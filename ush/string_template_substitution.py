@@ -2,10 +2,10 @@
 
 """
 
-Program Name: filename_template.py
-Contact(s): Brian Pettegrew (AWC liason for NCAR to NCO for WCOSS)
+Program Name: string_template_substitution.py
+Contact(s): Julie Prestopnik, NCAR RAL DTC, jpresto@ucar.edu
 Abstract: Supporting functions for parsing and creating filename templates
-History Log:  Initial version for GTG3
+History Log:  Initial version for METPlus
 Usage: Usually imported in other Python code for individual function calls
 Parameters: Varies
 Input Files: None
