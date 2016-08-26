@@ -167,8 +167,8 @@ def grep(pattern, file, greedy=False):
     return matching_lines
 
 
-def get_filepaths(dir):
-    '''Generates the file names in a directory tree
+def get_filepaths_for_grbfiles(dir):
+    '''Generates the grb2 file names in a directory tree
        by walking the tree either top-down or bottom-up.
        For each directory in the tree rooted at
        the directory top (including top itself), it
@@ -181,7 +181,7 @@ def get_filepaths(dir):
 
     Args:
         dir (string): The base directory from which we
-                      begin the search for filenames.
+                      begin the search for grib2 filenames.
     Returns:
         file_paths (list): A list of the full filepaths
                            of the data to be processed.
