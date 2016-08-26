@@ -19,6 +19,7 @@ import re
 import datetime
 import time
 import calendar
+import math
 
 TEMPLATE_IDENTIFIER_BEGIN = "{"
 TEMPLATE_IDENTIFIER_END = "}"
@@ -26,17 +27,20 @@ TEMPLATE_IDENTIFIER_END = "}"
 FORMATTING_DELIMITER = "?"
 FORMATTING_VALUE_DELIMITER = "="
 FORMAT_STRING = "fmt"
-LENGTH_STRING = "len"
 
 VALID_STRING = "valid"
 LEAD_STRING = "lead"
 INIT_STRING = "init"
+ACCUM_STRING = "accum"
+
+LEAD_ACCUM_FORMATTING_DELIMITER = "%"
 
 SECONDS_PER_HOUR = 3600
 MINUTES_PER_HOUR = 60
 SECONDS_PER_MINUTE = 60
 
 TWO_DIGIT_PAD = 2
+THREE_DIGIT_PAD = 3
 
 def date_str_to_datetime_obj(str):
     
@@ -50,42 +54,7 @@ def date_str_to_datetime_obj(str):
     elif length == 10:
         return datetime.datetime(int(str[:4]), int(str[4:6]), int(str[6:8]), int(str[8:10]), 0, 0, 0, None)
     elif length == 12:
-        return datetime.datetime(int(str[:4]), int(str[4:6]), int(str[6:8]), int(str[8:10]), int(str[10:12]), 0, 0, None)
-
-def time_str_to_time_tuple(time_str, format):
-    
-    """Convert year month day string to a datetime object. Works with [H]HH[MMSS]"""
-
-    # Using %HH but need %H for two digits...
-    
-    int_time_str = int(time_str)
-    time_string = str(int_time_str)
-    
-    # HH
-    if len(time_str) == 2:
-        #return datetime.datetime(None, None, None, int(str), 0, 0, 0, None)
-        return time.strptime(time_string, format)
-    # HHH
-    elif len(time_str) == 3:
-        return 
-    # HHMM
-    elif len(time_str) == 4:
-        #return datetime.datetime(0, 0, 0, int(str[0:2]), int(str[2:4]), 0, 0, None)
-        return time.strptime(time_string, format)
-    # HHHMM
-    elif len(time_str) == 5:
-        return 
-    # HHMMSS
-    elif lentime_(str) == 6:
-        #return datetime.datetime(0, 0, 0, int(str[0:2]), int(str[2:4]), int(str[4:6]), 0, None)
-        return time.strptime(time_string, format)
-    # HHHMMSS
-    elif len(time_str) == 7:
-        return 
-    else:
-        print("Lead time must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")         
-        exit(0)
-        
+        return datetime.datetime(int(str[:4]), int(str[4:6]), int(str[6:8]), int(str[8:10]), int(str[10:12]), 0, 0, None)       
     
 
 def multiple_replace(dict, text): 
@@ -98,36 +67,39 @@ def multiple_replace(dict, text):
   # For each match, look-up corresponding value in dictionary
   return regex.sub(lambda mo: dict[mo.string[mo.start():mo.end()]], text)
 
-def get_lead_time_seconds(lead_time_string):
+def get_lead_accum_time_seconds(time_string):
 
-    """ Returns the number of seconds for the lead time string in the format [H]HH[MMSS]"""
+    """ Returns the number of seconds for the time string in the format [H]HH[MMSS]"""
 
     # HH
-    if len(lead_time_string) == 2:
-        return (int(lead_time_string) * SECONDS_PER_HOUR)
+    if len(time_string) == 2:
+        return (int(time_string) * SECONDS_PER_HOUR)
     # HHH
-    elif len(lead_time_string) == 3:
-        return (int(lead_time_string) * SECONDS_PER_HOUR)
+    elif len(time_string) == 3:
+        return (int(time_string) * SECONDS_PER_HOUR)
     # HHMM
-    elif len(lead_time_string) == 4:
-        return ((int(lead_time_string[0:2]) * SECONDS_PER_HOUR) + (int(lead_time_string[2:4]) * MINUTES_PER_HOUR))
+    elif len(time_string) == 4:
+        return ((int(time_string[0:2]) * SECONDS_PER_HOUR) + (int(time_string[2:4]) * MINUTES_PER_HOUR))
     # HHHMM
-    elif len(lead_time_string) == 5:
-        return ((int(lead_time_string[0:3]) * SECONDS_PER_HOUR) + (int(lead_time_string[3:5]) * MINUTES_PER_HOUR))
+    elif len(time_string) == 5:
+        return ((int(time_string[0:3]) * SECONDS_PER_HOUR) + (int(time_string[3:5]) * MINUTES_PER_HOUR))
     # HHMMSS
-    elif len(lead_time_string) == 6:
-        return ((int(lead_time_string[0:2]) * SECONDS_PER_HOUR) + (int(lead_time_string[2:4]) * MINUTES_PER_HOUR) + int(lead_time_string[4:6]))
+    elif len(time_string) == 6:
+        return ((int(time_string[0:2]) * SECONDS_PER_HOUR) + (int(time_string[2:4]) * MINUTES_PER_HOUR) + int(time_string[4:6]))
     # HHHMMSS
-    elif len(lead_time_string) == 7:
-        return ((int(lead_time_string[0:3]) * SECONDS_PER_HOUR) + (int(lead_time_string[3:5]) * MINUTES_PER_HOUR) + int(lead_time_string[5:7]))
+    elif len(time_string) == 7:
+        return ((int(time_string[0:3]) * SECONDS_PER_HOUR) + (int(time_string[3:5]) * MINUTES_PER_HOUR) + int(time_string[5:7]))
     else:
-        print("Lead time must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")         
+        print("The time must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")         
         exit(0)
         
 class StringTemplateSubstitution:
     """
     tmpl_str - template string to populate
     kwargs - dictionary containing values for each template key
+
+    This class provides functionality for substituting values for
+    string templates.
     
     Possible keys for vals:
        init - must be in YYYYmmddHH[MMSS] format
@@ -138,9 +110,7 @@ class StringTemplateSubstitution:
        model - the name of the model
        domain - the domain number (01, 02, etc.) read in as a string
 
-       These keys can have parameters containing formatting information.
-       The format of the template in this case is {tmpl_key?parm1=val1}.
-       For example, 
+    See the description of doStringSub for further details.
        
     """
 
@@ -148,10 +118,23 @@ class StringTemplateSubstitution:
 
         self.tmpl = tmpl
         self.kwargs = kwargs
+    
         if self.kwargs is not None:
             for key, value in kwargs.iteritems():
                 #print("%s == %s" % (key, value))
                 setattr(self, key, value)
+
+        self.lead_time_seconds = 0
+        self.accum_time_seconds = 0
+        self.negative_lead = False
+        self.negative_accum = False
+
+        if (LEAD_STRING in self.kwargs):
+            self.lead_time_seconds =  get_lead_accum_time_seconds((self.kwargs).get(LEAD_STRING, None))
+        if (ACCUM_STRING in self.kwargs):
+            self.accum_time_seconds =  get_lead_accum_time_seconds((self.kwargs).get(ACCUM_STRING, None))
+
+        
 
     def dateCalcInit(self):
 
@@ -171,11 +154,11 @@ class StringTemplateSubstitution:
         valid_unix_time = calendar.timegm(valid_time_tuple)
 
         # Get the number of seconds for the lead time
-        lead_time_seconds = get_lead_time_seconds((self.kwargs).get(LEAD_STRING, None))
+        self.lead_time_seconds = get_lead_accum_time_seconds((self.kwargs).get(LEAD_STRING, None))
 
-        init_unix_time = valid_unix_time - lead_time_seconds
+        init_unix_time = valid_unix_time - self.lead_time_seconds
         init_time = time.strftime("%Y%m%d%H%M%S", time.gmtime(init_unix_time))
-        #print("init_time: ", init_time)
+
         return init_time
 
     def dateCalcValid(self):
@@ -196,17 +179,16 @@ class StringTemplateSubstitution:
         init_unix_time = calendar.timegm(init_time_tuple)
 
         # Get the number of seconds for the lead time
-        lead_time_seconds = get_lead_time_seconds((self.kwargs).get(LEAD_STRING, None))
+        self.lead_time_seconds = get_lead_accum_time_seconds((self.kwargs).get(LEAD_STRING, None))
 
-        valid_unix_time = init_unix_time + lead_time_seconds
+        valid_unix_time = init_unix_time + self.lead_time_seconds
         valid_time = time.strftime("%Y%m%d%H%M%S", time.gmtime(valid_unix_time))
-        #print("valid_time: ", valid_time)
+        
         return valid_time
 
     def dateCalcLead(self):
 
-        """ Calculate the lead time from the init and valid time
-            Currently requires the valid time to be greater than the init time"""
+        """ Calculate the lead time from the init and valid time """
              
         # Get the unix time for the init time
         if len((self.kwargs).get(INIT_STRING, None)) == 10:
@@ -236,14 +218,13 @@ class StringTemplateSubstitution:
         # Determine if the init time is greater than the lead time, if so lead time should be negative
         negative_lead_flag = 0
         if (valid_unix_time > init_unix_time):
-            lead_seconds = valid_unix_time - init_unix_time
+            self.lead_time_seconds = valid_unix_time - init_unix_time
         else:
-            print "Init time is greater than valid time"
-            lead_seconds = init_unix_time - valid_unix_time
+            self.lead_time_seconds = init_unix_time - valid_unix_time
             negative_lead_flag = 1
-        lead_seconds_str = str(datetime.timedelta(seconds=lead_seconds))
-        #print("Valid time currently: %s, Init time currently: %s"  % ((self.kwargs).get(VALID_STRING, None), (self.kwargs).get(INIT_STRING, None)))
-
+            self.negative_lead = True
+        lead_seconds_str = str(datetime.timedelta(seconds=(self.lead_time_seconds)))
+        
         # There are no days, but only HH:MM:SS information
         if len(lead_seconds_str) <= 8:
             HH,MM,SS = lead_seconds_str.split(":")
@@ -265,28 +246,104 @@ class StringTemplateSubstitution:
             total_hours = days_to_hours + int(HH)
             # Put together the lead_time string in the format [H]HH[MMSS]
             lead_time = str(total_hours) + MM + SS
+            
         # If the init time was greater than the valid time, the lead time should be negative
         if (negative_lead_flag == 1):
             lead_time = "-" + lead_time
-
-        #print("lead_time: ", lead_time)
+        
         return lead_time
 
-    def leadStringFormat(self, format_string):
+    def leadAccumStringFormat(self, parm_type, format_string):
 
-        print "In leadStringFormat"
-        print (self.kwargs).get(LEAD_STRING, None)
-        print format_string
+        """ Formats the lead or accum in the requested format """
+        
+        formatted_time_string = ""
+        time_seconds = 0
+        negative_flag = False
+        
+        if (parm_type == LEAD_STRING):
+            time_seconds = self.lead_time_seconds
+            negative_flag = self.negative_lead
+        elif (parm_type == ACCUM_STRING):
+            time_seconds = self.accum_time_seconds
+            negative_flag = self.negative_accum
+        else:
+            # Log and exit
+            print("Invalid parm_type of %s.  Acceptable parm types are lead and accum.", parm_type)
 
-        date_time_value = (self.kwargs).get(LEAD_STRING, None)
-        format_string = "\"" +  format_string +"\""
-        print format_string
-        #print type(date_time_value)
-        time_tuple = time_str_to_time_tuple(date_time_value, format_string)
-        print time_tuple
-    
+
+        hours_value = math.floor(time_seconds / SECONDS_PER_HOUR)
+        time_seconds = time_seconds - (hours_value * SECONDS_PER_HOUR)
+        minutes_value = math.floor(time_seconds / MINUTES_PER_HOUR)
+        time_seconds = time_seconds - (minutes_value * MINUTES_PER_HOUR)
+        seconds_value = time_seconds
+
+        hours_value_str = str(int(hours_value))
+        minutes_value_str = str(int(minutes_value))
+        seconds_value_str = str(int(seconds_value))
+        
+        format_string_split = format_string.split(LEAD_ACCUM_FORMATTING_DELIMITER)
+
+        # Minutes and seconds should be included (Empty, HH or HHH, MMSS)
+        if (len(format_string_split) == 3):
+            MM = minutes_value_str.zfill(TWO_DIGIT_PAD)
+            SS = seconds_value_str.zfill(TWO_DIGIT_PAD)
+            MMSS = MM + SS
+            if (format_string_split[1] == 'HH'):
+                hours = hours_value_str.zfill(TWO_DIGIT_PAD)
+                if (len(hours) == 3):
+                    print("The requested hours formatting was %s, but the hours given are: %s. Returning a three digit hour." % (format_string_split[1], hours) )                   
+            elif (format_string_split[1] == 'HHH'):
+                hours = hours_value_str.zfill(THREE_DIGIT_PAD)
+            else:
+                print("The time must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")         
+                exit(0)
+            
+            formatted_time_string = hours + MMSS
+
+        # Only hours should be included (Empty, HH or HHH)
+        elif (len(format_string_split) == 2):
+            if (format_string_split[1] == 'HH'):
+                hours = hours_value_str.zfill(TWO_DIGIT_PAD)
+                if (len(hours) == 3):
+                    print("The requested hours formatting was %s, but the hours given are: %s. Returning a three digit hour." % (format_string_split[1], hours) )                   
+            elif (format_string_split[1] == 'HHH'):
+                hours = hours_value_str.zfill(THREE_DIGIT_PAD)
+            else:
+                print("The time must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")         
+                exit(0)
+
+            formatted_time_string = hours
+
+        else:
+            print("The time must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")         
+            exit(0)
+
+        if negative_flag:
+            formatted_time_string = "-" + formatted_time_string
+            
+        return formatted_time_string
+        
     def doStringSub(self):
 
+        """ Populates the specified template with information from the kwargs dictionary.  The template
+            structure is compresed of a fixed string populated with template place-holders inside curly
+            braces, for example {tmpl_str}.  The tmpl_str must be present as a key in the kwargs
+            dictionary, and the value will replace the {tmpl_str} in the returned string.
+
+            In some cases, the template keys can have parameters containing formatting information.  The
+            format of the template in this case is {tmpl_str?parm=val}.  The supported parameters are:
+
+              init, valid:
+                fmt - specifies a strftime format for the date/time
+                      e.g. %Y%m%d%H%M%S, %Y%m%d%H
+                
+              lead, accum:
+                fmt -  specifies an amount of time in [H]HH[MMSS] format
+                       e.g. %HH, %HHH, %HH%MMSS, %HHH%MMSS 
+
+        """
+        
         # The . matches any single character except newline, and the following +
         # matches 1 or more occurrence of preceding expression.
         # The ? after the .+ makes it a lazy match so that it stops
@@ -334,6 +391,10 @@ class StringTemplateSubstitution:
             # Compute lead time
             elif ((INIT_STRING in self.kwargs and VALID_STRING in self.kwargs) and not (LEAD_STRING in self.kwargs)):
                 self.kwargs[LEAD_STRING] = self.dateCalcLead()
+                #print("self.lead_time_seconds: ", self.lead_time_seconds)
+                # Data is put into self.lead_time_seconds
+                #self.dateCalcLead()
+            #print self.kwargs[LEAD_STRING]
 
             # A dictionary that will contain the string to replace (key) and the string to replace it with (value)    
             replacement_dict = {}
@@ -354,7 +415,7 @@ class StringTemplateSubstitution:
                     # split_string[0] holds the key (e.g. "init", "valid", etc.)
                     if split_string[0] not in (self.kwargs).keys():
                         # Log and continue
-                        print "Some message about key not in key/value pair"
+                        print "Some message about key not in key/value pair: ", split_string[0]
 
                     # Key is in the dictionary
                     else:
@@ -379,23 +440,15 @@ class StringTemplateSubstitution:
                                 replacement_dict[string_to_replace] = date_time_str
 
                             elif (split_string[0] == LEAD_STRING):
-                                value = self.leadStringFormat(format_split_string[1])
+                                value = self.leadAccumStringFormat(LEAD_STRING, format_split_string[1])
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
 
+                            elif (string_string[0] == ACCUM_STRING):
+                                value = self.leadAccumStringFormat(ACCUM_STRING, format_split_string[1])
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
                             
-                        """
-                        # Check for requested LENGTH_STRING    
-                        elif format_split_string[0] == LENGTH_STRING:
-
-                            value = (self.kwargs).get(split_string[0], None)
-                            if (split_string[0] == LEAD_STRING):
-                              value = self.leadStringFormat(format_split_string[1])
-                            # Get the value for the desired length and pad with zeros if not already the desired length
-                            padded_value = value.zfill(int(format_split_string[1]))
-                            
-                            # Add back the template identifiers to the matched string to replace and add the key, value pair to the dictionary
-                            string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
-                            replacement_dict[string_to_replace] = padded_value
-                        """    
                 # No formatting or length is requested            
                 elif len(split_string) == 1:
 
@@ -404,20 +457,9 @@ class StringTemplateSubstitution:
                     replacement_dict[string_to_replace] = (self.kwargs).get(split_string[0], None)
                             
             # Replace regex with properly formatted information
-            #print replacement_dict
-            #print "self.tmpl: ", self.tmpl
             temp_str = multiple_replace(replacement_dict, self.tmpl)
-            print "temp_str: ", temp_str
             self.tmpl = temp_str
             return self.tmpl
-            
-
-        
-                
-    #def setSubs():
-
-    #def subString():
-
     
     
 if __name__ == "__main__":
