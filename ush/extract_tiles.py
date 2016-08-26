@@ -21,7 +21,6 @@ import met_util as util
 import time
 import re
 import subprocess
-import produtil.log as pl
 
 def main():
     '''Get TC-pairs track data and GFS model data, do any necessary processing then
@@ -53,7 +52,6 @@ def main():
    
     # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) | [File : function]| Message
     logger.info("INFO |  [" + cur_filename +  ":" + "cur_function] |" + "Inside main")
-    jlogger.msg("INFO Inside main")        
     
     # Get necessary executables
     tc_stat_exe = p.opt["TC_STAT"]
