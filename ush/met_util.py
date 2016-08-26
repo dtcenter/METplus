@@ -62,10 +62,10 @@ def mkdir_p(path):
     try:
         # ***Note***:
         # For Python 3.2 and beyond, os.makedirs has a third optional argument,
-        # exist_ok, that when set to True will enable the mkdir -p functionality
-        # unless mode is provided and the existing directory has different permissions
-        # from the intended ones.  In this situation the OSError exception is raised.
-        #
+        # exist_ok, that when set to True will enable the mkdir -p functionality.
+        # The mkdir -p functionality holds unless the mode is provided and the 
+        # existing directory has different permissions from the intended ones. 
+        # In this situation the OSError exception is raised.
 
         # default mode is octal 0777
         os.makedirs(path, mode=0775)
