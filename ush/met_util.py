@@ -81,7 +81,7 @@ def get_logger(p):
     '''Gets a logger
 
        Args:
-           p:   the ConfigMaster constants param file
+           p:   the ConfigMaster constants param 
 
        Returns:
            logger: the logger
@@ -106,7 +106,7 @@ def get_logger(p):
     formatter = logging.Formatter('%(asctime)s : %(message)s')
     logging.Formatter.converter = time.gmtime
     logger = logging.getLogger(log_path)
-    #logger.setLevel(log_level)
+    logger.setLevel(log_level)
     fileHandler = logging.FileHandler(log_path,mode='a')
     fileHandler.setFormatter(formatter)
     logger.addHandler(fileHandler)
