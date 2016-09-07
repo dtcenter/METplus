@@ -13,6 +13,7 @@ Condition codes: 0 for success, 1 for failure
 '''
 
 from __future__ import (print_function, division )
+
 import constants_pdef as P
 import logging
 import os
@@ -351,7 +352,6 @@ def create_tile_grid_string(lat,lon,logger,p):
      dlat = str(p.opt["DLAT"])
      dlon = str(p.opt["DLON"])
   
-     logger.log(1,"DEBUG1: dlat = "+ dlat)
 
      # Hard-coded values
      #lon_subtr = float(15)
