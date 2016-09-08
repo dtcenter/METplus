@@ -13,7 +13,7 @@ import os
 #
 
 #Levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
-LOG_LEVEL = "DEBUG1"
+LOG_LEVEL = "DEBUG"
 LOG_DIR = "/d1/SBU_util/out/logs"
 LOG_FILENAME = "extract_tiles.log"
 
@@ -69,8 +69,8 @@ LAT_SUBTR = 15
 # 
 # Constants used in performing the series analysis
 #
-CONFIG_BY_LEAD = "SeriesAnalysisConfig_by_lead"
-CONFIG_BY_INIT = "SeriesAnalysisConfig"
+CONFIG_BY_LEAD = "/d1/SBU_util/parm/SeriesAnalysisConfig_by_lead"
+CONFIG_BY_INIT = "/d1/SBU_util/parm/SeriesAnalysisConfig"
 
 #
 # Testing
