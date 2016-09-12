@@ -20,6 +20,9 @@ import datetime
 import time
 import calendar
 import math
+import logging
+import met_util as util
+import sys
 
 TEMPLATE_IDENTIFIER_BEGIN = "{"
 TEMPLATE_IDENTIFIER_END = "}"
@@ -41,6 +44,8 @@ SECONDS_PER_MINUTE = 60
 
 TWO_DIGIT_PAD = 2
 THREE_DIGIT_PAD = 3
+
+GLOBAL_LOGGER = None
 
 def date_str_to_datetime_obj(str):
     
@@ -71,6 +76,10 @@ def get_lead_accum_time_seconds(time_string):
 
     """ Returns the number of seconds for the time string in the format [H]HH[MMSS]"""
 
+    # Used for logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name        
+             
     # HH
     if len(time_string) == 2:
         return (int(time_string) * SECONDS_PER_HOUR)
@@ -90,11 +99,12 @@ def get_lead_accum_time_seconds(time_string):
     elif len(time_string) == 7:
         return ((int(time_string[0:3]) * SECONDS_PER_HOUR) + (int(time_string[3:5]) * MINUTES_PER_HOUR) + int(time_string[5:7]))
     else:
-        print("The time must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")         
+        (self.logger).error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "The time string " + time_string + " must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")
         exit(0)
         
 class StringTemplateSubstitution:
     """
+    params - params object used for logging
     tmpl_str - template string to populate
     kwargs - dictionary containing values for each template key
 
@@ -114,8 +124,9 @@ class StringTemplateSubstitution:
        
     """
 
-    def __init__(self, tmpl, **kwargs):
+    def __init__(self, params, tmpl, **kwargs):
 
+        self.logger = util.get_logger(params)
         self.tmpl = tmpl
         self.kwargs = kwargs
     
@@ -140,6 +151,10 @@ class StringTemplateSubstitution:
 
         """ Calculate the init time from the valid and lead time  """
 
+        # Used for logging
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name        
+
         # Get the unix time for the valid time
         if len((self.kwargs).get(VALID_STRING, None)) == 10:
             valid_time_tuple = time.strptime((self.kwargs).get(VALID_STRING, None), "%Y%m%d%H")
@@ -148,7 +163,7 @@ class StringTemplateSubstitution:
         elif len((self.kwargs).get(VALID_STRING, None)) == 14:
             valid_time_tuple = time.strptime((self.kwargs).get(VALID_STRING, None), "%Y%m%d%H%M%S")
         else:
-            print("Valid time must be in the format YYYYmmddHH[MMSS]. Valid time currently = ", (self.kwargs).get(VALID_STRING, None))
+            (self.logger).error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "The valid time " + (self.kwargs).get(VALID_STRING, None) + " must be in the format YYYYmmddHH[MMSS].")
             exit(0)
 
         valid_unix_time = calendar.timegm(valid_time_tuple)
@@ -164,6 +179,10 @@ class StringTemplateSubstitution:
     def dateCalcValid(self):
 
         """ Calculate the valid time from the init and lead time  """
+
+        # Used for logging
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name        
              
         # Get the unix time for the init time
         if len((self.kwargs).get(INIT_STRING, None)) == 10:
@@ -173,7 +192,7 @@ class StringTemplateSubstitution:
         elif len((self.kwargs).get(INIT_STRING, None)) == 14:
             init_time_tuple = time.strptime((self.kwargs).get(INIT_STRING, None), "%Y%m%d%H%M%S")
         else:
-            print("Init time must be in the format YYYYmmddHH[MMSS]. Init time currently = ", (self.kwargs).get(INIT_STRING, None))
+            (self.logger).error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "The init time " + (self.kwargs).get(INIT_STRING, None) + " must be in the format YYYYmmddHH[MMSS].")
             exit(0)
 
         init_unix_time = calendar.timegm(init_time_tuple)
@@ -189,6 +208,10 @@ class StringTemplateSubstitution:
     def dateCalcLead(self):
 
         """ Calculate the lead time from the init and valid time """
+
+        # Used for logging
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name        
              
         # Get the unix time for the init time
         if len((self.kwargs).get(INIT_STRING, None)) == 10:
@@ -198,7 +221,7 @@ class StringTemplateSubstitution:
         elif len((self.kwargs).get(INIT_STRING, None)) == 14:
             init_time_tuple = time.strptime((self.kwargs).get(INIT_STRING, None), "%Y%m%d%H%M%S")
         else:
-            print("Init time must be in the format YYYYmmddHH[MMSS]. Init time currently = ", (self.kwargs).get(INIT_STRING, None))
+            (self.logger).error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "The init time " + (self.kwargs).get(INIT_STRING, None) + " must be in the format YYYYmmddHH[MMSS].")
             exit(0)
         init_unix_time = calendar.timegm(init_time_tuple)
 
@@ -211,7 +234,7 @@ class StringTemplateSubstitution:
         elif len((self.kwargs).get(VALID_STRING, None)) == 14:
             valid_time_tuple = time.strptime((self.kwargs).get(VALID_STRING, None), "%Y%m%d%H%M%S")
         else:
-            print("Valid time must be in the format YYYYmmddHH[MMSS]. Valid time currently = ", (self.kwargs).get(VALID_STRING, None))
+            (self.logger).error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "The valid time " + (self.kwargs).get(VALID_STRING, None) + " must be in the format YYYYmmddHH[MMSS].")
             exit(0)
         valid_unix_time = calendar.timegm(valid_time_tuple)
 
@@ -256,6 +279,10 @@ class StringTemplateSubstitution:
     def leadAccumStringFormat(self, parm_type, format_string):
 
         """ Formats the lead or accum in the requested format """
+
+        # Used for logging
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name        
         
         formatted_time_string = ""
         time_seconds = 0
@@ -269,7 +296,8 @@ class StringTemplateSubstitution:
             negative_flag = self.negative_accum
         else:
             # Log and exit
-            print("Invalid parm_type of %s.  Acceptable parm types are lead and accum.", parm_type)
+            (self.logger).error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Invalid parm_type of " + parm_type + ".  Acceptable parm types are: " + LEAD_STRING + " and " + ACCUM_STRING + ".")
+            exit(0)
 
 
         hours_value = math.floor(time_seconds / SECONDS_PER_HOUR)
@@ -292,11 +320,12 @@ class StringTemplateSubstitution:
             if (format_string_split[1] == 'HH'):
                 hours = hours_value_str.zfill(TWO_DIGIT_PAD)
                 if (len(hours) == 3):
-                    print("The requested hours formatting was %s, but the hours given are: %s. Returning a three digit hour." % (format_string_split[1], hours) )                   
+                    (self.logger).warn("WARN | [" + cur_filename +  ":" + cur_function + "] | " + "The requested format for hours was " + format_string_split[1] + " but the hours given are " + hours + ". Returning a three digit hour.")
+                                       
             elif (format_string_split[1] == 'HHH'):
                 hours = hours_value_str.zfill(THREE_DIGIT_PAD)
             else:
-                print("The time must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")         
+                (self.logger).error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "The time must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")
                 exit(0)
             
             formatted_time_string = hours + MMSS
@@ -306,17 +335,17 @@ class StringTemplateSubstitution:
             if (format_string_split[1] == 'HH'):
                 hours = hours_value_str.zfill(TWO_DIGIT_PAD)
                 if (len(hours) == 3):
-                    print("The requested hours formatting was %s, but the hours given are: %s. Returning a three digit hour." % (format_string_split[1], hours) )                   
+                    (self.logger).warn("WARN | [" + cur_filename +  ":" + cur_function + "] | " + "The requested format for hours was " + format_string_split[1] + " but the hours given are " + hours + ". Returning a three digit hour.")
             elif (format_string_split[1] == 'HHH'):
                 hours = hours_value_str.zfill(THREE_DIGIT_PAD)
             else:
-                print("The time must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")         
+                (self.logger).error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "The time must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")
                 exit(0)
 
             formatted_time_string = hours
 
         else:
-            print("The time must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")         
+            (self.logger).error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "The time must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")
             exit(0)
 
         if negative_flag:
@@ -343,6 +372,9 @@ class StringTemplateSubstitution:
                        e.g. %HH, %HHH, %HH%MMSS, %HHH%MMSS 
 
         """
+
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
         
         # The . matches any single character except newline, and the following +
         # matches 1 or more occurrence of preceding expression.
@@ -362,19 +394,21 @@ class StringTemplateSubstitution:
         match_start_end_list = []
         for match in matches:
             match_start_end_list.append((match.start(), match.end()))
-
+            
         # Dictionary used to replace matches with the appropriate value
         match_replace = {}
         
         if match_list == 0:
             
             # Log and exit
-            print "No matches found"
-
+            (self.logger).error("ERROR |  [" + cur_filename +  ":" + cur_function + "] | " + "No matches found for template: " + self.tmpl)
+            exit(0)
+            
         elif len(match_list) != len(match_start_end_list):
                 
             # Log and exit
-            print "match_list and match_start_end_list should have the same length"
+            (self.logger).error("ERROR |  [" + cur_filename +  ":" + cur_function + "] | " + "match_list and match_start_end_list should have the same length for template: " + self.tmpl)
+            exit(0)
             
         else:
             
@@ -391,10 +425,6 @@ class StringTemplateSubstitution:
             # Compute lead time
             elif ((INIT_STRING in self.kwargs and VALID_STRING in self.kwargs) and not (LEAD_STRING in self.kwargs)):
                 self.kwargs[LEAD_STRING] = self.dateCalcLead()
-                #print("self.lead_time_seconds: ", self.lead_time_seconds)
-                # Data is put into self.lead_time_seconds
-                #self.dateCalcLead()
-            #print self.kwargs[LEAD_STRING]
 
             # A dictionary that will contain the string to replace (key) and the string to replace it with (value)    
             replacement_dict = {}
@@ -415,7 +445,7 @@ class StringTemplateSubstitution:
                     # split_string[0] holds the key (e.g. "init", "valid", etc.)
                     if split_string[0] not in (self.kwargs).keys():
                         # Log and continue
-                        print "Some message about key not in key/value pair: ", split_string[0]
+                        (self.logger).error("ERROR |  [" + cur_filename +  ":" + cur_function + "] | " + "The key " + split_string[0] + "does not exist for template: " + self.tmpl)
 
                     # Key is in the dictionary
                     else:
@@ -438,23 +468,27 @@ class StringTemplateSubstitution:
                                 # Add back the template identifiers to the matched string to replace and add the key, value pair to the dictionary
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = date_time_str
+                                (self.logger).info("INFO |  [" + cur_filename +  ":" + cur_function + "] | " + "Replacing " + string_to_replace + " with " + date_time_str + " for template " + self.tmpl)
 
                             elif (split_string[0] == LEAD_STRING):
                                 value = self.leadAccumStringFormat(LEAD_STRING, format_split_string[1])
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
+                                (self.logger).info("INFO |  [" + cur_filename +  ":" + cur_function + "] | " + "Replacing " + string_to_replace + " with " + value + " for template " + self.tmpl)
 
                             elif (string_string[0] == ACCUM_STRING):
                                 value = self.leadAccumStringFormat(ACCUM_STRING, format_split_string[1])
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
-                            
+                                (self.logger).info("INFO |  [" + cur_filename +  ":" + cur_function + "] | " + "Replacing " + string_to_replace + " with " + value + " for template " + self.tmpl)
+    
                 # No formatting or length is requested            
                 elif len(split_string) == 1:
 
                     # Add back the template identifiers to the matched string to replace and add the key, value pair to the dictionary
                     string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                     replacement_dict[string_to_replace] = (self.kwargs).get(split_string[0], None)
+                    (self.logger).info("INFO |  [" + cur_filename +  ":" + cur_function + "] | " + "Replacing " + string_to_replace + " with " + (self.kwargs).get(split_string[0], None) + " for template " + self.tmpl)
                             
             # Replace regex with properly formatted information
             temp_str = multiple_replace(replacement_dict, self.tmpl)

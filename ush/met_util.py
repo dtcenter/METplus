@@ -81,14 +81,13 @@ def get_logger(p):
     '''Gets a logger
 
        Args:
-           p:   the ConfigMaster constants param 
+           p:   the ConfigMaster constants param file
 
        Returns:
            logger: the logger
     '''
 
     # Retrieve all logging related parameters from the param file
-    output_dir = p.opt["OUT_DIR"]
     log_dir = p.opt["LOG_DIR"]
     log_level = p.opt["LOG_LEVEL"]
     log_filename = p.opt["LOG_FILENAME"]
