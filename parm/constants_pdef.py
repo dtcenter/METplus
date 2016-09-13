@@ -29,6 +29,7 @@ RM_EXE = "/bin/rm -rf"
 CUT_EXE = "/usr/bin/cut"
 TR_EXE = "/usr/bin/tr"
 NCAP2_EXE = "/usr/bin/nco/bin/ncap2"
+CONVERT_EXE = "/usr/bin/convert"
 
 #
 # Project Directories
