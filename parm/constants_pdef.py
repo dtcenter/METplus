@@ -26,6 +26,9 @@ WGRIB2 = "/d1/CODE/wgrib2"
 SERIES_ANALYSIS = "/d1/CODE/MET/MET_releases/met-5.2_beta2/bin/series_analysis"
 PLOT_DATA_PLANE = "/d1/CODE/MET/MET_releases/met-5.2_beta2/bin/plot_data_plane"
 RM_EXE = "/bin/rm -rf"
+CUT_EXE = "/usr/bin/cut"
+TR_EXE = "/usr/bin/tr"
+NCAP2_EXE = "/usr/bin/nco/bin/ncap2"
 
 #
 # Project Directories
@@ -38,6 +41,12 @@ GFS_DIR = os.path.join(PROJ_DIR, "model_data")
 # Output Directories
 # 
 OUT_DIR = "/d1/SBU_util/out/series_analysis"
+
+# 
+# Configuration files required in performing the series analysis
+#
+CONFIG_FILE_LEAD = "/d1/SBU_util/parm/SeriesAnalysisConfig_by_lead"
+CONFIG_FILE_INIT = "/d1/SBU_util/parm/SeriesAnalysisConfig"
 
 #
 # Lists
@@ -59,18 +68,15 @@ FHR_INC = 6
 #
 NLAT = 60
 NLON = 60
+
 # Resolution of data in degrees
 DLAT = 0.5
 DLON = 0.5
+
 # Degrees to subtract to get center of 30 x 30 grid
 LON_SUBTR = 15
 LAT_SUBTR = 15
 
-# 
-# Constants used in performing the series analysis
-#
-CONFIG_BY_LEAD = "/d1/SBU_util/parm/SeriesAnalysisConfig_by_lead"
-CONFIG_BY_INIT = "/d1/SBU_util/parm/SeriesAnalysisConfig"
 
 #
 # Testing
