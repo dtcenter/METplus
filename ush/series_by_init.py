@@ -84,6 +84,7 @@ def get_all_storms(init_list, out_dir_base, logger):
 
     logger.info("Retrieving all storms")
     storm_list = []
+    filter_list = []
     # Retrieve filter files, first create the filename
     # by piecing together the out_dir_base with the cur_init.
     for cur_init in init_list:
@@ -91,7 +92,7 @@ def get_all_storms(init_list, out_dir_base, logger):
         filter_file = ''.join(filter_parts)
         logger.info('filter file from get_all_storms: '+ filter_file)
         if filter_file not in storm_list:
-            storm_list.append(filter_file)
+            filter_list.append(filter_file)
       
     return storm_list
     
