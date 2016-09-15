@@ -45,15 +45,31 @@ def analysis_by_init_time(p,logger):
     series_anly_config_file = p.opt["CONFIG_FILE_INIT"]
     series_analysis_exe = p.opt["SERIES_ANALYSIS"]
     plot_data_plane_exe = p.opt["PLOT_DATA_PLANE"]
+    convert_exe = p.opt["CONVERT_EXE"]
     tr_exe  = p.opt["TR_EXE"]
     cut_exe = p.opt["CUT_EXE"]
     ncap2_exe = p.opt["NCAP2_EXE"]
+    fcst_tile_regex = p.opt["FCST_TILE_REGEX"]
+    anly_tile_regex = p.opt["ANLY_TILE_REGEX"]
     
 
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
+
  
+    # Check for the existence of forecast and analysis tile files
+    tile_dir_parts = [proj_dir, '/series_analysis/']
+    tile_dir = ''.join(tile_dir_parts)
+    try:
+        util.check_for_tiles(tile_dir, fcst_tile_regex, anly_tile_regex, logger)
+    except OSError as e:
+        logger.error("Missing 30x30 tile files.  Extract tiles needs to be run")
+        raise
+     
+    
+    # Get a list of the forecast tile files
+    fcst_tiles = util.get_files(tile_dir, fcst_tile_regex, logger)
     
     for cur_init in init_time_list:
         # Get all the storm ids for storm track pairs that correspond to this
@@ -117,8 +133,10 @@ def analysis_by_init_time(p,logger):
                    # by the MET series_analysis binary.
                    os.environ['NAME'] = name
                    os.environ['LEVEL'] = level
-                   out_part = ['-out ', output_dir, 'series_', name, '_', level, '.nc']
-                   out_param = ''.join(out_part)
+                   series_anly_output_parts = [output_dir, 'series_', name,'_',level, '.nc']
+                   series_anly_output_fname = ''.join(series_anly_output_parts)
+                   out_param_parts = ['-out ', series_anly_output_fname]
+                   out_param = ''.join(out_param_parts)
                    #logger.info('out param: '+ out_param)
 
                    # Now put everything together to create the command for running the 
@@ -128,9 +146,78 @@ def analysis_by_init_time(p,logger):
                    command = ''.join(command_parts)
                    #logger.info('command: '+ command)
                    os.system(command)
-                  
+                   
+                   # Now we need to invoke the MET tool plot_data_plane to generate plots that are
+                   # recognized by the MET viewer.
+                   # Get the number of forecast tile files, the name of the first and last in the list
+                   # to be used by the -title option.
+                   num,beg,end = get_fcst_file_info(fcst_tiles, logger)
+                   #logger.info('num,beg, and end for title:'+ str(num) + ' ' + beg + ' ' + end)
 
+                   # Assemble the input file, output file, field string, and title
+                   plot_data_plane_input_fname = series_anly_output_fname
+                   #logger.info('plot data plane input fname: '+ plot_data_plane_input_fname)
+                   for cur_stat in stat_list:
+                       plot_data_plane_output = [output_dir,'series_',name, '_',level,'_',cur_stat,'.ps' ]
+                       plot_data_plane_output_fname = ''.join(plot_data_plane_output)
+                       os.environ['CUR_STAT'] = cur_stat 
+                       field_string_parts = ["'name=",'"series_cnt_', cur_stat,'";', 'level="', level, '";', "'"]
+                       field_string = ''.join(field_string_parts)
+                   #    logger.info('Field string: '+ field_string)
+                       title_parts = [' -title "GFS Init ', cur_init, ' Storm ',cur_storm, str(num), \
+                                      ' Forecasts (', beg, ' to ', end, '), ', cur_stat, ' for ', cur_var, '"' ]
+                       title = ''.join(title_parts)
+                   #    logger.info('Title: ' + title)
+                      
+                       # Now assemble the entire plot data plane command
+                       data_plane_command_parts = [plot_data_plane_exe, ' ', plot_data_plane_input_fname, ' ', plot_data_plane_output_fname, ' ', \
+                                                   field_string,' ', title ]
+                        
+
+                       data_plane_command = ''.join(data_plane_command_parts)
+                       logger.info("data_plane_command: " + data_plane_command)
+                       os.system(data_plane_command)
+
+                       # Now assemble the command to convert the postscript file to png
+                       png_fname = plot_data_plane_output_fname.replace('.ps','.png')
+                       convert_parts = [convert_exe, ' -rotate 90 -background white -flatten ', plot_data_plane_output_fname,' ', png_fname]
+                       convert = ''.join(convert_parts)
+                   #    logger.info('Convert: '+convert)
+                                 
+      
+def get_fcst_file_info(fcst_tiles_list, logger):
+    ''' Get the number of all the gridded forecast 30x30 tile files
+        created by extract_tiles, and from a sorted list, determine the filename of the first and last
+        files.  This information is used to create the title value to the -title opt in plot_data_plane.
     
+        Args:
+           fcst_tiles_list:  A list containing the full file names of all the forecast tile files
+           logger:  The logger to which all logging messages will be directed.
+
+
+        Returns:
+           num, beg, end:  A tuple representing the number of forecast tile files, and the first and 
+                           last file.
+        
+
+    '''
+
+    # For logging 
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+    
+    # Get the number of forecast tile files
+    num = len(fcst_tiles_list)
+   
+    # Get a sorted list of the forecast tile files and only return the 
+    # first and last
+    sorted_fcst_tiles = sorted(fcst_tiles_list)
+    beg = sorted_fcst_tiles[0]
+    end = sorted_fcst_tiles[-1]
+
+    return num,beg,end
+     
+        
 
 def get_storms_for_init(cur_init, out_dir_base, logger):
     ''' Retrieve all the filter files which have the .tcst
