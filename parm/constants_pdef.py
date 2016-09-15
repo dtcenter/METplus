@@ -78,6 +78,11 @@ DLON = 0.5
 LON_SUBTR = 15
 LAT_SUBTR = 15
 
+# Regular expressions for Forecast and Analysis tile files
+# These are used for performing series analysis.
+FCST_TILE_REGEX = "FCST_TILE_F[0-9]{3}.*.grb2"
+ANLY_TILE_REGEX = "ANLY_TILE_F[0-9]{3}.*.grb2"
+
 
 #
 # Testing
