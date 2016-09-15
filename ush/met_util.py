@@ -8,9 +8,10 @@ import logging
 import time
 import re
 import math
+import sys
 
 ''' A collection of utility functions used to perform necessary series
-    analysis tasks and other preprocessing tasks.
+    analysis tasks and other METPlus related tasks, .
 
 
 '''
@@ -207,6 +208,185 @@ def get_filepaths_for_grbfiles(dir):
     return file_paths
 
 
+def get_storm_ids(filter_filename, logger):
+    ''' Get each storm as identified by its STORM_ID in the filter file
+        save these in a set so we only save the unique ids and sort them.
+
+        Args:
+            filter_filename (string):  The name of the filter file to read
+                                       and extract the storm id
+            logger (string):  The name of the logger for logging useful info
+
+        Returns:
+            sorted_storms (List):  a list of unique, sorted storm ids
+    '''
+    # For logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    storm_id_list = set()
+    with open(filter_filename) as fileobj:
+         # skip the first line as it contains the header
+         next(fileobj)
+         for line in fileobj:
+             # split the columns, which are separated by one or
+             # more whitespace, hence the line.split() without any
+             # args
+             cols = line.split()
+
+             # we are only interested in the 4th column, STORM_ID
+             storm_id_list.add(str(cols[3]))
+
+    # sort the unique storm ids, copy the original
+    # set by using sorted rather than sort.
+    sorted_storms  = sorted(storm_id_list)
+    return sorted_storms
+
+
+def get_files(filedir, filename_regex, logger):
+    ''' Get all the files (with a particular
+        naming format) by walking
+        through the directories.
+   
+        Args:
+          filedir (String):  The topmost directory from which the
+                             search begins.
+          filename_regex (string):  The regular expression that
+                                    defines the naming format
+                                    of the files of interest.
+       Returns:
+          file_paths (string): a list of filenames (with full filepath)
+
+    '''
+    # For logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    file_paths = []
+    # Walk the tree
+    for root, directories, files in os.walk(filedir):
+        for filename in files:
+            # add it to the list only if it is a match
+            # to the specified format
+            match = re.match(filename_regex, filename)
+            if match:
+                # Join the two strings to form the full
+                # filepath.
+                filepath = os.path.join(root,filename)
+                file_paths.append(filepath)
+            else:
+                continue
+    return file_paths
+
+
+def get_name_level(var_combo, logger):
+    '''   Retrieve the variable name and level from a list of
+          variable/level combinations.  
+
+          Args:
+             var_combo(string):  A combination of the variable and the level
+                                 separated by '/'
+  
+          Returns:
+             name,level: A tuple of name and level derived from the
+                         name/level combination. 
+
+    '''
+    # For logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+    
+    match = re.match(r'(.*)/(.*)', var_combo)
+    name = match.group(1)
+    level = match.group(2)
+
+    return name,level
+
+    
+
+def create_ascii_file(dir, filename, file_list, logger):
+    '''Create an ASCII file of name 'filename', located in directory 'dir', 
+        containing the filenames of all files indicated in the input file_list. 
+        
+        Args:
+           dir:  The location where the ASCII file should be saved
+           filename:  The name of the ASCII filename
+           file_list:  A list of file names (full file path)
+           logger:  The logger to which all logging messages will be directed.
+    
+        Returns:
+           None: creates an ASCII file in the specified location with the 
+                 specified name, containing the files specified in the file_list 
+    '''
+    # For logging 
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+    ascii_filename = os.join.path(dir,filename)
+ 
+    try:
+        with open(ascii_filename, 'a') as f:
+            for cur_file in file_list:
+                f.write(cur_file) 
+                f.write('\n')
+    except IOError as e:
+          logger.error("Could not create requested ASCII file")
+
+
+
+def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
+    ''' Checks for the presence of forecast and analysis
+        tiles that were created by extract_tiles
+
+        Args:
+            tile_dir (string):  The directory where the expected
+                                tiled files should reside.
+
+            fcst_file_regex (string): The regexp describing the format of the
+                                  forecast tile file.
+
+            anly_file_regex (string): The regexp describing the format of the
+                                  analysis tile file.
+
+            logger (string):    The logger to which all log messages
+                                should be directed.
+
+        Returns:
+            None  raises OSError if files are missing
+
+    '''
+
+    anly_tiles = get_files(tile_dir, anly_file_regex, logger)
+    fcst_tiles = get_files(tile_dir, fcst_file_regex, logger)
+
+    num_anly_tiles = len(anly_tiles)
+    num_fcst_tiles = len(fcst_tiles)
+   
+ 
+
+    # Check that there are analysis and forecast tiles (which were, or should have been created earlier by extract_tiles).
+    if not anly_tiles :
+        # Cannot proceed, the necessary 30x30 degree analysis tiles are missing
+        logger.error("ERROR: No anly tile files were found  "+ tile_dir)
+        raise OSError("No 30x30 anlysis tiles were found")
+    elif not fcst_tiles :
+        # Cannot proceed, the necessary 30x30 degree fcst tiles are missing
+        logger.error("ERROR: No fcst tile files were found  "+ tile_dir)
+        raise OSError("No 30x30 fcst tiles were found")
+
+    # Check for same number of fcst and analysis files
+    if num_anly_tiles != num_fcst_tiles:
+        # Something is wrong, we are missing
+        # either an ANLY tile file or a FCST tile
+        # file, this indicates a serious problem.
+        logger.warn("WARNING: There are a different number of anly and fcst tiles, there should be the same number...")
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     
@@ -239,3 +419,5 @@ if __name__ == "__main__":
     val = 14.1
     pt = round_0p5(val)
     print("{:.1f} rounded = {:.1f}".format(val,pt))
+
+
