@@ -30,6 +30,7 @@ CUT_EXE = "/usr/bin/cut"
 TR_EXE = "/usr/bin/tr"
 NCAP2_EXE = "/usr/bin/nco/bin/ncap2"
 CONVERT_EXE = "/usr/bin/convert"
+TC_PAIRS = "/d1/CODE/MET/MET_releases/met-5.2_beta2/bin/tc_pairs"
 
 #
 # Project Directories
@@ -37,6 +38,8 @@ CONVERT_EXE = "/usr/bin/convert"
 
 PROJ_DIR = "/d1/SBU/GFS"
 GFS_DIR = os.path.join(PROJ_DIR, "model_data")
+TRACK_DATA_DIR = os.path.join(PROJ_DIR, "track_data")
+TC_PAIRS_DIR = os.path.join(PROJ_DIR, "tc_pairs")
 
 #
 # Output Directories
@@ -83,6 +86,14 @@ LAT_SUBTR = 15
 FCST_TILE_REGEX = "FCST_TILE_F[0-9]{3}.*.grb2"
 ANLY_TILE_REGEX = "ANLY_TILE_F[0-9]{3}.*.grb2"
 
+# For tc pairs
+TRACK_TYPE = "extra_tropical_cyclone"
+TC_PAIRS_CONFIG_PATH = "TCPairsETCConfig"
+ADECK_FILE_PREFIX = "amlq"
+BDECK_FILE_PREFIX = "bmlq"
+TRACK_DATA_SUBDIR_MOD = "track_data_atcf"
+MISSING_VAL_TO_REPLACE = "-99"
+MISSING_VAL = "-9999"
 
 #
 # Testing
