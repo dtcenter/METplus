@@ -51,6 +51,7 @@ def analysis_by_init_time(p,logger):
     ncap2_exe = p.opt["NCAP2_EXE"]
     fcst_tile_regex = p.opt["FCST_TILE_REGEX"]
     anly_tile_regex = p.opt["ANLY_TILE_REGEX"]
+    rm_exe = p.opt["RM_EXE"]
     
 
     # For logging
@@ -70,6 +71,15 @@ def analysis_by_init_time(p,logger):
     
     # Get a list of the forecast tile files
     fcst_tiles = util.get_files(tile_dir, fcst_tile_regex, logger)
+
+
+    # Generate ASCII files that contain a list of all the forecast and 
+    # analysis tiles that were created by the extract_tiles script.
+      
+    # First clean up any existing ASCII files that may have been created in a
+    # previous run
+    cleanup_ascii(init_time_list,p,logger)
+
     
     for cur_init in init_time_list:
         # Get all the storm ids for storm track pairs that correspond to this
@@ -89,10 +99,10 @@ def analysis_by_init_time(p,logger):
                 # First get the filenames for the gridded forecast and analysis 30x30 tiles
                 # that were created by extract_tiles. These files are aggregated by 
                 # init time and storm id.
-                anly_grid_regexp = ".*ANLY_TILE_F.*grb2"
-                fcst_grid_regexp = ".*FCST_TILE_F.*grb2"
-                anly_grid_files = util.get_files(output_dir, anly_grid_regexp, logger)
-                fcst_grid_files = util.get_files(output_dir, fcst_grid_regexp, logger)
+                anly_grid_regex = ".*ANLY_TILE_F.*grb2"
+                fcst_grid_regex = ".*FCST_TILE_F.*grb2"
+                anly_grid_files = util.get_files(output_dir, anly_grid_regex, logger)
+                fcst_grid_files = util.get_files(output_dir, fcst_grid_regex, logger)
                
                 # Now do some checking to make sure we aren't missing either the forecast or
                 # analysis files, if so log the error and exit.
@@ -107,11 +117,31 @@ def analysis_by_init_time(p,logger):
                 # where fcst_ASCII_filename contains the full file path
                 # and filename of each gridded fcst file.
                 # The latter is preferred when dealing with a large number of files.
-                fcst_param = '-fcst '
+        
+                # Create an ASCII file containing the forecast files. 
+                fcst_ascii_fname_parts = ['FCST_ASCII_FILES_',cur_storm ]
+                fcst_ascii_fname = ''.join(fcst_ascii_fname_parts)
+                logger.info('output dir: '+ output_dir)
+                logger.info('fcst ascii filename: '+ fcst_ascii_fname)
+                fcst_ascii = os.path.join(output_dir, fcst_ascii_fname)
+
+                tmp_fcst_param = ''
                 for cur_fcst in fcst_grid_files:          
-                    fcst_param += cur_fcst
-                    fcst_param += ' '
-#                logger.info('fcst param: '+fcst_param)
+                    cur_tile = os.path.basename(cur_fcst)
+                    tmp_fcst_param +=  cur_fcst
+                    tmp_fcst_param += '\n'
+                logger.info('fcst param: '+ tmp_fcst_param)
+
+                # Now create the ASCII file
+                try:
+                    with open(fcst_ascii, 'a') as f:
+                        logger.info("Creating ASCII file: " + tmp_fcst_param)
+                        f.write(tmp_fcst_param)
+                except IOError as e:
+                    logger.error("ERROR: Could not create requested ASCII file" + fcst_ascii)
+
+                fcst_param_parts = ['-fcst ', fcst_ascii]
+                fcst_param = ''.join(fcst_param_parts)
 
                 # Generate the -obs portion (analysis file)
                 # -obs obs_file1 obs_file2 obs_file3 ... obs_filen
@@ -119,11 +149,28 @@ def analysis_by_init_time(p,logger):
                 # -obs obs_ASCII_filename
                 # where obs_ASCII_filename contains the full file path
                 # and filename of each gridded analysis file.
-                obs_param = ' -obs '
+
+                # Create an ASCII file containing a list of all the analysis
+                # tiles.
+                anly_ascii_fname_parts = ['ANLY_ASCII_FILES_',cur_storm ]
+                anly_ascii_fname = ''.join(anly_ascii_fname_parts)
+                anly_ascii = os.path.join(output_dir, anly_ascii_fname)
+
+                obs_param_parts = [' -obs ', anly_ascii]
+                obs_param = ''.join(obs_param_parts)
+                tmp_obs_param = ''
                 for cur_anly in anly_grid_files:          
-                    obs_param += cur_anly 
-                    obs_param += ' '
-#                logger.info('obs param: '+obs_param)
+                    tmp_obs_param += cur_anly 
+                    tmp_obs_param += '\n'
+
+                # Now create the ASCII file
+                try:
+                    with open(anly_ascii, 'a') as f:
+                        f.write(tmp_obs_param)
+                except IOError as e:
+                    logger.error("ERROR:Could not create requested ASCII file" + anly_ascii)
+                anly_param_parts = ['-obs ', anly_ascii]
+                anly_param = ''.join(anly_param_parts)
     
                 # Generate the -out portion, get the NAME and corresponding LEVEL for
                 # each variable.  
@@ -137,14 +184,13 @@ def analysis_by_init_time(p,logger):
                    series_anly_output_fname = ''.join(series_anly_output_parts)
                    out_param_parts = ['-out ', series_anly_output_fname]
                    out_param = ''.join(out_param_parts)
-                   #logger.info('out param: '+ out_param)
 
                    # Now put everything together to create the command for running the 
                    # MET series_analysis binary:
                    # -fcst <file> -obs <obs_file> -out <output file> -config <series analysis config file>
                    command_parts = [ series_analysis_exe, ' ', fcst_param, ' ', obs_param, ' -config ', series_anly_config_file, ' ',  out_param ] 
                    command = ''.join(command_parts)
-                   #logger.info('command: '+ command)
+                   logger.info('SERIES ANALYSIS COMMAND: '+ command)
                    os.system(command)
                    
                    # Now we need to invoke the MET tool plot_data_plane to generate plots that are
@@ -152,37 +198,33 @@ def analysis_by_init_time(p,logger):
                    # Get the number of forecast tile files, the name of the first and last in the list
                    # to be used by the -title option.
                    num,beg,end = get_fcst_file_info(fcst_tiles, logger)
-                   #logger.info('num,beg, and end for title:'+ str(num) + ' ' + beg + ' ' + end)
 
                    # Assemble the input file, output file, field string, and title
                    plot_data_plane_input_fname = series_anly_output_fname
-                   #logger.info('plot data plane input fname: '+ plot_data_plane_input_fname)
                    for cur_stat in stat_list:
                        plot_data_plane_output = [output_dir,'series_',name, '_',level,'_',cur_stat,'.ps' ]
                        plot_data_plane_output_fname = ''.join(plot_data_plane_output)
                        os.environ['CUR_STAT'] = cur_stat 
                        field_string_parts = ["'name=",'"series_cnt_', cur_stat,'";', 'level="', level, '";', "'"]
                        field_string = ''.join(field_string_parts)
-                   #    logger.info('Field string: '+ field_string)
                        title_parts = [' -title "GFS Init ', cur_init, ' Storm ',cur_storm, str(num), \
                                       ' Forecasts (', beg, ' to ', end, '), ', cur_stat, ' for ', cur_var, '"' ]
                        title = ''.join(title_parts)
-                   #    logger.info('Title: ' + title)
                       
                        # Now assemble the entire plot data plane command
                        data_plane_command_parts = [plot_data_plane_exe, ' ', plot_data_plane_input_fname, ' ', plot_data_plane_output_fname, ' ', \
                                                    field_string,' ', title ]
-                        
 
                        data_plane_command = ''.join(data_plane_command_parts)
-                       logger.info("data_plane_command: " + data_plane_command)
+                       logger.info("DATA_PLANE_COMMAND: " + data_plane_command)
                        os.system(data_plane_command)
 
                        # Now assemble the command to convert the postscript file to png
                        png_fname = plot_data_plane_output_fname.replace('.ps','.png')
                        convert_parts = [convert_exe, ' -rotate 90 -background white -flatten ', plot_data_plane_output_fname,' ', png_fname]
                        convert = ''.join(convert_parts)
-                   #    logger.info('Convert: '+convert)
+                       logger.info('CONVERT COMMAND: '+convert)
+                       os.system(convert)
                                  
       
 def get_fcst_file_info(fcst_tiles_list, logger):
@@ -262,23 +304,47 @@ def get_storms_for_init(cur_init, out_dir_base, logger):
     
     
         
-     
+def cleanup_ascii(init_list, p, logger):
+    ''' Remove any pre-existing FCST and ANLY ASCII
+        files.
 
+        Args:
+            init_list:  A list containing the init times.
+            p:  The ConfigMaster used to retrieve parameter values
+            logger :  The logger to which any logging messages 
+                      will be sent.
 
+        Returns:
+            None:  removes any existing FCST and ANLY ASCII files
+                   containing a list of the gridded tiles from 
+                   the extract_tiles script.
+    
+  
+    '''
+    # Useful for logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+    fcst_ascii_regex = p.opt["FCST_ASCII_REGEX_INIT"]
+    anly_ascii_regex = p.opt["ANLY_ASCII_REGEX_INIT"]
+    out_dir_base = p.opt["OUT_DIR"]
+    rm_exe = p.opt["RM_EXE"]
+    
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    for cur_init in init_list:
+        storm_list = get_storms_for_init(cur_init, out_dir_base, logger)
+        for cur_storm in storm_list:
+            output_dir_parts = [out_dir_base,'/',cur_init,'/',cur_storm,'/']
+            output_dir = ''.join(output_dir_parts)
+            for root,directories,files in os.walk(output_dir):
+                for cur_file in files:
+                    fcst_match = re.match(fcst_ascii_regex, cur_file)
+                    anly_match = re.match(anly_ascii_regex, cur_file)
+                    rm_command_parts = [rm_exe, ' ', output_dir,'/', cur_file]
+                    rm_cmd = ''.join(rm_command_parts)
+                    if fcst_match:
+                        os.system(rm_cmd)
+                    if anly_match:
+                        os.system(rm_cmd)
 
 
 
