@@ -9,12 +9,6 @@ import sys
 import met_util as util
 import errno
 
-def main():
-    # Create ConfigMaster parm object
-    p = P.Params()
-    p.init(__doc__)
-    logger = util.get_logger(p)
-    analysis_by_lead_time(p, logger)
 
 
 def analysis_by_lead_time(p, logger):
@@ -51,8 +45,6 @@ def analysis_by_lead_time(p, logger):
     # Create a param object
     p = P.Params()
     p.init(__doc__)
-
-    logger = util.get_logger(p)
     
     cur_ = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name 
@@ -92,74 +84,118 @@ def analysis_by_lead_time(p, logger):
     
     # Create the values for the -fcst, -obs, and other required
     # options for running the MET series_analysis binary.
-    for cur_fhr in range(fhr_beg, fhr_end+1, fhr_inc):
-        logger.info('Evaluating forecast hour ' + str(cur_fhr))
+    for fhr in range(fhr_beg, fhr_end+1, fhr_inc):
+        cur_fhr = str(fhr).zfill(3)
+        logger.info('Evaluating forecast hour ' + cur_fhr)
 
         # Create the output directory where the netCDF files
         # will be saved.
-        #out_dir_parts = [out_dir_base, '/', 'series_F', str(cur_fhr)]
+        #TODO replace with this when finished testing
+        #out_dir_parts = [out_dir_base, '/', 'series_F', cur_fhr]
         # for testing and development use this
-        out_dir_parts = [out_dir_base, '/python_lead/', 'series_F', str(cur_fhr)]
+        out_dir_parts = [out_dir_base, '/python_lead/', 'series_F', cur_fhr]
         out_dir = ''.join(out_dir_parts)
         util.mkdir_p(out_dir)
         
-        # Gather all the forecast and analysis gridded tile files
+        # Gather all the forecast gridded tile files
         # so they can be saved in ASCII files.
-        fcst_tiles = get_files(tile_dir,fcst_tile_regex,logger)
-        tmp_fcst_tile = ''
-        tmp_anly_tile = ''
-        for cur_fcst_tile in fcst_tiles:
-            match_fcst = re.match(fcst_tile_regex, cur_fcst_tile)
-            if match_fcst:
-                storm_subdir = match_fcst.group(0)
-            else:
-                logger.error("ERROR: No matching storm id found, exiting...")
-                sys.exit()
-            # Create the ASCII files for the forecast and analysis files.
-            lead_out_dir_parms = [out_dir, '/series_F', str(cur_fhr)]
-            lead_out_dir = ''.join(lead_out_dir_parms)
-            fcst_files_hr_list = ['FCST_FILES_F', str(cur_fhr)]
-            fcst_files_hr_dir = ''.join(fcst_files_hr_list)
-            anly_files_hr_list = ['ANLY_FILES_F', str(cur_fhr)]
-            anly_files_hr_dir = ''.join(anly_files_hr_list)
-            ascii_fcst_tiles_path = os.path.join(lead_out_dir, fcst_files_hr_dir) 
-            fcst_tile_filename = os.path.join(lead_out_dir, fcst_files_hr_dir)
-            anly_tile_filename = os.path.join(lead_out_dir, anly_files_hr_dir)
-            ascii_anly_file_parts = [lead_out_dir, 'FCST_FILE_F',str(cur_fcst)]
-            ascii_anly_file = ''.join(ascii_anly_file_parts)
-            ascii_fcst_file_parts = [lead_out_dir, 'ANLY_FILE_F',str(cur_fcst)]
-            ascii_fcst_file = ''.join(ascii_fcst_file_parts)
+        fcst_tiles_list = get_files(tile_dir,"FCST",fcst_tile_regex, cur_fhr, logger)
+        fcst_tiles = retrieve_fhr_tiles(fcst_tiles_list,'FCST',out_dir, cur_fhr, fcst_tile_regex,logger)
+        ascii_fcst_file_parts = [out_dir, '/FCST_FILE_F',cur_fhr]
+        ascii_fcst_file = ''.join(ascii_fcst_file_parts)
 
- 
-            # Capture all the FCST tiles (full file path)
-            logger.info('FCST tile files: '+ fcst_tiles_filename)
-            tmp_fcst_tile += fcst_tile_filename
-            tmp_fcst_tile += '\n'
-   
-            # Capture all the ANLY tiles (full file path)
-            logger.info('ANLY tile files: '+ ascii_anly_tiles_filename)
-            tmp_anly_tile += anly_tile_filename
-            tmp_anly_tile += '\n' 
- 
+
+        # Gather all the analysis gridded tile files
+        # so they can be saved in ASCII files.
+        anly_tiles_list = get_files(tile_dir,"ANLY", anly_tile_regex, cur_fhr, logger)
+        anly_tiles = retrieve_fhr_tiles(anly_tiles_list,'ANLY',out_dir, cur_fhr, anly_tile_regex,logger)
+        ascii_anly_file_parts = [out_dir, '/ANLY_FILE_F',cur_fhr]
+        ascii_anly_file = ''.join(ascii_anly_file_parts)
             
-         # Now create the ASCII files
-         try:
-             with open(ascii_fcst_file, 'a') as f:
-                  f.write(tmp_fcst_tile)
-         except IOError as e:
-             logger.error("ERROR: Could not create requested ASCII file: " + ascii_fcst_file)
+        # Now create the ASCII files needed for the -fcst and -obs 
+        try:
+           with open(ascii_fcst_file, 'a') as f:
+                f.write(fcst_tiles)
+        except IOError as e:
+            logger.error("ERROR: Could not create requested ASCII file: " + ascii_fcst_file)
 
-         try:
-             with open(ascii_anly_file, 'a') as f:
-                  f.write(tmp_anly_file)
-         except IOError as e:
-             logger.error("ERROR: Could not create requested ASCII file: " + ascii_anly_file)
+        try:
+            with open(ascii_anly_file, 'a') as f:
+                f.write(anly_tiles)
+        except IOError as e:
+            logger.error("ERROR: Could not create requested ASCII file: " + ascii_anly_file)
 
-            
-                       
-                
+        # -fcst and -obs params
+        fcst_param_parts = ['-fcst ', ascii_fcst_file]
+        fcst_param = ''.join(fcst_param_parts)
+        obs_param_parts = [ '-obs ', ascii_anly_file]
+        obs_param = ''.join(obs_param_parts)
+        logger.info('fcst param: ' + fcst_param)
+        logger.info('obs param: ' + obs_param)
+      
+        # Create the -out param and invoke the MET series analysis binary
+        for cur_var in var_list:
+            # Get the name and level to create the -out param
+            # and set the NAME and LEVEL environment variables that
+            # are needed by the MET series analysis binary.
+            match = re.match(r'(.*)/(.*)',cur_var)
+            name = match.group(1)
+            level = match.group(2)
+            os.environ['NAME'] = name
+            os.environ['LEVEL'] = level
+            out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr,'/', 'series_F', cur_fhr, '_', name, '_', level, '.nc'] 
+            out_param = ''.join(out_param_parts)
+            logger.info("out param: " + out_param)
+
+        # Create the full series analysis command.
+        config_param_parts = ['-config ', series_anly_configuration_file]
+        config_param = ''.join(config_param_parts)
+        series_analysis_cmd_parts = [series_analysis_exe, ' ', fcst_param, ' ', obs_param, ' ', config_param, ' ', out_param]
+        series_analysis_cmd = ''.join(series_analysis_cmd_parts)
+        logger.info(" series analysis command: " + series_analysis_cmd)
+        os.system(series_analysis_cmd)
+       
+
+def retrieve_fhr_tiles(tile_list, file_type, cur_fhr, out_dir, type_regex,logger):            
+    ''' Retrieves only the gridded tile files that
+        correspond to the type.
+        
+        Args:
+           tile_list:  List of tiles (full filepath).
+           file_type : FCST or ANLY
+           cur_fhr:  The current forecast hour
+           out_dir: The output directory 
+           type_regex:  The regex that corresponds to the tile filename for this type
+           logger: Logger to which all logging messages are passed.
+        
+        Returns:
+           fhr_tiles (string):  A string of gridded tile names separated by newlines
+    '''
+    type = file_type.upper() 
+    fhr_tiles = '' 
+    for cur_tile in tile_list:
+       match = re.match(type_regex, cur_tile) 
+       if match:
+           storm_subdir = match.group(0)
+       else:
+           logger.error("ERROR: No matching storm id found, exiting...")
+           sys.exit()
+
+       # Create the ASCII files for the forecast or analysis files
+       if type == 'FCST':
+           filename_base = 'FCST_FILES_F'
+       else:
+           filename_base = 'ANLY_FILES_F'
+
+       tile_hr_parts = [filename_base, cur_fhr]
+       tile_hr_dir = ''.join(tile_hr_parts)
+       tile_full_filename = os.path.join(out_dir, tile_hr_dir)
+        
+       fhr_tiles += cur_tile   
+       fhr_tiles += '\n'
 
 
+    return fhr_tiles
 
 
 def find_matching_tile(fcst_file, anly_tiles, logger):
@@ -191,7 +227,7 @@ def find_matching_tile(fcst_file, anly_tiles, logger):
 
 
 
-def get_files(filedir, filename_regex, logger):
+def get_files(filedir, type, filename_regex, cur_fhr, logger):
     ''' Get all the files (with a particular
         naming format) by walking 
         through the directories.
@@ -199,14 +235,22 @@ def get_files(filedir, filename_regex, logger):
         Args:
           filedir (String):  The topmost directory from which the
                              search begins.
+          type:  FCST or ANLY
           filename_regex (string):  The regular expression that
                                     defines the naming format
                                     of the files of interest.
+
+          cur_fhr: The current forecast hour for which we need to 
+                   find the corresponding file
+
+          logger:  The logger to which all log messages will be
+                   directed.
        Returns:
           file_paths (string): a list of filenames (with full filepath)       
 
     '''
     file_paths = []
+    
     # Walk the tree
     for root, directories, files in os.walk(filedir):
         for filename in files:
@@ -214,12 +258,19 @@ def get_files(filedir, filename_regex, logger):
             # to the specified format
             #prog = re.compile(filename_regex)
             match = re.match(filename_regex, filename)
-            
             if match:
-                # Join the two strings to form the full
-                # filepath.
-                filepath = os.path.join(root,filename)
-                file_paths.append(filepath)
+                # Now match based on the current forecast hour
+                if type == 'FCST':
+                    match_fhr = re.match(r'.*FCST_TILE_F([0-9]{3}).*',match.group())
+                elif type == 'ANLY':
+                    match_fhr = re.match(r'.*ANLY_TILE_F([0-9]{3}).*',match.group())
+
+                if match_fhr:
+                   if match_fhr.group(1) == cur_fhr:
+                       # Join the two strings to form the full
+                       # filepath.
+                       filepath = os.path.join(root,filename)
+                       file_paths.append(filepath)
             else:
                 continue
     return file_paths
@@ -243,6 +294,7 @@ def cleanup_lead_ascii( p, logger):
     # Useful for logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
+
     fhr_beg = p.opt["FHR_BEG"]
     fhr_end = p.opt["FHR_END"]
     fhr_inc = p.opt["FHR_INC"]
@@ -251,24 +303,29 @@ def cleanup_lead_ascii( p, logger):
     rm_exe = p.opt["RM_EXE"]
     out_dir_base = p.opt["OUT_DIR"]
  
-    for cur_fhr in range(fhr_beg, fhr_end, fhr_inc):
-        #out_dir_parts = [out_dir_base, '/', 'series_F', str(cur_fhr)]
-        out_dir_parts = [out_dir_base, '/python_lead/', 'series_F', str(cur_fhr)]
+    for fhr in range(fhr_beg, fhr_end + 1, fhr_inc):
+        cur_fhr = str(fhr).zfill(3)
+        # TODO replace with this when done testing
+        #out_dir_parts = [out_dir_base, '/', 'series_F', cur_fhr]
+        out_dir_parts = [out_dir_base, '/python_lead/', 'series_F', cur_fhr]
         out_dir = ''.join(out_dir_parts)    
           
         for root,directories,files in os.walk(out_dir):
             for cur_file in files:
                 fcst_match = re.match(fcst_ascii_regex, cur_file)
                 anly_match = re.match(anly_ascii_regex, cur_file)
-                rm_cmd_parts = [rm_exe, ' ', out_dir, '/', cur_file]
-                rm_cmd = ''.join(rm_cmd_parts)
+                rm_file = os.path.join(out_dir, cur_file)
                 if fcst_match:
-                    os.system(rm_cmd)
+                    os.remove(rm_file)
                 if anly_match:
-                    os.system(rm_cmd)
+                    os.remove(rm_file)
              
        
 
 if __name__ == "__main__":
-    main()
+    # Create ConfigMaster parm object
+    p = P.Params()
+    p.init(__doc__)
+    logger = util.get_logger(p)
+    analysis_by_lead_time(p, logger)
 
