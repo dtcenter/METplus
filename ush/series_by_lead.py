@@ -3,6 +3,7 @@ from __future__ import print_function
 
 import constants_pdef as P
 import logging
+import string
 import re
 import os
 import sys
@@ -41,7 +42,6 @@ def analysis_by_lead_time(p, logger):
 
 
     '''
-
     # Create a param object
     p = P.Params()
     p.init(__doc__)
@@ -49,6 +49,13 @@ def analysis_by_lead_time(p, logger):
     cur_ = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name 
     
+    # Set the threshold min and max values used
+    # after series analysis is complete to determine
+    # the min and max across all lead times for a
+    # given variable and statistic.
+    VMIN = 999999
+    VMAX = -999999
+
     # Retrieve any necessary values from the parm file(s)
     fhr_beg = p.opt["FHR_BEG"]
     fhr_end = p.opt["FHR_END"]
@@ -66,6 +73,8 @@ def analysis_by_lead_time(p, logger):
     convert_exe = p.opt["CONVERT_EXE"]
     rm_exe = p.opt["RM_EXE"]
     series_anly_configuration_file = p.opt["CONFIG_FILE_LEAD"]
+    ncap2_exe = p.opt["NCAP2_EXE"]
+    ncdump_exe = p.opt["NCDUMP_EXE"]
  
     # Check for the existence of the storm track tiles and raise an error if these are missing.
     # Get a list of the grb2 forecast tiles in <proj_dir>/series_analysis/*/*/FCST_TILE_F<cur_fhr>.grb2
@@ -143,18 +152,158 @@ def analysis_by_lead_time(p, logger):
             level = match.group(2)
             os.environ['NAME'] = name
             os.environ['LEVEL'] = level
-            out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr,'/', 'series_F', cur_fhr, '_', name, '_', level, '.nc'] 
+            out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr, '_', name, '_', level, '.nc'] 
             out_param = ''.join(out_param_parts)
             logger.info("out param: " + out_param)
 
-        # Create the full series analysis command.
-        config_param_parts = ['-config ', series_anly_configuration_file]
-        config_param = ''.join(config_param_parts)
-        series_analysis_cmd_parts = [series_analysis_exe, ' ', fcst_param, ' ', obs_param, ' ', config_param, ' ', out_param]
-        series_analysis_cmd = ''.join(series_analysis_cmd_parts)
-        logger.info(" series analysis command: " + series_analysis_cmd)
-        os.system(series_analysis_cmd)
+            # Create the full series analysis command.
+            config_param_parts = ['-config ', series_anly_configuration_file]
+            config_param = ''.join(config_param_parts)
+            series_analysis_cmd_parts = [series_analysis_exe, ' ', fcst_param, ' ', obs_param, ' ', config_param, ' ', out_param]
+            series_analysis_cmd = ''.join(series_analysis_cmd_parts)
+            logger.info(" series analysis command: " + series_analysis_cmd)
+            os.system(series_analysis_cmd)
+
+    # Now create animation plots
+    animate_dir = os.path.join(out_dir, 'series_animate')
+    util.mkdir_p(animate_dir)
+   
+    # Generate a plot for each variable, statistic, and lead time.
+    # First, retrieve all the netCDF files that were generated above by the run series analysis.
+    logger.info('GENERATING PLOTS...')
+    nc_out_dir = os.path.join(out_dir_base, 'python_lead')
+    nc_list = retrieve_nc_files(nc_out_dir,logger)
+    if len(nc_list) == 0:
+        logger.error("ERROR: cannot find netCDF files!")
+        sys.exit()
+
+    for cur_var in var_list: 
+            # Get the name and level to set the NAME and LEVEL
+            # environment variables that
+            # are needed by the MET series analysis binary.
+            match = re.match(r'(.*)/(.*)',cur_var)
+            name = match.group(1)
+            level = match.group(2)
+            os.environ['NAME'] = name
+            os.environ['LEVEL'] = level
+            # Iterate over the statistics, setting the CUR_STAT
+            # environment variable...
+            for cur_stat in stat_list:
+                os.environ['CUR_STAT'] = cur_stat
+                # Determine the min and max for all lead times for a given variable and statistic
+                # First remove any previous min.nc, max.nc, min.txt, and max.txt files.
+                minmax_nc_path = os.path.join(out_dir_base,'python_lead/series_F*/') 
+                logger.info("minmax nc path: "+minmax_nc_path)
+                rm_min_cmd_parts = [rm_exe,' ', minmax_nc_path,'min.nc']
+                rm_max_cmd_parts = [rm_exe,' ', minmax_nc_path, 'max.nc']
+                rm_min_cmd = ''.join(rm_min_cmd_parts)
+                rm_max_cmd = ''.join(rm_max_cmd_parts)
+                logger.info('rm min cmd :' + rm_min_cmd)
+                rm_min_txt_parts = [rm_exe, 'min.nc']
+                rm_max_txt_parts = [rm_exe, 'min.nc']
+                rm_min_txt = ''.join(rm_min_cmd_parts)
+                rm_max_txt = ''.join(rm_max_cmd_parts)
+                os.system(rm_min_cmd)
+                os.system(rm_max_cmd)
+                os.system(rm_min_txt)
+                os.system(rm_max_txt)
+
+                
+                # Use the NCO utility ncap2 to determine the min and max
+                # for each netCDF file that was created by the series analysis.
+                # Then use ncdump to create text files which can be searched for the
+                # min and max values computed by ncap2.
+                for cur_nc in nc_list:
+                    # Determine the directory of this netCDF file so we can create the min and max
+                    # temporary files used to determine the min and max values for this variable and
+                    # statistic.
+                    match = re.match(r'(.*/series_F[0-9]{3})/series_F[0-9].*nc',cur_nc)
+                    if match:
+                       base_nc_dir = match.group(1) 
+                    else:
+                       logger.error("Cannot determine base directory path for netCDF files")
+                       sys.exit()
+                    min_nc_path = os.path.join(base_nc_dir, 'min.nc')
+                    max_nc_path = os.path.join(base_nc_dir, 'max.nc')
+                    nco_min_cmd_parts = [ncap2_exe, ' -v -s ', 'min=min(series_cnt_', cur_stat,') ', cur_nc, ' ', min_nc_path ] 
+                    nco_min_cmd = ''.join(nco_min_cmd_parts)
+                    nco_max_cmd_parts = [ncap2_exe, ' -v -s ', 'max=max(series_cnt_', cur_stat,') ', cur_nc, ' ', max_nc_path ] 
+                    nco_max_cmd = ''.join(nco_max_cmd_parts)
+                    logger.info('MIN cmd: ' + nco_min_cmd)
+                    logger.info('MAX cmd: ' + nco_max_cmd)
+                    min_txt_path = os.path.join(base_nc_dir, 'min.txt')
+                    max_txt_path = os.path.join(base_nc_dir, 'max.txt')
+                    ncdump_min_cmd_parts = [ncdump_exe, ' min.nc > ', min_txt_path]
+                    ncdump_min_cmd = ''.join(ncdump_min_cmd_parts)
+                    ncdump_max_cmd_parts = [ncdump_exe, ' max.nc > ', max_txt_path]
+                    ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
+                    logger.info('ncdump min: ' + ncdump_min_cmd) 
+                    logger.info('ncdump max: ' + ncdump_max_cmd) 
+                   
+                    # Look for the min and max values in each netCDF file to
+                    # determine the min and max for this lead time, variable and statistic.
+                    try:
+                        with open(min_txt_path,'r') as fmin:
+                            for line in fmin:
+                                min_match = re.match('.*min.*=([0-9]{1,}.*;', line)
+                                if min_match:
+                                    cur_min = min_match.group(1)
+                                    if cur_min < VMIN:
+                                        VMIN = cur_min
+                        with open(max_txt_path,'r') as fmax:
+                            for line in fmax:
+                                max_match = re.match('.*max.*=([0-9]{1,}.*;', line)
+                                if max_match:
+                                    cur_max = max_match.group(1)
+                                    if cur_max >= VMAX:
+                                        VMAX = cur_max
+                        logger.info("VMAX = "+ VMAX)
+                        logger.info("VMIN = "+ VMIN)
+                    except IOError as e:
+                        logger.error("ERROR: Cannot open either the min or max text file ")
+                        
+   
+                    
+ 
+                
        
+def retrieve_nc_files(dir, logger):
+    '''Retrieve all the netCDF files that were created by the MET series analysis binary.
+       
+       Args:
+           dir: The base directory where all the series_F<fcst hour> sub-directories
+                    are located.  The corresponding variable and statistic files for 
+                    these forecast hours are found in these sub-directories.
+                   
+           logger:  The logger to which all log messages are directed.
+
+       Returns:
+           nc_list: A list of the netCDF files (full path) created when the MET series analysis
+                   binary was invoked.
+    '''
+    logger.info("INFO| Retrieving all netCDF files in dir: " + dir)
+    nc_list = []
+    filename_regex = ".*series_F[0-9]{3}.*nc"
+
+    # Walk the tree
+    for root, directories, files in os.walk(dir):
+        for filename in files:
+            # add it to the list only if it is a match
+            # to the specified format
+            match = re.match(filename_regex, filename)
+            if match:
+                full_filename = os.path.join(dir,filename)
+                nc_list.append(full_filename)
+            else:
+                continue
+
+    return nc_list
+
+
+
+
+
+
 
 def retrieve_fhr_tiles(tile_list, file_type, cur_fhr, out_dir, type_regex,logger):            
     ''' Retrieves only the gridded tile files that
