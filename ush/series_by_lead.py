@@ -162,7 +162,7 @@ def analysis_by_lead_time(p, logger):
             series_analysis_cmd_parts = [series_analysis_exe, ' ', fcst_param, ' ', obs_param, ' ', config_param, ' ', out_param]
             series_analysis_cmd = ''.join(series_analysis_cmd_parts)
             logger.info(" series analysis command: " + series_analysis_cmd)
-            os.system(series_analysis_cmd)
+            #os.system(series_analysis_cmd)
 
     # Now create animation plots
     animate_dir = os.path.join(out_dir, 'series_animate')
@@ -194,13 +194,13 @@ def analysis_by_lead_time(p, logger):
                 # First remove any previous min.nc, max.nc, min.txt, and max.txt files.
                 minmax_nc_path = os.path.join(out_dir_base,'python_lead/series_F*/') 
                 logger.info("minmax nc path: "+minmax_nc_path)
-                rm_min_cmd_parts = [rm_exe,' ', minmax_nc_path,'min.nc']
-                rm_max_cmd_parts = [rm_exe,' ', minmax_nc_path, 'max.nc']
+                rm_min_cmd_parts = [rm_exe,' ', minmax_nc_path,'/min.nc']
+                rm_max_cmd_parts = [rm_exe,' ', minmax_nc_path, '/max.nc']
                 rm_min_cmd = ''.join(rm_min_cmd_parts)
                 rm_max_cmd = ''.join(rm_max_cmd_parts)
                 logger.info('rm min cmd :' + rm_min_cmd)
-                rm_min_txt_parts = [rm_exe, 'min.nc']
-                rm_max_txt_parts = [rm_exe, 'min.nc']
+                rm_min_txt_parts = [rm_exe, ' ', minmax_nc_path, '/min.txt']
+                rm_max_txt_parts = [rm_exe, ' ', minmax_nc_path,'/max.txt']
                 rm_min_txt = ''.join(rm_min_cmd_parts)
                 rm_max_txt = ''.join(rm_max_cmd_parts)
                 os.system(rm_min_cmd)
@@ -208,7 +208,7 @@ def analysis_by_lead_time(p, logger):
                 os.system(rm_min_txt)
                 os.system(rm_max_txt)
 
-                
+                  
                 # Use the NCO utility ncap2 to determine the min and max
                 # for each netCDF file that was created by the series analysis.
                 # Then use ncdump to create text files which can be searched for the
@@ -222,15 +222,17 @@ def analysis_by_lead_time(p, logger):
                        base_nc_dir = match.group(1) 
                     else:
                        logger.error("Cannot determine base directory path for netCDF files")
+                       logger.error("current netCDF file: " + cur_nc)
                        sys.exit()
                     min_nc_path = os.path.join(base_nc_dir, 'min.nc')
                     max_nc_path = os.path.join(base_nc_dir, 'max.nc')
-                    nco_min_cmd_parts = [ncap2_exe, ' -v -s ', 'min=min(series_cnt_', cur_stat,') ', cur_nc, ' ', min_nc_path ] 
+                    nco_min_cmd_parts = [ncap2_exe, ' -v -s ', '"','min=min(series_cnt_', cur_stat,')','" ', cur_nc, ' ', min_nc_path ] 
                     nco_min_cmd = ''.join(nco_min_cmd_parts)
-                    nco_max_cmd_parts = [ncap2_exe, ' -v -s ', 'max=max(series_cnt_', cur_stat,') ', cur_nc, ' ', max_nc_path ] 
+                    nco_max_cmd_parts = [ncap2_exe, ' -v -s ', '"', 'max=max(series_cnt_', cur_stat,')', '" ', cur_nc, ' ', max_nc_path ] 
                     nco_max_cmd = ''.join(nco_max_cmd_parts)
                     logger.info('MIN cmd: ' + nco_min_cmd)
                     logger.info('MAX cmd: ' + nco_max_cmd)
+
                     min_txt_path = os.path.join(base_nc_dir, 'min.txt')
                     max_txt_path = os.path.join(base_nc_dir, 'max.txt')
                     ncdump_min_cmd_parts = [ncdump_exe, ' min.nc > ', min_txt_path]
@@ -264,14 +266,28 @@ def analysis_by_lead_time(p, logger):
                         
    
                     
- 
+def get_min_max(nc_list, logger):
+    '''Determine the min and max for all lead times for this
+       statistic and variable.
+
+       Args:
+           logger:  The logger to which all log messages are directed.
+          
+       Returns:
+           tuple (vmin, vmax)
+               vmin:  The minimum
+               vmax:  The maximum
+       
+    '''
+
+    logger.info("Inside get_min_max")
                 
        
-def retrieve_nc_files(dir, logger):
+def retrieve_nc_files(base_dir, logger):
     '''Retrieve all the netCDF files that were created by the MET series analysis binary.
        
        Args:
-           dir: The base directory where all the series_F<fcst hour> sub-directories
+           base_dir: The base directory where all the series_F<fcst hour> sub-directories
                     are located.  The corresponding variable and statistic files for 
                     these forecast hours are found in these sub-directories.
                    
@@ -281,25 +297,28 @@ def retrieve_nc_files(dir, logger):
            nc_list: A list of the netCDF files (full path) created when the MET series analysis
                    binary was invoked.
     '''
-    logger.info("INFO| Retrieving all netCDF files in dir: " + dir)
+    logger.info("INFO| Retrieving all netCDF files in dir: " + base_dir)
     nc_list = []
-    filename_regex = ".*series_F[0-9]{3}.*nc"
+    filename_regex = "series_F[0-9]{3}.*nc"
 
-    # Walk the tree
-    for root, directories, files in os.walk(dir):
-        for filename in files:
-            # add it to the list only if it is a match
-            # to the specified format
-            match = re.match(filename_regex, filename)
+    # Get a list of all the series_F* directories
+    series_dir_list = [os.path.normcase(f) for f in os.listdir(base_dir)]
+    
+    # Iterate through each of these series subdirectories and create a list of
+    # all the netCDF files (full file path).
+    for dir in series_dir_list:
+        full_path = os.path.join(base_dir, dir)
+        
+        # Get a list of all the netCDF files for this subdirectory.
+        nc_files_list = [ f for f in os.listdir(full_path) if os.path.isfile(os.path.join(full_path,f))]
+        for cur_nc in nc_files_list:
+            match = re.match(filename_regex, cur_nc) 
             if match:
-                full_filename = os.path.join(dir,filename)
-                nc_list.append(full_filename)
-            else:
-                continue
-
-    return nc_list
-
-
+                nc_file = os.path.join(full_path, cur_nc)
+                nc_list.append(nc_file)
+              
+   
+    return nc_list    
 
 
 
