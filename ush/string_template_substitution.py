@@ -72,7 +72,7 @@ def multiple_replace(dict, text):
   # For each match, look-up corresponding value in dictionary
   return regex.sub(lambda mo: dict[mo.string[mo.start():mo.end()]], text)
 
-def get_lead_accum_time_seconds(time_string):
+def get_lead_accum_time_seconds(logger, time_string):
 
     """ Returns the number of seconds for the time string in the format [H]HH[MMSS]"""
 
@@ -99,7 +99,7 @@ def get_lead_accum_time_seconds(time_string):
     elif len(time_string) == 7:
         return ((int(time_string[0:3]) * SECONDS_PER_HOUR) + (int(time_string[3:5]) * MINUTES_PER_HOUR) + int(time_string[5:7]))
     else:
-        (self.logger).error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "The time string " + time_string + " must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")
+        logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "The time string " + time_string + " must be in the format [H]HH[MMSS], where a two digit hour is required.  Providing a three digit hour, two digit minutes and a two digit seconds are optional.")
         exit(0)
         
 class StringTemplateSubstitution:
@@ -141,9 +141,9 @@ class StringTemplateSubstitution:
         self.negative_accum = False
 
         if (LEAD_STRING in self.kwargs):
-            self.lead_time_seconds =  get_lead_accum_time_seconds((self.kwargs).get(LEAD_STRING, None))
+            self.lead_time_seconds =  get_lead_accum_time_seconds(self.logger, (self.kwargs).get(LEAD_STRING, None))
         if (ACCUM_STRING in self.kwargs):
-            self.accum_time_seconds =  get_lead_accum_time_seconds((self.kwargs).get(ACCUM_STRING, None))
+            self.accum_time_seconds =  get_lead_accum_time_seconds(self.logger, (self.kwargs).get(ACCUM_STRING, None))
 
         
 
@@ -169,7 +169,7 @@ class StringTemplateSubstitution:
         valid_unix_time = calendar.timegm(valid_time_tuple)
 
         # Get the number of seconds for the lead time
-        self.lead_time_seconds = get_lead_accum_time_seconds((self.kwargs).get(LEAD_STRING, None))
+        self.lead_time_seconds = get_lead_accum_time_seconds(self.logger, (self.kwargs).get(LEAD_STRING, None))
 
         init_unix_time = valid_unix_time - self.lead_time_seconds
         init_time = time.strftime("%Y%m%d%H%M%S", time.gmtime(init_unix_time))
@@ -198,7 +198,7 @@ class StringTemplateSubstitution:
         init_unix_time = calendar.timegm(init_time_tuple)
 
         # Get the number of seconds for the lead time
-        self.lead_time_seconds = get_lead_accum_time_seconds((self.kwargs).get(LEAD_STRING, None))
+        self.lead_time_seconds = get_lead_accum_time_seconds(self.logger, (self.kwargs).get(LEAD_STRING, None))
 
         valid_unix_time = init_unix_time + self.lead_time_seconds
         valid_time = time.strftime("%Y%m%d%H%M%S", time.gmtime(valid_unix_time))
