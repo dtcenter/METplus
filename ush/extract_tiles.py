@@ -22,6 +22,7 @@ import met_util as util
 import time
 import re
 import subprocess
+import string_template_substitution as sts
 
 def main():
     '''Get TC-pairs track data and GFS model data, do any necessary processing then
@@ -63,10 +64,9 @@ def main():
         year_month = extract_year_month(cur_init, logger)
         
         # Create the name of the filter file we need to find.  If the file doesn't exist, then run TC_STAT 
-        filter_path_list = [output_dir, '/', cur_init, '/']
-        filter_path  = ''.join(filter_path_list)
-        filter_name_list = [filter_path,'filter_', cur_init, '.tcst']
-        filter_name  = ''.join(filter_name_list)
+        filter_path = os.path.join(output_dir, cur_init)
+        filter_filename = "filter_" + cur_init + ".tcst"
+        filter_name = os.path.join(filter_path, filter_filename)
 
         if util.file_exists(filter_name):
             logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Filter file exists, using Track data file: " + filter_name)
@@ -188,22 +188,23 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
                 logger.WARN("RuntimeError raised")
                 #raise RuntimeError('valid time has unexpected format for YMDH')
 
+                
+            lead_str = str(fcst_hr).zfill(3)
+                
+            fcst_dir = os.path.join(gfs_dir, init_ymd)
+            init_ymdh_split = init_ymdh.split("_")
+            init_YYYYmmddHH = "".join(init_ymdh_split)
+            fcstSTS = sts.StringTemplateSubstitution(p, p.opt["GFS_FCST_FILE_TMPL"], init=init_YYYYmmddHH, lead=lead_str)
+            fcst_file = fcstSTS.doStringSub()
+            fcst_filename = os.path.join(fcst_dir, fcst_file)
 
-            # !!!! NOTE !!!!
-            # !!!  Replace this logic with StringFormatter logic.
-            # !!!! NOTE !!!!
-
-            fcst_hr_str = str(fcst_hr).zfill(3)
-            fcst_list = [gfs_dir, '/', init_ymd,'/gfs_4_',init_ymdh,'00_', fcst_hr_str, '.grb2']
-            fcst_filename = ''.join(fcst_list)
-            anly_list = [gfs_dir, '/', valid_ymd, '/gfs_4_', valid_ymdh, '00_000.grb2']
-            anly_filename = ''.join(anly_list)
-            fcst_hr_str = str(fcst_hr).zfill(3)
-            fcst_list = [gfs_dir, '/', init_ymd,'/gfs_4_',init_ymdh,'00_', fcst_hr_str, '.grb2']
-            fcst_filename = ''.join(fcst_list)
-            anly_list = [gfs_dir, '/', valid_ymd, '/gfs_4_', valid_ymdh, '00_000.grb2']
-            anly_filename = ''.join(anly_list)
-
+            anly_dir =  os.path.join(gfs_dir, valid_ymd)
+            valid_ymdh_split = valid_ymdh.split("_")
+            valid_YYYYmmddHH = "".join(valid_ymdh_split)
+            anlySTS = sts.StringTemplateSubstitution(p, p.opt["GFS_ANLY_FILE_TMPL"], valid=valid_YYYYmmddHH, lead=lead_str)
+            anly_file = anlySTS.doStringSub()
+            anly_filename = os.path.join(anly_dir, anly_file)
+            
 
             # Check if the forecast file exists. If it doesn't exist, just log it
             if util.file_exists(fcst_filename):
@@ -219,17 +220,21 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
 
             # Regrid the forecast and analysis files to a 30 degree X 30 degree tile centered on
             # latlon lon0:nlon:dlon lat0:nlat:dlat
+        
             fcst_base = os.path.basename(fcst_filename)
             anly_base = os.path.basename(anly_filename)
             fcst_tile_grid = create_tile_grid_string(alat,alon,logger,p)
             anly_tile_grid = create_tile_grid_string(blat,blon,logger,p)
+ 
+            tile_dir = os.path.join(output_dir, cur_init, cur_storm)
+            fcst_hr_str = str(fcst_hr).zfill(3)
+            
+            fcst_tile_filename = p.opt["FCST_TILE_PREFIX"] + fcst_hr_str + "_" + fcst_base
+            fcst_tile_file = os.path.join(tile_dir, fcst_tile_filename)
+            anly_tile_filename = p.opt["ANLY_TILE_PREFIX"] + fcst_hr_str + "_" + anly_base
+            anly_tile_file = os.path.join(tile_dir, anly_tile_filename)
 
-            fcst_tile_file_list = [output_dir,'/', cur_init, '/',cur_storm, '/FCST_TILE_F',fcst_hr_str,'_',fcst_base ]
-            fcst_tile_file = ''.join(fcst_tile_file_list)
-            anly_tile_file_list = [output_dir, '/', cur_init, '/',cur_storm, '/ANLY_TILE_F',fcst_hr_str,'_', anly_base]
-            anly_tile_file = ''.join(anly_tile_file_list)
-
-
+            
             # Invoke wgrib2 on the fcst file only if a fcst tile file does NOT already exist.
             fcst_cmd_list= [wgrib2_exe, ' ' , fcst_filename, ' -new_grid ', fcst_tile_grid, ' ', fcst_tile_file, '>/dev/null']
             wgrb_cmd_fcst = ''.join(fcst_cmd_list)
@@ -250,7 +255,7 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
                 # Invoke wgrb2 to create a new grid file
                 logger.debug("wgrb_cmd_anly:" + wgrb_cmd_anly)
                 os.system(wgrb_cmd_anly)
-
+            
 
         # end of 'for line in tf:'
     # end of 'with open(tmp_filename, "r") as tf:'
