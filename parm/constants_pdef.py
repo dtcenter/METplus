@@ -40,6 +40,7 @@ PROJ_DIR = "/d1/SBU/GFS"
 GFS_DIR = os.path.join(PROJ_DIR, "model_data")
 TRACK_DATA_DIR = os.path.join(PROJ_DIR, "track_data")
 TC_PAIRS_DIR = os.path.join(PROJ_DIR, "tc_pairs")
+TMP_DIR = "/tmp"
 
 #
 # Output Directories
