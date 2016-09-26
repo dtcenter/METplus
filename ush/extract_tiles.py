@@ -90,10 +90,10 @@ def main():
             logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Processing storm: " + cur_storm)
             storm_output_dir = os.path.join(output_dir,cur_init, cur_storm)
             util.mkdir_p(storm_output_dir)
-            tmp_dir = os.path.join('/tmp',cur_pid)
+            tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
             util.mkdir_p(tmp_dir)
-            tmp_list = [tmp_dir,'/filter_', cur_init,'_',cur_storm ]
-            tmp_filename = ''.join(tmp_list)
+            tmp_file = "filter_" + cur_init + "_" + cur_storm
+            tmp_filename = os.path.join(tmp_dir, tmp_file)
             storm_match_list = util.grep(cur_storm, filter_name)
             with open(tmp_filename, "a+") as tmp_file:
                for storm_match in storm_match_list:
