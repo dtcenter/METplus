@@ -14,7 +14,7 @@ LOG_FILENAME="lead.log"
 #
 # Output Directories
 # 
-OUT_DIR = "/d1/minnawin/SBU_out/series_analysis"
+OUT_DIR = "/d1/minnawin/SBU_out/series_analysis/python_lead"
 
 
 #
