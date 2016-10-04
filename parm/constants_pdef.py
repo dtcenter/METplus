@@ -42,6 +42,7 @@ PROJ_DIR = "/d1/SBU/GFS"
 GFS_DIR = os.path.join(PROJ_DIR, "model_data")
 TRACK_DATA_DIR = os.path.join(PROJ_DIR, "track_data")
 TC_PAIRS_DIR = os.path.join(PROJ_DIR, "tc_pairs")
+TMP_DIR = "/tmp"
 
 #
 # Output Directories
@@ -69,6 +70,14 @@ FHR_END = 138
 FHR_INC = 6
 
 #
+# Filename templates
+#
+FCST_TILE_PREFIX = "FCST_TILE_F"
+ANLY_TILE_PREFIX = "ANLY_TILE_F"
+GFS_FCST_FILE_TMPL = "gfs_4_{init?fmt=%Y%m%d}_{init?fmt=%H}00_{lead?fmt=%HHH}.grb2"
+GFS_ANLY_FILE_TMPL = "gfs_4_{valid?fmt=%Y%m%d}_{valid?fmt=%H}00_000.grb2"
+
+#
 # Constants used in creating the tile grid
 #
 NLAT = 60
@@ -93,7 +102,9 @@ ANLY_ASCII_REGEX_INIT ="ANLY_ASCII_FILE.*"
 FCST_ASCII_REGEX_LEAD ="FCST_FILE_F.*"
 ANLY_ASCII_REGEX_LEAD ="ANLY_FILE_F.*"
 
+#
 # For tc pairs
+#
 TRACK_TYPE = "extra_tropical_cyclone"
 TC_PAIRS_CONFIG_PATH = "TCPairsETCConfig"
 ADECK_FILE_PREFIX = "amlq"
