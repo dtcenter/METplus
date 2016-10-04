@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env pythonzz
 
 from __future__ import (print_function)
 from ConfigMaster import ConfigMaster
@@ -28,9 +28,11 @@ PLOT_DATA_PLANE = "/d1/CODE/MET/MET_releases/met-5.2_beta2/bin/plot_data_plane"
 RM_EXE = "/bin/rm -rf"
 CUT_EXE = "/usr/bin/cut"
 TR_EXE = "/usr/bin/tr"
-NCAP2_EXE = "/usr/bin/nco/bin/ncap2"
+NCAP2_EXE = "/usr/local/nco/bin/ncap2"
 CONVERT_EXE = "/usr/bin/convert"
 TC_PAIRS = "/d1/CODE/MET/MET_releases/met-5.2_beta2/bin/tc_pairs"
+RM_EXE = "/bin/rm -rf"
+NCDUMP_EXE = "/usr/local/bin/ncdump"
 
 #
 # Project Directories
@@ -89,10 +91,16 @@ DLON = 0.5
 LON_SUBTR = 15
 LAT_SUBTR = 15
 
-# Regular expressions for Forecast and Analysis tile files
-# These are used for performing series analysis.
-FCST_TILE_REGEX = "FCST_TILE_F[0-9]{3}.*.grb2"
-ANLY_TILE_REGEX = "ANLY_TILE_F[0-9]{3}.*.grb2"
+# Regular expressions that are used in series analysis
+# Forecast and Analysis tile files, and ASCII files
+# created by the series analysis by init and lead time
+FCST_TILE_REGEX = ".*FCST_TILE_F.*.grb2"
+ANLY_TILE_REGEX = ".*ANLY_TILE_F.*.grb2"
+
+FCST_ASCII_REGEX_INIT ="FCST_ASCII_FILE.*"
+ANLY_ASCII_REGEX_INIT ="ANLY_ASCII_FILE.*"
+FCST_ASCII_REGEX_LEAD ="FCST_FILE_F.*"
+ANLY_ASCII_REGEX_LEAD ="ANLY_FILE_F.*"
 
 #
 # For tc pairs
