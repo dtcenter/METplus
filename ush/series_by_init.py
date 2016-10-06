@@ -11,24 +11,12 @@ import met_util as util
 import errno
 
 
-def main():
-    # Create ConfigMaster param object
-    p = P.Params()
-    p.init(__doc__)    
-    logger = util.get_logger(p)
 
-    analysis_by_init_time(p,logger)
-
-
-
-def analysis_by_init_time(p,logger):
+def analysis_by_init_time():
     ''' Invoke the series analysis script based on
         the init time in the format YYYYMMDD_hh
 
          Args:
-             p: The ConfigMaster param object
-             logger:  The log to which all logging messages are sent
-             
 
  
          Returns:
@@ -36,6 +24,12 @@ def analysis_by_init_time(p,logger):
 
 
     '''
+    # Create ConfigMaster param object
+    p = P.Params()
+    #p.init(__doc__)    
+    p.init()    
+    logger = util.get_logger(p)
+
     # Retrieve any necessary values from the param file(s)
     init_time_list = p.opt["INIT_LIST"]
     var_list = p.opt["VAR_LIST"]
@@ -350,4 +344,4 @@ def cleanup_ascii(init_list, p, logger):
 
 
 if __name__ == "__main__":
-    main()
+    analysis_by_init_time()
