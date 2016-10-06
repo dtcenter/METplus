@@ -13,7 +13,7 @@ import create_series_commands as csc
 
 
 
-def analysis_by_lead_time(p, logger):
+def analysis_by_lead_time():
     ''' Perform a series analysis of extra tropical cyclone
         paired data based on lead time (forecast hour) 
         This requires invoking the MET run_series_analysis binary,
@@ -30,10 +30,6 @@ def analysis_by_lead_time(p, logger):
                          -out <OUT_DIR>/series_F<CURR_FHR_<NAME>_<LEVEL>.nc 
                          -config SeriesAnalysisConfig_by_lead
       Args:
-        p:          ConfigMaster parameter object 
-
-        logger  :   The logging object to which logging will be saved.
-
 
 
 
@@ -45,7 +41,7 @@ def analysis_by_lead_time(p, logger):
     '''
     # Create a param object
     p = P.Params()
-    p.init(__doc__)
+    p.init()
     
     cur_ = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name 
