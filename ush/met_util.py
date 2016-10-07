@@ -302,36 +302,6 @@ def get_name_level(var_combo, logger):
 
     return name,level
 
-    
-
-def create_ascii_file(dir, filename, file_list, logger):
-    '''Create an ASCII file of name 'filename', located in directory 'dir', 
-        containing the filenames of all files indicated in the input file_list. 
-        
-        Args:
-           dir:  The location where the ASCII file should be saved
-           filename:  The name of the ASCII filename
-           file_list:  A list of file names (full file path)
-           logger:  The logger to which all logging messages will be directed.
-    
-        Returns:
-           None: creates an ASCII file in the specified location with the 
-                 specified name, containing the files specified in the file_list 
-    '''
-    # For logging 
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-    ascii_filename = os.join.path(dir,filename)
- 
-    try:
-        with open(ascii_filename, 'a') as f:
-            for cur_file in file_list:
-                f.write(cur_file) 
-                f.write('\n')
-    except IOError as e:
-          logger.error("Could not create requested ASCII file")
-
-
 
 def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
     ''' Checks for the presence of forecast and analysis
