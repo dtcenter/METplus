@@ -1,4 +1,4 @@
-#!/usr/bin/env pythonzz
+#!/usr/bin/env python
 
 from __future__ import (print_function)
 from ConfigMaster import ConfigMaster
@@ -7,6 +7,7 @@ class Params(ConfigMaster):
   defaultParams = """
 
 import os
+import datetime
 
 #
 # Logging
@@ -15,7 +16,14 @@ import os
 #Levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
 LOG_LEVEL = "DEBUG"
 LOG_DIR = "/d1/SBU_util/out/logs"
-LOG_FILENAME = "extract_tiles.log"
+LOG_FILENAME = os.path.join(LOG_DIR, "master_met_plus." + datetime.datetime.now().strftime("%Y%m%d") + ".log")
+
+#
+# Master Script
+#
+
+# Processes to run in master script
+PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py", "series_by_lead.py"]
 
 #
 # Executables
@@ -41,6 +49,7 @@ NCDUMP_EXE = "/usr/local/bin/ncdump"
 PROJ_DIR = "/d1/SBU/GFS"
 GFS_DIR = os.path.join(PROJ_DIR, "model_data")
 TRACK_DATA_DIR = os.path.join(PROJ_DIR, "track_data")
+TRACK_DATA_SUBDIR_MOD = os.path.join(PROJ_DIR, "track_data_atcf")
 TC_PAIRS_DIR = os.path.join(PROJ_DIR, "tc_pairs")
 TMP_DIR = "/tmp"
 
@@ -109,9 +118,10 @@ TRACK_TYPE = "extra_tropical_cyclone"
 TC_PAIRS_CONFIG_PATH = "TCPairsETCConfig"
 ADECK_FILE_PREFIX = "amlq"
 BDECK_FILE_PREFIX = "bmlq"
-TRACK_DATA_SUBDIR_MOD = "track_data_atcf"
 MISSING_VAL_TO_REPLACE = "-99"
 MISSING_VAL = "-9999"
+TRACK_DATA_MOD_FORCE_OVERWRITE = False
+TC_PAIRS_FORCE_OVERWRITE = False
 
 #
 # Testing
