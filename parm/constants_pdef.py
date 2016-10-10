@@ -106,7 +106,7 @@ ANLY_ASCII_REGEX_LEAD ="ANLY_FILE_F.*"
 # For tc pairs
 #
 TRACK_TYPE = "extra_tropical_cyclone"
-TC_PAIRS_CONFIG_PATH = "TCPairsETCConfig"
+TC_PAIRS_CONFIG_PATH = "/d1/SBU_util/parm/TCPairsETCConfig"
 ADECK_FILE_PREFIX = "amlq"
 BDECK_FILE_PREFIX = "bmlq"
 TRACK_DATA_SUBDIR_MOD = "track_data_atcf"
