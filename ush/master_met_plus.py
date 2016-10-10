@@ -7,60 +7,44 @@ import os
 import sys
 import met_util as util
 
-def master_met_plus():
+def main():
     '''
         Master MET+ script that invokes the necessary Python scripts
         to perform various activities, such as series analysis.
     '''
-    # Get all necessary pieces
+    # Retrieve parameters from corresponding param file
     p = P.Params() 
     p.init(__doc__)
-    cur_filename = sys.__getframe().f_code.co_filename
-    cur_file = sys.__getframe().f_code.co_nam3
+
+    # Used for logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
    
     logger = util.get_logger(p)
 
-    # Perform series analysis:
+    # Get the list of processes to call
+    process_list = p.opt["PROCESS_LIST"]
 
-    # Check that raw data to generate tc_pairs 
-    # exists
-    # raw_data_dir = p.opt["RAW_DATA"]
-    # if check_input_data(raw_data_dir):
-    #     
-    # else:
-    #     log error, exit
-    #
-    # first, invoke tc_pairs
-    # try:
-    #     gen_tc_pairs()
-    # except FileNotFoundError:
-    #     do something or exit
-    #
-    # 
-    # try:
-    #    run_extract_tiles() 
-    # except FileNotFoundError:
-    #    do something or exit
-    # 
-    # try:
-    #     run_series_analysis() 
-    # except FileNotFoundError:
-    #     do something like re-run run_extract_tiles or exit
-    # 
-    # 
-    # 
-    # 
-    # 
-    # 
-    # 
-    # 
-    # 
-    # 
+    # Get the name of the config file to use
+    config_file = p.getConfigFilePath()
 
-    
-    
+    for item in process_list:
 
+        if config_file == None:
+            cmd = "%s" % item
+            logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running: " + cmd)
+            ret = os.system(cmd)
+            if ret != 0:
+                logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd)
+                exit(0)
+        else:
+            cmd = "%s -c %s" % (item, config_file)
+            logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running: " + cmd)
+            ret = os.system(cmd)
+            if ret != 0:
+                logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd)
+                exit(0)
+            
+        
 if __name__ == "__main__":
-    print("Running as stand alone")
-else:
-    print("Imported into another script")
+    main()
