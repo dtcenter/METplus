@@ -26,8 +26,8 @@ def analysis_by_init_time():
     '''
     # Create ConfigMaster param object
     p = P.Params()
-    #p.init(__doc__)    
-    p.init()    
+    p.init(__doc__)    
+      
     logger = util.get_logger(p)
 
     # Retrieve any necessary values from the param file(s)
@@ -54,7 +54,7 @@ def analysis_by_init_time():
 
  
     # Check for the existence of forecast and analysis tile files
-    tile_dir_parts = [proj_dir, '/series_analysis/']
+    tile_dir_parts = [proj_dir, '/series_analysis']
     tile_dir = ''.join(tile_dir_parts)
     try:
         util.check_for_tiles(tile_dir, fcst_tile_regex, anly_tile_regex, logger)
@@ -80,16 +80,16 @@ def analysis_by_init_time():
         # init time.
         storm_list = get_storms_for_init(cur_init, out_dir_base, logger)    
         if not storm_list:
-            logger.error('ERROR| No storm ids found, exiting')
+            logger.error('ERROR|['+ cur_filename + ':' + cur_function + ']| No storm ids found, exiting')
             sys.exit(1)
         else:
             for cur_storm in storm_list:
                 
                 # Generate the -fcst, -obs, -config, and -out parameter values for invoking
                 # the MET series_analysis binary.
-                output_dir_parts = [out_dir_base, '/',cur_init, '/',cur_storm, '/']
+                output_dir_parts = [out_dir_base, cur_init, '/',cur_storm]
                 output_dir = ''.join(output_dir_parts) 
-
+                
                 # First get the filenames for the gridded forecast and analysis 30x30 tiles
                 # that were created by extract_tiles. These files are aggregated by 
                 # init time and storm id.
@@ -101,7 +101,7 @@ def analysis_by_init_time():
                 # Now do some checking to make sure we aren't missing either the forecast or
                 # analysis files, if so log the error and exit.
                 if not anly_grid_files or not fcst_grid_files:
-                     logger.error('ERROR| No gridded analysis or forecast files found, exiting')
+                     logger.error('ERROR|[' + cur_filename + ':' + cur_function +']| ' +'No gridded analysis or forecast files found, exiting')
                      sys.exit(1)
 
                 # Generate the -fcst portion (forecast file)
@@ -115,29 +115,31 @@ def analysis_by_init_time():
                 # Create an ASCII file containing the forecast files. 
                 fcst_ascii_fname_parts = ['FCST_ASCII_FILES_',cur_storm ]
                 fcst_ascii_fname = ''.join(fcst_ascii_fname_parts)
-                logger.info('output dir: '+ output_dir)
-                logger.info('fcst ascii filename: '+ fcst_ascii_fname)
                 fcst_ascii = os.path.join(output_dir, fcst_ascii_fname)
+               
 
+                # Sort the files in the fcst_grid_files list.
+                sorted_fcst_grid_files = sorted(fcst_grid_files)
                 tmp_fcst_param = ''
-                for cur_fcst in fcst_grid_files:          
+                for cur_fcst in sorted_fcst_grid_files:          
                     cur_tile = os.path.basename(cur_fcst)
                     tmp_fcst_param +=  cur_fcst
                     tmp_fcst_param += '\n'
-                logger.info('fcst param: '+ tmp_fcst_param)
+              
 
                 # Now create the ASCII file
                 try:
                     with open(fcst_ascii, 'a') as f:
-                        logger.info("Creating ASCII file: " + tmp_fcst_param)
+                        
                         f.write(tmp_fcst_param)
                 except IOError as e:
-                    logger.error("ERROR: Could not create requested ASCII file" + fcst_ascii)
+                    logger.error("ERROR|[" + cur_filename + ":" + cur_function + "]| " + "Could not create requested ASCII file:  " + fcst_ascii)
 
                 fcst_param_parts = ['-fcst ', fcst_ascii]
                 fcst_param = ''.join(fcst_param_parts)
 
                 # Generate the -obs portion (analysis file)
+                # These are the gridded observation files.
                 # -obs obs_file1 obs_file2 obs_file3 ... obs_filen
                 # or
                 # -obs obs_ASCII_filename
@@ -152,17 +154,21 @@ def analysis_by_init_time():
 
                 obs_param_parts = [' -obs ', anly_ascii]
                 obs_param = ''.join(obs_param_parts)
+
+                # Sort the files in the anly_grid_files list.
+                sorted_anly_grid_files = sorted(anly_grid_files)
                 tmp_obs_param = ''
-                for cur_anly in anly_grid_files:          
+                for cur_anly in sorted_anly_grid_files:          
                     tmp_obs_param += cur_anly 
                     tmp_obs_param += '\n'
+
 
                 # Now create the ASCII file
                 try:
                     with open(anly_ascii, 'a') as f:
                         f.write(tmp_obs_param)
                 except IOError as e:
-                    logger.error("ERROR:Could not create requested ASCII file" + anly_ascii)
+                    logger.error("ERROR|[" + cur_filename + ":" + cur_function + "]| " + "Could not create requested ASCII file:  " + anly_ascii)
                 anly_param_parts = ['-obs ', anly_ascii]
                 anly_param = ''.join(anly_param_parts)
     
@@ -174,7 +180,7 @@ def analysis_by_init_time():
                    # by the MET series_analysis binary.
                    os.environ['NAME'] = name
                    os.environ['LEVEL'] = level
-                   series_anly_output_parts = [output_dir, 'series_', name,'_',level, '.nc']
+                   series_anly_output_parts = [output_dir, '/', 'series_', name,'_',level, '.nc']
                    series_anly_output_fname = ''.join(series_anly_output_parts)
                    out_param_parts = ['-out ', series_anly_output_fname]
                    out_param = ''.join(out_param_parts)
@@ -184,50 +190,52 @@ def analysis_by_init_time():
                    # -fcst <file> -obs <obs_file> -out <output file> -config <series analysis config file>
                    command_parts = [ series_analysis_exe, ' ', fcst_param, ' ', obs_param, ' -config ', series_anly_config_file, ' ',  out_param ] 
                    command = ''.join(command_parts)
-                   logger.info('SERIES ANALYSIS COMMAND: '+ command)
+                   logger.info('INFO|['+ cur_filename + ':' + cur_function +  ']|' + 'SERIES ANALYSIS COMMAND: ' + command)
                    os.system(command)
                    
                    # Now we need to invoke the MET tool plot_data_plane to generate plots that are
                    # recognized by the MET viewer.
                    # Get the number of forecast tile files, the name of the first and last in the list
                    # to be used by the -title option.
-                   num,beg,end = get_fcst_file_info(fcst_tiles, logger)
+                   num,beg,end = get_fcst_file_info(out_dir_base, cur_init, cur_storm, logger)
 
                    # Assemble the input file, output file, field string, and title
                    plot_data_plane_input_fname = series_anly_output_fname
                    for cur_stat in stat_list:
-                       plot_data_plane_output = [output_dir,'series_',name, '_',level,'_',cur_stat,'.ps' ]
+                       plot_data_plane_output = [output_dir,'/series_',name, '_',level,'_',cur_stat,'.ps' ]
                        plot_data_plane_output_fname = ''.join(plot_data_plane_output)
                        os.environ['CUR_STAT'] = cur_stat 
                        field_string_parts = ["'name=",'"series_cnt_', cur_stat,'";', 'level="', level, '";', "'"]
                        field_string = ''.join(field_string_parts)
-                       title_parts = [' -title "GFS Init ', cur_init, ' Storm ',cur_storm, str(num), \
-                                      ' Forecasts (', beg, ' to ', end, '), ', cur_stat, ' for ', cur_var, '"' ]
+                       title_parts = [' -title "GFS Init ', cur_init, ' Storm ',cur_storm, ' ', str(num), \
+                                      ' Forecasts (', str(beg), ' to ', str(end), '), ', cur_stat, ' for ', cur_var, '"' ]
                        title = ''.join(title_parts)
+                     
                       
                        # Now assemble the entire plot data plane command
                        data_plane_command_parts = [plot_data_plane_exe, ' ', plot_data_plane_input_fname, ' ', plot_data_plane_output_fname, ' ', \
                                                    field_string,' ', title ]
 
                        data_plane_command = ''.join(data_plane_command_parts)
-                       logger.info("DATA_PLANE_COMMAND: " + data_plane_command)
+                       logger.info("INFO|[" + cur_filename + ":" + cur_function + "]| DATA_PLANE_COMMAND: " + data_plane_command)
                        os.system(data_plane_command)
 
                        # Now assemble the command to convert the postscript file to png
                        png_fname = plot_data_plane_output_fname.replace('.ps','.png')
                        convert_parts = [convert_exe, ' -rotate 90 -background white -flatten ', plot_data_plane_output_fname,' ', png_fname]
                        convert = ''.join(convert_parts)
-                       logger.info('CONVERT COMMAND: '+convert)
                        os.system(convert)
                                  
       
-def get_fcst_file_info(fcst_tiles_list, logger):
-    ''' Get the number of all the gridded forecast 30x30 tile files
-        created by extract_tiles, and from a sorted list, determine the filename of the first and last
+def get_fcst_file_info(output_dir, cur_init, cur_storm, logger):
+    ''' Get the number of all the gridded forecast 30x30 tile files for a given storm id and init time
+        (created by extract_tiles). Determine the filename of the first and last
         files.  This information is used to create the title value to the -title opt in plot_data_plane.
     
         Args:
-           fcst_tiles_list:  A list containing the full file names of all the forecast tile files
+           output_dir: The directory of the gridded files of interest.
+           cur_init:  The init time of interest.
+           cur_storm:  The storm id of interest.
            logger:  The logger to which all logging messages will be directed.
 
 
@@ -242,15 +250,38 @@ def get_fcst_file_info(fcst_tiles_list, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
     
-    # Get the number of forecast tile files
-    num = len(fcst_tiles_list)
    
-    # Get a sorted list of the forecast tile files and only return the 
-    # first and last
-    sorted_fcst_tiles = sorted(fcst_tiles_list)
-    beg = sorted_fcst_tiles[0]
-    end = sorted_fcst_tiles[-1]
+    # Get a sorted list of the forecast tile files for the init time of interest
+    # for all the storm ids and return the forecast hour corresponding to the first
+    # and last file.
+    base_dir_to_search = os.path.join(output_dir, cur_init)
+    dir_to_search = os.path.join(base_dir_to_search, cur_storm)
+    search_regex = ".*FCST_TILE.*.grb2"
+    files_of_interest = util.get_files(dir_to_search, search_regex, logger)
+    sorted_files = sorted(files_of_interest)
+    first = sorted_files[0]
+    last = sorted_files[-1]
 
+    # Extract the forecast hour from the first and last
+    # filenames.
+    match_beg = re.search(".*FCST_TILE_(F[0-9]{3}).*.grb2", first)
+    match_end = re.search(".*FCST_TILE_(F[0-9]{3}).*.grb2", last)
+    if match_beg:
+        beg = match_beg.group(1)
+    else:
+        logger.error("ERROR|[" + cur_filename + ":" + cur_function + "]| " + "Unexpected file format encountered, exiting...")
+        sys.exit(1)
+    if match_end:
+        end = match_end.group(1)
+    else: 
+        logger.error("ERROR|[" + cur_filename + ":" + cur_function + "]| " + "Unexpected file format encountered, exiting...")
+        sys.exit(1)
+       
+
+    # Get the number of forecast tile files
+    num = len(sorted_files)
+    
+   
     return num,beg,end
      
         
@@ -280,7 +311,6 @@ def get_storms_for_init(cur_init, out_dir_base, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    logger.info(cur_function)
     filter_set = set()
     storm_list = []
 
