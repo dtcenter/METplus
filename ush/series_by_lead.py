@@ -9,7 +9,7 @@ import os
 import sys
 import met_util as util
 import errno
-import create_series_commands as csc
+#import create_series_commands as csc
 
 
 
@@ -203,13 +203,13 @@ def analysis_by_lead_time():
                     # extension of the postscript file with '.png'.
                     repl_string = ['_', cur_stat, '.ps']
                     repl = ''.join(repl_string)
-                    print("cur nc to be modified: {}".format(cur_nc))
+                    logger.info("cur nc to be modified: "+ cur_nc)
                     ps_file = re.sub('(\.nc)$', repl, cur_nc)                     
-                    print("ps file: {} from cur nc: {} ".format(cur_nc, ps_file))
+                    logger.info("ps file from cur nc: " + ps_file)
       
                     # Now create the PNG filename from the Postscript filename.
                     png_file = re.sub('(\.ps)$', '.png', ps_file) 
-                    print("PNG file: {} from original {}: ".format(png_file, cur_nc))
+                    #print("PNG file: {} from original {}: ".format(png_file, cur_nc))
               
                     # Extract the forecast hour from the netCDF filename.
                     match_fhr = re.match(r'.*/series_F\d{3}/series_F(\d{3}).*\.nc', cur_nc)
@@ -219,22 +219,21 @@ def analysis_by_lead_time():
                         logger.error("ERROR: netCDF file format is unexpected, exiting...")
                         sys.exit()
 
-                    # Get the max series_cnt_TOTAL value  
+                    # Get the max series_cnt_TOTAL value (i.e. nseries)
                     tempfile_dir = out_dir_base + '/series_F*' 
                     clean_max = [ rm_exe, ' ', tempfile_dir, '/max.*']
                     clean_min = [ rm_exe, ' ', tempfile_dir, '/min.*']
                     clean_max_cmd = ''.join(clean_max)
                     clean_min_cmd = ''.join(clean_min)
                     os.system(clean_max_cmd)
-                    os.system(clean_min_cmd)
-                   
-                    # Get the number of series
+                    os.system(clean_min_cmd)         
                     nseries = get_nseries(cur_nc, p, logger)
 
 
                     # Create the plot data plane command.
-                    plot_data_plane_parts = [plot_data_plane_exe, ' ', cur_nc, ' ', ps_file, ' ', "'",'name = ', '"', 'series_cnt_',cur_stat, '"; ', 'level=', '"(\*,\*)"; ',"'", ' -title ','"GFS F', str(fhr),  ' Forecasts (N = ', str(nseries),'), ', cur_stat,' for ', cur_var, '"']
+                    plot_data_plane_parts = [plot_data_plane_exe, ' ', cur_nc, ' ', ps_file, ' ', "'",'name = ', '"', 'series_cnt_',cur_stat, '"; ', 'level=', '"(\*,\*)"; ',"'", ' -title ','"GFS F', str(fhr),  ' Forecasts (N = ', str(nseries),'), ', cur_stat,' for ', cur_var, '"', ' -plot_range ', str(vmin), ' ', str(vmax) ]
                     plot_data_plane_cmd = ''.join(plot_data_plane_parts)
+                    logger.info("plot_data_plane cmd: " + plot_data_plane_cmd)
                     os.system(plot_data_plane_cmd)
                   
                     # Create the convert command.
@@ -667,5 +666,5 @@ if __name__ == "__main__":
     p = P.Params()
     p.init(__doc__)
     logger = util.get_logger(p)
-    analysis_by_lead_time(p, logger)
+    analysis_by_lead_time()
 
