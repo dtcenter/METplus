@@ -53,7 +53,7 @@ def main():
     cur_pid = str(os.getpid())
    
     # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) | [File : function]| Message
-    logger.info("INFO |  [" + cur_filename +  ":" + "cur_function] |" + "Inside main")
+    #logger.info("INFO |  [" + cur_filename +  ":" + "cur_function] |" + "Inside main")
     
     # Get necessary executables
     tc_stat_exe = p.opt["TC_STAT"]
@@ -75,7 +75,7 @@ def main():
             util.mkdir_p(filter_path)
             tc_cmd_list = [tc_stat_exe, " -job filter -lookin ", project_dir,"/tc_pairs/", year_month, " -init_inc ", cur_init, " -match_points true -dump_row ", filter_name]
             tc_cmd = ''.join(tc_cmd_list)
-            logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | tc command: " + tc_cmd)
+            #logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | tc command: " + tc_cmd)
             os.system(tc_cmd)
 
         # Now get unique storm ids from the filter file, filter_yyyymmdd_hh.tcst
@@ -107,7 +107,7 @@ def main():
     # end of for cur_init
 
     # Clean up the tmp directory
-    logger.debug("CLEAN UP: " + tmp_dir)
+    #logger.debug("CLEAN UP: " + tmp_dir)
     subprocess.call(["rm", "-rf", tmp_dir])
 
 
@@ -145,6 +145,8 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
     gfs_dir = p.opt["GFS_DIR"]
     output_dir = p.opt["OUT_DIR"]
     wgrib2_exe = p.opt["WGRIB2"]
+    egrep_exe = p.opt["EGREP_EXE"]
+
     # obtain the gfs_fcst dir
     with open(tmp_filename, "r") as tf:
         for line in tf:
@@ -236,8 +238,10 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
 
             
             # Invoke wgrib2 on the fcst file only if a fcst tile file does NOT already exist.
-            fcst_cmd_list= [wgrib2_exe, ' ' , fcst_filename, ' -new_grid ', fcst_tile_grid, ' ', fcst_tile_file, '>/dev/null']
+            #fcst_cmd_list= [wgrib2_exe, ' ' , fcst_filename, ' -new_grid ', fcst_tile_grid, ' ', fcst_tile_file, '>/dev/null']
+            fcst_cmd_list= [wgrib2_exe, ' ' , fcst_filename, ' | ', egrep_exe, ' ":TMP:2 m above|:HGT:500 mb|:PWAT:|:PRMSL:"|', wgrib2_exe, ' -i ', fcst_filename, ' -new_grid ', fcst_tile_grid, ' ', fcst_tile_file, '>/dev/null']
             wgrb_cmd_fcst = ''.join(fcst_cmd_list)
+            
 
             if util.file_exists(fcst_tile_file):
                 logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Forecast tile file: " + fcst_tile_file)
@@ -247,8 +251,10 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
                 os.system(wgrb_cmd_fcst)
 
             # Invoke wgrib2 on the analysis file if an analysis tile file does NOT exist
-            anly_cmd_list= [wgrib2_exe, ' ' , anly_filename, ' -new_grid ', anly_tile_grid, ' ', anly_tile_file, '>/dev/null']
+            #anly_cmd_list= [wgrib2_exe, ' ' , anly_filename, ' -new_grid ', anly_tile_grid, ' ', anly_tile_file, '>/dev/null']
+            anly_cmd_list= [wgrib2_exe, ' ' , anly_filename, ' | ', egrep_exe, ' ":TMP:2 m above|:HGT:500 mb|:PWAT:|:PRMSL:"|',wgrib2_exe, ' -i ', anly_filename, ' -new_grid ', anly_tile_grid, ' ', anly_tile_file, '>/dev/null']
             wgrb_cmd_anly = ''.join(anly_cmd_list)
+            
             if util.file_exists(anly_tile_file):
                 logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Analysis tile file: " + anly_tile_file)
             else:
@@ -259,12 +265,6 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
 
         # end of 'for line in tf:'
     # end of 'with open(tmp_filename, "r") as tf:'
-
-
-
-
-
-
 
 
 def get_storm_ids(filter_filename, logger):
