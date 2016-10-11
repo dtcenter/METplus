@@ -76,16 +76,28 @@ def main():
     cur_function = sys._getframe().f_code.co_name
     logger = util.get_logger(p)
 
+    # Get the desired YYYYMM from INIT_LIST
+    YYYYMM_list = []
+    for init in p.opt["INIT_LIST"]:
+        if init[0:6] not in YYYYMM_list:
+            YYYYMM_list.append(init[0:6])
+
+    # Set up the environment variable to be used in the TCPairs Config file (TC_PAIRS_CONFIG_PATH)
+    # Used to set init_inc in "TC_PAIRS_CONFIG_PATH"
+    os.environ['INIT_INC'] = str(p.opt["INIT_LIST"])
+
     # Get a directory path listing of the dated subdirectories (YYYYMM format) in the track_data directory
     dir_list = []
     for YYYYMM in os.listdir(p.opt["TRACK_DATA_DIR"]):
         if os.path.isdir(os.path.join(p.opt["TRACK_DATA_DIR"], YYYYMM)):
-            dir_list.append(os.path.join(p.opt["TRACK_DATA_DIR"], YYYYMM))
+            if (YYYYMM in YYYYMM_list):
+                dir_list.append(os.path.join(p.opt["TRACK_DATA_DIR"], YYYYMM))
 
+    
     if (dir_list == []):
         logger.warning("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "There are no dated sub-directories (YYYYMM) with input data as expected in: " + p.opt["TRACK_DATA_DIR"])
         exit(0)
-        
+       
     # Get a list of files in the dated subdirectories 
     for mydir in dir_list:
         myfiles = os.listdir(mydir)
@@ -198,7 +210,7 @@ def main():
                     if ret != 0:
                         logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd)
                         exit(0)
-                
+               
     
 if __name__ == "__main__":
     main()
