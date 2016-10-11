@@ -41,6 +41,7 @@ CONVERT_EXE = "/usr/bin/convert"
 TC_PAIRS = "/d1/CODE/MET/MET_releases/met-5.2_beta2/bin/tc_pairs"
 RM_EXE = "/bin/rm -rf"
 NCDUMP_EXE = "/usr/local/bin/ncdump"
+EGREP_EXE = "/bin/egrep"
 
 #
 # Project Directories
