@@ -196,14 +196,14 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
             fcst_dir = os.path.join(gfs_dir, init_ymd)
             init_ymdh_split = init_ymdh.split("_")
             init_YYYYmmddHH = "".join(init_ymdh_split)
-            fcstSTS = sts.StringTemplateSubstitution(p, p.opt["GFS_FCST_FILE_TMPL"], init=init_YYYYmmddHH, lead=lead_str)
+            fcstSTS = sts.StringTemplateSubstitution(logger, p.opt["GFS_FCST_FILE_TMPL"], init=init_YYYYmmddHH, lead=lead_str)
             fcst_file = fcstSTS.doStringSub()
             fcst_filename = os.path.join(fcst_dir, fcst_file)
 
             anly_dir =  os.path.join(gfs_dir, valid_ymd)
             valid_ymdh_split = valid_ymdh.split("_")
             valid_YYYYmmddHH = "".join(valid_ymdh_split)
-            anlySTS = sts.StringTemplateSubstitution(p, p.opt["GFS_ANLY_FILE_TMPL"], valid=valid_YYYYmmddHH, lead=lead_str)
+            anlySTS = sts.StringTemplateSubstitution(logger, p.opt["GFS_ANLY_FILE_TMPL"], valid=valid_YYYYmmddHH, lead=lead_str)
             anly_file = anlySTS.doStringSub()
             anly_filename = os.path.join(anly_dir, anly_file)
             
@@ -213,12 +213,14 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
                 logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Forecast file: " + fcst_filename)
             else:
                 logger.warn("WARNING| [" + cur_filename + ":" + cur_function +  " ] | Can't find forecast file, continuing anyway: " + fcst_filename)
+                continue
 
             # Check if the analysis file exists. If it doesn't exist, just log it.
             if util.file_exists(anly_filename):
                     logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Analysis file: " + anly_filename)
             else:
                 logger.warn("WARNING| [" + cur_filename + ":" + cur_function +  " ] | Can't find analysis file, continuing anyway: " + anly_filename)
+                continue
 
             # Regrid the forecast and analysis files to a 30 degree X 30 degree tile centered on
             # latlon lon0:nlon:dlon lat0:nlat:dlat
