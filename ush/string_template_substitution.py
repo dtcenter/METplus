@@ -104,7 +104,7 @@ def get_lead_accum_time_seconds(logger, time_string):
         
 class StringTemplateSubstitution:
     """
-    params - params object used for logging
+    log - log object 
     tmpl_str - template string to populate
     kwargs - dictionary containing values for each template key
 
@@ -124,9 +124,9 @@ class StringTemplateSubstitution:
        
     """
 
-    def __init__(self, params, tmpl, **kwargs):
+    def __init__(self, log, tmpl, **kwargs):
 
-        self.logger = util.get_logger(params)
+        self.logger = log
         self.tmpl = tmpl
         self.kwargs = kwargs
     
