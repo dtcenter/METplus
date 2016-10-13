@@ -84,7 +84,15 @@ def main():
 
     # Set up the environment variable to be used in the TCPairs Config file (TC_PAIRS_CONFIG_PATH)
     # Used to set init_inc in "TC_PAIRS_CONFIG_PATH"
-    os.environ['INIT_INC'] = str(p.opt["INIT_LIST"])
+    # Need to do some pre-processing so that Python will use " and not ' because currently MET
+    # doesn't support single-quotes
+    tmp_list = []
+    for item in p.opt["INIT_LIST"]:
+        tmp_str = "\"" + item + "\""
+        tmp_list.append(tmp_str)
+    tmp_init_string = ', '.join(tmp_list)
+    init_string = "[" + tmp_init_string + "]"    
+    os.environ['INIT_INC'] = init_string
 
     # Get a directory path listing of the dated subdirectories (YYYYMM format) in the track_data directory
     dir_list = []
