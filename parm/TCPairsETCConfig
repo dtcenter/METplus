@@ -39,7 +39,8 @@ storm_name = [];
 //
 init_beg = "";
 init_end = "";
-init_inc = [];
+//init_inc = [];
+init_inc = ${INIT_INC};
 init_exc = [];
 
 //
