@@ -9,6 +9,7 @@ import os
 import sys
 import met_util as util
 import errno
+import subprocess
 
 
 
@@ -28,7 +29,6 @@ def analysis_by_init_time():
     p = P.Params()
     p.init(__doc__)    
       
-    logger = util.get_logger(p)
 
     # Retrieve any necessary values from the param file(s)
     init_time_list = p.opt["INIT_LIST"]
@@ -81,13 +81,14 @@ def analysis_by_init_time():
         storm_list = get_storms_for_init(cur_init, out_dir_base, logger)    
         if not storm_list:
             logger.error('ERROR|['+ cur_filename + ':' + cur_function + ']| No storm ids found, exiting')
-            sys.exit(1)
+            continue
         else:
             for cur_storm in storm_list:
                 
                 # Generate the -fcst, -obs, -config, and -out parameter values for invoking
                 # the MET series_analysis binary.
-                output_dir = os.path.join(out_dir_base, cur_init, cur_storm)
+                output_dir_parts = [out_dir_base, cur_init, '/',cur_storm]
+                output_dir = ''.join(output_dir_parts) 
                 
                 # First get the filenames for the gridded forecast and analysis 30x30 tiles
                 # that were created by extract_tiles. These files are aggregated by 
@@ -101,7 +102,7 @@ def analysis_by_init_time():
                 # analysis files, if so log the error and exit.
                 if not anly_grid_files or not fcst_grid_files:
                      logger.error('ERROR|[' + cur_filename + ':' + cur_function +']| ' +'No gridded analysis or forecast files found, exiting')
-                     sys.exit(1)
+                     continue
 
                 # Generate the -fcst portion (forecast file)
                 # -fcst file_1 file_2 file_3 ... file_n
@@ -190,7 +191,11 @@ def analysis_by_init_time():
                    command_parts = [ series_analysis_exe, ' ', fcst_param, ' ', obs_param, ' -config ', series_anly_config_file, ' ',  out_param ] 
                    command = ''.join(command_parts)
                    logger.info('INFO|['+ cur_filename + ':' + cur_function +  ']|' + 'SERIES ANALYSIS COMMAND: ' + command)
-                   os.system(command)
+                   # Using shell=True because we aren't relying on external input for creating the command to the MET series analysis
+                   # binary
+                   met_result = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
+                   logger.info('INFO|[MET series analysis] :' + met_result)
+                 
                    
                    # Now we need to invoke the MET tool plot_data_plane to generate plots that are
                    # recognized by the MET viewer.
@@ -217,13 +222,19 @@ def analysis_by_init_time():
 
                        data_plane_command = ''.join(data_plane_command_parts)
                        logger.info("INFO|[" + cur_filename + ":" + cur_function + "]| DATA_PLANE_COMMAND: " + data_plane_command)
-                       os.system(data_plane_command)
+                       # Using shell=True because we aren't relying on external input for creating the command to the MET series analysis
+                       # binary
+                       data_plane_result = subprocess.check_output(data_plane_command, stderr=subprocess.STDOUT, shell=True)
+                       logger.info('INFO|[MET data plane]: ' + data_plane_result)
 
                        # Now assemble the command to convert the postscript file to png
                        png_fname = plot_data_plane_output_fname.replace('.ps','.png')
                        convert_parts = [convert_exe, ' -rotate 90 -background white -flatten ', plot_data_plane_output_fname,' ', png_fname]
                        convert = ''.join(convert_parts)
-                       os.system(convert)
+                       # Using shell=True because we aren't relying on external input for creating the command to the MET series analysis
+                       # binary
+                       convert_results = subprocess.check_output(convert, stderr=subprocess.STDOUT, shell=True) 
+                       logger.info('INFO|[convert ]: ' + convert_results)
                                  
       
 def get_fcst_file_info(output_dir, cur_init, cur_storm, logger):
@@ -373,4 +384,7 @@ def cleanup_ascii(init_list, p, logger):
 
 
 if __name__ == "__main__":
+    p = P.Params()
+    p.init(__doc__)
+    logger = util.get_logger(p)
     analysis_by_init_time()
