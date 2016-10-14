@@ -87,8 +87,7 @@ def analysis_by_init_time():
                 
                 # Generate the -fcst, -obs, -config, and -out parameter values for invoking
                 # the MET series_analysis binary.
-                output_dir_parts = [out_dir_base, cur_init, '/',cur_storm]
-                output_dir = ''.join(output_dir_parts) 
+                output_dir = os.path.join(out_dir_base, cur_init, cur_storm)
                 
                 # First get the filenames for the gridded forecast and analysis 30x30 tiles
                 # that were created by extract_tiles. These files are aggregated by 
