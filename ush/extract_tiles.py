@@ -39,11 +39,9 @@ def main():
     '''
 
     # Retrieve parameters from corresponding param file
-    p = P.Params()
-    p.init(__doc__)  ## Put description of the code here
+   
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-    logger = util.get_logger(p)
     init_times = p.opt["INIT_LIST"]
     output_dir = p.opt["OUT_DIR"]
     project_dir = p.opt["PROJ_DIR"]
@@ -53,7 +51,7 @@ def main():
     cur_pid = str(os.getpid())
    
     # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) | [File : function]| Message
-    #logger.info("INFO |  [" + cur_filename +  ":" + "cur_function] |" + "Inside main")
+    logger.info("INFO |  [" + cur_filename +  ":" + "cur_function] |" + "BEGIN extract_tiles")
     
     # Get necessary executables
     tc_stat_exe = p.opt["TC_STAT"]
@@ -63,20 +61,26 @@ def main():
         logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] |Begin processing for initialization time: " + cur_init)
         year_month = extract_year_month(cur_init, logger)
         
-        # Create the name of the filter file we need to find.  If the file doesn't exist, then run TC_STAT 
-        filter_path = os.path.join(output_dir, cur_init)
+       # Create the name of the filter file we need to find.  If the file doesn't exist, then run TC_STAT 
         filter_filename = "filter_" + cur_init + ".tcst"
-        filter_name = os.path.join(filter_path, filter_filename)
+       # filter_name = os.path.join(filter_path, filter_filename)
+        filter_name = os.path.join(output_dir, cur_init, filter_filename)
 
         if util.file_exists(filter_name):
             logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Filter file exists, using Track data file: " + filter_name)
         else:
            # Create the storm track
+            filter_path = os.path.join(output_dir, cur_init)
             util.mkdir_p(filter_path)
             tc_cmd_list = [tc_stat_exe, " -job filter -lookin ", project_dir,"/tc_pairs/", year_month, " -init_inc ", cur_init, " -match_points true -dump_row ", filter_name]
             tc_cmd = ''.join(tc_cmd_list)
-            #logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | tc command: " + tc_cmd)
-            os.system(tc_cmd)
+            logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | tc command: " + tc_cmd)
+            # ** NOTE***: since we are NOT using externally defined commands in constructing the
+            # call to tc_pairs, we can use shell=True.  If external output is being used, 
+            # setting shell=True will open up to shell injection security breach.
+            tc_pairs_out = subprocess.check_output(tc_cmd, stderr=subprocess.STDOUT, shell=True )
+            logger.info("INFO| [tc_pairs ]|" + tc_pairs_out)
+            
 
         # Now get unique storm ids from the filter file, filter_yyyymmdd_hh.tcst
         sorted_storm_ids = get_storm_ids(filter_name, logger)
@@ -85,6 +89,7 @@ def main():
         # Iterate over each filter file in the output directory and search for the
         # presence of the storm id.  Store this corresponding row of data into
         # a temporary file in the /tmp/<pid> directory.
+       
         storm_match_list = [] 
         for cur_storm in sorted_storm_ids:
             logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Processing storm: " + cur_storm)
@@ -94,6 +99,7 @@ def main():
             util.mkdir_p(tmp_dir)
             tmp_file = "filter_" + cur_init + "_" + cur_storm
             tmp_filename = os.path.join(tmp_dir, tmp_file)
+            
             storm_match_list = util.grep(cur_storm, filter_name)
             with open(tmp_filename, "a+") as tmp_file:
                for storm_match in storm_match_list:
@@ -146,6 +152,7 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
     output_dir = p.opt["OUT_DIR"]
     wgrib2_exe = p.opt["WGRIB2"]
     egrep_exe = p.opt["EGREP_EXE"]
+    requested_records = p.opt["GRIB2_RECORDS"]
 
     # obtain the gfs_fcst dir
     with open(tmp_filename, "r") as tf:
@@ -240,31 +247,26 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
 
             
             # Invoke wgrib2 on the fcst file only if a fcst tile file does NOT already exist.
-            #fcst_cmd_list= [wgrib2_exe, ' ' , fcst_filename, ' -new_grid ', fcst_tile_grid, ' ', fcst_tile_file, '>/dev/null']
-            fcst_cmd_list= [wgrib2_exe, ' ' , fcst_filename, ' | ', egrep_exe, ' ":TMP:2 m above|:HGT:500 mb|:PWAT:|:PRMSL:"|', wgrib2_exe, ' -i ', fcst_filename, ' -new_grid ', fcst_tile_grid, ' ', fcst_tile_file, '>/dev/null']
-            wgrb_cmd_fcst = ''.join(fcst_cmd_list)
-            
 
+            # Create new gridded file for fcst tile
             if util.file_exists(fcst_tile_file):
-                logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Forecast tile file: " + fcst_tile_file)
+                logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Forecast tile file " + fcst_tile_file + " exists, skip wgrib2 regridding")
             else:
-                # Invoke wgrb2 to create a new grid file
-                logger.debug("wgrb_cmd_fcst: " + wgrb_cmd_fcst)
-                os.system(wgrb_cmd_fcst)
-
-            # Invoke wgrib2 on the analysis file if an analysis tile file does NOT exist
-            #anly_cmd_list= [wgrib2_exe, ' ' , anly_filename, ' -new_grid ', anly_tile_grid, ' ', anly_tile_file, '>/dev/null']
-            anly_cmd_list= [wgrib2_exe, ' ' , anly_filename, ' | ', egrep_exe, ' ":TMP:2 m above|:HGT:500 mb|:PWAT:|:PRMSL:"|',wgrib2_exe, ' -i ', anly_filename, ' -new_grid ', anly_tile_grid, ' ', anly_tile_file, '>/dev/null']
-            wgrb_cmd_anly = ''.join(anly_cmd_list)
+                # Invoke wgrb2 to perform regridding on the records of interest
+                fcst_cmd_list= [wgrib2_exe, ' ' , fcst_filename, ' | ', egrep_exe, ' "',requested_records, '"|', wgrib2_exe, ' -i ', fcst_filename, ' -new_grid ', fcst_tile_grid, ' ', fcst_tile_file]
+                wgrb_cmd_fcst = ''.join(fcst_cmd_list)
+                wgrb_fcst_out = subprocess.check_output(wgrb_cmd_fcst, stderr=subprocess.STDOUT, shell=True)
+                logger.info("INFO|[wgrib2]| on fcst file:" + wgrb_fcst_out)
             
+            # Create new gridded file for anly tile
             if util.file_exists(anly_tile_file):
-                logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Analysis tile file: " + anly_tile_file)
+                logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Analysis tile file: " + anly_tile_file + " exists, skip wgrib2 regridding")
             else:
-                # Invoke wgrb2 to create a new grid file
-                logger.debug("wgrb_cmd_anly:" + wgrb_cmd_anly)
-                os.system(wgrb_cmd_anly)
-            
-
+                # Invoke wgrb2 to perform regridding on the records of interest
+                anly_cmd_list= [wgrib2_exe, ' ' , anly_filename, ' | ', egrep_exe, ' "', requested_records, '"|',wgrib2_exe, ' -i ', anly_filename, ' -new_grid ', anly_tile_grid, ' ', anly_tile_file, '>/dev/null']
+                wgrb_cmd_anly = ''.join(anly_cmd_list)
+                wgrb_anly_out = subprocess.check_output(wgrb_cmd_anly, stderr=subprocess.STDOUT, shell=True)
+                logger.info("INFO|[wgrib2]| on analysis file:" + wgrb_anly_out)
         # end of 'for line in tf:'
     # end of 'with open(tmp_filename, "r") as tf:'
 
@@ -284,7 +286,6 @@ def get_storm_ids(filter_filename, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
     storm_id_list = set()
-    logger.info("get_storm_ids, reading file "+ filter_filename)
     with open(filter_filename) as fileobj:
          # skip the first line as it contains the header
          next(fileobj)
@@ -360,13 +361,6 @@ def create_tile_grid_string(lat,lon,logger,p):
      dlon = str(p.opt["DLON"])
   
 
-     # Hard-coded values
-     #lon_subtr = float(15)
-     #lat_subtr = float(15)
-     #dlon = dlat = '0.5'
-     #nlon = nlat = '60'
-
-
      adj_lon = float(lon) - lon_subtr
      adj_lat = float(lat) - lat_subtr
 
@@ -385,4 +379,7 @@ def create_tile_grid_string(lat,lon,logger,p):
 
 
 if __name__ == "__main__":
+    p = P.Params()
+    p.init(__doc__)  ## Put description of the code here
+    logger = util.get_logger(p)
     main()
