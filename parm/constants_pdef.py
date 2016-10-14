@@ -25,6 +25,16 @@ LOG_FILENAME = os.path.join(LOG_DIR, "master_met_plus." + datetime.datetime.now(
 # Processes to run in master script
 PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py", "series_by_lead.py"]
 
+# Used by extract_tiles.py
+# Define the records of interest from the grib2 file
+# in the format :field:level:field1:level1:field2:level2:
+# for specific level and field
+# or :field:field1:field2: for all levels of
+# specified fields,
+# or :field:level:field1:field2:level2: for a combination of field
+# and level.
+GRIB2_RECORDS = ":TMP:2 m above|:HGT:500 mb|:PWAT:|:PRMSL:"
+
 #
 # Executables
 #
