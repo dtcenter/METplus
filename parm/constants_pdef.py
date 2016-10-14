@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import (print_function)
-from ConfigMaster import ConfigMaster
+from config_master import ConfigMaster
 
 class Params(ConfigMaster):
   defaultParams = """
