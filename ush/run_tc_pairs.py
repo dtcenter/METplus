@@ -86,13 +86,9 @@ def main():
     # Used to set init_inc in "TC_PAIRS_CONFIG_PATH"
     # Need to do some pre-processing so that Python will use " and not ' because currently MET
     # doesn't support single-quotes
-    tmp_list = []
-    for item in p.opt["INIT_LIST"]:
-        tmp_str = "\"" + item + "\""
-        tmp_list.append(tmp_str)
-    tmp_init_string = ', '.join(tmp_list)
-    init_string = "[" + tmp_init_string + "]"    
-    os.environ['INIT_INC'] = init_string
+    tmp_init_string = str(p.opt["INIT_LIST"])
+    tmp_init_string = tmp_init_string.replace("\'","\"")
+    os.environ['INIT_INC'] = tmp_init_string
 
     # Get a directory path listing of the dated subdirectories (YYYYMM format) in the track_data directory
     dir_list = []
