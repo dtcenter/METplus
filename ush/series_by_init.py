@@ -80,15 +80,14 @@ def analysis_by_init_time():
         # init time.
         storm_list = get_storms_for_init(cur_init, out_dir_base, logger)    
         if not storm_list:
-            logger.error('ERROR|['+ cur_filename + ':' + cur_function + ']| No storm ids found, exiting')
+            logger.info('INFO|['+ cur_filename + ':' + cur_function + ']| No storm ids found, try next init time...')
             continue
         else:
             for cur_storm in storm_list:
                 
                 # Generate the -fcst, -obs, -config, and -out parameter values for invoking
                 # the MET series_analysis binary.
-                output_dir_parts = [out_dir_base, cur_init, '/',cur_storm]
-                output_dir = ''.join(output_dir_parts) 
+                output_dir = os.path.join(out_dir_base, cur_init, cur_storm)
                 
                 # First get the filenames for the gridded forecast and analysis 30x30 tiles
                 # that were created by extract_tiles. These files are aggregated by 
@@ -101,7 +100,7 @@ def analysis_by_init_time():
                 # Now do some checking to make sure we aren't missing either the forecast or
                 # analysis files, if so log the error and exit.
                 if not anly_grid_files or not fcst_grid_files:
-                     logger.error('ERROR|[' + cur_filename + ':' + cur_function +']| ' +'No gridded analysis or forecast files found, exiting')
+                     logger.info('INFO|[' + cur_filename + ':' + cur_function +']| ' +'No gridded analysis or forecast files found, continue')
                      continue
 
                 # Generate the -fcst portion (forecast file)
