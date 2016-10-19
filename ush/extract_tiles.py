@@ -45,6 +45,7 @@ def main():
     init_times = p.opt["INIT_LIST"]
     output_dir = p.opt["OUT_DIR"]
     project_dir = p.opt["PROJ_DIR"]
+    overwrite_flag = p.opt["OVERWRITE_TRACK"]
 
     # get the process id to be used to identify the output
     # amongst different users and runs.
@@ -63,10 +64,9 @@ def main():
         
        # Create the name of the filter file we need to find.  If the file doesn't exist, then run TC_STAT 
         filter_filename = "filter_" + cur_init + ".tcst"
-       # filter_name = os.path.join(filter_path, filter_filename)
         filter_name = os.path.join(output_dir, cur_init, filter_filename)
 
-        if util.file_exists(filter_name):
+        if util.file_exists(filter_name) and overwrite_flag == "FALSE":
             logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Filter file exists, using Track data file: " + filter_name)
         else:
            # Create the storm track
