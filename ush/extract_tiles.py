@@ -66,7 +66,7 @@ def main():
         filter_filename = "filter_" + cur_init + ".tcst"
         filter_name = os.path.join(output_dir, cur_init, filter_filename)
 
-        if util.file_exists(filter_name) and overwrite_flag == "FALSE":
+        if util.file_exists(filter_name) and overwrite_flag == False:
             logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Filter file exists, using Track data file: " + filter_name)
         else:
            # Create the storm track
