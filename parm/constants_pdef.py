@@ -34,7 +34,7 @@ PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py", "series_by_lead.py"]
 # or :field:level:field1:field2:level2: for a combination of field
 # and level.
 GRIB2_RECORDS = ":TMP:2 m above|:HGT:500 mb|:PWAT:|:PRMSL:"
-OVERWRITE_TRACK = "FALSE"
+OVERWRITE_TRACK = False
 
 #
 # Executables
