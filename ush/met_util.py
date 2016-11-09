@@ -352,6 +352,53 @@ def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
 
 
 
+def get_env_var(env_name, p, logger):
+    '''Get the environment variable, if it isn't found, look for
+       it in the param/config file.  If it hasn't been found, then
+       log and exit.
+
+    '''
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+    if env_name not in os.environ:
+        # Look for env_name in param/config file
+        try:
+          var = p.opt[env_name]
+          os.environ[env_name] = var
+          logger.info('INFO|'+ cur_filename + ':' + cur_function + '|' + 'Setting ' + env_name + ' to ' + var)
+        except NameError as e:
+          logger.error('ERROR|'+ cur_filename + ':' + cur_function + '|' +'No env name defined in param file, exiting')
+        except KeyError as k:
+          logger.error('ERROR|'+ cur_filename + ':' + cur_function + '|' +'No env name defined in param file, exiting')
+        else:
+          val = os.environ[env_name]
+          logger.info('INFO|' + cur_filename + ':' + cur_function + '|' + 'Now ' + env_name + ' is set to ' + val)
+
+
+
+def extract_year_month(init_time, logger):
+    ''' Retrieve the YYYYMM from the initialization time with format YYYYMMDD_hh
+
+        Args:
+            init_time (string):  The initialization time of expected format YYYYMMDD_hh
+
+        Returns:
+            year_month (string):  The YYYYMM portion of the initialization time
+
+    '''
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    # Match on anything that starts with 1 or 2 (for the century) followed by 5 digits
+    # for the remainder of the YYYMM
+    ym = re.match(r'^((1|2)[0-9]{5})',init_time)
+    #ym = re.match(r'^2[0-9]{5}',init_time)
+    if ym:
+        year_month = ym.group(0)
+        return year_month
+    else:
+        logger.warning("WARNING|" +  "[" + cur_filename + ":" + cur_function + "]" + " | Cannot extract YYYYMM from initialization time, unexpected format")
+        raise Warning("Cannot extract YYYYMM from initialization time, unexpected format")
 
 
 
