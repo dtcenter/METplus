@@ -46,6 +46,7 @@ def main():
     output_dir = p.opt["OUT_DIR"]
     project_dir = p.opt["PROJ_DIR"]
     overwrite_flag = p.opt["OVERWRITE_TRACK"]
+    filter_opts = p.opt["EXTRACT_TILES_FILTER_OPTS"]
 
     # get the process id to be used to identify the output
     # amongst different users and runs.
@@ -73,8 +74,14 @@ def main():
             filter_path = os.path.join(output_dir, cur_init)
             util.mkdir_p(filter_path)
             tc_cmd_list = [tc_stat_exe, " -job filter -lookin ", project_dir,"/tc_pairs/", year_month, " -init_inc ", cur_init, " -match_points true -dump_row ", filter_name]
+
+            # Append the filter options to the already created tc-stat commands
+            if len(filter_opts) > 0 :
+                tc_cmd_list.append(" ")
+                tc_cmd_list.append(filter_opts)   
             tc_cmd = ''.join(tc_cmd_list)
             logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | tc command: " + tc_cmd)
+
             # ** NOTE***: since we are NOT using externally defined commands in constructing the
             # call to tc_pairs, we can use shell=True.  If external output is being used, 
             # setting shell=True will open up to shell injection security breach.
@@ -286,17 +293,24 @@ def get_storm_ids(filter_filename, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
     storm_id_list = set()
-    with open(filter_filename) as fileobj:
-         # skip the first line as it contains the header
-         next(fileobj)
-         for line in fileobj:
-             # split the columns, which are separated by one or
-             # more whitespace, hence the line.split() without any
-             # args
-             cols = line.split()
+    if os.path.isfile(filter_filename):
+        with open(filter_filename) as fileobj:
+             # skip the first line as it contains the header
+             try:
+                 next(fileobj)
+             except StopIteration,e:
+                 return storm_id_list
+             for line in fileobj:
+                 # split the columns, which are separated by one or
+                 # more whitespace, hence the line.split() without any
+                 # args
+                 cols = line.split()
 
-             # we are only interested in the 4th column, STORM_ID
-             storm_id_list.add(str(cols[3]))
+                 # we are only interested in the 4th column, STORM_ID
+                 storm_id_list.add(str(cols[3]))
+
+    else:
+        return storm_id_list
 
     # sort the unique storm ids
     sorted_storms  = sorted(storm_id_list)
