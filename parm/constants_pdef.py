@@ -10,12 +10,25 @@ import os
 import datetime
 
 #
+# Set up any environment variables 
+# and commonly used directory "bases"
+#
+
+# Recently recompiled by John on 11/07, use this
+#/d1/CODE/MET/MET_releases/met-5.2/bin/tc_stat
+MET_BASE = "/d1/CODE/MET/MET_releases/met-5.2"
+
+OUTPUT_BASE ="/d1/SBU_util/out"
+PARM_BASE ="/d1/SBU_util/parm"
+
+
+#
 # Logging
 #
 
 #Levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
 LOG_LEVEL = "DEBUG"
-LOG_DIR = "/d1/SBU_util/out/logs"
+LOG_DIR = os.path.join(OUTPUT_BASE,"logs")
 LOG_FILENAME = os.path.join(LOG_DIR, "master_met_plus." + datetime.datetime.now().strftime("%Y%m%d") + ".log")
 
 #
@@ -40,16 +53,20 @@ OVERWRITE_TRACK = False
 # Executables
 #
 
-TC_STAT = "/d1/CODE/MET/MET_releases/met-5.2_beta2/bin/tc_stat"
+
+# Use this version:/d1/CODE/MET/MET_releases/met-5.2/bin/tc_stat
+# it was recompiled by John on 11/07/2016
+TC_STAT = os.path.join(MET_BASE, "bin/tc_stat")
+
 WGRIB2 = "/d1/CODE/wgrib2"
-SERIES_ANALYSIS = "/d1/CODE/MET/MET_releases/met-5.2_beta2/bin/series_analysis"
-PLOT_DATA_PLANE = "/d1/CODE/MET/MET_releases/met-5.2_beta2/bin/plot_data_plane"
+SERIES_ANALYSIS = os.path.join(MET_BASE, "bin/series_analysis")
+PLOT_DATA_PLANE = os.path.join(MET_BASE, "bin/plot_data_plane")
 RM_EXE = "/bin/rm -rf"
 CUT_EXE = "/usr/bin/cut"
 TR_EXE = "/usr/bin/tr"
 NCAP2_EXE = "/usr/local/nco/bin/ncap2"
 CONVERT_EXE = "/usr/bin/convert"
-TC_PAIRS = "/d1/CODE/MET/MET_releases/met-5.2_beta2/bin/tc_pairs"
+TC_PAIRS = os.path.join(MET_BASE, "bin/tc_pairs")
 RM_EXE = "/bin/rm -rf"
 NCDUMP_EXE = "/usr/local/bin/ncdump"
 EGREP_EXE = "/bin/egrep"
@@ -63,18 +80,30 @@ GFS_DIR = os.path.join(PROJ_DIR, "model_data")
 TRACK_DATA_DIR = os.path.join(PROJ_DIR, "track_data")
 TRACK_DATA_SUBDIR_MOD = os.path.join(PROJ_DIR, "track_data_atcf")
 TC_PAIRS_DIR = os.path.join(PROJ_DIR, "tc_pairs")
+TC_STAT_DIR = os.path.join(PROJ_DIR,"tc_stat")
 TMP_DIR = "/tmp"
 
 #
 # Output Directories
 # 
-OUT_DIR = "/d1/SBU_util/out/series_analysis"
+OUT_DIR = os.path.join(OUTPUT_BASE,"series_analysis")
+# If you wish to keep the filtered tracks in the series analysis directory,
+# and then run extract_tiles.py without re-running tc-stat,
+# keep the following setting: 
+# OVERWRITE_TRACK = False
+# 
+FILTER_OUT_DIR = OUT_DIR
+
+# Use this setting if you want to separate the filtered track files from
+# the series analysis directory.
+#FILTER_OUT_DIR = os.path.join(OUTPUT_BASE, "filtered")
+
 
 # 
 # Configuration files required in performing the series analysis
 #
-CONFIG_FILE_LEAD = "/d1/SBU_util/parm/SeriesAnalysisConfig_by_lead"
-CONFIG_FILE_INIT = "/d1/SBU_util/parm/SeriesAnalysisConfig"
+CONFIG_FILE_LEAD = os.path.join(PARM_BASE,"SeriesAnalysisConfig_by_lead")
+CONFIG_FILE_INIT = os.path.join(PARM_BASE, "SeriesAnalysisConfig")
 
 #
 # Lists
@@ -83,7 +112,9 @@ CONFIG_FILE_INIT = "/d1/SBU_util/parm/SeriesAnalysisConfig"
 # Used for performing series analysis both for lead time and init time
 VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0"]
 STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE"]
-INIT_LIST = ["20150126_00", "20150126_06", "20150126_12", "20150126_18", "20150127_00", "20150127_06", "20150127_12", "20150127_18"]
+INIT_LIST = ["20120131_00","20120131_06", "20120131_12", "20141203_06", "20141203_12", "20150126_00", "20150126_06", "20150126_12", "20150126_18", "20150127_00", "20150127_06", "20150127_12", "20150127_18"]
+# Dates used for testing  filtering by basin
+#INIT_LIST = ["20141203_06", "20141203_12"]
 
 # Used for performing series analysis based on lead time
 FHR_BEG = 0
@@ -127,13 +158,20 @@ ANLY_ASCII_REGEX_LEAD ="ANLY_FILE_F.*"
 # For tc pairs
 #
 TRACK_TYPE = "extra_tropical_cyclone"
-TC_PAIRS_CONFIG_PATH = "/d1/SBU_util/parm/TCPairsETCConfig"
+TC_PAIRS_CONFIG_PATH = os.path.join(PARM_BASE, "TCPairsETCConfig")
 ADECK_FILE_PREFIX = "amlq"
 BDECK_FILE_PREFIX = "bmlq"
 MISSING_VAL_TO_REPLACE = "-99"
 MISSING_VAL = "-9999"
 TRACK_DATA_MOD_FORCE_OVERWRITE = False
 TC_PAIRS_FORCE_OVERWRITE = False
+
+#
+# TC-STAT filtering options
+#
+EXTRACT_TILES_FILTER_OPTS="  -basin ML -out_init_mask " + os.path.join(MET_BASE,"share/met/poly/CONUS.poly") 
+#EXTRACT_TILES_FILTER_OPTS=" -basin ML "
+SERIES_ANALYSIS_FILTER_OPTS="-init_beg 20140101 -init_end 20150101"
 
 #
 # Testing
