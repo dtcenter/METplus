@@ -23,6 +23,7 @@ import time
 import re
 import subprocess
 import string_template_substitution as sts
+import run_tc_stat as tcs
 
 def main():
     '''Get TC-pairs track data and GFS model data, do any necessary processing then
@@ -47,48 +48,40 @@ def main():
     project_dir = p.opt["PROJ_DIR"]
     overwrite_flag = p.opt["OVERWRITE_TRACK"]
     filter_opts = p.opt["EXTRACT_TILES_FILTER_OPTS"]
+    filtered_out_dir = p.opt["EXTRACT_OUT_DIR"]
+    tc_stat_exe = p.opt["TC_STAT"]
+
 
     # get the process id to be used to identify the output
     # amongst different users and runs.
     cur_pid = str(os.getpid())
+    tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
    
     # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) | [File : function]| Message
     logger.info("INFO |  [" + cur_filename +  ":" + "cur_function] |" + "BEGIN extract_tiles")
     
-    # Get necessary executables
-    tc_stat_exe = p.opt["TC_STAT"]
-
     # Process TC pairs by initialization time
     for cur_init in init_times:
         logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] |Begin processing for initialization time: " + cur_init)
-        year_month = extract_year_month(cur_init, logger)
+        year_month = util.extract_year_month(cur_init, logger)
         
        # Create the name of the filter file we need to find.  If the file doesn't exist, then run TC_STAT 
         filter_filename = "filter_" + cur_init + ".tcst"
-        filter_name = os.path.join(output_dir, cur_init, filter_filename)
+        filter_name = os.path.join(filtered_out_dir, cur_init, filter_filename)
 
         if util.file_exists(filter_name) and overwrite_flag == False:
             logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Filter file exists, using Track data file: " + filter_name)
         else:
            # Create the storm track
-            filter_path = os.path.join(output_dir, cur_init)
+            filter_path = os.path.join(filtered_out_dir, cur_init)
             util.mkdir_p(filter_path)
             tc_cmd_list = [tc_stat_exe, " -job filter -lookin ", project_dir,"/tc_pairs/", year_month, " -init_inc ", cur_init, " -match_points true -dump_row ", filter_name]
 
-            # Append the filter options to the already created tc-stat commands
-            if len(filter_opts) > 0 :
-                tc_cmd_list.append(" ")
-                tc_cmd_list.append(filter_opts)   
+            # Perform any filtering by calling run_tc_stat
             tc_cmd = ''.join(tc_cmd_list)
+            tcs.tc_stat(p, logger, filter_opts, cur_init, tc_cmd, filtered_out_dir)
             logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | tc command: " + tc_cmd)
-
-            # ** NOTE***: since we are NOT using externally defined commands in constructing the
-            # call to tc_pairs, we can use shell=True.  If external output is being used, 
-            # setting shell=True will open up to shell injection security breach.
-            tc_pairs_out = subprocess.check_output(tc_cmd, stderr=subprocess.STDOUT, shell=True )
-            logger.info("INFO| [tc_pairs ]|" + tc_pairs_out)
             
-
         # Now get unique storm ids from the filter file, filter_yyyymmdd_hh.tcst
         sorted_storm_ids = get_storm_ids(filter_name, logger)
        
@@ -100,9 +93,8 @@ def main():
         storm_match_list = [] 
         for cur_storm in sorted_storm_ids:
             logger.info("INFO| [" + cur_filename + ":" + cur_function +  " ] | Processing storm: " + cur_storm)
-            storm_output_dir = os.path.join(output_dir,cur_init, cur_storm)
+            storm_output_dir = os.path.join(filtered_out_dir,cur_init, cur_storm)
             util.mkdir_p(storm_output_dir)
-            tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
             util.mkdir_p(tmp_dir)
             tmp_file = "filter_" + cur_init + "_" + cur_storm
             tmp_filename = os.path.join(tmp_dir, tmp_file)
@@ -115,13 +107,14 @@ def main():
             # Peform regridding of the forecast and analysis files to a 30 x 30 degree tile
             # centered on the storm
             regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p)
+
         # end of for cur_storm 
 
     # end of for cur_init
 
     # Clean up the tmp directory
-    #logger.debug("CLEAN UP: " + tmp_dir)
     subprocess.call(["rm", "-rf", tmp_dir])
+
 
 
 def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
@@ -160,6 +153,7 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
     wgrib2_exe = p.opt["WGRIB2"]
     egrep_exe = p.opt["EGREP_EXE"]
     requested_records = p.opt["GRIB2_RECORDS"]
+    filtered_out_dir = p.opt["EXTRACT_OUT_DIR"]
 
     # obtain the gfs_fcst dir
     with open(tmp_filename, "r") as tf:
@@ -244,7 +238,7 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
             fcst_tile_grid = create_tile_grid_string(alat,alon,logger,p)
             anly_tile_grid = create_tile_grid_string(blat,blon,logger,p)
  
-            tile_dir = os.path.join(output_dir, cur_init, cur_storm)
+            tile_dir = os.path.join(filtered_out_dir, cur_init, cur_storm)
             fcst_hr_str = str(fcst_hr).zfill(3)
             
             fcst_tile_filename = p.opt["FCST_TILE_PREFIX"] + fcst_hr_str + "_" + fcst_base
@@ -293,7 +287,7 @@ def get_storm_ids(filter_filename, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
     storm_id_list = set()
-    if os.path.isfile(filter_filename):
+    if os.path.isfile(filter_filename) and os.path.getsize(filter_filename) > 0:
         with open(filter_filename) as fileobj:
              # skip the first line as it contains the header
              try:
@@ -316,31 +310,6 @@ def get_storm_ids(filter_filename, logger):
     sorted_storms  = sorted(storm_id_list)
     return sorted_storms
 
-
-def extract_year_month(init_time, logger):
-    ''' Retrieve the YYYYMM from the initialization time with format YYYYMMDD_hh
-        
-        Args:
-            init_time (string):  The initialization time of expected format YYYYMMDD_hh
-           
-        Returns:
-            year_month (string):  The YYYYMM portion of the initialization time
-      
-    '''
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
-    # Match on anything that starts with 1 or 2 (for the century) followed by 5 digits
-    # for the remainder of the YYYMM
-    ym = re.match(r'^((1|2)[0-9]{5})',init_time)
-    #ym = re.match(r'^2[0-9]{5}',init_time)
-    if ym:
-        year_month = ym.group(0)
-        return year_month 
-    else:
-        logger.warning("WARNING|" +  "[" + cur_filename + ":" + cur_function + "]" + " | Cannot extract YYYYMM from initialization time, unexpected format")
-        raise Warning("Cannot extract YYYYMM from initialization time, unexpected format")
-        
 
 
 def create_tile_grid_string(lat,lon,logger,p):
