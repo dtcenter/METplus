@@ -397,11 +397,9 @@ def extract_year_month(init_time, logger):
         year_month = ym.group(0)
         return year_month
     else:
-        logger.warning("WARNING|" +  "[" + cur_filename + ":" + cur_function + "]" + " | Cannot extract YYYYMM from initialization time, unexpected format")
+        logger.warning("WARNING|" +  "[" + cur_filename + ":" + cur_function + "]" + 
+                       " | Cannot extract YYYYMM from initialization time, unexpected format")
         raise Warning("Cannot extract YYYYMM from initialization time, unexpected format")
-
-
-
 
 
 
