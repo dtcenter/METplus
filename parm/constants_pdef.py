@@ -16,9 +16,10 @@ import datetime
 
 # Recently recompiled by John on 11/07, use this
 #/d1/CODE/MET/MET_releases/met-5.2/bin/tc_stat
-MET_BASE = "/d1/CODE/MET/MET_releases/met-5.2"
+MET_BUILD_BASE = "/d1/CODE/MET/MET_releases/met-5.2"
 
-OUTPUT_BASE ="/d1/SBU_util/out"
+#OUTPUT_BASE ="/d1/SBU_util/out"
+OUTPUT_BASE ="/d1/minnawin/SBU_out"
 PARM_BASE ="/d1/SBU_util/parm"
 
 
@@ -47,7 +48,12 @@ PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py", "series_by_lead.py"]
 # or :field:level:field1:field2:level2: for a combination of field
 # and level.
 GRIB2_RECORDS = ":TMP:2 m above|:HGT:500 mb|:PWAT:|:PRMSL:"
-OVERWRITE_TRACK = False
+
+# Don't overwrite filter files if they already exist.
+#OVERWRITE_TRACK = False 
+
+# Overwrite any filter files
+OVERWRITE_TRACK = True 
 
 #
 # Executables
@@ -56,17 +62,17 @@ OVERWRITE_TRACK = False
 
 # Use this version:/d1/CODE/MET/MET_releases/met-5.2/bin/tc_stat
 # it was recompiled by John on 11/07/2016
-TC_STAT = os.path.join(MET_BASE, "bin/tc_stat")
+TC_STAT = os.path.join(MET_BUILD_BASE, "bin/tc_stat")
 
 WGRIB2 = "/d1/CODE/wgrib2"
-SERIES_ANALYSIS = os.path.join(MET_BASE, "bin/series_analysis")
-PLOT_DATA_PLANE = os.path.join(MET_BASE, "bin/plot_data_plane")
+SERIES_ANALYSIS = os.path.join(MET_BUILD_BASE, "bin/series_analysis")
+PLOT_DATA_PLANE = os.path.join(MET_BUILD_BASE, "bin/plot_data_plane")
 RM_EXE = "/bin/rm -rf"
 CUT_EXE = "/usr/bin/cut"
 TR_EXE = "/usr/bin/tr"
 NCAP2_EXE = "/usr/local/nco/bin/ncap2"
 CONVERT_EXE = "/usr/bin/convert"
-TC_PAIRS = os.path.join(MET_BASE, "bin/tc_pairs")
+TC_PAIRS = os.path.join(MET_BUILD_BASE, "bin/tc_pairs")
 RM_EXE = "/bin/rm -rf"
 NCDUMP_EXE = "/usr/local/bin/ncdump"
 EGREP_EXE = "/bin/egrep"
@@ -87,16 +93,20 @@ TMP_DIR = "/tmp"
 # Output Directories
 # 
 OUT_DIR = os.path.join(OUTPUT_BASE,"series_analysis")
-# If you wish to keep the filtered tracks in the series analysis directory,
-# and then run extract_tiles.py without re-running tc-stat,
-# keep the following setting: 
-# OVERWRITE_TRACK = False
-# 
-FILTER_OUT_DIR = OUT_DIR
 
-# Use this setting if you want to separate the filtered track files from
+#
+# Use this setting to separate the filtered track files from
 # the series analysis directory.
-#FILTER_OUT_DIR = os.path.join(OUTPUT_BASE, "filtered")
+#
+EXTRACT_OUT_DIR = os.path.join(OUTPUT_BASE, "extract_tiles")
+SERIES_LEAD_FILTERED_OUT_DIR = os.path.join(OUTPUT_BASE, "series_lead_filtered")
+SERIES_INIT_FILTERED_OUT_DIR = os.path.join(OUTPUT_BASE, "series_init_filtered")
+
+#
+# Define the output directories for Series analysis by lead and init
+#
+SERIES_LEAD_OUT_DIR=os.path.join(OUTPUT_BASE, "series_lead_output")
+SERIES_INIT_OUT_DIR=os.path.join(OUTPUT_BASE, "series_init_output")
 
 
 # 
@@ -112,7 +122,8 @@ CONFIG_FILE_INIT = os.path.join(PARM_BASE, "SeriesAnalysisConfig")
 # Used for performing series analysis both for lead time and init time
 VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0"]
 STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE"]
-INIT_LIST = ["20120131_00","20120131_06", "20120131_12", "20141203_06", "20141203_12", "20150126_00", "20150126_06", "20150126_12", "20150126_18", "20150127_00", "20150127_06", "20150127_12", "20150127_18"]
+INIT_LIST = ["20141203_06", "20141203_12", "20150126_00", "20150126_06", "20150126_12", "20150126_18", "20150127_00", "20150127_06", "20150127_12", "20150127_18"]
+
 # Dates used for testing  filtering by basin
 #INIT_LIST = ["20141203_06", "20141203_12"]
 
@@ -169,9 +180,13 @@ TC_PAIRS_FORCE_OVERWRITE = False
 #
 # TC-STAT filtering options
 #
-EXTRACT_TILES_FILTER_OPTS="  -basin ML -out_init_mask " + os.path.join(MET_BASE,"share/met/poly/CONUS.poly") 
-#EXTRACT_TILES_FILTER_OPTS=" -basin ML "
-SERIES_ANALYSIS_FILTER_OPTS="-init_beg 20140101 -init_end 20150101"
+#EXTRACT_TILES_FILTER_OPTS="-basin ML -out_init_mask " + os.path.join(MET_BUILD_BASE,"share/met/poly/CONUS.poly") 
+#EXTRACT_TILES_FILTER_OPTS="  -basin ML -out_init_mask " + os.path.join(MET_BUILD_BASE,"share/met/poly/CONUS.poly") 
+EXTRACT_TILES_FILTER_OPTS="-basin ML"
+# If no filtering is requested
+#EXTRACT_TILES_FILTER_OPTS=""
+SERIES_ANALYSIS_FILTER_OPTS="-init_beg 20140101 -init_end 20160101"
+#SERIES_ANALYSIS_FILTER_OPTS=""
 
 #
 # Testing
