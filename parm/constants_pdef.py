@@ -37,8 +37,9 @@ LOG_FILENAME = os.path.join(LOG_DIR, "master_met_plus." + datetime.datetime.now(
 #
 
 # Processes to run in master script
-PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py", "series_by_lead.py"]
-
+PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py"]
+#PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py", "series_by_lead.py"]
+#
 # Used by extract_tiles.py
 # Define the records of interest from the grib2 file
 # in the format :field:level:field1:level1:field2:level2:
@@ -47,13 +48,23 @@ PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py", "series_by_lead.py"]
 # specified fields,
 # or :field:level:field1:field2:level2: for a combination of field
 # and level.
+#
 GRIB2_RECORDS = ":TMP:2 m above|:HGT:500 mb|:PWAT:|:PRMSL:"
+VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0"]
 
+#
 # Don't overwrite filter files if they already exist.
+#
 #OVERWRITE_TRACK = False 
-
-# Overwrite any filter files
 OVERWRITE_TRACK = True 
+
+
+#
+#  By default, background map is turned off.
+#  Set BACKGROUND_MAP to True to turn of plotting of 
+#  background map.
+#
+BACKGROUND_MAP = False
 
 #
 # Executables
@@ -76,6 +87,7 @@ TC_PAIRS = os.path.join(MET_BUILD_BASE, "bin/tc_pairs")
 RM_EXE = "/bin/rm -rf"
 NCDUMP_EXE = "/usr/local/bin/ncdump"
 EGREP_EXE = "/bin/egrep"
+REGRID_DATA_PLANE = os.path.join(MET_BUILD_BASE, "bin/regrid_data_plane")
 
 #
 # Project Directories
@@ -105,8 +117,8 @@ SERIES_INIT_FILTERED_OUT_DIR = os.path.join(OUTPUT_BASE, "series_init_filtered")
 #
 # Define the output directories for Series analysis by lead and init
 #
-SERIES_LEAD_OUT_DIR=os.path.join(OUTPUT_BASE, "series_lead_output")
-SERIES_INIT_OUT_DIR=os.path.join(OUTPUT_BASE, "series_init_output")
+SERIES_LEAD_OUT_DIR=os.path.join(OUTPUT_BASE, "series_analysis_lead")
+SERIES_INIT_OUT_DIR=os.path.join(OUTPUT_BASE, "series_analysis_init")
 
 
 # 
@@ -120,7 +132,6 @@ CONFIG_FILE_INIT = os.path.join(PARM_BASE, "SeriesAnalysisConfig")
 #
 
 # Used for performing series analysis both for lead time and init time
-VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0"]
 STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE"]
 INIT_LIST = ["20141203_06", "20141203_12", "20150126_00", "20150126_06", "20150126_12", "20150126_18", "20150127_00", "20150127_06", "20150127_12", "20150127_18"]
 
@@ -150,9 +161,12 @@ NLON = 60
 DLAT = 0.5
 DLON = 0.5
 
-# Degrees to subtract to get center of 30 x 30 grid
-LON_SUBTR = 15
-LAT_SUBTR = 15
+# Degrees to add or subtract to both sides of the center lat, 
+# and above and below the center lon 
+# to define the n x m grid, where n = 2 * LON_SUBTR
+# m = 2* LAT_SUBTR
+LON_ADJ = 15
+LAT_ADJ = 15
 
 # Regular expressions that are used in series analysis
 # Forecast and Analysis tile files, and ASCII files
