@@ -87,7 +87,7 @@ TC_PAIRS = os.path.join(MET_BUILD_BASE, "bin/tc_pairs")
 RM_EXE = "/bin/rm -rf"
 NCDUMP_EXE = "/usr/local/bin/ncdump"
 EGREP_EXE = "/bin/egrep"
-REGRID_DATA_PLANE = os.path.join(MET_BUILD_BASE, "bin/regrid_data_plane")
+REGRID_DATA_PLANE_EXE = os.path.join(MET_BUILD_BASE, "bin/regrid_data_plane")
 
 #
 # Project Directories
@@ -149,7 +149,9 @@ FHR_INC = 6
 FCST_TILE_PREFIX = "FCST_TILE_F"
 ANLY_TILE_PREFIX = "ANLY_TILE_F"
 GFS_FCST_FILE_TMPL = "gfs_4_{init?fmt=%Y%m%d}_{init?fmt=%H}00_{lead?fmt=%HHH}.grb2"
+GFS_FCST_NC_FILE_TMPL = "gfs_4_{init?fmt=%Y%m%d}_{init?fmt=%H}00_{lead?fmt=%HHH}.nc"
 GFS_ANLY_FILE_TMPL = "gfs_4_{valid?fmt=%Y%m%d}_{valid?fmt=%H}00_000.grb2"
+GFS_ANLY_NC_FILE_TMPL = "gfs_4_{valid?fmt=%Y%m%d}_{valid?fmt=%H}00_000.nc"
 
 #
 # Constants used in creating the tile grid
