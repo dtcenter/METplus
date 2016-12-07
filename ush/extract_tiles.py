@@ -26,16 +26,17 @@ import string_template_substitution as sts
 import run_tc_stat as tcs
 
 def main():
-    '''Get TC-pairs track data and GFS model data, do any necessary processing then
-       regrid the forecast and analysis files to a 30x 30 degree tile centered on the
-       storm.
+    '''Get TC-pairs track data and GFS model data, do any necessary 
+       processing then regrid the forecast and analysis files to a 
+       30x 30 degree tile centered on the storm.
       
        Args:
            None 
 
        Returns:
 
-           None: invokes wgrib2 to create a new grib file from two extratropical storm track files.
+           None: invokes regrid_data_plane to create a netCDF file from two 
+                 extratropical storm track files.
 
     '''
 
@@ -50,6 +51,7 @@ def main():
     addl_filter_opts = p.opt["EXTRACT_TILES_FILTER_OPTS"]
     filtered_out_dir = p.opt["EXTRACT_OUT_DIR"]
     tc_stat_exe = p.opt["TC_STAT"]
+    regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE_EXE"]
 
 
     # get the process id to be used to identify the output
@@ -98,7 +100,7 @@ def main():
             
         # Now get unique storm ids from the filter file, 
         # filter_yyyymmdd_hh.tcst
-        sorted_storm_ids = get_storm_ids(filter_name, logger)
+        sorted_storm_ids = util.get_storm_ids(filter_name, logger)
        
         # Process each storm in the sorted_storm_ids list
         # Iterate over each filter file in the output directory and 
@@ -155,14 +157,13 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
         p          :       ConfigMaster constants file
      
         Returns:
-        None:              Performs regridding via invoking wgrib2 
-                           on the forecast and analysis files to 
-                           a 30 x 30 degree tile centered on the storm:
-                           latlon lon0:nlon:dlon lat0:nlat:dlat
-                           NOTE:  the values for nlon, dlon and lat and 
-                                  lon adjustment values are stored in 
+        None:              Performs regridding via invoking regrid_data_plane
+                           on the forecast and analysis files via a latlon 
+                           string with the following format: 
+                           latlon Nx Ny lat_ll lon_ll delta_lat delta_lon 
+                           NOTE:  thes values are defined in 
                                   the extract_tiles_parm parameter/config 
-                                  file.
+                                  file as NLAT, NLON.
 
     '''
 
@@ -174,10 +175,9 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
     cur_function = sys._getframe().f_code.co_name
     gfs_dir = p.opt["GFS_DIR"]
     output_dir = p.opt["OUT_DIR"]
-    wgrib2_exe = p.opt["WGRIB2"]
-    egrep_exe = p.opt["EGREP_EXE"]
     requested_records = p.opt["GRIB2_RECORDS"]
     filtered_out_dir = p.opt["EXTRACT_OUT_DIR"]
+    regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE_EXE"]
 
     # obtain the gfs_fcst dir
     with open(tmp_filename, "r") as tf:
@@ -240,10 +240,27 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
             valid_ymdh_split = valid_ymdh.split("_")
             valid_YYYYmmddHH = "".join(valid_ymdh_split)
             anlySTS = sts.StringTemplateSubstitution(logger, 
-                                                     p.opt["GFS_ANLY_FILE_TMPL"]                                                     , valid=valid_YYYYmmddHH,
-                                                     lead=lead_str)
+                                                p.opt["GFS_ANLY_FILE_TMPL"],                                                    valid=valid_YYYYmmddHH,
+                                                lead=lead_str)
             anly_file = anlySTS.doStringSub()
             anly_filename = os.path.join(anly_dir, anly_file)
+
+            # Create the filename for the regridded file, which is a 
+            # netCDF file.
+            nc_fcstSTS = sts.StringTemplateSubstitution(logger,
+                                                p.opt["GFS_FCST_NC_FILE_TMPL"],                                                 init=init_YYYYmmddHH, 
+                                                lead=lead_str)
+            fcst_nc_file = nc_fcstSTS.doStringSub()
+            fcst_nc_filename = os.path.join(fcst_dir, fcst_nc_file)
+
+  
+            nc_anlySTS = sts.StringTemplateSubstitution(logger, 
+                                              p.opt["GFS_ANLY_NC_FILE_TMPL"],                                                 valid=valid_YYYYmmddHH,
+                                              lead=lead_str)
+  
+            anly_nc_file = nc_anlySTS.doStringSub()
+            anly_nc_filename = os.path.join(anly_dir, anly_nc_file)
+
             
             # Create the tmp file to be used for troubleshooting 
             # and verification.  The file will contain all the 
@@ -301,150 +318,154 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
             # param/config file, under the LON_ADJ and LAT_ADJ 
             # variables.
         
-            fcst_base = os.path.basename(fcst_filename)
-            anly_base = os.path.basename(anly_filename)
-            fcst_tile_grid = create_tile_grid_string(alat,alon,logger,p)
-            anly_tile_grid = create_tile_grid_string(blat,blon,logger,p)
+            fcst_base = os.path.basename(fcst_nc_filename)
+            anly_base = os.path.basename(anly_nc_filename)
+            fcst_grid_spec = create_grid_specification_string(alat,alon,
+                                                              logger,p)
+            anly_grid_spec = create_grid_specification_string(blat,blon,
+                                                              logger,p)
  
             tile_dir = os.path.join(filtered_out_dir, cur_init, cur_storm)
             fcst_hr_str = str(fcst_hr).zfill(3)
             
-            fcst_tile_filename = p.opt["FCST_TILE_PREFIX"] + fcst_hr_str                                         + "_" + fcst_base
-            fcst_tile_file = os.path.join(tile_dir, fcst_tile_filename)
-            anly_tile_filename =  p.opt["ANLY_TILE_PREFIX"] + fcst_hr_str                                         + "_" + anly_base
-            anly_tile_file = os.path.join(tile_dir, anly_tile_filename)
+            fcst_regridded_filename = p.opt["FCST_TILE_PREFIX"] + fcst_hr_str                                         + "_" + fcst_base
+            fcst_regridded_file = os.path.join(tile_dir, fcst_regridded_filename)
+            anly_regridded_filename =  p.opt["ANLY_TILE_PREFIX"] + fcst_hr_str                                         + "_" + anly_base
+            anly_regridded_file = os.path.join(tile_dir, anly_regridded_filename)
             
-            # Regrid via wgrib2 on the fcst file only if a fcst tile 
+            # Regrid the fcst file only if a fcst tile 
             # file does NOT already exist.
 
             # Create new gridded file for fcst tile
-            if util.file_exists(fcst_tile_file):
+            if util.file_exists(fcst_regridded_file):
                 msg = ("INFO| [" + cur_filename + ":" + 
                        cur_function +  " ] | Forecast tile file " + 
-                       fcst_tile_file + " exists, skip wgrib2 regridding")
+                       fcst_regridded_file + " exists, skip regridding")
                 logger.info(msg)
             else:
-                # Invoke wgrb2 to perform regridding on the records of interest
-                fcst_cmd_list= [wgrib2_exe, ' ' , fcst_filename, ' | ', 
-                                egrep_exe, ' "',requested_records, '"|', 
-                                wgrib2_exe, ' -i ', fcst_filename,
-                                ' -new_grid ', fcst_tile_grid, ' ', 
-                                fcst_tile_file]
-                wgrb_cmd_fcst = ''.join(fcst_cmd_list)
-                msg = ("INFO|[wgrib2]| Regridding via wgrib2:" + 
-                       wgrb_cmd_fcst)
+                # Perform regridding on the records of interest
+                var_level_string = retrieve_var_levels(p,logger)
+                fcst_cmd_list = [regrid_data_plane_exe, ' ', 
+                                 fcst_filename, ' ',
+                                 fcst_grid_spec, ' ',
+                                 fcst_regridded_file, ' ',
+                                 var_level_string,
+                                 ' -method NEAREST '   ]
+                regrid_cmd_fcst = ''.join(fcst_cmd_list)
+                msg = ("INFO|[regrid]| Regridding via regrid_data_plane:" + 
+                       regrid_cmd_fcst)
                 logger.info(msg)
-                wgrb_fcst_out = subprocess.check_output(wgrb_cmd_fcst, 
-                                                        stderr=
-                                                        subprocess.STDOUT, 
-                                                        shell=True)
-                logger.info("INFO|[wgrib2]| on fcst file:" + wgrb_fcst_out)
-            
+                regrid_fcst_out = subprocess.check_output(regrid_cmd_fcst, 
+                                                      stderr=
+                                                      subprocess.STDOUT,                                                              shell=True)
+       
+                msg = ("INFO|[regrid]| on fcst file:" + regrid_fcst_out)
+                logger.info(msg)
+                 
             # Create new gridded file for anly tile
-            if util.file_exists(anly_tile_file):
-                logger.info("INFO| [" + cur_filename + ":" + 
-                            cur_function +  " ] | Analysis tile file: " + 
-                            anly_tile_file + " exists, skip wgrib2 regridding")
+            if util.file_exists(anly_regridded_file):
+                logger.info("INFO| [" + cur_filename + ":" +                                                        cur_function +  " ] |" + 
+                                    " Analysis tile file: " + 
+                                    anly_regridded_file + 
+                                    " exists, skip regridding")
             else:
-                # Invoke wgrb2 to perform regridding on the records of interest
-                anly_cmd_list= [wgrib2_exe, ' ' , anly_filename, ' | ', 
-                                egrep_exe, ' "', requested_records, '"|',
-                                wgrib2_exe, ' -i ', anly_filename, 
-                                ' -new_grid ', anly_tile_grid, ' ', 
-                                anly_tile_file, '>/dev/null']
-                wgrb_cmd_anly = ''.join(anly_cmd_list)
-                wgrb_anly_out = subprocess.check_output(wgrb_cmd_anly, 
-                                                        stderr=
-                                                        subprocess.STDOUT, 
-                                                        shell=True)
-                logger.info("INFO|[wgrib2]| on analysis file:" + wgrb_anly_out)
+                # Perform regridding on the records of interest
+                anly_cmd_list = [regrid_data_plane_exe, ' ',
+                                 anly_filename, ' ',
+                                 anly_grid_spec, ' ',
+                                 anly_regridded_file, ' ',
+                                 var_level_string, ' ',
+                                 ' -method NEAREST ' ]
+                regrid_cmd_anly = ''.join(anly_cmd_list)
+                regrid_anly_out = subprocess.check_output(regrid_cmd_anly,                                                              stderr= 
+                                                      subprocess.STDOUT,                                                              shell=True)
+                logger.info("INFO|regrid| on analysis file:" +
+                            regrid_anly_out)
 
 
-def get_storm_ids(filter_filename, logger):
-    ''' Get each storm as identified by its STORM_ID in the filter file 
-        save these in a set so we only save the unique ids and sort them.
-     
+def retrieve_var_levels(p, logger):
+#0123456789012345678901234567890123456789012345678901234567890123456789012345678
+    ''' Retrieve the variable name and level from the
+        VAR_LIST defined in the constants_pdef.py param file.  This will
+        be used as part of the command to regrid the grib2 storm track 
+        files into netCDF.
+        
         Args:
-            filter_filename (string):  The name of the filter file to read 
-                                       and extract the storm id   
-            logger (string):  The name of the logger for logging useful info
-
+            p:       The reference to the ConfigMaster config/param 
+                     constants_pdef.py    
+            logger:  The logger to which all logging is directed.
+ 
         Returns:
-            sorted_storms (List):  a list of unique, sorted storm ids
+            field_level_string (string):  A string with format -field
+                                          'name="HGT"; level="P500";'
+                                          for each variable defined in VAR_LIST.
     '''
+
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-    storm_id_list = set()
-    if os.path.isfile(filter_filename) and                                             os.path.getsize(filter_filename) > 0:
-        with open(filter_filename) as fileobj:
-             # skip the first line as it contains the header
-             try:
-                 next(fileobj)
-             except StopIteration,e:
-                 return storm_id_list
-             for line in fileobj:
-                 # split the columns, which are separated by one or
-                 # more whitespace, hence the line.split() without any
-                 # args
-                 cols = line.split()
 
-                 # we are only interested in the 4th column, STORM_ID
-                 storm_id_list.add(str(cols[3]))
+    var_list = p.opt["VAR_LIST"]
+    full_list = []  
+    name_str = 'name="'
+    level_str = 'level="'
+    field_level_string = ''
 
-    else:
-        return storm_id_list
+    for cur_var in var_list:
+        match = re.match(r'(.*)/(.*)',cur_var)
+        name = match.group(1)
+        level = match.group(2)
+        cur_list = [' -field ', "'", name_str, name, '"; ', level_str, level, '";', "'", '\\ ']
+        cur_str = ''.join(cur_list)
+        full_list.append(cur_str)
 
-    # sort the unique storm ids
-    sorted_storms  = sorted(storm_id_list)
-    return sorted_storms
+    field_level_string = ''.join(full_list)     
+    return field_level_string
 
+    
 
-
-def create_tile_grid_string(lat,lon,logger,p):
-     ''' Create the tile grid string that has the format:
-         latlon lon0:nlon:dlon lat0:nlat:dlat
+def create_grid_specification_string(lat,lon,logger,p):
+    ''' Create the grid specification string with the format:
+         latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
+         used by the MET tool, regrid_data_plane.
 
          Args:
-            lat (string):  the latitude of the grid point
-            lon (string):  the longitude of the grid point
+            lat (string):   The latitude of the grid point
+            lon (string):   The longitude of the grid point
             logger(string): The name of the logger
-            p      : ConfigMaster constants file
+            p:              ConfigMaster param/config file
+                            constants_pdef.py
 
          Returns:
             tile_grid_str (string): the tile grid string for the
                                     input lon and lat
 
-      '''
+    '''
  
-     cur_filename = sys._getframe().f_code.co_filename
-     cur_function = sys._getframe().f_code.co_name
-
-     # initialize the tile grid string
-     # and get the other values from the parameter file
-     tile_grid_str = ' '
-     lon_subtr = p.opt["LON_ADJ"]
-     adj_lon = float(lon) - lon_subtr
-     lat_subtr = p.opt["LAT_ADJ"]
-     adj_lat = float(lat) - lat_subtr
-     nlat = str(p.opt["NLAT"])
-     nlon = str(p.opt["NLON"])
-     dlat = str(p.opt["DLAT"])
-     dlon = str(p.opt["DLON"])
-  
-
-     adj_lon = float(lon) - lon_subtr
-     adj_lat = float(lat) - lat_subtr
-
-
-     lon0 = str(util.round_0p5(adj_lon))
-     lat0 = str(util.round_0p5(adj_lat))
-
-     #Format is: latlon lon0:nlon:dlat lat0:nlat:dlat
-     grid_list = ['latlon ', lon0, ':', nlon, ':', dlon, ' ',  
-                  lat0, ':', nlat, ':', dlat]
-     tile_grid_str = ''.join(grid_list)
     
-     return tile_grid_str
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    # initialize the tile grid string
+    # and get the other values from the parameter file
+    tile_grid_str = ' '
+    nlat = str(p.opt["NLAT"])
+    nlon = str(p.opt["NLON"])
+    dlat = str(p.opt["DLAT"])
+    dlon = str(p.opt["DLON"])
+
+    lon0 = str(util.round_0p5(float(lon)))
+    lat0 = str(util.round_0p5(float(lat)))
+
+    # Format for regrid_data_plane:
+    # latlon Nx Ny lat_ll lon_ll delta_lat delta_lon 
+    grid_list = ['"', 'latlon ', nlat, ' ', nlon, ' ', lat0, ' ', lon0, ' ',  
+                 dlat, ' ', dlon, '"']
+    tile_grid_str = ''.join(grid_list)
+    
+    msg = ("INFO|" + cur_filename + ":" + cur_function + 
+           "| complete grid specification string: " + tile_grid_str)
+    logger.info(
+    return tile_grid_str
 
 
 
