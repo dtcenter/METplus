@@ -175,7 +175,6 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
     cur_function = sys._getframe().f_code.co_name
     gfs_dir = p.opt["GFS_DIR"]
     output_dir = p.opt["OUT_DIR"]
-    requested_records = p.opt["GRIB2_RECORDS"]
     filtered_out_dir = p.opt["EXTRACT_OUT_DIR"]
     regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE_EXE"]
 
@@ -188,7 +187,8 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
             # blat, and blon (positions of the two extra-tropical
             # cyclone tracks)  but Python is zero-based so indices 
             # differ by 1.
-            init, lead, valid, alat, alon, blat, blon = col[7], col[8], col[9],                                                         col[18], col[19],                                                               col[20], col[21]
+            init, lead, valid, alat, alon, blat, blon = col[7], col[8], col[9],col[18],\
+                                                        col[19],col[20], col[21]
 
             # integer division for both Python 2 and 3
             lead_time = int(lead)
@@ -230,7 +230,8 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
             init_ymdh_split = init_ymdh.split("_")
             init_YYYYmmddHH = "".join(init_ymdh_split)
             fcstSTS = sts.StringTemplateSubstitution(logger,
-                                                     p.opt["GFS_FCST_FILE_TMPL"]                                                     , init=init_YYYYmmddHH, 
+                                                     p.opt["GFS_FCST_FILE_TMPL"],
+                                                     init=init_YYYYmmddHH, 
                                                      lead=lead_str)
 
             fcst_file = fcstSTS.doStringSub()
@@ -240,7 +241,8 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
             valid_ymdh_split = valid_ymdh.split("_")
             valid_YYYYmmddHH = "".join(valid_ymdh_split)
             anlySTS = sts.StringTemplateSubstitution(logger, 
-                                                p.opt["GFS_ANLY_FILE_TMPL"],                                                    valid=valid_YYYYmmddHH,
+                                                p.opt["GFS_ANLY_FILE_TMPL"],
+                                                valid=valid_YYYYmmddHH,
                                                 lead=lead_str)
             anly_file = anlySTS.doStringSub()
             anly_filename = os.path.join(anly_dir, anly_file)
@@ -248,14 +250,16 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
             # Create the filename for the regridded file, which is a 
             # netCDF file.
             nc_fcstSTS = sts.StringTemplateSubstitution(logger,
-                                                p.opt["GFS_FCST_NC_FILE_TMPL"],                                                 init=init_YYYYmmddHH, 
+                                                p.opt["GFS_FCST_NC_FILE_TMPL"],                                                 
+                                                init=init_YYYYmmddHH, 
                                                 lead=lead_str)
             fcst_nc_file = nc_fcstSTS.doStringSub()
             fcst_nc_filename = os.path.join(fcst_dir, fcst_nc_file)
 
   
             nc_anlySTS = sts.StringTemplateSubstitution(logger, 
-                                              p.opt["GFS_ANLY_NC_FILE_TMPL"],                                                 valid=valid_YYYYmmddHH,
+                                              p.opt["GFS_ANLY_NC_FILE_TMPL"],
+                                              valid=valid_YYYYmmddHH,
                                               lead=lead_str)
   
             anly_nc_file = nc_anlySTS.doStringSub()
@@ -328,9 +332,12 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
             tile_dir = os.path.join(filtered_out_dir, cur_init, cur_storm)
             fcst_hr_str = str(fcst_hr).zfill(3)
             
-            fcst_regridded_filename = p.opt["FCST_TILE_PREFIX"] + fcst_hr_str                                         + "_" + fcst_base
+            fcst_regridded_filename = p.opt["FCST_TILE_PREFIX"] + \
+                                      fcst_hr_str + "_" + \
+                                      fcst_base
             fcst_regridded_file = os.path.join(tile_dir, fcst_regridded_filename)
-            anly_regridded_filename =  p.opt["ANLY_TILE_PREFIX"] + fcst_hr_str                                         + "_" + anly_base
+            anly_regridded_filename =  p.opt["ANLY_TILE_PREFIX"] + fcst_hr_str + \
+                                       "_" + anly_base
             anly_regridded_file = os.path.join(tile_dir, anly_regridded_filename)
             
             # Regrid the fcst file only if a fcst tile 
@@ -344,7 +351,7 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
                 logger.info(msg)
             else:
                 # Perform regridding on the records of interest
-                var_level_string = retrieve_var_levels(p,logger)
+                var_level_string = retrieve_var_info(p,logger)
                 fcst_cmd_list = [regrid_data_plane_exe, ' ', 
                                  fcst_filename, ' ',
                                  fcst_grid_spec, ' ',
@@ -357,14 +364,16 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
                 logger.info(msg)
                 regrid_fcst_out = subprocess.check_output(regrid_cmd_fcst, 
                                                       stderr=
-                                                      subprocess.STDOUT,                                                              shell=True)
+                                                      subprocess.STDOUT,
+                                                      shell=True)
        
                 msg = ("INFO|[regrid]| on fcst file:" + regrid_fcst_out)
                 logger.info(msg)
                  
             # Create new gridded file for anly tile
             if util.file_exists(anly_regridded_file):
-                logger.info("INFO| [" + cur_filename + ":" +                                                        cur_function +  " ] |" + 
+                logger.info("INFO| [" + cur_filename + ":" +                                                        
+                                    cur_function +  " ] |" + 
                                     " Analysis tile file: " + 
                                     anly_regridded_file + 
                                     " exists, skip regridding")
@@ -377,16 +386,20 @@ def regrid_fcst_anly(tmp_filename, cur_init, cur_storm, logger, p):
                                  var_level_string, ' ',
                                  ' -method NEAREST ' ]
                 regrid_cmd_anly = ''.join(anly_cmd_list)
-                regrid_anly_out = subprocess.check_output(regrid_cmd_anly,                                                              stderr= 
-                                                      subprocess.STDOUT,                                                              shell=True)
+                regrid_anly_out = subprocess.check_output(regrid_cmd_anly,                                                              
+                                                          stderr= 
+                                                          subprocess.STDOUT,                                                              
+                                                          shell=True)
                 logger.info("INFO|regrid| on analysis file:" +
                             regrid_anly_out)
 
 
-def retrieve_var_levels(p, logger):
-#0123456789012345678901234567890123456789012345678901234567890123456789012345678
+def retrieve_var_info(p, logger):
     ''' Retrieve the variable name and level from the
-        VAR_LIST defined in the constants_pdef.py param file.  This will
+        EXTRACT_TILES_VAR_FILTER and VAR_LIST.  If the 
+        EXTRACT_TILES_VAR_FILTER is empty, then retrieve
+        the variable information from VAR_LIST.  Both are defined 
+        in the constants_pdef.py param file.  This will
         be used as part of the command to regrid the grib2 storm track 
         files into netCDF.
         
@@ -405,12 +418,16 @@ def retrieve_var_levels(p, logger):
     cur_function = sys._getframe().f_code.co_name
 
     var_list = p.opt["VAR_LIST"]
+    extra_var_list = p.opt["EXTRACT_TILES_VAR_LIST"]
     full_list = []  
     name_str = 'name="'
     level_str = 'level="'
     field_level_string = ''
+    
+    # Append the extra_var list to the var_list
+    full_var_list = var_list + extra_var_list
 
-    for cur_var in var_list:
+    for cur_var in full_var_list:
         match = re.match(r'(.*)/(.*)',cur_var)
         name = match.group(1)
         level = match.group(2)
@@ -464,9 +481,8 @@ def create_grid_specification_string(lat,lon,logger,p):
     
     msg = ("INFO|" + cur_filename + ":" + cur_function + 
            "| complete grid specification string: " + tile_grid_str)
-    logger.info(
+    logger.info(msg)
     return tile_grid_str
-
 
 
 
