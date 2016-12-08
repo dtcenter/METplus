@@ -49,8 +49,9 @@ PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py"]
 # or :field:level:field1:field2:level2: for a combination of field
 # and level.
 #
-GRIB2_RECORDS = ":TMP:2 m above|:HGT:500 mb|:PWAT:|:PRMSL:"
-VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0"]
+VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2"]
+EXTRACT_TILES_VAR_LIST = ["PWAT/L0"]
+
 
 #
 # Don't overwrite filter files if they already exist.
@@ -201,7 +202,7 @@ TC_PAIRS_FORCE_OVERWRITE = False
 EXTRACT_TILES_FILTER_OPTS="-basin ML"
 # If no filtering is requested
 #EXTRACT_TILES_FILTER_OPTS=""
-SERIES_ANALYSIS_FILTER_OPTS="-init_beg 20140101 -init_end 20160101"
+SERIES_ANALYSIS_FILTER_OPTS="-init_beg 20140101 -init_end 20141231"
 #SERIES_ANALYSIS_FILTER_OPTS=""
 
 #
