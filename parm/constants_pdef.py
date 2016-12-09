@@ -157,10 +157,12 @@ DLAT = 0.5
 DLON = 0.5
 
 #
-#     Degrees to add or subtract to both sides of the center lat, and
-#     above and below the center lon to define the n x m grid, where
-#       n = 2 * LON_SUBTR
-#       m = 2* LAT_SUBTR
+#     Degrees to subtract from the center lat and lon to 
+#     calculate the lower left lat (lat_ll) and lower
+#     left lon (lon_ll) for a grid that is 2n X 2m, 
+#     where n = LAT_ADJ degrees and m = LON_ADJ degrees.
+#     For this case, where n=15 and m=15, this results
+#     in a 30 deg X 30 deg grid.
 #
 
 LON_ADJ = 15
