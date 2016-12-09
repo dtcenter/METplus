@@ -698,9 +698,12 @@ def retrieve_var_info(p, logger):
     field_level_string = ''
 
     # Append the extra_var list to the var_list
+    # and remove any duplicates. *NOTE, order
+    # will be lost.
     full_var_list = var_list + extra_var_list
+    unique_var_list = list(set(full_var_list)) 
 
-    for cur_var in full_var_list:
+    for cur_var in unique_var_list:
         match = re.match(r'(.*)/(.*)',cur_var)
         name = match.group(1)
         level = match.group(2)
