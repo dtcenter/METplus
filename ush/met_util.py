@@ -9,6 +9,8 @@ import time
 import re
 import math
 import sys
+import string_template_substitution as sts
+import subprocess
 
 ''' A collection of utility functions used to perform necessary series
     analysis tasks and other METPlus related tasks, .
@@ -400,6 +402,360 @@ def extract_year_month(init_time, logger):
         logger.warning("WARNING|" +  "[" + cur_filename + ":" + cur_function + "]" + 
                        " | Cannot extract YYYYMM from initialization time, unexpected format")
         raise Warning("Cannot extract YYYYMM from initialization time, unexpected format")
+
+
+
+def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
+    ''' Retrieves the data from the GFS_DIR (defined in constants_pdef.py) that
+        corresponds to the storms defined in the tmp_filename:
+        1) create the analysis tile and forecast file names from the 
+           tmp_filename file. 
+        2) perform regridding via MET tool (regrid_data_plane) and store results
+           (netCDF files) in the out_dir.
+   
+        Args:
+        tmp_filename:      Filename of the temporary filter file in 
+                           the /tmp directory. Contains rows 
+                           of data corresponding to a storm id of varying
+                           lead times.
+
+        cur_init:          The current init time
+     
+        cur_storm:         The current storm 
+      
+        out_dir:           The directory where regridded netCDF output is saved.
+
+        logger     :       The name of the logger used in logging.
+        p          :       Referenct to the ConfigMaster constants_pdef.py
+                           param/config file.
+     
+        Returns:
+        None:              Performs regridding via invoking regrid_data_plane
+                           on the forecast and analysis files via a latlon 
+                           string with the following format: 
+                           latlon Nx Ny lat_ll lon_ll delta_lat delta_lon 
+                           NOTE:  thes values are defined in 
+                                  the extract_tiles_parm parameter/config 
+                                  file as NLAT, NLON.
+
+    '''
+
+    # Extract the columns of interest: init time, lead time, 
+    # valid time lat and lon of both  tropical cyclone tracks, etc. 
+    # Then calculate the forecast hour and other things.
+   
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+    gfs_dir = p.opt["GFS_DIR"]
+    regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE_EXE"]
+
+    # obtain the gfs_fcst dir
+    with open(tmp_filename, "r") as tf:
+        for line in tf:
+            col = line.split()
+            # Columns of interest are 8, 9, 10, 19, 20, 21, and 22
+            # for init time, lead time, valid time, alat, alon, 
+            # blat, and blon (positions of the two extra-tropical
+            # cyclone tracks)  but Python is zero-based so indices 
+            # differ by 1.
+            init, lead, valid, alat, alon, blat, blon = col[7], col[8], col[9],col[18],\
+                                                        col[19],col[20], col[21]
+
+            # integer division for both Python 2 and 3
+            lead_time = int(lead)
+            fcst_hr = lead_time // 10000
+            fcst_hr_str = str(fcst_hr)
+
+            init_ymd_match = re.match(r'[0-9]{8}',init)
+            if init_ymd_match:
+                init_ymd = init_ymd_match.group(0)
+            else:
+                raise RuntimeError('init time has unexpected format for YMD')
+                logger.WARN("RuntimeError raised")
+
+            init_ymdh_match = re.match(r'[0-9|_]{11}',init)
+            if init_ymdh_match:
+                init_ymdh = init_ymdh_match.group(0)
+            else:
+                logger.WARN("RuntimeError raised")
+                #raise RuntimeError('init time has unexpected format for YMDH')
+
+            valid_ymd_match = re.match(r'[0-9]{8}',valid)
+            if valid_ymd_match:
+                valid_ymd = valid_ymd_match.group(0)
+            else:
+                logger.WARN("RuntimeError raised")
+                #raise RuntimeError('valid time has unexpected format for YMD')
+
+            valid_ymdh_match = re.match(r'[0-9|_]{11}',valid)
+            if valid_ymdh_match:
+                valid_ymdh = valid_ymdh_match.group(0)
+            else:
+                logger.WARN("RuntimeError raised")
+                #raise RuntimeError('valid time has unexpected format for YMDH')
+
+                
+            lead_str = str(fcst_hr).zfill(3)
+                
+            fcst_dir = os.path.join(gfs_dir, init_ymd)
+            init_ymdh_split = init_ymdh.split("_")
+            init_YYYYmmddHH = "".join(init_ymdh_split)
+            fcstSTS = sts.StringTemplateSubstitution(logger,
+                                                     p.opt["GFS_FCST_FILE_TMPL"],
+                                                     init=init_YYYYmmddHH, 
+                                                     lead=lead_str)
+
+            fcst_file = fcstSTS.doStringSub()
+            fcst_filename = os.path.join(fcst_dir, fcst_file)
+
+            anly_dir =  os.path.join(gfs_dir, valid_ymd)
+            valid_ymdh_split = valid_ymdh.split("_")
+            valid_YYYYmmddHH = "".join(valid_ymdh_split)
+            anlySTS = sts.StringTemplateSubstitution(logger, 
+                                                p.opt["GFS_ANLY_FILE_TMPL"],
+                                                valid=valid_YYYYmmddHH,
+                                                lead=lead_str)
+            anly_file = anlySTS.doStringSub()
+            anly_filename = os.path.join(anly_dir, anly_file)
+
+            # Create the filename for the regridded file, which is a 
+            # netCDF file.
+            nc_fcstSTS = sts.StringTemplateSubstitution(logger,
+                                                p.opt["GFS_FCST_NC_FILE_TMPL"],                                                 
+                                                init=init_YYYYmmddHH, 
+                                                lead=lead_str)
+            fcst_nc_file = nc_fcstSTS.doStringSub()
+            fcst_nc_filename = os.path.join(fcst_dir, fcst_nc_file)
+
+  
+            nc_anlySTS = sts.StringTemplateSubstitution(logger, 
+                                              p.opt["GFS_ANLY_NC_FILE_TMPL"],
+                                              valid=valid_YYYYmmddHH,
+                                              lead=lead_str)
+  
+            anly_nc_file = nc_anlySTS.doStringSub()
+            anly_nc_filename = os.path.join(anly_dir, anly_nc_file)
+
+            
+            # Create the tmp file to be used for troubleshooting 
+            # and verification.  The file will contain all the 
+            # fcst and analysis files that will be used as input 
+            # for another script.
+            tmp_fcst_filename = os.path.join(out_dir, 
+                                             "tmp_fcst_regridded.txt")
+            tmp_anly_filename = os.path.join(out_dir, 
+                                             "tmp_anly_regridded.txt")
+
+            # Check if the forecast file exists. If it doesn't 
+            # exist, just log it
+            if file_exists(fcst_filename):
+                msg = ("INFO| [" + cur_filename + ":" + cur_function +  
+                       " ] | Forecast file: " + fcst_filename)
+                logger.info(msg)
+                # Write this to the tmp file (to be used for 
+                # troubleshooting and validation) which will be saved
+                # in the EXTRACT_OUT_DIR
+                with open(tmp_fcst_filename, "a+") as tmpfile:
+                    tmpfile.write(fcst_filename+"\n")
+                
+            else:
+                msg = ("WARNING| [" + cur_filename + ":" + 
+                       cur_function +  " ] | " +
+                       "Can't find forecast file, continuing anyway: " + 
+                       fcst_filename)
+                logger.warn(msg)
+                continue
+
+            # Check if the analysis file exists. If it doesn't 
+            # exist, just log it.
+            if file_exists(anly_filename):
+                    msg = ("INFO| [" + cur_filename + ":" +
+                           cur_function +  " ] | Analysis file: " + 
+                           anly_filename)
+                    logger.info(msg)
+                    # Write this to the tmp file (to be used for 
+                    # troubleshooting and validation). This will
+                    # be stored in the EXTRACT_OUT_DIR
+                    with open(tmp_anly_filename, "a+") as tmpfile:
+                        tmpfile.write(fcst_filename+"\n")
+            else:
+                msg = ("WARNING| [" + cur_filename + ":" + 
+                       cur_function +  " ] | " + 
+                       "Can't find analysis file, continuing anyway: " +
+                       anly_filename)
+                logger.warn(msg)
+                continue
+
+            # Regrid the forecast and analysis files to an n degree X 
+            # m degree tile centered on
+            # latlon lon0:nlon:dlon lat0:nlat:dlat
+            # The size of the grid is defined in the constants_pdef.py
+            # param/config file, under the LON_ADJ and LAT_ADJ 
+            # variables.
+        
+            fcst_base = os.path.basename(fcst_nc_filename)
+            anly_base = os.path.basename(anly_nc_filename)
+            fcst_grid_spec = create_grid_specification_string(alat,alon,
+                                                              logger,p)
+            anly_grid_spec = create_grid_specification_string(blat,blon,
+                                                              logger,p)
+ 
+            tile_dir = os.path.join(out_dir, cur_init, cur_storm)
+            fcst_hr_str = str(fcst_hr).zfill(3)
+            
+            fcst_regridded_filename = p.opt["FCST_TILE_PREFIX"] + \
+                                      fcst_hr_str + "_" + \
+                                      fcst_base
+            fcst_regridded_file = os.path.join(tile_dir, fcst_regridded_filename)
+            anly_regridded_filename =  p.opt["ANLY_TILE_PREFIX"] + fcst_hr_str + \
+                                       "_" + anly_base
+            anly_regridded_file = os.path.join(tile_dir, anly_regridded_filename)
+            
+            # Regrid the fcst file only if a fcst tile 
+            # file does NOT already exist.
+
+            # Create new gridded file for fcst tile
+            if file_exists(fcst_regridded_file):
+                msg = ("INFO| [" + cur_filename + ":" + 
+                       cur_function +  " ] | Forecast tile file " + 
+                       fcst_regridded_file + " exists, skip regridding")
+                logger.info(msg)
+            else:
+                # Perform regridding on the records of interest
+                var_level_string = retrieve_var_info(p,logger)
+                fcst_cmd_list = [regrid_data_plane_exe, ' ', 
+                                 fcst_filename, ' ',
+                                 fcst_grid_spec, ' ',
+                                 fcst_regridded_file, ' ',
+                                 var_level_string,
+                                 ' -method NEAREST '   ]
+                regrid_cmd_fcst = ''.join(fcst_cmd_list)
+                msg = ("INFO|[regrid]| Regridding via regrid_data_plane:" + 
+                       regrid_cmd_fcst)
+                logger.info(msg)
+                regrid_fcst_out = subprocess.check_output(regrid_cmd_fcst, 
+                                                      stderr=
+                                                      subprocess.STDOUT,
+                                                      shell=True)
+       
+                msg = ("INFO|[regrid]| on fcst file:" + regrid_fcst_out)
+                logger.info(msg)
+                 
+            # Create new gridded file for anly tile
+            if file_exists(anly_regridded_file):
+                logger.info("INFO| [" + cur_filename + ":" +                                                        
+                                    cur_function +  " ] |" + 
+                                    " Analysis tile file: " + 
+                                    anly_regridded_file + 
+                                    " exists, skip regridding")
+            else:
+                # Perform regridding on the records of interest
+                anly_cmd_list = [regrid_data_plane_exe, ' ',
+                                 anly_filename, ' ',
+                                 anly_grid_spec, ' ',
+                                 anly_regridded_file, ' ',
+                                 var_level_string, ' ',
+                                 ' -method NEAREST ' ]
+                regrid_cmd_anly = ''.join(anly_cmd_list)
+                regrid_anly_out = subprocess.check_output(regrid_cmd_anly,                                                              
+                                                          stderr= 
+                                                          subprocess.STDOUT,                                                              
+                                                          shell=True)
+                logger.info("INFO|regrid| on analysis file:" +
+                            regrid_anly_out)
+
+
+
+
+def retrieve_var_info(p, logger):
+    ''' Retrieve the variable name and level from the
+        EXTRACT_TILES_VAR_FILTER and VAR_LIST.  If the
+        EXTRACT_TILES_VAR_FILTER is empty, then retrieve
+        the variable information from VAR_LIST.  Both are defined
+        in the constants_pdef.py param file.  This will
+        be used as part of the command to regrid the grib2 storm track
+        files into netCDF.
+
+        Args:
+            p:       The reference to the ConfigMaster config/param
+                     constants_pdef.py
+            logger:  The logger to which all logging is directed.
+
+        Returns:
+            field_level_string (string):  A string with format -field
+                                          'name="HGT"; level="P500";'
+                                          for each variable defined in VAR_LIST.
+    '''
+
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    var_list = p.opt["VAR_LIST"]
+    extra_var_list = p.opt["EXTRACT_TILES_VAR_LIST"]
+    full_list = []
+    name_str = 'name="'
+    level_str = 'level="'
+    field_level_string = ''
+
+    # Append the extra_var list to the var_list
+    full_var_list = var_list + extra_var_list
+
+    for cur_var in full_var_list:
+        match = re.match(r'(.*)/(.*)',cur_var)
+        name = match.group(1)
+        level = match.group(2)
+        cur_list = [' -field ', "'", name_str, name, '"; ', level_str, level, '";', "'", '\\ ']
+        cur_str = ''.join(cur_list)
+        full_list.append(cur_str)
+
+    field_level_string = ''.join(full_list)
+    return field_level_string
+
+
+
+def create_grid_specification_string(lat,lon,logger,p):
+    ''' Create the grid specification string with the format:
+         latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
+         used by the MET tool, regrid_data_plane.
+
+         Args:
+            lat (string):   The latitude of the grid point
+            lon (string):   The longitude of the grid point
+            logger(string): The name of the logger
+            p:              ConfigMaster param/config file
+                            constants_pdef.py
+
+         Returns:
+            tile_grid_str (string): the tile grid string for the
+                                    input lon and lat
+
+    '''
+
+
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    # initialize the tile grid string
+    # and get the other values from the parameter file
+    tile_grid_str = ' '
+    nlat = str(p.opt["NLAT"])
+    nlon = str(p.opt["NLON"])
+    dlat = str(p.opt["DLAT"])
+    dlon = str(p.opt["DLON"])
+
+    lon0 = str(round_0p5(float(lon)))
+    lat0 = str(round_0p5(float(lat)))
+
+    # Format for regrid_data_plane:
+    # latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
+    grid_list = ['"', 'latlon ', nlat, ' ', nlon, ' ', lat0, ' ', lon0, ' ',
+                 dlat, ' ', dlon, '"']
+    tile_grid_str = ''.join(grid_list)
+
+    msg = ("INFO|" + cur_filename + ":" + cur_function +
+           "| complete grid specification string: " + tile_grid_str)
+    logger.info(msg)
+    return tile_grid_str
 
 
 
