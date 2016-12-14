@@ -22,6 +22,7 @@ import sys
 import met_util as util
 import re
 import csv
+import subprocess
 
 
 def read_modify_write_file(in_csvfile, MM, p, out_csvfile, logger):
@@ -116,7 +117,7 @@ def main():
             if not os.path.exists(adeck_mod):
                 mkdir_cmd = "mkdir -p %s" % (adeck_mod)
                 logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Making output directory: " + adeck_mod)
-                ret = os.system(mkdir_cmd)
+                ret = subprocess.check_output(mkdir_cmd, stderr=subprocess.STDOUT, shell=True)
                 if ret != 0:
                     logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + mkdir_cmd)
                     exit(0)
@@ -132,7 +133,7 @@ def main():
                 if not os.path.exists(pairs_out_dir):
                     mkdir_cmd = "mkdir -p %s" % (pairs_out_dir)
                     logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Making output directory: " + pairs_out_dir)
-                    ret = os.system(mkdir_cmd)
+                    ret = subprocess_check_output(mkdir_cmd, stderr=subprocess.STDOUT, shell=True)
                     if ret != 0:
                         logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + mkdir_cmd)
                         exit(0)
@@ -201,7 +202,7 @@ def main():
                         logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Writing tc_pairs output file: "  + pairs_out_file + ", replacing existing data because TC_PAIRS_FORCE_OVERWRITE is set to True")
                         cmd = p.opt["TC_PAIRS"] + " -adeck " + adeck_file_path + " -bdeck " + bdeck_file_path + " -config " + p.opt["TC_PAIRS_CONFIG_PATH"] + " -out " + pairs_out_file
                         logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd)
-                        ret = os.system(cmd)
+                        ret = subprocess_check_output(cmd, stderr=subprocess.STDOUT, shell=True)
                         if ret != 0:
                             logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd)
                             exit(0)
@@ -210,7 +211,7 @@ def main():
                 else:
                     cmd = p.opt["TC_PAIRS"] + " -adeck " + adeck_file_path + " -bdeck " + bdeck_file_path + " -config " + p.opt["TC_PAIRS_CONFIG_PATH"] + " -out " + pairs_out_file
                     logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd)
-                    ret = os.system(cmd)
+                    ret = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
                     if ret != 0:
                         logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd)
                         exit(0)
