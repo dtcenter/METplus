@@ -31,7 +31,8 @@ def analysis_by_init_time():
       
 
     # Retrieve any necessary values from the param file(s)
-    init_time_list = p.opt["INIT_LIST"]
+    init_time_list = util.gen_init_list(p.opt["INIT_DATE_BEG"], p.opt["INIT_DATE_END"], p.opt["INIT_HOUR_INC"], p.opt["INIT_HOUR_END"])    
+    #init_time_list = p.opt["INIT_LIST"]
     var_list = p.opt["VAR_LIST"]
     stat_list = p.opt["STAT_LIST"]
     proj_dir = p.opt["PROJ_DIR"]

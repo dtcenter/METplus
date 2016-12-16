@@ -77,9 +77,10 @@ def main():
     cur_function = sys._getframe().f_code.co_name
     logger = util.get_logger(p)
 
-    # Get the desired YYYYMM from INIT_LIST
+    # Get the desired YYYYMM from the init list
     YYYYMM_list = []
-    for init in p.opt["INIT_LIST"]:
+    init_list = util.gen_init_list(p.opt["INIT_DATE_BEG"], p.opt["INIT_DATE_END"], p.opt["INIT_HOUR_INC"], p.opt["INIT_HOUR_END"])
+    for init in init_list:
         if init[0:6] not in YYYYMM_list:
             YYYYMM_list.append(init[0:6])
 
@@ -87,7 +88,7 @@ def main():
     # Used to set init_inc in "TC_PAIRS_CONFIG_PATH"
     # Need to do some pre-processing so that Python will use " and not ' because currently MET
     # doesn't support single-quotes
-    tmp_init_string = str(p.opt["INIT_LIST"])
+    tmp_init_string = str(init_list)    
     tmp_init_string = tmp_init_string.replace("\'","\"")
     os.environ['INIT_INC'] = tmp_init_string
 

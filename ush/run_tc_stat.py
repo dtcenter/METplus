@@ -93,7 +93,8 @@ if __name__ == "__main__":
     p.init(__doc__)
     logger = util.get_logger(p)
 
-    init_list = p.opt["INIT_LIST"]
+    #init_list = p.opt["INIT_LIST"]
+    init_list = util.gen_init_list(p.opt["INIT_DATE_BEG"], p.opt["INIT_DATE_END"], p.opt["INIT_HOUR_INC"], p.opt["INIT_HOUR_END"]) 
 
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
