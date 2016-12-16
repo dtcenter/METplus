@@ -116,7 +116,6 @@ GFS_ANLY_NC_FILE_TMPL = "gfs_4_{valid?fmt=%Y%m%d}_{valid?fmt=%H}00_000.nc"
 #
 #     LISTS AND SETTINGS
 #
-
 #
 #     Processes to run in master script (master_met_plus.py)
 #
@@ -124,15 +123,26 @@ GFS_ANLY_NC_FILE_TMPL = "gfs_4_{valid?fmt=%Y%m%d}_{valid?fmt=%H}00_000.nc"
 PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py"]
 
 
-STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE"]
-INIT_LIST = ["20141203_06", "20141203_12", "20150126_00", "20150126_06", "20150126_12", "20150126_18", "20150127_00", "20150127_06", "20150127_12", "20150127_18"]
+STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE", "BCRMSE", "E50", "IQR", "MAD"]
+
+#
+#     Used for track data
+#     Dates must be in YYYYMMDD format
+#     INIT_HOUR_INC is the increment in integer format
+#     INIT_HOUR_END should be a string in HH or HHH format
+#
+INIT_DATE_BEG = "20141201"
+INIT_DATE_END = "20150331"
+INIT_HOUR_INC =  6
+INIT_HOUR_END = "18"
+
 
 #
 #     Used by extract_tiles.py to define the records of interest from the grib2 file
 #
 
-VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2"]
-EXTRACT_TILES_VAR_LIST = ["PWAT/L0"]
+VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0", "HGT/P250", "TMP/P850", "TMP/P500", "PVORT/L0", "UGRD/P250", "VGRD/P250", "TCDC/L0" ]
+EXTRACT_TILES_VAR_LIST = []
 
 #
 #     Used for performing series analysis based on lead time
@@ -202,8 +212,8 @@ MISSING_VAL = "-9999"
 #     TC-STAT filtering options
 #
 
-EXTRACT_TILES_FILTER_OPTS="-basin ML"
-SERIES_ANALYSIS_FILTER_OPTS="-init_beg 20140101 -init_end 20141231"
+EXTRACT_TILES_FILTER_OPTS=" -basin ML -out_init_mask " + os.path.join(MET_BUILD_BASE,"share/met/poly/CONUS.poly")
+SERIES_ANALYSIS_FILTER_OPTS="-init_beg 20141201 -init_end 20150331"
 
 
 #
