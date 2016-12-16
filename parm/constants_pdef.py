@@ -126,7 +126,6 @@ PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py"]
 STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE", "BCRMSE", "E50", "IQR", "MAD"]
 
 #
-#     Used for track data
 #     Dates must be in YYYYMMDD format
 #     INIT_HOUR_INC is the increment in integer format
 #     INIT_HOUR_END should be a string in HH or HHH format
