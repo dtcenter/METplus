@@ -119,16 +119,26 @@ GFS_ANLY_NC_FILE_TMPL = "gfs_4_{valid?fmt=%Y%m%d}_{valid?fmt=%H}00_000.nc"
 
 PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py"]
 
-
 STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE"]
-INIT_LIST = ["20141203_06", "20141203_12", "20150126_00", "20150126_06", "20150126_12", "20150126_18", "20150127_00", "20150127_06", "20150127_12", "20150127_18"]
+
+#
+#     Used for track data
+#     Dates must be in YYYYMMDD format
+#     INIT_HOUR_INC is the increment in integer format
+#     INIT_HOUR_END should be a string in HH or HHH format
+#
+INIT_DATE_BEG = "20150126"
+INIT_DATE_END = "20150127"
+INIT_HOUR_INC =  6
+INIT_HOUR_END = "18"
+
 
 #
 #     Used by extract_tiles.py to define the records of interest from the grib2 file
 #
 
 VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2"]
-EXTRACT_TILES_VAR_LIST = ["PWAT/L0"]
+EXTRACT_TILES_VAR_LIST = []
 
 #
 #     Used for performing series analysis based on lead time
@@ -153,10 +163,12 @@ DLAT = 0.5
 DLON = 0.5
 
 #
-#     Degrees to add or subtract to both sides of the center lat, and
-#     above and below the center lon to define the n x m grid, where
-#       n = 2 * LON_SUBTR
-#       m = 2* LAT_SUBTR
+#     Degrees to subtract from the center lat and lon to 
+#     calculate the lower left lat (lat_ll) and lower
+#     left lon (lon_ll) for a grid that is 2n X 2m, 
+#     where n = LAT_ADJ degrees and m = LON_ADJ degrees.
+#     For this case, where n=15 and m=15, this results
+#     in a 30 deg X 30 deg grid.
 #
 
 LON_ADJ = 15
@@ -169,6 +181,10 @@ LAT_ADJ = 15
 #
 
 FCST_TILE_REGEX = ".*FCST_TILE_F.*.grb2"
+ANLY_TILE_REGEX = ".*ANLY_TILE_F.*.grb2"
+FCST_NC_TILE_REGEX = ".*FCST_TILE_F.*.nc"
+ANLY_NC_TILE_REGEX = ".*ANLY_TILE_F.*.nc"
+
 ANLY_TILE_REGEX = ".*ANLY_TILE_F.*.grb2"
 
 FCST_ASCII_REGEX_INIT ="FCST_ASCII_FILE.*"
@@ -192,8 +208,9 @@ MISSING_VAL = "-9999"
 #     TC-STAT filtering options
 #
 
-EXTRACT_TILES_FILTER_OPTS="-basin ML"
-SERIES_ANALYSIS_FILTER_OPTS="-init_beg 20140101 -init_end 20141231"
+#EXTRACT_TILES_FILTER_OPTS=" -basin ML -out_init_mask " + os.path.join(MET_BUILD_BASE,"share/met/poly/CONUS.poly")
+EXTRACT_TILES_FILTER_OPTS=" -basin ML"
+SERIES_ANALYSIS_FILTER_OPTS="-init_beg 20141201 -init_end 20141231"
 
 
 #
