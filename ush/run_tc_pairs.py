@@ -133,7 +133,7 @@ def main():
                 if not os.path.exists(pairs_out_dir):
                     mkdir_cmd = "mkdir -p %s" % (pairs_out_dir)
                     logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Making output directory: " + pairs_out_dir)
-                    ret = subprocess_check_output(mkdir_cmd, stderr=subprocess.STDOUT, shell=True)
+                    ret = subprocess.check_output(mkdir_cmd, stderr=subprocess.STDOUT, shell=True)
                     if ret != 0:
                         logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + mkdir_cmd)
                         exit(0)
