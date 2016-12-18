@@ -45,7 +45,6 @@ def main():
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
     init_times = util.gen_init_list(p.opt["INIT_DATE_BEG"], p.opt["INIT_DATE_END"], p.opt["INIT_HOUR_INC"], p.opt["INIT_HOUR_END"])    
-    #init_times = p.opt["INIT_LIST"]
     output_dir = p.opt["OUT_DIR"]
     project_dir = p.opt["PROJ_DIR"]
     overwrite_flag = p.opt["OVERWRITE_TRACK"]
@@ -82,7 +81,8 @@ def main():
                    filter_name)
             logger.info(msg)
         else:
-           # Create the storm track
+           # Create the storm track by applying the
+           # filter options defined in the constants_pdef.py file.
             filter_path = os.path.join(filtered_out_dir, cur_init)
             util.mkdir_p(filter_path)
             tc_cmd_list = [tc_stat_exe, " -job filter -lookin ", 
@@ -91,7 +91,7 @@ def main():
                            " -match_points true -dump_row ", 
                            filter_name, " ", addl_filter_opts]
 
-            # Perform any filtering by calling run_tc_stat
+            # Call run_tc_stat to do the actual filtering.
             tc_cmd = ''.join(tc_cmd_list)
             tcs.tc_stat(p, logger, tc_cmd, 
                         filtered_out_dir)
@@ -129,11 +129,14 @@ def main():
             # Peform regridding of the forecast and analysis files 
             # to a 30 x 30 degree tile centered on the storm
             util.retrieve_and_regrid(tmp_filename, cur_init, cur_storm, filtered_out_dir,
-                             logger, p)
+                                     logger, p)
+           
 
         # end of for cur_storm 
-
     # end of for cur_init
+
+    # Check for empty files and directories in the filtered_out_dir 
+    util.prune_empty(filtered_out_dir, p, logger)
 
     # Clean up the tmp directory
     subprocess.call(["rm", "-rf", tmp_dir])
