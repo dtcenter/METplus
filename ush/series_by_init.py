@@ -43,7 +43,7 @@ def analysis_by_init_time():
     tc_stat_exe = p.opt["TC_STAT"]
     series_analysis_exe = p.opt["SERIES_ANALYSIS"]
     plot_data_plane_exe = p.opt["PLOT_DATA_PLANE"]
-    regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE"]
+    regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE_EXE"]
     convert_exe = p.opt["CONVERT_EXE"]
     tr_exe  = p.opt["TR_EXE"]
     cut_exe = p.opt["CUT_EXE"]
