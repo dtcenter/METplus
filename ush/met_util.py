@@ -247,6 +247,12 @@ def get_storm_ids(filter_filename, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
     storm_id_list = set()
+    empty_list = [] 
+
+    # Check if the filter_filename is empty, if it
+    # is, then return.  
+    if os.stat(filter_filename).st_size == 0:
+         return empty_list
     with open(filter_filename) as fileobj:
          # skip the first line as it contains the header
          next(fileobj)
@@ -444,7 +450,11 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
     gfs_dir = p.opt["GFS_DIR"]
+<<<<<<< HEAD
     regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE"]
+=======
+    regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE_EXE"]
+>>>>>>> 6dad71c7c194c21d748f19d0c6da542f9b0ad92e
     wgrib2_exe = p.opt["WGRIB2"]
     egrep_exe = p.opt["EGREP_EXE"]
  
@@ -968,7 +978,11 @@ def prune_empty(output_dir, p, logger):
                        "Empty file: " + file +
                        "...removing" )
                  
+<<<<<<< HEAD
                 log.info(msg)
+=======
+                logger.info(msg)
+>>>>>>> 6dad71c7c194c21d748f19d0c6da542f9b0ad92e
                 os.remove(file)
 
 

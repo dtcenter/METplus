@@ -33,14 +33,25 @@ def analysis_by_init_time():
 
     # Retrieve any necessary values (dirs, executables) 
     # from the param file(s)
+<<<<<<< HEAD
     init_time_list = p.opt["INIT_LIST"]
+=======
+    init_time_list = util.gen_init_list(p.opt["INIT_DATE_BEG"],
+                                    p.opt["INIT_DATE_END"],
+                                    p.opt["INIT_HOUR_INC"],
+                                    p.opt["INIT_HOUR_END"])
+>>>>>>> 6dad71c7c194c21d748f19d0c6da542f9b0ad92e
     var_list = p.opt["VAR_LIST"]
     stat_list = p.opt["STAT_LIST"]
     proj_dir = p.opt["PROJ_DIR"]
     tc_stat_exe = p.opt["TC_STAT"]
     series_analysis_exe = p.opt["SERIES_ANALYSIS"]
     plot_data_plane_exe = p.opt["PLOT_DATA_PLANE"]
+<<<<<<< HEAD
     regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE"]
+=======
+    regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE_EXE"]
+>>>>>>> 6dad71c7c194c21d748f19d0c6da542f9b0ad92e
     convert_exe = p.opt["CONVERT_EXE"]
     tr_exe  = p.opt["TR_EXE"]
     cut_exe = p.opt["CUT_EXE"]
@@ -86,12 +97,15 @@ def analysis_by_init_time():
     # Get a list of the forecast tile files
     fcst_tiles = util.get_files(tile_dir, fcst_tile_regex, logger)
 
+<<<<<<< HEAD
     # Generate ASCII files that contain a list of all the forecast and 
     # analysis tiles that were created by the extract_tiles script.  
     # First clean up any existing ASCII files that may have been 
     # created in a previous run
     #cleanup_ascii(init_time_list,p,logger)
 
+=======
+>>>>>>> 6dad71c7c194c21d748f19d0c6da542f9b0ad92e
     # Apply any filtering, use MET Tool tc_stat.  Filter options
     # are defined in the constants_pdef.py param/config file.
     util.mkdir_p(series_filtered_out_dir)
@@ -524,6 +538,7 @@ def get_storms_for_init(cur_init, out_dir_base, logger):
     return storm_list
     
     
+<<<<<<< HEAD
     
         
 def cleanup_ascii(init_list, p, logger):
@@ -579,6 +594,8 @@ def cleanup_ascii(init_list, p, logger):
 
 
 
+=======
+>>>>>>> 6dad71c7c194c21d748f19d0c6da542f9b0ad92e
 if __name__ == "__main__":
     p = P.Params()
     p.init(__doc__)
