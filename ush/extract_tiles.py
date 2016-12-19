@@ -44,7 +44,10 @@ def main():
    
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-    init_times = util.gen_init_list(p.opt["INIT_DATE_BEG"], p.opt["INIT_DATE_END"], p.opt["INIT_HOUR_INC"], p.opt["INIT_HOUR_END"])    
+    init_times = util.gen_init_list(p.opt["INIT_DATE_BEG"], 
+                                    p.opt["INIT_DATE_END"], 
+                                    p.opt["INIT_HOUR_INC"], 
+                                    p.opt["INIT_HOUR_END"])    
     output_dir = p.opt["OUT_DIR"]
     project_dir = p.opt["PROJ_DIR"]
     overwrite_flag = p.opt["OVERWRITE_TRACK"]
@@ -69,7 +72,7 @@ def main():
                " ] |Begin processing for initialization time: " + cur_init)
         logger.info(msg)
         year_month = util.extract_year_month(cur_init, logger)
-        
+       
        # Create the name of the filter file we need to find.  If 
        # the file doesn't exist, then run TC_STAT 
         filter_filename = "filter_" + cur_init + ".tcst"
@@ -93,6 +96,7 @@ def main():
 
             # Call run_tc_stat to do the actual filtering.
             tc_cmd = ''.join(tc_cmd_list)
+            print("tc_cmd: ", tc_cmd)
             tcs.tc_stat(p, logger, tc_cmd, 
                         filtered_out_dir)
             msg = ("INFO| [" + cur_filename + ":" + cur_function +  
@@ -101,7 +105,13 @@ def main():
             
         # Now get unique storm ids from the filter file, 
         # filter_yyyymmdd_hh.tcst
+
         sorted_storm_ids = util.get_storm_ids(filter_name, logger)
+        # Check for empty sorted_storm_ids, if empty,
+        # continue to the next time.      
+        if len(sorted_storm_ids) == 0:
+            continue
+   
        
         # Process each storm in the sorted_storm_ids list
         # Iterate over each filter file in the output directory and 
