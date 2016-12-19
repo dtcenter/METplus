@@ -209,6 +209,14 @@ BACKGROUND_MAP = False
 
 
 #
+#     REGRDDING
+#
+
+
+REGRID_USING_MET_TOOL = False
+
+
+#
 #     TESTING
 #
 
