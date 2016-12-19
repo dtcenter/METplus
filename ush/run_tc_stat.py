@@ -46,7 +46,7 @@ def tc_stat(p, logger, tc_cmd, filtered_output_dir):
             None: if no error, then invoke MET tool TC-STAT and 
                   subsets tc-pairs data, creating a filter.tcst file.
 
-            1:    if an error has been encountered
+            Raises CalledProcessError
 
     '''
 
@@ -55,7 +55,6 @@ def tc_stat(p, logger, tc_cmd, filtered_output_dir):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
     
-    output_dir = p.opt["OUT_DIR"]
     project_dir = p.opt["PROJ_DIR"]
     tc_stat_exe = p.opt["TC_STAT"]
 
