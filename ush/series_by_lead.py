@@ -910,7 +910,10 @@ def apply_filters(p,logger):
 
     # Retrieve any values from the param/config file, 
     # constants_pdef.py.
-    init_times = p.opt["INIT_LIST"]
+    init_list = util.gen_init_list(p.opt["INIT_DATE_BEG"],
+                                    p.opt["INIT_DATE_END"],
+                                    p.opt["INIT_HOUR_INC"],
+                                    p.opt["INIT_HOUR_END"])
     tc_stat_exe = p.opt["TC_STAT"]
     series_lead_filtered_out_dir = p.opt["SERIES_LEAD_FILTERED_OUT_DIR"]
     extract_out_dir = p.opt["EXTRACT_OUT_DIR"]
