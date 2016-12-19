@@ -44,13 +44,17 @@ def main():
    
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-    init_times = p.opt["INIT_LIST"]
+    init_times = util.gen_init_list(p.opt["INIT_DATE_BEG"],  
+                                    p.opt["INIT_DATE_END"], 
+                                    p.opt["INIT_HOUR_INC"], 
+                                    p.opt["INIT_HOUR_END"])    
+    output_dir = p.opt["OUT_DIR"]
     project_dir = p.opt["PROJ_DIR"]
     overwrite_flag = p.opt["OVERWRITE_TRACK"]
     addl_filter_opts = p.opt["EXTRACT_TILES_FILTER_OPTS"]
     filtered_out_dir = p.opt["EXTRACT_OUT_DIR"]
     tc_stat_exe = p.opt["TC_STAT"]
-    regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE"]
+    regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE_EXE"]
 
 
     # get the process id to be used to identify the output

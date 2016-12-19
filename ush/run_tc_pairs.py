@@ -77,9 +77,10 @@ def main():
     cur_function = sys._getframe().f_code.co_name
     logger = util.get_logger(p)
 
-    # Get the desired YYYYMM from INIT_LIST
+    # Get the desired YYYYMM from the init list
     YYYYMM_list = []
-    for init in p.opt["INIT_LIST"]:
+    init_list = util.gen_init_list(p.opt["INIT_DATE_BEG"], p.opt["INIT_DATE_END"], p.opt["INIT_HOUR_INC"], p.opt["INIT_HOUR_END"])
+    for init in init_list:
         if init[0:6] not in YYYYMM_list:
             YYYYMM_list.append(init[0:6])
 
@@ -87,7 +88,7 @@ def main():
     # Used to set init_inc in "TC_PAIRS_CONFIG_PATH"
     # Need to do some pre-processing so that Python will use " and not ' because currently MET
     # doesn't support single-quotes
-    tmp_init_string = str(p.opt["INIT_LIST"])
+    tmp_init_string = str(init_list)    
     tmp_init_string = tmp_init_string.replace("\'","\"")
     os.environ['INIT_INC'] = tmp_init_string
 
@@ -117,7 +118,8 @@ def main():
             if not os.path.exists(adeck_mod):
                 mkdir_cmd = "mkdir -p %s" % (adeck_mod)
                 logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Making output directory: " + adeck_mod)
-                ret = subprocess.check_output(mkdir_cmd, stderr=subprocess.STDOUT, shell=True)
+                #ret = subprocess.check_output(mkdir_cmd, stderr=subprocess.STDOUT, shell=True)
+                ret = os.system(mkdir_cmd)
                 if ret != 0:
                     logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + mkdir_cmd)
                     exit(0)
@@ -133,7 +135,8 @@ def main():
                 if not os.path.exists(pairs_out_dir):
                     mkdir_cmd = "mkdir -p %s" % (pairs_out_dir)
                     logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Making output directory: " + pairs_out_dir)
-                    ret = subprocess_check_output(mkdir_cmd, stderr=subprocess.STDOUT, shell=True)
+                    #ret = subprocess.check_output(mkdir_cmd, stderr=subprocess.STDOUT, shell=True)
+                    ret = os.system(mkdir_cmd)
                     if ret != 0:
                         logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + mkdir_cmd)
                         exit(0)
@@ -202,7 +205,8 @@ def main():
                         logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Writing tc_pairs output file: "  + pairs_out_file + ", replacing existing data because TC_PAIRS_FORCE_OVERWRITE is set to True")
                         cmd = p.opt["TC_PAIRS"] + " -adeck " + adeck_file_path + " -bdeck " + bdeck_file_path + " -config " + p.opt["TC_PAIRS_CONFIG_PATH"] + " -out " + pairs_out_file
                         logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd)
-                        ret = subprocess_check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+                        #ret = subprocess_check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+                        ret = os.system(cmd)
                         if ret != 0:
                             logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd)
                             exit(0)
@@ -211,7 +215,8 @@ def main():
                 else:
                     cmd = p.opt["TC_PAIRS"] + " -adeck " + adeck_file_path + " -bdeck " + bdeck_file_path + " -config " + p.opt["TC_PAIRS_CONFIG_PATH"] + " -out " + pairs_out_file
                     logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd)
-                    ret = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+                    #ret = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+                    ret = os.system(cmd)                    
                     if ret != 0:
                         logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd)
                         exit(0)

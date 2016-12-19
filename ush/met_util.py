@@ -6,6 +6,7 @@ import os
 import errno
 import logging
 import time
+import calendar
 import re
 import math
 import sys
@@ -858,6 +859,71 @@ def create_grid_specification_string(lat,lon,logger,p):
     logger.info(msg)
     return tile_grid_str
 
+def gen_date_list(begin_date, end_date):
+    '''Generates a list of dates of the form yyyymmdd from a being date to end date
+    Inputs:
+      begin_date -- such as "20070101"
+      end_date -- such as "20070103"
+    Returns:
+      date_list -- such as ["20070101","20070102","20070103"]
+    '''
+    begin_tm = time.strptime(begin_date, "%Y%m%d")
+    end_tm = time.strptime(end_date, "%Y%m%d")
+    begin_tv = calendar.timegm(begin_tm)
+    end_tv = calendar.timegm(end_tm)
+    date_list = []
+    for tv in xrange(begin_tv, end_tv+86400, 86400):
+        date_list.append(time.strftime("%Y%m%d", time.gmtime(tv)))
+    return date_list
+
+def gen_hour_list(hour_inc, hour_end):
+    '''Generates a list of hours of the form hh or hhh
+    Inputs:
+      hr_inc -- increment in integer format such as 6
+      hr_end -- hh or hhh string indicating the end hour for the increment such as "18"
+    Returns:
+      hour_list -- such as ["00", "06", "12", "18"]
+    '''
+
+    int_list = range(0, int(hour_end)+1, hour_inc)
+
+    zfill_val = 0
+    if len(hour_end) == 2:
+        zfill_val = 2
+    elif len(hour_end) == 3:
+        zfill_val = 3
+
+    hour_list = []
+    for my_int in int_list:
+        hour_string = str(my_int).zfill(zfill_val)
+        hour_list.append(hour_string)
+
+    return hour_list
+        
+
+def gen_init_list(init_date_begin, init_date_end, init_hr_inc, init_hr_end):
+    '''
+    Generates a list of initialization date and times of the form yyyymmdd_hh or yyyymmdd_hhh
+    Inputs:
+      init_begin_date -- yyyymmdd string such as "20070101"
+      init_end_date -- yyyymmdd string such as "20070102"
+      init_hr_inc -- increment in integer format such as 6
+      init_hr_end -- hh or hhh string indicating the end hour for the increment such as "18"
+    Returns:
+      init_list -- such as ["20070101_00", "20070101_06", "20070101_12", "20070101_18", "20070102_00", "20070102_06", "20070102_12", "20070102_18"]
+    '''
+    
+    myhourlist = gen_hour_list(init_hr_inc, init_hr_end)
+    
+    mydatelist = gen_date_list(init_date_begin, init_date_end)
+
+    date_init_list = []
+    for index,my_date in enumerate(mydatelist):
+        for my_hour in myhourlist:
+            init_string = my_date + "_" + my_hour
+            date_init_list.append(init_string)
+
+    return date_init_list
 
 def prune_empty(output_dir, p, logger):
     ''' Start from the output_dir, and recursively check
@@ -949,11 +1015,13 @@ if __name__ == "__main__":
            
  
     
-    val = -14.1
-    pt = round_0p5(val)
-    print("{:.1f} rounded = {:.1f}".format(val,pt))
-    val = 14.1
-    pt = round_0p5(val)
-    print("{:.1f} rounded = {:.1f}".format(val,pt))
+    #val = -14.1
+    #pt = round_0p5(val)
+    #print("{:.1f} rounded = {:.1f}".format(val,pt))
+    #val = 14.1
+    #pt = round_0p5(val)
+    #print("{:.1f} rounded = {:.1f}".format(val,pt))
 
-
+    init_list = []
+    init_list = gen_init_list("20141201", "20150331", 6, "18")
+    print(init_list)
