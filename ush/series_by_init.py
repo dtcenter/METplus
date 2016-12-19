@@ -33,7 +33,10 @@ def analysis_by_init_time():
 
     # Retrieve any necessary values (dirs, executables) 
     # from the param file(s)
-    init_time_list = p.opt["INIT_LIST"]
+    init_time_list = util.gen_init_list(p.opt["INIT_DATE_BEG"],
+                                    p.opt["INIT_DATE_END"],
+                                    p.opt["INIT_HOUR_INC"],
+                                    p.opt["INIT_HOUR_END"])
     var_list = p.opt["VAR_LIST"]
     stat_list = p.opt["STAT_LIST"]
     proj_dir = p.opt["PROJ_DIR"]
@@ -85,12 +88,6 @@ def analysis_by_init_time():
      
     # Get a list of the forecast tile files
     fcst_tiles = util.get_files(tile_dir, fcst_tile_regex, logger)
-
-    # Generate ASCII files that contain a list of all the forecast and 
-    # analysis tiles that were created by the extract_tiles script.  
-    # First clean up any existing ASCII files that may have been 
-    # created in a previous run
-    #cleanup_ascii(init_time_list,p,logger)
 
     # Apply any filtering, use MET Tool tc_stat.  Filter options
     # are defined in the constants_pdef.py param/config file.
@@ -524,61 +521,6 @@ def get_storms_for_init(cur_init, out_dir_base, logger):
     return storm_list
     
     
-    
-        
-def cleanup_ascii(init_list, p, logger):
-    ''' Remove any pre-existing FCST and ANLY ASCII
-        files.
-
-        Args:
-            init_list:  A list containing the init times.
-            p:  The ConfigMaster used to retrieve parameter values
-            logger :  The logger to which any logging messages 
-                      will be sent.
-
-        Returns:
-            None:  removes any existing FCST and ANLY ASCII files
-                   containing a list of the gridded tiles from 
-                   the extract_tiles script.
-    
-  
-    '''
-    # Useful for logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-    fcst_ascii_regex = p.opt["FCST_ASCII_REGEX_INIT"]
-    anly_ascii_regex = p.opt["ANLY_ASCII_REGEX_INIT"]
-    out_dir_base = p.opt["SERIES_INIT_FILTERED_OUT_DIR"]
-    rm_exe = p.opt["RM_EXE"]
-    
-    # Check for non-existent or empty directory, if empty,  no need to
-    # proceed.
-    if not os.path.exists(out_dir_base):
-        return
-    if os.listdir(out_dir_base) == []:
-        return
-
-    for cur_init in init_list:
-        storm_list = get_storms_for_init(cur_init, out_dir_base, logger)
-        for cur_storm in storm_list:
-            output_dir_parts = [out_dir_base,'/',
-                                cur_init,'/',cur_storm,'/']
-            output_dir = ''.join(output_dir_parts)
-            for root,directories,files in os.walk(output_dir):
-                for cur_file in files:
-                    fcst_match = re.match(fcst_ascii_regex, cur_file)
-                    anly_match = re.match(anly_ascii_regex, cur_file)
-                    rm_command_parts = [rm_exe, ' ', output_dir,
-                                        '/', cur_file]
-                    rm_cmd = ''.join(rm_command_parts)
-                    if fcst_match:
-                        os.system(rm_cmd)
-                    if anly_match:
-                        os.system(rm_cmd)
-
-
-
-
 if __name__ == "__main__":
     p = P.Params()
     p.init(__doc__)
