@@ -68,7 +68,11 @@ def analysis_by_lead_time():
     extract_out_dir = p.opt["EXTRACT_OUT_DIR"]
     filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"] 
     series_lead_filtered_out_dir = p.opt["SERIES_LEAD_FILTERED_OUT_DIR"]            
-    init_times = p.opt["INIT_LIST"]
+    init_times = util.gen_init_list(p.opt["INIT_DATE_BEG"],
+                                    p.opt["INIT_DATE_END"],
+                                    p.opt["INIT_HOUR_INC"],
+                                    p.opt["INIT_HOUR_END"])
+
     series_lead_out_dir = p.opt["SERIES_LEAD_OUT_DIR"] 
     background_map = p.opt["BACKGROUND_MAP"]
 
