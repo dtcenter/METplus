@@ -44,22 +44,15 @@ def main():
    
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-<<<<<<< HEAD
-    init_times = util.gen_init_list(p.opt["INIT_DATE_BEG"],  
-=======
     init_times = util.gen_init_list(p.opt["INIT_DATE_BEG"], 
->>>>>>> 6dad71c7c194c21d748f19d0c6da542f9b0ad92e
                                     p.opt["INIT_DATE_END"], 
                                     p.opt["INIT_HOUR_INC"], 
                                     p.opt["INIT_HOUR_END"])    
-    output_dir = p.opt["OUT_DIR"]
     project_dir = p.opt["PROJ_DIR"]
     overwrite_flag = p.opt["OVERWRITE_TRACK"]
     addl_filter_opts = p.opt["EXTRACT_TILES_FILTER_OPTS"]
     filtered_out_dir = p.opt["EXTRACT_OUT_DIR"]
     tc_stat_exe = p.opt["TC_STAT"]
-    regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE_EXE"]
-
 
     # get the process id to be used to identify the output
     # amongst different users and runs.
@@ -77,8 +70,8 @@ def main():
         logger.info(msg)
         year_month = util.extract_year_month(cur_init, logger)
        
-       # Create the name of the filter file we need to find.  If 
-       # the file doesn't exist, then run TC_STAT 
+        # Create the name of the filter file we need to find.  If
+        # the file doesn't exist, then run TC_STAT
         filter_filename = "filter_" + cur_init + ".tcst"
         filter_name = os.path.join(filtered_out_dir, cur_init, filter_filename)
 
@@ -88,19 +81,18 @@ def main():
                    filter_name)
             logger.info(msg)
         else:
-           # Create the storm track by applying the
-           # filter options defined in the constants_pdef.py file.
+            # Create the storm track by applying the
+            # filter options defined in the constants_pdef.py file.
             filter_path = os.path.join(filtered_out_dir, cur_init)
             util.mkdir_p(filter_path)
             tc_cmd_list = [tc_stat_exe, " -job filter -lookin ", 
-                           project_dir,"/tc_pairs/", year_month, 
+                           project_dir, "/tc_pairs/", year_month,
                            " -init_inc ", cur_init, 
                            " -match_points true -dump_row ", 
                            filter_name, " ", addl_filter_opts]
 
             # Call run_tc_stat to do the actual filtering.
             tc_cmd = ''.join(tc_cmd_list)
-            print("tc_cmd: ", tc_cmd)
             tcs.tc_stat(p, logger, tc_cmd, 
                         filtered_out_dir)
             msg = ("INFO| [" + cur_filename + ":" + cur_function +  
@@ -115,8 +107,7 @@ def main():
         # continue to the next time.      
         if len(sorted_storm_ids) == 0:
             continue
-   
-       
+
         # Process each storm in the sorted_storm_ids list
         # Iterate over each filter file in the output directory and 
         # search for the presence of the storm id.  Store this 
@@ -137,14 +128,14 @@ def main():
             
             storm_match_list = util.grep(cur_storm, filter_name)
             with open(tmp_filename, "a+") as tmp_file:
-               for storm_match in storm_match_list:
-                   tmp_file.write(storm_match)
+                for storm_match in storm_match_list:
+                    tmp_file.write(storm_match)
                
             # Peform regridding of the forecast and analysis files 
             # to a 30 x 30 degree tile centered on the storm
-            util.retrieve_and_regrid(tmp_filename, cur_init, cur_storm, filtered_out_dir,
+            util.retrieve_and_regrid(tmp_filename, cur_init, 
+                                     cur_storm, filtered_out_dir,
                                      logger, p)
-           
 
         # end of for cur_storm 
     # end of for cur_init
@@ -156,11 +147,8 @@ def main():
     subprocess.call(["rm", "-rf", tmp_dir])
 
 
-
-
-
 if __name__ == "__main__":
     p = P.Params()
-    p.init(__doc__)  ## Put description of the code here
+    p.init(__doc__)  # Put description of the code here
     logger = util.get_logger(p)
     main()
