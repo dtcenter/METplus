@@ -50,15 +50,10 @@ def tc_stat(p, logger, tc_cmd, filtered_output_dir):
 
     '''
 
-    # Retrieve parameters from corresponding param file
-
+    # Useful for logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
     
-    project_dir = p.opt["PROJ_DIR"]
-    tc_stat_exe = p.opt["TC_STAT"]
-
-
     # get the process id to be used to identify the output
     # amongst different users and runs.
     cur_pid = str(os.getpid())
@@ -72,7 +67,6 @@ def tc_stat(p, logger, tc_cmd, filtered_output_dir):
     # Create the arguments to pass to the MET Tool TC-STAT
     util.mkdir_p(filtered_output_dir)
 
-   
     # Make call to tc_stat, capturing any stderr and stdout to the MET Plus log.
     try:
         tc_stat_out = subprocess.check_output(tc_cmd, stderr=subprocess.STDOUT, shell=True )
@@ -92,8 +86,7 @@ if __name__ == "__main__":
     p.init(__doc__)
     logger = util.get_logger(p)
 
-    #init_list = p.opt["INIT_LIST"]
-    init_list = util.gen_init_list(p.opt["INIT_DATE_BEG"], p.opt["INIT_DATE_END"], p.opt["INIT_HOUR_INC"], p.opt["INIT_HOUR_END"]) 
+    init_list = util.gen_init_list(p.opt["INIT_DATE_BEG"], p.opt["INIT_DATE_END"], p.opt["INIT_HOUR_INC"], p.opt["INIT_HOUR_END"])
 
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
