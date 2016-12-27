@@ -12,6 +12,7 @@ import math
 import sys
 import string_template_substitution as sts
 import subprocess
+import run_tc_stat as tcs
 
 ''' A collection of utility functions used to perform necessary series
     analysis tasks and other METPlus related tasks, .
@@ -251,6 +252,8 @@ def get_storm_ids(filter_filename, logger):
 
     # Check if the filter_filename is empty, if it
     # is, then return.  
+    if not os.path.isfile(filter_filename):
+        return empty_list
     if os.stat(filter_filename).st_size == 0:
         return empty_list
     with open(filter_filename) as fileobj:
@@ -404,7 +407,7 @@ def extract_year_month(init_time, logger):
         year_month = ym.group(0)
         return year_month
     else:
-        logger.warning("WARNING|" +  "[" + cur_filename + ":" + cur_function + "]" + 
+        logger.warning("WARNING|" + "[" + cur_filename + ":" + cur_function + "]" +
                        " | Cannot extract YYYYMM from initialization time, unexpected format")
         raise Warning("Cannot extract YYYYMM from initialization time, unexpected format")
 
@@ -591,7 +594,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                         tmpfile.write(anly_filename+"\n")
             else:
                 msg = ("WARNING| [" + cur_filename + ":" + 
-                       cur_function +  " ] | " + 
+                       cur_function + " ] | " +
                        "Can't find analysis file, continuing anyway: " +
                        anly_filename)
                 logger.warn(msg)
@@ -608,12 +611,11 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
  
             tile_dir = os.path.join(out_dir, cur_init, cur_storm)
             fcst_hr_str = str(fcst_hr).zfill(3)
-            
-            fcst_regridded_filename = p.opt["FCST_TILE_PREFIX"] + \
-                                      fcst_hr_str + "_" + \
+
+            fcst_regridded_filename = p.opt["FCST_TILE_PREFIX"] + fcst_hr_str + "_" + \
                                       fcst_base
             fcst_regridded_file = os.path.join(tile_dir, fcst_regridded_filename)
-            anly_regridded_filename =  p.opt["ANLY_TILE_PREFIX"] + fcst_hr_str + \
+            anly_regridded_filename = p.opt["ANLY_TILE_PREFIX"] + fcst_hr_str + \
                                        "_" + anly_base
             anly_regridded_file = os.path.join(tile_dir, anly_regridded_filename)
             
@@ -671,14 +673,14 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                                     " exists, skip regridding")
             else:
                 # Perform regridding on the records of interest
-                var_level_string = retrieve_var_info(p,logger)
+                var_level_string = retrieve_var_info(p, logger)
                 if regrid_with_MET_tool:
                     anly_cmd_list = [regrid_data_plane_exe, ' ',
                                      anly_filename, ' ',
                                      anly_grid_spec, ' ',
                                      anly_regridded_file, ' ',
                                      var_level_string, ' ',
-                                     ' -method NEAREST ' ]
+                                     ' -method NEAREST ']
                     regrid_cmd_anly = ''.join(anly_cmd_list)
                     regrid_anly_out = subprocess.check_output(regrid_cmd_anly,                                                              
                                                               stderr= 
@@ -689,8 +691,8 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                 else:
                     # Regridding via wgrib2.
                     requested_records = retrieve_var_info(p,logger)
-                    anly_cmd_list = [wgrib2_exe, ' ' , anly_filename, ' | ', 
-                                     egrep_exe,' ', requested_records, '|', 
+                    anly_cmd_list = [wgrib2_exe, ' ', anly_filename, ' | ',
+                                     egrep_exe, ' ', requested_records, '|',
                                      wgrib2_exe, ' -i ', anly_filename,
                                      ' -new_grid ', anly_grid_spec, ' ', 
                                      anly_regridded_file]
@@ -702,7 +704,6 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                     msg = ("INFO|[wgrib2]| Regridding via wgrib2:" + 
                            wgrb_cmd_anly)
                     logger.info(msg)
-
 
 
 def retrieve_var_info(p, logger):
@@ -797,7 +798,7 @@ def retrieve_var_info(p, logger):
     return field_level_string
 
 
-def create_grid_specification_string(lat,lon,logger,p):
+def create_grid_specification_string(lat, lon, logger, p):
     ''' Create the grid specification string with the format:
          latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
          used by the MET tool, regrid_data_plane.
@@ -960,7 +961,7 @@ def prune_empty(output_dir, p, logger):
         for file in files:
             file = os.path.join(root,file)
             if os.stat(file).st_size == 0:
-                msg = ("INFO|[" +cur_filename + ":" + 
+                msg = ("INFO|[" + cur_filename + ":" +
                        cur_function + "]|" + 
                        "Empty file: " + file +
                        "...removing" )
@@ -982,8 +983,108 @@ def prune_empty(output_dir, p, logger):
                 logger.info(msg)  
                 os.rmdir(d)
 
-       
 
+def apply_series_filters(series_output_dir, p, logger):
+    ''' Apply filter options, as specified in the
+        constants_pdef.py param/config file.
+
+        Args:
+           series_output_dir:  The directory where the filter results
+                               are stored.
+           p       : The reference to the constants_pdef.py
+                     param/config file.
+           logger  : The logger to which all logging is directed.
+
+
+        Returns:
+            None
+
+    '''
+
+    # Useful for logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    # Retrieve any values from the param/config file,
+    # constants_pdef.py.
+    init_list = gen_init_list(p.opt["INIT_DATE_BEG"],
+                                   p.opt["INIT_DATE_END"],
+                                   p.opt["INIT_HOUR_INC"],
+                                   p.opt["INIT_HOUR_END"])
+    tc_stat_exe = p.opt["TC_STAT"]
+    extract_out_dir = p.opt["EXTRACT_OUT_DIR"]
+    cur_pid = str(os.getpid())
+    tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
+    filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
+    tile_dir = extract_out_dir
+
+    for cur_init in init_list:
+        # Create the ASCII file with the storms that meet the
+        # filter criteria.
+        filter_path = os.path.join(series_output_dir, cur_init)
+        mkdir_p(filter_path)
+        filter_file = "filter_" + cur_init + ".tcst"
+        filter_filename = os.path.join(series_output_dir,
+                                       cur_init, filter_file)
+        tc_cmd_list = [tc_stat_exe, " -job filter ",
+                       " -lookin ", tile_dir,
+                       " -match_points true ",
+                       " -dump_row ", filter_filename,
+                       " ", filter_opts]
+        tc_cmd = ''.join(tc_cmd_list)
+        print("tc_cmd: ", tc_cmd)
+        tcs.tc_stat(p, logger, tc_cmd, series_output_dir)
+        msg = ("INFO}[" + cur_filename + ":" + cur_function +
+               "]| tc command: " + tc_cmd)
+        logger.info(msg)
+
+        # Check that the filter.tcst file isn't empty. If
+        # it is, then use the files from extract_tiles as
+        # input (tile_dir = extract_out_dir)
+        if os.stat(filter_filename).st_size == 0:
+            msg = ("WARN| " + cur_filename + ":" + cur_function +
+                   "]| Empty filter file, filter " +
+                   " options yield nothing...using full " +
+                   " dataset created by extract_tiles.")
+            logger.warn(msg)
+        else:
+            # Now retrieve the files corresponding to these
+            # storm ids that resulted from filtering.
+            tile_dir = series_output_dir
+            sorted_storm_ids = get_storm_ids(filter_filename, logger)
+            storm_match_list = []
+            for cur_storm in sorted_storm_ids:
+                msg = ("INFO| [" + cur_filename + ":" +
+                       cur_function +
+                       " ] | Processing storm: " + cur_storm)
+                logger.info(msg)
+            storm_output_dir = os.path.join(series_output_dir,
+                                            cur_init, cur_storm)
+            mkdir_p(storm_output_dir)
+            mkdir_p(tmp_dir)
+            tmp_file = "filter_" + cur_init + "_" + cur_storm
+            tmp_filename = os.path.join(tmp_dir, tmp_file)
+            storm_match_list = grep(cur_storm, filter_filename)
+            with open(tmp_filename, "a+") as tmp_file:
+                for storm_match in storm_match_list:
+                    tmp_file.write(storm_match)
+
+            # Create the analysis and forecast files based
+            # on the storms (defined in the tmp_filename created above)
+            # Store the analysis and forecast files in the
+            # series_output_dir.
+            retrieve_and_regrid(tmp_filename, cur_init, cur_storm,
+                                tile_dir, logger, p)
+
+    # Check for any empty files and directories and remove them to avoid
+    # any errors or performance degradation when performing
+    # series analysis.
+    prune_empty(series_output_dir, p, logger)
+
+    # Clean up the tmp dir
+    subprocess.call(["rm", "-rf", tmp_dir])
+
+    return 0
 
 
 if __name__ == "__main__":
