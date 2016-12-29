@@ -51,13 +51,8 @@ def analysis_by_lead_time():
     fhr_beg = p.opt["FHR_BEG"]
     fhr_end = p.opt["FHR_END"]
     fhr_inc = p.opt["FHR_INC"]
-    fcst_nc_tile_regex = p.opt["FCST_NC_TILE_REGEX"]
-    anly_nc_tile_regex = p.opt["ANLY_NC_TILE_REGEX"]
     fcst_tile_regex = p.opt["FCST_TILE_REGEX"]
     anly_tile_regex = p.opt["ANLY_TILE_REGEX"]
-    fcst_ascii_regex = p.opt["FCST_ASCII_REGEX_LEAD"]
-    anly_ascii_regex = p.opt["ANLY_ASCII_REGEX_LEAD"]
-    out_dir_base = p.opt["SERIES_LEAD_FILTERED_OUT_DIR"]
     var_list = p.opt["VAR_LIST"]
     stat_list = p.opt["STAT_LIST"]
     series_analysis_exe = p.opt["SERIES_ANALYSIS"]
@@ -66,22 +61,11 @@ def analysis_by_lead_time():
     convert_exe = p.opt["CONVERT_EXE"]
     series_anly_configuration_file = p.opt["CONFIG_FILE_LEAD"]
     extract_out_dir = p.opt["EXTRACT_OUT_DIR"]
-    filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"] 
-    series_lead_filtered_out_dir = p.opt["SERIES_LEAD_FILTERED_OUT_DIR"]            
-<<<<<<< HEAD
-    init_times = p.opt["INIT_LIST"]
-=======
-    init_times = util.gen_init_list(p.opt["INIT_DATE_BEG"],
-                                    p.opt["INIT_DATE_END"],
-                                    p.opt["INIT_HOUR_INC"],
-                                    p.opt["INIT_HOUR_END"])
-
->>>>>>> 6dad71c7c194c21d748f19d0c6da542f9b0ad92e
-    series_lead_out_dir = p.opt["SERIES_LEAD_OUT_DIR"] 
+    series_lead_filtered_out_dir = p.opt["SERIES_LEAD_FILTERED_OUT_DIR"]
+    series_lead_out_dir = p.opt["SERIES_LEAD_OUT_DIR"]
     background_map = p.opt["BACKGROUND_MAP"]
 
-
-    # Check for the existence of the storm track tiles and raise 
+    # Check for the existence of the storm track tiles and raise
     # an error if these are missing.
     # Get a list of the grb2 forecast tiles in 
     # <project dir>/series_analysis/*/*/FCST_TILE_F<cur_fhr>.grb2
@@ -101,7 +85,7 @@ def analysis_by_lead_time():
   
     # Apply any filtering via tc_stat, as indicated in the
     # constants_pdef.py parameter/config file.
-    apply_filters(p,logger)
+    util.apply_series_filters(series_lead_filtered_out_dir, p, logger)
 
     # Check for any empty files and directories and remove to avoid
     # any errors or performance degradation when performing a 
@@ -133,24 +117,21 @@ def analysis_by_lead_time():
         # so they can be saved in ASCII files.
         fcst_tiles_list = get_anly_fcst_files(tile_dir,"FCST",fcst_tile_regex,
                                     cur_fhr, logger)
-        fcst_tiles = retrieve_fhr_tiles(fcst_tiles_list,'FCST',out_dir, 
-                                        cur_fhr, fcst_tile_regex,logger)
-        #ascii_fcst_file_parts = [out_dir, '/FCST_FILES_F',cur_fhr]
-        ascii_fcst_file_parts = [tile_dir, '/FCST_FILES_F',cur_fhr]
+        fcst_tiles = retrieve_fhr_tiles(fcst_tiles_list, 'FCST', out_dir,
+                                        cur_fhr, fcst_tile_regex, logger)
+        ascii_fcst_file_parts = [tile_dir, '/FCST_FILES_F', cur_fhr]
         ascii_fcst_file = ''.join(ascii_fcst_file_parts)
     
         # Gather all the analysis gridded tile files
         # so they can be saved in ASCII files.
         anly_tiles_list = get_anly_fcst_files(tile_dir,"ANLY", anly_tile_regex, 
                                     cur_fhr, logger)
-        anly_tiles = retrieve_fhr_tiles(anly_tiles_list,'ANLY',out_dir, 
-                                        cur_fhr, anly_tile_regex,logger)
-        #ascii_anly_file_parts = [out_dir, '/ANLY_FILES_F',cur_fhr]
-        ascii_anly_file_parts = [tile_dir, '/ANLY_FILES_F',cur_fhr]
+        anly_tiles = retrieve_fhr_tiles(anly_tiles_list,'ANLY', out_dir,
+                                        cur_fhr, anly_tile_regex, logger)
+        ascii_anly_file_parts = [tile_dir, '/ANLY_FILES_F', cur_fhr]
         ascii_anly_file = ''.join(ascii_anly_file_parts)
 
-
-        # Now create the ASCII files needed for the -fcst and -obs 
+        # Now create the ASCII files needed for the -fcst and -obs
         try:
            if len(fcst_tiles) == 0:
                msg = ("INFO|[" + cur_filename + ":" +
@@ -162,7 +143,6 @@ def analysis_by_lead_time():
                with open(ascii_fcst_file, 'a') as f:
                    f.write(fcst_tiles)
 
-                
         except IOError as e:
             msg = ("ERROR: Could not create requested" + 
                    " ASCII file: " + ascii_fcst_file)
@@ -188,7 +168,6 @@ def analysis_by_lead_time():
         # Remove any empty directories that result from 
         # when no files are written.
         util.prune_empty(out_dir,p,logger)
-
 
         # -fcst and -obs params
         fcst_param_parts = ['-fcst ', ascii_fcst_file]
@@ -278,7 +257,6 @@ def analysis_by_lead_time():
             nc_var_list = get_var_ncfiles(name, nc_list,logger)
             if len(nc_var_list) == 0:
                 logger.error("ERROR nc_var_list is empty, exiting...")
-                
 
             # Iterate over the statistics, setting the CUR_STAT
             # environment variable...
@@ -347,7 +325,6 @@ def analysis_by_lead_time():
 
                     nseries = get_nseries(cur_nc, p, logger)
 
-
                     # Create the plot data plane command.
                     print( "creating plot via plot data plane")
                     if background_map:
@@ -368,7 +345,7 @@ def analysis_by_lead_time():
                                              ' Forecasts (N = ', str(nseries),
                                              '), ', cur_stat,' for ', cur_var, 
                                              '"', ' -plot_range ', str(vmin),
-                                             ' ', str(vmax) ]
+                                             ' ', str(vmax)]
 
                     plot_data_plane_cmd = ''.join(plot_data_plane_parts)
                     msg = ("INFO|[" + cur_filename + ":" +  
@@ -390,16 +367,13 @@ def analysis_by_lead_time():
                                                       shell=True)
 
                 # Create animated gif
-                
-                gif_parts = [convert_exe, 
-                             ' -dispose Background -delay 100 ', 
-                             series_lead_out_dir, '/series_F', 
-                             str(fhr_inc).zfill(3),
-                             '/series_F',str(fhr_inc).zfill(3),
-                             '_', name,'_', 
-                             level, '_', cur_stat, '.png' , '  ', 
-                             animate_dir,'/series_animate_', name, '_', 
-                             level, '_', cur_stat, '.gif']    
+                gif_parts = [convert_exe,
+                             ' -dispose Background -delay 100 ',
+                             series_lead_out_dir, '/series_F*',
+                             '/series_F*', '_', name,'_',
+                             level, '_', cur_stat, '.png' , '  ',
+                             animate_dir,'/series_animate_', name, '_',
+                             level, '_', cur_stat, '.gif']
                 animate_cmd = ''.join(gif_parts)
                 msg = ("INFO|[" + cur_filename + ":" + cur_function + 
                        "]| animate command: " + animate_cmd)
@@ -407,7 +381,6 @@ def analysis_by_lead_time():
                 animate_out = subprocess.check_output(animate_cmd,
                                               stderr=subprocess.STDOUT,
                                               shell=True)
-
 
     
 def get_nseries(nc_var_file, p, logger):
@@ -436,7 +409,9 @@ def get_nseries(nc_var_file, p, logger):
     ncap2_exe = p.opt["NCAP2_EXE"]
     ncdump_exe = p.opt["NCDUMP_EXE"]
 
- 
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
     # Determine the series_F<fhr> subdirectory where this netCDF file
     # resides.
     match = re.match(r'(.*/series_F[0-9]{3})/series_F[0-9]{3}.*nc',
@@ -470,7 +445,7 @@ def get_nseries(nc_var_file, p, logger):
                             '/nseries.nc > ', nseries_txt_path]
     ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
     print("ncdump_max_cmd: ", ncdump_max_cmd)
-    ncdump_out = subprocess.check_output(ncdump_max_cmd, stderr= 
+    ncdump_out = subprocess.check_output(ncdump_max_cmd, stderr=
                                          subprocess.STDOUT,
                                          shell=True)
     # Look for the max value for this netCDF file.
@@ -483,7 +458,7 @@ def get_nseries(nc_var_file, p, logger):
 
                     # Clean up any intermediate .nc and .txt files
                     print("cleaning up nseries nc and txt files") 
-                    nseries_list = [rm_exe, ' ', base_nc_dir,'/nseries.*'] 
+                    nseries_list = [rm_exe, ' ', base_nc_dir,'/nseries.*']
                     nseries_cmd = ''.join(nseries_list)
                     os.system(nseries_cmd)
                     return max
@@ -491,10 +466,9 @@ def get_nseries(nc_var_file, p, logger):
     except IOError as e:
         msg = ("ERROR|[" + cur_filename + ":" + 
                cur_function +  "]| cannot open the min text file")
-        log.error(msg)
+        logger.error(msg)
         
-   
-                    
+
 def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
     '''Determine the min and max for all lead times for each 
        statistic and variable pairing.
@@ -516,11 +490,13 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
                VMAX:  The maximum
        
     '''
-    out_dir_base = p.opt["SERIES_LEAD_OUT_DIR"]
+
     ncap2_exe = p.opt["NCAP2_EXE"]
     ncdump_exe = p.opt["NCDUMP_EXE"]
     rm_exe = p.opt["RM_EXE"]
 
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
 
     # Initialize the threshold values for min and max.
     VMIN = 999999.
@@ -538,7 +514,7 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
                    "]| Cannot determine base directory path " + 
                    "for netCDF files. Exiting...")
             logger.error(msg)
-            #sys.exit(1) 
+            sys.exit(1)
         
         # Use NCO utility ncap2 to find the min and max for 
         # the variable and stat pair.
@@ -562,8 +538,7 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
         nco_min_out = subprocess.check_output(nco_min_cmd, stderr=
                                               subprocess.STDOUT,
                                               shell=True) 
- 
- 
+
         # MAX VALUE from netCDF
         # First, remove pre-existing max.nc file from a previous run.
         max_nc_path = os.path.join(base_nc_dir, 'max.nc')
@@ -582,7 +557,6 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
         nco_max_out = subprocess.check_output(nco_max_cmd, stderr=
                                               subprocess.STDOUT,
                                               shell=True)
-
 
         # Create ASCII files with the min and max values, which can
         # then be parsed to find the VMIN and VMAX.
@@ -619,7 +593,7 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
         except IOError as e:
             msg = ("ERROR|[" +cur_filename + ":" + cur_function  + 
                    "]| cannot open the min text file")
-            log.error(msg) 
+            logger.error(msg)
         try:
             with open(max_txt_path,'r') as fmax:
                 for line in fmax:
@@ -634,7 +608,8 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
                       "]| cannot open the max text file")
             logger.error(msg)
     print("For ", cur_stat, " final VMIN: ", VMIN, " final VMAX: ", VMAX) 
-    return VMIN,VMAX
+    return VMIN, VMAX
+
 
 def get_var_ncfiles(cur_var, nc_list, logger):
     ''' Retrieve only the netCDF files corresponding to this statistic
@@ -651,6 +626,10 @@ def get_var_ncfiles(cur_var, nc_list, logger):
                               correspond to this variable.
 
     '''
+
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
     # Create the regex to retrieve the variable name.
     # The variable is contained in the netCDF file name.
     var_ncfiles = []
@@ -693,6 +672,9 @@ def retrieve_nc_files(base_dir, logger):
                      when the MET series analysis binary was invoked.
     '''
 
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
     nc_list = []
     filename_regex = "series_F[0-9]{3}.*nc"
 
@@ -713,12 +695,8 @@ def retrieve_nc_files(base_dir, logger):
             if match:
                 nc_file = os.path.join(full_path, cur_nc)
                 nc_list.append(nc_file)
-              
-   
+
     return nc_list    
-
-
-
 
 
 def retrieve_fhr_tiles(tile_list, file_type, cur_fhr, out_dir, 
@@ -740,31 +718,34 @@ def retrieve_fhr_tiles(tile_list, file_type, cur_fhr, out_dir,
                                 separated by newlines
     '''
 
-    type = file_type.upper() 
-    fhr_tiles = '' 
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    type = file_type.upper()
+    fhr_tiles = ''
     for cur_tile in tile_list:
-       match = re.match(type_regex, cur_tile) 
-       if match:
-           storm_subdir = match.group(0)
-       else:
-           msg = ("ERROR|[" + cur_filename + ":" + 
-                  cur_function +                 
-                  "]| No matching storm id found, exiting...")
-           logger.error(msg)
-           sys.exit(1)
+        match = re.match(type_regex, cur_tile)
+        if match:
+            storm_subdir = match.group(0)
+        else:
+            msg = ("ERROR|[" + cur_filename + ":" +
+                   cur_function +
+                   "]| No matching storm id found, exiting...")
+            logger.error(msg)
+            sys.exit(1)
 
-       # Create the ASCII files for the forecast or analysis files
-       if type == 'FCST':
-           filename_base = 'FCST_FILES_F'
-       else:
-           filename_base = 'ANLY_FILES_F'
+        # Create the ASCII files for the forecast or analysis files
+        if type == 'FCST':
+            filename_base = 'FCST_FILES_F'
+        else:
+            filename_base = 'ANLY_FILES_F'
 
-       tile_hr_parts = [filename_base, cur_fhr]
-       tile_hr_dir = ''.join(tile_hr_parts)
-       tile_full_filename = os.path.join(out_dir, tile_hr_dir)
-        
-       fhr_tiles += cur_tile   
-       fhr_tiles += '\n'
+        tile_hr_parts = [filename_base, cur_fhr]
+        tile_hr_dir = ''.join(tile_hr_parts)
+        tile_full_filename = os.path.join(out_dir, tile_hr_dir)
+
+        fhr_tiles += cur_tile
+        fhr_tiles += '\n'
 
 
     return fhr_tiles
@@ -788,7 +769,10 @@ def find_matching_tile(fcst_file, anly_tiles, logger):
                                    that corresponds to the same lead 
                                    time as the input fcst tile. 
     '''
-    
+
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
     # Derive the ANLY file name from the FCST file.
     anly_from_fcst = re.sub(r'FCST','ANLY', fcst_file)
 
@@ -796,7 +780,6 @@ def find_matching_tile(fcst_file, anly_tiles, logger):
         return anly_from_fcst
     else:
         return None
-
 
 
 def get_anly_fcst_files(filedir, type, filename_regex, cur_fhr, logger):
@@ -820,6 +803,10 @@ def get_anly_fcst_files(filedir, type, filename_regex, cur_fhr, logger):
           file_paths (string): a list of filenames (with full filepath)       
 
     '''
+
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
     file_paths = []
     
     # Walk the tree
@@ -848,6 +835,7 @@ def get_anly_fcst_files(filedir, type, filename_regex, cur_fhr, logger):
                 continue
     return file_paths
 
+
 def cleanup_lead_ascii( p, logger):
     ''' Remove any pre-existing FCST and ANLY ASCII files 
         created by previous runs of series_by_lead.
@@ -864,7 +852,6 @@ def cleanup_lead_ascii( p, logger):
                     gridded tiles.
     '''
     
-
     # Useful for logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
@@ -893,108 +880,6 @@ def cleanup_lead_ascii( p, logger):
                     os.remove(rm_file)
              
        
-def apply_filters(p,logger):
-    ''' Apply any filter options, as specified in the
-        constants_pdef.py param/config file.
-
-        Args:
-           p       : The reference to the constants_pdef.py 
-                     param/config file.
-           logger  : The logger to which all logging is directed.
-
-
-        Returns:
-            None
-
-    '''
-
-    # Useful for logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
-    # Retrieve any values from the param/config file, 
-    # constants_pdef.py.
-<<<<<<< HEAD
-    init_times = p.opt["INIT_LIST"]
-=======
-    init_list = util.gen_init_list(p.opt["INIT_DATE_BEG"],
-                                    p.opt["INIT_DATE_END"],
-                                    p.opt["INIT_HOUR_INC"],
-                                    p.opt["INIT_HOUR_END"])
->>>>>>> 6dad71c7c194c21d748f19d0c6da542f9b0ad92e
-    tc_stat_exe = p.opt["TC_STAT"]
-    series_lead_filtered_out_dir = p.opt["SERIES_LEAD_FILTERED_OUT_DIR"]
-    extract_out_dir = p.opt["EXTRACT_OUT_DIR"]
-    cur_pid = str(os.getpid())
-    tmp_dir = os.path.join(p.opt["TMP_DIR"],cur_pid)
-    filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
-
-    # Create the ASCII file with the storms that meet the
-    # filter criteria.
-    filter_filename = os.path.join(series_lead_filtered_out_dir,
-                                   "filter.tcst")
-    tc_cmd_list = [tc_stat_exe, " -job filter ",
-                   " -lookin ",  extract_out_dir, 
-                   " -match_points true ",
-                   " -dump_row ", filter_filename, 
-                   " ", filter_opts]
-    tc_cmd = ''.join(tc_cmd_list)
-    tcs.tc_stat(p, logger, tc_cmd, series_lead_filtered_out_dir)
-    msg = ("INFO}[" + cur_filename + ":" + cur_function + 
-           "]| tc command: " + tc_cmd)
-    logger.info(msg)
-
-    # Check that the filter.tcst file isn't empty. If
-    # it is, then use the files from extract_tiles as
-    # input (tile_dir = extract_out_dir)
-    if os.stat(filter_filename).st_size == 0:
-        tile_dir = extract_out_dir
-        msg = ("WARN| " + cur_filename + ":" + cur_function + 
-                     "]| Empty filter file, filter " +
-                     " options yield nothing...using full "+
-                     " dataset created by extract_tiles." )
-        logger.warn(msg) 
-    else:
-        # Now retrieve the files corresponding to these
-        # storm ids that resulted from filtering.
-        tile_dir = series_lead_filtered_out_dir
-        sorted_storm_ids = util.get_storm_ids(filter_filename, logger)
-        storm_match_list = []
-        for cur_storm in sorted_storm_ids:
-            msg = ("INFO| [" + cur_filename + ":" + 
-                   cur_function +
-                   " ] | Processing storm: " + cur_storm)
-            logger.info(msg)
-            for cur_init in init_times:
-                storm_output_dir = os.path.join(series_lead_filtered_out_dir,
-                                                cur_init, cur_storm)
-                util.mkdir_p(storm_output_dir)
-                util.mkdir_p(tmp_dir)
-                tmp_file = "filter_" + cur_init + "_" + cur_storm
-                tmp_filename = os.path.join(tmp_dir, tmp_file)
-                storm_match_list = util.grep(cur_storm, filter_filename)
-                with open(tmp_filename, "a+") as tmp_file:
-                    for storm_match in storm_match_list:
-                        tmp_file.write(storm_match)
-
-                # Create the analysis and forecast files based
-                # on the storms (defined in the tmp_filename created above)
-                # Store the analysis and forecast files in the  
-                # series_lead_filtered_out_dir.
-                util.retrieve_and_regrid(tmp_filename, cur_init, cur_storm, 
-                                    series_lead_filtered_out_dir, logger, p)
-       
-    # Check for any empty files and directories and remove them to avoid
-    # any errors or performance degradation when performing  
-    # series analysis.
-    util.prune_empty(series_lead_filtered_out_dir, p, logger) 
-
-    # Clean up the tmp dir
-    subprocess.call(["rm", "-rf", tmp_dir])     
-
-
-    return 0
-
 if __name__ == "__main__":
     # Create ConfigMaster parm object
     p = P.Params()
