@@ -247,11 +247,13 @@ def get_storm_ids(filter_filename, logger):
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
+
+    # Initialize a set because we want unique storm ids.
     storm_id_list = set()
     empty_list = [] 
 
     # Check if the filter_filename is empty, if it
-    # is, then return.  
+    # is, then return an empty list.
     if not os.path.isfile(filter_filename):
         return empty_list
     if os.stat(filter_filename).st_size == 0:
@@ -270,7 +272,7 @@ def get_storm_ids(filter_filename, logger):
 
     # sort the unique storm ids, copy the original
     # set by using sorted rather than sort.
-    sorted_storms  = sorted(storm_id_list)
+    sorted_storms = sorted(storm_id_list)
     return sorted_storms
 
 
@@ -303,7 +305,7 @@ def get_files(filedir, filename_regex, logger):
             if match:
                 # Join the two strings to form the full
                 # filepath.
-                filepath = os.path.join(root,filename)
+                filepath = os.path.join(root, filename)
                 file_paths.append(filepath)
             else:
                 continue
@@ -365,11 +367,11 @@ def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
  
     # Check that there are analysis and forecast tiles
     # (which were, or should have been created earlier by extract_tiles).
-    if not anly_tiles :
+    if not anly_tiles:
         # Cannot proceed, the necessary 30x30 degree analysis tiles are missing
         logger.error("ERROR: No anly tile files were found  "+ tile_dir)
         raise OSError("No 30x30 anlysis tiles were found")
-    elif not fcst_tiles :
+    elif not fcst_tiles:
         # Cannot proceed, the necessary 30x30 degree fcst tiles are missing
         logger.error("ERROR: No fcst tile files were found  "+ tile_dir)
         raise OSError("No 30x30 fcst tiles were found")
@@ -380,8 +382,6 @@ def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
         # either an ANLY tile file or a FCST tile
         # file, this indicates a serious problem.
         logger.warn("WARNING: There are a different number of anly and fcst tiles, there should be the same number...")
-
-    return 0
 
 
 def extract_year_month(init_time, logger):
@@ -413,12 +413,20 @@ def extract_year_month(init_time, logger):
 
 
 def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
-    ''' Retrieves the data from the GFS_DIR (defined in constants_pdef.py) that
+    ''' Retrieves the data from the GFS_DIR (defined in constants_pdef.py), or
+        extract_tiles directory that
         corresponds to the storms defined in the tmp_filename:
         1) create the analysis tile and forecast file names from the 
            tmp_filename file. 
         2) perform regridding via MET tool (regrid_data_plane) and store results
-           (netCDF files) in the out_dir or via 
+           (netCDF files) in the out_dir or via
+
+           Regridding via  regrid_data_plane on the forecast and analysis files via a latlon
+                           string with the following format:
+                           latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
+                           NOTE:  thes values are defined in
+                                  the extract_tiles_parm parameter/config
+                                  file as NLAT, NLON.
    
         Args:
         tmp_filename:      Filename of the temporary filter file in 
@@ -430,7 +438,11 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
      
         cur_storm:         The current storm 
       
-        out_dir:           The directory where regridded netCDF output is saved.
+        out_dir:           The directory where regridded netCDF or grib2 output is saved
+                           depending on which regridding methodology is requested.  If
+                           the MET tool regrid_data_plane is requested, then netCDF data
+                           is produced.  If wgrib2 is requested, then grib2 data is produced.
+
    
 
         logger     :       The name of the logger used in logging.
@@ -438,13 +450,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                            param/config file.
      
         Returns:
-        None:              Performs regridding via invoking regrid_data_plane
-                           on the forecast and analysis files via a latlon 
-                           string with the following format: 
-                           latlon Nx Ny lat_ll lon_ll delta_lat delta_lon 
-                           NOTE:  thes values are defined in 
-                                  the extract_tiles_parm parameter/config 
-                                  file as NLAT, NLON.
+           None
 
     '''
 
@@ -458,6 +464,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
     wgrib2_exe = p.opt["WGRIB2"]
     egrep_exe = p.opt["EGREP_EXE"]
     regrid_with_MET_tool = p.opt["REGRID_USING_MET_TOOL"]
+    overwrite_flag = p.opt["OVERWRITE_TRACK"]
 
     # Extract the columns of interest: init time, lead time,
     # valid time lat and lon of both  tropical cyclone tracks, etc.
@@ -489,24 +496,20 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                 init_ymdh = init_ymdh_match.group(0)
             else:
                 logger.WARN("RuntimeError raised")
-                # raise RuntimeError('init time has unexpected format for YMDH')
 
             valid_ymd_match = re.match(r'[0-9]{8}', valid)
             if valid_ymd_match:
                 valid_ymd = valid_ymd_match.group(0)
             else:
                 logger.WARN("RuntimeError raised")
-                # raise RuntimeError('valid time has unexpected format for YMD')
 
             valid_ymdh_match = re.match(r'[0-9|_]{11}', valid)
             if valid_ymdh_match:
                 valid_ymdh = valid_ymdh_match.group(0)
             else:
                 logger.WARN("RuntimeError raised")
-                # raise RuntimeError('valid time has unexpected format for YMDH')
 
             lead_str = str(fcst_hr).zfill(3)
-                
             fcst_dir = os.path.join(gfs_dir, init_ymd)
             init_ymdh_split = init_ymdh.split("_")
             init_YYYYmmddHH = "".join(init_ymdh_split)
@@ -514,7 +517,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
             valid_ymdh_split = valid_ymdh.split("_")
             valid_YYYYmmddHH = "".join(valid_ymdh_split)
 
-            # Do regridding via MET Tool or wgrib2 tool, based on flag set in
+            # Create output filenames for regridding via MET Tool or wgrib2 tool, based on flag set in
             # constants_pdef.py.
             if regrid_with_MET_tool:
                 # MET Tool regrid_data_plane used to regrid.
@@ -535,42 +538,28 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                 # Create the filename for the regridded file, which is a 
                 # grib2 file.
                 fcstSTS = sts.StringTemplateSubstitution(logger,
-                                                   p.opt["GFS_FCST_FILE_TMPL"],
-                                                   init=init_YYYYmmddHH, 
-                                                   lead=lead_str)
+                                                         p.opt["GFS_FCST_FILE_TMPL"],
+                                                         init=init_YYYYmmddHH,
+                                                         lead=lead_str)
 
                 anlySTS = sts.StringTemplateSubstitution(logger,
-                                                  p.opt["GFS_ANLY_FILE_TMPL"],
-                                                  valid=valid_YYYYmmddHH,
-                                                  lead=lead_str)
+                                                         p.opt["GFS_ANLY_FILE_TMPL"],
+                                                         valid=valid_YYYYmmddHH,
+                                                         lead=lead_str)
 
             fcst_file = fcstSTS.doStringSub()
             fcst_filename = os.path.join(fcst_dir, fcst_file)
             anly_file = anlySTS.doStringSub()
             anly_filename = os.path.join(anly_dir, anly_file)
 
-            # Create the tmp file to be used for troubleshooting
-            # and verification.  The file will contain all the 
-            # fcst and analysis files that will be used as input 
-            # for another script.
-            tmp_fcst_filename = os.path.join(out_dir, 
-                                             "tmp_fcst_regridded.txt")
-            tmp_anly_filename = os.path.join(out_dir, 
-                                             "tmp_anly_regridded.txt")
-
-            # Check if the forecast file exists. If it doesn't 
+            # Check if the forecast input file exists. If it doesn't
             # exist, just log it
             if file_exists(fcst_filename):
                 msg = ("INFO| [" + cur_filename + ":" + cur_function +  
                        " ] | Forecast file: " + fcst_filename)
                 logger.info(msg)
 
-                # Write this to the tmp file (to be used for 
-                # troubleshooting and validation) which will be saved
-                # in the EXTRACT_OUT_DIR
-                with open(tmp_fcst_filename, "a+") as tmpfile:
-                    tmpfile.write(fcst_filename+"\n")
-                
+
             else:
                 msg = ("WARNING| [" + cur_filename + ":" + 
                        cur_function + " ] | " +
@@ -579,7 +568,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                 logger.warn(msg)
                 continue
 
-            # Check if the analysis file exists. If it doesn't 
+            # Check if the analysis input file exists. If it doesn't
             # exist, just log it.
             if file_exists(anly_filename):
                     msg = ("INFO| [" + cur_filename + ":" +
@@ -587,11 +576,6 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                            anly_filename)
                     logger.info(msg)
 
-                    # Write this to the tmp file (to be used for 
-                    # troubleshooting and validation). This will
-                    # be stored in the EXTRACT_OUT_DIR directory.
-                    with open(tmp_anly_filename, "a+") as tmpfile:
-                        tmpfile.write(anly_filename+"\n")
             else:
                 msg = ("WARNING| [" + cur_filename + ":" + 
                        cur_function + " ] | " +
@@ -620,15 +604,15 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
             anly_regridded_file = os.path.join(tile_dir, anly_regridded_filename)
             
             # Regrid the fcst file only if a fcst tile 
-            # file does NOT already exist.
+            # file does NOT already exist or if the overwrite flag is True.
             # Create new gridded file for fcst tile
-            if file_exists(fcst_regridded_file):
+            if file_exists(fcst_regridded_file) and not overwrite_flag:
                 msg = ("INFO| [" + cur_filename + ":" + 
-                       cur_function +  " ] | Forecast tile file " + 
+                       cur_function + " ] | Forecast tile file " +
                        fcst_regridded_file + " exists, skip regridding")
                 logger.info(msg)
             else:
-                # Perform regridding on the records of interest
+                # Perform fcst regridding on the records of interest
                 var_level_string = retrieve_var_info(p, logger)
                 if regrid_with_MET_tool:
                     # Perform regridding using MET Tool regrid_data_plane
@@ -665,14 +649,14 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                                                             shell=True)
 
             # Create new gridded file for anly tile
-            if file_exists(anly_regridded_file):
-                logger.info("INFO| [" + cur_filename + ":" +                                                        
-                                    cur_function +  " ] |" + 
-                                    " Analysis tile file: " + 
-                                    anly_regridded_file + 
-                                    " exists, skip regridding")
+            if file_exists(anly_regridded_file) and not overwrite_flag:
+                logger.info("INFO| [" + cur_filename + ":" +
+                            cur_function + " ] |" +
+                            " Analysis tile file: " +
+                            anly_regridded_file +
+                            " exists, skip regridding")
             else:
-                # Perform regridding on the records of interest
+                # Perform anly regridding on the records of interest
                 var_level_string = retrieve_var_info(p, logger)
                 if regrid_with_MET_tool:
                     anly_cmd_list = [regrid_data_plane_exe, ' ',
@@ -998,7 +982,6 @@ def apply_series_filters(series_output_dir, p, logger):
 
         Returns:
             None
-
     '''
 
     # Useful for logging
@@ -1007,16 +990,13 @@ def apply_series_filters(series_output_dir, p, logger):
 
     # Retrieve any values from the param/config file,
     # constants_pdef.py.
-    init_list = gen_init_list(p.opt["INIT_DATE_BEG"],
-                                   p.opt["INIT_DATE_END"],
-                                   p.opt["INIT_HOUR_INC"],
-                                   p.opt["INIT_HOUR_END"])
     tc_stat_exe = p.opt["TC_STAT"]
     extract_out_dir = p.opt["EXTRACT_OUT_DIR"]
     cur_pid = str(os.getpid())
     tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
     filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
     tile_dir = extract_out_dir
+    init_list = get_updated_init_times(tile_dir, p, logger)
 
     for cur_init in init_list:
         # Create the ASCII file with the storms that meet the
@@ -1084,8 +1064,93 @@ def apply_series_filters(series_output_dir, p, logger):
     # Clean up the tmp dir
     subprocess.call(["rm", "-rf", tmp_dir])
 
-    return 0
 
+def create_filter_tmp_files(filtered_files_list, filter_output_dir, p, logger):
+    ''' Creates the tmp_fcst and tmp_anly ASCII files that contain the full filepath of files that
+        correspond to the filter criteria.  Useful for validating that filtering returns the expected
+        results/troubleshooting.
+
+        Args:
+            filtered_files_list :  A list of the netCDF or grb2 files that result from applying filter options
+                                   and running the MET tool tc_stat.
+
+            filter_output_dir   :  The directory where the filtered data is stored
+
+            p:                      Reference to constants_pdef.py
+
+            logger:                The logger to where all logging is directed.
+
+        Returns:
+            None: Creates two ASCII files
+
+
+    '''
+
+    # Useful for logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    # Create the filenames for the tmp_fcst and tmp_anly files.
+    tmp_fcst_filename = os.path.join(filter_output_dir, "tmp_fcst_regridded.txt")
+    tmp_anly_filename = os.path.join(filter_output_dir, "tmp_anly_regridded.txt")
+
+    fcst_list = []
+    anly_list = []
+
+    for file in filtered_files_list:
+        fcst_match = re.match(r'ANLY_TILE_F.*', file)
+        if fcst_match:
+            fcst_list.append(fcst_match)
+        anly_match = re.match(r'FCST_TILE_F.*', file)
+        if anly_match:
+            anly_list.append(anly_match)
+
+    # Write to the appropriate tmp file
+    with open(tmp_fcst_filename, "a+") as fcst_tmpfile:
+        for fcst in fcst_list:
+            print("writing to tmp_fcst file: ", fcst)
+            logger.info("Writing to tmp_fcst file: " + fcst)
+            fcst_tmpfile.write(fcst + "\n")
+
+    with open(tmp_anly_filename, "a+") as anly_tmpfile:
+        for anly in anly_list:
+            print("writing to tmp_anly file: ", anly)
+            logger.info("Writing to tmp_anly file: " + anly)
+            anly_tmpfile.write(anly + "\n")
+
+
+def get_updated_init_times(input_dir, p, logger):
+    ''' Get a list of init times, derived by the .tcst files in the
+        input_dir (and below).
+
+        Args:
+            input_dir:  The topmost directory from which our search for filter.tcst files
+                        begins.
+
+            p:          Reference to constants_pdef param/config file.
+
+            logger:     The logger to which all logging is directed.
+
+        Returns:
+            updated_init_times_list : A list of the init times represented by the
+                                      forecast.tcst files found in the input_dir.
+    '''
+
+    # For logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    updated_init_times_list = []
+    init_times_list = []
+    filter_list = get_files(input_dir, ".*.tcst", p)
+    if len(filter_list) > 0:
+        for f in filter_list:
+            print("get_updated_init_times, file: ", f)
+            match = re.match(r'.*/filter_([0-9]{8}_[0-9]{2,3})', f)
+            init_times_list.append(match.group(1))
+        updated_init_times_list = sorted(init_times_list)
+
+    return updated_init_times_list
 
 if __name__ == "__main__":
     
