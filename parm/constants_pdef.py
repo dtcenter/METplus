@@ -110,11 +110,8 @@ ANLY_ASCII_REGEX_LEAD ="ANLY_FILE_F.*"
 #
 
 TC_PAIRS_CONFIG_PATH = os.path.join(PARM_BASE, "TCPairsETCConfig")
- 
-#     Configuration files required in performing the series analysis
-
-CONFIG_FILE_LEAD = os.path.join(PARM_BASE,"SeriesAnalysisConfig_by_lead")
-CONFIG_FILE_INIT = os.path.join(PARM_BASE, "SeriesAnalysisConfig")
+SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH = os.path.join(PARM_BASE,"SeriesAnalysisConfig_by_lead")
+SERIES_ANALYSIS_BY_INIT_CONFIG_PATH = os.path.join(PARM_BASE, "SeriesAnalysisConfig")
 
 #
 #     LISTS AND SETTINGS
