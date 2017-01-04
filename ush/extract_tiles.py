@@ -75,7 +75,7 @@ def main():
         filter_filename = "filter_" + cur_init + ".tcst"
         filter_name = os.path.join(filtered_out_dir, cur_init, filter_filename)
 
-        if util.file_exists(filter_name) and overwrite_flag == False:
+        if util.file_exists(filter_name) and not overwrite_flag:
             msg = ("INFO| [" + cur_filename + ":" + cur_function +  
                    " ] | Filter file exists, using Track data file: " + 
                    filter_name)
@@ -98,11 +98,15 @@ def main():
             msg = ("INFO| [" + cur_filename + ":" + cur_function +  
                    " ] | tc command: " + tc_cmd)
             logger.info(msg)
-            
+
+            # Remove any empty files and directories that can occur
+            # from filtering.
+            util.prune_empty(filter_name, p, logger)
+
         # Now get unique storm ids from the filter file, 
         # filter_yyyymmdd_hh.tcst
-
         sorted_storm_ids = util.get_storm_ids(filter_name, logger)
+
         # Check for empty sorted_storm_ids, if empty,
         # continue to the next time.      
         if len(sorted_storm_ids) == 0:
@@ -113,8 +117,6 @@ def main():
         # search for the presence of the storm id.  Store this 
         # corresponding row of data into a temporary file in the 
         # /tmp/<pid> directory.
-       
-        storm_match_list = [] 
         for cur_storm in sorted_storm_ids:
             msg = ("INFO| [" + cur_filename + ":" + cur_function +  
                    " ] | Processing storm: " + cur_storm)
@@ -140,7 +142,7 @@ def main():
         # end of for cur_storm 
     # end of for cur_init
 
-    # Check for empty files and directories in the filtered_out_dir 
+    # Remove any empty files and directories in the extract_tiles output directory
     util.prune_empty(filtered_out_dir, p, logger)
 
     # Clean up the tmp directory
