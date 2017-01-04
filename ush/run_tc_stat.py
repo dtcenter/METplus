@@ -58,7 +58,7 @@ def tc_stat(p, logger, tc_cmd, filtered_output_dir):
     # amongst different users and runs.
     cur_pid = str(os.getpid())
 
-    # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) | 
+    # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
     # [File : function]| Message
     msg = ("INFO |  [" + cur_filename +  ":" + "cur_function] |" +
            "BEGIN run_tc_stat")
