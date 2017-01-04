@@ -122,7 +122,7 @@ SERIES_ANALYSIS_BY_INIT_CONFIG_PATH = os.path.join(PARM_BASE, "SeriesAnalysisCon
 PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py"]
 
 
-STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE", "BCRMSE", "E50", "IQR", "MAD"]
+STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE", "BCMSE", "E50", "IQR", "MAD"]
 
 #     Dates must be in YYYYMMDD format
 #     INIT_HOUR_INC is the increment in integer format
