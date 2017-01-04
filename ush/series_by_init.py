@@ -41,7 +41,7 @@ def analysis_by_init_time():
     series_analysis_exe = p.opt["SERIES_ANALYSIS"]
     plot_data_plane_exe = p.opt["PLOT_DATA_PLANE"]
     convert_exe = p.opt["CONVERT_EXE"]
-    series_anly_config_file = p.opt["CONFIG_FILE_INIT"]
+    series_anly_config_file = p.opt["SERIES_ANALYSIS_BY_INIT_CONFIG_PATH"]
     MET_regrid = p.opt["REGRID_USING_MET_TOOL"]
     filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
     cur_pid = str(os.getpid())

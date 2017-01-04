@@ -59,7 +59,7 @@ def analysis_by_lead_time():
     plot_data_plane_exe = p.opt["PLOT_DATA_PLANE"]
     rm_exe = p.opt["RM_EXE"]
     convert_exe = p.opt["CONVERT_EXE"]
-    series_anly_configuration_file = p.opt["CONFIG_FILE_LEAD"]
+    series_anly_configuration_file = p.opt["SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH"]
     extract_out_dir = p.opt["EXTRACT_OUT_DIR"]
     series_lead_filtered_out_dir = p.opt["SERIES_LEAD_FILTERED_OUT_DIR"]
     series_lead_out_dir = p.opt["SERIES_LEAD_OUT_DIR"]
