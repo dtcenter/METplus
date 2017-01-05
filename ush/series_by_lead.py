@@ -554,6 +554,7 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
                              'min=min(series_cnt_', cur_stat, ')',
                              '" ', cur_nc, ' ', min_nc_path]
         nco_min_cmd = ''.join(nco_min_cmd_parts)
+        logger.info('!!!nco_min_cmd: ' + nco_min_cmd)
         nco_min_out = subprocess.check_output(nco_min_cmd,
                                               stderr=subprocess.STDOUT,
                                               shell=True)
@@ -561,7 +562,7 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
         # MAX VALUE from netCDF
         # First, remove pre-existing max.nc file from a previous run.
         max_nc_path = os.path.join(base_nc_dir, 'max.nc')
-        max_txt_path = os.path.join(base_nc_dir, 'max.txt')
+        max_txt_file = os.path.join(base_nc_dir, 'max.txt')
         try:
             os.remove(max_nc_path)
             os.remove(max_txt_file)
@@ -572,7 +573,7 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
                              'max=max(series_cnt_', cur_stat, ')',
                              '" ', cur_nc, ' ', max_nc_path]
         nco_max_cmd = ''.join(nco_max_cmd_parts)
-        logger.info('!!!!!!!!!nco_max_cmd: ' + nco_max_cmd)
+        logger.info('!!!nco_max_cmd: ' + nco_max_cmd)
         nco_max_out = subprocess.check_output(nco_max_cmd,
                                               stderr=subprocess.STDOUT,
                                               shell=True)
@@ -584,6 +585,9 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
         ncdump_min_out = subprocess.check_output(ncdump_min_cmd,
                                                  stderr=subprocess.STDOUT,
                                                  shell=True)
+
+        min_nc_path = os.path.join(base_nc_dir, 'min.nc')
+        max_txt_path = os.path.join(base_nc_dir, 'max.txt')
         ncdump_max_cmd_parts = [ncdump_exe, ' ', base_nc_dir,
                                 '/max.nc > ', max_txt_path]
         ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
