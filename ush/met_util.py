@@ -305,7 +305,7 @@ def get_files(filedir, filename_regex, logger):
             if match:
                 # Join the two strings to form the full
                 # filepath.
-                filepath = os.path.join(root, filename)
+                filepath = os.path.join(root,filename)
                 file_paths.append(filepath)
             else:
                 continue
@@ -750,7 +750,6 @@ def retrieve_var_info(p, logger):
                         level_val, '"; ',
                         level_str, '(*,*,*)";', '\\ ']
             cur_str = ''.join(cur_list)
-            print('cur_list for regrid_data_plane:', cur_str)
             full_list.append(cur_str)
         field_level_string = ''.join(full_list)
     else:
@@ -996,9 +995,9 @@ def apply_series_filters(series_output_dir, p, logger):
     tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
     filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
     tile_dir = extract_out_dir
-    init_list = get_updated_init_times(tile_dir, p, logger)
+    init_times = get_updated_init_times(tile_dir, p, logger)
 
-    for cur_init in init_list:
+    for cur_init in init_times:
         # Create the ASCII file with the storms that meet the
         # filter criteria.
         filter_path = os.path.join(series_output_dir, cur_init)
@@ -1009,10 +1008,10 @@ def apply_series_filters(series_output_dir, p, logger):
         tc_cmd_list = [tc_stat_exe, " -job filter ",
                        " -lookin ", tile_dir,
                        " -match_points true ",
+                       " -init_inc ", cur_init,
                        " -dump_row ", filter_filename,
                        " ", filter_opts]
         tc_cmd = ''.join(tc_cmd_list)
-        print("tc_cmd: ", tc_cmd)
         tcs.tc_stat(p, logger, tc_cmd, series_output_dir)
         msg = ("INFO}[" + cur_filename + ":" + cur_function +
                "]| tc command: " + tc_cmd)
@@ -1098,24 +1097,21 @@ def create_filter_tmp_files(filtered_files_list, filter_output_dir, p, logger):
     anly_list = []
 
     for file in filtered_files_list:
-        fcst_match = re.match(r'ANLY_TILE_F.*', file)
+        fcst_match = re.match(r'(.*/FCST_TILE_F.*.[grb2|nc])', file)
         if fcst_match:
-            fcst_list.append(fcst_match)
-        anly_match = re.match(r'FCST_TILE_F.*', file)
+            fcst_list.append(fcst_match.group(1))
+
+        anly_match = re.match(r'(.*/ANLY_TILE_F.*.[grb2|nc])', file)
         if anly_match:
-            anly_list.append(anly_match)
+            anly_list.append(anly_match.group(1))
 
     # Write to the appropriate tmp file
     with open(tmp_fcst_filename, "a+") as fcst_tmpfile:
         for fcst in fcst_list:
-            print("writing to tmp_fcst file: ", fcst)
-            logger.info("Writing to tmp_fcst file: " + fcst)
             fcst_tmpfile.write(fcst + "\n")
 
     with open(tmp_anly_filename, "a+") as anly_tmpfile:
         for anly in anly_list:
-            print("writing to tmp_anly file: ", anly)
-            logger.info("Writing to tmp_anly file: " + anly)
             anly_tmpfile.write(anly + "\n")
 
 
@@ -1145,7 +1141,6 @@ def get_updated_init_times(input_dir, p, logger):
     filter_list = get_files(input_dir, ".*.tcst", p)
     if len(filter_list) > 0:
         for f in filter_list:
-            print("get_updated_init_times, file: ", f)
             match = re.match(r'.*/filter_([0-9]{8}_[0-9]{2,3})', f)
             init_times_list.append(match.group(1))
         updated_init_times_list = sorted(init_times_list)
