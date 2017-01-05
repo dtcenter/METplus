@@ -315,7 +315,6 @@ def analysis_by_lead_time():
                 repl_string = ['_', cur_stat, '.ps']
                 repl = ''.join(repl_string)
                 ps_file = re.sub('(\.nc)$', repl, cur_nc)
-                print("ps_file: ", ps_file)
 
                 # Now create the PNG filename from the
                 # Postscript filename.
@@ -353,7 +352,6 @@ def analysis_by_lead_time():
                 nseries = get_nseries(cur_nc, p, logger)
 
                 # Create the plot data plane command.
-                print("creating plot via plot data plane")
                 if background_map:
                     # Flag set to True, print background map.
                     map_data = ''
