@@ -122,7 +122,7 @@ SERIES_ANALYSIS_BY_INIT_CONFIG_PATH = os.path.join(PARM_BASE, "SeriesAnalysisCon
 PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py"]
 
 
-STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE", "BCMSE", "E50", "IQR", "MAD"]
+STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE", "BCMSE", "E50", "EIQR", "MAD"]
 
 #     Dates must be in YYYYMMDD format
 #     INIT_HOUR_INC is the increment in integer format
@@ -135,8 +135,11 @@ INIT_HOUR_END = "18"
 
 #     Used by extract_tiles.py to define the records of interest from the grib2 file
 
-
-VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0", "HGT/P250", "TMP/P850", "TMP/P500", "PVORT/L0", "UGRD/P250", "VGRD/P250", "TCDC/L0" ]
+#     WARNING:
+#     PVORT is not available in current data sets and errors occur with TCDC 
+#     do not use these variables.
+#VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0", "HGT/P250", "TMP/P850", "TMP/P500", "PVORT/L0", "UGRD/P250", "VGRD/P250", "TCDC/L0" ]
+VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0", "HGT/P250", "TMP/P850", "TMP/P500", "UGRD/P250", "VGRD/P250" ]
 EXTRACT_TILES_VAR_LIST = []
 
 #     Used for performing series analysis based on lead time
