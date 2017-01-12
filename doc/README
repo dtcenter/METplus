@@ -1,0 +1,55 @@
+-------------------------------------------------
+Model Evaluation Tools (MET) Plus  MET+  (January 2017)
+-------------------------------------------------
+
+***Terms of Use? - Do I need that here like in the README for MET?***
+
+Welcome to the documentation for MET+.  MET+ is a set of Python wrapper scripts around the MET verification tools (and eventually METViewer, a tool used for plotting MET output verification statistics).
+
+
+Background and Future
+---------------------
+
+MET+ development began in 2016 with initial development for the cyclone-relative verification for the Stony Brook University (SBU) project. Development in 2017 will focus on replicating the Global Deterministic National Centers for Environmental Predication (NCEP) Verification and future work will focus on ensemble, meso, and storm scale verification at NCEP and public support.
+
+
+Dependencies
+------------
+
+The MET verification tools package is required to be installed on your system prior to running the MET+ wrapper scripts.
+
+MET+ was developed using Python version 2.7.9.
+
+The ncdump and ncap2 utilities are used in running series_by_lead.py and can be obtained at the following sites, respectively:
+
+http://www.unidata.ucar.edu/downloads/netcdf/index.jsp
+http://nco.sourceforge.net/
+
+***Are convert, cut, and tr pretty standard?***
+***I see wgrib2 used in met_util.py.  Under what circumstances is this needed/required?***
+
+
+Version Control
+---------------
+
+MET+ uses GIT for version control in a private NCAR respository.
+
+
+Configuration Files
+-------------------
+
+There are two sets of configuration files - one for running MET+ and one for running MET.
+
+- MET+
+
+The main configuration file for MET+ is constants_pdef.py, which is located in the "parm" subdirectory. If you are not sharing data locations with others, you can modify constants_pdef.py directly and use it as your main configuration file.
+
+If you are sharing data locations with others, it is advised that you override the options in the constants_pdef.py by using your own config file, for example, feature_relative_config_jpresto.py (renaming it however you'd like).  feature_relative_config_jpresto.py has slightly different syntax from constants_pdef.py but has the same fields, some with different values. Having all of the same fields that are in constants_pdef.py in your personal config file is not necessary as these fields override what is in constants_pdef.py.  However, at a minimum if you reset a BASE or DIR value (e.g. OUTPUT_BASE, PROJ_DIR) you'll need to include all other fields that use that BASE or DIR field. If you do not do that, the default value will be used.
+
+- MET
+
+The configuration files for the MET tools are also located in the "parm" subdirectory.  Currently, the applicable configuration files are TCPairsETCConfig (for the extra tropical cyclone TCPairs run) and the SeriesAnalysisConfig (for series analysis by init time) and SeriesAnalysisConfig_by_lead (for series analysis bylead time).
+
+
+Configuration Setup
+-------------------
