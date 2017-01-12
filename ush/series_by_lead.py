@@ -67,6 +67,15 @@ def analysis_by_lead_time():
     series_filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
     series_filter_opts.strip()
 
+    # Set up the environment variable to be used in the Series Analysis
+    #   Config file (SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH)
+    # Used to set cnt  value in output_stats in "SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH"
+    # Need to do some pre-processing so that Python will use " and not '
+    #  because currently MET doesn't support single-quotes
+    tmp_stat_string = str(stat_list)    
+    tmp_stat_string = tmp_stat_string.replace("\'","\"")
+    os.environ['STAT_LIST'] = tmp_stat_string        
+
     # Check for the existence of the storm track tiles and raise
     # an error if these are missing.
     # Get a list of the grb2 forecast tiles in 
