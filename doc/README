@@ -1,8 +1,9 @@
--------------------------------------------------
+-------------------------------------------------------
 Model Evaluation Tools (MET) Plus  MET+  (January 2017)
--------------------------------------------------
+-------------------------------------------------------
 
 ***Terms of Use? - Do I need that here like in the README for MET?***
+Yes, copy and paste. Ask Tara about changing specific language about the funding below (disclaimer)
 
 Welcome to the documentation for MET+.  MET+ is a set of Python wrapper scripts around the MET verification tools (and eventually METViewer, a tool used for plotting MET output verification statistics).
 
@@ -25,14 +26,56 @@ The ncdump and ncap2 utilities are used in running series_by_lead.py and can be 
 http://www.unidata.ucar.edu/downloads/netcdf/index.jsp
 http://nco.sourceforge.net/
 
-***Are convert, cut, and tr pretty standard?***
-***I see wgrib2 used in met_util.py.  Under what circumstances is this needed/required?***
+***Are convert, cut, and tr pretty standard?*** Yes, list as required; convert is part of image magik, others are standard
+***I see wgrib2 used in met_util.py.  Under what circumstances is this needed/required?***  Don't need to list where it's used, just need to say it's required for now, but may be replaced by regrid_data_plane.
 
 
 Version Control
 ---------------
 
 MET+ uses GIT for version control in a private NCAR respository.
+
+
+Getting the Code and Test Data
+------------------------------
+
+Get the MET+ package by running:
+
+  wget http://<path>/MET+_alpha.20170109.tar.gz
+
+Get the MET+ test data by running:
+
+  wget http://<path>/MET+_test_data.20170109.tar
+
+Decide where you would like to put the code and copy the MET+ Package to that location.  Unpack the gzipped tar file in that directory by running:
+
+  tar -zxf MET+_alpha.20170109.tar.gz
+
+Decide where you would like to put the test data and copy the MET+ test data to that location.  Unpack the gzipped tar file in that directory by running:
+
+  tar -zxf MET+_test_data.20170109.tar
+
+
+Configuring the Environment
+---------------------------
+
+Open up your .cshrc (or similar file) using the editor of your choice and add the following:
+
+  To your PYTHONPATH, add:
+
+    {full path to METPlus/ush}:{full path to METPlus/parm} (replacing the text in {} with the full path)
+
+  If you do not currently have a PYTHONPATH, add (for csh shell - use "export" for bash):
+
+    setenv PYTHONPATH {full path to METPlus/ush}:{full path to METPlus/parm} (replacing the text in {} with the full path)
+
+  To your PATH (path), add:
+    
+    {full path to METPlus/ush} (replacing the text in {} with the full path)
+
+Save the changes and source your .cshrc (or similar file) by running, for example:
+
+    source ~/.cshrc
 
 
 Configuration Files
@@ -44,7 +87,7 @@ There are two sets of configuration files - one for running MET+ and one for run
 
 The main configuration file for MET+ is constants_pdef.py, which is located in the "parm" subdirectory. If you are not sharing data locations with others, you can modify constants_pdef.py directly and use it as your main configuration file.
 
-If you are sharing data locations with others, it is advised that you override the options in the constants_pdef.py by using your own config file, for example, feature_relative_config_jpresto.py (renaming it however you'd like).  feature_relative_config_jpresto.py has slightly different syntax from constants_pdef.py but has the same fields, some with different values. Having all of the same fields that are in constants_pdef.py in your personal config file is not necessary as these fields override what is in constants_pdef.py.  However, at a minimum if you reset a BASE or DIR value (e.g. OUTPUT_BASE, PROJ_DIR) you'll need to include all other fields that use that BASE or DIR field. If you do not do that, the default value will be used.
+If you are sharing data locations with others, it is advised that you override the options in the constants_pdef.py by using your own config file, for example, feature_relative_config_jpresto.py (renaming it however you'd like).  feature_relative_config_jpresto.py has slightly different syntax from constants_pdef.py but has the same fields, some with different values. Having all of the same fields that are in constants_pdef.py in your personal config file is not necessary as these fields override what is in constants_pdef.py.  ** However, at a minimum if you reset a BASE or DIR value (e.g. OUTPUT_BASE, PROJ_DIR) you'll need to include all other fields that use that BASE or DIR field. If you do not do that, the default value will be used. **
 
 - MET
 
@@ -53,3 +96,28 @@ The configuration files for the MET tools are also located in the "parm" subdire
 
 Configuration Setup
 -------------------
+
+The user should look at the constants_pdef.py and/or associated personal config file, e.g. feature_relative_config_jpresto.py to modify necessary and desired fields.  The information below will cover the various section:
+
+NON-MET EXECUTABLES
+
+Some of these fields may need to be modified based on the location of the executables on your system, but some may be standard. Note that the WGRIB2 executable is not currently in a standard location and will need to be modified.
+
+COMMONLY USED BASE VARIABLES
+
+
+
+
+How to Run?
+-----------
+
+
+
+
+================================================================================
+Release Notes
+================================================================================
+
+Alpha Release Notes:
+-------------------
+- Initial release of the code.
