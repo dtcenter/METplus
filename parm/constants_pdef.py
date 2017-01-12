@@ -111,7 +111,7 @@ ANLY_ASCII_REGEX_LEAD ="ANLY_FILE_F.*"
 
 TC_PAIRS_CONFIG_PATH = os.path.join(PARM_BASE, "TCPairsETCConfig")
 SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH = os.path.join(PARM_BASE,"SeriesAnalysisConfig_by_lead")
-SERIES_ANALYSIS_BY_INIT_CONFIG_PATH = os.path.join(PARM_BASE, "SeriesAnalysisConfig")
+SERIES_ANALYSIS_BY_INIT_CONFIG_PATH = os.path.join(PARM_BASE, "SeriesAnalysisConfig_by_init")
 
 #
 #     LISTS AND SETTINGS
@@ -134,12 +134,7 @@ INIT_HOUR_INC =  6
 INIT_HOUR_END = "18"
 
 #     Used by extract_tiles.py to define the records of interest from the grib2 file
-
-#     WARNING:
-#     PVORT is not available in current data sets and errors occur with TCDC 
-#     do not use these variables.
-#VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0", "HGT/P250", "TMP/P850", "TMP/P500", "PVORT/L0", "UGRD/P250", "VGRD/P250", "TCDC/L0" ]
-VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0", "HGT/P250", "TMP/P850", "TMP/P500", "UGRD/P250", "VGRD/P250" ]
+VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0", "HGT/P250", "TMP/P850", "TMP/P500", "UGRD/P250", "VGRD/P250", "TCDC/L0" ]
 EXTRACT_TILES_VAR_LIST = []
 
 #     Used for performing series analysis based on lead time
