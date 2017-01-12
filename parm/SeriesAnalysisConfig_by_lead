@@ -117,7 +117,7 @@ output_stats = {
    cts    = [];
    mctc   = [];
    mcts   = [];
-   cnt    = [ "TOTAL", "ME", "MAE", "RMSE", "FBAR", "OBAR" ];
+   cnt    = ${STAT_LIST};
    sl1l2  = [];
    sal1l2 = [];
    pct    = [];
@@ -130,6 +130,6 @@ output_stats = {
 
 rank_corr_flag = FALSE; 
 tmp_dir        = "/tmp";
-version        = "V5.1";
+version        = "V5.2";
 
 ////////////////////////////////////////////////////////////////////////////////
