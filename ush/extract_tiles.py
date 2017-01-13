@@ -15,14 +15,10 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import (print_function, division )
 
 import constants_pdef as P
-import logging
 import os
 import sys
 import met_util as util
-import time
-import re
 import subprocess
-import string_template_substitution as sts
 import run_tc_stat as tcs
 
 def main():
