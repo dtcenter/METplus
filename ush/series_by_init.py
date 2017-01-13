@@ -3,14 +3,11 @@
 from __future__ import print_function
 
 import constants_pdef as P
-import logging
 import re
 import os
 import sys
 import met_util as util
-import errno
 import subprocess
-import run_tc_stat as tcs
 
 
 def analysis_by_init_time():
@@ -31,21 +28,14 @@ def analysis_by_init_time():
 
     # Retrieve any necessary values (dirs, executables) 
     # from the param file(s)
-    init_time_list = util.gen_init_list(p.opt["INIT_DATE_BEG"],
-                                        p.opt["INIT_DATE_END"],
-                                        p.opt["INIT_HOUR_INC"],
-                                        p.opt["INIT_HOUR_END"])
     var_list = p.opt["VAR_LIST"]
     stat_list = p.opt["STAT_LIST"]
-    tc_stat_exe = p.opt["TC_STAT"]
     series_analysis_exe = p.opt["SERIES_ANALYSIS"]
     plot_data_plane_exe = p.opt["PLOT_DATA_PLANE"]
     convert_exe = p.opt["CONVERT_EXE"]
     series_anly_config_file = p.opt["SERIES_ANALYSIS_BY_INIT_CONFIG_PATH"]
-    MET_regrid = p.opt["REGRID_USING_MET_TOOL"]
-    filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
-    cur_pid = str(os.getpid())
-    tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
+    regrid_with_MET_tool = p.opt["REGRID_USING_MET_TOOL"]
+    series_filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
     extract_tiles_dir = p.opt["EXTRACT_OUT_DIR"]
     series_out_dir = p.opt["SERIES_INIT_OUT_DIR"]
     series_filtered_out_dir = p.opt["SERIES_INIT_FILTERED_OUT_DIR"]
@@ -60,7 +50,7 @@ def analysis_by_init_time():
     tmp_stat_string = tmp_stat_string.replace("\'","\"")
     os.environ['STAT_LIST'] = tmp_stat_string        
 
-    if MET_regrid:
+    if regrid_with_MET_tool:
         # Regridding via MET Tool regrid_data_plane.
         fcst_tile_regex = p.opt["FCST_NC_TILE_REGEX"]
         anly_tile_regex = p.opt["ANLY_NC_TILE_REGEX"]
@@ -74,7 +64,10 @@ def analysis_by_init_time():
     cur_function = sys._getframe().f_code.co_name
 
     # Initialize the tile_dir to point to the extract_tiles_dir.
+    # And retrieve a list of init times based on the data available in
+    # the extract tiles directory.
     tile_dir = extract_tiles_dir
+    init_times = util.get_updated_init_times(tile_dir, p, logger)
 
     # Check for input tile data.
     try:
@@ -86,101 +79,100 @@ def analysis_by_init_time():
         logger.error(msg)
         raise
 
-    for cur_init in init_time_list:
-        # Apply any filtering, use MET Tool tc_stat.  Filter options
-        # are defined in the constants_pdef.py param/config file.
-        filter_path = os.path.join(series_filtered_out_dir, cur_init)
-        util.mkdir_p(filter_path)
+    # If applicable apply any filtering via tc_stat, as indicated in the
+    # constants_pdef.py parameter/config file.
+    if series_filter_opts:
+        util.apply_series_filters(tile_dir, init_times, series_filtered_out_dir, p, logger)
 
-        filter_file = "filter_" + cur_init + ".tcst"
-        filter_filename = os.path.join(series_filtered_out_dir, cur_init, filter_file)
-
-        tc_cmd_list = [tc_stat_exe, " -job filter ",
-                       " -lookin ", tile_dir,
-                       " -match_points true ",
-                       " -init_inc ", cur_init,
-                       " -dump_row ", filter_filename,
-                       " ", filter_opts]
-        tc_cmd = ''.join(tc_cmd_list)
-        tcs.tc_stat(p, logger, tc_cmd, series_filtered_out_dir)
-        msg = ("INFO|[" + cur_filename + ":" + cur_function + "]|" +
-               "tc command: " + tc_cmd)
-        logger.info(msg)
-
-        # Remove any empty files and directories
+        # Clean up any empty files and directories that could arise as a result of filtering
         util.prune_empty(series_filtered_out_dir, p, logger)
 
-        # Check that the filter.tcst file created by tc_stat exists.
-        # If it is, then continue using the files in the extract_tiles
-        # directory as input.  Otherwise, continue to the next init time.
-        if not util.file_exists(filter_filename):
-            msg = ("WARN|[" + cur_filename + ":" + cur_function + "]|" +
-                   "No filter file because filter options yield nothing...")
-            logger.warn(msg)
-            continue
-        else:
-            # Now retrieve and regrid the files corresponding to the
-            # storm ids in the filter file.
+        # Get the list of all the files that were created as a result
+        # of applying the filter options.
+        #  First, make sure that the series_lead_filtered_out directory isn't
+        # empty.  If so, then no files fall within the filter criteria.
+        if os.listdir(series_filtered_out_dir):
+            # The series filter directory has data, use this directory as
+            # input for series analysis.
             tile_dir = series_filtered_out_dir
-            sorted_storm_ids = util.get_storm_ids(filter_filename, logger)
-            for cur_storm in sorted_storm_ids:
-                msg = ("INFO|[" + cur_filename + ":" + cur_function +
-                       "]| Processing storm: " + cur_storm)
-                logger.info(msg)
-                storm_output_dir = os.path.join(tile_dir,
-                                                cur_init, cur_storm)
-                util.mkdir_p(storm_output_dir)
-                util.mkdir_p(tmp_dir)
-                tmp_file = "filter_" + cur_init
-                tmp_filename = os.path.join(tmp_dir, tmp_file)
-                storm_list = util.grep(cur_storm, filter_filename)
-                with open(tmp_filename, "a+") as tmp_file:
-                    for storm_match in storm_list:
-                        tmp_file.write(storm_match)
 
-                # Create the analysis and forecast files based
-                # on the storms defined in the tmp_filename created
-                # above, and store these in the series_filtered_out_dir.
-                util.retrieve_and_regrid(tmp_filename, cur_init,
-                                         cur_storm, tile_dir, logger, p)
+            # Generate the tmp_anly and tmp_fcst files used to validate filtering and for troubleshooting
+            # The tmp_fcst and tmp_anly ASCII files contain the
+            # list of files that meet the filter criteria.
+            filtered_dirs_list = util.get_files(tile_dir, ".*.", logger)
+            util.create_filter_tmp_files(filtered_dirs_list, series_filtered_out_dir, p, logger)
 
-    # Clean up the tmp directory and remove any empty files and directories.
-    subprocess.call(["rm", "-rf", tmp_dir])
+        else:
+            msg = ("INFO| Applied series filter options, no results..." +
+                   "using extract tiles data for series analysis input.")
+            logger.info(msg)
+            tile_dir = extract_tiles_dir
+            filtered_dirs_list = util.get_files(tile_dir, ".*.", logger)
 
-    # Now generate the arguments to the MET Tool: series_analyis.
-    for cur_init in init_time_list:
-        # Get all the storm ids for storm track pairs that 
+    else:
+        # No additional filtering was requested.  Use the data in the extract tiles directory
+        # as input for series analysis.
+        # source of input tile data.
+        filtered_dirs_list = util.get_files(tile_dir, ".*.", logger)
+
+    # From the filtered files list, extract the init time and storm id and
+    # create a sorted list of the init times.
+    filter_init_times = set()
+    for f in filtered_dirs_list:
+        # Retrieve the file path that contains the init time and storm id.
+        match = re.match(r'.*/([0-9]{8}_[0-9]{2,3})/([A-Za-z]{2}[0-9]{10})/', f)
+        if match:
+            init_storm = match.group(1)
+            init_storm_dir = match.group(0)
+
+            # Add this path if the directory isn't empty
+            if os.listdir(init_storm_dir):
+                filter_init_times.add(init_storm)
+            else:
+                # Directory is empty, go to next one in the filtered_dirs_list.
+                continue
+        else:
+            continue
+
+    # Create FCST and ANLY ASCII files based on init time and storm id.  These are arguments to the
+    # -fcst and -obs arguments to the MET Tool series_analysis.
+    sorted_filter_init = sorted(filter_init_times)
+    fcst_ascii_file_base = 'FCST_ASCII_FILES_'
+    anly_ascii_file_base = 'ANLY_ASCII_FILES_'
+
+    for cur_init in sorted_filter_init:
+        # Get all the storm ids for storm track pairs that
         # correspond to this init time.
         storm_list = get_storms_for_init(cur_init, tile_dir, logger)
         if len(storm_list) == 0:
             msg = ('INFO|[' + cur_filename + ':' + cur_function +
-                   ']| No storm ids found, try next init time...')
+                   ']| No storm ids found for ' + cur_init +
+                   ']| No storm ids found for ' + cur_init +
+                   ', check next init time in the list...')
             logger.info(msg)
             continue
         else:
             for cur_storm in storm_list:
-                # Generate the -fcst, -obs, -config, and 
+                # Generate the -fcst, -obs, -config, and
                 # -out parameter values for invoking
                 # the MET series_analysis binary.
-                output_dir = os.path.join(series_out_dir, cur_init,
-                                          cur_storm)
 
-                # First get the filenames for the gridded forecast and 
+                # First get the filenames for the gridded forecast and
                 # analysis (30 deg x30 deg tiles that were created by
                 # extract_tiles). These files are aggregated by
                 # init time and storm id.
                 anly_grid_regex = ".*ANLY_TILE_F.*grb2"
                 fcst_grid_regex = ".*FCST_TILE_F.*grb2"
-                anly_grid_files = util.get_files(series_filtered_out_dir,
+                anly_grid_files = util.get_files(tile_dir,
                                                  anly_grid_regex, logger)
-                fcst_grid_files = util.get_files(series_filtered_out_dir,
+                fcst_grid_files = util.get_files(tile_dir,
                                                  fcst_grid_regex, logger)
 
-                # Now do some checking to make sure we aren't 
+                # Now do some checking to make sure we aren't
                 # missing either the forecast or
                 # analysis files, if so log the error and proceed to next
                 # storm in the list.
-                if not anly_grid_files or not fcst_grid_files:
+                if len(anly_grid_files) == 0 or len(fcst_grid_files) == 0:
                     msg = ('INFO|[' + cur_filename + ':' +
                            cur_function + ']| ' +
                            'No gridded analysis or forecast' +
@@ -188,45 +180,42 @@ def analysis_by_init_time():
                     logger.info(msg)
                     continue
 
-                # Generate the -fcst portion (forecast file)
-                # -fcst file_1 file_2 file_3 ... file_n
-                # or
-                # -fcst fcst_ASCII_filename
-                # where fcst_ASCII_filename contains the full file path
-                # and filename of each gridded fcst file.
-                # The latter is preferred when dealing with a large 
-                # number of files.
+                # Now create the FCST and ANLY ASCII files based on cur_init and cur_storm:
+                create_fcst_anly_to_ascii_file(fcst_grid_files, cur_init, cur_storm, fcst_ascii_file_base,
+                                               series_out_dir, logger)
+                create_fcst_anly_to_ascii_file(fcst_grid_files, cur_init, cur_storm, anly_ascii_file_base,
+                                               series_out_dir, logger)
+                util.prune_empty(series_out_dir, p, logger)
 
-                # Create an ASCII file containing the full path
-                # to the forecast files.
-                fcst_ascii_fname_parts = ['FCST_ASCII_FILES_', cur_storm]
+    # Clean up any remaining empty files and dirs
+    util.prune_empty(series_out_dir, p, logger)
+
+    # Now assemble the -fcst, -obs, and -out arguments and invoke the MET Tool: series_analysis.
+    for cur_init in sorted_filter_init:
+        storm_list = get_storms_for_init(cur_init, tile_dir, logger)
+        for cur_storm in storm_list:
+            if len(storm_list) == 0:
+                msg = ('INFO|[' + cur_filename + ':' + cur_function +
+                       ']| No storm ids found for ' + cur_init +
+                       ', check next init time in the list...')
+                logger.info(msg)
+                continue
+            else:
+                # Generate the -obs portion (analysis file)
+                # These are the gridded observation files.
+                # -obs obs_file1 obs_file2 obs_file3 ... obs_filen
+                # or
+                #  -obs obs_ASCII_filename
+                # where obs_ASCII_filename contains the full file path
+                # and filename of each gridded analysis file.  We will
+                # use the FCST ASCII filename created above.
+                fcst_ascii_fname_parts = [fcst_ascii_file_base, cur_storm]
                 fcst_ascii_fname = ''.join(fcst_ascii_fname_parts)
-                fcst_ascii_dir = os.path.join(series_out_dir, cur_init,
-                                          cur_storm)
-                util.mkdir_p(fcst_ascii_dir)
                 fcst_ascii = os.path.join(series_out_dir, cur_init,
                                           cur_storm, fcst_ascii_fname)
-
-                # Sort the files in the fcst_grid_files list.
-                sorted_fcst_grid_files = sorted(fcst_grid_files)
-                tmp_fcst_param = ''
-                for cur_fcst in sorted_fcst_grid_files:
-                    tmp_fcst_param += cur_fcst
-                    tmp_fcst_param += '\n'
-
-                # Now create the forecast ASCII file
-                try:
-                    with open(fcst_ascii, 'a') as f:
-                        f.write(tmp_fcst_param)
-                except IOError as e:
-                    msg = ("ERROR|[" + cur_filename + ":" +
-                           cur_function + "]| " +
-                           "Could not create requested ASCII file:  " +
-                           fcst_ascii)
-                    logger.error(msg)
-
                 fcst_param_parts = ['-fcst ', fcst_ascii]
                 fcst_param = ''.join(fcst_param_parts)
+                logger.info("fcst_param: " + fcst_param)
 
                 # Generate the -obs portion (analysis file)
                 # These are the gridded observation files.
@@ -234,42 +223,23 @@ def analysis_by_init_time():
                 # or
                 # -obs obs_ASCII_filename
                 # where obs_ASCII_filename contains the full file path
-                # and filename of each gridded analysis file.
-
-                # Create an ASCII file containing a list of all 
-                # the analysis tiles.
-                anly_ascii_fname_parts = ['ANLY_ASCII_FILES_', cur_storm]
+                # and filename of each gridded analysis file.  We will
+                # use the ANLY ASCII file generated above.
+                anly_ascii_fname_parts = [anly_ascii_file_base, cur_storm]
                 anly_ascii_fname = ''.join(anly_ascii_fname_parts)
-                anly_ascii_dir = os.path.join(series_out_dir, cur_init,
-                                              cur_storm)
-                util.mkdir_p(anly_ascii_dir)
                 anly_ascii = os.path.join(series_out_dir, cur_init,
                                           cur_storm, anly_ascii_fname)
                 obs_param_parts = [' -obs ', anly_ascii]
                 obs_param = ''.join(obs_param_parts)
 
-                # Sort the files in the anly_grid_files list.
-                sorted_anly_grid_files = sorted(anly_grid_files)
-                tmp_obs_param = ''
-                for cur_anly in sorted_anly_grid_files:
-                    tmp_obs_param += cur_anly
-                    tmp_obs_param += '\n'
+                logger.info("obs_param: " + obs_param)
 
-                # Now create the analysis ASCII file
-                try:
-                    with open(anly_ascii, 'a') as f:
-                        f.write(tmp_obs_param)
-                except IOError as e:
-                    msg = ("ERROR|[" + cur_filename + ":" +
-                           cur_function + "]| " +
-                           "Could not create requested ASCII file:  " +
-                           anly_ascii)
-                    logger.error(msg)
-
+                # Generate the -out portion, get the NAME and
+                # corresponding LEVEL for each variable.
+                output_dir = os.path.join(series_out_dir, cur_init,
+                                          cur_storm)
                 util.mkdir_p(output_dir)
 
-                # Generate the -out portion, get the NAME and 
-                # corresponding LEVEL for each variable.  
                 for cur_var in var_list:
                     name, level = util.get_name_level(cur_var, logger)
 
@@ -317,9 +287,18 @@ def analysis_by_init_time():
                     # Get the number of forecast tile files,
                     # the name of the first and last in the list
                     # to be used by the -title option.
-                    num, beg, end = get_fcst_file_info(series_filtered_out_dir,
-                                                       cur_init, cur_storm,
-                                                       logger)
+                    if tile_dir == extract_tiles_dir:
+                        # Since filtering was not requested, or
+                        # the additional filtering doesn't yield results,
+                        # search the series_out_dir
+                        num, beg, end = get_fcst_file_info(series_out_dir,
+                                                           cur_init, cur_storm,
+                                                           logger)
+                    else:
+                        # Search the series_filtered_out_dir for the filtered files.
+                        num, beg, end = get_fcst_file_info(series_filtered_out_dir,
+                                                           cur_init, cur_storm,
+                                                           logger)
 
                     # Assemble the input file, output file, field string,
                     # and title
@@ -407,10 +386,6 @@ def analysis_by_init_time():
                         logger.info('INFO|[convert ]: ' + convert_results)
 
 
-
-
-
-
 def get_fcst_file_info(dir_to_search, cur_init, cur_storm, logger):
     ''' Get the number of all the gridded forecast 30x30 tile 
         files for a given storm id and init time
@@ -430,6 +405,8 @@ def get_fcst_file_info(dir_to_search, cur_init, cur_storm, logger):
            num, beg, end:  A tuple representing the number of 
                            forecast tile files, and the first and 
                            last file.
+
+                           sys.exit(1) otherwise
         
 
     '''
@@ -498,10 +475,9 @@ def get_storms_for_init(cur_init, out_dir_base, logger):
            logger : The logger to which all log messages are directed. 
 
         Returns:
-           storm_dict: A dict of all the storms ids aggregated by 
-                      init times (i.e. key=init time, 
-                      value = list of storm ids corresponding to that
-                      init time)
+           storm_list: A list of all the storms ids that correspond to this init time and actually
+                       has a directory in the init dir (additional filtering in a previous step
+                       may result in missing storm ids even though they are in the filter.tcst file)
  
     '''
 
@@ -510,7 +486,6 @@ def get_storms_for_init(cur_init, out_dir_base, logger):
     cur_function = sys._getframe().f_code.co_name
 
     filter_set = set()
-    storm_list = []
 
     # Retrieve filter files, first create the filename
     # by piecing together the out_dir_base with the cur_init.
@@ -523,6 +498,75 @@ def get_storms_for_init(cur_init, out_dir_base, logger):
 
     return storm_list
 
+
+def create_fcst_anly_to_ascii_file(fcst_anly_grid_files, cur_init, cur_storm, fcst_anly_filename_base,
+                                   series_out_dir, logger):
+    ''' Create ASCII file for either the FCST or ANLY files that are aggregated based on init time
+        and storm id.
+
+        Args:
+                fcst_anly_grid_files:       A list of the FCST or ANLY gridded files under consideration.
+
+
+
+                cur_init:                  The initialization time of interest
+
+                cur_storm:                 The storm id of interest
+
+                fcst_anly_filename_base:   The base name of the ASCII file (either ANLY_ASCII_FILES_ or
+                                           FCST_ASCII_FILES_ which will be appended with the
+                                           storm id.
+
+                series_out_dir:            The directory where all the output from series analysis will be saved.
+
+                logger:                    The logger to which all logging will be directed.
+
+        Returns:
+               None:                       Creates an ASCII file containing a list of either FCST or ANLY
+                                           files based on init time and storm id.
+
+
+    '''
+
+    # For logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    # Create an ASCII file containing a list of all
+    # the fcst or analysis tiles.
+    fcst_anly_ascii_fname_parts = [fcst_anly_filename_base, cur_storm]
+    fcst_anly_ascii_fname = ''.join(fcst_anly_ascii_fname_parts)
+    fcst_anly_ascii_dir = os.path.join(series_out_dir, cur_init,
+                                       cur_storm)
+    util.mkdir_p(fcst_anly_ascii_dir)
+    fcst_anly_ascii = os.path.join(fcst_anly_ascii_dir, fcst_anly_ascii_fname)
+
+    # Sort the files in the fcst_anly_grid_files list.
+    sorted_fcst_anly_grid_files = sorted(fcst_anly_grid_files)
+    tmp_param = ''
+    for cur_fcst_anly in sorted_fcst_anly_grid_files:
+        # Write out the files that pertain to this storm and
+        # don't write if already in tmp_param.
+        if cur_fcst_anly not in tmp_param and cur_storm in cur_fcst_anly:
+            tmp_param += cur_fcst_anly
+            tmp_param += '\n'
+    # Now create the fcst or analysis ASCII file
+    try:
+        with open(fcst_anly_ascii, 'a') as f:
+               f.write(tmp_param)
+    except IOError as e:
+       msg = ("ERROR|[" + cur_filename + ":" +
+              cur_function + "]| " +
+              "Could not create requested ASCII file:  " +
+              fcst_anly_ascii)
+       logger.error(msg)
+
+    if os.stat(fcst_anly_ascii).st_size == 0:
+        # Just in case there are any empty fcst ASCII or anly ASCII files at this point,
+        # explicitly remove them (and any resulting empty directories)
+        #  so they don't cause any problems with further processing
+        # steps.
+        util.prune_empty(fcst_anly_ascii_dir, p, logger)
 
 if __name__ == "__main__":
     p = P.Params()
