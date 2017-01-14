@@ -468,19 +468,19 @@ class StringTemplateSubstitution:
                                 # Add back the template identifiers to the matched string to replace and add the key, value pair to the dictionary
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = date_time_str
-                                (self.logger).info("INFO |  [" + cur_filename +  ":" + cur_function + "] | " + "Replacing " + string_to_replace + " with " + date_time_str + " for template " + self.tmpl)
+                                #(self.logger).info("INFO |  [" + cur_filename +  ":" + cur_function + "] | " + "Replacing " + string_to_replace + " with " + date_time_str + " for template " + self.tmpl)
 
                             elif (split_string[0] == LEAD_STRING):
                                 value = self.leadAccumStringFormat(LEAD_STRING, format_split_string[1])
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
-                                (self.logger).info("INFO |  [" + cur_filename +  ":" + cur_function + "] | " + "Replacing " + string_to_replace + " with " + value + " for template " + self.tmpl)
+                                #(self.logger).info("INFO |  [" + cur_filename +  ":" + cur_function + "] | " + "Replacing " + string_to_replace + " with " + value + " for template " + self.tmpl)
 
                             elif (string_string[0] == ACCUM_STRING):
                                 value = self.leadAccumStringFormat(ACCUM_STRING, format_split_string[1])
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
-                                (self.logger).info("INFO |  [" + cur_filename +  ":" + cur_function + "] | " + "Replacing " + string_to_replace + " with " + value + " for template " + self.tmpl)
+                                #(self.logger).info("INFO |  [" + cur_filename +  ":" + cur_function + "] | " + "Replacing " + string_to_replace + " with " + value + " for template " + self.tmpl)
     
                 # No formatting or length is requested            
                 elif len(split_string) == 1:
@@ -488,7 +488,7 @@ class StringTemplateSubstitution:
                     # Add back the template identifiers to the matched string to replace and add the key, value pair to the dictionary
                     string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                     replacement_dict[string_to_replace] = (self.kwargs).get(split_string[0], None)
-                    (self.logger).info("INFO |  [" + cur_filename +  ":" + cur_function + "] | " + "Replacing " + string_to_replace + " with " + (self.kwargs).get(split_string[0], None) + " for template " + self.tmpl)
+                    #(self.logger).info("INFO |  [" + cur_filename +  ":" + cur_function + "] | " + "Replacing " + string_to_replace + " with " + (self.kwargs).get(split_string[0], None) + " for template " + self.tmpl)
                             
             # Replace regex with properly formatted information
             temp_str = multiple_replace(replacement_dict, self.tmpl)
