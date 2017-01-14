@@ -21,6 +21,7 @@ import met_util as util
 import subprocess
 import run_tc_stat as tcs
 
+
 def main():
     '''Get TC-pairs track data and GFS model data, do any necessary 
        processing then regrid the forecast and analysis files to a 
@@ -61,9 +62,7 @@ def main():
     
     # Process TC pairs by initialization time
     for cur_init in init_times:
-        msg = ("INFO| [" + cur_filename + ":" + cur_function +  
-               " ] |Begin processing for initialization time: " + cur_init)
-        logger.info(msg)
+        # Begin processing for initialization time, cur_init
         year_month = util.extract_year_month(cur_init, logger)
        
         # Create the name of the filter file we need to find.  If
@@ -71,12 +70,7 @@ def main():
         filter_filename = "filter_" + cur_init + ".tcst"
         filter_name = os.path.join(filtered_out_dir, cur_init, filter_filename)
 
-        if util.file_exists(filter_name) and not overwrite_flag:
-            msg = ("INFO| [" + cur_filename + ":" + cur_function +  
-                   " ] | Filter file exists, using Track data file: " + 
-                   filter_name)
-            logger.info(msg)
-        else:
+        if not util.file_exists(filter_name) and overwrite_flag:
             # Create the storm track by applying the
             # filter options defined in the constants_pdef.py file.
             filter_path = os.path.join(filtered_out_dir, cur_init)
@@ -91,9 +85,6 @@ def main():
             tc_cmd = ''.join(tc_cmd_list)
             tcs.tc_stat(p, logger, tc_cmd, 
                         filtered_out_dir)
-            msg = ("INFO| [" + cur_filename + ":" + cur_function +  
-                   " ] | tc command: " + tc_cmd)
-            logger.info(msg)
 
             # Remove any empty files and directories that can occur
             # from filtering.
@@ -106,6 +97,7 @@ def main():
         # Check for empty sorted_storm_ids, if empty,
         # continue to the next time.      
         if len(sorted_storm_ids) == 0:
+            # No storms found for init time, cur_init
             continue
 
         # Process each storm in the sorted_storm_ids list
@@ -114,10 +106,7 @@ def main():
         # corresponding row of data into a temporary file in the 
         # /tmp/<pid> directory.
         for cur_storm in sorted_storm_ids:
-            msg = ("INFO| [" + cur_filename + ":" + cur_function +  
-                   " ] | Processing storm: " + cur_storm)
-            logger.info(msg)
-            storm_output_dir = os.path.join(filtered_out_dir,cur_init, 
+            storm_output_dir = os.path.join(filtered_out_dir,cur_init,
                                             cur_storm)
             util.mkdir_p(storm_output_dir)
             util.mkdir_p(tmp_dir)
