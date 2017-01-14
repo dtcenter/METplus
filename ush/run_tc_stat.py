@@ -60,20 +60,14 @@ def tc_stat(p, logger, tc_cmd, filtered_output_dir):
 
     # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
     # [File : function]| Message
-    msg = ("INFO |  [" + cur_filename +  ":" + "cur_function] |" +
-           "BEGIN run_tc_stat")
-    logger.info(msg)
-    
+
     # Create the arguments to pass to the MET Tool TC-STAT
     util.mkdir_p(filtered_output_dir)
 
     # Make call to tc_stat, capturing any stderr and stdout to the MET Plus log.
     try:
         tc_stat_out = subprocess.check_output(tc_cmd, stderr=subprocess.STDOUT, shell=True )
-        msg = ("INFO|" + cur_filename + ':' + cur_function + 
-               '|tc command:' + tc_cmd)
-        logger.info(msg)
-    except subprocess.CalledProcessError, e:
+    except subprocess.CalledProcessError as e:
         msg = ("ERROR| " + cur_filename + ":" + cur_function + 
                " from calling MET TC-STAT with command:" + tc_cmd)
         logger.error(msg)
