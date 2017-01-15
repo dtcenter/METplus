@@ -224,7 +224,7 @@ TEST_FILENAME="extract_tiles_test.txt"
 
 #     Levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
 
-LOG_LEVEL = "DEBUG"
+LOG_LEVEL = "INFO"
 LOG_FILENAME = os.path.join(LOG_DIR, "master_met_plus." + datetime.datetime.now().strftime("%Y%m%d") + ".log")
 
 """    
