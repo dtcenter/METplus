@@ -829,7 +829,7 @@ def create_grid_specification_string(lat, lon, logger, p):
     tile_grid_str = ''.join(grid_list)
     msg = ("INFO|" + cur_filename + ":" + cur_function +
            "| complete grid specification string: " + tile_grid_str)
-    logger.decode(msg)
+    logger.debug(msg)
     return tile_grid_str
 
 
