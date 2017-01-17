@@ -15,15 +15,12 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import (print_function, division )
 
 import constants_pdef as P
-import logging
 import os
 import sys
 import met_util as util
-import time
-import re
 import subprocess
-import string_template_substitution as sts
 import run_tc_stat as tcs
+
 
 def main():
     '''Get TC-pairs track data and GFS model data, do any necessary 
@@ -58,28 +55,22 @@ def main():
     # amongst different users and runs.
     cur_pid = str(os.getpid())
     tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
+    logger.info("Begin extract tiles")
    
     # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
     # [File : function]| Message logger.info("INFO |  [" + 
     # cur_filename +  ":" + "cur_function] |" + "BEGIN extract_tiles")
-    
     # Process TC pairs by initialization time
     for cur_init in init_times:
-        msg = ("INFO| [" + cur_filename + ":" + cur_function +  
-               " ] |Begin processing for initialization time: " + cur_init)
-        logger.info(msg)
+        # Begin processing for initialization time, cur_init
         year_month = util.extract_year_month(cur_init, logger)
        
         # Create the name of the filter file we need to find.  If
         # the file doesn't exist, then run TC_STAT
         filter_filename = "filter_" + cur_init + ".tcst"
         filter_name = os.path.join(filtered_out_dir, cur_init, filter_filename)
-
         if util.file_exists(filter_name) and not overwrite_flag:
-            msg = ("INFO| [" + cur_filename + ":" + cur_function +  
-                   " ] | Filter file exists, using Track data file: " + 
-                   filter_name)
-            logger.info(msg)
+            logger.debug("skipping tc_stat, ", filter_name, " exists")
         else:
             # Create the storm track by applying the
             # filter options defined in the constants_pdef.py file.
@@ -95,14 +86,10 @@ def main():
             tc_cmd = ''.join(tc_cmd_list)
             tcs.tc_stat(p, logger, tc_cmd, 
                         filtered_out_dir)
-            msg = ("INFO| [" + cur_filename + ":" + cur_function +  
-                   " ] | tc command: " + tc_cmd)
-            logger.info(msg)
 
             # Remove any empty files and directories that can occur
             # from filtering.
             util.prune_empty(filter_name, p, logger)
-
         # Now get unique storm ids from the filter file, 
         # filter_yyyymmdd_hh.tcst
         sorted_storm_ids = util.get_storm_ids(filter_name, logger)
@@ -110,6 +97,7 @@ def main():
         # Check for empty sorted_storm_ids, if empty,
         # continue to the next time.      
         if len(sorted_storm_ids) == 0:
+            # No storms found for init time, cur_init
             continue
 
         # Process each storm in the sorted_storm_ids list
@@ -118,10 +106,7 @@ def main():
         # corresponding row of data into a temporary file in the 
         # /tmp/<pid> directory.
         for cur_storm in sorted_storm_ids:
-            msg = ("INFO| [" + cur_filename + ":" + cur_function +  
-                   " ] | Processing storm: " + cur_storm)
-            logger.info(msg)
-            storm_output_dir = os.path.join(filtered_out_dir,cur_init, 
+            storm_output_dir = os.path.join(filtered_out_dir,cur_init,
                                             cur_storm)
             util.mkdir_p(storm_output_dir)
             util.mkdir_p(tmp_dir)
@@ -148,6 +133,7 @@ def main():
     # Clean up the tmp directory
     subprocess.call(["rm", "-rf", tmp_dir])
 
+    logger.info("Finished with extract tiles")
 
 if __name__ == "__main__":
     p = P.Params()

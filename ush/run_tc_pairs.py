@@ -26,6 +26,7 @@ import subprocess
 
 
 def read_modify_write_file(in_csvfile, MM, p, out_csvfile, logger):
+    print("inside tc pairs")
 
     # Used for logging
     cur_filename = sys._getframe().f_code.co_filename
@@ -117,7 +118,7 @@ def main():
             # If the output directory doesn't exist, create it
             if not os.path.exists(adeck_mod):
                 mkdir_cmd = "mkdir -p %s" % (adeck_mod)
-                logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Making output directory: " + adeck_mod)
+                logger.debug("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Making output directory: " + adeck_mod)
                 #ret = subprocess.check_output(mkdir_cmd, stderr=subprocess.STDOUT, shell=True)
                 ret = os.system(mkdir_cmd)
                 if ret != 0:
@@ -134,7 +135,7 @@ def main():
                 pairs_out_dir = os.path.join(p.opt["TC_PAIRS_DIR"], os.path.basename(mydir))
                 if not os.path.exists(pairs_out_dir):
                     mkdir_cmd = "mkdir -p %s" % (pairs_out_dir)
-                    logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Making output directory: " + pairs_out_dir)
+                    logger.debug("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Making output directory: " + pairs_out_dir)
                     #ret = subprocess.check_output(mkdir_cmd, stderr=subprocess.STDOUT, shell=True)
                     ret = os.system(mkdir_cmd)
                     if ret != 0:
@@ -171,24 +172,24 @@ def main():
                     # Check for existence of data and overwrite if desired
                     if os.path.exists(adeck_file_path):
                         if (p.opt["TRACK_DATA_MOD_FORCE_OVERWRITE"]):
-                            logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Writing modified csv file: " + adeck_file_path + ", replacing existing data because TRACK_DATA_MOD_FORCE_OVERWRITE is set to True")
+                            logger.debug("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Writing modified csv file: " + adeck_file_path + ", replacing existing data because TRACK_DATA_MOD_FORCE_OVERWRITE is set to True")
                             read_modify_write_file(adeck_in_file_path, MM, p, adeck_file_path, logger)
                         else:
-                            logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Using existing modified csv file: "  + adeck_file_path + ", because TRACK_DATA_MOD_FORCE_OVERWRITE is set to False")
+                            logger.debug("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Using existing modified csv file: "  + adeck_file_path + ", because TRACK_DATA_MOD_FORCE_OVERWRITE is set to False")
                     else:
-                        logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Writing modified csv file: " + adeck_file_path)
+                        logger.debug("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Writing modified csv file: " + adeck_file_path)
                         read_modify_write_file(adeck_in_file_path, MM, p, adeck_file_path, logger)
                 
                     # Read in the bdeck file, modify it, and write a new bdeck file
                     # Check for existence of data and overwrite if desired
                     if os.path.exists(bdeck_file_path):
                         if (p.opt["TRACK_DATA_MOD_FORCE_OVERWRITE"]):
-                            logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Writing modified csv file: "  + bdeck_file_path + ", replacing existing data because TRACK_DATA_MOD_FORCE_OVERWRITE is set to True")
+                            logger.debug("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Writing modified csv file: "  + bdeck_file_path + ", replacing existing data because TRACK_DATA_MOD_FORCE_OVERWRITE is set to True")
                             read_modify_write_file(bdeck_in_file_path, MM, p, bdeck_file_path, logger)
                         else:
-                            logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Using existing modified csv file: "  + bdeck_file_path + ", because TRACK_DATA_MOD_FORCE_OVERWRITE is set to False")
+                            logger.debug("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Using existing modified csv file: "  + bdeck_file_path + ", because TRACK_DATA_MOD_FORCE_OVERWRITE is set to False")
                     else:
-                        logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Writing modified csv file: " + bdeck_file_path)
+                        logger.debug("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Writing modified csv file: " + bdeck_file_path)
                         read_modify_write_file(bdeck_in_file_path, MM, p, bdeck_file_path, logger)
 
                 else:
@@ -202,21 +203,21 @@ def main():
                 pairs_out_file_with_suffix = pairs_out_file + ".tcst"
                 if os.path.exists(pairs_out_file_with_suffix):
                     if (p.opt["TC_PAIRS_FORCE_OVERWRITE"]):
-                        logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Writing tc_pairs output file: "  + pairs_out_file + ", replacing existing data because TC_PAIRS_FORCE_OVERWRITE is set to True")
+                        logger.debug("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Writing tc_pairs output file: "  + pairs_out_file + ", replacing existing data because TC_PAIRS_FORCE_OVERWRITE is set to True")
                         cmd = p.opt["TC_PAIRS"] + " -adeck " + adeck_file_path + " -bdeck " + bdeck_file_path + " -config " + p.opt["TC_PAIRS_CONFIG_PATH"] + " -out " + pairs_out_file
-                        logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd)
-                        #ret = subprocess_check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+                        logger.debug("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd)
+                        #ret = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
                         ret = os.system(cmd)
                         if ret != 0:
                             logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd)
                             exit(0)
                     else:
-                        logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Existing tc_pairs output file: "  + pairs_out_file + ", is available for use. To overwrite set TC_PAIRS_FORCE_OVERWRITE to True")
+                        logger.debug("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Existing tc_pairs output file: "  + pairs_out_file + ", is available for use. To overwrite set TC_PAIRS_FORCE_OVERWRITE to True")
                 else:
                     cmd = p.opt["TC_PAIRS"] + " -adeck " + adeck_file_path + " -bdeck " + bdeck_file_path + " -config " + p.opt["TC_PAIRS_CONFIG_PATH"] + " -out " + pairs_out_file
-                    logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd)
+                    logger.debug("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd)
                     #ret = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
-                    ret = os.system(cmd)                    
+                    ret = os.system(cmd)
                     if ret != 0:
                         logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd)
                         exit(0)

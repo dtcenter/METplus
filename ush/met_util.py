@@ -8,7 +8,6 @@ import logging
 import time
 import calendar
 import re
-import math
 import sys
 import string_template_substitution as sts
 import subprocess
@@ -39,8 +38,9 @@ def round_0p5(val):
 
     val2 = val * 2
     rval = round_to_int(val2)
-    pt_five = round(rval,0) / 2
+    pt_five = round(rval, 0) / 2
     return pt_five
+
 
 def round_to_int(val):
     ''' Round to integer value
@@ -76,11 +76,11 @@ def mkdir_p(path):
         os.makedirs(path, mode=0775)
     except OSError as exc:
         # Ignore the error that gets created if the path already exists
-        if exc.errno == errno.EEXIST and os.path.isdir(path):    
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
             pass
         else:
             raise
-        
+
 
 def get_logger(p):
     '''Gets a logger
@@ -110,12 +110,12 @@ def get_logger(p):
     logging.Formatter.converter = time.gmtime
     logger = logging.getLogger(log_path)
     logger.setLevel(log_level)
-    fileHandler = logging.FileHandler(log_path,mode='a')
+    fileHandler = logging.FileHandler(log_path, mode='a')
     fileHandler.setFormatter(formatter)
     logger.addHandler(fileHandler)
     return logger
 
- 
+
 def file_exists(filename):
     ''' Determines if a file exists
         NOTE:  This is not a Python idiomatic way
@@ -141,7 +141,7 @@ def file_exists(filename):
     if os.path.isfile(filename):
         return True
     else:
-        return False    
+        return False
 
 
 def is_dir_empty(directory):
@@ -179,14 +179,14 @@ def grep(pattern, file, greedy=False):
             line (string):     The matching string
 
     '''
-    
+
     matching_lines = []
     with open(file, 'r') as f:
         for line in f:
-            match = re.search(pattern,line)
+            match = re.search(pattern, line)
             if match:
-                matching_lines.append(line)    
-    # if you got here, you didn't find anything
+                matching_lines.append(line)
+                # if you got here, you didn't find anything
     return matching_lines
 
 
@@ -220,11 +220,11 @@ def get_filepaths_for_grbfiles(dir):
     for root, directories, files in os.walk(dir):
         for filename in files:
             # add it to the list only if it is a grib file
-            match = re.match(r'.*(grib|grb|grib2|grb2)$',filename)
+            match = re.match(r'.*(grib|grb|grib2|grb2)$', filename)
             if match:
                 # Join the two strings to form the full
                 # filepath.
-                filepath = os.path.join(root,filename)
+                filepath = os.path.join(root, filename)
                 file_paths.append(filepath)
             else:
                 continue
@@ -250,7 +250,7 @@ def get_storm_ids(filter_filename, logger):
 
     # Initialize a set because we want unique storm ids.
     storm_id_list = set()
-    empty_list = [] 
+    empty_list = []
 
     # Check if the filter_filename is empty, if it
     # is, then return an empty list.
@@ -305,7 +305,7 @@ def get_files(filedir, filename_regex, logger):
             if match:
                 # Join the two strings to form the full
                 # filepath.
-                filepath = os.path.join(root,filename)
+                filepath = os.path.join(root, filename)
                 file_paths.append(filepath)
             else:
                 continue
@@ -329,12 +329,12 @@ def get_name_level(var_combo, logger):
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-    
+
     match = re.match(r'(.*)/(.*)', var_combo)
     name = match.group(1)
     level = match.group(2)
 
-    return name,level
+    return name, level
 
 
 def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
@@ -355,25 +355,24 @@ def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
                                 should be directed.
 
         Returns:
-            None  raises OSError if files are missing
+            None  raises OSError if expected files are missing
 
     '''
-
     anly_tiles = get_files(tile_dir, anly_file_regex, logger)
     fcst_tiles = get_files(tile_dir, fcst_file_regex, logger)
 
     num_anly_tiles = len(anly_tiles)
     num_fcst_tiles = len(fcst_tiles)
- 
+
     # Check that there are analysis and forecast tiles
     # (which were, or should have been created earlier by extract_tiles).
     if not anly_tiles:
         # Cannot proceed, the necessary 30x30 degree analysis tiles are missing
-        logger.error("ERROR: No anly tile files were found  "+ tile_dir)
+        logger.error("ERROR: No anly tile files were found  " + tile_dir)
         raise OSError("No 30x30 anlysis tiles were found")
     elif not fcst_tiles:
         # Cannot proceed, the necessary 30x30 degree fcst tiles are missing
-        logger.error("ERROR: No fcst tile files were found  "+ tile_dir)
+        logger.error("ERROR: No fcst tile files were found  " + tile_dir)
         raise OSError("No 30x30 fcst tiles were found")
 
     # Check for same number of fcst and analysis files
@@ -381,7 +380,7 @@ def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
         # Something is wrong, we are missing
         # either an ANLY tile file or a FCST tile
         # file, this indicates a serious problem.
-        logger.warn("WARNING: There are a different number of anly and fcst tiles, there should be the same number...")
+        logger.info("INFO: There are a different number of anly and fcst tiles...")
 
 
 def extract_year_month(init_time, logger):
@@ -401,7 +400,7 @@ def extract_year_month(init_time, logger):
 
     # Match on anything that starts with 1 or 2 (for the century) followed by 5 digits
     # for the remainder of the YYYMM
-    ym = re.match(r'^((1|2)[0-9]{5})',init_time)
+    ym = re.match(r'^((1|2)[0-9]{5})', init_time)
     # ym = re.match(r'^2[0-9]{5}',init_time)
     if ym:
         year_month = ym.group(0)
@@ -413,8 +412,7 @@ def extract_year_month(init_time, logger):
 
 
 def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
-    ''' Retrieves the data from the GFS_DIR (defined in constants_pdef.py), or
-        extract_tiles directory that
+    ''' Retrieves the data from the GFS_DIR (defined in constants_pdef.py) that
         corresponds to the storms defined in the tmp_filename:
         1) create the analysis tile and forecast file names from the 
            tmp_filename file. 
@@ -432,7 +430,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
         tmp_filename:      Filename of the temporary filter file in 
                            the /tmp directory. Contains rows 
                            of data corresponding to a storm id of varying
-                           lead times.
+                           times.
 
         cur_init:          The current init time
      
@@ -477,8 +475,8 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
             # blat, and blon (positions of the two extra-tropical
             # cyclone tracks)  but Python is zero-based so indices 
             # differ by 1.
-            init, lead, valid, alat, alon, blat, blon = col[7], col[8], col[9],col[18],\
-                                                        col[19],col[20], col[21]
+            init, lead, valid, alat, alon, blat, blon = col[7], col[8], col[9], col[18], \
+                                                        col[19], col[20], col[21]
 
             # integer division for both Python 2 and 3
             lead_time = int(lead)
@@ -513,7 +511,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
             fcst_dir = os.path.join(gfs_dir, init_ymd)
             init_ymdh_split = init_ymdh.split("_")
             init_YYYYmmddHH = "".join(init_ymdh_split)
-            anly_dir =  os.path.join(gfs_dir, valid_ymd)
+            anly_dir = os.path.join(gfs_dir, valid_ymd)
             valid_ymdh_split = valid_ymdh.split("_")
             valid_YYYYmmddHH = "".join(valid_ymdh_split)
 
@@ -524,15 +522,15 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                 # Create the filename for the regridded file, which is a 
                 # netCDF file.
                 fcstSTS = sts.StringTemplateSubstitution(logger,
-                                                p.opt["GFS_FCST_NC_FILE_TMPL"], 
-                                                init=init_YYYYmmddHH, 
-                                                lead=lead_str)
+                                                         p.opt["GFS_FCST_NC_FILE_TMPL"],
+                                                         init=init_YYYYmmddHH,
+                                                         lead=lead_str)
 
-                anlySTS = sts.StringTemplateSubstitution(logger, 
-                                                p.opt["GFS_ANLY_NC_FILE_TMPL"],
-                                                valid=valid_YYYYmmddHH,
-                                                lead=lead_str)
-      
+                anlySTS = sts.StringTemplateSubstitution(logger,
+                                                         p.opt["GFS_ANLY_NC_FILE_TMPL"],
+                                                         valid=valid_YYYYmmddHH,
+                                                         lead=lead_str)
+
             else:
                 # wgrib2 used to regrid.
                 # Create the filename for the regridded file, which is a 
@@ -555,33 +553,31 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
             # Check if the forecast input file exists. If it doesn't
             # exist, just log it
             if file_exists(fcst_filename):
-                msg = ("INFO| [" + cur_filename + ":" + cur_function +  
+                msg = ("INFO| [" + cur_filename + ":" + cur_function +
                        " ] | Forecast file: " + fcst_filename)
-                logger.info(msg)
-
-
+                logger.debug(msg)
             else:
-                msg = ("WARNING| [" + cur_filename + ":" + 
+                msg = ("WARNING| [" + cur_filename + ":" +
                        cur_function + " ] | " +
-                       "Can't find forecast file, continuing anyway: " + 
+                       "Can't find forecast file, continuing anyway: " +
                        fcst_filename)
-                logger.warn(msg)
+                logger.debug(msg)
                 continue
 
             # Check if the analysis input file exists. If it doesn't
             # exist, just log it.
             if file_exists(anly_filename):
-                    msg = ("INFO| [" + cur_filename + ":" +
-                           cur_function + " ] | Analysis file: " +
-                           anly_filename)
-                    logger.info(msg)
+                msg = ("INFO| [" + cur_filename + ":" +
+                       cur_function + " ] | Analysis file: " +
+                       anly_filename)
+                logger.debug(msg)
 
             else:
-                msg = ("WARNING| [" + cur_filename + ":" + 
+                msg = ("WARNING| [" + cur_filename + ":" +
                        cur_function + " ] | " +
                        "Can't find analysis file, continuing anyway: " +
                        anly_filename)
-                logger.warn(msg)
+                logger.debug(msg)
                 continue
 
             # Create the arguments used to perform regridding.
@@ -592,7 +588,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                                                               logger, p)
             anly_grid_spec = create_grid_specification_string(blat, blon,
                                                               logger, p)
- 
+
             tile_dir = os.path.join(out_dir, cur_init, cur_storm)
             fcst_hr_str = str(fcst_hr).zfill(3)
 
@@ -600,23 +596,23 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                                       fcst_base
             fcst_regridded_file = os.path.join(tile_dir, fcst_regridded_filename)
             anly_regridded_filename = p.opt["ANLY_TILE_PREFIX"] + fcst_hr_str + \
-                                       "_" + anly_base
+                                      "_" + anly_base
             anly_regridded_file = os.path.join(tile_dir, anly_regridded_filename)
-            
+
             # Regrid the fcst file only if a fcst tile 
             # file does NOT already exist or if the overwrite flag is True.
             # Create new gridded file for fcst tile
             if file_exists(fcst_regridded_file) and not overwrite_flag:
-                msg = ("INFO| [" + cur_filename + ":" + 
+                msg = ("INFO| [" + cur_filename + ":" +
                        cur_function + " ] | Forecast tile file " +
                        fcst_regridded_file + " exists, skip regridding")
-                logger.info(msg)
+                logger.debug(msg)
             else:
                 # Perform fcst regridding on the records of interest
                 var_level_string = retrieve_var_info(p, logger)
                 if regrid_with_MET_tool:
                     # Perform regridding using MET Tool regrid_data_plane
-                    fcst_cmd_list = [regrid_data_plane_exe, ' ', 
+                    fcst_cmd_list = [regrid_data_plane_exe, ' ',
                                      fcst_filename, ' ',
                                      fcst_grid_spec, ' ',
                                      fcst_regridded_file, ' ',
@@ -627,30 +623,30 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                                                               stderr=
                                                               subprocess.STDOUT,
                                                               shell=True)
-                    msg = ("INFO|[regrid]| regrid_data_plane regrid command:" + 
+                    msg = ("INFO|[regrid]| regrid_data_plane regrid command:" +
                            regrid_cmd_fcst)
-                    logger.info(msg)
-                   
+                    logger.debug(msg)
+
                 else:
                     # Perform regridding via wgrib2 
-                    requested_records = retrieve_var_info(p,logger)
-                    fcst_cmd_list = [wgrib2_exe, ' ' , fcst_filename, ' | ', 
-                                     egrep_exe, ' ', requested_records, '|', 
+                    requested_records = retrieve_var_info(p, logger)
+                    fcst_cmd_list = [wgrib2_exe, ' ', fcst_filename, ' | ',
+                                     egrep_exe, ' ', requested_records, '|',
                                      wgrib2_exe, ' -i ', fcst_filename,
-                                     ' -new_grid ', fcst_grid_spec, ' ', 
+                                     ' -new_grid ', fcst_grid_spec, ' ',
                                      fcst_regridded_file]
                     wgrb_cmd_fcst = ''.join(fcst_cmd_list)
-                    msg = ("INFO|[wgrib2]| wgrib2 regrid command:" + 
+                    msg = ("INFO|[wgrib2]| wgrib2 regrid command:" +
                            wgrb_cmd_fcst)
-                    logger.info(msg)
-                    wgrb_fcst_out = subprocess.check_output(wgrb_cmd_fcst, 
+                    logger.debug(msg)
+                    wgrb_fcst_out = subprocess.check_output(wgrb_cmd_fcst,
                                                             stderr=
-                                                            subprocess.STDOUT, 
+                                                            subprocess.STDOUT,
                                                             shell=True)
 
             # Create new gridded file for anly tile
             if file_exists(anly_regridded_file) and not overwrite_flag:
-                logger.info("INFO| [" + cur_filename + ":" +
+                logger.debug("INFO| [" + cur_filename + ":" +
                             cur_function + " ] |" +
                             " Analysis tile file: " +
                             anly_regridded_file +
@@ -666,28 +662,28 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                                      var_level_string, ' ',
                                      ' -method NEAREST ']
                     regrid_cmd_anly = ''.join(anly_cmd_list)
-                    regrid_anly_out = subprocess.check_output(regrid_cmd_anly,                                                              
-                                                              stderr= 
-                                                              subprocess.STDOUT,                                                              
+                    regrid_anly_out = subprocess.check_output(regrid_cmd_anly,
+                                                              stderr=
+                                                              subprocess.STDOUT,
                                                               shell=True)
                     msg = ("INFO|[regrid]| on anly file:" + anly_regridded_file)
-                    logger.info(msg)
+                    logger.debug(msg)
                 else:
                     # Regridding via wgrib2.
-                    requested_records = retrieve_var_info(p,logger)
+                    requested_records = retrieve_var_info(p, logger)
                     anly_cmd_list = [wgrib2_exe, ' ', anly_filename, ' | ',
                                      egrep_exe, ' ', requested_records, '|',
                                      wgrib2_exe, ' -i ', anly_filename,
-                                     ' -new_grid ', anly_grid_spec, ' ', 
+                                     ' -new_grid ', anly_grid_spec, ' ',
                                      anly_regridded_file]
                     wgrb_cmd_anly = ''.join(anly_cmd_list)
-                    wgrb_anly_out = subprocess.check_output(wgrb_cmd_anly, 
+                    wgrb_anly_out = subprocess.check_output(wgrb_cmd_anly,
                                                             stderr=
-                                                            subprocess.STDOUT, 
+                                                            subprocess.STDOUT,
                                                             shell=True)
-                    msg = ("INFO|[wgrib2]| Regridding via wgrib2:" + 
+                    msg = ("INFO|[wgrib2]| Regridding via wgrib2:" +
                            wgrb_cmd_anly)
-                    logger.info(msg)
+                    logger.debug(msg)
 
 
 def retrieve_var_info(p, logger):
@@ -728,15 +724,15 @@ def retrieve_var_info(p, logger):
     # and remove any duplicates. *NOTE, order
     # will be lost.
     full_var_list = var_list + extra_var_list
-    unique_var_list = list(set(full_var_list)) 
+    unique_var_list = list(set(full_var_list))
 
     if MET_format:
         name_str = 'name="'
         level_str = 'level="'
 
         for cur_var in unique_var_list:
-            match = re.match(r'(.*)/(.*)',cur_var)
-            name = match.group(1) 
+            match = re.match(r'(.*)/(.*)', cur_var)
+            name = match.group(1)
             level = match.group(2)
             level_match = re.match(r'([a-zA-Z])([0-9])', level)
             level_val = level_match.group(2)
@@ -755,29 +751,29 @@ def retrieve_var_info(p, logger):
     else:
         full_list = ['":']
         for cur_var in unique_var_list:
-            match = re.match(r'(.*)/(.*)',cur_var)
-            name = match.group(1) 
-            level= match.group(2)
+            match = re.match(r'(.*)/(.*)', cur_var)
+            name = match.group(1)
+            level = match.group(2)
             level_match = re.match(r'([a-zA-Z])([0-9]{1,3})', level)
             level_val = level_match.group(2)
 
             # Create the field info string that can be used by 
             # wgrib2 to perform regridding.
             if int(level_val) > 0:
-                level_str = str(level_val) + ' ' 
+                level_str = str(level_val) + ' '
             else:
                 # For Z0, Z2, etc. just gather all available.
                 level_str = ""
-            
-            cur_list = [ name, ':', level_str, '|']
+
+            cur_list = [name, ':', level_str, '|']
             tmp_str = ''.join(cur_list)
             full_list.append(tmp_str)
 
         # Remove the last '|' and add the terminal double quote.
         field_level_string = ''.join(full_list)
         field_level_string = field_level_string[:-1]
-        field_level_string = field_level_string + '"'
-           
+        field_level_string += '"'
+
     return field_level_string
 
 
@@ -823,17 +819,17 @@ def create_grid_specification_string(lat, lon, logger, p):
         grid_list = ['"', 'latlon ', nlat, ' ', nlon, ' ', lat0, ' ', lon0, ' ',
                      dlat, ' ', dlon, '"']
     else:
-       adj_lon = float(lon) - lon_subtr
-       adj_lat = float(lat) - lat_subtr 
-       lon0 = str(round_0p5(adj_lon))
-       lat0 = str(round_0p5(adj_lat))
-       grid_list = ['latlon ', lon0, ':', nlon, ':', dlon, ' ', 
-                    lat0, ':', nlat, ':', dlat]
+        adj_lon = float(lon) - lon_subtr
+        adj_lat = float(lat) - lat_subtr
+        lon0 = str(round_0p5(adj_lon))
+        lat0 = str(round_0p5(adj_lat))
+        grid_list = ['latlon ', lon0, ':', nlon, ':', dlon, ' ',
+                     lat0, ':', nlat, ':', dlat]
 
     tile_grid_str = ''.join(grid_list)
     msg = ("INFO|" + cur_filename + ":" + cur_function +
            "| complete grid specification string: " + tile_grid_str)
-    logger.info(msg)
+    logger.debug(msg)
     return tile_grid_str
 
 
@@ -851,7 +847,7 @@ def gen_date_list(begin_date, end_date):
     begin_tv = calendar.timegm(begin_tm)
     end_tv = calendar.timegm(end_tm)
     date_list = []
-    for tv in xrange(begin_tv, end_tv+86400, 86400):
+    for tv in xrange(begin_tv, end_tv + 86400, 86400):
         date_list.append(time.strftime("%Y%m%d", time.gmtime(tv)))
     return date_list
 
@@ -865,7 +861,7 @@ def gen_hour_list(hour_inc, hour_end):
       hour_list -- such as ["00", "06", "12", "18"]
     '''
 
-    int_list = range(0, int(hour_end)+1, hour_inc)
+    int_list = range(0, int(hour_end) + 1, hour_inc)
 
     zfill_val = 0
     if len(hour_end) == 2:
@@ -879,7 +875,7 @@ def gen_hour_list(hour_inc, hour_end):
         hour_list.append(hour_string)
 
     return hour_list
-        
+
 
 def gen_init_list(init_date_begin, init_date_end, init_hr_inc, init_hr_end):
     '''
@@ -894,11 +890,11 @@ def gen_init_list(init_date_begin, init_date_end, init_hr_inc, init_hr_end):
     '''
 
     myhourlist = gen_hour_list(init_hr_inc, init_hr_end)
-    
+
     mydatelist = gen_date_list(init_date_begin, init_date_end)
 
     date_init_list = []
-    for index,my_date in enumerate(mydatelist):
+    for index, my_date in enumerate(mydatelist):
         for my_hour in myhourlist:
             init_string = my_date + "_" + my_hour
             date_init_list.append(init_string)
@@ -928,7 +924,7 @@ def prune_empty(output_dir, p, logger):
 
     # Retrieve any necessary variables from the constants_pdef.py
     # param/config file.
-    
+
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
@@ -938,42 +934,47 @@ def prune_empty(output_dir, p, logger):
     # Check for empty files.
     for root, dirs, files in os.walk(output_dir):
         path = root.split('/')
-      
+
         # Create a full file path by joining the path
         # and filename.
         for file in files:
-            file = os.path.join(root,file)
+            file = os.path.join(root, file)
             if os.stat(file).st_size == 0:
                 msg = ("INFO|[" + cur_filename + ":" +
-                       cur_function + "]|" + 
+                       cur_function + "]|" +
                        "Empty file: " + file +
-                       "...removing" )
-                 
-                logger.info(msg)
+                       "...removing")
+
+                logger.debug(msg)
                 os.remove(file)
 
     # Now check for any empty directories, some 
     # may have been created when removing
     # empty files.
-    for root,dirs, files in os.walk(output_dir):
+    for root, dirs, files in os.walk(output_dir):
         for dir in dirs:
-            d = os.path.join(root,dir)
-            if not os.listdir(d):
+
+            d = os.path.join(root, dir)
+            if os.listdir(d) == []:
                 msg = ("INFO|[" + cur_filename + ":" +
                        cur_function + "]|" +
                        "Empty directory: " + d +
                        "...removing")
-                logger.info(msg)  
+                logger.debug(msg)
                 os.rmdir(d)
 
 
-def apply_series_filters(series_output_dir, p, logger):
+def apply_series_filters(tile_dir, init_times, series_output_dir, p, logger):
     ''' Apply filter options, as specified in the
         constants_pdef.py param/config file.
 
         Args:
+
+           tile_dir:           Directory where input data files reside.
+                               e.g. data which we will be applying our filter criteria.
+           init_times:          List of init times that define the input data.
            series_output_dir:  The directory where the filter results
-                               are stored.
+                               will be stored.
            p       : The reference to the constants_pdef.py
                      param/config file.
            logger  : The logger to which all logging is directed.
@@ -981,21 +982,19 @@ def apply_series_filters(series_output_dir, p, logger):
 
         Returns:
             None
+
     '''
 
     # Useful for logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    # Retrieve any values from the param/config file,
+    # Retrieve any necessary values from the param/config file,
     # constants_pdef.py.
     tc_stat_exe = p.opt["TC_STAT"]
-    extract_out_dir = p.opt["EXTRACT_OUT_DIR"]
     cur_pid = str(os.getpid())
     tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
     filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
-    tile_dir = extract_out_dir
-    init_times = get_updated_init_times(tile_dir, p, logger)
 
     for cur_init in init_times:
         # Create the ASCII file with the storms that meet the
@@ -1015,7 +1014,7 @@ def apply_series_filters(series_output_dir, p, logger):
         tcs.tc_stat(p, logger, tc_cmd, series_output_dir)
         msg = ("INFO}[" + cur_filename + ":" + cur_function +
                "]| tc command: " + tc_cmd)
-        logger.info(msg)
+        logger.debug(msg)
 
         # Check that the filter.tcst file isn't empty. If
         # it is, then use the files from extract_tiles as
@@ -1023,37 +1022,35 @@ def apply_series_filters(series_output_dir, p, logger):
         if os.stat(filter_filename).st_size == 0:
             msg = ("WARN| " + cur_filename + ":" + cur_function +
                    "]| Empty filter file, filter " +
-                   " options yield nothing...using full " +
-                   " dataset created by extract_tiles.")
-            logger.warn(msg)
+                   " options yield nothing.")
+            logger.debug(msg)
+            continue
         else:
             # Now retrieve the files corresponding to these
             # storm ids that resulted from filtering.
-            tile_dir = series_output_dir
             sorted_storm_ids = get_storm_ids(filter_filename, logger)
-            storm_match_list = []
             for cur_storm in sorted_storm_ids:
                 msg = ("INFO| [" + cur_filename + ":" +
                        cur_function +
                        " ] | Processing storm: " + cur_storm)
-                logger.info(msg)
-            storm_output_dir = os.path.join(series_output_dir,
-                                            cur_init, cur_storm)
-            mkdir_p(storm_output_dir)
-            mkdir_p(tmp_dir)
-            tmp_file = "filter_" + cur_init + "_" + cur_storm
-            tmp_filename = os.path.join(tmp_dir, tmp_file)
-            storm_match_list = grep(cur_storm, filter_filename)
-            with open(tmp_filename, "a+") as tmp_file:
-                for storm_match in storm_match_list:
-                    tmp_file.write(storm_match)
+                logger.debug(msg)
+                storm_output_dir = os.path.join(series_output_dir,
+                                                cur_init, cur_storm)
+                mkdir_p(storm_output_dir)
+                mkdir_p(tmp_dir)
+                tmp_file = "filter_" + cur_init + "_" + cur_storm
+                tmp_filename = os.path.join(tmp_dir, tmp_file)
+                storm_match_list = grep(cur_storm, filter_filename)
+                with open(tmp_filename, "a+") as tmp_file:
+                    for storm_match in storm_match_list:
+                        tmp_file.write(storm_match)
 
-            # Create the analysis and forecast files based
-            # on the storms (defined in the tmp_filename created above)
-            # Store the analysis and forecast files in the
-            # series_output_dir.
-            retrieve_and_regrid(tmp_filename, cur_init, cur_storm,
-                                tile_dir, logger, p)
+                # Create the analysis and forecast files based
+                # on the storms (defined in the tmp_filename created above)
+                # Store the analysis and forecast files in the
+                # series_output_dir.
+                retrieve_and_regrid(tmp_filename, cur_init, cur_storm,
+                                    series_output_dir, logger, p)
 
     # Check for any empty files and directories and remove them to avoid
     # any errors or performance degradation when performing
@@ -1147,38 +1144,61 @@ def get_updated_init_times(input_dir, p, logger):
 
     return updated_init_times_list
 
+
+def get_dirs(base_dir, p, logger):
+    '''Get a list of directories under a base directory.
+
+        Args:
+            base_dir:  The base directory from where search begins
+            p:         The reference to constants_pdef.py, the param/config file.
+            logger:    The logger to which all logging is directed.
+
+       Returns:
+           dir_list:  A list of directories under the base_dir
+    '''
+
+    # For logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    dir_list = []
+    for dirname, dirs, filenames in os.walk(base_dir):
+        for d in dirs:
+            dir_list.append(os.path.join(dirname, d))
+
+    return dir_list
+
+
 if __name__ == "__main__":
-    
-    #test grep
-    #pattern = "abcd"
-    #file = "./test.txt"
-    #m =  grep(pattern, file)
-    #if m:
+    # test grep
+    # pattern = "abcd"
+    # file = "./test.txt"
+    # m =  grep(pattern, file)
+    # if m:
     #     print("Found a match")
-    #else:
+    # else:
     #     print( "No match found")
 
 
-    #test the rounding to the nearest n.5
-    
-    #counter = 0
-    #vals =     [3.0,3.1,3.2,3.3,3.4,3.5,3.6,3.7,3.8,3.9,4.0]
-    #expected = [3.0,3.0,3.0,3.5,3.5,3.5,3.5,3.5,4.0,4.0,4.0]
-    #for val in vals:
+    # test the rounding to the nearest n.5
+
+    # counter = 0
+    # vals =     [3.0,3.1,3.2,3.3,3.4,3.5,3.6,3.7,3.8,3.9,4.0]
+    # expected = [3.0,3.0,3.0,3.5,3.5,3.5,3.5,3.5,4.0,4.0,4.0]
+    # for val in vals:
     #    pt = round_0p5(val)
     #    if(pt != expected[counter]):
     #       raise Exception("round_0p5 failed to round the input value to expected value.")
     #    counter +=1
-           
- 
-    
-    #val = -14.1
-    #pt = round_0p5(val)
-    #print("{:.1f} rounded = {:.1f}".format(val,pt))
-    #val = 14.1
-    #pt = round_0p5(val)
-    #print("{:.1f} rounded = {:.1f}".format(val,pt))
+
+
+
+    # val = -14.1
+    # pt = round_0p5(val)
+    # print("{:.1f} rounded = {:.1f}".format(val,pt))
+    # val = 14.1
+    # pt = round_0p5(val)
+    # print("{:.1f} rounded = {:.1f}".format(val,pt))
 
     init_list = []
     init_list = gen_init_list("20141201", "20150331", 6, "18")
-    print(init_list)
