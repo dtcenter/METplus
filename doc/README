@@ -1,59 +1,158 @@
--------------------------------------------------------
-Model Evaluation Tools (MET) Plus  MET+  (January 2017)
--------------------------------------------------------
+======================================================
+Model Evaluation Tools Plus  (METplus)  (January 2017)
+======================================================
 
-***Terms of Use? - Do I need that here like in the README for MET?***
-Yes, copy and paste. Ask Tara about changing specific language about the funding below (disclaimer)
+Welcome to the documentation for METplus.  METplus is a set of Python wrapper scripts around the MET verification tools
+(and eventually METViewer, a tool used for plotting MET output verification statistics).
 
-Welcome to the documentation for MET+.  MET+ is a set of Python wrapper scripts around the MET verification tools (and eventually METViewer, a tool used for plotting MET output verification statistics).
+
+================================================================================
+Model Evaluation Tools (MET) TERMS OF USE - IMPORTANT!
+================================================================================
+
+USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS AND CONDITIONS:
+
+1. License.  Subject to these terms and conditions, University Corporation for
+   Atmospheric Research (UCAR) grants you a non-exclusive, royalty-free license
+   to use, create derivative works, publish, distribute, disseminate, transfer,
+   modify, revise and copy the Model Evaluation Tools Plus (MET plus) software.
+
+   You shall not sell, license or transfer for a fee the Software, or any work
+   that in any manner contains the Software.
+
+2. Disclaimer of Warranty on Software.  Use of the Software is at your sole
+   risk.  The Software is provided "AS IS" and without warranty of any kind and
+   UCAR EXPRESSLY DISCLAIMS ALL WARRANTIES AND/OR CONDITIONS OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTIES OR
+   CONDITIONS OF TITLE, NON-INFRINGEMENT OF A THIRD PARTY'S INTELLECTUAL
+   PROPERTY, MERCHANTABILITY OR SATISFACTORY QUALITY AND FITNESS FOR A
+   PARTICULAR PURPOSE.  THE PARTIES EXPRESSLY DISCLAIM THAT THE UNIFORM COMPUTER
+   INFORMATION TRANSACTIONS ACT (UCITA) APPLIES TO OR GOVERNS THIS AGREEMENT.
+   No oral or written information or advice given by UCAR or a UCAR authorized
+   representative shall create a warranty or in any way increase the scope of
+   this warranty.  Should the Software prove defective, you (and neither UCAR
+   nor any UCAR representative) assume the cost of all necessary correction.
+
+3. Limitation of Liability.  UNDER NO CIRCUMSTANCES, INCLUDING NEGLIGENCE, SHALL
+   UCAR BE LIABLE FOR ANY DIRECT, INCIDENTAL, SPECIAL, INDIRECT OR CONSEQUENTIAL
+   DAMAGES INCLUDING LOST REVENUE, PROFIT OR DATA, WHETHER IN AN ACTION IN
+   CONTRACT OR TORT ARISING OUT OF OR RELATING TO THE USE OF OR INABILITY TO USE
+   THE SOFTWARE, EVEN IF UCAR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+   DAMAGES.
+
+4. Compliance with Law.  All Software and any technical data delivered under
+   this Agreement are subject to U.S. export control laws and may be subject to
+   export or import regulations in other countries.  You agree to comply
+   strictly with all applicable laws and regulations in connection with use and
+   distribution of the Software, including export control laws, and you
+   acknowledge that you have responsibility to obtain any required license to
+   export, re-export, or import as may be required.
+
+5. No Endorsement/No Support.  The names UCAR/NCAR, National Center for
+   Atmospheric Research and the University Corporation for Atmospheric Research
+   may not be used in any advertising or publicity to endorse or promote any
+   products or commercial entity unless specific written permission is obtained
+   from UCAR.  The Software is provided without any support or maintenance, and
+   without any obligation to provide you with modifications, improvements,
+   enhancements, or updates of the Software.
+
+6. Controlling Law and Severability.  This Agreement shall be governed by the
+   laws of the United States and the State of Colorado.  If for any reason a
+   court of competent jurisdiction finds any provision, or portion thereof, to
+   be unenforceable, the remainder of this Agreement shall continue in full
+   force and effect.  This Agreement shall not be governed by the United Nations
+   Convention on Contracts for the International Sale of Goods, the application
+   of which is hereby expressly excluded.
+
+7. Termination.  Your rights under this Agreement will terminate automatically
+   without notice from UCAR if you fail to comply with any term(s) of this
+   Agreement.  You may terminate this Agreement at any time by destroying the
+   Software and any related documentation and any complete or partial copies
+   thereof.  Upon termination, all rights granted under this Agreement shall
+   terminate.  The following provisions shall survive termination: Sections 2, 3,
+   6 and 9.
+
+8. Complete Agreement.  This Agreement constitutes the entire agreement between
+   the parties with respect to the use of the Software and supersedes all prior
+   or contemporaneous understandings regarding such subject matter.  No
+   amendment to or modification of this Agreement will be binding unless in
+   writing and signed by UCAR.
+
+9. Notices and Additional Terms.  Copyright in Software is held by UCAR. You
+   must include, with each copy of the Software and associated documentation,
+   a copy of this Agreement and the following notice:
+
+   "The source of this material is the Research Applications Laboratory at the
+   National Center for Atmospheric Research, a program of the University
+   Corporation for Atmospheric Research (UCAR) pursuant to a Cooperative
+   Agreement with the National Science Foundation; Copyright 2007 University
+   Corporation for Atmospheric Research.  All Rights Reserved."
+
+   The following notice shall be displayed on any scholarly works associated
+   with, related to or derived from the Software:
+
+   "Model Evaluation Tools Plus (METplus) was developed at the National Center 
+    for Atmospheric Research (NCAR) through grants from the National Oceanic and 
+    Atmospheric Administration (NOAA).  NCAR is sponsored by the United States 
+    National Science Foundation (NSF)."
+
+By using or downloading the Software, you agree to be bound by the terms and
+conditions of this Agreement.
 
 
 Background and Future
 ---------------------
 
-MET+ development began in 2016 with initial development for the cyclone-relative verification for the Stony Brook University (SBU) project. Development in 2017 will focus on replicating the Global Deterministic National Centers for Environmental Predication (NCEP) Verification and future work will focus on ensemble, meso, and storm scale verification at NCEP and public support.
+METplus development began in 2016 with initial development for the cyclone-relative verification for the Stony Brook University (SBU) project.
+Development in 2017 will focus on replicating the Global Deterministic National Centers for Environmental Predication (NCEP) Verification and
+future work will focus on ensemble, meso, and storm scale verification at NCEP and public support.
 
 
 Dependencies
 ------------
 
-The MET verification tools package is required to be installed on your system prior to running the MET+ wrapper scripts.
+The MET verification tools package is required to be installed on your system prior to running the METplus wrapper scripts.
 
-MET+ was developed using Python version 2.7.9.
+METplus was developed using Python version 2.7.9.
 
-The ncdump and ncap2 utilities are used in running series_by_lead.py and can be obtained at the following sites, respectively:
-
-http://www.unidata.ucar.edu/downloads/netcdf/index.jsp
-http://nco.sourceforge.net/
-
-***Are convert, cut, and tr pretty standard?*** Yes, list as required; convert is part of image magik, others are standard
-***I see wgrib2 used in met_util.py.  Under what circumstances is this needed/required?***  Don't need to list where it's used, just need to say it's required for now, but may be replaced by regrid_data_plane.
+- METplus requires the following to be installed on your system:
+  - ncdump utility
+    - http://www.unidata.ucar.edu/downloads/netcdf/index.jsp
+  - ncap2 utility
+    - http://nco.sourceforge.net/
+  - convert utility (part of ImageMagick)
+    - https://www.imagemagick.org/script/binary-releases.php
+  - wgrib2 utility
+    - http://www.cpc.noaa.gov/products/wesley/wgrib2/compile_questions.html
+  - egrep utility
+    - http://directory.fsf.org/wiki/Grep
+  - rm, cut, tr utilities (standard on Linux)
 
 
 Version Control
 ---------------
 
-MET+ uses GIT for version control in a private NCAR respository.
+METplus uses GIT for version control in a private NCAR respository.
 
 
 Getting the Code and Test Data
 ------------------------------
 
-Get the MET+ package by running:
+Get the METplus package by running:
 
-  wget http://<path>/MET+_alpha.20170109.tar.gz
+  wget http://<path>/METplus_alpha.20170109.tar.gz
 
-Get the MET+ test data by running:
+Get the METplus test data by running:
 
-  wget http://<path>/MET+_test_data.20170109.tar
+  wget http://<path>/METplus_test_data.20170109.tar
 
-Decide where you would like to put the code and copy the MET+ Package to that location.  Unpack the gzipped tar file in that directory by running:
+Decide where you would like to put the code and copy the METplus Package to that location.  Unpack the gzipped tar file in that directory by running:
 
-  tar -zxf MET+_alpha.20170109.tar.gz
+  tar -zxf METplus_alpha.20170109.tar.gz
 
-Decide where you would like to put the test data and copy the MET+ test data to that location.  Unpack the gzipped tar file in that directory by running:
+Decide where you would like to put the test data and copy the METplus test data to that location.  Unpack the gzipped tar file in that directory by running:
 
-  tar -zxf MET+_test_data.20170109.tar
+  tar -zxf METplus_test_data.20170109.tar
 
 
 Configuring the Environment
@@ -81,36 +180,152 @@ Save the changes and source your .cshrc (or similar file) by running, for exampl
 Configuration Files
 -------------------
 
-There are two sets of configuration files - one for running MET+ and one for running MET.
+There are two sets of configuration files - one for running METplus and one for running MET.
 
-- MET+
+- METplus
 
-The main configuration file for MET+ is constants_pdef.py, which is located in the "parm" subdirectory. If you are not sharing data locations with others, you can modify constants_pdef.py directly and use it as your main configuration file.
+The main configuration file for METplus is constants_pdef.py, which is located in the "parm" subdirectory. If you are not sharing data
+locations with others, you can modify constants_pdef.py directly and use it as your main configuration file.
 
-If you are sharing data locations with others, it is advised that you override the options in the constants_pdef.py by using your own config file, for example, feature_relative_config_jpresto.py (renaming it however you'd like).  feature_relative_config_jpresto.py has slightly different syntax from constants_pdef.py but has the same fields, some with different values. Having all of the same fields that are in constants_pdef.py in your personal config file is not necessary as these fields override what is in constants_pdef.py.  ** However, at a minimum if you reset a BASE or DIR value (e.g. OUTPUT_BASE, PROJ_DIR) you'll need to include all other fields that use that BASE or DIR field. If you do not do that, the default value will be used. **
+If you are sharing data locations with others, it is advised that you override the options in the constants_pdef.py by using your own
+config file, for example, feature_relative_config_jpresto.py (renaming it however you'd like).  feature_relative_config_jpresto.py
+has slightly different syntax from constants_pdef.py but has the same fields, some with different values. Having all of the same fields
+that are in constants_pdef.py in your personal config file is not necessary as these fields override what is in constants_pdef.py.
+
+** Important Note **
+However, at a minimum if you reset a BASE or DIR value (e.g. OUTPUT_BASE, PROJ_DIR) you'll need to include all other fields that use
+that BASE or DIR field. If you do not do that, the default value will be used. 
 
 - MET
 
-The configuration files for the MET tools are also located in the "parm" subdirectory.  Currently, the applicable configuration files are TCPairsETCConfig (for the extra tropical cyclone TCPairs run) and the SeriesAnalysisConfig (for series analysis by init time) and SeriesAnalysisConfig_by_lead (for series analysis bylead time).
+The configuration files for the MET tools are also located in the "parm" subdirectory.  Currently, the applicable configuration files are
+TCPairsETCConfig (for the extra tropical cyclone TCPairs run) and the SeriesAnalysisConfig_by_init and SeriesAnalysisConfig_by_lead.
 
 
 Configuration Setup
 -------------------
 
-The user should look at the constants_pdef.py and/or associated personal config file, e.g. feature_relative_config_jpresto.py to modify necessary and desired fields.  The information below will cover the various section:
+The user should look at the constants_pdef.py and/or associated personal config file, e.g. feature_relative_config_jpresto.py to modify
+necessary and desired fields.  The information below will cover the various section:
 
 NON-MET EXECUTABLES
 
-Some of these fields may need to be modified based on the location of the executables on your system, but some may be standard. Note that the WGRIB2 executable is not currently in a standard location and will need to be modified.
+Some of these fields may need to be modified based on the location of the executables on your system, but some may be standard. Note that
+the WGRIB2 executable is not currently in a standard location and will need to be modified.
+
 
 COMMONLY USED BASE VARIABLES
 
+MET_BUILD_BASE is the base location for the MET release that you will be using. Please set that to an appropriate location.  As noted above
+(see "** Important Note **"), if you are using your own config file, and not directly using constants_def.py, you will need to set both
+MET_BUILD_BASE and MET_BASE in your own config file, as MET_BASE relies on MET_BUILD_BASE.
+
+OUTPUT_BASE is the base area for where the user would like to store their output data.
+
+PARM_BASE is the parm subdirectory for the METplus configuration files.  This gets referenced multiple times in the file.  As noted above
+(see "** Important Note **"), if you are using your own config file, and not directly using constants_def.py, you will need to set PARM_BASE
+and fields that rely on it in your own config file, as many other fields rely on PARM_BASE.
+
+
+MET EXECUTABLES
+
+These fields rely on MET_BUILD_BASE and its "bin" subdirectory.  As noted above (see "** Important Note **"), if you are using your own config
+file, and not directly using constants_def.py, you will need to set these fields in your config file as well if you have reset MET_BUILD_BASE,
+as these fields rely on MET_BUILD_BASE.
+
+
+INPUT DATA DIRECTORIES
+
+These fields indicate where your input data is located.
+
+For example, the METplus_test_data.20170109.tar.gz, includes a "reduced_model_data" directory, which contains GFS data, and a "track_data"
+directory, which contains extra tropical cyclone track data.  If you wanted to put this data at "/d1/data/SBU", you would set the following:
+
+PROJ_DIR = "/d1/data/GFS"
+GFS_DIR = os.path.join(PROJ_DIR, "reduced_model_data")
+TRACK_DATA_DIR = os.path.join(PROJ_DIR, "track_data")
+
+As noted above (see "** Important Note **"), if you are using your own config file, and not directly using constants_def.py, you will need to
+set these fields in your config file as well if you have reset PROJ_DIR, as these fields rely on PROJ_DIR.
+
+
+OUTPUT DIRECTORIES
+
+These fields include a log directory and a tmp directory along with other output directories. The TRACK_DATA_SUBDIR_MOD refers to the subdirectory
+where the track data will be written, reformatted to be in true ATCF format, which the MET tools need for processing.
+
+As noted above (see "** Important Note **"), if you are using your own config file, and not directly using constants_def.py, and have reset
+OUTPUT_BASE or PROJ_DIR, you will need to include these fields in your config file as well.
+
+
+FILENAME TEMPLATES
+
+These fields contain templates for filenames and filename prefixes and regular expressions.
+
+
+CONFIGURATION FILES
+
+These fields indicate which configuration files to use for MET.
+
+
+LISTS AND SETTINGS
+
+PROCESS_LIST is the list of processes that the user wants the master script to run.  For example, a full run from start to finish for running series
+analysis by lead, would be:
+
+ PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py", "series_by_lead.py"]
+
+This section also contains fields for desired statistics and variables,  desired dates and times, grid settings, etc.
+
+
+TC PAIRS filtering options
+
+This section contains the options used for the call to MET's tc_pairs code.
+
+
+TC-STAT filtering options
+
+This section contains the filtering options for the call to MET's tc_stat code.
+
+
+OVERWRITE OPTIONS
+
+These options exist so that you can choose whether or not to overwrite already processed data sets.
+
+
+PLOTTING
+
+This section contains the possible plotting options
+
+
+REGRDDING
+
+This section contains the possible regridding options.  REGRID_USING_MET_TOOL is currently set to FALSE, as METplus is currently using wgrib2,
+as opposed to regrid_data_plane, for part of its processing.
+
+
+TESTING
+
+These options are currently used by the developers and shouldn't need to be modified.
+
+
+LOGGING
+
+This section contains the logging options.  A LOG_LEVEL of "DEBUG" will likely provide too much information for the general user, so the user
+may wish to start off with "INFO" instead.
 
 
 
 How to Run?
 -----------
 
+If you're only using constants_pdef.py and not your own config file, and you have set up constant_pdef.py you can simply run:
+
+  master_met_plus.py
+
+If you're using your own config file, for example, feature_relative_config_jpresto.py, and you have set it up you can runm for example:
+
+  master_met_plus.py -c feature_relative_config_jpresto.py
 
 
 
