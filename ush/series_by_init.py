@@ -40,8 +40,6 @@ def analysis_by_init_time():
     series_filtered_out_dir = p.opt["SERIES_INIT_FILTERED_OUT_DIR"]
     background_map = p.opt["BACKGROUND_MAP"]
     series_filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
-    fcst_tile_regex = p.opt["FCST_TILE_REGEX"]
-    anly_tile_regex = p.opt["ANLY_TILE_REGEX"]
 
     # Set up the environment variable to be used in the Series Analysis
     #   Config file (SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH)
@@ -52,11 +50,20 @@ def analysis_by_init_time():
     tmp_stat_string = tmp_stat_string.replace("\'", "\"")
     os.environ['STAT_LIST'] = tmp_stat_string
 
+    if regrid_with_MET_tool:
+        # Regridding via MET Tool regrid_data_plane.
+        fcst_tile_regex = p.opt["FCST_NC_TILE_REGEX"]
+        anly_tile_regex = p.opt["ANLY_NC_TILE_REGEX"]
+    else:
+        # Regridding via wgrib2 tool.
+        fcst_tile_regex = p.opt["FCST_TILE_REGEX"]
+        anly_tile_regex = p.opt["ANLY_TILE_REGEX"]
+
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-
     logger.info("Starting series analysis by init time")
+
     # Initialize the tile_dir to point to the extract_tiles_dir.
     # And retrieve a list of init times based on the data available in
     # the extract tiles directory.
@@ -106,6 +113,7 @@ def analysis_by_init_time():
         # as input for series analysis.
         # source of input tile data.
         filtered_dirs_list = util.get_files(tile_dir, ".*.", logger)
+        tile_dir = extract_tiles_dir
 
     # From the filtered files list, extract the init time and storm id and
     # create a sorted list of the init times.
@@ -128,6 +136,8 @@ def analysis_by_init_time():
 
     # Create FCST and ANLY ASCII files based on init time and storm id.  These are arguments to the
     # -fcst and -obs arguments to the MET Tool series_analysis.
+    # First, get an updated list of init times, since filtering can reduce the amount of init times.
+    filter_init_times = util.get_updated_init_times(tile_dir, p, logger)
     sorted_filter_init = sorted(filter_init_times)
     fcst_ascii_file_base = 'FCST_ASCII_FILES_'
     anly_ascii_file_base = 'ANLY_ASCII_FILES_'
@@ -152,6 +162,11 @@ def analysis_by_init_time():
                 # init time and storm id.
                 anly_grid_regex = ".*ANLY_TILE_F.*grb2"
                 fcst_grid_regex = ".*FCST_TILE_F.*grb2"
+
+                if regrid_with_MET_tool:
+                    anly_grid_regex = ".*ANLY_TILE_F.*nc"
+                    fcst_grid_regex = ".*FCST_TILE_F.*nc"
+
                 anly_grid_files = util.get_files(tile_dir,
                                                  anly_grid_regex, logger)
                 fcst_grid_files = util.get_files(tile_dir,
@@ -171,10 +186,11 @@ def analysis_by_init_time():
                                                series_out_dir, logger)
                 create_fcst_anly_to_ascii_file(fcst_grid_files, cur_init, cur_storm, anly_ascii_file_base,
                                                series_out_dir, logger)
-                util.prune_empty(series_out_dir, p,logger)
+                util.prune_empty(series_out_dir, p, logger)
 
     # Clean up any remaining empty files and dirs
     util.prune_empty(series_out_dir, p, logger)
+    logger.debug("Finished creating FCST and ANLY ASCII files, and cleaning empty files and dirs")
 
     # Now assemble the -fcst, -obs, and -out arguments and invoke the MET Tool: series_analysis.
     for cur_init in sorted_filter_init:
@@ -199,6 +215,9 @@ def analysis_by_init_time():
                                           cur_storm, fcst_ascii_fname)
                 fcst_param_parts = ['-fcst ', fcst_ascii]
                 fcst_param = ''.join(fcst_param_parts)
+                msg = ("DEBUG|[" + cur_function + ":" + cur_filename + "]" +
+                       "fcst param: " + fcst_param)
+                logger.debug(msg)
 
                 # Generate the -obs portion (analysis file)
                 # These are the gridded observation files.
@@ -214,6 +233,9 @@ def analysis_by_init_time():
                                           cur_storm, anly_ascii_fname)
                 obs_param_parts = [' -obs ', anly_ascii]
                 obs_param = ''.join(obs_param_parts)
+                msg = ("DEBUG|[" + cur_function + ":" + cur_filename + "]" +
+                       "obs param: " + obs_param)
+                logger.debug(msg)
 
                 # Generate the -out portion, get the NAME and
                 # corresponding LEVEL for each variable.
@@ -228,6 +250,12 @@ def analysis_by_init_time():
                     # is required by the MET series_analysis binary.
                     os.environ['NAME'] = name
                     os.environ['LEVEL'] = level
+
+                    # Set the NAME to name_level if regrid_data_plane
+                    # was used to regrid.
+                    if regrid_with_MET_tool:
+                        os.environ['NAME'] = name + "_" + level
+
                     series_anly_output_parts = [output_dir, '/',
                                                 'series_', name, '_',
                                                 level, '.nc']
@@ -250,6 +278,7 @@ def analysis_by_init_time():
                     msg = ('INFO|[' + cur_filename + ':' +
                            cur_function + ']|' +
                            'SERIES ANALYSIS COMMAND: ' + command)
+                    logger.debug(msg)
 
                     # Using shell=True because we aren't relying
                     # on external input for creating the command
@@ -269,13 +298,13 @@ def analysis_by_init_time():
                         # the additional filtering doesn't yield results,
                         # search the series_out_dir
                         num, beg, end = get_fcst_file_info(series_out_dir,
-                                                       cur_init, cur_storm,
-                                                       logger)
+                                                           cur_init, cur_storm,
+                                                           p, logger)
                     else:
                         # Search the series_filtered_out_dir for the filtered files.
                         num, beg, end = get_fcst_file_info(series_filtered_out_dir,
                                                            cur_init, cur_storm,
-                                                           logger)
+                                                           p, logger)
 
                     # Assemble the input file, output file, field string,
                     # and title
@@ -355,7 +384,7 @@ def analysis_by_init_time():
     logger.info("Finished series analysis by init time")
 
 
-def get_fcst_file_info(dir_to_search, cur_init, cur_storm, logger):
+def get_fcst_file_info(dir_to_search, cur_init, cur_storm, p, logger):
     ''' Get the number of all the gridded forecast 30x30 tile 
         files for a given storm id and init time
         (created by extract_tiles). Determine the filename of the 
@@ -366,6 +395,7 @@ def get_fcst_file_info(dir_to_search, cur_init, cur_storm, logger):
            dir_to_search: The directory of the gridded files of interest.
            cur_init:  The init time of interest.
            cur_storm:  The storm id of interest.
+           p        : The reference to constants_pdef.py param/config file.
            logger:  The logger to which all logging messages 
                     will be directed.
 
@@ -380,6 +410,8 @@ def get_fcst_file_info(dir_to_search, cur_init, cur_storm, logger):
 
     '''
 
+    regrid_with_MET_tool = p.opt["REGRID_USING_MET_TOOL"]
+
     # For logging 
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
@@ -390,6 +422,10 @@ def get_fcst_file_info(dir_to_search, cur_init, cur_storm, logger):
     # base_dir_to_search = os.path.join(output_dir, cur_init)
     gridded_dir = os.path.join(dir_to_search, cur_init, cur_storm)
     search_regex = ".*FCST_TILE.*.grb2"
+
+    if regrid_with_MET_tool:
+        search_regex = ".*FCST_TILE.*.nc"
+
     files_of_interest = util.get_files(gridded_dir, search_regex,
                                        logger)
     sorted_files = sorted(files_of_interest)
@@ -408,6 +444,9 @@ def get_fcst_file_info(dir_to_search, cur_init, cur_storm, logger):
     # filenames.
     match_beg = re.search(".*FCST_TILE_(F[0-9]{3}).*.grb2", first)
     match_end = re.search(".*FCST_TILE_(F[0-9]{3}).*.grb2", last)
+    if regrid_with_MET_tool:
+        match_beg = re.search(".*FCST_TILE_(F[0-9]{3}).*.nc", first)
+        match_end = re.search(".*FCST_TILE_(F[0-9]{3}).*.nc", last)
     if match_beg:
         beg = match_beg.group(1)
     else:
@@ -455,8 +494,6 @@ def get_storms_for_init(cur_init, out_dir_base, logger):
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-
-    filter_set = set()
 
     # Retrieve filter files, first create the filename
     # by piecing together the out_dir_base with the cur_init.
@@ -524,13 +561,13 @@ def create_fcst_anly_to_ascii_file(fcst_anly_grid_files, cur_init, cur_storm, fc
     # Now create the fcst or analysis ASCII file
     try:
         with open(fcst_anly_ascii, 'a') as f:
-               f.write(tmp_param)
+            f.write(tmp_param)
     except IOError as e:
-       msg = ("ERROR|[" + cur_filename + ":" +
-              cur_function + "]| " +
-              "Could not create requested ASCII file:  " +
-              fcst_anly_ascii)
-       logger.error(msg)
+        msg = ("ERROR|[" + cur_filename + ":" +
+               cur_function + "]| " +
+               "Could not create requested ASCII file:  " +
+               fcst_anly_ascii)
+        logger.error(msg)
 
     if os.stat(fcst_anly_ascii).st_size == 0:
         # Just in case there are any empty fcst ASCII or anly ASCII files at this point,
