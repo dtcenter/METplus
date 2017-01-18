@@ -55,11 +55,11 @@ def main():
     # amongst different users and runs.
     cur_pid = str(os.getpid())
     tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
+    logger.info("Begin extract tiles")
    
     # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
     # [File : function]| Message logger.info("INFO |  [" + 
     # cur_filename +  ":" + "cur_function] |" + "BEGIN extract_tiles")
-    
     # Process TC pairs by initialization time
     for cur_init in init_times:
         # Begin processing for initialization time, cur_init
@@ -69,8 +69,9 @@ def main():
         # the file doesn't exist, then run TC_STAT
         filter_filename = "filter_" + cur_init + ".tcst"
         filter_name = os.path.join(filtered_out_dir, cur_init, filter_filename)
-
-        if not util.file_exists(filter_name) and overwrite_flag:
+        if util.file_exists(filter_name) and not overwrite_flag:
+            logger.debug("skipping tc_stat, ", filter_name, " exists")
+        else:
             # Create the storm track by applying the
             # filter options defined in the constants_pdef.py file.
             filter_path = os.path.join(filtered_out_dir, cur_init)
@@ -83,6 +84,7 @@ def main():
 
             # Call run_tc_stat to do the actual filtering.
             tc_cmd = ''.join(tc_cmd_list)
+            logger.debug("DEBUG|tc_cmd: " + tc_cmd)
             tcs.tc_stat(p, logger, tc_cmd, 
                         filtered_out_dir)
 
@@ -98,6 +100,9 @@ def main():
         # continue to the next time.      
         if len(sorted_storm_ids) == 0:
             # No storms found for init time, cur_init
+            msg = ("DEBUG|[" + cur_filename + ":" + cur_function + " ]|" +
+                   "No storms were found for " + cur_init + "...continue to next in list")
+            logger.debug(msg)
             continue
 
         # Process each storm in the sorted_storm_ids list
@@ -133,6 +138,7 @@ def main():
     # Clean up the tmp directory
     subprocess.call(["rm", "-rf", tmp_dir])
 
+    logger.info("Finished with extract tiles")
 
 if __name__ == "__main__":
     p = P.Params()
