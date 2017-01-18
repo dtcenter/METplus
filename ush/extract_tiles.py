@@ -57,6 +57,13 @@ def main():
     tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
     msg = ("INFO|[" + cur_filename + ":" + cur_function + "]|Begin extract tiles")
     logger.info(msg)
+
+    # Check that there are tc_pairs data which is used as input
+    if util.is_dir_empty(tc_pairs_dir):
+        msg = ("ERROR|[" + cur_filename + ":" + cur_function + "]|No tc pairs data found at " +
+               tc_pairs_dir + "Exiting...")
+        logger.error(msg)
+        sys.exit(1)
    
     # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
     # [File : function]| Message logger.info("INFO |  [" + 
