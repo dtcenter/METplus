@@ -55,7 +55,8 @@ def main():
     # amongst different users and runs.
     cur_pid = str(os.getpid())
     tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
-    logger.info("Begin extract tiles")
+    msg = ("INFO|[" + cur_filename + ":" + cur_function + "]|Begin extract tiles")
+    logger.info(msg)
    
     # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
     # [File : function]| Message logger.info("INFO |  [" + 
@@ -70,7 +71,10 @@ def main():
         filter_filename = "filter_" + cur_init + ".tcst"
         filter_name = os.path.join(filtered_out_dir, cur_init, filter_filename)
         if util.file_exists(filter_name) and not overwrite_flag:
-            logger.debug("skipping tc_stat, " +  filter_name + " exists")
+            msg = ("DEBUG| [" + cur_filename + ":" + cur_function +
+                   " ] | Filter file exists, using Track data file: " +
+                   filter_name)
+            logger.debug(msg)
         else:
             # Create the storm track by applying the
             # filter options defined in the constants_pdef.py file.
@@ -136,8 +140,8 @@ def main():
 
     # Clean up the tmp directory
     subprocess.call(["rm", "-rf", tmp_dir])
-
-    logger.info("Finished with extract tiles")
+    msg = ("INFO|[" + cur_function + ":" + cur_filename + "]| Finished extract tiles")
+    logger.info(msg)
 
 if __name__ == "__main__":
     p = P.Params()
