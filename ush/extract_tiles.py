@@ -45,7 +45,7 @@ def main():
                                     p.opt["INIT_DATE_END"], 
                                     p.opt["INIT_HOUR_INC"], 
                                     p.opt["INIT_HOUR_END"])    
-    project_dir = p.opt["PROJ_DIR"]
+    tc_pairs_dir = p.opt["TC_PAIRS_DIR"]
     overwrite_flag = p.opt["OVERWRITE_TRACK"]
     addl_filter_opts = p.opt["EXTRACT_TILES_FILTER_OPTS"]
     filtered_out_dir = p.opt["EXTRACT_OUT_DIR"]
@@ -81,7 +81,7 @@ def main():
             filter_path = os.path.join(filtered_out_dir, cur_init)
             util.mkdir_p(filter_path)
             tc_cmd_list = [tc_stat_exe, " -job filter -lookin ", 
-                           project_dir, "/tc_pairs/", year_month,
+                           tc_pairs_dir, "/tc_pairs/", year_month,
                            " -init_inc ", cur_init, 
                            " -match_points true -dump_row ", 
                            filter_name, " ", addl_filter_opts]
