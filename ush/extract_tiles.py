@@ -91,7 +91,6 @@ def main():
             # Remove any empty files and directories that can occur
             # from filtering.
             util.prune_empty(filter_name, p, logger)
-
         # Now get unique storm ids from the filter file, 
         # filter_yyyymmdd_hh.tcst
         sorted_storm_ids = util.get_storm_ids(filter_name, logger)
