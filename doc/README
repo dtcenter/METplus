@@ -104,7 +104,7 @@ Background and Future
 ---------------------
 
 METplus development began in 2016 with initial development for the cyclone-relative verification for the Stony Brook University (SBU) project.
-Development in 2017 will focus on replicating the Global Deterministic National Centers for Environmental Predication (NCEP) Verification and
+Development in 2017 will focus on replicating the Global Deterministic National Centers for Environmental Prediction (NCEP) Verification and
 future work will focus on ensemble, meso, and storm scale verification at NCEP and public support.
 
 
@@ -132,7 +132,7 @@ METplus was developed using Python version 2.7.9.
 Version Control
 ---------------
 
-METplus uses GIT for version control in a private NCAR respository.
+METplus uses GIT for version control in a private NCAR repository.
 
 
 Getting the Code and Test Data
@@ -298,7 +298,7 @@ PLOTTING
 This section contains the possible plotting options
 
 
-REGRDDING
+REGRIDDING
 
 This section contains the possible regridding options.  REGRID_USING_MET_TOOL is currently set to FALSE, as METplus is currently using wgrib2,
 as opposed to regrid_data_plane, for part of its processing.
@@ -323,7 +323,7 @@ If you're only using constants_pdef.py and not your own config file, and you hav
 
   master_met_plus.py
 
-If you're using your own config file, for example, feature_relative_config_jpresto.py, and you have set it up you can runm for example:
+If you're using your own config file, for example, feature_relative_config_jpresto.py, and you have set it up you can run for example:
 
   master_met_plus.py -c feature_relative_config_jpresto.py
 
