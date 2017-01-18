@@ -515,35 +515,19 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
             valid_ymdh_split = valid_ymdh.split("_")
             valid_YYYYmmddHH = "".join(valid_ymdh_split)
 
-            # Create output filenames for regridding via MET Tool or wgrib2 tool, based on flag set in
-            # constants_pdef.py.
-            if regrid_with_MET_tool:
-                # MET Tool regrid_data_plane used to regrid.
-                # Create the filename for the regridded file, which is a 
-                # netCDF file.
-                fcstSTS = sts.StringTemplateSubstitution(logger,
-                                                         p.opt["GFS_FCST_NC_FILE_TMPL"],
-                                                         init=init_YYYYmmddHH,
-                                                         lead=lead_str)
+            # Create output filenames for regridding
+            # wgrib2 used to regrid.
+            # Create the filename for the regridded file, which is a
+            # grib2 file.
+            fcstSTS = sts.StringTemplateSubstitution(logger,
+                                                     p.opt["GFS_FCST_FILE_TMPL"],
+                                                     init=init_YYYYmmddHH,
+                                                     lead=lead_str)
 
-                anlySTS = sts.StringTemplateSubstitution(logger,
-                                                         p.opt["GFS_ANLY_NC_FILE_TMPL"],
-                                                         valid=valid_YYYYmmddHH,
-                                                         lead=lead_str)
-
-            else:
-                # wgrib2 used to regrid.
-                # Create the filename for the regridded file, which is a 
-                # grib2 file.
-                fcstSTS = sts.StringTemplateSubstitution(logger,
-                                                         p.opt["GFS_FCST_FILE_TMPL"],
-                                                         init=init_YYYYmmddHH,
-                                                         lead=lead_str)
-
-                anlySTS = sts.StringTemplateSubstitution(logger,
-                                                         p.opt["GFS_ANLY_FILE_TMPL"],
-                                                         valid=valid_YYYYmmddHH,
-                                                         lead=lead_str)
+            anlySTS = sts.StringTemplateSubstitution(logger,
+                                                     p.opt["GFS_ANLY_FILE_TMPL"],
+                                                     valid=valid_YYYYmmddHH,
+                                                     lead=lead_str)
 
             fcst_file = fcstSTS.doStringSub()
             fcst_filename = os.path.join(fcst_dir, fcst_file)
@@ -580,23 +564,26 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                 logger.debug(msg)
                 continue
 
-            # Create the arguments used to perform regridding.
-            fcst_base = os.path.basename(fcst_filename)
-            anly_base = os.path.basename(anly_filename)
+            # Create the arguments used to perform regridding.  NOTE: the base name
+            # is the same for both the fcst and anly filenames, so use either one
+            # to derive the base name that will be used to create the fcst_regridded_filename
+            # and anly_regridded_filename.
+            fcst_anly_base = os.path.basename(fcst_filename)
 
             fcst_grid_spec = create_grid_specification_string(alat, alon,
                                                               logger, p)
             anly_grid_spec = create_grid_specification_string(blat, blon,
                                                               logger, p)
+            if regrid_with_MET_tool:
+                nc_fcst_anly_base = re.sub("grb2", "nc", fcst_anly_base)
+                fcst_anly_base = nc_fcst_anly_base
 
             tile_dir = os.path.join(out_dir, cur_init, cur_storm)
             fcst_hr_str = str(fcst_hr).zfill(3)
 
-            fcst_regridded_filename = p.opt["FCST_TILE_PREFIX"] + fcst_hr_str + "_" + \
-                                      fcst_base
+            fcst_regridded_filename = p.opt["FCST_TILE_PREFIX"] + fcst_hr_str + "_" + fcst_anly_base
             fcst_regridded_file = os.path.join(tile_dir, fcst_regridded_filename)
-            anly_regridded_filename = p.opt["ANLY_TILE_PREFIX"] + fcst_hr_str + \
-                                      "_" + anly_base
+            anly_regridded_filename = p.opt["ANLY_TILE_PREFIX"] + fcst_hr_str + "_" + fcst_anly_base
             anly_regridded_file = os.path.join(tile_dir, anly_regridded_filename)
 
             # Regrid the fcst file only if a fcst tile 
@@ -647,10 +634,10 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
             # Create new gridded file for anly tile
             if file_exists(anly_regridded_file) and not overwrite_flag:
                 logger.debug("INFO| [" + cur_filename + ":" +
-                            cur_function + " ] |" +
-                            " Analysis tile file: " +
-                            anly_regridded_file +
-                            " exists, skip regridding")
+                             cur_function + " ] |" +
+                             " Analysis tile file: " +
+                             anly_regridded_file +
+                             " exists, skip regridding")
             else:
                 # Perform anly regridding on the records of interest
                 var_level_string = retrieve_var_info(p, logger)
@@ -717,7 +704,7 @@ def retrieve_var_info(p, logger):
 
     var_list = p.opt["VAR_LIST"]
     extra_var_list = p.opt["EXTRACT_TILES_VAR_LIST"]
-    MET_format = p.opt["REGRID_USING_MET_TOOL"]
+    regrid_with_MET_tool = p.opt["REGRID_USING_MET_TOOL"]
     full_list = []
 
     # Append the extra_var list to the var_list
@@ -726,7 +713,7 @@ def retrieve_var_info(p, logger):
     full_var_list = var_list + extra_var_list
     unique_var_list = list(set(full_var_list))
 
-    if MET_format:
+    if regrid_with_MET_tool:
         name_str = 'name="'
         level_str = 'level="'
 
@@ -734,17 +721,13 @@ def retrieve_var_info(p, logger):
             match = re.match(r'(.*)/(.*)', cur_var)
             name = match.group(1)
             level = match.group(2)
-            level_match = re.match(r'([a-zA-Z])([0-9])', level)
-            level_val = level_match.group(2)
+            level_val = "_" + level
 
             # Create the field info string that can be used
             # by the MET Tool regrid_data_plane to perform
             # regridding.
-            # cur_list = [' -field ', "'", name_str, name, '"; ',
-            #            level_str, level, '";', "'", '\\ ']
-            cur_list = [' -field ', "'", name_str, name, '_',
-                        level_val, '"; ',
-                        level_str, '(*,*,*)";', '\\ ']
+            cur_list = [' -field ', "'", name_str, name, '"; ',
+                        level_str, level_val, '";', "'", '\\ ']
             cur_str = ''.join(cur_list)
             full_list.append(cur_str)
         field_level_string = ''.join(full_list)
@@ -810,19 +793,23 @@ def create_grid_specification_string(lat, lon, logger, p):
     lon_subtr = p.opt["LON_ADJ"]
     lat_subtr = p.opt["LAT_ADJ"]
 
-    lon0 = str(round_0p5(float(lon)))
-    lat0 = str(round_0p5(float(lat)))
-
     # Format for regrid_data_plane:
-    # latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
+    # latlon Nx Ny lat_ll lon_ll delta_lat delta_lonadj_lon = float(lon) - lon_subtr
+    adj_lon = float(lon) - lon_subtr
+    adj_lat = float(lat) - lat_subtr
+    lon0 = str(round_0p5(adj_lon))
+    lat0 = str(round_0p5(adj_lat))
+
+    msg = ("DEBUG|[" + cur_filename + ":" + cur_function + "]  nlat:" + nlat + " nlon: " +
+           nlon + " lat0:" + lat0 + " lon0: " + lon0)
+    logger.debug(msg)
+
+    # Create the specification string based on the requested tool.
     if regrid_by_MET:
         grid_list = ['"', 'latlon ', nlat, ' ', nlon, ' ', lat0, ' ', lon0, ' ',
                      dlat, ' ', dlon, '"']
     else:
-        adj_lon = float(lon) - lon_subtr
-        adj_lat = float(lat) - lat_subtr
-        lon0 = str(round_0p5(adj_lon))
-        lat0 = str(round_0p5(adj_lat))
+        # regrid via wgrib2
         grid_list = ['latlon ', lon0, ':', nlon, ':', dlon, ' ',
                      lat0, ':', nlat, ':', dlat]
 
