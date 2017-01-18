@@ -134,7 +134,7 @@ INIT_HOUR_INC =  6
 INIT_HOUR_END = "18"
 
 #     Used by extract_tiles.py to define the records of interest from the grib2 file
-VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0", "HGT/P250", "TMP/P850", "TMP/P500", "UGRD/P250", "VGRD/P250", "TCDC/L0" ]
+VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0", "HGT/P250", "TMP/P850", "TMP/P500", "UGRD/P250", "VGRD/P250" ]
 EXTRACT_TILES_VAR_LIST = []
 
 #     Used for performing series analysis based on lead time
@@ -207,8 +207,10 @@ BACKGROUND_MAP = False
 #     REGRDDING
 #
 
+#     ALWAYS set this to True.  This will use 
+#     the MET Tool regrid_data_plane to perform all regridding.
 
-REGRID_USING_MET_TOOL = False
+REGRID_USING_MET_TOOL = True
 
 
 #
