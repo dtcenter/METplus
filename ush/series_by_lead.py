@@ -72,6 +72,15 @@ def analysis_by_lead_time():
     tmp_stat_string = tmp_stat_string.replace("\'", "\"")
     os.environ['STAT_LIST'] = tmp_stat_string
 
+    if regrid_with_MET_tool:
+        # Regridding via MET Tool regrid_data_plane.
+        fcst_tile_regex = p.opt["FCST_NC_TILE_REGEX"]
+        anly_tile_regex = p.opt["ANLY_NC_TILE_REGEX"]
+    else:
+        # Regridding via wgrib2 tool.
+        fcst_tile_regex = p.opt["FCST_TILE_REGEX"]
+        anly_tile_regex = p.opt["ANLY_TILE_REGEX"]
+
     # Check for the existence of the storm track tiles and raise
     # an error if these are missing.
     # Get a list of the grb2 forecast tiles in 
@@ -228,6 +237,9 @@ def analysis_by_lead_time():
             os.environ['NAME'] = name
             os.environ['LEVEL'] = level
 
+            # Set NAME to name_level if regridding with regrid data plane
+            if regrid_with_MET_tool:
+                os.environ['NAME'] = name + '_' + level
             out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr,
                                '_', name, '_', level, '.nc']
             out_param = ''.join(out_param_parts)
@@ -292,11 +304,11 @@ def analysis_by_lead_time():
         name = match.group(1)
         level = match.group(2)
 
-        if regrid_with_MET_tool:
-            name = match.group(1) + '_' + level
-
         os.environ['NAME'] = name
         os.environ['LEVEL'] = level
+
+        if regrid_with_MET_tool:
+            os.environ['NAME'] = name + '_' + level
 
         # Retrieve only those netCDF files that correspond to
         # the current variable.
@@ -348,21 +360,6 @@ def analysis_by_lead_time():
                     continue
 
                 # Get the max series_cnt_TOTAL value (i.e. nseries)
-                tempfile_dir = series_lead_out_dir + '/series_F*'
-                clean_tmp_max = os.path.join(tempfile_dir, "max.*")
-                clean_tmp_min = os.path.join(tempfile_dir, "min.*")
-
-                try:
-                    # Remove any max.nc, max.txt, min.nc and min.txt
-                    # files if they remain.
-                    os.remove(clean_tmp_max)
-                    os.remove(clean_tmp_min)
-                except OSError as e:
-                    # Probably alread removed or never created
-                    pass
-                    logger.debug("WARNING|[" + cur_filename + ":" +
-                                 cur_function + " " + str(e))
-
                 nseries = get_nseries(cur_nc, p, logger)
 
                 # Create the plot data plane command.
@@ -395,23 +392,23 @@ def analysis_by_lead_time():
                 # the background map was requested in the
                 # constants_pdef.py param/config file.
                 if background_map:
-                # Flag set to True, print background map.
+                    # Flag set to True, print background map.
                     map_data = ''
                 else:
                     map_data = "map_data={source=[];}  "
 
                 plot_data_plane_parts = [plot_data_plane_exe, ' ',
-                cur_nc, ' ', ps_file, ' ',
-                "'", 'name = ', '"',
-                'series_cnt_', cur_stat, '";',
-                'level=', '"(\*,\*)"; ',
-                ' ', map_data,
-                "'", ' -title ', '"GFS F',
-                str(fhr),
-                ' Forecasts (N = ', str(nseries),
-                '), ', cur_stat, ' for ', cur_var,
-                '"', ' -plot_range ', str(vmin),
-                ' ', str(vmax)]
+                                         cur_nc, ' ', ps_file, ' ',
+                                         "'", 'name = ', '"',
+                                         'series_cnt_', cur_stat, '";',
+                                         'level=', '"(\*,\*)"; ',
+                                         ' ', map_data,
+                                         "'", ' -title ', '"GFS F',
+                                         str(fhr),
+                                         ' Forecasts (N = ', str(nseries),
+                                         '), ', cur_stat, ' for ', cur_var,
+                                         '"', ' -plot_range ', str(vmin),
+                                         ' ', str(vmax)]
 
                 plot_data_plane_cmd = ''.join(plot_data_plane_parts)
                 msg = ("INFO|[" + cur_filename + ":" +
@@ -419,8 +416,8 @@ def analysis_by_lead_time():
                        plot_data_plane_cmd)
                 logger.debug(msg)
                 plot_out = subprocess.check_output(plot_data_plane_cmd,
-                                            stderr = subprocess.STDOUT,
-                                            shell = True)
+                                                   stderr=subprocess.STDOUT,
+                                                   shell=True)
 
                 # Create the convert command.
                 convert_parts = [convert_exe, ' -rotate 90 ',
@@ -430,7 +427,7 @@ def analysis_by_lead_time():
                 convert_out = subprocess.check_output(convert_cmd,
                                                       stderr=
                                                       subprocess.STDOUT,
-                                     shell = True)
+                                                      shell=True)
 
             # Create animated gif
             logger.info("Creating animated gifs")
@@ -450,6 +447,7 @@ def analysis_by_lead_time():
                                                   shell=True)
 
     logger.info("Finished with series analysis by lead")
+
 
 def get_nseries(nc_var_file, p, logger):
     '''Determine the number of series for this lead time and
