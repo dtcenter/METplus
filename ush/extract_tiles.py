@@ -88,7 +88,7 @@ def main():
             filter_path = os.path.join(filtered_out_dir, cur_init)
             util.mkdir_p(filter_path)
             tc_cmd_list = [tc_stat_exe, " -job filter -lookin ", 
-                           tc_pairs_dir, "/tc_pairs/", year_month,
+                           tc_pairs_dir, "/", year_month,
                            " -init_inc ", cur_init, 
                            " -match_points true -dump_row ", 
                            filter_name, " ", addl_filter_opts]
