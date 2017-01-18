@@ -70,7 +70,7 @@ def main():
         filter_filename = "filter_" + cur_init + ".tcst"
         filter_name = os.path.join(filtered_out_dir, cur_init, filter_filename)
         if util.file_exists(filter_name) and not overwrite_flag:
-            logger.debug("skipping tc_stat, ", filter_name, " exists")
+            logger.debug("skipping tc_stat, " +  filter_name + " exists")
         else:
             # Create the storm track by applying the
             # filter options defined in the constants_pdef.py file.
