@@ -44,7 +44,7 @@ REGRID_DATA_PLANE_EXE = os.path.join(MET_BUILD_BASE, "bin/regrid_data_plane")
 #
 
 PROJ_DIR = "/d1/jpresto/my_sbu_wip/data"
-GFS_DIR = "/d1/SBU/GFS/model_data"
+GFS_DIR = "/d1/SBU/GFS/reduced_model_data"
 TRACK_DATA_DIR = "/d1/SBU/GFS/track_data"
 
 #
@@ -99,16 +99,14 @@ ANLY_ASCII_REGEX_INIT ="ANLY_ASCII_FILE.*"
 FCST_ASCII_REGEX_LEAD ="FCST_FILE_F.*"
 ANLY_ASCII_REGEX_LEAD ="ANLY_FILE_F.*"
 
+
 #
 #     CONFIGURATION FILES (uses previously set variables)
 #
 
 TC_PAIRS_CONFIG_PATH = os.path.join(PARM_BASE, "TCPairsETCConfig")
- 
-#     Configuration files required in performing the series analysis
-
-CONFIG_FILE_LEAD = os.path.join(PARM_BASE,"SeriesAnalysisConfig_by_lead")
-CONFIG_FILE_INIT = os.path.join(PARM_BASE, "SeriesAnalysisConfig")
+SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH = os.path.join(PARM_BASE,"SeriesAnalysisConfig_by_lead")
+SERIES_ANALYSIS_BY_INIT_CONFIG_PATH = os.path.join(PARM_BASE, "SeriesAnalysisConfig_by_init")
 
 #
 #     LISTS AND SETTINGS
@@ -116,22 +114,24 @@ CONFIG_FILE_INIT = os.path.join(PARM_BASE, "SeriesAnalysisConfig")
 
 #     Processes to run in master script (master_met_plus.py)
 
-PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py"]
+PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py", "series_by_lead.py"]
 
-STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE"]
+
+STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE", "BCMSE", "E50", "EIQR", "MAD"]
 
 #     Dates must be in YYYYMMDD format
 #     INIT_HOUR_INC is the increment in integer format
 #     INIT_HOUR_END should be a string in HH or HHH format
 
-INIT_DATE_BEG = "20150126"
-INIT_DATE_END = "20150127"
+INIT_DATE_BEG = "20141201"
+INIT_DATE_END = "20150106"
 INIT_HOUR_INC =  6
 INIT_HOUR_END = "18"
 
 #     Used by extract_tiles.py to define the records of interest from the grib2 file
 
-VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2"]
+
+VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0", "HGT/P250", "TMP/P850", "TMP/P500", "UGRD/P250", "VGRD/P250" ]
 EXTRACT_TILES_VAR_LIST = []
 
 #     Used for performing series analysis based on lead time
@@ -174,9 +174,8 @@ MISSING_VAL = "-9999"
 #     TC-STAT filtering options
 #
 
-#EXTRACT_TILES_FILTER_OPTS=" -basin ML -out_init_mask " + os.path.join(MET_BUILD_BASE,"share/met/poly/CONUS.poly")
-EXTRACT_TILES_FILTER_OPTS=" -basin ML"
-SERIES_ANALYSIS_FILTER_OPTS="-init_beg 20141201 -init_end 20141231"
+EXTRACT_TILES_FILTER_OPTS=" -basin ML -out_init_mask " + os.path.join(MET_BUILD_BASE,"share/met/poly/CONUS.poly")
+SERIES_ANALYSIS_FILTER_OPTS="-init_beg 20141201 -init_end 20150106"
 
 #
 #     OVERWRITE OPTIONS
@@ -201,6 +200,14 @@ BACKGROUND_MAP = False
 
 
 #
+#     REGRDDING
+#
+
+
+REGRID_USING_MET_TOOL = True
+
+
+#
 #     TESTING
 #
 
@@ -213,7 +220,7 @@ TEST_FILENAME="extract_tiles_test.txt"
 
 #     Levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
 
-LOG_LEVEL = "DEBUG"
+LOG_LEVEL = "INFO"
 LOG_FILENAME = os.path.join(LOG_DIR, "feature_relative_config_jpresto." + datetime.datetime.now().strftime("%Y%m%d") + ".log")
 
 
