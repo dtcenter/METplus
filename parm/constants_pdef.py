@@ -119,7 +119,7 @@ SERIES_ANALYSIS_BY_INIT_CONFIG_PATH = os.path.join(PARM_BASE, "SeriesAnalysisCon
 
 #     Processes to run in master script (master_met_plus.py)
 
-PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py"]
+PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py", "series_by_lead.py"]
 
 
 STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE", "BCMSE", "E50", "EIQR", "MAD"]
@@ -134,6 +134,7 @@ INIT_HOUR_INC =  6
 INIT_HOUR_END = "18"
 
 #     Used by extract_tiles.py to define the records of interest from the grib2 file
+
 VAR_LIST = ["HGT/P500", "PRMSL/Z0", "TMP/Z2", "PWAT/L0", "HGT/P250", "TMP/P850", "TMP/P500", "UGRD/P250", "VGRD/P250" ]
 EXTRACT_TILES_VAR_LIST = []
 

@@ -328,6 +328,16 @@ If you're using your own config file, for example, feature_relative_config_jpres
   master_met_plus.py -c feature_relative_config_jpresto.py
 
 
+Troubleshooting
+---------------
+
+- If you encounter the following error when running master_met_plus.py with your own config file (e.g. feature_relative_config_jpresto.py):
+
+  ERROR: Invalid parameter in configuration file feature_relative_config_jpresto.py: <field_name>
+  
+  The problem is likely that the <field_name> displayed is not in the constants_pdef.py file.  All fields in your own config file must exist
+  in the default config file, constants_pdef.py.
+
 
 ================================================================================
 Release Notes
