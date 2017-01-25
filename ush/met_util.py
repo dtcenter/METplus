@@ -1010,7 +1010,13 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, p, logger):
         # Check that the filter.tcst file isn't empty. If
         # it is, then use the files from extract_tiles as
         # input (tile_dir = extract_out_dir)
-        if file_exists(filter_filename):
+        if not file_exists(filter_filename):
+            msg = ("WARN| " + cur_filename + ":" + cur_function +
+                   "]| Non-existent filter file, filter " +
+                   " Never created by MET Tool tc_stat.")
+            logger.debug(msg)
+            continue
+        elif os.stat(filter_filename).st_size == 0:
             msg = ("WARN| " + cur_filename + ":" + cur_function +
                    "]| Empty filter file, filter " +
                    " options yield nothing.")
