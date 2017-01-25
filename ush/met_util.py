@@ -118,7 +118,7 @@ def get_logger(p):
 
 def file_exists(filename):
     ''' Determines if a file exists
-        NOTE:  This is not a Python idiomatic way
+        NOTE:  Simply using os.path.isfile() is not a Pythonic way
                to check if a file exists.  You can
                still encounter a TOCTTOU bug 
                "time of check to time of use"
@@ -138,9 +138,13 @@ def file_exists(filename):
             boolean : True if file exists, False otherwise
     '''
 
-    if os.path.isfile(filename):
-        return True
-    else:
+    try:
+        if os.path.isfile(filename):
+            return True
+        else:
+            return False
+    except IOError as e:
+        pass
         return False
 
 
@@ -1006,7 +1010,7 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, p, logger):
         # Check that the filter.tcst file isn't empty. If
         # it is, then use the files from extract_tiles as
         # input (tile_dir = extract_out_dir)
-        if os.stat(filter_filename).st_size == 0:
+        if file_exists(filter_filename):
             msg = ("WARN| " + cur_filename + ":" + cur_function +
                    "]| Empty filter file, filter " +
                    " options yield nothing.")
