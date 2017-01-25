@@ -144,7 +144,7 @@ Get the METplus package by running:
 
 Get the METplus test data by running:
 
-  wget http://<path>/METplus_test_data.20170109.tar
+  wget http://<path>/METplus_test_data.20170109.tar.gz
 
 Decide where you would like to put the code and copy the METplus Package to that location.  Unpack the gzipped tar file in that directory by running:
 
@@ -152,7 +152,7 @@ Decide where you would like to put the code and copy the METplus Package to that
 
 Decide where you would like to put the test data and copy the METplus test data to that location.  Unpack the gzipped tar file in that directory by running:
 
-  tar -zxf METplus_test_data.20170109.tar
+  tar -zxf METplus_test_data.20170109.tar.gz
 
 
 Configuring the Environment
@@ -192,9 +192,10 @@ config file, for example, feature_relative_config_jpresto.py (renaming it howeve
 has slightly different syntax from constants_pdef.py but has the same fields, some with different values. Having all of the same fields
 that are in constants_pdef.py in your personal config file is not necessary as these fields override what is in constants_pdef.py.
 
-** Important Note **
-However, at a minimum if you reset a BASE or DIR value (e.g. OUTPUT_BASE, PROJ_DIR) you'll need to include all other fields that use
-that BASE or DIR field. If you do not do that, the default value will be used. 
+** Important Note ** REQUIREMENT
+If you reset a BASE or DIR value (e.g. OUTPUT_BASE, PROJ_DIR) in your own constants_pdef file, than you must
+include in your own constants_pdef file all fields from the default constants_pdef.py that reference BASE or DIR.
+If you do not do that, the default value from constants_pdef.py file will be used, for those fields.
 
 - MET
 
