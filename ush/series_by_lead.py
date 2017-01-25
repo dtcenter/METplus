@@ -592,10 +592,8 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
             os.remove(min_txt_path)
         except OSError as e:
             # Exception can be raised if these
-            # files don't exist.
+            # files don't exist. Ignore this exception.
             pass
-            logger.debug("WARNING|[" + cur_filename + cur_function +
-                         "]| " + str(e))
 
         nco_min_cmd_parts = [ncap2_exe, ' -v -s ', '"',
                              'min=min(series_cnt_', cur_stat, ')',
@@ -707,15 +705,6 @@ def get_var_ncfiles(cur_var, nc_list, logger):
         if match:
             var_ncfiles.append(cur_nc)
 
-    # Do some checking- the number var_ncfiles 
-    # should be less than the total number of ncfiles.
-    num_var = len(var_ncfiles)
-    num_tot = len(nc_list)
-    if num_var == num_tot:
-        msg = ("ERROR|[" + cur_filename + ":" + cur_function +
-               "]| the number of netCDF for variable" + cur_var +
-               " is an inconsistent value, exiting...")
-        logger.error(msg)
     return var_ncfiles
 
 
