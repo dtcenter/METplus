@@ -140,7 +140,7 @@ Getting the Code and Test Data
 
 Get the METplus package by running:
 
-  wget http://<path>/METplus_alpha.20170109.tar.gz
+  wget http://<path>/METplus_alpha.20170126.tar.gz
 
 Get the METplus test data by running:
 
@@ -148,7 +148,7 @@ Get the METplus test data by running:
 
 Decide where you would like to put the code and copy the METplus Package to that location.  Unpack the gzipped tar file in that directory by running:
 
-  tar -zxf METplus_alpha.20170109.tar.gz
+  tar -zxf METplus_alpha.20170126.tar.gz
 
 Decide where you would like to put the test data and copy the METplus test data to that location.  Unpack the gzipped tar file in that directory by running:
 
@@ -184,18 +184,11 @@ There are two sets of configuration files - one for running METplus and one for 
 
 - METplus
 
-The main configuration file for METplus is constants_pdef.py, which is located in the "parm" subdirectory. If you are not sharing data
-locations with others, you can modify constants_pdef.py directly and use it as your main configuration file.
+The configuration file for METplus is constants_pdef.py, which is located in the "parm" subdirectory.
 
-If you are sharing data locations with others, it is advised that you override the options in the constants_pdef.py by using your own
-config file, for example, feature_relative_config_jpresto.py (renaming it however you'd like).  feature_relative_config_jpresto.py
-has slightly different syntax from constants_pdef.py but has the same fields, some with different values. Having all of the same fields
-that are in constants_pdef.py in your personal config file is not necessary as these fields override what is in constants_pdef.py.
+We are currently working on the ability for users to have their own version of the config file, where they would use
+constants_pdef.py as the default config file, but would be able to override specific fields in their own config file.
 
-** Important Note ** REQUIREMENT
-If you reset a BASE or DIR value (e.g. OUTPUT_BASE, PROJ_DIR) in your own constants_pdef file, than you must
-include in your own constants_pdef file all fields from the default constants_pdef.py that reference BASE or DIR.
-If you do not do that, the default value from constants_pdef.py file will be used, for those fields.
 
 - MET
 
@@ -206,8 +199,7 @@ TCPairsETCConfig (for the extra tropical cyclone TCPairs run) and the SeriesAnal
 Configuration Setup
 -------------------
 
-The user should look at the constants_pdef.py and/or associated personal config file, e.g. feature_relative_config_jpresto.py to modify
-necessary and desired fields.  The information below will cover the various section:
+The user should look at the constants_pdef.py to modify necessary and desired fields.  The information below will cover the various sections:
 
 NON-MET EXECUTABLES
 
@@ -217,22 +209,16 @@ the WGRIB2 executable is not currently in a standard location and will need to b
 
 COMMONLY USED BASE VARIABLES
 
-MET_BUILD_BASE is the base location for the MET release that you will be using. Please set that to an appropriate location.  As noted above
-(see "** Important Note **"), if you are using your own config file, and not directly using constants_def.py, you will need to set both
-MET_BUILD_BASE and MET_BASE in your own config file, as MET_BASE relies on MET_BUILD_BASE.
+MET_BUILD_BASE is the base location for the MET release that you will be using. Please set that to an appropriate location.  
 
 OUTPUT_BASE is the base area for where the user would like to store their output data.
 
-PARM_BASE is the parm subdirectory for the METplus configuration files.  This gets referenced multiple times in the file.  As noted above
-(see "** Important Note **"), if you are using your own config file, and not directly using constants_def.py, you will need to set PARM_BASE
-and fields that rely on it in your own config file, as many other fields rely on PARM_BASE.
+PARM_BASE is the parm subdirectory for the METplus configuration files.   
 
 
 MET EXECUTABLES
 
-These fields rely on MET_BUILD_BASE and its "bin" subdirectory.  As noted above (see "** Important Note **"), if you are using your own config
-file, and not directly using constants_def.py, you will need to set these fields in your config file as well if you have reset MET_BUILD_BASE,
-as these fields rely on MET_BUILD_BASE.
+These fields rely on MET_BUILD_BASE and its "bin" subdirectory.  
 
 
 INPUT DATA DIRECTORIES
@@ -242,21 +228,15 @@ These fields indicate where your input data is located.
 For example, the METplus_test_data.20170109.tar.gz, includes a "reduced_model_data" directory, which contains GFS data, and a "track_data"
 directory, which contains extra tropical cyclone track data.  If you wanted to put this data at "/d1/data/SBU", you would set the following:
 
-PROJ_DIR = "/d1/data/GFS"
+PROJ_DIR = "/d1/data/SBU"
 GFS_DIR = os.path.join(PROJ_DIR, "reduced_model_data")
 TRACK_DATA_DIR = os.path.join(PROJ_DIR, "track_data")
-
-As noted above (see "** Important Note **"), if you are using your own config file, and not directly using constants_def.py, you will need to
-set these fields in your config file as well if you have reset PROJ_DIR, as these fields rely on PROJ_DIR.
 
 
 OUTPUT DIRECTORIES
 
 These fields include a log directory and a tmp directory along with other output directories. The TRACK_DATA_SUBDIR_MOD refers to the subdirectory
 where the track data will be written, reformatted to be in true ATCF format, which the MET tools need for processing.
-
-As noted above (see "** Important Note **"), if you are using your own config file, and not directly using constants_def.py, and have reset
-OUTPUT_BASE or PROJ_DIR, you will need to include these fields in your config file as well.
 
 
 FILENAME TEMPLATES
@@ -276,7 +256,30 @@ analysis by lead, would be:
 
  PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py", "series_by_lead.py"]
 
-This section also contains fields for desired statistics and variables,  desired dates and times, grid settings, etc.
+STAT_LIST is the list of statistics to be computed (e.g. ["TOTAL", "FBAR", "OBAR"]).
+NOTE: Currently, "TOTAL" is a REQUIRED cnt statistic used by the series analysis scripts, so it must be in the STAT_LIST.
+
+INIT_DATE_BEG is the beginning date string in the format YYYYMMDD (e.g. "20141201") for the initialization time.
+INIT_DATE_END is the ending date string in the format YYYYMMDD (e.g. "20150331") for the initialization time.
+INIT_HOUR_INC is the hour increment in integer format (e.g. 6)
+INIT_HOUR_END is the last increment hour you'd like to process in string format (e.g. For the sample data provided, GFS has 00, 06, 12, and 18, so this value would be "18")
+
+VAR_LIST is the list of variables of interest with their levels (e.g. ["HGT/P500", "PRMSL/Z0", "TMP/Z2"])
+
+EXTRACT_TILES_VAR_LIST is the list of variables of interest (for extraction) with their levels (e.g. ["HGT/P500", "PRMSL/Z0", "TMP/Z2"]).  Values should not be present in
+both the VAR_LIST and the EXTRACT_TILES_VAR_LIST.
+
+The following are used for performing series analysis based on lead time:
+FHR_BEG is the beginning forecast time.  
+FHR_END is the ending forecast time.
+FHR_INC is the forecast hour increment.
+
+NLAT and NLON are the dimensions of the tile.
+
+DLAT and DLON is the resolution of the data in degrees.
+
+LON_ADJ and LAT_ADJ are the degrees to subtract from the center lat and lon to calculate the lower left lat (lat_ll) and lower left lon (lon_ll) for a grid that is 2n X 2m, 
+where n = LAT_ADJ degrees and m = LON_ADJ degrees.  For example, where n=15 and m=15, this results in a 30 deg X 30 deg grid.
 
 
 TC PAIRS filtering options
@@ -320,24 +323,10 @@ may wish to start off with "INFO" instead.
 How to Run?
 -----------
 
-If you're only using constants_pdef.py and not your own config file, and you have set up constant_pdef.py you can simply run:
+Once you have set up constant_pdef.py you can simply run:
 
   master_met_plus.py
 
-If you're using your own config file, for example, feature_relative_config_jpresto.py, and you have set it up you can run for example:
-
-  master_met_plus.py -c feature_relative_config_jpresto.py
-
-
-Troubleshooting
----------------
-
-- If you encounter the following error when running master_met_plus.py with your own config file (e.g. feature_relative_config_jpresto.py):
-
-  ERROR: Invalid parameter in configuration file feature_relative_config_jpresto.py: <field_name>
-  
-  The problem is likely that the <field_name> displayed is not in the constants_pdef.py file.  All fields in your own config file must exist
-  in the default config file, constants_pdef.py.
 
 
 ================================================================================
