@@ -116,8 +116,11 @@ SERIES_ANALYSIS_BY_INIT_CONFIG_PATH = os.path.join(PARM_BASE, "SeriesAnalysisCon
 
 PROCESS_LIST = ["run_tc_pairs.py", "extract_tiles.py", "series_by_lead.py"]
 
+#
+#     NOTE: "TOTAL" is a REQUIRED cnt statistic used by the series analysis scripts
+#
 
-STAT_LIST = ["FBAR", "OBAR", "ME", "MAE", "RMSE", "BCMSE", "E50", "EIQR", "MAD"]
+STAT_LIST = ["TOTAL", "FBAR", "OBAR", "ME", "MAE", "RMSE", "BCMSE", "E50", "EIQR", "MAD"]
 
 #     Dates must be in YYYYMMDD format
 #     INIT_HOUR_INC is the increment in integer format
@@ -203,6 +206,8 @@ BACKGROUND_MAP = False
 #     REGRDDING
 #
 
+#     ALWAYS set this to True.  This will use 
+#     the MET Tool regrid_data_plane to perform all regridding.
 
 REGRID_USING_MET_TOOL = True
 
