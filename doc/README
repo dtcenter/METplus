@@ -162,15 +162,15 @@ Open up your .cshrc (or similar file) using the editor of your choice and add th
 
   To your PYTHONPATH, add:
 
-    {full path to METPlus/ush}:{full path to METPlus/parm} (replacing the text in {} with the full path)
+    {full path to METplus/ush}:{full path to METplus/parm} (replacing the text in {} with the full path)
 
   If you do not currently have a PYTHONPATH, add (for csh shell - use "export" for bash):
 
-    setenv PYTHONPATH {full path to METPlus/ush}:{full path to METPlus/parm} (replacing the text in {} with the full path)
+    setenv PYTHONPATH {full path to METplus/ush}:{full path to METplus/parm} (replacing the text in {} with the full path)
 
   To your PATH (path), add:
     
-    {full path to METPlus/ush} (replacing the text in {} with the full path)
+    {full path to METplus/ush} (replacing the text in {} with the full path)
 
 Save the changes and source your .cshrc (or similar file) by running, for example:
 
