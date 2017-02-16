@@ -35,10 +35,6 @@ def analysis_by_lead_time():
 
 
     '''
-    # Create a param object
-    p = P.Params()
-    p.init()
-
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 

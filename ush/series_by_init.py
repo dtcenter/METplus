@@ -22,10 +22,6 @@ def analysis_by_init_time():
 
 
     '''
-    # Create ConfigMaster param object
-    p = P.Params()
-    p.init()
-
     # Retrieve any necessary values (dirs, executables) 
     # from the param file(s)
     var_list = p.opt["VAR_LIST"]
