@@ -7,7 +7,7 @@ Welcome to the documentation for METplus.  METplus is a set of Python wrapper sc
 
 
 ================================================================================
-Model Evaluation Tools (MET) TERMS OF USE - IMPORTANT!
+Model Evaluation Tools Plus (METplus) TERMS OF USE - IMPORTANT!
 ================================================================================
 
 USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS AND CONDITIONS:
@@ -113,7 +113,7 @@ Dependencies
 
 The MET verification tools package is required to be installed on your system prior to running the METplus wrapper scripts.
 
-METplus was developed using Python version 2.7.9.
+METplus was developed using Python version 2.7.9.  Python version 2.7 or greater is required.
 
 - METplus requires the following to be installed on your system:
   - ncdump utility
