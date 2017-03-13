@@ -140,15 +140,15 @@ Getting the Code and Test Data
 
 Get the METplus package by running:
 
-  wget http://<path>/METplus_alpha.20170126.tar.gz
+  wget http://www.dtcenter.org/met/users/downloads/METplus/METplus_alpha.20170308.tar
 
 Get the METplus test data by running:
 
-  wget http://<path>/METplus_test_data.20170109.tar.gz
+  wget http://www.dtcenter.org/met/users/downloads/METplus//METplus_test_data.20170109.tar.gz
 
 Decide where you would like to put the code and copy the METplus Package to that location.  Unpack the gzipped tar file in that directory by running:
 
-  tar -zxf METplus_alpha.20170126.tar.gz
+  tar -xf METplus_alpha.20170308.tar
 
 Decide where you would like to put the test data and copy the METplus test data to that location.  Unpack the gzipped tar file in that directory by running:
 
