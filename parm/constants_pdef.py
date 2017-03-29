@@ -233,5 +233,12 @@ TEST_FILENAME="extract_tiles_test.txt"
 LOG_LEVEL = "INFO"
 LOG_FILENAME = os.path.join(LOG_DIR, "master_met_plus." + datetime.datetime.now().strftime("%Y%m%d") + ".log")
 
+
+#
+#     SBU CONVERSION
+#
+
+SBU_OUTPUT_DIR =  os.path.join(OUTPUT_BASE,'cyclone_relative')
+
 """    
  
