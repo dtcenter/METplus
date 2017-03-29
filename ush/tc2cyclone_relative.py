@@ -1,0 +1,97 @@
+#!/usr/bin/env python
+
+from __future__ import (print_function,division)
+
+import constants_pdef as P
+import os
+import re
+import met_util as util
+
+
+def main():
+
+    """Convert MET TC-Pairs output (A-deck and B-deck track files) into format for SBU cyc-new.dat and match.dat.
+    Save each cyc-new.dat,match.dat pairing into a subdirectory based on their corresponding YYYYMMDD under the 
+    directory specified in the constants_pdef config/param file.
+    
+    :return: None, creates two files: cyc-new.dat and match.dat"""
+
+    # Retrieve any necessary values from the param/config file, constants_pdef
+    input_dir = p.opt['TC_PAIRS_DIR']
+    adeck_prefix = p.opt['ADECK_FILE_PREFIX']
+    base_cyclone_relative_dir = p.opt['SBU_OUTPUT_DIR']
+    tc_pair_extension = '.tcst'
+    regex = adeck_prefix + ".*." + tc_pair_extension
+    tc_pairs = util.get_files(input_dir, regex, logger)
+
+    for tc in tc_pairs:
+        # Retrieve the date from the filename, collect all the
+        # necessary values from the tc-pairs output file
+        # that correspond to this date and create a cyc-new.dat
+        # and model.dat file.  Each date sub-directory will have its own
+        # cyc-new.dat and model.dat file that corresponds to that date.
+        # Fortunately, the tc-pairs data is aggregated by YYYYMM sub-directories,
+        # where the files in the sub-directory correspond to the same YYYYMMDD.
+
+        # Create the cyc-new.dat and model.dat files in this subdir
+        cur_file = tc
+        match = re.match(r'.*/amlq([0-9]{8})', cur_file)
+        cur_date = match.group(1)
+        cur_sub_dir = os.path.join(base_cyclone_relative_dir, cur_date)
+        util.mkdir_p(cur_sub_dir)
+        cyc_filename = os.path.join(cur_sub_dir, "cyc-new-test.dat")
+        cyc_file = open(cyc_filename, 'a')
+        model_filename = os.path.join(cur_sub_dir, "model-test.dat")
+        model_file = open(model_filename, 'a')
+        # Open each file and retrieve the data
+        with open(tc, "r") as cur_tc_file:
+
+            # skip the header
+            next(cur_tc_file)
+            logger.debug('current file: {}'.format(cur_tc_file))
+
+            for line in cur_tc_file:
+                col = line.split()
+                cyclone_number = col[5]
+                fcst_lead_hh = str(col[8]).zfill(3)
+                adeck_lon = col[18]
+                adeck_lat = col[19]
+
+                # Min SLP (MSLP) is the center pressure
+                adeck_mslp = col[29]
+                bdeck_mslp = col[30]
+                cyc_column_elements = [cyclone_number, ' ', fcst_lead_hh, ' ', adeck_lon, ' ', adeck_lat, ' ',
+                                       adeck_mslp]
+                model_column_elements = [fcst_lead_hh, ' ', cyclone_number, ' ', cyclone_number, ' ']
+                cyc_columns = '   '.join(cyc_column_elements)
+                model_columns = '   '.join(model_column_elements)
+
+                # If any of our columns of interest contains 'NA', skip to the next line.
+                if 'NA' in cyc_columns or 'NA' in model_columns or bdeck_mslp == 'NA':
+                    continue
+
+                # Now that we don't have any 'NA' values, we can calculate the center pressure bias and
+                # append that to the model_columns.
+                center_pressure_bias = int(adeck_mslp) - int(bdeck_mslp)
+                logger.debug("curr file:{},cyclone num:{}, fcst_lead:{}, lon:{}, lat:{}, AMSLP:{}, BMSLP:{}, Bias {}".
+                             format(tc, cyclone_number, fcst_lead_hh, adeck_lon, adeck_lat, adeck_mslp,
+                                    bdeck_mslp, center_pressure_bias))
+                model_columns = model_columns + ' ' + str(center_pressure_bias)
+                logger.debug('cyc_columns:{}'.format(cyc_columns))
+                logger.debug('model_columns: {}'.format(model_columns))
+
+                # Write the corresponding data to the cyc_new and model data files.
+                cyc_file.write(cyc_columns.rjust(6))
+                cyc_file.write("\n")
+                model_file.write(model_columns.rjust(6))
+                model_file.write("\n")
+
+        # Close the files.
+        model_file.close()
+        cyc_file.close()
+
+if __name__ == "__main__":
+    p = P.Params()
+    p.init(__doc__)  # Put description of the code here
+    logger = util.get_logger(p)
+    main()
