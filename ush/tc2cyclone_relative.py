@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from __future__ import (print_function,division)
+from __future__ import print_function,division
 
 import constants_pdef as P
 import os
@@ -24,38 +24,34 @@ def main():
     regex = adeck_prefix + ".*." + tc_pair_extension
     tc_pairs = util.get_files(input_dir, regex, logger)
 
+    cyc_dict = {}
+    model_dict = {}
+
     for tc in tc_pairs:
         # Retrieve the date from the filename, collect all the
         # necessary values from the tc-pairs output file
         # that correspond to this date and create a cyc-new.dat
         # and model.dat file.  Each date sub-directory will have its own
-        # cyc-new.dat and model.dat file that corresponds to that date.
-        # Fortunately, the tc-pairs data is aggregated by YYYYMM sub-directories,
-        # where the files in the sub-directory correspond to the same YYYYMMDD.
-
-        # Create the cyc-new.dat and model.dat files in this subdir
-        cur_file = tc
-        match = re.match(r'.*/amlq([0-9]{8})', cur_file)
-        cur_date = match.group(1)
-        cur_sub_dir = os.path.join(base_cyclone_relative_dir, cur_date)
-        util.mkdir_p(cur_sub_dir)
-        cyc_filename = os.path.join(cur_sub_dir, "cyc-new-test.dat")
-        cyc_file = open(cyc_filename, 'a')
-        model_filename = os.path.join(cur_sub_dir, "model-test.dat")
-        model_file = open(model_filename, 'a')
-        # Open each file and retrieve the data
+        # cyc-new.dat and model.dat file corresponding to that date.
         with open(tc, "r") as cur_tc_file:
-
             # skip the header
             next(cur_tc_file)
-            logger.debug('current file: {}'.format(cur_tc_file))
-
+            logger.info('Processing current file: {}'.format(cur_tc_file))
             for line in cur_tc_file:
                 col = line.split()
                 cyclone_number = col[5]
+                init_time = col[7]
                 fcst_lead_hh = str(col[8]).zfill(3)
-                adeck_lon = col[18]
-                adeck_lat = col[19]
+                adeck_lat = col[18]
+                adeck_lon = col[19]
+
+                # Retrieve the date and create the full path and filenames.
+                match = re.match(r'([0-9]{8})_[0-9]{6}', init_time)
+                cur_date = match.group(1)
+                cur_sub_dir = os.path.join(base_cyclone_relative_dir, cur_date)
+                util.mkdir_p(cur_sub_dir)
+                cyc_filename = os.path.join(cur_sub_dir, "cyc-new-test.dat")
+                model_filename = os.path.join(cur_sub_dir, "model-test.dat")
 
                 # Min SLP (MSLP) is the center pressure
                 adeck_mslp = col[29]
@@ -71,27 +67,48 @@ def main():
                     continue
 
                 # Now that we don't have any 'NA' values, we can calculate the center pressure bias and
-                # append that to the model_columns.
+                # append that to the model_columns string.
                 center_pressure_bias = int(adeck_mslp) - int(bdeck_mslp)
-                logger.debug("curr file:{},cyclone num:{}, fcst_lead:{}, lon:{}, lat:{}, AMSLP:{}, BMSLP:{}, Bias {}".
-                             format(tc, cyclone_number, fcst_lead_hh, adeck_lon, adeck_lat, adeck_mslp,
+                logger.debug("\nReading from file:{},cyclone num:{},init_time:{}, fcst_lead:{}, lon:{}, lat:{}, AMSLP:{}, BMSLP:{}, Bias {}".format(tc, cyclone_number, init_time, fcst_lead_hh, adeck_lon, adeck_lat, adeck_mslp,
                                     bdeck_mslp, center_pressure_bias))
                 model_columns = model_columns + ' ' + str(center_pressure_bias)
-                logger.debug('cyc_columns:{}'.format(cyc_columns))
-                logger.debug('model_columns: {}'.format(model_columns))
 
-                # Write the corresponding data to the cyc_new and model data files.
-                cyc_file.write(cyc_columns.rjust(6))
+                # Open each file, retrieve data, write data, then close files.
+                # Use a dictionary to keep track of the filename (full path) to its associated date.
+                cyc_dict = update_dictionary(cyc_dict, cur_date, cyc_filename)
+                model_dict = update_dictionary(model_dict, cur_date, model_filename)
+                logger.info("Writing to corresponding cyc_new.dat and model.dat files for {}".format(cur_date))
+                logger.debug("Day: {},Cyc column: {}".format(cur_date, cyc_columns)) 
+                cyc_file = open(cyc_filename, 'a')
+                model_file = open(model_filename, 'a')
+                cyc_file.write(cyc_columns)
                 cyc_file.write("\n")
-                model_file.write(model_columns.rjust(6))
+                logger.debug("Day: {},Model column: {}".format(cur_date, model_columns)) 
+                model_file.write(model_columns)
                 model_file.write("\n")
 
-        # Close the files.
-        model_file.close()
-        cyc_file.close()
+                # Close the files.
+                model_file.close()
+                cyc_file.close()
+
+    logger.info("Finished")
+
+
+def update_dictionary(cur_dict, cur_key, cur_file):
+    """ Update the dictionary with a new key-value
+        pair if the key doesn't already exist 
+    """
+
+    if cur_key not in cur_dict:
+        logger.debug("Adding new key {} and value: {} to dictionary".format(cur_key, cur_file))
+        cur_dict[cur_key] = cur_file
+    return cur_dict
+
 
 if __name__ == "__main__":
     p = P.Params()
     p.init(__doc__)  # Put description of the code here
     logger = util.get_logger(p)
     main()
+
+
