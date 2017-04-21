@@ -1,0 +1,4 @@
+# This file is just used to document the svn version of the produtil directory.
+# If a newer version is checked out than update the revision number.
+ 
+-r 89186 https://svnemc.ncep.noaa.gov/projects/nceplibs/produtil/trunk/ush/produtil produtil
