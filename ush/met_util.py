@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-import constants_pdef as P
-import os
+import os, datetime
 import errno
 import logging
 import time
@@ -86,16 +85,24 @@ def get_logger(p):
     '''Gets a logger
 
        Args:
-           p:   the ConfigMaster constants param file
+           p:   the METplus produtil.ProdConfig object
 
        Returns:
            logger: the logger
     '''
 
     # Retrieve all logging related parameters from the param file
-    log_dir = p.opt["LOG_DIR"]
-    log_level = p.opt["LOG_LEVEL"]
-    log_filename = p.opt["LOG_FILENAME"]
+    log_dir = p.getdir('LOG_DIR')
+    log_level = p.getstr('config', 'LOG_LEVEL')
+    log_path_basename = os.path.splitext(p.getstr('config','LOG_FILENAME'))[0]
+    log_ext = os.path.splitext(p.getstr('config','LOG_FILENAME'))[1]
+    log_filename = log_path_basename+'.'\
+                   +datetime.datetime.now().strftime("%Y%m%d")\
+                   +log_ext.strip()
+
+    #TODO review, use builtin produtil.fileop vs. mkdir_p ?
+    #import produtil.fileop
+    #produtil.fileop.makedirs(log_dir,logger=None)
 
     # Check if the directory path for the log exists, if
     # not create it.
@@ -461,12 +468,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
     cur_function = sys._getframe().f_code.co_name
 
     # Get variables, etc. from constants_pdef.py param/config file.
-    gfs_dir = p.opt["GFS_DIR"]
-    regrid_data_plane_exe = p.opt["REGRID_DATA_PLANE_EXE"]
-    wgrib2_exe = p.opt["WGRIB2"]
-    egrep_exe = p.opt["EGREP_EXE"]
-    regrid_with_MET_tool = p.opt["REGRID_USING_MET_TOOL"]
-    overwrite_flag = p.opt["OVERWRITE_TRACK"]
+    gfs_dir = p.getdir('GFS_DIR')
+    regrid_data_plane_exe = p.getexe('REGRID_DATA_PLANE_EXE')
+    wgrib2_exe = p.getexe('WGRIB2')
+    egrep_exe = p.getexe('EGREP_EXE')
+    regrid_with_MET_tool = p.getbool('config','REGRID_USING_MET_TOOL')
+    overwrite_flag = p.getbool('config','OVERWRITE_TRACK')
 
     # Extract the columns of interest: init time, lead time,
     # valid time lat and lon of both  tropical cyclone tracks, etc.
@@ -524,12 +531,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
             # Create the filename for the regridded file, which is a
             # grib2 file.
             fcstSTS = sts.StringTemplateSubstitution(logger,
-                                                     p.opt["GFS_FCST_FILE_TMPL"],
+                                                     p.getraw('filename_templates','GFS_FCST_FILE_TMPL'),
                                                      init=init_YYYYmmddHH,
                                                      lead=lead_str)
 
             anlySTS = sts.StringTemplateSubstitution(logger,
-                                                     p.opt["GFS_ANLY_FILE_TMPL"],
+                                                     p.getraw('filename_templates', 'GFS_ANLY_FILE_TMPL'),
                                                      valid=valid_YYYYmmddHH,
                                                      lead=lead_str)
 
@@ -585,9 +592,9 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
             tile_dir = os.path.join(out_dir, cur_init, cur_storm)
             fcst_hr_str = str(fcst_hr).zfill(3)
 
-            fcst_regridded_filename = p.opt["FCST_TILE_PREFIX"] + fcst_hr_str + "_" + fcst_anly_base
+            fcst_regridded_filename = p.getstr('regex_pattern','FCST_TILE_PREFIX') + fcst_hr_str + "_" + fcst_anly_base
             fcst_regridded_file = os.path.join(tile_dir, fcst_regridded_filename)
-            anly_regridded_filename = p.opt["ANLY_TILE_PREFIX"] + fcst_hr_str + "_" + fcst_anly_base
+            anly_regridded_filename = p.getstr('regex_pattern','ANLY_TILE_PREFIX') + fcst_hr_str + "_" + fcst_anly_base
             anly_regridded_file = os.path.join(tile_dir, anly_regridded_filename)
 
             # Regrid the fcst file only if a fcst tile 
@@ -706,9 +713,9 @@ def retrieve_var_info(p, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    var_list = p.opt["VAR_LIST"]
-    extra_var_list = p.opt["EXTRACT_TILES_VAR_LIST"]
-    regrid_with_MET_tool = p.opt["REGRID_USING_MET_TOOL"]
+    var_list = getlist(p.getstr('config','VAR_LIST'))
+    extra_var_list = getlist(p.getstr('config','EXTRACT_TILES_VAR_LIST'))
+    regrid_with_MET_tool = p.getbool('config','REGRID_USING_MET_TOOL')
     full_list = []
 
     # Append the extra_var list to the var_list
@@ -785,17 +792,17 @@ def create_grid_specification_string(lat, lon, logger, p):
     # Useful for logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-    regrid_by_MET = p.opt["REGRID_USING_MET_TOOL"]
+    regrid_by_MET = p.getbool('config','REGRID_USING_MET_TOOL')
 
     # Initialize the tile grid string
     # and get the other values from the parameter file
     tile_grid_str = ' '
-    nlat = str(p.opt["NLAT"])
-    nlon = str(p.opt["NLON"])
-    dlat = str(p.opt["DLAT"])
-    dlon = str(p.opt["DLON"])
-    lon_subtr = p.opt["LON_ADJ"]
-    lat_subtr = p.opt["LAT_ADJ"]
+    nlat = p.getstr('NLAT')
+    nlon = p.getstr('NLON')
+    dlat = p.getstr('DLAT')
+    dlon = p.getstr('DLON')
+    lon_subtr = p.getfloat('LON_ADJ')
+    lat_subtr = p.getfloat('LAT_ADJ')
 
     # Format for regrid_data_plane:
     # latlon Nx Ny lat_ll lon_ll delta_lat delta_lonadj_lon = float(lon) - lon_subtr
@@ -982,10 +989,10 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, p, logger):
 
     # Retrieve any necessary values from the param/config file,
     # constants_pdef.py.
-    tc_stat_exe = p.opt["TC_STAT"]
+    tc_stat_exe = p.getexe('TC_STAT')
     cur_pid = str(os.getpid())
-    tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
-    filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
+    tmp_dir = os.path.join(p.getdir('TMP_DIR'), cur_pid)
+    filter_opts = p.getstr('config','SERIES_ANALYSIS_FILTER_OPTS')
 
     for cur_init in init_times:
         # Create the ASCII file with the storms that meet the
@@ -1165,6 +1172,24 @@ def get_dirs(base_dir, p, logger):
 
     return dir_list
 
+def getlist(s,logger=None):
+
+    # returns a list of string elements from a comma or space
+    # seperated string of values, returns and empty list
+    # if s is ''
+    # '4,4,2,4,2,4,2, ' or '4,4,2,4,2,4,2 ' or
+    # '4, 4, 4, 4, ' or '4, 4, 4, 4 '
+
+    # removes surrounding comma, and spaces, if present.
+    s = s.strip().strip(',').strip()
+
+    if ',' in s:
+        s = s.split(',')
+        s = [item.strip() for item in s]
+    else:
+        s = s.split()
+
+    return s
 
 if __name__ == "__main__":
     # test grep

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-import constants_pdef as P
+import produtil.setup
 import re
 import os
 import sys
@@ -35,28 +35,31 @@ def analysis_by_lead_time():
 
 
     '''
+
+    # produtil.log.postmsg('Example postmsg, convenience function for jlogger.info')
+
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
     # Retrieve any necessary values from the parm file(s)
-    fhr_beg = p.opt["FHR_BEG"]
-    fhr_end = p.opt["FHR_END"]
-    fhr_inc = p.opt["FHR_INC"]
-    fcst_tile_regex = p.opt["FCST_TILE_REGEX"]
-    anly_tile_regex = p.opt["ANLY_TILE_REGEX"]
-    var_list = p.opt["VAR_LIST"]
-    stat_list = p.opt["STAT_LIST"]
-    series_analysis_exe = p.opt["SERIES_ANALYSIS"]
-    plot_data_plane_exe = p.opt["PLOT_DATA_PLANE"]
-    rm_exe = p.opt["RM_EXE"]
-    convert_exe = p.opt["CONVERT_EXE"]
-    series_anly_configuration_file = p.opt["SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH"]
-    extract_tiles_dir = p.opt["EXTRACT_OUT_DIR"]
-    series_lead_filtered_out_dir = p.opt["SERIES_LEAD_FILTERED_OUT_DIR"]
-    series_lead_out_dir = p.opt["SERIES_LEAD_OUT_DIR"]
-    background_map = p.opt["BACKGROUND_MAP"]
-    regrid_with_MET_tool = p.opt["REGRID_USING_MET_TOOL"]
-    series_filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
+    fhr_beg = p.getint('config','FHR_BEG')
+    fhr_end = p.getint('config','FHR_END')
+    fhr_inc = p.getint('config','FHR_INC')
+    fcst_tile_regex = p.getstr('regex_pattern','FCST_TILE_REGEX')
+    anly_tile_regex = p.getstr('regex_pattern','ANLY_TILE_REGEX')
+    var_list = util.getlist(p.getstr('config','VAR_LIST'))
+    stat_list = util.getlist(p.getstr('config','STAT_LIST'))
+    series_analysis_exe = p.getexe('SERIES_ANALYSIS')
+    plot_data_plane_exe = p.getexe('PLOT_DATA_PLANE')
+    rm_exe = p.getexe('RM_EXE')
+    convert_exe = p.getexe('CONVERT_EXE')
+    series_anly_configuration_file   = p.getstr('config','SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH')
+    extract_tiles_dir = p.getdir('EXTRACT_OUT_DIR')
+    series_lead_filtered_out_dir = p.getdir('SERIES_LEAD_FILTERED_OUT_DIR')
+    series_lead_out_dir = p.getdir('SERIES_LEAD_OUT_DIR')
+    background_map = p.getbool('config','BACKGROUND_MAP')
+    regrid_with_MET_tool = p.getbool('config','REGRID_USING_MET_TOOL')
+    series_filter_opts = p.getstr('config','SERIES_ANALYSIS_FILTER_OPTS')
     series_filter_opts.strip()
 
     # Set up the environment variable to be used in the Series Analysis
@@ -66,16 +69,18 @@ def analysis_by_lead_time():
     #  because currently MET doesn't support single-quotes
     tmp_stat_string = str(stat_list)
     tmp_stat_string = tmp_stat_string.replace("\'", "\"")
+    # For example, we want tmp_stat_string to look like
+    #   '["TOTAL","FBAR"]', NOT "['TOTAL','FBAR']"
     os.environ['STAT_LIST'] = tmp_stat_string
 
     if regrid_with_MET_tool:
         # Regridding via MET Tool regrid_data_plane.
-        fcst_tile_regex = p.opt["FCST_NC_TILE_REGEX"]
-        anly_tile_regex = p.opt["ANLY_NC_TILE_REGEX"]
+        fcst_tile_regex = p.getstr('regex_pattern','FCST_NC_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern','ANLY_NC_TILE_REGEX')
     else:
         # Regridding via wgrib2 tool.
-        fcst_tile_regex = p.opt["FCST_TILE_REGEX"]
-        anly_tile_regex = p.opt["ANLY_TILE_REGEX"]
+        fcst_tile_regex = p.getstr('regex_pattern','FCST_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern','ANLY_TILE_REGEX')
 
     # Check for the existence of the storm track tiles and raise
     # an error if these are missing.
@@ -467,9 +472,9 @@ def get_nseries(nc_var_file, p, logger):
     '''
 
     # Retrieve any necessary things from the config/param file.
-    rm_exe = p.opt["RM_EXE"]
-    ncap2_exe = p.opt["NCAP2_EXE"]
-    ncdump_exe = p.opt["NCDUMP_EXE"]
+    rm_exe = p.getexe('RM_EXE')
+    ncap2_exe = p.getexe('NCAP2_EXE')
+    ncdump_exe = p.getexe('NCDUMP_EXE')
 
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
@@ -516,7 +521,8 @@ def get_nseries(nc_var_file, p, logger):
                     max = max_match.group(1)
 
                     # Clean up any intermediate .nc and .txt files
-                    nseries_list = [rm_exe, ' ', base_nc_dir, '/nseries.*']
+                    # WARNING Using rm -rf command.
+                    nseries_list = [rm_exe+'-rf', ' ', base_nc_dir, '/nseries.*']
                     nseries_cmd = ''.join(nseries_list)
                     os.system(nseries_cmd)
                     return max
@@ -549,9 +555,9 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
        
     '''
 
-    ncap2_exe = p.opt["NCAP2_EXE"]
-    ncdump_exe = p.opt["NCDUMP_EXE"]
-    rm_exe = p.opt["RM_EXE"]
+    ncap2_exe = p.getexe('NCAP2_EXE')
+    ncdump_exe = p.getexe('NCDUMP_EXE')
+    rm_exe = p.getexe('RM_EXE')
 
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
@@ -909,13 +915,13 @@ def cleanup_lead_ascii(p, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    fhr_beg = p.opt["FHR_BEG"]
-    fhr_end = p.opt["FHR_END"]
-    fhr_inc = p.opt["FHR_INC"]
-    fcst_ascii_regex = p.opt["FCST_ASCII_REGEX_LEAD"]
-    anly_ascii_regex = p.opt["ANLY_ASCII_REGEX_LEAD"]
-    rm_exe = p.opt["RM_EXE"]
-    out_dir_base = p.opt["SERIES_LEAD_OUT_DIR"]
+    fhr_beg = p.getint('config','FHR_BEG')
+    fhr_end = p.getint('config','FHR_END')
+    fhr_inc = p.getint('config','FHR_INC')
+    fcst_ascii_regex = p.getstr('regex_pattern','FCST_ASCII_REGEX_LEAD')
+    anly_ascii_regex = p.getstr('regex_pattern','ANLY_ASCII_REGEX_LEAD')
+    rm_exe = p.getexe('RM_EXE')
+    out_dir_base = p.getdir('SERIES_LEAD_OUT_DIR')
 
     for fhr in range(fhr_beg, fhr_end + 1, fhr_inc):
         cur_fhr = str(fhr).zfill(3)
@@ -934,8 +940,37 @@ def cleanup_lead_ascii(p, logger):
 
 
 if __name__ == "__main__":
-    # Create ConfigMaster parm object
-    p = P.Params()
-    p.init(__doc__)
-    logger = util.get_logger(p)
-    analysis_by_lead_time()
+    # sleep is for debugging in pycharm so I can attach to this process
+    # from the os.system call in master_met_plus.py
+    #import time
+    #time.sleep(60)
+
+    # sys.argv[0]='/path/to/series_by_lead.py'
+    # sys.argv[1]='-c'
+    # sys.argv[2]='jfrimel_ocean_constants_pdef_a.py'
+
+    # Testing constants_pdef until produtil is fully integrated.
+    #import constants_pdef as P
+    #test = P.Params()
+    #test.init(__doc__)
+
+
+    try:
+        produtil.setup.setup(send_dbn=False, jobname='series_by_lead')
+        produtil.log.postmsg('series_by_lead is starting')
+
+        # Read in the conf object p
+        import config_launcher
+        if len(sys.argv) == 3:
+            p = config_launcher.load_baseconfs(sys.argv[2])
+        else:
+            p = config_launcher.load_baseconfs()
+        logger = util.get_logger(p)
+        if 'MET_BASE' not in os.environ:
+            os.environ['MET_BASE'] = p.getdir('MET_BASE')
+        analysis_by_lead_time()
+        produtil.log.postmsg('series_by_lead completed')
+    except Exception as e:
+        produtil.log.jlogger.critical(
+            'series_by_lead failed: %s'%(str(e),),exc_info=True)
+        sys.exit(2)

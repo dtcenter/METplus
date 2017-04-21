@@ -2,7 +2,7 @@
 
 from __future__ import print_function,division
 
-import constants_pdef as P
+import produtil.setup
 import os
 import re
 import met_util as util
@@ -17,9 +17,9 @@ def main():
     :return: None, creates two files: cyc-new.dat and match.dat"""
 
     # Retrieve any necessary values from the param/config file, constants_pdef
-    input_dir = p.opt['TC_PAIRS_DIR']
-    adeck_prefix = p.opt['ADECK_FILE_PREFIX']
-    base_cyclone_relative_dir = p.opt['SBU_OUTPUT_DIR']
+    input_dir = p.getdir('TC_PAIRS_DIR')
+    adeck_prefix = p.getstr('config','ADECK_FILE_PREFIX')
+    base_cyclone_relative_dir = p.getdir('SBU_OUTPUT_DIR')
     tc_pair_extension = '.tcst'
     regex = adeck_prefix + ".*." + tc_pair_extension
     tc_pairs = util.get_files(input_dir, regex, logger)
@@ -110,5 +110,37 @@ if __name__ == "__main__":
     p.init(__doc__)  # Put description of the code here
     logger = util.get_logger(p)
     main()
+
+    # sleep is for debugging in pycharm so I can attach to this process
+    # from the os.system call in master_met_plus.py
+    #import time
+    #time.sleep(60)
+
+    # Testing constants_pdef until produtil is fully integrated.
+    #import constants_pdef as P
+    #test = P.Params()
+    #test.init(__doc__) ## Put description of the code here
+
+
+    try:
+        produtil.setup.setup(send_dbn=False, jobname='tc2cyclone_relative')
+        produtil.log.postmsg('tc2cyclone_relative is starting')
+
+        # Read in the configuration object p
+        import config_launcher
+        if len(sys.argv) == 3:
+            p = config_launcher.load_baseconfs(sys.argv[2])
+        else:
+            p = config_launcher.load_baseconfs()
+        logger = util.get_logger(p)
+        if 'MET_BASE' not in os.environ:
+            os.environ['MET_BASE'] = p.getdir('MET_BASE')
+        main()
+        produtil.log.postmsg('tc2cyclone_relative completed')
+    except Exception as e:
+        produtil.log.jlogger.critical(
+            'tc2cyclone_relative failed: %s'%(str(e),),exc_info=True)
+        sys.exit(2)
+
 
 
