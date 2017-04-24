@@ -43,6 +43,7 @@ SERIES_ANALYSIS = os.path.join(MET_BUILD_BASE, "bin/series_analysis")
 PLOT_DATA_PLANE = os.path.join(MET_BUILD_BASE, "bin/plot_data_plane")
 TC_PAIRS = os.path.join(MET_BUILD_BASE, "bin/tc_pairs")
 REGRID_DATA_PLANE_EXE = os.path.join(MET_BUILD_BASE, "bin/regrid_data_plane")
+PLOT_TCMPR = os.path.join(MET_BUILD_BASE, "scripts/Rscripts/plot_tcmpr.R" )
 
 #
 #     INPUT DATA DIRECTORIES (uses previously set variables)
@@ -63,6 +64,7 @@ TMP_DIR = "/tmp"
 TRACK_DATA_SUBDIR_MOD = os.path.join(PROJ_DIR, "track_data_atcf")
 TC_PAIRS_DIR = os.path.join(PROJ_DIR, "tc_pairs")
 TC_STAT_DIR = os.path.join(PROJ_DIR,"tc_stat")
+TCMPR_PLOT_OUT_DIR = os.path.join(OUTPUT_BASE,"tcmpr_plots")
 
 
 #     Use this setting to separate the filtered track files from
@@ -113,6 +115,7 @@ ANLY_ASCII_REGEX_LEAD ="ANLY_FILE_F.*"
 TC_PAIRS_CONFIG_PATH = os.path.join(PARM_BASE, "TCPairsETCConfig")
 SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH = os.path.join(PARM_BASE,"SeriesAnalysisConfig_by_lead")
 SERIES_ANALYSIS_BY_INIT_CONFIG_PATH = os.path.join(PARM_BASE, "SeriesAnalysisConfig_by_init")
+TCMPR_PLOT_CONFIG = ""
 
 #
 #     LISTS AND SETTINGS
