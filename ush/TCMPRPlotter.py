@@ -138,7 +138,6 @@ class TCMPRPlotter:
                     # return with a non-zero exit status of 1
                     self.logger.warn("WARN: plot_tcmpr.R returned exit status of 1, tcst file may be missing data.")
                     pass
-                self.logger.debug("After exception thrown")
                 # Reset empty cmds_list to prepare for next tcst file.
                 cmds_list = []
 
