@@ -100,7 +100,6 @@ class TCMPRPlotter:
                 except subprocess.CalledProcessError as cpe:
                     self.logger.warn("WARN: plot_tcmpr.R returned exit status of 1, tcst file may be empty")
                     pass
-                self.logger.debug("After exception thrown")
         # If the input data is a directory, create a command for each file in the directory and invoke the
         # R script for each tcst file.
         if os.path.isdir(self.input_data):
