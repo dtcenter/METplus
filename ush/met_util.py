@@ -797,12 +797,12 @@ def create_grid_specification_string(lat, lon, logger, p):
     # Initialize the tile grid string
     # and get the other values from the parameter file
     tile_grid_str = ' '
-    nlat = p.getstr('NLAT')
-    nlon = p.getstr('NLON')
-    dlat = p.getstr('DLAT')
-    dlon = p.getstr('DLON')
-    lon_subtr = p.getfloat('LON_ADJ')
-    lat_subtr = p.getfloat('LAT_ADJ')
+    nlat = p.getstr('config','NLAT')
+    nlon = p.getstr('config','NLON')
+    dlat = p.getstr('config','DLAT')
+    dlon = p.getstr('config','DLON')
+    lon_subtr = p.getfloat('config','LON_ADJ')
+    lat_subtr = p.getfloat('config','LAT_ADJ')
 
     # Format for regrid_data_plane:
     # latlon Nx Ny lat_ll lon_ll delta_lat delta_lonadj_lon = float(lon) - lon_subtr

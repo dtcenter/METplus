@@ -29,49 +29,57 @@ from produtil.config import ProdConfig
 
 baseinputconfs = ['metplus.conf','metplus.override.conf']
 
-##@var HOMEmetplus
+# Note: This is just a developer reference comment, in case we continue
+# extending the metplus capabilities, by following hwrf patterns.
+# These metplus configuration variables map to the following
+# HWRF variables.
+# METPLUS_BASE == HOMEmetplus, OUTPUT_BASE == WORKmetplus
+# METPLUS_CONF == CONFmetplus, METPUS_USH == USHmetplus
+# PARM_BASE == PARMmetplus
+
+##@var METPLUS_BASE
 # The METplus installation directory
-HOMEmetplus=None
+METPLUS_BASE=None
 
-##@var USHmetplus
+##@var METPLUS_USH
 # The ush/ subdirectory of the METplus installation directory
-USHmetplus=None
+METPLUS_USH=None
 
-##@var PARMmetplus
+##@var PARM_BASE
 # The parameter directory
-PARMmetplus=None
+PARM_BASE=None
 
-if os.environ.get('HOMEmetplus',''):  HOMEmetplus=os.environ['HOMEmetplus']
-if os.environ.get('USHmetplus',''):   USHmetplus=os.environ['USHmetplus']
-if os.environ.get('PARMmetplus',''):  PARMmetplus=os.environ['PARMmetplus']
+if os.environ.get('METPLUS_BASE',''):  METPLUS_BASE=os.environ['METPLUS_BASE']
+if os.environ.get('METPLUS_USH',''):   METPLUS_USH=os.environ['METPLUS_USH']
+if os.environ.get('PARM_BASE',''):  PARM_BASE=os.environ['PARM_BASE']
 
-# Based on HOMEmetplus, Will set USHmetplus, or PARMmetplus if not
+# Based on METPLUS_BASE, Will set METPLUS_USH, or PARM_BASE if not
 # already set in the environment.
-if HOMEmetplus is None:
-    guess_HOMEmetplus=dirname(dirname(realpath(__file__)))
-    USHguess=os.path.join(guess_HOMEmetplus,'ush')
-    PARMguess=os.path.join(guess_HOMEmetplus,'parm')
+if METPLUS_BASE is None:
+    guess_METPLUS_BASE=dirname(dirname(realpath(__file__)))
+    USHguess=os.path.join(guess_METPLUS_BASE,'ush')
+    PARMguess=os.path.join(guess_METPLUS_BASE,'parm')
     if os.path.isdir(USHguess) and os.path.isdir(PARMguess):
-        if USHmetplus is None: USHmetplus=USHguess
-        if PARMmetplus is None: PARMmetplus=PARMguess
+        if METPLUS_USH is None: METPLUS_USH=USHguess
+        if PARM_BASE is None: PARM_BASE=PARMguess
 else:
-    if os.path.isdir(HOMEmetplus):
-        if USHmetplus is None: USHmetplus=os.path.join(HOMEmetplus,'ush')
-        if PARMmetplus is None: PARMmetplus=os.path.join(HOMEmetplus,'parm')
+    if os.path.isdir(METPLUS_BASE):
+        if METPLUS_USH is None: METPLUS_USH=os.path.join(METPLUS_BASE,'ush')
+        if PARM_BASE is None: PARM_BASE=os.path.join(METPLUS_BASE,'parm')
     else:
-        print("$HOMEmetplus is not a directory: {} \nPlease set $HOMEmetplus " \
-               "in the environment.".format(HOMEmetplus), file=sys.stderr)
+        print("$METPLUS_BASE is not a directory: {} \nPlease set $METPLUS_BASE " \
+               "in the environment.".format(METPLUS_BASE), file=sys.stderr)
         sys.exit(2)
 
-#print("guess_HOMEmetplus is: {}",guess_HOMEmetplus)
-#print("USHmetplus is: {}",USHmetplus)
-#print("PARMmetplus is: {}",PARMmetplus)
+#print("guess_METPLUS_BASE is: {}",guess_METPLUS_BASE)
+#print("METPLUS_USH is: {}",METPLUS_USH)
+#print("PARM_BASE is: {}",PARM_BASE)
 
 # For METplus, this is assumed to already be set.
-if USHmetplus not in sys.path:
-    sys.path.append(USHmetplus)
+if METPLUS_USH not in sys.path:
+    sys.path.append(METPLUS_USH)
 
-#def parse_launch_args(args,usage,logger,PARMmetplus=None):
+#def parse_launch_args(args,usage,logger,PARM_BASE=None):
 # This is intended to be use to gather all the conf files on the
 # command line, along with overide options on the command line.
 # This includes the default conf files metplus.conf, metplus.override.conf
@@ -80,7 +88,7 @@ if USHmetplus not in sys.path:
 # that would be used by all tasks.
 def parse_launch_args(args, usage, logger):
 
-    parm=os.path.realpath(PARMmetplus)
+    parm=os.path.realpath(PARM_BASE)
 
     # Files in this list, that don't exist or are empty,
     # will be silently ignored.
@@ -150,22 +158,22 @@ def launch(file_list,moreopt,cycle=None,init_dirs=True,
         logger.info("%s: Parse this file" % (filename,))
         conf.read(filename)
 
-    produtil.fileop.makedirs(conf.getdir('WORKmetplus'),logger=logger)
+    produtil.fileop.makedirs(conf.getdir('OUTPUT_BASE'),logger=logger)
 
     #logger.info('Expand certain [dir] values to ensure availability ')
     #            'before vitals parsing.
     # frimel: Especially before vitals parsing. THIS IS ONLY NEEDED in
     # order to define the vit dictionary and use of vit|{somevar} in the
     # conf file.
-    for var in ( 'WORKmetplus', 'HOMEmetplus'):
+    for var in ( 'OUTPUT_BASE', 'METPLUS_BASE'):
         expand=conf.getstr('dir',var)
         logger.info('Replace [dir] %s with %s'%(var,expand))
         conf.set('dir',var,expand)
 
-    #conf.set('dir','HOMEmetplus',HOMEmetplus)
+    #conf.set('dir','METPLUS_BASE',METPLUS_BASE)
 
     #writes the metplus conf used by all tasks.
-    confloc=conf.getloc('CONFmetplus')
+    confloc=conf.getloc('METPLUS_CONF')
     logger.info('%s: write primary metplus.conf here'%(confloc,))
     with open(confloc,'wt') as f:
         conf.write(f)
@@ -191,7 +199,7 @@ def load(filename):
     #strcycle=cycle.strftime('%Y%m%d%H')
     #logger.info('Running cycle: '+cycle.strftime('%Y%m%d%H'))
 
-    WORKmetplus=conf.getdir('WORKmetplus')
+    OUTPUT_BASE=conf.getdir('OUTPUT_BASE')
 
     return conf
 
@@ -202,7 +210,7 @@ def load(filename):
 def load_baseconfs(add_conf_file=None):
     """ Loads the following conf files """
 
-    parm=PARMmetplus
+    parm=os.path.realpath(PARM_BASE)
 
     #baseconfs=[ os.path.join(parm, 'metplus.conf'),
     #          os.path.join(parm, 'metplus.override.conf')
@@ -225,19 +233,22 @@ def load_baseconfs(add_conf_file=None):
 
     return conf
 
+def set_conf_file_path(conf_file):
+    return _set_conf_file_path(conf_file)
+
 # This is meant to be used with the -c option in METplus
 # for backward compatability, since users using the -c option
 # are not required to add path information and the previous
 # constants object found it since it was pulled in via the import
 # statement and the parm directory was defined in the PYTHONPATH
 def _set_conf_file_path(conf_file):
-    """Do not call this.  It is an internal implementation routine.
-    It is only used internally and is called when adding an 
+    """Do not call this directly.  It is an internal implementation
+    routine. It is only used internally and is called when adding an 
     additional conf using the -c command line option.
 
     Adds the path information to the conf file if there isn't any.
     """
-    parm = PARMmetplus
+    parm=os.path.realpath(PARM_BASE)
 
     # Determine if add_conf_file has path information /path/to/file.conf
     # If not head than there is no path information, only a filename,
@@ -264,15 +275,15 @@ def test_gen_conf(file_list,cycle=None):
         logger.info("%s: parse this file"%(filename,))
         conf.read(filename)
 
-    produtil.fileop.makedirs(conf.getdir('WORKmetplus'),logger=logger)
+    produtil.fileop.makedirs(conf.getdir('OUTPUT_BASE'),logger=logger)
 
-    for var in ( 'WORKmetplus', 'HOMEmetplus' ):
+    for var in ( 'OUTPUT_BASE', 'METPLUS_BASE' ):
         expand=conf.getstr('dir',var)
         logger.info('Replace [dir] %s with %s'%(var,expand))
         conf.set('dir',var,expand)
 
     #writes metplus.conf used by all tasks.
-    confloc=conf.getloc('CONFmetplus')
+    confloc=conf.getloc('METPLUS_CONF')
     logger.info('%s: write metplus.conf here'%(confloc,))
     with open(confloc,'wt') as f:
         conf.write(f)
@@ -280,8 +291,8 @@ def test_gen_conf(file_list,cycle=None):
     return conf
 
 # THIS IS NOT USED, meant for internal dev testing.
-def test_metplus_launch_args(args,logger,usage,PARMmetplus=None):
-    if len(args)<2 or ( PARMmetplus is None and len(args)<3):
+def test_metplus_launch_args(args,logger,usage,PARM_BASE=None):
+    if len(args)<2 or ( PARM_BASE is None and len(args)<3):
         usage(logger=logger)
         sys.exit(2)
     stid=args[0].upper()
@@ -299,7 +310,7 @@ def test_metplus_launch_args(args,logger,usage,PARMmetplus=None):
              '../../frimel.conf.lfs2']
 
     stid='18L'
-    moreopt={'config': {'HOMEmetplus': '/path/to/METplus', 'EXPT': 'metplus_trunk'}}
+    moreopt={'config': {'METPLUS_BASE': '/path/to/METplus', 'EXPT': 'metplus_trunk'}}
 
     return (case_root,parm,infiles,stid,moreopt)
 

@@ -3,6 +3,7 @@
 from __future__ import print_function,division
 
 import produtil.setup
+import sys
 import os
 import re
 import met_util as util
@@ -106,10 +107,6 @@ def update_dictionary(cur_dict, cur_key, cur_file):
 
 
 if __name__ == "__main__":
-    p = P.Params()
-    p.init(__doc__)  # Put description of the code here
-    logger = util.get_logger(p)
-    main()
 
     # sleep is for debugging in pycharm so I can attach to this process
     # from the os.system call in master_met_plus.py

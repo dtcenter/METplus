@@ -522,7 +522,7 @@ def get_nseries(nc_var_file, p, logger):
 
                     # Clean up any intermediate .nc and .txt files
                     # WARNING Using rm -rf command.
-                    nseries_list = [rm_exe+'-rf', ' ', base_nc_dir, '/nseries.*']
+                    nseries_list = [rm_exe+' -rf', ' ', base_nc_dir, '/nseries.*']
                     nseries_cmd = ''.join(nseries_list)
                     os.system(nseries_cmd)
                     return max
