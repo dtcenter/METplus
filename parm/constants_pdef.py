@@ -43,6 +43,7 @@ SERIES_ANALYSIS = os.path.join(MET_BUILD_BASE, "bin/series_analysis")
 PLOT_DATA_PLANE = os.path.join(MET_BUILD_BASE, "bin/plot_data_plane")
 TC_PAIRS = os.path.join(MET_BUILD_BASE, "bin/tc_pairs")
 REGRID_DATA_PLANE_EXE = os.path.join(MET_BUILD_BASE, "bin/regrid_data_plane")
+PLOT_TCMPR = os.path.join(MET_BUILD_BASE, "scripts/Rscripts/plot_tcmpr.R" )
 
 #
 #     INPUT DATA DIRECTORIES (uses previously set variables)
@@ -51,6 +52,7 @@ REGRID_DATA_PLANE_EXE = os.path.join(MET_BUILD_BASE, "bin/regrid_data_plane")
 PROJ_DIR = "/d1/SBU/GFS"
 GFS_DIR = os.path.join(PROJ_DIR, "model_data")
 TRACK_DATA_DIR = os.path.join(PROJ_DIR, "track_data")
+TCMPR_DATA = os.path.join(OUTPUT_BASE, "tc_pairs")
 
 #
 #    OUTPUT DIRECTORIES (uses previously set variables)
@@ -62,6 +64,7 @@ TMP_DIR = "/tmp"
 TRACK_DATA_SUBDIR_MOD = os.path.join(PROJ_DIR, "track_data_atcf")
 TC_PAIRS_DIR = os.path.join(PROJ_DIR, "tc_pairs")
 TC_STAT_DIR = os.path.join(PROJ_DIR,"tc_stat")
+TCMPR_PLOT_OUT_DIR = os.path.join(OUTPUT_BASE,"tcmpr_plots")
 
 
 #     Use this setting to separate the filtered track files from
@@ -112,6 +115,7 @@ ANLY_ASCII_REGEX_LEAD ="ANLY_FILE_F.*"
 TC_PAIRS_CONFIG_PATH = os.path.join(PARM_BASE, "TCPairsETCConfig")
 SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH = os.path.join(PARM_BASE,"SeriesAnalysisConfig_by_lead")
 SERIES_ANALYSIS_BY_INIT_CONFIG_PATH = os.path.join(PARM_BASE, "SeriesAnalysisConfig_by_init")
+TCMPR_PLOT_CONFIG = ""
 
 #
 #     LISTS AND SETTINGS
@@ -184,6 +188,45 @@ MISSING_VAL = "-9999"
 
 EXTRACT_TILES_FILTER_OPTS=" -basin ML -out_init_mask " + os.path.join(MET_BUILD_BASE,"share/met/poly/CONUS.poly")
 SERIES_ANALYSIS_FILTER_OPTS="-init_beg 20141201 -init_end 20150331"
+
+#
+#     Plot_TCMPR options, if left unset, default values pre-defined in R utility will be used.
+#
+
+CONFIG_FILE = ""
+PREFIX = ""
+TITLE = ""
+SUBTITLE = ""
+XLAB = ""
+YLAB = ""
+XLIM = ""
+YLIM = ""
+FILTER = ""
+FILTERED_TCST_DATA_FILE= ""
+DEP_VARS = ""
+SCATTER_X = ""
+SCATTER_Y = ""
+SKILL_REF = ""
+SERIES = ""
+SERIES_CI = ""
+LEGEND = ""
+LEAD = ""
+PLOT_TYPES = ""
+RP_DIFF = ""
+DEMO_YR = ""
+HFIP_BASELINE = ""
+FOOTNOTE_FLAG = ""
+PLOT_CONFIG_PATH = ""
+SAVE_DATA = ""
+
+#
+#  TCMPR FLAGS False (don't set flag), True (set flag)
+#
+NO_EE = False
+NO_LOG = False
+SAVE = False
+
+
 
 #
 #     OVERWRITE OPTIONS
