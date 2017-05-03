@@ -283,5 +283,16 @@ LOG_FILENAME = os.path.join(LOG_DIR, "master_met_plus." + datetime.datetime.now(
 
 SBU_OUTPUT_DIR =  os.path.join(OUTPUT_BASE,'cyclone_relative')
 
+# LON format example: -180 is 180W, 40 is 40E
+SBU_WEST_MOST_LON = -180.0
+SBU_EAST_MOST_LON = 40.0
+SBU_SOUTHERN_MOST_LAT = 0
+SBU_NORTHERN_MOST_LAT = 90.0
+
+# The resolution in decimal degrees
+SBU_DLAT = 0.5
+SBU_DLON = 0.5
+
+
 """    
  
