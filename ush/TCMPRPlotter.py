@@ -52,7 +52,7 @@ class TCMPRPlotter:
         self.demo_year = p.opt['DEMO_YR']
         self.hfip_baseline = p.opt['HFIP_BASELINE']
         self.footnote_flag = p.opt['FOOTNOTE_FLAG']
-        self.plot_config_path = p.opt['PLOT_CONFIG_PATH']
+        self.plot_config_options = p.opt['PLOT_CONFIG_OPTS']
         self.save_data = p.opt['SAVE_DATA']
 
         # Optional flags, by default these will be set to False in the
@@ -100,6 +100,7 @@ class TCMPRPlotter:
                 except subprocess.CalledProcessError as cpe:
                     self.logger.warn("WARN: plot_tcmpr.R returned exit status of 1, tcst file may be empty")
                     pass
+
         # If the input data is a directory, create a command for each file in the directory and invoke the
         # R script for each tcst file.
         if os.path.isdir(self.input_data):
@@ -138,6 +139,7 @@ class TCMPRPlotter:
                     # return with a non-zero exit status of 1
                     self.logger.warn("WARN: plot_tcmpr.R returned exit status of 1, tcst file may be missing data.")
                     pass
+
                 # Reset empty cmds_list to prepare for next tcst file.
                 cmds_list = []
 
@@ -162,7 +164,9 @@ class TCMPRPlotter:
     def retrieve_optionals(self):
         """Creates a list of the optional options if they are defined."""
         optionals = []
-
+        if self.plot_config_file:
+            optionals.append(' -config ')
+            optionals.append(self.plot_config_file)
         if self.prefix:
             optionals.append(' -prefix ')
             optionals.append(self.prefix)
@@ -214,9 +218,9 @@ class TCMPRPlotter:
         if self.lead:
             optionals.append(' -lead ')
             optionals.append(self.lead)
-        if self.plot_config_file:
-            optionals.append(' -plot_config ')
-            optionals.append(self.plot_config_file)
+        if self.plot_types:
+            optionals.append(' -plot ')
+            optionals.append(self.plot_types)
         if self.rp_diff:
             optionals.append(' -rp_diff ')
             optionals.append(self.rp_diff)
@@ -226,6 +230,9 @@ class TCMPRPlotter:
         if self.hfip_baseline:
             optionals.append(' -hfip_bsln ')
             optionals.append(self.hfip_baseline)
+        if self.plot_config_options:
+            optionals.append(' -plot_config ')
+            optionals.append(self.plot_config_options)
         if self.save_data:
             optionals.append(' -save_data ')
             optionals.append(self.save_data)
