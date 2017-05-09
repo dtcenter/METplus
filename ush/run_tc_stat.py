@@ -18,13 +18,13 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import (print_function, division )
 
 import produtil.setup
+from produtil.run import batchexe, run, checkrun
 import logging
 import os
 import sys
 import met_util as util
 import time
 import re
-import subprocess
 import string_template_substitution as sts
 
 
@@ -66,11 +66,14 @@ def tc_stat(p, logger, tc_cmd, filtered_output_dir):
 
     # Make call to tc_stat, capturing any stderr and stdout to the MET Plus log.
     try:
-        tc_stat_out = subprocess.check_output(tc_cmd, stderr=subprocess.STDOUT, shell=True )
-    except subprocess.CalledProcessError as e:
+        tc_cmd = batchexe('sh')['-c',tc_cmd].err2out()
+        #tc_cmd = batchexe(tc_cmd.split()[0])[tc_cmd.split()[1:]].err2out() 
+        checkrun(tc_cmd)
+    except produtil.run.ExitStatusException as ese:
         msg = ("ERROR| " + cur_filename + ":" + cur_function + 
-               " from calling MET TC-STAT with command:" + tc_cmd)
+               " from calling MET TC-STAT with command:" + tc_cmd.to_shell())
         logger.error(msg)
+        logger.error({}.format(ese))
         pass
 
 
@@ -90,7 +93,10 @@ if __name__ == "__main__":
 
 
     try:
-        produtil.setup.setup(send_dbn=False, jobname='run_tc_stat')
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='run_tc_stat',jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='run_tc_stat')
         produtil.log.postmsg('run_tc_stat is starting')
 
         # Read in the configuration object p

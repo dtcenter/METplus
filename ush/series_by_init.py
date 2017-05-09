@@ -3,12 +3,12 @@
 from __future__ import print_function
 
 import produtil.setup
+from produtil.run import batchexe, run, checkrun
 import re
 import os
 import sys
 import met_util as util
-import subprocess
-
+# import subprocess
 
 def analysis_by_init_time():
     ''' Invoke the series analysis script based on
@@ -275,18 +275,21 @@ def analysis_by_init_time():
                                      ' -config ', series_anlysis_config_file,
                                      ' ', out_param]
                     command = ''.join(command_parts)
+                    command = batchexe('sh')['-c',command].err2out()
+                    #command = batchexe(command.split()[0])[command.split()[1:]].err2out()
 
                     msg = ('INFO|[' + cur_filename + ':' +
                            cur_function + ']|' +
-                           'SERIES ANALYSIS COMMAND: ' + command)
+                           'SERIES ANALYSIS COMMAND: ' + command.to_shell())
                     logger.debug(msg)
+                    met_result = run(command)
 
                     # Using shell=True because we aren't relying
                     # on external input for creating the command
                     # to the MET series analysis binary
-                    met_result = subprocess.check_output(command,
-                                                         stderr=subprocess.STDOUT,
-                                                         shell=True)
+                    # met_result = subprocess.check_output(command,
+                    #                                     stderr=subprocess.STDOUT,
+                    #                                     shell=True)
 
                     # Now we need to invoke the MET tool
                     # plot_data_plane to generate plots that are
@@ -356,15 +359,18 @@ def analysis_by_init_time():
 
                         data_plane_command = ''.join(
                             data_plane_command_parts)
+                        data_plane_command = batchexe('sh')['-c',data_plane_command].err2out()
+                        #data_plane_command = batchexe(data_plane_command.split()[0])[data_plane_command.split()[1:]].err2out()
+                        data_plane_result = run(data_plane_command)
 
                         # Using shell=True because we aren't
                         # relying on external input
                         # for creating the command to the MET series
                         # analysis binary
-                        data_plane_result = subprocess.check_output(
-                            data_plane_command,
-                            stderr=subprocess.STDOUT,
-                            shell=True)
+                        #data_plane_result = subprocess.check_output(
+                        #    data_plane_command,
+                        #    stderr=subprocess.STDOUT,
+                        #    shell=True)
 
                         # Now assemble the command to convert the
                         # postscript file to png
@@ -374,14 +380,17 @@ def analysis_by_init_time():
                                          ' -background white -flatten ',
                                          plot_data_plane_output_fname,
                                          ' ', png_fname]
-                        convert = ''.join(convert_parts)
+                        convert_command = ''.join(convert_parts)
+                        convert_command = batchexe('sh')['-c',convert_command].err2out()
+                        #convert_command = batchexe(convert_command.split()[0])[convert_command.split()[1:]].err2out()
+                        convert_result = run(convert_command)
 
                         # Using shell=True because we aren't relying
                         # on external input for creating the command to
                         # the MET series analysis binary
-                        convert_results = subprocess.check_output(convert,
-                                                                  stderr=subprocess.STDOUT,
-                                                                  shell=True)
+                        #convert_results = subprocess.check_output(convert,
+                        #                                          stderr=subprocess.STDOUT,
+                        #                                          shell=True)
     logger.info("Finished series analysis by init time")
 
 
@@ -591,7 +600,10 @@ if __name__ == "__main__":
 
 
     try:
-        produtil.setup.setup(send_dbn=False, jobname='series_by_init')
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='series_by_init',jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='series_by_init')
         produtil.log.postmsg('series_by_init is starting')
 
         # Read in the configuration object p

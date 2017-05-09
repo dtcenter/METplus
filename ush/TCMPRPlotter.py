@@ -2,11 +2,10 @@
 
 
 from __future__ import print_function
+import produtil.setup
+from produtil.run import batchexe, run, checkrun
 import met_util as util
-import constants_pdef as P
-import subprocess
-import os
-import re
+import sys,os,re
 
 
 
@@ -22,44 +21,44 @@ class TCMPRPlotter:
 
     def __init__(self, p):
         # Location of the R-script, plot_tcmpr.
-        self.tcmpr_script = p.opt['PLOT_TCMPR']
+        self.tcmpr_script = p.getexe('PLOT_TCMPR')
 
         # The only required argument, the name of the tcst file to plot.
-        self.input_data = p.opt['TCMPR_DATA']
+        self.input_data = p.getstr('config','TCMPR_DATA')
 
         # Optional arguments
-        self.plot_config_file = p.opt['TCMPR_PLOT_CONFIG']
-        self.output_base_dir = p.opt['TCMPR_PLOT_OUT_DIR']
-        self.prefix = p.opt['PREFIX']
-        self.title = p.opt['TITLE']
-        self.subtitle = p.opt['SUBTITLE']
-        self.xlab = p.opt['XLAB']
-        self.ylab = p.opt['YLAB']
-        self.xlim = p.opt['XLIM']
-        self.ylim = p.opt['YLIM']
-        self.filter = p.opt['FILTER']
-        self.filtered_tcst_data = p.opt['FILTERED_TCST_DATA_FILE']
-        self.dep_vars = p.opt['DEP_VARS']
-        self.scatter_x = p.opt['SCATTER_X']
-        self.scatter_y = p.opt['SCATTER_Y']
-        self.skill_ref = p.opt['SKILL_REF']
-        self.series = p.opt['SERIES']
-        self.series_ci = p.opt['SERIES_CI']
-        self.legend = p.opt['LEGEND']
-        self.lead = p.opt['LEAD']
-        self.plot_types = p.opt['PLOT_TYPES']
-        self.rp_diff = p.opt['RP_DIFF']
-        self.demo_year = p.opt['DEMO_YR']
-        self.hfip_baseline = p.opt['HFIP_BASELINE']
-        self.footnote_flag = p.opt['FOOTNOTE_FLAG']
-        self.plot_config_path = p.opt['PLOT_CONFIG_PATH']
-        self.save_data = p.opt['SAVE_DATA']
+        self.plot_config_file = p.getstr('config','TCMPR_PLOT_CONFIG')
+        self.output_base_dir = p.getdir('TCMPR_PLOT_OUT_DIR')
+        self.prefix = p.getstr('config','PREFIX')
+        self.title = p.getstr('config','TITLE')
+        self.subtitle = p.getstr('config','SUBTITLE')
+        self.xlab = p.getstr('config','XLAB')
+        self.ylab = p.getstr('config','YLAB')
+        self.xlim = p.getstr('config','XLIM')
+        self.ylim = p.getstr('config','YLIM')
+        self.filter = p.getstr('config','FILTER')
+        self.filtered_tcst_data = p.getstr('config','FILTERED_TCST_DATA_FILE')
+        self.dep_vars = p.getstr('config','DEP_VARS')
+        self.scatter_x = p.getstr('config','SCATTER_X')
+        self.scatter_y = p.getstr('config','SCATTER_Y')
+        self.skill_ref = p.getstr('config','SKILL_REF')
+        self.series = p.getstr('config','SERIES')
+        self.series_ci = p.getstr('config','SERIES_CI')
+        self.legend = p.getstr('config','LEGEND')
+        self.lead = p.getstr('config','LEAD')
+        self.plot_types = p.getstr('config','PLOT_TYPES')
+        self.rp_diff = p.getstr('config','RP_DIFF')
+        self.demo_year = p.getstr('config','DEMO_YR')
+        self.hfip_baseline = p.getstr('config','HFIP_BASELINE')
+        self.footnote_flag = p.getstr('config','FOOTNOTE_FLAG')
+        self.plot_config_path = p.getstr('config','PLOT_CONFIG_PATH')
+        self.save_data = p.getstr('config','SAVE_DATA')
 
         # Optional flags, by default these will be set to False in the
         # constants_pdef.py or produtil config files.
-        self.no_ee = p.opt['NO_EE']
-        self.no_log = p.opt['NO_LOG']
-        self.save = p.opt['SAVE']
+        self.no_ee = p.getbool('config','NO_EE')
+        self.no_log = p.getbool('config','NO_LOG')
+        self.save = p.getbool('config','SAVE')
 
         self.logger = util.get_logger(p)
         self.logger.debug("DEBUG: TCMPR input {}".format(self.input_data))
@@ -92,14 +91,20 @@ class TCMPRPlotter:
 
             if len(optionals) > 0:
                 cmds_list.append(optionals)
-                cmd = ''.join(cmds_list)
-                self.logger.debug("DEBUG: Command run {}".format(cmd))
+                # Due to the way cmds_list was created, join it all in to one string and than split that
+                # in to a list, so element [0] is 'Rscript', instead of 'Rscript self.tcmpr_script -lookin' 
+                cmds_list = ''.join(cmds_list).split()
+                #cmd = batchexe('sh')['-c',''.join(cmds_list)] > '/dev/null'   
+                cmd = batchexe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
+                self.logger.debug("DEBUG: Command run {}".format(cmd.to_shell()))
                 self.logger.info("INFO: Generating requested plots for " + self.input_data)
                 try:
-                    subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
-                except subprocess.CalledProcessError as cpe:
-                    self.logger.warn("WARN: plot_tcmpr.R returned exit status of 1, tcst file may be empty")
+                    checkrun(cmd)
+                except produtil.run.ExitStatusException as ese:
+                    self.logger.warn("WARN: plot_tcmpr.R returned non-zero exit status, "
+                                     "tcst file may be missing data, continuing: {}".format(ese))
                     pass
+
         # If the input data is a directory, create a command for each file in the directory and invoke the
         # R script for each tcst file.
         if os.path.isdir(self.input_data):
@@ -128,15 +133,23 @@ class TCMPRPlotter:
                     remaining_options = ''.join(optionals_list)
                     cmds_list.append(remaining_options)
 
-                cmd = ''.join(cmds_list)
-                self.logger.debug("DEBUG:  Command run {}".format(cmd))
+                # Due to the way cmds_list was created, join it all in to one string and than split that
+                # in to a list, so element [0] is 'Rscript', instead of 'Rscript self.tcmpr_script -lookin' 
+                cmds_list = ''.join(cmds_list).split()
+                #cmd = batchexe('sh')['-c',''.join(cmds_list)] > '/dev/null'
+                cmd = batchexe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
+                #cmd.err2out()
+                #cmd.out('/dev/null')
+                self.logger.debug("DEBUG:  Command run {}".format(cmd.to_shell()))
                 try:
-                    subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
-                except subprocess.CalledProcessError as cpe:
+                    #subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+                    checkrun(cmd)
+                    #ret = run(cmd)
+                except produtil.run.ExitStatusException as ese:
                     # If the tcst file is empty (with the exception of the header), or there is
-                    # some other problem, then plot_tcmpr.R will
-                    # return with a non-zero exit status of 1
-                    self.logger.warn("WARN: plot_tcmpr.R returned exit status of 1, tcst file may be missing data.")
+                    # some other problem, then plot_tcmpr.R will return with a non-zero exit status of 1
+                    self.logger.warn("WARN: plot_tcmpr.R returned non-zero exit status, " 
+                                     "tcst file may be missing data, continuing: {}".format(ese))
                     pass
                 # Reset empty cmds_list to prepare for next tcst file.
                 cmds_list = []
@@ -244,7 +257,40 @@ class TCMPRPlotter:
 
 
 if __name__ == "__main__":
-    p = P.Params()
-    p.init(__doc__)
-    tcp = TCMPRPlotter(p)
-    tcp.create_command()
+    try:
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='TCMPRPlotter',jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='TCMPRPlotter')
+        produtil.log.postmsg('TCMPRPlotter is starting')
+
+        # Read in the configuration object p
+        import config_launcher
+        if len(sys.argv) == 3:
+            p = config_launcher.load_baseconfs(sys.argv[2])
+        else:
+            p = config_launcher.load_baseconfs()
+        logger = util.get_logger(p)
+        if 'MET_BUILD_BASE' not in os.environ:
+            os.environ['MET_BUILD_BASE'] = p.getdir('MET_BUILD_BASE')
+        if p.getdir('MET_BIN') not in os.environ['PATH']:
+            os.environ['PATH'] += os.pathsep + p.getdir('MET_BIN')
+        tcp = TCMPRPlotter(p)
+        tcp.create_command()
+        produtil.log.postmsg('TCMPRPlotter completed')
+    except Exception as e:
+        produtil.log.jlogger.critical(
+            'TCMPRPlotter failed: %s'%(str(e),),exc_info=True)
+        sys.exit(2)
+
+
+
+
+
+
+
+
+
+
+
+

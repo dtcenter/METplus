@@ -18,7 +18,6 @@ import produtil.setup
 import os
 import sys
 import met_util as util
-import subprocess
 import run_tc_stat as tcs
 
 
@@ -148,7 +147,8 @@ def main():
     util.prune_empty(filtered_out_dir, p, logger)
 
     # Clean up the tmp directory
-    subprocess.call(["rm", "-rf", tmp_dir])
+    #subprocess.call(["rm", "-rf", tmp_dir])
+    util.rmtree(tmp_dir)
     msg = ("INFO|[" + cur_function + ":" + cur_filename + "]| Finished extract tiles")
     logger.info(msg)
 
@@ -166,7 +166,10 @@ if __name__ == "__main__":
 
 
     try:
-        produtil.setup.setup(send_dbn=False, jobname='extract_tiles')
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='extract_tiles',jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='extract_tiles')
         produtil.log.postmsg('extract_tiles is starting')
 
         # Read in the configuration object p

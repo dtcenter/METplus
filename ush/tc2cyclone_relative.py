@@ -120,7 +120,10 @@ if __name__ == "__main__":
 
 
     try:
-        produtil.setup.setup(send_dbn=False, jobname='tc2cyclone_relative')
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='tc2cyclone_relative',jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='tc2cyclone_relative')
         produtil.log.postmsg('tc2cyclone_relative is starting')
 
         # Read in the configuration object p

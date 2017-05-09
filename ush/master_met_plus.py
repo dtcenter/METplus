@@ -4,11 +4,7 @@ from __future__ import print_function
 import os, sys, re, logging, collections, getopt
 
 import produtil.setup
-#import produtil.log
-#import produtil.fileop, produtil.numerics, produtil.config
-#from produtil.config import ProdConfig
-#from produtil.numerics import to_datetime
-#import constants_pdef as P
+from produtil.run import batchexe, run, checkrun
 import met_util as util
 import config_launcher
 
@@ -103,18 +99,20 @@ def main():
     for item in process_list:
 
         if config_file == None:
-            cmd = "%s" % item
-            logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running: " + cmd)
-            ret = os.system(cmd)
+            cmd = batchexe("%s" % (item))
+            cmd_shell = cmd.to_shell()
+            logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running: " + cmd_shell)
+            ret = run(cmd)
             if ret != 0:
-                logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd)
+                logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd_shell)
                 exit(0)
         else:
-            cmd = "%s -c %s" % (item, config_file)
-            logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running: " + cmd)
-            ret = os.system(cmd)
+            cmd = batchexe('%s' % (item))['-c',config_file] # PASS
+            cmd_shell=cmd.to_shell()
+            logger.info("INFO | [" + cur_filename +  ":" + cur_function + "] | " + "Running: " + cmd_shell)
+            ret = run(cmd)
             if ret != 0:
-                logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd)
+                logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd_shell)
                 exit(0)
 
 if __name__ == "__main__":
@@ -122,9 +120,12 @@ if __name__ == "__main__":
         # Setting jobname as just an FYI ... problably shouldn't set so
         # as not to confuse since DBN is not being used ... Default jobname,
         # if not defined, in log is 'NO-NAME'
-        # Assuming the jlogfile environment variable set and path exists
-        produtil.setup.setup(send_dbn=False, jobname='run-METplus')
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus',jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus')
         produtil.log.postmsg('master_met_plus is starting')
+
         main()
         produtil.log.postmsg('master_met_plus completed')
     except Exception as e:

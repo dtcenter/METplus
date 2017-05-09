@@ -16,6 +16,7 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import (print_function, division )
 
 import produtil.setup
+from produtil.run import batchexe, run, checkrun
 import logging
 import os
 import sys
@@ -115,16 +116,7 @@ def main():
             # Create an atcf output directory for writing the modified files
             adeck_mod = os.path.join(p.getdir('TRACK_DATA_SUBDIR_MOD'), os.path.basename(mydir))
             bdeck_mod = os.path.join(p.getdir('TRACK_DATA_SUBDIR_MOD'), os.path.basename(mydir))
-
-            # If the output directory doesn't exist, create it
-            if not os.path.exists(adeck_mod):
-                mkdir_cmd = "mkdir -p %s" % (adeck_mod)
-                logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Making output directory: " + adeck_mod)
-                #ret = subprocess.check_output(mkdir_cmd, stderr=subprocess.STDOUT, shell=True)
-                ret = os.system(mkdir_cmd)
-                if ret != 0:
-                    logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + mkdir_cmd)
-                    exit(0)
+            produtil.fileop.makedirs(adeck_mod,logger=logger)
         
         # Iterate over the files, modifying them and writing new output files if necessary ("extra_tropical_cyclone" track type), and run tc_pairs
         for myfile in myfiles:
@@ -134,15 +126,7 @@ def main():
                 
                 # Create the output directory for the pairs, if it doesn't already exist
                 pairs_out_dir = os.path.join(p.getdir('TC_PAIRS_DIR'), os.path.basename(mydir))
-                if not os.path.exists(pairs_out_dir):
-                    mkdir_cmd = "mkdir -p %s" % (pairs_out_dir)
-                    logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Making output directory: " + pairs_out_dir)
-                    #ret = subprocess.check_output(mkdir_cmd, stderr=subprocess.STDOUT, shell=True)
-                    ret = os.system(mkdir_cmd)
-                    if ret != 0:
-                        logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + mkdir_cmd)
-                        exit(0)
-                    
+                produtil.fileop.makedirs(pairs_out_dir, logger=logger)
 
                 # Need to do extra processing if track_type is extra_tropical_cyclone
                 if (p.getstr('config','TRACK_TYPE') == "extra_tropical_cyclone"):
@@ -206,21 +190,21 @@ def main():
                     if (p.getbool('config','TC_PAIRS_FORCE_OVERWRITE')):
                         logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Writing tc_pairs output file: "  + pairs_out_file + ", replacing existing data because TC_PAIRS_FORCE_OVERWRITE is set to True")
                         cmd = p.getexe('TC_PAIRS') + " -adeck " + adeck_file_path + " -bdeck " + bdeck_file_path + " -config " + p.getstr('config','TC_PAIRS_CONFIG_PATH') + " -out " + pairs_out_file
-                        logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd)
-                        #ret = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
-                        ret = os.system(cmd)
+                        cmd = batchexe('sh')['-c',cmd].err2out()
+                        logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd.to_shell())
+                        ret = run(cmd)
                         if ret != 0:
-                            logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd)
+                            logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd.to_shell())
                             exit(0)
                     else:
                         logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Existing tc_pairs output file: "  + pairs_out_file + ", is available for use. To overwrite set TC_PAIRS_FORCE_OVERWRITE to True")
                 else:
                     cmd = p.getexe('TC_PAIRS') + " -adeck " + adeck_file_path + " -bdeck " + bdeck_file_path + " -config " + p.getstr('config','TC_PAIRS_CONFIG_PATH') + " -out " + pairs_out_file
-                    logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd)
-                    #ret = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
-                    ret = os.system(cmd)
+                    cmd = batchexe('sh')['-c',cmd].err2out()
+                    logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd.to_shell())
+                    ret = run(cmd)
                     if ret != 0:
-                        logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd)
+                        logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd.to_shell())
                         exit(0)
                
     
@@ -238,7 +222,10 @@ if __name__ == "__main__":
 
 
     try:
-        produtil.setup.setup(send_dbn=False, jobname='run_tc_pairs')
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='run_tc_pairs',jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='run_tc_pairs')
         produtil.log.postmsg('run_tc_pairs is starting')
 
         # Read in the configuration object p

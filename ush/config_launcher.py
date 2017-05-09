@@ -21,13 +21,15 @@ __all__=['load','launch','parse_launch_args','load_baseconfs']
 import os, re, sys, collections, random
 import produtil.fileop, produtil.run, produtil.log
 from produtil.fileop import isnonempty
-from produtil.run import run, exe
+from produtil.run import batchexe, run, checkrun
 from produtil.log import jlogger
 from os.path import dirname, realpath
 from random import Random
 from produtil.config import ProdConfig
 
-baseinputconfs = ['metplus.conf','metplus.override.conf']
+#baseinputconfs = ['metplus.conf','metplus.override.conf']
+baseinputconfs = ['metplus.conf']
+
 
 # Note: This is just a developer reference comment, in case we continue
 # extending the metplus capabilities, by following hwrf patterns.

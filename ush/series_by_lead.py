@@ -2,11 +2,12 @@
 from __future__ import print_function
 
 import produtil.setup
+from produtil.run import batchexe, run, checkrun
 import re
 import os
 import sys
 import met_util as util
-import subprocess
+#import subprocess
 
 
 def analysis_by_lead_time():
@@ -255,13 +256,17 @@ def analysis_by_lead_time():
                                          ' ', config_param, ' ',
                                          out_param]
             series_analysis_cmd = ''.join(series_analysis_cmd_parts)
+            series_analysis_cmd = batchexe('sh')['-c',series_analysis_cmd].err2out()
+            #series_analysis_cmd = batchexe(series_analysis_cmd.split()[0])[series_analysis_cmd.split()[1:]].err2out()
+            
             msg = ("INFO:[ " + cur_filename + ":" +
                    cur_function + "]|series analysis command: " +
-                   series_analysis_cmd)
+                   series_analysis_cmd.to_shell())
             logger.debug(msg)
-            series_out = subprocess.check_output(series_analysis_cmd,
-                                                 stderr=subprocess.STDOUT,
-                                                 shell=True)
+            series_out = run(series_analysis_cmd)
+            #series_out = subprocess.check_output(series_analysis_cmd,
+            #                                     stderr=subprocess.STDOUT,
+            #                                     shell=True)
 
     # Make sure there aren't any emtpy
     # files or directories that still persist.
@@ -412,23 +417,29 @@ def analysis_by_lead_time():
                                          ' ', str(vmax)]
 
                 plot_data_plane_cmd = ''.join(plot_data_plane_parts)
+                plot_data_plane_cmd = batchexe('sh')['-c',plot_data_plane_cmd].err2out()
+                #plot_data_plane_cmd = batchexe(plot_data_plane_cmd.split()[0])[plot_data_plane_cmd.split()[1:]].err2out()
                 msg = ("INFO|[" + cur_filename + ":" +
                        cur_function + "]| plot_data_plane cmd: " +
-                       plot_data_plane_cmd)
+                       plot_data_plane_cmd.to_shell())
                 logger.debug(msg)
-                plot_out = subprocess.check_output(plot_data_plane_cmd,
-                                                   stderr=subprocess.STDOUT,
-                                                   shell=True)
+                plot_out = run(plot_data_plane_cmd)
+                #plot_out = subprocess.check_output(plot_data_plane_cmd,
+                #                                   stderr=subprocess.STDOUT,
+                #                                   shell=True)
 
                 # Create the convert command.
                 convert_parts = [convert_exe, ' -rotate 90 ',
                                  ' -background white -flatten ',
                                  ps_file, ' ', png_file]
                 convert_cmd = ''.join(convert_parts)
-                convert_out = subprocess.check_output(convert_cmd,
-                                                      stderr=
-                                                      subprocess.STDOUT,
-                                                      shell=True)
+                convert_cmd = batchexe('sh')['-c',convert_cmd].err2out()
+                #convert_cmd = batchexe(convert_cmd.split()[0])[convert_cmd.split()[1:]].err2out()
+                convert_out = run(convert_cmd)
+                #convert_out = subprocess.check_output(convert_cmd,
+                #                                      stderr=
+                #                                      subprocess.STDOUT,
+                #                                      shell=True)
 
             # Create animated gif
             logger.info("Creating animated gifs")
@@ -440,12 +451,15 @@ def analysis_by_lead_time():
                          animate_dir, '/series_animate_', name, '_',
                          level, '_', cur_stat, '.gif']
             animate_cmd = ''.join(gif_parts)
+            animate_cmd = batchexe('sh')['-c',animate_cmd].err2out()
+            #animate_cmd = batchexe(animate_cmd.split()[0])[animate_cmd.split()[1:]].err2out()
             msg = ("INFO|[" + cur_filename + ":" + cur_function +
-                   "]| animate command: " + animate_cmd)
+                   "]| animate command: " + animate_cmd.to_shell())
             logger.debug(msg)
-            animate_out = subprocess.check_output(animate_cmd,
-                                                  stderr=subprocess.STDOUT,
-                                                  shell=True)
+            animate_out = run(animate_cmd)
+            #animate_out = subprocess.check_output(animate_cmd,
+            #                                      stderr=subprocess.STDOUT,
+            #                                      shell=True)
 
     logger.info("Finished with series analysis by lead")
 
@@ -500,18 +514,25 @@ def get_nseries(nc_var_file, p, logger):
                              'max=max(series_cnt_TOTAL)', '" ',
                              nc_var_file, ' ', nseries_nc_path]
     nco_nseries_cmd = ''.join(nco_nseries_cmd_parts)
-    nco_out = subprocess.check_output(nco_nseries_cmd,
-                                      stderr=subprocess.STDOUT,
-                                      shell=True)
+    nco_nseries_cmd = batchexe('sh')['-c',nco_nseries_cmd].err2out()
+    #nco_nseries_cmd = batchexe(nco_nseries_cmd.split()[0])[nco_nseries_cmd.split()[1:]].err2out()
+    nco_out = run(nco_nseries_cmd)
+    #nco_out = subprocess.check_output(nco_nseries_cmd,
+    #                                  stderr=subprocess.STDOUT,
+    #                                  shell=True)
 
     # Create an ASCII file with the max value, which can be parsed.
     nseries_txt_path = os.path.join(base_nc_dir, 'nseries.txt')
     ncdump_max_cmd_parts = [ncdump_exe, ' ', base_nc_dir,
                             '/nseries.nc > ', nseries_txt_path]
     ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
-    ncdump_out = subprocess.check_output(ncdump_max_cmd,
-                                         stderr=subprocess.STDOUT,
-                                         shell=True)
+    ncdump_max_cmd = batchexe('sh')['-c',ncdump_max_cmd].err2out()
+    #ncdump_max_cmd = batchexe(ncdump_max_cmd.split()[0])[ncdump_max_cmd.split()[1:]].err2out()
+    ncdump_out = run(ncdump_max_cmd)
+    
+    #ncdump_out = subprocess.check_output(ncdump_max_cmd,
+    #                                     stderr=subprocess.STDOUT,
+    #                                     shell=True)
     # Look for the max value for this netCDF file.
     try:
         with open(nseries_txt_path, 'r') as fmax:
@@ -601,10 +622,15 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
                              'min=min(series_cnt_', cur_stat, ')',
                              '" ', cur_nc, ' ', min_nc_path]
         nco_min_cmd = ''.join(nco_min_cmd_parts)
-        logger.debug('nco_min_cmd: ' + nco_min_cmd)
-        nco_min_out = subprocess.check_output(nco_min_cmd,
-                                              stderr=subprocess.STDOUT,
-                                              shell=True)
+
+        nco_min_cmd = batchexe('sh')['-c',nco_min_cmd].err2out()
+        #nco_min_cmd = batchexe(nco_min_cmd.split()[0])[nco_min_cmd.split()[1:]].err2out()
+
+        logger.debug('nco_min_cmd: ' + nco_min_cmd.to_shell())
+        nco_min_out = run(nco_min_cmd)
+        #nco_min_out = subprocess.check_output(nco_min_cmd,
+        #                                      stderr=subprocess.STDOUT,
+        #                                      shell=True)
 
         # MAX VALUE from netCDF
         max_nc_path = os.path.join(base_nc_dir, 'max.nc')
@@ -625,24 +651,34 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
                              'max=max(series_cnt_', cur_stat, ')',
                              '" ', cur_nc, ' ', max_nc_path]
         nco_max_cmd = ''.join(nco_max_cmd_parts)
-        logger.debug('!!!nco_max_cmd: ' + nco_max_cmd)
-        nco_max_out = subprocess.check_output(nco_max_cmd,
-                                              stderr=subprocess.STDOUT,
-                                              shell=True)
+        nco_max_cmd = batchexe('sh')['-c',nco_max_cmd].err2out()
+        #nco_max_cmd = batchexe(nco_max_cmd.split()[0])[nco_max_cmd.split()[1:]].err2out()
+
+        logger.debug('!!!nco_max_cmd: ' + nco_max_cmd.to_shell())
+        nco_max_out = run(nco_max_cmd)
+        #nco_max_out = subprocess.check_output(nco_max_cmd,
+        #                                      stderr=subprocess.STDOUT,
+        #                                      shell=True)
 
         # Create ASCII files with the min and max values, using
         # NCO utility ncdump. 
         # These files can be parsed to find the VMIN and VMAX.
         ncdump_min_cmd_parts = [ncdump_exe, ' ', base_nc_dir, '/min.nc > ', min_txt_path]
         ncdump_min_cmd = ''.join(ncdump_min_cmd_parts)
-        ncdump_min_out = subprocess.check_output(ncdump_min_cmd,
-                                                 stderr=subprocess.STDOUT,
-                                                 shell=True)
+        ncdump_min_cmd = batchexe('sh')['-c',ncdump_min_cmd].err2out()
+        #ncdump_min_cmd = batchexe(ncdump_min_cmd.split()[0])[ncdump_min_cmd.split()[1:]].err2out()
+        ncdump_min_out = run(ncdump_min_cmd)
+        #ncdump_min_out = subprocess.check_output(ncdump_min_cmd,
+        #                                         stderr=subprocess.STDOUT,
+        #                                         shell=True)
         ncdump_max_cmd_parts = [ncdump_exe, ' ', base_nc_dir,
                                 '/max.nc > ', max_txt_path]
         ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
-        ncdump_max_out = subprocess.check_output(ncdump_max_cmd,
-                                                 stderr=subprocess.STDOUT, shell=True)
+        ncdump_max_cmd = batchexe('sh')['-c',ncdump_max_cmd].err2out()
+        #ncdump_max_cmd = batchexe(ncdump_max_cmd.split()[0])[ncdump_max_cmd.split()[1:]].err2out()
+        ncdump_max_out = run(ncdump_max_cmd)
+        #ncdump_max_out = subprocess.check_output(ncdump_max_cmd,
+        #                                         stderr=subprocess.STDOUT, shell=True)
 
         # Look for the min and max values in each netCDF file.
         try:
@@ -956,7 +992,10 @@ if __name__ == "__main__":
 
 
     try:
-        produtil.setup.setup(send_dbn=False, jobname='series_by_lead')
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='series_by_lead',jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='series_by_lead')
         produtil.log.postmsg('series_by_lead is starting')
 
         # Read in the conf object p

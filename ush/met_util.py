@@ -1,15 +1,13 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-import os, datetime
+import logging, os, shutil, sys, datetime
+from produtil.run import batchexe, run, checkrun
 import errno
-import logging
 import time
 import calendar
 import re
-import sys
 import string_template_substitution as sts
-import subprocess
 import run_tc_stat as tcs
 
 ''' A collection of utility functions used to perform necessary series
@@ -79,6 +77,37 @@ def mkdir_p(path):
             pass
         else:
             raise
+
+def _rmtree_onerr(function,path,exc_info,logger=None):
+    """!Internal function used to log errors.
+
+    This is an internal implementation function called by
+    shutil.rmtree when an underlying function call failed.  See
+    the Python documentation of shutil.rmtree for details.
+    @param function the funciton that failed
+    @param path the path to the function that caused problems
+    @param exc_info the exception information
+    @protected"""
+    if logger:
+        logger.warning('%s: %s failed: %s'%(
+                str(path),str(function),str(exc_info)))
+
+def rmtree(tree,logger=None):
+    """!Deletes the tree, if possible.
+    @protected
+    @param tree the directory tree to delete"""
+    try:
+        # If it is a file, special file or symlink we can just
+        # delete it via unlink:
+        os.unlink(tree)
+        return
+    except EnvironmentError as e:
+        pass
+    # We get here for directories.
+    if logger:
+        logger.info('%s: rmtree'%(tree,))
+    #shutil.rmtree(tree,ignore_errors=False,onerror=_rmtree_onerr)
+    shutil.rmtree(tree,ignore_errors=False)
 
 
 def get_logger(p):
@@ -617,13 +646,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                                      var_level_string,
                                      ' -method NEAREST ']
                     regrid_cmd_fcst = ''.join(fcst_cmd_list)
-                    regrid_fcst_out = subprocess.check_output(regrid_cmd_fcst,
-                                                              stderr=
-                                                              subprocess.STDOUT,
-                                                              shell=True)
+                    regrid_cmd_fcst = batchexe('sh')['-c',regrid_cmd_fcst].err2out() 
+                    #regrid_cmd_fcst = batchexe(regrid_cmd_fcst.split()[0])[regrid_cmd_fcst.split()[1:]].err2out()
                     msg = ("INFO|[regrid]| regrid_data_plane regrid command:" +
-                           regrid_cmd_fcst)
+                           regrid_cmd_fcst.to_shell())
                     logger.debug(msg)
+                    regrid_fcst_out = run(regrid_cmd_fcst)
 
                 else:
                     # Perform regridding via wgrib2 
@@ -634,13 +662,13 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                                      ' -new_grid ', fcst_grid_spec, ' ',
                                      fcst_regridded_file]
                     wgrb_cmd_fcst = ''.join(fcst_cmd_list)
+                    wgrb_cmd_fcst = batchexe('sh')['-c',wgrb_cmd_fcst].err2out()
+                    #wgrb_cmd_fcst = batchexe(wgrb_cmd_fcst.split()[0])[wgrb_cmd_fcst.split()[1:]].err2out()
                     msg = ("INFO|[wgrib2]| wgrib2 regrid command:" +
-                           wgrb_cmd_fcst)
+                           wgrb_cmd_fcst.to_shell())
                     logger.debug(msg)
-                    wgrb_fcst_out = subprocess.check_output(wgrb_cmd_fcst,
-                                                            stderr=
-                                                            subprocess.STDOUT,
-                                                            shell=True)
+                    wgrb_fcst_out = run(wgrb_cmd_fcst)
+
 
             # Create new gridded file for anly tile
             if file_exists(anly_regridded_file) and not overwrite_flag:
@@ -660,10 +688,9 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                                      var_level_string, ' ',
                                      ' -method NEAREST ']
                     regrid_cmd_anly = ''.join(anly_cmd_list)
-                    regrid_anly_out = subprocess.check_output(regrid_cmd_anly,
-                                                              stderr=
-                                                              subprocess.STDOUT,
-                                                              shell=True)
+                    regrid_cmd_anly = batchexe('sh')['-c',regrid_cmd_anly].err2out()
+                    #regrid_cmd_anly = batchexe(regrid_cmd_anly.split()[0])[regrid_cmd_anly.split()[1:]].err2out()
+                    regrid_anly_out = run(regrid_cmd_anly)
                     msg = ("INFO|[regrid]| on anly file:" + anly_regridded_file)
                     logger.debug(msg)
                 else:
@@ -675,12 +702,11 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                                      ' -new_grid ', anly_grid_spec, ' ',
                                      anly_regridded_file]
                     wgrb_cmd_anly = ''.join(anly_cmd_list)
-                    wgrb_anly_out = subprocess.check_output(wgrb_cmd_anly,
-                                                            stderr=
-                                                            subprocess.STDOUT,
-                                                            shell=True)
+                    wgrb_cmd_anly = batchexe('sh')['-c',wgrb_cmd_anly].err2out()
+                    #wgrb_cmd_anly = batchexe(wgrb_cmd_anly.split()[0])[wgrb_cmd_anly.split()[1:]].err2out()
                     msg = ("INFO|[wgrib2]| Regridding via wgrib2:" +
-                           wgrb_cmd_anly)
+                           wgrb_cmd_anly.to_shell())
+                    wgrb_anly_out = run(wgrb_cmd_anly)
                     logger.debug(msg)
 
 
@@ -1062,7 +1088,7 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, p, logger):
     prune_empty(series_output_dir, p, logger)
 
     # Clean up the tmp dir
-    subprocess.call(["rm", "-rf", tmp_dir])
+    rmtree(tmp_dir)
 
 
 def create_filter_tmp_files(filtered_files_list, filter_output_dir, p, logger):
