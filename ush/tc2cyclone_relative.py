@@ -3,11 +3,11 @@
 from __future__ import print_function,division
 
 import produtil.setup
+rom produtil.run import batchexe, run, checkrun, runstr
 import sys
 import os
 import re
 import met_util as util
-import subprocess
 import math
 
 def main():
@@ -135,8 +135,8 @@ def lonlat2grid(in_lon, in_lat):
     # Convert input lon and lat to floats
     # Since SBU algorithm doesn't use the convention of negative lon for west of the prime meridian, make
     # necessary lon conversion (eg -179.5 is 179.5W, converted to 180.5 in SBU's convention)
-    west_lon = float(p.opt['SBU_WEST_MOST_LON'])
-    northmost_lat = float(p.opt['SBU_NORTHERN_MOST_LAT'])
+    west_lon = p.getfloat('config','SBU_WEST_MOST_LON')
+    northmost_lat = p.getfloat('config','SBU_NORTHERN_MOST_LAT')
 
     if west_lon < 0:
         westmost_lon = 360. - abs(west_lon)
@@ -159,8 +159,8 @@ def lonlat2grid(in_lon, in_lat):
 
 
     # Resolution
-    dlon = float(p.opt['SBU_DLON'])
-    dlat = float(p.opt['SBU_DLAT'])
+    dlon = p.getfloat('config','SBU_DLON')
+    dlat = p.getfloat('config','SBU_DLAT')
 
     # Get the fractional portion of the lon and lat (ie value to right of decimal point).
     fractional_lon = lon % 1
@@ -208,8 +208,11 @@ def get_counts(model_cyc_filename):
     """ Determine the number of lines in the specified file and return the count"""
 
     # Create command for using 'wc -l'
-    cmd = 'wc -l ' + model_cyc_filename
-    result = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+    #cmd = 'wc -l ' + model_cyc_filename
+    #result = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+    #cmd = batchexe('sh')['-c','wc -l '+model_cyc_filename]
+    cmd = batchexe('wc')['-l',model_cyc_filename]
+    result = runstr(cmd)  #runstr, executes program, captures its stdout.
 
     # Retrieve only the numerical portion of the result from 'wc -l'
     count_str = re.match(r'([0-9]+).*', result)
@@ -309,7 +312,6 @@ if __name__ == "__main__":
         produtil.log.jlogger.critical(
             'tc2cyclone_relative failed: %s'%(str(e),),exc_info=True)
         sys.exit(2)
-
 
     # For testing the lon lat grid conversion logic
     lon = -179.5
