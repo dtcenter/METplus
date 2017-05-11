@@ -1,1 +1,6 @@
-config_master.py was developed by Paul Prestopnik and George McCabe and comes from the RAL cvs directory and filename: libs/python/src/ConfigMaster/ConfigMaster.py.  Paul and George are currently in the process of renaming the script the way we have it named here and porting it to github.
+
+The produtil directory is a Platform-independent weather and ocean forecasting
+utility package. Developed at the National Oceanic and Atmospheric Administration (NOAA).
+
+
+http://www.emc.ncep.noaa.gov/HWRF/scripts/namespaceprodutil.html
