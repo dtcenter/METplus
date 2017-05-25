@@ -27,7 +27,6 @@ class CG_grid_stat(CommandGen):
   
   def __init__(self, p, logger):
     super(CG_grid_stat, self).__init__(p, logger)
-#    self.app_path = self.p.opt['GRID_STAT']
     self.app_path = self.p.getstr('exe','GRID_STAT')
     self.app_name = os.path.basename(self.app_path)
 

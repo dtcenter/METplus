@@ -21,24 +21,13 @@ def usage():
 if __name__ == "__main__":
   logger = logging.getLogger('run_example')
   args=None
-#  if not args: args=None
   (parm,infiles,moreopt) = \
     config_launcher.parse_launch_args(args,usage,logger)    
-#  p = config_launcher.launch("/d1/mccabe/MET/git/METplus/parm/metplus.conf", "") #infiles, moreopt, cycle=cycle)
   p = config_launcher.launch(infiles, moreopt) #infiles, moreopt, cycle=cycle)
-#  p = P.Params()
-#  p.init(__doc__)
   logger = util.get_logger(p)
   logger.setLevel(logging.DEBUG)
   
-
-#  init_time = str(2016010512)
   init_time = str(2016090412)
-#  grid_stat_out_dir = p.opt['GRID_STAT_OUT_DIR']
-#  phpt_dir = p.opt['PHPT_DIR']
-#  phpt_fcst_vars = p.opt['PHPT_FCST_VARS']
-#  config_dir = p.opt['CONFIG_DIR']
-#  lead_seq = p.opt['PHPT_LEAD_SEQ']
 
   grid_stat_out_dir = p.getstr('config', 'GRID_STAT_OUT_DIR')
   phpt_dir = p.getstr('config','PHPT_DIR')    
@@ -50,8 +39,6 @@ if __name__ == "__main__":
 
   for lead in range(lead_seq[0], lead_seq[2]+1, lead_seq[1]):
     for fcst_var in phpt_fcst_vars:
-#      accums = p.opt["PHPT_"+fcst_var+"_ACCUM"]
-#      ob_types = p.opt[fcst_var+"_OBTYPE"]
       accums = util.getlist(p.getstr('config',"PHPT_"+fcst_var+"_ACCUM"))
       ob_types = util.getlist(p.getstr('config',fcst_var+"_OBTYPE"))
       for accum in accums:
@@ -65,29 +52,18 @@ if __name__ == "__main__":
 
           ymd = init_time[0:8]
           if ob_type == "STAGE4":
-#            native_dir = p.opt['STAGE4_NATIVE_DIR']
-#            bucket_dir = p.opt['STAGE4_BUCKET_DIR']
-#            regrid_dir = p.opt['STAGE4_REGRID_DIR']
-#            regrid_template = p.opt['STAGE4_REGRID_TEMPLATE']
-#            bucket_template = p.opt['STAGE4_BUCKET_TEMPLATE']
             native_dir = p.getstr('config','STAGE4_NATIVE_DIR')
             bucket_dir = p.getstr('config','STAGE4_BUCKET_DIR')
             regrid_dir = p.getstr('config','STAGE4_REGRID_DIR')
             regrid_template = p.getstr('config','STAGE4_REGRID_TEMPLATE')
             bucket_template = p.getstr('config','STAGE4_BUCKET_TEMPLATE')
           elif ob_type == "WPCSNOW":
-#            native_dir = p.opt['WPCSNOW_NATIVE_DIR']
-#            bucket_dir = p.opt['WPCSNOW_BUCKET_DIR']
-#            regrid_dir = p.opt['WPCSNOW_REGRID_DIR']
-#            regrid_template = p.opt['WPCSNOW_REGRID_TEMPLATE']
-#            bucket_template = p.opt['WPCSNOW_BUCKET_TEMPLATE']
             native_dir = p.getstr('config','WPCSNOW_NATIVE_DIR')
             bucket_dir = p.getstr('config','WPCSNOW_BUCKET_DIR')
             regrid_dir = p.getstr('config','WPCSNOW_REGRID_DIR')
             regrid_template = p.getstr('config','WPCSNOW_REGRID_TEMPLATE')
             bucket_template = p.getstr('config','WPCSNOW_BUCKET_TEMPLATE')
 
-#          grid_stat_dir = p.opt['GRID_STAT_OUT_DIR']
           grid_stat_dir = p.getstr('config','GRID_STAT_OUT_DIR')
             
           if not os.path.exists(os.path.join(grid_stat_out_dir,init_time,"grid_stat")):
@@ -117,7 +93,6 @@ if __name__ == "__main__":
           run_regrid.add_input_file(outfile)
           run_regrid.add_input_file(os.path.join(config_dir,"mask/HRRRTLE_GRID.grb2"))
           regrid_file = run_regrid.fill_template(regrid_template, valid_time, accum)
-#          regrid_file = run_regrid.fill_template(regrid_template, valid_time, lead)
           run_regrid.set_output_path(os.path.join(regrid_dir,regrid_file))
           run_regrid.add_arg("-field 'name=\"{:s}_{:s}\"; level=\"(*,*)\";'".format(obs_var, str(accum).zfill(2)))
           run_regrid.add_arg("-method BUDGET")
@@ -128,7 +103,6 @@ if __name__ == "__main__":
           
           # GRID_STAT
           run_grid_stat = CG_grid_stat(p, logger)
-#          phpt_file = run_grid_stat.fill_template(p.opt['PHPT_TEMPLATE'], init_time, lead)
           phpt_file = run_grid_stat.fill_template(p.getstr('config','PHPT_TEMPLATE'), init_time, lead)
           phpt_path = os.path.join(phpt_dir,phpt_file)
           run_grid_stat.add_input_file(phpt_path)
@@ -136,7 +110,6 @@ if __name__ == "__main__":
 
           regrid_path = os.path.join(regrid_dir,regrid_file)
           run_grid_stat.add_input_file(regrid_path)
-#          run_grid_stat.set_param_file(p.opt['MET_CONFIG_GS'])
           run_grid_stat.set_param_file(p.getstr('config','MET_CONFIG_GS'))
           run_grid_stat.set_output_dir(os.path.join(grid_stat_out_dir,init_time,"grid_stat"))
   
@@ -144,8 +117,6 @@ if __name__ == "__main__":
 
           # get fcst and obs thresh parameters
           # verify they are the same size
-#          fcst_threshs = p.opt["PHPT_"+fcst_var+"_"+accum+"_THRESH"]
-#          obs_threshs = p.opt[ob_type+"_"+fcst_var+"_"+accum+"_THRESH"]
           fcst_threshs = util.getlistfloat(p.getstr('config',"PHPT_"+fcst_var+"_"+accum+"_THRESH"))
           obs_threshs = util.getlistfloat(p.getstr('config',ob_type+"_"+fcst_var+"_"+accum+"_THRESH"))
           if len(fcst_threshs) != len(obs_threshs):

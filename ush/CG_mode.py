@@ -28,7 +28,6 @@ class CG_mode(CommandGen):
   
   def __init__(self, p, logger):
     super(CG_mode, self).__init__(p, logger)
-#    self.app_path = self.p.opt['MODE']
     self.app_path = self.p.getstr('exe','MODE')
     self.app_name = os.path.basename(self.app_path)    
 

@@ -28,6 +28,5 @@ class CG_regrid_data_plane(CommandGen):
   
   def __init__(self, p, logger):
     super(CG_regrid_data_plane, self).__init__(p, logger)
-#    self.app_path = self.p.opt['REGRID_DATA_PLANE_EXE']
     self.app_path = self.p.getstr('exe','REGRID_DATA_PLANE_EXE')
     self.app_name = os.path.basename(self.app_path)

@@ -16,7 +16,6 @@ from __future__ import (print_function, division )
 
 import produtil.setup
 from produtil.run import batchexe, run, checkrun
-#import constants_pdef as P
 import logging
 import os
 import sys
@@ -33,7 +32,6 @@ class CG_pcp_combine(CommandGen):
   
   def __init__(self, p, logger):
     super(CG_pcp_combine, self).__init__(p, logger)
-#    self.app_path = self.p.opt['PCP_COMBINE']
     self.app_path = self.p.getstr('exe','PCP_COMBINE')
     self.app_name = os.path.basename(self.app_path)
 
@@ -79,13 +77,11 @@ class CG_pcp_combine(CommandGen):
         search_time = self.shift_time(valid_time, -i)
         # find closest file before time
         (self.logger).debug(self.app_name+": SEARCH TIME: " + search_time)
-#        f = self.find_closest_before(self.input_dir, search_time, self.p.opt['WPCSNOW_NATIVE_TEMPLATE'])
         f = self.find_closest_before(self.input_dir, search_time, self.p.getstr('config','WPCSNOW_NATIVE_TEMPLATE'))
         if f == "":
           continue
         (self.logger).debug("FILE: " + f)
         # build level info string
-#        file_time = datetime.datetime.strptime(os.path.basename(f),self.p.opt['WPCSNOW_NATIVE_TEMPLATE'] )
         file_time = datetime.datetime.strptime(os.path.basename(f),self.p.getstr('config','WPCSNOW_NATIVE_TEMPLATE') )
         v_time = datetime.datetime.strptime(search_time, "%Y%m%d%H")
         lead = int(((v_time - file_time).seconds/3600) - 1)
@@ -122,6 +118,5 @@ class CG_pcp_combine(CommandGen):
     outname = re.sub("[0-9]{2}h", str(accum).zfill(2)+"h", f.rstrip())
     (self.logger).debug(outname)
     self.set_output_dir(self.outdir)
-#    self.set_output_filename(os.path.basename(outname))
 
   
