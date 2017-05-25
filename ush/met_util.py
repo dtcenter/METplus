@@ -1217,6 +1217,16 @@ def getlist(s,logger=None):
 
     return s
 
+def getlistfloat(s):
+    s = getlist(s)
+    s = [float(i) for i in s]
+    return s
+
+def getlistint(s):
+    s = getlist(s)
+    s = [int(i) for i in s]
+    return s
+
 if __name__ == "__main__":
     # test grep
     # pattern = "abcd"
