@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-import constants_pdef as P
+import produtil.setup
+from produtil.run import batchexe, run, checkrun
 import re
 import os
 import sys
 import met_util as util
-import subprocess
+#import subprocess
 
 
 def analysis_by_lead_time():
@@ -35,28 +36,31 @@ def analysis_by_lead_time():
 
 
     '''
+
+    # produtil.log.postmsg('Example postmsg, convenience function for jlogger.info')
+
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
     # Retrieve any necessary values from the parm file(s)
-    fhr_beg = p.opt["FHR_BEG"]
-    fhr_end = p.opt["FHR_END"]
-    fhr_inc = p.opt["FHR_INC"]
-    fcst_tile_regex = p.opt["FCST_TILE_REGEX"]
-    anly_tile_regex = p.opt["ANLY_TILE_REGEX"]
-    var_list = p.opt["VAR_LIST"]
-    stat_list = p.opt["STAT_LIST"]
-    series_analysis_exe = p.opt["SERIES_ANALYSIS"]
-    plot_data_plane_exe = p.opt["PLOT_DATA_PLANE"]
-    rm_exe = p.opt["RM_EXE"]
-    convert_exe = p.opt["CONVERT_EXE"]
-    series_anly_configuration_file = p.opt["SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH"]
-    extract_tiles_dir = p.opt["EXTRACT_OUT_DIR"]
-    series_lead_filtered_out_dir = p.opt["SERIES_LEAD_FILTERED_OUT_DIR"]
-    series_lead_out_dir = p.opt["SERIES_LEAD_OUT_DIR"]
-    background_map = p.opt["BACKGROUND_MAP"]
-    regrid_with_MET_tool = p.opt["REGRID_USING_MET_TOOL"]
-    series_filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
+    fhr_beg = p.getint('config','FHR_BEG')
+    fhr_end = p.getint('config','FHR_END')
+    fhr_inc = p.getint('config','FHR_INC')
+    fcst_tile_regex = p.getstr('regex_pattern','FCST_TILE_REGEX')
+    anly_tile_regex = p.getstr('regex_pattern','ANLY_TILE_REGEX')
+    var_list = util.getlist(p.getstr('config','VAR_LIST'))
+    stat_list = util.getlist(p.getstr('config','STAT_LIST'))
+    series_analysis_exe = p.getexe('SERIES_ANALYSIS')
+    plot_data_plane_exe = p.getexe('PLOT_DATA_PLANE')
+    rm_exe = p.getexe('RM_EXE')
+    convert_exe = p.getexe('CONVERT_EXE')
+    series_anly_configuration_file   = p.getstr('config','SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH')
+    extract_tiles_dir = p.getdir('EXTRACT_OUT_DIR')
+    series_lead_filtered_out_dir = p.getdir('SERIES_LEAD_FILTERED_OUT_DIR')
+    series_lead_out_dir = p.getdir('SERIES_LEAD_OUT_DIR')
+    background_map = p.getbool('config','BACKGROUND_MAP')
+    regrid_with_MET_tool = p.getbool('config','REGRID_USING_MET_TOOL')
+    series_filter_opts = p.getstr('config','SERIES_ANALYSIS_FILTER_OPTS')
     series_filter_opts.strip()
 
     # Set up the environment variable to be used in the Series Analysis
@@ -66,16 +70,18 @@ def analysis_by_lead_time():
     #  because currently MET doesn't support single-quotes
     tmp_stat_string = str(stat_list)
     tmp_stat_string = tmp_stat_string.replace("\'", "\"")
+    # For example, we want tmp_stat_string to look like
+    #   '["TOTAL","FBAR"]', NOT "['TOTAL','FBAR']"
     os.environ['STAT_LIST'] = tmp_stat_string
 
     if regrid_with_MET_tool:
         # Regridding via MET Tool regrid_data_plane.
-        fcst_tile_regex = p.opt["FCST_NC_TILE_REGEX"]
-        anly_tile_regex = p.opt["ANLY_NC_TILE_REGEX"]
+        fcst_tile_regex = p.getstr('regex_pattern','FCST_NC_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern','ANLY_NC_TILE_REGEX')
     else:
         # Regridding via wgrib2 tool.
-        fcst_tile_regex = p.opt["FCST_TILE_REGEX"]
-        anly_tile_regex = p.opt["ANLY_TILE_REGEX"]
+        fcst_tile_regex = p.getstr('regex_pattern','FCST_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern','ANLY_TILE_REGEX')
 
     # Check for the existence of the storm track tiles and raise
     # an error if these are missing.
@@ -138,6 +144,18 @@ def analysis_by_lead_time():
 
     # Create the values for the -fcst, -obs, and other required
     # options for running the MET series_analysis binary.
+
+    # GitHub issue #30
+    # gracefully handle user's intent to process only one forecast hour (eg
+    # FCST_INIT=FCST_END and FCST_INCR=0
+    # If the user sets FCST_INCR=0 but has FCST_INIT != FCST_END, then
+    # log an error and exit.
+    fhr_diff = fhr_end - fhr_beg
+    if fhr_diff == 0 and frh_inc == 0:
+       fhr_inc = 1
+    else:
+       logger.error('ERROR: fcst range indicated with increment of 0 hrs, please check the configuration file.  Exiting...')
+       sys.exit(1)
 
     for fhr in range(fhr_beg, fhr_end + 1, fhr_inc):
         cur_fhr = str(fhr).zfill(3)
@@ -250,13 +268,17 @@ def analysis_by_lead_time():
                                          ' ', config_param, ' ',
                                          out_param]
             series_analysis_cmd = ''.join(series_analysis_cmd_parts)
+            series_analysis_cmd = batchexe('sh')['-c',series_analysis_cmd].err2out()
+            #series_analysis_cmd = batchexe(series_analysis_cmd.split()[0])[series_analysis_cmd.split()[1:]].err2out()
+            
             msg = ("INFO:[ " + cur_filename + ":" +
                    cur_function + "]|series analysis command: " +
-                   series_analysis_cmd)
+                   series_analysis_cmd.to_shell())
             logger.debug(msg)
-            series_out = subprocess.check_output(series_analysis_cmd,
-                                                 stderr=subprocess.STDOUT,
-                                                 shell=True)
+            series_out = run(series_analysis_cmd)
+            #series_out = subprocess.check_output(series_analysis_cmd,
+            #                                     stderr=subprocess.STDOUT,
+            #                                     shell=True)
 
     # Make sure there aren't any emtpy
     # files or directories that still persist.
@@ -358,33 +380,7 @@ def analysis_by_lead_time():
                 # Get the max series_cnt_TOTAL value (i.e. nseries)
                 nseries = get_nseries(cur_nc, p, logger)
 
-                # Create the plot data plane command.
-                if background_map:
-                    # Flag set to True, print background map.
-                    map_data = ''
-                else:
-                    map_data = "map_data={source=[];}  "
-
-                plot_data_plane_parts = [plot_data_plane_exe, ' ',
-                                         cur_nc, ' ', ps_file, ' ',
-                                         "'", 'name = ', '"',
-                                         'series_cnt_', cur_stat, '";',
-                                         'level=', '"(\*,\*)"; ',
-                                         ' ', map_data,
-                                         "'", ' -title ', '"GFS F',
-                                         str(fhr),
-                                         ' Forecasts (N = ', str(nseries),
-                                         '), ', cur_stat, ' for ', cur_var,
-                                         '"', ' -plot_range ', str(vmin),
-                                         ' ', str(vmax)]
- 
-                plot_data_plane_cmd = ''.join(plot_data_plane_parts)
-                msg = ("INFO|[" + cur_filename + ":" +
-                       cur_function + "]| plot_data_plane cmd: " +
-                       plot_data_plane_cmd)
-                logger.debug(msg)
-
-                # Create the command based on whether or not
+                # Create the plot data plane command based on whether 
                 # the background map was requested in the
                 # constants_pdef.py param/config file.
                 if background_map:
@@ -407,23 +403,29 @@ def analysis_by_lead_time():
                                          ' ', str(vmax)]
 
                 plot_data_plane_cmd = ''.join(plot_data_plane_parts)
+                plot_data_plane_cmd = batchexe('sh')['-c',plot_data_plane_cmd].err2out()
+                #plot_data_plane_cmd = batchexe(plot_data_plane_cmd.split()[0])[plot_data_plane_cmd.split()[1:]].err2out()
                 msg = ("INFO|[" + cur_filename + ":" +
                        cur_function + "]| plot_data_plane cmd: " +
-                       plot_data_plane_cmd)
+                       plot_data_plane_cmd.to_shell())
                 logger.debug(msg)
-                plot_out = subprocess.check_output(plot_data_plane_cmd,
-                                                   stderr=subprocess.STDOUT,
-                                                   shell=True)
+                plot_out = run(plot_data_plane_cmd)
+                #plot_out = subprocess.check_output(plot_data_plane_cmd,
+                #                                   stderr=subprocess.STDOUT,
+                #                                   shell=True)
 
                 # Create the convert command.
                 convert_parts = [convert_exe, ' -rotate 90 ',
                                  ' -background white -flatten ',
                                  ps_file, ' ', png_file]
                 convert_cmd = ''.join(convert_parts)
-                convert_out = subprocess.check_output(convert_cmd,
-                                                      stderr=
-                                                      subprocess.STDOUT,
-                                                      shell=True)
+                convert_cmd = batchexe('sh')['-c',convert_cmd].err2out()
+                #convert_cmd = batchexe(convert_cmd.split()[0])[convert_cmd.split()[1:]].err2out()
+                convert_out = run(convert_cmd)
+                #convert_out = subprocess.check_output(convert_cmd,
+                #                                      stderr=
+                #                                      subprocess.STDOUT,
+                #                                      shell=True)
 
             # Create animated gif
             logger.info("Creating animated gifs")
@@ -435,12 +437,15 @@ def analysis_by_lead_time():
                          animate_dir, '/series_animate_', name, '_',
                          level, '_', cur_stat, '.gif']
             animate_cmd = ''.join(gif_parts)
+            animate_cmd = batchexe('sh')['-c',animate_cmd].err2out()
+            #animate_cmd = batchexe(animate_cmd.split()[0])[animate_cmd.split()[1:]].err2out()
             msg = ("INFO|[" + cur_filename + ":" + cur_function +
-                   "]| animate command: " + animate_cmd)
+                   "]| animate command: " + animate_cmd.to_shell())
             logger.debug(msg)
-            animate_out = subprocess.check_output(animate_cmd,
-                                                  stderr=subprocess.STDOUT,
-                                                  shell=True)
+            animate_out = run(animate_cmd)
+            #animate_out = subprocess.check_output(animate_cmd,
+            #                                      stderr=subprocess.STDOUT,
+            #                                      shell=True)
 
     logger.info("Finished with series analysis by lead")
 
@@ -467,9 +472,9 @@ def get_nseries(nc_var_file, p, logger):
     '''
 
     # Retrieve any necessary things from the config/param file.
-    rm_exe = p.opt["RM_EXE"]
-    ncap2_exe = p.opt["NCAP2_EXE"]
-    ncdump_exe = p.opt["NCDUMP_EXE"]
+    rm_exe = p.getexe('RM_EXE')
+    ncap2_exe = p.getexe('NCAP2_EXE')
+    ncdump_exe = p.getexe('NCDUMP_EXE')
 
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
@@ -495,18 +500,25 @@ def get_nseries(nc_var_file, p, logger):
                              'max=max(series_cnt_TOTAL)', '" ',
                              nc_var_file, ' ', nseries_nc_path]
     nco_nseries_cmd = ''.join(nco_nseries_cmd_parts)
-    nco_out = subprocess.check_output(nco_nseries_cmd,
-                                      stderr=subprocess.STDOUT,
-                                      shell=True)
+    nco_nseries_cmd = batchexe('sh')['-c',nco_nseries_cmd].err2out()
+    #nco_nseries_cmd = batchexe(nco_nseries_cmd.split()[0])[nco_nseries_cmd.split()[1:]].err2out()
+    nco_out = run(nco_nseries_cmd)
+    #nco_out = subprocess.check_output(nco_nseries_cmd,
+    #                                  stderr=subprocess.STDOUT,
+    #                                  shell=True)
 
     # Create an ASCII file with the max value, which can be parsed.
     nseries_txt_path = os.path.join(base_nc_dir, 'nseries.txt')
     ncdump_max_cmd_parts = [ncdump_exe, ' ', base_nc_dir,
                             '/nseries.nc > ', nseries_txt_path]
     ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
-    ncdump_out = subprocess.check_output(ncdump_max_cmd,
-                                         stderr=subprocess.STDOUT,
-                                         shell=True)
+    ncdump_max_cmd = batchexe('sh')['-c',ncdump_max_cmd].err2out()
+    #ncdump_max_cmd = batchexe(ncdump_max_cmd.split()[0])[ncdump_max_cmd.split()[1:]].err2out()
+    ncdump_out = run(ncdump_max_cmd)
+    
+    #ncdump_out = subprocess.check_output(ncdump_max_cmd,
+    #                                     stderr=subprocess.STDOUT,
+    #                                     shell=True)
     # Look for the max value for this netCDF file.
     try:
         with open(nseries_txt_path, 'r') as fmax:
@@ -516,7 +528,8 @@ def get_nseries(nc_var_file, p, logger):
                     max = max_match.group(1)
 
                     # Clean up any intermediate .nc and .txt files
-                    nseries_list = [rm_exe, ' ', base_nc_dir, '/nseries.*']
+                    # WARNING Using rm -rf command.
+                    nseries_list = [rm_exe+' -rf', ' ', base_nc_dir, '/nseries.*']
                     nseries_cmd = ''.join(nseries_list)
                     os.system(nseries_cmd)
                     return max
@@ -549,9 +562,9 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
        
     '''
 
-    ncap2_exe = p.opt["NCAP2_EXE"]
-    ncdump_exe = p.opt["NCDUMP_EXE"]
-    rm_exe = p.opt["RM_EXE"]
+    ncap2_exe = p.getexe('NCAP2_EXE')
+    ncdump_exe = p.getexe('NCDUMP_EXE')
+    rm_exe = p.getexe('RM_EXE')
 
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
@@ -595,10 +608,15 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
                              'min=min(series_cnt_', cur_stat, ')',
                              '" ', cur_nc, ' ', min_nc_path]
         nco_min_cmd = ''.join(nco_min_cmd_parts)
-        logger.debug('nco_min_cmd: ' + nco_min_cmd)
-        nco_min_out = subprocess.check_output(nco_min_cmd,
-                                              stderr=subprocess.STDOUT,
-                                              shell=True)
+
+        nco_min_cmd = batchexe('sh')['-c',nco_min_cmd].err2out()
+        #nco_min_cmd = batchexe(nco_min_cmd.split()[0])[nco_min_cmd.split()[1:]].err2out()
+
+        logger.debug('nco_min_cmd: ' + nco_min_cmd.to_shell())
+        nco_min_out = run(nco_min_cmd)
+        #nco_min_out = subprocess.check_output(nco_min_cmd,
+        #                                      stderr=subprocess.STDOUT,
+        #                                      shell=True)
 
         # MAX VALUE from netCDF
         max_nc_path = os.path.join(base_nc_dir, 'max.nc')
@@ -619,24 +637,34 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
                              'max=max(series_cnt_', cur_stat, ')',
                              '" ', cur_nc, ' ', max_nc_path]
         nco_max_cmd = ''.join(nco_max_cmd_parts)
-        logger.debug('!!!nco_max_cmd: ' + nco_max_cmd)
-        nco_max_out = subprocess.check_output(nco_max_cmd,
-                                              stderr=subprocess.STDOUT,
-                                              shell=True)
+        nco_max_cmd = batchexe('sh')['-c',nco_max_cmd].err2out()
+        #nco_max_cmd = batchexe(nco_max_cmd.split()[0])[nco_max_cmd.split()[1:]].err2out()
+
+        logger.debug('!!!nco_max_cmd: ' + nco_max_cmd.to_shell())
+        nco_max_out = run(nco_max_cmd)
+        #nco_max_out = subprocess.check_output(nco_max_cmd,
+        #                                      stderr=subprocess.STDOUT,
+        #                                      shell=True)
 
         # Create ASCII files with the min and max values, using
         # NCO utility ncdump. 
         # These files can be parsed to find the VMIN and VMAX.
         ncdump_min_cmd_parts = [ncdump_exe, ' ', base_nc_dir, '/min.nc > ', min_txt_path]
         ncdump_min_cmd = ''.join(ncdump_min_cmd_parts)
-        ncdump_min_out = subprocess.check_output(ncdump_min_cmd,
-                                                 stderr=subprocess.STDOUT,
-                                                 shell=True)
+        ncdump_min_cmd = batchexe('sh')['-c',ncdump_min_cmd].err2out()
+        #ncdump_min_cmd = batchexe(ncdump_min_cmd.split()[0])[ncdump_min_cmd.split()[1:]].err2out()
+        ncdump_min_out = run(ncdump_min_cmd)
+        #ncdump_min_out = subprocess.check_output(ncdump_min_cmd,
+        #                                         stderr=subprocess.STDOUT,
+        #                                         shell=True)
         ncdump_max_cmd_parts = [ncdump_exe, ' ', base_nc_dir,
                                 '/max.nc > ', max_txt_path]
         ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
-        ncdump_max_out = subprocess.check_output(ncdump_max_cmd,
-                                                 stderr=subprocess.STDOUT, shell=True)
+        ncdump_max_cmd = batchexe('sh')['-c',ncdump_max_cmd].err2out()
+        #ncdump_max_cmd = batchexe(ncdump_max_cmd.split()[0])[ncdump_max_cmd.split()[1:]].err2out()
+        ncdump_max_out = run(ncdump_max_cmd)
+        #ncdump_max_out = subprocess.check_output(ncdump_max_cmd,
+        #                                         stderr=subprocess.STDOUT, shell=True)
 
         # Look for the min and max values in each netCDF file.
         try:
@@ -909,13 +937,13 @@ def cleanup_lead_ascii(p, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    fhr_beg = p.opt["FHR_BEG"]
-    fhr_end = p.opt["FHR_END"]
-    fhr_inc = p.opt["FHR_INC"]
-    fcst_ascii_regex = p.opt["FCST_ASCII_REGEX_LEAD"]
-    anly_ascii_regex = p.opt["ANLY_ASCII_REGEX_LEAD"]
-    rm_exe = p.opt["RM_EXE"]
-    out_dir_base = p.opt["SERIES_LEAD_OUT_DIR"]
+    fhr_beg = p.getint('config','FHR_BEG')
+    fhr_end = p.getint('config','FHR_END')
+    fhr_inc = p.getint('config','FHR_INC')
+    fcst_ascii_regex = p.getstr('regex_pattern','FCST_ASCII_REGEX_LEAD')
+    anly_ascii_regex = p.getstr('regex_pattern','ANLY_ASCII_REGEX_LEAD')
+    rm_exe = p.getexe('RM_EXE')
+    out_dir_base = p.getdir('SERIES_LEAD_OUT_DIR')
 
     for fhr in range(fhr_beg, fhr_end + 1, fhr_inc):
         cur_fhr = str(fhr).zfill(3)
@@ -934,8 +962,40 @@ def cleanup_lead_ascii(p, logger):
 
 
 if __name__ == "__main__":
-    # Create ConfigMaster parm object
-    p = P.Params()
-    p.init(__doc__)
-    logger = util.get_logger(p)
-    analysis_by_lead_time()
+    # sleep is for debugging in pycharm so I can attach to this process
+    # from the os.system call in master_met_plus.py
+    #import time
+    #time.sleep(60)
+
+    # sys.argv[0]='/path/to/series_by_lead.py'
+    # sys.argv[1]='-c'
+    # sys.argv[2]='jfrimel_ocean_constants_pdef_a.py'
+
+    # Testing constants_pdef until produtil is fully integrated.
+    #import constants_pdef as P
+    #test = P.Params()
+    #test.init(__doc__)
+
+
+    try:
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='series_by_lead',jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='series_by_lead')
+        produtil.log.postmsg('series_by_lead is starting')
+
+        # Read in the conf object p
+        import config_launcher
+        if len(sys.argv) == 3:
+            p = config_launcher.load_baseconfs(sys.argv[2])
+        else:
+            p = config_launcher.load_baseconfs()
+        logger = util.get_logger(p)
+        if 'MET_BASE' not in os.environ:
+            os.environ['MET_BASE'] = p.getdir('MET_BASE')
+        analysis_by_lead_time()
+        produtil.log.postmsg('series_by_lead completed')
+    except Exception as e:
+        produtil.log.jlogger.critical(
+            'series_by_lead failed: %s'%(str(e),),exc_info=True)
+        sys.exit(2)

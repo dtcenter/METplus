@@ -2,13 +2,13 @@
 
 from __future__ import print_function
 
-import constants_pdef as P
+import produtil.setup
+from produtil.run import batchexe, run, checkrun
 import re
 import os
 import sys
 import met_util as util
-import subprocess
-
+# import subprocess
 
 def analysis_by_init_time():
     ''' Invoke the series analysis script based on
@@ -22,20 +22,23 @@ def analysis_by_init_time():
 
 
     '''
+
+    #produtil.log.postmsg('Example postmsg, convenience function for jlogger.info')
+
     # Retrieve any necessary values (dirs, executables) 
     # from the param file(s)
-    var_list = p.opt["VAR_LIST"]
-    stat_list = p.opt["STAT_LIST"]
-    series_analysis_exe = p.opt["SERIES_ANALYSIS"]
-    plot_data_plane_exe = p.opt["PLOT_DATA_PLANE"]
-    convert_exe = p.opt["CONVERT_EXE"]
-    series_anlysis_config_file = p.opt["SERIES_ANALYSIS_BY_INIT_CONFIG_PATH"]
-    regrid_with_MET_tool = p.opt["REGRID_USING_MET_TOOL"]
-    extract_tiles_dir = p.opt["EXTRACT_OUT_DIR"]
-    series_out_dir = p.opt["SERIES_INIT_OUT_DIR"]
-    series_filtered_out_dir = p.opt["SERIES_INIT_FILTERED_OUT_DIR"]
-    background_map = p.opt["BACKGROUND_MAP"]
-    series_filter_opts = p.opt["SERIES_ANALYSIS_FILTER_OPTS"]
+    var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
+    stat_list = util.getlist(p.getstr('config', 'STAT_LIST'))
+    series_analysis_exe = p.getexe('SERIES_ANALYSIS')
+    plot_data_plane_exe = p.getexe('PLOT_DATA_PLANE')
+    convert_exe = p.getexe('CONVERT_EXE')
+    series_anlysis_config_file = p.getstr('config', 'SERIES_ANALYSIS_BY_INIT_CONFIG_PATH')
+    regrid_with_MET_tool = p.getbool('config','REGRID_USING_MET_TOOL')
+    extract_tiles_dir = p.getdir('EXTRACT_OUT_DIR')
+    series_out_dir = p.getdir('SERIES_INIT_OUT_DIR')
+    series_filtered_out_dir = p.getdir('SERIES_INIT_FILTERED_OUT_DIR')
+    background_map = p.getbool('config','BACKGROUND_MAP')
+    series_filter_opts = p.getstr('config','SERIES_ANALYSIS_FILTER_OPTS')
 
     # Set up the environment variable to be used in the Series Analysis
     #   Config file (SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH)
@@ -44,16 +47,18 @@ def analysis_by_init_time():
     #  because currently MET doesn't support single-quotes
     tmp_stat_string = str(stat_list)
     tmp_stat_string = tmp_stat_string.replace("\'", "\"")
+    # For example, we want tmp_stat_string to look like
+    #   '["TOTAL","FBAR"]', NOT "['TOTAL','FBAR']"
     os.environ['STAT_LIST'] = tmp_stat_string
 
     if regrid_with_MET_tool:
         # Regridding via MET Tool regrid_data_plane.
-        fcst_tile_regex = p.opt["FCST_NC_TILE_REGEX"]
-        anly_tile_regex = p.opt["ANLY_NC_TILE_REGEX"]
+        fcst_tile_regex = p.getstr('regex_pattern','FCST_NC_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern','ANLY_NC_TILE_REGEX')
     else:
         # Regridding via wgrib2 tool.
-        fcst_tile_regex = p.opt["FCST_TILE_REGEX"]
-        anly_tile_regex = p.opt["ANLY_TILE_REGEX"]
+        fcst_tile_regex = p.getstr('regex_pattern','FCST_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern','ANLY_TILE_REGEX')
 
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
@@ -270,18 +275,21 @@ def analysis_by_init_time():
                                      ' -config ', series_anlysis_config_file,
                                      ' ', out_param]
                     command = ''.join(command_parts)
+                    command = batchexe('sh')['-c',command].err2out()
+                    #command = batchexe(command.split()[0])[command.split()[1:]].err2out()
 
                     msg = ('INFO|[' + cur_filename + ':' +
                            cur_function + ']|' +
-                           'SERIES ANALYSIS COMMAND: ' + command)
+                           'SERIES ANALYSIS COMMAND: ' + command.to_shell())
                     logger.debug(msg)
+                    met_result = run(command)
 
                     # Using shell=True because we aren't relying
                     # on external input for creating the command
                     # to the MET series analysis binary
-                    met_result = subprocess.check_output(command,
-                                                         stderr=subprocess.STDOUT,
-                                                         shell=True)
+                    # met_result = subprocess.check_output(command,
+                    #                                     stderr=subprocess.STDOUT,
+                    #                                     shell=True)
 
                     # Now we need to invoke the MET tool
                     # plot_data_plane to generate plots that are
@@ -351,15 +359,18 @@ def analysis_by_init_time():
 
                         data_plane_command = ''.join(
                             data_plane_command_parts)
+                        data_plane_command = batchexe('sh')['-c',data_plane_command].err2out()
+                        #data_plane_command = batchexe(data_plane_command.split()[0])[data_plane_command.split()[1:]].err2out()
+                        data_plane_result = run(data_plane_command)
 
                         # Using shell=True because we aren't
                         # relying on external input
                         # for creating the command to the MET series
                         # analysis binary
-                        data_plane_result = subprocess.check_output(
-                            data_plane_command,
-                            stderr=subprocess.STDOUT,
-                            shell=True)
+                        #data_plane_result = subprocess.check_output(
+                        #    data_plane_command,
+                        #    stderr=subprocess.STDOUT,
+                        #    shell=True)
 
                         # Now assemble the command to convert the
                         # postscript file to png
@@ -369,14 +380,17 @@ def analysis_by_init_time():
                                          ' -background white -flatten ',
                                          plot_data_plane_output_fname,
                                          ' ', png_fname]
-                        convert = ''.join(convert_parts)
+                        convert_command = ''.join(convert_parts)
+                        convert_command = batchexe('sh')['-c',convert_command].err2out()
+                        #convert_command = batchexe(convert_command.split()[0])[convert_command.split()[1:]].err2out()
+                        convert_result = run(convert_command)
 
                         # Using shell=True because we aren't relying
                         # on external input for creating the command to
                         # the MET series analysis binary
-                        convert_results = subprocess.check_output(convert,
-                                                                  stderr=subprocess.STDOUT,
-                                                                  shell=True)
+                        #convert_results = subprocess.check_output(convert,
+                        #                                          stderr=subprocess.STDOUT,
+                        #                                          shell=True)
     logger.info("Finished series analysis by init time")
 
 
@@ -406,7 +420,7 @@ def get_fcst_file_info(dir_to_search, cur_init, cur_storm, p, logger):
 
     '''
 
-    regrid_with_MET_tool = p.opt["REGRID_USING_MET_TOOL"]
+    regrid_with_MET_tool = p.getbool('config','REGRID_USING_MET_TOOL')
 
     # For logging 
     cur_filename = sys._getframe().f_code.co_filename
@@ -573,7 +587,38 @@ def create_fcst_anly_to_ascii_file(fcst_anly_grid_files, cur_init, cur_storm, fc
         util.prune_empty(fcst_anly_ascii_dir, p, logger)
 
 if __name__ == "__main__":
-    p = P.Params()
-    p.init(__doc__)
-    logger = util.get_logger(p)
-    analysis_by_init_time()
+
+    # sleep is for debugging in pycharm so I can attach to this process
+    # from the os.system call in master_met_plus.py
+    #import time
+    #time.sleep(60)
+
+    # Testing constants_pdef until produtil is fully integrated.
+    #import constants_pdef as P
+    #test = P.Params()
+    #test.init(__doc__)
+
+
+    try:
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='series_by_init',jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='series_by_init')
+        produtil.log.postmsg('series_by_init is starting')
+
+        # Read in the configuration object p
+        import config_launcher
+        if len(sys.argv) == 3:
+            p = config_launcher.load_baseconfs(sys.argv[2])
+        else:
+            p = config_launcher.load_baseconfs()
+        logger = util.get_logger(p)
+        if 'MET_BASE' not in os.environ:
+            os.environ['MET_BASE'] = p.getdir('MET_BASE')
+        analysis_by_init_time()
+        produtil.log.postmsg('series_by_init completed')
+    except Exception as e:
+        produtil.log.jlogger.critical(
+            'series_by_init failed: %s'%(str(e),),exc_info=True)
+        sys.exit(2)
+

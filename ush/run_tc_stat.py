@@ -17,14 +17,14 @@ Condition codes: 0 for success, 1 for failure
 
 from __future__ import (print_function, division )
 
-import constants_pdef as P
+import produtil.setup
+from produtil.run import batchexe, run, checkrun
 import logging
 import os
 import sys
 import met_util as util
 import time
 import re
-import subprocess
 import string_template_substitution as sts
 
 
@@ -66,26 +66,64 @@ def tc_stat(p, logger, tc_cmd, filtered_output_dir):
 
     # Make call to tc_stat, capturing any stderr and stdout to the MET Plus log.
     try:
-        tc_stat_out = subprocess.check_output(tc_cmd, stderr=subprocess.STDOUT, shell=True )
-    except subprocess.CalledProcessError as e:
+        tc_cmd = batchexe('sh')['-c',tc_cmd].err2out()
+        #tc_cmd = batchexe(tc_cmd.split()[0])[tc_cmd.split()[1:]].err2out() 
+        checkrun(tc_cmd)
+    except produtil.run.ExitStatusException as ese:
         msg = ("ERROR| " + cur_filename + ":" + cur_function + 
-               " from calling MET TC-STAT with command:" + tc_cmd)
+               " from calling MET TC-STAT with command:" + tc_cmd.to_shell())
         logger.error(msg)
+        logger.error({}.format(ese))
         pass
 
 
 if __name__ == "__main__":
 
-    p = P.Params()
-    p.init(__doc__)
-    logger = util.get_logger(p)
+    # sleep is for debugging in pycharm so I can attach to this process
+    # from the os.system call in master_met_plus.py
+    #import time
+    #time.sleep(60)
 
-    init_list = util.gen_init_list(p.opt["INIT_DATE_BEG"], p.opt["INIT_DATE_END"], p.opt["INIT_HOUR_INC"], p.opt["INIT_HOUR_END"])
+    # Testing constants_pdef until produtil is fully integrated.
+    #import constants_pdef as P
+    #test = P.Params()
+    #test.init(__doc__) ## Put description of the code here
 
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-   
     # Does nothing right now, meant to be imported by another script.
+
+
+    try:
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='run_tc_stat',jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='run_tc_stat')
+        produtil.log.postmsg('run_tc_stat is starting')
+
+        # Read in the configuration object p
+        import config_launcher
+        if len(sys.argv) == 3:
+            p = config_launcher.load_baseconfs(sys.argv[2])
+        else:
+            p = config_launcher.load_baseconfs()
+        logger = util.get_logger(p)
+        if 'MET_BASE' not in os.environ:
+            os.environ['MET_BASE'] = p.getdir('MET_BASE')
+
+
+        init_list = util.gen_init_list(p.getstr('config', 'INIT_DATE_BEG'),
+                                       p.getstr('config', 'INIT_DATE_END'),
+                                       p.getint('config', 'INIT_HOUR_INC'),
+                                       p.getstr('config', 'INIT_HOUR_END'))
+
+
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        produtil.log.postmsg('run_tc_stat completed')
+    except Exception as e:
+        produtil.log.jlogger.critical(
+            'run_tc_stat failed: %s'%(str(e),),exc_info=True)
+        sys.exit(2)
 
     
     

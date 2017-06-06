@@ -14,11 +14,10 @@ Condition codes: 0 for success, 1 for failure
 
 from __future__ import (print_function, division )
 
-import constants_pdef as P
+import produtil.setup
 import os
 import sys
 import met_util as util
-import subprocess
 import run_tc_stat as tcs
 
 
@@ -38,23 +37,25 @@ def main():
     '''
 
     # Retrieve parameters from corresponding param file
+
+    # produtil.log.postmsg('Example postmsg, convenience function for jlogger.info')
    
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-    init_times = util.gen_init_list(p.opt["INIT_DATE_BEG"], 
-                                    p.opt["INIT_DATE_END"], 
-                                    p.opt["INIT_HOUR_INC"], 
-                                    p.opt["INIT_HOUR_END"])    
-    tc_pairs_dir = p.opt["TC_PAIRS_DIR"]
-    overwrite_flag = p.opt["OVERWRITE_TRACK"]
-    addl_filter_opts = p.opt["EXTRACT_TILES_FILTER_OPTS"]
-    filtered_out_dir = p.opt["EXTRACT_OUT_DIR"]
-    tc_stat_exe = p.opt["TC_STAT"]
+    init_times = util.gen_init_list(p.getstr('config','INIT_DATE_BEG'),
+                                    p.getstr('config','INIT_DATE_END'),
+                                    p.getint('config','INIT_HOUR_INC'),
+                                    p.getstr('config','INIT_HOUR_END'))
+    tc_pairs_dir = p.getdir('TC_PAIRS_DIR')
+    overwrite_flag = p.getbool('config','OVERWRITE_TRACK')
+    addl_filter_opts = p.getstr('config','EXTRACT_TILES_FILTER_OPTS')
+    filtered_out_dir = p.getdir('EXTRACT_OUT_DIR')
+    tc_stat_exe = p.getexe('TC_STAT')
 
     # get the process id to be used to identify the output
     # amongst different users and runs.
     cur_pid = str(os.getpid())
-    tmp_dir = os.path.join(p.opt["TMP_DIR"], cur_pid)
+    tmp_dir = os.path.join(p.getdir('TMP_DIR'), cur_pid)
     msg = ("INFO|[" + cur_filename + ":" + cur_function + "]|Begin extract tiles")
     logger.info(msg)
 
@@ -146,12 +147,43 @@ def main():
     util.prune_empty(filtered_out_dir, p, logger)
 
     # Clean up the tmp directory
-    subprocess.call(["rm", "-rf", tmp_dir])
+    #subprocess.call(["rm", "-rf", tmp_dir])
+    util.rmtree(tmp_dir)
     msg = ("INFO|[" + cur_function + ":" + cur_filename + "]| Finished extract tiles")
     logger.info(msg)
 
 if __name__ == "__main__":
-    p = P.Params()
-    p.init(__doc__)  # Put description of the code here
-    logger = util.get_logger(p)
-    main()
+
+    # sleep is for debugging in pycharm so I can attach to this process
+    # from the os.system call in master_met_plus.py
+    #import time
+    #time.sleep(60)
+
+    # Testing constants_pdef until produtil is fully integrated.
+    #import constants_pdef as P
+    #test = P.Params()
+    #test.init(__doc__)
+
+
+    try:
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='extract_tiles',jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='extract_tiles')
+        produtil.log.postmsg('extract_tiles is starting')
+
+        # Read in the configuration object p
+        import config_launcher
+        if len(sys.argv) == 3:
+            p = config_launcher.load_baseconfs(sys.argv[2])
+        else:
+            p = config_launcher.load_baseconfs()
+        logger = util.get_logger(p)
+        if 'MET_BASE' not in os.environ:
+            os.environ['MET_BASE'] = p.getdir('MET_BASE')
+        main()
+        produtil.log.postmsg('extract_tiles completed')
+    except Exception as e:
+        produtil.log.jlogger.critical(
+            'extract_tiles failed: %s'%(str(e),),exc_info=True)
+        sys.exit(2)
