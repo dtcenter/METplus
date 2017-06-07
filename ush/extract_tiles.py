@@ -106,7 +106,6 @@ def main():
         # Now get unique storm ids from the filter file, 
         # filter_yyyymmdd_hh.tcst
         sorted_storm_ids = util.get_storm_ids(filter_name, logger)
-
         # Check for empty sorted_storm_ids, if empty,
         # continue to the next time.      
         if len(sorted_storm_ids) == 0:
@@ -124,6 +123,7 @@ def main():
         for cur_storm in sorted_storm_ids:
             storm_output_dir = os.path.join(filtered_out_dir,cur_init,
                                             cur_storm)
+            header = open(filter_name, "r").readline()
             util.mkdir_p(storm_output_dir)
             util.mkdir_p(tmp_dir)
             tmp_file = "filter_" + cur_init + "_" + cur_storm
@@ -131,9 +131,11 @@ def main():
             
             storm_match_list = util.grep(cur_storm, filter_name)
             with open(tmp_filename, "a+") as tmp_file:
+                #copy over header information
+                tmp_file.write(header)
                 for storm_match in storm_match_list:
                     tmp_file.write(storm_match)
-               
+     
             # Peform regridding of the forecast and analysis files 
             # to a 30 x 30 degree tile centered on the storm
             util.retrieve_and_regrid(tmp_filename, cur_init, 
