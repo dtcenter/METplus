@@ -27,19 +27,19 @@ if __name__ == "__main__":
   logger = util.get_logger(p)
   logger.setLevel(logging.DEBUG)
   
-  init_time = str(2016090412)
+  init_time = p.getstr('config','RUN_TIME')
 
+  config_dir = p.getstr('config','CONFIG_DIR')  
   grid_stat_out_dir = p.getstr('config', 'GRID_STAT_OUT_DIR')
-  phpt_dir = p.getstr('config','PHPT_DIR')    
-  phpt_fcst_vars = util.getlist(p.getstr('config','PHPT_FCST_VARS'))
-  config_dir = p.getstr('config','CONFIG_DIR')
-  lead_seq = util.getlistint(p.getstr('config','PHPT_LEAD_SEQ'))
-
-  wpcsnow_var = "W01I_NONE"
+  model_type = p.getstr('config','MODEL_TYPE')
+  model_dir = p.getstr('config',model_type+'_DIR')    
+  fcst_vars = util.getlist(p.getstr('config','FCST_VARS'))
+  lead_seq = util.getlistint(p.getstr('config','LEAD_SEQ'))
 
   for lead in range(lead_seq[0], lead_seq[2]+1, lead_seq[1]):
-    for fcst_var in phpt_fcst_vars:
-      accums = util.getlist(p.getstr('config',"PHPT_"+fcst_var+"_ACCUM"))
+    for fcst_var in fcst_vars:
+      # loop over models to compare
+      accums = util.getlist(p.getstr('config',fcst_var+"_ACCUM"))
       ob_types = util.getlist(p.getstr('config',fcst_var+"_OBTYPE"))
       for accum in accums:
         for ob_type in ob_types:
@@ -48,22 +48,17 @@ if __name__ == "__main__":
           obs_var = p.getstr('config',ob_type+"_VAR")
           (logger).info("")
           (logger).info("")
-          (logger).info("For " + init_time + " F" + str(lead) + ", processing PHPT " + fcst_var + "_"+accum + " vs " + ob_type + " " + obs_var + "_" + accum)
+          (logger).info("For " + init_time + " F" + str(lead) + ", processing " + model_type + "_" + fcst_var + "_"+accum + " vs " + ob_type + " " + obs_var + "_" + accum)
 
           ymd = init_time[0:8]
-          if ob_type == "STAGE4":
-            native_dir = p.getstr('config','STAGE4_NATIVE_DIR')
-            bucket_dir = p.getstr('config','STAGE4_BUCKET_DIR')
-            regrid_dir = p.getstr('config','STAGE4_REGRID_DIR')
-            regrid_template = p.getstr('config','STAGE4_REGRID_TEMPLATE')
-            bucket_template = p.getstr('config','STAGE4_BUCKET_TEMPLATE')
-          elif ob_type == "WPCSNOW":
-            native_dir = p.getstr('config','WPCSNOW_NATIVE_DIR')
-            bucket_dir = p.getstr('config','WPCSNOW_BUCKET_DIR')
-            regrid_dir = p.getstr('config','WPCSNOW_REGRID_DIR')
-            regrid_template = p.getstr('config','WPCSNOW_REGRID_TEMPLATE')
-            bucket_template = p.getstr('config','WPCSNOW_BUCKET_TEMPLATE')
-
+          
+          # set up directories
+          native_dir = p.getstr('config',ob_type+'_NATIVE_DIR')
+          bucket_dir = p.getstr('config',ob_type+'_BUCKET_DIR')
+          regrid_dir = p.getstr('config',ob_type+'_REGRID_DIR')
+          native_template = p.getstr('config',ob_type+'_NATIVE_TEMPLATE')
+          regrid_template = p.getstr('config',ob_type+'_REGRID_TEMPLATE')          
+          bucket_template = p.getstr('config',ob_type+'_BUCKET_TEMPLATE')
           grid_stat_dir = p.getstr('config','GRID_STAT_OUT_DIR')
             
           if not os.path.exists(os.path.join(grid_stat_out_dir,init_time,"grid_stat")):
@@ -74,6 +69,23 @@ if __name__ == "__main__":
             os.makedirs(os.path.join(bucket_dir,ymd))
           if not os.path.exists(os.path.join(regrid_dir,ymd)):
             os.makedirs(os.path.join(regrid_dir,ymd))
+
+          # GEMPAKTOCF
+          # Check if NetCDF file exists already
+          
+          # Only run GempakToCF if it does not
+          # Need to find inputs to pcp_combine first?
+#          run_g2c = CG_GempakToCF(p, logger)
+#          in_dir = p.getstr('config',ob_type+'INPUT_DIR')
+#          in_file = run_g2c.fill_template(p.getstr('config',ob_type+'INPUT_TEMPLATE'))
+#          in_path = os.path.join(in_dir, in_file)
+#          run_g2c.add_input_file(in_path)
+#          extension = in_file.split('.')[-1:]
+          # TODO: make sure the expression could not be replaced in other places besides extension
+#          out_file = in_file.replace(extension,"nc")
+#          run_g2c.set_output_file(p.getstr('config',ob_type+'NATIVE_DIR'))
+#          run_g2c.run()
+          
             
           #PCP_COMBINE
           run_pcp = CG_pcp_combine(p, logger)
@@ -81,6 +93,9 @@ if __name__ == "__main__":
           run_pcp.set_input_dir(native_dir)
           run_pcp.set_output_dir(bucket_dir)
           run_pcp.get_accumulation(valid_time, int(accum), ob_type)
+#          run_pcp.get_accumulation(valid_time, int(accum), native_template)
+          # TODO: loop over input file list
+          
           run_pcp.set_output_filename(run_pcp.fill_template(bucket_template, valid_time, accum))
           run_pcp.add_arg("-name "+obs_var+"_"+accum)
           (logger).info("")
@@ -89,9 +104,10 @@ if __name__ == "__main__":
           (logger).debug("OUTFILE: "+outfile)
           
           # REGRID_DATA_PLANE
+          
           run_regrid = CG_regrid_data_plane(p, logger)
           run_regrid.add_input_file(outfile)
-          run_regrid.add_input_file(os.path.join(config_dir,"mask/HRRRTLE_GRID.grb2"))
+          run_regrid.add_input_file(p.getstr('config','VERIFICATION_GRID'))
           regrid_file = run_regrid.fill_template(regrid_template, valid_time, accum)
           run_regrid.set_output_path(os.path.join(regrid_dir,regrid_file))
           run_regrid.add_arg("-field 'name=\"{:s}_{:s}\"; level=\"(*,*)\";'".format(obs_var, str(accum).zfill(2)))
@@ -99,13 +115,32 @@ if __name__ == "__main__":
           run_regrid.add_arg("-width 2")
           (logger).info("")
           run_regrid.run()
-
+          
           
           # GRID_STAT
           run_grid_stat = CG_grid_stat(p, logger)
-          phpt_file = run_grid_stat.fill_template(p.getstr('config','PHPT_TEMPLATE'), init_time, lead)
-          phpt_path = os.path.join(phpt_dir,phpt_file)
-          run_grid_stat.add_input_file(phpt_path)
+          # get model to compare
+          max_forecast = p.getint('config',model_type+'_MAX_FORECAST')
+          valid_interval = p.getint('config',model_type+'_VALID_INTERVAL')
+          lead_check = lead
+          time_check = init_time
+          time_offset = 0
+          found = 0
+          while lead_check <= max_forecast:
+#            print("TC:"+time_check+" LC:"+str(lead_check))            
+            model_file = run_grid_stat.fill_template(p.getstr('config',model_type+'_TEMPLATE'), time_check, lead_check)
+            model_path = os.path.join(model_dir,model_file)
+            if os.path.exists(model_path):
+              found = 1
+              break
+            time_check = run_pcp.shift_time(time_check, -valid_interval)
+            lead_check = lead_check + valid_interval
+
+          if found == 0:
+            print("ERROR: COULD NOT FIND FILE IN "+model_dir)
+            continue
+          print("MODEL PATH: "+model_path)
+          run_grid_stat.add_input_file(model_path)
           regrid_file = run_grid_stat.fill_template(regrid_template, valid_time, accum)
 
           regrid_path = os.path.join(regrid_dir,regrid_file)
@@ -117,7 +152,7 @@ if __name__ == "__main__":
 
           # get fcst and obs thresh parameters
           # verify they are the same size
-          fcst_threshs = util.getlistfloat(p.getstr('config',"PHPT_"+fcst_var+"_"+accum+"_THRESH"))
+          fcst_threshs = util.getlistfloat(p.getstr('config',model_type+"_"+fcst_var+"_"+accum+"_THRESH"))
           obs_threshs = util.getlistfloat(p.getstr('config',ob_type+"_"+fcst_var+"_"+accum+"_THRESH"))
           if len(fcst_threshs) != len(obs_threshs):
             (logger).error("run_example: Number of forecast and observation thresholds must be the same")
@@ -126,7 +161,9 @@ if __name__ == "__main__":
           fcst_field = ""
           obs_field = ""
           for fcst_thresh in fcst_threshs:
-            fcst_field += "{ name=\"PROB\"; level=\"A"+accum+"\"; prob={ name=\""+fcst_var+"\"; thresh_lo="+str(fcst_thresh)+"; } }," 
+              # if prob then do prob version, else compare same names
+#            fcst_field += "{ name=\"PROB\"; level=\"A"+accum+"\"; prob={ name=\""+fcst_var+"\"; thresh_lo="+str(fcst_thresh)+"; } },"
+            fcst_field += "{ name=\""+fcst_var+"_"+accum+"\"; level=\"(*,*)\"; cat_thresh=[ gt"+str(fcst_thresh)+" ]; },"
           for obs_thresh in obs_threshs:
             obs_field += "{ name=\""+obs_var+"_"+accum+"\"; level=\"(*,*)\"; cat_thresh=[ gt"+str(obs_thresh)+" ]; },"
 
@@ -134,7 +171,7 @@ if __name__ == "__main__":
           # remove last comma
           fcst_field = fcst_field[0:-1]
           obs_field = obs_field[0:-1]
-          run_grid_stat.add_env_var("MODEL", "PHPT")
+          run_grid_stat.add_env_var("MODEL", model_type)
           run_grid_stat.add_env_var("FCST_VAR", fcst_var)
           run_grid_stat.add_env_var("OBS_VAR", obs_var)
           run_grid_stat.add_env_var("ACCUM", accum)
@@ -159,22 +196,21 @@ if __name__ == "__main__":
           run_grid_stat.run()
     
           # MODE
-          # TODO: look at GridStat config to update mode config file using env vars
+          '''
           fcst_fields = list()
           obs_fields = list()
           for fcst_thresh in fcst_threshs:
-#            fcst_fields.append("{ name=\"PROB\"; level=\"A"+accum+"\";}")
             fcst_fields.append("{ name=\""+fcst_var+"\"; level=\"A"+accum+"\";}")            
           for obs_thresh in obs_threshs:
             obs_fields.append("{ name=\""+obs_var+"_"+accum+"\"; level=\"(*,*)\";}")
 
           for idx, fcst in enumerate(fcst_fields):
             run_mode = CG_mode(p, logger)
-            run_mode.add_input_file(phpt_path)
+            run_mode.add_input_file(model_path)
             run_mode.add_input_file(regrid_path)
             run_mode.set_param_file(p.getstr('config','MET_CONFIG_MD'))
             run_mode.set_output_dir(p.getstr('config','MODE_OUT_DIR'))
-            run_mode.add_env_var("MODEL", "PHPT")
+            run_mode.add_env_var("MODEL", model_type)
             run_mode.add_env_var("FCST_VAR", fcst_var)
             run_mode.add_env_var("OBS_VAR", obs_var)
             run_mode.add_env_var("ACCUM", accum)
@@ -194,3 +230,4 @@ if __name__ == "__main__":
             run_mode.print_env_item("OBS_FIELD")
             (logger).info("")            
 #            run_mode.run()
+          '''

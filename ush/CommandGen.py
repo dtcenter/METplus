@@ -49,6 +49,9 @@ class CommandGen:
   def add_input_file(self, filename):
     self.infiles.append(filename)
 
+  def get_input_files(self):
+    return self.infiles
+
   def set_input_dir(self, d):
     self.input_dir = d
     

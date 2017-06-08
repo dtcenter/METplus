@@ -38,12 +38,6 @@ class CG_pcp_combine(CommandGen):
   def add_input_file(self, filename, interval):
     self.infiles.append(filename+" "+str(interval))
     
-  def search_for_accumulation(self, files, accum):
-    for f in files:
-      if int(f[-3:-1]) == accum:
-        return f
-    return None
-
   # TODO: needs more testing!
   def find_closest_before(self, dir, time, template):
     out_file = ""
@@ -62,13 +56,15 @@ class CG_pcp_combine(CommandGen):
     return out_file
 
   def get_accumulation(self, valid_time, accum, ob_type):
+    file_template = self.p.getstr('config',ob_type+"_NATIVE_TEMPLATE")
+    
+#  def get_accumulation(self, valid_time, accum, file_template, data_type):
     if self.input_dir == "":
       (self.logger).error(self.app_name+": Must set data dir to run get_accumulation")
       exit
     self.add_arg("-add")
-    (self.logger).debug(self.app_name+": Valid time: " + valid_time + " accum: " + str(accum) + " ob_type: " + ob_type)
-
-    # TODO: HOW DO I DESCRIBE THE DIFFERENCE OF THESE SETUPS WITHOUT REFERRING TO OB_TYPE
+#    (self.logger).debug(self.app_name+": Valid time: " + valid_time + " accum: " + str(accum) + " ob_type: " + ob_type)
+    '''
     if ob_type == "WPCSNOW":
       # start at valid_time
       search_time = valid_time
@@ -89,31 +85,45 @@ class CG_pcp_combine(CommandGen):
         (self.logger).debug("ADDING: " + f + " " + addon)
         self.add_input_file(f,addon)
     else:
-      start_time = self.shift_time(valid_time, -(accum-1) )
-      total_accum = accum
-      search_accum = total_accum
-      while start_time <= valid_time:
-        files = glob.glob("{:s}/{:s}/*{:s}*".format(self.input_dir,start_time[0:8],start_time))
-        (self.logger).debug(self.app_name+": Found " + str(len(files)) + " files")
-        for f in files:
-          (self.logger).debug(self.app_name+": File: " + f)
+    '''
+    start_time = self.shift_time(valid_time, -(accum-1) )
+    total_accum = accum
+    search_accum = total_accum
+    while start_time <= valid_time:
+      files = glob.glob("{:s}/{:s}/*{:s}*".format(self.input_dir,start_time[0:8],start_time))
+      (self.logger).debug(self.app_name+": Found " + str(len(files)) + " files")
+      for f in files:
+        (self.logger).debug(self.app_name+": File: " + f)
 
-        while search_accum > 0:
-          f = self.search_for_accumulation(files,search_accum)
-          if not f is None:
-            self.add_input_file(f,search_accum)
-            start_time = self.shift_time(start_time, search_accum)
-            total_accum -= search_accum
-            search_accum = total_accum
-            break
-          search_accum -= 1
-             
-        if total_accum == 0:
+      while search_accum > 0:
+        search_file = os.path.join(self.input_dir,self.fill_template(file_template, start_time, search_accum))
+#        print("Searching for "+search_file)
+        f = None
+        for file in files:
+          if file == search_file:
+#            print("FOUND SEARCH FILE: "+file)
+            f = file
+        if not f is None:
+          addon = ""
+          data_type = self.p.getstr('config',ob_type+'_NATIVE_DATA_TYPE')
+          if data_type == "GRIB":
+            addon = search_accum
+          elif data_type == "NETCDF":
+            addon = "'name=\""+self.p.getstr('config',ob_type+'_'+str(search_accum)+'_FIELD_NAME') +"\"; level=\"(0,*,*)\";'"
+#          self.add_input_file(f,search_accum)
+          self.add_input_file(f,addon)
+          start_time = self.shift_time(start_time, search_accum)
+          total_accum -= search_accum
+          search_accum = total_accum
           break
+        search_accum -= 1
              
-        if search_accum == 0:
-          (self.logger).warning(self.app_name+": Could not find files to compute accumulation")
-          return None
+      if total_accum == 0:
+        break
+             
+      if search_accum == 0:
+        (self.logger).warning(self.app_name+": Could not find files to compute accumulation")
+        return None
     (self.logger).debug("FILE: " + f)
     outname = re.sub("[0-9]{2}h", str(accum).zfill(2)+"h", f.rstrip())
     (self.logger).debug(outname)
