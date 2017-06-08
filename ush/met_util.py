@@ -298,17 +298,11 @@ def get_storm_ids(filter_filename, logger):
         return empty_list
     if os.stat(filter_filename).st_size == 0:
         return empty_list
-    with open(filter_filename) as fileobj:
-        # skip the first line as it contains the header
-        next(fileobj)
-        for line in fileobj:
-            # split the columns, which are separated by one or
-            # more whitespace, hence the line.split() without any
-            # args
-            cols = line.split()
-
-            # we are only interested in the 4th column, STORM_ID
-            storm_id_list.add(str(cols[3]))
+    with open(filter_filename, "r") as fileobj:
+         header = fileobj.readline().split()
+         header_colnum = header.index('STORM_ID')
+         for line in fileobj:
+             storm_id_list.add(str(line.split()[header_colnum]))
 
     # sort the unique storm ids, copy the original
     # set by using sorted rather than sort.
@@ -503,21 +497,21 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
     egrep_exe = p.getexe('EGREP_EXE')
     regrid_with_MET_tool = p.getbool('config','REGRID_USING_MET_TOOL')
     overwrite_flag = p.getbool('config','OVERWRITE_TRACK')
-
+    
     # Extract the columns of interest: init time, lead time,
     # valid time lat and lon of both  tropical cyclone tracks, etc.
     # Then calculate the forecast hour and other things.
     with open(tmp_filename, "r") as tf:
-        for line in tf:
+      #read header
+      header = tf.readline().split()
+      #get column number for columns on interest
+      header_colnum_init, header_colnum_lead, header_colnum_valid = header.index('INIT'), header.index('LEAD'), header.index('VALID')
+      header_colnum_alat, header_colnum_alon = header.index('ALAT'), header.index('ALON')
+      header_colnum_blat, header_colnum_blon = header.index('BLAT'), header.index('BLON') 
+      for line in tf:
             col = line.split()
-            # Columns of interest are 8, 9, 10, 19, 20, 21, and 22
-            # for init time, lead time, valid time, alat, alon, 
-            # blat, and blon (positions of the two extra-tropical
-            # cyclone tracks)  but Python is zero-based so indices 
-            # differ by 1.
-            init, lead, valid, alat, alon, blat, blon = col[7], col[8], col[9], col[18], \
-                                                        col[19], col[20], col[21]
-
+            init, lead, valid, alat, alon, blat, blon = col[header_colnum_init], col[header_colnum_lead], col[header_colnum_valid], col[header_colnum_alat], col[header_colnum_alon], col[header_colnum_blat], col[header_colnum_blon]
+ 
             # integer division for both Python 2 and 3
             lead_time = int(lead)
             fcst_hr = lead_time // 10000
