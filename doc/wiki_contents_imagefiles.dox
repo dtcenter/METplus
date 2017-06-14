@@ -1,5 +1,5 @@
+/** @page pull_in_wikicontents  Wiki Contents
 
-/**
 THIS FILE is not meant to by referenced by any pages.
 It purely exists to pull in the wiki_contents images file.
 
@@ -33,6 +33,10 @@ wiki_contents/diagrams
 @image html GitHub_process.png
 
 @image html METPlus_sequence_overview.png
+
+@image html series_by_lead_Activity.png
+
+@image html series_by_lead_Sequence_Diagram.png
 
 
 wiki_contents/images

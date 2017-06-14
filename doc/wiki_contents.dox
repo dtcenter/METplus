@@ -9,7 +9,7 @@ The source of this documentation is from the GitHub NCAR METplus website.
 
 This is just an example page of providing the content in a doxygen page.
 
-GitHub process Diagram
+wiki content diagrams
 -------------------------
 [extract_tiles_Activity](extract_tiles_Activity.png)
 
@@ -17,6 +17,9 @@ GitHub process Diagram
 
 [GitHub_process](GitHub_process.png)
 
+[series_by_lead_Activity](series_by_lead_Activity.png)
+
+[series_by_lead_Sequence_Diagram](series_by_lead_Sequence_Diagram.png)
 
 Current Use Cases
 -------------------------
