@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
+## @namespace master_met_plus
+# Main script the processes all the tasks in the PROCESS_LIST
+# 
+
 import os, sys, re, logging, collections, getopt
 
 import produtil.setup
@@ -8,10 +12,14 @@ from produtil.run import batchexe, run, checkrun
 import met_util as util
 import config_launcher
 
-## The logging.Logger for log messages
+##################
+## @var logger
+# The logging.Logger for log messages
 logger=None
 
 def usage(logger=None):
+    """! How to call this script.
+    @param logger a logging.logger for log messages"""
 
     if logger:
         logger.critical('Invalid arguments to master_met_plus.py.  Exiting.')
@@ -27,10 +35,10 @@ Exiting due to incorrect arguments.''')
     sys.exit(2)
 
 def main():
-    '''
-        Master MET+ script that invokes the necessary Python scripts
-        to perform various activities, such as series analysis.
-    '''
+    """!Main program.
+
+    Master MET+ script that invokes the necessary Python scripts
+    to perform various activities, such as series analysis."""
 
     produtil.log.jlogger.info('Top of master_met_plus')
     logger = logging.getLogger('master_met_plus')
