@@ -1,0 +1,30 @@
+#! /bin/bash
+
+set -xue
+doxygen=''
+if [[  -s  ./doxygenloc  ]] ; then
+    source ./doxygenloc
+else
+    echo "Run ./configure before running ./compile." 1>&2
+    exit 1
+fi
+
+# parm directory config files are handled here, instead of in the 
+# Doxyfile.in INPUT setting. Why? If you have many many conf files, 
+# like hwrf, defining here lets you specifiy which conf files you 
+# want documented.
+../../ush/confdoc.py \
+    ../../parm/metplus.conf \
+    > ../../doc/config-files.dox
+
+cat Doxyfile.in | sed 's,--PROJECT_NUMBER--,'$version',g' > Doxyfile
+
+echo "Running doxygen, logging to doxylog."
+"$doxygen" > doxylog 2>&1
+ret="$?"
+if [[ "$ret" == 0 ]] ; then
+    echo "Success!"
+else
+    echo "Failure: doxygen return status $ret."
+    exit $ret
+fi

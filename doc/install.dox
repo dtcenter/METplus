@@ -1,0 +1,80 @@
+/** @page install-repo Installing METplus from the Repository
+
+This page explains how to install METplus from the github repository
+housed here:
+
+@todo edit me: install.dox, THIS PAGE NEEDS TO BE FULLY REVIEWD AND EDITED. 
+
+A user account is required to access the METplus repository.
+
+  + <a href="http://github.com/NCAR/METplus" target="_blank">METplus GitHub Developer Page</a>
+
+Specifically, it explains how to install from the branch, tag or trunk
+that you checked out.  The guide is actually generated from special
+comments and documentation files inside that repository.
+
+@section install-prereq Prerequisites
+
+@subsection install-languages Prerequisites: Scripting Languages
+
+You need several scripting languages.  If you have Linux, MacOS
+or open-source BSD distribution, these are likely already installed,
+or can be installed via your OS installation command (apt-get, yum,
+etc.)
+
+ Language | Why              | Command | To obtain
+--------- | ---------------- | ------- | -----------------------------------------------------
+POSIX sh  | Job setup        | /bin/sh | Always present on POSIX-compliant operating systems.
+Python 2  | Workflow         | python  | https://www.python.org/downloads/release/python-2710/
+GNU make  | Build system     | gmake   | http://www.gnu.org/software/make/
+
+Note that Python must be version 2.x, and at least version 2.6.6.
+Python 3 is a completely different language than Python 2, and the
+METplus scripts are all Python 2 scripts.  You can get your Python
+version with this command:
+
+    python --version
+
+If your "python" program is version 3, you may also have a "python2"
+program:
+
+    python2 --version
+
+If your "python" command is version 3, and python2 is version 2, you
+can still run METplus.  However, you will need to edit the *.py files in
+ush/, scripts/ and rocoto/, and change:
+
+    #! /bin/env python
+
+to:
+
+    #! /bin/env python2
+
+@subsection install-workflow Prerequisites: Workflow Automation Programs
+
+If you want to run a large-scale METplus verification, you will
+need a workflow automation system.  The METplus system only supports Rocoto, but
+with some work you can use ecFlow as well:
+
+ What      | Why                   | Command       | To obtain
+---------- | --------------------- | ------------- | -------------------------------------------------------
+Rocoto     | Workflow Automation   | rocoto        | https://github.com/christopherwharrop/rocoto/releases
+ecFlow     | Alternative to Rocoto | ecflow-client | https://software.ecmwf.int/wiki/display/ECFLOW/Releases
+
+Using ecFlow for METplus is only supported for NCEP Central Operations.
+Other users must be adventurous to try it.
+
+------------------------------------------------------------------------
+@section checkout-repo Step 1: METplus Repository Checkout
+
+The first step is to check out the HWRF from the repository.  
+
+    git clone https://www.github.com/NCAR/METplus
+
+
+@subsection configure-run Step 1.2: Now Configure and Run 
+
+   + @ref mainpage-conf-run
+
+
+*/
