@@ -39,7 +39,9 @@ class CG_pcp_combine(CommandGen):
   def add_input_file(self, filename, addon):
 #    self.infiles.append(filename+" "+str(addon))
     self.infiles.append(filename)
-    self.inaddons.append(str(addon))    
+    self.inaddons.append(str(addon))
+
+  
 
   # NOTE: Assumes YYYYMMDD sub dir 
   def get_lowest_forecast_at_valid(self, valid_time, dtype):
@@ -103,7 +105,8 @@ class CG_pcp_combine(CommandGen):
     return out_file
 
   def get_accumulation(self, valid_time, accum, ob_type, is_forecast=False):
-    file_template = self.p.getstr('filename_templates',ob_type+"_NATIVE_TEMPLATE")
+    # TODO: pass in template (input/native) so this isn't assumed
+    file_template = self.p.getstr('filename_templates',ob_type+"_INPUT_TEMPLATE")
     
     if self.input_dir == "":
       (self.logger).error(self.app_name+": Must set data dir to run get_accumulation")
@@ -128,8 +131,6 @@ class CG_pcp_combine(CommandGen):
         lead = int((diff.days*24) / (data_interval/3600))
         lead += int( (v_time - file_time).seconds/data_interval) - 1
         addon = "'name=\""+self.p.getstr('config',ob_type+'_'+str(accum)+'_FIELD_NAME')+"\"; level=\"("+str(lead)+",*,*)\";'"
-        if os.path.splitext(f)[1] == '.grd':
-          f = os.path.splitext(f)[0]+'.nc'
         self.add_input_file(f,addon)
     else: # not a daily file
       # if field that corresponds to search accumulation exists in the files,
@@ -142,8 +143,6 @@ class CG_pcp_combine(CommandGen):
             addon = accum
           elif data_type == "NETCDF":          
             addon = "'name=\""+self.p.getstr('config',ob_type+'_'+str(accum)+'_FIELD_NAME') +"\"; level=\"(0,*,*)\";'"
-          if os.path.splitext(search_file)[1] == '.grd':            
-            search_file = os.path.splitext(search_file)[0]+'.nc'            
           self.add_input_file(search_file,addon)
           self.set_output_dir(self.outdir)
           return
@@ -160,14 +159,12 @@ class CG_pcp_combine(CommandGen):
             break
           # TODO: assumes 1hr accum in these files for now
           addon = "'name=\""+self.p.getstr('config',ob_type+'_'+str(1)+'_FIELD_NAME') +"\"; level=\"(0,*,*)\";'"
-          if os.path.splitext(f)[1] == '.grd':
-            f = os.path.splitext(f)[0]+'.nc'
           self.add_input_file(f,addon)
           start_time = self.shift_time(start_time, -1)
           search_accum -= 1
         else: # not looking for forecast files
           # get all files of valid_time (all accums)
-#          print("Searching: "+"{:s}/{:s}/*{:s}*".format(self.input_dir,start_time[0:8],start_time))
+          print("Searching: "+"{:s}/{:s}/*{:s}*".format(self.input_dir,start_time[0:8],start_time))
           files = sorted(glob.glob("{:s}/{:s}/*{:s}*".format(self.input_dir,start_time[0:8],start_time)))
           (self.logger).debug(self.app_name+": Found " + str(len(files)) + " files")
           for f in files:
@@ -188,9 +185,6 @@ class CG_pcp_combine(CommandGen):
                 addon = search_accum
               elif data_type == "NETCDF":
                 addon = "'name=\""+self.p.getstr('config',ob_type+'_'+str(search_accum)+'_FIELD_NAME') +"\"; level=\"(0,*,*)\";'"
-                # TODO: assumes non Gempak NC data has .nc extension
-                if os.path.splitext(f)[1] == '.grd':                
-                  f = os.path.splitext(f)[0]+'.nc'
               self.add_input_file(f,addon)
               start_time = self.shift_time(start_time, -search_accum)
               total_accum -= search_accum

@@ -14,7 +14,6 @@ Condition codes: 0 for success, 1 for failure
 
 from __future__ import (print_function, division )
 
-import constants_pdef as P
 import logging
 import os
 import sys

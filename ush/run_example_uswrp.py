@@ -9,15 +9,25 @@ import logging
 import met_util as util
 import os
 import re
+import getopt
+import sys
 
 from CG_pcp_combine import CG_pcp_combine
 from CG_grid_stat import CG_grid_stat
 from CG_regrid_data_plane import CG_regrid_data_plane
+from CG_GempakToCF import CG_GempakToCF
 from CG_mode import CG_mode
+
 
 def usage():
   print("Usage statement")
+  print ('''
+Usage: run_example_uswrp.py [ -c /path/to/additional/conf_file] [options]
 
+    -c|--config <arg0>      Specify custom configuration file to use
+    -r|--runtime <arg0>     Specify initialization time to process
+    -h|--help               Display this usage statement
+''')
 
 def find_model(model_type, lead, init_time):
   model_dir = p.getstr('config',model_type+'_INPUT_DIR')    
@@ -30,7 +40,6 @@ def find_model(model_type, lead, init_time):
   while lead_check <= max_forecast:
 #            print("TC:"+time_check+" LC:"+str(lead_check))            
     model_file = run_grid_stat.fill_template(p.getstr('filename_templates',model_type+'_NATIVE_TEMPLATE'), time_check, lead_check)
-#    model_file = run_grid_stat.fill_template_fcst(p.getraw('filename_templates',model_type+'_TEMPLATE'), time_check, lead_check)    
     model_path = os.path.join(model_dir,model_file)
     if os.path.exists(model_path):
       found = True
@@ -43,17 +52,40 @@ def find_model(model_type, lead, init_time):
   else:
     return ''
 
-  
 if __name__ == "__main__":
   logger = logging.getLogger('run_example')
-  args=None
+  init_time = 0
+  short_opts = "c:r:h"
+  long_opts  = ["config=",
+                  "help",
+                  "runtime="]
+  # All command line input, get options and arguments
+  try:
+    opts, args = getopt.gnu_getopt(sys.argv[1:], short_opts, long_opts)
+  except getopt.GetoptError as err:
+    print(str(err))
+    usage('SCRIPT IS EXITING DUE TO UNRECOGNIZED COMMAND LINE OPTION')
+  config_file=None
+  for k, v in opts:
+    if  k in ('-c', '--config'):
+      #adds the conf file to the list of arguments.
+      args.append(config_launcher.set_conf_file_path(v))
+      config_file=v
+    elif  k in ('-h', '--help'):
+      usage()
+    elif  k in ('-r', '--runtime'):
+      init_time = v
+    else:
+      assert False, "UNHANDLED OPTION"
+  if not args: args=None
   (parm,infiles,moreopt) = \
     config_launcher.parse_launch_args(args,usage,logger)    
-  p = config_launcher.launch(infiles, moreopt) #infiles, moreopt, cycle=cycle)
+  p = config_launcher.launch(infiles, moreopt)
   logger = util.get_logger(p)
   logger.setLevel(logging.DEBUG)
-  
-  init_time = p.getstr('config','RUN_TIME')
+
+  if init_time == 0:
+    init_time = p.getstr('config','RUN_TIME')
 
   config_dir = p.getstr('config','CONFIG_DIR')  
   grid_stat_out_dir = p.getstr('config', 'GRID_STAT_OUT_DIR')
@@ -61,7 +93,6 @@ if __name__ == "__main__":
   fcst_vars = util.getlist(p.getstr('config','FCST_VARS'))
   lead_seq = util.getlistint(p.getstr('config','LEAD_SEQ'))
 
-#  for lead in range(lead_seq[0], lead_seq[2]+1, lead_seq[1]):
   for lead in lead_seq:
     for fcst_var in fcst_vars:
       # loop over models to compare
@@ -79,15 +110,13 @@ if __name__ == "__main__":
           ymd = init_time[0:8]
           
           # set up directories
-          native_dir = p.getstr('config',ob_type+'_NATIVE_DIR')
+          input_dir = p.getstr('config',ob_type+'_INPUT_DIR')
+          native_dir = p.getstr('config',ob_type+'_NATIVE_DIR')          
           bucket_dir = p.getstr('config',ob_type+'_BUCKET_DIR')
           regrid_dir = p.getstr('config',ob_type+'_REGRID_DIR')
           native_template = p.getstr('filename_templates',ob_type+'_NATIVE_TEMPLATE')
           regrid_template = p.getstr('filename_templates',ob_type+'_REGRID_TEMPLATE')          
           bucket_template = p.getstr('filename_templates',ob_type+'_BUCKET_TEMPLATE')
-#          native_template = p.getraw('filename_templates',ob_type+'_NATIVE_TEMPLATE')
-#          regrid_template = p.getraw('filename_templates',ob_type+'_REGRID_TEMPLATE')          
-#          bucket_template = p.getraw('filename_templates',ob_type+'_BUCKET_TEMPLATE')
           model_bucket_dir = p.getstr('config',model_type+'_BUCKET_DIR')
           grid_stat_dir = p.getstr('config','GRID_STAT_OUT_DIR')
             
@@ -102,22 +131,6 @@ if __name__ == "__main__":
           if not os.path.exists(os.path.join(model_bucket_dir,ymd)):
             os.makedirs(os.path.join(model_bucket_dir,ymd))            
 
-          # GEMPAKTOCF
-          # Check if NetCDF file exists already
-          # TODO: add 12 to StageIV Gempak data for hours
-          # Only run GempakToCF if it does not
-          # Need to find inputs to pcp_combine first?
-#          run_g2c = CG_GempakToCF(p, logger)
-#          in_dir = p.getstr('config',ob_type+'INPUT_DIR')
-#          in_file = run_g2c.fill_template(p.getraw('config',ob_type+'INPUT_TEMPLATE'))
-#          in_path = os.path.join(in_dir, in_file)
-#          run_g2c.add_input_file(in_path)
-#          extension = in_file.split('.')[-1:]
-          # TODO: make sure the expression could not be replaced in other places besides extension
-#          out_file = in_file.replace(extension,"nc")
-#          run_g2c.set_output_file(p.getstr('config',ob_type+'NATIVE_DIR'))
-#          run_g2c.run()
-          
             
           #PCP_COMBINE
           run_pcp = CG_pcp_combine(p, logger)
@@ -125,21 +138,36 @@ if __name__ == "__main__":
           if int(valid_time[8:10]) % p.getint('config',ob_type+'_DATA_INTERVAL') != 0:
             (logger).warning("No observation for valid time: "+valid_time+". Skipping...")
             continue
-          run_pcp.set_input_dir(native_dir)
+          run_pcp.set_input_dir(input_dir)
           run_pcp.set_output_dir(bucket_dir)
           run_pcp.get_accumulation(valid_time, int(accum), ob_type)
-          # TODO: loop over input file list, call GempakToCF if native file doesn't exist
-#          infiles = run_pcp.get_input_files()
-#          for infile in infiles:
+
+          #  call GempakToCF if native file doesn't exist
+          infiles = run_pcp.get_input_files()
+          print("FOUND "+str(len(infiles))+" files")
+          for idx,infile in enumerate(infiles):
             # replace input_dir with native_dir, check if file exists
-            # if not, call GempakTOCF
+            nfile = infile.replace(input_dir, native_dir)
+            data_type = p.getstr('config',ob_type+'_NATIVE_DATA_TYPE')  
+            if data_type == "NETCDF":       
+              nfile = os.path.splitext(nfile)[0]+'.nc'            
+            print("NFILE:"+nfile)
+            if not os.path.isfile(nfile):
+              print("Calling GempakToCF to convert to NetCDF")
+              run_g2c = CG_GempakToCF(p, logger)
+              run_g2c.add_input_file(infile)
+              run_g2c.set_output_path(nfile)
+              print("RUNNING:"+run_g2c.get_command())
+              run_g2c.run()
+
+            run_pcp.infiles[idx] = nfile            
+              
           run_pcp.set_output_filename(run_pcp.fill_template(bucket_template, valid_time, accum))
           run_pcp.add_arg("-name "+obs_var+"_"+accum)
           print("RUNNING: "+str(run_pcp.get_command()))
           (logger).info("")
           run_pcp.run()
           outfile = run_pcp.get_output_path()
-          (logger).debug("OUTFILE: "+outfile)
 
           # REGRID_DATA_PLANE
           run_regrid = CG_regrid_data_plane(p, logger)
@@ -159,7 +187,9 @@ if __name__ == "__main__":
           run_grid_stat = CG_grid_stat(p, logger)
           # get model to compare
           model_dir = p.getstr('config',model_type+'_INPUT_DIR') 
-          # check if accum exists in forecast file. If not, run pcp_combine to create it
+          # check if accum exists in forecast file
+          # If not, run pcp_combine to create it
+          # TODO: remove reliance on model_type
           if model_type == 'HREF_MEAN':
             run_pcp_ob = CG_pcp_combine(p, logger)
             valid_time = run_pcp_ob.shift_time(init_time, lead)
@@ -174,14 +204,12 @@ if __name__ == "__main__":
             (logger).info("")
             run_pcp_ob.run()
             model_path = run_pcp_ob.get_output_path()
-            (logger).debug("MODEL OUTFILE: "+model_path)
           else:
             model_path = find_model(model_type, lead, init_time)
 
           if model_path == "":
             print("ERROR: COULD NOT FIND FILE IN "+model_dir)
             continue
-          print("MODEL PATH: "+model_path)
           run_grid_stat.add_input_file(model_path)
           regrid_file = run_grid_stat.fill_template(regrid_template, valid_time, accum)
 
@@ -203,10 +231,9 @@ if __name__ == "__main__":
           if len(fcst_threshs) != len(obs_threshs):
             (logger).error("run_example: Number of forecast and observation thresholds must be the same")
             exit
-# TODO: put all cat_thresh in 1 field instead of multiple fields
+
           fcst_field = ""
           obs_field = ""
-
 
           if p.getbool('config',model_type+'_IS_PROB'):
             for fcst_thresh in fcst_threshs:
@@ -226,30 +253,10 @@ if __name__ == "__main__":
               obs_field +="gt"+str(obs_thresh)+", "
             obs_field = obs_field[0:-2]
             obs_field += " ]; },"
-
-          '''  
-          for fcst_thresh in fcst_threshs:
-              # if prob then do prob version, else compare same names
-            if p.getbool('config',model_type+'_IS_PROB'):
-              fcst_field += "{ name=\"PROB\"; level=\"A"+accum+"\"; prob={ name=\""+fcst_var+"\"; thresh_lo="+str(fcst_thresh)+"; } },"
-            else:
-              data_type = p.getstr('config',ob_type+'_NATIVE_DATA_TYPE')
-              if data_type == "GRIB":
-                fcst_field += "{ name=\""+fcst_var+"_"+accum+"\"; level=\"(*,*)\"; cat_thresh=[ gt"+str(fcst_thresh)+" ]; },"
-              elif data_type == "NETCDF":
-                field_name = fcst_var+"_"+accum
-#                field_name = p.getstr('config',model_type+"_"+fcst_var+"_"+accum+"_NAME")
-                fcst_field += "{ name=\""+field_name+"\";  level=\"(*,*)\"; cat_thresh=[ gt"+str(fcst_thresh)+" ]; },"
-            '''
-
-               
-
-#            obs_field += "{ name=\""+obs_var+"_"+accum+"\"; cat_thresh=[ gt"+str(obs_thresh)+" ]; },"            
-
-
           # remove last comma
           fcst_field = fcst_field[0:-1]
           obs_field = obs_field[0:-1]
+
           run_grid_stat.add_env_var("MODEL", model_type)
           run_grid_stat.add_env_var("FCST_VAR", fcst_var)
           run_grid_stat.add_env_var("OBS_VAR", obs_var)
@@ -270,10 +277,12 @@ if __name__ == "__main__":
           run_grid_stat.print_env_item("CONFIG_DIR")
           run_grid_stat.print_env_item("FCST_FIELD")
           run_grid_stat.print_env_item("OBS_FIELD")
+          (logger).debug("")          
           (logger).debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
           run_grid_stat.print_env_copy([ "MODEL","FCST_VAR","OBS_VAR",\
                                        "ACCUM","OBTYPE","CONFIG_DIR",\
                                          "FCST_FIELD","OBS_FIELD" ])
+          (logger).debug("")                                         
           print("RUNNING: "+run_grid_stat.get_command())                                         
           (logger).info("")
 

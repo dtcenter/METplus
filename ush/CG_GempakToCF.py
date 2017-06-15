@@ -14,7 +14,6 @@ Condition codes: 0 for success, 1 for failure
 
 from __future__ import (print_function, division )
 
-import constants_pdef as P
 import logging
 import os
 import sys
@@ -28,13 +27,12 @@ class CG_GempakToCF(CommandGen):
   
   def __init__(self, p, logger):
     super(CG_GempakToCF, self).__init__(p, logger)
-    self.app_path = self.p.getstr('exe','GEMPAKTOCF')
-    self.app_name = os.path.basename(self.app_path)
+    self.app_name = "GempakToCF"
     self.class_path = self.p.getstr('exe','GEMPAKTOCF_CLASSPATH')
 
     
   def get_command(self):
-    cmd = "java -classpath " + self.class_path + " " + self.app_path + " "
+    cmd = "java -classpath " + self.class_path + " GempakToCF "
 
     if len(self.infiles) != 1:
       (self.logger).error(self.app_name+": Only 1 input file can be selected")
@@ -47,5 +45,5 @@ class CG_GempakToCF(CommandGen):
       (self.logger).error(self.app_name+": No output file specified")
       return None
 
-    cmd += self.outfile
+    cmd += self.get_output_path()
     return cmd
