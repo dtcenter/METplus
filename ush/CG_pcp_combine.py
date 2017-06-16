@@ -160,8 +160,6 @@ class CG_pcp_combine(CommandGen):
           # get all files of valid_time (all accums)
 #          print("Searching: "+"{:s}/{:s}/*{:s}*".format(self.input_dir,start_time[0:8],start_time))
           files = sorted(glob.glob("{:s}/{:s}/*{:s}*".format(self.input_dir,start_time[0:8],start_time)))
-          for f in files:
-#            (self.logger).debug(self.app_name+": File: " + f)
           # look for biggest accum that fits search
           while search_accum > 0:
             search_file = os.path.join(self.input_dir,self.fill_template(file_template, start_time, search_accum))

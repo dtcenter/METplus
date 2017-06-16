@@ -122,8 +122,10 @@ if __name__ == "__main__":
             
           if not os.path.exists(os.path.join(grid_stat_out_dir,init_time,"grid_stat")):
             os.makedirs(os.path.join(grid_stat_out_dir,init_time,"grid_stat"))
-          if not os.path.exists(native_dir):
-            os.makedirs(native_dir)
+          if not os.path.exists(os.path.join(native_dir,ymd)):
+            os.makedirs(os.path.join(native_dir,ymd))
+#          if not os.path.exists(native_dir):
+#            os.makedirs(native_dir)            
           if not os.path.exists(os.path.join(bucket_dir,ymd)):
             os.makedirs(os.path.join(bucket_dir,ymd))
           if not os.path.exists(os.path.join(regrid_dir,ymd)):
@@ -175,9 +177,11 @@ if __name__ == "__main__":
           run_regrid.add_input_file(p.getstr('config','VERIFICATION_GRID'))
           regrid_file = run_regrid.fill_template(regrid_template, valid_time, accum)
           run_regrid.set_output_path(os.path.join(regrid_dir,regrid_file))
-          run_regrid.add_arg("-field 'name=\"{:s}_{:s}\"; level=\"(*,*)\";'".format(obs_var, str(accum).zfill(2)))
+          field_name = "{:s}_{:s}".format(obs_var, str(accum).zfill(2))
+          run_regrid.add_arg("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(field_name))
           run_regrid.add_arg("-method BUDGET")
           run_regrid.add_arg("-width 2")
+          run_regrid.add_arg("-name "+field_name)
           print("RUNNING: "+str(run_regrid.get_command()))
           (logger).info("")
           run_regrid.run()
