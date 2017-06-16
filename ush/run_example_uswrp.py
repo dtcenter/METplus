@@ -72,6 +72,7 @@ if __name__ == "__main__":
       config_file=v
     elif  k in ('-h', '--help'):
       usage()
+      exit()
     elif  k in ('-r', '--runtime'):
       init_time = v
     else:
@@ -200,7 +201,7 @@ if __name__ == "__main__":
 
             #  call GempakToCF if native file doesn't exist
             infiles = run_pcp_ob.get_input_files()
-            print("FOUND "+str(len(infiles))+" files")
+#            print("FOUND "+str(len(infiles))+" files")
             for idx,infile in enumerate(infiles):
               # replace input_dir with native_dir, check if file exists
               nfile = infile.replace(model_dir, model_native_dir)
@@ -209,7 +210,7 @@ if __name__ == "__main__":
               data_type = p.getstr('config',ob_type+'_NATIVE_DATA_TYPE')  
               if data_type == "NETCDF":
                 nfile = os.path.splitext(nfile)[0]+'.nc'            
-              print("NFILE:"+nfile)
+#              print("NFILE:"+nfile)
               if not os.path.isfile(nfile):
                 print("Calling GempakToCF to convert model to NetCDF")
                 run_g2c = CG_GempakToCF(p, logger)
