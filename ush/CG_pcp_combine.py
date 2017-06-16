@@ -37,7 +37,6 @@ class CG_pcp_combine(CommandGen):
     self.inaddons = []
     
   def add_input_file(self, filename, addon):
-#    self.infiles.append(filename+" "+str(addon))
     self.infiles.append(filename)
     self.inaddons.append(str(addon))
 
@@ -57,31 +56,28 @@ class CG_pcp_combine(CommandGen):
     files = sorted(glob.glob("{:s}/{:s}/*".format(self.input_dir,str(day_before)[0:8])))
     for fpath in files:
       f = os.path.join(str(day_before)[0:8],os.path.basename(fpath))
-      native_template = self.p.getstr('filename_templates', dtype+'_NATIVE_TEMPLATE')
+      input_template = self.p.getstr('filename_templates', dtype+'_INPUT_TEMPLATE')
       # TODO: hack until we switch over to Julie's string parser
 #      fcst = self.pull_forecast(f, native_template)
       fcst = int(os.path.basename(fpath)[21:23])
       if fcst is None:
         print("ERROR: Could not pull forecast leas from f")
         exit
-      init = self.pull_template(os.path.basename(native_template[0:-8]), os.path.basename(f[0:-7]), "%Y%m%d%H")
+      init = self.pull_template(os.path.basename(input_template[0:-8]), os.path.basename(f[0:-7]), "%Y%m%d%H")
       v = self.shift_time(init,fcst)
       if v == valid_time:
         out_file = fpath
 
     files = sorted(glob.glob("{:s}/{:s}/*".format(self.input_dir,str(valid_time)[0:8])))
     for fpath in files:
-      print("foun:"+fpath)
       # hack until we switch over to Julie's string parser
 #      fcst = self.pull_forecast(f, native_template)
       fcst = os.path.basename(fpath)[20:23]
-      print("fcst is:" + fcst)
       if fcst is None:
         print("ERROR: Could not pull forecast leas from f")
         exit
-      init = self.pull_template(os.path.basename(native_template), os.path.basename(f), "%Y%m%d%H")
+      init = self.pull_template(os.path.basename(input_template), os.path.basename(f), "%Y%m%d%H")
       v = self.shift_time(fcst, init)
-      print(v+" vs. " +valid_time)
       if v == valid_time:
         out_file = fpath        
     return out_file
@@ -101,7 +97,7 @@ class CG_pcp_combine(CommandGen):
     for f in files:
       ftime = self.pull_template(template,os.path.basename(f),"%Y%m%d%H")
       if ftime < time:
-        out_file = f        
+        out_file = f
     return out_file
 
   def get_accumulation(self, valid_time, accum, ob_type, is_forecast=False):
@@ -114,8 +110,6 @@ class CG_pcp_combine(CommandGen):
     self.add_arg("-add")
 
     if self.p.getbool('config',ob_type+'_IS_DAILY_FILE') == True:
-      # start at valid_time
-      search_time = valid_time
       # loop accum times
       data_interval = self.p.getint('config',ob_type+'_DATA_INTERVAL')*3600
       for i in range(0, accum, data_interval):
@@ -164,11 +158,10 @@ class CG_pcp_combine(CommandGen):
           search_accum -= 1
         else: # not looking for forecast files
           # get all files of valid_time (all accums)
-          print("Searching: "+"{:s}/{:s}/*{:s}*".format(self.input_dir,start_time[0:8],start_time))
+#          print("Searching: "+"{:s}/{:s}/*{:s}*".format(self.input_dir,start_time[0:8],start_time))
           files = sorted(glob.glob("{:s}/{:s}/*{:s}*".format(self.input_dir,start_time[0:8],start_time)))
-          (self.logger).debug(self.app_name+": Found " + str(len(files)) + " files")
           for f in files:
-            (self.logger).debug(self.app_name+": File: " + f)
+#            (self.logger).debug(self.app_name+": File: " + f)
           # look for biggest accum that fits search
           while search_accum > 0:
             search_file = os.path.join(self.input_dir,self.fill_template(file_template, start_time, search_accum))

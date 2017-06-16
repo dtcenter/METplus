@@ -38,7 +38,6 @@ def find_model(model_type, lead, init_time):
   time_offset = 0
   found = False
   while lead_check <= max_forecast:
-#            print("TC:"+time_check+" LC:"+str(lead_check))            
     model_file = run_grid_stat.fill_template(p.getstr('filename_templates',model_type+'_NATIVE_TEMPLATE'), time_check, lead_check)
     model_path = os.path.join(model_dir,model_file)
     if os.path.exists(model_path):
@@ -144,14 +143,14 @@ if __name__ == "__main__":
 
           #  call GempakToCF if native file doesn't exist
           infiles = run_pcp.get_input_files()
-          print("FOUND "+str(len(infiles))+" files")
+#          print("FOUND "+str(len(infiles))+" files")
           for idx,infile in enumerate(infiles):
             # replace input_dir with native_dir, check if file exists
             nfile = infile.replace(input_dir, native_dir)
             data_type = p.getstr('config',ob_type+'_NATIVE_DATA_TYPE')  
             if data_type == "NETCDF":       
               nfile = os.path.splitext(nfile)[0]+'.nc'            
-            print("NFILE:"+nfile)
+#            print("NFILE:"+nfile)
             if not os.path.isfile(nfile):
               print("Calling GempakToCF to convert to NetCDF")
               run_g2c = CG_GempakToCF(p, logger)
@@ -160,7 +159,7 @@ if __name__ == "__main__":
               print("RUNNING:"+run_g2c.get_command())
               run_g2c.run()
 
-            run_pcp.infiles[idx] = nfile            
+            run_pcp.infiles[idx] = nfile
               
           run_pcp.set_output_filename(run_pcp.fill_template(bucket_template, valid_time, accum))
           run_pcp.add_arg("-name "+obs_var+"_"+accum)
@@ -191,12 +190,36 @@ if __name__ == "__main__":
           # If not, run pcp_combine to create it
           # TODO: remove reliance on model_type
           if model_type == 'HREF_MEAN':
+            model_native_dir = p.getstr('config',model_type+'_NATIVE_DIR')            
             run_pcp_ob = CG_pcp_combine(p, logger)
             valid_time = run_pcp_ob.shift_time(init_time, lead)
             run_pcp_ob.set_input_dir(model_dir)
             model_bucket_dir = p.getstr('config',model_type+'_BUCKET_DIR')
             run_pcp_ob.set_output_dir(model_bucket_dir)
             run_pcp_ob.get_accumulation(valid_time, int(accum), model_type, True)
+
+            #  call GempakToCF if native file doesn't exist
+            infiles = run_pcp_ob.get_input_files()
+            print("FOUND "+str(len(infiles))+" files")
+            for idx,infile in enumerate(infiles):
+              # replace input_dir with native_dir, check if file exists
+              nfile = infile.replace(model_dir, model_native_dir)
+              if not os.path.exists(os.path.dirname(nfile)):
+                os.makedirs(os.path.dirname(nfile))              
+              data_type = p.getstr('config',ob_type+'_NATIVE_DATA_TYPE')  
+              if data_type == "NETCDF":
+                nfile = os.path.splitext(nfile)[0]+'.nc'            
+              print("NFILE:"+nfile)
+              if not os.path.isfile(nfile):
+                print("Calling GempakToCF to convert model to NetCDF")
+                run_g2c = CG_GempakToCF(p, logger)
+                run_g2c.add_input_file(infile)
+                run_g2c.set_output_path(nfile)
+                print("RUNNING:"+run_g2c.get_command())
+                run_g2c.run()
+
+              run_pcp_ob.infiles[idx] = nfile            
+
             bucket_template = p.getstr('filename_templates', model_type+'_BUCKET_TEMPLATE')
             run_pcp_ob.set_output_filename(run_pcp_ob.fill_template(bucket_template, valid_time, accum))
             run_pcp_ob.add_arg("-name "+fcst_var+"_"+accum)
