@@ -7,7 +7,6 @@ import re
 import os
 import sys
 import met_util as util
-#import subprocess
 
 
 def analysis_by_lead_time():
@@ -42,19 +41,19 @@ def analysis_by_lead_time():
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
+    # Flag used to determine whether to use the forecast hour range and increment, or the
+    # specified list of forecast hours in creating the Series-analysis command.
+    # Support for GitHub Issue #3
+    fhr_by_range = True
+
     # Retrieve any necessary values from the parm file(s)
-    fhr_beg = p.getint('config','FHR_BEG')
-    fhr_end = p.getint('config','FHR_END')
-    fhr_inc = p.getint('config','FHR_INC')
-    fcst_tile_regex = p.getstr('regex_pattern','FCST_TILE_REGEX')
-    anly_tile_regex = p.getstr('regex_pattern','ANLY_TILE_REGEX')
-    var_list = util.getlist(p.getstr('config','VAR_LIST'))
-    stat_list = util.getlist(p.getstr('config','STAT_LIST'))
-    series_analysis_exe = p.getexe('SERIES_ANALYSIS')
+    fhr_beg = p.getint('config', 'FHR_BEG')
+    fhr_end = p.getint('config', 'FHR_END')
+    fhr_inc = p.getint('config', 'FHR_INC')
+    var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
+    stat_list = util.getlist(p.getstr('config', 'STAT_LIST'))
     plot_data_plane_exe = p.getexe('PLOT_DATA_PLANE')
-    rm_exe = p.getexe('RM_EXE')
     convert_exe = p.getexe('CONVERT_EXE')
-    series_anly_configuration_file   = p.getstr('config','SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH')
     extract_tiles_dir = p.getdir('EXTRACT_OUT_DIR')
     series_lead_filtered_out_dir = p.getdir('SERIES_LEAD_FILTERED_OUT_DIR')
     series_lead_out_dir = p.getdir('SERIES_LEAD_OUT_DIR')
@@ -62,6 +61,11 @@ def analysis_by_lead_time():
     regrid_with_MET_tool = p.getbool('config','REGRID_USING_MET_TOOL')
     series_filter_opts = p.getstr('config','SERIES_ANALYSIS_FILTER_OPTS')
     series_filter_opts.strip()
+
+    # GitHub Issue #3 support
+    fhr_of_interest = util.getlist(p.getstr('config', 'FHR_OF_INTEREST'))
+    if len(fhr_of_interest) > 0:
+        fhr_by_range = False
 
     # Set up the environment variable to be used in the Series Analysis
     #   Config file (SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH)
@@ -106,6 +110,7 @@ def analysis_by_lead_time():
     # constants_pdef.py parameter/config file.
     if series_filter_opts:
         util.mkdir_p(series_lead_filtered_out_dir)
+        print("tile dir {}:".format(tile_dir))
         util.apply_series_filters(tile_dir, init_times, series_lead_filtered_out_dir, p, logger)
 
         # Remove any empty files and directories to avoid
@@ -151,138 +156,29 @@ def analysis_by_lead_time():
     # If the user sets FCST_INCR=0 but has FCST_INIT != FCST_END, then
     # log an error and exit.
     fhr_diff = fhr_end - fhr_beg
-    if fhr_diff == 0 and frh_inc == 0:
-       fhr_inc = 1
+    if fhr_diff == 0 and fhr_inc == 0:
+        fhr_inc = 1
+    elif fhr_inc == 0:
+        logger.error('ERROR: fcst range indicated with increment of 0 hrs, please check the configuration file.'
+                     '  Exiting...')
+        sys.exit(1)
+    # GitHub Issue #3 support:
+    if fhr_by_range:
+        start = fhr_beg
+        end = fhr_end + 1
+        step = fhr_inc
     else:
-       logger.error('ERROR: fcst range indicated with increment of 0 hrs, please check the configuration file.  Exiting...')
-       sys.exit(1)
+        start = 0
+        end = len(fhr_of_interest)
+        step = 1
 
-    for fhr in range(fhr_beg, fhr_end + 1, fhr_inc):
-        cur_fhr = str(fhr).zfill(3)
-        msg = ('INFO|[' + cur_filename + ':' + cur_function +
-               ']| Evaluating forecast hour ' + cur_fhr)
-        logger.debug(msg)
-
-        # Create the output directory where the netCDF series files
-        # will be saved.
-        util.mkdir_p(series_lead_out_dir)
-        out_dir_parts = [series_lead_out_dir, '/', 'series_F', cur_fhr]
-        out_dir = ''.join(out_dir_parts)
-        util.mkdir_p(out_dir)
-
-        # Gather all the forecast gridded tile files
-        # so they can be saved in ASCII files.
-        fcst_tiles_list = get_anly_fcst_files(tile_dir, "FCST", fcst_tile_regex,
-                                              cur_fhr, logger)
-        fcst_tiles = retrieve_fhr_tiles(fcst_tiles_list, 'FCST', out_dir,
-                                        cur_fhr, fcst_tile_regex, logger)
-
-        # Location of FCST_FILES_Fhhh 
-        ascii_fcst_file_parts = [out_dir, '/FCST_FILES_F', cur_fhr]
-        ascii_fcst_file = ''.join(ascii_fcst_file_parts)
-
-        # Now create the ASCII files needed for the -fcst and -obs
-        try:
-            if len(fcst_tiles) == 0:
-                msg = ("INFO|[" + cur_filename + ":" +
-                       cur_function + "No fcst_tiles for fhr: " + cur_fhr +
-                       " Don't create FCST_F<fhr> ASCII file")
-                logger.debug(msg)
-                continue
-            else:
-                with open(ascii_fcst_file, 'a') as f:
-                    f.write(fcst_tiles)
-
-        except IOError as e:
-            msg = ("ERROR: Could not create requested" +
-                   " ASCII file: " + ascii_fcst_file)
-            logger.error(msg)
-
-        # Gather all the anly gridded tile files
-        # so they can be saved in ASCII files.
-        anly_tiles_list = get_anly_fcst_files(tile_dir, "ANLY", anly_tile_regex,
-                                              cur_fhr, logger)
-        anly_tiles = retrieve_fhr_tiles(anly_tiles_list, 'ANLY', out_dir,
-                                        cur_fhr, anly_tile_regex, logger)
-
-        # Location of ANLY_FILES_Fhhh files 
-        # filtering.
-        ascii_anly_file_parts = [out_dir, '/ANLY_FILES_F', cur_fhr]
-        ascii_anly_file = ''.join(ascii_anly_file_parts)
-
-        try:
-            # Only write to the ascii_anly_file if 
-            # the anly_tiles string isn't empty.
-            if len(anly_tiles) == 0:
-                msg = ("INFO|[" + cur_filename + ":" +
-                       cur_function + "No anly_tiles for fhr: " + cur_fhr +
-                       " Don't create ANLY_F<fhr> ASCII file")
-                logger.debug(msg)
-                continue
-            else:
-                with open(ascii_anly_file, 'a') as f:
-                    f.write(anly_tiles)
-
-        except IOError as e:
-            logger.error("ERROR: Could not create requested " +
-                         "ASCII file: " + ascii_anly_file)
-
-        # Remove any empty directories that result from 
-        # when no files are written.
-        util.prune_empty(out_dir, p, logger)
-
-        # -fcst and -obs params
-        fcst_param_parts = ['-fcst ', ascii_fcst_file]
-        fcst_param = ''.join(fcst_param_parts)
-        obs_param_parts = ['-obs ', ascii_anly_file]
-        obs_param = ''.join(obs_param_parts)
-        logger.debug('fcst param: ' + fcst_param)
-        logger.debug('obs param: ' + obs_param)
-
-        # Create the -out param and invoke the MET series 
-        # analysis binary
-        for cur_var in var_list:
-            # Get the name and level to create the -out param
-            # and set the NAME and LEVEL environment variables that
-            # are needed by the MET series analysis binary.
-            match = re.match(r'(.*)/(.*)', cur_var)
-            name = match.group(1)
-            level = match.group(2)
-            os.environ['NAME'] = name
-            os.environ['LEVEL'] = level
-
-            # Set NAME to name_level if regridding with regrid data plane
-            if regrid_with_MET_tool:
-                os.environ['NAME'] = name + '_' + level
-            out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr,
-                               '_', name, '_', level, '.nc']
-            out_param = ''.join(out_param_parts)
-
-            # Create the full series analysis command.
-            config_param_parts = ['-config ',
-                                  series_anly_configuration_file]
-            config_param = ''.join(config_param_parts)
-            series_analysis_cmd_parts = [series_analysis_exe, ' ',
-                                         ' -v 4 ',
-                                         fcst_param, ' ', obs_param,
-                                         ' ', config_param, ' ',
-                                         out_param]
-            series_analysis_cmd = ''.join(series_analysis_cmd_parts)
-            series_analysis_cmd = batchexe('sh')['-c',series_analysis_cmd].err2out()
-            #series_analysis_cmd = batchexe(series_analysis_cmd.split()[0])[series_analysis_cmd.split()[1:]].err2out()
-            
-            msg = ("INFO:[ " + cur_filename + ":" +
-                   cur_function + "]|series analysis command: " +
-                   series_analysis_cmd.to_shell())
-            logger.debug(msg)
-            series_out = run(series_analysis_cmd)
-            #series_out = subprocess.check_output(series_analysis_cmd,
-            #                                     stderr=subprocess.STDOUT,
-            #                                     shell=True)
-
-    # Make sure there aren't any emtpy
-    # files or directories that still persist.
-    util.prune_empty(series_lead_out_dir, p, logger)
+    # Create the command for MET Series-analysis using either a list of specified forecast hours, or
+    # a range of forecast hours with increment.
+    if fhr_by_range:
+        perform_series_for_range(tile_dir, start, end, step, p, logger)
+    else:
+        # Perform "bucketed" series analysis (i.e. from user-defined list of forecast hours in the METplus config file)
+        perform_series_for_bucket(tile_dir, start, end, p, logger)
 
     # Now create animation plots
     animate_dir = os.path.join(series_lead_out_dir, 'series_animate')
@@ -330,9 +226,9 @@ def analysis_by_lead_time():
 
         # Retrieve only those netCDF files that correspond to
         # the current variable.
-        nc_var_list = get_var_ncfiles(name, nc_list, logger)
+        nc_var_list = get_var_ncfiles(fhr_by_range, name, nc_list, logger)
         if len(nc_var_list) == 0:
-            logger.debug("WARNING nc_var_list is empty, check for next variable...")
+            logger.debug("WARNING nc_var_list is empty for " + name + "_" + level + ", check for next variable...")
             continue
 
         # Iterate over the statistics, setting the CUR_STAT
@@ -341,7 +237,7 @@ def analysis_by_lead_time():
             # Set environment variable required by MET
             # application Plot_Data_Plane.
             os.environ['CUR_STAT'] = cur_stat
-            vmin, vmax = get_netcdf_min_max(nc_var_list, cur_stat, p, logger)
+            vmin, vmax = get_netcdf_min_max(fhr_by_range, nc_var_list, cur_stat, p, logger)
             msg = ("|INFO|[ " + cur_filename + ":" + cur_function +
                    "]| Plotting range for " + cur_var + " " +
                    cur_stat + ":  " + str(vmin) + " to " + str(vmax))
@@ -367,8 +263,13 @@ def analysis_by_lead_time():
 
                 # Extract the forecast hour from the netCDF
                 # filename.
-                match_fhr = re.match(
-                    r'.*/series_F\d{3}/series_F(\d{3}).*\.nc', cur_nc)
+                if fhr_by_range:
+                    match_fhr = re.match(
+                        r'.*/series_F\d{3}/series_F(\d{3}).*\.nc', cur_nc)
+                else:
+                    match_fhr = re.match(
+                        r'.*/series_F\d{3}_to_F\d{3}/series_F(\d{3})_to_F(\d{3}).*\.nc', cur_nc)
+
                 if match_fhr:
                     fhr = match_fhr.group(1)
                 else:
@@ -378,7 +279,7 @@ def analysis_by_lead_time():
                     continue
 
                 # Get the max series_cnt_TOTAL value (i.e. nseries)
-                nseries = get_nseries(cur_nc, p, logger)
+                nseries = get_nseries(fhr_by_range, cur_nc, p, logger)
 
                 # Create the plot data plane command based on whether 
                 # the background map was requested in the
@@ -429,6 +330,12 @@ def analysis_by_lead_time():
 
             # Create animated gif
             logger.info("Creating animated gifs")
+            if fhr_by_range:
+                series_dir = '/series_F*'
+                series_fname_root = '/series_F*'
+            else:
+                series_dir = '/series_F*_to_F*'
+                series_fname_root = '/series_F*_to_F*'
             gif_parts = [convert_exe,
                          ' -dispose Background -delay 100 ',
                          series_lead_out_dir, '/series_F*',
@@ -450,12 +357,327 @@ def analysis_by_lead_time():
     logger.info("Finished with series analysis by lead")
 
 
-def get_nseries(nc_var_file, p, logger):
+def perform_series_for_bucket(tile_dir, start, end, p, logger):
+    # Used for logging.
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    # Retrieve necessary information from the config file.
+    series_analysis_exe = p.getexe('SERIES_ANALYSIS')
+    series_anly_configuration_file = p.getstr('config', 'SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH')
+    fhr_of_interest = util.getlist(p.getstr('config','FHR_OF_INTEREST'))
+
+    series_lead_out_dir = p.getdir('SERIES_LEAD_OUT_DIR')
+    var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
+    regrid_with_MET_tool = p.getbool('config', 'REGRID_USING_MET_TOOL')
+
+    if regrid_with_MET_tool:
+        # Regridding via MET Tool regrid_data_plane.
+        fcst_tile_regex = p.getstr('regex_pattern','FCST_NC_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern','ANLY_NC_TILE_REGEX')
+    else:
+        # Regridding via wgrib2 tool.
+        fcst_tile_regex = p.getstr('regex_pattern','FCST_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern','ANLY_TILE_REGEX')
+
+    fcst_tiles_list = []
+    anly_tiles_list = []
+    fhr_bucket = str(start).zfill(3) + "_to_F" + str(fhr_of_interest[end-1]).zfill(3)
+
+    # Create the output directory which will hold the series analysis results.
+    util.mkdir_p(series_lead_out_dir)
+    out_dir_parts = [series_lead_out_dir, '/', 'series_F', fhr_bucket]
+    out_dir = ''.join(out_dir_parts)
+    util.mkdir_p(out_dir)
+
+    logger.debug("Performing series analysis on bucket of forecast hours...")
+    for fhr in range(start, end):
+        cur_fhr = str(fhr_of_interest[fhr]).zfill(3)
+        msg = ('INFO|[' + cur_filename + ':' + cur_function +
+               ']| Evaluating forecast hour ' + cur_fhr)
+        logger.debug(msg)
+
+        # Create the output directory where the netCDF series files
+        # will be saved.
+        # out_dir = create_netcdf_dirs(series_lead_out_dir, cur_fhr)
+
+        # Gather all the forecast gridded tile files
+        # so they can be saved in ASCII files.
+        cur_fcst_tiles_list = get_anly_or_fcst_files(tile_dir, "FCST", fcst_tile_regex,
+                                                     cur_fhr, logger)
+        cur_fcst_tiles = retrieve_fhr_tiles(cur_fcst_tiles_list, 'FCST', out_dir,
+                                            cur_fhr, fcst_tile_regex, logger)
+
+        # Location of FCST_FILES_Fhhh
+        ascii_fcst_file_parts = [out_dir, '/FCST_FILES_F', fhr_bucket]
+        ascii_fcst_file = ''.join(ascii_fcst_file_parts)
+
+        fcst_tiles_list.append(cur_fcst_tiles)
+
+        # Gather all the anly gridded tile files
+        # so they can be saved in ASCII files.
+        cur_anly_tiles_list = get_anly_or_fcst_files(tile_dir, "ANLY", anly_tile_regex,
+                                                 cur_fhr, logger)
+        cur_anly_tiles = retrieve_fhr_tiles(cur_anly_tiles_list, 'ANLY', out_dir,
+                                        cur_fhr, anly_tile_regex, logger)
+
+        # Location of ANLY_FILES_Fhhh files
+        # filtering.
+        ascii_anly_file_parts = [out_dir, '/ANLY_FILES_F', fhr_bucket]
+        ascii_anly_file = ''.join(ascii_anly_file_parts)
+
+        anly_tiles_list.append(cur_anly_tiles)
+
+    # Now create the ASCII files needed for the -fcst and -obs
+    try:
+        if len(fcst_tiles_list) == 0:
+            msg = ("INFO|[" + cur_filename + ":" +
+                   cur_function + " No fcst_tiles for fhr bucket: " + str(start) + " to " + str(end) +
+                   " Don't create FCST_F<fhr> ASCII file")
+            logger.debug(msg)
+        else:
+            with open(ascii_fcst_file, 'a') as f:
+                for fcst_tiles in fcst_tiles_list:
+                    f.write(fcst_tiles)
+
+    except IOError as e:
+        msg = ("ERROR: Could not create requested" +
+                " ASCII file: " + ascii_fcst_file)
+        logger.error(msg)
+
+    try:
+        # Only write to the ascii_anly_file if
+        # the anly_tiles string isn't empty.
+        if len(anly_tiles_list) == 0:
+            msg = ("INFO|[" + cur_filename + ":" +
+                   cur_function + "No anly_tiles for fhr: " + fhr_bucket +
+                   " Don't create ANLY_F<fhr> ASCII file")
+            logger.debug(msg)
+        else:
+            with open(ascii_anly_file, 'a') as f:
+                for anly_tiles in anly_tiles_list:
+                    f.write(anly_tiles)
+
+    except IOError as e:
+        logger.error("ERROR: Could not create requested " +
+                     "ASCII file: " + ascii_anly_file)
+
+    # Remove any empty directories that result from
+    # when no files are written.
+    util.prune_empty(out_dir, p, logger)
+
+    # -fcst and -obs params
+    fcst_param_parts = ['-fcst ', ascii_fcst_file]
+    fcst_param = ''.join(fcst_param_parts)
+    obs_param_parts = ['-obs ', ascii_anly_file]
+    obs_param = ''.join(obs_param_parts)
+    logger.debug('fcst param: ' + fcst_param)
+    logger.debug('obs param: ' + obs_param)
+
+    # Create the -out param and invoke the MET series
+    # analysis binary
+    for cur_var in var_list:
+        # Get the name and level to create the -out param
+        # and set the NAME and LEVEL environment variables that
+        # are needed by the MET series analysis binary.
+        match = re.match(r'(.*)/(.*)', cur_var)
+        name = match.group(1)
+        level = match.group(2)
+        os.environ['NAME'] = name
+        os.environ['LEVEL'] = level
+
+        # Set NAME to name_level if regridding with regrid data plane
+        if regrid_with_MET_tool:
+            os.environ['NAME'] = name + '_' + level
+        out_param_parts = ['-out ', out_dir, '/series_F', fhr_bucket,
+                           '_', name, '_', level, '.nc']
+        out_param = ''.join(out_param_parts)
+
+        # Create the full series analysis command.
+        config_param_parts = ['-config ',
+                              series_anly_configuration_file]
+        config_param = ''.join(config_param_parts)
+        series_analysis_cmd_parts = [series_analysis_exe, ' ',
+                                     ' -v 4 ',
+                                     fcst_param, ' ', obs_param,
+                                     ' ', config_param, ' ',
+                                     out_param]
+        series_analysis_cmd = ''.join(series_analysis_cmd_parts)
+        msg = ("INFO:[ " + cur_filename + ":" +
+               cur_function + "]|series analysis command: " +
+               series_analysis_cmd)
+        logger.debug(msg)
+        series_analysis_cmd = batchexe('sh')['-c', series_analysis_cmd].err2out()
+        series_out = run(series_analysis_cmd)
+
+        # Make sure there aren't any emtpy
+        # files or directories that still persist.
+        util.prune_empty(series_lead_out_dir, p, logger)
+
+
+def perform_series_for_range(tile_dir, start, end, step, p, logger):
+    """Performs a series analysis by lead time, based on a range and increment of forecast hours.
+       Invokes the MET tool Series-analysis
+
+       Args:
+           tile_dir:  The location of the input data (output from running extract_tiles.py)
+           start:     The first forecast hour
+           end:       The last forecast hour
+           step:      The time increment/step size between forecast hours
+           p:         The instance to the configuration
+           logger:    The logger to which all log messages are directed
+
+       Returns:          None
+    """
+
+    # Used for logging.
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    # Retrieve necessary information from the config file.
+    series_analysis_exe = p.getexe("SERIES_ANALYSIS")
+    series_anly_configuration_file = p.getstr('config','SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH')
+    series_lead_out_dir = p.getdir('SERIES_LEAD_OUT_DIR')
+    fcst_tile_regex = p.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
+    anly_tile_regex = p.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
+
+    var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
+    regrid_with_MET_tool = p.getbool('config', 'REGRID_USING_MET_TOOL')
+
+    for fhr in range(start, end, step):
+        cur_fhr = str(fhr).zfill(3)
+        msg = ('INFO|[' + cur_filename + ':' + cur_function +
+               ']| Evaluating forecast hour ' + cur_fhr)
+        logger.debug(msg)
+
+        # Create the output directory where the netCDF series files
+        # will be saved.
+        # out_dir = create_netcdf_dirs(series_lead_out_dir, cur_fhr)
+
+        # TODO remove when testing is complete, these are replaced by create_netcdf_dirs()
+        util.mkdir_p(series_lead_out_dir)
+        out_dir_parts = [series_lead_out_dir, '/', 'series_F', cur_fhr]
+        out_dir = ''.join(out_dir_parts)
+        util.mkdir_p(out_dir)
+
+        # Gather all the forecast gridded tile files
+        # so they can be saved in ASCII files.
+        fcst_tiles_list = get_anly_or_fcst_files(tile_dir, "FCST", fcst_tile_regex,
+                                                 cur_fhr, logger)
+        fcst_tiles = retrieve_fhr_tiles(fcst_tiles_list, 'FCST', out_dir,
+                                        cur_fhr, fcst_tile_regex, logger)
+
+        # Location of FCST_FILES_Fhhh
+        ascii_fcst_file_parts = [out_dir, '/FCST_FILES_F', cur_fhr]
+        ascii_fcst_file = ''.join(ascii_fcst_file_parts)
+
+        # Now create the ASCII files needed for the -fcst and -obs
+        try:
+            if len(fcst_tiles) == 0:
+                msg = ("INFO|[" + cur_filename + ":" +
+                       cur_function + " No fcst_tiles for fhr: " + cur_fhr +
+                       " Don't create FCST_F<fhr> ASCII file")
+                logger.debug(msg)
+                continue
+            else:
+                with open(ascii_fcst_file, 'a') as f:
+                    f.write(fcst_tiles)
+
+        except IOError as e:
+            msg = ("ERROR: Could not create requested" +
+                   " ASCII file: " + ascii_fcst_file)
+            logger.error(msg)
+
+        # Gather all the anly gridded tile files
+        # so they can be saved in ASCII files.
+        anly_tiles_list = get_anly_or_fcst_files(tile_dir, "ANLY", anly_tile_regex,
+                                                 cur_fhr, logger)
+        anly_tiles = retrieve_fhr_tiles(anly_tiles_list, 'ANLY', out_dir,
+                                        cur_fhr, anly_tile_regex, logger)
+
+        # Location of ANLY_FILES_Fhhh files
+        # filtering.
+        ascii_anly_file_parts = [out_dir, '/ANLY_FILES_F', cur_fhr]
+        ascii_anly_file = ''.join(ascii_anly_file_parts)
+
+        try:
+            # Only write to the ascii_anly_file if
+            # the anly_tiles string isn't empty.
+            if len(anly_tiles) == 0:
+                msg = ("INFO|[" + cur_filename + ":" +
+                       cur_function + "No anly_tiles for fhr: " + cur_fhr +
+                       " Don't create ANLY_F<fhr> ASCII file")
+                logger.debug(msg)
+                continue
+            else:
+                with open(ascii_anly_file, 'a') as f:
+                    f.write(anly_tiles)
+
+        except IOError as e:
+            logger.error("ERROR: Could not create requested " +
+                         "ASCII file: " + ascii_anly_file)
+
+        # Remove any empty directories that result from
+        # when no files are written.
+        util.prune_empty(out_dir, p, logger)
+
+        # -fcst and -obs params
+        fcst_param_parts = ['-fcst ', ascii_fcst_file]
+        fcst_param = ''.join(fcst_param_parts)
+        obs_param_parts = ['-obs ', ascii_anly_file]
+        obs_param = ''.join(obs_param_parts)
+        logger.debug('fcst param: ' + fcst_param)
+        logger.debug('obs param: ' + obs_param)
+
+        # Create the -out param and invoke the MET series
+        # analysis binary
+        for cur_var in var_list:
+            # Get the name and level to create the -out param
+            # and set the NAME and LEVEL environment variables that
+            # are needed by the MET series analysis binary.
+            match = re.match(r'(.*)/(.*)', cur_var)
+            name = match.group(1)
+            level = match.group(2)
+            os.environ['NAME'] = name
+            os.environ['LEVEL'] = level
+
+            # Set NAME to name_level if regridding with regrid data plane
+            if regrid_with_MET_tool:
+                os.environ['NAME'] = name + '_' + level
+            out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr,
+                               '_', name, '_', level, '.nc']
+            out_param = ''.join(out_param_parts)
+
+            # Create the full series analysis command.
+            config_param_parts = ['-config ',
+                                  series_anly_configuration_file]
+            config_param = ''.join(config_param_parts)
+            series_analysis_cmd_parts = [series_analysis_exe, ' ',
+                                         ' -v 4 ',
+                                         fcst_param, ' ', obs_param,
+                                         ' ', config_param, ' ',
+                                         out_param]
+            series_analysis_cmd = ''.join(series_analysis_cmd_parts)
+            msg = ("INFO:[ " + cur_filename + ":" +
+                   cur_function + "]|series analysis command: " +
+                   series_analysis_cmd)
+            logger.debug(msg)
+            series_analysis_cmd = batchexe('sh')['-c', series_analysis_cmd].err2out()
+            series_out = run(series_analysis_cmd)
+
+            # Make sure there aren't any emtpy
+            # files or directories that still persist.
+    util.prune_empty(series_lead_out_dir, p, logger)
+
+
+def get_nseries(fhr_by_range, nc_var_file, p, logger):
     '''Determine the number of series for this lead time and
        its associated variable via calculating the max series_cnt_TOTAL 
        value.
 
        Args:
+             fhr_by_range:  Boolean value indicating whether series analysis was performed on a range of forecast
+                          hours (True) or on a "bucket" of forecast hours (False).
              nc_var_file:  The netCDF file for a particular variable.
              p:             The ConfigMaster object.
              logger:        The logger to which all log messages are
@@ -481,8 +703,13 @@ def get_nseries(nc_var_file, p, logger):
 
     # Determine the series_F<fhr> subdirectory where this netCDF file
     # resides.
-    match = re.match(r'(.*/series_F[0-9]{3})/series_F[0-9]{3}.*nc',
-                     nc_var_file)
+    if fhr_by_range:
+        match = re.match(r'(.*/series_F[0-9]{3})/series_F[0-9]{3}.*nc',
+                         nc_var_file)
+    else:
+        match = re.match(r'(.*/series_F[0-9]{3}_to_F[0-9]{3})/series_F[0-9]{3}_to_F[0-9]{3}.*nc',
+                         nc_var_file)
+
     if match:
         base_nc_dir = match.group(1)
     else:
@@ -503,9 +730,6 @@ def get_nseries(nc_var_file, p, logger):
     nco_nseries_cmd = batchexe('sh')['-c',nco_nseries_cmd].err2out()
     #nco_nseries_cmd = batchexe(nco_nseries_cmd.split()[0])[nco_nseries_cmd.split()[1:]].err2out()
     nco_out = run(nco_nseries_cmd)
-    #nco_out = subprocess.check_output(nco_nseries_cmd,
-    #                                  stderr=subprocess.STDOUT,
-    #                                  shell=True)
 
     # Create an ASCII file with the max value, which can be parsed.
     nseries_txt_path = os.path.join(base_nc_dir, 'nseries.txt')
@@ -516,9 +740,6 @@ def get_nseries(nc_var_file, p, logger):
     #ncdump_max_cmd = batchexe(ncdump_max_cmd.split()[0])[ncdump_max_cmd.split()[1:]].err2out()
     ncdump_out = run(ncdump_max_cmd)
     
-    #ncdump_out = subprocess.check_output(ncdump_max_cmd,
-    #                                     stderr=subprocess.STDOUT,
-    #                                     shell=True)
     # Look for the max value for this netCDF file.
     try:
         with open(nseries_txt_path, 'r') as fmax:
@@ -540,11 +761,13 @@ def get_nseries(nc_var_file, p, logger):
         logger.error(msg)
 
 
-def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
+def get_netcdf_min_max(fhr_by_range, nc_var_files, cur_stat, p, logger):
     '''Determine the min and max for all lead times for each 
        statistic and variable pairing.
 
        Args:
+           fhr_by_range:  Boolean value indicating whether series analysis was performed on a range of forecast
+                          hours (True) or on a "bucket" of forecast hours (False).
            nc_var_files:  A list of the netCDF files generated 
                           by the MET series analysis tool that 
                           correspond to the variable of interest.
@@ -562,9 +785,12 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
        
     '''
 
+
     ncap2_exe = p.getexe('NCAP2_EXE')
     ncdump_exe = p.getexe('NCDUMP_EXE')
-    rm_exe = p.getexe('RM_EXE')
+
+    max_temporary_files = []
+    min_temporary_files = []
 
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
@@ -574,9 +800,12 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
     VMAX = -999999.
 
     for cur_nc in nc_var_files:
-        # Determine the series_F<fhr> subdirectory where this 
+        # Determine the series_F<fhr> subdirectory where this
         # netCDF file resides.
-        match = re.match(r'(.*/series_F[0-9]{3})/series_F[0-9]{3}.*nc', cur_nc)
+        if fhr_by_range:
+            match = re.match(r'(.*/series_F[0-9]{3})/series_F[0-9]{3}.*nc', cur_nc)
+        else:
+            match = re.match(r'(.*/series_F[0-9]{3}_to_F[0-9]{3})/series_F[0-9]{3}_to_F[0-9]{3}.*nc', cur_nc)
         if match:
             base_nc_dir = match.group(1)
             logger.debug("base nc dir: " + base_nc_dir)
@@ -587,86 +816,58 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
             logger.error(msg)
             sys.exit(1)
 
-        # Use NCO utility ncap2 to find the min and max for 
-        # the variable and stat pair.
-
-        # MIN VALUE from netCDF
+        # Create file paths for temporary files for min value...
         min_nc_path = os.path.join(base_nc_dir, 'min.nc')
         min_txt_path = os.path.join(base_nc_dir, 'min.txt')
+        min_temporary_files.append(min_nc_path)
+        min_temporary_files.append(min_txt_path)
 
-        # First, remove any pre-existing min.nc and
-        # min.txt files from a previous run.
-        try:
-            os.remove(min_nc_path)
-            os.remove(min_txt_path)
-        except OSError as e:
-            # Exception can be raised if these
-            # files don't exist. Ignore this exception.
-            pass
+        # Clean up any temporary min files that might have been left over from a previous run.
+        cleanup_temporary_files(min_temporary_files)
 
+        # Use NCO ncap2 to get the min for the current stat-var pairing.
         nco_min_cmd_parts = [ncap2_exe, ' -v -s ', '"',
                              'min=min(series_cnt_', cur_stat, ')',
                              '" ', cur_nc, ' ', min_nc_path]
         nco_min_cmd = ''.join(nco_min_cmd_parts)
-
-        nco_min_cmd = batchexe('sh')['-c',nco_min_cmd].err2out()
-        #nco_min_cmd = batchexe(nco_min_cmd.split()[0])[nco_min_cmd.split()[1:]].err2out()
-
-        logger.debug('nco_min_cmd: ' + nco_min_cmd.to_shell())
+        logger.debug('nco_min_cmd: ' + nco_min_cmd)
+        nco_min_cmd = batchexe('sh')['-c', nco_min_cmd].err2out()
         nco_min_out = run(nco_min_cmd)
-        #nco_min_out = subprocess.check_output(nco_min_cmd,
-        #                                      stderr=subprocess.STDOUT,
-        #                                      shell=True)
 
-        # MAX VALUE from netCDF
+        # now set up file paths for the max value...
         max_nc_path = os.path.join(base_nc_dir, 'max.nc')
         max_txt_path = os.path.join(base_nc_dir, 'max.txt')
+        max_temporary_files.append(max_nc_path)
+        max_temporary_files.append(max_txt_path)
 
-        # First, remove pre-existing max.nc file from any previous run.
-        try:
-            os.remove(max_nc_path)
-            os.remove(max_txt_path)
-        except OSError as e:
-            # If already removed or never created, this will 
-            # raise an exception.
-            pass
-            logger.warn("WARN|[" + cur_filename + cur_function +
-                         "]| " + str(e))
+        # First, remove pre-existing max.txt and max.nc file from any previous run.
+        cleanup_temporary_files(max_temporary_files)
 
+        # Using NCO ncap2 to perform arithmetic processing to retrieve the max from each
+        # netCDF file's stat-var pairing.
         nco_max_cmd_parts = [ncap2_exe, ' -v -s ', '"',
                              'max=max(series_cnt_', cur_stat, ')',
                              '" ', cur_nc, ' ', max_nc_path]
         nco_max_cmd = ''.join(nco_max_cmd_parts)
-        nco_max_cmd = batchexe('sh')['-c',nco_max_cmd].err2out()
-        #nco_max_cmd = batchexe(nco_max_cmd.split()[0])[nco_max_cmd.split()[1:]].err2out()
+        logger.debug('nco_max_cmd: ' + nco_max_cmd)
+        nco_max_cmd = batchexe('sh')['-c', nco_max_cmd].err2out()
+        nco_out = run(nco_max_cmd)
 
-        logger.debug('!!!nco_max_cmd: ' + nco_max_cmd.to_shell())
-        nco_max_out = run(nco_max_cmd)
-        #nco_max_out = subprocess.check_output(nco_max_cmd,
-        #                                      stderr=subprocess.STDOUT,
-        #                                      shell=True)
-
-        # Create ASCII files with the min and max values, using
-        # NCO utility ncdump. 
-        # These files can be parsed to find the VMIN and VMAX.
+        # Create ASCII files with the min and max values, using the
+        # NCO utility ncdump.
+        # These files can be parsed to determine the VMIN and VMAX.
         ncdump_min_cmd_parts = [ncdump_exe, ' ', base_nc_dir, '/min.nc > ', min_txt_path]
         ncdump_min_cmd = ''.join(ncdump_min_cmd_parts)
-        ncdump_min_cmd = batchexe('sh')['-c',ncdump_min_cmd].err2out()
-        #ncdump_min_cmd = batchexe(ncdump_min_cmd.split()[0])[ncdump_min_cmd.split()[1:]].err2out()
+        ncdump_min_cmd = batchexe('sh')['-c', ncdump_min_cmd].err2out()
         ncdump_min_out = run(ncdump_min_cmd)
-        #ncdump_min_out = subprocess.check_output(ncdump_min_cmd,
-        #                                         stderr=subprocess.STDOUT,
-        #                                         shell=True)
+
         ncdump_max_cmd_parts = [ncdump_exe, ' ', base_nc_dir,
                                 '/max.nc > ', max_txt_path]
         ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
-        ncdump_max_cmd = batchexe('sh')['-c',ncdump_max_cmd].err2out()
-        #ncdump_max_cmd = batchexe(ncdump_max_cmd.split()[0])[ncdump_max_cmd.split()[1:]].err2out()
+        ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
         ncdump_max_out = run(ncdump_max_cmd)
-        #ncdump_max_out = subprocess.check_output(ncdump_max_cmd,
-        #                                         stderr=subprocess.STDOUT, shell=True)
 
-        # Look for the min and max values in each netCDF file.
+        # Search for 'min' in the min.txt file.
         try:
             with open(min_txt_path, 'r') as fmin:
                 for line in fmin:
@@ -680,6 +881,8 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
             msg = ("ERROR|[" + cur_filename + ":" + cur_function +
                    "]| cannot open the min text file")
             logger.error(msg)
+
+        # Search for 'max' in the max.txt file.
         try:
             with open(max_txt_path, 'r') as fmax:
                 for line in fmax:
@@ -694,15 +897,20 @@ def get_netcdf_min_max(nc_var_files, cur_stat, p, logger):
                    "]| cannot open the max text file")
             logger.error(msg)
 
+        # Clean up min.nc, min.txt, max.nc and max.txt temporary files.
+        cleanup_temporary_files(min_temporary_files)
+        cleanup_temporary_files(max_temporary_files)
 
     return VMIN, VMAX
 
 
-def get_var_ncfiles(cur_var, nc_list, logger):
+def get_var_ncfiles(fhr_by_range, cur_var, nc_list, logger):
     ''' Retrieve only the netCDF files corresponding to this statistic
         and variable pairing.
 
         Args:
+            fhr_by_range: The boolean value indicating whether series analysis was performed on a range of forecast hours
+                       (True) or on a 'bucket' of forecast hours (False)
             cur_var:   The variable of interest.
             nc_list:  The list of all netCDF files that were generated 
                       by the MET utility run_series_analysis.
@@ -722,6 +930,13 @@ def get_var_ncfiles(cur_var, nc_list, logger):
     var_ncfiles = []
     var_regex_parts = [".*series_F[0-9]{3}_", cur_var,
                        "_[0-9a-zA-Z]+.*nc"]
+    if fhr_by_range:
+        var_regex_parts = [".*series_F[0-9]{3}_", cur_var,
+                           "_[0-9a-zA-Z]+.*nc"]
+    else:
+        var_regex_parts = [".*series_F[0-9]{3}_to_F[0-9]{3}_", cur_var,
+                           "_[0-9a-zA-Z]+.*nc"]
+
     var_regex = ''.join(var_regex_parts)
     for cur_nc in nc_list:
         # Determine the variable from the filename
@@ -863,7 +1078,7 @@ def find_matching_tile(fcst_file, anly_tiles, logger):
         return None
 
 
-def get_anly_fcst_files(filedir, type, filename_regex, cur_fhr, logger):
+def get_anly_or_fcst_files(filedir, type, filename_regex, cur_fhr, logger):
     ''' Get all the ANLY or FCST files by walking 
         through the directories starting at filedir.
     
@@ -960,6 +1175,21 @@ def cleanup_lead_ascii(p, logger):
                 if anly_match:
                     os.remove(rm_file)
 
+
+def cleanup_temporary_files(list_of_files):
+    """ Remove the files indicated in the list_of_files list.  The full file path must be indicated.
+
+        Args:
+            list_of_files: A list of files (full filepath) to be removed.
+        Returns:
+            None:  Removes the requested files.
+    """
+    for f in list_of_files:
+        try:
+            os.remove(f)
+        except OSError as oe:
+            # Raises exception if this doesn't exist (never created or already removed).  Ignore.
+            pass
 
 if __name__ == "__main__":
     # sleep is for debugging in pycharm so I can attach to this process

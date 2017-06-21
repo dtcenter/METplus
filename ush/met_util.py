@@ -1202,7 +1202,7 @@ def get_dirs(base_dir, p, logger):
 def getlist(s,logger=None):
 
     # returns a list of string elements from a comma or space
-    # seperated string of values, returns and empty list
+    # separated string of values, returns and empty list
     # if s is ''
     # '4,4,2,4,2,4,2, ' or '4,4,2,4,2,4,2 ' or
     # '4, 4, 4, 4, ' or '4, 4, 4, 4 '
