@@ -502,13 +502,14 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
     # valid time lat and lon of both  tropical cyclone tracks, etc.
     # Then calculate the forecast hour and other things.
     with open(tmp_filename, "r") as tf:
-      #read header
-      header = tf.readline().split()
-      #get column number for columns on interest
-      header_colnum_init, header_colnum_lead, header_colnum_valid = header.index('INIT'), header.index('LEAD'), header.index('VALID')
-      header_colnum_alat, header_colnum_alon = header.index('ALAT'), header.index('ALON')
-      header_colnum_blat, header_colnum_blon = header.index('BLAT'), header.index('BLON') 
-      for line in tf:
+        # read header
+        header = tf.readline().split()
+        # get column number for columns on interest
+        print('header{}:'.format(header))
+        header_colnum_init, header_colnum_lead, header_colnum_valid = header.index('INIT'), header.index('LEAD'), header.index('VALID')
+        header_colnum_alat, header_colnum_alon = header.index('ALAT'), header.index('ALON')
+        header_colnum_blat, header_colnum_blon = header.index('BLAT'), header.index('BLON')
+        for line in tf:
             col = line.split()
             init, lead, valid, alat, alon, blat, blon = col[header_colnum_init], col[header_colnum_lead], col[header_colnum_valid], col[header_colnum_alat], col[header_colnum_alon], col[header_colnum_blat], col[header_colnum_blon]
  
@@ -1008,7 +1009,7 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, p, logger):
     cur_function = sys._getframe().f_code.co_name
 
     # Retrieve any necessary values from the param/config file,
-    # constants_pdef.py.
+    # metplus.conf.
     tc_stat_exe = p.getexe('TC_STAT')
     cur_pid = str(os.getpid())
     tmp_dir = os.path.join(p.getdir('TMP_DIR'), cur_pid)
@@ -1053,10 +1054,15 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, p, logger):
             # Now retrieve the files corresponding to these
             # storm ids that resulted from filtering.
             sorted_storm_ids = get_storm_ids(filter_filename, logger)
+
+            # Retrieve the header from filter_filename to be used in creating the temporary files.
+            with open(filter_filename, 'r') as ff:
+                header = ff.readline()
+
             for cur_storm in sorted_storm_ids:
                 msg = ("INFO| [" + cur_filename + ":" +
                        cur_function +
-                       " ] | Processing storm: " + cur_storm)
+                       " ] | Processing storm: " + cur_storm + " for file: " + filter_filename)
                 logger.debug(msg)
                 storm_output_dir = os.path.join(series_output_dir,
                                                 cur_init, cur_storm)
@@ -1066,6 +1072,7 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, p, logger):
                 tmp_filename = os.path.join(tmp_dir, tmp_file)
                 storm_match_list = grep(cur_storm, filter_filename)
                 with open(tmp_filename, "a+") as tmp_file:
+                    tmp_file.write(header)
                     for storm_match in storm_match_list:
                         tmp_file.write(storm_match)
 
@@ -1195,7 +1202,7 @@ def get_dirs(base_dir, p, logger):
 def getlist(s,logger=None):
 
     # returns a list of string elements from a comma or space
-    # seperated string of values, returns and empty list
+    # separated string of values, returns and empty list
     # if s is ''
     # '4,4,2,4,2,4,2, ' or '4,4,2,4,2,4,2 ' or
     # '4, 4, 4, 4, ' or '4, 4, 4, 4 '
