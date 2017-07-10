@@ -365,7 +365,7 @@ def perform_series_for_bucket(tile_dir, start, end, p, logger):
     # Retrieve necessary information from the config file.
     series_analysis_exe = p.getexe('SERIES_ANALYSIS')
     series_anly_configuration_file = p.getstr('config', 'SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH')
-    fhr_of_interest = util.getlist(p.getstr('config','FHR_OF_INTEREST'))
+    fhr_of_interest = util.getlist(p.getstr('config', 'FHR_OF_INTEREST'))
 
     series_lead_out_dir = p.getdir('SERIES_LEAD_OUT_DIR')
     var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
@@ -373,12 +373,12 @@ def perform_series_for_bucket(tile_dir, start, end, p, logger):
 
     if regrid_with_MET_tool:
         # Regridding via MET Tool regrid_data_plane.
-        fcst_tile_regex = p.getstr('regex_pattern','FCST_NC_TILE_REGEX')
-        anly_tile_regex = p.getstr('regex_pattern','ANLY_NC_TILE_REGEX')
+        fcst_tile_regex = p.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
     else:
         # Regridding via wgrib2 tool.
-        fcst_tile_regex = p.getstr('regex_pattern','FCST_TILE_REGEX')
-        anly_tile_regex = p.getstr('regex_pattern','ANLY_TILE_REGEX')
+        fcst_tile_regex = p.getstr('regex_pattern', 'FCST_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern', 'ANLY_TILE_REGEX')
 
     fcst_tiles_list = []
     anly_tiles_list = []
@@ -417,9 +417,9 @@ def perform_series_for_bucket(tile_dir, start, end, p, logger):
         # Gather all the anly gridded tile files
         # so they can be saved in ASCII files.
         cur_anly_tiles_list = get_anly_or_fcst_files(tile_dir, "ANLY", anly_tile_regex,
-                                                 cur_fhr, logger)
+                                                     cur_fhr, logger)
         cur_anly_tiles = retrieve_fhr_tiles(cur_anly_tiles_list, 'ANLY', out_dir,
-                                        cur_fhr, anly_tile_regex, logger)
+                                            cur_fhr, anly_tile_regex, logger)
 
         # Location of ANLY_FILES_Fhhh files
         # filtering.
@@ -442,7 +442,7 @@ def perform_series_for_bucket(tile_dir, start, end, p, logger):
 
     except IOError as e:
         msg = ("ERROR: Could not create requested" +
-                " ASCII file: " + ascii_fcst_file)
+               " ASCII file: " + ascii_fcst_file)
         logger.error(msg)
 
     try:
@@ -538,11 +538,17 @@ def perform_series_for_range(tile_dir, start, end, step, p, logger):
     series_analysis_exe = p.getexe("SERIES_ANALYSIS")
     series_anly_configuration_file = p.getstr('config','SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH')
     series_lead_out_dir = p.getdir('SERIES_LEAD_OUT_DIR')
-    fcst_tile_regex = p.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
-    anly_tile_regex = p.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
-
     var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
     regrid_with_MET_tool = p.getbool('config', 'REGRID_USING_MET_TOOL')
+
+    if regrid_with_MET_tool:
+        # Regridding via MET Tool regrid_data_plane.
+        fcst_tile_regex = p.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
+    else:
+        # Regridding via wgrib2 tool.
+        fcst_tile_regex = p.getstr('regex_pattern', 'FCST_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern', 'ANLY_TILE_REGEX')
 
     for fhr in range(start, end, step):
         cur_fhr = str(fhr).zfill(3)
@@ -727,7 +733,7 @@ def get_nseries(fhr_by_range, nc_var_file, p, logger):
                              'max=max(series_cnt_TOTAL)', '" ',
                              nc_var_file, ' ', nseries_nc_path]
     nco_nseries_cmd = ''.join(nco_nseries_cmd_parts)
-    nco_nseries_cmd = batchexe('sh')['-c',nco_nseries_cmd].err2out()
+    nco_nseries_cmd = batchexe('sh')['-c', nco_nseries_cmd].err2out()
     #nco_nseries_cmd = batchexe(nco_nseries_cmd.split()[0])[nco_nseries_cmd.split()[1:]].err2out()
     nco_out = run(nco_nseries_cmd)
 
@@ -736,7 +742,7 @@ def get_nseries(fhr_by_range, nc_var_file, p, logger):
     ncdump_max_cmd_parts = [ncdump_exe, ' ', base_nc_dir,
                             '/nseries.nc > ', nseries_txt_path]
     ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
-    ncdump_max_cmd = batchexe('sh')['-c',ncdump_max_cmd].err2out()
+    ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
     #ncdump_max_cmd = batchexe(ncdump_max_cmd.split()[0])[ncdump_max_cmd.split()[1:]].err2out()
     ncdump_out = run(ncdump_max_cmd)
     
