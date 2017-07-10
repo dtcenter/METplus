@@ -397,10 +397,6 @@ def perform_series_for_bucket(tile_dir, start, end, p, logger):
                ']| Evaluating forecast hour ' + cur_fhr)
         logger.debug(msg)
 
-        # Create the output directory where the netCDF series files
-        # will be saved.
-        # out_dir = create_netcdf_dirs(series_lead_out_dir, cur_fhr)
-
         # Gather all the forecast gridded tile files
         # so they can be saved in ASCII files.
         cur_fcst_tiles_list = get_anly_or_fcst_files(tile_dir, "FCST", fcst_tile_regex,
@@ -558,9 +554,6 @@ def perform_series_for_range(tile_dir, start, end, step, p, logger):
 
         # Create the output directory where the netCDF series files
         # will be saved.
-        # out_dir = create_netcdf_dirs(series_lead_out_dir, cur_fhr)
-
-        # TODO remove when testing is complete, these are replaced by create_netcdf_dirs()
         util.mkdir_p(series_lead_out_dir)
         out_dir_parts = [series_lead_out_dir, '/', 'series_F', cur_fhr]
         out_dir = ''.join(out_dir_parts)
