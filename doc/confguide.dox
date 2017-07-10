@@ -1,0 +1,40 @@
+/** @page confguide METplus Configuration Guide
+
+@todo edit me: confguide.dox, THIS PAGE is a STARTING PLACEHOLDER.
+THIS PAGE NEEDS TO BE FULLY REVIEWED AND EDITED.
+
+
+This page explains how to modify the *.conf files in the METplus parm
+directory, and explains the purpose of the various conf files.  There
+are a number of subpages with more detailed information:
+
++ @subpage metplus-conf 
++ @subpage available_configurations link to page that has examples of various configurations to run METplus.
+
+@todo Add input source and METplus configuration pages.
+
+The *.conf files configure various aspects of the METplus system.
+Users can also override these configuration settings manually on the
+command line. In the future, programmatically in the metplus.prelaunch()
+function.
+
+These are the standard conf files read in by all workflows, in the
+order they are read in:
+
+File                     | Purpose
+------------------------ | ----------------------------------------------------
+parm/metplus.conf        | Detailed configuration of most aspects of METplus.
+parm/user.template.conf  | Basic configuration settings.
+
+The first file, metplus.conf, should not need to be modified unless 
+one is making extensive changes to METplus, or adding new functionality to
+the underlying scripts.  Instead, one can specify additional
+configuration files that override the default settings.  See @ref
+available_configurations for a list of alternate METplus configurations,
+and how to enable them.
+
+The user.template.conf should be modified manually.  In fact, it is meant
+as a starting point for a user to override the values set in metplus.conf
+in order to run METplus in the users environment.
+
+*/

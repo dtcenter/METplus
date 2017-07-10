@@ -1,0 +1,18 @@
+#! /bin/bash
+
+set -xue
+
+# Clean source directory:
+if [[ "$*" =~ -a ]] ; then
+    rm -f doxygenloc
+fi
+rm -f doxylog Doxyfile ../../doc/config-files.dox
+rm -f *~ \#*\#
+
+# Clean target directory:
+cd ../../doc/
+rm -f *tmp *~ \#*\#
+
+if [[ "$*" =~ -a ]] ; then
+    rm -rf html latex
+fi

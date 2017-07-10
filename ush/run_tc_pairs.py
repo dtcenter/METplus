@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-'''
+"""
 Program Name: run_tc_pairs.py
 Contact(s): Julie Prestopnik, Minna Win
 Abstract: Runs tc_pairs to parse ADeck and BDeck ATCF files, filter the data, and match them up
@@ -11,9 +11,18 @@ Input Files: adeck and bdeck files
 Output Files: tc_pairs files
 Condition codes: 0 for success, 1 for failure
 
-'''
+"""
 
 from __future__ import (print_function, division )
+
+##@namespace run_tc_pairs
+# @brief Runs tc_pairs to parse ADeck and BDeck ATCF files, filter the data, and match them up.
+#
+# Call as follows: 
+# @code{.sh}
+# run_tc_pairs.py [-c /path/to/user.template.conf]
+# @endcode
+#
 
 import produtil.setup
 from produtil.run import batchexe, run, checkrun
@@ -27,6 +36,13 @@ import subprocess
 
 
 def read_modify_write_file(in_csvfile, MM, p, out_csvfile, logger):
+    """! Reads modifies and writes file
+    @param in_csvfile input csv file that is being parsed
+    @param MM The storm month
+    @param p The configuration object, the conf file information.
+    @param out_csvfile the output csv file
+    @param logger a logging.logger for log messages"""
+
     print("inside tc pairs")
 
     # Used for logging
@@ -71,6 +87,9 @@ def read_modify_write_file(in_csvfile, MM, p, out_csvfile, logger):
 
     
 def main():
+    """!Main program.
+
+    This is the main program"""
 
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name

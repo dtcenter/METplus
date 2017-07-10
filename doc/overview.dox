@@ -1,0 +1,38 @@
+/** \page metplus_scripts_overview METplus System Overview
+
+@todo edit me: overview.dox, THIS PAGE is a PLACEHOLDER.
+THIS PAGE NEEDS TO BE FULLY CREATED.
+
+\section intro Introduction
+
+placeholder
+
+\section purpose Purpose
+
+placeholder
+
+\section sysdesign Overall System Design
+
+placeholder
+
+The remainder of this page documents these layers at an abstract
+level, and provides links to additional information.
+
+\subsection workflow Workflow Layer
+
+placeholder
+
+\section portlay Portability Layer
+
+The Portability Layer is a Python package (see @ref produtil_overview
+"produtil") which implements cross-platform methods of doing common
+tasks.  For example, it implements a way of running MPI, OpenMP and
+serial programs in a cross-platform manner.  It can perform file
+operations with improved logging, interact with the batch system,
+identify limitations of the cluster, deal with restricted data
+classes, manipulate resource limits, and interact with a database
+file.
+
++ @ref produtil
+
+*/
