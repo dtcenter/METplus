@@ -46,7 +46,7 @@ class CG_pcp_combine(CommandGen):
   def get_lowest_forecast_at_valid(self, valid_time, dtype):
     out_file = ""
     day_before = self.shift_time(valid_time, -24)
-
+    input_template = self.p.getstr('filename_templates', dtype+'_INPUT_TEMPLATE')
     # TODO: do we need to make sure to check if dir exists first
     #   , or will glob handle?
     # get all files in yesterday directory, get valid time from init/fcst
@@ -55,29 +55,48 @@ class CG_pcp_combine(CommandGen):
     #  days to look back
     files = sorted(glob.glob("{:s}/{:s}/*".format(self.input_dir,str(day_before)[0:8])))
     for fpath in files:
+#      print("PATH:"+fpath)
       f = os.path.join(str(day_before)[0:8],os.path.basename(fpath))
-      input_template = self.p.getstr('filename_templates', dtype+'_INPUT_TEMPLATE')
+#      input_template = self.p.getstr('filename_templates', dtype+'_INPUT_TEMPLATE')
       # TODO: hack until we switch over to Julie's string parser
 #      fcst = self.pull_forecast(f, native_template)
-      fcst = int(os.path.basename(fpath)[21:23])
+      if dtype == "NATIONAL_BLEND":
+        fcst = int(os.path.basename(fpath)[22:25])
+      else:
+        fcst = int(os.path.basename(fpath)[20:23])
       if fcst is None:
         print("ERROR: Could not pull forecast leas from f")
         exit
-      init = self.pull_template(os.path.basename(input_template[0:-8]), os.path.basename(f[0:-7]), "%Y%m%d%H")
+
+      if dtype == "NATIONAL_BLEND":
+        init = self.pull_template(os.path.basename(input_template[-12:-4]), os.path.basename(f[-17:-7]), "%Y%m%d%H")
+      else:
+        init = self.pull_template(os.path.basename(input_template[0:-9]), os.path.basename(f[0:-7]), "%Y%m%d%H")
+#        init = self.pull_template(os.path.basename(input_template[0:-8]), os.path.basename(f[0:-7]), "%Y%m%d%H")        
       v = self.shift_time(init,fcst)
       if v == valid_time:
         out_file = fpath
 
     files = sorted(glob.glob("{:s}/{:s}/*".format(self.input_dir,str(valid_time)[0:8])))
     for fpath in files:
+      f = os.path.join(str(day_before)[0:8],os.path.basename(fpath))        
       # hack until we switch over to Julie's string parser
 #      fcst = self.pull_forecast(f, native_template)
-      fcst = os.path.basename(fpath)[20:23]
+      if dtype == "NATIONAL_BLEND":
+        fcst = int(os.path.basename(fpath)[22:25])
+      else:
+        fcst = int(os.path.basename(fpath)[20:23])
       if fcst is None:
         print("ERROR: Could not pull forecast leas from f")
         exit
-      init = self.pull_template(os.path.basename(input_template), os.path.basename(f), "%Y%m%d%H")
-      v = self.shift_time(fcst, init)
+
+      if dtype == "NATIONAL_BLEND":
+#        print(input_template[-12:-4]+" and "+os.path.basename(f[-17:-7]))
+        init = self.pull_template(os.path.basename(input_template[-12:-4]), os.path.basename(f[-17:-7]), "%Y%m%d%H")
+      else:
+#        init = self.pull_template(os.path.basename(input_template[0:-8]), os.path.basename(f[0:-7]), "%Y%m%d%H")
+        init = self.pull_template(os.path.basename(input_template[0:-9]), os.path.basename(f[0:-7]), "%Y%m%d%H")
+      v = self.shift_time(init, fcst)
       if v == valid_time:
         out_file = fpath        
     return out_file
@@ -131,6 +150,7 @@ class CG_pcp_combine(CommandGen):
       #  check the file with valid time before moving backwards in time
       if self.p.has_option('config', ob_type+'_'+str(accum)+'_FIELD_NAME'):
         search_file = os.path.join(self.input_dir,self.fill_template(file_template, valid_time, accum))
+#        print("SEARCHFILE: "+search_file)
         if os.path.exists(search_file):
           data_type = self.p.getstr('config',ob_type+'_NATIVE_DATA_TYPE')  
           if data_type == "GRIB":
@@ -147,12 +167,17 @@ class CG_pcp_combine(CommandGen):
       search_accum = total_accum
       # loop backwards in time until you have a full set of accumulation
       while last_time <= start_time:
+#        print("last:"+last_time+" start:"+start_time)
         if is_forecast:
           f = self.get_lowest_forecast_at_valid(start_time,ob_type)
           if f == "":
             break
           # TODO: assumes 1hr accum in these files for now
-          addon = "'name=\""+self.p.getstr('config',ob_type+'_'+str(1)+'_FIELD_NAME') +"\"; level=\"(0,*,*)\";'"
+#          addon = "'name=\""+self.p.getstr('config',ob_type+'_'+str(1)+'_FIELD_NAME') +"\"; level=\"(0,*,*)\";'"
+          if ob_type == "NATIONAL_BLEND":
+            addon = "'name=\""+self.p.getstr('config',ob_type+'_'+str(6)+'_FIELD_NAME') +"\"; level=\"(0,*,*)\";'"
+          else:
+            addon = "'name=\""+self.p.getstr('config',ob_type+'_'+str(1)+'_FIELD_NAME') +"\"; level=\"(0,*,*)\";'"          
           self.add_input_file(f,addon)
           start_time = self.shift_time(start_time, -1)
           search_accum -= 1

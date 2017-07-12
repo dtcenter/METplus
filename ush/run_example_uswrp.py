@@ -39,6 +39,7 @@ def find_model(model_type, lead, init_time):
   found = False
   while lead_check <= max_forecast:
     model_file = run_grid_stat.fill_template(p.getstr('filename_templates',model_type+'_NATIVE_TEMPLATE'), time_check, lead_check)
+    print("model file: "+model_file)
     model_path = os.path.join(model_dir,model_file)
     if os.path.exists(model_path):
       found = True
@@ -119,19 +120,26 @@ if __name__ == "__main__":
           bucket_template = p.getstr('filename_templates',ob_type+'_BUCKET_TEMPLATE')
           model_bucket_dir = p.getstr('config',model_type+'_BUCKET_DIR')
           grid_stat_dir = p.getstr('config','GRID_STAT_OUT_DIR')
+
+
+          #PCP_COMBINE
+          run_pcp = CG_pcp_combine(p, logger)
+          valid_time = run_pcp.shift_time(init_time, lead)
+          # create directories corresponding to the valid time
+          ymd_v = valid_time[0:8]
             
           if not os.path.exists(os.path.join(grid_stat_out_dir,init_time,"grid_stat")):
             os.makedirs(os.path.join(grid_stat_out_dir,init_time,"grid_stat"))
-          if not os.path.exists(os.path.join(native_dir,ymd)):
-            os.makedirs(os.path.join(native_dir,ymd))
+          if not os.path.exists(os.path.join(native_dir,ymd_v)):
+            os.makedirs(os.path.join(native_dir,ymd_v))
 #          if not os.path.exists(native_dir):
 #            os.makedirs(native_dir)            
-          if not os.path.exists(os.path.join(bucket_dir,ymd)):
-            os.makedirs(os.path.join(bucket_dir,ymd))
-          if not os.path.exists(os.path.join(regrid_dir,ymd)):
-            os.makedirs(os.path.join(regrid_dir,ymd))
-          if not os.path.exists(os.path.join(model_bucket_dir,ymd)):
-            os.makedirs(os.path.join(model_bucket_dir,ymd))            
+          if not os.path.exists(os.path.join(bucket_dir,ymd_v)):
+            os.makedirs(os.path.join(bucket_dir,ymd_v))
+          if not os.path.exists(os.path.join(regrid_dir,ymd_v)):
+            os.makedirs(os.path.join(regrid_dir,ymd_v))
+          if not os.path.exists(os.path.join(model_bucket_dir,ymd_v)):
+            os.makedirs(os.path.join(model_bucket_dir,ymd_v))            
 
             
           #PCP_COMBINE
@@ -194,7 +202,7 @@ if __name__ == "__main__":
           # check if accum exists in forecast file
           # If not, run pcp_combine to create it
           # TODO: remove reliance on model_type
-          if model_type == 'HREF_MEAN':
+          if model_type == 'HREF_MEAN' or model_type == "NATIONAL_BLEND":
             model_native_dir = p.getstr('config',model_type+'_NATIVE_DIR')            
             run_pcp_ob = CG_pcp_combine(p, logger)
             valid_time = run_pcp_ob.shift_time(init_time, lead)
