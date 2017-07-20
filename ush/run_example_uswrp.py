@@ -11,6 +11,7 @@ import os
 import re
 import getopt
 import sys
+import string_template_substitution as sts
 
 from CG_pcp_combine import CG_pcp_combine
 from CG_grid_stat import CG_grid_stat
@@ -38,7 +39,10 @@ def find_model(model_type, lead, init_time):
   time_offset = 0
   found = False
   while lead_check <= max_forecast:
-    model_file = run_grid_stat.fill_template(p.getstr('filename_templates',model_type+'_NATIVE_TEMPLATE'), time_check, lead_check)
+    model_file = sts.StringTemplateSubstitution(logger,
+                p.getraw('filename_templates',model_type+'_NATIVE_TEMPLATE'),
+                init=time_check,
+                lead=str(lead_check)).doStringSub()
     print("model file: "+model_file)
     model_path = os.path.join(model_dir,model_file)
     if os.path.exists(model_path):
@@ -115,9 +119,9 @@ if __name__ == "__main__":
           native_dir = p.getstr('config',ob_type+'_NATIVE_DIR')          
           bucket_dir = p.getstr('config',ob_type+'_BUCKET_DIR')
           regrid_dir = p.getstr('config',ob_type+'_REGRID_DIR')
-          native_template = p.getstr('filename_templates',ob_type+'_NATIVE_TEMPLATE')
-          regrid_template = p.getstr('filename_templates',ob_type+'_REGRID_TEMPLATE')          
-          bucket_template = p.getstr('filename_templates',ob_type+'_BUCKET_TEMPLATE')
+          native_template = p.getraw('filename_templates',ob_type+'_NATIVE_TEMPLATE')
+          regrid_template = p.getraw('filename_templates',ob_type+'_REGRID_TEMPLATE')          
+          bucket_template = p.getraw('filename_templates',ob_type+'_BUCKET_TEMPLATE')
           model_bucket_dir = p.getstr('config',model_type+'_BUCKET_DIR')
           grid_stat_dir = p.getstr('config','GRID_STAT_OUT_DIR')
 
@@ -132,8 +136,6 @@ if __name__ == "__main__":
             os.makedirs(os.path.join(grid_stat_out_dir,init_time,"grid_stat"))
           if not os.path.exists(os.path.join(native_dir,ymd_v)):
             os.makedirs(os.path.join(native_dir,ymd_v))
-#          if not os.path.exists(native_dir):
-#            os.makedirs(native_dir)            
           if not os.path.exists(os.path.join(bucket_dir,ymd_v)):
             os.makedirs(os.path.join(bucket_dir,ymd_v))
           if not os.path.exists(os.path.join(regrid_dir,ymd_v)):
@@ -154,14 +156,12 @@ if __name__ == "__main__":
 
           #  call GempakToCF if native file doesn't exist
           infiles = run_pcp.get_input_files()
-#          print("FOUND "+str(len(infiles))+" files")
           for idx,infile in enumerate(infiles):
             # replace input_dir with native_dir, check if file exists
             nfile = infile.replace(input_dir, native_dir)
             data_type = p.getstr('config',ob_type+'_NATIVE_DATA_TYPE')  
             if data_type == "NETCDF":       
               nfile = os.path.splitext(nfile)[0]+'.nc'            
-#            print("NFILE:"+nfile)
             if not os.path.isfile(nfile):
               print("Calling GempakToCF to convert to NetCDF")
               run_g2c = CG_GempakToCF(p, logger)
@@ -172,7 +172,12 @@ if __name__ == "__main__":
 
             run_pcp.infiles[idx] = nfile
               
-          run_pcp.set_output_filename(run_pcp.fill_template(bucket_template, valid_time, accum))
+          pcpSts = sts.StringTemplateSubstitution(logger,
+                bucket_template,
+                valid=valid_time,
+                accum=str(accum))
+          pcp_out = pcpSts.doStringSub()
+          run_pcp.set_output_filename(pcp_out)
           run_pcp.add_arg("-name "+obs_var+"_"+accum)
           print("RUNNING: "+str(run_pcp.get_command()))
           (logger).info("")
@@ -183,7 +188,11 @@ if __name__ == "__main__":
           run_regrid = CG_regrid_data_plane(p, logger)
           run_regrid.add_input_file(outfile)
           run_regrid.add_input_file(p.getstr('config','VERIFICATION_GRID'))
-          regrid_file = run_regrid.fill_template(regrid_template, valid_time, accum)
+          regridSts = sts.StringTemplateSubstitution(logger,
+                   regrid_template,
+                   valid=valid_time,
+                   accum=str(accum))
+          regrid_file = regridSts.doStringSub()
           run_regrid.set_output_path(os.path.join(regrid_dir,regrid_file))
           field_name = "{:s}_{:s}".format(obs_var, str(accum).zfill(2))
           run_regrid.add_arg("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(field_name))
@@ -213,7 +222,7 @@ if __name__ == "__main__":
 
             #  call GempakToCF if native file doesn't exist
             infiles = run_pcp_ob.get_input_files()
-#            print("FOUND "+str(len(infiles))+" files")
+
             for idx,infile in enumerate(infiles):
               # replace input_dir with native_dir, check if file exists
               nfile = infile.replace(model_dir, model_native_dir)
@@ -222,7 +231,7 @@ if __name__ == "__main__":
               data_type = p.getstr('config',ob_type+'_NATIVE_DATA_TYPE')  
               if data_type == "NETCDF":
                 nfile = os.path.splitext(nfile)[0]+'.nc'            
-#              print("NFILE:"+nfile)
+
               if not os.path.isfile(nfile):
                 print("Calling GempakToCF to convert model to NetCDF")
                 run_g2c = CG_GempakToCF(p, logger)
@@ -233,8 +242,13 @@ if __name__ == "__main__":
 
               run_pcp_ob.infiles[idx] = nfile            
 
-            bucket_template = p.getstr('filename_templates', model_type+'_BUCKET_TEMPLATE')
-            run_pcp_ob.set_output_filename(run_pcp_ob.fill_template(bucket_template, valid_time, accum))
+            bucket_template = p.getraw('filename_templates', model_type+'_BUCKET_TEMPLATE')
+            pcpSts = sts.StringTemplateSubstitution(logger,
+                bucket_template,
+                valid=valid_time,
+                accum=str(accum))
+            pcp_out = pcpSts.doStringSub()
+            run_pcp_ob.set_output_filename(pcp_out)
             run_pcp_ob.add_arg("-name "+fcst_var+"_"+accum)
             print("RUNNING: "+str(run_pcp_ob.get_command()))
             (logger).info("")
@@ -247,7 +261,11 @@ if __name__ == "__main__":
             print("ERROR: COULD NOT FIND FILE IN "+model_dir)
             continue
           run_grid_stat.add_input_file(model_path)
-          regrid_file = run_grid_stat.fill_template(regrid_template, valid_time, accum)
+          regridSts = sts.StringTemplateSubstitution(logger,
+                   regrid_template,
+                   valid=valid_time,
+                   accum=str(accum))
+          regrid_file = regridSts.doStringSub()
 
           regrid_path = os.path.join(regrid_dir,regrid_file)
           run_grid_stat.add_input_file(regrid_path)

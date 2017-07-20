@@ -25,6 +25,7 @@ import csv
 import subprocess
 import glob
 import datetime
+import string_template_substitution as sts
 
 from CommandGen import CommandGen
 
@@ -46,7 +47,7 @@ class CG_pcp_combine(CommandGen):
   def get_lowest_forecast_at_valid(self, valid_time, dtype):
     out_file = ""
     day_before = self.shift_time(valid_time, -24)
-    input_template = self.p.getstr('filename_templates', dtype+'_INPUT_TEMPLATE')
+    input_template = self.p.getraw('filename_templates', dtype+'_INPUT_TEMPLATE')
     # TODO: do we need to make sure to check if dir exists first
     #   , or will glob handle?
     # get all files in yesterday directory, get valid time from init/fcst
@@ -55,12 +56,11 @@ class CG_pcp_combine(CommandGen):
     #  days to look back
     files = sorted(glob.glob("{:s}/{:s}/*".format(self.input_dir,str(day_before)[0:8])))
     for fpath in files:
-#      print("PATH:"+fpath)
       f = os.path.join(str(day_before)[0:8],os.path.basename(fpath))
-#      input_template = self.p.getstr('filename_templates', dtype+'_INPUT_TEMPLATE')
+#      input_template = self.p.getraw('filename_templates', dtype+'_INPUT_TEMPLATE')
       # TODO: hack until we switch over to Julie's string parser
 #      fcst = self.pull_forecast(f, native_template)
-      if dtype == "NATIONAL_BLEND":
+      if dtype == "NATIONAL_BLEND": #or dtype == "HREF_MEAN":
         fcst = int(os.path.basename(fpath)[22:25])
       else:
         fcst = int(os.path.basename(fpath)[20:23])
@@ -68,11 +68,13 @@ class CG_pcp_combine(CommandGen):
         print("ERROR: Could not pull forecast leas from f")
         exit
 
-      if dtype == "NATIONAL_BLEND":
-        init = self.pull_template(os.path.basename(input_template[-12:-4]), os.path.basename(f[-17:-7]), "%Y%m%d%H")
+      if dtype == "NATIONAL_BLEND": # or dtype == "HREF_MEAN":
+        init = self.pull_template(os.path.basename(input_template[-13:-5]), os.path.basename(f[-17:-7]), "%Y%m%d%H")
+      elif dtype == "HREF_MEAN":
+        init = self.pull_template(os.path.basename(input_template[-29:-21]), os.path.basename(f[-18:-8]), "%Y%m%d%H")            
       else:
-        init = self.pull_template(os.path.basename(input_template[0:-9]), os.path.basename(f[0:-7]), "%Y%m%d%H")
-#        init = self.pull_template(os.path.basename(input_template[0:-8]), os.path.basename(f[0:-7]), "%Y%m%d%H")        
+        init = self.pull_template(os.path.basename(input_template[-29:-21]), os.path.basename(f[-17:-7]), "%Y%m%d%H")
+
       v = self.shift_time(init,fcst)
       if v == valid_time:
         out_file = fpath
@@ -82,7 +84,7 @@ class CG_pcp_combine(CommandGen):
       f = os.path.join(str(day_before)[0:8],os.path.basename(fpath))        
       # hack until we switch over to Julie's string parser
 #      fcst = self.pull_forecast(f, native_template)
-      if dtype == "NATIONAL_BLEND":
+      if dtype == "NATIONAL_BLEND" or dtype == "HREF_MEAN":
         fcst = int(os.path.basename(fpath)[22:25])
       else:
         fcst = int(os.path.basename(fpath)[20:23])
@@ -90,12 +92,10 @@ class CG_pcp_combine(CommandGen):
         print("ERROR: Could not pull forecast leas from f")
         exit
 
-      if dtype == "NATIONAL_BLEND":
-#        print(input_template[-12:-4]+" and "+os.path.basename(f[-17:-7]))
-        init = self.pull_template(os.path.basename(input_template[-12:-4]), os.path.basename(f[-17:-7]), "%Y%m%d%H")
+      if dtype == "NATIONAL_BLEND" or dtype == "HREF_MEAN":
+        init = self.pull_template(os.path.basename(input_template[-13:-5]), os.path.basename(f[-17:-7]), "%Y%m%d%H")
       else:
-#        init = self.pull_template(os.path.basename(input_template[0:-8]), os.path.basename(f[0:-7]), "%Y%m%d%H")
-        init = self.pull_template(os.path.basename(input_template[0:-9]), os.path.basename(f[0:-7]), "%Y%m%d%H")
+        init = self.pull_template(os.path.basename(input_template[-29:-21]), os.path.basename(f[-17:-7]), "%Y%m%d%H")        
       v = self.shift_time(init, fcst)
       if v == valid_time:
         out_file = fpath        
@@ -108,20 +108,22 @@ class CG_pcp_combine(CommandGen):
     day_before = self.shift_time(time, -24)
     files = sorted(glob.glob("{:s}/*{:s}*".format(dir,str(day_before)[0:8])))
     for f in files:
-      ftime = self.pull_template(template,os.path.basename(f),"%Y%m%d%H")
+#      ftime = self.pull_template(template,os.path.basename(f),"%Y%m%d%H")
+      ftime = f[-18:-8]
       if ftime < time:
         out_file = f
 
     files = sorted(glob.glob("{:s}/*{:s}*".format(dir,str(time)[0:8])))
     for f in files:
-      ftime = self.pull_template(template,os.path.basename(f),"%Y%m%d%H")
+#      ftime = self.pull_template(template,os.path.basename(f),"%Y%m%d%H")
+      ftime = f[-18:-8]      
       if ftime < time:
         out_file = f
     return out_file
 
   def get_accumulation(self, valid_time, accum, ob_type, is_forecast=False):
     # TODO: pass in template (input/native) so this isn't assumed
-    file_template = self.p.getstr('filename_templates',ob_type+"_INPUT_TEMPLATE")
+    file_template = self.p.getraw('filename_templates',ob_type+"_INPUT_TEMPLATE")
     
     if self.input_dir == "":
       (self.logger).error(self.app_name+": Must set data dir to run get_accumulation")
@@ -138,7 +140,7 @@ class CG_pcp_combine(CommandGen):
         if f == "":
           continue
         # build level info string
-        file_time = datetime.datetime.strptime(os.path.basename(f),file_template )
+        file_time = datetime.datetime.strptime(f[-18:-8],"%Y%m%d%H")
         v_time = datetime.datetime.strptime(search_time, "%Y%m%d%H")
         diff = v_time - file_time
         lead = int((diff.days*24) / (data_interval/3600))
@@ -149,8 +151,13 @@ class CG_pcp_combine(CommandGen):
       # if field that corresponds to search accumulation exists in the files,
       #  check the file with valid time before moving backwards in time
       if self.p.has_option('config', ob_type+'_'+str(accum)+'_FIELD_NAME'):
-        search_file = os.path.join(self.input_dir,self.fill_template(file_template, valid_time, accum))
-#        print("SEARCHFILE: "+search_file)
+        fSts = sts.StringTemplateSubstitution(self.logger,
+                      file_template,
+                      valid=valid_time,
+                      accum=str(accum).zfill(2))
+        # TODO: This assumes max 99 accumulation. zfill to 3 if above that is possible
+        search_file = os.path.join(self.input_dir,fSts.doStringSub())
+
         if os.path.exists(search_file):
           data_type = self.p.getstr('config',ob_type+'_NATIVE_DATA_TYPE')  
           if data_type == "GRIB":
@@ -167,13 +174,11 @@ class CG_pcp_combine(CommandGen):
       search_accum = total_accum
       # loop backwards in time until you have a full set of accumulation
       while last_time <= start_time:
-#        print("last:"+last_time+" start:"+start_time)
         if is_forecast:
           f = self.get_lowest_forecast_at_valid(start_time,ob_type)
           if f == "":
             break
-          # TODO: assumes 1hr accum in these files for now
-#          addon = "'name=\""+self.p.getstr('config',ob_type+'_'+str(1)+'_FIELD_NAME') +"\"; level=\"(0,*,*)\";'"
+          # TODO: assumes 1hr accum (6 for NB) in these files for now
           if ob_type == "NATIONAL_BLEND":
             addon = "'name=\""+self.p.getstr('config',ob_type+'_'+str(6)+'_FIELD_NAME') +"\"; level=\"(0,*,*)\";'"
           else:
@@ -183,11 +188,14 @@ class CG_pcp_combine(CommandGen):
           search_accum -= 1
         else: # not looking for forecast files
           # get all files of valid_time (all accums)
-#          print("Searching: "+"{:s}/{:s}/*{:s}*".format(self.input_dir,start_time[0:8],start_time))
           files = sorted(glob.glob("{:s}/{:s}/*{:s}*".format(self.input_dir,start_time[0:8],start_time)))
           # look for biggest accum that fits search
           while search_accum > 0:
-            search_file = os.path.join(self.input_dir,self.fill_template(file_template, start_time, search_accum))
+            fSts = sts.StringTemplateSubstitution(self.logger,
+                      file_template,
+                      valid=start_time,
+                      accum=str(search_accum).zfill(2))
+            search_file = os.path.join(self.input_dir,fSts.doStringSub())
             f = None
             for file in files:
               if file == search_file:
@@ -251,4 +259,3 @@ class CG_pcp_combine(CommandGen):
 
     cmd += os.path.join(self.outdir,self.outfile)
     return cmd
-
