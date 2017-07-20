@@ -1,0 +1,20 @@
+/** @page metplus-conf Local System Configuration (metplus.conf)
+
+
+This page documents how to modify the METplus parm/metplus.conf 
+amd user.template.conf file.
+
+@todo edit me: metplus-conf.dox, THIS PAGE is a STARTING PLACEHOLDER.
+THIS PAGE NEEDS TO BE FULLY REVIEWED AND EDITED.
+It should be filled in with the information and configuration variables 
+found in the README file  @ref METplus_install_guide
+
+@section mp-dir metplus.conf: [dir] Configure Run Areas
+
+For Example:
+
+    [dir]
+    PROJ_DIR = /d1/data/SBU
+    GFS_DIR = GFS_DIR = {PROJ_DIR}/reduced_model_data
+
+*/

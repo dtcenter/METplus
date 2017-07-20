@@ -1,7 +1,17 @@
 #!/usr/bin/env python
 
-
 from __future__ import print_function
+
+##@namespace TCMPRPlotter
+# A Python class than encapsulates the plot_tcmpr.R plotting script.
+#
+# Generates plots for input files with .tcst format and
+# creates output subdirectory based on the input tcst file. 
+# The plot_tcmpr.R plot also supports additional filtering by calling MET tool
+# tc_stat. This wrapper extends plot_tcmpr.R by allowing the user to specify as input 
+# a directory (to support plotting all files in the specified directory and its subdirectories).
+# The user can now either indicate a file or directory in the (required) -lookin option.
+
 import produtil.setup
 from produtil.run import batchexe, run, checkrun
 import met_util as util
@@ -10,16 +20,19 @@ import sys,os,re
 
 
 class TCMPRPlotter:
-    """ A Python wrapper to the plot_tcmpr.R plotting script
-        Generates plots for input files with .tcst format and
-        creates output subdirectory based on the input tcst file. 
-        The plot_tcmpr.R plot also supports additional filtering by calling MET tool
-        tc_stat. This wrapper extends plot_tcmpr.R by allowing the user to specify as input 
-        a directory (to support plotting all files in the specified directory and its subdirectories). The user
-        can now either indicate a file or directory in the (required) -lookin option.
-    """
+    """!A Python class than encapsulates the plot_tcmpr.R plotting script.
+
+    Generates plots for input files with .tcst format and
+    creates output subdirectory based on the input tcst file. 
+    The plot_tcmpr.R plot also supports additional filtering by calling MET tool
+    tc_stat. This wrapper extends plot_tcmpr.R by allowing the user to specify as input 
+    a directory (to support plotting all files in the specified directory and its subdirectories).
+    The user can now either indicate a file or directory in the (required) -lookin option. """
 
     def __init__(self, p):
+        """!Constructor for TCMPRPlotter
+        @param p The configuration object, the conf file information."""
+
         # Location of the R-script, plot_tcmpr.
         self.tcmpr_script = p.getexe('PLOT_TCMPR')
 
@@ -151,6 +164,7 @@ class TCMPRPlotter:
                     self.logger.warn("WARN: plot_tcmpr.R returned non-zero exit status, " 
                                      "tcst file may be missing data, continuing: {}".format(ese))
                     pass
+
                 # Reset empty cmds_list to prepare for next tcst file.
                 cmds_list = []
 

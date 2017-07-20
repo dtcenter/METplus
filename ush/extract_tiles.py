@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-'''
+"""
 Program Name: extract_tiles.py
 Contact(s): Julie Prestopnik, Minna Win
 Abstract: Extracts tiles to be used by series_analysis History Log:  Initial version 
@@ -10,9 +10,18 @@ Input Files: tc_pairs data
 Output Files: tiled grib2 files
 Condition codes: 0 for success, 1 for failure
 
-'''
+"""
 
 from __future__ import (print_function, division )
+
+## @namespace extract_tiles
+# @brief Runs  Extracts tiles to be used by series_analysis.
+#
+# Call as follows: 
+# @code{.sh}
+# extract_tils.py [-c /path/to/user.template.conf]
+# @endcode
+#
 
 import produtil.setup
 import os
@@ -22,9 +31,11 @@ import run_tc_stat as tcs
 
 
 def main():
-    '''Get TC-pairs track data and GFS model data, do any necessary 
-       processing then regrid the forecast and analysis files to a 
-       30x 30 degree tile centered on the storm.
+    """!Get TC-paris data than regrid tiles centered on the storm.
+
+    Get TC-pairs track data and GFS model data, do any necessary 
+    processing then regrid the forecast and analysis files to a 
+    30 x 30 degree tile centered on the storm.
       
        Args:
            None 
@@ -33,8 +44,7 @@ def main():
 
            None: invokes regrid_data_plane to create a netCDF file from two 
                  extratropical storm track files.
-
-    '''
+    """
 
     # Retrieve parameters from corresponding param file
 
@@ -106,7 +116,6 @@ def main():
         # Now get unique storm ids from the filter file, 
         # filter_yyyymmdd_hh.tcst
         sorted_storm_ids = util.get_storm_ids(filter_name, logger)
-
         # Check for empty sorted_storm_ids, if empty,
         # continue to the next time.      
         if len(sorted_storm_ids) == 0:
@@ -124,6 +133,7 @@ def main():
         for cur_storm in sorted_storm_ids:
             storm_output_dir = os.path.join(filtered_out_dir,cur_init,
                                             cur_storm)
+            header = open(filter_name, "r").readline()
             util.mkdir_p(storm_output_dir)
             util.mkdir_p(tmp_dir)
             tmp_file = "filter_" + cur_init + "_" + cur_storm
@@ -131,9 +141,11 @@ def main():
             
             storm_match_list = util.grep(cur_storm, filter_name)
             with open(tmp_filename, "a+") as tmp_file:
+                #copy over header information
+                tmp_file.write(header)
                 for storm_match in storm_match_list:
                     tmp_file.write(storm_match)
-               
+     
             # Peform regridding of the forecast and analysis files 
             # to a 30 x 30 degree tile centered on the storm
             util.retrieve_and_regrid(tmp_filename, cur_init, 

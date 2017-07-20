@@ -1,0 +1,34 @@
+/** @page wikicontents  METplus wiki contents
+
+Model Evaluation Tools Plus  (METplus)  wiki contents               
+======================================================
+
+Welcome to the METplus wiki contents documentation.
+
+The source of this documentation is from the GitHub NCAR METplus website.
+
+This is just an example page of providing the content in a doxygen page.
+
+wiki content diagrams
+-------------------------
+[extract_tiles_Activity](extract_tiles_Activity.png)
+
+[extract_tiles.py_Sequence_Diagram](extract_tiles.py_Sequence_Diagram.png)
+
+[GitHub_process](GitHub_process.png)
+
+[series_by_lead_Activity](series_by_lead_Activity.png)
+
+[series_by_lead_Sequence_Diagram](series_by_lead_Sequence_Diagram.png)
+
+Current Use Cases
+-------------------------
+[Current Uses Cases](current_use_cases.png)
+
+
+Example in-line image
+---------------------------
+@image html METPlus_sequence_overview.png
+
+
+*/
