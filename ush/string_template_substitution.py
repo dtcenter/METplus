@@ -457,7 +457,6 @@ class StringTemplateSubstitution:
                         # Check for requested FORMAT_STRING
                         # format_split_string[0] holds the formatting/length value delimiter (e.g. "fmt", "len")
                         if format_split_string[0] == FORMAT_STRING:
-
                             if ((split_string[0] == VALID_STRING) or (split_string[0] == INIT_STRING)):
                                 # Get the value of the valid, init, etc. and convert to a datetime object with the requested FORMAT_STRING format
                                 date_time_value = (self.kwargs).get(split_string[0], None)
@@ -476,7 +475,7 @@ class StringTemplateSubstitution:
                                 replacement_dict[string_to_replace] = value
                                 #(self.logger).info("INFO |  [" + cur_filename +  ":" + cur_function + "] | " + "Replacing " + string_to_replace + " with " + value + " for template " + self.tmpl)
 
-                            elif (string_string[0] == ACCUM_STRING):
+                            elif (split_string[0] == ACCUM_STRING):
                                 value = self.leadAccumStringFormat(ACCUM_STRING, format_split_string[1])
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
