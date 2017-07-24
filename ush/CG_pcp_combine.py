@@ -60,20 +60,30 @@ class CG_pcp_combine(CommandGen):
 #      input_template = self.p.getraw('filename_templates', dtype+'_INPUT_TEMPLATE')
       # TODO: hack until we switch over to Julie's string parser
 #      fcst = self.pull_forecast(f, native_template)
-      if dtype == "NATIONAL_BLEND": #or dtype == "HREF_MEAN":
-        fcst = int(os.path.basename(fpath)[22:25])
+
+#      if dtype == "PHPT":
+#        fcst = int(os.path.basename(fpath)[-20:-18])
+#      else:
+#        fcst = int(os.path.splitext(os.path.basename(f))[0][-3])
+        
+      if dtype == "NATIONAL_BLEND" or dtype == "HREF_MEAN":
+        fcst = int(os.path.splitext(os.path.basename(f))[0][-3:])
+#      elif dtype == "HREF_MEAN":
+#        fcst = int(os.path.splitext(os.path.basename(f))[0][-3])
+#        fcst = int(os.path.basename(fpath)[22:25])
       else:
-        fcst = int(os.path.basename(fpath)[20:23])
+        fcst = int(os.path.basename(f)[-20:-18])        
+#        fcst = int(os.path.basename(fpath)[20:23])
+        
       if fcst is None:
         print("ERROR: Could not pull forecast leas from f")
         exit
 
       if dtype == "NATIONAL_BLEND": # or dtype == "HREF_MEAN":
         init = self.pull_template(os.path.basename(input_template[-13:-5]), os.path.basename(f[-17:-7]), "%Y%m%d%H")
-      elif dtype == "HREF_MEAN":
-        init = self.pull_template(os.path.basename(input_template[-29:-21]), os.path.basename(f[-18:-8]), "%Y%m%d%H")            
       else:
-        init = self.pull_template(os.path.basename(input_template[-29:-21]), os.path.basename(f[-17:-7]), "%Y%m%d%H")
+#        init = self.pull_template(os.path.basename(input_template[-29:-21]), os.path.basename(f[-18:-8]), "%Y%m%d%H")
+        init = self.pull_template(os.path.basename(input_template[-29:-21]), os.path.splitext(os.path.basename(f))[0][-14:-4], "%Y%m%d%H")            
 
       v = self.shift_time(init,fcst)
       if v == valid_time:
@@ -81,19 +91,35 @@ class CG_pcp_combine(CommandGen):
 
     files = sorted(glob.glob("{:s}/{:s}/*".format(self.input_dir,str(valid_time)[0:8])))
     for fpath in files:
-      f = os.path.join(str(day_before)[0:8],os.path.basename(fpath))        
+      f = os.path.join(str(day_before)[0:8],os.path.basename(fpath))
+#      print("FILE:"+f)
       # hack until we switch over to Julie's string parser
 #      fcst = self.pull_forecast(f, native_template)
+#      if dtype == "PHPT":
+#        fcst = int(os.path.basename(f)[-20:-18])
+#      else:
+#        fcst = int(os.path.splitext(os.path.basename(f))[0][-3:])
+#      print("FCST:"+str(fcst))
       if dtype == "NATIONAL_BLEND" or dtype == "HREF_MEAN":
-        fcst = int(os.path.basename(fpath)[22:25])
+#        fcst = int(os.path.basename(fpath)[22:25])
+        fcst = int(os.path.splitext(os.path.basename(f))[0][-3:])
       else:
-        fcst = int(os.path.basename(fpath)[20:23])
+        fcst = int(os.path.basename(f)[-20:-18])          
+#        fcst = int(os.path.basename(fpath)[20:23])
+#      print("F:"+f)
+#      print("FCST:"+str(fcst))
       if fcst is None:
-        print("ERROR: Could not pull forecast leas from f")
+        print("ERROR: Could not pull forecast lead from f")
         exit
 
-      if dtype == "NATIONAL_BLEND" or dtype == "HREF_MEAN":
-        init = self.pull_template(os.path.basename(input_template[-13:-5]), os.path.basename(f[-17:-7]), "%Y%m%d%H")
+      if dtype == "HREF_MEAN":
+        temp = os.path.splitext(os.path.basename(input_template))[0][-25:-17]
+        init = self.pull_template(temp, os.path.basename(f[-17:-7]), "%Y%m%d%H")        
+      elif dtype == "NATIONAL_BLEND":
+        temp = os.path.splitext(os.path.basename(input_template))[0][-9:-1]          
+#        init = self.pull_template(os.path.basename(input_template[-13:-5]), os.path.basename(f[-17:-7]), "%Y%m%d%H")
+        init = self.pull_template(temp, os.path.basename(f[-17:-7]), "%Y%m%d%H")
+
       else:
         init = self.pull_template(os.path.basename(input_template[-29:-21]), os.path.basename(f[-17:-7]), "%Y%m%d%H")        
       v = self.shift_time(init, fcst)
