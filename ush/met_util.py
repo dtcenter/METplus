@@ -1228,6 +1228,12 @@ def getlistint(s):
     s = [int(i) for i in s]
     return s
 
+
+# hours      
+def shift_time(time, shift):
+  return (datetime.datetime.strptime(time, "%Y%m%d%H") + datetime.timedelta(hours=shift)).strftime("%Y%m%d%H")
+
+
 if __name__ == "__main__":
     # test grep
     # pattern = "abcd"
