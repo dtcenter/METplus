@@ -495,5 +495,198 @@ class StringTemplateSubstitution:
             return self.tmpl
     
     
+class StringTemplateExtract:
+  def __init__(self, log, temp, fstr):
+    self.temp = temp
+    self.fstr = fstr
+    
+    self.validTime = None
+    self.initTime = None
+    self.leadTime = -1
+    self.accumTime = -1
+
+  def getValidTime(self, fmt):
+    if self.validTime == None:
+      return ""
+    return self.validTime.strftime(fmt)
+
+  def getInitTime(self, fmt):
+    if self.initTime == None:
+      return ""
+    return self.initTime.strftime(fmt)
+
+  def getLeadHour(self):
+    if self.leadTime == -1:
+      return -1
+    return self.leadTime / 3600
+
+  def getAccumHour(self):
+    if self.accumTime == -1:
+      return -1
+    return self.accumTime / 3600
+            
+  def parseTemplate(self):
+    #{valid?fmt=%Y%m%d}/blendp_qpf_{valid?fmt=%Y%m%d%H}_A{accum?fmt=%HH}.nc
+#    fstr = "20170622/blendp_qpf_2017062204_A06.nc"
+#    temp = p.getraw('filename_templates',"NATIONAL_BLEND_BUCKET_TEMPLATE")
+#    temp = "{init?fmt=%Y%m%d}/blendp_qpf_{init?fmt=%Y%m%d%H}_A{lead?fmt=%HH}.nc"
+    tempLen = len(self.temp)
+    i = 0
+    idx = 0
+    yIdx = -1
+    mIdx = -1
+    dIdx = -1
+    hIdx = -1
+    lead = -1
+    accum = -1
+  
+    inValid = False
+    inAccum = False
+    inLead = False
+    inInit = False
+    
+    while i < tempLen:
+      if self.temp[i] == TEMPLATE_IDENTIFIER_BEGIN:
+        i += 1
+        if self.temp[i:i+len(VALID_STRING)+5] == VALID_STRING+"?fmt=":
+          inValid = True
+          i += 9
+        if self.temp[i:i+len(ACCUM_STRING)+5] == ACCUM_STRING+"?fmt=":
+          inAccum = True
+          i += 9
+        if self.temp[i:i+len(INIT_STRING)+5] == INIT_STRING+"?fmt=":
+          inInit = True
+          i += 8
+        if self.temp[i:i+len(LEAD_STRING)+5] == LEAD_STRING+"?fmt=":
+          inLead = True
+          i += 8
+
+      elif self.temp[i] == TEMPLATE_IDENTIFIER_END:
+        if inValid:
+          if yIdx == -1 or mIdx == -1 or dIdx == -1:
+            print("ERROR: Invalid valid time")
+            exit(1)
+          if hIdx == -1:
+            hour = 0
+          else:
+            hour = int(self.fstr[hIdx:hIdx+2])
+          self.validTime = datetime.datetime(int(self.fstr[yIdx:yIdx+4]),
+                                        int(self.fstr[mIdx:mIdx+2]),
+                                        int(self.fstr[dIdx:dIdx+2]),
+                                        hour, 0)
+#          print("VALID:"+self.validTime.isoformat(' '))
+          yIdx = -1
+          mIdx = -1
+          dIdx = -1
+          hIdx = -1
+          inValid = False
+
+
+        if inInit:
+          if yIdx == -1 or mIdx == -1 or dIdx == -1:
+            print("ERROR: Invalid init time")
+            exit(1)
+          if hIdx == -1:
+            hour = 0
+          else:
+            hour = int(self.fstr[hIdx:hIdx+2])
+          self.initTime = datetime.datetime(int(self.fstr[yIdx:yIdx+4]),
+                                        int(self.fstr[mIdx:mIdx+2]),
+                                        int(self.fstr[dIdx:dIdx+2]),
+                                        hour, 0)
+#          print("INIT:"+self.initTime.isoformat(' '))
+          yIdx = -1
+          mIdx = -1
+          dIdx = -1
+          hIdx = -1
+          inInit = False
+        
+        elif inAccum:
+          if accum == -1:
+            print("ERROR: Invalid accum time")
+            exit(1)
+          self.accumTime = int(accum) * SECONDS_PER_HOUR
+#          print("ACCUM SECONDS:"+str(self.accumTime))
+          accum = -1
+          inAccum = False
+
+        elif inLead:
+          if lead == -1:
+            print("ERROR: Invalid lead time")
+            exit(1)
+          self.leadTime = int(lead) * SECONDS_PER_HOUR
+#          print("LEAD SECONDS:"+str(self.leadTime))
+          lead = -1
+          inLead = False
+
+      elif inValid:
+        if self.temp[i:i+2] == "%Y":
+          yIdx = idx
+#          print("YEAR:"+self.fstr[yIdx:yIdx+4])
+          idx += 4
+          i += 1
+        elif self.temp[i:i+2] == "%m":
+          mIdx = idx
+#          print("MONTH:"+self.fstr[mIdx:mIdx+2])        
+          idx += 2
+          i += 1
+        elif self.temp[i:i+2] == "%d":
+          dIdx = idx
+#          print("DAY:"+self.fstr[dIdx:dIdx+2])        
+          idx += 2
+          i += 1
+        elif self.temp[i:i+2] == "%H":
+          hIdx = idx
+#          print("HOUR:"+self.fstr[hIdx:hIdx+2])        
+          idx += 2
+          i += 1
+      elif inInit:
+        if self.temp[i:i+2] == "%Y":
+          yIdx = idx
+#          print("YEAR:"+self.fstr[yIdx:yIdx+4])
+          idx += 4
+          i += 1
+        elif self.temp[i:i+2] == "%m":
+          mIdx = idx
+#          print("MONTH:"+self.fstr[mIdx:mIdx+2])        
+          idx += 2
+          i += 1
+        elif self.temp[i:i+2] == "%d":
+          dIdx = idx
+#          print("DAY:"+self.fstr[dIdx:dIdx+2])        
+          idx += 2
+          i += 1
+        elif self.temp[i:i+2] == "%H":
+          hIdx = idx
+#          print("HOUR:"+self.fstr[hIdx:hIdx+2])        
+          idx += 2
+          i += 1        
+      elif inAccum:
+        if self.temp[i:i+4] == "%HHH":
+#          print("ACCUM3:"+self.fstr[idx:idx+3])
+          accum = self.fstr[idx:idx+3]
+          idx += 3
+          i += 3
+        elif self.temp[i:i+3] == "%HH":
+#          print("ACCUM2:"+self.fstr[idx:idx+2])
+          accum = self.fstr[idx:idx+2]
+          idx += 2
+          i += 2
+      elif inLead:
+        if self.temp[i:i+4] == "%HHH":
+#          print("LEAD3:"+self.fstr[idx:idx+3])
+          lead = self.fstr[idx:idx+3]
+          idx += 3
+          i += 3
+        elif self.temp[i:i+3] == "%HH":
+#          print("LEAD2:"+self.fstr[idx:idx+2])
+          lead = self.fstr[idx:idx+2]        
+          idx += 2
+          i += 2      
+      else:
+        idx += 1
+      i += 1
+
+
 if __name__ == "__main__":
     main()

@@ -40,13 +40,12 @@ class CG_pcp_combine(CommandGen):
   def add_input_file(self, filename, addon):
     self.infiles.append(filename)
     self.inaddons.append(str(addon))
-
   
 
   # NOTE: Assumes YYYYMMDD sub dir 
   def get_lowest_forecast_at_valid(self, valid_time, dtype):
     out_file = ""
-    day_before = self.shift_time(valid_time, -24)
+    day_before = util.shift_time(valid_time, -24)
     input_template = self.p.getraw('filename_templates', dtype+'_INPUT_TEMPLATE')
     # TODO: do we need to make sure to check if dir exists first
     #   , or will glob handle?
@@ -57,96 +56,61 @@ class CG_pcp_combine(CommandGen):
     files = sorted(glob.glob("{:s}/{:s}/*".format(self.input_dir,str(day_before)[0:8])))
     for fpath in files:
       f = os.path.join(str(day_before)[0:8],os.path.basename(fpath))
-#      input_template = self.p.getraw('filename_templates', dtype+'_INPUT_TEMPLATE')
-      # TODO: hack until we switch over to Julie's string parser
-#      fcst = self.pull_forecast(f, native_template)
+      ste = sts.StringTemplateExtract(self.logger, input_template, f)
+      ste.parseTemplate()
 
-#      if dtype == "PHPT":
-#        fcst = int(os.path.basename(fpath)[-20:-18])
-#      else:
-#        fcst = int(os.path.splitext(os.path.basename(f))[0][-3])
-        
-      if dtype == "NATIONAL_BLEND" or dtype == "HREF_MEAN":
-        fcst = int(os.path.splitext(os.path.basename(f))[0][-3:])
-#      elif dtype == "HREF_MEAN":
-#        fcst = int(os.path.splitext(os.path.basename(f))[0][-3])
-#        fcst = int(os.path.basename(fpath)[22:25])
-      else:
-        fcst = int(os.path.basename(f)[-20:-18])        
-#        fcst = int(os.path.basename(fpath)[20:23])
-        
-      if fcst is None:
-        print("ERROR: Could not pull forecast leas from f")
+      fcst = ste.getLeadHour()
+      if fcst is -1:
+        print("ERROR: Could not pull forecast lead from f")
         exit
 
-      if dtype == "NATIONAL_BLEND": # or dtype == "HREF_MEAN":
-        init = self.pull_template(os.path.basename(input_template[-13:-5]), os.path.basename(f[-17:-7]), "%Y%m%d%H")
-      else:
-#        init = self.pull_template(os.path.basename(input_template[-29:-21]), os.path.basename(f[-18:-8]), "%Y%m%d%H")
-        init = self.pull_template(os.path.basename(input_template[-29:-21]), os.path.splitext(os.path.basename(f))[0][-14:-4], "%Y%m%d%H")            
-
-      v = self.shift_time(init,fcst)
+      init = ste.getInitTime("%Y%m%d%H")
+      v = util.shift_time(init,fcst)
       if v == valid_time:
         out_file = fpath
 
     files = sorted(glob.glob("{:s}/{:s}/*".format(self.input_dir,str(valid_time)[0:8])))
     for fpath in files:
       f = os.path.join(str(day_before)[0:8],os.path.basename(fpath))
-#      print("FILE:"+f)
-      # hack until we switch over to Julie's string parser
-#      fcst = self.pull_forecast(f, native_template)
-#      if dtype == "PHPT":
-#        fcst = int(os.path.basename(f)[-20:-18])
-#      else:
-#        fcst = int(os.path.splitext(os.path.basename(f))[0][-3:])
-#      print("FCST:"+str(fcst))
-      if dtype == "NATIONAL_BLEND" or dtype == "HREF_MEAN":
-#        fcst = int(os.path.basename(fpath)[22:25])
-        fcst = int(os.path.splitext(os.path.basename(f))[0][-3:])
-      else:
-        fcst = int(os.path.basename(f)[-20:-18])          
-#        fcst = int(os.path.basename(fpath)[20:23])
-#      print("F:"+f)
-#      print("FCST:"+str(fcst))
-      if fcst is None:
+      ste = sts.StringTemplateExtract(self.logger, input_template, f)
+      ste.parseTemplate()      
+      fcst = ste.getLeadHour()
+
+      if fcst is -1:
         print("ERROR: Could not pull forecast lead from f")
         exit
 
-      if dtype == "HREF_MEAN":
-        temp = os.path.splitext(os.path.basename(input_template))[0][-25:-17]
-        init = self.pull_template(temp, os.path.basename(f[-17:-7]), "%Y%m%d%H")        
-      elif dtype == "NATIONAL_BLEND":
-        temp = os.path.splitext(os.path.basename(input_template))[0][-9:-1]          
-#        init = self.pull_template(os.path.basename(input_template[-13:-5]), os.path.basename(f[-17:-7]), "%Y%m%d%H")
-        init = self.pull_template(temp, os.path.basename(f[-17:-7]), "%Y%m%d%H")
-
-      else:
-        init = self.pull_template(os.path.basename(input_template[-29:-21]), os.path.basename(f[-17:-7]), "%Y%m%d%H")        
-      v = self.shift_time(init, fcst)
+      init = ste.getInitTime("%Y%m%d%H")        
+      v = util.shift_time(init, fcst)
       if v == valid_time:
         out_file = fpath        
     return out_file
 
 
-  
-  def find_closest_before(self, dir, time, template):
+  def search_day(self, dir, file_time, search_time, template):
     out_file = ""
-    day_before = self.shift_time(time, -24)
-    files = sorted(glob.glob("{:s}/*{:s}*".format(dir,str(day_before)[0:8])))
+    print("Search:"+dir+" and "+search_time)
+    files = sorted(glob.glob("{:s}/*{:s}*".format(dir,search_time)))
     for f in files:
-#      ftime = self.pull_template(template,os.path.basename(f),"%Y%m%d%H")
-      ftime = f[-18:-8]
-      if ftime < time:
-        out_file = f
-
-    files = sorted(glob.glob("{:s}/*{:s}*".format(dir,str(time)[0:8])))
-    for f in files:
-#      ftime = self.pull_template(template,os.path.basename(f),"%Y%m%d%H")
-      ftime = f[-18:-8]      
-      if ftime < time:
+      ste = sts.StringTemplateExtract(self.logger, template, os.path.basename(f))
+      ste.parseTemplate()
+      ftime = ste.getValidTime("%Y%m%d%H")
+      if ftime < file_time:
         out_file = f
     return out_file
+      
+  def find_closest_before(self, dir, time, template):
+    day_before = util.shift_time(time, -24)
+    yesterday_file = self.search_day(dir, time, str(day_before)[0:8], template)
+    today_file = self.search_day(dir, time, str(time)[0:8], template)
+    print("Y:"+yesterday_file)
+    print("T:"+today_file)    
+    if today_file == "":
+      return yesterday_file
+    else:
+      return today_file
 
+  
   def get_accumulation(self, valid_time, accum, ob_type, is_forecast=False):
     # TODO: pass in template (input/native) so this isn't assumed
     file_template = self.p.getraw('filename_templates',ob_type+"_INPUT_TEMPLATE")
@@ -160,7 +124,7 @@ class CG_pcp_combine(CommandGen):
       # loop accum times
       data_interval = self.p.getint('config',ob_type+'_DATA_INTERVAL')*3600
       for i in range(0, accum, data_interval):
-        search_time = self.shift_time(valid_time, -i)
+        search_time = util.shift_time(valid_time, -i)
         # find closest file before time
         f = self.find_closest_before(self.input_dir, search_time, file_template)
         if f == "":
@@ -195,7 +159,7 @@ class CG_pcp_combine(CommandGen):
           return
       
       start_time = valid_time
-      last_time = self.shift_time(valid_time, -(accum-1) )
+      last_time = util.shift_time(valid_time, -(accum-1) )
       total_accum = accum
       search_accum = total_accum
       # loop backwards in time until you have a full set of accumulation
@@ -210,7 +174,7 @@ class CG_pcp_combine(CommandGen):
           else:
             addon = "'name=\""+self.p.getstr('config',ob_type+'_'+str(1)+'_FIELD_NAME') +"\"; level=\"(0,*,*)\";'"          
           self.add_input_file(f,addon)
-          start_time = self.shift_time(start_time, -1)
+          start_time = util.shift_time(start_time, -1)
           search_accum -= 1
         else: # not looking for forecast files
           # get all files of valid_time (all accums)
@@ -236,7 +200,7 @@ class CG_pcp_combine(CommandGen):
               elif data_type == "NETCDF":
                 addon = "'name=\""+self.p.getstr('config',ob_type+'_'+str(search_accum)+'_FIELD_NAME') +"\"; level=\"(0,*,*)\";'"
               self.add_input_file(f,addon)
-              start_time = self.shift_time(start_time, -search_accum)
+              start_time = util.shift_time(start_time, -search_accum)
               total_accum -= search_accum
               search_accum = total_accum
               break
@@ -248,11 +212,7 @@ class CG_pcp_combine(CommandGen):
         if search_accum == 0:
           (self.logger).warning(self.app_name+": Could not find files to compute accumulation")
           return None
-    (self.logger).debug("FILE: " + f)
-    # TODO: Don't require 'h' character after accum
-    # do we even need this?
-    outname = re.sub("[0-9]{2}h", str(accum).zfill(2)+"h", f.rstrip())
-    (self.logger).debug(outname)
+
     self.set_output_dir(self.outdir)
 
 

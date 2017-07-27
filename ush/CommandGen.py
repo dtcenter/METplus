@@ -105,56 +105,7 @@ class CommandGen:
    (self.logger).debug(item+"="+self.env[item])
 #    print(item,":",self.env[item]) 
 
-  def fill_template_fcst(self, template, ymd_str, lead_str):
-    fcstSts = sts.StringTemplateSubstitution(self.logger,
-                template,
-                init=ymd_str,
-                lead=lead_str)
-    return fcstSts.doStringSub()
 
-  def fill_template_accum(self, template, ymd_str, accum_str):
-    fcstSts = sts.StringTemplateSubstitution(self.logger,
-                template,
-                init=ymd_str,
-                accum=str(accum_str))
-    return fcstSts.doStringSub()  
-    
-
-  def fill_template(self, template, d, lead=-1):
-    out = template
-    if lead == '*':
-      out = out.replace("%FFF", '*')
-      out = out.replace("%FF", '*')
-    elif lead != -1:
-      out = out.replace("%FFF", str(lead).zfill(3))
-      out = out.replace("%FF", str(lead).zfill(2))
-    t = datetime.datetime.strptime(d, "%Y%m%d%H")
-    out = t.strftime(out)
-    return out
-
-  
-  def pull_template(self, template, string, new_template):
-#    template = template.replace("%FFF", '000')
-#    template = template.replace("%FF", '00')
-    t = datetime.datetime.strptime(string, template)
-    return t.strftime(new_template)
-
-  def pull_forecast(self, f, template):
-    try:
-      idx = template.index('%FFF')
-#      ymdh = 
-      return f[idx:idx+3]
-    except ValueError:
-      try:
-        idx = template.index('%FF')
-        return f[idx:idx+2]
-      except ValueError:
-        return None
-
-  # hours      
-  def shift_time(self, time, shift):
-    return (datetime.datetime.strptime(time, "%Y%m%d%H") + datetime.timedelta(hours=shift)).strftime("%Y%m%d%H")
-                   
   def get_command(self):
     if self.app_path is None:
       (self.logger).error("No app path specified. You must use a subclass")
