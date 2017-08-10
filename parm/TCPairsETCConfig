@@ -119,5 +119,5 @@ watch_warn = {
 // Indicate a version number for the contents of this configuration file.
 // The value should generally not be modified.
 //
-version = "V5.2";
+version = "V6.0";
 
