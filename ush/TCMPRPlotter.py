@@ -290,6 +290,8 @@ if __name__ == "__main__":
         else:
             p = config_launcher.load_baseconfs()
         logger = util.get_logger(p)
+        if 'RSCRIPTS_BASE' not in os.environ:
+            os.environ['RSCRIPTS_BASE'] = p.getdir('RSCRIPTS_BASE')
         if 'MET_BUILD_BASE' not in os.environ:
             os.environ['MET_BUILD_BASE'] = p.getdir('MET_BUILD_BASE')
         if p.getdir('MET_BIN') not in os.environ['PATH']:
