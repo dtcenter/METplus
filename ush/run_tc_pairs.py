@@ -3,8 +3,9 @@
 """
 Program Name: run_tc_pairs.py
 Contact(s): Julie Prestopnik, Minna Win
-Abstract: Runs tc_pairs to parse ADeck and BDeck ATCF files, filter the data, and match them up
-History Log:  Initial version 
+Abstract: Runs tc_pairs to parse ADeck and BDeck ATCF files,
+          filter the data, and match them up
+History Log:  Initial version
 Usage: run_tc_pairs.py
 Parameters: None
 Input Files: adeck and bdeck files
@@ -13,29 +14,28 @@ Condition codes: 0 for success, 1 for failure
 
 """
 
-from __future__ import (print_function, division )
-
-##@namespace run_tc_pairs
-# @brief Runs tc_pairs to parse ADeck and BDeck ATCF files, filter the data, and match them up.
-#
-# Call as follows: 
-# @code{.sh}
-# run_tc_pairs.py [-c /path/to/user.template.conf]
-# @endcode
-#
-
+from __future__ import (print_function, division)
 import produtil.setup
-from produtil.run import batchexe, run, checkrun
-import logging
+from produtil.run import batchexe, run
 import os
 import sys
 import met_util as util
 import re
 import csv
-import subprocess
+
+'''!@namespace run_tc_pairs
+@brief Runs tc_pairs to parse ADeck and BDeck ATCF files,
+filter the data, and match them up.
+
+Call as follows:
+@code{.sh}
+run_tc_pairs.py [-c /path/to/user.template.conf]
+@endcode
+'''
 
 
-def read_modify_write_file(in_csvfile, MM, missing_values, out_csvfile, logger):
+def read_modify_write_file(in_csvfile, MM, missing_values,
+                           out_csvfile, logger):
     """! Reads modifies and writes file
     @param in_csvfile input csv file that is being parsed
     @param MM The storm month
@@ -46,33 +46,33 @@ def read_modify_write_file(in_csvfile, MM, missing_values, out_csvfile, logger):
     print("inside tc pairs")
 
     # Used for logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
+    # cur_filename = sys._getframe().f_code.co_filename
+    # cur_function = sys._getframe().f_code.co_name
 
     # Open the output csv file
     out_file = open(out_csvfile, "wb")
     # Tell the write to use the line separator "\n" instead of the DOS "\r\n"
     writer = csv.writer(out_file, lineterminator="\n")
-    
+
     with open(in_csvfile) as csvfile:
 
         in_file_reader = csv.reader(csvfile)
         for index, row in enumerate(in_file_reader):
-            
             # Create a list for the modified lines
             row_list = []
-            
-            # Replace the second column (storm number) with the month followed by the storm number
+
+            # Replace the second column (storm number) with
+            # the month followed by the storm number
             # e.g. Replace 0006 with 010006
             row[1] = " " + MM + (row[1]).strip()
 
             # Iterate over the items, deleting or modifying the columns
             for item in row:
-            
                 # Delete the third column
                 if item == row[2]:
                     continue
-                # Replace MISSING_VAL_TO_REPLACE=missing_values[0] with MISSING_VAL=missing_values[1]
+                # Replace MISSING_VAL_TO_REPLACE=missing_values[0] with
+                # MISSING_VAL=missing_values[1]
                 elif (item.strip() == missing_values[0]):
                     item = " " + missing_values[1]
                 # Create a new row to write
@@ -83,9 +83,8 @@ def read_modify_write_file(in_csvfile, MM, missing_values, out_csvfile, logger):
 
     csvfile.close()
     out_file.close()
-                            
 
-    
+
 def main():
     """!Main program.
 
@@ -97,24 +96,25 @@ def main():
 
     # Retrieve any necessary values, from the configuration file object p.
     # For efficency get the values here, once, and not in any loops.
-    init_list = util.gen_init_list(p.getstr('config','INIT_DATE_BEG'),
-                                    p.getstr('config','INIT_DATE_END'),
-                                    p.getint('config','INIT_HOUR_INC'),
-                                    p.getstr('config','INIT_HOUR_END'))
+    init_list = util.gen_init_list(p.getstr('config', 'INIT_DATE_BEG'),
+                                   p.getstr('config', 'INIT_DATE_END'),
+                                   p.getint('config', 'INIT_HOUR_INC'),
+                                   p.getstr('config', 'INIT_HOUR_END'))
 
-    track_data_dir=p.getdir('TRACK_DATA_DIR')
-    track_type=p.getstr('config','TRACK_TYPE')
-    track_data_subdir_mod=p.getdir('TRACK_DATA_SUBDIR_MOD')
-    adeck_file_prefix=p.getstr('config','ADECK_FILE_PREFIX')
-    bdeck_file_prefix=p.getstr('config','BDECK_FILE_PREFIX')
-    track_data_mod_force_overwrite=p.getbool('config','TRACK_DATA_MOD_FORCE_OVERWRITE')
-    tc_pairs_dir=p.getdir('TC_PAIRS_DIR')
-    tc_pairs_force_overwrite=p.getbool('config','TC_PAIRS_FORCE_OVERWRITE')
-    tc_pairs_exe=p.getexe('TC_PAIRS')
-    tc_pairs_config_path=p.getstr('config','TC_PAIRS_CONFIG_PATH')
-    missing_val_to_replace=p.getstr('config','MISSING_VAL_TO_REPLACE')
-    missing_val=p.getstr('config','MISSING_VAL')
-    missing_values=(missing_val_to_replace, missing_val)
+    track_data_dir = p.getdir('TRACK_DATA_DIR')
+    track_type = p.getstr('config', 'TRACK_TYPE')
+    track_data_subdir_mod = p.getdir('TRACK_DATA_SUBDIR_MOD')
+    adeck_file_prefix = p.getstr('config', 'ADECK_FILE_PREFIX')
+    bdeck_file_prefix = p.getstr('config', 'BDECK_FILE_PREFIX')
+    track_data_mod_force_overwrite = \
+        p.getbool('config', 'TRACK_DATA_MOD_FORCE_OVERWRITE')
+    tc_pairs_dir = p.getdir('TC_PAIRS_DIR')
+    tc_pairs_force_overwrite = p.getbool('config', 'TC_PAIRS_FORCE_OVERWRITE')
+    tc_pairs_exe = p.getexe('TC_PAIRS')
+    tc_pairs_config_path = p.getstr('config', 'TC_PAIRS_CONFIG_PATH')
+    missing_val_to_replace = p.getstr('config', 'MISSING_VAL_TO_REPLACE')
+    missing_val = p.getstr('config', 'MISSING_VAL')
+    missing_values = (missing_val_to_replace, missing_val)
 
     # Get the desired YYYYMM from the init list
     YYYYMM_list = []
@@ -122,143 +122,221 @@ def main():
         if init[0:6] not in YYYYMM_list:
             YYYYMM_list.append(init[0:6])
 
-    # Set up the environment variable to be used in the TCPairs Config file (TC_PAIRS_CONFIG_PATH)
+    # Set up the environment variable to be used in the TCPairs Config
+    # file (TC_PAIRS_CONFIG_PATH)
     # Used to set init_inc in "TC_PAIRS_CONFIG_PATH"
-    # Need to do some pre-processing so that Python will use " and not ' because currently MET
+    # Need to do some pre-processing so that Python will use " and not '
+    # because currently MET
     # doesn't support single-quotes
-    tmp_init_string = str(init_list)    
-    tmp_init_string = tmp_init_string.replace("\'","\"")
+    tmp_init_string = str(init_list)
+    tmp_init_string = tmp_init_string.replace("\'", "\"")
     os.environ['INIT_INC'] = tmp_init_string
 
-    # Get a directory path listing of the dated subdirectories (YYYYMM format) in the track_data directory
+    # Get a directory path listing of the dated subdirectories
+    # (YYYYMM format) in the track_data directory
     dir_list = []
     for YYYYMM in os.listdir(track_data_dir):
         if os.path.isdir(os.path.join(track_data_dir, YYYYMM)):
             if (YYYYMM in YYYYMM_list):
                 dir_list.append(os.path.join(track_data_dir, YYYYMM))
 
-    
     if (dir_list == []):
-        logger.warning("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "There are no dated sub-directories (YYYYMM) with input data as expected in: " + track_data_dir)
+        logger.warning("ERROR | [" + cur_filename + ":" + cur_function +
+                       "] | There are no dated sub-directories (YYYYMM) " +
+                       "with input data as expected in: " + track_data_dir)
         exit(0)
-       
-    # Get a list of files in the dated subdirectories 
+
+    # Get a list of files in the dated subdirectories
     for mydir in dir_list:
         myfiles = os.listdir(mydir)
         # Need to do extra processing if track_type is extra_tropical_cyclone
         if (track_type == "extra_tropical_cyclone"):
-            
             # Create an atcf output directory for writing the modified files
-            adeck_mod = os.path.join(track_data_subdir_mod, os.path.basename(mydir))
-            bdeck_mod = os.path.join(track_data_subdir_mod, os.path.basename(mydir))
-            produtil.fileop.makedirs(adeck_mod,logger=logger)
-        
-        # Iterate over the files, modifying them and writing new output files if necessary ("extra_tropical_cyclone" track type), and run tc_pairs
+            adeck_mod = os.path.join(track_data_subdir_mod,
+                                     os.path.basename(mydir))
+            bdeck_mod = os.path.join(track_data_subdir_mod,
+                                     os.path.basename(mydir))
+            produtil.fileop.makedirs(adeck_mod, logger=logger)
+
+        # Iterate over the files, modifying them and writing new output
+        # files if necessary ("extra_tropical_cyclone" track type), and
+        # run tc_pairs
         for myfile in myfiles:
-            
             # Check to see if the files have the ADeck prefix
             if myfile.startswith(adeck_file_prefix):
-                
-                # Create the output directory for the pairs, if it doesn't already exist
-                pairs_out_dir = os.path.join(tc_pairs_dir, os.path.basename(mydir))
+                # Create the output directory for the pairs, if
+                # it doesn't already exist
+                pairs_out_dir = os.path.join(tc_pairs_dir,
+                                             os.path.basename(mydir))
                 produtil.fileop.makedirs(pairs_out_dir, logger=logger)
 
-                # Need to do extra processing if track_type is extra_tropical_cyclone
+                # Need to do extra processing if track_type is
+                # extra_tropical_cyclone
                 if (track_type == "extra_tropical_cyclone"):
 
                     # Form the adeck and bdeck input filename paths
                     adeck_in_file_path = os.path.join(mydir, myfile)
-                    bdeck_in_file_path = re.sub(adeck_file_prefix, bdeck_file_prefix, adeck_in_file_path)
+                    bdeck_in_file_path = re.sub(adeck_file_prefix,
+                                                bdeck_file_prefix,
+                                                adeck_in_file_path)
                     adeck_file_path = os.path.join(adeck_mod, myfile)
-                    bdeck_file_path = os.path.join(bdeck_mod, re.sub(adeck_file_prefix, bdeck_file_prefix, myfile))
-    
-                    # Get the storm number e.g. 0004 in amlq2012033118.gfso.0004
-                    split_basename = myfile.split(".")
-                    storm_num = split_basename[-1]
-    
+                    bdeck_file_path = os.path.join(bdeck_mod,
+                                                   re.sub(adeck_file_prefix,
+                                                          bdeck_file_prefix,
+                                                          myfile))
+
+                    # Get the storm number e.g. 0004 in
+                    # amlq2012033118.gfso.0004
+                    # split_basename = myfile.split(".")
+
                     # Get the YYYYMM e.g 201203 in amlq2012033118.gfso.0004
                     YYYYMM = myfile[4:10]
-            
+
                     # Get the MM from the YYYYMM
                     MM = YYYYMM[-2:]
 
                     # HERE
-                    # Before calling this function (twice below) check to see if the output file exists already.  If it does exist
-                    # either check a force overwrite option (add) or log a message telling the user to delete the existing data
-                    # if they want a fresh run
-
-                    
-                    # Read in the adeck file, modify it, and write a new adeck file
+                    # Before calling this function (twice below) check to
+                    # see if the output file exists already.  If it does exist
+                    # either check a force overwrite option (add) or
+                    # log a message telling the user to delete the
+                    # existing data if they want a fresh run
+                    # Read in the adeck file, modify it, and
+                    # write a new adeck file
                     # Check for existence of data and overwrite if desired
                     if os.path.exists(adeck_file_path):
                         if (track_data_mod_force_overwrite):
-                            logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Writing modified csv file: " + adeck_file_path + ", replacing existing data because TRACK_DATA_MOD_FORCE_OVERWRITE is set to True")
-                            read_modify_write_file(adeck_in_file_path, MM, missing_values, adeck_file_path, logger)
+                            logger.debug("DEBUG | [" + cur_filename +
+                                         ":" + cur_function + "] | " +
+                                         "Writing modified csv file: " +
+                                         adeck_file_path + ", replacing " +
+                                         "existing data because " +
+                                         "TRACK_DATA_MOD_FORCE_OVERWRITE " +
+                                         "is set to True")
+                            read_modify_write_file(adeck_in_file_path, MM,
+                                                   missing_values,
+                                                   adeck_file_path, logger)
                         else:
-                            logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Using existing modified csv file: "  + adeck_file_path + ", because TRACK_DATA_MOD_FORCE_OVERWRITE is set to False")
+                            logger.debug("DEBUG | [" + cur_filename +
+                                         ":" + cur_function + "] | " +
+                                         "Using existing modified csv file: " +
+                                         adeck_file_path + ", because " +
+                                         "TRACK_DATA_MOD_FORCE_OVERWRITE is " +
+                                         "set to False")
                     else:
-                        logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Writing modified csv file: " + adeck_file_path)
-                        read_modify_write_file(adeck_in_file_path, MM, missing_values, adeck_file_path, logger)
-                
-                    # Read in the bdeck file, modify it, and write a new bdeck file
+                        logger.debug("DEBUG | [" + cur_filename + ":" +
+                                     cur_function + "] | " +
+                                     "Writing modified csv file: " +
+                                     adeck_file_path)
+                        read_modify_write_file(adeck_in_file_path, MM,
+                                               missing_values,
+                                               adeck_file_path, logger)
+
+                    # Read in the bdeck file, modify it,
+                    # and write a new bdeck file
                     # Check for existence of data and overwrite if desired
                     if os.path.exists(bdeck_file_path):
                         if (track_data_mod_force_overwrite):
-                            logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Writing modified csv file: "  + bdeck_file_path + ", replacing existing data because TRACK_DATA_MOD_FORCE_OVERWRITE is set to True")
-                            read_modify_write_file(bdeck_in_file_path, MM, missing_values, bdeck_file_path, logger)
+                            logger.debug("DEBUG | [" + cur_filename +
+                                         ":" + cur_function + "] | " +
+                                         "Writing modified csv file: " +
+                                         bdeck_file_path + ", replacing " +
+                                         "existing data because " +
+                                         "TRACK_DATA_MOD_FORCE_OVERWRITE is" +
+                                         " set to True")
+                            read_modify_write_file(bdeck_in_file_path, MM,
+                                                   missing_values,
+                                                   bdeck_file_path, logger)
                         else:
-                            logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Using existing modified csv file: "  + bdeck_file_path + ", because TRACK_DATA_MOD_FORCE_OVERWRITE is set to False")
+                            logger.debug("DEBUG | [" + cur_filename +
+                                         ":" + cur_function + "] | " +
+                                         "Using existing modified csv file: " +
+                                         bdeck_file_path + ", because " +
+                                         "TRACK_DATA_MOD_FORCE_OVERWRITE is " +
+                                         "set to False")
                     else:
-                        logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Writing modified csv file: " + bdeck_file_path)
-                        read_modify_write_file(bdeck_in_file_path, MM, missing_values, bdeck_file_path, logger)
+                        logger.debug("DEBUG | [" + cur_filename + ":" +
+                                     cur_function + "] | " +
+                                     "Writing modified csv file: " +
+                                     bdeck_file_path)
+                        read_modify_write_file(bdeck_in_file_path, MM,
+                                               missing_values,
+                                               bdeck_file_path, logger)
 
                 else:
 
                     # Set up the adeck and bdeck file paths
                     adeck_file_path = os.path.join(mydir, myfile)
-                    bdeck_file_path = re.sub(adeck_file_prefix, bdeck_file_prefix, adeck_file_path)
-    
+                    bdeck_file_path = re.sub(adeck_file_prefix,
+                                             bdeck_file_prefix,
+                                             adeck_file_path)
+
                 # Run tc_pairs
                 pairs_out_file = os.path.join(pairs_out_dir, myfile)
                 pairs_out_file_with_suffix = pairs_out_file + ".tcst"
                 if os.path.exists(pairs_out_file_with_suffix):
                     if (tc_pairs_force_overwrite):
-                        logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Writing tc_pairs output file: "  + pairs_out_file + ", replacing existing data because TC_PAIRS_FORCE_OVERWRITE is set to True")
-                        cmd = tc_pairs_exe + " -adeck " + adeck_file_path + " -bdeck " + bdeck_file_path + " -config " + tc_pairs_config_path + " -out " + pairs_out_file
-                        cmd = batchexe('sh')['-c',cmd].err2out()
-                        logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd.to_shell())
+                        logger.debug("DEBUG | [" + cur_filename + ":" +
+                                     cur_function + "] | " +
+                                     "Writing tc_pairs output file: " +
+                                     pairs_out_file + ", replacing existing " +
+                                     " data because TC_PAIRS_FORCE_OVERWRITE" +
+                                     " is set to True")
+                        cmd = tc_pairs_exe + " -adeck " + adeck_file_path + \
+                            " -bdeck " + bdeck_file_path + " -config " + \
+                            tc_pairs_config_path + " -out " + pairs_out_file
+                        cmd = batchexe('sh')['-c', cmd].err2out()
+                        logger.debug("DEBUG | [" + cur_filename + ":" +
+                                     cur_function + "] | " +
+                                     "Running tc_pairs with command: " +
+                                     cmd.to_shell())
                         ret = run(cmd, sleeptime=.00001)
                         if ret != 0:
-                            logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd.to_shell())
+                            logger.error("ERROR | [" + cur_filename +
+                                         ":" + cur_function + "] | " +
+                                         "Problem executing: " +
+                                         cmd.to_shell())
                             exit(0)
                     else:
-                        logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Existing tc_pairs output file: "  + pairs_out_file + ", is available for use. To overwrite set TC_PAIRS_FORCE_OVERWRITE to True")
+                        logger.debug("DEBUG | [" + cur_filename + ":" +
+                                     cur_function + "] | " +
+                                     "Existing tc_pairs output file: " +
+                                     pairs_out_file + ", is available for " +
+                                     "use. To overwrite set " +
+                                     "TC_PAIRS_FORCE_OVERWRITE to True")
                 else:
-                    cmd = tc_pairs_exe + " -adeck " + adeck_file_path + " -bdeck " + bdeck_file_path + " -config " + tc_pairs_config_path + " -out " + pairs_out_file
-                    cmd = batchexe('sh')['-c',cmd].err2out()
-                    logger.debug("DEBUG | [" + cur_filename +  ":" + cur_function + "] | " + "Running tc_pairs with command: " + cmd.to_shell())
+                    cmd = tc_pairs_exe + " -adeck " + adeck_file_path + \
+                        " -bdeck " + bdeck_file_path + " -config " + \
+                        tc_pairs_config_path + " -out " + pairs_out_file
+                    cmd = batchexe('sh')['-c', cmd].err2out()
+                    logger.debug("DEBUG | [" + cur_filename + ":" +
+                                 cur_function + "] | " +
+                                 "Running tc_pairs with command: " +
+                                 cmd.to_shell())
                     ret = run(cmd, sleeptime=.00001)
                     if ret != 0:
-                        logger.error("ERROR | [" + cur_filename +  ":" + cur_function + "] | " + "Problem executing: " + cmd.to_shell())
+                        logger.error("ERROR | [" + cur_filename +
+                                     ":" + cur_function + "] | " +
+                                     "Problem executing: " + cmd.to_shell())
                         exit(0)
-               
-    
-if __name__ == "__main__":
 
+
+if __name__ == "__main__":
     # sleep is for debugging in pycharm so I can attach to this process
     # from the os.system call in master_met_plus.py
-    #import time
-    #time.sleep(60)
+    # import time
+    # time.sleep(60)
 
     # Testing constants_pdef until produtil is fully integrated.
-    #import constants_pdef as P
-    #test = P.Params()
-    #test.init(__doc__) ## Put description of the code here
-
+    # import constants_pdef as P
+    # test = P.Params()
+    # test.init(__doc__) ## Put description of the code here
 
     try:
         if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='run_tc_pairs',jlogfile=os.environ['JLOGFILE'])
+            produtil.setup.setup(send_dbn=False,
+                                 jobname='run_tc_pairs',
+                                 jlogfile=os.environ['JLOGFILE'])
         else:
             produtil.setup.setup(send_dbn=False, jobname='run_tc_pairs')
         produtil.log.postmsg('run_tc_pairs is starting')
@@ -276,6 +354,5 @@ if __name__ == "__main__":
         produtil.log.postmsg('run_tc_pairs completed')
     except Exception as e:
         produtil.log.jlogger.critical(
-            'run_tc_pairs failed: %s'%(str(e),),exc_info=True)
+            'run_tc_pairs failed: %s' % (str(e),), exc_info=True)
         sys.exit(2)
-

@@ -3,12 +3,13 @@
 from __future__ import print_function
 
 import produtil.setup
-from produtil.run import batchexe, run, checkrun
+from produtil.run import batchexe, run
 import re
 import os
 import sys
 import met_util as util
 # import subprocess
+
 
 def analysis_by_init_time():
     ''' Invoke the series analysis script based on
@@ -16,33 +17,30 @@ def analysis_by_init_time():
 
          Args:
 
- 
          Returns:
               None:  Creates graphical plots of storm tracks
-
-
     '''
 
-    #produtil.log.postmsg('Example postmsg, convenience function for jlogger.info')
-
-    # Retrieve any necessary values (dirs, executables) 
+    # Retrieve any necessary values (dirs, executables)
     # from the param file(s)
     var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
     stat_list = util.getlist(p.getstr('config', 'STAT_LIST'))
     series_analysis_exe = p.getexe('SERIES_ANALYSIS')
     plot_data_plane_exe = p.getexe('PLOT_DATA_PLANE')
     convert_exe = p.getexe('CONVERT_EXE')
-    series_anlysis_config_file = p.getstr('config', 'SERIES_ANALYSIS_BY_INIT_CONFIG_PATH')
-    regrid_with_MET_tool = p.getbool('config','REGRID_USING_MET_TOOL')
+    series_anlysis_config_file = \
+        p.getstr('config', 'SERIES_ANALYSIS_BY_INIT_CONFIG_PATH')
+    regrid_with_MET_tool = p.getbool('config', 'REGRID_USING_MET_TOOL')
     extract_tiles_dir = p.getdir('EXTRACT_OUT_DIR')
     series_out_dir = p.getdir('SERIES_INIT_OUT_DIR')
     series_filtered_out_dir = p.getdir('SERIES_INIT_FILTERED_OUT_DIR')
-    background_map = p.getbool('config','BACKGROUND_MAP')
-    series_filter_opts = p.getstr('config','SERIES_ANALYSIS_FILTER_OPTS')
+    background_map = p.getbool('config', 'BACKGROUND_MAP')
+    series_filter_opts = p.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
 
     # Set up the environment variable to be used in the Series Analysis
     #   Config file (SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH)
-    # Used to set cnt  value in output_stats in "SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH"
+    # Used to set cnt  value in output_stats in
+    # "SERIES_ANALYSIS_BY_LEAD_CONFIG_PATH"
     # Need to do some pre-processing so that Python will use " and not '
     #  because currently MET doesn't support single-quotes
     tmp_stat_string = str(stat_list)
@@ -53,12 +51,12 @@ def analysis_by_init_time():
 
     if regrid_with_MET_tool:
         # Regridding via MET Tool regrid_data_plane.
-        fcst_tile_regex = p.getstr('regex_pattern','FCST_NC_TILE_REGEX')
-        anly_tile_regex = p.getstr('regex_pattern','ANLY_NC_TILE_REGEX')
+        fcst_tile_regex = p.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
     else:
         # Regridding via wgrib2 tool.
-        fcst_tile_regex = p.getstr('regex_pattern','FCST_TILE_REGEX')
-        anly_tile_regex = p.getstr('regex_pattern','ANLY_TILE_REGEX')
+        fcst_tile_regex = p.getstr('regex_pattern', 'FCST_TILE_REGEX')
+        anly_tile_regex = p.getstr('regex_pattern', 'ANLY_TILE_REGEX')
 
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
@@ -73,8 +71,9 @@ def analysis_by_init_time():
 
     # Check for input tile data.
     try:
-        util.check_for_tiles(tile_dir, fcst_tile_regex, anly_tile_regex, logger)
-    except OSError as e:
+        util.check_for_tiles(tile_dir, fcst_tile_regex,
+                             anly_tile_regex, logger)
+    except OSError:
         msg = ("Missing 30x30 tile files.  " +
                "Extract tiles needs to be run")
         logger.error(msg)
@@ -82,9 +81,11 @@ def analysis_by_init_time():
     # If applicable apply any filtering via tc_stat, as indicated in the
     # constants_pdef.py parameter/config file.
     if series_filter_opts:
-        util.apply_series_filters(tile_dir, init_times, series_filtered_out_dir, p, logger)
+        util.apply_series_filters(tile_dir, init_times,
+                                  series_filtered_out_dir, p, logger)
 
-        # Clean up any empty files and directories that could arise as a result of filtering
+        # Clean up any empty files and directories that could arise as
+        # a result of filtering
         util.prune_empty(series_filtered_out_dir, p, logger)
 
         # Get the list of all the files that were created as a result
@@ -96,11 +97,13 @@ def analysis_by_init_time():
             # input for series analysis.
             tile_dir = series_filtered_out_dir
 
-            # Generate the tmp_anly and tmp_fcst files used to validate filtering and for troubleshooting
+            # Generate the tmp_anly and tmp_fcst files used to validate
+            # filtering and for troubleshooting
             # The tmp_fcst and tmp_anly ASCII files contain the
             # list of files that meet the filter criteria.
             filtered_dirs_list = util.get_files(tile_dir, ".*.", logger)
-            util.create_filter_tmp_files(filtered_dirs_list, series_filtered_out_dir, p, logger)
+            util.create_filter_tmp_files(filtered_dirs_list,
+                                         series_filtered_out_dir, p, logger)
 
         else:
             msg = ("INFO| Applied series filter options, no results..." +
@@ -110,7 +113,8 @@ def analysis_by_init_time():
             filtered_dirs_list = util.get_files(tile_dir, ".*.", logger)
 
     else:
-        # No additional filtering was requested.  Use the data in the extract tiles directory
+        # No additional filtering was requested.
+        # Use the data in the extract tiles directory
         # as input for series analysis.
         # source of input tile data.
         filtered_dirs_list = util.get_files(tile_dir, ".*.", logger)
@@ -121,7 +125,8 @@ def analysis_by_init_time():
     filter_init_times = set()
     for f in filtered_dirs_list:
         # Retrieve the file path that contains the init time and storm id.
-        match = re.match(r'.*/([0-9]{8}_[0-9]{2,3})/([A-Za-z]{2}[0-9]{10})/', f)
+        match = re.match(r'.*/([0-9]{8}_[0-9]{2,3})/([A-Za-z]{2}[0-9]{10})/',
+                         f)
         if match:
             init_storm = match.group(1)
             init_storm_dir = match.group(0)
@@ -135,9 +140,11 @@ def analysis_by_init_time():
         else:
             continue
 
-    # Create FCST and ANLY ASCII files based on init time and storm id.  These are arguments to the
+    # Create FCST and ANLY ASCII files based on init time and storm id.
+    # These are arguments to the
     # -fcst and -obs arguments to the MET Tool series_analysis.
-    # First, get an updated list of init times, since filtering can reduce the amount of init times.
+    # First, get an updated list of init times,
+    # since filtering can reduce the amount of init times.
     filter_init_times = util.get_updated_init_times(tile_dir, p, logger)
     sorted_filter_init = sorted(filter_init_times)
     fcst_ascii_file_base = 'FCST_ASCII_FILES_'
@@ -182,18 +189,23 @@ def analysis_by_init_time():
                     # files found, continue
                     continue
 
-                # Now create the FCST and ANLY ASCII files based on cur_init and cur_storm:
-                create_fcst_anly_to_ascii_file(fcst_grid_files, cur_init, cur_storm, fcst_ascii_file_base,
+                # Now create the FCST and ANLY ASCII files based on
+                # cur_init and cur_storm:
+                create_fcst_anly_to_ascii_file(fcst_grid_files, cur_init,
+                                               cur_storm, fcst_ascii_file_base,
                                                series_out_dir, logger)
-                create_fcst_anly_to_ascii_file(fcst_grid_files, cur_init, cur_storm, anly_ascii_file_base,
+                create_fcst_anly_to_ascii_file(fcst_grid_files, cur_init,
+                                               cur_storm, anly_ascii_file_base,
                                                series_out_dir, logger)
                 util.prune_empty(series_out_dir, p, logger)
 
     # Clean up any remaining empty files and dirs
     util.prune_empty(series_out_dir, p, logger)
-    logger.debug("Finished creating FCST and ANLY ASCII files, and cleaning empty files and dirs")
+    logger.debug("Finished creating FCST and ANLY ASCII files, and " +
+                 "cleaning empty files and dirs")
 
-    # Now assemble the -fcst, -obs, and -out arguments and invoke the MET Tool: series_analysis.
+    # Now assemble the -fcst, -obs, and -out arguments and invoke the
+    # MET Tool: series_analysis.
     for cur_init in sorted_filter_init:
         storm_list = get_storms_for_init(cur_init, tile_dir, logger)
         for cur_storm in storm_list:
@@ -275,14 +287,13 @@ def analysis_by_init_time():
                                      ' -config ', series_anlysis_config_file,
                                      ' ', out_param]
                     command = ''.join(command_parts)
-                    command = batchexe('sh')['-c',command].err2out()
-                    #command = batchexe(command.split()[0])[command.split()[1:]].err2out()
+                    command = batchexe('sh')['-c', command].err2out()
 
                     msg = ('INFO|[' + cur_filename + ':' +
                            cur_function + ']|' +
                            'SERIES ANALYSIS COMMAND: ' + command.to_shell())
                     logger.debug(msg)
-                    met_result = run(command)
+                    run(command)
 
                     # Using shell=True because we aren't relying
                     # on external input for creating the command
@@ -305,10 +316,12 @@ def analysis_by_init_time():
                                                            cur_init, cur_storm,
                                                            p, logger)
                     else:
-                        # Search the series_filtered_out_dir for the filtered files.
-                        num, beg, end = get_fcst_file_info(series_filtered_out_dir,
-                                                           cur_init, cur_storm,
-                                                           p, logger)
+                        # Search the series_filtered_out_dir for
+                        # the filtered files.
+                        num, beg, end = \
+                            get_fcst_file_info(series_filtered_out_dir,
+                                               cur_init, cur_storm,
+                                               p, logger)
 
                     # Assemble the input file, output file, field string,
                     # and title
@@ -350,24 +363,23 @@ def analysis_by_init_time():
                         title = ''.join(title_parts)
 
                         # Now assemble the entire plot data plane command
-                        data_plane_command_parts = [plot_data_plane_exe,
-                                                    ' ',
-                                                    plot_data_plane_input_fname,
-                                                    ' ',
-                                                    plot_data_plane_output_fname,
-                                                    ' ', field_string, ' ', title]
+                        data_plane_command_parts = \
+                            [plot_data_plane_exe, ' ',
+                             plot_data_plane_input_fname, ' ',
+                             plot_data_plane_output_fname, ' ',
+                             field_string, ' ', title]
 
                         data_plane_command = ''.join(
                             data_plane_command_parts)
-                        data_plane_command = batchexe('sh')['-c',data_plane_command].err2out()
-                        #data_plane_command = batchexe(data_plane_command.split()[0])[data_plane_command.split()[1:]].err2out()
-                        data_plane_result = run(data_plane_command)
+                        data_plane_command = \
+                            batchexe('sh')['-c', data_plane_command].err2out()
+                        run(data_plane_command)
 
                         # Using shell=True because we aren't
                         # relying on external input
                         # for creating the command to the MET series
                         # analysis binary
-                        #data_plane_result = subprocess.check_output(
+                        # data_plane_result = subprocess.check_output(
                         #    data_plane_command,
                         #    stderr=subprocess.STDOUT,
                         #    shell=True)
@@ -381,53 +393,51 @@ def analysis_by_init_time():
                                          plot_data_plane_output_fname,
                                          ' ', png_fname]
                         convert_command = ''.join(convert_parts)
-                        convert_command = batchexe('sh')['-c',convert_command].err2out()
-                        #convert_command = batchexe(convert_command.split()[0])[convert_command.split()[1:]].err2out()
-                        convert_result = run(convert_command)
+                        convert_command = \
+                            batchexe('sh')['-c', convert_command].err2out()
+                        run(convert_command)
 
                         # Using shell=True because we aren't relying
                         # on external input for creating the command to
                         # the MET series analysis binary
-                        #convert_results = subprocess.check_output(convert,
-                        #                                          stderr=subprocess.STDOUT,
-                        #                                          shell=True)
+                        # convert_results = subprocess.check_output(convert,
+                        #                      stderr=subprocess.STDOUT,
+                        #                      shell=True)
     logger.info("Finished series analysis by init time")
 
 
 def get_fcst_file_info(dir_to_search, cur_init, cur_storm, p, logger):
-    ''' Get the number of all the gridded forecast 30x30 tile 
+    ''' Get the number of all the gridded forecast 30x30 tile
         files for a given storm id and init time
-        (created by extract_tiles). Determine the filename of the 
-        first and last files.  This information is used to create 
+        (created by extract_tiles). Determine the filename of the
+        first and last files.  This information is used to create
         the title value to the -title opt in plot_data_plane.
-    
+
         Args:
            dir_to_search: The directory of the gridded files of interest.
            cur_init:  The init time of interest.
            cur_storm:  The storm id of interest.
            p        : The reference to constants_pdef.py param/config file.
-           logger:  The logger to which all logging messages 
+           logger:  The logger to which all logging messages
                     will be directed.
 
 
         Returns:
-           num, beg, end:  A tuple representing the number of 
-                           forecast tile files, and the first and 
+           num, beg, end:  A tuple representing the number of
+                           forecast tile files, and the first and
                            last file.
 
                           sys.exit(1) otherwise
-        
-
     '''
 
-    regrid_with_MET_tool = p.getbool('config','REGRID_USING_MET_TOOL')
+    regrid_with_MET_tool = p.getbool('config', 'REGRID_USING_MET_TOOL')
 
-    # For logging 
+    # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    # Get a sorted list of the forecast tile files for the init 
-    # time of interest for all the storm ids and return the 
+    # Get a sorted list of the forecast tile files for the init
+    # time of interest for all the storm ids and return the
     # forecast hour corresponding to the first and last file.
     # base_dir_to_search = os.path.join(output_dir, cur_init)
     gridded_dir = os.path.join(dir_to_search, cur_init, cur_storm)
@@ -480,30 +490,31 @@ def get_fcst_file_info(dir_to_search, cur_init, cur_storm, p, logger):
 
 
 def get_storms_for_init(cur_init, out_dir_base, logger):
-    ''' Retrieve all the filter files which have the .tcst
-        extension.  Inside each file, extract the STORM_ID
-        and append to the list, if the storm_list directory
-        exists.
-        
-        Args:
-           cur_init : the init time
+    '''Retrieve all the filter files which have the .tcst
+       extension.  Inside each file, extract the STORM_ID
+       and append to the list, if the storm_list directory
+       exists.
 
-           out_dir_base (string):  The directory where one should start
-                                   searching for the filter file(s)
-                                   - those with a .tcst file extension.
+       Args:
+         cur_init : the init time
 
-           logger : The logger to which all log messages are directed. 
+         out_dir_base (string):  The directory where one should start
+                                 searching for the filter file(s)
+                                 - those with a .tcst file extension.
 
-        Returns:
-           storm_list: A list of all the storms ids that correspond to this init time and actually
-                             has a directory in the init dir (additional filtering in a previous step
-                             may result in missing storm ids even though they are in the filter.tcst file)
- 
+         logger : The logger to which all log messages are directed.
+
+       Returns:
+         storm_list: A list of all the storms ids that correspond to
+                     this init time and actually has a directory in the
+                     init dir (additional filtering in a previous step
+                     may result in missing storm ids even though they are
+                     in the filter.tcst file)
     '''
 
     # For logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
+    # cur_filename = sys._getframe().f_code.co_filename
+    # cur_function = sys._getframe().f_code.co_name
 
     # Retrieve filter files, first create the filename
     # by piecing together the out_dir_base with the cur_init.
@@ -517,33 +528,35 @@ def get_storms_for_init(cur_init, out_dir_base, logger):
     return storm_list
 
 
-def create_fcst_anly_to_ascii_file(fcst_anly_grid_files, cur_init, cur_storm, fcst_anly_filename_base,
+def create_fcst_anly_to_ascii_file(fcst_anly_grid_files, cur_init, cur_storm,
+                                   fcst_anly_filename_base,
                                    series_out_dir, logger):
-    ''' Create ASCII file for either the FCST or ANLY files that are aggregated based on init time
-        and storm id.
+    '''Create ASCII file for either the FCST or ANLY files that are
+       aggregated based on init time and storm id.
 
-        Args:
-                fcst_anly_grid_files:       A list of the FCST or ANLY gridded files under consideration.
+       Args:
+         fcst_anly_grid_files:       A list of the FCST or ANLY gridded
+                                     files under consideration.
 
+         cur_init:                  The initialization time of interest
 
+         cur_storm:                 The storm id of interest
 
-                cur_init:                  The initialization time of interest
+         fcst_anly_filename_base:   The base name of the ASCII file
+                                    (either ANLY_ASCII_FILES_ or
+                                    FCST_ASCII_FILES_ which will be
+                                    appended with the storm id.
 
-                cur_storm:                 The storm id of interest
+         series_out_dir:            The directory where all the output from
+                                    series analysis will be saved.
 
-                fcst_anly_filename_base:   The base name of the ASCII file (either ANLY_ASCII_FILES_ or
-                                           FCST_ASCII_FILES_ which will be appended with the
-                                           storm id.
+         logger:                    The logger to which all logging will be
+                                    directed.
 
-                series_out_dir:            The directory where all the output from series analysis will be saved.
-
-                logger:                    The logger to which all logging will be directed.
-
-        Returns:
-               None:                       Creates an ASCII file containing a list of either FCST or ANLY
-                                           files based on init time and storm id.
-
-
+       Returns:
+         None:                      Creates an ASCII file containing a list
+                                    of either FCST or ANLY files based on
+                                    init time and storm id.
     '''
 
     # For logging
@@ -572,7 +585,7 @@ def create_fcst_anly_to_ascii_file(fcst_anly_grid_files, cur_init, cur_storm, fc
     try:
         with open(fcst_anly_ascii, 'a') as f:
             f.write(tmp_param)
-    except IOError as e:
+    except IOError:
         msg = ("ERROR|[" + cur_filename + ":" +
                cur_function + "]| " +
                "Could not create requested ASCII file:  " +
@@ -580,28 +593,29 @@ def create_fcst_anly_to_ascii_file(fcst_anly_grid_files, cur_init, cur_storm, fc
         logger.error(msg)
 
     if os.stat(fcst_anly_ascii).st_size == 0:
-        # Just in case there are any empty fcst ASCII or anly ASCII files at this point,
+        # Just in case there are any empty fcst ASCII or anly ASCII files
+        # at this point,
         # explicitly remove them (and any resulting empty directories)
         #  so they don't cause any problems with further processing
         # steps.
         util.prune_empty(fcst_anly_ascii_dir, p, logger)
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     # sleep is for debugging in pycharm so I can attach to this process
     # from the os.system call in master_met_plus.py
-    #import time
-    #time.sleep(60)
+    # import time
+    # time.sleep(60)
 
     # Testing constants_pdef until produtil is fully integrated.
-    #import constants_pdef as P
-    #test = P.Params()
-    #test.init(__doc__)
-
+    # import constants_pdef as P
+    # test = P.Params()
+    # test.init(__doc__)
 
     try:
         if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='series_by_init',jlogfile=os.environ['JLOGFILE'])
+            produtil.setup.setup(send_dbn=False, jobname='series_by_init',
+                                 jlogfile=os.environ['JLOGFILE'])
         else:
             produtil.setup.setup(send_dbn=False, jobname='series_by_init')
         produtil.log.postmsg('series_by_init is starting')
@@ -619,6 +633,5 @@ if __name__ == "__main__":
         produtil.log.postmsg('series_by_init completed')
     except Exception as e:
         produtil.log.jlogger.critical(
-            'series_by_init failed: %s'%(str(e),),exc_info=True)
+            'series_by_init failed: %s' % (str(e),), exc_info=True)
         sys.exit(2)
-

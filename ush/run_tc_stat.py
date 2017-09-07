@@ -15,17 +15,13 @@ Condition codes: 0 for success, 1 for failure
 
 '''
 
-from __future__ import (print_function, division )
+from __future__ import (print_function, division)
 
 import produtil.setup
-from produtil.run import batchexe, run, checkrun
-import logging
+from produtil.run import batchexe, checkrun
 import os
 import sys
 import met_util as util
-import time
-import re
-import string_template_substitution as sts
 
 
 def tc_stat(p, logger, tc_cmd, filtered_output_dir):
@@ -35,15 +31,15 @@ def tc_stat(p, logger, tc_cmd, filtered_output_dir):
            p     : reference to ConfigMaster parm/config object constants_pdef
            logger: the logger to which all log messages are directed
 
-           tc_cmd(string) : tc_stat cmd 
-                            The optional arguments read from the 
+           tc_cmd(string) : tc_stat cmd
+                            The optional arguments read from the
                             config/parm file should have already been
                             appended to these args.
 
-           filtered_output_dir:  The directory where the filtered files 
+           filtered_output_dir:  The directory where the filtered files
                                  will be saved.
          Returns:
-            None: if no error, then invoke MET tool TC-STAT and 
+            None: if no error, then invoke MET tool TC-STAT and
                   subsets tc-pairs data, creating a filter.tcst file.
 
             Raises CalledProcessError
@@ -53,10 +49,10 @@ def tc_stat(p, logger, tc_cmd, filtered_output_dir):
     # Useful for logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-    
+
     # get the process id to be used to identify the output
     # amongst different users and runs.
-    cur_pid = str(os.getpid())
+    # cur_pid = str(os.getpid())
 
     # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
     # [File : function]| Message
@@ -64,13 +60,12 @@ def tc_stat(p, logger, tc_cmd, filtered_output_dir):
     # Create the arguments to pass to the MET Tool TC-STAT
     util.mkdir_p(filtered_output_dir)
 
-    # Make call to tc_stat, capturing any stderr and stdout to the MET Plus log.
+    # Make call to tc_stat, capturing any stderr and stdout to the MET Plus log
     try:
-        tc_cmd = batchexe('sh')['-c',tc_cmd].err2out()
-        #tc_cmd = batchexe(tc_cmd.split()[0])[tc_cmd.split()[1:]].err2out() 
+        tc_cmd = batchexe('sh')['-c', tc_cmd].err2out()
         checkrun(tc_cmd)
     except produtil.run.ExitStatusException as ese:
-        msg = ("ERROR| " + cur_filename + ":" + cur_function + 
+        msg = ("ERROR| " + cur_filename + ":" + cur_function +
                " from calling MET TC-STAT with command:" + tc_cmd.to_shell())
         logger.error(msg)
         logger.error({}.format(ese))
@@ -81,20 +76,20 @@ if __name__ == "__main__":
 
     # sleep is for debugging in pycharm so I can attach to this process
     # from the os.system call in master_met_plus.py
-    #import time
-    #time.sleep(60)
+    # import time
+    # time.sleep(60)
 
     # Testing constants_pdef until produtil is fully integrated.
-    #import constants_pdef as P
-    #test = P.Params()
-    #test.init(__doc__) ## Put description of the code here
+    # import constants_pdef as P
+    # test = P.Params()
+    # test.init(__doc__) ## Put description of the code here
 
     # Does nothing right now, meant to be imported by another script.
 
-
     try:
         if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='run_tc_stat',jlogfile=os.environ['JLOGFILE'])
+            produtil.setup.setup(send_dbn=False, jobname='run_tc_stat',
+                                 jlogfile=os.environ['JLOGFILE'])
         else:
             produtil.setup.setup(send_dbn=False, jobname='run_tc_stat')
         produtil.log.postmsg('run_tc_stat is starting')
@@ -109,12 +104,10 @@ if __name__ == "__main__":
         if 'MET_BASE' not in os.environ:
             os.environ['MET_BASE'] = p.getdir('MET_BASE')
 
-
         init_list = util.gen_init_list(p.getstr('config', 'INIT_DATE_BEG'),
                                        p.getstr('config', 'INIT_DATE_END'),
                                        p.getint('config', 'INIT_HOUR_INC'),
                                        p.getstr('config', 'INIT_HOUR_END'))
-
 
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
@@ -122,9 +115,5 @@ if __name__ == "__main__":
         produtil.log.postmsg('run_tc_stat completed')
     except Exception as e:
         produtil.log.jlogger.critical(
-            'run_tc_stat failed: %s'%(str(e),),exc_info=True)
+            'run_tc_stat failed: %s' % (str(e),), exc_info=True)
         sys.exit(2)
-
-    
-    
-
