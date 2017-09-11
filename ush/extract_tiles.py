@@ -4,7 +4,7 @@
 Program Name: extract_tiles.py
 Contact(s): Julie Prestopnik, Minna Win
 Abstract: Extracts tiles to be used by series_analysis
-History Log:  Initial version
+History Log: Initial version
 Usage: extract_tiles.py
 Parameters: None
 Input Files: tc_pairs data
@@ -14,31 +14,30 @@ Condition codes: 0 for success, 1 for failure
 """
 
 from __future__ import (print_function, division)
+
 import produtil.setup
 import os
 import sys
 import met_util as util
 import run_tc_stat as tcs
 
-'''!@namespace extract_tiles
- @brief Runs  Extracts tiles to be used by series_analysis.
 
+"""!@namespace extract_tiles
+ @brief Runs  Extracts tiles to be used by series_analysis.
  Call as follows:
  @code{.sh}
  extract_tils.py [-c /path/to/user.template.conf]
  @endcode
-'''
+"""
 
 
 def main():
-    """!Get TC-paris data than regrid tiles centered on the storm.
+    """! Get TC-paris data than regrid tiles centered on the storm.
 
     Get TC-pairs track data and GFS model data, do any necessary
     processing then regrid the forecast and analysis files to a
     30 x 30 degree tile centered on the storm.
-
        Args:
-           None
 
        Returns:
 
@@ -48,8 +47,8 @@ def main():
 
     # Retrieve parameters from corresponding param file
 
-    # produtil.log.postmsg('Example postmsg,
-    # convenience function for jlogger.info')
+    # produtil.log.postmsg('Example postmsg, convenience function for
+    # jlogger.info')
 
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
@@ -74,8 +73,7 @@ def main():
     # Check that there are tc_pairs data which is used as input
     if util.is_dir_empty(tc_pairs_dir):
         msg = ("ERROR|[" + cur_filename + ":" + cur_function +
-               "]|No tc pairs data found at " +
-               tc_pairs_dir + "Exiting...")
+               "]|No tc pairs data found at " + tc_pairs_dir + "Exiting...")
         logger.error(msg)
         sys.exit(1)
 
@@ -86,6 +84,7 @@ def main():
     for cur_init in init_times:
         # Begin processing for initialization time, cur_init
         year_month = util.extract_year_month(cur_init, logger)
+
         # Create the name of the filter file we need to find.  If
         # the file doesn't exist, then run TC_STAT
         filter_filename = "filter_" + cur_init + ".tcst"
@@ -141,6 +140,7 @@ def main():
             util.mkdir_p(tmp_dir)
             tmp_file = "filter_" + cur_init + "_" + cur_storm
             tmp_filename = os.path.join(tmp_dir, tmp_file)
+
             storm_match_list = util.grep(cur_storm, filter_name)
             with open(tmp_filename, "a+") as tmp_file:
                 # copy over header information
@@ -148,7 +148,7 @@ def main():
                 for storm_match in storm_match_list:
                     tmp_file.write(storm_match)
 
-            # Peform regridding of the forecast and analysis files
+            # Perform regridding of the forecast and analysis files
             # to a 30 x 30 degree tile centered on the storm
             util.retrieve_and_regrid(tmp_filename, cur_init,
                                      cur_storm, filtered_out_dir,
@@ -157,8 +157,8 @@ def main():
         # end of for cur_storm
     # end of for cur_init
 
-    # Remove any empty files and directories in the
-    # extract_tiles output directory
+    # Remove any empty files and directories in the extract_tiles
+    #  output directory
     util.prune_empty(filtered_out_dir, p, logger)
 
     # Clean up the tmp directory
@@ -168,18 +168,7 @@ def main():
            "]| Finished extract tiles")
     logger.info(msg)
 
-
 if __name__ == "__main__":
-
-    # sleep is for debugging in pycharm so I can attach to this process
-    # from the os.system call in master_met_plus.py
-    # import time
-    # time.sleep(60)
-
-    # Testing constants_pdef until produtil is fully integrated.
-    # import constants_pdef as P
-    # test = P.Params()
-    # test.init(__doc__)
 
     try:
         if 'JLOGFILE' in os.environ:
