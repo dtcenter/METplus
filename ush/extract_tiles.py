@@ -72,7 +72,9 @@ class ExtractTiles(object):
             None: invokes regrid_data_plane to create a netCDF file from two
                     extratropical storm track files.
         """
-
+        # pylint:disable=protected-access
+        # Need to call sys.__getframe() to get the filename and method/func
+        # for logging information.
         # Used in logging
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
