@@ -205,7 +205,6 @@ if __name__ == "__main__":
             CONFIG_INST = config_launcher.load_baseconfs(sys.argv[2])
         else:
             CONFIG_INST = config_launcher.load_baseconfs()
-        LOGGER = util.get_logger(CONFIG_INST)
         if 'MET_BASE' not in os.environ:
             os.environ['MET_BASE'] = CONFIG_INST.getdir('MET_BASE')
 
