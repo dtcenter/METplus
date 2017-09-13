@@ -139,6 +139,10 @@ class TCMPRPlotter(object):
                                   cmd.to_shell())
                 self.logger.info("INFO: Generating requested plots for " +
                                  self.input_data)
+
+                # pylint:disable=unnecessary-pass
+                # If a tc file is empty, continue to the next, thus the pass
+                # isn't unnecessary.
                 try:
                     checkrun(cmd)
                 except produtil.run.ExitStatusException as ese:
@@ -146,6 +150,11 @@ class TCMPRPlotter(object):
                                      " exit status, "
                                      "tcst file may be missing data, "
                                      "continuing: " + ese)
+
+                    # Remove the empty directory
+                    if not os.listdir(dated_output_dir):
+                        os.rmdir(dated_output_dir)
+                    pass
 
         # If the input data is a directory, create a command for each
         # file in the directory and invoke the R script for each tcst file.
@@ -155,7 +164,7 @@ class TCMPRPlotter(object):
             cmds_list = []
             all_tcst_files = util.get_files(self.input_data, ".*.tcst",
                                             self.logger)
-            self.logger.debug("num of files " + len(all_tcst_files))
+            self.logger.debug("num of files " + str(len(all_tcst_files)))
             for tcst_file in all_tcst_files:
                 self.logger.info("INFO: Generating requested plots for " +
                                  tcst_file)
@@ -187,6 +196,10 @@ class TCMPRPlotter(object):
                 cmds_list = ''.join(cmds_list).split()
                 cmd = batchexe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
                 self.logger.debug("DEBUG:  Command run " + cmd.to_shell())
+
+                # pylint:disable=unnecessary-pass
+                # If a tc file is empty, continue to the next, thus the pass
+                # isn't unnecessary.
                 try:
                     checkrun(cmd)
                 except produtil.run.ExitStatusException as ese:
@@ -195,8 +208,12 @@ class TCMPRPlotter(object):
                     # plot_tcmpr.R will return with a non-zero exit status of 1
                     self.logger.warn("WARN: plot_tcmpr.R returned non-zero"
                                      " exit status, tcst file may be missing"
-                                     " data... continuing: " + ese)
+                                     " data... continuing: " + str(ese))
+                    # Remove the empty directory
+                    if not os.listdir(dated_output_dir):
+                        os.rmdir(dated_output_dir)
 
+                    pass
                 # Reset empty cmds_list to prepare for next tcst file.
                 cmds_list = []
 
