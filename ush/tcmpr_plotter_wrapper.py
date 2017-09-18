@@ -9,6 +9,7 @@ import produtil.setup
 from produtil.run import batchexe
 from produtil.run import checkrun
 import met_util as util
+import config_metplus
 
 
 ##@namespace TCMPRPlotter
@@ -338,14 +339,12 @@ if __name__ == "__main__":
             produtil.setup.setup(send_dbn=False, jobname='TCMPRPlotter')
         produtil.log.postmsg('TCMPRPlotter is starting')
 
-        # Read in the configuration object config
-        import config_launcher
-        if len(sys.argv) == 3:
-            CONFIG = config_launcher.load_baseconfs(sys.argv[2])
-        else:
-            CONFIG = config_launcher.load_baseconfs()
+
+        # Read in the configuration object CONFIG
+        CONFIG = config_metplus.setup()
         if 'MET_BUILD_BASE' not in os.environ:
             os.environ['MET_BUILD_BASE'] = CONFIG.getdir('MET_BUILD_BASE')
+
         if CONFIG.getdir('MET_BIN') not in os.environ['PATH']:
             os.environ['PATH'] += os.pathsep + CONFIG.getdir('MET_BIN')
         TCP = TCMPRPlotter(CONFIG)

@@ -12,6 +12,7 @@ import produtil.log
 from os.path import dirname, realpath
 # from random import Random
 from produtil.config import ProdConfig
+import met_util as util
 
 """!Creates the initial METplus directory structure,
 loads information into each job.
@@ -32,12 +33,11 @@ support sanity checks, and initial creation of the METplus system.
 '''!@var __all__
 All symbols exported by "from metplus.launcher import *"
 '''
-__all__ = ['load', 'launch', 'parse_launch_args', 'load_baseconfs']
+__all__ = ['load', 'launch', 'parse_launch_args', 'load_baseconfs', 'METplusLauncher']
 
 
-# baseinputconfs = ['metplus.conf','metplus.override.conf']
+# baseinputconfs = ['metplus.conf','metplus.override.conf','usecase.conf']
 baseinputconfs = ['metplus.conf']
-#baseinputconfs = ['metplus.conf', 'usecase.conf']
 
 
 # Note: This is just a developer reference comment, in case we continue
@@ -109,7 +109,30 @@ if METPLUS_USH not in sys.path:
 # along with, -c some.conf and any other conf files...
 # These are than used by def launch to create a single metplus final conf file
 # that would be used by all tasks.
-def parse_launch_args(args, usage, logger):
+def parse_launch_args(args, usage, filename, logger):
+    """!Parsed arguments to scripts that launch the METplus system.
+
+    This is the argument parser for the config_metplus.py
+    script.  It parses the arguments (in args).
+    If something goes wrong, this function calls
+    sys.exit(1) or sys.exit(2).
+
+    Options:
+    * section.variable=value --- set this value in this section, no matter what
+    * /path/to/file.conf --- read this conf file after the default conf files.
+
+    Later conf files override earlier ones.  The conf files read in
+    are:
+    * metplus.conf
+
+    @param args the script arguments, after script-specific ones are removed
+    @param usage a function called to provide a usage message
+    @param filename the module from which this was called
+    @param logger a logging.Logger for log messages"""
+
+    # stub
+    # if test for something fails:
+    #    usage(filename,logger)
 
     parm = os.path.realpath(PARM_BASE)
 
@@ -141,8 +164,13 @@ def parse_launch_args(args, usage, logger):
                     repr(m.group('value'))))
             moreopt[m.group('section')][m.group('option')] = m.group('value')
         elif os.path.exists(args[iarg]):
-            logger.info('%s: read this conf file' % (args[iarg],))
+            logger.info('%s: Plan to parse this conf file' % (args[iarg],))
             infiles.append(args[iarg])
+        elif os.path.exists(os.path.join(parm,args[iarg])):
+            logger.info('%s: Prepended parm directory, '
+                        'Plan to parse this conf file' %
+                        (os.path.join(parm,args[iarg]),))
+            infiles.append(os.path.join(parm,args[iarg]))
         else:
             bad = True
             logger.error('%s: invalid argument.  Not an config option '
@@ -165,9 +193,11 @@ def parse_launch_args(args, usage, logger):
 
 
 # This is intended to be used to create and write a final conf file
-# that is used be all tasks .... though METplus isn't being run
+# that is used by all tasks .... though METplus isn't being run
 # that way .... instead METplus tasks need to be able to run stand-alone
 # so each task needs to be able to initialize the conf files.
+# conf files are processed in the order they exist in the file_list
+# so each succesive element overwrites the previous.
 def launch(file_list, moreopt, cycle=None, init_dirs=True,
            prelaunch=None):
 
@@ -176,12 +206,48 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
             raise TypeError('First input to metplus.config.for_initial_job '
                             'must be a list of strings.')
 
-    conf = ProdConfig()
+    conf = METplusLauncher()
     logger = conf.log()
 
     for filename in file_list:
-        logger.info("%s: Parse this file" % (filename,))
         conf.read(filename)
+        logger.info("%s: Parsed this file" % (filename,))
+
+    # Determine if final METPLUS_CONF file already exists on disk.
+    # If it does, use it instead.
+    confloc = conf.getloc('METPLUS_CONF')
+    finalconfexists = util.file_exists(confloc)
+
+    if finalconfexists:
+        logger.warning('IGNORING all parsed conf file(s) AND any command line options or arguments, if given.')
+        logger.warning('INSTEAD, Using Existing final conf:  %s'%(confloc))
+        del logger
+        del conf
+        conf = METplusLauncher()
+        logger = conf.log()
+        conf.read(confloc)
+        # Set moreopt to None, in case it is not None, We do not want to process
+        # more options since using existing final conf file.
+        moreopt = None
+
+
+    #if moreopt is not None:
+    if moreopt:
+        for section,options in moreopt.iteritems():
+            if not conf.has_section(section):
+                conf.add_section(section)
+            for option,value in options.iteritems():
+                logger.info('Override: %s.%s=%s'
+                            %(section,option,repr(value)))
+                conf.set(section,option,value)
+
+    # Place holder for when workflow is developed in METplus.
+    # rocoto does not initialize the dirs, it returns here.
+    #if not init_dirs:
+    #    if prelaunch is not None:
+    #        prelaunch(conf,logger,cycle)
+    #    return conf
+
 
     produtil.fileop.makedirs(conf.getdir('OUTPUT_BASE'), logger=logger)
 
@@ -197,12 +263,15 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
 
     # conf.set('dir','METPLUS_BASE',METPLUS_BASE)
 
-    # writes the metplus conf used by all tasks.
-    confloc = conf.getloc('METPLUS_CONF')
-    logger.info('%s: write primary metplus.conf here' % (confloc,))
-    with open(confloc, 'wt') as f:
-        conf.write(f)
+    # Place holder for when workflow is developed in METplus.
+    #if prelaunch is not None:
+    #    prelaunch(conf,logger,cycle)
 
+    # writes the METPLUS_CONF used by all tasks.
+    if not finalconfexists:
+        logger.info('METPLUS_CONF: %s written here.' % (confloc,))
+        with open(confloc, 'wt') as f:
+            conf.write(f)
     return conf
 
 
@@ -216,7 +285,7 @@ def load(filename):
 
     @param filename The metplus*.conf file created by launch()"""
 
-    conf = ProdConfig()
+    conf = METplusLauncher()
     conf.read(filename)
 #    logger = conf.log()
 
@@ -289,6 +358,28 @@ def _set_conf_file_path(conf_file):
         return new_conf_file
 
     return conf_file
+
+class METplusLauncher(ProdConfig):
+    """!A replacement for the produtil.config.ProdConfig used throughout
+    the METplus system.  You should never need to instantiate one of
+    these --- the launch() and load() functions do that for you.  This
+    class is the underlying implementation of most of the
+    functionality described in launch() and load()"""
+    def __init__(self,conf=None):
+        """!Creates a new METplusLauncher
+        @param conf The configuration file."""
+        super(METplusLauncher,self).__init__(conf)
+        self._cycle=None
+    ##@var _cycle
+    # The cycle for this METplus run.
+
+    def sanity_check(self):
+        """!Runs nearly all sanity checks.
+
+        Runs simple sanity checks on the METplus installation directory
+        and configuration to make sure everything looks okay.  May
+        throw a wide variety of exceptions if sanity checks fail."""
+        logger=self.log('sanity.checker')
 
 
 # THIS IS NOT USED, meant for internal dev testing.

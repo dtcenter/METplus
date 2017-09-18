@@ -9,6 +9,7 @@ import produtil.setup
 from produtil.run import batchexe
 from produtil.run import run
 import met_util as util
+import config_metplus
 
 
 ## @namespace SeriesByLead
@@ -1351,19 +1352,13 @@ if __name__ == "__main__":
                                  jlogfile=os.environ['JLOGFILE'])
         else:
             produtil.setup.setup(send_dbn=False, jobname='SeriesByLead')
-
         produtil.log.postmsg('SeriesByLead is starting')
 
-        # Read in the conf object p
-        import config_launcher
-
-        if len(sys.argv) == 3:
-            CONFIG = config_launcher.load_baseconfs(sys.argv[2])
-        else:
-            CONFIG = config_launcher.load_baseconfs()
-
+        # Read in the configuration object CONFIG
+        CONFIG = config_metplus.setup()
         if 'MET_BASE' not in os.environ:
             os.environ['MET_BASE'] = CONFIG.getdir('MET_BASE')
+
         SBL = SeriesByLead(CONFIG)
         SBL.analysis_by_lead()
 

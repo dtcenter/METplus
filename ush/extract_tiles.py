@@ -20,6 +20,7 @@ import os
 import sys
 import produtil.setup
 import met_util as util
+import config_metplus
 from tc_stat_wrapper import TcStatWrapper
 
 ##@namespace ExtractTiles
@@ -200,11 +201,7 @@ if __name__ == "__main__":
         produtil.log.postmsg('extract_tiles is starting')
 
         # Read in the configuration object CONFIG_INST
-        import config_launcher
-        if len(sys.argv) == 3:
-            CONFIG_INST = config_launcher.load_baseconfs(sys.argv[2])
-        else:
-            CONFIG_INST = config_launcher.load_baseconfs()
+        CONFIG_INST = config_metplus.setup()
         if 'MET_BASE' not in os.environ:
             os.environ['MET_BASE'] = CONFIG_INST.getdir('MET_BASE')
 

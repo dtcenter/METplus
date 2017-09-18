@@ -5,10 +5,11 @@ from __future__ import print_function
 import re
 import os
 import sys
-import met_util as util
 import produtil.setup
 from produtil.run import batchexe
 from produtil.run import run
+import met_util as util
+import config_metplus
 
 
 ## @namespace SeriesByInit
@@ -748,15 +749,11 @@ class SeriesByInit(object):
 
 
 if __name__ == "__main__":
-    # sleep is for debugging in pycharm so I can attach to this process
+    # sleep is for debugging in pycharm so you can attach to this process
     # from the os.system call in master_met_plus.py
     # import time
     # time.sleep(60)
 
-    # Testing constants_pdef until produtil is fully integrated.
-    # import constants_pdef as P
-    # test = P.Params()
-    # test.init(__doc__)
 
     try:
         if 'JLOGFILE' in os.environ:
@@ -766,16 +763,11 @@ if __name__ == "__main__":
             produtil.setup.setup(send_dbn=False, jobname='series_by_init')
         produtil.log.postmsg('series_by_init is starting')
 
-        # Read in the configuration object p
-        import config_launcher
-
-        if len(sys.argv) == 3:
-            CONFIG = config_launcher.load_baseconfs(sys.argv[2])
-        else:
-            CONFIG = config_launcher.load_baseconfs()
-        logger = util.get_logger(CONFIG)
+        # Read in the configuration object CONFIG
+        CONFIG = config_metplus.setup()
         if 'MET_BASE' not in os.environ:
             os.environ['MET_BASE'] = CONFIG.getdir('MET_BASE')
+
         SBI = SeriesByInit(CONFIG)
         SBI.analysis_by_init_time()
         produtil.log.postmsg('series_by_init completed')
