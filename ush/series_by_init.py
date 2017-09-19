@@ -189,7 +189,7 @@ class SeriesByInit(object):
         # Generate plots
         self.generate_plots(sorted_filter_init, tile_dir)
 
-        logger.info("INFO|" + "Finished series analysis by init time")
+        self.logger.info("INFO|" + "Finished series analysis by init time")
 
     def get_fcst_file_info(self, dir_to_search, cur_init, cur_storm):
         """ Get the number of all the gridded forecast 30x30 tile
@@ -237,7 +237,7 @@ class SeriesByInit(object):
                    cur_function + "]|exiting, no files found for " +
                    "init time of interest" +
                    " and directory:" + dir_to_search)
-            logger.error(msg)
+            self.logger.error(msg)
             sys.exit(1)
 
         first = sorted_files[0]
@@ -255,7 +255,7 @@ class SeriesByInit(object):
         else:
             msg = ("ERROR|[" + cur_filename + ":" + cur_function + "]| " +
                    "Unexpected file format encountered, exiting...")
-            logger.error(msg)
+            self.logger.error(msg)
             sys.exit(1)
         if match_end:
             end = match_end.group(1)
@@ -263,7 +263,7 @@ class SeriesByInit(object):
             msg = ("ERROR|[" + cur_filename + ":" + cur_function +
                    "]| " +
                    "Unexpected file format encountered, exiting...")
-            logger.error(msg)
+            self.logger.error(msg)
             sys.exit(1)
 
         # Get the number of forecast tile files
@@ -325,9 +325,9 @@ class SeriesByInit(object):
                         fcst_grid_regex = ".*FCST_TILE_F.*nc"
 
                     anly_grid_files = util.get_files(tile_dir,
-                                                     anly_grid_regex, logger)
+                                                     anly_grid_regex, self.logger)
                     fcst_grid_files = util.get_files(tile_dir,
-                                                     fcst_grid_regex, logger)
+                                                     fcst_grid_regex, self.logger)
 
                     # Now do some checking to make sure we aren't
                     # missing either the forecast or
@@ -673,7 +673,7 @@ class SeriesByInit(object):
 
         # Now that we have the filter filename for the init time, let's
         # extract all the storm ids in this filter file.
-        storm_list = util.get_storm_ids(filter_file, logger)
+        storm_list = util.get_storm_ids(filter_file, self.logger)
 
         return storm_list
 
@@ -737,7 +737,7 @@ class SeriesByInit(object):
                    cur_function + "]| " +
                    "Could not create requested ASCII file:  " +
                    fcst_anly_ascii)
-            logger.error(msg)
+            self.logger.error(msg)
 
         if os.stat(fcst_anly_ascii).st_size == 0:
             # Just in case there are any empty fcst ASCII or anly ASCII files

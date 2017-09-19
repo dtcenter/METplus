@@ -1179,7 +1179,7 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, filter_opts,
     rmtree(tmp_dir)
 
 
-def create_filter_tmp_files(filtered_files_list, filter_output_dir):
+def create_filter_tmp_files(filtered_files_list, filter_output_dir, logger=None):
     """! Creates the tmp_fcst and tmp_anly ASCII files that contain the full
         filepath of files that correspond to the filter criteria.  Useful for
         validating that filtering returns the expected results/troubleshooting.
@@ -1192,6 +1192,7 @@ def create_filter_tmp_files(filtered_files_list, filter_output_dir):
 
             @param filter_output_dir:  The directory where the filtered data is
                                        stored
+            @param logger a logging.Logger for log messages
         Returns:
             None: Creates two ASCII files
 
