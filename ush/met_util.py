@@ -12,17 +12,11 @@ import calendar
 import re
 from produtil.run import batchexe
 from produtil.run import run
-import string_template_substitution as sts
-import run_tc_stat as tcs
+from string_template_substitution import StringSub
+from tc_stat_wrapper import TcStatWrapper
 
-'''!@namespace met_util
- @brief Runs  Utility functions for METplus.
-
-'''
-
-"""! A collection of utility functions used to perform necessary series
-    analysis tasks and other METPlus related tasks, .
-
+"""!@namespace met_util
+ @brief Provides  Utility functions for METplus.
 
 """
 
@@ -51,6 +45,10 @@ def round_0p5(val):
 
 def round_to_int(val):
     """! Round to integer value
+         Args:
+             @param val:  The value to round up
+         Returns:
+            rval:  The rounded up value.
     """
     val += 0.5
     rval = int(val)
@@ -124,21 +122,21 @@ def rmtree(tree, logger=None):
     shutil.rmtree(tree, ignore_errors=False)
 
 
-def get_logger(p):
+def get_logger(config):
     """!Gets a logger
 
        Args:
-           @param p:   the METplus produtil.ProdConfig object
+           @param config:   the config instance
 
        Returns:
            logger: the logger
     """
 
     # Retrieve all logging related parameters from the param file
-    log_dir = p.getdir('LOG_DIR')
-    log_level = p.getstr('config', 'LOG_LEVEL')
-    log_path_basename = os.path.splitext(p.getstr('config', 'LOG_FILENAME'))[0]
-    log_ext = os.path.splitext(p.getstr('config', 'LOG_FILENAME'))[1]
+    log_dir = config.getdir('LOG_DIR')
+    log_level = config.getstr('config', 'LOG_LEVEL')
+    log_path_basename = os.path.splitext(config.getstr('config', 'LOG_FILENAME'))[0]
+    log_ext = os.path.splitext(config.getstr('config', 'LOG_FILENAME'))[1]
     log_filename = \
         log_path_basename + '.' + datetime.datetime.now().strftime("%Y%m%d")\
         + log_ext.strip()
@@ -189,13 +187,9 @@ def file_exists(filename):
     """
 
     try:
-        if os.path.isfile(filename):
-            return True
-        else:
-            return False
+        return os.path.isfile(filename)
     except IOError:
         pass
-        return False
 
 
 def is_dir_empty(directory):
@@ -206,37 +200,35 @@ def is_dir_empty(directory):
                                        and for contents.
 
         Returns:
-           True              :  If the directory exists and isn't empty
-           False             :  Otherwise
+           True:  If the directory is empty
+           False:  If the directory exists and isn't empty
+
 
 
     """
     if not os.listdir(directory):
-        # Directory is empty
         return True
     else:
         return False
 
 
-def grep(pattern, file, greedy=False):
+def grep(pattern, infile):
     """! Python version of grep, searches the file line-by-line
         to find a match to the pattern. Returns upon finding the
         first match.
 
         Args:
             @param pattern:  The pattern to be matched
-            @param file:     The filename with full filepath in which to
+            @param infile:     The filename with full filepath in which to
                              search for the pattern
-            @param greedy:   Default is false, if True, returns a list of
-                             all matches
         Returns:
             line (string):  The matching string
 
     """
 
     matching_lines = []
-    with open(file, 'r') as f:
-        for line in f:
+    with open(infile, 'r') as file_handle:
+        for line in file_handle:
             match = re.search(pattern, line)
             if match:
                 matching_lines.append(line)
@@ -244,12 +236,12 @@ def grep(pattern, file, greedy=False):
     return matching_lines
 
 
-def get_filepaths_for_grbfiles(dir):
+def get_filepaths_for_grbfiles(base_dir):
     """! Generates the grb2 file names in a directory tree
        by walking the tree either top-down or bottom-up.
        For each directory in the tree rooted at
        the directory top (including top itself), it
-       produces a 3-tuple: (dirpath, dirnames, filenames).
+       produces a tuple: (dirpath, dirnames, filenames).
 
        This solution was found on Stack Overflow:
        http://stackoverflow.com/questions/3207219/how-to-list-all-files-of-a-
@@ -259,7 +251,7 @@ def get_filepaths_for_grbfiles(dir):
        Directory and All Its Subdirectories"
 
     Args:
-        @param dir: The base directory from which we
+        @param base_dir: The base directory from which we
                       begin the search for grib2 filenames.
     Returns:
         file_paths (list): A list of the full filepaths
@@ -272,8 +264,12 @@ def get_filepaths_for_grbfiles(dir):
     # all the full filenames
     file_paths = []
 
+    # pylint:disable=unused-variable
+    # os.walk returns tuple, we don't need to utilize all the returned
+    # values in the tuple.
+
     # Walk the tree
-    for root, directories, files in os.walk(dir):
+    for root, directories, files in os.walk(base_dir):
         for filename in files:
             # add it to the list only if it is a grib file
             match = re.match(r'.*(grib|grb|grib2|grb2)$', filename)
@@ -299,10 +295,14 @@ def get_storm_ids(filter_filename, logger):
         Returns:
             sorted_storms (List):  a list of unique, sorted storm ids
     """
+    # pylint:disable=protected-access
+    # Need to call sys.__getframe() to get the filename and method/func
+    # for logging information.
 
     # For logging
-    # cur_filename = sys._getframe().f_code.co_filename
-    # cur_function = sys._getframe().f_code.co_name
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+    logger.debug('DEBUG|' + cur_function + '|' + cur_filename)
 
     # Initialize a set because we want unique storm ids.
     storm_id_list = set()
@@ -341,11 +341,20 @@ def get_files(filedir, filename_regex, logger):
           file_paths (string): a list of filenames (with full filepath)
 
     """
+    # pylint:disable=protected-access
+    # Need to call sys.__getframe() to get the filename and method/func
+    # for logging information.
 
     # For logging
-    # cur_filename = sys._getframe().f_code.co_filename
-    # cur_function = sys._getframe().f_code.co_name
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    logger.debug("DEBUG|" + cur_filename + "|" + cur_function)
     file_paths = []
+
+    # pylint:disable=unused-variable
+    # os.walk returns a tuple. Not all returned values are needed.
+
     # Walk the tree
     for root, directories, files in os.walk(filedir):
         for filename in files:
@@ -376,9 +385,13 @@ def get_name_level(var_combo, logger):
 
     """
 
+    # pylint:disable=protected-access
+    # Need to call sys.__getframe() to get the filename and method/func
+    # for logging information.
     # For logging
-    # cur_filename = sys._getframe().f_code.co_filename
-    # cur_function = sys._getframe().f_code.co_name
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+    logger.debug("DEBUG|" + cur_function + "|" + cur_filename)
 
     match = re.match(r'(.*)/(.*)', var_combo)
     name = match.group(1)
@@ -448,6 +461,9 @@ def extract_year_month(init_time, logger):
             year_month (string):  The YYYYMM portion of the initialization time
 
     """
+    # pylint:disable=protected-access
+    # Need to call sys.__getframe() to get the filename and method/func
+    # for logging information.
 
     # Useful for logging
     cur_filename = sys._getframe().f_code.co_filename
@@ -455,9 +471,9 @@ def extract_year_month(init_time, logger):
 
     # Match on anything that starts with 1 or 2 (for the century)
     #  followed by 5 digits for the remainder of the YYYMM
-    ym = re.match(r'^((1|2)[0-9]{5})', init_time)
-    if ym:
-        year_month = ym.group(0)
+    year_month = re.match(r'^((1|2)[0-9]{5})', init_time)
+    if year_month:
+        year_month = year_month.group(0)
         return year_month
     else:
         logger.warning("WARNING|" + "[" + cur_filename + ":" + cur_function +
@@ -467,7 +483,8 @@ def extract_year_month(init_time, logger):
                       " unexpected format")
 
 
-def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
+def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
+                        config):
     """! Retrieves the data from the GFS_DIR (defined in metplus.conf)
          that corresponds to the storms defined in the tmp_filename:
         1) create the analysis tile and forecast file names from the
@@ -500,39 +517,45 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
 
 
         @param logger:  The name of the logger used in logging.
-        @param p:       Reference to the metplus.conf param/config file.
+        @param config:  config instance
 
         Returns:
            None
 
     """
 
+    # pylint: disable=protected-access
+    # Need to call sys._getframe() to get current function and file for
+    # logging information.
+    # pylint: disable=too-many-arguments
+    # all input is needed to perform task
+
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    # Get variables, etc. from constants_pdef.py param/config file.
-    gfs_dir = p.getdir('GFS_DIR')
-    regrid_data_plane_exe = p.getexe('REGRID_DATA_PLANE_EXE')
-    wgrib2_exe = p.getexe('WGRIB2')
-    egrep_exe = p.getexe('EGREP_EXE')
-    regrid_with_MET_tool = p.getbool('config', 'REGRID_USING_MET_TOOL')
-    overwrite_flag = p.getbool('config', 'OVERWRITE_TRACK')
+    # Get variables, etc. from param/config file.
+    gfs_dir = config.getdir('GFS_DIR')
+    regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE_EXE')
+    wgrib2_exe = config.getexe('WGRIB2')
+    egrep_exe = config.getexe('EGREP_EXE')
+    regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
+    overwrite_flag = config.getbool('config', 'OVERWRITE_TRACK')
 
     # Extract the columns of interest: init time, lead time,
-    # valid time lat and lon of both  tropical cyclone tracks, etc.
+    # valid time lat and lon of both tropical cyclone tracks, etc.
     # Then calculate the forecast hour and other things.
     with open(tmp_filename, "r") as tf:
         # read header
         header = tf.readline().split()
         # get column number for columns on interest
         print('header{}:'.format(header))
-        header_colnum_init, header_colnum_lead, header_colnum_valid =\
+        header_colnum_init, header_colnum_lead, header_colnum_valid = \
             header.index('INIT'), header.index('LEAD'), header.index('VALID')
-        header_colnum_alat, header_colnum_alon = header.index('ALAT'),\
-            header.index('ALON')
-        header_colnum_blat, header_colnum_blon = header.index('BLAT'),\
-            header.index('BLON')
+        header_colnum_alat, header_colnum_alon =\
+            header.index('ALAT'), header.index('ALON')
+        header_colnum_blat, header_colnum_blon = \
+            header.index('BLAT'), header.index('BLON')
         for line in tf:
             col = line.split()
             init, lead, valid, alat, alon, blat, blon = \
@@ -549,8 +572,8 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
             if init_ymd_match:
                 init_ymd = init_ymd_match.group(0)
             else:
-                raise RuntimeError('init time has unexpected format for YMD')
                 logger.WARN("RuntimeError raised")
+                raise RuntimeError('init time has unexpected format for YMD')
 
             init_ymdh_match = re.match(r'[0-9|_]{11}', init)
             if init_ymdh_match:
@@ -573,27 +596,24 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
             lead_str = str(fcst_hr).zfill(3)
             fcst_dir = os.path.join(gfs_dir, init_ymd)
             init_ymdh_split = init_ymdh.split("_")
-            init_YYYYmmddHH = "".join(init_ymdh_split)
+            init_yyyymmddhh = "".join(init_ymdh_split)
             anly_dir = os.path.join(gfs_dir, valid_ymd)
             valid_ymdh_split = valid_ymdh.split("_")
-            valid_YYYYmmddHH = "".join(valid_ymdh_split)
+            valid_yyyymmddhh = "".join(valid_ymdh_split)
 
             # Create output filenames for regridding
             # wgrib2 used to regrid.
             # Create the filename for the regridded file, which is a
             # grib2 file.
             fcst_sts = \
-                sts.StringSub(logger,
-                              p.getraw('filename_templates',
-                                       'GFS_FCST_FILE_TMPL'),
-                              init=init_YYYYmmddHH, lead=lead_str)
+                StringSub(logger, config.getraw('filename_templates',
+                                                'GFS_FCST_FILE_TMPL'),
+                          init=init_yyyymmddhh, lead=lead_str)
 
             anly_sts = \
-                sts.StringSub(logger,
-                              p.getraw('filename_templates',
-                                       'GFS_ANLY_FILE_TMPL'),
-                              valid=valid_YYYYmmddHH,
-                              lead=lead_str)
+                StringSub(logger, config.getraw('filename_templates',
+                                                'GFS_ANLY_FILE_TMPL'),
+                          valid=valid_yyyymmddhh, lead=lead_str)
 
             fcst_file = fcst_sts.doStringSub()
             fcst_filename = os.path.join(fcst_dir, fcst_file)
@@ -638,10 +658,10 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
             fcst_anly_base = os.path.basename(fcst_filename)
 
             fcst_grid_spec = create_grid_specification_string(alat, alon,
-                                                              logger, p)
+                                                              logger, config)
             anly_grid_spec = create_grid_specification_string(blat, blon,
-                                                              logger, p)
-            if regrid_with_MET_tool:
+                                                              logger, config)
+            if regrid_with_met_tool:
                 nc_fcst_anly_base = re.sub("grb2", "nc", fcst_anly_base)
                 fcst_anly_base = nc_fcst_anly_base
 
@@ -649,13 +669,13 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
             fcst_hr_str = str(fcst_hr).zfill(3)
 
             fcst_regridded_filename = \
-                p.getstr('regex_pattern', 'FCST_TILE_PREFIX') + \
+                config.getstr('regex_pattern', 'FCST_TILE_PREFIX') + \
                 fcst_hr_str + "_" + fcst_anly_base
             fcst_regridded_file = os.path.join(tile_dir,
                                                fcst_regridded_filename)
             anly_regridded_filename = \
-                p.getstr('regex_pattern', 'ANLY_TILE_PREFIX') + fcst_hr_str + \
-                "_" + fcst_anly_base
+                config.getstr('regex_pattern', 'ANLY_TILE_PREFIX') +\
+                fcst_hr_str + "_" + fcst_anly_base
             anly_regridded_file = os.path.join(tile_dir,
                                                anly_regridded_filename)
 
@@ -669,8 +689,8 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                 logger.debug(msg)
             else:
                 # Perform fcst regridding on the records of interest
-                var_level_string = retrieve_var_info(p, logger)
-                if regrid_with_MET_tool:
+                var_level_string = retrieve_var_info(config, logger)
+                if regrid_with_met_tool:
                     # Perform regridding using MET Tool regrid_data_plane
                     fcst_cmd_list = [regrid_data_plane_exe, ' ',
                                      fcst_filename, ' ',
@@ -688,7 +708,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
 
                 else:
                     # Perform regridding via wgrib2
-                    requested_records = retrieve_var_info(p, logger)
+                    requested_records = retrieve_var_info(config, logger)
                     fcst_cmd_list = [wgrib2_exe, ' ', fcst_filename, ' | ',
                                      egrep_exe, ' ', requested_records, '|',
                                      wgrib2_exe, ' -i ', fcst_filename,
@@ -711,8 +731,8 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                              " exists, skip regridding")
             else:
                 # Perform anly regridding on the records of interest
-                var_level_string = retrieve_var_info(p, logger)
-                if regrid_with_MET_tool:
+                var_level_string = retrieve_var_info(config, logger)
+                if regrid_with_met_tool:
                     anly_cmd_list = [regrid_data_plane_exe, ' ',
                                      anly_filename, ' ',
                                      anly_grid_spec, ' ',
@@ -728,7 +748,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                     logger.debug(msg)
                 else:
                     # Regridding via wgrib2.
-                    requested_records = retrieve_var_info(p, logger)
+                    requested_records = retrieve_var_info(config, logger)
                     anly_cmd_list = [wgrib2_exe, ' ', anly_filename, ' | ',
                                      egrep_exe, ' ', requested_records, '|',
                                      wgrib2_exe, ' -i ', anly_filename,
@@ -743,7 +763,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger, p):
                     logger.debug(msg)
 
 
-def retrieve_var_info(p, logger):
+def retrieve_var_info(config, logger):
     """! Retrieve the variable name and level from the
         EXTRACT_TILES_VAR_FILTER and VAR_LIST.  If the
         EXTRACT_TILES_VAR_FILTER is empty, then retrieve
@@ -753,9 +773,9 @@ def retrieve_var_info(p, logger):
         files into netCDF.
 
         Args:
-            @param p: The reference to the ConfigMaster config/param
-                      constants_pdef.py
+            @param config: The reference to the config/param instance.
             @param logger:  The logger to which all logging is directed.
+                            Optional.
 
         Returns:
             field_level_string (string):  If REGRID_USING_MET_TOOL is True,
@@ -770,13 +790,19 @@ def retrieve_var_info(p, logger):
                                           wgrib2.
     """
 
-    # For logging
-    # cur_filename = sys._getframe().f_code.co_filename
-    # cur_function = sys._getframe().f_code.co_name
+    # pylint: disable=protected-access
+    # Need to access sys._getframe() to retrieve the current file and function/
+    # method for logging information.
 
-    var_list = getlist(p.getstr('config', 'VAR_LIST'))
-    extra_var_list = getlist(p.getstr('config', 'EXTRACT_TILES_VAR_LIST'))
-    regrid_with_MET_tool = p.getbool('config', 'REGRID_USING_MET_TOOL')
+    # For logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    logger.debug("DEBUG|" + cur_filename + "|" + cur_function)
+
+    var_list = getlist(config.getstr('config', 'VAR_LIST'))
+    extra_var_list = getlist(config.getstr('config', 'EXTRACT_TILES_VAR_LIST'))
+    regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
     full_list = []
 
     # Append the extra_var list to the var_list
@@ -785,7 +811,7 @@ def retrieve_var_info(p, logger):
     full_var_list = var_list + extra_var_list
     unique_var_list = list(set(full_var_list))
 
-    if regrid_with_MET_tool:
+    if regrid_with_met_tool:
         name_str = 'name="'
         level_str = 'level="'
 
@@ -832,7 +858,7 @@ def retrieve_var_info(p, logger):
     return field_level_string
 
 
-def create_grid_specification_string(lat, lon, logger, p):
+def create_grid_specification_string(lat, lon, logger, config):
     """! Create the grid specification string with the format:
          latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
          used by the MET tool, regrid_data_plane.
@@ -841,7 +867,7 @@ def create_grid_specification_string(lat, lon, logger, p):
             @param lat:   The latitude of the grid point
             @param lon:   The longitude of the grid point
             @param logger: The name of the logger
-            @param p: ConfigMaster param/config file met_plus.conf
+            @param config: config instance
 
          Returns:
             tile_grid_str (string): the tile grid string for the
@@ -849,19 +875,23 @@ def create_grid_specification_string(lat, lon, logger, p):
 
     """
 
+    # pylint: disable=protected-access
+    # Need to access sys._getframe to capture current file and function for
+    # logging information
+
     # Useful for logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-    regrid_by_MET = p.getbool('config', 'REGRID_USING_MET_TOOL')
+    regrid_by_met = config.getbool('config', 'REGRID_USING_MET_TOOL')
 
     # Initialize the tile grid string
     # and get the other values from the parameter file
-    nlat = p.getstr('config', 'NLAT')
-    nlon = p.getstr('config', 'NLON')
-    dlat = p.getstr('config', 'DLAT')
-    dlon = p.getstr('config', 'DLON')
-    lon_subtr = p.getfloat('config', 'LON_ADJ')
-    lat_subtr = p.getfloat('config', 'LAT_ADJ')
+    nlat = config.getstr('config', 'NLAT')
+    nlon = config.getstr('config', 'NLON')
+    dlat = config.getstr('config', 'DLAT')
+    dlon = config.getstr('config', 'DLON')
+    lon_subtr = config.getfloat('config', 'LON_ADJ')
+    lat_subtr = config.getfloat('config', 'LAT_ADJ')
 
     # Format for regrid_data_plane:
     # latlon Nx Ny lat_ll lon_ll delta_lat delta_lonadj_lon =
@@ -876,7 +906,7 @@ def create_grid_specification_string(lat, lon, logger, p):
     logger.debug(msg)
 
     # Create the specification string based on the requested tool.
-    if regrid_by_MET:
+    if regrid_by_met:
         grid_list = ['"', 'latlon ', nlat, ' ', nlon, ' ', lat0, ' ',
                      lon0, ' ', dlat, ' ', dlon, '"']
     else:
@@ -958,6 +988,11 @@ def gen_init_list(init_date_begin, init_date_end, init_hr_inc, init_hr_end):
     my_date_list = gen_date_list(init_date_begin, init_date_end)
 
     date_init_list = []
+
+    # pylint:disable=unused-variable
+    # using enumerate on my_date_list returns a tuple, and not all values
+    # are needed.
+
     for index, my_date in enumerate(my_date_list):
         for my_hour in my_hour_list:
             init_string = my_date + "_" + my_hour
@@ -966,7 +1001,7 @@ def gen_init_list(init_date_begin, init_date_end, init_hr_inc, init_hr_end):
     return date_init_list
 
 
-def prune_empty(output_dir, p, logger):
+def prune_empty(output_dir, logger):
     """! Start from the output_dir, and recursively check
         all directories and files.  If there are any empty
         files or directories, delete/remove them so they
@@ -977,17 +1012,14 @@ def prune_empty(output_dir, p, logger):
             @param output_dir:  The directory from which searching
                                 should begin.
 
-
-            @param p:  The reference to the configuration
-
             @param logger: The logger to which all logging is
                            directed.
 
     """
 
-    # Retrieve any necessary variables from the metplus.conf.py
-    # param/config file.
-
+    # pylint:disable=protected-access
+    # Need to call sys.__getframe() to get the filename and method/func
+    # for logging information.
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
@@ -996,36 +1028,55 @@ def prune_empty(output_dir, p, logger):
     for root, dirs, files in os.walk(output_dir):
         # Create a full file path by joining the path
         # and filename.
-        for file in files:
-            file = os.path.join(root, file)
-            if os.stat(file).st_size == 0:
+        for a_file in files:
+            a_file = os.path.join(root, a_file)
+            if os.stat(a_file).st_size == 0:
                 msg = ("INFO|[" + cur_filename + ":" +
                        cur_function + "]|" +
-                       "Empty file: " + file +
+                       "Empty file: " + a_file +
                        "...removing")
 
                 logger.debug(msg)
-                os.remove(file)
+                os.remove(a_file)
 
     # Now check for any empty directories, some
     # may have been created when removing
     # empty files.
     for root, dirs, files in os.walk(output_dir):
-        for dir in dirs:
-
-            d = os.path.join(root, dir)
-            if os.listdir(d) == []:
+        for direc in dirs:
+            full_dir = os.path.join(root, direc)
+            if not os.listdir(full_dir):
                 msg = ("INFO|[" + cur_filename + ":" +
                        cur_function + "]|" +
-                       "Empty directory: " + d +
+                       "Empty directory: " + full_dir +
                        "...removing")
                 logger.debug(msg)
-                os.rmdir(d)
+                os.rmdir(full_dir)
 
 
-def apply_series_filters(tile_dir, init_times, series_output_dir, p, logger):
+def cleanup_temporary_files(list_of_files):
+    """! Remove the files indicated in the list_of_files list.  The full
+       file path must be indicated.
+
+        Args:
+          @param list_of_files: A list of files (full filepath) to be
+          removed.
+        Returns:
+            None:  Removes the requested files.
+    """
+    for single_file in list_of_files:
+        try:
+            os.remove(single_file)
+        except OSError:
+            # Raises exception if this doesn't exist (never created or
+            # already removed).  Ignore.
+            pass
+
+
+def apply_series_filters(tile_dir, init_times, series_output_dir, filter_opts,
+                         temporary_dir, logger, config):
     """! Apply filter options, as specified in the
-        metplus.conf.py param/config file.
+        param/config file.
 
         Args:
 
@@ -1035,46 +1086,40 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, p, logger):
            @param init_times:  List of init times that define the input data.
            @param series_output_dir:  The directory where the filter results
                                       will be stored.
-           @param p: The reference to the metplus.conf.py
-                     param/config file.
-           @param logger: The logger to which all logging is directed.
+           @param filter_opts:  The filter options to apply
+           @param temporary_dir:  The temporary directory where intermediate
+                                  files are saved.
+           @param logger:  The logger to which all logging is directed.
+           @param config:  The config/param instance
 
 
         Returns:
             None
 
     """
+    # pylint: disable=too-many-arguments
+    # Seven input arguments are needed to perform filtering.
+
+    # pylint:disable=protected-access
+    # Need to call sys.__getframe() to get the filename and method/func
+    # for logging information.
 
     # Useful for logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    # Retrieve any necessary values from the param/config file,
-    # metplus.conf.
-    tc_stat_exe = p.getexe('TC_STAT')
+    # Create temporary directory where intermediate files are saved.
     cur_pid = str(os.getpid())
-    tmp_dir = os.path.join(p.getdir('TMP_DIR'), cur_pid)
-    filter_opts = p.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
+    tmp_dir = os.path.join(temporary_dir, cur_pid)
 
     for cur_init in init_times:
-        # Create the ASCII file with the storms that meet the
-        # filter criteria.
-        filter_path = os.path.join(series_output_dir, cur_init)
-        mkdir_p(filter_path)
+        # Call the tc_stat wrapper to build up the command and invoke
+        # the MET tool tc_stat.
         filter_file = "filter_" + cur_init + ".tcst"
         filter_filename = os.path.join(series_output_dir,
                                        cur_init, filter_file)
-        tc_cmd_list = [tc_stat_exe, " -job filter ",
-                       " -lookin ", tile_dir,
-                       " -match_points true ",
-                       " -init_inc ", cur_init,
-                       " -dump_row ", filter_filename,
-                       " ", filter_opts]
-        tc_cmd = ''.join(tc_cmd_list)
-        tcs.tc_stat(p, logger, tc_cmd, series_output_dir)
-        msg = ("INFO}[" + cur_filename + ":" + cur_function +
-               "]| tc command: " + tc_cmd)
-        logger.debug(msg)
+        tcs = TcStatWrapper(config)
+        tcs.build_tc_stat(series_output_dir, cur_init, tile_dir, filter_opts)
 
         # Check that the filter.tcst file isn't empty. If
         # it is, then use the files from extract_tiles as
@@ -1096,15 +1141,15 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, p, logger):
             # storm ids that resulted from filtering.
             sorted_storm_ids = get_storm_ids(filter_filename, logger)
 
-            # Retrieve the header from filter_filename to be used in creating
-            # the temporary files.
-            with open(filter_filename, 'r') as ff:
-                header = ff.readline()
+            # Retrieve the header from filter_filename to be used in
+            # creating the temporary files.
+            with open(filter_filename, 'r') as filter_file:
+                header = filter_file.readline()
 
             for cur_storm in sorted_storm_ids:
-                msg = ("INFO| [" + cur_filename + ":" + cur_function +
-                       " ] | Processing storm: " + cur_storm + " for file: " +
-                       filter_filename)
+                msg = ("INFO| [" + cur_filename + ":" +
+                       cur_function + " ] | Processing storm: " + cur_storm +
+                       " for file: " + filter_filename)
                 logger.debug(msg)
                 storm_output_dir = os.path.join(series_output_dir,
                                                 cur_init, cur_storm)
@@ -1123,22 +1168,21 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, p, logger):
                 # Store the analysis and forecast files in the
                 # series_output_dir.
                 retrieve_and_regrid(tmp_filename, cur_init, cur_storm,
-                                    series_output_dir, logger, p)
+                                    series_output_dir, logger, config)
 
     # Check for any empty files and directories and remove them to avoid
     # any errors or performance degradation when performing
     # series analysis.
-    prune_empty(series_output_dir, p, logger)
+    prune_empty(series_output_dir, logger)
 
     # Clean up the tmp dir
     rmtree(tmp_dir)
 
 
-def create_filter_tmp_files(filtered_files_list, filter_output_dir, p, logger):
+def create_filter_tmp_files(filtered_files_list, filter_output_dir, logger=None):
     """! Creates the tmp_fcst and tmp_anly ASCII files that contain the full
-         filepath of files that correspond to the filter criteria.  Useful for
-         validating that filtering returns the expected results/
-         troubleshooting.
+        filepath of files that correspond to the filter criteria.  Useful for
+        validating that filtering returns the expected results/troubleshooting.
 
         Args:
             @param filtered_files_list:  A list of the netCDF or grb2 files
@@ -1148,11 +1192,7 @@ def create_filter_tmp_files(filtered_files_list, filter_output_dir, p, logger):
 
             @param filter_output_dir:  The directory where the filtered data is
                                        stored
-
-            @param p:  Reference to metplus.conf.py
-
-            @param logger:  The logger to where all logging is directed.
-
+            @param logger a logging.Logger for log messages
         Returns:
             None: Creates two ASCII files
 
@@ -1172,12 +1212,12 @@ def create_filter_tmp_files(filtered_files_list, filter_output_dir, p, logger):
     fcst_list = []
     anly_list = []
 
-    for file in filtered_files_list:
-        fcst_match = re.match(r'(.*/FCST_TILE_F.*.[grb2|nc])', file)
+    for filter_file in filtered_files_list:
+        fcst_match = re.match(r'(.*/FCST_TILE_F.*.[grb2|nc])', filter_file)
         if fcst_match:
             fcst_list.append(fcst_match.group(1))
 
-        anly_match = re.match(r'(.*/ANLY_TILE_F.*.[grb2|nc])', file)
+        anly_match = re.match(r'(.*/ANLY_TILE_F.*.[grb2|nc])', filter_file)
         if anly_match:
             anly_list.append(anly_match.group(1))
 
@@ -1191,17 +1231,15 @@ def create_filter_tmp_files(filtered_files_list, filter_output_dir, p, logger):
             anly_tmpfile.write(anly + "\n")
 
 
-def get_updated_init_times(input_dir, p, logger):
-    """! Get a list of init times, derived by the .tcst files in the
+def get_updated_init_times(input_dir, config=None):
+    """ Get a list of init times, derived by the .tcst files in the
         input_dir (and below).
 
         Args:
             @param input_dir:  The topmost directory from which our search for
                                filter.tcst files begins.
 
-            @param p:  Reference to metplus.conf param/config file.
-
-            @param logger:  The logger to which all logging is directed.
+            @param config:  Reference to metplus.conf configuration instance.
 
         Returns:
             updated_init_times_list : A list of the init times represented by
@@ -1215,37 +1253,34 @@ def get_updated_init_times(input_dir, p, logger):
 
     updated_init_times_list = []
     init_times_list = []
-    filter_list = get_files(input_dir, ".*.tcst", p)
-    if len(filter_list) > 0:
-        for f in filter_list:
-            match = re.match(r'.*/filter_([0-9]{8}_[0-9]{2,3})', f)
+    filter_list = get_files(input_dir, ".*.tcst", config)
+    if filter_list:
+        for filter_file in filter_list:
+            match = re.match(r'.*/filter_([0-9]{8}_[0-9]{2,3})', filter_file)
             init_times_list.append(match.group(1))
         updated_init_times_list = sorted(init_times_list)
 
     return updated_init_times_list
 
 
-def get_dirs(base_dir, p, logger):
+def get_dirs(base_dir):
     """! Get a list of directories under a base directory.
 
         Args:
             @param base_dir:  The base directory from where search begins
-            @param p:         The reference to metplus.conf, the param/config
-                              file.
-            @param logger:    The logger to which all logging is directed.
 
        Returns:
            dir_list:  A list of directories under the base_dir
     """
 
-    # For logging
-    # cur_filename = sys._getframe().f_code.co_filename
-    # cur_function = sys._getframe().f_code.co_name
-
     dir_list = []
+
+    # pylint:disable=unused-variable
+    # os.walk returns a tuple, not all returned values are needed.
+
     for dirname, dirs, filenames in os.walk(base_dir):
-        for d in dirs:
-            dir_list.append(os.path.join(dirname, d))
+        for direc in dirs:
+            dir_list.append(os.path.join(dirname, direc))
 
     return dir_list
 
@@ -1290,5 +1325,4 @@ def shift_time(time, shift):
 
 
 if __name__ == "__main__":
-    init_list = []
-    init_list = gen_init_list("20141201", "20150331", 6, "18")
+    gen_init_list("20141201", "20150331", 6, "18")

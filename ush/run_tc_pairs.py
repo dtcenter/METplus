@@ -17,6 +17,7 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import (print_function, division)
 import produtil.setup
 from produtil.run import batchexe, run
+import config_metplus
 import os
 import sys
 import met_util as util
@@ -341,13 +342,7 @@ if __name__ == "__main__":
             produtil.setup.setup(send_dbn=False, jobname='run_tc_pairs')
         produtil.log.postmsg('run_tc_pairs is starting')
 
-        # Read in the configuration object p
-        import config_launcher
-        if len(sys.argv) == 3:
-            p = config_launcher.load_baseconfs(sys.argv[2])
-        else:
-            p = config_launcher.load_baseconfs()
-        logger = util.get_logger(p)
+        p = config_metplus.setup()
         if 'MET_BASE' not in os.environ:
             os.environ['MET_BASE'] = p.getdir('MET_BASE')
         main()
