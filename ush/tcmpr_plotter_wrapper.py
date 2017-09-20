@@ -342,11 +342,13 @@ if __name__ == "__main__":
 
         # Read in the configuration object CONFIG
         CONFIG = config_metplus.setup()
+        if 'RSCRIPTS_BASE' not in os.environ:
+            os.environ['RSCRIPTS_BASE'] = CONFIG.getdir('RSCRIPTS_BASE')
         if 'MET_BUILD_BASE' not in os.environ:
             os.environ['MET_BUILD_BASE'] = CONFIG.getdir('MET_BUILD_BASE')
-
         if CONFIG.getdir('MET_BIN') not in os.environ['PATH']:
             os.environ['PATH'] += os.pathsep + CONFIG.getdir('MET_BIN')
+
         TCP = TCMPRPlotter(CONFIG)
         TCP.create_command()
         produtil.log.postmsg('TCMPRPlotter completed')
