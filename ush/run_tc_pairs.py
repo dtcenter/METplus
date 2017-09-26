@@ -38,33 +38,14 @@ run_tc_pairs.py [-c /path/to/user.template.conf]
 
 
 class TcPairs(object):
+    """ """
+
     def __init__(self, config):
         self.logger = util.get_logger(config)
-        # Retrieve any necessary values, from the configuration file object p.
-        self.init_list = util.gen_init_list(
-            config.getstr('config', 'INIT_DATE_BEG'),
-            config.getstr('config', 'INIT_DATE_END'),
-            config.getint('config', 'INIT_HOUR_INC'),
-            config.getstr('config', 'INIT_HOUR_END'))
-        self.track_data_dir = config.getdir('TRACK_DATA_DIR')
-        self.track_type = config.getstr('config', 'TRACK_TYPE')
-        self.track_data_subdir_mod = config.getdir('TRACK_DATA_SUBDIR_MOD')
-        self.adeck_file_prefix = config.getstr('config', 'ADECK_FILE_PREFIX')
-        self.bdeck_file_prefix = config.getstr('config', 'BDECK_FILE_PREFIX')
-        self.track_data_mod_force_overwrite = \
-            config.getbool('config', 'TRACK_DATA_MOD_FORCE_OVERWRITE')
-        self.tc_pairs_dir = config.getdir('TC_PAIRS_DIR')
-        self.tc_pairs_force_overwrite = \
-            config.getbool('config', 'TC_PAIRS_FORCE_OVERWRITE')
-        self.tc_pairs_exe = config.getexe('TC_PAIRS')
-        self.tc_pairs_config_path = config.getstr('config',
-                                                  'TC_PAIRS_CONFIG_PATH')
-        self.missing_val_to_replace = config.getstr('config',
-                                                    'MISSING_VAL_TO_REPLACE')
-        self.missing_val = config.getstr('config', 'MISSING_VAL')
+        self.config = config
 
     def read_modify_write_file(self, in_csvfile, storm_month, missing_values,
-                               out_csvfile, logger):
+                               out_csvfile):
         """! Reads, modifies and writes file
               Args:
                 @param in_csvfile input csv file that is being parsed
@@ -81,8 +62,9 @@ class TcPairs(object):
         # sys._getframe is a legitimate way to access the current
         # filename and method.
         # Used for logging
-        # cur_filename = sys._getframe().f_code.co_filename
-        # cur_function = sys._getframe().f_code.co_name
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+        self.logger.debug("DEBUG|" + cur_filename + "|" + cur_function)
 
         # Open the output csv file
         out_file = open(out_csvfile, "wb")
@@ -123,12 +105,12 @@ class TcPairs(object):
 
         csvfile.close()
         out_file.close()
-        logger.debug("DEBUG|run_tc_pairs.py|read_modify_write_file complete")
+        self.logger.debug("DEBUG|" + cur_function + "|" + cur_filename +
+                          " finished")
 
     def main(self):
-        """!Main program.
-
-        This is the main program"""
+        """! Build up the command to invoke the MET tool tc_pairs.
+        """
 
         # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
@@ -137,13 +119,20 @@ class TcPairs(object):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
-        missing_values = (self.missing_val_to_replace, self.missing_val)
+        missing_values = \
+            (self.config.getstr('config', 'MISSING_VAL_TO_REPLACE'),
+             self.config.getstr('config', 'MISSING_VAL'))
 
         # Get the desired YYYYMM from the init list
-        YYYYMM_list = []
-        for init in self.init_list:
-            if init[0:6] not in YYYYMM_list:
-                YYYYMM_list.append(init[0:6])
+        year_month_list = []
+        init_list = util.gen_init_list(
+            self.config.getstr('config', 'INIT_DATE_BEG'),
+            self.config.getstr('config', 'INIT_DATE_END'),
+            self.config.getint('config', 'INIT_HOUR_INC'),
+            self.config.getstr('config', 'INIT_HOUR_END'))
+        for init in init_list:
+            if init[0:6] not in year_month_list:
+                year_month_list.append(init[0:6])
 
         # Set up the environment variable to be used in the TCPairs Config
         # file (TC_PAIRS_CONFIG_PATH)
@@ -151,24 +140,31 @@ class TcPairs(object):
         # Need to do some pre-processing so that Python will use " and not '
         # because currently MET
         # doesn't support single-quotes
-        tmp_init_string = str(self.init_list)
+        tmp_init_string = str(init_list)
         tmp_init_string = tmp_init_string.replace("\'", "\"")
         os.environ['INIT_INC'] = tmp_init_string
 
         # Get a directory path listing of the dated subdirectories
         # (YYYYMM format) in the track_data directory
         dir_list = []
-        for YYYYMM in os.listdir(self.track_data_dir):
-            if os.path.isdir(os.path.join(self.track_data_dir, YYYYMM)):
-                if YYYYMM in YYYYMM_list:
-                    dir_list.append(os.path.join(self.track_data_dir, YYYYMM))
+        # Get a list of all the year_month directories in the
+        # track data directory specified in the config file.
+        for year_month in os.listdir(self.config.getdir('TRACK_DATA_DIR')):
+            # if the full directory path isn't an empty directory,
+            # check if the current year_month is the requested time.
+            if os.path.isdir(os.path.join(self.config.getdir('TRACK_DATA_DIR'),
+                                          year_month)) \
+                    and year_month in year_month_list:
+                dir_list.append(
+                    os.path.join(self.config.getdir('TRACK_DATA_DIR'),
+                                 year_month))
 
         if not dir_list:
             self.logger.warning("ERROR | [" + cur_filename + ":" +
                                 cur_function + "] | There are no dated"
-                                "sub-directories (YYYYMM) " +
+                                               "sub-directories (YYYYMM) " +
                                 "with input data as expected in: " +
-                                self.track_data_dir)
+                                self.config.getdir('TRACK_DATA_DIR'))
             exit(0)
 
         # Get a list of files in the dated subdirectories
@@ -176,13 +172,16 @@ class TcPairs(object):
             myfiles = os.listdir(mydir)
             # Need to do extra processing if track_type is extra_tropical
             # cyclone
-            if self.track_type == "extra_tropical_cyclone":
+            if self.config.getstr('config',
+                                  'TRACK_TYPE') == "extra_tropical_cyclone":
                 # Create an atcf output directory for writing the modified
                 # files
-                adeck_mod = os.path.join(self.track_data_subdir_mod,
-                                         os.path.basename(mydir))
-                bdeck_mod = os.path.join(self.track_data_subdir_mod,
-                                         os.path.basename(mydir))
+                adeck_mod = os.path.join(
+                    self.config.getdir('TRACK_DATA_SUBDIR_MOD'),
+                    os.path.basename(mydir))
+                bdeck_mod = os.path.join(
+                    self.config.getdir('TRACK_DATA_SUBDIR_MOD'),
+                    os.path.basename(mydir))
                 produtil.fileop.makedirs(adeck_mod, logger=self.logger)
 
             # Iterate over the files, modifying them and writing new output
@@ -190,185 +189,189 @@ class TcPairs(object):
             # run tc_pairs
             for myfile in myfiles:
                 # Check to see if the files have the ADeck prefix
-                if myfile.startswith(self.adeck_file_prefix):
+                if myfile.startswith(
+                        self.config.getstr('config', 'ADECK_FILE_PREFIX')):
                     # Create the output directory for the pairs, if
                     # it doesn't already exist
-                    pairs_out_dir = os.path.join(self.tc_pairs_dir,
-                                                 os.path.basename(mydir))
+                    pairs_out_dir = \
+                        os.path.join(self.config.getdir('TC_PAIRS_DIR'),
+                                     os.path.basename(mydir))
                     produtil.fileop.makedirs(pairs_out_dir, logger=self.logger)
 
                     # Need to do extra processing if track_type is
                     # extra_tropical_cyclone
-                    if self.track_type == "extra_tropical_cyclone":
+                    if self.config.getstr('config',
+                                          'TRACK_TYPE') == \
+                            "extra_tropical_cyclone":
 
                         # Form the adeck and bdeck input filename paths
                         adeck_in_file_path = os.path.join(mydir, myfile)
-                        bdeck_in_file_path = re.sub(self.adeck_file_prefix,
-                                                    self.bdeck_file_prefix,
-                                                    adeck_in_file_path)
+                        bdeck_in_file_path = re.sub(
+                            self.config.getstr('config', 'ADECK_FILE_PREFIX'),
+                            self.config.getstr('config', 'BDECK_FILE_PREFIX'),
+                            adeck_in_file_path)
                         adeck_file_path = os.path.join(adeck_mod, myfile)
-                        bdeck_file_path = \
-                            os.path.join(bdeck_mod,
-                                         re.sub(
-                                             self.adeck_file_prefix,
-                                             self.bdeck_file_prefix,
-                                             myfile))
+                        bdeck_file_path = os.path.join(bdeck_mod, re.sub(
+                            self.config.getstr('config', 'ADECK_FILE_PREFIX'),
+                            self.config.getstr('config', 'BDECK_FILE_PREFIX'),
+                            myfile))
 
                         # Get the storm number e.g. 0004 in
                         # amlq2012033118.gfso.0004
                         # split_basename = myfile.split(".")
 
                         # Get the YYYYMM e.g 201203 in amlq2012033118.gfso.0004
-                        YYYYMM = myfile[4:10]
+                        year_month = myfile[4:10]
 
                         # Get the MM from the YYYYMM
-                        storm_month = YYYYMM[-2:]
+                        storm_month = year_month[-2:]
 
-                        # HERE
-                        # Before calling this function (twice below) check to
-                        # see if the output file exists already.  If it
-                        # does exist either check a force overwrite option
-                        # (add) or log a message telling the user to delete the
-                        # existing data if they want a fresh run
-                        # Read in the adeck file, modify it, and
-                        # write a new adeck file
-                        # Check for existence of data and overwrite if desired
-                        if os.path.exists(adeck_file_path):
-                            if self.track_data_mod_force_overwrite:
-                                self.logger.debug("DEBUG | [" + cur_filename +
-                                                  ":" + cur_function + "] | " +
-                                                  "Writing modified csv file: "
-                                                  + adeck_file_path +
-                                                  ", replacing " +
-                                                  "existing data because " +
-                                                  "TRACK_DATA_MOD_FORCE_" +
-                                                  "OVERWRITE is set to True")
-                                self.read_modify_write_file(adeck_in_file_path,
-                                                            storm_month,
-                                                            missing_values,
-                                                            adeck_file_path,
-                                                            self.logger)
-                            else:
-                                self.logger.debug("DEBUG | [" + cur_filename +
-                                                  ":" + cur_function + "] | " +
-                                                  "Using existing modified csv"
-                                                  "file: " + adeck_file_path +
-                                                  ", because " +
-                                                  "track_data_mod_force_" +
-                                                  "overwrite is set to False")
-                        else:
-                            self.logger.debug("DEBUG | [" + cur_filename + ":"
-                                              + cur_function + "] | " +
-                                              "Writing modified csv file: " +
-                                              adeck_file_path)
-                            self.read_modify_write_file(adeck_in_file_path,
-                                                        storm_month,
-                                                        missing_values,
-                                                        adeck_file_path,
-                                                        self.logger)
+                        # Set up the adeck and bdeck track file paths for the
+                        # extra tropical cyclone data.
+                        self.setup_tropical_track_dirs(adeck_in_file_path,
+                                                       adeck_file_path,
+                                                       storm_month,
+                                                       missing_values)
 
                         # Read in the bdeck file, modify it,
                         # and write a new bdeck file
                         # Check for existence of data and overwrite if desired
-                        if os.path.exists(bdeck_file_path):
-                            if self.track_data_mod_force_overwrite:
-                                self.logger.debug("DEBUG | [" + cur_filename +
-                                                  ":" + cur_function + "] | " +
-                                                  "Writing modified csv file: "
-                                                  + bdeck_file_path +
-                                                  ", replacing existing data "
-                                                  + "because TRACK_DATA_MOD_"
-                                                  + "FORCE_OVERWRITE is set "
-                                                  + "to True")
-                                self.read_modify_write_file(bdeck_in_file_path,
-                                                            storm_month,
-                                                            missing_values,
-                                                            bdeck_file_path,
-                                                            self.logger)
-                            else:
-                                self.logger.debug("DEBUG | [" + cur_filename +
-                                                  ":" + cur_function + "] | " +
-                                                  "Using existing modified csv"
-                                                  " file: " + bdeck_file_path +
-                                                  ", because " +
-                                                  "TRACK_DATA_MOD_FORCE"
-                                                  "_OVERWRITE is set to False")
-                        else:
-                            self.logger.debug("DEBUG | [" + cur_filename +
-                                              ":" + cur_function + "] | " +
-                                              "Writing modified csv file: " +
-                                              bdeck_file_path)
-                            self.read_modify_write_file(bdeck_in_file_path,
-                                                        storm_month,
-                                                        missing_values,
-                                                        bdeck_file_path,
-                                                        self.logger)
-
+                        self.setup_tropical_track_dirs(bdeck_in_file_path,
+                                                       bdeck_file_path,
+                                                       storm_month,
+                                                       missing_values)
                     else:
-
                         # Set up the adeck and bdeck file paths
                         adeck_file_path = os.path.join(mydir, myfile)
-                        bdeck_file_path = re.sub(self.adeck_file_prefix,
-                                                 self.bdeck_file_prefix,
-                                                 adeck_file_path)
+                        bdeck_file_path = re.sub(
+                            self.config.getstr('config', 'ADECK_FILE_PREFIX'),
+                            self.config.getstr('config', 'BDECK_FILE_PREFIX'),
+                            adeck_file_path)
 
                     # Run tc_pairs
-                    pairs_out_file = os.path.join(pairs_out_dir, myfile)
-                    pairs_out_file_with_suffix = pairs_out_file + ".tcst"
-                    if os.path.exists(pairs_out_file_with_suffix):
-                        if self.tc_pairs_force_overwrite:
-                            self.logger.debug("DEBUG | [" + cur_filename +
-                                              ":" + cur_function + "] | " +
-                                              "Writing tc_pairs output file: "
-                                              + pairs_out_file + ", replacing"
-                                              + " existing " +
-                                              " data because TC_PAIRS_FORCE" +
-                                              "_OVERWRITE is set to True")
-                            cmd_list = [self.tc_pairs_exe, " -adeck ",
-                                        adeck_file_path, " -bdeck ",
-                                        bdeck_file_path, " -config ",
-                                        self.tc_pairs_config_path, " -out ",
-                                        pairs_out_file]
-                            cmd = ''.join(cmd_list)
-                            cmd = batchexe('sh')['-c', cmd].err2out()
-                            self.logger.debug("DEBUG | [" + cur_filename + ":"
-                                              + cur_function + "] | " +
-                                              "Running tc_pairs with command: "
-                                              + cmd.to_shell())
-                            ret = run(cmd, sleeptime=.00001)
-                            if ret != 0:
-                                self.logger.error("ERROR | [" + cur_filename +
-                                                  ":" + cur_function + "] | " +
-                                                  "Problem executing: " +
-                                                  cmd.to_shell())
-                                exit(0)
-                        else:
-                            self.logger.debug("DEBUG | [" + cur_filename +
-                                              ":" + cur_function + "] | " +
-                                              "Existing tc_pairs output " +
-                                              "file: " + pairs_out_file +
-                                              ", is available for "
-                                              + "use. To overwrite set " +
-                                              "TC_PAIRS_FORCE_OVERWRITE " +
-                                              "to True")
-                    else:
-                        cmd = self.tc_pairs_exe + " -adeck " + \
-                              adeck_file_path + \
-                              " -bdeck " + bdeck_file_path + " -config " + \
-                              self.tc_pairs_config_path + " -out " + \
-                              pairs_out_file
-                        cmd = batchexe('sh')['-c', cmd].err2out()
-                        self.logger.debug("DEBUG | [" + cur_filename + ":" +
-                                          cur_function + "] | " +
-                                          "Running tc_pairs with command: " +
+                    cmd = self.build_tc_pairs(pairs_out_dir, myfile,
+                                              adeck_file_path, bdeck_file_path)
+                    cmd = batchexe('sh')['-c', cmd].err2out()
+                    ret = run(cmd, sleeptime=.00001)
+                    if ret != 0:
+                        self.logger.error("ERROR | [" + cur_filename +
+                                          ":" + cur_function + "] | " +
+                                          "Problem executing: " +
                                           cmd.to_shell())
-                        ret = run(cmd, sleeptime=.00001)
-                        if ret != 0:
-                            self.logger.error("ERROR | [" + cur_filename +
-                                              ":" + cur_function + "] | " +
-                                              "Problem executing: " +
-                                              cmd.to_shell())
-                            exit(0)
+                        exit(0)
+
+    def setup_tropical_track_dirs(self, deck_input_file_path, deck_file_path,
+                                  storm_month, missing_values):
+        """! Set up the adeck or bdeck file paths.  If these
+             correspond to a tropical storm, then perform additional
+             processing via read_modify_write_file to conform to
+             ATCF format.
+
+             Args:
+                   @param deck_input_file_path: the adeck or bdeck input
+                                               filepath
+                   @param deck_file_path:  the adeck or bdeck filepath to be
+                                          created
+                   @param storm_month:  Month of the storm
+                   @param missing_values: The value specified in the config
+                                          file to indicate missing values/
+                                          missing data in the data file.
+                                          Typical values are -9999.
+        """
+
+        # pylint:disable=protected-access
+        # sys._getframe is a legitimate way to access the current
+        # filename and method.
+        # Used for logging information
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        # Check to see if the output file exists already.  If it
+        # does exist either check a force overwrite option
+        # (add) or log a message telling the user to delete the
+        # existing data if they want a fresh run
+        # Read in the adeck/bdeck file, modify it, and
+        # write a new adeck/bdeck file
+        # Check for existence of data and overwrite if desired
+        if os.path.exists(deck_file_path):
+            if self.config.getbool('config', 'TRACK_DATA_MOD_FORCE_OVERWRITE'):
+                self.logger.debug("DEBUG | [" + cur_filename +
+                                  ":" + cur_function + "] | " +
+                                  "Writing modified csv file: "
+                                  + deck_file_path +
+                                  ", replacing " +
+                                  "existing data because " +
+                                  "TRACK_DATA_MOD_FORCE_" +
+                                  "OVERWRITE is set to True")
+                self.read_modify_write_file(deck_input_file_path,
+                                            storm_month,
+                                            missing_values,
+                                            deck_file_path)
+            else:
+                self.logger.debug("DEBUG | [" + cur_filename +
+                                  ":" + cur_function + "] | " +
+                                  "Using existing modified csv"
+                                  "file: " + deck_file_path +
+                                  ", because " +
+                                  "track_data_mod_force_" +
+                                  "overwrite is set to False")
+        else:
+            self.logger.debug("DEBUG | [" + cur_filename + ":"
+                              + cur_function + "] | " +
+                              "Writing modified csv file: " +
+                              deck_file_path)
+            self.read_modify_write_file(deck_input_file_path,
+                                        storm_month,
+                                        missing_values,
+                                        deck_file_path)
+
+    def build_tc_pairs(self, pairs_output_dir, date_file, adeck_file_path,
+                       bdeck_file_path):
+        """! Build up the command that is used to run the MET tool,
+             tc_pairs.
+             Args:
+                 @param pairs_output_dir: output directory of paired track data
+                 @param date_file: the current date file from a list of all
+                                   possible date files in the input directory.
+                 @param adeck_file_path: the location of the adeck track output
+                 @param bdeck_file_path: the location of the bdeck track output
+            Returns:
+                 a list of commands
+
+        """
+
+        # pylint:disable=protected-access
+        # sys._getframe is a legitimate way to access the current
+        # filename and method.
+        # Used for logging information
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+        pairs_out_file = os.path.join(pairs_output_dir, date_file)
+        pairs_out_file_with_suffix = pairs_out_file + ".tcst"
+
+        cmd_list = [self.config.getexe('TC_PAIRS'), " -adeck ",
+                    adeck_file_path, " -bdeck ",
+                    bdeck_file_path, " -config ",
+                    self.config.getstr('config', 'TC_PAIRS_CONFIG_PATH'),
+                    " -out ", pairs_out_file]
+        cmd = ''.join(cmd_list)
+        # self.logger.debug("cmd = " + cmd)
+        if os.path.exists(pairs_out_file_with_suffix):
+            if self.config.getbool('config', 'TC_PAIRS_FORCE_OVERWRITE'):
+                self.logger.debug("DEBUG | [" + cur_filename +
+                                  ":" + cur_function + "] | " +
+                                  "Writing tc_pairs output file: "
+                                  + pairs_out_file + ", replacing"
+                                  + " existing " +
+                                  " data because TC_PAIRS_FORCE" +
+                                  "_OVERWRITE is set to True")
+        else:
+            self.logger.debug("DEBUG | [" + cur_filename + ":" +
+                              cur_function + "] | " +
+                              "Running tc_pairs with command: " +
+                              cmd)
+
+        return cmd
 
 
 if __name__ == "__main__":
@@ -381,13 +384,13 @@ if __name__ == "__main__":
             produtil.setup.setup(send_dbn=False, jobname='run_tc_pairs')
         produtil.log.postmsg('run_tc_pairs is starting')
 
-        config_inst = config_metplus.setup()
+        CONFIG_INST = config_metplus.setup()
         if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = config_inst.getdir('MET_BASE')
-        TCP = TcPairs(config_inst)
+            os.environ['MET_BASE'] = CONFIG_INST.getdir('MET_BASE')
+        TCP = TcPairs(CONFIG_INST)
         TCP.main()
         produtil.log.postmsg('run_tc_pairs completed')
-    except Exception as e:
+    except Exception as exc:
         produtil.log.jlogger.critical(
-            'run_tc_pairs failed: %s' % (str(e),), exc_info=True)
+            'run_tc_pairs failed: %s' % (str(exc),), exc_info=True)
         sys.exit(2)
