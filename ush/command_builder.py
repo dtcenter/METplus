@@ -1,0 +1,147 @@
+#!/usr/bin/env python
+
+"""
+Program Name: CommandGen.py
+Contact(s): George McCabe
+Abstract:
+History Log:  Initial version
+Usage: Create a subclass
+Parameters: None
+Input Files: N/A
+Output Files: N/A
+"""
+
+from __future__ import (print_function, division)
+
+import os
+import subprocess
+from abc import ABCMeta
+
+
+class CommandBuilder:
+    __metaclass__ = ABCMeta
+
+    def __init__(self, p, logger):
+        """Retrieve parameters from corresponding param file"""
+        self.p = p
+        self.logger = logger
+        self.debug = False
+        self.app_name = None
+        self.app_path = None
+        self.args = []
+        self.input_dir = ""
+        self.infiles = []
+        self.outdir = ""
+        self.outfile = ""
+        self.param = ""
+        self.env = os.environ.copy()
+
+    def set_debug(self, debug):
+        self.debug = debug
+
+    def add_arg(self, arg):
+        self.args.append(arg)
+
+    def add_input_file(self, filename):
+        self.infiles.append(filename)
+
+    def get_input_files(self):
+        return self.infiles
+
+    def set_input_dir(self, d):
+        self.input_dir = d
+
+    def set_output_path(self, outpath):
+        """Split path into directory and filename then save both"""
+        self.outfile = os.path.basename(outpath)
+        self.outdir = os.path.dirname(outpath)
+
+    def get_output_path(self):
+        """Combine output directory and filename then return result"""
+        return os.path.join(self.outdir, self.outfile)
+
+    def set_output_filename(self, outfile):
+        self.outfile = outfile
+
+    def set_output_dir(self, outdir):
+        self.outdir = outdir
+
+    def set_param_file(self, param):
+        self.param = param
+
+    def clear_command(self):
+        """Clear all arguments to command"""
+        self.args = []
+        self.infiles = []
+        self.outfile = ""
+        self.param = ""
+
+    def add_env_var(self, key, name):
+        self.env[key] = name
+
+    def get_env(self):
+        return self.env
+
+    def print_env(self):
+        """Print all environment variables set for this application"""
+        for x in self.env:
+            self.logger.debug(x, "=", self.env[x])
+
+    def print_env_copy(self, vars):
+        """Print list of environment variables that can be easily \
+        copied into terminal"""
+        out = ""
+        for v in vars:
+            if self.env[v].find('"') != -1:
+                next = 'export '+v+'="'+self.env[v].replace('"', '\\"')+'"'
+            else:
+                next = 'export '+v+'='+self.env[v]
+            out += next+'; '
+        self.logger.debug(out)
+
+    def print_env_item(self, item):
+        # TODO: Fix logger call here
+        self.logger.debug(item+"="+self.env[item])
+        #    print(item,":",self.env[item])
+
+    def get_command(self):
+        """Build command to run from arguments"""
+        if self.app_path is None:
+            self.logger.error("No app path specified. "\
+                              "You must use a subclass")
+            return None
+
+        cmd = self.app_path + " "
+        for a in self.args:
+            cmd += a + " "
+
+        if self.infiles:
+            self.logger.error("No input filenames specified")
+            return None
+
+        for f in self.infiles:
+            cmd += f + " "
+
+        if self.param != "":
+            cmd += self.param + " "
+
+        if self.outfile == "":
+            self.logger.error("No output filename specified")
+            return None
+
+        if self.outdir == "":
+            self.logger.error("No output directory specified")
+            return None
+
+        cmd += os.path.join(self.outdir, self.outfile)
+        return cmd
+
+    def run(self):
+        """Build and run command"""
+        cmd = self.get_command()
+        if cmd is None:
+            return
+        self.logger.info("RUNNING: " + cmd)
+        process = subprocess.Popen(cmd, env=self.env, shell=True)
+        process.wait()
+    #    os.system(cmd)
