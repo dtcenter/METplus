@@ -12,7 +12,7 @@ import met_util as util
 import config_metplus
 
 
-##@namespace TCMPRPlotter
+##@namespace TCMPRPlotterWrapper
 # A Python class than encapsulates the plot_tcmpr.R plotting script.
 #
 # Generates plots for input files with .tcst format and
@@ -29,7 +29,7 @@ import config_metplus
 #
 
 
-class TCMPRPlotter(object):
+class TCMPRPlotterWrapper(object):
     """! A Python class than encapsulates the plot_tcmpr.R plotting script.
 
     Generates plots for input files with .tcst format and
@@ -42,7 +42,7 @@ class TCMPRPlotter(object):
     """
 
     def __init__(self, config):
-        """!Constructor for TCMPRPlotter
+        """!Constructor for TCMPRPlotterWrapper
         @param config:  The configuration instance, contains
                         the conf file information."""
         # pylint:disable=too-many-instance-attributes
@@ -333,12 +333,11 @@ class TCMPRPlotter(object):
 if __name__ == "__main__":
     try:
         if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='TCMPRPlotter',
+            produtil.setup.setup(send_dbn=False, jobname='TCMPRPlotterWrapper',
                                  jlogfile=os.environ['JLOGFILE'])
         else:
-            produtil.setup.setup(send_dbn=False, jobname='TCMPRPlotter')
-        produtil.log.postmsg('TCMPRPlotter is starting')
-
+            produtil.setup.setup(send_dbn=False, jobname='TCMPRPlotterWrapper')
+        produtil.log.postmsg('TCMPRPlotterWrapper is starting')
 
         # Read in the configuration object CONFIG
         CONFIG = config_metplus.setup()
@@ -349,10 +348,10 @@ if __name__ == "__main__":
         if CONFIG.getdir('MET_BIN') not in os.environ['PATH']:
             os.environ['PATH'] += os.pathsep + CONFIG.getdir('MET_BIN')
 
-        TCP = TCMPRPlotter(CONFIG)
+        TCP = TCMPRPlotterWrapper(CONFIG)
         TCP.create_command()
-        produtil.log.postmsg('TCMPRPlotter completed')
+        produtil.log.postmsg('TCMPRPlotterWrapper completed')
     except Exception as e:
         produtil.log.jlogger.critical(
-            'TCMPRPlotter failed: %s' % (str(e),), exc_info=True)
+            'TCMPRPlotterWrapper failed: %s' % (str(e),), exc_info=True)
         sys.exit(2)
