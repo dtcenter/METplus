@@ -21,8 +21,7 @@ import sys
 import re
 import csv
 import produtil.setup
-from produtil.run import batchexe
-from produtil.run import run
+from command_builder import CommandBuilder
 import met_util as util
 import config_metplus
 
@@ -37,12 +36,13 @@ run_tc_pairs.py [-c /path/to/user.template.conf]
 '''
 
 
-class TcPairs(object):
+class TcPairs(CommandBuilder):
     """ """
 
     def __init__(self, config):
         self.logger = util.get_logger(config)
         self.config = config
+        super(TcPairs, self).__init__(config, self.logger)
 
     def read_modify_write_file(self, in_csvfile, storm_month, missing_values,
                                out_csvfile):
@@ -108,7 +108,7 @@ class TcPairs(object):
         self.logger.debug("DEBUG|" + cur_function + "|" + cur_filename +
                           " finished")
 
-    def main(self):
+    def run_at_time(self):
         """! Build up the command to invoke the MET tool tc_pairs.
         """
 
@@ -133,16 +133,6 @@ class TcPairs(object):
         for init in init_list:
             if init[0:6] not in year_month_list:
                 year_month_list.append(init[0:6])
-
-        # Set up the environment variable to be used in the TCPairs Config
-        # file (TC_PAIRS_CONFIG_PATH)
-        # Used to set init_inc in "TC_PAIRS_CONFIG_PATH"
-        # Need to do some pre-processing so that Python will use " and not '
-        # because currently MET
-        # doesn't support single-quotes
-        tmp_init_string = str(init_list)
-        tmp_init_string = tmp_init_string.replace("\'", "\"")
-        os.environ['INIT_INC'] = tmp_init_string
 
         # Get a directory path listing of the dated subdirectories
         # (YYYYMM format) in the track_data directory
@@ -187,10 +177,13 @@ class TcPairs(object):
             # Iterate over the files, modifying them and writing new output
             # files if necessary ("extra_tropical_cyclone" track type), and
             # run tc_pairs
+            adeck_file_prefix = self.config.getstr('config',
+                                                   'ADECK_FILE_PREFIX')
+            bdeck_file_prefix = self.config.getstr('config',
+                                                   'BDECK_FILE_PREFIX')
             for myfile in myfiles:
                 # Check to see if the files have the ADeck prefix
-                if myfile.startswith(
-                        self.config.getstr('config', 'ADECK_FILE_PREFIX')):
+                if myfile.startswith(adeck_file_prefix):
                     # Create the output directory for the pairs, if
                     # it doesn't already exist
                     pairs_out_dir = \
@@ -206,15 +199,12 @@ class TcPairs(object):
 
                         # Form the adeck and bdeck input filename paths
                         adeck_in_file_path = os.path.join(mydir, myfile)
-                        bdeck_in_file_path = re.sub(
-                            self.config.getstr('config', 'ADECK_FILE_PREFIX'),
-                            self.config.getstr('config', 'BDECK_FILE_PREFIX'),
-                            adeck_in_file_path)
+                        bdeck_in_file_path = re.sub(adeck_file_prefix,
+                                                    bdeck_file_prefix,
+                                                    adeck_in_file_path)
                         adeck_file_path = os.path.join(adeck_mod, myfile)
                         bdeck_file_path = os.path.join(bdeck_mod, re.sub(
-                            self.config.getstr('config', 'ADECK_FILE_PREFIX'),
-                            self.config.getstr('config', 'BDECK_FILE_PREFIX'),
-                            myfile))
+                            adeck_file_prefix, bdeck_file_prefix, myfile))
 
                         # Get the storm number e.g. 0004 in
                         # amlq2012033118.gfso.0004
@@ -248,17 +238,11 @@ class TcPairs(object):
                             self.config.getstr('config', 'BDECK_FILE_PREFIX'),
                             adeck_file_path)
 
-                    # Run tc_pairs
-                    cmd = self.build_tc_pairs(pairs_out_dir, myfile,
-                                              adeck_file_path, bdeck_file_path)
-                    cmd = batchexe('sh')['-c', cmd].err2out()
-                    ret = run(cmd, sleeptime=.00001)
-                    if ret != 0:
-                        self.logger.error("ERROR | [" + cur_filename +
-                                          ":" + cur_function + "] | " +
-                                          "Problem executing: " +
-                                          cmd.to_shell())
-                        exit(0)
+                    # Run tc_pairs to build up the command
+                    self.build_tc_pairs(pairs_out_dir, myfile,
+                                        adeck_file_path, bdeck_file_path,
+                                        init_list)
+                    self.run()
 
     def setup_tropical_track_dirs(self, deck_input_file_path, deck_file_path,
                                   storm_month, missing_values):
@@ -326,7 +310,7 @@ class TcPairs(object):
                                         deck_file_path)
 
     def build_tc_pairs(self, pairs_output_dir, date_file, adeck_file_path,
-                       bdeck_file_path):
+                       bdeck_file_path, init_list):
         """! Build up the command that is used to run the MET tool,
              tc_pairs.
              Args:
@@ -335,8 +319,10 @@ class TcPairs(object):
                                    possible date files in the input directory.
                  @param adeck_file_path: the location of the adeck track output
                  @param bdeck_file_path: the location of the bdeck track output
+                 @param init_list:  list of all init times indicated as
+                                    start, end, increment and a list is
+                                    created.
             Returns:
-                 a list of commands
 
         """
 
@@ -346,16 +332,40 @@ class TcPairs(object):
         # Used for logging information
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
+
         pairs_out_file = os.path.join(pairs_output_dir, date_file)
         pairs_out_file_with_suffix = pairs_out_file + ".tcst"
 
-        cmd_list = [self.config.getexe('TC_PAIRS'), " -adeck ",
-                    adeck_file_path, " -bdeck ",
-                    bdeck_file_path, " -config ",
-                    self.config.getstr('config', 'TC_PAIRS_CONFIG_PATH'),
-                    " -out ", pairs_out_file]
-        cmd = ''.join(cmd_list)
-        # self.logger.debug("cmd = " + cmd)
+        # Set up the environment variable to be used in the TCPairs Config
+        # file (TC_PAIRS_CONFIG_PATH)
+        # Used to set init_inc in "TC_PAIRS_CONFIG_PATH"
+        # Need to do some pre-processing so that Python will use " and not '
+        # because currently MET
+        # doesn't support single-quotes
+        tmp_init_string = str(init_list)
+        tmp_init_string = tmp_init_string.replace("\'", "\"")
+        self.add_env_var('INIT_INC', tmp_init_string)
+
+        self.app_path = self.config.getexe('TC_PAIRS')
+        self.app_name = os.path.basename(self.app_path)
+        self.add_arg(" -adeck ")
+        self.add_arg(adeck_file_path)
+        self.add_arg(" -bdeck ")
+        self.add_arg(bdeck_file_path)
+        self.add_arg(" -config ")
+        self.add_arg(self.config.getstr('config', 'TC_PAIRS_CONFIG_PATH'))
+        self.add_arg(" -out ")
+        self.add_arg(pairs_out_file_with_suffix)
+        # This info is necessary in order to create a command, even
+        # though you've defined this information via the -out args above
+        self.set_output_filename(date_file)
+        self.set_output_dir(pairs_output_dir)
+        cmd = self.get_command()
+        self.logger.debug("DEBUG| " + cur_function + "|" + cur_filename +
+                          "tc_pairs command = " + cmd)
+
+        # Log appropriate message, based on whether we did a force overwrite
+        # on existing data.
         if os.path.exists(pairs_out_file_with_suffix):
             if self.config.getbool('config', 'TC_PAIRS_FORCE_OVERWRITE'):
                 self.logger.debug("DEBUG | [" + cur_filename +
@@ -371,9 +381,6 @@ class TcPairs(object):
                               "Running tc_pairs with command: " +
                               cmd)
 
-        return cmd
-
-
 if __name__ == "__main__":
     try:
         if 'JLOGFILE' in os.environ:
@@ -388,7 +395,7 @@ if __name__ == "__main__":
         if 'MET_BASE' not in os.environ:
             os.environ['MET_BASE'] = CONFIG_INST.getdir('MET_BASE')
         TCP = TcPairs(CONFIG_INST)
-        TCP.main()
+        TCP.run_at_time()
         produtil.log.postmsg('run_tc_pairs completed')
     except Exception as exc:
         produtil.log.jlogger.critical(
