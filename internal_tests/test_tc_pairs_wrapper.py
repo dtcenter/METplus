@@ -20,7 +20,8 @@ class TestTcPairsWrapper(unittest.TestCase):
             the output from that run.
         """
         self.p = self.get_config()
-        rtcp = TcPairsWrapper(self.p)
+        logger = util.get_logger(self.p)
+        rtcp = TcPairsWrapper(self.p, logger)
         self.init_list = util.gen_init_list(
             self.p.getstr('config', 'INIT_DATE_BEG'),
             self.p.getstr('config', 'INIT_DATE_END'),
@@ -46,6 +47,7 @@ class TestTcPairsWrapper(unittest.TestCase):
 
         # Read in the configuration object CONFIG_INST
         config_instance = config_metplus.setup()
+
         if 'MET_BASE' not in os.environ:
             os.environ['MET_BASE'] = config_instance.getdir('MET_BASE')
 
