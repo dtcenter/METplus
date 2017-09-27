@@ -55,6 +55,7 @@ def main():
         args = None
     (parm, infiles, moreopt) = config_launcher.parse_launch_args(args,
                                                                  usage,
+                                                                 None,
                                                                  logger)
     p = config_launcher.launch(infiles, moreopt)
     logger = util.get_logger(p)

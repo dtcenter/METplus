@@ -1320,8 +1320,12 @@ def getlistint(s):
 
 # hours
 def shift_time(time, shift):
-    return (datetime.datetime.strptime(time, "%Y%m%d%H") +
-            datetime.timedelta(hours=shift)).strftime("%Y%m%d%H")
+    return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
+            datetime.timedelta(hours=shift)).strftime("%Y%m%d%H%M")
+
+#def shift_time(time, fmt, shift):
+#    return (datetime.datetime.strptime(time, fmt) +
+#            datetime.timedelta(hours=shift)).strftime(fmt)
 
 
 if __name__ == "__main__":

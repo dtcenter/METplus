@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 '''
-Program Name: CG_pcp_combine.py
+Program Name: pcp_combine_wrapper.py
 Contact(s): George McCabe
 Abstract: Runs pcp_combine to merge multiple forecast files
 History Log:  Initial version
-Usage: CG_pcp_combine.py
+Usage: 
 Parameters: None
 Input Files: grib2 files
 Output Files: pcp_combine files
@@ -27,17 +27,25 @@ import glob
 import datetime
 import string_template_substitution as sts
 
-from CommandGen import CommandGen
+from command_builder import CommandBuilder
+from task_info import TaskInfo
+from gempak_to_cf_wrapper import GempakToCFWrapper
 
-
-class CG_pcp_combine(CommandGen):
+class PcpCombineWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
-        super(CG_pcp_combine, self).__init__(p, logger)
+        super(PcpCombineWrapper, self).__init__(p, logger)
         self.app_path = self.p.getstr('exe', 'PCP_COMBINE')
         self.app_name = os.path.basename(self.app_path)
         self.inaddons = []
 
+    def clear(self):
+        super(PcpCombineWrapper, self).clear()
+        self.inaddons = []
+        
+    def test(self):
+      print("THIS IS A TEST")
+        
     def add_input_file(self, filename, addon):
         self.infiles.append(filename)
         self.inaddons.append(str(addon))
@@ -202,8 +210,8 @@ class CG_pcp_combine(CommandGen):
                     return
 
         start_time = valid_time
-        last_time = util.shift_time(valid_time, -(accum-1))
-        total_accum = accum
+        last_time = util.shift_time(valid_time, -(int(accum)-1))
+        total_accum = int(accum)
         search_accum = total_accum
         # loop backwards in time until you have a full set of accum
         while last_time <= start_time:
@@ -303,7 +311,32 @@ class CG_pcp_combine(CommandGen):
         cmd += os.path.join(self.outdir, self.outfile)
         return cmd
 
-    def run_at_time(self, valid_time, accum, ob_type,
+    def run_at_time(self, init_time):
+        task_info = TaskInfo()
+        task_info.init_time = init_time
+        fcst_vars = util.getlist(self.p.getstr('config', 'FCST_VARS'))
+        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))        
+        for lead in lead_seq:
+            task_info.lead = lead
+            for fcst_var in fcst_vars:
+                task_info.fcst_var = fcst_var
+                # loop over models to compare
+                accums = util.getlist(self.p.getstr('config', fcst_var+"_ACCUM"))
+                ob_types = util.getlist(self.p.getstr('config', fcst_var+"_OBTYPE"))
+                for accum in accums:
+                    task_info.level = accum
+                    for ob_type in ob_types:
+                        task_info.ob_type = ob_type
+                        if lead < int(accum):
+                            continue
+#                        self.run_at_time_fcst(task_info)
+                        self.run_at_time_once(task_info.getValidTime(),
+                                              task_info.level,
+                                              task_info.ob_type,
+                                              task_info.fcst_var)
+
+    
+    def run_at_time_once(self, valid_time, accum, ob_type,
                     fcst_var, is_forecast=False):
         input_dir = self.p.getstr('config', ob_type+'_INPUT_DIR')
         native_dir = self.p.getstr('config', ob_type+'_NATIVE_DIR')
@@ -331,7 +364,7 @@ class CG_pcp_combine(CommandGen):
                 nfile = os.path.splitext(nfile)[0]+'.nc'
             if not os.path.isfile(nfile):
                 print("Calling GempakToCF to convert to NetCDF")
-                run_g2c = CG_GempakToCF(self.p, self.logger)
+                run_g2c = GempakToCF(self.p, self.logger)
                 run_g2c.add_input_file(infile)
                 run_g2c.set_output_path(nfile)
                 cmd = run_g2c.get_command()
@@ -339,7 +372,7 @@ class CG_pcp_combine(CommandGen):
                     print("ERROR: GempakToCF could not generate command")
                     continue
                 print("RUNNING:"+str(cmd))
-                run_g2c.run()
+                run_g2c.build()
             infiles[idx] = nfile
 
             pcpSts = sts.StringSub(self.logger,
@@ -359,5 +392,5 @@ class CG_pcp_combine(CommandGen):
                 continue
             print("RUNNING: "+str(cmd))
             self.logger.info("")
-            self.run()
+            self.build()
             outfile = self.get_output_path()

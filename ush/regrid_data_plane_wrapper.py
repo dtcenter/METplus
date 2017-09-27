@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 '''
-Program Name: CG_regrid_data_plane.py
+Program Name: regrid_data_plane.py
 Contact(s): George McCabe
 Abstract: Runs regrid_data_plane
 History Log:  Initial version
-Usage: CG_regrid_data_plane.py
+Usage: 
 Parameters: None
 Input Files: nc files
 Output Files: nc files
@@ -22,17 +22,44 @@ import re
 import csv
 import subprocess
 import string_template_substitution as sts
-from CommandGen import CommandGen
+from task_info import TaskInfo
+from command_builder import CommandBuilder
 
 
-class CG_regrid_data_plane(CommandGen):
+class RegridDataPlaneWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
-        super(CG_regrid_data_plane, self).__init__(p, logger)
+        super(RegridDataPlaneWrapper, self).__init__(p, logger)
         self.app_path = self.p.getstr('exe', 'REGRID_DATA_PLANE_EXE')
         self.app_name = os.path.basename(self.app_path)
 
-    def run_at_time(self, valid_time, accum, ob_type):
+
+    def run_at_time(self, init_time):
+        task_info = TaskInfo()
+        task_info.init_time = init_time
+        fcst_vars = util.getlist(self.p.getstr('config', 'FCST_VARS'))
+        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))        
+        for lead in lead_seq:
+            task_info.lead = lead
+            for fcst_var in fcst_vars:
+                task_info.fcst_var = fcst_var            
+                # loop over models to compare
+                accums = util.getlist(self.p.getstr('config', fcst_var+"_ACCUM"))
+                ob_types = util.getlist(self.p.getstr('config', fcst_var+"_OBTYPE"))
+                for accum in accums:
+                    task_info.level = accum
+                    for ob_type in ob_types:
+                        task_info.ob_type = ob_type
+                        if lead < int(accum):
+                            continue
+#                        self.run_at_time_fcst(task_info)
+                        self.run_at_time_once(task_info.getValidTime(),
+                                              task_info.level,
+                                              task_info.ob_type)
+
+
+        
+    def run_at_time_once(self, valid_time, accum, ob_type):
         obs_var = self.p.getstr('config', ob_type+"_VAR")
         bucket_dir = self.p.getstr('config', ob_type+'_BUCKET_DIR')
         bucket_template = self.p.getraw('filename_templates',
@@ -71,4 +98,4 @@ class CG_regrid_data_plane(CommandGen):
             return
         print("RUNNING: "+str(cmd))
         self.logger.info("")
-        self.run()
+        self.build()

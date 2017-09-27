@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-Program Name: CommandGen.py
+Program Name: CommandBuilder.py
 Contact(s): George McCabe
 Abstract:
 History Log:  Initial version
@@ -17,14 +17,17 @@ import os
 import sys
 import re
 import csv
+import time
 import subprocess
 import datetime
+import calendar
 import string_template_substitution as sts
+import met_util as util
 
 from abc import ABCMeta
 
 
-class CommandGen:
+class CommandBuilder:
     __metaclass__ = ABCMeta
 
     def __init__(self, p, logger):
@@ -34,13 +37,17 @@ class CommandGen:
         self.debug = False
         self.app_name = None
         self.app_path = None
+        self.env = os.environ.copy()        
+        self.clear()
+
+    def clear(self):
         self.args = []
         self.input_dir = ""
         self.infiles = []
         self.outdir = ""
         self.outfile = ""
         self.param = ""
-        self.env = os.environ.copy()
+
 
     def set_debug(self, debug):
         self.debug = debug
@@ -142,12 +149,46 @@ class CommandGen:
         cmd += os.path.join(self.outdir, self.outfile)
         return cmd
 
-    def run(self):
+    def build(self):
         '''Build and run command'''
         cmd = self.get_command()
         if cmd is None:
             return
         (self.logger).info("RUNNING: " + cmd)
-        process = subprocess.Popen(cmd, env=self.env, shell=True)
-        process.wait()
+        print("RUNNING: " + cmd)         
+#        process = subprocess.Popen(cmd, env=self.env, shell=True)
+#        process.wait()
     #    os.system(cmd)
+
+    def run_all_times(self):
+        time_format = self.p.getstr('config', 'INIT_TIME_FMT')
+        start_t = self.p.getstr('config', 'INIT_BEG')
+        end_t = self.p.getstr('config', 'INIT_END')
+        time_interval = self.p.getint('config', 'INIT_INC')
+        if time_interval < 60:
+            print("ERROR: time_interval parameter must be greater than 60 seconds")
+            exit(1)
+        
+        init_time = calendar.timegm(time.strptime(start_t, time_format))
+        end_time = calendar.timegm(time.strptime(end_t, time_format))
+#        start_time = p.getstr('config', 'START_TIME')
+#        end_time = p.getstr('config', 'END_TIME')
+#        time_interval = p.getstr('config', 'TIME_INTERVAL')        
+#        init_time = start_time
+        while init_time <= end_time:
+            run_time = time.strftime("%Y%m%d%H%M", time.gmtime(init_time))
+            self.run_at_time(run_time)
+            self.clear()
+            init_time += time_interval
+#            init_time = util.shift_time(init_time, int(time_interval))
+        """
+        init_list = util.gen_init_list(p.getstr('config', 'INIT_DATE_BEG'),
+                                       p.getstr('config', 'INIT_DATE_END'),
+                                       p.getint('config', 'INIT_HOUR_INC'),
+                                       p.getstr('config', 'INIT_HOUR_END'))
+        # Get the desired YYYYMM from the init list
+        YYYYMM_list = []
+        for init in init_list:
+            if init[0:6] not in YYYYMM_list:
+                YYYYMM_list.append(init[0:6])
+        """

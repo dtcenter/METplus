@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 '''
-Program Name: CG_GempakToCF.py
+Program Name: gempak_to_cf.py
 Contact(s): George McCabe
 Abstract: Runs GempakToCF
 History Log:  Initial version
-Usage: CG_GempakToCF.py
+Usage: 
 Parameters: None
 Input Files:
 Output Files:
@@ -14,13 +14,13 @@ Condition codes: 0 for success, 1 for failure
 
 from __future__ import (print_function, division)
 
-from CommandGen import CommandGen
+from command_builder import CommandBuilder
 
 
-class CG_GempakToCF(CommandGen):
+class GempakToCFWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
-        super(CG_GempakToCF, self).__init__(p, logger)
+        super(GempakToCFWrapper, self).__init__(p, logger)
         self.app_name = "GempakToCF"
         self.class_path = self.p.getstr('exe', 'GEMPAKTOCF_CLASSPATH')
 
