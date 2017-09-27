@@ -42,10 +42,27 @@ class TcPairsWrapper(CommandBuilder):
        bdeck files.  Pre-processes extra tropical cyclone data.
     """
 
-    def __init__(self, config):
-        self.logger = util.get_logger(config)
-        self.config = config
-        super(TcPairsWrapper, self).__init__(config, self.logger)
+    def __init__(self, p, logger):
+        super(TcPairsWrapper, self).__init__(p, logger)
+        self.logger = logger
+        # Retrieve values set in the configuration file(s).
+        self.input_track_data = self.p.getdir('TRACK_DATA_DIR')
+        self.atcf_output_dir = self.p.getdir('TRACK_DATA_SUBDIR_MOD')
+        self.adeck_file_prefix = self.p.getstr('config', 'ADECK_FILE_PREFIX')
+        self.bdeck_file_prefix = self.p.getstr('config', 'BDECK_FILE_PREFIX')
+        self.track_type = self.p.getstr('config', 'TRACK_TYPE')
+        self.tc_pairs_dir = self.p.getdir('TC_PAIRS_DIR')
+        self.atcf_output_dir = self.p.getdir('TRACK_DATA_SUBDIR_MOD')
+        self.force_overwrite = self.p.getbool('config',
+                                              'TRACK_DATA_MOD_FORCE_OVERWRITE')
+        self.app_path = self.p.getexe('TC_PAIRS')
+        self.app_name = os.path.basename(self.app_path)
+        self.config_path = self.p.getstr('config', 'TC_PAIRS_CONFIG_PATH')
+        # These are the missing values used in the data file to indicate
+        # missing values.  Commonly, -9999 is used.
+        self.missing_values = \
+            (self.p.getstr('config', 'MISSING_VAL_TO_REPLACE'),
+             self.p.getstr('config', 'MISSING_VAL'))
 
     def run_at_time(self, requested_time):
         """! Build up the command to invoke the MET tool, tc_pairs.
@@ -62,18 +79,8 @@ class TcPairsWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
         self.logger.debug("DEBUGGER|" + cur_filename + "|" + cur_function)
 
-        # Retrieve values set in the configuration file(s).
-        input_track_data = self.config.getdir('TRACK_DATA_DIR')
-        atcf_output_dir = self.config.getdir('TRACK_DATA_SUBDIR_MOD')
-        adeck_file_prefix = self.config.getstr('config',
-                                               'ADECK_FILE_PREFIX')
-        bdeck_file_prefix = self.config.getstr('config',
-                                               'BDECK_FILE_PREFIX')
-        track_type = self.config.getstr('config', 'TRACK_TYPE')
-        tc_pairs_dir = self.config.getdir('TC_PAIRS_DIR')
-
         year_month_list = [year_month for year_month in
-                           os.listdir(input_track_data)]
+                           os.listdir(self.input_track_data)]
         # Check for empty data directories and whether data exists for this
         # requested time.
         self.perform_checks(requested_time, year_month_list)
@@ -96,10 +103,10 @@ class TcPairsWrapper(CommandBuilder):
 
         # Need to do extra processing if track_type is extra_tropical
         # cyclone
-        if track_type == "extra_tropical_cyclone":
+        if self.track_type == "extra_tropical_cyclone":
             # Create an atcf output directory for writing the modified
             # files
-            adeck_mod = os.path.join(atcf_output_dir, os.path.basename(
+            adeck_mod = os.path.join(self.atcf_output_dir, os.path.basename(
                 requested_year_month_path))
             produtil.fileop.makedirs(adeck_mod, logger=self.logger)
 
@@ -108,28 +115,28 @@ class TcPairsWrapper(CommandBuilder):
         # build up the command to run the MET tool, tc_pairs.
         for myfile in myfiles:
             # Check to see if the files have the ADeck prefix
-            if myfile.startswith(adeck_file_prefix):
+            if myfile.startswith(self.adeck_file_prefix):
                 # Create the output directory for the pairs, if
                 # it doesn't already exist
                 pairs_out_dir = \
-                    os.path.join(tc_pairs_dir,
+                    os.path.join(self.tc_pairs_dir,
                                  os.path.basename(requested_year_month_path))
                 produtil.fileop.makedirs(pairs_out_dir, logger=self.logger)
 
                 # Need to do extra processing if track_type is
                 # extra_tropical_cyclone
-            if track_type == "extra_tropical_cyclone":
+            if self.track_type == "extra_tropical_cyclone":
                 adeck_file_path, bdeck_file_path = \
                     self.process_extra_tropical_tracks(
-                        adeck_file_prefix, bdeck_file_prefix,
+                        self.adeck_file_prefix, self.bdeck_file_prefix,
                         requested_year_month_path,
                         myfile)
             else:
                 # Set up the adeck and bdeck file paths
                 adeck_file_path = os.path.join(requested_year_month_path,
                                                myfile)
-                bdeck_file_path = re.sub(adeck_file_prefix,
-                                         bdeck_file_prefix,
+                bdeck_file_path = re.sub(self.adeck_file_prefix,
+                                         self.bdeck_file_prefix,
                                          adeck_file_path)
 
                 # Run tc_pairs to build up the command
@@ -159,7 +166,7 @@ class TcPairsWrapper(CommandBuilder):
         self.logger.debug("DEBUG|" + cur_function + "|" + cur_filename)
 
         # Check that input directory is not empty.
-        if not os.listdir(self.config.getdir('TRACK_DATA_DIR')):
+        if not os.listdir(self.input_track_data):
             self.logger.error("ERROR|" + cur_filename + "|" + cur_function +
                               " | " + os.strerror(errno.ENODATA) + "| " +
                               "input data directory is empty or " +
@@ -204,11 +211,10 @@ class TcPairsWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         self.logger.debug("DEBUG|" + cur_filename + "|" + cur_function)
-        input_track_dir = self.config.getdir('TRACK_DATA_DIR')
 
         # Create the full file path for some_year_month that corresponds to
         # the full path in the input track directory.
-        year_month_path = os.path.join(input_track_dir, some_year_month)
+        year_month_path = os.path.join(self.input_track_data, some_year_month)
 
         return year_month_path
 
@@ -235,9 +241,8 @@ class TcPairsWrapper(CommandBuilder):
         self.logger.debug("DEBUG|" + cur_filename + "|" + cur_function)
 
         # Retrieve necessary values from the config file.
-        atcf_output_dir = self.config.getdir('TRACK_DATA_SUBDIR_MOD')
-        adeck_mod = os.path.join(atcf_output_dir, os.path.basename(mydir))
-        bdeck_mod = os.path.join(atcf_output_dir, os.path.basename(mydir))
+        adeck_mod = os.path.join(self.atcf_output_dir, os.path.basename(mydir))
+        bdeck_mod = os.path.join(self.atcf_output_dir, os.path.basename(mydir))
 
         # Form the adeck and bdeck input filename paths
         adeck_in_file_path = os.path.join(mydir, myfile)
@@ -305,7 +310,7 @@ class TcPairsWrapper(CommandBuilder):
         # write a new adeck/bdeck file
         # Check for existence of data and overwrite if desired
         if os.path.exists(deck_file_path):
-            if self.config.getbool('config', 'TRACK_DATA_MOD_FORCE_OVERWRITE'):
+            if self.force_overwrite:
                 self.logger.debug("DEBUG | [" + cur_filename +
                                   ":" + cur_function + "] | " +
                                   "Writing modified csv file: " +
@@ -370,14 +375,13 @@ class TcPairsWrapper(CommandBuilder):
         os.environ['INIT_INC'] = tmp_init_string
 
         self.add_env_var('INIT_INC', tmp_init_string)
-        self.app_path = self.config.getexe('TC_PAIRS')
-        self.app_name = os.path.basename(self.app_path)
+
         self.add_arg(" -adeck ")
         self.add_arg(adeck_file_path)
         self.add_arg(" -bdeck ")
         self.add_arg(bdeck_file_path)
         self.add_arg(" -config ")
-        self.add_arg(self.config.getstr('config', 'TC_PAIRS_CONFIG_PATH'))
+        self.add_arg(self.config_path)
         self.add_arg(" -out ")
         self.add_arg(pairs_out_file_with_suffix)
         # This info is necessary in order to create a command, even
@@ -390,7 +394,7 @@ class TcPairsWrapper(CommandBuilder):
         # Log appropriate message, based on whether we did a force overwrite
         # on existing data.
         if os.path.exists(pairs_out_file_with_suffix):
-            if self.config.getbool('config', 'TC_PAIRS_FORCE_OVERWRITE'):
+            if self.force_overwrite:
                 self.logger.debug("DEBUG | [" + cur_filename +
                                   ":" + cur_function + "] | " +
                                   "Writing tc_pairs output file: " +
@@ -425,12 +429,6 @@ class TcPairsWrapper(CommandBuilder):
         # Open the output csv file
         out_file = open(out_csvfile, "wb")
 
-        # These are the missing values used in the data file to indicate
-        # missing values.  Commonly, -9999 is used.
-        missing_values = \
-            (self.config.getstr('config', 'MISSING_VAL_TO_REPLACE'),
-             self.config.getstr('config', 'MISSING_VAL'))
-
         # Tell the write to use the line separator
         # "\n" instead of the DOS "\r\n"
         writer = csv.writer(out_file, lineterminator="\n")
@@ -457,8 +455,8 @@ class TcPairsWrapper(CommandBuilder):
                         continue
                     # Replace MISSING_VAL_TO_REPLACE=missing_values[0] with
                     # MISSING_VAL=missing_values[1]
-                    elif item.strip() == missing_values[0]:
-                        item = " " + missing_values[1]
+                    elif item.strip() == self.missing_values[0]:
+                        item = " " + self.missing_values[1]
                     # Create a new row to write
                     row_list.append(item)
 
@@ -480,16 +478,16 @@ if __name__ == "__main__":
         else:
             produtil.setup.setup(send_dbn=False, jobname='run_tc_pairs')
         produtil.log.postmsg('run_tc_pairs is starting')
-
-        CONFIG_INST = config_metplus.setup()
+        p = config_metplus.setup()
+        LOGGER = util.get_logger(p)
         if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = CONFIG_INST.getdir('MET_BASE')
+            os.environ['MET_BASE'] = p.getdir('MET_BASE')
         INIT_LIST = util.gen_init_list(
-            CONFIG_INST.getstr('config', 'INIT_DATE_BEG'),
-            CONFIG_INST.getstr('config', 'INIT_DATE_END'),
-            CONFIG_INST.getint('config', 'INIT_HOUR_INC'),
-            CONFIG_INST.getstr('config', 'INIT_HOUR_END'))
-        TCP = TcPairsWrapper(CONFIG_INST)
+            p.getstr('config', 'INIT_DATE_BEG'),
+            p.getstr('config', 'INIT_DATE_END'),
+            p.getint('config', 'INIT_HOUR_INC'),
+            p.getstr('config', 'INIT_HOUR_END'))
+        TCP = TcPairsWrapper(p, LOGGER)
         REQUEST_TIME = INIT_LIST[0]
         TCP.run_at_time(REQUEST_TIME)
         produtil.log.postmsg('run_tc_pairs completed')
