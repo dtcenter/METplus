@@ -82,61 +82,71 @@ class TcPairsWrapper(CommandBuilder):
         # to set the INIT_INC environment variable used by the MET
         # tc_pairs configuration file.
         requested_year_month_list = [requested_time]
-        dir_list = self.get_year_month_full_path(year_month_list)
-        for mydir in dir_list:
-            myfiles = os.listdir(mydir)
-            # Need to do extra processing if track_type is extra_tropical
-            # cyclone
+        match = re.match(r'^\d{6}', requested_time)
+        if match:
+            requested_year_month = match.group(0)
+        else:
+            self.logger.error("ERROR|" + os.strerror(errno.EINVAL) +
+                              " |unrecognized format for requested time." +
+                              "Exiting.")
+            sys.exit(errno.EINVAL)
+        requested_year_month_path = \
+            self.get_year_month_full_path(requested_year_month)
+        myfiles = os.listdir(requested_year_month_path)
+
+        # Need to do extra processing if track_type is extra_tropical
+        # cyclone
+        if track_type == "extra_tropical_cyclone":
+            # Create an atcf output directory for writing the modified
+            # files
+            adeck_mod = os.path.join(atcf_output_dir, os.path.basename(
+                requested_year_month_path))
+            produtil.fileop.makedirs(adeck_mod, logger=self.logger)
+
+        # Iterate over the files, modifying them and writing new output
+        # files if necessary ("extra_tropical_cyclone" track type), and
+        # build up the command to run the MET tool, tc_pairs.
+        for myfile in myfiles:
+            # Check to see if the files have the ADeck prefix
+            if myfile.startswith(adeck_file_prefix):
+                # Create the output directory for the pairs, if
+                # it doesn't already exist
+                pairs_out_dir = \
+                    os.path.join(tc_pairs_dir,
+                                 os.path.basename(requested_year_month_path))
+                produtil.fileop.makedirs(pairs_out_dir, logger=self.logger)
+
+                # Need to do extra processing if track_type is
+                # extra_tropical_cyclone
             if track_type == "extra_tropical_cyclone":
-                # Create an atcf output directory for writing the modified
-                # files
+                adeck_file_path, bdeck_file_path = \
+                    self.process_extra_tropical_tracks(
+                        adeck_file_prefix, bdeck_file_prefix,
+                        requested_year_month_path,
+                        myfile)
+            else:
+                # Set up the adeck and bdeck file paths
+                adeck_file_path = os.path.join(requested_year_month_path,
+                                               myfile)
+                bdeck_file_path = re.sub(adeck_file_prefix,
+                                         bdeck_file_prefix,
+                                         adeck_file_path)
 
-                adeck_mod = os.path.join(atcf_output_dir,
-                                         os.path.basename(mydir))
+                # Run tc_pairs to build up the command
+            self.build_tc_pairs(pairs_out_dir, myfile,
+                                adeck_file_path, bdeck_file_path,
+                                requested_year_month_list)
+            self.run()
 
-                produtil.fileop.makedirs(adeck_mod, logger=self.logger)
-
-            # Iterate over the files, modifying them and writing new output
-            # files if necessary ("extra_tropical_cyclone" track type), and
-            # build up the command to run the MET tool, tc_pairs.
-            for myfile in myfiles:
-                # Check to see if the files have the ADeck prefix
-                if myfile.startswith(adeck_file_prefix):
-                    # Create the output directory for the pairs, if
-                    # it doesn't already exist
-                    pairs_out_dir = \
-                        os.path.join(tc_pairs_dir, os.path.basename(mydir))
-                    produtil.fileop.makedirs(pairs_out_dir, logger=self.logger)
-
-                    # Need to do extra processing if track_type is
-                    # extra_tropical_cyclone
-                    if track_type == "extra_tropical_cyclone":
-                        adeck_file_path, bdeck_file_path = \
-                            self.process_extra_tropical_tracks(
-                                adeck_file_prefix, bdeck_file_prefix, mydir,
-                                myfile)
-                    else:
-                        # Set up the adeck and bdeck file paths
-                        adeck_file_path = os.path.join(mydir, myfile)
-                        bdeck_file_path = re.sub(adeck_file_prefix,
-                                                 bdeck_file_prefix,
-                                                 adeck_file_path)
-
-                    # Run tc_pairs to build up the command
-                    self.build_tc_pairs(pairs_out_dir, myfile,
-                                        adeck_file_path, bdeck_file_path,
-                                        requested_year_month_list)
-                    self.run()
-
-                    # Clean up previous command
-                    self.clear_command()
+            # Clean up previous command
+            self.clear_command()
 
     def perform_checks(self, requested_time, year_month_list):
         """! Performs checks for the absence of input data
-             Args:
-                 @param requested_time:  The time of interest
-                 @param year_month_list: A list of the year_month
-                                         subdirectories in the input directory.
+         Args:
+             @param requested_time:  The time of interest
+             @param year_month_list: A list of the year_month
+                                     subdirectories in the input directory.
         """
 
         # pylint:disable=protected-access
@@ -156,34 +166,35 @@ class TcPairsWrapper(CommandBuilder):
                               "non-existent, exiting.")
             sys.exit(errno.ENODATA)
 
-            # Check that the requested time has a corresponding year_month
-            # sub-directory in the input directory.
-            match = re.match(r'^\d{6}', requested_time)
-            if match:
-                requested_year_month = match.group(0)
-            else:
-                self.logger.error(
-                    "ERROR|" + cur_filename + "|" + cur_function +
-                    "| " + os.strerror(errno.EINVAL) +
-                    "| date-time format for requested time is " +
-                    "unrecognized, exiting.")
-                sys.exit(errno.EINVAL)
+        # Check that the requested time has a corresponding year_month
+        # sub-directory in the input directory.
+        match = re.match(r'^\d{6}', requested_time)
+        if match:
+            requested_year_month = match.group(0)
+        else:
+            self.logger.error(
+                "ERROR|" + cur_filename + "|" + cur_function +
+                "| " + os.strerror(errno.EINVAL) +
+                "| date-time format for requested time is " +
+                "unrecognized, exiting.")
+            sys.exit(errno.EINVAL)
 
-            # Do the actual checking for corresponding year_month dir.
-            if requested_year_month not in year_month_list:
-                self.logger.error(
-                    "ERROR| " + cur_filename + "|" + cur_function +
-                    os.strerror(errno.ENODATA) + "| exiting.")
-                sys.exit(errno.ENODATA)
+        # Do the actual checking for corresponding year_month dir.
+        if requested_year_month not in year_month_list:
+            self.logger.error(
+                "ERROR| " + cur_filename + "|" + cur_function +
+                os.strerror(errno.ENODATA) + "| exiting.")
+            sys.exit(errno.ENODATA)
 
-    def get_year_month_full_path(self, year_month_list):
+    def get_year_month_full_path(self, some_year_month):
         """! Retrieve a list of the full path for each year_month directory
              in the input directory.
              Args:
-                   @param year_month_list: A list of the year_months
-             Returns:
-                   dir_list:  A list of full paths to each year_month
-                              sub-directory in the input directory.
+                 @param some_year_month: The requested year-month
+                                            (YYYYMM format).
+            Returns:
+                year_month_path:  The full path in the input directory that
+                                 corresponds to some_year_month.
         """
         # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
@@ -193,40 +204,26 @@ class TcPairsWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         self.logger.debug("DEBUG|" + cur_filename + "|" + cur_function)
-        # Get a list of files in the dated subdirectories
-        dir_list = []
-        for year_month in os.listdir(self.config.getdir('TRACK_DATA_DIR')):
-            # if the full directory path isn't an empty directory,
-            # check if the current year_month is the requested time.
-            if os.path.isdir(os.path.join(self.config.getdir('TRACK_DATA_DIR'),
-                                          year_month)) \
-                    and year_month in year_month_list:
-                dir_list.append(
-                    os.path.join(self.config.getdir('TRACK_DATA_DIR'),
-                                 year_month))
+        input_track_dir = self.config.getdir('TRACK_DATA_DIR')
 
-        if not dir_list:
-            self.logger.warning("ERROR | [" + cur_filename + ":" +
-                                cur_function + "] | There are no dated"
-                                               "sub-directories (YYYYMM) " +
-                                "with input data as expected in: " +
-                                self.config.getdir('TRACK_DATA_DIR'))
-            exit(0)
+        # Create the full file path for some_year_month that corresponds to
+        # the full path in the input track directory.
+        year_month_path = os.path.join(input_track_dir, some_year_month)
 
-        return dir_list
+        return year_month_path
 
     def process_extra_tropical_tracks(self, adeck_file_prefix,
                                       bdeck_file_prefix, mydir, myfile):
         """! Extra tropical cyclone data requires additional processing:
-             removing the YYYYMMDD column and concatenating the month with
-             the storm id.
-             Args:
-                 @param adeck_file_prefix: The file prefix for adeck files
-                 @param bdeck_file_prefix: The file prefix for bdeck files
-                 @param mydir:  The current year_month data directory
-                 @param myfile:  The current track file
-             Returns:
-                 adeck_file_path, bdeck_file_path tuple
+            removing the YYYYMMDD column and concatenating the month with
+            the storm id.
+            Args:
+                @param adeck_file_prefix: The file prefix for adeck files
+                @param bdeck_file_prefix: The file prefix for bdeck files
+                @param mydir:  The current year_month data directory
+                @param myfile:  The current track file
+            Returns:
+                adeck_file_path, bdeck_file_path tuple
         """
         # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
@@ -239,10 +236,8 @@ class TcPairsWrapper(CommandBuilder):
 
         # Retrieve necessary values from the config file.
         atcf_output_dir = self.config.getdir('TRACK_DATA_SUBDIR_MOD')
-        adeck_mod = os.path.join(atcf_output_dir,
-                                 os.path.basename(mydir))
-        bdeck_mod = os.path.join(atcf_output_dir,
-                                 os.path.basename(mydir))
+        adeck_mod = os.path.join(atcf_output_dir, os.path.basename(mydir))
+        bdeck_mod = os.path.join(atcf_output_dir, os.path.basename(mydir))
 
         # Form the adeck and bdeck input filename paths
         adeck_in_file_path = os.path.join(mydir, myfile)
@@ -281,16 +276,16 @@ class TcPairsWrapper(CommandBuilder):
     def setup_extra_tropical_track_dirs(self, deck_input_file_path,
                                         deck_file_path, storm_month):
         """! Set up the adeck or bdeck file paths.  If these
-             correspond to a tropical storm, then perform additional
-             processing via read_modify_write_file to conform to
-             ATCF format.
+            correspond to a tropical storm, then perform additional
+            processing via read_modify_write_file to conform to
+            ATCF format.
 
-             Args:
-                   @param deck_input_file_path: the adeck or bdeck input
-                                               filepath
-                   @param deck_file_path:  the adeck or bdeck filepath to be
-                                          created
-                   @param storm_month:  Month of the storm
+            Args:
+                @param deck_input_file_path: the adeck or bdeck input
+                                            filepath
+                @param deck_file_path:  the adeck or bdeck filepath to be
+                                        created
+                @param storm_month:  Month of the storm
         """
 
         # pylint:disable=protected-access
@@ -342,14 +337,14 @@ class TcPairsWrapper(CommandBuilder):
     def build_tc_pairs(self, pairs_output_dir, date_file, adeck_file_path,
                        bdeck_file_path, req_year_month_list):
         """! Build up the command that is used to run the MET tool,
-             tc_pairs.
-             Args:
-                 @param pairs_output_dir: output directory of paired track data
-                 @param date_file: the current date file from a list of all
-                                   possible date files in the input directory.
-                 @param adeck_file_path: the location of the adeck track output
-                 @param bdeck_file_path: the location of the bdeck track output
-                 @param req_year_month_list:  list of requested time
+            tc_pairs.
+            Args:
+                @param pairs_output_dir: output directory of paired track data
+                @param date_file: the current date file from a list of all
+                                possible date files in the input directory.
+                @param adeck_file_path: the location of the adeck track output
+                @param bdeck_file_path: the location of the bdeck track output
+                @param req_year_month_list:  list of requested time
             Returns:
 
         """
@@ -411,7 +406,7 @@ class TcPairsWrapper(CommandBuilder):
 
     def read_modify_write_file(self, in_csvfile, storm_month, out_csvfile):
         """! Reads, modifies and writes file
-              Args:
+            Args:
                 @param in_csvfile input csv file that is being parsed
                 @param storm_month The storm month
                 @param out_csvfile the output csv file
