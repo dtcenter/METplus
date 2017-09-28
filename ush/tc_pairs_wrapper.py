@@ -55,10 +55,7 @@ class TcPairsWrapper(CommandBuilder):
         self.atcf_output_dir = self.p.getdir('TRACK_DATA_SUBDIR_MOD')
         self.force_overwrite = self.p.getbool('config',
                                               'TRACK_DATA_MOD_FORCE_OVERWRITE')
-        self.app_path = self.p.getexe('TC_PAIRS')
-        self.app_name = os.path.basename(self.app_path)
         self.config_path = self.p.getstr('config', 'TC_PAIRS_CONFIG_PATH')
-        self.set_param_file(self.config_path)
         # These are the missing values used in the data file to indicate
         # missing values.  Commonly, -9999 is used.
         self.missing_values = \
@@ -379,12 +376,12 @@ class TcPairsWrapper(CommandBuilder):
         self.app_path = self.p.getexe('TC_PAIRS')
         self.app_name = os.path.basename(self.app_path)
         self.add_input_file(adeck_file_path, "adeck")
-        self.add_input_file(bdeck_file_path, "bdeck")        
+        self.add_input_file(bdeck_file_path, "bdeck")
 #        self.add_arg(" -bdeck ")
 #        self.add_arg(bdeck_file_path)
 #        self.add_arg(" -config ")
 #        self.add_arg(self.p.getstr('config', 'TC_PAIRS_CONFIG_PATH'))
-        self.set_param_file(self.p.getstr('config', 'TC_PAIRS_CONFIG_PATH'))
+        self.set_param_file(self.config_path)
 #        self.add_arg(" -out ")
 #        self.add_arg(pairs_out_file_with_suffix)
         self.set_output_path(pairs_out_file_with_suffix)
