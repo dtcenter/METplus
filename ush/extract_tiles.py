@@ -19,6 +19,7 @@ from __future__ import (print_function, division)
 import os
 import sys
 import produtil.setup
+from command_builder import CommandBuilder
 import met_util as util
 import config_metplus
 from tc_stat_wrapper import TcStatWrapper
@@ -32,7 +33,7 @@ from tc_stat_wrapper import TcStatWrapper
 #
 
 
-class ExtractTiles(object):
+class ExtractTiles(CommandBuilder):
     """! Takes tc-pairs data and regrids paired data to an nxm grid as
          specified in the config file.
     """
@@ -43,24 +44,27 @@ class ExtractTiles(object):
     # Much of the data in the class are used to perform tasks, rather than
     # having methods operating on them.
 
-    def __init__(self, conf_instance):
-        self.tc_pairs_dir = conf_instance.getdir('TC_PAIRS_DIR')
-        self.overwrite_flag = conf_instance.getbool('config',
+
+    def __init__(self, p, logger):
+        super(ExtractTiles, self).__init__(p, logger)
+        self.tc_pairs_dir = self.p.getdir('TC_PAIRS_DIR')
+        self.overwrite_flag = self.p.getbool('config',
                                                     'OVERWRITE_TRACK')
         self.addl_filter_opts =\
-            conf_instance.getstr('config', 'EXTRACT_TILES_FILTER_OPTS')
-        self.filtered_out_dir = conf_instance.getdir('EXTRACT_OUT_DIR')
-        self.tc_stat_exe = conf_instance.getexe('TC_STAT')
-        self.init_date_beg = conf_instance.getstr('config', 'INIT_DATE_BEG')
-        self.init_date_end = conf_instance.getstr('config', 'INIT_DATE_END')
-        self.init_hour_inc = conf_instance.getint('config', 'INIT_HOUR_INC')
-        self.init_hour_end = conf_instance.getstr('config', 'INIT_HOUR_END')
-        self.logger = util.get_logger(conf_instance)
-        self.config = conf_instance
+            self.p.getstr('config', 'EXTRACT_TILES_FILTER_OPTS')
+        self.filtered_out_dir = self.p.getdir('EXTRACT_OUT_DIR')
+        self.tc_stat_exe = self.p.getexe('TC_STAT')
+        self.init_date_beg = self.p.getstr('config', 'INIT_DATE_BEG')
+        self.init_date_end = self.p.getstr('config', 'INIT_DATE_END')
+        self.init_hour_inc = self.p.getint('config', 'INIT_HOUR_INC')
+        self.init_hour_end = self.p.getstr('config', 'INIT_HOUR_END')
+        if self.logger is None:
+            self.logger = util.get_logger(self.p)
+        self.config = self.p
 
     # pylint: disable=too-many-locals
     # 23 local variables are needed to perform the necessary work.
-    def main(self):
+    def run_all_times(self):
         """!Get TC-paris data then regrid tiles centered on the storm.
 
         Get TC-pairs track data and GFS model data, do any necessary
@@ -205,8 +209,8 @@ if __name__ == "__main__":
         if 'MET_BASE' not in os.environ:
             os.environ['MET_BASE'] = CONFIG_INST.getdir('MET_BASE')
 
-        ET = ExtractTiles(CONFIG_INST)
-        ET.main()
+        ET = ExtractTiles(CONFIG_INST, logger=None)
+        ET.run_all_times()
         produtil.log.postmsg('extract_tiles completed')
     except Exception as exception:
         produtil.log.jlogger.critical(
