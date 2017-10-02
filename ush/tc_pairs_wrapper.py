@@ -11,7 +11,6 @@ Parameters: None
 Input Files: adeck and bdeck files
 Output Files: tc_pairs files
 Condition codes: 0 for success, 1 for failure
-
 """
 
 from __future__ import (print_function, division)
@@ -22,6 +21,8 @@ import re
 import csv
 import errno
 import produtil.setup
+from produtil.run import batchexe
+from produtil.run import checkrun
 from command_builder import CommandBuilder
 import met_util as util
 import config_metplus
@@ -29,7 +30,6 @@ import config_metplus
 '''!@namespace TcPairs
 @brief Wraps the MET tool tc_pairs to parse ADeck and BDeck ATCF files,
 filter the data, and match them up.
-
 Call as follows:
 @code{.sh}
 tc_pairs_wrapper.py [-c /path/to/user.template.conf]
@@ -109,7 +109,6 @@ class TcPairsWrapper(CommandBuilder):
         """! Build up the command to invoke the MET tool, tc_pairs.
              Args:
                  @param requested_time:  The time of interest in YYYYMMDD_hh
-
         """
 
         # pylint:disable=protected-access
@@ -324,7 +323,6 @@ class TcPairsWrapper(CommandBuilder):
             correspond to a tropical storm, then perform additional
             processing via read_modify_write_file to conform to
             ATCF format.
-
             Args:
                 @param deck_input_file_path: the adeck or bdeck input
                                             filepath
@@ -391,7 +389,8 @@ class TcPairsWrapper(CommandBuilder):
                 @param bdeck_file_path: the location of the bdeck track output
                 @param req_year_month_list:  list of requested time
             Returns:
-
+                cmd:  The command string used for the MET
+                             tool tc_pairs.
         """
 
         # pylint:disable=protected-access
@@ -417,24 +416,19 @@ class TcPairsWrapper(CommandBuilder):
         self.add_env_var('INIT_INC', tmp_init_string)
         self.app_path = self.p.getexe('TC_PAIRS')
         self.app_name = os.path.basename(self.app_path)
-        self.add_input_file(adeck_file_path, "adeck")
-        self.add_input_file(bdeck_file_path, "bdeck")
-#        self.add_arg(" -bdeck ")
-#        self.add_arg(bdeck_file_path)
-#        self.add_arg(" -config ")
-#        self.add_arg(self.p.getstr('config', 'TC_PAIRS_CONFIG_PATH'))
-        self.set_param_file(self.config_path)
-#        self.add_arg(" -out ")
-#        self.add_arg(pairs_out_file_with_suffix)
-        self.set_output_path(pairs_out_file_with_suffix)
+        self.add_arg(" -adeck ")
+        self.add_arg(adeck_file_path)
+        self.add_arg(" -bdeck ")
+        self.add_arg(bdeck_file_path)
+        self.add_arg(" -config ")
+        self.add_arg(self.config_path)
+        self.add_arg(" -out ")
+        self.add_arg(pairs_out_file)
         # This info is necessary in order to create a command, even
         # though you've defined this information in the -out args above
         self.set_output_filename(date_file)
         self.set_output_dir(pairs_output_dir)
         cmd = self.get_command()
-        if cmd is None:
-            print("ERROR: tc_pairs_wrapper could not generate command")
-            return
         self.logger.debug("cmd = " + str(cmd))
 
         # Log appropriate message, based on whether we did a force overwrite
@@ -453,6 +447,35 @@ class TcPairsWrapper(CommandBuilder):
                               cur_function + "] | " +
                               "Running tc_pairs with command: " +
                               cmd)
+
+        return cmd
+
+    def get_command(self):
+        """! Overrides CommandBuilder get_command
+             Args:
+            Returns:
+                cmd: The entire command string
+        """
+
+        if self.app_path is None:
+            self.logger.error("No app path specified. You must use a subclass")
+            return None
+
+        cmd = self.app_path + " "
+        for arg in self.args:
+            cmd += arg + " "
+
+        if self.infiles:
+            self.logger.error("No input filenames specified")
+            return None
+
+        for infile in self.infiles:
+            cmd += infile + " "
+
+        if self.param != "":
+            cmd += self.param + " "
+
+        return cmd
 
     def read_modify_write_file(self, in_csvfile, storm_month, out_csvfile):
         """! Reads, modifies and writes file
@@ -524,22 +547,20 @@ if __name__ == "__main__":
         else:
             produtil.setup.setup(send_dbn=False, jobname='run_tc_pairs')
         produtil.log.postmsg('run_tc_pairs is starting')
-
-        CONFIG_INST = config_metplus.setup()
-        LOG = util.get_logger(CONFIG_INST)
+        p = config_metplus.setup()
+        LOGGER = util.get_logger(p)
         if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = CONFIG_INST.getdir('MET_BASE')
+            os.environ['MET_BASE'] = p.getdir('MET_BASE')
         INIT_LIST = util.gen_init_list(
-            CONFIG_INST.getstr('config', 'INIT_DATE_BEG'),
-            CONFIG_INST.getstr('config', 'INIT_DATE_END'),
-            CONFIG_INST.getint('config', 'INIT_HOUR_INC'),
-            CONFIG_INST.getstr('config', 'INIT_HOUR_END'))
-        TCP = TcPairsWrapper(CONFIG_INST, LOG)
-        # Use the first time for testing
+            p.getstr('config', 'INIT_DATE_BEG'),
+            p.getstr('config', 'INIT_DATE_END'),
+            p.getint('config', 'INIT_HOUR_INC'),
+            p.getstr('config', 'INIT_HOUR_END'))
+        TCP = TcPairsWrapper(p, LOGGER)
         REQUEST_TIME = INIT_LIST[0]
         TCP.run_at_time(REQUEST_TIME)
         produtil.log.postmsg('run_tc_pairs completed')
     except Exception as exc:
         produtil.log.jlogger.critical(
             'run_tc_pairs failed: %s' % (str(exc),), exc_info=True)
-        sys.exit(2)
+sys.exit(2)
