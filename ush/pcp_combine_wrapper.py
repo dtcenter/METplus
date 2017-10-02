@@ -230,6 +230,7 @@ class PcpCombineWrapper(CommandBuilder):
                                            ob_type + '_'+str(1) +
                                            '_FIELD_NAME')
                     addon = "'name=\"" + ob_str + "\"; level=\"(0,*,*)\";'"
+
                 self.add_input_file(f, addon)
                 start_time = util.shift_time(start_time, -1)
                 search_accum -= 1
@@ -276,7 +277,8 @@ class PcpCombineWrapper(CommandBuilder):
 
                 if search_accum == 0:
                     self.logger.warning(self.app_name + ": Could not find "\
-                                        "files to compute accumulation")
+                                        "files to compute accumulation for "\
+                                        + ob_type)
                     return None
 
             self.set_output_dir(self.outdir)
@@ -364,7 +366,7 @@ class PcpCombineWrapper(CommandBuilder):
                 nfile = os.path.splitext(nfile)[0]+'.nc'
             if not os.path.isfile(nfile):
                 print("Calling GempakToCF to convert to NetCDF")
-                run_g2c = GempakToCF(self.p, self.logger)
+                run_g2c = GempakToCFWrapper(self.p, self.logger)
                 run_g2c.add_input_file(infile)
                 run_g2c.set_output_path(nfile)
                 cmd = run_g2c.get_command()
