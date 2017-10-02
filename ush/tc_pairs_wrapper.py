@@ -563,4 +563,4 @@ if __name__ == "__main__":
     except Exception as exc:
         produtil.log.jlogger.critical(
             'run_tc_pairs failed: %s' % (str(exc),), exc_info=True)
-sys.exit(2)
+        sys.exit(2)
