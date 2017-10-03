@@ -21,8 +21,6 @@ import re
 import csv
 import errno
 import produtil.setup
-from produtil.run import batchexe
-from produtil.run import checkrun
 from command_builder import CommandBuilder
 import met_util as util
 import config_metplus
@@ -44,7 +42,8 @@ class TcPairsWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
         super(TcPairsWrapper, self).__init__(p, logger)
-        self.logger = logger
+        self.app_path = self.p.getstr('exe', 'TC_PAIRS')
+        self.app_name = os.path.basename(self.app_path)
         # Retrieve values set in the configuration file(s).
         self.input_track_data = self.p.getdir('TRACK_DATA_DIR')
         self.atcf_output_dir = self.p.getdir('TRACK_DATA_SUBDIR_MOD')
@@ -61,6 +60,44 @@ class TcPairsWrapper(CommandBuilder):
         self.missing_values = \
             (self.p.getstr('config', 'MISSING_VAL_TO_REPLACE'),
              self.p.getstr('config', 'MISSING_VAL'))
+
+    def clear(self):
+        super(TcPairsWrapper, self).clear()
+        self.inaddons = []
+
+    def add_input_file(self, filename, typeId):
+        self.infiles.append(filename)
+        self.inaddons.append("-"+typeId)
+
+    def get_command(self):
+        if self.app_path is None:
+            self.logger.error("No app path specified. You must use a subclass")
+            return None
+
+        cmd = self.app_path + " "
+        for a in self.args:
+            cmd += a + " "
+
+        if len(self.infiles) == 0:
+            self.logger.error("No input filenames specified")
+            return None
+
+        for idx, f in enumerate(self.infiles):
+            cmd += self.inaddons[idx] + " " + f + " "
+
+        if self.param != "":
+            cmd += "-config " + self.param + " "
+
+        if self.outfile == "":
+            self.logger.error("No output filename specified")
+            return None
+
+        if self.outdir == "":
+            self.logger.error("No output directory specified")
+            return None
+
+        cmd += "-out " + os.path.join(self.outdir, self.outfile)
+        return cmd
 
     def run_at_time(self, requested_time):
         """! Build up the command to invoke the MET tool, tc_pairs.
@@ -137,24 +174,10 @@ class TcPairsWrapper(CommandBuilder):
                                              adeck_file_path)
 
                 # Run tc_pairs to build up the command
-                tcp_cmd_str = self.build_tc_pairs(pairs_out_dir, myfile,
-                                                  adeck_file_path,
-                                                  bdeck_file_path,
-                                                  requested_year_month_list)
-
-                # Invoke MET tool, tc_pairs
-                try:
-                    tcp_cmd = batchexe('sh')['-c', tcp_cmd_str].err2out()
-                    checkrun(tcp_cmd)
-                except produtil.run.ExitStatusException as ese:
-                    msg = ("ERROR| " + cur_filename + ":" + cur_function +
-                           " from calling MET TC-STAT with command:" +
-                           tcp_cmd.to_shell())
-                    self.logger.error(msg)
-                    self.logger.error(ese)
-
-                # Clean up previous command
-                self.clear_command()
+                self.build_tc_pairs(pairs_out_dir, myfile,
+                                    adeck_file_path, bdeck_file_path,
+                                    requested_year_month_list)
+                self.build()
 
     def perform_checks(self, requested_time, year_month_list):
         """! Performs checks for the absence of input data
@@ -207,7 +230,7 @@ class TcPairsWrapper(CommandBuilder):
              Args:
                  @param some_year_month: The requested year-month
                                             (YYYYMM format).
-            Returns:
+             Returns:
                 year_month_path:  The full path in the input directory that
                                  corresponds to some_year_month.
         """
@@ -381,10 +404,10 @@ class TcPairsWrapper(CommandBuilder):
         tmp_init_string = str(req_year_month_list)
         tmp_init_string = tmp_init_string.replace("\'", "\"")
         os.environ['INIT_INC'] = tmp_init_string
-
         self.add_env_var('INIT_INC', tmp_init_string)
-        self.app_path = self.p.getexe('TC_PAIRS')
-        self.app_name = os.path.basename(self.app_path)
+        environ = self.get_env()
+        self.logger.debug("DEBUG|" + cur_function + "|" + cur_filename +
+                          " INIT_INC Env: " + environ["INIT_INC"])
         self.add_arg(" -adeck ")
         self.add_arg(adeck_file_path)
         self.add_arg(" -bdeck ")
@@ -506,7 +529,6 @@ class TcPairsWrapper(CommandBuilder):
         self.logger.debug("DEBUG|" + cur_function + "|" + cur_filename +
                           " finished")
 
-
 if __name__ == "__main__":
     try:
         if 'JLOGFILE' in os.environ:
@@ -532,4 +554,4 @@ if __name__ == "__main__":
     except Exception as exc:
         produtil.log.jlogger.critical(
             'run_tc_pairs failed: %s' % (str(exc),), exc_info=True)
-sys.exit(2)
+        sys.exit(2)
