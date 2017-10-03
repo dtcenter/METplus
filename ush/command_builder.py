@@ -82,13 +82,6 @@ class CommandBuilder:
     def set_param_file(self, param):
         self.param = param
 
-    def clear_command(self):
-        '''Clear all arguments to command'''
-        self.args = []
-        self.infiles = []
-        self.outfile = ""
-        self.param = ""
-
     def add_env_var(self, key,  name):
         self.env[key] = name
 
@@ -156,39 +149,24 @@ class CommandBuilder:
             return
         (self.logger).info("RUNNING: " + cmd)
         print("RUNNING: " + cmd)         
-#        process = subprocess.Popen(cmd, env=self.env, shell=True)
-#        process.wait()
-    #    os.system(cmd)
+        process = subprocess.Popen(cmd, env=self.env, shell=True)
+        process.wait()
+        self.clear()
 
     def run_all_times(self):
         time_format = self.p.getstr('config', 'INIT_TIME_FMT')
         start_t = self.p.getstr('config', 'INIT_BEG')
         end_t = self.p.getstr('config', 'INIT_END')
         time_interval = self.p.getint('config', 'INIT_INC')
+
         if time_interval < 60:
             print("ERROR: time_interval parameter must be greater than 60 seconds")
             exit(1)
         
         init_time = calendar.timegm(time.strptime(start_t, time_format))
         end_time = calendar.timegm(time.strptime(end_t, time_format))
-#        start_time = p.getstr('config', 'START_TIME')
-#        end_time = p.getstr('config', 'END_TIME')
-#        time_interval = p.getstr('config', 'TIME_INTERVAL')        
-#        init_time = start_time
+
         while init_time <= end_time:
-            run_time = time.strftime("%Y%m%d%H%M", time.gmtime(init_time))
+            run_time = time.strftime("%Y%m%d_%H", time.gmtime(init_time))
             self.run_at_time(run_time)
-            self.clear()
             init_time += time_interval
-#            init_time = util.shift_time(init_time, int(time_interval))
-        """
-        init_list = util.gen_init_list(p.getstr('config', 'INIT_DATE_BEG'),
-                                       p.getstr('config', 'INIT_DATE_END'),
-                                       p.getint('config', 'INIT_HOUR_INC'),
-                                       p.getstr('config', 'INIT_HOUR_END'))
-        # Get the desired YYYYMM from the init list
-        YYYYMM_list = []
-        for init in init_list:
-            if init[0:6] not in YYYYMM_list:
-                YYYYMM_list.append(init[0:6])
-        """
