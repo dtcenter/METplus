@@ -22,8 +22,6 @@ import csv
 import errno
 import datetime
 import produtil.setup
-from produtil.run import batchexe
-from produtil.run import checkrun
 from command_builder import CommandBuilder
 import met_util as util
 import config_metplus
@@ -64,16 +62,13 @@ class TcPairsWrapper(CommandBuilder):
             (self.p.getstr('config', 'MISSING_VAL_TO_REPLACE'),
              self.p.getstr('config', 'MISSING_VAL'))
 
-        
     def clear(self):
         super(TcPairsWrapper, self).clear()
         self.inaddons = []
 
-        
     def add_input_file(self, filename, typeId):
         self.infiles.append(filename)
         self.inaddons.append("-"+typeId)
-
 
     def get_command(self):
         if self.app_path is None:
@@ -85,7 +80,7 @@ class TcPairsWrapper(CommandBuilder):
             cmd += a + " "
 
         if len(self.infiles) == 0:
-            (self.logger).error("No input filenames specified")
+            self.logger.error("No input filenames specified")
             return None
 
         for idx, f in enumerate(self.infiles):
@@ -94,18 +89,24 @@ class TcPairsWrapper(CommandBuilder):
         if self.param != "":
             cmd += "-config " + self.param + " "
 
-        if self.outfile == "":
-            (self.logger).error("No output filename specified")
-            return None
-
-        if self.outdir == "":
-            (self.logger).error("No output directory specified")
-            return None
-
-        cmd += "-out " + os.path.join(self.outdir, self.outfile)
+        # Not required for tc_pairs, MET tc_pairs has default output file
+        # if self.outfile == "":
+        #     self.logger.error("No output filename specified")
+        #     return None
+        #
+        # if self.outdir == "":
+        #     self.logger.error("No output directory specified")
+        #     self.logger.error("No output filename specified")
+        #     return None
+        #
+        # if self.outdir == "":
+        #     self.logger.error("No output directory specified")
+        #     return None
+        #
+        # cmd += "-out " + os.path.join(self.outdir, self.outfile)
         return cmd
-    
 
+    
     def run_all_times(self):
         init_times = []
         init_beg = self.p.getstr('config', 'INIT_BEG')[0:6]
@@ -199,7 +200,6 @@ class TcPairsWrapper(CommandBuilder):
                                     requested_year_month_list)
                 self.build()
 
-
     def perform_checks(self, requested_time, year_month_list):
         """! Performs checks for the absence of input data
          Args:
@@ -270,7 +270,6 @@ class TcPairsWrapper(CommandBuilder):
 
         return year_month_path
 
-        
     def process_extra_tropical_tracks(self, adeck_file_prefix,
                                       bdeck_file_prefix, mydir, myfile):
         """! Extra tropical cyclone data requires additional processing:
@@ -426,14 +425,13 @@ class TcPairsWrapper(CommandBuilder):
         tmp_init_string = str(req_year_month_list)
         tmp_init_string = tmp_init_string.replace("\'", "\"")
         os.environ['INIT_INC'] = tmp_init_string
-
         self.add_env_var('INIT_INC', tmp_init_string)
-        self.app_path = self.p.getexe('TC_PAIRS')
-        self.app_name = os.path.basename(self.app_path)
-        self.add_arg(" -adeck ")
-        self.add_arg(adeck_file_path)
-        self.add_arg(" -bdeck ")
-        self.add_arg(bdeck_file_path)
+        environ = self.get_env()
+        self.set_input_dir(self.input_track_data)
+        self.add_input_file(adeck_file_path, "adeck")
+        self.add_input_file(bdeck_file_path, "bdeck")
+        self.logger.debug("DEBUG|" + cur_function + "|" + cur_filename +
+                          " INIT_INC Env: " + environ["INIT_INC"])
         self.add_arg(" -config ")
         self.add_arg(self.config_path)
         self.add_arg(" -out ")
@@ -461,33 +459,6 @@ class TcPairsWrapper(CommandBuilder):
                               cur_function + "] | " +
                               "Running tc_pairs with command: " +
                               cmd)
-
-        return cmd
-
-    def get_command(self):
-        """! Overrides CommandBuilder get_command
-             Args:
-            Returns:
-                cmd: The entire command string
-        """
-
-        if self.app_path is None:
-            self.logger.error("No app path specified. You must use a subclass")
-            return None
-
-        cmd = self.app_path + " "
-        for arg in self.args:
-            cmd += arg + " "
-
-        if self.infiles:
-            self.logger.error("No input filenames specified")
-            return None
-
-        for infile in self.infiles:
-            cmd += infile + " "
-
-        if self.param != "":
-            cmd += self.param + " "
 
         return cmd
 
@@ -550,7 +521,6 @@ class TcPairsWrapper(CommandBuilder):
         out_file.close()
         self.logger.debug("DEBUG|" + cur_function + "|" + cur_filename +
                           " finished")
-
 
 if __name__ == "__main__":
     try:
