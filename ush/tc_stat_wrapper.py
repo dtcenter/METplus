@@ -44,9 +44,9 @@ class TcStatWrapper(object):
     """
     def __init__(self, p):
         self.tc_exe = p.getexe('TC_STAT')
-        self.init_date_beg = p.getstr('config', 'INIT_DATE_BEG')
-        self.init_date_end = p.getstr('config', 'INIT_DATE_END')
-        self.init_hour_inc = p.getint('config', 'INIT_HOUR_INC')
+#        self.init_date_beg = p.getstr('config', 'INIT_DATE_BEG')
+#        self.init_date_end = p.getstr('config', 'INIT_DATE_END')
+#        self.init_hour_inc = p.getint('config', 'INIT_HOUR_INC')
         self.logger = util.get_logger(p)
         self.config = p
 
@@ -129,9 +129,9 @@ if __name__ == "__main__":
         if 'MET_BASE' not in os.environ:
             os.environ['MET_BASE'] = CONFIG.getdir('MET_BASE')
 
-        util.gen_init_list(TCS.init_date_beg, TCS.init_date_end,
-                           TCS.init_hour_inc, CONFIG.getstr('config',
-                                                            'INIT_HOUR_END'))
+#        util.gen_init_list(TCS.init_date_beg, TCS.init_date_end,
+#                           TCS.init_hour_inc, CONFIG.getstr('config',
+#                                                            'INIT_HOUR_END'))
 
         produtil.log.postmsg('run_tc_stat completed')
 

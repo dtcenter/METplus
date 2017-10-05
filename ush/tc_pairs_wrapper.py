@@ -20,6 +20,7 @@ import sys
 import re
 import csv
 import errno
+import datetime
 import produtil.setup
 from produtil.run import batchexe
 from produtil.run import checkrun
@@ -104,7 +105,20 @@ class TcPairsWrapper(CommandBuilder):
         cmd += "-out " + os.path.join(self.outdir, self.outfile)
         return cmd
     
-                        
+
+    def run_all_times(self):
+        init_times = []
+        init_beg = self.p.getstr('config', 'INIT_BEG')[0:6]
+        init_end = self.p.getstr('config', 'INIT_END')[0:6]        
+        init_time = datetime.datetime.strptime(init_beg, "%Y%m")
+        end_time = datetime.datetime.strptime(init_end, "%Y%m")
+
+        while init_time <= end_time:
+            print("INIT TIME:"+init_time.strftime("%Y%m%d"))
+            self.run_at_time(init_time.strftime("%Y%m%d"))            
+            init_time = init_time + datetime.timedelta(days=31)
+
+                            
     def run_at_time(self, requested_time):
         """! Build up the command to invoke the MET tool, tc_pairs.
              Args:

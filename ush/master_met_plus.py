@@ -22,7 +22,7 @@ from pcp_combine_wrapper import PcpCombineWrapper
 from grid_stat_wrapper import GridStatWrapper
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from tc_pairs_wrapper import TcPairsWrapper
-#from extract_tiles_wrapper import ExtractTilesWrapper
+from extract_tiles_wrapper import ExtractTilesWrapper
 #from series_by_lead_wrapper import SeriesByLeadWrapper
 #from series_by_init_wrapper import SeriesByInitWrapper
 #from mode_wrapper import ModeWrapper
