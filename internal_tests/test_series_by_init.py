@@ -5,6 +5,7 @@ from __future__ import print_function
 import unittest
 import os
 import re
+import shutil
 import config_metplus
 from series_by_init import SeriesByInit
 import met_util as util
@@ -15,9 +16,11 @@ class TestSeriesByInit(unittest.TestCase):
     def setUp(self):
         self.p = self.get_config()
         self.logger = util.get_logger(self.p)
+        self.sbi = SeriesByInit(self.p, self.logger)
 
     def tearDown(self):
-        pass
+        shutil.rmtree(self.sbi.series_out_dir)
+        shutil.rmtree(self.sbi.series_filtered_out_dir)
 
     @staticmethod
     def get_config():
@@ -38,22 +41,13 @@ class TestSeriesByInit(unittest.TestCase):
 
         return config_instance
 
-    def test_output_exists(self):
-        """ Make sure that the series_analysis_init output
-            directory isn't empty."""
-        sbi = SeriesByInit(self.p, self.logger)
-        sbi.run_all_times()
-        output_dir = sbi.series_out_dir
-        self.assertTrue(os.listdir(output_dir))
-
     def test_anly_fcst_ascii_files_exist(self):
         """ Test that in the series_init_filtered directory, the
             tmp_anly_regridded.txt and tmp_fcst_regridded.txt files
             exist.
         """
-        sbi = SeriesByInit(self.p, self.logger)
-        sbi.run_all_times()
-        filter_output_dir = sbi.series_filtered_out_dir
+        self.sbi.run_all_times()
+        filter_output_dir = self.sbi.series_filtered_out_dir
         filter_files_list = os.listdir(filter_output_dir)
         fcst_count = 0
         anly_count = 0
@@ -66,14 +60,99 @@ class TestSeriesByInit(unittest.TestCase):
                 anly_count += 1
         self.assertTrue(fcst_count == 1 and anly_count == 1)
 
-    def test_check_for_series_output_files(self):
+    def test_check_filtering_ok(self):
+        """ For a given filter condition, ensure that the filter criteria
+                is met.  Perform a simple filtering based on basin=ML and
+                make sure all subdirectories created in the series_init
+               _filtered directory begin with ML.
+        """
+        self.sbi.run_all_times()
+        filter_output_dir = self.sbi.series_filtered_out_dir
+        dated_filter_files_list = os.listdir(filter_output_dir)
+        self.sbi.filter_opts = "EXTRACT_TILES_FILTER_OPTS = -basin ML"
+
+        # Get the storm subdirs in the dated_filter_files_list
+        for dated_filter_file in dated_filter_files_list:
+            potential_dir = os.path.join(filter_output_dir, dated_filter_file)
+            if os.path.isdir(potential_dir):
+                storm_subdir_list = os.listdir(potential_dir)
+                for storm_subdir in storm_subdir_list:
+                    potential_storm_dir = os.path.join(potential_dir,
+                                                       storm_subdir)
+                    if os.path.isdir(potential_storm_dir):
+                        match = re.match(r'^ML', storm_subdir)
+                        self.assertTrue(match)
+
+    # def test_fcst_anly_ascii_files_not_empty(self):
+    #     """ Verify that the ANLY_ASCII_FILES_<storm-month-date> and
+    #         FCST_ASCII_FILES_<storm-month-date> text file (which contain
+    #         a list of all the files to be included in the series analysis) in
+    #         the series_analysis_int/YYYYMMDD_hh/storm directory are
+    #         not empty files.
+    #     """
+    #     self.sbi.run_all_times()
+    #     anly_ascii_ok = False
+    #     fcst_ascii_ok = False
+    #     dated_dir_list = os.listdir(self.sbi.series_out_dir)
+    #     # Get the storm sub-directories in each dated sub-directory
+    #     for dated_dir in dated_dir_list:
+    #         dated_dir_path = os.path.join(self.sbi.series_out_dir, dated_dir)
+    #         # Get a list of the storm sub-dirs in this directory
+    #         all_storm_list = os.listdir(dated_dir_path)
+    #         for each_storm in all_storm_list:
+    #             full_storm_dirname = os.path.join(dated_dir_path, each_storm)
+    #             # Now get the list of files for each storm sub-dir.
+    #             all_files = os.listdir(full_storm_dirname)
+    #             for each_file in all_files:
+    #                 full_filepath = os.path.join(full_storm_dirname, each_file)
+    #                 if os.path.isfile(full_filepath):
+    #                     if full_filepath.startswith("ANLY_ASCII_FILES"):
+    #                         if os.stat(full_filepath).st_size > 0:
+    #                             anly_ascii_ok = True
+    #                     if full_filepath.startswith("FCST_ASCII_FILES"):
+    #                         if os.stat(full_filepath).st_size > 0:
+    #                             fcst_ascii_ok = True
+    #                     self.assertTrue(anly_ascii_ok and fcst_ascii_ok)
+
+    def test_netcdf_files_created(self):
+        """ Verify that NetCDF files were created by series_analysis"""
+        self.sbi.run_all_times()
+        dated_dir_list = os.listdir(self.sbi.series_out_dir)
+        netcdf_file_counter = 0
+
+        # Get the storm sub-directories in each dated sub-directory
+        for dated_dir in dated_dir_list:
+            dated_dir_path = os.path.join(self.sbi.series_out_dir, dated_dir)
+            # Get a list of the storm sub-dirs in this directory
+            all_storm_list = os.listdir(dated_dir_path)
+            for each_storm in all_storm_list:
+                full_storm_dirname = os.path.join(dated_dir_path, each_storm)
+                # Now get the list of files for each storm sub-dir.
+                all_files = os.listdir(full_storm_dirname)
+                for each_file in all_files:
+                    full_filepath = os.path.join(full_storm_dirname, each_file)
+                    if os.path.isfile(full_filepath):
+                        if full_filepath.endswith('.nc'):
+                            netcdf_file_counter += 1
+
+        self.assertTrue(netcdf_file_counter > 0)
+
+    def test_output_exists(self):
+        """ Make sure that the series_analysis_init output
+            directory isn't empty.  If so, then something went wrong with
+            building the command or in the series_init run.
+        """
+        self.sbi.run_all_times()
+        output_dir = self.sbi.series_out_dir
+        self.assertTrue(os.listdir(output_dir))
+
+    def test_check_for_created_graphics_files(self):
         """ Check that the expected NetCDF, png, and Postscript files
             are present in the series_analysis_init/<storm month-number date
             subdirectory.
         """
-        sbi = SeriesByInit(self.p, self.logger)
-        sbi.run_all_times()
-        output_dir = sbi.series_out_dir
+        self.sbi.run_all_times()
+        output_dir = self.sbi.series_out_dir
         dated_filter_files_list = os.listdir(output_dir)
         # Get the storm sub-dirs in the first dated_filter_files_list
         first_dated_subdir = os.path.join(output_dir, dated_filter_files_list[0])
@@ -92,31 +171,6 @@ class TestSeriesByInit(unittest.TestCase):
                 ps_results.append(each_file)
 
         self.assertTrue(nc_results and png_results and ps_results)
-
-    def test_check_filtering_ok(self):
-        """ For a given filter condition, ensure that the filter criteria
-                is met.  Perform a simple filtering based on basin=ML and
-                make sure all subdirectories created in the series_init
-               _filtered directory begin with ML.
-        """
-        sbi = SeriesByInit(self.p, self.logger)
-        sbi.run_all_times()
-        filter_output_dir = sbi.series_filtered_out_dir
-        dated_filter_files_list = os.listdir(filter_output_dir)
-        sbi.filter_opts = "EXTRACT_TILES_FILTER_OPTS = -basin ML"
-
-        # Get the storm subdirs in the dated_filter_files_list
-        for dated_filter_file in dated_filter_files_list:
-            potential_dir = os.path.join(filter_output_dir, dated_filter_file)
-            if os.path.isdir(potential_dir):
-                storm_subdir_list = os.listdir(potential_dir)
-                for storm_subdir in storm_subdir_list:
-                    potential_storm_dir = os.path.join(potential_dir,
-                                                       storm_subdir)
-                    if os.path.isdir(potential_storm_dir):
-                        match = re.match(r'^ML', storm_subdir)
-                        self.assertTrue(match)
-
 
 if __name__ == "__main__":
     unittest.main()
