@@ -25,17 +25,17 @@ import met_util as util
 import config_metplus
 from tc_stat_wrapper import TcStatWrapper
 
-##@namespace ExtractTiles
-# @brief Runs  Extracts tiles to be used by series_analysis.
-# Call as follows:
-# @code{.sh}
-# extract_tiles.py [-c /path/to/user.template.conf]
-# @endcode
-#
+'''!@namespace ExtractTilesWrapper
+@brief Runs  Extracts tiles to be used by series_analysis.
+Call as follows:
+@code{.sh}
+extract_tiles_wrapper.py [-c /path/to/user.template.conf]
+@endcode
+'''
 
 
 class ExtractTilesWrapper(CommandBuilder):
-    """! Takes tc-pairs data and regrids paired data to an nxm grid as
+    """! Takes tc-pairs data and regrids paired data to an n x m grid as
          specified in the config file.
     """
 
@@ -45,39 +45,34 @@ class ExtractTilesWrapper(CommandBuilder):
     # Much of the data in the class are used to perform tasks, rather than
     # having methods operating on them.
 
-
     def __init__(self, p, logger):
         super(ExtractTilesWrapper, self).__init__(p, logger)
         self.app_path = self.p.getstr('exe', 'EXTRACT_TILES')
-        self.app_name = os.path.basename(self.app_path)        
+        self.app_name = os.path.basename(self.app_path)
         self.tc_pairs_dir = self.p.getdir('TC_PAIRS_DIR')
         self.overwrite_flag = self.p.getbool('config',
-                                                    'OVERWRITE_TRACK')
+                                             'OVERWRITE_TRACK')
         self.addl_filter_opts =\
             self.p.getstr('config', 'EXTRACT_TILES_FILTER_OPTS')
         self.filtered_out_dir = self.p.getdir('EXTRACT_OUT_DIR')
         self.tc_stat_exe = self.p.getexe('TC_STAT')
-        self.init_beg = self.p.getstr('config', 'INIT_BEG')[0:6]
-        self.init_end = self.p.getstr('config', 'INIT_END')[0:6]
+        self.init_beg = self.p.getstr('config', 'INIT_BEG')[0:8]
+        self.init_end = self.p.getstr('config', 'INIT_END')[0:8]
         if self.logger is None:
             self.logger = util.get_logger(self.p)
         self.config = self.p
-
 
     # pylint: disable=too-many-locals
     # 23 local variables are needed to perform the necessary work.
     def run_all_times(self):
         cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name        
-        init_times = []
-        init_time = datetime.datetime.strptime(self.init_beg, "%Y%m")
-        end_time = datetime.datetime.strptime(self.init_end, "%Y%m")
+        cur_function = sys._getframe().f_code.co_name
+        init_time = datetime.datetime.strptime(self.init_beg, "%Y%m%d")
+        end_time = datetime.datetime.strptime(self.init_end, "%Y%m%d")
 
         while init_time <= end_time:
-            print("INIT TIME:"+init_time.strftime("%Y%m%d"))
-            self.run_at_time(init_time.strftime("%Y%m%d"))            
-            init_time = init_time + datetime.timedelta(days=31)
-
+            self.run_at_time(init_time.strftime("%Y%m%d"))
+            init_time = init_time + datetime.timedelta(hours=24)
 
         # Remove any empty files and directories in the extract_tiles output
         # directory
@@ -89,7 +84,6 @@ class ExtractTilesWrapper(CommandBuilder):
                "| Finished extract tiles")
         self.logger.info(msg)
 
-                    
     def run_at_time(self, cur_init):
         """!Get TC-paris data then regrid tiles centered on the storm.
 
@@ -109,10 +103,6 @@ class ExtractTilesWrapper(CommandBuilder):
         # Used in logging
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-#        init_times = util.gen_init_list(self.init_date_beg,
-#                                        self.init_date_end,
-#                                        self.init_hour_inc,
-#                                        self.init_hour_end)
 
         # get the process id to be used to identify the output
         # amongst different users and runs.
@@ -141,12 +131,12 @@ class ExtractTilesWrapper(CommandBuilder):
         # the file doesn't exist, then run TC_STAT
         filter_filename = "filter_" + cur_init + ".tcst"
         filter_name = os.path.join(self.filtered_out_dir, cur_init,
-                                    filter_filename)
+                                   filter_filename)
 
         if util.file_exists(filter_name) and not self.overwrite_flag:
             msg = ("DEBUG| [" + cur_filename + ":" + cur_function +
-                    " ] | Filter file exists, using Track data file: " +
-                    filter_name)
+                   " ] | Filter file exists, using Track data file: " +
+                   filter_name)
             self.logger.debug(msg)
         else:
             # Create the storm track by applying the
@@ -157,7 +147,7 @@ class ExtractTilesWrapper(CommandBuilder):
             # the MET tool tc_stat to perform the filtering.
             tcs = TcStatWrapper(self.config)
             tcs.build_tc_stat(self.filtered_out_dir, cur_init,
-                                tile_dir, self.addl_filter_opts)
+                              tile_dir, self.addl_filter_opts)
 
             # Remove any empty files and directories that can occur
             # from filtering.
@@ -172,8 +162,8 @@ class ExtractTilesWrapper(CommandBuilder):
         if not sorted_storm_ids:
             # No storms found for init time, cur_init
             msg = ("DEBUG|[" + cur_filename + ":" + cur_function + " ]|" +
-                    "No storms were found for " + cur_init +
-                    "...continue to next in list")
+                   "No storms were found for " + cur_init +
+                   "...continue to next in list")
             self.logger.debug(msg)
             return
 
@@ -190,7 +180,6 @@ class ExtractTilesWrapper(CommandBuilder):
             util.mkdir_p(tmp_dir)
             tmp_filename = "filter_" + cur_init + "_" + cur_storm
             full_tmp_filename = os.path.join(tmp_dir, tmp_filename)
-            print("full_tmp_filename: {}".format(full_tmp_filename))
 
             storm_match_list = util.grep(cur_storm, filter_name)
             with open(full_tmp_filename, "a+") as tmp_file:
@@ -208,6 +197,16 @@ class ExtractTilesWrapper(CommandBuilder):
 
         # end of for cur_storm
 
+        # Remove any empty files and directories in the extract_tiles output
+        # directory
+        util.prune_empty(self.filtered_out_dir, self.logger)
+
+        # Clean up the tmp directory if it exists
+        if os.path.isdir(tmp_dir):
+            util.rmtree(tmp_dir)
+            msg = ("INFO|[" + cur_function + ":" + cur_filename + "]"
+                   "| Finished extract tiles")
+            self.logger.info(msg)
 
 if __name__ == "__main__":
 
@@ -224,7 +223,7 @@ if __name__ == "__main__":
         if 'MET_BASE' not in os.environ:
             os.environ['MET_BASE'] = CONFIG_INST.getdir('MET_BASE')
 
-        ET = ExtractTiles(CONFIG_INST, logger=None)
+        ET = ExtractTilesWrapper(CONFIG_INST, logger=None)
         ET.run_all_times()
         produtil.log.postmsg('extract_tiles completed')
     except Exception as exception:
