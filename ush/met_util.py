@@ -1256,7 +1256,7 @@ def get_updated_init_times(input_dir, config=None):
     filter_list = get_files(input_dir, ".*.tcst", config)
     if filter_list:
         for filter_file in filter_list:
-            match = re.match(r'.*/filter_([0-9]{8}_[0-9]{2,3})', filter_file)
+            match = re.match(r'.*/filter_([0-9]{8})', filter_file)
             init_times_list.append(match.group(1))
         updated_init_times_list = sorted(init_times_list)
 
