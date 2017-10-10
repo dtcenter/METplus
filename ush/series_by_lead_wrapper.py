@@ -95,7 +95,7 @@ class SeriesByLeadWrapper(object):
             self.anly_tile_regex = self.p.getstr('regex_pattern',
                                                  'ANLY_TILE_REGEX')
 
-    def analysis_by_lead(self):
+    def run_all_times(self):
         """! Perform a series analysis of extra tropical cyclone
              paired data based on lead time (forecast hour)
              This requires invoking the MET run_series_analysis binary,
@@ -1370,7 +1370,7 @@ if __name__ == "__main__":
             os.environ['MET_BASE'] = CONFIG.getdir('MET_BASE')
 
         SBL = SeriesByLeadWrapper(CONFIG, logger=None)
-        SBL.analysis_by_lead()
+        SBL.run_all_times()
 
         produtil.log.postmsg('series analysis by lead time completed')
     except Exception as e:
