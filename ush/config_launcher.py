@@ -33,15 +33,14 @@ support sanity checks, and initial creation of the METplus system.
 '''!@var __all__
 All symbols exported by "from metplus.launcher import *"
 '''
-__all__ = ['load', 'launch', 'parse_launch_args', 'load_baseconfs', 'METplusLauncher']
-
+__all__ = ['load', 'launch', 'parse_launch_args', 'load_baseconfs',
+           'METplusLauncher']
 
 # baseinputconfs = ['metplus.conf','metplus.override.conf','usecase.conf']
-#baseinputconfs = ['metplus.conf']
-baseinputconfs = ['/home/minnawin/modify_confs/METplus/parm/metplus_config/metplus_data.conf',
-                  '/home/minnawin/modify_confs/METplus/parm/metplus_config/metplus_system.conf',                  
-                  '/home/minnawin/modify_confs/METplus/parm/metplus_config/metplus_runtime.conf']
-
+# baseinputconfs = ['metplus.conf']
+baseinputconfs = ['metplus_config/metplus_data.conf',
+                  'metplus_config/metplus_runtime.conf',
+                  'metplus_config/metplus_system.conf']
 
 # Note: This is just a developer reference comment, in case we continue
 # extending the metplus capabilities, by following hwrf patterns.
@@ -163,17 +162,17 @@ def parse_launch_args(args, usage, filename, logger):
            =(?P<value>.*)$''', args[iarg])
         if m:
             logger.info('Set [%s] %s = %s' % (
-                    m.group('section'), m.group('option'),
-                    repr(m.group('value'))))
+                m.group('section'), m.group('option'),
+                repr(m.group('value'))))
             moreopt[m.group('section')][m.group('option')] = m.group('value')
         elif os.path.exists(args[iarg]):
             logger.info('%s: Plan to parse this conf file' % (args[iarg],))
             infiles.append(args[iarg])
-        elif os.path.exists(os.path.join(parm,args[iarg])):
+        elif os.path.exists(os.path.join(parm, args[iarg])):
             logger.info('%s: Prepended parm directory, '
                         'Plan to parse this conf file' %
-                        (os.path.join(parm,args[iarg]),))
-            infiles.append(os.path.join(parm,args[iarg]))
+                        (os.path.join(parm, args[iarg]),))
+            infiles.append(os.path.join(parm, args[iarg]))
         else:
             bad = True
             logger.error('%s: invalid argument.  Not an config option '
@@ -190,7 +189,7 @@ def parse_launch_args(args, usage, filename, logger):
             sys.exit(2)
         elif not produtil.fileop.isnonempty(file):
             logger.warning(
-                    file + ': conf file is empty.  Will continue anyway.')
+                file + ': conf file is empty.  Will continue anyway.')
         logger.info('Conf input: ' + repr(file))
     return (parm, infiles, moreopt)
 
@@ -203,7 +202,6 @@ def parse_launch_args(args, usage, filename, logger):
 # so each succesive element overwrites the previous.
 def launch(file_list, moreopt, cycle=None, init_dirs=True,
            prelaunch=None):
-
     for filename in file_list:
         if not isinstance(filename, basestring):
             raise TypeError('First input to metplus.config.for_initial_job '
@@ -222,8 +220,9 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     finalconfexists = util.file_exists(confloc)
 
     if finalconfexists:
-        logger.warning('IGNORING all parsed conf file(s) AND any command line options or arguments, if given.')
-        logger.warning('INSTEAD, Using Existing final conf:  %s'%(confloc))
+        logger.warning(
+            'IGNORING all parsed conf file(s) AND any command line options or arguments, if given.')
+        logger.warning('INSTEAD, Using Existing final conf:  %s' % (confloc))
         del logger
         del conf
         conf = METplusLauncher()
@@ -233,20 +232,19 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
         # more options since using existing final conf file.
         moreopt = None
 
-
-    #if moreopt is not None:
+    # if moreopt is not None:
     if moreopt:
-        for section,options in moreopt.iteritems():
+        for section, options in moreopt.iteritems():
             if not conf.has_section(section):
                 conf.add_section(section)
-            for option,value in options.iteritems():
+            for option, value in options.iteritems():
                 logger.info('Override: %s.%s=%s'
-                            %(section,option,repr(value)))
-                conf.set(section,option,value)
+                            % (section, option, repr(value)))
+                conf.set(section, option, value)
 
     # Place holder for when workflow is developed in METplus.
     # rocoto does not initialize the dirs, it returns here.
-    #if not init_dirs:
+    # if not init_dirs:
     #    if prelaunch is not None:
     #        prelaunch(conf,logger,cycle)
     #    return conf
@@ -267,7 +265,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # conf.set('dir','METPLUS_BASE',METPLUS_BASE)
 
     # Place holder for when workflow is developed in METplus.
-    #if prelaunch is not None:
+    # if prelaunch is not None:
     #    prelaunch(conf,logger,cycle)
 
     # writes the METPLUS_CONF used by all tasks.
@@ -290,14 +288,14 @@ def load(filename):
 
     conf = METplusLauncher()
     conf.read(filename)
-#    logger = conf.log()
+    #    logger = conf.log()
 
     # cycle=conf.cycle
     # assert(cycle is not None)
     # strcycle=cycle.strftime('%Y%m%d%H')
     # logger.info('Running cycle: '+cycle.strftime('%Y%m%d%H'))
 
-#    OUTPUT_BASE = conf.getdir('OUTPUT_BASE')
+    #    OUTPUT_BASE = conf.getdir('OUTPUT_BASE')
 
     return conf
 
@@ -362,17 +360,20 @@ def _set_conf_file_path(conf_file):
 
     return conf_file
 
+
 class METplusLauncher(ProdConfig):
     """!A replacement for the produtil.config.ProdConfig used throughout
     the METplus system.  You should never need to instantiate one of
     these --- the launch() and load() functions do that for you.  This
     class is the underlying implementation of most of the
     functionality described in launch() and load()"""
-    def __init__(self,conf=None):
+
+    def __init__(self, conf=None):
         """!Creates a new METplusLauncher
         @param conf The configuration file."""
-        super(METplusLauncher,self).__init__(conf)
-        self._cycle=None
+        super(METplusLauncher, self).__init__(conf)
+        self._cycle = None
+
     ##@var _cycle
     # The cycle for this METplus run.
 
@@ -382,12 +383,11 @@ class METplusLauncher(ProdConfig):
         Runs simple sanity checks on the METplus installation directory
         and configuration to make sure everything looks okay.  May
         throw a wide variety of exceptions if sanity checks fail."""
-        logger=self.log('sanity.checker')
+        logger = self.log('sanity.checker')
 
 
 # THIS IS NOT USED, meant for internal dev testing.
 def test_gen_conf(file_list, cycle=None):
-
     for filename in file_list:
         if not isinstance(filename, basestring):
             raise TypeError('First input to metplus.config.for_initial_job '
