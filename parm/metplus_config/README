@@ -1,0 +1,9 @@
+There are three config files in this directory:
+1) metplus_system.conf
+   This contains information indicating the location of binaries and other executables needed to run METplus.
+
+2) metplus_data.conf
+   Contains the information relevant to the data: filename templates and regex patterns for identifying data files.
+
+3) metplus_runtime.conf
+   Contains locations of other configurations, settings for logging levels, process list, var lists, and anything else needed at runtime.

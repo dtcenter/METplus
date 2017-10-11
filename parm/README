@@ -1,0 +1,18 @@
+This README describes what config files reside here and their function/purpose.
+The following three directories contain config files specific to their responsibilities:
+
+1) met_config 
+   Contains all the configuration files that are used by MET (ie config files used to run grid_stat, tc_pairs, series_init, etc.) 
+
+2) metplus_config
+   Contains all the configuration files necessary for running METplus:
+   a) metplus_data.conf
+      Indicate the directories where all necessary input data resides and where output data should be saved.
+   b) metplus_runtime.conf
+      Indicate the information needed to run METplus, such as ...
+   c) metplus_system.conf
+      Any configuration that is specific to a user's work environment, such as the location of the MET executables and any other libraries used by METplus that 
+      may vary from one work environment to another.
+
+3) metplus_use_cases 
+   This directory contains the configuration files specific to running a particular use case.

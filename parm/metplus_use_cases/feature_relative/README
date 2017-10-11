@@ -1,0 +1,5 @@
+This directory contains the feature_relative.conf configuration file that contains configuration information for all feature_relative examples. 
+
+***NOTE***
+Every subdirectory in the parm/metplus_use_cases directory MUST have a corresponding configuration file with a basename that is the same as the directory name:
+i.e. the feature_relative subdir must have a corresponding feature_relative.conf file, the qpf subdirectory MUST have a corresponding qpf.conf configuration file.  Specific example config files are to be saved in the $METplus/parm/metplus_use_cases/<use case suite>/
