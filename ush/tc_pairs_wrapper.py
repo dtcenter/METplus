@@ -28,7 +28,7 @@ import met_util as util
 import config_metplus
 
 
-'''!@namespace TcPairsWrappers
+'''!@namespace TcPairsWrapper
 @brief Wraps the MET tool tc_pairs to parse ADeck and BDeck ATCF files,
 filter the data, and match them up.
 Call as follows:
@@ -128,13 +128,16 @@ class TcPairsWrapper(CommandBuilder):
             (self.config.getstr('config', 'MISSING_VAL_TO_REPLACE'),
              self.config.getstr('config', 'MISSING_VAL'))
 
-        # Get the desired YYYYMM from the init list
-        year_month_list = []
+        # Get the desired YYYYMMDD_HH init increment list
+        # convert the increment INIT_INC from seconds to hours
         init_list = util.gen_init_list(
             self.config.getstr('config', 'INIT_BEG'),
             self.config.getstr('config', 'INIT_END'),
-            self.config.getint('config', 'INIT_INC'),
+            int(self.config.getint('config', 'INIT_INC')/3600),
             self.config.getstr('config', 'INIT_HOUR_END'))
+
+        # get a list of YYYYMM values
+        year_month_list = []
         for init in init_list:
             if init[0:6] not in year_month_list:
                 year_month_list.append(init[0:6])
