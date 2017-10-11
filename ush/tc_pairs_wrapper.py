@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Program Name: run_tc_pairs.py
+Program Name: tc_pairs_wrapper.py
 Contact(s): Julie Prestopnik, Minna Win
 Abstract: Invokes the MET tool tc_pairs to parse ADeck and BDeck ATCF files,
           filter the data, and match them up
@@ -131,9 +131,9 @@ class TcPairsWrapper(CommandBuilder):
         # Get the desired YYYYMM from the init list
         year_month_list = []
         init_list = util.gen_init_list(
-            self.config.getstr('config', 'INIT_DATE_BEG'),
-            self.config.getstr('config', 'INIT_DATE_END'),
-            self.config.getint('config', 'INIT_HOUR_INC'),
+            self.config.getstr('config', 'INIT_BEG'),
+            self.config.getstr('config', 'INIT_END'),
+            self.config.getint('config', 'INIT_INC'),
             self.config.getstr('config', 'INIT_HOUR_END'))
         for init in init_list:
             if init[0:6] not in year_month_list:
