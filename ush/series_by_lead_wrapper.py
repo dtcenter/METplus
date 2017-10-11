@@ -8,6 +8,7 @@ import errno
 import produtil.setup
 from produtil.run import batchexe
 from produtil.run import run
+from command_builder import CommandBuilder
 import met_util as util
 import config_metplus
 
@@ -30,7 +31,7 @@ SeriesByLeadWrapper.py [-c /path/to/user.template.conf]
 # all the attributes are necessary for performing tasks.
 
 
-class SeriesByLeadWrapper(object):
+class SeriesByLeadWrapper(CommandBuilder):
     """! @brief SeriesByLeadWrapper performs series analysis of paired
          data based on lead time and generates plots for each requested
          variable and statistic, as specified in a configuration/parameter
@@ -38,6 +39,7 @@ class SeriesByLeadWrapper(object):
     """
 
     def __init__(self, p, logger):
+        super(SeriesByLeadWrapper, self).__init__(p, logger)
         self.p = p
         self.logger = logger
         if self.logger is None:
