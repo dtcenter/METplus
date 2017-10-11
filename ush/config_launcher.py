@@ -37,7 +37,10 @@ __all__ = ['load', 'launch', 'parse_launch_args', 'load_baseconfs', 'METplusLaun
 
 
 # baseinputconfs = ['metplus.conf','metplus.override.conf','usecase.conf']
-baseinputconfs = ['metplus.conf']
+#baseinputconfs = ['metplus.conf']
+baseinputconfs = ['/home/minnawin/modify_confs/METplus/parm/metplus_config/metplus_data.conf',
+                  '/home/minnawin/modify_confs/METplus/parm/metplus_config/metplus_system.conf',                  
+                  '/home/minnawin/modify_confs/METplus/parm/metplus_config/metplus_runtime.conf']
 
 
 # Note: This is just a developer reference comment, in case we continue

@@ -151,7 +151,7 @@ class CommandBuilder:
         print("RUNNING: " + cmd)         
         process = subprocess.Popen(cmd, env=self.env, shell=True)
         process.wait()
-        self.clear()
+#        self.clear()
 
     def run_all_times(self):
         time_format = self.p.getstr('config', 'INIT_TIME_FMT')

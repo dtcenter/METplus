@@ -396,3 +396,4 @@ class PcpCombineWrapper(CommandBuilder):
             self.logger.info("")
             self.build()
             outfile = self.get_output_path()
+            self.clear()

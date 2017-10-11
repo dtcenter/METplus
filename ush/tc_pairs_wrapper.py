@@ -199,6 +199,7 @@ class TcPairsWrapper(CommandBuilder):
                                     adeck_file_path, bdeck_file_path,
                                     requested_year_month_list)
                 self.build()
+                self.clear()
 
     def perform_checks(self, requested_time, year_month_list):
         """! Performs checks for the absence of input data

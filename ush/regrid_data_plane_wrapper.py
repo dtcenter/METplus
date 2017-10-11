@@ -99,3 +99,4 @@ class RegridDataPlaneWrapper(CommandBuilder):
         print("RUNNING: "+str(cmd))
         self.logger.info("")
         self.build()
+        self.clear()
