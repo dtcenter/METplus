@@ -23,6 +23,7 @@ import csv
 import subprocess
 from command_builder import CommandBuilder
 from pcp_combine_wrapper import PcpCombineWrapper
+from gempak_to_cf_wrapper import GempakToCFWrapper
 from task_info import TaskInfo
 import string_template_substitution as sts
 
