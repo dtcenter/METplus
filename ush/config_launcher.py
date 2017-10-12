@@ -38,9 +38,9 @@ __all__ = ['load', 'launch', 'parse_launch_args', 'load_baseconfs',
 
 # baseinputconfs = ['metplus.conf','metplus.override.conf','usecase.conf']
 # baseinputconfs = ['metplus.conf']
-baseinputconfs = ['metplus_config/metplus_data.conf',
-                  'metplus_config/metplus_runtime.conf',
-                  'metplus_config/metplus_system.conf']
+baseinputconfs = ['metplus_config/metplus_system.conf',
+                  'metplus_config/metplus_data.conf',
+                  'metplus_config/metplus_runtime.conf']
 
 # Note: This is just a developer reference comment, in case we continue
 # extending the metplus capabilities, by following hwrf patterns.
@@ -217,7 +217,16 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # Determine if final METPLUS_CONF file already exists on disk.
     # If it does, use it instead.
     confloc = conf.getloc('METPLUS_CONF')
-    finalconfexists = util.file_exists(confloc)
+
+    # Just overwrite the final conf file.
+    # Not overwriting is annoying everyone, since when make a conf file edit
+    # you have to remember to remove the final conf file.
+    # Originally based on a hwrf workflow. since launcher task only runs once, 
+    # and all following tasks use the generated conf file.
+    #finalconfexists = util.file_exists(confloc)
+
+    # Force setting to False, so conf always gets overwritten
+    finalconfexists = False
 
     if finalconfexists:
         logger.warning(
