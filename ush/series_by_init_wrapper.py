@@ -61,8 +61,8 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # For building the argument string via
         # CommandBuilder:
-        # self.app_path = p.getexe('SERIES_ANALYSIS')
-        self.app_path = os.path.join(met_build_base, 'bin/series_analysis')
+        self.app_path = p.getexe('SERIES_ANALYSIS')
+        # self.app_path = os.path.join(met_build_base, 'bin/series_analysis')
         self.app_name = os.path.basename(self.app_path)
         self.inaddons = []
         self.infiles = []
@@ -600,7 +600,8 @@ class SeriesByInitWrapper(CommandBuilder):
         convert_exe = self.p.getexe('CONVERT_EXE')
         background_map = self.p.getbool('config', 'BACKGROUND_MAP')
         plot_data_plane_exe = self.p.getexe('PLOT_DATA_PLANE')
-        plot_data_plane_exe = os.path.join(self.p.getdir('MET_BUILD_BASE'), 'bin/plot_data_plane')
+        # plot_data_plane_exe = os.path.join(self.p.getdir('MET_BUILD_BASE'),
+        #  'bin/plot_data_plane')
         for cur_var in self.var_list:
             name, level = util.get_name_level(cur_var, self.logger)
             for cur_init in sorted_filter_init:
