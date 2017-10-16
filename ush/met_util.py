@@ -536,7 +536,9 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
 
     # Get variables, etc. from param/config file.
     gfs_dir = config.getdir('GFS_DIR')
-    regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE_EXE')
+    regrid_data_plane_exe = os.path.join(config.getdir('MET_BUILD_BASE'),
+                                         'bin/regrid_data_plane')
+    # regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE_EXE')
     wgrib2_exe = config.getexe('WGRIB2')
     egrep_exe = config.getexe('EGREP_EXE')
     regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
