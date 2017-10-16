@@ -35,9 +35,9 @@ from gempak_to_cf_wrapper import GempakToCFWrapper
 class PcpCombineWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(PcpCombineWrapper, self).__init__(p, logger)
-        # self.app_path = self.p.getstr('exe', 'PCP_COMBINE')
-        self.app_path = os.path.join(self.p.getdir('MET_BUILD_BASE'),
-                                     'bin/pcp_combine')
+        self.app_path = self.p.getstr('exe', 'PCP_COMBINE')
+        # self.app_path = os.path.join(self.p.getdir('MET_BUILD_BASE'),
+        #                              'bin/pcp_combine')
         self.app_name = os.path.basename(self.app_path)
         self.inaddons = []
 
