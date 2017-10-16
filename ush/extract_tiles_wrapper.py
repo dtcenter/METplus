@@ -15,7 +15,6 @@ Condition codes: 0 for success, 1 for failure
 
 from __future__ import (print_function, division)
 
-
 import os
 import sys
 import datetime
@@ -47,18 +46,19 @@ class ExtractTilesWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
         super(ExtractTilesWrapper, self).__init__(p, logger)
-        self.app_path = self.p.getstr('exe', 'EXTRACT_TILES')
+        met_build_base = p.getdir('MET_BUILD_BASE')
+        self.app_path = os.path.join(met_build_base, 'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
         self.tc_pairs_dir = self.p.getdir('TC_PAIRS_DIR')
         self.overwrite_flag = self.p.getbool('config',
                                              'OVERWRITE_TRACK')
-        self.addl_filter_opts =\
+        self.addl_filter_opts = \
             self.p.getstr('config', 'EXTRACT_TILES_FILTER_OPTS')
         self.filtered_out_dir = self.p.getdir('EXTRACT_OUT_DIR')
-        self.tc_stat_exe = self.p.getexe('TC_STAT')
+        self.tc_stat_exe = os.path.join(met_build_base, 'bin/tc_stat')
         self.init_beg = self.p.getstr('config', 'INIT_BEG')[0:8]
         self.init_end = self.p.getstr('config', 'INIT_END')[0:8]
-        self.init_hour_inc = int(self.p.getint('config', 'INIT_INC')/3600)
+        self.init_hour_inc = int(self.p.getint('config', 'INIT_INC') / 3600)
         self.init_hour_end = self.p.getint('config', 'INIT_HOUR_END')
         if self.logger is None:
             self.logger = util.get_logger(self.p)
@@ -73,11 +73,11 @@ class ExtractTilesWrapper(CommandBuilder):
         end_time = datetime.datetime.strptime(self.init_end, "%Y%m%d")
         end_time = end_time + datetime.timedelta(hours=self.init_hour_end)
 
-        
         # This is functionally equivalent to while loop below.
         # Get the desired YYYYMMDD_HH init increment list
         # init_list = util.gen_init_list(
-        #    self.init_beg, self.init_end, self.init_hour_inc, str(self.init_hour_end))
+        #    self.init_beg, self.init_end, self.init_hour_inc,
+        #    str(self.init_hour_end))
         # while init_time in init_list
         #     self.run_at_time(init_time)
 
@@ -85,16 +85,17 @@ class ExtractTilesWrapper(CommandBuilder):
         # and ending on the endYYYYMMDD_HH End Hour.
         while init_time <= end_time:
             self.run_at_time(init_time.strftime("%Y%m%d_%H"))
-            init_time = init_time + datetime.timedelta(hours=self.init_hour_inc)
+            init_time = init_time + datetime.timedelta(
+                hours=self.init_hour_inc)
 
         # Remove any empty files and directories in the extract_tiles output
         # directory
         util.prune_empty(self.filtered_out_dir, self.logger)
 
         # Clean up the tmp directory
-#        util.rmtree(tmp_dir)
-        msg = ("INFO|[" + cur_function + ":" + cur_filename + "]"
-               "| Finished extract tiles")
+        #        util.rmtree(tmp_dir)
+        msg = ("INFO|[" + cur_function + ":" + cur_filename +
+               "] | Finished extract tiles")
         self.logger.info(msg)
 
     def run_at_time(self, cur_init):
@@ -220,6 +221,7 @@ class ExtractTilesWrapper(CommandBuilder):
             msg = ("INFO|[" + cur_function + ":" + cur_filename + "]"
                    "| Finished extract tiles")
             self.logger.info(msg)
+
 
 if __name__ == "__main__":
 
