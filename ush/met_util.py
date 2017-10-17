@@ -17,7 +17,6 @@ from tc_stat_wrapper import TcStatWrapper
 
 """!@namespace met_util
  @brief Provides  Utility functions for METplus.
-
 """
 
 
@@ -28,10 +27,8 @@ def round_0p5(val):
        n.1, or n.2 to round down to n.0, and any input value of n.5, n.6 or
        n.7 to round to n.5. Finally, any input value of n.8 or n.9 will
        round to (n+1).0
-
        Args:
           @param val :  The number to be rounded to the nearest .5
-
        Returns:
           pt_five:  The n.0, n.5, or (n+1).0 value as
                             a result of rounding the input value, val.
@@ -60,7 +57,6 @@ def mkdir_p(path):
        From stackoverflow.com/questions/600268/mkdir-p-functionality-in-python
        Creates the entire directory path if it doesn't exist (including any
        required intermediate directories).
-
        Args:
            @param path : The full directory path to be created
        Returns
@@ -89,7 +85,6 @@ def mkdir_p(path):
 
 def _rmtree_onerr(function, path, exc_info, logger=None):
     """!Internal function used to log errors.
-
     This is an internal implementation function called by
     shutil.rmtree when an underlying function call failed.  See
     the Python documentation of shutil.rmtree for details.
@@ -107,7 +102,6 @@ def rmtree(tree, logger=None):
        @protected
        @param tree the directory tree to delete"
        @param logger the logger, optional
-
     """
     try:
         # If it is a file, special file or symlink we can just
@@ -124,10 +118,8 @@ def rmtree(tree, logger=None):
 
 def get_logger(config):
     """!Gets a logger
-
        Args:
            @param config:   the config instance
-
        Returns:
            logger: the logger
     """
@@ -173,13 +165,11 @@ def file_exists(filename):
                Instead, use the raising of
                exceptions, which is a Pythonic
                approach:
-
                try:
                    with open(filename) as fileobj:
                       pass # or do something fruitful
                except IOError as e:
                    logger.error("your helpful error message goes here")
-
         Args:
             @param filename:  the full filename (full path)
         Returns:
@@ -194,17 +184,12 @@ def file_exists(filename):
 
 def is_dir_empty(directory):
     """! Determines if a directory exists and is not empty
-
         Args:
            @param directory:  The directory to check for existence
                                        and for contents.
-
         Returns:
            True:  If the directory is empty
            False:  If the directory exists and isn't empty
-
-
-
     """
     if not os.listdir(directory):
         return True
@@ -216,14 +201,12 @@ def grep(pattern, infile):
     """! Python version of grep, searches the file line-by-line
         to find a match to the pattern. Returns upon finding the
         first match.
-
         Args:
             @param pattern:  The pattern to be matched
             @param infile:     The filename with full filepath in which to
                              search for the pattern
         Returns:
             line (string):  The matching string
-
     """
 
     matching_lines = []
@@ -242,22 +225,17 @@ def get_filepaths_for_grbfiles(base_dir):
        For each directory in the tree rooted at
        the directory top (including top itself), it
        produces a tuple: (dirpath, dirnames, filenames).
-
        This solution was found on Stack Overflow:
        http://stackoverflow.com/questions/3207219/how-to-list-all-files-of-a-
            directory-in-python#3207973
-
        **scroll down to the section with "Getting Full File Paths From a
        Directory and All Its Subdirectories"
-
     Args:
         @param base_dir: The base directory from which we
                       begin the search for grib2 filenames.
     Returns:
         file_paths (list): A list of the full filepaths
                            of the data to be processed.
-
-
     """
 
     # Create an empty list which will eventually store
@@ -286,12 +264,10 @@ def get_filepaths_for_grbfiles(base_dir):
 def get_storm_ids(filter_filename, logger):
     """! Get each storm as identified by its STORM_ID in the filter file
         save these in a set so we only save the unique ids and sort them.
-
         Args:
             @param filter_filename:  The name of the filter file to read
                                        and extract the storm id
             @param logger:  The name of the logger for logging useful info
-
         Returns:
             sorted_storms (List):  a list of unique, sorted storm ids
     """
@@ -330,7 +306,6 @@ def get_files(filedir, filename_regex, logger):
     """! Get all the files (with a particular
         naming format) by walking
         through the directories.
-
         Args:
           @param filedir:  The topmost directory from which the
                            search begins.
@@ -339,7 +314,6 @@ def get_files(filedir, filename_regex, logger):
                                   of the files of interest.
        Returns:
           file_paths (string): a list of filenames (with full filepath)
-
     """
     # pylint:disable=protected-access
     # Need to call sys.__getframe() to get the filename and method/func
@@ -374,15 +348,12 @@ def get_files(filedir, filename_regex, logger):
 def get_name_level(var_combo, logger):
     """!   Retrieve the variable name and level from a list of
           variable/level combinations.
-
           Args:
              @param var_combo:  A combination of the variable and the level
                                  separated by '/'
-
           Returns:
              name,level: A tuple of name and level derived from the
                          name/level combination.
-
     """
 
     # pylint:disable=protected-access
@@ -403,23 +374,17 @@ def get_name_level(var_combo, logger):
 def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
     """! Checks for the presence of forecast and analysis
         tiles that were created by extract_tiles
-
         Args:
             @param tile_dir:  The directory where the expected
                               tiled files should reside.
-
             @param fcst_file_regex: The regexp describing the format of the
                                     forecast tile file.
-
             @param anly_file_regex: The regexp describing the format of the
                                     analysis tile file.
-
             @param logger:    The logger to which all log messages
                                 should be directed.
-
         Returns:
             None  raises OSError if expected files are missing
-
     """
     anly_tiles = get_files(tile_dir, anly_file_regex, logger)
     fcst_tiles = get_files(tile_dir, fcst_file_regex, logger)
@@ -450,16 +415,12 @@ def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
 def extract_year_month(init_time, logger):
     """! Retrieve the YYYYMM from the initialization time with format
          YYYYMMDD_hh
-
         Args:
             @param init_time:  The initialization time of expected format
             YYYYMMDD_hh
-
             @param logger:  Logger
-
         Returns:
             year_month (string):  The YYYYMM portion of the initialization time
-
     """
     # pylint:disable=protected-access
     # Need to call sys.__getframe() to get the filename and method/func
@@ -491,37 +452,27 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
            tmp_filename file.
         2) perform regridding via MET tool (regrid_data_plane) and store
            results (netCDF files) in the out_dir or via
-
            Regridding via  regrid_data_plane on the forecast and analysis
            files via a latlon string with the following format:
                 latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
                 NOTE:  these values are defined in the extract_tiles_parm
                 parameter/config file as NLAT, NLON.
-
         Args:
         @param tmp_filename:   Filename of the temporary filter file in
                                the /tmp directory. Contains rows
                                of data corresponding to a storm id of varying
                                times.
-
         @param cur_init:       The current init time
-
         @param cur_storm:      The current storm
-
         @param out_dir:  The directory where regridded netCDF or grib2 output
                          is saved depending on which regridding methodology is
                          requested.  If the MET tool regrid_data_plane is
                          requested, then netCDF data is produced.  If wgrib2
                          is requested, then grib2 data is produced.
-
-
-
         @param logger:  The name of the logger used in logging.
         @param config:  config instance
-
         Returns:
            None
-
     """
 
     # pylint: disable=protected-access
@@ -536,9 +487,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
 
     # Get variables, etc. from param/config file.
     gfs_dir = config.getdir('GFS_DIR')
-    regrid_data_plane_exe = os.path.join(config.getdir('MET_BUILD_BASE'),
-                                         'bin/regrid_data_plane')
-    # regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE_EXE')
+    regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE_EXE')
     wgrib2_exe = config.getexe('WGRIB2')
     egrep_exe = config.getexe('EGREP_EXE')
     regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
@@ -551,7 +500,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
         # read header
         header = tf.readline().split()
         # get column number for columns on interest
-        print('header{}:'.format(header))
+        # print('header{}:'.format(header))
         header_colnum_init, header_colnum_lead, header_colnum_valid = \
             header.index('INIT'), header.index('LEAD'), header.index('VALID')
         header_colnum_alat, header_colnum_alon =\
@@ -773,12 +722,10 @@ def retrieve_var_info(config, logger):
         in the constants_pdef.py param file.  This will
         be used as part of the command to regrid the grib2 storm track
         files into netCDF.
-
         Args:
             @param config: The reference to the config/param instance.
             @param logger:  The logger to which all logging is directed.
                             Optional.
-
         Returns:
             field_level_string (string):  If REGRID_USING_MET_TOOL is True,
                                           A string with format -field
@@ -786,7 +733,6 @@ def retrieve_var_info(config, logger):
                                           for each variable defined in
                                           VAR_LIST. Otherwise, a string with
                                           format like:
-
                                           :TMP:2 |:HGT: 500|:PWAT:|:PRMSL:
                                           which will be used to regrid using
                                           wgrib2.
@@ -864,17 +810,14 @@ def create_grid_specification_string(lat, lon, logger, config):
     """! Create the grid specification string with the format:
          latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
          used by the MET tool, regrid_data_plane.
-
          Args:
             @param lat:   The latitude of the grid point
             @param lon:   The longitude of the grid point
             @param logger: The name of the logger
             @param config: config instance
-
          Returns:
             tile_grid_str (string): the tile grid string for the
                                     input lon and lat
-
     """
 
     # pylint: disable=protected-access
@@ -1009,14 +952,11 @@ def prune_empty(output_dir, logger):
         files or directories, delete/remove them so they
         don't cause performance degradation or errors
         when performing subsequent tasks.
-
         Input:
             @param output_dir:  The directory from which searching
                                 should begin.
-
             @param logger: The logger to which all logging is
                            directed.
-
     """
 
     # pylint:disable=protected-access
@@ -1059,7 +999,6 @@ def prune_empty(output_dir, logger):
 def cleanup_temporary_files(list_of_files):
     """! Remove the files indicated in the list_of_files list.  The full
        file path must be indicated.
-
         Args:
           @param list_of_files: A list of files (full filepath) to be
           removed.
@@ -1079,9 +1018,7 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, filter_opts,
                          temporary_dir, logger, config):
     """! Apply filter options, as specified in the
         param/config file.
-
         Args:
-
            @param tile_dir:  Directory where input data files reside.
                              e.g. data which we will be applying our filter
                              criteria.
@@ -1093,11 +1030,8 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, filter_opts,
                                   files are saved.
            @param logger:  The logger to which all logging is directed.
            @param config:  The config/param instance
-
-
         Returns:
             None
-
     """
     # pylint: disable=too-many-arguments
     # Seven input arguments are needed to perform filtering.
@@ -1113,6 +1047,8 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, filter_opts,
     # Create temporary directory where intermediate files are saved.
     cur_pid = str(os.getpid())
     tmp_dir = os.path.join(temporary_dir, cur_pid)
+    logger.debug("DEBUG|" + cur_filename + "|" + cur_function +
+                 " creating tmp dir: " + tmp_dir)
 
     for cur_init in init_times:
         # Call the tc_stat wrapper to build up the command and invoke
@@ -1185,20 +1121,16 @@ def create_filter_tmp_files(filtered_files_list, filter_output_dir, logger=None)
     """! Creates the tmp_fcst and tmp_anly ASCII files that contain the full
         filepath of files that correspond to the filter criteria.  Useful for
         validating that filtering returns the expected results/troubleshooting.
-
         Args:
             @param filtered_files_list:  A list of the netCDF or grb2 files
                                           that result from applying filter
                                           options and running the MET tool
                                           tc_stat.
-
             @param filter_output_dir:  The directory where the filtered data is
                                        stored
             @param logger a logging.Logger for log messages
         Returns:
             None: Creates two ASCII files
-
-
     """
 
     # Useful for logging
@@ -1236,13 +1168,10 @@ def create_filter_tmp_files(filtered_files_list, filter_output_dir, logger=None)
 def get_updated_init_times(input_dir, config=None):
     """ Get a list of init times, derived by the .tcst files in the
         input_dir (and below).
-
         Args:
             @param input_dir:  The topmost directory from which our search for
                                filter.tcst files begins.
-
             @param config:  Reference to metplus.conf configuration instance.
-
         Returns:
             updated_init_times_list : A list of the init times represented by
                                       the forecast.tcst files found in the
@@ -1258,7 +1187,7 @@ def get_updated_init_times(input_dir, config=None):
     filter_list = get_files(input_dir, ".*.tcst", config)
     if filter_list:
         for filter_file in filter_list:
-            match = re.match(r'.*/filter_([0-9]{8})', filter_file)
+            match = re.match(r'.*/filter_([0-9]{8}_[0-9]{2,3})', filter_file)
             init_times_list.append(match.group(1))
         updated_init_times_list = sorted(init_times_list)
 
@@ -1267,10 +1196,8 @@ def get_updated_init_times(input_dir, config=None):
 
 def get_dirs(base_dir):
     """! Get a list of directories under a base directory.
-
         Args:
             @param base_dir:  The base directory from where search begins
-
        Returns:
            dir_list:  A list of directories under the base_dir
     """
@@ -1293,7 +1220,6 @@ def getlist(s, logger=None):
          if s is ''
            '4,4,2,4,2,4,2, ' or '4,4,2,4,2,4,2 ' or
            '4, 4, 4, 4, ' or '4, 4, 4, 4 '
-
     """
 
     # removes surrounding comma, and spaces, if present.
@@ -1322,12 +1248,8 @@ def getlistint(s):
 
 # hours
 def shift_time(time, shift):
-    return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
-            datetime.timedelta(hours=shift)).strftime("%Y%m%d%H%M")
-
-#def shift_time(time, fmt, shift):
-#    return (datetime.datetime.strptime(time, fmt) +
-#            datetime.timedelta(hours=shift)).strftime(fmt)
+    return (datetime.datetime.strptime(time, "%Y%m%d%H") +
+            datetime.timedelta(hours=shift)).strftime("%Y%m%d%H")
 
 
 if __name__ == "__main__":
