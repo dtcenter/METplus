@@ -38,7 +38,7 @@ logger = None
 def usage():
     print("Usage statement")
     print ('''
-Usage: run_example_uswrp.py [ -c /path/to/additional/conf_file] [options]
+Usage: master_met_plus.py [ -c /path/to/additional/conf_file] [options]
     -c|--config <arg0>      Specify custom configuration file to use
     -r|--runtime <arg0>     Specify initialization time to process
     -h|--help               Display this usage statement
