@@ -39,7 +39,7 @@ class SeriesByInitWrapper(CommandBuilder):
         super(SeriesByInitWrapper, self).__init__(p, logger)
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
-        met_build_base = p.getdir('MET_BUILD_BASE')
+        # met_build_base = p.getdir('MET_BUILD_BASE')
         self.p = p
         self.logger = logger
         self.var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
