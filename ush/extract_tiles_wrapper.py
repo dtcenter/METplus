@@ -92,8 +92,6 @@ class ExtractTilesWrapper(CommandBuilder):
         # directory
         util.prune_empty(self.filtered_out_dir, self.logger)
 
-        # Clean up the tmp directory
-        #        util.rmtree(tmp_dir)
         msg = ("INFO|[" + cur_function + ":" + cur_filename +
                "] | Finished extract tiles")
         self.logger.info(msg)
