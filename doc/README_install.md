@@ -141,7 +141,7 @@ For example, the METplus_test_data.20170109.tar.gz, includes a "reduced_model_da
 directory, which contains extra tropical cyclone track data.  If you wanted to put this data at "/d1/data/SBU", you would set the following:
 
 PROJ_DIR = /d1/data/SBU
-GFS_DIR = GFS_DIR = {PROJ_DIR}/reduced_model_data
+MODEL_DATA_DIR = GFS_DIR = {PROJ_DIR}/reduced_model_data
 TRACK_DATA_DIR = {PROJ_DIR}/track_data
 
 
