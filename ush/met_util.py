@@ -446,7 +446,7 @@ def extract_year_month(init_time, logger):
 
 def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
                         config):
-    """! Retrieves the data from the GFS_DIR (defined in metplus.conf)
+    """! Retrieves the data from the MODEL_DATA_DIR (defined in metplus.conf)
          that corresponds to the storms defined in the tmp_filename:
         1) create the analysis tile and forecast file names from the
            tmp_filename file.
@@ -486,7 +486,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
     cur_function = sys._getframe().f_code.co_name
 
     # Get variables, etc. from param/config file.
-    gfs_dir = config.getdir('GFS_DIR')
+    model_data_dir = config.getdir('MODEL_DATA_DIR')
     regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE_EXE')
     wgrib2_exe = config.getexe('WGRIB2')
     egrep_exe = config.getexe('EGREP_EXE')
@@ -545,10 +545,10 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
                 logger.WARN("RuntimeError raised")
 
             lead_str = str(fcst_hr).zfill(3)
-            fcst_dir = os.path.join(gfs_dir, init_ymd)
+            fcst_dir = os.path.join(model_data_dir, init_ymd)
             init_ymdh_split = init_ymdh.split("_")
             init_yyyymmddhh = "".join(init_ymdh_split)
-            anly_dir = os.path.join(gfs_dir, valid_ymd)
+            anly_dir = os.path.join(model_data_dir, valid_ymd)
             valid_ymdh_split = valid_ymdh.split("_")
             valid_yyyymmddhh = "".join(valid_ymdh_split)
 
