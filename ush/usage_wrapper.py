@@ -30,9 +30,9 @@ class UsageWrapper(CommandBuilder):
                                     'GridStat', 'Mode', 'RegridDataPlane']
 
     def run_all_times(self):
-        print("This is a default process, please indicate more specific " +
-              "processes in the PROCESS_LIST variable in one of the " +
-              "following configuration files:\n " +
+        print("USAGE:\n  This is a default process, please indicate more " +
+              " specific processes in the PROCESS_LIST variable in one " +
+              "or more of the following configuration files:\n " +
               "-parm/metplus_config/metplus_runtime.conf\n " +
               "-parm/metplus_use_cases/<usecase_name>/<usecase_name>.conf\n " +
               "-parm/metplus_use_cases/<usecase_name>/" +
