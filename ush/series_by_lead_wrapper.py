@@ -27,12 +27,8 @@ import config_metplus
 # SeriesByLeadWrapper.py [-c /path/to/user.template.conf]
 # @endcode
 
-
-
 # pylint:disable=too-many-instance-attributes
 # all the attributes are necessary for performing tasks.
-
-
 class SeriesByLeadWrapper(CommandBuilder):
     """! @brief SeriesByLeadWrapper performs series analysis of paired
          data based on lead time and generates plots for each requested
@@ -67,7 +63,8 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.convert_exe = p.getexe('CONVERT_EXE')
         self.ncap2_exe = p.getexe('NCAP2_EXE')
         self.ncdump_exe = p.getexe('NCDUMP_EXE')
-        met_build_base = self.p.getdir('MET_BUILD_BASE')
+        self.rm_exe = p.getexe("RM_EXE")
+        # met_build_base = self.p.getdir('MET_BUILD_BASE')
         # self.series_analysis_exe = os.path.join(met_build_base,
         #                                         'bin/series_analysis')
         self.series_analysis_exe = p.getexe("SERIES_ANALYSIS")
@@ -257,7 +254,7 @@ class SeriesByLeadWrapper(CommandBuilder):
               @param init_times: A list of init times under which series
               filters will be applied.
             Returns:
-              tile_dir:  A directory of the resulting files from applying
+              filter_tile_dir:  A directory of the resulting files from applying
                          the filter criteria (as specified in the param/
                          config file).
         """
@@ -293,7 +290,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 # list of files that meet the filter criteria.
                 util.create_filter_tmp_files(filtered_files_list,
                                              self.series_lead_filtered_out_dir)
-                tile_dir = self.series_lead_filtered_out_dir
+                filter_tile_dir = self.series_lead_filtered_out_dir
             else:
                 # No data meet filter criteria, use data from extract
                 #  tiles directory.
@@ -301,15 +298,15 @@ class SeriesByLeadWrapper(CommandBuilder):
                        " filter criteria. Continue using all available data "
                        "in extract tiles directory.")
                 self.logger.debug(msg)
-                tile_dir = self.extract_tiles_dir
+                filter_tile_dir = self.extract_tiles_dir
 
         else:
             # No additional filtering was requested.  The extract tiles
             # directory is the
             # source of input tile data.
-            tile_dir = self.extract_tiles_dir
+            filter_tile_dir = self.extract_tiles_dir
 
-        return tile_dir
+        return filter_tile_dir
 
     def perform_series_for_fhr_groups(self, tile_dir):
         """! Series analysis for groups based on forecast hours
@@ -363,7 +360,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             out_dir = ''.join(out_dir_parts)
             util.mkdir_p(out_dir)
             msg = ('DEBUG|' + cur_filename + '|' + cur_function + ' | '
-                                                                  'Evaluating forecast hours: ' + cur_beg_str + ' to ' +
+                   'Evaluating forecast hours: ' + cur_beg_str + ' to ' +
                    cur_end_str)
             self.logger.debug(msg)
 
@@ -694,6 +691,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         # Use NCO utility ncap2 to find the max for the variable and
         # series_cnt_TOTAL pair.
         nseries_nc_path = os.path.join(base_nc_dir, 'nseries.nc')
+
         nco_nseries_cmd_parts = [self.ncap2_exe, ' -v -s ', '"',
                                  'max=max(series_cnt_TOTAL)', '" ',
                                  nc_var_file, ' ', nseries_nc_path]
@@ -703,8 +701,9 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         # Create an ASCII file with the max value, which can be parsed.
         nseries_txt_path = os.path.join(base_nc_dir, 'nseries.txt')
-        ncdump_max_cmd_parts = [self.ncdump_exe, ' ', base_nc_dir,
-                                '/nseries.nc > ', nseries_txt_path]
+
+        ncdump_max_cmd_parts = [self.ncdump_exe, ' ', nseries_nc_path,
+                                '> ', nseries_txt_path]
         ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
         ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
         run(ncdump_max_cmd)
@@ -718,14 +717,21 @@ class SeriesByLeadWrapper(CommandBuilder):
                         maximum = max_match.group(1)
 
                         # Clean up any intermediate .nc and .txt files
-                        nseries_files = os.path.join(base_nc_dir, '/nseries.*')
-                        for n_file in glob.glob(nseries_files):
-                            os.remove(n_file)
+                        nseries_list = [self.rm_exe + ' -rf', ' ', base_nc_dir,
+                                        '/nseries.txt']
+                        nseries_cmd = ''.join(nseries_list)
+                        os.system(nseries_cmd)
+
                         return maximum
+                    else:
+                        # Remove the nseries.nc file, it is no longer needed
+                        if os.path.isfile(nseries_nc_path):
+                            print("REMOVING OLD nc path file")
+                            os.remove(nseries_nc_path)
 
         except IOError:
             msg = ("ERROR|[" + cur_filename + ":" +
-                   cur_function + "]| cannot open the min text file")
+                   cur_function + "]| cannot open the max text file")
             self.logger.error(msg)
 
     def get_netcdf_min_max(self, do_fhr_by_range, nc_var_files, cur_stat):
