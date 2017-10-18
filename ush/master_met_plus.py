@@ -28,6 +28,7 @@ from series_by_init_wrapper import SeriesByInitWrapper
 #from mode_wrapper import ModeWrapper
 from usage_wrapper import UsageWrapper
 from command_builder import CommandBuilder
+from tcmpr_plotter_wrapper import TCMPRPlotterWrapper
 
 '''!@var logger
 The logging.Logger for log messages
