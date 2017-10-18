@@ -453,6 +453,7 @@ class SeriesByInitWrapper(CommandBuilder):
                                                  cur_init)
                         self.create_out_arg(cur_storm, cur_init, name, level)
                         self.build()
+                        self.clear()
 
     def create_obs_fcst_arg(self, param_arg, ascii_file_base, cur_storm,
                             cur_init):
