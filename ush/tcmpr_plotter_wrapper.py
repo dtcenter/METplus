@@ -8,6 +8,7 @@ import re
 import produtil.setup
 from produtil.run import batchexe
 from produtil.run import checkrun
+from command_builder import CommandBuilder
 import met_util as util
 import config_metplus
 
@@ -29,7 +30,7 @@ import config_metplus
 #
 
 
-class TCMPRPlotterWrapper(object):
+class TCMPRPlotterWrapper(CommandBuilder):
     """! A Python class than encapsulates the plot_tcmpr.R plotting script.
 
     Generates plots for input files with .tcst format and
@@ -41,63 +42,64 @@ class TCMPRPlotterWrapper(object):
     indicate a file or directory in the (required) -lookin option.
     """
 
-    def __init__(self, config):
+    def __init__(self, p, logger):
         """!Constructor for TCMPRPlotterWrapper
-        @param config:  The configuration instance, contains
-                        the conf file information."""
+            Args:
+            @param config:  The configuration instance, contains
+                            the conf file information.
+            @param logger:  A logger, can be None
+        """
+
         # pylint:disable=too-many-instance-attributes
         # All these instance attributes are needed to support the
         # plot_tcmpr.R functionality.
-
+        super(TCMPRPlotterWrapper, self).__init__(p, logger)
+        self.config = p
         # Location of the R-script, plot_tcmpr.
-        self.tcmpr_script = config.getexe('PLOT_TCMPR')
+        self.tcmpr_script = p.getexe('PLOT_TCMPR')
 
         # The only required argument, the name of the tcst file to plot.
-        self.input_data = config.getstr('config', 'TCMPR_DATA')
+        self.input_data = p.getstr('config', 'TCMPR_DATA')
 
         # Optional arguments
-        self.plot_config_file = config.getstr('config', 'TCMPR_PLOT_CONFIG')
-        self.output_base_dir = config.getdir('TCMPR_PLOT_OUT_DIR')
-        self.prefix = config.getstr('config', 'PREFIX')
-        self.title = config.getstr('config', 'TITLE')
-        self.subtitle = config.getstr('config', 'SUBTITLE')
-        self.xlab = config.getstr('config', 'XLAB')
-        self.ylab = config.getstr('config', 'YLAB')
-        self.xlim = config.getstr('config', 'XLIM')
-        self.ylim = config.getstr('config', 'YLIM')
-        self.filter = config.getstr('config', 'FILTER')
-        self.filtered_tcst_data = config.getstr('config',
-                                                'FILTERED_TCST_DATA_FILE')
-        self.dep_vars = config.getstr('config', 'DEP_VARS')
-        self.scatter_x = config.getstr('config', 'SCATTER_X')
-        self.scatter_y = config.getstr('config', 'SCATTER_Y')
-        self.skill_ref = config.getstr('config', 'SKILL_REF')
-        self.series = config.getstr('config', 'SERIES')
-        self.series_ci = config.getstr('config', 'SERIES_CI')
-        self.legend = config.getstr('config', 'LEGEND')
-        self.lead = config.getstr('config', 'LEAD')
-        self.plot_types = config.getstr('config', 'PLOT_TYPES')
-        self.rp_diff = config.getstr('config', 'RP_DIFF')
-        self.demo_year = config.getstr('config', 'DEMO_YR')
-        self.hfip_baseline = config.getstr('config', 'HFIP_BASELINE')
-        self.footnote_flag = config.getstr('config', 'FOOTNOTE_FLAG')
-        self.plot_config_options = config.getstr('config', 'PLOT_CONFIG_OPTS')
-        self.save_data = config.getstr('config', 'SAVE_DATA')
+        self.plot_config_file = p.getstr('config', 'TCMPR_PLOT_CONFIG')
+        self.output_base_dir = p.getdir('TCMPR_PLOT_OUT_DIR')
+        self.prefix = p.getstr('config', 'PREFIX')
+        self.title = p.getstr('config', 'TITLE')
+        self.subtitle = p.getstr('config', 'SUBTITLE')
+        self.xlab = p.getstr('config', 'XLAB')
+        self.ylab = p.getstr('config', 'YLAB')
+        self.xlim = p.getstr('config', 'XLIM')
+        self.ylim = p.getstr('config', 'YLIM')
+        self.filter = p.getstr('config', 'FILTER')
+        self.filtered_tcst_data = p.getstr('config',
+                                           'FILTERED_TCST_DATA_FILE')
+        self.dep_vars = p.getstr('config', 'DEP_VARS')
+        self.scatter_x = p.getstr('config', 'SCATTER_X')
+        self.scatter_y = p.getstr('config', 'SCATTER_Y')
+        self.skill_ref = p.getstr('config', 'SKILL_REF')
+        self.series = p.getstr('config', 'SERIES')
+        self.series_ci = p.getstr('config', 'SERIES_CI')
+        self.legend = p.getstr('config', 'LEGEND')
+        self.lead = p.getstr('config', 'LEAD')
+        self.plot_types = p.getstr('config', 'PLOT_TYPES')
+        self.rp_diff = p.getstr('config', 'RP_DIFF')
+        self.demo_year = p.getstr('config', 'DEMO_YR')
+        self.hfip_baseline = p.getstr('config', 'HFIP_BASELINE')
+        self.footnote_flag = p.getstr('config', 'FOOTNOTE_FLAG')
+        self.plot_config_options = p.getstr('config', 'PLOT_CONFIG_OPTS')
+        self.save_data = p.getstr('config', 'SAVE_DATA')
 
         # Optional flags, by default these will be set to False in the
         # produtil config files.
-        self.no_ee = config.getbool('config', 'NO_EE')
-        self.no_log = config.getbool('config', 'NO_LOG')
-        self.save = config.getbool('config', 'SAVE')
+        self.no_ee = p.getbool('config', 'NO_EE')
+        self.no_log = p.getbool('config', 'NO_LOG')
+        self.save = p.getbool('config', 'SAVE')
 
-        self.logger = util.get_logger(config)
-        self.logger.debug("DEBUG: TCMPR input " + self.input_data)
-        self.logger.debug("DEBUG: TCMPR config file " +
-                          self.plot_config_file)
-        self.logger.debug("DEBUG: output " + self.output_base_dir)
-        self.config = config
+        if self.logger is None:
+            self.logger = util.get_logger(self.p)
 
-    def create_command(self):
+    def run_all_times(self):
         """! Builds the command for invoking tcmpr.R plot script.
 
              Args:
@@ -109,6 +111,11 @@ class TCMPRPlotterWrapper(object):
         base_cmds = ''.join(base_cmds_list)
         self.logger.debug("base_cmds " + base_cmds)
         cmds_list = []
+
+        self.logger.debug("DEBUG: TCMPR input " + self.input_data)
+        self.logger.debug("DEBUG: TCMPR config file " +
+                          self.plot_config_file)
+        self.logger.debug("DEBUG: output " + self.output_base_dir)
 
         # Create a list of all the "optional" options and flags.
         optionals_list = self.retrieve_optionals()
@@ -348,8 +355,8 @@ if __name__ == "__main__":
         if CONFIG.getdir('MET_BIN') not in os.environ['PATH']:
             os.environ['PATH'] += os.pathsep + CONFIG.getdir('MET_BIN')
 
-        TCP = TCMPRPlotterWrapper(CONFIG)
-        TCP.create_command()
+        TCP = TCMPRPlotterWrapper(CONFIG, logger=None)
+        TCP.run_all_times()
         produtil.log.postmsg('TCMPRPlotterWrapper completed')
     except Exception as e:
         produtil.log.jlogger.critical(
