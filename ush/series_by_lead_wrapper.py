@@ -56,7 +56,6 @@ class SeriesByLeadWrapper(CommandBuilder):
                                                       'FHR_GROUP_LABELS'))
         self.var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
         self.stat_list = util.getlist(p.getstr('config', 'STAT_LIST'))
-        # self.plot_data_plane_exe = p.getexe('PLOT_DATA_PLANE')
         self.plot_data_plane_exe = os.path.join(
             self.p.getdir('MET_BUILD_BASE'),
             'bin/plot_data_plane')
@@ -67,7 +66,6 @@ class SeriesByLeadWrapper(CommandBuilder):
         met_build_base = self.p.getdir('MET_BUILD_BASE')
         self.series_analysis_exe = os.path.join(met_build_base,
                                                 'bin/series_analysis')
-        # self.series_analysis_exe = p.getexe("SERIES_ANALYSIS")
         self.extract_tiles_dir = p.getdir('EXTRACT_OUT_DIR')
         self.series_lead_filtered_out_dir = \
             p.getdir('SERIES_LEAD_FILTERED_OUT_DIR')
