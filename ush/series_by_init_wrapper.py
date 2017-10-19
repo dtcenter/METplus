@@ -39,7 +39,7 @@ class SeriesByInitWrapper(CommandBuilder):
         super(SeriesByInitWrapper, self).__init__(p, logger)
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
-        # met_build_base = p.getdir('MET_BUILD_BASE')
+
         self.p = p
         self.logger = logger
         self.var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
@@ -61,8 +61,9 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # For building the argument string via
         # CommandBuilder:
-        self.app_path = p.getexe('SERIES_ANALYSIS')
-        # self.app_path = os.path.join(met_build_base, 'bin/series_analysis')
+        # self.app_path = p.getexe('SERIES_ANALYSIS')
+        met_build_base = p.getdir('MET_BUILD_BASE')
+        self.app_path = os.path.join(met_build_base, 'bin/series_analysis')
         self.app_name = os.path.basename(self.app_path)
         self.inaddons = []
         self.infiles = []
