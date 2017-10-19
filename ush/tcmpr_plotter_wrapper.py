@@ -56,7 +56,8 @@ class TCMPRPlotterWrapper(CommandBuilder):
         super(TCMPRPlotterWrapper, self).__init__(p, logger)
         self.config = p
         # Location of the R-script, plot_tcmpr.
-        self.tcmpr_script = p.getexe('PLOT_TCMPR')
+        self.tcmpr_script = os.path.join(p.getdir('MET_BUILD_BASE'),
+                                         'scripts/Rscripts/plot_tcmpr.R')
 
         # The only required argument, the name of the tcst file to plot.
         self.input_data = p.getstr('config', 'TCMPR_DATA')
