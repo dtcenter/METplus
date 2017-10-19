@@ -600,9 +600,8 @@ class SeriesByInitWrapper(CommandBuilder):
         """
         convert_exe = self.p.getexe('CONVERT_EXE')
         background_map = self.p.getbool('config', 'BACKGROUND_MAP')
-        plot_data_plane_exe = self.p.getexe('PLOT_DATA_PLANE')
-        # plot_data_plane_exe = os.path.join(self.p.getdir('MET_BUILD_BASE'),
-        #  'bin/plot_data_plane')
+        plot_data_plane_exe = os.path.join(self.p.getdir('MET_BUILD_BASE'),
+                                           'bin/plot_data_plane')
         for cur_var in self.var_list:
             name, level = util.get_name_level(cur_var, self.logger)
             for cur_init in sorted_filter_init:
