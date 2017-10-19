@@ -47,7 +47,7 @@ class ExtractTilesWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(ExtractTilesWrapper, self).__init__(p, logger)
         met_build_base = p.getdir('MET_BUILD_BASE')
-        self.app_path = os.path.join(met_build_base, 'bin/tc_pairs')
+        self.app_path = os.path.join(p.getdir('MET_BUILD_BASE'), 'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
         self.tc_pairs_dir = self.p.getdir('TC_PAIRS_DIR')
         self.overwrite_flag = self.p.getbool('config',
