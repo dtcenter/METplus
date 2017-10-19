@@ -44,7 +44,6 @@ class TcStatWrapper(object):
     """
     def __init__(self, p):
         met_build_base = p.getdir('MET_BUILD_BASE')
-        # self.tc_exe = p.getexe('TC_STAT')
         self.tc_exe = os.path.join(met_build_base, 'bin/tc_stat')
 #        self.init_date_beg = p.getstr('config', 'INIT_DATE_BEG')
 #        self.init_date_end = p.getstr('config', 'INIT_DATE_END')
