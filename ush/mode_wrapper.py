@@ -29,9 +29,9 @@ class ModeWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(ModeWrapper, self).__init__(p, logger)
         self.app_path = self.p.getstr('exe', 'MODE')
-        # self.app_path = os.path.join(self.p.getdir('MET_BUILD_BASE'),
-        #                              'bin/mode')
-        self.app_name = os.path.basename(self.app_path)
+        self.app_path = os.path.join(self.p.getdir('MET_BUILD_BASE'),
+                                     'bin/mode')
+        # self.app_name = os.path.basename(self.app_path)
 
     def set_output_dir(self, outdir):
         self.outdir = "-outdir "+outdir
