@@ -61,7 +61,6 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # For building the argument string via
         # CommandBuilder:
-        # self.app_path = p.getexe('SERIES_ANALYSIS')
         met_build_base = p.getdir('MET_BUILD_BASE')
         self.app_path = os.path.join(met_build_base, 'bin/series_analysis')
         self.app_name = os.path.basename(self.app_path)
