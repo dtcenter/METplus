@@ -32,9 +32,8 @@ class GridStatWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
         super(GridStatWrapper, self).__init__(p, logger)
-        self.app_path = self.p.getstr('exe', 'GRID_STAT')
-        # met_build_base = p.getdir('MET_BUILD_BASE')
-        # self.app_path = os.path.join(met_build_base, 'bin/grid_stat')
+        met_build_base = p.getdir('MET_BUILD_BASE')
+        self.app_path = os.path.join(met_build_base, 'bin/grid_stat')
         self.app_name = os.path.basename(self.app_path)
 
     def set_output_dir(self, outdir):
