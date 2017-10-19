@@ -356,7 +356,6 @@ class TcPairsWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
         pairs_out_file = os.path.join(pairs_output_dir, date_file)
         pairs_out_file_with_suffix = pairs_out_file + ".tcst"
-        met_build_base = self.config.getdir('MET_BUILD_BASE')
         tc_pairs_exe = os.path.join(self.config.getdir('MET_BUILD_BASE'),
                                     'bin/tc_pairs')
         cmd_list = [tc_pairs_exe, " -adeck ",
