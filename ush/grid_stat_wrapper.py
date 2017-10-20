@@ -173,19 +173,19 @@ class GridStatWrapper(CommandBuilder):
                 if data_type == "NETCDF":
                     nfile = os.path.splitext(nfile)[0]+'.nc'
 
-                if not os.path.isfile(nfile):
-                    print("Calling GempakToCF to convert model to NetCDF")
-                    run_g2c = GempakToCFWrapper(self.p, self.logger)
-                    run_g2c.add_input_file(infile)
-                    run_g2c.set_output_path(nfile)
-                    cmd = run_g2c.get_command()
-                    if cmd is None:
-                        print("ERROR: GempakToCF could not generate command")
-                        return
-                    print("RUNNING: "+str(cmd))
-                    run_g2c.build()
+                    if not os.path.isfile(nfile):
+                        print("Calling GempakToCF to convert model to NetCDF")
+                        run_g2c = GempakToCFWrapper(self.p, self.logger)
+                        run_g2c.add_input_file(infile)
+                        run_g2c.set_output_path(nfile)
+                        cmd = run_g2c.get_command()
+                        if cmd is None:
+                            print("ERROR: GempakToCF could not generate command")
+                            return
+                        print("RUNNING: "+str(cmd))
+                        run_g2c.build()
 
-                run_pcp_ob.infiles[idx] = nfile
+                    run_pcp_ob.infiles[idx] = nfile
 
             bucket_template = self.p.getraw('filename_templates',
                                             model_type+'_BUCKET_TEMPLATE')
