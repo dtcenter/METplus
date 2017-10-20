@@ -105,6 +105,7 @@ class GridStatWrapper(CommandBuilder):
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))        
         for lead in lead_seq:
             task_info.lead = lead
+            task_info.valid_time = -1
             for fcst_var in fcst_vars:
                 task_info.fcst_var = fcst_var
                 # loop over models to compare
@@ -253,8 +254,12 @@ class GridStatWrapper(CommandBuilder):
                              str(obs_thresh)+" ]; },"
         else:
             data_type = self.p.getstr('config', ti.ob_type+'_NATIVE_DATA_TYPE')
-            fcst_field += "{ name=\""+ti.fcst_var+"_"+accum + \
-                          "\"; level=\"(*,*)\"; cat_thresh=["
+            if data_type == "NETCDF":
+              fcst_field += "{ name=\""+ti.fcst_var+"_"+accum + \
+                            "\"; level=\"(*,*)\"; cat_thresh=["
+            else:
+              fcst_field += "{ name=\""+ti.fcst_var + \
+                            "\"; level=\"[A"+accum.zfill(2)+"]\"; cat_thresh=["                
             for fcst_thresh in fcst_threshs:
                 fcst_field += "gt"+str(fcst_thresh)+", "
             fcst_field = fcst_field[0:-2]

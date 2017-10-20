@@ -96,7 +96,7 @@ class RegridDataPlaneWrapper(CommandBuilder):
         if cmd is None:
             print("ERROR: regrid_data_plane could not generate command")
             return
-        print("RUNNING: " + str(cmd))
+#        print("RUNNING: " + str(cmd))
         self.logger.info("")
         self.build()
         self.clear()
