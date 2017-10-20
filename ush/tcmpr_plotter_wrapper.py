@@ -45,7 +45,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
     def __init__(self, p, logger):
         """!Constructor for TCMPRPlotterWrapper
             Args:
-            @param config:  The configuration instance, contains
+            @param p:  The configuration instance, contains
                             the conf file information.
             @param logger:  A logger, can be None
         """
@@ -60,9 +60,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
             self.logger = util.get_logger(self.p)
 
 
-        # RSCRIPTS_BASE and MET_BUILD_BASE are required environment variables
-        # for the plot_tcmpr.R met-6.0 script and MUST be set.
-        # User environment variable settings take precedence over configuration files.
+        # RSCRIPTS_BASE and MET_BUILD_BASE are required environment
+        # variables for the plot_tcmpr.R met-6.0 script and MUST be set.
+        # User environment variable settings take precedence over
+        # configuration files.
         if 'RSCRIPTS_BASE' in os.environ:
             self.logger.info('Using RSCRIPTS_BASE setting from user '
                              'environment instead of metplus configuration '
@@ -73,9 +74,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
         if 'MET_BUILD_BASE' in os.environ:
             self.logger.info('Using MET_BUILD_BASE setting from user '
                              'environment instead of metplus configuration '
-                             'file. Using: %s'% os.environ['MET_BUILD_BASE'])
-            self.tcmpr_script = os.path.join(os.environ['MET_BUILD_BASE'],
-                                         'scripts/Rscripts/plot_tcmpr.R')
+                             'file. Using: %s' % os.environ['MET_BUILD_BASE'])
+            self.tcmpr_script = \
+                os.path.join(os.environ['MET_BUILD_BASE'],
+                             'scripts/Rscripts/plot_tcmpr.R')
         else:
             os.environ['MET_BUILD_BASE'] = p.getdir('MET_BUILD_BASE')
             self.tcmpr_script = os.path.join(p.getdir('MET_BUILD_BASE'),
@@ -85,7 +87,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         self.input_data = p.getstr('config', 'TCMPR_DATA')
 
         # Optional arguments
-        self.plot_config_file = p.getstr('config', 'TCMPR_PLOT_CONFIG')
+        self.plot_config_file = p.getstr('config', 'CONFIG_FILE')
         self.output_base_dir = p.getdir('TCMPR_PLOT_OUT_DIR')
         self.prefix = p.getstr('config', 'PREFIX')
         self.title = p.getstr('config', 'TITLE')
