@@ -29,9 +29,8 @@ from command_builder import CommandBuilder
 class RegridDataPlaneWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(RegridDataPlaneWrapper, self).__init__(p, logger)
-        # self.app_path = os.path.join(self.p.getdir('MET_BUILD_BASE'),
-        #                              'bin/regrid_data_plane')
-        self.app_path = self.p.getstr('exe', 'REGRID_DATA_PLANE_EXE')
+        self.app_path = os.path.join(self.p.getdir('MET_BUILD_BASE'),
+                                     'bin/regrid_data_plane')
         self.app_name = os.path.basename(self.app_path)
 
     def run_at_time(self, init_time):
