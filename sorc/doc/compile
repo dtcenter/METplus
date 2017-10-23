@@ -14,7 +14,9 @@ fi
 # like hwrf, defining here lets you specifiy which conf files you 
 # want documented.
 ../../ush/confdoc.py \
-    ../../parm/metplus.conf \
+    ../../parm/metplus_config/metplus_system.conf \
+    ../../parm/metplus_config/metplus_runtime.conf \
+    ../../parm/metplus_config/metplus_data.conf \
     > ../../doc/config-files.dox
 
 cat Doxyfile.in | sed 's,--PROJECT_NUMBER--,'$version',g' > Doxyfile
