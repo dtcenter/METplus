@@ -42,7 +42,7 @@ fi
 #doxygen='/usr/bin/doxygen'
 #version="trunk@5501"
 
-metplus_ver='Alpha_2-produtil'
+metplus_ver='Beta-METplus'
 echo "version='$metplus_ver'" >> doxygenloc
 
 # ----
