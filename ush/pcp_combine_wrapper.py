@@ -204,6 +204,7 @@ class PcpCombineWrapper(CommandBuilder):
 #                files = sorted(glob.glob("{:s}/{:s}/*{:s}*"
 #                                         .format(self.input_dir,
 #                                                 start_time[0:8], start_time)))
+                print("INPUTDIR IS:"+self.input_dir+" and START TIME IS:"+start_time)
                 files = sorted(glob.glob("{:s}/*{:s}*"
                                          .format(self.input_dir,
                                                  start_time)))
@@ -293,7 +294,6 @@ class PcpCombineWrapper(CommandBuilder):
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
         for lead in lead_seq:
             task_info.lead = lead
-            task_info.valid_time = -1
             for fcst_var in fcst_vars:
                 task_info.fcst_var = fcst_var
                 # loop over models to compare

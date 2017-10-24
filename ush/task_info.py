@@ -42,8 +42,7 @@ class TaskInfo:
       if self.valid_time is not -1:
           return self.valid_time
       if self.init_time is not -1 and self.lead is not -1:
-          self.valid_time = util.shift_time(self.init_time, self.lead)
-          return self.valid_time
+          return util.shift_time(self.init_time, self.lead)
       print("ERROR: Could not compute valid_time")
       exit()
 
@@ -52,6 +51,5 @@ class TaskInfo:
       if self.init_time is not -1:
           return self.init_time
       if self.valid_time is not -1 and self.lead is not -1:
-          self.init_time = util.shift_time(self.valid_time, -self.lead)
-          return self.init_time
-      return -1  
+          return util.shift_time(self.valid_time, -self.lead)
+      return -1

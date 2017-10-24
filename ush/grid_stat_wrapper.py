@@ -104,7 +104,6 @@ class GridStatWrapper(CommandBuilder):
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))        
         for lead in lead_seq:
             task_info.lead = lead
-            task_info.valid_time = -1
             for fcst_var in fcst_vars:
                 task_info.fcst_var = fcst_var
                 # loop over models to compare
