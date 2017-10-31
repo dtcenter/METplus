@@ -59,7 +59,6 @@ class TCMPRPlotterWrapper(CommandBuilder):
         if self.logger is None:
             self.logger = util.get_logger(self.p)
 
-
         # RSCRIPTS_BASE and MET_BUILD_BASE are required environment
         # variables for the plot_tcmpr.R met-6.0 script and MUST be set.
         # User environment variable settings take precedence over
@@ -67,7 +66,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         if 'RSCRIPTS_BASE' in os.environ:
             self.logger.info('Using RSCRIPTS_BASE setting from user '
                              'environment instead of metplus configuration '
-                             'file. Using: %s'% os.environ['RSCRIPTS_BASE'])
+                             'file. Using: %s' % os.environ['RSCRIPTS_BASE'])
         else:
             os.environ['RSCRIPTS_BASE'] = p.getdir('RSCRIPTS_BASE')
 
@@ -83,7 +82,8 @@ class TCMPRPlotterWrapper(CommandBuilder):
             self.tcmpr_script = os.path.join(p.getdir('MET_BUILD_BASE'),
                                              'scripts/Rscripts/plot_tcmpr.R')
 
-        # The only required argument, the name of the tcst file to plot.
+        # The only required argument for plot_tcmpr.R, the name of
+        # the tcst file to plot.
         self.input_data = p.getstr('config', 'TCMPR_DATA')
 
         # Optional arguments
@@ -142,6 +142,9 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # Create a list of all the "optional" options and flags.
         optionals_list = self.retrieve_optionals()
 
+        # Create the output base directory
+        util.mkdir_p(self.output_base_dir)
+
         # If input data is a file, create a single command and invoke R script.
         if os.path.isfile(self.input_data):
             self.logger.debug("Currently plotting " + self.input_data)
@@ -152,9 +155,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # because we are supporting the plotting of multiple tcst files
             # in a directory.
             if self.output_base_dir:
-                dated_output_dir = self.create_output_subdir(self.input_data)
+                # dated_output_dir = self.create_output_subdir(self.input_data)
                 optionals_list.append(' -outdir ')
-                optionals_list.append(dated_output_dir)
+                # optionals_list.append(dated_output_dir)
+                optionals_list.append(self.output_base_dir)
                 optionals = ''.join(optionals_list)
 
             if optionals:
@@ -182,75 +186,69 @@ class TCMPRPlotterWrapper(CommandBuilder):
                                      "continuing: " + ese)
 
                     # Remove the empty directory
-                    if not os.listdir(dated_output_dir):
-                        os.rmdir(dated_output_dir)
+                    if not os.listdir(self.output_base_dir):
+                        os.rmdir(self.output_base_dir)
                     pass
 
-        # If the input data is a directory, create a command for each
-        # file in the directory and invoke the R script for each tcst file.
+        # If the input data is a directory, create a list of all the
+        # files in the directory and invoke the R script for this list
+        # of files.
         if os.path.isdir(self.input_data):
             self.logger.debug("plot all files in directory " +
                               self.input_data)
             cmds_list = []
-            all_tcst_files = util.get_files(self.input_data, ".*.tcst",
-                                            self.logger)
+            all_tcst_files_list = util.get_files(self.input_data, ".*.tcst",
+                                                 self.logger)
+            all_tcst_files = ' '.join(all_tcst_files_list)
             self.logger.debug("num of files " + str(len(all_tcst_files)))
-            for tcst_file in all_tcst_files:
-                self.logger.info("INFO: Generating requested plots for " +
-                                 tcst_file)
-                # Check if the file is empty, if so skip to next file.
-                if os.stat(tcst_file).st_size == 0:
-                    self.logger.warn("WARNING: " + tcst_file +
-                                     " is empty, continue to next file"
-                                     "in list.")
-                    continue
+            # Append the mandatory -lookin option to the base command.
+            cmds_list.append(base_cmds)
+            cmds_list.append(all_tcst_files)
+            # dated_output_dir = self.create_output_subdir(self.output_plot)
+            dated_output_dir = self.output_base_dir
+            if self.output_base_dir:
+                cmds_list.append(' -outdir ')
+                util.mkdir_p(self.output_base_dir)
+                cmds_list.append(self.output_base_dir)
+                self.logger.debug("DEBUG: Creating dated output dir " +
+                                  dated_output_dir)
 
-                # Append the mandatory -lookin option to the base command.
-                cmds_list.append(base_cmds)
-                cmds_list.append(tcst_file)
-                dated_output_dir = self.create_output_subdir(tcst_file)
+            if optionals_list:
+                remaining_options = ''.join(optionals_list)
+                cmds_list.append(remaining_options)
 
-                if self.output_base_dir:
-                    cmds_list.append(' -outdir ')
-                    cmds_list.append(dated_output_dir)
-                    self.logger.debug("DEBUG: Creating dated output dir " +
-                                      dated_output_dir)
+            # Due to the way cmds_list was created, join it all in to
+            # one string and than split that in to a list, so element [0]
+            # is 'Rscript', instead of 'Rscript self.tcmpr_script -lookin'
+            cmds_list = ''.join(cmds_list).split()
+            cmd = batchexe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
+            self.logger.debug("DEBUG:  Command run " + cmd.to_shell())
 
-                if optionals_list:
-                    remaining_options = ''.join(optionals_list)
-                    cmds_list.append(remaining_options)
+            # pylint:disable=unnecessary-pass
+            # If a tc file is empty, continue to the next, thus the pass
+            # isn't unnecessary.
+            try:
+                checkrun(cmd)
+            except produtil.run.ExitStatusException as ese:
+                # If the tcst file is empty (with the exception of the
+                #  header), or there is some other problem, then
+                # plot_tcmpr.R will return with a non-zero exit status of 1
+                self.logger.warn("WARN: plot_tcmpr.R returned non-zero"
+                                 " exit status, tcst file may be missing"
+                                 " data... continuing: " + str(ese))
+                # Remove the empty directory
+                # Remove the empty directory
+                if not os.listdir(dated_output_dir):
+                    os.rmdir(dated_output_dir)
 
-                # Due to the way cmds_list was created, join it all in to
-                # one string and than split that in to a list, so element [0]
-                # is 'Rscript', instead of 'Rscript self.tcmpr_script -lookin'
-                cmds_list = ''.join(cmds_list).split()
-                cmd = batchexe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
-                self.logger.debug("DEBUG:  Command run " + cmd.to_shell())
-
-                # pylint:disable=unnecessary-pass
-                # If a tc file is empty, continue to the next, thus the pass
-                # isn't unnecessary.
-                try:
-                    checkrun(cmd)
-                except produtil.run.ExitStatusException as ese:
-                    # If the tcst file is empty (with the exception of the
-                    #  header), or there is some other problem, then
-                    # plot_tcmpr.R will return with a non-zero exit status of 1
-                    self.logger.warn("WARN: plot_tcmpr.R returned non-zero"
-                                     " exit status, tcst file may be missing"
-                                     " data... continuing: " + str(ese))
-                    # Remove the empty directory
-                    if not os.listdir(dated_output_dir):
-                        os.rmdir(dated_output_dir)
-
-                    pass
-                # Reset empty cmds_list to prepare for next tcst file.
-                cmds_list = []
+                pass
+            # Reset empty cmds_list to prepare for next tcst file.
+            cmds_list = []
 
         self.logger.info("INFO: Plotting complete")
 
     def create_output_subdir(self, tcst_file):
-        """ Extract the base portion of the tcst filename:
+        """! Extract the base portion of the tcst filename:
             eg amlqYYYYMMDDhh.gfso.nnnn in
             /d1/username/tc_pairs/YYYYMM/amlqYYYYMMDDhh.gfso.nnnn and use this
             as the subdirectory (gets appended to the TCMPR output directory).
@@ -371,7 +369,7 @@ if __name__ == "__main__":
         # Read in the configuration object CONFIG
         CONFIG = config_metplus.setup()
 
-        #if CONFIG.getdir('MET_BIN') not in os.environ['PATH']:
+        # if CONFIG.getdir('MET_BIN') not in os.environ['PATH']:
         #    os.environ['PATH'] += os.pathsep + CONFIG.getdir('MET_BIN')
 
         TCP = TCMPRPlotterWrapper(CONFIG, logger=None)
