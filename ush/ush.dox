@@ -7,7 +7,7 @@ wrapping the MET tools suite.
 
 #### Utility scripts of general interest:
 
-* master_met_plus ---  This is the main script that calls all the 
+* master_metplus ---  This is the main script that calls all the 
   tasks in the PROCESS_LIST.
 
 * run_tc_pairs --- Runs tc_pairs to parse ADeck and BDeck ATCF files, 

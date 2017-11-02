@@ -311,7 +311,7 @@ def load(filename):
 
 # A METplus Demonstration work-around ...
 # Assumes and reads in only baseconfs and -c add_conf_file
-# This allows calling from both master_met_plus.py and via
+# This allows calling from both master_metplus.py and via
 # the command line from an individual module, such as series_by_lead.py
 def load_baseconfs(add_conf_file=None):
     """ Loads the following conf files """

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-'''!@namespace master_met_plus
+'''!@namespace master_metplus
 Main script the processes all the tasks in the PROCESS_LIST
 '''
 
@@ -39,7 +39,7 @@ logger = None
 def usage():
     print("Usage statement")
     print ('''
-Usage: master_met_plus.py [ -c /path/to/additional/conf_file] [options]
+Usage: master_metplus.py [ -c /path/to/additional/conf_file] [options]
     -c|--config <arg0>      Specify custom configuration file to use
     -r|--runtime <arg0>     Specify initialization time to process
     -h|--help               Display this usage statement
@@ -53,12 +53,12 @@ def main():
     to perform various activities, such as series analysis."""
 
     # Job Logger
-    produtil.log.jlogger.info('Top of master_met_plus')
+    produtil.log.jlogger.info('Top of master_metplus')
 
     # Setup Task logger, Until Conf object is created, Task logger is
     # only logging to tty, not a file.
-    logger = logging.getLogger('master_met_plus')
-    logger.info('logger Top of master_met_plus.')
+    logger = logging.getLogger('master_metplus')
+    logger.info('logger Top of master_metplus.')
 
     # Used for logging and usage statment
     cur_filename = sys._getframe().f_code.co_filename
@@ -186,10 +186,10 @@ if __name__ == "__main__":
                                  jlogfile=os.environ['JLOGFILE'])
         else:
             produtil.setup.setup(send_dbn=False, jobname='run-METplus')
-        produtil.log.postmsg('master_met_plus is starting')
+        produtil.log.postmsg('master_metplus is starting')
 
         main()
-        produtil.log.postmsg('master_met_plus completed')
+        produtil.log.postmsg('master_metplus completed')
     except Exception as e:
         produtil.log.jlogger.critical(
             'master_metplus  failed: %s' % (str(e),), exc_info=True)

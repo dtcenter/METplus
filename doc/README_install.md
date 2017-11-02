@@ -240,7 +240,7 @@ How to Run?
 
 Once you have set up user.template.conf you can simply run:
 
-  master_met_plus.py -c user.template.conf
+  master_metplus.py -c user.template.conf
 
 
 
