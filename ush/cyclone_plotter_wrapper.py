@@ -57,6 +57,14 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.circle_marker = p.getint('config', 'CIRCLE_MARKER_SIZE')
         self.cross_marker = p.getint('config', 'CROSS_MARKER_SIZE')
 
+    def run_all_times(self):
+        """! Calls the defs needed to create the cyclone plots
+             run_all_times() is required by CommandBuilder.
+
+        """
+        self.retrieve_data()
+        self.create_plot()
+
     def retrieve_data(self):
         """! Retrieve data from track files and return the min and max lon.
             Returns:
@@ -288,6 +296,9 @@ class CyclonePlotterWrapper(CommandBuilder):
             requested in the metplus.conf file."""
         map, proj_type, extent = self.get_basemap()
 
+        #Make sure the output directory exists, and create it if it doesn't.
+        util.mkdir_p(self.output_dir)
+
         # For the legend box
         ax = plt.subplot(111)
         box = ax.get_position()
@@ -451,7 +462,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                     # dummy scatter point
                     if dummy_counter == 0:
                         plt.scatter(0, 0, zorder=2, marker=None, c='',
-                                    label="\nDate (dd/hhz) is the first " +
+                                    label="Date (dd/hhz) is the first " +
                                     "time storm was able to be tracked " +
                                     "in model")
                         dummy_counter += 1
@@ -464,12 +475,14 @@ class CyclonePlotterWrapper(CommandBuilder):
         # The legend is outside the plot, below the x-axis to
         # avoid obscuring any storm tracks in the Southern
         # Hemisphere.
-        ax.legend(loc='lower left', bbox_to_anchor=(-0.01, -0.3),
+        # ax.legend(loc='lower left', bbox_to_anchor=(-0.03, -0.5),
+        #           fancybox=True, shadow=True, scatterpoints=1,
+        #           prop={'size': 6})
+        ax.legend(loc='lower left', bbox_to_anchor=(-0.01, -0.4),
                   fancybox=True, shadow=True, scatterpoints=1,
                   prop={'size': 6})
 
         # Write the plot to the output directory
-        util.mkdir_p(self.output_dir)
         out_filename_parts = [self.init_date, '_', self.projection, '.png']
         output_plot_name = ''.join(out_filename_parts)
         plot_filename = os.path.join(self.output_dir, output_plot_name)
@@ -572,9 +585,8 @@ if __name__ == "__main__":
             os.environ['MET_BASE'] = p.getdir('MET_BASE')
 
         # Request data extraction and plot generation.
-        xtc = CyclonePlotterWrapper(p, None)
-        xtc.retrieve_data()
-        xtc.create_plot()
+        cyclone = CyclonePlotterWrapper(p, None)
+        cyclone.run_all_times()
         produtil.log.postmsg('CyclonePlotter completed')
 
     except Exception as e:
