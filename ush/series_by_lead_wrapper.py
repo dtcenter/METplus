@@ -57,14 +57,14 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
         self.stat_list = util.getlist(p.getstr('config', 'STAT_LIST'))
         self.plot_data_plane_exe = os.path.join(
-            self.p.getdir('MET_BUILD_BASE'),
+            self.p.getdir('MET_INSTALL_DIR'),
             'bin/plot_data_plane')
         self.convert_exe = p.getexe('CONVERT_EXE')
         self.ncap2_exe = p.getexe('NCAP2_EXE')
         self.ncdump_exe = p.getexe('NCDUMP_EXE')
         self.rm_exe = p.getexe("RM_EXE")
-        met_build_base = self.p.getdir('MET_BUILD_BASE')
-        self.series_analysis_exe = os.path.join(met_build_base,
+        met_install_dir = self.p.getdir('MET_INSTALL_DIR')
+        self.series_analysis_exe = os.path.join(met_install_dir,
                                                 'bin/series_analysis')
         self.extract_tiles_dir = p.getdir('EXTRACT_OUT_DIR')
         self.series_lead_filtered_out_dir = \

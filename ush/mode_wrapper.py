@@ -28,7 +28,7 @@ class ModeWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
         super(ModeWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_BUILD_BASE'),
+        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                      'bin/mode')
         self.app_name = os.path.basename(self.app_path)
 
