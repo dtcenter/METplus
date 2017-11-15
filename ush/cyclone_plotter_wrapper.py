@@ -8,6 +8,8 @@ A Python class that generates plots of extra tropical cyclone forecast data,
 
 from __future__ import print_function
 import os
+import time
+import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap as Basemap
@@ -319,6 +321,16 @@ class CyclonePlotterWrapper(CommandBuilder):
         plt.title(self.title + "\nFor forecast with initial time = " +
                   self.init_date)
 
+        # Create the NCAR watermark with a timestamp
+        # This will appear in the bottom left corner of the plot, below
+        # the legend.  NOTE: The timestamp is in the user's local time zone
+        # and not in UTC time.
+        ts = time.time()
+        st = datetime.datetime.fromtimestamp(ts).strftime(
+            '%Y-%m-%d %H:%M:%S')
+        watermark = 'NCAR METplus\nplot created at: ' + st
+        plt.text(1, -180, watermark, fontsize=8, alpha=0.25)
+        
         # Iterate over each unique storm id in self.storm_id_dict and
         # set the marker, marker size, and annotation
         # before drawing the line and scatter plots.
