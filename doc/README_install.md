@@ -1,4 +1,4 @@
-Model Evaluation Tools Plus  (METplus)  (May 2017)         {#METplus_install_guide}
+Model Evaluation Tools Plus  (METplus)           {#METplus_install_guide}
 ======================================================
 
 Welcome to the documentation for METplus.  METplus is a set of Python wrapper scripts around the MET verification tools
@@ -37,19 +37,16 @@ METplus was developed using Python version 2.7.9.  Python version 2.7 or greater
 Version Control
 ---------------
 
-METplus uses GIT for version control in a private NCAR repository.
+METplus uses GIT for version control in a public GitHub repository: NCAR/METplus.
 
 
 Getting the Code and Test Data
 ------------------------------
 
-Get the METplus package by running:
+Get the METplus latest release:
 
   wget http://www.dtcenter.org/met/users/downloads/METplus/METplus_vX.2017XXXX.tar
 
-Get the METplus test data by running:
-
-  wget http://www.dtcenter.org/met/users/downloads/METplus//METplus_test_data.20170109.tar.gz
 
 Decide where you would like to put the code and copy the METplus Package to that location.  Unpack the gzipped tar file in that directory by running:
 
@@ -240,7 +237,7 @@ How to Run?
 
 Once you have set up user.template.conf you can simply run:
 
-  master_metplus.py -c user.template.conf
+  master_met_plus.py -c user.template.conf
 
 
 
