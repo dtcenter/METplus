@@ -109,7 +109,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # User environment variable settings take precedence over
         # configuration files.
 
-        # The purpose of this method is to support met-5.2 and later, 
+        # The purpose of this method is to support MET 6.0 and later, 
         # and to not throw a superfluous error, due to a missing  env variable
         # that is version specific. 
         # For example,
@@ -130,11 +130,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # Evironment variables and met versions required  by the plot_tcmpr.R
         # met-6.1 and later: MET_INSTALL_DIR, MET_BASE
         # met-6.0: MET_BUILD_BASE, RSCRIPTS_BASE
-        # met-5.2 and earlier: MET_BUILD_BASE
 
         # At some point in the future MET_BUILD_BASE and RSCRIPTS_BASE
         # should go-away from all METplus references. When we no longer 
-        # need to support met-6.0 and met-5.2, this method  can be simplified.
+        # need to support MET 6.0, this method  can be simplified.
 
         # MET_INSTALL_DIR introduced in METplus conf file, for met-6.1 and later
         if 'MET_INSTALL_DIR' in os.environ:
