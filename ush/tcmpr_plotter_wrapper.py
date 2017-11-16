@@ -222,7 +222,9 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # is 'Rscript', instead of 'Rscript self.tcmpr_script -lookin'
             cmds_list = ''.join(cmds_list).split()
             cmd = batchexe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
-            self.logger.debug("DEBUG:  Command run " + cmd.to_shell())
+            # This can be a very long command if the user has
+            # indicated a directory.  Only log this if necessary.
+            # self.logger.debug("DEBUG:  Command run " + cmd.to_shell())
 
             # pylint:disable=unnecessary-pass
             # If a tc file is empty, continue to the next, thus the pass
