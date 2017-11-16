@@ -328,9 +328,9 @@ class CyclonePlotterWrapper(CommandBuilder):
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime(
             '%Y-%m-%d %H:%M:%S')
-        watermark = 'NCAR METplus\nplot created at: ' + st
+        watermark = 'DTC METplus\nplot created at: ' + st
         plt.text(1, -180, watermark, fontsize=8, alpha=0.25)
-        
+
         # Iterate over each unique storm id in self.storm_id_dict and
         # set the marker, marker size, and annotation
         # before drawing the line and scatter plots.
