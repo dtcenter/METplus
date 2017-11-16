@@ -118,7 +118,7 @@ the WGRIB2 executable is not currently in a standard location and will need to b
 
 COMMONLY USED BASE VARIABLES
 
-MET_BUILD_BASE is the base location for the MET release that you will be using. Please set that to an appropriate location.  
+MET_INSTALL_DIR is the base location for the MET release that you will be using. Please set that to an appropriate location.  
 
 OUTPUT_BASE is the base area for where the user would like to store their output data.
 
@@ -127,7 +127,7 @@ PARM_BASE is the parm subdirectory for the METplus configuration files.
 
 MET EXECUTABLES
 
-These fields rely on MET_BUILD_BASE and its "bin" subdirectory.  
+These fields rely on MET_INSTALL_DIR and its "bin" subdirectory.  
 
 
 INPUT DATA DIRECTORIES

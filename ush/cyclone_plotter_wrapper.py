@@ -31,7 +31,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             self.logger = util.get_logger(self.p)
         else:
             self.logger  = logger
-        self.app_path = os.path.join(p.getdir('MET_BUILD_BASE'),
+        self.app_path = os.path.join(p.getdir('MET_INSTALL_DIR'),
                                      'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
         self.input_data = p.getdir('CYCLONE_INPUT_DIR')
