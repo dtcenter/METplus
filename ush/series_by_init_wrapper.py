@@ -42,6 +42,9 @@ class SeriesByInitWrapper(CommandBuilder):
 
         self.p = p
         self.logger = logger
+        if self.logger is None:
+            self.logger = util.get_logger(self.p)
+
         self.var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
         self.stat_list = util.getlist(p.getstr('config', 'STAT_LIST'))
 

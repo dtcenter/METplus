@@ -11,70 +11,72 @@ import re
 import shutil
 import met_util as util
 import produtil.setup
+import sys
 
+
+"""!This class can NOT be instantiated directly. It MUST be called from main.
+    The main function operates outside of this class which sets up the METplus
+    configuration object, $METPLUS_CONF, used by all unit tests. 
+
+    Each unit test calls TcPairsWrapper.run_at_time
+"""
 
 class TestTcPairsWrapper(unittest.TestCase):
+
+    def __init__(self,*args):
+        super(TestTcPairsWrapper,self).__init__(*args)
+        # self.config is an instance variable BUT it will be the same
+        # for all instances since TestRunTcPairs.config_inst is static.
+        # We can really refer to TestRunTcPairs.config_inst
+        # throughout the class and don't need to assign it to the
+        # self.config instance variable.
+        self.config = TestTcPairsWrapper.config_inst
+
+
     def setUp(self):
         """ Run run_tc_pairs.py based on the metplus.conf file in the
             $METPLUS_BASE/parm directory, then base all unit tests on
             the output from that run.
         """
-        self.p = self.get_config()
-        self.logger = util.get_logger(self.p)
+        # Get the desired YYYYMMDD_HH init increment list
+        # convert the increment INIT_INC from seconds to hours
         self.init_list = util.gen_init_list(
-            self.p.getstr('config', 'INIT_DATE_BEG'),
-            self.p.getstr('config', 'INIT_DATE_END'),
-            self.p.getint('config', 'INIT_HOUR_INC'),
-            self.p.getstr('config', 'INIT_HOUR_END'))
+            self.config.getstr('config', 'INIT_BEG'),
+            self.config.getstr('config', 'INIT_BEG'),
+            int(self.config.getint('config', 'INIT_INC')/3600),
+            self.config.getstr('config', 'INIT_HOUR_END'))
+
         # just run the first time
-        self.request_time = self.init_list[0]
-
+        #self.request_time = self.init_list[0]
+        self.request_time = self.init_list
+        
     def tearDown(self):
-        shutil.rmtree(self.p.getdir('TRACK_DATA_SUBDIR_MOD'))
-        shutil.rmtree(self.p.getdir('TC_PAIRS_DIR'))
-
-    @staticmethod
-    def get_config():
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False,
-                                 jobname='test run_tc_pairs',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False,
-                                 jobname='test run_tc_pairs')
-        produtil.log.postmsg('unit test for run_tc_pairs is starting')
-
-        # Read in the configuration object CONFIG_INST
-        config_instance = config_metplus.setup()
-
-        if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = config_instance.getdir('MET_BASE')
-
-        return config_instance
+        shutil.rmtree(self.config.getdir('TRACK_DATA_SUBDIR_MOD'))
+        shutil.rmtree(self.config.getdir('TC_PAIRS_DIR'))
 
     def test_no_empty_mod_dir(self):
         """ Verify that we are creating the ATCF files. """
-        rtcp = TcPairsWrapper(self.p, self.logger)
+        rtcp = TcPairsWrapper(self.config, logger=None)
         rtcp.run_at_time(self.request_time)
-        tc_pairs_dir = self.p.getdir('TC_PAIRS_DIR')
+        tc_pairs_dir = self.config.getdir('TC_PAIRS_DIR')
         self.assertTrue(os.listdir(tc_pairs_dir))
 
     def test_no_empty_tcp_dir(self):
         """ Verify that we are creating tc pair output"""
-        rtcp = TcPairsWrapper(self.p, self.logger)
+        rtcp = TcPairsWrapper(self.config, logger=None)
         rtcp.run_at_time(self.request_time)
-        tc_pairs_dir = self.p.getdir('TC_PAIRS_DIR')
+        tc_pairs_dir = self.config.getdir('TC_PAIRS_DIR')
         self.assertTrue(os.listdir(tc_pairs_dir))
 
     def test_one_less_column(self):
         """ Tests the read_modify_write_file() method.
-            Verify that the output in the track_data_atcf directory
+            Verify that the output: in the track_data_atcf directory
             has one fewer column than the input track data.
         """
-        rtcp = TcPairsWrapper(self.p, self.logger)
+        rtcp = TcPairsWrapper(self.config, logger=None)
         rtcp.run_at_time(self.request_time)
-        track_data_dir = self.p.getdir('TRACK_DATA_DIR')
-        track_data_subdir_mod = self.p.getdir('TRACK_DATA_SUBDIR_MOD')
+        track_data_dir = self.config.getdir('TRACK_DATA_DIR')
+        track_data_subdir_mod = self.config.getdir('TRACK_DATA_SUBDIR_MOD')
 
         # So that we have independence of the start and end times indicated
         # in the metplus.conf or any other conf file, perform the test as
@@ -118,10 +120,10 @@ class TestTcPairsWrapper(unittest.TestCase):
            Get the first row of the first file in the same subdirectory of the
            modified and input directory (i.e. same month)
         """
-        rtcp = TcPairsWrapper(self.p, self.logger)
+        rtcp = TcPairsWrapper(self.config, logger=None)
         rtcp.run_at_time(self.request_time)
-        track_data_dir = self.p.getdir('TRACK_DATA_DIR')
-        track_data_subdir_mod = self.p.getdir('TRACK_DATA_SUBDIR_MOD')
+        track_data_dir = self.config.getdir('TRACK_DATA_DIR')
+        track_data_subdir_mod = self.config.getdir('TRACK_DATA_SUBDIR_MOD')
         mod_dir_list = os.listdir(track_data_subdir_mod)
 
         # Get the first directory in the TRACK_DATA_SUBDIR_MOD directory and
@@ -174,9 +176,9 @@ class TestTcPairsWrapper(unittest.TestCase):
             list of dates in the TRACK_DATA_SUBDIR_MOD directory are equal to
             the list of dates in the TRACK_DATA_DIR directory.
         """
-        rtcp = TcPairsWrapper(self.p, self.logger)
-        tc_pairs_dir = self.p.getdir('TC_PAIRS_DIR')
-        track_data_subdir_mod = self.p.getdir('TRACK_DATA_SUBDIR_MOD')
+        rtcp = TcPairsWrapper(self.config, logger=None)
+        tc_pairs_dir = self.config.getdir('TC_PAIRS_DIR')
+        track_data_subdir_mod = self.config.getdir('TRACK_DATA_SUBDIR_MOD')
         rtcp.run_at_time(self.request_time)
 
         # First check that there are the same number of subdirectories in the
@@ -204,16 +206,88 @@ class TestTcPairsWrapper(unittest.TestCase):
         """ Verify that for INIT_DATE_BEG=20141205 and
             INIT_DATE_END=20141206 for GFS data in /d1/SBU/GFS,
             the track_data_atcf directory contains 450 files"""
-        rtcp = TcPairsWrapper(self.p, self.logger)
+        rtcp = TcPairsWrapper(self.config, logger=None)
         request_time = "20141205_00"
         rtcp.run_at_time(request_time)
         request_subdir = "201412"
         atcf_dir = os.path.join(
-            self.p.getdir('TRACK_DATA_SUBDIR_MOD'),
+            self.config.getdir('TRACK_DATA_SUBDIR_MOD'),
             request_subdir)
         subdir_mod_file_list = os.listdir(atcf_dir)
         self.assertEquals(len(subdir_mod_file_list), 450)
 
 
 if __name__ == "__main__":
-    unittest.main()
+    # NOTE: We are using unittest in a non-conventional manner.
+    # This is more of an integration test, testing the output of running
+    # tc_pairs_wrapper.py.
+    #
+    # main Assumes ALL arguments passed in are only for METplus configuration
+    # file processing.
+    # The unittest class also has its own set of command line arguments
+    # but we will not use them and do not have logic in place to 
+    # automatically handle using command arguments for both METplus
+    # and the unittest framework.
+    # 
+    # So AFTER we use the conf file arguments we must pop the command 
+    # lines args so the unittest class doesn't try to process the conf file
+    # arguments as unittest arguments.
+
+    try:
+        print('\nEXITING, Do Not Run. This test file is not complete.')
+        print('Must implement a run_at_time method in tc_pairs_wrapper.py\n')
+        sys.exit(0)
+
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False,
+                                 jobname='test_tc_pairs_wrapper',
+                                 jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='test_tc_pairs_wrapper')
+        produtil.log.postmsg('test_tc_pairs_wrapper is starting')
+
+        # Process command line args conf files, creates a conf object and final conf file.
+        CONFIG_INST = config_metplus.setup()
+
+        # This is specfic to this unit test class.
+        # Set a class level variable, (a METPlus configuration object), that can be used
+        # and referenced by a unit test object.
+        TestTcPairsWrapper.config_inst = CONFIG_INST
+
+        if 'MET_BASE' not in os.environ:
+            os.environ['MET_BASE'] = CONFIG_INST.getdir('MET_BASE')
+
+        # Instantiates and runs tc pairs. Generating output.
+        #TCP = TestTcPairsWrapper(CONFIG_INST, logger=None)
+        #TCP.run_all_times()
+        #produtil.log.postmsg('test_tc_pairs_wrapper run_all_times  completed')
+
+        # Remove all conf file command line arguments from sys.argv,
+        # except sys.argv[0]. Removing conf args allows unittest.main() 
+        # to run, else it will fail.
+        for arg in range(1, len(sys.argv)):
+            sys.argv.pop()
+
+        # Workaround - to pass in command line args to unittest.main()
+        # You must code them in here ....
+        # For example, uncomment the next line and you will see available options.
+        # sys.argv.append('-h')
+
+        # Setting exit=False allows unittest to return and NOT sys.exit, which
+        # allows commands after unittest.main() to execute.
+        unittest.main(exit=False)
+
+        # Caveate to exit=False
+        # It seems if you pass in an argument  than unittest will sys.exit
+        # and these line do not get executed, 
+        # at least for '-h' argument .... ie. sys.argv.append('-h')
+        #shutil.rmtree(CONFIG_INST.getdir('TRACK_DATA_SUBDIR_MOD'))
+        #shutil.rmtree(CONFIG_INST.getdir('TC_PAIRS_DIR'))
+
+    except Exception as exc:
+        produtil.log.jlogger.critical(
+            'test_tc_pairs_wrapper failed: %s' % (str(exc),), exc_info=True)
+        sys.exit(2)
+
+
+
