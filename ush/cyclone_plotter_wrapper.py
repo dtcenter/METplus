@@ -10,11 +10,14 @@ from __future__ import print_function
 import os
 import time
 import datetime
+import re
+import sys
+#pylint:disable=import-error
+# numpy, matplotlib and mpl_toolkits are not part of the standard Python
+# library
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap as Basemap
-import re
-import sys
 import met_util as util
 import produtil.setup
 import config_metplus
@@ -26,11 +29,12 @@ class CyclonePlotterWrapper(CommandBuilder):
         Reads input from ATCF files generated from MET TC-Pairs
     """
     def __init__(self, p, logger):
+        #pylint:disable=redefined-outer-name
         super(CyclonePlotterWrapper, self).__init__(p, logger)
         if logger is None:
             self.logger = util.get_logger(self.p)
         else:
-            self.logger  = logger
+            self.logger = logger
         self.app_path = os.path.join(p.getdir('MET_INSTALL_DIR'),
                                      'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
@@ -41,8 +45,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.projection = p.getstr('config', 'CYCLONE_PROJECTION')
         self.model = p.getstr('config', 'CYCLONE_MODEL')
         self.title = p.getstr('config', 'CYCLONE_PLOT_TITLE')
-        self.gen_ascii = p.getbool('config', 'GENERATE_TRACK_ASCII'
-        )
+        self.gen_ascii = p.getbool('config', 'GENERATE_TRACK_ASCII')
         # Create a set to keep track of unique storm_ids for each track file.
         self.unique_storm_id = set()
         # Data structure to separate data based on storm id.
@@ -144,7 +147,8 @@ class CyclonePlotterWrapper(CommandBuilder):
                         init_ymd, init_hh = \
                             self.extract_date_and_time_from_init(init_time)
 
-                        if init_ymd == self.init_date and init_hh == self.init_hr:
+                        if init_ymd == self.init_date and\
+                                init_hh == self.init_hr:
                             if model_name == self.model:
                                 # Check for the requested model,
                                 # if the model matches the requested
@@ -190,10 +194,9 @@ class CyclonePlotterWrapper(CommandBuilder):
 
                                 # Identify points based on valid time (hh).
                                 # Useful for plotting later on.
-                                valid_match = re.match(r'[0-9]{8}_' +
-                                                       '([0-9]{2})[0-9]{4}',
-                                                       track_dict['valid_time']
-                                                       )
+                                valid_match = \
+                                    re.match(r'[0-9]{8}_([0-9]{2})[0-9]{4}',
+                                             track_dict['valid_time'])
                                 if valid_match:
                                     # Since we are only interested in 00,
                                     # 06, 12, and 18 hr times...
@@ -280,6 +283,8 @@ class CyclonePlotterWrapper(CommandBuilder):
         """
         match_ymd = re.match(r'([0-9]{8}).*', init_time_str)
         match_hh = re.match(r'[0-9]{8}_([0-9]{2,3})[0-9]{4}', init_time_str)
+        # pylint:disable=no-else-return
+        # Explicitly return None if no match is found
         if match_ymd and match_hh:
             return match_ymd.group(1), match_hh.group(1)
         else:
@@ -296,12 +301,15 @@ class CyclonePlotterWrapper(CommandBuilder):
     def create_plot(self):
         """ Create the plot, with a Basemap of the projection type
             requested in the metplus.conf file."""
+        #pylint:disable=redefined-builtin
+        #pylint:disable=unused-variable
         map, proj_type, extent = self.get_basemap()
 
-        #Make sure the output directory exists, and create it if it doesn't.
+        # Make sure the output directory exists, and create it if it doesn't.
         util.mkdir_p(self.output_dir)
 
         # For the legend box
+        #pylint:disable=invalid-name
         ax = plt.subplot(111)
         box = ax.get_position()
         ax.set_position([box.x0, box.y0 + box.height * 0.1, box.width,
@@ -361,7 +369,9 @@ class CyclonePlotterWrapper(CommandBuilder):
             # For this storm id, get a list of all data (corresponding
             # to lines/rows in the tcst data file).
             track_info_list = self.storm_id_dict[cur_storm_id]
-            if len(track_info_list) == 0:
+            #pylint:disable=len-as-condition
+            # if len(track_info_list) == 0:
+            if not track_info_list:
                 self.logger.error("Empty track list, no data extracted " +
                                   "from track files, exiting.")
                 sys.exit(1)
@@ -399,6 +409,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                     size_list.append(marker_size)
 
                 # Determine the first point, needed later to annotate.
+                #pylint:disable=invalid-name
                 dd = track['valid_dd']
                 hh = track['valid_hh']
                 if dd and hh:
@@ -411,11 +422,11 @@ class CyclonePlotterWrapper(CommandBuilder):
                 # Write to the ASCII track file, if requested
                 if self.gen_ascii:
                     line_parts = ['model_name: ', track['model_name'], '   ',
-                                  'storm_id: ',   track['storm_id'], '   ',
-                                  'init_time: ',  track['init_time'], '   ',
+                                  'storm_id: ', track['storm_id'], '   ',
+                                  'init_time: ', track['init_time'], '   ',
                                   'valid_time: ', track['valid_time'], '   ',
-                                  'lat: ',        str(track['lat']), '   ',
-                                  'lon: ',        str(track['lon']), '   ',
+                                  'lat: ', str(track['lat']), '   ',
+                                  'lon: ', str(track['lon']), '   ',
                                   'lead_group: ', track['lead_group'], '   ',
                                   'first_point:', str(track['first_point'])]
                     line = ''.join(line_parts)
@@ -438,7 +449,8 @@ class CyclonePlotterWrapper(CommandBuilder):
                 # overlaying the annotation text over all points (all but
                 # one will have text).
                 plt.annotate(anno, xy=(x, y), xytext=(2, 2),
-                             textcoords='offset points', fontsize=11, color='red')
+                             textcoords='offset points', fontsize=11,
+                             color='red')
 
             # Generate the scatterplot, where the 6/18 Z forecast times
             # are labelled with a '+'
@@ -528,6 +540,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         if self.projection == 'MERCATOR':
             # Define projection, scale, corners of map, and resolution.
             # For Mercator
+            # pylint:disable=redefined-builtin
             map = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80,
                           llcrnrlon=-180, urcrnrlon=180, lat_ts=20,
                           resolution='c')
@@ -565,6 +578,9 @@ class CyclonePlotterWrapper(CommandBuilder):
 
     @staticmethod
     def set_lead_group(track_dict, init_hh):
+        """! Sets the position indicator key to 0 if init hour is 0 or 12,
+        and 6 if init hour is 6 or 18.  This is used to determine which
+        symbol to use, a '+' or 'o' when plotting track points."""
         if init_hh == '00' or init_hh == '12':
             track_dict['position_indicator'] = '0'
         elif init_hh == '06' or init_hh == '18':
@@ -572,6 +588,7 @@ class CyclonePlotterWrapper(CommandBuilder):
 
     @staticmethod
     def rescale_lon(lon):
+        """! Rescales longitude, using the same logic employed by MET."""
         if float(lon) < 0.:
             adj_lon = lon + 360.
         elif float(lon) > 180.:
@@ -580,6 +597,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             adj_lon = lon
 
         return adj_lon
+
 
 if __name__ == "__main__":
     try:
@@ -591,12 +609,13 @@ if __name__ == "__main__":
             produtil.setup.setup(send_dbn=False,
                                  jobname='CyclonePlotter')
         produtil.log.postmsg('CyclonePlotter is starting')
-
+        #pylint:disable=invalid-name
         p = config_metplus.setup()
         if 'MET_BASE' not in os.environ:
             os.environ['MET_BASE'] = p.getdir('MET_BASE')
 
         # Request data extraction and plot generation.
+        #pylint:disable=invalid-name
         cyclone = CyclonePlotterWrapper(p, None)
         cyclone.run_all_times()
         produtil.log.postmsg('CyclonePlotter completed')
@@ -605,5 +624,3 @@ if __name__ == "__main__":
         produtil.log.jlogger.critical('CyclonePlotter failed: %s'
                                       % (str(e),), exc_info=True)
         sys.exit(2)
-
-
