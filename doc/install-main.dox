@@ -1,33 +1,12 @@
 /** @page install METplus Installation Guide
 
+Obtain METplus from the public GitHub repository: https://github.com/NCAR/METplus
 
-@todo edit me: install-main.dox, THIS PAGE is a STARTING PLACEHOLDER. 
-THIS PAGE NEEDS TO BE FULLY REVIEWED AND EDITED.
-
-There are two ways to obtain METplus: from the public DTC website, or
-from the GitHub repositories.  Most of this guide focuses on the 
-second option: how to install from the GitHub repository, the option used 
-by the METPlus team and most of our NOAA collaborators.  
-
-@section install-svn-ref Installation from the Public Repository
+@section install-github-ref Installation from the Public Repository
 
 Most of this guide explains how to compile, install and run the HWRF
 system from the public repository:
 
   + @subpage install-repo
-
-If you are downloading from the DTC Subversion server, then that is
-the page for you.
-
-@section install-public-ref Public METplus Release Tarballs
-
-If you download METplus tarballs off of the DTC website, this guide will
-not help you.  The installation process is different.  See the DTC
-webpage here:
-
-* http://www.dtcenter.org/met/users/docs/
-
-and search for the version of METplus that you are using under "METplus
-Documents."
 
 */

@@ -42,6 +42,9 @@ class SeriesByInitWrapper(CommandBuilder):
 
         self.p = p
         self.logger = logger
+        if self.logger is None:
+            self.logger = util.get_logger(self.p)
+
         self.var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
         self.stat_list = util.getlist(p.getstr('config', 'STAT_LIST'))
 
@@ -61,8 +64,8 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # For building the argument string via
         # CommandBuilder:
-        met_build_base = p.getdir('MET_BUILD_BASE')
-        self.app_path = os.path.join(met_build_base, 'bin/series_analysis')
+        met_install_dir = p.getdir('MET_INSTALL_DIR')
+        self.app_path = os.path.join(met_install_dir, 'bin/series_analysis')
         self.app_name = os.path.basename(self.app_path)
         self.inaddons = []
         self.infiles = []
@@ -600,7 +603,7 @@ class SeriesByInitWrapper(CommandBuilder):
         """
         convert_exe = self.p.getexe('CONVERT_EXE')
         background_map = self.p.getbool('config', 'BACKGROUND_MAP')
-        plot_data_plane_exe = os.path.join(self.p.getdir('MET_BUILD_BASE'),
+        plot_data_plane_exe = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                            'bin/plot_data_plane')
         for cur_var in self.var_list:
             name, level = util.get_name_level(cur_var, self.logger)

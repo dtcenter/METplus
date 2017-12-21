@@ -1,19 +1,17 @@
 /** @page confguide METplus Configuration Guide
 
-@todo edit me: confguide.dox, THIS PAGE is a STARTING PLACEHOLDER.
-THIS PAGE NEEDS TO BE FULLY REVIEWED AND EDITED.
-
 
 This page explains how to modify the *.conf files in the METplus parm
 directory, and explains the purpose of the various conf files.  There
 are a number of subpages with more detailed information:
 
-+ @subpage metplus-conf 
-+ @subpage available_configurations link to page that has examples of various configurations to run METplus.
++ @ref metplus_data_conf
++ @ref metplus_system_conf
++ @ref metplus_runtime_conf
 
-@todo Add input source and METplus configuration pages.
 
-The *.conf files configure various aspects of the METplus system.
+
+The *.configure various aspects of the METplus system.
 Users can also override these configuration settings manually on the
 command line. In the future, programmatically in the metplus.prelaunch()
 function.
@@ -21,20 +19,42 @@ function.
 These are the standard conf files read in by all workflows, in the
 order they are read in:
 
-File                     | Purpose
------------------------- | ----------------------------------------------------
-parm/metplus.conf        | Detailed configuration of most aspects of METplus.
-parm/user.template.conf  | Basic configuration settings.
+File                      | Purpose
+------------------------- | ----------------------------------------------------
+parm/met_config           | Directory for MET configuration files
+parm/metplus_config/metplus_data.conf    | Any data related settings (e.g. location of input data, filename templates, etc.)
+parm/metplus_config/metplus_system.conf  | User system/host machine settings (e.g. location of executables)
+parm/metplus_config/metplus_runtime.conf | Runtime related settings (e.g. process list)
 
-The first file, metplus.conf, should not need to be modified unless 
-one is making extensive changes to METplus, or adding new functionality to
-the underlying scripts.  Instead, one can specify additional
-configuration files that override the default settings.  See @ref
-available_configurations for a list of alternate METplus configurations,
-and how to enable them.
 
-The user.template.conf should be modified manually.  In fact, it is meant
-as a starting point for a user to override the values set in metplus.conf
-in order to run METplus in the users environment.
+NOTE: All MET configuration files should be placed in the parm/met_config directory.
+
+There are three mandatory METplus configuration files that reside in the parm/metplus_config
+directory: metplus_data.conf, metplus_system.conf,
+and metplus_runtime.conf.  The METplus settings are defined by key-value pairs that are
+grouped under the appropriate section heading:
+
+    [dir]
+    OUTPUT_DIR=/path/to/output-dir
+    INPUT_DIR=/path/to/input-dir
+    TMP_DIR=/path/to/tmp-dir
+
+The metplus_data.conf file contains information
+related to data, such as the locations of input data or any filename templates.
+The metplus_system.conf configuration file contains locations of executables,
+source code, output directories, and any other system-related settings.
+The metplus_runtime.conf configuration file contains information pertinent at
+run-time, such as a process list, any begin and end times and begin and end dates for
+evaluations, the log level, etc.  Once these three METplus configuration files are
+established, they can be reused for subsequent evaluations.  Customizations
+are accomplished through additional configuration files, at the
+command line. The additional configuration files can be used to define new
+settings or over-ride existing settings in any of the three mandatory/default
+METplus config files or other existing config files.
+
+A master METplus configuration file is created (the name and location are set in
+the parm/metplus_runtime.conf file) by collecting all the information from
+the three METplus configuration files and any additionally specified
+configuration files.
 
 */
