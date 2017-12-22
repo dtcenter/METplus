@@ -107,24 +107,23 @@ class GridStatBucketWrapper(CommandBuilder):
             for fcst_var in fcst_vars:
                 task_info.fcst_var = fcst_var
                 # loop over models to compare
-                accums = util.getlist(self.p.getstr('config', fcst_var+"_ACCUM"))
+                levels = util.getlist(self.p.getstr('config', fcst_var+"_LEVEL"))
                 ob_types = util.getlist(self.p.getstr('config', fcst_var+"_OBTYPE"))
-                for accum in accums:
-                    task_info.level = accum
+                for level in levels:
+                    task_info.level = level
                     for ob_type in ob_types:
                         task_info.ob_type = ob_type
-                        if lead < int(accum):
+                        if lead < int(level):
                             continue
                         self.run_at_time_once(task_info)
 
 
-#    def run_at_time_fcst(self, init_time, lead, accum, ob_type, fcst_var):
     def run_at_time_once(self, ti):
         grid_stat_out_dir = self.p.getstr('config', 'GRID_STAT_OUT_DIR')
 #        valid_time = util.shift_time(ti.init_time, ti.lead)
         valid_time = ti.getValidTime()
         init_time = ti.getInitTime()
-        accum = ti.level
+        level = ti.level
         model_type = self.p.getstr('config', 'MODEL_TYPE')
         regrid_dir = self.p.getstr('config', ti.ob_type+'_REGRID_DIR')
         regrid_template = self.p.getraw('filename_templates',
@@ -143,20 +142,20 @@ class GridStatBucketWrapper(CommandBuilder):
 
         # get model to compare
         model_dir = self.p.getstr('config', model_type+'_INPUT_DIR')
-        # check if accum exists in forecast file
+        # check if level exists in forecast file
         # If not, run pcp_combine to create it
         # TODO: remove reliance on model_type
         if model_type == 'HREF_MEAN' or model_type == "NATIONAL_BLEND":
             native_dir = self.p.getstr('config', model_type+'_NATIVE_DIR')
             run_pcp_ob = PcpCombineWrapper(self.p, self.logger)
-#            run_pcp_ob.run_at_time(valid_time, int(accum),
+#            run_pcp_ob.run_at_time(valid_time, int(level),
 #                                   model_type, fcst_var, True)
             #      valid_time = util.shift_time(init_time, lead)
             run_pcp_ob.set_input_dir(model_dir)
 
             run_pcp_ob.set_output_dir(model_bucket_dir)
-#            run_pcp_ob.get_accumulation(valid_time, int(accum),
-            run_pcp_ob.get_accumulation(valid_time, accum,
+#            run_pcp_ob.get_accumulation(valid_time, int(level),
+            run_pcp_ob.get_accumulation(valid_time, level,
                                         model_type, True)
 
             #  call GempakToCF if native file doesn't exist
@@ -190,7 +189,7 @@ class GridStatBucketWrapper(CommandBuilder):
             pcpSts = sts.StringSub(self.logger,
                                    bucket_template,
                                    valid=valid_time,
-                                   accum=str(ti.level).zfill(2))
+                                   level=str(ti.level).zfill(2))
             pcp_out = pcpSts.doStringSub()
             run_pcp_ob.set_output_filename(pcp_out)
             run_pcp_ob.add_arg("-name "+ti.fcst_var+"_"+ti.level)
@@ -214,7 +213,7 @@ class GridStatBucketWrapper(CommandBuilder):
         regridSts = sts.StringSub(self.logger,
                                   regrid_template,
                                   valid=valid_time,
-                                  accum=str(accum).zfill(2))
+                                  level=str(level).zfill(2))
         regrid_file = regridSts.doStringSub()
 
         regrid_path = os.path.join(regrid_dir, regrid_file)
@@ -229,9 +228,9 @@ class GridStatBucketWrapper(CommandBuilder):
         # set up environment variables for each grid_stat run
         # get fcst and obs thresh parameters
         # verify they are the same size
-        fcst_str = model_type+"_"+ti.fcst_var+"_"+accum+"_THRESH"
+        fcst_str = model_type+"_"+ti.fcst_var+"_"+level+"_THRESH"
         fcst_threshs = util.getlistfloat(self.p.getstr('config', fcst_str))
-        obs_str = ti.ob_type+"_"+ti.fcst_var+"_"+accum+"_THRESH"
+        obs_str = ti.ob_type+"_"+ti.fcst_var+"_"+level+"_THRESH"
         obs_threshs = util.getlistfloat(self.p.getstr('config', obs_str))
         if len(fcst_threshs) != len(obs_threshs):
             self.logger.error("run_example: Number of forecast and "\
@@ -243,27 +242,27 @@ class GridStatBucketWrapper(CommandBuilder):
 
         if self.p.getbool('config', model_type+'_IS_PROB'):
             for fcst_thresh in fcst_threshs:
-                fcst_field += "{ name=\"PROB\"; level=\"A"+accum + \
+                fcst_field += "{ name=\"PROB\"; level=\"A"+level + \
                               "\"; prob={ name=\""+ti.fcst_var + \
                               "\"; thresh_lo="+str(fcst_thresh)+"; } },"
             for obs_thresh in obs_threshs:
-                obs_field += "{ name=\""+obs_var+"_"+accum + \
+                obs_field += "{ name=\""+obs_var+"_"+level + \
                              "\"; level=\"(*,*)\"; cat_thresh=[ gt" + \
                              str(obs_thresh)+" ]; },"
         else:
             data_type = self.p.getstr('config', ti.ob_type+'_NATIVE_DATA_TYPE')
             if data_type == "NETCDF":
-              fcst_field += "{ name=\""+ti.fcst_var+"_"+accum + \
+              fcst_field += "{ name=\""+ti.fcst_var+"_"+level + \
                             "\"; level=\"(*,*)\"; cat_thresh=["
             else:
               fcst_field += "{ name=\""+ti.fcst_var + \
-                            "\"; level=\"[A"+accum.zfill(2)+"]\"; cat_thresh=["                
+                            "\"; level=\"[A"+level.zfill(2)+"]\"; cat_thresh=["                
             for fcst_thresh in fcst_threshs:
                 fcst_field += "gt"+str(fcst_thresh)+", "
             fcst_field = fcst_field[0:-2]
             fcst_field += " ]; },"
 
-            obs_field += "{ name=\"" + obs_var+"_" + accum + \
+            obs_field += "{ name=\"" + obs_var+"_" + level + \
                          "\"; level=\"(*,*)\"; cat_thresh=[ "
             for obs_thresh in obs_threshs:
                 obs_field += "gt"+str(obs_thresh)+", "
@@ -276,7 +275,7 @@ class GridStatBucketWrapper(CommandBuilder):
         self.add_env_var("MODEL", model_type)
         self.add_env_var("FCST_VAR", ti.fcst_var)
         self.add_env_var("OBS_VAR", obs_var)
-        self.add_env_var("ACCUM", accum)
+        self.add_env_var("ACCUM", level)
         self.add_env_var("OBTYPE", ti.ob_type)
         self.add_env_var("CONFIG_DIR", config_dir)
         self.add_env_var("FCST_FIELD", fcst_field)

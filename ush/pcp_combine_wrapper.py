@@ -153,7 +153,7 @@ class PcpCombineWrapper(CommandBuilder):
                 fSts = sts.StringSub(self.logger,
                                      file_template,
                                      valid=valid_time,
-                                     accum=str(accum).zfill(2))
+                                     level=str(accum).zfill(2))
                 # TODO: This assumes max 99 accumulation.
                 # zfill to 3 if above that is possible
                 search_file = os.path.join(self.input_dir, fSts.doStringSub())
@@ -176,7 +176,7 @@ class PcpCombineWrapper(CommandBuilder):
         last_time = util.shift_time(valid_time, -(int(accum) - 1))
         total_accum = int(accum)
 #        search_accum = total_accum
-        search_accum = self.p.getint('config', ob_type+'_ACCUM')
+        search_accum = self.p.getint('config', ob_type+'_LEVEL')
 
         # loop backwards in time until you have a full set of accum
         while last_time <= start_time:
@@ -214,7 +214,7 @@ class PcpCombineWrapper(CommandBuilder):
                     fSts = sts.StringSub(self.logger,
                                          file_template,
                                          valid=start_time,
-                                         accum=str(search_accum).zfill(2))
+                                         level=str(search_accum).zfill(2))
                     search_file = os.path.join(self.input_dir,
                                                fSts.doStringSub())
                     f = None
@@ -298,7 +298,7 @@ class PcpCombineWrapper(CommandBuilder):
                 task_info.fcst_var = fcst_var
                 # loop over models to compare
                 accums = util.getlist(
-                    self.p.getstr('config', fcst_var + "_ACCUM"))
+                    self.p.getstr('config', fcst_var + "_LEVEL"))
                 ob_types = util.getlist(
                     self.p.getstr('config', fcst_var + "_OBTYPE"))
                 for accum in accums:
@@ -355,7 +355,7 @@ class PcpCombineWrapper(CommandBuilder):
         pcpSts = sts.StringSub(self.logger,
                                 bucket_template,
                                 valid=valid_time,
-                                accum=str(accum).zfill(2))
+                                level=str(accum).zfill(2))
         pcp_out = pcpSts.doStringSub()
         self.set_output_filename(pcp_out)
         #            if(is_forecast):

@@ -62,7 +62,7 @@ class ModeWrapper(CommandBuilder):
         cmd += self.outdir
         return cmd
 
-    def run_at_time(self, init_time, accum, ob_type, fcst_var):
+    def run_at_time(self, init_time, level, ob_type, fcst_var):
         # TODO: Need to get model_path!
         model_type = self.p.getstr('config', 'MODEL_TYPE')
         obs_var = self.p.getstr('config', ob_type+"_VAR")
@@ -72,9 +72,9 @@ class ModeWrapper(CommandBuilder):
         obs_fields = list()
         for fcst_thresh in fcst_threshs:
             fcst_fields.append("{ name=\"" + fcst_var + "\"; level=\"A" +
-                               accum + "\";}")
+                               level + "\";}")
         for obs_thresh in obs_threshs:
-            obs_fields.append("{ name=\"" + obs_var + "_" + accum +
+            obs_fields.append("{ name=\"" + obs_var + "_" + level +
                               "\"; level=\"(*,*)\";}")
 
         for idx, fcst in enumerate(fcst_fields):
@@ -85,7 +85,7 @@ class ModeWrapper(CommandBuilder):
             self.add_env_var("MODEL", model_type)
             self.add_env_var("FCST_VAR", fcst_var)
             self.add_env_var("OBS_VAR", obs_var)
-            self.add_env_var("ACCUM", accum)
+            self.add_env_var("ACCUM", level)
             self.add_env_var("OBTYPE", ob_type)
             self.add_env_var("CONFIG_DIR", config_dir)
             self.add_env_var("FCST_FIELD", fcst)
