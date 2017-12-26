@@ -32,7 +32,7 @@ class GridStatBucketWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
         super(GridStatBucketWrapper, self).__init__(p, logger)
-        met_build_base = p.getdir('MET_BUILD_BASE')
+        met_build_base = p.getdir('MET_INSTALL_DIR')
         self.app_path = os.path.join(met_build_base, 'bin/grid_stat')
         self.app_name = os.path.basename(self.app_path)
 
