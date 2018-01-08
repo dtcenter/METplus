@@ -201,12 +201,10 @@ class PcpCombineWrapper(CommandBuilder):
                 search_accum -= 1
             else:  # not looking for forecast files
                 # get all files of valid_time (all accums)
-#                files = sorted(glob.glob("{:s}/{:s}/*{:s}*"
-#                                         .format(self.input_dir,
-#                                                 start_time[0:8], start_time)))
                 print("INPUTDIR IS:"+self.input_dir+" and START TIME IS:"+start_time)
-                files = sorted(glob.glob("{:s}/*{:s}*"
+                files = sorted(glob.glob("{:s}/{:s}/*{:s}*"
                                          .format(self.input_dir,
+                                                 start_time[0:8],
                                                  start_time)))
 
                 # look for biggest accum that fits search
@@ -306,8 +304,11 @@ class PcpCombineWrapper(CommandBuilder):
                     for ob_type in ob_types:
                         task_info.ob_type = ob_type
                         if lead < int(accum):
+                            print("Lead "+str(lead)+" is less than accum "+accum)
+                            print("Skipping...")
                             continue
-                        #                        self.run_at_time_fcst(task_info)
+                        vt = task_info.getValidTime()
+                        print("RUNNING "+str(lead)+" forecast valid at "+vt)
                         self.run_at_time_once(task_info.getValidTime(),
                                               task_info.level,
                                               task_info.ob_type,
@@ -315,6 +316,7 @@ class PcpCombineWrapper(CommandBuilder):
 
     def run_at_time_once(self, valid_time, accum, ob_type,
                          fcst_var, is_forecast=False):
+        self.clear()
         input_dir = self.p.getstr('config', ob_type + '_INPUT_DIR')
         native_dir = self.p.getstr('config', ob_type + '_NATIVE_DIR')
         bucket_dir = self.p.getstr('config', ob_type + '_BUCKET_DIR')
@@ -370,4 +372,3 @@ class PcpCombineWrapper(CommandBuilder):
         self.logger.info("")
         self.build()
         outfile = self.get_output_path()
-        self.clear()
