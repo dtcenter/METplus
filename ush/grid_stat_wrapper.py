@@ -173,17 +173,17 @@ class GridStatWrapper(CommandBuilder):
 
         if self.p.getbool('config', model_type+'_IS_PROB'):
             for fcst_thresh in fcst_threshs:
-                fcst_field += "{ name=\"PROB\"; level=\"A"+level + \
+                fcst_field += "{ name=\"PROB\"; level=\"A"+level.zfill(2) + \
                               "\"; prob={ name=\""+ti.fcst_var + \
                               "\"; thresh_lo="+str(fcst_thresh)+"; } },"
             for obs_thresh in obs_threshs:
-                obs_field += "{ name=\""+obs_var+"_"+level + \
+                obs_field += "{ name=\""+obs_var+"_"+level.zfill(2) + \
                              "\"; level=\"(*,*)\"; cat_thresh=[ gt" + \
                              str(obs_thresh)+" ]; },"
         else:
             data_type = self.p.getstr('config', ti.ob_type+'_NATIVE_DATA_TYPE')
             if data_type == "NETCDF":
-              fcst_field += "{ name=\""+ti.fcst_var+"_"+level + \
+              fcst_field += "{ name=\""+ti.fcst_var+"_"+level.zfill(2) + \
                             "\"; level=\"(*,*)\"; cat_thresh=["
             else:
               fcst_field += "{ name=\""+ti.fcst_var + \
@@ -193,7 +193,7 @@ class GridStatWrapper(CommandBuilder):
             fcst_field = fcst_field[0:-2]
             fcst_field += " ]; },"
 
-            obs_field += "{ name=\"" + obs_var+"_" + level + \
+            obs_field += "{ name=\"" + obs_var+"_" + level.zfill(2) + \
                          "\"; level=\"(*,*)\"; cat_thresh=[ "
             for obs_thresh in obs_threshs:
                 obs_field += "gt"+str(obs_thresh)+", "
