@@ -147,11 +147,6 @@ def main():
         end_time = calendar.timegm(time.strptime(end_t, time_format))
         while init_time <= end_time:
             run_time = time.strftime("%Y%m%d%H%M", time.gmtime(init_time))            
-            print("")
-            print("****************************************")
-            print("* RUNNING MET+")
-            print("* at init time: " + run_time)
-            print("****************************************")
             logger.info("****************************************")
             logger.info("* RUNNING MET+")
             logger.info("*  at init time: " + run_time)
