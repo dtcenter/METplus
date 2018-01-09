@@ -61,10 +61,12 @@ class RegridDataPlaneWrapper(CommandBuilder):
 
     def run_at_time_once(self, valid_time, level, ob_type):
         obs_var = self.p.getstr('config', ob_type + "_VAR")
-        bucket_dir = self.p.getstr('config', ob_type + '_BUCKET_DIR')
+#        bucket_dir = self.p.getstr('config', ob_type + '_BUCKET_DIR')
+        bucket_dir = self.p.getstr('config', ob_type + '_REGRID_DATA_PLANE_INPUT_DIR')
         bucket_template = self.p.getraw('filename_templates',
                                         ob_type + '_BUCKET_TEMPLATE')
-        regrid_dir = self.p.getstr('config', ob_type + '_REGRID_DIR')
+#        regrid_dir = self.p.getstr('config', ob_type + '_REGRID_DIR')
+        regrid_dir = self.p.getstr('config', ob_type + '_REGRID_DATA_PLANE_OUTPUT_DIR')
         regrid_template = self.p.getraw('filename_templates',
                                         ob_type + '_REGRID_TEMPLATE')
 

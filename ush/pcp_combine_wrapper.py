@@ -157,6 +157,7 @@ class PcpCombineWrapper(CommandBuilder):
                 # TODO: This assumes max 99 accumulation.
                 # zfill to 3 if above that is possible
                 search_file = os.path.join(self.input_dir, fSts.doStringSub())
+#                print("SEARCHFILE:"+search_file)
 
                 if os.path.exists(search_file):
                     data_type = self.p.getstr('config',
@@ -215,6 +216,7 @@ class PcpCombineWrapper(CommandBuilder):
                                          level=str(search_accum).zfill(2))
                     search_file = os.path.join(self.input_dir,
                                                fSts.doStringSub())
+#                    print("SEARCHfile:"+search_file)
                     f = None
                     for file in files:
                         if file == search_file:
@@ -317,9 +319,12 @@ class PcpCombineWrapper(CommandBuilder):
     def run_at_time_once(self, valid_time, accum, ob_type,
                          fcst_var, is_forecast=False):
         self.clear()
-        input_dir = self.p.getstr('config', ob_type + '_INPUT_DIR')
-        native_dir = self.p.getstr('config', ob_type + '_NATIVE_DIR')
-        bucket_dir = self.p.getstr('config', ob_type + '_BUCKET_DIR')
+#        input_dir = self.p.getstr('config', ob_type + '_INPUT_DIR')
+#        native_dir = self.p.getstr('config', ob_type + '_NATIVE_DIR')
+#        bucket_dir = self.p.getstr('config', ob_type + '_BUCKET_DIR')
+        input_dir = self.p.getstr('config', ob_type + '_GEMPAK_INPUT_DIR')
+        native_dir = self.p.getstr('config', ob_type + '_PCP_COMBINE_INPUT_DIR')
+        bucket_dir = self.p.getstr('config', ob_type + '_PCP_COMBINE_OUTPUT_DIR')   
         bucket_template = self.p.getraw('filename_templates',
                                         ob_type + '_BUCKET_TEMPLATE')
 

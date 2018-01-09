@@ -125,10 +125,12 @@ class GridStatBucketWrapper(CommandBuilder):
         init_time = ti.getInitTime()
         level = ti.level
         model_type = self.p.getstr('config', 'MODEL_TYPE')
-        regrid_dir = self.p.getstr('config', ti.ob_type+'_REGRID_DIR')
+#        regrid_dir = self.p.getstr('config', ti.ob_type+'_REGRID_DIR')
+        regrid_dir = self.p.getstr('config', ti.ob_type+'_GRID_STAT_OBS_INPUT_DIR')
         regrid_template = self.p.getraw('filename_templates',
                                         ti.ob_type+'_REGRID_TEMPLATE')
-        model_bucket_dir = self.p.getstr('config', model_type+'_BUCKET_DIR')
+#        model_bucket_dir = self.p.getstr('config', model_type+'_BUCKET_DIR')
+        model_bucket_dir = self.p.getstr('config', 'GRID_STAT_MODEL_INPUT_DIR')        
         obs_var = self.p.getstr('config', ti.ob_type+"_VAR")
         config_dir = self.p.getstr('config', 'CONFIG_DIR')
 
@@ -141,12 +143,16 @@ class GridStatBucketWrapper(CommandBuilder):
             os.makedirs(os.path.join(model_bucket_dir, ymd_v))
 
         # get model to compare
-        model_dir = self.p.getstr('config', model_type+'_INPUT_DIR')
+#        model_dir = self.p.getstr('config', model_type+'_INPUT_DIR')
+#        model_dir = self.p.getstr('config', model_type+'_PCP_COMBINE_INPUT_DIR')
+        model_dir = self.p.getstr('config', model_type+'_GEMPAK_INPUT_DIR')
         # check if level exists in forecast file
         # If not, run pcp_combine to create it
         # TODO: remove reliance on model_type
         if model_type == 'HREF_MEAN' or model_type == "NATIONAL_BLEND":
-            native_dir = self.p.getstr('config', model_type+'_NATIVE_DIR')
+#            native_dir = self.p.getstr('config', model_type+'_NATIVE_DIR')
+#            native_dir = self.p.getstr('config', model_type+'_GEMPAK_INPUT_DIR')
+            native_dir = self.p.getstr('config', model_type+'_PCP_COMBINE_INPUT_DIR')
             run_pcp_ob = PcpCombineWrapper(self.p, self.logger)
 #            run_pcp_ob.run_at_time(valid_time, int(level),
 #                                   model_type, fcst_var, True)
@@ -199,7 +205,7 @@ class GridStatBucketWrapper(CommandBuilder):
                 print("ERROR: pcp_combine observation could not "\
                       "generate command")
                 return
-            print("RUNNING: "+str(cmd))
+#            print("RUNNING: "+str(cmd))
             self.logger.info("")
             run_pcp_ob.build()
             model_path = run_pcp_ob.get_output_path()
