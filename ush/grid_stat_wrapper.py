@@ -64,8 +64,8 @@ class GridStatWrapper(CommandBuilder):
         cmd += self.outdir
         return cmd
 
-    def find_model(self, model_type, lead, init_time):
-        model_dir = self.p.getstr('config', 'GRID_STAT_MODEL_INPUT_DIR')
+    def find_model(self, model_type, lead, init_time, level):
+        model_dir = self.p.getstr('config', model_type+'_GRID_STAT_MODEL_INPUT_DIR')
         forecasts = model_type+'_FORECASTS'
         max_forecast = util.getlistint(self.p.getstr('config', forecasts))[-1]
         init_interval = self.p.getint('config', model_type+'_INIT_INTERVAL')
@@ -75,16 +75,23 @@ class GridStatWrapper(CommandBuilder):
         found = False
         while lead_check <= max_forecast:
             model_template = self.p.getraw('filename_templates',
-                                           'GRID_STAT_MODEL_TEMPLATE')
+                                           model_type+'_GRID_STAT_MODEL_TEMPLATE')
             model_ss = sts.StringSub(self.logger, model_template,
                                      init=time_check,
-                                     lead=str(lead_check).zfill(2))
+                                     lead=str(lead_check).zfill(2),
+                                     level=str(level).zfill(2))
             model_file = model_ss.doStringSub()
-            print("model file: "+model_file)
             model_path = os.path.join(model_dir, model_file)
             if os.path.exists(model_path):
                 found = True
                 break
+            elif os.path.exists(model_path+".gz"):
+                with gzip.open(model_path+".gz", 'rb') as infile:
+                    with open(model_path, 'wb') as outfile:
+                        outfile.write(infile.read())
+                        infile.close()
+                        outfile.close()
+                        # TODO: change model_path to path without gz, set found to true and break
 
             time_check = util.shift_time(time_check, -init_interval)
             lead_check = lead_check + init_interval
@@ -121,9 +128,10 @@ class GridStatWrapper(CommandBuilder):
         init_time = ti.getInitTime()
         level = ti.level
         model_type = self.p.getstr('config', 'MODEL_TYPE')
-        obs_dir = self.p.getstr('config', 'GRID_STAT_OBS_DIR')
+        obs_dir = self.p.getstr('config', ti.ob_type+'_GRID_STAT_OBS_INPUT_DIR')
         obs_template = self.p.getraw('filename_templates',
-                                      'GRID_STAT_OBS_TEMPLATE')
+                                      ti.ob_type+'_GRID_STAT_OBS_TEMPLATE')
+        model_dir = self.p.getstr('config', model_type+'_GRID_STAT_MODEL_INPUT_DIR')        
         obs_var = self.p.getstr('config', ti.ob_type+"_VAR")
         config_dir = self.p.getstr('config', 'CONFIG_DIR')
 
@@ -134,8 +142,7 @@ class GridStatWrapper(CommandBuilder):
                                      init_time, "grid_stat"))
 
         # get model to compare
-        model_dir = self.p.getstr('config', 'GRID_STAT_MODEL_DIR')
-        model_path = self.find_model(model_type, ti.lead, init_time)
+        model_path = self.find_model(model_type, ti.lead, init_time, ti.level)
 
         if model_path == "":
             print("ERROR: COULD NOT FIND FILE IN "+model_dir)
@@ -231,7 +238,7 @@ class GridStatWrapper(CommandBuilder):
         self.logger.debug("")
         cmd = self.get_command()
         if cmd is None:
-            print("ERROR: grid_stat (observation) could not generate command")
+            print("ERROR: grid_stat could not generate command")
             return
         print("RUNNING: "+str(cmd))
         self.logger.info("")

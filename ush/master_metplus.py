@@ -19,6 +19,7 @@ import met_util as util
 import config_metplus
 
 from pcp_combine_wrapper import PcpCombineWrapper
+from pcp_combine_model_wrapper import PcpCombineModelWrapper
 from grid_stat_wrapper import GridStatWrapper
 from grid_stat_bucket_wrapper import GridStatBucketWrapper
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper

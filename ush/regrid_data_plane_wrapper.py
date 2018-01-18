@@ -54,28 +54,25 @@ class RegridDataPlaneWrapper(CommandBuilder):
                         task_info.ob_type = ob_type
                         if lead < int(level):
                             continue
-                        #                        self.run_at_time_fcst(task_info)
                         self.run_at_time_once(task_info.getValidTime(),
                                               task_info.level,
                                               task_info.ob_type)
 
     def run_at_time_once(self, valid_time, level, ob_type):
         obs_var = self.p.getstr('config', ob_type + "_VAR")
-#        bucket_dir = self.p.getstr('config', ob_type + '_BUCKET_DIR')
         bucket_dir = self.p.getstr('config', ob_type + '_REGRID_DATA_PLANE_INPUT_DIR')
-        bucket_template = self.p.getraw('filename_templates',
-                                        ob_type + '_BUCKET_TEMPLATE')
-#        regrid_dir = self.p.getstr('config', ob_type + '_REGRID_DIR')
+        input_template = self.p.getraw('filename_templates',
+                                        ob_type + '_REGRID_DATA_PLANE_TEMPLATE')
         regrid_dir = self.p.getstr('config', ob_type + '_REGRID_DATA_PLANE_OUTPUT_DIR')
         regrid_template = self.p.getraw('filename_templates',
-                                        ob_type + '_REGRID_TEMPLATE')
+                                        ob_type + '_REGRID_DATA_PLANE_TEMPLATE')
 
         ymd_v = valid_time[0:8]
         if not os.path.exists(os.path.join(regrid_dir, ymd_v)):
             os.makedirs(os.path.join(regrid_dir, ymd_v))
 
         pcpSts = sts.StringSub(self.logger,
-                               bucket_template,
+                               input_template,
                                valid=valid_time,
                                level=str(level).zfill(2))
         outfile = os.path.join(bucket_dir, pcpSts.doStringSub())
@@ -98,7 +95,6 @@ class RegridDataPlaneWrapper(CommandBuilder):
         if cmd is None:
             print("ERROR: regrid_data_plane could not generate command")
             return
-#        print("RUNNING: " + str(cmd))
         self.logger.info("")
         self.build()
         self.clear()
