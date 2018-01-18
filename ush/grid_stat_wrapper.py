@@ -156,10 +156,7 @@ class GridStatWrapper(CommandBuilder):
 
         obs_path = os.path.join(obs_dir, obs_file)
         self.add_input_file(obs_path)
-        if self.p.getbool('config', model_type+'_IS_PROB'):
-            self.set_param_file(self.p.getstr('config', 'MET_CONFIG_GSP'))
-        else:
-            self.set_param_file(self.p.getstr('config', 'MET_CONFIG_GSM'))
+        self.set_param_file(self.p.getstr('config', 'GRID_STAT_CONFIG'))
         self.set_output_dir(os.path.join(grid_stat_out_dir,
                                          init_time, "grid_stat"))
 

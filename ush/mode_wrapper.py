@@ -80,7 +80,7 @@ class ModeWrapper(CommandBuilder):
         for idx, fcst in enumerate(fcst_fields):
             self.add_input_file(model_path)
             self.add_input_file(regrid_path)
-            self.set_param_file(self.p.getstr('config', 'MET_CONFIG_MD'))
+            self.set_param_file(self.p.getstr('config', 'MODE_CONFIG'))
             self.set_output_dir(self.p.getstr('config', 'MODE_OUT_DIR'))
             self.add_env_var("MODEL", model_type)
             self.add_env_var("FCST_VAR", fcst_var)
