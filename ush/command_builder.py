@@ -148,7 +148,6 @@ class CommandBuilder:
         if cmd is None:
             return
         (self.logger).info("RUNNING: " + cmd)
-        print("RUNNING: " + cmd)         
         process = subprocess.Popen(cmd, env=self.env, shell=True)
         process.wait()
 #        self.clear()

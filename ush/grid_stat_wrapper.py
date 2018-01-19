@@ -22,8 +22,6 @@ import re
 import csv
 import subprocess
 from command_builder import CommandBuilder
-from pcp_combine_wrapper import PcpCombineWrapper
-from gempak_to_cf_wrapper import GempakToCFWrapper
 from task_info import TaskInfo
 import string_template_substitution as sts
 
@@ -32,8 +30,8 @@ class GridStatWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
         super(GridStatWrapper, self).__init__(p, logger)
-        met_build_base = p.getdir('MET_BUILD_BASE')
-        self.app_path = os.path.join(met_build_base, 'bin/grid_stat')
+        met_install_dir = p.getdir('MET_INSTALL_DIR')
+        self.app_path = os.path.join(met_install_dir, 'bin/grid_stat')
         self.app_name = os.path.basename(self.app_path)
 
     def set_output_dir(self, outdir):
@@ -66,9 +64,8 @@ class GridStatWrapper(CommandBuilder):
         cmd += self.outdir
         return cmd
 
-    def find_model(self, model_type, lead, init_time):
-        model_dir = self.p.getstr('config', model_type+'_INPUT_DIR')
-        #  max_forecast = self.p.getint('config', model_type+'_MAX_FORECAST')
+    def find_model(self, model_type, lead, init_time, level):
+        model_dir = self.p.getstr('config', model_type+'_GRID_STAT_MODEL_INPUT_DIR')
         forecasts = model_type+'_FORECASTS'
         max_forecast = util.getlistint(self.p.getstr('config', forecasts))[-1]
         init_interval = self.p.getint('config', model_type+'_INIT_INTERVAL')
@@ -77,17 +74,24 @@ class GridStatWrapper(CommandBuilder):
         time_offset = 0
         found = False
         while lead_check <= max_forecast:
-            native_template = self.p.getraw('filename_templates',
-                                            model_type+'_NATIVE_TEMPLATE')
-            model_ss = sts.StringSub(self.logger, native_template,
+            model_template = self.p.getraw('filename_templates',
+                                           model_type+'_GRID_STAT_MODEL_TEMPLATE')
+            model_ss = sts.StringSub(self.logger, model_template,
                                      init=time_check,
-                                     lead=str(lead_check).zfill(2))
+                                     lead=str(lead_check).zfill(2),
+                                     level=str(level).zfill(2))
             model_file = model_ss.doStringSub()
-            print("model file: "+model_file)
             model_path = os.path.join(model_dir, model_file)
             if os.path.exists(model_path):
                 found = True
                 break
+            elif os.path.exists(model_path+".gz"):
+                with gzip.open(model_path+".gz", 'rb') as infile:
+                    with open(model_path, 'wb') as outfile:
+                        outfile.write(infile.read())
+                        infile.close()
+                        outfile.close()
+                        # TODO: change model_path to path without gz, set found to true and break
 
             time_check = util.shift_time(time_check, -init_interval)
             lead_check = lead_check + init_interval
@@ -107,29 +111,27 @@ class GridStatWrapper(CommandBuilder):
             for fcst_var in fcst_vars:
                 task_info.fcst_var = fcst_var
                 # loop over models to compare
-                accums = util.getlist(self.p.getstr('config', fcst_var+"_ACCUM"))
+                levels = util.getlist(self.p.getstr('config', fcst_var+"_LEVEL"))
                 ob_types = util.getlist(self.p.getstr('config', fcst_var+"_OBTYPE"))
-                for accum in accums:
-                    task_info.level = accum
+                for level in levels:
+                    task_info.level = level
                     for ob_type in ob_types:
                         task_info.ob_type = ob_type
-                        if lead < int(accum):
+                        if lead < int(level):
                             continue
                         self.run_at_time_once(task_info)
 
 
-#    def run_at_time_fcst(self, init_time, lead, accum, ob_type, fcst_var):
     def run_at_time_once(self, ti):
         grid_stat_out_dir = self.p.getstr('config', 'GRID_STAT_OUT_DIR')
-#        valid_time = util.shift_time(ti.init_time, ti.lead)
         valid_time = ti.getValidTime()
         init_time = ti.getInitTime()
-        accum = ti.level
+        level = ti.level
         model_type = self.p.getstr('config', 'MODEL_TYPE')
-        regrid_dir = self.p.getstr('config', ti.ob_type+'_REGRID_DIR')
-        regrid_template = self.p.getraw('filename_templates',
-                                        ti.ob_type+'_REGRID_TEMPLATE')
-        model_bucket_dir = self.p.getstr('config', model_type+'_BUCKET_DIR')
+        obs_dir = self.p.getstr('config', ti.ob_type+'_GRID_STAT_OBS_INPUT_DIR')
+        obs_template = self.p.getraw('filename_templates',
+                                      ti.ob_type+'_GRID_STAT_OBS_TEMPLATE')
+        model_dir = self.p.getstr('config', model_type+'_GRID_STAT_MODEL_INPUT_DIR')        
         obs_var = self.p.getstr('config', ti.ob_type+"_VAR")
         config_dir = self.p.getstr('config', 'CONFIG_DIR')
 
@@ -138,100 +140,32 @@ class GridStatWrapper(CommandBuilder):
                                            init_time, "grid_stat")):
             os.makedirs(os.path.join(grid_stat_out_dir,
                                      init_time, "grid_stat"))
-        if not os.path.exists(os.path.join(model_bucket_dir, ymd_v)):
-            os.makedirs(os.path.join(model_bucket_dir, ymd_v))
 
         # get model to compare
-        model_dir = self.p.getstr('config', model_type+'_INPUT_DIR')
-        # check if accum exists in forecast file
-        # If not, run pcp_combine to create it
-        # TODO: remove reliance on model_type
-        if model_type == 'HREF_MEAN' or model_type == "NATIONAL_BLEND":
-            native_dir = self.p.getstr('config', model_type+'_NATIVE_DIR')
-            run_pcp_ob = PcpCombineWrapper(self.p, self.logger)
-#            run_pcp_ob.run_at_time(valid_time, int(accum),
-#                                   model_type, fcst_var, True)
-            #      valid_time = util.shift_time(init_time, lead)
-            run_pcp_ob.set_input_dir(model_dir)
-
-            run_pcp_ob.set_output_dir(model_bucket_dir)
-#            run_pcp_ob.get_accumulation(valid_time, int(accum),
-            run_pcp_ob.get_accumulation(valid_time, accum,
-                                        model_type, True)
-
-            #  call GempakToCF if native file doesn't exist
-            infiles = run_pcp_ob.get_input_files()
-            for idx, infile in enumerate(infiles):
-                # replace input_dir with native_dir, check if file exists
-                nfile = infile.replace(model_dir, native_dir)
-                if not os.path.exists(os.path.dirname(nfile)):
-                    os.makedirs(os.path.dirname(nfile))
-                data_type = self.p.getstr('config',
-                                          ti.ob_type+'_NATIVE_DATA_TYPE')
-                if data_type == "NETCDF":
-                    nfile = os.path.splitext(nfile)[0]+'.nc'
-
-                    if not os.path.isfile(nfile):
-                        print("Calling GempakToCF to convert model to NetCDF")
-                        run_g2c = GempakToCFWrapper(self.p, self.logger)
-                        run_g2c.add_input_file(infile)
-                        run_g2c.set_output_path(nfile)
-                        cmd = run_g2c.get_command()
-                        if cmd is None:
-                            print("ERROR: GempakToCF could not generate command")
-                            return
-                        print("RUNNING: "+str(cmd))
-                        run_g2c.build()
-
-                    run_pcp_ob.infiles[idx] = nfile
-
-            bucket_template = self.p.getraw('filename_templates',
-                                            model_type+'_BUCKET_TEMPLATE')
-            pcpSts = sts.StringSub(self.logger,
-                                   bucket_template,
-                                   valid=valid_time,
-                                   accum=str(ti.level).zfill(2))
-            pcp_out = pcpSts.doStringSub()
-            run_pcp_ob.set_output_filename(pcp_out)
-            run_pcp_ob.add_arg("-name "+ti.fcst_var+"_"+ti.level)
-
-            cmd = run_pcp_ob.get_command()
-            if cmd is None:
-                print("ERROR: pcp_combine observation could not "\
-                      "generate command")
-                return
-            print("RUNNING: "+str(cmd))
-            self.logger.info("")
-            run_pcp_ob.build()
-            model_path = run_pcp_ob.get_output_path()
-        else:
-            model_path = self.find_model(model_type, ti.lead, init_time)
+        model_path = self.find_model(model_type, ti.lead, init_time, ti.level)
 
         if model_path == "":
             print("ERROR: COULD NOT FIND FILE IN "+model_dir)
             return
         self.add_input_file(model_path)
-        regridSts = sts.StringSub(self.logger,
-                                  regrid_template,
+        obsSts = sts.StringSub(self.logger,
+                                  obs_template,
                                   valid=valid_time,
-                                  accum=str(accum).zfill(2))
-        regrid_file = regridSts.doStringSub()
+                                  level=str(level).zfill(2))
+        obs_file = obsSts.doStringSub()
 
-        regrid_path = os.path.join(regrid_dir, regrid_file)
-        self.add_input_file(regrid_path)
-        if self.p.getbool('config', model_type+'_IS_PROB'):
-            self.set_param_file(self.p.getstr('config', 'MET_CONFIG_GSP'))
-        else:
-            self.set_param_file(self.p.getstr('config', 'MET_CONFIG_GSM'))
+        obs_path = os.path.join(obs_dir, obs_file)
+        self.add_input_file(obs_path)
+        self.set_param_file(self.p.getstr('config', 'GRID_STAT_CONFIG'))
         self.set_output_dir(os.path.join(grid_stat_out_dir,
                                          init_time, "grid_stat"))
 
         # set up environment variables for each grid_stat run
         # get fcst and obs thresh parameters
         # verify they are the same size
-        fcst_str = model_type+"_"+ti.fcst_var+"_"+accum+"_THRESH"
+        fcst_str = model_type+"_"+ti.fcst_var+"_"+level+"_THRESH"
         fcst_threshs = util.getlistfloat(self.p.getstr('config', fcst_str))
-        obs_str = ti.ob_type+"_"+ti.fcst_var+"_"+accum+"_THRESH"
+        obs_str = ti.ob_type+"_"+ti.fcst_var+"_"+level+"_THRESH"
         obs_threshs = util.getlistfloat(self.p.getstr('config', obs_str))
         if len(fcst_threshs) != len(obs_threshs):
             self.logger.error("run_example: Number of forecast and "\
@@ -243,27 +177,27 @@ class GridStatWrapper(CommandBuilder):
 
         if self.p.getbool('config', model_type+'_IS_PROB'):
             for fcst_thresh in fcst_threshs:
-                fcst_field += "{ name=\"PROB\"; level=\"A"+accum + \
+                fcst_field += "{ name=\"PROB\"; level=\"A"+level.zfill(2) + \
                               "\"; prob={ name=\""+ti.fcst_var + \
                               "\"; thresh_lo="+str(fcst_thresh)+"; } },"
             for obs_thresh in obs_threshs:
-                obs_field += "{ name=\""+obs_var+"_"+accum + \
+                obs_field += "{ name=\""+obs_var+"_"+level.zfill(2) + \
                              "\"; level=\"(*,*)\"; cat_thresh=[ gt" + \
                              str(obs_thresh)+" ]; },"
         else:
             data_type = self.p.getstr('config', ti.ob_type+'_NATIVE_DATA_TYPE')
             if data_type == "NETCDF":
-              fcst_field += "{ name=\""+ti.fcst_var+"_"+accum + \
+              fcst_field += "{ name=\""+ti.fcst_var+"_"+level.zfill(2) + \
                             "\"; level=\"(*,*)\"; cat_thresh=["
             else:
               fcst_field += "{ name=\""+ti.fcst_var + \
-                            "\"; level=\"[A"+accum.zfill(2)+"]\"; cat_thresh=["                
+                            "\"; level=\"[A"+level.zfill(2)+"]\"; cat_thresh=["                
             for fcst_thresh in fcst_threshs:
                 fcst_field += "gt"+str(fcst_thresh)+", "
             fcst_field = fcst_field[0:-2]
             fcst_field += " ]; },"
 
-            obs_field += "{ name=\"" + obs_var+"_" + accum + \
+            obs_field += "{ name=\"" + obs_var+"_" + level.zfill(2) + \
                          "\"; level=\"(*,*)\"; cat_thresh=[ "
             for obs_thresh in obs_threshs:
                 obs_field += "gt"+str(obs_thresh)+", "
@@ -276,7 +210,7 @@ class GridStatWrapper(CommandBuilder):
         self.add_env_var("MODEL", model_type)
         self.add_env_var("FCST_VAR", ti.fcst_var)
         self.add_env_var("OBS_VAR", obs_var)
-        self.add_env_var("ACCUM", accum)
+        self.add_env_var("ACCUM", level)
         self.add_env_var("OBTYPE", ti.ob_type)
         self.add_env_var("CONFIG_DIR", config_dir)
         self.add_env_var("FCST_FIELD", fcst_field)
@@ -301,7 +235,7 @@ class GridStatWrapper(CommandBuilder):
         self.logger.debug("")
         cmd = self.get_command()
         if cmd is None:
-            print("ERROR: grid_stat (observation) could not generate command")
+            print("ERROR: grid_stat could not generate command")
             return
         print("RUNNING: "+str(cmd))
         self.logger.info("")

@@ -19,6 +19,7 @@ import met_util as util
 import config_metplus
 
 from pcp_combine_wrapper import PcpCombineWrapper
+from pcp_combine_model_wrapper import PcpCombineModelWrapper
 from grid_stat_wrapper import GridStatWrapper
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from tc_pairs_wrapper import TcPairsWrapper
@@ -29,6 +30,7 @@ from series_by_init_wrapper import SeriesByInitWrapper
 from usage_wrapper import UsageWrapper
 from command_builder import CommandBuilder
 from tcmpr_plotter_wrapper import TCMPRPlotterWrapper
+from cyclone_plotter_wrapper import CyclonePlotterWrapper
 
 '''!@var logger
 The logging.Logger for log messages
@@ -145,11 +147,6 @@ def main():
         end_time = calendar.timegm(time.strptime(end_t, time_format))
         while init_time <= end_time:
             run_time = time.strftime("%Y%m%d%H%M", time.gmtime(init_time))            
-            print("")
-            print("****************************************")
-            print("* RUNNING MET+")
-            print("* at init time: " + run_time)
-            print("****************************************")
             logger.info("****************************************")
             logger.info("* RUNNING MET+")
             logger.info("*  at init time: " + run_time)

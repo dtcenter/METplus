@@ -1,8 +1,7 @@
 /** @page rocoto_workflow METplus Rocoto Workflow
+Rocoto support is not yet available in METplus.
 
-@todo edit me: rotoco.dox, THIS PAGE is a PLACEHOLDER.
-THIS PAGE NEEDS TO BE FULLY CREATED.
-
-The METplus system can be run through the Rocoto workflow manager.
+METplus has not yet been set up to support the Rocoto workflow manager, but will
+be in the near future.
 
 */

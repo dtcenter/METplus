@@ -5,48 +5,43 @@ from __future__ import print_function
 import unittest
 import os
 import re
-import shutil
 import config_metplus
-from series_by_init import SeriesByInit
+from series_by_init_wrapper import SeriesByInitWrapper
 import met_util as util
 import produtil.setup
+import sys
 
 
+"""!This class can NOT be instantiated directly. It MUST be called from main.
+    The main function operates outside of this class which sets up the METplus
+    configuration object, $METPLUS_CONF, and runs series_by_init_wrapper. Than 
+    all the unit tests in this class are based on the output from that one run.
+"""
 class TestSeriesByInit(unittest.TestCase):
+    def __init__(self,*args):
+        super(TestSeriesByInit,self).__init__(*args)
+        # self.p is an instance variable BUT it will be the same
+        # for all instances since TestSeriesByInit.config_inst is static.
+        #self.p = TestSeriesByInit.config_inst
+        self.sbi = TestSeriesByInit.sbi
+        self.logger = self.sbi.logger
+
     def setUp(self):
-        self.p = self.get_config()
-        self.logger = util.get_logger(self.p)
-        self.sbi = SeriesByInit(self.p, self.logger)
+        # Perform setup for each test.
+        pass
 
     def tearDown(self):
-        shutil.rmtree(self.sbi.series_out_dir)
-        shutil.rmtree(self.sbi.series_filtered_out_dir)
-
-    @staticmethod
-    def get_config():
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False,
-                                 jobname='test run_tc_pairs',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False,
-                                 jobname='test run_tc_pairs')
-        produtil.log.postmsg('unit test for run_tc_pairs is starting')
-
-        # Read in the configuration object CONFIG_INST
-        config_instance = config_metplus.setup()
-
-        if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = config_instance.getdir('MET_BASE')
-
-        return config_instance
+        # Perform any cleanup after each test.
+        pass
+        #util.rmtree(self.sbi.series_out_dir)
+        #util.rmtree(self.sbi.series_filtered_out_dir)
 
     def test_anly_fcst_ascii_files_exist(self):
         """ Test that in the series_init_filtered directory, the
             tmp_anly_regridded.txt and tmp_fcst_regridded.txt files
             exist.
         """
-        self.sbi.run_all_times()
+        #self.sbi.run_all_times()
         filter_output_dir = self.sbi.series_filtered_out_dir
         filter_files_list = os.listdir(filter_output_dir)
         fcst_count = 0
@@ -66,7 +61,7 @@ class TestSeriesByInit(unittest.TestCase):
                 make sure all subdirectories created in the series_init
                _filtered directory begin with ML.
         """
-        self.sbi.run_all_times()
+        #self.sbi.run_all_times()
         filter_output_dir = self.sbi.series_filtered_out_dir
         dated_filter_files_list = os.listdir(filter_output_dir)
         self.sbi.filter_opts = "EXTRACT_TILES_FILTER_OPTS = -basin ML"
@@ -116,7 +111,7 @@ class TestSeriesByInit(unittest.TestCase):
 
     def test_netcdf_files_created(self):
         """ Verify that NetCDF files were created by series_analysis"""
-        self.sbi.run_all_times()
+        #self.sbi.run_all_times()
         dated_dir_list = os.listdir(self.sbi.series_out_dir)
         netcdf_file_counter = 0
 
@@ -142,7 +137,7 @@ class TestSeriesByInit(unittest.TestCase):
             directory isn't empty.  If so, then something went wrong with
             building the command or in the series_init run.
         """
-        self.sbi.run_all_times()
+        #self.sbi.run_all_times()
         output_dir = self.sbi.series_out_dir
         self.assertTrue(os.listdir(output_dir))
 
@@ -151,7 +146,7 @@ class TestSeriesByInit(unittest.TestCase):
             are present in the series_analysis_init/<storm month-number date
             subdirectory.
         """
-        self.sbi.run_all_times()
+        #self.sbi.run_all_times()
         output_dir = self.sbi.series_out_dir
         dated_filter_files_list = os.listdir(output_dir)
         # Get the storm sub-dirs in the first dated_filter_files_list
@@ -173,4 +168,72 @@ class TestSeriesByInit(unittest.TestCase):
         self.assertTrue(nc_results and png_results and ps_results)
 
 if __name__ == "__main__":
-    unittest.main()
+    # NOTE: We are using unittest in a non-conventional manner.
+    # This is more of an integration test, testing the output of running
+    # series by init.
+    #
+    # main Assumes ALL arguments passed in are only for METplus configuration
+    # file processing.
+    # The unittest class also has its own set of command line arguments
+    # but we will not use them and do not have logic in place to 
+    # automatically handle using command arguments for both METplus
+    # and the unittest framework.
+    # 
+    # So AFTER we use the conf file arguments we must pop the command 
+    # lines args so the unittest class doesn't try to process the conf file
+    # arguments as unittest arguments.
+    try:
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False,
+                                 jobname='test_series_by_init',
+                                 jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='test_series_by_init')
+        produtil.log.postmsg('test_series_by_init is starting')
+
+        # Process command line args conf files, creates a conf object and final conf file.
+        CONFIG_INST = config_metplus.setup()
+
+        # This is specfic to this unit test class.
+        # Set a class level variable, (a METPlus configuration object), that can be used
+        # and referenced by a unit test object.
+        TestSeriesByInit.config_inst = CONFIG_INST
+
+        if 'MET_BASE' not in os.environ:
+            os.environ['MET_BASE'] = CONFIG_INST.getdir('MET_BASE')
+
+        # Instantitates and runs series by init. Generating output.
+        SBI = SeriesByInitWrapper(CONFIG_INST, logger=None)
+        TestSeriesByInit.sbi = SBI
+        SBI.run_all_times()
+        produtil.log.postmsg('SeriesByInitWRapper.run_all_times completed')
+
+
+        # Remove all conf file command line arguments from sys.argv,
+        # except sys.argv[0]. Removing conf args allows unittest.main() 
+        # to run, else it will fail.
+        for arg in range(1, len(sys.argv)):
+            sys.argv.pop()
+
+        # Workaround - to pass in command line args to unittest.main()
+        # You must code them in here ....
+        # For example, uncomment the next line and you will see available options.
+        # sys.argv.append('-h')
+
+        # Setting exit=False allows unittest to return and NOT sys.exit, which
+        # allows commands after unittest.main() to execute.
+        unittest.main(exit=False)
+
+        # Caveate to exit=False
+        # It seems if you pass in an argument  than unittest will sys.exit
+        # and these line do not get executed, 
+        # at least for '-h' argument .... ie. sys.argv.append('-h')
+        util.rmtree(SBI.series_out_dir)
+        util.rmtree(SBI.series_filtered_out_dir)
+
+
+    except Exception as exc:
+        produtil.log.jlogger.critical(
+            'test_series_by_init failed: %s' % (str(exc),), exc_info=True)
+        sys.exit(2)
+
