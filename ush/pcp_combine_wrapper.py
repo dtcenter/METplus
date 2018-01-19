@@ -315,9 +315,6 @@ class PcpCombineWrapper(CommandBuilder):
 
 
         ymd_v = valid_time[0:8]
-#        if ob_type != "QPE":
-        if not os.path.exists(os.path.join(input_dir, ymd_v)):
-            os.makedirs(os.path.join(input_dir, ymd_v))
         if not os.path.exists(os.path.join(bucket_dir, ymd_v)):
             os.makedirs(os.path.join(bucket_dir, ymd_v))
 
