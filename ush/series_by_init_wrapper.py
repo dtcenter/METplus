@@ -399,7 +399,7 @@ class SeriesByInitWrapper(CommandBuilder):
                         fcst_grid_files, cur_init, cur_storm,
                         self.fcst_ascii_file_prefix)
                     self.create_fcst_anly_to_ascii_file(
-                        fcst_grid_files, cur_init, cur_storm,
+                        anly_grid_files, cur_init, cur_storm,
                         self.anly_ascii_file_prefix)
                     util.prune_empty(self.series_out_dir, self.logger)
         return sorted_filter_init
