@@ -308,9 +308,6 @@ class PcpCombineWrapper(CommandBuilder):
 
 
         ymd_v = valid_time[0:8]
-#        if ob_type != "QPE":
-        if not os.path.exists(os.path.join(input_dir, ymd_v)):
-            os.makedirs(os.path.join(input_dir, ymd_v))
         if not os.path.exists(os.path.join(bucket_dir, ymd_v)):
             os.makedirs(os.path.join(bucket_dir, ymd_v))
 
@@ -333,6 +330,8 @@ class PcpCombineWrapper(CommandBuilder):
             self.set_input_dir(gempak_dir)
             if self.get_accumulation(valid_time[0:10], int(accum), "OBS", gempak_template, is_forecast) is True:
                 #   if success, run GempakToCF, run pcp_combine
+                if not os.path.exists(os.path.join(input_dir, ymd_v)):
+                    os.makedirs(os.path.join(input_dir, ymd_v))
                 infiles = self.get_input_files()
                 for idx, infile in enumerate(infiles):
                     # replace input_dir with native_dir, check if file exists
