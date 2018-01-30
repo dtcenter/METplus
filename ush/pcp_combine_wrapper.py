@@ -144,9 +144,10 @@ class PcpCombineWrapper(CommandBuilder):
             # if field that corresponds to search accumulation exists
             # in the files,
             #  check the file with valid time before moving backwards in time
+            
             if self.p.has_option('config',
                                  data_type + '_' + str(
-                                     accum) + '_FIELD_NAME') and data_type != "NATIONAL_BLEND":
+                                     accum) + '_FIELD_NAME') and self.p.getstr('config', "MODEL_TYPE") != "NATIONAL_BLEND" and data_type == "FCST":
                 fSts = sts.StringSub(self.logger,
                                      file_template,
                                      valid=valid_time,
@@ -181,7 +182,7 @@ class PcpCombineWrapper(CommandBuilder):
                 if f == "":
                     break
                 # TODO: assumes 1hr accum (6 for NB) in these files for now
-                if data_type == "NATIONAL_BLEND":
+                if self.p.getstr('config', 'MODEL_TYPE') == "NATIONAL_BLEND" and data_type == "FCST":
                     ob_str = self.p.getstr('config',
                                            data_type + '_' + str(6) +
                                            '_FIELD_NAME')
@@ -278,40 +279,32 @@ class PcpCombineWrapper(CommandBuilder):
     def run_at_time(self, init_time):
         task_info = TaskInfo()
         task_info.init_time = init_time
-        fcst_vars = util.getlist(self.p.getstr('config', 'FCST_VARS'))
+        compare_vars = util.getlist(self.p.getstr('config', 'COMPARISON_VARS'))
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
         for lead in lead_seq:
             task_info.lead = lead
-            for fcst_var in fcst_vars:
-                task_info.fcst_var = fcst_var
+            for compare_var in compare_vars:
                 # loop over models to compare
-                accums = util.getlist(
-                    self.p.getstr('config', fcst_var + "_LEVEL"))
-                ob_types = util.getlist(
-                    self.p.getstr('config', fcst_var + "_OBTYPE"))
+                accums = util.getlist(self.p.getstr('config', "OUT_LEVEL"))
                 for accum in accums:
-                    task_info.level = accum
-                    for ob_type in ob_types:
-                        task_info.ob_type = ob_type
-                        if lead < int(accum):
-                            print("Lead "+str(lead)+" is less than accum "+accum)
-                            print("Skipping...")
-                            continue
-                        vt = task_info.getValidTime()
-                        self.run_at_time_once(task_info.getValidTime(),
-                                              task_info.level,
-                                              task_info.ob_type,
-                                              task_info.fcst_var)
+                    if lead < int(accum):
+                        print("Lead "+str(lead)+" is less than accum "+accum)
+                        print("Skipping...")
+                        continue
+                    vt = task_info.getValidTime()
+                    self.run_at_time_once(task_info.getValidTime(),
+                                          accum,
+                                          compare_var)
 
-    def run_at_time_once(self, valid_time, accum, ob_type,
-                         fcst_var, is_forecast=False):
+    def run_at_time_once(self, valid_time, accum,
+                         compare_var, is_forecast=False):
         self.clear()
         
-        input_dir = self.p.getstr('config', ob_type + '_PCP_COMBINE_INPUT_DIR')
-        input_template = self.p.getraw('filename_templates', ob_type + '_PCP_COMBINE_INPUT_TEMPLATE')
-        bucket_dir = self.p.getstr('config', ob_type + '_PCP_COMBINE_OUTPUT_DIR')
+        input_dir = self.p.getstr('config', 'OBS_PCP_COMBINE_INPUT_DIR')
+        input_template = self.p.getraw('filename_templates', 'OBS_PCP_COMBINE_INPUT_TEMPLATE')
+        bucket_dir = self.p.getstr('config', 'OBS_PCP_COMBINE_OUTPUT_DIR')
         bucket_template = self.p.getraw('filename_templates',
-                                        ob_type + '_PCP_COMBINE_OUTPUT_TEMPLATE')
+                                        'OBS_PCP_COMBINE_OUTPUT_TEMPLATE')
 
 
         ymd_v = valid_time[0:8]
@@ -323,28 +316,28 @@ class PcpCombineWrapper(CommandBuilder):
 
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.set_input_dir(input_dir)
-        if self.get_accumulation(valid_time[0:10], int(accum), ob_type, input_template, is_forecast) is True:
+        if self.get_accumulation(valid_time[0:10], int(accum), "OBS", input_template, is_forecast) is True:
             # if success, run pcp_combine            
             infiles = self.get_input_files()            
         else:
             # if failure, check _GEMPAK_INPUT_DIR to get accumulation files
-            if not self.p.has_option('config', ob_type + '_GEMPAK_INPUT_DIR') or \
-              not self.p.has_option('filename_templates', ob_type + '_GEMPAK_TEMPLATE'):
+            if not self.p.has_option('config', 'OBS_GEMPAK_INPUT_DIR') or \
+              not self.p.has_option('filename_templates', 'OBS_GEMPAK_TEMPLATE'):
                 self.logger.warning(self.app_name + ": Could not find " \
                                     "files to compute accumulation in " \
                                     + input_dir)
                 return False
-            gempak_dir = self.p.getstr('config', ob_type + '_GEMPAK_INPUT_DIR')
-            gempak_template = self.p.getraw('filename_templates', ob_type + '_GEMPAK_TEMPLATE')
+            gempak_dir = self.p.getstr('config', 'OBS_GEMPAK_INPUT_DIR')
+            gempak_template = self.p.getraw('filename_templates', 'OBS_GEMPAK_TEMPLATE')
             self.clear()
             self.set_input_dir(gempak_dir)
-            if self.get_accumulation(valid_time[0:10], int(accum), ob_type, gempak_template, is_forecast) is True:
+            if self.get_accumulation(valid_time[0:10], int(accum), "OBS", gempak_template, is_forecast) is True:
                 #   if success, run GempakToCF, run pcp_combine
                 infiles = self.get_input_files()
                 for idx, infile in enumerate(infiles):
                     # replace input_dir with native_dir, check if file exists
                     nfile = infile.replace(gempak_dir, input_dir)
-                    data_type = self.p.getstr('config', ob_type + '_NATIVE_DATA_TYPE')
+                    data_type = self.p.getstr('config', 'OBS_NATIVE_DATA_TYPE')
                     if data_type == "NETCDF":
                         nfile = os.path.splitext(nfile)[0] + '.nc'
                         if not os.path.isfile(nfile):
@@ -373,8 +366,7 @@ class PcpCombineWrapper(CommandBuilder):
                                 level=str(accum).zfill(2))
         pcp_out = pcpSts.doStringSub()
         self.set_output_filename(pcp_out)
-        varname = self.p.getstr('config', ob_type + "_VAR")
-        self.add_arg("-name " + varname + "_" + accum)
+        self.add_arg("-name " + compare_var + "_" + accum)
         cmd = self.get_command()
         if cmd is None:
             print("ERROR: pcp_combine could not generate command")
