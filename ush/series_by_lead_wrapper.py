@@ -1248,7 +1248,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                              'series_cnt_', cur_stat, '";',
                                              'level=', '"(\*,\*)"; ',
                                              ' ', map_data,
-                                             "'", ' -title ', '"GFS F',
+                                             "'", ' -title ', '"GFS ',
                                              str(fhr),
                                              ' Forecasts (N = ', str(nseries),
                                              '), ', cur_stat, ' for ', cur_var,
