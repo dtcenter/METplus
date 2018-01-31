@@ -34,7 +34,7 @@ class TaskInfo:
         self.valid_time = -1
         self.lead = -1
         self.level = -1
-        self.fcst_var = ""
+        self.compare_var = ""
         self.ob_type = ""
         
 

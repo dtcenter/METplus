@@ -27,7 +27,8 @@ class UsageWrapper(CommandBuilder):
         self.available_processes = ['TcPairs', 'ExtractTiles', 'SeriesByInit',
                                     'SeriesByLead', 'PcpCombine',
                                     'RegridDataPlane',
-                                    'GridStat', 'Mode', 'RegridDataPlane']
+                                    'GridStat', 'Mode', 'RegridDataPlane',
+                                    'CyclonePlotter', 'TCMPRPlotter']
 
     def run_all_times(self):
         print("USAGE:\n  This is a default process, please indicate more " +

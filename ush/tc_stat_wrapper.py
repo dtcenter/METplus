@@ -43,8 +43,8 @@ class TcStatWrapper(object):
          cyclone pair data.
     """
     def __init__(self, p):
-        met_build_base = p.getdir('MET_BUILD_BASE')
-        self.tc_exe = os.path.join(met_build_base, 'bin/tc_stat')
+        met_install_dir = p.getdir('MET_INSTALL_DIR')
+        self.tc_exe = os.path.join(met_install_dir, 'bin/tc_stat')
 #        self.init_date_beg = p.getstr('config', 'INIT_DATE_BEG')
 #        self.init_date_end = p.getstr('config', 'INIT_DATE_END')
 #        self.init_hour_inc = p.getint('config', 'INIT_HOUR_INC')

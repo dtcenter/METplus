@@ -487,8 +487,8 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
 
     # Get variables, etc. from param/config file.
     model_data_dir = config.getdir('MODEL_DATA_DIR')
-    metplus_base = config.getdir('MET_BUILD_BASE')
-    regrid_data_plane_exe = os.path.join(metplus_base, 'bin/regrid_data_plane')
+    met_install_dir = config.getdir('MET_INSTALL_DIR')
+    regrid_data_plane_exe = os.path.join(met_install_dir, 'bin/regrid_data_plane')
     # regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE_EXE')
     wgrib2_exe = config.getexe('WGRIB2')
     egrep_exe = config.getexe('EGREP_EXE')

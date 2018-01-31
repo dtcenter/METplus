@@ -46,8 +46,8 @@ class ExtractTilesWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
         super(ExtractTilesWrapper, self).__init__(p, logger)
-        met_build_base = p.getdir('MET_BUILD_BASE')
-        self.app_path = os.path.join(p.getdir('MET_BUILD_BASE'), 'bin/tc_pairs')
+        met_install_dir = p.getdir('MET_INSTALL_DIR')
+        self.app_path = os.path.join(p.getdir('MET_INSTALL_DIR'), 'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
         self.tc_pairs_dir = self.p.getdir('TC_PAIRS_DIR')
         self.overwrite_flag = self.p.getbool('config',
@@ -55,7 +55,7 @@ class ExtractTilesWrapper(CommandBuilder):
         self.addl_filter_opts = \
             self.p.getstr('config', 'EXTRACT_TILES_FILTER_OPTS')
         self.filtered_out_dir = self.p.getdir('EXTRACT_OUT_DIR')
-        self.tc_stat_exe = os.path.join(met_build_base, 'bin/tc_stat')
+        self.tc_stat_exe = os.path.join(met_install_dir, 'bin/tc_stat')
         self.init_beg = self.p.getstr('config', 'INIT_BEG')[0:8]
         self.init_end = self.p.getstr('config', 'INIT_END')[0:8]
         self.init_hour_inc = int(self.p.getint('config', 'INIT_INC') / 3600)

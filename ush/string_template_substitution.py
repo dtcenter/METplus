@@ -31,9 +31,9 @@ FORMAT_STRING = "fmt"
 VALID_STRING = "valid"
 LEAD_STRING = "lead"
 INIT_STRING = "init"
-ACCUM_STRING = "accum"
+LEVEL_STRING = "level"
 
-LEAD_ACCUM_FORMATTING_DELIMITER = "%"
+LEAD_LEVEL_FORMATTING_DELIMITER = "%"
 
 SECONDS_PER_HOUR = 3600
 MINUTES_PER_HOUR = 60
@@ -78,7 +78,7 @@ def multiple_replace(dict, text):
     return regex.sub(lambda mo: dict[mo.string[mo.start():mo.end()]], text)
 
 
-def get_lead_accum_time_seconds(logger, time_string):
+def get_lead_level_time_seconds(logger, time_string):
     """ Returns the number of seconds for the time string in the format
         [H]HH[MMSS]"""
 
@@ -132,8 +132,7 @@ class StringSub:
        init - must be in YYYYmmddHH[MMSS] format
        valid - must be in YYYYmmddHH[MMSS] format
        lead - must be in HH[MMSS] format
-       accum - must be in HH[MMSS] fomrat
-       level - the level number as a string (?)
+       level - must be in HH[MMSS] format
        model - the name of the model
        domain - the domain number (01, 02, etc.) read in as a string
 
@@ -152,19 +151,19 @@ class StringSub:
                 setattr(self, key, value)
 
         self.lead_time_seconds = 0
-        self.accum_time_seconds = 0
+        self.level_time_seconds = 0
         self.negative_lead = False
-        self.negative_accum = False
+        self.negative_level = False
 
         if (LEAD_STRING in self.kwargs):
             self.lead_time_seconds = \
-                 get_lead_accum_time_seconds(self.logger,
+                 get_lead_level_time_seconds(self.logger,
                                              self.kwargs.get(LEAD_STRING,
                                                              None))
-        if (ACCUM_STRING in self.kwargs):
-            self.accum_time_seconds =  \
-                get_lead_accum_time_seconds(self.logger,
-                                            self.kwargs.get(ACCUM_STRING,
+        if (LEVEL_STRING in self.kwargs):
+            self.level_time_seconds =  \
+                get_lead_level_time_seconds(self.logger,
+                                            self.kwargs.get(LEVEL_STRING,
                                                             None))
 
     def dateCalcInit(self):
@@ -197,7 +196,7 @@ class StringSub:
 
         # Get the number of seconds for the lead time
         self.lead_time_seconds = \
-            get_lead_accum_time_seconds(self.logger,
+            get_lead_level_time_seconds(self.logger,
                                         self.kwargs.get(LEAD_STRING, None))
 
         init_unix_time = valid_unix_time - self.lead_time_seconds
@@ -235,7 +234,7 @@ class StringSub:
 
         # Get the number of seconds for the lead time
         self.lead_time_seconds = \
-            get_lead_accum_time_seconds(self.logger,
+            get_lead_level_time_seconds(self.logger,
                                         self.kwargs.get(LEAD_STRING, None))
 
         valid_unix_time = init_unix_time + self.lead_time_seconds
@@ -336,9 +335,9 @@ class StringSub:
 
         return lead_time
 
-    def leadAccumFormat(self, parm_type, format_string):
+    def leadLevelFormat(self, parm_type, format_string):
 
-        """ Formats the lead or accum in the requested format """
+        """ Formats the lead or level in the requested format """
 
         # Used for logging
         cur_filename = sys._getframe().f_code.co_filename
@@ -351,15 +350,15 @@ class StringSub:
         if (parm_type == LEAD_STRING):
             time_seconds = self.lead_time_seconds
             negative_flag = self.negative_lead
-        elif (parm_type == ACCUM_STRING):
-            time_seconds = self.accum_time_seconds
-            negative_flag = self.negative_accum
+        elif (parm_type == LEVEL_STRING):
+            time_seconds = self.level_time_seconds
+            negative_flag = self.negative_level
         else:
             # Log and exit
             self.logger.error("ERROR | [" + cur_filename + ":" +
                               cur_function + "] | Invalid parm_type of " +
                               parm_type + ".  Acceptable parm types are: " +
-                              LEAD_STRING + " and " + ACCUM_STRING + ".")
+                              LEAD_STRING + " and " + LEVEL_STRING + ".")
             exit(0)
 
         hours_value = math.floor(time_seconds / SECONDS_PER_HOUR)
@@ -373,7 +372,7 @@ class StringSub:
         seconds_value_str = str(int(seconds_value))
 
         format_string_split = \
-            format_string.split(LEAD_ACCUM_FORMATTING_DELIMITER)
+            format_string.split(LEAD_LEVEL_FORMATTING_DELIMITER)
 
         # Minutes and seconds should be included (Empty, HH or HHH, MMSS)
         if (len(format_string_split) == 3):
@@ -459,7 +458,7 @@ class StringSub:
                 fmt - specifies a strftime format for the date/time
                       e.g. %Y%m%d%H%M%S, %Y%m%d%H
 
-              lead, accum:
+              lead, level:
                 fmt -  specifies an amount of time in [H]HH[MMSS] format
                        e.g. %HH, %HHH, %HH%MMSS, %HHH%MMSS
 
@@ -592,15 +591,15 @@ class StringSub:
 
                             elif (split_string[0] == LEAD_STRING):
                                 value = \
-                                  self.leadAccumFormat(LEAD_STRING,
+                                  self.leadLevelFormat(LEAD_STRING,
                                                        format_split_string[1])
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN \
                                     + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
 
-                            elif (split_string[0] == ACCUM_STRING):
+                            elif (split_string[0] == LEVEL_STRING):
                                 value = \
-                                  self.leadAccumFormat(ACCUM_STRING,
+                                  self.leadLevelFormat(LEVEL_STRING,
                                                        format_split_string[1])
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN \
                                     + match + TEMPLATE_IDENTIFIER_END
@@ -630,7 +629,7 @@ class StringExtract:
         self.validTime = None
         self.initTime = None
         self.leadTime = -1
-        self.accumTime = -1
+        self.levelTime = -1
 
     def getValidTime(self, fmt):
         if self.validTime is None:
@@ -649,10 +648,10 @@ class StringExtract:
         return self.leadTime / 3600
 
     @property
-    def accumHour(self):
-        if self.accumTime == -1:
+    def levelHour(self):
+        if self.levelTime == -1:
             return -1
-        return self.accumTime / 3600
+        return self.levelTime / 3600
 
     def parseTemplate(self):
         tempLen = len(self.temp)
@@ -663,10 +662,10 @@ class StringExtract:
         dIdx = -1
         hIdx = -1
         lead = -1
-        accum = -1
+        level = -1
 
         inValid = False
-        inAccum = False
+        inLevel = False
         inLead = False
         inInit = False
 
@@ -676,8 +675,8 @@ class StringExtract:
                 if self.temp[i:i+len(VALID_STRING)+5] == VALID_STRING+"?fmt=":
                     inValid = True
                     i += 9
-                if self.temp[i:i+len(ACCUM_STRING)+5] == ACCUM_STRING+"?fmt=":
-                    inAccum = True
+                if self.temp[i:i+len(LEVEL_STRING)+5] == LEVEL_STRING+"?fmt=":
+                    inLevel = True
                     i += 9
                 if self.temp[i:i+len(INIT_STRING)+5] == INIT_STRING+"?fmt=":
                     inInit = True
@@ -724,13 +723,13 @@ class StringExtract:
                     hIdx = -1
                     inInit = False
 
-                elif inAccum:
-                    if accum == -1:
-                        print("ERROR: Invalid accum time")
+                elif inLevel:
+                    if level == -1:
+                        print("ERROR: Invalid level time")
                         exit(1)
-                    self.accumTime = int(accum) * SECONDS_PER_HOUR
-                    accum = -1
-                    inAccum = False
+                    self.levelTime = int(level) * SECONDS_PER_HOUR
+                    level = -1
+                    inLevel = False
 
                 elif inLead:
                     if lead == -1:
@@ -774,13 +773,13 @@ class StringExtract:
                     hIdx = idx
                     idx += 2
                     i += 1
-            elif inAccum:
+            elif inLevel:
                 if self.temp[i:i+4] == "%HHH":
-                    accum = self.fstr[idx:idx+3]
+                    level = self.fstr[idx:idx+3]
                     idx += 3
                     i += 3
                 elif self.temp[i:i+3] == "%HH":
-                    accum = self.fstr[idx:idx+2]
+                    level = self.fstr[idx:idx+2]
                     idx += 2
                     i += 2
             elif inLead:
