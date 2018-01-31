@@ -43,7 +43,7 @@ class RegridDataPlaneWrapper(CommandBuilder):
             task_info.valid_time = -1
             for compare_var in compare_vars:
                 levels = util.getlist(
-                    self.p.getstr('config', "OBS_LEVEL"))
+                    self.p.getstr('config', "OUT_LEVEL"))
                 for level in levels:
                     if lead < int(level):
                             continue                    
