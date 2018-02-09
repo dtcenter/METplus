@@ -44,7 +44,6 @@ fcst = {
    //
    // Categorical thresholds 
    //
-   cat_thresh = [ >=12.5, >=25.4, >=50.8, >=76.2 ];
    field = [ ${FCST_FIELD} ];
 }
 obs = {
