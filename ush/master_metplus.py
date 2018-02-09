@@ -18,7 +18,7 @@ from produtil.run import batchexe, run  # , checkrun
 import met_util as util
 import config_metplus
 
-from pcp_combine_wrapper import PcpCombineWrapper
+from pcp_combine_obs_wrapper import PcpCombineObsWrapper
 from pcp_combine_model_wrapper import PcpCombineModelWrapper
 from grid_stat_wrapper import GridStatWrapper
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper

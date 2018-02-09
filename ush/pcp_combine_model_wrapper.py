@@ -87,8 +87,8 @@ class PcpCombineModelWrapper(PcpCombineWrapper):
         else:
             # if failure, check _GEMPAK_INPUT_DIR to get accumulation files
 
-            if not self.p.hasoption('config', 'FCST_GEMPAK_INPUT_DIR') or \
-               not self.p.hasoption('filename_templates', 'FCST_GEMPAK_TEMPLATE'):
+            if not self.p.has_option('config', 'FCST_GEMPAK_INPUT_DIR') or \
+               not self.p.has_option('filename_templates', 'FCST_GEMPAK_TEMPLATE'):
                 self.logger.warning(self.app_name + ": Could not find " \
                                     "files to compute accumulation in " \
                                     + input_dir)
