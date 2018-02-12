@@ -105,26 +105,25 @@ class GridStatWrapper(CommandBuilder):
     def run_at_time(self, init_time):
         task_info = TaskInfo()
         task_info.init_time = init_time
-        compare_vars = util.getlist(self.p.getstr('config', 'COMPARISON_VARS'))
+        compare_vars = util.getlist(self.p.getstr('config', 'VAR_LIST'))
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))        
         for lead in lead_seq:
             task_info.lead = lead
             for compare_var in compare_vars:
-                task_info.compare_var = compare_var
-                # loop over models to compare
-                levels = util.getlist(self.p.getstr('config', "OUT_LEVEL"))
-                for level in levels:
-                    task_info.level = level
-                    if lead < int(level):
-                        continue
-                    self.run_at_time_once(task_info)
+                var_name, level = compare_var.split("/")
+                task_info.compare_var = var_name
+                task_info.level = level
+                if lead < int(level[1:]):
+                    continue
+                self.run_at_time_once(task_info)
 
 
     def run_at_time_once(self, ti):
         grid_stat_out_dir = self.p.getstr('config', 'GRID_STAT_OUT_DIR')
         valid_time = ti.getValidTime()
         init_time = ti.getInitTime()
-        level = ti.level
+        level = ti.level[1:]
+        level_type = ti.level[0:1]
         model_type = self.p.getstr('config', 'MODEL_TYPE')
         obs_dir = self.p.getstr('config', 'OBS_GRID_STAT_INPUT_DIR')
         obs_template = self.p.getraw('filename_templates',
@@ -139,7 +138,7 @@ class GridStatWrapper(CommandBuilder):
                                      init_time, "grid_stat"))
 
         # get model to compare
-        model_path = self.find_model(ti.lead, init_time, ti.level)
+        model_path = self.find_model(ti.lead, init_time, level)
 
         if model_path == "":
             print("ERROR: COULD NOT FIND FILE IN "+model_dir)
@@ -161,11 +160,8 @@ class GridStatWrapper(CommandBuilder):
         # get fcst and obs thresh parameters
         # verify they are the same size
 
-        # TODO: Check if threshold params exist in the conf file
-        #  only add cat_thresh if it exists
         fcst_str = "FCST_"+ti.compare_var+"_"+level+"_THRESH"
         obs_str = "OBS_"+ti.compare_var+"_"+level+"_THRESH"
-        level_type = self.p.getstr('config', 'LEVEL_TYPE')
         fcst_cat_thresh = ""
         obs_cat_thresh = ""
         fcst_threshs = []
@@ -202,7 +198,6 @@ class GridStatWrapper(CommandBuilder):
         
         if self.p.getbool('config', 'FCST_IS_PROB'):
             for fcst_thresh in fcst_threshs:
-#                fcst_field += "{ name=\"PROB\"; level=\"A"+level.zfill(2) + \
                 fcst_field += "{ name=\"PROB\"; level=\""+level_type + \
                               level.zfill(2) + "\"; prob={ name=\"" + \
                               ti.compare_var + \
@@ -215,15 +210,11 @@ class GridStatWrapper(CommandBuilder):
             data_type = self.p.getstr('config', 'OBS_NATIVE_DATA_TYPE')
             if data_type == "NETCDF":
               fcst_field += "{ name=\""+ti.compare_var+"_"+level.zfill(2) + \
-                            "\"; level=\"(*,*)\"; " #cat_thresh=["
+                            "\"; level=\"(*,*)\"; "
             else:
               fcst_field += "{ name=\""+ti.compare_var + \
                             "\"; level=\"["+level_type + \
-                            level.zfill(2)+"]\"; " #cat_thresh=["                
-#            for fcst_thresh in fcst_threshs:
-#                fcst_field += "gt"+str(fcst_thresh)+", "
-#            fcst_field = fcst_field[0:-2]
-#            fcst_field += " ]; },"
+                            level.zfill(2)+"]\"; "
             fcst_field += fcst_cat_thresh+" },"
 
             obs_field += "{ name=\"" + ti.compare_var+"_" + level.zfill(2) + \
@@ -269,7 +260,6 @@ class GridStatWrapper(CommandBuilder):
         if cmd is None:
             print("ERROR: grid_stat could not generate command")
             return
-        print("RUNNING: "+str(cmd))
         self.logger.info("")
         self.build()
         self.clear()

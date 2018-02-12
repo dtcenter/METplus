@@ -49,22 +49,20 @@ class PcpCombineObsWrapper(PcpCombineWrapper):
     def run_at_time(self, init_time):
         task_info = TaskInfo()
         task_info.init_time = init_time
-        compare_vars = util.getlist(self.p.getstr('config', 'COMPARISON_VARS'))
+        compare_vars = util.getlist(self.p.getstr('config', 'VAR_LIST'))
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
         for lead in lead_seq:
             task_info.lead = lead
             for compare_var in compare_vars:
-                # loop over models to compare
-                accums = util.getlist(self.p.getstr('config', "OUT_LEVEL"))
-                for accum in accums:
-                    if lead < int(accum):
-                        print("Lead "+str(lead)+" is less than accum "+accum)
-                        print("Skipping...")
-                        continue
-                    vt = task_info.getValidTime()
-                    self.run_at_time_once(task_info.getValidTime(),
-                                          accum,
-                                          compare_var)
+                var_name, accum = compare_var.split("/")
+                if lead < int(accum[1:]):
+                    print("Lead "+str(lead)+" is less than accum "+accum[1:])
+                    print("Skipping...")
+                    continue
+                vt = task_info.getValidTime()
+                self.run_at_time_once(task_info.getValidTime(),
+                                      accum[1:],
+                                      var_name)
 
     def run_at_time_once(self, valid_time, accum,
                          compare_var, is_forecast=False):
