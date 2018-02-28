@@ -157,7 +157,6 @@ class PcpCombineWrapper(CommandBuilder):
                 f = self.get_lowest_forecast_at_valid(start_time, data_type)
                 if f == "":
                     break
-                # TODO: assumes 1hr accum (6 for NB) in these files for now
                 ob_str = self.p.getstr('config',
                                        data_type + '_' + str(level) +
                                        '_FIELD_NAME')
@@ -189,11 +188,13 @@ class PcpCombineWrapper(CommandBuilder):
                     # if found a file, add it to input list with info
                     if f is not None:
                         addon = ""
+#                        d_type = util.get_filetype(f)
                         d_type = self.p.getstr('config', data_type +
                                                   '_NATIVE_DATA_TYPE')
                         if d_type == "GRIB":
                             addon = search_accum
                         elif d_type == "NETCDF":
+#                        else:
                             ob_str = self.p.getstr('config', data_type +
                                                    '_' + str(search_accum) +
                                                    '_FIELD_NAME')

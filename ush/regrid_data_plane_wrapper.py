@@ -36,17 +36,18 @@ class RegridDataPlaneWrapper(CommandBuilder):
     def run_at_time(self, init_time):
         task_info = TaskInfo()
         task_info.init_time = init_time
-        compare_vars = util.getlist(self.p.getstr('config', 'VAR_LIST'))
+        var_list = util.parse_var_list(self.p)        
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
         for lead in lead_seq:
             task_info.lead = lead
             task_info.valid_time = -1
-            for compare_var in compare_vars:
-                var_name, level = compare_var.split("/")
-                if lead < int(level[1:]):
-                    continue                    
+            for var_info in var_list:
+                level = var_info.obs_level
+                if level[0].isalpha():
+                    level = var_info.obs_level[1:]                       
                 self.run_at_time_once(task_info.getValidTime(),
-                                      level[1:], var_name)
+                                      level, var_info.obs_name)
+
 
     def run_at_time_once(self, valid_time, level, compare_var):
         bucket_dir = self.p.getstr('config', 'OBS_REGRID_DATA_PLANE_INPUT_DIR')

@@ -49,20 +49,20 @@ class PcpCombineObsWrapper(PcpCombineWrapper):
     def run_at_time(self, init_time):
         task_info = TaskInfo()
         task_info.init_time = init_time
-        compare_vars = util.getlist(self.p.getstr('config', 'VAR_LIST'))
+        var_list = util.parse_var_list(self.p)
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
         for lead in lead_seq:
             task_info.lead = lead
-            for compare_var in compare_vars:
-                var_name, accum = compare_var.split("/")
-                if lead < int(accum[1:]):
-                    print("Lead "+str(lead)+" is less than accum "+accum[1:])
-                    print("Skipping...")
-                    continue
-                vt = task_info.getValidTime()
+            vt = task_info.getValidTime()            
+            for var_info in var_list:
+                level = var_info.obs_level
+                if level[0].isalpha():
+                    level = var_info.obs_level[1:]
+
                 self.run_at_time_once(task_info.getValidTime(),
-                                      accum[1:],
-                                      var_name)
+                                      level,
+                                      var_info.obs_name)
+
 
     def run_at_time_once(self, valid_time, accum,
                          compare_var, is_forecast=False):
@@ -104,8 +104,10 @@ class PcpCombineObsWrapper(PcpCombineWrapper):
                 for idx, infile in enumerate(infiles):
                     # replace input_dir with native_dir, check if file exists
                     nfile = infile.replace(gempak_dir, input_dir)
+#                    data_type = util.get_filetype(nfile)
                     data_type = self.p.getstr('config', 'OBS_NATIVE_DATA_TYPE')
                     if data_type == "NETCDF":
+#                    if data_type == "GEMPAK":
                         nfile = os.path.splitext(nfile)[0] + '.nc'
                         if not os.path.isfile(nfile):
                             print("Calling GempakToCF to convert to NetCDF")

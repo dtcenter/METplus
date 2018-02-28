@@ -33,9 +33,6 @@ class TaskInfo:
         self.init_time = -1
         self.valid_time = -1
         self.lead = -1
-        self.level = -1
-        self.compare_var = ""
-        self.ob_type = ""
         
 
     def getValidTime(self):

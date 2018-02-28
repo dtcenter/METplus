@@ -47,7 +47,6 @@ Usage: master_metplus.py [ -c /path/to/additional/conf_file] [options]
     -h|--help               Display this usage statement
 ''')
 
-
 def main():
     """!Main program.
 
@@ -119,7 +118,7 @@ def main():
     #
     # both work ...
     # Note: Using (item))sys.argv[1:], is preferable since
-    # it doesn't depend on the conf file existing.
+    # it doesn't depend on the conf file existing.       
     processes = []
     for item in process_list:
       try:

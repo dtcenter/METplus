@@ -66,9 +66,7 @@ class GridStatWrapper(CommandBuilder):
 
     def find_model(self, lead, init_time, level):
         model_dir = self.p.getstr('config', 'FCST_GRID_STAT_INPUT_DIR')
-        forecasts = 'FCST_NUM_FORECASTS'
-        # TODO: Sort fcsts then get the actual max instead of using last val
-        max_forecast = util.getlistint(self.p.getstr('config', forecasts))[-1]
+        max_forecast = self.p.getint('config', 'FCST_MAX_FORECAST')
         init_interval = self.p.getint('config', 'FCST_INIT_INTERVAL')
         lead_check = lead
         time_check = init_time
@@ -77,10 +75,11 @@ class GridStatWrapper(CommandBuilder):
         while lead_check <= max_forecast:
             model_template = self.p.getraw('filename_templates',
                                            'FCST_GRID_STAT_INPUT_TEMPLATE')
+            # split by - to handle a level that is a range, such as 0-10
             model_ss = sts.StringSub(self.logger, model_template,
                                      init=time_check,
                                      lead=str(lead_check).zfill(2),
-                                     level=str(level).zfill(2))
+                                     level=str(level.split('-')[0]).zfill(2))
             model_file = model_ss.doStringSub()
             model_path = os.path.join(model_dir, model_file)
             if os.path.exists(model_path):
@@ -92,8 +91,8 @@ class GridStatWrapper(CommandBuilder):
                         outfile.write(infile.read())
                         infile.close()
                         outfile.close()
-                        # TODO: change model_path to path without gz, set found to true and break
-
+                        # TODO: change model_path to path without gz
+                        # set found to true and break
             time_check = util.shift_time(time_check, -init_interval)
             lead_check = lead_check + init_interval            
 
@@ -105,25 +104,29 @@ class GridStatWrapper(CommandBuilder):
     def run_at_time(self, init_time):
         task_info = TaskInfo()
         task_info.init_time = init_time
-        compare_vars = util.getlist(self.p.getstr('config', 'VAR_LIST'))
+        var_list = util.parse_var_list(self.p)
+        
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))        
         for lead in lead_seq:
             task_info.lead = lead
-            for compare_var in compare_vars:
-                var_name, level = compare_var.split("/")
-                task_info.compare_var = var_name
-                task_info.level = level
-                if lead < int(level[1:]):
-                    continue
-                self.run_at_time_once(task_info)
+            for var_info in var_list:
+                self.run_at_time_once(task_info, var_info)
 
 
-    def run_at_time_once(self, ti):
+    def run_at_time_once(self, ti, v):
         grid_stat_out_dir = self.p.getstr('config', 'GRID_STAT_OUT_DIR')
         valid_time = ti.getValidTime()
         init_time = ti.getInitTime()
-        level = ti.level[1:]
-        level_type = ti.level[0:1]
+        fcst_level = v.fcst_level
+        fcst_level_type = ""
+        if(fcst_level[0].isalpha()):
+            fcst_level_type = fcst_level[0]
+            fcst_level = fcst_level[1:]
+        obs_level = v.obs_level
+        obs_level_type = ""
+        if(obs_level[0].isalpha()):
+            obs_level_type = obs_level[0]
+            obs_level = obs_level[1:]            
         model_type = self.p.getstr('config', 'MODEL_TYPE')
         obs_dir = self.p.getstr('config', 'OBS_GRID_STAT_INPUT_DIR')
         obs_template = self.p.getraw('filename_templates',
@@ -138,16 +141,17 @@ class GridStatWrapper(CommandBuilder):
                                      init_time, "grid_stat"))
 
         # get model to compare
-        model_path = self.find_model(ti.lead, init_time, level)
+        model_path = self.find_model(ti.lead, init_time, fcst_level)
 
         if model_path == "":
             print("ERROR: COULD NOT FIND FILE IN "+model_dir)
             return
         self.add_input_file(model_path)
+        # TODO: Handle range of levels
         obsSts = sts.StringSub(self.logger,
                                   obs_template,
                                   valid=valid_time,
-                                  level=str(level).zfill(2))
+                                  level=str(obs_level.split('-')[0]).zfill(2))
         obs_file = obsSts.doStringSub()
 
         obs_path = os.path.join(obs_dir, obs_file)
@@ -160,8 +164,8 @@ class GridStatWrapper(CommandBuilder):
         # get fcst and obs thresh parameters
         # verify they are the same size
 
-        fcst_str = "FCST_"+ti.compare_var+"_"+level+"_THRESH"
-        obs_str = "OBS_"+ti.compare_var+"_"+level+"_THRESH"
+        fcst_str = "FCST_"+v.fcst_name+"_"+fcst_level+"_THRESH"
+        obs_str = "OBS_"+v.obs_name+"_"+obs_level+"_THRESH"
         fcst_cat_thresh = ""
         obs_cat_thresh = ""
         fcst_threshs = []
@@ -180,7 +184,7 @@ class GridStatWrapper(CommandBuilder):
             for obs_thresh in obs_threshs:
                 obs_cat_thresh += "gt"+str(obs_thresh)+", "
             obs_cat_thresh = obs_cat_thresh[0:-2]+" ];"
-        print(str(len(fcst_threshs))+" and "+str(len(obs_threshs)))
+
         if len(fcst_threshs) != len(obs_threshs):
             self.logger.error("run_example: Number of forecast and "\
                               "observation thresholds must be the same")
@@ -189,48 +193,48 @@ class GridStatWrapper(CommandBuilder):
         # TODO: Allow NetCDF level with more than 2 dimensions i.e. (1,*,*)
         # TODO: Need to check data type for PROB fcst? non PROB obs?
 
-                    
-
         fcst_field = ""
         obs_field = ""
-
-
-        
+# TODO: change PROB mode to put all cat thresh values in 1 item        
         if self.p.getbool('config', 'FCST_IS_PROB'):
             for fcst_thresh in fcst_threshs:
-                fcst_field += "{ name=\"PROB\"; level=\""+level_type + \
-                              level.zfill(2) + "\"; prob={ name=\"" + \
-                              ti.compare_var + \
+                fcst_field += "{ name=\"PROB\"; level=\""+fcst_level_type + \
+                              fcst_level.zfill(2) + "\"; prob={ name=\"" + \
+                              v.fcst_name + \
                               "\"; thresh_lo="+str(fcst_thresh)+"; } },"
             for obs_thresh in obs_threshs:
-                obs_field += "{ name=\""+ti.compare_var+"_"+level.zfill(2) + \
+                obs_field += "{ name=\""+v.obs_name+"_"+obs_level.zfill(2) + \
                              "\"; level=\"(*,*)\"; cat_thresh=[ gt" + \
                              str(obs_thresh)+" ]; },"
         else:
             data_type = self.p.getstr('config', 'OBS_NATIVE_DATA_TYPE')
             if data_type == "NETCDF":
-              fcst_field += "{ name=\""+ti.compare_var+"_"+level.zfill(2) + \
+              fcst_field += "{ name=\""+v.fcst_name+"_"+fcst_level.zfill(2) + \
                             "\"; level=\"(*,*)\"; "
             else:
-              fcst_field += "{ name=\""+ti.compare_var + \
-                            "\"; level=\"["+level_type + \
-                            level.zfill(2)+"]\"; "
+              fcst_field += "{ name=\""+v.fcst_name + \
+                            "\"; level=\"["+fcst_level_type + \
+                            fcst_level.zfill(2)+"]\"; "                  
             fcst_field += fcst_cat_thresh+" },"
 
-            obs_field += "{ name=\"" + ti.compare_var+"_" + level.zfill(2) + \
+            obs_field += "{ name=\"" + v.obs_name+"_" + obs_level.zfill(2) + \
                          "\"; level=\"(*,*)\"; "
             obs_field += obs_cat_thresh
             obs_field += " },"
-        # remove last comma
-        fcst_field = fcst_field[0:-1]
-        obs_field = obs_field[0:-1]
+        # remove last comma and } to be added back after extra options
+        fcst_field = fcst_field[0:-2]
+        obs_field = obs_field[0:-2]
 
-        ob_type = self.p.getstr('config', "OB_TYPE")        
+        fcst_field += v.fcst_extra+"}"
+        obs_field += v.obs_extra+"}"
+
+        ob_type = self.p.getstr('config', "OB_TYPE")
 
         self.add_env_var("MODEL", model_type)
-        self.add_env_var("FCST_VAR", ti.compare_var)
-        self.add_env_var("OBS_VAR", ti.compare_var)
-        self.add_env_var("ACCUM", level)
+        self.add_env_var("FCST_VAR", v.fcst_name)
+        self.add_env_var("OBS_VAR", v.obs_name)
+        # TODO: Change ACCUM to LEVEL in GridStatConfig_MEAN/PROB and here
+        self.add_env_var("ACCUM", fcst_level)
         self.add_env_var("OBTYPE", ob_type)
         self.add_env_var("CONFIG_DIR", config_dir)
         self.add_env_var("FCST_FIELD", fcst_field)
