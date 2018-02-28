@@ -1227,11 +1227,8 @@ def getlist(s, logger=None):
     # removes surrounding comma, and spaces, if present.
     s = s.strip().strip(',').strip()
 
-    if ',' in s:
-        s = s.split(',')
-        s = [item.strip() for item in s]
-    else:
-        s = s.split()
+    s = s.split(',')
+    s = [item.strip() for item in s]
 
     return s
 
@@ -1252,6 +1249,81 @@ def getlistint(s):
 def shift_time(time, shift):
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(hours=shift)).strftime("%Y%m%d%H%M")
+
+
+class FieldObj(object):
+    __slots__ = 'fcst_name', 'fcst_level', 'fcst_extra',\
+                'obs_name', 'obs_level', 'obs_extra'
+
+def parse_var_list(p):
+    # var_list is a list containing an list of FieldObj
+    var_list = []
+
+    # find all FCST_VARn_NAME keys in the conf files
+    all_conf = p.keys('config')
+    fcst_indices = []
+    regex = re.compile("FCST_VAR(\d+)_NAME")
+    for conf in all_conf:
+        result = regex.match(conf)
+        if result is not None:
+          fcst_indices.append(result.group(1))
+
+    # loop over all possible variables and add them to list
+    for n in fcst_indices:
+        # get fcst var info if available
+        if p.has_option('config', "FCST_VAR"+n+"_NAME"):
+            fcst_name = p.getstr('config', "FCST_VAR"+n+"_NAME")
+
+            fcst_extra = ""
+            if p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
+                fcst_extra = p.getraw('config', "FCST_VAR"+n+"_OPTIONS")
+
+            # if OBS_VARn_X does not exist, use FCST_VARn_X
+            if p.has_option('config', "OBS_VAR"+n+"_NAME"):
+                obs_name = p.getstr('config', "OBS_VAR"+n+"_NAME")
+            else:
+                obs_name = fcst_name
+
+            obs_extra = ""
+            if p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
+                obs_extra = p.getraw('config', "OBS_VAR"+n+"_OPTIONS")
+
+            fcst_levels = getlist(p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
+            if p.has_option('config', "OBS_VAR"+n+"_LEVELS"):
+                obs_levels = getlist(p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
+            else:
+                obs_levels = fcst_levels
+
+            if len(fcst_levels) != len(obs_levels):
+                print("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
+                          "_LEVELS do not have the same number of elements")
+                exit(1)
+
+            for f,o in zip(fcst_levels, obs_levels):
+                fo = FieldObj()
+                fo.fcst_name = fcst_name
+                fo.obs_name = obs_name
+                fo.fcst_extra = fcst_extra
+                fo.obs_extra = obs_extra
+                fo.fcst_level = f
+                fo.obs_level = o
+                var_list.append(fo)
+
+    '''
+    count = 0
+    for v in var_list:
+        print(" fcst_name:"+v.fcst_name)
+        print(" fcst_level:"+v.fcst_level)
+        print(" fcst_extra:"+v.fcst_extra)
+        print(" obs_name:"+v.obs_name)
+        print(" obs_level:"+v.obs_level)
+        print(" obs_extra:"+v.obs_extra)
+        print("")
+        count += 1
+    '''
+    return var_list
+
+
 
 
 if __name__ == "__main__":
