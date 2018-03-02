@@ -63,7 +63,7 @@ class PcpCombineWrapper(CommandBuilder):
                 print("ERROR: Could not pull forecast lead from f")
                 exit
 
-            init = se.getInitTime("%Y%m%d%H")
+            init = se.getInitTime("%Y%m%d%H%M")
             v = util.shift_time(init, fcst)
             if v == valid_time:
                 out_file = fpath
@@ -130,7 +130,6 @@ class PcpCombineWrapper(CommandBuilder):
                     continue
                 # build level info string
                 file_time = datetime.datetime.strptime(f[-18:-8], "%Y%m%d%H")
-                print("SEARCHTIME:"+search_time)
                 v_time = datetime.datetime.strptime(search_time, "%Y%m%d%H")
                 diff = v_time - file_time
                 lead = int((diff.days * 24) / (data_interval / 3600))
@@ -145,12 +144,11 @@ class PcpCombineWrapper(CommandBuilder):
 
 
         start_time = valid_time
-        last_time = util.shift_time(valid_time, -(int(accum) - 1))[0:10]
+        last_time = util.shift_time(valid_time, -(int(accum) - 1))
         total_accum = int(accum)
 #        search_accum = total_accum
         level = self.p.getint('config', data_type+'_LEVEL')
         search_accum = level
-
         # loop backwards in time until you have a full set of accum
         while last_time <= start_time:
             if is_forecast:
@@ -161,7 +159,6 @@ class PcpCombineWrapper(CommandBuilder):
                                        data_type + '_' + str(level) +
                                        '_FIELD_NAME')
                 addon = "'name=\"" + ob_str + "\"; level=\"(0,*,*)\";'"
-
                 self.add_input_file(f, addon)
                 start_time = util.shift_time(start_time, -1)
                 search_accum -= 1
@@ -213,7 +210,8 @@ class PcpCombineWrapper(CommandBuilder):
                 if search_accum == 0:
                     return False
 
-                
+        if len(self.infiles) is 0:
+            return False
         return True
         self.set_output_dir(self.outdir)
 

@@ -80,11 +80,10 @@ class PcpCombineModelWrapper(PcpCombineWrapper):
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.set_input_dir(input_dir)
         if self.get_accumulation(valid_time, accum, "FCST", input_template, True) is True:
-            # if success, run pcp_combine            
+            # if success, run pcp_combine
             infiles = self.get_input_files()            
         else:
             # if failure, check _GEMPAK_INPUT_DIR to get accumulation files
-
             if not self.p.has_option('config', 'FCST_GEMPAK_INPUT_DIR') or \
                not self.p.has_option('filename_templates', 'FCST_GEMPAK_TEMPLATE'):
                 self.logger.warning(self.app_name + ": Could not find " \
@@ -96,7 +95,7 @@ class PcpCombineModelWrapper(PcpCombineWrapper):
                                             'FCST_GEMPAK_TEMPLATE')                 
             self.set_input_dir(gempak_dir)
             if self.get_accumulation(valid_time, accum,
-                              model_type, gempak_template, True) is True:
+                              "FCST", gempak_template, True) is True:
                 # if success, run GempakToCF, run pcp_combine
                infiles = self.get_input_files()
                for idx, infile in enumerate(infiles):
