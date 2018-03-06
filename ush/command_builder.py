@@ -166,6 +166,6 @@ class CommandBuilder:
         end_time = calendar.timegm(time.strptime(end_t, time_format))
 
         while init_time <= end_time:
-            run_time = time.strftime("%Y%m%d_%H", time.gmtime(init_time))
+            run_time = time.strftime("%Y%m%d%H%M", time.gmtime(init_time))
             self.run_at_time(run_time)
             init_time += time_interval
