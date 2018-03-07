@@ -234,7 +234,7 @@ class GridStatWrapper(CommandBuilder):
         self.add_env_var("FCST_VAR", v.fcst_name)
         self.add_env_var("OBS_VAR", v.obs_name)
         # TODO: Change ACCUM to LEVEL in GridStatConfig_MEAN/PROB and here
-        self.add_env_var("ACCUM", fcst_level)
+        self.add_env_var("ACCUM", v.fcst_level)
         self.add_env_var("OBTYPE", ob_type)
         self.add_env_var("CONFIG_DIR", config_dir)
         self.add_env_var("FCST_FIELD", fcst_field)

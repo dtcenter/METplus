@@ -9,11 +9,19 @@
 //
 // Output model name to be written
 //
+//model = "${model_fcst_now}";
 model = "${MODEL}";
+
+//
+// Output description to be written
+// May be set separately in each "obs.field" entry
+//
+desc = "NA";
 
 //
 // Output observation type to be written
 //
+//obtype = "${obs_name}";
 obtype = "${OBTYPE}";
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -22,38 +30,48 @@ obtype = "${OBTYPE}";
 // Verification grid
 //
 regrid = {
-   to_grid    = OBS;
-   method     = NEAREST;
-   width      = 1;
+   to_grid    = "G211";
+   method     = BILIN;
+   width      = 2;
    vld_thresh = 0.5;
+   shape      = SQUARE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-cat_thresh  = [ NA ];
-cnt_thresh  = [ NA ];
-cnt_logic   = UNION;
-wind_thresh = [ NA ];
-wind_logic  = UNION;
+//
+// May be set separately in each "field" entry
+//
+censor_thresh = [];
+censor_val    = [];
+//cat_thresh    = [ ${threshold_config} ];
+cnt_thresh    = [ NA ];
+cnt_logic     = UNION;
+wind_thresh   = [ NA ];
+wind_logic    = UNION;
+eclv_points   = 0.05;
 
 //
 // Forecast and observation fields to be verified
 //
 fcst = {
+    field = [
+      ${FCST_FIELD}
+//      { name  = "${model_var}"; level = [ "(*,*)" ]; cat_thresh = [ ${threshold_config} ]; }
+    ];
+    };
 
-   //
-   // Categorical thresholds 
-   //
-   field = [ ${FCST_FIELD} ];
-}
 obs = {
-   field = [ ${OBS_FIELD} ];
-}
+    field = [
+//      { name  = "APCP"; level = [ "L0" ]; cat_thresh = [ ${threshold_config} ]; }
+      ${OBS_FIELD}
+    ];
+    };
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// Climatology mean data
+// Climatology data
 //
 climo_mean = {
 
@@ -61,15 +79,24 @@ climo_mean = {
    field     = [];
 
    regrid = {
-      method     = NEAREST;
-      width      = 1;
+      method     = BILIN;
+      width      = 2;
       vld_thresh = 0.5;
+      shape      = SQUARE;
    }
 
-   time_interp_method = DW_MEAN;
-   match_day          = FALSE;
+   time_interp_method = NEAREST;
+   match_day          = TRUE;
    time_step          = 21600;
 }
+
+climo_stdev = climo_mean;
+climo_stdev = {
+   file_name = [];
+}
+
+climo_cdf_bins = 1;
+write_cdf_bins = FALSE;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -77,8 +104,10 @@ climo_mean = {
 // Verification masking regions
 //
 mask = {
-   grid = ["FULL"];
-   poly = [];
+   grid = [ "FULL" ];
+   poly = [ "/d1/METplus_Mallory/data/poly/CONUS.nc",
+            "/d1/METplus_Mallory/data/poly/EAST.nc",
+            "/d1/METplus_Mallory/data/poly/WEST.nc" ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +133,7 @@ boot = {
 interp = {
    field      = BOTH;
    vld_thresh = 1.0;
+   shape      = SQUARE;
 
    type = [
       {
@@ -122,6 +152,17 @@ nbrhd = {
    width      = [ 1 ];
    cov_thresh = [ >=0.5 ];
    vld_thresh = 1.0;
+   shape      = SQUARE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Fourier decomposition
+//
+fourier = {
+   wave_1d_beg = [];
+   wave_1d_end = [];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,7 +173,7 @@ nbrhd = {
 output_flag = {
    fho    = NONE;
    ctc    = STAT;
-   cts    = STAT;
+   cts    = NONE;
    mctc   = NONE;
    mcts   = NONE;
    cnt    = NONE;
@@ -144,22 +185,34 @@ output_flag = {
    pstd   = NONE;
    pjc    = NONE;
    prc    = NONE;
+//   eclv   = NONE;
    nbrctc = NONE;
    nbrcts = NONE;
    nbrcnt = NONE;
+//   grad   = NONE;
 }
 
 //
 // NetCDF matched pairs output file
 //
-nc_pairs_flag   = FALSE;
+nc_pairs_flag   = {
+   latlon     = FALSE;
+   raw        = FALSE;
+   diff       = FALSE;
+   climo      = FALSE;
+   weight     = FALSE;
+   nbrhd      = FALSE;
+   fourier    = FALSE;
+   gradient   = FALSE;
+   apply_mask = FALSE;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 grid_weight_flag = NONE;
 rank_corr_flag   = FALSE;
 tmp_dir          = "/tmp";
-output_prefix    = "MEAN_${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${ACCUM}";
-version          = "V6.0";
+output_prefix    = "${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${ACCUM}";
+version          = "V6.1";
 
 ////////////////////////////////////////////////////////////////////////////////

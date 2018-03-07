@@ -109,6 +109,11 @@ class PcpCombineWrapper(CommandBuilder):
         else:
             return today_file
 
+#    def subtract_files():
+    # need accum interval, valid time, directory
+    # find file at valid time in directory
+    # find file at valid time - accum in directory
+        
     def get_accumulation(self, valid_time, accum, data_type,
                          file_template, is_forecast=False):
         if self.input_dir == "":
@@ -129,7 +134,8 @@ class PcpCombineWrapper(CommandBuilder):
                 if f == "":
                     continue
                 # build level info string
-                file_time = datetime.datetime.strptime(f[-18:-8], "%Y%m%d%H")
+                # TODO: pull out YYYYMMDDHH from filename
+                file_time = datetime.datetime.strptime(f[-17:-7], "%Y%m%d%H")
                 v_time = datetime.datetime.strptime(search_time, "%Y%m%d%H")
                 diff = v_time - file_time
                 lead = int((diff.days * 24) / (data_interval / 3600))
