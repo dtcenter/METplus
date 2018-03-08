@@ -46,14 +46,14 @@ class PcpCombineObsWrapper(PcpCombineWrapper):
         self.inaddons = []
 
 
-    def run_at_time(self, init_time):
+    def run_at_time(self, init_time, valid_time):
         task_info = TaskInfo()
         task_info.init_time = init_time
+        task_info.valid_time = valid_time        
         var_list = util.parse_var_list(self.p)
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
         for lead in lead_seq:
             task_info.lead = lead
-            vt = task_info.getValidTime()            
             for var_info in var_list:
                 level = var_info.obs_level
                 if level[0].isalpha():

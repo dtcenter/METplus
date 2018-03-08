@@ -84,7 +84,8 @@ class ExtractTilesWrapper(CommandBuilder):
         # Loop from begYYYYMMDD to endYYYYMMDD incrementing by HH
         # and ending on the endYYYYMMDD_HH End Hour.
         while init_time <= end_time:
-            self.run_at_time(init_time.strftime("%Y%m%d_%H"))
+#            self.run_at_time(init_time.strftime("%Y%m%d_%H"))
+            self.run_at_time(init_time.strftime("%Y%m%d%H%M"), -1)
             init_time = init_time + datetime.timedelta(
                 hours=self.init_hour_inc)
 
@@ -96,7 +97,8 @@ class ExtractTilesWrapper(CommandBuilder):
                "] | Finished extract tiles")
         self.logger.info(msg)
 
-    def run_at_time(self, cur_init):
+#    def run_at_time(self, cur_init):
+    def run_at_time(self, init_time, valid_time):
         """!Get TC-paris data then regrid tiles centered on the storm.
 
         Get TC-pairs track data and GFS model data, do any necessary
@@ -123,6 +125,8 @@ class ExtractTilesWrapper(CommandBuilder):
         msg = ("INFO|[" + cur_filename + ":" + cur_function + "]"
                "|Begin extract tiles")
         self.logger.info(msg)
+
+        cur_init = init_time[0:8]+"_"+init_time[8:10]
 
         # Check that there are tc_pairs data which are used as input
         if util.is_dir_empty(self.tc_pairs_dir):
