@@ -150,22 +150,33 @@ class CommandBuilder:
         (self.logger).info("RUNNING: " + cmd)
         process = subprocess.Popen(cmd, env=self.env, shell=True)
         process.wait()
-#        self.clear()
+
 
     def run_all_times(self):
-        time_format = self.p.getstr('config', 'INIT_TIME_FMT')
-        start_t = self.p.getstr('config', 'INIT_BEG')
-        end_t = self.p.getstr('config', 'INIT_END')
-        time_interval = self.p.getint('config', 'INIT_INC')
-
+        use_init = p.getbool('config', 'LOOP_BY_INIT')
+        if use_init:
+            time_format = p.getstr('config', 'INIT_TIME_FMT')
+            start_t = p.getstr('config', 'INIT_BEG')
+            end_t = p.getstr('config', 'INIT_END')
+            time_interval = p.getint('config', 'INIT_INC')
+        else:
+            time_format = p.getstr('config', 'VALID_TIME_FMT')
+            start_t = p.getstr('config', 'VALID_BEG')
+            end_t = p.getstr('config', 'VALID_END')
+            time_interval = p.getint('config', 'VALID_INC')
+        
         if time_interval < 60:
             print("ERROR: time_interval parameter must be greater than 60 seconds")
             exit(1)
         
-        init_time = calendar.timegm(time.strptime(start_t, time_format))
+        loop_time = calendar.timegm(time.strptime(start_t, time_format))
         end_time = calendar.timegm(time.strptime(end_t, time_format))
 
-        while init_time <= end_time:
-            run_time = time.strftime("%Y%m%d%H%M", time.gmtime(init_time))
-            self.run_at_time(run_time)
-            init_time += time_interval
+        while loop_time <= end_time:
+            run_time = time.strftime("%Y%m%d%H%M", time.gmtime(loop_time))
+            # Set valid time to -1 if using init and vice versa            
+            if use_init:
+                self.run_at_time(run_time, -1)
+            else:
+                self.run_at_time(-1, run_time)
+            loop_time += time_interval

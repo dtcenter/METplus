@@ -28,7 +28,8 @@ class UsageWrapper(CommandBuilder):
                                     'SeriesByLead', 'PcpCombine',
                                     'RegridDataPlane',
                                     'GridStat', 'Mode', 'RegridDataPlane',
-                                    'CyclonePlotter', 'TCMPRPlotter']
+                                    'CyclonePlotter', 'TCMPRPlotter',
+                                    'PB2NC', 'PointStat']
 
     def run_all_times(self):
         print("USAGE:\n  This is a default process, please indicate more " +

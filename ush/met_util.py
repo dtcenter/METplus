@@ -10,6 +10,8 @@ import errno
 import time
 import calendar
 import re
+from collections import namedtuple
+
 from produtil.run import batchexe
 from produtil.run import run
 from string_template_substitution import StringSub
@@ -1324,6 +1326,103 @@ def parse_var_list(p):
     return var_list
 
 
+def reformat_fields_for_met(all_vars_list, logger):
+        """! Reformat the fcst or obs field values defined in the
+             MET+ config file to the MET field dictionary.
+
+             Args:
+                 all_vars_list - The list of all variables/fields retrieved
+                                 from the MET+ configuration file
+
+                 logger        - The log to which any logging is directed.
+
+             Returns:
+                 met_fields - a named tuple containing the fcst field and
+                              obs field key-value pairs needed by MET.
+
+
+        """
+        # pylint:disable=protected-access
+        # Need to call sys.__getframe() to get the filename and method/func
+        # for logging information.
+
+        # Used for logging.
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+        logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+                    "Reformatting field dictionary ...")
+
+        # Named tuple (so we don't have to remember the order of the fields)
+        # containing the string corresponding to the fcst or obs field
+        # key-values for the MET config file.
+        MetFields = namedtuple("MetFields", "fcst_field, obs_field")
+
+        # Two types of fields in the MET fields dictionary, fcst and obs. Use
+        # this to create the key-value pairs.
+        field_list = ['fcst', 'obs']
+        fcst_field = ''
+        obs_field = ''
+        for var in all_vars_list:
+            # Create the key-value pairs in the fcst field and obs field
+            # dictionaries as defined in the MET configuration file:
+            # fcst = {
+            #    field = [
+            #       {
+            #         name = "TMP";
+            #         level = ["P500"];
+            #         cat_thresh = [ > 80.0];
+            #         GRIB_lvl_typ = 202;
+            #       },
+            #       {
+            #         name = "HGT";
+            #         level = ["P500"];
+            #         cat_thresh = [ > 0.0];
+            #         GRIB_lvl_typ = 202;
+            #       },
+            #    ]
+            # }
+            # obs = fcst;
+            #
+            # The reformatting involves creating the field key-value pairs in
+            # the fcst and obs dictionaries.
+
+            # Iterate over the field types fcst and obs
+            for field in field_list:
+                if field == 'fcst':
+                    name = var.fcst_name
+                    level = var.fcst_level.zfill(2)
+                    extra = var.fcst_extra
+                elif field == 'obs':
+                    name = var.obs_name
+                    level = var.obs_level
+                    extra = var.obs_extra
+
+                name_level_extra_list = ['{ name = "', name,
+                                         '"; level = [ "', level, '" ]; ']
+                if extra:
+                    extra_str = extra + '; }, '
+                    name_level_extra_list.append(extra_str)
+                else:
+                    # End the text for this field.  If this is the last field,
+                    # end the dictionary appropriately.
+                    if var.fcst_name == all_vars_list[-1].fcst_name:
+                        # This is the last field, terminate it appropriately.
+                        # name_level_extra_list.append(' }]; ')
+                        name_level_extra_list.append('}')
+                    else:
+                        # More field(s) to go
+                        name_level_extra_list.append('}, ')
+
+                # Create the long string that will comprise the dictionary in
+                # the MET point_stat config file.
+                if field == 'fcst':
+                    fcst_field += ''.join(name_level_extra_list)
+                elif field == 'obs':
+                    obs_field += ''.join(name_level_extra_list)
+
+        met_fields = MetFields(fcst_field, obs_field)
+
+        return met_fields
 
 
 if __name__ == "__main__":
