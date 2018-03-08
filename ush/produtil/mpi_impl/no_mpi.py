@@ -8,42 +8,18 @@
 
 import os, logging
 import produtil.prog,produtil.pipeline
-from .mpi_impl_base import MPIDisabled
+from .mpi_impl_base import MPIDisabled,ImplementationBase
 module_logger=logging.getLogger('lsf_cray_intel')
 
-def runsync(logger=None):
-    """!Runs the "sync" command as an exe()."""
-    if logger is None: logger=module_logger
-    sync=produtil.prog.Runner(['/bin/sync'])
-    p=produtil.pipeline.Pipeline(sync,capture=True,logger=logger)
-    version=p.to_string()
-    status=p.poll()
-def openmp(arg,threads):
-    """!Does nothing.  This implementation does not support OpenMP.
-
-    @param arg An produtil.prog.Runner or
-    produtil.mpiprog.MPIRanksBase object tree
-    @param threads the number of threads, or threads per rank, an
-    integer"""
-    if threads is not None:
-        if hasattr(arg,'threads'):
-            arg.threads=threads
-        if hasattr(arg,'env'):
-            return arg.env(OMP_NUM_THREADS=threads)
-    else:
-        del arg.threads
-        return arg
-def mpirunner(arg,**kwargs):
-    """!Raises an exception to indicate MPI is not supported
-    @param arg,kwargs Ignored."""
-    raise MPIDisabled('This job cannot run MPI programs.')
-def can_run_mpi():
-    """!Returns False to indicate MPI is not supported."""
-    return False
-def make_bigexe(exe,**kwargs): 
-    """!Returns an ImmutableRunner that will run the specified program.
-    @returns an empty list
-    @param exe The executable to run on compute nodes.
-    @param kwargs Ignored."""
-    return produtil.prog.ImmutableRunner([str(exe)],**kwargs)
-
+class Implementation(ImplementationBase):
+    @staticmethod
+    def name():
+        """Returns the string "no_mpi" to indicate MPI is not available."""
+        return 'no_mpi'
+    @staticmethod
+    def detect(logger=None,force=False,**kwargs):
+        """!Returns a new instrance of this class to indicate that
+        the "no MPI" implementation of MPI is always available"""
+        return Implementation()
+    def __init__(self,logger=None):
+        super(Implementation,self).__init__(logger=logger)
