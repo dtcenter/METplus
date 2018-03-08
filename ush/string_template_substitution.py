@@ -32,12 +32,17 @@ VALID_STRING = "valid"
 LEAD_STRING = "lead"
 INIT_STRING = "init"
 LEVEL_STRING = "level"
+CYCLE_STRING = "cycle"
+OFFSET_STRING = "offset"
 
 LEAD_LEVEL_FORMATTING_DELIMITER = "%"
+# Use the same formatting delimiter used for level:
+CYCLE_OFFSET_FORMATTING_DELIMITER = LEAD_LEVEL_FORMATTING_DELIMITER
 
-SECONDS_PER_HOUR = 3600
-MINUTES_PER_HOUR = 60
-SECONDS_PER_MINUTE = 60
+SECONDS_PER_HOUR = 3600.
+MINUTES_PER_HOUR = 60.
+SECONDS_PER_MINUTE = 60.
+HOURS_PER_DAY = 24.
 
 TWO_DIGIT_PAD = 2
 THREE_DIGIT_PAD = 3
@@ -68,11 +73,13 @@ def date_str_to_datetime_obj(str):
 
 
 def multiple_replace(dict, text):
-    """ Replace in 'text' all occurences of any key in the
+    """ Replace in 'text' all occurrences of any key in the
     given dictionary by its corresponding value.  Returns the new string. """
 
     # Create a regular expression  from the dictionary keys
     regex = re.compile("(%s)" % "|".join(map(re.escape, dict.keys())))
+    j = "".join(map(re.escape, dict.keys()))
+    # print "regex from dictionary keys: {}".format(j)
 
     # For each match, look-up corresponding value in dictionary
     return regex.sub(lambda mo: dict[mo.string[mo.start():mo.end()]], text)
@@ -119,6 +126,30 @@ def get_lead_level_time_seconds(logger, time_string):
         exit(0)
 
 
+def get_time_in_hours(logger, time_string):
+    """! Returns the number of hours for the time string in the format
+         H, HH or HHH"""
+
+    # Used for logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    # H, HH or HHH
+    if len(time_string) == 1:
+        return int(time_string)
+    elif len(time_string) == 2:
+        return int(time_string)
+    elif len(time_string) == 3:
+        return int(time_string)
+    else:
+        logger.error("ERROR | [" + cur_filename + ":" + cur_function +
+                     "] | " + "The time string " + time_string +
+                     " must be in the format H, HH or HHH where a one-, two-"
+                     " or three-digit" +
+                     " hour is required.")
+        exit(0)
+
+
 class StringSub:
     """
     log - log object
@@ -135,6 +166,14 @@ class StringSub:
        level - must be in HH[MMSS] format
        model - the name of the model
        domain - the domain number (01, 02, etc.) read in as a string
+       cycle - the cycle hour in HH format (00, 03, 06, etc.)
+       offset_hour - the offset hour in HH format to add
+                     to the init + cycl time:
+                      (YYYYMMDD + hh) + offset
+                     Indicate a negative offset by using a '-' sign
+                     in the
+
+
 
     See the description of doStringSub for further details.
     """
@@ -154,20 +193,30 @@ class StringSub:
         self.level_time_seconds = 0
         self.negative_lead = False
         self.negative_level = False
+        self.cycle_hours = 0
+        self.offset_hour = 0
 
-        if (LEAD_STRING in self.kwargs):
+        if LEAD_STRING in self.kwargs:
             self.lead_time_seconds = \
-                 get_lead_level_time_seconds(self.logger,
-                                             self.kwargs.get(LEAD_STRING,
-                                                             None))
-        if (LEVEL_STRING in self.kwargs):
-            self.level_time_seconds =  \
+                get_lead_level_time_seconds(self.logger,
+                                            self.kwargs.get(LEAD_STRING,
+                                                            None))
+        if LEVEL_STRING in self.kwargs:
+            self.level_time_seconds = \
                 get_lead_level_time_seconds(self.logger,
                                             self.kwargs.get(LEVEL_STRING,
                                                             None))
+        if CYCLE_STRING in self.kwargs:
+            self.cycle_time_hours = \
+                get_time_in_hours(self.logger,
+                                  self.kwargs.get(CYCLE_STRING, None))
+
+        if OFFSET_STRING in self.kwargs:
+            self.offset_hour = \
+                get_time_in_hours(self.logger,
+                                  self.kwargs.get(OFFSET_STRING, None))
 
     def dateCalcInit(self):
-
         """ Calculate the init time from the valid and lead time  """
         # Used for logging
         cur_filename = sys._getframe().f_code.co_filename
@@ -238,6 +287,61 @@ class StringSub:
                                         self.kwargs.get(LEAD_STRING, None))
 
         valid_unix_time = init_unix_time + self.lead_time_seconds
+        valid_time = time.strftime("%Y%m%d%H%M%S",
+                                   time.gmtime(valid_unix_time))
+
+        return valid_time
+
+    def calc_valid_for_prepbufr(self):
+        """! Calculates the valid time from the init time, cycle hour, and
+             negative or positive offset hour.
+
+             Returns:
+                 valid_time - the calculated valid time
+
+        """
+        # Used for logging
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        # For GDAS and other prepbufr files that do not make use
+        # of the cycle hour and offset hour
+        cycle_and_offset_difference_in_secs = 0
+
+        # Get the unix time for the init time
+        if len(self.kwargs.get(INIT_STRING, None)) == 8:
+            init_time_tuple = \
+                time.strptime(self.kwargs.get(INIT_STRING, None), "%Y%m%d")
+        elif len(self.kwargs.get(INIT_STRING, None)) == 10:
+            init_time_tuple = \
+                time.strptime(self.kwargs.get(INIT_STRING, None), "%Y%m%d%H")
+        elif len(self.kwargs.get(INIT_STRING, None)) == 12:
+            init_time_tuple = \
+                time.strptime(self.kwargs.get(INIT_STRING, None), "%Y%m%d%H%M")
+        elif len(self.kwargs.get(INIT_STRING, None)) == 14:
+            init_time_tuple = \
+                time.strptime(self.kwargs.get(INIT_STRING, None),
+                              "%Y%m%d%H%M%S")
+        else:
+            self.logger.error("ERROR | [" + cur_filename + ":" +
+                              cur_function + "] | " + "The init time " +
+                              self.kwargs.get(INIT_STRING, None) +
+                              " must be in the format YYYYmmddHH[MMSS].")
+            exit(0)
+
+        init_unix_time = calendar.timegm(init_time_tuple)
+
+        # Get the difference between the cycle hour and offset hour and convert
+        # result to seconds.
+        if self.offset_hour:
+            cycle_and_offset_difference_in_secs = \
+                (self.cycle_time_hours - self.offset_hour) * SECONDS_PER_HOUR
+
+        # valid time is the sum of the init time and difference between
+        # the cycle and offset.
+        valid_unix_time = init_unix_time + cycle_and_offset_difference_in_secs
+
+        # Convert valid_unix_time to the specified format.
         valid_time = time.strftime("%Y%m%d%H%M%S",
                                    time.gmtime(valid_unix_time))
 
@@ -335,7 +439,7 @@ class StringSub:
 
         return lead_time
 
-    def leadLevelFormat(self, parm_type, format_string):
+    def format_lead_level(self, parm_type, format_string):
 
         """ Formats the lead or level in the requested format """
 
@@ -347,10 +451,10 @@ class StringSub:
         time_seconds = 0
         negative_flag = False
 
-        if (parm_type == LEAD_STRING):
+        if parm_type == LEAD_STRING:
             time_seconds = self.lead_time_seconds
             negative_flag = self.negative_lead
-        elif (parm_type == LEVEL_STRING):
+        elif parm_type == LEVEL_STRING:
             time_seconds = self.level_time_seconds
             negative_flag = self.negative_level
         else:
@@ -375,13 +479,13 @@ class StringSub:
             format_string.split(LEAD_LEVEL_FORMATTING_DELIMITER)
 
         # Minutes and seconds should be included (Empty, HH or HHH, MMSS)
-        if (len(format_string_split) == 3):
+        if len(format_string_split) == 3:
             MM = minutes_value_str.zfill(TWO_DIGIT_PAD)
             SS = seconds_value_str.zfill(TWO_DIGIT_PAD)
             MMSS = MM + SS
-            if (format_string_split[1] == 'HH'):
+            if format_string_split[1] == 'HH':
                 hours = hours_value_str.zfill(TWO_DIGIT_PAD)
-                if (len(hours) == 3):
+                if len(hours) == 3:
                     self.logger.warn("WARN | [" + cur_filename + ":" +
                                      cur_function + "] | " +
                                      "The requested format for hours was " +
@@ -389,15 +493,17 @@ class StringSub:
                                      " but the hours given are " + hours +
                                      ". Returning a three digit hour.")
 
-            elif (format_string_split[1] == 'HHH'):
+            elif format_string_split[1] == 'HHH':
                 hours = hours_value_str.zfill(THREE_DIGIT_PAD)
             else:
                 self.logger.error("ERROR | [" + cur_filename + ":" +
                                   cur_function + "] | " + "The time must " +
                                   "be in the format [H]HH[MMSS], where a " +
                                   "two digit hour is required.  Providing a " +
-                                  "three digit hour, two digit minutes and a" +
-                                  " two digit seconds are optional.")
+                                  "one-,two-, or three-digit "
+                                  "day, two-digit "
+                                  "minute and a" +
+                                  " two-digit second are optional.")
                 exit(0)
 
             formatted_time_string = hours + MMSS
@@ -441,10 +547,250 @@ class StringSub:
 
         return formatted_time_string
 
+    def format_cycle_offset(self, parm_type, format_string):
+        """! Formats the cycle or offset time in the requested format.
+             The cycle and offset units are in seconds, the smallest unit of
+             time which is supported by MET/METplus. The output formats
+             supported are: day hour minutes seconds (dHMS), day hour
+             minutes (dHM), hour minutes seconds (HMS), day hour (dH),
+             hour minutes (HM), and hour (H).  Minutes and seconds are in
+             two-digit format and days and hours can be either two- or
+             three-digit.
+
+             Args:
+                 parm_type    -  either cycle or offset
+                 format_string -  the string whose format should be emulated
+                                  i.e. the template
+
+             Returns:
+                 formatted_time_string - the time string in the requested
+                 format
+        """
+        # Used for logging
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        formatted_time_string = ""
+        if parm_type == CYCLE_STRING:
+            time_hours = self.cycle_time_hours
+        elif parm_type == OFFSET_STRING:
+            time_hours = self.offset_hour
+        else:
+            # Log and exit
+            self.logger.error("ERROR | [" + cur_filename + ":" +
+                              cur_function + "] | Invalid parm_type of " +
+                              parm_type + ".  Acceptable parm types are: " +
+                              CYCLE_STRING + " and " + OFFSET_STRING + ".")
+            exit(0)
+
+        #
+        # Break down the cycle/offset time into number of whole numbers
+        # of days, hours, minutes and seconds.
+        #
+
+        # DAYS
+        # Determine the whole number of days. The difference between the
+        # cycle/offset's whole number of days and the original cycle/offset
+        # value is used to calculate the whole number of hours.
+        time_days = time_hours / HOURS_PER_DAY
+        whole_number_of_days = math.floor(time_days)
+        remaining_time_in_hours = \
+            (time_days - whole_number_of_days) * HOURS_PER_DAY
+
+        # HOURS
+        # Determine the whole number of hours. Following the same logic
+        # employed above.
+        whole_number_of_hours = math.floor(remaining_time_in_hours)
+        remaining_time_in_seconds = \
+            (remaining_time_in_hours - whole_number_of_hours) * \
+            SECONDS_PER_HOUR
+
+        # MINUTES and SECONDS
+        # Get the whole number of minutes. The difference between the
+        # remaining_time_minutes and the whole number of minutes is then
+        # used to calculate the number of seconds (i.e. what is left over).
+        whole_number_of_minutes = \
+            math.floor(remaining_time_in_seconds / SECONDS_PER_MINUTE)
+        remaining_seconds = \
+            remaining_time_in_seconds - \
+            (whole_number_of_minutes * SECONDS_PER_MINUTE)
+
+        # What's left is the number of seconds
+        seconds_value = remaining_seconds
+
+        days_value_str = str(int(whole_number_of_days))
+        hours_value_str = str(int(whole_number_of_hours))
+        minutes_value_str = str(int(whole_number_of_minutes))
+        seconds_value_str = str(int(seconds_value))
+        # print("days: {} hours: {} minutes: {}".format(days_value_str,
+        #                                               hours_value_str,
+        #                                               minutes_value_str))
+
+        format_string_split = \
+            format_string.split(CYCLE_OFFSET_FORMATTING_DELIMITER)
+
+        # Two- and three-digits for days and hours, minutes and seconds
+        # will always be tw0-digit values, unless otherwise specified.
+        days_two_digit = days_value_str.zfill(TWO_DIGIT_PAD)
+        days_three_digit = days_value_str.zfill(THREE_DIGIT_PAD)
+        hours_two_digit = hours_value_str.zfill(TWO_DIGIT_PAD)
+        hours_three_digit = hours_value_str.zfill(THREE_DIGIT_PAD)
+        MM = minutes_value_str.zfill(TWO_DIGIT_PAD)
+        SS = seconds_value_str.zfill(TWO_DIGIT_PAD)
+        MMSS = MM + SS
+
+        # Days, hours, minutes and seconds (dHMS)
+        if len(format_string_split) == 5:
+            if format_string_split[1] == 'dd':
+                days = days_two_digit
+            elif format_string_split[1] == 'ddd':
+                days = days_three_digit
+            else:
+                self.logger.error(
+                    "ERROR | [" + cur_filename + ":" + cur_function + "] | "
+                    + "The number of days must be in the format dd where a "
+                      "two digit day is required. An  optional 3-digit "
+                      "number is also supported.")
+                exit(0)
+
+            if format_string_split[2] == 'HH':
+                hours = hours_two_digit
+            elif format_string_split[2] == 'HHH':
+                hours = hours_three_digit
+
+            formatted_time_string = days + '_' + hours + '_' + MM + '_' + SS
+
+        # Days-hours-minutes (dHM) or hours-minutes-seconds (HMS)
+        elif len(format_string_split) == 4:
+            # Days Hours Minutes (dHM)
+            day_flag = False
+
+            # The first formatting element determines whether this is a
+            # day-hour-minute (dHM) or hour-minute-second (HMS) format
+
+            # Day Hour Minute
+            if format_string_split[1] == 'dd':
+                day_flag = True
+                days = days_two_digit
+            elif format_string_split[1] == 'ddd':
+                day_flag = True
+                days = days_three_digit
+
+            # Hour Minute Seconds
+            elif format_string_split[1] == 'HH':
+                hours = hours_two_digit
+            elif format_string_split[1] == 'HHH':
+                hours = hours_three_digit
+            else:
+                # The expected dHM or HMS format pattern was not met
+                self.logger.error("ERROR | [" + cur_filename + ":" +
+                                  cur_function + "] | " + "The time must "
+                                                          "" +
+                                  "be in the format [ddd][H]HH[MMSS], "
+                                  "where a " +
+                                  "two digit hour is required.  "
+                                  "Providing a " +
+                                  "one-,two-, or three-digit hour,  "
+                                  "two-digit minutes and two-digit "
+                                  "seconds " +
+                                  "are optional.")
+                exit(0)
+
+            # The hour in the day hour minute (dHM) format
+            if format_string_split[2] == 'HH':
+                hours = hours_two_digit
+            elif format_string_split[2] == 'HHH':
+                hours = hours_three_digit
+
+            if day_flag:
+                formatted_time_string = days + "_" + hours + MM
+            else:
+                formatted_time_string = hours + MMSS
+
+        # Days hours (dH) or hours minutes (HM) format
+        # Use the day_flag flag to determine whether we have dH or HM format
+        # requested.
+        elif len(format_string_split) == 3:
+            day_flag = False
+            # The dH vs HM formats are readily determined based on the first
+            # formatting element: d or H.
+
+            # day hour format
+            if format_string_split[1] == 'dd':
+                days = days_two_digit
+                day_flag = True
+            elif format_string_split[1] == 'ddd':
+                days = days_three_digit
+                day_flag = True
+
+            # hour minute format
+            elif format_string_split[1] == 'HH':
+                hours = hours_two_digit
+                day_flag = False
+            elif format_string_split[1] == 'HHH':
+                hours = hours_three_digit
+                day_flag = False
+            else:
+                # The expected format of day-hour or hour-minute was not met.
+                self.logger.error("ERROR | [" + cur_filename + ":" +
+                                  cur_function + "] | " +
+                                  "The time must be in the format " +
+                                  "[ddd][H]HH[MMSS], where a two digit hour "
+                                  "is " +
+                                  "required.  Providing a one-, two-, "
+                                  "or three-digit day, three-digit hour, " +
+                                  "two digit minutes and a two-digit seconds" +
+                                  " are optional.")
+                exit(0)
+            # The hour portion of the day hour format
+            if format_string_split[2] == 'HH':
+                hours = hours_two_digit
+            elif format_string_split[2] == 'HHH':
+                hours = hours_three_digit
+
+            if day_flag:
+                formatted_time_string = days + "_" + hours
+            else:
+                formatted_time_string = hours + MM
+
+        # Hours only (Empty, HH or HHH)
+        elif len(format_string_split) == 2:
+            if format_string_split[1] == 'HH':
+                hours_str = str(time_hours)
+                hours = hours_str.zfill(TWO_DIGIT_PAD)
+            elif format_string_split[1] == 'HHH':
+                hours_str = str(time_hours)
+                hours = hours_str.zfill(THREE_DIGIT_PAD)
+            else:
+                self.logger.error("ERROR | [" + cur_filename + ":" +
+                                  cur_function + "] | " +
+                                  "The time must be in the format " +
+                                  "[ddd][H]HH[MMSS], where a two digit hour "
+                                  "is " +
+                                  "required.  Providing a one-, two- or "
+                                  "three-digit day, three digit hour, " +
+                                  "two digit minutes and a two digit seconds" +
+                                  " are optional.")
+                exit(0)
+
+            formatted_time_string = hours
+        else:
+            self.logger.error("ERROR | [" + cur_filename + ":" +
+                              cur_function + "] | " +
+                              "The time must be in the format " +
+                              "[ddd][H]HH[MMSS], where a two digit hour " +
+                              "is required.  Providing a one-, two-, " +
+                              "or three-digit day, three digit " +
+                              "hour, two digit minutes and a two digit " +
+                              "seconds are optional.")
+            exit(0)
+
+        return formatted_time_string
+
     def doStringSub(self):
 
         """Populates the specified template with information from the
-           kwargs dictionary.  The template structure is compresed of
+           kwargs dictionary.  The template structure is comprised of
            a fixed string populated with template place-holders inside curly
            braces, for example {tmpl_str}.  The tmpl_str must be present as
            a key in the kwargs dictionary, and the value will replace the
@@ -461,6 +807,12 @@ class StringSub:
               lead, level:
                 fmt -  specifies an amount of time in [H]HH[MMSS] format
                        e.g. %HH, %HHH, %HH%MMSS, %HHH%MMSS
+
+              cycle, negative_offset, positive_offset:
+                fmt - specifies the cycle and offset hours in HH format. H and
+                      HHH format are supported, to anticipate any changes
+                      in prepbufr data.
+
 
         """
 
@@ -507,24 +859,33 @@ class StringSub:
 
             # Compute init time
             if (
-               VALID_STRING in self.kwargs and
-               LEAD_STRING in self.kwargs and
-               INIT_STRING not in self.kwargs
-               ):
+                    VALID_STRING in self.kwargs and
+                    LEAD_STRING in self.kwargs and
+                    INIT_STRING not in self.kwargs
+            ):
                 self.kwargs[INIT_STRING] = self.dateCalcInit()
             # Compute valid time
             elif (
-                 INIT_STRING in self.kwargs and
-                 LEAD_STRING in self.kwargs and
-                 VALID_STRING not in self.kwargs
-                 ):
+                    INIT_STRING in self.kwargs and
+                    LEAD_STRING in self.kwargs and
+                    VALID_STRING not in self.kwargs
+            ):
                 self.kwargs[VALID_STRING] = self.dateCalcValid()
+            # Compute valid time for prepbufr file
+            elif (
+                    INIT_STRING in self.kwargs and
+                    CYCLE_STRING in self.kwargs and
+                    OFFSET_STRING in self.kwargs and
+                    VALID_STRING not in self.kwargs and
+                    LEAD_STRING not in self.kwargs
+            ):
+                self.kwargs[VALID_STRING] = self.calc_valid_for_prepbufr()
             # Compute lead time
             elif (
-                 INIT_STRING in self.kwargs and
-                 VALID_STRING in self.kwargs and
-                 LEAD_STRING not in self.kwargs
-                 ):
+                    INIT_STRING in self.kwargs and
+                    VALID_STRING in self.kwargs and
+                    LEAD_STRING not in self.kwargs
+            ):
                 self.kwargs[LEAD_STRING] = self.dateCalcLead()
 
             # A dictionary that will contain the string to replace (key)
@@ -544,7 +905,7 @@ class StringSub:
                 if len(split_string) == 2:
 
                     # split_string[0] holds the key (e.g. "init", "valid", etc)
-                    if split_string[0] not in (self.kwargs).keys():
+                    if split_string[0] not in self.kwargs.keys():
                         # Log and continue
                         self.logger.error("ERROR |  [" + cur_filename +
                                           ":" + cur_function + "] | " +
@@ -554,7 +915,7 @@ class StringSub:
 
                     # Key is in the dictionary
                     else:
-                        # Check for formating/length request by splitting on
+                        # Check for formatting/length request by splitting on
                         # FORMATTING_VALUE_DELIMITER
                         # split_string[1] holds the formatting/length
                         # information (e.g. "fmt=%Y%m%d", "len=3")
@@ -565,10 +926,10 @@ class StringSub:
                         # format_split_string[0] holds the formatting/length
                         # value delimiter (e.g. "fmt", "len")
                         if format_split_string[0] == FORMAT_STRING:
-                            if(
-                               split_string[0] == VALID_STRING or
-                               split_string[0] == INIT_STRING
-                               ):
+                            if (
+                                    split_string[0] == VALID_STRING or
+                                    split_string[0] == INIT_STRING
+                            ):
                                 # Get the value of the valid, init, etc. and
                                 # convert to a datetime object with the
                                 # requested FORMAT_STRING format
@@ -576,7 +937,7 @@ class StringSub:
                                     self.kwargs.get(split_string[0], None)
                                 dt_obj = \
                                     date_str_to_datetime_obj(date_time_value)
-                                # Convert the dateime object back to a
+                                # Convert the datetime object back to a
                                 # string of the requested format
                                 date_time_str = \
                                     dt_obj.strftime(format_split_string[1])
@@ -585,24 +946,45 @@ class StringSub:
                                 # matched string to replace and add the
                                 # key, value pair to the dictionary
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN \
-                                    + match + TEMPLATE_IDENTIFIER_END
+                                                    + match + \
+                                                    TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = \
                                     date_time_str
 
-                            elif (split_string[0] == LEAD_STRING):
+                            elif split_string[0] == LEAD_STRING:
                                 value = \
-                                  self.leadLevelFormat(LEAD_STRING,
-                                                       format_split_string[1])
-                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN \
-                                    + match + TEMPLATE_IDENTIFIER_END
+                                    self.format_lead_level(LEAD_STRING,
+                                                           format_split_string[
+                                                               1])
+                                string_to_replace = \
+                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
+                                    TEMPLATE_IDENTIFIER_END
+
                                 replacement_dict[string_to_replace] = value
 
-                            elif (split_string[0] == LEVEL_STRING):
+                            elif split_string[0] == LEVEL_STRING:
                                 value = \
-                                  self.leadLevelFormat(LEVEL_STRING,
-                                                       format_split_string[1])
-                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN \
-                                    + match + TEMPLATE_IDENTIFIER_END
+                                    self.format_lead_level(LEVEL_STRING,
+                                                           format_split_string[
+                                                               1])
+                                string_to_replace = \
+                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
+                                    TEMPLATE_IDENTIFIER_END
+
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == CYCLE_STRING:
+                                value = self.format_cycle_offset(
+                                    CYCLE_STRING, format_split_string[1])
+                                string_to_replace = \
+                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
+                                    TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == OFFSET_STRING:
+                                value = self.format_cycle_offset(
+                                    OFFSET_STRING, format_split_string[1])
+                                string_to_replace = \
+                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
+                                    TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
 
                 # No formatting or length is requested
@@ -612,9 +994,9 @@ class StringSub:
                     # string to replace and add the key, value pair to the
                     # dictionary
                     string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + \
-                        TEMPLATE_IDENTIFIER_END
+                                        TEMPLATE_IDENTIFIER_END
                     replacement_dict[string_to_replace] = \
-                        (self.kwargs).get(split_string[0], None)
+                        self.kwargs.get(split_string[0], None)
 
             # Replace regex with properly formatted information
             temp_str = multiple_replace(replacement_dict, self.tmpl)
@@ -672,16 +1054,20 @@ class StringExtract:
         while i < tempLen:
             if self.temp[i] == TEMPLATE_IDENTIFIER_BEGIN:
                 i += 1
-                if self.temp[i:i+len(VALID_STRING)+5] == VALID_STRING+"?fmt=":
+                if self.temp[
+                   i:i + len(VALID_STRING) + 5] == VALID_STRING + "?fmt=":
                     inValid = True
                     i += 9
-                if self.temp[i:i+len(LEVEL_STRING)+5] == LEVEL_STRING+"?fmt=":
+                if self.temp[
+                   i:i + len(LEVEL_STRING) + 5] == LEVEL_STRING + "?fmt=":
                     inLevel = True
                     i += 9
-                if self.temp[i:i+len(INIT_STRING)+5] == INIT_STRING+"?fmt=":
+                if self.temp[
+                   i:i + len(INIT_STRING) + 5] == INIT_STRING + "?fmt=":
                     inInit = True
                     i += 8
-                if self.temp[i:i+len(LEAD_STRING)+5] == LEAD_STRING+"?fmt=":
+                if self.temp[
+                   i:i + len(LEAD_STRING) + 5] == LEAD_STRING + "?fmt=":
                     inLead = True
                     i += 8
             elif self.temp[i] == TEMPLATE_IDENTIFIER_END:
@@ -692,11 +1078,11 @@ class StringExtract:
                     if hIdx == -1:
                         hour = 0
                     else:
-                        hour = int(self.fstr[hIdx:hIdx+2])
+                        hour = int(self.fstr[hIdx:hIdx + 2])
                     self.validTime = \
-                        datetime.datetime(int(self.fstr[yIdx:yIdx+4]),
-                                          int(self.fstr[mIdx:mIdx+2]),
-                                          int(self.fstr[dIdx:dIdx+2]),
+                        datetime.datetime(int(self.fstr[yIdx:yIdx + 4]),
+                                          int(self.fstr[mIdx:mIdx + 2]),
+                                          int(self.fstr[dIdx:dIdx + 2]),
                                           hour, 0)
                     yIdx = -1
                     mIdx = -1
@@ -711,11 +1097,11 @@ class StringExtract:
                     if hIdx == -1:
                         hour = 0
                     else:
-                        hour = int(self.fstr[hIdx:hIdx+2])
+                        hour = int(self.fstr[hIdx:hIdx + 2])
                     self.initTime = \
-                        datetime.datetime(int(self.fstr[yIdx:yIdx+4]),
-                                          int(self.fstr[mIdx:mIdx+2]),
-                                          int(self.fstr[dIdx:dIdx+2]),
+                        datetime.datetime(int(self.fstr[yIdx:yIdx + 4]),
+                                          int(self.fstr[mIdx:mIdx + 2]),
+                                          int(self.fstr[dIdx:dIdx + 2]),
                                           hour, 0)
                     yIdx = -1
                     mIdx = -1
@@ -740,55 +1126,55 @@ class StringExtract:
                     inLead = False
 
             elif inValid:
-                if self.temp[i:i+2] == "%Y":
+                if self.temp[i:i + 2] == "%Y":
                     yIdx = idx
                     idx += 4
                     i += 1
-                elif self.temp[i:i+2] == "%m":
+                elif self.temp[i:i + 2] == "%m":
                     mIdx = idx
                     idx += 2
                     i += 1
-                elif self.temp[i:i+2] == "%d":
+                elif self.temp[i:i + 2] == "%d":
                     dIdx = idx
                     idx += 2
                     i += 1
-                elif self.temp[i:i+2] == "%H":
+                elif self.temp[i:i + 2] == "%H":
                     hIdx = idx
                     idx += 2
                     i += 1
             elif inInit:
-                if self.temp[i:i+2] == "%Y":
+                if self.temp[i:i + 2] == "%Y":
                     yIdx = idx
                     idx += 4
                     i += 1
-                elif self.temp[i:i+2] == "%m":
+                elif self.temp[i:i + 2] == "%m":
                     mIdx = idx
                     idx += 2
                     i += 1
-                elif self.temp[i:i+2] == "%d":
+                elif self.temp[i:i + 2] == "%d":
                     dIdx = idx
                     idx += 2
                     i += 1
-                elif self.temp[i:i+2] == "%H":
+                elif self.temp[i:i + 2] == "%H":
                     hIdx = idx
                     idx += 2
                     i += 1
             elif inLevel:
-                if self.temp[i:i+4] == "%HHH":
-                    level = self.fstr[idx:idx+3]
+                if self.temp[i:i + 4] == "%HHH":
+                    level = self.fstr[idx:idx + 3]
                     idx += 3
                     i += 3
-                elif self.temp[i:i+3] == "%HH":
-                    level = self.fstr[idx:idx+2]
+                elif self.temp[i:i + 3] == "%HH":
+                    level = self.fstr[idx:idx + 2]
                     idx += 2
                     i += 2
             elif inLead:
-                if self.temp[i:i+4] == "%HHH":
-                    lead = self.fstr[idx:idx+3]
+                if self.temp[i:i + 4] == "%HHH":
+                    lead = self.fstr[idx:idx + 3]
                     idx += 3
                     i += 3
-                elif self.temp[i:i+3] == "%HH":
-                    lead = self.fstr[idx:idx+2]
+                elif self.temp[i:i + 3] == "%HH":
+                    lead = self.fstr[idx:idx + 2]
                     idx += 2
                     i += 2
             else:

@@ -155,67 +155,114 @@ operations that change stdin).
 """
 
 import time, logging
-import produtil.mpi_impl as mpiimpl
+import produtil.mpi_impl
 import produtil.sigsafety
 import produtil.prog as prog
 import produtil.mpiprog as mpiprog
 import produtil.pipeline as pipeline
 
+# These two were moved to produtil.prog to avoid a cyclic import.
+# They still need to be available from produtil.run:
+from produtil.prog import InvalidRunArgument,ExitStatusException
+
 ##@var __all__
 # List of symbols exported by "from produtil.run import *"
 __all__=['alias','exe','run','runstr','mpi','mpiserial','mpirun',
-         'runbg','prog','mpiprog','mpiimpl','waitprocs','runsync',
+         'runbg','prog','mpiprog','waitprocs','runsync',
          'InvalidRunArgument','ExitStatusException','checkrun',
-         'batchexe','bigexe','openmp']
+         'batchexe','bigexe','openmp','make_mpi']
 
 ##@var module_logger
 # Default logger used by some functions if no logger is given
 module_logger=logging.getLogger('produtil.run')
 
-class InvalidRunArgument(prog.ProgSyntaxError):
-    """!Raised to indicate that an invalid argument was sent into one
-    of the run module functions."""
+##@var _detected_mpi
+# The cached return value from detect_mpi()
+_detected_mpi=None
 
-class ExitStatusException(Exception):
-    """!Raised to indicate that a program generated an invalid return
-    code.  
+def make_mpi(mpi_name=produtil.mpi_impl.NO_NAME,**kwargs):
+    """!Creates an MPI implementation object for the specified MPI
+    implementation. 
 
-    Examine the "returncode" member variable for the returncode value.
-    Negative values indicate the program was terminated by a signal
-    while zero and positive values indicate the program exited.  The
-    highest exit status of the pipeline is returned when a pipeline is
-    used.
+    Creates an object suitable for passing to the mpiimpl argument of
+    various functions in produtil.run.  The object will implement the
+    requested MPI implementation.  This object is NOT used to
+    initialize the produtil.run; instead it is simply returned.
 
-    For MPI programs, the exit status is generally unreliable due to
-    implementation-dependent issues, but this package attempts to
-    return the highest exit status seen.  Generally, you can count on
-    MPI implementations to return zero if you call MPI_Finalize() and
-    exit normally, and non-zero if you call MPI_Abort with a non-zero
-    argument.  Any other situation will produce unpredictable results."""
-    ##@var message
-    # A string description for what went wrong
+    @returns an MPI implementation object for the specified arguments
 
-    ##@var returncode
-    # The return code, including signal information.  
+    @param mpi_name the name of the MPI implementation. If
+    mpi_name=None, an mpiimpl for pure serial programs is returned.
+    If no mpi_name is given, the local machine's available MPI
+    implementation is detected and returned.
 
-    def __init__(self,message,status):
-        """!ExitStatusException constructor
-        @param message a description of what went wrong
-        @param status the exit status"""
-        self.message=message
-        self.returncode=status
+    @note When mpi_name is unset, the detection of the MPI
+    implementation is redone, even if it had been done before by
+    another call to get_mpi() or detect_mpi()
 
-    @property
-    def status(self):
-        """!An alias for self.returncode: the exit status."""
-        return self.returncode
+    @param kwargs additional arguments passed to produtil.mpi_impl.get_mpi()
 
-    def __str__(self):
-        """!A string description of the error."""
-        return '%s (returncode=%d)'%(str(self.message),int(self.returncode))
-    def __repr__(self):
-        """!A pythonic description of the error for debugging."""
-        return 'NonZeroExit(%s,%s)'%(repr(self.message),repr(self.returncode))
+    @see produtil.mpi_impl.impi.Implementation.detect()"""
+
+    # The special value of None requests no MPI implementation.  That
+    # situation does not need any initialization of the produtil.run
+    # module:
+    if mpi_name is None:
+        return produtil.mpi_impl.get_mpi(None,**kwargs)
+
+    # For anything other than "None," we have to ensure the
+    # produtil.run is initialized to something before running
+    # produtil.mpi_impl.get_mpi.
+    detect_mpi()
+
+    # Next, return the requested implementation:
+    return produtil.mpi_impl.get_mpi(mpi_name,**kwargs)
+
+def detect_mpi():
+    """!Called by functions inside produtil.run to automatically
+    detect the available MPI implementation.  
+
+    Detects the available MPI implementation - but that isn't as
+    simple as it sounds.  The detection logic requires calling
+    produtil.run.  Hence, produtil.run must be usable during the call
+    to detect_mpi().  The way this is handled is in three steps:
+
+    1. Set the MPI implementation to "no MPI."  This will allow all
+    serial (non-OpenMP, non-MPI) calls to succeed.
+
+    2. Run the MPI implementation detection functions.  These will be
+    able to use produtil.run to execute serial programs to detect 
+    the MPI implementation.
+
+    3. If an MPI implementation is detected, set the MPI
+    implementation to that one.
+
+    @note MPI implementation detection only happens during the first
+    call to detect_mpi().  Any later calls will return the cached
+    result from _detected_mpi.
+
+    @returns a subclass of
+    produtil.mpi_impl.mpi_impl_base.ImplementationBase for generation
+    of produtil.prog.Runner objects from openmp or mpi program
+    specifications.
+
+    @see _detected_mpi"""
+    global _detected_mpi
+    if _detected_mpi: return _detected_mpi
+
+    # First, set the implementation to None so that the mpi_impl
+    # subclasses can use produtil.run.  This will only allow serial,
+    # non-OpenMP programs:
+    _detected_mpi=produtil.mpi_impl.get_mpi(None)
+
+    # Next, ask produtil.mpi_impl to detect the MPI implementation:
+    detected=produtil.mpi_impl.get_mpi()
+
+    # If detection succeeds, override the selected MPI implementation:
+    if detected:
+        _detected_mpi=detected
+
+    return _detected_mpi
 
 def alias(arg):
     """!Attempts to generate an unmodifiable "copy on write" version
@@ -239,7 +286,7 @@ def batchexe(name,**kwargs):
     @returns a new produtil.prog.ImmutableRunner"""
     return prog.ImmutableRunner([str(name)],**kwargs)
 
-def exe(name,**kwargs):
+def exe(name,mpiimpl=None,**kwargs):
     """!Returns a prog.ImmutableRunner object that represents a large
     serial program that must be run on a compute node.
     @note This function does NOT search $PATH on Cray.  That ensures
@@ -249,13 +296,15 @@ def exe(name,**kwargs):
     @param name the executable name or path
     @param kwargs passed to produtil.prog.Runner.__init__
     @returns a new produtil.prog.ImmutableRunner"""
+    if mpiimpl is None:
+        mpiimpl=detect_mpi()
     return mpiimpl.make_bigexe(str(name),**kwargs)
 
 def bigexe(name,**kwargs):
     """!Alias for exe() for backward compatibility.  Use exe() instead."""
     return exe(name,**kwargs)
 
-def mpirun(arg,**kwargs):
+def mpirun(arg,mpiimpl=None,**kwargs):
     """!Converts an MPI program specification into a runnable shell
     program suitable for run(), runstr() or checkrun().
 
@@ -271,9 +320,11 @@ def mpirun(arg,**kwargs):
     @param kwargs additional arguments to control output.  
     @returns a prog.Runner object for the specified
     mpiprog.MPIRanksBase object."""
+    if mpiimpl is None:
+        mpiimpl=detect_mpi()
     return mpiimpl.mpirunner(arg,**kwargs)
 
-def make_pipeline(arg,capture,**kwargs):
+def make_pipeline(arg,capture,mpiimpl=None,**kwargs):
     """!This internal implementation function generates a
     prog.PopenCommand object for the specified input, which may be a
     prog.Runner or mpiprog.MPIRanksBase.
@@ -281,6 +332,8 @@ def make_pipeline(arg,capture,**kwargs):
       output of exe(), bigexe() or mpirun()
     @param capture if True, capture the stdout into a string
     @param kwargs additional keyword arguments, same as for  mpirun()"""
+    if mpiimpl is None:
+        mpiimpl=detect_mpi()
     if isinstance(arg,prog.Runner):
         runner=arg
     elif isinstance(arg, mpiprog.MPIRanksBase):
@@ -369,8 +422,10 @@ def waitprocs(procs,logger=None,timeout=None,usleep=1000):
         time.sleep(usleep/1.e6)
     return False if(p) else True
 
-def runsync(logger=None):
+def runsync(logger=None,mpiimpl=None):
     """!Runs the "sync" command as an exe()."""
+    if mpiimpl is None:
+        mpiimpl=detect_mpi()
     return mpiimpl.runsync(logger=logger)
 
 def run(arg,logger=None,sleeptime=None,**kwargs):
@@ -412,7 +467,7 @@ def checkrun(arg,logger=None,**kwargs):
         raise ExitStatusException('%s: non-zero exit status'%(repr(arg),),r)
     return r
 
-def openmp(arg,threads=None):
+def openmp(arg,threads=None,mpiimpl=None):
     """!Sets the number of OpenMP threads for the specified program.
 
     @warning Generally, when using MPI with OpenMP, the batch system
@@ -429,6 +484,8 @@ def openmp(arg,threads=None):
     system has already configured the environment correctly for an
     MPI+OpenMP task with default maximum threads and ranks.
     @returns see run()"""
+    if mpiimpl is None:
+        mpiimpl=detect_mpi()
     return mpiimpl.openmp(arg,threads)
     
 def runstr(arg,logger=None,**kwargs):

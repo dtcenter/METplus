@@ -66,6 +66,10 @@ class NotValidPosixSh(Exception):
     """!Base class of exceptions that are raised when converting a
     Runner or pipeline of Runners to a POSIX sh command, if the Runner
     cannot be expressed as POSIX sh."""
+class PrerunNotValidPosixSh(NotValidPosixSh):
+    """!Raised when trying to convert a pipeline of Runners to a POSIX
+    sh string if the pipeline has a prerun object that lacks a to_shell
+    function."""
 class NoSuchRedirection(NotValidPosixSh): 
     """!Raised when trying to convert a pipeline of Runners to a POSIX
     sh string, if a redirection in the pipeline cannot be expressed in
@@ -82,6 +86,55 @@ class EqualInEnv(Exception):
     """!Raised when converting a Runner or pipeline of Runners to a
     POSIX sh string if there is an equal ("=") sign in an environment
     variable name."""
+
+
+
+class InvalidRunArgument(ProgSyntaxError):
+    """!Raised to indicate that an invalid argument was sent into one
+    of the run module functions."""
+
+class ExitStatusException(Exception):
+    """!Raised to indicate that a program generated an invalid return
+    code.  
+
+    Examine the "returncode" member variable for the returncode value.
+    Negative values indicate the program was terminated by a signal
+    while zero and positive values indicate the program exited.  The
+    highest exit status of the pipeline is returned when a pipeline is
+    used.
+
+    For MPI programs, the exit status is generally unreliable due to
+    implementation-dependent issues, but this package attempts to
+    return the highest exit status seen.  Generally, you can count on
+    MPI implementations to return zero if you call MPI_Finalize() and
+    exit normally, and non-zero if you call MPI_Abort with a non-zero
+    argument.  Any other situation will produce unpredictable results."""
+    ##@var message
+    # A string description for what went wrong
+
+    ##@var returncode
+    # The return code, including signal information.  
+
+    def __init__(self,message,status):
+        """!ExitStatusException constructor
+        @param message a description of what went wrong
+        @param status the exit status"""
+        self.message=message
+        self.returncode=status
+
+    @property
+    def status(self):
+        """!An alias for self.returncode: the exit status."""
+        return self.returncode
+
+    def __str__(self):
+        """!A string description of the error."""
+        return '%s (returncode=%d)'%(str(self.message),int(self.returncode))
+    def __repr__(self):
+        """!A pythonic description of the error for debugging."""
+        return 'NonZeroExit(%s,%s)'%(repr(self.message),repr(self.returncode))
+
+
 
 def shvarok(s):
     """!Returns True if the specified environment variable name is a
@@ -106,6 +159,7 @@ def shbackslash(s):
     """!Given a Python str, returns a backslashed POSIX sh string, or
     raises NotValidPosixShString if that cannot be done.
     @param s a string to backslash"""
+    s=str(s)
     if not shstrok(s):
         raise NotValidPosixShString('String is not expressable in POSIX sh: %s'%(repr(s),))
     if re.search(r'(?ms)[^a-zA-Z0-9_+.,/-]',s):
@@ -423,6 +477,19 @@ class Runner(object):
         if self._prerun: self._prerun=list()
         return self
 
+    def __prerun_to_shell(self):
+        """!Internal implementation function - do not use.
+
+        Applies all prerun objects using their to_shell functions, and
+        then clears the prerun list"""
+        texts=list()
+        for prerun in self._prerun:
+            assert(prerun)
+            ( text, runner ) = prerun.to_shell(self)
+            texts.append(text)
+        self._prerun=list()
+        return ''.join(texts)
+
     def prerun(self,arg):
         """!Adds a function or callable object to be called before
         running the program.  
@@ -693,6 +760,18 @@ class Runner(object):
         """!Returns a string that expresses this object as a POSIX sh
         shell command if possible, or raises a subclass of
         NotValidPosixSh if not."""
+
+        if self._prerun:
+            for prerun in self._prerun:
+                if not hasattr(prerun,'to_shell'):
+                    raise PrerunNotValidPosixSh(
+                        '%s: has a prerun object that cannot be expressed '
+                        'as posix sh'%(self._args[0],))
+            no_prerun=self.copy()
+            text=no_prerun.__prerun_to_shell()
+            text+=no_prerun.to_shell()
+            return text
+
         if self._prev is not None:
             s=self._prev.to_shell()+' | '
         elif self._stdin is not None:

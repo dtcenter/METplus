@@ -1,0 +1,452 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import os
+import config_metplus
+import produtil.setup
+import sys
+import logging
+import pytest
+from point_stat_wrapper import PointStatWrapper
+import met_util as util
+
+
+#
+# These are tests (not necessarily unit tests) for the 
+# MET Point-Stat Wrapper, PointStatWrapper.py
+# NOTE:  This test requires pytest, which is NOT part of the standard Python
+# library.
+# These tests require one configuration file in addition to the three
+# required METplus configuration files:  point_stat_test.conf.  This contains
+# the information necessary for running all the tests.  Each test can be
+# customized to replace various settings if needed.
+#
+
+# 
+# -----------Mandatory-----------
+#  configuration and fixture to support METplus configuration files beyond
+#  the metplus_data, metplus_system, and metplus_runtime conf files.
+#
+
+
+# Add a test configuration
+def pytest_addoption(parser):
+    parser.addoption("-c", action="store", help=" -c <test config file>")
+
+
+# @pytest.fixture
+def cmdopt(request):
+    return request.config.getoption("-c")
+
+
+# 
+# ------------Pytest fixtures that can be used for all tests ---------------
+#
+@pytest.fixture
+def point_stat_wrapper():
+    """! Returns a default PointStatWrapper with /path/to entries in the
+         metplus_system.conf and metplus_runtime.conf configuration
+         files.  Subsequent tests can customize the final METplus configuration
+         to over-ride these /path/to values."""
+
+    # Default, empty PointStatWrapper with some configuration values set
+    # to /path/to:
+    conf = metplus_config()
+    return PointStatWrapper(conf, None)
+
+
+@pytest.fixture
+def metplus_config():
+    try:
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='PointStatWrapper ',
+                                 jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='PointStatWrapper ')
+        produtil.log.postmsg('point_stat_wrapper  is starting')
+
+        # Read in the configuration object CONFIG
+        config = config_metplus.setup()
+        return config
+
+    except Exception as e:
+        produtil.log.jlogger.critical(
+            'point_stat_wrapper failed: %s' % (str(e),), exc_info=True)
+        sys.exit(2)
+
+
+# ------------------TESTS GO BELOW ---------------------------
+
+# @pytest.mark.parametrize(
+#     'key, value', [
+#         ('app_path', '/usr/local/met-6.1/bin/point_stat'),
+#         ('app_name', 'point_stat')
+#
+#     ]
+# )
+# def test_config(key, value):
+#     psw = point_stat_wrapper()
+#     # assert isinstance(conf, METplusLauncher)
+#     # Retrieve the value of the class attribute that corresponds
+#     # to the key in the parametrization
+#
+#     psw_key = psw.__getattribute__(key)
+#     assert(psw_key == value)
+
+# def test_correct_time_info_by_valid():
+#     # Test that the time info derived from a particular file is
+#     # correct when selecting by valid time
+#     output_dir = '/some/path/to/output/files'
+#     fcst_filename = 'pgbf00.gfs.2017060112'
+#     obs_filename = 'prepbufr.gdas.2017060112.nc'
+#     expected_fcst_valid_str = '2017060112'
+#     expected_obs_valid_str = '2017060112'
+#     fcst_filepath = os.path.join(output_dir, fcst_filename)
+#     obs_filepath = os.path.join(output_dir, obs_filename)
+#     ps = point_stat_wrapper()
+#     fcst_regex = ps.ps_dict['FCST_INPUT_FILE_REGEX']
+#     obs_regex = '.*prepbufr.gdas.(2[0-9]{9}).nc'
+#     fcst_compile = re.compile(fcst_regex)
+#     fcst_match = re.match(fcst_compile, fcst_filepath)
+#     obs_compile = re.compile(obs_regex)
+#     obs_match = re.match(obs_compile, obs_filepath)
+#     fcst_time_info = ps.get_time_info_from_file(fcst_match)
+#     obs_time_info = ps.get_time_info_from_file(obs_match)
+#
+#     fcst_valid = datetime.datetime.fromtimestamp(
+#         fcst_time_info.valid).strftime('%Y%m%d%H')
+#     obs_valid = datetime.datetime.fromtimestamp(
+#         obs_time_info.valid).strftime(
+#         '%Y%m%d%H')
+#     assert (expected_fcst_valid_str == fcst_valid)
+#     assert (expected_obs_valid_str == obs_valid)
+#
+#
+# def test_file_info_by_valid_correct_for_gdas():
+#     # Test that the resulting tuple from create_input_file_info() is correct
+#     # when selecting by valid time for obs files
+#     ps = point_stat_wrapper()
+#     ps.ps_dict['OBS_INPUT_FILE_REGEX'] = ".*prepbufr.gdas.(2[0-9]{9}).nc"
+#     ps.ps_dict[
+#         'OBS_INPUT_DIR'] = '/d1/minnawin/pb2nc_output/gdas/upper_air'
+#     ps.ps_dict['VALID_START_DATE'] = '2017060100'
+#     ps.ps_dict['VALID_END_DATE'] = '2017060323'
+#     # Based on the files in the input directory above, these are the fcst
+#     # files
+#     # that are used for the test:
+#     # prepbufr.20170601.t12z.tm00.nc
+#     # prepbufr.20170601.t18z.tm00.nc
+#     # prepbufr.20170602.t00z.tm03.nc
+#     # prepbufr.20170602.t18z.tm00.nc
+#     # prepbufr.20170603.t00z.tm00.nc
+#     # prepbufr.20170603.t00z.tm03.nc
+#     expected_obs_filepaths = [
+#         '/d1/minnawin/pb2nc_output/gdas/upper_air/prepbufr.gdas'
+#         '.2017060100.nc',
+#         '/d1/minnawin/pb2nc_output/gdas/upper_air/prepbufr.gdas'
+#         '.2017060112.nc',
+#         '/d1/minnawin/pb2nc_output/gdas/upper_air/prepbufr.gdas'
+#         '.2017060118.nc',
+#         '/d1/minnawin/pb2nc_output/gdas/upper_air/prepbufr.gdas'
+#         '.2017060200.nc',
+#         '/d1/minnawin/pb2nc_output/gdas/upper_air/prepbufr.gdas'
+#         '.2017060212.nc',
+#         '/d1/minnawin/pb2nc_output/gdas/upper_air/prepbufr.gdas'
+#         '.2017060218.nc',
+#         '/d1/minnawin/pb2nc_output/gdas/upper_air/prepbufr.gdas'
+#         '.2017060300.nc',
+#         '/d1/minnawin/pb2nc_output/gdas/upper_air/prepbufr.gdas'
+#         '.2017060312.nc'
+#
+#     ]
+#     expected_obs_valid_times = ['2017060100', '2017060112', '2017060118',
+#                                 '2017060200', '2017060212', '2017060218',
+#                                 '2017060300', '2017060312']
+#
+#     file_type = "obs"
+#     consolidated_obs_list = ps.create_input_file_info(file_type)
+#     if len(expected_obs_filepaths) == len(consolidated_obs_list):
+#         for obs in consolidated_obs_list:
+#             print('obs:', obs)
+#             if obs.full_filepath in expected_obs_filepaths:
+#                 expected_obs_filepaths.remove(obs.full_filepath)
+#             valid_time_str = datetime.datetime.fromtimestamp(
+#                 obs.valid_time).strftime('%Y%m%d%H')
+#             if valid_time_str in expected_obs_valid_times:
+#                 expected_obs_valid_times.remove(valid_time_str)
+#         if len(expected_obs_filepaths) > 0:
+#             # Exact match to expected obs filepaths was not met, fail
+#             assert True is False
+#
+#         if len(expected_obs_valid_times) > 0:
+#             # Exact match expected for init times not met, fail
+#             assert True is False
+#
+#     else:
+#         # Number of results not expected, fail
+#         assert True is False
+#
+#
+# def test_file_info_by_valid_correct_for_nam():
+#     # Test that the resulting tuple from create_input_file_info() is correct
+#     # when selecting by valid time for obs files
+#     ps = point_stat_wrapper()
+#     ps.ps_dict['OBS_INPUT_DIR'] = '/d1/minnawin/pb2nc_output/nam/conus_sfc'
+#
+#     # Based on the files in the input directory above, these are the
+#     expected_obs_filepaths = [
+#         '/d1/minnawin/pb2nc_output/nam/conus_sfc/prepbufr.20170601.t00z'
+#         '.tm00.nc',
+#         '/d1/minnawin/pb2nc_output/nam/conus_sfc/prepbufr.20170601.t12z'
+#         '.tm00.nc',
+#         '/d1/minnawin/pb2nc_output/nam/conus_sfc/prepbufr.20170601.t18z'
+#         '.tm00.nc',
+#         '/d1/minnawin/pb2nc_output/nam/conus_sfc/prepbufr.20170602.t00z'
+#         '.tm03.nc',
+#         '/d1/minnawin/pb2nc_output/nam/conus_sfc/prepbufr.20170602.t18z'
+#         '.tm00.nc',
+#         '/d1/minnawin/pb2nc_output/nam/conus_sfc/prepbufr.20170603.t00z'
+#         '.tm00.nc',
+#         '/d1/minnawin/pb2nc_output/nam/conus_sfc/prepbufr.20170603.t00z'
+#         '.tm03.nc',
+#         '/d1/minnawin/pb2nc_output/nam/conus_sfc/prepbufr.20170603.t06z'
+#         '.tm00.nc',
+#         '/d1/minnawin/pb2nc_output/nam/conus_sfc/prepbufr.20170603.t06z'
+#         '.tm03.nc',
+#         '/d1/minnawin/pb2nc_output/nam/conus_sfc/prepbufr.20170603.t12z'
+#         '.tm00.nc',
+#         '/d1/minnawin/pb2nc_output/nam/conus_sfc/prepbufr.20170603.t12z'
+#         '.tm03.nc',
+#         '/d1/minnawin/pb2nc_output/nam/conus_sfc/prepbufr.20170603.t18z'
+#         '.tm00.nc',
+#         '/d1/minnawin/pb2nc_output/nam/conus_sfc/prepbufr.20170603.t18z'
+#         '.tm03.nc',
+#     ]
+#     expected_obs_valid_times = ['2017060100', '2017060112', '2017060118',
+#                                 '2017060121', '2017060218', '2017060300',
+#                                 '2017060221', '2017060306', '2017060303',
+#                                 '2017060312', '2017060309', '2017060318',
+#                                 '2017060315']
+#
+#     file_type = "obs"
+#     consolidated_obs_list = ps.create_input_file_info(file_type)
+#     assert(len(expected_obs_filepaths) == len(consolidated_obs_list))
+#
+#     # Make sure we got exact matches with respect to the valid times
+#     # and filepaths
+#     for obs in consolidated_obs_list:
+#         if obs.full_filepath in expected_obs_filepaths:
+#             expected_obs_filepaths.remove(obs.full_filepath)
+#         valid_time_str = datetime.datetime.fromtimestamp(
+#             obs.valid_time).strftime('%Y%m%d%H')
+#         if valid_time_str in expected_obs_valid_times:
+#             expected_obs_valid_times.remove(valid_time_str)
+#
+#     # If we had the exact matches, these arrays will be empty
+#     assert(len(expected_obs_filepaths) == 0)
+#     assert(len(expected_obs_valid_times) == 0)
+#
+#
+# def test_correct_pairings_nam_vs_gfs():
+#     # Test that the pairings produce correct results for NAM (conus_sfc) vs
+#     # GFS(fcst/model)
+#     ps = point_stat_wrapper()
+#
+#     # For conus_sfc first
+#     # fcst_input_dir = '/d1/METplus_Mallory/data/gfs'
+#     fcst_input_dir = '/d1/minnawin/data/gfs'
+#     obs_input_dir = '/d1/minnawin/pb2nc_output/nam/conus_sfc'
+#     ps.ps_dict['FCST_INPUT_DIR'] = fcst_input_dir
+#     ps.ps_dict['OBS_INPUT_DIR'] = obs_input_dir
+#     ps.ps_dict['OBS_INPUT_FILE_REGEX'] =\
+#         '.*prepbufr.(2[0-9]{7}).t([0-9]{2})z.tm([0-9]{2}).nc'
+#     ps.ps_dict['FCST_INPUT_FILE_REGEX'] = '.*pgbf([0-9]{1,3}).gfs.(2[0-9]{
+# 9})'
+#
+#     # Check conus sfc (NAM)
+#     pairs_by_valid = ps.select_fcst_obs_pairs()
+#     # Using data in /d1/minnawin/pb2nc_output/ for NAM data
+#     # For fcst file in pair, expecting the fcst filename (NAM) in format
+#     # ymd.tCC.tmhh where date = ymd, cycle = CC and offset = hh
+#     fcst_file_regex = ps.ps_dict['FCST_INPUT_FILE_REGEX']
+#     obs_file_regex = ps.ps_dict['OBS_INPUT_FILE_REGEX']
+#     fcst_regex_compile = re.compile(fcst_file_regex)
+#     obs_regex_compile = re.compile(obs_file_regex)
+#
+#     # anticipate matched pairs like the following (filepaths omitted for
+#     # clarity)
+#     #
+#     # conus_sfc
+#     # ----------
+#     # prepbufr.nam.20170601.t03z.tm03.nc, pgbf00.gfs.2017060100
+#     # prepbufr.nam.20170601.t03z.tm03.nc, pgbf12.gfs.2017053112
+#     # prepbufr.nam.20170601.t03z.tm03.nc, pgbf24.gfs.2017050100
+#     # ...
+#     #
+#     # prepbufr.nam.20170601.t12z.tm00.nc, pgbf00.gfs.2017060112
+#     # prepbufr.nam.20170601.t12z.tm00.nc, pgbf12.gfs.2017060100
+#
+#     # pick a matched pair from the middle of the list and verify that they
+#     # have the same valid time
+#     num_pairs = len(pairs_by_valid)
+#
+#     if num_pairs > 0:
+#         mid_index = (num_pairs - 1)/2
+#         fcst = pairs_by_valid[mid_index][0]
+#         obs = pairs_by_valid[mid_index][1]
+#         fcst_match = re.match(fcst_regex_compile, fcst)
+#         obs_match = re.match(obs_regex_compile, obs)
+#         if fcst_match and obs_match:
+#             fcst_ymdh_str = fcst_match.group(2)
+#             fcst_ymd = ps.convert_date_strings_to_unix_times(fcst_ymdh_str)
+#             fcst_hr_in_secs = int(fcst_match.group(1)) * ps.HOURS_TO_SECONDS
+#             fcst_valid = fcst_ymd + fcst_hr_in_secs
+#
+#             # Now get the valid time for this
+#             obs_ymd =\
+#                 ps.convert_date_strings_to_unix_times(obs_match.group(1))
+#             obs_cycle = int(obs_match.group(2))
+#             obs_offset = int(obs_match.group(3))
+#             delta_secs = (obs_cycle - obs_offset) * ps.HOURS_TO_SECONDS
+#             obs_valid = obs_ymd + delta_secs
+#
+#             assert(fcst_valid == obs_valid)
+#
+#     else:
+#         # No matches were produced but some matches were expected. Fail
+#         assert True is False
+#
+#
+# def test_correct_pairings_gdas_vs_gfs():
+#     # Test that the pairings produce correct results for
+#     # GDAS (upper_air) point obs vs GFS(fcst/model)
+#     ps = point_stat_wrapper()
+#
+#     # For conus_sfc first
+#     # fcst_input_dir = '/d1/METplus_Mallory/data/gfs'
+#     fcst_input_dir = '/d1/minnawin/data/gfs'
+#     obs_input_dir = '/d1/minnawin/pb2nc_output/gdas/upper_air'
+#     ps.ps_dict['FCST_INPUT_DIR'] = fcst_input_dir
+#     ps.ps_dict['OBS_INPUT_DIR'] = obs_input_dir
+#     ps.ps_dict['OBS_INPUT_FILE_REGEX'] = \
+#         '.*prepbufr.gdas.(2[0-9]{9}).nc'
+#     ps.ps_dict['FCST_INPUT_FILE_REGEX'] = '.*pgbf([0-9]{1,3}).gfs.(2[0-9]{
+# 9})'
+#     # Check upper_air (GDAS)
+#     pairs_by_valid = ps.select_fcst_obs_pairs()
+#     # Using data in /d1/minnawin/pb2nc_output GDAS data.
+#     # For fcst file in pair, expecting the fcst filename (GDAS) to be in
+#     # format ymdh where ymdh = valid time = init time
+#     fcst_file_regex = ps.ps_dict['FCST_INPUT_FILE_REGEX']
+#     obs_file_regex = ps.ps_dict['OBS_INPUT_FILE_REGEX']
+#     fcst_regex_compile = re.compile(fcst_file_regex)
+#     obs_regex_compile = re.compile(obs_file_regex)
+#
+#     # anticipate matched pairs like the following (filepaths omitted for
+#     # clarity)
+#     #
+#     # upper air
+#     # ----------
+#     # prepbufr.gdas.2017060100, pbgf00.gfs.2017060100
+#     # prepbufr.gdas.2017060100, pbgf12.gfs.2017053112
+#     # prepbufr.gdas.2017060100, pbgf24.gfs.2017053100
+#     # ...
+#     # prepbufr.gdas.2017060112, pgbf00.gfs.2017060112
+#     # prepbufr.gdas.2017060112, pgbf12.gfs.2017060100
+#     #
+#
+#     # pick a matched pair from the middle of the list and verify that they
+#     # have the same valid time
+#     num_pairs = len(pairs_by_valid)
+#
+#     if num_pairs > 0:
+#         mid_index = (num_pairs - 1) / 2
+#         fcst = pairs_by_valid[mid_index][0]
+#         obs = pairs_by_valid[mid_index][1]
+#         fcst_match = re.match(fcst_regex_compile, fcst)
+#         obs_match = re.match(obs_regex_compile, obs)
+#         if fcst_match and obs_match:
+#             fcst_ymdh_str = fcst_match.group(2)
+#             fcst_ymd = ps.convert_date_strings_to_unix_times(fcst_ymdh_str)
+#             fcst_hr_in_secs = int(fcst_match.group(1)) * ps.HOURS_TO_SECONDS
+#             fcst_valid = fcst_ymd + fcst_hr_in_secs
+#
+#             # Now get the valid time for this
+#             obs_valid =\
+#                 ps.convert_date_strings_to_unix_times(obs_match.group(1))
+#
+#             assert(fcst_valid == obs_valid)
+#
+#     else:
+#         # No matches were produced but some matches were expected. Fail
+#         assert True is False
+
+
+# def test_command_upper_air():
+#     """! Test that the command that is used to invoke MET point_stat
+#          is correct/expected
+#     """
+#     ps = point_stat_wrapper()
+#
+#     # Set up the appropriate input directories
+#     # fcst_input_dir = '/d1/minnawin/data/gfs'
+#     fcst_input_dir = '/d1/METplus_Mallory/data/gfs'
+#     obs_input_dir = '/d1/minnawin/pb2nc_output/gdas/upper_air'
+#     ps.ps_dict['FCST_INPUT_DIR'] = fcst_input_dir
+#     ps.ps_dict['OBS_INPUT_DIR'] = obs_input_dir
+#     ps.ps_dict['OBS_INPUT_FILE_REGEX'] = \
+#         '.*prepbufr.gdas.(2[0-9]{9}).nc'
+#     ps.ps_dict['FCST_INPUT_FILE_REGEX'] = '.*pgbf([0-9]{1,3}).gfs.(2[0-9]{
+# 9})'
+#     ps.run_all_times()
+#     assert True
+
+
+def test_reformat_fields_for_met():
+    """! Verify that the fcst_field and obs_field text in the MET config
+         field dictionary are well-formed. Test is based on the
+         point_stat_test_conus_sfc.conf file.
+    """
+    ps = point_stat_wrapper()
+
+    # Set up the appropriate input directories
+    # fcst_input_dir = '/d1/minnawin/data/gfs'
+    fcst_input_dir = '/d1/METplus_Mallory/data/gfs'
+    obs_input_dir = '/d1/minnawin/pb2nc_output/gdas/upper_air'
+    ps.ps_dict['FCST_INPUT_DIR'] = fcst_input_dir
+    ps.ps_dict['OBS_INPUT_DIR'] = obs_input_dir
+    ps.ps_dict['OBS_INPUT_FILE_REGEX'] = \
+        '.*prepbufr.gdas.(2[0-9]{9}).nc'
+    ps.ps_dict['FCST_INPUT_FILE_REGEX'] = '.*pgbf([0-9]{1,3}).gfs.(2[0-9]{9})'
+
+    all_vars_list = util.parse_var_list(ps.p)
+    logger = logging.getLogger("temp_log")
+    fields = util.reformat_fields_for_met(all_vars_list, logger)
+    # The following fields were defined in the MET+ config file:
+    # TMP, RH, DPT, UGRD, VGRD, TCDC, PRMSL
+
+    fcst_str = fields.fcst_field
+    expected_fcst_str = '{ name = "TMP"; level = [ "Z2" ]; }, ' \
+                        '{ name = "RH"; level = [ "Z2" ]; }, ' \
+                        '{ name = "DPT"; level = [ "Z2" ]; }, ' \
+                        '{ name = "UGRD"; level = [ "Z10" ]; }, ' \
+                        '{ name = "VGRD"; level = [ "Z10" ]; }, ' \
+                        '{ name = "TCDC"; level = [ "L0" ]; GRIB_lvl_typ = ' \
+                        '200; }, ' \
+                        '{ name = "PRMSL"; level = [ "Z0" ]; }'
+
+    print("expected: ", expected_fcst_str)
+    print("fcst str: ", fcst_str)
+    obs_str = fields.obs_field
+    expected_obs_str = '{ name = "TMP"; level = [ "Z2" ]; }, ' \
+                       '{ name = "RH"; level = [ "Z2" ]; }, ' \
+                       '{ name = "DPT"; level = [ "Z2" ]; }, ' \
+                       '{ name = "UGRD"; level = [ "Z10" ]; }, ' \
+                       '{ name = "VGRD"; level = [ "Z10" ]; }, ' \
+                       '{ name = "TCDC"; level = [ "L0" ]; }, ' \
+                       '{ name = "PRMSL"; level = [ "Z0" ]; }'
+    print("expected: ", expected_obs_str)
+    print("obs  str: ", obs_str)
+
+    if fcst_str == expected_fcst_str:
+        assert True is True
+    assert obs_str == expected_obs_str

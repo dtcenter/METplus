@@ -1,0 +1,121 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// PB2NC configuration file.
+//
+// For additional information, see the MET_BASE/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// PrepBufr message type
+//
+//message_type = [ "ADPUPA", "ANYAIR", "PROFLR", "VADWND" ];
+message_type = [];
+
+//
+// Mapping of input PrepBufr message types to output message types
+//
+message_type_map = [];
+
+//
+// PrepBufr station ID
+//
+station_id = [];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Observation time window
+//
+obs_window = {
+   beg = -2700;
+   end =  2700;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Observation retention regions
+//
+mask = {
+   grid = "";
+   poly = "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Observing location elevation
+//
+elevation_range = {
+   beg =  -1000;
+   end = 100000;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Observation types
+//
+pb_report_type  = [ 120, 220, 221, 122, 222, 223, 224, 131, 133, 233, 153, 156, 157, 180, 280, 181, 182, 281, 282, 183, 284, 187, 287 ];
+in_report_type  = [];
+
+instrument_type = [];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Vertical levels to retain
+//
+level_range = {
+   beg = 1;
+   end = 511;
+}
+
+level_category = [];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// BUFR variable names to retain or derive.
+// If emtpy, process all available variables.
+//
+//obs_bufr_var = [ "POB", "QOB", "TOB", "ZOB", "UOB", "VOB" ];
+obs_bufr_var = [ "QOB", "TOB", "ZOB", "UOB", "VOB" ];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Mapping of BUFR variable name to GRIB name. The default map is defined at
+// obs_prepbufr_map. This replaces/expends the default map.
+//
+obs_bufr_map = [];
+
+// This map is for PREPBUFR. It will be added into obs_bufr_map.
+// Please do not override this map.
+obs_prefbufr_map = [
+   { key = "POB";     val = "PRES";  },
+   { key = "QOB";     val = "SPFH";  },
+   { key = "TOB";     val = "TMP";   },
+   { key = "ZOB";     val = "HGT";   },
+   { key = "UOB";     val = "UGRD";  },
+   { key = "VOB";     val = "VGRD";  },
+   { key = "D_DPT";   val = "DPT";   },
+   { key = "D_WDIR";  val = "WDIR";  },
+   { key = "D_WIND";  val = "WIND";  },
+   { key = "D_RH";    val = "RH";    },
+   { key = "D_MIXR";  val = "MIXR";  },
+   { key = "D_PRMSL"; val = "PRMSL"; }
+];
+
+////////////////////////////////////////////////////////////////////////////////
+
+quality_mark_thresh = 2;
+event_stack_flag    = TOP;
+
+////////////////////////////////////////////////////////////////////////////////
+
+tmp_dir = "/tmp";
+version = "V6.1";
+
+////////////////////////////////////////////////////////////////////////////////
