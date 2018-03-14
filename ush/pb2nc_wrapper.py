@@ -1,35 +1,35 @@
 #!/usr/bin/env python
 
 from __future__ import print_function, unicode_literals
-
+import sys
 import os
 import re
 import time
 import calendar
+from collections import namedtuple
+from command_builder import CommandBuilder
 import config_metplus
 import met_util as util
 import produtil.setup
-import sys
-from collections import namedtuple
-from command_builder import CommandBuilder
-from produtil.run import batchexe, run
 from string_template_substitution import StringSub
 
 """
 Program Name: PB2NC_Wrapper.py
 Contact(s): Minna Win, Jim Frimel, George McCabe, Julie Prestopnik
-Abstract: Wrapper to MET PB2NC
+Abstract: Wrapper to MET tool PB2NC
 History Log:  Initial version
-Usage: PB2NC_Wrapper.py
+Usage: pb2nc_wrapper.py
 Parameters: None
 Input Files: prepBUFR data files
 Output Files: netCDF files
 Condition codes: 0 for success, 1 for failure
-
 """
 
 
 class PB2NCWrapper(CommandBuilder):
+    """! Wrapper to the MET tool pb2nc which converts prepbufr files
+         to NetCDF for MET's point_stat tool can recognize.
+    """
     def __init__(self, p, logger):
         super(PB2NCWrapper, self).__init__(p, logger)
         self.p = p
@@ -42,6 +42,9 @@ class PB2NCWrapper(CommandBuilder):
         self.args = []
 
         # Conversion of hours to seconds
+        # pylint:disable=invalid-name
+        # Need to set constant value, most Pythonic way according to
+        # Stack-Overflow is to set attribute.
         self.HOURS_TO_SECONDS = 3600
 
     def create_pb_dict(self):
@@ -94,7 +97,8 @@ class PB2NCWrapper(CommandBuilder):
             pb_dict['GRID_MASK'] = grid_id
 
         pb_dict['MASK_POLY'] = self.p.getstr('config', 'MASK_POLY')
-        pb_dict['STATION_ID'] = self.p.getstr('config', 'STATION_ID')
+        pb_dict['STATION_ID'] = util.getlist(self.p.getstr('config',
+                                                           'STATION_ID'))
 
         # Retrieve YYYYMMDD begin and end time
         pb_dict['BEG_TIME'] = self.p.getstr('config', 'BEG_TIME')[0:8]
@@ -108,14 +112,14 @@ class PB2NCWrapper(CommandBuilder):
         pb_dict['END_HOUR'] = self.p.getstr('config', 'END_HOUR')
         pb_dict['START_DATE'] = self.p.getstr('config', 'START_DATE')
         pb_dict['END_DATE'] = self.p.getstr('config', 'END_DATE')
+        pb_dict['TIME_SUMMARY_FLAG'] = self.p.getbool('config',
+                                                      'TIME_SUMMARY_FLAG')
         pb_dict['TIME_SUMMARY_BEG'] = self.p.getstr('config',
                                                     'TIME_SUMMARY_BEG')
         pb_dict['TIME_SUMMARY_END'] = self.p.getstr('config',
                                                     'TIME_SUMMARY_END')
         pb_dict['TIME_SUMMARY_VAR_NAMES'] = util.getlist(
             self.p.getstr('conf', 'TIME_SUMMARY_VAR_NAMES'))
-        pb_dict['QUALITY_MARK_THRESH'] = \
-            self.p.getstr('config', 'QUALITY_MARK_THRESH')
         pb_dict['TIME_SUMMARY_TYPES'] = util.getlist(
             self.p.getstr('config', 'TIME_SUMMARY_TYPES'))
         pb_dict['OVERWRITE_NC_OUTPUT'] = \
@@ -159,9 +163,9 @@ class PB2NCWrapper(CommandBuilder):
             # For now, we only support running all times (loop method via
             # processes).
             self.logger.error('ERROR:|:' + cur_function + '|' + cur_filename +
-                              '|' + 'Only the loop method of "processes" is '
-                              + 'currently supported, please change the '
-                                'LOOP_METHOD value in your config file.')
+                              '|' + 'Only the loop method of "processes" is ' +
+                              'currently supported, please change the ' +
+                              'LOOP_METHOD value in your config file.')
             sys.exit(1)
 
     def reformat_grid_id(self, grid_id):
@@ -196,9 +200,9 @@ class PB2NCWrapper(CommandBuilder):
         else:
             # Unexpected format
             self.logger.error(
-                'ERROR |:' + cur_function + '|' + cur_filename
-                + '|' + 'Grid id in unexpected format of Gn or '
-                        'Gnn, please check again. Exiting...')
+                'ERROR |:' + cur_function + '|' + cur_filename +
+                '|' + 'Grid id in unexpected format of Gn or ' +
+                'Gnn, please check again. Exiting...')
             sys.exit(1)
 
         return reformatted_id
@@ -253,35 +257,58 @@ class PB2NCWrapper(CommandBuilder):
         # subprocess, the environment variables are handled as strings.
         # Need to do some pre-processing so that Python will use " and not '
         # because currently MET doesn't support single-quotes
-        tmp_message_type_string = str(self.pb_dict['MESSAGE_TYPE'])
-        message_type_string = tmp_message_type_string.replace("\'", "\"")
-        self.add_env_var(b'MESSAGE_TYPE', message_type_string)
-        os.environ['MESSAGE_TYPE'] = message_type_string
 
-        tmp_obs_bufr_str = str(self.pb_dict['OBS_BUFR_VAR_LIST'])
-        obs_bufr_str = tmp_obs_bufr_str.replace("\'", "\"")
-        self.add_env_var(b'OBS_BUFR_VAR_LIST', obs_bufr_str)
-        # os.environ['OBS_BUFR_VAR_LIST'] = obs_bufr_str
+        # MESSAGE_TYPE, STATION_ID, OBS_BUFR_VAR_LIST are different from other
+        # variables.  For instance, if set to nothing:
+        #          MESSAGE_TYPE =
+        # then don't allow it to be converted to "", or else MET will
+        # search for message type "" in the prepbufr file.
+        tmp_message_type = self.pb_dict['MESSAGE_TYPE']
+        # Check for "empty" MESSAGE_TYPE in MET+ config file and
+        # set the MESSAGE_TYPE environment variable appropriately.
+        if not tmp_message_type[0]:
+            self.add_env_var('MESSAGE_TYPE', "[]")
+        else:
+            # Not empty, set the MESSAGE_TYPE environment variable to the
+            # message types specified in the MET+ config file.
+            message_type_string = tmp_message_type.replace("\'", "\"")
+            self.add_env_var(b'MESSAGE_TYPE', message_type_string)
 
-        # self.add_env_var('TIME_SUMMARY_BEG',
-        #                  self.pb_dict['TIME_SUMMARY_BEG'])
-        # os.environ['TIME_SUMMARY_BEG'] = self.pb_dict['TIME_SUMMARY_BEG']
+        tmp_station_id = self.pb_dict['STATION_ID']
+        if not tmp_station_id[0]:
+            self.add_env_var('STATION_ID', "[]")
+        else:
+            # Not empty, set the environment variable to the
+            # value specified in the MET+ config file.
+            station_id_string = str(tmp_station_id).replace("\'", "\"")
+            self.add_env_var(b'STATION_ID', station_id_string)
+
+        tmp_obs_bufr = self.pb_dict['OBS_BUFR_VAR_LIST']
+        if not tmp_obs_bufr[0]:
+            self.add_env_var(b'OBS_BUFR_VAR_LIST', "[]")
+        else:
+            # Not empty, set the environment variable to the
+            # value specified in the MET+ config file.
+            tmp_obs_bufr_str = str(tmp_obs_bufr).replace("\'", "\"")
+            self.add_env_var(b'OBS_BUFR_VAR_LIST', tmp_obs_bufr_str)
+
+        # Support for time summary was introduced with MET-6.1 release
         #
-        # self.add_env_var(b'TIME_SUMMARY_END', self.pb_dict[
-        #     'TIME_SUMMARY_END'])
-        # os.environ['TIME_SUMMARY_END'] = self.pb_dict['TIME_SUMMARY_END']
-        #
-        # time_summary_var_names_str = str(self.pb_dict[
-        #                                      'TIME_SUMMARY_VAR_NAMES'])
-        # self.add_env_var(b'TIME_SUMMARY_VAR_NAMES',
-        #                  time_summary_var_names_str)
-        # os.environ['TIME_SUMMARY_VAR_NAMES'] = time_summary_var_names_str
-        #
-        # time_summary_types_str = str(self.pb_dict[
-        #                                  'TIME_SUMMARY_TYPES'])
-        # self.add_env_var(b'TIME_SUMMARY_TYPES',
-        #                  time_summary_types_str)
-        # os.environ['TIME_SUMMARY)TYPES'] = time_summary_types_str
+        if self.pb_dict['TIME_SUMMARY_FLAG']:
+            flag = "TRUE"
+        else:
+            flag = "FALSE"
+
+        self.add_env_var('TIME_SUMMARY_FLAG', flag)
+        self.add_env_var('TIME_SUMMARY_BEG',
+                         self.pb_dict['TIME_SUMMARY_BEG'])
+        self.add_env_var(b'TIME_SUMMARY_END', self.pb_dict[
+            'TIME_SUMMARY_END'])
+        time_summary_var_names_str = str(
+            self.pb_dict['TIME_SUMMARY_VAR_NAMES'])
+        self.add_env_var(b'TIME_SUMMARY_VAR_NAMES', time_summary_var_names_str)
+        time_summary_types_str = str(self.pb_dict['TIME_SUMMARY_TYPES'])
+        self.add_env_var(b'TIME_SUMMARY_TYPES', time_summary_types_str)
 
         # Determine the files to convert based on init or valid start and
         # end times and a time interval.
@@ -349,11 +376,11 @@ class PB2NCWrapper(CommandBuilder):
             time_flag = 'valid'
         else:
             # unsupported time method
-            self.logger.error('ERROR|:' + cur_function + '|' + cur_filename
-                              + ' Unrecognized time method, only BY_INIT or '
-                                'BY_VALID are supported. Check the '
-                                'TIME_METHOD setting in your configuration '
-                                'file.')
+            self.logger.error('ERROR|:' + cur_function + '|' + cur_filename +
+                              ' Unrecognized time method, only BY_INIT or ' +
+                              'BY_VALID are supported. Check the ' +
+                              'TIME_METHOD setting in your configuration ' +
+                              'file.')
             sys.exit(1)
 
         # Some prepbufr files are organized into YMD subdirectories with
@@ -454,6 +481,10 @@ class PB2NCWrapper(CommandBuilder):
                          "Retrieving the time info for the prepBufr file of "
                          "interest, based on init time (YMD + cycle) or valid"
                          "time (YMDH or [YMD + (cycle - offset)].")
+
+        # pylint:disable=invalid-name
+        # This is a named tuple, and follows the "standard" practice of
+        # capitalizing the name of a named tuple, like a class name.
         PbFileTimeInfo = namedtuple('PbFileTimeInfo',
                                     'full_filepath, pb_unix_time')
 
@@ -480,8 +511,8 @@ class PB2NCWrapper(CommandBuilder):
                         pb_file_time_info = PbFileTimeInfo(pb_file,
                                                            cur_init_unix)
                     else:
-                        cur_valid_unix = unix_cur_date + (
-                                cycle_in_secs - offset_in_secs)
+                        cur_valid_unix = unix_cur_date + \
+                                         (cycle_in_secs - offset_in_secs)
                         pb_file_time_info = PbFileTimeInfo(pb_file,
                                                            cur_valid_unix)
 
@@ -557,6 +588,8 @@ class PB2NCWrapper(CommandBuilder):
         # /path/to/MET_pb2nc_config_file
         # -pbFile <list of remaining prepbufr files in the
         # prepbufr_files_to_evaluate
+        # pylint:disable=simplifiable-if-statement
+        # Expecting 'yes' or 'no' from user in config file.
         if self.pb_dict['OVERWRITE_NC_OUTPUT'] == 'yes':
             overwrite_flag = True
         else:
@@ -579,7 +612,7 @@ class PB2NCWrapper(CommandBuilder):
                 relevant_pb_file)
 
             output_full_filename = self.generate_output_nc_filename(
-                                            pb_output_file_to_name)
+                pb_output_file_to_name)
 
             # Run if overwrite_flag is True, or if the output
             # file doesn't already exist.
@@ -593,11 +626,12 @@ class PB2NCWrapper(CommandBuilder):
 
                 # For debugging
                 # self.add_arg(' -index -v 4 -log /tmp/pb2nc.log')
+                self.add_arg(' -v 5 -log /tmp/pb2nc_conus_sfc_test.log')
 
                 # Invoke MET pb2nc
                 cmd = self.get_command()
-                self.logger.debug('DEBUG|:' + cur_function + '|' + cur_filename
-                                  + 'pb2nc called with: ' + cmd)
+                self.logger.debug('DEBUG|:' + cur_function + '|' +
+                                  cur_filename + 'pb2nc called with: ' + cmd)
                 self.build()
                 self.logger.debug(
                     'DEBUG|:' + cur_function + '|' + cur_filename +
@@ -642,6 +676,9 @@ class PB2NCWrapper(CommandBuilder):
 
         return full_filepath
 
+    # pylint:disable=invalid-name
+    # this method name adheres to "snake_case", is descriptive of what
+    # it does, and conveys an action.
     def convert_date_strings_to_unix_times(self, date_string):
         """! Convert any YYYYMMDD or YYYYMMDDHH date string to Unix time
              Args:
@@ -776,6 +813,9 @@ class PB2NCWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
+        self.logger.debug('DEBUG:|' + cur_function + '|' + cur_filename +
+                          ' Generating output NetCDF file name...')
+
         # Create the output directory structure
         pb2nc_output_dir = os.path.join(self.pb_dict['OUTPUT_BASE'],
                                         self.pb_dict[
@@ -792,9 +832,9 @@ class PB2NCWrapper(CommandBuilder):
             offset = prepbufr_file_info.offset
             date = prepbufr_file_info.date
 
-            ss = StringSub(self.logger, self.pb_dict['NC_FILE_TMPL'],
-                           init=str(date), cycle=cycle, offset=offset)
-            nc_output_filename = ss.doStringSub()
+            string_sub = StringSub(self.logger, self.pb_dict['NC_FILE_TMPL'],
+                                   init=str(date), cycle=cycle, offset=offset)
+            nc_output_filename = string_sub.doStringSub()
             nc_output_filepath = os.path.join(pb2nc_output_dir,
                                               nc_output_filename)
 
@@ -809,9 +849,6 @@ class PB2NCWrapper(CommandBuilder):
                                               nc_output_filename)
         return nc_output_filepath
 
-    def clear(self):
-        super(PB2NCWrapper, self).clear()
-
     def get_command(self):
         if self.app_path is None:
             self.logger.error("No app path specified. You must use a subclass")
@@ -819,8 +856,8 @@ class PB2NCWrapper(CommandBuilder):
 
         cmd = " " + self.app_path + " "
         if self.args:
-            for a in self.args:
-                cmd += a + " "
+            for arg in self.args:
+                cmd += arg + " "
 
         if self.param != "":
             cmd += " " + self.param + " "
