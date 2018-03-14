@@ -115,9 +115,15 @@ class GridStatWrapper(CommandBuilder):
 
 
     def run_at_time_once(self, ti, v):
-        grid_stat_out_dir = self.p.getstr('config', 'GRID_STAT_OUT_DIR')
         valid_time = ti.getValidTime()
         init_time = ti.getInitTime()
+        grid_stat_base_dir = self.p.getstr('config', 'GRID_STAT_OUT_DIR')
+        if self.p.getbool('config', 'LOOP_BY_INIT'):
+            grid_stat_out_dir = os.path.join(grid_stat_base_dir,
+                                     init_time, "grid_stat")
+        else:
+            grid_stat_out_dir = os.path.join(grid_stat_base_dir,
+                                     valid_time, "grid_stat")
         fcst_level = v.fcst_level
         fcst_level_type = ""
         if(fcst_level[0].isalpha()):
@@ -136,10 +142,8 @@ class GridStatWrapper(CommandBuilder):
         config_dir = self.p.getstr('config', 'CONFIG_DIR')
 
         ymd_v = valid_time[0:8]
-        if not os.path.exists(os.path.join(grid_stat_out_dir,
-                                           init_time, "grid_stat")):
-            os.makedirs(os.path.join(grid_stat_out_dir,
-                                     init_time, "grid_stat"))
+        if not os.path.exists(grid_stat_out_dir):
+            os.makedirs(grid_stat_out_dir)
 
         # get model to compare
         model_path = self.find_model(ti.lead, init_time, fcst_level)
@@ -158,8 +162,7 @@ class GridStatWrapper(CommandBuilder):
         obs_path = os.path.join(obs_dir, obs_file)
         self.add_input_file(obs_path)
         self.set_param_file(self.p.getstr('config', 'GRID_STAT_CONFIG'))
-        self.set_output_dir(os.path.join(grid_stat_out_dir,
-                                         init_time, "grid_stat"))
+        self.set_output_dir(grid_stat_out_dir)
 
         # set up environment variables for each grid_stat run
         # get fcst and obs thresh parameters
