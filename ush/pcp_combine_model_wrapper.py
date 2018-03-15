@@ -51,15 +51,14 @@ class PcpCombineModelWrapper(PcpCombineWrapper):
         task_info.init_time = init_time
         task_info.valid_time = valid_time        
         var_list = util.parse_var_list(self.p)        
-        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))        
+        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
+        # want to combine fcst data files to get total accum matching obs?
+        obs_level = self.p.getstr('config', 'OBS_LEVEL')
         for lead in lead_seq:
             task_info.lead = lead
             for var_info in var_list:
-                level = var_info.obs_level
-                if level[0].isalpha():
-                    level = var_info.obs_level[1:]                 
                 self.run_at_time_once(task_info.getValidTime(),
-                                      level,
+                                      obs_level,
                                       var_info.fcst_name)
 
 
