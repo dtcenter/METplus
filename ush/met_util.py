@@ -1219,18 +1219,48 @@ def get_dirs(base_dir):
 
 
 def getlist(s, logger=None):
-    """!  returns a list of string elements from a comma or space
-          separated string of values, returns and empty list
-         if s is ''
-           '4,4,2,4,2,4,2, ' or '4,4,2,4,2,4,2 ' or
-           '4, 4, 4, 4, ' or '4, 4, 4, 4 '
+    """! Returns a list of string elements from a comma or space
+         separated string of values.
+
+         This function MUST also return an empty list [] if s is '' empty.
+
+         This function is meant to handle these possible or similar inputs:
+         AND return a clean list with no surrounding spaces or trailing
+         commas in the elements.
+
+         '4,4,2,4,2,4,2, ' or '4,4,2,4,2,4,2 ' or
+         '4, 4, 4, 4, ' or '4, 4, 4, 4 '
+
+         Note: getstr on an empty variable (EMPTY_VAR = ) in 
+         a conf file returns '' an empty string.
+        
+        @param s the string being converted to a list.  
     """
 
-    # removes surrounding comma, and spaces, if present.
+    # Developer NOTE: we could just force this to only operate
+    # on comma seperated lists, not space seperated.
+
+    # FIRST remove surrounding comma, and spaces, form the string.
     s = s.strip().strip(',').strip()
 
-    s = s.split(',')
-    s = [item.strip() for item in s]
+    # splitting an empty string, s with ',', creates a 1 element
+    # list with an empty string element, we dont want to create or 
+    # retrun that, ie. NEVER RETURN THIS [''], If s is '', an
+    # empty string, then return an empty list [].
+    # Doing so allows for proper boolean testing of your
+    # list elsewhere in the code, ie. bool([]) is False.
+
+    # if s is not an empty string, split it on
+    # commas or spaces
+    if s:
+        if ',' in s:
+            s = s.split(',')
+            s = [item.strip() for item in s]
+        else:
+            s = s.split()
+    else:
+        # create an empty list []
+        s = list()
 
     return s
 
