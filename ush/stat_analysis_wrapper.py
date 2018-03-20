@@ -70,7 +70,7 @@ class StatAnalysisWrapper(CommandBuilder):
             filter_time = init_time
             self.add_env_var("FCST_VALID", "")
             self.add_env_var("FCST_INIT", init_time)
-        self.logger.debug("Formatting grid2grid")
+        self.logger.info("Formatting grid2grid")
         #build -lookin directory
         self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, filter_time, "grid_stat"))
         #save output like VSDB
@@ -371,48 +371,48 @@ class StatAnalysisWrapper(CommandBuilder):
 ########################################################################
 ########################################################################
     def run_all_times(self):
-        self.logger.debug("RUNNING STAT_ANALYSIS FOR PLOTTING FORMAT")
+        self.logger.info("RUNNING STAT_ANALYSIS FOR PLOTTING FORMAT")
         verif_type = self.p.getstr('config', 'VERIF_TYPE')
         verif_case = self.p.getstr('config', 'VERIF_CASE')
         if verif_type == 'grid2grid':
             if verif_case == 'pres':
-                 self.logger.debug("Formatting for plotting for grid2grid-pres")
+                 self.logger.info("Formatting for plotting for grid2grid-pres")
                  self.grid2grid_pres_plot_format()
             elif verif_case == 'anom':
-                 self.logger.debug("Formatting for plotting for grid2grid-anom")
+                 self.logger.info("Formatting for plotting for grid2grid-anom")
                  self.grid2grid_anom_plot_format()
             elif verif_case == 'sfc':
-                 self.logger.debug("Formatting for plotting for grid2grid-sfc")
+                 self.logger.info("Formatting for plotting for grid2grid-sfc")
                  self.grid2grid_sfc_plot_format()
             else:
-                 self.logger.debug("Not a valid VERIF_CASE option for grid2grid")
+                 self.logger.error("Not a valid VERIF_CASE option for grid2grid")
                  exit(1)
         elif verif_type == 'grid2obs':
             if verif_case == 'sfc':
-                 self.logger.debug("Formatting for plotting for grid2obs-sfc")
+                 self.logger.info("Formatting for plotting for grid2obs-sfc")
             elif verif_case == 'upper_air':
-                 self.logger.debug("Formatting for plottting for grid2grid-upper_air")
+                 self.logger.info("Formatting for plottting for grid2grid-upper_air")
             else:
-                 self.logger.debug("Not a valid VERIF_CASE option for grid2obs")
+                 self.logger.error("Not a valid VERIF_CASE option for grid2obs")
                  exit(1)
         elif verif_type == 'precip':
-            self.logger.debug("Formatting for plotting for precip")
+            self.logger.info("Formatting for plotting for precip")
         else:
-            self.logger.debug("Not a valid VERIF_TYPE option")
+            self.logger.error("Not a valid VERIF_TYPE option")
             exit(1)
 
     def run_at_time(self, init_time, valid_time):
-        self.logger.debug("RUNNING STAT_ANALYSIS FOR VSDB FORMAT")
+        self.logger.info("RUNNING STAT_ANALYSIS FOR VSDB FORMAT")
         verif_type = self.p.getstr('config', 'VERIF_TYPE')
         verif_case = self.p.getstr('config', 'VERIF_CASE')
         #parse betwen VERIF_TYPE for stat_analysis specifications
         if verif_type == 'grid2grid':
-             self.logger.debug("Formatting in VSDB style for grid2grid")
+             self.logger.info("Formatting in VSDB style for grid2grid")
              self.grid2grid_VSDB_format(valid_time, init_time)
         elif verif_type == 'grid2obs':
-            self.logger.debug("Formatting in VSDB style for grid2obs")
+            self.logger.info("Formatting in VSDB style for grid2obs")
         elif verif_type == 'precip':
-            self.logger.debug("Formatting in VSDB style for precip")
+            self.logger.info("Formatting in VSDB style for precip")
         else:
-            self.logger.debug("Not a valid VERIF_TYPE option for formatting")
+            self.logger.error("Not a valid VERIF_TYPE option for formatting")
             exit(1)
