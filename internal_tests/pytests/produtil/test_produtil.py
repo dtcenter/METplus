@@ -141,6 +141,7 @@ def test_get_exe_ok():
     executable = conf_obj.getexe('WGRIB2')
     assert executable == expected_exe
 
+
 def test_get_bool():
     """! Test that boolean values are correctly retrieved."""
     conf_obj = get_config_obj()
