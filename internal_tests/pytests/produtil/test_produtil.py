@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import os
+import subprocess
 import produtil.setup
 import sys
 import logging
@@ -131,3 +132,13 @@ def test_new_lines_in_conf():
         "very long line requiring newline character to be tested 12345\n67890 end of the line."
     long_line = conf_obj.getstr('config', 'NEW_LINES')
     assert long_line == expected_string
+
+
+def test_get_exe_ok():
+    """! Test that executables are correctly retrieved."""
+    conf_obj = get_config_obj()
+    expected_exe = '/usr/local/bin/wgrib2'
+    executable = conf_obj.getexe('WGRIB2')
+    assert executable == expected_exe
+
+
