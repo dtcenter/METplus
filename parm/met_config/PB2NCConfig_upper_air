@@ -10,7 +10,7 @@
 // PrepBufr message type
 //
 //message_type = [];
-message_type =  [ "${MESSAGE_TYPE}" ] ;
+message_type =  ${MESSAGE_TYPE} ;
 
 //
 // Mapping of input PrepBufr message types to output message types
@@ -19,7 +19,7 @@ message_type_map = [];
    //
 // PrepBufr station ID
 //
-station_id = "";
+station_id = ${STATION_ID};
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ level_category = [];
 // If emtpy, process all available variables.
 //
 //obs_bufr_var = [ "QOB", "TOB", "ZOB", "UOB", "VOB" ];
-obs_bufr_var =  [ "${OBS_BUFR_VAR_LIST}" ]  ;
+obs_bufr_var =  ${OBS_BUFR_VAR_LIST} ;
 ////////////////////////////////////////////////////////////////////////////////
 
 //
