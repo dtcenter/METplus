@@ -86,8 +86,6 @@ level_category = [];
 // If emtpy, process all available variables.
 //
 obs_bufr_var = [ "PMO", "TOB", "TDO", "UOB", "VOB", "PWO", "TOCC" ];
-//TODO fix this in wrapper
-//obs_bufr_var =  ${OBS_BUFR_VAR_LIST} ;
 
 ////////////////////////////////////////////////////////////////////////////////
 

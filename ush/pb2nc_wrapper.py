@@ -245,13 +245,13 @@ class PB2NCWrapper(CommandBuilder):
         self.set_input_dir(self.pb_dict['PREPBUFR_DATA_DIR'])
         grid_mask = str(self.pb_dict['GRID_MASK'])
         self.add_env_var(b'GRID_MASK', grid_mask)
-        os.environ['GRID_MASK'] = grid_mask
+        # os.environ['GRID_MASK'] = grid_mask
         mask_poly = str(self.pb_dict['MASK_POLY'])
         self.add_env_var(b'MASK_POLY', mask_poly)
-        os.environ['MASK_POLY'] = mask_poly
+        # os.environ['MASK_POLY'] = mask_poly
         station_id = str(self.pb_dict['STATION_ID'])
         self.add_env_var(b'STATION_ID', station_id)
-        os.environ['STATION_ID'] = station_id
+        # os.environ['STATION_ID'] = station_id
 
         # Convert any lists into strings, so that when we run via
         # subprocess, the environment variables are handled as strings.
@@ -266,38 +266,43 @@ class PB2NCWrapper(CommandBuilder):
         tmp_message_type = self.pb_dict['MESSAGE_TYPE']
         # Check for "empty" MESSAGE_TYPE in MET+ config file and
         # set the MESSAGE_TYPE environment variable appropriately.
-        if not tmp_message_type[0]:
+        if not tmp_message_type:
             self.add_env_var('MESSAGE_TYPE', "[]")
         else:
             # Not empty, set the MESSAGE_TYPE environment variable to the
             # message types specified in the MET+ config file.
-            message_type_string = tmp_message_type.replace("\'", "\"")
-            self.add_env_var(b'MESSAGE_TYPE', message_type_string)
+            tmp_message_type = str(tmp_message_type).replace("\'", "\"")
+            # Remove all whitespace
+            tmp_message_type = ''.join(tmp_message_type.split())
+            self.add_env_var(b'MESSAGE_TYPE', tmp_message_type)
 
         tmp_station_id = self.pb_dict['STATION_ID']
-        if not tmp_station_id[0]:
+        if not tmp_station_id:
             self.add_env_var('STATION_ID', "[]")
         else:
             # Not empty, set the environment variable to the
             # value specified in the MET+ config file.
             station_id_string = str(tmp_station_id).replace("\'", "\"")
+            # Remove all whitespace
+            station_id_string = ''.join(station_id_string.split())
             self.add_env_var(b'STATION_ID', station_id_string)
 
         tmp_obs_bufr = self.pb_dict['OBS_BUFR_VAR_LIST']
-        if not tmp_obs_bufr[0]:
+        if not tmp_obs_bufr:
             self.add_env_var(b'OBS_BUFR_VAR_LIST', "[]")
         else:
             # Not empty, set the environment variable to the
             # value specified in the MET+ config file.
             tmp_obs_bufr_str = str(tmp_obs_bufr).replace("\'", "\"")
+            tmp_obs_bufr_str = ''.join(tmp_obs_bufr_str.split())
             self.add_env_var(b'OBS_BUFR_VAR_LIST', tmp_obs_bufr_str)
 
         # Support for time summary was introduced with MET-6.1 release
         #
         if self.pb_dict['TIME_SUMMARY_FLAG']:
-            flag = "TRUE"
+            flag = "True"
         else:
-            flag = "FALSE"
+            flag = "False"
 
         self.add_env_var('TIME_SUMMARY_FLAG', flag)
         self.add_env_var('TIME_SUMMARY_BEG',
@@ -626,7 +631,7 @@ class PB2NCWrapper(CommandBuilder):
 
                 # For debugging
                 # self.add_arg(' -index -v 4 -log /tmp/pb2nc.log')
-                self.add_arg(' -v 5 -log /tmp/pb2nc_conus_sfc_test.log')
+                self.add_arg(' -v 5 -log /tmp/pb2nc_test.log')
 
                 # Invoke MET pb2nc
                 cmd = self.get_command()

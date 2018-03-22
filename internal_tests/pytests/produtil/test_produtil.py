@@ -142,3 +142,9 @@ def test_get_exe_ok():
     assert executable == expected_exe
 
 
+def test_get_bool():
+    """! Test that boolean values are correctly retrieved."""
+    conf_obj = get_config_obj()
+    bool_val = conf_obj.getbool('config', 'BOOL_VALUE')
+    assert bool_val is True
+
