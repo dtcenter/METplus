@@ -83,22 +83,21 @@ class PB2NCWrapper(CommandBuilder):
         pb_dict['TIME_METHOD'] = self.p.getstr('config', 'TIME_METHOD')
         pb_dict['PB2NC_CONFIG_FILE'] = self.p.getstr('config',
                                                      'PB2NC_CONFIG_FILE')
-        pb_dict['MESSAGE_TYPE'] = util.getlist(self.p.getstr('config',
-                                                             'MESSAGE_TYPE'))
+        pb_dict['PB2NC_MESSAGE_TYPE'] = util.getlist(self.p.getstr('config',
+                                                             'PB2NC_MESSAGE_TYPE'))
         pb_dict['VERTICAL_LOCATION'] = self.p.getstr('config',
                                                      'VERTICAL_LOCATION')
 
-        grid_id = self.p.getstr('config', 'GRID_MASK')
+        grid_id = self.p.getstr('config', 'PB2NC_GRID')
         if grid_id.startswith('G'):
             # Reformat grid ids that begin with 'G' ( G10, G1, etc.) to format
             # Gnnn
-            pb_dict['GRID_MASK'] = self.reformat_grid_id(grid_id)
+            pb_dict['PB2NC_GRID'] = self.reformat_grid_id(grid_id)
         else:
-            pb_dict['GRID_MASK'] = grid_id
+            pb_dict['PB2NC_GRID'] = grid_id
 
-        pb_dict['MASK_POLY'] = self.p.getstr('config', 'MASK_POLY')
-        pb_dict['STATION_ID'] = util.getlist(self.p.getstr('config',
-                                                           'STATION_ID'))
+        pb_dict['PB2NC_POLY'] = self.p.getstr('config', 'PB2NC_POLY')
+        pb_dict['PB2NC_STATION_ID'] = util.getlist(self.p.getstr('config', 'PB2NC_STATION_ID'))
 
         # Retrieve YYYYMMDD begin and end time
         pb_dict['BEG_TIME'] = self.p.getstr('config', 'BEG_TIME')[0:8]
@@ -243,49 +242,46 @@ class PB2NCWrapper(CommandBuilder):
         # Environment variables
         # Set ENVs that are needed by the MET pb2nc config file
         self.set_input_dir(self.pb_dict['PREPBUFR_DATA_DIR'])
-        grid_mask = str(self.pb_dict['GRID_MASK'])
-        self.add_env_var(b'GRID_MASK', grid_mask)
-        # os.environ['GRID_MASK'] = grid_mask
-        mask_poly = str(self.pb_dict['MASK_POLY'])
-        self.add_env_var(b'MASK_POLY', mask_poly)
-        # os.environ['MASK_POLY'] = mask_poly
-        station_id = str(self.pb_dict['STATION_ID'])
-        self.add_env_var(b'STATION_ID', station_id)
-        # os.environ['STATION_ID'] = station_id
+        grid_mask = str(self.pb_dict['PB2NC_GRID'])
+        self.add_env_var(b'PB2NC_GRID', grid_mask)
+        poly = str(self.pb_dict['PB2NC_POLY'])
+        self.add_env_var(b'PB2NC_POLY', poly)
+        station_id = str(self.pb_dict['PB2NC_STATION_ID'])
+        self.add_env_var(b'PB2NC_STATION_ID', station_id)
 
         # Convert any lists into strings, so that when we run via
         # subprocess, the environment variables are handled as strings.
         # Need to do some pre-processing so that Python will use " and not '
         # because currently MET doesn't support single-quotes
 
-        # MESSAGE_TYPE, STATION_ID, OBS_BUFR_VAR_LIST are different from other
+        # PB2NC_MESSAGE_TYPE, PB2NC_STATION_ID, OBS_BUFR_VAR_LIST are different from other
         # variables.  For instance, if set to nothing:
-        #          MESSAGE_TYPE =
+        #          PB2NC_MESSAGE_TYPE =
         # then don't allow it to be converted to "", or else MET will
         # search for message type "" in the prepbufr file.
-        tmp_message_type = self.pb_dict['MESSAGE_TYPE']
-        # Check for "empty" MESSAGE_TYPE in MET+ config file and
-        # set the MESSAGE_TYPE environment variable appropriately.
+        tmp_message_type = self.pb_dict['PB2NC_MESSAGE_TYPE']
+        # Check for "empty" PB2NC_MESSAGE_TYPE in MET+ config file and
+        # set the PB2NC_MESSAGE_TYPE environment variable appropriately.
         if not tmp_message_type:
-            self.add_env_var('MESSAGE_TYPE', "[]")
+            self.add_env_var('PB2NC_MESSAGE_TYPE', "[]")
         else:
-            # Not empty, set the MESSAGE_TYPE environment variable to the
+            # Not empty, set the PB2NC_MESSAGE_TYPE environment variable to the
             # message types specified in the MET+ config file.
             tmp_message_type = str(tmp_message_type).replace("\'", "\"")
             # Remove all whitespace
             tmp_message_type = ''.join(tmp_message_type.split())
-            self.add_env_var(b'MESSAGE_TYPE', tmp_message_type)
+            self.add_env_var(b'PB2NC_MESSAGE_TYPE', tmp_message_type)
 
-        tmp_station_id = self.pb_dict['STATION_ID']
+        tmp_station_id = self.pb_dict['PB2NC_STATION_ID']
         if not tmp_station_id:
-            self.add_env_var('STATION_ID', "[]")
+            self.add_env_var('PB2NC_STATION_ID', "[]")
         else:
             # Not empty, set the environment variable to the
             # value specified in the MET+ config file.
             station_id_string = str(tmp_station_id).replace("\'", "\"")
             # Remove all whitespace
             station_id_string = ''.join(station_id_string.split())
-            self.add_env_var(b'STATION_ID', station_id_string)
+            self.add_env_var(b'PB2NC_STATION_ID', station_id_string)
 
         tmp_obs_bufr = self.pb_dict['OBS_BUFR_VAR_LIST']
         if not tmp_obs_bufr:
