@@ -104,63 +104,63 @@ def test_config(key, value):
         ('NC_FILE_TMPL', 'prepbufr.gdas.{valid?fmt=%Y%m%d%HH}')
     ]
 )
-def test_set_attribute_after_wrapper_creation(key, value):
-    # Test that we can change the attribute defined in the config file
-    pb = pb2nc_wrapper()
-    pb.pb_dict['NC_FILE_TMPL'] = value
-    p_attr = pb.pb_dict[key]
-    assert (p_attr == value)
-
-
-# Get all seven values set in the OBS_BUFR_VAR_LIST in the test config file
-# and verify that we get what is expected.
-@pytest.mark.parametrize(
-    'element', [
-        pb2nc_wrapper().pb_dict['OBS_BUFR_VAR_LIST'][0],
-        pb2nc_wrapper().pb_dict['OBS_BUFR_VAR_LIST'][1]
-    ]
-)
-def test_get_obs_bufr_var_list(element):
-    # See if we can retrieve the OBS_BUFR_VAR_LIST and check that this is
-    # what we expect currently we have the following in the pb2nc_test.conf:
-    # OBS_BUFR_VAR_LIST = QOB, TOB
-    # verify that we have found each of these in the OBS_BUFR_VAR_LIST list.
-    var_list = ['QOB', 'TOB']
-
-    assert (element in var_list)
-
-
-# -----------------------------
-# test_output_dir_name_creation
+# def test_set_attribute_after_wrapper_creation(key, value):
+#     # Test that we can change the attribute defined in the config file
+#     pb = pb2nc_wrapper()
+#     pb.pb_dict['NC_FILE_TMPL'] = value
+#     p_attr = pb.pb_dict[key]
+#     assert (p_attr == value)
+#
+#
+# # Get all seven values set in the OBS_BUFR_VAR_LIST in the test config file
+# # and verify that we get what is expected.
+# @pytest.mark.parametrize(
+#     'element', [
+#         pb2nc_wrapper().pb_dict['OBS_BUFR_VAR_LIST'][0],
+#         pb2nc_wrapper().pb_dict['OBS_BUFR_VAR_LIST'][1]
+#     ]
+# )
+# def test_get_obs_bufr_var_list(element):
+#     # See if we can retrieve the OBS_BUFR_VAR_LIST and check that this is
+#     # what we expect currently we have the following in the pb2nc_test.conf:
+#     # OBS_BUFR_VAR_LIST = QOB, TOB
+#     # verify that we have found each of these in the OBS_BUFR_VAR_LIST list.
+#     var_list = ['QOB', 'TOB']
+#
+#     assert (element in var_list)
+#
+#
 # # -----------------------------
-def test_output_dir_name_creation_for_nam():
-    # Verify that the output directory name is being assembled correctly
-    wrapper = pb2nc_wrapper()
-    wrapper.pb_dict['PB2NC_OUTPUT_DIR'] = \
-        '/d1/minnawin/pb2nc_crow_test/nam/conus_sfc'
-    wrapper.pb_dict['PREPBUFR_DIR_REGEX'] = '.*nam.(2[0-9]{7})'
-    wrapper.pb_dict['PREPBUFR_FILE_REGEX'] = \
-        '.*nam.t([0-9]{2})z.prepbufr.tm([0-9]{2})'
-    wrapper.pb_dict['NC_FILE_TMPL'] = 'prepbufr.nam.{init?fmt=%Y%m%d}.t{cycle?fmt=%HH}z.tm{offset?fmt=%HH}.nc'
-    date = '20170617'
-    cycle = '12'
-    offset = '00'
-    # full file path for test data is:
-    full_filepath = '/d1/METplus_Mallory/data/prepbufr/nam/nam.20170617/nam' \
-                    '.t12z.prepbufr.tm00'
-    expected_outdir = wrapper.pb_dict['OUTPUT_BASE']
-    expected_model = wrapper.pb_dict['PREPBUFR_MODEL_DIR_NAME']
-    expected_loc = wrapper.pb_dict['VERTICAL_LOCATION']
-    expected_filename = 'prepbufr.nam.' + date + '.t12z' + \
-                        '.tm' + offset + '.nc'
-    expected_outfile = os.path.join(expected_outdir,
-                                    expected_model, expected_loc,
-                                    expected_filename)
-    pbFileInfo = namedtuple('pbFileInfo', 'full_filepath, date, cycle, offset')
-    relevant_pb_file = pbFileInfo(full_filepath, date, cycle, offset)
-    out_filename = wrapper.generate_output_nc_filename(relevant_pb_file)
-    assert (out_filename == expected_outfile)
-
+# # test_output_dir_name_creation
+# # # -----------------------------
+# def test_output_dir_name_creation_for_nam():
+#     # Verify that the output directory name is being assembled correctly
+#     wrapper = pb2nc_wrapper()
+#     wrapper.pb_dict['PB2NC_OUTPUT_DIR'] = \
+#         '/d1/minnawin/pb2nc_crow_test/nam/conus_sfc'
+#     wrapper.pb_dict['PREPBUFR_DIR_REGEX'] = '.*nam.(2[0-9]{7})'
+#     wrapper.pb_dict['PREPBUFR_FILE_REGEX'] = \
+#         '.*nam.t([0-9]{2})z.prepbufr.tm([0-9]{2})'
+#     wrapper.pb_dict['NC_FILE_TMPL'] = 'prepbufr.nam.{init?fmt=%Y%m%d}.t{cycle?fmt=%HH}z.tm{offset?fmt=%HH}.nc'
+#     date = '20170617'
+#     cycle = '12'
+#     offset = '00'
+#     # full file path for test data is:
+#     full_filepath = '/d1/METplus_Mallory/data/prepbufr/nam/nam.20170617/nam' \
+#                     '.t12z.prepbufr.tm00'
+#     expected_outdir = wrapper.pb_dict['OUTPUT_BASE']
+#     expected_model = wrapper.pb_dict['PREPBUFR_MODEL_DIR_NAME']
+#     expected_loc = wrapper.pb_dict['VERTICAL_LOCATION']
+#     expected_filename = 'prepbufr.nam.' + date + '.t12z' + \
+#                         '.tm' + offset + '.nc'
+#     expected_outfile = os.path.join(expected_outdir,
+#                                     expected_model, expected_loc,
+#                                     expected_filename)
+#     pbFileInfo = namedtuple('pbFileInfo', 'full_filepath, date, cycle, offset')
+#     relevant_pb_file = pbFileInfo(full_filepath, date, cycle, offset)
+#     out_filename = wrapper.generate_output_nc_filename(relevant_pb_file)
+#     assert (out_filename == expected_outfile)
+#
 #
 # def test_output_dir_name_creation_for_gdas():
 #     # Verify that the output directory name is being assembled correctly
@@ -508,10 +508,13 @@ def test_output_dir_name_creation_for_nam():
 #         assert True is False
 #     assert True
 #
-
 #
 # def test_refactor():
 #     pb = pb2nc_wrapper()
 #     relevant = pb.get_files_by_time()
 #     assert True is True
 #
+def test_run():
+    pb = pb2nc_wrapper()
+    pb.run_all_times()
+    assert True
