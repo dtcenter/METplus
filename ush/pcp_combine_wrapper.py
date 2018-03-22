@@ -368,6 +368,8 @@ class PcpCombineWrapper(CommandBuilder):
         self.set_pcp_dir(input_dir)
         self.set_pcp_regex(init_time[0:10])
         self.set_output_dir(output_dir)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
         
         pcpSts = sts.StringSub(self.logger,
                                 output_template,
