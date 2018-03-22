@@ -65,9 +65,10 @@ class PcpCombineModelWrapper(PcpCombineWrapper):
                 if not self.p.has_option('config', 'PCP_COMBINE_METHOD') or \
                   self.p.getstr('config', 'PCP_COMBINE_METHOD') == "ADD":
                     self.run_add_method(task_info.getValidTime(),
+                                        task_info.getInitTime(),
                                           out_level,
                                           var_info.obs_name,
-                                          "FCST")
+                                          "FCST", True)
                 elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUM":
                     self.run_sum_method(task_info.getValidTime(),
                                  task_info.getInitTime(),
