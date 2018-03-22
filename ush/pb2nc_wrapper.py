@@ -70,8 +70,7 @@ class PB2NCWrapper(CommandBuilder):
         pb_dict['METPLUS_BASE'] = self.p.getdir('dir', 'METPLUS_BASE')
         pb_dict['MET_BUILD_BASE'] = self.p.getdir('dir', 'MET_BUILD_BASE')
         pb_dict['MET_INSTALL_DIR'] = self.p.getdir('dir', 'MET_INSTALL_DIR')
-        pb_dict['PREPBUFR_DATA_DIR'] = self.p.getstr('dir',
-                                                     'PREPBUFR_DATA_DIR')
+        pb_dict['PREPBUFR_DATA_DIR'] = self.p.getstr('dir','PREPBUFR_DATA_DIR')
         pb_dict['PREPBUFR_MODEL_DIR_NAME'] = \
             self.p.getstr('dir', 'PREPBUFR_MODEL_DIR_NAME')
         pb_dict['PB2NC_OUTPUT_DIR'] = self.p.getstr('dir', 'PB2NC_OUTPUT_DIR')
@@ -81,12 +80,9 @@ class PB2NCWrapper(CommandBuilder):
 
         # Configuration
         pb_dict['TIME_METHOD'] = self.p.getstr('config', 'TIME_METHOD')
-        pb_dict['PB2NC_CONFIG_FILE'] = self.p.getstr('config',
-                                                     'PB2NC_CONFIG_FILE')
-        pb_dict['PB2NC_MESSAGE_TYPE'] = util.getlist(self.p.getstr('config',
-                                                             'PB2NC_MESSAGE_TYPE'))
-        pb_dict['VERTICAL_LOCATION'] = self.p.getstr('config',
-                                                     'VERTICAL_LOCATION')
+        pb_dict['PB2NC_CONFIG_FILE'] = self.p.getstr('config', 'PB2NC_CONFIG_FILE')
+        pb_dict['PB2NC_MESSAGE_TYPE'] = util.getlist(self.p.getstr('config', 'PB2NC_MESSAGE_TYPE'))
+        pb_dict['VERTICAL_LOCATION'] = self.p.getstr('config', 'VERTICAL_LOCATION')
 
         grid_id = self.p.getstr('config', 'PB2NC_GRID')
         if grid_id.startswith('G'):
