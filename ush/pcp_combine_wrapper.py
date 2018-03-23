@@ -368,6 +368,8 @@ class PcpCombineWrapper(CommandBuilder):
         self.set_pcp_dir(input_dir)
         self.set_pcp_regex(init_time[0:10])
         self.set_output_dir(output_dir)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
         
         pcpSts = sts.StringSub(self.logger,
                                 output_template,
@@ -387,7 +389,7 @@ class PcpCombineWrapper(CommandBuilder):
         return outfile
 
 
-    def run_add_method(self, valid_time, accum,
+    def run_add_method(self, valid_time, init_time, accum,
                          compare_var, data_src, is_forecast=False):
         self.clear()
         self.set_method("ADD")
@@ -398,10 +400,9 @@ class PcpCombineWrapper(CommandBuilder):
         output_template = self.p.getraw('filename_templates',
                                         data_src+'_PCP_COMBINE_OUTPUT_TEMPLATE')
 
-
-        ymd_v = valid_time[0:8]
-        if not os.path.exists(os.path.join(output_dir, ymd_v)):
-            os.makedirs(os.path.join(output_dir, ymd_v))
+        ymd = valid_time[0:8]
+        if not os.path.exists(os.path.join(output_dir, ymd)):
+            os.makedirs(os.path.join(output_dir, ymd))
 
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.set_input_dir(input_dir)
@@ -422,12 +423,12 @@ class PcpCombineWrapper(CommandBuilder):
             self.set_input_dir(gempak_dir)
             if self.get_accumulation(valid_time, int(accum), data_src, gempak_template, is_forecast) is True:
                 #   if success, run GempakToCF, run pcp_combine
-                if not os.path.exists(os.path.join(input_dir, ymd_v)):
-                    os.makedirs(os.path.join(input_dir, ymd_v))
                 infiles = self.get_input_files()
                 for idx, infile in enumerate(infiles):
                     # replace input_dir with native_dir, check if file exists
                     nfile = infile.replace(gempak_dir, input_dir)
+                    if not os.path.exists(os.path.dirname(nfile)):
+                        os.makedirs(os.path.dirname(nfile))
 #                    data_type = util.get_filetype(nfile)
                     data_type = self.p.getstr('config', data_src+'_NATIVE_DATA_TYPE')
                     if data_type == "NETCDF":
