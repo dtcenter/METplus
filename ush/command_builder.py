@@ -24,6 +24,9 @@ import calendar
 import string_template_substitution as sts
 import met_util as util
 
+from produtil.run import batchexe
+from produtil.run import checkrun
+
 from abc import ABCMeta
 
 

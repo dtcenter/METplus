@@ -36,14 +36,10 @@ from gempak_to_cf_wrapper import GempakToCFWrapper
 class PcpCombineModelWrapper(PcpCombineWrapper):
     def __init__(self, p, logger):
         super(PcpCombineModelWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
-                                     'bin/pcp_combine')
-        self.app_name = os.path.basename(self.app_path)
-        self.inaddons = []
+
 
     def clear(self):
         super(PcpCombineModelWrapper, self).clear()
-        self.inaddons = []
 
 
     def run_at_time(self, init_time, valid_time):
@@ -53,92 +49,33 @@ class PcpCombineModelWrapper(PcpCombineWrapper):
         var_list = util.parse_var_list(self.p)        
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
         # want to combine fcst data files to get total accum matching obs?
-        obs_level = self.p.getstr('config', 'OBS_LEVEL')
+#        obs_level = self.p.getstr('config', 'OBS_LEVEL')
+        fcst_level = self.p.getstr('config', 'FCST_LEVEL')
+        # TODO: should use getpath or something?
+        in_dir = self.p.getstr('config', 'FCST_PCP_COMBINE_INPUT_DIR')
+        out_dir = self.p.getstr('config', 'FCST_PCP_COMBINE_OUTPUT_DIR')
+        out_template = self.p.getraw('filename_templates',
+                                     'FCST_PCP_COMBINE_OUTPUT_TEMPLATE')        
         for lead in lead_seq:
             task_info.lead = lead
             for var_info in var_list:
-                self.run_at_time_once(task_info.getValidTime(),
-                                      obs_level,
-                                      var_info.fcst_name)
-
-
-    def run_at_time_once(self, valid_time, accum,
-                         compare_var, is_forecast=False):
-        self.clear()
-        model_type = self.p.getstr('config', 'MODEL_TYPE')        
-        input_dir = self.p.getstr('config',
-                                  'FCST_PCP_COMBINE_INPUT_DIR')
-        input_template = self.p.getraw('filename_templates',
-                                       'FCST_PCP_COMBINE_INPUT_TEMPLATE')        
-
-        model_bucket_dir = self.p.getstr('config',
-                                         'FCST_PCP_COMBINE_OUTPUT_DIR')
-        
-        if not os.path.exists(os.path.join(model_bucket_dir,valid_time[0:8])):
-          os.makedirs(os.path.join(model_bucket_dir,valid_time[0:8]))
-
-        # check _PCP_COMBINE_INPUT_DIR to get accumulation files
-        self.set_input_dir(input_dir)
-        if self.get_accumulation(valid_time, accum, "FCST", input_template, True) is True:
-            # if success, run pcp_combine
-            infiles = self.get_input_files()            
-        else:
-            # if failure, check _GEMPAK_INPUT_DIR to get accumulation files
-            if not self.p.has_option('config', 'FCST_GEMPAK_INPUT_DIR') or \
-               not self.p.has_option('filename_templates', 'FCST_GEMPAK_TEMPLATE'):
-                self.logger.warning(self.app_name + ": Could not find " \
-                                    "files to compute accumulation in " \
-                                    + input_dir)
-                return False            
-            gempak_dir = self.p.getstr('config', 'FCST_GEMPAK_INPUT_DIR')
-            gempak_template = self.p.getraw('filename_templates',
-                                            'FCST_GEMPAK_TEMPLATE')                 
-            self.set_input_dir(gempak_dir)
-            if self.get_accumulation(valid_time, accum,
-                              "FCST", gempak_template, True) is True:
-                # if success, run GempakToCF, run pcp_combine
-               infiles = self.get_input_files()
-               for idx, infile in enumerate(infiles):
-                    # replace gempak_dir with pcp_input_dir, check if file exists
-                    nfile = infile.replace(gempak_dir, input_dir)
-                    if not os.path.exists(os.path.dirname(nfile)):
-                        os.makedirs(os.path.dirname(nfile))
-#                    data_type = util.get_filetype(nfile)
-                    data_type = self.p.getstr('config',
-                                              'FCST_NATIVE_DATA_TYPE')
-                    if data_type == "NETCDF":
-#                    if data_type == "GEMPAK":
-                        nfile = os.path.splitext(nfile)[0]+'.nc'
-                        # call GempakToCF if pcp input file doesn't exist
-                        if not os.path.isfile(nfile):
-                            print("Calling GempakToCF to convert model to NetCDF")
-                            run_g2c = GempakToCFWrapper(self.p, self.logger)
-                            run_g2c.add_input_file(infile)
-                            run_g2c.set_output_path(nfile)
-                            cmd = run_g2c.get_command()
-                            if cmd is None:
-                                print("ERROR: GempakToCF could not generate command")
-                                return
-                            print("RUNNING: "+str(cmd))
-                            run_g2c.build()
-
-                    self.infiles[idx] = nfile
-
-        bucket_template = self.p.getraw('filename_templates',
-                                        'FCST_PCP_COMBINE_OUTPUT_TEMPLATE')
-        pcpSts = sts.StringSub(self.logger,
-                                bucket_template,
-                                valid=valid_time,
-                                level=str(accum).zfill(2))
-        pcp_out = pcpSts.doStringSub()
-        self.set_output_dir(model_bucket_dir)        
-        self.set_output_filename(pcp_out)
-        self.add_arg("-name "+compare_var+"_"+accum.zfill(2))
-
-        cmd = self.get_command()
-        if cmd is None:
-            print("ERROR: pcp_combine model could not "\
-                    "generate command")
-            return
-        self.logger.info("")
-        self.build()
+                out_level = var_info.obs_level
+                if out_level[0].isalpha():
+                    out_level = out_level[1:]
+                if not self.p.has_option('config', 'PCP_COMBINE_METHOD') or \
+                  self.p.getstr('config', 'PCP_COMBINE_METHOD') == "ADD":
+                    self.run_add_method(task_info.getValidTime(),
+                                        task_info.getInitTime(),
+                                          out_level,
+                                          var_info.obs_name,
+                                          "FCST", True)
+                elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUM":
+                    self.run_sum_method(task_info.getValidTime(),
+                                 task_info.getInitTime(),
+                                 fcst_level, out_level,
+                                 in_dir, out_dir, out_template)
+                elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUBTRACT":
+                    self.run_subtract_method()
+                else:
+                    self.logger.error("Invalid PCP_COMBINE_METHOD specified")
+                    exit(1)

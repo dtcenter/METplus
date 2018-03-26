@@ -16,7 +16,7 @@ import produtil.setup
 from command_builder import CommandBuilder
 
 """
-Program Name: Point_Stat_Wrapper.py
+Program Name: point_stat_wrapper.py
 Contact(s): Minna Win, Jim Frimel, George McCabe, Julie Prestopnik
 Abstract: Wrapper to MET point_stat
 History Log:  Initial version
@@ -98,16 +98,17 @@ class PointStatWrapper(CommandBuilder):
         ps_dict['POINT_STAT_CONFIG_FILE'] = \
             self.p.getstr('config', 'POINT_STAT_CONFIG_FILE')
         ps_dict['REGRID_TO_GRID'] = self.p.getstr('config', 'REGRID_TO_GRID')
-        grid_id = self.p.getstr('config', 'GRID_MASK')
+        grid_id = self.p.getstr('config', 'POINT_STAT_GRID')
         if grid_id.startswith('G'):
             # Reformat grid ids that begin with 'G' ( G10, G1, etc.) to format
             # Gnnn
-            ps_dict['GRID_MASK'] = self.reformat_grid_id(grid_id)
+            ps_dict['POINT_STAT_GRID'] = self.reformat_grid_id(grid_id)
         else:
-            ps_dict['GRID_MASK'] = grid_id
+            ps_dict['POINT_STAT_GRID'] = grid_id
 
-        ps_dict['MASK_POLY'] = util.getlist(self.p.getstr('config',
-                                                          'MASK_POLY'))
+        ps_dict['POINT_STAT_POLY'] = util.getlist(self.p.getstr('config', 'POINT_STAT_POLY'))
+        ps_dict['POINT_STAT_STATION_ID'] = util.getlist(self.p.getstr('config', 'POINT_STAT_STATION_ID'))
+        ps_dict['POINT_STAT_MESSAGE_TYPE'] = util.getlist(self.p.getstr('config', 'POINT_STAT_MESSAGE_TYPE'))
 
         # Retrieve YYYYMMDD begin and end time
         ps_dict['BEG_TIME'] = self.p.getstr('config', 'BEG_TIME')[0:8]
@@ -116,6 +117,10 @@ class PointStatWrapper(CommandBuilder):
         ps_dict['END_HOUR'] = self.p.getstr('config', 'END_HOUR')
         ps_dict['START_DATE'] = self.p.getstr('config', 'START_DATE')
         ps_dict['END_DATE'] = self.p.getstr('config', 'END_DATE')
+        ps_dict['FCST_HR_START'] = self.p.getstr('config', 'FCST_HR_START')
+        ps_dict['FCST_HR_END'] = self.p.getstr('config', 'FCST_HR_END')
+        ps_dict['FCST_HR_INTERVAL'] = self.p.getstr('config',
+                                                    'FCST_HR_INTERVAL')
         ps_dict['POINT_STAT_OUTPUT_PREFIX'] = \
             self.p.getstr('config', 'POINT_STAT_OUTPUT_PREFIX')
         # Filename templates and regex patterns for input dirs and filenames
@@ -237,19 +242,47 @@ class PointStatWrapper(CommandBuilder):
 
         # Set the environment variables
         self.add_env_var(b'MODEL_FCST', str(self.ps_dict['MODEL_NAME']))
-        os.environ['MODEL_FCST'] = str(self.ps_dict['MODEL_NAME'])
 
         regrid_to_grid = str(self.ps_dict['REGRID_TO_GRID'])
         self.add_env_var(b'REGRID_TO_GRID', regrid_to_grid)
         os.environ['REGRID_TO_GRID'] = regrid_to_grid
 
-        mask_poly_str = str(self.ps_dict['MASK_POLY'])
-        mask_poly = mask_poly_str.replace("\'", "\"")
-        self.add_env_var(b'MASK_POLY', mask_poly)
-        os.environ['MASK_POLY'] = mask_poly
+        # MET accepts a list of values for POINT_STAT_POLY, POINT_STAT_GRID, POINT_STAT_STATION_ID,
+        # and POINT_STAT_MESSAGE_TYPE. If these values are not set in the MET+ config file, assign them to "[]" so
+        # MET recognizes that these are empty lists, resulting in the expected behavior.
+        poly_str = str(self.ps_dict['POINT_STAT_POLY'])
+        if not poly_str:
+            self.add_env_var(b'POINT_STAT_POLY', "[]")
+        else:
+            poly = poly_str.replace("\'", "\"")
+            self.add_env_var(b'POINT_STAT_POLY', poly)
 
-        self.add_env_var(b'GRID_MASK', self.ps_dict['GRID_MASK'])
-        os.environ['GRID_MASK'] = self.ps_dict['GRID_MASK']
+        grid_str = str(self.ps_dict['POINT_STAT_GRID'])
+        if not grid_str:
+            self.add_env_var(b'POINT_STAT_GRID', "[]")
+        else:
+            grid = grid_str.replace("\'", "\"")
+            self.add_env_var(b'POINT_STAT_GRID', grid)
+
+        sid_str = str(self.ps_dict['POINT_STAT_STATION_ID'])
+        if not sid_str:
+            self.add_env_var(b'POINT_STAT_STATION_ID', "[]")
+        else:
+            sid = grid_str.replace("\'", "\"")
+            self.add_env_var(b'POINT_STAT_STATION_ID', sid)
+
+        tmp_message_type = str(self.ps_dict['POINT_STAT_MESSAGE_TYPE'])
+        # Check for "empty" POINT_STAT_MESSAGE_TYPE in MET+ config file and
+        # set the POINT_STAT_MESSAGE_TYPE environment variable appropriately.
+        if not tmp_message_type:
+            self.add_env_var('POINT_STAT_MESSAGE_TYPE', "[]")
+        else:
+            # Not empty, set the POINT_STAT_MESSAGE_TYPE environment variable to the
+            # message types specified in the MET+ config file.
+            tmp_message_type = str(tmp_message_type).replace("\'", "\"")
+            # Remove all whitespace
+            tmp_message_type = ''.join(tmp_message_type.split())
+            self.add_env_var(b'POINT_STAT_MESSAGE_TYPE', tmp_message_type)
 
         # Retrieve all the fcst and obs field values (name, level, options)
         # from the MET+ config file, passed into the MET config file via
@@ -259,100 +292,6 @@ class PointStatWrapper(CommandBuilder):
 
         self.add_env_var(b'FCST_FIELD', met_fields.fcst_field)
         self.add_env_var(b'OBS_FIELD', met_fields.obs_field)
-
-    def reformat_fields_for_met(self, all_vars_list):
-        """! Reformat the fcst or obs field values defined in the
-             MET+ config file to the MET field dictionary.
-
-             Args:
-                 all_vars_list - The list of all variables/fields retrieved
-                                 from the MET+ configuration file
-
-             Returns:
-                 met_fields - a named tuple containing the
-
-
-        """
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-
-        # Used for logging.
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
-                         "Reformatting field dictionary ...")
-
-        # Named tuple (so we don't have to remember the order of the fields)
-        # containing the string corresponding to the fcst or obs field's
-        # key-values for the MET config file.
-        MetFields = namedtuple("MetFields", "fcst_field, obs_field")
-
-        # Two types of fields in the MET fields dictionary, fcst and obs. Use
-        # this to create the key-value pairs.
-        field_list = ['fcst', 'obs']
-        fcst_field = ''
-        obs_field = ''
-        for var in all_vars_list:
-            # Create the key-value pairs in the fcst field and obs field
-            # dictionaries defined in the MET configuration file:
-            # fcst = {
-            #    field = [
-            #       {
-            #         name = "TMP";
-            #         level = ["P500"];
-            #         cat_thresh = [ > 80.0];
-            #         GRIB_lvl_typ = 202;
-            #       },
-            #       {
-            #         name = "HGT";
-            #         level = ["P500"];
-            #         cat_thresh = [ > 0.0];
-            #         GRIB_lvl_typ = 202;
-            #       },
-            #    ]
-            # }
-            # obs = fcst;
-            #
-            # The reformatting involves creating the field key-value pairs in
-            # the fcst and obs dictionaries.
-            # Determine if this is a fcst or obs field
-
-            # Iterate for the field types fcst and obs
-            for field in field_list:
-                if field == 'fcst':
-                    name = var.fcst_name
-                    level = var.fcst_level.zfill(2)
-                    extra = var.fcst_extra
-                elif field == 'obs':
-                    name = var.obs_name
-                    level = var.obs_level
-                    extra = var.obs_extra
-
-                name_level_extra_list = ['{ name = "', name,
-                                         '";  level = [ "', level, '"]; ']
-                if extra:
-                    extra_str = extra + '; }, '
-                    name_level_extra_list.append(extra_str)
-                else:
-                    # End the text for this field.  If this is the last field,
-                    # end the dictionary appropriately.
-                    if var.fcst_name == all_vars_list[-1].fcst_name:
-                        # This is the last field, terminate it appropriately.
-                        name_level_extra_list.append(' }]; ')
-                    else:
-                        # More field(s) to go
-                        name_level_extra_list.append(' }, ')
-                # Create the long string that will comprise the dictionary in
-                # the MET point_stat config file.
-                if field == 'fcst':
-                    fcst_field += ''.join(name_level_extra_list)
-                elif field == 'obs':
-                    obs_field += ''.join(name_level_extra_list)
-
-        met_fields = MetFields(fcst_field, obs_field)
-
-        return met_fields
 
     def select_fcst_obs_pairs(self):
         """! Select file pairings of fcst and obs input files based on valid
@@ -378,46 +317,38 @@ class PointStatWrapper(CommandBuilder):
         self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
                          "Selecting file pairings by valid time...")
 
+        # Get fcst and obs files for all the requested forecast hours for each initialization time
+        # within the start and end dates.
         fcst_files_info = self.create_input_file_info("fcst")
         obs_files_info = self.create_input_file_info("obs")
-
-        # Determine which files are within the valid time window.  Whenever
-        # there is more than one fcst file with the same valid time,
-        # keep it, because we want to perform verification for all fcst/model
-        # forecast hours.
-        valid_start = self.ps_dict['START_DATE']
-        valid_end = self.ps_dict['END_DATE']
-        unix_start = self.convert_date_strings_to_unix_times(str(valid_start))
-        unix_end = self.convert_date_strings_to_unix_times(str(valid_end))
 
         # Use dictionary to store/organize obs and fcst files based on valid
         # times.  Key = valid time, Value = list of full_filepaths
         # associated with this valid time.
         obs_dict_by_valid = dict()
         fcst_dict_by_valid = dict()
+
         for fcst in fcst_files_info:
-            if unix_start <= fcst.valid_time <= unix_end:
-                if fcst.valid_time in fcst_dict_by_valid:
-                    fcst_dict_by_valid[fcst.valid_time].append(
-                        fcst.full_filepath)
-                else:
-                    # unique key, create a new list for this key and add the
-                    # first full filepath
-                    fcst_paths = list()
-                    fcst_paths.append(fcst.full_filepath)
-                    fcst_dict_by_valid[fcst.valid_time] = fcst_paths
+            if fcst.valid_time in fcst_dict_by_valid:
+                fcst_dict_by_valid[fcst.valid_time].append(
+                    fcst.full_filepath)
+            else:
+                # unique key, create a new list for this key and add the
+                # first full filepath
+                fcst_paths = list()
+                fcst_paths.append(fcst.full_filepath)
+                fcst_dict_by_valid[fcst.valid_time] = fcst_paths
 
         for obs in obs_files_info:
-            if unix_start <= obs.valid_time <= unix_end:
-                if obs.valid_time in obs_dict_by_valid:
-                    # Valid time already encountered, enter this obs path
-                    # to the list of obs paths
-                    obs_dict_by_valid[obs.valid_time].append(obs.full_filepath)
-                else:
-                    # New key/valid time
-                    obs_paths = list()
-                    obs_paths.append(obs.full_filepath)
-                    obs_dict_by_valid[obs.valid_time] = obs_paths
+            if obs.valid_time in obs_dict_by_valid:
+                # Valid time already encountered, enter this obs path
+                # to the list of obs paths
+                obs_dict_by_valid[obs.valid_time].append(obs.full_filepath)
+            else:
+                # New key/valid time
+                obs_paths = list()
+                obs_paths.append(obs.full_filepath)
+                obs_dict_by_valid[obs.valid_time] = obs_paths
 
         # Now get paired fcst and obs files
         fcst_obs_pairs = []
@@ -470,10 +401,41 @@ class PointStatWrapper(CommandBuilder):
         # Initialize the output list
         consolidated_file_info = []
 
-        # Valid time tuple
+        # Determine which files are within the valid time window.
+        # Whenever there is more than one fcst file with the same valid time,
+        # keep it, because we want to perform verification for all fcst/model
+        # forecast hours.
+        valid_start = self.ps_dict['START_DATE']
+        valid_end = self.ps_dict['END_DATE']
+
+        fhr_start = self.ps_dict['FCST_HR_START']
+        fhr_end = self.ps_dict['FCST_HR_END']
+        fhr_interval = self.ps_dict['FCST_HR_INTERVAL']
+
+        fhr_start_secs = int(fhr_start) * self.HOURS_TO_SECONDS
+        fhr_end_secs = int(fhr_end) * self.HOURS_TO_SECONDS
+        last_fhr = fhr_end_secs + 1
+        fhr_interval_secs = int(fhr_interval) * self.HOURS_TO_SECONDS
+        date_start = self.convert_date_strings_to_unix_times(str(valid_start))
+        date_end = self.convert_date_strings_to_unix_times(str(valid_end))
+        all_valid_times = []
+
+        all_fhrs = []
+        for cur_fhr in range(fhr_start_secs, last_fhr, fhr_interval_secs):
+            all_fhrs.append(cur_fhr)
+
+        # create a list of tuples: date (yyyymmdd) and forecast hour (both
+        # in seconds) to represent all the valid times of interest.
+        for cur_date in range(date_start, date_end, fhr_interval_secs):
+            for cur_fhr in range(fhr_start_secs, last_fhr,
+                                 fhr_interval_secs):
+                cur_valid_time = cur_date + cur_fhr
+                if cur_valid_time not in all_valid_times:
+                    all_valid_times.append(cur_valid_time)
+
         InputFileInfo = namedtuple('InputFileInfo',
                                    'full_filepath, date, '
-                                   'valid_time')
+                                   'valid_time, cycle_or_fcst')
         if file_type == "fcst":
             # Get the information for the fcst/model file
             if all_fcst_files:
@@ -484,12 +446,15 @@ class PointStatWrapper(CommandBuilder):
                     time_info_tuple = \
                         self.get_time_info_from_file(match)
 
-                    # Incorporate the time information into the
-                    # InputFileInfo tuple
-                    input_file_info = InputFileInfo(fcst_file,
-                                                    time_info_tuple.date,
-                                                    time_info_tuple.valid)
-                    consolidated_file_info.append(input_file_info)
+                    # Determine if this file's valid time is one of the valid times of interest and corresponds to
+                    # the expected forecast hour (based on forecast hour start and forecast hour interval).  If
+                    # so, then consolidate the time info into the InputFileInfo tuple.
+                    if time_info_tuple.valid in all_valid_times and time_info_tuple.cycle_or_fcst in all_fhrs:
+                        input_file_info = \
+                            InputFileInfo(fcst_file, time_info_tuple.date,
+                                          time_info_tuple.valid,
+                                          time_info_tuple.cycle_or_fcst)
+                        consolidated_file_info.append(input_file_info)
             else:
                 self.logger.error('ERROR:|' + cur_function + '|' +
                                   cur_filename + 'No fcst files found in '
@@ -506,12 +471,26 @@ class PointStatWrapper(CommandBuilder):
                 for obs_file in all_obs_files:
                     match = re.match(regex_match, obs_file)
                     time_info_tuple = self.get_time_info_from_file(match)
-                    # Incorporate the time information into the
-                    # InputFileInfo tuple
-                    input_file_info = InputFileInfo(obs_file,
-                                                    time_info_tuple.date,
-                                                    time_info_tuple.valid)
-                    consolidated_file_info.append(input_file_info)
+
+                    # Determine if this file's valid time is one of the valid times of interest.  If
+                    # so, then consolidate the time info into the InputFileInfo tuple. Obs files may or may not have
+                    # a cycle time (e.g. no cycle time: prepbufr.gdas.2017061500.nc  vs.
+                    # cycle time:  prepbufr.nam.20170611.t00z.tm00.nc), so we need to check if the cycle_or_fcst tuple
+                    # value is None:
+                    if time_info_tuple.cycle_or_fcst is None:
+                        if time_info_tuple.valid in all_valid_times:
+                            input_file_info = \
+                                InputFileInfo(obs_file, time_info_tuple.date,
+                                          time_info_tuple.valid,
+                                          time_info_tuple.cycle_or_fcst)
+                            consolidated_file_info.append(input_file_info)
+                    else:
+                        if time_info_tuple.valid in all_valid_times and time_info_tuple.cycle_or_fcst in all_fhrs:
+                            input_file_info = \
+                                InputFileInfo(obs_file, time_info_tuple.date,
+                                              time_info_tuple.valid,
+                                              time_info_tuple.cycle_or_fcst)
+                            consolidated_file_info.append(input_file_info)
 
             else:
                 self.logger.error('ERROR:|' + cur_function + '|' +
@@ -531,8 +510,8 @@ class PointStatWrapper(CommandBuilder):
                                    regex match
              Returns:
                    file_time_info - a named tuple containing the date (ymd
-                   or ymdh), and cycle and offset times for the file of
-                   interest.
+                   or ymdh), and cycle time for obs file,
+                   or fhr if fcst file.
         """
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
@@ -545,7 +524,7 @@ class PointStatWrapper(CommandBuilder):
             "DEBUG|:" + cur_function + '|' + cur_filename + '| ' +
             "Retrieving time information for file")
 
-        TimeInfo = namedtuple('TimeInfo', 'date, valid')
+        TimeInfo = namedtuple('TimeInfo', 'date, valid, cycle_or_fcst')
 
         if match_from_regex.lastindex == 3:
             # We have a date, cycle, and offset
@@ -557,22 +536,22 @@ class PointStatWrapper(CommandBuilder):
                 date_str)
             cycle_secs = int(cycle) * self.HOURS_TO_SECONDS
             valid_time_unix = unix_date + (cycle_secs - offset_secs)
-            file_time_info = TimeInfo(unix_date, valid_time_unix)
+            file_time_info = TimeInfo(unix_date, valid_time_unix, cycle_secs)
         elif match_from_regex.lastindex == 2:
-            # We have a fhr cycle hour, and run date (CDATE -EMC terminology)
+            # We have a fhr/cycle hour, and offset hr
             date_str = str(match_from_regex.group(2))
             fhr_cycle_hr = int(match_from_regex.group(1))
             fhr_cycle = self.HOURS_TO_SECONDS * fhr_cycle_hr
             unix_date = self.convert_date_strings_to_unix_times(date_str)
             valid_time_unix = unix_date + fhr_cycle
-            file_time_info = TimeInfo(unix_date, valid_time_unix)
+            file_time_info = TimeInfo(unix_date, valid_time_unix, fhr_cycle)
         elif match_from_regex.lastindex == 1:
             # We only have date in ymdh, which we use as a valid
             # time.
             date_str = str(match_from_regex.group(1))
             unix_date = self.convert_date_strings_to_unix_times(date_str)
             valid_time_unix = unix_date
-            file_time_info = TimeInfo(unix_date, valid_time_unix)
+            file_time_info = TimeInfo(unix_date, valid_time_unix, None)
         else:
             # No match, filename format is unexpected.
             self.logger.error('ERROR|:' + cur_function + '|' + cur_filename +
@@ -585,6 +564,8 @@ class PointStatWrapper(CommandBuilder):
 
     def convert_date_strings_to_unix_times(self, date_string):
         """! Convert any YYYYMMDD or YYYYMMDDHH date string to Unix time
+
+
              Args:
                  date_string - The date string in YYYYMMDD or YYYYMMDDHH format
              Returns:
@@ -613,7 +594,7 @@ class PointStatWrapper(CommandBuilder):
         return unix_time
 
     def reformat_grid_id(self, grid_id):
-        """!Reformat the grid id (MASK_GRID value in the configuration
+        """!Reformat the grid id (POINT_STAT_GRID value in the configuration
             file.)
 
             Args:
@@ -624,7 +605,7 @@ class PointStatWrapper(CommandBuilder):
                 the numerical
                                 value portion of the grid id defined
                                 in the
-                                configuration file (MASK_GRID)
+                                configuration file (POINT_STAT_GRID)
         """
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and
