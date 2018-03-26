@@ -76,7 +76,7 @@ logger.addHandler(ch)
 plotting_out_dir = os.environ['PLOTTING_OUT_DIR']
 ####################################################################
 logger.info("------> Running "+os.path.realpath(__file__))
-logger.debug("----- for start date:"+sdate+" end date:"+edate+" cycle:"+cycle+"Z forecast hour means for region:"+region+" fcst var:"+fcst_var_name+" obs var:"+obs_var_name)
+logger.debug("----- for "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z forecast hour means for region:"+region+" fcst var:"+fcst_var_name+" obs var:"+obs_var_name)
 #############################################################################
 ##### Read data in data, compute statistics, and plot
 #read in data
@@ -169,11 +169,18 @@ while vl <= nlevels:
                                   CI_data.append(line_split)
                          CI_data_array = np.asarray(CI_data)
                          #assign variables
-                         #model_now_lead = CI_data_array[:,0].astype(float)
+                         model_now_leads_CI = CI_data_array[:,0].astype(float)
                          model_now_stat_now_CI = data_array[:,1]
-                         model_now_stat_now_CI[model_now_stat_now_CI == '--'] = np.nan
-                         model_now_stat_now_CI = np.ma.masked_array(model_now_stat_now_CI, mask=model_now_stat_now_CI == np.nan)
-                         count_masked_CI = np.ma.count_masked(model_now_stat_now_CI)
+                         #check for missing data
+                         for l in range(len(leads)):
+                              if leads[l] == model_now_leads_CI[l]:
+                                   model_now_stat_now_CI[l] = model_now_stat_now_CI[l]
+                              else:
+                                   ll = np.where(model_now_leads_CI == leads[l])[0]
+                                   if len(ll) != 0:
+                                        model_now_stat_now_CI[l] = model_now_stat_now_CI[ll[0]]
+                                   else:
+                                        model_now_stat_now_CI[l] = np.nan
                  else:
                      logger.error(model_now_CI_file+" NOT FOUND! Setting to NaN")
                      model_now_stat_now_CI = np.ones_like(leads) * np.nan
@@ -184,10 +191,10 @@ while vl <= nlevels:
                  #forecast hour mean
                  if count_masked != len(model_now_stat_now_mean):
                      logger.debug("Plotting "+stat_now+" lead forecast hour means for "+model_now)
-                     ax1.plot(leads, model_now_stat_now_mean, color=colors[m-1], ls='--', marker='o', markersize=7, label=model_now)
+                     ax1.plot(leads, model_now_stat_now_mean, color=colors[m-1], ls='-', marker='o', markersize=7, label=model_now)
                      #differnce from model 1 with 95% CI
                      logger.debug("Plotting "+stat_now+" CIs for "+model_now+" - "+model_list[0])
-                     ax2.plot(leads, model_now_stat_now_mean - model_1_stat_now_mean, color=colors[m-1], ls='--',  marker='o', markersize=7)
+                     ax2.plot(leads, model_now_stat_now_mean - model_1_stat_now_mean, color=colors[m-1], ls='-',  marker='o', markersize=7)
                  if count_masked_CI != len(model_now_stat_now_CI):
                      #adjusted bar graph for CI to be centered on 0
                      ax2.bar(leads, 2*model_now_stat_now_CI, bottom=-1*model_now_stat_now_CI, color='None', width=1.5+((m-2)*0.2), edgecolor=colors[m-1], linewidth='1')
@@ -198,4 +205,4 @@ while vl <= nlevels:
         plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+fcst_var_level_now+"_obs"+obs_var_name+obs_var_level_now+"_"+grid+region+".png", bbox_inches='tight')
         s+=1
     vl+=1
-    print(" ")
+print(" ")

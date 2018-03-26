@@ -97,7 +97,7 @@ logger.addHandler(ch)
 plotting_out_dir = os.environ['PLOTTING_OUT_DIR']
 ####################################################################
 logger.info("------> Running "+os.path.realpath(__file__))
-logger.debug("----- with start date:"+sdate+" end date:"+edate+" cycle:"+cycle+"Z lead:"+lead+" region:"+region+" fcst var:"+fcst_var_name+" obs var:"+obs_var_name)
+logger.debug("----- with "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z lead:"+lead+" region:"+region+" fcst var:"+fcst_var_name+" obs var:"+obs_var_name)
 #############################################################################
 ##### Read data in data, compute statistics, and plot
 #read in data
@@ -164,27 +164,30 @@ while s <= nstats: #loop over statistics
                          uvoobar = parsum[:,6]
                          if stat_now == 'bias':
                              model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt(uvffbar) - np.sqrt(uvoobar))
-                         if stat_now == 'rmse':
+                         elif stat_now == 'rmse':
                              model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt(uvffbar + uvoobar - (2*uvfobar)))
-                         if stat_now == 'msess':
+                         elif stat_now == 'msess':
                              mse = uvffbar + uvoobar - (2*uvfobar)
                              var_o = uvoobar - (uobar**2) - (vobar**2)
                              model_now_stat_now_vals = np.ma.masked_invalid(1 - (mse/var_o))
-                         if stat_now == 'rsd':
+                         elif stat_now == 'rsd':
                              var_f = uvffbar - (ufbar**2) - (vfbar**2)
                              var_o = uvoobar - (uobar**2) - (vobar**2)
                              model_now_stat_now_vals = np.ma.masked_invalid((np.sqrt(var_f))/(np.sqrt(var_o)))
-                         if stat_now == 'rmse_md':
+                         elif stat_now == 'rmse_md':
                              model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt((ufbar - uobar)**2 + (vfbar - vobar)**2))
-                         if stat_now == 'rmse_pv':
+                         elif stat_now == 'rmse_pv':
                              var_f = uvffbar - (ufbar**2) - (vfbar**2)
                              var_o = uvoobar - (uobar**2) - (vobar**2)
                              R = (uvfobar -  (ufbar*uobar) - (vfbar*vobar))/np.sqrt(var_f*var_o)
                              model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt(var_f + var_o - (2*np.sqrt(var_f*var_o)*R)))
-                         if stat_now == 'pcor':
+                         elif stat_now == 'pcor':
                              var_f = uvffbar - (ufbar**2) - (vfbar**2)
                              var_o = uvoobar - (uobar**2) - (vobar**2)
                              model_now_stat_now_vals = np.ma.masked_invalid((uvfobar -  (ufbar*uobar) - (vfbar*vobar))/np.sqrt(var_f*var_o))
+                         else:
+                             logger.error(stat_now+" cannot be computed!")
+                             exit(1)
                      else:
                          fbar = parsum[:,0]
                          obar = parsum[:,1]
@@ -193,43 +196,46 @@ while s <= nstats: #loop over statistics
                          oobar = parsum[:,4]
                          if stat_now == 'bias':
                              model_now_stat_now_vals = np.ma.masked_invalid(fbar - obar)
-                         if stat_now == 'rmse':
+                         elif stat_now == 'rmse':
                              model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt(ffbar + oobar - (2*fobar)))
-                         if stat_now == 'msess':
+                         elif stat_now == 'msess':
                              mse = ffbar + oobar - (2*fobar)
                              var_o = oobar - (obar**2)
                              model_now_stat_now_vals = np.ma.masked_invalid(1 - (mse/var_o))
-                         if stat_now == 'rsd':
+                         elif stat_now == 'rsd':
                              var_f = ffbar - (fbar**2)
                              var_o = oobar - (obar**2)
                              model_now_stat_now_vals = np.ma.masked_invalid((np.sqrt(var_f))/(np.sqrt(var_o)))
-                         if stat_now == 'rmse_md':
+                         elif stat_now == 'rmse_md':
                              model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt((fbar - obar)**2))
-                         if stat_now == 'rmse_pv':
+                         elif stat_now == 'rmse_pv':
                              var_f = ffbar - (fbar**2)
                              var_o = oobar - (obar**2)
                              R = (fobar - (fbar*obar))/np.sqrt(var_f*var_o)
                              model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt(var_f + var_o - (2*np.sqrt(var_f*var_o)*R)))
-                         if stat_now == 'pcor':
+                         elif stat_now == 'pcor':
                              var_f = ffbar - (fbar**2)
                              var_o = oobar - (obar**2)
                              model_now_stat_now_vals = np.ma.masked_invalid((fobar - (fbar*obar))/np.sqrt(var_f*var_o))
-                         #get existing model date files
-                         model_now_dates_list = []
-                         model_now_stat_file_dates = data_array[:,4]
-                         dateformat = "%Y%m%d_%H%M%S"
-                         for d in range(len(model_now_stat_file_dates)):
-                             model_date = datetime.datetime.strptime(model_now_stat_file_dates[d], dateformat)
-                             model_now_dates_list.append(md.date2num(model_date))
-                         model_now_dates = np.asarray(model_now_dates_list)
-                         #account for missing data
-                         model_now_stat_now_dates_vals = np.zeros_like(dates)
-                         for d in range(len(dates)):
-                              dd = np.where(model_now_dates == dates[d])[0]
-                              if len(dd) != 0:
-                                   model_now_stat_now_dates_array[d,vl-1] = model_now_stat_now_vals[dd[0]]
-                              else:
-                                   model_now_stat_now_dates_array[d,vl-1] = np.nan
+                         else:
+                             logger.error(stat_now+" cannot be computed!")
+                             exit(1)
+                     #get existing model date files
+                     model_now_dates_list = []
+                     model_now_stat_file_dates = data_array[:,4]
+                     dateformat = "%Y%m%d_%H%M%S"
+                     for d in range(len(model_now_stat_file_dates)):
+                         model_date = datetime.datetime.strptime(model_now_stat_file_dates[d], dateformat)
+                         model_now_dates_list.append(md.date2num(model_date))
+                     model_now_dates = np.asarray(model_now_dates_list)
+                     #account for missing data
+                     model_now_stat_now_dates_vals = np.zeros_like(dates)
+                     for d in range(len(dates)):
+                          dd = np.where(model_now_dates == dates[d])[0]
+                          if len(dd) != 0:
+                              model_now_stat_now_dates_array[d,vl-1] = model_now_stat_now_vals[dd[0]]
+                          else:
+                              model_now_stat_now_dates_array[d,vl-1] = np.nan
              else:
                  logger.error(model_now_stat_file+" NOT FOUND! Setting to NaN")
                  model_now_stat_now_dates_array[:,vl-1] = np.ones_like(dates) * np.nan
@@ -307,3 +313,4 @@ while s <= nstats: #loop over statistics
      logger.debug("---- Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_f"+lead+"_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_tp.png")
      plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_f"+lead+"_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_tp.png", bbox_inches='tight')
      s+=1
+print(" ")
