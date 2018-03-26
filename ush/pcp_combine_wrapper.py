@@ -39,23 +39,85 @@ class PcpCombineWrapper(CommandBuilder):
                                      'bin/pcp_combine')
         self.app_name = os.path.basename(self.app_path)
         self.inaddons = []
+        self.method = "ADD"
+        self.pcp_dir = ""
+        self.pcp_regex = ""
+        self.init_time = -1
+        self.valid_time = -1
+        self.in_accum = -1
+        self.out_accum = -1
+
 
     def clear(self):
         super(PcpCombineWrapper, self).clear()
         self.inaddons = []
+        self.method = "ADD"
+        self.pcp_dir = ""
+        self.pcp_regex = ""
+        self.init_time = -1
+        self.valid_time = -1
+        self.in_accum = -1
+        self.out_accum = -1
+
+
+    def set_method(self, method):
+        self.method = method
 
 
     def add_input_file(self, filename, addon):
         self.infiles.append(filename)
         self.inaddons.append(str(addon))
 
-    def getLastFile(self, valid_time, search_time, template):
+
+    def set_pcp_dir(self, filepath):
+        self.pcp_dir = filepath
+
+
+    def set_pcp_regex(self, regexp):
+        self.pcp_regex = regexp
+
+
+    def set_init_time(self, init_time):
+        self.init_time = init_time[0:8]+"_"+init_time[8:10]
+
+
+    def set_valid_time(self, valid_time):
+        self.valid_time = valid_time[0:8]+"_"+valid_time[8:10]
+
+
+    def set_in_accum(self, in_accum):
+        self.in_accum = in_accum
+
+
+    def set_out_accum(self, out_accum):
+        self.out_accum = out_accum
+
+
+    def getLowestForecastFile(self, valid_time, search_time, template):
+        # search for dated dir and without, combine two glob results and sort
         out_file = ""
-        files = sorted(glob.glob("{:s}/{:s}/*".format(self.input_dir,
-                                                      str(search_time)[0:8])))
+        # used to find lowest forecast
+        lowest_fcst = 999999
+        # TODO: Rethink this? causes problems if both formats exist in dir
+        files_dated = glob.glob("{:s}/{:s}/*".format(self.input_dir,
+                                                      str(search_time)[0:8]))
+        files_nodate = glob.glob("{:s}/*".format(self.input_dir))
+        files = sorted(files_dated + files_nodate)
+
         for fpath in files:
-            f = os.path.join(str(search_time)[0:8], os.path.basename(fpath))
+            # check if result is a file or not
+            if os.path.isdir(fpath):
+                continue
+
+            # Check number of / in template, get same number from file path
+            num_slashes = template.count('/')
+            path_split = fpath.split('/')
+            f = ""
+            for n in range(num_slashes, -1, -1):
+                f = os.path.join(f,path_split[-(n+1)])
+
             se = sts.StringExtract(self.logger, template, f)
+            # TODO: should parseTemplate return false on failure instead of crashing?
             se.parseTemplate()
 
             fcst = se.leadHour
@@ -65,8 +127,9 @@ class PcpCombineWrapper(CommandBuilder):
 
             init = se.getInitTime("%Y%m%d%H%M")
             v = util.shift_time(init, fcst)
-            if v == valid_time:
+            if v == valid_time and fcst < lowest_fcst:
                 out_file = fpath
+                lowest_fcst = fcst
         return out_file
 
     # NOTE: Assumes YYYYMMDD sub dir
@@ -79,8 +142,8 @@ class PcpCombineWrapper(CommandBuilder):
         # NOTE: This will only apply to forecasts up to 48  hours
         #  If more is needed, will need to add parameter to specify number of
         #  days to look back
-        out_file = self.getLastFile(valid_time, day_before, input_template)
-        out_file2 = self.getLastFile(valid_time, valid_time, input_template)
+        out_file = self.getLowestForecastFile(valid_time, day_before, input_template)
+        out_file2 = self.getLowestForecastFile(valid_time, valid_time, input_template)
         if out_file2 == "":
             return out_file
         else:
@@ -109,12 +172,40 @@ class PcpCombineWrapper(CommandBuilder):
         else:
             return today_file
 
+
+    def get_daily_file(valid_time,accum, data_src):
+        # loop accum times
+        data_interval = self.p.getint('config',
+                                      data_src + '_DATA_INTERVAL') * 3600
+        for i in range(0, accum, data_interval):
+            search_time = util.shift_time(valid_time+"00", -i)[0:10]
+            # find closest file before time
+            f = self.find_closest_before(self.input_dir, search_time,
+                                         file_template)
+            if f == "":
+                continue
+            # build level info string
+            # TODO: pull out YYYYMMDDHH from filename
+            file_time = datetime.datetime.strptime(f[-17:-7], "%Y%m%d%H")
+            v_time = datetime.datetime.strptime(search_time, "%Y%m%d%H")
+            diff = v_time - file_time
+            lead = int((diff.days * 24) / (data_interval / 3600))
+            lead += int((v_time - file_time).seconds / data_interval) - 1
+            fname = self.p.getstr('config',
+                                  data_src + '_' + str(
+                                      accum) + '_FIELD_NAME')
+            addon = "'name=\"" + fname + "\"; level=\"(" + \
+                    str(lead) + ",*,*)\";'"
+            self.add_input_file(f, addon)
+            return True
+        
+
 #    def subtract_files():
     # need accum interval, valid time, directory
     # find file at valid time in directory
     # find file at valid time - accum in directory
         
-    def get_accumulation(self, valid_time, accum, data_type,
+    def get_accumulation(self, valid_time, accum, data_src,
                          file_template, is_forecast=False):
         if self.input_dir == "":
             self.logger.error(self.app_name +
@@ -122,53 +213,29 @@ class PcpCombineWrapper(CommandBuilder):
             exit
         self.add_arg("-add")
 
-        if self.p.getbool('config', data_type + '_IS_DAILY_FILE') is True:
-            # loop accum times
-            data_interval = self.p.getint('config',
-                                          data_type + '_DATA_INTERVAL') * 3600
-            for i in range(0, accum, data_interval):
-                search_time = util.shift_time(valid_time+"00", -i)[0:10]
-                # find closest file before time
-                f = self.find_closest_before(self.input_dir, search_time,
-                                             file_template)
-                if f == "":
-                    continue
-                # build level info string
-                # TODO: pull out YYYYMMDDHH from filename
-                file_time = datetime.datetime.strptime(f[-17:-7], "%Y%m%d%H")
-                v_time = datetime.datetime.strptime(search_time, "%Y%m%d%H")
-                diff = v_time - file_time
-                lead = int((diff.days * 24) / (data_interval / 3600))
-                lead += int((v_time - file_time).seconds / data_interval) - 1
-                fname = self.p.getstr('config',
-                                      data_type + '_' + str(
-                                          accum) + '_FIELD_NAME')
-                addon = "'name=\"" + fname + "\"; level=\"(" + \
-                        str(lead) + ",*,*)\";'"
-                self.add_input_file(f, addon)
-                return True
-
+        if self.p.getbool('config', data_src + '_IS_DAILY_FILE') is True:
+            self.get_daily_file(valid_time, accum, data_src)
 
         start_time = valid_time
         last_time = util.shift_time(valid_time, -(int(accum) - 1))
         total_accum = int(accum)
-#        search_accum = total_accum
-        level = self.p.getint('config', data_type+'_LEVEL')
+        level = self.p.getint('config', data_src+'_LEVEL')
         search_accum = level
         # loop backwards in time until you have a full set of accum
         while last_time <= start_time:
             if is_forecast:
-                f = self.get_lowest_forecast_at_valid(start_time, data_type)
+                f = self.get_lowest_forecast_at_valid(start_time, data_src)
                 if f == "":
                     break
                 ob_str = self.p.getstr('config',
-                                       data_type + '_' + str(level) +
+                                       data_src + '_' + str(level) +
                                        '_FIELD_NAME')
                 addon = "'name=\"" + ob_str + "\"; level=\"(0,*,*)\";'"
                 self.add_input_file(f, addon)
                 start_time = util.shift_time(start_time, -1)
                 search_accum -= 1
             else:  # not looking for forecast files
+                start_time = start_time[0:10]
                 # get all files of valid_time (all accums)
                 # NOTE: This assumes dated subdir, template needs to match
                 files = sorted(glob.glob("{:s}/{:s}/*{:s}*"
@@ -183,6 +250,7 @@ class PcpCombineWrapper(CommandBuilder):
                                          level=str(search_accum).zfill(2))
                     search_file = os.path.join(self.input_dir,
                                                fSts.doStringSub())
+
                     f = None
                     for file in files:
                         if file == search_file:
@@ -191,14 +259,12 @@ class PcpCombineWrapper(CommandBuilder):
                     # if found a file, add it to input list with info
                     if f is not None:
                         addon = ""
-#                        d_type = util.get_filetype(f)
-                        d_type = self.p.getstr('config', data_type +
+                        d_type = self.p.getstr('config', data_src +
                                                   '_NATIVE_DATA_TYPE')
                         if d_type == "GRIB":
                             addon = search_accum
                         elif d_type == "NETCDF":
-#                        else:
-                            ob_str = self.p.getstr('config', data_type +
+                            ob_str = self.p.getstr('config', data_src +
                                                    '_' + str(search_accum) +
                                                    '_FIELD_NAME')
                             addon = "'name=\"" + ob_str + \
@@ -221,6 +287,7 @@ class PcpCombineWrapper(CommandBuilder):
         return True
         self.set_output_dir(self.outdir)
 
+        
     def get_command(self):
         if self.app_path is None:
             self.logger.error("No app path specified. You must use a subclass")
@@ -230,15 +297,39 @@ class PcpCombineWrapper(CommandBuilder):
         for a in self.args:
             cmd += a + " "
 
-        if len(self.infiles) == 0:
-            (self.logger).error("No input filenames specified")
-            return None
+        if self.method == "SUM":
+            if self.init_time == -1:
+                (self.logger).error("No init time specified")
+                return None
 
-        for idx, f in enumerate(self.infiles):
-            cmd += f + " " + self.inaddons[idx] + " "
+            if self.valid_time == -1:
+                (self.logger).error("No valid time specified")
+                return None
 
-        if self.param != "":
-            cmd += self.param + " "
+            if self.in_accum == -1:
+                (self.logger).error("No input accumulation specified")
+                return None
+
+            if self.out_accum == -1:
+                (self.logger).error("No output accumulation specified")
+                return None
+
+            cmd += "-sum "+self.init_time+" "+self.in_accum+" "+\
+              self.valid_time+" "+self.out_accum+" "
+
+        else:
+            if self.method == "ADD":
+                cmd += "-add "
+            elif self.method == "SUBTRACT":
+                cmd += "-subtract "
+
+            if len(self.infiles) == 0:
+                (self.logger).error("No input filenames specified")
+                return None
+
+            for idx, f in enumerate(self.infiles):
+                cmd += f + " " + self.inaddons[idx] + " "
+
 
         if self.outfile == "":
             (self.logger).error("No output filename specified")
@@ -249,9 +340,131 @@ class PcpCombineWrapper(CommandBuilder):
             return None
 
         cmd += os.path.join(self.outdir, self.outfile)
+
+        if self.pcp_dir != "":
+            cmd += " -pcpdir "+self.pcp_dir
+
+        if self.pcp_regex != "":
+            cmd += " -pcprx "+self.pcp_regex
+
         return cmd
 
 
     def run_at_time(self, init_time):
         self.logger.error("Must use PcpCombineObs or PcpCombineModel")
         exit(1)
+
+    def run_subtract_method(self):
+        print("SUBTRACT MODE NOT IMPLEMENTED YET!")
+        exit(1)
+
+    def run_sum_method(self, valid_time, init_time, in_accum, out_accum,
+                input_dir, output_dir, output_template):
+        self.set_method("SUM")
+        self.set_init_time(init_time)
+        self.set_valid_time(valid_time)        
+        self.set_in_accum(in_accum)
+        self.set_out_accum(out_accum)
+        self.set_pcp_dir(input_dir)
+        self.set_pcp_regex(init_time[0:10])
+        self.set_output_dir(output_dir)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        
+        pcpSts = sts.StringSub(self.logger,
+                                output_template,
+                                init=init_time,
+                                valid=valid_time,
+                                level=str(out_accum).zfill(2))
+        pcp_out = pcpSts.doStringSub()
+        self.set_output_filename(pcp_out)
+
+        cmd = self.get_command()
+        if cmd is None:
+            print("ERROR: pcp_combine could not generate command")
+            return
+        self.logger.info("")
+        self.build()
+        outfile = self.get_output_path()
+        return outfile
+
+
+    def run_add_method(self, valid_time, init_time, accum,
+                         compare_var, data_src, is_forecast=False):
+        self.clear()
+        self.set_method("ADD")
+
+        input_dir = self.p.getstr('config', data_src+'_PCP_COMBINE_INPUT_DIR')
+        input_template = self.p.getraw('filename_templates', data_src+'_PCP_COMBINE_INPUT_TEMPLATE')
+        output_dir = self.p.getstr('config', data_src+'_PCP_COMBINE_OUTPUT_DIR')
+        output_template = self.p.getraw('filename_templates',
+                                        data_src+'_PCP_COMBINE_OUTPUT_TEMPLATE')
+
+        ymd = valid_time[0:8]
+        if not os.path.exists(os.path.join(output_dir, ymd)):
+            os.makedirs(os.path.join(output_dir, ymd))
+
+        # check _PCP_COMBINE_INPUT_DIR to get accumulation files
+        self.set_input_dir(input_dir)
+        if self.get_accumulation(valid_time, int(accum), data_src, input_template, is_forecast) is True:
+            # if success, run pcp_combine
+            infiles = self.get_input_files()
+        else:
+            # if failure, check _GEMPAK_INPUT_DIR to get accumulation files
+            if not self.p.has_option('config', data_src+'_GEMPAK_INPUT_DIR') or \
+              not self.p.has_option('filename_templates', data_src+'_GEMPAK_TEMPLATE'):
+                self.logger.warning(self.app_name + ": Could not find " \
+                                    "files to compute accumulation in " \
+                                    + input_dir)
+                return False
+            gempak_dir = self.p.getstr('config', data_src+'_GEMPAK_INPUT_DIR')
+            gempak_template = self.p.getraw('filename_templates', data_src+'_GEMPAK_TEMPLATE')
+            self.clear()
+            self.set_input_dir(gempak_dir)
+            if self.get_accumulation(valid_time, int(accum), data_src, gempak_template, is_forecast) is True:
+                #   if success, run GempakToCF, run pcp_combine
+                infiles = self.get_input_files()
+                for idx, infile in enumerate(infiles):
+                    # replace input_dir with native_dir, check if file exists
+                    nfile = infile.replace(gempak_dir, input_dir)
+                    if not os.path.exists(os.path.dirname(nfile)):
+                        os.makedirs(os.path.dirname(nfile))
+#                    data_type = util.get_filetype(nfile)
+                    data_type = self.p.getstr('config', data_src+'_NATIVE_DATA_TYPE')
+                    if data_type == "NETCDF":
+                        nfile = os.path.splitext(nfile)[0] + '.nc'
+                        if not os.path.isfile(nfile):
+                            print("Calling GempakToCF to convert to NetCDF")
+                            run_g2c = GempakToCFWrapper(self.p, self.logger)
+                            run_g2c.add_input_file(infile)
+                            run_g2c.set_output_path(nfile)
+                            cmd = run_g2c.get_command()
+                            if cmd is None:
+                                print("ERROR: GempakToCF could not generate command")
+                                continue
+                            run_g2c.build()
+                    infiles[idx] = nfile
+
+            else:
+                #   if failure, quit
+                self.logger.warning(self.app_name + ": Could not find " \
+                                    "files to compute accumulation in " \
+                                    + gempak_dir)
+                return None
+
+        self.set_output_dir(output_dir)
+        pcpSts = sts.StringSub(self.logger,
+                                output_template,
+                                valid=valid_time,
+                                level=str(accum).zfill(2))
+        pcp_out = pcpSts.doStringSub()
+        self.set_output_filename(pcp_out)
+        self.add_arg("-name " + compare_var + "_" + str(accum).zfill(2))
+        cmd = self.get_command()
+        if cmd is None:
+            print("ERROR: pcp_combine could not generate command")
+            return
+        self.logger.info("")
+        self.build()
+        outfile = self.get_output_path()
+        return outfile

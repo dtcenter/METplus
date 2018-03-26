@@ -12,6 +12,7 @@ import calendar
 import re
 from collections import namedtuple
 
+import subprocess
 from produtil.run import batchexe
 from produtil.run import run
 from string_template_substitution import StringSub
@@ -1453,6 +1454,19 @@ def reformat_fields_for_met(all_vars_list, logger):
         met_fields = MetFields(fcst_field, obs_field)
 
         return met_fields
+
+def get_filetype(config, filepath):
+    ncdump_exe = config.getexe('NCDUMP_EXE')
+    try:
+        result = subprocess.check_output([ncdump_exe, filepath])
+    except subprocess.CalledProcessError:
+        return "GRIB"
+
+    regex = re.search("netcdf", result)
+    if regex is not None:
+        return "NETCDF"
+    else:
+        return None
 
 
 if __name__ == "__main__":
