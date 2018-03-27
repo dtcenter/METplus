@@ -91,7 +91,7 @@ logger.addHandler(ch)
 plotting_out_dir = os.environ['PLOTTING_OUT_DIR']
 ####################################################################
 logger.info("------> Running "+os.path.realpath(__file__))
-logger.debug("----- with start date:"+sdate+" end date:"+edate+" cycle:"+cycle+"Z region"+region+" fcst var:"+fcst_var_name+" obs var:"+obs_var_name)
+logger.debug("----- with "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z region"+region+" fcst var:"+fcst_var_name+" obs var:"+obs_var_name)
 #############################################################################
 ##### Read data in data, compute statistics, and plot
 #read in data
@@ -231,3 +231,4 @@ while s <= nstats: #loop over statistics
      logger.debug("---- Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_tp.png")
      plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_tp.png", bbox_inches='tight')
      s+=1
+print(" ")

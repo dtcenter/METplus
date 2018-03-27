@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''
-Program Name: plot_grid2grid_pres_ts.py
+Program Name: plot_grid2grid_anom_ts.py
 Contact(s): Mallory Row
 Abstract: Reads filtered files from stat_analysis_wrapper run_all_times to make time series plots
 History Log:  Initial version
@@ -117,78 +117,36 @@ while s <= nstats: #loop over statistics
                    #parse between sl1l2 and vl1l2 data and set variables
                    parsum = data_array[:,23:].astype(float)
                    if fcst_var_name == 'UGRD_VGRD' or obs_var_name == 'UGRD_VGRD':
-                       ufbar = parsum[:,0]
-                       vfbar = parsum[:,1]
-                       uobar = parsum[:,2]
-                       vobar = parsum[:,3]
-                       uvfobar = parsum[:,4]
-                       uvffbar = parsum[:,5]
-                       uvoobar = parsum[:,6]
-                       if stat_now == 'bias':
-                           model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt(uvffbar) - np.sqrt(uvoobar))
-                       elif stat_now == 'rmse':
-                           model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt(uvffbar + uvoobar - (2*uvfobar)))
-                       elif stat_now == 'msess':
-                           mse = uvffbar + uvoobar - (2*uvfobar)
-                           var_o = uvoobar - (uobar**2) - (vobar**2)
-                           model_now_stat_now_vals = np.ma.masked_invalid(1 - (mse/var_o))
-                       elif stat_now == 'rsd':
-                           var_f = uvffbar - (ufbar**2) - (vfbar**2)
-                           var_o = uvoobar - (uobar**2) - (vobar**2)
-                           model_now_stat_now_vals = np.ma.masked_invalid((np.sqrt(var_f))/(np.sqrt(var_o)))
-                       elif stat_now == 'rmse_md':
-                           model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt((ufbar - uobar)**2 + (vfbar - vobar)**2))
-                       elif stat_now == 'rmse_pv':
-                           var_f = uvffbar - (ufbar**2) - (vfbar**2)
-                           var_o = uvoobar - (uobar**2) - (vobar**2)
-                           R = (uvfobar -  (ufbar*uobar) - (vfbar*vobar))/np.sqrt(var_f*var_o)
-                           model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt(var_f + var_o - (2*np.sqrt(var_f*var_o)*R)))
-                       elif stat_now == 'pcor':
-                           var_f = uvffbar - (ufbar**2) - (vfbar**2)
-                           var_o = uvoobar - (uobar**2) - (vobar**2)
-                           model_now_stat_now_vals = np.ma.masked_invalid((uvfobar -  (ufbar*uobar) - (vfbar*vobar))/np.sqrt(var_f*var_o))
-                       else:
-                           logger.error(stat_now+" cannot be computed!") 
-                           exit(1)
-                   else:
-                       fbar = parsum[:,0]
-                       obar = parsum[:,1]
-                       fobar = parsum[:,2]
-                       ffbar = parsum[:,3]
-                       oobar = parsum[:,4]
-                       if stat_now == 'bias':
-                          model_now_stat_now_vals = np.ma.masked_invalid(fbar - obar)
-                       elif stat_now == 'rmse':
-                           model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt(ffbar + oobar - (2*fobar)))
-                       elif stat_now == 'msess':
-                           mse = ffbar + oobar - (2*fobar)
-                           var_o = oobar - (obar**2)
-                           model_now_stat_now_vals = np.ma.masked_invalid(1 - (mse/var_o))
-                       elif stat_now == 'rsd':
-                           var_f = ffbar - (fbar**2)
-                           var_o = oobar - (obar**2)
-                           model_now_stat_now_vals = np.ma.masked_invalid((np.sqrt(var_f))/(np.sqrt(var_o)))
-                       elif stat_now == 'rmse_md':
-                           model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt((fbar - obar)**2))
-                       elif stat_now == 'rmse_pv':
-                           var_f = ffbar - (fbar**2)
-                           var_o = oobar - (obar**2)
-                           R = (fobar - (fbar*obar))/np.sqrt(var_f*var_o)
-                           model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt(var_f + var_o - (2*np.sqrt(var_f*var_o)*R)))
-                       elif stat_now == 'pcor':
-                           var_f = ffbar - (fbar**2)
-                           var_o = oobar - (obar**2)
-                           model_now_stat_now_vals = np.ma.masked_invalid((fobar - (fbar*obar))/np.sqrt(var_f*var_o))
+                       ufabar = parsum[:,0]
+                       vfavar = parsum[:,1]
+                       uoabar = parsum[:,2]
+                       voabar = parsum[:,3]
+                       uvfoabar = parsum[:,4]
+                       uvffabar = parsum[:,5]
+                       uvooabar = parsum[:,6]
+                       if stat_now == 'acc':
+                           model_now_stat_now_vals = np.ma.masked_invalid((uvfoabar)/np.sqrt(uvffabar - uvooabar))
                        else:
                            logger.error(stat_now+" cannot be computed!")
                            exit(1)
+                   else:
+                       fabar = parsum[:,0]
+                       oabar = parsum[:,1]
+                       foabar = parsum[:,2]
+                       ffabar = parsum[:,3]
+                       ooabar = parsum[:,4]
+                       if stat_now == 'acc':
+                           model_now_stat_now_vals = np.ma.masked_invalid((foabar - (fabar*oabar))/np.sqrt((ffabar - (fabar)**2)*(ooabar - (oabar)**2)))     
+                       else:
+                           logger.error(stat_now+" cannot be computed!")
+                           exit(1)              
                    #get existing model date files
                    model_now_dates_list = []
                    model_now_stat_file_dates = data_array[:,4]
                    dateformat = "%Y%m%d_%H%M%S"
                    for d in range(len(model_now_stat_file_dates)):
-                        model_date = datetime.datetime.strptime(model_now_stat_file_dates[d], dateformat)
-                        model_now_dates_list.append(md.date2num(model_date))
+                       model_date = datetime.datetime.strptime(model_now_stat_file_dates[d], dateformat)
+                       model_now_dates_list.append(md.date2num(model_date))
                    model_now_dates = np.asarray(model_now_dates_list)
                    #account for missing data
                    model_now_stat_now_dates_vals = np.zeros_like(dates)
@@ -199,7 +157,7 @@ while s <= nstats: #loop over statistics
                         else:
                             model_now_stat_now_dates_vals[d] = np.nan
           else:
-              logger.warning(model_now_stat_file+" NOT FOUND! Setting to NaN")
+              logger.error(model_now_stat_file+" NOT FOUND! Setting to NaN")
               nrow = 0
               model_now_stat_now_dates_vals = np.ones_like(dates)*np.nan
           model_now_stat_now_dates_vals = np.ma.masked_invalid(model_now_stat_now_dates_vals)
