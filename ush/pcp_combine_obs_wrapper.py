@@ -51,6 +51,8 @@ class PcpCombineObsWrapper(PcpCombineWrapper):
         obs_level = self.p.getstr('config', 'OBS_LEVEL')
         # TODO: should use getdir? move dir confs to dir section
         in_dir = self.p.getstr('config', 'OBS_PCP_COMBINE_INPUT_DIR')
+        in_template = self.p.getraw('filename_templates',
+                                     'OBS_PCP_COMBINE_INPUT_TEMPLATE')
         out_dir = self.p.getstr('config', 'OBS_PCP_COMBINE_OUTPUT_DIR')
         out_template = self.p.getraw('filename_templates',
                                      'OBS_PCP_COMBINE_OUTPUT_TEMPLATE')
@@ -73,7 +75,9 @@ class PcpCombineObsWrapper(PcpCombineWrapper):
                                  obs_level, out_level,
                                  in_dir, out_dir, out_template)
                 elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUBTRACT":
-                    self.run_subtract_method()
+                    self.run_subtract_method(task_info, var_info, int(out_level),
+                                             in_dir, out_dir, in_template,
+                                             out_template)
                 else:
                     self.logger.error("Invalid PCP_COMBINE_METHOD specified")
                     exit(1)
