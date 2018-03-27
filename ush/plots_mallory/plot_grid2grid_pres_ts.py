@@ -156,7 +156,7 @@ while s <= nstats: #loop over statistics
                        fobar = parsum[:,2]
                        ffbar = parsum[:,3]
                        oobar = parsum[:,4]
-                       elif stat_now == 'bias':
+                       if stat_now == 'bias':
                           model_now_stat_now_vals = np.ma.masked_invalid(fbar - obar)
                        elif stat_now == 'rmse':
                            model_now_stat_now_vals = np.ma.masked_invalid(np.sqrt(ffbar + oobar - (2*fobar)))
