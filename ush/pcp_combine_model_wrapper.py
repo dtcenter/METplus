@@ -53,9 +53,11 @@ class PcpCombineModelWrapper(PcpCombineWrapper):
         fcst_level = self.p.getstr('config', 'FCST_LEVEL')
         # TODO: should use getpath or something?
         in_dir = self.p.getstr('config', 'FCST_PCP_COMBINE_INPUT_DIR')
+        in_template = self.p.getraw('filename_templates',
+                                     'FCST_PCP_COMBINE_INPUT_TEMPLATE')
         out_dir = self.p.getstr('config', 'FCST_PCP_COMBINE_OUTPUT_DIR')
         out_template = self.p.getraw('filename_templates',
-                                     'FCST_PCP_COMBINE_OUTPUT_TEMPLATE')        
+                                     'FCST_PCP_COMBINE_OUTPUT_TEMPLATE')
         for lead in lead_seq:
             task_info.lead = lead
             for var_info in var_list:
@@ -75,7 +77,9 @@ class PcpCombineModelWrapper(PcpCombineWrapper):
                                  fcst_level, out_level,
                                  in_dir, out_dir, out_template)
                 elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUBTRACT":
-                    self.run_subtract_method()
+                    self.run_subtract_method(task_info, var_info, int(out_level),
+                                             in_dir, out_dir, in_template,
+                                             out_template)
                 else:
                     self.logger.error("Invalid PCP_COMBINE_METHOD specified")
                     exit(1)

@@ -50,3 +50,6 @@ class TaskInfo:
       if self.valid_time is not -1 and self.lead is not -1:
           return util.shift_time(self.valid_time, -self.lead)
       return -1
+
+    def getLeadTime(self):
+        return self.lead

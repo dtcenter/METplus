@@ -31,7 +31,7 @@ from command_builder import CommandBuilder
 from task_info import TaskInfo
 from gempak_to_cf_wrapper import GempakToCFWrapper
 
-
+# TODO: Default method is ADD, should this start unset?
 class PcpCombineWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(PcpCombineWrapper, self).__init__(p, logger)
@@ -46,6 +46,12 @@ class PcpCombineWrapper(CommandBuilder):
         self.valid_time = -1
         self.in_accum = -1
         self.out_accum = -1
+        self.field_name = ""
+        self.field_level = ""
+        self.name = ""
+        self.logfile = ""
+        self.verbose = -1
+        self.compress = -1
 
 
     def clear(self):
@@ -58,6 +64,12 @@ class PcpCombineWrapper(CommandBuilder):
         self.valid_time = -1
         self.in_accum = -1
         self.out_accum = -1
+        self.field_name = ""
+        self.field_level = ""
+        self.name = ""
+        self.logfile = ""
+        self.verbose = -1
+        self.compress = -1
 
 
     def set_method(self, method):
@@ -67,6 +79,27 @@ class PcpCombineWrapper(CommandBuilder):
     def add_input_file(self, filename, addon):
         self.infiles.append(filename)
         self.inaddons.append(str(addon))
+
+
+    def set_field(self, name, level):
+        self.field_name = name
+        self.field_level = level
+
+
+    def set_name(self,name):
+        self.name = name
+
+
+    def set_logfile(self,logfile):
+        self.logfile = logfile
+
+
+    def set_verbose(self, v):
+        self.verbose = v
+
+
+    def set_compress(self, c):
+        self.compress = c
 
 
     def set_pcp_dir(self, filepath):
@@ -199,11 +232,6 @@ class PcpCombineWrapper(CommandBuilder):
             self.add_input_file(f, addon)
             return True
         
-
-#    def subtract_files():
-    # need accum interval, valid time, directory
-    # find file at valid time in directory
-    # find file at valid time - accum in directory
         
     def get_accumulation(self, valid_time, accum, data_src,
                          file_template, is_forecast=False):
@@ -347,6 +375,24 @@ class PcpCombineWrapper(CommandBuilder):
         if self.pcp_regex != "":
             cmd += " -pcprx "+self.pcp_regex
 
+        if self.field_name != "":
+            cmd += " -field 'name=\""+self.field_name+"\";"
+            if self.field_level != "":
+                cmd += " level=\""+self.field_level+"\";"
+            cmd += "'"
+
+        if self.name != "":
+            cmd += " -name "+self.name
+
+        if self.logfile != "":
+            cmd += " -log "+self.logfile
+
+        if self.verbose != -1:
+            cmd += " -v "+str(self.verbose)
+
+        if self.compress != -1:
+            cmd += " -compress "+str(self.compress)
+
         return cmd
 
 
@@ -354,12 +400,58 @@ class PcpCombineWrapper(CommandBuilder):
         self.logger.error("Must use PcpCombineObs or PcpCombineModel")
         exit(1)
 
-    def run_subtract_method(self):
-        print("SUBTRACT MODE NOT IMPLEMENTED YET!")
-        exit(1)
+# pcp_combine -subtract /d1/mccabe/mallory.data/prfv3rt1/20180308/gfs.t00z.pgrb.1p00.f048 48 /d1/mccabe/mallory.data/prfv3rt1/20180308/gfs.t00z.pgrb.1p00.f024 24 -field 'name="APCP"; level="L0";' ~/20180308/gfs.v24z_A24.nc
+
+#    def run_subtract_method(self, init_time, lead, in_dir, accum_1, accum_2,
+#                            in_template, out_template):
+    def run_subtract_method(self, task_info, var_info, accum, in_dir,
+                            out_dir, in_template, out_template):
+        init_time = task_info.getInitTime()
+        valid_time = task_info.getValidTime()
+        lead = task_info.getLeadTime()
+        lead2 = lead + accum
+
+        self.set_method("SUBTRACT")
+
+        pcpSts1 = sts.StringSub(self.logger,
+                                in_template,
+                                init=init_time,
+                                lead=str(lead))
+        file1 = pcpSts1.doStringSub()
+
+        pcpSts2 = sts.StringSub(self.logger,
+                                in_template,
+                                init=init_time,
+                                lead=str(lead2))
+        file2 = pcpSts2.doStringSub()
+
+        self.add_input_file(os.path.join(in_dir,file2),lead2)
+        self.add_input_file(os.path.join(in_dir,file1),lead)
+
+        outSts = sts.StringSub(self.logger,
+                               out_template,
+                               valid=valid_time,
+                               level=str(accum))
+        out_file = outSts.doStringSub()
+        self.set_output_filename(out_file)
+        self.set_output_dir(out_dir)
+
+        # TODO: If out template has a subdir, make that directory!
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+
+        cmd = self.get_command()
+        if cmd is None:
+            print("ERROR: pcp_combine could not generate command")
+            return
+        self.logger.info("")
+        self.build()
+        outfile = self.get_output_path()
+        return outfile
+
 
     def run_sum_method(self, valid_time, init_time, in_accum, out_accum,
-                input_dir, output_dir, output_template):
+                       input_dir, output_dir, output_template):
         self.set_method("SUM")
         self.set_init_time(init_time)
         self.set_valid_time(valid_time)        
@@ -390,7 +482,7 @@ class PcpCombineWrapper(CommandBuilder):
 
 
     def run_add_method(self, valid_time, init_time, accum,
-                         compare_var, data_src, is_forecast=False):
+                       compare_var, data_src, is_forecast=False):
         self.clear()
         self.set_method("ADD")
 
