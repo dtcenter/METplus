@@ -98,13 +98,7 @@ class PointStatWrapper(CommandBuilder):
         ps_dict['POINT_STAT_CONFIG_FILE'] = \
             self.p.getstr('config', 'POINT_STAT_CONFIG_FILE')
         ps_dict['REGRID_TO_GRID'] = self.p.getstr('config', 'REGRID_TO_GRID')
-        grid_id = self.p.getstr('config', 'POINT_STAT_GRID')
-        if grid_id.startswith('G'):
-            # Reformat grid ids that begin with 'G' ( G10, G1, etc.) to format
-            # Gnnn
-            ps_dict['POINT_STAT_GRID'] = self.reformat_grid_id(grid_id)
-        else:
-            ps_dict['POINT_STAT_GRID'] = grid_id
+        ps_dict['POINT_STAT_GRID'] = self.p.getstr('config', 'POINT_STAT_GRID')
 
         ps_dict['POINT_STAT_POLY'] = util.getlist(self.p.getstr('config', 'POINT_STAT_POLY'))
         ps_dict['POINT_STAT_STATION_ID'] = util.getlist(self.p.getstr('config', 'POINT_STAT_STATION_ID'))
@@ -241,7 +235,7 @@ class PointStatWrapper(CommandBuilder):
                          "the MET config file...")
 
         # Set the environment variables
-        self.add_env_var(b'MODEL_FCST', str(self.ps_dict['MODEL_NAME']))
+        self.add_env_var(b'MODEL_NAME', str(self.ps_dict['MODEL_NAME']))
 
         regrid_to_grid = str(self.ps_dict['REGRID_TO_GRID'])
         self.add_env_var(b'REGRID_TO_GRID', regrid_to_grid)
@@ -261,14 +255,15 @@ class PointStatWrapper(CommandBuilder):
         if not grid_str:
             self.add_env_var(b'POINT_STAT_GRID', "[]")
         else:
-            grid = grid_str.replace("\'", "\"")
+            # grid = grid_str.replace("\'", "\"")
+            grid = '"' + grid_str + '"'
             self.add_env_var(b'POINT_STAT_GRID', grid)
 
         sid_str = str(self.ps_dict['POINT_STAT_STATION_ID'])
         if not sid_str:
             self.add_env_var(b'POINT_STAT_STATION_ID', "[]")
         else:
-            sid = grid_str.replace("\'", "\"")
+            sid = sid_str.replace("\'", "\"")
             self.add_env_var(b'POINT_STAT_STATION_ID', sid)
 
         tmp_message_type = str(self.ps_dict['POINT_STAT_MESSAGE_TYPE'])
@@ -419,7 +414,7 @@ class PointStatWrapper(CommandBuilder):
         date_start = self.convert_date_strings_to_unix_times(str(valid_start))
         date_end = self.convert_date_strings_to_unix_times(str(valid_end))
         all_valid_times = []
-
+        all_dates = []
         all_fhrs = []
         for cur_fhr in range(fhr_start_secs, last_fhr, fhr_interval_secs):
             all_fhrs.append(cur_fhr)
@@ -432,6 +427,7 @@ class PointStatWrapper(CommandBuilder):
                 cur_valid_time = cur_date + cur_fhr
                 if cur_valid_time not in all_valid_times:
                     all_valid_times.append(cur_valid_time)
+            all_dates.append(cur_date)
 
         InputFileInfo = namedtuple('InputFileInfo',
                                    'full_filepath, date, '
@@ -449,7 +445,7 @@ class PointStatWrapper(CommandBuilder):
                     # Determine if this file's valid time is one of the valid times of interest and corresponds to
                     # the expected forecast hour (based on forecast hour start and forecast hour interval).  If
                     # so, then consolidate the time info into the InputFileInfo tuple.
-                    if time_info_tuple.valid in all_valid_times and time_info_tuple.cycle_or_fcst in all_fhrs:
+                    if time_info_tuple.date in all_dates and time_info_tuple.cycle_or_fcst in all_fhrs:
                         input_file_info = \
                             InputFileInfo(fcst_file, time_info_tuple.date,
                                           time_info_tuple.valid,
