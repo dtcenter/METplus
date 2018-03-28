@@ -9,7 +9,7 @@
 //
 // Output model name to be written
 //
-//model = "${model_fcst_now}";
+//model = "${MODEL_NAME}";
 model = "GFS";
 
 //
