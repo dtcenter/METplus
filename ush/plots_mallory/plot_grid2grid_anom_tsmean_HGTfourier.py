@@ -184,6 +184,7 @@ while s <= nstats: #loop over statistics
                         logger.warning(model_now_CI_file+" was empty! Setting to NaN")
                         model_now_stat_now_CI = np.ones_like(leads) * np.nan
                     else:
+                        logger.debug("Found "+model_now_CI_file)
                         #read data file and put in array
                         CI_data = list()
                         with open(model_now_CI_file) as f:
@@ -193,7 +194,7 @@ while s <= nstats: #loop over statistics
                         CI_data_array = np.asarray(CI_data)
                         #assign variables
                         model_now_leads_CI = CI_data_array[:,0].astype(float)
-                        model_now_stat_now_CI = data_array[:,1]
+                        model_now_stat_now_CI = CI_data_array[:,1]
                         #check for missing data
                         for l in range(len(leads)):
                             if leads[l] == model_now_leads_CI[l]:
@@ -216,9 +217,10 @@ while s <= nstats: #loop over statistics
                     logger.debug("Plotting "+stat_now+" lead forecast hour means for "+model_now)
                     ax1.plot(leads, model_now_stat_now_mean, color=colors[m-1], ls='-', marker='o', markersize=7, label=model_now)
                     #differnce from model 1 with 95% CI
-                    logger.debug("Plotting "+stat_now+" CIs for "+model_now+" - "+model_list[0])
+                    logger.debug("Plotting "+stat_now+" lead forecast hour means for "+model_now+" - "+model_list[0])
                     ax2.plot(leads, model_now_stat_now_mean - model_1_stat_now_mean, color=colors[m-1], ls='-',  marker='o', markersize=7)
                 if count_masked_CI != len(model_now_stat_now_CI):
+                    logger.debug("Plotting "+stat_now+" CIs for "+model_now+" - "+model_list[0])
                     #adjusted bar graph for CI to be centered on 0
                     ax2.bar(leads, 2*model_now_stat_now_CI, bottom=-1*model_now_stat_now_CI, color='None', width=1.5+((m-2)*0.2), edgecolor=colors[m-1], linewidth='1')
             m+=1 
