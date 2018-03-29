@@ -621,9 +621,8 @@ class PB2NCWrapper(CommandBuilder):
                 # Config file location
                 self.set_param_file(self.pb_dict['PB2NC_CONFIG_FILE'])
 
-                # For debugging
+                # For developer debugging
                 # self.add_arg(' -index -v 4 -log /tmp/pb2nc.log')
-                self.add_arg(' -v 5 -log /tmp/pb2nc_test.log')
 
                 # Invoke MET pb2nc
                 cmd = self.get_command()
