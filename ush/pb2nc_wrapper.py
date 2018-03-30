@@ -812,12 +812,8 @@ class PB2NCWrapper(CommandBuilder):
         self.logger.debug('DEBUG:|' + cur_function + '|' + cur_filename +
                           ' Generating output NetCDF file name...')
 
-        # Create the output directory structure
-        pb2nc_output_dir = os.path.join(self.pb_dict['OUTPUT_BASE'],
-                                        self.pb_dict[
-                                            'PREPBUFR_MODEL_DIR_NAME'],
-                                        self.pb_dict['VERTICAL_LOCATION'])
-        util.mkdir_p(pb2nc_output_dir)
+        # Get the output directory
+        pb2nc_output_dir = self.pb_dict['PB2NC_OUTPUT_DIR']
 
         # Get the cycle hour and offset hour from the prepbufr file info named
         # tuple
