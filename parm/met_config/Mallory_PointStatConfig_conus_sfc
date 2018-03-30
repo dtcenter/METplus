@@ -9,7 +9,7 @@
 //
 // Output model name to be written
 //
-model = "${MODEL_FCST}";
+model = "${MODEL_NAME}";
 
 //
 // Output description to be written
@@ -122,7 +122,6 @@ obs_window = {
 mask = {
    grid    = ["FULL"];
    //poly    = [ ${sfc_regions_config} ];
-   //poly    = [ "${MASK_POLY}" ];
    poly = ["$MET_BUILD_BASE/share/met/poly/NCEP_masks/CONUS_mask.nc" ];
    sid     = [];
 }

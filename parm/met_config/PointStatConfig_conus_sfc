@@ -9,8 +9,8 @@
 //
 // Output model name to be written
 //
-//model = "${MODEL_NAME}";
-model = "GFS";
+model = "${MODEL_NAME}";
+//model = "GFS";
 
 //
 // Output description to be written
@@ -24,8 +24,8 @@ desc = "NA";
 // Verification grid
 //
 regrid = {
-   //to_grid    = "${upper_air_GGG}";
-   to_grid    = "G212";
+   to_grid    = "${REGRID_TO_GRID}";
+   //to_grid    = "G212";
    method     = BILIN;
    width      = 2;
    vld_thresh = 0.5;
@@ -50,22 +50,7 @@ eclv_points   = 0.05;
 // Forecast and observation fields to be verified
 //
 fcst = {
-   field = [
-      { name  = "TMP"; level = [ "P1000", "P925", "P850", "P700", "P500",
-  "P400", "P300", "P250", "P200", "P150", "P100", "P50", "P20", "P10" ]; },
-      { name  = "RH"; level = [ "P1000", "P925", "P850", "P700", "P500",
-  "P400", "P300" ]; },
-      { name  = "UGRD"; level = [ "P1000", "P925", "P850", "P700", "P500",
- "P400", "P300", "P250", "P200", "P150", "P100", "P50", "P20", "P10" ]; },
-      { name  = "VGRD"; level = [ "P1000", "P925", "P850", "P700", "P500",
-  "P400", "P300", "P250", "P200", "P150", "P100", "P50", "P20", "P10" ]; },
-      { name  = "HGT"; level = [ "P1000", "P925", "P850", "P700", "P500",
-  "P400", "P300", "P250", "P200", "P150", "P100", "P50", "P20", "P10" ]; }
-   ];
-
-
-
-
+  field = [ ${FCST_FIELD} ];
 }
 obs = fcst;
 
@@ -75,7 +60,8 @@ obs = fcst;
 // Point observation filtering options
 // May be set separately in each "obs.field" entry
 //
-message_type   = [ "ADPUPA" ];
+//message_type   = [ "ADPUPA" ];
+message_type = ${POINT_STAT_MESSAGE_TYPE};
 sid_exc        = [];
 obs_quality    = [];
 duplicate_flag = NONE;
@@ -128,9 +114,36 @@ obs_window = {
 // Verification masking regions
 //
 mask = {
-   grid    = [];
-   poly    = [];
+   //grid    = [ "FULL" ];
+   grid = ${POINT_STAT_GRID};
+   //poly = ${POINT_STAT_POLY};
+   poly = ["/d1/METplus_Mallory/data/poly/CONUS.nc",
+           "/d1/METplus_Mallory/data/poly/EAST.nc",
+           "/d1/METplus_Mallory/data/poly/WEST.nc",
+           "/d1/METplus_Mallory/data/poly/NWC.nc",
+           "/d1/METplus_Mallory/data/poly/SWC.nc",
+           "/d1/METplus_Mallory/data/poly/NMT.nc",
+           "/d1/METplus_Mallory/data/poly/SMT.nc",
+           "/d1/METplus_Mallory/data/poly/GRB.nc",
+           "/d1/METplus_Mallory/data/poly/SWD.nc",
+           "/d1/METplus_Mallory/data/poly/NPL.nc",
+           "/d1/METplus_Mallory/data/poly/SPL.nc",
+           "/d1/METplus_Mallory/data/poly/MDW.nc",
+           "/d1/METplus_Mallory/data/poly/LMV.nc",
+           "/d1/METplus_Mallory/data/poly/GMC.nc",
+           "/d1/METplus_Mallory/data/poly/NEC.nc",
+           "/d1/METplus_Mallory/data/poly/SEC.nc",
+           "/d1/METplus_Mallory/data/poly/APL.nc",
+           "/d1/METplus_Mallory/data/poly/WCA.nc",
+           "/d1/METplus_Mallory/data/poly/ECA.nc",
+           "/d1/METplus_Mallory/data/poly/ATC.nc",
+           "/d1/METplus_Mallory/data/poly/NAK.nc",
+           "/d1/METplus_Mallory/data/poly/SAK.nc",
+           "/d1/METplus_Mallory/data/poly/NPO.nc",
+           "/d1/METplus_Mallory/data/poly/MEX.nc"
+           ];
    sid     = [];
+   //sid = ${POINT_STAT_STATION_ID};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
