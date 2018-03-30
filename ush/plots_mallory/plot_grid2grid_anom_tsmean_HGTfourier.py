@@ -169,6 +169,7 @@ while s <= nstats: #loop over statistics
                 ax1.set_xlim([leads[0],leads[-1]])
                 ax1.tick_params(axis='x', pad=10)
                 ax1.tick_params(axis='y', pad=15)
+                ax1.set_title(wave_num_pairing, loc='left')
                 #difference from model 1 set up
                 ax2.plot(leads, np.zeros_like(leads), color='k')
                 ax2.set_xlabel("Forecast Hour")
