@@ -1400,7 +1400,7 @@ def reformat_fields_for_met(all_vars_list, logger):
             #    field = [
             #       {
             #         name = "TMP";
-            #         level = ["P500"];
+            #         level = ["P500", "P400", "P300"];
             #         cat_thresh = [ > 80.0];
             #         GRIB_lvl_typ = 202;
             #       },
@@ -1431,14 +1431,13 @@ def reformat_fields_for_met(all_vars_list, logger):
                 name_level_extra_list = ['{ name = "', name,
                                          '"; level = [ "', level, '" ]; ']
                 if extra:
-                    extra_str = extra + '; }, '
+                    extra_str = extra + '; },'
                     name_level_extra_list.append(extra_str)
                 else:
                     # End the text for this field.  If this is the last field,
                     # end the dictionary appropriately.
-                    if var.fcst_name == all_vars_list[-1].fcst_name:
+                    if var == all_vars_list[-1]:
                         # This is the last field, terminate it appropriately.
-                        # name_level_extra_list.append(' }]; ')
                         name_level_extra_list.append('}')
                     else:
                         # More field(s) to go

@@ -40,7 +40,7 @@ warnings.filterwarnings('ignore')
 ###cmap_bias = cmocean.cm.curl
 ###cmap = cmocean.cm.tempo
 ###cmap_diff = cmocean.cm.balance
-cmap_bias = plt.cm.PiYG
+cmap_bias = plt.cm.PiYG_r
 cmap = plt.cm.BuPu
 cmap_diff = plt.cm.coolwarm
 ##############################################################################
