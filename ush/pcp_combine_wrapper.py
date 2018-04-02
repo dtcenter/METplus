@@ -50,7 +50,6 @@ class PcpCombineWrapper(CommandBuilder):
         self.field_level = ""
         self.name = ""
         self.logfile = ""
-        self.verbose = -1
         self.compress = -1
 
 
@@ -68,7 +67,6 @@ class PcpCombineWrapper(CommandBuilder):
         self.field_level = ""
         self.name = ""
         self.logfile = ""
-        self.verbose = -1
         self.compress = -1
 
 
@@ -92,10 +90,6 @@ class PcpCombineWrapper(CommandBuilder):
 
     def set_logfile(self,logfile):
         self.logfile = logfile
-
-
-    def set_verbose(self, v):
-        self.verbose = v
 
 
     def set_compress(self, c):
