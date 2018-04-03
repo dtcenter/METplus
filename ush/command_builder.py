@@ -50,10 +50,14 @@ class CommandBuilder:
         self.outdir = ""
         self.outfile = ""
         self.param = ""
+        self.verbose = -1
 
 
     def set_debug(self, debug):
         self.debug = debug
+
+    def set_verbose(self, v):
+        self.verbose = v
 
     def add_arg(self, arg):
         self.args.append(arg)
@@ -141,6 +145,9 @@ class CommandBuilder:
         if self.outdir == "":
             (self.logger).error("No output directory specified")
             return None
+
+        if self.verbose != -1:
+            cmd += " -v "+str(self.verbose)
 
         cmd += os.path.join(self.outdir, self.outfile)
         return cmd
