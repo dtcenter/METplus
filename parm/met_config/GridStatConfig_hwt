@@ -65,8 +65,9 @@ obs = fcst;
 // Climatology data
 //
 climo_mean = {
+
    file_name = [];
-   field = [];
+   field     = [];
 
    regrid = {
       method     = NEAREST;
@@ -75,8 +76,8 @@ climo_mean = {
       shape      = SQUARE;
    }
 
-   time_interp_method = NEAREST;
-   match_day          = TRUE;
+   time_interp_method = DW_MEAN;
+   match_day          = FALSE;
    time_step          = 21600;
 }
 
@@ -95,10 +96,7 @@ write_cdf_bins = FALSE;
 //
 mask = {
    grid = [ "FULL" ];
-   poly = [ "/d1/METplus_Mallory/data/poly/NHX.nc",
-            "/d1/METplus_Mallory/data/poly/SHX.nc",
-            "/d1/METplus_Mallory/data/poly/TRO.nc",
-	    "/d1/METplus_Mallory/data/poly/PNA.nc" ]; 
+   poly = []; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,7 +120,7 @@ boot = {
 // Data smoothing methods
 //
 interp = {
-   field      = BOTH;
+   field      = NONE;
    vld_thresh = 1.0;
    shape      = SQUARE;
 
@@ -140,9 +138,10 @@ interp = {
 // Neighborhood methods
 //
 nbrhd = {
+   field      = BOTH;
+   vld_thresh = 1.0;
    width      = [ 1 ];
    cov_thresh = [ >=0.5 ];
-   vld_thresh = 1.0;
    shape      = SQUARE;
 }
 
@@ -169,9 +168,9 @@ output_flag = {
    mcts   = NONE;
    cnt    = NONE;
    sl1l2  = NONE;
-   sal1l2 = STAT;
+   sal1l2 = NONE;
    vl1l2  = NONE;
-   val1l2 = STAT;
+   val1l2 = NONE;
    pct    = NONE;
    pstd   = NONE;
    pjc    = NONE;
@@ -179,7 +178,7 @@ output_flag = {
    eclv   = NONE;
    nbrctc = NONE;
    nbrcts = NONE;
-   nbrcnt = NONE;
+   nbrcnt = BOTH;
    grad   = NONE;
 }
 
@@ -200,7 +199,7 @@ nc_pairs_flag   = {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-grid_weight_flag = COS_LAT;
+grid_weight_flag = NONE;
 rank_corr_flag   = FALSE;
 tmp_dir          = "/tmp";
 output_prefix    = "${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${ACCUM}";
