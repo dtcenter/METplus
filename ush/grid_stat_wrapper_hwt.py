@@ -63,7 +63,7 @@ class GridStatWrapper(CommandBuilder):
 
         cmd += self.outdir
         return cmd
-    
+
     def check_model(self, model_templates, model_types, max_forecasts):
         dsize = len(model_templates)
         if len(model_types) != dsize:
@@ -124,7 +124,7 @@ class GridStatWrapper(CommandBuilder):
         var_list = util.parse_var_list(self.p)
         
         model_templates = util.getlist(self.p.getraw('filename_templates','FCST_GRID_STAT_INPUT_TEMPLATE'))
-        model_types = util.getlist(self.p..getraw('config','MODEL_TYPE'))
+        model_types = util.getlist(self.p.getraw('config','MODEL_TYPE'))
         max_forecasts = util.getlist(self.p.getraw('config','FCST_MAX_FORECAST'))
         self.check_model(model_templates, model_types, max_forecasts)
         
