@@ -275,8 +275,7 @@ class GridStatWrapper(CommandBuilder):
         verif_poly = "["
         for vp in verif_polys:
             verif_poly += "\""+vp+"\", "
-        verif_poly = verif_poly[0:-2]
-        verif_poly += "]"
+        verif_poly = verif_poly[0:-2]+"]"
 
         self.add_env_var("MODEL", model_type)
         self.add_env_var("FCST_VAR", v.fcst_name)
