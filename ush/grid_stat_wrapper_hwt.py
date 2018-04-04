@@ -271,7 +271,7 @@ class GridStatWrapper(CommandBuilder):
         obs_field += v.obs_extra+"}"
 
         ob_type = self.p.getstr('config', "OB_TYPE")
-        verif_poly = util.getlist(self.p.getstr('config',"VERIFICATION_POLY"))
+        #verif_poly = util.getlist(self.p.getstr('config',"VERIFICATION_POLY"))
 
         self.add_env_var("MODEL", model_type)
         self.add_env_var("FCST_VAR", v.fcst_name)
@@ -283,7 +283,7 @@ class GridStatWrapper(CommandBuilder):
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
         self.add_env_var("MET_VALID_HHMM", valid_time[4:8])
-        self.add_env_var("VERIF_POLY",verif_poly)
+        #self.add_env_var("VERIF_POLY",verif_poly)
         cmd = self.get_command()
 
         self.logger.debug("")
@@ -297,7 +297,7 @@ class GridStatWrapper(CommandBuilder):
         self.print_env_item("FCST_FIELD")
         self.print_env_item("OBS_FIELD")
         self.print_env_item("MET_VALID_HHMM")  
-        self.print_env_item("VERIF_POLY")
+        #self.print_env_item("VERIF_POLY")
         self.logger.debug("")
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_copy(["MODEL", "FCST_VAR", "OBS_VAR",
