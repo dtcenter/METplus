@@ -127,7 +127,7 @@ class GridStatWrapper(CommandBuilder):
         model_types = util.getlist(self.p.getraw('config','MODEL_TYPE'))
         max_forecasts = util.getlist(self.p.getraw('config','FCST_MAX_FORECAST'))
         self.check_model(model_templates, model_types, max_forecasts)
-        
+
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))        
         for md in range(len(model_templates)):
             cur_model = [model_templates[md],model_types[md],max_forecasts[md]]
@@ -308,4 +308,4 @@ class GridStatWrapper(CommandBuilder):
             return
         self.logger.info("")
         self.build()
-self.clear()
+        self.clear()
