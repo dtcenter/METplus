@@ -410,31 +410,31 @@ class MakePlotsWrapper(CommandBuilder):
 ########################################################################
     def run_all_times(self):
         self.logger.info("RUNNING SCRIPTS FOR PLOTTING")
-        verif_type = self.p.getstr('config', 'VERIF_TYPE')
         verif_case = self.p.getstr('config', 'VERIF_CASE')
-        if verif_type == 'grid2grid':
-            if verif_case == 'pres':
+        verif_type = self.p.getstr('config', 'VERIF_TYPE')
+        if verif_case == 'grid2grid':
+            if verif_type == 'pres':
                  self.logger.info("Making plots for grid2grid-pres")
                  self.grid2grid_pres_plots()
-            elif verif_case == 'anom':
+            elif verif_type == 'anom':
                  self.logger.info("Making plots for for grid2grid-anom")
                  self.grid2grid_anom_plots()
-            elif verif_case == 'sfc':
+            elif verif_type == 'sfc':
                  self.logger.info("Making plots for grid2grid-sfc")
                  self.grid2grid_sfc_plots()
             else:
-                 self.logger.error("Not a valid VERIF_CASE option for grid2grid")
+                 self.logger.error("Not a valid VERIF_TYPE option for grid2grid")
                  exit(1)
-        elif verif_type == 'grid2obs':
-            if verif_case == 'sfc':
+        elif verif_case == 'grid2obs':
+            if verif_type == 'sfc':
                  self.logger.info("Formatting for plotting for grid2obs-sfc")
-            elif verif_case == 'upper_air':
+            elif verif_type == 'upper_air':
                  self.logger.info("Formatting for plottting for grid2grid-upper_air")
             else:
-                 self.logger.error("Not a valid VERIF_CASE option for grid2obs")
+                 self.logger.error("Not a valid VERIF_TYPE option for grid2obs")
                  exit(1)
-        elif verif_type == 'precip':
+        elif verif_case == 'precip':
             self.logger.info("Formatting for plotting for precip")
         else:
-            self.logger.error("Not a valid VERIF_TYPE option")
+            self.logger.error("Not a valid VERIF_CASE option")
             exit(1)

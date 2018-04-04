@@ -372,47 +372,45 @@ class StatAnalysisWrapper(CommandBuilder):
 ########################################################################
     def run_all_times(self):
         self.logger.info("RUNNING STAT_ANALYSIS FOR PLOTTING FORMAT")
-        verif_type = self.p.getstr('config', 'VERIF_TYPE')
         verif_case = self.p.getstr('config', 'VERIF_CASE')
-        if verif_type == 'grid2grid':
-            if verif_case == 'pres':
+        verif_type = self.p.getstr('config', 'VERIF_TYPE')
+        if verif_case == 'grid2grid':
+            if verif_type == 'pres':
                  self.logger.info("Formatting for plotting for grid2grid-pres")
                  self.grid2grid_pres_plot_format()
-            elif verif_case == 'anom':
+            elif verif_type == 'anom':
                  self.logger.info("Formatting for plotting for grid2grid-anom")
                  self.grid2grid_anom_plot_format()
-            elif verif_case == 'sfc':
+            elif verif_type == 'sfc':
                  self.logger.info("Formatting for plotting for grid2grid-sfc")
                  self.grid2grid_sfc_plot_format()
             else:
-                 self.logger.error("Not a valid VERIF_CASE option for grid2grid")
+                 self.logger.error("Not a valid VERIF_TYPE option for grid2grid")
                  exit(1)
-        elif verif_type == 'grid2obs':
-            if verif_case == 'sfc':
+        elif verif_case == 'grid2obs':
+            if verif_type == 'sfc':
                  self.logger.info("Formatting for plotting for grid2obs-sfc")
-            elif verif_case == 'upper_air':
+            elif verif_type == 'upper_air':
                  self.logger.info("Formatting for plottting for grid2grid-upper_air")
             else:
-                 self.logger.error("Not a valid VERIF_CASE option for grid2obs")
+                 self.logger.error("Not a valid VERIF_TYPE option for grid2obs")
                  exit(1)
-        elif verif_type == 'precip':
+        elif verif_case == 'precip':
             self.logger.info("Formatting for plotting for precip")
         else:
-            self.logger.error("Not a valid VERIF_TYPE option")
+            self.logger.error("Not a valid VERIF_CASE option")
             exit(1)
 
     def run_at_time(self, init_time, valid_time):
         self.logger.info("RUNNING STAT_ANALYSIS FOR VSDB FORMAT")
-        verif_type = self.p.getstr('config', 'VERIF_TYPE')
         verif_case = self.p.getstr('config', 'VERIF_CASE')
-        #parse betwen VERIF_TYPE for stat_analysis specifications
-        if verif_type == 'grid2grid':
+        if verif_case == 'grid2grid':
              self.logger.info("Formatting in VSDB style for grid2grid")
              self.grid2grid_VSDB_format(valid_time, init_time)
-        elif verif_type == 'grid2obs':
+        elif verif_case == 'grid2obs':
             self.logger.info("Formatting in VSDB style for grid2obs")
-        elif verif_type == 'precip':
+        elif verif_case == 'precip':
             self.logger.info("Formatting in VSDB style for precip")
         else:
-            self.logger.error("Not a valid VERIF_TYPE option for formatting")
+            self.logger.error("Not a valid VERIF_CASE option for formatting")
             exit(1)
