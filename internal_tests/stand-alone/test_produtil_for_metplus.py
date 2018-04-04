@@ -53,9 +53,9 @@ class TestProdutilForMETplus:
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
         # for logging information.
-        cur_filename = sys._getframe().f_code.co_filename
-        fail_msg = cur_filename + ' |FAIL: produtil config object NOT created'
-        pass_msg = cur_filename + ' |PASS: Valid produtil config object created'
+        cur_function = sys._getframe().f_code.co_name
+        fail_msg = cur_function + ' |FAIL: produtil config object NOT created'
+        pass_msg = cur_function + ' |PASS: Valid produtil config object created'
         try:
             assert self.config, fail_msg
         except AssertionError:
@@ -75,10 +75,10 @@ class TestProdutilForMETplus:
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
         # for logging information.
-        cur_filename = sys._getframe().f_code.co_filename
-        fail_msg = cur_filename + ' |FAIL: Mismatch in the number of expected and retrieved sections'\
+        cur_function = sys._getframe().f_code.co_name
+        fail_msg = cur_function + ' |FAIL: Mismatch in the number of expected and retrieved sections'\
                                   ' from the config file.'
-        pass_msg = cur_filename + ' |PASS: Matching number of expected and retrieved sections from the config file.'
+        pass_msg = cur_function + ' |PASS: Matching number of expected and retrieved sections from the config file.'
         expected_sections = ['dir', 'config', 'exe', 'filename_templates']
         retrieved_sections_size = len(self.config.sections())
         expected_sections_size = len(expected_sections)
@@ -99,9 +99,9 @@ class TestProdutilForMETplus:
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
         # for logging information.
-        cur_filename = sys._getframe().f_code.co_filename
-        fail_msg = cur_filename + ' |FAIL: Not all expected sections were retrieved from the config file.'
-        pass_msg = cur_filename + ' |PASS: All expected sections were retrieved from the config file.'
+        cur_function = sys._getframe().f_code.co_name
+        fail_msg = cur_function + ' |FAIL: Not all expected sections were retrieved from the config file.'
+        pass_msg = cur_function + ' |PASS: All expected sections were retrieved from the config file.'
         expected_sections = ['dir', 'config', 'exe', 'filename_templates']
         retrieved_sections = self.config.sections()
         for expected_section in expected_sections:
@@ -123,10 +123,10 @@ class TestProdutilForMETplus:
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
         # for logging information.
-        cur_filename = sys._getframe().f_code.co_filename
-        fail_msg = cur_filename + ' |FAIL: Mismatch in number of retrieved vs expected items from the [dir]'\
+        cur_function = sys._getframe().f_code.co_name
+        fail_msg = cur_function + ' |FAIL: Mismatch in number of retrieved vs expected items from the [dir]'\
                                   ' section of all config files.'
-        pass_msg = cur_filename + ' |PASS: Same number of expected and retrieved items were retrieved from the [dir]'\
+        pass_msg = cur_function + ' |PASS: Same number of expected and retrieved items were retrieved from the [dir]'\
                                   ' section of all config files.'
         section_of_interest = 'dir'
         retrieved_items = self.config.items(section_of_interest)
@@ -149,10 +149,10 @@ class TestProdutilForMETplus:
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
         # for logging information.
-        cur_filename = sys._getframe().f_code.co_filename
-        fail_msg = cur_filename + ' |FAIL: Mismatch in retrieved vs expected items from the [dir] section'\
+        cur_function = sys._getframe().f_code.co_name
+        fail_msg = cur_function + ' |FAIL: Mismatch in retrieved vs expected items from the [dir] section'\
                                   ' of all config files.'
-        pass_msg = cur_filename + ' |PASS: The same expected and retrieved items were retrieved from the [dir]'\
+        pass_msg = cur_function + ' |PASS: The same expected and retrieved items were retrieved from the [dir]'\
                                   ' section of all config files.'
         section_of_interest = 'dir'
         retrieved_items = self.config.items(section_of_interest)
@@ -178,12 +178,12 @@ class TestProdutilForMETplus:
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
         # for logging information.
-        cur_filename = sys._getframe().f_code.co_filename
-        fail_msg = cur_filename + ' |FAIL: No matching value for corresponding option from select item in [dir]'\
+        cur_function = sys._getframe().f_code.co_name
+        fail_msg = cur_function + ' |FAIL: No matching value for corresponding option from select item in [dir]'\
                                   ' section of all MET+ config files.'
-        fail_msg2 = cur_filename + ' |FAIL: Mismatch in number of expected and retrieved items in the [dir] section'\
+        fail_msg2 = cur_function + ' |FAIL: Mismatch in number of expected and retrieved items in the [dir] section'\
                                     ' of all MET+ config files.'
-        pass_msg = cur_filename + ' |PASS: Matching values found for corresponding option from the [dir] section'\
+        pass_msg = cur_function + ' |PASS: Matching values found for corresponding option from the [dir] section'\
                                   ' of all MET+ config files.'
         section_of_interest = 'dir'
         retrieved_items = self.config.items(section_of_interest)
