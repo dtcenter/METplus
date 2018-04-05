@@ -4,17 +4,17 @@ import json
 import datetime
 
 now = datetime.datetime.now()
-today_date = now.strftime(%Y%m%d)
+today_date = now.strftime("%Y%m%d")
 
-domain_file = "hwt_dd1."+today_date+".json"
+domain_file = "/raid/efp/se2018_web/web_data/sector_bounds/hwt_dd1."+today_date+".json"
 json_data = open(domain_file).read()
 domain_data = json.loads(json_data)
 corner_pts = domain_data["corners"]
 
 #Write output file
-outfile = open("HWTSE_"+tdate+".poly","w")
-outfile.write("HWTSE_"+tdate)
+outfile = open("HWTSE_"+today_date+".poly","w")
+outfile.write("HWTSE_"+today_date+"\n")
 for pts in corner_pts:
-  outfile.write(pts[0]+" "+pts[1])
+  outfile.write(str(pts[0])+" "+str(pts[1])+"\n")
 
 outfile.close()
