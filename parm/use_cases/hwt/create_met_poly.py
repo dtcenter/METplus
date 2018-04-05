@@ -14,5 +14,7 @@ corner_pts = domain_data["corners"]
 #Write output file
 outfile = open("HWTSE_"+tdate+".poly","w")
 outfile.write("HWTSE_"+tdate)
+for pts in corner_pts:
+  outfile.write(pts[0]+" "+pts[1])
 
 outfile.close()
