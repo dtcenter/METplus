@@ -71,8 +71,7 @@ class GridStatWrapper(CommandBuilder):
             exit()
         if len(max_forecasts) != dsize:
             if len(max_forecasts) == 1:
-                mf_extension = max_forecasts*(dsize-1)
-                max_forecasts.extend(mf_extension)
+                max_forecasts.extend(max_forecasts*(dsize-1))
             else:
                 print("ERROR: Number of max forecasts != number of model templates or 1")
                 exit()
