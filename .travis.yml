@@ -10,4 +10,4 @@ branches:
   - develop
   
 script:
-METplus/internal_tests/stand_alone/test_produtil_for_metplus.py -c METplus/internal_tests/stand_alone/produtil_for_METplus.conf
+#METplus/internal_tests/stand_alone/test_produtil_for_metplus.py -c METplus/internal_tests/stand_alone/produtil_for_METplus.conf
