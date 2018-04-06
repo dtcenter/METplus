@@ -57,6 +57,7 @@ class StatAnalysisWrapper(CommandBuilder):
         return cmd
     
     def grid2grid_VSDB_format(self, valid_time, init_time):
+        self.logger.info("Formatting in VSDB style for grid2grid")
         #read config
         model_type = self.p.getstr('config', 'MODEL_TYPE')
         ob_type = self.p.getstr('config', 'OB_TYPE')
@@ -66,6 +67,7 @@ class StatAnalysisWrapper(CommandBuilder):
         stat_analysis_out_dir = self.p.getstr('config', 'STAT_ANALYSIS_OUT_DIR')
         #filtering times based on if files made based on init_time or valid_time
         if init_time == -1:
+            print("Valid on: "+valid_time)
             filter_time = valid_time
             date_YYYYMMDD = filter_time[0:8]
             cycle = filter_time[8:10]
@@ -76,6 +78,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.add_env_var("FCST_INIT_END", "")
             self.add_env_var("FCST_INIT_HOUR", "")
         else:
+            print("Initialized on: "+init_time)
             filter_time = init_time
             date_YYYYMMDD = filter_time[0:8]
             cycle = filter_time[8:10]
@@ -84,8 +87,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.add_env_var("FCST_VALID_HOUR", "")
             self.add_env_var("FCST_INIT_BEG", init_time)
             self.add_env_var("FCST_INIT_END", init_time)
-            self.add_env_var("FCST_INIT_HOUR", cycle)
-        self.logger.info("Formatting grid2grid")
+            self.add_env_var("FCST_INIT_HOUR", '"'+cycle+'"')
         #build -lookin directory
         self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, filter_time, "grid_stat"))
         #save output like VSDB
@@ -114,7 +116,82 @@ class StatAnalysisWrapper(CommandBuilder):
         self.build()
         self.clear()
 
+    def grid2obs_VSDB_format(self, valid_time, init_time):
+        #read config
+        self.logger.info("Formatting in VSDB style for grid2obs")
+        model_type = self.p.getstr('config', 'MODEL_TYPE')
+        ob_type = self.p.getstr('config', 'OB_TYPE')
+        self.add_env_var("MODEL_TYPE", model_type)
+        self.add_env_var("OB_TYPE", ob_type)
+        stat_analysis_lookin_dir = self.p.getstr('config', 'STAT_ANALYSIS_LOOKIN_DIR')
+        stat_analysis_out_dir = self.p.getstr('config', 'STAT_ANALYSIS_OUT_DIR')
+        if init_time == -1:
+            date_YYYYMMDD = valid_time[0:8]
+            valid_beg_hour = self.p.getstr('config', 'VALID_BEG_HOUR')
+            valid_end_hour = self.p.getstr('config', 'VALID_END_HOUR')
+            print("Valid on: "+date_YYYYMMDD+" between "+valid_beg_hour+"-"+valid_end_hour)
+            loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
+            loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
+            loop_inc = self.p.getint('config', 'INIT_INC')
+        else:
+            date_YYYYMMDD = init_time[0:8]
+            init_beg_hour = self.p.getstr('config', 'INIT_BEG_HOUR')
+            init_end_hour = self.p.getstr('config', 'INIT_END_HOUR')
+            print("Initialized on: "+date_YYYYMMDD+" between "+init_beg_hour+"-"+init_end_hour)
+            loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
+            loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
+            loop_inc = self.p.getint('config', 'VALID_INC')
+        loop_hour = loop_beg_hour 
+        while loop_hour <= loop_end_hour:
+            loop_hour_str = str(loop_hour).zfill(2)
+            #filtering times based on if files made based on init_time or valid_time
+            if init_time == -1:
+                print("Any model forecasts initialized at: "+loop_hour_str)
+                self.add_env_var("FCST_VALID_BEG", date_YYYYMMDD+"_"+valid_beg_hour+"0000")
+                self.add_env_var("FCST_VALID_END", date_YYYYMMDD+"_"+valid_end_hour+"0000")
+                self.add_env_var("FCST_VALID_HOUR", "")
+                self.add_env_var("FCST_INIT_BEG", "")
+                self.add_env_var("FCST_INIT_END", "")
+                self.add_env_var("FCST_INIT_HOUR", '"'+loop_hour_str+'"')
+            else:
+                print("Any model forecasts valid at: "+loop_hour_str)
+                self.add_env_var("FCST_VALID_BEG", "")
+                self.add_env_var("FCST_VALID_END", "")
+                self.add_env_var("FCST_VALID_HOUR", '"'+loop_hour_str+'"')
+                self.add_env_var("FCST_INIT_BEG", date_YYYYMMDD+"_"+init_beg_hour+"0000")
+                self.add_env_var("FCST_INIT_END", date_YYYYMMDD+"_"+init_end_hour+"0000")
+                self.add_env_var("FCST_INIT_HOUR", "")
+            #build -lookin directory
+            self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir))
+            #save output like VSDB
+            if not os.path.exists(os.path.join(stat_analysis_out_dir,
+                                  loop_hour_str+"Z", model_type)):
+               os.makedirs(os.path.join(stat_analysis_out_dir,
+                                            loop_hour_str+"Z", model_type))
+            dump_row_file = os.path.join(stat_analysis_out_dir,
+                                         loop_hour_str+"Z", model_type, model_type+"_"+date_YYYYMMDD+".stat")
+            job = "-job filter -dump_row "+dump_row_file
+            self.add_env_var("JOB", job)
+            #get stat_analysis config file
+            self.set_param_file(self.p.getstr('config', 'STAT_ANALYSIS_CONFIG'))
+            #environment
+            self.logger.debug("")
+            self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+            self.logger.debug("")
+            self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+            self.logger.debug("")
+            #build command
+            cmd = self.get_command()
+            if cmd is None:
+                print("ERROR: stat_analysis could not generate command")
+                return
+            self.logger.info("")
+            self.build()
+            self.clear()
+            loop_hour += loop_inc
+
     def grid2grid_pres_plot_format(self):
+        self.logger.info("Formatting for plotting for grid2grid-pres")
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT')
         if use_init:
@@ -194,6 +271,7 @@ class StatAnalysisWrapper(CommandBuilder):
                             self.clear() 
 
     def grid2grid_anom_plot_format(self):
+        self.logger.info("Formatting for plotting for grid2grid-anom")
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT')
         if use_init:
@@ -302,6 +380,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                 self.clear()
  
     def grid2grid_sfc_plot_format(self):
+        self.logger.info("Formatting for plotting for grid2grid-sfc")
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT')
         if use_init:
@@ -389,13 +468,10 @@ class StatAnalysisWrapper(CommandBuilder):
         verif_type = self.p.getstr('config', 'VERIF_TYPE')
         if verif_case == 'grid2grid':
             if verif_type == 'pres':
-                 self.logger.info("Formatting for plotting for grid2grid-pres")
                  self.grid2grid_pres_plot_format()
             elif verif_type == 'anom':
-                 self.logger.info("Formatting for plotting for grid2grid-anom")
                  self.grid2grid_anom_plot_format()
             elif verif_type == 'sfc':
-                 self.logger.info("Formatting for plotting for grid2grid-sfc")
                  self.grid2grid_sfc_plot_format()
             else:
                  self.logger.error("Not a valid VERIF_TYPE option for grid2grid")
@@ -418,10 +494,9 @@ class StatAnalysisWrapper(CommandBuilder):
         self.logger.info("RUNNING STAT_ANALYSIS FOR VSDB FORMAT")
         verif_case = self.p.getstr('config', 'VERIF_CASE')
         if verif_case == 'grid2grid':
-             self.logger.info("Formatting in VSDB style for grid2grid")
              self.grid2grid_VSDB_format(valid_time, init_time)
         elif verif_case == 'grid2obs':
-            self.logger.info("Formatting in VSDB style for grid2obs")
+            self.grid2obs_VSDB_format(valid_time, init_time)
         elif verif_case == 'precip':
             self.logger.info("Formatting in VSDB style for precip")
         else:
