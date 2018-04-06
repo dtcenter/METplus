@@ -92,6 +92,7 @@ class PointStatWrapper(CommandBuilder):
             self.p.getstr('dir', 'POINT_STAT_OUTPUT_DIR')
 
         # Configuration
+        ps_dict['TIME_METHOD'] = self.p.getstr('config', 'TIME_METHOD')
         ps_dict['LOOP_METHOD'] = self.p.getstr('config', 'LOOP_METHOD')
         ps_dict['MODEL_NAME'] = self.p.getstr('config', 'MODEL_NAME')
         ps_dict['OBS_NAME'] = self.p.getstr('config', 'OBS_NAME')
@@ -393,6 +394,7 @@ class PointStatWrapper(CommandBuilder):
         # Whenever there is more than one fcst file with the same valid time,
         # keep it, because we want to perform verification for all fcst/model
         # forecast hours.
+        time_method = self.ps_dict['TIME_METHOD']
         valid_start = self.ps_dict['START_DATE']
         valid_end = self.ps_dict['END_DATE']
 
@@ -414,13 +416,23 @@ class PointStatWrapper(CommandBuilder):
 
         # create a list of tuples: date (yyyymmdd) and forecast hour (both
         # in seconds) to represent all the valid times of interest.
-        for cur_date in range(date_start, date_end, fhr_interval_secs):
-            for cur_fhr in range(fhr_start_secs, last_fhr,
-                                 fhr_interval_secs):
-                cur_valid_time = cur_date + cur_fhr
-                if cur_valid_time not in all_valid_times:
-                    all_valid_times.append(cur_valid_time)
-            all_dates.append(cur_date)
+        if time_method == 'BY_VALID':
+            for cur_date in range(date_start, date_end, fhr_interval_secs):
+                for cur_fhr in range(fhr_start_secs, last_fhr,
+                                     fhr_interval_secs):
+                    cur_init_time = cur_date - cur_fhr
+                    if cur_init_time not in all_dates:
+                        all_dates.append(cur_init_time)
+                all_valid_times.append(cur_date)
+
+        if time_method == 'BY_INIT': #original code from Minna
+            for cur_date in range(date_start, date_end, fhr_interval_secs):
+                for cur_fhr in range(fhr_start_secs, last_fhr,
+                                     fhr_interval_secs):
+                    cur_valid_time = cur_date + cur_fhr
+                    if cur_valid_time not in all_valid_times:
+                        all_valid_times.append(cur_valid_time)
+                all_dates.append(cur_date)
 
         InputFileInfo = namedtuple('InputFileInfo',
                                    'full_filepath, date, '
