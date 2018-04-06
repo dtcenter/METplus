@@ -9,23 +9,23 @@
 //
 // Filtering input STAT lines by the contents of each column
 //
-model = [];
+model = [ "${MODEL_TYPE}" ];
 desc  = [];
 
 fcst_lead = [];
 obs_lead  = [];
 
-fcst_valid_beg  = "${FCST_VALID}";
-fcst_valid_end  = "";
-fcst_valid_hour = [];
+fcst_valid_beg  = "${FCST_VALID_BEG}";
+fcst_valid_end  = "${FCST_VALID_END}";
+fcst_valid_hour = [${FCST_VALID_HOUR}];
 
 obs_valid_beg   = "";
 obs_valid_end   = "";
 obs_valid_hour  = [];
 
-fcst_init_beg   = "${FCST_INIT}";
-fcst_init_end   = "";
-fcst_init_hour  = [];
+fcst_init_beg   = "${FCST_INIT_BEG}";
+fcst_init_end   = "${FCST_INIT_END}";
+fcst_init_hour  = [${FCST_INIT_HOUR}];
 
 obs_init_beg    = "";
 obs_init_end    = "";
@@ -37,7 +37,7 @@ obs_var  = [];
 fcst_lev = [];
 obs_lev  = [];
 
-obtype = [];
+obtype = [ "${OB_TYPE}" ];
 
 vx_mask = [];
 

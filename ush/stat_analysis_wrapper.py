@@ -59,23 +59,36 @@ class StatAnalysisWrapper(CommandBuilder):
     def grid2grid_VSDB_format(self, valid_time, init_time):
         #read config
         model_type = self.p.getstr('config', 'MODEL_TYPE')
+        ob_type = self.p.getstr('config', 'OB_TYPE')
+        self.add_env_var("MODEL_TYPE", model_type)
+        self.add_env_var("OB_TYPE", ob_type)
         stat_analysis_lookin_dir = self.p.getstr('config', 'STAT_ANALYSIS_LOOKIN_DIR')
         stat_analysis_out_dir = self.p.getstr('config', 'STAT_ANALYSIS_OUT_DIR')
         #filtering times based on if files made based on init_time or valid_time
         if init_time == -1:
             filter_time = valid_time
-            self.add_env_var("FCST_VALID", valid_time)
-            self.add_env_var("FCST_INIT", "")
+            date_YYYYMMDD = filter_time[0:8]
+            cycle = filter_time[8:10]
+            self.add_env_var("FCST_VALID_BEG", valid_time)
+            self.add_env_var("FCST_VALID_END", valid_time)
+            self.add_env_var("FCST_VALID_HOUR", '"'+cycle+'"')
+            self.add_env_var("FCST_INIT_BEG", "")
+            self.add_env_var("FCST_INIT_END", "")
+            self.add_env_var("FCST_INIT_HOUR", "")
         else:
             filter_time = init_time
-            self.add_env_var("FCST_VALID", "")
-            self.add_env_var("FCST_INIT", init_time)
+            date_YYYYMMDD = filter_time[0:8]
+            cycle = filter_time[8:10]
+            self.add_env_var("FCST_VALID_BEG", "")
+            self.add_env_var("FCST_VALID_END", "")
+            self.add_env_var("FCST_VALID_HOUR", "")
+            self.add_env_var("FCST_INIT_BEG", init_time)
+            self.add_env_var("FCST_INIT_END", init_time)
+            self.add_env_var("FCST_INIT_HOUR", cycle)
         self.logger.info("Formatting grid2grid")
         #build -lookin directory
         self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, filter_time, "grid_stat"))
         #save output like VSDB
-        date_YYYYMMDD = filter_time[0:8]
-        cycle = filter_time[8:10]
         if not os.path.exists(os.path.join(stat_analysis_out_dir,
                               cycle+"Z", model_type)):
            os.makedirs(os.path.join(stat_analysis_out_dir,
