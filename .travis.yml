@@ -10,5 +10,5 @@ branches:
   - develop
   
 script:
-  - pytest internal_tests/pytests/produtil/regress_test_produtil.py produtil_test.conf
+  - pytest METplus/internal_tests/pytests/produtil/regress_test_produtil.py METplus/internal_tests/pytests/produtil/produtil_test.conf
 
