@@ -10,5 +10,5 @@ branches:
   - develop
   
 script:
-  - pytest
+  - pytest internal_tests/pytests/produtil
 
