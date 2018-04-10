@@ -3,7 +3,6 @@ astroid==1.6.3
 attrs==17.4.0
 backports-abc==0.5
 backports.functools-lru-cache==1.5
-basemap==1.1.0
 Cartopy==0.16.0
 certifi==2018.1.18
 cffi==1.11.5
