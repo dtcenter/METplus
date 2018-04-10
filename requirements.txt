@@ -11,7 +11,7 @@ ipaddress==1.0.18
 more-itertools==4.1.0
 pluggy==0.6.0
 py==1.5.2
-pycosat==0.6.2
+pycosat==0.6.3
 pycparser==2.18
 pyOpenSSL==17.2.0
 PySocks==1.6.7
