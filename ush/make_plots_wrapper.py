@@ -64,6 +64,9 @@ class MakePlotsWrapper(CommandBuilder):
         if use_init:
             start_t = self.p.getstr('config', 'INIT_BEG')
             end_t = self.p.getstr('config', 'INIT_END')
+            loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
+            loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
+            loop_inc = self.p.getint('config', 'INIT_INC')
             date_filter_method = "Initialization"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -71,6 +74,9 @@ class MakePlotsWrapper(CommandBuilder):
         else:
             start_t = self.p.getstr('config', 'VALID_BEG')
             end_t = self.p.getstr('config', 'VALID_END')
+            loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
+            loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
+            loop_inc = self.p.getint('config', 'VALID_INC')
             date_filter_method = "Valid"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -80,7 +86,6 @@ class MakePlotsWrapper(CommandBuilder):
         if os.path.exists(plotting_out_dir):
             self.logger.info(plotting_out_dir+" exist, removing")
             util.rmtree(plotting_out_dir)
-        cycle_list = util.getlist(self.p.getstr('config', 'CYCLE_LIST'))
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
         model_list = self.p.getstr('config', 'MODEL_LIST')
@@ -140,8 +145,10 @@ class MakePlotsWrapper(CommandBuilder):
             fo.fcst_level = fcst_levels
             fo.obs_level = obs_levels
             var_info_list.append(fo)
-        for cycle in cycle_list:
-            self.add_env_var('CYCLE', cycle)
+        loop_hour = loop_beg_hour
+        while loop_hour <= loop_end_hour:
+            loop_hour_str = str(loop_hour).zfill(2)
+            self.add_env_var('CYCLE', loop_hour_str)
             for v in var_info_list:
                 fcst_var_levels_list = v.fcst_level
                 self.add_env_var('FCST_VAR_NAME', v.fcst_name)
@@ -181,6 +188,7 @@ class MakePlotsWrapper(CommandBuilder):
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
                     print("")
+            loop_hour += loop_inc
 
     def grid2grid_anom_plots(self):
         logging_filename = self.logger.handlers[0].baseFilename
@@ -192,6 +200,9 @@ class MakePlotsWrapper(CommandBuilder):
         if use_init:
             start_t = self.p.getstr('config', 'INIT_BEG')
             end_t = self.p.getstr('config', 'INIT_END')
+            loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
+            loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
+            loop_inc = self.p.getint('config', 'INIT_INC')
             date_filter_method = "Initialization"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -199,6 +210,9 @@ class MakePlotsWrapper(CommandBuilder):
         else:
             start_t = self.p.getstr('config', 'VALID_BEG')
             end_t = self.p.getstr('config', 'VALID_END')
+            loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
+            loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
+            loop_inc = self.p.getint('config', 'VALID_INC')
             date_filter_method = "Valid"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -208,7 +222,6 @@ class MakePlotsWrapper(CommandBuilder):
         if os.path.exists(plotting_out_dir):
             self.logger.info(plotting_out_dir+" exist, removing")
             util.rmtree(plotting_out_dir)
-        cycle_list = util.getlist(self.p.getstr('config', 'CYCLE_LIST'))
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
         model_list = self.p.getstr('config', 'MODEL_LIST')
@@ -268,8 +281,11 @@ class MakePlotsWrapper(CommandBuilder):
             fo.fcst_level = fcst_levels
             fo.obs_level = obs_levels
             var_info_list.append(fo)
-        for cycle in cycle_list:
-            self.add_env_var('CYCLE', cycle)
+        loop_hour = loop_beg_hour
+        while loop_hour <= loop_end_hour:
+            loop_hour_str = str(loop_hour).zfill(2)
+            #filtering times based on if files made based on init_time or valid_time
+            self.add_env_var('CYCLE', loop_hour_str)
             for v in var_info_list:
                 fcst_var_levels_list = v.fcst_level
                 self.add_env_var('FCST_VAR_NAME', v.fcst_name)
@@ -338,7 +354,8 @@ class MakePlotsWrapper(CommandBuilder):
                          process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                          process.wait()
                          print("")       
-
+            loop_hour += loop_inc
+ 
     def grid2grid_sfc_plots(self):
         logging_filename = self.logger.handlers[0].baseFilename
         self.add_env_var("LOGGING_FILENAME", logging_filename)
@@ -349,6 +366,9 @@ class MakePlotsWrapper(CommandBuilder):
         if use_init:
             start_t = self.p.getstr('config', 'INIT_BEG')
             end_t = self.p.getstr('config', 'INIT_END')
+            loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
+            loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
+            loop_inc = self.p.getint('config', 'INIT_INC')
             date_filter_method = "Initialization"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -356,6 +376,9 @@ class MakePlotsWrapper(CommandBuilder):
         else:
             start_t = self.p.getstr('config', 'VALID_BEG')
             end_t = self.p.getstr('config', 'VALID_END')
+            loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
+            loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
+            loop_inc = self.p.getint('config', 'VALID_INC')
             date_filter_method = "Valid"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -365,7 +388,6 @@ class MakePlotsWrapper(CommandBuilder):
         if os.path.exists(plotting_out_dir):
             self.logger.info(plotting_out_dir+" exist, removing")
             util.rmtree(plotting_out_dir)
-        cycle_list = util.getlist(self.p.getstr('config', 'CYCLE_LIST'))
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
         model_list = self.p.getstr('config', 'MODEL_LIST')
@@ -375,8 +397,10 @@ class MakePlotsWrapper(CommandBuilder):
         self.add_env_var("MODEL_LIST", model_list)
         self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
         var_list = util.parse_var_list(self.p)
-        for cycle in cycle_list:
-            self.add_env_var('CYCLE', cycle)
+        loop_hour = loop_beg_hour
+        while loop_hour <= loop_end_hour:
+            loop_hour_str = str(loop_hour).zfill(2)
+            self.add_env_var('CYCLE', loop_hour_str)
             for var_info in var_list:
                 fcst_var_name = var_info.fcst_name
                 fcst_var_level = var_info.fcst_level
@@ -405,6 +429,7 @@ class MakePlotsWrapper(CommandBuilder):
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
                     print("")
+            loop_hour += loop_inc
 ########################################################################
 ########################################################################
 ########################################################################
