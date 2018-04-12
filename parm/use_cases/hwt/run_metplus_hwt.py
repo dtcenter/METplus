@@ -17,3 +17,5 @@ os.environ["FCST_LVL_IN"] = "L0"
 os.environ["FCST_MAX_FCST_IN"] = "48"
 
 os.environ["OUT_DIR_IN"] = "/home/christina.kalb/metout"
+
+os.system('./master_metplus.py -c ../parm/use_cases/hwt/grid2grid_hwt_env.conf')
