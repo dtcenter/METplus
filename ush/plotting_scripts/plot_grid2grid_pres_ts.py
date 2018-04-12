@@ -52,6 +52,7 @@ emon = int(edate[4:6])
 emonth = month_name[emon-1]
 eday = int(edate[6:8])
 cycle_int = int(os.environ['CYCLE'])
+lead_int = int(os.environ['LEAD'])
 sd = datetime.datetime(syear, smon, sday, cycle_int)
 ed = datetime.datetime(eyear, emon, eday, cycle_int)+datetime.timedelta(days=1)
 tdelta = datetime.timedelta(days=1)
@@ -187,8 +188,11 @@ while s <= nstats: #loop over statistics
                    model_now_stat_file_dates = data_array[:,4]
                    dateformat = "%Y%m%d_%H%M%S"
                    for d in range(len(model_now_stat_file_dates)):
-                        model_date = datetime.datetime.strptime(model_now_stat_file_dates[d], dateformat)
-                        model_now_dates_list.append(md.date2num(model_date))
+                        if date_filter_method == 'Valid':
+                            model_date = datetime.datetime.strptime(model_now_stat_file_dates[d], dateformat)
+                        elif date_filter_method == 'Initialization':
+                            model_date = datetime.datetime.strptime(model_now_stat_file_dates[d], dateformat) - datetime.timedelta(hours=lead_int)
+                   model_now_dates_list.append(md.date2num(model_date))
                    model_now_dates = np.asarray(model_now_dates_list)
                    #account for missing data
                    model_now_stat_now_dates_vals = np.zeros_like(dates)
