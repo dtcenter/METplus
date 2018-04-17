@@ -98,12 +98,12 @@ def test_config(key, value):
     assert (pb_key == value)
 
 
-@pytest.mark.parametrize(
-    'key, value', [
-        ('NC_FILE_TMPL', 'nam.t{init?fmt=%HH}z.prepbufr.tm{lead?fmt=%HH}'),
-        ('NC_FILE_TMPL', 'prepbufr.gdas.{valid?fmt=%Y%m%d%HH}')
-    ]
-)
+#@pytest.mark.parametrize(
+#    'key, value', [
+#        ('NC_FILE_TMPL', 'nam.t{init?fmt=%HH}z.prepbufr.tm{lead?fmt=%HH}'),
+#        ('NC_FILE_TMPL', 'prepbufr.gdas.{valid?fmt=%Y%m%d%HH}')
+#    ]
+#)
 # def test_set_attribute_after_wrapper_creation(key, value):
 #     # Test that we can change the attribute defined in the config file
 #     pb = pb2nc_wrapper()
@@ -509,12 +509,5 @@ def test_config(key, value):
 #     assert True
 #
 #
-# def test_refactor():
-#     pb = pb2nc_wrapper()
-#     relevant = pb.get_files_by_time()
-#     assert True is True
 #
-def test_run():
-    pb = pb2nc_wrapper()
-    pb.run_all_times()
-    assert True
+
