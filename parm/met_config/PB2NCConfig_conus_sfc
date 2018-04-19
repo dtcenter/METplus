@@ -30,8 +30,10 @@ station_id = ${PB2NC_STATION_ID} ;
 // Observation time window
 //
 obs_window = {
-   beg = -2700;
-   end =  2700;
+  // beg = -2700;
+  // end =  2700;
+  beg = ${OBS_WINDOW_BEGIN};
+  end = ${OBS_WINDOW_END};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
