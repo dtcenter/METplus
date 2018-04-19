@@ -3,8 +3,6 @@
 from __future__ import print_function
 import os
 import sys
-import re
-import logging
 import pytest
 import produtil
 import config_metplus
@@ -18,13 +16,13 @@ from tc_pairs_wrapper import TcPairsWrapper
 
 
 # Add a test configuration
-def pytest_addoption(parser):
-    parser.addoption("-c", action="store", help=" -c <test config file>")
+# def pytest_addoption(parser):
+#     parser.addoption("-c", action="store", help=" -c <test config file>")
 
 
 # @pytest.fixture
-def cmdopt(request):
-    return request.config.getoption("-c")
+# def cmdopt(request):
+#     return request.config.getoption("-c")
 
 
 #
@@ -39,7 +37,7 @@ def tc_pairs_wrapper():
 
     # Default, empty PointStatWrapper with some configuration values set
     # to /path/to:
-    conf = ()
+    conf = metplus_config()
     return TcPairsWrapper(conf, None)
 
 
@@ -66,6 +64,14 @@ def metplus_config():
 def test_no_empty_mod_dir():
     """ Verify that we are creating the ATCF files. """
     rtcp = tc_pairs_wrapper()
-    # rtcp.run_at_time(request_time)
-    # tc_pairs_dir = self.config.getdir('TC_PAIRS_DIR')
-    # self.assertTrue(os.listdir(tc_pairs_dir))
+    tc_pairs_dir = rtcp.config.getdir('TC_PAIRS_DIR')
+    dirs_list = os.listdir(tc_pairs_dir)
+    assert len(dirs_list) == 1
+
+
+def test_no_empty_tcp_dir():
+    """ Verify that we are creating tc pair output"""
+    rtcp = tc_pairs_wrapper()
+    rtcp.run_all_times()
+    tc_pairs_dir = rtcp.config.getdir('TC_PAIRS_DIR')
+    assert os.listdir(tc_pairs_dir)
