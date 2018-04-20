@@ -117,8 +117,8 @@ class PointStatWrapper(CommandBuilder):
         ps_dict['FCST_HR_INTERVAL'] = self.p.getstr('config',
                                                     'FCST_HR_INTERVAL')
 
-        ps_dict['OBS_WINDOW_BEG'] = self.p.getstr('config', 'OBS_WINDOW_BEG')
-        ps_dict['OBS_WINDOW_END'] = self.p.gestr('config', 'OBS_WINDOW_END')
+        ps_dict['OBS_WINDOW_BEGIN'] = self.p.getstr('config', 'OBS_WINDOW_BEGIN')
+        ps_dict['OBS_WINDOW_END'] = self.p.getstr('config', 'OBS_WINDOW_END')
 
         # Filename templates and regex patterns for input dirs and filenames
         ps_dict['FCST_INPUT_FILE_REGEX'] = \
@@ -287,7 +287,7 @@ class PointStatWrapper(CommandBuilder):
         self.add_env_var(b'OBS_FIELD', met_fields.obs_field)
 
         # Set the environment variables corresponding to the obs_window dictionary.
-        self.add_env_var(b'OBS_WINDOW_BEG', str(self.ps_dict['OBS_WINDOW_BEG']))
+        self.add_env_var(b'OBS_WINDOW_BEGIN', str(self.ps_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var(b'OBS_WINDOW_END', str(self.ps_dict['OBS_WINDOW_END']))
 
     def select_fcst_obs_pairs(self):

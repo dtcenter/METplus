@@ -117,7 +117,7 @@ class PB2NCWrapper(CommandBuilder):
             self.p.getstr('conf', 'TIME_SUMMARY_VAR_NAMES'))
         pb_dict['TIME_SUMMARY_TYPES'] = util.getlist(
             self.p.getstr('config', 'TIME_SUMMARY_TYPES'))
-        pb_dict['OBS_WINDOW_BEG'] = self.p.getstr('config', 'OBS_WINDOW_BEG')
+        pb_dict['OBS_WINDOW_BEGIN'] = self.p.getstr('config', 'OBS_WINDOW_BEGIN')
         pb_dict['OBS_WINDOW_END'] = self.p.getstr('config', 'OBS_WINDOW_END')
 
         pb_dict['OVERWRITE_NC_OUTPUT'] = \
@@ -310,7 +310,7 @@ class PB2NCWrapper(CommandBuilder):
         self.add_env_var(b'TIME_SUMMARY_TYPES', time_summary_types_str)
 
         # Add the environment variables corresponding to the obs_window dictionary in MET.
-        self.add_env_var('OBS_WINDOW_BEG', str(self.pb_dict['OBS_WINDOW_BEG']))
+        self.add_env_var('OBS_WINDOW_BEGIN', str(self.pb_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var('OBS_WINDOW_END', str(self.pb_dict['OBS_WINDOW_END']))
 
         # Determine the files to convert based on init or valid start and
