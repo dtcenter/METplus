@@ -64,6 +64,7 @@ class TcPairsWrapper(CommandBuilder):
         self.logger.debug("DEBUG|run_tc_pairs.py|read_modify_write_file")
 
         # pylint:disable=protected-access
+        # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
         # filename and method.
         # Used for logging
@@ -259,14 +260,18 @@ class TcPairsWrapper(CommandBuilder):
                     # Run tc_pairs
                     cmd = self.build_tc_pairs(pairs_out_dir, myfile,
                                               adeck_file_path, bdeck_file_path)
-                    cmd = batchexe('sh')['-c', cmd].err2out()
-                    ret = run(cmd, sleeptime=.00001)
-                    if ret != 0:
-                        self.logger.error("ERROR | [" + cur_filename +
-                                          ":" + cur_function + "] | " +
-                                          "Problem executing: " +
-                                          cmd.to_shell())
-                        exit(0)
+                    # cmd = batchexe('sh')['-c', cmd].err2out()
+                    # ret = run(cmd, sleeptime=.00001)
+                    #
+                    #
+                    # if ret != 0:
+                    #     self.logger.error("ERROR | [" + cur_filename +
+                    #                       ":" + cur_function + "] | " +
+                    #                       "Problem executing: " +
+                    #                       cmd.to_shell())
+                    #     exit(0)
+                    self.build()
+                    self.clear()
 
     def setup_tropical_track_dirs(self, deck_input_file_path, deck_file_path,
                                   storm_month, missing_values):
