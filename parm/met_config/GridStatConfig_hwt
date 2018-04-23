@@ -28,7 +28,7 @@ obtype = "${OBTYPE}";
 // Verification grid
 //
 regrid = {
-   to_grid    = NONE;
+   to_grid    = FCST;
    method     = NEAREST;
    width      = 1;
    vld_thresh = 0.5;
@@ -57,7 +57,11 @@ fcst = {
     ${FCST_FIELD}
     ];
     };
-obs = fcst;
+obs = {
+    field = [
+    ${OBS_FIELD}
+    ];
+    };
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -95,7 +99,7 @@ write_cdf_bins = FALSE;
 // Verification masking regions
 //
 mask = {
-   grid = [ "FULL" ];
+   grid = [];
    poly = ${VERIF_POLY}; 
 }
 

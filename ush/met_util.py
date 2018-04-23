@@ -1323,7 +1323,7 @@ def parse_var_list(p):
 
             fcst_levels = getlist(p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
             if p.has_option('config', "OBS_VAR"+n+"_LEVELS"):
-                obs_levels = getlist(p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
+                obs_levels = getlist(p.getstr('config', "OBS_VAR"+n+"_LEVELS"))
             else:
                 obs_levels = fcst_levels
 

@@ -20,6 +20,7 @@ import os
 import sys
 import re
 import csv
+import subprocess
 import produtil.setup
 from produtil.run import batchexe
 from produtil.run import run
@@ -46,8 +47,11 @@ class TcPairsWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(TcPairsWrapper, self).__init__(p, logger)
         self.config = self.p
+        self.app_path = os.path.join(p.getdir('MET_INSTALL_DIR'), 'bin/tc_pairs')
+        self.app_name = os.path.basename(self.app_path)
         if self.logger is None:
             self.logger = util.get_logger(self.p)
+        self.cmd = ''
 
     def read_modify_write_file(self, in_csvfile, storm_month, missing_values,
                                out_csvfile):
@@ -386,6 +390,27 @@ class TcPairsWrapper(CommandBuilder):
                               cmd)
 
         return cmd
+
+    def get_command(self):
+        """! Over-ride CommandBuilder's get_command because unlike other MET tools,
+             tc_pairs handles input files differently- namely, through flags -adeck and -bdeck and doesn't
+             require an output file, as there is a default.
+        Build command to run from arguments"""
+        if self.app_path is None:
+            self.logger.error("No app path specified. You must use a subclass")
+            return None
+
+        return self.cmd
+
+    def build(self):
+        """! Override CommandBuilder's build() since tc_pairs handles input and output differently from the other
+             MET tools"""
+        cmd = self.get_command()
+        if cmd is None:
+            return
+        self.logger.info("RUNNING: " + cmd)
+        process = subprocess.Popen(cmd, env=self.env, shell=True)
+        process.wait()
 
 
 if __name__ == "__main__":
