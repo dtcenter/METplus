@@ -46,10 +46,33 @@ class PcpCombineModelWrapper(PcpCombineWrapper):
         task_info = TaskInfo()
         task_info.init_time = init_time
         task_info.valid_time = valid_time        
-        var_list = util.parse_var_list(self.p)        
-        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
+        var_list = util.parse_var_list(self.p)
+        max_forecast = self.p.getint('config', 'FCST_MAX_FORECAST')
+
+        if init_time == -1:
+            #Create a list of files to loop over
+            gen_seq = util.getlistint(self.p.getstr('config','GEN_SEQ'))
+            init_interval = self.p.getint('config','FCST_INIT_INTERVAL')
+            valid_hr  = int(valid_time[8:10])
+            #Find lead times
+            lead_seq = []
+            for gs in gen_seq:
+                if valid_hr >= gs:
+                    current_lead = valid_hr - gs
+                elif valid_hr < gs:
+                    current_lead = valid_hr + gs
+            while current_lead <= max_forecast:
+                lead_seq.append(current_lead)
+                current_lead = current_lead + 24
+
+            lead_seq = sorted(lead_seq)
+
+
+        if valid_time == -1:
+            lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
+            
         # want to combine fcst data files to get total accum matching obs?
-#        obs_level = self.p.getstr('config', 'OBS_LEVEL')
+        # obs_level = self.p.getstr('config', 'OBS_LEVEL')
         fcst_level = self.p.getstr('config', 'FCST_LEVEL')
         # TODO: should use getpath or something?
         in_dir = self.p.getstr('config', 'FCST_PCP_COMBINE_INPUT_DIR')
