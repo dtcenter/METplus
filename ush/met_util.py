@@ -13,10 +13,16 @@ import re
 from collections import namedtuple
 
 import subprocess
-from produtil.run import batchexe
-from produtil.run import run
+from produtil.run import exe
+from produtil.run import runstr,alias
 from string_template_substitution import StringSub
+# TODO Remove the classes and refactor met-util
+# met_util needs to be refactored and the functions that
+# instantiate the objects(CommandBuilder) refactored in to there
+# own respective class OR in there own module, patterned after their
+# intended function.
 from tc_stat_wrapper import TcStatWrapper
+from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 
 """!@namespace met_util
  @brief Provides  Utility functions for METplus.
@@ -119,10 +125,115 @@ def rmtree(tree, logger=None):
     shutil.rmtree(tree, ignore_errors=False)
 
 
-def get_logger(config):
-    """!Gets a logger
+def set_logvars(config, logger=None):
+    """!Sets and adds the LOG_METPLUS and LOG_TIMESTAMP
+       to the config object. If LOG_METPLUS was already defined by the
+       user in their conf file. It expands and rewrites it in the conf
+       object and the final file.
+       conf file.
        Args:
            @param config:   the config instance
+           @param logger: the logger, optional
+
+    """
+
+    if logger is None:
+        logger = config.log()
+
+    # LOG_TIMESTAMP_TEMPLATE is not required in the conf file,
+    # so lets first test for that.
+    log_timestamp_template = config.getstr('config','LOG_TIMESTAMP_TEMPLATE','')
+    if log_timestamp_template:
+        # Note: strftime appears to handle if log_timestamp_template
+        # is a string ie. 'blah' and not a valid set of % directives %Y%m%d,
+        # it does return the string 'blah', instead of crashing.
+        # However, I'm still going to test for a valid % directive and
+        # set a default. It probably is ok to remove the if not block pattern
+        # test, and not set a default, especially if causing some unintended
+        # consequences or the pattern is not capturing a valid directive.
+        # The reality is, the user is expected to have entered a correct
+        # directive in the conf file.
+        # This pattern is meant to test for a repeating set of
+        # case insensitive %(AnyAlphabeticCharacter), ie. %Y%m ...
+        # The basic pattern is (%+[a-z])+ , %+ allows for 1 or more
+        # % characters, ie. %%Y, %% is a valid directive.
+        # (?i) case insensitive, \A begin string \Z end of string
+        if not re.match('(?i)\A(?:(%+[a-z])+)\Z', log_timestamp_template):
+            logger.warning('Your LOG_TIMESTAMP_TEMPLATE is not '
+                           'a valid strftime directive: %s' % repr(log_timestamp_template))
+            logger.info('Using the following default: %Y%m%d%H')
+            log_timestamp_template = '%Y%m%d%H'
+        log_filenametimestamp = datetime.datetime.now().strftime(log_timestamp_template)
+    else:
+        log_filenametimestamp=''
+
+    log_dir = config.getdir('LOG_DIR')
+
+    # NOTE: LOG_METPLUS or metpluslog is meant to include the absolute path
+    #       and the metpluslog_filename,
+    # so metpluslog = /path/to/metpluslog_filename
+
+    # if LOG_METPLUS =  unset in the conf file, means NO logging.
+    # Also, assUmes the user has included the intended path in LOG_METPLUS.
+    user_defined_log_file = None
+    if config.has_option('config','LOG_METPLUS'):
+        user_defined_log_file = True
+        # strinterp will set metpluslog to '' if LOG_METPLUS =  is unset.
+        metpluslog = config.strinterp('config','{LOG_METPLUS}', \
+                                    LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp)
+
+        # test if there is any path information, if there is, assUme it is as intended,
+        # if there is not, than add log_dir.
+        if metpluslog:
+            if os.path.basename(metpluslog) == metpluslog:
+                metpluslog = os.path.join(log_dir, metpluslog)
+    else:
+        # No LOG_METPLUS in conf file, so let the code try to set it,
+        # if the user defined the variable LOG_FILENAME_TEMPLATE.
+        # LOG_FILENAME_TEMPLATE is an 'unpublished' variable - no one knows
+        # about it unless you are reading this. Why does this exist ?
+        # It was from my first cycle implementation. I did not want to pull
+        # it out, in case the group wanted a stand alone metplus log filename
+        # template variable.
+
+        # If metpluslog_filename includes a path, python joins it intelligently.
+        # Set the metplus log filename.
+        # strinterp will set metpluslog_filename to '' if LOG_FILENAME_TEMPLATE =
+        if config.has_option('config', 'LOG_FILENAME_TEMPLATE'):
+            metpluslog_filename = config.strinterp('config', '{LOG_FILENAME_TEMPLATE}',
+                                                   LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp)
+        else:
+            metpluslog_filename = ''
+        if metpluslog_filename:
+            metpluslog = os.path.join(log_dir, metpluslog_filename)
+        else:
+            metpluslog = ''
+
+
+
+    # Adding LOG_TIMESTAMP to the final configuration file.
+    logger.info('Adding: config.LOG_TIMESTAMP=%s' % repr(log_filenametimestamp))
+    config.set('config','LOG_TIMESTAMP',log_filenametimestamp)
+
+    # Setting LOG_METPLUS in the configuration object
+    # At this point LOG_METPLUS will have a value or '' the empty string.
+    if user_defined_log_file:
+        logger.info('Replace [config] LOG_METPLUS with %s' % repr(metpluslog))
+    else:
+        logger.info('Adding: config.LOG_METPLUS=%s' % repr(metpluslog))
+    # expand LOG_METPLUS to ensure it is available
+    config.set('config', 'LOG_METPLUS', metpluslog)
+
+
+def get_logger(config, sublog=None):
+    """!This function will return a logger with a formatted file handler
+    for writing to the LOG_METPLUS and it sets the LOG_LEVEL. If LOG_METPLUS is
+    not defined, a logger is still returned without adding a file handler,
+    but still setting the LOG_LEVEL.
+
+       Args:
+           @param config:   the config instance
+           @param sublog the logging subdomain, or None
        Returns:
            logger: the logger
     """
@@ -130,34 +241,73 @@ def get_logger(config):
     # Retrieve all logging related parameters from the param file
     log_dir = config.getdir('LOG_DIR')
     log_level = config.getstr('config', 'LOG_LEVEL')
-    log_path_basename = os.path.splitext(config.getstr('config', 'LOG_FILENAME'))[0]
-    log_ext = os.path.splitext(config.getstr('config', 'LOG_FILENAME'))[1]
-    log_filename = \
-        log_path_basename + '.' + datetime.datetime.now().strftime("%Y%m%d")\
-        + log_ext.strip()
 
     # TODO review, use builtin produtil.fileop vs. mkdir_p ?
     # import produtil.fileop
     # produtil.fileop.makedirs(log_dir,logger=None)
 
-    # Check if the directory path for the log exists, if
+    # Check if the directory path for the log file exists, if
     # not create it.
     if not os.path.exists(log_dir):
         mkdir_p(log_dir)
 
-    # Get the current filename and method, set up
-    # the filehandler and the formatter, etc.
-    log_path = os.path.join(log_dir, log_filename)
+    if sublog is not None:
+        logger = config.log(sublog)
+    else:
+        logger = config.log()
 
-    formatter = logging.Formatter('%(asctime)s : %(message)s')
-    logging.Formatter.converter = time.gmtime
-    logger = logging.getLogger(log_path)
+    # Set the logger level from the config instance.
     logger.setLevel(log_level)
-    file_handler = logging.FileHandler(log_path, mode='a')
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-    return logger
 
+    # Make sure the LOG_METPLUS is defined. In this function,
+    # LOG_METPLUS should already be defined in the config object,
+    # even if it is empty, LOG_METPLUS =.
+    if not config.has_option('config','LOG_METPLUS'):
+        set_logvars(config)
+    metpluslog = config.getstr('config', 'LOG_METPLUS', '')
+
+
+    # TODO: Remove LOG_OUTPUT control variable.
+    # This was the yes/no control variable from the first cycle logging
+    # implementation to turn logging on or off. Instead LOG_METPLUS
+    # is being used as the on/off switch, this is not being used.
+    # I'm keeping it here until after the group review, in case it comes up
+    # that folks want to define such a variable in the conf file.
+    # If not used, Delete this comment and commented out code block below
+    # and you are done, nothing else needs to be changed elsewhere
+    # in the code base.
+    #if config.getbool('config','LOG_OUTPUT',default=False,badtypeok=True):
+    #    if not metpluslog:
+    #        logger.warning('LOG_OUTPUT in conf file is yes, Looks like you want to log your output ?')
+    #        logger.warning('However, LOG_METPLUS is not a valid file, I can not log your output.')
+    #    else:
+    #        logger.info('LOG_OUTPUT in your conf file is set to yes')
+    #else:
+    #    logger.info('LOG_OUTPUT in your conf file is set to no or not set.')
+    #if metpluslog and config.getbool('config', 'LOG_OUTPUT', default=False, badtypeok=True):
+
+    if metpluslog:
+        # It is possible that more path, other than just LOG_DIR, was added
+        # to the metpluslog, by either a user defining more path in
+        # LOG_METPLUS or LOG_FILENAME_TEMPLATE definitions in their conf file.
+        # So lets check and make more directory if needed.
+        dirname = os.path.dirname(metpluslog)
+        if not os.path.exists(dirname):
+            mkdir_p(dirname)
+
+        # set up the filehandler and the formatter, etc.
+        # This matches the oformat log.py formatter of produtil
+        # So terminal output will now match log files.
+        formatter = logging.Formatter(
+            "%(asctime)s.%(msecs)03d %(name)s (%(filename)s:%(lineno)d) "
+            "%(levelname)s: %(message)s",
+            "%m/%d %H:%M:%S")
+        #logging.Formatter.converter = time.gmtime
+        file_handler = logging.FileHandler(metpluslog, mode='a')
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+
+    return logger
 
 def file_exists(filename):
     """! Determines if a file exists
@@ -484,6 +634,17 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
     # pylint: disable=too-many-arguments
     # all input is needed to perform task
 
+    #TODO Review this function retrieve_and_regrid
+    # This needs to be refactored in to its own wrapper
+    # or factored in to the RegridDataPlanWrapper class or subclass.
+    # rdp=, was added when logging capability was added to capture
+    # all MET output to log files. It is a temporary work around
+    # to get logging up and running as needed.
+    # It is being used to call the run_cmd method, which runs the cmd
+    # and redirects logging based on the conf settings.
+    # Instantiate a RegridDataPlaneWrapper
+    rdp = RegridDataPlaneWrapper(config,logger)
+
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
@@ -655,12 +816,20 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
                                      var_level_string,
                                      ' -method NEAREST ']
                     regrid_cmd_fcst = ''.join(fcst_cmd_list)
-                    regrid_cmd_fcst = \
-                        batchexe('sh')['-c', regrid_cmd_fcst].err2out()
+
+                    #regrid_cmd_fcst = \
+                    #    batchexe('sh')['-c', regrid_cmd_fcst].err2out()
+                    # run(regrid_cmd_fcst)
+
+                    # Since not using the CommandBuilder to build the cmd,
+                    # add the met verbosity level to the MET cmd created before
+                    # we run the command.
+                    regrid_cmd_fcst = rdp.cmdrunner.insert_metverbosity_opt(regrid_cmd_fcst)
+                    (ret, regrid_cmd_fcst) = rdp.cmdrunner.run_cmd(regrid_cmd_fcst,app_name=rdp.app_name)
                     msg = ("INFO|[regrid]| regrid_data_plane regrid command:" +
                            regrid_cmd_fcst.to_shell())
                     logger.debug(msg)
-                    run(regrid_cmd_fcst)
+
 
                 else:
                     # Perform regridding via wgrib2
@@ -671,12 +840,14 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
                                      ' -new_grid ', fcst_grid_spec, ' ',
                                      fcst_regridded_file]
                     wgrb_cmd_fcst = ''.join(fcst_cmd_list)
-                    wgrb_cmd_fcst = \
-                        batchexe('sh')['-c', wgrb_cmd_fcst].err2out()
+                    #wgrb_cmd_fcst = \
+                    #    batchexe('sh')['-c', wgrb_cmd_fcst].err2out()
+                    #run(wgrb_cmd_fcst)
+
+                    (ret, wgrb_cmd_fcst) = rdp.cmdrunner.run_cmd(wgrb_cmd_fcst,ismetcmd=False)
                     msg = ("INFO|[wgrib2]| wgrib2 regrid command:" +
                            wgrb_cmd_fcst.to_shell())
                     logger.debug(msg)
-                    run(wgrb_cmd_fcst)
 
             # Create new gridded file for anly tile
             if file_exists(anly_regridded_file) and not overwrite_flag:
@@ -696,9 +867,15 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
                                      var_level_string, ' ',
                                      ' -method NEAREST ']
                     regrid_cmd_anly = ''.join(anly_cmd_list)
-                    regrid_cmd_anly = \
-                        batchexe('sh')['-c', regrid_cmd_anly].err2out()
-                    run(regrid_cmd_anly)
+                    #regrid_cmd_anly = \
+                    #    batchexe('sh')['-c', regrid_cmd_anly].err2out()
+                    #run(regrid_cmd_anly)
+
+                    # Since not using the CommandBuilder to build the cmd,
+                    # add the met verbosity level to the MET cmd created before
+                    # we run the command.
+                    regrid_cmd_anly = rdp.cmdrunner.insert_metverbosity_opt(regrid_cmd_anly)
+                    (ret, regrid_cmd_anly) = rdp.cmdrunner.run_cmd(regrid_cmd_anly,app_name=rdp.app_name)
                     msg = ("INFO|[regrid]| on anly file:" +
                            anly_regridded_file)
                     logger.debug(msg)
@@ -711,11 +888,13 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
                                      ' -new_grid ', anly_grid_spec, ' ',
                                      anly_regridded_file]
                     wgrb_cmd_anly = ''.join(anly_cmd_list)
-                    wgrb_cmd_anly = \
-                        batchexe('sh')['-c', wgrb_cmd_anly].err2out()
+                    #wgrb_cmd_anly = \
+                    #    batchexe('sh')['-c', wgrb_cmd_anly].err2out()
+                    # run(wgrb_cmd_anly)
+
+                    (ret, wgrb_cmd_anly) = rdp.cmdrunner.run_cmd(wgrb_cmd_anly, ismetcmd=False)
                     msg = ("INFO|[wgrib2]| Regridding via wgrib2:" +
                            wgrb_cmd_anly.to_shell())
-                    run(wgrb_cmd_anly)
                     logger.debug(msg)
 
 
@@ -1061,7 +1240,10 @@ def apply_series_filters(tile_dir, init_times, series_output_dir, filter_opts,
         filter_file = "filter_" + cur_init + ".tcst"
         filter_filename = os.path.join(series_output_dir,
                                        cur_init, filter_file)
-        tcs = TcStatWrapper(config)
+
+        #TODO Review this function apply_series_filters
+        # should this be in its own wrapper or subclass of tc_stat
+        tcs = TcStatWrapper(config,logger)
         tcs.build_tc_stat(series_output_dir, cur_init, tile_dir, filter_opts)
 
         # Check that the filter.tcst file isn't empty. If

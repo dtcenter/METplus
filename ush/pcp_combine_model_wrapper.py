@@ -15,7 +15,7 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import (print_function, division)
 
 import produtil.setup
-from produtil.run import batchexe, run, checkrun
+#from produtil.run import batchexe, run, checkrun
 import logging
 import os
 import sys

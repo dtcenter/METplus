@@ -40,19 +40,22 @@ def usage(filename=None,logger=None):
     if logger:
         logger.critical('Invalid arguments to %s.  Exiting.'%(filename))
 
+    # Note: runtime option is not being used. remove it ?
+    # -r|--runtime <arg0>     Specify initialization time to process
     print ('''
-Usage: %s [ -c /path/to/additional/conf_file] [options]
-
-Optional arguments:
+Usage: %s [ -c /path/to/additional/conf_file]...[] [options]
+    -c|--config <arg0>      Specify custom configuration file to use
+    -h|--help               Display this usage statement
+    
+Optional arguments: [options]
 section.option=value -- override conf options on the command line
 /path/to/parmfile.conf -- additional conf files to parse
 
-Exiting due to incorrect arguments.'''%(filename))
+'''%(filename))
     sys.exit(2)
 
-
 def setup(filename=None,logger=None):
-    """!The METplus setup fuction.
+    """!The METplus setup function.
     @param filename the filename of the calling module.
     @param logger a logging.logger for log messages
 
@@ -63,11 +66,12 @@ def setup(filename=None,logger=None):
     if filename is None:
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
+        filename = cur_filename
 
     # Setup Task logger, Until a Conf object is created, Task logger is
     # only logging to tty, not a file.
     if logger is None:
-        logger = logging.getLogger('config_metplus')
+        logger = logging.getLogger('metplus')
 
     logger.info('Starting METplus configuration setup.')
 
@@ -78,30 +82,40 @@ def setup(filename=None,logger=None):
     # which are ultimately passed as arguments.
 
     # if option is followed by : or = indicates option requires an argument
-    short_opts = "c:h"
-    long_opts = ["constants=",
+    short_opts = "c:r:h"
+    # Note: r: runtime= option is not being used. remove it ?
+    long_opts = ["config=",
+                 "runtime=",
                  "help"]
 
     # All command line input, get options and arguments
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], short_opts, long_opts)
     except getopt.GetoptError as err:
-        # SCRIPT IS EXITING DUE TO UNRECOGNIZED COMMAND LINE OPTION
+        #usage('SCRIPT IS EXITING DUE TO UNRECOGNIZED COMMAND LINE OPTION'
         print(str(err))        
         usage(filename,logger)
 
     logger.info('All OPTS and ARGS: %s %s',opts, args)
 
+    # notice -h does not require an argument so its argument is ''
     # opts=[('-h',''),('-c','path/to/file.conf')]
 
     opts_conf_files = list()
     opts_conf_file = None
     for k, v in opts:
-        if k in ('-c', '--constants'):
+        if k in ('-c', '--config'):
             opts_conf_files.extend(v.split(","))
-
+        elif k in ('-r', '--runtime'):
+            # If using these they should be added to conf file
+            # via additional options on the command line
+            # config.end_time= and than accessed via the config object.
+            start_time = v
+            end_time = v
         elif k in ('-h', '--help'):
-            usage(filename,logger)
+            if logger:
+                logger.info('Help, printing Usage statement')
+            usage(filename=filename)
         else:
             assert False, "UNHANDLED OPTION"
 
@@ -130,6 +144,8 @@ def setup(filename=None,logger=None):
     cycle = None
     conf = config_launcher.launch(infiles, moreopt, cycle=cycle)
     #conf.sanity_check()
+
+    logger.info('Completed METplus configuration setup.')
 
     return conf
 

@@ -65,7 +65,7 @@ def unblock(stream,logger=None):
     @param stream the stream to unblock
     @param logger a logging.Logger for log messages
     @returns True on success, False otherwise."""
-    call_fcntrl(os.O_NONBLOCK,0,logger)
+    call_fcntrl(stream,os.O_NONBLOCK,0,logger)
 
 def call_fcntrl(stream,on,off,logger=None):
     """!Internal function that implements unblock()

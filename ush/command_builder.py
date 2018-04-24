@@ -22,16 +22,13 @@ import subprocess
 import datetime
 import calendar
 import string_template_substitution as sts
-import met_util as util
-
-from produtil.run import batchexe
-from produtil.run import checkrun
-
+from command_runner import CommandRunner
 from abc import ABCMeta
 
 
 class CommandBuilder:
     __metaclass__ = ABCMeta
+
 
     def __init__(self, p, logger):
         '''Retrieve parameters from corresponding param file'''
@@ -40,7 +37,9 @@ class CommandBuilder:
         self.debug = False
         self.app_name = None
         self.app_path = None
-        self.env = os.environ.copy()        
+        self.env = os.environ.copy()
+        self.set_verbose(self.p.getstr('config', 'LOG_MET_VERBOSITY', '2'))
+        self.cmdrunner = CommandRunner(self.p, logger=self.logger)
         self.clear()
 
     def clear(self):
@@ -50,7 +49,7 @@ class CommandBuilder:
         self.outdir = ""
         self.outfile = ""
         self.param = ""
-        self.verbose = -1
+        #self.verbose = -1
 
 
     def set_debug(self, debug):
@@ -91,6 +90,13 @@ class CommandBuilder:
 
     def add_env_var(self, key,  name):
         self.env[key] = name
+        # Note: Modify os.environ directly since it is automatically
+        # copied to the produtil runner environment. If needed,
+        # we could also pass self.env to the command runner,
+        # My preference would be to only copy the env vars
+        # required, not the whole environment, since that is already
+        # being done.
+        os.environ[key] = name
 
     def get_env(self):
         return self.env
@@ -125,6 +131,10 @@ class CommandBuilder:
             return None
 
         cmd = self.app_path + " "
+
+        if self.verbose != -1:
+            cmd += "-v "+str(self.verbose) + " "
+
         for a in self.args:
             cmd += a + " "
 
@@ -146,20 +156,27 @@ class CommandBuilder:
             (self.logger).error("No output directory specified")
             return None
 
-        if self.verbose != -1:
-            cmd += " -v "+str(self.verbose)
+        cmd += " " + os.path.join(self.outdir, self.outfile)
 
-        cmd += os.path.join(self.outdir, self.outfile)
         return cmd
 
+    # Placed running of command in its own class, command_runner run_cmd().
+    # This will allow the ability to still call build() as is currenly done
+    # in subclassed CommandBuilder wrappers and also allow wrappers
+    # such as tc_pairs that are not heavily designed around command builder
+    # to call cmdrunner.run_cmd().
+    # Make sure they have SET THE self.app_name in the subclasses constructor.
+    # see regrid_data_plane_wrapper.py as an example of how to set.
     def build(self):
         '''Build and run command'''
         cmd = self.get_command()
         if cmd is None:
             return
-        (self.logger).info("RUNNING: " + cmd)
-        process = subprocess.Popen(cmd, env=self.env, shell=True)
-        process.wait()
+        self.cmdrunner.run_cmd(cmd, app_name=self.app_name)
+
+        #self.logger.info("RUNNING: " + cmd)
+        #process = subprocess.Popen(cmd, env=self.env, shell=True)
+        #process.wait()
 
 
     def run_all_times(self):
