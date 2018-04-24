@@ -1006,8 +1006,10 @@ class StringSub:
 
 class StringExtract:
     def __init__(self, log, temp, fstr):
+        self.logger = log
         self.temp = temp
         self.fstr = fstr
+
         self.validTime = None
         self.initTime = None
         self.leadTime = -1
@@ -1043,8 +1045,21 @@ class StringExtract:
         mIdx = -1
         dIdx = -1
         hIdx = -1
+        minIdx = -1
         lead = -1
         level = -1
+
+        validYear = -1
+        validMonth = -1
+        validDay = -1
+        validHour = 0
+        validMin = 0
+
+        initYear = -1
+        initMonth = -1
+        initDay = -1
+        initHour = 0
+        initMin = 0
 
         inValid = False
         inLevel = False
@@ -1054,6 +1069,7 @@ class StringExtract:
         while i < tempLen:
             if self.temp[i] == TEMPLATE_IDENTIFIER_BEGIN:
                 i += 1
+                # TODO: change 9 and 8 to len(VALID_STRING) + len(?fmt=)
                 if self.temp[
                    i:i + len(VALID_STRING) + 5] == VALID_STRING + "?fmt=":
                     inValid = True
@@ -1072,60 +1088,62 @@ class StringExtract:
                     i += 8
             elif self.temp[i] == TEMPLATE_IDENTIFIER_END:
                 if inValid:
-                    if yIdx == -1 or mIdx == -1 or dIdx == -1:
-                        print("ERROR: Invalid valid time")
-                        exit(1)
-                    if hIdx == -1:
-                        hour = 0
-                    else:
-                        hour = int(self.fstr[hIdx:hIdx + 2])
-                    self.validTime = \
-                        datetime.datetime(int(self.fstr[yIdx:yIdx + 4]),
-                                          int(self.fstr[mIdx:mIdx + 2]),
-                                          int(self.fstr[dIdx:dIdx + 2]),
-                                          hour, 0)
+                    if yIdx != -1:
+                        validYear = int(self.fstr[yIdx:yIdx+4])
+                    if mIdx != -1:
+                        validMonth = int(self.fstr[mIdx:yIdx+2])
+                    if dIdx != -1:
+                        validDay = int(self.fstr[dIdx:dIdx+2])
+                    if hIdx != -1:
+                        validHour = int(self.fstr[hIdx:hIdx + 2])
+                    if minIdx != -1:
+                        validMin = int(self.fstr[minIdx:minIdx + 2])                        
+
                     yIdx = -1
                     mIdx = -1
                     dIdx = -1
                     hIdx = -1
+                    minIdx = -1
                     inValid = False
 
                 if inInit:
-                    if yIdx == -1 or mIdx == -1 or dIdx == -1:
-                        print("ERROR: Invalid init time")
-                        exit(1)
-                    if hIdx == -1:
-                        hour = 0
-                    else:
-                        hour = int(self.fstr[hIdx:hIdx + 2])
-                    self.initTime = \
-                        datetime.datetime(int(self.fstr[yIdx:yIdx + 4]),
-                                          int(self.fstr[mIdx:mIdx + 2]),
-                                          int(self.fstr[dIdx:dIdx + 2]),
-                                          hour, 0)
+                    if yIdx != -1:
+                        initYear = int(self.fstr[yIdx:yIdx + 4])
+                    if mIdx != -1:
+                        initMonth = int(self.fstr[mIdx:mIdx + 2])
+                    if dIdx != -1:
+                        initDay = int(self.fstr[dIdx:dIdx + 2])
+                    if hIdx != -1:
+                        initHour = int(self.fstr[hIdx:hIdx + 2])
+                    if minIdx != -1:
+                        initMin = int(self.fstr[minIdx:minIdx + 2])                        
+
                     yIdx = -1
                     mIdx = -1
                     dIdx = -1
                     hIdx = -1
+                    minIdx = -1
                     inInit = False
 
                 elif inLevel:
                     if level == -1:
-                        print("ERROR: Invalid level time")
-                        exit(1)
+                        self.logger.error("Invalid level time")
+                        return False
                     self.levelTime = int(level) * SECONDS_PER_HOUR
                     level = -1
                     inLevel = False
 
                 elif inLead:
                     if lead == -1:
-                        print("ERROR: Invalid lead time")
-                        exit(1)
+                        self.logger.error("Invalid lead time")
+                        return False
                     self.leadTime = int(lead) * SECONDS_PER_HOUR
                     lead = -1
                     inLead = False
 
             elif inValid:
+                # TODO: Handle minutes?
+                # TODO: consolidate inValid and inInit?
                 if self.temp[i:i + 2] == "%Y":
                     yIdx = idx
                     idx += 4
@@ -1142,6 +1160,10 @@ class StringExtract:
                     hIdx = idx
                     idx += 2
                     i += 1
+                elif self.temp[i:i + 2] == "%M":
+                    minIdx = idx
+                    idx += 2
+                    i += 1                    
             elif inInit:
                 if self.temp[i:i + 2] == "%Y":
                     yIdx = idx
@@ -1159,6 +1181,10 @@ class StringExtract:
                     hIdx = idx
                     idx += 2
                     i += 1
+                elif self.temp[i:i + 2] == "%M":
+                    minIdx = idx
+                    idx += 2
+                    i += 1                                        
             elif inLevel:
                 if self.temp[i:i + 4] == "%HHH":
                     level = self.fstr[idx:idx + 3]
@@ -1180,3 +1206,21 @@ class StringExtract:
             else:
                 idx += 1
             i += 1
+
+        if validYear != -1 and validMonth != -1 and validDay != -1:
+            self.validTime = \
+                datetime.datetime(validYear,
+                                  validMonth,
+                                  validDay,
+                                  validHour,
+                                  validMin)
+
+        if initYear != -1 and initMonth != -1 and initDay != -1:
+            self.initTime = \
+                datetime.datetime(initYear,
+                                  initMonth,
+                                  initDay,
+                                  initHour,
+                                  initMin)
+        # TODO: Check if success? Or wrap getValid/InitTime with == None check?
+        return True
