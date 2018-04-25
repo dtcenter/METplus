@@ -400,6 +400,7 @@ class PcpCombineWrapper(CommandBuilder):
 #                            in_template, out_template):
     def run_subtract_method(self, task_info, var_info, accum, in_dir,
                             out_dir, in_template, out_template):
+        self.clear()
         init_time = task_info.getInitTime()
         valid_time = task_info.getValidTime()
         lead = task_info.getLeadTime()
@@ -446,6 +447,7 @@ class PcpCombineWrapper(CommandBuilder):
 
     def run_sum_method(self, valid_time, init_time, in_accum, out_accum,
                        input_dir, output_dir, output_template):
+        self.clear()
         self.set_method("SUM")
         self.set_init_time(init_time)
         self.set_valid_time(valid_time)        
