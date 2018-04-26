@@ -113,9 +113,7 @@ class CommandBuilder:
         self.logger.debug(out)
 
     def print_env_item(self, item):
-        # TODO: Fix logger call here
-        (self.logger).debug(item+"="+self.env[item])
-        #    print(item,":",self.env[item])
+        self.logger.debug(item+"="+self.env[item])
 
     def get_command(self):
         '''Build command to run from arguments'''
