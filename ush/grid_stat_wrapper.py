@@ -166,7 +166,7 @@ class GridStatWrapper(CommandBuilder):
         valid_time = ti.getValidTime()
         init_time = ti.getInitTime()
         grid_stat_base_dir = self.p.getstr('config', 'GRID_STAT_OUT_DIR')
-        if self.p.getbool('config', 'LOOP_BY_INIT'):
+        if self.p.getbool('config', 'LOOP_BY_INIT', True):
             grid_stat_out_dir = os.path.join(grid_stat_base_dir,
                                      init_time, "grid_stat")
         else:

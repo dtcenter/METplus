@@ -103,7 +103,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def grid2grid_pres_plot_format(self):
         #read config
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT')
+        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
             start_t = self.p.getstr('config', 'INIT_BEG')
             end_t = self.p.getstr('config', 'INIT_END')
@@ -182,7 +182,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def grid2grid_anom_plot_format(self):
         #read config
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT')
+        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
             start_t = self.p.getstr('config', 'INIT_BEG')
             end_t = self.p.getstr('config', 'INIT_END')
@@ -290,7 +290,7 @@ class StatAnalysisWrapper(CommandBuilder):
  
     def grid2grid_sfc_plot_format(self):
         #read config
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT')
+        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
             start_t = self.p.getstr('config', 'INIT_BEG')
             end_t = self.p.getstr('config', 'INIT_END')

@@ -138,7 +138,7 @@ def main():
             process.run_all_times()
 
     elif p.getstr('config', 'LOOP_METHOD') == "times":
-        use_init = p.getbool('config', 'LOOP_BY_INIT')
+        use_init = p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
             time_format = p.getstr('config', 'INIT_TIME_FMT')
             start_t = p.getstr('config', 'INIT_BEG')
