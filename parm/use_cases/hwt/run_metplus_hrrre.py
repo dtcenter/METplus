@@ -8,11 +8,7 @@ os.environ["VALID_BEG_IN"] = "2018041400"
 os.environ["VALID_END_IN"] = "2018041500"
 
 ens_num_list = ["01","02","03","04","05","06","07","08","09"]
-varstuff_list = [("REFC","L0"),("REFC","MergedReflectivityQCComposite"),("REFC","Z500"),
-    ("MXUPHL","Z2000-5000"),("MXUPHL","RotationTrack60min"),("MXUPHL","Z500")]
-varstuff = defaultdict(list)
-for var,desc in varstuff_list:
-    varstuff[var].append(desc)
+varstuff={"REFC":["L0","MergedReflectivityQCComposite","Z500"],"MXUPHL":["Z2000-5000","RotationTrack60min","Z500"]}
 
 #TODO...  Switch to Burkley's mask
 polymaskfile = create_poly(os.environ.get("VALID_BEG_IN"))
@@ -33,17 +29,13 @@ for ens_num in ens_num_list:
     os.environ["FCST_INPUT_TEMPLATE_IN"] = "{init?fmt=%Y%m%d%H}/hrrre"+ens_num+"_{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.grib2"
     os.environ["MODEL_TYPE_IN"] = "HRRRe"+ens_num
 
-    for vv in varstuff_dict:
+    for vv in varstuff:
         os.environ["FCST_VAR_IN"] = vv
         os.environ["FCST_LVL_IN"] = varstuff[vv][0]
 
         os.environ["OBS_VAR_IN"] = varstuff[vv][1]
         os.environ["OBS_LVL_IN"] = varstuff[vv][2]
 
-        os.environ["OUT_DIR_IN"] = "/raid/efp/se2018/ftp/dtc/HRRRe"
-        print(vv)
-        print(varstuff[vv][0])
-        print(varstuff[vv][0])
-        print(varstuff[vv][0])
-        
+        os.environ["OUT_DIR_IN"] = "/raid/efp/se2018/ftp/dtc/HRRRe"+ens_num
+             
         os.system('./master_metplus.py -c ../parm/use_cases/hwt/grid2grid_hwt_env.conf')
