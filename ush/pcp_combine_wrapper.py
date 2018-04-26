@@ -31,7 +31,6 @@ from command_builder import CommandBuilder
 from task_info import TaskInfo
 from gempak_to_cf_wrapper import GempakToCFWrapper
 
-# TODO: Default method is ADD, should this start unset?
 class PcpCombineWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(PcpCombineWrapper, self).__init__(p, logger)
@@ -122,37 +121,45 @@ class PcpCombineWrapper(CommandBuilder):
 
     def getLowestForecastFile(self, valid_time, search_time, template):
         # search for dated dir and without, combine two glob results and sort
-        out_file = ""
+        out_file = None
         # used to find lowest forecast
         lowest_fcst = 999999
-        # TODO: Rethink this? causes problems if both formats exist in dir
-        files_dated = glob.glob("{:s}/{:s}/*".format(self.input_dir,
-                                                      str(search_time)[0:8]))
-        files_nodate = glob.glob("{:s}/*".format(self.input_dir))
-        files = sorted(files_dated + files_nodate)
+        num_slashes = template.count('/')
+        search_string = "{:s}/*"
+        for n in range(num_slashes):
+            search_string += "/*"
+
+        all_files = glob.glob(search_string.format(self.input_dir))
+        files = sorted(all_files)
 
         for fpath in files:
+            # TODO: Replace with util.get_time_from_file(fpath, template)
             # check if result is a file or not
-            if os.path.isdir(fpath):
-                continue
+#            if os.path.isdir(fpath):
+#                continue
 
             # Check number of / in template, get same number from file path
-            num_slashes = template.count('/')
-            path_split = fpath.split('/')
-            f = ""
-            for n in range(num_slashes, -1, -1):
-                f = os.path.join(f,path_split[-(n+1)])
+#            path_split = fpath.split('/')
+#            f = ""
+#            for n in range(num_slashes, -1, -1):
+#                f = os.path.join(f,path_split[-(n+1)])
 
-            se = sts.StringExtract(self.logger, template, f)
+#            se = sts.StringExtract(self.logger, template, f)
+            se = util.get_time_from_file(self.logger, fpath, template)
+            
             # TODO: should parseTemplate return false on failure instead of crashing?
-            se.parseTemplate()
+#            se.parseTemplate()
+            if se == None:
+                return None
 
             fcst = se.leadHour
             if fcst is -1:
-                print("ERROR: Could not pull forecast lead from f")
+                self.logger.error("Could not pull forecast lead from f")
                 exit
 
             init = se.getInitTime("%Y%m%d%H%M")
+#            if init == None:
+#                return None
             v = util.shift_time(init, fcst)
             if v == valid_time and fcst < lowest_fcst:
                 out_file = fpath
@@ -171,7 +178,7 @@ class PcpCombineWrapper(CommandBuilder):
         #  days to look back
         out_file = self.getLowestForecastFile(valid_time, day_before, input_template)
         out_file2 = self.getLowestForecastFile(valid_time, valid_time, input_template)
-        if out_file2 == "":
+        if out_file2 == None:
             return out_file
         else:
             return out_file2
@@ -185,7 +192,7 @@ class PcpCombineWrapper(CommandBuilder):
                                    os.path.basename(f))
             se.parseTemplate()
             ftime = se.getValidTime("%Y%m%d%H")
-            if ftime < file_time:
+            if ftime != None and ftime < file_time:
                 out_file = f
         return out_file
 
@@ -247,7 +254,7 @@ class PcpCombineWrapper(CommandBuilder):
         while last_time <= start_time:
             if is_forecast:
                 f = self.get_lowest_forecast_at_valid(start_time, data_src)
-                if f == "":
+                if f == None:
                     break
                 ob_str = self.p.getstr('config',
                                        data_src + '_' + str(level) +
@@ -400,6 +407,7 @@ class PcpCombineWrapper(CommandBuilder):
 #                            in_template, out_template):
     def run_subtract_method(self, task_info, var_info, accum, in_dir,
                             out_dir, in_template, out_template):
+        self.clear()
         init_time = task_info.getInitTime()
         valid_time = task_info.getValidTime()
         lead = task_info.getLeadTime()
@@ -436,7 +444,7 @@ class PcpCombineWrapper(CommandBuilder):
 
         cmd = self.get_command()
         if cmd is None:
-            print("ERROR: pcp_combine could not generate command")
+            self.logger.error("pcp_combine could not generate command")
             return
         self.logger.info("")
         self.build()
@@ -446,6 +454,7 @@ class PcpCombineWrapper(CommandBuilder):
 
     def run_sum_method(self, valid_time, init_time, in_accum, out_accum,
                        input_dir, output_dir, output_template):
+        self.clear()
         self.set_method("SUM")
         self.set_init_time(init_time)
         self.set_valid_time(valid_time)        
@@ -467,7 +476,7 @@ class PcpCombineWrapper(CommandBuilder):
 
         cmd = self.get_command()
         if cmd is None:
-            print("ERROR: pcp_combine could not generate command")
+            self.logger.error("pcp_combine could not generate command")
             return
         self.logger.info("")
         self.build()
@@ -520,13 +529,13 @@ class PcpCombineWrapper(CommandBuilder):
                     if data_type == "NETCDF":
                         nfile = os.path.splitext(nfile)[0] + '.nc'
                         if not os.path.isfile(nfile):
-                            print("Calling GempakToCF to convert to NetCDF")
+                            self.logger.info("Calling GempakToCF to convert to NetCDF")
                             run_g2c = GempakToCFWrapper(self.p, self.logger)
                             run_g2c.add_input_file(infile)
                             run_g2c.set_output_path(nfile)
                             cmd = run_g2c.get_command()
                             if cmd is None:
-                                print("ERROR: GempakToCF could not generate command")
+                                self.logger.error("GempakToCF could not generate command")
                                 continue
                             run_g2c.build()
                     infiles[idx] = nfile
@@ -548,7 +557,7 @@ class PcpCombineWrapper(CommandBuilder):
         self.add_arg("-name " + compare_var + "_" + str(accum).zfill(2))
         cmd = self.get_command()
         if cmd is None:
-            print("ERROR: pcp_combine could not generate command")
+            self.logger.error("pcp_combine could not generate command")
             return
         self.logger.info("")
         self.build()
