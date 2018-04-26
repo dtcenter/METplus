@@ -16,6 +16,7 @@ import subprocess
 from produtil.run import batchexe
 from produtil.run import run
 from string_template_substitution import StringSub
+from string_template_substitution import StringExtract
 from tc_stat_wrapper import TcStatWrapper
 
 """!@namespace met_util
@@ -1278,10 +1279,14 @@ def getlistint(s):
     return s
 
 
-# hours
+# minutes
 def shift_time(time, shift):
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(hours=shift)).strftime("%Y%m%d%H%M")
+
+def shift_time_minutes(time, shift):
+    return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
+            datetime.timedelta(minutes=shift)).strftime("%Y%m%d%H%M")
 
 
 class FieldObj(object):
@@ -1464,6 +1469,25 @@ def get_filetype(config, filepath):
     regex = re.search("netcdf", result)
     if regex is not None:
         return "NETCDF"
+    else:
+        return None
+
+
+def get_time_from_file(logger, filepath, template):
+    if os.path.isdir(filepath):
+        return None
+
+    # Check number of / in template, get same number from file path
+    num_slashes = template.count('/')
+    path_split = filepath.split('/')
+    f = ""
+    for n in range(num_slashes, -1, -1):
+        f = os.path.join(f,path_split[-(n+1)])
+#    print(f+" and "+template)
+    se = StringExtract(logger, template, f)
+
+    if se.parseTemplate():
+        return se
     else:
         return None
 
