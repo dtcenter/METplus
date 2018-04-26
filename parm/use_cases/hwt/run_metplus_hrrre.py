@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-from collections import defaultdict
 from create_met_poly import create_poly
 
 os.environ["VALID_BEG_IN"] = "2018041400"
