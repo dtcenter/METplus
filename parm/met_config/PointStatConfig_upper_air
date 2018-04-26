@@ -77,7 +77,7 @@ obs = fcst;
 //message_type   = [ "ADPUPA" ];
 message_type = ${POINT_STAT_MESSAGE_TYPE};
 sid_exc        = [];
-obs_quality    = [];
+obs_quality    = [ "1", "2", "3" ];
 duplicate_flag = NONE;
 obs_summary    = NONE;
 obs_perc_value = 50;
@@ -118,8 +118,10 @@ write_cdf_bins = FALSE;
 // Point observation time window
 //
 obs_window = {
-   beg = -2700;
-   end =  2700;
+   // beg = -2700;
+  // end =  2700;
+  beg = ${OBS_WINDOW_BEGIN};
+  end = ${OBS_WINDOW_END};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

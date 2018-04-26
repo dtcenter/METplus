@@ -28,8 +28,10 @@ station_id = ${PB2NC_STATION_ID};
 // Observation time window
 //
 obs_window = {
-   beg = -2700;
-   end =  2700;
+   // beg = -2700;
+  // end =  2700;
+  beg = ${OBS_WINDOW_BEGIN};
+  end = ${OBS_WINDOW_END};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +61,7 @@ elevation_range = {
 //
 // Observation types
 //
-pb_report_type  = [120, 220, 221, 122, 222, 223, 224, 131, 133, 233, 153, 156, 157, 180, 280, 181, 182, 281, 282, 183, 284, 187, 287];
+pb_report_type = [120, 220, 221, 122, 222, 223, 224, 131, 133, 233, 153, 156, 157, 180, 280, 181, 182, 281, 282, 183, 284, 187, 287];
 
 in_report_type  = [];
 
@@ -75,7 +77,7 @@ level_range = {
    end = 511;
 }
 
-level_category = [];
+level_category = [0, 1, 4, 5, 6];
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -83,7 +85,7 @@ level_category = [];
 // BUFR variable names to retain or derive.
 // If emtpy, process all available variables.
 //
-//obs_bufr_var = [ "QOB", "TOB", "ZOB", "UOB", "VOB" ];
+//obs_bufr_var = [ "QOB", "TOB", "ZOB", "UOB", "VOB", "PMO" ];
 obs_bufr_var =  ${OBS_BUFR_VAR_LIST} ;
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -114,6 +116,7 @@ obs_prefbufr_map = [
    { key = "ZOB";     val = "HGT";   },
    { key = "UOB";     val = "UGRD";  },
    { key = "VOB";     val = "VGRD";  },
+   { key = "PMO";     val = "PRMSL"; },
    { key = "D_DPT";   val = "DPT";   },
    { key = "D_WDIR";  val = "WDIR";  },
    { key = "D_WIND";  val = "WIND";  },
@@ -125,7 +128,7 @@ obs_prefbufr_map = [
 
 ////////////////////////////////////////////////////////////////////////////////
 
-quality_mark_thresh = 2;
+quality_mark_thresh = 3;
 event_stack_flag    = TOP;
 
 ////////////////////////////////////////////////////////////////////////////////

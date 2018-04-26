@@ -92,6 +92,7 @@ class PointStatWrapper(CommandBuilder):
             self.p.getstr('dir', 'POINT_STAT_OUTPUT_DIR')
 
         # Configuration
+        ps_dict['TIME_METHOD'] = self.p.getstr('config', 'TIME_METHOD')
         ps_dict['LOOP_METHOD'] = self.p.getstr('config', 'LOOP_METHOD')
         ps_dict['MODEL_NAME'] = self.p.getstr('config', 'MODEL_NAME')
         ps_dict['OBS_NAME'] = self.p.getstr('config', 'OBS_NAME')
@@ -115,6 +116,10 @@ class PointStatWrapper(CommandBuilder):
         ps_dict['FCST_HR_END'] = self.p.getstr('config', 'FCST_HR_END')
         ps_dict['FCST_HR_INTERVAL'] = self.p.getstr('config',
                                                     'FCST_HR_INTERVAL')
+
+        ps_dict['OBS_WINDOW_BEGIN'] = self.p.getstr('config', 'OBS_WINDOW_BEGIN')
+        ps_dict['OBS_WINDOW_END'] = self.p.getstr('config', 'OBS_WINDOW_END')
+
         # Filename templates and regex patterns for input dirs and filenames
         ps_dict['FCST_INPUT_FILE_REGEX'] = \
             self.p.getraw('regex_pattern', 'FCST_INPUT_FILE_REGEX')
@@ -281,6 +286,10 @@ class PointStatWrapper(CommandBuilder):
         self.add_env_var(b'FCST_FIELD', met_fields.fcst_field)
         self.add_env_var(b'OBS_FIELD', met_fields.obs_field)
 
+        # Set the environment variables corresponding to the obs_window dictionary.
+        self.add_env_var(b'OBS_WINDOW_BEGIN', str(self.ps_dict['OBS_WINDOW_BEGIN']))
+        self.add_env_var(b'OBS_WINDOW_END', str(self.ps_dict['OBS_WINDOW_END']))
+
     def select_fcst_obs_pairs(self):
         """! Select file pairings of fcst and obs input files based on valid
              time:
@@ -393,6 +402,7 @@ class PointStatWrapper(CommandBuilder):
         # Whenever there is more than one fcst file with the same valid time,
         # keep it, because we want to perform verification for all fcst/model
         # forecast hours.
+        time_method = self.ps_dict['TIME_METHOD']
         valid_start = self.ps_dict['START_DATE']
         valid_end = self.ps_dict['END_DATE']
 
@@ -414,13 +424,23 @@ class PointStatWrapper(CommandBuilder):
 
         # create a list of tuples: date (yyyymmdd) and forecast hour (both
         # in seconds) to represent all the valid times of interest.
-        for cur_date in range(date_start, date_end, fhr_interval_secs):
-            for cur_fhr in range(fhr_start_secs, last_fhr,
-                                 fhr_interval_secs):
-                cur_valid_time = cur_date + cur_fhr
-                if cur_valid_time not in all_valid_times:
-                    all_valid_times.append(cur_valid_time)
-            all_dates.append(cur_date)
+        if time_method == 'BY_VALID':
+            for cur_date in range(date_start, date_end, fhr_interval_secs):
+                for cur_fhr in range(fhr_start_secs, last_fhr,
+                                     fhr_interval_secs):
+                    cur_init_time = cur_date - cur_fhr
+                    if cur_init_time not in all_dates:
+                        all_dates.append(cur_init_time)
+                all_valid_times.append(cur_date)
+
+        if time_method == 'BY_INIT': #original code from Minna
+            for cur_date in range(date_start, date_end, fhr_interval_secs):
+                for cur_fhr in range(fhr_start_secs, last_fhr,
+                                     fhr_interval_secs):
+                    cur_valid_time = cur_date + cur_fhr
+                    if cur_valid_time not in all_valid_times:
+                        all_valid_times.append(cur_valid_time)
+                all_dates.append(cur_date)
 
         InputFileInfo = namedtuple('InputFileInfo',
                                    'full_filepath, date, '

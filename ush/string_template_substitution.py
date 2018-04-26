@@ -1074,6 +1074,7 @@ class StringExtract:
             if self.temp[i] == TEMPLATE_IDENTIFIER_BEGIN:
                 # increment past TEMPLATE_IDENTIFIER_BEGIN
                 i += 1
+                # TODO: change 9 and 8 to len(VALID_STRING) + len(?fmt=)
                 if self.temp[
                    i:i + len(VALID_STRING) + fmt_len] == VALID_STRING + "?fmt=":
                     inValid = True
@@ -1146,7 +1147,6 @@ class StringExtract:
                     inLead = False
 
             elif inValid or inInit:
-                # TODO: consolidate inValid and inInit?
                 if self.temp[i:i + 2] == "%Y":
                     yIdx = idx
                     idx += 4
@@ -1167,27 +1167,6 @@ class StringExtract:
                     minIdx = idx
                     idx += 2
                     i += 1
-#            elif inInit:
-#                if self.temp[i:i + 2] == "%Y":
-#                    yIdx = idx
-#                    idx += 4
-#                    i += 1
-#                elif self.temp[i:i + 2] == "%m":
-#                    mIdx = idx
-#                    idx += 2
-#                    i += 1
-#                elif self.temp[i:i + 2] == "%d":
-#                    dIdx = idx
-#                    idx += 2
-#                    i += 1
-#                elif self.temp[i:i + 2] == "%H":
-#                    hIdx = idx
-#                    idx += 2
-#                    i += 1
-#                elif self.temp[i:i + 2] == "%M":
-#                    minIdx = idx
-#                    idx += 2
-#                    i += 1
             elif inLevel:
                 if self.temp[i:i + 4] == "%HHH":
                     level = self.fstr[idx:idx + 3]

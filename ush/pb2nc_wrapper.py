@@ -117,6 +117,9 @@ class PB2NCWrapper(CommandBuilder):
             self.p.getstr('conf', 'TIME_SUMMARY_VAR_NAMES'))
         pb_dict['TIME_SUMMARY_TYPES'] = util.getlist(
             self.p.getstr('config', 'TIME_SUMMARY_TYPES'))
+        pb_dict['OBS_WINDOW_BEGIN'] = self.p.getstr('config', 'OBS_WINDOW_BEGIN')
+        pb_dict['OBS_WINDOW_END'] = self.p.getstr('config', 'OBS_WINDOW_END')
+
         pb_dict['OVERWRITE_NC_OUTPUT'] = \
             self.p.getstr('config', 'OVERWRITE_NC_OUTPUT').lower()
 
@@ -141,7 +144,6 @@ class PB2NCWrapper(CommandBuilder):
         return pb_dict
 
     def main(self):
-        """! Main entry point to the pb2nc wrapper if running stand-alone"""
 
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
@@ -306,6 +308,10 @@ class PB2NCWrapper(CommandBuilder):
         self.add_env_var(b'TIME_SUMMARY_VAR_NAMES', time_summary_var_names_str)
         time_summary_types_str = str(self.pb_dict['TIME_SUMMARY_TYPES'])
         self.add_env_var(b'TIME_SUMMARY_TYPES', time_summary_types_str)
+
+        # Add the environment variables corresponding to the obs_window dictionary in MET.
+        self.add_env_var('OBS_WINDOW_BEGIN', str(self.pb_dict['OBS_WINDOW_BEGIN']))
+        self.add_env_var('OBS_WINDOW_END', str(self.pb_dict['OBS_WINDOW_END']))
 
         # Determine the files to convert based on init or valid start and
         # end times and a time interval.
@@ -633,10 +639,6 @@ class PB2NCWrapper(CommandBuilder):
                     'DEBUG|:' + cur_function + '|' + cur_filename +
                     ' Finished running pb2nc...')
                 self.clear()
-
-                # pb2nc_cmd = \
-                #     batchexe('sh')['-c', cmd].err2out()
-                # run(pb2nc_cmd)
 
             else:
                 self.logger.debug("DEBUG|:" + cur_function + '|' +
