@@ -20,10 +20,14 @@ import os
 import sys
 import re
 import csv
-import subprocess
+#import subprocess
 import produtil.setup
-from produtil.run import batchexe
-from produtil.run import run
+from produtil.run import ExitStatusException
+#from produtil.run import batchexe
+#from produtil.run import run
+# TODO - critical  must import met_util before CommandBuilder
+# MUST import met_util BEFORE command_builder, else it breaks stand-alone
+import met_util as util
 from command_builder import CommandBuilder
 import met_util as util
 import config_metplus
@@ -50,8 +54,9 @@ class TcPairsWrapper(CommandBuilder):
         self.app_path = os.path.join(p.getdir('MET_INSTALL_DIR'), 'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
         if self.logger is None:
-            self.logger = util.get_logger(self.p)
+            self.logger = util.get_logger(self.p,sublog='TcPairs')
         self.cmd = ''
+        self.logger.info("Initialized TcPairsWrapper")
 
     def read_modify_write_file(self, in_csvfile, storm_month, missing_values,
                                out_csvfile):
@@ -126,6 +131,7 @@ class TcPairsWrapper(CommandBuilder):
         # sys._getframe is a legitimate way to access the current
         # filename and method.
         # Used for logging information
+        self.logger.info("Started run_all_times in TcPairsWrapper")
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
@@ -274,8 +280,26 @@ class TcPairsWrapper(CommandBuilder):
                     #                       "Problem executing: " +
                     #                       cmd.to_shell())
                     #     exit(0)
-                    self.build()
-                    self.clear()
+                    #self.build()
+                    #self.clear()
+
+                    # Since this wrapper is not using the CommandBuilder to build the cmd,
+                    # we need to add the met verbosity level to the cmd created before we
+                    # run the command.
+                    cmd = self.cmdrunner.insert_metverbosity_opt(cmd)
+
+                    try:
+                        (ret, cmd) = self.cmdrunner.run_cmd(cmd, sleeptime=.00001, app_name=self.app_name)
+
+                        if not ret == 0:
+                            raise ExitStatusException('%s: non-zero exit status'%(repr(cmd),),ret)
+
+                    except ExitStatusException as ese:
+                        self.logger.error(ese)
+                        exit(ret)
+
+
+        self.logger.info("Completed run_all_times in TcPairsWrapper")
 
     def setup_tropical_track_dirs(self, deck_input_file_path, deck_file_path,
                                   storm_month, missing_values):

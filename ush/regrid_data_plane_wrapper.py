@@ -84,7 +84,7 @@ class RegridDataPlaneWrapper(CommandBuilder):
         self.add_arg("-name " + field_name)
         cmd = self.get_command()
         if cmd is None:
-            print("ERROR: regrid_data_plane could not generate command")
+            self.logger.error("regrid_data_plane could not generate command")
             return
         self.logger.info("")
         self.build()

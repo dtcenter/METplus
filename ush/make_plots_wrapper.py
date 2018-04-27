@@ -60,7 +60,7 @@ class MakePlotsWrapper(CommandBuilder):
         plotting_scripts_dir = self.p.getstr('config', 'PLOTTING_SCRIPTS_DIR')
         #python_v3_dir = self.p.getstr('config', 'PYTHON_V3_DIR')
         #read config
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT')
+        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
             start_t = self.p.getstr('config', 'INIT_BEG')
             end_t = self.p.getstr('config', 'INIT_END')
@@ -196,7 +196,7 @@ class MakePlotsWrapper(CommandBuilder):
         plotting_scripts_dir = self.p.getstr('config', 'PLOTTING_SCRIPTS_DIR')
         #python_v3_dir = self.p.getstr('config', 'PYTHON_V3_DIR')
         #read config
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT')
+        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
             start_t = self.p.getstr('config', 'INIT_BEG')
             end_t = self.p.getstr('config', 'INIT_END')
@@ -362,7 +362,7 @@ class MakePlotsWrapper(CommandBuilder):
         plotting_scripts_dir = self.p.getstr('config', 'PLOTTING_SCRIPTS_DIR')
         #python_v3_dir = self.p.getstr('config', 'PYTHON_V3_DIR')
         #read config
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT')
+        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
             start_t = self.p.getstr('config', 'INIT_BEG')
             end_t = self.p.getstr('config', 'INIT_END')

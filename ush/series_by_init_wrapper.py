@@ -11,8 +11,9 @@ import config_metplus
 import met_util as util
 import produtil.setup
 from command_builder import CommandBuilder
-from produtil.run import batchexe
-from produtil.run import run
+#TODO after testing, remove these produtil.run imports
+#from produtil.run import exe
+#from produtil.run import run
 
 '''! @namespace SeriesByInitWrapper
 @brief Performs any optional filtering of input tcst data then performs
@@ -39,11 +40,11 @@ class SeriesByInitWrapper(CommandBuilder):
         super(SeriesByInitWrapper, self).__init__(p, logger)
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
-
+        self.app_name = 'SeriesByInit'
         self.p = p
-        self.logger = logger
+        self.logger=logger
         if self.logger is None:
-            self.logger = util.get_logger(self.p)
+            self.logger = util.get_logger(self.p,sublog='SeriesByInit')
 
         self.var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
         self.stat_list = util.getlist(p.getstr('config', 'STAT_LIST'))
@@ -72,6 +73,8 @@ class SeriesByInitWrapper(CommandBuilder):
         self.outdir = ""
         self.outfile = ""
         self.args = []
+
+        self.logger.info("Initialized SeriesByInitWrapper")
 
     def run_all_times(self):
         """! Invoke the series analysis script based on
@@ -685,10 +688,20 @@ class SeriesByInitWrapper(CommandBuilder):
 
                         data_plane_command = ''.join(
                             data_plane_command_parts)
-                        data_plane_command = \
-                            batchexe('sh')[
-                                '-c', data_plane_command].err2out()
-                        run(data_plane_command)
+                        #TODO after testing remove these commented out lines
+                        #data_plane_command = \
+                        #    batchexe('sh')[
+                        #        '-c', data_plane_command].err2out()
+                        #run(data_plane_command)
+
+                        # Since this wrapper is not using the CommandBuilder
+                        # to build the cmd, we need to add the met verbosity
+                        # level to the MET cmd created before we run
+                        # the command.
+                        data_plane_command = self.cmdrunner.insert_metverbosity_opt\
+                            (data_plane_command)
+                        (ret, cmd) = self.cmdrunner.run_cmd\
+                            (data_plane_command,app_name=self.app_name)
 
                         # Now assemble the command to convert the
                         # postscript file to png
@@ -699,9 +712,11 @@ class SeriesByInitWrapper(CommandBuilder):
                                          plot_data_plane_output_fname,
                                          ' ', png_fname]
                         convert_command = ''.join(convert_parts)
-                        convert_command = \
-                            batchexe('sh')['-c', convert_command].err2out()
-                        run(convert_command)
+                        #TODO after testing, remove these commented out lines
+                        #convert_command = \
+                        #    batchexe('sh')['-c', convert_command].err2out()
+                        #run(convert_command)
+                        (ret, cmd) = self.cmdrunner.run_cmd(convert_command, ismetcmd=False)
 
     def get_storms_for_init(self, cur_init, out_dir_base):
         """! Retrieve all the filter files which have the .tcst

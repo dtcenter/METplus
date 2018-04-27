@@ -193,7 +193,21 @@ class StatAnalysisWrapper(CommandBuilder):
     def grid2grid_pres_plot_format(self):
         self.logger.info("Formatting for plotting for grid2grid-pres")
         #read config
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT')
+        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
+        if use_init:
+            start_t = self.p.getstr('config', 'INIT_BEG')
+            end_t = self.p.getstr('config', 'INIT_END')
+            self.add_env_var("FCST_VALID_BEG", "")
+            self.add_env_var("FCST_VALID_END", "")
+            self.add_env_var("FCST_INIT_BEG", start_t)
+            self.add_env_var("FCST_INIT_END", end_t)
+        else:
+            start_t = self.p.getstr('config', 'VALID_BEG')
+            end_t = self.p.getstr('config', 'VALID_END')
+            self.add_env_var("FCST_VALID_BEG", start_t)
+            self.add_env_var("FCST_VALID_END", end_t)
+            self.add_env_var("FCST_INIT_BEG", "")
+            self.add_env_var("FCST_INIT_END", "")
         stat_analysis_lookin_dir = self.p.getstr('config', 'STAT_ANALYSIS_LOOKIN_DIR')
         stat_analysis_out_dir = self.p.getstr('config', 'STAT_ANALYSIS_OUT_DIR')
         var_list = util.parse_var_list(self.p)
@@ -287,7 +301,22 @@ class StatAnalysisWrapper(CommandBuilder):
     def grid2grid_anom_plot_format(self):
         self.logger.info("Formatting for plotting for grid2grid-anom")
         #read config
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT')
+        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
+        if use_init:
+            start_t = self.p.getstr('config', 'INIT_BEG')
+            end_t = self.p.getstr('config', 'INIT_END')
+            self.add_env_var("FCST_VALID_BEG", "")
+            self.add_env_var("FCST_VALID_END", "")
+            self.add_env_var("FCST_INIT_BEG", start_t)
+            self.add_env_var("FCST_INIT_END", end_t)
+        else:
+            start_t = self.p.getstr('config', 'VALID_BEG')
+            end_t = self.p.getstr('config', 'VALID_END')
+            self.add_env_var("FCST_VALID_BEG", start_t)
+            self.add_env_var("FCST_VALID_END", end_t)
+            self.add_env_var("FCST_INIT_BEG", "")
+            self.add_env_var("FCST_INIT_END", "")
+
         stat_analysis_lookin_dir = self.p.getstr('config', 'STAT_ANALYSIS_LOOKIN_DIR')
         stat_analysis_out_dir = self.p.getstr('config', 'STAT_ANALYSIS_OUT_DIR')
         var_list = util.parse_var_list(self.p)
@@ -410,7 +439,22 @@ class StatAnalysisWrapper(CommandBuilder):
     def grid2grid_sfc_plot_format(self):
         self.logger.info("Formatting for plotting for grid2grid-sfc")
         #read config
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT')
+        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
+        if use_init:
+            start_t = self.p.getstr('config', 'INIT_BEG')
+            end_t = self.p.getstr('config', 'INIT_END')
+            self.add_env_var("FCST_VALID_BEG", "")
+            self.add_env_var("FCST_VALID_END", "")
+            self.add_env_var("FCST_INIT_BEG", start_t)
+            self.add_env_var("FCST_INIT_END", end_t)
+        else:
+            start_t = self.p.getstr('config', 'VALID_BEG')
+            end_t = self.p.getstr('config', 'VALID_END')
+            self.add_env_var("FCST_VALID_BEG", start_t)
+            self.add_env_var("FCST_VALID_END", end_t)
+            self.add_env_var("FCST_INIT_BEG", "")
+            self.add_env_var("FCST_INIT_END", "")
+
         stat_analysis_lookin_dir = self.p.getstr('config', 'STAT_ANALYSIS_LOOKIN_DIR')
         stat_analysis_out_dir = self.p.getstr('config', 'STAT_ANALYSIS_OUT_DIR')
         var_list = util.parse_var_list(self.p)

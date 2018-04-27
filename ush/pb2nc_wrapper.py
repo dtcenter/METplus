@@ -640,10 +640,6 @@ class PB2NCWrapper(CommandBuilder):
                     ' Finished running pb2nc...')
                 self.clear()
 
-                # pb2nc_cmd = \
-                #     batchexe('sh')['-c', cmd].err2out()
-                # run(pb2nc_cmd)
-
             else:
                 self.logger.debug("DEBUG|:" + cur_function + '|' +
                                   cur_filename + ' Not overwriting existing '

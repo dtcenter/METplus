@@ -7,10 +7,10 @@ import sys
 import errno
 import glob
 import produtil.setup
-from produtil.run import batchexe
-from produtil.run import run
-from command_builder import CommandBuilder
+#from produtil.run import batchexe
+#from produtil.run import run
 import met_util as util
+from command_builder import CommandBuilder
 import config_metplus
 
 
@@ -38,10 +38,12 @@ class SeriesByLeadWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
         super(SeriesByLeadWrapper, self).__init__(p, logger)
+        self.app_name = 'SeriesByLead'
         self.p = p
         self.logger = logger
         if self.logger is None:
-            self.logger = util.get_logger(self.p)
+            self.logger = util.get_logger(self.p,sublog='SeriesByLead')
+
         # Retrieve any necessary values from the parm file(s)
         self.fhr_beg = p.getint('config', 'FHR_BEG')
         self.fhr_end = p.getint('config', 'FHR_END')
@@ -98,6 +100,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                                                  'FCST_TILE_REGEX')
             self.anly_tile_regex = self.p.getstr('regex_pattern',
                                                  'ANLY_TILE_REGEX')
+
+        self.logger.info("Initialized SeriesByLeadWrapper")
 
     def run_all_times(self):
         """! Perform a series analysis of extra tropical cyclone
@@ -475,17 +479,27 @@ class SeriesByLeadWrapper(CommandBuilder):
                                           self.series_anly_configuration_file]
                     config_param = ''.join(config_param_parts)
                     series_analysis_cmd_parts = [self.series_analysis_exe, ' ',
-                                                 ' -v 4 ', fcst_param, ' ',
+                                                 fcst_param, ' ',
                                                  obs_param, ' ', config_param,
                                                  ' ', out_param]
                     series_analysis_cmd = ''.join(series_analysis_cmd_parts)
+
+                    # Since this wrapper is not using the CommandBuilder
+                    # to build the cmd, we need to add the met verbosity
+                    # level to the MET cmd created before we run
+                    # the command.
+                    series_analysis_cmd = self.cmdrunner.insert_metverbosity_opt \
+                        (series_analysis_cmd)
+                    (ret, series_analysis_cmd) = self.cmdrunner.run_cmd\
+                        (series_analysis_cmd, app_name=self.app_name)
+
                     msg = ("INFO:[ " + cur_filename + ":" +
                            cur_function + "]|series analysis command: " +
-                           series_analysis_cmd)
+                           series_analysis_cmd.to_shell())
                     self.logger.debug(msg)
-                    series_analysis_cmd = batchexe('sh')[
-                        '-c', series_analysis_cmd].err2out()
-                    run(series_analysis_cmd)
+                    #series_analysis_cmd = batchexe('sh')[
+                    #    '-c', series_analysis_cmd].err2out()
+                    #run(series_analysis_cmd)
 
                     # Clean up any empty files and directories that still
                     # persist.
@@ -624,18 +638,27 @@ class SeriesByLeadWrapper(CommandBuilder):
                                       self.series_anly_configuration_file]
                 config_param = ''.join(config_param_parts)
                 series_analysis_cmd_parts = [self.series_analysis_exe, ' ',
-                                             ' -v 4 ',
                                              fcst_param, ' ', obs_param,
                                              ' ', config_param, ' ',
                                              out_param]
                 series_analysis_cmd = ''.join(series_analysis_cmd_parts)
+
+                # Since this wrapper is not using the CommandBuilder
+                # to build the cmd, we need to add the met verbosity
+                # level to the MET cmd created before we run
+                # the command.
+                series_analysis_cmd = self.cmdrunner.insert_metverbosity_opt \
+                    (series_analysis_cmd)
+                (ret, series_analysis_cmd) = self.cmdrunner.run_cmd\
+                    (series_analysis_cmd, app_name=self.app_name)
+
                 msg = ("INFO:[ " + cur_filename + ":" +
                        cur_function + "]|series analysis command: " +
-                       series_analysis_cmd)
+                       series_analysis_cmd.to_shell())
                 self.logger.debug(msg)
-                series_analysis_cmd = \
-                    batchexe('sh')['-c', series_analysis_cmd].err2out()
-                run(series_analysis_cmd)
+                #series_analysis_cmd = \
+                #    batchexe('sh')['-c', series_analysis_cmd].err2out()
+                #run(series_analysis_cmd)
 
                 # Make sure there aren't any emtpy
                 # files or directories that still persist.
@@ -663,6 +686,10 @@ class SeriesByLeadWrapper(CommandBuilder):
         # Need to call sys.__getframe() to get the filename and method/func
         # for logging information.
 
+        # TODO: Fix ncdump commands so they do not need to be run_inshell
+        # The issue is that > redirect symbol in the command.
+        # This can be fixed by removing that and using .out()
+
         # Useful for logging
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
@@ -686,6 +713,10 @@ class SeriesByLeadWrapper(CommandBuilder):
             self.logger.error(msg)
             sys.exit(1)
 
+        # TODO: critical. harden Do we ant to add -O overwrite option to
+        # all ncap2 commands?? If I restart and not delete output
+        # the user is prompted. This will pause any automation.
+
         # Use NCO utility ncap2 to find the max for the variable and
         # series_cnt_TOTAL pair.
         nseries_nc_path = os.path.join(base_nc_dir, 'nseries.nc')
@@ -694,8 +725,11 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  'max=max(series_cnt_TOTAL)', '" ',
                                  nc_var_file, ' ', nseries_nc_path]
         nco_nseries_cmd = ''.join(nco_nseries_cmd_parts)
-        nco_nseries_cmd = batchexe('sh')['-c', nco_nseries_cmd].err2out()
-        run(nco_nseries_cmd)
+        (ret, nco_nseries_cmd) = self.cmdrunner.run_cmd\
+            (nco_nseries_cmd,ismetcmd=False)
+        #nco_nseries_cmd = batchexe('sh')['-c', nco_nseries_cmd].err2out()
+        #run(nco_nseries_cmd)
+
 
         # Create an ASCII file with the max value, which can be parsed.
         nseries_txt_path = os.path.join(base_nc_dir, 'nseries.txt')
@@ -703,8 +737,10 @@ class SeriesByLeadWrapper(CommandBuilder):
         ncdump_max_cmd_parts = [self.ncdump_exe, ' ', nseries_nc_path,
                                 '> ', nseries_txt_path]
         ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
-        ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
-        run(ncdump_max_cmd)
+        (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd\
+            (ncdump_max_cmd,ismetcmd=False,run_inshell=True)
+        #ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
+        #run(ncdump_max_cmd)
 
         # Look for the max value for this netCDF file.
         try:
@@ -801,8 +837,10 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  '" ', cur_nc, ' ', min_nc_path]
             nco_min_cmd = ''.join(nco_min_cmd_parts)
             self.logger.debug('nco_min_cmd: ' + nco_min_cmd)
-            nco_min_cmd = batchexe('sh')['-c', nco_min_cmd].err2out()
-            run(nco_min_cmd)
+            (ret, nco_min_cmd) = self.cmdrunner.run_cmd\
+                (nco_min_cmd,ismetcmd=False)
+            #nco_min_cmd = batchexe('sh')['-c', nco_min_cmd].err2out()
+            #run(nco_min_cmd)
 
             # now set up file paths for the max value...
             max_nc_path = os.path.join(base_nc_dir, 'max.nc')
@@ -822,8 +860,9 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  '" ', cur_nc, ' ', max_nc_path]
             nco_max_cmd = ''.join(nco_max_cmd_parts)
             self.logger.debug('nco_max_cmd: ' + nco_max_cmd)
-            nco_max_cmd = batchexe('sh')['-c', nco_max_cmd].err2out()
-            run(nco_max_cmd)
+            (ret, nco_max_cmd) = self.cmdrunner.run_cmd(nco_max_cmd,ismetcmd=False)
+            #nco_max_cmd = batchexe('sh')['-c', nco_max_cmd].err2out()
+            #run(nco_max_cmd)
 
             # Create ASCII files with the min and max values, using the
             # NCO utility ncdump.
@@ -831,14 +870,18 @@ class SeriesByLeadWrapper(CommandBuilder):
             ncdump_min_cmd_parts = [self.ncdump_exe, ' ', base_nc_dir,
                                     '/min.nc > ', min_txt_path]
             ncdump_min_cmd = ''.join(ncdump_min_cmd_parts)
-            ncdump_min_cmd = batchexe('sh')['-c', ncdump_min_cmd].err2out()
-            run(ncdump_min_cmd)
+            (ret, ncdump_min_cmd) = self.cmdrunner.run_cmd\
+                (ncdump_min_cmd,ismetcmd=False,run_inshell=True)
+            #ncdump_min_cmd = batchexe('sh')['-c', ncdump_min_cmd].err2out()
+            #run(ncdump_min_cmd)
 
             ncdump_max_cmd_parts = [self.ncdump_exe, ' ', base_nc_dir,
                                     '/max.nc > ', max_txt_path]
             ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
-            ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
-            run(ncdump_max_cmd)
+            (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd\
+                (ncdump_max_cmd,ismetcmd=False,run_inshell=True)
+            #ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
+            #run(ncdump_max_cmd)
 
             # Search for 'min' in the min.txt file.
             try:
@@ -1256,21 +1299,31 @@ class SeriesByLeadWrapper(CommandBuilder):
                                              ' ', str(vmax)]
 
                     plot_data_plane_cmd = ''.join(plot_data_plane_parts)
-                    plot_data_plane_cmd = \
-                        batchexe('sh')['-c', plot_data_plane_cmd].err2out()
+
+                    # Since this wrapper is not using the CommandBuilder
+                    # to build the cmd, we need to add the met verbosity
+                    # level to the MET cmd created before we run
+                    # the command.
+                    plot_data_plane_cmd = self.cmdrunner.insert_metverbosity_opt \
+                        (plot_data_plane_cmd)
+                    (ret, plot_data_plane_cmd) = self.cmdrunner.run_cmd\
+                        (plot_data_plane_cmd, app_name=self.app_name)
+                    #plot_data_plane_cmd = \
+                    #    batchexe('sh')['-c', plot_data_plane_cmd].err2out()
                     msg = ("INFO|[" + cur_filename + ":" +
                            cur_function + "]| plot_data_plane cmd: " +
                            plot_data_plane_cmd.to_shell())
                     self.logger.debug(msg)
-                    run(plot_data_plane_cmd)
+                    #run(plot_data_plane_cmd)
 
                     # Create the convert command.
                     convert_parts = [self.convert_exe, ' -rotate 90 ',
                                      ' -background white -flatten ',
                                      ps_file, ' ', png_file]
                     convert_cmd = ''.join(convert_parts)
-                    convert_cmd = batchexe('sh')['-c', convert_cmd].err2out()
-                    run(convert_cmd)
+                    (ret, convert_cmd) = self.cmdrunner.run_cmd(convert_cmd,ismetcmd=False)
+                    #convert_cmd = batchexe('sh')['-c', convert_cmd].err2out()
+                    #run(convert_cmd)
 
     def create_animated_gifs(self, do_fhr_by_range):
         """! Creates the animated GIF files from the .png files created in
@@ -1326,11 +1379,28 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  level, '_', cur_stat, '.gif']
                     animate_cmd = ''.join(gif_parts)
                     self.logger.debug("animate cmd: {}".format(animate_cmd))
-                    animate_cmd = batchexe('sh')['-c', animate_cmd].err2out()
+                    # TODO: Fix animate_cmd so it does not require run_inshell to work.
+                    # It is working as is, ideally we do not require run_inshell
+                    # The issue has to do with multiple files in the directory
+                    # when using the wild card. If only one file exists than the command
+                    # will run ok without run_inshell.  You can repeat the issue
+                    # by removing run_inshell keyword in the call below and
+                    # running examples/series_by_lead_all_fhrs.conf use case.
+                    # no animated gifs are created.
+                    # convert: unable to open image
+                    # .... No such file or directory @ error/blob.c/OpenBlob/2712.
+                    # convert: unable to open file
+                    # convert: no images defined
+
+                    (ret, animate_cmd) = self.cmdrunner.run_cmd\
+                        (animate_cmd,ismetcmd=False,
+                         run_inshell=True,log_theoutput=True)
+
+                    #animate_cmd = exe('sh')['-c', animate_cmd].err2out()
                     msg = ("INFO|[" + cur_filename + ":" + cur_function +
                            "]| animate command: " + animate_cmd.to_shell())
                     self.logger.debug(msg)
-                    run(animate_cmd)
+                    #run(animate_cmd)
                 else:
                     # For series analysis by forecast hour groups, create a
                     # list of the series analysis output for all the forecast
@@ -1356,11 +1426,16 @@ class SeriesByLeadWrapper(CommandBuilder):
 
                     animate_cmd = ''.join(gif_parts)
                     self.logger.debug("animate cmd: {}".format(animate_cmd))
-                    animate_cmd = batchexe('sh')['-c', animate_cmd].err2out()
+
+                    (ret, animate_cmd) = self.cmdrunner.run_cmd\
+                        (animate_cmd,ismetcmd=False,
+                         run_inshell=True,log_theoutput=True)
+
+                    #animate_cmd = batchexe('sh')['-c', animate_cmd].err2out()
                     msg = ("INFO|[" + cur_filename + ":" + cur_function +
                            "]| animate command: " + animate_cmd.to_shell())
                     self.logger.debug(msg)
-                    run(animate_cmd)
+                    #run(animate_cmd)
 
 
 if __name__ == "__main__":

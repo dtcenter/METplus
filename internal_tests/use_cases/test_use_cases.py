@@ -20,9 +20,15 @@ import met_util as util
 def run_test_use_case(param_file, run_a, run_b):
     metplus_home = "/d1/mccabe/METplus"
     a_conf = metplus_home+"/internal_tests/use_cases/system.a.conf"
-    b_conf = metplus_home+"/internal_tests/use_cases/system.b.conf"    
-    params_a = [ param_file, a_conf ]
-    params_b = [ param_file, b_conf ]    
+    b_conf = metplus_home+"/internal_tests/use_cases/system.b.conf"
+    params = param_file.split(",")
+#    params_a = [ params, a_conf ]
+#    params_b = [ params, b_conf ]
+    params_a = params + [a_conf]
+    params_b = params + [b_conf]
+    print(params_a)
+#    params_a = [ param_file, a_conf ]
+#    params_b = [ param_file, b_conf ]
     logger = logging.getLogger('master_metplus')    
 
     # read A confs
@@ -114,14 +120,40 @@ def compare_results(p, p_b):
                 glob_string = "{:s}/{:s}/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
                 files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
+            elif process == "TcPairs":
+                out_a = p.getstr('config', "TC_PAIRS_DIR")
+                out_b = p_b.getstr('config', "TC_PAIRS_DIR")
+                glob_string = "{:s}/{:s}/*"
+                files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
+                files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
+            elif process == "ExtractTiles":
+                # TODO FIX DIR
+                out_a = p.getstr('config', "EXTRACT_OUT_DIR")
+                out_b = p_b.getstr('config', "EXTRACT_OUT_DIR")
+                glob_string = "{:s}/{:s}/*/*"
+                date_dir = run_time[0:8]+"_"+run_time[8:10]
+                files_a = glob.glob(glob_string.format(out_a, date_dir))
+                files_b = glob.glob(glob_string.format(out_b, date_dir))
+            elif process == "SeriesByInit": # TODO FIX DIR
+                out_a = p.getstr('config', "SERIES_INIT_FILTERED_OUT_DIR")
+                out_b = p_b.getstr('config', "SERIES_INIT_FILTERED_OUT_DIR")
+                glob_string = "{:s}/{:s}/*/*"
+                date_dir = run_time[0:8]+"_"+run_time[8:10]
+                files_a = glob.glob(glob_string.format(out_a, date_dir))
+                files_b = glob.glob(glob_string.format(out_b, date_dir))
+            elif process == "SeriesByLead": # TODO FIX DIR
+                out_a = p.getstr('config', "SERIES_LEAD_FILTERED_OUT_DIR")
+                out_b = p_b.getstr('config', "SERIES_LEAD_FILTERED_OUT_DIR")
+                glob_string = "{:s}/{:s}/*/*"
+                date_dir = run_time[0:8]+"_"+run_time[8:10]
+                files_a = glob.glob(glob_string.format(out_a, date_dir))
+                files_b = glob.glob(glob_string.format(out_b, date_dir))
             else:
                 print("PROCESS:"+process+" is not valid")
                 continue
 
-#        files_a = glob.glob("{:s}/{:s}/*".format(a_dir,out_subdir))
-#        files_b = glob.glob("{:s}/{:s}/*".format(b_dir,out_subdir))
-
-            compare_output_files(files_a, files_b, a_dir, b_dir)
+            if not compare_output_files(files_a, files_b, a_dir, b_dir):
+                all_good = False
 
         loop_time += time_interval
 
@@ -131,9 +163,11 @@ def compare_results(p, p_b):
         print("ERROR: Some differences")
 
 
-def compare_output_files(files_a, files_b, a_dir, b_dir):  
+def compare_output_files(files_a, files_b, a_dir, b_dir):
+    all_good = True
     if len(files_a) == 0 and len(files_b) == 0:
-        return
+        print("WARNING: No files in either directory")
+        return True
     if len(files_a) == len(files_b):
         print("Equal number of output files: "+str(len(files_a)))
     else:
@@ -150,12 +184,17 @@ def compare_output_files(files_a, files_b, a_dir, b_dir):
             continue
 
         # check if files are equivalent
-        if not filecmp.cmp(afile, bfile):
-            print("ERROR: Differences between "+afile+" and "+bfile)
-            all_good = False 
+        # TODO: Improve this, a file path difference in the file could
+        #  report a difference when the data is the same
+        # for netCDF:
+        # ncdump infile1 infile2 outfile can be used then check how many outfile points are non-zero
+#        if not filecmp.cmp(afile, bfile):
+#            print("ERROR: Differences between "+afile+" and "+bfile)
+#            all_good = False
+    return all_good
 
 def main():
-    run_a = True
+    run_a = False
     run_b = True
 
     metplus_home = "/d1/mccabe/METplus"
@@ -163,16 +202,16 @@ def main():
     param_files = [
                     use_case_dir+"/qpf/examples/ruc-vs-s2grib.conf",
                     use_case_dir+"/qpf/examples/phpt-vs-s4grib.conf",
-#                    use_case_dir+"/qpf/examples/hrefmean-vs-qpe.conf",
-#                    use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf",
-#                    use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf",
-#                    use_case_dir+"feature_relative/series_by_init_12-14_to_12-16.conf",
-#                    use_case_dir+"feature_relative/series_by_lead_all_fhrs.conf",
-#                    use_case_dir+"feature_relative/series_by_lead_by_fhr_grouping.conf",                    
+                    use_case_dir+"/qpf/examples/hrefmean-vs-qpe.conf",
+                    use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf",
+                    use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" #,                    
+#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" #,
+#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" #,
+#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_by_fhr_grouping.conf" #,    
 #                    use_case_dir+"/grid_to_grid/grid2grid_anom.conf",
 #                    use_case_dir+"/grid_to_grid/grid2grid_anom_height.conf",
 #                    use_case_dir+"/grid_to_grid/grid2grid_sfc.conf" #,
-                    use_case_dir+"/grid_to_grid/grid2grid_precip.conf"
+#                    use_case_dir+"/grid_to_grid/grid2grid_precip.conf"
                   ]
 
     for param_file in param_files:                    

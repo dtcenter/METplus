@@ -7,10 +7,10 @@ import os
 import re
 import subprocess
 import produtil.setup
-from produtil.run import batchexe
+from produtil.run import exe
 from produtil.run import checkrun
-from command_builder import CommandBuilder
 import met_util as util
+from command_builder import CommandBuilder
 import config_metplus
 
 
@@ -55,10 +55,11 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # All these instance attributes are needed to support the
         # plot_tcmpr.R functionality.
         super(TCMPRPlotterWrapper, self).__init__(p, logger)
+        self.app_name = 'plot_tcmpr.R'
         self.config = p
-
+        self.logger = logger
         if self.logger is None:
-            self.logger = util.get_logger(self.p)
+            self.logger = util.get_logger(self.p,sublog='TCMPRPlotter')
 
         self._init_tcmpr_script()
 
@@ -257,31 +258,32 @@ class TCMPRPlotterWrapper(CommandBuilder):
                 # is 'Rscript', instead of 'Rscript self.tcmpr_script -lookin'
 
                 # Use CommandBuilder's build() and clear(); using
-                # produtil's batchexe generates mpirun warnings
-                # cmds_list = ''.join(cmds_list).split()
-                # cmd = batchexe('sh')['-c',''.join(cmds_list)] > '/dev/null'
-                # cmd = batchexe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
-                # self.logger.debug("DEBUG: Command run " +
-                #                   cmd.to_shell())
-                # self.logger.info("INFO: Generating requested plots for " +
-                #                  self.input_data)
-                self.build()
-                self.clear()
+                # produtil's  exe generates mpirun warnings, only on eyewall,
+                # which can be ignored.
+                cmds_list = ''.join(cmds_list).split()
+                #cmd = exe('sh')['-c',''.join(cmds_list)] > '/dev/null'
+                cmd = exe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
+                self.logger.debug("DEBUG: Command run " +
+                                   cmd.to_shell())
+                self.logger.info("INFO: Generating requested plots for " +
+                                  self.input_data)
+                #self.build()
+                #self.clear()
                 # pylint:disable=unnecessary-pass
                 # If a tc file is empty, continue to the next, thus the pass
                 # isn't unnecessary.
-                # try:
-                #     checkrun(cmd)
-                # except produtil.run.ExitStatusException as ese:
-                #     self.logger.warn("WARN: plot_tcmpr.R returned non-zero"
-                #                      " exit status, "
-                #                      "tcst file may be missing data, "
-                #                      "continuing: " + ese)
-                #
-                #     # Remove the empty directory
-                #     if not os.listdir(self.output_base_dir):
-                #         os.rmdir(self.output_base_dir)
-                #     pass
+                try:
+                    checkrun(cmd)
+                except produtil.run.ExitStatusException as ese:
+                    self.logger.warn("WARN: plot_tcmpr.R returned non-zero"
+                                     " exit status, "
+                                     "tcst file may be missing data, "
+                                     "continuing: " + ese)
+
+                    # Remove the empty directory
+                    if not os.listdir(self.output_base_dir):
+                        os.rmdir(self.output_base_dir)
+                    pass
 
                 # Remove the empty directory
                 if not os.listdir(self.output_base_dir):
@@ -319,7 +321,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # one string and than split that in to a list, so element [0]
             # is 'Rscript', instead of 'Rscript self.tcmpr_script -lookin'
             cmds_list = ''.join(cmds_list).split()
-            # cmd = batchexe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
+            cmd = exe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
             # This can be a very long command if the user has
             # indicated a directory.  Only log this if necessary.
             # self.logger.debug("DEBUG:  Command run " + cmd.to_shell())
@@ -327,20 +329,20 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # pylint:disable=unnecessary-pass
             # If a tc file is empty, continue to the next, thus the pass
             # isn't unnecessary.
-            # try:
-            #     checkrun(cmd)
-            # except produtil.run.ExitStatusException as ese:
-            #     # If the tcst file is empty (with the exception of the
-            #     #  header), or there is some other problem, then
-            #     # plot_tcmpr.R will return with a non-zero exit status of 1
-            #     self.logger.warn("WARN: plot_tcmpr.R returned non-zero"
-            #                      " exit status, tcst file may be missing"
-            #                      " data... continuing: " + str(ese))
-            #     # Remove the empty directory
-            #     if not os.listdir(dated_output_dir):
-            #         os.rmdir(dated_output_dir)
-            #
-            #     pass
+            try:
+                checkrun(cmd)
+            except produtil.run.ExitStatusException as ese:
+                # If the tcst file is empty (with the exception of the
+                #  header), or there is some other problem, then
+                # plot_tcmpr.R will return with a non-zero exit status of 1
+                self.logger.warn("WARN: plot_tcmpr.R returned non-zero"
+                                 " exit status, tcst file may be missing"
+                                 " data... continuing: " + str(ese))
+                # Remove the empty directory
+                if not os.listdir(dated_output_dir):
+                    os.rmdir(dated_output_dir)
+
+                pass
             # Reset empty cmds_list to prepare for next tcst file.
             cmds_list = []
 

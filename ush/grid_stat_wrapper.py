@@ -21,6 +21,8 @@ import met_util as util
 import re
 import csv
 import subprocess
+import datetime
+import glob
 from command_builder import CommandBuilder
 from task_info import TaskInfo
 import string_template_substitution as sts
@@ -91,8 +93,8 @@ class GridStatWrapper(CommandBuilder):
                         outfile.write(infile.read())
                         infile.close()
                         outfile.close()
-                        # TODO: change model_path to path without gz
-                        # set found to true and break
+                        found = True
+                        break
             time_check = util.shift_time(time_check, -init_interval)
             lead_check = lead_check + init_interval            
 
@@ -114,11 +116,57 @@ class GridStatWrapper(CommandBuilder):
                 self.run_at_time_once(task_info, var_info)
 
 
+    def find_obs(self, ti, v):
+        valid_time = ti.getValidTime()
+        obs_dir = self.p.getstr('config', 'OBS_GRID_STAT_INPUT_DIR')
+        obs_template = self.p.getraw('filename_templates',
+                                     'OBS_GRID_STAT_INPUT_TEMPLATE')
+        # convert valid_time to unix time
+        valid_seconds = int(datetime.datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
+        # get files from valid time day, day before, and day after
+#        valid_date = valid_time[0:8]
+#        yesterday_date = util.shift_time(valid_time, -24)[0:8]
+#        tomorrow_date = util.shift_time(valid_time, 24)[0:8]
+#        all_files = glob.glob("{:s}/*".format(obs_dir), recursive=True)
+        # get time of each file, compare to valid time, save best within range
+        closest_file = ""
+        closest_time = 9999999
+        # TODO: Parameterize
+        valid_range_lower = 60
+        valid_range_upper = 60
+        lower_limit = int(datetime.datetime.strptime(util.shift_time_minutes(valid_time, -valid_range_lower),
+                                                 "%Y%m%d%H%M").strftime("%s"))
+        upper_limit = int(datetime.datetime.strptime(util.shift_time_minutes(valid_time, valid_range_upper),
+                                                 "%Y%m%d%H%M").strftime("%s"))
+
+        for dirpath, dirnames, all_files in os.walk(obs_dir):
+            for filename in sorted(all_files):
+                f = os.path.join(dirpath, filename)
+                # check depth of template to crop filepath
+                se = util.get_time_from_file(f, obs_template, self.logger)
+                if se is not None:
+                    file_valid_time = se.getValidTime("%Y%m%d%H%M")
+                    file_valid_dt = datetime.datetime.strptime(file_valid_time, "%Y%m%d%H%M")
+                    file_valid_seconds = int(file_valid_dt.strftime("%s"))
+                    if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
+                        continue
+                    diff = abs(valid_seconds - file_valid_seconds)
+                    if diff < closest_time:
+                        closest_time = diff
+                        closest_file = f
+
+        if closest_file != "":
+            return closest_file
+        else:
+            return None
+        
+
+
     def run_at_time_once(self, ti, v):
         valid_time = ti.getValidTime()
         init_time = ti.getInitTime()
         grid_stat_base_dir = self.p.getstr('config', 'GRID_STAT_OUT_DIR')
-        if self.p.getbool('config', 'LOOP_BY_INIT'):
+        if self.p.getbool('config', 'LOOP_BY_INIT', True):
             grid_stat_out_dir = os.path.join(grid_stat_base_dir,
                                      init_time, "grid_stat")
         else:
@@ -152,15 +200,18 @@ class GridStatWrapper(CommandBuilder):
             print("ERROR: COULD NOT FIND FILE IN "+model_dir)
             return
         self.add_input_file(model_path)
-        # TODO: Handle range of levels
-        obsSts = sts.StringSub(self.logger,
-                                  obs_template,
-                                  valid=valid_time,
-                                  init=init_time,
-                                  level=str(obs_level.split('-')[0]).zfill(2))
-        obs_file = obsSts.doStringSub()
+        if self.p.getbool('config','OBS_EXACT_VALID_TIME', True):
+            obsSts = sts.StringSub(self.logger,
+                                   obs_template,
+                                   valid=valid_time,
+                                   init=init_time,
+                                   level=str(obs_level.split('-')[0]).zfill(2))
+            obs_file = obsSts.doStringSub()
 
-        obs_path = os.path.join(obs_dir, obs_file)
+            obs_path = os.path.join(obs_dir, obs_file)
+        else:
+            obs_path = self.find_obs(ti, v)
+
         self.add_input_file(obs_path)
         self.set_param_file(self.p.getstr('config', 'GRID_STAT_CONFIG'))
         self.set_output_dir(grid_stat_out_dir)

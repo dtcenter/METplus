@@ -161,7 +161,7 @@ class ExtractTilesWrapper(CommandBuilder):
             tile_dir = ''.join(tile_dir_parts)
             # Use TcStatWrapper to build up the tc_stat command and invoke
             # the MET tool tc_stat to perform the filtering.
-            tcs = TcStatWrapper(self.config)
+            tcs = TcStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(self.filtered_out_dir, cur_init,
                               tile_dir, self.addl_filter_opts)
 
