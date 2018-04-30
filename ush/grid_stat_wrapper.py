@@ -188,7 +188,7 @@ class GridStatWrapper(CommandBuilder):
         obs_dir = self.p.getdir('OBS_GRID_STAT_INPUT_DIR')
         obs_template = self.p.getraw('filename_templates',
                                      'OBS_GRID_STAT_INPUT_TEMPLATE')
-        model_dir = self.p.getdir('FCST_GRID_STAT_INPUT_DIR')        
+        model_dir = self.p.getdir('FCST_GRID_STAT_INPUT_DIR')
         config_dir = self.p.getdir('CONFIG_DIR')
 
         ymd_v = valid_time[0:8]
