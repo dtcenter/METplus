@@ -27,6 +27,7 @@ def run_test_use_case(param_file, run_a, run_b):
     params_a = params + [a_conf]
     params_b = params + [b_conf]
     print(params_a)
+    all_good = True
 #    params_a = [ param_file, a_conf ]
 #    params_b = [ param_file, b_conf ]
     logger = logging.getLogger('master_metplus')    
@@ -61,8 +62,10 @@ def run_test_use_case(param_file, run_a, run_b):
         process = subprocess.Popen(cmd, shell=True)
         process.wait()
 
-    compare_results(p, p_b)
- 
+    if not compare_results(p, p_b):
+        all_good = False
+
+    return all_good
 
 def compare_results(p, p_b):
     a_dir = p.getstr('config', 'OUTPUT_BASE')
@@ -71,7 +74,7 @@ def compare_results(p, p_b):
     print("****************************")
     print("* TEST RESULTS             *")
     print("****************************")
-    all_good = True
+    good = True
 
     processes = util.getlist(p.getstr('config', 'PROCESS_LIST'))
     
@@ -153,18 +156,18 @@ def compare_results(p, p_b):
                 continue
 
             if not compare_output_files(files_a, files_b, a_dir, b_dir):
-                all_good = False
+                good = False
 
         loop_time += time_interval
 
-    if all_good:
+    if good:
         print("Success")
     else:
         print("ERROR: Some differences")
-
+    return good
 
 def compare_output_files(files_a, files_b, a_dir, b_dir):
-    all_good = True
+    good = True
     if len(files_a) == 0 and len(files_b) == 0:
         print("WARNING: No files in either directory")
         return True
@@ -172,7 +175,7 @@ def compare_output_files(files_a, files_b, a_dir, b_dir):
         print("Equal number of output files: "+str(len(files_a)))
     else:
         print("ERROR: A output "+str(len(files_a))+" files, B output "+str(len(files_b))+" files")
-        all_good = False
+        good = False
 
     for afile in files_a:
         bfile = afile.replace(a_dir, b_dir)
@@ -180,7 +183,7 @@ def compare_output_files(files_a, files_b, a_dir, b_dir):
         if not os.path.exists(bfile):
             print("ERROR: "+os.path.basename(afile)+" missing in B")
             print(bfile)
-            all_good = False
+            good = False
             continue
 
         # check if files are equivalent
@@ -190,11 +193,11 @@ def compare_output_files(files_a, files_b, a_dir, b_dir):
         # ncdump infile1 infile2 outfile can be used then check how many outfile points are non-zero
 #        if not filecmp.cmp(afile, bfile):
 #            print("ERROR: Differences between "+afile+" and "+bfile)
-#            all_good = False
-    return all_good
+#            good = False
+    return good
 
 def main():
-    run_a = False
+    run_a = True
     run_b = True
 
     metplus_home = "/d1/mccabe/METplus"
@@ -204,18 +207,26 @@ def main():
                     use_case_dir+"/qpf/examples/phpt-vs-s4grib.conf",
                     use_case_dir+"/qpf/examples/hrefmean-vs-qpe.conf",
                     use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf",
-                    use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" #,                    
+                    use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" ,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" #,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" #,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_by_fhr_grouping.conf" #,    
-#                    use_case_dir+"/grid_to_grid/grid2grid_anom.conf",
-#                    use_case_dir+"/grid_to_grid/grid2grid_anom_height.conf",
-#                    use_case_dir+"/grid_to_grid/grid2grid_sfc.conf" #,
-#                    use_case_dir+"/grid_to_grid/grid2grid_precip.conf"
+                    use_case_dir+"/grid_to_grid/grid2grid_anom.conf",
+                    use_case_dir+"/grid_to_grid/grid2grid_anom_height.conf",
+                    use_case_dir+"/grid_to_grid/grid2grid_sfc.conf" ,
+                    use_case_dir+"/grid_to_grid/grid2grid_precip.conf"
                   ]
 
+    all_good = True
     for param_file in param_files:                    
-        run_test_use_case(param_file, run_a, run_b)
+        if not run_test_use_case(param_file, run_a, run_b):
+            all_good = False
+
+    if all_good:
+        print("ALL TESTS PASSED")
+    else:
+        print("ERROR: Some tests failed")
+
     
 
     

@@ -1470,6 +1470,10 @@ def shift_time_minutes(time, shift):
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(minutes=shift)).strftime("%Y%m%d%H%M")
 
+def shift_time_seconds(time, shift):
+    return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
+            datetime.timedelta(seconds=shift)).strftime("%Y%m%d%H%M")
+
 
 class FieldObj(object):
     __slots__ = 'fcst_name', 'fcst_level', 'fcst_extra',\

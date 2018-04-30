@@ -67,7 +67,9 @@ class GridStatWrapper(CommandBuilder):
         return cmd
 
     def find_model(self, lead, init_time, level):
-        model_dir = self.p.getstr('config', 'FCST_GRID_STAT_INPUT_DIR')
+        model_dir = self.p.getdir('FCST_GRID_STAT_INPUT_DIR')
+        model_template = self.p.getraw('filename_templates',
+                                       'FCST_GRID_STAT_INPUT_TEMPLATE')
         max_forecast = self.p.getint('config', 'FCST_MAX_FORECAST')
         init_interval = self.p.getint('config', 'FCST_INIT_INTERVAL')
         lead_check = lead
@@ -75,8 +77,6 @@ class GridStatWrapper(CommandBuilder):
         time_offset = 0
         found = False
         while lead_check <= max_forecast:
-            model_template = self.p.getraw('filename_templates',
-                                           'FCST_GRID_STAT_INPUT_TEMPLATE')
             # split by - to handle a level that is a range, such as 0-10
             model_ss = sts.StringSub(self.logger, model_template,
                                      init=time_check,
@@ -118,7 +118,7 @@ class GridStatWrapper(CommandBuilder):
 
     def find_obs(self, ti, v):
         valid_time = ti.getValidTime()
-        obs_dir = self.p.getstr('config', 'OBS_GRID_STAT_INPUT_DIR')
+        obs_dir = self.p.getdir('OBS_GRID_STAT_INPUT_DIR')
         obs_template = self.p.getraw('filename_templates',
                                      'OBS_GRID_STAT_INPUT_TEMPLATE')
         # convert valid_time to unix time
@@ -131,12 +131,14 @@ class GridStatWrapper(CommandBuilder):
         # get time of each file, compare to valid time, save best within range
         closest_file = ""
         closest_time = 9999999
-        # TODO: Parameterize
-        valid_range_lower = 60
-        valid_range_upper = 60
-        lower_limit = int(datetime.datetime.strptime(util.shift_time_minutes(valid_time, -valid_range_lower),
+        # TODO: Parameterize - test
+#        valid_range_lower = 60
+#        valid_range_upper = 60
+        valid_range_lower = self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
+        valid_range_upper = self.p.getint('config', 'WINDOW_RANGE_END', 3600)
+        lower_limit = int(datetime.datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
                                                  "%Y%m%d%H%M").strftime("%s"))
-        upper_limit = int(datetime.datetime.strptime(util.shift_time_minutes(valid_time, valid_range_upper),
+        upper_limit = int(datetime.datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
                                                  "%Y%m%d%H%M").strftime("%s"))
 
         for dirpath, dirnames, all_files in os.walk(obs_dir):
@@ -165,7 +167,7 @@ class GridStatWrapper(CommandBuilder):
     def run_at_time_once(self, ti, v):
         valid_time = ti.getValidTime()
         init_time = ti.getInitTime()
-        grid_stat_base_dir = self.p.getstr('config', 'GRID_STAT_OUT_DIR')
+        grid_stat_base_dir = self.p.getdir('GRID_STAT_OUT_DIR')
         if self.p.getbool('config', 'LOOP_BY_INIT', True):
             grid_stat_out_dir = os.path.join(grid_stat_base_dir,
                                      init_time, "grid_stat")
@@ -183,11 +185,11 @@ class GridStatWrapper(CommandBuilder):
             obs_level_type = obs_level[0]
             obs_level = obs_level[1:]            
         model_type = self.p.getstr('config', 'MODEL_TYPE')
-        obs_dir = self.p.getstr('config', 'OBS_GRID_STAT_INPUT_DIR')
+        obs_dir = self.p.getdir('OBS_GRID_STAT_INPUT_DIR')
         obs_template = self.p.getraw('filename_templates',
                                      'OBS_GRID_STAT_INPUT_TEMPLATE')
-        model_dir = self.p.getstr('config', 'FCST_GRID_STAT_INPUT_DIR')        
-        config_dir = self.p.getstr('config', 'CONFIG_DIR')
+        model_dir = self.p.getdir('FCST_GRID_STAT_INPUT_DIR')
+        config_dir = self.p.getdir('CONFIG_DIR')
 
         ymd_v = valid_time[0:8]
         if not os.path.exists(grid_stat_out_dir):

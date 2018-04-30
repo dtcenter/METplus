@@ -52,10 +52,10 @@ class PcpCombineModelWrapper(PcpCombineWrapper):
 #        obs_level = self.p.getstr('config', 'OBS_LEVEL')
         fcst_level = self.p.getstr('config', 'FCST_LEVEL')
         # TODO: should use getpath or something?
-        in_dir = self.p.getstr('config', 'FCST_PCP_COMBINE_INPUT_DIR')
+        in_dir = self.p.getdir('FCST_PCP_COMBINE_INPUT_DIR')
         in_template = self.p.getraw('filename_templates',
                                      'FCST_PCP_COMBINE_INPUT_TEMPLATE')
-        out_dir = self.p.getstr('config', 'FCST_PCP_COMBINE_OUTPUT_DIR')
+        out_dir = self.p.getdir('FCST_PCP_COMBINE_OUTPUT_DIR')
         out_template = self.p.getraw('filename_templates',
                                      'FCST_PCP_COMBINE_OUTPUT_TEMPLATE')
         for lead in lead_seq:
