@@ -66,7 +66,7 @@ class ModeWrapper(CommandBuilder):
         # TODO: Need to get model_path!
         model_type = self.p.getstr('config', 'MODEL_TYPE')
         obs_var = self.p.getstr('config', ob_type+"_VAR")
-        config_dir = self.p.getstr('config', 'CONFIG_DIR')
+        config_dir = self.p.getdir('CONFIG_DIR')
 
         fcst_fields = list()
         obs_fields = list()
@@ -81,7 +81,7 @@ class ModeWrapper(CommandBuilder):
             self.add_input_file(model_path)
             self.add_input_file(regrid_path)
             self.set_param_file(self.p.getstr('config', 'MODE_CONFIG'))
-            self.set_output_dir(self.p.getstr('config', 'MODE_OUT_DIR'))
+            self.set_output_dir(self.p.getdir('MODE_OUT_DIR'))
             self.add_env_var("MODEL", model_type)
             self.add_env_var("FCST_VAR", fcst_var)
             self.add_env_var("OBS_VAR", obs_var)
