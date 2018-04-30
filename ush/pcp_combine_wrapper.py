@@ -489,9 +489,9 @@ class PcpCombineWrapper(CommandBuilder):
         self.clear()
         self.set_method("ADD")
 
-        input_dir = self.p.getstr('config', data_src+'_PCP_COMBINE_INPUT_DIR')
+        input_dir = self.p.getdir(data_src+'_PCP_COMBINE_INPUT_DIR')
         input_template = self.p.getraw('filename_templates', data_src+'_PCP_COMBINE_INPUT_TEMPLATE')
-        output_dir = self.p.getstr('config', data_src+'_PCP_COMBINE_OUTPUT_DIR')
+        output_dir = self.p.getdir(data_src+'_PCP_COMBINE_OUTPUT_DIR')
         output_template = self.p.getraw('filename_templates',
                                         data_src+'_PCP_COMBINE_OUTPUT_TEMPLATE')
 
@@ -506,13 +506,13 @@ class PcpCombineWrapper(CommandBuilder):
             infiles = self.get_input_files()
         else:
             # if failure, check _GEMPAK_INPUT_DIR to get accumulation files
-            if not self.p.has_option('config', data_src+'_GEMPAK_INPUT_DIR') or \
+            if not self.p.has_option('dir', data_src+'_GEMPAK_INPUT_DIR') or \
               not self.p.has_option('filename_templates', data_src+'_GEMPAK_TEMPLATE'):
                 self.logger.warning(self.app_name + ": Could not find " \
                                     "files to compute accumulation in " \
                                     + input_dir)
                 return False
-            gempak_dir = self.p.getstr('config', data_src+'_GEMPAK_INPUT_DIR')
+            gempak_dir = self.p.getdir(data_src+'_GEMPAK_INPUT_DIR')
             gempak_template = self.p.getraw('filename_templates', data_src+'_GEMPAK_TEMPLATE')
             self.clear()
             self.set_input_dir(gempak_dir)
