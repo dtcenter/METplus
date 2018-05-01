@@ -29,36 +29,35 @@ from command_builder import CommandBuilder
 class MakePlotsWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(MakePlotsWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join('/contrib/anaconda/2.3.0',
-                                     'bin/python')
-        self.app_name = os.path.basename(self.app_path)
-    
-    def set_python_script(self, pythonscript):
-        self.pythonscript = pythonscript
-
-    def get_command(self):
-        if self.app_path is None:
-            self.logger.error(self.app_name + ": No app path specified. \
-                              You must use a subclass")
-            return None
-
-        cmd = self.app_path + " "
-        for a in self.args:
-            cmd += a + " "
-
-        if self.pythonscript == "":
-            self.logger.error(self.app_name+": No python script specified")
-            return None
-
-        cmd += self.pythonscript
-   
-        return cmd
+    #    self.app_path = os.path.join(self.p.getdir('PYTHON_INSTALL_DIR'),
+    #                                 'bin/python')
+    #    self.app_name = os.path.basename(self.app_path)
+    #
+    #def set_python_script(self, pythonscript):
+    #    self.pythonscript = pythonscript
+    #
+    #def get_command(self):
+    #    if self.app_path is None:
+    #        self.logger.error(self.app_name + ": No app path specified. \
+    #                          You must use a subclass")
+    #        return None
+    #
+    #    cmd = self.app_path + " "
+    #    for a in self.args:
+    #        cmd += a + " "
+    #
+    #    if self.pythonscript == "":
+    #        self.logger.error(self.app_name+": No python script specified")
+    #        return None
+    #
+    #    cmd += self.pythonscript
+    #
+    #    return cmd
 
     def grid2grid_pres_plots(self):
         logging_filename = self.logger.handlers[0].baseFilename
         self.add_env_var("LOGGING_FILENAME", logging_filename)
-        plotting_scripts_dir = self.p.getstr('config', 'PLOTTING_SCRIPTS_DIR')
-        #python_v3_dir = self.p.getstr('config', 'PYTHON_V3_DIR')
+        plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
@@ -81,8 +80,8 @@ class MakePlotsWrapper(CommandBuilder):
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
             self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
-        stat_files_input_dir = self.p.getstr('config', 'STAT_FILES_INPUT_DIR')
-        plotting_out_dir = self.p.getstr('config', 'PLOTTING_OUT_DIR')
+        stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
+        plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
         if os.path.exists(plotting_out_dir):
             self.logger.info(plotting_out_dir+" exist, removing")
             util.rmtree(plotting_out_dir)
@@ -193,8 +192,7 @@ class MakePlotsWrapper(CommandBuilder):
     def grid2grid_anom_plots(self):
         logging_filename = self.logger.handlers[0].baseFilename
         self.add_env_var("LOGGING_FILENAME", logging_filename)
-        plotting_scripts_dir = self.p.getstr('config', 'PLOTTING_SCRIPTS_DIR')
-        #python_v3_dir = self.p.getstr('config', 'PYTHON_V3_DIR')
+        plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
@@ -217,8 +215,8 @@ class MakePlotsWrapper(CommandBuilder):
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
             self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
-        stat_files_input_dir = self.p.getstr('config', 'STAT_FILES_INPUT_DIR')
-        plotting_out_dir = self.p.getstr('config', 'PLOTTING_OUT_DIR')
+        stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
+        plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
         if os.path.exists(plotting_out_dir):
             self.logger.info(plotting_out_dir+" exist, removing")
             util.rmtree(plotting_out_dir)
@@ -359,8 +357,7 @@ class MakePlotsWrapper(CommandBuilder):
     def grid2grid_sfc_plots(self):
         logging_filename = self.logger.handlers[0].baseFilename
         self.add_env_var("LOGGING_FILENAME", logging_filename)
-        plotting_scripts_dir = self.p.getstr('config', 'PLOTTING_SCRIPTS_DIR')
-        #python_v3_dir = self.p.getstr('config', 'PYTHON_V3_DIR')
+        plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
@@ -383,8 +380,8 @@ class MakePlotsWrapper(CommandBuilder):
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
             self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
-        stat_files_input_dir = self.p.getstr('config', 'STAT_FILES_INPUT_DIR')
-        plotting_out_dir = self.p.getstr('config', 'PLOTTING_OUT_DIR')
+        stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
+        plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
         if os.path.exists(plotting_out_dir):
             self.logger.info(plotting_out_dir+" exist, removing")
             util.rmtree(plotting_out_dir)

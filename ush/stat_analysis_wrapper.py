@@ -63,8 +63,8 @@ class StatAnalysisWrapper(CommandBuilder):
         ob_type = self.p.getstr('config', 'OB_TYPE')
         self.add_env_var("MODEL_TYPE", model_type)
         self.add_env_var("OB_TYPE", ob_type)
-        stat_analysis_lookin_dir = self.p.getstr('config', 'STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = self.p.getstr('config', 'STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
+        stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
         #filtering times based on if files made based on init_time or valid_time
         if init_time == -1:
             self.logger.info("Valid on: "+valid_time)
@@ -123,8 +123,8 @@ class StatAnalysisWrapper(CommandBuilder):
         ob_type = self.p.getstr('config', 'OB_TYPE')
         self.add_env_var("MODEL_TYPE", model_type)
         self.add_env_var("OB_TYPE", ob_type)
-        stat_analysis_lookin_dir = self.p.getstr('config', 'STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = self.p.getstr('config', 'STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
+        stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
         if init_time == -1:
             date_YYYYMMDD = valid_time[0:8]
             valid_beg_hour = self.p.getstr('config', 'VALID_BEG_HOUR')
@@ -208,8 +208,8 @@ class StatAnalysisWrapper(CommandBuilder):
             self.add_env_var("FCST_VALID_END", end_t)
             self.add_env_var("FCST_INIT_BEG", "")
             self.add_env_var("FCST_INIT_END", "")
-        stat_analysis_lookin_dir = self.p.getstr('config', 'STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = self.p.getstr('config', 'STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
+        stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
@@ -317,8 +317,8 @@ class StatAnalysisWrapper(CommandBuilder):
             self.add_env_var("FCST_INIT_BEG", "")
             self.add_env_var("FCST_INIT_END", "")
 
-        stat_analysis_lookin_dir = self.p.getstr('config', 'STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = self.p.getstr('config', 'STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
+        stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
@@ -455,8 +455,8 @@ class StatAnalysisWrapper(CommandBuilder):
             self.add_env_var("FCST_INIT_BEG", "")
             self.add_env_var("FCST_INIT_END", "")
 
-        stat_analysis_lookin_dir = self.p.getstr('config', 'STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = self.p.getstr('config', 'STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
+        stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
