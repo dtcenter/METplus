@@ -1012,17 +1012,21 @@ class StringExtract:
 
         self.validTime = None
         self.initTime = None
-        self.leadTime = -1
+        self.leadTime = 0
         self.levelTime = -1
 
     def getValidTime(self, fmt):
         if self.validTime is None:
-            return ""
+            if self.initTime is None:
+                return ""
+            return (self.initTime + datetime.timedelta(seconds=self.leadTime)).strftime(fmt)
         return self.validTime.strftime(fmt)
 
     def getInitTime(self, fmt):
         if self.initTime is None:
-            return ""
+            if self.validTime is None:
+                return ""
+            return (self.validTime - datetime.timedelta(seconds=self.leadTime)).strftime(fmt)
         return self.initTime.strftime(fmt)
 
     @property
