@@ -16,6 +16,7 @@ import calendar
 import met_util as util
 #import config_metplus
 
+# TODO: move test results to separate file for readability
 
 def run_test_use_case(param_file, run_a, run_b):
     metplus_home = "/d1/mccabe/METplus"
