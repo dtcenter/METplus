@@ -270,6 +270,8 @@ class TcPairsWrapper(CommandBuilder):
                     # Run tc_pairs
                     self.cmd = self.build_tc_pairs(pairs_out_dir, myfile,
                                               adeck_file_path, bdeck_file_path)
+                    self.build()
+
 
         self.logger.info("Completed run_all_times in TcPairsWrapper")
 
@@ -404,13 +406,13 @@ class TcPairsWrapper(CommandBuilder):
         # Since this wrapper is not using the CommandBuilder to build the cmd,
         # we need to add the met verbosity level to the cmd created before we
         # run the command.
-        cmd = self.cmdrunner.insert_metverbosity_opt(self.cmd)
+        self.cmd = self.cmdrunner.insert_metverbosity_opt(self.cmd)
 
         try:
-            (ret, cmd) = self.cmdrunner.run_cmd(cmd, sleeptime=.00001, app_name=self.app_name)
+            (ret, self.cmd) = self.cmdrunner.run_cmd(self.cmd, sleeptime=.00001, app_name=self.app_name)
 
             if not ret == 0:
-                raise ExitStatusException('%s: non-zero exit status' % (repr(cmd),), ret)
+                raise ExitStatusException('%s: non-zero exit status' % (repr(self.cmd),), ret)
 
         except ExitStatusException as ese:
             self.logger.error(ese)
