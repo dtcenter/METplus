@@ -131,9 +131,7 @@ class GridStatWrapper(CommandBuilder):
         # get time of each file, compare to valid time, save best within range
         closest_file = ""
         closest_time = 9999999
-        # TODO: Parameterize - test
-#        valid_range_lower = 60
-#        valid_range_upper = 60
+
         valid_range_lower = self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
         valid_range_upper = self.p.getint('config', 'WINDOW_RANGE_END', 3600)
         lower_limit = int(datetime.datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
@@ -145,7 +143,7 @@ class GridStatWrapper(CommandBuilder):
             for filename in sorted(all_files):
                 f = os.path.join(dirpath, filename)
                 # check depth of template to crop filepath
-                se = util.get_time_from_file(f, obs_template, self.logger)
+                se = util.get_time_from_file(self.logger, f, obs_template)
                 if se is not None:
                     file_valid_time = se.getValidTime("%Y%m%d%H%M")
                     file_valid_dt = datetime.datetime.strptime(file_valid_time, "%Y%m%d%H%M")
