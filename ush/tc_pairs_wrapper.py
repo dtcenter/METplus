@@ -268,35 +268,9 @@ class TcPairsWrapper(CommandBuilder):
                             adeck_file_path)
 
                     # Run tc_pairs
-                    cmd = self.build_tc_pairs(pairs_out_dir, myfile,
+                    self.cmd = self.build_tc_pairs(pairs_out_dir, myfile,
                                               adeck_file_path, bdeck_file_path)
-                    # cmd = batchexe('sh')['-c', cmd].err2out()
-                    # ret = run(cmd, sleeptime=.00001)
-                    #
-                    #
-                    # if ret != 0:
-                    #     self.logger.error("ERROR | [" + cur_filename +
-                    #                       ":" + cur_function + "] | " +
-                    #                       "Problem executing: " +
-                    #                       cmd.to_shell())
-                    #     exit(0)
-                    #self.build()
-                    #self.clear()
-
-                    # Since this wrapper is not using the CommandBuilder to build the cmd,
-                    # we need to add the met verbosity level to the cmd created before we
-                    # run the command.
-                    cmd = self.cmdrunner.insert_metverbosity_opt(cmd)
-
-                    try:
-                        (ret, cmd) = self.cmdrunner.run_cmd(cmd, sleeptime=.00001, app_name=self.app_name)
-
-                        if not ret == 0:
-                            raise ExitStatusException('%s: non-zero exit status'%(repr(cmd),),ret)
-
-                    except ExitStatusException as ese:
-                        self.logger.error(ese)
-                        exit(ret)
+                    self.build()
 
 
         self.logger.info("Completed run_all_times in TcPairsWrapper")
@@ -429,12 +403,20 @@ class TcPairsWrapper(CommandBuilder):
     def build(self):
         """! Override CommandBuilder's build() since tc_pairs handles input and output differently from the other
              MET tools"""
-        cmd = self.get_command()
-        if cmd is None:
-            return
-        self.logger.info("RUNNING: " + cmd)
-        process = subprocess.Popen(cmd, env=self.env, shell=True)
-        process.wait()
+        # Since this wrapper is not using the CommandBuilder to build the cmd,
+        # we need to add the met verbosity level to the cmd created before we
+        # run the command.
+        self.cmd = self.cmdrunner.insert_metverbosity_opt(self.cmd)
+
+        try:
+            (ret, self.cmd) = self.cmdrunner.run_cmd(self.cmd, sleeptime=.00001, app_name=self.app_name)
+
+            if not ret == 0:
+                raise ExitStatusException('%s: non-zero exit status' % (repr(self.cmd),), ret)
+
+        except ExitStatusException as ese:
+            self.logger.error(ese)
+            exit(ret)
 
 
 if __name__ == "__main__":

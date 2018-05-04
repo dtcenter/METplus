@@ -134,7 +134,7 @@ class TestProdutilForMETplus:
 
         # Expected items from the [dir] section of all MET+ config files.
         expected_items = ['PROJ_DIR', 'METPLUS_BASE', 'MET_BASE', 'MET_INSTALL_DIR', 'OUTPUT_BASE', 'TMP_DIR',
-                          'MODEL_DATA_DIR', 'PARM_BASE', 'LOG_DIR', 'TEST_DIR']
+                          'MODEL_DATA_DIR', 'PARM_BASE', 'LOG_DIR', 'TEST_DIR', 'CONFIG_DIR']
         # expected_items = ['PROJ_DIR']
         try:
             assert len(retrieved_items) == len(expected_items), fail_msg
@@ -160,7 +160,7 @@ class TestProdutilForMETplus:
 
         # Expected items from the [dir] section of MET+ config files.
         expected_items = ['PROJ_DIR', 'METPLUS_BASE', 'MET_BASE', 'MET_INSTALL_DIR', 'OUTPUT_BASE', 'TMP_DIR',
-                          'MODEL_DATA_DIR', 'PARM_BASE', 'LOG_DIR', 'TEST_DIR']
+                          'MODEL_DATA_DIR', 'PARM_BASE', 'LOG_DIR', 'TEST_DIR', 'CONFIG_DIR']
         for retrieved_item in retrieved_items:
             try:
                 assert retrieved_item[0] in expected_items, fail_msg
@@ -193,7 +193,7 @@ class TestProdutilForMETplus:
                           'MET_BASE': '/usr/local/met-6.1', 'MET_INSTALL_DIR': '/usr/local/met-6.1',
                           'OUTPUT_BASE': '/tmp/output_base', 'TMP_DIR': '/tmp',
                           'MODEL_DATA_DIR': '/tmp/model_data_dir', 'PARM_BASE': '/home/some_user/METplus/parm',
-                          'LOG_DIR': '/log_dir', 'TEST_DIR': '/usr/local/met-6.1'}
+                          'LOG_DIR': '/log_dir', 'TEST_DIR': '/usr/local/met-6.1', 'CONFIG_DIR':'/home/user_joe/config_dir'}
 
         for retrieved_item in retrieved_items:
                 if len(retrieved_items) == len(expected_items):
