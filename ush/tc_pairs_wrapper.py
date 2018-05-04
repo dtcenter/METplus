@@ -20,9 +20,14 @@ import os
 import sys
 import re
 import csv
+#import subprocess
 import produtil.setup
-from produtil.run import batchexe
-from produtil.run import run
+from produtil.run import ExitStatusException
+#from produtil.run import batchexe
+#from produtil.run import run
+# TODO - critical  must import met_util before CommandBuilder
+# MUST import met_util BEFORE command_builder, else it breaks stand-alone
+import met_util as util
 from command_builder import CommandBuilder
 import met_util as util
 import config_metplus
@@ -46,8 +51,12 @@ class TcPairsWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(TcPairsWrapper, self).__init__(p, logger)
         self.config = self.p
+        self.app_path = os.path.join(p.getdir('MET_INSTALL_DIR'), 'bin/tc_pairs')
+        self.app_name = os.path.basename(self.app_path)
         if self.logger is None:
-            self.logger = util.get_logger(self.p)
+            self.logger = util.get_logger(self.p,sublog='TcPairs')
+        self.cmd = ''
+        self.logger.info("Initialized TcPairsWrapper")
 
     def read_modify_write_file(self, in_csvfile, storm_month, missing_values,
                                out_csvfile):
@@ -63,6 +72,7 @@ class TcPairsWrapper(CommandBuilder):
 
         self.logger.debug("DEBUG|run_tc_pairs.py|read_modify_write_file")
 
+        # pylint:disable=protected-access
         # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
         # filename and method.
@@ -121,6 +131,7 @@ class TcPairsWrapper(CommandBuilder):
         # sys._getframe is a legitimate way to access the current
         # filename and method.
         # Used for logging information
+        self.logger.info("Started run_all_times in TcPairsWrapper")
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
@@ -257,16 +268,12 @@ class TcPairsWrapper(CommandBuilder):
                             adeck_file_path)
 
                     # Run tc_pairs
-                    cmd = self.build_tc_pairs(pairs_out_dir, myfile,
+                    self.cmd = self.build_tc_pairs(pairs_out_dir, myfile,
                                               adeck_file_path, bdeck_file_path)
-                    cmd = batchexe('sh')['-c', cmd].err2out()
-                    ret = run(cmd, sleeptime=.00001)
-                    if ret != 0:
-                        self.logger.error("ERROR | [" + cur_filename +
-                                          ":" + cur_function + "] | " +
-                                          "Problem executing: " +
-                                          cmd.to_shell())
-                        exit(0)
+                    self.build()
+
+
+        self.logger.info("Completed run_all_times in TcPairsWrapper")
 
     def setup_tropical_track_dirs(self, deck_input_file_path, deck_file_path,
                                   storm_month, missing_values):
@@ -356,7 +363,7 @@ class TcPairsWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
         pairs_out_file = os.path.join(pairs_output_dir, date_file)
         pairs_out_file_with_suffix = pairs_out_file + ".tcst"
-        tc_pairs_exe = os.path.join(self.config.getdir('MET_BUILD_BASE'),
+        tc_pairs_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                     'bin/tc_pairs')
         cmd_list = [tc_pairs_exe, " -adeck ",
                     adeck_file_path, " -bdeck ",
@@ -381,6 +388,35 @@ class TcPairsWrapper(CommandBuilder):
                               cmd)
 
         return cmd
+
+    def get_command(self):
+        """! Over-ride CommandBuilder's get_command because unlike other MET tools,
+             tc_pairs handles input files differently- namely, through flags -adeck and -bdeck and doesn't
+             require an output file, as there is a default.
+        Build command to run from arguments"""
+        if self.app_path is None:
+            self.logger.error("No app path specified. You must use a subclass")
+            return None
+
+        return self.cmd
+
+    def build(self):
+        """! Override CommandBuilder's build() since tc_pairs handles input and output differently from the other
+             MET tools"""
+        # Since this wrapper is not using the CommandBuilder to build the cmd,
+        # we need to add the met verbosity level to the cmd created before we
+        # run the command.
+        self.cmd = self.cmdrunner.insert_metverbosity_opt(self.cmd)
+
+        try:
+            (ret, self.cmd) = self.cmdrunner.run_cmd(self.cmd, sleeptime=.00001, app_name=self.app_name)
+
+            if not ret == 0:
+                raise ExitStatusException('%s: non-zero exit status' % (repr(self.cmd),), ret)
+
+        except ExitStatusException as ese:
+            self.logger.error(ese)
+            exit(ret)
 
 
 if __name__ == "__main__":

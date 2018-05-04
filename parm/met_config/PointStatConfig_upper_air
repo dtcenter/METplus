@@ -1,0 +1,227 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Point-Stat configuration file.
+//
+// For additional information, see the MET_BASE/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Output model name to be written
+//
+//model = "${MODEL_NAME}";
+model = "gfs";
+
+//
+// Output description to be written
+// May be set separately in each "obs.field" entry
+//
+desc = "NA";
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification grid
+//
+regrid = {
+   to_grid    = "${REGRID_TO_GRID}";
+   method     = BILIN;
+   width      = 2;
+   vld_thresh = 0.5;
+   shape      = SQUARE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// May be set separately in each "field" entry
+//
+censor_thresh = [];
+censor_val    = [];
+cat_thresh    = [ NA ];
+cnt_thresh    = [ NA ];
+cnt_logic     = UNION;
+wind_thresh   = [ NA ];
+wind_logic    = UNION;
+eclv_points   = 0.05;
+
+//
+// Forecast and observation fields to be verified
+//
+//fcst = {
+   //field = [
+   //   { name  = "TMP"; level = [ "P1000", "P925", "P850", "P700", "P500",
+  //"P400", "P300", "P250", "P200", "P150", "P100", "P50", "P20", "P10" ]; },
+ //     { name  = "RH"; level = [ "P1000", "P925", "P850", "P700", "P500",
+ // "P400", "P300" ]; },
+ //     { name  = "UGRD"; level = [ "P1000", "P925", "P850", "P700", "P500",
+ //"P400", "P300", "P250", "P200", "P150", "P100", "P50", "P20", "P10" ]; },
+ //     { name  = "VGRD"; level = [ "P1000", "P925", "P850", "P700", "P500",
+ // "P400", "P300", "P250", "P200", "P150", "P100", "P50", "P20", "P10" ]; },
+ //     { name  = "HGT"; level = [ "P1000", "P925", "P850", "P700", "P500",
+ // "P400", "P300", "P250", "P200", "P150", "P100", "P50", "P20", "P10" ]; }
+  // ];
+
+fcst = {
+  field = [ ${FCST_FIELD} ];
+
+}
+obs = fcst;
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation filtering options
+// May be set separately in each "obs.field" entry
+//
+//message_type   = [ "ADPUPA" ];
+message_type = ${POINT_STAT_MESSAGE_TYPE};
+sid_exc        = [];
+obs_quality    = [ "1", "2", "3" ];
+duplicate_flag = NONE;
+obs_summary    = NONE;
+obs_perc_value = 50;
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Climatology data
+//
+climo_mean = {
+
+   file_name = [];
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape      = SQUARE;
+   }
+
+   time_interp_method = NEAREST;
+   match_day          = TRUE;
+   time_step          = 21600;
+}
+
+climo_stdev = climo_mean;
+climo_stdev = {
+   file_name = [];
+}
+
+climo_cdf_bins = 1;
+write_cdf_bins = FALSE;
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation time window
+//
+obs_window = {
+   // beg = -2700;
+  // end =  2700;
+  beg = ${OBS_WINDOW_BEGIN};
+  end = ${OBS_WINDOW_END};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification masking regions
+//
+mask = {
+   //grid    = ["FULL"];
+   //poly    = [];
+   //sid     = [];
+   grid = ${POINT_STAT_GRID};
+   poly = ["/d1/METplus_Mallory/data/poly/G236.nc",
+           "/d1/METplus_Mallory/data/poly/EUR.nc",
+           "/d1/METplus_Mallory/data/poly/ASI.nc",
+           "/d1/METplus_Mallory/data/poly/AFR.nc",
+           "/d1/METplus_Mallory/data/poly/AUS.nc",
+           "/d1/METplus_Mallory/data/poly/NA.nc",
+           "/d1/METplus_Mallory/data/poly/SA.nc",
+           "/d1/METplus_Mallory/data/poly/NH.nc",
+           "/d1/METplus_Mallory/data/poly/SH.nc",
+           "/d1/METplus_Mallory/data/poly/TRO.nc"
+           ];
+   sid = ${POINT_STAT_STATION_ID};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Confidence interval settings
+//
+ci_alpha  = [ 0.05 ];
+
+boot = {
+   interval = PCTILE;
+   rep_prop = 1.0;
+   n_rep    = 0;
+   rng      = "mt19937";
+   seed     = "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Interpolation methods
+//
+interp = {
+   vld_thresh = 1.0;
+   shape      = SQUARE;
+
+   type = [
+      {
+         method = BILIN;
+         width  = 2;
+      }
+   ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// HiRA verification method
+//
+hira = {
+   flag       = FALSE;
+   width      = [ 2, 3, 4, 5 ];
+   vld_thresh = 1.0;
+   cov_thresh = [ ==0.25 ];
+   shape      = SQUARE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Statistical output types
+//
+output_flag = {
+   fho    = NONE;
+   ctc    = NONE;
+   cts    = NONE;
+   mctc   = NONE;
+   mcts   = NONE;
+   cnt    = NONE;
+   sl1l2  = STAT;
+   sal1l2 = NONE;
+   vl1l2  = STAT;
+   val1l2 = NONE;
+   pct    = NONE;
+   pstd   = NONE;
+   pjc    = NONE;
+   prc    = NONE;
+   eclv   = NONE;
+   mpr    = NONE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+rank_corr_flag = FALSE;
+tmp_dir        = "/tmp";
+output_prefix  = "";
+version        = "V6.1";
+
+////////////////////////////////////////////////////////////////////////////////

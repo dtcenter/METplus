@@ -124,66 +124,214 @@
 # package-level namespace.  There are instructions in the code in
 # __init__.py on how to modify it to achieve these steps.
 
-from . import no_mpi
-
-########################################################################
-# Import the MPI detection functions from all known modules.  We
-# ignore ImportError in case the module is missing (which it will be
-# for NCO, who only gets the WCOSS-specific modules).
-
-try:
-    from .impi import detect as impi_detect
-except ImportError: pass
-
-try:
-    from .mpiexec import detect as mpiexec_detect
-except ImportError: pass
-
-try:
-    from .srun import detect as srun_detect
-except ImportError: pass
-
-try:
-    from .inside_aprun import detect as inside_aprun_detect
-except ImportError: pass
-
-try:
-    from .mpiexec_mpt import detect as mpiexec_mpt_detect
-except ImportError as e: pass
-
-try:
-    from .mpirun_lsf import detect as mpirun_lsf_detect
-except ImportError as e: pass
-
-try:
-    from .lsf_cray_intel import detect as lsf_cray_intel_detect
-except ImportError as e: pass
-
-try:
-    from .inside_aprun import detect as inside_aprun_detect
-except ImportError as e: pass
-
-########################################################################
-# Decide what MPI implementation to use
-
-if 'mpirun_lsf_detect' in dir() and mpirun_lsf_detect():
-    from .mpirun_lsf import *
-elif 'srun_detect' in dir() and srun_detect():
-    from .srun import *
-elif 'inside_aprun' in dir() and inside_aprun_detect():
-    from .inside_aprun import *
-elif 'lsf_cray_intel_detect' in dir() and lsf_cray_intel_detect():
-    from .lsf_cray_intel import *
-elif 'impi_detect' in dir() and impi_detect():
-    from .impi import *
-elif 'mpiexec_mpt_detect' in dir() and mpiexec_mpt_detect():
-    from .mpiexec_mpt import *
-elif 'mpiexec_detect' in dir() and mpiexec_detect():
-    from .mpiexec import *
-else:
-    from .no_mpi import *
+import logging
+import produtil.fileop
 
 ##@var __all__
-# List of symbols to export by "from produtil.mpi_impl import *"
-__all__=['mpirunner','can_run_mpi','bigexe_prepend',
-         'guess_maxmpi','guess_nthreads']
+# An empty list that indicates no symbols are exported by "from
+# produtil.mpi_impl import *"
+__all__=[]
+
+##@var detectors
+# Mapping from MPI implementation name to its detection function
+# 
+# A mapping from MPI implementation name to a class static method that
+# detects that implementation.  When detection succeeds, the function
+# should return an instance of the class.  Otherwise, it should return
+# None.  The function must have at least these two optional arguments
+# and must be able to discard any other optional arguments:
+#
+#  - logger --- a logging.Logger object for log messages
+#  - force --- if True, the detector must succeed and return
+#              an Implementation that has suitable defaults.
+#              This is used to generate mpi execution commands
+#              outside the job that will run them.
+detectors=dict()
+
+##@var detection_list
+# Order in which MPI implementations should be detected.  
+#
+# Used when automatically detecting the MPI implementation.  This is a
+# list of implementation names (keys in the detectors dict).  The first
+# matching implementation is used.
+detection_order=list()
+
+##@var no_implementation
+# The special implementation object that is used when no implementation is avalable.
+no_implementation=None
+
+def add_implementation(clazz):
+    """!Adds an MPI implementation class to the list of
+    implementations to detect.
+
+    Adds this implementation to the module-level detectors and
+    detection_order.  The class must have the following static
+    methods:
+
+    * name - the name of the class
+    * detect - a function that detects the implementation
+
+    @see produtil.mpi_impl.detectors for more information
+
+    @param class a class that implements the name and detect functions"""
+    name=clazz.name()
+    detectors[name]=clazz.detect
+    detection_order.append(name)
+
+##@var NO_NAME
+# Special value for the get_mpi() mpi_name to indicate the mpi_name
+# argument was not set.  Do not modify.
+NO_NAME=object()
+
+def register_implementations(logger=None):
+    """!Adds all known MPI implementations to the list for get_mpi
+    detection.
+
+    @warning This is part of the internal implementation of get_mpi()
+    and should never be called directly.
+
+    Loops over all MPI implementation modules inside produtil.mpi_impl
+    and adds each one to the list of MPI implementations.  Also adds
+    the special "no implementation" fallback from
+    produtil.mpi_impl.no_mpi.
+
+    @see produtil.mpi_impl.no_implementation
+    @see produtil.mpi_impl.get_mpi"""
+
+    if logger is None: logger=logging.getLogger('mpi_impl')
+
+    # IMPLEMENTATION NOTE: The "import" statements in this function
+    # must NOT be at the module level.  This is because the submodules
+    # of mpi_impl need to use produtil.run, but produtil.run must
+    # import the mpi_impl package.  Hence, initialization of the
+    # mpi_impl module-level variables, from mpi_impl submodules, has
+    # to happen inside this function.
+
+    # First, add the "no implementation" implementation.  This must be
+    # done first to ensure this function is not called twice when the
+    # implementation-specific code fails.  That is needed because
+    # no_implementation=None is used to detect if
+    # register_implementations was called.
+    global no_implementation
+    import produtil.mpi_impl.no_mpi
+    no_implementation=produtil.mpi_impl.no_mpi.Implementation.detect()
+
+    # Now add each implementation.  We need to wrap each around a
+    # try...except so that NCEP Central Operations can delete the
+    # unused produtil.mpi_impl.* modules without breaking produtil.run
+    # functionality.
+
+    try:
+        import produtil.mpi_impl.inside_aprun
+        add_implementation(produtil.mpi_impl.inside_aprun.Implementation)
+    except ImportError as e: 
+        logger.info('inside_aprun: cannot import: %s'%(str(e),))
+
+    try:
+        import produtil.mpi_impl.lsf_cray_intel
+        add_implementation(produtil.mpi_impl.lsf_cray_intel.Implementation)
+    except ImportError as e: 
+        logger.info('lsf_cray_intel: cannot import: %s'%(str(e),))
+
+    try:
+        import produtil.mpi_impl.mpirun_lsf
+        add_implementation(produtil.mpi_impl.mpirun_lsf.Implementation)
+    except ImportError as e: 
+        logger.info('mpirun_lsf: cannot import: %s'%(str(e),))
+
+    try:
+        import produtil.mpi_impl.impi
+        add_implementation(produtil.mpi_impl.impi.Implementation)
+    except ImportError as e: 
+        logger.info('impi: cannot import: %s'%(str(e),))
+
+    try:
+        import produtil.mpi_impl.mpiexec_mpt
+        add_implementation(produtil.mpi_impl.mpiexec_mpt.Implementation)
+    except ImportError as e: 
+        logger.info('mpiexec_mpt: cannot import: %s'%(str(e),))
+
+    try:
+        import produtil.mpi_impl.srun
+        add_implementation(produtil.mpi_impl.srun.Implementation)
+    except ImportError as e: 
+        logger.info('srun: cannot import: %s'%(str(e),))
+
+    try:
+        import produtil.mpi_impl.mpiexec
+        add_implementation(produtil.mpi_impl.mpiexec.Implementation)
+    except ImportError as e: 
+        logger.info('mpiexec: cannot import: %s'%(str(e),))
+
+def get_mpi(mpi_name=NO_NAME,force=False,logger=None,**kwargs):
+    """!Selects a specified MPI implementation, or automatically
+    detects the currently available one.
+
+    @warning This is an internal implementation function that should
+    never be called directly.  Use produtil.run.get_mpi() instead.
+
+    @param mpi_name Optional: the name of the desired MPI
+    implementation, or None to request running without MPI.
+
+    @param force if True, and mpi_name is given, the MPI
+    implementation will be used even if it is not available on the
+    current machine.  Note that if the name is not recognized, this
+    function will still raise an exception even if force=True.
+    Default is False.
+
+    @param logger a logging.Logger for messages.
+
+    @param kwargs Optional: additional keyword arguments to pass to
+    the MPI implementation detection functions.
+
+    @raise NotImplementedError if the MPI implementation is unknown,
+    or if the implementation is unavailble on this machine, and
+    force=False"""
+
+    if logger is None:
+        logger=logging.getLogger('mpi_impl')
+
+    # Initialize this module if we have not done so already:
+    if no_implementation is None:
+        register_implementations()
+
+    # Handle the case where the caller explicitly selected no MPI.
+    if mpi_name is None:
+        return no_mpi.Implementation.detect(
+            force=force,logger=logger,**kwargs)
+
+    # Handle the case of a specified implementation.  We try to use
+    # that implementation,
+    if mpi_name is not NO_NAME:
+        if mpi_name not in detectors:
+            raise NotImplementedError('The selected MPI implementation "%s" '
+                                      'is unknown.'%(mpi_name,))
+        detector=detectors[mpi_name]
+        impl=detector(force=force,logger=logger,**kwargs)
+        if impl is None:
+            raise NotImplementedError('The selected MPI implementation "%s" '
+                                      'is not available.'%(mpi_name,))
+        return impl
+
+    # Finally, handle the case where auto-detection is requested:
+    for name in detection_order:
+        detect=detectors[name]
+        result=None
+        try:
+            result=detect(
+                force=force,logger=logger,**kwargs)
+        except (StandardError,
+                produtil.fileop.FileOpError,
+                produtil.prog.ExitStatusException) as ee:
+            # Ignore exceptions related to an inability to detect the
+            # MPI implementation.  We assume the issue has already
+            # been logged, and we move on to the next implementation's
+            # detection function.
+            logger.info('%s: not detected: %s'%(
+                    name,str(ee)))
+            pass
+        if result:
+            # Detection succeeded.
+            return result
+    return no_mpi.Implementation.detect(
+        force=force,logger=logger,**kwargs)

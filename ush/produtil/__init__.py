@@ -81,4 +81,4 @@
 #   current batch job.
 # * produtil.cluster --- Query information about the cluster.
 
-version='4.0'
+version='4.1'

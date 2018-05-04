@@ -20,9 +20,11 @@ from __future__ import (print_function, division)
 import os
 import sys
 import produtil.setup
-from produtil.run import batchexe
-from produtil.run import checkrun
+from produtil.run import ExitStatusException
 import met_util as util
+from command_builder import CommandBuilder
+import config_metplus
+
 
 ## @namespace TcStatWrapper
 #  @brief Wrapper to the MET tool tc_stat, which is used for filtering tropical
@@ -38,18 +40,33 @@ import met_util as util
 # attribute data.
 
 
-class TcStatWrapper(object):
+class TcStatWrapper(CommandBuilder):
     """! Wrapper for the MET tool, tc_stat, which is used to filter tropical
          cyclone pair data.
     """
-    def __init__(self, p):
-        met_build_base = p.getdir('MET_BUILD_BASE')
-        self.tc_exe = os.path.join(met_build_base, 'bin/tc_stat')
+    def __init__(self, p, logger):
+        super(TcStatWrapper, self).__init__(p, logger)
+        self.app_name = 'tc_stat'
+        self.config = self.p
+        self.logger=logger
+        if self.logger is None:
+            self.logger = util.get_logger(self.p,sublog='TcStat')
+
+        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
+                                     'bin/tc_stat')
+        self.app_name = os.path.basename(self.app_path)
+        self.tc_exe = self.app_path
+
+        # TODO after testing, remove lines below that have ###
+        ###met_install_dir = self.p.getdir('MET_INSTALL_DIR')
+        ###self.tc_exe = os.path.join(met_install_dir, 'bin/tc_stat')
 #        self.init_date_beg = p.getstr('config', 'INIT_DATE_BEG')
 #        self.init_date_end = p.getstr('config', 'INIT_DATE_END')
 #        self.init_hour_inc = p.getint('config', 'INIT_HOUR_INC')
-        self.logger = util.get_logger(p)
-        self.config = p
+        ###self.logger = util.get_logger(p)
+        ###self.config = p
+
+        self.logger.info("Initialized TcStatWrapper")
 
     def build_tc_stat(self, series_output_dir, cur_init, tile_dir,
                       filter_opts):
@@ -95,16 +112,20 @@ class TcStatWrapper(object):
 
         tc_cmd_str = ''.join(tc_cmd_list)
 
-        # Make call to tc_stat, capturing any stderr and stdout to the MET
-        #  Plus log.
+
+        # Since this wrapper is not using the CommandBuilder to build the cmd,
+        # we need to add the met verbosity level to the MET cmd created before
+        # we run the command.
+        tc_cmd_str = self.cmdrunner.insert_metverbosity_opt(tc_cmd_str)
+
+        # Run tc_stat
         try:
-            tc_cmd = batchexe('sh')['-c', tc_cmd_str].err2out()
-            checkrun(tc_cmd)
-        except produtil.run.ExitStatusException as ese:
-            msg = ("ERROR| " + cur_filename + ":" + cur_function +
-                   " from calling MET TC-STAT with command:" +
-                   tc_cmd.to_shell())
-            self.logger.error(msg)
+            #tc_cmd = batchexe('sh')['-c', tc_cmd_str].err2out()
+            #checkrun(tc_cmd)
+            (ret, cmd) = self.cmdrunner.run_cmd(tc_cmd_str,app_name=self.app_name)
+            if not ret == 0:
+                raise ExitStatusException('%s: non-zero exit status'%(repr(cmd),),ret)
+        except ExitStatusException as ese:
             self.logger.error(ese)
 
 
@@ -118,17 +139,19 @@ if __name__ == "__main__":
             produtil.setup.setup(send_dbn=False, jobname='run_tc_stat')
         produtil.log.postmsg('run_tc_stat is starting')
 
-        # Read in the configuration object p
-        import config_launcher
-        if len(sys.argv) == 3:
-            CONFIG = config_launcher.load_baseconfs(sys.argv[2])
-        else:
-            CONFIG = config_launcher.load_baseconfs()
+        # Read in the configuration object
+        ###import config_launcher
+        ###if len(sys.argv) == 3:
+        ###    CONFIG = config_launcher.load_baseconfs(sys.argv[2])
+        ###else:
+        ###    CONFIG = config_launcher.load_baseconfs()
 
-        TCS = TcStatWrapper(CONFIG)
-
+        CONFIG = config_metplus.setup()
         if 'MET_BASE' not in os.environ:
             os.environ['MET_BASE'] = CONFIG.getdir('MET_BASE')
+
+        TCS = TcStatWrapper(CONFIG, logger=None)
+        #TCS.<call_some_method>
 
 #        util.gen_init_list(TCS.init_date_beg, TCS.init_date_end,
 #                           TCS.init_hour_inc, CONFIG.getstr('config',

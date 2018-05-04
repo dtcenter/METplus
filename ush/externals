@@ -1,4 +1,16 @@
-# This file is just used to document the svn version of the produtil directory.
+# This file is just used to document the Historical versions of the produtil directory.
 # If a newer version is checked out than update the revision number.
  
+# Current version:
+branch: regtests-run
+commit: 9858fc849a8eba 2018 Jan 10 in the vlab git repository
+https://james.t.frimel@vlab.ncep.noaa.gov/code-review/a/EMC_produtil
+NOTE:
+EMC_produtil/ush/produtil moved to METplus/produtil
+EMC_produtil/usy/*.py test files moved to METplus/internal_tests/produtil
+
+
+# When there was an svn diretory
+Initial import in to METplus github project, this was the version we used
+in METplus up til March 2018
 -r 89186 https://svnemc.ncep.noaa.gov/projects/nceplibs/produtil/trunk/ush/produtil produtil

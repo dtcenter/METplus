@@ -14,8 +14,8 @@ how the scripts work.
 This website layout and content is based on and uses the original work
 that was developed for the HWRF project by Samuel Trahan from EMC-NCEP-NOAA.
 
-@note We are still adding content to this manual, so pages may move,
-merge, or be renamed.
+@note Content is currently being added to this manual.  Pages may move,
+merge, be renamed, reformatted, or edited.
 
 
 ------------------------------------------------------------------------
@@ -24,45 +24,40 @@ merge, or be renamed.
  + @ref METplus_TermsOfUse
 
 
-\section mainpage_whazzit What is All of This?
+\section mainpage_whatisthis What is All of This?
 
-METplus is a python scripting structure around the the MET
+METplus is a Python scripting structure (wrapper) around the the MET
 series of statistical tools.
 
-You can find more information about MET on these websites:
+You can find more information about MET and METplus on these websites:
 
 What                  | Where
---------------------- | ------------------------------------
-<sup>*</sup>METplus   | https://www.github.com/NCAR/METplus  
+:--------------------- | :------------------------------------
 MET                   | http://www.dtcenter.org/met/users/
+METplus<sup>*</sup>   | https://www.github.com/NCAR/METplus
 
-<b><sup>*</sup>The METplus GitHub repository is currently private and requires a user account to access.</b>
-
-The rest of *this* website explains in great detail how to install,
-configure, run and develop the METplus scripts.
-
+<b><sup>*</sup>The METplus GitHub repository is currently public. A user account
+ is necessary if you plan on contributing code or modifying your code.</b>
 
 ------------------------------------------------------------------------
 \section mainpage-install Installing METplus
 
  + @ref install-repo  
 
-After you have installed the METplus, you must then configure 
+After you have installed the METplus source code, you must then configure
 it to run on your machine.
 
 ------------------------------------------------------------------------
 \section mainpage-conf-run Configuring and Running METplus
 
-METplus and MET is designed to be highly configurable.  
+METplus and MET are designed to be highly configurable.
 Detailed information about configuring METPlus is found in this page and its subpages:
 
 If you downloaded METplus from the GitHub repository, this page
-is for you.  It explains in detail how to configure, and run  METplus:
+is for you.  It explains in detail how to configure, and run METplus:
 
  + @ref METplus_install_guide
  + @ref confguide
-
-We have a detailed guide on how to run METplus using Rocoto here:
  + @ref rocoto_workflow
 
 We will be adding more pages on these topics in the near future,
@@ -101,15 +96,15 @@ this page.
 This manual is a living document.  It is generated from special
 comments in the scripts themselves by a program called Doxygen, a
 documentation generation suite.  Users can generate the entire
-website, and a LaTeX version of the same, if they have Doxygen version
-1.8.9.1 or later.
+website, and a LaTeX version of the same, if they have **Doxygen version
+1.8.9.1 or later**.
 
 \code{.sh}
 git clone https://www.github.com/NCAR/METplus
 cd METplus/sorc/
 make doc
 cd ../doc
-# copy the html/ directory to a web server
+# copy the entire contents of the html/ directory to a web server
 \endcode
 
 As the METplus code is updated, the documentation should
@@ -118,16 +113,16 @@ the new version.
 
 
 --------------------------------------------------------------
-### \section Repository README Text file and wiki contents.
+<!--### \section Repository README Text file and wiki contents.
 
 Links to the main repository README text file and the GitHub wiki contents
- <!--
+
  This links to the doxygen created html version of the README.md file
  named METplus_README.html, the link text is: METplus Repository README File
  So ... on the web page you literally see the following
  See the METplus Repository README File
- -->
+
  + @ref METplus_README
  + @ref wikicontents
-
+-->
 */

@@ -33,9 +33,6 @@ class TaskInfo:
         self.init_time = -1
         self.valid_time = -1
         self.lead = -1
-        self.level = -1
-        self.fcst_var = ""
-        self.ob_type = ""
         
 
     def getValidTime(self):
@@ -53,3 +50,6 @@ class TaskInfo:
       if self.valid_time is not -1 and self.lead is not -1:
           return util.shift_time(self.valid_time, -self.lead)
       return -1
+
+    def getLeadTime(self):
+        return self.lead

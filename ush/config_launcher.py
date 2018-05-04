@@ -2,6 +2,7 @@ from __future__ import print_function
 import os
 import re
 import sys
+import logging
 import collections
 import produtil.fileop
 import produtil.run
@@ -40,7 +41,8 @@ __all__ = ['load', 'launch', 'parse_launch_args', 'load_baseconfs',
 # baseinputconfs = ['metplus.conf']
 baseinputconfs = ['metplus_config/metplus_system.conf',
                   'metplus_config/metplus_data.conf',
-                  'metplus_config/metplus_runtime.conf']
+                  'metplus_config/metplus_runtime.conf',
+                  'metplus_config/metplus_logging.conf']
 
 # Note: This is just a developer reference comment, in case we continue
 # extending the metplus capabilities, by following hwrf patterns.
@@ -210,16 +212,35 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     conf = METplusLauncher()
     logger = conf.log()
 
+    # Read in and parse all the conf files.
     for filename in file_list:
         conf.read(filename)
         logger.info("%s: Parsed this file" % (filename,))
+
+    # Overriding or passing in specific conf items on the command line
+    # ie. config.NEWVAR="a new var" dir.SOMEDIR=/override/dir/path
+    # If spaces, seems like you need double quotes on command line.
+    if moreopt:
+        for section, options in moreopt.iteritems():
+            if not conf.has_section(section):
+                conf.add_section(section)
+            for option, value in options.iteritems():
+                logger.info('Override: %s.%s=%s'
+                            % (section, option, repr(value)))
+                conf.set(section, option, value)
+
+    # All conf files and command line options have been parsed.
+    # So lets set and add specific log variables to the conf object
+    # based on the conf log template values.
+    util.set_logvars(conf)
+
 
     # Determine if final METPLUS_CONF file already exists on disk.
     # If it does, use it instead.
     confloc = conf.getloc('METPLUS_CONF')
 
-    # Just overwrite the final conf file.
-    # Not overwriting is annoying everyone, since when make a conf file edit
+    # Received feedback: Users want to overwrite the final conf file if it exists.
+    # Not overwriting is annoying everyone, since when one makes a conf file edit
     # you have to remember to remove the final conf file.
     # Originally based on a hwrf workflow. since launcher task only runs once, 
     # and all following tasks use the generated conf file.
@@ -241,15 +262,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
         # more options since using existing final conf file.
         moreopt = None
 
-    # if moreopt is not None:
-    if moreopt:
-        for section, options in moreopt.iteritems():
-            if not conf.has_section(section):
-                conf.add_section(section)
-            for option, value in options.iteritems():
-                logger.info('Override: %s.%s=%s'
-                            % (section, option, repr(value)))
-                conf.set(section, option, value)
+
 
     # Place holder for when workflow is developed in METplus.
     # rocoto does not initialize the dirs, it returns here.
@@ -257,7 +270,6 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     #    if prelaunch is not None:
     #        prelaunch(conf,logger,cycle)
     #    return conf
-
 
     produtil.fileop.makedirs(conf.getdir('OUTPUT_BASE'), logger=logger)
 
@@ -297,7 +309,7 @@ def load(filename):
 
     conf = METplusLauncher()
     conf.read(filename)
-    #    logger = conf.log()
+    # logger = conf.log()
 
     # cycle=conf.cycle
     # assert(cycle is not None)
@@ -369,7 +381,7 @@ def _set_conf_file_path(conf_file):
 
     return conf_file
 
-
+# Really should have called this class METPlusConfig
 class METplusLauncher(ProdConfig):
     """!A replacement for the produtil.config.ProdConfig used throughout
     the METplus system.  You should never need to instantiate one of
@@ -382,9 +394,26 @@ class METplusLauncher(ProdConfig):
         @param conf The configuration file."""
         super(METplusLauncher, self).__init__(conf)
         self._cycle = None
+        self._logger=logging.getLogger('metplus')
+        logger = self._logger
 
     ##@var _cycle
     # The cycle for this METplus run.
+
+    # Overrides method in ProdConfig
+    def log(self,sublog=None):
+        """!returns a logging.Logger object
+
+        Returns a logging.Logger object.  If the sublog argument is
+        provided, then the logger will be under that subdomain of the
+        "metplus" logging domain.  Otherwise, this METpluslauncher's logger
+        (usually the "metplus" domain) is returned.
+        @param sublog the logging subdomain, or None
+        @returns a logging.Logger object"""
+        if sublog is not None:
+            with self:
+                return logging.getLogger('metplus.'+sublog)
+        return self._logger
 
     def sanity_check(self):
         """!Runs nearly all sanity checks.

@@ -29,53 +29,43 @@ from command_builder import CommandBuilder
 class RegridDataPlaneWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(RegridDataPlaneWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_BUILD_BASE'),
+        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                      'bin/regrid_data_plane')
         self.app_name = os.path.basename(self.app_path)
 
-    def run_at_time(self, init_time):
+    def run_at_time(self, init_time, valid_time):
         task_info = TaskInfo()
         task_info.init_time = init_time
-        fcst_vars = util.getlist(self.p.getstr('config', 'FCST_VARS'))
+        task_info.valid_time = valid_time
+        var_list = util.parse_var_list(self.p)        
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
         for lead in lead_seq:
             task_info.lead = lead
             task_info.valid_time = -1
-            for fcst_var in fcst_vars:
-                task_info.fcst_var = fcst_var
-                # loop over models to compare
-                accums = util.getlist(
-                    self.p.getstr('config', fcst_var + "_ACCUM"))
-                ob_types = util.getlist(
-                    self.p.getstr('config', fcst_var + "_OBTYPE"))
-                for accum in accums:
-                    task_info.level = accum
-                    for ob_type in ob_types:
-                        task_info.ob_type = ob_type
-                        if lead < int(accum):
-                            continue
-                        #                        self.run_at_time_fcst(task_info)
-                        self.run_at_time_once(task_info.getValidTime(),
-                                              task_info.level,
-                                              task_info.ob_type)
+            for var_info in var_list:
+                level = var_info.obs_level
+                if level[0].isalpha():
+                    level = var_info.obs_level[1:]                       
+                self.run_at_time_once(task_info.getValidTime(),
+                                      level, var_info.obs_name)
 
-    def run_at_time_once(self, valid_time, accum, ob_type):
-        obs_var = self.p.getstr('config', ob_type + "_VAR")
-        bucket_dir = self.p.getstr('config', ob_type + '_BUCKET_DIR')
-        bucket_template = self.p.getraw('filename_templates',
-                                        ob_type + '_BUCKET_TEMPLATE')
-        regrid_dir = self.p.getstr('config', ob_type + '_REGRID_DIR')
+
+    def run_at_time_once(self, valid_time, level, compare_var):
+        bucket_dir = self.p.getdir('OBS_REGRID_DATA_PLANE_INPUT_DIR')
+        input_template = self.p.getraw('filename_templates',
+                                        'OBS_REGRID_DATA_PLANE_TEMPLATE')
+        regrid_dir = self.p.getdir('OBS_REGRID_DATA_PLANE_OUTPUT_DIR')
         regrid_template = self.p.getraw('filename_templates',
-                                        ob_type + '_REGRID_TEMPLATE')
+                                        'OBS_REGRID_DATA_PLANE_TEMPLATE')
 
         ymd_v = valid_time[0:8]
         if not os.path.exists(os.path.join(regrid_dir, ymd_v)):
             os.makedirs(os.path.join(regrid_dir, ymd_v))
 
         pcpSts = sts.StringSub(self.logger,
-                               bucket_template,
+                               input_template,
                                valid=valid_time,
-                               accum=str(accum).zfill(2))
+                               level=str(level).zfill(2))
         outfile = os.path.join(bucket_dir, pcpSts.doStringSub())
 
         self.add_input_file(outfile)
@@ -83,10 +73,10 @@ class RegridDataPlaneWrapper(CommandBuilder):
         regridSts = sts.StringSub(self.logger,
                                   regrid_template,
                                   valid=valid_time,
-                                  accum=str(accum).zfill(2))
+                                  level=str(level).zfill(2))
         regrid_file = regridSts.doStringSub()
         self.set_output_path(os.path.join(regrid_dir, regrid_file))
-        field_name = "{:s}_{:s}".format(obs_var, str(accum).zfill(2))
+        field_name = "{:s}_{:s}".format(compare_var, str(level).zfill(2))
         self.add_arg("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(
             field_name))
         self.add_arg("-method BUDGET")
@@ -94,9 +84,8 @@ class RegridDataPlaneWrapper(CommandBuilder):
         self.add_arg("-name " + field_name)
         cmd = self.get_command()
         if cmd is None:
-            print("ERROR: regrid_data_plane could not generate command")
+            self.logger.error("regrid_data_plane could not generate command")
             return
-#        print("RUNNING: " + str(cmd))
         self.logger.info("")
         self.build()
         self.clear()

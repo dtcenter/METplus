@@ -22,13 +22,13 @@ import subprocess
 import datetime
 import calendar
 import string_template_substitution as sts
-import met_util as util
-
+from command_runner import CommandRunner
 from abc import ABCMeta
 
 
 class CommandBuilder:
     __metaclass__ = ABCMeta
+
 
     def __init__(self, p, logger):
         '''Retrieve parameters from corresponding param file'''
@@ -37,7 +37,9 @@ class CommandBuilder:
         self.debug = False
         self.app_name = None
         self.app_path = None
-        self.env = os.environ.copy()        
+        self.env = os.environ.copy()
+        self.set_verbose(self.p.getstr('config', 'LOG_MET_VERBOSITY', '2'))
+        self.cmdrunner = CommandRunner(self.p, logger=self.logger)
         self.clear()
 
     def clear(self):
@@ -47,10 +49,14 @@ class CommandBuilder:
         self.outdir = ""
         self.outfile = ""
         self.param = ""
+        #self.verbose = -1
 
 
     def set_debug(self, debug):
         self.debug = debug
+
+    def set_verbose(self, v):
+        self.verbose = v
 
     def add_arg(self, arg):
         self.args.append(arg)
@@ -84,6 +90,13 @@ class CommandBuilder:
 
     def add_env_var(self, key,  name):
         self.env[key] = name
+        # Note: Modify os.environ directly since it is automatically
+        # copied to the produtil runner environment. If needed,
+        # we could also pass self.env to the command runner,
+        # My preference would be to only copy the env vars
+        # required, not the whole environment, since that is already
+        # being done.
+        os.environ[key] = name
 
     def get_env(self):
         return self.env
@@ -106,9 +119,7 @@ class CommandBuilder:
         self.logger.debug(out)
 
     def print_env_item(self, item):
-        # TODO: Fix logger call here
-        (self.logger).debug(item+"="+self.env[item])
-        #    print(item,":",self.env[item])
+        self.logger.debug(item+"="+self.env[item])
 
     def get_command(self):
         '''Build command to run from arguments'''
@@ -118,6 +129,10 @@ class CommandBuilder:
             return None
 
         cmd = self.app_path + " "
+
+        if self.verbose != -1:
+            cmd += "-v "+str(self.verbose) + " "
+
         for a in self.args:
             cmd += a + " "
 
@@ -139,34 +154,54 @@ class CommandBuilder:
             (self.logger).error("No output directory specified")
             return None
 
-        cmd += os.path.join(self.outdir, self.outfile)
+        cmd += " " + os.path.join(self.outdir, self.outfile)
+
         return cmd
 
+    # Placed running of command in its own class, command_runner run_cmd().
+    # This will allow the ability to still call build() as is currenly done
+    # in subclassed CommandBuilder wrappers and also allow wrappers
+    # such as tc_pairs that are not heavily designed around command builder
+    # to call cmdrunner.run_cmd().
+    # Make sure they have SET THE self.app_name in the subclasses constructor.
+    # see regrid_data_plane_wrapper.py as an example of how to set.
     def build(self):
         '''Build and run command'''
         cmd = self.get_command()
         if cmd is None:
             return
-        (self.logger).info("RUNNING: " + cmd)
-        print("RUNNING: " + cmd)         
-        process = subprocess.Popen(cmd, env=self.env, shell=True)
-        process.wait()
-#        self.clear()
+        self.cmdrunner.run_cmd(cmd, app_name=self.app_name)
+
+        #self.logger.info("RUNNING: " + cmd)
+        #process = subprocess.Popen(cmd, env=self.env, shell=True)
+        #process.wait()
+
 
     def run_all_times(self):
-        time_format = self.p.getstr('config', 'INIT_TIME_FMT')
-        start_t = self.p.getstr('config', 'INIT_BEG')
-        end_t = self.p.getstr('config', 'INIT_END')
-        time_interval = self.p.getint('config', 'INIT_INC')
-
+        use_init = p.getbool('config', 'LOOP_BY_INIT', True)
+        if use_init:
+            time_format = p.getstr('config', 'INIT_TIME_FMT')
+            start_t = p.getstr('config', 'INIT_BEG')
+            end_t = p.getstr('config', 'INIT_END')
+            time_interval = p.getint('config', 'INIT_INC')
+        else:
+            time_format = p.getstr('config', 'VALID_TIME_FMT')
+            start_t = p.getstr('config', 'VALID_BEG')
+            end_t = p.getstr('config', 'VALID_END')
+            time_interval = p.getint('config', 'VALID_INC')
+        
         if time_interval < 60:
             print("ERROR: time_interval parameter must be greater than 60 seconds")
             exit(1)
         
-        init_time = calendar.timegm(time.strptime(start_t, time_format))
+        loop_time = calendar.timegm(time.strptime(start_t, time_format))
         end_time = calendar.timegm(time.strptime(end_t, time_format))
 
-        while init_time <= end_time:
-            run_time = time.strftime("%Y%m%d_%H", time.gmtime(init_time))
-            self.run_at_time(run_time)
-            init_time += time_interval
+        while loop_time <= end_time:
+            run_time = time.strftime("%Y%m%d%H%M", time.gmtime(loop_time))
+            # Set valid time to -1 if using init and vice versa            
+            if use_init:
+                self.run_at_time(run_time, -1)
+            else:
+                self.run_at_time(-1, run_time)
+            loop_time += time_interval

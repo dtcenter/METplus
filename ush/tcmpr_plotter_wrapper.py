@@ -5,11 +5,12 @@ from __future__ import print_function
 import sys
 import os
 import re
+import subprocess
 import produtil.setup
-from produtil.run import batchexe
+from produtil.run import exe
 from produtil.run import checkrun
-from command_builder import CommandBuilder
 import met_util as util
+from command_builder import CommandBuilder
 import config_metplus
 
 
@@ -54,10 +55,11 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # All these instance attributes are needed to support the
         # plot_tcmpr.R functionality.
         super(TCMPRPlotterWrapper, self).__init__(p, logger)
+        self.app_name = 'plot_tcmpr.R'
         self.config = p
-
+        self.logger = logger
         if self.logger is None:
-            self.logger = util.get_logger(self.p)
+            self.logger = util.get_logger(self.p,sublog='TCMPRPlotter')
 
         self._init_tcmpr_script()
 
@@ -104,12 +106,9 @@ class TCMPRPlotterWrapper(CommandBuilder):
         """! Called by the constructor to set up the environment variables
         used by the plot_tcmpr.R script and  to set the self.tcmpr_script
         variable."""
-
-
         # User environment variable settings take precedence over
         # configuration files.
-
-        # The purpose of this method is to support MET 6.0 and later, 
+        # The purpose of this method is to support MET 6.0 and later,
         # and to not throw a superfluous error, due to a missing  env variable
         # that is version specific. 
         # For example,
@@ -127,7 +126,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # break. It would be much easier if there was a way to check
         # for the version of met. Hopefully it covers 99% of the cases.
 
-        # Evironment variables and met versions required  by the plot_tcmpr.R
+        # Environment variables and met versions required by the plot_tcmpr.R
         # met-6.1 and later: MET_INSTALL_DIR, MET_BASE
         # met-6.0: MET_BUILD_BASE, RSCRIPTS_BASE
 
@@ -152,7 +151,6 @@ class TCMPRPlotterWrapper(CommandBuilder):
             else:
                 os.environ['MET_INSTALL_DIR'] = self.p.getdir('MET_INSTALL_DIR')
 
-
         # MET_BASE has always been defined in METplus, so it 'should'
         # exist, so we will throw an error, if it is not defined, 
         # even though it is not required if running METplus against 
@@ -162,12 +160,11 @@ class TCMPRPlotterWrapper(CommandBuilder):
                              'environment instead of metplus configuration '
                              'file. Using: %s' % os.environ['MET_BASE'])
             met_base_tcmpr_script = \
-                os.path.join(os.environ['MET_BASE'],'Rscripts/plot_tcmpr.R')
+                os.path.join(os.environ['MET_BASE'], 'Rscripts/plot_tcmpr.R')
         else:
             os.environ['MET_BASE'] = self.p.getdir('MET_BASE')
             met_base_tcmpr_script = \
-                os.path.join(self.p.getdir('MET_BASE'),'Rscripts/plot_tcmpr.R')
-
+                os.path.join(self.p.getdir('MET_BASE'), 'Rscripts/plot_tcmpr.R')
 
         # RSCRIPTS_BASE introduced and used ONLY in met-6.0 release.
         # Will go away when we no longer support met-6.0 and earlier.
@@ -180,9 +177,8 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # If MET_BUILD_BASE is defined in conf file, assume we are
             # running with met-6.0 and earlier. Which means RSCRIPTS_BASE
             # is required, so throw an error, if it is not defined.
-            if self.p.has_option('dir','MET_BUILD_BASE'):
+            if self.p.has_option('dir', 'MET_BUILD_BASE'):
                 os.environ['RSCRIPTS_BASE'] = self.p.getdir('RSCRIPTS_BASE')
-
 
         # MET_BUILD_BASE has always been defined in METplus.
         # Will go away when we no longer support met-6.0 and earlier.
@@ -194,15 +190,14 @@ class TCMPRPlotterWrapper(CommandBuilder):
                 os.path.join(os.environ['MET_BUILD_BASE'],
                              'scripts/Rscripts/plot_tcmpr.R')
         else:
-            if self.p.has_option('dir','MET_BUILD_BASE'):
+            if self.p.has_option('dir', 'MET_BUILD_BASE'):
                 os.environ['MET_BUILD_BASE'] = self.p.getdir('MET_BUILD_BASE')
                 met_build_base_tcmpr_script = os.path.join(self.p.getdir('MET_BUILD_BASE'),
                                              'scripts/Rscripts/plot_tcmpr.R')
             else:
-                #Set to empty string since we test it later.
+                # Set to empty string since we test it later.
                 met_build_base_tcmpr_script = ''
 
-      
         if util.file_exists(met_base_tcmpr_script):
             self.tcmpr_script = met_base_tcmpr_script
             self.logger.info('Using MET_BASE plot_tcmpr script: %s '
@@ -213,10 +208,8 @@ class TCMPRPlotterWrapper(CommandBuilder):
                                           % met_build_base_tcmpr_script)
         else:
             self.logger.error('NO tcmpr_plot.R script could be found, '
-                    'Check your MET_BASE or MET_BUILD_BASE paths in conf file.')
+                              'Check your MET_BASE or MET_BUILD_BASE paths in conf file.')
             sys.exit(1)
-
-
 
     def run_all_times(self):
         """! Builds the command for invoking tcmpr.R plot script.
@@ -263,14 +256,19 @@ class TCMPRPlotterWrapper(CommandBuilder):
                 # Due to the way cmds_list was created, join it all in to
                 # one string and than split that in to a list, so element [0]
                 # is 'Rscript', instead of 'Rscript self.tcmpr_script -lookin'
-                cmds_list = ''.join(cmds_list).split()
-                # cmd = batchexe('sh')['-c',''.join(cmds_list)] > '/dev/null'
-                cmd = batchexe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
-                self.logger.debug("DEBUG: Command run " +
-                                  cmd.to_shell())
-                self.logger.info("INFO: Generating requested plots for " +
-                                 self.input_data)
 
+                # Use CommandBuilder's build() and clear(); using
+                # produtil's  exe generates mpirun warnings, only on eyewall,
+                # which can be ignored.
+                cmds_list = ''.join(cmds_list).split()
+                #cmd = exe('sh')['-c',''.join(cmds_list)] > '/dev/null'
+                cmd = exe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
+                self.logger.debug("DEBUG: Command run " +
+                                   cmd.to_shell())
+                self.logger.info("INFO: Generating requested plots for " +
+                                  self.input_data)
+                #self.build()
+                #self.clear()
                 # pylint:disable=unnecessary-pass
                 # If a tc file is empty, continue to the next, thus the pass
                 # isn't unnecessary.
@@ -285,6 +283,11 @@ class TCMPRPlotterWrapper(CommandBuilder):
                     # Remove the empty directory
                     if not os.listdir(self.output_base_dir):
                         os.rmdir(self.output_base_dir)
+                    pass
+
+                # Remove the empty directory
+                if not os.listdir(self.output_base_dir):
+                    os.rmdir(self.output_base_dir)
                     pass
 
         # If the input data is a directory, create a list of all the
@@ -318,8 +321,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # one string and than split that in to a list, so element [0]
             # is 'Rscript', instead of 'Rscript self.tcmpr_script -lookin'
             cmds_list = ''.join(cmds_list).split()
-            cmd = batchexe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
-            self.logger.debug("DEBUG:  Command run " + cmd.to_shell())
+            cmd = exe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
+            # This can be a very long command if the user has
+            # indicated a directory.  Only log this if necessary.
+            # self.logger.debug("DEBUG:  Command run " + cmd.to_shell())
 
             # pylint:disable=unnecessary-pass
             # If a tc file is empty, continue to the next, thus the pass
@@ -333,7 +338,6 @@ class TCMPRPlotterWrapper(CommandBuilder):
                 self.logger.warn("WARN: plot_tcmpr.R returned non-zero"
                                  " exit status, tcst file may be missing"
                                  " data... continuing: " + str(ese))
-                # Remove the empty directory
                 # Remove the empty directory
                 if not os.listdir(dated_output_dir):
                     os.rmdir(dated_output_dir)
@@ -452,6 +456,25 @@ class TCMPRPlotterWrapper(CommandBuilder):
             optionals.append(' -save')
 
         return optionals
+
+    def get_command(self):
+        """! Over-ride CommandBuilder's get_command because unlike other MET tools,
+             tcmpr_plotter_wrapper handles input files differently because it wraps an R-script, plot_tcmpr.R
+             rather than a typical MET tool. Build command to run from arguments"""
+        if self.app_path is None:
+            self.logger.error("No app path specified. You must use a subclass")
+            return None
+
+        return self.cmd
+
+    def build(self):
+        """! Override CommandBuilder's build() since the plot_"""
+        cmd = self.get_command()
+        if cmd is None:
+            return
+        self.logger.info("RUNNING: " + cmd)
+        process = subprocess.Popen(cmd, env=self.env, shell=True)
+        process.wait()
 
 
 if __name__ == "__main__":

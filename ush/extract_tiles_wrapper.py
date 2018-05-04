@@ -46,8 +46,8 @@ class ExtractTilesWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
         super(ExtractTilesWrapper, self).__init__(p, logger)
-        met_build_base = p.getdir('MET_BUILD_BASE')
-        self.app_path = os.path.join(p.getdir('MET_BUILD_BASE'), 'bin/tc_pairs')
+        met_install_dir = p.getdir('MET_INSTALL_DIR')
+        self.app_path = os.path.join(p.getdir('MET_INSTALL_DIR'), 'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
         self.tc_pairs_dir = self.p.getdir('TC_PAIRS_DIR')
         self.overwrite_flag = self.p.getbool('config',
@@ -55,7 +55,7 @@ class ExtractTilesWrapper(CommandBuilder):
         self.addl_filter_opts = \
             self.p.getstr('config', 'EXTRACT_TILES_FILTER_OPTS')
         self.filtered_out_dir = self.p.getdir('EXTRACT_OUT_DIR')
-        self.tc_stat_exe = os.path.join(met_build_base, 'bin/tc_stat')
+        self.tc_stat_exe = os.path.join(met_install_dir, 'bin/tc_stat')
         self.init_beg = self.p.getstr('config', 'INIT_BEG')[0:8]
         self.init_end = self.p.getstr('config', 'INIT_END')[0:8]
         self.init_hour_inc = int(self.p.getint('config', 'INIT_INC') / 3600)
@@ -84,7 +84,8 @@ class ExtractTilesWrapper(CommandBuilder):
         # Loop from begYYYYMMDD to endYYYYMMDD incrementing by HH
         # and ending on the endYYYYMMDD_HH End Hour.
         while init_time <= end_time:
-            self.run_at_time(init_time.strftime("%Y%m%d_%H"))
+#            self.run_at_time(init_time.strftime("%Y%m%d_%H"))
+            self.run_at_time(init_time.strftime("%Y%m%d%H%M"), -1)
             init_time = init_time + datetime.timedelta(
                 hours=self.init_hour_inc)
 
@@ -96,7 +97,8 @@ class ExtractTilesWrapper(CommandBuilder):
                "] | Finished extract tiles")
         self.logger.info(msg)
 
-    def run_at_time(self, cur_init):
+#    def run_at_time(self, cur_init):
+    def run_at_time(self, init_time, valid_time):
         """!Get TC-paris data then regrid tiles centered on the storm.
 
         Get TC-pairs track data and GFS model data, do any necessary
@@ -123,6 +125,8 @@ class ExtractTilesWrapper(CommandBuilder):
         msg = ("INFO|[" + cur_filename + ":" + cur_function + "]"
                "|Begin extract tiles")
         self.logger.info(msg)
+
+        cur_init = init_time[0:8]+"_"+init_time[8:10]
 
         # Check that there are tc_pairs data which are used as input
         if util.is_dir_empty(self.tc_pairs_dir):
@@ -157,7 +161,7 @@ class ExtractTilesWrapper(CommandBuilder):
             tile_dir = ''.join(tile_dir_parts)
             # Use TcStatWrapper to build up the tc_stat command and invoke
             # the MET tool tc_stat to perform the filtering.
-            tcs = TcStatWrapper(self.config)
+            tcs = TcStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(self.filtered_out_dir, cur_init,
                               tile_dir, self.addl_filter_opts)
 

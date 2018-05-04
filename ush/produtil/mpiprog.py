@@ -46,9 +46,10 @@ __all__=[]
 
 import sys
 
+import StringIO
 import logging
 import produtil.prog
-from produtil.prog import ProgSyntaxError
+from produtil.prog import ProgSyntaxError, shbackslash
 
 class MPIProgSyntaxError(ProgSyntaxError): 
     """!Base class of syntax errors in MPI program specifications"""
@@ -65,6 +66,23 @@ class InputsNotStrings(ProgSyntaxError):
     """!Raised when the validation scripts were expecting string
     arguments or string executable names, but something else was
     found."""
+
+class MixedValues(object):
+    """!Special type for MIXED_VALUES constant."""
+
+class MixedValuesError(MPIProgSyntaxError):
+    """Indicates that an iterator over information specific to an MPI
+    rank cannot iterate over a group of ranks collectively because the
+    information in each rank differs.
+
+    This is used in MPMD mode for local options when the various MPI
+    ranks have different local options."""
+
+##@var MIXED_VALUES
+# Constant value used by MPIRanksMPMD to indicate that the threads,
+# localopts, or other information has mixed values within the various
+# mpi ranks.
+MIXED_VALUES=MixedValues()
 
 ########################################################################
 
@@ -146,7 +164,9 @@ class MPIRanksBase(object):
             else:
                 for x in between: yield x%kw
             kw['n']=count
-            for x in before: yield x%kw
+            for x in before: 
+                assert(isinstance(x,str))
+                yield x%kw
             if include_localopts:
                 for lo in rank.localoptiter():
                     yield lo
@@ -224,7 +244,19 @@ class MPIRanksBase(object):
         """!Iterates over local MPI configuration options for this rank
         or group of ranks."""
         for x in self._localopts: yield x
-
+    def mixedlocalopts(self):
+        """!Do the MPI ranks within this group contain mixed values
+        for local options?"""
+        return False
+    def samelocalopts(self,other):
+        i=0
+        for localopt in other.localoptiter():
+            if i>len(self._localopts):
+                return False
+            if self._localopts[i]!=localopt:
+                return False
+            i+=1
+        return True
     def getturbomode(self):
         """!Do we want turbo mode to be enabled for this set of ranks?
         @returns None if unknown, True if turbo mode is explicitly enabled
@@ -236,7 +268,7 @@ class MPIRanksBase(object):
         self._turbomode=tm
         logging.getLogger('mpiprog.py').info(
             "TURBO MODE IS %s"%(repr(self._turbomode)))
-        return self._turbomode
+        return self
     def delturbomode(self,tm):
         """!Removes the request for turbo mode to be on or off."""
         self._turbomode=None
@@ -250,6 +282,10 @@ class MPIRanksBase(object):
     def rpn(self,count=0):
         self.ranks_per_node=count
         return self
+
+    def env(self,*kwargs):
+        """!Sets environment variables in the individual MPI ranks"""
+        raise NotImplementedError('Subclass did not implement env()')
 
     def make_runners_immutable(self):
         """!Returns a copy of this object where all child
@@ -267,7 +303,6 @@ class MPIRanksBase(object):
         True, which is an error.  It is also possible that neither are
         True if there are zero ranks."""
         return (False,False)
-
 
     def getranks_per_node(self):
         """!Returns the number of MPI ranks per node requsted by this
@@ -325,13 +360,21 @@ class MPIRanksBase(object):
             elif t is not None and n is not None and t>n:
                 n=t
         return n
+    @property
+    def nonzero_threads(self):
+        """!The number of threads requested, or 1 if no threads are
+        requested.  This is a simple wrapper around getthreads"""
+        threads=self.getthreads()
+        if threads is None:
+            return 1
+        return max(1,int(threads))
     def setthreads(self,nthreads):
         """!Sets the number of threads requested by each MPI rank
         within this group of MPI ranks."""
         for r,c in self.groups():
             if r is not self:
                 r.threads=nthreads
-        return nthreads
+        return self
     def delthreads(self):
         """!Removes the request for threads."""
         for r,c in self.groups():
@@ -431,6 +474,10 @@ class MPIRanksSPMD(MPIRanksBase):
         self._localopts=list(mpirank._localopts)
         self._turbomode=mpirank.turbomode
 
+    def env(self,**kwargs):
+        self._mpirank=self._mpirank.env(**kwargs)
+        return self
+
     def getranks_per_node(self):
         """!Returns the number of MPI ranks per node requsted by this
         MPI rank, or 0 if unspecified."""
@@ -452,7 +499,7 @@ class MPIRanksSPMD(MPIRanksBase):
         t=bool(tm)
         self._mpirank.turbomode=t
         self._turbomode=t
-        return t
+        return self
     def getturbomode(self):
         return self._turbomode
     def delturbomode(self):
@@ -481,6 +528,18 @@ class MPIRanksSPMD(MPIRanksBase):
         """!Returns "X*N" where X is the MPI program and N is the
         number of ranks."""
         return '%s*%d'%(repr(self._mpirank),int(self._count))
+        # sio=StringIO.StringIO()
+        # sio.write(repr(self._mpirank))
+        # if self.haslocalopts():
+        #     sio.write('.setlocalopts(%s)'%(repr(self.localopts),))
+        # if self.threads:
+        #     sio.write('.threads(%s)'%(repr(self.threads),))
+        # if self.turbomode:
+        #     sio.write('.turbomode(%s)'%(repr(self.turbomode),))
+        # sio.write('*%d'%int(self._count))
+        # ret=sio.getvalue()
+        # sio.close()
+        # return ret
     def ngroups(self):
         """!Returns 1 or 0: 1 if there are ranks and 0 if there are none."""
         if self._count>0:
@@ -499,6 +558,7 @@ class MPIRanksSPMD(MPIRanksBase):
         c=MPIRanksSPMD(self._mpirank.copy(),self._count)
         c._turbomode=self._turbomode
         c._localopts=list(self._localopts)
+        c.threads=self.threads
         return c
     def ranks(self):
         """!Iterates over MPI ranks within self."""
@@ -526,8 +586,11 @@ class MPIRanksSPMD(MPIRanksBase):
         the MPI program presently requested, this returns a new
         MPIRanksMPMD."""
         copy=False
+        if not hasattr(other,'nranks'):
+            raise TypeError('%s %s: has no nranks'%(
+                    type(other).__name__,repr(other)))
         ocount=other.nranks()
-        if self._localopts==other._localopts and \
+        if self.samelocalopts(other) and \
            self._turbomode==other._turbomode and \
            self.ranks_per_node==other.ranks_per_node:
             copy=True
@@ -574,14 +637,22 @@ class MPIRanksMPMD(MPIRanksBase):
             self._localopts=list()
             self._turbomode=None
             self._ranks_per_node=0
+
+    def env(self,**kwargs):
+        self._el=[ e.env(**kwargs) for e in self._el ]
+        return self
     def setturbomode(self,tm):
         t=bool(tm)
         for r in self._el:
             r.turbomode=t
         self._turbomode=t
-        return t
+        return self
     def getturbomode(self):
-        return self._el[0]._turbomode
+        result=self._el[0].turbomode
+        for el in self._el[1:]:
+            if result!=el.turbomode:
+                return MIXED_VALUES
+        return result
     def delturbomode(self):
         for r in self._el:
             del r.turbomode
@@ -589,6 +660,22 @@ class MPIRanksMPMD(MPIRanksBase):
         return None
     turbomode=property(getturbomode,setturbomode,delturbomode,
                        "Turbo mode setting for this group of MPI ranks.")
+
+    def setthreads(self,threads):
+        for r in self._el:
+            r.threads=threads
+        return self
+    def getthreads(self):
+        result=self._el[0].threads
+        for el in self._el[1:]:
+            if result!=el.threads:
+                return MIXED_VALUES
+        return result
+    def delthreads(self):
+        for r in self._el:
+            del r.threads
+    threads=property(getthreads,setthreads,delthreads,"""The number of threads per rank.""")
+
     def setranks_per_node(self,tm):
         t=bool(tm)
         for r in self._el:
@@ -596,7 +683,11 @@ class MPIRanksMPMD(MPIRanksBase):
         self._ranks_per_node=t
         return t
     def getranks_per_node(self):
-        return self._el[0]._ranks_per_node
+        result=self._el[0]._ranks_per_node
+        for e in self._el[1:]:
+            if e.ranks_per_node!=result:
+                return MIXED_VALUES
+        return result
     def delranks_per_node(self):
         for r in self._el:
             del r.ranks_per_node
@@ -619,6 +710,18 @@ class MPIRanksMPMD(MPIRanksBase):
         for r in self._el:
             r.addlocalopt(localopt)
         return self
+    def mixedlocalopts(self):
+        """!Do the MPI ranks within this group contain mixed values
+        for local options?"""
+        for e in self._el[1:]:
+            if not self._el[0].samelocalopts(e):
+                return True
+        return False
+    def localoptiter(self):
+        if self.mixedlocalopts():
+            raise MixedValuesError()
+        for i in self._el[0].localoptiter():
+            yield i
     def make_runners_immutable(self):
         """!Tells each containing element to make its
         produtil.prog.Runners into produtil.prog.ImmutableRunners so
@@ -729,6 +832,7 @@ class MPIRank(MPIRanksBase):
         self._localopts=list()
         self._turbomode=None
         self._ranks_per_node=0
+        self._env=dict()
         if isinstance(arg,MPIRank):
             if self._logger is None:
                 self._logger=arg._logger
@@ -754,6 +858,9 @@ class MPIRank(MPIRanksBase):
                 'strings, or a Runner that contains only the executable '
                 'and its arguments.')
         self.validate()
+    def env(self,**kwargs):
+        self._env.update(**kwargs)
+        return self
     def getthreads(self):
         """!Returns the number of threads requested by this MPI rank,
         or by each MPI rank in this group of MPI ranks."""
@@ -761,8 +868,11 @@ class MPIRank(MPIRanksBase):
     def setthreads(self,nthreads):
         """!Sets the number of threads requested by each MPI rank
         within this group of MPI ranks."""
-        self._threads=int(nthreads)
-        return self._threads
+        if nthreads is None:
+            self._threads=None
+        else:
+            self._threads=int(nthreads)
+        return self
     def delthreads(self):
         """!Removes the request for threads."""
         self._threads=1
@@ -782,10 +892,19 @@ class MPIRank(MPIRanksBase):
     def __repr__(self):
         """!Returns a Pythonic representation of this object for
         debugging."""
-        s='mpi(%s)'%(repr(self._args[0]))
+        sio=StringIO.StringIO()
+        sio.write('mpi(%s)'%(repr(self._args[0])))
         if len(self._args)>1:
-            s=s+'['+','.join([repr(x) for x in self._args[1:]])+']'
-        return s
+            sio.write('['+','.join([repr(x) for x in self._args[1:]])+']')
+        if self.haslocalopts():
+            sio.write('.setlocalopts(%s)'%(repr(self.localopts),))
+        if self.threads:
+            sio.write('.threads(%s)'%(repr(self.threads),))
+        if self.turbomode:
+            sio.write('.turbomode(%s)'%(repr(self.turbomode),))
+        ret=sio.getvalue()
+        sio.close()
+        return ret
     def get_logger(self):
         """!Returns a logging.Logger for this object, or None."""
         return logger
@@ -805,6 +924,10 @@ class MPIRank(MPIRanksBase):
                         'Executable and arguments must be strings.')
     def args(self):
         """!Iterates over the executable arguments."""
+        if self._env:
+            yield '/bin/env'
+            for k,v in self._env.iteritems():
+                yield '%s=%s'%(k,shbackslash(v))
         for arg in self._args: yield arg
     def copy(self):
         """!Return a copy of self.  This is a deep copy except for the
@@ -812,6 +935,7 @@ class MPIRank(MPIRanksBase):
         c=MPIRank(self)
         c._turbomode=self._turbomode
         c._localopts=list(self._localopts)
+        c._threads=self._threads
         return c
     def nranks(self):
         """!Returns 1: the number of MPI ranks."""
@@ -855,7 +979,7 @@ class MPIRank(MPIRanksBase):
         """!Returns True if this MPIRank is equal to the other object."""
         return isinstance(other,MPIRank) \
             and self._args==other._args \
-            and self._localopts==other._localopts \
+            and self.samelocalopts(other) \
             and self._turbomode==other._turbomode \
             and self._ranks_per_node==other._ranks_per_node
     def check_serial(self): 
