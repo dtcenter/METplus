@@ -1669,7 +1669,7 @@ def get_time_from_file(logger, filepath, template):
     f = ""
     for n in range(num_slashes, -1, -1):
         f = os.path.join(f,path_split[-(n+1)])
-#    print(f+" and "+template)
+
     se = StringExtract(logger, template, f)
 
     if se.parseTemplate():
@@ -1680,3 +1680,9 @@ def get_time_from_file(logger, filepath, template):
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
+  #TODO: Move to unit tests
+#  get_time_from_file(None, "20170201", "{valid?fmt=%Y%m%d}")
+#  get_time_from_file(None, "/path/to/data//GFS/track_data/201412/amlq2014123118.gfso.0006", "{init?fmt=%Y%m}/amlq{init?fmt=%Y%m%d%H}.gfso.00{lead?fmt=%HH}")
+#  get_time_from_file(None, "/path/to/data/mrms/2018/04/30/mrms.MergedReflectivityQCComposite.20180430_062438.grib2", "{valid?fmt=%Y}/{valid?fmt=%m}/{valid?fmt=%d}/mrms.MergedReflectivityQCComposite.{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}.grib2")
+
+  
