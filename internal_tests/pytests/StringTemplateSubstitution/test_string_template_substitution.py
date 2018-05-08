@@ -59,8 +59,7 @@ def test_gdas_substitution():
     expected_filename = 'prepbufr.gdas.' + valid_string + '.nc'
     ss = StringSub(logger, templ, valid=valid_string)
     filename = ss.doStringSub()
-    print("expected filename ", expected_filename, " gdas filename: ",
-      filename)
+    # print("expected filename ", expected_filename, " gdas filename: ", filename)
     assert(filename == expected_filename)
 
 @pytest.mark.parametrize(
@@ -84,7 +83,7 @@ def test_nam_substitution_HH(key, value):
     ss = StringSub(logger, templ, init=init_string, cycle=cycle_string,
                    offset=offset_string)
     filename = ss.doStringSub()
-    print('nam filename: ', filename)
+    # print('nam filename: ', filename)
     assert (filename == expected_filename)
 
 
@@ -109,7 +108,7 @@ def test_nam_substitution_HHH(key, value):
     ss = StringSub(logger, templ, init=init_string, cycle=cycle_string,
                    offset=offset_string)
     filename = ss.doStringSub()
-    print('nam filename: ', filename)
+    # print('nam filename: ', filename)
     assert (filename == expected_filename)
 
 
@@ -133,5 +132,57 @@ def test_nam_substitution_dHMS(key, value):
         ss = StringSub(logger, templ, init=init_string, cycle=cycle_string,
                        offset=offset_string)
         filename = ss.doStringSub()
-        print('nam filename: ', filename)
+        # print('nam filename: ', filename)
         assert (filename == expected_filename)
+
+
+def test_ym_date_dir_init():
+    # Test that the ym directory can be read in and does substitution correctly
+    logger = logging.getLogger("test")
+    # e.g. /d1/METplus_TC/adeck_orig/201708/atcfunix.gfs.2017080100
+    init_str = '2017080100'
+    date_str = '201708'
+    templ = '/d1/METplus_TC/adeck_orig/{date?fmt=%s}/atcfunix.gfs.{init?fmt=%Y%m%d%H}.dat'
+    ss = StringSub(logger, templ, date=date_str, init=init_str)
+    filename = ss.doStringSub()
+    expected_filename = '/d1/METplus_TC/adeck_orig/201708/atcfunix.gfs.2017080100.dat'
+    assert filename == expected_filename
+
+
+def test_ym_date_dir():
+    # Test that the ym directory can be read in and does substitution correctly
+    logger = logging.getLogger("test")
+    # e.g. /d1/METplus_TC/adeck_orig/201708/atcfunix.gfs.2017080100
+    date_str = '201708'
+    templ = '/d1/METplus_TC/adeck_orig/{date?fmt=%s}/atcfunix.gfs.2017080100.dat'
+    ss = StringSub(logger, templ, date=date_str)
+    filename = ss.doStringSub()
+    expected_filename = '/d1/METplus_TC/adeck_orig/201708/atcfunix.gfs.2017080100.dat'
+    assert filename == expected_filename
+# 
+def test_ymd_date_dir():
+    # Test that the ymd directory can be read in and does substitution correctly
+    logger = logging.getLogger("test")
+    # e.g. /d1/METplus_TC/adeck_orig/20170811/atcfunix.gfs.2017080100
+    init_str = '2017081118'
+    date_str = '20170811'
+    templ = '/d1/METplus_TC/adeck_orig/{date?fmt=%s}/atcfunix.gfs.{init?fmt=%Y%m%d%H}.dat'
+    ss = StringSub(logger, templ, date=date_str, init=init_str)
+    filename = ss.doStringSub()
+    expected_filename = '/d1/METplus_TC/adeck_orig/20170811/atcfunix.gfs.2017081118.dat'
+    assert filename == expected_filename
+# 
+def test_ymd_region_cyclone():
+    # Test that we can recreate the full file path with a date, region, and cyclone
+    logger = logging.getLogger("test")
+    # /d1/METplus_TC/bdeck_orig/20170811/bal052017.dat
+    date_str = '201708'
+    region_str = 'al'
+    cyclone_str = '05'
+    year_str = '2017'
+    # templ = '/d1/METplus_TC/bdeck/{date?fmt=%Y%m}/bal{region?fmt=%s}.dat'
+    templ = '/d1/METplus_TC/bdeck/{date?fmt=%s}/b{region?fmt=%s}{cyclone?fmt=%s}{misc?fmt=%s}.dat'
+    ss = StringSub(logger, templ, date=date_str, region=region_str, cyclone=cyclone_str, misc=year_str)
+    full_file = ss.doStringSub()
+    expected_full_file = '/d1/METplus_TC/bdeck/201708/bal052017.dat'
+    assert full_file == expected_full_file
