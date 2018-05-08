@@ -302,8 +302,7 @@ class GridStatWrapper(CommandBuilder):
         self.add_env_var("MODEL", model_type)
         self.add_env_var("FCST_VAR", v.fcst_name)
         self.add_env_var("OBS_VAR", v.obs_name)
-        # TODO: Change ACCUM to LEVEL in GridStatConfig_MEAN/PROB and here
-        self.add_env_var("ACCUM", v.fcst_level)
+        self.add_env_var("LEVEL", v.fcst_level)
         self.add_env_var("OBTYPE", ob_type)
         self.add_env_var("CONFIG_DIR", config_dir)
         self.add_env_var("FCST_FIELD", fcst_field)
@@ -316,7 +315,7 @@ class GridStatWrapper(CommandBuilder):
         self.print_env_item("MODEL")
         self.print_env_item("FCST_VAR")
         self.print_env_item("OBS_VAR")
-        self.print_env_item("ACCUM")
+        self.print_env_item("LEVEL")
         self.print_env_item("OBTYPE")
         self.print_env_item("CONFIG_DIR")
         self.print_env_item("FCST_FIELD")
