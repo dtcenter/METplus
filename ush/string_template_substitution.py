@@ -835,15 +835,24 @@ class StringSub:
                 fmt - specifies the cycle and offset hours in HH format. H and
                       HHH format are supported, to anticipate any changes
                       in prepbufr data.
+
+              The following were created to support processing of 
+              tropical cyclone data:
               cyclone:
-                fmt - specifies the annual cyclone number as a 2- to 4-digit string.
+                fmt - specifies the annual cyclone number as a string.
 
               region:
-                fmt - specifies the region/basin of cyclone.  A 2-character designation:
-                      AL|WP|CP|EP|SH|IO|LS Upper or lower case supported.
+                fmt - a string that specifies the region/basin of cyclone.
+                      For ATCF formatted data, this is a 2-character
+                      designation:
+                      AL|WP|CP|EP|SH|IO|LS lower case designations are
+                      observed in filenames.
               date:
-                fmt - specifies the date format for a subdirectory in which track
-                      data resides.  Recognizes YYYYMM (%Y%m) and YYYYMMDD (%Y%M%d) format.
+                fmt - a string representation of the date format for a
+                      subdirectory in which track data resides.
+              misc:
+                fmt -a string that represents any other miscellaneous feature
+                     of the track data
 
 
         """
