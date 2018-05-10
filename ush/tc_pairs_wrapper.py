@@ -16,6 +16,7 @@ Condition codes: 0 for success, 1 for failure
 
 from __future__ import (print_function, division)
 
+import collections
 import os
 import sys
 import re
@@ -27,6 +28,7 @@ from produtil.run import ExitStatusException
 from command_builder import CommandBuilder
 import met_util as util
 import config_metplus
+from string_template_substitution import StringSub
 
 '''!@namespace TcPairsWrapper
 @brief Wraps the MET tool tc_pairs to parse ADeck and BDeck ATCF files,
@@ -138,10 +140,9 @@ class TcPairsWrapper(CommandBuilder):
 
         # Differentiate between non-ATCF data and ATCF track data based on
         # the TRACK_TYPE
-        if self.config.getstr('config',
-                              'TRACK_TYPE') == "extra_tropical_cyclone":
+        track_type = self.config.getstr('config', 'TRACK_TYPE')
+        if track_type == "extra_tropical_cyclone":
             self.process_non_ATCF()
-
         else:
             self.process_ATCF()
 
@@ -280,9 +281,9 @@ class TcPairsWrapper(CommandBuilder):
 
                     # Run tc_pairs
                     self.cmd = self.build_tc_pairs(pairs_out_dir,
-                                                   cur_track_file,
                                                    adeck_file_path,
-                                                   bdeck_file_path)
+                                                   bdeck_file_path,
+                                                   cur_track_file)
                     self.build()
 
     def process_ATCF(self):
@@ -300,12 +301,73 @@ class TcPairsWrapper(CommandBuilder):
         adeck_input_dir = self.config.getstr('dir', 'ADECK_TRACK_DATA_DIR')
         bdeck_input_dir = self.config.getstr('dir', 'BDECK_TRACK_DATA_DIR')
         fcst_filename_tmpl = self.config.getraw('filename_templates',
-                                                'FCST_TMPL')
+                                                'FORECAST_TMPL')
         reference_filename_tmpl = self.config.getraw('filename_templates',
                                                      'REFERENCE_TMPL')
 
-        # Filter down track data based on init time window.
-        # Get the init time window from the INIT_BEG, INIT_END, INIT_HOUR_END,
+        # Check if there is a date keyword in the filename template, if there
+        # isn't, then create the -adeck and -bdeck portion of the command
+        # using the top-level directories and call tc_pairs.  Otherwise,
+        # attempt to do some filtering of initialization times based on the date
+        # information provided.
+        adeck_date_match = re.match(r'.*\{date\?fmt=(.*?)\}.*', fcst_filename_tmpl)
+        bdeck_date_match = re.match(r'.*\{date\?fmt=(.*?)\}.*', reference_filename_tmpl)
+        if adeck_date_match and bdeck_date_match:
+            adeck_date_str = adeck_date_match.group(1)
+            bdeck_date_str = bdeck_date_match.group(1)
+            adeck_date_info = self.retrieve_date_format_info(adeck_date_str)
+            bdeck_date_info = self.retrieve_date_format_info(bdeck_date_str)
+            adeck_date_regex = adeck_date_info.date_regex
+            bdeck_date_regex = bdeck_date_info.date_regex
+            adeck_date_list = self.create_date_list(adeck_date_info.date_len)
+            bdeck_date_list = self.create_date_list(bdeck_date_info.date_len)
+
+            # Now we have a list of times for A-Deck and B-Deck.  Look for files in the A-Deck and B-Deck
+            # directories for files that match with the times in these lists. Use StringTemplateSubstitution to
+            # create an "expected" filename, and if it exists in the data directory, add it to either an ADeck list
+            # or BDeck list of full filepaths.
+            adeck_input_files = util.get_
+
+            for adeck_date in adeck_date_list:
+
+
+
+
+        else:
+            # set -adeck and -bdeck values to the ADeck and BDeck top-level directories
+            # respectively and run MET tc_pairs.
+            adeck_top_level_dir = self.config.getdir('ADECK_TRACK_DATA_DIR')
+            bdeck_top_level_dir = self.config.getdir('BDECK_TRACK_DATA_DIR')
+            pairs_out_dir = self.config.getdir('TC_PAIRS_DIR')
+            produtil.fileop.makedirs(pairs_out_dir, logger=self.logger)
+            self.cmd = self.build_tc_pairs(pairs_out_dir,
+                                           adeck_top_level_dir,
+                                           bdeck_top_level_dir, None)
+
+        self.build()
+
+    def create_date_list(self, date_str_len):
+        """!From the date string length, create a list of dates that define the initialization window defined by
+            the values to INIT_BEG, INIT_END, INIT_INC, and INIT_HOUR_END in the config file.
+
+            Args:
+                date_str_len : An integer value that represents the length of the date string specified in the
+                              filename template
+            Returns:
+                date_list : A list of times, either YYYY, YYYYMM, YYYYMMdd, or YYYYMMddhh, based on the date_str_len
+
+        """
+        # pylint:disable=protected-access
+        # sys._getframe is a legitimate way to access the current
+        # filename and method.
+        # Used for logging information
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        self.logger.debug(
+            cur_function + '|' + cur_filename + ": Creating a list of dates that define the init time window...")
+        # Filter track data based on the initialization time window.
+        # Get the init time window from  INIT_BEG, INIT_END, INIT_HOUR_END,
         # and INIT_INCREMENT in the config file as a list of init times.
         # Convert the increment INIT_INCREMENT from seconds to hours
         init_list = util.gen_init_list(
@@ -314,16 +376,76 @@ class TcPairsWrapper(CommandBuilder):
             int(self.config.getint('config', 'INIT_INCREMENT') / 3600),
             self.config.getstr('config', 'INIT_HOUR_END'))
 
-        # Set up the adeck and bdeck file paths
+        # Determine the granularity of date, ie. YYYY, YYYYMM, YYYYMMDD, etc.
+        # Create the adeck and bdeck files with full file paths
+        # to create the -adeck and -bdeck values needed to run
+        # MET tc_pairs.
 
-        # Run tc_pairs
-        # self.cmd = self.build_tc_pairs(pairs_out_dir, cur_track_file,
-        #                                adeck_file_path, bdeck_file_path)
-        # self.build()
+        deck_date_list = []
+        for cur_init in init_list:
+            if cur_init[0:date_str_len] not in deck_date_list:
+                deck_date_list.append(cur_init[0:date_str_len])
+
+        return deck_date_list
+
+    def retrieve_date_format_info(self, date_str):
+
+        """! From the date?fmt= value set in the filename_templates section of the configuration file,
+             determine whether this date is a YYYY (%Y), YYYYMM (%Y%m), YYYYMMDD (%Y%m%d), or YYYYMMDDhh (%Y%m%d%h)
+
+             Args:
+                date_str    - the string representing the value to the date?fmt= key
+             Returns:
+                A named tuple containing:
+                date_regex  - a string representation of the regex of the date from the filename_templates section of
+                              the config file
+                date_str_len - the number of characters/numbers defining the date
+        """
+        # pylint:disable=protected-access
+        # sys._getframe is a legitimate way to access the current
+        # filename and method.
+        # Used for logging information
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        self.logger.debug(
+            cur_function + '|' + cur_filename + ": Determining the date format's regex...")
+        DateFormatInfo = collections.namedtuple('DateFormatInfo', 'date_regex, date_len')
+        # Determine if we have YYYY, YYYYMM, YYYYMMDD, or YYYYMMDDhh for
+        # the date string
+        date_format_match = re.match('(?i)\A(?:(%+[a-z])+)\Z', date_str)
+        if date_format_match:
+            # Determine whether we have YYYY, YYYYMM, YYYYMMdd, or YYYYMMddhh
+            first_match = date_format_match.group(1)
+            match_len = len(first_match)
+            if match_len == 8:
+                # year month day hour, %Y%m%d%h
+                date_regex = '[0-9]{10}'
+                date_len = 10
+            elif match_len == 6:
+                # year month day, %Y%m%d
+                date_regex = '[0-9]{8}'
+                date_len = 8
+            elif match_len == 4:
+                # year month, %Y%m
+                date_regex = '[0-9]{6}'
+                date_len = 6
+            elif match_len == 2:
+                # year, %Y
+                date_regex = '[0-9]{4}'
+                date_len = 4
+            else:
+                self.logger.error(
+                    'Date format specified in the filename_templates section does not match expected %Y, %Y%m, %Y%m%d, ' +
+                    'or %Y%m%d%h format')
+                exit(1)
+
+        date_format_info = DateFormatInfo(date_regex, date_len)
+        return date_format_info
 
     def set_env_vars(self):
         """! Set up all the environment variables that are assigned in the MET+ config file which are
-             to be used by the MET TC-pairs config file.
+            to be used by the MET TC-pairs config file.
 
              Args:
                  nothing - retrieves necessary MET+ config values via class attributes
@@ -507,16 +629,18 @@ class TcPairsWrapper(CommandBuilder):
                                         missing_values,
                                         deck_file_path)
 
-    def build_tc_pairs(self, pairs_output_dir, date_file, adeck_file_path,
-                       bdeck_file_path):
+    def build_tc_pairs(self, pairs_output_dir, adeck_file_path,
+                       bdeck_file_path, date_file=None, ):
         """! Build up the command that is used to run the MET tool,
              tc_pairs.
              Args:
                  @param pairs_output_dir: output directory of paired track data
+                 @param adeck_file_path: the location of the adeck track data, as file or top-level directory
+                 @param bdeck_file_path: the location of the bdeck track data, as file or top-level directory
                  @param date_file: the current date file from a list of all
-                                   possible date files in the input directory.
-                 @param adeck_file_path: the location of the adeck track output
-                 @param bdeck_file_path: the location of the bdeck track output
+                                   possible date files in the input directory, used
+                                   to over ride the default output name created by MET tc_pairs.
+                                   Default is None-allow MET to name the output file.
             Returns:
                  a list of commands
 
@@ -528,32 +652,44 @@ class TcPairsWrapper(CommandBuilder):
         # Used for logging information
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        pairs_out_file = os.path.join(pairs_output_dir, date_file)
-        pairs_out_file_with_suffix = pairs_out_file + ".tcst"
-        tc_pairs_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                    'bin/tc_pairs')
-        cmd_list = [tc_pairs_exe, " -adeck ",
-                    adeck_file_path, " -bdeck ",
-                    bdeck_file_path, " -config ",
-                    self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE'),
-                    " -out ", pairs_out_file]
-        cmd = ''.join(cmd_list)
-        # self.logger.debug("cmd = " + cmd)
-        if os.path.exists(pairs_out_file_with_suffix):
-            if self.config.getbool('config', 'TC_PAIRS_FORCE_OVERWRITE'):
-                self.logger.debug("DEBUG | [" + cur_filename +
-                                  ":" + cur_function + "] | " +
-                                  "Writing tc_pairs output file: "
-                                  + pairs_out_file + ", replacing"
-                                  + " existing " +
-                                  " data because TC_PAIRS_FORCE" +
-                                  "_OVERWRITE is set to True")
+        # A date_file exists, set -adeck and -bdeck to specific files
+        if date_file:
+            pairs_out_file = os.path.join(pairs_output_dir, date_file)
+            pairs_out_file_with_suffix = pairs_out_file + ".tcst"
+            if os.path.exists(pairs_out_file_with_suffix):
+                if self.config.getbool('config', 'TC_PAIRS_FORCE_OVERWRITE'):
+                    self.logger.debug("DEBUG | [" + cur_filename +
+                                      ":" + cur_function + "] | " +
+                                      "Writing tc_pairs output file: "
+                                      + pairs_out_file + ", replacing"
+                                      + " existing " +
+                                      " data because TC_PAIRS_FORCE" +
+                                      "_OVERWRITE is set to True")
+
+            tc_pairs_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
+                                        'bin/tc_pairs')
+            cmd_list = [tc_pairs_exe, " -adeck ",
+                        adeck_file_path, " -bdeck ",
+                        bdeck_file_path, " -config ",
+                        self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE'),
+                        " -out ", pairs_out_file]
+            cmd = ''.join(cmd_list)
         else:
+            # No date_file specified, set -adeck and -bdeck to top-level directories
+            tc_pairs_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
+                                        'bin/tc_pairs')
+            cmd_list = [tc_pairs_exe, " -adeck ",
+                        adeck_file_path, " -bdeck ",
+                        bdeck_file_path, " -config ",
+                        self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE')]
+
+            cmd = ''.join(cmd_list)
             self.logger.debug("DEBUG | [" + cur_filename + ":" +
                               cur_function + "] | " +
                               "Running tc_pairs with command: " +
                               cmd)
 
+        # self.logger.debug("cmd = " + cmd)
         return cmd
 
     def get_command(self):
