@@ -15,7 +15,6 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import (print_function, division)
 
 import produtil.setup
-#from produtil.run import batchexe, run, checkrun
 import logging
 import os
 import sys
@@ -49,7 +48,6 @@ class PcpCombineObsWrapper(PcpCombineWrapper):
         var_list = util.parse_var_list(self.p)
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
         obs_level = self.p.getstr('config', 'OBS_LEVEL')
-        # TODO: should use getdir? move dir confs to dir section
         in_dir = self.p.getdir('OBS_PCP_COMBINE_INPUT_DIR')
         in_template = self.p.getraw('filename_templates',
                                      'OBS_PCP_COMBINE_INPUT_TEMPLATE')
