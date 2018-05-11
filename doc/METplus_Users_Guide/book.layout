@@ -1,0 +1,29 @@
+#% Do not delete the line below; configure depends on this
+#  \DeclareLaTeXClass{Book (Standard Class)}
+#  \DeclareCategory{Books}
+# Book textclass definition file. Taken from initial LyX source code
+# Author : Matthias Ettrich <ettrich@informatik.uni-tuebingen.de>
+# Transposed by Pascal André <andre@via.ecp.fr>
+# Heavily modifed and enhanced by serveral developers.
+
+
+Format 49
+Input stdclass.inc
+Input numreport.inc
+
+
+Sides           2
+PageStyle       Headings
+
+
+NoStyle Abstract
+
+
+Style Bibliography
+	TopSep                4
+	LabelString           "Bibliography"
+	LabelFont
+	  Series              Bold
+	  Size                Huge
+	EndFont
+End
