@@ -15,7 +15,6 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import (print_function, division)
 
 import produtil.setup
-#from produtil.run import batchexe, run, checkrun
 import logging
 import os
 import sys
@@ -48,10 +47,7 @@ class PcpCombineModelWrapper(PcpCombineWrapper):
         task_info.valid_time = valid_time        
         var_list = util.parse_var_list(self.p)        
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
-        # want to combine fcst data files to get total accum matching obs?
-#        obs_level = self.p.getstr('config', 'OBS_LEVEL')
         fcst_level = self.p.getstr('config', 'FCST_LEVEL')
-        # TODO: should use getpath or something?
         in_dir = self.p.getdir('FCST_PCP_COMBINE_INPUT_DIR')
         in_template = self.p.getraw('filename_templates',
                                      'FCST_PCP_COMBINE_INPUT_TEMPLATE')
