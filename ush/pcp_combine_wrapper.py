@@ -143,8 +143,8 @@ class PcpCombineWrapper(CommandBuilder):
                 exit
 
             init = se.getInitTime("%Y%m%d%H%M")
-            if init == "":
-                return None
+#            if init == None:
+#                return None
             v = util.shift_time(init, fcst)
             if v == valid_time and fcst < lowest_fcst:
                 out_file = fpath
