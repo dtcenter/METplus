@@ -192,7 +192,7 @@ class GridStatWrapper(CommandBuilder):
         model_path = self.find_model(ti.lead, init_time, fcst_level)
 
         if model_path == "":
-            print("ERROR: COULD NOT FIND FILE IN "+model_dir)
+            self.logger.error("ERROR: COULD NOT FIND FILE IN "+model_dir)
             return
         self.add_input_file(model_path)
         if self.p.getbool('config','OBS_EXACT_VALID_TIME', True):
@@ -322,7 +322,7 @@ class GridStatWrapper(CommandBuilder):
         self.logger.debug("")
         cmd = self.get_command()
         if cmd is None:
-            print("ERROR: grid_stat could not generate command")
+            self.logger.error("ERROR: grid_stat could not generate command")
             return
         self.logger.info("")
         self.build()
