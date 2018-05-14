@@ -211,7 +211,6 @@ class PcpCombineWrapper(CommandBuilder):
             v_time = datetime.datetime.strptime(search_time[0:10], "%Y%m%d%H")
             diff = v_time - file_time
 
-            # TODO: appears to be getting the wrong value for lead?
             lead = int((diff.days * 24) / (data_interval / 3600))
             lead += int((v_time - file_time).seconds / data_interval) - 1
             fname = self.p.getstr('config',
@@ -424,9 +423,10 @@ class PcpCombineWrapper(CommandBuilder):
         self.set_output_filename(out_file)
         self.set_output_dir(out_dir)
 
-        # TODO: If out template has a subdir, make that directory!
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
+        # If out template has a subdir, make that directory
+        mk_dir = os.path.join(out_dir, os.path.dirname(out_file))
+        if not os.path.exists(mk_dir):
+            os.makedirs(mk_dir)
 
         cmd = self.get_command()
         if cmd is None:
