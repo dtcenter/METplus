@@ -316,7 +316,7 @@ class GridStatWrapper(CommandBuilder):
         self.logger.debug("")
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_copy(["MODEL", "FCST_VAR", "OBS_VAR",
-                             "ACCUM", "OBTYPE", "CONFIG_DIR",
+                             "LEVEL", "OBTYPE", "CONFIG_DIR",
                              "FCST_FIELD", "OBS_FIELD",
                              "MET_VALID_HHMM"])
         self.logger.debug("")

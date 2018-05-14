@@ -143,8 +143,8 @@ class PcpCombineWrapper(CommandBuilder):
                 exit
 
             init = se.getInitTime("%Y%m%d%H%M")
-#            if init == None:
-#                return None
+            if init == "":
+                return None
             v = util.shift_time(init, fcst)
             if v == valid_time and fcst < lowest_fcst:
                 out_file = fpath
@@ -170,43 +170,48 @@ class PcpCombineWrapper(CommandBuilder):
 
     def search_day(self, dir, file_time, search_time, template):
         out_file = ""
-        files = sorted(glob.glob("{:s}/*{:s}*".format(dir, search_time)))
+        files = sorted(glob.glob("{:s}/*{:s}*".format(dir, search_time[0:8])))
         for f in files:
             se = sts.StringExtract(self.logger, template,
                                    os.path.basename(f))
             se.parseTemplate()
-            ftime = se.getValidTime("%Y%m%d%H")
-            if ftime != None and ftime < file_time:
+            ftime = se.getValidTime("%Y%m%d%H%M")
+            if ftime != None and int(ftime) < int(file_time):
                 out_file = f
         return out_file
 
     def find_closest_before(self, dir, time, template):
         day_before = util.shift_time(time, -24)
         yesterday_file = self.search_day(dir, time,
-                                         str(day_before)[0:8], template)
-        today_file = self.search_day(dir, time, str(time)[0:8], template)
+                                         str(day_before)[0:10], template)
+        today_file = self.search_day(dir, time, str(time)[0:10], template)
+        # need to check valid time to make sure today_file does not come after VT
         if today_file == "":
             return yesterday_file
         else:
             return today_file
 
 
-    def get_daily_file(valid_time,accum, data_src):
+    def get_daily_file(self, valid_time,accum, data_src, file_template):
         # loop accum times
         data_interval = self.p.getint('config',
                                       data_src + '_DATA_INTERVAL') * 3600
         for i in range(0, accum, data_interval):
-            search_time = util.shift_time(valid_time+"00", -i)[0:10]
+            search_time = util.shift_time(valid_time, -i)
             # find closest file before time
             f = self.find_closest_before(self.input_dir, search_time,
                                          file_template)
             if f == "":
                 continue
             # build level info string
-            # TODO: pull out YYYYMMDDHH from filename
-            file_time = datetime.datetime.strptime(f[-17:-7], "%Y%m%d%H")
-            v_time = datetime.datetime.strptime(search_time, "%Y%m%d%H")
+            se = sts.StringExtract(self.logger, file_template,
+                                   os.path.basename(f))
+            se.parseTemplate()
+            file_time = datetime.datetime.strptime(se.getInitTime("%Y%m%d%H"),"%Y%m%d%H")
+            v_time = datetime.datetime.strptime(search_time[0:10], "%Y%m%d%H")
             diff = v_time - file_time
+
+            # TODO: appears to be getting the wrong value for lead?
             lead = int((diff.days * 24) / (data_interval / 3600))
             lead += int((v_time - file_time).seconds / data_interval) - 1
             fname = self.p.getstr('config',
@@ -226,8 +231,8 @@ class PcpCombineWrapper(CommandBuilder):
             exit
         self.add_arg("-add")
 
-        if self.p.getbool('config', data_src + '_IS_DAILY_FILE') is True:
-            self.get_daily_file(valid_time, accum, data_src)
+        if self.p.getbool('config', data_src + '_IS_DAILY_FILE', False) is True:
+            return self.get_daily_file(valid_time, accum, data_src, file_template)
 
         start_time = valid_time
         last_time = util.shift_time(valid_time, -(int(accum) - 1))
