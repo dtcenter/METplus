@@ -49,7 +49,6 @@ class CommandBuilder:
         self.outdir = ""
         self.outfile = ""
         self.param = ""
-        #self.verbose = -1
 
 
     def set_debug(self, debug):
@@ -171,10 +170,6 @@ class CommandBuilder:
         if cmd is None:
             return
         self.cmdrunner.run_cmd(cmd, app_name=self.app_name)
-
-        #self.logger.info("RUNNING: " + cmd)
-        #process = subprocess.Popen(cmd, env=self.env, shell=True)
-        #process.wait()
 
 
     def run_all_times(self):

@@ -15,7 +15,6 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import (print_function, division)
 
 import produtil.setup
-#from produtil.run import batchexe, run, checkrun
 import logging
 import os
 import sys
@@ -133,22 +132,8 @@ class PcpCombineWrapper(CommandBuilder):
         files = sorted(all_files)
 
         for fpath in files:
-            # TODO: Replace with util.get_time_from_file(fpath, template)
-            # check if result is a file or not
-#            if os.path.isdir(fpath):
-#                continue
-
-            # Check number of / in template, get same number from file path
-#            path_split = fpath.split('/')
-#            f = ""
-#            for n in range(num_slashes, -1, -1):
-#                f = os.path.join(f,path_split[-(n+1)])
-
-#            se = sts.StringExtract(self.logger, template, f)
             se = util.get_time_from_file(self.logger, fpath, template)
-            
-            # TODO: should parseTemplate return false on failure instead of crashing?
-#            se.parseTemplate()
+
             if se == None:
                 return None
 
@@ -158,15 +143,14 @@ class PcpCombineWrapper(CommandBuilder):
                 exit
 
             init = se.getInitTime("%Y%m%d%H%M")
-#            if init == None:
-#                return None
+            if init == "":
+                return None
             v = util.shift_time(init, fcst)
             if v == valid_time and fcst < lowest_fcst:
                 out_file = fpath
                 lowest_fcst = fcst
         return out_file
 
-    # NOTE: Assumes YYYYMMDD sub dir
     def get_lowest_forecast_at_valid(self, valid_time, dtype):
         out_file = ""
         day_before = util.shift_time(valid_time, -24)
@@ -186,43 +170,47 @@ class PcpCombineWrapper(CommandBuilder):
 
     def search_day(self, dir, file_time, search_time, template):
         out_file = ""
-        files = sorted(glob.glob("{:s}/*{:s}*".format(dir, search_time)))
+        files = sorted(glob.glob("{:s}/*{:s}*".format(dir, search_time[0:8])))
         for f in files:
             se = sts.StringExtract(self.logger, template,
                                    os.path.basename(f))
             se.parseTemplate()
-            ftime = se.getValidTime("%Y%m%d%H")
-            if ftime != None and ftime < file_time:
+            ftime = se.getValidTime("%Y%m%d%H%M")
+            if ftime != None and int(ftime) < int(file_time):
                 out_file = f
         return out_file
 
     def find_closest_before(self, dir, time, template):
         day_before = util.shift_time(time, -24)
         yesterday_file = self.search_day(dir, time,
-                                         str(day_before)[0:8], template)
-        today_file = self.search_day(dir, time, str(time)[0:8], template)
+                                         str(day_before)[0:10], template)
+        today_file = self.search_day(dir, time, str(time)[0:10], template)
+        # need to check valid time to make sure today_file does not come after VT
         if today_file == "":
             return yesterday_file
         else:
             return today_file
 
 
-    def get_daily_file(valid_time,accum, data_src):
+    def get_daily_file(self, valid_time,accum, data_src, file_template):
         # loop accum times
         data_interval = self.p.getint('config',
                                       data_src + '_DATA_INTERVAL') * 3600
         for i in range(0, accum, data_interval):
-            search_time = util.shift_time(valid_time+"00", -i)[0:10]
+            search_time = util.shift_time(valid_time, -i)
             # find closest file before time
             f = self.find_closest_before(self.input_dir, search_time,
                                          file_template)
             if f == "":
                 continue
             # build level info string
-            # TODO: pull out YYYYMMDDHH from filename
-            file_time = datetime.datetime.strptime(f[-17:-7], "%Y%m%d%H")
-            v_time = datetime.datetime.strptime(search_time, "%Y%m%d%H")
+            se = sts.StringExtract(self.logger, file_template,
+                                   os.path.basename(f))
+            se.parseTemplate()
+            file_time = datetime.datetime.strptime(se.getInitTime("%Y%m%d%H"),"%Y%m%d%H")
+            v_time = datetime.datetime.strptime(search_time[0:10], "%Y%m%d%H")
             diff = v_time - file_time
+
             lead = int((diff.days * 24) / (data_interval / 3600))
             lead += int((v_time - file_time).seconds / data_interval) - 1
             fname = self.p.getstr('config',
@@ -242,8 +230,8 @@ class PcpCombineWrapper(CommandBuilder):
             exit
         self.add_arg("-add")
 
-        if self.p.getbool('config', data_src + '_IS_DAILY_FILE') is True:
-            self.get_daily_file(valid_time, accum, data_src)
+        if self.p.getbool('config', data_src + '_IS_DAILY_FILE', False) is True:
+            return self.get_daily_file(valid_time, accum, data_src, file_template)
 
         start_time = valid_time
         last_time = util.shift_time(valid_time, -(int(accum) - 1))
@@ -401,10 +389,7 @@ class PcpCombineWrapper(CommandBuilder):
         self.logger.error("Must use PcpCombineObs or PcpCombineModel")
         exit(1)
 
-# pcp_combine -subtract /d1/mccabe/mallory.data/prfv3rt1/20180308/gfs.t00z.pgrb.1p00.f048 48 /d1/mccabe/mallory.data/prfv3rt1/20180308/gfs.t00z.pgrb.1p00.f024 24 -field 'name="APCP"; level="L0";' ~/20180308/gfs.v24z_A24.nc
 
-#    def run_subtract_method(self, init_time, lead, in_dir, accum_1, accum_2,
-#                            in_template, out_template):
     def run_subtract_method(self, task_info, var_info, accum, in_dir,
                             out_dir, in_template, out_template):
         self.clear()
@@ -438,9 +423,10 @@ class PcpCombineWrapper(CommandBuilder):
         self.set_output_filename(out_file)
         self.set_output_dir(out_dir)
 
-        # TODO: If out template has a subdir, make that directory!
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
+        # If out template has a subdir, make that directory
+        mk_dir = os.path.join(out_dir, os.path.dirname(out_file))
+        if not os.path.exists(mk_dir):
+            os.makedirs(mk_dir)
 
         cmd = self.get_command()
         if cmd is None:

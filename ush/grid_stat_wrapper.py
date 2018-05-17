@@ -123,11 +123,6 @@ class GridStatWrapper(CommandBuilder):
                                      'OBS_GRID_STAT_INPUT_TEMPLATE')
         # convert valid_time to unix time
         valid_seconds = int(datetime.datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
-        # get files from valid time day, day before, and day after
-#        valid_date = valid_time[0:8]
-#        yesterday_date = util.shift_time(valid_time, -24)[0:8]
-#        tomorrow_date = util.shift_time(valid_time, 24)[0:8]
-#        all_files = glob.glob("{:s}/*".format(obs_dir), recursive=True)
         # get time of each file, compare to valid time, save best within range
         closest_file = ""
         closest_time = 9999999
@@ -197,7 +192,7 @@ class GridStatWrapper(CommandBuilder):
         model_path = self.find_model(ti.lead, init_time, fcst_level)
 
         if model_path == "":
-            print("ERROR: COULD NOT FIND FILE IN "+model_dir)
+            self.logger.error("ERROR: COULD NOT FIND FILE IN "+model_dir)
             return
         self.add_input_file(model_path)
         if self.p.getbool('config','OBS_EXACT_VALID_TIME', True):
@@ -263,7 +258,6 @@ class GridStatWrapper(CommandBuilder):
                              "\"; level=\"(*,*)\"; cat_thresh=[ gt" + \
                              str(obs_thresh)+" ]; },"
         else:
-#            data_type = self.p.getstr('config', 'OBS_NATIVE_DATA_TYPE')
             obs_data_type = util.get_filetype(self.p, obs_path)
             model_data_type = util.get_filetype(self.p, model_path)
             if obs_data_type == "NETCDF":
@@ -286,8 +280,6 @@ class GridStatWrapper(CommandBuilder):
 
             fcst_field += fcst_cat_thresh+" },"
 
-#            obs_field += "{ name=\"" + v.obs_name+"_" + obs_level.zfill(2) + \
-#                         "\"; level=\"(*,*)\"; "
             obs_field += obs_cat_thresh+ " },"
 
         # remove last comma and } to be added back after extra options
@@ -324,13 +316,13 @@ class GridStatWrapper(CommandBuilder):
         self.logger.debug("")
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_copy(["MODEL", "FCST_VAR", "OBS_VAR",
-                             "ACCUM", "OBTYPE", "CONFIG_DIR",
+                             "LEVEL", "OBTYPE", "CONFIG_DIR",
                              "FCST_FIELD", "OBS_FIELD",
                              "MET_VALID_HHMM"])
         self.logger.debug("")
         cmd = self.get_command()
         if cmd is None:
-            print("ERROR: grid_stat could not generate command")
+            self.logger.error("ERROR: grid_stat could not generate command")
             return
         self.logger.info("")
         self.build()
