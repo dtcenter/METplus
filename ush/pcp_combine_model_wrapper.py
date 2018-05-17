@@ -49,10 +49,10 @@ class PcpCombineModelWrapper(PcpCombineWrapper):
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
         fcst_level = self.p.getstr('config', 'FCST_LEVEL')
         in_dir = self.p.getdir('FCST_PCP_COMBINE_INPUT_DIR')
-        in_template = self.p.getraw('filename_templates',
+        in_template = util.getraw_interp(self.p, 'filename_templates',
                                      'FCST_PCP_COMBINE_INPUT_TEMPLATE')
         out_dir = self.p.getdir('FCST_PCP_COMBINE_OUTPUT_DIR')
-        out_template = self.p.getraw('filename_templates',
+        out_template = util.getraw_interp(self.p, 'filename_templates',
                                      'FCST_PCP_COMBINE_OUTPUT_TEMPLATE')
         for lead in lead_seq:
             task_info.lead = lead

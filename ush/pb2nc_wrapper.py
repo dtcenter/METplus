@@ -124,11 +124,11 @@ class PB2NCWrapper(CommandBuilder):
             self.p.getstr('config', 'OVERWRITE_NC_OUTPUT').lower()
 
         # Filename templates and regex patterns for input dirs and filenames
-        pb_dict['NC_FILE_TMPL'] = self.p.getraw('filename_templates',
+        pb_dict['NC_FILE_TMPL'] = util.getraw_interp(self.p, 'filename_templates',
                                                 'NC_FILE_TMPL')
-        pb_dict['PREPBUFR_FILE_REGEX'] = self.p.getraw('regex_pattern',
+        pb_dict['PREPBUFR_FILE_REGEX'] = util.getraw_interp(self.p, 'regex_pattern',
                                                        'PREPBUFR_FILE_REGEX')
-        pb_dict['PREPBUFR_DIR_REGEX'] = self.p.getraw('regex_pattern',
+        pb_dict['PREPBUFR_DIR_REGEX'] = util.getraw_interp(self.p, 'regex_pattern',
                                                       'PREPBUFR_DIR_REGEX')
 
         # non-MET executables

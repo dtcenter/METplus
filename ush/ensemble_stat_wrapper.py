@@ -79,7 +79,7 @@ class EnsembleStatWrapper(CommandBuilder):
         time_offset = 0
         found = False
         #while lead_check <= max_forecast:
-        model_template = os.path.expandvars(self.p.getraw('filename_templates',
+        model_template = os.path.expandvars(util.getraw_interp(self.p, 'filename_templates',
                                        'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE'))
         # split by - to handle a level that is a range, such as 0-10
         model_ss = sts.StringSub(self.logger, model_template,

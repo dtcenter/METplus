@@ -1500,7 +1500,7 @@ def parse_var_list(p):
 
             fcst_extra = ""
             if p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                fcst_extra = p.getraw('config', "FCST_VAR"+n+"_OPTIONS")
+                fcst_extra = getraw_interp(p, 'config', "FCST_VAR"+n+"_OPTIONS")
 
             # if OBS_VARn_X does not exist, use FCST_VARn_X
             if p.has_option('config', "OBS_VAR"+n+"_NAME"):
@@ -1510,7 +1510,7 @@ def parse_var_list(p):
 
             obs_extra = ""
             if p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                obs_extra = p.getraw('config', "OBS_VAR"+n+"_OPTIONS")
+                obs_extra = getraw_interp(p, 'config', "OBS_VAR"+n+"_OPTIONS")
 
             fcst_levels = getlist(p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
             if p.has_option('config', "OBS_VAR"+n+"_LEVELS"):
@@ -1677,6 +1677,39 @@ def get_time_from_file(logger, filepath, template):
     else:
         return None
 
+# parse parameter and replace any existing parameters
+# referenced with the value (looking in same section, then
+# config, dir, and os environment)
+# returns raw string, preserving {valid?fmt=%Y} blocks
+def getraw_interp(p, sec, opt):
+    in_template = p.getraw(sec, opt)
+    out_template = ""
+    in_brackets = False
+    for i, c in enumerate(in_template):
+        if c == "{":
+            in_brackets = True
+            start_idx = i
+        elif c == "}":
+            var_name = in_template[start_idx+1:i]
+            var = None
+            if p.has_option(sec,var_name):
+                var = p.getstr(sec,name)
+            elif p.has_option('config',var_name):
+                var = p.getstr('config',name)
+            elif p.has_option('dir',var_name):
+                var = p.getstr('dir',name)
+            elif var_name[0:3] == "ENV":
+                var = os.environ.get(var_name[4:-1])
+
+            if var is None:
+                out_template += in_template[start_idx:i+1]
+            else: 
+                out_template += var
+            in_brackets = False
+        elif not in_brackets:
+            out_template += c
+
+    return out_template
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
