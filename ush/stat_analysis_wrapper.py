@@ -550,7 +550,7 @@ class StatAnalysisWrapper(CommandBuilder):
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT')
         stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = self.p.getstr('STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
