@@ -154,7 +154,7 @@ class PcpCombineWrapper(CommandBuilder):
     def get_lowest_forecast_at_valid(self, valid_time, dtype):
         out_file = ""
         day_before = util.shift_time(valid_time, -24)
-        input_template = self.p.getraw('filename_templates',
+        input_template = util.getraw_interp(self.p, 'filename_templates',
                                        dtype + '_PCP_COMBINE_INPUT_TEMPLATE')
         # get all files in yesterday directory, get valid time from init/fcst
         # NOTE: This will only apply to forecasts up to 48  hours
@@ -476,9 +476,9 @@ class PcpCombineWrapper(CommandBuilder):
         self.set_method("ADD")
 
         input_dir = self.p.getdir(data_src+'_PCP_COMBINE_INPUT_DIR')
-        input_template = self.p.getraw('filename_templates', data_src+'_PCP_COMBINE_INPUT_TEMPLATE')
+        input_template = util.getraw_interp(self.p, 'filename_templates', data_src+'_PCP_COMBINE_INPUT_TEMPLATE')
         output_dir = self.p.getdir(data_src+'_PCP_COMBINE_OUTPUT_DIR')
-        output_template = self.p.getraw('filename_templates',
+        output_template = util.getraw_interp(self.p, 'filename_templates',
                                         data_src+'_PCP_COMBINE_OUTPUT_TEMPLATE')
 
         ymd = valid_time[0:8]
@@ -499,7 +499,7 @@ class PcpCombineWrapper(CommandBuilder):
                                     + input_dir)
                 return False
             gempak_dir = self.p.getdir(data_src+'_GEMPAK_INPUT_DIR')
-            gempak_template = self.p.getraw('filename_templates', data_src+'_GEMPAK_TEMPLATE')
+            gempak_template = util.getraw_interp(self.p, 'filename_templates', data_src+'_GEMPAK_TEMPLATE')
             self.clear()
             self.set_input_dir(gempak_dir)
             if self.get_accumulation(valid_time, int(accum), data_src, gempak_template, is_forecast) is True:

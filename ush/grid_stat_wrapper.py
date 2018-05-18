@@ -68,7 +68,7 @@ class GridStatWrapper(CommandBuilder):
 
     def find_model(self, lead, init_time, level):
         model_dir = self.p.getdir('FCST_GRID_STAT_INPUT_DIR')
-        model_template = self.p.getraw('filename_templates',
+        model_template = util.getraw_interp(self.p, 'filename_templates',
                                        'FCST_GRID_STAT_INPUT_TEMPLATE')
         max_forecast = self.p.getint('config', 'FCST_MAX_FORECAST')
         init_interval = self.p.getint('config', 'FCST_INIT_INTERVAL')
@@ -119,7 +119,7 @@ class GridStatWrapper(CommandBuilder):
     def find_obs(self, ti, v):
         valid_time = ti.getValidTime()
         obs_dir = self.p.getdir('OBS_GRID_STAT_INPUT_DIR')
-        obs_template = self.p.getraw('filename_templates',
+        obs_template = util.getraw_interp(self.p, 'filename_templates',
                                      'OBS_GRID_STAT_INPUT_TEMPLATE')
         # convert valid_time to unix time
         valid_seconds = int(datetime.datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
@@ -179,7 +179,7 @@ class GridStatWrapper(CommandBuilder):
             obs_level = obs_level[1:]            
         model_type = self.p.getstr('config', 'MODEL_TYPE')
         obs_dir = self.p.getdir('OBS_GRID_STAT_INPUT_DIR')
-        obs_template = self.p.getraw('filename_templates',
+        obs_template = util.getraw_interp(self.p, 'filename_templates',
                                      'OBS_GRID_STAT_INPUT_TEMPLATE')
         model_dir = self.p.getdir('FCST_GRID_STAT_INPUT_DIR')
         config_dir = self.p.getdir('CONFIG_DIR')
@@ -192,7 +192,7 @@ class GridStatWrapper(CommandBuilder):
         model_path = self.find_model(ti.lead, init_time, fcst_level)
 
         if model_path == "":
-            self.logger.error("ERROR: COULD NOT FIND FILE IN "+model_dir)
+            self.logger.error("ERROR: COULD NOT FIND FILE IN "+model_dir+" FOR "+init_time+" f"+str(ti.lead))
             return
         self.add_input_file(model_path)
         if self.p.getbool('config','OBS_EXACT_VALID_TIME', True):
