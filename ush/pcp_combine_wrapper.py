@@ -385,9 +385,61 @@ class PcpCombineWrapper(CommandBuilder):
         return cmd
 
 
-    def run_at_time(self, init_time):
-        self.logger.error("Must use PcpCombineObs or PcpCombineModel")
-        exit(1)
+    def run_at_time(self, init_time, valid_time):
+        task_info = TaskInfo()
+        task_info.init_time = init_time
+        task_info.valid_time = valid_time
+        var_list = util.parse_var_list(self.p)
+        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
+
+        run_list = []
+        if self.p.getstr('config', 'FCST_PCP_COMBINE_RUN', False):
+            run_list.append("FCST")
+        if self.p.getstr('config', 'OBS_PCP_COMBINE_RUN', False):
+            run_list.append("OBS")
+
+        if len(run_list) == 0:
+            self.logger.error("PcpCombine specified in process_list, but "+\
+                              "FCST_PCP_COMBINE_RUN and OBS_PCP_COMBINE_RUN "+\
+                              " are both False. Set one or both to true or "+\
+                              "remove PcpCombine from the process_list")
+            exit()
+
+        for rl in run_list:
+
+            level = self.p.getstr('config', rl+'_LEVEL')
+            in_dir = self.p.getdir(rl+'_PCP_COMBINE_INPUT_DIR')
+            in_template = util.getraw_interp(self.p, 'filename_templates',
+                                         rl+'_PCP_COMBINE_INPUT_TEMPLATE')
+            out_dir = self.p.getdir(rl+'_PCP_COMBINE_OUTPUT_DIR')
+            out_template = util.getraw_interp(self.p, 'filename_templates',
+                                         rl+'_PCP_COMBINE_OUTPUT_TEMPLATE')
+
+            for lead in lead_seq:
+                task_info.lead = lead
+                for var_info in var_list:
+                    out_level = var_info.obs_level
+                    if out_level[0].isalpha():
+                        out_level = out_level[1:]
+                    if not self.p.has_option('config', 'PCP_COMBINE_METHOD') or \
+                      self.p.getstr('config', 'PCP_COMBINE_METHOD') == "ADD":
+                        self.run_add_method(task_info.getValidTime(),
+                                            task_info.getInitTime(),
+                                            out_level,
+                                            var_info.obs_name,
+                                            rl)
+                    elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUM":
+                        self.run_sum_method(task_info.getValidTime(),
+                                     task_info.getInitTime(),
+                                     level, out_level,
+                                     in_dir, out_dir, out_template)
+                    elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUBTRACT":
+                        self.run_subtract_method(task_info, var_info, int(out_level),
+                                                 in_dir, out_dir, in_template,
+                                                 out_template)
+                    else:
+                        self.logger.error("Invalid PCP_COMBINE_METHOD specified")
+                        exit(1)
 
 
     def run_subtract_method(self, task_info, var_info, accum, in_dir,
@@ -471,7 +523,10 @@ class PcpCombineWrapper(CommandBuilder):
 
 
     def run_add_method(self, valid_time, init_time, accum,
-                       compare_var, data_src, is_forecast=False):
+                       compare_var, data_src):
+        is_forecast = False
+        if data_src == "FCST":
+            is_forecast = True
         self.clear()
         self.set_method("ADD")
 
