@@ -147,7 +147,7 @@ reference "chap:Software-Installation/Getting-St"
  Chapter 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "chap:MET-Data-I/O"
+reference "chap:METplus System Configuration"
 
 \end_inset
 
@@ -489,18 +489,6 @@ placement t
 wide false
 sideways false
 status open
-
-\begin_layout Plain Layout
-\noindent
-\align center
-\begin_inset Graphics
-	filename /d1/johnhg/MET/MET_development/svn-met-dev.cgd.ucar.edu/trunk/met/doc/MET_Users_Guide/Flowchart/MET_flowchart_v7.0.png
-	scale 60
-
-\end_inset
-
-
-\end_layout
 
 \begin_layout Plain Layout
 

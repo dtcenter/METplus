@@ -1,0 +1,1316 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass book
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing onehalf
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip bigskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Chapter
+MET+ System Configuration
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:METplus System Configuration"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+Data must be preprocessed prior to using for verification.
+ Several MET tools exist for this purpose.
+ In addition to preprocessing observations, some plotting utilities for
+ data checking are also provided and described at the end of this chapter.
+ Both the input and output file formats are described in this chapter.
+ Sections 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:IO_Input-data-formats"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:IO_Intermediate-data-formats"
+
+\end_inset
+
+ are primarily concerned with re-formatting input files into the intermediate
+ files required by some MET modules.
+ These steps are represented by the first three columns in the MET flowchart
+ depicted in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Fig_Overview_MET_Overview_Flowchart"
+
+\end_inset
+
+.
+ Output data formats are described in later Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:IO_Output-data-formats"
+
+\end_inset
+
+.
+ Common configuration files options are described in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:IO_Configuration-File-Details"
+
+\end_inset
+
+.
+ Description of software modules used to reformat the data may now be found
+ in Chapters 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:Re-Formatting-of-Point"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:Re-Formatting-of-Gridded"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Data format summary
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:IO_Data-format-summary"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The following is a summary of the input and output formats for each of the
+ tools currently in MET.
+ The output listed is the maximum number of possible output files.
+ Generally, the type of output files generated can be controlled by the
+ configuration files and/or the command line options:
+\end_layout
+
+\begin_layout Description
+
+\series medium
+1.
+ 
+\series bold
+PB2NC Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One PrepBufr point observation file and one configuration file.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One NetCDF file containing the observations that have been retained.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+2.
+ 
+\series bold
+ASCII2NC Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One or more ASCII point observation file(s) that has (have) been formatted
+ as expected, and optional configuration file.
+ 
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One NetCDF file containing the reformatted observations.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+3.
+ 
+\series bold
+MADIS2NC Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One MADIS point observation file.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One NetCDF file containing the reformatted observations.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+4.
+ 
+\series bold
+LIDAR2NC Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One 
+\series default
+CALIPSO
+\series medium
+ satellite HDF file
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One NetCDF file containing the reformatted observations.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+5.
+ 
+\series bold
+Pcp-Combine Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: Two or more gridded model or observation files (in GRIB format for 
+\begin_inset Quotes eld
+\end_inset
+
+sum
+\begin_inset Quotes erd
+\end_inset
+
+ command, or any gridded file for 
+\begin_inset Quotes eld
+\end_inset
+
+add
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+subtract
+\begin_inset Quotes erd
+\end_inset
+
+ commands) containing accumulated precipitation to be combined to create
+ a new accumulation interval.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One NetCDF file containing the summed accumulation interval.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+6.
+
+\series bold
+ Regrid-Data-Plane Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One gridded model or observation field and one gridded field to provide
+ grid specification if desired.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One NetCDF file containing the regridded data field.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+7.
+
+\series bold
+ Shift-Data-Plane Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One gridded model or observation field.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One NetCDF file containing the shifted data field.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+8.
+ 
+\series bold
+MODIS-Regrid Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One gridded model or observation field and one gridded field to provide
+ grid specification.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One NetCDF file containing the regridded data field.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+9.
+ 
+\series bold
+Gen-VX-Mask Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One gridded model or observation file and one ASCII file defining a Lat/Lon
+ masking polyline.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One NetCDF file containing a bitmap for the masking region defined by
+ the polyline over the domain of the gridded input file.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+10.
+ 
+\series bold
+Point-Stat Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One gridded model file, at least one point observation file in NetCDF
+ format (as the output of the PB2NC, MADIS2NC, or ASCII2NC tool), and one
+ configuration file.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One STAT file containing all of the requested line types, and several
+ ASCII files for each line type requested.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+11.
+ 
+\series bold
+Grid-Stat Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One gridded model file and one gridded observation file, and one configuration
+ file.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One STAT file containing all of the requested line types, several ASCII
+ files for each line type requested, and one NetCDF file containing the
+ matched pair data and difference field for each verification region and
+ variable type/level being verified.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+12.
+ 
+\series bold
+Ensemble Stat Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: An arbitrary number of gridded model files and one or more optional files
+ containing observations.
+ Point and gridded observations are both accepted.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One NetCDF file containing requested ensemble forecast information.
+ If observations are provided, one STAT file containing all requested line
+ types, and several ASCII files for each line type requested.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+13.
+ 
+\series bold
+Wavelet-Stat Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One gridded model file, one gridded observation file and one configuration
+ file.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One STAT file containing the 
+\begin_inset Quotes eld
+\end_inset
+
+ISC
+\begin_inset Quotes erd
+\end_inset
+
+ line type, one ASCII file containing intensity-scale information and statistics
+, one NetCDF file containing information about the wavelet decomposition
+ of forecast and observed fields and their differences, and one PostScript
+ file containing plots and summaries of the intensity-scale verification.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+14.
+ 
+\series bold
+GSID2MPR Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One or more binary GSI diagnostic files (conventional or radiance) to
+ be reformatted.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One ASCII file in matched pair format.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+15.
+ 
+\series bold
+GSID2ORANK Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One or more binary GSI diagnostic files (conventional or radiance) to
+ be reformatted.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One ASCII file in orank format.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+16.
+ 
+\series bold
+Stat-Analysis Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One or more STAT files output from the Point-Stat, Grid-Stat, or Ensemble
+ Stat, or Wavelet-Stat tools and, optionally, one configuration file containing
+ specifications for the analysis job(s) to be run on the STAT data.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: ASCII output of the analysis jobs will be printed to the screen unless
+ redirected to a file using the 
+\begin_inset Quotes eld
+\end_inset
+
+-out
+\begin_inset Quotes erd
+\end_inset
+
+ option.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+17.
+ 
+\series bold
+Series Analysis Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: An arbitrary number of gridded model files and gridded observation files
+ and one or more optional files containing observations.
+ 
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One NetCDF file containing requested output statistics on the same grid
+ as the input files.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+18.
+ 
+\series bold
+MODE Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One gridded model file and one gridded observation file and one or two
+ configuration files.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One ASCII file containing contingency table counts and statistics, one
+ ASCII file containing single and pair object attribute values, one NetCDF
+ file containing object indices for the gridded simple and cluster object
+ fields, and one PostScript plot containing a summary of the features-based
+ verification performed.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+19.
+ 
+\series bold
+MODE-Analysis Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One or more MODE object statistics files from the MODE tool and, optionally,
+ one configuration file containing specification for the analysis job(s)
+ to be run on the object data.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: ASCII output of the analysis jobs will be printed to the screen unless
+ redirected to a file using the 
+\begin_inset Quotes eld
+\end_inset
+
+-out
+\begin_inset Quotes erd
+\end_inset
+
+ option.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+20.
+ 
+\series bold
+MODE-TD Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: Two or more gridded model file and two or more gridded observation file
+ and one or two configuration files.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: Three ASCII files containing 2D single object and 3D single and pair object
+ attribute values and one NetCDF file containing object indices for the
+ gridded simple and cluster object fields.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+21.
+ 
+\series bold
+TC-Dland Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One file containing the longitude (degrees W negative) and latitude (degrees
+ N positive) of all the coastlines and islands considered to be a significant
+ landmass.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One NetCDF format file containing a gridded field representing the distance
+ to the nearest coastline or island, as specified in the input file
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+22.
+ 
+\series bold
+TC-Pair Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: Two ATCF format files containing output from a tropical cyclone tracker
+ and one configuration file.
+ One file would be for the forecast, or 
+\begin_inset Quotes eld
+\end_inset
+
+A
+\begin_inset Quotes erd
+\end_inset
+
+-deck.
+ The other is expected to be the NHC Best Track Analysis, but could also
+ be any ATCF format reference.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: ASCII output with the suffix .tcstat
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+23.
+ 
+\series bold
+TC-Stat Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One or more TCSTAT files output from the Point-Stat, Grid-Stat, or Ensemble
+ Stat, or Wavelet-Stat tools and, optionally, one configuration file containing
+ specifications for the analysis job(s) to be run on the TCSTAT data.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: ASCII output of the analysis jobs will be printed to the screen unless
+ redirected to a file using the 
+\begin_inset Quotes eld
+\end_inset
+
+-out
+\begin_inset Quotes erd
+\end_inset
+
+ option.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+24.
+ 
+\series bold
+Plot-Point-Obs Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One NetCDF file with point observations in it.
+ Most likely the output from ascii2nc, pb2nc, madis2nc.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One postscript file containing a plot of the requested field.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+25.
+ 
+\series bold
+Plot-Data-Plane Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One gridded data file to be plotted.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One postscript file containing a plot of the requested field.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+
+\series medium
+26.
+ 
+\series bold
+Plot-MODE-Field Tool
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Input
+\series medium
+: One or more MODE output files to be used for plotting and one configuration
+ file.
+\end_layout
+
+\begin_layout Description
+
+\series medium
+* 
+\series bold
+Output
+\series medium
+: One NetCDF file with the requested MODE objects plotted.
+ Options for objects include raw, simple or cluster and forecast or observed
+ objects.
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Configuration File Details
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:IO_Configuration-File-Details"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Part of the strength of MET is the leveraging of capability across tools.
+ There are several config options that are common to many of the tools.
+ They are described in this section.
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+Many of the MET tools use a configuration file to set parameters.
+ This prevents the command line from becoming too long and cumbersome and
+ makes the output easier to duplicate.
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+Settings common to multiple tools are described in the following sections
+ while those specific to individual tools are explained in the chapters
+ for those tools.
+ In addition, these configuration settings are described in the share/met/config
+/README file and the share/met/config/README-TC file for the MET-Tropical
+ Cyclone tools.
+\end_layout
+
+\begin_layout Subsection
+General MET+ Config Options - Common to many tools
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:IO_General-MET-Config-Options"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This information may also be found, along with detailed information regarding
+ configuration of individual tools, in the data/config/README file.
+\end_layout
+
+\end_body
+\end_document
