@@ -144,7 +144,7 @@ class TcPairsWrapper(CommandBuilder):
         if track_type == "extra_tropical_cyclone":
             self.process_non_ATCF()
         else:
-            self.process_ATCF()
+            self.process_atcf()
 
         self.logger.info("Completed run_all_times in TcPairsWrapper")
 
@@ -286,7 +286,7 @@ class TcPairsWrapper(CommandBuilder):
                                                    cur_track_file)
                     self.build()
 
-    def process_ATCF(self):
+    def process_atcf(self):
         # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
         # filename and method.
@@ -309,33 +309,56 @@ class TcPairsWrapper(CommandBuilder):
         # isn't, then create the -adeck and -bdeck portion of the command
         # using the top-level directories and call tc_pairs.  Otherwise,
         # attempt to do some filtering of initialization times based on the date
-        # information provided.
+        # information provided. Check for the other cyclone-relevant keywords:
+        # region, cyclone, misc, which will be used to create expected file names.
+        has_date = False
+        has_region = False
+        has_cyclone = False
+        has_misc = False
         adeck_date_match = re.match(r'.*\{date\?fmt=(.*?)\}.*', fcst_filename_tmpl)
         bdeck_date_match = re.match(r'.*\{date\?fmt=(.*?)\}.*', reference_filename_tmpl)
-        if adeck_date_match and bdeck_date_match:
+        adeck_region_match = re.match(r'\{region\?fmt=(.*?)\}', fcst_filename_tmpl)
+        adeck_cyclone_match = re.match(r'\{cyclone\?fmt=(.*?)\}', fcst_filename_tmpl)
+        adeck_misc_match = re.match(r'\{misc\?fmt=(.*?)\}', fcst_filename_tmpl)
+        bdeck_region_match = re.match(r'\{region\?fmt=(.*?)\}', fcst_filename_tmpl)
+        bdeck_cyclone_match = re.match(r'\{cyclone\?fmt=(.*?)\}', fcst_filename_tmpl)
+        adeck_misc_match = re.match(r'\{misc\?fmt=(.*?)\}', fcst_filename_tmpl)
+
+        # Initialize the by_dir flag, which indicates whether to invoke TC-Pairs with top-level A-deck and B-deck
+        # directories, or by filename.  If set to False, then invoke with file names, if True, then invoke
+        # using top-level directories.
+        adeck_by_dir = True
+        bdeck_by_dir = True
+
+
+        # Since we are searching based on init time, put in dummy values for the region and cyclone, when
+        # we create "expected" file names, we use these in place of actual region and cyclone values but only
+        # search based on date.
+        adeck_region = 'az'
+        bdeck_region = 'bz'
+        adeck_cyclone = '00'
+        bdeck_cyclone = '00'
+        adeck_misc = 'misc'
+        bdeck_misc = 'misc'
+
+        # Determine if we have any date information, either in the directory name or file name.
+        if adeck_date_match:
             adeck_date_str = adeck_date_match.group(1)
-            bdeck_date_str = bdeck_date_match.group(1)
             adeck_date_info = self.retrieve_date_format_info(adeck_date_str)
-            bdeck_date_info = self.retrieve_date_format_info(bdeck_date_str)
             adeck_date_regex = adeck_date_info.date_regex
+            by_dir = False
+
+        if bdeck_date_match:
+            bdeck_date_str = bdeck_date_match.group(1)
+            bdeck_date_info = self.retrieve_date_format_info(bdeck_date_str)
             bdeck_date_regex = bdeck_date_info.date_regex
-            adeck_date_list = self.create_date_list(adeck_date_info.date_len)
-            bdeck_date_list = self.create_date_list(bdeck_date_info.date_len)
+            by_dir = False
 
-            # Now we have a list of times for A-Deck and B-Deck.  Look for files in the A-Deck and B-Deck
-            # directories for files that match with the times in these lists. Use StringTemplateSubstitution to
-            # create an "expected" filename, and if it exists in the data directory, add it to either an ADeck list
-            # or BDeck list of full filepaths.
-            adeck_input_files = util.get_
-
-            for adeck_date in adeck_date_list:
-
-
-
-
-        else:
+        # If A-deck and B-deck do NOT have date information in their filename_template descriptors, then
+        # invoke tc_pairs with the top-level directories for both.
+        if adeck_by_dir and bdeck_by_dir:
             # set -adeck and -bdeck values to the ADeck and BDeck top-level directories
-            # respectively and run MET tc_pairs.
+            # respectively and invoke MET tc_pairs.
             adeck_top_level_dir = self.config.getdir('ADECK_TRACK_DATA_DIR')
             bdeck_top_level_dir = self.config.getdir('BDECK_TRACK_DATA_DIR')
             pairs_out_dir = self.config.getdir('TC_PAIRS_DIR')
@@ -343,18 +366,98 @@ class TcPairsWrapper(CommandBuilder):
             self.cmd = self.build_tc_pairs(pairs_out_dir,
                                            adeck_top_level_dir,
                                            bdeck_top_level_dir, None)
+        else:
+            # Invoke tc_pairs with A-deck and B-deck filenames. Create the expected file names and
+            # if these are found in the input directories, invoke tc_pairs with them.
+            # A list of A-deck and B-deck named tuples with the year, month, date, and hour.
+            init_list = util.gen_init_list(
+                self.config.getstr('config', 'INIT_BEG'),
+                self.config.getstr('config', 'INIT_END'),
+                int(self.config.getint('config', 'INIT_INCREMENT') / 3600),
+                self.config.getstr('config', 'INIT_HOUR_END'))
+            adeck_date_list = self.create_date_list(adeck_date_info.date_len, init_list)
+            bdeck_date_list = self.create_date_list(bdeck_date_info.date_len, init_list)
+
+            # Now we have a list of times for A-Deck and B-Deck.  Look for files in the A-Deck and B-Deck
+            # directories for files that match with the times in these lists. Use StringTemplateSubstitution to
+            # create an "expected" filename, and if it exists in the data directory, add it to either an ADeck list
+            # or BDeck list of full file paths.
+
+            for adeck_date in adeck_date_list:
+                year = adeck_date.year
+                month = adeck_date.month
+                day = adeck_date.day
+                hour = adeck_date.hour
+
+                date = year
+                if month:
+                    date += month
+                if day:
+                    date += day
+                if hour:
+                    date += hour
+
+                # A few combinations:
+                # 1) region, cyclone, date
+                # 2) region, cyclone, misc, date
+                # 3) date
+                string_sub = StringSub(self.logger, fcst_filename_tmpl, region=adeck_region, cyclone=adeck_cyclone,
+                                       date=date)
+                adeck_input_file = string_sub.doStringSub()
+
+            for bdeck_date in bdeck_date_list:
+                year = bdeck_date.year
+                month = bdeck_date.month
+                day = bdeck_date.day
+                hour = bdeck_date.hour
+
+                date = year
+                if month:
+                    date += month
+                if day:
+                    date += day
+                if hour:
+                    date += hour
+
+                string_sub = StringSub(self.logger, reference_filename_tmpl, region=bdeck_region, cyclone=bdeck_cyclone,
+                                       date=date)
+                bdeck_input_file = string_sub.doStringSub()
+
+
+
 
         self.build()
 
-    def create_date_list(self, date_str_len):
+    def get_input_track_files(self):
+        """! Get all the input track files in the A-deck or B-deck input directory.
+             Args:
+
+             Returns:
+
+
+        """
+        # pylint:disable=protected-access
+        # sys._getframe is a legitimate way to access the current
+        # filename and method.
+        # Used for logging information
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        self.logger.debug(
+            cur_function + '|' + cur_filename + ": Creating a list of input A-deck or B-deck track files")
+
+
+
+    def create_date_list(self, date_str_len, init_list):
         """!From the date string length, create a list of dates that define the initialization window defined by
             the values to INIT_BEG, INIT_END, INIT_INC, and INIT_HOUR_END in the config file.
 
             Args:
                 date_str_len : An integer value that represents the length of the date string specified in the
                               filename template
+                init_list    : A list of init times based on the begin, end, increment, and hour end times.
             Returns:
-                date_list : A list of times, either YYYY, YYYYMM, YYYYMMdd, or YYYYMMddhh, based on the date_str_len
+                date_list : A list of times, as named tuples, based on the date_str_len
 
         """
         # pylint:disable=protected-access
@@ -370,21 +473,40 @@ class TcPairsWrapper(CommandBuilder):
         # Get the init time window from  INIT_BEG, INIT_END, INIT_HOUR_END,
         # and INIT_INCREMENT in the config file as a list of init times.
         # Convert the increment INIT_INCREMENT from seconds to hours
-        init_list = util.gen_init_list(
-            self.config.getstr('config', 'INIT_BEG'),
-            self.config.getstr('config', 'INIT_END'),
-            int(self.config.getint('config', 'INIT_INCREMENT') / 3600),
-            self.config.getstr('config', 'INIT_HOUR_END'))
+
 
         # Determine the granularity of date, ie. YYYY, YYYYMM, YYYYMMDD, etc.
         # Create the adeck and bdeck files with full file paths
         # to create the -adeck and -bdeck values needed to run
         # MET tc_pairs.
+        DateDescription = collections.namedtuple('DateDescription', 'year, month, day, hour')
 
         deck_date_list = []
-        for cur_init in init_list:
-            if cur_init[0:date_str_len] not in deck_date_list:
-                deck_date_list.append(cur_init[0:date_str_len])
+        if date_str_len == 10:
+            # Because of the YYYYMMDD_hh format in init_list, need to account for additional '_' character.
+            for cur_init in init_list:
+                cur_year = cur_init[0:4]
+                cur_month = cur_init[4:6]
+                cur_day = cur_init[6:8]
+
+                # Ignore the '_' separating the YYYYMMDD from the hh
+                cur_hour = cur_init[9:11]
+                cur_date = DateDescription(year=cur_year, month=cur_month, day=cur_day, hour=cur_hour)
+                deck_date_list.append(cur_date)
+        else:
+            # YYYY, YYYYMM, or  YYYYMMDD
+            for cur_init in init_list:
+                cur_year = cur_init[0:4]
+                if date_str_len == 6:
+                    cur_month = cur_init[4:6]
+                else:
+                    cur_month = None
+                if date_str_len == 8:
+                    cur_day = cur_init[6:8]
+                else:
+                    cur_day = None
+                cur_date = DateDescription(year=cur_year, month=cur_month, day=cur_day, hour=None)
+                deck_date_list.append(cur_date)
 
         return deck_date_list
 
@@ -413,10 +535,10 @@ class TcPairsWrapper(CommandBuilder):
         DateFormatInfo = collections.namedtuple('DateFormatInfo', 'date_regex, date_len')
         # Determine if we have YYYY, YYYYMM, YYYYMMDD, or YYYYMMDDhh for
         # the date string
-        date_format_match = re.match('(?i)\A(?:(%+[a-z])+)\Z', date_str)
+        date_format_match = re.match('(?i)\A(?:(%+[a-z])*)\Z', date_str)
         if date_format_match:
             # Determine whether we have YYYY, YYYYMM, YYYYMMdd, or YYYYMMddhh
-            first_match = date_format_match.group(1)
+            first_match = date_format_match.group(0)
             match_len = len(first_match)
             if match_len == 8:
                 # year month day hour, %Y%m%d%h
