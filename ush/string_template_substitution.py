@@ -179,7 +179,7 @@ class StringSub:
                       (YYYYMMDD + hh) + offset
                      Indicate a negative offset by using a '-' sign
                      in the
-       date - the YYYYMM date 
+       date - the YYYYMM date
        region - the two-character (upper or lower case) region/basin designation
        cyclone - a two-digit annual cyclone number (if ATCF) or four-digit cyclone number (leading zeros)
        misc - any string
@@ -836,7 +836,7 @@ class StringSub:
                       HHH format are supported, to anticipate any changes
                       in prepbufr data.
 
-              The following were created to support processing of 
+              The following were created to support processing of
               tropical cyclone data:
               cyclone:
                 fmt - specifies the annual cyclone number as a string.
@@ -849,10 +849,12 @@ class StringSub:
                       observed in filenames.
               date:
                 fmt - a string representation of the date format for a
-                      subdirectory in which track data resides.
+                      subdirectory in which track data resides, or the
+                      string representation of the date format in a file.
+                      Expected formats: YYYY, YYYYMM, YYYYMMDD, and YYYYMMDDhh
               misc:
                 fmt -a string that represents any other miscellaneous feature
-                     of the track data
+                     of the track data, such as experiment name or some other descriptor
 
 
         """
@@ -933,7 +935,7 @@ class StringSub:
             # the date (YYMM or YYMMMDD), or date and region, or date, region, and cyclone.
             elif (
                     DATE_STRING in self.kwargs or
-                    (DATE_STRING in self.kwargs and INIT_STRING in self.kwargs) 
+                    (DATE_STRING in self.kwargs and INIT_STRING in self.kwargs)
 
             ):
                 self.kwargs[DATE_STRING] = self.date
@@ -959,7 +961,7 @@ class StringSub:
                 self.kwargs[DATE_STRING] = self.date
                 self.kwargs[REGION_STRING] = self.region
                 self.kwargs[CYCLONE_STRING] = self.cyclone
-                
+
             # Finally, check for misc string, which can occur with any combination of the above
             if MISC_STRING in self.kwargs:
                 self.kwargs[MISC_STRING] = self.misc
@@ -1081,6 +1083,158 @@ class StringSub:
                                 value = str(self.misc)
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match \
                                                     + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+
+                # No formatting or length is requested
+                elif len(split_string) == 1:
+
+                    # Add back the template identifiers to the matched
+                    # string to replace and add the key, value pair to the
+                    # dictionary
+                    string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + \
+                                        TEMPLATE_IDENTIFIER_END
+                    replacement_dict[string_to_replace] = \
+                        self.kwargs.get(split_string[0], None)
+
+            # Replace regex with properly formatted information
+            temp_str = multiple_replace(replacement_dict, self.tmpl)
+            self.tmpl = temp_str
+            return self.tmpl
+
+    def create_cyclone_regex(self):
+        """! Create the regex that describes the tropical cyclone string.  Similar logic to doStringSub() except
+             replace the date, region, and cyclone with the appropriate regex.
+
+        """
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        # The . matches any single character except newline, and the
+        # following + matches 1 or more occurrence of preceding expression.
+        # The ? after the .+ makes it a lazy match so that it stops
+        # after the first "}" instead of continuin to match as many
+        # characters as possible
+
+        # findall searches through the string and finds all non-overlapping
+        # matches and returns the group
+        # match_list is a list with the contents being the data between the
+        # curly braces
+        match_list = re.findall('\{(.+?)\}', self.tmpl)
+
+        # finditer gets the start and end indices
+        # Iterate over each match to get the starting and ending indices
+        matches = re.finditer('\{(.+?)\}', self.tmpl)
+        match_start_end_list = []
+        for match in matches:
+            match_start_end_list.append((match.start(), match.end()))
+
+        if match_list == 0:
+            # Log and exit
+            self.logger.error("ERROR |  [" + cur_filename + ":" +
+                              cur_function + "] | " +
+                              "No matches found for template: " +
+                              self.tmpl)
+            exit(0)
+        elif len(match_list) != len(match_start_end_list):
+            # Log and exit
+            self.logger.error("ERROR |  [" + cur_filename + ":" +
+                              cur_function + "] | " +
+                              "match_list and match_start_end_list should " +
+                              "have the same length for template: " +
+                              self.tmpl)
+            exit(0)
+        else:
+            # No times to compute, create the regex expressions that describe
+            # the date (YYYY, YYYYMM, YYYYMMMDD, or YYYYMMDDhh),  region, cyclone, and misc portions of the
+            # filename template.
+            if (
+                    DATE_STRING in self.kwargs or
+                    (DATE_STRING in self.kwargs and INIT_STRING in self.kwargs)
+
+            ):
+                self.kwargs[DATE_STRING] = self.date
+            # Date and cyclone only
+            elif (
+                    DATE_STRING in self.kwargs and
+                    CYCLONE_STRING in self.kwargs):
+                self.kwargs[DATE_STRING] = self.date
+                self.kwargs[CYCLONE_STRING] = self.cyclone
+
+            # Date and region only
+            elif (
+                    DATE_STRING in self.kwargs and
+                    REGION_STRING in self.kwargs
+            ):
+
+                self.kwargs[DATE_STRING] = self.date
+                self.kwargs[REGION_STRING] = self.region
+
+            # Date, region, and cyclone
+            elif (
+                    DATE_STRING in self.kwargs and
+                    REGION_STRING in self.kwargs and
+                    CYCLONE_STRING in self.kwargs
+            ):
+                self.kwargs[DATE_STRING] = self.date
+                self.kwargs[REGION_STRING] = self.region
+                self.kwargs[CYCLONE_STRING] = self.cyclone
+
+            # Finally, check for misc string, which can occur with any combination of the above
+            if MISC_STRING in self.kwargs:
+                self.kwargs[MISC_STRING] = self.misc
+
+            # A dictionary that will contain the string to replace (key)
+            # and the string to replace it with (value)
+            replacement_dict = {}
+
+            # Search for the FORMATTING_DELIMITER within the first string
+            for index, match in enumerate(match_list):
+                split_string = match.split(FORMATTING_DELIMITER)
+
+                # valid, init, lead, etc.
+                # print split_string[0]
+                # value e.g. 2016012606, 3
+                # print (self.kwargs).get(split_string[0], None)
+
+                # Formatting is requested or length is requested
+                if len(split_string) == 2:
+
+                    # split_string[0] holds the key (e.g. "cyclone", "region", etc)
+                    if split_string[0] not in self.kwargs.keys():
+                        # Log and continue
+                        self.logger.error("ERROR |  [" + cur_filename +
+                                          ":" + cur_function + "] | " +
+                                          "The key " + split_string[0] +
+                                          "does not exist for template: " +
+                                          self.tmpl)
+
+                    # Key is in the dictionary
+                    else:
+                        # Check for formatting/length request by splitting on
+                        # FORMATTING_VALUE_DELIMITER
+                        # split_string[1] holds the formatting/length
+                        # information (e.g. "fmt=%Y%m%d", "len=3")
+                        format_split_string = \
+                            split_string[1].split(FORMATTING_VALUE_DELIMITER)
+                        # Check for requested FORMAT_STRING
+                        # format_split_string[0] holds the formatting/length
+                        # value delimiter (e.g. "fmt", "len")
+                        if format_split_string[0] == FORMAT_STRING:
+                            if split_string[0] == DATE_STRING:
+                                value = "([0-9]{4,10})"
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == REGION_STRING:
+                                value = "([a-zA-z]{2})"
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == CYCLONE_STRING:
+                                value = "([0-9]{2,3})"
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == MISC_STRING:
+                                value = "([a-zA-z0-9-_.]+)"
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
 
                 # No formatting or length is requested
