@@ -324,38 +324,30 @@ class TcPairsWrapper(CommandBuilder):
         bdeck_cyclone_match = re.match(r'\{cyclone\?fmt=(.*?)\}', fcst_filename_tmpl)
         adeck_misc_match = re.match(r'\{misc\?fmt=(.*?)\}', fcst_filename_tmpl)
 
-        # Initialize the by_dir flag, which indicates whether to invoke TC-Pairs with top-level A-deck and B-deck
-        # directories, or by filename.  If set to False, then invoke with file names, if True, then invoke
-        # using top-level directories.
+        # Initialize the (a|b)deck_by_dir flag, which indicates whether to invoke TC-Pairs with top-level
+        # A-deck and B-deck directories, or by filename pairs.  If set to False, then invoke with paired file names,
+        # otherwise, invoke using top-level directories.
         adeck_by_dir = True
         bdeck_by_dir = True
 
 
-        # Since we are searching based on init time, put in dummy values for the region and cyclone, when
-        # we create "expected" file names, we use these in place of actual region and cyclone values but only
-        # search based on date.
-        adeck_region = 'az'
-        bdeck_region = 'bz'
-        adeck_cyclone = '00'
-        bdeck_cyclone = '00'
-        adeck_misc = 'misc'
-        bdeck_misc = 'misc'
 
         # Determine if we have any date information, either in the directory name or file name.
         if adeck_date_match:
             adeck_date_str = adeck_date_match.group(1)
             adeck_date_info = self.retrieve_date_format_info(adeck_date_str)
             adeck_date_regex = adeck_date_info.date_regex
-            by_dir = False
+            adeck_by_dir = False
 
         if bdeck_date_match:
             bdeck_date_str = bdeck_date_match.group(1)
             bdeck_date_info = self.retrieve_date_format_info(bdeck_date_str)
             bdeck_date_regex = bdeck_date_info.date_regex
-            by_dir = False
+            bdeck_by_dir = False
 
         # If A-deck and B-deck do NOT have date information in their filename_template descriptors, then
-        # invoke tc_pairs with the top-level directories for both.
+        # invoke tc_pairs with the top-level directories for both. Note: This isn't the most efficient way to invoke
+        # tc_pairs.
         if adeck_by_dir and bdeck_by_dir:
             # set -adeck and -bdeck values to the ADeck and BDeck top-level directories
             # respectively and invoke MET tc_pairs.
@@ -367,9 +359,9 @@ class TcPairsWrapper(CommandBuilder):
                                            adeck_top_level_dir,
                                            bdeck_top_level_dir, None)
         else:
-            # Invoke tc_pairs with A-deck and B-deck filenames. Create the expected file names and
-            # if these are found in the input directories, invoke tc_pairs with them.
-            # A list of A-deck and B-deck named tuples with the year, month, date, and hour.
+            # Invoke tc_pairs with A-deck and B-deck filenames. Get a list of all the input files (A-deck and B-deck),
+            # and filter based on time, then by cyclone and region if these were specified in the config file.
+
             init_list = util.gen_init_list(
                 self.config.getstr('config', 'INIT_BEG'),
                 self.config.getstr('config', 'INIT_END'),
@@ -378,10 +370,23 @@ class TcPairsWrapper(CommandBuilder):
             adeck_date_list = self.create_date_list(adeck_date_info.date_len, init_list)
             bdeck_date_list = self.create_date_list(bdeck_date_info.date_len, init_list)
 
-            # Now we have a list of times for A-Deck and B-Deck.  Look for files in the A-Deck and B-Deck
-            # directories for files that match with the times in these lists. Use StringTemplateSubstitution to
-            # create an "expected" filename, and if it exists in the data directory, add it to either an ADeck list
-            # or BDeck list of full file paths.
+            # Look for files in the A-Deck and B-Deck
+            # directories for files with times that are within the init time window. Employ
+            # StringTemplateSubstitution to create a regex for the filename to assist in identifying the date,
+            # region, and cyclone from the file name (if available) to perform filtering of input data prior to invoking
+            # tc_pairs, making it run more efficiently.
+            all_adeck_files = self.get_input_track_files(adeck_input_dir, init_list)
+            all_bdeck_files = self.get_input_track_files(bdeck_input_dir, init_list)
+
+            # Use dummy values for the region and cyclone, to create a string template substitution object.
+            # This string template substitution object will be used to replace the key-values in the filename
+            # template with its corresponding regex.
+            adeck_region = 'az'
+            bdeck_region = 'bz'
+            adeck_cyclone = '00'
+            bdeck_cyclone = '00'
+            adeck_misc = 'amisc'
+            bdeck_misc = 'bmisc'
 
             for adeck_date in adeck_date_list:
                 year = adeck_date.year
@@ -403,7 +408,7 @@ class TcPairsWrapper(CommandBuilder):
                 # 3) date
                 string_sub = StringSub(self.logger, fcst_filename_tmpl, region=adeck_region, cyclone=adeck_cyclone,
                                        date=date)
-                adeck_input_file = string_sub.doStringSub()
+                adeck_input_file = string_sub.create_cyclone_regex()
 
             for bdeck_date in bdeck_date_list:
                 year = bdeck_date.year
@@ -421,18 +426,17 @@ class TcPairsWrapper(CommandBuilder):
 
                 string_sub = StringSub(self.logger, reference_filename_tmpl, region=bdeck_region, cyclone=bdeck_cyclone,
                                        date=date)
-                bdeck_input_file = string_sub.doStringSub()
-
-
-
+                bdeck_input_file = string_sub.create_cyclone_regex()
 
         self.build()
 
-    def get_input_track_files(self):
+    def get_input_track_files(self, input_dir, init_list):
         """! Get all the input track files in the A-deck or B-deck input directory.
              Args:
-
+                 input_dir  - the directory of the A-deck or B-deck input
+                 init_list  - a list of initialization times that comprise the initialization time window
              Returns:
+                 input_track_files - a list of all the input track files (full filepath)
 
 
         """
@@ -446,7 +450,72 @@ class TcPairsWrapper(CommandBuilder):
         self.logger.debug(
             cur_function + '|' + cur_filename + ": Creating a list of input A-deck or B-deck track files")
 
+        subdirs_list = util.get_dirs(input_dir)
+        files_within_time_criteria = []
+        if subdirs_list:
+            for track_dir in subdirs_list:
+                # Determine if the date information (YYYY, YYYYMM, YYYYMMDD) is in the directory name
+                match = re.match(r".*/(2[0-9]{3,7})", track_dir)
+                if match:
+                    # Date is in the directory name, generate a list of all the files in the subdirectories that
+                    # lie within the init time window.
+                    year_match = re.match(r".*/(2[0-9]{3})", track_dir)
+                    year_month_match = re.match(r".*/(2[0-9]{5})", track_dir)
+                    year_month_day_match = re.match(r"(.*/2[0-9]{7})", track_dir)
+                    if year_month_day_match:
+                        granularity = 'ymd'
+                    elif year_month_match:
+                        granularity = 'ym'
+                    elif year_match:
+                        granularity = 'y'
 
+                    init_by_granularity = self.get_init_times_by_granularity(init_list, granularity)
+                    for init_time in init_by_granularity:
+                        if granularity == 'ymd':
+                            if int(init_time) <= int(year_month_day_match.group(1)):
+                                # Get all files in this subdir and store in files_within_time_criteria list
+                                files_list = util.get_files(track_dir, ".*.dat", self.logger)
+                                for cur_file in files_list:
+                                    files_within_time_criteria.append(os.path.join(track_dir, cur_file))
+                        elif granularity == 'ym':
+                            if int(init_time) <= int(year_month_match.group(1)):
+                                # Get all files in this subdir and store in files_within_time_criteria list
+                                files_list = util.get_files(track_dir, ".*.dat", self.logger)
+                                for cur_file in files_list:
+                                    files_within_time_criteria.append(os.path.join(track_dir, cur_file))
+                        elif granularity == 'y':
+                            if int(init_time) <= int(year_match.group(1)):
+                                # Get all files in this subdir and store in files_within_time_criteria list
+                                files_list = util.get_files(track_dir, ".*.dat", self.logger)
+                                for cur_file in files_list:
+                                    files_within_time_criteria.append(os.path.join(track_dir, cur_file))
+                    return files_within_time_criteria
+
+        else:
+            # No dated subdirs, only files containing date information.
+            # Retrieve all .dat files and store in list with full file path.
+            files_list = util.get_files(input_dir, "*.dat", self.logger)
+
+    def get_init_times_by_granularity(self, init_list, granularity):
+        """! Returns the init list in YYYYMMDD_hh as YYYY, YYYYMM, or YYYYMMDD
+
+             Args:
+                 init_list - initialization times specifying the time window, in YYYYMMDD_hh
+                 granularity - y for YYYY, ym for YYYYMM, and ymd for YYYYMMDD
+            Returns:
+                init_by_granularity - a list of the initialization times in the specified granularity: YYYY,
+                YYYYMM, or YYYYMMDD
+
+        """
+        init_by_granularity = []
+        for init in init_list:
+            if granularity == 'y':
+                init_by_granularity.append(init[0:4])
+            elif granularity == 'ym':
+                init_by_granularity.append(init[0:6])
+            elif granularity == 'ymd':
+                init_by_granularity.append(init[0:8])
+        return init_by_granularity
 
     def create_date_list(self, date_str_len, init_list):
         """!From the date string length, create a list of dates that define the initialization window defined by
@@ -473,7 +542,6 @@ class TcPairsWrapper(CommandBuilder):
         # Get the init time window from  INIT_BEG, INIT_END, INIT_HOUR_END,
         # and INIT_INCREMENT in the config file as a list of init times.
         # Convert the increment INIT_INCREMENT from seconds to hours
-
 
         # Determine the granularity of date, ie. YYYY, YYYYMM, YYYYMMDD, etc.
         # Create the adeck and bdeck files with full file paths
