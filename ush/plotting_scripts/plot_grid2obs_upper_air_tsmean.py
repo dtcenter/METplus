@@ -129,7 +129,7 @@ while vl <= nlevels:
                  model_now_fbar_mean[model_now_fbar_mean == '--'] = np.nan
                  model_now_fbar_mean = model_now_fbar_mean.astype(float)
                  model_now_fbar_mean = np.ma.masked_array(model_now_fbar_mean, mask=model_now_fbar_mean == np.nan)
-                 count_masked = np.ma.count_masked(model_now_fbar_mean)
+                 count_masked_fbar = np.ma.count_masked(model_now_fbar_mean)
                  #get forecast hour mean file
                  model_now_obar_mean_file = plotting_out_dir+"/data/"+cycle+"Z/"+model_now+"/obar_mean_"+region+"_fcst"+fcst_var_name+fcst_var_level_now+"_obs"+obs_var_name+obs_var_level_now+".txt"
                  if os.path.exists(model_now_obar_mean_file):
@@ -165,6 +165,7 @@ while vl <= nlevels:
                  model_now_obar_mean[model_now_obar_mean == '--'] = np.nan
                  model_now_obar_mean = model_now_obar_mean.astype(float)
                  model_now_obar_mean = np.ma.masked_array(model_now_obar_mean, mask=model_now_obar_mean == np.nan)
+                 count_masked_obar = np.ma.count_masked(model_now_obar_mean)
                  #create image directory if does not exist
                  if not os.path.exists(os.path.join(plotting_out_dir, "imgs", cycle+"Z")):
                     os.makedirs(os.path.join(plotting_out_dir, "imgs", cycle+"Z"))
@@ -172,12 +173,12 @@ while vl <= nlevels:
                  if m == 1:
                      fig, (ax1, ax2) = plt.subplots(2,1,figsize=(10,6), sharex=True)
                      #forecast hour mean
-                     if count_masked != len(model_now_obar_mean):
+                     if count_masked_obfar != len(model_now_obar_mean):
                          logger.debug("Plotting obar lead forecast hour means for "+model_now)
                          ax1.plot(leads, model_now_obar_mean, color='dimgrey', ls='-', linewidth=2.0, marker='o', markersize=7, label='obs')
                          model_1_obar_mean = model_now_obar_mean
                      #forecast hour mean
-                     if count_masked != len(model_now_fbar_mean):
+                     if count_masked_fbar != len(model_now_fbar_mean):
                          logger.debug("Plotting fbar lead forecast hour means for "+model_now)
                          ax1.plot(leads, model_now_fbar_mean, color=colors[m-1], ls='-', linewidth=2.0, marker='o', markersize=7, label=model_now)
                          ax2.plot(leads, model_now_fbar_mean - model_1_obar_mean, color=colors[m-1], ls='-',  marker='o', markersize=7)
@@ -195,7 +196,7 @@ while vl <= nlevels:
                      ax2.grid(True)
                  else:
                      #forecast hour mean
-                     if count_masked != len(model_now_fbar_mean):
+                     if count_masked_fbar != len(model_now_fbar_mean):
                          logger.debug("Plotting fbar lead forecast hour means for "+model_now)
                          ax1.plot(leads, model_now_fbar_mean, color=colors[m-1], ls='-', marker='o', markersize=7, label=model_now)
                          ax2.plot(leads, model_now_fbar_mean - model_1_obar_mean, color=colors[m-1], ls='-',  marker='o', markersize=7)
