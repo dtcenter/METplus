@@ -240,7 +240,7 @@ while vl <= nlevels:
                  #create image directory if does not exist
                  if not os.path.exists(os.path.join(plotting_out_dir, "imgs", cycle+"Z")):
                     os.makedirs(os.path.join(plotting_out_dir, "imgs", cycle+"Z"))
-                 #plot individual statistic forecast hour mean with CI time seres
+                 #plot individual statistic forecast hour mean
                  if m == 1:
                      fig, (ax1, ax2) = plt.subplots(2,1,figsize=(10,6), sharex=True)
                      #forecast hour mean
@@ -255,7 +255,6 @@ while vl <= nlevels:
                      ax1.tick_params(axis='y', pad=15)
                      #difference from model 1 set up
                      ax2.plot(leads, np.zeros_like(leads), color='k')
-                     ax2.text(0.0, -0.35, "Differences outside the outline bars are significant at the 95% confidence interval", fontsize=10, bbox={'facecolor':'white', 'alpha':0, 'pad':5}, transform=ax2.transAxes)
                      ax2.set_xlabel("Forecast Hour")
                      ax2.tick_params(axis='x', pad=10)
                      ax2.tick_params(axis='y', pad=15)
@@ -268,7 +267,10 @@ while vl <= nlevels:
                          ax1.plot(leads, model_now_stat_now_mean, color=colors[m-1], ls='-', marker='o', markersize=7, label=model_now)
                          ax2.plot(leads, model_now_stat_now_mean - model_1_stat_now_mean, color=colors[m-1], ls='-',  marker='o', markersize=7)
              m+=1
-        ax1.legend(bbox_to_anchor=(0.0, 1.02, 1.0, .102), loc=3, ncol=nmodels, fontsize='13', mode="expand", borderaxespad=0.)
+        if stat_now == 'avg':
+            ax1.legend(bbox_to_anchor=(0.0, 1.02, 1.0, .102), loc=3, ncol=nmodels+1, fontsize='13', mode="expand", borderaxespad=0.
+        else:
+            ax1.legend(bbox_to_anchor=(0.0, 1.02, 1.0, .102), loc=3, ncol=nmodels, fontsize='13', mode="expand", borderaxespad=0.)
         ax1.set_title("Fcst: "+fcst_var_name+"_"+fcst_var_level_now+" Obs: "+obs_var_name+"_"+obs_var_level_now+" "+str(stat_now)+'\n'+grid+"-"+region+" "+date_filter_method+" "+cycle+"Z "+str(sday)+smonth+str(syear)+"-"+str(eday)+emonth+str(eyear)+" Means\n\n", fontsize=14, fontweight='bold')
         logger.debug("--- Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+fcst_var_level_now+"_obs"+obs_var_name+obs_var_level_now+"_"+grid+region+".png")
         plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+fcst_var_level_now+"_obs"+obs_var_name+obs_var_level_now+"_"+grid+region+".png", bbox_inches='tight')
