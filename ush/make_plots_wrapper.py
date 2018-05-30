@@ -575,6 +575,89 @@ class MakePlotsWrapper(CommandBuilder):
             print("")
             loop_hour += loop_inc
 
+    def grid2obs_conus_sfc_plots(self):
+        self.logger.info("Making plots for grid2obs-conus_sfc")
+        ##need to add for other plotting functions?
+        if len(self.logger.handlers) != 1:
+            logging_filename = self.logger.parent.handlers[0].baseFilename
+        else:
+            logging_filename = self.logger.handlers[0].baseFilename
+        self.add_env_var("LOGGING_FILENAME", logging_filename)
+        plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
+        #read config
+        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
+        if use_init:
+            start_t = self.p.getstr('config', 'INIT_BEG')
+            end_t = self.p.getstr('config', 'INIT_END')
+            init_beg_hour = self.p.getstr('config', 'INIT_BEG_HOUR')
+            init_end_hour = self.p.getstr('config', 'INIT_END_HOUR')
+            loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
+            loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
+            loop_inc = self.p.getint('config', 'VALID_INC')
+            date_filter_method = "Initialization"
+            self.add_env_var("START_T", start_t)
+            self.add_env_var("END_T", end_t)
+            self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
+        else:
+            start_t = self.p.getstr('config', 'VALID_BEG')
+            end_t = self.p.getstr('config', 'VALID_END')
+            valid_beg_hour = self.p.getstr('config', 'VALID_BEG_HOUR')
+            valid_end_hour = self.p.getstr('config', 'VALID_END_HOUR')
+            loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
+            loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
+            loop_inc = self.p.getint('config', 'INIT_INC')
+            date_filter_method = "Valid"
+            self.add_env_var("START_T", start_t)
+            self.add_env_var("END_T", end_t)
+            self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
+        stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
+        plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
+        if os.path.exists(plotting_out_dir):
+            self.logger.info(plotting_out_dir+" exist, removing")
+            util.rmtree(plotting_out_dir)
+        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
+        lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
+        model_list = self.p.getstr('config', 'MODEL_LIST')
+        plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
+        self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
+        self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
+        self.add_env_var("MODEL_LIST", model_list)
+        self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
+        var_list = util.parse_var_list(self.p)
+        loop_hour = loop_beg_hour
+        while loop_hour <= loop_end_hour:
+            loop_hour_str = str(loop_hour).zfill(2)
+            self.add_env_var('CYCLE', loop_hour_str)
+            for var_info in var_list:
+                fcst_var_name = var_info.fcst_name
+                fcst_var_level = var_info.fcst_level
+                #fcst_var_extra =  var_info.fcst_extra.replace(" = ", "").rstrip(";")
+                obs_var_name = var_info.obs_name
+                obs_var_level = var_info.obs_level
+                #obs_var_extra =  var_info.obs_extra.replace(" = ", "").rstrip(";")
+                self.add_env_var('FCST_VAR_NAME', fcst_var_name)
+                self.add_env_var('FCST_VAR_LEVEL', fcst_var_level)
+                self.add_env_var('OBS_VAR_NAME', obs_var_name)
+                self.add_env_var('OBS_VAR_LEVEL', obs_var_level)
+                for region in region_list:
+                    self.add_env_var('REGION', region)
+                    for lead in lead_list:
+                        if lead < 10:
+                            lead_string = '0'+str(lead)
+                        else:
+                            lead_string = str(lead)
+                        self.add_env_var('LEAD', lead_string)
+                        py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_conus_sfc_ts.py")
+                        process = subprocess.Popen(py_cmd, env=self.env, shell=True)
+                        process.wait()
+                        print("")
+                    self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
+                    py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_conus_sfc_tsmean.py")
+                    process = subprocess.Popen(py_cmd, env=self.env, shell=True)
+                    process.wait()
+                    print("")
+            loop_hour += loop_inc
+
 ########################################################################
 ########################################################################
 ########################################################################
@@ -593,8 +676,8 @@ class MakePlotsWrapper(CommandBuilder):
                  self.logger.error("Not a valid VERIF_TYPE option for grid2grid")
                  exit(1)
         elif verif_case == 'grid2obs':
-            if verif_type == 'sfc':
-                 self.logger.info("Formatting for plotting for grid2obs-sfc")
+            if verif_type == 'conus_sfc':
+                 self.grid2obs_conus_sfc_plots()
             elif verif_type == 'upper_air':
                  self.grid2obs_upper_air_plots()
             else:
