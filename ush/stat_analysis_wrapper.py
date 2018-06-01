@@ -32,7 +32,9 @@ class StatAnalysisWrapper(CommandBuilder):
         self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                      'bin/stat_analysis')
         self.app_name = os.path.basename(self.app_path)
-
+        if self.logger is None:
+            self.logger = util.get_logger(self.p,sublog='StatAnalysis')
+   
     def set_lookin_dir(self, lookindir):
         self.lookindir = "-lookin "+lookindir+" "
    

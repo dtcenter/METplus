@@ -2,9 +2,12 @@
 from __future__ import print_function
 import os
 import config_metplus
+import datetime
 import sys
+import logging
 import pytest
 from stat_analysis_wrapper import StatAnalysisWrapper
+import met_util as util
 import produtil.setup
 
 #
@@ -54,11 +57,11 @@ def stat_analysis_wrapper():
 def metplus_config():
     try:
         if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='PointStatWrapper ',
+            produtil.setup.setup(send_dbn=False, jobname='StatAnalysisWrapper ',
                                  jlogfile=os.environ['JLOGFILE'])
         else:
-            produtil.setup.setup(send_dbn=False, jobname='PointStatWrapper ')
-        produtil.log.postmsg('point_stat_wrapper  is starting')
+            produtil.setup.setup(send_dbn=False, jobname='StatAnalysisWrapper ')
+        produtil.log.postmsg('stat_analysis_wrapper  is starting')
 
         # Read in the configuration object CONFIG
         config = config_metplus.setup()
@@ -66,53 +69,12 @@ def metplus_config():
 
     except Exception as e:
         produtil.log.jlogger.critical(
-            'point_stat_wrapper failed: %s' % (str(e),), exc_info=True)
+            'stat_analysis_wrapper failed: %s' % (str(e),), exc_info=True)
         sys.exit(2)
 
 
 # ------------------TESTS GO BELOW ---------------------------
 #
-
-def test_vsdb_output_exists_run_all_times():
-    # Verify that you have created some output in the output dir
-
-    # Create a StatAnalysisWrapper object to invoke the methods.
-    st = stat_analysis_wrapper()
-    stat_analysis_out_dir = st.p.getdir('STAT_ANALYSIS_OUT_DIR')
-    st.run_all_times()
-
-    # Check final output directory for files
-    #
-    files_in_dir = []
-    for dirpath, dirnames, files in os.walk(stat_analysis_out_dir):
-        for name in files:
-            files_in_dir.append(name)
-
-    # If empty list, assert is False and test fails.
-    assert files_in_dir
-
-
-def test_vsdb_output_size_ok():
-    # Check for a specific file that have expected file size
-    st = stat_analysis_wrapper()
-    stat_analysis_out_dir = st.p.getdir('STAT_ANALYSIS_OUT_DIR')
-    # ToDo Replace with appropriate values
-    expected_file = "full-path/to/file-of-interest"
-    expected_size_bytes = 1548
-    st.run_all_times()
-
-    # Check final output directory for particular file with the correct
-    # file size.
-    #
-    files_in_dir = []
-    for dirpath, dirnames, files in os.walk(stat_analysis_out_dir):
-        for name in files:
-            files_in_dir.append(os.path.join(dirpath, name))
-    if expected_file in files_in_dir:
-        # if the filesize for this specific file and init and valid times in the
-        # test config file do not match what is expected, test fails.
-        assert expected_size_bytes == os.path.getsize(expected_file)
-
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # To test numerous files for filesize, use parametrization:
@@ -138,42 +100,63 @@ def test_vsdb_output_size_ok():
 #         # expected.
 #             assert actual_key == key
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+def test_run_at_time_valid_output_created():
+    # Verify that you have created some output in the output dir
 
-def test_run_at_time_g2g():
-    # Check for expected output from running run_at_time for grid-to-grid use
-    # case
-    init_time = '20170711'
-    valid_time = '20170712'
-
-    # Create a StatAnalysisWrapper object to invoke the methods.
-    st = stat_analysis_wrapper()
-    stat_analysis_out_dir = st.p.getdir('STAT_ANALYSIS_OUT_DIR')
-
-    # ToDo Implement me
-    # Check for the presence of files, check for expected filesize of one or
-    # more expected files, etc.
-    # Check for the presence of files, check for expected file size of one or
-    # more expected files, etc.
-    # assert expected_filesize == actual_filesize
-    # or
-    # assert files_in_dir
-
-def test_run_at_time_g2o():
-    # Check for expected output from running run_at_time for grid-to-obs use
-    # case
-    init_time = '20170711'
-    valid_time = '20170712'
+    init_time = -1
+    valid_time = '201706010000'
 
     # Create a StatAnalysisWrapper object to invoke the methods.
     st = stat_analysis_wrapper()
     stat_analysis_out_dir = st.p.getdir('STAT_ANALYSIS_OUT_DIR')
+    st.run_at_time(init_time, valid_time)
 
-    # ToDo Implement me
-    # Check for the presence of files, check for expected file size of one or
-    # more expected files, etc.
-    # assert expected_filesize == actual_filesize
-    # or
-    # assert files_in_dir
+    # Check final output directory for files
+    #
+    files_in_dir = []
+    for dirpath, dirnames, files in os.walk(stat_analysis_out_dir):
+        for name in files:
+            files_in_dir.append(name)
 
+    # If empty list, assert is False and test fails.
+    assert files_in_dir
 
+def test_run_at_time_valid_check_file():
+    # Check for a specific file that have expected file size
 
+    init_time = -1
+    valid_time = '201706010000'
+
+    # Create a StatAnalysisWrapper object to invoke the methods.
+    st = stat_analysis_wrapper()
+    stat_analysis_out_dir = st.p.getdir('STAT_ANALYSIS_OUT_DIR')
+    st.run_at_time(init_time, valid_time)
+ 
+    # Expected file info
+    model_type = st.p.getstr('config', 'MODEL_TYPE')
+    filter_time = valid_time
+    date_YYYYMMDD = filter_time[0:8]
+    cycle = filter_time[8:10]
+    expected_file = os.path.join(stat_analysis_out_dir, cycle+"Z", model_type, model_type+"_"+date_YYYYMMDD+".stat")
+    verif_type = st.p.getstr('config', 'VERIF_TYPE')
+    if verif_type == "pres":
+        expected_size_bytes = 408468
+    elif verif_type == "anom":
+        expected_size_bytes = 288584
+    elif verif_type == "sfc":
+        expected_size_bytes = 459735 
+    elif verif_type == 'upper_air':
+        expected_size_bytes = 1773009
+    elif verif_type == 'conus_sfc':
+        expected_size_bytes = 624006 
+    # Check final output directory for particular file with the correct
+    # file size.
+    #
+    files_in_dir = []
+    for dirpath, dirnames, files in os.walk(stat_analysis_out_dir):
+        for name in files:
+            files_in_dir.append(os.path.join(dirpath, name))
+    if expected_file in files_in_dir:
+        # if the filesize for this specific file and init and valid times in the
+        # test config file do not match what is expected, test fails.
+        assert expected_size_bytes == os.path.getsize(expected_file) 
