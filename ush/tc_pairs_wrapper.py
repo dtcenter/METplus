@@ -280,13 +280,19 @@ class TcPairsWrapper(CommandBuilder):
                                                    missing_values)
 
                     # Run tc_pairs
-                    self.cmd = self.build_tc_pairs(pairs_out_dir,
-                                                   adeck_file_path,
-                                                   bdeck_file_path,
-                                                   cur_track_file)
+                    self.cmd = self.build_non_atcf_tc_pairs(pairs_out_dir,
+                                                            adeck_file_path,
+                                                            bdeck_file_path,
+                                                            cur_track_file)
                     self.build()
 
     def process_atcf(self):
+        """! Create the arguments to run MET tc_pairs on ATCF formatted input data.
+             Args:
+
+             Returns:
+
+        """
         # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
         # filename and method.
@@ -304,141 +310,250 @@ class TcPairsWrapper(CommandBuilder):
                                                 'FORECAST_TMPL')
         reference_filename_tmpl = self.config.getraw('filename_templates',
                                                      'REFERENCE_TMPL')
+        top_level_dir = (self.config.getstr('config', 'TOP_LEVEL_DIRS')).lower()
+        if top_level_dir == 'yes':
+            by_dir = True
+        else:
+            by_dir = False
 
-        # Check if there is a date keyword in the filename template, if there
-        # isn't, then create the -adeck and -bdeck portion of the command
-        # using the top-level directories and call tc_pairs.  Otherwise,
-        # attempt to do some filtering of initialization times based on the date
-        # information provided. Check for the other cyclone-relevant keywords:
-        # region, cyclone, misc, which will be used to create expected file names.
-        has_date = False
-        has_region = False
-        has_cyclone = False
-        has_misc = False
-        adeck_date_match = re.match(r'.*\{date\?fmt=(.*?)\}.*', fcst_filename_tmpl)
-        bdeck_date_match = re.match(r'.*\{date\?fmt=(.*?)\}.*', reference_filename_tmpl)
-        adeck_region_match = re.match(r'\{region\?fmt=(.*?)\}', fcst_filename_tmpl)
-        adeck_cyclone_match = re.match(r'\{cyclone\?fmt=(.*?)\}', fcst_filename_tmpl)
-        adeck_misc_match = re.match(r'\{misc\?fmt=(.*?)\}', fcst_filename_tmpl)
-        bdeck_region_match = re.match(r'\{region\?fmt=(.*?)\}', fcst_filename_tmpl)
-        bdeck_cyclone_match = re.match(r'\{cyclone\?fmt=(.*?)\}', fcst_filename_tmpl)
-        adeck_misc_match = re.match(r'\{misc\?fmt=(.*?)\}', fcst_filename_tmpl)
-
-        # Initialize the (a|b)deck_by_dir flag, which indicates whether to invoke TC-Pairs with top-level
-        # A-deck and B-deck directories, or by filename pairs.  If set to False, then invoke with paired file names,
-        # otherwise, invoke using top-level directories.
-        adeck_by_dir = True
-        bdeck_by_dir = True
-
-
-
-        # Determine if we have any date information, either in the directory name or file name.
-        if adeck_date_match:
-            adeck_date_str = adeck_date_match.group(1)
-            adeck_date_info = self.retrieve_date_format_info(adeck_date_str)
-            adeck_date_regex = adeck_date_info.date_regex
-            adeck_by_dir = False
-
-        if bdeck_date_match:
-            bdeck_date_str = bdeck_date_match.group(1)
-            bdeck_date_info = self.retrieve_date_format_info(bdeck_date_str)
-            bdeck_date_regex = bdeck_date_info.date_regex
-            bdeck_by_dir = False
-
-        # If A-deck and B-deck do NOT have date information in their filename_template descriptors, then
-        # invoke tc_pairs with the top-level directories for both. Note: This isn't the most efficient way to invoke
-        # tc_pairs.
-        if adeck_by_dir and bdeck_by_dir:
-            # set -adeck and -bdeck values to the ADeck and BDeck top-level directories
-            # respectively and invoke MET tc_pairs.
+        # User specifies to run tc_pairs with top-level dirs for A-deck and B-deck input files
+        if by_dir:
+            # Invoke MET tc_pairs with top-level directories
             adeck_top_level_dir = self.config.getdir('ADECK_TRACK_DATA_DIR')
             bdeck_top_level_dir = self.config.getdir('BDECK_TRACK_DATA_DIR')
             pairs_out_dir = self.config.getdir('TC_PAIRS_DIR')
             produtil.fileop.makedirs(pairs_out_dir, logger=self.logger)
-            self.cmd = self.build_tc_pairs(pairs_out_dir,
-                                           adeck_top_level_dir,
-                                           bdeck_top_level_dir, None)
+            self.cmd = self.build_non_atcf_tc_pairs(pairs_out_dir,
+                                                    adeck_top_level_dir,
+                                                    bdeck_top_level_dir, None)
         else:
             # Invoke tc_pairs with A-deck and B-deck filenames. Get a list of all the input files (A-deck and B-deck),
-            # and filter based on time, then by cyclone and region if these were specified in the config file.
+            # and filter based on one or all of the following criteria: date, region, cyclone.
 
             init_list = util.gen_init_list(
                 self.config.getstr('config', 'INIT_BEG'),
                 self.config.getstr('config', 'INIT_END'),
                 int(self.config.getint('config', 'INIT_INCREMENT') / 3600),
                 self.config.getstr('config', 'INIT_HOUR_END'))
-            adeck_date_list = self.create_date_list(adeck_date_info.date_len, init_list)
-            bdeck_date_list = self.create_date_list(bdeck_date_info.date_len, init_list)
 
             # Look for files in the A-Deck and B-Deck
             # directories for files with times that are within the init time window. Employ
             # StringTemplateSubstitution to create a regex for the filename to assist in identifying the date,
             # region, and cyclone from the file name (if available) to perform filtering of input data prior to invoking
             # tc_pairs, making it run more efficiently.
-            all_adeck_files = self.get_input_track_files(adeck_input_dir, init_list)
-            all_bdeck_files = self.get_input_track_files(bdeck_input_dir, init_list)
+            all_adeck_files = self.get_input_track_files(adeck_input_dir)
+            all_bdeck_files = self.get_input_track_files(bdeck_input_dir)
 
-            # Use dummy values for the region and cyclone, to create a string template substitution object.
-            # This string template substitution object will be used to replace the key-values in the filename
-            # template with its corresponding regex.
-            adeck_region = 'az'
-            bdeck_region = 'bz'
-            adeck_cyclone = '00'
-            bdeck_cyclone = '00'
-            adeck_misc = 'amisc'
-            bdeck_misc = 'bmisc'
+            # Create the appropriate string template substitution object, based on what is defined in the
+            # filename_templates
+            (adeck_input_file_regex, adeck_sorted_keywords) = self.create_filename_regex(fcst_filename_tmpl)
+            (bdeck_input_file_regex, bdeck_sorted_keywords) = self.create_filename_regex(reference_filename_tmpl)
 
-            for adeck_date in adeck_date_list:
-                year = adeck_date.year
-                month = adeck_date.month
-                day = adeck_date.day
-                hour = adeck_date.hour
+            filtered_adeck_files = self.filter_input(all_adeck_files, init_list, adeck_input_file_regex,
+                                                     adeck_sorted_keywords)
+            filtered_bdeck_files = self.filter_input(all_bdeck_files, init_list, bdeck_input_file_regex,
+                                                     bdeck_sorted_keywords)
 
-                date = year
-                if month:
-                    date += month
-                if day:
-                    date += day
-                if hour:
-                    date += hour
+            # TODO  implement this in a separate method, build_atcf_tc_pairs() to get self.cmd
+            # Generate the -adeck and -bdeck pairings
 
-                # A few combinations:
-                # 1) region, cyclone, date
-                # 2) region, cyclone, misc, date
-                # 3) date
-                string_sub = StringSub(self.logger, fcst_filename_tmpl, region=adeck_region, cyclone=adeck_cyclone,
-                                       date=date)
-                adeck_input_file = string_sub.create_cyclone_regex()
-
-            for bdeck_date in bdeck_date_list:
-                year = bdeck_date.year
-                month = bdeck_date.month
-                day = bdeck_date.day
-                hour = bdeck_date.hour
-
-                date = year
-                if month:
-                    date += month
-                if day:
-                    date += day
-                if hour:
-                    date += hour
-
-                string_sub = StringSub(self.logger, reference_filename_tmpl, region=bdeck_region, cyclone=bdeck_cyclone,
-                                       date=date)
-                bdeck_input_file = string_sub.create_cyclone_regex()
+            for adeck in filtered_adeck_files:
+                for bdeck in filtered_bdeck_files:
+                    adeck_arg = '-adeck ' + adeck
+                    bdeck_arg = '-bdeck ' + bdeck
 
         self.build()
 
-    def get_input_track_files(self, input_dir, init_list):
+    def get_date_format_info(self, tmpl):
+        """! From the filename_templates template for the input track file, determine the format of the date:
+
+             Args:
+                @parm tmpl - The filename template as defined in the filename_templates section of the config file
+             Returns:
+                 date_len  - The length of the expected date string: 4 if YYYY, 6 if YYYYMM, 8 if YYYYMMDD and 10
+                             if YYYYMMDDhh
+        """
+        # pylint:disable=protected-access
+        # sys._getframe is a legitimate way to access the current
+        # filename and method.
+        # Used for logging information
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        self.logger.debug(
+            cur_function + '|' + cur_filename + ":Determining date format information...")
+        # Determine if we have YYYY, YYYYMM, YYYYMMDD, or YYYYMMDDhh for
+        # the date string
+        date_format_match = re.match('(?i)\A(?:(%+[a-z])*)\Z', tmpl)
+        if date_format_match:
+            # Determine whether we have YYYY, YYYYMM, YYYYMMdd, or YYYYMMddhh
+            first_match = date_format_match.group(0)
+            match_len = len(first_match)
+            if match_len == 8:
+                # year month day hour, %Y%m%d%h
+                date_len = 10
+            elif match_len == 6:
+                # year month day, %Y%m%d
+                date_len = 8
+            elif match_len == 4:
+                # year month, %Y%m
+                date_len = 6
+            elif match_len == 2:
+                # year, %Y
+                date_len = 4
+            else:
+                self.logger.error(
+                    'Date format specified in the filename_templates section does not match expected %Y, %Y%m, %Y%m%d, ' +
+                    'or %Y%m%d%h format')
+                exit(1)
+        return date_len
+
+    def create_filename_regex(self, tmpl):
+        """! Creates the regex of the forecast or reference filename as defined in the filename_template section
+             of the config file.
+
+           Args:
+               @param tmpl - The filename template describing the forecast or reference input track file (full filepath)
+
+           Returns:
+               tuple of two values:
+               input_file_regex - A regex string representing the filename. This will be useful when filtering based on
+                             date, region, or cyclone.
+               keywords_ordered -  A list of keywords, in the order in which they were found in the template string.
+        """
+        # pylint:disable=protected-access
+        # sys._getframe is a legitimate way to access the current
+        # filename and method.
+        # Used for logging information
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        self.logger.debug(
+            cur_function + '|' + cur_filename + ":Generating the filename regex from the filename_templates section.")
+
+        # To filter files on the criteria of date, region, or cyclone (or any combination),
+        # Use dummy values for the region and cyclone, to create a string template substitution object.
+        # This string template substitution object will be used to replace the key-values in the filename
+        # template with its corresponding regex.
+        region = 'yz'
+        cyclone = '00'
+        date = '20170704'
+        misc = 'misc_stuff'
+
+        # The string template substitution object will be initialized based on what combination of the
+        # keywords have been specified in the filename_templates section: date, region, cyclone. Since
+        date_match = re.match(r'.*\{date\?fmt=(.*?)\}.*', tmpl)
+        region_match = re.match(r'.*\{region\?fmt=(.*?)\}', tmpl)
+        cyclone_match = re.match(r'.*\{cyclone\?fmt=(.*?)\}', tmpl)
+        misc_match = re.match(r'.*\{misc\?fmt=(.*?)\}', tmpl)
+
+        # Rather than having multiple if-elif to account for every possible combination of keywords in a
+        # filename_template , store the keywords in a dictionary and use **kwargs to invoke StringSub with
+        # this dictionary of keyword argument. Determine the order in which the keywords appear in the filename_template
+        # and order the keywords, to facilitate filtering.
+        keyword_index = {}
+        if date_match:
+            kwargs = {'date': date}
+            [(m.start(), m.end()) for m in re.finditer(r".*\{date\?fmt=(.*?)\}.", tmpl)]
+            keyword_index['date'] = m.start(1)
+        if region_match:
+            kwargs['region'] = region
+            [(m.start(), m.end()) for m in re.finditer(r".*\{region\?fmt=(.*?)\}", tmpl)]
+            keyword_index['region'] = m.start(1)
+        if cyclone_match:
+            kwargs['cyclone'] = cyclone
+            [(m.start(), m.end()) for m in re.finditer(r".*\{cyclone\?fmt=(.*?)\}", tmpl)]
+            keyword_index['cyclone'] = m.start(1)
+        if misc_match:
+            kwargs['misc'] = misc
+            [(m.start(), m.end()) for m in re.finditer(r".*\{misc\?fmt=(.*?)\}", tmpl)]
+            keyword_index['misc'] = m.start(1)
+        string_sub = StringSub(self.logger, tmpl, **kwargs)
+        input_file_regex = string_sub.create_cyclone_regex()
+
+        # Get a list of the keywords in the order in which they appeared in the filename_template description
+        ordered = collections.OrderedDict(sorted(keyword_index.items(), key=lambda t: t[1]))
+        keywords_ordered = ordered.keys()
+        return input_file_regex, keywords_ordered
+
+    def filter_input(self, all_input_files, init_list, input_file_regex, sorted_keywords):
+        """! Filter the input track file based on any or all of the following:
+             date, region, cyclone.
+
+             Args:
+                 @param all_input_files  -  a list of all the input track files (full file path)
+                 @param init_list        -  a list of all init times in YYYYMMDD_hh format that define
+                                     the initialization time window.
+                 @param input_file_regex -  the regex describing the input file's format (full file path)
+                 @param sorted_keywords  -  a list of keywords, in the order in which they appear in the filename_template
+                                     description
+
+            Returns:
+                filtered_input    - a list of filtered input track files (full file path)
+        """
+        # pylint:disable=protected-access
+        # sys._getframe is a legitimate way to access the current
+        # filename and method.
+        # Used for logging information
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        self.logger.debug(
+            cur_function + '|' + cur_filename + ": Filtering track file input")
+
+        if 'date' in sorted_keywords:
+            filtered = self.filter_by_date(all_input_files, input_file_regex, init_list)
+        else:
+            filtered = []
+
+        # Do further filtering by region and cyclone if applicable.
+        if 'region' in sorted_keywords:
+            if filtered:
+                filtered_input = self.filter_by_region(filtered)
+                if filtered_input:
+                    filtered = []
+            else:
+                # No filtering by date, use original input data
+                filtered_input = self.filter_by_region(all_input_files)
+        if 'cyclone' in sorted_keywords:
+            if filtered:
+                filtered_input = self.filter_by_cyclone(filtered)
+            else:
+                # No filtering by date or region, use original input data, all_input_files
+                filtered_input = self.filter_by_cyclone(all_input_files)
+        return filtered_input
+
+    def filter_by_date(self, input_data, init_list):
+        """! Filter the input data by date
+
+             Args:
+                 input_data  - A list of all input data (full file path)
+                 init_list   - A list of all init times that define the initialization time window
+             Returns:
+                 filtered_by_date - A list of all input data that lie within the initialization time window
+                                   (full filepath)
+
+        """
+        # pylint:disable=protected-access
+        # sys._getframe is a legitimate way to access the current
+        # filename and method.
+        # Used for logging information
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        self.logger.debug(
+            cur_function + '|' + cur_filename + ": Filtering track file input by date...")
+        filtered_by_date = input_data
+        date_len = self.get_date_format_info()
+
+        return filtered_by_date
+
+    def get_input_track_files(self, input_dir):
         """! Get all the input track files in the A-deck or B-deck input directory.
              Args:
                  input_dir  - the directory of the A-deck or B-deck input
-                 init_list  - a list of initialization times that comprise the initialization time window
              Returns:
-                 input_track_files - a list of all the input track files (full filepath)
-
-
+                 all_track_files - a list of all the input track files (full filepath)
         """
         # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
@@ -450,188 +565,13 @@ class TcPairsWrapper(CommandBuilder):
         self.logger.debug(
             cur_function + '|' + cur_filename + ": Creating a list of input A-deck or B-deck track files")
 
-        subdirs_list = util.get_dirs(input_dir)
-        files_within_time_criteria = []
-        if subdirs_list:
-            for track_dir in subdirs_list:
-                # Determine if the date information (YYYY, YYYYMM, YYYYMMDD) is in the directory name
-                match = re.match(r".*/(2[0-9]{3,7})", track_dir)
-                if match:
-                    # Date is in the directory name, generate a list of all the files in the subdirectories that
-                    # lie within the init time window.
-                    year_match = re.match(r".*/(2[0-9]{3})", track_dir)
-                    year_month_match = re.match(r".*/(2[0-9]{5})", track_dir)
-                    year_month_day_match = re.match(r"(.*/2[0-9]{7})", track_dir)
-                    if year_month_day_match:
-                        granularity = 'ymd'
-                    elif year_month_match:
-                        granularity = 'ym'
-                    elif year_match:
-                        granularity = 'y'
+        # Retrieve full file path for every file in the input directory
+        all_track_files = []
+        for dirs, _, files in os.walk(input_dir):
+            for f in files:
+                all_track_files.append(os.path.join(dirs, f))
 
-                    init_by_granularity = self.get_init_times_by_granularity(init_list, granularity)
-                    for init_time in init_by_granularity:
-                        if granularity == 'ymd':
-                            if int(init_time) <= int(year_month_day_match.group(1)):
-                                # Get all files in this subdir and store in files_within_time_criteria list
-                                files_list = util.get_files(track_dir, ".*.dat", self.logger)
-                                for cur_file in files_list:
-                                    files_within_time_criteria.append(os.path.join(track_dir, cur_file))
-                        elif granularity == 'ym':
-                            if int(init_time) <= int(year_month_match.group(1)):
-                                # Get all files in this subdir and store in files_within_time_criteria list
-                                files_list = util.get_files(track_dir, ".*.dat", self.logger)
-                                for cur_file in files_list:
-                                    files_within_time_criteria.append(os.path.join(track_dir, cur_file))
-                        elif granularity == 'y':
-                            if int(init_time) <= int(year_match.group(1)):
-                                # Get all files in this subdir and store in files_within_time_criteria list
-                                files_list = util.get_files(track_dir, ".*.dat", self.logger)
-                                for cur_file in files_list:
-                                    files_within_time_criteria.append(os.path.join(track_dir, cur_file))
-                    return files_within_time_criteria
-
-        else:
-            # No dated subdirs, only files containing date information.
-            # Retrieve all .dat files and store in list with full file path.
-            files_list = util.get_files(input_dir, "*.dat", self.logger)
-
-    def get_init_times_by_granularity(self, init_list, granularity):
-        """! Returns the init list in YYYYMMDD_hh as YYYY, YYYYMM, or YYYYMMDD
-
-             Args:
-                 init_list - initialization times specifying the time window, in YYYYMMDD_hh
-                 granularity - y for YYYY, ym for YYYYMM, and ymd for YYYYMMDD
-            Returns:
-                init_by_granularity - a list of the initialization times in the specified granularity: YYYY,
-                YYYYMM, or YYYYMMDD
-
-        """
-        init_by_granularity = []
-        for init in init_list:
-            if granularity == 'y':
-                init_by_granularity.append(init[0:4])
-            elif granularity == 'ym':
-                init_by_granularity.append(init[0:6])
-            elif granularity == 'ymd':
-                init_by_granularity.append(init[0:8])
-        return init_by_granularity
-
-    def create_date_list(self, date_str_len, init_list):
-        """!From the date string length, create a list of dates that define the initialization window defined by
-            the values to INIT_BEG, INIT_END, INIT_INC, and INIT_HOUR_END in the config file.
-
-            Args:
-                date_str_len : An integer value that represents the length of the date string specified in the
-                              filename template
-                init_list    : A list of init times based on the begin, end, increment, and hour end times.
-            Returns:
-                date_list : A list of times, as named tuples, based on the date_str_len
-
-        """
-        # pylint:disable=protected-access
-        # sys._getframe is a legitimate way to access the current
-        # filename and method.
-        # Used for logging information
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
-        self.logger.debug(
-            cur_function + '|' + cur_filename + ": Creating a list of dates that define the init time window...")
-        # Filter track data based on the initialization time window.
-        # Get the init time window from  INIT_BEG, INIT_END, INIT_HOUR_END,
-        # and INIT_INCREMENT in the config file as a list of init times.
-        # Convert the increment INIT_INCREMENT from seconds to hours
-
-        # Determine the granularity of date, ie. YYYY, YYYYMM, YYYYMMDD, etc.
-        # Create the adeck and bdeck files with full file paths
-        # to create the -adeck and -bdeck values needed to run
-        # MET tc_pairs.
-        DateDescription = collections.namedtuple('DateDescription', 'year, month, day, hour')
-
-        deck_date_list = []
-        if date_str_len == 10:
-            # Because of the YYYYMMDD_hh format in init_list, need to account for additional '_' character.
-            for cur_init in init_list:
-                cur_year = cur_init[0:4]
-                cur_month = cur_init[4:6]
-                cur_day = cur_init[6:8]
-
-                # Ignore the '_' separating the YYYYMMDD from the hh
-                cur_hour = cur_init[9:11]
-                cur_date = DateDescription(year=cur_year, month=cur_month, day=cur_day, hour=cur_hour)
-                deck_date_list.append(cur_date)
-        else:
-            # YYYY, YYYYMM, or  YYYYMMDD
-            for cur_init in init_list:
-                cur_year = cur_init[0:4]
-                if date_str_len == 6:
-                    cur_month = cur_init[4:6]
-                else:
-                    cur_month = None
-                if date_str_len == 8:
-                    cur_day = cur_init[6:8]
-                else:
-                    cur_day = None
-                cur_date = DateDescription(year=cur_year, month=cur_month, day=cur_day, hour=None)
-                deck_date_list.append(cur_date)
-
-        return deck_date_list
-
-    def retrieve_date_format_info(self, date_str):
-
-        """! From the date?fmt= value set in the filename_templates section of the configuration file,
-             determine whether this date is a YYYY (%Y), YYYYMM (%Y%m), YYYYMMDD (%Y%m%d), or YYYYMMDDhh (%Y%m%d%h)
-
-             Args:
-                date_str    - the string representing the value to the date?fmt= key
-             Returns:
-                A named tuple containing:
-                date_regex  - a string representation of the regex of the date from the filename_templates section of
-                              the config file
-                date_str_len - the number of characters/numbers defining the date
-        """
-        # pylint:disable=protected-access
-        # sys._getframe is a legitimate way to access the current
-        # filename and method.
-        # Used for logging information
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
-        self.logger.debug(
-            cur_function + '|' + cur_filename + ": Determining the date format's regex...")
-        DateFormatInfo = collections.namedtuple('DateFormatInfo', 'date_regex, date_len')
-        # Determine if we have YYYY, YYYYMM, YYYYMMDD, or YYYYMMDDhh for
-        # the date string
-        date_format_match = re.match('(?i)\A(?:(%+[a-z])*)\Z', date_str)
-        if date_format_match:
-            # Determine whether we have YYYY, YYYYMM, YYYYMMdd, or YYYYMMddhh
-            first_match = date_format_match.group(0)
-            match_len = len(first_match)
-            if match_len == 8:
-                # year month day hour, %Y%m%d%h
-                date_regex = '[0-9]{10}'
-                date_len = 10
-            elif match_len == 6:
-                # year month day, %Y%m%d
-                date_regex = '[0-9]{8}'
-                date_len = 8
-            elif match_len == 4:
-                # year month, %Y%m
-                date_regex = '[0-9]{6}'
-                date_len = 6
-            elif match_len == 2:
-                # year, %Y
-                date_regex = '[0-9]{4}'
-                date_len = 4
-            else:
-                self.logger.error(
-                    'Date format specified in the filename_templates section does not match expected %Y, %Y%m, %Y%m%d, ' +
-                    'or %Y%m%d%h format')
-                exit(1)
-
-        date_format_info = DateFormatInfo(date_regex, date_len)
-        return date_format_info
+        return all_track_files
 
     def set_env_vars(self):
         """! Set up all the environment variables that are assigned in the MET+ config file which are
@@ -819,8 +759,8 @@ class TcPairsWrapper(CommandBuilder):
                                         missing_values,
                                         deck_file_path)
 
-    def build_tc_pairs(self, pairs_output_dir, adeck_file_path,
-                       bdeck_file_path, date_file=None, ):
+    def build_non_atcf_tc_pairs(self, pairs_output_dir, adeck_file_path,
+                                bdeck_file_path, date_file=None, ):
         """! Build up the command that is used to run the MET tool,
              tc_pairs.
              Args:
