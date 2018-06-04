@@ -100,16 +100,13 @@ def metplus_config():
 #         # expected.
 #             assert actual_key == key
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-def test_run_at_time_valid_output_created():
+def test_run_all_times_valid_output_created():
     # Verify that you have created some output in the output dir
-
-    init_time = -1
-    valid_time = '201706010000'
 
     # Create a StatAnalysisWrapper object to invoke the methods.
     st = stat_analysis_wrapper()
     stat_analysis_out_dir = st.p.getdir('STAT_ANALYSIS_OUT_DIR')
-    st.run_at_time(init_time, valid_time)
+    st.run_all_times()
 
     # Check final output directory for files
     #
@@ -121,42 +118,39 @@ def test_run_at_time_valid_output_created():
     # If empty list, assert is False and test fails.
     assert files_in_dir
 
-def test_run_at_time_valid_check_file():
+def test_run_all_times_valid_check_file():
     # Check for a specific file that have expected file size
-
-    init_time = -1
-    valid_time = '201706010000'
 
     # Create a StatAnalysisWrapper object to invoke the methods.
     st = stat_analysis_wrapper()
     stat_analysis_out_dir = st.p.getdir('STAT_ANALYSIS_OUT_DIR')
-    st.run_at_time(init_time, valid_time)
+    st.run_all_times()
  
     # Expected file info
     model_type = st.p.getstr('config', 'MODEL_TYPE')
     filter_time = valid_time
     date_YYYYMMDD = filter_time[0:8]
     cycle = filter_time[8:10]
-    expected_file = os.path.join(stat_analysis_out_dir, cycle+"Z", model_type, model_type+"_"+date_YYYYMMDD+".stat")
-    verif_type = st.p.getstr('config', 'VERIF_TYPE')
-    if verif_type == "pres":
-        expected_size_bytes = 408468
-    elif verif_type == "anom":
-        expected_size_bytes = 288584
-    elif verif_type == "sfc":
-        expected_size_bytes = 459735 
-    elif verif_type == 'upper_air':
-        expected_size_bytes = 1773009
-    elif verif_type == 'conus_sfc':
-        expected_size_bytes = 624006 
-    # Check final output directory for particular file with the correct
-    # file size.
-    #
-    files_in_dir = []
-    for dirpath, dirnames, files in os.walk(stat_analysis_out_dir):
-        for name in files:
-            files_in_dir.append(os.path.join(dirpath, name))
-    if expected_file in files_in_dir:
-        # if the filesize for this specific file and init and valid times in the
-        # test config file do not match what is expected, test fails.
-        assert expected_size_bytes == os.path.getsize(expected_file) 
+#    expected_file = os.path.join(stat_analysis_out_dir, cycle+"Z", model_type, model_type+"_"+date_YYYYMMDD+".stat")
+#    verif_type = st.p.getstr('config', 'VERIF_TYPE')
+#    if verif_type == "pres":
+#        expected_size_bytes = 408468
+#    elif verif_type == "anom":
+#        expected_size_bytes = 288584
+#    elif verif_type == "sfc":
+#        expected_size_bytes = 459735 
+#    elif verif_type == 'upper_air':
+#        expected_size_bytes = 1773009
+#    elif verif_type == 'conus_sfc':
+#        expected_size_bytes = 624006 
+#    # Check final output directory for particular file with the correct
+#    # file size.
+#    #
+#    files_in_dir = []
+#    for dirpath, dirnames, files in os.walk(stat_analysis_out_dir):
+#        for name in files:
+#            files_in_dir.append(os.path.join(dirpath, name))
+#    if expected_file in files_in_dir:
+#        # if the filesize for this specific file and init and valid times in the
+#        # test config file do not match what is expected, test fails.
+#        assert expected_size_bytes == os.path.getsize(expected_file) 
