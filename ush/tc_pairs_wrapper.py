@@ -350,9 +350,9 @@ class TcPairsWrapper(CommandBuilder):
             (bdeck_input_file_regex, bdeck_sorted_keywords) = self.create_filename_regex(reference_filename_tmpl)
 
             filtered_adeck_files = self.filter_input(all_adeck_files, init_list, adeck_input_file_regex,
-                                                     adeck_sorted_keywords)
+                                                     adeck_sorted_keywords, fcst_filename_tmpl)
             filtered_bdeck_files = self.filter_input(all_bdeck_files, init_list, bdeck_input_file_regex,
-                                                     bdeck_sorted_keywords)
+                                                     bdeck_sorted_keywords, reference_filename_tmpl)
 
             # TODO  implement this in a separate method, build_atcf_tc_pairs() to get self.cmd
             # Generate the -adeck and -bdeck pairings
@@ -384,10 +384,11 @@ class TcPairsWrapper(CommandBuilder):
             cur_function + '|' + cur_filename + ":Determining date format information...")
         # Determine if we have YYYY, YYYYMM, YYYYMMDD, or YYYYMMDDhh for
         # the date string
-        date_format_match = re.match('(?i)\A(?:(%+[a-z])*)\Z', tmpl)
+        # date_format_match = re.match(r'(?i)\A(?:(%+[a-z])*)\Z', tmpl)
+        date_format_match = re.match(r'.*\{date\?fmt=([\%+\w]{2,8}).*dat', tmpl)
         if date_format_match:
-            # Determine whether we have YYYY, YYYYMM, YYYYMMdd, or YYYYMMddhh
-            first_match = date_format_match.group(0)
+            # Determine whether we have YYYY (%Y), YYYYMM (%Y%m), YYYYMMdd (%Y%m%d), or YYYYMMddhh (%Y%m%d%h)
+            first_match = date_format_match.group(1)
             match_len = len(first_match)
             if match_len == 8:
                 # year month day hour, %Y%m%d%h
@@ -406,6 +407,9 @@ class TcPairsWrapper(CommandBuilder):
                     'Date format specified in the filename_templates section does not match expected %Y, %Y%m, %Y%m%d, ' +
                     'or %Y%m%d%h format')
                 exit(1)
+        else:
+            # No match return 0
+            return 0
         return date_len
 
     def create_filename_regex(self, tmpl):
@@ -476,7 +480,7 @@ class TcPairsWrapper(CommandBuilder):
         keywords_ordered = ordered.keys()
         return input_file_regex, keywords_ordered
 
-    def filter_input(self, all_input_files, init_list, input_file_regex, sorted_keywords):
+    def filter_input(self, all_input_files, init_list, input_file_regex, sorted_keywords, tmpl):
         """! Filter the input track file based on any or all of the following:
              date, region, cyclone.
 
@@ -485,8 +489,10 @@ class TcPairsWrapper(CommandBuilder):
                  @param init_list        -  a list of all init times in YYYYMMDD_hh format that define
                                      the initialization time window.
                  @param input_file_regex -  the regex describing the input file's format (full file path)
-                 @param sorted_keywords  -  a list of keywords, in the order in which they appear in the filename_template
-                                     description
+                 @param sorted_keywords  -  a list of keywords, in the order in which they appear in the
+                                            filename_template description
+                 @param tmpl             - the filename template for the A-deck or B-deck file, defined in the
+                                           filename_templates section of the config file
 
             Returns:
                 filtered_input    - a list of filtered input track files (full file path)
@@ -501,34 +507,52 @@ class TcPairsWrapper(CommandBuilder):
         self.logger.debug(
             cur_function + '|' + cur_filename + ": Filtering track file input")
 
+        # Eight possible combinations: date only, region only, cyclone only, (date, region, cyclone), (date, region),
+        # (date, cyclone), (cyclone, region), (no date, no region, no cyclone)
+        by_date = False
+        by_region = False
+        by_cyclone = False
         if 'date' in sorted_keywords:
-            filtered = self.filter_by_date(all_input_files, input_file_regex, init_list)
-        else:
-            filtered = []
-
-        # Do further filtering by region and cyclone if applicable.
+            by_date = True
         if 'region' in sorted_keywords:
-            if filtered:
-                filtered_input = self.filter_by_region(filtered)
-                if filtered_input:
-                    filtered = []
-            else:
-                # No filtering by date, use original input data
-                filtered_input = self.filter_by_region(all_input_files)
+            by_region = True
         if 'cyclone' in sorted_keywords:
-            if filtered:
-                filtered_input = self.filter_by_cyclone(filtered)
-            else:
-                # No filtering by date or region, use original input data, all_input_files
-                filtered_input = self.filter_by_cyclone(all_input_files)
-        return filtered_input
+            by_cyclone = True
+        if by_date and by_region and by_cyclone:
+            filtered_by_date = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
+            filtered_by_region = self.filter_by_region(filtered_by_date, input_file_regex, tmpl, sorted_keywords)
+            filtered = self.filter_by_region(filtered_by_region, input_file_regex,  tmpl, sorted_keywords)
+        elif by_date and by_region:
+            filtered_by_date = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
+            filtered = self.filter_by_region(filtered_by_date, input_file_regex, tmpl, sorted_keywords)
+        elif by_date and by_cyclone:
+            filtered_by_date = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
+            filtered = self.filter_by_cyclone(filtered_by_date, input_file_regex, tmpl, sorted_keywords)
+        elif by_region and by_cyclone and not by_date:
+            filtered_by_region = self.filter_by_region(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
+            filtered = self.filter_by_region(filtered_by_region, input_file_regex, tmpl, sorted_keywords)
+        elif by_date and not by_region and not by_cyclone:
+            filtered = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
+        elif not by_date and by_region and not by_cyclone:
+            filtered = self.filter_by_region(all_input_files, input_file_regex, tmpl, sorted_keywords)
+        elif not by_date and not by_region and by_cyclone:
+            filtered = self.filter_by_cyclone(all_input_files, input_file_regex, tmpl, sorted_keywords)
+        else:
+            # Nothing to filter by, return the original input data
+            return all_input_files
+        return filtered
 
-    def filter_by_date(self, input_data, init_list):
+    def filter_by_date(self, input_data, file_regex, init_list, tmpl, sorted_keywords):
         """! Filter the input data by date
 
              Args:
-                 input_data  - A list of all input data (full file path)
-                 init_list   - A list of all init times that define the initialization time window
+                 @parm input_data  - A list of all input data (full file path)
+                 @param file_regex - The regex for the input file
+                 @parm init_list   - A list of all init times that define the initialization time window
+                 @parm tmpl        - The filename template for the A-deck or B-deck input, as specified in the
+                                     filename_templates section of the config file.  Needed to assist in the
+                                     extraction of dates from the directory or filename of the A-deck or B-deck input.
+                 @param sorted_keywords - List of keywords, in the order in which they appear.
              Returns:
                  filtered_by_date - A list of all input data that lie within the initialization time window
                                    (full filepath)
@@ -543,10 +567,135 @@ class TcPairsWrapper(CommandBuilder):
 
         self.logger.debug(
             cur_function + '|' + cur_filename + ": Filtering track file input by date...")
-        filtered_by_date = input_data
-        date_len = self.get_date_format_info()
+        date_len = self.get_date_format_info(tmpl)
+        regex_comp = re.compile(file_regex)
+        group_number = sorted_keywords.index('date') + 1
+        if date_len == 0:
+            # No match to date?=fmt in filename_templates description, return the input file
+            return input_data
+
+        filtered_by_date = []
+        for cur_init in init_list:
+            # Match the init time granularity to the input data's granularity for ease in filtering by date.
+            if date_len == 10:
+                # %Y%m%d%h -> YYYYMMDDhh
+                cur_year = cur_init[0:4]
+                cur_month = cur_init[4:6]
+                cur_day = cur_init[6:8]
+                # Start at 9 instead of 8 because of '_' in init_list's YYYYMMDD_hh.
+                cur_hour = cur_init[9:11]
+                cur_init_date = int(cur_year + cur_month + cur_day + cur_hour)
+            elif date_len == 8:
+                # %Y%m%d -> YYYYMMDD
+                cur_year = cur_init[0:4]
+                cur_month = cur_init[4:6]
+                cur_day = cur_init[6:8]
+                cur_init_date = int(cur_year + cur_month + cur_day)
+            elif date_len == 6:
+                # %Y%m -> YYYYMM
+                cur_year = cur_init[0:4]
+                cur_month = cur_init[4:6]
+                cur_init_date = int(cur_year + cur_month)
+            elif date_len == 4:
+                # %Y -> YYYY
+                cur_init_date = int(cur_init[0:4])
+
+            for cur_input in input_data:
+                # Compare the current init time with that of the input data's time
+                input_date_match = re.match(regex_comp, cur_input)
+                if input_date_match:
+                    input_date = int(input_date_match.group(group_number))
+                    if input_date <= cur_init_date:
+                        if cur_input not in filtered_by_date:
+                            filtered_by_date.append(cur_input)
 
         return filtered_by_date
+
+    def filter_by_region(self, input_data, input_file_regex, tmpl, sorted_keywords ):
+        """! Filter the input data by region
+
+                    Args:
+                        @parm input_data  - A list of all input data (full file path)
+                        @param input_file_regex - The regex of the filename/directory for track input data.
+                        @parm tmpl        - The filename template for the A-deck or B-deck input, as specified in the
+                                            filename_templates section of the config file.  Needed to assist in the
+                                            extraction of dates from the directory or filename of the A-deck or B-deck input.
+                        @sorted_keywords - A list of keywords, in the order in which they appear.
+                    Returns:
+                        filtered_by_region - A list of all input data that correspond to the list of regions requested
+
+               """
+        # pylint:disable=protected-access
+        # sys._getframe is a legitimate way to access the current
+        # filename and method.
+        # Used for logging information
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        self.logger.debug(
+            cur_function + '|' + cur_filename + ": Filtering track file input by region...")
+        # Get a list of the regions of interest
+        regions_from_conf = util.getlist(self.config.getstr('conf', 'BASIN'))
+        regions = []
+        for region in regions_from_conf:
+            regions.append(region.lower())
+        group_number = sorted_keywords.index('region') + 1
+        filtered = []
+        if regions:
+            # Extract the region based on the filename template
+            for cur_data in input_data:
+                regex_comp = re.compile(input_file_regex)
+                match = re.match(regex_comp, cur_data)
+                if match:
+                    data_match = match.group(group_number).lower()
+                    if data_match in regions:
+                        filtered.append(cur_data)
+        else:
+            return input_data
+
+        return filtered
+
+    def filter_by_cyclone(self, input_data, input_file_regex, tmpl, sorted_keywords ):
+        """! Filter the input data by cyclone
+
+                    Args:
+                        @parm input_data  - A list of all input data (full file path)
+                        @param input_file_regex - The regex of the filename/directory for track input data.
+                        @parm tmpl        - The filename template for the A-deck or B-deck input, as specified in the
+                                            filename_templates section of the config file.  Needed to assist in the
+                                            extraction of dates from the directory or filename of the A-deck or B-deck input.
+                        @sorted_keywords - A list of keywords, in the order in which they appear.
+                    Returns:
+                        filtered_by_cyclone - A list of all input data that correspond to the list of regions requested
+
+               """
+        # pylint:disable=protected-access
+        # sys._getframe is a legitimate way to access the current
+        # filename and method.
+        # Used for logging information
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        self.logger.debug(
+            cur_function + '|' + cur_filename + ": Filtering track file input by cyclone...")
+
+        # Get a list of the cyclones of interest
+        cyclones = util.getlist(self.config.getstr('conf', 'BASIN'))
+        group_number = sorted_keywords.index('cyclone') + 1
+        filtered = []
+        if cyclones:
+            # Extract the cyclone based on the filename template
+            for cur_data in input_data:
+                regex_comp = re.compile(input_file_regex)
+                match = re.match(regex_comp, cur_data)
+                if match:
+                    data_match = match.group(group_number).lower()
+                    if data_match in cyclones:
+                        filtered.append(cur_data)
+        else:
+            return input_data
+
+        return filtered
 
     def get_input_track_files(self, input_dir):
         """! Get all the input track files in the A-deck or B-deck input directory.
