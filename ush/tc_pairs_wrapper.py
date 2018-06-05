@@ -316,16 +316,19 @@ class TcPairsWrapper(CommandBuilder):
         else:
             by_dir = False
 
+        # Commands common to both methods of invoking tc_pairs
+        pairs_out_dir = self.config.getdir('TC_PAIRS_DIR')
+        produtil.fileop.makedirs(pairs_out_dir, logger=self.logger)
+
         # User specifies to run tc_pairs with top-level dirs for A-deck and B-deck input files
         if by_dir:
             # Invoke MET tc_pairs with top-level directories
             adeck_top_level_dir = self.config.getdir('ADECK_TRACK_DATA_DIR')
             bdeck_top_level_dir = self.config.getdir('BDECK_TRACK_DATA_DIR')
-            pairs_out_dir = self.config.getdir('TC_PAIRS_DIR')
-            produtil.fileop.makedirs(pairs_out_dir, logger=self.logger)
             self.cmd = self.build_non_atcf_tc_pairs(pairs_out_dir,
                                                     adeck_top_level_dir,
                                                     bdeck_top_level_dir, None)
+            self.build()
         else:
             # Invoke tc_pairs with A-deck and B-deck filenames. Get a list of all the input files (A-deck and B-deck),
             # and filter based on one or all of the following criteria: date, region, cyclone.
@@ -354,15 +357,45 @@ class TcPairsWrapper(CommandBuilder):
             filtered_bdeck_files = self.filter_input(all_bdeck_files, init_list, bdeck_input_file_regex,
                                                      bdeck_sorted_keywords, reference_filename_tmpl)
 
-            # TODO  implement this in a separate method, build_atcf_tc_pairs() to get self.cmd
-            # Generate the -adeck and -bdeck pairings
+            # Unlike the other MET tools, the tc_pairs usage for this use case is:
+            # tc_pairs\
+            #  -adeck <top-level dir or file> \
+            #  -bdeck <top-level dir or file> \
+            #  -config <file>
+            # [-out base] \
+            # [-log file] \
+            # [ -v level ]
 
+            # Combine each A-Deck file with each B-Deck file (not performant, but since we made all attempts to
+            # filter both A-Deck and B-Deck files based on date, region and cyclone, we have hopefully reduced
+            # the number of pairings).
+            config_file = self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE')
+            tc_pairs_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
+                                        'bin/tc_pairs')
+            out_base = self.config.getstr('dir', 'OUTPUT_BASE')
             for adeck in filtered_adeck_files:
-                for bdeck in filtered_bdeck_files:
-                    adeck_arg = '-adeck ' + adeck
-                    bdeck_arg = '-bdeck ' + bdeck
+                # Use the adeck base filename to create the output .tcst file
+                basename = basename(adeck)
+                m = re.match(r'(.*).dat', basename)
+                if m:
+                    filename_only = m.group(1)
+                else:
+                    self.logger.warning(
+                        cur_function + "|" + cur_filename + ": A-deck filename doesn't have .dat extension, "
+                                                            "using the A-deck filename as the base output .tcst file")
+                    filename_only = adeck
+                outfile = os.path.join(pairs_out_dir, filename_only)
 
-        self.build()
+                for bdeck in filtered_bdeck_files:
+                    # cmd_list = [tc_pairs_exe, " -adeck ", adeck, " -bdeck ", bdeck, " -config ", config_file]
+                    cmd_list = [tc_pairs_exe, " -adeck ", adeck, " -bdeck ", bdeck, " -config ", config_file, " -out ",
+                                outfile, " -v 50"]
+                    self.cmd = ''.join(cmd_list)
+                    self.logger.debug("DEBUG | [" + cur_filename + ":" +
+                                      cur_function + "] | " +
+                                      "Running tc_pairs with command: " +
+                                      self.cmd)
+                    self.build()
 
     def get_date_format_info(self, tmpl):
         """! From the filename_templates template for the input track file, determine the format of the date:
@@ -521,7 +554,7 @@ class TcPairsWrapper(CommandBuilder):
         if by_date and by_region and by_cyclone:
             filtered_by_date = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
             filtered_by_region = self.filter_by_region(filtered_by_date, input_file_regex, tmpl, sorted_keywords)
-            filtered = self.filter_by_region(filtered_by_region, input_file_regex,  tmpl, sorted_keywords)
+            filtered = self.filter_by_cyclone(filtered_by_region, input_file_regex, tmpl, sorted_keywords)
         elif by_date and by_region:
             filtered_by_date = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
             filtered = self.filter_by_region(filtered_by_date, input_file_regex, tmpl, sorted_keywords)
@@ -529,8 +562,9 @@ class TcPairsWrapper(CommandBuilder):
             filtered_by_date = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
             filtered = self.filter_by_cyclone(filtered_by_date, input_file_regex, tmpl, sorted_keywords)
         elif by_region and by_cyclone and not by_date:
-            filtered_by_region = self.filter_by_region(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
-            filtered = self.filter_by_region(filtered_by_region, input_file_regex, tmpl, sorted_keywords)
+            filtered_by_region = self.filter_by_region(all_input_files, input_file_regex, init_list, tmpl,
+                                                       sorted_keywords)
+            filtered = self.filter_by_cyclone(filtered_by_region, input_file_regex, tmpl, sorted_keywords)
         elif by_date and not by_region and not by_cyclone:
             filtered = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
         elif not by_date and by_region and not by_cyclone:
@@ -611,7 +645,7 @@ class TcPairsWrapper(CommandBuilder):
 
         return filtered_by_date
 
-    def filter_by_region(self, input_data, input_file_regex, tmpl, sorted_keywords ):
+    def filter_by_region(self, input_data, input_file_regex, tmpl, sorted_keywords):
         """! Filter the input data by region
 
                     Args:
@@ -655,7 +689,7 @@ class TcPairsWrapper(CommandBuilder):
 
         return filtered
 
-    def filter_by_cyclone(self, input_data, input_file_regex, tmpl, sorted_keywords ):
+    def filter_by_cyclone(self, input_data, input_file_regex, tmpl, sorted_keywords):
         """! Filter the input data by cyclone
 
                     Args:
@@ -680,7 +714,7 @@ class TcPairsWrapper(CommandBuilder):
             cur_function + '|' + cur_filename + ": Filtering track file input by cyclone...")
 
         # Get a list of the cyclones of interest
-        cyclones = util.getlist(self.config.getstr('conf', 'BASIN'))
+        cyclones = util.getlist(self.config.getstr('conf', 'CYCLONE'))
         group_number = sorted_keywords.index('cyclone') + 1
         filtered = []
         if cyclones:
@@ -747,6 +781,26 @@ class TcPairsWrapper(CommandBuilder):
         #  Python will use " and not ' because currently MET doesn't
         # support single-quotes.
 
+        # INIT_BEG, INIT_END
+        tmp_init_beg = self.config.getstr('config', 'INIT_BEG')
+        tmp_init_end = self.config.getstr('config', 'INIT_END')
+
+        if not tmp_init_beg:
+            os.environ['INIT_BEG'] = "[]"
+            self.add_env_var(b'INIT_BEG', "[]")
+        else:
+            init_beg = str(tmp_init_beg).replace("\'", "\"")
+            init_beg_str = ''.join(init_beg.split())
+            os.environ['INIT_BEG'] = str(init_beg_str)
+        if not tmp_init_end:
+            os.environ['INIT_END'] = "[]"
+            self.add_env_var('INIT_END', "[]")
+        else:
+            init_end = str(tmp_init_end).replace("\'", "\"")
+            init_end_str = ''.join(init_end.split())
+            os.environ['INIT_END'] = str(init_end_str)
+            self.add_env_var(b'INIT_END', str(init_end_str))
+
         # INIT_INC and INIT_EXC
         # Used to set init_inc in "TC_PAIRS_CONFIG_FILE"
         tmp_init_inc = util.getlist(
@@ -756,6 +810,7 @@ class TcPairsWrapper(CommandBuilder):
         if not tmp_init_inc:
             # self.add_env_var('PB2NC_STATION_ID', "[]")
             os.environ['INIT_INCLUDE'] = "[]"
+            self.add_env_var('INIT_INCLUDE', "[]")
         else:
             # Not empty, set the environment variable to the
             # value specified in the MET+ config file after removing whitespace
@@ -767,6 +822,7 @@ class TcPairsWrapper(CommandBuilder):
         if not tmp_init_exc:
             # self.add_env_var('PB2NC_STATION_ID', "[]")
             os.environ['INIT_EXCLUDE'] = "[]"
+            self.add_env_var('INIT_EXCLUDE', "[]")
         else:
             # Not empty, set the environment variable to the
             # value specified in the MET+ config file after removing whitespace
@@ -780,22 +836,26 @@ class TcPairsWrapper(CommandBuilder):
         if not tmp_model:
             # Empty, MET is expecting [] to indicate all models are to be included
             os.environ['MODEL'] = "[]"
+            self.add_env_var('MODEL', "[]")
         else:
             # Replace ' with " and remove whitespace
             model = str(tmp_model).replace("\'", "\"")
             model_str = ''.join(model.split())
             os.environ['MODEL'] = str(model_str)
+            self.add_env_var(b'MODEL', str(model_str))
 
         # STORM_ID
         tmp_storm_id = util.getlist(self.config.getstr('config', 'STORM_ID'))
         if not tmp_storm_id:
             # Empty, use all storm_ids, indicate this to MET via '[]'
             os.environ['STORM_ID'] = "[]"
+            self.add_env_var(b'STORM_ID', "[]")
         else:
             # Replace ' with " and remove whitespace
             storm_id = str(tmp_storm_id).replace("\'", "\"")
             storm_id_str = ''.join(storm_id.split())
             os.environ['STORM_ID'] = str(storm_id_str)
+            self.add_env_var(b'STORM_ID', str(storm_id_str))
 
         # BASIN
         tmp_basin = util.getlist(self.config.getstr('config', 'BASIN'))
@@ -803,22 +863,26 @@ class TcPairsWrapper(CommandBuilder):
             # Empty, we want all basins.  Send MET '[]' to indicate that
             # we want all the basins.
             os.environ['BASIN'] = "[]"
+            self.add_env_var(b'BASIN', "[]")
         else:
             # Replace any ' with " and remove whitespace.
             basin = str(tmp_basin).replace("\'", "\"")
             basin_str = ''.join(basin.split())
             os.environ['BASIN'] = str(basin_str)
+            self.add_env_var(b'BASIN', str(basin_str))
 
         # CYCLONE
         tmp_cyclone = util.getlist(self.config.getstr('config', 'CYCLONE'))
         if not tmp_cyclone:
             # Empty, use all cyclones, send '[]' to MET.
             os.environ['CYCLONE'] = "[]"
+            self.add_env_var('CYCLONE', "[]")
         else:
             # Replace ' with " and get rid of any whitespace
             cyclone = str(tmp_cyclone).replace("\'", "\"")
             cyclone_str = ''.join(cyclone.split())
             os.environ['CYCLONE'] = str(cyclone_str)
+            self.add_env_var(b'CYCLONE', str(cyclone_str))
 
         # STORM_NAME
         tmp_storm_name = util.getlist(
@@ -827,17 +891,21 @@ class TcPairsWrapper(CommandBuilder):
             # Empty, equivalent to 'STORM_NAME = "[]"; in MET config file,
             # use all storm names.
             os.environ['STORM_NAME'] = "[]"
+            self.add_env_var('STORM_NAME', "[]")
         else:
             storm_name = str(tmp_storm_name).replace("\'", "\"")
             storm_name_str = ''.join(storm_name.split())
             os.environ['STORM_NAME'] = str(storm_name_str)
+            self.add_env_var(b'STORM_NAME', str(storm_name_str))
 
         # Valid time window variables
         valid_beg = self.config.getstr('config', 'VALID_BEG')
         os.environ['VALID_BEG'] = str(valid_beg)
+        self.add_env_var(b'VALID_BEG', str(valid_beg))
 
         valid_end = self.config.getstr('config', 'VALID_END')
         os.environ['VALID_END'] = str(valid_end)
+        self.add_env_var(b'VALID_END', str(valid_end))
 
         # DLAND_FILE
         tmp_dland_file = self.config.getstr('config', 'DLAND_FILE')
@@ -909,7 +977,7 @@ class TcPairsWrapper(CommandBuilder):
                                         deck_file_path)
 
     def build_non_atcf_tc_pairs(self, pairs_output_dir, adeck_file_path,
-                                bdeck_file_path, date_file=None, ):
+                                bdeck_file_path, date_file=None):
         """! Build up the command that is used to run the MET tool,
              tc_pairs.
              Args:
@@ -957,10 +1025,13 @@ class TcPairsWrapper(CommandBuilder):
             # No date_file specified, set -adeck and -bdeck to top-level directories
             tc_pairs_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                         'bin/tc_pairs')
-            cmd_list = [tc_pairs_exe, " -adeck ",
+            outfile = os.path.join(self.config.getstr('dir', 'OUTPUT_BASE'), "tc_pairs")
+            cmd_list = [tc_pairs_exe,
+                        " -adeck ",
                         adeck_file_path, " -bdeck ",
                         bdeck_file_path, " -config ",
-                        self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE')]
+                        self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE'),
+                        " -out ", outfile, " -v 50"]
 
             cmd = ''.join(cmd_list)
             self.logger.debug("DEBUG | [" + cur_filename + ":" +
