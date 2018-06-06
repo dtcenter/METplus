@@ -865,7 +865,7 @@ class StringSub:
         # The . matches any single character except newline, and the
         # following + matches 1 or more occurrence of preceding expression.
         # The ? after the .+ makes it a lazy match so that it stops
-        # after the first "}" instead of continuin to match as many
+        # after the first "}" instead of continuing to match as many
         # characters as possible
 
         # findall searches through the string and finds all non-overlapping
@@ -1112,7 +1112,7 @@ class StringSub:
         # The . matches any single character except newline, and the
         # following + matches 1 or more occurrence of preceding expression.
         # The ? after the .+ makes it a lazy match so that it stops
-        # after the first "}" instead of continuin to match as many
+        # after the first "}" instead of continuing to match as many
         # characters as possible
 
         # findall searches through the string and finds all non-overlapping
@@ -1225,7 +1225,7 @@ class StringSub:
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
                             elif split_string[0] == REGION_STRING:
-                                value = "([a-zA-z]{2})"
+                                value = "([a-zA-Z]{2})"
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
                             elif split_string[0] == CYCLONE_STRING:
@@ -1233,7 +1233,7 @@ class StringSub:
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
                             elif split_string[0] == MISC_STRING:
-                                value = "([a-zA-z0-9-_.]+)"
+                                value = "([a-zA-Z0-9-_.]+)"
                                 string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
 
