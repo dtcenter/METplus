@@ -325,9 +325,22 @@ class TcPairsWrapper(CommandBuilder):
             # Invoke MET tc_pairs with top-level directories
             adeck_top_level_dir = self.config.getdir('ADECK_TRACK_DATA_DIR')
             bdeck_top_level_dir = self.config.getdir('BDECK_TRACK_DATA_DIR')
-            self.cmd = self.build_non_atcf_tc_pairs(pairs_out_dir,
-                                                    adeck_top_level_dir,
-                                                    bdeck_top_level_dir, None)
+            tc_pairs_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
+                                        'bin/tc_pairs')
+            outfile = os.path.join(self.config.getstr('dir', 'OUTPUT_BASE'), "tc_pairs")
+            cmd_list = [tc_pairs_exe,
+                        " -adeck ",
+                        adeck_input_dir, " -bdeck ",
+                        bdeck_input_dir, " -config ",
+                        self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE'),
+                        " -out ", outfile, " -v 50"]
+
+            self.cmd = ''.join(cmd_list)
+            self.logger.debug("DEBUG | [" + cur_filename + ":" +
+                              cur_function + "] | " +
+                              "Running tc_pairs with command: " +
+                              self.cmd)
+
             self.build()
         else:
             # Invoke tc_pairs with A-deck and B-deck filenames. Get a list of all the input files (A-deck and B-deck),
@@ -977,7 +990,7 @@ class TcPairsWrapper(CommandBuilder):
                                         deck_file_path)
 
     def build_non_atcf_tc_pairs(self, pairs_output_dir, adeck_file_path,
-                                bdeck_file_path, date_file=None):
+                                bdeck_file_path, date_file):
         """! Build up the command that is used to run the MET tool,
              tc_pairs.
              Args:
@@ -999,47 +1012,31 @@ class TcPairsWrapper(CommandBuilder):
         # Used for logging information
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        # A date_file exists, set -adeck and -bdeck to specific files
-        if date_file:
-            pairs_out_file = os.path.join(pairs_output_dir, date_file)
-            pairs_out_file_with_suffix = pairs_out_file + ".tcst"
-            if os.path.exists(pairs_out_file_with_suffix):
-                if self.config.getbool('config', 'TC_PAIRS_FORCE_OVERWRITE'):
-                    self.logger.debug("DEBUG | [" + cur_filename +
-                                      ":" + cur_function + "] | " +
-                                      "Writing tc_pairs output file: "
-                                      + pairs_out_file + ", replacing"
-                                      + " existing " +
-                                      " data because TC_PAIRS_FORCE" +
-                                      "_OVERWRITE is set to True")
+        pairs_out_file = os.path.join(pairs_output_dir, date_file)
+        pairs_out_file_with_suffix = pairs_out_file + ".tcst"
+        if os.path.exists(pairs_out_file_with_suffix):
+            if self.config.getbool('config', 'TC_PAIRS_FORCE_OVERWRITE'):
+                self.logger.debug("DEBUG | [" + cur_filename +
+                                  ":" + cur_function + "] | " +
+                                  "Writing tc_pairs output file: "
+                                  + pairs_out_file + ", replacing"
+                                  + " existing " +
+                                  " data because TC_PAIRS_FORCE" +
+                                  "_OVERWRITE is set to True")
 
-            tc_pairs_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                        'bin/tc_pairs')
-            cmd_list = [tc_pairs_exe, " -adeck ",
-                        adeck_file_path, " -bdeck ",
-                        bdeck_file_path, " -config ",
-                        self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE'),
-                        " -out ", pairs_out_file]
-            cmd = ''.join(cmd_list)
-        else:
-            # No date_file specified, set -adeck and -bdeck to top-level directories
-            tc_pairs_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                        'bin/tc_pairs')
-            outfile = os.path.join(self.config.getstr('dir', 'OUTPUT_BASE'), "tc_pairs")
-            cmd_list = [tc_pairs_exe,
-                        " -adeck ",
-                        adeck_file_path, " -bdeck ",
-                        bdeck_file_path, " -config ",
-                        self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE'),
-                        " -out ", outfile, " -v 50"]
+        tc_pairs_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
+                                    'bin/tc_pairs')
+        cmd_list = [tc_pairs_exe, " -adeck ",
+                    adeck_file_path, " -bdeck ",
+                    bdeck_file_path, " -config ",
+                    self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE'),
+                    " -out ", pairs_out_file]
+        cmd = ''.join(cmd_list)
+        self.logger.debug("DEBUG | [" + cur_filename + ":" +
+                          cur_function + "] | " +
+                          "Running tc_pairs with command: " +
+                          cmd)
 
-            cmd = ''.join(cmd_list)
-            self.logger.debug("DEBUG | [" + cur_filename + ":" +
-                              cur_function + "] | " +
-                              "Running tc_pairs with command: " +
-                              cmd)
-
-        # self.logger.debug("cmd = " + cmd)
         return cmd
 
     def get_command(self):
