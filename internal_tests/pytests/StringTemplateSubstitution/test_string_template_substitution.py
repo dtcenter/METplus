@@ -159,7 +159,8 @@ def test_ym_date_dir():
     filename = ss.doStringSub()
     expected_filename = '/d1/METplus_TC/adeck_orig/201708/atcfunix.gfs.2017080100.dat'
     assert filename == expected_filename
-# 
+
+
 def test_ymd_date_dir():
     # Test that the ymd directory can be read in and does substitution correctly
     logger = logging.getLogger("test")
@@ -171,7 +172,8 @@ def test_ymd_date_dir():
     filename = ss.doStringSub()
     expected_filename = '/d1/METplus_TC/adeck_orig/20170811/atcfunix.gfs.2017081118.dat'
     assert filename == expected_filename
-# 
+
+
 def test_ymd_region_cyclone():
     # Test that we can recreate the full file path with a date, region, and cyclone
     logger = logging.getLogger("test")
@@ -186,3 +188,17 @@ def test_ymd_region_cyclone():
     full_file = ss.doStringSub()
     expected_full_file = '/d1/METplus_TC/bdeck/201708/bal052017.dat'
     assert full_file == expected_full_file
+
+
+def test_create_cyclone_regex():
+    # Test that the regex created from a template is what is expected
+    logger = logging.getLogger("test")
+    templ = '/d1/METplus_TC/bdeck/{date?fmt=%s}/b{region?fmt=%s}{cyclone?fmt=%s}{misc?fmt=%s}.dat'
+    date_str = '201708'
+    region_str = 'al'
+    cyclone_str = '05'
+    year_str = '2017'
+    ss = StringSub(logger, templ, date=date_str, region=region_str, cyclone=cyclone_str, misc=year_str)
+    actual_regex = ss.create_cyclone_regex()
+    expected_regex = '/d1/METplus_TC/bdeck/([0-9]{4,10})/b([a-zA-Z]{2})([0-9]{2,3})([a-zA-Z0-9-_.]+).dat'
+    assert actual_regex == expected_regex
