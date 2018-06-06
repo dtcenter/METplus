@@ -181,7 +181,7 @@ class StringSub:
                      in the
        date - the YYYYMM date
        region - the two-character (upper or lower case) region/basin designation
-       cyclone - a two-digit annual cyclone number (if ATCF) or four-digit cyclone number (leading zeros)
+       cyclone - a two-digit annual cyclone number (if ATCF_by_pairs) or four-digit cyclone number (leading zeros)
        misc - any string
 
 
@@ -843,7 +843,7 @@ class StringSub:
 
               region:
                 fmt - a string that specifies the region/basin of cyclone.
-                      For ATCF formatted data, this is a 2-character
+                      For ATCF_by_pairs formatted data, this is a 2-character
                       designation:
                       AL|WP|CP|EP|SH|IO|LS lower case designations are
                       observed in filenames.
