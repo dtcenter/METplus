@@ -616,7 +616,7 @@ class TcPairsWrapper(CommandBuilder):
             by_cyclone = True
         if by_date and by_region and by_cyclone:
             filtered_by_date = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
-            filtered_by_region = self.filter_by_region(filtered_by_date, input_file_regex, tmpl, sorted_keywords)
+            filtered_by_region = self.filter_by_region(filtered_by_date, input_file_regex, sorted_keywords)
             filtered = self.filter_by_cyclone(filtered_by_region, input_file_regex, tmpl, sorted_keywords)
         elif by_date and by_region:
             filtered_by_date = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
@@ -708,15 +708,12 @@ class TcPairsWrapper(CommandBuilder):
 
         return filtered_by_date
 
-    def filter_by_region(self, input_data, input_file_regex, tmpl, sorted_keywords):
+    def filter_by_region(self, input_data, input_file_regex, sorted_keywords):
         """! Filter the input data by region
 
                     Args:
                         @param input_data  - A list of all input data (full file path)
                         @param input_file_regex - The regex of the filename/directory for track input data.
-                        @param tmpl        - The filename template for the A-deck or B-deck input, as specified in the
-                                            filename_templates section of the config file.  Needed to assist in the
-                                            extraction of dates from the directory or filename of the A-deck or B-deck input.
                         @sorted_keywords - A list of keywords, in the order in which they appear.
                     Returns:
                         filtered_by_region - A list of all input data that correspond to the list of regions requested
@@ -752,15 +749,12 @@ class TcPairsWrapper(CommandBuilder):
 
         return filtered
 
-    def filter_by_cyclone(self, input_data, input_file_regex, tmpl, sorted_keywords):
+    def filter_by_cyclone(self, input_data, input_file_regex, sorted_keywords):
         """! Filter the input data by cyclone
 
                     Args:
                         @param input_data  - A list of all input data (full file path)
                         @param input_file_regex - The regex of the filename/directory for track input data.
-                        @param tmpl        - The filename template for the A-deck or B-deck input, as specified in the
-                                            filename_templates section of the config file.  Needed to assist in the
-                                            extraction of dates from the directory or filename of the A-deck or B-deck input.
                         @sorted_keywords - A list of keywords, in the order in which they appear.
                     Returns:
                         filtered_by_cyclone - A list of all input data that correspond to the list of regions requested
