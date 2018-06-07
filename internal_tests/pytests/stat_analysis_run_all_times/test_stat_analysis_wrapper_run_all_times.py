@@ -126,57 +126,33 @@ def test_run_all_times_valid_check_file():
     stat_analysis_out_dir = st.p.getdir('STAT_ANALYSIS_OUT_DIR')
     st.run_all_times()
 
-    # Get output
-    files_in_dir = []
+    # Get test output
+    files_in_test_dir = []
     for dirpath, dirnames, files in os.walk(stat_analysis_out_dir):
         for name in files:
-            files_in_dir.append(os.path.join(dirpath, name))    
+            files_in_test_dir.append(os.path.join(dirpath,name))    
+    files_in_test_dir.sort()
  
-    # Get run info
+    # Get truth output
+    files_in_truth_dir = []
     truth_file_dir =  "/scratch4/NCEPDEV/global/save/Mallory.Row/VRFY/myMETplus_stuff/data_for_pytests"
     verif_case = st.p.getstr('config', 'VERIF_CASE')
     verif_type = st.p.getstr('config', 'VERIF_TYPE')
-    var_name = st.p.getstr('config', 'FCST_VAR1_NAME')
-    var_level_list = util.getlist(st.p.getstr('config', 'FCST_VAR1_LEVELS'))
-    model_list = util.getlist(st.p.getstr('config', 'MODEL_LIST'))
-    lead_list = util.getlist(st.p.getstr('config', 'LEAD_LIST'))
-    region_list = util.getlist(st.p.getstr('config', 'REGION_LIST'))
-    fourier_wv1_list = []
-    if verif_case == 'grid2grid':
-       loop_beg = st.p.getint('config', 'VALID_BEG')
-       loop_end = st.p.getint('config', 'VALID_END')
-       loop_inc = st.p.getint('config', 'VALID_INC')
-       fourier_wv1_list.append("NONE")
-       if verif_type == "anom" and var_name == "HGT":
-          fourier_decomp_height = st.p.getbool('config', 'FOURIER_HEIGHT_DECOMP')
-          if fourier_decomp_height:
-              wave_num_beg_list = util.getlist(st.p.getstr('config', 'WAVE_NUM_BEG_LIST'))
-              wave_num_end_list = util.getlist(st.p.getstr('config', 'WAVE_NUM_END_LIST'))
-              for wn in range(len(wave_num_beg_list)):
-                  wb = wave_num_beg_list[wn]
-                  we = wave_num_end_list[wn]
-                  wave_num_pairing = "WV1_"+wb+"-"+we
-                  fourier_wv1_list.append(wave_num_pairing)
-    elif verif_case == 'grid2obs':
-       loop_beg = st.p.getint('config', 'INIT_BEG')
-       loop_end = st.p.getint('config', 'INIT_END')
-       loop_inc = st.p.getint('config', 'INIT_INC')
-       fourier_wv1_list.append("NONE")
-    loop_hour = loop_beg
-    while loop_hour <= loop_end:
-        for model in model_list:
-            for region in region_list:
-                for lead in lead_list:
-                     for var_level in var_level_list:
-                         for fourier_wv1 in fourier_wv1_list:
-                             if fourier_wv1 == "NONE":
-                                  test_file = os.path.join(stat_analysis_out_dir, str(loop_hour).zfill(2)+"Z", model, region, model+"_f"+lead.zfill(2)+"_fcst"+var_name+var_level+"_obs"+var_name+var_level+".stat")
-                                  truth_file = os.path.join(truth_file_dir, verif_case, "plot_format_data", verif_type, str(loop_hour).zfill(2)+"Z", model, region, model+"_f"+lead.zfill(2)+"_fcst"+var_name+var_level+"_obs"+var_name+var_level+".stat")
-                             else:
-                                  test_file = os.path.join(stat_analysis_out_dir, str(loop_hour).zfill(2)+"Z", model, region, model+"_f"+lead.zfill(2)+"_fcst"+var_name+var_level+"_obs"+var_name+var_level+"_"+fourier_wv1+".stat")
-                                  truth_file = os.path.join(truth_file_dir, verif_case, "plot_format_data", verif_type, str(loop_hour).zfill(2)+"Z", model, region, model+"_f"+lead.zfill(2)+"_fcst"+var_name+var_level+"_obs"+var_name+var_level+"_"+fourier_wv1+".stat")
-                             if test_file in files_in_dir:
-                                 # if the filesize for this specific file and init and valid times in the
-                                 # test config file do not match what is expected, test fails.
-                                 assert os.path.getsize(test_file) == os.path.getsize(truth_file) 
-        loop_hour+=loop_inc
+    for dirpath, dirnames, files in os.walk(os.path.join(truth_file_dir,verif_case, "plot_format_data", verif_type)):
+        for name in files:
+            files_in_truth_dir.append(os.path.join(dirpath, name))
+    files_in_truth_dir.sort()
+
+    # Check number of files is the same, if so check file basenames the same, if so check sizes
+    if len(files_in_test_dir) == len(files_in_truth_dir):
+        for f in range(len(files_in_test_dir)):
+            basename_test = os.path.basename(files_in_test_dir[f]) 
+            basename_truth = os.path.basename(files_in_truth_dir[f])
+            if basename_test == basename_truth:
+               assert os.path.getsize(files_in_test_dir[f]) ==  os.path.getsize(files_in_truth_dir[f])
+            else:
+                # Fails if namming of files not the same
+                assert True is False   
+    else:
+       # Fails if number of files not the same
+       assert True is False
