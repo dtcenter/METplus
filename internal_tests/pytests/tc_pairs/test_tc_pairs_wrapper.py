@@ -9,6 +9,7 @@ import pytest
 import produtil
 import config_metplus
 from tc_pairs_wrapper import TcPairsWrapper
+import met_util as util
 
 
 #
@@ -215,22 +216,50 @@ def metplus_config():
 #     assert regex_fname == expected_regex_fname
 
 
-def test_top_level_dir():
-    # Verify that invoking tc_pairs with top-level directories for A-deck and B-deck
-    # track files yields the expected results (for test data from Mallory, located on
-    # 'eyewall' under /d1/METplus_TC/adeck and /d1/METplus_TC/bdeck directories), an expected number of
-    # rows are in the .tcst file created.
+# def test_top_level_dir():
+#     # Verify that invoking tc_pairs with top-level directories for A-deck and B-deck
+#     # track files yields the expected results (for test data from Mallory, located on
+#     # 'eyewall' under /d1/METplus_TC/adeck and /d1/METplus_TC/bdeck directories), an expected number of
+#     # rows are in the .tcst file created.
+#     rtcp = tc_pairs_wrapper()
+#     track_type = rtcp.tcp_dict['TRACK_TYPE']
+#     if track_type == 'extra_tropical_cyclone':
+#         pytest.exit("Skip test_top_level_dir, this is for ATCF_by_pairs data and based on TRACK_TYPE, " +
+#                     "this is non-ATCF_by_pairs data.")
+#     rtcp.tcp_dict['INIT_BEG'] = ""
+#     rtcp.tcp_dict['INIT_END'] = ""
+#     rtcp.run_all_times()
+#     output_file = os.path.join(rtcp.tcp_dict['TC_PAIRS_DIR'], "tc_pairs.tcst")
+#     num_lines = len(open(output_file).readlines())
+#
+#     expected_number_results = 27762
+#     assert num_lines == expected_number_results
+
+
+def test_filter_by_date():
+    # Verify that the filter_by_date is correctly filtering the A-deck track files
     rtcp = tc_pairs_wrapper()
     track_type = rtcp.tcp_dict['TRACK_TYPE']
     if track_type == 'extra_tropical_cyclone':
-        pytest.exit("Skip test_top_level_dir, this is for ATCF_by_pairs data and based on TRACK_TYPE, this is non-ATCF_by_pairs data.")
-    rtcp.tcp_dict['INIT_BEG'] = ""
-    rtcp.tcp_dict['INIT_END'] = ""
-    rtcp.run_all_times()
-    output_file = os.path.join(rtcp.tcp_dict['TC_PAIRS_DIR'], "tc_pairs.tcst")
-    num_lines = len(open(output_file).readlines())
+        pytest.skip("Skip test, track type is extra tropical cyclone (non-ATCF) and this test is for ATCF data.")
+    init_beg = rtcp.tcp_dict['INIT_BEG'] = 20170801
+    init_end = rtcp.tcp_dict['INIT_END'] = 20170901
+    adeck_dir = rtcp.tcp_dict['ADECK_TRACK_DATA_DIR'] = '/d1/METplus_TC/adeck'
+    bdeck_dir = rtcp.tcp_dict['BDECK_TRACK_DATA_DIR'] = '/d1/METplus_TC/bdeck'
+    forecast_tmpl = rtcp.tcp_dict['FORECAST_TMPL'] = '/d1/METplus_TC/adeck/atcfunix.gfs.{date?fmt=%Y%m%d%h}.dat'
+    reference_tmpl = rtcp.tcp_dict['REFERENCE_TMPL'] = '/d1/METplus_TC/bdeck/b{region?fmt=%s}{cyclone?fmt=%s}{date?fmt=%Y}.dat'
+    init_increment = rtcp.tcp_dict['INIT_INCREMENT'] = 21600
+    rtcp.tcp_dict['INIT_HOUR_END'] = 18
+    init_list = util.gen_init_list(
+        rtcp.tcp_dict['INIT_BEG'],
+        rtcp.tcp_dict['INIT_END'],
+        rtcp.tcp_dict['INIT_INCREMENT'],
+        rtcp.tcp_dict['INIT_HOUR_END'])
+    file_regex, sorted_keywords = rtcp.create_filename_regex(forecast_tmpl)
+    all_files = []
+    for dirpath, _, filenames in os.walk(adeck_dir):
+        for f in filenames:
+            all_files.append(os.path.join(dirpath, f))
 
-    expected_number_results = 27762
-    print('EXPECTED: ', expected_number_results)
-    print('ACTUAL:   ', num_lines)
-    assert num_lines == expected_number_results
+    rtcp.filter_by_date(all_files, file_regex, init_list, forecast_tmpl, sorted_keywords)
+    assert True
