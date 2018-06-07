@@ -29,6 +29,8 @@ from command_builder import CommandBuilder
 class MakePlotsWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(MakePlotsWrapper, self).__init__(p, logger)
+        if self.logger is None:
+            self.logger = util.get_logger(self.p,sublog='MakePlots')
     #    self.app_path = os.path.join(self.p.getdir('PYTHON_INSTALL_DIR'),
     #                                 'bin/python')
     #    self.app_name = os.path.basename(self.app_path)
@@ -471,10 +473,12 @@ class MakePlotsWrapper(CommandBuilder):
         if os.path.exists(plotting_out_dir):
             self.logger.info(plotting_out_dir+" exist, removing")
             util.rmtree(plotting_out_dir)
+        regrid_to_grid = self.p.getstr('config', 'REGRID_TO_GRID')
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
         model_list = self.p.getstr('config', 'MODEL_LIST')
         plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
+        self.add_env_var("REGRID_TO_GRID", regrid_to_grid)
         self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
         self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
         self.add_env_var("MODEL_LIST", model_list)
@@ -615,10 +619,12 @@ class MakePlotsWrapper(CommandBuilder):
         if os.path.exists(plotting_out_dir):
             self.logger.info(plotting_out_dir+" exist, removing")
             util.rmtree(plotting_out_dir)
+        regrid_to_grid = self.p.getstr('config', 'REGRID_TO_GRID')
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
         model_list = self.p.getstr('config', 'MODEL_LIST')
         plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
+        self.add_env_var("REGRID_TO_GRID", regrid_to_grid)
         self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
         self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
         self.add_env_var("MODEL_LIST", model_list)
