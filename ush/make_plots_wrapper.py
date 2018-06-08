@@ -112,7 +112,7 @@ class MakePlotsWrapper(CommandBuilder):
 
             fcst_extra = ""
             if self.p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                fcst_extra = self.p.getraw('config', "FCST_VAR"+n+"_OPTIONS")
+                fcst_extra = util.getraw_interp(self.p, 'config', "FCST_VAR"+n+"_OPTIONS")
 
             fcst_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
             # if OBS_VARn_X does not exist, use FCST_VARn_X
@@ -123,7 +123,7 @@ class MakePlotsWrapper(CommandBuilder):
 
             obs_extra = ""
             if self.p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                obs_extra = self.p.getraw('config', "OBS_VAR"+n+"_OPTIONS")
+                obs_extra = util.getraw_interp(self.p, 'config', "OBS_VAR"+n+"_OPTIONS")
             ##else:
             ##    obs_extra = fcst_extra
             ##fcst_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
@@ -247,7 +247,7 @@ class MakePlotsWrapper(CommandBuilder):
 
             fcst_extra = ""
             if self.p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                fcst_extra = self.p.getraw('config', "FCST_VAR"+n+"_OPTIONS")
+                fcst_extra = util.getraw_interp(self.p, 'config', "FCST_VAR"+n+"_OPTIONS")
 
             fcst_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
             # if OBS_VARn_X does not exist, use FCST_VARn_X
@@ -258,7 +258,7 @@ class MakePlotsWrapper(CommandBuilder):
 
             obs_extra = ""
             if self.p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                obs_extra = self.p.getraw('config', "OBS_VAR"+n+"_OPTIONS")
+                obs_extra = util.getraw_interp(self.p, 'config', "OBS_VAR"+n+"_OPTIONS")
             ##else:
             ##    obs_extra = fcst_extra
             ##fcst_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))

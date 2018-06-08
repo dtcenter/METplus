@@ -15,7 +15,6 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import (print_function, division)
 
 import produtil.setup
-#from produtil.run import batchexe, run, checkrun
 import logging
 import os
 import sys
@@ -133,22 +132,8 @@ class PcpCombineWrapper(CommandBuilder):
         files = sorted(all_files)
 
         for fpath in files:
-            # TODO: Replace with util.get_time_from_file(fpath, template)
-            # check if result is a file or not
-#            if os.path.isdir(fpath):
-#                continue
-
-            # Check number of / in template, get same number from file path
-#            path_split = fpath.split('/')
-#            f = ""
-#            for n in range(num_slashes, -1, -1):
-#                f = os.path.join(f,path_split[-(n+1)])
-
-#            se = sts.StringExtract(self.logger, template, f)
             se = util.get_time_from_file(self.logger, fpath, template)
-            
-            # TODO: should parseTemplate return false on failure instead of crashing?
-#            se.parseTemplate()
+
             if se == None:
                 return None
 
@@ -158,19 +143,18 @@ class PcpCombineWrapper(CommandBuilder):
                 exit
 
             init = se.getInitTime("%Y%m%d%H%M")
-#            if init == None:
-#                return None
+            if init == "":
+                return None
             v = util.shift_time(init, fcst)
             if v == valid_time and fcst < lowest_fcst:
                 out_file = fpath
                 lowest_fcst = fcst
         return out_file
 
-    # NOTE: Assumes YYYYMMDD sub dir
     def get_lowest_forecast_at_valid(self, valid_time, dtype):
         out_file = ""
         day_before = util.shift_time(valid_time, -24)
-        input_template = self.p.getraw('filename_templates',
+        input_template = util.getraw_interp(self.p, 'filename_templates',
                                        dtype + '_PCP_COMBINE_INPUT_TEMPLATE')
         # get all files in yesterday directory, get valid time from init/fcst
         # NOTE: This will only apply to forecasts up to 48  hours
@@ -186,43 +170,47 @@ class PcpCombineWrapper(CommandBuilder):
 
     def search_day(self, dir, file_time, search_time, template):
         out_file = ""
-        files = sorted(glob.glob("{:s}/*{:s}*".format(dir, search_time)))
+        files = sorted(glob.glob("{:s}/*{:s}*".format(dir, search_time[0:8])))
         for f in files:
             se = sts.StringExtract(self.logger, template,
                                    os.path.basename(f))
             se.parseTemplate()
-            ftime = se.getValidTime("%Y%m%d%H")
-            if ftime != None and ftime < file_time:
+            ftime = se.getValidTime("%Y%m%d%H%M")
+            if ftime != None and int(ftime) < int(file_time):
                 out_file = f
         return out_file
 
     def find_closest_before(self, dir, time, template):
         day_before = util.shift_time(time, -24)
         yesterday_file = self.search_day(dir, time,
-                                         str(day_before)[0:8], template)
-        today_file = self.search_day(dir, time, str(time)[0:8], template)
+                                         str(day_before)[0:10], template)
+        today_file = self.search_day(dir, time, str(time)[0:10], template)
+        # need to check valid time to make sure today_file does not come after VT
         if today_file == "":
             return yesterday_file
         else:
             return today_file
 
 
-    def get_daily_file(valid_time,accum, data_src):
+    def get_daily_file(self, valid_time,accum, data_src, file_template):
         # loop accum times
         data_interval = self.p.getint('config',
                                       data_src + '_DATA_INTERVAL') * 3600
         for i in range(0, accum, data_interval):
-            search_time = util.shift_time(valid_time+"00", -i)[0:10]
+            search_time = util.shift_time(valid_time, -i)
             # find closest file before time
             f = self.find_closest_before(self.input_dir, search_time,
                                          file_template)
             if f == "":
                 continue
             # build level info string
-            # TODO: pull out YYYYMMDDHH from filename
-            file_time = datetime.datetime.strptime(f[-17:-7], "%Y%m%d%H")
-            v_time = datetime.datetime.strptime(search_time, "%Y%m%d%H")
+            se = sts.StringExtract(self.logger, file_template,
+                                   os.path.basename(f))
+            se.parseTemplate()
+            file_time = datetime.datetime.strptime(se.getInitTime("%Y%m%d%H"),"%Y%m%d%H")
+            v_time = datetime.datetime.strptime(search_time[0:10], "%Y%m%d%H")
             diff = v_time - file_time
+
             lead = int((diff.days * 24) / (data_interval / 3600))
             lead += int((v_time - file_time).seconds / data_interval) - 1
             fname = self.p.getstr('config',
@@ -242,8 +230,8 @@ class PcpCombineWrapper(CommandBuilder):
             exit
         self.add_arg("-add")
 
-        if self.p.getbool('config', data_src + '_IS_DAILY_FILE') is True:
-            self.get_daily_file(valid_time, accum, data_src)
+        if self.p.getbool('config', data_src + '_IS_DAILY_FILE', False) is True:
+            return self.get_daily_file(valid_time, accum, data_src, file_template)
 
         start_time = valid_time
         last_time = util.shift_time(valid_time, -(int(accum) - 1))
@@ -397,14 +385,63 @@ class PcpCombineWrapper(CommandBuilder):
         return cmd
 
 
-    def run_at_time(self, init_time):
-        self.logger.error("Must use PcpCombineObs or PcpCombineModel")
-        exit(1)
+    def run_at_time(self, init_time, valid_time):
+        task_info = TaskInfo()
+        task_info.init_time = init_time
+        task_info.valid_time = valid_time
+        var_list = util.parse_var_list(self.p)
+        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
 
-# pcp_combine -subtract /d1/mccabe/mallory.data/prfv3rt1/20180308/gfs.t00z.pgrb.1p00.f048 48 /d1/mccabe/mallory.data/prfv3rt1/20180308/gfs.t00z.pgrb.1p00.f024 24 -field 'name="APCP"; level="L0";' ~/20180308/gfs.v24z_A24.nc
+        run_list = []
+        if self.p.getstr('config', 'FCST_PCP_COMBINE_RUN', False):
+            run_list.append("FCST")
+        if self.p.getstr('config', 'OBS_PCP_COMBINE_RUN', False):
+            run_list.append("OBS")
 
-#    def run_subtract_method(self, init_time, lead, in_dir, accum_1, accum_2,
-#                            in_template, out_template):
+        if len(run_list) == 0:
+            self.logger.error("PcpCombine specified in process_list, but "+\
+                              "FCST_PCP_COMBINE_RUN and OBS_PCP_COMBINE_RUN "+\
+                              " are both False. Set one or both to true or "+\
+                              "remove PcpCombine from the process_list")
+            exit()
+
+        for rl in run_list:
+
+            level = self.p.getstr('config', rl+'_LEVEL')
+            in_dir = self.p.getdir(rl+'_PCP_COMBINE_INPUT_DIR')
+            in_template = util.getraw_interp(self.p, 'filename_templates',
+                                         rl+'_PCP_COMBINE_INPUT_TEMPLATE')
+            out_dir = self.p.getdir(rl+'_PCP_COMBINE_OUTPUT_DIR')
+            out_template = util.getraw_interp(self.p, 'filename_templates',
+                                         rl+'_PCP_COMBINE_OUTPUT_TEMPLATE')
+
+            for lead in lead_seq:
+                task_info.lead = lead
+                for var_info in var_list:
+                    out_level = var_info.obs_level
+                    if out_level[0].isalpha():
+                        out_level = out_level[1:]
+                    if not self.p.has_option('config', 'PCP_COMBINE_METHOD') or \
+                      self.p.getstr('config', 'PCP_COMBINE_METHOD') == "ADD":
+                        self.run_add_method(task_info.getValidTime(),
+                                            task_info.getInitTime(),
+                                            out_level,
+                                            var_info.obs_name,
+                                            rl)
+                    elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUM":
+                        self.run_sum_method(task_info.getValidTime(),
+                                     task_info.getInitTime(),
+                                     level, out_level,
+                                     in_dir, out_dir, out_template)
+                    elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUBTRACT":
+                        self.run_subtract_method(task_info, var_info, int(out_level),
+                                                 in_dir, out_dir, in_template,
+                                                 out_template)
+                    else:
+                        self.logger.error("Invalid PCP_COMBINE_METHOD specified")
+                        exit(1)
+
+
     def run_subtract_method(self, task_info, var_info, accum, in_dir,
                             out_dir, in_template, out_template):
         self.clear()
@@ -438,9 +475,10 @@ class PcpCombineWrapper(CommandBuilder):
         self.set_output_filename(out_file)
         self.set_output_dir(out_dir)
 
-        # TODO: If out template has a subdir, make that directory!
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
+        # If out template has a subdir, make that directory
+        mk_dir = os.path.join(out_dir, os.path.dirname(out_file))
+        if not os.path.exists(mk_dir):
+            os.makedirs(mk_dir)
 
         cmd = self.get_command()
         if cmd is None:
@@ -485,14 +523,17 @@ class PcpCombineWrapper(CommandBuilder):
 
 
     def run_add_method(self, valid_time, init_time, accum,
-                       compare_var, data_src, is_forecast=False):
+                       compare_var, data_src):
+        is_forecast = False
+        if data_src == "FCST":
+            is_forecast = True
         self.clear()
         self.set_method("ADD")
 
         input_dir = self.p.getdir(data_src+'_PCP_COMBINE_INPUT_DIR')
-        input_template = self.p.getraw('filename_templates', data_src+'_PCP_COMBINE_INPUT_TEMPLATE')
+        input_template = util.getraw_interp(self.p, 'filename_templates', data_src+'_PCP_COMBINE_INPUT_TEMPLATE')
         output_dir = self.p.getdir(data_src+'_PCP_COMBINE_OUTPUT_DIR')
-        output_template = self.p.getraw('filename_templates',
+        output_template = util.getraw_interp(self.p, 'filename_templates',
                                         data_src+'_PCP_COMBINE_OUTPUT_TEMPLATE')
 
         ymd = valid_time[0:8]
@@ -513,7 +554,7 @@ class PcpCombineWrapper(CommandBuilder):
                                     + input_dir)
                 return False
             gempak_dir = self.p.getdir(data_src+'_GEMPAK_INPUT_DIR')
-            gempak_template = self.p.getraw('filename_templates', data_src+'_GEMPAK_TEMPLATE')
+            gempak_template = util.getraw_interp(self.p, 'filename_templates', data_src+'_GEMPAK_TEMPLATE')
             self.clear()
             self.set_input_dir(gempak_dir)
             if self.get_accumulation(valid_time, int(accum), data_src, gempak_template, is_forecast) is True:

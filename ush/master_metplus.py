@@ -18,8 +18,7 @@ import produtil.setup
 import met_util as util
 import config_metplus
 
-from pcp_combine_obs_wrapper import PcpCombineObsWrapper
-from pcp_combine_model_wrapper import PcpCombineModelWrapper
+from pcp_combine_wrapper import PcpCombineWrapper
 from grid_stat_wrapper import GridStatWrapper
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from tc_pairs_wrapper import TcPairsWrapper

@@ -96,7 +96,7 @@ def compare_results(p, p_b):
     while loop_time <= end_time:
         run_time = time.strftime("%Y%m%d%H%M", time.gmtime(loop_time))
         print("Checking "+run_time)
-
+        # TODO: Handle PcpCombine for each type of run (OBS vs FCST)
         for process in processes:
             print("Checking output from "+process)
             if process == "GridStat":

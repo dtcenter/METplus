@@ -122,9 +122,9 @@ class PointStatWrapper(CommandBuilder):
 
         # Filename templates and regex patterns for input dirs and filenames
         ps_dict['FCST_INPUT_FILE_REGEX'] = \
-            self.p.getraw('regex_pattern', 'FCST_INPUT_FILE_REGEX')
+            util.getraw_interp(self.p, 'regex_pattern', 'FCST_INPUT_FILE_REGEX')
         ps_dict['OBS_INPUT_FILE_REGEX'] = \
-            self.p.getraw('regex_pattern', 'OBS_INPUT_FILE_REGEX')
+            util.getraw_interp(self.p, 'regex_pattern', 'OBS_INPUT_FILE_REGEX')
 
         # non-MET executables
         ps_dict['WGRIB2'] = self.p.getdir('exe', 'WGRIB2')

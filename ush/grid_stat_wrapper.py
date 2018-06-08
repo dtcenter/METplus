@@ -68,7 +68,7 @@ class GridStatWrapper(CommandBuilder):
 
     def find_model(self, lead, init_time, level):
         model_dir = self.p.getdir('FCST_GRID_STAT_INPUT_DIR')
-        model_template = self.p.getraw('filename_templates',
+        model_template = util.getraw_interp(self.p, 'filename_templates',
                                        'FCST_GRID_STAT_INPUT_TEMPLATE')
         max_forecast = self.p.getint('config', 'FCST_MAX_FORECAST')
         init_interval = self.p.getint('config', 'FCST_INIT_INTERVAL')
@@ -119,15 +119,10 @@ class GridStatWrapper(CommandBuilder):
     def find_obs(self, ti, v):
         valid_time = ti.getValidTime()
         obs_dir = self.p.getdir('OBS_GRID_STAT_INPUT_DIR')
-        obs_template = self.p.getraw('filename_templates',
+        obs_template = util.getraw_interp(self.p, 'filename_templates',
                                      'OBS_GRID_STAT_INPUT_TEMPLATE')
         # convert valid_time to unix time
         valid_seconds = int(datetime.datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
-        # get files from valid time day, day before, and day after
-#        valid_date = valid_time[0:8]
-#        yesterday_date = util.shift_time(valid_time, -24)[0:8]
-#        tomorrow_date = util.shift_time(valid_time, 24)[0:8]
-#        all_files = glob.glob("{:s}/*".format(obs_dir), recursive=True)
         # get time of each file, compare to valid time, save best within range
         closest_file = ""
         closest_time = 9999999
@@ -184,7 +179,7 @@ class GridStatWrapper(CommandBuilder):
             obs_level = obs_level[1:]            
         model_type = self.p.getstr('config', 'MODEL_TYPE')
         obs_dir = self.p.getdir('OBS_GRID_STAT_INPUT_DIR')
-        obs_template = self.p.getraw('filename_templates',
+        obs_template = util.getraw_interp(self.p, 'filename_templates',
                                      'OBS_GRID_STAT_INPUT_TEMPLATE')
         model_dir = self.p.getdir('FCST_GRID_STAT_INPUT_DIR')
         config_dir = self.p.getdir('CONFIG_DIR')
@@ -197,7 +192,7 @@ class GridStatWrapper(CommandBuilder):
         model_path = self.find_model(ti.lead, init_time, fcst_level)
 
         if model_path == "":
-            print("ERROR: COULD NOT FIND FILE IN "+model_dir)
+            self.logger.error("ERROR: COULD NOT FIND FILE IN "+model_dir+" FOR "+init_time+" f"+str(ti.lead))
             return
         self.add_input_file(model_path)
         if self.p.getbool('config','OBS_EXACT_VALID_TIME', True):
@@ -263,7 +258,6 @@ class GridStatWrapper(CommandBuilder):
                              "\"; level=\"(*,*)\"; cat_thresh=[ gt" + \
                              str(obs_thresh)+" ]; },"
         else:
-#            data_type = self.p.getstr('config', 'OBS_NATIVE_DATA_TYPE')
             obs_data_type = util.get_filetype(self.p, obs_path)
             model_data_type = util.get_filetype(self.p, model_path)
             if obs_data_type == "NETCDF":
@@ -286,8 +280,6 @@ class GridStatWrapper(CommandBuilder):
 
             fcst_field += fcst_cat_thresh+" },"
 
-#            obs_field += "{ name=\"" + v.obs_name+"_" + obs_level.zfill(2) + \
-#                         "\"; level=\"(*,*)\"; "
             obs_field += obs_cat_thresh+ " },"
 
         # remove last comma and } to be added back after extra options
@@ -302,8 +294,7 @@ class GridStatWrapper(CommandBuilder):
         self.add_env_var("MODEL", model_type)
         self.add_env_var("FCST_VAR", v.fcst_name)
         self.add_env_var("OBS_VAR", v.obs_name)
-        # TODO: Change ACCUM to LEVEL in GridStatConfig_MEAN/PROB and here
-        self.add_env_var("ACCUM", v.fcst_level)
+        self.add_env_var("LEVEL", v.fcst_level)
         self.add_env_var("OBTYPE", ob_type)
         self.add_env_var("CONFIG_DIR", config_dir)
         self.add_env_var("FCST_FIELD", fcst_field)
@@ -316,7 +307,7 @@ class GridStatWrapper(CommandBuilder):
         self.print_env_item("MODEL")
         self.print_env_item("FCST_VAR")
         self.print_env_item("OBS_VAR")
-        self.print_env_item("ACCUM")
+        self.print_env_item("LEVEL")
         self.print_env_item("OBTYPE")
         self.print_env_item("CONFIG_DIR")
         self.print_env_item("FCST_FIELD")
@@ -325,13 +316,13 @@ class GridStatWrapper(CommandBuilder):
         self.logger.debug("")
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_copy(["MODEL", "FCST_VAR", "OBS_VAR",
-                             "ACCUM", "OBTYPE", "CONFIG_DIR",
+                             "LEVEL", "OBTYPE", "CONFIG_DIR",
                              "FCST_FIELD", "OBS_FIELD",
                              "MET_VALID_HHMM"])
         self.logger.debug("")
         cmd = self.get_command()
         if cmd is None:
-            print("ERROR: grid_stat could not generate command")
+            self.logger.error("ERROR: grid_stat could not generate command")
             return
         self.logger.info("")
         self.build()
