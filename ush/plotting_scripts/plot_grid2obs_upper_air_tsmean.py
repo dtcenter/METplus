@@ -173,7 +173,7 @@ while vl <= nlevels:
                  if m == 1:
                      fig, (ax1, ax2) = plt.subplots(2,1,figsize=(10,6), sharex=True)
                      #forecast hour mean
-                     if count_masked_obfar != len(model_now_obar_mean):
+                     if count_masked_obar != len(model_now_obar_mean):
                          logger.debug("Plotting obar lead forecast hour means for "+model_now)
                          ax1.plot(leads, model_now_obar_mean, color='dimgrey', ls='-', linewidth=2.0, marker='o', markersize=7, label='obs')
                          model_1_obar_mean = model_now_obar_mean
@@ -268,7 +268,7 @@ while vl <= nlevels:
                          ax2.plot(leads, model_now_stat_now_mean - model_1_stat_now_mean, color=colors[m-1], ls='-',  marker='o', markersize=7)
              m+=1
         if stat_now == 'avg':
-            ax1.legend(bbox_to_anchor=(0.0, 1.02, 1.0, .102), loc=3, ncol=nmodels+1, fontsize='13', mode="expand", borderaxespad=0.
+            ax1.legend(bbox_to_anchor=(0.0, 1.02, 1.0, .102), loc=3, ncol=nmodels+1, fontsize='13', mode="expand", borderaxespad=0.)
         else:
             ax1.legend(bbox_to_anchor=(0.0, 1.02, 1.0, .102), loc=3, ncol=nmodels, fontsize='13', mode="expand", borderaxespad=0.)
         ax1.set_title("Fcst: "+fcst_var_name+"_"+fcst_var_level_now+" Obs: "+obs_var_name+"_"+obs_var_level_now+" "+str(stat_now)+'\n'+grid+"-"+region+" "+date_filter_method+" "+cycle+"Z "+str(sday)+smonth+str(syear)+"-"+str(eday)+emonth+str(eyear)+" Means\n\n", fontsize=14, fontweight='bold')
