@@ -26,11 +26,11 @@ import glob
 import datetime
 import string_template_substitution as sts
 
-from command_builder import CommandBuilder
+from reformat_gridded_wrapper import ReformatGriddedWrapper
 from task_info import TaskInfo
 from gempak_to_cf_wrapper import GempakToCFWrapper
 
-class PcpCombineWrapper(CommandBuilder):
+class PcpCombineWrapper(ReformatGriddedWrapper):
     def __init__(self, p, logger):
         super(PcpCombineWrapper, self).__init__(p, logger)
         self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
@@ -117,7 +117,7 @@ class PcpCombineWrapper(CommandBuilder):
     def set_out_accum(self, out_accum):
         self.out_accum = out_accum
 
-
+    # TODO: Change function so it only looks in dated dir if it exists
     def getLowestForecastFile(self, valid_time, search_time, template):
         # search for dated dir and without, combine two glob results and sort
         out_file = None
@@ -384,71 +384,36 @@ class PcpCombineWrapper(CommandBuilder):
 
         return cmd
 
-
-    def run_at_time(self, init_time, valid_time):
-        task_info = TaskInfo()
-        task_info.init_time = init_time
-        task_info.valid_time = valid_time
-        var_list = util.parse_var_list(self.p)
-        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
-
-        run_list = []
-        if self.p.getstr('config', 'FCST_PCP_COMBINE_RUN', False):
-            run_list.append("FCST")
-        if self.p.getstr('config', 'OBS_PCP_COMBINE_RUN', False):
-            run_list.append("OBS")
-
-        if len(run_list) == 0:
-            self.logger.error("PcpCombine specified in process_list, but "+\
-                              "FCST_PCP_COMBINE_RUN and OBS_PCP_COMBINE_RUN "+\
-                              " are both False. Set one or both to true or "+\
-                              "remove PcpCombine from the process_list")
-            exit()
-
-        for rl in run_list:
-
-            level = self.p.getstr('config', rl+'_LEVEL')
-            in_dir = self.p.getdir(rl+'_PCP_COMBINE_INPUT_DIR')
-            in_template = util.getraw_interp(self.p, 'filename_templates',
-                                         rl+'_PCP_COMBINE_INPUT_TEMPLATE')
-            out_dir = self.p.getdir(rl+'_PCP_COMBINE_OUTPUT_DIR')
-            out_template = util.getraw_interp(self.p, 'filename_templates',
-                                         rl+'_PCP_COMBINE_OUTPUT_TEMPLATE')
-
-            for lead in lead_seq:
-                task_info.lead = lead
-                for var_info in var_list:
-                    out_level = var_info.obs_level
-                    if out_level[0].isalpha():
-                        out_level = out_level[1:]
-                    if not self.p.has_option('config', 'PCP_COMBINE_METHOD') or \
-                      self.p.getstr('config', 'PCP_COMBINE_METHOD') == "ADD":
-                        self.run_add_method(task_info.getValidTime(),
-                                            task_info.getInitTime(),
-                                            out_level,
-                                            var_info.obs_name,
-                                            rl)
-                    elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUM":
-                        self.run_sum_method(task_info.getValidTime(),
-                                     task_info.getInitTime(),
-                                     level, out_level,
-                                     in_dir, out_dir, out_template)
-                    elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUBTRACT":
-                        self.run_subtract_method(task_info, var_info, int(out_level),
-                                                 in_dir, out_dir, in_template,
-                                                 out_template)
-                    else:
-                        self.logger.error("Invalid PCP_COMBINE_METHOD specified")
-                        exit(1)
+    # TODO: change run_* to setup_*, then run app outside of if block
+    def run_at_time_once(self, task_info, var_info, rl):
+        if not self.p.has_option('config', 'PCP_COMBINE_METHOD') or \
+          self.p.getstr('config', 'PCP_COMBINE_METHOD') == "ADD":
+            self.run_add_method(task_info, var_info, rl)
+        elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUM":
+            self.run_sum_method(task_info, var_info, rl)
+        elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUBTRACT":
+            self.run_subtract_method(task_info, var_info, rl)
+        else:
+            self.logger.error("Invalid PCP_COMBINE_METHOD specified")
+            exit(1)
 
 
-    def run_subtract_method(self, task_info, var_info, accum, in_dir,
-                            out_dir, in_template, out_template):
+    def run_subtract_method(self, task_info, var_info, rl):
         self.clear()
+        in_dir = self.p.getdir(rl+'_PCP_COMBINE_INPUT_DIR')
+        in_template = util.getraw_interp(self.p, 'filename_templates',
+                                     rl+'_PCP_COMBINE_INPUT_TEMPLATE')
+        out_dir = self.p.getdir(rl+'_PCP_COMBINE_OUTPUT_DIR')
+        out_template = util.getraw_interp(self.p, 'filename_templates',
+                                     rl+'_PCP_COMBINE_OUTPUT_TEMPLATE')
+
+        accum = var_info.obs_level
+        if accum[0].isalpha():
+            accum = accum[1:]
         init_time = task_info.getInitTime()
         valid_time = task_info.getValidTime()
         lead = task_info.getLeadTime()
-        lead2 = lead + accum
+        lead2 = lead + int(accum)
 
         self.set_method("SUBTRACT")
 
@@ -490,22 +455,34 @@ class PcpCombineWrapper(CommandBuilder):
         return outfile
 
 
-    def run_sum_method(self, valid_time, init_time, in_accum, out_accum,
-                       input_dir, output_dir, output_template):
+    def run_sum_method(self, task_info, var_info, rl):
         self.clear()
+        in_accum = self.p.getstr('config', rl+'_LEVEL')
+        in_dir = self.p.getdir(rl+'_PCP_COMBINE_INPUT_DIR')
+        in_template = util.getraw_interp(self.p, 'filename_templates',
+                                     rl+'_PCP_COMBINE_INPUT_TEMPLATE')
+        out_dir = self.p.getdir(rl+'_PCP_COMBINE_OUTPUT_DIR')
+        out_template = util.getraw_interp(self.p, 'filename_templates',
+                                     rl+'_PCP_COMBINE_OUTPUT_TEMPLATE')
+
+        out_accum = var_info.obs_level
+        if out_accum[0].isalpha():
+            out_accum = out_accum[1:]
+        valid_time = task_info.getValidTime()
+        init_time = task_info.getInitTime()
         self.set_method("SUM")
         self.set_init_time(init_time)
         self.set_valid_time(valid_time)        
         self.set_in_accum(in_accum)
         self.set_out_accum(out_accum)
-        self.set_pcp_dir(input_dir)
+        self.set_pcp_dir(in_dir)
         self.set_pcp_regex(init_time[0:10])
-        self.set_output_dir(output_dir)
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
+        self.set_output_dir(out_dir)
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
         
         pcpSts = sts.StringSub(self.logger,
-                                output_template,
+                                out_template,
                                 init=init_time,
                                 valid=valid_time,
                                 level=str(out_accum).zfill(2))
@@ -522,13 +499,21 @@ class PcpCombineWrapper(CommandBuilder):
         return outfile
 
 
-    def run_add_method(self, valid_time, init_time, accum,
-                       compare_var, data_src):
+    def run_add_method(self, task_info, var_info, data_src):
         is_forecast = False
         if data_src == "FCST":
             is_forecast = True
         self.clear()
         self.set_method("ADD")
+
+        accum = var_info.obs_level
+        if accum[0].isalpha():
+            accum = accum[1:]
+
+        valid_time = task_info.getValidTime()
+        init_time = task_info.getInitTime()
+        # TODO: should this be fcst_name if in forecast mode?
+        compare_var = var_info.obs_name
 
         input_dir = self.p.getdir(data_src+'_PCP_COMBINE_INPUT_DIR')
         input_template = util.getraw_interp(self.p, 'filename_templates', data_src+'_PCP_COMBINE_INPUT_TEMPLATE')

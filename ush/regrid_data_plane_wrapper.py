@@ -23,34 +23,23 @@ import csv
 import subprocess
 import string_template_substitution as sts
 from task_info import TaskInfo
-from command_builder import CommandBuilder
+from reformat_gridded_wrapper import ReformatGriddedWrapper
 
-
-class RegridDataPlaneWrapper(CommandBuilder):
+class RegridDataPlaneWrapper(ReformatGriddedWrapper):
     def __init__(self, p, logger):
         super(RegridDataPlaneWrapper, self).__init__(p, logger)
         self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                      'bin/regrid_data_plane')
         self.app_name = os.path.basename(self.app_path)
 
-    def run_at_time(self, init_time, valid_time):
-        task_info = TaskInfo()
-        task_info.init_time = init_time
-        task_info.valid_time = valid_time
-        var_list = util.parse_var_list(self.p)        
-        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
-        for lead in lead_seq:
-            task_info.lead = lead
-            task_info.valid_time = -1
-            for var_info in var_list:
-                level = var_info.obs_level
-                if level[0].isalpha():
-                    level = var_info.obs_level[1:]                       
-                self.run_at_time_once(task_info.getValidTime(),
-                                      level, var_info.obs_name)
 
+    def run_at_time_once(self, task_info, var_info, rl):
+        valid_time = task_info.getValidTime()
+        compare_var = var_info.obs_name
+        level = var_info.obs_level
+        if level[0].isalpha():
+            level = var_info.obs_level[1:]
 
-    def run_at_time_once(self, valid_time, level, compare_var):
         bucket_dir = self.p.getdir('OBS_REGRID_DATA_PLANE_INPUT_DIR')
         input_template = util.getraw_interp(self.p, 'filename_templates',
                                         'OBS_REGRID_DATA_PLANE_TEMPLATE')
