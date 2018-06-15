@@ -74,12 +74,14 @@ class TcPairsWrapper(CommandBuilder):
         # Used for logging
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.debug("DEBUG|" + cur_filename + "|" + cur_function + ": creating the tc_pairs dictionary with"
-                                                                         " values from the config file")
+        self.logger.debug("DEBUG|" + cur_filename + "|" + cur_function +
+                          ": creating the tc_pairs dictionary with" +
+                          " values from the config file")
         tcp_dict = dict()
         tcp_dict['MISSING_VAL_TO_REPLACE'] = self.config.getstr('config', 'MISSING_VAL_TO_REPLACE')
         tcp_dict['MISSING_VAL'] = self.config.getstr('config', 'MISSING_VAL')
         tcp_dict['TRACK_TYPE'] = self.config.getstr('config', 'TRACK_TYPE')
+        tcp_dict['TC_PAIRS_CONFIG_FILE'] = self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE')
         tcp_dict['INIT_BEG'] = self.config.getstr('config', 'INIT_BEG')
         tcp_dict['INIT_END'] = self.config.getstr('config', 'INIT_END')
         tcp_dict['INIT_INCREMENT'] = int(self.config.getint('config', 'INIT_INCREMENT') / 3600)
@@ -193,11 +195,6 @@ class TcPairsWrapper(CommandBuilder):
 
         # Get the desired YYYYMMDD_HH init increment list
         # convert the increment INIT_INC from seconds to hours
-        print('RUN_ALL_TIMES')
-        print("INIT_INCREMENT: ", self.tcp_dict['INIT_INCREMENT'])
-        print('INIT BEG: ', self.tcp_dict['INIT_BEG'])
-        print('INIT END: ', self.tcp_dict['INIT_END'])
-        print('INIT HOUR_END: ', self.tcp_dict['INIT_HOUR_END'])
         init_list = util.gen_init_list(
             self.tcp_dict['INIT_BEG'],
             self.tcp_dict['INIT_END'],
@@ -368,6 +365,8 @@ class TcPairsWrapper(CommandBuilder):
         fcst_filename_tmpl = self.tcp_dict['FORECAST_TMPL']
         reference_filename_tmpl = self.tcp_dict['REFERENCE_TMPL']
         top_level_dir = self.tcp_dict['TOP_LEVEL_DIRS'].lower()
+        # pylint:disable=simplifiable-if-statement
+        # using yes and no is less confusing to user
         if top_level_dir == 'yes':
             by_dir = True
         else:
@@ -398,27 +397,33 @@ class TcPairsWrapper(CommandBuilder):
 
             self.build()
         else:
-            # Invoke tc_pairs with A-deck and B-deck filenames. Get a list of all the input files (A-deck and B-deck),
-            # and filter based on one or all of the following criteria: date, region, cyclone.
-
+            # Invoke tc_pairs with A-deck and B-deck filenames. Get a list of all the input files
+            # (A-deck and B-deck), and filter based on one or all of the following criteria: date,
+            # region, cyclone.
 
             # Look for files in the A-Deck and B-Deck
             # directories for files with times that are within the init time window. Employ
-            # StringTemplateSubstitution to create a regex for the filename to assist in identifying the date,
-            # region, and cyclone from the file name (if available) to perform filtering of input data prior to invoking
-            # tc_pairs, making it run more efficiently.
+            # StringTemplateSubstitution to create a regex for the filename to assist in
+            # identifying the date, region, and cyclone from the file name (if available)
+            # to perform filtering of input data prior to invoking tc_pairs, making it
+            # run more efficiently.
             all_adeck_files = self.get_input_track_files(adeck_input_dir)
             all_bdeck_files = self.get_input_track_files(bdeck_input_dir)
 
-            # Create the appropriate string template substitution object, based on what is defined in the
-            # filename_templates
-            (adeck_input_file_regex, adeck_sorted_keywords) = self.create_filename_regex(fcst_filename_tmpl)
-            (bdeck_input_file_regex, bdeck_sorted_keywords) = self.create_filename_regex(reference_filename_tmpl)
+            # Create the appropriate string template substitution object, based on what is
+            # defined in the filename_templates
+            (adeck_input_file_regex, adeck_sorted_keywords) = \
+                self.create_filename_regex(fcst_filename_tmpl)
+            (bdeck_input_file_regex, bdeck_sorted_keywords) = \
+                self.create_filename_regex(reference_filename_tmpl)
 
-            filtered_adeck_files = self.filter_input(all_adeck_files, init_list, adeck_input_file_regex,
+            filtered_adeck_files = self.filter_input(all_adeck_files, init_list,
+                                                     adeck_input_file_regex,
                                                      adeck_sorted_keywords, fcst_filename_tmpl)
-            filtered_bdeck_files = self.filter_input(all_bdeck_files, init_list, bdeck_input_file_regex,
-                                                     bdeck_sorted_keywords, reference_filename_tmpl)
+            filtered_bdeck_files = self.filter_input(all_bdeck_files, init_list,
+                                                     bdeck_input_file_regex,
+                                                     bdeck_sorted_keywords,
+                                                     reference_filename_tmpl)
 
             # Unlike the other MET tools, the tc_pairs usage for this use case is:
             # tc_pairs\
@@ -429,30 +434,29 @@ class TcPairsWrapper(CommandBuilder):
             # [-log file] \
             # [ -v level ]
 
-            # Combine each A-Deck file with each B-Deck file (not performant, but since we made all attempts to
-            # filter both A-Deck and B-Deck files based on date, region and cyclone, we have hopefully reduced
-            # the number of pairings).
+            # Combine each A-Deck file with each B-Deck file (not performant, but since we
+            # made all attempts to filter both A-Deck and B-Deck files based on date, region
+            # and cyclone, we have hopefully reduced the number of pairings).
             config_file = self.tcp_dict['TC_PAIRS_CONFIG_FILE']
             tc_pairs_exe = os.path.join(self.tcp_dict['MET_INSTALL_DIR'],
                                         'bin/tc_pairs')
-            out_base = self.tcp_dict['OUTPUT_BASE']
             for adeck in filtered_adeck_files:
                 # Use the adeck base filename to create the output .tcst file
-                basename = basename(adeck)
+                basename = os.path.basename(adeck)
                 m = re.match(r'(.*).dat', basename)
                 if m:
                     filename_only = m.group(1)
                 else:
                     self.logger.warning(
-                        cur_function + "|" + cur_filename + ": A-deck filename doesn't have .dat extension, "
-                                                            "using the A-deck filename as the base output .tcst file")
+                        cur_function + "|" + cur_filename + ": A-deck filename doesn't' +"
+                        " have .dat extension, using the A-deck filename as the base " +
+                        "output .tcst file")
                     filename_only = adeck
                 outfile = os.path.join(pairs_out_dir, filename_only)
 
                 for bdeck in filtered_bdeck_files:
-                    # cmd_list = [tc_pairs_exe, " -adeck ", adeck, " -bdeck ", bdeck, " -config ", config_file]
-                    cmd_list = [tc_pairs_exe, " -adeck ", adeck, " -bdeck ", bdeck, " -config ", config_file, " -out ",
-                                outfile, " -v 50"]
+                    cmd_list = [tc_pairs_exe, " -adeck ", adeck, " -bdeck ", bdeck, " -config ",
+                                config_file, " -out ", outfile]
                     self.cmd = ''.join(cmd_list)
                     self.logger.debug("DEBUG | [" + cur_filename + ":" +
                                       cur_function + "] | " +
@@ -461,13 +465,15 @@ class TcPairsWrapper(CommandBuilder):
                     self.build()
 
     def get_date_format_info(self, tmpl):
-        """! From the filename_templates template for the input track file, determine the format of the date:
+        """! From the filename_templates template for the input track file,
+             determine the format of the date:
 
              Args:
-                @parm tmpl - The filename template as defined in the filename_templates section of the config file
+                @parm tmpl - The filename template as defined in the filename_templates
+                             section of the config file
              Returns:
-                 date_len  - The length of the expected date string: 4 if YYYY, 6 if YYYYMM, 8 if YYYYMMDD and 10
-                             if YYYYMMDDhh
+                 date_len  - The length of the expected date string: 4 if YYYY, 6 if YYYYMM,
+                             8 if YYYYMMDD and 10 if YYYYMMDDhh
         """
         # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
@@ -483,7 +489,8 @@ class TcPairsWrapper(CommandBuilder):
         # date_format_match = re.match(r'(?i)\A(?:(%+[a-z])*)\Z', tmpl)
         date_format_match = re.match(r'.*\{date\?fmt=([\%+\w]{2,8}).*dat', tmpl)
         if date_format_match:
-            # Determine whether we have YYYY (%Y), YYYYMM (%Y%m), YYYYMMdd (%Y%m%d), or YYYYMMddhh (%Y%m%d%h)
+            # Determine whether we have YYYY (%Y), YYYYMM (%Y%m), YYYYMMdd (%Y%m%d),
+            # or YYYYMMddhh (%Y%m%d%h)
             first_match = date_format_match.group(1)
             match_len = len(first_match)
             if match_len == 8:
@@ -500,8 +507,9 @@ class TcPairsWrapper(CommandBuilder):
                 date_len = 4
             else:
                 self.logger.error(
-                    'Date format specified in the filename_templates section does not match expected %Y, %Y%m, %Y%m%d, ' +
-                    'or %Y%m%d%h format')
+                    'Date format specified in the filename_templates section does not ' +
+                    'match expected %Y, %Y%m, ' + ''
+                    ' %Y%m%d, or %Y%m%d%h format')
                 exit(1)
         else:
             # No match return 0
@@ -509,17 +517,19 @@ class TcPairsWrapper(CommandBuilder):
         return date_len
 
     def create_filename_regex(self, tmpl):
-        """! Creates the regex of the forecast or reference filename as defined in the filename_template section
-             of the config file.
+        """! Creates the regex of the forecast or reference filename as defined in the
+             filename_template section of the config file.
 
            Args:
-               @param tmpl - The filename template describing the forecast or reference input track file (full filepath)
+               @param tmpl - The filename template describing the forecast or reference input
+                             track file (full filepath)
 
            Returns:
                tuple of two values:
-               input_file_regex - A regex string representing the filename. This will be useful when filtering based on
-                             date, region, or cyclone.
-               keywords_ordered -  A list of keywords, in the order in which they were found in the template string.
+               input_file_regex - A regex string representing the filename. This will be
+                                  useful when filtering based on date, region, or cyclone.
+               keywords_ordered -  A list of keywords, in the order in which they were found in
+                                   the template string.
         """
         # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
@@ -529,28 +539,31 @@ class TcPairsWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         self.logger.debug(
-            cur_function + '|' + cur_filename + ":Generating the filename regex from the filename_templates section.")
+            cur_function + '|' + cur_filename +
+            ":Generating the filename regex from the filename_templates section.")
 
         # To filter files on the criteria of date, region, or cyclone (or any combination),
-        # Use dummy values for the region and cyclone, to create a string template substitution object.
-        # This string template substitution object will be used to replace the key-values in the filename
-        # template with its corresponding regex.
+        # Use dummy values for the region and cyclone, to create a string template
+        # substitution object. This string template substitution object will be used to
+        # replace the key-values in the filename template with its corresponding regex.
         region = 'yz'
         cyclone = '00'
         date = '20170704'
         misc = 'misc_stuff'
 
-        # The string template substitution object will be initialized based on what combination of the
-        # keywords have been specified in the filename_templates section: date, region, cyclone. Since
+        # The string template substitution object will be initialized based on what
+        # combination of the keywords have been specified in the filename_templates
+        # section: date, region, cyclone. Since
         date_match = re.match(r'.*\{date\?fmt=(.*?)\}.*', tmpl)
         region_match = re.match(r'.*\{region\?fmt=(.*?)\}', tmpl)
         cyclone_match = re.match(r'.*\{cyclone\?fmt=(.*?)\}', tmpl)
         misc_match = re.match(r'.*\{misc\?fmt=(.*?)\}', tmpl)
 
-        # Rather than having multiple if-elif to account for every possible combination of keywords in a
-        # filename_template , store the keywords in a dictionary and use **kwargs to invoke StringSub with
-        # this dictionary of keyword argument. Determine the order in which the keywords appear in the filename_template
-        # and order the keywords, to facilitate filtering.
+        # Rather than having multiple if-elif to account for every possible combination of
+        # keywords in a filename_template , store the keywords in a dictionary and use
+        # **kwargs to invoke StringSub with this dictionary of keyword argument. Determine
+        # the order in which the keywords appear in the filename_template and order
+        # the keywords, to facilitate filtering.
         keyword_index = {}
         if date_match:
             kwargs = {'date': date}
@@ -571,7 +584,8 @@ class TcPairsWrapper(CommandBuilder):
         string_sub = StringSub(self.logger, tmpl, **kwargs)
         input_file_regex = string_sub.create_cyclone_regex()
 
-        # Get a list of the keywords in the order in which they appeared in the filename_template description
+        # Get a list of the keywords in the order in which they appeared in the
+        # filename_template description
         ordered = collections.OrderedDict(sorted(keyword_index.items(), key=lambda t: t[1]))
         keywords_ordered = ordered.keys()
         return input_file_regex, keywords_ordered
@@ -582,13 +596,15 @@ class TcPairsWrapper(CommandBuilder):
 
              Args:
                  @param all_input_files  -  a list of all the input track files (full file path)
-                 @param init_list        -  a list of all init times in YYYYMMDD_hh format that define
-                                     the initialization time window.
-                 @param input_file_regex -  the regex describing the input file's format (full file path)
-                 @param sorted_keywords  -  a list of keywords, in the order in which they appear in the
-                                            filename_template description
-                 @param tmpl             - the filename template for the A-deck or B-deck file, defined in the
-                                           filename_templates section of the config file
+                 @param init_list        -  a list of all init times in YYYYMMDD_hh format that
+                                            define the initialization time window.
+                 @param input_file_regex -  the regex describing the input file's format
+                                            (full file path)
+                 @param sorted_keywords  -  a list of keywords, in the order in which they
+                                            appear in the filename_template description
+                 @param tmpl             - the filename template for the A-deck or B-deck file,
+                                           defined in the filename_templates section of
+                                           the config file
 
             Returns:
                 filtered_input    - a list of filtered input track files (full file path)
@@ -603,7 +619,8 @@ class TcPairsWrapper(CommandBuilder):
         self.logger.debug(
             cur_function + '|' + cur_filename + ": Filtering track file input")
 
-        # Eight possible combinations: date only, region only, cyclone only, (date, region, cyclone), (date, region),
+        # Eight possible combinations: date only, region only, cyclone only,
+        # (date, region, cyclone), (date, region),
         # (date, cyclone), (cyclone, region), (no date, no region, no cyclone)
         by_date = False
         by_region = False
@@ -615,25 +632,38 @@ class TcPairsWrapper(CommandBuilder):
         if 'cyclone' in sorted_keywords:
             by_cyclone = True
         if by_date and by_region and by_cyclone:
-            filtered_by_date = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
-            filtered_by_region = self.filter_by_region(filtered_by_date, input_file_regex, sorted_keywords)
-            filtered = self.filter_by_cyclone(filtered_by_region, input_file_regex, tmpl, sorted_keywords)
-        elif by_date and by_region:
-            filtered_by_date = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
-            filtered = self.filter_by_region(filtered_by_date, input_file_regex, tmpl, sorted_keywords)
-        elif by_date and by_cyclone:
-            filtered_by_date = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
-            filtered = self.filter_by_cyclone(filtered_by_date, input_file_regex, tmpl, sorted_keywords)
-        elif by_region and by_cyclone and not by_date:
-            filtered_by_region = self.filter_by_region(all_input_files, input_file_regex, init_list, tmpl,
+            filtered_by_date = \
+                self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl,
+                                    sorted_keywords)
+            filtered_by_region = self.filter_by_region(filtered_by_date, input_file_regex,
                                                        sorted_keywords)
-            filtered = self.filter_by_cyclone(filtered_by_region, input_file_regex, tmpl, sorted_keywords)
+            filtered = self.filter_by_cyclone(filtered_by_region, input_file_regex,
+                                              sorted_keywords)
+        elif by_date and by_region:
+            filtered_by_date =\
+                self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl,
+                                    sorted_keywords)
+            filtered = self.filter_by_region(filtered_by_date, input_file_regex, sorted_keywords)
+        elif by_date and by_cyclone:
+            filtered_by_date = \
+                self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl,
+                                    sorted_keywords)
+            filtered = self.filter_by_cyclone(filtered_by_date, input_file_regex, sorted_keywords)
+        # pylint:disable=too-many-function-args
+        elif by_region and by_cyclone and not by_date:
+            filtered_by_region = \
+                self.filter_by_region(all_input_files, input_file_regex, init_list,
+                                      sorted_keywords)
+            filtered = self.filter_by_cyclone(filtered_by_region, input_file_regex,
+                                              sorted_keywords)
         elif by_date and not by_region and not by_cyclone:
-            filtered = self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
+            filtered = \
+                self.filter_by_date(all_input_files, input_file_regex, init_list,
+                                    tmpl, sorted_keywords)
         elif not by_date and by_region and not by_cyclone:
-            filtered = self.filter_by_region(all_input_files, input_file_regex, tmpl, sorted_keywords)
+            filtered = self.filter_by_region(all_input_files, input_file_regex, sorted_keywords)
         elif not by_date and not by_region and by_cyclone:
-            filtered = self.filter_by_cyclone(all_input_files, input_file_regex, tmpl, sorted_keywords)
+            filtered = self.filter_by_cyclone(all_input_files, input_file_regex, sorted_keywords)
         else:
             # Nothing to filter by, return the original input data
             return all_input_files
@@ -645,14 +675,17 @@ class TcPairsWrapper(CommandBuilder):
              Args:
                  @param input_data  - A list of all input data (full file path)
                  @param file_regex - The regex for the input file
-                 @param init_list   - A list of all init times that define the initialization time window
-                 @param tmpl        - The filename template for the A-deck or B-deck input, as specified in the
-                                     filename_templates section of the config file.  Needed to assist in the
-                                     extraction of dates from the directory or filename of the A-deck or B-deck input.
+                 @param init_list   - A list of all init times that define the initialization
+                                      time window
+                 @param tmpl        - The filename template for the A-deck or B-deck input,
+                                      as specified in the filename_templates section of the
+                                      config file.  Needed to assist in the
+                                      extraction of dates from the directory or filename of the
+                                      A-deck or B-deck input.
                  @param sorted_keywords - List of keywords, in the order in which they appear.
              Returns:
-                 filtered_by_date - A list of all input data that lie within the initialization time window
-                                   (full filepath)
+                 filtered_by_date - A list of all input data that lie within the initialization
+                                    time window (full filepath)
 
         """
         # pylint:disable=protected-access
@@ -674,7 +707,8 @@ class TcPairsWrapper(CommandBuilder):
         filtered_by_date = []
         end_date = init_list[-1]
         for cur_init in init_list:
-            # Match the init time granularity to the input data's granularity for ease in filtering by date.
+            # Match the init time granularity to the input data's granularity for ease
+            # in filtering by date.
             if date_len == 10:
                 # %Y%m%d%h -> YYYYMMDDhh
                 # start date
@@ -714,8 +748,6 @@ class TcPairsWrapper(CommandBuilder):
                 # end date
                 end_year = end_date[0:4]
                 end_month = end_date[4:6]
-                end_day = end_date[6:8]
-                end_hour = end_date[9:11]
                 cur_end_date = int(end_year + end_month)
 
             elif date_len == 4:
@@ -728,7 +760,7 @@ class TcPairsWrapper(CommandBuilder):
                 input_date_match = re.match(regex_comp, cur_input)
                 if input_date_match:
                     input_date = int(input_date_match.group(group_number))
-                    if input_date >= cur_init_date and input_date <= cur_end_date:
+                    if cur_init_date <= input_date <= cur_end_date:
                         if cur_input not in filtered_by_date:
                             filtered_by_date.append(cur_input)
 
@@ -739,12 +771,14 @@ class TcPairsWrapper(CommandBuilder):
 
                     Args:
                         @param input_data  - A list of all input data (full file path)
-                        @param input_file_regex - The regex of the filename/directory for track input data.
-                        @sorted_keywords - A list of keywords, in the order in which they appear.
+                        @param input_file_regex - The regex of the filename/directory for
+                                                  track input data.
+                        @param sorted_keywords - A list of keywords, in the order in which
+                                                 they appear.
                     Returns:
-                        filtered_by_region - A list of all input data that correspond to the list of regions requested
-
-               """
+                        filtered_by_region - A list of all input data that correspond to the list of
+                        regions requested
+        """
         # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
         # filename and method.
@@ -780,12 +814,14 @@ class TcPairsWrapper(CommandBuilder):
 
                     Args:
                         @param input_data  - A list of all input data (full file path)
-                        @param input_file_regex - The regex of the filename/directory for track input data.
-                        @sorted_keywords - A list of keywords, in the order in which they appear.
+                        @param input_file_regex - The regex of the filename/directory for
+                                                  track input data.
+                        @param sorted_keywords - A list of keywords, in the order in which
+                                                 they appear.
                     Returns:
-                        filtered_by_cyclone - A list of all input data that correspond to the list of regions requested
-
-               """
+                        filtered_by_cyclone - A list of all input data that correspond
+                                              to the list of regions requested
+       """
         # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
         # filename and method.
@@ -828,20 +864,20 @@ class TcPairsWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
-        self.logger.debug(
-            cur_function + '|' + cur_filename + ": Creating a list of input A-deck or B-deck track files")
+        self.logger.debug(cur_function + '|' + cur_filename + ": Creating a list of input A-deck " +
+                          "or B-deck track files")
 
         # Retrieve full file path for every file in the input directory
         all_track_files = []
         for dirs, _, files in os.walk(input_dir):
-            for f in files:
-                all_track_files.append(os.path.join(dirs, f))
+            for cur_file in files:
+                all_track_files.append(os.path.join(dirs, cur_file))
 
         return all_track_files
 
     def set_env_vars(self):
-        """! Set up all the environment variables that are assigned in the MET+ config file which are
-            to be used by the MET TC-pairs config file.
+        """! Set up all the environment variables that are assigned in the MET+ config
+             file which are to be used by the MET TC-pairs config file.
 
              Args:
                  nothing - retrieves necessary MET+ config values via class attributes
@@ -856,9 +892,9 @@ class TcPairsWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
-        self.logger.debug(
-            cur_function + '|' + cur_filename + ': Setting environment variables that will be used by '
-                                                'MET...')
+        self.logger.debug(cur_function + '|' + cur_filename +
+                          ': Setting environment variables that will be' +
+                          ' used by MET...')
 
         # For all cases below, we need to do some pre-processing so that
         #  Python will use " and not ' because currently MET doesn't
@@ -956,7 +992,7 @@ class TcPairsWrapper(CommandBuilder):
             self.add_env_var(b'CYCLONE', str(cyclone_str))
 
         # STORM_NAME
-        tmp_storm_name =  self.tcp_dict['STORM_NAME']
+        tmp_storm_name = self.tcp_dict['STORM_NAME']
         if not tmp_storm_name:
             # Empty, equivalent to 'STORM_NAME = "[]"; in MET config file,
             # use all storm names.
@@ -1048,8 +1084,10 @@ class TcPairsWrapper(CommandBuilder):
              tc_pairs.
              Args:
                  @param pairs_output_dir: output directory of paired track data
-                 @param adeck_file_path: the location of the adeck track data, as file or top-level directory
-                 @param bdeck_file_path: the location of the bdeck track data, as file or top-level directory
+                 @param adeck_file_path: the location of the adeck track data,
+                                         as file or top-level directory
+                 @param bdeck_file_path: the location of the bdeck track data,
+                                         as file or top-level directory
                  @param date_file: the current date file from a list of all
                                    possible date files in the input directory, used
                                    to over ride the default output name created by MET tc_pairs.
@@ -1094,9 +1132,10 @@ class TcPairsWrapper(CommandBuilder):
 
     def get_command(self):
         """! Over-ride CommandBuilder's get_command because unlike other MET tools,
-             tc_pairs handles input files differently- namely, through flags -adeck and -bdeck and doesn't
-             require an output file, as there is a default.
-        Build command to run from arguments"""
+             tc_pairs handles input files differently- namely, through flags -adeck
+             and -bdeck and doesn't require an output file, as there is a default.
+             Build command to run from arguments
+        """
         if self.app_path is None:
             self.logger.error("No app path specified. You must use a subclass")
             return None
@@ -1104,8 +1143,10 @@ class TcPairsWrapper(CommandBuilder):
         return self.cmd
 
     def build(self):
-        """! Override CommandBuilder's build() since tc_pairs handles input and output differently from the other
-             MET tools"""
+        """! Override CommandBuilder's build() since tc_pairs handles input and output differently
+             from the other MET tools
+        """
+
         # Since this wrapper is not using the CommandBuilder to build the cmd,
         # we need to add the met verbosity level to the cmd created before we
         # run the command.
