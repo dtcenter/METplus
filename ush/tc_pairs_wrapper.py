@@ -97,8 +97,7 @@ class TcPairsWrapper(CommandBuilder):
         tcp_dict['BDECK_FILE_PREFIX'] = self.config.getstr('config', 'BDECK_FILE_PREFIX')
         tcp_dict['TOP_LEVEL_DIRS'] = self.config.getstr('config', 'TOP_LEVEL_DIRS')
         tcp_dict['MET_INSTALL_DIR'] = self.config.getdir('MET_INSTALL_DIR')
-        tcp_dict['OUTPUT_BASE'] =  self.config.getstr('dir', 'OUTPUT_BASE')
-        tcp_dict['BASIN'] =  self.config.getstr('config', 'BASIN')
+        tcp_dict['OUTPUT_BASE'] = self.config.getstr('dir', 'OUTPUT_BASE')
         tcp_dict['CYCLONE'] = util.getlist(self.config.getstr('config', 'CYCLONE'))
         tcp_dict['MODEL'] = util.getlist(self.config.getstr('config', 'MODEL'))
         tcp_dict['STORM_ID'] = util.getlist(self.config.getstr('config', 'STORM_ID'))
@@ -192,17 +191,30 @@ class TcPairsWrapper(CommandBuilder):
         # file (TC_PAIRS_CONFIG_FILE)
         self.set_env_vars()
 
+        # Get the desired YYYYMMDD_HH init increment list
+        # convert the increment INIT_INC from seconds to hours
+        print('RUN_ALL_TIMES')
+        print("INIT_INCREMENT: ", self.tcp_dict['INIT_INCREMENT'])
+        print('INIT BEG: ', self.tcp_dict['INIT_BEG'])
+        print('INIT END: ', self.tcp_dict['INIT_END'])
+        print('INIT HOUR_END: ', self.tcp_dict['INIT_HOUR_END'])
+        init_list = util.gen_init_list(
+            self.tcp_dict['INIT_BEG'],
+            self.tcp_dict['INIT_END'],
+            self.tcp_dict['INIT_INCREMENT'],
+            self.tcp_dict['INIT_HOUR_END'])
+
         # Differentiate between non-ATCF_by_pairs data and ATCF_by_pairs track data based on
         # the TRACK_TYPE
         track_type = self.tcp_dict['TRACK_TYPE']
         if track_type == "extra_tropical_cyclone":
-            self.process_non_atcf()
+            self.process_non_atcf(init_list)
         else:
-            self.process_atcf()
+            self.process_atcf(init_list)
 
         self.logger.info("Completed run_all_times in TcPairsWrapper")
 
-    def process_non_atcf(self):
+    def process_non_atcf(self, init_list):
         """! Original implementation of this wrapper- for
              extra-tropical-cyclone data in non-ATCF_by_pairs format
              We need to do extra processing in the form of replacing -99
@@ -212,6 +224,7 @@ class TcPairsWrapper(CommandBuilder):
              to the second column.
 
            Args:
+               init_list - A list of all times defining the time window.
 
            Returns:
                Nothing, creates the command to invoke MET tc_pairs and
@@ -229,14 +242,6 @@ class TcPairsWrapper(CommandBuilder):
         missing_values = \
             (self.tcp_dict['MISSING_VAL_TO_REPLACE'],
              self.tcp_dict['MISSING_VAL'])
-
-        # Get the desired YYYYMMDD_HH init increment list
-        # convert the increment INIT_INC from seconds to hours
-        init_list = util.gen_init_list(
-            self.tcp_dict['INIT_BEG'],
-            self.tcp_dict['INIT_END'],
-            self.tcp_dict['INIT_INCREMENT'],
-            self.tcp_dict['INIT_HOUR_END'])
 
         # get a list of YYYYMM values
         year_month_list = []
@@ -340,10 +345,10 @@ class TcPairsWrapper(CommandBuilder):
                                                             cur_track_file)
                     self.build()
 
-    def process_atcf(self):
+    def process_atcf(self, init_list):
         """! Create the arguments to run MET tc_pairs on ATCF_by_pairs formatted input data.
              Args:
-
+                 init_list - A list of initialization times defining the time window.
              Returns:
 
         """
@@ -396,11 +401,6 @@ class TcPairsWrapper(CommandBuilder):
             # Invoke tc_pairs with A-deck and B-deck filenames. Get a list of all the input files (A-deck and B-deck),
             # and filter based on one or all of the following criteria: date, region, cyclone.
 
-            init_list = util.gen_init_list(
-                self.tcp_dict['INIT_BEG'],
-                self.tcp_dict['INIT_END'],
-                int(self.tcp_dict['INIT_INCREMENT'] / 3600),
-                self.tcp_dict['INIT_HOUR_END'])
 
             # Look for files in the A-Deck and B-Deck
             # directories for files with times that are within the init time window. Employ
@@ -672,37 +672,63 @@ class TcPairsWrapper(CommandBuilder):
             return input_data
 
         filtered_by_date = []
+        end_date = init_list[-1]
         for cur_init in init_list:
             # Match the init time granularity to the input data's granularity for ease in filtering by date.
             if date_len == 10:
                 # %Y%m%d%h -> YYYYMMDDhh
+                # start date
                 cur_year = cur_init[0:4]
                 cur_month = cur_init[4:6]
                 cur_day = cur_init[6:8]
                 # Start at 9 instead of 8 because of '_' in init_list's YYYYMMDD_hh.
                 cur_hour = cur_init[9:11]
                 cur_init_date = int(cur_year + cur_month + cur_day + cur_hour)
+
+                # end date
+                end_year = end_date[0:4]
+                end_month = end_date[4:6]
+                end_day = end_date[6:8]
+                end_hour = end_date[9:11]
+                cur_end_date = int(end_year + end_month + end_day + end_hour)
+
             elif date_len == 8:
                 # %Y%m%d -> YYYYMMDD
                 cur_year = cur_init[0:4]
                 cur_month = cur_init[4:6]
                 cur_day = cur_init[6:8]
                 cur_init_date = int(cur_year + cur_month + cur_day)
+
+                # end date
+                end_year = end_date[0:4]
+                end_month = end_date[4:6]
+                end_day = end_date[6:8]
+                cur_end_date = int(end_year + end_month + end_day)
+
             elif date_len == 6:
                 # %Y%m -> YYYYMM
                 cur_year = cur_init[0:4]
                 cur_month = cur_init[4:6]
                 cur_init_date = int(cur_year + cur_month)
+
+                # end date
+                end_year = end_date[0:4]
+                end_month = end_date[4:6]
+                end_day = end_date[6:8]
+                end_hour = end_date[9:11]
+                cur_end_date = int(end_year + end_month)
+
             elif date_len == 4:
                 # %Y -> YYYY
                 cur_init_date = int(cur_init[0:4])
+                cur_end_date = int(end_date[0:4])
 
             for cur_input in input_data:
                 # Compare the current init time with that of the input data's time
                 input_date_match = re.match(regex_comp, cur_input)
                 if input_date_match:
                     input_date = int(input_date_match.group(group_number))
-                    if input_date <= cur_init_date:
+                    if input_date >= cur_init_date and input_date <= cur_end_date:
                         if cur_input not in filtered_by_date:
                             filtered_by_date.append(cur_input)
 
@@ -729,7 +755,7 @@ class TcPairsWrapper(CommandBuilder):
         self.logger.debug(
             cur_function + '|' + cur_filename + ": Filtering track file input by region...")
         # Get a list of the regions of interest
-        regions_from_conf = util.getlist(self.tcp_dict['BASIN'])
+        regions_from_conf = self.tcp_dict['BASIN']
         regions = []
         for region in regions_from_conf:
             regions.append(region.lower())
@@ -771,7 +797,7 @@ class TcPairsWrapper(CommandBuilder):
             cur_function + '|' + cur_filename + ": Filtering track file input by cyclone...")
 
         # Get a list of the cyclones of interest
-        cyclones = util.getlist(self.tcp_dict['CYCLONE'])
+        cyclones = self.tcp_dict['CYCLONE']
         group_number = sorted_keywords.index('cyclone') + 1
         filtered = []
         if cyclones:
