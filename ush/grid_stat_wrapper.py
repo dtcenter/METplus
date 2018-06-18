@@ -17,8 +17,13 @@ from __future__ import (print_function, division)
 import os
 from compare_gridded_wrapper import CompareGriddedWrapper
 
+'''!@namespace GridStatWrapper
+@brief Wraps the MET tool grid_stat to compare gridded datasets
+@endcode
+'''
 class GridStatWrapper(CompareGriddedWrapper):
-
+    '''!Wraps the MET tool grid_stat to compare gridded datasets
+    '''
     def __init__(self, p, logger):
         super(GridStatWrapper, self).__init__(p, logger)
         met_install_dir = p.getdir('MET_INSTALL_DIR')

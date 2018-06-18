@@ -25,7 +25,13 @@ import string_template_substitution as sts
 from task_info import TaskInfo
 from reformat_gridded_wrapper import ReformatGriddedWrapper
 
+'''!@namespace RegridDataPlaneWrapper
+@brief Wraps the MET tool regrid_data_plane to reformat gridded datasets
+@endcode
+'''
 class RegridDataPlaneWrapper(ReformatGriddedWrapper):
+    '''!Wraps the MET tool regrid_data_plane to reformat gridded datasets
+    '''
     def __init__(self, p, logger):
         super(RegridDataPlaneWrapper, self).__init__(p, logger)
         self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
@@ -34,6 +40,11 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
 
     def run_at_time_once(self, task_info, var_info, rl):
+        """! Runs the MET application for a given time and forecast lead combination
+              Args:
+                @param ti task_info object containing timing information
+                @param v var_info object containing variable information
+        """
         valid_time = task_info.getValidTime()
         compare_var = var_info.obs_name
         level = var_info.obs_level

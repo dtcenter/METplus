@@ -30,7 +30,18 @@ from reformat_gridded_wrapper import ReformatGriddedWrapper
 from task_info import TaskInfo
 from gempak_to_cf_wrapper import GempakToCFWrapper
 
+'''!@namespace PcpCombineWrapper
+@brief Wraps the MET tool pcp_combine to combine or divide
+precipitation accumulations
+Call as follows:
+@code{.sh}
+Cannot be called directly. Must use child classes.
+@endcode
+@todo add main function to be able to run alone via command line
+'''
 class PcpCombineWrapper(ReformatGriddedWrapper):
+    """!Wraps the MET tool pcp_combine to combine or divide
+    precipitation accumulations"""
     def __init__(self, p, logger):
         super(PcpCombineWrapper, self).__init__(p, logger)
         self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
@@ -117,11 +128,18 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     def set_out_accum(self, out_accum):
         self.out_accum = out_accum
 
-    # TODO: Change function so it only looks in dated dir if it exists
-    def getLowestForecastFile(self, valid_time, search_time, template):
-        # search for dated dir and without, combine two glob results and sort
+
+    def getLowestForecastFile(self, valid_time, dtype):
+        """!Find the lowest forecast hour that corresponds to the
+        valid time
+        Args:
+          @param valid_time valid time to search
+          @param dtype data type (FCST or OBS) to get filename template
+          @rtype string
+          @return Path to file with the lowest forecast hour"""
         out_file = None
-        # used to find lowest forecast
+        template = util.getraw_interp(self.p, 'filename_templates',
+                                       dtype + '_PCP_COMBINE_INPUT_TEMPLATE')
         lowest_fcst = 999999
         num_slashes = template.count('/')
         search_string = "{:s}/*"
@@ -151,24 +169,21 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 lowest_fcst = fcst
         return out_file
 
-    def get_lowest_forecast_at_valid(self, valid_time, dtype):
-        out_file = ""
-        day_before = util.shift_time(valid_time, -24)
-        input_template = util.getraw_interp(self.p, 'filename_templates',
-                                       dtype + '_PCP_COMBINE_INPUT_TEMPLATE')
-        # get all files in yesterday directory, get valid time from init/fcst
-        # NOTE: This will only apply to forecasts up to 48  hours
-        #  If more is needed, will need to add parameter to specify number of
-        #  days to look back
-        out_file = self.getLowestForecastFile(valid_time, day_before, input_template)
-        out_file2 = self.getLowestForecastFile(valid_time, valid_time, input_template)
-        if out_file2 == None:
-            return out_file
-        else:
-            return out_file2
-
+#    def get_lowest_forecast_at_valid(self, valid_time, dtype):
+#        input_template = util.getraw_interp(self.p, 'filename_templates',
+#                                       dtype + '_PCP_COMBINE_INPUT_TEMPLATE')
+#        out_file = self.getLowestForecastFile(valid_time, input_template)
+#        return out_file
 
     def search_day(self, dir, file_time, search_time, template):
+        """!Find file path within a day before the file_time
+        Args:
+          @param file_time output file must have a timestamp before this value
+          @param search_time time to use to get directory listing
+          @param template filename template to search
+          @rtype string
+          @return path to file
+        """
         out_file = ""
         files = sorted(glob.glob("{:s}/*{:s}*".format(dir, search_time[0:8])))
         for f in files:
@@ -181,6 +196,14 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return out_file
 
     def find_closest_before(self, dir, time, template):
+        """!Find the closest file that comes before the search time
+        The file may be from the previous day
+        Args:
+          @param dir directory to search
+          @param time search time - output must come before this time
+          @param template filename template to search
+          @rtype string
+          @return path to file"""
         day_before = util.shift_time(time, -24)
         yesterday_file = self.search_day(dir, time,
                                          str(day_before)[0:10], template)
@@ -192,7 +215,15 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             return today_file
 
 
-    def get_daily_file(self, valid_time,accum, data_src, file_template):
+    def get_daily_file(self, valid_time, accum, data_src, file_template):
+        """!Pull accumulation out of file that contains a full day of data
+        Args:
+          @param valid_time valid time to search
+          @param accum accumulation to extract from file
+          @param data_src type of data (FCST or OBS)
+          @param file_template filename template to search
+          @rtype bool
+          @return True if file was added to output list, False if not"""
         # loop accum times
         data_interval = self.p.getint('config',
                                       data_src + '_DATA_INTERVAL') * 3600
@@ -220,10 +251,21 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                     str(lead) + ",*,*)\";'"
             self.add_input_file(f, addon)
             return True
+        return False
         
         
     def get_accumulation(self, valid_time, accum, data_src,
                          file_template, is_forecast=False):
+        """!Find files to combine to build the desired accumulation
+        Args:
+          @param valid_time valid time to search
+          @param accum desired accumulation to build
+          @param data_src type of data (FCST or OBS)
+          @param file_template filename template to search
+          @param is_forecast handle differently if reading forecast files
+          @rtype bool
+          @return True if full set of files to build accumulation is found
+        """
         if self.input_dir == "":
             self.logger.error(self.app_name +
                               ": Must set data dir to run get_accumulation")
@@ -241,7 +283,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # loop backwards in time until you have a full set of accum
         while last_time <= start_time:
             if is_forecast:
-                f = self.get_lowest_forecast_at_valid(start_time, data_src)
+                f = self.getLowestForecastFile(start_time, data_src)
                 if f == None:
                     break
                 ob_str = self.p.getstr('config',
@@ -399,6 +441,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
 
     def run_subtract_method(self, task_info, var_info, rl):
+        """!Setup pcp_combine to subtract two files to build desired accumulation
+        Args:
+          @param ti task_info object containing timing information
+          @param v var_info object containing variable information
+          @params rl data type (FCST or OBS)
+          @rtype string
+          @return path to output file"""
         self.clear()
         in_dir = self.p.getdir(rl+'_PCP_COMBINE_INPUT_DIR')
         in_template = util.getraw_interp(self.p, 'filename_templates',
@@ -456,6 +505,14 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
 
     def run_sum_method(self, task_info, var_info, rl):
+        """!Setup pcp_combine to build desired accumulation based on
+        init/valid times and accumulations
+        Args:
+          @param ti task_info object containing timing information
+          @param v var_info object containing variable information
+          @params rl data type (FCST or OBS)
+          @rtype string
+          @return path to output file"""
         self.clear()
         in_accum = self.p.getstr('config', rl+'_LEVEL')
         in_dir = self.p.getdir(rl+'_PCP_COMBINE_INPUT_DIR')
@@ -500,6 +557,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
 
     def run_add_method(self, task_info, var_info, data_src):
+        """!Setup pcp_combine to add files to build desired accumulation
+        Args:
+          @param ti task_info object containing timing information
+          @param v var_info object containing variable information
+          @params rl data type (FCST or OBS)
+          @rtype string
+          @return path to output file"""
         is_forecast = False
         if data_src == "FCST":
             is_forecast = True
