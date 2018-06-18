@@ -10,7 +10,7 @@ import pytest
 import config_metplus
 from pcp_combine_wrapper import PcpCombineWrapper
 import met_util as util
-
+from task_info import TaskInfo
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
@@ -22,13 +22,13 @@ import met_util as util
 # The following two methods should be included in ALL pytest tests for METplus.
 #
 #
-def pytest_addoption(parser):
-    parser.addoption("-c", action="store", help=" -c <test config file>")
+#def pytest_addoption(parser):
+#    parser.addoption("-c", action="store", help=" -c <test config file>")
 
 
 # @pytest.fixture
-def cmdopt(request):
-    return request.config.getoption("-c")
+#def cmdopt(request):
+#    return request.config.getoption("-c")
 
 
 # -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
@@ -191,7 +191,7 @@ def test_setup_add_method():
     task_info.init_time = -1
     task_info.valid_time = "2016090418"
     var_list = []
-    fo = FieldObj()
+    fo = util.FieldObj()
     fo.fcst_name = "APCP"
     fo.obs_name = "ACPCP"
     fo.fcst_extra = ""
@@ -228,7 +228,7 @@ def test_setup_sum_method():
     task_info.init_time = -1
     task_info.valid_time = "2016090418"
     var_list = []
-    fo = FieldObj()
+    fo = util.FieldObj()
     fo.fcst_name = "APCP"
     fo.obs_name = "ACPCP"
     fo.fcst_extra = ""
@@ -267,7 +267,7 @@ def test_setup_subtract_method():
     task_info.init_time = -1
     task_info.valid_time = "2016090418"
     var_list = []
-    fo = FieldObj()
+    fo = util.FieldObj()
     fo.fcst_name = "APCP"
     fo.obs_name = "ACPCP"
     fo.fcst_extra = ""
