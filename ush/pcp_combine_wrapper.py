@@ -153,7 +153,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             se = util.get_time_from_file(self.logger, fpath, template)
 
             if se == None:
-                return None
+                continue
 
             fcst = se.leadHour
             if fcst is -1:
@@ -428,19 +428,26 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
     # TODO: change run_* to setup_*, then run app outside of if block
     def run_at_time_once(self, task_info, var_info, rl):
+        cmd = None
         if not self.p.has_option('config', 'PCP_COMBINE_METHOD') or \
           self.p.getstr('config', 'PCP_COMBINE_METHOD') == "ADD":
-            self.run_add_method(task_info, var_info, rl)
+            cmd = self.setup_add_method(task_info, var_info, rl)
         elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUM":
-            self.run_sum_method(task_info, var_info, rl)
+            cmd = self.setup_sum_method(task_info, var_info, rl)
         elif self.p.getstr('config', 'PCP_COMBINE_METHOD') == "SUBTRACT":
-            self.run_subtract_method(task_info, var_info, rl)
+            cmd = self.setup_subtract_method(task_info, var_info, rl)
         else:
             self.logger.error("Invalid PCP_COMBINE_METHOD specified")
             exit(1)
 
+        if cmd is None:
+            self.logger.error("pcp_combine could not generate command")
+            return
+        self.logger.info("")
+        self.build()
 
-    def run_subtract_method(self, task_info, var_info, rl):
+
+    def setup_subtract_method(self, task_info, var_info, rl):
         """!Setup pcp_combine to subtract two files to build desired accumulation
         Args:
           @param ti task_info object containing timing information
@@ -465,19 +472,17 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         lead2 = lead + int(accum)
 
         self.set_method("SUBTRACT")
-
         pcpSts1 = sts.StringSub(self.logger,
                                 in_template,
                                 init=init_time,
-                                lead=str(lead))
+                                lead=str(lead).zfill(2))
         file1 = pcpSts1.doStringSub()
 
         pcpSts2 = sts.StringSub(self.logger,
                                 in_template,
                                 init=init_time,
-                                lead=str(lead2))
+                                lead=str(lead2).zfill(2))
         file2 = pcpSts2.doStringSub()
-
         self.add_input_file(os.path.join(in_dir,file2),lead2)
         self.add_input_file(os.path.join(in_dir,file1),lead)
 
@@ -495,16 +500,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             os.makedirs(mk_dir)
 
         cmd = self.get_command()
-        if cmd is None:
-            self.logger.error("pcp_combine could not generate command")
-            return
-        self.logger.info("")
-        self.build()
         outfile = self.get_output_path()
         return outfile
 
 
-    def run_sum_method(self, task_info, var_info, rl):
+    def setup_sum_method(self, task_info, var_info, rl):
         """!Setup pcp_combine to build desired accumulation based on
         init/valid times and accumulations
         Args:
@@ -529,7 +529,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         init_time = task_info.getInitTime()
         self.set_method("SUM")
         self.set_init_time(init_time)
-        self.set_valid_time(valid_time)        
+        self.set_valid_time(valid_time)
         self.set_in_accum(in_accum)
         self.set_out_accum(out_accum)
         self.set_pcp_dir(in_dir)
@@ -550,13 +550,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if cmd is None:
             self.logger.error("pcp_combine could not generate command")
             return
-        self.logger.info("")
-        self.build()
         outfile = self.get_output_path()
         return outfile
 
 
-    def run_add_method(self, task_info, var_info, data_src):
+    def setup_add_method(self, task_info, var_info, data_src):
         """!Setup pcp_combine to add files to build desired accumulation
         Args:
           @param ti task_info object containing timing information
@@ -649,7 +647,5 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if cmd is None:
             self.logger.error("pcp_combine could not generate command")
             return
-        self.logger.info("")
-        self.build()
         outfile = self.get_output_path()
         return outfile
