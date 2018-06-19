@@ -39,7 +39,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         self.app_name = os.path.basename(self.app_path)
 
 
-    def run_at_time_once(self, task_info, var_info, rl):
+    def run_at_time_once(self, task_info, var_info, dtype):
         """! Runs the MET application for a given time and forecast lead combination
               Args:
                 @param ti task_info object containing timing information
@@ -51,31 +51,31 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if level[0].isalpha():
             level = var_info.obs_level[1:]
 
-        bucket_dir = self.p.getdir('OBS_REGRID_DATA_PLANE_INPUT_DIR')
+        input_dir = self.p.getdir(dtype+'_REGRID_DATA_PLANE_INPUT_DIR')
         input_template = util.getraw_interp(self.p, 'filename_templates',
-                                        'OBS_REGRID_DATA_PLANE_TEMPLATE')
-        regrid_dir = self.p.getdir('OBS_REGRID_DATA_PLANE_OUTPUT_DIR')
-        regrid_template = util.getraw_interp(self.p, 'filename_templates',
-                                        'OBS_REGRID_DATA_PLANE_TEMPLATE')
+                                        dtype+'_REGRID_DATA_PLANE_TEMPLATE')
+        output_dir = self.p.getdir(dtype+'_REGRID_DATA_PLANE_OUTPUT_DIR')
+        output_template = util.getraw_interp(self.p, 'filename_templates',
+                                        dtype+'_REGRID_DATA_PLANE_TEMPLATE')
 
         ymd_v = valid_time[0:8]
-        if not os.path.exists(os.path.join(regrid_dir, ymd_v)):
-            os.makedirs(os.path.join(regrid_dir, ymd_v))
+        if not os.path.exists(os.path.join(output_dir, ymd_v)):
+            os.makedirs(os.path.join(output_dir, ymd_v))
 
         pcpSts = sts.StringSub(self.logger,
                                input_template,
                                valid=valid_time,
                                level=str(level).zfill(2))
-        outfile = os.path.join(bucket_dir, pcpSts.doStringSub())
+        infile = os.path.join(input_dir, pcpSts.doStringSub())
 
-        self.add_input_file(outfile)
+        self.add_input_file(infile)
         self.add_input_file(self.p.getstr('config', 'VERIFICATION_GRID'))
         regridSts = sts.StringSub(self.logger,
-                                  regrid_template,
+                                  output_template,
                                   valid=valid_time,
                                   level=str(level).zfill(2))
-        regrid_file = regridSts.doStringSub()
-        self.set_output_path(os.path.join(regrid_dir, regrid_file))
+        outfile = regridSts.doStringSub()
+        self.set_output_path(os.path.join(output_dir, outfile))
         field_name = "{:s}_{:s}".format(compare_var, str(level).zfill(2))
         self.add_arg("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(
             field_name))
@@ -84,7 +84,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         self.add_arg("-name " + field_name)
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("regrid_data_plane could not generate command")
+            self.logger.error(self.app_name+" could not generate command")
             return
         self.logger.info("")
         self.build()
