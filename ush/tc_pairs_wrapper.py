@@ -419,13 +419,16 @@ class TcPairsWrapper(CommandBuilder):
             (bdeck_input_file_regex, bdeck_sorted_keywords) = \
                 self.create_filename_regex(reference_filename_tmpl)
 
-            filtered_adeck_files = self.filter_input(all_adeck_files, init_list,
-                                                     adeck_input_file_regex,
-                                                     adeck_sorted_keywords, fcst_filename_tmpl)
-            filtered_bdeck_files = self.filter_input(all_bdeck_files, init_list,
-                                                     bdeck_input_file_regex,
-                                                     bdeck_sorted_keywords,
-                                                     reference_filename_tmpl)
+            # If for some reason the actual files don't match with what is expected, use all
+            # ADeck and BDeck input files.
+            if len(adeck_input_file_regex) > 0 and len(bdeck_input_file_regex) > 0:
+                filtered_adeck_files = self.filter_input(all_adeck_files, init_list,
+                                                         adeck_input_file_regex,
+                                                         adeck_sorted_keywords, fcst_filename_tmpl)
+                filtered_bdeck_files = self.filter_input(all_bdeck_files, init_list,
+                                                         bdeck_input_file_regex,
+                                                         bdeck_sorted_keywords,
+                                                         reference_filename_tmpl)
 
             # Unlike the other MET tools, the tc_pairs usage for this use case is:
             # tc_pairs\
@@ -562,13 +565,14 @@ class TcPairsWrapper(CommandBuilder):
         misc_match = re.match(r'.*\{misc\?fmt=(.*?)\}', tmpl)
 
         # Rather than having multiple if-elif to account for every possible combination of
-        # keywords in a filename_template , store the keywords in a dictionary and use
+        # keywords in a filename_template, store the keywords in a dictionary and use
         # **kwargs to invoke StringSub with this dictionary of keyword argument. Determine
         # the order in which the keywords appear in the filename_template and order
         # the keywords, to facilitate filtering.
         keyword_index = {}
+        kwargs = {}
         if date_match:
-            kwargs = {'date': date}
+            kwargs['date'] = date
             [(m.start(), m.end()) for m in re.finditer(r".*\{date\?fmt=(.*?)\}.", tmpl)]
             keyword_index['date'] = m.start(1)
         if region_match:
