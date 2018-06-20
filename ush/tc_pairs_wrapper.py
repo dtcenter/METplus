@@ -3,8 +3,10 @@
 """
 Program Name: tc_pairs_wrapper.py
 Contact(s): Julie Prestopnik, Minna Win
-Abstract: Invokes the MET tool tc_pairs to parse ADeck and BDeck ATCF_by_pairs files,
-          filter the data, and match them up
+Abstract: Invokes the MET tool tc_pairs to parse ADeck and BDeck files (ATCF formatted and SBU GFS extra
+          tropical cyclone, non-ATCF formatted),
+          filter the data, and match them up or just pass in the top level ADeck and BDeck directories to
+          MET tc_pairs (slower)
 History Log:  Initial version
 Usage:
 Parameters: None
@@ -264,8 +266,8 @@ class TcPairsWrapper(CommandBuilder):
 
         if not dir_list:
             self.logger.warning("ERROR | [" + cur_filename + ":" +
-                                cur_function + "] | There are no dated"
-                                               "sub-directories (YYYYMM) " +
+                                cur_function + "] | There are no dated" +
+                                " sub-directories (YYYYMM) " +
                                 "with input data as expected in: " +
                                 self.config.getdir('TRACK_DATA_DIR'))
             exit(0)
@@ -925,7 +927,6 @@ class TcPairsWrapper(CommandBuilder):
         tmp_init_exc = util.getlist(
             self.tcp_dict['INIT_EXCLUDE'])
         if not tmp_init_inc:
-            # self.add_env_var('PB2NC_STATION_ID', "[]")
             self.add_env_var(b'INIT_INCLUDE', "[]")
         else:
             # Not empty, set the environment variable to the
@@ -936,7 +937,6 @@ class TcPairsWrapper(CommandBuilder):
             self.add_env_var(b'INIT_INCLUDE', str(init_inc_str))
 
         if not tmp_init_exc:
-            # self.add_env_var('PB2NC_STATION_ID', "[]")
             self.add_env_var(b'INIT_EXCLUDE', "[]")
         else:
             # Not empty, set the environment variable to the
