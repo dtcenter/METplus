@@ -23,59 +23,59 @@ import csv
 import subprocess
 import string_template_substitution as sts
 from task_info import TaskInfo
-from command_builder import CommandBuilder
+from reformat_gridded_wrapper import ReformatGriddedWrapper
 
-
-class RegridDataPlaneWrapper(CommandBuilder):
+'''!@namespace RegridDataPlaneWrapper
+@brief Wraps the MET tool regrid_data_plane to reformat gridded datasets
+@endcode
+'''
+class RegridDataPlaneWrapper(ReformatGriddedWrapper):
+    '''!Wraps the MET tool regrid_data_plane to reformat gridded datasets
+    '''
     def __init__(self, p, logger):
         super(RegridDataPlaneWrapper, self).__init__(p, logger)
         self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                      'bin/regrid_data_plane')
         self.app_name = os.path.basename(self.app_path)
 
-    def run_at_time(self, init_time, valid_time):
-        task_info = TaskInfo()
-        task_info.init_time = init_time
-        task_info.valid_time = valid_time
-        var_list = util.parse_var_list(self.p)        
-        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
-        for lead in lead_seq:
-            task_info.lead = lead
-            task_info.valid_time = -1
-            for var_info in var_list:
-                level = var_info.obs_level
-                if level[0].isalpha():
-                    level = var_info.obs_level[1:]                       
-                self.run_at_time_once(task_info.getValidTime(),
-                                      level, var_info.obs_name)
 
+    def run_at_time_once(self, task_info, var_info, dtype):
+        """! Runs the MET application for a given time and forecast lead combination
+              Args:
+                @param ti task_info object containing timing information
+                @param v var_info object containing variable information
+        """
+        valid_time = task_info.getValidTime()
+        compare_var = var_info.obs_name
+        level = var_info.obs_level
+        if level[0].isalpha():
+            level = var_info.obs_level[1:]
 
-    def run_at_time_once(self, valid_time, level, compare_var):
-        bucket_dir = self.p.getdir('OBS_REGRID_DATA_PLANE_INPUT_DIR')
+        input_dir = self.p.getdir(dtype+'_REGRID_DATA_PLANE_INPUT_DIR')
         input_template = util.getraw_interp(self.p, 'filename_templates',
-                                        'OBS_REGRID_DATA_PLANE_TEMPLATE')
-        regrid_dir = self.p.getdir('OBS_REGRID_DATA_PLANE_OUTPUT_DIR')
-        regrid_template = util.getraw_interp(self.p, 'filename_templates',
-                                        'OBS_REGRID_DATA_PLANE_TEMPLATE')
+                                        dtype+'_REGRID_DATA_PLANE_TEMPLATE')
+        output_dir = self.p.getdir(dtype+'_REGRID_DATA_PLANE_OUTPUT_DIR')
+        output_template = util.getraw_interp(self.p, 'filename_templates',
+                                        dtype+'_REGRID_DATA_PLANE_TEMPLATE')
 
         ymd_v = valid_time[0:8]
-        if not os.path.exists(os.path.join(regrid_dir, ymd_v)):
-            os.makedirs(os.path.join(regrid_dir, ymd_v))
+        if not os.path.exists(os.path.join(output_dir, ymd_v)):
+            os.makedirs(os.path.join(output_dir, ymd_v))
 
         pcpSts = sts.StringSub(self.logger,
                                input_template,
                                valid=valid_time,
                                level=str(level).zfill(2))
-        outfile = os.path.join(bucket_dir, pcpSts.doStringSub())
+        infile = os.path.join(input_dir, pcpSts.doStringSub())
 
-        self.add_input_file(outfile)
+        self.add_input_file(infile)
         self.add_input_file(self.p.getstr('config', 'VERIFICATION_GRID'))
         regridSts = sts.StringSub(self.logger,
-                                  regrid_template,
+                                  output_template,
                                   valid=valid_time,
                                   level=str(level).zfill(2))
-        regrid_file = regridSts.doStringSub()
-        self.set_output_path(os.path.join(regrid_dir, regrid_file))
+        outfile = regridSts.doStringSub()
+        self.set_output_path(os.path.join(output_dir, outfile))
         field_name = "{:s}_{:s}".format(compare_var, str(level).zfill(2))
         self.add_arg("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(
             field_name))
@@ -84,7 +84,7 @@ class RegridDataPlaneWrapper(CommandBuilder):
         self.add_arg("-name " + field_name)
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("regrid_data_plane could not generate command")
+            self.logger.error(self.app_name+" could not generate command")
             return
         self.logger.info("")
         self.build()
