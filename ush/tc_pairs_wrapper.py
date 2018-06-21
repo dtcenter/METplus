@@ -639,16 +639,12 @@ class TcPairsWrapper(CommandBuilder):
             by_cyclone = True
         if by_date and by_region and by_cyclone:
             filtered_by_date = \
-                self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl,
-                                    sorted_keywords)
-            filtered_by_region = self.filter_by_region(filtered_by_date, input_file_regex,
-                                                       sorted_keywords)
-            filtered = self.filter_by_cyclone(filtered_by_region, input_file_regex,
-                                              sorted_keywords)
+                self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
+            filtered_by_region = self.filter_by_region(filtered_by_date, input_file_regex, sorted_keywords)
+            filtered = self.filter_by_cyclone(filtered_by_region, input_file_regex, sorted_keywords)
         elif by_date and by_region:
             filtered_by_date =\
-                self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl,
-                                    sorted_keywords)
+                self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
             filtered = self.filter_by_region(filtered_by_date, input_file_regex, sorted_keywords)
         elif by_date and by_cyclone:
             filtered_by_date = \
@@ -658,8 +654,7 @@ class TcPairsWrapper(CommandBuilder):
         # pylint:disable=too-many-function-args
         elif by_region and by_cyclone and not by_date:
             filtered_by_region = \
-                self.filter_by_region(all_input_files, input_file_regex, init_list,
-                                      sorted_keywords)
+                self.filter_by_region(all_input_files, input_file_regex, sorted_keywords)
             filtered = self.filter_by_cyclone(filtered_by_region, input_file_regex,
                                               sorted_keywords)
         elif by_date and not by_region and not by_cyclone:
