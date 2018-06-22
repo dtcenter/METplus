@@ -23,7 +23,6 @@ import csv
 import subprocess
 import datetime
 import glob
-import gzip
 from command_builder import CommandBuilder
 from task_info import TaskInfo
 import string_template_substitution as sts
@@ -111,17 +110,11 @@ that reformat gridded data
                                      level=str(level.split('-')[0]).zfill(2))
             model_file = model_ss.doStringSub()
             model_path = os.path.join(model_dir, model_file)
+            util.decompress_file(model_path, self.logger)
             if os.path.exists(model_path):
                 found = True
                 break
-            elif os.path.exists(model_path+".gz"):
-                with gzip.open(model_path+".gz", 'rb') as infile:
-                    with open(model_path, 'wb') as outfile:
-                        outfile.write(infile.read())
-                        infile.close()
-                        outfile.close()
-                        found = True
-                        break
+
             time_check = util.shift_time(time_check, -init_interval)
             lead_check = lead_check + init_interval            
 
