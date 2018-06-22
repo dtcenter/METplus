@@ -430,6 +430,21 @@ class TcPairsWrapper(CommandBuilder):
                                                          bdeck_sorted_keywords,
                                                          reference_filename_tmpl)
 
+                # For debugging and informational purposes, create ASCII files containing the input files that
+                # will be used in the evaluation.
+                adeck_ascii = os.path.join(self.tcp_dict['OUTPUT_BASE'], 'adeck_filtered_files.txt')
+                with open(adeck_ascii, "a+") as adeck_file:
+                    adeck_file.write("A-deck input files (after filtering), to be used in evaluation:\n")
+                    adeck_file.write("==============================================================\n")
+                    for adeck in filtered_adeck_files:
+                        adeck_file.write(adeck + "\n")
+                bdeck_ascii = os.path.join(self.tcp_dict['OUTPUT_BASE'], 'bdeck_filtered_files.txt')
+                with open(bdeck_ascii, "a+") as bdeck_file:
+                    bdeck_file.write("B-deck input files (after filtering), to be used in evaluation:\n")
+                    bdeck_file.write("==============================================================\n")
+                    for bdeck in filtered_bdeck_files:
+                        bdeck_file.write(bdeck + "\n")
+
             # Unlike the other MET tools, the tc_pairs usage for this use case is:
             # tc_pairs\
             #  -adeck <top-level dir or file> \
@@ -569,8 +584,8 @@ class TcPairsWrapper(CommandBuilder):
         # **kwargs to invoke StringSub with this dictionary of keyword argument. Determine
         # the order in which the keywords appear in the filename_template and order
         # the keywords, to facilitate filtering.
-        keyword_index = {}
-        kwargs = {}
+        keyword_index = dict()
+        kwargs = dict()
         if date_match:
             kwargs['date'] = date
             [(m.start(), m.end()) for m in re.finditer(r".*\{date\?fmt=(.*?)\}.", tmpl)]
@@ -686,7 +701,8 @@ class TcPairsWrapper(CommandBuilder):
                  @param sorted_keywords - List of keywords, in the order in which they appear.
              Returns:
                  filtered_by_date - A list of all input data that lie within the initialization
-                                    time window (full filepath)
+                                    time window (full filepath)  If the applied filter returns zero
+                                    results, log a message and return the origin input data.
 
         """
         # pylint:disable=protected-access
@@ -765,6 +781,10 @@ class TcPairsWrapper(CommandBuilder):
                         if cur_input not in filtered_by_date:
                             filtered_by_date.append(cur_input)
 
+        if len(filtered_by_date) == 0:
+            self.logger.warning('Filtering by date produced no results.  Returning original data set.')
+            return input_data
+
         return filtered_by_date
 
     def filter_by_region(self, input_data, input_file_regex, sorted_keywords):
@@ -778,7 +798,7 @@ class TcPairsWrapper(CommandBuilder):
                                                  they appear.
                     Returns:
                         filtered_by_region - A list of all input data that correspond to the list of
-                        regions requested
+                        regions requested.  If filtering returns zero results, log this and return the input data.
         """
         # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
@@ -796,7 +816,7 @@ class TcPairsWrapper(CommandBuilder):
             regions.append(region.lower())
         group_number = sorted_keywords.index('region') + 1
         filtered = []
-        if regions:
+        if len(regions) > 0:
             # Extract the region based on the filename template
             for cur_data in input_data:
                 regex_comp = re.compile(input_file_regex)
@@ -805,7 +825,8 @@ class TcPairsWrapper(CommandBuilder):
                     data_match = match.group(group_number).lower()
                     if data_match in regions:
                         filtered.append(cur_data)
-        else:
+        if len(filtered) == 0:
+            self.logger.warning('Filtering by region produced no results.  Returning input data set.')
             return input_data
 
         return filtered
@@ -837,7 +858,7 @@ class TcPairsWrapper(CommandBuilder):
         cyclones = self.tcp_dict['CYCLONE']
         group_number = sorted_keywords.index('cyclone') + 1
         filtered = []
-        if cyclones:
+        if len(cyclones) > 0:
             # Extract the cyclone based on the filename template
             for cur_data in input_data:
                 regex_comp = re.compile(input_file_regex)
@@ -846,7 +867,8 @@ class TcPairsWrapper(CommandBuilder):
                     data_match = match.group(group_number).lower()
                     if data_match in cyclones:
                         filtered.append(cur_data)
-        else:
+        if len(filtered) == 0:
+            self.logger.warning('Filtering by region produced no results.  Returning input data set.')
             return input_data
 
         return filtered
