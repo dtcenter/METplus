@@ -433,12 +433,28 @@ class TcPairsWrapper(CommandBuilder):
                 # For debugging and informational purposes, create ASCII files containing the input files that
                 # will be used in the evaluation.
                 adeck_ascii = os.path.join(self.tcp_dict['OUTPUT_BASE'], 'adeck_filtered_files.txt')
+
+                # Remove file from previous run
+                try:
+                    os.remove(adeck_ascii)
+                except OSError:
+                    # File doesn't exist/already scrubbed
+                    pass
+
                 with open(adeck_ascii, "a+") as adeck_file:
                     adeck_file.write("A-deck input files (after filtering), to be used in evaluation:\n")
                     adeck_file.write("==============================================================\n")
                     for adeck in filtered_adeck_files:
                         adeck_file.write(adeck + "\n")
                 bdeck_ascii = os.path.join(self.tcp_dict['OUTPUT_BASE'], 'bdeck_filtered_files.txt')
+
+                # Remove file from previous run
+                try:
+                    os.remove(bdeck_ascii)
+                except OSError:
+                    # File doesn't exist/already scrubbed
+                    pass
+
                 with open(bdeck_ascii, "a+") as bdeck_file:
                     bdeck_file.write("B-deck input files (after filtering), to be used in evaluation:\n")
                     bdeck_file.write("==============================================================\n")
@@ -469,7 +485,7 @@ class TcPairsWrapper(CommandBuilder):
                 else:
                     self.logger.warning(
                         cur_function + "|" + cur_filename + ": A-deck filename doesn't' +"
-                        " have .dat extension, using the A-deck filename as the base " +
+                                                            " have .dat extension, using the A-deck filename as the base " +
                         "output .tcst file")
                     filename_only = adeck
                 outfile = os.path.join(pairs_out_dir, filename_only)
@@ -529,7 +545,7 @@ class TcPairsWrapper(CommandBuilder):
                 self.logger.error(
                     'Date format specified in the filename_templates section does not ' +
                     'match expected %Y, %Y%m, ' + ''
-                    ' %Y%m%d, or %Y%m%d%h format')
+                                                  ' %Y%m%d, or %Y%m%d%h format')
                 exit(1)
         else:
             # No match return 0
@@ -646,11 +662,21 @@ class TcPairsWrapper(CommandBuilder):
         by_date = False
         by_region = False
         by_cyclone = False
-        if 'date' in sorted_keywords:
+
+        # Check for the presence of the 'date' keyword in the filename template and
+        # also if INIT_BEG and INIT_END are defined in the config file. If absent, then the wrapper will not perform
+        # any filtering by date.
+        if 'date' in sorted_keywords and len(self.tcp_dict['INIT_BEG']) > 0 and len(self.tcp_dict['INIT_END']) > 0:
             by_date = True
-        if 'region' in sorted_keywords:
+
+        # Check for the 'region' keyword in the filename template and for values defined in the config file. If
+        # absent, then the wrapper will not perform filtering by region.
+        if 'region' in sorted_keywords and len(self.tcp_dict['BASIN']) > 0:
             by_region = True
-        if 'cyclone' in sorted_keywords:
+
+        # Check for the 'cyclone' keyword in the filename template and for a cyclone annual number
+        # defined in the config file.  If absent, then forgo filtering by cyclone.
+        if 'cyclone' in sorted_keywords and len(self.tcp_dict['CYCLONE']) > 0:
             by_cyclone = True
         if by_date and by_region and by_cyclone:
             filtered_by_date = \
@@ -658,7 +684,7 @@ class TcPairsWrapper(CommandBuilder):
             filtered_by_region = self.filter_by_region(filtered_by_date, input_file_regex, sorted_keywords)
             filtered = self.filter_by_cyclone(filtered_by_region, input_file_regex, sorted_keywords)
         elif by_date and by_region:
-            filtered_by_date =\
+            filtered_by_date = \
                 self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
             filtered = self.filter_by_region(filtered_by_date, input_file_regex, sorted_keywords)
         elif by_date and by_cyclone:
@@ -714,11 +740,19 @@ class TcPairsWrapper(CommandBuilder):
 
         self.logger.debug(
             cur_function + '|' + cur_filename + ": Filtering track file input by date...")
+
+        # Check if filtering by init time is defined in the config file, if not, forgo filtering by date and return
+        # input_data.
+        if len(self.tcp_dict['INIT_BEG']) == 0 and len(self.tcp_dict['INIT_END']) == 0:
+            self.logger.info("No init times specified in config file, skip filtering by date.")
+            return input_data
+
         date_len = self.get_date_format_info(tmpl)
         regex_comp = re.compile(file_regex)
         group_number = sorted_keywords.index('date') + 1
         if date_len == 0:
             # No match to date?=fmt in filename_templates description, return the input file
+            self.logger.info("Date doesn't match filename template date, skip filtering by date.")
             return input_data
 
         filtered_by_date = []
@@ -811,6 +845,18 @@ class TcPairsWrapper(CommandBuilder):
             cur_function + '|' + cur_filename + ": Filtering track file input by region...")
         # Get a list of the regions of interest
         regions_from_conf = self.tcp_dict['BASIN']
+
+        # Check that the 'region' keyword is in the sorted_keywords list, if not, then skip filtering by region and
+        # return the input_data.
+        if 'region' not in sorted_keywords:
+            self.logger.info("The 'region' keyword is not in the filename template, skip filtering by region.")
+            return input_data
+
+        # Check for any regions in the config file, if none exist, then skip filtering and return the input data.
+        if len(regions_from_conf) == 0:
+            self.logger.info('No regions specified in config file, skip filtering by regions. Returning input data.')
+            return input_data
+
         regions = []
         for region in regions_from_conf:
             regions.append(region.lower())
@@ -826,7 +872,7 @@ class TcPairsWrapper(CommandBuilder):
                     if data_match in regions:
                         filtered.append(cur_data)
         if len(filtered) == 0:
-            self.logger.warning('Filtering by region produced no results.  Returning input data set.')
+            self.logger.info('Filtering by region produced no results.  Returning input data set.')
             return input_data
 
         return filtered
@@ -856,6 +902,19 @@ class TcPairsWrapper(CommandBuilder):
 
         # Get a list of the cyclones of interest
         cyclones = self.tcp_dict['CYCLONE']
+
+        # Check if 'cyclone' keyword is in the sorted_keywords list, if not, skip filtering by cyclone.
+        if 'cyclone' not in sorted_keywords:
+            self.logger.info(
+                "No 'cyclone' keyword found in filename templates, skip filtering by annual cyclone number.")
+            return input_data
+
+        # If no cyclones were requested in the conf file, forgo filtering and return the input_data
+        if len(cyclones) == 0:
+            self.logger.info(
+                "No annual cyclone number defined in conf file, skipping filtering by annual cyclone number.")
+            return input_data
+
         group_number = sorted_keywords.index('cyclone') + 1
         filtered = []
         if len(cyclones) > 0:
