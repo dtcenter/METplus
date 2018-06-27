@@ -10,6 +10,9 @@ import errno
 import time
 import calendar
 import re
+import gzip
+import bz2
+import zipfile
 from collections import namedtuple
 
 import subprocess
@@ -1711,6 +1714,36 @@ def getraw_interp(p, sec, opt):
             out_template += c
 
     return out_template
+
+
+def decompress_file(filename, logger=None):
+    if os.path.exists(filename):
+        return
+    elif os.path.exists(filename+".gz"):        
+        if logger:
+            logger.info("Decompressing gz file")
+        with gzip.open(filename+".gz", 'rb') as infile:
+            with open(filename, 'wb') as outfile:
+                outfile.write(infile.read())
+                infile.close()
+                outfile.close()
+    elif os.path.exists(filename+".bz2"):
+        if logger:
+            logger.info("Decompressing bz2 file")
+        with open(filename+".bz2", 'rb') as infile:
+            with open(filename, 'wb') as outfile:
+                outfile.write(bz2.decompress(infile.read()))
+                infile.close()
+                outfile.close()
+    elif os.path.exists(filename+".zip"):
+        if logger:
+            logger.info("Decompressing zip file")
+        with zipfile.ZipFile(filename+".zip") as z:
+            with open(filename, 'wb') as f:
+                f.write(z.read(os.path.basename(filename)))
+#        zip = zipfile.ZipFile(filename+".zip")
+#        zip.extractall(os.path.dirname(filename))
+
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
