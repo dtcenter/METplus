@@ -12,53 +12,53 @@
 //
 // Models
 //
-model = [];
-//model = ${MODEL};
+//model = [];
+model = "${MODEL}";
 //
 // Storm identifiers
-//    
-storm_id = [];
-//storm_id = ${STORM_ID};
+//
+//storm_id = [];
+storm_id = "${STORM_ID}";
 
 //
 // Basins
 //
-basin = [];
-//basin = ${basin};
+//basin = [];
+basin = "${BASIN}";
 
 //
 // Cyclone numbers
 //
-cyclone = [];
-//cyclone = ${CYCLONE};
+//cyclone = [];
+cyclone = "${CYCLONE}";
 
 //
 // Storm names
 //
-storm_name = [];
-//storm_name = ${STORM_NAME};
+//storm_name = [];
+storm_name = "${STORM_NAME}";
 
 //
 // Model initialization time windows to include or exclude
 //
-init_beg = "";
-//init_beg = "${INIT_BEG}";
-init_end = "";
-//init_end = "${INIT_END}";
-init_inc = [];
-//init_inc = ${INIT_INCLUDE};
-init_exc = [];
-//init_exc = ${INIT_EXCLUDE};
+//init_beg = "";
+init_beg = "${INIT_BEG}";
+//init_end = "";
+init_end = "${INIT_END}";
+//init_inc = [];
+init_inc = "${INIT_INCLUDE}";
+//init_exc = [];
+init_exc = "${INIT_EXCLUDE}";
 //
 // Valid model time window
 //
-valid_beg = "";
-//valid_beg = "${VALID_BEG}";
-valid_end = "";
-//valid_end = "${VALID_END}";
+//valid_beg = "";
+valid_beg = "${VALID_BEG}";
+//valid_end = "";
+valid_end = "${VALID_END}";
 
 //
-// Model initialization hours 
+// Model initialization hours
 //
 init_hour = [];
 
@@ -69,7 +69,7 @@ init_mask  = "";
 valid_mask = "";
 
 //
-// Specify if the code should check for duplicate ATCF lines 
+// Specify if the code should check for duplicate ATCF lines
 //
 check_dup = FALSE;
 
