@@ -23,6 +23,8 @@ import os
 import sys
 import re
 import csv
+from string import lower
+
 import produtil.setup
 from produtil.run import ExitStatusException
 # TODO - critical  must import met_util before CommandBuilder
@@ -88,8 +90,8 @@ class TcPairsWrapper(CommandBuilder):
         tcp_dict['INIT_END'] = self.config.getstr('config', 'INIT_END')
         tcp_dict['INIT_INCREMENT'] = int(self.config.getint('config', 'INIT_INCREMENT') / 3600)
         tcp_dict['INIT_HOUR_END'] = self.config.getstr('config', 'INIT_HOUR_END')
-        tcp_dict['INIT_INCLUDE'] = self.config.getstr('config', 'INIT_INCLUDE')
-        tcp_dict['INIT_EXCLUDE'] = self.config.getstr('config', 'INIT_EXCLUDE')
+        tcp_dict['INIT_INCLUDE'] = util.getlist(self.config.getstr('config', 'INIT_INCLUDE'))
+        tcp_dict['INIT_EXCLUDE'] = util.getlist(self.config.getstr('config', 'INIT_EXCLUDE'))
         tcp_dict['VALID_BEG'] = self.config.getstr('config', 'VALID_BEG')
         tcp_dict['VALID_END'] = self.config.getstr('config', 'VALID_END')
         tcp_dict['ADECK_TRACK_DATA_DIR'] = self.config.getdir('ADECK_TRACK_DATA_DIR')
@@ -108,9 +110,9 @@ class TcPairsWrapper(CommandBuilder):
         tcp_dict['BASIN'] = util.getlist(self.config.getstr('config', 'BASIN'))
         tcp_dict['STORM_NAME'] = util.getlist(self.config.getstr('config', 'STORM_NAME'))
         tcp_dict['DLAND_FILE'] = self.config.getstr('config', 'DLAND_FILE')
-        tcp_dict['FORECAST_TMPL'] = self.config.getraw('filename_templates', 'FORECAST_TMPL')
-        tcp_dict['REFERENCE_TMPL'] = self.config.getraw('filename_templates', 'REFERENCE_TMPL')
-
+        if tcp_dict['TRACK_TYPE'].lower() != 'extra_tropical_cyclone':
+            tcp_dict['FORECAST_TMPL'] = self.config.getraw('filename_templates', 'FORECAST_TMPL')
+            tcp_dict['REFERENCE_TMPL'] = self.config.getraw('filename_templates', 'REFERENCE_TMPL')
         return tcp_dict
 
     def read_modify_write_file(self, in_csvfile, storm_month, missing_values,
@@ -387,9 +389,8 @@ class TcPairsWrapper(CommandBuilder):
             cmd_list = [tc_pairs_exe,
                         " -adeck ",
                         adeck_input_dir, " -bdeck ",
-                        bdeck_input_dir, " -config ",
-                        self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE'),
-                        " -out ", outfile, " -v 50"]
+                        bdeck_input_dir, " -config ", self.tcp_dict['TC_PAIRS_CONFIG_FILE'],
+                        " -out ", outfile]
 
             self.cmd = ''.join(cmd_list)
             self.logger.debug("DEBUG | [" + cur_filename + ":" +
@@ -484,8 +485,8 @@ class TcPairsWrapper(CommandBuilder):
                     filename_only = m.group(1)
                 else:
                     self.logger.warning(
-                        cur_function + "|" + cur_filename + ": A-deck filename doesn't' +"
-                                                            " have .dat extension, using the A-deck filename as the base " +
+                        cur_function + "|" + cur_filename + ": A-deck filename doesn't +"
+                        " have .dat extension, using the A-deck filename as the base " +
                         "output .tcst file")
                     filename_only = adeck
                 outfile = os.path.join(pairs_out_dir, filename_only)
@@ -1002,12 +1003,14 @@ class TcPairsWrapper(CommandBuilder):
 
         # INIT_INC and INIT_EXC
         # Used to set init_inc in "TC_PAIRS_CONFIG_FILE"
+        # tmp_init_inc = self.tcp_dict['INIT_INCLUDE']
+        # tmp_init_exc = self.tcp_dict['INIT_EXCLUDE']
         tmp_init_inc = util.getlist(
-            self.tcp_dict['INIT_INCLUDE'])
+            self.config.getstr('config', 'INIT_INCLUDE'))
         tmp_init_exc = util.getlist(
-            self.tcp_dict['INIT_EXCLUDE'])
+            self.config.getstr('config', 'INIT_EXCLUDE'))
         if not tmp_init_inc:
-            self.add_env_var(b'INIT_INCLUDE', "[]")
+            self.add_env_var(b'INIT_INCLUDE', "")
         else:
             # Not empty, set the environment variable to the
             # value specified in the MET+ config file after removing whitespace
@@ -1017,7 +1020,7 @@ class TcPairsWrapper(CommandBuilder):
             self.add_env_var(b'INIT_INCLUDE', str(init_inc_str))
 
         if not tmp_init_exc:
-            self.add_env_var(b'INIT_EXCLUDE', "[]")
+            self.add_env_var(b'INIT_EXCLUDE', "")
         else:
             # Not empty, set the environment variable to the
             # value specified in the MET+ config file after removing whitespace
@@ -1083,10 +1086,10 @@ class TcPairsWrapper(CommandBuilder):
             self.add_env_var(b'STORM_NAME', str(storm_name_str))
 
         # Valid time window variables
-        valid_beg = self.config.getstr('config', 'VALID_BEG')
+        valid_beg = self.tcp_dict['VALID_BEG']
         self.add_env_var(b'VALID_BEG', str(valid_beg))
 
-        valid_end = self.config.getstr('config', 'VALID_END')
+        valid_end = self.tcp_dict['VALID_END']
         self.add_env_var(b'VALID_END', str(valid_end))
 
         # DLAND_FILE
