@@ -203,17 +203,17 @@ class CommandBuilder:
     def run_all_times(self):
         """!Loop over time range specified in conf file and
         call MET+ wrapper for each time"""
-        use_init = p.getbool('config', 'LOOP_BY_INIT', True)
+        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
-            time_format = p.getstr('config', 'INIT_TIME_FMT')
-            start_t = p.getstr('config', 'INIT_BEG')
-            end_t = p.getstr('config', 'INIT_END')
-            time_interval = p.getint('config', 'INIT_INC')
+            time_format = self.p.getstr('config', 'INIT_TIME_FMT')
+            start_t = self.p.getstr('config', 'INIT_BEG')
+            end_t = self.p.getstr('config', 'INIT_END')
+            time_interval = self.p.getint('config', 'INIT_INC')
         else:
-            time_format = p.getstr('config', 'VALID_TIME_FMT')
-            start_t = p.getstr('config', 'VALID_BEG')
-            end_t = p.getstr('config', 'VALID_END')
-            time_interval = p.getint('config', 'VALID_INC')
+            time_format = self.p.getstr('config', 'VALID_TIME_FMT')
+            start_t = self.p.getstr('config', 'VALID_BEG')
+            end_t = self.p.getstr('config', 'VALID_END')
+            time_interval = self.p.getint('config', 'VALID_INC')
         
         if time_interval < 60:
             print("ERROR: time_interval parameter must be greater than 60 seconds")
@@ -230,3 +230,8 @@ class CommandBuilder:
             else:
                 self.run_at_time(-1, run_time)
             loop_time += time_interval
+
+
+
+#if __name__ == "__main__":
+#  main()
