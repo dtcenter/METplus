@@ -255,22 +255,26 @@ that reformat gridded data
         # get fcst and obs thresh parameters
         # verify they are the same size
 
-        fcst_str = "FCST_"+v.fcst_name+"_"+fcst_level+"_THRESH"
-        obs_str = "OBS_"+v.obs_name+"_"+obs_level+"_THRESH"
+#        fcst_str = "FCST_"+v.fcst_name+"_"+fcst_level+"_THRESH"
+#        obs_str = "OBS_"+v.obs_name+"_"+obs_level+"_THRESH"
+#        fcst_str = v.fcst_thresh
+#        obs_str = v.obs_thresh
         fcst_cat_thresh = ""
-        obs_cat_thresh = ""
         fcst_threshs = []
-        obs_threshs = []
-        
-        if self.p.has_option('config', fcst_str):
-            fcst_threshs = util.getlistfloat(self.p.getstr('config', fcst_str))
+        if v.fcst_thresh != "":
+#            fcst_threshs = util.getlistfloat(self.p.getstr('config', fcst_str))
+            fcst_threshs = v.fcst_thresh
             fcst_cat_thresh = "cat_thresh=[ "
             for fcst_thresh in fcst_threshs:
                 fcst_cat_thresh += "gt"+str(fcst_thresh)+", "
             fcst_cat_thresh = fcst_cat_thresh[0:-2]+" ];"
             
-        if self.p.has_option('config', obs_str):
-            obs_threshs = util.getlistfloat(self.p.getstr('config', obs_str))
+ #       if self.p.has_option('config', obs_str):
+#        obs_threshs = util.getlistfloat(self.p.getstr('config', obs_str))
+        obs_cat_thresh = ""
+        obs_threshs = []        
+        if v.obs_thresh != "":
+            obs_threshs = v.obs_thresh
             obs_cat_thresh = "cat_thresh=[ "
             for obs_thresh in obs_threshs:
                 obs_cat_thresh += "gt"+str(obs_thresh)+", "

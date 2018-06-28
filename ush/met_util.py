@@ -1482,8 +1482,8 @@ def shift_time_seconds(time, shift):
 
 
 class FieldObj(object):
-    __slots__ = 'fcst_name', 'fcst_level', 'fcst_extra',\
-                'obs_name', 'obs_level', 'obs_extra'
+    __slots__ = 'fcst_name', 'fcst_level', 'fcst_extra', 'fcst_thresh', \
+                'obs_name', 'obs_level', 'obs_extra', 'obs_thresh'
 
 def parse_var_list(p):
     # var_list is a list containing an list of FieldObj
@@ -1508,6 +1508,10 @@ def parse_var_list(p):
             if p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
                 fcst_extra = getraw_interp(p, 'config', "FCST_VAR"+n+"_OPTIONS")
 
+            fcst_thresh = ""
+            if p.has_option('config', "FCST_VAR"+n+"_THRESH"):
+                fcst_thresh = getlistfloat(p.getstr('config', "FCST_VAR"+n+"_THRESH"))
+
             # if OBS_VARn_X does not exist, use FCST_VARn_X
             if p.has_option('config', "OBS_VAR"+n+"_NAME"):
                 obs_name = p.getstr('config', "OBS_VAR"+n+"_NAME")
@@ -1529,12 +1533,20 @@ def parse_var_list(p):
                           "_LEVELS do not have the same number of elements")
                 exit(1)
 
+            # if OBS_VARn_THRESH does not exist, use FCST_VARn_THRESH
+            if p.has_option('config', "OBS_VAR"+n+"_THRESH"):
+                obs_thresh = getlistfloat(getstr('config', "OBS_VAR"+n+"_THRESH"))
+            else:
+                obs_thresh = fcst_thresh
+
             for f,o in zip(fcst_levels, obs_levels):
                 fo = FieldObj()
                 fo.fcst_name = fcst_name
                 fo.obs_name = obs_name
                 fo.fcst_extra = fcst_extra
                 fo.obs_extra = obs_extra
+                fo.fcst_thresh = fcst_thresh
+                fo.obs_thresh = obs_thresh             
                 fo.fcst_level = f
                 fo.obs_level = o
                 var_list.append(fo)
