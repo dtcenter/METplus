@@ -58,7 +58,10 @@ class MakePlotsWrapper(CommandBuilder):
 
     def grid2grid_pres_plots(self):
         self.logger.info("Making plots for grid2grid-pres")
-        logging_filename = self.logger.handlers[0].baseFilename
+        try:
+            logging_filename = self.logger.parent.handlers[0].baseFilename
+        except:
+            logging_filename = self.logger.handlers[0].baseFilename
         self.add_env_var("LOGGING_FILENAME", logging_filename)
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
@@ -194,7 +197,10 @@ class MakePlotsWrapper(CommandBuilder):
 
     def grid2grid_anom_plots(self):
         self.logger.info("Making plots for grid2grid-anom")
-        logging_filename = self.logger.handlers[0].baseFilename
+        try:
+            logging_filename = self.logger.parent.handlers[0].baseFilename
+        except:
+            logging_filename = self.logger.handlers[0].baseFilename
         self.add_env_var("LOGGING_FILENAME", logging_filename)
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
@@ -360,7 +366,10 @@ class MakePlotsWrapper(CommandBuilder):
  
     def grid2grid_sfc_plots(self):
         self.logger.info("Making plots for grid2grid-sfc")
-        logging_filename = self.logger.handlers[0].baseFilename
+        try:
+            logging_filename = self.logger.parent.handlers[0].baseFilename
+        except:
+            logging_filename = self.logger.handlers[0].baseFilename
         self.add_env_var("LOGGING_FILENAME", logging_filename)
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
