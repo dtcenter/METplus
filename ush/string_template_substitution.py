@@ -88,7 +88,6 @@ def multiple_replace(dict, text):
 def get_lead_level_time_seconds(logger, time_string):
     """ Returns the number of seconds for the time string in the format
         [H]HH[MMSS]"""
-
     # Used for logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name

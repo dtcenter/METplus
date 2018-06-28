@@ -25,13 +25,19 @@ import string_template_substitution as sts
 from command_runner import CommandRunner
 from abc import ABCMeta
 
-
+'''!@namespace CommandBuilder
+@brief Common functionality to wrap all MET applications
+Call as follows:
+@code{.sh}
+Cannot be called directly. Must use child classes.
+@endcode
+'''
 class CommandBuilder:
     __metaclass__ = ABCMeta
 
-
+    """!Common functionality to wrap all MET applications
+    """
     def __init__(self, p, logger):
-        '''Retrieve parameters from corresponding param file'''
         self.p = p
         self.logger = logger
         self.debug = False
@@ -43,6 +49,8 @@ class CommandBuilder:
         self.clear()
 
     def clear(self):
+        """!Unset class variables to prepare for next run time
+        """
         self.args = []
         self.input_dir = ""
         self.infiles = []
@@ -58,24 +66,34 @@ class CommandBuilder:
         self.verbose = v
 
     def add_arg(self, arg):
+        """!Add generic argument to MET application command line
+        """
         self.args.append(arg)
 
     def add_input_file(self, filename):
+        """!Add input filename to MET application command line
+        """
         self.infiles.append(filename)
 
     def get_input_files(self):
+        """!Returns list of input files passed to MET application
+        """
         return self.infiles
 
     def set_input_dir(self, d):
+        """!Set directory to look for input files
+        """
         self.input_dir = d
 
     def set_output_path(self, outpath):
-        '''Split path into directory and filename then save both'''
+        """!Split path into directory and filename then save both
+        """
         self.outfile = os.path.basename(outpath)
         self.outdir = os.path.dirname(outpath)
 
     def get_output_path(self):
-        '''Combine output directory and filename then return result'''
+        """!Combine output directory and filename then return result
+        """
         return os.path.join(self.outdir, self.outfile)
 
     def set_output_filename(self, outfile):
@@ -88,6 +106,9 @@ class CommandBuilder:
         self.param = param
 
     def add_env_var(self, key,  name):
+        """!Sets an environment variable so that the MET application
+        can reference it in the parameter file or the application itself
+        """
         self.env[key] = name
         # Note: Modify os.environ directly since it is automatically
         # copied to the produtil runner environment. If needed,
@@ -101,13 +122,15 @@ class CommandBuilder:
         return self.env
 
     def print_env(self):
-        '''Print all environment variables set for this application'''        
+        """!Print all environment variables set for this application
+        """
         for x in self.env:
             self.logger.debug(x, "=", self.env[x])
 
     def print_env_copy(self, vars):
-        '''Print list of environment variables that can be easily \
-        copied into terminal'''
+        """!Print list of environment variables that can be easily
+        copied into terminal
+        """
         out = ""
         for v in vars:
             if self.env[v].find('"') != -1:
@@ -118,10 +141,15 @@ class CommandBuilder:
         self.logger.debug(out)
 
     def print_env_item(self, item):
+        """!Print single environment variable in the log file
+        """
         self.logger.debug(item+"="+self.env[item])
 
     def get_command(self):
-        '''Build command to run from arguments'''
+        """! Builds the command to run the MET application
+           @rtype string
+           @return Returns a MET command with arguments that you can run
+        """
         if self.app_path is None:
             (self.logger).error("No app path specified. "\
                                 "You must use a subclass")
@@ -165,7 +193,7 @@ class CommandBuilder:
     # Make sure they have SET THE self.app_name in the subclasses constructor.
     # see regrid_data_plane_wrapper.py as an example of how to set.
     def build(self):
-        '''Build and run command'''
+        """!Build and run command"""
         cmd = self.get_command()
         if cmd is None:
             return
@@ -173,17 +201,19 @@ class CommandBuilder:
 
 
     def run_all_times(self):
-        use_init = p.getbool('config', 'LOOP_BY_INIT', True)
+        """!Loop over time range specified in conf file and
+        call MET+ wrapper for each time"""
+        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
-            time_format = p.getstr('config', 'INIT_TIME_FMT')
-            start_t = p.getstr('config', 'INIT_BEG')
-            end_t = p.getstr('config', 'INIT_END')
-            time_interval = p.getint('config', 'INIT_INC')
+            time_format = self.p.getstr('config', 'INIT_TIME_FMT')
+            start_t = self.p.getstr('config', 'INIT_BEG')
+            end_t = self.p.getstr('config', 'INIT_END')
+            time_interval = self.p.getint('config', 'INIT_INC')
         else:
-            time_format = p.getstr('config', 'VALID_TIME_FMT')
-            start_t = p.getstr('config', 'VALID_BEG')
-            end_t = p.getstr('config', 'VALID_END')
-            time_interval = p.getint('config', 'VALID_INC')
+            time_format = self.p.getstr('config', 'VALID_TIME_FMT')
+            start_t = self.p.getstr('config', 'VALID_BEG')
+            end_t = self.p.getstr('config', 'VALID_END')
+            time_interval = self.p.getint('config', 'VALID_INC')
         
         if time_interval < 60:
             print("ERROR: time_interval parameter must be greater than 60 seconds")
@@ -200,3 +230,8 @@ class CommandBuilder:
             else:
                 self.run_at_time(-1, run_time)
             loop_time += time_interval
+
+
+
+#if __name__ == "__main__":
+#  main()

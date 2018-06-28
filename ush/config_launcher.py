@@ -271,7 +271,13 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     #        prelaunch(conf,logger,cycle)
     #    return conf
 
+    # Initialize the output directories
     produtil.fileop.makedirs(conf.getdir('OUTPUT_BASE'), logger=logger)
+    # A user my set the confloc METPLUS_CONF location in a subdir of OUTPUT_BASE
+    # or even in another parent directory altogether, so make thedirectory
+    # so the metplus_final.conf file can be written.
+    if not os.path.exists(realpath(dirname(confloc))):
+        produtil.fileop.makedirs(realpath(dirname(confloc)), logger=logger)
 
     # logger.info('Expand certain [dir] values to ensure availability ')
     #            'before vitals parsing.
