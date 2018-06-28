@@ -162,7 +162,7 @@ while s <= nstats: #loop over statistics
                   for d in range(len(model_now_stat_file_dates)):
                       if date_filter_method == 'Valid':
                             model_date = datetime.datetime.strptime(model_now_stat_file_dates[d], dateformat)
-                        elif date_filter_method == 'Initialization':
+                      elif date_filter_method == 'Initialization':
                             model_date = datetime.datetime.strptime(model_now_stat_file_dates[d], dateformat) - datetime.timedelta(hours=lead_int)
                       model_now_dates_list.append(md.date2num(model_date))
                   model_now_dates = np.asarray(model_now_dates_list)
