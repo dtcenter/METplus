@@ -192,7 +192,7 @@ while s <= nstats: #loop over statistics
                             model_date = datetime.datetime.strptime(model_now_stat_file_dates[d], dateformat)
                         elif date_filter_method == 'Initialization':
                             model_date = datetime.datetime.strptime(model_now_stat_file_dates[d], dateformat) - datetime.timedelta(hours=lead_int)
-                   model_now_dates_list.append(md.date2num(model_date))
+                        model_now_dates_list.append(md.date2num(model_date))
                    model_now_dates = np.asarray(model_now_dates_list)
                    #account for missing data
                    model_now_stat_now_dates_vals = np.zeros_like(dates)
