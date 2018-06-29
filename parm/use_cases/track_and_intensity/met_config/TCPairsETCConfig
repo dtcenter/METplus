@@ -13,30 +13,30 @@
 // Models
 //
 //model = [];
-model = "${MODEL}";
+model = ${MODEL};
 //
 // Storm identifiers
 //
 //storm_id = [];
-storm_id = "${STORM_ID}";
+storm_id = ${STORM_ID};
 
 //
 // Basins
 //
 //basin = [];
-basin = "${BASIN}";
+basin = ${BASIN};
 
 //
 // Cyclone numbers
 //
 //cyclone = [];
-cyclone = "${CYCLONE}";
+cyclone = ${CYCLONE};
 
 //
 // Storm names
 //
 //storm_name = [];
-storm_name = "${STORM_NAME}";
+storm_name = ${STORM_NAME};
 
 //
 // Model initialization time windows to include or exclude
@@ -46,9 +46,9 @@ init_beg = "${INIT_BEG}";
 //init_end = "";
 init_end = "${INIT_END}";
 //init_inc = [];
-init_inc = "${INIT_INCLUDE}";
+init_inc = ${INIT_INCLUDE};
 //init_exc = [];
-init_exc = "${INIT_EXCLUDE}";
+init_exc = ${INIT_EXCLUDE};
 //
 // Valid model time window
 //
@@ -104,7 +104,7 @@ anly_track = BDECK;
 // Specify if only those track points common to both the ADECK and BDECK
 // tracks be written out.
 //
-match_points = TRUE;
+match_points = FALSE;
 
 //
 // Specify the NetCDF output of the gen_dland tool containing a gridded
