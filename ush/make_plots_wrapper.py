@@ -139,7 +139,7 @@ class MakePlotsWrapper(CommandBuilder):
                 obs_levels = fcst_levels
             
             if len(fcst_levels) != len(obs_levels):
-                print("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
+                self.logger.error("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
                           "_LEVELS do not have the same number of elements")
                 exit(1)
             fo = util.FieldObj()
@@ -274,7 +274,7 @@ class MakePlotsWrapper(CommandBuilder):
                 obs_levels = fcst_levels
 
             if len(fcst_levels) != len(obs_levels):
-                print("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
+                self.logger.error("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
                           "_LEVELS do not have the same number of elements")
                 exit(1)
             fo = util.FieldObj()
@@ -319,7 +319,7 @@ class MakePlotsWrapper(CommandBuilder):
                                       wave_num_beg_list = util.getlist(self.p.getstr('config', 'WAVE_NUM_BEG_LIST'))
                                       wave_num_end_list = util.getlist(self.p.getstr('config', 'WAVE_NUM_END_LIST'))
                                       if len(wave_num_beg_list) != len(wave_num_end_list):
-                                          print("ERROR: WAVE_NUM_BEG_LIST and WAVE_NUM_END_LIST do not have the same number of elements")
+                                          self.logger.error("ERROR: WAVE_NUM_BEG_LIST and WAVE_NUM_END_LIST do not have the same number of elements")
                                           exit(1)
                                       else:
                                            wave_num_beg_list_str = self.p.getstr('config', 'WAVE_NUM_BEG_LIST')
@@ -339,7 +339,7 @@ class MakePlotsWrapper(CommandBuilder):
                                  wave_num_beg_list = util.getlist(self.p.getstr('config', 'WAVE_NUM_BEG_LIST'))
                                  wave_num_end_list = util.getlist(self.p.getstr('config', 'WAVE_NUM_END_LIST'))
                                  if len(wave_num_beg_list) != len(wave_num_end_list):
-                                      print("ERROR: WAVE_NUM_BEG_LIST and WAVE_NUM_END_LIST do not have the same number of elements")
+                                      self.logger.error("ERROR: WAVE_NUM_BEG_LIST and WAVE_NUM_END_LIST do not have the same number of elements")
                                       exit(1)
                                  else:
                                       wave_num_beg_list_str = self.p.getstr('config', 'WAVE_NUM_BEG_LIST')
@@ -520,7 +520,7 @@ class MakePlotsWrapper(CommandBuilder):
                 obs_levels = fcst_levels
 
             if len(fcst_levels) != len(obs_levels):
-                print("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
+                self.logger.error("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
                           "_LEVELS do not have the same number of elements")
                 exit(1)
             fo = util.FieldObj()
