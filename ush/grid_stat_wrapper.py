@@ -15,6 +15,7 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import (print_function, division)
 
 import os
+import met_util as util
 from compare_gridded_wrapper import CompareGriddedWrapper
 
 '''!@namespace GridStatWrapper
@@ -29,3 +30,6 @@ class GridStatWrapper(CompareGriddedWrapper):
         met_install_dir = p.getdir('MET_INSTALL_DIR')
         self.app_path = os.path.join(met_install_dir, 'bin/grid_stat')
         self.app_name = os.path.basename(self.app_path)
+
+if __name__ == "__main__":
+        util.run_stand_alone("grid_stat_wrapper", "GridStat")

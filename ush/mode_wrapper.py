@@ -24,3 +24,7 @@ class ModeWrapper(CompareGriddedWrapper):
         self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                      'bin/mode')
         self.app_name = os.path.basename(self.app_path)
+
+
+if __name__ == "__main__":
+    util.run_stand_alone("mode_wrapper", "Mode")
