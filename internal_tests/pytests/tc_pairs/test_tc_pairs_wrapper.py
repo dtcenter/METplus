@@ -238,13 +238,22 @@ def test_top_level_dir():
     by_top_level = rtcp.tcp_dict['TOP_LEVEL_DIRS'].lower()
     if by_top_level == 'no':
         pytest.skip("Skip, this is a test for tc-pairs via top-level input dirs.")
+
+    # Capture all the available data
     rtcp.tcp_dict['INIT_BEG'] = "20170101"
     rtcp.tcp_dict['INIT_END'] = "20171231"
+
     rtcp.run_all_times()
     output_file = os.path.join(rtcp.tcp_dict['TC_PAIRS_DIR'], "tc_pairs.tcst")
     num_lines = len(open(output_file).readlines())
 
+    # This number was obtained by running MET tc-pairs at the command line with empty values in the MET
+    # config file, match_points = False,  and then obtaining the line count of the resulting .tcst file.
     expected_number_results = 27762
+
+    # This is the expected value when match_points = True in the MET config file
+    # expected_number_results = 7299
+
     assert num_lines == expected_number_results
 
 
