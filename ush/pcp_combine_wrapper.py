@@ -649,3 +649,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             return
         outfile = self.get_output_path()
         return outfile
+
+if __name__ == "__main__":
+        util.run_stand_alone("pcp_combine_wrapper", "PcpCombine")
