@@ -70,7 +70,7 @@ class PB2NCWrapper(CommandBuilder):
         pb_dict['METPLUS_BASE'] = self.p.getdir('dir', 'METPLUS_BASE')
         pb_dict['MET_BUILD_BASE'] = self.p.getdir('dir', 'MET_BUILD_BASE')
         pb_dict['MET_INSTALL_DIR'] = self.p.getdir('dir', 'MET_INSTALL_DIR')
-        pb_dict['PREPBUFR_DATA_DIR'] = self.p.getstr('dir','PREPBUFR_DATA_DIR')
+        pb_dict['PREPBUFR_DATA_DIR'] = self.p.getstr('dir', 'PREPBUFR_DATA_DIR')
         pb_dict['PREPBUFR_MODEL_DIR_NAME'] = \
             self.p.getstr('dir', 'PREPBUFR_MODEL_DIR_NAME')
         pb_dict['PB2NC_OUTPUT_DIR'] = self.p.getstr('dir', 'PB2NC_OUTPUT_DIR')
