@@ -89,3 +89,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         self.logger.info("")
         self.build()
         self.clear()
+
+
+if __name__ == "__main__":
+        util.run_stand_alone("regrid_data_plane_wrapper", "RegridDataPlane")

@@ -23,7 +23,6 @@ import csv
 import subprocess
 import datetime
 import glob
-import gzip
 from command_builder import CommandBuilder
 from task_info import TaskInfo
 import string_template_substitution as sts
@@ -111,17 +110,11 @@ that reformat gridded data
                                      level=str(level.split('-')[0]).zfill(2))
             model_file = model_ss.doStringSub()
             model_path = os.path.join(model_dir, model_file)
+            util.decompress_file(model_path, self.logger)
             if os.path.exists(model_path):
                 found = True
                 break
-            elif os.path.exists(model_path+".gz"):
-                with gzip.open(model_path+".gz", 'rb') as infile:
-                    with open(model_path, 'wb') as outfile:
-                        outfile.write(infile.read())
-                        infile.close()
-                        outfile.close()
-                        found = True
-                        break
+
             time_check = util.shift_time(time_check, -init_interval)
             lead_check = lead_check + init_interval            
 
@@ -262,22 +255,26 @@ that reformat gridded data
         # get fcst and obs thresh parameters
         # verify they are the same size
 
-        fcst_str = "FCST_"+v.fcst_name+"_"+fcst_level+"_THRESH"
-        obs_str = "OBS_"+v.obs_name+"_"+obs_level+"_THRESH"
+#        fcst_str = "FCST_"+v.fcst_name+"_"+fcst_level+"_THRESH"
+#        obs_str = "OBS_"+v.obs_name+"_"+obs_level+"_THRESH"
+#        fcst_str = v.fcst_thresh
+#        obs_str = v.obs_thresh
         fcst_cat_thresh = ""
-        obs_cat_thresh = ""
         fcst_threshs = []
-        obs_threshs = []
-        
-        if self.p.has_option('config', fcst_str):
-            fcst_threshs = util.getlistfloat(self.p.getstr('config', fcst_str))
+        if v.fcst_thresh != "":
+#            fcst_threshs = util.getlistfloat(self.p.getstr('config', fcst_str))
+            fcst_threshs = v.fcst_thresh
             fcst_cat_thresh = "cat_thresh=[ "
             for fcst_thresh in fcst_threshs:
                 fcst_cat_thresh += "gt"+str(fcst_thresh)+", "
             fcst_cat_thresh = fcst_cat_thresh[0:-2]+" ];"
             
-        if self.p.has_option('config', obs_str):
-            obs_threshs = util.getlistfloat(self.p.getstr('config', obs_str))
+ #       if self.p.has_option('config', obs_str):
+#        obs_threshs = util.getlistfloat(self.p.getstr('config', obs_str))
+        obs_cat_thresh = ""
+        obs_threshs = []        
+        if v.obs_thresh != "":
+            obs_threshs = v.obs_thresh
             obs_cat_thresh = "cat_thresh=[ "
             for obs_thresh in obs_threshs:
                 obs_cat_thresh += "gt"+str(obs_thresh)+", "
