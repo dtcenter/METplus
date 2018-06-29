@@ -276,4 +276,3 @@ while vl <= nlevels:
         plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+fcst_var_level_now+"_obs"+obs_var_name+obs_var_level_now+"_"+grid+region+".png", bbox_inches='tight')
         s+=1
     vl+=1
-print(" ")

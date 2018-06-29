@@ -177,22 +177,18 @@ class MakePlotsWrapper(CommandBuilder):
                             py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_ts.py")
                             process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                             process.wait() 
-                            print("")
                         ####py_cmd = os.path.join("python3")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tp.py") #add python3 at top of script
                         py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tp.py")
                         process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                         process.wait()
-                        print("")
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                     py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tsmean.py")
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
-                    print("")
                     ####py_cmd = os.path.join("python3")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tpmean.py") #add python3 at top of script
                     py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tpmean.py")
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
-                    print("")
             loop_hour += loop_inc
 
     def grid2grid_anom_plots(self):
@@ -317,7 +313,6 @@ class MakePlotsWrapper(CommandBuilder):
                              py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_ts.py")
                              process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                              process.wait()
-                             print("")
                              if v.fcst_name == 'HGT' or v.obs_name == 'HGT':
                                   fourier_decomp_height = self.p.getbool('config', 'FOURIER_HEIGHT_DECOMP')
                                   if fourier_decomp_height:
@@ -334,12 +329,10 @@ class MakePlotsWrapper(CommandBuilder):
                                            py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_ts_HGTfourier.py")
                                            process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                                            process.wait()
-                                           print("") 
                          self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                          py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_tsmean.py")
                          process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                          process.wait()
-                         print("")
                          if v.fcst_name == 'HGT' or v.obs_name == 'HGT':
                              fourier_decomp_height = self.p.getbool('config', 'FOURIER_HEIGHT_DECOMP')
                              if fourier_decomp_height:
@@ -356,12 +349,10 @@ class MakePlotsWrapper(CommandBuilder):
                                       py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_tsmean_HGTfourier.py")
                                       process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                                       process.wait()
-                                      print("")
                          ####py_cmd = os.path.join("python3")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_timemap.py") #add python3 at top of script
                          py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_timemap.py")
                          process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                          process.wait()
-                         print("")       
             loop_hour += loop_inc
  
     def grid2grid_sfc_plots(self):
@@ -434,12 +425,10 @@ class MakePlotsWrapper(CommandBuilder):
                         py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_sfc_ts.py")
                         process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                         process.wait()
-                        print("")
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                     py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_sfc_tsmean.py")
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
-                    print("")
             loop_hour += loop_inc
 
     def grid2obs_upper_air_plots(self):
@@ -569,22 +558,18 @@ class MakePlotsWrapper(CommandBuilder):
                             py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_ts.py")
                             process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                             process.wait()
-                            print("")
                         ####py_cmd = os.path.join("python3")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_vertprof.py") #add python3 at top of script
                         py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_vertprof.py")
                         process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                         process.wait()
-                        print("")
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                     py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_tsmean.py")
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
-                    print("")
                     ####py_cmd = os.path.join("python3")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_verfprofmean.py") #add python3 at top of script
                     py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_vertprofmean.py")
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
-            print("")
             loop_hour += loop_inc
 
     def grid2obs_conus_sfc_plots(self):
@@ -663,12 +648,10 @@ class MakePlotsWrapper(CommandBuilder):
                         py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_conus_sfc_ts.py")
                         process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                         process.wait()
-                        print("")
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                     py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_conus_sfc_tsmean.py")
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
-                    print("")
             loop_hour += loop_inc
 
 ########################################################################

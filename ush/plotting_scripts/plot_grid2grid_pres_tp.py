@@ -317,4 +317,3 @@ while s <= nstats: #loop over statistics
      logger.debug("---- Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_f"+lead+"_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_tp.png")
      plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_f"+lead+"_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_tp.png", bbox_inches='tight')
      s+=1
-print(" ")
