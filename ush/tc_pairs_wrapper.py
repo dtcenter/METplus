@@ -16,14 +16,13 @@ Condition codes: 0 for success, 1 for failure
 
 """
 
-from __future__ import (print_function, division)
+from __future__ import print_function, division, unicode_literals
 
 import collections
 import os
 import sys
 import re
 import csv
-from string import lower
 
 import produtil.setup
 from produtil.run import ExitStatusException
@@ -443,8 +442,8 @@ class TcPairsWrapper(CommandBuilder):
                     pass
 
                 with open(adeck_ascii, "a+") as adeck_file:
-                    adeck_file.write("A-deck input files (after filtering), to be used in evaluation:\n")
-                    adeck_file.write("==============================================================\n")
+                    adeck_file.write(b"A-deck input files (after filtering), to be used in evaluation:\n")
+                    adeck_file.write(b"==============================================================\n")
                     for adeck in filtered_adeck_files:
                         adeck_file.write(adeck + "\n")
                 bdeck_ascii = os.path.join(self.tcp_dict['OUTPUT_BASE'], 'bdeck_filtered_files.txt')
@@ -457,8 +456,8 @@ class TcPairsWrapper(CommandBuilder):
                     pass
 
                 with open(bdeck_ascii, "a+") as bdeck_file:
-                    bdeck_file.write("B-deck input files (after filtering), to be used in evaluation:\n")
-                    bdeck_file.write("==============================================================\n")
+                    bdeck_file.write(b"B-deck input files (after filtering), to be used in evaluation:\n")
+                    bdeck_file.write(b"==============================================================\n")
                     for bdeck in filtered_bdeck_files:
                         bdeck_file.write(bdeck + "\n")
 
@@ -665,7 +664,7 @@ class TcPairsWrapper(CommandBuilder):
         by_cyclone = False
 
         # Check for the presence of the 'date' keyword in the filename template and
-        # also if INIT_BEG and INIT_END are defined in the config file. If absent, then the wrapper will not perform
+        # if INIT_BEG and INIT_END are defined in the config file. If absent, then the wrapper will not perform
         # any filtering by date.
         if 'date' in sorted_keywords and len(self.tcp_dict['INIT_BEG']) > 0 and len(self.tcp_dict['INIT_END']) > 0:
             by_date = True
@@ -679,36 +678,44 @@ class TcPairsWrapper(CommandBuilder):
         # defined in the config file.  If absent, then forgo filtering by cyclone.
         if 'cyclone' in sorted_keywords and len(self.tcp_dict['CYCLONE']) > 0:
             by_cyclone = True
+
+        # date, region, and cyclone
         if by_date and by_region and by_cyclone:
             filtered_by_date = \
                 self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
             filtered_by_region = self.filter_by_region(filtered_by_date, input_file_regex, sorted_keywords)
             filtered = self.filter_by_cyclone(filtered_by_region, input_file_regex, sorted_keywords)
+        # date and region
         elif by_date and by_region:
             filtered_by_date = \
                 self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl, sorted_keywords)
             filtered = self.filter_by_region(filtered_by_date, input_file_regex, sorted_keywords)
+        # date and cyclone
         elif by_date and by_cyclone:
             filtered_by_date = \
                 self.filter_by_date(all_input_files, input_file_regex, init_list, tmpl,
                                     sorted_keywords)
             filtered = self.filter_by_cyclone(filtered_by_date, input_file_regex, sorted_keywords)
-        # pylint:disable=too-many-function-args
+        # region and cyclone
         elif by_region and by_cyclone and not by_date:
             filtered_by_region = \
                 self.filter_by_region(all_input_files, input_file_regex, sorted_keywords)
             filtered = self.filter_by_cyclone(filtered_by_region, input_file_regex,
                                               sorted_keywords)
+        # date
         elif by_date and not by_region and not by_cyclone:
             filtered = \
                 self.filter_by_date(all_input_files, input_file_regex, init_list,
                                     tmpl, sorted_keywords)
+        # region
         elif not by_date and by_region and not by_cyclone:
             filtered = self.filter_by_region(all_input_files, input_file_regex, sorted_keywords)
+        # cyclone
         elif not by_date and not by_region and by_cyclone:
             filtered = self.filter_by_cyclone(all_input_files, input_file_regex, sorted_keywords)
         else:
             # Nothing to filter by, return the original input data
+            self.logger.info('Nothing to filter, returning original input data.')
             return all_input_files
         return filtered
 
@@ -744,14 +751,14 @@ class TcPairsWrapper(CommandBuilder):
 
         # Check if filtering by init time is defined in the config file, if not, forgo filtering by date and return
         # input_data.
-        if len(self.tcp_dict['INIT_BEG']) == 0 and len(self.tcp_dict['INIT_END']) == 0:
+        if not self.tcp_dict['INIT_BEG'] and not self.tcp_dict['INIT_END']:
             self.logger.info("No init times specified in config file, skip filtering by date.")
             return input_data
 
         date_len = self.get_date_format_info(tmpl)
         regex_comp = re.compile(file_regex)
         group_number = sorted_keywords.index('date') + 1
-        if date_len == 0:
+        if not date_len:
             # No match to date?=fmt in filename_templates description, return the input file
             self.logger.info("Date doesn't match filename template date, skip filtering by date.")
             return input_data
@@ -807,6 +814,7 @@ class TcPairsWrapper(CommandBuilder):
                 cur_init_date = int(cur_init[0:4])
                 cur_end_date = int(end_date[0:4])
 
+            # Do checking
             for cur_input in input_data:
                 # Compare the current init time with that of the input data's time
                 input_date_match = re.match(regex_comp, cur_input)
@@ -816,8 +824,8 @@ class TcPairsWrapper(CommandBuilder):
                         if cur_input not in filtered_by_date:
                             filtered_by_date.append(cur_input)
 
-        if len(filtered_by_date) == 0:
-            self.logger.warning('Filtering by date produced no results.  Returning original data set.')
+        if not filtered_by_date:
+            self.logger.info('Filtering by date produced no results.  Returning original data set.')
             return input_data
 
         return filtered_by_date
@@ -854,7 +862,7 @@ class TcPairsWrapper(CommandBuilder):
             return input_data
 
         # Check for any regions in the config file, if none exist, then skip filtering and return the input data.
-        if len(regions_from_conf) == 0:
+        if not regions_from_conf:
             self.logger.info('No regions specified in config file, skip filtering by regions. Returning input data.')
             return input_data
 
@@ -863,7 +871,7 @@ class TcPairsWrapper(CommandBuilder):
             regions.append(region.lower())
         group_number = sorted_keywords.index('region') + 1
         filtered = []
-        if len(regions) > 0:
+        if regions:
             # Extract the region based on the filename template
             for cur_data in input_data:
                 regex_comp = re.compile(input_file_regex)
@@ -872,7 +880,7 @@ class TcPairsWrapper(CommandBuilder):
                     data_match = match.group(group_number).lower()
                     if data_match in regions:
                         filtered.append(cur_data)
-        if len(filtered) == 0:
+        if not filtered:
             self.logger.info('Filtering by region produced no results.  Returning input data set.')
             return input_data
 
@@ -911,14 +919,14 @@ class TcPairsWrapper(CommandBuilder):
             return input_data
 
         # If no cyclones were requested in the conf file, forgo filtering and return the input_data
-        if len(cyclones) == 0:
+        if not cyclones:
             self.logger.info(
                 "No annual cyclone number defined in conf file, skipping filtering by annual cyclone number.")
             return input_data
 
         group_number = sorted_keywords.index('cyclone') + 1
         filtered = []
-        if len(cyclones) > 0:
+        if cyclones:
             # Extract the cyclone based on the filename template
             for cur_data in input_data:
                 regex_comp = re.compile(input_file_regex)
@@ -927,7 +935,7 @@ class TcPairsWrapper(CommandBuilder):
                     data_match = match.group(group_number).lower()
                     if data_match in cyclones:
                         filtered.append(cur_data)
-        if len(filtered) == 0:
+        if not filtered:
             self.logger.warning('Filtering by region produced no results.  Returning input data set.')
             return input_data
 
@@ -1005,12 +1013,9 @@ class TcPairsWrapper(CommandBuilder):
         # Used to set init_inc in "TC_PAIRS_CONFIG_FILE"
         # tmp_init_inc = self.tcp_dict['INIT_INCLUDE']
         # tmp_init_exc = self.tcp_dict['INIT_EXCLUDE']
-        tmp_init_inc = util.getlist(
-            self.config.getstr('config', 'INIT_INCLUDE'))
-        tmp_init_exc = util.getlist(
-            self.config.getstr('config', 'INIT_EXCLUDE'))
+        tmp_init_inc = self.tcp_dict['INIT_INCLUDE']
         if not tmp_init_inc:
-            self.add_env_var(b'INIT_INCLUDE', "")
+            self.add_env_var('INIT_INCLUDE', "[]")
         else:
             # Not empty, set the environment variable to the
             # value specified in the MET+ config file after removing whitespace
@@ -1019,21 +1024,21 @@ class TcPairsWrapper(CommandBuilder):
             init_inc_str = ''.join(init_inc.split())
             self.add_env_var(b'INIT_INCLUDE', str(init_inc_str))
 
+        tmp_init_exc = self.tcp_dict['INIT_EXCLUDE']
         if not tmp_init_exc:
-            self.add_env_var(b'INIT_EXCLUDE', "")
+            # Empty, MET is expecting [] to indicate all models are to be included
+            self.add_env_var('INIT_EXCLUDE', "[]")
         else:
-            # Not empty, set the environment variable to the
-            # value specified in the MET+ config file after removing whitespace
-            # and replacing ' with ".
+            # Replace ' with " and remove whitespace
             init_exc = str(tmp_init_exc).replace("\'", "\"")
             init_exc_str = ''.join(init_exc.split())
             self.add_env_var(b'INIT_EXCLUDE', str(init_exc_str))
 
-        # MODEL
+        # f
         tmp_model = self.tcp_dict['MODEL']
         if not tmp_model:
             # Empty, MET is expecting [] to indicate all models are to be included
-            self.add_env_var(b'MODEL', "[]")
+            self.add_env_var('MODEL', "[]")
         else:
             # Replace ' with " and remove whitespace
             model = str(tmp_model).replace("\'", "\"")
@@ -1044,7 +1049,7 @@ class TcPairsWrapper(CommandBuilder):
         tmp_storm_id = self.tcp_dict['STORM_ID']
         if not tmp_storm_id:
             # Empty, use all storm_ids, indicate this to MET via '[]'
-            self.add_env_var(b'STORM_ID', "[]")
+            self.add_env_var('STORM_ID', "[]")
         else:
             # Replace ' with " and remove whitespace
             storm_id = str(tmp_storm_id).replace("\'", "\"")
@@ -1056,7 +1061,7 @@ class TcPairsWrapper(CommandBuilder):
         if tmp_basin:
             # Empty, we want all basins.  Send MET '[]' to indicate that
             # we want all the basins.
-            self.add_env_var(b'BASIN', "[]")
+            self.add_env_var('BASIN', "[]")
         else:
             # Replace any ' with " and remove whitespace.
             basin = str(tmp_basin).replace("\'", "\"")
@@ -1067,7 +1072,7 @@ class TcPairsWrapper(CommandBuilder):
         tmp_cyclone = self.tcp_dict['CYCLONE']
         if not tmp_cyclone:
             # Empty, use all cyclones, send '[]' to MET.
-            self.add_env_var(b'CYCLONE', "[]")
+            self.add_env_var('CYCLONE', "[]")
         else:
             # Replace ' with " and get rid of any whitespace
             cyclone = str(tmp_cyclone).replace("\'", "\"")
@@ -1079,7 +1084,7 @@ class TcPairsWrapper(CommandBuilder):
         if not tmp_storm_name:
             # Empty, equivalent to 'STORM_NAME = "[]"; in MET config file,
             # use all storm names.
-            self.add_env_var(b'STORM_NAME', "[]")
+            self.add_env_var('STORM_NAME', "[]")
         else:
             storm_name = str(tmp_storm_name).replace("\'", "\"")
             storm_name_str = ''.join(storm_name.split())
