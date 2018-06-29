@@ -12,22 +12,27 @@
 //
 // Models
 //
-model = [];
+//model = [];
+model = "${MODEL}";
+
 
 //
 // Storm identifiers
-//    
+//
 storm_id = [];
+//storm_id = "${STORM_ID}";
 
 //
 // Basins
 //
 basin = [];
+//basin = "${BASIN}";
 
 //
 // Cyclone numbers
 //
 cyclone = [];
+//cyclone = "${CYCLONE}";
 
 //
 // Storm names
@@ -39,8 +44,8 @@ storm_name = [];
 //
 init_beg = "";
 init_end = "";
-//init_inc = [];
-init_inc = ${INIT_INC};
+init_inc = [];
+//init_inc = "${INIT_INCLUDE}";
 init_exc = [];
 
 //
@@ -50,7 +55,7 @@ valid_beg = "";
 valid_end = "";
 
 //
-// Model initialization hours 
+// Model initialization hours
 //
 init_hour = [];
 
@@ -61,7 +66,7 @@ init_mask  = "";
 valid_mask = "";
 
 //
-// Specify if the code should check for duplicate ATCF lines 
+// Specify if the code should check for duplicate ATCF lines
 //
 check_dup = FALSE;
 
@@ -96,7 +101,7 @@ anly_track = BDECK;
 // Specify if only those track points common to both the ADECK and BDECK
 // tracks be written out.
 //
-match_points = TRUE;
+match_points = FALSE;
 
 //
 // Specify the NetCDF output of the gen_dland tool containing a gridded
