@@ -31,34 +31,13 @@ class MakePlotsWrapper(CommandBuilder):
         super(MakePlotsWrapper, self).__init__(p, logger)
         if self.logger is None:
             self.logger = util.get_logger(self.p,sublog='MakePlots')
-    #    self.app_path = os.path.join(self.p.getdir('PYTHON_INSTALL_DIR'),
-    #                                 'bin/python')
-    #    self.app_name = os.path.basename(self.app_path)
-    #
-    #def set_python_script(self, pythonscript):
-    #    self.pythonscript = pythonscript
-    #
-    #def get_command(self):
-    #    if self.app_path is None:
-    #        self.logger.error(self.app_name + ": No app path specified. \
-    #                          You must use a subclass")
-    #        return None
-    #
-    #    cmd = self.app_path + " "
-    #    for a in self.args:
-    #        cmd += a + " "
-    #
-    #    if self.pythonscript == "":
-    #        self.logger.error(self.app_name+": No python script specified")
-    #        return None
-    #
-    #    cmd += self.pythonscript
-    #
-    #    return cmd
 
     def grid2grid_pres_plots(self):
         self.logger.info("Making plots for grid2grid-pres")
-        logging_filename = self.logger.handlers[0].baseFilename
+        try:
+            logging_filename = self.logger.parent.handlers[0].baseFilename
+        except:
+            logging_filename = self.logger.handlers[0].baseFilename
         self.add_env_var("LOGGING_FILENAME", logging_filename)
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
@@ -136,7 +115,7 @@ class MakePlotsWrapper(CommandBuilder):
                 obs_levels = fcst_levels
             
             if len(fcst_levels) != len(obs_levels):
-                print("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
+                self.logger.error("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
                           "_LEVELS do not have the same number of elements")
                 exit(1)
             fo = util.FieldObj()
@@ -174,27 +153,24 @@ class MakePlotsWrapper(CommandBuilder):
                             py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_ts.py")
                             process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                             process.wait() 
-                            print("")
-                        ####py_cmd = os.path.join("python3")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tp.py") #add python3 at top of script
                         py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tp.py")
                         process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                         process.wait()
-                        print("")
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                     py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tsmean.py")
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
-                    print("")
-                    ####py_cmd = os.path.join("python3")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tpmean.py") #add python3 at top of script
                     py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tpmean.py")
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
-                    print("")
             loop_hour += loop_inc
 
     def grid2grid_anom_plots(self):
         self.logger.info("Making plots for grid2grid-anom")
-        logging_filename = self.logger.handlers[0].baseFilename
+        try:
+            logging_filename = self.logger.parent.handlers[0].baseFilename
+        except:
+            logging_filename = self.logger.handlers[0].baseFilename
         self.add_env_var("LOGGING_FILENAME", logging_filename)
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
@@ -272,7 +248,7 @@ class MakePlotsWrapper(CommandBuilder):
                 obs_levels = fcst_levels
 
             if len(fcst_levels) != len(obs_levels):
-                print("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
+                self.logger.error("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
                           "_LEVELS do not have the same number of elements")
                 exit(1)
             fo = util.FieldObj()
@@ -311,14 +287,13 @@ class MakePlotsWrapper(CommandBuilder):
                              py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_ts.py")
                              process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                              process.wait()
-                             print("")
                              if v.fcst_name == 'HGT' or v.obs_name == 'HGT':
                                   fourier_decomp_height = self.p.getbool('config', 'FOURIER_HEIGHT_DECOMP')
                                   if fourier_decomp_height:
                                       wave_num_beg_list = util.getlist(self.p.getstr('config', 'WAVE_NUM_BEG_LIST'))
                                       wave_num_end_list = util.getlist(self.p.getstr('config', 'WAVE_NUM_END_LIST'))
                                       if len(wave_num_beg_list) != len(wave_num_end_list):
-                                          print("ERROR: WAVE_NUM_BEG_LIST and WAVE_NUM_END_LIST do not have the same number of elements")
+                                          self.logger.error("ERROR: WAVE_NUM_BEG_LIST and WAVE_NUM_END_LIST do not have the same number of elements")
                                           exit(1)
                                       else:
                                            wave_num_beg_list_str = self.p.getstr('config', 'WAVE_NUM_BEG_LIST')
@@ -328,19 +303,17 @@ class MakePlotsWrapper(CommandBuilder):
                                            py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_ts_HGTfourier.py")
                                            process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                                            process.wait()
-                                           print("") 
                          self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                          py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_tsmean.py")
                          process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                          process.wait()
-                         print("")
                          if v.fcst_name == 'HGT' or v.obs_name == 'HGT':
                              fourier_decomp_height = self.p.getbool('config', 'FOURIER_HEIGHT_DECOMP')
                              if fourier_decomp_height:
                                  wave_num_beg_list = util.getlist(self.p.getstr('config', 'WAVE_NUM_BEG_LIST'))
                                  wave_num_end_list = util.getlist(self.p.getstr('config', 'WAVE_NUM_END_LIST'))
                                  if len(wave_num_beg_list) != len(wave_num_end_list):
-                                      print("ERROR: WAVE_NUM_BEG_LIST and WAVE_NUM_END_LIST do not have the same number of elements")
+                                      self.logger.error("ERROR: WAVE_NUM_BEG_LIST and WAVE_NUM_END_LIST do not have the same number of elements")
                                       exit(1)
                                  else:
                                       wave_num_beg_list_str = self.p.getstr('config', 'WAVE_NUM_BEG_LIST')
@@ -350,17 +323,17 @@ class MakePlotsWrapper(CommandBuilder):
                                       py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_tsmean_HGTfourier.py")
                                       process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                                       process.wait()
-                                      print("")
-                         ####py_cmd = os.path.join("python3")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_timemap.py") #add python3 at top of script
                          py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_timemap.py")
                          process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                          process.wait()
-                         print("")       
             loop_hour += loop_inc
  
     def grid2grid_sfc_plots(self):
         self.logger.info("Making plots for grid2grid-sfc")
-        logging_filename = self.logger.handlers[0].baseFilename
+        try:
+            logging_filename = self.logger.parent.handlers[0].baseFilename
+        except:
+            logging_filename = self.logger.handlers[0].baseFilename
         self.add_env_var("LOGGING_FILENAME", logging_filename)
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
@@ -425,12 +398,10 @@ class MakePlotsWrapper(CommandBuilder):
                         py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_sfc_ts.py")
                         process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                         process.wait()
-                        print("")
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                     py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_sfc_tsmean.py")
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
-                    print("")
             loop_hour += loop_inc
 
     def grid2obs_upper_air_plots(self):
@@ -522,7 +493,7 @@ class MakePlotsWrapper(CommandBuilder):
                 obs_levels = fcst_levels
 
             if len(fcst_levels) != len(obs_levels):
-                print("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
+                self.logger.error("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
                           "_LEVELS do not have the same number of elements")
                 exit(1)
             fo = util.FieldObj()
@@ -560,22 +531,16 @@ class MakePlotsWrapper(CommandBuilder):
                             py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_ts.py")
                             process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                             process.wait()
-                            print("")
-                        ####py_cmd = os.path.join("python3")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_vertprof.py") #add python3 at top of script
                         py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_vertprof.py")
                         process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                         process.wait()
-                        print("")
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                     py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_tsmean.py")
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
-                    print("")
-                    ####py_cmd = os.path.join("python3")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_verfprofmean.py") #add python3 at top of script
                     py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_vertprofmean.py")
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
-            print("")
             loop_hour += loop_inc
 
     def grid2obs_conus_sfc_plots(self):
@@ -654,12 +619,10 @@ class MakePlotsWrapper(CommandBuilder):
                         py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_conus_sfc_ts.py")
                         process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                         process.wait()
-                        print("")
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                     py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_conus_sfc_tsmean.py")
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
-                    print("")
             loop_hour += loop_inc
 
 ########################################################################
