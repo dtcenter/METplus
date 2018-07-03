@@ -88,7 +88,6 @@ def multiple_replace(dict, text):
 def get_lead_level_time_seconds(logger, time_string):
     """ Returns the number of seconds for the time string in the format
         [H]HH[MMSS]"""
-
     # Used for logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
@@ -1012,17 +1011,21 @@ class StringExtract:
 
         self.validTime = None
         self.initTime = None
-        self.leadTime = -1
+        self.leadTime = 0
         self.levelTime = -1
 
     def getValidTime(self, fmt):
         if self.validTime is None:
-            return ""
+            if self.initTime is None:
+                return ""
+            return (self.initTime + datetime.timedelta(seconds=self.leadTime)).strftime(fmt)
         return self.validTime.strftime(fmt)
 
     def getInitTime(self, fmt):
         if self.initTime is None:
-            return ""
+            if self.validTime is None:
+                return ""
+            return (self.validTime - datetime.timedelta(seconds=self.leadTime)).strftime(fmt)
         return self.initTime.strftime(fmt)
 
     @property

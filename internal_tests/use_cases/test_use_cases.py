@@ -16,16 +16,18 @@ import calendar
 import met_util as util
 #import config_metplus
 
+# TODO: move test results to separate file for readability
 
-def run_test_use_case(param_file, run_a, run_b):
+def run_test_use_case(param_a, param_b, run_a, run_b):
     metplus_home = "/d1/mccabe/METplus"
     a_conf = metplus_home+"/internal_tests/use_cases/system.a.conf"
     b_conf = metplus_home+"/internal_tests/use_cases/system.b.conf"
-    params = param_file.split(",")
+    params_a = param_a.split(",")
+    params_b = param_b.split(",")
 #    params_a = [ params, a_conf ]
 #    params_b = [ params, b_conf ]
-    params_a = params + [a_conf]
-    params_b = params + [b_conf]
+    params_a = params_a + [a_conf]
+    params_b = params_b + [b_conf]
     print(params_a)
     all_good = True
 #    params_a = [ param_file, a_conf ]
@@ -95,7 +97,7 @@ def compare_results(p, p_b):
     while loop_time <= end_time:
         run_time = time.strftime("%Y%m%d%H%M", time.gmtime(loop_time))
         print("Checking "+run_time)
-
+        # TODO: Handle PcpCombine for each type of run (OBS vs FCST)
         for process in processes:
             print("Checking output from "+process)
             if process == "GridStat":
@@ -211,15 +213,17 @@ def main():
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" #,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" #,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_by_fhr_grouping.conf" #,    
-                    use_case_dir+"/grid_to_grid/grid2grid_anom.conf",
+                    use_case_dir+"/grid_to_grid/grid2grid_anom.conf" ,
                     use_case_dir+"/grid_to_grid/grid2grid_anom_height.conf",
                     use_case_dir+"/grid_to_grid/grid2grid_sfc.conf" ,
                     use_case_dir+"/grid_to_grid/grid2grid_precip.conf"
                   ]
 
     all_good = True
-    for param_file in param_files:                    
-        if not run_test_use_case(param_file, run_a, run_b):
+    for param_file in param_files:
+        param_a = param_file.replace(metplus_home,"/d1/mccabe/METplus.a")
+        param_b = param_file.replace(metplus_home,"/d1/mccabe/METplus.b")
+        if not run_test_use_case(param_a, param_b, run_a, run_b):
             all_good = False
 
     if all_good:

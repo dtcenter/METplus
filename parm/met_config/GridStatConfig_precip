@@ -213,6 +213,5 @@ grid_weight_flag = NONE;
 rank_corr_flag   = FALSE;
 tmp_dir          = "/tmp";
 output_prefix    = "${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${ACCUM}";
-version          = "V6.1";
 
 ////////////////////////////////////////////////////////////////////////////////
