@@ -825,6 +825,7 @@ class PB2NCWrapper(CommandBuilder):
 
         # Get the output directory
         pb2nc_output_dir = self.pb_dict['PB2NC_OUTPUT_DIR']
+        util.mkdir_p(pb2nc_output_dir)
 
         # Get the cycle hour and offset hour from the prepbufr file info named
         # tuple
