@@ -54,7 +54,7 @@ class TcPairsWrapper(CommandBuilder):
         self.app_path = os.path.join(p.getdir('MET_INSTALL_DIR'), 'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
         if self.logger is None:
-            self.logger = util.get_logger(self.p,sublog='TcPairs')
+            self.logger = util.get_logger(self.p, sublog='TcPairs')
         self.cmd = ''
         self.logger.info("Initialized TcPairsWrapper")
 
@@ -269,7 +269,8 @@ class TcPairsWrapper(CommandBuilder):
 
                     # Run tc_pairs
                     self.cmd = self.build_tc_pairs(pairs_out_dir, myfile,
-                                              adeck_file_path, bdeck_file_path)
+                                                   adeck_file_path,
+                                                   bdeck_file_path)
                     self.build()
 
 

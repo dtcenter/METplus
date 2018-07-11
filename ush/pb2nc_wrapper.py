@@ -291,7 +291,7 @@ class PB2NCWrapper(CommandBuilder):
 
         tmp_obs_bufr = self.pb_dict['OBS_BUFR_VAR_LIST']
         if not tmp_obs_bufr:
-            self.add_env_var(b'OBS_BUFR_VAR_LIST', "[]")
+            self.add_env_var('OBS_BUFR_VAR_LIST', "[]")
         else:
             # Not empty, set the environment variable to the
             # value specified in the MET+ config file.
