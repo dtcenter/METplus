@@ -260,8 +260,8 @@ class PB2NCWrapper(CommandBuilder):
         # Need to do some pre-processing so that Python will use " and not '
         # because currently MET doesn't support single-quotes
 
-        # PB2NC_MESSAGE_TYPE, PB2NC_STATION_ID, OBS_BUFR_VAR_LIST
-        # are different from other variables.  For instance, if set to nothing:
+        # PB2NC_MESSAGE_TYPE, PB2NC_STATION_ID, OBS_BUFR_VAR_LIST are
+        # different from other variables.  For instance, if set to nothing:
         #          PB2NC_MESSAGE_TYPE =
         # then don't allow it to be converted to "", or else MET will
         # search for message type "" in the prepbufr file.
@@ -661,8 +661,7 @@ class PB2NCWrapper(CommandBuilder):
             Args:
                 @param filename   - filename of the file of interest
                 @param subdir     - if this file is located in a dated subdir,
-                then
-                             include this, default is None.
+                                    include this. The default is None.
             Returns:
                 full_filepath - the full filepath for this file.
         """
@@ -826,6 +825,7 @@ class PB2NCWrapper(CommandBuilder):
 
         # Get the output directory
         pb2nc_output_dir = self.pb_dict['PB2NC_OUTPUT_DIR']
+        util.mkdir_p(pb2nc_output_dir)
 
         # Get the cycle hour and offset hour from the prepbufr file info named
         # tuple

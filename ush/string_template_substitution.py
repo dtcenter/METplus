@@ -211,9 +211,10 @@ class StringSub:
                                   self.kwargs.get(CYCLE_STRING, None))
 
         if OFFSET_STRING in self.kwargs:
-            self.offset_hour = \
-                get_time_in_hours(self.logger,
-                                  self.kwargs.get(OFFSET_STRING, None))
+            if self.kwargs.get(OFFSET_STRING, None):
+                self.offset_hour = \
+                    get_time_in_hours(self.logger,
+                                      self.kwargs.get(OFFSET_STRING, None))
 
     def dateCalcInit(self):
         """ Calculate the init time from the valid and lead time  """
