@@ -18,36 +18,43 @@
 //
 // Stratify by the AMODEL or BMODEL columns.
 //
-amodel = [];
-bmodel = [];
+//amodel = [];
+//bmodel = [];
+amodel = ${TC_STAT_AMODEL};
+bmodel = ${TC_STAT_BMODEL};
 
 //
 // Stratify by the DESC column.
 //
-desc = [];
+//desc = [];
+desc = ${TC_STAT_DESC};
 
 //
 // Stratify by the STORM_ID column.
 //
-storm_id = [];
+//storm_id = [];
+storm_id = ${TC_STAT_STORM_ID};
 
 //
 // Stratify by the BASIN column.
 // May add using the "-basin" job command option.
 //
-basin = [];
+//basin = [];
+basin = ${TC_STAT_BASIN};
 
 //
 // Stratify by the CYCLONE column.
 // May add using the "-cyclone" job command option.
 //
-cyclone = [];
+//cyclone = [];
+cyclone = ${TC_STAT_CYCLONE};
 
 //
 // Stratify by the STORM_NAME column.
 // May add using the "-storm_name" job command option.
 //
-storm_name = [];
+//storm_name = [];
+storm_name = ${TC_STAT_STORM_NAME};
 
 //
 // Stratify by the INIT times.
@@ -55,36 +62,51 @@ storm_name = [];
 // May modify using the "-init_beg", "-init_end", "-init_inc",
 // and "-init_exc" job command options.
 //
-init_beg = "";
-init_end = "";
-init_inc = [];
-init_exc = [];
+//init_beg = "";
+//init_end = "";
+//init_inc = [];
+//init_exc = [];
+init_beg = ${TC_STAT_INIT_BEG};
+init_end = ${TC_STAT_INIT_END};
+init_inc = ${TC_STAT_INIT_INCLUDE};
+init_exc = ${TC_STAT_INIT_EXCLUDE};
 
 //
 // Stratify by the VALID times.
 //
-valid_beg = "";
-valid_end = "";
-valid_inc = [];
-valid_exc = [];
+//valid_beg = "";
+//valid_end = "";
+//valid_inc = [];
+//valid_exc = [];
+valid_beg = ${TC_STAT_VALID_BEG};
+valid_end = ${TC_STAT_VALID_END};
+valid_inc = ${TC_STAT_VALID_INCLUDE};
+valid_exc = ${TC_STAT_VALID_EXCLUDE};
 
 //
 // Stratify by the initialization and valid hours and lead time.
 //
-init_hour  = [];
-valid_hour = [];
-lead       = [];
+//init_hour  = [];
+//valid_hour = [];
+//lead       = [];
+
+init_hour = ${TC_STAT_INIT_HOUR};
+valid_hour = $(TC_STAT_VALID_HOUR};
+lead = ${TC_STAT_LEAD};
 
 //
 // Select tracks which contain all required lead times.
 //
-lead_req = [];
+//lead_req = [];
+lead_req = ${TC_STAT_LEAD_REQ};
 
 //
 // Stratify by the INIT_MASK and VALID_MASK columns.
 //
-init_mask  = [];
-valid_mask = [];
+//init_mask  = [];
+//valid_mask = [];
+init_mask = ${TC_STAT_INIT_MASK};
+valid_mask = ${TC_STAT_VALID_MASK};
 
 //
 // Stratify by the LINE_TYPE column.
@@ -96,36 +118,46 @@ line_type = [];
 // common to both the ADECK and BDECK tracks.  If the watch/warning status
 // of any of the track points appears in the list, retain the entire track.
 //
-track_watch_warn = [];
+//track_watch_warn = [];
+track_watch_warn = ${TC_STAT_TRACK_WATCH_WARN};
 
 //
 // Stratify by applying thresholds to numeric data columns.
 //
-column_thresh_name = [];
-column_thresh_val  = [];
+//column_thresh_name = [];
+//column_thresh_val  = [];
+column_thresh_name = ${TC_STAT_COLUMN_THRESH_NAME};
+column_thresh_val = ${TC_STAT_COLUMN_THRESH_VAL};
 
 //
 // Stratify by performing string matching on non-numeric data columns.
 //
-column_str_name = [];
-column_str_val  = [];
+//column_str_name = [];
+//column_str_val  = [];
+column_str_name = ${TC_STAT_COLUMN_STR_NAME};
+column_str_val = ${TC_STAT_COLUMN_STR_VAL};
 
 //
 // Similar to the column_thresh options above
 //
-init_thresh_name = [];
-init_thresh_val  = [];
+//init_thresh_name = [];
+//init_thresh_val  = [];
+init_thresh_name = ${TC_STAT_INIT_THRESH_NAME};
+init_thresh_val = ${TC_STAT_INIT_THRESH_VAL};
 
 //
 // Similar to the column_str options above
 //
-init_str_name = [];
-init_str_val  = [];
+//init_str_name = [];
+//init_str_val  = [];
+init_str_name = ${TC_STAT_INIT_STR_NAME};
+init_str_val = ${TC_STAT_INIT_STR_VAL};
 
 //
 // Stratify by the ADECK and BDECK distances to land.
 //
-water_only = FALSE;
+//water_only = FALSE;
+water_only = ${TC_STAT_WATER_ONLY};
 
 //
 // Specify whether only those track points for which rapid intensification
@@ -147,9 +179,14 @@ rirw = {
 // retained, and define the landfall retention window in HH[MMSS] format
 // around the landfall time.
 //
-landfall     = FALSE;
-landfall_beg = "-24";
-landfall_end = "00";
+//landfall     = FALSE;
+//landfall_beg = "-24";
+//landfall_end = "00";
+
+landfall = ${TC_STAT_LANDFALL}
+landfall_beg = ${TC_STAT_LANDFALL_BEG};
+landfall_end = ${TC_STAT_LANDFALL_END};
+
 
 //
 // Specify whether only those track points common to both the ADECK and BDECK
