@@ -147,8 +147,8 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # not defined.
             if self.p.has_option('dir', 'MET_BUILD_BASE'):
                 if self.p.has_option('dir', 'MET_INSTALL_DIR'):
-                    os.environ['MET_INSTALL_DIR'] = self.p.getdir(
-                        'MET_INSTALL_DIR')
+                    os.environ['MET_INSTALL_DIR'] = \
+                        self.p.getdir('MET_INSTALL_DIR')
             else:
                 os.environ['MET_INSTALL_DIR'] = self.p.getdir('MET_INSTALL_DIR')
 

@@ -2,7 +2,7 @@
 
 """
 Program Name: tc_pairs_wrapper.py
-Contact(s): Julie Prestopnik, Minna Win
+Contact(s): Julie Prestopnik, Minna Win, Jim Frimel, George McCabe
 Abstract: Invokes the MET tool tc_pairs to parse ADeck and BDeck ATCF files,
           filter the data, and match them up
 History Log:  Initial version
@@ -20,18 +20,11 @@ import os
 import sys
 import re
 import csv
-#import subprocess
 import produtil.setup
 from produtil.run import ExitStatusException
-#from produtil.run import batchexe
-#from produtil.run import run
-# TODO - critical  must import met_util before CommandBuilder
-# MUST import met_util BEFORE command_builder, else it breaks stand-alone
-import met_util as util
 from command_builder import CommandBuilder
 import met_util as util
 import config_metplus
-
 
 '''!@namespace TcPairsWrapper
 @brief Wraps the MET tool tc_pairs to parse ADeck and BDeck ATCF files,
@@ -51,7 +44,8 @@ class TcPairsWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(TcPairsWrapper, self).__init__(p, logger)
         self.config = self.p
-        self.app_path = os.path.join(p.getdir('MET_INSTALL_DIR'), 'bin/tc_pairs')
+        self.app_path = os.path.join(p.getdir('MET_INSTALL_DIR'),
+                                     'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
         if self.logger is None:
             self.logger = util.get_logger(self.p, sublog='TcPairs')
@@ -144,7 +138,7 @@ class TcPairsWrapper(CommandBuilder):
         init_list = util.gen_init_list(
             self.config.getstr('config', 'INIT_BEG'),
             self.config.getstr('config', 'INIT_END'),
-            int(self.config.getint('config', 'INIT_INC')/3600),
+            int(self.config.getint('config', 'INIT_INC') / 3600),
             self.config.getstr('config', 'INIT_HOUR_END'))
 
         # get a list of YYYYMM values
@@ -273,7 +267,6 @@ class TcPairsWrapper(CommandBuilder):
                                                    bdeck_file_path)
                     self.build()
 
-
         self.logger.info("Completed run_all_times in TcPairsWrapper")
 
     def setup_tropical_track_dirs(self, deck_input_file_path, deck_file_path,
@@ -391,8 +384,9 @@ class TcPairsWrapper(CommandBuilder):
         return cmd
 
     def get_command(self):
-        """! Over-ride CommandBuilder's get_command because unlike other MET tools,
-             tc_pairs handles input files differently- namely, through flags -adeck and -bdeck and doesn't
+        """! Over-ride CommandBuilder's get_command because unlike other MET
+             tools, tc_pairs handles input files differently- namely,
+             through flags -adeck and -bdeck and doesn't
              require an output file, as there is a default.
         Build command to run from arguments"""
         if self.app_path is None:
@@ -402,18 +396,21 @@ class TcPairsWrapper(CommandBuilder):
         return self.cmd
 
     def build(self):
-        """! Override CommandBuilder's build() since tc_pairs handles input and output differently from the other
-             MET tools"""
+        """! Override CommandBuilder's build() since tc_pairs handles input and
+             output differently from the other MET tools"""
         # Since this wrapper is not using the CommandBuilder to build the cmd,
         # we need to add the met verbosity level to the cmd created before we
         # run the command.
         self.cmd = self.cmdrunner.insert_metverbosity_opt(self.cmd)
 
         try:
-            (ret, self.cmd) = self.cmdrunner.run_cmd(self.cmd, sleeptime=.00001, app_name=self.app_name)
+            (ret, self.cmd) = \
+                self.cmdrunner.run_cmd(self.cmd, sleeptime=.00001,
+                                       app_name=self.app_name)
 
             if not ret == 0:
-                raise ExitStatusException('%s: non-zero exit status' % (repr(self.cmd),), ret)
+                raise ExitStatusException(
+                    '%s: non-zero exit status' % (repr(self.cmd),), ret)
 
         except ExitStatusException as ese:
             self.logger.error(ese)
