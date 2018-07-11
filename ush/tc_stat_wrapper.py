@@ -165,7 +165,8 @@ class TcStatWrapper(CommandBuilder):
             self.config.getstr('config', 'TC_STAT_COLUMN_THRESH_VAL'))
 
         tc_stat_dict['COLUMN_STR_NAME'] = \
-            util.getlist(self.config.getstr('config', 'TC_STAT_COLUMN_STR_NAME'))
+            util.getlist(
+                self.config.getstr('config', 'TC_STAT_COLUMN_STR_NAME'))
 
         tc_stat_dict['COLUMN_STR_VAL'] = \
             util.getlist(self.config.getstr('config', 'TC_STAT_COLUMN_STR_VAL'))
@@ -205,7 +206,8 @@ class TcStatWrapper(CommandBuilder):
 
         tc_stat_dict['OUTPUT_DIR'] = self.p.getdir('TC_STAT_OUTPUT_DIR')
 
-        tc_stat_dict['JOB_TYPE'] = self.p.getstr('config', 'TC_STAT_JOB_TYPE')
+        tc_stat_dict['JOB_TYPE'] = \
+            self.p.getstr('config', 'TC_STAT_JOB_TYPE').lower()
 
         tc_stat_dict['PARM_BASE'] = self.p.getdir('PARM_BASE')
 
@@ -245,7 +247,46 @@ class TcStatWrapper(CommandBuilder):
 
         # Since this is different from the other MET tools, we will build
         # the commands rather than use command builder's methods.
+        match_points = str(self.tc_stat_dict['MATCH_POINTS'])
 
+        # Create the name of the filtered file based on the job type
+        job_type = self.tc_stat_dict['JOB_TYPE'].lower()
+        filtered_filename = 'tc_' + job_type + '_job.tcst'
+
+        filtered_output_file = os.path.join(self.tc_stat_dict['OUTPUT_DIR'],
+                                            filtered_filename)
+        if job_type == 'filter':
+            tc_cmd_list = [self.tc_exe, " -job ", self.tc_stat_dict['JOB_TYPE'],
+                           " -lookin ", self.tc_stat_dict['INPUT_DIR'],
+                           " -dump_row ", filtered_output_file,
+                           " -match_points ",
+                           match_points.lower()
+                           ]
+        elif job_type == 'summary':
+            tc_cmd_list = [self.tc_exe, " -job ", self.tc_stat_dict['JOB_TYPE'],
+                           " -by ",
+                           " -lookin ", self.tc_stat_dict['INPUT_DIR'],
+                           " -dump_row ", filtered_output_file,
+                           " -match_points ",
+                           match_points.lower()
+                           ]
+
+        tc_cmd_str = ''.join(tc_cmd_list)
+
+        # Since this wrapper is not using the CommandBuilder to build the cmd,
+        # we need to add the met verbosity level to the MET cmd created before
+        # we run the command.
+        tc_cmd_str = self.cmdrunner.insert_metverbosity_opt(tc_cmd_str)
+
+        # Run tc_stat
+        try:
+            (ret, cmd) = \
+                self.cmdrunner.run_cmd(tc_cmd_str, app_name=self.app_name)
+            if not ret == 0:
+                raise ExitStatusException(
+                    '%s: non-zero exit status' % (repr(cmd),), ret)
+        except ExitStatusException as ese:
+            self.logger.error(ese)
 
     def set_envs(self):
         """! Set the env variables based on settings in the METplus config
