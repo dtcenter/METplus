@@ -372,7 +372,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         return dated_output_dir
 
     def retrieve_optionals(self):
-        """Creates a dictinary of the options and their values.
+        """Creates a dictionary of the options and their values.
            Args:
 
            Returns:
