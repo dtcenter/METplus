@@ -30,6 +30,7 @@ class PB2NCWrapper(CommandBuilder):
     """! Wrapper to the MET tool pb2nc which converts prepbufr files
          to NetCDF for MET's point_stat tool can recognize.
     """
+
     def __init__(self, p, logger):
         super(PB2NCWrapper, self).__init__(p, logger)
         self.p = p
@@ -70,7 +71,7 @@ class PB2NCWrapper(CommandBuilder):
         pb_dict['METPLUS_BASE'] = self.p.getdir('dir', 'METPLUS_BASE')
         pb_dict['MET_BUILD_BASE'] = self.p.getdir('dir', 'MET_BUILD_BASE')
         pb_dict['MET_INSTALL_DIR'] = self.p.getdir('dir', 'MET_INSTALL_DIR')
-        pb_dict['PREPBUFR_DATA_DIR'] = self.p.getstr('dir','PREPBUFR_DATA_DIR')
+        pb_dict['PREPBUFR_DATA_DIR'] = self.p.getstr('dir', 'PREPBUFR_DATA_DIR')
         pb_dict['PREPBUFR_MODEL_DIR_NAME'] = \
             self.p.getstr('dir', 'PREPBUFR_MODEL_DIR_NAME')
         pb_dict['PB2NC_OUTPUT_DIR'] = self.p.getstr('dir', 'PB2NC_OUTPUT_DIR')
@@ -80,9 +81,12 @@ class PB2NCWrapper(CommandBuilder):
 
         # Configuration
         pb_dict['TIME_METHOD'] = self.p.getstr('config', 'TIME_METHOD')
-        pb_dict['PB2NC_CONFIG_FILE'] = self.p.getstr('config', 'PB2NC_CONFIG_FILE')
-        pb_dict['PB2NC_MESSAGE_TYPE'] = util.getlist(self.p.getstr('config', 'PB2NC_MESSAGE_TYPE'))
-        pb_dict['VERTICAL_LOCATION'] = self.p.getstr('config', 'VERTICAL_LOCATION')
+        pb_dict['PB2NC_CONFIG_FILE'] = self.p.getstr('config',
+                                                     'PB2NC_CONFIG_FILE')
+        pb_dict['PB2NC_MESSAGE_TYPE'] = util.getlist(
+            self.p.getstr('config', 'PB2NC_MESSAGE_TYPE'))
+        pb_dict['VERTICAL_LOCATION'] = self.p.getstr('config',
+                                                     'VERTICAL_LOCATION')
 
         grid_id = self.p.getstr('config', 'PB2NC_GRID')
         if grid_id.startswith('G'):
@@ -93,7 +97,8 @@ class PB2NCWrapper(CommandBuilder):
             pb_dict['PB2NC_GRID'] = grid_id
 
         pb_dict['PB2NC_POLY'] = self.p.getstr('config', 'PB2NC_POLY')
-        pb_dict['PB2NC_STATION_ID'] = util.getlist(self.p.getstr('config', 'PB2NC_STATION_ID'))
+        pb_dict['PB2NC_STATION_ID'] = util.getlist(
+            self.p.getstr('config', 'PB2NC_STATION_ID'))
 
         # Retrieve YYYYMMDD begin and end time
         pb_dict['BEG_TIME'] = self.p.getstr('config', 'BEG_TIME')[0:8]
@@ -117,19 +122,22 @@ class PB2NCWrapper(CommandBuilder):
             self.p.getstr('conf', 'TIME_SUMMARY_VAR_NAMES'))
         pb_dict['TIME_SUMMARY_TYPES'] = util.getlist(
             self.p.getstr('config', 'TIME_SUMMARY_TYPES'))
-        pb_dict['OBS_WINDOW_BEGIN'] = self.p.getstr('config', 'OBS_WINDOW_BEGIN')
+        pb_dict['OBS_WINDOW_BEGIN'] = self.p.getstr('config',
+                                                    'OBS_WINDOW_BEGIN')
         pb_dict['OBS_WINDOW_END'] = self.p.getstr('config', 'OBS_WINDOW_END')
 
         pb_dict['OVERWRITE_NC_OUTPUT'] = \
             self.p.getstr('config', 'OVERWRITE_NC_OUTPUT').lower()
 
         # Filename templates and regex patterns for input dirs and filenames
-        pb_dict['NC_FILE_TMPL'] = util.getraw_interp(self.p, 'filename_templates',
-                                                'NC_FILE_TMPL')
-        pb_dict['PREPBUFR_FILE_REGEX'] = util.getraw_interp(self.p, 'regex_pattern',
-                                                       'PREPBUFR_FILE_REGEX')
-        pb_dict['PREPBUFR_DIR_REGEX'] = util.getraw_interp(self.p, 'regex_pattern',
-                                                      'PREPBUFR_DIR_REGEX')
+        pb_dict['NC_FILE_TMPL'] = util.getraw_interp(self.p,
+                                                     'filename_templates',
+                                                     'NC_FILE_TMPL')
+        pb_dict['PREPBUFR_FILE_REGEX'] = \
+            util.getraw_interp(self.p, 'regex_pattern', 'PREPBUFR_FILE_REGEX')
+        pb_dict['PREPBUFR_DIR_REGEX'] = util.getraw_interp(self.p,
+                                                           'regex_pattern',
+                                                           'PREPBUFR_DIR_REGEX')
 
         # non-MET executables
         pb_dict['WGRIB2'] = self.p.getdir('exe', 'WGRIB2')
@@ -252,8 +260,8 @@ class PB2NCWrapper(CommandBuilder):
         # Need to do some pre-processing so that Python will use " and not '
         # because currently MET doesn't support single-quotes
 
-        # PB2NC_MESSAGE_TYPE, PB2NC_STATION_ID, OBS_BUFR_VAR_LIST are different from other
-        # variables.  For instance, if set to nothing:
+        # PB2NC_MESSAGE_TYPE, PB2NC_STATION_ID, OBS_BUFR_VAR_LIST
+        # are different from other variables.  For instance, if set to nothing:
         #          PB2NC_MESSAGE_TYPE =
         # then don't allow it to be converted to "", or else MET will
         # search for message type "" in the prepbufr file.
@@ -283,7 +291,7 @@ class PB2NCWrapper(CommandBuilder):
 
         tmp_obs_bufr = self.pb_dict['OBS_BUFR_VAR_LIST']
         if not tmp_obs_bufr:
-            self.add_env_var(b'OBS_BUFR_VAR_LIST', "[]")
+            self.add_env_var('OBS_BUFR_VAR_LIST', "[]")
         else:
             # Not empty, set the environment variable to the
             # value specified in the MET+ config file.
@@ -309,8 +317,10 @@ class PB2NCWrapper(CommandBuilder):
         time_summary_types_str = str(self.pb_dict['TIME_SUMMARY_TYPES'])
         self.add_env_var(b'TIME_SUMMARY_TYPES', time_summary_types_str)
 
-        # Add the environment variables corresponding to the obs_window dictionary in MET.
-        self.add_env_var('OBS_WINDOW_BEGIN', str(self.pb_dict['OBS_WINDOW_BEGIN']))
+        # Add the environment variables corresponding to the obs_window
+        # dictionary in MET.
+        self.add_env_var('OBS_WINDOW_BEGIN',
+                         str(self.pb_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var('OBS_WINDOW_END', str(self.pb_dict['OBS_WINDOW_END']))
 
         # Determine the files to convert based on init or valid start and
