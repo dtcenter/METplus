@@ -230,7 +230,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
                 logger.debug(msg)
             else:
                 # Perform fcst regridding on the records of interest
-                var_level_string = util.retrieve_var_info(config,
+                var_level_string = retrieve_var_info(config,
                                                           logger)
                 if regrid_with_met_tool:
                     # Perform regridding using MET Tool regrid_data_plane
@@ -255,7 +255,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
 
                 else:
                     # Perform regridding via wgrib2
-                    requested_records = util.retrieve_var_info(config,
+                    requested_records = retrieve_var_info(config,
                                                                logger)
                     fcst_cmd_list = [wgrib2_exe, ' ', fcst_filename, ' | ',
                                      egrep_exe, ' ', requested_records, '|',
@@ -278,7 +278,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
                              " exists, skip regridding")
             else:
                 # Perform anly regridding on the records of interest
-                var_level_string = util.retrieve_var_info(config,
+                var_level_string = retrieve_var_info(config,
                                                           logger)
                 if regrid_with_met_tool:
                     anly_cmd_list = [regrid_data_plane_exe, ' ',
@@ -315,3 +315,97 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
                     msg = ("INFO|[wgrib2]| Regridding via wgrib2:" +
                            wgrb_cmd_anly.to_shell())
                     logger.debug(msg)
+
+
+def retrieve_var_info(config, logger):
+    """! Retrieve the variable name and level from the
+        EXTRACT_TILES_VAR_FILTER and VAR_LIST.  If the
+        EXTRACT_TILES_VAR_FILTER is empty, then retrieve
+        the variable information from VAR_LIST.  Both are defined
+        in the constants_pdef.py param file.  This will
+        be used as part of the command to regrid the grib2 storm track
+        files into netCDF.
+        Args:
+            @param config: The reference to the config/param instance.
+            @param logger:  The logger to which all logging is directed.
+                            Optional.
+        Returns:
+            field_level_string (string):  If REGRID_USING_MET_TOOL is True,
+                                          A string with format -field
+                                          'name="HGT"; level="P500";'
+                                          for each variable defined in
+                                          VAR_LIST. Otherwise, a string with
+                                          format like:
+                                          :TMP:2 |:HGT: 500|:PWAT:|:PRMSL:
+                                          which will be used to regrid using
+                                          wgrib2.
+    """
+
+    # pylint: disable=protected-access
+    # Need to access sys._getframe() to retrieve the current file and function/
+    # method for logging information.
+
+    # For logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    logger.debug("DEBUG|" + cur_filename + "|" + cur_function)
+
+    var_list = util.getlist(config.getstr('config', 'VAR_LIST'))
+    extra_var_list = util.getlist(config.getstr('config',
+                                                'EXTRACT_TILES_VAR_LIST'))
+    regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
+    full_list = []
+
+    # Append the extra_var list to the var_list
+    # and remove any duplicates. *NOTE, order
+    # will be lost.
+    full_var_list = var_list + extra_var_list
+    unique_var_list = list(set(full_var_list))
+
+    if regrid_with_met_tool:
+        name_str = 'name="'
+        level_str = 'level="'
+
+        for cur_var in unique_var_list:
+            match = re.match(r'(.*)/(.*)', cur_var)
+            name = match.group(1)
+            level = match.group(2)
+            level_val = "_" + level
+
+            # Create the field info string that can be used
+            # by the MET Tool regrid_data_plane to perform
+            # regridding.
+            cur_list = [' -field ', "'", name_str, name, '"; ',
+                        level_str, level_val, '";', "'", '\\ ']
+            cur_str = ''.join(cur_list)
+            full_list.append(cur_str)
+        field_level_string = ''.join(full_list)
+    else:
+        full_list = ['":']
+        for cur_var in unique_var_list:
+            match = re.match(r'(.*)/(.*)', cur_var)
+            name = match.group(1)
+            level = match.group(2)
+            level_match = re.match(r'([a-zA-Z])([0-9]{1,3})', level)
+            level_val = level_match.group(2)
+
+            # Create the field info string that can be used by
+            # wgrib2 to perform regridding.
+            if int(level_val) > 0:
+                level_str = str(level_val) + ' '
+            else:
+                # For Z0, Z2, etc. just gather all available.
+                level_str = ""
+
+            cur_list = [name, ':', level_str, '|']
+            tmp_str = ''.join(cur_list)
+            full_list.append(tmp_str)
+
+        # Remove the last '|' and add the terminal double quote.
+        field_level_string = ''.join(full_list)
+        field_level_string = field_level_string[:-1]
+        field_level_string += '"'
+
+    return field_level_string
+
