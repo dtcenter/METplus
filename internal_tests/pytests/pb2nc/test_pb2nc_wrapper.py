@@ -76,40 +76,40 @@ def metplus_config():
 # ------------------------
 #  test_config
 # ------------------------
-# @pytest.mark.parametrize(
-#     'key, value', [
-#         ('APP_PATH', '/usr/local/met-6.1/bin/pb2nc'),
-#         ('APP_NAME', 'pb2nc'),
-#         ('START_DATE', '20170601'),
-#         ('END_DATE', '20170630'),
-#         ('PREPBUFR_DATA_DIR', '/d1/METplus_Mallory/data/prepbufr'),
-#         ('PREPBUFR_MODEL_DIR_NAME', 'nam')
-#     ]
-# )
-# def test_config(key, value):
-#     pb = pb2nc_wrapper()
-#     pb.pb_dict['START_DATE'] = '20170601'
-#     pb.pb_dict['END_DATE'] = '20170630'
-#     pb.pb_dict['PREPBUFR_MODEL_DIR_NAME'] = 'nam'
-#
-#     # Retrieve the value of the class attribute that corresponds to the key
-#     # in the parametrization pb_key = pb.__getattribute__(key)
-#     pb_key = pb.pb_dict[key]
-#     assert (pb_key == value)
-#
-#
-# @pytest.mark.parametrize(
-#    'key, value', [
-#        ('NC_FILE_TMPL', 'nam.t{init?fmt=%HH}z.prepbufr.tm{lead?fmt=%HH}'),
-#        ('NC_FILE_TMPL', 'prepbufr.gdas.{valid?fmt=%Y%m%d%HH}')
-#    ]
-# )
-# def test_set_attribute_after_wrapper_creation(key, value):
-#     # Test that we can change the attribute defined in the config file
-#     pb = pb2nc_wrapper()
-#     pb.pb_dict['NC_FILE_TMPL'] = value
-#     p_attr = pb.pb_dict[key]
-#     assert (p_attr == value)
+@pytest.mark.parametrize(
+    'key, value', [
+        ('APP_PATH', '/usr/local/met-6.1/bin/pb2nc'),
+        ('APP_NAME', 'pb2nc'),
+        ('START_DATE', '20170601'),
+        ('END_DATE', '20170630'),
+        ('PREPBUFR_DATA_DIR', '/d1/METplus_Mallory/data/prepbufr'),
+        ('PREPBUFR_MODEL_DIR_NAME', 'nam')
+    ]
+)
+def test_config(key, value):
+    pb = pb2nc_wrapper()
+    pb.pb_dict['START_DATE'] = '20170601'
+    pb.pb_dict['END_DATE'] = '20170630'
+    pb.pb_dict['PREPBUFR_MODEL_DIR_NAME'] = 'nam'
+
+    # Retrieve the value of the class attribute that corresponds to the key
+    # in the parametrization pb_key = pb.__getattribute__(key)
+    pb_key = pb.pb_dict[key]
+    assert (pb_key == value)
+
+
+@pytest.mark.parametrize(
+   'key, value', [
+       ('NC_FILE_TMPL', 'nam.t{init?fmt=%HH}z.prepbufr.tm{lead?fmt=%HH}'),
+       ('NC_FILE_TMPL', 'prepbufr.gdas.{valid?fmt=%Y%m%d%HH}')
+   ]
+)
+def test_set_attribute_after_wrapper_creation(key, value):
+    # Test that we can change the attribute defined in the config file
+    pb = pb2nc_wrapper()
+    pb.pb_dict['NC_FILE_TMPL'] = value
+    p_attr = pb.pb_dict[key]
+    assert (p_attr == value)
 
 
 # Get all seven values set in the OBS_BUFR_VAR_LIST in the test config file
@@ -167,6 +167,7 @@ def test_output_dir_name_creation_for_nam():
     out_filename = wrapper.generate_output_nc_filename(relevant_pb_file)
     assert (out_filename == expected_outfile)
 
+
 def test_output_dir_name_creation_for_gdas():
     # Verify that the output directory name is being assembled correctly
     wrapper = pb2nc_wrapper()
@@ -187,6 +188,39 @@ def test_output_dir_name_creation_for_gdas():
     pbFileInfo = namedtuple('pbFileInfo', 'full_filepath, date, cycle, offset')
     relevant_pb_file = pbFileInfo(full_filepath, date, cycle, offset)
     out_filename = wrapper.generate_output_nc_filename(relevant_pb_file)
+    assert (out_filename == expected_outfile)
+
+
+def test_output_dir_name_creation_for_gdas_vsdb():
+    # Verify that the output directory name is being assembled correctly for
+    # VSDB files of the format:
+    # /gpfs/hps/nco/ops/com/gfs/prod/gdas.20180706/gdas.t00z.prepbufr
+    wrapper = pb2nc_wrapper()
+    date = '20180706'
+    cycle = '00'
+    offset = None
+    wrapper.pb_dict[
+        'PB2NC_OUTPUT_DIR'] = \
+        '/gpfs/hps/nco/ops/com/gfs/prod/gdas.20180706'
+    wrapper.pb_dict['PREPBUFR_DIR_REGEX'] = \
+        '.gpfs/hps/nco/ops/com/gfs/prod/gdas.(2[0-9]{7})'
+    wrapper.pb_dict['PREPBUFR_FILE_REGEX'] = \
+        'gdas.t([0-9]{2})z.prepbufr'
+    wrapper.pb_dict['NC_FILE_TMPL'] = 'gdas.t{cycle?fmt=%HH}z.nc'
+    full_filepath = \
+        '/gpfs/hps/nco/ops/com/gfs/prod/gdas.20180706/gdas.t00z.prepbufr'
+    expected_outdir = '/gpfs/hps/nco/ops/com/gfs/prod'
+    expected_model = 'gdas.' + date
+    expected_filename = 'gdas.t00z.nc'
+    expected_outfile = os.path.join(expected_outdir,
+                                    expected_model,
+                                    expected_filename)
+
+    pbFileInfo = namedtuple('pbFileInfo', 'full_filepath, date, cycle, offset')
+    relevant_pb_file = pbFileInfo(full_filepath, date, cycle, offset)
+    out_filename = wrapper.generate_output_nc_filename(relevant_pb_file)
+    # print('expected filename: ', expected_outfile)
+    # print('out filename: ', out_filename)
     assert (out_filename == expected_outfile)
 
 # ---------------------
@@ -513,6 +547,4 @@ def test_by_valid_for_gdas_multiple_expected():
         # Fail, didn't return the expected number of results
         assert True is False
     assert True
-
-
 

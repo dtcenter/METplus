@@ -112,7 +112,7 @@ class StatAnalysisWrapper(CommandBuilder):
         #build command
         cmd = self.get_command()
         if cmd is None:
-            print("ERROR: stat_analysis could not generate command")
+            self.logger.error("ERROR: stat_analysis could not generate command")
             return
         self.logger.info("")
         self.build()
@@ -185,7 +185,7 @@ class StatAnalysisWrapper(CommandBuilder):
             #build command
             cmd = self.get_command()
             if cmd is None:
-                print("ERROR: stat_analysis could not generate command")
+                self.logger.error("ERROR: stat_analysis could not generate command")
                 return
             self.logger.info("")
             self.build()
@@ -293,7 +293,7 @@ class StatAnalysisWrapper(CommandBuilder):
                             #build command
                             cmd = self.get_command()
                             if cmd is None:
-                                print("ERROR: stat_analysis could not generate command")
+                                self.logger.error("ERROR: stat_analysis could not generate command")
                                 return
                             self.logger.info("")
                             self.build()
@@ -377,7 +377,7 @@ class StatAnalysisWrapper(CommandBuilder):
                             wave_num_beg_list = util.getlist(self.p.getstr('config', 'WAVE_NUM_BEG_LIST'))
                             wave_num_end_list = util.getlist(self.p.getstr('config', 'WAVE_NUM_END_LIST'))
                             if len(wave_num_beg_list) != len(wave_num_end_list):
-                                print("ERROR: WAVE_NUM_BEG_LIST and WAVE_NUM_END_LIST do not have the same number of elements")
+                                self.logger.error("ERROR: WAVE_NUM_BEG_LIST and WAVE_NUM_END_LIST do not have the same number of elements")
                                 exit(1)
                             else:
                                 interp_mthd.append("NEAREST")
@@ -431,7 +431,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                 #build command
                                 cmd = self.get_command()
                                 if cmd is None:
-                                    print("ERROR: stat_analysis could not generate command")
+                                    self.logger.error("ERROR: stat_analysis could not generate command")
                                     return
                                 self.logger.info("")
                                 self.build()
@@ -540,7 +540,7 @@ class StatAnalysisWrapper(CommandBuilder):
                             #build command
                             cmd = self.get_command()
                             if cmd is None:
-                                print("ERROR: stat_analysis could not generate command")
+                                self.logger.error("ERROR: stat_analysis could not generate command")
                                 return
                             self.logger.info("")
                             self.build()
@@ -638,7 +638,7 @@ class StatAnalysisWrapper(CommandBuilder):
                             #build command
                             cmd = self.get_command()
                             if cmd is None:
-                                print("ERROR: stat_analysis could not generate command")
+                                self.logger.error("ERROR: stat_analysis could not generate command")
                                 return
                             self.logger.info("")
                             self.build()
@@ -736,7 +736,7 @@ class StatAnalysisWrapper(CommandBuilder):
                             #build command
                             cmd = self.get_command()
                             if cmd is None:
-                                print("ERROR: stat_analysis could not generate command")
+                                self.logger.error("ERROR: stat_analysis could not generate command")
                                 return
                             self.logger.info("")
                             self.build()
