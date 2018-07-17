@@ -14,7 +14,7 @@ Condition codes: 0 for success, 1 for failure
 
 """
 
-from __future__ import (print_function, division)
+from __future__ import (print_function, division, unicode_literals)
 
 import os
 import sys
@@ -62,8 +62,8 @@ class TcStatWrapper(CommandBuilder):
               Args:
 
               Returns:
-                    dictionary of the key-value representation
-                    of options set in the config file.
+                    tc_stat_dict - a dictionary of the key-value representation
+                                   of options set in the config file.
         """
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
@@ -123,8 +123,8 @@ class TcStatWrapper(CommandBuilder):
         tc_stat_dict['INIT_EXCLUDE'] = util.getlist(
             self.config.getstr('config', 'TC_STAT_INIT_EXCLUDE'))
 
-        tc_stat_dict['INIT_HOUR'] = self.config.getstr('config',
-                                                       'TC_STAT_INIT_HOUR')
+        tc_stat_dict['INIT_HOUR'] = util.getlist(
+            self.config.getstr('config', 'TC_STAT_INIT_HOUR'))
 
         tc_stat_dict['VALID_BEG'] = self.config.getstr('config',
                                                        'TC_STAT_INIT_BEG')
@@ -183,14 +183,49 @@ class TcStatWrapper(CommandBuilder):
         tc_stat_dict['INIT_STR_VAL'] = \
             util.getlist(self.config.getstr('config', 'TC_STAT_INIT_STR_VAL'))
 
-        tc_stat_dict['WATER_ONLY'] = self.config.getstr('config',
-                                                        'TC_STAT_WATER_ONLY')
+        try:
+            tc_stat_dict['WATER_ONLY'] = \
+                self.config.getbool('config', 'TC_STAT_WATER_ONLY')
+        except ValueError:
+            # WATER_ONLY not defined in any configuration files, set to False
+            # and proceed.
+            self.logger.warn(
+                cur_filename + '|' + cur_function +
+                ': WATER_ONLY undefined in config file.  Setting to False.')
+            tc_stat_dict['WATER_ONLY'] = False
+            pass
 
-        tc_stat_dict['LANDFALL'] = self.config.getstr('config',
-                                                      'TC_STAT_LANDFALL')
+        try:
+            tc_stat_dict['LANDFALL'] = \
+                self.config.getbool('config', 'TC_STAT_LANDFALL')
+        except ValueError:
+            # Not set by user in MET tc_stat config file or METplus config
+            # file.  Set to False and continue ingesting config file values.
+            self.logger.warn(cur_filename + '|' + cur_function + ': LANDFALL' +
+                             ' undefined in config file.  Setting to False...')
+            tc_stat_dict['LANDFALL'] = False
+            pass
 
-        tc_stat_dict['MATCH_POINTS'] = self.p.getstr('config',
-                                                     'TC_STAT_MATCH_POINTS')
+        tc_stat_dict['LANDFALL_BEG'] = \
+            self.config.getstr('config', 'TC_STAT_LANDFALL_BEG')
+
+        tc_stat_dict['LANDFALL_END'] = \
+            self.config.getstr('config', 'TC_STAT_LANDFALL_END')
+
+        try:
+            tc_stat_dict['MATCH_POINTS'] = \
+                self.p.getbool('config', 'TC_STAT_MATCH_POINTS')
+        except ValueError:
+            # If the user didn't set this, set it to FALSE and resume reading
+            # in the remaining values in the configuration file.
+            self.logger.warn(cur_filename + '|' + cur_function +
+                             ": MATCH_POINTS is not set to either " +
+                             "True or False, setting to False")
+            tc_stat_dict['MATCH_POINTS'] = False
+            pass
+
+        tc_stat_dict['JOB_TYPE'] = \
+            self.p.getstr('config', 'TC_STAT_JOB_TYPE').lower()
 
         tc_stat_dict['OUTPUT_BASE'] = self.p.getdir('OUTPUT_BASE')
 
@@ -206,10 +241,9 @@ class TcStatWrapper(CommandBuilder):
 
         tc_stat_dict['OUTPUT_DIR'] = self.p.getdir('TC_STAT_OUTPUT_DIR')
 
-        tc_stat_dict['JOB_TYPE'] = \
-            self.p.getstr('config', 'TC_STAT_JOB_TYPE').lower()
-
         tc_stat_dict['PARM_BASE'] = self.p.getdir('PARM_BASE')
+
+        tc_stat_dict['CONFIG_FILE'] = self.p.getdir('TC_STAT_CONFIG_FILE')
 
         return tc_stat_dict
 
@@ -220,7 +254,8 @@ class TcStatWrapper(CommandBuilder):
              Args:
 
              Returns:
-
+                0 if successfully runs MET tc_stat tool.
+                1 otherwise
         """
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
@@ -255,13 +290,34 @@ class TcStatWrapper(CommandBuilder):
 
         filtered_output_file = os.path.join(self.tc_stat_dict['OUTPUT_DIR'],
                                             filtered_filename)
+
         if job_type == 'filter':
+            # Create the env variable for the analysis job that is to be run
+            # after applying any filtering based on the parameters defined in
+            # the METplus config file(s). Since the environment variable
+            # contains whitespace, surrond this with "", then to indicate
+            # that this is a string to MET, enclose this with '' to get
+            # something like this:
+            #     '" -job filter -dump_row /path/to/file.tcst"'
+            # to satisfy the OS and MET.
+
+            analysis_job_list = ['"', '-job ',
+                                 self.tc_stat_dict['JOB_TYPE'].lower(),
+                                 ' -dump_row ', filtered_output_file, '"']
+
+            analysis_job_str = ''.join(analysis_job_list)
+            analysis_job_str = "'" + analysis_job_str + "'"
+            self.add_env_var('JOBS', analysis_job_str)
             tc_cmd_list = [self.tc_exe, " -job ", self.tc_stat_dict['JOB_TYPE'],
                            " -lookin ", self.tc_stat_dict['INPUT_DIR'],
                            " -dump_row ", filtered_output_file,
-                           " -match_points ",
-                           match_points.lower()
+                           " -config ", self.tc_stat_dict['CONFIG_FILE']
                            ]
+
+            # tc_cmd_list = [self.tc_exe,
+            #                " -lookin ", self.tc_stat_dict['INPUT_DIR'],
+            #                " -config ", self.tc_stat_dict['CONFIG_FILE']
+            #                ]
         elif job_type == 'summary':
             tc_cmd_list = [self.tc_exe, " -job ", self.tc_stat_dict['JOB_TYPE'],
                            " -by ",
@@ -288,6 +344,8 @@ class TcStatWrapper(CommandBuilder):
         except ExitStatusException as ese:
             self.logger.error(ese)
 
+        return 0
+
     def set_envs(self):
         """! Set the env variables based on settings in the METplus config
              files.
@@ -295,7 +353,7 @@ class TcStatWrapper(CommandBuilder):
              Args:
 
              Returns:
-                 none - sets environment variables
+                 0 - if successfully sets env variable
 
 
         """
@@ -312,173 +370,363 @@ class TcStatWrapper(CommandBuilder):
         self.logger.info('Setting env variables from config file...')
         # Set all the environment variables that are needed by the
         # MET config file.
-        if self.tc_stat_dict['AMODEL']:
-            self.add_env_var('AMODEL', self.tc_stat_dict['AMODEL'])
-        else:
-            self.add_env_var('AMODEL', '[]')
 
-        if self.tc_stat_dict['BMODEL']:
-            self.add_env_var('BMODEL', self.tc_stat_dict['BMODEL'])
+        # The analysis job list in the MET tc_stat config file requires
+        # -job filter, -job summary, -job rirw, or -job probrirw and
+        # -dump.  It can
+        # take additional, optional arguments, but since we are already
+        # reading in these options, only the -job <job type> will suffice.
+        job_type = self.tc_stat_dict['JOB_TYPE'].lower()
+        if job_type:
+            self.add_env_var('JOBS', job_type)
         else:
-            self.add_env_var('BMODEL', '[]')
+            # Not defined in any METplus configuration files.
+            self.logger.error('No job type specified, exiting...')
+            sys.exit(1)
 
-        if self.tc_stat_dict['DESC']:
-            self.add_env_var('DESC', self.tc_stat_dict['DESC'])
+        tmp_amodel = self.tc_stat_dict['AMODEL']
+        if tmp_amodel:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_amodel_str = str(tmp_amodel).replace("\'", "\"")
+            tmp_amodel = ''.join(tmp_amodel_str.split())
+            self.add_env_var('AMODEL', tmp_amodel)
         else:
-            self.add_env_var('DESC', '[]')
+            self.add_env_var('AMODEL', "[]")
 
-        if self.tc_stat_dict['STORM_ID']:
-            self.add_env_var('STORM_ID', self.tc_stat_dict['STORM_ID'])
+        tmp_bmodel = self.tc_stat_dict['BMODEL']
+        if tmp_bmodel:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_bmodel_str = str(tmp_bmodel).replace("\'", "\"")
+            tmp_bmodel = ''.join(tmp_bmodel_str.split())
+            self.add_env_var('BMODEL', tmp_bmodel)
         else:
-            self.add_env_var('STORM_ID', '[]')
+            self.add_env_var('BMODEL', "[]")
 
-        if self.tc_stat_dict['BASIN']:
-            self.add_env_var('BASIN', self.tc_stat_dict['BASIN'])
+        tmp_desc = self.tc_stat_dict['DESC']
+        if tmp_desc:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_desc_str = str(tmp_desc).replace("\'", "\"")
+            tmp_desc = ''.join(tmp_desc_str.split())
+            self.add_env_var('DESC', tmp_desc)
         else:
-            self.add_env_var('BASIN', '[]')
+            self.add_env_var('DESC', "[]")
 
-        if self.tc_stat_dict['CYCLONE']:
-            self.add_env_var('CYCLONE', self.tc_stat_dict['CYCLONE'])
+        tmp_storm_id = self.tc_stat_dict['STORM_ID']
+        if tmp_storm_id:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_storm_id_str = str(tmp_storm_id).replace("\'", "\"")
+            tmp_storm_id = ''.join(tmp_storm_id_str.split())
+            self.add_env_var('STORM_ID', tmp_storm_id)
         else:
-            self.add_env_var('CYCLONE', '[]')
+            self.add_env_var('STORM_ID', "[]")
 
-        if self.tc_stat_dict['STORM_NAME']:
-            self.add_env_var('STORM_NAME', self.tc_stat_dict['STORM_NAME'])
+        tmp_basin = self.tc_stat_dict['BASIN']
+        if tmp_basin:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_basin_str = str(tmp_basin).replace("\'", "\"")
+            tmp_basin = ''.join(tmp_basin_str.split())
+            self.add_env_var('BASIN', tmp_basin)
         else:
-            self.add_env_var('STORM_NAME', '[]')
+            self.add_env_var('BASIN', "[]")
+
+        tmp_cyclone = self.tc_stat_dict['CYCLONE']
+        if tmp_cyclone:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_cyclone_str = str(tmp_cyclone).replace("\'", "\"")
+            tmp_cyclone = ''.join(tmp_cyclone_str.strip())
+            self.add_env_var('CYCLONE', tmp_cyclone)
+        else:
+            self.add_env_var('CYCLONE', "[]")
+
+        tmp_storm_name = self.tc_stat_dict['STORM_NAME']
+        if tmp_storm_name:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_storm_name_str = str(tmp_storm_name).replace("\'", "\"")
+            tmp_storm_name = ''.join(tmp_storm_name_str.strip())
+            self.add_env_var('STORM_NAME', tmp_storm_name)
+        else:
+            self.add_env_var('STORM_NAME', "[]")
 
         if self.tc_stat_dict['INIT_BEG']:
-            self.add_env_var('INIT_BEG', self.tc_stat_dict['INIT_BEG'])
+            self.add_env_var(b'INIT_BEG', self.tc_stat_dict['INIT_BEG'])
         else:
-            self.add_env_var('INIT_BEG', '')
+            self.add_env_var(b'INIT_BEG', "")
 
         if self.tc_stat_dict['INIT_END']:
             self.add_env_var('INIT_END', self.tc_stat_dict['INIT_END'])
         else:
-            self.add_env_var('INIT_END', '')
+            self.add_env_var(b'INIT_END', "")
 
-        if self.tc_stat_dict['INIT_INCLUDE']:
-            self.add_env_var('INIT_INCLUDE', self.tc_stat_dict['INIT_INCLUDE'])
+        tmp_init_include = self.tc_stat_dict['INIT_INCLUDE']
+        if tmp_init_include:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_init_include_str = str(tmp_init_include).replace("\'", "\"")
+            tmp_init_include = ''.join(tmp_init_include_str.strip())
+            self.add_env_var('INIT_INCLUDE', tmp_init_include)
         else:
-            self.add_env_var('INIT_INCLUDE', '[]')
+            self.add_env_var('INIT_INCLUDE', "[]")
 
-        if self.tc_stat_dict['INIT_EXCLUDE']:
-            self.add_env_var('INIT_EXCLUDE', self.tc_stat_dict['INIT_EXCLUDE'])
+        tmp_init_exclude = self.tc_stat_dict['INIT_EXCLUDE']
+        if tmp_init_exclude:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_init_exclude_str = str(tmp_init_exclude).replace("\'", "\"")
+            tmp_init_exclude = ''.join(tmp_init_exclude_str.strip())
+            self.add_env_var('INIT_EXCLUDE', tmp_init_exclude)
         else:
-            self.add_env_var('INIT_EXCLUDE', '[]')
+            self.add_env_var('INIT_EXCLUDE', "[]")
 
-        if self.tc_stat_dict['INIT_HOUR']:
-            self.add_env_var('INIT_HOUR', self.tc_stat_dict['INIT_HOUR'])
+        tmp_init_hour = self.tc_stat_dict['INIT_HOUR']
+        if tmp_init_hour:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_init_hour_str = str(tmp_init_hour).replace("\'", "\"")
+            tmp_init_hour = ''.join(tmp_init_hour_str.split())
+            self.add_env_var('INIT_HOUR', tmp_init_hour)
         else:
-            self.add_env_var('INIT_HOUR', '[]')
+            self.add_env_var('INIT_HOUR', "[]")
 
-        if self.tc_stat_dict['VALID_BEG']:
-            self.add_env_var('VALID_BEG', self.tc_stat_dict['VALID_BEG'])
+        tmp_valid_begin = self.tc_stat_dict['VALID_BEG']
+        if tmp_valid_begin:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_valid_begin_str = str(tmp_valid_begin).replace("\'", "\"")
+            tmp_valid_begin = ''.join(tmp_valid_begin_str.strip())
+            self.add_env_var(b'VALID_BEG', tmp_valid_begin)
         else:
-            self.add_env_var('VALID_BEG', '')
+            self.add_env_var(b'VALID_BEG', '')
 
-        if self.tc_stat_dict['VALID_END']:
-            self.add_env_var('VALID_END', self.tc_stat_dict['VALID_END'])
+        tmp_valid_end = self.tc_stat_dict['VALID_END']
+        if tmp_valid_end:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_valid_end_str = str(tmp_valid_end).replace("\'", "\"")
+            tmp_valid_end = ''.join(tmp_valid_end_str.strip())
+            self.add_env_var(b'VALID_END', tmp_valid_end)
         else:
-            self.add_env_var('VALID_END', '')
+            self.add_env_var(b'VALID_END', "")
 
-        if self.tc_stat_dict['VALID_INCLUDE']:
-            self.add_env_var('VALID_INCLUDE',
-                             self.tc_stat_dict['VALID_INCLUDE'])
+        tmp_valid_include = self.tc_stat_dict['VALID_INCLUDE']
+        if tmp_valid_include:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_valid_include_str = str(tmp_valid_include).replace("\'", "\"")
+            tmp_valid_include = ''.join(tmp_valid_include_str.strip())
+            self.add_env_var('VALID_INCLUDE', tmp_valid_include)
         else:
-            self.add_env_var('VALID_INCLUDE', '[]')
+            self.add_env_var('VALID_INCLUDE', "[]")
 
-        if self.tc_stat_dict['VALID_EXCLUDE']:
-            self.add_env_var('VALID_EXCLUDE',
-                             self.tc_stat_dict['VALID_EXCLUDE'])
+        tmp_valid_exclude = self.tc_stat_dict['VALID_EXCLUDE']
+        if tmp_valid_exclude:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_valid_exclude_str = str(tmp_valid_exclude).replace("\'", "\"")
+            tmp_valid_exclude = ''.join(tmp_valid_exclude_str.strip())
+            self.add_env_var('VALID_EXCLUDE', tmp_valid_exclude)
         else:
-            self.add_env_var('VALID_EXCLUDE', '[]')
+            self.add_env_var('VALID_EXCLUDE', "[]")
 
-        if self.tc_stat_dict['VALID_HOUR']:
-            self.add_env_var('VALID_HOUR', self.tc_stat_dict['VALID_HOUR'])
+        tmp_valid_hour = self.tc_stat_dict['VALID_HOUR']
+        if tmp_valid_hour:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_valid_hour_str = str(tmp_valid_hour).replace("\'", "\"")
+            tmp_valid_hour = ''.join(tmp_valid_hour_str.strip())
+            self.add_env_var('VALID_HOUR', tmp_valid_hour)
         else:
-            self.add_env_var('VALID_HOUR', '[]')
+            self.add_env_var('VALID_HOUR', "[]")
 
-        if self.tc_stat_dict['LEAD_REQ']:
-            self.add_env_var('LEAD_REQ', self.tc_stat_dict['LEAD_REQ'])
+        tmp_lead_req = self.tc_stat_dict['LEAD_REQ']
+        if tmp_lead_req:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_lead_req_str = str(tmp_lead_req).replace("\'", "\"")
+            tmp_lead_req = ''.join(tmp_lead_req_str.strip())
+            self.add_env_var('LEAD_REQ', tmp_lead_req)
         else:
-            self.add_env_var('LEAD_REQ', '[]')
+            self.add_env_var('LEAD_REQ', "[]")
 
-        if self.tc_stat_dict['LEAD']:
-            self.add_env_var('LEAD', self.tc_stat_dict['LEAD'])
+        tmp_lead = self.tc_stat_dict['LEAD']
+        if tmp_lead:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_lead_str = str(tmp_lead).replace("\'", "\"")
+            tmp_lead = ''.join(tmp_lead_str.strip())
+            self.add_env_var('LEAD', tmp_lead)
         else:
-            self.add_env_var('LEAD', '[]')
+            self.add_env_var('LEAD', "[]")
 
-        if self.tc_stat_dict['INIT_MASK']:
-            self.add_env_var('INIT_MASK', self.tc_stat_dict['INIT_MASK'])
+        tmp_init_mask = self.tc_stat_dict['INIT_MASK']
+        if tmp_init_mask:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_init_mask_str = str(tmp_init_mask).replace("\'", "\"")
+            tmp_init_mask = ''.join(tmp_init_mask_str.strip())
+            self.add_env_var('INIT_MASK', tmp_init_mask)
         else:
-            self.add_env_var('INIT_MASK', '[]')
+            self.add_env_var('INIT_MASK', "[]")
 
-        if self.tc_stat_dict['TRACK_WATCH_WARN']:
-            self.add_env_var('TRACK_WATCH_WARN',
-                             self.tc_stat_dict['TRACK_WATCH_WARN'])
+        tmp_valid_mask = self.tc_stat_dict['VALID_MASK']
+        if tmp_valid_mask:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_valid_mask_str = str(tmp_valid_mask).replace("\'", "\"")
+            tmp_valid_mask = ''.join(tmp_valid_mask_str.strip())
+            self.add_env_var('VALID_MASK', tmp_valid_mask)
         else:
-            self.add_env_var('TRACK_WATCH_WARN', '[]')
+            self.add_env_var('VALID_MASK', "[]")
 
-        if self.tc_stat_dict['COLUMN_THRESH_NAME']:
-            self.add_env_var('COLUMN_THRESH_NAME',
-                             self.tc_stat_dict['COLUMN_THRESH_NAME'])
+        tmp_track_watch_warn = self.tc_stat_dict['TRACK_WATCH_WARN']
+        if tmp_track_watch_warn:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_track_watch_warn_str = str(tmp_track_watch_warn).replace("\'",
+                                                                         "\"")
+            tmp_track_watch_warn = ''.join(tmp_track_watch_warn_str.strip())
+            self.add_env_var('TRACK_WATCH_WARN', tmp_track_watch_warn)
         else:
-            self.add_env_var('COLUMN_THRESH_NAME', '[]')
+            self.add_env_var('TRACK_WATCH_WARN', "[]")
 
-        if self.tc_stat_dict['COLUMN_THRESH_VAL']:
-            self.add_env_var('COLUMN_THRESH_VAL',
-                             self.tc_stat_dict['COLUMN_THRESH_VAL'])
+        tmp_column_thresh_name = self.tc_stat_dict['COLUMN_THRESH_NAME']
+        if tmp_column_thresh_name:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_column_thresh_name_str = str(tmp_column_thresh_name).replace(
+                "\'", "\"")
+            tmp_column_thresh_name = ''.join(tmp_column_thresh_name_str.strip())
+            self.add_env_var('COLUMN_THRESH_NAME', tmp_column_thresh_name)
         else:
-            self.add_env_var('COLUMN_THRESH_VAL', '[]')
+            self.add_env_var('COLUMN_THRESH_NAME', "[]")
 
-        if self.tc_stat_dict['COLUMN_STR_NAME']:
-            self.add_env_var('COLUMN_STR_NAME',
-                             self.tc_stat_dict['COLUMN_STR_NAME'])
+        tmp_column_thresh_val = self.tc_stat_dict['COLUMN_THRESH_VAL']
+        if tmp_column_thresh_val:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_column_thresh_val_str = str(tmp_column_thresh_val).replace("\'",
+                                                                           "\"")
+            tmp_column_thresh_val = ''.join(tmp_column_thresh_val_str.strip())
+            self.add_env_var('COLUMN_THRESH_VAL', tmp_column_thresh_val)
         else:
-            self.add_env_var('COLUMN_STR_NAME', '[]')
+            self.add_env_var('COLUMN_THRESH_VAL', "[]")
 
-        if self.tc_stat_dict['COLUMN_STR_VAL']:
-            self.add_env_var('COLUMN_STR_VAL',
-                             self.tc_stat_dict['COLUMN_STR_VAL'])
+        tmp_column_str_name = self.tc_stat_dict['COLUMN_STR_NAME']
+        if tmp_column_str_name:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_column_thresh_val_str = str(tmp_column_thresh_val).replace("\'",
+                                                                           "\"")
+            tmp_column_thresh_val = ''.join(tmp_column_thresh_val_str.strip())
+            self.add_env_var('COLUMN_STR_NAME', tmp_column_thresh_val)
         else:
-            self.add_env_var('COLUMN_STR_VAL', '[]')
+            self.add_env_var('COLUMN_STR_NAME', "[]")
 
-        if self.tc_stat_dict['INIT_THRESH_NAME']:
-            self.add_env_var('INIT_THRESH_NAME',
-                             self.tc_stat_dict['INIT_THRESH_NAME'])
+        tmp_column_str_val = self.tc_stat_dict['COLUMN_STR_VAL']
+        if tmp_column_str_val:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_column_str_val_str = str(tmp_column_str_val).replace("\'", "\"")
+            tmp_column_str_val = ''.join(tmp_column_str_val_str.strip())
+            self.add_env_var('COLUMN_STR_VAL', tmp_column_str_val)
         else:
-            self.add_env_var('INIT_THRESH_NAME', '[]')
+            self.add_env_var('COLUMN_STR_VAL', "[]")
 
-        if self.tc_stat_dict['INIT_THRESH_VAL']:
-            self.add_env_var('INIT_THRESH_VAL',
-                             self.tc_stat_dict['INIT_THRESH_VAL'])
+        tmp_init_thresh_name = self.tc_stat_dict['INIT_THRESH_NAME']
+        if tmp_init_thresh_name:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_init_thresh_name_str = str(tmp_init_thresh_name).replace("\'",
+                                                                         "\"")
+            tmp_init_thresh_name = ''.join(tmp_init_thresh_name_str.strip())
+
+            self.add_env_var('INIT_THRESH_NAME', tmp_init_thresh_name)
+
         else:
-            self.add_env_var('INIT_THRESH_VAL', '[]')
+            self.add_env_var('INIT_THRESH_NAME', "[]")
 
-        if self.tc_stat_dict['INIT_STR_NAME']:
-            self.add_env_var('INIT_STR_NAME',
-                             self.tc_stat_dict['INIT_STR_NAME'])
+        tmp_init_thresh_val = self.tc_stat_dict['INIT_THRESH_VAL']
+        if tmp_init_thresh_val:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_init_thresh_val_str = str(tmp_init_thresh_val).replace("\'",
+                                                                       "\"")
+            tmp_init_thresh_val = ''.join(tmp_init_thresh_val_str.strip())
+            self.add_env_var('INIT_THRESH_VAL', tmp_init_thresh_val)
         else:
-            self.add_env_var('INIT_STR_NAME', '[]')
+            self.add_env_var('INIT_THRESH_VAL', "[]")
 
-        if self.tc_stat_dict['INIT_STR_VAL']:
-            self.add_env_var('INIT_STR_VAL', self.tc_stat_dict['INIT_STR_VAL'])
+        tmp_init_str_name = self.tc_stat_dict['INIT_STR_NAME']
+        if tmp_init_str_name:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_init_str_name_str = str(tmp_init_str_name).replace("\'", "\"")
+            tmp_init_str_name = ''.join(tmp_init_str_name_str.strip())
+            self.add_env_var('INIT_STR_NAME', tmp_init_str_name)
         else:
-            self.add_env_var('INIT_STR_VAL', '[]')
+            self.add_env_var('INIT_STR_NAME', "[]")
 
+        tmp_init_str_val = self.tc_stat_dict['INIT_STR_VAL']
+        if tmp_init_str_val:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_init_str_val_str = str(tmp_init_str_val).replace("\'", "\"")
+            tmp_init_str_val = ''.join(tmp_init_str_val_str.strip())
+            self.add_env_var('INIT_STR_VAL', tmp_init_str_val)
+        else:
+            self.add_env_var('INIT_STR_VAL', "[]")
+
+        # boolean values for WATER_ONLY
         if self.tc_stat_dict['WATER_ONLY']:
-            self.add_env_var('WATER_ONLY', self.tc_stat_dict['WATER_ONLY'])
+            flag = "TRUE"
         else:
-            # Set to FALSE if not defined
-            self.add_env_var('WATER_ONLY', 'FALSE')
+            flag = "FALSE"
+        self.add_env_var('WATER_ONLY', flag)
 
-        if self.tc_stat_dict['MATCH_POINTS']:
-            self.add_env_var('MATCH_POINTS',
-                             self.tc_stat_dict['MATCH_POINTS'])
+        # boolean value for LANDFALL
+        if self.tc_stat_dict['LANDFALL']:
+            flag = "TRUE"
         else:
-            # Set to FALSE if not defined
-            self.add_env_var('MATCH_POINTS', 'FALSE')
+            flag = "FALSE"
+        self.add_env_var('LANDFALL', flag)
+
+        if self.tc_stat_dict['LANDFALL_BEG']:
+            self.add_env_var('LANDFALL_BEG',
+                             self.tc_stat_dict['LANDFALL_BEG'])
+        else:
+            # Set to default
+            self.add_env_var('LANDFALL_BEG', '-24')
+
+        if self.tc_stat_dict['LANDFALL_END']:
+            self.add_env_var('LANDFALL_END',
+                             self.tc_stat_dict['LANDFALL_END'])
+        else:
+            # Set to default
+            self.add_env_var('LANDFALL_END', '00')
+
+        # boolean value for MATCH_POINTS
+        if self.tc_stat_dict['MATCH_POINTS']:
+            flag = "TRUE"
+        else:
+            flag = "FALSE"
+        self.add_env_var('MATCH_POINTS', flag)
+
+        if self.tc_stat_dict['CONFIG_FILE']:
+            self.add_env_var(b'CONFIG_FILE',
+                             self.tc_stat_dict['CONFIG_FILE'])
+        else:
+            self.logger.error(
+                cur_filename + '|' + cur_function +
+                ': no MET TC-Stat config file found. Exiting')
+            sys.exit(1)
+
+        return 0
 
     def config_lists_ok(self):
         """! Verify that the length of the name and val lists
@@ -586,6 +834,7 @@ class TcStatWrapper(CommandBuilder):
         filter_path = os.path.join(tc_stat_output_dir, cur_init)
         util.mkdir_p(filter_path)
 
+        config_file = self.tc_stat_dict['CON']
         tc_cmd_list = [self.tc_exe, " -job filter ",
                        " -lookin ", tile_dir,
                        " -match_points true ",
@@ -622,13 +871,6 @@ if __name__ == "__main__":
         else:
             produtil.setup.setup(send_dbn=False, jobname='run_tc_stat')
         produtil.log.postmsg('run_tc_stat is starting')
-
-        # Read in the configuration object
-        ###import config_launcher
-        ###if len(sys.argv) == 3:
-        ###    CONFIG = config_launcher.load_baseconfs(sys.argv[2])
-        ###else:
-        ###    CONFIG = config_launcher.load_baseconfs()
 
         CONFIG = config_metplus.setup()
         if 'MET_BASE' not in os.environ:
