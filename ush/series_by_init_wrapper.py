@@ -14,6 +14,8 @@ from command_builder import CommandBuilder
 #TODO after testing, remove these produtil.run imports
 #from produtil.run import exe
 #from produtil.run import run
+from tc_stat_wrapper import TcStatWrapper
+import feature_util
 
 '''! @namespace SeriesByInitWrapper
 @brief Performs any optional filtering of input tcst data then performs
@@ -143,10 +145,10 @@ class SeriesByInitWrapper(CommandBuilder):
         # parameter/config file.
         tmp_dir = os.path.join(self.p.getdir('TMP_DIR'), str(os.getpid()))
         if series_filter_opts:
-            util.apply_series_filters(tile_dir, init_times,
+            self.apply_series_filters(tile_dir, init_times,
                                       self.series_filtered_out_dir,
                                       self.filter_opts,
-                                      tmp_dir, self.logger, self.p)
+                                      tmp_dir, self.p)
 
             # Clean up any empty files and directories that could arise as
             # a result of filtering
@@ -214,6 +216,114 @@ class SeriesByInitWrapper(CommandBuilder):
                               " series_analysis, exiting...")
             sys.exit(errno.ENODATA)
         self.logger.info("INFO|" + "Finished series analysis by init time")
+
+    def apply_series_filters(self, tile_dir, init_times, series_output_dir,
+                             filter_opts, temporary_dir, config):
+
+        """! Apply filter options, as specified in the
+            param/config file.
+            Args:
+               @param tile_dir:  Directory where input data files reside.
+                                 e.g. data which we will be applying our filter
+                                 criteria.
+               @param init_times:  List of init times that define the
+                                   input data.
+               @param series_output_dir:  The directory where the filter results
+                                          will be stored.
+               @param filter_opts:  The filter options to apply
+               @param temporary_dir:  The temporary directory where intermediate
+                                      files are saved.
+               @param config:  The config/param instance
+            Returns:
+                None
+        """
+        # pylint: disable=too-many-arguments
+        # Seven input arguments are needed to perform filtering.
+
+        # pylint:disable=protected-access
+        # Need to call sys.__getframe() to get the filename and method/func
+        # for logging information.
+
+        # Useful for logging
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        # Create temporary directory where intermediate files are saved.
+        cur_pid = str(os.getpid())
+        tmp_dir = os.path.join(temporary_dir, cur_pid)
+        self.logger.debug("DEBUG|" + cur_filename + "|" + cur_function +
+                          " creating tmp dir: " + tmp_dir)
+
+        for cur_init in init_times:
+            # Call the tc_stat wrapper to build up the command and invoke
+            # the MET tool tc_stat.
+            filter_file = "filter_" + cur_init + ".tcst"
+            filter_filename = os.path.join(series_output_dir,
+                                           cur_init, filter_file)
+
+            tcs = TcStatWrapper(config, self.logger)
+            tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
+                              filter_opts)
+
+            # Check that the filter.tcst file isn't empty. If
+            # it is, then use the files from extract_tiles as
+            # input (tile_dir = extract_out_dir)
+            if not util.file_exists(filter_filename):
+                msg = ("WARN| " + cur_filename + ":" + cur_function +
+                       "]| Non-existent filter file, filter " +
+                       " Never created by MET Tool tc_stat.")
+                self.logger.debug(msg)
+                continue
+            elif os.stat(filter_filename).st_size == 0:
+                msg = ("WARN| " + cur_filename + ":" + cur_function +
+                       "]| Empty filter file, filter " +
+                       " options yield nothing.")
+                self.logger.debug(msg)
+                continue
+            else:
+                # Now retrieve the files corresponding to these
+                # storm ids that resulted from filtering.
+                sorted_storm_ids = util.get_storm_ids(filter_filename,
+                                                      self.logger)
+
+                # Retrieve the header from filter_filename to be used in
+                # creating the temporary files.
+                with open(filter_filename, 'r') as filter_file:
+                    header = filter_file.readline()
+
+                for cur_storm in sorted_storm_ids:
+                    msg = ("INFO| [" + cur_filename + ":" +
+                           cur_function + " ] | Processing storm: " +
+                           cur_storm + " for file: " + filter_filename)
+                    self.logger.debug(msg)
+                    storm_output_dir = os.path.join(series_output_dir,
+                                                    cur_init, cur_storm)
+                    util.mkdir_p(storm_output_dir)
+                    util.mkdir_p(tmp_dir)
+                    tmp_file = "filter_" + cur_init + "_" + cur_storm
+                    tmp_filename = os.path.join(tmp_dir, tmp_file)
+                    storm_match_list = util.grep(cur_storm, filter_filename)
+                    with open(tmp_filename, "a+") as tmp_file:
+                        tmp_file.write(header)
+                        for storm_match in storm_match_list:
+                            tmp_file.write(storm_match)
+
+                    # Create the analysis and forecast files based
+                    # on the storms (defined in the tmp_filename created above)
+                    # Store the analysis and forecast files in the
+                    # series_output_dir.
+                    feature_util.retrieve_and_regrid(tmp_filename, cur_init,
+                                                     cur_storm,
+                                                     series_output_dir,
+                                                     self.logger,  config)
+
+        # Check for any empty files and directories and remove them to avoid
+        # any errors or performance degradation when performing
+        # series analysis.
+        util.prune_empty(series_output_dir, self.logger)
+
+        # Clean up the tmp dir
+        util.rmtree(tmp_dir)
 
     def is_netcdf_created(self):
         """! Check for the presence of NetCDF files in the series_analysis_init
