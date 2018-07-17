@@ -310,7 +310,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
                     # delimited by ','.
                     full_cmd_list.append(','.join(value))
                 elif key == '-dep':
-                    # dependendent variables list items are appended
+                    # dependant variables list items are appended
                     # as one string.  Convert list into a string delimited
                     # by ','.
                     full_cmd_list.append(','.join(value))
