@@ -1184,14 +1184,7 @@ def get_time_from_file(logger, filepath, template):
     if os.path.isdir(filepath):
         return None
 
-    # Check number of / in template, get same number from file path
-    num_slashes = template.count('/')
-    path_split = filepath.split('/')
-    f = ""
-    for n in range(num_slashes, -1, -1):
-        f = os.path.join(f,path_split[-(n+1)])
-
-    se = StringExtract(logger, template, f)
+    se = StringExtract(logger, template, filepath)
 
     if se.parseTemplate():
         return se
