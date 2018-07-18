@@ -146,34 +146,30 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         for n in range(num_slashes):
             search_string += "/*"
 
-        all_files = glob.glob(search_string.format(self.input_dir))
-        files = sorted(all_files)
+        for dirpath, dirnames, all_files in os.walk(self.input_dir):
+            for filename in sorted(all_files):
+                fullpath = os.path.join(dirpath, filename)
+                f = fullpath.replace(self.input_dir+"/", "")
+                se = util.get_time_from_file(self.logger, f, template)
 
-        for fpath in files:
-            se = util.get_time_from_file(self.logger, fpath, template)
+                if se == None:
+                    continue
 
-            if se == None:
-                continue
+                fcst = se.leadHour
+                if fcst is -1:
+                    self.logger.error("Could not pull forecast lead from f")
+                    exit
 
-            fcst = se.leadHour
-            if fcst is -1:
-                self.logger.error("Could not pull forecast lead from f")
-                exit
+                init = se.getInitTime("%Y%m%d%H%M")
+                if init == "":
+                    continue
 
-            init = se.getInitTime("%Y%m%d%H%M")
-            if init == "":
-                return None
-            v = util.shift_time(init, fcst)
-            if v == valid_time and fcst < lowest_fcst:
-                out_file = fpath
-                lowest_fcst = fcst
+                v = util.shift_time(init, fcst)
+                if v == valid_time and fcst < lowest_fcst:
+                    out_file = fullpath
+                    lowest_fcst = fcst
         return out_file
 
-#    def get_lowest_forecast_at_valid(self, valid_time, dtype):
-#        input_template = util.getraw_interp(self.p, 'filename_templates',
-#                                       dtype + '_PCP_COMBINE_INPUT_TEMPLATE')
-#        out_file = self.getLowestForecastFile(valid_time, input_template)
-#        return out_file
 
     def search_day(self, dir, file_time, search_time, template):
         """!Find file path within a day before the file_time
