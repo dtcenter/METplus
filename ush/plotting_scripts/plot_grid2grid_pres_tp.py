@@ -89,7 +89,7 @@ for vl in range(nlevels):
 logging_filename = os.environ['LOGGING_FILENAME']
 logger = logging.getLogger(logging_filename)
 logger.setLevel("DEBUG")
-formatter = logging.Formatter('%(asctime)s : %(message)s')
+formatter = logging.Formatter("%(asctime)s.%(msecs)03d (%(filename)s:%(lineno)d) ""%(levelname)s: %(message)s","%m/%d %H:%M:%S")
 file_handler = logging.FileHandler(logging_filename, mode='a')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
@@ -317,4 +317,3 @@ while s <= nstats: #loop over statistics
      logger.debug("---- Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_f"+lead+"_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_tp.png")
      plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_f"+lead+"_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_tp.png", bbox_inches='tight')
      s+=1
-print(" ")
