@@ -42,6 +42,7 @@ that reformat gridded data
     def __init__(self, p, logger):
         super(CompareGriddedWrapper, self).__init__(p, logger)
         met_install_dir = p.getdir('MET_INSTALL_DIR')
+        self.cg_dict = self.create_cg_dict()
 
 
     def set_output_dir(self, outdir):
@@ -93,11 +94,10 @@ that reformat gridded data
                 @return Returns the path to a model file
         """
         app_name_caps = self.app_name.upper()
-        model_dir = self.p.getdir('FCST_'+app_name_caps+'_INPUT_DIR')
-        model_template = util.getraw_interp(self.p, 'filename_templates',
-                                       'FCST_'+app_name_caps+'_INPUT_TEMPLATE')
-        max_forecast = self.p.getint('config', 'FCST_MAX_FORECAST')
-        init_interval = self.p.getint('config', 'FCST_INIT_INTERVAL')
+        model_dir = self.cg_dict['FCST_INPUT_DIR']
+        model_template = self.cg_dict['FCST_INPUT_TEMPLATE']
+        max_forecast = self.cg_dict['FCST_MAX_FORECAST']
+        init_interval = self.cg_dict['FCST_INIT_INTERVAL']
         lead_check = lead
         time_check = init_time
         time_offset = 0
@@ -124,7 +124,7 @@ that reformat gridded data
             return ''
 
 
-    def find_obs(self, ti, v):
+    def find_obs(self, ti):
         """! Finds the observation file to compare
               Args:
                 @param ti task_info object containing timing information
@@ -134,17 +134,16 @@ that reformat gridded data
         """        
         app_name_caps = self.app_name.upper()        
         valid_time = ti.getValidTime()
-        obs_dir = self.p.getdir('OBS_'+app_name_caps+'_INPUT_DIR')
-        obs_template = util.getraw_interp(self.p, 'filename_templates',
-                                     'OBS_'+app_name_caps+'_INPUT_TEMPLATE')
+        obs_dir = self.cg_dict['OBS_INPUT_DIR']
+        obs_template = self.cg_dict['OBS_INPUT_TEMPLATE']
         # convert valid_time to unix time
         valid_seconds = int(datetime.datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
         # get time of each file, compare to valid time, save best within range
         closest_file = ""
         closest_time = 9999999
 
-        valid_range_lower = self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
-        valid_range_upper = self.p.getint('config', 'WINDOW_RANGE_END', 3600)
+        valid_range_lower = self.cg_dict['WINDOW_RANGE_BEG']
+        valid_range_upper = self.cg_dict['WINDOW_RANGE_END']
         lower_limit = int(datetime.datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
                                                  "%Y%m%d%H%M").strftime("%s"))
         upper_limit = int(datetime.datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
@@ -152,11 +151,14 @@ that reformat gridded data
 
         for dirpath, dirnames, all_files in os.walk(obs_dir):
             for filename in sorted(all_files):
-                f = os.path.join(dirpath, filename)
+                fullpath = os.path.join(dirpath, filename)
+                f = fullpath.replace(obs_dir+"/", "")
                 # check depth of template to crop filepath
                 se = util.get_time_from_file(self.logger, f, obs_template)
                 if se is not None:
                     file_valid_time = se.getValidTime("%Y%m%d%H%M")
+                    if file_valid_time == '':
+                        continue
                     file_valid_dt = datetime.datetime.strptime(file_valid_time, "%Y%m%d%H%M")
                     file_valid_seconds = int(file_valid_dt.strftime("%s"))
                     if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
@@ -164,7 +166,7 @@ that reformat gridded data
                     diff = abs(valid_seconds - file_valid_seconds)
                     if diff < closest_time:
                         closest_time = diff
-                        closest_file = f
+                        closest_file = fullpath
 
         if closest_file != "":
             return closest_file
@@ -184,7 +186,7 @@ that reformat gridded data
         task_info.valid_time = valid_time        
         var_list = util.parse_var_list(self.p)
         
-        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))        
+        lead_seq = self.cg_dict['LEAD_SEQ']
         for lead in lead_seq:
             task_info.lead = lead
             for var_info in var_list:
@@ -200,8 +202,8 @@ that reformat gridded data
         app_name_caps = self.app_name.upper()        
         valid_time = ti.getValidTime()
         init_time = ti.getInitTime()
-        base_dir = self.p.getdir(app_name_caps+'_OUT_DIR')
-        if self.p.getbool('config', 'LOOP_BY_INIT', True):
+        base_dir = self.cg_dict['OUTPUT_DIR']
+        if self.cg_dict['LOOP_BY_INIT']:
             out_dir = os.path.join(base_dir,
                                    init_time, self.app_name)
         else:
@@ -217,12 +219,11 @@ that reformat gridded data
         if(obs_level[0].isalpha()):
             obs_level_type = obs_level[0]
             obs_level = obs_level[1:]            
-        model_type = self.p.getstr('config', 'MODEL_TYPE')
-        obs_dir = self.p.getdir('OBS_'+app_name_caps+'_INPUT_DIR')
-        obs_template = util.getraw_interp(self.p, 'filename_templates',
-                                     'OBS_'+app_name_caps+'_INPUT_TEMPLATE')
-        model_dir = self.p.getdir('FCST_'+app_name_caps+'_INPUT_DIR')
-        config_dir = self.p.getdir('CONFIG_DIR')
+        model_type = self.cg_dict['MODEL_TYPE']
+        obs_dir = self.cg_dict['OBS_INPUT_DIR']
+        obs_template = self.cg_dict['OBS_INPUT_TEMPLATE']
+        model_dir = self.cg_dict['FCST_INPUT_DIR']
+        config_dir = self.cg_dict['CONFIG_DIR']
 
         ymd_v = valid_time[0:8]
         if not os.path.exists(out_dir):
@@ -235,7 +236,7 @@ that reformat gridded data
             self.logger.error("ERROR: COULD NOT FIND FILE IN "+model_dir+" FOR "+init_time+" f"+str(ti.lead))
             return
         self.add_input_file(model_path)
-        if self.p.getbool('config','OBS_EXACT_VALID_TIME', True):
+        if self.cg_dict['OBS_EXACT_VALID_TIME']:
             obsSts = sts.StringSub(self.logger,
                                    obs_template,
                                    valid=valid_time,
@@ -245,32 +246,24 @@ that reformat gridded data
 
             obs_path = os.path.join(obs_dir, obs_file)
         else:
-            obs_path = self.find_obs(ti, v)
+            obs_path = self.find_obs(ti)
 
         self.add_input_file(obs_path)
-        self.set_param_file(self.p.getstr('config', app_name_caps+'_CONFIG'))
+        self.set_param_file(self.cg_dict['CONFIG_FILE'])
         self.set_output_dir(out_dir)
 
         # set up environment variables for each run
         # get fcst and obs thresh parameters
         # verify they are the same size
-
-#        fcst_str = "FCST_"+v.fcst_name+"_"+fcst_level+"_THRESH"
-#        obs_str = "OBS_"+v.obs_name+"_"+obs_level+"_THRESH"
-#        fcst_str = v.fcst_thresh
-#        obs_str = v.obs_thresh
         fcst_cat_thresh = ""
         fcst_threshs = []
         if v.fcst_thresh != "":
-#            fcst_threshs = util.getlistfloat(self.p.getstr('config', fcst_str))
             fcst_threshs = v.fcst_thresh
             fcst_cat_thresh = "cat_thresh=[ "
             for fcst_thresh in fcst_threshs:
                 fcst_cat_thresh += "gt"+str(fcst_thresh)+", "
             fcst_cat_thresh = fcst_cat_thresh[0:-2]+" ];"
             
- #       if self.p.has_option('config', obs_str):
-#        obs_threshs = util.getlistfloat(self.p.getstr('config', obs_str))
         obs_cat_thresh = ""
         obs_threshs = []        
         if v.obs_thresh != "":
@@ -291,7 +284,7 @@ that reformat gridded data
         fcst_field = ""
         obs_field = ""
 # TODO: change PROB mode to put all cat thresh values in 1 item        
-        if self.p.getbool('config', 'FCST_IS_PROB'):
+        if self.cg_dict['FCST_IS_PROB']:
             for fcst_thresh in fcst_threshs:
                 fcst_field += "{ name=\"PROB\"; level=\""+fcst_level_type + \
                               fcst_level.zfill(2) + "\"; prob={ name=\"" + \
@@ -333,7 +326,7 @@ that reformat gridded data
         fcst_field += v.fcst_extra+"}"
         obs_field += v.obs_extra+"}"
 
-        ob_type = self.p.getstr('config', "OB_TYPE")
+        ob_type = self.cg_dict["OB_TYPE"]
 
         self.add_env_var("MODEL", model_type)
         self.add_env_var("FCST_VAR", v.fcst_name)
