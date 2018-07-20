@@ -50,7 +50,6 @@ class TcStatWrapper(CommandBuilder):
             self.logger = util.get_logger(self.p, sublog='TcStat')
         self.tc_stat_dict = self.create_tc_stat_dictionary()
         self.tc_exe = self.tc_stat_dict['APP_PATH']
-
         self.logger.info("Initialized TcStatWrapper")
 
     def create_tc_stat_dictionary(self):
@@ -78,6 +77,14 @@ class TcStatWrapper(CommandBuilder):
 
         tc_stat_dict = dict()
 
+        # Check whether we are running MET tc_stat from the command line
+        # or with the MET config file.
+
+        if self.p.getstr('config', 'TC_STAT_RUN_VIA') == 'CONFIG':
+            self.by_config = True
+        else:
+            self.by_config = False
+
         # Check for the MET_INSTALL_DIR, if it is missing, then
         # we cannot invoke the MET tool.
         if not self.p.getdir('MET_INSTALL_DIR'):
@@ -90,143 +97,125 @@ class TcStatWrapper(CommandBuilder):
 
         tc_stat_dict['APP_NAME'] = os.path.basename(tc_stat_dict['APP_PATH'])
 
-        tc_stat_dict['AMODEL'] = \
-            util.getlist(self.config.getstr('config', 'TC_STAT_AMODEL'))
+        if self.by_config:
 
-        tc_stat_dict['BMODEL'] = \
-            util.getlist(self.config.getstr('config', 'TC_STAT_BMODEL'))
+            tc_stat_dict['DESC'] = \
+                util.getlist(self.config.getstr('config', 'TC_STAT_DESC'))
 
-        tc_stat_dict['DESC'] = \
-            util.getlist(self.config.getstr('config', 'TC_STAT_DESC'))
+            tc_stat_dict['INIT_BEG'] = self.config.getstr('config',
+                                                          'TC_STAT_INIT_BEG')
 
-        tc_stat_dict['STORM_ID'] = \
-            util.getlist(self.config.getstr('config', 'TC_STAT_STORM_ID'))
+            tc_stat_dict['INIT_END'] = self.config.getstr('config',
+                                                          'TC_STAT_INIT_END')
 
-        tc_stat_dict['BASIN'] = util.getlist(
-            self.config.getstr('config', 'TC_STAT_BASIN'))
+            tc_stat_dict['INIT_INCLUDE'] = util.getlist(
+                self.config.getstr('config', 'TC_STAT_INIT_INCLUDE'))
 
-        tc_stat_dict['CYCLONE'] = util.getlist(
-            self.config.getstr('config', 'TC_STAT_CYCLONE'))
+            tc_stat_dict['INIT_EXCLUDE'] = util.getlist(
+                self.config.getstr('config', 'TC_STAT_INIT_EXCLUDE'))
 
-        tc_stat_dict['STORM_NAME'] = util.getlist(
-            self.config.getstr('config', 'TC_STAT_STORM_NAME'))
+            tc_stat_dict['INIT_HOUR'] = util.getlist(
+                self.config.getstr('config', 'TC_STAT_INIT_HOUR'))
 
-        tc_stat_dict['INIT_BEG'] = self.config.getstr('config',
-                                                      'TC_STAT_INIT_BEG')
+            tc_stat_dict['VALID_BEG'] = self.config.getstr('config',
+                                                           'TC_STAT_INIT_BEG')
 
-        tc_stat_dict['INIT_END'] = self.config.getstr('config',
-                                                      'TC_STAT_INIT_END')
+            tc_stat_dict['VALID_END'] = self.config.getstr('config',
+                                                           'TC_STAT_INIT_END')
 
-        tc_stat_dict['INIT_INCLUDE'] = util.getlist(
-            self.config.getstr('config', 'TC_STAT_INIT_INCLUDE'))
+            tc_stat_dict['VALID_INCLUDE'] = util.getlist(
+                self.config.getstr('config', 'TC_STAT_VALID_INCLUDE'))
 
-        tc_stat_dict['INIT_EXCLUDE'] = util.getlist(
-            self.config.getstr('config', 'TC_STAT_INIT_EXCLUDE'))
+            tc_stat_dict['VALID_EXCLUDE'] = util.getlist(
+                self.config.getstr('config', 'TC_STAT_VALID_EXCLUDE'))
 
-        tc_stat_dict['INIT_HOUR'] = util.getlist(
-            self.config.getstr('config', 'TC_STAT_INIT_HOUR'))
+            tc_stat_dict['LEAD_REQ'] = \
+                util.getlist(self.config.getstr('config', 'TC_STAT_LEAD_REQ'))
 
-        tc_stat_dict['VALID_BEG'] = self.config.getstr('config',
-                                                       'TC_STAT_INIT_BEG')
+            tc_stat_dict['INIT_MASK'] = \
+                util.getlist(self.config.getstr('config', 'TC_STAT_INIT_MASK'))
 
-        tc_stat_dict['VALID_END'] = self.config.getstr('config',
-                                                       'TC_STAT_INIT_END')
+            tc_stat_dict['VALID_MASK'] = \
+                util.getlist(self.config.getstr('config', 'TC_STAT_VALID_MASK'))
 
-        tc_stat_dict['VALID_INCLUDE'] = util.getlist(
-            self.config.getstr('config', 'TC_STAT_VALID_INCLUDE'))
+            tc_stat_dict['VALID_HOUR'] = \
+                util.getlist(self.config.getstr('config', 'TC_STAT_VALID_HOUR'))
 
-        tc_stat_dict['VALID_EXCLUDE'] = util.getlist(
-            self.config.getstr('config', 'TC_STAT_VALID_EXCLUDE'))
+            tc_stat_dict['LEAD'] = \
+                util.getlist(self.config.getstr('config', 'TC_STAT_LEAD'))
 
-        tc_stat_dict['LEAD_REQ'] = \
-            util.getlist(self.config.getstr('config', 'TC_STAT_LEAD_REQ'))
+            tc_stat_dict['TRACK_WATCH_WARN'] = \
+                util.getlist(
+                    self.config.getstr('config', 'TC_STAT_TRACK_WATCH_WARN'))
 
-        tc_stat_dict['INIT_MASK'] = \
-            util.getlist(self.config.getstr('config', 'TC_STAT_INIT_MASK'))
+            tc_stat_dict['COLUMN_THRESH_NAME'] = \
+                util.getlist(
+                    self.config.getstr('config', 'TC_STAT_COLUMN_THRESH_NAME'))
 
-        tc_stat_dict['VALID_MASK'] = \
-            util.getlist(self.config.getstr('config', 'TC_STAT_VALID_MASK'))
+            tc_stat_dict['COLUMN_THRESH_VAL'] = util.getlist(
+                self.config.getstr('config', 'TC_STAT_COLUMN_THRESH_VAL'))
 
-        tc_stat_dict['VALID_HOUR'] = \
-            util.getlist(self.config.getstr('config', 'TC_STAT_VALID_HOUR'))
+            tc_stat_dict['COLUMN_STR_NAME'] = \
+                util.getlist(
+                    self.config.getstr('config', 'TC_STAT_COLUMN_STR_NAME'))
 
-        tc_stat_dict['LEAD'] = \
-            util.getlist(self.config.getstr('config', 'TC_STAT_LEAD'))
+            tc_stat_dict['COLUMN_STR_VAL'] = \
+                util.getlist(
+                    self.config.getstr('config', 'TC_STAT_COLUMN_STR_VAL'))
 
-        tc_stat_dict['TRACK_WATCH_WARN'] = \
-            util.getlist(
-                self.config.getstr('config', 'TC_STAT_TRACK_WATCH_WARN'))
+            tc_stat_dict['INIT_THRESH_NAME'] = util.getlist(
+                self.config.getstr('config', 'TC_STAT_INIT_THRESH_NAME'))
 
-        tc_stat_dict['COLUMN_THRESH_NAME'] = \
-            util.getlist(
-                self.config.getstr('config', 'TC_STAT_COLUMN_THRESH_NAME'))
+            tc_stat_dict['INIT_THRESH_VAL'] = util.getlist(
+                self.config.getstr('config', 'TC_STAT_INIT_THRESH_VAL'))
 
-        tc_stat_dict['COLUMN_THRESH_VAL'] = util.getlist(
-            self.config.getstr('config', 'TC_STAT_COLUMN_THRESH_VAL'))
+            tc_stat_dict['INIT_STR_NAME'] = \
+                util.getlist(
+                    self.config.getstr('config', 'TC_STAT_INIT_STR_NAME'))
 
-        tc_stat_dict['COLUMN_STR_NAME'] = \
-            util.getlist(
-                self.config.getstr('config', 'TC_STAT_COLUMN_STR_NAME'))
+            tc_stat_dict['INIT_STR_VAL'] = \
+                util.getlist(
+                    self.config.getstr('config', 'TC_STAT_INIT_STR_VAL'))
 
-        tc_stat_dict['COLUMN_STR_VAL'] = \
-            util.getlist(self.config.getstr('config', 'TC_STAT_COLUMN_STR_VAL'))
+            try:
+                tc_stat_dict['WATER_ONLY'] = \
+                    self.config.getbool('config', 'TC_STAT_WATER_ONLY')
+            except ValueError:
+                # WATER_ONLY not defined in any configuration files,
+                # set to False and proceed.
+                self.logger.warn(
+                    cur_filename + '|' + cur_function +
+                    ': WATER_ONLY undefined in config file.  Setting to False.')
+                tc_stat_dict['WATER_ONLY'] = False
+                pass
 
-        tc_stat_dict['INIT_THRESH_NAME'] = util.getlist(
-            self.config.getstr('config', 'TC_STAT_INIT_THRESH_NAME'))
+            try:
+                tc_stat_dict['LANDFALL'] = \
+                    self.config.getbool('config', 'TC_STAT_LANDFALL')
+            except ValueError:
+                # Not set by user in MET tc_stat config file or METplus config
+                # file.  Set to False and continue ingesting config file values.
+                self.logger.warn(
+                    cur_filename + '|' + cur_function + ': LANDFALL' +
+                    ' undefined in config file.  Setting to False...')
+                tc_stat_dict['LANDFALL'] = False
+                pass
 
-        tc_stat_dict['INIT_THRESH_VAL'] = util.getlist(
-            self.config.getstr('config', 'TC_STAT_INIT_THRESH_VAL'))
+            tc_stat_dict['LANDFALL_BEG'] = \
+                self.config.getstr('config', 'TC_STAT_LANDFALL_BEG')
 
-        tc_stat_dict['INIT_STR_NAME'] = \
-            util.getlist(self.config.getstr('config', 'TC_STAT_INIT_STR_NAME'))
+            tc_stat_dict['LANDFALL_END'] = \
+                self.config.getstr('config', 'TC_STAT_LANDFALL_END')
 
-        tc_stat_dict['INIT_STR_VAL'] = \
-            util.getlist(self.config.getstr('config', 'TC_STAT_INIT_STR_VAL'))
+            tc_stat_dict['JOBS_LIST'] = \
+                self.p.getstr('config', 'TC_STAT_JOBS_LIST')
+        else:
+            # via command line, only one job requested
+            tc_stat_dict['CMD_LINE_JOB'] = self.config.getstr(
+                'config', 'TC_STAT_CMD_LINE_JOB')
 
-        try:
-            tc_stat_dict['WATER_ONLY'] = \
-                self.config.getbool('config', 'TC_STAT_WATER_ONLY')
-        except ValueError:
-            # WATER_ONLY not defined in any configuration files, set to False
-            # and proceed.
-            self.logger.warn(
-                cur_filename + '|' + cur_function +
-                ': WATER_ONLY undefined in config file.  Setting to False.')
-            tc_stat_dict['WATER_ONLY'] = False
-            pass
-
-        try:
-            tc_stat_dict['LANDFALL'] = \
-                self.config.getbool('config', 'TC_STAT_LANDFALL')
-        except ValueError:
-            # Not set by user in MET tc_stat config file or METplus config
-            # file.  Set to False and continue ingesting config file values.
-            self.logger.warn(cur_filename + '|' + cur_function + ': LANDFALL' +
-                             ' undefined in config file.  Setting to False...')
-            tc_stat_dict['LANDFALL'] = False
-            pass
-
-        tc_stat_dict['LANDFALL_BEG'] = \
-            self.config.getstr('config', 'TC_STAT_LANDFALL_BEG')
-
-        tc_stat_dict['LANDFALL_END'] = \
-            self.config.getstr('config', 'TC_STAT_LANDFALL_END')
-
-        try:
-            tc_stat_dict['MATCH_POINTS'] = \
-                self.p.getbool('config', 'TC_STAT_MATCH_POINTS')
-        except ValueError:
-            # If the user didn't set this, set it to FALSE and resume reading
-            # in the remaining values in the configuration file.
-            self.logger.warn(cur_filename + '|' + cur_function +
-                             ": MATCH_POINTS is not set to either " +
-                             "True or False, setting to False")
-            tc_stat_dict['MATCH_POINTS'] = False
-            pass
-
-        tc_stat_dict['JOB_TYPE'] = \
-            self.p.getstr('config', 'TC_STAT_JOB_TYPE').lower()
-
+        tc_stat_dict['MATCH_POINTS'] = \
+            self.p.getstr('config', 'TC_STAT_MATCH_POINTS').upper()
         tc_stat_dict['OUTPUT_BASE'] = self.p.getdir('OUTPUT_BASE')
 
         tc_stat_dict['PROJ_DIR'] = self.p.getdir('PROJ_DIR')
@@ -268,13 +257,15 @@ class TcStatWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         self.logger.info('Starting tc_stat_wrapper...')
-        self.set_envs()
-        if not self.config_lists_ok():
-            self.logger.error('There is at least one <>_VAL/<>_NAME pair'
-                              'requested in the MET tc-stat config file where'
-                              'the size of the lists is not equal.  Please'
-                              'check your MET tc-stat config file.')
-            sys.exit(1)
+        if self.by_config:
+            self.set_envs()
+            if not self.config_lists_ok():
+                self.logger.error('There is at least one <>_VAL/<>_NAME pair'
+                                  'requested in the MET tc-stat config '
+                                  'file where the size of the lists '
+                                  'is not equal.  Please '
+                                  'check your MET tc-stat config file.')
+                sys.exit(1)
 
         # Don't forget to create the output directory, as MET tc_stat will
         # not do this.
@@ -283,51 +274,23 @@ class TcStatWrapper(CommandBuilder):
         # Since this is different from the other MET tools, we will build
         # the commands rather than use command builder's methods.
         match_points = str(self.tc_stat_dict['MATCH_POINTS'])
+        if self.by_config:
+            # Running with config file
 
-        # Create the name of the filtered file based on the job type
-        job_type = self.tc_stat_dict['JOB_TYPE'].lower()
-        filtered_filename = 'tc_' + job_type + '_job.tcst'
-
-        filtered_output_file = os.path.join(self.tc_stat_dict['OUTPUT_DIR'],
-                                            filtered_filename)
-
-        if job_type == 'filter':
-            # Create the env variable for the analysis job that is to be run
-            # after applying any filtering based on the parameters defined in
-            # the METplus config file(s). Since the environment variable
-            # contains whitespace, surrond this with "", then to indicate
-            # that this is a string to MET, enclose this with '' to get
-            # something like this:
-            #     '" -job filter -dump_row /path/to/file.tcst"'
-            # to satisfy the OS and MET.
-
-            analysis_job_list = ['"', '-job ',
-                                 self.tc_stat_dict['JOB_TYPE'].lower(),
-                                 ' -dump_row ', filtered_output_file, '"']
-
-            analysis_job_str = ''.join(analysis_job_list)
-            analysis_job_str = "'" + analysis_job_str + "'"
-            self.add_env_var('JOBS', analysis_job_str)
-            tc_cmd_list = [self.tc_exe, " -job ", self.tc_stat_dict['JOB_TYPE'],
-                           " -lookin ", self.tc_stat_dict['INPUT_DIR'],
-                           " -dump_row ", filtered_output_file,
-                           " -config ", self.tc_stat_dict['CONFIG_FILE']
+            tc_cmd_list = [self.tc_exe,
+                           " -lookin", self.tc_stat_dict['INPUT_DIR'],
+                           " -config ", self.tc_stat_dict['CONFIG_FILE'],
+                           self.tc_stat_dict['JOBS_LIST']
+                           ]
+        else:
+            # Run single job from command line
+            tc_cmd_list = [self.tc_exe,
+                           " -lookin", self.tc_stat_dict['INPUT_DIR'],
+                           self.tc_stat_dict['CMD_LINE_JOB'],
+                           "-match_points", match_points
                            ]
 
-            # tc_cmd_list = [self.tc_exe,
-            #                " -lookin ", self.tc_stat_dict['INPUT_DIR'],
-            #                " -config ", self.tc_stat_dict['CONFIG_FILE']
-            #                ]
-        elif job_type == 'summary':
-            tc_cmd_list = [self.tc_exe, " -job ", self.tc_stat_dict['JOB_TYPE'],
-                           " -by ",
-                           " -lookin ", self.tc_stat_dict['INPUT_DIR'],
-                           " -dump_row ", filtered_output_file,
-                           " -match_points ",
-                           match_points.lower()
-                           ]
-
-        tc_cmd_str = ''.join(tc_cmd_list)
+        tc_cmd_str = ' '.join(tc_cmd_list)
 
         # Since this wrapper is not using the CommandBuilder to build the cmd,
         # we need to add the met verbosity level to the MET cmd created before
@@ -348,7 +311,8 @@ class TcStatWrapper(CommandBuilder):
 
     def set_envs(self):
         """! Set the env variables based on settings in the METplus config
-             files.
+             files.  This is only necessary when running MET tc_stat via
+             the config file.
 
              Args:
 
@@ -370,90 +334,6 @@ class TcStatWrapper(CommandBuilder):
         self.logger.info('Setting env variables from config file...')
         # Set all the environment variables that are needed by the
         # MET config file.
-
-        # The analysis job list in the MET tc_stat config file requires
-        # -job filter, -job summary, -job rirw, or -job probrirw and
-        # -dump.  It can
-        # take additional, optional arguments, but since we are already
-        # reading in these options, only the -job <job type> will suffice.
-        job_type = self.tc_stat_dict['JOB_TYPE'].lower()
-        if job_type:
-            self.add_env_var('JOBS', job_type)
-        else:
-            # Not defined in any METplus configuration files.
-            self.logger.error('No job type specified, exiting...')
-            sys.exit(1)
-
-        tmp_amodel = self.tc_stat_dict['AMODEL']
-        if tmp_amodel:
-            # Replace any single quotes with double quotes and remove any
-            # whitespace
-            tmp_amodel_str = str(tmp_amodel).replace("\'", "\"")
-            tmp_amodel = ''.join(tmp_amodel_str.split())
-            self.add_env_var('AMODEL', tmp_amodel)
-        else:
-            self.add_env_var('AMODEL', "[]")
-
-        tmp_bmodel = self.tc_stat_dict['BMODEL']
-        if tmp_bmodel:
-            # Replace any single quotes with double quotes and remove any
-            # whitespace
-            tmp_bmodel_str = str(tmp_bmodel).replace("\'", "\"")
-            tmp_bmodel = ''.join(tmp_bmodel_str.split())
-            self.add_env_var('BMODEL', tmp_bmodel)
-        else:
-            self.add_env_var('BMODEL', "[]")
-
-        tmp_desc = self.tc_stat_dict['DESC']
-        if tmp_desc:
-            # Replace any single quotes with double quotes and remove any
-            # whitespace
-            tmp_desc_str = str(tmp_desc).replace("\'", "\"")
-            tmp_desc = ''.join(tmp_desc_str.split())
-            self.add_env_var('DESC', tmp_desc)
-        else:
-            self.add_env_var('DESC', "[]")
-
-        tmp_storm_id = self.tc_stat_dict['STORM_ID']
-        if tmp_storm_id:
-            # Replace any single quotes with double quotes and remove any
-            # whitespace
-            tmp_storm_id_str = str(tmp_storm_id).replace("\'", "\"")
-            tmp_storm_id = ''.join(tmp_storm_id_str.split())
-            self.add_env_var('STORM_ID', tmp_storm_id)
-        else:
-            self.add_env_var('STORM_ID', "[]")
-
-        tmp_basin = self.tc_stat_dict['BASIN']
-        if tmp_basin:
-            # Replace any single quotes with double quotes and remove any
-            # whitespace
-            tmp_basin_str = str(tmp_basin).replace("\'", "\"")
-            tmp_basin = ''.join(tmp_basin_str.split())
-            self.add_env_var('BASIN', tmp_basin)
-        else:
-            self.add_env_var('BASIN', "[]")
-
-        tmp_cyclone = self.tc_stat_dict['CYCLONE']
-        if tmp_cyclone:
-            # Replace any single quotes with double quotes and remove any
-            # whitespace
-            tmp_cyclone_str = str(tmp_cyclone).replace("\'", "\"")
-            tmp_cyclone = ''.join(tmp_cyclone_str.strip())
-            self.add_env_var('CYCLONE', tmp_cyclone)
-        else:
-            self.add_env_var('CYCLONE', "[]")
-
-        tmp_storm_name = self.tc_stat_dict['STORM_NAME']
-        if tmp_storm_name:
-            # Replace any single quotes with double quotes and remove any
-            # whitespace
-            tmp_storm_name_str = str(tmp_storm_name).replace("\'", "\"")
-            tmp_storm_name = ''.join(tmp_storm_name_str.strip())
-            self.add_env_var('STORM_NAME', tmp_storm_name)
-        else:
-            self.add_env_var('STORM_NAME', "[]")
-
         if self.tc_stat_dict['INIT_BEG']:
             self.add_env_var(b'INIT_BEG', self.tc_stat_dict['INIT_BEG'])
         else:
@@ -726,6 +606,15 @@ class TcStatWrapper(CommandBuilder):
                 ': no MET TC-Stat config file found. Exiting')
             sys.exit(1)
 
+        jobs_list_tmp = self.tc_stat_dict['JOBS_LIST']
+        if jobs_list_tmp :
+            # MET is expecting a string
+            jobs_list_str = '"' + jobs_list_tmp + '"'
+            self.add_env_var('JOBS', jobs_list_str)
+        else:
+            self.logger.error('No jobs list defined. Please check your METplus'
+                              'config file.  Exiting...')
+            sys.exit(1)
         return 0
 
     def config_lists_ok(self):
@@ -797,9 +686,13 @@ class TcStatWrapper(CommandBuilder):
         # If we got here, all corresponding lists have the same length
         return is_ok
 
-    def build_tc_stat(self, tc_stat_output_dir, cur_init, tile_dir,
+    def build_tc_stat(self, tc_stat_output_dir, cur_init, tc_input_dir,
                       filter_opts):
-        """! Creates the call to MET tool TC-STAT to subset tc-pairs output
+        """!This is called from extract_tiles_wrapper and from any other
+            wrapper to provide additional filtering WITHOUT the need for
+            a tc_stat MET config file.
+
+            Creates the call to MET tool TC-STAT to subset tc-pairs output
             based on the criteria specified in the feature relative
             use case parameter/config file.
 
@@ -807,8 +700,8 @@ class TcStatWrapper(CommandBuilder):
             @param tc_stat_output_dir:  The output directory where filtered
                                        results are saved.
             @param cur_init:  The initialization time
-            @param tile_dir:  The input data directory (tc pair data to be
-                              filtered)
+            @param tc_input_dir:  The input data directory (location of the
+                                  tc pair data to be filtered)
             @param filter_opts:  The list of filter options to apply
 
             Returns:
@@ -828,15 +721,16 @@ class TcStatWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         util.mkdir_p(tc_stat_output_dir)
+
         filter_filename = "filter_" + cur_init + ".tcst"
         filter_name = os.path.join(tc_stat_output_dir, cur_init,
                                    filter_filename)
         filter_path = os.path.join(tc_stat_output_dir, cur_init)
         util.mkdir_p(filter_path)
 
-        config_file = self.tc_stat_dict['CON']
+        # This is for extract_tiles to call without a config file
         tc_cmd_list = [self.tc_exe, " -job filter ",
-                       " -lookin ", tile_dir,
+                       " -lookin ", tc_input_dir,
                        " -match_points true ",
                        " -init_inc ", cur_init,
                        " -dump_row ", filter_name,
