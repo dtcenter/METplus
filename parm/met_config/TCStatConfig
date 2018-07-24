@@ -20,41 +20,41 @@
 //
 //amodel = [];
 //bmodel = [];
-amodel = ${TC_STAT_AMODEL};
-bmodel = ${TC_STAT_BMODEL};
+amodel = ${AMODEL};
+bmodel = ${BMODEL};
 
 //
 // Stratify by the DESC column.
 //
 //desc = [];
-desc = ${TC_STAT_DESC};
+desc = ${DESC};
 
 //
 // Stratify by the STORM_ID column.
 //
 //storm_id = [];
-storm_id = ${TC_STAT_STORM_ID};
+storm_id = ${STORM_ID};
 
 //
 // Stratify by the BASIN column.
 // May add using the "-basin" job command option.
 //
 //basin = [];
-basin = ${TC_STAT_BASIN};
+basin = ${BASIN};
 
 //
 // Stratify by the CYCLONE column.
 // May add using the "-cyclone" job command option.
 //
 //cyclone = [];
-cyclone = ${TC_STAT_CYCLONE};
+cyclone = ${CYCLONE};
 
 //
 // Stratify by the STORM_NAME column.
 // May add using the "-storm_name" job command option.
 //
 //storm_name = [];
-storm_name = ${TC_STAT_STORM_NAME};
+storm_name = ${STORM_NAME};
 
 //
 // Stratify by the INIT times.
@@ -66,10 +66,10 @@ storm_name = ${TC_STAT_STORM_NAME};
 //init_end = "";
 //init_inc = [];
 //init_exc = [];
-init_beg = ${TC_STAT_INIT_BEG};
-init_end = ${TC_STAT_INIT_END};
-init_inc = ${TC_STAT_INIT_INCLUDE};
-init_exc = ${TC_STAT_INIT_EXCLUDE};
+init_beg = "${INIT_BEG}";
+init_end = "${INIT_END}";
+init_inc = ${INIT_INCLUDE};
+init_exc = ${INIT_EXCLUDE};
 
 //
 // Stratify by the VALID times.
@@ -78,10 +78,10 @@ init_exc = ${TC_STAT_INIT_EXCLUDE};
 //valid_end = "";
 //valid_inc = [];
 //valid_exc = [];
-valid_beg = ${TC_STAT_VALID_BEG};
-valid_end = ${TC_STAT_VALID_END};
-valid_inc = ${TC_STAT_VALID_INCLUDE};
-valid_exc = ${TC_STAT_VALID_EXCLUDE};
+valid_beg = "${VALID_BEG}";
+valid_end = "${VALID_END}";
+valid_inc = ${VALID_INCLUDE};
+valid_exc = ${VALID_EXCLUDE};
 
 //
 // Stratify by the initialization and valid hours and lead time.
@@ -90,23 +90,23 @@ valid_exc = ${TC_STAT_VALID_EXCLUDE};
 //valid_hour = [];
 //lead       = [];
 
-init_hour = ${TC_STAT_INIT_HOUR};
-valid_hour = $(TC_STAT_VALID_HOUR};
-lead = ${TC_STAT_LEAD};
+init_hour = ${INIT_HOUR};
+valid_hour = ${VALID_HOUR};
+lead = ${LEAD};
 
 //
 // Select tracks which contain all required lead times.
 //
 //lead_req = [];
-lead_req = ${TC_STAT_LEAD_REQ};
+lead_req = ${LEAD_REQ};
 
 //
 // Stratify by the INIT_MASK and VALID_MASK columns.
 //
 //init_mask  = [];
 //valid_mask = [];
-init_mask = ${TC_STAT_INIT_MASK};
-valid_mask = ${TC_STAT_VALID_MASK};
+init_mask = ${INIT_MASK};
+valid_mask = ${VALID_MASK};
 
 //
 // Stratify by the LINE_TYPE column.
@@ -119,45 +119,45 @@ line_type = [];
 // of any of the track points appears in the list, retain the entire track.
 //
 //track_watch_warn = [];
-track_watch_warn = ${TC_STAT_TRACK_WATCH_WARN};
+track_watch_warn = ${TRACK_WATCH_WARN};
 
 //
 // Stratify by applying thresholds to numeric data columns.
 //
 //column_thresh_name = [];
 //column_thresh_val  = [];
-column_thresh_name = ${TC_STAT_COLUMN_THRESH_NAME};
-column_thresh_val = ${TC_STAT_COLUMN_THRESH_VAL};
+column_thresh_name = ${COLUMN_THRESH_NAME};
+column_thresh_val = ${COLUMN_THRESH_VAL};
 
 //
 // Stratify by performing string matching on non-numeric data columns.
 //
 //column_str_name = [];
 //column_str_val  = [];
-column_str_name = ${TC_STAT_COLUMN_STR_NAME};
-column_str_val = ${TC_STAT_COLUMN_STR_VAL};
+column_str_name = ${COLUMN_STR_NAME};
+column_str_val = ${COLUMN_STR_VAL};
 
 //
 // Similar to the column_thresh options above
 //
 //init_thresh_name = [];
 //init_thresh_val  = [];
-init_thresh_name = ${TC_STAT_INIT_THRESH_NAME};
-init_thresh_val = ${TC_STAT_INIT_THRESH_VAL};
+init_thresh_name = ${INIT_THRESH_NAME};
+init_thresh_val = ${INIT_THRESH_VAL};
 
 //
 // Similar to the column_str options above
 //
 //init_str_name = [];
 //init_str_val  = [];
-init_str_name = ${TC_STAT_INIT_STR_NAME};
-init_str_val = ${TC_STAT_INIT_STR_VAL};
+init_str_name = ${INIT_STR_NAME};
+init_str_val = ${INIT_STR_VAL};
 
 //
 // Stratify by the ADECK and BDECK distances to land.
 //
 //water_only = FALSE;
-water_only = ${TC_STAT_WATER_ONLY};
+water_only = ${WATER_ONLY};
 
 //
 // Specify whether only those track points for which rapid intensification
@@ -183,9 +183,9 @@ rirw = {
 //landfall_beg = "-24";
 //landfall_end = "00";
 
-landfall = ${TC_STAT_LANDFALL}
-landfall_beg = ${TC_STAT_LANDFALL_BEG};
-landfall_end = ${TC_STAT_LANDFALL_END};
+landfall = ${LANDFALL};
+landfall_beg = "${LANDFALL_BEG}";
+landfall_end = "${LANDFALL_END}";
 
 
 //
@@ -193,7 +193,7 @@ landfall_end = ${TC_STAT_LANDFALL_END};
 // tracks should be retained.  May modify using the "-match_points" job command
 // option.
 //
-match_points = FALSE;
+match_points = ${MATCH_POINTS};
 
 //
 // Specify whether only those cases common to all models in the dataset should
@@ -222,7 +222,8 @@ out_valid_mask = "";
 //
 // Array of TCStat analysis jobs to be performed on the filtered data
 //
-jobs = [];
+//jobs = ["-job filter -dump_row /d1/minnawin/feature87/output/tc_stat/tc_stat_filter_job_conf.tcst"];
+jobs = ${JOBS};
 
 //
 // Indicate a version number for the contents of this configuration file.
