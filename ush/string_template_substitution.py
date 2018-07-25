@@ -211,9 +211,10 @@ class StringSub:
                                   self.kwargs.get(CYCLE_STRING, None))
 
         if OFFSET_STRING in self.kwargs:
-            self.offset_hour = \
-                get_time_in_hours(self.logger,
-                                  self.kwargs.get(OFFSET_STRING, None))
+            if self.kwargs.get(OFFSET_STRING, None):
+                self.offset_hour = \
+                    get_time_in_hours(self.logger,
+                                      self.kwargs.get(OFFSET_STRING, None))
 
     def dateCalcInit(self):
         """ Calculate the init time from the valid and lead time  """
@@ -1096,15 +1097,15 @@ class StringExtract:
                     i += len(LEAD_STRING) + fmt_len - 1
             elif self.temp[i] == TEMPLATE_IDENTIFIER_END:
                 if inValid:
-                    if yIdx != -1:
+                    if yIdx != -1 and self.fstr[yIdx:yIdx+4].isdigit():
                         validYear = int(self.fstr[yIdx:yIdx+4])
-                    if mIdx != -1:
+                    if mIdx != -1 and self.fstr[mIdx:mIdx+2].isdigit():
                         validMonth = int(self.fstr[mIdx:mIdx+2])
-                    if dIdx != -1:
+                    if dIdx != -1 and self.fstr[dIdx:dIdx+2].isdigit():
                         validDay = int(self.fstr[dIdx:dIdx+2])
-                    if hIdx != -1:
+                    if hIdx != -1 and self.fstr[hIdx:hIdx+2].isdigit():
                         validHour = int(self.fstr[hIdx:hIdx + 2])
-                    if minIdx != -1:
+                    if minIdx != -1 and self.fstr[minIdx:minIdx+2].isdigit():
                         validMin = int(self.fstr[minIdx:minIdx + 2])
 
                     yIdx = -1
@@ -1115,15 +1116,15 @@ class StringExtract:
                     inValid = False
 
                 if inInit:
-                    if yIdx != -1:
+                    if yIdx != -1 and self.fstr[yIdx:yIdx+4].isdigit():
                         initYear = int(self.fstr[yIdx:yIdx + 4])
-                    if mIdx != -1:
+                    if mIdx != -1 and self.fstr[mIdx:mIdx+2].isdigit():
                         initMonth = int(self.fstr[mIdx:mIdx + 2])
-                    if dIdx != -1:
+                    if dIdx != -1 and self.fstr[dIdx:dIdx+2].isdigit():
                         initDay = int(self.fstr[dIdx:dIdx + 2])
-                    if hIdx != -1:
+                    if hIdx != -1 and self.fstr[hIdx:hIdx+2].isdigit():
                         initHour = int(self.fstr[hIdx:hIdx + 2])
-                    if minIdx != -1:
+                    if minIdx != -1 and self.fstr[minIdx:minIdx+2].isdigit():
                         initMin = int(self.fstr[minIdx:minIdx + 2])
 
                     yIdx = -1
@@ -1134,22 +1135,22 @@ class StringExtract:
                     inInit = False
 
                 elif inLevel:
-                    if level == -1:
-                        self.logger.error("Invalid level time")
+                    if level == -1 or level == None or not level.isdigit():
                         return False
                     self.levelTime = int(level) * SECONDS_PER_HOUR
                     level = -1
                     inLevel = False
 
                 elif inLead:
-                    if lead == -1:
-                        self.logger.error("Invalid lead time")
+                    if lead == -1 or lead == None or not lead.isdigit():
                         return False
                     self.leadTime = int(lead) * SECONDS_PER_HOUR
                     lead = -1
                     inLead = False
 
             elif inValid or inInit:
+                if idx > len(self.fstr):
+                    return False
                 if self.temp[i:i + 2] == "%Y":
                     yIdx = idx
                     idx += 4

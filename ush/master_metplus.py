@@ -27,7 +27,7 @@ from series_by_lead_wrapper import SeriesByLeadWrapper
 from series_by_init_wrapper import SeriesByInitWrapper
 from stat_analysis_wrapper import StatAnalysisWrapper
 from make_plots_wrapper import MakePlotsWrapper
-#from mode_wrapper import ModeWrapper
+from mode_wrapper import ModeWrapper
 from usage_wrapper import UsageWrapper
 from command_builder import CommandBuilder
 from tcmpr_plotter_wrapper import TCMPRPlotterWrapper
