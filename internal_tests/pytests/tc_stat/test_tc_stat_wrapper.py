@@ -69,7 +69,7 @@ def metplus_config():
         ('APP_NAME', 'tc_stat'),
         ('INIT_BEG', '20141213'),
         ('INIT_END', '20141213'),
-        ('INIT_HOUR', '00')
+        ('INIT_HOUR', ['00'])
     ]
 )
 def test_tc_stat_dict(key, value):
@@ -79,6 +79,30 @@ def test_tc_stat_dict(key, value):
     tcsw = tc_stat_wrapper()
     actual_value = tcsw.tc_stat_dict[key]
     assert actual_value == value
+
+
+def test_config_lists():
+    """! Test that when the COLUMN_THRESH_NAME and COLUMN_THRESH_VAL lists
+         are of different length, the appropriate value is returned
+         from config_lists_ok()
+    """
+    tcsw = tc_stat_wrapper()
+
+    # Uneven lengths, expect False to be returned
+    TC_STAT_COLUMN_THRESH_NAME = "A, B, C"
+    TC_STAT_COLUMN_THRESH_VAL =  "1,2"
+    tcsw.tc_stat_dict['COLUMN_THRESH_NAME'] = TC_STAT_COLUMN_THRESH_NAME
+    tcsw.tc_stat_dict['COLUMN_THRESH_VAL'] = TC_STAT_COLUMN_THRESH_VAL
+    assert tcsw.config_lists_ok() is False
+
+
+
+
+
+
+
+
+
 
 
 
