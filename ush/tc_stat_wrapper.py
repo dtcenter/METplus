@@ -45,6 +45,7 @@ class TcStatWrapper(CommandBuilder):
         self.app_name = 'tc_stat'
         self.config = self.p
         self.logger = logger
+        self.by_config = False
 
         if self.logger is None:
             self.logger = util.get_logger(self.p, sublog='TcStat')
