@@ -7,7 +7,6 @@ import pytest
 import produtil
 import config_metplus
 from tc_stat_wrapper import TcStatWrapper
-import met_util as util
 
 
 #
@@ -19,11 +18,13 @@ import met_util as util
 
 # Add a test configuration
 def pytest_addoption(parser):
+    """! For supporting config files from the command line"""
     parser.addoption("-c", action="store", help=" -c <test config file>")
 
 
 # @pytest.fixture
 def cmdopt(request):
+    """! For supporting the additional config files used by METplus"""
     return request.config.getoption("-c")
 
 
@@ -45,6 +46,7 @@ def tc_stat_wrapper():
 
 @pytest.fixture
 def metplus_config():
+    """! Generate the METplus config object"""
     try:
         if 'JLOGFILE' in os.environ:
             produtil.setup.setup(send_dbn=False, jobname='TcStatWrapper ',
@@ -89,10 +91,10 @@ def test_config_lists():
     tcsw = tc_stat_wrapper()
 
     # Uneven lengths, expect False to be returned
-    TC_STAT_COLUMN_THRESH_NAME = "A, B, C"
-    TC_STAT_COLUMN_THRESH_VAL = "1,2"
-    tcsw.tc_stat_dict['COLUMN_THRESH_NAME'] = TC_STAT_COLUMN_THRESH_NAME
-    tcsw.tc_stat_dict['COLUMN_THRESH_VAL'] = TC_STAT_COLUMN_THRESH_VAL
+    column_thresh_name = "A, B, C"
+    column_thresh_val = "1,2"
+    tcsw.tc_stat_dict['COLUMN_THRESH_NAME'] = column_thresh_name
+    tcsw.tc_stat_dict['COLUMN_THRESH_VAL'] = column_thresh_val
     assert tcsw.config_lists_ok() is False
 
 
@@ -110,8 +112,8 @@ def test_filter_by_si_basin():
     tcsw.run_all_times()
     output_file = \
         tcsw.tc_stat_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
-    with open(output_file, 'r') as f:
-        lines = len(f.readlines())
+    with open(output_file, 'r') as out_file:
+        lines = len(out_file.readlines())
         print("Num lines: ", str(lines))
 
     assert lines == expected_num_lines
@@ -132,8 +134,8 @@ def test_filter_by_cyclone():
     tcsw.run_all_times()
     output_file = \
         tcsw.tc_stat_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
-    with open(output_file, 'r') as f:
-        lines = len(f.readlines())
+    with open(output_file, 'r') as out_file:
+        lines = len(out_file.readlines())
         # print("Num lines: ", str(lines))
 
     assert lines == expected_num_lines
@@ -153,11 +155,12 @@ def test_filter_by_storm_name():
     tcsw.run_all_times()
     output_file = \
         tcsw.tc_stat_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
-    with open(output_file, 'r') as f:
-        lines = len(f.readlines())
+    with open(output_file, 'r') as out_file:
+        lines = len(out_file.readlines())
         print("Num lines: ", str(lines))
 
     assert lines == expected_num_lines
+
 
 def test_filter_by_storm_id():
     """! Test that for a given time window of SBU GFS data, the expected number
@@ -175,8 +178,8 @@ def test_filter_by_storm_id():
     tcsw.run_all_times()
     output_file = \
         tcsw.tc_stat_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
-    with open(output_file, 'r') as f:
-        lines = len(f.readlines())
+    with open(output_file, 'r') as out_file:
+        lines = len(out_file.readlines())
         print("Num lines: ", str(lines))
     # Note that the number of lines does NOT match what is expected.  For
     # this data, the stratify by storm_id produces 0 results.  This may
@@ -202,11 +205,12 @@ def test_filter_by_basin_cyclone():
     tcsw.run_all_times()
     output_file = \
         tcsw.tc_stat_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
-    with open(output_file, 'r') as f:
-        lines = len(f.readlines())
+    with open(output_file, 'r') as out_file:
+        lines = len(out_file.readlines())
         print("Num lines: ", str(lines))
 
     assert lines == expected_num_lines
+
 
 def test_run_via_command_line():
     """! Test that running via command line produces the expected results for
@@ -227,10 +231,11 @@ def test_run_via_command_line():
     expected_num_rows = 6
     tcsw.run_all_times()
     output_file = output_base + '/tc_stat/tc_stat_filter.out'
-    with open(output_file, 'r') as f:
-        lines = len(f.readlines())
+    with open(output_file, 'r') as out_file:
+        lines = len(out_file.readlines())
         print('Number of lines: ', lines)
     assert lines == expected_num_rows
+
 
 def test_run_via_config_file():
     """! Test that running via the config file on a specific time window
@@ -253,9 +258,7 @@ def test_run_via_config_file():
 
     # Expect 13 lines of output (including the header)
     num_expected_lines = 13
-    with open(output_file, 'r') as f:
-        lines = len(f.readlines())
+    with open(output_file, 'r') as out_file:
+        lines = len(out_file.readlines())
         print("Number of lines: ", lines)
     assert lines == num_expected_lines
-
-
