@@ -147,8 +147,8 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # not defined.
             if self.p.has_option('dir', 'MET_BUILD_BASE'):
                 if self.p.has_option('dir', 'MET_INSTALL_DIR'):
-                    os.environ['MET_INSTALL_DIR'] = self.p.getdir(
-                        'MET_INSTALL_DIR')
+                    os.environ['MET_INSTALL_DIR'] = \
+                        self.p.getdir('MET_INSTALL_DIR')
             else:
                 os.environ['MET_INSTALL_DIR'] = self.p.getdir('MET_INSTALL_DIR')
 
@@ -310,7 +310,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
                     # delimited by ','.
                     full_cmd_list.append(','.join(value))
                 elif key == '-dep':
-                    # dependendent variables list items are appended
+                    # dependant variables list items are appended
                     # as one string.  Convert list into a string delimited
                     # by ','.
                     full_cmd_list.append(','.join(value))
@@ -372,7 +372,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         return dated_output_dir
 
     def retrieve_optionals(self):
-        """Creates a dictinary of the options and their values.
+        """Creates a dictionary of the options and their values.
            Args:
 
            Returns:
