@@ -45,7 +45,14 @@ class TcStatWrapper(CommandBuilder):
         self.app_name = 'tc_stat'
         self.config = self.p
         self.logger = logger
-        self.by_config = False
+
+        # Check whether we are running MET tc_stat from the command line
+        # or with the MET config file.
+        run_method = self.p.getstr('config', 'TC_STAT_RUN_VIA')
+        if run_method == 'CONFIG':
+            self.by_config = True
+        else:
+            self.by_config = False
 
         if self.logger is None:
             self.logger = util.get_logger(self.p, sublog='TcStat')
@@ -78,13 +85,6 @@ class TcStatWrapper(CommandBuilder):
 
         tc_stat_dict = dict()
 
-        # Check whether we are running MET tc_stat from the command line
-        # or with the MET config file.
-
-        if self.p.getstr('config', 'TC_STAT_RUN_VIA') == 'CONFIG':
-            self.by_config = True
-        else:
-            self.by_config = False
 
         # Check for the MET_INSTALL_DIR, if it is missing, then
         # we cannot invoke the MET tool.
@@ -99,9 +99,26 @@ class TcStatWrapper(CommandBuilder):
         tc_stat_dict['APP_NAME'] = os.path.basename(tc_stat_dict['APP_PATH'])
 
         if self.by_config:
+            tc_stat_dict['AMODEL'] = \
+                util.getlist(self.config.getstr('config', 'TC_STAT_AMODEL'))
+
+            tc_stat_dict['BMODEL'] = \
+                util.getlist(self.config.getstr('config', 'TC_STAT_BMODEL'))
 
             tc_stat_dict['DESC'] = \
                 util.getlist(self.config.getstr('config', 'TC_STAT_DESC'))
+
+            tc_stat_dict['STORM_ID'] = \
+                util.getlist(self.config.getstr('config', 'TC_STAT_STORM_ID'))
+
+            tc_stat_dict['BASIN'] = util.getlist(
+                self.config.getstr('config', 'TC_STAT_BASIN'))
+
+            tc_stat_dict['CYCLONE'] = util.getlist(
+                self.config.getstr('config', 'TC_STAT_CYCLONE'))
+
+            tc_stat_dict['STORM_NAME'] = util.getlist(
+                self.config.getstr('config', 'TC_STAT_STORM_NAME'))
 
             tc_stat_dict['INIT_BEG'] = self.config.getstr('config',
                                                           'TC_STAT_INIT_BEG')
@@ -335,6 +352,77 @@ class TcStatWrapper(CommandBuilder):
         self.logger.info('Setting env variables from config file...')
         # Set all the environment variables that are needed by the
         # MET config file.
+
+        tmp_amodel = self.tc_stat_dict['AMODEL']
+        if tmp_amodel:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_amodel_str = str(tmp_amodel).replace("\'", "\"")
+            tmp_amodel = ''.join(tmp_amodel_str.split())
+            self.add_env_var('AMODEL', tmp_amodel)
+        else:
+            self.add_env_var('AMODEL', "[]")
+
+        tmp_bmodel = self.tc_stat_dict['BMODEL']
+        if tmp_bmodel:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_bmodel_str = str(tmp_bmodel).replace("\'", "\"")
+            tmp_bmodel = ''.join(tmp_bmodel_str.split())
+            self.add_env_var('BMODEL', tmp_bmodel)
+        else:
+            self.add_env_var('BMODEL', "[]")
+
+        tmp_desc = self.tc_stat_dict['DESC']
+        if tmp_desc:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_desc_str = str(tmp_desc).replace("\'", "\"")
+            tmp_desc = ''.join(tmp_desc_str.split())
+            self.add_env_var('DESC', tmp_desc)
+        else:
+            self.add_env_var('DESC', "[]")
+
+        tmp_storm_id = self.tc_stat_dict['STORM_ID']
+        if tmp_storm_id:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_storm_id_str = str(tmp_storm_id).replace("\'", "\"")
+            tmp_storm_id = ''.join(tmp_storm_id_str.split())
+            self.add_env_var('STORM_ID', tmp_storm_id)
+        else:
+            self.add_env_var('STORM_ID', "[]")
+
+        tmp_basin = self.tc_stat_dict['BASIN']
+        if tmp_basin:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_basin_str = str(tmp_basin).replace("\'", "\"")
+            tmp_basin = ''.join(tmp_basin_str.split())
+            self.add_env_var('BASIN', tmp_basin)
+        else:
+            self.add_env_var('BASIN', "[]")
+
+        tmp_cyclone = self.tc_stat_dict['CYCLONE']
+        if tmp_cyclone:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_cyclone_str = str(tmp_cyclone).replace("\'", "\"")
+            tmp_cyclone = ''.join(tmp_cyclone_str.strip())
+            self.add_env_var('CYCLONE', tmp_cyclone)
+        else:
+            self.add_env_var('CYCLONE', "[]")
+
+        tmp_storm_name = self.tc_stat_dict['STORM_NAME']
+        if tmp_storm_name:
+            # Replace any single quotes with double quotes and remove any
+            # whitespace
+            tmp_storm_name_str = str(tmp_storm_name).replace("\'", "\"")
+            tmp_storm_name = ''.join(tmp_storm_name_str.strip())
+            self.add_env_var('STORM_NAME', tmp_storm_name)
+        else:
+            self.add_env_var('STORM_NAME', "[]")
+
         if self.tc_stat_dict['INIT_BEG']:
             self.add_env_var(b'INIT_BEG', self.tc_stat_dict['INIT_BEG'])
         else:
@@ -592,7 +680,7 @@ class TcStatWrapper(CommandBuilder):
             self.add_env_var('LANDFALL_END', '00')
 
         # boolean value for MATCH_POINTS
-        if self.tc_stat_dict['MATCH_POINTS']:
+        if self.tc_stat_dict['MATCH_POINTS'] == 'true':
             flag = "TRUE"
         else:
             flag = "FALSE"
