@@ -49,10 +49,7 @@ class TcStatWrapper(CommandBuilder):
         # Check whether we are running MET tc_stat from the command line
         # or with the MET config file.
         run_method = self.p.getstr('config', 'TC_STAT_RUN_VIA')
-        if run_method == 'CONFIG':
-            self.by_config = True
-        else:
-            self.by_config = False
+        self.by_config = bool(run_method == 'CONFIG')
 
         if self.logger is None:
             self.logger = util.get_logger(self.p, sublog='TcStat')
@@ -84,7 +81,6 @@ class TcStatWrapper(CommandBuilder):
         self.logger.info('Creating tc-stat dictionary...')
 
         tc_stat_dict = dict()
-
 
         # Check for the MET_INSTALL_DIR, if it is missing, then
         # we cannot invoke the MET tool.
@@ -274,7 +270,8 @@ class TcStatWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
-        self.logger.info('Starting tc_stat_wrapper...')
+        self.logger.info(cur_filename  + '|' + cur_filename +
+                         ':   Starting tc_stat_wrapper...')
         if self.by_config:
             self.set_envs()
             if not self.config_lists_ok():
@@ -298,15 +295,13 @@ class TcStatWrapper(CommandBuilder):
             tc_cmd_list = [self.tc_exe,
                            " -lookin", self.tc_stat_dict['INPUT_DIR'],
                            " -config ", self.tc_stat_dict['CONFIG_FILE'],
-                           self.tc_stat_dict['JOBS_LIST']
-                           ]
+                           self.tc_stat_dict['JOBS_LIST']]
         else:
             # Run single job from command line
             tc_cmd_list = [self.tc_exe,
                            " -lookin", self.tc_stat_dict['INPUT_DIR'],
                            self.tc_stat_dict['CMD_LINE_JOB'],
-                           "-match_points", match_points
-                           ]
+                           "-match_points", match_points]
 
         tc_cmd_str = ' '.join(tc_cmd_list)
 
@@ -696,7 +691,7 @@ class TcStatWrapper(CommandBuilder):
             sys.exit(1)
 
         jobs_list_tmp = self.tc_stat_dict['JOBS_LIST']
-        if jobs_list_tmp :
+        if jobs_list_tmp:
             # MET is expecting a string
             jobs_list_str = '"' + jobs_list_tmp + '"'
             self.add_env_var('JOBS', jobs_list_str)
