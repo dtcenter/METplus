@@ -14,7 +14,7 @@ import time
 import datetime
 import calendar
 import produtil.setup
-#from produtil.run import run
+# from produtil.run import run
 import met_util as util
 import config_metplus
 
@@ -32,7 +32,7 @@ from usage_wrapper import UsageWrapper
 from command_builder import CommandBuilder
 from tcmpr_plotter_wrapper import TCMPRPlotterWrapper
 # cyclone plotter should be commented out when committed
-#from cyclone_plotter_wrapper import CyclonePlotterWrapper
+# from cyclone_plotter_wrapper import CyclonePlotterWrapper
 from pb2nc_wrapper import PB2NCWrapper
 from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TcStatWrapper
@@ -73,7 +73,7 @@ def main():
     # than you would get it this way logger=p.log(). The config
     # object has-a logger we want.
     logger = util.get_logger(p)
-    #logger.info('Top of master_metplus after conf file setup.')
+    # logger.info('Top of master_metplus after conf file setup.')
 
     # This is available in each subprocess from os.system BUT
     # we also set it in each process since they may be called stand alone.
@@ -93,23 +93,25 @@ def main():
     #
     # both work ...
     # Note: Using (item))sys.argv[1:], is preferable since
-    # it doesn't depend on the conf file existing.       
+    # it doesn't depend on the conf file existing.
     processes = []
     for item in process_list:
-      try:
-        logger = p.log(item)
-        command_builder = getattr(sys.modules[__name__], item+"Wrapper")(p, logger)
-      except AttributeError:
-        raise NameError("Process %s doesn't exist" % item)
-        exit()
+        try:
+            logger = p.log(item)
+            command_builder = getattr(sys.modules[__name__], item + "Wrapper")(
+                p, logger)
+        except AttributeError:
+            raise NameError("Process %s doesn't exist" % item)
+            exit()
 
-      processes.append(command_builder)
+        processes.append(command_builder)
 
     if p.getstr('config', 'LOOP_METHOD') == "processes":
         for process in processes:
-            # referencing using repr(process.app_name) in log since it may be None,
-            # if not set in the command builder subclass' contsructor, and no need to
-            # generate an exception because of that.
+            # referencing using repr(process.app_name) in
+            # log since it may be None,
+            # if not set in the command builder subclass' contsructor,
+            # and no need to generate an exception because of that.
             produtil.log.postmsg('master_metplus Calling run_all_times '
                                  'in: %s wrapper.' % repr(process.app_name))
             process.run_all_times()
@@ -126,11 +128,12 @@ def main():
             start_t = p.getstr('config', 'VALID_BEG')
             end_t = p.getstr('config', 'VALID_END')
             time_interval = p.getint('config', 'VALID_INC')
-                        
+
         if time_interval < 60:
-            print("ERROR: time_interval parameter must be greater than 60 seconds")
+            print("ERROR: time_interval parameter must be "
+                  "greater than 60 seconds")
             exit(1)
-        
+
         loop_time = calendar.timegm(time.strptime(start_t, time_format))
         end_time = calendar.timegm(time.strptime(end_t, time_format))
         while loop_time <= end_time:
@@ -141,7 +144,7 @@ def main():
                 logger.info("*  at init time: " + run_time)
             else:
                 logger.info("*  at valid time: " + run_time)
-            logger.info("****************************************")            
+            logger.info("****************************************")
             for process in processes:
                 # Set valid time to -1 if using init and vice versa
                 if use_init:

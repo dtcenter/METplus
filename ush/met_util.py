@@ -263,8 +263,23 @@ def get_logger(config, sublog=None):
     else:
         logger = config.log()
 
-    # Set the logger level from the config instance.
-    logger.setLevel(log_level)
+    # Setting of the logger level from the config instance.
+    # Check for log_level by Integer or LevelName.
+    # Try to convert the string log_level to an integer and use that, if
+    # it can't convert then we assume it is a valid LevelName, which
+    # is what is should be anyway,  ie. DEBUG.
+    # Note:
+    # Earlier versions of python2 require setLevel(<int>), argument
+    # to be an int. Passing in the LevelName, 'DEBUG' will disable
+    # logging output. Later versions of python2 will accept 'DEBUG',
+    # not sure which version that changed with, but the logic below
+    # should work for all version. I know python 2.6.6 must be an int,
+    # and python 2.7.5 accepts the LevelName.
+    try:
+        int_log_level = int(log_level)
+        logger.setLevel(int_log_level)
+    except ValueError:
+        logger.setLevel(logging.getLevelName(log_level))
 
     # Make sure the LOG_METPLUS is defined. In this function,
     # LOG_METPLUS should already be defined in the config object,
