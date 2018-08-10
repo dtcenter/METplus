@@ -48,8 +48,8 @@ class ModeWrapper(CompareGriddedWrapper):
                                'FCST_MODE_INPUT_TEMPLATE')
         self.cg_dict['OUTPUT_DIR'] = \
           self.p.getdir('MODE_OUT_DIR')
-        self.cg_dict['FCST_MAX_FORECAST'= self.p.getint('config', 'FCST_MAX_FORECAST')
-        self.cg_dict['FCST_INIT_INTERVAL'= self.p.getint('config', 'FCST_INIT_INTERVAL')
+        self.cg_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST')
+        self.cg_dict['FCST_INIT_INTERVAL']= self.p.getint('config', 'FCST_INIT_INTERVAL')
         self.cg_dict['WINDOW_RANGE_BEG'] = \
           self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
         self.cg_dict['WINDOW_RANGE_END'] = \
