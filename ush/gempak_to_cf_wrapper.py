@@ -19,7 +19,7 @@ import logging
 import met_util as util
 import string_template_substitution as sts
 from task_info import TaskInfo
-from reformat_gridded_wrapper import ReformatGriddedWrapper
+from command_builder import CommandBuilder
 
 
 '''!@namespace GempakToCFWrapper
@@ -28,7 +28,7 @@ from reformat_gridded_wrapper import ReformatGriddedWrapper
 '''
 
 
-class GempakToCFWrapper(ReformatGriddedWrapper):
+class GempakToCFWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
         super(GempakToCFWrapper, self).__init__(p, logger)
@@ -57,20 +57,38 @@ class GempakToCFWrapper(ReformatGriddedWrapper):
         cmd += self.get_output_path()
         return cmd
 
-    def run_at_time_once(self, task_info, var_info, dtype):
+    def run_at_time(self, init_time, valid_time):
+        """! Runs the MET application for a given run time. Processing forecast
+              or observation data is determined by conf variables. This function
+              loops over the list of forecast leads and runs the application for
+              each.
+              Args:
+                @param init_time initialization time to run. -1 if not set
+                @param valid_time valid time to run. -1 if not set
+        """        
+        app_name_caps = self.app_name.upper()
+        class_name = self.__class__.__name__[0: -7]
+        task_info = TaskInfo()
+        task_info.init_time = init_time
+        task_info.valid_time = valid_time
+        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
+
+        for lead in lead_seq:
+            task_info.lead = lead
+            self.run_at_time_once(task_info)
+                    
+    def run_at_time_once(self, task_info):
         """! Runs the MET application for a given time and forecast lead combination
              Args:
                 @param task_info task_info object containing timing information
-                @param var_info var_info object containing variable information
-                @params dtype dtype (FCST or OBS)
         """
         valid_time = task_info.getValidTime()
-        input_dir = self.p.getdir(dtype+'_GEMPAKTOCF_INPUT_DIR')
+        input_dir = self.p.getdir('GEMPAKTOCF_INPUT_DIR')
         input_template = util.getraw_interp(self.p, 'filename_templates',
-                                        dtype+'_GEMPAKTOCF_INPUT_TEMPLATE')
-        output_dir = self.p.getdir(dtype+'_GEMPAKTOCF_OUTPUT_DIR')
+                                        'GEMPAKTOCF_INPUT_TEMPLATE')
+        output_dir = self.p.getdir('GEMPAKTOCF_OUTPUT_DIR')
         output_template = util.getraw_interp(self.p, 'filename_templates',
-                                        dtype+'_GEMPAKTOCF_OUTPUT_TEMPLATE')
+                                        'GEMPAKTOCF_OUTPUT_TEMPLATE')
 
         ymd_v = valid_time[0:8]
         if not os.path.exists(os.path.join(output_dir, ymd_v)):
