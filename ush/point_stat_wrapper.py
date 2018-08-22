@@ -600,6 +600,12 @@ class PointStatWrapper(CommandBuilder):
             time_tuple = \
                 time.strptime(date_string, "%Y%m%d%H")
             unix_time = calendar.timegm(time_tuple)
+        else:
+            self.logger.error(cur_filename + '|' + cur_function + '|: The date '
+                                                                  'format does not match any'
+                                                                  'YMD or YMDh format. ')
+            sys.exit(1)
+            
         return unix_time
 
     def reformat_grid_id(self, grid_id):
