@@ -17,7 +17,7 @@ from collections import namedtuple
 
 import subprocess
 from produtil.run import exe
-from produtil.run import runstr,alias
+from produtil.run import runstr, alias
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
 # for run stand alone
@@ -149,7 +149,8 @@ def set_logvars(config, logger=None):
 
     # LOG_TIMESTAMP_TEMPLATE is not required in the conf file,
     # so lets first test for that.
-    log_timestamp_template = config.getstr('config','LOG_TIMESTAMP_TEMPLATE','')
+    log_timestamp_template = config.getstr('config', 'LOG_TIMESTAMP_TEMPLATE',
+                                           '')
     if log_timestamp_template:
         # Note: strftime appears to handle if log_timestamp_template
         # is a string ie. 'blah' and not a valid set of % directives %Y%m%d,
@@ -167,12 +168,14 @@ def set_logvars(config, logger=None):
         # (?i) case insensitive, \A begin string \Z end of string
         if not re.match('(?i)\A(?:(%+[a-z])+)\Z', log_timestamp_template):
             logger.warning('Your LOG_TIMESTAMP_TEMPLATE is not '
-                           'a valid strftime directive: %s' % repr(log_timestamp_template))
+                           'a valid strftime directive: %s' % repr(
+                log_timestamp_template))
             logger.info('Using the following default: %Y%m%d%H')
             log_timestamp_template = '%Y%m%d%H'
-        log_filenametimestamp = datetime.datetime.now().strftime(log_timestamp_template)
+        log_filenametimestamp = datetime.datetime.now().strftime(
+            log_timestamp_template)
     else:
-        log_filenametimestamp=''
+        log_filenametimestamp = ''
 
     log_dir = config.getdir('LOG_DIR')
 
@@ -183,13 +186,15 @@ def set_logvars(config, logger=None):
     # if LOG_METPLUS =  unset in the conf file, means NO logging.
     # Also, assUmes the user has included the intended path in LOG_METPLUS.
     user_defined_log_file = None
-    if config.has_option('config','LOG_METPLUS'):
+    if config.has_option('config', 'LOG_METPLUS'):
         user_defined_log_file = True
         # strinterp will set metpluslog to '' if LOG_METPLUS =  is unset.
-        metpluslog = config.strinterp('config','{LOG_METPLUS}', \
-                                    LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp)
+        metpluslog = config.strinterp('config', '{LOG_METPLUS}',
+                                      LOG_TIMESTAMP_TEMPLATE=
+                                      log_filenametimestamp)
 
-        # test if there is any path information, if there is, assUme it is as intended,
+        # test if there is any path information, if there is,
+        # assume it is as intended,
         # if there is not, than add log_dir.
         if metpluslog:
             if os.path.basename(metpluslog) == metpluslog:
@@ -205,10 +210,13 @@ def set_logvars(config, logger=None):
 
         # If metpluslog_filename includes a path, python joins it intelligently.
         # Set the metplus log filename.
-        # strinterp will set metpluslog_filename to '' if LOG_FILENAME_TEMPLATE =
+        # strinterp will set metpluslog_filename to ''
+        # if LOG_FILENAME_TEMPLATE =
         if config.has_option('config', 'LOG_FILENAME_TEMPLATE'):
-            metpluslog_filename = config.strinterp('config', '{LOG_FILENAME_TEMPLATE}',
-                                                   LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp)
+            metpluslog_filename = config.strinterp('config',
+                                                   '{LOG_FILENAME_TEMPLATE}',
+                                                   LOG_TIMESTAMP_TEMPLATE=
+                                                   log_filenametimestamp)
         else:
             metpluslog_filename = ''
         if metpluslog_filename:
@@ -216,11 +224,9 @@ def set_logvars(config, logger=None):
         else:
             metpluslog = ''
 
-
-
     # Adding LOG_TIMESTAMP to the final configuration file.
     logger.info('Adding: config.LOG_TIMESTAMP=%s' % repr(log_filenametimestamp))
-    config.set('config','LOG_TIMESTAMP',log_filenametimestamp)
+    config.set('config', 'LOG_TIMESTAMP', log_filenametimestamp)
 
     # Setting LOG_METPLUS in the configuration object
     # At this point LOG_METPLUS will have a value or '' the empty string.
@@ -284,10 +290,9 @@ def get_logger(config, sublog=None):
     # Make sure the LOG_METPLUS is defined. In this function,
     # LOG_METPLUS should already be defined in the config object,
     # even if it is empty, LOG_METPLUS =.
-    if not config.has_option('config','LOG_METPLUS'):
+    if not config.has_option('config', 'LOG_METPLUS'):
         set_logvars(config)
     metpluslog = config.getstr('config', 'LOG_METPLUS', '')
-
 
     # TODO: Remove LOG_OUTPUT control variable.
     # This was the yes/no control variable from the first cycle logging
@@ -298,15 +303,18 @@ def get_logger(config, sublog=None):
     # If not used, Delete this comment and commented out code block below
     # and you are done, nothing else needs to be changed elsewhere
     # in the code base.
-    #if config.getbool('config','LOG_OUTPUT',default=False,badtypeok=True):
+    # if config.getbool('config','LOG_OUTPUT',default=False,badtypeok=True):
     #    if not metpluslog:
-    #        logger.warning('LOG_OUTPUT in conf file is yes, Looks like you want to log your output ?')
-    #        logger.warning('However, LOG_METPLUS is not a valid file, I can not log your output.')
+    #        logger.warning('LOG_OUTPUT in conf file is yes,
+    #  Looks like you want to log your output ?')
+    #        logger.warning('However, LOG_METPLUS is not a valid file,
+    #  I can not log your output.')
     #    else:
     #        logger.info('LOG_OUTPUT in your conf file is set to yes')
-    #else:
+    # else:
     #    logger.info('LOG_OUTPUT in your conf file is set to no or not set.')
-    #if metpluslog and config.getbool('config', 'LOG_OUTPUT', default=False, badtypeok=True):
+    # if metpluslog and config.getbool('config', 'LOG_OUTPUT',
+    # default=False, badtypeok=True):
 
     if metpluslog:
         # It is possible that more path, other than just LOG_DIR, was added
@@ -324,12 +332,13 @@ def get_logger(config, sublog=None):
             "%(asctime)s.%(msecs)03d %(name)s (%(filename)s:%(lineno)d) "
             "%(levelname)s: %(message)s",
             "%m/%d %H:%M:%S")
-        #logging.Formatter.converter = time.gmtime
+        # logging.Formatter.converter = time.gmtime
         file_handler = logging.FileHandler(metpluslog, mode='a')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
     return logger
+
 
 def file_exists(filename):
     """! Determines if a file exists
@@ -614,9 +623,10 @@ def extract_year_month(init_time, logger):
     else:
         logger.warning("WARNING|" + "[" + cur_filename + ":" + cur_function +
                        "]" + " | Cannot extract YYYYMM from "
-                       "initialization time, unexpected format")
+                             "initialization time, unexpected format")
         raise Warning("Cannot extract YYYYMM from initialization time,"
                       " unexpected format")
+
 
 def create_grid_specification_string(lat, lon, logger, config):
     """! Create the grid specification string with the format:
@@ -826,10 +836,8 @@ def cleanup_temporary_files(list_of_files):
             pass
 
 
-
-
-
-def create_filter_tmp_files(filtered_files_list, filter_output_dir, logger=None):
+def create_filter_tmp_files(filtered_files_list, filter_output_dir,
+                            logger=None):
     """! Creates the tmp_fcst and tmp_anly ASCII files that contain the full
         filepath of files that correspond to the filter criteria.  Useful for
         validating that filtering returns the expected results/troubleshooting.
@@ -990,9 +998,11 @@ def shift_time(time, shift):
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(hours=shift)).strftime("%Y%m%d%H%M")
 
+
 def shift_time_minutes(time, shift):
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(minutes=shift)).strftime("%Y%m%d%H%M")
+
 
 def shift_time_seconds(time, shift):
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
@@ -1002,6 +1012,7 @@ def shift_time_seconds(time, shift):
 class FieldObj(object):
     __slots__ = 'fcst_name', 'fcst_level', 'fcst_extra', 'fcst_thresh', \
                 'obs_name', 'obs_level', 'obs_extra', 'obs_thresh'
+
 
 def parse_var_list(p):
     # var_list is a list containing an list of FieldObj
@@ -1014,57 +1025,63 @@ def parse_var_list(p):
     for conf in all_conf:
         result = regex.match(conf)
         if result is not None:
-          fcst_indices.append(result.group(1))
+            fcst_indices.append(result.group(1))
 
     # loop over all possible variables and add them to list
     for n in fcst_indices:
         # get fcst var info if available
-        if p.has_option('config', "FCST_VAR"+n+"_NAME"):
-            fcst_name = p.getstr('config', "FCST_VAR"+n+"_NAME")
+        if p.has_option('config', "FCST_VAR" + n + "_NAME"):
+            fcst_name = p.getstr('config', "FCST_VAR" + n + "_NAME")
 
             fcst_extra = ""
-            if p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                fcst_extra = getraw_interp(p, 'config', "FCST_VAR"+n+"_OPTIONS")
+            if p.has_option('config', "FCST_VAR" + n + "_OPTIONS"):
+                fcst_extra = getraw_interp(p, 'config',
+                                           "FCST_VAR" + n + "_OPTIONS")
 
             fcst_thresh = ""
-            if p.has_option('config', "FCST_VAR"+n+"_THRESH"):
-                fcst_thresh = getlistfloat(p.getstr('config', "FCST_VAR"+n+"_THRESH"))
+            if p.has_option('config', "FCST_VAR" + n + "_THRESH"):
+                fcst_thresh = getlistfloat(p.getstr('config',
+                                                    "FCST_VAR" + n + "_THRESH"))
 
             # if OBS_VARn_X does not exist, use FCST_VARn_X
-            if p.has_option('config', "OBS_VAR"+n+"_NAME"):
-                obs_name = p.getstr('config', "OBS_VAR"+n+"_NAME")
+            if p.has_option('config', "OBS_VAR" + n + "_NAME"):
+                obs_name = p.getstr('config', "OBS_VAR" + n + "_NAME")
             else:
                 obs_name = fcst_name
 
             obs_extra = ""
-            if p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                obs_extra = getraw_interp(p, 'config', "OBS_VAR"+n+"_OPTIONS")
+            if p.has_option('config', "OBS_VAR" + n + "_OPTIONS"):
+                obs_extra = getraw_interp(p, 'config',
+                                          "OBS_VAR" + n + "_OPTIONS")
 
-            fcst_levels = getlist(p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-            if p.has_option('config', "OBS_VAR"+n+"_LEVELS"):
-                obs_levels = getlist(p.getstr('config', "OBS_VAR"+n+"_LEVELS"))
+            fcst_levels = getlist(
+                p.getstr('config', "FCST_VAR" + n + "_LEVELS"))
+            if p.has_option('config', "OBS_VAR" + n + "_LEVELS"):
+                obs_levels = getlist(
+                    p.getstr('config', "OBS_VAR" + n + "_LEVELS"))
             else:
                 obs_levels = fcst_levels
 
             if len(fcst_levels) != len(obs_levels):
-                print("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
-                          "_LEVELS do not have the same number of elements")
+                print("ERROR: FCST_VAR" + n + "_LEVELS and OBS_VAR" + n + \
+                      "_LEVELS do not have the same number of elements")
                 exit(1)
 
             # if OBS_VARn_THRESH does not exist, use FCST_VARn_THRESH
-            if p.has_option('config', "OBS_VAR"+n+"_THRESH"):
-                obs_thresh = getlistfloat(getstr('config', "OBS_VAR"+n+"_THRESH"))
+            if p.has_option('config', "OBS_VAR" + n + "_THRESH"):
+                obs_thresh = getlistfloat(getstr('config',
+                                                 "OBS_VAR" + n + "_THRESH"))
             else:
                 obs_thresh = fcst_thresh
 
-            for f,o in zip(fcst_levels, obs_levels):
+            for f, o in zip(fcst_levels, obs_levels):
                 fo = FieldObj()
                 fo.fcst_name = fcst_name
                 fo.obs_name = obs_name
                 fo.fcst_extra = fcst_extra
                 fo.obs_extra = obs_extra
                 fo.fcst_thresh = fcst_thresh
-                fo.obs_thresh = obs_thresh             
+                fo.obs_thresh = obs_thresh
                 fo.fcst_level = f
                 fo.obs_level = o
                 var_list.append(fo)
@@ -1085,101 +1102,102 @@ def parse_var_list(p):
 
 
 def reformat_fields_for_met(all_vars_list, logger):
-        """! Reformat the fcst or obs field values defined in the
-             MET+ config file to the MET field dictionary.
+    """! Reformat the fcst or obs field values defined in the
+         MET+ config file to the MET field dictionary.
 
-             Args:
-                 all_vars_list - The list of all variables/fields retrieved
-                                 from the MET+ configuration file
+         Args:
+             all_vars_list - The list of all variables/fields retrieved
+                             from the MET+ configuration file
 
-                 logger        - The log to which any logging is directed.
+             logger        - The log to which any logging is directed.
 
-             Returns:
-                 met_fields - a named tuple containing the fcst field and
-                              obs field key-value pairs needed by MET.
+         Returns:
+             met_fields - a named tuple containing the fcst field and
+                          obs field key-value pairs needed by MET.
 
 
-        """
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
+    """
+    # pylint:disable=protected-access
+    # Need to call sys.__getframe() to get the filename and method/func
+    # for logging information.
 
-        # Used for logging.
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-        logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
-                    "Reformatting field dictionary ...")
+    # Used for logging.
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+    logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+                "Reformatting field dictionary ...")
 
-        # Named tuple (so we don't have to remember the order of the fields)
-        # containing the string corresponding to the fcst or obs field
-        # key-values for the MET config file.
-        MetFields = namedtuple("MetFields", "fcst_field, obs_field")
+    # Named tuple (so we don't have to remember the order of the fields)
+    # containing the string corresponding to the fcst or obs field
+    # key-values for the MET config file.
+    MetFields = namedtuple("MetFields", "fcst_field, obs_field")
 
-        # Two types of fields in the MET fields dictionary, fcst and obs. Use
-        # this to create the key-value pairs.
-        field_list = ['fcst', 'obs']
-        fcst_field = ''
-        obs_field = ''
-        for var in all_vars_list:
-            # Create the key-value pairs in the fcst field and obs field
-            # dictionaries as defined in the MET configuration file:
-            # fcst = {
-            #    field = [
-            #       {
-            #         name = "TMP";
-            #         level = ["P500", "P400", "P300"];
-            #         cat_thresh = [ > 80.0];
-            #         GRIB_lvl_typ = 202;
-            #       },
-            #       {
-            #         name = "HGT";
-            #         level = ["P500"];
-            #         cat_thresh = [ > 0.0];
-            #         GRIB_lvl_typ = 202;
-            #       },
-            #    ]
-            # }
-            # obs = fcst;
-            #
-            # The reformatting involves creating the field key-value pairs in
-            # the fcst and obs dictionaries.
+    # Two types of fields in the MET fields dictionary, fcst and obs. Use
+    # this to create the key-value pairs.
+    field_list = ['fcst', 'obs']
+    fcst_field = ''
+    obs_field = ''
+    for var in all_vars_list:
+        # Create the key-value pairs in the fcst field and obs field
+        # dictionaries as defined in the MET configuration file:
+        # fcst = {
+        #    field = [
+        #       {
+        #         name = "TMP";
+        #         level = ["P500", "P400", "P300"];
+        #         cat_thresh = [ > 80.0];
+        #         GRIB_lvl_typ = 202;
+        #       },
+        #       {
+        #         name = "HGT";
+        #         level = ["P500"];
+        #         cat_thresh = [ > 0.0];
+        #         GRIB_lvl_typ = 202;
+        #       },
+        #    ]
+        # }
+        # obs = fcst;
+        #
+        # The reformatting involves creating the field key-value pairs in
+        # the fcst and obs dictionaries.
 
-            # Iterate over the field types fcst and obs
-            for field in field_list:
-                if field == 'fcst':
-                    name = var.fcst_name
-                    level = var.fcst_level.zfill(2)
-                    extra = var.fcst_extra
-                elif field == 'obs':
-                    name = var.obs_name
-                    level = var.obs_level
-                    extra = var.obs_extra
+        # Iterate over the field types fcst and obs
+        for field in field_list:
+            if field == 'fcst':
+                name = var.fcst_name
+                level = var.fcst_level.zfill(2)
+                extra = var.fcst_extra
+            elif field == 'obs':
+                name = var.obs_name
+                level = var.obs_level
+                extra = var.obs_extra
 
-                name_level_extra_list = ['{ name = "', name,
-                                         '"; level = [ "', level, '" ]; ']
-                if extra:
-                    extra_str = extra + '; },'
-                    name_level_extra_list.append(extra_str)
+            name_level_extra_list = ['{ name = "', name,
+                                     '"; level = [ "', level, '" ]; ']
+            if extra:
+                extra_str = extra + '; },'
+                name_level_extra_list.append(extra_str)
+            else:
+                # End the text for this field.  If this is the last field,
+                # end the dictionary appropriately.
+                if var == all_vars_list[-1]:
+                    # This is the last field, terminate it appropriately.
+                    name_level_extra_list.append('}')
                 else:
-                    # End the text for this field.  If this is the last field,
-                    # end the dictionary appropriately.
-                    if var == all_vars_list[-1]:
-                        # This is the last field, terminate it appropriately.
-                        name_level_extra_list.append('}')
-                    else:
-                        # More field(s) to go
-                        name_level_extra_list.append('}, ')
+                    # More field(s) to go
+                    name_level_extra_list.append('}, ')
 
-                # Create the long string that will comprise the dictionary in
-                # the MET point_stat config file.
-                if field == 'fcst':
-                    fcst_field += ''.join(name_level_extra_list)
-                elif field == 'obs':
-                    obs_field += ''.join(name_level_extra_list)
+            # Create the long string that will comprise the dictionary in
+            # the MET point_stat config file.
+            if field == 'fcst':
+                fcst_field += ''.join(name_level_extra_list)
+            elif field == 'obs':
+                obs_field += ''.join(name_level_extra_list)
 
-        met_fields = MetFields(fcst_field, obs_field)
+    met_fields = MetFields(fcst_field, obs_field)
 
-        return met_fields
+    return met_fields
+
 
 def get_filetype(config, filepath):
     ncdump_exe = config.getexe('NCDUMP_EXE')
@@ -1206,6 +1224,7 @@ def get_time_from_file(logger, filepath, template):
     else:
         return None
 
+
 # parse parameter and replace any existing parameters
 # referenced with the value (looking in same section, then
 # config, dir, and os environment)
@@ -1219,20 +1238,20 @@ def getraw_interp(p, sec, opt):
             in_brackets = True
             start_idx = i
         elif c == "}":
-            var_name = in_template[start_idx+1:i]
+            var_name = in_template[start_idx + 1:i]
             var = None
-            if p.has_option(sec,var_name):
-                var = p.getstr(sec,name)
-            elif p.has_option('config',var_name):
-                var = p.getstr('config',name)
-            elif p.has_option('dir',var_name):
-                var = p.getstr('dir',name)
+            if p.has_option(sec, var_name):
+                var = p.getstr(sec, name)
+            elif p.has_option('config', var_name):
+                var = p.getstr('config', name)
+            elif p.has_option('dir', var_name):
+                var = p.getstr('dir', name)
             elif var_name[0:3] == "ENV":
                 var = os.environ.get(var_name[4:-1])
 
             if var is None:
-                out_template += in_template[start_idx:i+1]
-            else: 
+                out_template += in_template[start_idx:i + 1]
+            else:
                 out_template += var
             in_brackets = False
         elif not in_brackets:
@@ -1244,80 +1263,77 @@ def getraw_interp(p, sec, opt):
 def decompress_file(filename, logger=None):
     if os.path.exists(filename):
         return
-    elif os.path.exists(filename+".gz"):        
+    elif os.path.exists(filename + ".gz"):
         if logger:
             logger.info("Decompressing gz file")
-        with gzip.open(filename+".gz", 'rb') as infile:
+        with gzip.open(filename + ".gz", 'rb') as infile:
             with open(filename, 'wb') as outfile:
                 outfile.write(infile.read())
                 infile.close()
                 outfile.close()
-    elif os.path.exists(filename+".bz2"):
+    elif os.path.exists(filename + ".bz2"):
         if logger:
             logger.info("Decompressing bz2 file")
-        with open(filename+".bz2", 'rb') as infile:
+        with open(filename + ".bz2", 'rb') as infile:
             with open(filename, 'wb') as outfile:
                 outfile.write(bz2.decompress(infile.read()))
                 infile.close()
                 outfile.close()
-    elif os.path.exists(filename+".zip"):
+    elif os.path.exists(filename + ".zip"):
         if logger:
             logger.info("Decompressing zip file")
-        with zipfile.ZipFile(filename+".zip") as z:
+        with zipfile.ZipFile(filename + ".zip") as z:
             with open(filename, 'wb') as f:
                 f.write(z.read(os.path.basename(filename)))
+
+
 #        zip = zipfile.ZipFile(filename+".zip")
 #        zip.extractall(os.path.dirname(filename))
 
+
 def run_stand_alone(module_name, app_name):
-        try:
-            # If jobname is not defined, in log it is 'NO-NAME'
-            if 'JLOGFILE' in os.environ:
-                produtil.setup.setup(send_dbn=False, jobname='run-METplus',
-                                     jlogfile=os.environ['JLOGFILE'])
-            else:
-                produtil.setup.setup(send_dbn=False, jobname='run-METplus')
-            produtil.log.postmsg(app_name+' is starting')
+    try:
+        # If jobname is not defined, in log it is 'NO-NAME'
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus',
+                                 jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus')
+        produtil.log.postmsg(app_name + ' is starting')
 
-            # Job Logger
-            produtil.log.jlogger.info('Top of '+app_name)
+        # Job Logger
+        produtil.log.jlogger.info('Top of ' + app_name)
 
-            # Used for logging and usage statment
-            cur_filename = sys._getframe().f_code.co_filename
-            cur_function = sys._getframe().f_code.co_name
+        # Used for logging and usage statment
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
 
-            # Setup Task logger, Until Conf object is created, Task logger is
-            # only logging to tty, not a file.
-            logger = logging.getLogger(app_name)
-            logger.info('logger Top of '+app_name+".")
+        # Setup Task logger, Until Conf object is created, Task logger is
+        # only logging to tty, not a file.
+        logger = logging.getLogger(app_name)
+        logger.info('logger Top of ' + app_name + ".")
 
-            # Parse arguments, options and return a config instance.
-            p = config_metplus.setup(filename=cur_filename)
+        # Parse arguments, options and return a config instance.
+        p = config_metplus.setup(filename=cur_filename)
 
-            logger = get_logger(p)
+        logger = get_logger(p)
 
-            module = __import__(module_name)
-            wrapper_class = getattr(module, app_name+"Wrapper")
-            wrapper = wrapper_class(p, logger)
+        module = __import__(module_name)
+        wrapper_class = getattr(module, app_name + "Wrapper")
+        wrapper = wrapper_class(p, logger)
 
-            os.environ['MET_BASE'] = p.getdir('MET_BASE')
+        os.environ['MET_BASE'] = p.getdir('MET_BASE')
 
-            produtil.log.postmsg(app_name+' Calling run_all_times.')
+        produtil.log.postmsg(app_name + ' Calling run_all_times.')
 
-            wrapper.run_all_times()
+        wrapper.run_all_times()
 
-            produtil.log.postmsg(app_name+' completed')
-        except Exception as e:
-            produtil.log.jlogger.critical(
-                app_name+'  failed: %s' % (str(e),), exc_info=True)
-            sys.exit(2)
+        produtil.log.postmsg(app_name + ' completed')
+    except Exception as e:
+        produtil.log.jlogger.critical(
+            app_name + '  failed: %s' % (str(e),), exc_info=True)
+        sys.exit(2)
 
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
-  #TODO: Move to unit tests
-#  get_time_from_file(None, "20170201", "{valid?fmt=%Y%m%d}")
-#  get_time_from_file(None, "/path/to/data//GFS/track_data/201412/amlq2014123118.gfso.0006", "{init?fmt=%Y%m}/amlq{init?fmt=%Y%m%d%H}.gfso.00{lead?fmt=%HH}")
-#  get_time_from_file(None, "/path/to/data/mrms/2018/04/30/mrms.MergedReflectivityQCComposite.20180430_062438.grib2", "{valid?fmt=%Y}/{valid?fmt=%m}/{valid?fmt=%d}/mrms.MergedReflectivityQCComposite.{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}.grib2")
-
-  
