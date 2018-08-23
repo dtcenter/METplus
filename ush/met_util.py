@@ -1335,5 +1335,36 @@ def run_stand_alone(module_name, app_name):
         sys.exit(2)
 
 
+def get_date_from_path(dir_to_search, date_regex):
+    """! If the directory is comprised of dated subdirectories, retrieve
+         the YYYYMMDD or YYYYMMDDHH from the dated subdirectory name.
+
+         Args:
+               @param dir_to_search    - the directory from where to search
+                                         for dated subdirectories
+               @param date_regex       - the regular expression describing
+                                         the format of the date in the
+                                         subdirectory name: YYYYMMDD or
+                                         YYYYMMDDHH
+        Returns:
+               dates_from_path         - a list of named tuples containing
+                                         the subdir filepath and corresponding
+                                         date (YYYYMMDD or YYYYMMDDHH)
+
+    """
+    DatePath = namedtuple('DatePath', 'subdir_filepath, data_date')
+    dates_from_path = []
+    subdirs_list = get_dirs(dir_to_search)
+
+    if subdirs_list:
+        for subdir in subdirs_list:
+            match = re.match(date_regex, subdir)
+            if match:
+                subdir_path = os.path.join(dir_to_search, subdir)
+                date_path = DatePath(subdir_path, match.group(1))
+                dates_from_path.append(date_path)
+    return dates_from_path
+
+
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
