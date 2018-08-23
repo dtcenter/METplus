@@ -433,7 +433,7 @@ class PointStatWrapper(CommandBuilder):
                         all_dates.append(cur_init_time)
                 all_valid_times.append(cur_date)
 
-        if time_method == 'BY_INIT': #original code from Minna
+        if time_method == 'BY_INIT':  # original code from Minna
             for cur_date in range(date_start, date_end, fhr_interval_secs):
                 for cur_fhr in range(fhr_start_secs, last_fhr,
                                      fhr_interval_secs):
@@ -490,8 +490,8 @@ class PointStatWrapper(CommandBuilder):
                         if time_info_tuple.valid in all_valid_times:
                             input_file_info = \
                                 InputFileInfo(obs_file, time_info_tuple.date,
-                                          time_info_tuple.valid,
-                                          time_info_tuple.cycle_or_fcst)
+                                              time_info_tuple.valid,
+                                              time_info_tuple.cycle_or_fcst)
                             consolidated_file_info.append(input_file_info)
                     else:
                         if time_info_tuple.valid in all_valid_times and time_info_tuple.cycle_or_fcst in all_fhrs:
