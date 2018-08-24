@@ -34,6 +34,11 @@ INIT_STRING = "init"
 LEVEL_STRING = "level"
 CYCLE_STRING = "cycle"
 OFFSET_STRING = "offset"
+# These three were added in response to the tropical cyclone use case
+DATE_STRING = "date"
+REGION_STRING = "region"
+CYCLONE_STRING = "cyclone"
+MISC_STRING = "misc"
 
 LEAD_LEVEL_FORMATTING_DELIMITER = "%"
 # Use the same formatting delimiter used for level:
@@ -52,13 +57,15 @@ GLOBAL_LOGGER = None
 
 def date_str_to_datetime_obj(str):
     """Convert year month day string to a datetime object.
-    Works with YYYYMMDDHHMMSS, YYYYMMDDHHMM, YYYYMMDDHH, YYYYMMDD"""
+    Works with YYYYMMDDHHMMSS, YYYYMMDDHHMM, YYYYMMDDHH, YYYYMMDD, YYYYMM"""
 
     length = len(str)
     if length == 14:
         return datetime.datetime(int(str[:4]), int(str[4:6]),
                                  int(str[6:8]), int(str[8:10]),
                                  int(str[10:12]), int(str[12:14]), 0, None)
+    elif length == 6:
+        return datetime.datetime(int(str[:4]), int(str[4:6]), 0, 0, 0, 0, 0, None)
     elif length == 8:
         return datetime.datetime(int(str[:4]), int(str[4:6]),
                                  int(str[6:8]), 0, 0, 0, 0, None)
@@ -92,6 +99,9 @@ def get_lead_level_time_seconds(logger, time_string):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
+    # H
+    if len(time_string) == 1:
+        return (int(time_string) * SECONDS_PER_HOUR)
     # HH
     if len(time_string) == 2:
         return (int(time_string) * SECONDS_PER_HOUR)
@@ -171,6 +181,10 @@ class StringSub:
                       (YYYYMMDD + hh) + offset
                      Indicate a negative offset by using a '-' sign
                      in the
+       date - the YYYYMM date
+       region - the two-character (upper or lower case) region/basin designation
+       cyclone - a two-digit annual cyclone number (if ATCF_by_pairs) or four-digit cyclone number (leading zeros)
+       misc - any string
 
 
 
@@ -215,6 +229,18 @@ class StringSub:
                 self.offset_hour = \
                     get_time_in_hours(self.logger,
                                       self.kwargs.get(OFFSET_STRING, None))
+
+        if DATE_STRING in self.kwargs:
+            self.date = self.kwargs.get(DATE_STRING, None)
+
+        if CYCLONE_STRING in self.kwargs:
+            self.cyclone = str(self.kwargs.get(CYCLONE_STRING, None))
+
+        if REGION_STRING in self.kwargs:
+            self.region = str(self.kwargs.get(REGION_STRING, None))
+
+        if MISC_STRING in self.kwargs:
+            self.misc = str(self.kwargs.get(MISC_STRING, None))
 
     def dateCalcInit(self):
         """ Calculate the init time from the valid and lead time  """
@@ -377,7 +403,7 @@ class StringSub:
         init_unix_time = calendar.timegm(init_time_tuple)
 
         # Get the unix time for the valid time
-        if len((self.kwargs).get(VALID_STRING, None)) == 10:
+        if len(self.kwarg).get(VALID_STRING, None) == 10:
             valid_time_tuple = \
                 time.strptime(self.kwargs.get(VALID_STRING, None),
                               "%Y%m%d%H")
@@ -400,14 +426,14 @@ class StringSub:
         # Determine if the init time is greater than the lead time,
         # if so lead time should be negative
         negative_lead_flag = 0
-        if (valid_unix_time > init_unix_time):
+        if valid_unix_time > init_unix_time:
             self.lead_time_seconds = valid_unix_time - init_unix_time
         else:
             self.lead_time_seconds = init_unix_time - valid_unix_time
             negative_lead_flag = 1
             self.negative_lead = True
         lead_seconds_str = \
-            str(datetime.timedelta(seconds=(self.lead_time_seconds)))
+            str(datetime.timedelta(seconds=self.lead_time_seconds))
 
         # There are no days, but only HH:MM:SS information
         if len(lead_seconds_str) <= 8:
@@ -434,7 +460,7 @@ class StringSub:
             lead_time = str(total_hours) + MM + SS
         # If the init time was greater than the valid time,
         # the lead time should be negative
-        if (negative_lead_flag == 1):
+        if negative_lead_flag == 1:
             lead_time = "-" + lead_time
 
         return lead_time
@@ -495,6 +521,11 @@ class StringSub:
 
             elif format_string_split[1] == 'HHH':
                 hours = hours_value_str.zfill(THREE_DIGIT_PAD)
+            elif format_string_split[1] == 'H':
+                hours = hours_value_str
+            elif re.match("\..*H", format_string_split[1]):
+                padding = int(re.match("\.(.*)H", format_string_split[1]).group(1))
+                hours = hours_value_str.zfill(padding)
             else:
                 self.logger.error("ERROR | [" + cur_filename + ":" +
                                   cur_function + "] | " + "The time must " +
@@ -509,18 +540,23 @@ class StringSub:
             formatted_time_string = hours + MMSS
 
         # Only hours should be included (Empty, HH or HHH)
-        elif (len(format_string_split) == 2):
-            if (format_string_split[1] == 'HH'):
+        elif len(format_string_split) == 2:
+            if format_string_split[1] == 'HH':
                 hours = hours_value_str.zfill(TWO_DIGIT_PAD)
-                if (len(hours) == 3):
+                if len(hours) == 3:
                     self.logger.warn("WARN | [" + cur_filename + ":" +
                                      cur_function + "] | " +
                                      "The requested format for hours was " +
                                      format_string_split[1] +
                                      " but the hours given are " + hours +
                                      ". Returning a three digit hour.")
-            elif (format_string_split[1] == 'HHH'):
+            elif format_string_split[1] == 'HHH':
                 hours = hours_value_str.zfill(THREE_DIGIT_PAD)
+            elif format_string_split[1] == 'H':
+                hours = hours_value_str
+            elif re.match("\..*H", format_string_split[1]):
+                padding = int(re.match("\.(.*)H", format_string_split[1]).group(1))
+                hours = hours_value_str.zfill(padding)
             else:
                 self.logger.error("ERROR | [" + cur_filename + ":" +
                                   cur_function + "] | " +
@@ -647,10 +683,10 @@ class StringSub:
                 days = days_three_digit
             else:
                 self.logger.error(
-                    "ERROR | [" + cur_filename + ":" + cur_function + "] | "
-                    + "The number of days must be in the format dd where a "
-                      "two digit day is required. An  optional 3-digit "
-                      "number is also supported.")
+                        "ERROR | [" + cur_filename + ":" + cur_function + "] | "
+                        + "The number of days must be in the format dd where a "
+                          "two digit day is required. An  optional 3-digit "
+                          "number is also supported.")
                 exit(0)
 
             if format_string_split[2] == 'HH':
@@ -813,6 +849,26 @@ class StringSub:
                       HHH format are supported, to anticipate any changes
                       in prepbufr data.
 
+              The following were created to support processing of
+              tropical cyclone data:
+              cyclone:
+                fmt - specifies the annual cyclone number as a string.
+
+              region:
+                fmt - a string that specifies the region/basin of cyclone.
+                      For ATCF_by_pairs formatted data, this is a 2-character
+                      designation:
+                      AL|WP|CP|EP|SH|IO|LS lower case designations are
+                      observed in filenames.
+              date:
+                fmt - a string representation of the date format for a
+                      subdirectory in which track data resides, or the
+                      string representation of the date format in a file.
+                      Expected formats: YYYY, YYYYMM, YYYYMMDD, and YYYYMMDDhh
+              misc:
+                fmt -a string that represents any other miscellaneous feature
+                     of the track data, such as experiment name or some other descriptor
+
 
         """
 
@@ -822,7 +878,7 @@ class StringSub:
         # The . matches any single character except newline, and the
         # following + matches 1 or more occurrence of preceding expression.
         # The ? after the .+ makes it a lazy match so that it stops
-        # after the first "}" instead of continuin to match as many
+        # after the first "}" instead of continuing to match as many
         # characters as possible
 
         # findall searches through the string and finds all non-overlapping
@@ -887,6 +943,41 @@ class StringSub:
                     LEAD_STRING not in self.kwargs
             ):
                 self.kwargs[LEAD_STRING] = self.dateCalcLead()
+
+            # No times to compute. Just retrieve the string representation(s) of
+            # the date (YYMM or YYMMMDD), or date and region, or date, region, and cyclone.
+            elif (
+                    DATE_STRING in self.kwargs or
+                    (DATE_STRING in self.kwargs and INIT_STRING in self.kwargs)
+
+            ):
+                self.kwargs[DATE_STRING] = self.date
+            # Date and cyclone only
+            elif (
+                    DATE_STRING in self.kwargs and
+                    CYCLONE_STRING in self.kwargs):
+                self.kwargs[DATE_STRING] = self.date
+                self.kwargs[CYCLONE_STRING] = self.cyclone
+            # Date and region only
+            elif (
+                    DATE_STRING in self.kwargs and
+                    REGION_STRING in self.kwargs
+            ):
+                self.kwargs[DATE_STRING] = self.date
+                self.kwargs[REGION_STRING] = self.region
+            # Date, region, and cyclone
+            elif (
+                    DATE_STRING in self.kwargs and
+                    REGION_STRING in self.kwargs and
+                    CYCLONE_STRING in self.kwargs
+            ):
+                self.kwargs[DATE_STRING] = self.date
+                self.kwargs[REGION_STRING] = self.region
+                self.kwargs[CYCLONE_STRING] = self.cyclone
+
+            # Finally, check for misc string, which can occur with any combination of the above
+            if MISC_STRING in self.kwargs:
+                self.kwargs[MISC_STRING] = self.misc
 
             # A dictionary that will contain the string to replace (key)
             # and the string to replace it with (value)
@@ -974,17 +1065,189 @@ class StringSub:
                                 replacement_dict[string_to_replace] = value
                             elif split_string[0] == CYCLE_STRING:
                                 value = self.format_cycle_offset(
-                                    CYCLE_STRING, format_split_string[1])
+                                        CYCLE_STRING, format_split_string[1])
                                 string_to_replace = \
                                     TEMPLATE_IDENTIFIER_BEGIN + match + \
                                     TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
                             elif split_string[0] == OFFSET_STRING:
                                 value = self.format_cycle_offset(
-                                    OFFSET_STRING, format_split_string[1])
+                                        OFFSET_STRING, format_split_string[1])
                                 string_to_replace = \
                                     TEMPLATE_IDENTIFIER_BEGIN + match + \
                                     TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == DATE_STRING:
+                                value = self.date
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match\
+                                                    + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == REGION_STRING:
+                                value = str(self.region).lower()
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match \
+                                                    + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == CYCLONE_STRING:
+                                value = str(self.cyclone)
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match \
+                                                    + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == MISC_STRING:
+                                value = str(self.misc)
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match \
+                                                    + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+
+                # No formatting or length is requested
+                elif len(split_string) == 1:
+
+                    # Add back the template identifiers to the matched
+                    # string to replace and add the key, value pair to the
+                    # dictionary
+                    string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + \
+                                        TEMPLATE_IDENTIFIER_END
+                    replacement_dict[string_to_replace] = \
+                        self.kwargs.get(split_string[0], None)
+
+            # Replace regex with properly formatted information
+            temp_str = multiple_replace(replacement_dict, self.tmpl)
+            self.tmpl = temp_str
+            return self.tmpl
+
+    def create_cyclone_regex(self):
+        """! Create the regex that describes the tropical cyclone string.  Similar logic to doStringSub() except
+             replace the date, region, and cyclone with the appropriate regex.
+
+        """
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        # The . matches any single character except newline, and the
+        # following + matches 1 or more occurrence of preceding expression.
+        # The ? after the .+ makes it a lazy match so that it stops
+        # after the first "}" instead of continuing to match as many
+        # characters as possible
+
+        # findall searches through the string and finds all non-overlapping
+        # matches and returns the group
+        # match_list is a list with the contents being the data between the
+        # curly braces
+        match_list = re.findall('\{(.+?)\}', self.tmpl)
+
+        # finditer gets the start and end indices
+        # Iterate over each match to get the starting and ending indices
+        matches = re.finditer('\{(.+?)\}', self.tmpl)
+        match_start_end_list = []
+        for match in matches:
+            match_start_end_list.append((match.start(), match.end()))
+
+        if match_list == 0:
+            # Log and exit
+            self.logger.error("ERROR |  [" + cur_filename + ":" +
+                              cur_function + "] | " +
+                              "No matches found for template: " +
+                              self.tmpl)
+            exit(0)
+        elif len(match_list) != len(match_start_end_list):
+            # Log and exit
+            self.logger.error("ERROR |  [" + cur_filename + ":" +
+                              cur_function + "] | " +
+                              "match_list and match_start_end_list should " +
+                              "have the same length for template: " +
+                              self.tmpl)
+            exit(0)
+        else:
+            # No times to compute, create the regex expressions that describe
+            # the date (YYYY, YYYYMM, YYYYMMMDD, or YYYYMMDDhh),  region, cyclone, and misc portions of the
+            # filename template.
+            if (
+                    DATE_STRING in self.kwargs or
+                    (DATE_STRING in self.kwargs and INIT_STRING in self.kwargs)
+
+            ):
+                self.kwargs[DATE_STRING] = self.date
+            # Date and cyclone only
+            elif (
+                    DATE_STRING in self.kwargs and
+                    CYCLONE_STRING in self.kwargs):
+                self.kwargs[DATE_STRING] = self.date
+                self.kwargs[CYCLONE_STRING] = self.cyclone
+
+            # Date and region only
+            elif (
+                    DATE_STRING in self.kwargs and
+                    REGION_STRING in self.kwargs
+            ):
+
+                self.kwargs[DATE_STRING] = self.date
+                self.kwargs[REGION_STRING] = self.region
+
+            # Date, region, and cyclone
+            elif (
+                    DATE_STRING in self.kwargs and
+                    REGION_STRING in self.kwargs and
+                    CYCLONE_STRING in self.kwargs
+            ):
+                self.kwargs[DATE_STRING] = self.date
+                self.kwargs[REGION_STRING] = self.region
+                self.kwargs[CYCLONE_STRING] = self.cyclone
+
+            # Finally, check for misc string, which can occur with any combination of the above
+            if MISC_STRING in self.kwargs:
+                self.kwargs[MISC_STRING] = self.misc
+
+            # A dictionary that will contain the string to replace (key)
+            # and the string to replace it with (value)
+            replacement_dict = {}
+
+            # Search for the FORMATTING_DELIMITER within the first string
+            for index, match in enumerate(match_list):
+                split_string = match.split(FORMATTING_DELIMITER)
+
+                # valid, init, lead, etc.
+                # print split_string[0]
+                # value e.g. 2016012606, 3
+                # print (self.kwargs).get(split_string[0], None)
+
+                # Formatting is requested or length is requested
+                if len(split_string) == 2:
+
+                    # split_string[0] holds the key (e.g. "cyclone", "region", etc)
+                    if split_string[0] not in self.kwargs.keys():
+                        # Log and continue
+                        self.logger.error("ERROR |  [" + cur_filename +
+                                          ":" + cur_function + "] | " +
+                                          "The key " + split_string[0] +
+                                          "does not exist for template: " +
+                                          self.tmpl)
+
+                    # Key is in the dictionary
+                    else:
+                        # Check for formatting/length request by splitting on
+                        # FORMATTING_VALUE_DELIMITER
+                        # split_string[1] holds the formatting/length
+                        # information (e.g. "fmt=%Y%m%d", "len=3")
+                        format_split_string = \
+                            split_string[1].split(FORMATTING_VALUE_DELIMITER)
+                        # Check for requested FORMAT_STRING
+                        # format_split_string[0] holds the formatting/length
+                        # value delimiter (e.g. "fmt", "len")
+                        if format_split_string[0] == FORMAT_STRING:
+                            if split_string[0] == DATE_STRING:
+                                value = "([0-9]{4,10})"
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == REGION_STRING:
+                                value = "([a-zA-Z]{2})"
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == CYCLONE_STRING:
+                                value = "([0-9]{2,3})"
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == MISC_STRING:
+                                value = "([a-zA-Z0-9-_.]+)"
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + TEMPLATE_IDENTIFIER_END
                                 replacement_dict[string_to_replace] = value
 
                 # No formatting or length is requested
@@ -1020,6 +1283,7 @@ class StringExtract:
             if self.initTime is None:
                 return ""
             return (self.initTime + datetime.timedelta(seconds=self.leadTime)).strftime(fmt)
+
         return self.validTime.strftime(fmt)
 
     def getInitTime(self, fmt):
@@ -1090,7 +1354,7 @@ class StringExtract:
                 if self.temp[
                    i:i + len(INIT_STRING) + fmt_len] == INIT_STRING + "?fmt=":
                     inInit = True
-                    i += len(INIT_STRING) + fmt_len -1
+                    i += len(INIT_STRING) + fmt_len - 1
                 if self.temp[
                    i:i + len(LEAD_STRING) + fmt_len] == LEAD_STRING + "?fmt=":
                     inLead = True
@@ -1142,11 +1406,13 @@ class StringExtract:
                     inLevel = False
 
                 elif inLead:
+                    print("LEADD:"+lead)
                     if lead == -1 or lead == None or not lead.isdigit():
                         return False
                     self.leadTime = int(lead) * SECONDS_PER_HOUR
                     lead = -1
                     inLead = False
+                    print("SET LEAD TO -1")
 
             elif inValid or inInit:
                 if idx > len(self.fstr):
@@ -1189,11 +1455,19 @@ class StringExtract:
                     lead = self.fstr[idx:idx + 2]
                     idx += 2
                     i += 2
+                elif re.match("%\..*H", self.temp[i:i+4]):
+                    padding = int(re.match("%\.(.*)H", self.temp[i:i+4]).group(1))
+                    lead = self.fstr[idx:idx + padding]
+                    print("LEAD:"+str(lead))
+                    idx += padding
+                    i += padding
+                    print("PADDING:"+str(padding)+" "+str(lead))
             else:
                 idx += 1
             # increment past TEMPLATE_IDENTIFIER_END
             i += 1
 
+        print("y:"+str(validYear)+" m:"+str(validMonth)+" d:"+str(validDay))
         if validYear != -1 and validMonth != -1 and validDay != -1:
             self.validTime = \
                 datetime.datetime(validYear,
@@ -1201,7 +1475,7 @@ class StringExtract:
                                   validDay,
                                   validHour,
                                   validMin)
-
+        print("y:"+str(initYear)+" m:"+str(initMonth)+" d:"+str(initDay)+" lead:"+str(lead))
         if initYear != -1 and initMonth != -1 and initDay != -1:
             self.initTime = \
                 datetime.datetime(initYear,
