@@ -954,14 +954,14 @@ def getlist(s, logger=None):
     """
 
     # Developer NOTE: we could just force this to only operate
-    # on comma seperated lists, not space seperated.
+    # on comma separated lists, not space separated.
 
     # FIRST remove surrounding comma, and spaces, form the string.
     s = s.strip().strip(',').strip()
 
     # splitting an empty string, s with ',', creates a 1 element
-    # list with an empty string element, we dont want to create or
-    # retrun that, ie. NEVER RETURN THIS [''], If s is '', an
+    # list with an empty string element, we don't want to create or
+    # return that, ie. NEVER RETURN THIS [''], If s is '', an
     # empty string, then return an empty list [].
     # Doing so allows for proper boolean testing of your
     # list elsewhere in the code, ie. bool([]) is False.
