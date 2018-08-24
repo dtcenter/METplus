@@ -4,6 +4,7 @@ from __future__ import print_function
 
 import pytest
 from string_template_substitution import StringSub
+from string_template_substitution import StringExtract
 import logging
 
 
@@ -135,3 +136,158 @@ def test_nam_substitution_dHMS(key, value):
         filename = ss.doStringSub()
         print('nam filename: ', filename)
         assert (filename == expected_filename)
+
+
+def test_hh_lead():
+    logger = logging.getLogger("test")
+    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%HH}h"
+    filepath = "1987020103_A03h"
+    se = StringExtract(logger, template,
+                           filepath)
+    se.parseTemplate()
+    ftime = se.getValidTime("%Y%m%d%H%M")
+    assert(ftime == "198702010600")
+
+
+def test_hhh_lead():
+    logger = logging.getLogger("test")
+    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%HHH}h"
+    filepath = "1987020103_A003h"
+    se = StringExtract(logger, template,
+                           filepath)
+    se.parseTemplate()
+    ftime = se.getValidTime("%Y%m%d%H%M")
+    assert(ftime == "198702010600")
+
+
+def test_2h_lead():
+    logger = logging.getLogger("test")
+    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.2H}h"
+    filepath = "1987020103_A03h"
+    se = StringExtract(logger, template,
+                           filepath)
+    se.parseTemplate()
+    ftime = se.getValidTime("%Y%m%d%H%M")
+    assert(ftime == "198702010600")
+
+
+def test_3h_lead():
+    logger = logging.getLogger("test")
+    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.3H}h"
+    filepath = "1987020103_A003h"
+    se = StringExtract(logger, template,
+                           filepath)
+    se.parseTemplate()
+    ftime = se.getValidTime("%Y%m%d%H%M")
+    assert(ftime == "198702010600")
+
+'''
+def test_h_lead_no_pad_1_digit():
+    logger = logging.getLogger("test")
+    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    filepath = "1987020103_A3h"
+    se = StringExtract(logger, template,
+                           filepath)
+    se.parseTemplate()
+    ftime = se.getValidTime("%Y%m%d%H%M")
+    assert(ftime == "198702010600")
+
+
+def test_h_lead_no_pad_2_digit():
+    logger = logging.getLogger("test")
+    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    filepath = "1987020103_A12h"
+    se = StringExtract(logger, template,
+                           filepath)
+    se.parseTemplate()
+    ftime = se.getValidTime("%Y%m%d%H%M")
+    assert(ftime == "198702011500")
+
+
+def test_h_lead_no_pad_3_digit():
+    logger = logging.getLogger("test")
+    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    filepath = "1987020103_A102h"
+    se = StringExtract(logger, template,
+                           filepath)
+    se.parseTemplate()
+    ftime = se.getValidTime("%Y%m%d%H%M")
+    assert(ftime == "198702050900")
+'''
+
+def test_h_lead_no_pad_1_digit_sub():
+    logger = logging.getLogger("test")
+    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    init_time = "1987020103"
+    lead_time = "3"
+    fSts = StringSub(logger,
+                     file_template,
+                     init=init_time,
+                     lead=lead_time)
+    out_string = fSts.doStringSub()
+    assert(out_string == "1987020103_A3h")
+
+
+def test_h_lead_no_pad_2_digit_sub():
+    logger = logging.getLogger("test")
+    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    init_time = "1987020103"
+    lead_time = "12"
+    fSts = StringSub(logger,
+                     file_template,
+                     init=init_time,
+                     lead=lead_time)
+    out_string = fSts.doStringSub()
+    assert(out_string == "1987020103_A12h")
+
+
+def test_h_lead_no_pad_3_digit_sub():
+    logger = logging.getLogger("test")
+    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    init_time = "1987020103"
+    lead_time = "102"
+    fSts = StringSub(logger,
+                     file_template,
+                     init=init_time,
+                     lead=lead_time)
+    out_string = fSts.doStringSub()
+    assert(out_string == "1987020103_A102h")
+
+
+def test_h_lead_pad_1_digit_sub():
+    logger = logging.getLogger("test")
+    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.1H}h"
+    init_time = "1987020103"
+    lead_time = "3"
+    fSts = StringSub(logger,
+                     file_template,
+                     init=init_time,
+                     lead=lead_time)
+    out_string = fSts.doStringSub()
+    assert(out_string == "1987020103_A3h")
+
+
+def test_h_lead_pad_2_digit_sub():
+    logger = logging.getLogger("test")
+    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.2H}h"
+    init_time = "1987020103"
+    lead_time = "3"
+    fSts = StringSub(logger,
+                     file_template,
+                     init=init_time,
+                     lead=lead_time)
+    out_string = fSts.doStringSub()
+    assert(out_string == "1987020103_A03h")
+
+
+def test_h_lead_pad_2_digit_sub():
+    logger = logging.getLogger("test")
+    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.3H}h"
+    init_time = "1987020103"
+    lead_time = "3"
+    fSts = StringSub(logger,
+                     file_template,
+                     init=init_time,
+                     lead=lead_time)
+    out_string = fSts.doStringSub()
+    assert(out_string == "1987020103_A003h")

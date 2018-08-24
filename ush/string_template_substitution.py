@@ -92,6 +92,9 @@ def get_lead_level_time_seconds(logger, time_string):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
+    # H
+    if len(time_string) == 1:
+        return (int(time_string) * SECONDS_PER_HOUR)
     # HH
     if len(time_string) == 2:
         return (int(time_string) * SECONDS_PER_HOUR)
@@ -495,6 +498,11 @@ class StringSub:
 
             elif format_string_split[1] == 'HHH':
                 hours = hours_value_str.zfill(THREE_DIGIT_PAD)
+            elif format_string_split[1] == 'H':
+                hours = hours_value_str
+            elif re.match("\..*H", format_string_split[1]):
+                padding = int(re.match("\.(.*)H", format_string_split[1]).group(1))
+                hours = hours_value_str.zfill(padding)
             else:
                 self.logger.error("ERROR | [" + cur_filename + ":" +
                                   cur_function + "] | " + "The time must " +
@@ -521,6 +529,11 @@ class StringSub:
                                      ". Returning a three digit hour.")
             elif (format_string_split[1] == 'HHH'):
                 hours = hours_value_str.zfill(THREE_DIGIT_PAD)
+            elif format_string_split[1] == 'H':
+                hours = hours_value_str
+            elif re.match("\..*H", format_string_split[1]):
+                padding = int(re.match("\.(.*)H", format_string_split[1]).group(1))
+                hours = hours_value_str.zfill(padding)
             else:
                 self.logger.error("ERROR | [" + cur_filename + ":" +
                                   cur_function + "] | " +
@@ -1189,6 +1202,11 @@ class StringExtract:
                     lead = self.fstr[idx:idx + 2]
                     idx += 2
                     i += 2
+                elif re.match("%\..*H", self.temp[i:i+4]):
+                    padding = int(re.match("%\.(.*)H", self.temp[i:i+4]).group(1))
+                    lead = self.fstr[idx:idx + padding]
+                    idx += padding
+                    i += padding
             else:
                 idx += 1
             # increment past TEMPLATE_IDENTIFIER_END
