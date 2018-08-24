@@ -101,9 +101,12 @@ class PointStatWrapper(CommandBuilder):
         ps_dict['REGRID_TO_GRID'] = self.p.getstr('config', 'REGRID_TO_GRID')
         ps_dict['POINT_STAT_GRID'] = self.p.getstr('config', 'POINT_STAT_GRID')
 
-        ps_dict['POINT_STAT_POLY'] = util.getlist(self.p.getstr('config', 'POINT_STAT_POLY'))
-        ps_dict['POINT_STAT_STATION_ID'] = util.getlist(self.p.getstr('config', 'POINT_STAT_STATION_ID'))
-        ps_dict['POINT_STAT_MESSAGE_TYPE'] = util.getlist(self.p.getstr('config', 'POINT_STAT_MESSAGE_TYPE'))
+        ps_dict['POINT_STAT_POLY'] = util.getlist(
+            self.p.getstr('config', 'POINT_STAT_POLY'))
+        ps_dict['POINT_STAT_STATION_ID'] = util.getlist(
+            self.p.getstr('config', 'POINT_STAT_STATION_ID'))
+        ps_dict['POINT_STAT_MESSAGE_TYPE'] = util.getlist(
+            self.p.getstr('config', 'POINT_STAT_MESSAGE_TYPE'))
 
         # Retrieve YYYYMMDD begin and end time
         ps_dict['BEG_TIME'] = self.p.getstr('config', 'BEG_TIME')[0:8]
@@ -117,7 +120,8 @@ class PointStatWrapper(CommandBuilder):
         ps_dict['FCST_HR_INTERVAL'] = self.p.getstr('config',
                                                     'FCST_HR_INTERVAL')
 
-        ps_dict['OBS_WINDOW_BEGIN'] = self.p.getstr('config', 'OBS_WINDOW_BEGIN')
+        ps_dict['OBS_WINDOW_BEGIN'] = self.p.getstr('config',
+                                                    'OBS_WINDOW_BEGIN')
         ps_dict['OBS_WINDOW_END'] = self.p.getstr('config', 'OBS_WINDOW_END')
 
         # Filename templates and regex patterns for input dirs and filenames
@@ -125,6 +129,10 @@ class PointStatWrapper(CommandBuilder):
             util.getraw_interp(self.p, 'regex_pattern', 'FCST_INPUT_FILE_REGEX')
         ps_dict['OBS_INPUT_FILE_REGEX'] = \
             util.getraw_interp(self.p, 'regex_pattern', 'OBS_INPUT_FILE_REGEX')
+        ps_dict['OBS_INPUT_DIR_REGEX'] = \
+            util.getraw_interp(self.p, 'regex_pattern', 'OBS_INPUT_DIR_REGEX')
+        ps_dict['FCST_INPUT_DIR_REGEX'] = \
+            util.getraw_interp(self.p, 'regex_pattern', 'FCST_INPUT_DIR_REGEX')
 
         # non-MET executables
         ps_dict['WGRIB2'] = self.p.getdir('exe', 'WGRIB2')
@@ -239,9 +247,11 @@ class PointStatWrapper(CommandBuilder):
         self.add_env_var(b'REGRID_TO_GRID', regrid_to_grid)
         os.environ['REGRID_TO_GRID'] = regrid_to_grid
 
-        # MET accepts a list of values for POINT_STAT_POLY, POINT_STAT_GRID, POINT_STAT_STATION_ID,
-        # and POINT_STAT_MESSAGE_TYPE. If these values are not set in the MET+ config file, assign them to "[]" so
-        # MET recognizes that these are empty lists, resulting in the expected behavior.
+        # MET accepts a list of values for POINT_STAT_POLY, POINT_STAT_GRID,
+        # POINT_STAT_STATION_ID, and POINT_STAT_MESSAGE_TYPE. If these
+        # values are not set in the MET+ config file, assign them to "[]" so
+        # MET recognizes that these are empty lists, resulting in the
+        # expected behavior.
         poly_str = str(self.ps_dict['POINT_STAT_POLY'])
         if not poly_str:
             self.add_env_var(b'POINT_STAT_POLY', "[]")
@@ -270,7 +280,8 @@ class PointStatWrapper(CommandBuilder):
         if not tmp_message_type:
             self.add_env_var('POINT_STAT_MESSAGE_TYPE', "[]")
         else:
-            # Not empty, set the POINT_STAT_MESSAGE_TYPE environment variable to the
+            # Not empty, set the POINT_STAT_MESSAGE_TYPE environment
+            #  variable to the
             # message types specified in the MET+ config file.
             tmp_message_type = str(tmp_message_type).replace("\'", "\"")
             # Remove all whitespace
@@ -286,8 +297,10 @@ class PointStatWrapper(CommandBuilder):
         self.add_env_var(b'FCST_FIELD', met_fields.fcst_field)
         self.add_env_var(b'OBS_FIELD', met_fields.obs_field)
 
-        # Set the environment variables corresponding to the obs_window dictionary.
-        self.add_env_var(b'OBS_WINDOW_BEGIN', str(self.ps_dict['OBS_WINDOW_BEGIN']))
+        # Set the environment variables corresponding to the obs_window
+        # dictionary.
+        self.add_env_var(b'OBS_WINDOW_BEGIN',
+                         str(self.ps_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var(b'OBS_WINDOW_END', str(self.ps_dict['OBS_WINDOW_END']))
 
     def select_fcst_obs_pairs(self):
@@ -314,8 +327,8 @@ class PointStatWrapper(CommandBuilder):
         self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
                          "Selecting file pairings by valid time...")
 
-        # Get fcst and obs files for all the requested forecast hours for each initialization time
-        # within the start and end dates.
+        # Get fcst and obs files for all the requested forecast hours for
+        # each initialization time within the start and end dates.
         fcst_files_info = self.create_input_file_info("fcst")
         obs_files_info = self.create_input_file_info("obs")
 
@@ -386,14 +399,54 @@ class PointStatWrapper(CommandBuilder):
         # Get a list of all the model/fcst files
         dir_to_search = self.ps_dict['FCST_INPUT_DIR']
         fcst_file_regex = self.ps_dict['FCST_INPUT_FILE_REGEX']
-        all_fcst_files = util.get_files(dir_to_search, fcst_file_regex,
-                                        self.logger)
+
+        # Get a list of dates (YYYYMMDD or YYYYMMDDHH) from dated subdirs
+        # (if data is not arranged
+        # into dated subdirs, an empty list is returned).
+        all_fcst_files = []
+        fcst_files_in_subdirs = []
+
+        fcst_dir_regex = self.ps_dict['FCST_INPUT_DIR_REGEX']
+        if fcst_dir_regex:
+            fcst_date_dirs = util.get_date_from_path(dir_to_search,
+                                                     fcst_dir_regex)
+            if fcst_date_dirs:
+
+                for fcst_entry in fcst_date_dirs:
+                    dir_to_search = fcst_entry.subdir_filepath
+                    fcst_files_in_subdirs = util.get_files(dir_to_search,
+                                                           fcst_file_regex,
+                                                           self.logger)
+            all_fcst_files.append(fcst_files_in_subdirs)
+        else:
+            # Files contain date information in the filename.
+            all_fcst_files = util.get_files(dir_to_search, fcst_file_regex,
+                                            self.logger)
 
         # Get a list of all the obs files
         dir_to_search = self.ps_dict['OBS_INPUT_DIR']
         obs_file_regex = self.ps_dict['OBS_INPUT_FILE_REGEX']
-        all_obs_files = util.get_files(dir_to_search, obs_file_regex,
-                                       self.logger)
+
+        # Get a list of dates (YYYYMMDD or YYYYMMDDHH) from dated
+        # subdirs (if data is not arranged
+        # into dated subdirs, an empty list is returned).
+        all_obs_files = []
+        obs_files_in_subdirs = []
+        obs_dir_regex = self.ps_dict['OBS_INPUT_DIR_REGEX']
+        if obs_dir_regex:
+            obs_date_dirs = util.get_date_from_path(dir_to_search,
+                                                    obs_dir_regex)
+            if obs_date_dirs:
+                all_obs_files = []
+                for obs_entry in obs_date_dirs:
+                    dir_to_search = obs_entry.subdir_filepath
+                    obs_files_in_subdirs = util.get_files(dir_to_search,
+                                                          obs_file_regex,
+                                                          self.logger)
+            all_obs_files.append(obs_files_in_subdirs)
+        else:
+            all_obs_files = util.get_files(dir_to_search, obs_file_regex,
+                                           self.logger)
 
         # Initialize the output list
         consolidated_file_info = []
@@ -433,7 +486,7 @@ class PointStatWrapper(CommandBuilder):
                         all_dates.append(cur_init_time)
                 all_valid_times.append(cur_date)
 
-        if time_method == 'BY_INIT':  # original code from Minna
+        if time_method == 'BY_INIT':
             for cur_date in range(date_start, date_end, fhr_interval_secs):
                 for cur_fhr in range(fhr_start_secs, last_fhr,
                                      fhr_interval_secs):
@@ -455,14 +508,18 @@ class PointStatWrapper(CommandBuilder):
                     time_info_tuple = \
                         self.get_time_info_from_file(match)
 
-                    # Determine if this file's valid time is one of the valid times of interest and corresponds to
-                    # the expected forecast hour (based on forecast hour start and forecast hour interval).  If
-                    # so, then consolidate the time info into the InputFileInfo tuple.
-                    if time_info_tuple.date in all_dates and time_info_tuple.cycle_or_fcst in all_fhrs:
-                        input_file_info = \
-                            InputFileInfo(fcst_file, time_info_tuple.date,
-                                          time_info_tuple.valid,
-                                          time_info_tuple.cycle_or_fcst)
+                    # Determine if this file's valid time is one of the
+                    # valid times of interest and corresponds to
+                    # the expected forecast hour (based on forecast hour start
+                    # and forecast hour interval).  If so, then consolidate
+                    # the time info into the InputFileInfo tuple.
+                    if time_info_tuple.date in all_dates and \
+                            time_info_tuple.cycle_or_fcst in all_fhrs:
+                        input_file_info = InputFileInfo(fcst_file,
+                                                        time_info_tuple.date,
+                                                        time_info_tuple.valid,
+                                                        time_info_tuple.
+                                                        cycle_or_fcst)
                         consolidated_file_info.append(input_file_info)
             else:
                 self.logger.error('ERROR:|' + cur_function + '|' +
@@ -481,10 +538,14 @@ class PointStatWrapper(CommandBuilder):
                     match = re.match(regex_match, obs_file)
                     time_info_tuple = self.get_time_info_from_file(match)
 
-                    # Determine if this file's valid time is one of the valid times of interest.  If
-                    # so, then consolidate the time info into the InputFileInfo tuple. Obs files may or may not have
-                    # a cycle time (e.g. no cycle time: prepbufr.gdas.2017061500.nc  vs.
-                    # cycle time:  prepbufr.nam.20170611.t00z.tm00.nc), so we need to check if the cycle_or_fcst tuple
+                    # Determine if this file's valid time is
+                    # one of the valid times of interest.  If
+                    # so, then consolidate the time info into the
+                    # InputFileInfo tuple. Obs files may or may not have
+                    # a cycle time (e.g. no cycle time:
+                    # prepbufr.gdas.2017061500.nc  vs.
+                    # cycle time:  prepbufr.nam.20170611.t00z.tm00.nc),
+                    # so we need to check if the cycle_or_fcst tuple
                     # value is None:
                     if time_info_tuple.cycle_or_fcst is None:
                         if time_info_tuple.valid in all_valid_times:
@@ -494,7 +555,8 @@ class PointStatWrapper(CommandBuilder):
                                               time_info_tuple.cycle_or_fcst)
                             consolidated_file_info.append(input_file_info)
                     else:
-                        if time_info_tuple.valid in all_valid_times and time_info_tuple.cycle_or_fcst in all_fhrs:
+                        if time_info_tuple.valid in all_valid_times and \
+                                time_info_tuple.cycle_or_fcst in all_fhrs:
                             input_file_info = \
                                 InputFileInfo(obs_file, time_info_tuple.date,
                                               time_info_tuple.valid,
