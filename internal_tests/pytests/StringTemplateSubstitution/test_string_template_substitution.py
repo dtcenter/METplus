@@ -158,26 +158,26 @@ def test_hhh_lead():
     assert(ftime == "198702010600")
 
 
-def test_2h_lead():
-    logger = logging.getLogger("test")
-    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.2H}h"
-    filepath = "1987020103_A03h"
-    se = StringExtract(logger, template,
-                           filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
-    assert(ftime == "198702010600")
-
-
-def test_3h_lead():
-    logger = logging.getLogger("test")
-    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.3H}h"
-    filepath = "1987020103_A003h"
-    se = StringExtract(logger, template,
-                           filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
-    assert(ftime == "198702010600")
+# def test_2h_lead():
+#     logger = logging.getLogger("test")
+#     template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.2H}h"
+#     filepath = "1987020103_A03h"
+#     se = StringExtract(logger, template,
+#                            filepath)
+#     se.parseTemplate()
+#     ftime = se.getValidTime("%Y%m%d%H%M")
+#     assert(ftime == "198702010600")
+#
+#
+# def test_3h_lead():
+#     logger = logging.getLogger("test")
+#     template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.3H}h"
+#     filepath = "1987020103_A003h"
+#     se = StringExtract(logger, template,
+#                            filepath)
+#     se.parseTemplate()
+#     ftime = se.getValidTime("%Y%m%d%H%M")
+#     assert(ftime == "198702010600")
 
 '''
 def test_h_lead_no_pad_1_digit():
