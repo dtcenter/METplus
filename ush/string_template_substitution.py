@@ -433,7 +433,7 @@ class StringSub:
             negative_lead_flag = 1
             self.negative_lead = True
         lead_seconds_str = \
-            str(datetime.timedelta(seconds=self.lead_time_second))
+            str(datetime.timedelta(seconds=self.lead_time_seconds))
 
         # There are no days, but only HH:MM:SS information
         if len(lead_seconds_str) <= 8:
@@ -1275,17 +1275,22 @@ class StringExtract:
 
         self.validTime = None
         self.initTime = None
-        self.leadTime = -1
+        self.leadTime = 0
         self.levelTime = -1
 
     def getValidTime(self, fmt):
         if self.validTime is None:
-            return ""
+            if self.initTime is None:
+                return ""
+            return (self.initTime + datetime.timedelta(seconds=self.leadTime)).strftime(fmt)
+
         return self.validTime.strftime(fmt)
 
     def getInitTime(self, fmt):
         if self.initTime is None:
-            return ""
+            if self.validTime is None:
+                return ""
+            return (self.validTime - datetime.timedelta(seconds=self.leadTime)).strftime(fmt)
         return self.initTime.strftime(fmt)
 
     @property
@@ -1401,11 +1406,13 @@ class StringExtract:
                     inLevel = False
 
                 elif inLead:
+                    print("LEADD:"+lead)
                     if lead == -1 or lead == None or not lead.isdigit():
                         return False
                     self.leadTime = int(lead) * SECONDS_PER_HOUR
                     lead = -1
                     inLead = False
+                    print("SET LEAD TO -1")
 
             elif inValid or inInit:
                 if idx > len(self.fstr):
@@ -1451,13 +1458,16 @@ class StringExtract:
                 elif re.match("%\..*H", self.temp[i:i+4]):
                     padding = int(re.match("%\.(.*)H", self.temp[i:i+4]).group(1))
                     lead = self.fstr[idx:idx + padding]
+                    print("LEAD:"+str(lead))
                     idx += padding
                     i += padding
+                    print("PADDING:"+str(padding)+" "+str(lead))
             else:
                 idx += 1
             # increment past TEMPLATE_IDENTIFIER_END
             i += 1
 
+        print("y:"+str(validYear)+" m:"+str(validMonth)+" d:"+str(validDay))
         if validYear != -1 and validMonth != -1 and validDay != -1:
             self.validTime = \
                 datetime.datetime(validYear,
@@ -1465,7 +1475,7 @@ class StringExtract:
                                   validDay,
                                   validHour,
                                   validMin)
-
+        print("y:"+str(initYear)+" m:"+str(initMonth)+" d:"+str(initDay)+" lead:"+str(lead))
         if initYear != -1 and initMonth != -1 and initDay != -1:
             self.initTime = \
                 datetime.datetime(initYear,
