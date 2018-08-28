@@ -399,54 +399,21 @@ class PointStatWrapper(CommandBuilder):
         # Get a list of all the model/fcst files
         dir_to_search = self.ps_dict['FCST_INPUT_DIR']
         fcst_file_regex = self.ps_dict['FCST_INPUT_FILE_REGEX']
+        fcst_dir_regex = self.ps_dict['FCST_INPUT_DIR_REGEX']
 
         # Get a list of dates (YYYYMMDD or YYYYMMDDHH) from dated subdirs
         # (if data is not arranged
         # into dated subdirs, an empty list is returned).
-        all_fcst_files = []
-        fcst_files_in_subdirs = []
-
-        fcst_dir_regex = self.ps_dict['FCST_INPUT_DIR_REGEX']
-        if fcst_dir_regex:
-            fcst_date_dirs = util.get_date_from_path(dir_to_search,
-                                                     fcst_dir_regex)
-            if fcst_date_dirs:
-
-                for fcst_entry in fcst_date_dirs:
-                    dir_to_search = fcst_entry.subdir_filepath
-                    fcst_files_in_subdirs = util.get_files(dir_to_search,
-                                                           fcst_file_regex,
-                                                           self.logger)
-            all_fcst_files.append(fcst_files_in_subdirs)
-        else:
-            # Files contain date information in the filename.
-            all_fcst_files = util.get_files(dir_to_search, fcst_file_regex,
-                                            self.logger)
+        all_fcst_files = self.get_all_input_files(dir_to_search,
+                                                  fcst_file_regex,
+                                                  fcst_dir_regex)
 
         # Get a list of all the obs files
         dir_to_search = self.ps_dict['OBS_INPUT_DIR']
         obs_file_regex = self.ps_dict['OBS_INPUT_FILE_REGEX']
-
-        # Get a list of dates (YYYYMMDD or YYYYMMDDHH) from dated
-        # subdirs (if data is not arranged
-        # into dated subdirs, an empty list is returned).
-        all_obs_files = []
-        obs_files_in_subdirs = []
         obs_dir_regex = self.ps_dict['OBS_INPUT_DIR_REGEX']
-        if obs_dir_regex:
-            obs_date_dirs = util.get_date_from_path(dir_to_search,
-                                                    obs_dir_regex)
-            if obs_date_dirs:
-                all_obs_files = []
-                for obs_entry in obs_date_dirs:
-                    dir_to_search = obs_entry.subdir_filepath
-                    obs_files_in_subdirs = util.get_files(dir_to_search,
-                                                          obs_file_regex,
-                                                          self.logger)
-            all_obs_files.append(obs_files_in_subdirs)
-        else:
-            all_obs_files = util.get_files(dir_to_search, obs_file_regex,
-                                           self.logger)
+        all_obs_files = self.get_all_input_files(dir_to_search, obs_file_regex,
+                                                 obs_dir_regex)
 
         # Initialize the output list
         consolidated_file_info = []
@@ -572,6 +539,57 @@ class PointStatWrapper(CommandBuilder):
                                                  'input directory path in '
                                                  'the config file is correct.')
         return consolidated_file_info
+
+    def get_all_input_files(self, dir_to_search, input_file_regex,
+                            input_dir_regex):
+        """! Get all the input files (obs or fcst) based on the regular
+             expression defined in the METplus configuration file.
+
+             Args:
+                 @param dir_to_search:     The directory where the input files
+                                           reside.
+                 @param input_file_regex:  The regular expression of the
+                                           input fcst or obs file
+                 @param input_dir_regex:   The regular expression for the
+                                           input directory (if input data
+                                           is organized into dated directories).
+            Returns:
+                 all_input_files:  a list of all the fcst or obs input files
+        """
+        # pylint:disable=protected-access
+        # Need to call sys.__getframe() to get the filename and method/func
+        # for logging information.
+
+        # Used for logging.
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+        self.logger.debug(
+            "DEBUG|:" + cur_function + '|' + cur_filename + '| ' +
+            "Retrieving all forecast or obs input files")
+        all_input_files = []
+        input_files_in_subdirs = []
+
+        # Get a list of dates(YYYYMMDD or YYYYMMDDHH)
+        # from dated subdirs (if data is not arranged
+        # into dated subdirs, an empty list is returned).
+        if input_dir_regex:
+            fcst_date_dirs = util.get_date_from_path(dir_to_search,
+                                                     input_dir_regex)
+            if fcst_date_dirs:
+
+                for fcst_entry in fcst_date_dirs:
+                    dir_to_search = fcst_entry.subdir_filepath
+                    input_files_in_subdirs = util.get_files(dir_to_search,
+                                                           input_file_regex,
+                                                           self.logger)
+                    if input_files_in_subdirs:
+                        all_input_files.append(input_files_in_subdirs)
+        else:
+            # Files contain date information in the filename.
+            all_input_files = util.get_files(dir_to_search, input_file_regex,
+                                             self.logger)
+
+        return all_input_files
 
     def get_time_info_from_file(self, match_from_regex):
         """! Determine the date and the valid time.
