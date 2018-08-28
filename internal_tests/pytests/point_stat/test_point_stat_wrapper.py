@@ -510,21 +510,35 @@ def test_get_all_input_files():
     """
     ps = point_stat_wrapper()
 
+    # Expected number of fcst and obs files
+    expected_num_fcst_files = 11160
+    expected_num_obs_files = 6
+
     # Set up the appropriate input directories
     fcst_input_dir = '/d1/METplus_Mallory/data/gfs'
     obs_input_dir = '/d1/METplus_Pointstat/conus_sfc'
     ps.ps_dict['FCST_INPUT_DIR'] = fcst_input_dir
     ps.ps_dict['OBS_INPUT_DIR'] = obs_input_dir
-    ps.ps_dict['OBS_INPUT_FILE_REGEX'] = \
-        '.*prepbufr.nam.(2[0-9]{7}).t([0-9]{2})z.tm([0-9]{2}).nc'
+    ps.ps_dict['OBS_INPUT_FILE_REGEX'] = 'prepbufr.nam.t([0-9]{2})z.awphys([0-9]{2}).tm([0-9]{2}).nc'
     ps.ps_dict['FCST_INPUT_FILE_REGEX'] = '.*pgbf([0-9]{1,3}).gfs.(2[0-9]{9})'
 
     # These will be replaced with filename_templates
-    ps.ps_dict['FCST_INPUT_DIR_REGEX'] = '.*nam.(2[0-9]{7})'
-    ps.ps_dict['OBS_INPUT_DIR_REGEX'] = '.*prepbufr.nam.t([0-9]{2})z.' \
-                                        'awphys[0-9]{2}.tm([0-9]{2}).nc '
-    fcst_dir_to_search = '/d1/METplus_Mallory/data/gfs'
-    obs_dir_to_search = '/d1/METplus_Pointstat/conus_sfc'
+    ps.ps_dict['FCST_INPUT_DIR_REGEX'] = ''
+    ps.ps_dict['OBS_INPUT_DIR_REGEX'] = '.*nam.(2[0-9]{7})'
+
+    fcst_dir_to_search = fcst_input_dir
+    obs_dir_to_search = obs_input_dir
+    all_fcst_files = ps.get_all_input_files(fcst_dir_to_search,
+                                            ps.ps_dict['FCST_INPUT_FILE_REGEX'],
+                                            ps.ps_dict['FCST_INPUT_DIR_REGEX'])
+    all_obs_files = ps.get_all_input_files(obs_dir_to_search,
+                                           ps.ps_dict['OBS_INPUT_FILE_REGEX'],
+                                           ps.ps_dict['OBS_INPUT_DIR_REGEX'])
+    # print("num fcst files: ", len(all_fcst_files))
+    # print("num obs files: ", len(all_obs_files))
+
+    assert(expected_num_fcst_files == len(all_fcst_files) and
+           expected_num_obs_files == len(all_obs_files))
 
 
 
