@@ -12,7 +12,7 @@ import met_util as util
 import produtil.setup
 
 #
-# These are tests (not necessarily unit tests) for the 
+# These are tests (not necessarily unit tests) for the
 # MET Point-Stat Wrapper, PointStatWrapper.py
 # NOTE:  This test requires pytest, which is NOT part of the standard Python
 # library.
@@ -22,7 +22,7 @@ import produtil.setup
 # customized to replace various settings if needed.
 #
 
-# 
+#
 # -----------Mandatory-----------
 #  configuration and fixture to support METplus configuration files beyond
 #  the metplus_data, metplus_system, and metplus_runtime conf files.
@@ -39,7 +39,7 @@ def cmdopt(request):
     return request.config.getoption("-c")
 
 
-# 
+#
 # ------------Pytest fixtures that can be used for all tests ---------------
 #
 @pytest.fixture
@@ -76,7 +76,7 @@ def metplus_config():
 
 
 # ------------------TESTS GO BELOW ---------------------------
-#
+
 @pytest.mark.parametrize(
     'key, value', [
         ('app_path', '/usr/local/met-6.1/bin/point_stat'),
@@ -91,6 +91,7 @@ def test_config(key, value):
     # to the key in the parametrization
 
     psw_key = psw.__getattribute__(key)
+    print('*****psw_key: ', psw_key)
     assert(psw_key == value)
 
 
@@ -148,7 +149,7 @@ def test_file_info_by_valid_correct_for_gdas():
         '/d1/METplus_Mallory/output_for_testing/grid2obs_metplustest.2/prepbufr/prepbufr.gdas.2017060100.nc',
         '/d1/METplus_Mallory/output_for_testing/grid2obs_metplustest.2/prepbufr/prepbufr.gdas.2017060200.nc',
         '/d1/METplus_Mallory/output_for_testing/grid2obs_metplustest.2/prepbufr/prepbufr.gdas.2017060300.nc'
-        
+
 
     ]
     expected_obs_valid_times = ['2017060100', '2017060200', '2017060300']
@@ -353,55 +354,55 @@ def test_correct_pairings_gdas_vs_gfs():
         assert True is False
 
 
-# def test_reformat_fields_for_met_conus_sfc():
-#     """! RUN THIS ONLY FOR CONUS SFC
-#          Verify that the fcst_field and obs_field text in the MET config
-#          field dictionary are well-formed. Test is based on the
-#          point_stat_test_conus_sfc.conf file.
-#     """
-#     ps = point_stat_wrapper()
-# 
-#     # Set up the appropriate input directories
-#     fcst_input_dir = '/d1/METplus_Mallory/data/gfs'
-#     obs_input_dir = '/d1/minnawin/pb2nc_output/nam/conus_sfc'
-#     ps.ps_dict['FCST_INPUT_DIR'] = fcst_input_dir
-#     ps.ps_dict['OBS_INPUT_DIR'] = obs_input_dir
-#     ps.ps_dict['OBS_INPUT_FILE_REGEX'] = \
-#         '.*prepbufr.nam.(2[0-9]{7}).t([0-9]{2})z.tm([0-9]{2}).nc'
-#     ps.ps_dict['FCST_INPUT_FILE_REGEX'] = '.*pgbf([0-9]{1,3}).gfs.(2[0-9]{9})'
-# 
-#     all_vars_list = util.parse_var_list(ps.p)
-#     logger = logging.getLogger("temp_log")
-#     fields = util.reformat_fields_for_met(all_vars_list, logger)
-#     # The following fields were defined in the MET+ config file:
-#     # TMP, RH, DPT, UGRD, VGRD, TCDC, PRMSL
-# 
-#     fcst_str = fields.fcst_field
-#     expected_fcst_str = '{ name = "TMP"; level = [ "Z2" ]; }, ' \
-#                         '{ name = "RH"; level = [ "Z2" ]; }, ' \
-#                         '{ name = "DPT"; level = [ "Z2" ]; }, ' \
-#                         '{ name = "UGRD"; level = [ "Z10" ]; }, ' \
-#                         '{ name = "VGRD"; level = [ "Z10" ]; }, ' \
-#                         '{ name = "TCDC"; level = [ "L0" ]; GRIB_lvl_typ = ' \
-#                         '200; }, ' \
-#                         '{ name = "PRMSL"; level = [ "Z0" ]; }'
-# 
-#     print("expected: ", expected_fcst_str)
-#     print("fcst str: ", fcst_str)
-#     obs_str = fields.obs_field
-#     expected_obs_str = '{ name = "TMP"; level = [ "Z2" ]; }, ' \
-#                        '{ name = "RH"; level = [ "Z2" ]; }, ' \
-#                        '{ name = "DPT"; level = [ "Z2" ]; }, ' \
-#                        '{ name = "UGRD"; level = [ "Z10" ]; }, ' \
-#                        '{ name = "VGRD"; level = [ "Z10" ]; }, ' \
-#                        '{ name = "TCDC"; level = [ "L0" ]; }, ' \
-#                        '{ name = "PRMSL"; level = [ "Z0" ]; }'
-#     print("expected: ", expected_obs_str)
-#     print("obs  str: ", obs_str)
-# 
-#     if fcst_str == expected_fcst_str:
-#         assert True is True
-#     assert obs_str == expected_obs_str
+def test_reformat_fields_for_met_conus_sfc():
+    """! RUN THIS ONLY FOR CONUS SFC
+         Verify that the fcst_field and obs_field text in the MET config
+         field dictionary are well-formed. Test is based on the
+         point_stat_test_conus_sfc.conf file.
+    """
+    ps = point_stat_wrapper()
+
+    # Set up the appropriate input directories
+    fcst_input_dir = '/d1/METplus_Mallory/data/gfs'
+    obs_input_dir = '/d1/minnawin/pb2nc_output/nam/conus_sfc'
+    ps.ps_dict['FCST_INPUT_DIR'] = fcst_input_dir
+    ps.ps_dict['OBS_INPUT_DIR'] = obs_input_dir
+    ps.ps_dict['OBS_INPUT_FILE_REGEX'] = \
+        '.*prepbufr.nam.(2[0-9]{7}).t([0-9]{2})z.tm([0-9]{2}).nc'
+    ps.ps_dict['FCST_INPUT_FILE_REGEX'] = '.*pgbf([0-9]{1,3}).gfs.(2[0-9]{9})'
+
+    all_vars_list = util.parse_var_list(ps.p)
+    logger = logging.getLogger("temp_log")
+    fields = util.reformat_fields_for_met(all_vars_list, logger)
+    # The following fields were defined in the MET+ config file:
+    # TMP, RH, DPT, UGRD, VGRD, TCDC, PRMSL
+
+    fcst_str = fields.fcst_field
+    expected_fcst_str = '{ name = "TMP"; level = [ "Z2" ]; }, ' \
+                        '{ name = "RH"; level = [ "Z2" ]; }, ' \
+                        '{ name = "DPT"; level = [ "Z2" ]; }, ' \
+                        '{ name = "UGRD"; level = [ "Z10" ]; }, ' \
+                        '{ name = "VGRD"; level = [ "Z10" ]; }, ' \
+                        '{ name = "TCDC"; level = [ "L0" ]; GRIB_lvl_typ = ' \
+                        '200; }, ' \
+                        '{ name = "PRMSL"; level = [ "Z0" ]; }'
+
+    print("expected: ", expected_fcst_str)
+    print("fcst str: ", fcst_str)
+    obs_str = fields.obs_field
+    expected_obs_str = '{ name = "TMP"; level = [ "Z2" ]; }, ' \
+                       '{ name = "RH"; level = [ "Z2" ]; }, ' \
+                       '{ name = "DPT"; level = [ "Z2" ]; }, ' \
+                       '{ name = "UGRD"; level = [ "Z10" ]; }, ' \
+                       '{ name = "VGRD"; level = [ "Z10" ]; }, ' \
+                       '{ name = "TCDC"; level = [ "L0" ]; }, ' \
+                       '{ name = "PRMSL"; level = [ "Z0" ]; }'
+    print("expected: ", expected_obs_str)
+    print("obs  str: ", obs_str)
+
+    if fcst_str == expected_fcst_str:
+        assert True is True
+    assert obs_str == expected_obs_str
 
 # def test_reformat_fields_for_met_upper_air():
 #     """! RUN THIS ONLY FOR UPPER AIR
@@ -410,7 +411,7 @@ def test_correct_pairings_gdas_vs_gfs():
 #          point_stat_test_upper_air.conf file.
 #     """
 #     ps = point_stat_wrapper()
-# 
+#
 #     # Set up the appropriate input directories
 #     # fcst_input_dir = '/d1/minnawin/data/gfs'
 #     fcst_input_dir = '/d1/METplus_Mallory/data/gfs'
@@ -420,13 +421,13 @@ def test_correct_pairings_gdas_vs_gfs():
 #     ps.ps_dict['OBS_INPUT_FILE_REGEX'] = \
 #         '.*prepbufr.gdas.(2[0-9]{9}).nc'
 #     ps.ps_dict['FCST_INPUT_FILE_REGEX'] = '.*pgbf([0-9]{1,3}).gfs.(2[0-9]{9})'
-# 
+#
 #     all_vars_list = util.parse_var_list(ps.p)
 #     logger = logging.getLogger("temp_log")
 #     fields = util.reformat_fields_for_met(all_vars_list, logger)
 #     # The following fields were defined in the MET+ config file:
 #     # TMP, RH, HGT, UGRD, VGRD
-# 
+#
 #     fcst_str = fields.fcst_field
 #     expected_fcst_str = '{ name = "TMP"; level = [ "P1000" ]; }, ' \
 #                         '{ name = "TMP"; level = [ "P925" ]; }, ' \
@@ -492,12 +493,38 @@ def test_correct_pairings_gdas_vs_gfs():
 #                         '{ name = "HGT"; level = [ "P50" ]; }, ' \
 #                         '{ name = "HGT"; level = [ "P20" ]; }, ' \
 #                         '{ name = "HGT"; level = [ "P10" ]; }'
-# 
+#
 #     # print("expected: ", expected_fcst_str)
 #     # print("fcst str: ", fcst_str)
 #     obs_str = fields.obs_field
 #     expected_obs_str = expected_fcst_str
 #     # print("expected: ", expected_obs_str)
 #     # print("obs  str: ", obs_str)
-# 
+#
 #     assert fcst_str == expected_fcst_str and obs_str == expected_obs_str
+
+def test_get_all_input_files():
+    """! Verify that the newly added method get_all_input_files() is
+         returning the expected number of files.
+
+    """
+    ps = point_stat_wrapper()
+
+    # Set up the appropriate input directories
+    fcst_input_dir = '/d1/METplus_Mallory/data/gfs'
+    obs_input_dir = '/d1/METplus_Pointstat/conus_sfc'
+    ps.ps_dict['FCST_INPUT_DIR'] = fcst_input_dir
+    ps.ps_dict['OBS_INPUT_DIR'] = obs_input_dir
+    ps.ps_dict['OBS_INPUT_FILE_REGEX'] = \
+        '.*prepbufr.nam.(2[0-9]{7}).t([0-9]{2})z.tm([0-9]{2}).nc'
+    ps.ps_dict['FCST_INPUT_FILE_REGEX'] = '.*pgbf([0-9]{1,3}).gfs.(2[0-9]{9})'
+
+    # These will be replaced with filename_templates
+    ps.ps_dict['FCST_INPUT_DIR_REGEX'] = '.*nam.(2[0-9]{7})'
+    ps.ps_dict['OBS_INPUT_DIR_REGEX'] = '.*prepbufr.nam.t([0-9]{2})z.' \
+                                        'awphys[0-9]{2}.tm([0-9]{2}).nc '
+    fcst_dir_to_search = '/d1/METplus_Mallory/data/gfs'
+    obs_dir_to_search = '/d1/METplus_Pointstat/conus_sfc'
+
+
+
