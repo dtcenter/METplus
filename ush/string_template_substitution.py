@@ -403,7 +403,7 @@ class StringSub:
         init_unix_time = calendar.timegm(init_time_tuple)
 
         # Get the unix time for the valid time
-        if len(self.kwarg).get(VALID_STRING, None) == 10:
+        if len(self.kwargs.get(VALID_STRING, None)) == 10:
             valid_time_tuple = \
                 time.strptime(self.kwargs.get(VALID_STRING, None),
                               "%Y%m%d%H")
