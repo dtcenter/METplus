@@ -179,7 +179,7 @@ def test_3h_lead():
     ftime = se.getValidTime("%Y%m%d%H%M")
     assert(ftime == "198702010600")
 
-'''
+
 def test_h_lead_no_pad_1_digit():
     logger = logging.getLogger("test")
     template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
@@ -211,7 +211,7 @@ def test_h_lead_no_pad_3_digit():
     se.parseTemplate()
     ftime = se.getValidTime("%Y%m%d%H%M")
     assert(ftime == "198702050900")
-'''
+
 
 def test_h_lead_no_pad_1_digit_sub():
     logger = logging.getLogger("test")
