@@ -946,14 +946,14 @@ def getlist(s, logger=None):
     """
 
     # Developer NOTE: we could just force this to only operate
-    # on comma seperated lists, not space seperated.
+    # on comma separated lists, not space separated.
 
     # FIRST remove surrounding comma, and spaces, form the string.
     s = s.strip().strip(',').strip()
 
     # splitting an empty string, s with ',', creates a 1 element
-    # list with an empty string element, we dont want to create or
-    # retrun that, ie. NEVER RETURN THIS [''], If s is '', an
+    # list with an empty string element, we don't want to create or
+    # return that, ie. NEVER RETURN THIS [''], If s is '', an
     # empty string, then return an empty list [].
     # Doing so allows for proper boolean testing of your
     # list elsewhere in the code, ie. bool([]) is False.
@@ -1232,7 +1232,7 @@ def getraw_interp(p, sec, opt):
 
             if var is None:
                 out_template += in_template[start_idx:i+1]
-            else: 
+            else:
                 out_template += var
             in_brackets = False
         elif not in_brackets:
@@ -1320,4 +1320,4 @@ if __name__ == "__main__":
 #  get_time_from_file(None, "/path/to/data//GFS/track_data/201412/amlq2014123118.gfso.0006", "{init?fmt=%Y%m}/amlq{init?fmt=%Y%m%d%H}.gfso.00{lead?fmt=%HH}")
 #  get_time_from_file(None, "/path/to/data/mrms/2018/04/30/mrms.MergedReflectivityQCComposite.20180430_062438.grib2", "{valid?fmt=%Y}/{valid?fmt=%m}/{valid?fmt=%d}/mrms.MergedReflectivityQCComposite.{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}.grib2")
 
-  
+

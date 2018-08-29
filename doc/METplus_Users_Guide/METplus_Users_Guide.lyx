@@ -238,11 +238,14 @@ filename "Installation/METplus_Users_Guide_Installation.lyx"
 \begin_layout Standard
 \begin_inset CommandInset include
 LatexCommand include
-filename "References/METplus_Users_Guide_References.lyx"
+filename "System_Configuration/METplus_System_Configuration.lyx"
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
 \begin_inset Newpage pagebreak
 \end_inset
 
@@ -252,14 +255,11 @@ filename "References/METplus_Users_Guide_References.lyx"
 \begin_layout Standard
 \begin_inset CommandInset include
 LatexCommand include
-filename "System_Configuration/METplus_System_Configuration.lyx"
+filename "References/METplus_Users_Guide_References.lyx"
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
 \begin_inset Newpage pagebreak
 \end_inset
 
