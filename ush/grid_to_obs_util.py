@@ -3,8 +3,10 @@
 from __future__ import print_function, unicode_literals
 import sys
 import re
+import os
 from collections import namedtuple
 from string_template_substitution import StringSub
+import met_util as util
 
 """!@namespace feature_util
  @brief Provides  Utility functions for METplus feature relative use case.
@@ -124,7 +126,7 @@ def get_date_from_path(dir_to_search, date_regex):
     """
     DatePath = namedtuple('DatePath', 'subdir_filepath, data_date')
     dates_from_path = []
-    subdirs_list = get_dirs(dir_to_search)
+    subdirs_list = util.get_dirs(dir_to_search)
 
     if subdirs_list:
         for subdir in subdirs_list:
