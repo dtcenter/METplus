@@ -370,3 +370,35 @@ def test_create_cyclone_regex():
                      '{2,3})([a-zA-Z0-9-_.]+).dat'
     assert actual_regex == expected_regex
 
+
+def test_crow_variable_hour():
+    # Test that StringSub's doStringSub() correctly creates the valid hour
+    # without any zero-padding when given the following as input:
+    # pgbf{lead?fmt=%H}.gfs.{valid?fmt=%Y%M%D%H}
+    # pgbf([0-9]{1,3}).gfs.(2[0-9]{9})
+    logger = logging.getLogger("crow_data")
+
+    # crow input files with 3, 2, and 1-digit lead times:
+    crow_input_file_3 = 'pgbf219.gfs.2017060418'
+    crow_input_file_2 = 'pgbf18.gfs.2017062000'
+    crow_input_file_1 = 'pgbf3.gfs.2017060418'
+    lead_1 = '3'
+    lead_2 = '18'
+    lead_3 = '219'
+    valid_2 = '2017062000'
+    valid_1 = valid_3 = '2017060418'
+    templ = 'pgbf{lead?fmt=%H}.gfs.{valid?fmt=%Y%m%d%H}'
+    ss_1 = StringSub(logger, templ, valid=valid_1, lead=lead_1)
+    ss_2 = StringSub(logger, templ, valid=valid_2, lead=lead_2)
+    ss_3 = StringSub(logger, templ, valid=valid_3, lead=lead_3)
+    crow_1_output = ss_1.doStringSub()
+    crow_2_output = ss_2.doStringSub()
+    crow_3_output = ss_3.doStringSub()
+    # print("crow_1 output: ", crow_1_output)
+    # print("crow_2 output: ", crow_2_output)
+    # print("crow_3 output: ", crow_3_output)
+    assert(crow_1_output == crow_input_file_1 and
+           crow_2_output == crow_input_file_2 and
+           crow_3_output == crow_input_file_3)
+
+
