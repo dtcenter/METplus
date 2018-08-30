@@ -1152,7 +1152,14 @@ def reformat_fields_for_met(all_vars_list, logger):
                 name_level_extra_list = ['{ name = "', name,
                                          '"; level = [ "', level, '" ]; ']
                 if extra:
-                    extra_str = extra + '; },'
+                    # End the text for this field.  If this is the last field,
+                    # end the dictionary appropriately.
+                    if var == all_vars_list[-1]:
+                        # This is the last field, terminate it appropriately.
+                        extra_str = extra + '; }'
+                    else:
+                        # More field(s) to go
+                        extra_str = extra + '; },'
                     name_level_extra_list.append(extra_str)
                 else:
                     # End the text for this field.  If this is the last field,
