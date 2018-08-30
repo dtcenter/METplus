@@ -498,8 +498,9 @@ def test_reformat_fields_for_met_conus_sfc():
 #     # print("fcst str: ", fcst_str)
 #     obs_str = fields.obs_field
 #     expected_obs_str = expected_fcst_str
-#     # print("expected: ", expected_obs_str)
-#     # print("obs  str: ", obs_str)
+#     print("expected: ", expected_obs_str, "\n")
+#     print("=======================================================\n")
+#     print("obs  str: ", obs_str)
 #
 #     assert fcst_str == expected_fcst_str and obs_str == expected_obs_str
 
