@@ -2,15 +2,8 @@
 
 from __future__ import print_function, unicode_literals
 import sys
-import os
 import re
-import time
-import calendar
 from collections import namedtuple
-from command_builder import CommandBuilder
-import config_metplus
-import met_util as util
-import produtil.setup
 from string_template_substitution import StringSub
 
 """!@namespace feature_util

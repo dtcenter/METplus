@@ -23,13 +23,6 @@ from string_template_substitution import StringExtract
 # for run stand alone
 import produtil
 import config_metplus
-# TODO Remove the classes and refactor met-util
-# met_util needs to be refactored and the functions that
-# instantiate the objects(CommandBuilder) refactored in to there
-# own respective class OR in there own module, patterned after their
-# intended function.
-from tc_stat_wrapper import TcStatWrapper
-from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 
 """!@namespace met_util
  @brief Provides  Utility functions for METplus.
