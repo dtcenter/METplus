@@ -12,6 +12,7 @@ import itertools
 
 import config_metplus
 import met_util as util
+import grid_to_obs_util as g2o_util
 import produtil.setup
 from command_builder import CommandBuilder
 
@@ -573,8 +574,8 @@ class PointStatWrapper(CommandBuilder):
         # from dated subdirs (if data is not arranged
         # into dated subdirs, an empty list is returned).
         if input_dir_regex:
-            fcst_date_dirs = util.get_date_from_path(dir_to_search,
-                                                     input_dir_regex)
+            fcst_date_dirs = g2o_util.get_date_from_path(dir_to_search,
+                                                         input_dir_regex)
             if fcst_date_dirs:
 
                 for fcst_entry in fcst_date_dirs:
