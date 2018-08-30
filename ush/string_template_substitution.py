@@ -1339,7 +1339,6 @@ class StringExtract:
                       FORMAT_STRING)
 
         while i < tempLen:
-            print("I:"+self.temp[i])
             if self.temp[i] == TEMPLATE_IDENTIFIER_BEGIN:
                 # increment past TEMPLATE_IDENTIFIER_BEGIN
                 i += 1
@@ -1407,10 +1406,8 @@ class StringExtract:
                     inLevel = False
 
                 elif inLead:
-                    print("END LEAD")
                     if lead == -1 or lead == None or not lead.isdigit():
                         return False
-                    print("CONVERT LEAD")
                     self.leadTime = int(lead) * SECONDS_PER_HOUR
                     lead = -1
                     inLead = False
@@ -1465,10 +1462,9 @@ class StringExtract:
                     # check for digit until non-digit comes up
                     lead = ""
                     while self.fstr[idx].isdigit():
-                        print("CHECK:"+self.fstr[idx])
                         lead += self.fstr[idx]
                         idx += 1
-                    print("LEAD:"+lead)
+
                     i += 1
                     if lead == "":
                         lead = -1
@@ -1485,7 +1481,7 @@ class StringExtract:
                                   validDay,
                                   validHour,
                                   validMin)
-        print("LEAD:"+str(lead)+" "+str(initHour))
+
         if initYear != -1 and initMonth != -1 and initDay != -1:
             self.initTime = \
                 datetime.datetime(initYear,
