@@ -7,7 +7,7 @@ import time
 import re
 import sys
 from collections import namedtuple
-
+from collections import OrderedDict
 import itertools
 
 import config_metplus
@@ -15,6 +15,7 @@ import met_util as util
 import grid_to_obs_util as g2o_util
 import produtil.setup
 from command_builder import CommandBuilder
+from string_template_substitution import StringSub
 
 """
 Program Name: point_stat_wrapper.py
@@ -399,6 +400,8 @@ class PointStatWrapper(CommandBuilder):
 
         # Get a list of all the model/fcst files
         dir_to_search = self.ps_dict['FCST_INPUT_DIR']
+        fcst_file_pattern = self.ps_dict['FCST_INPUT_FILE_TMPL']
+
         fcst_file_regex = self.ps_dict['FCST_INPUT_FILE_REGEX']
         fcst_dir_regex = self.ps_dict['FCST_INPUT_DIR_REGEX']
 
@@ -752,6 +755,115 @@ class PointStatWrapper(CommandBuilder):
             cmd += "-outdir " + self.outdir
 
         return cmd
+
+    def create_filename_regex(self, tmpl):
+        """! Creates the regex of the forecast or reference filename as defined
+             in the filename_template section of the config file.
+
+           Args:
+               @param tmpl - The filename template describing the forecast or
+                             reference input track file (full filepath)
+
+           Returns:
+               tuple of two values:
+               input_file_regex - A regex string representing the filename.
+                                  This will be useful when filtering based on
+                                  date, region, or cyclone.
+               keywords_ordered -  A list of keywords, in the order in which
+                                   they were found in the template string.
+        """
+        # pylint:disable=protected-access
+        # sys._getframe is a legitimate way to access the current
+        # filename and method.
+        # Used for logging information
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        self.logger.debug(
+            cur_function + '|' + cur_filename +
+            ":Generating the filename regex from the filename_templates "
+            "section.")
+
+        # To filter files on the criteria of date, region, or cyclone
+        # (or any combination). Use dummy values for the region and cyclone,
+        # to create a string template
+        # substitution object. This string template substitution
+        # object will be used to
+        # replace the key-values in the filename template with its
+        #  corresponding regex.
+        offset = '00'
+        cycle = '00'
+        lead = '00'
+        # support either init or valid time in the filename
+        init = '20170704'
+        valid = '2017070412'
+
+        # The string template substitution object will be initialized
+        # based on the combination of the keywords have been specified in the
+        # filename_templates section: init/valid, cyclone, offset, lead
+        init_match = re.match(r'.*\{init\?fmt=(.*?)\}.*', tmpl)
+        valid_match = re.match(r'.*\{valid\?fmt=(.*?)\}.*', tmpl)
+        # date is either an initialization time or valid time, determine
+        # which one we have and assign this to date_match
+        if init_match:
+            date_match = init_match
+            kwargs['date'] = init
+        elif valid_match:
+            date_match  = valid_match
+            kwargs['date'] = valid
+        else:
+            # No init or valid time in name, this is possible as the
+            # date information can be found in the subdirectory name.
+            # Just in case, log a warning message and continue.
+            self.logger.warn(cur_filename + "|" +
+                             cur_function + '|: No date information was found '
+                                           'in the filename template section.'
+                                           'Assuming date information was'
+                                           'retrieved from a dated '
+                                           'subdirectory.')
+        offset_match = re.match(r'.*\{offset\?fmt=(.*?)\}', tmpl)
+        cycle_match = re.match(r'.*\{cycle\?fmt=(.*?)\}', tmpl)
+        lead_match = re.match(r'.*\{lead\?fmt=(.*?)\}', tmpl)
+
+        # Rather than having multiple if-elif to account for every
+        # possible combination of
+        # keywords in a filename_template, store the keywords in
+        # a dictionary and use
+        # **kwargs to invoke StringSub with this dictionary of keyword
+        #  argument. Determine
+        # the order in which the keywords appear in the
+        # filename_template and order
+        # the keywords, to facilitate filtering.
+        keyword_index = dict()
+        kwargs = dict()
+        if date_match:
+            [(m.start(), m.end()) for m in
+             re.finditer(r".*\{date\?fmt=(.*?)\}.", tmpl)]
+            keyword_index['date'] = m.start(1)
+        if cycle_match:
+            kwargs['cycle'] = cycle
+            [(m.start(), m.end()) for m in
+             re.finditer(r".*\{cycle\?fmt=(.*?)\}", tmpl)]
+            keyword_index['cycle'] = m.start(1)
+        if offset_match:
+            kwargs['offset'] = offset
+            [(m.start(), m.end()) for m in
+             re.finditer(r".*\{offset\?fmt=(.*?)\}", tmpl)]
+            keyword_index['offset'] = m.start(1)
+        if lead_match:
+            kwargs['lead'] = lead
+            [(m.start(), m.end()) for m in
+             re.finditer(r".*\{lead\?fmt=(.*?)\}", tmpl)]
+            keyword_index['lead'] = m.start(1)
+        string_sub = StringSub(self.logger, tmpl, **kwargs)
+        input_file_regex = string_sub.create_cyclone_regex()
+
+        # Get a list of the keywords in the order in which they appeared in the
+        # filename_template description
+        ordered = OrderedDict(
+            sorted(keyword_index.items(), key=lambda t: t[1]))
+        keywords_ordered = ordered.keys()
+        return input_file_regex, keywords_ordered
 
 
 if __name__ == "__main__":
