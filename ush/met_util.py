@@ -981,14 +981,35 @@ def getlistint(s):
 
 # minutes
 def shift_time(time, shift):
+    """ Adjust time by shift hours. Format is %Y%m%d%H%M
+        Args:
+            @param time: Start time in %Y%m%d%H%M
+            @param shift: Amount to adjust time in hours
+        Returns:
+            New time in format %Y%m%d%H%M
+    """
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(hours=shift)).strftime("%Y%m%d%H%M")
 
 def shift_time_minutes(time, shift):
+    """ Adjust time by shift minutes. Format is %Y%m%d%H%M
+        Args:
+            @param time: Start time in %Y%m%d%H%M
+            @param shift: Amount to adjust time in minutes
+        Returns:
+            New time in format %Y%m%d%H%M
+    """
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(minutes=shift)).strftime("%Y%m%d%H%M")
 
 def shift_time_seconds(time, shift):
+    """ Adjust time by shift seconds. Format is %Y%m%d%H%M
+        Args:
+            @param time: Start time in %Y%m%d%H%M
+            @param shift: Amount to adjust time in seconds
+        Returns:
+            New time in format %Y%m%d%H%M
+    """
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(seconds=shift)).strftime("%Y%m%d%H%M")
 
@@ -998,6 +1019,13 @@ class FieldObj(object):
                 'obs_name', 'obs_level', 'obs_extra', 'obs_thresh'
 
 def parse_var_list(p):
+    """ read conf items and populate list of FieldObj containing
+    information about each variable to be compared
+        Args:
+            @param p: Conf object
+        Returns:
+            list of FieldObj with variable information
+    """
     # var_list is a list containing an list of FieldObj
     var_list = []
 
@@ -1207,11 +1235,20 @@ def get_time_from_file(logger, filepath, template):
     else:
         return None
 
-# parse parameter and replace any existing parameters
-# referenced with the value (looking in same section, then
-# config, dir, and os environment)
-# returns raw string, preserving {valid?fmt=%Y} blocks
+
 def getraw_interp(p, sec, opt):
+    """ parse parameter and replace any existing parameters
+        referenced with the value (looking in same section, then
+        config, dir, and os environment)
+        returns raw string, preserving {valid?fmt=%Y} blocks
+        Args:
+            @param p: Conf object
+            @param sec: Section in the conf file to look for variable
+            @param opt: Variable to interpret
+        Returns:
+            Raw string
+    """
+
     in_template = p.getraw(sec, opt)
     out_template = ""
     in_brackets = False
@@ -1243,6 +1280,13 @@ def getraw_interp(p, sec, opt):
 
 
 def decompress_file(filename, logger=None):
+    """ Decompress gzip, bzip, or zip files
+        Args:
+            @param filename: Path to file without zip extensions
+            @param logger: Optional argument to allow logging
+        Returns:
+            None
+    """
     if os.path.exists(filename):
         return
     elif os.path.exists(filename+".gz"):        
@@ -1267,10 +1311,19 @@ def decompress_file(filename, logger=None):
         with zipfile.ZipFile(filename+".zip") as z:
             with open(filename, 'wb') as f:
                 f.write(z.read(os.path.basename(filename)))
-#        zip = zipfile.ZipFile(filename+".zip")
-#        zip.extractall(os.path.dirname(filename))
+
 
 def run_stand_alone(module_name, app_name):
+    """ Used to allow MET tool wrappers to be run without using
+    master_metplus.py
+        Args:
+            @param module_name: Name of wrapper with underscores, i.e.
+            pcp_combine_wrapper
+            @param app_name: Name of wrapper with camel case, i.e.
+            PcpCombine
+        Returns:
+            None
+    """
         try:
             # If jobname is not defined, in log it is 'NO-NAME'
             if 'JLOGFILE' in os.environ:
