@@ -13,7 +13,7 @@ import met_util as util
 """
 
 
-def grid2obs_file_info(self, g2obs_file):
+def grid2obs_file_info(g2obs_file, subdir_regex, logger):
     """! Extract date information on all prepbufr or point stat input files
          (grid2obs files) in the specified
          input directory.  This information will facilitate the naming
@@ -23,6 +23,10 @@ def grid2obs_file_info(self, g2obs_file):
         @param g2obs_file - The grid2obs file(full filepath) undergoing
                           conversion to NetCDF. This can be a prepBufr file
                           or any other input file used for point_stat.
+        @param subdir_regex - The regular expression that describes the
+                              dated subdirectory (if applicable).
+        @param logger     - The logger to which all logging is to be
+                            directed.
     Returns:
         g2obs_file_info -    information in the form
                              of named tuples: full_filepath, ymd,
@@ -45,7 +49,7 @@ def grid2obs_file_info(self, g2obs_file):
     # Used for logging.
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-    self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+    logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
                      "Creating prepbufr file information")
 
     # For files like GDAS, there are no cycle and offset values in the
@@ -58,7 +62,6 @@ def grid2obs_file_info(self, g2obs_file):
     # Check if this prepbufr data has the date in the subdirectory name
     # in the form of a dated subdirectory,
     # This is indicated by setting the directory regex, PREPBUFR_DIR_REGEX
-    subdir_regex = self.pb_dict['PREPBUFR_DIR_REGEX']
     if subdir_regex:
         regex_compile = re.compile(subdir_regex)
         match = re.match(regex_compile, g2obs_file)
@@ -84,12 +87,12 @@ def grid2obs_file_info(self, g2obs_file):
         else:
             # Something is wrong, there should be a cycle time if
             # there is an offset time.
-            self.logger.error('ERROR |' + cur_function + '|' +
-                              cur_filename + 'Expected cycle time not'
-                                             'found. This '
-                                             'data does not have '
-                                             'the expected prepbufr '
-                                             'filename, exiting...')
+            logger.error('ERROR |' + cur_function + '|' +
+                         cur_filename + 'Expected cycle time not'
+                                        'found. This '
+                                        'data does not have '
+                                        'the expected prepbufr '
+                                        'filename, exiting...')
             sys.exit(1)
     else:
         # No offset, check for cycle time (these files correspond to
