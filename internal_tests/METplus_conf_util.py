@@ -189,7 +189,8 @@ conly = [x for x in clist if x not in tlist]
 tonly = [x for x in tlist if x not in clist]
 print("")
 print("  TOTAL EXISTING CONF ENTRIES: %04d" % (int(len(clist))))
-print("  TOTAL NEW CONF ENTRIES     : %04d" % (int(len(tlist))))
+print("  TOTAL NEW CONF ENTRIES     : %04d" % (int(len(tlist)-len(clist))))
+print("  TOTAL AFTER UPDATE         : %04d" % (int(len(tlist))))
 print("")
 if conly == []:
   print("  NO OBSOLETE ITEMS.")
