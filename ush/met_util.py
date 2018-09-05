@@ -1324,13 +1324,13 @@ def run_stand_alone(module_name, app_name):
         Returns:
             None
     """
-        try:
-            # If jobname is not defined, in log it is 'NO-NAME'
-            if 'JLOGFILE' in os.environ:
-                produtil.setup.setup(send_dbn=False, jobname='run-METplus',
-                                     jlogfile=os.environ['JLOGFILE'])
-            else:
-                produtil.setup.setup(send_dbn=False, jobname='run-METplus')
+    try:
+        # If jobname is not defined, in log it is 'NO-NAME'
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus',
+                                 jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus')
             produtil.log.postmsg(app_name+' is starting')
 
             # Job Logger
@@ -1361,10 +1361,10 @@ def run_stand_alone(module_name, app_name):
             wrapper.run_all_times()
 
             produtil.log.postmsg(app_name+' completed')
-        except Exception as e:
-            produtil.log.jlogger.critical(
-                app_name+'  failed: %s' % (str(e),), exc_info=True)
-            sys.exit(2)
+    except Exception as e:
+       produtil.log.jlogger.critical(
+               app_name+'  failed: %s' % (str(e),), exc_info=True)
+       sys.exit(2)
 
 
 if __name__ == "__main__":
