@@ -407,10 +407,10 @@ class PointStatWrapper(CommandBuilder):
         fcst_dir_regex = self.ps_dict['FCST_INPUT_DIR_REGEX']
 
         # Create the regex for the full filepath
-        # if fcst_dir_regex:
-        #     fcst_file_regex = fcst_dir_regex + fcst_file_regex_tuple[0]
-        # else:
-        fcst_file_regex = '.*' + fcst_file_regex_tuple[0]
+        if fcst_dir_regex:
+            fcst_file_regex =  fcst_dir_regex + "/" + fcst_file_regex_tuple[0]
+        else:
+            fcst_file_regex = '.*' + fcst_file_regex_tuple[0]
 
         # Get a list of dates (YYYYMMDD or YYYYMMDDHH) from dated subdirs
         # (if data is not arranged
@@ -426,10 +426,10 @@ class PointStatWrapper(CommandBuilder):
         obs_file_regex_tuple = self.create_filename_regex(obs_file_tmpl)
 
         # Create the regex for the full filepath
-        # if obs_dir_regex:
-        #     obs_file_regex = obs_dir_regex + '/' + obs_file_regex_tuple[0]
-        # else:
-        obs_file_regex = '.*' + obs_file_regex_tuple[0]
+        if obs_dir_regex:
+            obs_file_regex = obs_dir_regex + '/' + obs_file_regex_tuple[0]
+        else:
+            obs_file_regex = '.*' + obs_file_regex_tuple[0]
 
         all_obs_files = self.get_all_input_files(dir_to_search,
                                                  obs_file_regex,
@@ -483,10 +483,6 @@ class PointStatWrapper(CommandBuilder):
                     if cur_valid_time not in all_valid_times:
                         all_valid_times.append(cur_valid_time)
                 all_dates.append(cur_date)
-
-        InputFileInfo = namedtuple('InputFileInfo',
-                                   'full_filepath, date, '
-                                   'valid_time, cycle, lead')
 
         if file_type == "fcst":
             consolidated_file_info = self.get_input_within_time_window("fcst", all_dates, all_fhrs,
