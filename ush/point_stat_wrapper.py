@@ -489,83 +489,81 @@ class PointStatWrapper(CommandBuilder):
                                    'valid_time, cycle, lead')
 
         if file_type == "fcst":
-            # Get the information for the fcst/model file
-            if all_fcst_files:
-                regex_match = re.compile(fcst_file_regex)
-                for fcst_file in all_fcst_files:
-                    match = re.match(regex_match, fcst_file)
-                    time_info_tuple = \
-                        self.get_time_info_from_file(match)
-
-                    # Determine if this file's valid time is one of the
-                    # valid times of interest and corresponds to
-                    # the expected forecast hour (based on forecast hour start
-                    # and forecast hour interval).  If so, then consolidate
-                    # the time info into the InputFileInfo tuple.
-                    if time_info_tuple.date in all_dates and \
-                            (time_info_tuple.cycle in all_fhrs or
-                             time_info_tuple.lead in all_fhrs):
-                        input_file_info = InputFileInfo(fcst_file,
-                                                        time_info_tuple.date,
-                                                        time_info_tuple.valid,
-                                                        time_info_tuple.
-                                                        cycle,
-                                                        time_info_tuple.lead)
-                        consolidated_file_info.append(input_file_info)
-            else:
-                self.logger.error('ERROR:|' + cur_function + '|' +
-                                  cur_filename + 'No fcst files found in '
-                                                 'specified input directory. '
-                                                 ' Please verify that data '
-                                                 'files are present and the '
-                                                 'input directory path in '
-                                                 'the config file is correct.')
+            consolidated_file_info = self.get_input_within_time_window("fcst", all_dates, all_fhrs,
+                                                                       all_fcst_files, fcst_file_regex)
         else:
-            # Get the relevant information for the obs file
-            if all_obs_files:
-                regex_match = re.compile(obs_file_regex)
-                for obs_file in all_obs_files:
-                    match = re.match(regex_match, obs_file)
-                    time_info_tuple = self.get_time_info_from_file(match)
+            consolidated_file_info = self.get_input_within_time_window("obs", all_dates, all_fhrs,
+                                                                       all_obs_files, obs_file_regex)
 
-                    # Determine if this file's valid time is
-                    # one of the valid times of interest.  If
-                    # so, then consolidate the time info into the
-                    # InputFileInfo tuple. Obs files may or may not have
-                    # a cycle time (e.g. no cycle time:
-                    # prepbufr.gdas.2017061500.nc  vs.
-                    # cycle time:  prepbufr.nam.20170611.t00z.tm00.nc),
-                    # or lead time. So we need to check if the cycle tuple
-                    # value is None or the lead tuple value is None:
-                    if time_info_tuple.cycle is None or\
-                            time_info_tuple.lead is None:
-                        if time_info_tuple.valid in all_valid_times:
-                            input_file_info = \
-                                InputFileInfo(obs_file, time_info_tuple.date,
-                                              time_info_tuple.valid,
-                                              time_info_tuple.cycle,
-                                              time_info_tuple.lead)
-                            consolidated_file_info.append(input_file_info)
-                    else:
-                        if time_info_tuple.valid in all_valid_times and \
-                                (time_info_tuple.cycle in all_fhrs or
-                                 time_info_tuple.lead in all_fhrs):
-                            input_file_info = \
-                                InputFileInfo(obs_file, time_info_tuple.date,
-                                              time_info_tuple.valid,
-                                              time_info_tuple.cycle,
-                                              time_info_tuple.lead)
-                            consolidated_file_info.append(input_file_info)
 
-            else:
-                self.logger.error('ERROR:|' + cur_function + '|' +
-                                  cur_filename + '| No obs files found in '
-                                                 'specified input directory. '
-                                                 ' Please verify that data '
-                                                 'files are present and the '
-                                                 'input directory path in '
-                                                 'the config file is correct.')
         return consolidated_file_info
+
+    def get_input_within_time_window(self, input_file_type, all_dates_in_window, all_fhrs, all_input_files, input_regex):
+        """! Filter the input files (fcst or obs) based on whether the date lies within the
+             time window specified by the user (via start and end times, interval/step size, beginning forecast
+             hour and ending forecast hour).  For files that fall within the time window, the full filepath
+             and available time information (initialization time, cycle, lead, offset) are stored in
+             a named tuple.
+
+             Args:
+                 @param input_file_type  - "fcst" or "obs"
+                 @param all_dates_in_window - all the dates that comprise the user's time window
+                 @param all_fhrs   - all the forecast hours in the time window
+                 @param all_input_files - all the fcst or obs input files
+                 @param input_regex     - the regex for the fcst or obs input file
+             Returns:
+                 consolidated_file_info  - a list of the named tuple, which contains the
+                                    information for each file (i.e. the date and any combination of
+                                    cycle, lead, and offset within the user's specified time window of interest).
+
+        """
+        # pylint:disable=protected-access
+        # Need to call sys.__getframe() to get the filename and method/func
+        # for logging information.
+
+        # Used for logging.
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+                         "Creating file information for model/fcst or obs...")
+
+        consolidated_file_info = []
+
+        InputFileInfo = namedtuple('InputFileInfo',
+                                   'full_filepath, date, '
+                                   'valid_time, cycle, lead')
+        # Get the information for the fcst/model file
+        if all_input_files:
+            regex_match = re.compile(input_regex)
+            for input_file in all_input_files:
+                match = re.match(regex_match, input_file)
+                time_info_tuple = \
+                    self.get_time_info_from_file(match)
+
+                # Determine if this file's valid time is one of the
+                # valid times of interest and corresponds to
+                # the expected forecast hour (based on forecast hour start
+                # and forecast hour interval).  If so, then consolidate
+                # the time info into the InputFileInfo tuple.
+                if time_info_tuple.date in all_dates_in_window and \
+                        (time_info_tuple.cycle in all_fhrs or
+                         time_info_tuple.lead in all_fhrs):
+                    input_file_info = InputFileInfo(input_file,
+                                                    time_info_tuple.date,
+                                                    time_info_tuple.valid,
+                                                    time_info_tuple.
+                                                    cycle,
+                                                    time_info_tuple.lead)
+                    consolidated_file_info.append(input_file_info)
+        else:
+            self.logger.error(cur_function + '|' + cur_filename +
+                              'No input files (obs/fcst) found in '
+                              'the specified input directory. '
+                              'Please verify that data '
+                              'files are present and the '
+                              'input directory path in '
+                              'the config file is correct.')
+            sys.exit(1)
 
     def get_all_input_files(self, dir_to_search, input_file_regex,
                             input_dir_regex):
