@@ -1365,9 +1365,9 @@ def getraw_interp(p, sec, opt):
             if p.has_option(sec,var_name):
                 var = p.getstr(sec,name)
             elif p.has_option('config',var_name):
-                var = p.getstr('config',name)
+                var = p.getstr('config',var_name)
             elif p.has_option('dir',var_name):
-                var = p.getstr('dir',name)
+                var = p.getstr('dir',var_name)
             elif var_name[0:3] == "ENV":
                 var = os.environ.get(var_name[4:-1])
 
@@ -1427,47 +1427,47 @@ def run_stand_alone(module_name, app_name):
         Returns:
             None
     """
-        try:
-            # If jobname is not defined, in log it is 'NO-NAME'
-            if 'JLOGFILE' in os.environ:
-                produtil.setup.setup(send_dbn=False, jobname='run-METplus',
-                                     jlogfile=os.environ['JLOGFILE'])
-            else:
-                produtil.setup.setup(send_dbn=False, jobname='run-METplus')
-            produtil.log.postmsg(app_name+' is starting')
+    try:
+        # If jobname is not defined, in log it is 'NO-NAME'
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus',
+                                 jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus')
+        produtil.log.postmsg(app_name+' is starting')
 
-            # Job Logger
-            produtil.log.jlogger.info('Top of '+app_name)
+        # Job Logger
+        produtil.log.jlogger.info('Top of '+app_name)
 
-            # Used for logging and usage statment
-            cur_filename = sys._getframe().f_code.co_filename
-            cur_function = sys._getframe().f_code.co_name
+        # Used for logging and usage statment
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
 
-            # Setup Task logger, Until Conf object is created, Task logger is
-            # only logging to tty, not a file.
-            logger = logging.getLogger(app_name)
-            logger.info('logger Top of '+app_name+".")
+        # Setup Task logger, Until Conf object is created, Task logger is
+        # only logging to tty, not a file.
+        logger = logging.getLogger(app_name)
+        logger.info('logger Top of '+app_name+".")
 
-            # Parse arguments, options and return a config instance.
-            p = config_metplus.setup(filename=cur_filename)
+        # Parse arguments, options and return a config instance.
+        p = config_metplus.setup(filename=cur_filename)
 
-            logger = get_logger(p)
+        logger = get_logger(p)
 
-            module = __import__(module_name)
-            wrapper_class = getattr(module, app_name+"Wrapper")
-            wrapper = wrapper_class(p, logger)
+        module = __import__(module_name)
+        wrapper_class = getattr(module, app_name+"Wrapper")
+        wrapper = wrapper_class(p, logger)
 
-            os.environ['MET_BASE'] = p.getdir('MET_BASE')
+        os.environ['MET_BASE'] = p.getdir('MET_BASE')
 
-            produtil.log.postmsg(app_name+' Calling run_all_times.')
+        produtil.log.postmsg(app_name+' Calling run_all_times.')
 
-            wrapper.run_all_times()
+        wrapper.run_all_times()
 
-            produtil.log.postmsg(app_name+' completed')
-        except Exception as e:
-            produtil.log.jlogger.critical(
-                app_name+'  failed: %s' % (str(e),), exc_info=True)
-            sys.exit(2)
+        produtil.log.postmsg(app_name+' completed')
+    except Exception as e:
+        produtil.log.jlogger.critical(
+            app_name+'  failed: %s' % (str(e),), exc_info=True)
+        sys.exit(2)
 
 
 if __name__ == "__main__":
