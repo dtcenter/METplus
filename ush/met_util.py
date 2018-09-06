@@ -14,6 +14,7 @@ import gzip
 import bz2
 import zipfile
 from collections import namedtuple
+import struct
 
 import subprocess
 from produtil.run import exe
@@ -1210,18 +1211,120 @@ def reformat_fields_for_met(all_vars_list, logger):
 
         return met_fields
 
-def get_filetype(config, filepath):
-    ncdump_exe = config.getexe('NCDUMP_EXE')
-    try:
-        result = subprocess.check_output([ncdump_exe, filepath])
-    except subprocess.CalledProcessError:
-        return "GRIB"
+def get_filetype(filepath, logger=None):
+    """!This function determines if the filepath is a NETCDF or GRIB file
+       based on the first eight bytes of the file.
+       It returns the string GRIB, NETCDF, or a None object.
 
-    regex = re.search("netcdf", result)
-    if regex is not None:
-        return "NETCDF"
-    else:
+       Note: If it is NOT determined to ba a NETCDF file,
+       it returns GRIB, regardless.
+       Unless there is an IOError exception, such as filepath refers
+       to a non-existent file or filepath is only a directory, than
+       None is returned, without a system exit.
+
+       Args:
+           @param filepath:  path/to/filename
+           @param logger the logger, optional
+       Returns:
+           @returns The string GRIB, NETCDF or a None object
+    """
+    # Developer Note
+    # Since we have the impending code-freeze, keeping the behavior the same,
+    # just changing the implementation.
+    # The previous logic did not test for GRIB it would just return 'GRIB'
+    # if you couldn't run ncdump on the file.
+    # Also note:
+    # As John indicated ... there is the case when a grib file
+    # may not start with GRIB ... and if you pass the MET command filtetype=GRIB
+    # MET will handle it ok ...
+
+    # Notes on file format and determining type.
+    # https://www.wmo.int/pages/prog/www/WDM/Guides/Guide-binary-2.html
+    # https://www.unidata.ucar.edu/software/netcdf/docs/faq.html
+    # http: // www.hdfgroup.org / HDF5 / doc / H5.format.html
+
+    # Interpreting single byte by byte - so ok to ignore endianess
+    # od command:
+    #   od -An -c -N8 foo.nc
+    #   od -tx1 -N8 foo.nc
+    # GRIB
+    # Octet no.  IS Content
+    # 1-4        'GRIB' (Coded CCITT-ITA No. 5) (ASCII);
+    # 5-7        Total length, in octets, of GRIB message(including Sections 0 & 5);
+    # 8          Edition number - currently 1
+    # NETCDF .. ie. od -An -c -N4 foo.nc which will output
+    # C   D   F 001
+    # C   D   F 002
+    # 211   H   D   F
+    # HDF5
+    # Magic numbers   Hex: 89 48 44 46 0d 0a 1a 0a
+    # ASCII: \211 HDF \r \n \032 \n
+
+    # Below is a reference that may be used in the future to
+    # determine grib version.
+    # import struct
+    # with open ("foo.grb2","rb")as binary_file:
+    #     binary_file.seek(7)
+    #     one_byte = binary_file.read(1)
+    #
+    # This would return an integer with value 1 or 2,
+    # B option is an unsigned char.
+    #  struct.unpack('B',one_byte)[0]
+
+    try:
+        # read will return up to 8 bytes, if file is 0 bytes in length,
+        # than first_eight_bytes will be the empty string ''.
+        # Don't test the file length, just adds more time overhead.
+        with open(filepath, "rb") as binary_file:
+            binary_file.seek(0)
+            first_eight_bytes = binary_file.read(8)
+
+        # From the first eight bytes of the file, unpack the bytes
+        # of the known identifier byte locations, in to a string.
+        # Example, if this was a netcdf file than ONLY name_cdf would
+        # equal 'CDF' the other variables, name_hdf would be 'DF '
+        # name_grid 'CDF '
+        name_cdf, name_hdf, name_grib = [None] * 3
+        if len(first_eight_bytes) == 8:
+            name_cdf =  struct.unpack('3s',first_eight_bytes[:3])[0]
+            name_hdf =  struct.unpack('3s',first_eight_bytes[1:4])[0]
+            name_grib = struct.unpack('4s',first_eight_bytes[:4])[0]
+
+        # Why not just use a else, instead of elif else if we are going to
+        # return GRIB ? It allows for expansion, ie. Maybe we pass in a
+        # logger and log the cases we can't determine the type.
+        if name_cdf == 'CDF' or name_hdf == 'HDF':
+            return "NETCDF"
+        elif name_grib == 'GRIB':
+            return "GRIB"
+        else:
+            # This mimicks previous behavoir, were we at least will always return GRIB.
+            # It also handles the case where GRIB was not in the first 4 bytes
+            # of a legitimate grib file, see John.
+            # logger.info('Can't determine type, returning GRIB
+            # as default %s'%filepath)
+            return "GRIB"
+
+    except IOError:
+        # Skip the IOError, and keep processing data.
+        # ie. filepath references a file that does not exist
+        # or filepath is a directory.
         return None
+
+    # Previous Logic
+    # ncdump_exe = config.getexe('NCDUMP_EXE')
+    #try:
+    #    result = subprocess.check_output([ncdump_exe, filepath])
+
+    #except subprocess.CalledProcessError:
+    #    return "GRIB"
+
+    #regex = re.search("netcdf", result)
+    #if regex is not None:
+    #    return "NETCDF"
+    #else:
+    #    return None
+
 
 
 def get_time_from_file(logger, filepath, template):
@@ -1262,9 +1365,9 @@ def getraw_interp(p, sec, opt):
             if p.has_option(sec,var_name):
                 var = p.getstr(sec,name)
             elif p.has_option('config',var_name):
-                var = p.getstr('config',name)
+                var = p.getstr('config',var_name)
             elif p.has_option('dir',var_name):
-                var = p.getstr('dir',name)
+                var = p.getstr('dir',var_name)
             elif var_name[0:3] == "ENV":
                 var = os.environ.get(var_name[4:-1])
 
@@ -1324,47 +1427,47 @@ def run_stand_alone(module_name, app_name):
         Returns:
             None
     """
-        try:
-            # If jobname is not defined, in log it is 'NO-NAME'
-            if 'JLOGFILE' in os.environ:
-                produtil.setup.setup(send_dbn=False, jobname='run-METplus',
-                                     jlogfile=os.environ['JLOGFILE'])
-            else:
-                produtil.setup.setup(send_dbn=False, jobname='run-METplus')
-            produtil.log.postmsg(app_name+' is starting')
+    try:
+        # If jobname is not defined, in log it is 'NO-NAME'
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus',
+                                 jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus')
+        produtil.log.postmsg(app_name+' is starting')
 
-            # Job Logger
-            produtil.log.jlogger.info('Top of '+app_name)
+        # Job Logger
+        produtil.log.jlogger.info('Top of '+app_name)
 
-            # Used for logging and usage statment
-            cur_filename = sys._getframe().f_code.co_filename
-            cur_function = sys._getframe().f_code.co_name
+        # Used for logging and usage statment
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
 
-            # Setup Task logger, Until Conf object is created, Task logger is
-            # only logging to tty, not a file.
-            logger = logging.getLogger(app_name)
-            logger.info('logger Top of '+app_name+".")
+        # Setup Task logger, Until Conf object is created, Task logger is
+        # only logging to tty, not a file.
+        logger = logging.getLogger(app_name)
+        logger.info('logger Top of '+app_name+".")
 
-            # Parse arguments, options and return a config instance.
-            p = config_metplus.setup(filename=cur_filename)
+        # Parse arguments, options and return a config instance.
+        p = config_metplus.setup(filename=cur_filename)
 
-            logger = get_logger(p)
+        logger = get_logger(p)
 
-            module = __import__(module_name)
-            wrapper_class = getattr(module, app_name+"Wrapper")
-            wrapper = wrapper_class(p, logger)
+        module = __import__(module_name)
+        wrapper_class = getattr(module, app_name+"Wrapper")
+        wrapper = wrapper_class(p, logger)
 
-            os.environ['MET_BASE'] = p.getdir('MET_BASE')
+        os.environ['MET_BASE'] = p.getdir('MET_BASE')
 
-            produtil.log.postmsg(app_name+' Calling run_all_times.')
+        produtil.log.postmsg(app_name+' Calling run_all_times.')
 
-            wrapper.run_all_times()
+        wrapper.run_all_times()
 
-            produtil.log.postmsg(app_name+' completed')
-        except Exception as e:
-            produtil.log.jlogger.critical(
-                app_name+'  failed: %s' % (str(e),), exc_info=True)
-            sys.exit(2)
+        produtil.log.postmsg(app_name+' completed')
+    except Exception as e:
+        produtil.log.jlogger.critical(
+            app_name+'  failed: %s' % (str(e),), exc_info=True)
+        sys.exit(2)
 
 
 if __name__ == "__main__":
