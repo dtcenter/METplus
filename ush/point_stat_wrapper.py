@@ -9,6 +9,8 @@ import sys
 from collections import namedtuple
 from collections import OrderedDict
 import itertools
+import copy
+import pdb
 
 import config_metplus
 import met_util as util
@@ -173,7 +175,7 @@ class PointStatWrapper(CommandBuilder):
         if loop_method == 'processes':
             self.run_all_times()
         else:
-            self.logger.error("ERROR|:" + cur_function + '|' + cur_filename +
+            self.logger.error(cur_function + '|' + cur_filename +
                               '| ' + " loop method defined in configuration "
                                      "file is unsupported.  Only 'processes' "
                                      "is "
@@ -218,7 +220,7 @@ class PointStatWrapper(CommandBuilder):
             util.mkdir_p(self.outdir)
 
             cmd = self.get_command()
-            self.logger.debug("DEBUG:|" + cur_function + "|" + cur_filename
+            self.logger.debug(cur_function + "|" + cur_filename
                               + "| Command to run MET point_stat: " + cmd)
             self.build()
             self.clear()
@@ -400,44 +402,6 @@ class PointStatWrapper(CommandBuilder):
         self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
                          "Creating file information for model/fcst or obs...")
 
-        # Get a list of all the model/fcst files
-        dir_to_search = self.ps_dict['FCST_INPUT_DIR']
-        fcst_file_tmpl = self.ps_dict['FCST_INPUT_FILE_TMPL']
-        fcst_file_regex_tuple = self.create_filename_regex(fcst_file_tmpl)
-        fcst_dir_regex = self.ps_dict['FCST_INPUT_DIR_REGEX']
-
-        # Create the regex for the full filepath
-        if fcst_dir_regex:
-            fcst_file_regex =  fcst_dir_regex + "/" + fcst_file_regex_tuple[0]
-        else:
-            fcst_file_regex = '.*' + fcst_file_regex_tuple[0]
-
-        # Get a list of dates (YYYYMMDD or YYYYMMDDHH) from dated subdirs
-        # (if data is not arranged
-        # into dated subdirs, an empty list is returned).
-        all_fcst_files = self.get_all_input_files(dir_to_search,
-                                                  fcst_file_regex,
-                                                  fcst_dir_regex)
-
-        # Get a list of all the obs files
-        dir_to_search = self.ps_dict['OBS_INPUT_DIR']
-        obs_file_tmpl = self.ps_dict['OBS_INPUT_FILE_TMPL']
-        obs_dir_regex = self.ps_dict['OBS_INPUT_DIR_REGEX']
-        obs_file_regex_tuple = self.create_filename_regex(obs_file_tmpl)
-
-        # Create the regex for the full filepath
-        if obs_dir_regex:
-            obs_file_regex = obs_dir_regex + '/' + obs_file_regex_tuple[0]
-        else:
-            obs_file_regex = '.*' + obs_file_regex_tuple[0]
-
-        all_obs_files = self.get_all_input_files(dir_to_search,
-                                                 obs_file_regex,
-                                                 obs_dir_regex)
-
-        # Initialize the output list
-        consolidated_file_info = []
-
         # Determine which files are within the valid time window.
         # Whenever there is more than one fcst file with the same valid time,
         # keep it, because we want to perform verification for all fcst/model
@@ -475,7 +439,7 @@ class PointStatWrapper(CommandBuilder):
                         all_dates.append(cur_init_time)
                 all_valid_times.append(cur_date)
 
-        if time_method == 'BY_INIT':
+        elif time_method == 'BY_INIT':
             for cur_date in range(date_start, date_end, fhr_interval_secs):
                 for cur_fhr in range(fhr_start_secs, last_fhr,
                                      fhr_interval_secs):
@@ -485,32 +449,75 @@ class PointStatWrapper(CommandBuilder):
                 all_dates.append(cur_date)
 
         if file_type == "fcst":
-            consolidated_file_info = self.get_input_within_time_window("fcst", all_dates, all_fhrs,
-                                                                       all_fcst_files, fcst_file_regex)
-        else:
-            consolidated_file_info = self.get_input_within_time_window("obs", all_dates, all_fhrs,
-                                                                       all_obs_files, obs_file_regex)
+            # Get a list of all the model/fcst files
+            dir_to_search = self.ps_dict['FCST_INPUT_DIR']
+            fcst_file_tmpl = self.ps_dict['FCST_INPUT_FILE_TMPL']
+            fcst_file_regex_tuple = self.create_filename_regex(fcst_file_tmpl)
+            fcst_dir_regex = self.ps_dict['FCST_INPUT_DIR_REGEX']
 
+            # Get a list of dates (YYYYMMDD or YYYYMMDDHH) from dated subdirs
+            # (if data is not arranged
+            # into dated subdirs, an empty list is returned).
+            all_fcst_files = self.get_all_input_files(dir_to_search,
+                                                      fcst_file_regex_tuple[0],
+                                                      fcst_dir_regex)
+
+            consolidated_file_info = self.get_input_within_time_window(
+                file_type, all_dates, all_fhrs,
+                all_fcst_files, fcst_file_regex_tuple)
+
+        elif file_type == "obs":
+
+            # Get a list of all the obs files
+            dir_to_search = self.ps_dict['OBS_INPUT_DIR']
+            obs_file_tmpl = self.ps_dict['OBS_INPUT_FILE_TMPL']
+            obs_dir_regex = self.ps_dict['OBS_INPUT_DIR_REGEX']
+            obs_file_regex_tuple = self.create_filename_regex(obs_file_tmpl)
+
+            all_obs_files = self.get_all_input_files(dir_to_search,
+                                                     obs_file_regex_tuple[0],
+                                                     obs_dir_regex)
+            consolidated_file_info = self.get_input_within_time_window(
+                file_type, all_dates, all_fhrs,
+                all_obs_files, obs_file_regex_tuple)
+        else:
+            self.logger.error(
+                cur_filename + '|' + cur_function +
+                '| Unsupported file type.  File type must be "fcst" or "obs"')
+            sys.exit(1)
 
         return consolidated_file_info
 
-    def get_input_within_time_window(self, input_file_type, all_dates_in_window, all_fhrs, all_input_files, input_regex):
-        """! Filter the input files (fcst or obs) based on whether the date lies within the
-             time window specified by the user (via start and end times, interval/step size, beginning forecast
-             hour and ending forecast hour).  For files that fall within the time window, the full filepath
-             and available time information (initialization time, cycle, lead, offset) are stored in
-             a named tuple.
+    def get_input_within_time_window(self, input_file_type, all_dates_in_window,
+                                     all_fhrs, all_input_files,
+                                     input_regex_tuple):
+        """! Filter the input files (fcst or obs) based on whether the
+             date lies within the time window specified by the user
+             (via start and end times, interval/step size, beginning forecast
+             hour and ending forecast hour).  For files that fall within
+             the time window, the full filepath and available time
+             information (initialization time, cycle, lead, offset)
+             are stored in a named tuple.
 
              Args:
                  @param input_file_type  - "fcst" or "obs"
-                 @param all_dates_in_window - all the dates that comprise the user's time window
+                 @param all_dates_in_window - all the dates that comprise
+                                              the user's time window
                  @param all_fhrs   - all the forecast hours in the time window
                  @param all_input_files - all the fcst or obs input files
-                 @param input_regex     - the regex for the fcst or obs input file
+                 @param input_regex_tuple     - the tuple containing the
+                                                filename regex and the order
+                                                of keywords for the date,cycle,
+                                                offset and lead for the fcst/obs
+                                                input file
              Returns:
-                 consolidated_file_info  - a list of the named tuple, which contains the
-                                    information for each file (i.e. the date and any combination of
-                                    cycle, lead, and offset within the user's specified time window of interest).
+                 consolidated_file_info  - a list of the named tuple,
+                                           which contains the
+                                           information for each file
+                                           (i.e. the date and any combination of
+                                           cycle, lead, and offset within
+                                           the user's specified time window
+                                           of interest).
 
         """
         # pylint:disable=protected-access
@@ -528,13 +535,47 @@ class PointStatWrapper(CommandBuilder):
         InputFileInfo = namedtuple('InputFileInfo',
                                    'full_filepath, date, '
                                    'valid_time, cycle, lead')
+
         # Get the information for the fcst/model file
+        # Create the regex for the full filepath, so we correctly
+        # capture the date information from the dated subdirectories if
+        # our data is organized by subdirectories with init dates.
+        full_input_keywords = copy.deepcopy(input_regex_tuple[1])
+        if input_file_type == 'fcst':
+            fcst_dir_regex = self.ps_dict['FCST_INPUT_DIR_REGEX']
+            if fcst_dir_regex:
+                # If the data is organized by date subdirectories
+                full_input_regex = '.*' + fcst_dir_regex + '/' + \
+                                   input_regex_tuple[0]
+                full_input_keywords.insert(0, 'init')
+            else:
+                full_input_regex = '.*' + str(input_regex_tuple[0])
+
+        elif input_file_type == 'obs':
+            obs_dir_regex = self.ps_dict['OBS_INPUT_DIR_REGEX']
+            if obs_dir_regex:
+                # If the data is organized by date subdirectories
+                full_input_regex = '.*' + obs_dir_regex + '/' +\
+                                   input_regex_tuple[0]
+                full_input_keywords.insert(0, 'init')
+
+            else:
+                full_input_regex = '.*/' + input_regex_tuple[0]
+
         if all_input_files:
-            regex_match = re.compile(input_regex)
+            regex_match = re.compile(full_input_regex)
             for input_file in all_input_files:
                 match = re.match(regex_match, input_file)
-                time_info_tuple = \
-                    self.get_time_info_from_file(match)
+                if input_file_type == 'fcst':
+                    time_info_tuple = \
+                        self.get_time_info_from_file(match,
+                                                     full_input_regex,
+                                                     full_input_keywords)
+                elif input_file_type == 'obs':
+                    time_info_tuple = \
+                            self.get_time_info_from_file(match,
+                                                         full_input_regex,
+                                                         full_input_keywords)
 
                 # Determine if this file's valid time is one of the
                 # valid times of interest and corresponds to
@@ -552,14 +593,17 @@ class PointStatWrapper(CommandBuilder):
                                                     time_info_tuple.lead)
                     consolidated_file_info.append(input_file_info)
         else:
-            self.logger.error(cur_function + '|' + cur_filename +
-                              'No input files (obs/fcst) found in '
+            self.logger.error(cur_function + '|' + cur_filename + '| '
+                              ' No input files for ' + input_file_type +
+                              ' found in '
                               'the specified input directory. '
                               'Please verify that data '
                               'files are present and the '
                               'input directory path in '
                               'the config file is correct.')
             sys.exit(1)
+
+        return consolidated_file_info
 
     def get_all_input_files(self, dir_to_search, input_file_regex,
                             input_dir_regex):
@@ -585,10 +629,9 @@ class PointStatWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
         self.logger.debug(
-            "DEBUG|:" + cur_function + '|' + cur_filename + '| ' +
+            cur_function + '|' + cur_filename + '| ' +
             "Retrieving all forecast or obs input files")
         all_input_files = []
-        input_files_in_subdirs = []
 
         # Get a list of dates(YYYYMMDD or YYYYMMDDHH)
         # from dated subdirs (if data is not arranged
@@ -597,7 +640,6 @@ class PointStatWrapper(CommandBuilder):
             fcst_date_dirs = g2o_util.get_date_from_path(dir_to_search,
                                                          input_dir_regex)
             if fcst_date_dirs:
-
                 for fcst_entry in fcst_date_dirs:
                     dir_to_search = fcst_entry.subdir_filepath
                     input_files_in_subdirs = util.get_files(dir_to_search,
@@ -609,15 +651,23 @@ class PointStatWrapper(CommandBuilder):
             # Files contain date information in the filename.
             all_input_files = util.get_files(dir_to_search, input_file_regex,
                                              self.logger)
-
         return all_input_files
 
-    def get_time_info_from_file(self, match_from_regex):
+    def get_time_info_from_file(self, match_from_regex, full_input_regex,
+                                full_input_keywords):
         """! Determine the date and the valid time.
 
              Args:
-                match_from_regex - the match object returned from the
-                                   regex match
+               @param  match_from_regex - the match object returned from the
+                                          regex match
+               @param full_input_regex -       the file regex (full)
+                                          containing the ordering
+                                          of the date, cycle, offset, and
+                                          lead for the fcst/obs input
+                                          file.
+               @param full_input_keywords - a list of all the keywords,
+                                            including the init time from
+                                            any date subdirectories
              Returns:
                    file_time_info - a named tuple containing the date (ymd
                    or ymdh), and cycle time for obs file,
@@ -631,7 +681,7 @@ class PointStatWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
         self.logger.debug(
-            "DEBUG|:" + cur_function + '|' + cur_filename + '| ' +
+            cur_function + '|' + cur_filename + '| ' +
             "Retrieving time information for file")
 
         TimeInfo = namedtuple('TimeInfo', 'date, valid, cycle, lead')
@@ -641,39 +691,199 @@ class PointStatWrapper(CommandBuilder):
         # any other times elsewhere, so we will omit it.
         if not match_from_regex:
             # No match, filename format is unexpected.
-            self.logger.error('ERROR|:' + cur_function + '|' + cur_filename +
+            self.logger.error(cur_function + '|' + cur_filename +
                               ' filename does not match expected format, '
                               'please check your filename regex in the '
                               'configuration file. Exiting...')
             sys.exit(1)
         elif match_from_regex.lastindex == 4:
             # We have a date, cycle, lead, and offset
+            # Get the index of the keywords from the regex tuple that
+            # was passed in as an argument, so we preserve the order
+            # of the cycle, offset, and lead in the filename.
+
+            # We are assuming that since there are 4 matches, the
+            # first one is the date derived from the subdirectory name.
             date_str = str(match_from_regex.group(1))
-            cycle = match_from_regex.group(2)
-            offset_str = match_from_regex.group(3)
-            lead_str = match_from_regex.group(4)
+
+            # Enumerate the list of keywords embedded in the filename to
+            # get the ordering so we can assign the correct value to the
+            # cycle, offset, and lead.
+
+            # Initialize the date, cycle, lead, and offset strings to None,
+            # and xxx_secs to 0
+            cycle_str = None
+            offset_str = None
+            lead_str = None
+            cycle_index = None
+            lead_index = None
+            offset_index = None
+            cycle_secs = 0
+            offset_secs = 0
+            lead_secs = 0
+
+            for i, x in enumerate(full_input_keywords):
+                if x == 'cycle':
+                    # Add one to the index, because
+                    # the 0th regex group is the entire matched string.
+                    cycle_index = i + 1
+                elif x == 'offset':
+                    # Add one to the index, because
+                    # the 0th regex group is the entire matched string.
+                    offset_index = i + 1
+                elif x == 'lead':
+                    # Add one to the index, because
+                    # the 0th regex group is the entire matched string.
+                    lead_index = i + 1
+
+            if cycle_index:
+                cycle_str = match_from_regex.group(cycle_index)
+                cycle_secs = int(cycle_str) * self.HOURS_TO_SECONDS
+
+            if offset_index:
+                offset_str = match_from_regex.group(3)
+                offset_secs = self.HOURS_TO_SECONDS * int(offset_str)
+
+            # For future case where a lead is used in conjunction with
+            # date and either cycle or offset:
+            if lead_index:
+                lead_str = match_from_regex.group(lead_index)
+                lead_secs = int(lead_str) * self.HOURS_TO_SECONDS
+
+            cycle = match_from_regex.group(cycle_index)
+            offset_str = match_from_regex.group(offset_index)
+            lead_str = match_from_regex.group(lead_index)
             offset_secs = self.HOURS_TO_SECONDS * int(offset_str)
             unix_date = self.convert_date_strings_to_unix_times(
                 date_str)
             cycle_secs = int(cycle) * self.HOURS_TO_SECONDS
             lead_secs = int(lead_str) * self.HOURS_TO_SECONDS
             valid_time_unix = unix_date + (cycle_secs - offset_secs + lead_secs)
-            file_time_info = TimeInfo(unix_date, valid_time_unix, cycle,
+            file_time_info = TimeInfo(unix_date, valid_time_unix, cycle_secs,
                                       lead_secs)
         elif match_from_regex.lastindex == 3:
-            # We have a date, cycle, and offset
-            date_str = str(match_from_regex.group(1))
-            cycle = match_from_regex.group(2)
-            offset_str = match_from_regex.group(3)
-            offset_secs = self.HOURS_TO_SECONDS * int(offset_str)
-            unix_date = self.convert_date_strings_to_unix_times(
-                date_str)
-            cycle_secs = int(cycle) * self.HOURS_TO_SECONDS
-            valid_time_unix = unix_date + (cycle_secs - offset_secs)
+            # We could have a combination of any three of the following:
+            # date, cycle, lead, offset
+            # Enumerate the list of keywords embedded in the filename to
+            # get the ordering so we can assign the correct value to the
+            # cycle, offset, and lead.
+
+            # Initialize the date, cycle, lead, and offset strings to None
+            # and xxx_secs to 0
+            date_str = None
+            cycle_str = None
+            offset_str = None
+            lead_str = None
+            date_index = None
+            cycle_index = None
+            lead_index = None
+            offset_index = None
+            cycle_secs = 0
+            offset_secs = 0
+            lead_secs = 0
+
+            for i, x in enumerate(full_input_keywords):
+                if x == 'valid' or x == 'init':
+                    # Add one to the index, because
+                    # the 0th regex group is the entire matched string.
+                    date_index = i + 1
+                elif x == 'cycle':
+                    # Add one to the index, because
+                    # the 0th regex group is the entire matched string.
+                    cycle_index = i + 1
+                elif x == 'offset':
+                    # Add one to the index, because
+                    # the 0th regex group is the entire matched string.
+                    offset_index = i + 1
+                elif x == 'lead':
+                    # Add one to the index, because
+                    # the 0th regex group is the entire matched string.
+                    lead_index = i + 1
+
+            if date_index:
+                date_str = match_from_regex.group(date_index)
+                unix_date = self.convert_date_strings_to_unix_times(
+                    date_str)
+            else:
+                self.logger.error(cur_filename + "|" + cur_function + "|" +
+                                  "No date information available.  Exiting.")
+                sys.exit(1)
+
+            if cycle_index:
+                cycle_str = match_from_regex.group(cycle_index)
+                cycle_secs = int(cycle_str) * self.HOURS_TO_SECONDS
+
+            if offset_index:
+                offset_str = match_from_regex.group(3)
+                offset_secs = self.HOURS_TO_SECONDS * int(offset_str)
+
+            # For future case where a lead is used in conjunction with
+            # date and either cycle or offset:
+            if lead_index:
+                lead_str = match_from_regex.group(lead_index)
+                lead_secs = int(lead_str) * self.HOURS_TO_SECONDS
+
+            valid_time_unix = unix_date + cycle_secs - offset_secs
+
             file_time_info = TimeInfo(unix_date, valid_time_unix, cycle_secs,
-                                      None)
+                                      lead_secs)
+
         elif match_from_regex.lastindex == 2:
-            # We have a fhr/cycle hour, and offset hr
+            # We most likely have a fhr/cycle hour, and offset hr
+            # or we could have a combination of any two of the following:
+            # date, cycle, lead, offset
+
+            #Initialize the date, cycle, lead, and offset strings to None
+            # and xxx_secs to 0
+            date_str = None
+            cycle_str = None
+            offset_str = None
+            lead_str = None
+            date_index = None
+            cycle_index = None
+            lead_index = None
+            offset_index = None
+            cycle_secs = 0
+            offset_secs = 0
+            lead_secs = 0
+
+            for i, x in enumerate(full_input_keywords):
+                if x == 'valid' or x == 'init':
+                    # Add one to the index, because
+                    # the 0th regex group is the entire matched string.
+                    date_index = i + 1
+                elif x == 'cycle':
+                    # Add one to the index, because
+                    # the 0th regex group is the entire matched string.
+                    cycle_index = i + 1
+                elif x == 'offset':
+                    # Add one to the index, because
+                    # the 0th regex group is the entire matched string.
+                    offset_index = i + 1
+                elif x == 'lead':
+                    # Add one to the index, because
+                    # the 0th regex group is the entire matched string.
+                    lead_index = i + 1
+
+            if date_index:
+                date_str = match_from_regex.group(date_index)
+                unix_date = self.convert_date_strings_to_unix_times(
+                    date_str)
+
+            if cycle_index:
+                cycle_str = match_from_regex.group(cycle_index)
+                cycle_secs = int(cycle_str) * self.HOURS_TO_SECONDS
+
+            if offset_index:
+                offset_str = match_from_regex.group(3)
+                offset_secs = self.HOURS_TO_SECONDS * int(offset_str)
+
+            # For future case where a lead is used in conjunction with
+            # date and either cycle or offset:
+            if lead_index:
+                lead_str = match_from_regex.group(lead_index)
+                lead_secs = int(lead_str) * self.HOURS_TO_SECONDS
+
             date_str = str(match_from_regex.group(2))
             fhr_cycle_hr = int(match_from_regex.group(1))
             fhr_cycle = self.HOURS_TO_SECONDS * fhr_cycle_hr
@@ -681,6 +891,7 @@ class PointStatWrapper(CommandBuilder):
             valid_time_unix = unix_date + fhr_cycle
             file_time_info = TimeInfo(unix_date, valid_time_unix, fhr_cycle,
                                       None)
+
         elif match_from_regex.lastindex == 1:
             # We only have date in ymdh, which we use as a valid
             # time.
@@ -709,7 +920,7 @@ class PointStatWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
         self.logger.debug(
-            "DEBUG|:" + cur_function + '|' + cur_filename + '| ' +
+            cur_function + '|' + cur_filename + '| ' +
             "Converting date strings to unix times")
 
         if len(date_string) == 8:
@@ -759,7 +970,7 @@ class PointStatWrapper(CommandBuilder):
         else:
             # Unexpected format
             self.logger.error(
-                'ERROR |:' + cur_function + '|' + cur_filename
+                cur_function + '|' + cur_filename
                 + '|' + 'Grid id in unexpected format of Gn or '
                         'Gnn, please check again. Exiting...')
             sys.exit(1)
@@ -852,10 +1063,10 @@ class PointStatWrapper(CommandBuilder):
             # No init or valid time in name, this is possible as the
             # date information can be found in the subdirectory name.
             # Just in case, log a warning message and continue.
-            self.logger.warn(cur_filename + "|" +
+            self.logger.info(cur_filename + "|" +
                              cur_function + '|: No date information was found '
                                             'in the filename template section.'
-                                            'Assuming date information was'
+                                            'Assuming date information was '
                                             'retrieved from a dated '
                                             'subdirectory.')
         offset_match = re.match(r'.*\{offset\?fmt=(.*?)\}', tmpl)
@@ -895,6 +1106,7 @@ class PointStatWrapper(CommandBuilder):
              re.finditer(r".*\{lead\?fmt=(.*?)\}", tmpl)]
             keyword_index['lead'] = m.start(1)
         string_sub = StringSub(self.logger, tmpl, **kwargs)
+
         input_file_regex = string_sub.create_grid2obs_regex()
 
         # Get a list of the keywords in the order in which they appeared in the
@@ -902,6 +1114,7 @@ class PointStatWrapper(CommandBuilder):
         ordered = OrderedDict(
             sorted(keyword_index.items(), key=lambda t: t[1]))
         keywords_ordered = ordered.keys()
+
         return input_file_regex, keywords_ordered
 
 
