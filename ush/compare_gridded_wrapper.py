@@ -295,8 +295,8 @@ that reformat gridded data
                              "\"; level=\"(*,*)\"; cat_thresh=[ gt" + \
                              str(obs_thresh)+" ]; },"
         else:
-            obs_data_type = util.get_filetype(self.p, obs_path)
-            model_data_type = util.get_filetype(self.p, model_path)
+            obs_data_type = util.get_filetype(obs_path)
+            model_data_type = util.get_filetype(model_path)
             if obs_data_type == "NETCDF":
 
               obs_field += "{ name=\"" + v.obs_name+"_" + obs_level.zfill(2) + \
