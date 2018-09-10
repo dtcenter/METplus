@@ -1335,44 +1335,38 @@ class StringSub:
 
             # Valid and cycle only
             elif (VALID_STRING in self.kwargs and
-                  CYCLE_STRING in self.kwargs
-            ):
+                  CYCLE_STRING in self.kwargs):
 
                 self.kwargs[VALID_STRING] = self.valid
                 self.kwargs[CYCLE_STRING] = self.cycle
 
             # Cycle and lead
             elif (CYCLE_STRING in self.kwargs and
-                  LEAD_STRING in self.kwargs
-            ):
+                  LEAD_STRING in self.kwargs):
                 self.kwargs[CYCLE_STRING] = self.cycle
                 self.kwargs[LEAD_STRING] = self.lead
             # Cycle and offset
             elif (CYCLE_STRING in self.kwargs and
-                   OFFSET_STRING in self.kwargs
-                 ):
+                  OFFSET_STRING in self.kwargs):
                 self.kwargs[CYCLE_STRING] = self.date
                 self.kwargs[OFFSET_STRING] = self.region
             # Valid and lead
             elif (VALID_STRING in self.kwargs and
-                  LEAD_STRING in self.kwargs
-                 ):
+                  LEAD_STRING in self.kwargs):
                 self.kwargs[VALID_STRING] = self.valid
                 self.kwargs[LEAD_STRING] = self.lead
             # init and lead
             # This combination hasn't been observed, but including it
             # in the event it is needed.
             elif (INIT_STRING in self.kwargs and
-                  LEAD_STRING in self.kwargs
-                 ):
+                  LEAD_STRING in self.kwargs):
                 self.kwargs[INIT_STRING] = self.init
                 self.kwargs[LEAD_STRING] = self.lead
 
             # Cycle, lead, and offset
             elif (CYCLE_STRING in self.kwargs and
                   LEAD_STRING in self.kwargs and
-                  OFFSET_STRING in self.kwargs
-                ):
+                  OFFSET_STRING in self.kwargs):
                 self.kwargs[CYCLE_STRING] = self.cycle
                 self.kwargs[LEAD_STRING] = self.lead
                 self.kwargs[OFFSET_STRING] = self.offset
