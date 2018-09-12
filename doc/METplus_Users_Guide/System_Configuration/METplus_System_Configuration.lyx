@@ -3777,6 +3777,62 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+FCST_INPUT_DIR_REGEX
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the regular expression used for searching for forecast file input
+ directories.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ point_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [regex_pattern]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 FCST_INPUT_DIR
 \series default
 
@@ -3815,15 +3871,9 @@ Default:
 \series default
 \shape default
  Varies
-\series bold
-\shape italic
-
 \begin_inset Newline newline
 \end_inset
 
-
-\series default
-\shape default
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -3866,6 +3916,67 @@ Family:
 \series default
 \shape default
  [regex_pattern]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_INPUT_FILE_TMPL
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the filename template for input forecast files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ point_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
 \series bold
 \shape italic
 
@@ -10393,6 +10504,68 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+OBS_INPUT_DIR_REGEX
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the regular expression to use when searching for observation file
+ input directories.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ point_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [regex_pattern]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 OBS_INPUT_FILE_REGEX
 \series default
 
@@ -10420,6 +10593,67 @@ Family:
 \series default
 \shape default
  [regex_pattern]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_INPUT_FILE_TEMPL
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the filename template to use for observation input files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ point_stat_wrapper.py, 
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
 \series bold
 \shape italic
 
