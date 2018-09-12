@@ -85,8 +85,6 @@ class PB2NCWrapper(CommandBuilder):
                                                      'PB2NC_CONFIG_FILE')
         pb_dict['PB2NC_MESSAGE_TYPE'] = util.getlist(
             self.p.getstr('config', 'PB2NC_MESSAGE_TYPE'))
-        pb_dict['VERTICAL_LOCATION'] = self.p.getstr('config',
-                                                     'VERTICAL_LOCATION')
 
         grid_id = self.p.getstr('config', 'PB2NC_GRID')
         if grid_id.startswith('G'):

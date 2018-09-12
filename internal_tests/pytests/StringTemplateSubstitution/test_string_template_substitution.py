@@ -60,7 +60,6 @@ def test_gdas_substitution():
     expected_filename = 'prepbufr.gdas.' + valid_string + '.nc'
     ss = StringSub(logger, templ, valid=valid_string)
     filename = ss.doStringSub()
-    # print("expected filename ", expected_filename, " gdas filename: ", filename)
     assert(filename == expected_filename)
 
 @pytest.mark.parametrize(
@@ -298,10 +297,12 @@ def test_ym_date_dir_init():
     # e.g. /d1/METplus_TC/adeck_orig/201708/atcfunix.gfs.2017080100
     init_str = '2017080100'
     date_str = '201708'
-    templ = '/d1/METplus_TC/adeck_orig/{date?fmt=%s}/atcfunix.gfs.{init?fmt=%Y%m%d%H}.dat'
+    templ = '/d1/METplus_TC/adeck_orig/{date?fmt=%s}/' \
+            'atcfunix.gfs.{init?fmt=%Y%m%d%H}.dat'
     ss = StringSub(logger, templ, date=date_str, init=init_str)
     filename = ss.doStringSub()
-    expected_filename = '/d1/METplus_TC/adeck_orig/201708/atcfunix.gfs.2017080100.dat'
+    expected_filename = '/d1/METplus_TC/adeck_orig/201708/' \
+                        'atcfunix.gfs.2017080100.dat'
     assert filename == expected_filename
 
 
@@ -310,10 +311,12 @@ def test_ym_date_dir():
     logger = logging.getLogger("test")
     # e.g. /d1/METplus_TC/adeck_orig/201708/atcfunix.gfs.2017080100
     date_str = '201708'
-    templ = '/d1/METplus_TC/adeck_orig/{date?fmt=%s}/atcfunix.gfs.2017080100.dat'
+    templ = '/d1/METplus_TC/adeck_orig/{date?fmt=%s}/' \
+            'atcfunix.gfs.2017080100.dat'
     ss = StringSub(logger, templ, date=date_str)
     filename = ss.doStringSub()
-    expected_filename = '/d1/METplus_TC/adeck_orig/201708/atcfunix.gfs.2017080100.dat'
+    expected_filename = '/d1/METplus_TC/adeck_orig/201708/' \
+                        'atcfunix.gfs.2017080100.dat'
     assert filename == expected_filename
 
 
@@ -323,15 +326,18 @@ def test_ymd_date_dir():
     # e.g. /d1/METplus_TC/adeck_orig/20170811/atcfunix.gfs.2017080100
     init_str = '2017081118'
     date_str = '20170811'
-    templ = '/d1/METplus_TC/adeck_orig/{date?fmt=%s}/atcfunix.gfs.{init?fmt=%Y%m%d%H}.dat'
+    templ = '/d1/METplus_TC/adeck_orig/{date?fmt=%s}/atcfunix.gfs.' \
+            '{init?fmt=%Y%m%d%H}.dat'
     ss = StringSub(logger, templ, date=date_str, init=init_str)
     filename = ss.doStringSub()
-    expected_filename = '/d1/METplus_TC/adeck_orig/20170811/atcfunix.gfs.2017081118.dat'
+    expected_filename = '/d1/METplus_TC/adeck_orig/20170811/' \
+                        'atcfunix.gfs.2017081118.dat'
     assert filename == expected_filename
 
 
 def test_ymd_region_cyclone():
-    # Test that we can recreate the full file path with a date, region, and cyclone
+    # Test that we can recreate the full file path with a date,
+    # region, and cyclone
     logger = logging.getLogger("test")
     # /d1/METplus_TC/bdeck_orig/20170811/bal052017.dat
     date_str = '201708'
@@ -339,8 +345,10 @@ def test_ymd_region_cyclone():
     cyclone_str = '05'
     year_str = '2017'
     # templ = '/d1/METplus_TC/bdeck/{date?fmt=%Y%m}/bal{region?fmt=%s}.dat'
-    templ = '/d1/METplus_TC/bdeck/{date?fmt=%s}/b{region?fmt=%s}{cyclone?fmt=%s}{misc?fmt=%s}.dat'
-    ss = StringSub(logger, templ, date=date_str, region=region_str, cyclone=cyclone_str, misc=year_str)
+    templ = '/d1/METplus_TC/bdeck/{date?fmt=%s}/b{region?fmt=%s}' \
+            '{cyclone?fmt=%s}{misc?fmt=%s}.dat'
+    ss = StringSub(logger, templ, date=date_str, region=region_str,
+                   cyclone=cyclone_str, misc=year_str)
     full_file = ss.doStringSub()
     expected_full_file = '/d1/METplus_TC/bdeck/201708/bal052017.dat'
     assert full_file == expected_full_file
@@ -349,13 +357,135 @@ def test_ymd_region_cyclone():
 def test_create_cyclone_regex():
     # Test that the regex created from a template is what is expected
     logger = logging.getLogger("test")
-    templ = '/d1/METplus_TC/bdeck/{date?fmt=%s}/b{region?fmt=%s}{cyclone?fmt=%s}{misc?fmt=%s}.dat'
+    templ = '/d1/METplus_TC/bdeck/{date?fmt=%s}/b{region?fmt=%s}' \
+            '{cyclone?fmt=%s}{misc?fmt=%s}.dat'
     date_str = '201708'
     region_str = 'al'
     cyclone_str = '05'
     year_str = '2017'
-    ss = StringSub(logger, templ, date=date_str, region=region_str, cyclone=cyclone_str, misc=year_str)
+    ss = StringSub(logger, templ, date=date_str, region=region_str,
+                   cyclone=cyclone_str, misc=year_str)
     actual_regex = ss.create_cyclone_regex()
-    expected_regex = '/d1/METplus_TC/bdeck/([0-9]{4,10})/b([a-zA-Z]{2})([0-9]{2,3})([a-zA-Z0-9-_.]+).dat'
+    expected_regex = '/d1/METplus_TC/bdeck/([0-9]{4,10})/b([a-zA-Z]{2})([0-9]' \
+                     '{2,3})([a-zA-Z0-9-_.]+).dat'
     assert actual_regex == expected_regex
 
+
+def test_crow_variable_hour():
+    # Test that StringSub's doStringSub() correctly creates the valid hour
+    # without any zero-padding when given the following as input:
+    # pgbf{lead?fmt=%H}.gfs.{valid?fmt=%Y%M%D%H}
+    # pgbf([0-9]{1,3}).gfs.(2[0-9]{9})
+    logger = logging.getLogger("crow_data")
+
+    # crow input files with 3, 2, and 1-digit lead times:
+    crow_input_file_3 = 'pgbf219.gfs.2017060418'
+    crow_input_file_2 = 'pgbf18.gfs.2017062000'
+    crow_input_file_1 = 'pgbf3.gfs.2017060418'
+    lead_1 = '3'
+    lead_2 = '18'
+    lead_3 = '219'
+    valid_2 = '2017062000'
+    valid_1 = valid_3 = '2017060418'
+    templ = 'pgbf{lead?fmt=%H}.gfs.{valid?fmt=%Y%m%d%H}'
+    ss_1 = StringSub(logger, templ, valid=valid_1, lead=lead_1)
+    ss_2 = StringSub(logger, templ, valid=valid_2, lead=lead_2)
+    ss_3 = StringSub(logger, templ, valid=valid_3, lead=lead_3)
+    crow_1_output = ss_1.doStringSub()
+    crow_2_output = ss_2.doStringSub()
+    crow_3_output = ss_3.doStringSub()
+    # print("crow_1 output: ", crow_1_output)
+    # print("crow_2 output: ", crow_2_output)
+    # print("crow_3 output: ", crow_3_output)
+    assert(crow_1_output == crow_input_file_1 and
+           crow_2_output == crow_input_file_2 and
+           crow_3_output == crow_input_file_3)
+
+
+def test_create_grid2obs_regex_gfs():
+    # Test that the regex created from a template is what is expected
+    logger = logging.getLogger("test")
+    templ = '/path/to/gfs/pgbf{lead?fmt=%H}.gfs.{valid?fmt=%Y%m%d%HH}'
+
+    # variables to pass into StringSub
+    valid_str = '2017081118'
+    lead_str = '00'
+
+    ss = StringSub(logger, templ, valid=valid_str, lead=lead_str)
+    actual_regex = ss.create_grid2obs_regex()
+    expected_regex = '/path/to/gfs/pgbf([0-9]{1,3}).gfs.([0-9]{10})'
+    assert actual_regex == expected_regex
+
+
+def test_create_grid2obs_regex_nam():
+    # Test that the regex created from a template is what is expected
+    logger = logging.getLogger("test")
+    templ = \
+        '/path/to/nam.20170811/nam.t{cycle?' \
+        'fmt=%HH}z.prepbufr.tm{offset?fmt=%HH}'
+
+    # variables to set for StringSub
+    cycle_str = '18'
+    offset_str = '03'
+
+    ss = StringSub(logger, templ, cycle=cycle_str, offset=offset_str)
+    actual_regex = ss.create_grid2obs_regex()
+    expected_regex = \
+        '/path/to/nam.20170811/nam.t([0-9]{2,3})z.prepbufr.tm([0-9]{2,3})'
+    assert actual_regex == expected_regex
+
+
+def test_create_grid2obs_regex_gdas():
+    # Test that the regex created from a template is what is expected
+    logger = logging.getLogger("test")
+    templ = \
+        '/path/to/gdas/prepbufr.gdas.{valid?fmt=%Y%m%d%HH}'
+    # '/path/to/nam.20170611/nam.t[cycle?fmt=%HH}z.prepbufr.tm{offset?fmt=%HH}'
+    # templ_hrrr ='/path/to/hrrr.t{cycle?fmt=%HH}z.wrfprsf{lead?fmt=%HH}.grib2'
+    # tmpl_gdas = 'prepbufr.gdas.{valid?fmt=%Y%m%d%HH}'
+
+    # variables to set for StringSub
+    valid_str = '2017063018'
+
+    ss = StringSub(logger, templ, valid=valid_str)
+    actual_regex = ss.create_grid2obs_regex()
+    expected_regex = '/path/to/gdas/prepbufr.gdas.([0-9]{10})'
+    assert actual_regex == expected_regex
+
+def test_create_grid2obs_regex_hrrr():
+    # Test that the regex created from a template is what is expected
+    logger = logging.getLogger("test")
+    templ = \
+    '/path/to/hrrr/hrrr.t{cycle?fmt=%HH}z.wrfprsf{lead?fmt=%HH}.grib2'
+
+    # variables to set for StringSub
+    cycle_str = '15'
+    lead_str = '12'
+
+    ss = StringSub(logger, templ, cycle=cycle_str, lead=lead_str)
+    actual_regex = ss.create_grid2obs_regex()
+    expected_regex = \
+        '/path/to/hrrr/hrrr.t([0-9]{2,3})z.wrfprsf([0-9]{1,3}).grib2'
+    assert actual_regex == expected_regex
+
+
+def test_create_grid2obs_regex_all():
+    # Test that the regex created from the template that has valid
+    # cycle, lead and offset is correct (expected).
+    logger = logging.getLogger("test")
+    templ = \
+        '/path/to/nam.{init?fmt=%Y%m%d}/rap.t{cycle?fmt=%HH}z.awphys{lead?fmt=%H}.' \
+        'tm{offset?fmt=%H}.grib2'
+
+    # variables to set for StringSub
+    init_str = "20180815"
+    cycle_str = '00'
+    lead_str = '60'
+    offset_str = '00'
+
+    ss = StringSub(logger, templ, init=init_str, cycle=cycle_str,
+                   lead=lead_str, offset=offset_str)
+    actual_regex = ss.create_grid2obs_regex()
+    expected_regex = '/path/to/nam.([0-9]{8})/rap.t([0-9]{2,3})z.' \
+                     'awphys([0-9]{1,3}).tm([0-9]{2,3}).grib2'
+    assert actual_regex == expected_regex

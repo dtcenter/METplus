@@ -1079,7 +1079,6 @@ def parse_var_list(p):
                 obs_thresh = getlistfloat(getstr('config', "OBS_VAR"+n+"_THRESH"))
             else:
                 obs_thresh = fcst_thresh
-
             for f,o in zip(fcst_levels, obs_levels):
                 fo = FieldObj()
                 fo.fcst_name = fcst_name
@@ -1434,10 +1433,11 @@ def run_stand_alone(module_name, app_name):
                                  jlogfile=os.environ['JLOGFILE'])
         else:
             produtil.setup.setup(send_dbn=False, jobname='run-METplus')
-        produtil.log.postmsg(app_name+' is starting')
+        produtil.log.postmsg(app_name + ' is starting')
 
         # Job Logger
-        produtil.log.jlogger.info('Top of '+app_name)
+        produtil.log.jlogger.info('Top of ' + app_name)
+
 
         # Used for logging and usage statment
         cur_filename = sys._getframe().f_code.co_filename
@@ -1446,7 +1446,7 @@ def run_stand_alone(module_name, app_name):
         # Setup Task logger, Until Conf object is created, Task logger is
         # only logging to tty, not a file.
         logger = logging.getLogger(app_name)
-        logger.info('logger Top of '+app_name+".")
+        logger.info('logger Top of ' + app_name + ".")
 
         # Parse arguments, options and return a config instance.
         p = config_metplus.setup(filename=cur_filename)
@@ -1454,27 +1454,23 @@ def run_stand_alone(module_name, app_name):
         logger = get_logger(p)
 
         module = __import__(module_name)
-        wrapper_class = getattr(module, app_name+"Wrapper")
+        wrapper_class = getattr(module, app_name + "Wrapper")
         wrapper = wrapper_class(p, logger)
 
         os.environ['MET_BASE'] = p.getdir('MET_BASE')
 
-        produtil.log.postmsg(app_name+' Calling run_all_times.')
+        produtil.log.postmsg(app_name + ' Calling run_all_times.')
 
         wrapper.run_all_times()
 
-        produtil.log.postmsg(app_name+' completed')
+        produtil.log.postmsg(app_name + ' completed')
     except Exception as e:
         produtil.log.jlogger.critical(
-            app_name+'  failed: %s' % (str(e),), exc_info=True)
+            app_name + '  failed: %s' % (str(e),), exc_info=True)
         sys.exit(2)
 
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
-  #TODO: Move to unit tests
-#  get_time_from_file(None, "20170201", "{valid?fmt=%Y%m%d}")
-#  get_time_from_file(None, "/path/to/data//GFS/track_data/201412/amlq2014123118.gfso.0006", "{init?fmt=%Y%m}/amlq{init?fmt=%Y%m%d%H}.gfso.00{lead?fmt=%HH}")
-#  get_time_from_file(None, "/path/to/data/mrms/2018/04/30/mrms.MergedReflectivityQCComposite.20180430_062438.grib2", "{valid?fmt=%Y}/{valid?fmt=%m}/{valid?fmt=%d}/mrms.MergedReflectivityQCComposite.{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}.grib2")
 
 
