@@ -143,12 +143,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
             # grib2 file.
             fcst_sts = \
                 StringSub(logger, config.getraw('filename_templates',
-                                                     'GFS_FCST_FILE_TMPL'),
+                                                'GFS_FCST_FILE_TMPL'),
                           init=init_yyyymmddhh, lead=lead_str)
 
             anly_sts = \
                 StringSub(logger, config.getraw('filename_templates',
-                                                     'GFS_ANLY_FILE_TMPL'),
+                                                'GFS_ANLY_FILE_TMPL'),
                           valid=valid_yyyymmddhh, lead=lead_str)
 
             fcst_file = fcst_sts.doStringSub()
