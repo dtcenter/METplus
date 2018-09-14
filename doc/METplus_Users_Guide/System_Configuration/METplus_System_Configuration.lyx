@@ -2854,68 +2854,6 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-EXPT
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Name of experiment.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- config_launcher.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- METplus
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
 EXTRACT_OUT_DIR
 \series default
 
