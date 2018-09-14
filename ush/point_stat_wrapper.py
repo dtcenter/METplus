@@ -582,9 +582,7 @@ class PointStatWrapper(CommandBuilder):
                 # the expected forecast hour (based on forecast hour start
                 # and forecast hour interval).  If so, then consolidate
                 # the time info into the InputFileInfo tuple.
-                if time_info_tuple.date in all_dates_in_window and \
-                        (time_info_tuple.cycle in all_fhrs or
-                         time_info_tuple.lead in all_fhrs):
+                if time_info_tuple.date in all_dates_in_window:
                     input_file_info = InputFileInfo(input_file,
                                                     time_info_tuple.date,
                                                     time_info_tuple.valid,
