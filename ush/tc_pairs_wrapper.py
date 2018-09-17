@@ -25,8 +25,8 @@ import re
 import csv
 import produtil.setup
 from produtil.run import ExitStatusException
-# TODO - critical  must import met_util before CommandBuilder
-# MUST import met_util BEFORE command_builder, else it breaks stand-alone
+# TODO - critical  must import grid_to_obs_util before CommandBuilder
+# MUST import grid_to_obs_util BEFORE command_builder, else it breaks stand-alone
 from command_builder import CommandBuilder
 import met_util as util
 import config_metplus

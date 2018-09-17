@@ -137,16 +137,6 @@ class PB2NCWrapper(CommandBuilder):
                                                            'regex_pattern',
                                                            'PREPBUFR_DIR_REGEX')
 
-        # non-MET executables
-        pb_dict['WGRIB2'] = self.p.getdir('exe', 'WGRIB2')
-        pb_dict['RM_EXE'] = self.p.getdir('exe', 'RM_EXE')
-        pb_dict['CUT_EXE'] = self.p.getdir('exe', 'CUT_EXE')
-        pb_dict['TR_EXE'] = self.p.getdir('exe', 'TR_EXE')
-        pb_dict['NCAP2_EXE'] = self.p.getdir('exe', 'NCAP2_EXE')
-        pb_dict['CONVERT_EXE'] = self.p.getdir('exe', 'CONVERT_EXE')
-        pb_dict['NCDUMP_EXE'] = self.p.getdir('exe', 'NCDUMP_EXE')
-        pb_dict['EGREP_EXE'] = self.p.getdir('exe', 'EGREP_EXE')
-
         return pb_dict
 
     def main(self):
