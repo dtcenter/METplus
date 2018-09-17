@@ -274,7 +274,7 @@ that reformat gridded data
             obs_cat_thresh = obs_cat_thresh[0:-2]+" ];"
 
         if len(fcst_threshs) != len(obs_threshs):
-            self.logger.error("run_example: Number of forecast and "\
+            self.logger.error("Number of forecast and "\
                               "observation thresholds must be the same")
             exit(1)
 
