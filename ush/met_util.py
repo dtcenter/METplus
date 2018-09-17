@@ -136,7 +136,6 @@ def set_logvars(config, logger=None):
        Args:
            @param config:   the config instance
            @param logger: the logger, optional
-
     """
 
     if logger is None:
@@ -232,7 +231,6 @@ def get_logger(config, sublog=None):
     for writing to the LOG_METPLUS and it sets the LOG_LEVEL. If LOG_METPLUS is
     not defined, a logger is still returned without adding a file handler,
     but still setting the LOG_LEVEL.
-
        Args:
            @param config:   the config instance
            @param sublog the logging subdomain, or None
@@ -924,16 +922,12 @@ def get_dirs(base_dir):
 def getlist(s, logger=None):
     """! Returns a list of string elements from a comma or space
          separated string of values.
-
          This function MUST also return an empty list [] if s is '' empty.
-
          This function is meant to handle these possible or similar inputs:
          AND return a clean list with no surrounding spaces or trailing
          commas in the elements.
-
          '4,4,2,4,2,4,2, ' or '4,4,2,4,2,4,2 ' or
          '4, 4, 4, 4, ' or '4, 4, 4, 4 '
-
          Note: getstr on an empty variable (EMPTY_VAR = ) in
          a conf file returns '' an empty string.
 
@@ -1086,7 +1080,7 @@ def parse_var_list(p):
                 fo.fcst_extra = fcst_extra
                 fo.obs_extra = obs_extra
                 fo.fcst_thresh = fcst_thresh
-                fo.obs_thresh = obs_thresh             
+                fo.obs_thresh = obs_thresh
                 fo.fcst_level = f
                 fo.obs_level = o
                 var_list.append(fo)
@@ -1109,18 +1103,13 @@ def parse_var_list(p):
 def reformat_fields_for_met(all_vars_list, logger):
         """! Reformat the fcst or obs field values defined in the
              MET+ config file to the MET field dictionary.
-
              Args:
                  all_vars_list - The list of all variables/fields retrieved
                                  from the MET+ configuration file
-
                  logger        - The log to which any logging is directed.
-
              Returns:
                  met_fields - a named tuple containing the fcst field and
                               obs field key-value pairs needed by MET.
-
-
         """
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
@@ -1391,7 +1380,7 @@ def decompress_file(filename, logger=None):
     """
     if os.path.exists(filename):
         return
-    elif os.path.exists(filename+".gz"):        
+    elif os.path.exists(filename+".gz"):
         if logger:
             logger.info("Decompressing gz file")
         with gzip.open(filename+".gz", 'rb') as infile:
@@ -1483,5 +1472,3 @@ def add_common_items_to_dictionary(p, dictionary):
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
-
-
