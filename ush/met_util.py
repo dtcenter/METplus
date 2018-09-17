@@ -1459,5 +1459,16 @@ def run_stand_alone(module_name, app_name):
         sys.exit(2)
 
 
+def add_common_items_to_dictionary(p, dictionary):
+    dictionary['WGRIB2'] = p.getexe('WGRIB2')
+    dictionary['CUT_EXE'] = p.getexe('CUT_EXE')
+    dictionary['TR_EXE'] = p.getexe('TR_EXE')
+    dictionary['RM_EXE'] = p.getexe('RM_EXE')
+    dictionary['NCAP2_EXE'] = p.getexe('NCAP2_EXE')
+    dictionary['CONVERT_EXE'] = p.getexe('CONVERT_EXE')
+    dictionary['NCDUMP_EXE'] = p.getexe('NCDUMP_EXE')
+    dictionary['EGREP_EXE'] = p.getexe('EGREP_EXE')
+
+
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
