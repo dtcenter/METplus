@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 from __future__ import print_function
-<<<<<<< HEAD:internal_tests/pytests/grid_to_obs_util/test_grid_to_obs_util.py
+import sys
 import grid_to_obs_util as g2o_util
-=======
 import pytest
 import met_util as util
 import produtil
 import os
 import config_metplus
->>>>>>> origin/develop:internal_tests/pytests/met_util/test_met_util.py
 
 @pytest.fixture
 def metplus_config():
@@ -34,7 +32,7 @@ def metplus_config():
             'met_util test failed: %s' % (str(e),), exc_info=True)
         sys.exit(2)
 
-'''
+
 def test_get_date_from_path_subdirs_found():
     date_regex = ".*nam.(2[0-9]{7})"
     # This data is on the DTC NCAR host 'eyewall'
@@ -60,10 +58,4 @@ def test_get_date_from_path_correct_dates():
             counter += 1
 
     assert counter == expected_count
-'''
 
-def test_add_common_items_to_dictionary():
-    conf = metplus_config()
-    dictionary = dict()
-    util.add_common_items_to_dictionary(conf, dictionary)
-    assert(dictionary['WGRIB2'] == conf.getexe('WGRIB2'))
