@@ -14,6 +14,7 @@ import gzip
 import bz2
 import zipfile
 from collections import namedtuple
+import struct
 
 import subprocess
 from produtil.run import exe
@@ -23,13 +24,7 @@ from string_template_substitution import StringExtract
 # for run stand alone
 import produtil
 import config_metplus
-# TODO Remove the classes and refactor met-util
-# met_util needs to be refactored and the functions that
-# instantiate the objects(CommandBuilder) refactored in to there
-# own respective class OR in there own module, patterned after their
-# intended function.
-from tc_stat_wrapper import TcStatWrapper
-from regrid_data_plane_wrapper import RegridDataPlaneWrapper
+
 
 """!@namespace met_util
  @brief Provides  Utility functions for METplus.
@@ -946,14 +941,14 @@ def getlist(s, logger=None):
     """
 
     # Developer NOTE: we could just force this to only operate
-    # on comma seperated lists, not space seperated.
+    # on comma separated lists, not space separated.
 
     # FIRST remove surrounding comma, and spaces, form the string.
     s = s.strip().strip(',').strip()
 
     # splitting an empty string, s with ',', creates a 1 element
-    # list with an empty string element, we dont want to create or
-    # retrun that, ie. NEVER RETURN THIS [''], If s is '', an
+    # list with an empty string element, we don't want to create or
+    # return that, ie. NEVER RETURN THIS [''], If s is '', an
     # empty string, then return an empty list [].
     # Doing so allows for proper boolean testing of your
     # list elsewhere in the code, ie. bool([]) is False.
@@ -987,14 +982,35 @@ def getlistint(s):
 
 # minutes
 def shift_time(time, shift):
+    """ Adjust time by shift hours. Format is %Y%m%d%H%M
+        Args:
+            @param time: Start time in %Y%m%d%H%M
+            @param shift: Amount to adjust time in hours
+        Returns:
+            New time in format %Y%m%d%H%M
+    """
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(hours=shift)).strftime("%Y%m%d%H%M")
 
 def shift_time_minutes(time, shift):
+    """ Adjust time by shift minutes. Format is %Y%m%d%H%M
+        Args:
+            @param time: Start time in %Y%m%d%H%M
+            @param shift: Amount to adjust time in minutes
+        Returns:
+            New time in format %Y%m%d%H%M
+    """
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(minutes=shift)).strftime("%Y%m%d%H%M")
 
 def shift_time_seconds(time, shift):
+    """ Adjust time by shift seconds. Format is %Y%m%d%H%M
+        Args:
+            @param time: Start time in %Y%m%d%H%M
+            @param shift: Amount to adjust time in seconds
+        Returns:
+            New time in format %Y%m%d%H%M
+    """
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(seconds=shift)).strftime("%Y%m%d%H%M")
 
@@ -1004,6 +1020,13 @@ class FieldObj(object):
                 'obs_name', 'obs_level', 'obs_extra', 'obs_thresh'
 
 def parse_var_list(p):
+    """ read conf items and populate list of FieldObj containing
+    information about each variable to be compared
+        Args:
+            @param p: Conf object
+        Returns:
+            list of FieldObj with variable information
+    """
     # var_list is a list containing an list of FieldObj
     var_list = []
 
@@ -1056,7 +1079,6 @@ def parse_var_list(p):
                 obs_thresh = getlistfloat(getstr('config', "OBS_VAR"+n+"_THRESH"))
             else:
                 obs_thresh = fcst_thresh
-
             for f,o in zip(fcst_levels, obs_levels):
                 fo = FieldObj()
                 fo.fcst_name = fcst_name
@@ -1158,7 +1180,14 @@ def reformat_fields_for_met(all_vars_list, logger):
                 name_level_extra_list = ['{ name = "', name,
                                          '"; level = [ "', level, '" ]; ']
                 if extra:
-                    extra_str = extra + '; },'
+                    # End the text for this field.  If this is the last field,
+                    # end the dictionary appropriately.
+                    if var == all_vars_list[-1]:
+                        # This is the last field, terminate it appropriately.
+                        extra_str = extra + '; }'
+                    else:
+                        # More field(s) to go
+                        extra_str = extra + '; },'
                     name_level_extra_list.append(extra_str)
                 else:
                     # End the text for this field.  If this is the last field,
@@ -1181,18 +1210,120 @@ def reformat_fields_for_met(all_vars_list, logger):
 
         return met_fields
 
-def get_filetype(config, filepath):
-    ncdump_exe = config.getexe('NCDUMP_EXE')
-    try:
-        result = subprocess.check_output([ncdump_exe, filepath])
-    except subprocess.CalledProcessError:
-        return "GRIB"
+def get_filetype(filepath, logger=None):
+    """!This function determines if the filepath is a NETCDF or GRIB file
+       based on the first eight bytes of the file.
+       It returns the string GRIB, NETCDF, or a None object.
 
-    regex = re.search("netcdf", result)
-    if regex is not None:
-        return "NETCDF"
-    else:
+       Note: If it is NOT determined to ba a NETCDF file,
+       it returns GRIB, regardless.
+       Unless there is an IOError exception, such as filepath refers
+       to a non-existent file or filepath is only a directory, than
+       None is returned, without a system exit.
+
+       Args:
+           @param filepath:  path/to/filename
+           @param logger the logger, optional
+       Returns:
+           @returns The string GRIB, NETCDF or a None object
+    """
+    # Developer Note
+    # Since we have the impending code-freeze, keeping the behavior the same,
+    # just changing the implementation.
+    # The previous logic did not test for GRIB it would just return 'GRIB'
+    # if you couldn't run ncdump on the file.
+    # Also note:
+    # As John indicated ... there is the case when a grib file
+    # may not start with GRIB ... and if you pass the MET command filtetype=GRIB
+    # MET will handle it ok ...
+
+    # Notes on file format and determining type.
+    # https://www.wmo.int/pages/prog/www/WDM/Guides/Guide-binary-2.html
+    # https://www.unidata.ucar.edu/software/netcdf/docs/faq.html
+    # http: // www.hdfgroup.org / HDF5 / doc / H5.format.html
+
+    # Interpreting single byte by byte - so ok to ignore endianess
+    # od command:
+    #   od -An -c -N8 foo.nc
+    #   od -tx1 -N8 foo.nc
+    # GRIB
+    # Octet no.  IS Content
+    # 1-4        'GRIB' (Coded CCITT-ITA No. 5) (ASCII);
+    # 5-7        Total length, in octets, of GRIB message(including Sections 0 & 5);
+    # 8          Edition number - currently 1
+    # NETCDF .. ie. od -An -c -N4 foo.nc which will output
+    # C   D   F 001
+    # C   D   F 002
+    # 211   H   D   F
+    # HDF5
+    # Magic numbers   Hex: 89 48 44 46 0d 0a 1a 0a
+    # ASCII: \211 HDF \r \n \032 \n
+
+    # Below is a reference that may be used in the future to
+    # determine grib version.
+    # import struct
+    # with open ("foo.grb2","rb")as binary_file:
+    #     binary_file.seek(7)
+    #     one_byte = binary_file.read(1)
+    #
+    # This would return an integer with value 1 or 2,
+    # B option is an unsigned char.
+    #  struct.unpack('B',one_byte)[0]
+
+    try:
+        # read will return up to 8 bytes, if file is 0 bytes in length,
+        # than first_eight_bytes will be the empty string ''.
+        # Don't test the file length, just adds more time overhead.
+        with open(filepath, "rb") as binary_file:
+            binary_file.seek(0)
+            first_eight_bytes = binary_file.read(8)
+
+        # From the first eight bytes of the file, unpack the bytes
+        # of the known identifier byte locations, in to a string.
+        # Example, if this was a netcdf file than ONLY name_cdf would
+        # equal 'CDF' the other variables, name_hdf would be 'DF '
+        # name_grid 'CDF '
+        name_cdf, name_hdf, name_grib = [None] * 3
+        if len(first_eight_bytes) == 8:
+            name_cdf =  struct.unpack('3s',first_eight_bytes[:3])[0]
+            name_hdf =  struct.unpack('3s',first_eight_bytes[1:4])[0]
+            name_grib = struct.unpack('4s',first_eight_bytes[:4])[0]
+
+        # Why not just use a else, instead of elif else if we are going to
+        # return GRIB ? It allows for expansion, ie. Maybe we pass in a
+        # logger and log the cases we can't determine the type.
+        if name_cdf == 'CDF' or name_hdf == 'HDF':
+            return "NETCDF"
+        elif name_grib == 'GRIB':
+            return "GRIB"
+        else:
+            # This mimicks previous behavoir, were we at least will always return GRIB.
+            # It also handles the case where GRIB was not in the first 4 bytes
+            # of a legitimate grib file, see John.
+            # logger.info('Can't determine type, returning GRIB
+            # as default %s'%filepath)
+            return "GRIB"
+
+    except IOError:
+        # Skip the IOError, and keep processing data.
+        # ie. filepath references a file that does not exist
+        # or filepath is a directory.
         return None
+
+    # Previous Logic
+    # ncdump_exe = config.getexe('NCDUMP_EXE')
+    #try:
+    #    result = subprocess.check_output([ncdump_exe, filepath])
+
+    #except subprocess.CalledProcessError:
+    #    return "GRIB"
+
+    #regex = re.search("netcdf", result)
+    #if regex is not None:
+    #    return "NETCDF"
+    #else:
+    #    return None
+
 
 
 def get_time_from_file(logger, filepath, template):
@@ -1206,11 +1337,20 @@ def get_time_from_file(logger, filepath, template):
     else:
         return None
 
-# parse parameter and replace any existing parameters
-# referenced with the value (looking in same section, then
-# config, dir, and os environment)
-# returns raw string, preserving {valid?fmt=%Y} blocks
+
 def getraw_interp(p, sec, opt):
+    """ parse parameter and replace any existing parameters
+        referenced with the value (looking in same section, then
+        config, dir, and os environment)
+        returns raw string, preserving {valid?fmt=%Y} blocks
+        Args:
+            @param p: Conf object
+            @param sec: Section in the conf file to look for variable
+            @param opt: Variable to interpret
+        Returns:
+            Raw string
+    """
+
     in_template = p.getraw(sec, opt)
     out_template = ""
     in_brackets = False
@@ -1224,15 +1364,15 @@ def getraw_interp(p, sec, opt):
             if p.has_option(sec,var_name):
                 var = p.getstr(sec,name)
             elif p.has_option('config',var_name):
-                var = p.getstr('config',name)
+                var = p.getstr('config',var_name)
             elif p.has_option('dir',var_name):
-                var = p.getstr('dir',name)
+                var = p.getstr('dir',var_name)
             elif var_name[0:3] == "ENV":
                 var = os.environ.get(var_name[4:-1])
 
             if var is None:
                 out_template += in_template[start_idx:i+1]
-            else: 
+            else:
                 out_template += var
             in_brackets = False
         elif not in_brackets:
@@ -1242,6 +1382,13 @@ def getraw_interp(p, sec, opt):
 
 
 def decompress_file(filename, logger=None):
+    """ Decompress gzip, bzip, or zip files
+        Args:
+            @param filename: Path to file without zip extensions
+            @param logger: Optional argument to allow logging
+        Returns:
+            None
+    """
     if os.path.exists(filename):
         return
     elif os.path.exists(filename+".gz"):        
@@ -1266,58 +1413,64 @@ def decompress_file(filename, logger=None):
         with zipfile.ZipFile(filename+".zip") as z:
             with open(filename, 'wb') as f:
                 f.write(z.read(os.path.basename(filename)))
-#        zip = zipfile.ZipFile(filename+".zip")
-#        zip.extractall(os.path.dirname(filename))
+
 
 def run_stand_alone(module_name, app_name):
-        try:
-            # If jobname is not defined, in log it is 'NO-NAME'
-            if 'JLOGFILE' in os.environ:
-                produtil.setup.setup(send_dbn=False, jobname='run-METplus',
-                                     jlogfile=os.environ['JLOGFILE'])
-            else:
-                produtil.setup.setup(send_dbn=False, jobname='run-METplus')
-            produtil.log.postmsg(app_name+' is starting')
+    """ Used to allow MET tool wrappers to be run without using
+    master_metplus.py
+        Args:
+            @param module_name: Name of wrapper with underscores, i.e.
+            pcp_combine_wrapper
+            @param app_name: Name of wrapper with camel case, i.e.
+            PcpCombine
+        Returns:
+            None
+    """
+    try:
+        # If jobname is not defined, in log it is 'NO-NAME'
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus',
+                                 jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus')
+        produtil.log.postmsg(app_name + ' is starting')
 
-            # Job Logger
-            produtil.log.jlogger.info('Top of '+app_name)
+        # Job Logger
+        produtil.log.jlogger.info('Top of ' + app_name)
 
-            # Used for logging and usage statment
-            cur_filename = sys._getframe().f_code.co_filename
-            cur_function = sys._getframe().f_code.co_name
 
-            # Setup Task logger, Until Conf object is created, Task logger is
-            # only logging to tty, not a file.
-            logger = logging.getLogger(app_name)
-            logger.info('logger Top of '+app_name+".")
+        # Used for logging and usage statment
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
 
-            # Parse arguments, options and return a config instance.
-            p = config_metplus.setup(filename=cur_filename)
+        # Setup Task logger, Until Conf object is created, Task logger is
+        # only logging to tty, not a file.
+        logger = logging.getLogger(app_name)
+        logger.info('logger Top of ' + app_name + ".")
 
-            logger = get_logger(p)
+        # Parse arguments, options and return a config instance.
+        p = config_metplus.setup(filename=cur_filename)
 
-            module = __import__(module_name)
-            wrapper_class = getattr(module, app_name+"Wrapper")
-            wrapper = wrapper_class(p, logger)
+        logger = get_logger(p)
 
-            os.environ['MET_BASE'] = p.getdir('MET_BASE')
+        module = __import__(module_name)
+        wrapper_class = getattr(module, app_name + "Wrapper")
+        wrapper = wrapper_class(p, logger)
 
-            produtil.log.postmsg(app_name+' Calling run_all_times.')
+        os.environ['MET_BASE'] = p.getdir('MET_BASE')
 
-            wrapper.run_all_times()
+        produtil.log.postmsg(app_name + ' Calling run_all_times.')
 
-            produtil.log.postmsg(app_name+' completed')
-        except Exception as e:
-            produtil.log.jlogger.critical(
-                app_name+'  failed: %s' % (str(e),), exc_info=True)
-            sys.exit(2)
+        wrapper.run_all_times()
+
+        produtil.log.postmsg(app_name + ' completed')
+    except Exception as e:
+        produtil.log.jlogger.critical(
+            app_name + '  failed: %s' % (str(e),), exc_info=True)
+        sys.exit(2)
 
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
-  #TODO: Move to unit tests
-#  get_time_from_file(None, "20170201", "{valid?fmt=%Y%m%d}")
-#  get_time_from_file(None, "/path/to/data//GFS/track_data/201412/amlq2014123118.gfso.0006", "{init?fmt=%Y%m}/amlq{init?fmt=%Y%m%d%H}.gfso.00{lead?fmt=%HH}")
-#  get_time_from_file(None, "/path/to/data/mrms/2018/04/30/mrms.MergedReflectivityQCComposite.20180430_062438.grib2", "{valid?fmt=%Y}/{valid?fmt=%m}/{valid?fmt=%d}/mrms.MergedReflectivityQCComposite.{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}.grib2")
 
-  
+
