@@ -32,7 +32,7 @@ from usage_wrapper import UsageWrapper
 from command_builder import CommandBuilder
 from tcmpr_plotter_wrapper import TCMPRPlotterWrapper
 # cyclone plotter should be commented out when committed
-# from cyclone_plotter_wrapper import CyclonePlotterWrapper
+from cyclone_plotter_wrapper import CyclonePlotterWrapper
 from pb2nc_wrapper import PB2NCWrapper
 from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TcStatWrapper
