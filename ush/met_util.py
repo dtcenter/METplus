@@ -928,7 +928,7 @@ def getlist(s, logger=None):
          commas in the elements.
          '4,4,2,4,2,4,2, ' or '4,4,2,4,2,4,2 ' or
          '4, 4, 4, 4, ' or '4, 4, 4, 4 '
-         Note: getstr on an empty variable (EMPTY_VAR = ) in 
+         Note: getstr on an empty variable (EMPTY_VAR = ) in
          a conf file returns '' an empty string.
 
         @param s the string being converted to a list.
@@ -1080,7 +1080,7 @@ def parse_var_list(p):
                 fo.fcst_extra = fcst_extra
                 fo.obs_extra = obs_extra
                 fo.fcst_thresh = fcst_thresh
-                fo.obs_thresh = obs_thresh             
+                fo.obs_thresh = obs_thresh
                 fo.fcst_level = f
                 fo.obs_level = o
                 var_list.append(fo)
@@ -1380,7 +1380,7 @@ def decompress_file(filename, logger=None):
     """
     if os.path.exists(filename):
         return
-    elif os.path.exists(filename+".gz"):        
+    elif os.path.exists(filename+".gz"):
         if logger:
             logger.info("Decompressing gz file")
         with gzip.open(filename+".gz", 'rb') as infile:
