@@ -1453,7 +1453,11 @@ class StringSub:
 
             # Replace regex with properly formatted information
             temp_str = multiple_replace(replacement_dict, self.tmpl)
-            self.tmpl = temp_str
+
+            # Add the $ to the end of the filename to
+            # ensure that no other files with unorthodox extensions
+            #  (e.g. file1.grb2.idx) are matched, thereby improving performance.
+            self.tmpl = temp_str + "$"
             return self.tmpl
 
 
