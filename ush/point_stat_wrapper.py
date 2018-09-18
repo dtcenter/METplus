@@ -82,18 +82,18 @@ class PointStatWrapper(CommandBuilder):
         ps_dict['APP_PATH'] = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                            'bin/point_stat')
         ps_dict['APP_NAME'] = os.path.basename(ps_dict['APP_PATH'])
-        ps_dict['PROJ_DIR'] = self.p.getdir('dir', 'PROJ_DIR')
-        ps_dict['TMP_DIR'] = self.p.getdir('dir', 'TMP_DIR')
-        ps_dict['METPLUS_BASE'] = self.p.getdir('dir', 'METPLUS_BASE')
-        ps_dict['MET_BUILD_BASE'] = self.p.getdir('dir', 'MET_BUILD_BASE')
-        ps_dict['MET_INSTALL_DIR'] = self.p.getdir('dir', 'MET_INSTALL_DIR')
+        ps_dict['PROJ_DIR'] = self.p.getdir('PROJ_DIR')
+        ps_dict['TMP_DIR'] = self.p.getdir('TMP_DIR')
+        ps_dict['METPLUS_BASE'] = self.p.getdir('METPLUS_BASE')
+        ps_dict['MET_BUILD_BASE'] = self.p.getdir('MET_BUILD_BASE')
+        ps_dict['MET_INSTALL_DIR'] = self.p.getdir('MET_INSTALL_DIR')
 
-        ps_dict['PARM_BASE'] = self.p.getdir('dir', 'PARM_BASE')
-        ps_dict['OUTPUT_BASE'] = self.p.getstr('dir', 'OUTPUT_BASE')
-        ps_dict['FCST_INPUT_DIR'] = self.p.getstr('dir', 'FCST_INPUT_DIR')
-        ps_dict['OBS_INPUT_DIR'] = self.p.getstr('dir', 'OBS_INPUT_DIR')
+        ps_dict['PARM_BASE'] = self.p.getdir('PARM_BASE')
+        ps_dict['OUTPUT_BASE'] = self.p.getdir('OUTPUT_BASE')
+        ps_dict['FCST_INPUT_DIR'] = self.p.getdir('FCST_INPUT_DIR')
+        ps_dict['OBS_INPUT_DIR'] = self.p.getdir('OBS_INPUT_DIR')
         ps_dict['POINT_STAT_OUTPUT_DIR'] = \
-            self.p.getstr('dir', 'POINT_STAT_OUTPUT_DIR')
+            self.p.getdir('POINT_STAT_OUTPUT_DIR')
 
         # Configuration
         ps_dict['TIME_METHOD'] = self.p.getstr('config', 'TIME_METHOD')
@@ -141,14 +141,14 @@ class PointStatWrapper(CommandBuilder):
                                'OBS_INPUT_FILE_TMPL')
 
         # non-MET executables
-        ps_dict['WGRIB2'] = self.p.getdir('exe', 'WGRIB2')
-        ps_dict['RM_EXE'] = self.p.getdir('exe', 'RM_EXE')
-        ps_dict['CUT_EXE'] = self.p.getdir('exe', 'CUT_EXE')
-        ps_dict['TR_EXE'] = self.p.getdir('exe', 'TR_EXE')
-        ps_dict['NCAP2_EXE'] = self.p.getdir('exe', 'NCAP2_EXE')
-        ps_dict['CONVERT_EXE'] = self.p.getdir('exe', 'CONVERT_EXE')
-        ps_dict['NCDUMP_EXE'] = self.p.getdir('exe', 'NCDUMP_EXE')
-        ps_dict['EGREP_EXE'] = self.p.getdir('exe', 'EGREP_EXE')
+        ps_dict['WGRIB2'] = self.p.getdir('WGRIB2')
+        ps_dict['RM_EXE'] = self.p.getdir('RM_EXE')
+        ps_dict['CUT_EXE'] = self.p.getdir('CUT_EXE')
+        ps_dict['TR_EXE'] = self.p.getdir('TR_EXE')
+        ps_dict['NCAP2_EXE'] = self.p.getdir('NCAP2_EXE')
+        ps_dict['CONVERT_EXE'] = self.p.getdir('CONVERT_EXE')
+        ps_dict['NCDUMP_EXE'] = self.p.getdir('NCDUMP_EXE')
+        ps_dict['EGREP_EXE'] = self.p.getdir('EGREP_EXE')
 
         return ps_dict
 
