@@ -47,7 +47,6 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.output_dir = p.getdir('CYCLONE_OUT_DIR')
         self.init_date = p.getstr('config', 'CYCLONE_INIT_DATE')
         self.init_hr = p.getstr('config', 'CYCLONE_INIT_HR')
-        self.projection = p.getstr('config', 'CYCLONE_PROJECTION')
         self.model = p.getstr('config', 'CYCLONE_MODEL')
         self.title = p.getstr('config', 'CYCLONE_PLOT_TITLE')
         self.gen_ascii = p.getbool('config', 'GENERATE_TRACK_ASCII')
@@ -59,11 +58,6 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.columns_of_interest = ['AMODEL', 'STORM_ID', 'BASIN', 'INIT',
                                     'LEAD', 'VALID', 'ALAT', 'ALON', 'BLAT',
                                     'BLON', 'AMSLP', 'BMSLP']
-        self.llcrnrlat = p.getfloat('config', 'CYCLONE_LLCRNRLAT')
-        self.llcrnrlon = p.getfloat('config', 'CYCLONE_LLCRNRLON')
-        self.urcrnrlat = p.getfloat('config', 'CYCLONE_URCRNRLAT')
-        self.urcrnrlon = p.getfloat('config', 'CYCLONE_URCRNRLON')
-        self.resolution = p.getstr('config', 'CYCLONE_RESOLUTION')
         self.circle_marker = p.getint('config', 'CIRCLE_MARKER_SIZE')
         self.cross_marker = p.getint('config', 'CROSS_MARKER_SIZE')
 
@@ -359,7 +353,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         # If requested, create an ASCII file with the tracks that are going to
         # be plotted.  This is useful to debug or verify that what you
         # see on the plot is what is expected.
-        ascii_track_parts = [self.init_date, '_', self.projection, '.txt']
+        ascii_track_parts = [self.init_date, '.txt']
         ascii_track_output_name = ''.join(ascii_track_parts)
         plot_filename = os.path.join(self.output_dir, ascii_track_output_name)
         ascii_track_file = open(plot_filename, 'w')
@@ -374,7 +368,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         # If requested, create an ASCII file with the tracks that are going to
         # be plotted.  This is useful to debug or verify that what you
         # see on the plot is what is expected.
-        ascii_track_parts = [self.init_date, '_', self.projection, '.txt']
+        ascii_track_parts = [self.init_date, '.txt']
         ascii_track_output_name = ''.join(ascii_track_parts)
         plot_filename = os.path.join(self.output_dir, ascii_track_output_name)
         ascii_track_file = open(plot_filename, 'w')
@@ -519,7 +513,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                   prop={'size': 6})
 
         # Write the plot to the output directory
-        out_filename_parts = [self.init_date, '_', self.projection, '.png']
+        out_filename_parts = [self.init_date, '.png']
         output_plot_name = ''.join(out_filename_parts)
         plot_filename = os.path.join(self.output_dir, output_plot_name)
         plt.savefig(plot_filename)
