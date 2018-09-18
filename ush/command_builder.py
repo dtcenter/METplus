@@ -125,7 +125,7 @@ class CommandBuilder:
         """!Print all environment variables set for this application
         """
         for x in self.env:
-            self.logger.debug(x, "=", self.env[x])
+            self.logger.debug(x+"="+self.env[x])
 
     def print_env_copy(self, vars):
         """!Print list of environment variables that can be easily

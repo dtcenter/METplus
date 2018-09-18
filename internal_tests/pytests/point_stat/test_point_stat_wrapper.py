@@ -139,7 +139,8 @@ def test_file_info_by_valid_correct_for_gdas():
     # Test that the resulting tuple from create_input_file_info() is correct
     # when selecting by valid time for obs files
     ps = point_stat_wrapper()
-    ps.ps_dict['OBS_INPUT_FILE_REGEX'] = ".*prepbufr.gdas.(2[0-9]{9}).nc"
+    ps.ps_dict['OBS_INPUT_FILE_TMPL'] = "prepbufr.gdas.{valid?fmt=%Y%m%d%H}.nc"
+    ps.ps_dict['OBS_INPUT_DIR_REGEX'] = ""
     ps.ps_dict[
         'OBS_INPUT_DIR'] = '/d1/METplus_Mallory/output_for_testing/grid2obs_metplustest.2/prepbufr'
     ps.ps_dict['VALID_START_DATE'] = '2017060100'
@@ -436,111 +437,114 @@ def test_reformat_fields_for_met_conus_sfc():
         assert True is True
     assert obs_str == expected_obs_str
 
-def test_reformat_fields_for_met_upper_air():
-    """! THIS RUNS ONLY FOR UPPER AIR skips if test config file is set
-         up for conus_sfc
-         Verify that the fcst_field and obs_field text in the MET config
-         field dictionary are well-formed. Test is based on the
-         point_stat_test_upper_air.conf file.
-    """
-    ps = point_stat_wrapper()
-    # Check if we are currently using the upper air config files for testing
-    # Do this by checking which MET point_stat config file is being used by
-    # searching for the term 'upper' in the MET point_stat config file name.
-    # If is is absent, skip this test.
 
-    met_config_file =  ps.ps_dict['POINT_STAT_CONFIG_FILE']
-    match = re.match(r'.*upper.*', met_config_file)
-    # if not match:
-    #     pytest.skip("The current test config file is not set up for upper air")
-
-    # Set up the appropriate input directories
-    # fcst_input_dir = '/d1/minnawin/data/gfs'
-    fcst_input_dir = '/d1/METplus_Mallory/data/gfs'
-    obs_input_dir = '/d1/minnawin/pb2nc_output/gdas/upper_air'
-    ps.ps_dict['FCST_INPUT_DIR'] = fcst_input_dir
-    ps.ps_dict['OBS_INPUT_DIR'] = obs_input_dir
-    ps.ps_dict['OBS_INPUT_FILE_REGEX'] = \
-        '.*prepbufr.gdas.(2[0-9]{9}).nc'
-    ps.ps_dict['FCST_INPUT_FILE_REGEX'] = '.*pgbf([0-9]{1,3}).gfs.(2[0-9]{9})'
-
-    all_vars_list = util.parse_var_list(ps.p)
-    logger = logging.getLogger("temp_log")
-    fields = util.reformat_fields_for_met(all_vars_list, logger)
-    # The following fields were defined in the MET+ config file:
-    # TMP, RH, HGT, UGRD, VGRD
-
-    fcst_str = fields.fcst_field
-    expected_fcst_str = '{ name = "TMP"; level = [ "P1000" ]; }, ' \
-                        '{ name = "TMP"; level = [ "P925" ]; }, ' \
-                        '{ name = "TMP"; level = [ "P850" ]; }, ' \
-                        '{ name = "TMP"; level = [ "P700" ]; }, ' \
-                        '{ name = "TMP"; level = [ "P500" ]; }, ' \
-                        '{ name = "TMP"; level = [ "P400" ]; }, ' \
-                        '{ name = "TMP"; level = [ "P300" ]; }, ' \
-                        '{ name = "TMP"; level = [ "P250" ]; }, ' \
-                        '{ name = "TMP"; level = [ "P200" ]; }, ' \
-                        '{ name = "TMP"; level = [ "P150" ]; }, ' \
-                        '{ name = "TMP"; level = [ "P100" ]; }, ' \
-                        '{ name = "TMP"; level = [ "P50" ]; }, ' \
-                        '{ name = "TMP"; level = [ "P20" ]; }, ' \
-                        '{ name = "TMP"; level = [ "P10" ]; }, ' \
-                        '{ name = "RH"; level = [ "P1000" ]; }, ' \
-                        '{ name = "RH"; level = [ "P925" ]; }, ' \
-                        '{ name = "RH"; level = [ "P850" ]; }, ' \
-                        '{ name = "RH"; level = [ "P700" ]; }, ' \
-                        '{ name = "RH"; level = [ "P500" ]; }, ' \
-                        '{ name = "RH"; level = [ "P400" ]; }, ' \
-                        '{ name = "RH"; level = [ "P300" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P1000" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P925" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P850" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P700" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P500" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P400" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P300" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P250" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P200" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P150" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P100" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P50" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P20" ]; }, ' \
-                        '{ name = "UGRD"; level = [ "P10" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P1000" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P925" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P850" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P700" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P500" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P400" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P300" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P250" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P200" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P150" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P100" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P50" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P20" ]; }, ' \
-                        '{ name = "VGRD"; level = [ "P10" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P1000" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P950" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P925" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P850" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P700" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P500" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P400" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P300" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P250" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P200" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P150" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P100" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P50" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P20" ]; }, ' \
-                        '{ name = "HGT"; level = [ "P10" ]; }'
-
-    # print("expected: ", expected_fcst_str)
-    # print("fcst str: ", fcst_str)
-    obs_str = fields.obs_field
-    expected_obs_str = expected_fcst_str
-    # print("expected: ", expected_obs_str)
-    # print("obs  str: ", obs_str)
-
-    assert fcst_str == expected_fcst_str and obs_str == expected_obs_str
+# def test_reformat_fields_for_met_upper_air():
+#     """! THIS RUNS ONLY FOR GDAS upper air configuration file (g20_upper.conf)
+#          This test gets skipped if test config file is set
+#          up for conus_sfc
+#          Verify that the fcst_field and obs_field text in the MET config
+#          field dictionary are well-formed. Test is based on the
+#          point_stat_test_upper_air.conf file.
+#     """
+#     ps = point_stat_wrapper()
+#     # Check if we are currently using the upper air config files for testing
+#     # Do this by checking which MET point_stat config file is being used by
+#     # searching for the term 'upper' in the MET point_stat config file name.
+#     # If is is absent, skip this test.
+#
+#     met_config_file =  ps.ps_dict['POINT_STAT_CONFIG_FILE']
+#     match = re.match(r'.*upper.*', met_config_file)
+#     if not match:
+#        pytest.skip("The current test config file is not set up for upper air")
+#
+#     # Set up the appropriate input directories
+#     fcst_input_dir = '/d1/METplus_Mallory/data/gfs'
+#     obs_input_dir = '/d1/minnawin/pb2nc_crow_test/gdas/upper_air/Mallory_config'
+#     ps.ps_dict['FCST_INPUT_DIR'] = fcst_input_dir
+#     ps.ps_dict['OBS_INPUT_DIR'] = obs_input_dir
+#     ps.ps_dict['OBS_INPUT_DIR_REGEX'] = ''
+#     ps.ps_dict['OBS_INPUT_FILE_TMPL'] = 'prepbufr.gdas.{valid?fmt=%Y%m%d%H}.nc'
+#     ps.ps_dict['FCST_INPUT_DIR_REGEX'] = ''
+#     ps.ps_dict['FCST_INPUT_FILE_TMPL'] = \
+#         'pgbf{lead?fmt=%H}.gfs.{valid?fmt=%Y%m%d%H}'
+#
+#     all_vars_list = util.parse_var_list(ps.p)
+#     logger = logging.getLogger("temp_log")
+#     fields = util.reformat_fields_for_met(all_vars_list, logger)
+#     # The following fields were defined in the MET+ config file:
+#     # TMP, RH, HGT, UGRD, VGRD
+#
+#     fcst_str = fields.fcst_field
+#     expected_fcst_str = '{ name = "TMP"; level = [ "P1000" ]; }, ' \
+#                         '{ name = "TMP"; level = [ "P925" ]; }, ' \
+#                         '{ name = "TMP"; level = [ "P850" ]; }, ' \
+#                         '{ name = "TMP"; level = [ "P700" ]; }, ' \
+#                         '{ name = "TMP"; level = [ "P500" ]; }, ' \
+#                         '{ name = "TMP"; level = [ "P400" ]; }, ' \
+#                         '{ name = "TMP"; level = [ "P300" ]; }, ' \
+#                         '{ name = "TMP"; level = [ "P250" ]; }, ' \
+#                         '{ name = "TMP"; level = [ "P200" ]; }, ' \
+#                         '{ name = "TMP"; level = [ "P150" ]; }, ' \
+#                         '{ name = "TMP"; level = [ "P100" ]; }, ' \
+#                         '{ name = "TMP"; level = [ "P50" ]; }, ' \
+#                         '{ name = "TMP"; level = [ "P20" ]; }, ' \
+#                         '{ name = "TMP"; level = [ "P10" ]; }, ' \
+#                         '{ name = "RH"; level = [ "P1000" ]; }, ' \
+#                         '{ name = "RH"; level = [ "P925" ]; }, ' \
+#                         '{ name = "RH"; level = [ "P850" ]; }, ' \
+#                         '{ name = "RH"; level = [ "P700" ]; }, ' \
+#                         '{ name = "RH"; level = [ "P500" ]; }, ' \
+#                         '{ name = "RH"; level = [ "P400" ]; }, ' \
+#                         '{ name = "RH"; level = [ "P300" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P1000" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P925" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P850" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P700" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P500" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P400" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P300" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P250" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P200" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P150" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P100" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P50" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P20" ]; }, ' \
+#                         '{ name = "UGRD"; level = [ "P10" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P1000" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P925" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P850" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P700" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P500" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P400" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P300" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P250" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P200" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P150" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P100" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P50" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P20" ]; }, ' \
+#                         '{ name = "VGRD"; level = [ "P10" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P1000" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P950" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P925" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P850" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P700" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P500" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P400" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P300" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P250" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P200" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P150" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P100" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P50" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P20" ]; }, ' \
+#                         '{ name = "HGT"; level = [ "P10" ]; }'
+#
+#     # print("expected: ", expected_fcst_str)
+#     # print("fcst str: ", fcst_str)
+#     obs_str = fields.obs_field
+#     expected_obs_str = expected_fcst_str
+#     # print("expected: ", expected_obs_str)
+#     # print("obs  str: ", obs_str)
+#
+#     assert fcst_str == expected_fcst_str and obs_str == expected_obs_str
