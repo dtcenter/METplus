@@ -1117,8 +1117,6 @@ class TcPairsWrapper(CommandBuilder):
 
         # INIT_INC and INIT_EXC
         # Used to set init_inc in "TC_PAIRS_CONFIG_FILE"
-        # tmp_init_inc = self.tcp_dict['INIT_INCLUDE']
-        # tmp_init_exc = self.tcp_dict['INIT_EXCLUDE']
         tmp_init_inc = self.tcp_dict['INIT_INCLUDE']
         if not tmp_init_inc:
             self.add_env_var('INIT_INCLUDE', "[]")
@@ -1128,7 +1126,7 @@ class TcPairsWrapper(CommandBuilder):
             # and replacing ' with ".
             init_inc = str(tmp_init_inc).replace("\'", "\"")
             init_inc_str = ''.join(init_inc.split())
-            self.add_env_var(b'INIT_INCLUDE', str(init_inc_str))
+            self.add_env_var('INIT_INCLUDE', str(init_inc_str))
 
         tmp_init_exc = self.tcp_dict['INIT_EXCLUDE']
         if not tmp_init_exc:
@@ -1139,9 +1137,9 @@ class TcPairsWrapper(CommandBuilder):
             # Replace ' with " and remove whitespace
             init_exc = str(tmp_init_exc).replace("\'", "\"")
             init_exc_str = ''.join(init_exc.split())
-            self.add_env_var(b'INIT_EXCLUDE', str(init_exc_str))
+            self.add_env_var('INIT_EXCLUDE', str(init_exc_str))
 
-        # f
+        # MODEL
         tmp_model = self.tcp_dict['MODEL']
         if not tmp_model:
             # Empty, MET is expecting [] to indicate all models are to be
@@ -1166,7 +1164,7 @@ class TcPairsWrapper(CommandBuilder):
 
         # BASIN
         tmp_basin = self.tcp_dict['BASIN']
-        if tmp_basin:
+        if not tmp_basin:
             # Empty, we want all basins.  Send MET '[]' to indicate that
             # we want all the basins.
             self.add_env_var('BASIN', "[]")
