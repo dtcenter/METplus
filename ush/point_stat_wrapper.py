@@ -309,6 +309,15 @@ class PointStatWrapper(CommandBuilder):
                          str(self.ps_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var(b'OBS_WINDOW_END', str(self.ps_dict['OBS_WINDOW_END']))
 
+        self.logger.debug("")
+        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_env_copy(["MODEL_NAME","FCST_FIELD","POINT_STAT_MESSAGE_TYPE",
+                            "OBS_WINDOW_BEGIN","OBS_WINDOW_END","POINT_STAT_GRID",
+                            "POINT_STAT_POLY"])
+        self.logger.debug("")
+
+
+        
     def select_fcst_obs_pairs(self):
         """! Select file pairings of fcst and obs input files based on valid
              time:
