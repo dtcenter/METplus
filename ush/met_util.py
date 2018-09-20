@@ -928,7 +928,11 @@ def getlist(s, logger=None):
          commas in the elements.
          '4,4,2,4,2,4,2, ' or '4,4,2,4,2,4,2 ' or
          '4, 4, 4, 4, ' or '4, 4, 4, 4 '
+<<<<<<< HEAD
          Note: getstr on an empty variable (EMPTY_VAR = ) in
+=======
+         Note: getstr on an empty variable (EMPTY_VAR = ) in 
+>>>>>>> origin
          a conf file returns '' an empty string.
 
         @param s the string being converted to a list.
@@ -1471,4 +1475,4 @@ def add_common_items_to_dictionary(p, dictionary):
 
 
 if __name__ == "__main__":
-    gen_init_list("20141201", "20150331", 6, "18")
+gen_init_list("20141201", "20150331", 6, "18")

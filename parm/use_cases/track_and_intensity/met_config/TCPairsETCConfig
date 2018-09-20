@@ -104,7 +104,7 @@ anly_track = BDECK;
 // Specify if only those track points common to both the ADECK and BDECK
 // tracks be written out.
 //
-match_points = FALSE;
+match_points = TRUE;
 
 //
 // Specify the NetCDF output of the gen_dland tool containing a gridded
@@ -128,5 +128,5 @@ watch_warn = {
 // Indicate a version number for the contents of this configuration file.
 // The value should generally not be modified.
 //
-version = "V6.1";
+//version = "V6.1";
 
