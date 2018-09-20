@@ -1,0 +1,219 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Grid-Stat configuration file.
+//
+// For additional information, see the MET_BASE/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Output model name to be written
+//
+//model = "${model_fcst_now}";
+model = "${MODEL}";
+
+//
+// Output description to be written
+// May be set separately in each "obs.field" entry
+//
+desc = "NA";
+
+//
+// Output observation type to be written
+//
+//obtype = "${model_fcst_now}_anl";
+obtype = "${OBTYPE}";
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification grid
+//
+regrid = {
+//   to_grid    = "${GGG}";
+   to_grid    = "G002";
+   method     = BILIN;
+   width      = 2;
+   vld_thresh = 0.5;
+   shape      = SQUARE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// May be set separately in each "field" entry
+//
+censor_thresh = [];
+censor_val    = [];
+cat_thresh    = [];
+cnt_thresh    = [ NA ];
+cnt_logic     = UNION;
+wind_thresh   = [ NA ];
+wind_logic    = UNION;
+eclv_points   = 0.05;
+
+//
+// Forecast and observation fields to be verified
+//
+fcst = {
+    field = [
+    ${FCST_FIELD}
+//      { name  = "HGT"; level = [ "P1000", "P850", "P700", "P500", "P200", "P100", "P50", "P20", "P10" ]; },
+//      { name  = "TMP"; level = [ "P1000", "P850", "P700", "P500", "P200", "P100", "P50", "P20", "P10" ]; },
+//      { name  = "UGRD"; level = [ "P1000", "P850", "P700", "P500", "P200", "P100", "P50", "P20", "P10" ]; },
+//      { name  = "VGRD"; level = [ "P1000", "P850", "P700", "P500", "P200", "P100", "P50", "P20", "P10" ]; },
+//      { name  = "O3MR"; level = [ "P100", "P70", "P50", "P30", "P20", "P10" ]; }
+    ];
+    };
+obs = fcst;
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Climatology data
+//
+climo_mean = {
+
+   file_name = [];
+   field     = [];
+
+   regrid = {
+      method     = BILIN;
+      width      = 2;
+      vld_thresh = 0.5;
+      shape      = SQUARE;
+   }
+
+   time_interp_method = NEAREST;
+   match_day          = TRUE;
+   time_step          = 21600;
+}
+
+climo_stdev = climo_mean;
+climo_stdev = {
+   file_name = [];
+}
+
+climo_cdf_bins = 1;
+write_cdf_bins = FALSE;
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification masking regions
+//
+mask = {
+   grid = [ "FULL" ];
+   poly = [ "/d1/METplus_Mallory/data/poly/NHX.nc",
+            "/d1/METplus_Mallory/data/poly/SHX.nc",
+            "/d1/METplus_Mallory/data/poly/TRO.nc",
+	    "/d1/METplus_Mallory/data/poly/PNA.nc"
+	  ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Confidence interval settings
+//
+ci_alpha  = [ 0.05 ];
+
+boot = {
+   interval = PCTILE;
+   rep_prop = 1.0;
+   n_rep    = 0;
+   rng      = "mt19937";
+   seed     = "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Data smoothing methods
+//
+interp = {
+   field      = BOTH;
+   vld_thresh = 1.0;
+   shape      = SQUARE;
+
+   type = [
+      {
+         method = NEAREST;
+         width  = 1;
+      }
+   ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Neighborhood methods
+//
+nbrhd = {
+   width      = [ 1 ];
+   cov_thresh = [ >=0.5 ];
+   vld_thresh = 1.0;
+   shape      = SQUARE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Fourier decomposition
+//
+fourier = {
+   wave_1d_beg = [];
+   wave_1d_end = [];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Statistical output types
+//
+// NOTE: Had to remove items that are from 6.1 because using 6.0
+output_flag = {
+   fho    = NONE;
+   ctc    = NONE;
+   cts    = NONE;
+   mctc   = NONE;
+   mcts   = NONE;
+   cnt    = NONE;
+   sl1l2  = STAT;
+   sal1l2 = NONE;
+   vl1l2  = STAT;
+   val1l2 = NONE;
+   pct    = NONE;
+   pstd   = NONE;
+   pjc    = NONE;
+   prc    = NONE;
+//   eclv   = NONE;
+   nbrctc = NONE;
+   nbrcts = NONE;
+   nbrcnt = NONE;
+//   grad   = NONE;
+}
+
+//
+// NetCDF matched pairs output file
+//
+nc_pairs_flag   = {
+   latlon     = FALSE;
+   raw        = FALSE;
+   diff       = FALSE;
+   climo      = FALSE;
+   weight     = FALSE;
+   nbrhd      = FALSE;
+   fourier    = FALSE;
+   gradient   = FALSE;
+   apply_mask = FALSE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+grid_weight_flag = COS_LAT;
+rank_corr_flag   = FALSE;
+tmp_dir          = "/tmp";
+output_prefix    = "${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${ACCUM}";
+
+////////////////////////////////////////////////////////////////////////////////
