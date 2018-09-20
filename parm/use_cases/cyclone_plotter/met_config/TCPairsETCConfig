@@ -13,46 +13,49 @@
 // Models
 //
 //model = [];
-model = "${MODEL}";
-
-
+model = ${MODEL};
 //
 // Storm identifiers
 //
-storm_id = [];
-//storm_id = "${STORM_ID}";
+//storm_id = [];
+storm_id = ${STORM_ID};
 
 //
 // Basins
 //
-basin = [];
-//basin = "${BASIN}";
+//basin = [];
+basin = ${BASIN};
 
 //
 // Cyclone numbers
 //
-cyclone = [];
-//cyclone = "${CYCLONE}";
+//cyclone = [];
+cyclone = ${CYCLONE};
 
 //
 // Storm names
 //
-storm_name = [];
+//storm_name = [];
+storm_name = ${STORM_NAME};
 
 //
 // Model initialization time windows to include or exclude
 //
-init_beg = "";
-init_end = "";
-init_inc = [];
-//init_inc = "${INIT_INCLUDE}";
-init_exc = [];
-
+//init_beg = "";
+init_beg = "${INIT_BEG}";
+//init_end = "";
+init_end = "${INIT_END}";
+//init_inc = [];
+init_inc = ${INIT_INCLUDE};
+//init_exc = [];
+init_exc = ${INIT_EXCLUDE};
 //
 // Valid model time window
 //
-valid_beg = "";
-valid_end = "";
+//valid_beg = "";
+valid_beg = "${VALID_BEG}";
+//valid_end = "";
+valid_end = "${VALID_END}";
 
 //
 // Model initialization hours
@@ -101,14 +104,15 @@ anly_track = BDECK;
 // Specify if only those track points common to both the ADECK and BDECK
 // tracks be written out.
 //
-match_points = FALSE;
+match_points = TRUE;
 
 //
 // Specify the NetCDF output of the gen_dland tool containing a gridded
 // representation of the minimum distance to land.
 //
 //dland_file = "MET_BASE/tc_data/dland_global_tenth_degree.nc";
-dland_file = "";
+//dland_file = "";
+dland_file = "${DLAND_FILE}";
 
 //
 // Specify watch/warning information:
@@ -119,4 +123,10 @@ watch_warn = {
    file_name   = "MET_BASE/tc_data/wwpts_us.txt";
    time_offset = -14400;
 }
+
+//
+// Indicate a version number for the contents of this configuration file.
+// The value should generally not be modified.
+//
+//version = "V6.1";
 
