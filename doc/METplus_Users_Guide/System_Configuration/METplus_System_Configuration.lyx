@@ -7237,8 +7237,8 @@ LEAD
 \begin_inset Newline newline
 \end_inset
 
-For cyclone_plotter_wrapper.py, this refers to the LEAD column of interest
- in the input ASCII cyclone file.
+For cyclone_plotter_wrapper.py, this refers to the column of interest in
+ the input ASCII cyclone file.
 \end_layout
 
 \begin_layout Standard
@@ -7248,7 +7248,13 @@ In the tcmpr_plotter_wrapper.py, this corresponds to the optional -lead argument
 \end_layout
 
 \begin_layout Standard
-In feature
+In feature_util.py, this corresponds to the name of the column of interest
+ in the input ASCII data file.
+\end_layout
+
+\begin_layout Standard
+In tc_stat_wrapper.py, this corresponds to the name of the column of interest
+ in the input ASCII data file.
 \end_layout
 
 \begin_layout Standard
@@ -7258,8 +7264,8 @@ In feature
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py, tcmpr_plotter_wrapper.py, feature_util.py, make_plots_
-wrapper.py, stat_analysis_wrapper.py, tc_stat_wrapper.py
+ cyclone_plotter_wrapper.py, tcmpr_plotter_wrapper.py, feature_util.py, tc_stat_wra
+pper.py
 \series bold
 \shape italic
 
@@ -7443,7 +7449,7 @@ LEGEND
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The text to be includede in the legend of your plot.
 \end_layout
 
 \begin_layout Standard
@@ -8268,7 +8274,7 @@ MET_BASE
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The base directory where your MET installation resides.
 \end_layout
 
 \begin_layout Standard
@@ -8325,7 +8331,7 @@ MET_BIN
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The location of MET binaries.
 \end_layout
 
 \begin_layout Standard
@@ -8368,7 +8374,8 @@ MET_BUILD_BASE
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The base directory of the MET install.
+ Only needed if using MET version 6.0
 \end_layout
 
 \begin_layout Standard
@@ -8378,7 +8385,7 @@ MET_BUILD_BASE
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py, tcmpr_plotter_wrapper.py
+ tcmpr_plotter_wrapper.py
 \series bold
 \shape italic
 
@@ -8429,7 +8436,8 @@ MET_INSTALL_DIR
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The base directory of the MET install.
+ To be defined when using MET version 6.1 and beyond
 \end_layout
 
 \begin_layout Standard
@@ -9128,7 +9136,7 @@ NLAT
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The number of latitude points.
 \end_layout
 
 \begin_layout Standard
@@ -9189,7 +9197,7 @@ NLON
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The number of longitude points.
 \end_layout
 
 \begin_layout Standard
@@ -11303,7 +11311,8 @@ OBS_WINDOW_BEG
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+Corresponds to the OBS_WINDOW_BEG in the MET config file for pb2nc.
+ Please refer to Chapter 4 of the MET User's Guide.
 \end_layout
 
 \begin_layout Standard
@@ -11364,7 +11373,8 @@ OBS_WINDOW_END
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+Corresponds to the OBS_WINDOW_END in the MET config file for pb2nc.
+ Please refer to Chapter 4 of the MET User's Guide.
 \end_layout
 
 \begin_layout Standard
@@ -12863,7 +12873,9 @@ PREFIX
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+This corresponds to the optional -prefix flag of the plot_TCMPR.R script
+ (which is wrapped by tcmpr_plotter_wrapper.py).
+ This is the output file name prefix.
 \end_layout
 
 \begin_layout Standard
@@ -12873,7 +12885,7 @@ PREFIX
 Used by:
 \series default
 \shape default
- feature_util.py, tcmpr_plotter_wrapper.py, tc_pairs_wrapper.py
+ tcmpr_plotter_wrapper.py
 \series bold
 \shape italic
 
@@ -13231,7 +13243,9 @@ PROJ_DIR
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+A directory for generic use.
+ The user can store input files (if INPUT_BASE is not defined), intermediate
+ files, and any other project-related files.
 \end_layout
 
 \begin_layout Standard
@@ -13307,7 +13321,7 @@ REFERENCE_TMPL
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The filename template describing the observation/reference data.
 \end_layout
 
 \begin_layout Standard
@@ -13368,7 +13382,8 @@ REGION_LIST
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+A list of the regions of interest.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -13694,7 +13709,9 @@ SAVE
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+Corresponds to the optional -save flag in plot_TCMPR.R (which is wrapped
+ by tcmpr_plotter_wrapper.py).
+ This is a yes/no value to indicate whether to save the image (yes).
 \end_layout
 
 \begin_layout Standard
@@ -13755,7 +13772,10 @@ SAVE_DATA
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+Corresponds to the optional -save_data flag in plot_TCMPR.R (which is wrapped
+ by tcmpr_plotter_wrapper.py).
+ Indicates whether to save the filtered track data to a file instead of
+ deleting it.
 \end_layout
 
 \begin_layout Standard
@@ -13816,7 +13836,9 @@ SCATTER_X
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+Corresponds to the optional -scatter_x flag in plot_TCMPR.R (which is wrapped
+ by tcmpr_plotter_wrapper.py).
+ This is a comma-separated list of x-axis variable columns to plot.
 \end_layout
 
 \begin_layout Standard
@@ -13877,7 +13899,9 @@ SCATTER_Y
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+Corresponds to the optional -scatter_y flag in plot_TCMPR.R (which is wrapped
+ by tcmpr_plotter_wrapper.py).
+ This is a comma-separated list of y-axis variable columns to plot.
 \end_layout
 
 \begin_layout Standard
@@ -13938,7 +13962,11 @@ SERIES
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+Corresponds to the optional -series flag in plot_TCMPR.R (which is wrapped
+ by tcmpr_plotter_wrapper.py).
+ This is the column whose unique values define the series on the plot, optionall
+y followed by a comma-separated list of values, including: ALL, OTHER, and
+ colon-separated groups.
 \end_layout
 
 \begin_layout Standard
@@ -14123,7 +14151,10 @@ SERIES_ANALYSIS_FILTER_OPTS
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+Filtering options to be applied during series analysis.
+ Filter options are performed by invoking the MET tc_stat tool within the
+ METplus wrapper.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -14184,7 +14215,11 @@ SERIES_CI
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+Corresponds to the optional -series_ci flag in plot_TCMPR.R (which is wrapped
+ by tcmpr_plotter_wrapper.py).
+ This is a list of true/false for confidence intervals.
+ This list can be optionally followed by a comma-separated list of values,
+ including ALL, OTHER, and colon-separated groups.
 \end_layout
 
 \begin_layout Standard
@@ -14493,7 +14528,10 @@ SKILL_REF
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+This corresponds to the optional -skill_ref flag in plot_TCMPR.R (which is
+ wrapped by tcmpr_plotter_wrapper.py).
+ This is the identifier for the skill score reference.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -14987,7 +15025,7 @@ STORM_ID
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The identifier of the storm(s) of interest.
 \end_layout
 
 \begin_layout Standard
@@ -15048,7 +15086,8 @@ STORM_NAME
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The name(s) of the storm of interest.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -15109,7 +15148,7 @@ SUBTITLE
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The subtitle of the plot.
 \end_layout
 
 \begin_layout Standard
@@ -15983,7 +16022,7 @@ TC_STAT_CYCLONE
 \begin_inset Newline newline
 \end_inset
 
-Specify the CYCLONE option for use with the MET tc_stat tool.
+Specify the CYCLONE of interest for use with the MET tc_stat tool.
 \end_layout
 
 \begin_layout Standard
@@ -16462,7 +16501,8 @@ TC_STAT_INIT_MASK
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+This corresponds to the INIT_MASK keyword in the MET tc_stat config file.
+ For more information, please refer to Chapter 20 in the MET User's Guide.
 \end_layout
 
 \begin_layout Standard
@@ -16523,7 +16563,9 @@ TC_STAT_INIT_STR_NAME
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+This corresponds to the INIT_STR_NAME keyword in the MET tc_stat config
+ file.
+ Please refer to Chapter 20 in the MET User's Guide for more details.
 \end_layout
 
 \begin_layout Standard
@@ -16584,7 +16626,8 @@ TC_STAT_INIT_STR_VAL
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+This corresponds to the INIT_STR_VAL keyword in the MET tc_stat config file.
+ Please refer to Chapter 20 in the MET User's Guide for more information.
 \end_layout
 
 \begin_layout Standard
@@ -17314,7 +17357,7 @@ TC_STAT_STORM_ID
 \begin_inset Newline newline
 \end_inset
 
-Set the STORM_ID for use with the MET tc_stat tool.
+Set the STORM_ID(s) of interest with the MET tc_stat tool.
 \end_layout
 
 \begin_layout Standard
@@ -17724,7 +17767,8 @@ TC_STAT_VALID_HOUR
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+This corresponds to the VALID_HOUR keyword in the MET tc_stat config file.
+ For more information, please refer to Chapter 20 of the MET User's Guide.
 \end_layout
 
 \begin_layout Standard
@@ -17855,7 +17899,8 @@ TC_STAT_VALID_MASK
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+This corresponds to the VALID_MASK in the MET tc_stat config file.
+ Please refer to Chapter 20 of the MET User's Guide for more information.
 \end_layout
 
 \begin_layout Standard
