@@ -131,6 +131,31 @@ name "sec:SC_Config_File_Structure"
 
 \end_layout
 
+\begin_layout Standard
+\noindent
+\align left
+There is a hierarchy of configuration files employed in METplus: the 
+\begin_inset Quotes eld
+\end_inset
+
+set-and-forget
+\begin_inset Quotes erd
+\end_inset
+
+ type configuration files that reside in the 
+\shape italic
+METplus_installation_dir
+\shape default
+/parm/metplus_config and configuration files that are specific to a user's
+ specific needs in the 
+\shape italic
+METplus_installation_dir
+\shape default
+/parm/use_cases/
+\shape italic
+specific_use_case
+\end_layout
+
 \begin_layout Itemize
 Families of config options [exe], [filename_templates], [dir], [config],
  etc...
@@ -406,7 +431,7 @@ AMODEL
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The model name of the ADeck model data
 \end_layout
 
 \begin_layout Standard
@@ -461,7 +486,9 @@ ANLY_ASCII_REGEX_LEAD
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The regular expression describing the analysis (obs) file name (in ASCII
+ format) of the intermediate file generated when running a series by lead
+ case.
 \end_layout
 
 \begin_layout Standard
@@ -516,7 +543,8 @@ ANLY_NC_TILE_REGEX
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The regular expression used to search the input files that are in netCDF
+ format and used in the series by analysis task.
 \end_layout
 
 \begin_layout Standard
@@ -571,7 +599,8 @@ ANLY_TILE_PREFIX
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The prefix to the filename for the analysis file that is created as part
+ of a series analysis.
 \end_layout
 
 \begin_layout Standard
@@ -626,7 +655,7 @@ ANLY_TILE_REGEX
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The regular expression for the analysis input file the file is in GRIB2.
 \end_layout
 
 \begin_layout Standard
@@ -847,12 +876,11 @@ height "1pt"
 \end_inset
 
 BDECK_FILE_PREFIX
-\series default
+\end_layout
 
-\begin_inset Newline newline
-\end_inset
-
-...Some description here...
+\begin_layout Standard
+Relevant for non-ATCF tropical cyclone data.
+ The filename prefix for the BDeck data.
 \end_layout
 
 \begin_layout Standard
@@ -913,7 +941,7 @@ BDECK_TRACK_DATA_DIR
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The input directory where the BDeck track data resides.
 \end_layout
 
 \begin_layout Standard
@@ -1035,7 +1063,7 @@ BMODEL
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The model name of the BDeck model data.
 \end_layout
 
 \begin_layout Standard
@@ -1723,128 +1751,6 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-CYCLONE_LLCRNRLAT
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Set the lower left corner latitude boundary for the cyclone plotter.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- cyclone_plotter_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- -90
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-CYCLONE_LLCRNRLON
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Set the lower left corner longitude boundary for the cyclone plotter.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- cyclone_plotter_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- 0
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
 CYCLONE_MODEL
 \series default
 
@@ -2011,80 +1917,6 @@ Default:
 \end_inset
 
 
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-CYCLONE_PROJECTION
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify what projection the cyclone plotter should use.
- 
-\end_layout
-
-\begin_layout Standard
-Acceptable options are:
-\begin_inset Newline newline
-\end_inset
-
-c = Cylindrical equal area
-\begin_inset Newline newline
-\end_inset
-
-lcc = Lambert conformal conic
-\begin_inset Newline newline
-\end_inset
-
-cyl = Cylindrical equidistant
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- cyclone_plotter_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
 \begin_inset Newline newline
 \end_inset
 
@@ -2101,170 +1933,6 @@ height "1pt"
 \end_inset
 
 
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-CYCLONE_RESOLUTION
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-...Some description here...
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- cyclone_plotter_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-CYCLONE_URCRNRLAT
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Set the upper right corner latitude boundary for the cyclone plotter.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- cyclone_plotter_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- 90
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-CYCLONE_URCRNRLON
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Set the upper right corner longitude boundary for the cyclone plotter.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- cyclone_plotter_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- 360
 \end_layout
 
 \begin_layout Subsection
@@ -2299,7 +1967,10 @@ DEMO_YR
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The demo year.
+ This is an optional value used by the plot_TCMPR.R script, (which is wrapped
+ by tcmpr_plotter_wrapper.py).
+ Please refer to Chapter 21 in the MET User's Guide for more details.
 \end_layout
 
 \begin_layout Standard
@@ -2360,7 +2031,11 @@ DEP_VARS
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+Corresponds to the optional flag -dep in the plot_TCMPR.R, which is wrapped
+ by tcmpr_plotter_wrapper.py.
+ The value to this flag is a comma-separated list of dependent variable
+ columns to plot.
+ Please refer to Chapter 21 in the MET User's Guide for more details.
 \end_layout
 
 \begin_layout Standard
@@ -2421,7 +2096,10 @@ DLAND_FILE
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The file generated by the MET tool tc_dland, containing the gridded representati
+on of the minimum distance to land.
+ Please refer to Chapter 18 of the MET User's Guide for more information
+ about the tc_dland tool.
 \end_layout
 
 \begin_layout Standard
@@ -2482,7 +2160,7 @@ DLAT
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The latitude value, in degrees.
 \end_layout
 
 \begin_layout Standard
@@ -2543,7 +2221,7 @@ DLON
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The longitude value, in degrees.
 \end_layout
 
 \begin_layout Standard
@@ -2860,7 +2538,7 @@ EXTRACT_OUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-Set the output directory for the MET extract_tiles utility.
+Set the output directory for the METplus extract_tiles utility.
 \end_layout
 
 \begin_layout Standard
@@ -2921,7 +2599,7 @@ EXTRACT_TILES_FILTER_OPTS
 \begin_inset Newline newline
 \end_inset
 
-Control what options are passed to the MET extract_tiles utility.
+Control what options are passed to the METplus extract_tiles utility.
 \end_layout
 
 \begin_layout Standard
@@ -2982,7 +2660,7 @@ EXTRACT_TILES_VAR_LIST
 \begin_inset Newline newline
 \end_inset
 
-Control what variables the MET extract_tiles utility runs on.
+Control what variables the METplus extract_tiles utility runs on.
 \end_layout
 
 \begin_layout Standard
@@ -3171,7 +2849,8 @@ FCST_ASCII_REGEX_LEAD
 \begin_inset Newline newline
 \end_inset
 
-Regular expression used to find lead times desired for forecast data.
+Regular expression used to find the forecast file (ASCII format) generated
+ as an intermediate step in the series by lead use case.
 \end_layout
 
 \begin_layout Standard
@@ -4322,7 +4001,7 @@ FCST_NC_TILE_REGEX
 \begin_inset Newline newline
 \end_inset
 
-Define the regular expression used when finding forecast netCDF tiles.
+Define the regular expression for input forecast files that are in netCDF.
 \end_layout
 
 \begin_layout Standard
@@ -4806,6 +4485,8 @@ FCST_TILE_PREFIX
 \end_inset
 
 Prefix for forecast tile files.
+ Used to create filename of intermediate files that are created while performing
+ a series analysis.
 \end_layout
 
 \begin_layout Standard
@@ -4866,7 +4547,7 @@ FCST_TILE_REGEX
 \begin_inset Newline newline
 \end_inset
 
-Regular expression for forecast tile files.
+Regular expression for forecast input files that are in GRIB2.
 \end_layout
 
 \begin_layout Standard
@@ -5792,7 +5473,10 @@ FILTER
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+Corresponds to the optional -filter argument to the plot_TCMPR.R script which
+ is wrapped by tcmpr_plotter_wrapper.py.
+ This is a list of filtering options for the tc_stat tool.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -5853,7 +5537,10 @@ FILTERED_TCST_DATA_FILE
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+Corresponds to the optional -tcst argument to the plot_TCMPR.R script which
+ is wrapped by tcmpr_plotter_wrapper.py.
+ This is a tcst data file to be used instead of running the tc_stat tool.
+ Indicate a full path to the data file.
 \end_layout
 
 \begin_layout Standard
@@ -5914,7 +5601,11 @@ FOOTNOTE_FLAG
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+This corresponds to the optional -footnote flag in the plot_TCMPR.R script
+ which is wrapped by tcmpr_plotter_wrapper.py.
+ According to the plot_TCMPR.R usage, this flag is used to disable footnote
+ (date).
+ 
 \end_layout
 
 \begin_layout Standard
@@ -6720,7 +6411,10 @@ HFIP_BASELINE
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+Corresponds to the optional -hfip_bsln flag in the plot_TCMPR.R script which
+ is wrapped by tcmpr_plotter_wrapper.py.
+ This is a string that indicates whether to add the HFIP baseline, and indicates
+ the version (no, 0, 5, 10 year goal).
 \end_layout
 
 \begin_layout Standard
@@ -7543,7 +7237,18 @@ LEAD
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+For cyclone_plotter_wrapper.py, this refers to the LEAD column of interest
+ in the input ASCII cyclone file.
+\end_layout
+
+\begin_layout Standard
+In the tcmpr_plotter_wrapper.py, this corresponds to the optional -lead argument
+ in the plot_TCMPR.R script (which is wrapped by tcmpr_plotter.py).
+ This argument is set to a comma-separted list of lead times (h) to be plotted.
+\end_layout
+
+\begin_layout Standard
+In feature
 \end_layout
 
 \begin_layout Standard
@@ -7553,8 +7258,8 @@ LEAD
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py, feature_util.py, make_plots_wrapper.py, stat_analysis_
-wrapper.py, tc_stat_wrapper.py
+ cyclone_plotter_wrapper.py, tcmpr_plotter_wrapper.py, feature_util.py, make_plots_
+wrapper.py, stat_analysis_wrapper.py, tc_stat_wrapper.py
 \series bold
 \shape italic
 
