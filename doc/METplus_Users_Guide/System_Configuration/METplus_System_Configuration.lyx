@@ -77,7 +77,7 @@
 \begin_body
 
 \begin_layout Chapter
-MET+ System Configuration
+METplus System Configuration
 \begin_inset CommandInset label
 LatexCommand label
 name "chap:METplus System Configuration"
@@ -88,7 +88,7 @@ name "chap:METplus System Configuration"
 \end_layout
 
 \begin_layout Standard
-This chapter will serve as a guide to configuring MET+.
+This chapter will serve as a guide to configuring METplus.
 \end_layout
 
 \begin_layout Section
@@ -103,21 +103,40 @@ name "sec:SC_Config_Best_Practices"
 \end_layout
 
 \begin_layout Standard
-Insert some best practices here.
- For example:
+Below is a list of Best Practices:
 \end_layout
 
 \begin_layout Enumerate
-Using your own configuration file(s) - not those that ship with MET+
+Set your log level to an appropriate level.
+\end_layout
+
+\begin_layout Enumerate
+Direct your logging either to stdout or to a log file.
+\end_layout
+
+\begin_layout Enumerate
+Refer to you log file to verify that all your processes ran cleanly.
+\end_layout
+
+\begin_layout Enumerate
+The order in which you list your METplus config files matter.
+ The last config file on the command line will over-ride any key-values
+ defined in an earlier config file.
+\end_layout
+
+\begin_layout Enumerate
+Check the master_metplus.conf file, it contains all the key-values based
+ on what you specified.
+ This will help you determine whether you forgot to replace any 
+\shape italic
+/path/to
+\shape default
+ with valid paths or to verify that you have defined things as you expected.
 \end_layout
 
 \begin_layout Enumerate
 The last configuration file loaded will over-write any values of config
- variables loaded before it
-\end_layout
-
-\begin_layout Enumerate
-Only configure the bare minimum for the task you're trying to accomplish
+ variables loaded before it.
 \end_layout
 
 \begin_layout Section
@@ -157,8 +176,50 @@ specific_use_case
 \end_layout
 
 \begin_layout Itemize
-Families of config options [exe], [filename_templates], [dir], [config],
- etc...
+There are four configuration files that are required to be fully configured
+ (i.e.
+ all keywords are defined by either whitespace or a valid value):
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\noindent
+metplus_system
+\end_layout
+
+\begin_layout Itemize
+\noindent
+metplus_data
+\end_layout
+
+\begin_layout Itemize
+\noindent
+metplus_logging
+\end_layout
+
+\begin_layout Itemize
+\noindent
+metplus_runtime
+\end_layout
+
+\begin_layout Standard
+By default, key-values that need the user's input are set to 
+\shape italic
+/path/to
+\shape default
+.
+ Replace these with the appropriate directory for your project.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Additional configuration files are optional and the key-values defined in
+ these additional config files over-ride any values defined in the four
+ mandatory METplus configuration files.
+ These additional configuration files enables users to use a common set
+ of configuration files and create customized environments for their verificatio
+ns.
+ 
 \end_layout
 
 \begin_layout Section
@@ -173,8 +234,12 @@ name "sec:SC_Config_Quick_Start_Example"
 \end_layout
 
 \begin_layout Standard
-Have an example here of running MET tool X, with forecast data X and observation
- data X.
+?TODO: Track and Intensity use case using the MET tutorial data? Or should
+ we have tropical cyclone data that the user can download?
+\end_layout
+
+\begin_layout Standard
+?Or is there another use case we should use, that is easy and runs quickly?
 \end_layout
 
 \begin_layout Standard
@@ -234,7 +299,7 @@ CONFIG_NAME_HERE
 Used by: 
 \series default
 \shape default
-Which MET+ utility is this used by?
+Which METplus utility is this used by?
 \series bold
 \shape italic
 
@@ -7510,7 +7575,7 @@ LOG_DIR
 \begin_inset Newline newline
 \end_inset
 
-Specify the directory where log files from MET and MET+ should be written.
+Specify the directory where log files from MET and METplus should be written.
 \end_layout
 
 \begin_layout Standard
@@ -7682,7 +7747,7 @@ LOG_METPLUS
 \begin_inset Newline newline
 \end_inset
 
-Control the filename of the MET+ log file.
+Control the filename of the METplus log file.
  Control the timestamp appended to the filename with LOG_TIMESTAMP_TEMPLATE.
  To turn OFF all logging, do not set this option.
 \end_layout
@@ -7745,8 +7810,8 @@ LOG_MET_OUTPUT_TO_METPLUS
 \begin_inset Newline newline
 \end_inset
 
-Control whether logging output from the MET tools is sent to the MET+ log
- file, or individual log files for each MET tool.
+Control whether logging output from the MET tools is sent to the METplus
+ log file, or individual log files for each MET tool.
 \end_layout
 
 \begin_layout Standard
@@ -7876,7 +7941,7 @@ LOG_TIMESTAMP_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-Set the timestamp template for the MET+ log file.
+Set the timestamp template for the METplus log file.
  Use Python strftime directives, e.g.
 \begin_inset Newline newline
 \end_inset
@@ -8067,7 +8132,7 @@ LOOP_METHOD
 \begin_inset Newline newline
 \end_inset
 
-Control the looping method for MET+.
+Control the looping method for METplus.
  Valid options are 
 \begin_inset Quotes eld
 \end_inset
@@ -8149,7 +8214,7 @@ METPLUS_BASE
 \begin_inset Newline newline
 \end_inset
 
-Set the base directory for the MET+ installation.
+Set the base directory for the METplus installation.
 \end_layout
 
 \begin_layout Standard
@@ -8211,8 +8276,8 @@ METPLUS_CONF
 \begin_inset Newline newline
 \end_inset
 
-Provide the absolute path to the MET+ final configuration file.
- This file will contain every configuration option and value used when MET+
+Provide the absolute path to the METplus final configuration file.
+ This file will contain every configuration option and value used when METplus
  was run.
 \end_layout
 
@@ -11497,7 +11562,7 @@ OUTPUT_BASE
 \begin_inset Newline newline
 \end_inset
 
-Provide a path to the top level output directory for MET+.
+Provide a path to the top level output directory for METplus.
 \end_layout
 
 \begin_layout Standard
@@ -11702,7 +11767,7 @@ PARM_BASE
 \begin_inset Newline newline
 \end_inset
 
-Specify the top level MET+ parameter file directory.
+Specify the top level METplus parameter file directory.
 \end_layout
 
 \begin_layout Standard
@@ -13181,7 +13246,7 @@ PROCESS_LIST
 \begin_inset Newline newline
 \end_inset
 
-Specify the list of processes for MET+ to perform, in a comma separated
+Specify the list of processes for METplus to perform, in a comma separated
  list.
 \end_layout
 
