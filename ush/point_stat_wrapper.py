@@ -85,9 +85,7 @@ class PointStatWrapper(CommandBuilder):
         ps_dict['PROJ_DIR'] = self.p.getdir('PROJ_DIR')
         ps_dict['TMP_DIR'] = self.p.getdir('TMP_DIR')
         ps_dict['METPLUS_BASE'] = self.p.getdir('METPLUS_BASE')
-        ps_dict['MET_BUILD_BASE'] = self.p.getdir('MET_BUILD_BASE')
         ps_dict['MET_INSTALL_DIR'] = self.p.getdir('MET_INSTALL_DIR')
-
         ps_dict['PARM_BASE'] = self.p.getdir('PARM_BASE')
         ps_dict['OUTPUT_BASE'] = self.p.getdir('OUTPUT_BASE')
         ps_dict['FCST_INPUT_DIR'] = self.p.getdir('FCST_INPUT_DIR')
@@ -317,7 +315,7 @@ class PointStatWrapper(CommandBuilder):
         self.logger.debug("")
 
 
-        
+
     def select_fcst_obs_pairs(self):
         """! Select file pairings of fcst and obs input files based on valid
              time:
