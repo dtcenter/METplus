@@ -77,7 +77,7 @@
 \begin_body
 
 \begin_layout Chapter
-Overview of MET+
+Overview of METplus
 \begin_inset CommandInset label
 LatexCommand label
 name "chap:Overview-of-MET"
@@ -102,30 +102,15 @@ name "sec:Purpose-and-organization"
 
 \series medium
 The goal of this User's Guide is to provide basic information for users
- of the Model Evaluation Tools (MET) to enable users to apply MET to their
- datasets and evaluation studies.
- MET has been specifically designed for application to the Weather Research
- and Forecasting (WRF) model (see 
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.wrf-model.org/index.php
-\end_layout
-
-\end_inset
-
- for more information about the WRF).
- However, MET may also be used for the evaluation of forecasts from other
- models or applications if certain file format definitions (described in
- this document) are followed.
+ of the Model Evaluation Tools Plus (METplus) to enable users to more easily
+ apply MET to their datasets and evaluation studies.
+ 
 \end_layout
 
 \begin_layout Standard
 
 \series medium
-The MET User's Guide is organized as follows.
+The METplus User's Guide is organized as follows.
  Chapter 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -133,7 +118,7 @@ reference "chap:Overview-of-MET"
 
 \end_inset
 
- provides an overview of MET and its components.
+ provides an overview of METplus.
  Chapter 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -141,9 +126,8 @@ reference "chap:Software-Installation/Getting-St"
 
 \end_inset
 
- contains basic information about how to get started with MET - including
- system requirements, required software (and how to obtain it), how to download
- MET, and information about compilers, libraries, and how to build the code.
+ contains basic information about how to get started with METplus - including
+ system requirements, required software , and how to download METplus.
  Chapter 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -151,165 +135,7 @@ reference "chap:METplus System Configuration"
 
 \end_inset
 
- - 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:Masking"
-
-\end_inset
-
- focuses on the data needed to run MET, including formats for forecasts,
- observations, and output.
- These chapters also document the reformatting and masking tools available
- in MET.
- Chapters 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:The-Point-Stat-Tool"
-
-\end_inset
-
- - 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:GSI-Tools"
-
-\end_inset
-
- focus on the main statistics modules contained in MET, including the Point-Stat
-, Grid-Stat, Ensemble-Stat, Wavelet-Stat and GSI Diagnostic Tools.
- These chapters include an introduction to the statistical verification
- methodologies utilized by the tools, followed by a section containing practical
- information, such as how to set up configuration files and the format of
- the output.
- Chapters 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:The-Stat-Analysis-Tool"
-
-\end_inset
-
- and 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:The-Series-Analysis"
-
-\end_inset
-
- focus on the analysis modules, Stat-Analysis and Series-Analysis, which
- aggregate the output statistics from the other tools across multiple cases.
- Chapters 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:The-MODE-Tool"
-
-\end_inset
-
- - 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:MODE-Time-Domain"
-
-\end_inset
-
- describe a suite of object-based tools, including MODE, MODE-Analysis,
- and MODE-TD.
- Chapters 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:MET-TC-Overview"
-
-\end_inset
-
- - 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:TC-Stat"
-
-\end_inset
-
- describe tools focused on tropical cyclones, including MET-TC Overview,
- TC-Dland, TC-Pairs and TC-Stat.
- Finally, Chapter 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:Plotting-and-Graphics"
-
-\end_inset
-
- includes plotting tools included in the MET release for checking and visualizin
-g data, as well as some additional tools and information for plotting MET
- results.
- The appendices provide further useful information, including answers to
- some typical questions  (Appendix 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:App_A-FAQs-&-How"
-
-\end_inset
-
-: How do I...
- ?); and links and information about map projections, grids, and polylines
- (Appendix 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:App_B-Map-Projections-Grids"
-
-\end_inset
-
-).
- Appendices 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:App_C-Verification-Measures"
-
-\end_inset
-
- and 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:App_D-Confidence-Intervals"
-
-\end_inset
-
- provide more information about the verification measures and confidence
- intervals that are provided by MET.
- Sample code that can be used to perform analyses on the output of MET and
- create particular types of plots of verification results is posted on the
- MET website (
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.dtcenter.org/met/users/
-\end_layout
-
-\end_inset
-
-).
- Note that the MET development group also accepts contributed analysis and
- plotting scripts which may be posted on the MET website for use by the
- community.
- It should be noted there are References plus a List of Tables and Figures
- between Chapter 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "chap:Plotting-and-Graphics"
-
-\end_inset
-
- and Appendices.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The remainder of this chapter includes information about the context for
- MET development, as well as information on the design principles used in
- developing MET.
- In addition, this chapter includes an overview of the MET package and its
- specific modules.
+ 
 \end_layout
 
 \begin_layout Section
@@ -326,8 +152,8 @@ name "sec:The-Developmental-Testbed"
 \begin_layout Standard
 
 \series medium
-MET has been developed, and will be maintained and enhanced, by the Developmenta
-l Testbed Center (DTC; 
+METplus has been developed, and will be maintained and enhanced, by the
+ Developmental Testbed Center (DTC; 
 \begin_inset Flex URL
 status open
 
@@ -346,25 +172,29 @@ http://www.dtcenter.org/
  operational environment in which the research community can test model
  enhancements; the operational community benefits from DTC testing and evaluatio
 n of models before new models are implemented operationally.
- MET serves both the research and operational communities in this way -
- offering capabilities for researchers to test their own enhancements to
- models and providing a capability for the DTC to evaluate the strengths
+ METplus serves both the research and operational communities in this way
+ - offering capabilities for researchers to test their own enhancements
+ to models and providing a capability for the DTC to evaluate the strengths
  and weaknesses of advances in NWP prior to operational implementation.
 \end_layout
 
 \begin_layout Standard
 
 \series medium
-The MET package will also be available to DTC visitors and to the WRF modeling
- community for testing and evaluation of new model capabilities, applications
- in new environments, and so on.
+METplus will also be available to DTC visitors and to the WRF modeling community
+ for testing and evaluation of new model capabilities, applications in new
+ environments, and so on.
+ The METplus release schedule is coincident with the MET release schedule
+ and the METplus major release number is six less than the MET major release
+ number (e.g.
+ MET 8.0 is released with METplus 2.0).
 \end_layout
 
 \begin_layout Section
-MET goals and design philosophy
+METplus goals and design philosophy
 \begin_inset CommandInset label
 LatexCommand label
-name "sec:MET-goals-and"
+name "sec:METplus-goals-and"
 
 \end_inset
 
@@ -374,55 +204,51 @@ name "sec:MET-goals-and"
 \begin_layout Standard
 
 \series medium
-The primary goal of MET development is to provide a state-of-the-art verificatio
-n package to the NWP community.
- By "state-of-the-art" we mean that MET will incorporate newly developed
- and advanced verification methodologies, including new methods for diagnostic
- and spatial verification and new techniques provided by the verification
- and modeling communities.
- MET also utilizes and replicates the capabilities of existing systems for
- verification of NWP forecasts.
- For example, the MET package replicates existing National Center for Environmen
-tal Prediction (NCEP) operational verification capabilities (e.g., I/O, methods,
- statistics, data types).
- MET development will take into account the needs of the NWP community -
- including operational centers and the research and development community.
- Some of the MET capabilities include traditional verification approaches
- for standard surface and upper air variables (e.g., Equitable Threat Score,
- Mean Squared Error), confidence intervals for verification measures, and
- spatial forecast verification methods.
- In the future, MET will include additional state-of-the-art and new methodologi
-es.
+The primary goal of METplus development is to provide MET users with a highly
+ configurable and simple means to perform model verification using the MET
+ tools.
+ Prior to the availability of METplus, users who had more complex verifications
+ that required the use of more than one MET tool were faced with setting
+ up multiple MET config files and creating some automation scripts to perform
+ the verification.
+ METplus provides the user with the infrastructure to make the end-to-end
+ steps in verification more tractable.
+ 
 \end_layout
 
 \begin_layout Standard
 
 \series medium
-The MET package has been designed to be modular and adaptable.
- For example, individual modules can be applied without running the entire
- set of tools.
- New tools can easily be added to the MET package due to this modular design.
- In addition, the tools can readily be incorporated into a larger "system"
- that may include a database as well as more sophisticated input/output
- and user interfaces.
- Currently, the MET package is a set of tools that can easily be applied
- by any user on their own computer platform.
+METplus has been designed to be modular and adaptable.
+ This is accomplished through wrapping the MET tools with Python and the
+ use of hierarchical configuration files to enable users to readily customize
+ their verification environments.
+ Wrappers can be run individually, or as a group of wrappers that represent
+ a sequence of MET processes.
+ New wrappers can readily be added to the METplus package due to this modular
+ design.
+ Currently, METplus can easily be applied by any user on their own computer
+ platform that supports Python 2.7.
 \end_layout
 
 \begin_layout Standard
 
 \series medium
-The MET code and documentation is maintained by the DTC in Boulder, Colorado.
- The MET package is freely available to the modeling, verification, and
- operational communities, including universities, governments, the private
- sector, and operational modeling and prediction centers.
+The METplus code and documentation is maintained by the DTC in Boulder,
+ Colorado.
+ METplus is freely available to the modeling, verification, and operational
+ communities, including universities, governments, the private sector, and
+ operational modeling and prediction centers through a publicly accessible
+ GitHub repository.
+ Users simply need access to a web browser to download the source code and
+ any other relevant documentation and data samples.
 \end_layout
 
 \begin_layout Section
-MET+ components
+METplus components
 \begin_inset CommandInset label
 LatexCommand label
-name "sec:MET+-components"
+name "sec:METplus-components"
 
 \end_inset
 
@@ -432,282 +258,11 @@ name "sec:MET+-components"
 \begin_layout Standard
 
 \series medium
-The major components of the MET package are represented in Figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "Fig_Overview_MET_Overview_Flowchart"
-
-\end_inset
-
-.
- The main stages represented are input, reformatting, plotting, intermediate
- output, statistical analyses, and output and aggregation/analysis.
- The MET-TC package functions independently of the other MET modules, as
- inducated in the Figure.
- Each of these stages is described further in later chapters.
- For example, the input and output formats are discussed in Chapter 2 as
- well as in the chapters associated with each of the statistics modules.
- MET input files are represented on the far left.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The reformatting stage of MET consists of the Gen-Vx-Mask, PB2NC, ASCII2NC,
- Pcp-Combine, MADIS2NC, MODIS regrid, WWMCA Regrid, and Ensemble Stat tools.
- The PB2NC tool is used to create NetCDF files from input PrepBufr files
- containing point observations.
- Likewise, the ASCII2NC tool is used to create NetCDF files from input ASCII
- point observations.
- Many types of data from the MADIS network can be formatted for use in MET
- by the MADIS2NC tool.
- MODIS and WWMCA files are regridded and formatted into NetCDF files by
- their respective tools.
- These NetCDF files are then used in the statistical analysis step.
- The Gen-Vx-Mask and Pcp-Combine are optional.
- The Gen-Vx-Mask tool will create a bitmapped masking area in one of two
- ways.
- The first is from a user specified polygon, i.e.
- a text file containing a series of latitudes / longitudes.
- This mask can then be used to efficiently limit verification to the interior
- of a user specified region.
- Similarly, the Gen-Vx-Mask tool can create a circular masking region, frequency
- used with radar observations.
- The Pcp-Combine tool accumulates precipitation amounts into the time interval
- selected by the user - if a user would like to verify over a different
- time interval than is included in their forecast or observational dataset.
- The Ensemble-Stat tool will combine many forecasts into an ensemble mean
- or probability forecast.
- Additionally, if observations are included ensemble rank histogram and
- probability integral transform information is produced.
- 
-\series bold
-
-\begin_inset Float figure
-placement t
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-
-\series bold
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Basic representation of current MET structure and modules.
- Colored areas represent software and modules included in MET, and gray
- areas represent input and output files.
-\end_layout
-
-\end_inset
-
-
-\begin_inset CommandInset label
-LatexCommand label
-name "Fig_Overview_MET_Overview_Flowchart"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Several optional plotting utilities are provided to assist users in checking
- their output from the data preprocessing step.
- Plot point obs will create a postscript plot showing the locations of point
- observations.
- This can be quite useful for assessing whether the latitude and longitude
- of observation stations was specified correctly.
- Plot data plane produces a similar plot for gridded data.
- For users of the MODE object based verification methods, the plot_mode_field
- utility will create graphics of the MODE object output.
- Finally, WWMCA plot produces a plot of the raw WWMCA data file.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The main statistical analysis components of the current version of MET are:
- Point-Stat, Grid-Stat, Series-Analysis, Ensemble-Stat, MODE, MODE-TD (MTD),
- and Wavelet-Stat.
- The Point-Stat tool is used for grid-to-point verification, or verification
- of a gridded forecast field against a point-based observation (i.e., surface
- observing stations, ACARS, rawinsondes, and other observation types that
- could be described as a point observation).
- In addition to providing traditional forecast verification scores for both
- continuous and categorical variables, confidence intervals are also produced
- using parametric and non-parametric methods.
- Confidence intervals take into account the uncertainty associated with
- verification statistics due to sampling variability and limitations in
- sample size.
- These intervals provide more meaningful information about forecast performance.
- For example, confidence intervals allow credible comparisons of performance
- between two models when a limited number of model runs is available.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Sometimes it may be useful to verify a forecast against gridded fields (e.g.,
- Stage IV precipitation analyses).
- The Grid-Stat tool produces traditional verification statistics when a
- gridded field is used as the observational dataset.
- Like the Point-Stat tool, the Grid-Stat tool also produces confidence intervals.
- The Grid-Stat tool also includes "neighborhood" spatial methods, such as
- the Fractional Skill Score (Roberts and Lean 2008).
- These methods are discussed in Ebert (2008).
- The Grid-Stat tool accumulates statistics over the entire domain.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Users wishing to accumulate statistics over a time, height, or other series
- separately for each grid location should use the Series-Analysis tool.
- Series-Analysis can read any gridded matched pair data produced by the
- other MET tools and accumulate them, keeping each spatial location separate.
- Maps of these statistics can be useful for diagnosing spatial differences
- in forecast quality.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The MODE (Method for Object-based Diagnostic Evaluation) tool also uses
- gridded fields as observational datasets.
- However, unlike the Grid-Stat tool, which applies traditional forecast
- verification techniques, MODE applies the object-based spatial verification
- technique described in Davis et al.
- (2006a,b) and Brown et al.
- (2007).
- This technique was developed in response to the "double penalty" problem
- in forecast verification.
- A forecast missed by even a small distance is effectively penalized twice
- by standard categorical verification scores: once for missing the event
- and a second time for producing a false alarm of the event elsewhere.
- As an alternative, MODE defines objects in both the forecast and observation
- fields.
- The objects in the forecast and observation fields are then matched and
- compared to one another.
- Applying this technique also provides diagnostic verification information
- that is difficult or even impossible to obtain using traditional verification
- measures.
- For example, the MODE tool can provide information about errors in location,
- size, and intensity.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The MODE-TD tool extends object-based analysis from two-dimensional forecasts
- and observations to include the time dimension.
- In addition to the two dimensional information provded by MODE, MODE-TD
- can be used to examine even more features including displacement in time,
- and duration and speed of moving areas of interest.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The Wavelet-Stat tool decomposes two-dimensional forecasts and observations
- according to the Intensity-Scale verification technique described by Casati
- et al.
- (2004).
- There are many types of spatial verification approaches and the Intensity-Scale
- technique belongs to the scale-decomposition (or scale-separation) verification
- approaches.
- The spatial scale components are obtained by applying a wavelet transformation
- to the forecast and observation fields.
- The resulting scale-decomposition measures error, bias and skill of the
- forecast on each spatial scale.
- Information is provided on the scale dependency of the error and skill,
- on the no-skill to skill transition scale, and on the ability of the forecast
- to reproduce the observed scale structure.
- The Wavelet-Stat tool is primarily used for precipitation fields.
- However, the tool can be applied to other variables, such as cloud fraction.
- 
-\end_layout
-
-\begin_layout Standard
-Though Ensemble-Stat is a preprocessing tool for creation of ensemble forecasts
- from a group of files, it also produces several types of ensemble statistics.
- Thus, it is included as a statistics tool in the flowchart.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Results from the statistical analysis stage are output in ASCII, NetCDF
- and Postscript formats.
- The Point-Stat, Grid-Stat, and Wavelet-Stat tools create STAT (statistics)
- files which are tabular ASCII files ending with a ".stat" suffix.
- In earlier versions of MET, this output format was called VSDB (Verification
- System DataBase).
- VSDB, which was developed by the NCEP, is a specialized ASCII format that
- can be easily read and used by graphics and analysis software.
- The STAT output format of the Point-Stat, Grid-Stat, and Wavelet-Stat tools
- is an extension of the VSDB format developed by NCEP.
- Additional columns of data and output line types have been added to store
- statistics not produced by the NCEP version.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The Stat-Analysis and MODE-Analysis tools aggregate the output statistics
- from the previous steps across multiple cases.
- The Stat-Analysis tool reads the STAT output of Point-Stat, Grid-Stat,
- Ensemble-Stat, and Wavelet-Stat and can be used to filter the STAT data
- and produce aggregated continuous and categorical statistics.
- The MODE-Analysis tool reads the ASCII output of the MODE tool and can
- be used to produce summary information about object location, size, and
- intensity (as well as other object characteristics) across one or more
- cases.
-\end_layout
-
-\begin_layout Standard
-Tropical cyclone forecasts and observations are quite different than numerical
- model forecasts, and thus they have their own set of tools.
- The MET-TC package includes three modules: TC-DLAND, TC-PAIRS, and TC-STAT.
- The TC-DLAND module calculates the distance to land from all locations
- on a specified grid.
- This information can be used in later modules to eliminate tropical cyclones
- that are over land from being included in the statistics.
- TC-PAIRS matches up tropical cyclone forecasts and observations and writes
- all output to a file.
- In TC-STAT, these forecast / observation pairs are analyzed according to
- user preference to produce statistics.
- 
-\end_layout
-
-\begin_layout Standard
-The following chapters of this MET User's Guide contain usage statements
- for each tool, which may be viewed if you type the name of the tool.
- Alternatively, the user can also type the name of the tool followed by
- 
-\series bold
--help
-\series default
- to obtain the usage statement.
- Each tool also has a 
-\series bold
--version
-\series default
- command line option associated with it so that the user can determine what
- version of the tool they are using.
+The major components of METplus package are METplus Python wrappers to the
+ MET tools, MET configuration files and a hierarchy of METplus configuration
+ files.
+ Some Python wrappers do not correspond to a particular MET tool, but wrap
+ utilities to extend METplus functionality.
 \end_layout
 
 \begin_layout Section
@@ -724,10 +279,11 @@ name "sec:Future-development-plans"
 \begin_layout Standard
 
 \series medium
-MET is an evolving verification software package.
- New capabilities are planned in controlled, successive version releases.
+METplus is an evolving application.
+ New capabilities are planned in controlled, successive version releases
+ that are synchronized with MET releases.
  Bug fixes and user-identified problems will be addressed as they are found
- and posted to the known issues section of the MET Users web page (
+ and posted to the known issues section of the METplus Users web page (
 \begin_inset Flex URL
 status open
 
@@ -740,110 +296,10 @@ www.dtcenter.org/met/users/support
 
 ).
  Plans are also in place to incorporate many new capabilities and options
- in future releases of MET.
- Some of the planned additions are listed below.
+ in future releases of METplus.
+ 
 \end_layout
 
-\begin_layout Standard
-Additional statistical capabilities
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Additional spatial forecast verification methods 
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Additional hurricane verification fields and methods
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Enhanced support for time series verification
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Additional methods for verification of climate and seasonal forecasts
-\end_layout
-
-\begin_layout Standard
-Additional analysis capabilities and plotting routines
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Post to the MET website sample analysis and plotting routines that may include
-\series default
-
-\begin_inset Separator latexpar
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-
-\series medium
-Boxplots
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Discrimination plots
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Reliability diagrams
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Scatter/density plots
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Color-fill/contour maps of statistics
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Height series
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Histograms
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Taylor diagrams
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Performance diagrams
-\end_layout
-
-\end_deeper
 \begin_layout Section
 Code support
 \begin_inset CommandInset label
@@ -858,10 +314,10 @@ name "sec:Code-support"
 \begin_layout Standard
 
 \series medium
-MET support is provided through a MET-help e-mail address: met_help@ucar.edu.
+METplus support is provided through a MET-help e-mail address: met_help@ucar.edu.
  We will endeavor to respond to requests for help in a timely fashion.
- In addition, information about MET and tools that can be used with MET
- are provided on the MET Users web page (
+ In addition, information about METplus and tools that can be used with
+ MET are provided on the MET Users web page (
 \begin_inset Flex URL
 status open
 
@@ -878,7 +334,7 @@ http://www.dtcenter.org/met/users/
 \begin_layout Standard
 
 \series medium
-We welcome comments and suggestions for improvements to MET, especially
+We welcome comments and suggestions for improvements to METplus, especially
  information regarding errors.
  Comments may be submitted using the MET Feedback form available on the
  MET website.
@@ -889,28 +345,13 @@ We welcome comments and suggestions for improvements to MET, especially
 
 \begin_layout Standard
 
-\series bold
--help
-\series default
- and 
-\series bold
--version
-\series default
- command line options are available for all of the MET tools.
- Typing the name of the tool with no command line options also produces
- the usage statement.
-\end_layout
-
-\begin_layout Standard
-
 \series medium
-The MET package is a "living" set of tools.
+METplus is a "living" set of wrappers and configuration files.
  Our goal is to continually enhance it and add to its capabilities.
  Because our time, resources, and talents are limited, we welcome contributed
- code for future versions of MET.
- These contributions may represent new verification methodologies, new analysis
- tools, or new plotting functions.
- For more information on contributing code to MET, please contact 
+ code for future versions of METplus.
+ These contributions may represent new use cases or new plotting functions.
+ For more information on contributing code to METplus, please contact 
 \begin_inset Flex URL
 status open
 
