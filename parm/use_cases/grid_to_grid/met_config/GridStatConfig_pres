@@ -104,10 +104,10 @@ write_cdf_bins = FALSE;
 //
 mask = {
    grid = [ "FULL" ];
-    poly = [ "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NHX.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/SHX.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/TRO.nc",
-	    "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/PNA.nc" ];
+    poly = [ "${CONFIG_DIR}/poly/NHX.nc",
+            "${CONFIG_DIR}/poly/SHX.nc",
+            "${CONFIG_DIR}/poly/TRO.nc",
+	    "${CONFIG_DIR}/poly/PNA.nc" ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -213,6 +213,6 @@ nc_pairs_flag   = {
 grid_weight_flag = COS_LAT;
 rank_corr_flag   = FALSE;
 tmp_dir          = "/tmp";
-output_prefix    = "${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${ACCUM}";
+output_prefix    = "${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${LEVEL}";
 
 ////////////////////////////////////////////////////////////////////////////////
