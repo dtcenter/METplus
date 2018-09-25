@@ -118,32 +118,7 @@ obs_window = {
 mask = {
    //grid    = [ "FULL" ];
    grid = ${POINT_STAT_GRID};
-   //poly = ${POINT_STAT_POLY};
-   poly = ["/d1/METplus_Mallory/data/poly/CONUS.nc",
-           "/d1/METplus_Mallory/data/poly/EAST.nc",
-           "/d1/METplus_Mallory/data/poly/WEST.nc",
-           "/d1/METplus_Mallory/data/poly/NWC.nc",
-           "/d1/METplus_Mallory/data/poly/SWC.nc",
-           "/d1/METplus_Mallory/data/poly/NMT.nc",
-           "/d1/METplus_Mallory/data/poly/SMT.nc",
-           "/d1/METplus_Mallory/data/poly/GRB.nc",
-           "/d1/METplus_Mallory/data/poly/SWD.nc",
-           "/d1/METplus_Mallory/data/poly/NPL.nc",
-           "/d1/METplus_Mallory/data/poly/SPL.nc",
-           "/d1/METplus_Mallory/data/poly/MDW.nc",
-           "/d1/METplus_Mallory/data/poly/LMV.nc",
-           "/d1/METplus_Mallory/data/poly/GMC.nc",
-           "/d1/METplus_Mallory/data/poly/NEC.nc",
-           "/d1/METplus_Mallory/data/poly/SEC.nc",
-           "/d1/METplus_Mallory/data/poly/APL.nc",
-           "/d1/METplus_Mallory/data/poly/WCA.nc",
-           "/d1/METplus_Mallory/data/poly/ECA.nc",
-           "/d1/METplus_Mallory/data/poly/ATC.nc",
-           "/d1/METplus_Mallory/data/poly/NAK.nc",
-           "/d1/METplus_Mallory/data/poly/SAK.nc",
-           "/d1/METplus_Mallory/data/poly/NPO.nc",
-           "/d1/METplus_Mallory/data/poly/MEX.nc"
-           ];
+   poly = ${POINT_STAT_POLY};
    sid     = [];
    //sid = ${POINT_STAT_STATION_ID};
 }
