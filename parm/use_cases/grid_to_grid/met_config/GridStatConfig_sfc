@@ -117,18 +117,18 @@ write_cdf_bins = FALSE;
 //
 mask = {
    grid = [ "FULL" ];
-   poly = [ "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NHX.nc",
-            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/SHX.nc",
-            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/N60.nc",
-            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/S60.nc",
-            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/TRO.nc",
-            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NPO.nc",
-            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/SPO.nc",
-            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NAO.nc",
-            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/SAO.nc",
-            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/CONUS.nc",
-            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/CAM.nc",
-            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NSA.nc" ];
+   poly = [ "${CONFIG_DIR}/poly/NHX.nc",
+            "${CONFIG_DIR}/poly/SHX.nc",
+            "${CONFIG_DIR}/poly/N60.nc",
+            "${CONFIG_DIR}/poly/S60.nc",
+            "${CONFIG_DIR}/poly/TRO.nc",
+            "${CONFIG_DIR}/poly/NPO.nc",
+            "${CONFIG_DIR}/poly/SPO.nc",
+            "${CONFIG_DIR}/poly/NAO.nc",
+            "${CONFIG_DIR}/poly/SAO.nc",
+            "${CONFIG_DIR}/poly/CONUS.nc",
+            "${CONFIG_DIR}/poly/CAM.nc",
+            "${CONFIG_DIR}/poly/NSA.nc" ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

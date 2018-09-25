@@ -105,9 +105,9 @@ write_cdf_bins = FALSE;
 //
 mask = {
    grid = [ "FULL" ];
-   poly = [ "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/CONUS.nc",
-            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/EAST.nc",
-            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/WEST.nc" ];
+   poly = [ "${CONFIG_DIR}/poly/CONUS.nc",
+            "${CONFIG_DIR}/poly/EAST.nc",
+            "${CONFIG_DIR}/poly/WEST.nc" ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
