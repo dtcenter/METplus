@@ -204,15 +204,16 @@ name "sec:METplus-goals-and"
 \begin_layout Standard
 
 \series medium
-The primary goal of METplus development is to provide MET users with a highly
- configurable and simple means to perform model verification using the MET
- tools.
+METplus is a Python scripting infrastructure for the MET tools.
+ The primary goal of METplus development is to provide MET users with a
+ highly configurable and simple means to perform model verification using
+ the MET tools.
  Prior to the availability of METplus, users who had more complex verifications
  that required the use of more than one MET tool were faced with setting
  up multiple MET config files and creating some automation scripts to perform
  the verification.
- METplus provides the user with the infrastructure to make the end-to-end
- steps in verification more tractable.
+ METplus provides the user with the infrastructure to modularly create the
+ necessary steps to perform such verifications.
  
 \end_layout
 
