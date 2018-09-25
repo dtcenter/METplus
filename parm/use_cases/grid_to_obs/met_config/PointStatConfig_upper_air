@@ -131,20 +131,9 @@ obs_window = {
 //
 mask = {
    //grid    = ["FULL"];
-   //poly    = [];
+   poly    = [];
    //sid     = [];
    grid = ${POINT_STAT_GRID};
-   poly = ["/d1/METplus_Mallory/data/poly/G236.nc",
-           "/d1/METplus_Mallory/data/poly/EUR.nc",
-           "/d1/METplus_Mallory/data/poly/ASI.nc",
-           "/d1/METplus_Mallory/data/poly/AFR.nc",
-           "/d1/METplus_Mallory/data/poly/AUS.nc",
-           "/d1/METplus_Mallory/data/poly/NA.nc",
-           "/d1/METplus_Mallory/data/poly/SA.nc",
-           "/d1/METplus_Mallory/data/poly/NH.nc",
-           "/d1/METplus_Mallory/data/poly/SH.nc",
-           "/d1/METplus_Mallory/data/poly/TRO.nc"
-           ];
    sid = ${POINT_STAT_STATION_ID};
 }
 
