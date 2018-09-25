@@ -207,6 +207,6 @@ nc_pairs_flag   = {
 grid_weight_flag = COS_LAT;
 rank_corr_flag   = FALSE;
 tmp_dir          = "/tmp";
-output_prefix    = "height_${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${ACCUM}";
+output_prefix    = "height_${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${LEVEL}";
 
 ////////////////////////////////////////////////////////////////////////////////
