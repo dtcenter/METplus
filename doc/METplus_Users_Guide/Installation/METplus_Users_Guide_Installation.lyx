@@ -100,13 +100,8 @@ name "sec:Install_Introduction"
 \begin_layout Standard
 
 \series medium
-This chapter describes how to install the MET package.
- MET has been developed and tested on Linux operating systems.
- Support for additional platforms and compilers may be added in future releases.
- The MET package requires many external libraries to be available on the
- user's computer prior to installation.
- Required and recommended libraries, how to install MET, the MET directory
- structure, and sample cases are described in the following sections.
+This chapter describes how to download and set up METplus.
+ METplus has been developed and tested on the Debian Linux operating system.
  
 \end_layout
 
@@ -124,37 +119,14 @@ name "sec:Install_Supported-architectures"
 \begin_layout Standard
 
 \series medium
-The MET package was developed on Debian Linux using the GNU compilers and
- the Portland Group (PGI) compilers.
- The MET package has also been built on several other Linux distributions
- using the GNU, PGI, and Intel compilers.
- Past versions of MET have also been ported to IBM machines using the IBM
- compilers, but we are currently unable to support this option as the developmen
-t team lacks access to an IBM machine for testing.
- Other machines may be added to this list in future releases as they are
- tested.
- In particular, the goal is to support those architectures supported by
- the WRF model itself.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The MET tools run on a single processor.
- Therefore, none of the utilities necessary for running WRF on multiple
- processors are necessary for running MET.
- Individual calls to the MET tools have relatively low computing and memory
- requirements.
- However users will likely be making many calls to the tools and passing
- those individual calls to several processors will accomplish the verification
- task more efficiently.
+METplus was developed on Debian Linux and is supported on this platform.
 \end_layout
 
 \begin_layout Section
-Programming languages
+Programming/scripting languages
 \begin_inset CommandInset label
 LatexCommand label
-name "sec:Install_Programming-languages"
+name "sec:Programming-/-scripting-languages"
 
 \end_inset
 
@@ -164,41 +136,183 @@ name "sec:Install_Programming-languages"
 \begin_layout Standard
 
 \series medium
-The MET package, including MET-TC, is written primarily in C/C++ in order
- to be compatible with an extensive verification code base in C/C++ already
- in existence.
- In addition, the object-based MODE and MODE-TD verification tools relies
- heavily on the object-oriented aspects of C++.
- Knowledge of C/C++ is not necessary to use the MET package.
- The MET package has been designed to be highly configurable through the
- use of ASCII configuration files, enabling a great deal of flexibility
- without the need for source code modifications.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-NCEP's BUFRLIB is written entirely in Fortran.
- The portion of MET that handles the interface to the BUFRLIB for reading
- PrepBufr point observation files is also written in Fortran.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The MET package is intended to be a tool for the modeling community to use
- and adapt.
+METplus is written in Python 2.7.
+ METplus is intended to be a tool for the modeling community to use and
+ adapt.
  As users make upgrades and improvements to the tools, they are encouraged
  to offer those upgrades to the broader community by offering feedback to
  the developers.
+\end_layout
+
+\begin_layout Section
+Pre-requisites 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Pre-requisites"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following software is required to run METplus:
+\end_layout
+
+\begin_layout Itemize
+Python 2.7 
+\end_layout
+
+\begin_layout Itemize
+R version 3.2.5
+\series medium
+ 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+R version 3.2.5 is required when the tcmpr_plotter_wrapper.py wraps the plot_tcmpr.R
+ script.
+ Please refer to Chapter 21 Plotting and Graphics Support for more information
+ about plot_tcmpr.R.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+nco (netCDF operators)
+\end_layout
+
+\begin_layout Itemize
+MET version 6.1 or above
+\end_layout
+
+\begin_layout Itemize
+Basic familiarity with MET
+\end_layout
+
+\begin_layout Itemize
+GitHub account (if you plan on contributing code to METplus)
+\end_layout
+
+\begin_layout Section
+METplus directory structure 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:METplus-directory-structure"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+Once you have cloned the METplus from the GitHub repository at https://github.com
+/NCAR/METplus to a location on your host, change directories to the METplus
+ directory.
+ You should have the following directory structure:
+\end_layout
+
+\begin_layout LyX-Code
+
+\series medium
+METplus
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+
+\series medium
+doc
+\end_layout
+
+\begin_layout LyX-Code
+internal_tests
+\end_layout
+
+\begin_layout LyX-Code
+parm
+\end_layout
+
+\begin_layout LyX-Code
+sorc
+\end_layout
+
+\begin_layout LyX-Code
+ush
+\end_layout
+
+\begin_layout LyX-Code
+README.md
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+
+\series medium
+The top-level METplus directory consists of a README.md file and several
+ subdirectories.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The doc/ directory contains documentation for users (PDF) and Doxygen files
+ that are used to create the developer documentaton.
+ The Doxygen documentation can be created and viewed via web browser if
+ the developer has Doxygen installed on the host.
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The internal_tests/ directory contains unit test scripts that are only relevant
+ to METplus developers and contributors.
+\end_layout
+
+\begin_layout Standard
+The parm/ directory contains all the configuration files for MET and METplus.
+\end_layout
+
+\begin_layout Standard
+The sorc/ directory contains Doxygen executables to generate documentation
+ for developers.
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The src/ directory contains the source code for each of the wrappers in
+ METplus.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The ush/ directory contains the Python wrappers to the MET tools.
  
 \end_layout
 
 \begin_layout Section
-Required compilers and scripting languages
+Getting the METplus source code
 \begin_inset CommandInset label
 LatexCommand label
-name "sec:Install_Required-compilers-and"
+name "sec:Getting-the-METplus-source-code"
 
 \end_inset
 
@@ -206,235 +320,217 @@ name "sec:Install_Required-compilers-and"
 \end_layout
 
 \begin_layout Standard
-
-\series medium
-The MET package was developed and tested using the GNU g++/gfortran compilers,
- the Portland Group (PGI) pgCC or pgc++ and pgf90 compilers, and the Intel
- icc/ifort compilers.
- As additional compilers are successfully tested, they will be added to
- the list of supported platforms/compilers.
+The METplus source code is available for download from a public GitHub repositor
+y.
 \end_layout
 
-\begin_layout Standard
-
-\series medium
-The GNU make utility is used in building all executables and is therefore
- required.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The MET package consists of a group of command line utilities that are compiled
- separately.
- The user may choose to run any subset of these utilities to employ the
- type of verification methods desired.
- New tools developed and added to the toolkit will be included as command
- line utilities.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-In order to control the desired flow through MET, users are encouraged to
- run the tools via a script.
- Some sample scripts are provided in the distribution; these examples are
- written in the Bourne shell.
- However, users are free to adapt these sample scripts to any scripting
- language desired.
-\end_layout
-
-\begin_layout Section
-Required libraries and optional utilities
+\begin_layout Subsection
+Get the source code via your Web Browser
 \begin_inset CommandInset label
 LatexCommand label
-name "sec:Install_Required-libraries-and"
+name "subsec:Get-the-source-code-via-your-Web-Browser"
 
 \end_inset
 
 
 \end_layout
 
+\begin_layout Itemize
+On your local host (or wherever you wish to install the METplus code) create
+ a directory where you want the code to reside
+\end_layout
+
+\begin_layout Itemize
+Open the browser of your choice and navigate to https://github.com/NCAR/METplus.
+ You will see something like the following:
+\end_layout
+
 \begin_layout Standard
+\begin_inset Graphics
+	filename /tmp/metplus_repo.png
+	rotateOrigin center
 
-\series medium
-Three external libraries are required for compiling/building MET and should
- be downloaded and installed before attempting to install MET.
- Additional external libraries required for building advanced features in
- MET are discussed in Section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:Installation-of-required"
+\end_inset
 
+
+\end_layout
+
+\begin_layout Itemize
+You should be directed to the 'master' branch, verify this by looking at
+ the button labelled 'Branch' in the upper left corner of your window, directly
+ beneath the solid blue horizontal line.
+\end_layout
+
+\begin_layout Itemize
+Click on the green 
+\begin_inset Quotes eld
+\end_inset
+
+Clone or download
+\begin_inset Quotes erd
+\end_inset
+
+ button near the top right of the page.
+\end_layout
+
+\begin_layout Itemize
+A box appears with 
+\begin_inset Quotes eld
+\end_inset
+
+Clone with HTTPS
+\begin_inset Quotes erd
+\end_inset
+
+ label
+\end_layout
+
+\begin_layout Itemize
+Click on the blue text: 
+\begin_inset Quotes eld
+\end_inset
+
+Download Zip
+\begin_inset Quotes erd
 \end_inset
 
  :
 \end_layout
 
-\begin_layout Description
-
-\series medium
-1.
- NCEP's BUFRLIB is used by MET to decode point-based observation datasets
- in PrepBufr format.
- BUFRLIB is distributed and supported by NCEP and is freely available for
- download from NCEP's website at 
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.nco.ncep.noaa.gov/sib/decoders/BUFRLIB
-\end_layout
-
-\end_inset
-
-.
- BUFRLIB requires C and Fortran-90 compilers that should be from the same
- family of compilers used when building MET.
-\end_layout
-
-\begin_layout Description
-
-\series medium
-2.
- Several tools within MET use Unidata's NetCDF libraries for writing output
- NetCDF files.
- NetCDF libraries are distributed and supported by Unidata and are freely
- available for download from Unidata's website at 
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.unidata.ucar.edu/software/netcdf
-\end_layout
-
-\end_inset
-
-.
- The same family of compilers used to build NetCDF should be used when building
- MET.
- MET is now compatible with the enhanced data model provided in NetCDF version
- 4.
- The support for NetCDF version 4 requires HDF5 which is freely available
- for download at 
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-https://support.hdfgroup.org/HDF5/
-\end_layout
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Description
-
-\series medium
-3.
- The GNU Scientific Library (GSL) is used by MET when computing confidence
- intervals.
- GSL is distributed and supported by the GNU Software Foundation and is
- freely available for download from the GNU website at 
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.gnu.org/software/gsl
-\end_layout
-
-\end_inset
-
-.
- 
-\end_layout
-
-\begin_layout Description
-
-\series medium
-4.
- The Zlib is used by MET for compression when writing postscript image files
- from tools (e.g.
- MODE, Wavelet-Stat, Plot-Data-Plane, and Plot-Point-Obs).
- Zlib is distributed and supported Zlib.org and is freely available for download
- from the Zlib website at 
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.zlib.net
-\end_layout
-
-\end_inset
-
-.
- 
-\end_layout
-
 \begin_layout Standard
+\begin_inset Graphics
+	filename /tmp/download_metplus.png
 
-\series medium
-Two additional utilities are strongly recommended for use with MET:
+\end_inset
+
+
 \end_layout
 
-\begin_layout Description
+\begin_layout Itemize
+Your browser should prompt you on what to do with this file.
+ Save it to the directory you created above
+\end_layout
 
-\series medium
-1.
- The Unified Post-Processor is recommended for post-processing the raw WRF
- model output prior to verifying the model forecasts with MET.
- The Unified Post-Processor is freely available for download from the "downloads
-" section of the WRF-NMM user's website at 
-\begin_inset Flex URL
+\begin_layout Itemize
+cd to the directory where you saved the code.
+ You should see the file METplus-master.zip
+\end_layout
+
+\begin_layout Itemize
+Uncompress the file:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Linux/Unix:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
-
-http://www.dtcenter.org/wrf-nmm/users
+unzip METplus-master.zip
 \end_layout
 
 \end_inset
 
-.
- MET can read data on a standard, de-staggered grid and on pressure or regular
- levels in the vertical.
- The Unified Post-Processor outputs model data in this format from both
- WRF cores, the NMM and the ARW.
- However, the Unified Post-Processor is not strictly required as long as
- the user can produce gridded model output on a standard de-staggered grid
- on pressure or regular levels in the vertical.
- Two-dimensional fields (e.g., precipitation amount) are also accepted for
- some modules.
+
 \end_layout
 
-\begin_layout Description
+\begin_layout Itemize
+You should now have a METplus-master directory
+\end_layout
 
-\series medium
-2.
- The copygb utility is recommended for re-gridding model and observation
- datasets in GRIB version 1 format to a common verification grid.
- The copygb utility is distributed as part of the Unified Post-Processor
- and is available from other sources as well.
- While earlier versions of MET required that all gridded data be placed
- on a common grid, MET version 5.1 added support for automated re-gridding
- on the fly.
- After version 5.1, users have the option of running copygb to regrid their
- GRIB1 data ahead of time or leveraging the automated regridding capability
- within MET.
+\begin_deeper
+\begin_layout Itemize
+If you downloaded the code via the command line, you will get a METplus
+ directory rather than METplus-master.
  
+\end_layout
+
+\begin_layout Itemize
+GitHub appends the '-master' to the name to emphasize that is is from the
+ master branch
+\end_layout
+
+\begin_layout Itemize
+To avoid clutter and confusion, you can now remove the METplus-master.zip
+ (optional)
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Subsection
+Get the source code via Command line 
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Get-the-source-via-Command-line"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+On your local host (or wherever you wish to install the METplus code) create
+ a directory where you want the code to reside
+\end_layout
+
+\begin_layout Itemize
+cd to the directory you just created.
+\end_layout
+
+\begin_layout Itemize
+On the command line, enter the following:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+git clone https://github.com/NCAR/METplus
+\end_layout
+
+\begin_layout Itemize
+The source code should appear under the METplus directory
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+To update your copy, cd to your METplus install directory: /
+\shape italic
+path
+\shape default
+/
+\shape italic
+to
+\shape default
+/METplus and enter 
+\shape italic
+git pull
+\shape default
+ at the command line
 \end_layout
 
 \begin_layout Section
-Installation of required libraries
+Set up your environment 
 \begin_inset CommandInset label
 LatexCommand label
-name "sec:Installation-of-required"
+name "sec:Set-up-your-environment"
 
 \end_inset
 
@@ -442,1504 +538,293 @@ name "sec:Installation-of-required"
 \end_layout
 
 \begin_layout Standard
-
-\series medium
-As described in Section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:Install_Required-libraries-and"
-
-\end_inset
-
-, some external libraries are required for building the MET:
-\end_layout
-
-\begin_layout Description
-
-\series medium
-1.
- NCEP's BUFRLIB is used by the MET to decode point-based observation datasets
- in PrepBufr format.
- Once you have downloaded and unpacked the BUFRLIB tarball, refer to the
- README_BUFRLIB file.
- When compiling the library using the GNU C and Fortran compilers, users
- are strongly encouraged to use the -DUNDERSCORE and -fno-second-underscore
- options.
- Also, MET expects the BUFRLIB archive file to be named "libbufr.a".
- Therefore, compiling the BUFRLIB using the GNU compilers consists of the
- following 3 steps:
-\series default
-
-\begin_inset Separator latexpar
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout LyX-Code
-
-\series medium
-* gcc -c -DUNDERSCORE *.c
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-* gfortran -c -DUNDERSCORE -fno-second-underscore *.f *.F
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-* ar crv libbufr.a *.o
-\end_layout
-
-\end_deeper
-\begin_layout Description
-
-\series medium
-Compiling the BUFRLIB using the PGI C and Fortran-90 compilers consists
- of the following 3 steps:
-\series default
-
-\begin_inset Separator latexpar
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout LyX-Code
-
-\series medium
-* pgcc -c -DUNDERSCORE *.c
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-* pgf90 -c -DUNDERSCORE -Mnosecond_underscore *.f *.F
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-* ar crv libbufr.a *.o
-\end_layout
-
-\end_deeper
-\begin_layout Description
-
-\series medium
-Compiling the BUFRLIB using the Intel icc and ifort compilers consists of
- the following 3 steps:
-\series default
-
-\begin_inset Separator latexpar
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout LyX-Code
-
-\series medium
-* icc -c -DUNDERSCORE *.c
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-* ifort -c -DUNDERSCORE *.f *.F
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-* ar crv libbufr.a *.o
-\end_layout
-
-\end_deeper
-\begin_layout Description
-
-\series medium
-2.
- Unidata's NetCDF libraries are used by several tools within MET for writing
- output NetCDF files.
- The same family of compilers used to build NetCDF should be used when building
- MET.
- Users may also find some utilities built for NetCDF such as ncdump and
- ncview useful for viewing the contents of NetCDF files.
- Detailed installation instructions are available from Unidata at 
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.unidata.ucar.edu/software/netcdf/docs/netcdf-install/
-\end_layout
-
-\end_inset
-
-.
- Support for NetCDF version 4 requires HDF5.
- Detailed installation instructions for HDF5 are available at 
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-https://support.hdfgroup.org/HDF5/release/obtainsrc.html
-\end_layout
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Description
-
-\series medium
-3.
- The GNU Scientific Library (GSL) is used by MET for random sampling and
- normal and binomial distribution computations when estimating confidence
- intervals.
- Precompiled binary packages are available for most GNU/Linux distributions
- and may be installed with root access.
- When installing GSL from a precompiled package on Debian Linux, the developer's
- version of GSL must be used; otherwise, use the GSL version available from
- the GNU website (
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.gnu.org/software/gsl/
-\end_layout
-
-\end_inset
-
-).
- MET requires access to the GSL source headers and library archive file
- at build time.
- 
-\end_layout
-
-\begin_layout Description
-
-\series medium
-4.
- For users wishing to compile MET with GRIB2 file support, NCEP's GRIB2
- Library in C (g2clib) must be installed, along with jasperlib, libpng,
- and zlib.
- (
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.nco.ncep.noaa.gov/pmb/codes/GRIB2
-\end_layout
-
-\end_inset
-
-).
- Please note that compiling the GRIB2C library with the 
-\series bold
--D__64BIT__
-\series medium
- option requires that MET also be configured with 
-\series bold
-CFLAGS="-D__64BIT__"
-\series medium
-.
- Compiling MET and the GRIB2C library inconsistently may result in a segmentatio
-n fault when reading GRIB2 files.
- MET expects the GRIB2C library to be named libgrib2c.a, which may be set
- in the GRIB2C makefile as 
-\series bold
-LIB=libgrib2c.a.
-\end_layout
-
-\begin_layout Description
-
-\series medium
-5.
- Users wishing to compile MODIS-regrid and/or lidar2nc will need to install
- both the HDF4 and HDF-EOS2 libraries available from the HDF group websites
- (
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.hdfgroup.org/products/hdf4
-\end_layout
-
-\end_inset
-
-) and (
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.hdfgroup.org/hdfeos.html
-\end_layout
-
-\end_inset
-
-).
-\end_layout
-
-\begin_layout Description
-
-\series medium
-6.
- The MODE-Graphics utility requires Cairo and FreeType.
- Thus, users who wish to compile this utility must install both libraries,
- available from (
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://cairographics.org/releases
-\end_layout
-
-\end_inset
-
-) and (
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.freetype.org/download.html
-\end_layout
-
-\end_inset
-
-).
- In addition, users will need to download Ghostscript font data required
- at runtime (
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://sourceforge.net/projects/gs-fonts
-\end_layout
-
-\end_inset
-
-).
-\end_layout
-
-\begin_layout Section
-Installation of optional utilities
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Installation-of-optional"
-
-\end_inset
-
-
+Environment variables need to be set to allow the METplus application to
+ be run from any directory and for locating the necessary Python modules.
+ There is an option to set the JLOGFILE environment variable, which indicates
+ where JLOGS will be saved.
+ JLOGS provide information pertinent to the configuration-file framework.
+ If this environment is unset, then output from the configuration framework
+ will be directed to stdout (your display).
 \end_layout
 
 \begin_layout Standard
-
-\series medium
-As described in the introduction to this chapter, two additional utilities
- are strongly recommended for use with MET.
+Add the following information to your .cshrc (C shell) or .bashrc (Bash shell):
 \end_layout
 
-\begin_layout Description
-
-\series medium
-1.
- The Unified Post-Processor is recommended for post-processing the raw WRF
- model output prior to verifying the data with MET.
- The Unified Post-Processor may be used on output from both the ARW and
- NMM cores.
- Please refer to online documentation for instructions on how to install
- and use the Unified Post-Processor.
- Installation instructions for the Unified Post-Processor can be found in
- Chapter 7 of the WRF-NMM User's Guide or online at 
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.dtcenter.org/wrf-nmm/users/docs/user_guide/V3/users_guide_nmm_chap7.pdf
+\begin_layout Paragraph
+.cshrc:
 \end_layout
 
-\end_inset
-
- .
+\begin_layout Itemize
+Open your .cshrc file and do the following:
 \end_layout
 
-\begin_layout Description
-
-\series medium
-2.
- The copygb utility is recommended for re-gridding model and observation
- datasets in GRIB format to a common verification grid.
- The copygb utility is distributed as part of the Unified Post-Processor
- and is available from other sources as well.
- Please refer to the "Unified Post-processor" utility mentioned above for
- information on availability and installation.
+\begin_layout Itemize
+To your PATH, add: 
+\shape italic
+full-path-to
+\shape default
+-
+\shape italic
+METplus
+\shape default
+/ush
 \end_layout
 
-\begin_layout Section
-MET directory structure 
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Install_MET-directory-structure"
-
-\end_inset
-
-
+\begin_layout Itemize
+To your PYTHONPATH, add: 
+\shape italic
+full-path-to
+\shape default
+-
+\shape italic
+METplus
+\shape default
+/ush:
+\shape italic
+full-path-to-METplus
+\shape default
+/parm
 \end_layout
 
-\begin_layout Standard
-
-\series medium
-Once you have downloaded the MET tarball and unzipped and unpacked its contents,
- the top-level MET directory structure follows this outline:
+\begin_layout Itemize
+Optional: add JLOGFILE variable and set to 
+\shape italic
+full-path-to-save-jlog-files
 \end_layout
 
-\begin_layout Standard
-\begin_inset Newpage pagebreak
-\end_inset
-
-
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-met-5.1/
-\series default
-
-\begin_inset Separator latexpar
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout LyX-Code
-
-\series medium
-aclocal.m4
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-config.guess
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-config.h.in
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-config.sub
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-configure
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-configure.ac
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-data/
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-depcomp
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-doc/
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-install-sh
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-internal_tests/
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-Makefile.am
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-Makefile.in
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-Make-include
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-missing
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-out/
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-README
-\end_layout
-
-\begin_layout LyX-Code
-scripts/
-\begin_inset Separator latexpar
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout LyX-Code
-config/
-\end_layout
-
-\begin_layout LyX-Code
-examples/
-\end_layout
-
-\begin_layout LyX-Code
-mk/
-\end_layout
-
-\begin_layout LyX-Code
-Rscripts/
-\begin_inset Separator latexpar
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout LyX-Code
-include/
-\end_layout
-
-\end_deeper
-\end_deeper
-\begin_layout LyX-Code
-
-\series medium
-src/
-\end_layout
-
-\end_deeper
-\begin_layout Standard
-
-\series medium
-The top-level MET directory consists of a README file, Makefiles, configuration
- files, and several subdirectories.
- The top-level Makefile and configuration files control how the entire toolkit
- is built.
- Instructions for using these files to build MET can be found in Section
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:Install_Building-the-MET"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-When MET has been successfully built and installed, the installation directory
- contains two subdirectories.
- The bin/ directory contains executables for each module of MET as well
- as several plotting utilities.
- The share/met/ directory contains many subdirectories with data required
- at runtime and a subdirectory of sample R scripts utilities.
- The colortables/, map/, and ps/ subdirectories contain data used in creating
- PostScript plots for several MET tools.
- The poly/ subdirectory contains predefined lat/lon polyline regions for
- use in selecting regions over which to verify.
- The polylines defined correspond to verification regions used by NCEP as
- described in Appendix B.
- The config/ directory contains default configuration files for the MET
- tools.
- The table_files/ and tc_data/ subdirectories contain GRIB table definitions
- and tropical cyclone data, respectively.
- The Rscripts/ subdirectory contains a handful of plotting graphic utilities
- for MET-TC.
- These are the same Rscripts that reside under the top-level MET scripts/Rscript
-s directory, other than it is the installed location.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The data/ directory contains several configuration and static data files
- used by MET.
- The sample_fcst/ and sample_obs/ subdirectories contain sample data used
- by the test scripts provided in the scripts/ directory.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The doc/ directory contains documentation for MET, including the MET User's
- Guide.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The out/ directory will be populated with sample output from the test cases
- described in the next section.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The src/ directory contains the source code for each of the tools in MET.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The scripts/ directory contains test scripts that are run by make test after
- MET has been successfully built, and a directory of sample configuration
- files used in those tests located in the scripts/config/ subdirectory.
- The output from the test scripts in this directory will be written to the
- out/ directory.
- Users are encouraged to copy sample configuration files to another location
- and modify them for their own use.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The 
-\series default
-share/met/Rscripts
-\series medium
- directory contains a handful of sample R scripts, include 
-\series bold
-plot_tcmpr.R
-\series default
-, which provides graphic utilities for MET-TC.
- For more information on the graphics capabilities, see Section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "subsec:TC-Stat-tool-example"
-
-\end_inset
-
- of this User's Guide.
-\end_layout
-
-\begin_layout Section
-Building the MET package
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Install_Building-the-MET"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Building the MET package consists of three main steps: (1) install the required
- libraries, (2) configure the environment variables, and (3) configure and
- execute the build.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Install the required libraries.
+\begin_layout Itemize
+close your .cshrc file and run 
+\family typewriter
+source ~/.cshrc
 \end_layout
 
 \begin_layout Itemize
 
-\series medium
-Please refer to Section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:Installation-of-required"
+\shape italic
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\shape italic
+e.g.
+\end_layout
+
+\begin_layout Plain Layout
+set path = (other_path_entries /home/username/METplus/ush
+\end_layout
+
+\begin_layout Plain Layout
+setenv PYTHONPATH /home/username/METplus/ush:/home/username/METplus/parm:$PYTHON
+PATH
+\end_layout
+
+\begin_layout Plain Layout
+# optional
+\end_layout
+
+\begin_layout Plain Layout
+setenv JLOGFILE /home/username/jlog_out
+\end_layout
 
 \end_inset
 
- and 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:Installation-of-optional"
 
-\end_inset
+\end_layout
 
- on how to install the required and optional libraries.
+\begin_layout Paragraph
+.bashrc:
 \end_layout
 
 \begin_layout Itemize
-If installing the required and optional libraries in a non-standard location,
- the user may need to tell MET where to find them.
- This can be done by setting or adding to the LD_LIBRARY PATH to included
- the path to the library files.
+Open your .bashrc file and do the following:
+\end_layout
+
+\begin_layout Itemize
+To your PATH, add : 
+\shape italic
+full-path-to-METplus
+\shape default
+/ush
+\end_layout
+
+\begin_layout Itemize
+To your PYTHONPATH, add 
+\shape italic
+full-path-to-METplus
+\shape default
+/parm
+\end_layout
+
+\begin_layout Itemize
+Optional: add a JLOGFILE environment variable and set it to the directory
+ where you want the logs to reside
+\end_layout
+
+\begin_layout Itemize
+close your .bashrc file and run 
+\family typewriter
+source ~/.bashrc
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\shape italic
+e.g.
+\end_layout
+
+\begin_layout Plain Layout
+export PATH=/home/username/METplus/ush:$PATH
+\end_layout
+
+\begin_layout Plain Layout
+export PYTHONPATH=
+\begin_inset Quotes erd
+\end_inset
+
+/home/username/METplus/ush:/home/username/METplus/parm:/$PYTHONPATH
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+#optional
+\end_layout
+
+\begin_layout Plain Layout
+export JLOGFILE=/home/username
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Running METplus
 \end_layout
 
 \begin_layout Standard
-
-\series bold
-\bar under
-Set Environment Variables
+Running METplus involves invoking the Python script master_metplus.py from
+ any directory followed by a list of configurationfiles (file path relative
+ to the 
+\shape italic
+path_to_METplus_install_dir
+\shape default
+/METplus/parm directory).
 \end_layout
 
 \begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
 
-\series medium
-The MET build uses environment variables to specify the locations of the
- needed external libraries.
- For each library, there is a set of three environment variables to describe
- the locations: $MET_<lib>, $MET_<lib>INC and $MET_<lib>LIB.
+\begin_layout Plain Layout
+Example: Using a default configuration
+\end_layout
+
+\begin_layout Plain Layout
+>master_metplus.py
+\end_layout
+
+\begin_layout Plain Layout
+Does nothing, a usage message appears, indicating that other config files
+ are required to perform useful tasks.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
 
-\series medium
-The $MET_<lib> environment variable can be used if the external library
- is installed such that there is a main directory which has a subdirectory
- called "lib" containing the library files and another subdirectory called
- "include" containing the include files.
- For example, if the NetCDF library files are installed in /opt/netcdf/lib
- and the include files are in /opt/netcdf/include, you can just define the
- $MET_NETCDF environment variable to be "/opt/netcdf".
+\begin_layout Plain Layout
+Example: Using a use-case configuration
 \end_layout
 
-\begin_layout Standard
-
-\series medium
-The $MET_<lib>INC and $MET_<lib>LIB environment variables are used if the
- library and include files for an external library are installed in separate
- locations.
- In this case, both environment variables must be specified and the associated
- $MET_<lib> variable will be ignored.
- For example, if the NetCDF include files are installed in /opt/include/netcdf
- and the library files are in /opt/lib/netcdf, then you would set $MET_NETCDFINC
- to "/opt/include/netcdf" and $MET_NETCDFLIB to "/opt/lib/netcdf".
-\end_layout
-
-\begin_layout Standard
-The following environment variables should also be set:
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-- Set $MET_NETCDF to point to the main NetCDF directory, or set $MET_NETCDFINC
- to point to the directory with the NetCDF include files and set $MET_NETCDFLIB
- to point to the directory with the NetCDF library files.
-\end_layout
-
-\begin_layout Standard
-- Set $MET_HDF5 to point to the main HDF5 directory.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-- Set $MET_BUFR to point to the main BUFR directory, or set $MET_BUFRLIB
- to point to the directory with the BUFR library files.
- Because we don't use any BUFR library include files, you don't need to
- specify $MET_BUFRINC.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-- Set $MET_GSL to point to the main GSL directory, or set $MET_GSLINC to
- point to the directory with the GSL include files and set $MET_GSLLIB to
- point to the directory with the GSL library files.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-- If compiling support for GRIB2, set $MET_GRIB2CINC and $MET_GRIB2CLIB
- to point to the main GRIB2C directory which contains both the include and
- library files.
- These are used instead of $MET_GRIB2C since the main GRIB2C directory does
- not contain include and lib subdirectories.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-- If compiling MODIS-Regrid and/or lidar2nc, set $MET_HDF to point to the
- main HDF4 directory, or set $MET_HDFINC to point to the directory with
- the HDF4 include files and set $MET_HDFLIB to point to the directory with
- the HDF4 library files.
- Also, set $MET_HDFEOS to point to the main HDF EOS directory, or set $MET_HDFEO
-SINC to point to the directory with the HDF EOS include files and set $MET_HDFEO
-SLIB to point to the directory with the HDF EOS library files.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-- If compiling MODE Graphics, set $MET_CAIRO to point to the main Cairo
- directory, or set $MET_CAIROINC to point to the directory with the Cairo
- include files and set $MET_CAIROLIB to point to the directory with the
- Cairo library files.
- Also, set $MET_FREETYPE to point to the main FreeType directory, or set
- $MET_FREETYPEINC to point to the directory with the FreeType include files
- and set $MET_FREETYPELIB to point to the directory with the FreeType library
- files.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-- When running MODE Graphics, set $MET_FONT_DIR to the directory containing
- font data required at runtime.
- A link to the tarball containing this font data can be found on the MET
- website.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-For ease of use, you should define these in your .cshrc or equivalent file.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\bar under
-Configure and execute the build
-\end_layout
-
-\begin_layout Standard
-Example: 
-\series medium
-To configure MET to install all of the available tools in the "bin" subdirectory
- of your current directory, you would use the following commands:
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-1.
- ./configure --prefix=`pwd` --enable-grib2 --enable-modis 
+\begin_layout Plain Layout
+>master_metplus.py -c use_cases/feature_relative/feature_relative.conf 
 \backslash
 
 \end_layout
 
-\begin_layout LyX-Code
-
-\series medium
-               --enable-mode_graphics --enable-lidar2nc
+\begin_layout Plain Layout
+Runs METplus using the defaults set in the three config files found in parm/metp
+lus_config.
+ Any variables defined in these three config files can be over-ridden in
+ the parm/use_cases/feature_relative/feature_relative.conf file.
+ METplus will run using the values specified in the feature_relative.conf
+ file.
 \end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-2.
- Type 'make install >& make_install.log &'
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-3.
- Type 'tail -f make_install.log' to view the execution of the make.
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-4.
- When make is finished, type 'CNTRL-C' to quit the tail.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-If all tools are enabled and the build is successful, the "<prefix>/bin"
- directory (where <prefix> is the prefix you specified on your configure
- command line) will contain 27 executables:
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- ascii2nc
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- ensemble_stat
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- gen_vx_mask
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- grid_stat
-\end_layout
-
-\begin_layout LyX-Code
-- gsid2mpr
-\end_layout
-
-\begin_layout LyX-Code
-- gsidens2orank
-\end_layout
-
-\begin_layout LyX-Code
-- lidar2nc
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- madis2nc
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- mode
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- mode_analysis
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- modis_regrid
-\end_layout
-
-\begin_layout LyX-Code
-- mtd
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- pb2nc
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- pcp_combine
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- plot_data_plane
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- plot_mode_field
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- plot_point_obs
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- point_stat
-\end_layout
-
-\begin_layout LyX-Code
-- regrid_data_plane
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- series_analysis
-\end_layout
-
-\begin_layout LyX-Code
-- shift_data_plane
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- stat_analysis
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- tc_dland
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- tc_pairs
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- tc_stat
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- wavelet_stat
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- wwmca_plot
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-- wwmca_regrid
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-NOTE: Several compilation warnings may occur which are expected.
- If any errors occur, please refer to the appendix on troubleshooting for
- common problems.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series bold
--help
-\series default
- and 
-\series bold
--version
-\series default
- command line options are available for all of the MET tools.
- Typing the name of the tool with no command line options also produces
- the usage statement.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The configure script has command line options to specify where to install
- MET and which MET utilities to install.
- Include any of the following options that apply to your system:
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–prefix=PREFIX
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-By default, MET will install all the files in "/usr/local/bin".
- You can specify an installation prefix other than "/usr/local" using "–prefix",
- for instance "–prefix=$HOME" or "–prefix=`pwd`".
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–enable-grib2
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Enable compilation of utilities using GRIB2
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-block4
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable use of BLOCK4 in the compilation.
- Use this if you have trouble using PrepBufr files.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-ascii2nc
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of ascii2nc
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-ensemble_stat
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of ensemble_stat
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-gen_vx_mask
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of gen_vx_mask
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-gis_utils
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of gis_dump_dbf, gis_dump_shp, and gis_dump_shx
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-grid_stat
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of grid_stat
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–enable-lidar2nc
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Enable compilation of lidar2nc
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-madis2nc
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of madis2nc
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-mode
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of mode
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-mode_analysis
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of mode_analysis
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-pb2nc
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of pb2nc
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-pcp_combine
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of pcp_combine
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-plot_data_plane
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of plot_data_plane
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-plot_data_plane
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of plot_data_plane
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-regrid_data_plane
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of regrid_data_plane
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-shift_data_plane
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of shift_data_plane
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-plot_point_obs
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of plot_point_obs
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-point_stat
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of point_stat
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-stat_analysis
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of stat_analysis
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-wavelet_stat
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of wavelet_stat
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-series_analysis
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of series_analysis
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-wwmca
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of wwmca
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–enable-modis
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Enable compilation of modis
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–enable-mode_graphics
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Enable compilation of mode_graphics
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-mode_time_domain
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of mode_time_domain
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-tc_utils
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of tc_utils
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-–disable-gsi_tools
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Disable compilation of gsi_tools
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\bar under
-Make Targets
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The autoconf utility provides some standard make targets for the users.
- In MET, the following standard targets have been implemented and tested:
-\end_layout
-
-\begin_layout Description
-
-\series medium
-1.
- 
-\series bold
-all
-\series medium
- - compile all of the components in the package, but don't install them.
-\end_layout
-
-\begin_layout Description
-
-\series medium
-2.
- 
-\series bold
-install
-\series medium
- - install the components (where is described below).
- Will also compile if "make all" hasn't been done yet.
-\end_layout
-
-\begin_layout Description
-
-\series medium
-3.
- 
-\series bold
-clean
-\series medium
- - remove all of the temporary files created during the compilation.
-\end_layout
-
-\begin_layout Description
-
-\series medium
-4.
- 
-\series bold
-uninstall
-\series medium
- - remove the installed files.
- For us, these are the executables and the files in $MET_BASE.
-\end_layout
-
-\begin_layout Description
-
-\series medium
-MET also has the following non-standard targets:
-\end_layout
-
-\begin_layout Description
-
-\series medium
-5.
- 
-\series bold
-test
-\series medium
- - runs the scripts/test_all.sh script.
- You must run "make install" before using this target.
-\end_layout
-
-\begin_layout Section
-Sample test cases
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Install_Sample-test-cases"
 
 \end_inset
 
@@ -1947,50 +832,55 @@ name "sec:Install_Sample-test-cases"
 \end_layout
 
 \begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
 
-\series medium
-Once the MET package has been built successfully, the user is encouraged
- to run the sample test scripts provided.
- They are run using make test in the top-level directory.
- Execute the following commands:
+\begin_layout Plain Layout
+Example: Using example configuration to perform specific evaluation (e.g.
+ Model 1 vs.
+ Obs1, Model 1 vs Obs 2, Model 2 vs.
+ Obs 1, etc.)
 \end_layout
 
-\begin_layout Description
+\begin_layout Plain Layout
+>master_metplus.py -c use_cases/feature_relative/feature_relative.conf 
+\backslash
 
-\series medium
-1.
- Type 'make test >& make_test.log &' to run all of the test scripts in the
- directory.
- These test scripts use test data supplied with the tarball.
- For instructions on running your own data, please refer to the MET User's
- Guide.
 \end_layout
 
-\begin_layout Description
-
-\series medium
-2.
- Type 'tail -f make_test.log' to view the execution of the test script.
+\begin_layout Plain Layout
+-c use_cases/feature_relative/example/series_by_lead_all_fhrs.conf
 \end_layout
 
-\begin_layout Description
-
-\series medium
-3.
- When the test script is finished, type 'CNTRL-C' to quit the tail.
- Look in "out" to find the output files for these tests.
- Each tool has a separate, appropriately named subdirectory for its output
- files.
- 
+\begin_layout Plain Layout
+This runs METplus using the defaults set in the three config files found
+ in parm/metplus_config, where variables can be over-ridden by parm/use_cases/fe
+ature_relative/feature_relative.conf or in parm/use_cases/feature_relative/exampl
+e/series_by_lead_all_fhrs.conf.
+ The order in which conf files are called is important.
+ Variables that are defined in intermediate conf files will be over-ridden
+ by the same variables set in the conf file following it, or the last conf
+ file.
 \end_layout
 
-\begin_layout Description
+\end_inset
 
-\series medium
-4.
- In particular, check that the PB2NC tool ran without error.
- If there was an error, run "make clean" then rerun your configure command
- adding "–disable-block4" to your configure command line and rebuild MET.
+
 \end_layout
 
 \end_body

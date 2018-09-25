@@ -1475,4 +1475,4 @@ def add_common_items_to_dictionary(p, dictionary):
 
 
 if __name__ == "__main__":
-gen_init_list("20141201", "20150331", 6, "18")
+    gen_init_list("20141201", "20150331", 6, "18")
