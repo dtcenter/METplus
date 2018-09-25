@@ -80,7 +80,7 @@
 Overview of METplus
 \begin_inset CommandInset label
 LatexCommand label
-name "chap:Overview-of-MET"
+name "chap:Overview-of-METplus"
 
 \end_inset
 
@@ -114,7 +114,7 @@ The METplus User's Guide is organized as follows.
  Chapter 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "chap:Overview-of-MET"
+reference "chap:Overview-of-METplus"
 
 \end_inset
 
