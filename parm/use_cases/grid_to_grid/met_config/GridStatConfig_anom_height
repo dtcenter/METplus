@@ -70,9 +70,7 @@ obs = fcst;
 //
 climo_mean = fcst;
 climo_mean = {
-
-//   file_name = [ "${MET_HOME}/nwprod/fix/cmean_1d.1959${vm}${vd}" ];
-   file_name = [ "/d1/METplus_Mallory/met/nwprod/fix/cmean_1d.1959${MET_VALID_HHMM}" ];
+   file_name = [ "{INPUT_BASE}/nwprod/fix/cmean_1d.1959${MET_VALID_HHMM}" ];
 
    regrid = {
       method     = BILIN;
@@ -101,10 +99,10 @@ write_cdf_bins = FALSE;
 //
 mask = {
    grid = [ "FULL" ];
-   poly = [ "/d1/METplus_Mallory/data/poly/NHX.nc",
-            "/d1/METplus_Mallory/data/poly/SHX.nc",
-            "/d1/METplus_Mallory/data/poly/TRO.nc",
-	    "/d1/METplus_Mallory/data/poly/PNA.nc" ];
+   poly = [ "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NHX.nc",
+            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/SHX.nc",
+            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/TRO.nc",
+	    "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/PNA.nc" ]; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -76,7 +76,7 @@
 \begin_body
 
 \begin_layout Chapter*
-Foreword: A note to MET+ users
+Foreword: A note to METplus users
 \begin_inset CommandInset label
 LatexCommand label
 name "chap:Foreword:-A-note"
@@ -133,10 +133,10 @@ This User's Guide was prepared by the developers of the MET, including Tressa
 \end_layout
 
 \begin_layout Section*
-New for MET+ v1.0
+New for METplus v2.0
 \begin_inset CommandInset label
 LatexCommand label
-name "sec:New-for-MET+"
+name "sec:New-for-METplus"
 
 \end_inset
 
@@ -146,312 +146,81 @@ name "sec:New-for-MET+"
 \begin_layout Standard
 
 \series medium
-METv7.0 includes some major enhancements, including the addition of vector
- statistics for winds, finer control of configuration options, message type
- groups, and WMO mean summary statistics.
-\end_layout
-
-\begin_layout Subsection*
-Enhancements to Existing Tools:
+METplus v2.0 includes some new wrappers:
 \end_layout
 
 \begin_layout Itemize
-
-\series medium
-Distribute the latest set of bugfixes, details not listed here.
-\end_layout
-
-\begin_layout Itemize
-Vector statistics for winds
+pb2nc_wrapper
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-
-\series medium
-Add vector wind speeds to the existing VL1L2 line type (F_SPEED_BAR and
- O_SPEED_BAR)
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Add a new VCNT line type containing statistics for wind vectors.
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Enhance STAT-Analysis to parse the updated VL1L2 line type, parse the new
- VCNT line type, and derive VCNT statistics from input VL1L2 lines.
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Enhance STAT-Analysis to read U/V matched pair (MPR) lines and derive VL1L2
- or VCNT output lines.
+Python wrapper to the MET tool pb2nc
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
-
-\series medium
-Config file options
+point_stat_wrapper
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
+Python wrapper to the MET tool point_stat
+\end_layout
 
-\series medium
-Refactor config file logic for Point-Stat, Grid-Stat, and Ensemble-Stat.
+\end_deeper
+\begin_layout Standard
+Enhancements, refactorization, and bug fixes have been addressed in the
+ following wrappers:
 \end_layout
 
 \begin_layout Itemize
-
-\series medium
-Whenever possible, parse config file options separately for each verification
- task rather than parsing from the top level.
+tc_stat_wrapper
 \end_layout
 
+\begin_deeper
 \begin_layout Itemize
-
-\series medium
-See default config files for the list of options which may be specified
- separately for each "obs.field" entry.
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Parse the "regrid" option separately for each field so that regridding logic
- can be customized for each field (e.g.
- use BUDGET for precipitation and BILIN for temperature).
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Add "message_type_group" config file option to define message types that
- should be processed together as a group.
- Enhance PB2NC, Point-Stat, and Ensemble-Stat to parse and process groups
- of message types.
+can now be run stand-alone
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
-
-\series medium
-PB2NC
+tc_pairs_wrapper
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
+can now read ATCF input file formats
+\end_layout
 
-\series medium
-Add specialized processing for AIRNOW message types to use the TPHR value
- as the accumulation interval and the QCIND value as the quality control
- value.
+\begin_layout Itemize
+support for numerous input file naming conventions 
+\end_layout
+
+\begin_layout Itemize
+support for input data organized into one directory or subdirectories with
+ date information in the name
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
-
-\series medium
-STAT-Analysis
+cyclone_plotter_wrapper
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-
-\series medium
-Enhance the existing summary job type.
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Print debug messages and warnings when summary includes multiple values
- for each header column.
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Add three new output columns for WMO-approved means of daily scores (WMO_TYPE,
- WMO_MEAN, and WMO_WEIGHTED_MEAN).
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Process columns of data from multiple input line types when the following
- format is used 
-\begin_inset Quotes eld
-\end_inset
-
--column LINE_TYPE:COLUMN
-\begin_inset Quotes erd
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Add -derive job command option to automatically compute statistics on the
- fly from input partial sums (SL1L2/SAL1L2 -> CNT, VL1L2 -> VCNT, and CTC
- -> CTS).
+replaced the dependency on Basemap toolkits (which are unstable on some
+ platforms) with Cartopy for map rendering
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
-
-\series medium
-Point-Stat
+tcmpr_plotter_wrapper
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-
-\series medium
-Append the shape to the INTERP_MTHD column but omit it for NEAREST, BILIN,
- and BUDGET methods.
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-
-\series medium
-Grid-Stat
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-
-\series medium
-Add "nbrhd.field" config file option to control the computation of fractional
- coverage fields.
- 
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-
-\series medium
-Ensemble-Stat
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-
-\series medium
-Add "nc_var_str" config file option to customize NetCDF variable names.
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Add "ensemble_flag.latlon" config file option.
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-
-\series medium
-MTD
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-
-\series medium
-Rename output files using a more explicit naming convention:
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-
-\series medium
-Rename *_3d_ss.txt to *_3d_simple_single.txt.
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Rename *_3d_sc.txt to *_3d_simple_cluster.txt.
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Rename *_3d_ps.txt to *_3d_pair_single.txt.
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Rename *_3d_pc.txt to *_3d_pair_cluser.txt.
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-
-\series medium
-Update output file conventions to match the logic of MODE:
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-
-\series medium
-Rename the "OBJ_ID" column to "OBJECT_ID".
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Rename the "CLUSTER_ID" column to "OBJECT_CAT".
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-
-\series medium
-Change object naming conventions for "OBJECT_ID" and "OBJECT_CAT":
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-
-\series medium
-FROM: F_#, O_#, F_#_O_#, CF_#, CO_#, and CF_#_CF_#
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-TO: F###, O###, F###_O###, CF###, CO###, and CF###_CO###
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Where ### is a 3-digit object number with leading 0's.
-\end_layout
-
-\begin_layout Itemize
-
-\series medium
-Indicate unmatched objects with a 3-digit "000" object number.
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-
-\series medium
-Only write pair information to *_pair_cluster.txt for matches.
+now supports whitespace in plot title, sub-title, and legend
 \end_layout
 
 \end_deeper
