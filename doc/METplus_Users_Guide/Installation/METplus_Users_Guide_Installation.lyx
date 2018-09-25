@@ -319,6 +319,11 @@ name "sec:Getting-the-METplus-source-code"
 
 \end_layout
 
+\begin_layout Standard
+The METplus source code is available for download from a public GitHub repositor
+y.
+\end_layout
+
 \begin_layout Subsection
 Get the source code via your Web Browser
 \begin_inset CommandInset label
@@ -331,8 +336,8 @@ name "subsec:Get-the-source-code-via-your-Web-Browser"
 \end_layout
 
 \begin_layout Itemize
-On your local host (or wherever you wish to install the METplus code, create
- a directory where you want the code to reside)
+On your local host (or wherever you wish to install the METplus code) create
+ a directory where you want the code to reside
 \end_layout
 
 \begin_layout Itemize
@@ -483,7 +488,8 @@ name "subsec:Get-the-source-via-Command-line"
 \end_layout
 
 \begin_layout Itemize
-Create a directory where you want the METplus source to reside.
+On your local host (or wherever you wish to install the METplus code) create
+ a directory where you want the code to reside
 \end_layout
 
 \begin_layout Itemize
@@ -494,12 +500,387 @@ cd to the directory you just created.
 On the command line, enter the following:
 \end_layout
 
+\begin_deeper
 \begin_layout Itemize
 git clone https://github.com/NCAR/METplus
 \end_layout
 
 \begin_layout Itemize
-The source code should appear under the METplus directory 
+The source code should appear under the METplus directory
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+To update your copy, cd to your METplus install directory: /
+\shape italic
+path
+\shape default
+/
+\shape italic
+to
+\shape default
+/METplus and enter 
+\shape italic
+git pull
+\shape default
+ at the command line
+\end_layout
+
+\begin_layout Section
+Set up your environment 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Set-up-your-environment"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Environment variables need to be set to allow the METplus application to
+ be run from any directory and for locating the necessary Python modules.
+ There is an option to set the JLOGFILE environment variable, which indicates
+ where JLOGS will be saved.
+ JLOGS provide information pertinent to the configuration-file framework.
+ If this environment is unset, then output from the configuration framework
+ will be directed to stdout (your display).
+\end_layout
+
+\begin_layout Standard
+Add the following information to your .cshrc (C shell) or .bashrc (Bash shell):
+\end_layout
+
+\begin_layout Paragraph
+.cshrc:
+\end_layout
+
+\begin_layout Itemize
+Open your .cshrc file and do the following:
+\end_layout
+
+\begin_layout Itemize
+To your PATH, add: 
+\shape italic
+full-path-to
+\shape default
+-
+\shape italic
+METplus
+\shape default
+/ush
+\end_layout
+
+\begin_layout Itemize
+To your PYTHONPATH, add: 
+\shape italic
+full-path-to
+\shape default
+-
+\shape italic
+METplus
+\shape default
+/ush:
+\shape italic
+full-path-to-METplus
+\shape default
+/parm
+\end_layout
+
+\begin_layout Itemize
+Optional: add JLOGFILE variable and set to 
+\shape italic
+full-path-to-save-jlog-files
+\end_layout
+
+\begin_layout Itemize
+close your .cshrc file and run 
+\family typewriter
+source ~/.cshrc
+\end_layout
+
+\begin_layout Itemize
+
+\shape italic
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\shape italic
+e.g.
+\end_layout
+
+\begin_layout Plain Layout
+set path = (other_path_entries /home/username/METplus/ush
+\end_layout
+
+\begin_layout Plain Layout
+setenv PYTHONPATH /home/username/METplus/ush:/home/username/METplus/parm:$PYTHON
+PATH
+\end_layout
+
+\begin_layout Plain Layout
+# optional
+\end_layout
+
+\begin_layout Plain Layout
+setenv JLOGFILE /home/username/jlog_out
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+.bashrc:
+\end_layout
+
+\begin_layout Itemize
+Open your .bashrc file and do the following:
+\end_layout
+
+\begin_layout Itemize
+To your PATH, add : 
+\shape italic
+full-path-to-METplus
+\shape default
+/ush
+\end_layout
+
+\begin_layout Itemize
+To your PYTHONPATH, add 
+\shape italic
+full-path-to-METplus
+\shape default
+/parm
+\end_layout
+
+\begin_layout Itemize
+Optional: add a JLOGFILE environment variable and set it to the directory
+ where you want the logs to reside
+\end_layout
+
+\begin_layout Itemize
+close your .bashrc file and run 
+\family typewriter
+source ~/.bashrc
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\shape italic
+e.g.
+\end_layout
+
+\begin_layout Plain Layout
+export PATH=/home/username/METplus/ush:$PATH
+\end_layout
+
+\begin_layout Plain Layout
+export PYTHONPATH=
+\begin_inset Quotes erd
+\end_inset
+
+/home/username/METplus/ush:/home/username/METplus/parm:/$PYTHONPATH
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+#optional
+\end_layout
+
+\begin_layout Plain Layout
+export JLOGFILE=/home/username
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Running METplus
+\end_layout
+
+\begin_layout Standard
+Running METplus involves invoking the Python script master_metplus.py from
+ any directory followed by a list of configurationfiles (file path relative
+ to the 
+\shape italic
+path_to_METplus_install_dir
+\shape default
+/METplus/parm directory).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+Example: Using a default configuration
+\end_layout
+
+\begin_layout Plain Layout
+>master_metplus.py
+\end_layout
+
+\begin_layout Plain Layout
+Does nothing, a usage message appears, indicating that other config files
+ are required to perform useful tasks.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+Example: Using a use-case configuration
+\end_layout
+
+\begin_layout Plain Layout
+>master_metplus.py -c use_cases/feature_relative/feature_relative.conf 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+Runs METplus using the defaults set in the three config files found in parm/metp
+lus_config.
+ Any variables defined in these three config files can be over-ridden in
+ the parm/use_cases/feature_relative/feature_relative.conf file.
+ METplus will run using the values specified in the feature_relative.conf
+ file.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+Example: Using example configuration to perform specific evaluation (e.g.
+ Model 1 vs.
+ Obs1, Model 1 vs Obs 2, Model 2 vs.
+ Obs 1, etc.)
+\end_layout
+
+\begin_layout Plain Layout
+>master_metplus.py -c use_cases/feature_relative/feature_relative.conf 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+-c use_cases/feature_relative/example/series_by_lead_all_fhrs.conf
+\end_layout
+
+\begin_layout Plain Layout
+This runs METplus using the defaults set in the three config files found
+ in parm/metplus_config, where variables can be over-ridden by parm/use_cases/fe
+ature_relative/feature_relative.conf or in parm/use_cases/feature_relative/exampl
+e/series_by_lead_all_fhrs.conf.
+ The order in which conf files are called is important.
+ Variables that are defined in intermediate conf files will be over-ridden
+ by the same variables set in the conf file following it, or the last conf
+ file.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body
