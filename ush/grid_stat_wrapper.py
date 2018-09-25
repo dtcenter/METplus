@@ -54,8 +54,8 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.cg_dict['FCST_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'FCST_GRID_STAT_INPUT_TEMPLATE')
-        self.cg_dict['OUTPUT_DIR'] = \
-          self.p.getdir('GRID_STAT_OUT_DIR')
+        self.cg_dict['OUTPUT_DIR'] =  self.p.getdir('GRID_STAT_OUT_DIR')
+        self.cg_dict['INPUT_BASE'] =  self.p.getdir('INPUT_BASE')
         self.cg_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 24)
         self.cg_dict['FCST_INIT_INTERVAL'] = self.p.getint('config', 'FCST_INIT_INTERVAL', 12)
         self.cg_dict['WINDOW_RANGE_BEG'] = \

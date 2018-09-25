@@ -327,6 +327,7 @@ that reformat gridded data
         obs_field += v.obs_extra+"}"
 
         ob_type = self.cg_dict["OB_TYPE"]
+        input_base = self.cg_dict["INPUT_BASE"]
 
         self.add_env_var("MODEL", model_type)
         self.add_env_var("FCST_VAR", v.fcst_name)
@@ -336,6 +337,7 @@ that reformat gridded data
         self.add_env_var("CONFIG_DIR", config_dir)
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
+        self.add_env_var("INPUT_BASE", input_base)
         self.add_env_var("MET_VALID_HHMM", valid_time[4:8])
         cmd = self.get_command()
 
@@ -349,12 +351,14 @@ that reformat gridded data
         self.print_env_item("CONFIG_DIR")
         self.print_env_item("FCST_FIELD")
         self.print_env_item("OBS_FIELD")
+        self.print_env_item("INPUT_BASE")
         self.print_env_item("MET_VALID_HHMM")        
         self.logger.debug("")
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_copy(["MODEL", "FCST_VAR", "OBS_VAR",
                              "LEVEL", "OBTYPE", "CONFIG_DIR",
                              "FCST_FIELD", "OBS_FIELD",
+                             "INPUT_BASE",
                              "MET_VALID_HHMM"])
         self.logger.debug("")
         cmd = self.get_command()
