@@ -319,6 +319,17 @@ name "sec:Getting-the-METplus-source-code"
 
 \end_layout
 
+\begin_layout Subsection
+Get the source code via your Web Browser
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Get-the-source-code-via-your-Web-Browser"
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Itemize
 On your local host (or wherever you wish to install the METplus code, create
  a directory where you want the code to reside)
@@ -391,13 +402,104 @@ Download Zip
 \end_layout
 
 \begin_layout Itemize
-Save the code to the directory where you wish the source code to reside
- (ie.
- the directory you created in the first step, above).
+Your browser should prompt you on what to do with this file.
+ Save it to the directory you created above
 \end_layout
 
 \begin_layout Itemize
+cd to the directory where you saved the code.
+ You should see the file METplus-master.zip
+\end_layout
 
+\begin_layout Itemize
+Uncompress the file:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Linux/Unix:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+unzip METplus-master.zip
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+You should now have a METplus-master directory
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+If you downloaded the code via the command line, you will get a METplus
+ directory rather than METplus-master.
+ 
+\end_layout
+
+\begin_layout Itemize
+GitHub appends the '-master' to the name to emphasize that is is from the
+ master branch
+\end_layout
+
+\begin_layout Itemize
+To avoid clutter and confusion, you can now remove the METplus-master.zip
+ (optional)
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Subsection
+Get the source code via Command line 
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Get-the-source-via-Command-line"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Create a directory where you want the METplus source to reside.
+\end_layout
+
+\begin_layout Itemize
+cd to the directory you just created.
+\end_layout
+
+\begin_layout Itemize
+On the command line, enter the following:
+\end_layout
+
+\begin_layout Itemize
+git clone https://github.com/NCAR/METplus
+\end_layout
+
+\begin_layout Itemize
+The source code should appear under the METplus directory 
 \end_layout
 
 \end_body
