@@ -13,26 +13,26 @@
 // Models
 //
 //model = [];
-model = "${MODEL}";
+model = ${MODEL};
 
 
 //
 // Storm identifiers
 //
-storm_id = [];
-//storm_id = "${STORM_ID}";
+//storm_id = [];
+storm_id = ${STORM_ID};
 
 //
 // Basins
 //
-basin = [];
-//basin = "${BASIN}";
+//basin = [];
+basin = ${BASIN};
 
 //
 // Cyclone numbers
 //
-cyclone = [];
-//cyclone = "${CYCLONE}";
+//cyclone = [];
+cyclone = ${CYCLONE};
 
 //
 // Storm names
@@ -42,11 +42,12 @@ storm_name = [];
 //
 // Model initialization time windows to include or exclude
 //
-init_beg = "";
-init_end = "";
-init_inc = [];
-//init_inc = "${INIT_INCLUDE}";
-init_exc = [];
+init_beg = "${INIT_BEG}";
+init_end = "${INIT_END}";
+//init_inc = [];
+init_inc = ${INIT_INCLUDE};
+//init_exc = [];
+init_exc = ${INIT_EXCLUDE};
 
 //
 // Valid model time window
@@ -108,7 +109,7 @@ match_points = FALSE;
 // representation of the minimum distance to land.
 //
 //dland_file = "MET_BASE/tc_data/dland_global_tenth_degree.nc";
-dland_file = "";
+dland_file = "${DLAND_FILE}";
 
 //
 // Specify watch/warning information:
