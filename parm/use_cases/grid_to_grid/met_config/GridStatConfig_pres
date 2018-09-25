@@ -104,10 +104,10 @@ write_cdf_bins = FALSE;
 //
 mask = {
    grid = [ "FULL" ];
-    poly = [ "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NHX.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/SHX.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/TRO.nc",
-	    "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/PNA.nc" ];
+    poly = [ "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NHX.nc",
+            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/SHX.nc",
+            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/TRO.nc",
+	    "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/PNA.nc" ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

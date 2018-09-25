@@ -117,18 +117,18 @@ write_cdf_bins = FALSE;
 //
 mask = {
    grid = [ "FULL" ];
-   poly = [ "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NHX.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/SHX.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/N60.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/S60.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/TRO.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NPO.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/SPO.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NAO.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/SAO.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/CONUS.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/CAM.nc",
-            "{PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NSA.nc" ];
+   poly = [ "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NHX.nc",
+            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/SHX.nc",
+            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/N60.nc",
+            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/S60.nc",
+            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/TRO.nc",
+            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NPO.nc",
+            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/SPO.nc",
+            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NAO.nc",
+            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/SAO.nc",
+            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/CONUS.nc",
+            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/CAM.nc",
+            "${PARM_BASE}/use_cases/grid_to_grid/met_config/poly/NSA.nc" ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
