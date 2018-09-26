@@ -134,7 +134,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.logger.info("Valid on: "+date_YYYYMMDD+" between "+valid_beg_hour+"-"+valid_end_hour)
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INC')
+            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
         else:
             date_YYYYMMDD = init_time[0:8]
             init_beg_hour = self.p.getstr('config', 'INIT_BEG_HOUR')
@@ -142,7 +142,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.logger.info("Initialized on: "+date_YYYYMMDD+" between "+init_beg_hour+"-"+init_end_hour)
             loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INC')
+            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
         loop_hour = loop_beg_hour 
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
@@ -220,11 +220,11 @@ class StatAnalysisWrapper(CommandBuilder):
         if use_init:
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INC')
+            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
         else:
             loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INC')
+            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
         loop_hour = loop_beg_hour
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
@@ -328,11 +328,11 @@ class StatAnalysisWrapper(CommandBuilder):
         if use_init:
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INC')
+            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
         else:
             loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INC')
+            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
         loop_hour = loop_beg_hour
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
@@ -467,11 +467,11 @@ class StatAnalysisWrapper(CommandBuilder):
         if use_init:
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INC')
+            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
         else:
             loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INC')
+            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
         loop_hour = loop_beg_hour
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
@@ -563,13 +563,13 @@ class StatAnalysisWrapper(CommandBuilder):
             init_end_hour = self.p.getstr('config', 'INIT_END_HOUR')
             loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INC')
+            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
         else:
             valid_beg_hour = self.p.getstr('config', 'VALID_BEG_HOUR')
             valid_end_hour = self.p.getstr('config', 'VALID_END_HOUR')
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INC')
+            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
         loop_hour = loop_beg_hour
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
@@ -661,13 +661,13 @@ class StatAnalysisWrapper(CommandBuilder):
             init_end_hour = self.p.getstr('config', 'INIT_END_HOUR')
             loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INC')
+            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
         else:
             valid_beg_hour = self.p.getstr('config', 'VALID_BEG_HOUR')
             valid_end_hour = self.p.getstr('config', 'VALID_END_HOUR')
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INC')
+            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
         loop_hour = loop_beg_hour
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)

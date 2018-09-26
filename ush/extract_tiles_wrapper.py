@@ -59,7 +59,7 @@ class ExtractTilesWrapper(CommandBuilder):
         self.tc_stat_exe = os.path.join(met_install_dir, 'bin/tc_stat')
         self.init_beg = self.p.getstr('config', 'INIT_BEG')[0:8]
         self.init_end = self.p.getstr('config', 'INIT_END')[0:8]
-        self.init_hour_inc = int(self.p.getint('config', 'INIT_INC') / 3600)
+        self.init_hour_inc = int(self.p.getint('config', 'INIT_INCREMENT') / 3600)
         self.init_hour_end = self.p.getint('config', 'INIT_HOUR_END')
         if self.logger is None:
             self.logger = util.get_logger(self.p)

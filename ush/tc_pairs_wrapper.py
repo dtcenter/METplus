@@ -214,7 +214,7 @@ class TcPairsWrapper(CommandBuilder):
         self.set_env_vars()
 
         # Get the desired YYYYMMDD_HH init increment list
-        # convert the increment INIT_INC from seconds to hours
+        # convert the increment INIT_INCREMENT from seconds to hours
         init_list = util.gen_init_list(
             self.tcp_dict['INIT_BEG'],
             self.tcp_dict['INIT_END'],
@@ -1115,7 +1115,7 @@ class TcPairsWrapper(CommandBuilder):
             init_end_str = ''.join(init_end.split())
             self.add_env_var(b'INIT_END', str(init_end_str))
 
-        # INIT_INC and INIT_EXC
+        # INIT_INCLUDE and INIT_EXCLUDE
         # Used to set init_inc in "TC_PAIRS_CONFIG_FILE"
         tmp_init_inc = self.tcp_dict['INIT_INCLUDE']
         if not tmp_init_inc:

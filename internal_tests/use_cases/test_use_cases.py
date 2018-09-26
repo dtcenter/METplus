@@ -85,12 +85,12 @@ def compare_results(p, p_b):
         time_format = p.getstr('config', 'INIT_TIME_FMT')
         start_t = p.getstr('config', 'INIT_BEG')
         end_t = p.getstr('config', 'INIT_END')
-        time_interval = p.getint('config', 'INIT_INC')
+        time_interval = p.getint('config', 'INIT_INCREMENT')
     else:
         time_format = p.getstr('config', 'VALID_TIME_FMT')
         start_t = p.getstr('config', 'VALID_BEG')
         end_t = p.getstr('config', 'VALID_END')
-        time_interval = p.getint('config', 'VALID_INC')
+        time_interval = p.getint('config', 'VALID_INCREMENT')
         
     loop_time = calendar.timegm(time.strptime(start_t, time_format))
     end_time = calendar.timegm(time.strptime(end_t, time_format))
