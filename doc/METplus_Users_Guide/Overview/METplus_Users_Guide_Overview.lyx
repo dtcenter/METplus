@@ -101,10 +101,15 @@ name "sec:Purpose-and-organization"
 \begin_layout Standard
 
 \series medium
-The goal of this User's Guide is to provide basic information for users
- of the Model Evaluation Tools Plus (METplus) to enable users to more easily
- apply MET to their datasets and evaluation studies.
- 
+The goal of this User's Guide is to equip users with the information needed
+ to use the Model Evaluation Tools (MET) and it's companion package METplus.
+ MET is a set of verification tools developed and supported to community
+ via the Developmental Testbed Center (DTC) for use by the numerical weather
+ prediction community.
+ METplus is a suite of Python wrappers and ancillary scripts to enhance
+ the user's ability to quickly set-up and run MET.
+ Over the next few years, METplus will become the authoritative repository
+ for verification of the Unified Forecast System.
 \end_layout
 
 \begin_layout Standard
@@ -296,9 +301,29 @@ www.dtcenter.org/met/users/support
 \end_inset
 
 ).
- Plans are also in place to incorporate many new capabilities and options
- in future releases of METplus.
- 
+ Future METplus development plans are based on several contributing factors,
+ including the needs of both the operational and research community.
+ Issues that are in the development queue detailed in the 
+\begin_inset Quotes eld
+\end_inset
+
+Issues
+\begin_inset Quotes erd
+\end_inset
+
+ section of the GitHub repository.
+ Please send questions to 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+met_help@ucar.edu
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section

@@ -89,26 +89,29 @@ name "chap:Foreword:-A-note"
 \begin_layout Standard
 
 \series medium
-This user's guide is provided as an aid to users of the Model Evaluation
- Tools (MET).
- MET is a set of verification tools developed by the Developmental Testbed
- Center (DTC) for use by the numerical weather prediction community - and
- especially users and developers of the Weather Research and Forecasting
- (WRF) model - to help them assess and evaluate the performance of numerical
- weather predictions.
+This User's Guide is provided as an aid to users of the Model Evaluation
+ Tools (MET) and it's companion package METplus.
+ MET is a set of verification tools developed and supported to community
+ via the Developmental Testbed Center (DTC) for use by the numerical weather
+ prediction community.
+ METplus is intended to be a suite of Python wrappers and ancillary scripts
+ to enhance the user's ability to quickly set-up and run MET.
+ Over the next few years, METplus will become the authoritative repository
+ for verification of the Unified Forecast System.
 \end_layout
 
 \begin_layout Standard
 
 \series medium
-It is important to note here that MET is an evolving software package.
- Previous releases of MET have occurred each year since 2008.
- This documentation describes the 7.0 release from March 2018.
+It is important to note here that METplus is an evolving software package.
+ Previous releases of METplus have occurred since 2017.
+ This documentation describes the 2.0 release in September 2018.
  Intermediate releases may include bug fixes.
- MET is also be able to accept new modules contributed by the community.
+ METplus is also be able to accept new modules contributed by the community.
  If you have code you would like to contribute, we will gladly consider
  your contribution.
- Please send email to: 
+ While we are setting up our community contribution protocol, please send
+ email to: 
 \begin_inset CommandInset href
 LatexCommand href
 name "met_help@ucar.edu"
@@ -116,7 +119,7 @@ type "mailto:"
 
 \end_inset
 
-.
+ and inform us of your desired contribution.
  We will then determine the maturity of new verification method and coordinate
  the inclusion of the new module in a future version.
 \end_layout
@@ -124,11 +127,10 @@ type "mailto:"
 \begin_layout Standard
 
 \series medium
-This User's Guide was prepared by the developers of the MET, including Tressa
- Fowler, John Halley Gotway, Randy Bullock, Kathryn Newman, Julie Prestopnik,
- Lisa Goodrich, Tara Jensen, Barbara Brown, Howard Soh, Tatiana Burek, Minna
- Win-Gildenmeister, George McCabe, Paul Prestopnik, Eric Gilleland, Nancy
- Rehak, Paul Oldenburg, Anne Holmes, Lacey Holland, David Ahijevych and
+This User's Guide was prepared by the developers of the METplus, including
+ Dan Adriaansen, Minna Win-Gildenmeister, Julie Prestopnik, Jim Frimel,
+ Mallory Row, John Halley Gotway, George McCabe, Paul Prestopnik, Christana
+ Kalb, Hank Fisher, Jonathan Vigh, Lisa Goodrich, Tara Jensen, Tatiana Burek,and
  Bonny Strong.
 \end_layout
 
@@ -446,10 +448,10 @@ The following notice shall be displayed on any scholarly works associated
 \begin_layout Plain Layout
 
 \shape italic
-"Model Evaluation Tools (MET) was developed at the National Center for Atmospher
-ic Research (NCAR) through grants from the National Science Foundation (NSF),
- the National Oceanic and Atmospheric Administration (NOAA), the United
- States Air Force (USAF), and the United States Department of Energy (DOE).
+"Model Evaluation Tools (MET) and METplus were developed at the National
+ Center for Atmospheric Research (NCAR) through grants from the National
+ Science Foundation (NSF), the National Oceanic and Atmospheric Administration
+ (NOAA), and the United States Air Force (USAF).
  NCAR is sponsored by the United States National Science Foundation." 
 \end_layout
 
@@ -475,23 +477,30 @@ The citation for this User's Guide should be:
 \end_layout
 
 \begin_layout Standard
-T.
- Fowler, J.
- Halley Gotway, K.
- Newman, T.
- Jensen, Brown, B., and R.
- Bullock, 2017:
+Adriaansen, D., M.
+ Win-Gildenmeister, J.
+ Frimel, J.
+ Prestopnik, J.
+ Halley Gotway,
 \begin_inset Newline newline
 \end_inset
 
-The Model Evaluation Tools v7.0 (METv7.0) User’s Guide.
+T.
+ Jensen, J.
+ Vigh, C.
+ Kalb, G.
+ McCabe, and H.
+ Fisher, 2018:
+\begin_inset Newline newline
+\end_inset
+
+The METplus Version 2.0 User’s Guide.
  Developmental Testbed Center.
 \begin_inset Newline newline
 \end_inset
 
-Available at: http://www.dtcenter.org/met/users/docs/users_guide/MET_Users_Guide_v
-7.0.pdf.
- 407 pp.
+Available at: https://github.com/NCAR/METplus/releases.
+ 85 pp.
 \end_layout
 
 \begin_layout Chapter*
@@ -513,31 +522,20 @@ name "chap:Acknowledgments"
 We thank the the National Science Foundation (NSF) along with three organization
 s within the National Oceanic and Atmospheric Administration (NOAA): 1)
  Office of Atmospheric Research (OAR); 2) Next Generation Global Predition
- System project (NGGPS); and 3) United State Weather Research Program (USWRP),
- the United States Air Force (USAF), and the United States Department of
- Energy (DOE) for their support of this work.
- Funding for the development of MET-TC is from the NOAA's Hurricane Forecast
- Improvement Project (HFIP) through the Developmental Testbed Center (DTC).
- Funding for the expansion of capability to address many methods pertinent
- to global and climate simulations was provided by NOAA's Next Generation
- Global Prediction System (NGGPS) and NSF Earth System Model 2 (EaSM2) projects.
- We would like to thank James Franklin at the National Hurricane Center
- (NHC) for his insight into the original development of the existing NHC
- verification software.
+ System project (NGGPS); and 3) United State Weather Research Program (USWRP)
+ for their support of this work.
  Thanks also go to the staff at the Developmental Testbed Center for their
  help, advice, and many types of support.
- We released METv1.0 in January 2008 and would not have made a decade of
- cutting-edge verification support without those who participated in the
- original MET planning workshopsand the now dis-banded verification advisory
- group (Mike Baldwin, Matthew Sittel, Elizabeth Ebert, Geoff DiMego, Chris
- Davis, and Jason Knievel).
+ We released METplus Alpha in February 2017 and would not have made a decade
+ of cutting-edge verification support without those who participated in
+ DTC planning workshops and the NGGPS United Forecast System Strategic Implement
+ation Plan Working Groups (NGGPS UFS SIP WGs).
 \end_layout
 
 \begin_layout Standard
 
 \series medium
-The National Center for Atmospheric Research (NCAR) is sponsored by NSF.
- The DTC is sponsored by the National Oceanic and Atmospheric Administration
+The DTC is sponsored by the National Oceanic and Atmospheric Administration
  (NOAA), the United States Air Force, and the National Science Foundation
  (NSF).
  NCAR is sponsored by the National Science Foundation (NSF).
