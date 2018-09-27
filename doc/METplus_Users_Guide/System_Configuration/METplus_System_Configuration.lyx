@@ -302,6 +302,16 @@ Your METplus install directory will hereafter be referred to as METplus_INSTALL
 \end_layout
 
 \begin_layout Itemize
+Verify that all the 
+\shape italic
+path/to
+\shape default
+ values are replaced with valid paths in the METplus_INSTALL/parm/metplus_conf/m
+etplus_data.conf and METplus_INSTALL/parm/metplus_conf/metplus_system.conf
+ files
+\end_layout
+
+\begin_layout Itemize
 Two configuration files are used in this use case, track_and_intensity.conf
  file and tcmp_mean_median.conf to take cyclone track data, and using tc_pairs_wr
 apper.py which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone
@@ -8212,7 +8222,6 @@ LOOP_BY_INIT
 
 Control whether the analysis is processed across initialization times or
  not.
- If set to false, the processes will loop by valid time.
 \end_layout
 
 \begin_layout Standard
@@ -8275,7 +8284,7 @@ LOOP_METHOD
 \begin_inset Newline newline
 \end_inset
 
-Control the looping order method for METplus.
+Control the looping method for METplus.
  Valid options are 
 \begin_inset Quotes eld
 \end_inset
@@ -8293,25 +8302,6 @@ processes
 \end_inset
 
 .
- If set to 
-\begin_inset Quotes eld
-\end_inset
-
-times
-\begin_inset Quotes erd
-\end_inset
-
- it will loop over each process for each time, then increment the time.
- If set to 
-\begin_inset Quotes eld
-\end_inset
-
-processes
-\begin_inset Quotes erd
-\end_inset
-
- it will loop over every time for a given process, then increment to the
- next process.
 \end_layout
 
 \begin_layout Standard
@@ -12358,31 +12348,6 @@ PCP_COMBINE_METHOD
 \end_inset
 
 Specify the method to be used with the MET pcp_combine tool.
- Valid options are 
-\begin_inset Quotes eld
-\end_inset
-
-SUM,
-\begin_inset Quotes erd
-\end_inset
-
- 
-\begin_inset Quotes eld
-\end_inset
-
-SUBTRACT,
-\begin_inset Quotes erd
-\end_inset
-
- and 
-\begin_inset Quotes eld
-\end_inset
-
-ADD.
-\begin_inset Quotes erd
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -12412,7 +12377,7 @@ Family:
 Default:
 \series default
 \shape default
- ADD
+ Varies
 \series bold
 \shape italic
 
