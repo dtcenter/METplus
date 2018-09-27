@@ -88,7 +88,7 @@ name "chap:METplus System Configuration"
 \end_layout
 
 \begin_layout Standard
-This chapter will serve as a guide to configuring METplus.
+This chapter is a guide on configuring METplus.
 \end_layout
 
 \begin_layout Section
@@ -110,12 +110,36 @@ Below is a list of Best Practices:
 Set your log level to an appropriate level.
 \end_layout
 
+\begin_deeper
+\begin_layout Enumerate
+Debug is the most verbose and is useful for developers and when you are
+ troubleshooting problems
+\end_layout
+
+\begin_layout Enumerate
+Info is the less verbose than Debug and is the recommended level to initially
+ set your log level
+\end_layout
+
+\begin_layout Enumerate
+Warning - only logs warnings, error or critical events
+\end_layout
+
+\begin_layout Enumerate
+Error - only logs errors or critical events
+\end_layout
+
+\begin_layout Enumerate
+Critical is the least verbose
+\end_layout
+
+\end_deeper
 \begin_layout Enumerate
 Direct your logging either to stdout or to a log file.
 \end_layout
 
 \begin_layout Enumerate
-Refer to you log file to verify that all your processes ran cleanly.
+Review your log file to verify that all your processes ran cleanly.
 \end_layout
 
 \begin_layout Enumerate
@@ -125,18 +149,13 @@ The order in which you list your METplus config files matter.
 \end_layout
 
 \begin_layout Enumerate
-Check the master_metplus.conf file, it contains all the key-values based
- on what you specified.
+Check the master_metplus.conf file, as it contains all the key-values based
+ on what you have specified.
  This will help you determine whether you forgot to replace any 
 \shape italic
 /path/to
 \shape default
  with valid paths or to verify that you have defined things as you expected.
-\end_layout
-
-\begin_layout Enumerate
-The last configuration file loaded will over-write any values of config
- variables loaded before it.
 \end_layout
 
 \begin_layout Section
@@ -153,7 +172,8 @@ name "sec:SC_Config_File_Structure"
 \begin_layout Standard
 \noindent
 \align left
-There is a hierarchy of configuration files employed in METplus: the 
+METplus employs a hierarchy of configuration files employed in METplus.
+ At the lowest level are the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -165,8 +185,8 @@ set-and-forget
 \shape italic
 METplus_installation_dir
 \shape default
-/parm/metplus_config and configuration files that are specific to a user's
- specific needs in the 
+/parm/metplus_configl At the next level are the configuration files that
+ pertain to a user's specific needs in the 
 \shape italic
 METplus_installation_dir
 \shape default
@@ -176,7 +196,7 @@ specific_use_case
 \end_layout
 
 \begin_layout Itemize
-There are four configuration files that are required to be fully configured
+Four configuration files are required for METplus to be fully configured
  (i.e.
  all keywords are defined by either whitespace or a valid value):
 \end_layout
@@ -203,22 +223,22 @@ metplus_runtime
 \end_layout
 
 \begin_layout Standard
-By default, key-values that need the user's input are set to 
+By default, key-values that require the user's input are set to 
 \shape italic
 /path/to
 \shape default
 .
- Replace these with the appropriate directory for your project.
+ Make sure to replace these with the appropriate directory for your project.
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
-Additional configuration files are optional and the key-values defined in
- these additional config files over-ride any values defined in the four
- mandatory METplus configuration files.
+Additional configuration files are optional and the key-values defined there
+ will over-ride any values defined in the four mandatory METplus configuration
+ files.
  These additional configuration files enables users to use a common set
- of configuration files and create customized environments for their verificatio
-ns.
+ of configuration files and to create customized environments for their
+ verification tasks.
  
 \end_layout
 
@@ -233,15 +253,200 @@ name "sec:SC_Config_Quick_Start_Example"
 
 \end_layout
 
-\begin_layout Standard
-?TODO: Track and Intensity use case using the MET tutorial data? Or should
- we have tropical cyclone data that the user can download?
+\begin_layout Paragraph
+Track and Intensity Use case with sample data
 \end_layout
 
-\begin_layout Standard
-?Or is there another use case we should use, that is easy and runs quickly?
+\begin_layout Itemize
+Create a directory where you wish to store the sample data
 \end_layout
 
+\begin_layout Itemize
+Retrieve the sample data from the GitHub repository:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+In your browser, navigate to https://github.com/NCAR/METplus/releases
+\end_layout
+
+\begin_layout Itemize
+locate the latest release and click on the sample_data.tar.gz link associated
+ with that release
+\end_layout
+
+\begin_layout Itemize
+save it to the directory you created above, hereafter referred to as INPUT_DATA_
+DIRECTORY
+\end_layout
+
+\begin_layout Itemize
+cd to your $INPUT_DATA_DIRECTORY and uncompress the tarball: 
+\shape italic
+tar xvfz sample_data.tar.gz
+\end_layout
+
+\begin_layout Itemize
+when you perform a listing of the sample_data directory, the INPUT_DATA_DIRECTOR
+Y/sample_data/GFS contains the data you will need for this use case
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Set up the configuration file:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Your METplus install directory will hereafter be referred to as METplus_INSTALL
+\end_layout
+
+\begin_layout Itemize
+Two configuration files are used in this use case, track_and_intensity.conf
+ file and tcmp_mean_median.conf to take cyclone track data, and using tc_pairs_wr
+apper.py which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone
+ tracks to generate matched pairs and error statistics).
+ The tcmpr_plotter_wrapper.py is then used (wraps the MET tool plot_tcmpr.R)
+ to generate a mean and median plots for these matched pairs.
+\end_layout
+
+\begin_layout Itemize
+In your editor, open the METplus_INSTALL/METplus/parm/use_cases/track_and_intens
+ity.conf file:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+You will replace any 
+\shape italic
+/path/to
+\shape default
+ with actual paths by setting the following:
+\end_layout
+
+\begin_layout Itemize
+METPLUS_BASE to the path to where you installed METplus with '
+\shape italic
+ush
+\shape default
+': METplus_INSTALL/all_users/METplus
+\end_layout
+
+\begin_layout Itemize
+PARM_BASE to the path to where you installed METplus, appended with with
+ '
+\shape italic
+parm
+\shape default
+': METplus_INSTALL/all_users/METplus/
+\shape italic
+parm
+\end_layout
+
+\begin_layout Itemize
+OUTPUT_BASE to where you wish to save the output:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+ADECK_TRACK_DATA_DIR to INPUT_DATA_DIRECTORY/sample_data/GFS/track_data
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+save your changes and exit your editor
+\end_layout
+
+\begin_layout Itemize
+In your editor, open the METplus_INSTALL/METplus/parm/use_cases/track_and_intens
+ity/examples/tcmpr_mean_median.conf
+\end_layout
+
+\begin_layout Itemize
+Verify that PROCESS_LIST is set to TcPairs, TCMPRPlotter.
+ This instructs METplus to run the TcPairs wrapper first (TC-Pairs) followed
+ by the TCMPR plotter wrapper (plot_TCMPR.R).
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Itemize
+Run the use case:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Make sure you have set the following environment in your .cshrc (C shell)
+ or .bashrc (Bash):
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+csh: setenv RSCRIPTS_BASE $MET_BASE/scripts/Rscripts
+\end_layout
+
+\begin_layout Itemize
+bash: export RSCIPTS_BASE $MET_BASE/scripts/Rscripts
+\end_layout
+
+\begin_layout Itemize
+Refer to Section 2.7 for the full instructions on setting up the rest of
+ your environment
+\end_layout
+
+\begin_layout Itemize
+on your command line, run:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+master_metplus.py -c use_cases/track_and_intensity/track_and_intensity.conf
+ -c use_cases/track_and_intensity/examples/tcmpr_mean_median.conf
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+When complete, you will have a log file in the output directory you specified,
+ and under the tc_pairs directory you will see .tcst files under the 201412
+ subdirectory.
+ These are the matched pairs created by the MET tool Tc-pairs and can be
+ viewed in any text editor.
+\end_layout
+
+\begin_layout Itemize
+Plots are generated under the tcmpr_plots subdirectory, in .png format.
+ You should have the following plots which can be viewed by any graphics
+ viewers such as 'display' on Linux/Unix hosts:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+AMAX_WIND-BMAX_WIND_mean.png
+\end_layout
+
+\begin_layout Itemize
+AMAX_WIND-BMAX_WIND_median.png
+\end_layout
+
+\begin_layout Itemize
+AMSLP-BMSLP_mean.png
+\end_layout
+
+\begin_layout Itemize
+AMSLP-BMSLP_median.png
+\end_layout
+
+\begin_layout Itemize
+TK_ERR_mean.png
+\end_layout
+
+\begin_layout Itemize
+TK_ERR_median.png
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_deeper
 \begin_layout Standard
 \begin_inset Newpage pagebreak
 \end_inset
