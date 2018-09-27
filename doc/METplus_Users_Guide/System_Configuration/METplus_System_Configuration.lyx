@@ -8007,6 +8007,7 @@ LOOP_BY_INIT
 
 Control whether the analysis is processed across initialization times or
  not.
+ If set to false, the processes will loop by valid time.
 \end_layout
 
 \begin_layout Standard
@@ -8069,7 +8070,7 @@ LOOP_METHOD
 \begin_inset Newline newline
 \end_inset
 
-Control the looping method for METplus.
+Control the looping order method for METplus.
  Valid options are 
 \begin_inset Quotes eld
 \end_inset
@@ -8087,6 +8088,25 @@ processes
 \end_inset
 
 .
+ If set to 
+\begin_inset Quotes eld
+\end_inset
+
+times
+\begin_inset Quotes erd
+\end_inset
+
+ it will loop over each process for each time, then increment the time.
+ If set to 
+\begin_inset Quotes eld
+\end_inset
+
+processes
+\begin_inset Quotes erd
+\end_inset
+
+ it will loop over every time for a given process, then increment to the
+ next process.
 \end_layout
 
 \begin_layout Standard
@@ -12133,6 +12153,31 @@ PCP_COMBINE_METHOD
 \end_inset
 
 Specify the method to be used with the MET pcp_combine tool.
+ Valid options are 
+\begin_inset Quotes eld
+\end_inset
+
+SUM,
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+SUBTRACT,
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+ADD.
+\begin_inset Quotes erd
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -12162,7 +12207,7 @@ Family:
 Default:
 \series default
 \shape default
- Varies
+ ADD
 \series bold
 \shape italic
 
