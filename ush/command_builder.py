@@ -208,12 +208,12 @@ class CommandBuilder:
             time_format = self.p.getstr('config', 'INIT_TIME_FMT')
             start_t = self.p.getstr('config', 'INIT_BEG')
             end_t = self.p.getstr('config', 'INIT_END')
-            time_interval = self.p.getint('config', 'INIT_INC')
+            time_interval = self.p.getint('config', 'INIT_INCREMENT')
         else:
             time_format = self.p.getstr('config', 'VALID_TIME_FMT')
             start_t = self.p.getstr('config', 'VALID_BEG')
             end_t = self.p.getstr('config', 'VALID_END')
-            time_interval = self.p.getint('config', 'VALID_INC')
+            time_interval = self.p.getint('config', 'VALID_INCREMENT')
         
         if time_interval < 60:
             print("ERROR: time_interval parameter must be greater than 60 seconds")

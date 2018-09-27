@@ -232,8 +232,6 @@ class TcStatWrapper(CommandBuilder):
             self.p.getstr('config', 'TC_STAT_MATCH_POINTS').upper()
         tc_stat_dict['OUTPUT_BASE'] = self.p.getdir('OUTPUT_BASE')
 
-        tc_stat_dict['PROJ_DIR'] = self.p.getdir('PROJ_DIR')
-
         tc_stat_dict['TMP_DIR'] = self.p.getdir('TMP_DIR')
 
         tc_stat_dict['METPLUS_BASE'] = self.p.getdir('METPLUS_BASE')

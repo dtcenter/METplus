@@ -140,13 +140,17 @@ output_flag = {
    sal1l2 = NONE;
    vl1l2  = NONE;
    val1l2 = NONE;
+   vcnt   = NONE;
    pct    = NONE;
    pstd   = NONE;
    pjc    = NONE;
    prc    = NONE;
+   eclv   = BOTH;
    nbrctc = NONE;
    nbrcts = NONE;
    nbrcnt = NONE;
+   grad   = BOTH;
+
 }
 
 //

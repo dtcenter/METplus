@@ -105,7 +105,7 @@ write_cdf_bins = FALSE;
 mask = {
    grid = [ "FULL" ];
     poly = [ "${CONFIG_DIR}/poly/NHX.nc",
-            "${CONFIG_DIR}/SHX.nc",
+            "${CONFIG_DIR}/poly/SHX.nc",
             "${CONFIG_DIR}/poly/TRO.nc",
 	    "${CONFIG_DIR}/poly/PNA.nc" ];
 }

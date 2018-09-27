@@ -47,7 +47,7 @@ class MakePlotsWrapper(CommandBuilder):
             end_t = self.p.getstr('config', 'INIT_END')
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INC')
+            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
             date_filter_method = "Initialization"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -57,7 +57,7 @@ class MakePlotsWrapper(CommandBuilder):
             end_t = self.p.getstr('config', 'VALID_END')
             loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INC')
+            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
             date_filter_method = "Valid"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -180,7 +180,7 @@ class MakePlotsWrapper(CommandBuilder):
             end_t = self.p.getstr('config', 'INIT_END')
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INC')
+            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
             date_filter_method = "Initialization"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -190,7 +190,7 @@ class MakePlotsWrapper(CommandBuilder):
             end_t = self.p.getstr('config', 'VALID_END')
             loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INC')
+            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
             date_filter_method = "Valid"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -343,7 +343,7 @@ class MakePlotsWrapper(CommandBuilder):
             end_t = self.p.getstr('config', 'INIT_END')
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INC')
+            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
             date_filter_method = "Initialization"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -353,7 +353,7 @@ class MakePlotsWrapper(CommandBuilder):
             end_t = self.p.getstr('config', 'VALID_END')
             loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INC')
+            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
             date_filter_method = "Valid"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -421,7 +421,7 @@ class MakePlotsWrapper(CommandBuilder):
             init_end_hour = self.p.getstr('config', 'INIT_END_HOUR')
             loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INC')
+            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
             date_filter_method = "Initialization"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -433,7 +433,7 @@ class MakePlotsWrapper(CommandBuilder):
             valid_end_hour = self.p.getstr('config', 'VALID_END_HOUR')
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INC')
+            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
             date_filter_method = "Valid"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -560,7 +560,7 @@ class MakePlotsWrapper(CommandBuilder):
             init_end_hour = self.p.getstr('config', 'INIT_END_HOUR')
             loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INC')
+            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
             date_filter_method = "Initialization"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -572,7 +572,7 @@ class MakePlotsWrapper(CommandBuilder):
             valid_end_hour = self.p.getstr('config', 'VALID_END_HOUR')
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INC')
+            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
             date_filter_method = "Valid"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)

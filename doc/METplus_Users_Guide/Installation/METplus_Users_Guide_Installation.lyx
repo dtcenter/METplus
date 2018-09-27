@@ -141,7 +141,19 @@ METplus is written in Python 2.7.
  adapt.
  As users make upgrades and improvements to the tools, they are encouraged
  to offer those upgrades to the broader community by offering feedback to
- the developers.
+ the developers or coordinating for a GitHub pull.
+ For more information on contributing code to METplus, please contact 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+met_help@ucar.edu
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
@@ -347,7 +359,7 @@ Open the browser of your choice and navigate to https://github.com/NCAR/METplus.
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename /tmp/metplus_repo.png
+	filename C:/tmp/metplus_repo.png
 	rotateOrigin center
 
 \end_inset
@@ -399,7 +411,7 @@ Download Zip
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename /tmp/download_metplus.png
+	filename C:/tmp/download_metplus.png
 
 \end_inset
 

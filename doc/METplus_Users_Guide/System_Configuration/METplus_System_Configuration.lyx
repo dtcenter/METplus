@@ -6911,70 +6911,6 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-INIT_INC
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Control the increment or stride to use when stepping between forecast initializa
-tions.
- Units are seconds.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- command_builder.py, extract_tiles_wrapper.py, make_plots_wrapper.py, master_metplu
-s.py, stat_analysis_wrapper.py, tc_pairs_wrapper.py, tc_stat_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
 INIT_INCLUDE
 \series default
 
@@ -7054,7 +6990,8 @@ tions.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ command_builder.py, extract_tiles_wrapper.py, make_plots_wrapper.py, master_metplu
+s.py, stat_analysis_wrapper.py, tc_pairs_wrapper.py, tc_stat_wrapper.py
 \series bold
 \shape italic
 
@@ -19290,7 +19227,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-VALID_INC
+VALID_INCREMENT
 \series default
 
 \begin_inset Newline newline
