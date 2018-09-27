@@ -334,6 +334,8 @@ name "sec:Getting-the-METplus-source-code"
 \begin_layout Standard
 The METplus source code is available for download from a public GitHub repositor
 y.
+ You can retrieve the source code through your web browser or the command
+ line.
 \end_layout
 
 \begin_layout Subsection
@@ -345,6 +347,16 @@ name "subsec:Get-the-source-code-via-your-Web-Browser"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsubsection
+Source code only:
+\end_layout
+
+\begin_layout Standard
+If you wish to retrieve only the source code, then the following steps will
+ illustrate how to quickly access the METplus source code and relevant documenta
+tion:
 \end_layout
 
 \begin_layout Itemize
@@ -488,6 +500,101 @@ To avoid clutter and confusion, you can now remove the METplus-master.zip
 
 \end_deeper
 \end_deeper
+\begin_layout Subsubsection
+Source code, additional documentation, and sample data
+\end_layout
+
+\begin_layout Standard
+If you are a new METplus user and would like to experiment with the use
+ cases, you will want to follow these instructions to retrieve the source
+ code, additional documentation and sample data that accompanies the use
+ cases:
+\end_layout
+
+\begin_layout Itemize
+On your local host (or wherever you wish to install the METplus code) create
+ a directory where you want the code to reside
+\end_layout
+
+\begin_layout Itemize
+Open the browser of your choice and navigate to https://github.com/NCAR/METplus.
+ You will see something like the following:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename C:/tmp/metplus_repo.png
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Click on the 'releases' link, highlighted by a red circle in the diagram
+ below:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename /tmp/metplus_repo_release.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+You will be redirected to another screen.
+ The latest available release appears at the top of the screen:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename /tmp/metplus_repo_releases_page.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Click on the 'Source code' link (either the 
+\shape italic
+zip
+\shape default
+ or 
+\shape italic
+tar.gz
+\shape default
+) and when promted, save to the directory you created.
+\end_layout
+
+\begin_layout Itemize
+Uncompress the source code (
+\shape italic
+gunzip
+\shape default
+ for zip file or 
+\shape italic
+tar xvfz
+\shape default
+ for the tar.gz file)
+\end_layout
+
+\begin_layout Itemize
+Create a directory for the sample data directory
+\end_layout
+
+\begin_layout Itemize
+Click on the 
+\shape italic
+sample_data.tar.gz 
+\shape default
+link and when prompted, save the file to the directory you created above
+\end_layout
+
 \begin_layout Subsection
 Get the source code via Command line 
 \begin_inset CommandInset label
@@ -514,6 +621,8 @@ On the command line, enter the following:
 
 \begin_deeper
 \begin_layout Itemize
+
+\shape italic
 git clone https://github.com/NCAR/METplus
 \end_layout
 
@@ -750,12 +859,23 @@ export JLOGFILE=/home/username
 \end_layout
 
 \begin_layout Section
+Set up METplus Configuration files
+\end_layout
+
+\begin_layout Standard
+There are four METplus configuration files that must be defined prior to
+ running METplus.
+ These configuration files reside in the METplus_INSTALL_DIRECTORY/METplus/parm/
+metplus_config
+\end_layout
+
+\begin_layout Section
 Running METplus
 \end_layout
 
 \begin_layout Standard
 Running METplus involves invoking the Python script master_metplus.py from
- any directory followed by a list of configurationfiles (file path relative
+ any directory followed by a list of configuration files (file path relative
  to the 
 \shape italic
 path_to_METplus_install_dir
@@ -763,6 +883,100 @@ path_to_METplus_install_dir
 /METplus/parm directory).
 \end_layout
 
+\begin_layout Standard
+The following configuration files are automatically loaded during a METplus
+ run and do not need to be invoked on the command line.
+ They must to have all variables with values assigned to
+\shape italic
+ /path/to's 
+\shape default
+replaced with valid path names, or have those variables defined in a down-stream
+ config file:
+\end_layout
+
+\begin_layout Itemize
+metplus_data.conf
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+data-relevant settings:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+filename templates
+\end_layout
+
+\begin_layout Itemize
+regular expressions for input or output filenames
+\end_layout
+
+\begin_layout Itemize
+directories where input data are located
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Itemize
+metplus_logging.conf
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+set logging levels for METplus and MET output
+\end_layout
+
+\begin_layout Itemize
+turn on/off logging to stdout (screen) or log files
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+metplus_runtime.conf
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+runtime-related settings:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+location of METplus master_metplus.conf file (the 'master' conf file that
+ is a collection of all the final METplus configuration files)
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Itemize
+metplus_system.conf
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+system-related settings:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+location of METplus source code
+\end_layout
+
+\begin_layout Itemize
+location of MET source and build
+\end_layout
+
+\begin_layout Itemize
+location of other non-MET executables/binaries
+\end_layout
+
+\begin_layout Itemize
+location of METplus parm directory
+\end_layout
+
+\end_deeper
+\end_deeper
 \begin_layout Standard
 \begin_inset Box Boxed
 position "t"
