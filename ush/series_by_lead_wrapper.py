@@ -6,12 +6,19 @@ import os
 import sys
 import errno
 import glob
+
+from regrid_data_plane_wrapper import RegridDataPlaneWrapper
+
 import produtil.setup
-#from produtil.run import batchexe
-#from produtil.run import run
+# from produtil.run import batchexe
+# from produtil.run import run
 import met_util as util
+import feature_util
 from command_builder import CommandBuilder
 import config_metplus
+from tc_stat_wrapper import TcStatWrapper
+from regrid_data_plane_wrapper import RegridDataPlaneWrapper
+from string_template_substitution import StringSub
 
 
 ## @namespace SeriesByLeadWrapper
@@ -42,7 +49,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.p = p
         self.logger = logger
         if self.logger is None:
-            self.logger = util.get_logger(self.p,sublog='SeriesByLead')
+            self.logger = util.get_logger(self.p, sublog='SeriesByLead')
 
         # Retrieve any necessary values from the parm file(s)
         self.fhr_beg = p.getint('config', 'FHR_BEG')
@@ -217,8 +224,8 @@ class SeriesByLeadWrapper(CommandBuilder):
             # each value in FHR_GROUP_BEG has a corresponding ending fhr in
             # FHR_GROUP_END.
             if start_list_len != end_list_len or \
-                            start_list_len != label_list_len or \
-                            end_list_len != label_list_len:
+                    start_list_len != label_list_len or \
+                    end_list_len != label_list_len:
                 self.logger.error("ERROR:|" + os.strerror(errno.EINVAL) +
                                   " The number of forecast hour begin " +
                                   "and end times, and the number of " +
@@ -262,11 +269,10 @@ class SeriesByLeadWrapper(CommandBuilder):
         """
         if self.series_filter_opts:
             util.mkdir_p(self.series_lead_filtered_out_dir)
-            util.apply_series_filters(tile_dir, init_times,
+            self.apply_series_filters(tile_dir, init_times,
                                       self.series_lead_filtered_out_dir,
                                       self.series_filter_opts,
                                       self.tmp_dir,
-                                      self.logger,
                                       self.p)
 
             # Remove any empty files and directories to avoid
@@ -488,18 +494,16 @@ class SeriesByLeadWrapper(CommandBuilder):
                     # to build the cmd, we need to add the met verbosity
                     # level to the MET cmd created before we run
                     # the command.
-                    series_analysis_cmd = self.cmdrunner.insert_metverbosity_opt \
+                    series_analysis_cmd =\
+                        self.cmdrunner.insert_metverbosity_opt \
                         (series_analysis_cmd)
-                    (ret, series_analysis_cmd) = self.cmdrunner.run_cmd\
+                    (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
                         (series_analysis_cmd, app_name=self.app_name)
 
                     msg = ("INFO:[ " + cur_filename + ":" +
                            cur_function + "]|series analysis command: " +
                            series_analysis_cmd.to_shell())
                     self.logger.debug(msg)
-                    #series_analysis_cmd = batchexe('sh')[
-                    #    '-c', series_analysis_cmd].err2out()
-                    #run(series_analysis_cmd)
 
                     # Clean up any empty files and directories that still
                     # persist.
@@ -649,16 +653,16 @@ class SeriesByLeadWrapper(CommandBuilder):
                 # the command.
                 series_analysis_cmd = self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
-                (ret, series_analysis_cmd) = self.cmdrunner.run_cmd\
+                (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
                     (series_analysis_cmd, app_name=self.app_name)
 
                 msg = ("INFO:[ " + cur_filename + ":" +
                        cur_function + "]|series analysis command: " +
                        series_analysis_cmd.to_shell())
                 self.logger.debug(msg)
-                #series_analysis_cmd = \
+                # series_analysis_cmd = \
                 #    batchexe('sh')['-c', series_analysis_cmd].err2out()
-                #run(series_analysis_cmd)
+                # run(series_analysis_cmd)
 
                 # Make sure there aren't any emtpy
                 # files or directories that still persist.
@@ -725,11 +729,10 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  'max=max(series_cnt_TOTAL)', '" ',
                                  nc_var_file, ' ', nseries_nc_path]
         nco_nseries_cmd = ''.join(nco_nseries_cmd_parts)
-        (ret, nco_nseries_cmd) = self.cmdrunner.run_cmd\
-            (nco_nseries_cmd,ismetcmd=False)
-        #nco_nseries_cmd = batchexe('sh')['-c', nco_nseries_cmd].err2out()
-        #run(nco_nseries_cmd)
-
+        (ret, nco_nseries_cmd) = self.cmdrunner.run_cmd \
+            (nco_nseries_cmd, ismetcmd=False)
+        # nco_nseries_cmd = batchexe('sh')['-c', nco_nseries_cmd].err2out()
+        # run(nco_nseries_cmd)
 
         # Create an ASCII file with the max value, which can be parsed.
         nseries_txt_path = os.path.join(base_nc_dir, 'nseries.txt')
@@ -737,16 +740,17 @@ class SeriesByLeadWrapper(CommandBuilder):
         ncdump_max_cmd_parts = [self.ncdump_exe, ' ', nseries_nc_path,
                                 '> ', nseries_txt_path]
         ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
-        (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd\
-            (ncdump_max_cmd,ismetcmd=False,run_inshell=True)
-        #ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
-        #run(ncdump_max_cmd)
+        (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
+            (ncdump_max_cmd, ismetcmd=False, run_inshell=True)
+        # ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
+        # run(ncdump_max_cmd)
 
         # Look for the max value for this netCDF file.
         try:
             with open(nseries_txt_path, 'r') as fmax:
                 for line in fmax:
-                    max_match = re.match(r'\s*max\s*=\s([-+]?\d*\.*\d*)', line)
+                    max_match = re.match(r'\s*max\s*=\s([-+]?\d*\.*\d*)',
+                                         line)
                     if max_match:
                         maximum = max_match.group(1)
 
@@ -837,10 +841,10 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  '" ', cur_nc, ' ', min_nc_path]
             nco_min_cmd = ''.join(nco_min_cmd_parts)
             self.logger.debug('nco_min_cmd: ' + nco_min_cmd)
-            (ret, nco_min_cmd) = self.cmdrunner.run_cmd\
-                (nco_min_cmd,ismetcmd=False)
-            #nco_min_cmd = batchexe('sh')['-c', nco_min_cmd].err2out()
-            #run(nco_min_cmd)
+            (ret, nco_min_cmd) = self.cmdrunner.run_cmd \
+                (nco_min_cmd, ismetcmd=False)
+            # nco_min_cmd = batchexe('sh')['-c', nco_min_cmd].err2out()
+            # run(nco_min_cmd)
 
             # now set up file paths for the max value...
             max_nc_path = os.path.join(base_nc_dir, 'max.nc')
@@ -860,9 +864,10 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  '" ', cur_nc, ' ', max_nc_path]
             nco_max_cmd = ''.join(nco_max_cmd_parts)
             self.logger.debug('nco_max_cmd: ' + nco_max_cmd)
-            (ret, nco_max_cmd) = self.cmdrunner.run_cmd(nco_max_cmd,ismetcmd=False)
-            #nco_max_cmd = batchexe('sh')['-c', nco_max_cmd].err2out()
-            #run(nco_max_cmd)
+            (ret, nco_max_cmd) = self.cmdrunner.run_cmd(nco_max_cmd,
+                                                        ismetcmd=False)
+            # nco_max_cmd = batchexe('sh')['-c', nco_max_cmd].err2out()
+            # run(nco_max_cmd)
 
             # Create ASCII files with the min and max values, using the
             # NCO utility ncdump.
@@ -870,18 +875,18 @@ class SeriesByLeadWrapper(CommandBuilder):
             ncdump_min_cmd_parts = [self.ncdump_exe, ' ', base_nc_dir,
                                     '/min.nc > ', min_txt_path]
             ncdump_min_cmd = ''.join(ncdump_min_cmd_parts)
-            (ret, ncdump_min_cmd) = self.cmdrunner.run_cmd\
-                (ncdump_min_cmd,ismetcmd=False,run_inshell=True)
-            #ncdump_min_cmd = batchexe('sh')['-c', ncdump_min_cmd].err2out()
-            #run(ncdump_min_cmd)
+            (ret, ncdump_min_cmd) = self.cmdrunner.run_cmd \
+                (ncdump_min_cmd, ismetcmd=False, run_inshell=True)
+            # ncdump_min_cmd = batchexe('sh')['-c', ncdump_min_cmd].err2out()
+            # run(ncdump_min_cmd)
 
             ncdump_max_cmd_parts = [self.ncdump_exe, ' ', base_nc_dir,
                                     '/max.nc > ', max_txt_path]
             ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
-            (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd\
-                (ncdump_max_cmd,ismetcmd=False,run_inshell=True)
-            #ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
-            #run(ncdump_max_cmd)
+            (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
+                (ncdump_max_cmd, ismetcmd=False, run_inshell=True)
+            # ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
+            # run(ncdump_max_cmd)
 
             # Search for 'min' in the min.txt file.
             try:
@@ -964,7 +969,7 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         Args:
             @param do_fhr_by_range:  Boolean value, True if series analysis was
-                                  performed on range.  False otherwise.
+                                     performed on range.  False otherwise.
         Returns:
             nc_list:      A list of the netCDF files (full path) created
                           when the MET series analysis binary was invoked.
@@ -1304,26 +1309,28 @@ class SeriesByLeadWrapper(CommandBuilder):
                     # to build the cmd, we need to add the met verbosity
                     # level to the MET cmd created before we run
                     # the command.
-                    plot_data_plane_cmd = self.cmdrunner.insert_metverbosity_opt \
+                    plot_data_plane_cmd =\
+                        self.cmdrunner.insert_metverbosity_opt\
                         (plot_data_plane_cmd)
                     (ret, plot_data_plane_cmd) = self.cmdrunner.run_cmd\
                         (plot_data_plane_cmd, app_name=self.app_name)
-                    #plot_data_plane_cmd = \
+                    # plot_data_plane_cmd = \
                     #    batchexe('sh')['-c', plot_data_plane_cmd].err2out()
                     msg = ("INFO|[" + cur_filename + ":" +
                            cur_function + "]| plot_data_plane cmd: " +
                            plot_data_plane_cmd.to_shell())
                     self.logger.debug(msg)
-                    #run(plot_data_plane_cmd)
+                    # run(plot_data_plane_cmd)
 
                     # Create the convert command.
                     convert_parts = [self.convert_exe, ' -rotate 90 ',
                                      ' -background white -flatten ',
                                      ps_file, ' ', png_file]
                     convert_cmd = ''.join(convert_parts)
-                    (ret, convert_cmd) = self.cmdrunner.run_cmd(convert_cmd,ismetcmd=False)
-                    #convert_cmd = batchexe('sh')['-c', convert_cmd].err2out()
-                    #run(convert_cmd)
+                    (ret, convert_cmd) = self.cmdrunner.run_cmd(convert_cmd,
+                                                                ismetcmd=False)
+                    # convert_cmd = batchexe('sh')['-c', convert_cmd].err2out()
+                    # run(convert_cmd)
 
     def create_animated_gifs(self, do_fhr_by_range):
         """! Creates the animated GIF files from the .png files created in
@@ -1379,28 +1386,33 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  level, '_', cur_stat, '.gif']
                     animate_cmd = ''.join(gif_parts)
                     self.logger.debug("animate cmd: {}".format(animate_cmd))
-                    # TODO: Fix animate_cmd so it does not require run_inshell to work.
-                    # It is working as is, ideally we do not require run_inshell
+                    # TODO:
+                    # Fix animate_cmd so it does not require run_inshell
+                    #  to work.
+                    # It is working as is, ideally we do not require
+                    # run_inshell
                     # The issue has to do with multiple files in the directory
-                    # when using the wild card. If only one file exists than the command
-                    # will run ok without run_inshell.  You can repeat the issue
+                    # when using the wild card. If only one file exists
+                    # then the command will run ok without run_inshell.
+                    # You can repeat the issue
                     # by removing run_inshell keyword in the call below and
                     # running examples/series_by_lead_all_fhrs.conf use case.
                     # no animated gifs are created.
                     # convert: unable to open image
-                    # .... No such file or directory @ error/blob.c/OpenBlob/2712.
+                    # .... No such file or directory
+                    #  @ error/blob.c/OpenBlob/2712.
                     # convert: unable to open file
                     # convert: no images defined
 
                     (ret, animate_cmd) = self.cmdrunner.run_cmd\
-                        (animate_cmd,ismetcmd=False,
-                         run_inshell=True,log_theoutput=True)
+                        (animate_cmd, ismetcmd=False,
+                         run_inshell=True, log_theoutput=True)
 
-                    #animate_cmd = exe('sh')['-c', animate_cmd].err2out()
+                    # animate_cmd = exe('sh')['-c', animate_cmd].err2out()
                     msg = ("INFO|[" + cur_filename + ":" + cur_function +
                            "]| animate command: " + animate_cmd.to_shell())
                     self.logger.debug(msg)
-                    #run(animate_cmd)
+                    # run(animate_cmd)
                 else:
                     # For series analysis by forecast hour groups, create a
                     # list of the series analysis output for all the forecast
@@ -1427,16 +1439,123 @@ class SeriesByLeadWrapper(CommandBuilder):
                     animate_cmd = ''.join(gif_parts)
                     self.logger.debug("animate cmd: {}".format(animate_cmd))
 
-                    (ret, animate_cmd) = self.cmdrunner.run_cmd\
-                        (animate_cmd,ismetcmd=False,
-                         run_inshell=True,log_theoutput=True)
+                    (ret, animate_cmd) = self.cmdrunner.run_cmd \
+                        (animate_cmd, ismetcmd=False,
+                         run_inshell=True, log_theoutput=True)
 
-                    #animate_cmd = batchexe('sh')['-c', animate_cmd].err2out()
+                    # animate_cmd = batchexe('sh')['-c', animate_cmd].err2out()
                     msg = ("INFO|[" + cur_filename + ":" + cur_function +
                            "]| animate command: " + animate_cmd.to_shell())
                     self.logger.debug(msg)
-                    #run(animate_cmd)
+                    # run(animate_cmd)
 
+    def apply_series_filters(self, tile_dir, init_times, series_output_dir,
+                             filter_opts, temporary_dir, config):
+
+        """! Apply filter options, as specified in the
+            param/config file.
+            Args:
+               @param tile_dir:  Directory where input data files reside.
+                                 e.g. data which we will be applying our filter
+                                 criteria.
+               @param init_times:  List of init times that define the
+                                   input data.
+               @param series_output_dir:  The directory where the filter results
+                                          will be stored.
+               @param filter_opts:  The filter options to apply
+               @param temporary_dir:  The temporary directory where intermediate
+                                      files are saved.
+               @param config:  The config/param instance
+            Returns:
+                None
+        """
+        # pylint: disable=too-many-arguments
+        # Seven input arguments are needed to perform filtering.
+
+        # pylint:disable=protected-access
+        # Need to call sys.__getframe() to get the filename and method/func
+        # for logging information.
+
+        # Useful for logging
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        # Create temporary directory where intermediate files are saved.
+        cur_pid = str(os.getpid())
+        tmp_dir = os.path.join(temporary_dir, cur_pid)
+        self.logger.debug("DEBUG|" + cur_filename + "|" + cur_function +
+                          " creating tmp dir: " + tmp_dir)
+
+        for cur_init in init_times:
+            # Call the tc_stat wrapper to build up the command and invoke
+            # the MET tool tc_stat.
+            filter_file = "filter_" + cur_init + ".tcst"
+            filter_filename = os.path.join(series_output_dir,
+                                           cur_init, filter_file)
+
+            tcs = TcStatWrapper(config, self.logger)
+            tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
+                              filter_opts)
+
+            # Check that the filter.tcst file isn't empty. If
+            # it is, then use the files from extract_tiles as
+            # input (tile_dir = extract_out_dir)
+            if not util.file_exists(filter_filename):
+                msg = ("WARN| " + cur_filename + ":" + cur_function +
+                       "]| Non-existent filter file, filter " +
+                       " Never created by MET Tool tc_stat.")
+                self.logger.debug(msg)
+                continue
+            elif os.stat(filter_filename).st_size == 0:
+                msg = ("WARN| " + cur_filename + ":" + cur_function +
+                       "]| Empty filter file, filter " +
+                       " options yield nothing.")
+                self.logger.debug(msg)
+                continue
+            else:
+                # Now retrieve the files corresponding to these
+                # storm ids that resulted from filtering.
+                sorted_storm_ids = util.get_storm_ids(filter_filename,
+                                                      self.logger)
+
+                # Retrieve the header from filter_filename to be used in
+                # creating the temporary files.
+                with open(filter_filename, 'r') as filter_file:
+                    header = filter_file.readline()
+
+                for cur_storm in sorted_storm_ids:
+                    msg = ("INFO| [" + cur_filename + ":" +
+                           cur_function + " ] | Processing storm: " +
+                           cur_storm + " for file: " + filter_filename)
+                    self.logger.debug(msg)
+                    storm_output_dir = os.path.join(series_output_dir,
+                                                    cur_init, cur_storm)
+                    util.mkdir_p(storm_output_dir)
+                    util.mkdir_p(tmp_dir)
+                    tmp_file = "filter_" + cur_init + "_" + cur_storm
+                    tmp_filename = os.path.join(tmp_dir, tmp_file)
+                    storm_match_list = util.grep(cur_storm, filter_filename)
+                    with open(tmp_filename, "a+") as tmp_file:
+                        tmp_file.write(header)
+                        for storm_match in storm_match_list:
+                            tmp_file.write(storm_match)
+
+                    # Create the analysis and forecast files based
+                    # on the storms (defined in the tmp_filename created above)
+                    # Store the analysis and forecast files in the
+                    # series_output_dir.
+                    feature_util.retrieve_and_regrid(tmp_filename, cur_init,
+                                                     cur_storm,
+                                                     series_output_dir,
+                                                     self.logger,  config)
+
+        # Check for any empty files and directories and remove them to avoid
+        # any errors or performance degradation when performing
+        # series analysis.
+        util.prune_empty(series_output_dir, self.logger)
+
+        # Clean up the tmp dir
+        util.rmtree(tmp_dir)
 
 if __name__ == "__main__":
     """! Set up the logging, configuration launcher, and environment

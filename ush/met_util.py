@@ -10,20 +10,21 @@ import errno
 import time
 import calendar
 import re
+import gzip
+import bz2
+import zipfile
 from collections import namedtuple
+import struct
 
 import subprocess
 from produtil.run import exe
 from produtil.run import runstr,alias
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
-# TODO Remove the classes and refactor met-util
-# met_util needs to be refactored and the functions that
-# instantiate the objects(CommandBuilder) refactored in to there
-# own respective class OR in there own module, patterned after their
-# intended function.
-from tc_stat_wrapper import TcStatWrapper
-from regrid_data_plane_wrapper import RegridDataPlaneWrapper
+# for run stand alone
+import produtil
+import config_metplus
+
 
 """!@namespace met_util
  @brief Provides  Utility functions for METplus.
@@ -255,8 +256,23 @@ def get_logger(config, sublog=None):
     else:
         logger = config.log()
 
-    # Set the logger level from the config instance.
-    logger.setLevel(log_level)
+    # Setting of the logger level from the config instance.
+    # Check for log_level by Integer or LevelName.
+    # Try to convert the string log_level to an integer and use that, if
+    # it can't convert then we assume it is a valid LevelName, which
+    # is what is should be anyway,  ie. DEBUG.
+    # Note:
+    # Earlier versions of python2 require setLevel(<int>), argument
+    # to be an int. Passing in the LevelName, 'DEBUG' will disable
+    # logging output. Later versions of python2 will accept 'DEBUG',
+    # not sure which version that changed with, but the logic below
+    # should work for all version. I know python 2.6.6 must be an int,
+    # and python 2.7.5 accepts the LevelName.
+    try:
+        int_log_level = int(log_level)
+        logger.setLevel(int_log_level)
+    except ValueError:
+        logger.setLevel(logging.getLevelName(log_level))
 
     # Make sure the LOG_METPLUS is defined. In this function,
     # LOG_METPLUS should already be defined in the config object,
@@ -595,400 +611,6 @@ def extract_year_month(init_time, logger):
         raise Warning("Cannot extract YYYYMM from initialization time,"
                       " unexpected format")
 
-
-def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, logger,
-                        config):
-    """! Retrieves the data from the MODEL_DATA_DIR (defined in metplus.conf)
-         that corresponds to the storms defined in the tmp_filename:
-        1) create the analysis tile and forecast file names from the
-           tmp_filename file.
-        2) perform regridding via MET tool (regrid_data_plane) and store
-           results (netCDF files) in the out_dir or via
-           Regridding via  regrid_data_plane on the forecast and analysis
-           files via a latlon string with the following format:
-                latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
-                NOTE:  these values are defined in the extract_tiles_parm
-                parameter/config file as NLAT, NLON.
-        Args:
-        @param tmp_filename:   Filename of the temporary filter file in
-                               the /tmp directory. Contains rows
-                               of data corresponding to a storm id of varying
-                               times.
-        @param cur_init:       The current init time
-        @param cur_storm:      The current storm
-        @param out_dir:  The directory where regridded netCDF or grib2 output
-                         is saved depending on which regridding methodology is
-                         requested.  If the MET tool regrid_data_plane is
-                         requested, then netCDF data is produced.  If wgrib2
-                         is requested, then grib2 data is produced.
-        @param logger:  The name of the logger used in logging.
-        @param config:  config instance
-        Returns:
-           None
-    """
-
-    # pylint: disable=protected-access
-    # Need to call sys._getframe() to get current function and file for
-    # logging information.
-    # pylint: disable=too-many-arguments
-    # all input is needed to perform task
-
-    #TODO Review this function retrieve_and_regrid
-    # This needs to be refactored in to its own wrapper
-    # or factored in to the RegridDataPlanWrapper class or subclass.
-    # rdp=, was added when logging capability was added to capture
-    # all MET output to log files. It is a temporary work around
-    # to get logging up and running as needed.
-    # It is being used to call the run_cmd method, which runs the cmd
-    # and redirects logging based on the conf settings.
-    # Instantiate a RegridDataPlaneWrapper
-    rdp = RegridDataPlaneWrapper(config,logger)
-
-    # For logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
-    # Get variables, etc. from param/config file.
-    model_data_dir = config.getdir('MODEL_DATA_DIR')
-    met_install_dir = config.getdir('MET_INSTALL_DIR')
-    regrid_data_plane_exe = os.path.join(met_install_dir, 'bin/regrid_data_plane')
-    # regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE_EXE')
-    wgrib2_exe = config.getexe('WGRIB2')
-    egrep_exe = config.getexe('EGREP_EXE')
-    regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
-    overwrite_flag = config.getbool('config', 'OVERWRITE_TRACK')
-
-    # Extract the columns of interest: init time, lead time,
-    # valid time lat and lon of both tropical cyclone tracks, etc.
-    # Then calculate the forecast hour and other things.
-    with open(tmp_filename, "r") as tf:
-        # read header
-        header = tf.readline().split()
-        # get column number for columns on interest
-        # print('header{}:'.format(header))
-        header_colnum_init, header_colnum_lead, header_colnum_valid = \
-            header.index('INIT'), header.index('LEAD'), header.index('VALID')
-        header_colnum_alat, header_colnum_alon =\
-            header.index('ALAT'), header.index('ALON')
-        header_colnum_blat, header_colnum_blon = \
-            header.index('BLAT'), header.index('BLON')
-        for line in tf:
-            col = line.split()
-            init, lead, valid, alat, alon, blat, blon = \
-                col[header_colnum_init], col[header_colnum_lead], \
-                col[header_colnum_valid], col[header_colnum_alat], \
-                col[header_colnum_alon], col[header_colnum_blat], \
-                col[header_colnum_blon]
-
-            # integer division for both Python 2 and 3
-            lead_time = int(lead)
-            fcst_hr = lead_time // 10000
-
-            init_ymd_match = re.match(r'[0-9]{8}', init)
-            if init_ymd_match:
-                init_ymd = init_ymd_match.group(0)
-            else:
-                logger.WARN("RuntimeError raised")
-                raise RuntimeError('init time has unexpected format for YMD')
-
-            init_ymdh_match = re.match(r'[0-9|_]{11}', init)
-            if init_ymdh_match:
-                init_ymdh = init_ymdh_match.group(0)
-            else:
-                logger.WARN("RuntimeError raised")
-
-            valid_ymd_match = re.match(r'[0-9]{8}', valid)
-            if valid_ymd_match:
-                valid_ymd = valid_ymd_match.group(0)
-            else:
-                logger.WARN("RuntimeError raised")
-
-            valid_ymdh_match = re.match(r'[0-9|_]{11}', valid)
-            if valid_ymdh_match:
-                valid_ymdh = valid_ymdh_match.group(0)
-            else:
-                logger.WARN("RuntimeError raised")
-
-            lead_str = str(fcst_hr).zfill(3)
-            fcst_dir = os.path.join(model_data_dir, init_ymd)
-            init_ymdh_split = init_ymdh.split("_")
-            init_yyyymmddhh = "".join(init_ymdh_split)
-            anly_dir = os.path.join(model_data_dir, valid_ymd)
-            valid_ymdh_split = valid_ymdh.split("_")
-            valid_yyyymmddhh = "".join(valid_ymdh_split)
-
-            # Create output filenames for regridding
-            # wgrib2 used to regrid.
-            # Create the filename for the regridded file, which is a
-            # grib2 file.
-            fcst_sts = \
-                StringSub(logger, config.getraw('filename_templates',
-                                                'GFS_FCST_FILE_TMPL'),
-                          init=init_yyyymmddhh, lead=lead_str)
-
-            anly_sts = \
-                StringSub(logger, config.getraw('filename_templates',
-                                                'GFS_ANLY_FILE_TMPL'),
-                          valid=valid_yyyymmddhh, lead=lead_str)
-
-            fcst_file = fcst_sts.doStringSub()
-            fcst_filename = os.path.join(fcst_dir, fcst_file)
-            anly_file = anly_sts.doStringSub()
-            anly_filename = os.path.join(anly_dir, anly_file)
-
-            # Check if the forecast input file exists. If it doesn't
-            # exist, just log it
-            if file_exists(fcst_filename):
-                msg = ("INFO| [" + cur_filename + ":" + cur_function +
-                       " ] | Forecast file: " + fcst_filename)
-                logger.debug(msg)
-            else:
-                msg = ("WARNING| [" + cur_filename + ":" +
-                       cur_function + " ] | " +
-                       "Can't find forecast file, continuing anyway: " +
-                       fcst_filename)
-                logger.debug(msg)
-                continue
-
-            # Check if the analysis input file exists. If it doesn't
-            # exist, just log it.
-            if file_exists(anly_filename):
-                msg = ("INFO| [" + cur_filename + ":" +
-                       cur_function + " ] | Analysis file: " +
-                       anly_filename)
-                logger.debug(msg)
-
-            else:
-                msg = ("WARNING| [" + cur_filename + ":" +
-                       cur_function + " ] | " +
-                       "Can't find analysis file, continuing anyway: " +
-                       anly_filename)
-                logger.debug(msg)
-                continue
-
-            # Create the arguments used to perform regridding.
-            # NOTE: the base name
-            # is the same for both the fcst and anly filenames,
-            # so use either one to derive the base name that will be used to
-            # create the fcst_regridded_filename and anly_regridded_filename.
-            fcst_anly_base = os.path.basename(fcst_filename)
-
-            fcst_grid_spec = create_grid_specification_string(alat, alon,
-                                                              logger, config)
-            anly_grid_spec = create_grid_specification_string(blat, blon,
-                                                              logger, config)
-            if regrid_with_met_tool:
-                nc_fcst_anly_base = re.sub("grb2", "nc", fcst_anly_base)
-                fcst_anly_base = nc_fcst_anly_base
-
-            tile_dir = os.path.join(out_dir, cur_init, cur_storm)
-            fcst_hr_str = str(fcst_hr).zfill(3)
-
-            fcst_regridded_filename = \
-                config.getstr('regex_pattern', 'FCST_TILE_PREFIX') + \
-                fcst_hr_str + "_" + fcst_anly_base
-            fcst_regridded_file = os.path.join(tile_dir,
-                                               fcst_regridded_filename)
-            anly_regridded_filename = \
-                config.getstr('regex_pattern', 'ANLY_TILE_PREFIX') +\
-                fcst_hr_str + "_" + fcst_anly_base
-            anly_regridded_file = os.path.join(tile_dir,
-                                               anly_regridded_filename)
-
-            # Regrid the fcst file only if a fcst tile
-            # file does NOT already exist or if the overwrite flag is True.
-            # Create new gridded file for fcst tile
-            if file_exists(fcst_regridded_file) and not overwrite_flag:
-                msg = ("INFO| [" + cur_filename + ":" +
-                       cur_function + " ] | Forecast tile file " +
-                       fcst_regridded_file + " exists, skip regridding")
-                logger.debug(msg)
-            else:
-                # Perform fcst regridding on the records of interest
-                var_level_string = retrieve_var_info(config, logger)
-                if regrid_with_met_tool:
-                    # Perform regridding using MET Tool regrid_data_plane
-                    fcst_cmd_list = [regrid_data_plane_exe, ' ',
-                                     fcst_filename, ' ',
-                                     fcst_grid_spec, ' ',
-                                     fcst_regridded_file, ' ',
-                                     var_level_string,
-                                     ' -method NEAREST ']
-                    regrid_cmd_fcst = ''.join(fcst_cmd_list)
-
-                    #regrid_cmd_fcst = \
-                    #    batchexe('sh')['-c', regrid_cmd_fcst].err2out()
-                    # run(regrid_cmd_fcst)
-
-                    # Since not using the CommandBuilder to build the cmd,
-                    # add the met verbosity level to the MET cmd created before
-                    # we run the command.
-                    regrid_cmd_fcst = rdp.cmdrunner.insert_metverbosity_opt(regrid_cmd_fcst)
-                    (ret, regrid_cmd_fcst) = rdp.cmdrunner.run_cmd(regrid_cmd_fcst,app_name=rdp.app_name)
-                    msg = ("INFO|[regrid]| regrid_data_plane regrid command:" +
-                           regrid_cmd_fcst.to_shell())
-                    logger.debug(msg)
-
-
-                else:
-                    # Perform regridding via wgrib2
-                    requested_records = retrieve_var_info(config, logger)
-                    fcst_cmd_list = [wgrib2_exe, ' ', fcst_filename, ' | ',
-                                     egrep_exe, ' ', requested_records, '|',
-                                     wgrib2_exe, ' -i ', fcst_filename,
-                                     ' -new_grid ', fcst_grid_spec, ' ',
-                                     fcst_regridded_file]
-                    wgrb_cmd_fcst = ''.join(fcst_cmd_list)
-                    #wgrb_cmd_fcst = \
-                    #    batchexe('sh')['-c', wgrb_cmd_fcst].err2out()
-                    #run(wgrb_cmd_fcst)
-
-                    (ret, wgrb_cmd_fcst) = rdp.cmdrunner.run_cmd(wgrb_cmd_fcst,ismetcmd=False)
-                    msg = ("INFO|[wgrib2]| wgrib2 regrid command:" +
-                           wgrb_cmd_fcst.to_shell())
-                    logger.debug(msg)
-
-            # Create new gridded file for anly tile
-            if file_exists(anly_regridded_file) and not overwrite_flag:
-                logger.debug("INFO| [" + cur_filename + ":" +
-                             cur_function + " ] |" +
-                             " Analysis tile file: " +
-                             anly_regridded_file +
-                             " exists, skip regridding")
-            else:
-                # Perform anly regridding on the records of interest
-                var_level_string = retrieve_var_info(config, logger)
-                if regrid_with_met_tool:
-                    anly_cmd_list = [regrid_data_plane_exe, ' ',
-                                     anly_filename, ' ',
-                                     anly_grid_spec, ' ',
-                                     anly_regridded_file, ' ',
-                                     var_level_string, ' ',
-                                     ' -method NEAREST ']
-                    regrid_cmd_anly = ''.join(anly_cmd_list)
-                    #regrid_cmd_anly = \
-                    #    batchexe('sh')['-c', regrid_cmd_anly].err2out()
-                    #run(regrid_cmd_anly)
-
-                    # Since not using the CommandBuilder to build the cmd,
-                    # add the met verbosity level to the MET cmd created before
-                    # we run the command.
-                    regrid_cmd_anly = rdp.cmdrunner.insert_metverbosity_opt(regrid_cmd_anly)
-                    (ret, regrid_cmd_anly) = rdp.cmdrunner.run_cmd(regrid_cmd_anly,app_name=rdp.app_name)
-                    msg = ("INFO|[regrid]| on anly file:" +
-                           anly_regridded_file)
-                    logger.debug(msg)
-                else:
-                    # Regridding via wgrib2.
-                    requested_records = retrieve_var_info(config, logger)
-                    anly_cmd_list = [wgrib2_exe, ' ', anly_filename, ' | ',
-                                     egrep_exe, ' ', requested_records, '|',
-                                     wgrib2_exe, ' -i ', anly_filename,
-                                     ' -new_grid ', anly_grid_spec, ' ',
-                                     anly_regridded_file]
-                    wgrb_cmd_anly = ''.join(anly_cmd_list)
-                    #wgrb_cmd_anly = \
-                    #    batchexe('sh')['-c', wgrb_cmd_anly].err2out()
-                    # run(wgrb_cmd_anly)
-
-                    (ret, wgrb_cmd_anly) = rdp.cmdrunner.run_cmd(wgrb_cmd_anly, ismetcmd=False)
-                    msg = ("INFO|[wgrib2]| Regridding via wgrib2:" +
-                           wgrb_cmd_anly.to_shell())
-                    logger.debug(msg)
-
-
-def retrieve_var_info(config, logger):
-    """! Retrieve the variable name and level from the
-        EXTRACT_TILES_VAR_FILTER and VAR_LIST.  If the
-        EXTRACT_TILES_VAR_FILTER is empty, then retrieve
-        the variable information from VAR_LIST.  Both are defined
-        in the constants_pdef.py param file.  This will
-        be used as part of the command to regrid the grib2 storm track
-        files into netCDF.
-        Args:
-            @param config: The reference to the config/param instance.
-            @param logger:  The logger to which all logging is directed.
-                            Optional.
-        Returns:
-            field_level_string (string):  If REGRID_USING_MET_TOOL is True,
-                                          A string with format -field
-                                          'name="HGT"; level="P500";'
-                                          for each variable defined in
-                                          VAR_LIST. Otherwise, a string with
-                                          format like:
-                                          :TMP:2 |:HGT: 500|:PWAT:|:PRMSL:
-                                          which will be used to regrid using
-                                          wgrib2.
-    """
-
-    # pylint: disable=protected-access
-    # Need to access sys._getframe() to retrieve the current file and function/
-    # method for logging information.
-
-    # For logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
-    logger.debug("DEBUG|" + cur_filename + "|" + cur_function)
-
-    var_list = getlist(config.getstr('config', 'VAR_LIST'))
-    extra_var_list = getlist(config.getstr('config', 'EXTRACT_TILES_VAR_LIST'))
-    regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
-    full_list = []
-
-    # Append the extra_var list to the var_list
-    # and remove any duplicates. *NOTE, order
-    # will be lost.
-    full_var_list = var_list + extra_var_list
-    unique_var_list = list(set(full_var_list))
-
-    if regrid_with_met_tool:
-        name_str = 'name="'
-        level_str = 'level="'
-
-        for cur_var in unique_var_list:
-            match = re.match(r'(.*)/(.*)', cur_var)
-            name = match.group(1)
-            level = match.group(2)
-            level_val = "_" + level
-
-            # Create the field info string that can be used
-            # by the MET Tool regrid_data_plane to perform
-            # regridding.
-            cur_list = [' -field ', "'", name_str, name, '"; ',
-                        level_str, level_val, '";', "'", '\\ ']
-            cur_str = ''.join(cur_list)
-            full_list.append(cur_str)
-        field_level_string = ''.join(full_list)
-    else:
-        full_list = ['":']
-        for cur_var in unique_var_list:
-            match = re.match(r'(.*)/(.*)', cur_var)
-            name = match.group(1)
-            level = match.group(2)
-            level_match = re.match(r'([a-zA-Z])([0-9]{1,3})', level)
-            level_val = level_match.group(2)
-
-            # Create the field info string that can be used by
-            # wgrib2 to perform regridding.
-            if int(level_val) > 0:
-                level_str = str(level_val) + ' '
-            else:
-                # For Z0, Z2, etc. just gather all available.
-                level_str = ""
-
-            cur_list = [name, ':', level_str, '|']
-            tmp_str = ''.join(cur_list)
-            full_list.append(tmp_str)
-
-        # Remove the last '|' and add the terminal double quote.
-        field_level_string = ''.join(full_list)
-        field_level_string = field_level_string[:-1]
-        field_level_string += '"'
-
-    return field_level_string
-
-
 def create_grid_specification_string(lat, lon, logger, config):
     """! Create the grid specification string with the format:
          latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
@@ -1197,110 +819,7 @@ def cleanup_temporary_files(list_of_files):
             pass
 
 
-def apply_series_filters(tile_dir, init_times, series_output_dir, filter_opts,
-                         temporary_dir, logger, config):
-    """! Apply filter options, as specified in the
-        param/config file.
-        Args:
-           @param tile_dir:  Directory where input data files reside.
-                             e.g. data which we will be applying our filter
-                             criteria.
-           @param init_times:  List of init times that define the input data.
-           @param series_output_dir:  The directory where the filter results
-                                      will be stored.
-           @param filter_opts:  The filter options to apply
-           @param temporary_dir:  The temporary directory where intermediate
-                                  files are saved.
-           @param logger:  The logger to which all logging is directed.
-           @param config:  The config/param instance
-        Returns:
-            None
-    """
-    # pylint: disable=too-many-arguments
-    # Seven input arguments are needed to perform filtering.
 
-    # pylint:disable=protected-access
-    # Need to call sys.__getframe() to get the filename and method/func
-    # for logging information.
-
-    # Useful for logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
-    # Create temporary directory where intermediate files are saved.
-    cur_pid = str(os.getpid())
-    tmp_dir = os.path.join(temporary_dir, cur_pid)
-    logger.debug("DEBUG|" + cur_filename + "|" + cur_function +
-                 " creating tmp dir: " + tmp_dir)
-
-    for cur_init in init_times:
-        # Call the tc_stat wrapper to build up the command and invoke
-        # the MET tool tc_stat.
-        filter_file = "filter_" + cur_init + ".tcst"
-        filter_filename = os.path.join(series_output_dir,
-                                       cur_init, filter_file)
-
-        #TODO Review this function apply_series_filters
-        # should this be in its own wrapper or subclass of tc_stat
-        tcs = TcStatWrapper(config,logger)
-        tcs.build_tc_stat(series_output_dir, cur_init, tile_dir, filter_opts)
-
-        # Check that the filter.tcst file isn't empty. If
-        # it is, then use the files from extract_tiles as
-        # input (tile_dir = extract_out_dir)
-        if not file_exists(filter_filename):
-            msg = ("WARN| " + cur_filename + ":" + cur_function +
-                   "]| Non-existent filter file, filter " +
-                   " Never created by MET Tool tc_stat.")
-            logger.debug(msg)
-            continue
-        elif os.stat(filter_filename).st_size == 0:
-            msg = ("WARN| " + cur_filename + ":" + cur_function +
-                   "]| Empty filter file, filter " +
-                   " options yield nothing.")
-            logger.debug(msg)
-            continue
-        else:
-            # Now retrieve the files corresponding to these
-            # storm ids that resulted from filtering.
-            sorted_storm_ids = get_storm_ids(filter_filename, logger)
-
-            # Retrieve the header from filter_filename to be used in
-            # creating the temporary files.
-            with open(filter_filename, 'r') as filter_file:
-                header = filter_file.readline()
-
-            for cur_storm in sorted_storm_ids:
-                msg = ("INFO| [" + cur_filename + ":" +
-                       cur_function + " ] | Processing storm: " + cur_storm +
-                       " for file: " + filter_filename)
-                logger.debug(msg)
-                storm_output_dir = os.path.join(series_output_dir,
-                                                cur_init, cur_storm)
-                mkdir_p(storm_output_dir)
-                mkdir_p(tmp_dir)
-                tmp_file = "filter_" + cur_init + "_" + cur_storm
-                tmp_filename = os.path.join(tmp_dir, tmp_file)
-                storm_match_list = grep(cur_storm, filter_filename)
-                with open(tmp_filename, "a+") as tmp_file:
-                    tmp_file.write(header)
-                    for storm_match in storm_match_list:
-                        tmp_file.write(storm_match)
-
-                # Create the analysis and forecast files based
-                # on the storms (defined in the tmp_filename created above)
-                # Store the analysis and forecast files in the
-                # series_output_dir.
-                retrieve_and_regrid(tmp_filename, cur_init, cur_storm,
-                                    series_output_dir, logger, config)
-
-    # Check for any empty files and directories and remove them to avoid
-    # any errors or performance degradation when performing
-    # series analysis.
-    prune_empty(series_output_dir, logger)
-
-    # Clean up the tmp dir
-    rmtree(tmp_dir)
 
 
 def create_filter_tmp_files(filtered_files_list, filter_output_dir, logger=None):
@@ -1409,21 +928,25 @@ def getlist(s, logger=None):
          commas in the elements.
          '4,4,2,4,2,4,2, ' or '4,4,2,4,2,4,2 ' or
          '4, 4, 4, 4, ' or '4, 4, 4, 4 '
+<<<<<<< HEAD
+         Note: getstr on an empty variable (EMPTY_VAR = ) in
+=======
          Note: getstr on an empty variable (EMPTY_VAR = ) in 
+>>>>>>> origin
          a conf file returns '' an empty string.
-        
-        @param s the string being converted to a list.  
+
+        @param s the string being converted to a list.
     """
 
     # Developer NOTE: we could just force this to only operate
-    # on comma seperated lists, not space seperated.
+    # on comma separated lists, not space separated.
 
     # FIRST remove surrounding comma, and spaces, form the string.
     s = s.strip().strip(',').strip()
 
     # splitting an empty string, s with ',', creates a 1 element
-    # list with an empty string element, we dont want to create or 
-    # retrun that, ie. NEVER RETURN THIS [''], If s is '', an
+    # list with an empty string element, we don't want to create or
+    # return that, ie. NEVER RETURN THIS [''], If s is '', an
     # empty string, then return an empty list [].
     # Doing so allows for proper boolean testing of your
     # list elsewhere in the code, ie. bool([]) is False.
@@ -1457,23 +980,51 @@ def getlistint(s):
 
 # minutes
 def shift_time(time, shift):
+    """ Adjust time by shift hours. Format is %Y%m%d%H%M
+        Args:
+            @param time: Start time in %Y%m%d%H%M
+            @param shift: Amount to adjust time in hours
+        Returns:
+            New time in format %Y%m%d%H%M
+    """
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(hours=shift)).strftime("%Y%m%d%H%M")
 
 def shift_time_minutes(time, shift):
+    """ Adjust time by shift minutes. Format is %Y%m%d%H%M
+        Args:
+            @param time: Start time in %Y%m%d%H%M
+            @param shift: Amount to adjust time in minutes
+        Returns:
+            New time in format %Y%m%d%H%M
+    """
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(minutes=shift)).strftime("%Y%m%d%H%M")
 
 def shift_time_seconds(time, shift):
+    """ Adjust time by shift seconds. Format is %Y%m%d%H%M
+        Args:
+            @param time: Start time in %Y%m%d%H%M
+            @param shift: Amount to adjust time in seconds
+        Returns:
+            New time in format %Y%m%d%H%M
+    """
     return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
             datetime.timedelta(seconds=shift)).strftime("%Y%m%d%H%M")
 
 
 class FieldObj(object):
-    __slots__ = 'fcst_name', 'fcst_level', 'fcst_extra',\
-                'obs_name', 'obs_level', 'obs_extra'
+    __slots__ = 'fcst_name', 'fcst_level', 'fcst_extra', 'fcst_thresh', \
+                'obs_name', 'obs_level', 'obs_extra', 'obs_thresh'
 
 def parse_var_list(p):
+    """ read conf items and populate list of FieldObj containing
+    information about each variable to be compared
+        Args:
+            @param p: Conf object
+        Returns:
+            list of FieldObj with variable information
+    """
     # var_list is a list containing an list of FieldObj
     var_list = []
 
@@ -1494,7 +1045,11 @@ def parse_var_list(p):
 
             fcst_extra = ""
             if p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                fcst_extra = p.getraw('config', "FCST_VAR"+n+"_OPTIONS")
+                fcst_extra = getraw_interp(p, 'config', "FCST_VAR"+n+"_OPTIONS")
+
+            fcst_thresh = ""
+            if p.has_option('config', "FCST_VAR"+n+"_THRESH"):
+                fcst_thresh = getlistfloat(p.getstr('config', "FCST_VAR"+n+"_THRESH"))
 
             # if OBS_VARn_X does not exist, use FCST_VARn_X
             if p.has_option('config', "OBS_VAR"+n+"_NAME"):
@@ -1504,7 +1059,7 @@ def parse_var_list(p):
 
             obs_extra = ""
             if p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                obs_extra = p.getraw('config', "OBS_VAR"+n+"_OPTIONS")
+                obs_extra = getraw_interp(p, 'config', "OBS_VAR"+n+"_OPTIONS")
 
             fcst_levels = getlist(p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
             if p.has_option('config', "OBS_VAR"+n+"_LEVELS"):
@@ -1517,12 +1072,19 @@ def parse_var_list(p):
                           "_LEVELS do not have the same number of elements")
                 exit(1)
 
+            # if OBS_VARn_THRESH does not exist, use FCST_VARn_THRESH
+            if p.has_option('config', "OBS_VAR"+n+"_THRESH"):
+                obs_thresh = getlistfloat(getstr('config', "OBS_VAR"+n+"_THRESH"))
+            else:
+                obs_thresh = fcst_thresh
             for f,o in zip(fcst_levels, obs_levels):
                 fo = FieldObj()
                 fo.fcst_name = fcst_name
                 fo.obs_name = obs_name
                 fo.fcst_extra = fcst_extra
                 fo.obs_extra = obs_extra
+                fo.fcst_thresh = fcst_thresh
+                fo.obs_thresh = obs_thresh
                 fo.fcst_level = f
                 fo.obs_level = o
                 var_list.append(fo)
@@ -1611,7 +1173,14 @@ def reformat_fields_for_met(all_vars_list, logger):
                 name_level_extra_list = ['{ name = "', name,
                                          '"; level = [ "', level, '" ]; ']
                 if extra:
-                    extra_str = extra + '; },'
+                    # End the text for this field.  If this is the last field,
+                    # end the dictionary appropriately.
+                    if var == all_vars_list[-1]:
+                        # This is the last field, terminate it appropriately.
+                        extra_str = extra + '; }'
+                    else:
+                        # More field(s) to go
+                        extra_str = extra + '; },'
                     name_level_extra_list.append(extra_str)
                 else:
                     # End the text for this field.  If this is the last field,
@@ -1634,32 +1203,127 @@ def reformat_fields_for_met(all_vars_list, logger):
 
         return met_fields
 
-def get_filetype(config, filepath):
-    ncdump_exe = config.getexe('NCDUMP_EXE')
-    try:
-        result = subprocess.check_output([ncdump_exe, filepath])
-    except subprocess.CalledProcessError:
-        return "GRIB"
+def get_filetype(filepath, logger=None):
+    """!This function determines if the filepath is a NETCDF or GRIB file
+       based on the first eight bytes of the file.
+       It returns the string GRIB, NETCDF, or a None object.
 
-    regex = re.search("netcdf", result)
-    if regex is not None:
-        return "NETCDF"
-    else:
+       Note: If it is NOT determined to ba a NETCDF file,
+       it returns GRIB, regardless.
+       Unless there is an IOError exception, such as filepath refers
+       to a non-existent file or filepath is only a directory, than
+       None is returned, without a system exit.
+
+       Args:
+           @param filepath:  path/to/filename
+           @param logger the logger, optional
+       Returns:
+           @returns The string GRIB, NETCDF or a None object
+    """
+    # Developer Note
+    # Since we have the impending code-freeze, keeping the behavior the same,
+    # just changing the implementation.
+    # The previous logic did not test for GRIB it would just return 'GRIB'
+    # if you couldn't run ncdump on the file.
+    # Also note:
+    # As John indicated ... there is the case when a grib file
+    # may not start with GRIB ... and if you pass the MET command filtetype=GRIB
+    # MET will handle it ok ...
+
+    # Notes on file format and determining type.
+    # https://www.wmo.int/pages/prog/www/WDM/Guides/Guide-binary-2.html
+    # https://www.unidata.ucar.edu/software/netcdf/docs/faq.html
+    # http: // www.hdfgroup.org / HDF5 / doc / H5.format.html
+
+    # Interpreting single byte by byte - so ok to ignore endianess
+    # od command:
+    #   od -An -c -N8 foo.nc
+    #   od -tx1 -N8 foo.nc
+    # GRIB
+    # Octet no.  IS Content
+    # 1-4        'GRIB' (Coded CCITT-ITA No. 5) (ASCII);
+    # 5-7        Total length, in octets, of GRIB message(including Sections 0 & 5);
+    # 8          Edition number - currently 1
+    # NETCDF .. ie. od -An -c -N4 foo.nc which will output
+    # C   D   F 001
+    # C   D   F 002
+    # 211   H   D   F
+    # HDF5
+    # Magic numbers   Hex: 89 48 44 46 0d 0a 1a 0a
+    # ASCII: \211 HDF \r \n \032 \n
+
+    # Below is a reference that may be used in the future to
+    # determine grib version.
+    # import struct
+    # with open ("foo.grb2","rb")as binary_file:
+    #     binary_file.seek(7)
+    #     one_byte = binary_file.read(1)
+    #
+    # This would return an integer with value 1 or 2,
+    # B option is an unsigned char.
+    #  struct.unpack('B',one_byte)[0]
+
+    try:
+        # read will return up to 8 bytes, if file is 0 bytes in length,
+        # than first_eight_bytes will be the empty string ''.
+        # Don't test the file length, just adds more time overhead.
+        with open(filepath, "rb") as binary_file:
+            binary_file.seek(0)
+            first_eight_bytes = binary_file.read(8)
+
+        # From the first eight bytes of the file, unpack the bytes
+        # of the known identifier byte locations, in to a string.
+        # Example, if this was a netcdf file than ONLY name_cdf would
+        # equal 'CDF' the other variables, name_hdf would be 'DF '
+        # name_grid 'CDF '
+        name_cdf, name_hdf, name_grib = [None] * 3
+        if len(first_eight_bytes) == 8:
+            name_cdf =  struct.unpack('3s',first_eight_bytes[:3])[0]
+            name_hdf =  struct.unpack('3s',first_eight_bytes[1:4])[0]
+            name_grib = struct.unpack('4s',first_eight_bytes[:4])[0]
+
+        # Why not just use a else, instead of elif else if we are going to
+        # return GRIB ? It allows for expansion, ie. Maybe we pass in a
+        # logger and log the cases we can't determine the type.
+        if name_cdf == 'CDF' or name_hdf == 'HDF':
+            return "NETCDF"
+        elif name_grib == 'GRIB':
+            return "GRIB"
+        else:
+            # This mimicks previous behavoir, were we at least will always return GRIB.
+            # It also handles the case where GRIB was not in the first 4 bytes
+            # of a legitimate grib file, see John.
+            # logger.info('Can't determine type, returning GRIB
+            # as default %s'%filepath)
+            return "GRIB"
+
+    except IOError:
+        # Skip the IOError, and keep processing data.
+        # ie. filepath references a file that does not exist
+        # or filepath is a directory.
         return None
+
+    # Previous Logic
+    # ncdump_exe = config.getexe('NCDUMP_EXE')
+    #try:
+    #    result = subprocess.check_output([ncdump_exe, filepath])
+
+    #except subprocess.CalledProcessError:
+    #    return "GRIB"
+
+    #regex = re.search("netcdf", result)
+    #if regex is not None:
+    #    return "NETCDF"
+    #else:
+    #    return None
+
 
 
 def get_time_from_file(logger, filepath, template):
     if os.path.isdir(filepath):
         return None
 
-    # Check number of / in template, get same number from file path
-    num_slashes = template.count('/')
-    path_split = filepath.split('/')
-    f = ""
-    for n in range(num_slashes, -1, -1):
-        f = os.path.join(f,path_split[-(n+1)])
-#    print(f+" and "+template)
-    se = StringExtract(logger, template, f)
+    se = StringExtract(logger, template, filepath)
 
     if se.parseTemplate():
         return se
@@ -1667,5 +1331,148 @@ def get_time_from_file(logger, filepath, template):
         return None
 
 
+def getraw_interp(p, sec, opt):
+    """ parse parameter and replace any existing parameters
+        referenced with the value (looking in same section, then
+        config, dir, and os environment)
+        returns raw string, preserving {valid?fmt=%Y} blocks
+        Args:
+            @param p: Conf object
+            @param sec: Section in the conf file to look for variable
+            @param opt: Variable to interpret
+        Returns:
+            Raw string
+    """
+
+    in_template = p.getraw(sec, opt)
+    out_template = ""
+    in_brackets = False
+    for i, c in enumerate(in_template):
+        if c == "{":
+            in_brackets = True
+            start_idx = i
+        elif c == "}":
+            var_name = in_template[start_idx+1:i]
+            var = None
+            if p.has_option(sec,var_name):
+                var = p.getstr(sec,name)
+            elif p.has_option('config',var_name):
+                var = p.getstr('config',var_name)
+            elif p.has_option('dir',var_name):
+                var = p.getstr('dir',var_name)
+            elif var_name[0:3] == "ENV":
+                var = os.environ.get(var_name[4:-1])
+
+            if var is None:
+                out_template += in_template[start_idx:i+1]
+            else:
+                out_template += var
+            in_brackets = False
+        elif not in_brackets:
+            out_template += c
+
+    return out_template
+
+
+def decompress_file(filename, logger=None):
+    """ Decompress gzip, bzip, or zip files
+        Args:
+            @param filename: Path to file without zip extensions
+            @param logger: Optional argument to allow logging
+        Returns:
+            None
+    """
+    if os.path.exists(filename):
+        return
+    elif os.path.exists(filename+".gz"):
+        if logger:
+            logger.info("Decompressing gz file")
+        with gzip.open(filename+".gz", 'rb') as infile:
+            with open(filename, 'wb') as outfile:
+                outfile.write(infile.read())
+                infile.close()
+                outfile.close()
+    elif os.path.exists(filename+".bz2"):
+        if logger:
+            logger.info("Decompressing bz2 file")
+        with open(filename+".bz2", 'rb') as infile:
+            with open(filename, 'wb') as outfile:
+                outfile.write(bz2.decompress(infile.read()))
+                infile.close()
+                outfile.close()
+    elif os.path.exists(filename+".zip"):
+        if logger:
+            logger.info("Decompressing zip file")
+        with zipfile.ZipFile(filename+".zip") as z:
+            with open(filename, 'wb') as f:
+                f.write(z.read(os.path.basename(filename)))
+
+
+def run_stand_alone(module_name, app_name):
+    """ Used to allow MET tool wrappers to be run without using
+    master_metplus.py
+        Args:
+            @param module_name: Name of wrapper with underscores, i.e.
+            pcp_combine_wrapper
+            @param app_name: Name of wrapper with camel case, i.e.
+            PcpCombine
+        Returns:
+            None
+    """
+    try:
+        # If jobname is not defined, in log it is 'NO-NAME'
+        if 'JLOGFILE' in os.environ:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus',
+                                 jlogfile=os.environ['JLOGFILE'])
+        else:
+            produtil.setup.setup(send_dbn=False, jobname='run-METplus')
+        produtil.log.postmsg(app_name + ' is starting')
+
+        # Job Logger
+        produtil.log.jlogger.info('Top of ' + app_name)
+
+
+        # Used for logging and usage statment
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        # Setup Task logger, Until Conf object is created, Task logger is
+        # only logging to tty, not a file.
+        logger = logging.getLogger(app_name)
+        logger.info('logger Top of ' + app_name + ".")
+
+        # Parse arguments, options and return a config instance.
+        p = config_metplus.setup(filename=cur_filename)
+
+        logger = get_logger(p)
+
+        module = __import__(module_name)
+        wrapper_class = getattr(module, app_name + "Wrapper")
+        wrapper = wrapper_class(p, logger)
+
+        os.environ['MET_BASE'] = p.getdir('MET_BASE')
+
+        produtil.log.postmsg(app_name + ' Calling run_all_times.')
+
+        wrapper.run_all_times()
+
+        produtil.log.postmsg(app_name + ' completed')
+    except Exception as e:
+        produtil.log.jlogger.critical(
+            app_name + '  failed: %s' % (str(e),), exc_info=True)
+        sys.exit(2)
+
+
+def add_common_items_to_dictionary(p, dictionary):
+    dictionary['WGRIB2'] = p.getexe('WGRIB2')
+    dictionary['CUT_EXE'] = p.getexe('CUT_EXE')
+    dictionary['TR_EXE'] = p.getexe('TR_EXE')
+    dictionary['RM_EXE'] = p.getexe('RM_EXE')
+    dictionary['NCAP2_EXE'] = p.getexe('NCAP2_EXE')
+    dictionary['CONVERT_EXE'] = p.getexe('CONVERT_EXE')
+    dictionary['NCDUMP_EXE'] = p.getexe('NCDUMP_EXE')
+    dictionary['EGREP_EXE'] = p.getexe('EGREP_EXE')
+
+
 if __name__ == "__main__":
-gen_init_list("20141201", "20150331", 6, "18")
+    gen_init_list("20141201", "20150331", 6, "18")

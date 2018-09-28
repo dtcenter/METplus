@@ -79,7 +79,7 @@ class EnsembleStatWrapper(CommandBuilder):
         time_offset = 0
         found = False
         #while lead_check <= max_forecast:
-        model_template = os.path.expandvars(self.p.getraw('filename_templates',
+        model_template = os.path.expandvars(util.getraw_interp(self.p, 'filename_templates',
                                        'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE'))
         # split by - to handle a level that is a range, such as 0-10
         model_ss = sts.StringSub(self.logger, model_template,
@@ -257,8 +257,8 @@ class EnsembleStatWrapper(CommandBuilder):
             #                 str(obs_thresh)+" ]; },"
         else:
 #            data_type = self.p.getstr('config', 'OBS_NATIVE_DATA_TYPE')
-            #obs_data_type = util.get_filetype(self.p, obs_path)
-            model_data_type = util.get_filetype(self.p, model_path)
+            #obs_data_type = util.get_filetype(obs_path)
+            model_data_type = util.get_filetype(model_path)
             #if obs_data_type == "NETCDF":
 
             #  obs_field += "{ name=\"" + v.obs_name+"_" + obs_level.zfill(2) + \

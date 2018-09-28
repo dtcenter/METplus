@@ -21,6 +21,7 @@ import datetime
 import produtil.setup
 from command_builder import CommandBuilder
 import met_util as util
+import feature_util
 import config_metplus
 from tc_stat_wrapper import TcStatWrapper
 
@@ -58,7 +59,7 @@ class ExtractTilesWrapper(CommandBuilder):
         self.tc_stat_exe = os.path.join(met_install_dir, 'bin/tc_stat')
         self.init_beg = self.p.getstr('config', 'INIT_BEG')[0:8]
         self.init_end = self.p.getstr('config', 'INIT_END')[0:8]
-        self.init_hour_inc = int(self.p.getint('config', 'INIT_INC') / 3600)
+        self.init_hour_inc = int(self.p.getint('config', 'INIT_INCREMENT') / 3600)
         self.init_hour_end = self.p.getint('config', 'INIT_HOUR_END')
         if self.logger is None:
             self.logger = util.get_logger(self.p)
@@ -84,7 +85,6 @@ class ExtractTilesWrapper(CommandBuilder):
         # Loop from begYYYYMMDD to endYYYYMMDD incrementing by HH
         # and ending on the endYYYYMMDD_HH End Hour.
         while init_time <= end_time:
-#            self.run_at_time(init_time.strftime("%Y%m%d_%H"))
             self.run_at_time(init_time.strftime("%Y%m%d%H%M"), -1)
             init_time = init_time + datetime.timedelta(
                 hours=self.init_hour_inc)
@@ -105,7 +105,8 @@ class ExtractTilesWrapper(CommandBuilder):
         processing then regrid the forecast and analysis files to a
         30 x 30 degree tile centered on the storm.
         Args:
-
+            init_time:  The init time of interest
+            valid_time:  The valid time of interest, not currently in use.
         Returns:
 
             None: invokes regrid_data_plane to create a netCDF file from two
@@ -207,9 +208,9 @@ class ExtractTilesWrapper(CommandBuilder):
             # Perform regridding of the forecast and analysis files
             # to an n X n degree tile centered on the storm (dimensions
             # are indicated in the config/param file).
-            util.retrieve_and_regrid(full_tmp_filename, cur_init,
-                                     cur_storm, self.filtered_out_dir,
-                                     self.logger, self.config)
+            feature_util.retrieve_and_regrid(full_tmp_filename, cur_init,
+                                             cur_storm, self.filtered_out_dir,
+                                             self.logger, self.config)
 
         # end of for cur_storm
 

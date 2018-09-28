@@ -1,0 +1,395 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass book
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing onehalf
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip bigskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Chapter
+Overview of METplus
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:Overview-of-METplus"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Purpose and organization of the User's Guide
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Purpose-and-organization"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The goal of this User's Guide is to equip users with the information needed
+ to use the Model Evaluation Tools (MET) and it's companion package METplus.
+ MET is a set of verification tools developed and supported to community
+ via the Developmental Testbed Center (DTC) for use by the numerical weather
+ prediction community.
+ METplus is a suite of Python wrappers and ancillary scripts to enhance
+ the user's ability to quickly set-up and run MET.
+ Over the next few years, METplus will become the authoritative repository
+ for verification of the Unified Forecast System.
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The METplus User's Guide is organized as follows.
+ Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:Overview-of-METplus"
+
+\end_inset
+
+ provides an overview of METplus.
+ Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:Software-Installation/Getting-St"
+
+\end_inset
+
+ contains basic information about how to get started with METplus - including
+ system requirements, required software , and how to download METplus.
+ Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:METplus System Configuration"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Section
+The Developmental Testbed Center (DTC)
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:The-Developmental-Testbed"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+METplus has been developed, and will be maintained and enhanced, by the
+ Developmental Testbed Center (DTC; 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://www.dtcenter.org/
+\end_layout
+
+\end_inset
+
+ ).
+ The main goal of the DTC is to serve as a bridge between operations and
+ research, to facilitate the activities of these two important components
+ of the numerical weather prediction (NWP) community.
+ The DTC provides an environment that is functionally equivalent to the
+ operational environment in which the research community can test model
+ enhancements; the operational community benefits from DTC testing and evaluatio
+n of models before new models are implemented operationally.
+ METplus serves both the research and operational communities in this way
+ - offering capabilities for researchers to test their own enhancements
+ to models and providing a capability for the DTC to evaluate the strengths
+ and weaknesses of advances in NWP prior to operational implementation.
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+METplus will also be available to DTC visitors and to the WRF modeling community
+ for testing and evaluation of new model capabilities, applications in new
+ environments, and so on.
+ The METplus release schedule is coincident with the MET release schedule
+ and the METplus major release number is six less than the MET major release
+ number (e.g.
+ MET 8.0 is released with METplus 2.0).
+\end_layout
+
+\begin_layout Section
+METplus goals and design philosophy
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:METplus-goals-and"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+METplus is a Python scripting infrastructure for the MET tools.
+ The primary goal of METplus development is to provide MET users with a
+ highly configurable and simple means to perform model verification using
+ the MET tools.
+ Prior to the availability of METplus, users who had more complex verifications
+ that required the use of more than one MET tool were faced with setting
+ up multiple MET config files and creating some automation scripts to perform
+ the verification.
+ METplus provides the user with the infrastructure to modularly create the
+ necessary steps to perform such verifications.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+METplus has been designed to be modular and adaptable.
+ This is accomplished through wrapping the MET tools with Python and the
+ use of hierarchical configuration files to enable users to readily customize
+ their verification environments.
+ Wrappers can be run individually, or as a group of wrappers that represent
+ a sequence of MET processes.
+ New wrappers can readily be added to the METplus package due to this modular
+ design.
+ Currently, METplus can easily be applied by any user on their own computer
+ platform that supports Python 2.7.
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The METplus code and documentation is maintained by the DTC in Boulder,
+ Colorado.
+ METplus is freely available to the modeling, verification, and operational
+ communities, including universities, governments, the private sector, and
+ operational modeling and prediction centers through a publicly accessible
+ GitHub repository.
+ Users simply need access to a web browser to download the source code and
+ any other relevant documentation and data samples.
+\end_layout
+
+\begin_layout Section
+METplus components
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:METplus-components"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The major components of METplus package are METplus Python wrappers to the
+ MET tools, MET configuration files and a hierarchy of METplus configuration
+ files.
+ Some Python wrappers do not correspond to a particular MET tool, but wrap
+ utilities to extend METplus functionality.
+\end_layout
+
+\begin_layout Section
+Future development plans
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Future-development-plans"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+METplus is an evolving application.
+ New capabilities are planned in controlled, successive version releases
+ that are synchronized with MET releases.
+ Bug fixes and user-identified problems will be addressed as they are found
+ and posted to the known issues section of the METplus Users web page (
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+www.dtcenter.org/met/users/support
+\end_layout
+
+\end_inset
+
+).
+ Future METplus development plans are based on several contributing factors,
+ including the needs of both the operational and research community.
+ Issues that are in the development queue detailed in the 
+\begin_inset Quotes eld
+\end_inset
+
+Issues
+\begin_inset Quotes erd
+\end_inset
+
+ section of the GitHub repository.
+ Please send questions to 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+met_help@ucar.edu
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Code support
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Code-support"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+METplus support is provided through a MET-help e-mail address: met_help@ucar.edu.
+ We will endeavor to respond to requests for help in a timely fashion.
+ In addition, information about METplus and tools that can be used with
+ MET are provided on the MET Users web page (
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://www.dtcenter.org/met/users/
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+We welcome comments and suggestions for improvements to METplus, especially
+ information regarding errors.
+ Comments may be submitted using the MET Feedback form available on the
+ MET website.
+ In addition, comments on this document would be greatly appreciated.
+ While we cannot promise to incorporate all suggested changes, we will certainly
+ take all suggestions into consideration.
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+METplus is a "living" set of wrappers and configuration files.
+ Our goal is to continually enhance it and add to its capabilities.
+ Because our time, resources, and talents are limited, we welcome contributed
+ code for future versions of METplus.
+ These contributions may represent new use cases or new plotting functions.
+ For more information on contributing code to METplus, please contact 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+met_help@ucar.edu
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\end_body
+\end_document

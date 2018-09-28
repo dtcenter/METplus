@@ -59,7 +59,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         self.config = p
         self.logger = logger
         if self.logger is None:
-            self.logger = util.get_logger(self.p,sublog='TCMPRPlotter')
+            self.logger = util.get_logger(self.p, sublog='TCMPRPlotter')
 
         self._init_tcmpr_script()
 
@@ -80,7 +80,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         self.filter = p.getstr('config', 'FILTER')
         self.filtered_tcst_data = p.getstr('config',
                                            'FILTERED_TCST_DATA_FILE')
-        self.dep_vars = p.getstr('config', 'DEP_VARS')
+        self.dep_vars = util.getlist(p.getstr('config', 'DEP_VARS'))
         self.scatter_x = p.getstr('config', 'SCATTER_X')
         self.scatter_y = p.getstr('config', 'SCATTER_Y')
         self.skill_ref = p.getstr('config', 'SKILL_REF')
@@ -88,7 +88,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         self.series_ci = p.getstr('config', 'SERIES_CI')
         self.legend = p.getstr('config', 'LEGEND')
         self.lead = p.getstr('config', 'LEAD')
-        self.plot_types = p.getstr('config', 'PLOT_TYPES')
+        self.plot_types = util.getlist(p.getstr('config', 'PLOT_TYPES'))
         self.rp_diff = p.getstr('config', 'RP_DIFF')
         self.demo_year = p.getstr('config', 'DEMO_YR')
         self.hfip_baseline = p.getstr('config', 'HFIP_BASELINE')
@@ -110,15 +110,15 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # configuration files.
         # The purpose of this method is to support MET 6.0 and later,
         # and to not throw a superfluous error, due to a missing  env variable
-        # that is version specific. 
+        # that is version specific.
         # For example,
-        # MET_INSTALL_DIR is required starting with met-6.1, so we don't 
-        # want to throw an error if it is not defined and we are running 
+        # MET_INSTALL_DIR is required starting with met-6.1, so we don't
+        # want to throw an error if it is not defined and we are running
         # with an earlier version of met.
-        # 
+        #
         # Ultimately, the plot_tcmpr.R script will throw an error
         # indicating any missing required environment variables.
-        # So if all else fails, we defer to plot_tcmpr.R, 
+        # So if all else fails, we defer to plot_tcmpr.R,
         # We are being nice and trying to catch/prevent it here.
 
         # The logic in this method is not perfect. So it is entirely
@@ -131,7 +131,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # met-6.0: MET_BUILD_BASE, RSCRIPTS_BASE
 
         # At some point in the future MET_BUILD_BASE and RSCRIPTS_BASE
-        # should go-away from all METplus references. When we no longer 
+        # should go-away from all METplus references. When we no longer
         # need to support MET 6.0, this method  can be simplified.
 
         # MET_INSTALL_DIR introduced in METplus conf file, for met-6.1 and later
@@ -145,15 +145,16 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # running with met-6.0 and earlier. Which means MET_INSTALL_DIR
             # is NOT required, so we don't want to throw an error, if it is
             # not defined.
-            if self.p.has_option('dir','MET_BUILD_BASE'):
-                if self.p.has_option('dir','MET_INSTALL_DIR'):
-                    os.environ['MET_INSTALL_DIR'] = self.p.getdir('MET_INSTALL_DIR')
+            if self.p.has_option('dir', 'MET_BUILD_BASE'):
+                if self.p.has_option('dir', 'MET_INSTALL_DIR'):
+                    os.environ['MET_INSTALL_DIR'] = \
+                        self.p.getdir('MET_INSTALL_DIR')
             else:
                 os.environ['MET_INSTALL_DIR'] = self.p.getdir('MET_INSTALL_DIR')
 
         # MET_BASE has always been defined in METplus, so it 'should'
-        # exist, so we will throw an error, if it is not defined, 
-        # even though it is not required if running METplus against 
+        # exist, so we will throw an error, if it is not defined,
+        # even though it is not required if running METplus against
         # met-6.0 and earlier.
         if 'MET_BASE' in os.environ:
             self.logger.info('Using MET_BASE setting from user '
@@ -192,8 +193,9 @@ class TCMPRPlotterWrapper(CommandBuilder):
         else:
             if self.p.has_option('dir', 'MET_BUILD_BASE'):
                 os.environ['MET_BUILD_BASE'] = self.p.getdir('MET_BUILD_BASE')
-                met_build_base_tcmpr_script = os.path.join(self.p.getdir('MET_BUILD_BASE'),
-                                             'scripts/Rscripts/plot_tcmpr.R')
+                met_build_base_tcmpr_script = os.path.join(
+                    self.p.getdir('MET_BUILD_BASE'),
+                    'scripts/Rscripts/plot_tcmpr.R')
             else:
                 # Set to empty string since we test it later.
                 met_build_base_tcmpr_script = ''
@@ -201,14 +203,15 @@ class TCMPRPlotterWrapper(CommandBuilder):
         if util.file_exists(met_base_tcmpr_script):
             self.tcmpr_script = met_base_tcmpr_script
             self.logger.info('Using MET_BASE plot_tcmpr script: %s '
-                                               % met_base_tcmpr_script)           
+                             % met_base_tcmpr_script)
         elif util.file_exists(met_build_base_tcmpr_script):
             self.tcmpr_script = met_build_base_tcmpr_script
             self.logger.info('Using MET_BUILD_BASE plot_tcmpr script: %s '
-                                          % met_build_base_tcmpr_script)
+                             % met_build_base_tcmpr_script)
         else:
             self.logger.error('NO tcmpr_plot.R script could be found, '
-                              'Check your MET_BASE or MET_BUILD_BASE paths in conf file.')
+                              'Check your MET_BASE or MET_BUILD_BASE ',
+                              'paths in conf file.')
             sys.exit(1)
 
     def run_all_times(self):
@@ -219,132 +222,128 @@ class TCMPRPlotterWrapper(CommandBuilder):
              Returns:
 
         """
-        base_cmds_list = [' Rscript ', self.tcmpr_script, ' -lookin ']
-        base_cmds = ''.join(base_cmds_list)
-        self.logger.debug("base_cmds " + base_cmds)
-        cmds_list = []
 
         self.logger.debug("DEBUG: TCMPR input " + self.input_data)
         self.logger.debug("DEBUG: TCMPR config file " +
                           self.plot_config_file)
         self.logger.debug("DEBUG: output " + self.output_base_dir)
 
-        # Create a list of all the "optional" options and flags.
-        optionals_list = self.retrieve_optionals()
+        # Create a dictionary of all the "optional" options and flags.
+        cmds_dict = self.retrieve_optionals()
 
-        # Create the output base directory
+        # Create the TCMPR output base directory, where the final plots
+        # will be saved.
         util.mkdir_p(self.output_base_dir)
 
         # If input data is a file, create a single command and invoke R script.
         if os.path.isfile(self.input_data):
             self.logger.debug("Currently plotting " + self.input_data)
-            cmds_list.append(base_cmds)
-            cmds_list.append(self.input_data)
+            cmds_dict[' -lookin '] = self.input_data
 
             # Special treatment of the "optional" output_base_dir option
             # because we are supporting the plotting of multiple tcst files
             # in a directory.
             if self.output_base_dir:
                 # dated_output_dir = self.create_output_subdir(self.input_data)
-                optionals_list.append(' -outdir ')
-                # optionals_list.append(dated_output_dir)
-                optionals_list.append(self.output_base_dir)
-                optionals = ''.join(optionals_list)
+                cmds_dict[' -outdir '] = self.output_base_dir
 
-            if optionals:
-                cmds_list.append(optionals)
-                # Due to the way cmds_list was created, join it all in to
-                # one string and than split that in to a list, so element [0]
-                # is 'Rscript', instead of 'Rscript self.tcmpr_script -lookin'
+            # Generate the list, where the -args are separated by their
+            # values.
+            full_cmd_list = ['Rscript' + self.tcmpr_script]
+            for key, value in cmds_dict.iteritems():
+                full_cmd_list.append(key)
+                full_cmd_list.append(value)
 
-                # Use CommandBuilder's build() and clear(); using
-                # produtil's  exe generates mpirun warnings, only on eyewall,
-                # which can be ignored.
-                cmds_list = ''.join(cmds_list).split()
-                #cmd = exe('sh')['-c',''.join(cmds_list)] > '/dev/null'
-                cmd = exe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
-                self.logger.debug("DEBUG: Command run " +
-                                   cmd.to_shell())
-                self.logger.info("INFO: Generating requested plots for " +
-                                  self.input_data)
-                #self.build()
-                #self.clear()
-                # pylint:disable=unnecessary-pass
-                # If a tc file is empty, continue to the next, thus the pass
-                # isn't unnecessary.
-                try:
-                    checkrun(cmd)
-                except produtil.run.ExitStatusException as ese:
-                    self.logger.warn("WARN: plot_tcmpr.R returned non-zero"
-                                     " exit status, "
-                                     "tcst file may be missing data, "
-                                     "continuing: " + ese)
-
-                    # Remove the empty directory
-                    if not os.listdir(self.output_base_dir):
-                        os.rmdir(self.output_base_dir)
-                    pass
-
-                # Remove the empty directory
-                if not os.listdir(self.output_base_dir):
-                    os.rmdir(self.output_base_dir)
-                    pass
-
-        # If the input data is a directory, create a list of all the
-        # files in the directory and invoke the R script for this list
-        # of files.
-        if os.path.isdir(self.input_data):
-            self.logger.debug("plot all files in directory " +
-                              self.input_data)
-            cmds_list = []
-            all_tcst_files_list = util.get_files(self.input_data, ".*.tcst",
-                                                 self.logger)
-            all_tcst_files = ' '.join(all_tcst_files_list)
-            self.logger.debug("num of files " + str(len(all_tcst_files)))
-            # Append the mandatory -lookin option to the base command.
-            cmds_list.append(base_cmds)
-            cmds_list.append(all_tcst_files)
-            # dated_output_dir = self.create_output_subdir(self.output_plot)
-            dated_output_dir = self.output_base_dir
-            if self.output_base_dir:
-                cmds_list.append(' -outdir ')
-                util.mkdir_p(self.output_base_dir)
-                cmds_list.append(self.output_base_dir)
-                self.logger.debug("DEBUG: Creating dated output dir " +
-                                  dated_output_dir)
-
-            if optionals_list:
-                remaining_options = ''.join(optionals_list)
-                cmds_list.append(remaining_options)
-
-            # Due to the way cmds_list was created, join it all in to
-            # one string and than split that in to a list, so element [0]
-            # is 'Rscript', instead of 'Rscript self.tcmpr_script -lookin'
-            cmds_list = ''.join(cmds_list).split()
-            cmd = exe(cmds_list[0])[cmds_list[1:]] > '/dev/null'
-            # This can be a very long command if the user has
-            # indicated a directory.  Only log this if necessary.
-            # self.logger.debug("DEBUG:  Command run " + cmd.to_shell())
-
+            # Separate the 'Rscript' portion from the args, to conform to
+            # produtil's exe syntax.
+            cmd = exe(full_cmd_list[0])[full_cmd_list[1:]] > '/dev/null'
+            self.logger.debug("DEBUG: Command run " +
+                              cmd.to_shell())
+            self.logger.info("INFO: Generating requested plots for " +
+                             self.input_data)
             # pylint:disable=unnecessary-pass
             # If a tc file is empty, continue to the next, thus the pass
             # isn't unnecessary.
             try:
                 checkrun(cmd)
             except produtil.run.ExitStatusException as ese:
+                self.logger.warn("WARN: plot_tcmpr.R returned non-zero"
+                                 " exit status, "
+                                 "tcst file may be missing data, "
+                                 "continuing: " + repr(ese))
+
+        # If the input data is a directory, create a list of all the
+        # files in the directory and invoke the R script for this list
+        # of files.
+        elif os.path.isdir(self.input_data):
+            self.logger.debug("plot all files in directory " +
+                              self.input_data)
+            cmds_dict = self.retrieve_optionals()
+            all_tcst_files_list = util.get_files(self.input_data, ".*.tcst",
+                                                 self.logger)
+            all_tcst_files = ' '.join(all_tcst_files_list)
+            self.logger.debug("num of files " + str(len(all_tcst_files)))
+            # Append the mandatory -lookin option to the base command.
+            cmds_dict['-lookin'] = all_tcst_files
+            if self.output_base_dir:
+                cmds_dict['-outdir'] = self.output_base_dir
+                self.logger.debug("DEBUG: Creating dated output dir " +
+                                  self.output_base_dir)
+
+            # Create the full_cmd_list from the keys and values of the
+            # cmds_dict and then form one command list.
+            full_cmd_list = list()
+            full_cmd_list.append("Rscript")
+            full_cmd_list.append(self.tcmpr_script)
+            for key, value in cmds_dict.iteritems():
+                full_cmd_list.append(key)
+                if key == '-lookin':
+                    # treat the list of dirs in -lookin differently,
+                    # append each individual directory to replicate original
+                    # implementation's behavior of splitting the commands
+                    # by whitespace and assigning each command to an item
+                    # in a list.
+                    for tcst_file in all_tcst_files_list:
+                        full_cmd_list.append(tcst_file)
+                elif key == '-plot':
+                    # plot types list is also appended as a single string,
+                    # delimited by ','.
+                    full_cmd_list.append(','.join(value))
+                elif key == '-dep':
+                    # dependant variables list items are appended
+                    # as one string.  Convert list into a string delimited
+                    # by ','.
+                    full_cmd_list.append(','.join(value))
+
+                else:
+                    full_cmd_list.append(value)
+
+            # Separate the 'Rscript' portion from the args, to conform to
+            # produtil's exe syntax.
+            cmd = exe(full_cmd_list[0])[full_cmd_list[1:]] > '/dev/null'
+
+            # This can be a very long command if the user has
+            # indicated a directory.  Only log this if necessary.
+            # self.logger.debug("DEBUG:  Command run " + cmd.to_shell())
+            # cmd_str = ' '.join(full_cmd_list)
+            # cmd_list = 'Rscript ' + cmd_str
+            # self.logger.debug('TCMPR Command run: ' + cmd_str)
+
+            # Now run the command via produtil
+            try:
+                checkrun(cmd)
+            except produtil.run.ExitStatusException as ese:
                 # If the tcst file is empty (with the exception of the
                 #  header), or there is some other problem, then
                 # plot_tcmpr.R will return with a non-zero exit status of 1
-                self.logger.warn("WARN: plot_tcmpr.R returned non-zero"
-                                 " exit status, tcst file may be missing"
-                                 " data... continuing: " + str(ese))
-                # Remove the empty directory
-                if not os.listdir(dated_output_dir):
-                    os.rmdir(dated_output_dir)
-
-                pass
-            # Reset empty cmds_list to prepare for next tcst file.
-            cmds_list = []
+                self.logger.error("plot_tcmpr.R returned non-zero"
+                                  " exit status, tcst file may be missing"
+                                  " data... continuing: " + str(ese))
+                sys.exit(1)
+        else:
+            self.logger.error("Expected input is neither a file nor directory,"
+                              "exiting...")
+            sys.exit(1)
 
         self.logger.info("INFO: Plotting complete")
 
@@ -358,6 +357,9 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
             Args:
                 @param tcst_file:  The input tc-pairs file.
+            Returns:
+                dated_output_dir:  The output dir where the final tcmpr plots
+                                   will be saved
         """
         subdir_match = re.match(r'.*/(.*).tcst', tcst_file)
         subdir = subdir_match.group(1)
@@ -370,97 +372,88 @@ class TCMPRPlotterWrapper(CommandBuilder):
         return dated_output_dir
 
     def retrieve_optionals(self):
-        """Creates a list of the optional options if they are defined."""
-        optionals = []
+        """Creates a dictionary of the options and their values.
+           Args:
+
+           Returns:
+               options_dict: a dictionary of the values to the optional args
+                          in a format where the argument is the key, and
+                          the args value is the dictionary value.  This is
+                          useful in keeping the args separate from their
+                          values, where values with whitespaces aren't
+                          compromised (i.e. whitespaces are retained).
+
+
+        """
+        options_dict = dict()
+
         if self.plot_config_file:
-            optionals.append(' -config ')
-            optionals.append(self.plot_config_file)
+            options_dict['-config'] = self.plot_config_file
         if self.prefix:
-            optionals.append(' -prefix ')
-            optionals.append(self.prefix)
+            options_dict['-prefix'] = self.prefix
         if self.title:
-            optionals.append(' -title ')
-            optionals.append(self.title)
+            options_dict['-title'] = '"' + self.title + '"'
         if self.subtitle:
-            optionals.append(' -subtitle ')
-            optionals.append(self.subtitle)
+            options_dict['-subtitle'] = '"' + self.subtitle + '"'
         if self.xlab:
-            optionals.append(' -xlab ')
-            optionals.append(self.xlab)
+            options_dict['-xlab'] = '"' + self.xlab + '"'
         if self.ylab:
-            optionals.append(' -ylab ')
-            optionals.append(self.ylab)
+            options_dict['-ylab'] = '"' + self.ylab + '"'
         if self.xlim:
-            optionals.append(' -xlim ')
-            optionals.append(self.xlim)
+            options_dict['-xlim'] = self.xlim
         if self.ylim:
-            optionals.append(' -ylim ')
-            optionals.append(self.ylim)
+            options_dict['-ylim'] = self.ylim
         if self.filter:
-            optionals.append(' -filter ')
-            optionals.append(self.filter)
+            options_dict['-filter'] = self.filter
         if self.filtered_tcst_data:
-            optionals.append(' -tcst ')
-            optionals.append(self.filtered_tcst_data)
+            options_dict['-tcst'] = self.filtered_tcst_data
         if self.dep_vars:
-            optionals.append(' -dep ')
-            optionals.append(self.dep_vars)
+            options_dict['-dep'] = self.dep_vars
         if self.scatter_x:
-            optionals.append(' -scatter_x ')
-            optionals.append(self.scatter_x)
+            options_dict['-scatter_x'] = self.scatter_x
         if self.scatter_y:
-            optionals.append(' -scatter_y ')
-            optionals.append(self.scatter_y)
+            options_dict['-scatter_y'] = self.scatter_y
         if self.skill_ref:
-            optionals.append(' -skill_ref ')
-            optionals.append(self.skill_ref)
+            options_dict['-skill_ref'] = self.skill_ref
         if self.series:
-            optionals.append(' - series ')
-            optionals.append(self.series)
+            options_dict['-series'] = self.series
         if self.series_ci:
-            optionals.append(' -series_ci ')
-            optionals.append(self.series_ci)
+            options_dict['-series_ci'] = self.series_ci
         if self.legend:
-            optionals.append(' -legend ')
-            optionals.append(self.legend)
+            options_dict['-legend'] = '"' + self.legend + '"'
         if self.lead:
-            optionals.append(' -lead ')
-            optionals.append(self.lead)
+            options_dict['-lead'] = self.lead
         if self.plot_types:
-            optionals.append(' -plot ')
-            optionals.append(self.plot_types)
+            options_dict['-plot'] = self.plot_types
         if self.rp_diff:
-            optionals.append(' -rp_diff ')
-            optionals.append(self.rp_diff)
+            options_dict['-rp_diff'] = self.rp_diff
         if self.demo_year:
-            optionals.append(' -demo_yr ')
-            optionals.append(self.demo_year)
+            options_dict['-demo_yr'] = self.demo_year
         if self.hfip_baseline:
-            optionals.append(' -hfip_bsln ')
-            optionals.append(self.hfip_baseline)
+            options_dict['-hfip_bsln'] = self.hfip_baseline
         if self.plot_config_options:
-            optionals.append(' -plot_config ')
-            optionals.append(self.plot_config_options)
+            options_dict['-plot_config'] = self.plot_config_file
         if self.save_data:
-            optionals.append(' -save_data ')
-            optionals.append(self.save_data)
+            options_dict['-save_data'] = self.save_data
 
         # Flags
         if self.footnote_flag:
-            optionals.append(' -footnote_flag ')
+            options_dict['-footnote_flag'] = ''
         if self.no_ee:
-            optionals.append(' -no_ee ')
+            options_dict['-no_ee'] = ''
         if self.no_log:
-            optionals.append(' -no_log ')
+            options_dict['-no_log'] = ''
         if self.save:
-            optionals.append(' -save')
+            options_dict['-save'] = ''
 
-        return optionals
+        return options_dict
 
     def get_command(self):
-        """! Over-ride CommandBuilder's get_command because unlike other MET tools,
-             tcmpr_plotter_wrapper handles input files differently because it wraps an R-script, plot_tcmpr.R
-             rather than a typical MET tool. Build command to run from arguments"""
+        """! Over-ride CommandBuilder's get_command because unlike
+             other MET tools, tcmpr_plotter_wrapper handles input
+             files differently because it wraps an R-script, plot_tcmpr.R
+             rather than a typical MET tool. Build command to run from
+             arguments"""
         if self.app_path is None:
             self.logger.error("No app path specified. You must use a subclass")
             return None
@@ -468,7 +461,8 @@ class TCMPRPlotterWrapper(CommandBuilder):
         return self.cmd
 
     def build(self):
-        """! Override CommandBuilder's build() since the plot_"""
+        """! Override CommandBuilder's build() since the plot_tcmpr.R plot
+             is set up differently from the other MET tools."""
         cmd = self.get_command()
         if cmd is None:
             return
@@ -488,9 +482,6 @@ if __name__ == "__main__":
 
         # Read in the configuration object CONFIG
         CONFIG = config_metplus.setup()
-
-        # if CONFIG.getdir('MET_BIN') not in os.environ['PATH']:
-        #    os.environ['PATH'] += os.pathsep + CONFIG.getdir('MET_BIN')
 
         TCP = TCMPRPlotterWrapper(CONFIG, logger=None)
         TCP.run_all_times()

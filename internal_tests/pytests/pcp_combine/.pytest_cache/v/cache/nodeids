@@ -1,0 +1,14 @@
+[
+  "test_pcp_combine_wrapper.py::test_get_accumulation_1_to_6", 
+  "test_pcp_combine_wrapper.py::test_get_accumulation_6_to_6", 
+  "test_pcp_combine_wrapper.py::test_get_lowest_forecast_file_dated_subdir", 
+  "test_pcp_combine_wrapper.py::test_get_lowest_forecast_file_no_subdir", 
+  "test_pcp_combine_wrapper.py::test_get_lowest_forecast_file_yesterday", 
+  "test_pcp_combine_wrapper.py::test_search_day", 
+  "test_pcp_combine_wrapper.py::test_find_closest_before_today", 
+  "test_pcp_combine_wrapper.py::test_find_closest_before_yesterday", 
+  "test_pcp_combine_wrapper.py::test_get_daily_file", 
+  "test_pcp_combine_wrapper.py::test_setup_add_method", 
+  "test_pcp_combine_wrapper.py::test_setup_sum_method", 
+  "test_pcp_combine_wrapper.py::test_setup_subtract_method"
+]

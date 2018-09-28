@@ -14,96 +14,50 @@ Condition codes: 0 for success, 1 for failure
 
 from __future__ import (print_function, division)
 
-import logging
 import os
-import sys
-import met_util as util
-import re
-import csv
-import subprocess
-from command_builder import CommandBuilder
+from compare_gridded_wrapper import CompareGriddedWrapper
 
-
-class ModeWrapper(CommandBuilder):
+class ModeWrapper(CompareGriddedWrapper):
 
     def __init__(self, p, logger):
         super(ModeWrapper, self).__init__(p, logger)
         self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                      'bin/mode')
         self.app_name = os.path.basename(self.app_path)
+        self.create_cg_dict()
 
-    def set_output_dir(self, outdir):
-        self.outdir = "-outdir "+outdir
 
-    def get_command(self):
-        if self.app_path is None:
-            self.logger.error(self.app_name + ": No app path specified. "\
-                              "You must use a subclass")
-            return None
+    def create_cg_dict(self):
+        self.cg_dict = dict()
+        self.cg_dict['LOOP_BY_INIT'] = self.p.getbool('config', 'LOOP_BY_INIT', True)
+        self.cg_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
+        self.cg_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL_TYPE')
+        self.cg_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE')
+        self.cg_dict['CONFIG_DIR'] = self.p.getdir('CONFIG_DIR')
+        self.cg_dict['CONFIG_FILE'] = self.p.getstr('config', 'MODE_CONFIG')
+        self.cg_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB')
+        self.cg_dict['OBS_INPUT_DIR'] = \
+          self.p.getdir('OBS_MODE_INPUT_DIR')
+        self.cg_dict['OBS_INPUT_TEMPLATE'] = \
+          self.p.getraw_interp('filename_template',
+                               'OBS_MODE_INPUT_TEMPLATE')
+        self.cg_dict['FCST_INPUT_DIR'] = \
+          self.p.getdir('FCST_MODE_INPUT_DIR')
+        self.cg_dict['FCST_INPUT_TEMPLATE'] = \
+          self.p.getraw_interp('filename_template',
+                               'FCST_MODE_INPUT_TEMPLATE')
+        self.cg_dict['OUTPUT_DIR'] = self.p.getdir('MODE_OUT_DIR')
+        self.cg_dict['INPUT_BASE'] = self.p.getdir('INPUT_BASE')
+        self.cg_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST')
+        self.cg_dict['FCST_INIT_INTERVAL']= self.p.getint('config', 'FCST_INIT_INTERVAL')
+        self.cg_dict['WINDOW_RANGE_BEG'] = \
+          self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
+        self.cg_dict['WINDOW_RANGE_END'] = \
+          self.p.getint('config', 'WINDOW_RANGE_END', 3600)
+        self.cg_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
+                                                              'OBS_EXACT_VALID_TIME',
+                                                              True)
 
-        cmd = self.app_path + " "
-        for a in self.args:
-            cmd += a + " "
 
-        if len(self.infiles) == 0:
-            self.logger.error(self.app_name+": No input filenames specified")
-            return None
-
-        for f in self.infiles:
-            cmd += f + " "
-
-        if self.param != "":
-            cmd += self.param + " "
-
-        if self.outdir == "":
-            self.logger.error(self.app_name+": No output directory specified")
-            return None
-
-        cmd += self.outdir
-        return cmd
-
-    def run_at_time(self, init_time, level, ob_type, fcst_var):
-        # TODO: Need to get model_path!
-        model_type = self.p.getstr('config', 'MODEL_TYPE')
-        obs_var = self.p.getstr('config', ob_type+"_VAR")
-        config_dir = self.p.getdir('CONFIG_DIR')
-
-        fcst_fields = list()
-        obs_fields = list()
-        for fcst_thresh in fcst_threshs:
-            fcst_fields.append("{ name=\"" + fcst_var + "\"; level=\"A" +
-                               level + "\";}")
-        for obs_thresh in obs_threshs:
-            obs_fields.append("{ name=\"" + obs_var + "_" + level +
-                              "\"; level=\"(*,*)\";}")
-
-        for idx, fcst in enumerate(fcst_fields):
-            self.add_input_file(model_path)
-            self.add_input_file(regrid_path)
-            self.set_param_file(self.p.getstr('config', 'MODE_CONFIG'))
-            self.set_output_dir(self.p.getdir('MODE_OUT_DIR'))
-            self.add_env_var("MODEL", model_type)
-            self.add_env_var("FCST_VAR", fcst_var)
-            self.add_env_var("OBS_VAR", obs_var)
-            self.add_env_var("ACCUM", level)
-            self.add_env_var("OBTYPE", ob_type)
-            self.add_env_var("CONFIG_DIR", config_dir)
-            self.add_env_var("FCST_FIELD", fcst)
-            self.add_env_var("OBS_FIELD", obs_fields[idx])
-            self.logger.debug("")
-            self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-            self.print_env_item("MODEL")
-            self.print_env_item("FCST_VAR")
-            self.print_env_item("OBS_VAR")
-            self.print_env_item("ACCUM")
-            self.print_env_item("OBTYPE")
-            self.print_env_item("CONFIG_DIR")
-            self.print_env_item("FCST_FIELD")
-            self.print_env_item("OBS_FIELD")
-            self.logger.info("")
-            cmd = run_mode.get_command()
-            if cmd is None:
-                print("ERROR: mode could not generate command")
-                continue
-            print("RUNNING: " + str(cmd))
-            self.build()
+if __name__ == "__main__":
+    util.run_stand_alone("mode_wrapper", "Mode")

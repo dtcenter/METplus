@@ -76,7 +76,7 @@ obs_var_level = os.environ['OBS_VAR_LEVEL']
 logging_filename = os.environ['LOGGING_FILENAME']
 logger = logging.getLogger(logging_filename)
 logger.setLevel("DEBUG")
-formatter = logging.Formatter('%(asctime)s : %(message)s')
+formatter = logging.Formatter("%(asctime)s.%(msecs)03d (%(filename)s:%(lineno)d) ""%(levelname)s: %(message)s","%m/%d %H:%M:%S")
 file_handler = logging.FileHandler(logging_filename, mode='a')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
@@ -192,7 +192,7 @@ while s <= nstats: #loop over statistics
                             model_date = datetime.datetime.strptime(model_now_stat_file_dates[d], dateformat)
                         elif date_filter_method == 'Initialization':
                             model_date = datetime.datetime.strptime(model_now_stat_file_dates[d], dateformat) - datetime.timedelta(hours=lead_int)
-                   model_now_dates_list.append(md.date2num(model_date))
+                        model_now_dates_list.append(md.date2num(model_date))
                    model_now_dates = np.asarray(model_now_dates_list)
                    #account for missing data
                    model_now_stat_now_dates_vals = np.zeros_like(dates)
@@ -270,4 +270,3 @@ while s <= nstats: #loop over statistics
      logger.debug("---- Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_f"+lead+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_"+grid+region+".png")
      plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_f"+lead+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_"+grid+region+".png", bbox_inches='tight')
      s+=1
-print(" ")

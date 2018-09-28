@@ -20,7 +20,7 @@ For Example:
     INIT_TIME_FMT = %Y%m%d
     INIT_BEG = 20141214
     INIT_END = 20141216
-    INIT_INC =  21600
+    INIT_INCREMENT =  21600
     #21600 sec (6hours) The increment in seconds in integer format
 
     # LOGGING
