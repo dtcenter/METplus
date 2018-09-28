@@ -32,7 +32,8 @@ from usage_wrapper import UsageWrapper
 from command_builder import CommandBuilder
 from tcmpr_plotter_wrapper import TCMPRPlotterWrapper
 # Keep cyclone_plotter commented out in repository. It requires cartopy
-# from cyclone_plotter_wrapper import CyclonePlotterWrapper
+# If cartopy is not present then master_metplus will error and exit.
+#from cyclone_plotter_wrapper import CyclonePlotterWrapper
 from pb2nc_wrapper import PB2NCWrapper
 from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TcStatWrapper

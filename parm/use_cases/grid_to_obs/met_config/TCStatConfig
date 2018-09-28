@@ -222,7 +222,7 @@ out_valid_mask = "";
 //
 // Array of TCStat analysis jobs to be performed on the filtered data
 //
-//jobs = ["-job filter -dump_row /d1/minnawin/feature87/output/tc_stat/tc_stat_filter_job_conf.tcst"];
+//jobs = ["-job filter -dump_row /d1/someuser/feature87/output/tc_stat/tc_stat_filter_job_conf.tcst"];
 jobs = ${JOBS};
 
 //
