@@ -539,7 +539,9 @@ Click on the 'releases' link, highlighted by a red circle in the diagram
 \begin_layout Standard
 \begin_inset Graphics
 	filename /tmp/metplus_repo_release.png
-	scale 50
+	lyxscale 60
+	scale 60
+	clip
 
 \end_inset
 
@@ -554,7 +556,8 @@ You will be redirected to another screen.
 \begin_layout Standard
 \begin_inset Graphics
 	filename /tmp/metplus_repo_releases_page.png
-	scale 50
+	lyxscale 70
+	scale 70
 
 \end_inset
 
