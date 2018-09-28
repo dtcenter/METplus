@@ -123,7 +123,7 @@ Daniel Adriaansen
 
 \series bold
 \shape italic
-1,2
+1
 \end_layout
 
 \end_inset
@@ -135,7 +135,7 @@ Daniel Adriaansen
 
 \series bold
 \shape italic
-1,2
+1,3
 \end_layout
 
 \end_inset
@@ -147,7 +147,7 @@ Daniel Adriaansen
 
 \series bold
 \shape italic
-1,3
+2,3
 \end_layout
 
 \end_inset
@@ -167,7 +167,7 @@ Julie Prestopnik
 
 \series bold
 \shape italic
-1,2
+1,3
 \end_layout
 
 \end_inset
@@ -191,7 +191,7 @@ Julie Prestopnik
 
 \series bold
 \shape italic
-1,2
+1,3
 \end_layout
 
 \end_inset
@@ -211,7 +211,7 @@ George McCabe
 
 \series bold
 \shape italic
-1,2
+1,3
 \end_layout
 
 \end_inset
@@ -223,7 +223,7 @@ George McCabe
 
 \series bold
 \shape italic
-1,2
+1,3
 \end_layout
 
 \end_inset
@@ -235,7 +235,7 @@ George McCabe
 
 \series bold
 \shape italic
-1,2
+1,3
 \end_layout
 
 \end_inset
@@ -255,7 +255,7 @@ George McCabe
 
 \series bold
 \shape italic
-1,2
+1
 \end_layout
 
 \end_inset
@@ -267,7 +267,7 @@ George McCabe
 
 \series bold
 \shape italic
-1,2
+1
 \end_layout
 
 \end_inset
@@ -296,26 +296,6 @@ George McCabe
 
 \end_inset
 
-Developmental Testbed Center
-\shape default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\shape italic
-
-\begin_inset script superscript
-
-\begin_layout Plain Layout
-
-\series bold
-\shape italic
-2
-\end_layout
-
-\end_inset
-
 National Center for Atmospheric Research
 \shape default
 ,
@@ -336,12 +316,15 @@ Research Applications Laboratory
 \begin_inset script superscript
 
 \begin_layout Plain Layout
-3
+
+\series bold
+\shape italic
+2
 \end_layout
 
 \end_inset
 
-Cooperative Institute for Research in the Atmosphere and 
+Cooperative Institute for Research in the Atmosphere at 
 \shape default
 
 \begin_inset Newline newline
@@ -351,7 +334,7 @@ Cooperative Institute for Research in the Atmosphere and
 \shape italic
 National Oceanic and Atmospheric Administration (NOAA)
 \shape default
-,
+
 \begin_inset Newline newline
 \end_inset
 
@@ -372,13 +355,33 @@ Earth System Research Laboratory
 
 \series bold
 \shape italic
+3
+\end_layout
+
+\end_inset
+
+Developmental Testbed Center
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\shape italic
+
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
 4
 \end_layout
 
 \end_inset
 
 I.M.
- Systems Group and
+ Systems Group at
 \shape default
 
 \begin_inset Newline newline
