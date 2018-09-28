@@ -371,7 +371,7 @@ Open the browser of your choice and navigate to https://github.com/NCAR/METplus.
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename /tmp/metplus_repo.png
+	filename metplus_repo.png
 	lyxscale 70
 	scale 70
 	rotateOrigin center
@@ -425,7 +425,7 @@ Download Zip
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename /tmp/download_metplus.png
+	filename download_metplus.png
 	lyxscale 70
 	scale 70
 
@@ -527,7 +527,7 @@ Open the browser of your choice and navigate to https://github.com/NCAR/METplus.
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename /tmp/metplus_repo.png
+	filename metplus_repo.png
 	lyxscale 70
 	scale 70
 	rotateOrigin center
@@ -544,7 +544,7 @@ Click on the 'releases' link, highlighted by a red circle in the diagram
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename /tmp/metplus_repo_release.png
+	filename metplus_repo_release.png
 	lyxscale 50
 	scale 50
 	clip
@@ -561,7 +561,7 @@ You will be redirected to another screen.
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename /tmp/metplus_repo_releases_page.png
+	filename metplus_repo_releases_page.png
 	lyxscale 50
 	scale 50
 
@@ -726,7 +726,7 @@ full-path-to-save-jlog-files
 \end_layout
 
 \begin_layout Itemize
-close your .cshrc file and run 
+Close your .cshrc file and run 
 \family typewriter
 source ~/.cshrc
 \end_layout
@@ -759,12 +759,11 @@ e.g.
 \end_layout
 
 \begin_layout Plain Layout
-set path = (other_path_entries /home/username/METplus/ush
+set path = (other_path_entries ~/METplus/ush
 \end_layout
 
 \begin_layout Plain Layout
-setenv PYTHONPATH /home/username/METplus/ush:/home/username/METplus/parm:$PYTHON
-PATH
+setenv PYTHONPATH ~/METplus/ush:~/METplus/parm:$PYTHONPATH
 \end_layout
 
 \begin_layout Plain Layout
@@ -772,7 +771,7 @@ PATH
 \end_layout
 
 \begin_layout Plain Layout
-setenv JLOGFILE /home/username/jlog_out
+setenv JLOGFILE ~/jlog_out
 \end_layout
 
 \end_inset
@@ -810,7 +809,7 @@ Optional: add a JLOGFILE environment variable and set it to the directory
 \end_layout
 
 \begin_layout Itemize
-close your .bashrc file and run 
+Close your .bashrc file and run 
 \family typewriter
 source ~/.bashrc
 \end_layout
@@ -841,7 +840,7 @@ e.g.
 \end_layout
 
 \begin_layout Plain Layout
-export PATH=/home/username/METplus/ush:$PATH
+export PATH=~/METplus/ush:$PATH
 \end_layout
 
 \begin_layout Plain Layout
@@ -849,7 +848,7 @@ export PYTHONPATH=
 \begin_inset Quotes erd
 \end_inset
 
-/home/username/METplus/ush:/home/username/METplus/parm:/$PYTHONPATH
+~/METplus/ush:~/METplus/parm:/$PYTHONPATH
 \begin_inset Quotes erd
 \end_inset
 
@@ -861,7 +860,7 @@ export PYTHONPATH=
 \end_layout
 
 \begin_layout Plain Layout
-export JLOGFILE=/home/username
+export JLOGFILE=~/
 \end_layout
 
 \end_inset
