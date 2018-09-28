@@ -371,7 +371,9 @@ Open the browser of your choice and navigate to https://github.com/NCAR/METplus.
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename C:/tmp/metplus_repo.png
+	filename /tmp/metplus_repo.png
+	lyxscale 70
+	scale 70
 	rotateOrigin center
 
 \end_inset
@@ -424,6 +426,8 @@ Download Zip
 \begin_layout Standard
 \begin_inset Graphics
 	filename /tmp/download_metplus.png
+	lyxscale 70
+	scale 70
 
 \end_inset
 
@@ -524,6 +528,8 @@ Open the browser of your choice and navigate to https://github.com/NCAR/METplus.
 \begin_layout Standard
 \begin_inset Graphics
 	filename /tmp/metplus_repo.png
+	lyxscale 70
+	scale 70
 	rotateOrigin center
 
 \end_inset
@@ -539,8 +545,8 @@ Click on the 'releases' link, highlighted by a red circle in the diagram
 \begin_layout Standard
 \begin_inset Graphics
 	filename /tmp/metplus_repo_release.png
-	lyxscale 60
-	scale 60
+	lyxscale 50
+	scale 50
 	clip
 
 \end_inset
@@ -556,8 +562,8 @@ You will be redirected to another screen.
 \begin_layout Standard
 \begin_inset Graphics
 	filename /tmp/metplus_repo_releases_page.png
-	lyxscale 70
-	scale 70
+	lyxscale 50
+	scale 50
 
 \end_inset
 
@@ -573,13 +579,13 @@ zip
 \shape italic
 tar.gz
 \shape default
-) and when promted, save to the directory you created.
+) and when prompted, save it to the directory you created.
 \end_layout
 
 \begin_layout Itemize
-Uncompress the source code (
+Uncompress the source code (on Linux/Unix
 \shape italic
-gunzip
+: gunzip
 \shape default
  for zip file or 
 \shape italic
@@ -874,29 +880,10 @@ There are four METplus configuration files that must be defined prior to
 metplus_config
 \end_layout
 
-\begin_layout Section
-Running METplus
-\end_layout
-
-\begin_layout Standard
-Running METplus involves invoking the Python script master_metplus.py from
- any directory followed by a list of configuration files (file path relative
- to the 
-\shape italic
-path_to_METplus_install_dir
-\shape default
-/METplus/parm directory).
-\end_layout
-
 \begin_layout Standard
 The following configuration files are automatically loaded during a METplus
  run and do not need to be invoked on the command line.
- They must to have all variables with values assigned to
-\shape italic
- /path/to's 
-\shape default
-replaced with valid path names, or have those variables defined in a down-stream
- config file:
+ 
 \end_layout
 
 \begin_layout Itemize
@@ -982,6 +969,33 @@ location of METplus parm directory
 
 \end_deeper
 \end_deeper
+\begin_layout Standard
+They must be fully defined by replacing all variables with 
+\shape italic
+/path/to's 
+\shape default
+with valid path names, or have those variables defined in a down-stream
+ config file.
+ If configuring METplus in a common location for multiple users, it is recommend
+ed that the these four configuration files are fully defined.
+ Individual users have the option to make customizations by over-riding
+ any of these values in their own configuration files.
+\end_layout
+
+\begin_layout Section
+Running METplus
+\end_layout
+
+\begin_layout Standard
+Running METplus involves invoking the Python script master_metplus.py from
+ any directory followed by a list of configuration files (file path relative
+ to the 
+\shape italic
+path_to_METplus_install_dir
+\shape default
+/METplus/parm directory).
+\end_layout
+
 \begin_layout Standard
 \begin_inset Box Boxed
 position "t"
