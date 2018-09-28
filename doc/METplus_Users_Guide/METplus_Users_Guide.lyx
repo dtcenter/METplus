@@ -135,7 +135,7 @@ Daniel Adriaansen
 
 \series bold
 \shape italic
-1,3
+1,4
 \end_layout
 
 \end_inset
@@ -147,7 +147,7 @@ Daniel Adriaansen
 
 \series bold
 \shape italic
-2,3
+2,4
 \end_layout
 
 \end_inset
@@ -167,7 +167,7 @@ Julie Prestopnik
 
 \series bold
 \shape italic
-1,3
+1,4
 \end_layout
 
 \end_inset
@@ -179,7 +179,7 @@ Julie Prestopnik
 
 \series bold
 \shape italic
-4
+3
 \end_layout
 
 \end_inset
@@ -191,7 +191,7 @@ Julie Prestopnik
 
 \series bold
 \shape italic
-1,3
+1,4
 \end_layout
 
 \end_inset
@@ -211,7 +211,7 @@ George McCabe
 
 \series bold
 \shape italic
-1,3
+1,4
 \end_layout
 
 \end_inset
@@ -223,7 +223,7 @@ George McCabe
 
 \series bold
 \shape italic
-1,3
+1,4
 \end_layout
 
 \end_inset
@@ -235,7 +235,7 @@ George McCabe
 
 \series bold
 \shape italic
-1,3
+1,4
 \end_layout
 
 \end_inset
@@ -360,7 +360,16 @@ Earth System Research Laboratory
 
 \end_inset
 
-Developmental Testbed Center
+I.M.
+ Systems Group at
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\shape italic
+NOAA Environmental Modeling Center
 \shape default
 
 \begin_inset Newline newline
@@ -380,16 +389,7 @@ Developmental Testbed Center
 
 \end_inset
 
-I.M.
- Systems Group at
-\shape default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\shape italic
-NOAA Environmental Modeling Center
+Developmental Testbed Center
 \shape default
 
 \begin_inset Newline newline
