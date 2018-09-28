@@ -115,40 +115,268 @@ Boulder, Colorado
 
 \series bold
 \shape italic
-Daniel Adriaansen, Minna Win-Gildenmeister, James Frimel,
-\shape default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\shape italic
-Julie Prestopnik, Mallory Row, John Halley Gotway, 
-\shape default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\shape italic
-George McCabe, Tara Jensen, Jonathan Vigh, 
-\shape default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\shape italic
- Christina Kalb, and Hank Fisher
+Christina Kalb, and Hank Fisher
 \shape default
  
+\shape italic
+Daniel Adriaansen
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+1
+\end_layout
+
+\end_inset
+
+, Minna Win-Gildenmeister
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+1,3
+\end_layout
+
+\end_inset
+
+, James Frimel
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+2,3
+\end_layout
+
+\end_inset
+
+,
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\shape italic
+Julie Prestopnik
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+1,3
+\end_layout
+
+\end_inset
+
+, Mallory Row
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+4
+\end_layout
+
+\end_inset
+
+, John Halley Gotway
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+1,3
+\end_layout
+
+\end_inset
+
+, 
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\shape italic
+George McCabe
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+1
+\end_layout
+
+\end_inset
+
+, Tara Jensen
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+1,3
+\end_layout
+
+\end_inset
+
+, Jonathan Vigh
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+1,3
+\end_layout
+
+\end_inset
+
+, 
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\shape italic
+ Christina Kalb
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+1
+\end_layout
+
+\end_inset
+
+, and Hank Fisher
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+\begin_inset VSpace 0.2in
+\end_inset
+
+
+\series bold
+\shape italic
+
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+1
+\end_layout
+
+\end_inset
+
+National Center for Atmospheric Research/Research Applications Laboratory
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\shape italic
+
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+2
+\end_layout
+
+\end_inset
+
+Cooperative Institute for Research in the Atmosphere and 
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\shape italic
+National Oceanic and Atmospheric Administration (NOAA)/Earth System Research
+ Laboratory
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\shape italic
+
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+3
+\end_layout
+
+\end_inset
+
+Developmental Testbed Center
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\shape italic
+
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\series bold
+\shape italic
+4
+\end_layout
+
+\end_inset
+
+I.M.
+ System Group and NOAA/Environmental Modeling Center
+\shape default
+
 \begin_inset Newline newline
 \end_inset
 
 
 \series default
 
-\begin_inset VSpace 1in
+\begin_inset VSpace 0.5in
 \end_inset
 
 
@@ -158,6 +386,10 @@ George McCabe, Tara Jensen, Jonathan Vigh,
 
 \series bold
 September 2018
+\end_layout
+
+\begin_layout Date
+
 \end_layout
 
 \begin_layout Standard
