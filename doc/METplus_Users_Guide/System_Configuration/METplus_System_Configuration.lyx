@@ -13861,7 +13861,10 @@ RP_DIFF
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+This corresponds to the optional -rp_diff flag of the plot_TCMPR.R script
+ (which is wrapped by tcmpr_plotter_wrapper.py).
+ This a comma-separated list of thresholds to specify meaningful differences
+ for the relative performance plot.
 \end_layout
 
 \begin_layout Standard
@@ -16579,7 +16582,7 @@ TC_STAT_INIT_HOUR
 \begin_inset Newline newline
 \end_inset
 
-...Some description here...
+The beginning hour (HH) of the initialization time of interest.
 \end_layout
 
 \begin_layout Standard
