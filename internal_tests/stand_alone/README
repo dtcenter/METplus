@@ -1,2 +1,3 @@
-These tests are simple tests that can be run without the pytest framework.  Originally designed to run for CROW sprint, in anticipation
-of a run-time host where pytest is not installed.
+These tests are simple tests that can be run without the pytest framework.  Originally designed to run for CROW sprint, 
+in anticipation of a run-time host where pytest is not installed.  Currently run manually, not part of any automation scheme.
+
