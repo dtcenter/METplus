@@ -37,3 +37,67 @@ def test_add_common_items_to_dictionary():
     dictionary = dict()
     util.add_common_items_to_dictionary(conf, dictionary)
     assert(dictionary['WGRIB2'] == conf.getexe('WGRIB2'))
+
+
+def test_threshold_gt():
+    thresh_list = {"gt2.3"}
+    assert(util.validate_thresholds(thresh_list))
+
+def test_threshold_ge():
+    thresh_list = {"ge2.3"}
+    assert(util.validate_thresholds(thresh_list))
+
+def test_threshold_eq():
+    thresh_list = {"eq2.3"}
+    assert(util.validate_thresholds(thresh_list))
+
+def test_threshold_ne():
+    thresh_list = {"ne2.3"}
+    assert(util.validate_thresholds(thresh_list))
+
+def test_threshold_lt():
+    thresh_list = {"lt2.3"}
+    assert(util.validate_thresholds(thresh_list))
+
+def test_threshold_le():
+    thresh_list = {"le2.3"}
+    assert(util.validate_thresholds(thresh_list))
+
+def test_threshold_gt_symbol():
+    thresh_list = {">2.3"}
+    assert(util.validate_thresholds(thresh_list))
+
+def test_threshold_ge_symbol():
+    thresh_list = {">=2.3"}
+    assert(util.validate_thresholds(thresh_list))
+
+def test_threshold_eq_symbol():
+    thresh_list = {"==2.3"}
+    assert(util.validate_thresholds(thresh_list))
+
+def test_threshold_ne_symbol():
+    thresh_list = {"!=2.3"}
+    assert(util.validate_thresholds(thresh_list))
+
+def test_threshold_lt_symbol():
+    thresh_list = {"<2.3"}
+    assert(util.validate_thresholds(thresh_list))
+
+def test_threshold_le_symbol():
+    thresh_list = {"<=2.3"}
+    assert(util.validate_thresholds(thresh_list))
+
+def test_threshold_gt_no_number():
+    thresh_list = {"gta"}
+    assert(util.validate_thresholds(thresh_list) == False)
+
+def test_threshold_just_number():
+    thresh_list = {"2.3"}
+    assert(util.validate_thresholds(thresh_list) == False)
+
+def test_threshold_only_one_fails():
+    thresh_list = {"<=2.3", "2.4", "gt2.7"}
+    assert(util.validate_thresholds(thresh_list) == False)
+
+
+    

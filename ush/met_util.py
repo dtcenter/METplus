@@ -1017,6 +1017,21 @@ class FieldObj(object):
     __slots__ = 'fcst_name', 'fcst_level', 'fcst_extra', 'fcst_thresh', \
                 'obs_name', 'obs_level', 'obs_extra', 'obs_thresh'
 
+
+def validate_thresholds(thresh_list):
+    # review threshold values to ensure they start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le
+    valid_comparisons = { ">", ">=", "==", "!=", "<", "<=", "gt", "ge", "eq", "ne", "lt", "le" }
+    for thresh in thresh_list:
+        valid = False
+        for comp in valid_comparisons:
+            if re.match(r'^'+comp+'\d', thresh) != None:
+                valid = True
+                break
+    if valid != True:
+        print("ERROR: Threshold values must start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt, or le")
+        return False;
+    return True        
+                
 def parse_var_list(p):
     """ read conf items and populate list of FieldObj containing
     information about each variable to be compared
@@ -1049,7 +1064,10 @@ def parse_var_list(p):
 
             fcst_thresh = ""
             if p.has_option('config', "FCST_VAR"+n+"_THRESH"):
-                fcst_thresh = getlistfloat(p.getstr('config', "FCST_VAR"+n+"_THRESH"))
+                fcst_thresh = getlist(p.getstr('config', "FCST_VAR"+n+"_THRESH"))
+                if validate_thresholds(fcst_thresh) == False:
+                    print("  Update FCST_VAR"+n+"_THRESH to match this format")
+                    exit(1)
 
             # if OBS_VARn_X does not exist, use FCST_VARn_X
             if p.has_option('config', "OBS_VAR"+n+"_NAME"):
@@ -1074,9 +1092,15 @@ def parse_var_list(p):
 
             # if OBS_VARn_THRESH does not exist, use FCST_VARn_THRESH
             if p.has_option('config', "OBS_VAR"+n+"_THRESH"):
-                obs_thresh = getlistfloat(getstr('config', "OBS_VAR"+n+"_THRESH"))
+                obs_thresh = getlist(p.getstr('config', "OBS_VAR"+n+"_THRESH"))
+                if validate_thresholds(obs_thresh) == False:
+                    print("  Update OBS_VAR"+n+"_THRESH to match this format")
+                    exit(1)
             else:
                 obs_thresh = fcst_thresh
+
+  
+
             for f,o in zip(fcst_levels, obs_levels):
                 fo = FieldObj()
                 fo.fcst_name = fcst_name
