@@ -9,8 +9,8 @@ Background and Future
 ---------------------
 
 METplus development began in 2016 with initial development for the cyclone-relative verification for the Stony Brook University (SBU) project.
-Development in 2017 will focus on replicating the Global Deterministic National Centers for Environmental Prediction (NCEP) Verification and
-future work will focus on ensemble, meso, and storm scale verification at NCEP and public support.
+Development in 2017 replicated the Global Deterministic National Centers for Environmental Prediction (NCEP) Verification. 
+Future work will focus on ensemble, meso, and storm scale verification at NCEP and providing public support.
 
 
 Dependencies
@@ -32,6 +32,8 @@ METplus was developed using Python version 2.7.9.  Python version 2.7 or greater
   - egrep utility
     - http://directory.fsf.org/wiki/Grep
   - rm, cut, tr utilities (standard on Linux)
+
+as these additional executables are needed to perform series analyses.
 
 
 Version Control
@@ -133,6 +135,33 @@ files, run the following from the command line:
 ================================================================================
 Release Notes
 ================================================================================
+
+
+2.0 Release Notes:
+=================
+2018 September 28:
+METplus v2.0 is available under the 'release' link of the GitHub repository.  
+The release contains the METplus user documentation and sample data for running
+the use cases.  Global grid-to-point (aka grid-to-obs) and grid-to-grid support 
+use cases have been added.  Additional code refactoring was done to
+address issues from the Beta release:
+
+
+What's New
+----------
+The following wrappers were added:
+- pb2nc
+- point_stat
+- grid-stat
+
+
+Improvements
+------------
+- clean up code inconsistencies in the METplus configuration files
+- remove hard-coded paths
+- remove deprecated code and configuration file entries
+
+
 Beta Release Notes:
 ------------------
 2017 October 20:
