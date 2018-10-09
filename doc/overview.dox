@@ -11,7 +11,9 @@ written entirely in Python.
 As of the beta release of METplus, the following MET applications have
 corresponding METplus "wrappers":
 - Grid-Stat
+- Point-Stat
 - PCP-Combine
+- PB2NC
 - MODE
 - Regrid-Data-Plane
 - Series-Analysis
