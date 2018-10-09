@@ -29,8 +29,24 @@ from command_builder import CommandBuilder
 class MakePlotsWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(MakePlotsWrapper, self).__init__(p, logger)
+        self.app_name = 'make_plots'
         if self.logger is None:
             self.logger = util.get_logger(self.p,sublog='MakePlots')
+
+    def parse_model_list(self):
+        model_list = []
+        all_conf = self.p.keys('config')
+        model_indices = []
+        regex = re.compile("MODEL(\d+)_NAME")
+        for conf in all_conf:
+            result = regex.match(conf)
+            if result is not None:
+                model_indices.append(result.group(1))
+        for m in model_indices:
+            if self.p.has_option('config', "MODEL"+m+"_NAME"):
+                model_name = self.p.getstr('config', "MODEL"+m+"_NAME")
+                model_list.append(model_name)
+        return model_list
 
     def grid2grid_pres_plots(self):
         self.logger.info("Making plots for grid2grid-pres")
@@ -69,11 +85,11 @@ class MakePlotsWrapper(CommandBuilder):
             util.rmtree(plotting_out_dir)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
-        model_list = self.p.getstr('config', 'MODEL_LIST')
+        model_names = self.parse_model_list()
+        self.add_env_var("MODEL_NAMES", ' '.join(model_names))
         plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
         self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
         self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
-        self.add_env_var("MODEL_LIST", model_list)
         self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
         #need to grab var info in special way that differs from util.parse_var_list
         #need variables with cooresponding list of levels; logic derived from util.parse_var_list
@@ -153,16 +169,16 @@ class MakePlotsWrapper(CommandBuilder):
                             py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_ts.py")
                             process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                             process.wait() 
-                        py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tp.py")
-                        process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                        process.wait()
-                    self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
-                    py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tsmean.py")
-                    process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                    process.wait()
-                    py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tpmean.py")
-                    process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                    process.wait()
+                        #py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tp.py")
+                        #process = subprocess.Popen(py_cmd, env=self.env, shell=True)
+                        #process.wait()
+                    #self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
+                    #py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tsmean.py")
+                    #process = subprocess.Popen(py_cmd, env=self.env, shell=True)
+                    #process.wait()
+                    #py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tpmean.py")
+                    #process = subprocess.Popen(py_cmd, env=self.env, shell=True)
+                    #process.wait()
             loop_hour += loop_inc
 
     def grid2grid_anom_plots(self):
@@ -202,11 +218,11 @@ class MakePlotsWrapper(CommandBuilder):
             util.rmtree(plotting_out_dir)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
-        model_list = self.p.getstr('config', 'MODEL_LIST')
+        model_names = self.parse_model_list()
+        self.add_env_var("MODEL_NAMES", ' '.join(model_names))
         plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
         self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
         self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
-        self.add_env_var("MODEL_LIST", model_list)
         self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
         #need to grab var info in special way that differs from util.parse_var_list
         #need variables with cooresponding list of levels; logic derived from util.parse_var_list
@@ -365,11 +381,11 @@ class MakePlotsWrapper(CommandBuilder):
             util.rmtree(plotting_out_dir)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
-        model_list = self.p.getstr('config', 'MODEL_LIST')
+        model_names = self.parse_model_list()
+        self.add_env_var("MODEL_NAMES", ' '.join(model_names))
         plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
         self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
         self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
-        self.add_env_var("MODEL_LIST", model_list)
         self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
         var_list = util.parse_var_list(self.p)
         loop_hour = loop_beg_hour
@@ -446,12 +462,12 @@ class MakePlotsWrapper(CommandBuilder):
         regrid_to_grid = self.p.getstr('config', 'REGRID_TO_GRID')
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
-        model_list = self.p.getstr('config', 'MODEL_LIST')
+        model_names = self.parse_model_list()
+        self.add_env_var("MODEL_NAMES", ' '.join(model_names))
         plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
         self.add_env_var("REGRID_TO_GRID", regrid_to_grid)
         self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
         self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
-        self.add_env_var("MODEL_LIST", model_list)
         self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
         #need to grab var info in special way that differs from util.parse_var_list
         #need variables with cooresponding list of levels; logic derived from util.parse_var_list
@@ -585,12 +601,12 @@ class MakePlotsWrapper(CommandBuilder):
         regrid_to_grid = self.p.getstr('config', 'REGRID_TO_GRID')
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
-        model_list = self.p.getstr('config', 'MODEL_LIST')
+        model_names = self.parse_model_list()
+        self.add_env_var("MODEL_NAMES", ' '.join(model_names))
         plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
         self.add_env_var("REGRID_TO_GRID", regrid_to_grid)
         self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
         self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
-        self.add_env_var("MODEL_LIST", model_list)
         self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
         var_list = util.parse_var_list(self.p)
         loop_hour = loop_beg_hour

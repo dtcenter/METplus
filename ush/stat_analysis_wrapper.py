@@ -192,6 +192,30 @@ class StatAnalysisWrapper(CommandBuilder):
             self.clear()
             loop_hour += loop_inc
 
+    class FieldObj(object):
+        __slots__ = 'name', 'dir'
+
+    def parse_model_list(self):
+        model_list = []
+        all_conf = self.p.keys('config')
+        model_indices = []
+        regex = re.compile("MODEL(\d+)_NAME")
+        for conf in all_conf:
+            result = regex.match(conf)
+            if result is not None:
+                model_indices.append(result.group(1))
+        for m in model_indices:
+            if self.p.has_option('config', "MODEL"+m+"_NAME"):
+                model_name = self.p.getstr('config', "MODEL"+m+"_NAME")
+                model_dir = ""
+                if self.p.has_option('config', "MODEL"+m+"_STAT_DIR"):
+                    model_dir = self.p.getstr('config', "MODEL"+m+"_STAT_DIR")
+            mod = self.FieldObj()
+            mod.name = model_name
+            mod.dir = model_dir
+            model_list.append(mod)
+        return model_list
+
     def grid2grid_pres_plot_format(self):
         self.logger.info("Formatting for plotting for grid2grid-pres")
         #read config
@@ -210,12 +234,12 @@ class StatAnalysisWrapper(CommandBuilder):
             self.add_env_var("FCST_VALID_END", end_t)
             self.add_env_var("FCST_INIT_BEG", "")
             self.add_env_var("FCST_INIT_END", "")
-        stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
+        #stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
         stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
-        model_list = util.getlist(self.p.getstr('config', 'MODEL_LIST'))  
+        model_list = self.parse_model_list()
         self.add_env_var('INTERP', 'NEAREST')
         if use_init:
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
@@ -247,9 +271,11 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.add_env_var("FCST_INIT_BEG", "")
                 self.add_env_var("FCST_INIT_END", "")
                 self.add_env_var("FCST_INIT_HOUR", "")
-            for model in model_list:
+            for model_info in model_list:
+                model = model_info.name
                 self.add_env_var('MODEL', model)
                 #build -lookin directory
+                stat_analysis_lookin_dir = model_info.dir
                 self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, loop_hour_str+'Z', model))
                 for var_info in var_list:
                     fcst_var_name = var_info.fcst_name
@@ -324,7 +350,7 @@ class StatAnalysisWrapper(CommandBuilder):
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
-        model_list = util.getlist(self.p.getstr('config', 'MODEL_LIST'))
+        model_list = self.parse_model_list()
         if use_init:
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
             loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
@@ -355,9 +381,11 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.add_env_var("FCST_INIT_BEG", "")
                 self.add_env_var("FCST_INIT_END", "")
                 self.add_env_var("FCST_INIT_HOUR", "")
-            for model in model_list:
+            for model_info in model_list:
+                model = model_info.name
                 self.add_env_var('MODEL', model)
                 #build -lookin directory
+                stat_analysis_lookin_dir = model_info.dir
                 self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, loop_hour_str+'Z', model))
                 for var_info in var_list:
                     fcst_var_name = var_info.fcst_name
@@ -462,7 +490,7 @@ class StatAnalysisWrapper(CommandBuilder):
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
-        model_list = util.getlist(self.p.getstr('config', 'MODEL_LIST'))
+        model_list = self.parse_model_list()
         self.add_env_var('INTERP', 'NEAREST')
         if use_init:
             loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
@@ -494,9 +522,11 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.add_env_var("FCST_INIT_BEG", "")
                 self.add_env_var("FCST_INIT_END", "")
                 self.add_env_var("FCST_INIT_HOUR", "")
-            for model in model_list:
+            for model_info in model_list:
+                model = model_info.name
                 self.add_env_var('MODEL', model)
                 #build -lookin directory
+                stat_analysis_lookin_dir = model_info.dir
                 self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, loop_hour_str+'Z', model))
                 for var_info in var_list:
                     fcst_var_name = var_info.fcst_name
@@ -556,7 +586,7 @@ class StatAnalysisWrapper(CommandBuilder):
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
-        model_list = util.getlist(self.p.getstr('config', 'MODEL_LIST'))
+        model_list = self.get_model_list()
         self.add_env_var('INTERP', 'BILIN')
         if use_init:
             init_beg_hour = self.p.getstr('config', 'INIT_BEG_HOUR')
@@ -592,9 +622,11 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.add_env_var("FCST_INIT_BEG", "")
                 self.add_env_var("FCST_INIT_END", "")
                 self.add_env_var("FCST_INIT_HOUR", '"'+loop_hour_str+'"')
-            for model in model_list:
+            for model_info in model_list:
+                model = model_info.name
                 self.add_env_var('MODEL', model)
                 #build -lookin directory
+                stat_analysis_lookin_dir = model_info.dir
                 self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, loop_hour_str+'Z', model))
                 for var_info in var_list:
                     fcst_var_name = var_info.fcst_name
@@ -654,7 +686,7 @@ class StatAnalysisWrapper(CommandBuilder):
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
-        model_list = util.getlist(self.p.getstr('config', 'MODEL_LIST'))
+        model_list = self.parse_model_list()
         self.add_env_var('INTERP', 'BILIN')
         if use_init:
             init_beg_hour = self.p.getstr('config', 'INIT_BEG_HOUR')
@@ -690,9 +722,11 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.add_env_var("FCST_INIT_BEG", "")
                 self.add_env_var("FCST_INIT_END", "")
                 self.add_env_var("FCST_INIT_HOUR", '"'+loop_hour_str+'"')
-            for model in model_list:
+            for model_info in model_list:
+                model = model_info.name
                 self.add_env_var('MODEL', model)
                 #build -lookin directory
+                stat_analysis_lookin_dir = model_info.dir
                 self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, loop_hour_str+'Z', model))
                 for var_info in var_list:
                     fcst_var_name = var_info.fcst_name
