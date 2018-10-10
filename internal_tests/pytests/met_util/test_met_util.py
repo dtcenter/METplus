@@ -40,11 +40,11 @@ def test_add_common_items_to_dictionary():
 
 
 def test_threshold_gt():
-    thresh_list = {"gt2.3"}
+    thresh_list = {"gt2.3", "gt5.5"}
     assert(util.validate_thresholds(thresh_list))
 
 def test_threshold_ge():
-    thresh_list = {"ge2.3"}
+    thresh_list = {"ge2.3", "ge5.5"}
     assert(util.validate_thresholds(thresh_list))
 
 def test_threshold_eq():
@@ -56,19 +56,19 @@ def test_threshold_ne():
     assert(util.validate_thresholds(thresh_list))
 
 def test_threshold_lt():
-    thresh_list = {"lt2.3"}
+    thresh_list = {"lt2.3", "lt1.1"}
     assert(util.validate_thresholds(thresh_list))
 
 def test_threshold_le():
-    thresh_list = {"le2.3"}
+    thresh_list = {"le2.3", "le1.1"}
     assert(util.validate_thresholds(thresh_list))
 
 def test_threshold_gt_symbol():
-    thresh_list = {">2.3"}
+    thresh_list = {">2.3", ">5.5"}
     assert(util.validate_thresholds(thresh_list))
 
 def test_threshold_ge_symbol():
-    thresh_list = {">=2.3"}
+    thresh_list = {">=2.3", ">=5.5"}
     assert(util.validate_thresholds(thresh_list))
 
 def test_threshold_eq_symbol():
@@ -80,15 +80,19 @@ def test_threshold_ne_symbol():
     assert(util.validate_thresholds(thresh_list))
 
 def test_threshold_lt_symbol():
-    thresh_list = {"<2.3"}
+    thresh_list = {"<2.3", "<1.1"}
     assert(util.validate_thresholds(thresh_list))
 
 def test_threshold_le_symbol():
-    thresh_list = {"<=2.3"}
+    thresh_list = {"<=2.3", "<=1.1"}
     assert(util.validate_thresholds(thresh_list))
 
 def test_threshold_gt_no_number():
     thresh_list = {"gta"}
+    assert(util.validate_thresholds(thresh_list) == False)
+
+def test_threshold_ge_symbol_no_number():
+    thresh_list = {">=a"}
     assert(util.validate_thresholds(thresh_list) == False)
 
 def test_threshold_just_number():
