@@ -1355,7 +1355,7 @@ def getraw_interp(p, sec, opt):
             var_name = in_template[start_idx+1:i]
             var = None
             if p.has_option(sec,var_name):
-                var = p.getstr(sec,name)
+                var = p.getstr(sec,var_name)
             elif p.has_option('config',var_name):
                 var = p.getstr('config',var_name)
             elif p.has_option('dir',var_name):
