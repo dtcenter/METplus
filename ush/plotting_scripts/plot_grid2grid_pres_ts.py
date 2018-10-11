@@ -11,10 +11,6 @@ Output Files: .png images
 Condition codes: 0 for success, 1 for failure
 '''
 ############################################################################
-## To Do
-## stat_now -> stat_formal_now (RMSE -> Root Mean Square Error, ACC -> Anomaly Correlation Coeiffcent)
-## for CI use ndays, number of non NaNs in array?
-############################################################################
 ##### Import python modules
 from __future__ import (print_function, division)
 import os
@@ -62,10 +58,11 @@ sd = datetime.datetime(syear, smon, sday, cycle_int)
 ed = datetime.datetime(eyear, emon, eday, cycle_int)+datetime.timedelta(days=1)
 tdelta = datetime.timedelta(days=1)
 dates = md.drange(sd, ed, tdelta)
-ndays = len(dates)
+total_days = len(dates)
 date_filter_method = os.environ['DATE_FILTER_METHOD']
 #input info
-stat_files_input_dir = os.environ['STAT_FILES_INPUT_DIR']
+stat_files_input_dir_base = os.environ['STAT_FILES_INPUT_DIR']
+stat_files_input_dir = os.path.join(stat_files_input_dir_base, "pres")
 model_names = os.environ['MODEL_NAMES'].replace(" ", ",").split(",")
 nmodels = len(model_names)
 cycle = os.environ['CYCLE']
@@ -78,7 +75,7 @@ fcst_var_name = os.environ['FCST_VAR_NAME']
 fcst_var_level = os.environ['FCST_VAR_LEVEL']
 obs_var_name = os.environ['OBS_VAR_NAME']
 obs_var_level = os.environ['OBS_VAR_LEVEL']
-event_equalization = False
+event_equalization = True
 ci_method = "EMC"
 #ouput info
 logging_filename = os.environ['LOGGING_FILENAME']
@@ -90,7 +87,8 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 ch = logging.StreamHandler()
 logger.addHandler(ch)
-plotting_out_dir = os.environ['PLOTTING_OUT_DIR']
+plotting_out_dir_base = os.environ['PLOTTING_OUT_DIR']
+plotting_out_dir = os.path.join(plotting_out_dir_base, "pres")
 ####################################################################
 logger.info("------> Running "+os.path.realpath(__file__))
 logger.debug("----- with "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z lead:"+lead+" region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
@@ -126,16 +124,16 @@ while m <= nmodels: #loop over models
             if data_line_type == 'SL1L2':
                 #if create partial sum data arrays for all models and all dates, if not created yet
                 if create_data_arrays:
-                    fbar_models_dates = np.full([nmodels,ndays], np.nan)
-                    obar_models_dates = np.full([nmodels,ndays], np.nan)
-                    fobar_models_dates = np.full([nmodels,ndays], np.nan)
-                    ffbar_models_dates = np.full([nmodels,ndays], np.nan)
-                    oobar_models_dates = np.full([nmodels,ndays], np.nan)
+                    fbar_models_dates = np.full([nmodels,total_days], np.nan)
+                    obar_models_dates = np.full([nmodels,total_days], np.nan)
+                    fobar_models_dates = np.full([nmodels,total_days], np.nan)
+                    ffbar_models_dates = np.full([nmodels,total_days], np.nan)
+                    oobar_models_dates = np.full([nmodels,total_days], np.nan)
                     create_data_arrays = False
                 #read data for current model
                 #check for any missing data in current model from requested date span,
                 #arrange data in chronological order, and put in array
-                for d in range(ndays):
+                for d in range(total_days):
                     dd = np.where(model_now_dates_formatted == dates[d])[0]
                     if len(dd) == 1:
                         fbar_models_dates[m-1, d] = model_now_data.loc[dd[0]]['A']
@@ -146,18 +144,18 @@ while m <= nmodels: #loop over models
             elif data_line_type == 'VL1L2':
                 #if first model, initialize partial sum data arrays for all models and all dates
                 if create_data_arrays:
-                    ufbar_models_dates = np.full([nmodels,ndays], np.nan)
-                    vfbar_models_dates = np.full([nmodels,ndays], np.nan)
-                    uobar_models_dates = np.full([nmodels,ndays], np.nan)
-                    vobar_models_dates = np.full([nmodels,ndays], np.nan)
-                    uvfobar_models_dates = np.full([nmodels,ndays], np.nan)
-                    uvffbar_models_dates = np.full([nmodels,ndays], np.nan)
-                    uvoobar_models_dates = np.full([nmodels,ndays], np.nan)
+                    ufbar_models_dates = np.full([nmodels,total_days], np.nan)
+                    vfbar_models_dates = np.full([nmodels,total_days], np.nan)
+                    uobar_models_dates = np.full([nmodels,total_days], np.nan)
+                    vobar_models_dates = np.full([nmodels,total_days], np.nan)
+                    uvfobar_models_dates = np.full([nmodels,total_days], np.nan)
+                    uvffbar_models_dates = np.full([nmodels,total_days], np.nan)
+                    uvoobar_models_dates = np.full([nmodels,total_days], np.nan)
                     create_data_arrays = False
                 #read data for current model
                 #check for any missing data in current model from requested date span,
                 #arrange data in chronological order, and put in array
-                for d in range(ndays):
+                for d in range(total_days):
                     dd = np.where(model_now_dates_formatted == dates[d])[0]
                     if len(dd) == 1:
                         ufbar_models_dates[m-1, d] = model_now_data.loc[dd[0]]['A']
@@ -175,6 +173,7 @@ logger.info("---- Calculating and plotting statistics")
 s=1
 while s <= nstats: #loop over statistics
     stat_now = plot_stats_list[s-1]
+    stat_formal_name_now = pd.get_stat_formal_name(stat_now)
     logger.debug("--- "+stat_now)
     if data_line_type == 'SL1L2':
         if stat_now == 'bias':
@@ -259,17 +258,7 @@ while s <= nstats: #loop over statistics
             else:
                 if ci_method == "EMC":
                     logger.debug("Calculating confidence intervals using EMC method")
-                    model_now_model1_diff = model_now_stat_now_vals-model1_stat_now_vals
-                    model_now_model1_diff_mean = model_now_model1_diff.mean()
-                    model_now_model1_std = np.sqrt(((model_now_stat_now_vals-model1_stat_now_vals-model_now_model1_diff_mean)*(model_now_stat_now_vals-model1_stat_now_vals-model_now_model1_diff_mean)).mean())
-                    if ndays >= 80:
-                        model_now_model1_intvl = 1.960*model_now_model1_std/np.sqrt(ndays-1)
-                    elif ndays >= 40 and ndays < 80:
-                        model_now_model1_intvl = 2.000*model_now_model1_std/np.sqrt(ndays-1)
-                    elif ndays >= 20 and ndays < 40:
-                        model_now_model1_intvl = 2.042*model_now_model1_std/np.sqrt(ndays-1)
-                    elif ndays < 20:
-                        model_now_model1_intvl = 2.228*model_now_model1_std/np.sqrt(ndays-1)
+                    model_now_model1_intvl = pd.cintvl_emc(model1_stat_now_vals, model_now_stat_now_vals, total_days)
                 elif ci_method == "NCAR":
                     logger.warning("NCAR method not set up yet, setting as NaN")
                     model_now_model1_intvl = np.nan
@@ -312,7 +301,7 @@ while s <= nstats: #loop over statistics
         ax.plot_date(dates,model_now_stat_now_vals, color=colors[m-1], ls='-', linewidth=2.0, marker='o', markersize=7, label=model_now+' '+str(round(model_now_stat_now_vals.mean(),2))+' '+str(vals_count))
         m+=1
     ax.legend(bbox_to_anchor=(1.025, 1.0, 0.375, 0.0), loc='upper right', ncol=1, fontsize='13', mode="expand", borderaxespad=0.)
-    ax.set_title("Fcst: "+fcst_var_name+"_"+fcst_var_level+" Obs: "+obs_var_name+"_"+obs_var_level+" "+str(stat_now)+'\n'+grid+"-"+region+" "+date_filter_method+" "+cycle+"Z "+str(sday)+smonth+str(syear)+"-"+str(eday)+emonth+str(eyear)+" f"+lead+"\n", fontsize=14, fontweight='bold')
+    ax.set_title("Fcst: "+fcst_var_name+"_"+fcst_var_level+" Obs: "+obs_var_name+"_"+obs_var_level+" "+str(stat_formal_name_now)+'\n'+grid+"-"+region+" "+date_filter_method+" "+cycle+"Z "+str(sday)+smonth+str(syear)+"-"+str(eday)+emonth+str(eyear)+" f"+lead+"\n", fontsize=14, fontweight='bold')
     logger.debug("Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_f"+lead+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_"+grid+region+".png")
     plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_f"+lead+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_"+grid+region+".png", bbox_inches='tight')
     s+=1
