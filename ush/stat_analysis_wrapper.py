@@ -93,12 +93,13 @@ class StatAnalysisWrapper(CommandBuilder):
         #build -lookin directory
         self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, filter_time, "grid_stat"))
         #save output like VSDB
+        verif_type = self.p.getstr('config', "VERIF_TYPE")
         if not os.path.exists(os.path.join(stat_analysis_out_dir,
-                              cycle+"Z", model_type)):
+                              verif_type ,cycle+"Z", model_type)):
            os.makedirs(os.path.join(stat_analysis_out_dir,
-                                        cycle+"Z", model_type))
+                                    verif_type, cycle+"Z", model_type))
         dump_row_file = os.path.join(stat_analysis_out_dir,
-                                     cycle+"Z", model_type, model_type+"_"+date_YYYYMMDD+".stat")
+                                     verif_type, cycle+"Z", model_type, model_type+"_"+date_YYYYMMDD+".stat")
         job = "-job filter -dump_row "+dump_row_file
         self.add_env_var("JOB", job)
         #get stat_analysis config file
@@ -166,12 +167,13 @@ class StatAnalysisWrapper(CommandBuilder):
             #build -lookin directory
             self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir))
             #save output like VSDB
+            verif_type = self.p.getstr('config', "VERIF_TYPE")
             if not os.path.exists(os.path.join(stat_analysis_out_dir,
-                                  loop_hour_str+"Z", model_type)):
+                                  verif_type, loop_hour_str+"Z", model_type)):
                os.makedirs(os.path.join(stat_analysis_out_dir,
-                                            loop_hour_str+"Z", model_type))
+                                        verif_type, loop_hour_str+"Z", model_type))
             dump_row_file = os.path.join(stat_analysis_out_dir,
-                                         loop_hour_str+"Z", model_type, model_type+"_"+date_YYYYMMDD+".stat")
+                                         verif_type, loop_hour_str+"Z", model_type, model_type+"_"+date_YYYYMMDD+".stat")
             job = "-job filter -dump_row "+dump_row_file
             self.add_env_var("JOB", job)
             #get stat_analysis config file
@@ -276,7 +278,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.add_env_var('MODEL', model)
                 #build -lookin directory
                 stat_analysis_lookin_dir = model_info.dir
-                self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, loop_hour_str+'Z', model))
+                self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, 'pres', loop_hour_str+'Z', model))
                 for var_info in var_list:
                     fcst_var_name = var_info.fcst_name
                     fcst_var_level = var_info.fcst_level
@@ -297,15 +299,11 @@ class StatAnalysisWrapper(CommandBuilder):
                                 lead_string = str(lead)
                             self.add_env_var('LEAD', lead_string)
                             if not os.path.exists(os.path.join(stat_analysis_out_dir,
-                                                  loop_hour_str+"Z", model, region)):
+                                                  'pres', loop_hour_str+"Z", model, region)):
                                os.makedirs(os.path.join(stat_analysis_out_dir,
-                                           loop_hour_str+"Z", model, region))
-                            ##dump_row_file = os.path.join(stat_analysis_out_dir,
-                            ##                             loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_"+fcst_var_name+fcst_var_level+".stat")
+                                           'pres', loop_hour_str+"Z", model, region))
                             dump_row_file = os.path.join(stat_analysis_out_dir,
-                                                         loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+".stat")
-                            ##dump_row_file = os.path.join(stat_analysis_out_dir,
-                            ##                             loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+"_obs"+obs_var_name+obs_var_level+obs_var_extra+".stat")
+                                                         'pres', loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+".stat")
                             job = "-job filter -dump_row "+dump_row_file
                             self.add_env_var("JOB", job)
                             #get stat_analysis config file
@@ -386,7 +384,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.add_env_var('MODEL', model)
                 #build -lookin directory
                 stat_analysis_lookin_dir = model_info.dir
-                self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, loop_hour_str+'Z', model))
+                self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, 'anom', loop_hour_str+'Z', model))
                 for var_info in var_list:
                     fcst_var_name = var_info.fcst_name
                     fcst_var_level = var_info.fcst_level
@@ -427,25 +425,17 @@ class StatAnalysisWrapper(CommandBuilder):
                                 lead_string = str(lead)
                             self.add_env_var('LEAD', lead_string)
                             if not os.path.exists(os.path.join(stat_analysis_out_dir,
-                                                  loop_hour_str+"Z", model, region)):
+                                                  'anom', loop_hour_str+"Z", model, region)):
                                os.makedirs(os.path.join(stat_analysis_out_dir,
-                                           loop_hour_str+"Z", model, region))
+                                           'anom', loop_hour_str+"Z", model, region))
                             for im in interp_mthd:
                                 self.add_env_var('INTERP', im)    
                                 if im == "NEAREST":                             
-                                    ##dump_row_file = os.path.join(stat_analysis_out_dir,
-                                    ##                             loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_"+fcst_var_name+fcst_var_level+".stat")
                                     dump_row_file = os.path.join(stat_analysis_out_dir,
-                                                                 loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+".stat")
-                                    ##dump_row_file = os.path.join(stat_analysis_out_dir,
-                                    ##                             loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+"_obs"+obs_var_name+obs_var_level+obs_var_extra+".stat")
+                                                                 'anom', loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+".stat")
                                 else: 
-                                    ##dump_row_file = os.path.join(stat_analysis_out_dir,
-                                    ##                             loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_"+fcst_var_name+fcst_var_level+".stat")
                                     dump_row_file = os.path.join(stat_analysis_out_dir,
-                                                                 loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_"+im+".stat")
-                                    ##dump_row_file = os.path.join(stat_analysis_out_dir,
-                                    ##                             loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+"_obs"+obs_var_name+obs_var_level+obs_var_extra+"_"+im+".stat")
+                                                                 'anom', loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_"+im+".stat")
                                 job = "-job filter -dump_row "+dump_row_file
                                 self.add_env_var("JOB", job)
                                 #get stat_analysis config file
@@ -527,7 +517,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.add_env_var('MODEL', model)
                 #build -lookin directory
                 stat_analysis_lookin_dir = model_info.dir
-                self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, loop_hour_str+'Z', model))
+                self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, 'sfc', loop_hour_str+'Z', model))
                 for var_info in var_list:
                     fcst_var_name = var_info.fcst_name
                     fcst_var_level = var_info.fcst_level
@@ -548,15 +538,11 @@ class StatAnalysisWrapper(CommandBuilder):
                                 lead_string = str(lead)
                             self.add_env_var('LEAD', lead_string)
                             if not os.path.exists(os.path.join(stat_analysis_out_dir,
-                                                  loop_hour_str+"Z", model, region)):
+                                                  'sfc', loop_hour_str+"Z", model, region)):
                                os.makedirs(os.path.join(stat_analysis_out_dir,
-                                           loop_hour_str+"Z", model, region))
-                            ##dump_row_file = os.path.join(stat_analysis_out_dir,
-                            ##                             loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_"+fcst_var_name+fcst_var_level+".stat")
+                                           'sfc', loop_hour_str+"Z", model, region))
                             dump_row_file = os.path.join(stat_analysis_out_dir,
-                                                         loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+".stat")
-                            ##dump_row_file = os.path.join(stat_analysis_out_dir,
-                            ##                             loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+"_obs"+obs_var_name+obs_var_level+obs_var_extra+".stat")
+                                                         'sfc', loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+".stat")
                             job = "-job filter -dump_row "+dump_row_file
                             self.add_env_var("JOB", job)
                             #get stat_analysis config file
@@ -627,7 +613,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.add_env_var('MODEL', model)
                 #build -lookin directory
                 stat_analysis_lookin_dir = model_info.dir
-                self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, loop_hour_str+'Z', model))
+                self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, 'upper_air', loop_hour_str+'Z', model))
                 for var_info in var_list:
                     fcst_var_name = var_info.fcst_name
                     fcst_var_level = var_info.fcst_level
@@ -651,12 +637,8 @@ class StatAnalysisWrapper(CommandBuilder):
                                                   loop_hour_str+"Z", model, region)):
                                os.makedirs(os.path.join(stat_analysis_out_dir,
                                            loop_hour_str+"Z", model, region))
-                            ##dump_row_file = os.path.join(stat_analysis_out_dir,
-                            ##                             loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_"+fcst_var_name+fcst_var_level+".stat")
                             dump_row_file = os.path.join(stat_analysis_out_dir,
-                                                         loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+".stat")
-                            ##dump_row_file = os.path.join(stat_analysis_out_dir,
-                            ##                             loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+"_obs"+obs_var_name+obs_var_level+obs_var_extra+".stat")
+                                                         'upper_air', loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+".stat")
                             job = "-job filter -dump_row "+dump_row_file
                             self.add_env_var("JOB", job)
                             #get stat_analysis config file
@@ -727,7 +709,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.add_env_var('MODEL', model)
                 #build -lookin directory
                 stat_analysis_lookin_dir = model_info.dir
-                self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, loop_hour_str+'Z', model))
+                self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, 'conus_sfc', loop_hour_str+'Z', model))
                 for var_info in var_list:
                     fcst_var_name = var_info.fcst_name
                     fcst_var_level = var_info.fcst_level
@@ -751,12 +733,8 @@ class StatAnalysisWrapper(CommandBuilder):
                                                   loop_hour_str+"Z", model, region)):
                                os.makedirs(os.path.join(stat_analysis_out_dir,
                                            loop_hour_str+"Z", model, region))
-                            ##dump_row_file = os.path.join(stat_analysis_out_dir,
-                            ##                             loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_"+fcst_var_name+fcst_var_level+".stat")
                             dump_row_file = os.path.join(stat_analysis_out_dir,
-                                                         loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+".stat")
-                            ##dump_row_file = os.path.join(stat_analysis_out_dir,
-                            ##                             loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+"_obs"+obs_var_name+obs_var_level+obs_var_extra+".stat")
+                                                         'conus_sfc', loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+".stat")
                             job = "-job filter -dump_row "+dump_row_file
                             self.add_env_var("JOB", job)
                             #get stat_analysis config file
