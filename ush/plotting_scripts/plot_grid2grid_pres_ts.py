@@ -294,7 +294,7 @@ while s <= nstats: #loop over statistics
                 ax.xaxis.set_major_formatter(md.DateFormatter('%b%Y'))
                 ax.xaxis.set_minor_locator(md.DayLocator())
             ax.tick_params(axis='y', pad=15)
-            ax.set_ylabel(stat_now)
+            ax.set_ylabel(stat_formal_name_now)
             #ax.set_ylim()
         masked_count = np.ma.count_masked(model_now_stat_now_vals)
         vals_count = len(model_now_stat_now_vals) - masked_count
