@@ -261,7 +261,7 @@ that reformat gridded data
             fcst_threshs = v.fcst_thresh
             fcst_cat_thresh = "cat_thresh=[ "
             for fcst_thresh in fcst_threshs:
-                fcst_cat_thresh += "gt"+str(fcst_thresh)+", "
+                fcst_cat_thresh += str(fcst_thresh)+", "
             fcst_cat_thresh = fcst_cat_thresh[0:-2]+" ];"
             
         obs_cat_thresh = ""
@@ -270,7 +270,7 @@ that reformat gridded data
             obs_threshs = v.obs_thresh
             obs_cat_thresh = "cat_thresh=[ "
             for obs_thresh in obs_threshs:
-                obs_cat_thresh += "gt"+str(obs_thresh)+", "
+                obs_cat_thresh += str(obs_thresh)+", "
             obs_cat_thresh = obs_cat_thresh[0:-2]+" ];"
 
         if len(fcst_threshs) != len(obs_threshs):
@@ -286,13 +286,22 @@ that reformat gridded data
 # TODO: change PROB mode to put all cat thresh values in 1 item        
         if self.cg_dict['FCST_IS_PROB']:
             for fcst_thresh in fcst_threshs:
+                thresh_str = ""
+                comparison = util.get_comparison_from_threshold(fcst_thresh)
+                number = util.get_number_from_threshold(fcst_thresh)
+                if comparison in ["gt", "ge", ">", ">=" ]:
+                    thresh_str += "thresh_lo="+str(number)+";"
+                elif comparison in ["lt", "le", "<", "<=" ]:
+                    thresh_str += "thresh_hi="+str(number)+";"
+
+                thresh = util.get_number_from_threshold(fcst_thresh)
                 fcst_field += "{ name=\"PROB\"; level=\""+fcst_level_type + \
                               fcst_level.zfill(2) + "\"; prob={ name=\"" + \
                               v.fcst_name + \
-                              "\"; thresh_lo="+str(fcst_thresh)+"; } },"
+                              "\"; "+thresh_str+" } },"
             for obs_thresh in obs_threshs:
                 obs_field += "{ name=\""+v.obs_name+"_"+obs_level.zfill(2) + \
-                             "\"; level=\"(*,*)\"; cat_thresh=[ gt" + \
+                             "\"; level=\"(*,*)\"; cat_thresh=[ " + \
                              str(obs_thresh)+" ]; },"
         else:
             obs_data_type = util.get_filetype(obs_path)

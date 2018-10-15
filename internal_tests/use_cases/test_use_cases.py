@@ -199,8 +199,8 @@ def compare_output_files(files_a, files_b, a_dir, b_dir):
     return good
 
 def main():
-    run_a = True
-    run_b = True
+    run_a = False
+    run_b = False
 
     metplus_home = "/d1/mccabe/METplus"
     use_case_dir = os.path.join(metplus_home,"parm/use_cases")
@@ -209,14 +209,14 @@ def main():
                     use_case_dir+"/qpf/examples/phpt-vs-s4grib.conf",
                     use_case_dir+"/qpf/examples/hrefmean-vs-qpe.conf",
                     use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf",
-                    use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" ,
+                    use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" #,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" #,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" #,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_by_fhr_grouping.conf" #,    
-                    use_case_dir+"/grid_to_grid/grid2grid_anom.conf" ,
-                    use_case_dir+"/grid_to_grid/grid2grid_anom_height.conf",
-                    use_case_dir+"/grid_to_grid/grid2grid_sfc.conf" ,
-                    use_case_dir+"/grid_to_grid/grid2grid_precip.conf"
+#                    use_case_dir+"/grid_to_grid/examples/anom.conf" ,
+#                    use_case_dir+"/grid_to_grid/examples/anom_height.conf",
+#                    use_case_dir+"/grid_to_grid/examples/sfc.conf" ,
+#                    use_case_dir+"/grid_to_grid/examples/precip.conf"
                   ]
 
     all_good = True

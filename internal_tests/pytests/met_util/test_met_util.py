@@ -76,11 +76,11 @@ def test_threshold_eq_symbol():
     assert(util.validate_thresholds(thresh_list))
 
 def test_threshold_ne_symbol():
-    thresh_list = {"!=2.3"}
+    thresh_list = {"!=.3"}
     assert(util.validate_thresholds(thresh_list))
 
 def test_threshold_lt_symbol():
-    thresh_list = {"<2.3", "<1.1"}
+    thresh_list = {"<2.3", "<1."}
     assert(util.validate_thresholds(thresh_list))
 
 def test_threshold_le_symbol():
@@ -103,5 +103,103 @@ def test_threshold_only_one_fails():
     thresh_list = {"<=2.3", "2.4", "gt2.7"}
     assert(util.validate_thresholds(thresh_list) == False)
 
+def test_threshold_complex_comparison():
+    thresh_list = {"<=2.3||>=4.2", "gt2.3&&lt4.2"}
+    assert(util.validate_thresholds(thresh_list))
 
-    
+def test_get_number_from_threshold_gt():
+    assert(util.get_number_from_threshold("gt4.5") == 4.5)
+
+def test_get_number_from_threshold_gt_int():
+    assert(util.get_number_from_threshold("gt4") == 4)
+
+def test_get_number_from_threshold_gt_symbol():
+    assert(util.get_number_from_threshold(">4.545") == 4.545)
+
+def test_get_number_from_threshold_ge_symbol():
+    assert(util.get_number_from_threshold(">=4.0") == 4.0)
+
+def test_get_number_from_threshold_lt_symbol():
+    assert(util.get_number_from_threshold("<4.5") == 4.5)
+
+def test_get_number_from_threshold_le_symbol():
+    assert(util.get_number_from_threshold("<=4.5") == 4.5)
+
+def test_get_number_from_threshold_ne_symbol():
+    assert(util.get_number_from_threshold("!=4.5") == 4.5)
+
+def test_get_number_from_threshold_eq_symbol():
+    assert(util.get_number_from_threshold("==4.5") == 4.5)
+
+def test_get_number_from_threshold_gt():
+    assert(util.get_number_from_threshold("gt4.5") == 4.5)
+
+def test_get_number_from_threshold_ge():
+    assert(util.get_number_from_threshold("ge4.5") == 4.5)
+
+def test_get_number_from_threshold_lt():
+    assert(util.get_number_from_threshold("lt4.5") == 4.5)
+
+def test_get_number_from_threshold_le():
+    assert(util.get_number_from_threshold("le4.5") == 4.5)
+
+def test_get_number_from_threshold_ne():
+    assert(util.get_number_from_threshold("ne10.5") == 10.5)
+
+def test_get_number_from_threshold_eq():
+    assert(util.get_number_from_threshold("eq4.5") == 4.5)
+
+def test_get_number_from_threshold_eq_negative():
+    assert(util.get_number_from_threshold("eq-4.5") == -4.5)
+
+def test_get_number_from_threshold_eq_positive():
+    assert(util.get_number_from_threshold("eq+4.5") == 4.5)
+
+def test_get_number_from_threshold_eq_starts_with_decimal():
+    assert(util.get_number_from_threshold("eq.5") == 0.5)
+
+def test_get_number_from_threshold_eq_ends_with_decimal():
+    assert(util.get_number_from_threshold("eq5.") == 5)
+
+def test_get_comparison_from_threshold_gt_symbol():
+    assert(util.get_comparison_from_threshold(">4.545") == ">")
+
+def test_get_comparison_from_threshold_ge_symbol():
+    assert(util.get_comparison_from_threshold(">=4.0") == ">=")
+
+def test_get_comparison_from_threshold_lt_symbol():
+    assert(util.get_comparison_from_threshold("<4.5") == "<")
+
+def test_get_comparison_from_threshold_le_symbol():
+    assert(util.get_comparison_from_threshold("<=4.5") == "<=")
+
+def test_get_comparison_from_threshold_ne_symbol():
+    assert(util.get_comparison_from_threshold("!=4.5") == "!=")
+
+def test_get_comparison_from_threshold_eq_symbol():
+    assert(util.get_comparison_from_threshold("==4.5") == "==")
+
+def test_get_comparison_from_threshold_gt():
+    assert(util.get_comparison_from_threshold("gt4.5") == "gt")
+
+def test_get_comparison_from_threshold_ge():
+    assert(util.get_comparison_from_threshold("ge4.5") == "ge")
+
+def test_get_comparison_from_threshold_lt():
+    assert(util.get_comparison_from_threshold("lt4.5") == "lt")
+
+def test_get_comparison_from_threshold_le():
+    assert(util.get_comparison_from_threshold("le4.5") == "le")
+
+def test_get_comparison_from_threshold_ne():
+    assert(util.get_comparison_from_threshold("ne10.5") == "ne")
+
+def test_get_comparison_from_threshold_eq():
+    assert(util.get_comparison_from_threshold("eq4.5") == "eq")
+
+def test_get_comparison_from_threshold_complex():
+    assert(util.get_comparison_from_threshold("<=2.3||>=4.2") == "<=")
+
+def test_get_number_from_threshold_complex():
+    assert(util.get_number_from_threshold("<=2.3||>=4.2") == 2.3)
+
