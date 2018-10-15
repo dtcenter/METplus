@@ -81,6 +81,9 @@ plotting_out_dir = os.path.join(plotting_out_dir_base, "pres")
 logger.info("------> Running "+os.path.realpath(__file__))
 logger.debug("----- for "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z forecast hour means for region:"+region+" fcst var:"+fcst_var_name+" obs var:"+obs_var_name)
 #############################################################################
+##### Create image directory if does not exist
+if not os.path.exists(os.path.join(plotting_out_dir, "imgs", cycle+"Z")):
+    os.makedirs(os.path.join(plotting_out_dir, "imgs", cycle+"Z"))
 ##### Read data in data, compute statistics, and plot
 #read in data
 vl = 1
@@ -131,9 +134,6 @@ while vl <= nlevels:
                  logger.warning("Model "+str(m)+" "+model_now+": "+model_now_mean_file+" missing")                 
              model_now_stat_now_means = np.ma.masked_invalid(model_now_stat_now_means)
              count_masked = np.ma.count_masked(model_now_stat_now_means)
-             #create image directory if does not exist
-             if not os.path.exists(os.path.join(plotting_out_dir, "imgs", cycle+"Z")):
-                os.makedirs(os.path.join(plotting_out_dir, "imgs", cycle+"Z"))
              #plot individual statistic forecast hour mean with CI time seres
              if m == 1:
                  #set up plot

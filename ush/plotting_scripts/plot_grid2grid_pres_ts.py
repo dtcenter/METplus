@@ -93,6 +93,9 @@ plotting_out_dir = os.path.join(plotting_out_dir_base, "pres")
 logger.info("------> Running "+os.path.realpath(__file__))
 logger.debug("----- with "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z lead:"+lead+" region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
 #############################################################################
+##### Create image directory if does not exist
+if not os.path.exists(os.path.join(plotting_out_dir, "imgs", cycle+"Z")):
+    os.makedirs(os.path.join(plotting_out_dir, "imgs", cycle+"Z"))
 ##### Read data in data, compute statistics, and plot
 #read in data
 logger.info("---- Gathering data")
@@ -273,9 +276,6 @@ while s <= nstats: #loop over statistics
                     append_write = 'w' # make a new file if not
                 with open(save_ci_filename, append_write) as save_ci_file:
                     save_ci_file.write(lead+' '+str(model_now_model1_intvl)+ '\n')
-        #create image directory if does not exist
-        if not os.path.exists(os.path.join(plotting_out_dir, "imgs", cycle+"Z")):
-            os.makedirs(os.path.join(plotting_out_dir, "imgs", cycle+"Z"))
         #plot individual statistic time series
         logger.debug("Plotting "+stat_now+" time series for "+model_now)
         if m == 1:
