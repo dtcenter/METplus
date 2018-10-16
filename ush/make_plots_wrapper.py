@@ -176,9 +176,9 @@ class MakePlotsWrapper(CommandBuilder):
                     py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tsmean.py")
                     process = subprocess.Popen(py_cmd, env=self.env, shell=True)
                     process.wait()
-                    #py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tpmean.py")
-                    #process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                    #process.wait()
+                    py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tpmean.py")
+                    process = subprocess.Popen(py_cmd, env=self.env, shell=True)
+                    process.wait()
             loop_hour += loop_inc
 
     def grid2grid_anom_plots(self):
