@@ -236,7 +236,6 @@ class StatAnalysisWrapper(CommandBuilder):
             self.add_env_var("FCST_VALID_END", end_t)
             self.add_env_var("FCST_INIT_BEG", "")
             self.add_env_var("FCST_INIT_END", "")
-        #stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
         stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
@@ -342,8 +341,6 @@ class StatAnalysisWrapper(CommandBuilder):
             self.add_env_var("FCST_VALID_END", end_t)
             self.add_env_var("FCST_INIT_BEG", "")
             self.add_env_var("FCST_INIT_END", "")
-
-        stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
         stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
@@ -474,8 +471,6 @@ class StatAnalysisWrapper(CommandBuilder):
             self.add_env_var("FCST_VALID_END", end_t)
             self.add_env_var("FCST_INIT_BEG", "")
             self.add_env_var("FCST_INIT_END", "")
-
-        stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
         stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
@@ -567,7 +562,6 @@ class StatAnalysisWrapper(CommandBuilder):
         self.logger.info("Formatting for plotting for grid2obs-upper_air")
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT')
-        stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
         stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
@@ -663,7 +657,6 @@ class StatAnalysisWrapper(CommandBuilder):
         self.logger.info("Formatting for plotting for grid2obs-conus_sfc")
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT')
-        stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
         stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
