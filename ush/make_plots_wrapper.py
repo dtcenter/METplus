@@ -80,9 +80,10 @@ class MakePlotsWrapper(CommandBuilder):
             self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
         stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
         plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
-        if os.path.exists(plotting_out_dir):
-            self.logger.info(plotting_out_dir+" exist, removing")
-            util.rmtree(plotting_out_dir)
+        plotting_out_dir_pres = os.path.join(plotting_out_dir, 'pres')
+        if os.path.exists(plotting_out_dir_pres):
+            self.logger.info(plotting_out_dir_pres+" exist, removing")
+            util.rmtree(plotting_out_dir_pres)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
         model_names = self.parse_model_list()
@@ -213,9 +214,10 @@ class MakePlotsWrapper(CommandBuilder):
             self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
         stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
         plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
-        if os.path.exists(plotting_out_dir):
-            self.logger.info(plotting_out_dir+" exist, removing")
-            util.rmtree(plotting_out_dir)
+        plotting_out_dir_anom = os.path.join(plotting_out_dir, 'anom')
+        if os.path.exists(plotting_out_dir_anom):
+            self.logger.info(plotting_out_dir_anom+" exist, removing")
+            util.rmtree(plotting_out_dir_anom)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
         model_names = self.parse_model_list()
@@ -376,9 +378,10 @@ class MakePlotsWrapper(CommandBuilder):
             self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
         stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
         plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
-        if os.path.exists(plotting_out_dir):
-            self.logger.info(plotting_out_dir+" exist, removing")
-            util.rmtree(plotting_out_dir)
+        plotting_out_dir_sfc = os.path.join(plotting_out_dir, 'sfc')
+        if os.path.exists(plotting_out_dir_sfc):
+            self.logger.info(plotting_out_dir_sfc+" exist, removing")
+            util.rmtree(plotting_out_dir_sfc)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
         model_names = self.parse_model_list()
@@ -456,9 +459,10 @@ class MakePlotsWrapper(CommandBuilder):
             self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
         stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
         plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
-        if os.path.exists(plotting_out_dir):
-            self.logger.info(plotting_out_dir+" exist, removing")
-            util.rmtree(plotting_out_dir)
+        plotting_out_dir_upper_air = os.path.join(plotting_out_dir, 'upper_air')
+        if os.path.exists(plotting_out_dir_upper_air):
+            self.logger.info(plotting_out_dir_upper_air+" exist, removing")
+            util.rmtree(plotting_out_dir_upper_air)
         regrid_to_grid = self.p.getstr('config', 'REGRID_TO_GRID')
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
@@ -595,9 +599,10 @@ class MakePlotsWrapper(CommandBuilder):
             self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
         stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
         plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
-        if os.path.exists(plotting_out_dir):
-            self.logger.info(plotting_out_dir+" exist, removing")
-            util.rmtree(plotting_out_dir)
+        plotting_out_dir_conus_sfc = os.path.join(plotting_out_dir, 'conus_sfc')
+        if os.path.exists(plotting_out_dir_conus_sfc):
+            self.logger.info(plotting_out_dir_conus_sfc+" exist, removing")
+            util.rmtree(plotting_out_dir_conus_sfc)
         regrid_to_grid = self.p.getstr('config', 'REGRID_TO_GRID')
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
