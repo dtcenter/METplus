@@ -274,10 +274,13 @@ while s <= nstats: #loop over statistics
         fig = plt.figure(figsize=(19,12))
         gs = gridspec.GridSpec(2,3)
         gs.update(wspace=0.3, hspace=0.25)
-    elif nmodels > 6:
+    elif nmodels > 6 and nmodels <= 9:
         fig = plt.figure(figsize=(21,17))
         gs = gridspec.GridSpec(3,3)
         gs.update(wspace=0.35, hspace=0.25)
+    else:
+        logger.error("Too many models selected, max. is 9")
+        exit(1)
     m=1
     yy,xx = np.meshgrid(fcst_var_levels_num, dates)
     while m <= nmodels: #loop over models
