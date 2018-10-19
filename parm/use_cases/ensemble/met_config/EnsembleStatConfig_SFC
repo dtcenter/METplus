@@ -1,0 +1,198 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Ensemble-Stat configuration file.
+//
+// For additional information, see the MET_BASE/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Output model name to be written
+//
+model = "${MODEL}_ens_${DOMAIN}";
+
+//
+// Output description to be written
+// May be set separately in each "obs.field" entry
+//
+desc = "NA";
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification grid
+//
+regrid = {
+   to_grid    = ${GRID_VX};
+   method     = BILIN;
+   width      = 2;
+   vld_thresh = 0.5;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+tmp_z2_thresh   = [ >=283, >=288, >=293, >=298, >=303 ];
+dpt_z2_thresh   = [ >=278, >=283, >=288, >=293, >=298 ];
+uv_z10_thresh   = [ <=-10, <=-5, <=-2, >=2, >=5, >=10 ];
+wind_z10_thresh = [ >=2, >=4, >=6, >=8, >=10 ];
+
+//
+// Ensemble product fields to be processed
+//
+ens = {
+   ens_thresh = 1.0;
+   vld_thresh = 1.0;
+
+   field = [
+      { name = "TMP";  level = [ "Z2" ];  cat_thresh = tmp_z2_thresh;   },
+      { name = "DPT";  level = [ "Z2" ];  cat_thresh = dpt_z2_thresh;   },
+      { name = "UGRD"; level = [ "Z10" ]; cat_thresh = uv_z10_thresh;   },   
+      { name = "VGRD"; level = [ "Z10" ]; cat_thresh = uv_z10_thresh;   },
+      { name = "WIND"; level = [ "Z10" ]; cat_thresh = wind_z10_thresh; }
+   ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+cnt_thresh  = [ NA ];
+cnt_logic   = UNION;
+wind_thresh = [ NA ];
+wind_logic  = UNION;
+
+//
+// Forecast and observation fields to be verified
+//
+fcst = {
+   field = [
+      { name = "TMP";  level = [ "Z2" ];  cat_thresh = tmp_z2_thresh;   },
+      { name = "DPT";  level = [ "Z2" ];  cat_thresh = dpt_z2_thresh;   },
+      { name = "UGRD"; level = [ "Z10" ]; cat_thresh = uv_z10_thresh;   },   
+      { name = "VGRD"; level = [ "Z10" ]; cat_thresh = uv_z10_thresh;   },
+      { name = "WIND"; level = [ "Z10" ]; cat_thresh = wind_z10_thresh; }
+   ];
+};
+
+//
+// Ensemble bin sizes
+// May be set separately in each "obs.field" entry
+//
+obs = {
+   field = [
+      { name = "TMP";  level = [ "Z2" ];  cat_thresh = tmp_z2_thresh; ens_ssvar_bin_size = 1.0; ens_phist_bin_size = 0.05;   },
+      { name = "DPT";  level = [ "Z2" ];  cat_thresh = dpt_z2_thresh; ens_ssvar_bin_size = 1.0; ens_phist_bin_size = 0.05;   },
+      { name = "UGRD"; level = [ "Z10" ]; cat_thresh = uv_z10_thresh; ens_ssvar_bin_size = 1.0; ens_phist_bin_size = 0.05;   },
+      { name = "VGRD"; level = [ "Z10" ]; cat_thresh = uv_z10_thresh; ens_ssvar_bin_size = 1.0; ens_phist_bin_size = 0.05;   },
+      { name = "WIND"; level = [ "Z10" ]; cat_thresh = wind_z10_thresh; ens_ssvar_bin_size = 1.0; ens_phist_bin_size = 0.05; }
+   ];
+};
+obs = { wind_thresh = >2.572; };
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation filtering options
+// May be set separately in each "obs.field" entry
+//
+message_type       = [ "ADPSFC" ];
+sid_exc            = [];
+obs_thresh         = [ NA ];
+obs_quality        = [];
+duplicate_flag     = UNIQUE;
+obs_summary        = NONE;
+obs_perc_value     = 50;
+skip_const         = TRUE;
+
+//
+// Observation error options
+// Set dist_type to NONE to use the observation error table instead
+// May be set separately in each "obs.field" entry
+//
+obs_error = {
+   flag             = TRUE;    // TRUE or FALSE
+   dist_type        = NONE;    // Distribution type
+   dist_parm        = [];      // Distribution parameters
+   inst_bias_scale  = 1.0;     // Instrument bias scale adjustment
+   inst_bias_offset = 0.0;     // Instrument bias offset adjustment
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation time window
+//
+obs_window = {
+   beg = -900;
+   end =  900;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification masking regions
+//
+mask = {
+   grid = [];
+   poly = [ "${MASKS}/EAST.nc",
+            "${MASKS}/WEST.nc",
+            "${MASKS}/CONUS.nc",
+            "${MASKS}/LMV.nc" ];
+   sid  = [];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Confidence interval settings
+//
+ci_alpha  = [ 0.01 ]; 
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Interpolation methods
+//
+interp = {
+   type       = [ { method = BILIN; width = 2; } ];
+   vld_thresh = 1.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Statistical output types
+//
+output_flag = {
+   ecnt  = STAT;
+   rhist = STAT;
+   phist = STAT;
+   orank = NONE;
+   ssvar = STAT;
+   relp  = STAT;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Ensemble product output types
+//
+ensemble_flag = {
+   mean      = TRUE;
+   stdev     = TRUE;
+   minus     = FALSE;
+   plus      = FALSE;
+   min       = FALSE;
+   max       = FALSE;
+   range     = FALSE;
+   vld_count = TRUE;
+   frequency = TRUE;
+   rank      = FALSE;
+   weight    = FALSE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+grid_weight_flag = NONE;
+output_prefix    = "${MODEL}_${DOMAIN}_F${FCST_TIME}_ADPSFC";
+version          = "V7.1";
+
+////////////////////////////////////////////////////////////////////////////////
