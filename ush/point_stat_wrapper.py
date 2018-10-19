@@ -122,8 +122,8 @@ class PointStatWrapper(CommandBuilder):
         ps_dict['FCST_HR_INTERVAL'] = self.p.getstr('config',
                                                     'FCST_HR_INTERVAL')
 
-        ps_dict['OBS_WINDOW_BEG'] = self.p.getstr('config',
-                                                    'OBS_WINDOW_BEG')
+        ps_dict['OBS_WINDOW_BEGIN'] = self.p.getstr('config',
+                                                    'OBS_WINDOW_BEGIN')
         ps_dict['OBS_WINDOW_END'] = self.p.getstr('config', 'OBS_WINDOW_END')
 
         # Filename templates and regex patterns for input dirs and filenames
