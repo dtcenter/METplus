@@ -566,7 +566,7 @@ class StatAnalysisWrapper(CommandBuilder):
         var_list = util.parse_var_list(self.p)
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
-        model_list = self.get_model_list()
+        model_list = self.parse_model_list()
         self.add_env_var('INTERP', 'BILIN')
         if use_init:
             init_beg_hour = self.p.getstr('config', 'INIT_BEG_HOUR')
