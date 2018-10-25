@@ -628,9 +628,9 @@ class StatAnalysisWrapper(CommandBuilder):
                                 lead_string = str(lead)
                             self.add_env_var('LEAD', lead_string)
                             if not os.path.exists(os.path.join(stat_analysis_out_dir,
-                                                  loop_hour_str+"Z", model, region)):
+                                                  'upper_air', loop_hour_str+"Z", model, region)):
                                os.makedirs(os.path.join(stat_analysis_out_dir,
-                                           loop_hour_str+"Z", model, region))
+                                           'upper_air', loop_hour_str+"Z", model, region))
                             dump_row_file = os.path.join(stat_analysis_out_dir,
                                                          'upper_air', loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+".stat")
                             job = "-job filter -dump_row "+dump_row_file
@@ -723,9 +723,9 @@ class StatAnalysisWrapper(CommandBuilder):
                                 lead_string = str(lead)
                             self.add_env_var('LEAD', lead_string)
                             if not os.path.exists(os.path.join(stat_analysis_out_dir,
-                                                  loop_hour_str+"Z", model, region)):
+                                                  'conus_sfc', loop_hour_str+"Z", model, region)):
                                os.makedirs(os.path.join(stat_analysis_out_dir,
-                                           loop_hour_str+"Z", model, region))
+                                           'conus_sfc', loop_hour_str+"Z", model, region))
                             dump_row_file = os.path.join(stat_analysis_out_dir,
                                                          'conus_sfc', loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+".stat")
                             job = "-job filter -dump_row "+dump_row_file
