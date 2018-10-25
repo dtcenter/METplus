@@ -66,8 +66,8 @@ class EnsembleStatWrapper(CompareEnsembleWrapper):
                           ce_dict['CONFIG_DIR']+'/EnsembleStatConfig_SFC')
 
         # No Default being set this is REQUIRED TO BE DEFINED in conf file.
-        ce_dict['ENSEMBLE_NUMBER_OF_MEMBERS'] = \
-            self.p.getstr('config','ENSEMBLE_NUMBER_OF_MEMBERS')
+        ce_dict['N_ENSEMBLE_MEMBERS'] = \
+            self.p.getstr('filename_templates','N_ENSEMBLE_MEMBERS')
 
         ce_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
 
@@ -86,10 +86,10 @@ class EnsembleStatWrapper(CompareEnsembleWrapper):
           self.p.getdir('FCST_ENSEMBLE_STAT_INPUT_DIR')
 
         # This is a raw string and will be interpreted to generate the 
-        # ensemble member filenames.
+        # ensemble member filenames. This may be a list of 1 or n members.
         ce_dict['FCST_INPUT_TEMPLATE'] = \
-          util.getraw_interp(self.p, 'filename_templates',
-                               'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE')
+          util.getlist(util.getraw_interp(self.p, 'filename_templates',
+                               'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE'))
 
 
         ce_dict['OUTPUT_DIR'] =  self.p.getdir('ENSEMBLE_STAT_OUT_DIR')

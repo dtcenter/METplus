@@ -119,7 +119,7 @@ that compares ensemble data
         cmd += self.outdir
         return cmd
 
-    def find_model_members(self, lead, init_time, level):
+    def find_model_members(self, lead, init_time, level=None):
         """! Finds the model member files to compare
               Args:
                 @param lead forecast lead value
@@ -130,7 +130,9 @@ that compares ensemble data
         """
         app_name_caps = self.app_name.upper()
         model_dir = self.ce_dict['FCST_INPUT_DIR']
-        model_template = self.ce_dict['FCST_INPUT_TEMPLATE']
+
+        # model_template is a list of 1 or more.
+        ens_members_template = self.ce_dict['FCST_INPUT_TEMPLATE']
         max_forecast = self.ce_dict['FCST_MAX_FORECAST']
         init_interval = self.ce_dict['FCST_INIT_INTERVAL']
         lead_check = lead
@@ -139,34 +141,52 @@ that compares ensemble data
         found = False
 #        while lead_check <= max_forecast:
             # split by - to handle a level that is a range, such as 0-10
-        model_ss = sts.StringSub(self.logger, model_template,
-                                     init=time_check,
-                                     lead=str(lead_check).zfill(2),
-                                     level=str(level.split('-')[0]).zfill(2))
-        model_file = model_ss.doStringSub()
 
-        # TODO: jtf Harden and remove this requirement/assumption that the
-        # model_path after a String Template Substitution contains wildcards
+        ens_members_path = []
+        # This is for all the members defined in the template.
+        for ens_member_template in ens_members_template:
+            if level:
+                model_ss = sts.StringSub(self.logger, ens_member_template,
+                                             init=time_check,
+                                             lead=str(lead_check).zfill(2),
+                                             level=str(level.split('-')[0]).zfill(2))
+            else:
+                model_ss = sts.StringSub(self.logger, ens_member_template,
+                                             init=time_check,
+                                             lead=str(lead_check).zfill(2))
+            member_file = model_ss.doStringSub()
+            member_path = os.path.join(model_dir, member_file)
+
+            ens_members_path.append(member_path)
+
+
+        # TODO: jtf Harden and review this requirement/assumption that the
+        # member_path after a String Template Substitution contains wildcards
         # that can be globbed to return all the members for this lead time.
         # It may contain wild cards, it may contain a produtil conf variable
         # of the number of ensemble members as well as format and padding
-        # info. For now we are assuming model_file has wild cards that can
-        # be globbed, ie.
+        # info. For now we are assuming member_path has wild cards that can
+        # be globbed.
+
+        # This is if FCST_INPUT_TEMPLATE on has 1 item in its template list
+        #  and the template has filename wild cards to glob and match files.
         # /somevalidpath/postprd_mem000?/wrfprs_conus_mem000?_00.grib2
-        model_path = os.path.join(model_dir, model_file)
-        model_path_list = sorted(glob.glob(model_path))
+        if int(self.ce_dict['N_ENSEMBLE_MEMBERS']) > 1 \
+                and len(ens_members_template) == 1:
+            ens_members_path = sorted(glob.glob(member_path))
+            self.logger.debug('Ensemble Members File pattern: %s'%
+                              ens_members_template[0])
+            self.logger.debug('Number of Members matching File Pattern: ' +
+                              str(len(ens_members_path)))
 
-
-        self.logger.debug('Ensemble Members File pattern: %s'% model_path)
-        self.logger.debug('Number of Members matching File Pattern: ' + str(len(model_path_list)))
         # check that all the members exist.
         all_members_exist = True
-        for member_path in model_path_list:
+        for member_path in ens_members_path:
             if not os.path.exists(member_path):
                 self.logger.error("MISSING ensemble member: %s"%member_path)
                 all_members_exist = False
 
-
+# TODO: jtf Review this block - do we need it, it was in grid_stat_wrapper.py
 #            util.decompress_file(model_path, self.logger)
 #            if os.path.exists(model_path):
 #                found = True
@@ -176,7 +196,7 @@ that compares ensemble data
 #            lead_check = lead_check + init_interval
 
         if all_members_exist:
-            return model_path_list
+            return ens_members_path
         else:
             return []
 
@@ -246,8 +266,14 @@ that compares ensemble data
         lead_seq = self.ce_dict['LEAD_SEQ']
         for lead in lead_seq:
             task_info.lead = lead
-            for var_info in var_list:
-                self.run_at_time_once(task_info, var_info)
+
+            # if var_list is empty [], we infer that means the ens, fcst, obs
+            # fields are defined in the MET conf file instead.
+            if var_list:
+                for var_info in var_list:
+                    self.run_at_time_once(task_info, var_info)
+            else:
+                self.run_at_time_once_no_var_list(task_info)
 
     def run_at_time_once(self, ti, v):
         """! Runs the MET application for a given time and forecast lead combination
@@ -294,21 +320,21 @@ that compares ensemble data
                               +model_dir+" FOR "+init_time+" f"+str(ti.lead))
             return
 
-        if int(self.ce_dict['ENSEMBLE_NUMBER_OF_MEMBERS']) != \
+        if int(self.ce_dict['N_ENSEMBLE_MEMBERS']) != \
                 len(model_member_paths):
             self.logger.error("MISMATCH: Members matching File Pattern: %s "
-                              "vs. conf ENSEMBLE_NUMBER_OF_MEMBERS: %s " %
+                              "vs. conf N_ENSEMBLE_MEMBERS: %s " %
                               (len(model_member_paths),
-                               self.ce_dict['ENSEMBLE_NUMBER_OF_MEMBERS']))
+                               self.ce_dict['N_ENSEMBLE_MEMBERS']))
             return
 
         # TODO: jtf add ensemble file list file
-        # if ENSEMBLE_NUMBER_OF_MEMBERS is not defined, use that as
+        # if N_ENSEMBLE_MEMBERS is not defined, use that as
         # a trigger to indicate a file with list of members will be
         # used instead.
 
         # Add the number of ensemble members to the MET command
-        self.set_input_file_num(self.ce_dict['ENSEMBLE_NUMBER_OF_MEMBERS'])
+        self.set_input_file_num(self.ce_dict['N_ENSEMBLE_MEMBERS'])
 
         # Add each member to create a space seperated list on the command line
         for member in model_member_paths:
@@ -339,7 +365,6 @@ that compares ensemble data
                                    valid=valid_time,
                                    init=init_time,
                                    level=str(obs_level.split('-')[0]).zfill(2))
-
 
             obs_file = obsSts.doStringSub()
 
@@ -407,7 +432,7 @@ that compares ensemble data
             #Note: this check for model_data_type checks
             #only the first member and assumes all the others are the same.
             model_data_type = util.get_filetype(model_member_paths[0])
-            # remove these 2 lines ... for initial local testing
+
             if obs_data_type == "NETCDF":
 
               obs_field += "{ name=\"" + v.obs_name+"_" + obs_level.zfill(2) + \
@@ -479,6 +504,123 @@ that compares ensemble data
             return
         self.logger.info("")
         self.build()
+        #self.logger.info('=====================================================================')
+        #self.logger.info("{:s}".format(cmd))
+        #for arg in cmd.split():
+        #    self.logger.info("{:s}".format(arg))
+        #self.clear()
+
+    def run_at_time_once_no_var_list(self, ti):
+        """! Runs the MET application for a given time and forecast lead combination
+              Args:
+                @param ti task_info object containing timing information
+        """
+        app_name_caps = self.app_name.upper()
+        valid_time = ti.getValidTime()
+        init_time = ti.getInitTime()
+        base_dir = self.ce_dict['OUTPUT_DIR']
+        if self.ce_dict['LOOP_BY_INIT']:
+            out_dir = os.path.join(base_dir,
+                                   init_time, self.app_name)
+        else:
+            out_dir = os.path.join(base_dir,
+                                   valid_time, self.app_name)
+
+        model_type = self.ce_dict['MODEL_TYPE']
+        obs_dir = self.ce_dict['OBS_INPUT_DIR']
+        obs_template = self.ce_dict['OBS_INPUT_TEMPLATE']
+        model_dir = self.ce_dict['FCST_INPUT_DIR']
+        config_dir = self.ce_dict['CONFIG_DIR']
+
+        ymd_v = valid_time[0:8]
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+
+        # get model to compare
+        model_member_paths = self.find_model_members(ti.lead, init_time)
+
+        if not model_member_paths:
+            self.logger.error("Missing Ensemble Member FILEs IN "
+                              + model_dir + " FOR " + init_time + " f" + str(ti.lead))
+            return
+
+        if int(self.ce_dict['N_ENSEMBLE_MEMBERS']) != \
+                len(model_member_paths):
+            self.logger.error("MISMATCH: Members matching File Pattern: %s "
+                              "vs. conf N_ENSEMBLE_MEMBERS: %s " %
+                              (len(model_member_paths),
+                               self.ce_dict['N_ENSEMBLE_MEMBERS']))
+            return
+
+        # TODO: jtf add ensemble file list file
+        # if N_ENSEMBLE_MEMBERS is not defined, use that as
+        # a trigger to indicate a file with list of members will be
+        # used instead.
+
+        # Add the number of ensemble members to the MET command
+        self.set_input_file_num(self.ce_dict['N_ENSEMBLE_MEMBERS'])
+
+        # Add each member to create a space seperated list on the command line
+        for member in model_member_paths:
+            self.add_input_file(member)
+
+        # TODO: jtf STS fundamental. We need to know what keys to pass in
+        # from the filename_template. if the keys change, the call
+        # must change in the code. Therefore, we need to specify in
+        # the conf file which sts keys are supported for subject
+        # template.
+
+        if self.ce_dict['OBS_EXACT_VALID_TIME']:
+            obsSts = sts.StringSub(self.logger,
+                                   obs_template,
+                                   lead=str(ti.lead),
+                                   valid=valid_time,
+                                   init=init_time)
+
+            obs_file = obsSts.doStringSub()
+
+            obs_path = os.path.join(obs_dir, obs_file)
+        else:
+            obs_path = self.find_obs(ti)
+
+        self.add_point_obs_file(obs_path)
+        self.set_param_file(self.ce_dict['CONFIG_FILE'])
+        self.set_output_dir(out_dir)
+
+        # set up environment variables for each run
+        # get fcst and obs thresh parameters
+        # verify they are the same size
+
+
+        ob_type = self.ce_dict["OB_TYPE"]
+        input_base = self.ce_dict["INPUT_BASE"]
+
+        self.add_env_var("MODEL", model_type)
+        self.add_env_var("OBTYPE", ob_type)
+        self.add_env_var("CONFIG_DIR", config_dir)
+        self.add_env_var("INPUT_BASE", input_base)
+        self.add_env_var("MET_VALID_HHMM", valid_time[4:8])
+        cmd = self.get_command()
+
+        self.logger.debug("")
+        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_env_item("MODEL")
+        self.print_env_item("OBTYPE")
+        self.print_env_item("CONFIG_DIR")
+        self.print_env_item("INPUT_BASE")
+        self.print_env_item("MET_VALID_HHMM")
+        self.logger.debug("")
+        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_env_copy(["MODEL", "OBTYPE", "CONFIG_DIR",
+                             "INPUT_BASE", "MET_VALID_HHMM"])
+        self.logger.debug("")
+        cmd = self.get_command()
+        if cmd is None:
+            self.logger.error("ERROR: " + self.app_name + \
+                              " could not generate command")
+            return
+        self.logger.info("")
+        #self.build()
         #self.logger.info('=====================================================================')
         #self.logger.info("{:s}".format(cmd))
         #for arg in cmd.split():
