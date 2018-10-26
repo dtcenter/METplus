@@ -65,6 +65,25 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.cg_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
                                                               'OBS_EXACT_VALID_TIME',
                                                               True)
+        # these are not used by grid_stat, only mode
+        self.cg_dict['QUILT'] = "FALSE"
+        self.cg_dict['CONV_RADIUS'] = 5
+        self.cg_dict['CONV_THRESH'] = 0.5
+        self.cg_dict['MERGE_THRESH'] = 0.45
+        self.cg_dict['MERGE_FLAG'] = "THRESH"
+
+
+    def do_wrapper_specific_operations(self):
+        self.add_env_var("INPUT_BASE", self.cg_dict["INPUT_BASE"])
+        self.print_env_item("INPUT_BASE")
+        self.logger.debug("")
+        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_env_copy(["MODEL", "FCST_VAR", "OBS_VAR",
+                             "LEVEL", "OBTYPE", "CONFIG_DIR",
+                             "FCST_FIELD", "OBS_FIELD",
+                             "INPUT_BASE",
+                             "MET_VALID_HHMM"])
+        self.logger.debug("")
 
 
 if __name__ == "__main__":

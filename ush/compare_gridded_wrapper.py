@@ -84,7 +84,7 @@ that reformat gridded data
         cmd += self.outdir
         return cmd
 
-    def find_model(self, lead, init_time, level):
+    def find_model(self, ti, v):
         """! Finds the model file to compare
               Args:
                 @param lead forecast lead value
@@ -93,7 +93,9 @@ that reformat gridded data
                 @rtype string
                 @return Returns the path to a model file
         """
-        app_name_caps = self.app_name.upper()
+        lead = ti.getLeadTime()
+        init_time = ti.getInitTime()
+        level_type, level = self.split_level(v.fcst_level)
         model_dir = self.cg_dict['FCST_INPUT_DIR']
         model_template = self.cg_dict['FCST_INPUT_TEMPLATE']
         max_forecast = self.cg_dict['FCST_MAX_FORECAST']
@@ -124,18 +126,32 @@ that reformat gridded data
             return ''
 
 
-    def find_obs(self, ti):
+    def find_obs(self, ti, v):
         """! Finds the observation file to compare
               Args:
                 @param ti task_info object containing timing information
                 @param v var_info object containing variable information
                 @rtype string
                 @return Returns the path to an observation file
-        """        
-        app_name_caps = self.app_name.upper()        
+        """
         valid_time = ti.getValidTime()
-        obs_dir = self.cg_dict['OBS_INPUT_DIR']
+        init_time = ti.getInitTime()
+        obs_level_type, obs_level = self.split_level(v.obs_level)
         obs_template = self.cg_dict['OBS_INPUT_TEMPLATE']
+        obs_dir = self.cg_dict['OBS_INPUT_DIR']
+        if self.cg_dict['OBS_EXACT_VALID_TIME']:
+            obsSts = sts.StringSub(self.logger,
+                                   obs_template,
+                                   valid=valid_time,
+                                   init=init_time,
+                                   level=str(obs_level.split('-')[0]).zfill(2))
+            obs_file = obsSts.doStringSub()
+
+            obs_path = os.path.join(obs_dir, obs_file)
+            if os.path.exists(obs_path):
+                return obs_path
+            return None
+                       
         # convert valid_time to unix time
         valid_seconds = int(datetime.datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
         # get time of each file, compare to valid time, save best within range
@@ -172,7 +188,91 @@ that reformat gridded data
             return closest_file
         else:
             return None
-        
+
+    def get_field_info(self, v, obs_path, model_path):
+        fcst_level_type, fcst_level = self.split_level(v.fcst_level)
+        obs_level_type, obs_level = self.split_level(v.obs_level)
+
+        fcst_cat_thresh = ""
+        fcst_threshs = []
+        if v.fcst_thresh != "":
+            fcst_threshs = v.fcst_thresh
+            fcst_cat_thresh = "cat_thresh=[ "
+            for fcst_thresh in fcst_threshs:
+                fcst_cat_thresh += str(fcst_thresh)+", "
+            fcst_cat_thresh = fcst_cat_thresh[0:-2]+" ];"
+
+        obs_cat_thresh = ""
+        obs_threshs = []
+        if v.obs_thresh != "":
+            obs_threshs = v.obs_thresh
+            obs_cat_thresh = "cat_thresh=[ "
+            for obs_thresh in obs_threshs:
+                obs_cat_thresh += str(obs_thresh)+", "
+            obs_cat_thresh = obs_cat_thresh[0:-2]+" ];"
+
+        if len(fcst_threshs) != len(obs_threshs):
+            self.logger.error("Number of forecast and "\
+                            "observation thresholds must be the same")
+            exit(1)
+
+        # TODO: Allow NetCDF level with more than 2 dimensions i.e. (1,*,*)
+        # TODO: Need to check data type for PROB fcst? non PROB obs?
+
+        fcst_field = ""
+        obs_field = ""
+        if self.cg_dict['FCST_IS_PROB']:
+            for fcst_thresh in fcst_threshs:
+                thresh_str = ""
+                comparison = util.get_comparison_from_threshold(fcst_thresh)
+                number = util.get_number_from_threshold(fcst_thresh)
+                if comparison in ["gt", "ge", ">", ">=" ]:
+                    thresh_str += "thresh_lo="+str(number)+";"
+                elif comparison in ["lt", "le", "<", "<=" ]:
+                    thresh_str += "thresh_hi="+str(number)+";"
+
+                fcst_field += "{ name=\"PROB\"; level=\""+fcst_level_type + \
+                              fcst_level.zfill(2) + "\"; prob={ name=\"" + \
+                                v.fcst_name + \
+                                "\"; "+thresh_str+" } },"
+            # TODO: do not use cat_thresh for mode
+            for obs_thresh in obs_threshs:
+                obs_field += "{ name=\""+v.obs_name+"_"+obs_level.zfill(2) + \
+                             "\"; level=\"(*,*)\"; cat_thresh=[ " + \
+                             str(obs_thresh)+" ]; },"
+        else:
+            obs_data_type = util.get_filetype(obs_path)
+            model_data_type = util.get_filetype(model_path)
+            if obs_data_type == "NETCDF":
+                obs_field += "{ name=\"" + v.obs_name+"_" + obs_level.zfill(2) + \
+                             "\"; level=\"(*,*)\"; "
+            else:
+                obs_field += "{ name=\""+v.obs_name + \
+                             "\"; level=\"["+obs_level_type + \
+                            obs_level.zfill(2)+"]\"; "
+
+            if model_data_type == "NETCDF":
+                fcst_field += "{ name=\""+v.fcst_name+"_"+fcst_level.zfill(2) + \
+                              "\"; level=\"(*,*)\"; "
+            else:
+                fcst_field += "{ name=\""+v.fcst_name + \
+                              "\"; level=\"["+fcst_level_type + \
+                              fcst_level.zfill(2)+"]\"; "
+
+            fcst_field += fcst_cat_thresh+" },"
+            obs_field += obs_cat_thresh+ " },"
+
+        # remove last comma and } to be added back after extra options
+        fcst_field = fcst_field[0:-2] + v.fcst_extra+"}"
+        obs_field = obs_field[0:-2] + v.obs_extra+"}"
+        return fcst_field, obs_field
+
+    def split_level(self, level):
+        level_type = ""
+        if(level[0].isalpha()):
+            level_type = level[0]
+            level = level[1:]
+        return level_type, level
 
     def run_at_time(self, init_time, valid_time):
         """! Runs the MET application for a given run time. This function loops
@@ -189,187 +289,60 @@ that reformat gridded data
         lead_seq = self.cg_dict['LEAD_SEQ']
         for lead in lead_seq:
             task_info.lead = lead
-            for var_info in var_list:
-                self.run_at_time_once(task_info, var_info)
+            self.run_at_time_all_fields(task_info, var_list)
 
 
-    def run_at_time_once(self, ti, v):
-        """! Runs the MET application for a given time and forecast lead combination
-              Args:
-                @param ti task_info object containing timing information
-                @param v var_info object containing variable information
-        """
-        app_name_caps = self.app_name.upper()        
-        valid_time = ti.getValidTime()
-        init_time = ti.getInitTime()
+    def run_at_time_all_fields(self, task_info, var_list):
+        # run app once for each field with all levels in each
+        # TODO: implement method to add all fields and levels to a single call
+        for var_info in var_list:
+            self.run_at_time_once(task_info, var_info)
+
+    def create_and_set_output_dir(self, ti):
         base_dir = self.cg_dict['OUTPUT_DIR']
         if self.cg_dict['LOOP_BY_INIT']:
             out_dir = os.path.join(base_dir,
-                                   init_time, self.app_name)
+                                   ti.getInitTime(), self.app_name)
         else:
             out_dir = os.path.join(base_dir,
-                                   valid_time, self.app_name)
-        fcst_level = v.fcst_level
-        fcst_level_type = ""
-        if(fcst_level[0].isalpha()):
-            fcst_level_type = fcst_level[0]
-            fcst_level = fcst_level[1:]
-        obs_level = v.obs_level
-        obs_level_type = ""
-        if(obs_level[0].isalpha()):
-            obs_level_type = obs_level[0]
-            obs_level = obs_level[1:]            
-        model_type = self.cg_dict['MODEL_TYPE']
-        obs_dir = self.cg_dict['OBS_INPUT_DIR']
-        obs_template = self.cg_dict['OBS_INPUT_TEMPLATE']
-        model_dir = self.cg_dict['FCST_INPUT_DIR']
-        config_dir = self.cg_dict['CONFIG_DIR']
-
-        ymd_v = valid_time[0:8]
+                                   ti.getValidTime(), self.app_name)
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
-
-        # get model to compare
-        model_path = self.find_model(ti.lead, init_time, fcst_level)
-
-        if model_path == "":
-            self.logger.error("ERROR: COULD NOT FIND FILE IN "+model_dir+" FOR "+init_time+" f"+str(ti.lead))
-            return
-        self.add_input_file(model_path)
-        if self.cg_dict['OBS_EXACT_VALID_TIME']:
-            obsSts = sts.StringSub(self.logger,
-                                   obs_template,
-                                   valid=valid_time,
-                                   init=init_time,
-                                   level=str(obs_level.split('-')[0]).zfill(2))
-            obs_file = obsSts.doStringSub()
-
-            obs_path = os.path.join(obs_dir, obs_file)
-        else:
-            obs_path = self.find_obs(ti)
-
-        self.add_input_file(obs_path)
-        self.set_param_file(self.cg_dict['CONFIG_FILE'])
         self.set_output_dir(out_dir)
 
+    def process_fields(self, ti, v, model_path, obs_path):
         # set up environment variables for each run
         # get fcst and obs thresh parameters
         # verify they are the same size
-        fcst_cat_thresh = ""
-        fcst_threshs = []
-        if v.fcst_thresh != "":
-            fcst_threshs = v.fcst_thresh
-            fcst_cat_thresh = "cat_thresh=[ "
-            for fcst_thresh in fcst_threshs:
-                fcst_cat_thresh += str(fcst_thresh)+", "
-            fcst_cat_thresh = fcst_cat_thresh[0:-2]+" ];"
-            
-        obs_cat_thresh = ""
-        obs_threshs = []        
-        if v.obs_thresh != "":
-            obs_threshs = v.obs_thresh
-            obs_cat_thresh = "cat_thresh=[ "
-            for obs_thresh in obs_threshs:
-                obs_cat_thresh += str(obs_thresh)+", "
-            obs_cat_thresh = obs_cat_thresh[0:-2]+" ];"
+        self.set_param_file(self.cg_dict['CONFIG_FILE'])
+        self.create_and_set_output_dir(ti)
+        
+        fcst_field, obs_field = self.get_field_info(v, obs_path, model_path)
 
-        if len(fcst_threshs) != len(obs_threshs):
-            self.logger.error("Number of forecast and "\
-                              "observation thresholds must be the same")
-            exit(1)
-
-        # TODO: Allow NetCDF level with more than 2 dimensions i.e. (1,*,*)
-        # TODO: Need to check data type for PROB fcst? non PROB obs?
-
-        fcst_field = ""
-        obs_field = ""
-# TODO: change PROB mode to put all cat thresh values in 1 item        
-        if self.cg_dict['FCST_IS_PROB']:
-            for fcst_thresh in fcst_threshs:
-                thresh_str = ""
-                comparison = util.get_comparison_from_threshold(fcst_thresh)
-                number = util.get_number_from_threshold(fcst_thresh)
-                if comparison in ["gt", "ge", ">", ">=" ]:
-                    thresh_str += "thresh_lo="+str(number)+";"
-                elif comparison in ["lt", "le", "<", "<=" ]:
-                    thresh_str += "thresh_hi="+str(number)+";"
-
-                thresh = util.get_number_from_threshold(fcst_thresh)
-                fcst_field += "{ name=\"PROB\"; level=\""+fcst_level_type + \
-                              fcst_level.zfill(2) + "\"; prob={ name=\"" + \
-                              v.fcst_name + \
-                              "\"; "+thresh_str+" } },"
-            for obs_thresh in obs_threshs:
-                obs_field += "{ name=\""+v.obs_name+"_"+obs_level.zfill(2) + \
-                             "\"; level=\"(*,*)\"; cat_thresh=[ " + \
-                             str(obs_thresh)+" ]; },"
-        else:
-            obs_data_type = util.get_filetype(obs_path)
-            model_data_type = util.get_filetype(model_path)
-            if obs_data_type == "NETCDF":
-
-              obs_field += "{ name=\"" + v.obs_name+"_" + obs_level.zfill(2) + \
-                           "\"; level=\"(*,*)\"; "
-
-            else:
-              obs_field += "{ name=\""+v.obs_name + \
-                            "\"; level=\"["+obs_level_type + \
-                            obs_level.zfill(2)+"]\"; "
-
-            if model_data_type == "NETCDF":
-                fcst_field += "{ name=\""+v.fcst_name+"_"+fcst_level.zfill(2) + \
-                              "\"; level=\"(*,*)\"; "
-            else:
-                fcst_field += "{ name=\""+v.fcst_name + \
-                              "\"; level=\"["+fcst_level_type + \
-                              fcst_level.zfill(2)+"]\"; "
-
-            fcst_field += fcst_cat_thresh+" },"
-
-            obs_field += obs_cat_thresh+ " },"
-
-        # remove last comma and } to be added back after extra options
-        fcst_field = fcst_field[0:-2]
-        obs_field = obs_field[0:-2]
-
-        fcst_field += v.fcst_extra+"}"
-        obs_field += v.obs_extra+"}"
-
-        ob_type = self.cg_dict["OB_TYPE"]
-        input_base = self.cg_dict["INPUT_BASE"]
-
-        self.add_env_var("MODEL", model_type)
+        self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
+        self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])
         self.add_env_var("FCST_VAR", v.fcst_name)
         self.add_env_var("OBS_VAR", v.obs_name)
-        self.add_env_var("LEVEL", v.fcst_level)
-        self.add_env_var("OBTYPE", ob_type)
-        self.add_env_var("CONFIG_DIR", config_dir)
+        self.add_env_var("LEVEL", self.split_level(v.fcst_level)[1])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
-        self.add_env_var("INPUT_BASE", input_base)
-        self.add_env_var("MET_VALID_HHMM", valid_time[4:8])
-        cmd = self.get_command()
+        self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
+        self.add_env_var("MET_VALID_HHMM", ti.getValidTime()[4:8])
 
         self.logger.debug("")
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_item("MODEL")
+        self.print_env_item("OBTYPE")
         self.print_env_item("FCST_VAR")
         self.print_env_item("OBS_VAR")
         self.print_env_item("LEVEL")
-        self.print_env_item("OBTYPE")
-        self.print_env_item("CONFIG_DIR")
         self.print_env_item("FCST_FIELD")
         self.print_env_item("OBS_FIELD")
-        self.print_env_item("INPUT_BASE")
-        self.print_env_item("MET_VALID_HHMM")        
-        self.logger.debug("")
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(["MODEL", "FCST_VAR", "OBS_VAR",
-                             "LEVEL", "OBTYPE", "CONFIG_DIR",
-                             "FCST_FIELD", "OBS_FIELD",
-                             "INPUT_BASE",
-                             "MET_VALID_HHMM"])
-        self.logger.debug("")
+        self.print_env_item("CONFIG_DIR")
+        self.print_env_item("MET_VALID_HHMM")
+
+        self.do_wrapper_specific_operations()
+
         cmd = self.get_command()
         if cmd is None:
             self.logger.error("ERROR: "+self.app_name+\
@@ -378,3 +351,30 @@ that reformat gridded data
         self.logger.info("")
         self.build()
         self.clear()
+
+            
+    def run_at_time_once(self, ti, v):
+        """! Runs the MET application for a given time and forecast lead combination
+              Args:
+                @param ti task_info object containing timing information
+                @param v var_info object containing variable information
+        """
+        # get model to compare
+        model_path = self.find_model(ti, v)
+        if model_path == "":
+            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR "+ti.getInitTime()+" f"+str(ti.lead))
+            return
+        self.add_input_file(model_path)
+
+        # get observation to compare
+        obs_path = self.find_obs(ti, v)
+        if obs_path == None:
+            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['OBS_INPUT_DIR']+" FOR "+ti.getInitTime()+" f"+str(ti.lead))
+            return
+        self.add_input_file(obs_path)
+
+        # for grid_stat, loop over all variables and all them to the field list, then call the app once
+        # for mode, loop over all variables and levels (and probability thresholds) and call the app for each
+        self.process_fields(ti, v, model_path, obs_path)
+        
+
