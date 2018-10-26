@@ -9,7 +9,8 @@
 //
 // Output model name to be written
 //
-model = "${MODEL}_ens_${DOMAIN}";
+//model = "${MODEL}_ens_${DOMAIN}";
+model = "${MODEL}_ens
 
 //
 // Output description to be written
@@ -120,9 +121,11 @@ obs_error = {
 //
 // Point observation time window
 //
+//   beg = -900;
+//   end =  900;
 obs_window = {
-   beg = -900;
-   end =  900;
+   beg = ${OBS_WINDOW_BEGIN};
+   end = ${OBS_WINDOW_END};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,10 +135,10 @@ obs_window = {
 //
 mask = {
    grid = [];
-   poly = [ "${MASKS}/EAST.nc",
-            "${MASKS}/WEST.nc",
-            "${MASKS}/CONUS.nc",
-            "${MASKS}/LMV.nc" ];
+   poly = [ "${CONFIG_DIR}/masks/EAST.nc",
+            "${CONFIG_DIR}/masks/WEST.nc",
+            "${CONFIG_DIR}/masks/CONUS.nc",
+            "${CONFIG_DIR}/masks/LMV.nc" ];
    sid  = [];
 }
 
@@ -192,7 +195,13 @@ ensemble_flag = {
 ////////////////////////////////////////////////////////////////////////////////
 
 grid_weight_flag = NONE;
-output_prefix    = "${MODEL}_${DOMAIN}_F${FCST_TIME}_ADPSFC";
-version          = "V7.1";
+//output_prefix    = "${MODEL}_${DOMAIN}_F${FCST_LEAD}_ADPSFC";
+output_prefix    = "${MODEL}_F${FCST_LEAD}_ADPSFC";
+
+//
+// Indicate a version number for the contents of this configuration file.
+// The value should generally not be modified.
+//
+//version =
 
 ////////////////////////////////////////////////////////////////////////////////

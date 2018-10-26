@@ -11,12 +11,14 @@
 //
 //message_type = [ "ADPUPA", "ADPSFC", "SFCSHP", "AIRCAR", "AIRCFT",
 //                 "MSONET", "PROFLR", "RASSDA", "VADWND" ];
-message_type = [ "ADPUPA", "ADPSFC", "AIRCFT", "PROFLR" ];
+//message_type = [ "ADPUPA", "ADPSFC", "AIRCFT", "PROFLR" ];
+message_type = ${PB2NC_MESSAGE_TYPE} ;
 
 //
 // PrepBufr station ID
 //
-station_id = [];
+//station_id = [];
+station_id = ${PB2NC_STATION_ID} ;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -24,9 +26,11 @@ station_id = [];
 // Observation time window
 //
 // For RC processing, set explicitly on command line
+//   beg = -900;
+//   end =  900;
 obs_window = {
-   beg = -900;
-   end =  900;
+   beg = ${OBS_WINDOW_BEGIN};
+   end = ${OBS_WINDOW_END};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -34,9 +38,11 @@ obs_window = {
 //
 // Observation retention regions
 //
+//   grid = "";
+//   poly = "";
 mask = {
-   grid = "";
-   poly = "";
+   grid = "${PB2NC_GRID}";
+   poly = "${PB2NC_POLY}";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +84,8 @@ level_category = [];
 // BUFR variable names to retain or derive.
 // If emtpy, process all available variables.
 //
-obs_bufr_var = [ "POB", "QOB", "TOB", "ZOB", "UOB", "VOB", "D_DPT", "D_WDIR", "D_WIND", "D_RH", "D_MIXR", "D_PRMSL" ];
+//obs_bufr_var = [ "POB", "QOB", "TOB", "ZOB", "UOB", "VOB", "D_DPT", "D_WDIR", "D_WIND", "D_RH", "D_MIXR", "D_PRMSL" ];
+obs_bufr_var = ${OBS_BUFR_VAR_LIST};
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -128,8 +135,12 @@ time_summary = {
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-// tmp_dir = "/lfs3/projects/rtwbl/beck/tmp";
-tmp_dir = "/lfs1/projects/dtc-hurr/James.T.Frimel/metplus/GSDENS_MET_test/tmp";
-version = "V7.1";
+tmp_dir = "/tmp";
+
+//
+// Indicate a version number for the contents of this configuration file.
+// The value should generally not be modified.
+//
+//version =
 
 ////////////////////////////////////////////////////////////////////////////////

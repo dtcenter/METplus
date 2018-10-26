@@ -55,15 +55,54 @@ class EnsembleStatWrapper(CompareEnsembleWrapper):
         ce_dict['LEAD_SEQ'] = \
             util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
 
-        ce_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL_TYPE', 'FCST')
+        ce_dict['MODEL'] = self.p.getstr('config', 'MODEL', 'HRRRE')
+
+        ce_dict['GRID_VX'] = self.p.getstr('config', 'GRID_VX', 'FCST')
+
         ce_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE', 'OBS')
 
         ce_dict['CONFIG_DIR'] = \
             self.p.getdir('CONFIG_DIR',
-                          self.p.getdir('METPLUS_BASE')+'/parm/met_config')
-        ce_dict['CONFIG_FILE'] = \
+                          self.p.getdir('PARM_BASE')+'/use_cases/ensemble//met_config')
+        ce_dict['MET_CONFIG_FILE'] = \
             self.p.getstr('config', 'ENSEMBLE_STAT_CONFIG',
                           ce_dict['CONFIG_DIR']+'/EnsembleStatConfig_SFC')
+
+        # met_obs_error_table is not required, if it is not defined
+        # set it to the empty string '', that way the MET default is used.
+        ce_dict['MET_OBS_ERROR_TABLE'] = \
+            self.p.getstr('config', 'MET_OBS_ERROR_TABLE','')
+
+        # TODO: jtf This is beta functionality
+        # This fully works and has been tested ... but present to the
+        # team to see if we want something like this ...
+        # The following text is meant to be moved to the conf file it
+        # we add this capability ...
+        # [user_env_vars]
+        # user_env_vars section:
+        # Use this section to define new environment variable that you would
+        # like exported to the runtime environment, where they can be accessed
+        # and used by MET. This is really just a convenience so any new
+        # environment variables you may want to be defined can be maintained
+        # in this conf file. rather than putting them in your login shell.
+        #
+        # All variables in the user_env_vars section will be exported
+        # The user_env_vars section is not required.
+        # The user_env_vars section can be empty
+
+        # Setup the user_env_vars section.
+        # All variables in the user_env_vars section of a conf file will
+        # be exported to the environment, where they may be accessed
+        # and used by MET.
+        # We add a user_env_vars section to the conf object if it does not exist.
+        # Doing so simplifies the use of  user_env_vars in the code
+        # since you will not have to check for the existence of the section
+        # with each reference, at the very least it will
+        # be an empty list [] and any for loops will not be entered.
+        if 'user_env_vars' not in self.p.sections():
+            self.p.add_section('user_env_vars')
+        for env_var in self.p.keys('user_env_vars'):
+            ce_dict[env_var]=self.p.getstr('user_env_vars',env_var,'')
 
         # No Default being set this is REQUIRED TO BE DEFINED in conf file.
         ce_dict['N_ENSEMBLE_MEMBERS'] = \
@@ -101,10 +140,10 @@ class EnsembleStatWrapper(CompareEnsembleWrapper):
         ce_dict['FCST_INIT_INTERVAL'] = \
             self.p.getint('config', 'FCST_INIT_INTERVAL', 12)
 
-        ce_dict['WINDOW_RANGE_BEG'] = \
-          self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
-        ce_dict['WINDOW_RANGE_END'] = \
-          self.p.getint('config', 'WINDOW_RANGE_END', 3600)
+        ce_dict['OBS_WINDOW_BEGIN'] = \
+          self.p.getint('config', 'OBS_WINDOW_BEGIN', -3600)
+        ce_dict['OBS_WINDOW_END'] = \
+          self.p.getint('config', 'OBS_WINDOW_END', 3600)
         ce_dict['OBS_EXACT_VALID_TIME'] = \
             self.p.getbool('config','OBS_EXACT_VALID_TIME',True)
         return ce_dict

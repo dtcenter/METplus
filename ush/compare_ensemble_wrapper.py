@@ -148,12 +148,12 @@ that compares ensemble data
             if level:
                 model_ss = sts.StringSub(self.logger, ens_member_template,
                                              init=time_check,
-                                             lead=str(lead_check).zfill(2),
+                                             lead=str(lead_check),
                                              level=str(level.split('-')[0]).zfill(2))
             else:
                 model_ss = sts.StringSub(self.logger, ens_member_template,
                                              init=time_check,
-                                             lead=str(lead_check).zfill(2))
+                                             lead=str(lead_check))
             member_file = model_ss.doStringSub()
             member_path = os.path.join(model_dir, member_file)
 
@@ -219,8 +219,8 @@ that compares ensemble data
         closest_file = ""
         closest_time = 9999999
 
-        valid_range_lower = self.ce_dict['WINDOW_RANGE_BEG']
-        valid_range_upper = self.ce_dict['WINDOW_RANGE_END']
+        valid_range_lower = self.ce_dict['OBS_WINDOW_BEGIN']
+        valid_range_upper = self.ce_dict['OBS_WINDOW_END']
         lower_limit = int(datetime.datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
                                                  "%Y%m%d%H%M").strftime("%s"))
         upper_limit = int(datetime.datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
@@ -301,7 +301,7 @@ that compares ensemble data
         if(obs_level[0].isalpha()):
             obs_level_type = obs_level[0]
             obs_level = obs_level[1:]            
-        model_type = self.ce_dict['MODEL_TYPE']
+        model = self.ce_dict['MODEL']
         obs_dir = self.ce_dict['OBS_INPUT_DIR']
         obs_template = self.ce_dict['OBS_INPUT_TEMPLATE']
         model_dir = self.ce_dict['FCST_INPUT_DIR']
@@ -312,12 +312,12 @@ that compares ensemble data
             os.makedirs(out_dir)
 
         # get model to compare
-        model_member_paths =  self.find_model_members(ti.lead, init_time,
+        model_member_paths =  self.find_model_members(ti.getLeadTime(), init_time,
                                                       fcst_level)
 
         if not model_member_paths:
             self.logger.error("Missing Ensemble Member FILEs IN "
-                              +model_dir+" FOR "+init_time+" f"+str(ti.lead))
+                              +model_dir+" FOR "+init_time+" f"+str(ti.getLeadTime()))
             return
 
         if int(self.ce_dict['N_ENSEMBLE_MEMBERS']) != \
@@ -347,21 +347,9 @@ that compares ensemble data
         # template.
 
         if self.ce_dict['OBS_EXACT_VALID_TIME']:
-            #original call from compare_grid_wrapper.py
-            #obsSts = sts.StringSub(self.logger,
-            #                       obs_template,
-            #                       valid=valid_time,
-            #                       init=init_time,
-            #                       level=str(obs_level.split('-')[0]).zfill(2))
-            #obsSts = sts.StringSub(self.logger,
-            #                       obs_template,
-            #                       cycle=str(ti.lead),
-            #                       valid=valid_time,
-            #                       init=init_time,
-            #                       level=str(obs_level.split('-')[0]).zfill(2))
             obsSts = sts.StringSub(self.logger,
                                    obs_template,
-                                   lead=str(ti.lead),
+                                   lead=str(ti.getLeadTime()),
                                    valid=valid_time,
                                    init=init_time,
                                    level=str(obs_level.split('-')[0]).zfill(2))
@@ -373,7 +361,7 @@ that compares ensemble data
             obs_path = self.find_obs(ti)
 
         self.add_point_obs_file(obs_path)
-        self.set_param_file(self.ce_dict['CONFIG_FILE'])
+        self.set_param_file(self.ce_dict['MET_CONFIG_FILE'])
         self.set_output_dir(out_dir)
 
         # set up environment variables for each run
@@ -465,7 +453,32 @@ that compares ensemble data
         ob_type = self.ce_dict["OB_TYPE"]
         input_base = self.ce_dict["INPUT_BASE"]
 
-        self.add_env_var("MODEL", model_type)
+        # Only export the MET_OBS_ERROR_TABLE to the environment if
+        # it is defined. That way if it is not defined, that is, an
+        # empty string '', than the default table under the MET share
+        # directory is used.
+        met_obs_error_table = self.ce_dict["MET_OBS_ERROR_TABLE"]
+
+        # TODO jtf put logic here to automatically determine field width
+        # based on the forecast length ... ie. 36 or 126 max lead ...
+        cur_lead = '{:02d}'.format(int(ti.getLeadTime()))
+
+        # Automatically format field width based on forecast length
+        # This returns 2, the length of the last element in
+        # a sequence ['1','4','55']
+        # num_digits = len(util.getlist(self.p.getstr('config','LEAD_SEQ'))[-1:][0])
+        # field_width = '{:0%sd}'%str(num_digits)
+        # field_width = '{{:0{0}d}}'.format(num_digits)
+        # Either way, sets field_width to '{:02d}'
+        # now I can format my lead
+        # field_width.format(int(lead))
+
+        #Add any user_env_vars environment variables.
+        for env_var in self.p.keys('user_env_vars'):
+            self.add_env_var(env_var, self.ce_dict[env_var])
+        if met_obs_error_table:
+            self.add_env_var("MET_OBS_ERROR_TABLE", met_obs_error_table)
+        self.add_env_var("MODEL", model)
         self.add_env_var("FCST_VAR", v.fcst_name)
         self.add_env_var("OBS_VAR", v.obs_name)
         self.add_env_var("LEVEL", v.fcst_level)
@@ -474,11 +487,15 @@ that compares ensemble data
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
         self.add_env_var("INPUT_BASE", input_base)
-        self.add_env_var("MET_VALID_HHMM", valid_time[4:8])
+        self.add_env_var("FCST_LEAD",cur_lead)
         cmd = self.get_command()
 
         self.logger.debug("")
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+        for env_var in self.p.keys('user_env_vars'):
+            self.print_env_item(env_var)
+        if met_obs_error_table:
+            self.print_env_item("MET_OBS_ERROR_TABLE")
         self.print_env_item("MODEL")
         self.print_env_item("FCST_VAR")
         self.print_env_item("OBS_VAR")
@@ -488,14 +505,24 @@ that compares ensemble data
         self.print_env_item("FCST_FIELD")
         self.print_env_item("OBS_FIELD")
         self.print_env_item("INPUT_BASE")
-        self.print_env_item("MET_VALID_HHMM")        
+        self.print_env_item("FCST_LEAD")
         self.logger.debug("")
+
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(["MODEL", "FCST_VAR", "OBS_VAR",
-                             "LEVEL", "OBTYPE", "CONFIG_DIR",
-                             "FCST_FIELD", "OBS_FIELD",
-                             "INPUT_BASE",
-                             "MET_VALID_HHMM"])
+        if met_obs_error_table:
+            self.print_env_copy(self.p.keys('user_env_vars') +
+                                ["MET_OBS_ERROR_TABLE", "MODEL",
+                                 "FCST_VAR", "OBS_VAR", "LEVEL",
+                                 "OBTYPE", "CONFIG_DIR",
+                                 "FCST_FIELD", "OBS_FIELD",
+                                 "INPUT_BASE", "FCST_LEAD"])
+        else:
+            self.print_env_copy(self.p.keys('user_env_vars') +
+                                ["MODEL", "FCST_VAR", "OBS_VAR",
+                                 "LEVEL", "OBTYPE", "CONFIG_DIR",
+                                 "FCST_FIELD", "OBS_FIELD",
+                                 "INPUT_BASE", "FCST_LEAD"])
+
         self.logger.debug("")
         cmd = self.get_command()
         if cmd is None:
@@ -504,11 +531,7 @@ that compares ensemble data
             return
         self.logger.info("")
         self.build()
-        #self.logger.info('=====================================================================')
-        #self.logger.info("{:s}".format(cmd))
-        #for arg in cmd.split():
-        #    self.logger.info("{:s}".format(arg))
-        #self.clear()
+        self.clear()
 
     def run_at_time_once_no_var_list(self, ti):
         """! Runs the MET application for a given time and forecast lead combination
@@ -526,7 +549,8 @@ that compares ensemble data
             out_dir = os.path.join(base_dir,
                                    valid_time, self.app_name)
 
-        model_type = self.ce_dict['MODEL_TYPE']
+        model = self.ce_dict['MODEL']
+        grid_vx = self.ce_dict['GRID_VX']
         obs_dir = self.ce_dict['OBS_INPUT_DIR']
         obs_template = self.ce_dict['OBS_INPUT_TEMPLATE']
         model_dir = self.ce_dict['FCST_INPUT_DIR']
@@ -537,11 +561,11 @@ that compares ensemble data
             os.makedirs(out_dir)
 
         # get model to compare
-        model_member_paths = self.find_model_members(ti.lead, init_time)
+        model_member_paths = self.find_model_members(ti.getLeadTime(), init_time)
 
         if not model_member_paths:
             self.logger.error("Missing Ensemble Member FILEs IN "
-                              + model_dir + " FOR " + init_time + " f" + str(ti.lead))
+                              + model_dir + " FOR " + init_time + " f" + str(ti.getLeadTime()))
             return
 
         if int(self.ce_dict['N_ENSEMBLE_MEMBERS']) != \
@@ -553,9 +577,10 @@ that compares ensemble data
             return
 
         # TODO: jtf add ensemble file list file
-        # if N_ENSEMBLE_MEMBERS is not defined, use that as
-        # a trigger to indicate a file with list of members will be
-        # used instead.
+        # if N_ENSEMBLE_MEMBERS is not defined, Maybe use that as
+        # a trigger to indicate use an inputfile with list of members
+        # in the command to ensemble_stat will be
+        # used instead listing all the files on the command line?
 
         # Add the number of ensemble members to the MET command
         self.set_input_file_num(self.ce_dict['N_ENSEMBLE_MEMBERS'])
@@ -573,7 +598,7 @@ that compares ensemble data
         if self.ce_dict['OBS_EXACT_VALID_TIME']:
             obsSts = sts.StringSub(self.logger,
                                    obs_template,
-                                   lead=str(ti.lead),
+                                   lead=str(ti.getLeadTime()),
                                    valid=valid_time,
                                    init=init_time)
 
@@ -584,35 +609,71 @@ that compares ensemble data
             obs_path = self.find_obs(ti)
 
         self.add_point_obs_file(obs_path)
-        self.set_param_file(self.ce_dict['CONFIG_FILE'])
+        self.set_param_file(self.ce_dict['MET_CONFIG_FILE'])
         self.set_output_dir(out_dir)
 
         # set up environment variables for each run
         # get fcst and obs thresh parameters
         # verify they are the same size
 
-
         ob_type = self.ce_dict["OB_TYPE"]
         input_base = self.ce_dict["INPUT_BASE"]
 
-        self.add_env_var("MODEL", model_type)
+        # Only add the met_obs_error_table to te environment if
+        # it is define in the METplus conf. That way if it isn't,
+        # than the default is used.
+        met_obs_error_table = self.ce_dict["MET_OBS_ERROR_TABLE"]
+
+        #TODO jtf put logic here to automatically determine field width
+        # based on the forecast length ... ie. 36 or 126 max lead ...
+        cur_lead = '{:02d}'.format(int(ti.getLeadTime()))
+
+        # Automatically format field width based on forecast length
+        # This returns 2, the length of the last element in
+        # a sequence ['1','4','55']
+        # num_digits = len(util.getlist(self.p.getstr('config','LEAD_SEQ'))[-1:][0])
+        # field_width = '{:0%sd}'%str(num_digits)
+        # field_width = '{{:0{0}d}}'.format(num_digits)
+        # Either way, sets field_width to '{:02d}'
+        # now I can format my lead
+        # field_width.format(int(lead))
+
+        #Add any user_env_vars environment variables.
+        for env_var in self.p.keys('user_env_vars'):
+            self.add_env_var(env_var, self.ce_dict[env_var])
+        if met_obs_error_table:
+            self.add_env_var("MET_OBS_ERROR_TABLE", met_obs_error_table)
+        self.add_env_var("MODEL", model)
+        self.add_env_var("GRID_VX", grid_vx)
         self.add_env_var("OBTYPE", ob_type)
         self.add_env_var("CONFIG_DIR", config_dir)
         self.add_env_var("INPUT_BASE", input_base)
-        self.add_env_var("MET_VALID_HHMM", valid_time[4:8])
+        self.add_env_var("FCST_LEAD",cur_lead)
         cmd = self.get_command()
 
         self.logger.debug("")
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+        for env_var in self.p.keys('user_env_vars'):
+            self.print_env_item(env_var)
+        if met_obs_error_table:
+            self.print_env_item("MET_OBS_ERROR_TABLE")
         self.print_env_item("MODEL")
+        self.print_env_item("GRID_VX")
         self.print_env_item("OBTYPE")
         self.print_env_item("CONFIG_DIR")
         self.print_env_item("INPUT_BASE")
-        self.print_env_item("MET_VALID_HHMM")
+        self.print_env_item("FCST_LEAD")
         self.logger.debug("")
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(["MODEL", "OBTYPE", "CONFIG_DIR",
-                             "INPUT_BASE", "MET_VALID_HHMM"])
+        if met_obs_error_table:
+            self.print_env_copy(self.p.keys('user_env_vars') +
+                                ["MET_OBS_ERROR_TABLE", "MODEL", "GRID_VX",
+                                 "OBTYPE", "CONFIG_DIR", "INPUT_BASE",
+                                 "FCST_LEAD"])
+        else:
+            self.print_env_copy(self.p.keys('user_env_vars') +
+                                ["MODEL", "OBTYPE", "GRID_VX", "CONFIG_DIR",
+                                 "INPUT_BASE","FCST_LEAD"])
         self.logger.debug("")
         cmd = self.get_command()
         if cmd is None:
@@ -620,9 +681,7 @@ that compares ensemble data
                               " could not generate command")
             return
         self.logger.info("")
-        #self.build()
-        #self.logger.info('=====================================================================')
-        #self.logger.info("{:s}".format(cmd))
-        #for arg in cmd.split():
-        #    self.logger.info("{:s}".format(arg))
+        self.build()
         self.clear()
+
+
