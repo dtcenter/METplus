@@ -1,0 +1,150 @@
+
+README
+
+This README describes general information related to the current
+implemenation of the ensemble use case.
+
+
+2018 oct 24
+===============================================================================
+
+Overview:
+
+*)
+You can not run ensemble_stat one field variable at a time,  as you can
+with grid_stat. This fucntionality is not yet implemented in the 
+ensemble_stat use case.
+ FCST_VAR<n>_ vars: Currently NOT support for ensemble stat.
+ Set ens, fcst, obs field variables in the MET config file.
+ Variables and levels as specified in the field dictionary of the MET
+ configuration file. Specify as FCST_VARn_NAME, FCST_VARn_LEVELS,
+ (optional) FCST_VARn_OPTION
+
+FCST_VAR1_NAME = TMP
+FCST_VAR1_LEVELS = Z2
+FCST_VAR2_NAME = RH
+FCST_VAR2_LEVELS = Z2
+FCST_VAR3_NAME = TCDC
+FCST_VAR3_LEVELS = L0
+FCST_VAR3_OPTIONS = GRIB_lvl_typ = 200
+
+This implies you must set these variables in the MET config file
+and all variables are processed at the same time. If you require
+one at a time, you must create/define and run seperate MET config files.
+
+*)
+Regarding specifying the filename template for ensemble filenames, 
+In additions to the standard time support, you must use either 
+filename wildcards OR specifically list ALL the members.
+The time format keywords supported, in either case are: init?fmt= and lead?fmt=
+ie.
+FCST_ENSEMBLE_STAT_INPUT_TEMPLATE = {init?fmt=%Y%m%d%H}/postprd_mem000?/wrfprs_conus_mem000?_{lead?fmt=%HH}.grib2
+
+FCST_ENSEMBLE_STAT_INPUT_TEMPLATE =
+    {init?fmt=%Y%m%d%H}/postprd_mem0001/wrfprs_conus_mem0001_{lead?fmt=%HH}.grib2,
+    {init?fmt=%Y%m%d%H}/postprd_mem0002/wrfprs_conus_mem0002_{lead?fmt=%HH}.grib2,
+    {init?fmt=%Y%m%d%H}/postprd_mem0003/wrfprs_conus_mem0003_{lead?fmt=%HH}.grib2,
+    {init?fmt=%Y%m%d%H}/postprd_mem0004/wrfprs_conus_mem0004_{lead?fmt=%HH}.grib2,
+    {init?fmt=%Y%m%d%H}/postprd_mem0005/wrfprs_conus_mem0005_{lead?fmt=%HH}.grib2,
+    {init?fmt=%Y%m%d%H}/postprd_mem0006/wrfprs_conus_mem0006_{lead?fmt=%HH}.grib2,
+    {init?fmt=%Y%m%d%H}/postprd_mem0007/wrfprs_conus_mem0007_{lead?fmt=%HH}.grib2,
+    {init?fmt=%Y%m%d%H}/postprd_mem0008/wrfprs_conus_mem0008_{lead?fmt=%HH}.grib2,
+    {init?fmt=%Y%m%d%H}/postprd_mem0009/wrfprs_conus_mem0009_{lead?fmt=%HH}.grib2
+
+-----------------
+
+NOTE THE FOLLOWING.
+It has ONLY been tested  with the following settings/versions.
+ 
+*)
+MET v7.1 beta or later and requires that when using obs_error.txt
+
+*)
+YOU MUST USE THE following METplus CONF settings ...
+Anything other than the following has not been tested
+for the ensemble stat use case.
+
+LOOP_METHOD = processes  (pb2nc, ensemble_stat)
+TIME_METHOD = BY_INIT    (pb2nc)
+
+LOOP_BY_INIT = true      (ensemble_stat) see below for details.
+
+*)
+Field Variables ens, fcst, obs Must be set in the MET config file.
+These currently are not supported in the METplus config file.
+
+*)
+PB2NC requires  /YYYYMMDD subdirectories for prepbufr input file 
+struture to run pb2nc. 
+
+*)
+jet: /lfs1/projects/dtc-hurr/MET/MET_releases/7.1_beta6/share/met/config/README
+
+Recommend read: MET configuration file README
+
+MET_INSTALL_DIR/share/met/config/README
+
+// The "tmp_dir" entry in ConfigConstants defines the directory for the
+// temporary files. The directory must exist and be writable. The environment
+// variable MET_TMP_DIR overrides the default value at the configuration file.
+// Some tools override the temporary directory by the command line argument
+// "-tmp_dir <diretory_name>".
+tmp_dir = "/tmp";
+
+
+// By default, the MET_BASE/data/table_files/obs_error_table.txt file is read
+// but this may be overridden by setting the $MET_OBS_ERROR_TABLE environment
+// variable at runtime.
+
+==================================================
+GSD HRRRE SFC Test Case 
+
+1 init time 2018070912 with 37 hourly lead times ... with leads 00 ... 36
+
+LOOP_BY_INIT = True
+INIT_BEG=2018070912
+INIT_END=2018070912
+INIT_INCREMENT=3600 ( 1 hour, but will not be used since I have 1 init time ...)
+LEAD_SEQ=0,1, 2, 3, ... 35, 36     (In short ...)
+
+======================================================
+The Explained behavior of LOOP_BY_INIT = True or False
+
+LOOP_BY_INIT = True
+Step through initialization times and loop through each forecast lead relative to that init time
+
+Example:
+LOOP_BY_INIT = True
+INIT_BEG=2018010100
+INIT_END=2018010112
+INIT_INCREMENT=21600 (6 hours)
+LEAD_SEQ=3, 6
+
+This will run 
+20180101 00Z initialization, 3 hr forecast valid 20180101 03Z
+20180101 00Z initialization, 6 hr forecast valid 20180101 06Z
+20180101 06Z initialization, 3 hr forecast valid 20180101 09Z
+20180101 06Z initialization, 6 hr forecast valid 20180101 12Z
+20180101 12Z initialization, 3 hr forecast valid 20180101 15Z
+20180101 12Z initialization, 6 hr forecast valid 20180101 18Z
+
+LOOP_BY_INIT = False
+Step through valid times and loop through each forecast lead relative to that init time
+
+Example:
+LOOP_BY_INIT = False
+VALID_BEG=2018010100
+VALID_END=2018010112
+VALID_INCREMENT=21600 (6 hours)
+LEAD_SEQ=3, 6
+
+This will run 
+20180101 00Z valid, 3 hr forecast initialized 20171231 21Z
+20180101 00Z valid, 6 hr forecast initialized 20171231 18Z
+20180101 06Z valid, 3 hr forecast initialized 20180101 03Z
+20180101 06Z valid, 6 hr forecast initialized 20180101 00Z
+20180101 12Z valid, 3 hr forecast initialized 20180101 09Z
+20180101 12Z valid, 6 hr forecast initialized 20180101 06Z
+
+The method of looping will determine how the output files are named (valid or init time).
+
