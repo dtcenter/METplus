@@ -61,9 +61,10 @@ class EnsembleStatWrapper(CompareEnsembleWrapper):
 
         ce_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE', 'OBS')
 
+        # CONFIG_DIR is passed to MET via an environment variable.
         ce_dict['CONFIG_DIR'] = \
             self.p.getdir('CONFIG_DIR',
-                          self.p.getdir('PARM_BASE')+'/use_cases/ensemble//met_config')
+                          self.p.getdir('PARM_BASE')+'/use_cases/ensemble/met_config')
         ce_dict['MET_CONFIG_FILE'] = \
             self.p.getstr('config', 'ENSEMBLE_STAT_CONFIG',
                           ce_dict['CONFIG_DIR']+'/EnsembleStatConfig_SFC')

@@ -10,7 +10,7 @@
 // Output model name to be written
 //
 //model = "${MODEL}_ens_${DOMAIN}";
-model = "${MODEL}_ens
+model = "${MODEL}_ens";
 
 //
 // Output description to be written

@@ -168,14 +168,16 @@ that compares ensemble data
         # info. For now we are assuming member_path has wild cards that can
         # be globbed.
 
-        # This is if FCST_INPUT_TEMPLATE on has 1 item in its template list
+        # This is if FCST_INPUT_TEMPLATE has 1 item in its template list
         #  and the template has filename wild cards to glob and match files.
         # /somevalidpath/postprd_mem000?/wrfprs_conus_mem000?_00.grib2
         if int(self.ce_dict['N_ENSEMBLE_MEMBERS']) > 1 \
                 and len(ens_members_template) == 1:
+            # yes, we are re-assigning ens_member path, at this point
+            # before re-assignment,  member_path == ens_member_path[0]
             ens_members_path = sorted(glob.glob(member_path))
             self.logger.debug('Ensemble Members File pattern: %s'%
-                              ens_members_template[0])
+                              member_path)
             self.logger.debug('Number of Members matching File Pattern: ' +
                               str(len(ens_members_path)))
 
@@ -453,6 +455,9 @@ that compares ensemble data
         ob_type = self.ce_dict["OB_TYPE"]
         input_base = self.ce_dict["INPUT_BASE"]
 
+        obs_window_begin = str(self.ce_dict["OBS_WINDOW_BEGIN"])
+        obs_window_end = str(self.ce_dict["OBS_WINDOW_END"])
+
         # Only export the MET_OBS_ERROR_TABLE to the environment if
         # it is defined. That way if it is not defined, that is, an
         # empty string '', than the default table under the MET share
@@ -488,6 +493,9 @@ that compares ensemble data
         self.add_env_var("OBS_FIELD", obs_field)
         self.add_env_var("INPUT_BASE", input_base)
         self.add_env_var("FCST_LEAD",cur_lead)
+        self.add_env_var("OBS_WINDOW_BEGIN", obs_window_begin)
+        self.add_env_var("OBS_WINDOW_END", obs_window_end)
+
         cmd = self.get_command()
 
         self.logger.debug("")
@@ -506,6 +514,8 @@ that compares ensemble data
         self.print_env_item("OBS_FIELD")
         self.print_env_item("INPUT_BASE")
         self.print_env_item("FCST_LEAD")
+        self.print_env_item("OBS_WINDOW_BEGIN")
+        self.print_env_item("OBS_WINDOW_END")
         self.logger.debug("")
 
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
@@ -515,13 +525,15 @@ that compares ensemble data
                                  "FCST_VAR", "OBS_VAR", "LEVEL",
                                  "OBTYPE", "CONFIG_DIR",
                                  "FCST_FIELD", "OBS_FIELD",
-                                 "INPUT_BASE", "FCST_LEAD"])
+                                 "INPUT_BASE", "FCST_LEAD",
+                                 "OBS_WINDOW_BEGIN", "OBS_WINDOW_END"])
         else:
             self.print_env_copy(self.p.keys('user_env_vars') +
                                 ["MODEL", "FCST_VAR", "OBS_VAR",
                                  "LEVEL", "OBTYPE", "CONFIG_DIR",
                                  "FCST_FIELD", "OBS_FIELD",
-                                 "INPUT_BASE", "FCST_LEAD"])
+                                 "INPUT_BASE", "FCST_LEAD",
+                                 "OBS_WINDOW_BEGIN", "OBS_WINDOW_END"])
 
         self.logger.debug("")
         cmd = self.get_command()
@@ -619,6 +631,9 @@ that compares ensemble data
         ob_type = self.ce_dict["OB_TYPE"]
         input_base = self.ce_dict["INPUT_BASE"]
 
+        obs_window_begin = str(self.ce_dict["OBS_WINDOW_BEGIN"])
+        obs_window_end = str(self.ce_dict["OBS_WINDOW_END"])
+
         # Only add the met_obs_error_table to te environment if
         # it is define in the METplus conf. That way if it isn't,
         # than the default is used.
@@ -649,6 +664,8 @@ that compares ensemble data
         self.add_env_var("CONFIG_DIR", config_dir)
         self.add_env_var("INPUT_BASE", input_base)
         self.add_env_var("FCST_LEAD",cur_lead)
+        self.add_env_var("OBS_WINDOW_BEGIN", obs_window_begin)
+        self.add_env_var("OBS_WINDOW_END", obs_window_end)
         cmd = self.get_command()
 
         self.logger.debug("")
@@ -663,17 +680,21 @@ that compares ensemble data
         self.print_env_item("CONFIG_DIR")
         self.print_env_item("INPUT_BASE")
         self.print_env_item("FCST_LEAD")
+        self.print_env_item("OBS_WINDOW_BEGIN")
+        self.print_env_item("OBS_WINDOW_END")
         self.logger.debug("")
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         if met_obs_error_table:
             self.print_env_copy(self.p.keys('user_env_vars') +
                                 ["MET_OBS_ERROR_TABLE", "MODEL", "GRID_VX",
                                  "OBTYPE", "CONFIG_DIR", "INPUT_BASE",
-                                 "FCST_LEAD"])
+                                 "FCST_LEAD", "OBS_WINDOW_BEGIN", 
+                                 "OBS_WINDOW_END"])
         else:
             self.print_env_copy(self.p.keys('user_env_vars') +
                                 ["MODEL", "OBTYPE", "GRID_VX", "CONFIG_DIR",
-                                 "INPUT_BASE","FCST_LEAD"])
+                                 "INPUT_BASE","FCST_LEAD", "OBS_WINDOW_BEGIN",
+                                 "OBS_WINDOW_END"])
         self.logger.debug("")
         cmd = self.get_command()
         if cmd is None:
@@ -683,5 +704,4 @@ that compares ensemble data
         self.logger.info("")
         self.build()
         self.clear()
-
 
