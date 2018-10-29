@@ -92,8 +92,7 @@ class ModeWrapper(CompareGriddedWrapper):
                             "\"; "+thresh_str+" } },"
             # TODO: do not use cat_thresh for mode
             obs_field += "{ name=\""+v.obs_name+"_"+obs_level.zfill(2) + \
-                         "\"; level=\"(*,*)\"; cat_thresh=[ " + \
-                         str(obs_thresh)+" ]; },"
+                         "\"; level=\"(*,*)\"; },"
         else:
             obs_data_type = util.get_filetype(obs_path)
             model_data_type = util.get_filetype(model_path)
