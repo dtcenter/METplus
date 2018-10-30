@@ -189,7 +189,7 @@ that reformat gridded data
         else:
             return None
 
-    def get_field_info(self, v, obs_path, model_path):
+    def get_field_info(self, v, model_path, obs_path):
         fcst_level_type, fcst_level = self.split_level(v.fcst_level)
         obs_level_type, obs_level = self.split_level(v.obs_level)
 
@@ -289,14 +289,43 @@ that reformat gridded data
         lead_seq = self.cg_dict['LEAD_SEQ']
         for lead in lead_seq:
             task_info.lead = lead
-            self.run_at_time_all_fields(task_info, var_list)
+            self.run_at_time_once(task_info, var_list)
 
 
     def run_at_time_all_fields(self, task_info, var_list):
+        # get model from first var to compare
+        model_path = self.find_model(task_info, var_list[0])
+        if model_path == "":
+            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR "+task_info.getInitTime()+" f"+str(task_info.lead))
+            return
+        self.add_input_file(model_path)
+
+        # get observation to from first var compare
+        obs_path = self.find_obs(task_info, var_list[0])
+        if obs_path == None:
+            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['OBS_INPUT_DIR']+" FOR "+task_info.getInitTime()+" f"+str(task_info.lead))
+            return
+        self.add_input_file(obs_path)
+
+        fcst_field_list = []
+        obs_field_list = []
+        for v in var_list:
+            next_fcst, next_obs = self.get_field_info(v, model_path, obs_path)
+            fcst_field_list.append(next_fcst)
+            obs_field_list.append(next_obs)
+        fcst_field = ','.join(fcst_field_list)
+        obs_field = ','.join(obs_field_list)
+
+        self.process_fields(task_info, v, fcst_field, obs_field)
+
+    def run_at_time_once(self, task_info, var_list):
         # run app once for each field with all levels in each
         # TODO: implement method to add all fields and levels to a single call
-        for var_info in var_list:
-            self.run_at_time_once(task_info, var_info)
+        if self.cg_dict['ONCE_PER_FIELD']:
+            for var_info in var_list:
+                self.run_at_time_one_field(task_info, var_info)
+        else:
+            self.run_at_time_all_fields(task_info, var_list)
 
     def create_and_set_output_dir(self, ti):
         base_dir = self.cg_dict['OUTPUT_DIR']
@@ -310,20 +339,18 @@ that reformat gridded data
             os.makedirs(out_dir)
         self.set_output_dir(out_dir)
 
-    def process_fields(self, ti, v, model_path, obs_path):
+    def process_fields(self, ti, v, fcst_field, obs_field):
         # set up environment variables for each run
         # get fcst and obs thresh parameters
         # verify they are the same size
         self.set_param_file(self.cg_dict['CONFIG_FILE'])
         self.create_and_set_output_dir(ti)
         
-        fcst_field, obs_field = self.get_field_info(v, obs_path, model_path)
-
         self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
         self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])
         self.add_env_var("FCST_VAR", v.fcst_name)
         self.add_env_var("OBS_VAR", v.obs_name)
-        self.add_env_var("LEVEL", self.split_level(v.fcst_level)[1])
+        self.add_env_var("LEVEL", v.fcst_level)
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
         self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
@@ -353,7 +380,7 @@ that reformat gridded data
         self.clear()
 
             
-    def run_at_time_once(self, ti, v):
+    def run_at_time_one_field(self, ti, v):
         """! Runs the MET application for a given time and forecast lead combination
               Args:
                 @param ti task_info object containing timing information
@@ -375,6 +402,7 @@ that reformat gridded data
 
         # for grid_stat, loop over all variables and all them to the field list, then call the app once
         # for mode, loop over all variables and levels (and probability thresholds) and call the app for each
-        self.process_fields(ti, v, model_path, obs_path)
+        fcst_field, obs_field = self.get_field_info(v, model_path, obs_path)
+        self.process_fields(ti, v, fcst_field, obs_field)
         
 

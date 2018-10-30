@@ -58,14 +58,39 @@ class ModeWrapper(CompareGriddedWrapper):
         self.cg_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
                                                               'OBS_EXACT_VALID_TIME',
                                                               True)
+        self.cg_dict['ONCE_PER_FIELD'] = True
         self.cg_dict['QUILT'] = self.p.getbool('config', 'MODE_QUILT', False)
         self.cg_dict['CONV_RADIUS'] = self.p.getstr('config', 'MODE_CONV_RADIUS', "5")
         self.cg_dict['CONV_THRESH'] = self.p.getstr('config', 'MODE_CONV_THRESH', ">0.5")
         self.cg_dict['MERGE_THRESH'] = self.p.getstr('config', 'MODE_MERGE_THRESH', ">0.45")
         self.cg_dict['MERGE_FLAG'] = self.p.getstr('config', 'MODE_MERGE_FLAG', "THRESH")
 
+    def run_at_time_one_field(self, ti, v):
+        """! Runs the MET application for a given time and forecast lead combination
+              Args:
+                @param ti task_info object containing timing information
+                @param v var_info object containing variable information
+        """
+        # get model to compare
+        model_path = self.find_model(ti, v)
+        if model_path == "":
+            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR "+ti.getInitTime()+" f"+str(ti.lead))
+            return
+#        self.add_input_file(model_path)
 
-    def get_field_info(self, v, obs_path, model_path, fcst_thresh, obs_thresh):
+        # get observation to compare
+        obs_path = self.find_obs(ti, v)
+        if obs_path == None:
+            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['OBS_INPUT_DIR']+" FOR "+ti.getInitTime()+" f"+str(ti.lead))
+            return
+#        self.add_input_file(obs_path)
+
+        # for mode, loop over all variables and levels (and probability thresholds) and call the app for each
+#        fcst_field, obs_field = self.get_field_info(v, obs_path, model_path)
+        self.process_fields_one_thresh(ti, v, model_path, obs_path)
+
+
+    def get_field_info_mode(self, v, model_path, obs_path, fcst_thresh, obs_thresh):
         fcst_level_type, fcst_level = self.split_level(v.fcst_level)
         obs_level_type, obs_level = self.split_level(v.obs_level)
 
@@ -120,7 +145,7 @@ class ModeWrapper(CompareGriddedWrapper):
         obs_field = obs_field[0:-2] + v.obs_extra+"}"
         return fcst_field, obs_field
 
-    def process_fields(self, ti, v, model_path, obs_path):
+    def process_fields_one_thresh(self, ti, v, model_path, obs_path):
         # set up environment variables for each run
         # get fcst and obs thresh parameters
         # verify they are the same size
@@ -130,7 +155,7 @@ class ModeWrapper(CompareGriddedWrapper):
             self.add_input_file(model_path)
             self.add_input_file(obs_path)
         
-            fcst_field, obs_field = self.get_field_info(v, obs_path, model_path, fthresh, othresh)
+            fcst_field, obs_field = self.get_field_info_mode(v, model_path, obs_path, fthresh, othresh)
 
             self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
             self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])

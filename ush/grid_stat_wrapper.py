@@ -65,6 +65,9 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.cg_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
                                                               'OBS_EXACT_VALID_TIME',
                                                               True)
+        self.cg_dict['ONCE_PER_FIELD'] = self.p.getbool('config',
+                                                        'GRID_STAT_ONCE_PER_FIELD',
+                                                        False)
         # these are not used by grid_stat, only mode
         self.cg_dict['QUILT'] = "FALSE"
         self.cg_dict['CONV_RADIUS'] = 5

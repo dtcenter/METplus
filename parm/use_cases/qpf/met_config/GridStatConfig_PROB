@@ -166,6 +166,6 @@ nc_pairs_flag   = FALSE;
 grid_weight_flag = NONE;
 rank_corr_flag   = FALSE;
 tmp_dir          = "/tmp";
-output_prefix    = "PROB_${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_A${LEVEL}";
+output_prefix    = "PROB_${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${LEVEL}";
 
 ////////////////////////////////////////////////////////////////////////////////
