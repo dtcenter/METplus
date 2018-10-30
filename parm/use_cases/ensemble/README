@@ -57,7 +57,20 @@ NOTE THE FOLLOWING.
 It has ONLY been tested  with the following settings/versions.
  
 *)
-MET v7.1 beta or later and requires that when using obs_error.txt
+The observations error table  was introduced in MET Version 7.1_beta6
+The number of columns in the table changed in MET Version 8.0
+
+So make sure to refer to the correct table in the METplus ensemble use case
+file in the parm/use_cases/ensemble/examples directory.
+
+Currently the default is setup to refer to the 8.0 table.
+MET_OBS_ERROR_TABLE = {CONFIG_DIR}/table_files/obs_error_table_V8.0.txt
+
+
+Note: To refrence the default version that is distribued with MET,
+edit the METplus ensemble conf file under parm/use_cases/ensemble/examples
+and do not set a value by defining METplus configuration variable as follows;
+MET_OBS_ERROR_TABLE = 
 
 *)
 YOU MUST USE THE following METplus CONF settings ...
