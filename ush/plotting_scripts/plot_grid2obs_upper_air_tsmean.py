@@ -104,6 +104,9 @@ while vl <= nlevels:
              model_now_stat_now_means = np.ones_like(leads) * np.nan
              if stat_now == 'avg':
                  model_now_stat_now_means_obar = np.ones_like(leads) * np.nan
+                 mean_cols = [ "LEADS", "VALS", "OBAR" ]
+             else:
+                 mean_cols = [ "LEADS", "VALS" ]
              model_now_mean_file = plotting_out_dir+"/data/"+cycle+"Z/"+model_now+"/"+stat_now+"_mean_"+region+"_fcst"+fcst_var_name+fcst_var_level_now+"_obs"+obs_var_name+obs_var_level_now+".txt"
              if os.path.exists(model_now_mean_file):
                  nrow = sum(1 for line in open(model_now_mean_file))
@@ -111,11 +114,10 @@ while vl <= nlevels:
                      logger.warning("Model "+str(m)+" "+model_now+": "+model_now_mean_file+" empty")
                  else:
                      logger.debug("Model "+str(m)+" "+model_now+": found "+model_now_mean_file)
+                     model_now_data = pandas.read_csv(model_now_mean_file, sep=" ", header=None, names=mean_cols)
+                     model_now_stat_now_leads = model_now_data.loc[:]['LEADS']
+                     model_now_stat_now_vals = model_now_data.loc[:]['VALS']
                      if stat_now == 'avg':
-                         mean_cols = [ "LEADS", "VALS", "OBAR" ]
-                         model_now_data = pandas.read_csv(model_now_mean_file, sep=" ", header=None, names=mean_cols)
-                         model_now_stat_now_leads = model_now_data.loc[:]['LEADS']
-                         model_now_stat_now_vals = model_now_data.loc[:]['VALS']
                          model_now_stat_now_obar = model_now_data.loc[:]['OBAR']
                          #check for any missing OBAR data in current model for requested forecast leads
                          for l in range(len(leads)):
@@ -133,11 +135,6 @@ while vl <= nlevels:
                                          model_now_stat_now_means_obar[l] = model_now_stat_now_obar[ll[0]]
                                  else:
                                      model_now_stat_now_means_obar[l] = np.nan
-                     else:
-                         mean_cols = [ "LEADS", "VALS" ]
-                         model_now_data = pandas.read_csv(model_now_mean_file, sep=" ", header=None, names=mean_cols)
-                         model_now_stat_now_leads = model_now_data.loc[:]['LEADS'] 
-                         model_now_stat_now_vals = model_now_data.loc[:]['VALS']
                      #check for any missing data in current model for requested forecast leads
                      for l in range(len(leads)):
                          if leads[l] == model_now_stat_now_leads[l]:
@@ -274,7 +271,7 @@ while vl <= nlevels:
                  'edgecolor': 'black',}
                  ax2.text(0.7055, 1.05, "Note: differences outside the outline bars are significant\n at the 95% confidence interval", ha="center", va="center", fontsize=10, bbox=props, transform=ax2.transAxes)
                  if stat_now == 'avg':
-                     logger.debug("Plotting obar lead forecst hour means for "+model_now)
+                     logger.debug("Plotting obar lead forecst hour means")
                      ax1.plot(leads, model_now_stat_now_means_obar, color='dimgrey', ls='-', linewidth=2.0, marker='o', markersize=7, label="obs")
                      logger.debug("Plotting fbar lead forecst hour means for "+model_now)
                      ax1.plot(leads, model_now_stat_now_means, color=colors[m-1], ls='-', linewidth=2.0, marker='o', markersize=7, label=model_now)
