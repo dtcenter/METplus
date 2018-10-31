@@ -78,6 +78,7 @@ logger.addHandler(ch)
 plotting_out_dir_base = os.environ['PLOTTING_OUT_DIR']
 plotting_out_dir = os.path.join(plotting_out_dir_base, "upper_air")
 ####################################################################
+logger.info(" ")
 logger.info("------> Running "+os.path.realpath(__file__))
 logger.debug("----- for "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z forecast hour means for region:"+region+" fcst var:"+fcst_var_name+" obs var:"+obs_var_name)
 #############################################################################
@@ -135,6 +136,8 @@ while vl <= nlevels:
                                          model_now_stat_now_means_obar[l] = model_now_stat_now_obar[ll[0]]
                                  else:
                                      model_now_stat_now_means_obar[l] = np.nan
+                         model_now_stat_now_means_obar = np.ma.masked_invalid(model_now_stat_now_means_obar)
+                         count_masked_obar = np.ma.count_masked(model_now_stat_now_means_obar)
                      #check for any missing data in current model for requested forecast leads
                      for l in range(len(leads)):
                          if leads[l] == model_now_stat_now_leads[l]:
@@ -155,15 +158,16 @@ while vl <= nlevels:
                  logger.warning("Model "+str(m)+" "+model_now+": "+model_now_mean_file+" missing")
              model_now_stat_now_means = np.ma.masked_invalid(model_now_stat_now_means)
              count_masked = np.ma.count_masked(model_now_stat_now_means)
-             if stat_now == 'avg':
-                 model_now_stat_now_means_obar = np.ma.masked_invalid(model_now_stat_now_means_obar)
-                 count_masked_obar = np.ma.count_masked(model_now_stat_now_means_obar)
              #plot individual statistic forecast hour mean with CI time seres
              #get CI data
-             if stat_now == 'avg':
+             if m > 1 or stat_now == 'avg':
                  #intialize data array
                  model_now_stat_now_CI = np.ones_like(leads) * np.nan
-                 model_now_stat_now_CI_obar = np.ones_like(leads) * np.nan
+                 if stat_now == 'avg':
+                     model_now_stat_now_CI_obar = np.ones_like(leads) * np.nan
+                     mean_cols = [ "LEADS", "VALS", "OBAR" ]
+                 else:
+                     mean_cols = [ "LEADS", "VALS" ]
                  #get forecast hour mean file
                  model_now_CI_file = plotting_out_dir+"/data/"+cycle+"Z/"+model_now+"/"+stat_now+"_CI_"+region+"_fcst"+fcst_var_name+fcst_var_level_now+"_obs"+obs_var_name+obs_var_level_now+".txt"
                  if os.path.exists(model_now_CI_file):
@@ -172,11 +176,27 @@ while vl <= nlevels:
                          logger.warning("Model "+str(m)+" "+model_now+": "+model_now_CI_file+" empty")
                      else:
                          logger.debug("Model "+str(m)+" "+model_now+": found "+model_now_CI_file)
-                         mean_cols = [ "LEADS", "VALS", "OBAR" ]
                          model_now_data_CI = pandas.read_csv(model_now_CI_file, sep=" ", header=None, names=mean_cols)
                          model_now_stat_now_leads_CI = model_now_data_CI.loc[:]['LEADS']
                          model_now_stat_now_vals_CI = model_now_data_CI.loc[:]['VALS']
-                         model_now_stat_now_obar_CI = model_now_data_CI.loc[:]['OBAR']
+                         if stat_now == 'avg':
+                             model_now_stat_now_obar_CI = model_now_data_CI.loc[:]['OBAR']
+                             for l in range(len(leads)):
+                                 if leads[l] == model_now_stat_now_leads_CI[l]:
+                                     if model_now_stat_now_obar_CI[l] == '--':
+                                         model_now_stat_now_CI_obar[l] = np.nan
+                                     else:
+                                         model_now_stat_now_CI_obar[l] = model_now_stat_now_obar_CI[l]
+                                 else:
+                                     ll = np.where(model_now_stat_now_leads_CI == leads[l])[0]
+                                     if len(ll) != 0:
+                                         if model_now_stat_now_obar_CI[ll[0]] == '--':
+                                             model_now_stat_now_CI_obar[l] = np.nan
+                                         else:
+                                             model_now_stat_now_CI_obar[l] = model_now_stat_now_obar_CI[ll[0]]
+                                     else:
+                                         model_now_stat_now_CI_obar[l] = np.nan
+                             model_now_stat_now_CI_obar = np.ma.masked_invalid(model_now_stat_now_CI_obar)
                          #check for any missing data in current model for requested forecast leads
                          for l in range(len(leads)):
                              if leads[l] == model_now_stat_now_leads_CI[l]:
@@ -188,63 +208,14 @@ while vl <= nlevels:
                                  ll = np.where(model_now_stat_now_leads_CI == leads[l])[0]
                                  if len(ll) != 0:
                                      if model_now_stat_now_vals_CI[ll[0]] == '--':
-                                         model_now_stat_now_means_CI[l] = np.nan
+                                         model_now_stat_now_CI[l] = np.nan
                                      else:
-                                         model_now_stat_now_means_CI[l] = model_now_stat_now_vals_CI[ll[0]]
+                                         model_now_stat_now_CI[l] = model_now_stat_now_vals_CI[ll[0]]
                                  else:
-                                     model_now_stat_now_means_CI[l] = np.nan
-                             if leads[l] == model_now_stat_now_leads_CI[l]:
-                                if model_now_stat_now_obar_CI[l] == '--':
-                                     model_now_stat_now_CI_obar[l] = np.nan
-                                else:
-                                     model_now_stat_now_CI_obar[l] = model_now_stat_now_obar_CI[l]
-                             else:
-                                 ll = np.where(model_now_stat_now_leads_CI == leads[l])[0]
-                                 if len(ll) != 0:
-                                     if model_now_stat_now_obar_CI[ll[0]] == '--':
-                                         model_now_stat_now_means_CI_obar[l] = np.nan
-                                     else:
-                                         model_now_stat_now_means_CI_obar[l] = model_now_stat_now_vals_CI_obar[ll[0]]
-                                 else:
-                                     model_now_stat_now_means_CI_obar[l] = np.nan
+                                     model_now_stat_now_CI[l] = np.nan
                  else:
                      logger.warning("Model "+str(m)+" "+model_now+": "+model_now_CI_file+" missing")
                  model_now_stat_now_CI = np.ma.masked_invalid(model_now_stat_now_CI)
-             else:
-                 if m > 1:
-                     #intialize data array
-                     model_now_stat_now_CI = np.ones_like(leads) * np.nan
-                     #get forecast hour mean file
-                     model_now_CI_file = plotting_out_dir+"/data/"+cycle+"Z/"+model_now+"/"+stat_now+"_CI_"+region+"_fcst"+fcst_var_name+fcst_var_level_now+"_obs"+obs_var_name+obs_var_level_now+".txt"
-                     if os.path.exists(model_now_CI_file):
-                         nrow = sum(1 for line in open(model_now_CI_file))
-                         if nrow == 0: #file blank
-                             logger.warning("Model "+str(m)+" "+model_now+": "+model_now_CI_file+" empty")
-                         else:
-                             logger.debug("Model "+str(m)+" "+model_now+": found "+model_now_CI_file)
-                             mean_cols = [ "LEADS", "VALS" ]
-                             model_now_data_CI = pandas.read_csv(model_now_CI_file, sep=" ", header=None, names=mean_cols)
-                             model_now_stat_now_leads_CI = model_now_data_CI.loc[:]['LEADS']
-                             model_now_stat_now_vals_CI = model_now_data_CI.loc[:]['VALS']
-                             #check for any missing data in current model for requested forecast leads
-                             for l in range(len(leads)):
-                                 if leads[l] == model_now_stat_now_leads_CI[l]:
-                                     if model_now_stat_now_vals_CI[l] == '--':
-                                         model_now_stat_now_CI[l] = np.nan
-                                     else:
-                                         model_now_stat_now_CI[l] = model_now_stat_now_vals_CI[l]
-                                 else:
-                                     ll = np.where(model_now_stat_now_leads_CI == leads[l])[0]
-                                     if len(ll) != 0:
-                                         if model_now_stat_now_vals_CI[ll[0]] == '--':
-                                             model_now_stat_now_means_CI[l] = np.nan
-                                         else:
-                                             model_now_stat_now_means_CI[l] = model_now_stat_now_vals_CI[ll[0]]
-                                     else:
-                                         model_now_stat_now_means_CI[l] = np.nan
-                     else:
-                         logger.warning("Model "+str(m)+" "+model_now+": "+model_now_CI_file+" missing")
-                     model_now_stat_now_CI = np.ma.masked_invalid(model_now_stat_now_CI)
              if m == 1:
                  #set up plot
                  fig, (ax1, ax2) = plt.subplots(2,1,figsize=(10,12), sharex=True)
