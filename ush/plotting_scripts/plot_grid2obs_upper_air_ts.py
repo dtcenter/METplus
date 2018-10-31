@@ -104,6 +104,7 @@ if not os.path.exists(os.path.join(plotting_out_dir, "imgs", cycle+"Z")):
     os.makedirs(os.path.join(plotting_out_dir, "imgs", cycle+"Z"))
 ##### Read data in data, compute statistics, and plot
 #read in data
+logger.info("---- Gathering data")
 create_data_arrays = True
 m = 1
 while m <= nmodels: #loop over models
