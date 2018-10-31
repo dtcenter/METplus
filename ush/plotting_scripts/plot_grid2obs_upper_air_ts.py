@@ -231,16 +231,18 @@ while s <= nstats: #loop over statistics
                 save_mean_file.write(lead+' '+str(model_now_stat_now_vals.mean())+' '+str(model_now_stat_now_vals_obar.mean())+ '\n')
             else:
                 save_mean_file.write(lead+' '+str(model_now_stat_now_vals.mean())+ '\n')
-        #calculate 95% confidence intervals for difference between model m>1 and model 1
+        #calculate 95% confidence intervals for difference between model m>1 and model 1, and obs for stat_now == 'avg'
         if ci_method == "NONE":
             logger.debug("Not calculating confidence intervals")
         else:
             if m == 1:
                 model1_stat_now_vals = model_now_stat_now_vals
-            else:
+            if m > 1 or stat_now == 'avg':
                 if ci_method == "EMC":
                     logger.debug("Calculating confidence intervals using EMC method")
                     model_now_model1_intvl = pd.cintvl_emc(model1_stat_now_vals, model_now_stat_now_vals, total_days)
+                    if stat_now == 'avg':
+                        model_now_obs_intvl = pd.cintvl_emc(model_now_stat_now_vals_obar, model_now_stat_now_vals, total_days)
                 elif ci_method == "NCAR":
                     logger.warning("NCAR method not set up yet, setting as NaN")
                     model_now_model1_intvl = np.nan
@@ -254,7 +256,10 @@ while s <= nstats: #loop over statistics
                 else:
                     append_write = 'w' # make a new file if not
                 with open(save_ci_filename, append_write) as save_ci_file:
-                    save_ci_file.write(lead+' '+str(model_now_model1_intvl)+ '\n')
+                    if stat_now == 'avg':
+                        save_ci_file.write(lead+' '+str(model_now_model1_intvl)+' '+str(model_now_obs_intvl)+ '\n')
+                    else:
+                        save_ci_file.write(lead+' '+str(model_now_model1_intvl)+ '\n')
         #plot individual statistic time series
         if m == 1:
             #set up plot
