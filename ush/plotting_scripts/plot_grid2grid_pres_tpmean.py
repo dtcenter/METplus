@@ -195,7 +195,7 @@ while s <= nstats: #loop over statistics
         #plot
         ax = plt.subplot(gs[m-1])
         if stat_now == 'bias':
-            logger.debug("Plotting "+stat_now+" "+date_filter_method+" date - pressure for "+model_now)
+            logger.debug("Plotting "+stat_now+" leads - pressure for "+model_now)
             ax.set_title(model_now, loc='left')
             if m == 1:
                 clevels_bias = pd.get_clevels(model_now_stat_now_means)
@@ -208,14 +208,14 @@ while s <= nstats: #loop over statistics
                 ax.clabel(Cm, CFm.levels, fmt='%1.2f', inline=True, fontsize=12.5)
         else:
             if m == 1:
-                logger.debug("Plotting "+stat_now+" "+date_filter_method+" date - pressure for "+model_now)
+                logger.debug("Plotting "+stat_now+" leads - pressure for "+model_now)
                 model1_stat_now_means = model_now_stat_now_means
                 ax.set_title(model_now, loc='left')
                 CFm1 = ax.contourf(xx, yy, model_now_stat_now_means, cmap=cmap, extend='both')
                 Cm1 = ax.contour(xx, yy, model_now_stat_now_means, levels=CFm1.levels, colors='k', linewidths=1.0)
                 ax.clabel(Cm1, CFm1.levels, fmt='%1.2f', inline=True, fontsize=12.5)
             else:
-                logger.debug("Plotting "+stat_now+" "+date_filter_method+" date - pressure for "+model_now+" - "+model_names[0])
+                logger.debug("Plotting "+stat_now+" leads - pressure for "+model_now+" - "+model_names[0])
                 ax.set_title(model_now+'-'+model_names[0], loc='left')
                 if m == 2:
                     clevels_diff = pd.get_clevels(model_now_stat_now_means - model1_stat_now_means)
