@@ -3,7 +3,7 @@
 Program Name: plot_grid2obs_upper_air_vertprofmean.py
 Contact(s): Mallory Row
 Abstract: Reads mean forecast hour files from plot_grid2obs_upper_air_ts.py to make lead-pressue plots
-History Log:  Initial version
+History Log:  Second version
 Usage: 
 Parameters: None
 Input Files: ASCII files
@@ -22,6 +22,7 @@ import matplotlib.gridspec as gridspec
 import plot_defs as pd
 import warnings
 import logging
+import pandas as pandas
 #############################################################################
 ##### Settings
 np.set_printoptions(suppress=True)
@@ -51,16 +52,15 @@ syear = int(sdate[:4])
 smon = int(sdate[4:6])
 smonth = month_name[smon-1]
 sday = int(sdate[6:8])
-edate=os.environ['END_T']
+edate = os.environ['END_T']
 eyear = int(edate[:4])
 emon = int(edate[4:6])
 emonth = month_name[emon-1]
 eday = int(edate[6:8])
 date_filter_method = os.environ['DATE_FILTER_METHOD']
 #input info
-stat_files_input_dir = os.environ['STAT_FILES_INPUT_DIR']
-model_list = os.environ['MODEL_LIST'].replace(", ", ",").split(",")
-nmodels = len(model_list)
+model_names = os.environ['MODEL_NAMES'].replace(", ", ",").split(",")
+nmodels = len(model_names)
 cycle = os.environ['CYCLE']
 region = os.environ['REGION']
 lead_list = os.environ['LEAD_LIST'].replace(", ", ",").split(",")
@@ -79,6 +79,7 @@ obs_var_levels_num = np.empty(nlevels, dtype=int)
 for vl in range(nlevels):
     fcst_var_levels_num[vl] = fcst_var_levels_list[vl][1:]
     obs_var_levels_num[vl] = obs_var_levels_list[vl][1:]
+event_equalization = True
 #ouput info
 logging_filename = os.environ['LOGGING_FILENAME']
 logger = logging.getLogger(logging_filename)
@@ -89,246 +90,249 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 ch = logging.StreamHandler()
 logger.addHandler(ch)
-plotting_out_dir = os.environ['PLOTTING_OUT_DIR']
+plotting_out_dir_base = os.environ['PLOTTING_OUT_DIR']
+plotting_out_dir = os.path.join(plotting_out_dir_base, "upper_air")
 ####################################################################
+logger.info(" ")
 logger.info("------> Running "+os.path.realpath(__file__))
 logger.debug("----- with "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z region"+region+" fcst var:"+fcst_var_name+" obs var:"+obs_var_name)
 #############################################################################
-##### Read data in data, compute statistics, and plot
+##### Create image directory if does not exist
+if not os.path.exists(os.path.join(plotting_out_dir, "imgs", cycle+"Z")):
+    os.makedirs(os.path.join(plotting_out_dir, "imgs", cycle+"Z"))
+##### Read data in data and plot
 #read in data
 s=1
 while s <= nstats: #loop over statistics
-     stat_now = plot_stats_list[s-1]
-     logger.debug("---- "+stat_now)
-     if nmodels == 1:
-         fig = plt.figure(figsize=(10,12))
-         gs = gridspec.GridSpec(2,1)
-         gs.update(wspace=0.3, hspace=0.25)
-     elif nmodels == 2:
-         fig = plt.figure(figsize=(10,12))
-         gs = gridspec.GridSpec(2,1)
-         gs.update(wspace=0.3, hspace=0.25)
-     elif nmodels > 2 and nmodels <= 4:
-         fig = plt.figure(figsize=(15,12))
-         gs = gridspec.GridSpec(2,2)
-         gs.update(wspace=0.3, hspace=0.25)
-     elif nmodels > 4 and nmodels <= 6:
-         fig = plt.figure(figsize=(19,12))
-         gs = gridspec.GridSpec(2,3)
-         gs.update(wspace=0.3, hspace=0.25)
-     elif nmodels > 6:
-         fig = plt.figure(figsize=(21,17))
-         gs = gridspec.GridSpec(3,3)
-         gs.update(wspace=0.35, hspace=0.25)
-     m=1
-     while m <= nmodels: #loop over models
-         if stat_now == 'avg':
-             model_now_fbar_means_array = np.empty([len(leads), nlevels])
-             model_now_obar_means_array = np.empty([len(leads), nlevels])
-         else:
-             model_now_stat_now_means_array = np.empty([len(leads), nlevels])
-         model_now = model_list[m-1]
-         logger.debug(str(m)+" "+model_now)
-         vl = 1
-         while vl <= nlevels:
-             fcst_var_level_now = fcst_var_levels_list[vl-1]
-             obs_var_level_now = obs_var_levels_list[vl-1]
-             if stat_now == 'avg':
-                 #get forecast hour mean file
-                 model_now_fbar_mean_file = plotting_out_dir+"/data/"+cycle+"Z/"+model_now+"/fbar_mean_"+region+"_fcst"+fcst_var_name+fcst_var_level_now+"_obs"+obs_var_name+obs_var_level_now+".txt"
-                 if os.path.exists(model_now_fbar_mean_file):
-                     nrow = sum(1 for line in open(model_now_fbar_mean_file))
-                     if nrow == 0: #file blank
-                         logger.warning(model_now_fbar_mean_file+" was empty! Setting to NaN")
-                         model_now_fbar_means_array[:,vl-1] = np.ones_like(leads) * np.nan
-                     else:
-                         logger.debug("Found "+model_now_fbar_mean_file)
-                         #read data file and put in array
-                         data = list()
-                         with open(model_now_fbar_mean_file) as f:
-                             for line in f:
-                                 line_split = line.split()
-                                 data.append(line_split)
-                         data_array = np.asarray(data)
-                         #assign variables
-                         model_now_leads = data_array[:,0].astype(float)
-                         model_now_mean = data_array[:,1]
-                         model_now_mean[model_now_mean == '--'] = np.nan
-                         model_now_fbar_means_array[:,vl-1] = model_now_mean
-                         #check for missing data
-                         for l in range(len(leads)):
-                             if leads[l] == model_now_leads[l]:
-                                  model_now_fbar_means_array[l,vl-1] = model_now_fbar_means_array[l,vl-1]
-                             else:
-                                  ll = np.where(model_now_leads == leads[l])[0]
-                                  if len(ll) != 0:
-                                      model_now_fbar_means_array[l,vl-1] = model_now_fbar_means_array[ll[0],vl-1]
-                                  else:
-                                      model_now_fbar_means_array[l,vl-1] = np.nan
-                 else:
-                     logger.error(model_now_fbar_mean_file+" NOT FOUND! Setting to NaN")
-                     model_now_fbar_means_array[:,vl-1] = np.ones_like(leads) * np.nan
-                 #get forecast hour mean file
-                 model_now_obar_mean_file = plotting_out_dir+"/data/"+cycle+"Z/"+model_now+"/obar_mean_"+region+"_fcst"+fcst_var_name+fcst_var_level_now+"_obs"+obs_var_name+obs_var_level_now+".txt"
-                 if os.path.exists(model_now_obar_mean_file):
-                     nrow = sum(1 for line in open(model_now_obar_mean_file))
-                     if nrow == 0: #file blank
-                         logger.warning(model_now_obar_mean_file+" was empty! Setting to NaN")
-                         model_now_obar_means_array[:,vl-1] = np.ones_like(leads) * np.nan
-                     else:
-                         logger.debug("Found "+model_now_obar_mean_file)
-                         #read data file and put in array
-                         data = list()
-                         with open(model_now_obar_mean_file) as f:
-                             for line in f:
-                                 line_split = line.split()
-                                 data.append(line_split)
-                         data_array = np.asarray(data)
-                         #assign variables
-                         model_now_leads = data_array[:,0].astype(float)
-                         model_now_mean = data_array[:,1]
-                         model_now_mean[model_now_mean == '--'] = np.nan
-                         model_now_obar_means_array[:,vl-1] = model_now_mean
-                         #check for missing data
-                         for l in range(len(leads)):
-                             if leads[l] == model_now_leads[l]:
-                                  model_now_obar_means_array[l,vl-1] = model_now_obar_means_array[l,vl-1]
-                             else:
-                                  ll = np.where(model_now_leads == leads[l])[0]
-                                  if len(ll) != 0:
-                                      model_now_obar_means_array[l,vl-1] = model_now_obar_means_array[ll[0],vl-1]
-                                  else:
-                                      model_now_obar_means_array[l,vl-1] = np.nan
-                 else:
-                     logger.error(model_now_obar_mean_file+" NOT FOUND! Setting to NaN")
-                     model_now_obar_means_array[:,vl-1] = np.ones_like(leads) * np.nan
-             else:
-                 #get forecast hour mean file
-                 model_now_mean_file = plotting_out_dir+"/data/"+cycle+"Z/"+model_now+"/"+stat_now+"_mean_"+region+"_fcst"+fcst_var_name+fcst_var_level_now+"_obs"+obs_var_name+obs_var_level_now+".txt"
-                 if os.path.exists(model_now_mean_file):
-                     nrow = sum(1 for line in open(model_now_mean_file))
-                     if nrow == 0: #file blank
-                         logger.warning(model_now_mean_file+" was empty! Setting to NaN")
-                         model_now_stat_now_means_array[:,vl-1] = np.ones_like(leads) * np.nan
-                     else:
-                         logger.debug("Found "+model_now_mean_file)
-                         #read data file and put in array
-                         data = list()
-                         with open(model_now_mean_file) as f:
-                             for line in f:
-                                 line_split = line.split()
-                                 data.append(line_split)
-                         data_array = np.asarray(data)
-                         #assign variables
-                         model_now_leads = data_array[:,0].astype(float)
-                         model_now_mean = data_array[:,1]
-                         model_now_mean[model_now_mean == '--'] = np.nan    
-                         model_now_stat_now_means_array[:,vl-1] = model_now_mean
-                         #check for missing data
-                         for l in range(len(leads)):
-                             if leads[l] == model_now_leads[l]:
-                                  model_now_stat_now_means_array[l,vl-1] = model_now_stat_now_means_array[l,vl-1]
-                             else:
-                                  ll = np.where(model_now_leads == leads[l])[0]
-                                  if len(ll) != 0:
-                                      model_now_stat_now_means_array[l,vl-1] = model_now_stat_now_means_array[ll[0],vl-1]
-                                  else:
-                                      model_now_stat_now_means_array[l,vl-1] = np.nan
-                 else:
-                     logger.error(model_now_mean_file+" NOT FOUND! Setting to NaN")
-                     model_now_stat_now_means_array[:,vl-1] = np.ones_like(leads) * np.nan
-             vl+=1
-         #create image directory if does not exist
-         if not os.path.exists(os.path.join(plotting_out_dir, "imgs", cycle+"Z")):
-            os.makedirs(os.path.join(plotting_out_dir, "imgs", cycle+"Z")) 
-         if stat_now == 'avg':
-             model_now_fbar_means_array = model_now_fbar_means_array.astype(float)
-             model_now_fbar_means_array = np.ma.masked_array(model_now_fbar_means_array, mask=model_now_fbar_means_array == np.nan)
-             model_now_obar_means_array = model_now_obar_means_array.astype(float)
-             model_now_obar_means_array = np.ma.masked_array(model_now_obar_means_array, mask=model_now_obar_means_array == np.nan)
-             #make plot
-             axo = plt.subplot(gs[0])
-             ax = plt.subplot(gs[m])
-             yy,xx = np.meshgrid(fcst_var_levels_num, leads)
-             if m == 1:
-                 logger.debug("Plotting obar leads - pressure")
-                 C0 = axo.contourf(xx, yy, model_now_obar_means_array, cmap=cmap_avg, extend='both')
-                 C = axo.contour(xx, yy, model_now_obar_means_array, levels=C0.levels, colors='k', linewidths=1.0)
-                 axo.clabel(C,C0.levels, fmt='%1.2f', inline=True, fontsize=12.5)
-                 axo.set_title('obs', loc='left')
-                 logger.debug("Plotting fbar leads - pressure for "+model_now)
-                 C1 = ax.contourf(xx, yy, model_now_fbar_means_array, levels=C0.levels, cmap=cmap_avg, extend='both')
-                 C = ax.contour(xx, yy, model_now_fbar_means_array, levels=C0.levels, colors='k', linewidths=1.0)
-                 ax.clabel(C,C0.levels, fmt='%1.2f', inline=True, fontsize=12.5)
-                 ax.set_title(model_now, loc='left')
-             elif m >= 2:
-                 logger.debug("Plotting fbar leads - pressure for "+model_now)
-                 C1 = ax.contourf(xx, yy, model_now_fbar_means_array, levels=C0.levels, cmap=cmap_avg, extend='both')
-                 C = ax.contour(xx, yy, model_now_fbar_means_array, levels=C0.levels, colors='k', linewidths=1.0)
-                 ax.clabel(C,C0.levels, fmt='%1.2f', inline=True, fontsize=12.5)
-                 ax.set_title(model_now, loc='left')
-         else:
-             model_now_stat_now_means_array = model_now_stat_now_means_array.astype(float)
-             model_now_stat_now_means_array = np.ma.masked_array(model_now_stat_now_means_array, mask=model_now_stat_now_means_array == np.nan)
-             #make plot
-             ax = plt.subplot(gs[m-1])
-             yy,xx = np.meshgrid(fcst_var_levels_num, leads)
-             if m == 1:
-                 logger.debug("Plotting "+stat_now+" leads - pressure for "+model_now)
-                 if stat_now == 'bias':
-                     c0levels = pd.get_clevels(model_now_stat_now_means_array)
-                     C0 = ax.contourf(xx, yy, model_now_stat_now_means_array, levels=c0levels, cmap=cmap_bias, locator=matplotlib.ticker.MaxNLocator(symmetric=True), extend='both')      
-                 else:
-                     C0 = ax.contourf(xx, yy, model_now_stat_now_means_array, cmap=cmap, extend='both')
-                     model_1_stat_now_dates_array =  model_now_stat_now_means_array
-                 C = ax.contour(xx, yy, model_now_stat_now_means_array, levels=C0.levels, colors='k', linewidths=1.0)
-                 ax.clabel(C,C0.levels, fmt='%1.2f', inline=True, fontsize=12.5)
-                 ax.set_title(model_now, loc='left')
-             elif m == 2:
-                 if stat_now == 'bias':
-                     logger.debug("Plotting "+stat_now+" leads - pressure for "+model_now)
-                     C1 = ax.contourf(xx, yy, model_now_stat_now_means_array, levels=C0.levels, cmap=cmap_bias, extend='both')
-                     C = ax.contour(xx, yy, model_now_stat_now_means_array, levels=C0.levels, colors='k', linewidths=1.0)
-                     ax.clabel(C,C0.levels, fmt='%1.2f', inline=True, fontsize=12.5)
-                     ax.set_title(model_now, loc='left')
-                 else:
-                     logger.debug("Plotting "+stat_now+" leads - pressure for "+model_now+" - "+model_list[0])
-                     c1levels = pd.get_clevels(model_now_stat_now_means_array -  model_1_stat_now_dates_array)
-                     C1 = ax.contourf(xx, yy, model_now_stat_now_means_array -  model_1_stat_now_dates_array, levels=c1levels, cmap=cmap_diff, locator=matplotlib.ticker.MaxNLocator(symmetric=True),extend='both')
-                     C = ax.contour(xx, yy, model_now_stat_now_means_array -  model_1_stat_now_dates_array, levels=C1.levels, colors='k', linewidths=1.0)
-                     ax.clabel(C,C1.levels, fmt='%1.2f', inline=True, fontsize=12.5)
-                     ax.set_title(model_now+'-'+model_list[0], loc='left')
-             elif m > 2:
-                 if stat_now == 'bias':
-                     logger.debug("Plotting "+stat_now+" leads - pressure for "+model_now)
-                     ax.contourf(xx, yy, model_now_stat_now_means_array, levels=C0.levels, cmap=cmap_bias, extend='both')
-                     C = ax.contour(xx, yy, model_now_stat_now_means_array, levels=C0.levels, colors='k', linewidths=1.0)
-                     ax.clabel(C,C0.levels, fmt='%1.2f', inline=True, fontsize=12.5)
-                     ax.set_title(model_now, loc='left')
-                 else:
-                     logger.debug("Plotting "+stat_now+" leads - pressure for "+model_now+" - "+model_list[0])
-                     ax.contourf(xx, yy, model_now_stat_now_means_array -  model_1_stat_now_dates_array, levels=c1levels, cmap=cmap_diff, extend='both')
-                     C = ax.contour(xx, yy, model_now_stat_now_means_array -  model_1_stat_now_dates_array, levels=C1.levels, colors='k', linewidths=1.0)
-                     ax.clabel(C,C1.levels, fmt='%1.2f', inline=True, fontsize=12.5)
-                     ax.set_title(model_now+'-'+model_list[0], loc='left')
-             ax.grid(True)
-             ax.set_xlabel("Forecast Hour")
-             ax.set_xticks(leads)
-             ax.set_xlim([leads[0],leads[-1]])
-             ax.set_ylabel('Pressure Level')
-             ax.set_yscale("log")
-             ax.invert_yaxis()
-             ax.minorticks_off()
-             ax.set_yticks(fcst_var_levels_num)
-             ax.set_yticklabels(fcst_var_levels_num)
-             ax.set_ylim([fcst_var_levels_num[0],fcst_var_levels_num[-1]])
-             ax.tick_params(axis='x', pad=10)
-             ax.tick_params(axis='y', pad=15)
-         m+=1
-     if nmodels > 1:
-         cax = fig.add_axes([0.1, -0.05, 0.8, 0.05])
-         cbar = fig.colorbar(C1, cax=cax, orientation='horizontal', ticks=C1.levels)
-     fig.suptitle("Fcst: "+fcst_var_name+" Obs: "+obs_var_name+" "+str(stat_now)+'\n'+grid+"-"+region+" "+date_filter_method+" "+cycle+"Z "+str(sday)+smonth+str(syear)+"-"+str(eday)+emonth+str(eyear)+" Mean\n", fontsize=14, fontweight='bold') 
-     logger.debug("---- Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_vp.png")
-     plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_vp.png", bbox_inches='tight')
-     s+=1
+    stat_now = plot_stats_list[s-1]
+    stat_formal_name_now = pd.get_stat_formal_name(stat_now)
+    logger.debug("--- "+stat_now)
+    create_data_array = True
+    m=1
+    while m <= nmodels: #loop over models
+        model_now = model_names[m-1]
+        vl = 1
+        while vl <= nlevels:
+            fcst_var_level_now = fcst_var_levels_list[vl-1]
+            obs_var_level_now = obs_var_levels_list[vl-1]
+            model_now_mean_file = plotting_out_dir+"/data/"+cycle+"Z/"+model_now+"/"+stat_now+"_mean_"+region+"_fcst"+fcst_var_name+fcst_var_level_now+"_obs"+obs_var_name+obs_var_level_now+".txt"
+            if os.path.exists(model_now_mean_file):
+                nrow = sum(1 for line in open(model_now_mean_file))
+                if nrow == 0: #file blank if stat analysis filters were not all met
+                    logger.warning("Model "+str(m)+" "+model_now+": "+model_now_mean_file+" empty")
+                else:
+                    logger.debug("Model "+str(m)+" "+model_now+": found "+model_now_mean_file)
+                    #intialize data array
+                    model_now_stat_now_means = np.ones_like(leads) * np.nan
+                    if stat_now == 'avg':
+                        mean_cols = [ "LEADS", "VALS", "OBAR" ]
+                        model_now_stat_now_means_obar = np.ones_like(leads) * np.nan
+                    else:
+                        mean_cols = [ "LEADS", "VALS" ]
+                    model_now_data = pandas.read_csv(model_now_mean_file, sep=" ", header=None, names=mean_cols)
+                    model_now_stat_now_leads = model_now_data.loc[:]['LEADS']
+                    model_now_stat_now_vals = model_now_data.loc[:]['VALS']
+                    if stat_now == 'avg':
+                        model_now_stat_now_obar = model_now_data.loc[:]['OBAR']
+                        #check for any missing data in current model for requested forecast leads
+                        for l in range(len(leads)):
+                            if leads[l] == model_now_stat_now_leads[l]:
+                                if model_now_stat_now_obar[l] == '--':
+                                    model_now_stat_now_means_obar[l] = np.nan
+                                else:
+                                    model_now_stat_now_means_obar[l] = model_now_stat_now_obar[l]
+                            else:
+                                ll = np.where(model_now_stat_now_leads == leads[l])[0]
+                                if model_now_stat_now_obar[l] == '--':
+                                    model_now_stat_now_means_obar[l] = np.nan
+                                else:
+                                    model_now_stat_now_means_obar[l] = model_now_stat_now_obar[l]
+                    #check for any missing data in current model for requested forecast leads
+                    for l in range(len(leads)):
+                        if leads[l] == model_now_stat_now_leads[l]:
+                            if model_now_stat_now_vals[l] == '--':
+                                model_now_stat_now_means[l] = np.nan
+                            else:
+                                model_now_stat_now_means[l] = model_now_stat_now_vals[l]
+                        else:
+                            ll = np.where(model_now_stat_now_leads == leads[l])[0]
+                            if len(ll) != 0:
+                                if model_now_stat_now_vals[ll[0]] == '--':
+                                    model_now_stat_now_means[l] = np.nan
+                                else:
+                                    model_now_stat_now_means[l] = model_now_stat_now_vals[ll[0]]
+                            else:
+                                model_now_stat_now_means[l] = np.nan
+                    #if first model, initialize partial sum data array for all models and all dates
+                    if create_data_array:
+                        create_data_array = False
+                        stat_now_means = np.full([nmodels,len(leads),nlevels], np.nan)
+                        if stat_now == 'avg':
+                            stat_now_means_obar = np.full([nmodels,len(leads),nlevels], np.nan)
+                    stat_now_means[m-1, :, vl-1] = model_now_stat_now_means
+                    if stat_now == 'avg':
+                        stat_now_means_obar[m-1, :, vl-1] = model_now_stat_now_means_obar
+                  
+            else:
+                logger.warning("Model "+str(m)+" "+model_now+": "+model_now_mean_file+" missing")
+            vl+=1
+        m+=1
+    stat_now_means = np.ma.masked_invalid(stat_now_means)
+    if stat_now == 'avg':
+        stat_now_means_obar = np.ma.masked_invalid(stat_now_means_obar)
+    #do event equalization, if requested
+    if event_equalization:
+        logger.debug("Doing event equalization")
+        vl = 1
+        while vl <= nlevels:
+            stat_now_means[:,:,vl-1] = np.ma.mask_cols(stat_now_means[:,:,vl-1])
+            if stat_now == 'avg':
+                stat_now_means_obar[:,:,vl-1] = np.ma.mask_cols(stat_now_means_obar[:,:,vl-1])
+            vl+=1
+    #make plot
+    if stat_now == 'avg':
+        if nmodels == 1:
+            fig = plt.figure(figsize=(10,12))
+            gs = gridspec.GridSpec(2,1)
+            gs.update(wspace=0.3, hspace=0.25)
+        elif nmodels >= 2 and nmodels < 4:
+            fig = plt.figure(figsize=(15,12))
+            gs = gridspec.GridSpec(2,2)
+            gs.update(wspace=0.3, hspace=0.25)
+        elif nmodels >= 4 and nmodels < 6:
+            fig = plt.figure(figsize=(19,12))
+            gs = gridspec.GridSpec(2,3)
+            gs.update(wspace=0.3, hspace=0.25)
+        elif nmodels >= 6 and nmodels < 9:
+            fig = plt.figure(figsize=(21,17))
+            gs = gridspec.GridSpec(3,3)
+            gs.update(wspace=0.35, hspace=0.25)
+        elif nmodels == 9:
+            fig = plt.figure(figsize=(25,12))
+            gs = gridspec.GridSpec(2,5)
+            gs.update(wspace=0.15, hspace=0.25)
+        else:
+            logger.error("Too many models selected, max. is 9")
+            exit(1)
+    else:
+        if nmodels == 1:
+            fig = plt.figure(figsize=(10,12))
+            gs = gridspec.GridSpec(2,1)
+            gs.update(wspace=0.3, hspace=0.25)
+        elif nmodels == 2:
+            fig = plt.figure(figsize=(10,12))
+            gs = gridspec.GridSpec(2,1)
+            gs.update(wspace=0.3, hspace=0.25)
+        elif nmodels > 2 and nmodels <= 4:
+            fig = plt.figure(figsize=(15,12))
+            gs = gridspec.GridSpec(2,2)
+            gs.update(wspace=0.3, hspace=0.25)
+        elif nmodels > 4 and nmodels <= 6:
+            fig = plt.figure(figsize=(19,12))
+            gs = gridspec.GridSpec(2,3)
+            gs.update(wspace=0.3, hspace=0.25)
+        elif nmodels > 6 and nmodels <=9:
+            fig = plt.figure(figsize=(21,17))
+            gs = gridspec.GridSpec(3,3)
+            gs.update(wspace=0.35, hspace=0.25)
+        else:
+            logger.error("Too many models selected, max. is 9")
+            exit(1)
+    m=1
+    yy,xx = np.meshgrid(fcst_var_levels_num, leads)
+    while m <= nmodels: #loop over models
+        model_now = model_names[m-1]
+        logger.debug(str(m)+" "+model_now)
+        model_now_stat_now_means = stat_now_means[m-1,:,:]
+        #plot
+        if stat_now == 'avg':
+            ax = plt.subplot(gs[m])
+            if m == 1:
+                model_now_stat_now_means_obar = stat_now_means_obar[m-1,:,:]
+                ax_obs = plt.subplot(gs[0])
+                ax_obs.grid(True)
+                ax_obs.tick_params(axis='x', pad=10)
+                ax_obs.set_xlabel("Forecast Hour")
+                ax_obs.set_xticks(leads)
+                ax_obs.set_xlim([leads[0],leads[-1]])
+                ax_obs.tick_params(axis='y', pad=15)
+                ax_obs.set_ylabel("Pressure Level")
+                ax_obs.set_yscale("log")
+                ax_obs.invert_yaxis()
+                ax_obs.minorticks_off()
+                ax_obs.set_yticks(fcst_var_levels_num)
+                ax_obs.set_yticklabels(fcst_var_levels_num)
+                ax_obs.set_ylim([fcst_var_levels_num[0],fcst_var_levels_num[-1]])
+                logger.debug("Plotting obar leads - pressure for obs")
+                ax_obs.set_title('obs', loc='left')
+                CF_obar = ax_obs.contourf(xx, yy, model_now_stat_now_means_obar, cmap=cmap_avg, extend='both')
+                C_obar = ax_obs.contour(xx, yy, model_now_stat_now_means_obar, levels=CF_obar.levels, colors='k', linewidths=1.0)
+                ax_obs.clabel(C_obar, CF_obar.levels, fmt='%1.2f', inline=True, fontsize=12.5)
+                logger.debug("Plotting fbar - obar leads - pressure for "+model_now)
+                ax.set_title(model_now+'-obs', loc='left')
+                clevels_avg_diff = pd.get_clevels(model_now_stat_now_means - model_now_stat_now_means_obar)
+                CFm1 = ax.contourf(xx, yy, model_now_stat_now_means - model_now_stat_now_means_obar, levels=clevels_avg_diff, cmap=cmap_diff, locator=matplotlib.ticker.MaxNLocator(symmetric=True), extend='both')
+                Cm1 = ax.contour(xx, yy, model_now_stat_now_means - model_now_stat_now_means_obar, levels=CFm1.levels, colors='k', linewidths=1.0)
+                ax.clabel(Cm1, CFm1.levels, fmt='%1.2f', inline=True, fontsize=12.5)
+            else:
+                logger.debug("Plotting fbar - obar leads - pressure for "+model_now)
+                ax.set_title(model_now+'-obs', loc='left')
+                CFm = ax.contourf(xx, yy, model_now_stat_now_means - model_now_stat_now_means_obar, levels=CFm1.levels, cmap=cmap_diff, locator=matplotlib.ticker.MaxNLocator(symmetric=True), extend='both')
+                Cm = ax.contour(xx, yy, model_now_stat_now_means - model_now_stat_now_means_obar, levels=CFm1.levels, colors='k', linewidths=1.0)
+                ax.clabel(Cm, CFm1.levels, fmt='%1.2f', inline=True, fontsize=12.5)
+        else:
+            ax = plt.subplot(gs[m-1])
+            if stat_now == 'bias':
+                logger.debug("Plotting "+stat_now+" leads - pressure for "+model_now)
+                ax.set_title(model_now, loc='left')
+                if m == 1:
+                    clevels_bias = pd.get_clevels(model_now_stat_now_means)
+                    CFm1 = ax.contourf(xx, yy, model_now_stat_now_means, levels=clevels_bias, cmap=cmap_bias, locator=matplotlib.ticker.MaxNLocator(symmetric=True), extend='both')
+                    Cm1 = ax.contour(xx, yy, model_now_stat_now_means, levels=CFm1.levels, colors='k', linewidths=1.0)
+                    ax.clabel(Cm1, CFm1.levels, fmt='%1.2f', inline=True, fontsize=12.5)
+                else:
+                    CFm = ax.contourf(xx, yy, model_now_stat_now_means, levels=CFm1.levels, cmap=cmap_bias, extend='both')
+                    Cm = ax.contour(xx, yy, model_now_stat_now_means, levels=CFm1.levels, colors='k', linewidths=1.0)
+                    ax.clabel(Cm, CFm.levels, fmt='%1.2f', inline=True, fontsize=12.5)
+            else:
+                if m == 1:
+                    logger.debug("Plotting "+stat_now+" leads - pressure for "+model_now)
+                    model1_stat_now_means = model_now_stat_now_means
+                    CFm1 = ax.contourf(xx, yy, model_now_stat_now_means, cmap=cmap, extend='both')
+                    Cm1 = ax.contour(xx, yy, model_now_stat_now_means, levels=CFm1.levels, colors='k', linewidths=1.0)
+                    ax.clabel(Cm1, CFm1.levels, fmt='%1.2f', inline=True, fontsize=12.5)
+                else:
+                    logger.debug("Plotting "+stat_now+" leads - pressure for "+model_now+" - "+model_names[0])
+                    if m == 2:
+                        clevels_diff = pd.get_clevels(model_now_stat_now_means - model1_stat_now_means)
+                        CFm2 = ax.contourf(xx, yy, model_now_stat_now_means - model1_stat_now_means, levels=clevels_diff, cmap=cmap_diff, locator=matplotlib.ticker.MaxNLocator(symmetric=True),extend='both')
+                        Cm2 = ax.contour(xx, yy, model_now_stat_now_means - model1_stat_now_means, levels=CFm2.levels, colors='k', linewidths=1.0)
+                        ax.clabel(Cm2, CFm2.levels, fmt='%1.2f', inline=True, fontsize=12.5)
+                    else:
+                        CFm = ax.contourf(xx, yy, model_now_stat_now_means - model1_stat_now_means, levels=CFm2.levels, cmap=cmap_diff, locator=matplotlib.ticker.MaxNLocator(symmetric=True),extend='both')
+                        Cm = ax.contour(xx, model_now_stat_now_means - model1_stat_now_means, levels=CFm2.levels, colors='k', linewidths=1.0)
+                        ax.clabel(Cm, CFm.levels, fmt='%1.2f', inline=True, fontsize=12.5)
+        ax.grid(True)
+        ax.tick_params(axis='x', pad=10)
+        ax.set_xlabel("Forecast Hour")
+        ax.set_xticks(leads)
+        ax.set_xlim([leads[0],leads[-1]])
+        ax.tick_params(axis='y', pad=15)
+        ax.set_ylabel("Pressure Level")
+        ax.set_yscale("log")
+        ax.invert_yaxis()
+        ax.minorticks_off()
+        ax.set_yticks(fcst_var_levels_num)
+        ax.set_yticklabels(fcst_var_levels_num)
+        ax.set_ylim([fcst_var_levels_num[0],fcst_var_levels_num[-1]])
+        m+=1
+    if nmodels > 1:
+        cax = fig.add_axes([0.1, -0.05, 0.8, 0.05])
+        if stat_now == 'bias':
+            cbar = fig.colorbar(CFm, cax=cax, orientation='horizontal', ticks=CFm.levels)
+        else:
+            cbar = fig.colorbar(CFm2, cax=cax, orientation='horizontal', ticks=CFm2.levels)
+    fig.suptitle("Fcst: "+fcst_var_name+" Obs: "+obs_var_name+" "+str(stat_formal_name_now)+'\n'+grid+"-"+region+" "+date_filter_method+" "+cycle+"Z "+str(sday)+smonth+str(syear)+"-"+str(eday)+emonth+str(eyear)+" Mean\n", fontsize=14, fontweight='bold') 
+    logger.debug("---- Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_vp.png")
+    plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_vp.png", bbox_inches='tight')
+    s+=1
