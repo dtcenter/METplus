@@ -125,13 +125,8 @@ class MakePlotsWrapper(CommandBuilder):
         self.add_env_var("LOGGING_FILENAME", logging_filename)
         logging_level = self.p.getstr('config', 'LOG_LEVEL')
         self.add_env_var("LOGGING_LEVEL", logging_level)
-
-    def grid2grid_pres_plots(self):
-        self.logger.info("Making plots for grid2grid-pres")
-        #set logging info for plotting scripts
-        self.get_logging_info()
-        plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
-        #read config
+    
+    def get_grid2grid_date_info(self):
         use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
             start_t = self.p.getstr('config', 'INIT_BEG')
@@ -153,21 +148,70 @@ class MakePlotsWrapper(CommandBuilder):
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
             self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
+        return loop_beg_hour, loop_end_hour, loop_inc    
+
+    def get_grid2obs_date_info(self):
+        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
+        if use_init:
+            start_t = self.p.getstr('config', 'INIT_BEG')
+            end_t = self.p.getstr('config', 'INIT_END')
+            init_beg_hour = self.p.getstr('config', 'INIT_BEG_HOUR')
+            init_end_hour = self.p.getstr('config', 'INIT_END_HOUR')
+            loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
+            loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
+            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
+            date_filter_method = "Initialization"
+            self.add_env_var("START_T", start_t)
+            self.add_env_var("END_T", end_t)
+            self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
+        else:
+            start_t = self.p.getstr('config', 'VALID_BEG')
+            end_t = self.p.getstr('config', 'VALID_END')
+            valid_beg_hour = self.p.getstr('config', 'VALID_BEG_HOUR')
+            valid_end_hour = self.p.getstr('config', 'VALID_END_HOUR')
+            loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
+            loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
+            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
+            date_filter_method = "Valid"
+            self.add_env_var("START_T", start_t)
+            self.add_env_var("END_T", end_t)
+            self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
+        return loop_beg_hour, loop_end_hour, loop_inc
+       
+    def get_plotting_info(self):
+        plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
+        self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
         plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
-        plotting_out_dir_pres = os.path.join(plotting_out_dir, 'pres')
-        if os.path.exists(plotting_out_dir_pres):
-            self.logger.info(plotting_out_dir_pres+" exist, removing")
-            util.rmtree(plotting_out_dir_pres)
-        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
-        lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
+        self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
+        plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
+        self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
+        verif_type = self.p.getstr('config', 'VERIF_TYPE')
+        plotting_out_dir_type = os.path.join(plotting_out_dir, verif_type)
+        if os.path.exists(plotting_out_dir_type):
+            self.logger.info(plotting_out_dir_type+" exist, removing")
+            util.rmtree(plotting_out_dir_type)
+        util.mkdir_p(plotting_out_dir_type)
+        return plotting_scripts_dir
+
+    def grid2grid_pres_plots(self):
+        self.logger.info("Making plots for grid2grid-pres")
+        #set logging info for plotting scripts
+        self.get_logging_info()
+        #get looping hour info and set date info
+        loop_beg_hour, loop_end_hour, loop_inc = self.get_grid2grid_date_info()
+        #get model info
         model_names = self.parse_model_list()
         self.add_env_var("MODEL_NAMES", ' '.join(model_names))
-        plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
-        self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
-        self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
-        self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
+        #get variable info 
         var_info_list = self.parse_vars_with_level_list()
+        #get lead info
+        lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
+        #get region info
+        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
+        #get plotting script directory and other plotting info
+        plotting_scripts_dir = self.get_plotting_info()
+        #start loops to run plotting scripts 
         loop_hour = loop_beg_hour
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
@@ -175,11 +219,9 @@ class MakePlotsWrapper(CommandBuilder):
             for v in var_info_list:
                 fcst_var_levels_list = v.fcst_level
                 self.add_env_var('FCST_VAR_NAME', v.fcst_name)
-                #self.add_env_var('FCST_VAR_EXTRA', v.fcst_extra)
                 self.add_env_var('FCST_VAR_LEVELS_LIST', ''.join(fcst_var_levels_list).replace("P", " P").lstrip().replace(" P", ", P"))
                 obs_var_levels_list = v.obs_level
                 self.add_env_var('OBS_VAR_NAME', v.obs_name)
-                #self.add_env_var('OBS_VAR_EXTRA', v.obs_extra)
                 self.add_env_var('OBS_VAR_LEVELS_LIST', ''.join(obs_var_levels_list).replace("P", " P").lstrip().replace(" P", ", P"))
                 for region in region_list:
                     self.add_env_var('REGION', region)
@@ -194,39 +236,39 @@ class MakePlotsWrapper(CommandBuilder):
                             self.add_env_var('OBS_VAR_LEVEL', obs_var_levels_list[vl])
                             #build command
                             self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_ts.py"))
+                            self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z lead:"+lead_string+" region:"+region+" fcst var:"+v.fcst_name+"_"+fcst_var_levels_list[vl]+" obs var:"+v.obs_name+"_"+obs_var_levels_list[vl])
                             cmd = self.get_command()
                             if cmd is None:
                                 self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                                 return
-                            self.logger.info("")
                             self.build()
                             self.clear()
                         #build command
                         self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tp.py"))
+                        self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z lead:"+lead_string+" region:"+region+" fcst var:"+v.fcst_name+" obs var:"+v.obs_name)
                         cmd = self.get_command()
                         if cmd is None:
                             self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                             return
-                        self.logger.info("")
                         self.build()
                         self.clear()
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                     #build command
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tsmean.py"))
+                    self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+v.fcst_name+" obs var:"+v.obs_name)
                     cmd = self.get_command()
                     if cmd is None:
                         self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                         return
-                    self.logger.info("")
                     self.build()
                     self.clear()
                     #build command
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tpmean.py"))
+                    self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+v.fcst_name+" obs var:"+v.obs_name)
                     cmd = self.get_command()
                     if cmd is None:
                         self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                         return
-                    self.logger.info("")
                     self.build()
                     self.clear()
             loop_hour += loop_inc
@@ -235,57 +277,30 @@ class MakePlotsWrapper(CommandBuilder):
         self.logger.info("Making plots for grid2grid-anom")
         #set logging info for plotting scripts
         self.get_logging_info()
-        plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
-        #read config
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
-        if use_init:
-            start_t = self.p.getstr('config', 'INIT_BEG')
-            end_t = self.p.getstr('config', 'INIT_END')
-            loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
-            loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
-            date_filter_method = "Initialization"
-            self.add_env_var("START_T", start_t)
-            self.add_env_var("END_T", end_t)
-            self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
-        else:
-            start_t = self.p.getstr('config', 'VALID_BEG')
-            end_t = self.p.getstr('config', 'VALID_END')
-            loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
-            loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
-            date_filter_method = "Valid"
-            self.add_env_var("START_T", start_t)
-            self.add_env_var("END_T", end_t)
-            self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
-        stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
-        plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
-        plotting_out_dir_anom = os.path.join(plotting_out_dir, 'anom')
-        if os.path.exists(plotting_out_dir_anom):
-            self.logger.info(plotting_out_dir_anom+" exist, removing")
-            util.rmtree(plotting_out_dir_anom)
-        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
-        lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
+        #get looping hour info and set date info
+        loop_beg_hour, loop_end_hour, loop_inc = self.get_grid2grid_date_info()
+        #get model info
         model_names = self.parse_model_list()
         self.add_env_var("MODEL_NAMES", ' '.join(model_names))
-        plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
-        self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
-        self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
-        self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
+        #get variable info 
         var_info_list = self.parse_vars_with_level_list()
+        #get lead info
+        lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
+        #get region info
+        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
+        #get plotting script directory and other plotting info
+        plotting_scripts_dir = self.get_plotting_info()
+        #start loops to run plotting scripts
         loop_hour = loop_beg_hour
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
-            #filtering times based on if files made based on init_time or valid_time
             self.add_env_var('CYCLE', loop_hour_str)
             for v in var_info_list:
                 fcst_var_levels_list = v.fcst_level
                 self.add_env_var('FCST_VAR_NAME', v.fcst_name)
-                #self.add_env_var('FCST_VAR_EXTRA', v.fcst_extra)
                 self.add_env_var('FCST_VAR_LEVELS_LIST', ''.join(fcst_var_levels_list).replace("P", " P").lstrip().replace(" P", ", P"))
                 obs_var_levels_list = v.obs_level
                 self.add_env_var('OBS_VAR_NAME', v.obs_name)
-                #self.add_env_var('OBS_VAR_EXTRA', v.obs_extra)
                 self.add_env_var('OBS_VAR_LEVELS_LIST', ''.join(obs_var_levels_list).replace("P", " P").lstrip().replace(" P", ", P"))
                 for region in region_list:
                     self.add_env_var('REGION', region)
@@ -300,6 +315,7 @@ class MakePlotsWrapper(CommandBuilder):
                              self.add_env_var('LEAD', lead_string)
                              #build command
                              self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_ts.py"))
+                             self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z lead:"+lead_string+" region:"+region+" fcst var:"+v.fcst_name+"_"+fcst_var_levels_list[vl]+" obs var:"+v.obs_name+"_"+obs_var_levels_list[vl])
                              cmd = self.get_command()
                              if cmd is None:
                                  self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
@@ -322,21 +338,21 @@ class MakePlotsWrapper(CommandBuilder):
                                            self.add_env_var('WAVE_NUM_END_LIST', wave_num_end_list_str)
                                            #build command
                                            self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_ts_HGTfourier.py"))
+                                           self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z lead:"+lead_string+" region:"+region+" fcst var:"+v.fcst_name+"_"+fcst_var_levels_list[vl]+" obs var:"+v.obs_name+"_"+obs_var_levels_list[vl])
                                            cmd = self.get_command()
                                            if cmd is None:
                                                self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                                                return
-                                           self.logger.info("")
                                            self.build()
                                            self.clear() 
                          self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                          #build command
                          self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_tsmean.py"))
+                         self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+v.fcst_name+"_"+fcst_var_levels_list[vl]+" obs var:"+v.obs_name+"_"+obs_var_levels_list[vl])
                          cmd = self.get_command()
                          if cmd is None:
                              self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                              return
-                         self.logger.info("")
                          self.build()
                          self.clear()
                          if v.fcst_name == 'HGT' or v.obs_name == 'HGT':
@@ -354,20 +370,20 @@ class MakePlotsWrapper(CommandBuilder):
                                       self.add_env_var('WAVE_NUM_END_LIST', wave_num_end_list_str)
                                       #build command
                                       self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_tsmean_HGTfourier.py"))
+                                      self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+v.fcst_name+"_"+fcst_var_levels_list[vl]+" obs var:"+v.obs_name+"_"+obs_var_levels_list[vl])
                                       cmd = self.get_command()
                                       if cmd is None:
                                           self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                                           return
-                                      self.logger.info("")
                                       self.build()
                                       self.clear()
                          #build command
                          self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_timemap.py"))
+                         self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+v.fcst_name+"_"+fcst_var_levels_list[vl]+" obs var:"+v.obs_name+"_"+obs_var_levels_list[vl])
                          cmd = self.get_command()
                          if cmd is None:
                              self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                              return
-                         self.logger.info("")
                          self.build()
                          self.clear()
             loop_hour += loop_inc
@@ -376,44 +392,20 @@ class MakePlotsWrapper(CommandBuilder):
         self.logger.info("Making plots for grid2grid-sfc")
         #set logging info for plotting scripts
         self.get_logging_info()
-        plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
-        #read config
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
-        if use_init:
-            start_t = self.p.getstr('config', 'INIT_BEG')
-            end_t = self.p.getstr('config', 'INIT_END')
-            loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
-            loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
-            date_filter_method = "Initialization"
-            self.add_env_var("START_T", start_t)
-            self.add_env_var("END_T", end_t)
-            self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
-        else:
-            start_t = self.p.getstr('config', 'VALID_BEG')
-            end_t = self.p.getstr('config', 'VALID_END')
-            loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
-            loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
-            date_filter_method = "Valid"
-            self.add_env_var("START_T", start_t)
-            self.add_env_var("END_T", end_t)
-            self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
-        stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
-        plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
-        plotting_out_dir_sfc = os.path.join(plotting_out_dir, 'sfc')
-        if os.path.exists(plotting_out_dir_sfc):
-            self.logger.info(plotting_out_dir_sfc+" exist, removing")
-            util.rmtree(plotting_out_dir_sfc)
-        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
-        lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
+        #get looping hour info and set date info
+        loop_beg_hour, loop_end_hour, loop_inc = self.get_grid2grid_date_info()
+        #get model info
         model_names = self.parse_model_list()
         self.add_env_var("MODEL_NAMES", ' '.join(model_names))
-        plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
-        self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
-        self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
-        self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
+        #get variable info 
         var_list = util.parse_var_list(self.p)
+        #get lead info
+        lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
+        #get region info
+        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
+        #get plotting script directory and other plotting info
+        plotting_scripts_dir = self.get_plotting_info()
+        #start loops to run plotting scripts
         loop_hour = loop_beg_hour
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
@@ -421,10 +413,8 @@ class MakePlotsWrapper(CommandBuilder):
             for var_info in var_list:
                 fcst_var_name = var_info.fcst_name
                 fcst_var_level = var_info.fcst_level
-                #fcst_var_extra =  var_info.fcst_extra.replace(" = ", "").rstrip(";")
                 obs_var_name = var_info.obs_name
                 obs_var_level = var_info.obs_level
-                #obs_var_extra =  var_info.obs_extra.replace(" = ", "").rstrip(";")
                 self.add_env_var('FCST_VAR_NAME', fcst_var_name)
                 self.add_env_var('FCST_VAR_LEVEL', fcst_var_level)
                 self.add_env_var('OBS_VAR_NAME', obs_var_name)
@@ -439,21 +429,21 @@ class MakePlotsWrapper(CommandBuilder):
                         self.add_env_var('LEAD', lead_string)
                         #build command
                         self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_sfc_ts.py"))
+                        self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z lead:"+lead_string+" region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
                         cmd = self.get_command()
                         if cmd is None:
                             self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                             return
-                        self.logger.info("")
                         self.build()
                         self.clear()
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                     #build command
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_sfc_tsmean.py"))
+                    self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
                     cmd = self.get_command()
                     if cmd is None:
                         self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                         return
-                    self.logger.info("")
                     self.build()
                     self.clear()
             loop_hour += loop_inc
@@ -462,50 +452,23 @@ class MakePlotsWrapper(CommandBuilder):
         self.logger.info("Making plots for grid2obs-upper_air")
         #set logging info for plotting scripts
         self.get_logging_info()
-        plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
-        #read config
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
-        if use_init:
-            start_t = self.p.getstr('config', 'INIT_BEG')
-            end_t = self.p.getstr('config', 'INIT_END')
-            init_beg_hour = self.p.getstr('config', 'INIT_BEG_HOUR')
-            init_end_hour = self.p.getstr('config', 'INIT_END_HOUR')
-            loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
-            loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
-            date_filter_method = "Initialization"
-            self.add_env_var("START_T", start_t)
-            self.add_env_var("END_T", end_t)
-            self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
-        else:
-            start_t = self.p.getstr('config', 'VALID_BEG')
-            end_t = self.p.getstr('config', 'VALID_END')
-            valid_beg_hour = self.p.getstr('config', 'VALID_BEG_HOUR')
-            valid_end_hour = self.p.getstr('config', 'VALID_END_HOUR')
-            loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
-            loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
-            date_filter_method = "Valid"
-            self.add_env_var("START_T", start_t)
-            self.add_env_var("END_T", end_t)
-            self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
-        stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
-        plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
-        plotting_out_dir_upper_air = os.path.join(plotting_out_dir, 'upper_air')
-        if os.path.exists(plotting_out_dir_upper_air):
-            self.logger.info(plotting_out_dir_upper_air+" exist, removing")
-            util.rmtree(plotting_out_dir_upper_air)
-        regrid_to_grid = self.p.getstr('config', 'REGRID_TO_GRID')
-        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
-        lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
+        #get looping hour info and set date info
+        loop_beg_hour, loop_end_hour, loop_inc = self.get_grid2obs_date_info()
+        #get model info
         model_names = self.parse_model_list()
         self.add_env_var("MODEL_NAMES", ' '.join(model_names))
-        plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
-        self.add_env_var("REGRID_TO_GRID", regrid_to_grid)
-        self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
-        self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
-        self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
+        #get variable info 
         var_info_list = self.parse_vars_with_level_list()
+        #get lead info
+        lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
+        #get region info
+        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
+        #get grid info
+        regrid_to_grid = self.p.getstr('config', 'REGRID_TO_GRID')
+        self.add_env_var("REGRID_TO_GRID", regrid_to_grid)
+        #get plotting script directory and other plotting info
+        plotting_scripts_dir = self.get_plotting_info()
+        #start loops to run plotting scripts
         loop_hour = loop_beg_hour
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
@@ -513,11 +476,9 @@ class MakePlotsWrapper(CommandBuilder):
             for v in var_info_list:
                 fcst_var_levels_list = v.fcst_level
                 self.add_env_var('FCST_VAR_NAME', v.fcst_name)
-                #self.add_env_var('FCST_VAR_EXTRA', v.fcst_extra)
                 self.add_env_var('FCST_VAR_LEVELS_LIST', ''.join(fcst_var_levels_list).replace("P", " P").lstrip().replace(" P", ", P"))
                 obs_var_levels_list = v.obs_level
                 self.add_env_var('OBS_VAR_NAME', v.obs_name)
-                #self.add_env_var('OBS_VAR_EXTRA', v.obs_extra)
                 self.add_env_var('OBS_VAR_LEVELS_LIST', ''.join(obs_var_levels_list).replace("P", " P").lstrip().replace(" P", ", P"))
                 for region in region_list:
                     self.add_env_var('REGION', region)
@@ -532,39 +493,39 @@ class MakePlotsWrapper(CommandBuilder):
                             self.add_env_var('OBS_VAR_LEVEL', obs_var_levels_list[vl])
                             #build command
                             self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_ts.py"))
+                            self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z lead:"+lead_string+" region:"+region+" fcst var:"+v.fcst_name+"_"+fcst_var_levels_list[vl]+" obs var:"+v.obs_name+"_"+obs_var_levels_list[vl])
                             cmd = self.get_command()
                             if cmd is None:
                                 self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                                 return
-                            self.logger.info("")
                             self.build()
                             self.clear()
                         #build command
                         self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_vertprof.py"))
+                        self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z lead:"+lead_string+" region:"+region+" fcst var:"+v.fcst_name+" obs var:"+v.obs_name)
                         cmd = self.get_command()
                         if cmd is None:
                             self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                             return
-                        self.logger.info("")
                         self.build()
                         self.clear()
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                     #build command
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_tsmean.py"))
+                    self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+v.fcst_name+" obs var:"+v.obs_name)
                     cmd = self.get_command()
                     if cmd is None:
                         self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                         return
-                    self.logger.info("")
                     self.build()
                     self.clear()
                     #build command
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_vertprofmean.py"))
+                    self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+v.fcst_name+" obs var:"+v.obs_name)
                     cmd = self.get_command()
                     if cmd is None:
                         self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                         return
-                    self.logger.info("")
                     self.build()
                     self.clear()
             loop_hour += loop_inc
@@ -573,50 +534,23 @@ class MakePlotsWrapper(CommandBuilder):
         self.logger.info("Making plots for grid2obs-conus_sfc")
         #set logging info for plotting scripts
         self.get_logging_info()
-        plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
-        #read config
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
-        if use_init:
-            start_t = self.p.getstr('config', 'INIT_BEG')
-            end_t = self.p.getstr('config', 'INIT_END')
-            init_beg_hour = self.p.getstr('config', 'INIT_BEG_HOUR')
-            init_end_hour = self.p.getstr('config', 'INIT_END_HOUR')
-            loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
-            loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.p.getint('config', 'VALID_INCREMENT')
-            date_filter_method = "Initialization"
-            self.add_env_var("START_T", start_t)
-            self.add_env_var("END_T", end_t)
-            self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
-        else:
-            start_t = self.p.getstr('config', 'VALID_BEG')
-            end_t = self.p.getstr('config', 'VALID_END')
-            valid_beg_hour = self.p.getstr('config', 'VALID_BEG_HOUR')
-            valid_end_hour = self.p.getstr('config', 'VALID_END_HOUR')
-            loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
-            loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.p.getint('config', 'INIT_INCREMENT')
-            date_filter_method = "Valid"
-            self.add_env_var("START_T", start_t)
-            self.add_env_var("END_T", end_t)
-            self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
-        stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
-        plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
-        plotting_out_dir_conus_sfc = os.path.join(plotting_out_dir, 'conus_sfc')
-        if os.path.exists(plotting_out_dir_conus_sfc):
-            self.logger.info(plotting_out_dir_conus_sfc+" exist, removing")
-            util.rmtree(plotting_out_dir_conus_sfc)
-        regrid_to_grid = self.p.getstr('config', 'REGRID_TO_GRID')
-        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
-        lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
+        #get looping hour info and set date info
+        loop_beg_hour, loop_end_hour, loop_inc = self.get_grid2obs_date_info()
+        #get model info
         model_names = self.parse_model_list()
         self.add_env_var("MODEL_NAMES", ' '.join(model_names))
-        plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
-        self.add_env_var("REGRID_TO_GRID", regrid_to_grid)
-        self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
-        self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
-        self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
+        #get variable info 
         var_list = util.parse_var_list(self.p)
+        #get lead info
+        lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
+        #get region info
+        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
+        #get grid info
+        regrid_to_grid = self.p.getstr('config', 'REGRID_TO_GRID')
+        self.add_env_var("REGRID_TO_GRID", regrid_to_grid)
+        #get plotting script directory and other plotting info
+        plotting_scripts_dir = self.get_plotting_info()
+        #start loops to run plotting scripts
         loop_hour = loop_beg_hour
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
@@ -624,10 +558,8 @@ class MakePlotsWrapper(CommandBuilder):
             for var_info in var_list:
                 fcst_var_name = var_info.fcst_name
                 fcst_var_level = var_info.fcst_level
-                #fcst_var_extra =  var_info.fcst_extra.replace(" = ", "").rstrip(";")
                 obs_var_name = var_info.obs_name
                 obs_var_level = var_info.obs_level
-                #obs_var_extra =  var_info.obs_extra.replace(" = ", "").rstrip(";")
                 self.add_env_var('FCST_VAR_NAME', fcst_var_name)
                 self.add_env_var('FCST_VAR_LEVEL', fcst_var_level)
                 self.add_env_var('OBS_VAR_NAME', obs_var_name)
@@ -642,21 +574,21 @@ class MakePlotsWrapper(CommandBuilder):
                         self.add_env_var('LEAD', lead_string)
                         #build command
                         self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_conus_sfc_ts.py"))
+                        self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z lead:"+lead_string+" region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
                         cmd = self.get_command()
                         if cmd is None:
                             self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                             return
-                        self.logger.info("")
                         self.build()
                         self.clear()
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
                     #build command
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_conus_sfc_tsmean.py"))
+                    self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
                     cmd = self.get_command()
                     if cmd is None:
                         self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
                         return
-                    self.logger.info("")
                     self.build()
                     self.clear()
             loop_hour += loop_inc
