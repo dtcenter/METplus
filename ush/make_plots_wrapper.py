@@ -29,9 +29,27 @@ from command_builder import CommandBuilder
 class MakePlotsWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(MakePlotsWrapper, self).__init__(p, logger)
+        self.app_path = 'python'
         self.app_name = 'make_plots'
         if self.logger is None:
             self.logger = util.get_logger(self.p,sublog='MakePlots')
+
+    def set_plotting_script(self, plotting_script_path):
+        self.plotting_script = plotting_script_path
+
+    def get_command(self):
+        if self.app_path is None:
+            self.logger.error(self.app_name + ": No app path specified. \
+                              You must use a subclass")
+            return None
+        cmd = self.app_path + " "
+        
+        if self.plotting_script == "":
+            self.logger.error(self.app_name+": No plotting script specified")
+            return None
+        cmd += self.plotting_script
+
+        return cmd
 
     def parse_model_list(self):
         model_list = []
@@ -50,10 +68,7 @@ class MakePlotsWrapper(CommandBuilder):
 
     def grid2grid_pres_plots(self):
         self.logger.info("Making plots for grid2grid-pres")
-        try:
-            logging_filename = self.logger.parent.handlers[0].baseFilename
-        except:
-            logging_filename = self.logger.handlers[0].baseFilename
+        logging_filename = self.p.getstr('config', 'LOG_METPLUS')
         self.add_env_var("LOGGING_FILENAME", logging_filename)
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
@@ -167,27 +182,48 @@ class MakePlotsWrapper(CommandBuilder):
                         for vl in range(len(fcst_var_levels_list)):
                             self.add_env_var('FCST_VAR_LEVEL', fcst_var_levels_list[vl])
                             self.add_env_var('OBS_VAR_LEVEL', obs_var_levels_list[vl])
-                            py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_ts.py")
-                            process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                            process.wait()
-                        py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tp.py")
-                        process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                        process.wait()
+                            #build command
+                            self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_ts.py"))
+                            cmd = self.get_command()
+                            if cmd is None:
+                                self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                                return
+                            self.logger.info("")
+                            self.build()
+                            self.clear()
+                        #build command
+                        self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tp.py"))
+                        cmd = self.get_command()
+                        if cmd is None:
+                            self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                            return
+                        self.logger.info("")
+                        self.build()
+                        self.clear()
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
-                    py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tsmean.py")
-                    process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                    process.wait()
-                    py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tpmean.py")
-                    process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                    process.wait()
+                    #build command
+                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tsmean.py"))
+                    cmd = self.get_command()
+                    if cmd is None:
+                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                        return
+                    self.logger.info("")
+                    self.build()
+                    self.clear()
+                    #build command
+                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tpmean.py"))
+                    cmd = self.get_command()
+                    if cmd is None:
+                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                        return
+                    self.logger.info("")
+                    self.build()
+                    self.clear()
             loop_hour += loop_inc
 
     def grid2grid_anom_plots(self):
         self.logger.info("Making plots for grid2grid-anom")
-        try:
-            logging_filename = self.logger.parent.handlers[0].baseFilename
-        except:
-            logging_filename = self.logger.handlers[0].baseFilename
+        logging_filename = self.p.getstr('config', 'LOG_METPLUS')
         self.add_env_var("LOGGING_FILENAME", logging_filename)
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
@@ -302,9 +338,15 @@ class MakePlotsWrapper(CommandBuilder):
                              else:
                                  lead_string = str(lead)
                              self.add_env_var('LEAD', lead_string)
-                             py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_ts.py")
-                             process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                             process.wait()
+                             #build command
+                             self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_ts.py"))
+                             cmd = self.get_command()
+                             if cmd is None:
+                                 self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                                 return
+                             self.logger.info("")
+                             self.build()
+                             self.clear()
                              if v.fcst_name == 'HGT' or v.obs_name == 'HGT':
                                   fourier_decomp_height = self.p.getbool('config', 'FOURIER_HEIGHT_DECOMP')
                                   if fourier_decomp_height:
@@ -317,14 +359,26 @@ class MakePlotsWrapper(CommandBuilder):
                                            wave_num_beg_list_str = self.p.getstr('config', 'WAVE_NUM_BEG_LIST')
                                            wave_num_end_list_str = self.p.getstr('config', 'WAVE_NUM_END_LIST')
                                            self.add_env_var('WAVE_NUM_BEG_LIST', wave_num_beg_list_str)
-                                           self.add_env_var('WAVE_NUM_END_LIST', wave_num_end_list_str) 
-                                           py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_ts_HGTfourier.py")
-                                           process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                                           process.wait()
+                                           self.add_env_var('WAVE_NUM_END_LIST', wave_num_end_list_str)
+                                           #build command
+                                           self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_ts_HGTfourier.py"))
+                                           cmd = self.get_command()
+                                           if cmd is None:
+                                               self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                                               return
+                                           self.logger.info("")
+                                           self.build()
+                                           self.clear() 
                          self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
-                         py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_tsmean.py")
-                         process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                         process.wait()
+                         #build command
+                         self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_tsmean.py"))
+                         cmd = self.get_command()
+                         if cmd is None:
+                             self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                             return
+                         self.logger.info("")
+                         self.build()
+                         self.clear()
                          if v.fcst_name == 'HGT' or v.obs_name == 'HGT':
                              fourier_decomp_height = self.p.getbool('config', 'FOURIER_HEIGHT_DECOMP')
                              if fourier_decomp_height:
@@ -338,20 +392,29 @@ class MakePlotsWrapper(CommandBuilder):
                                       wave_num_end_list_str = self.p.getstr('config', 'WAVE_NUM_END_LIST')
                                       self.add_env_var('WAVE_NUM_BEG_LIST', wave_num_beg_list_str)
                                       self.add_env_var('WAVE_NUM_END_LIST', wave_num_end_list_str)
-                                      py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_tsmean_HGTfourier.py")
-                                      process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                                      process.wait()
-                         py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_timemap.py")
-                         process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                         process.wait()
+                                      #build command
+                                      self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_tsmean_HGTfourier.py"))
+                                      cmd = self.get_command()
+                                      if cmd is None:
+                                          self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                                          return
+                                      self.logger.info("")
+                                      self.build()
+                                      self.clear()
+                         #build command
+                         self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_timemap.py"))
+                         cmd = self.get_command()
+                         if cmd is None:
+                             self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                             return
+                         self.logger.info("")
+                         self.build()
+                         self.clear()
             loop_hour += loop_inc
  
     def grid2grid_sfc_plots(self):
         self.logger.info("Making plots for grid2grid-sfc")
-        try:
-            logging_filename = self.logger.parent.handlers[0].baseFilename
-        except:
-            logging_filename = self.logger.handlers[0].baseFilename
+        logging_filename = self.p.getstr('config', 'LOG_METPLUS')
         self.add_env_var("LOGGING_FILENAME", logging_filename)
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
@@ -414,21 +477,30 @@ class MakePlotsWrapper(CommandBuilder):
                         else:
                             lead_string = str(lead)
                         self.add_env_var('LEAD', lead_string)
-                        py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_sfc_ts.py")
-                        process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                        process.wait()
+                        #build command
+                        self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_sfc_ts.py"))
+                        cmd = self.get_command()
+                        if cmd is None:
+                            self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                            return
+                        self.logger.info("")
+                        self.build()
+                        self.clear()
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
-                    py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2grid_sfc_tsmean.py")
-                    process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                    process.wait()
+                    #build command
+                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_sfc_tsmean.py"))
+                    cmd = self.get_command()
+                    if cmd is None:
+                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                        return
+                    self.logger.info("")
+                    self.build()
+                    self.clear()
             loop_hour += loop_inc
 
     def grid2obs_upper_air_plots(self):
         self.logger.info("Making plots for grid2obs-upper_air")
-        try:
-            logging_filename = self.logger.parent.handlers[0].baseFilename
-        except:
-            logging_filename = self.logger.handlers[0].baseFilename
+        logging_filename = self.p.getstr('config', 'LOG_METPLUS')
         self.add_env_var("LOGGING_FILENAME", logging_filename)
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
@@ -548,27 +620,48 @@ class MakePlotsWrapper(CommandBuilder):
                         for vl in range(len(fcst_var_levels_list)):
                             self.add_env_var('FCST_VAR_LEVEL', fcst_var_levels_list[vl])
                             self.add_env_var('OBS_VAR_LEVEL', obs_var_levels_list[vl])
-                            py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_ts.py")
-                            process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                            process.wait()
-                        py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_vertprof.py")
-                        process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                        process.wait()
+                            #build command
+                            self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_ts.py"))
+                            cmd = self.get_command()
+                            if cmd is None:
+                                self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                                return
+                            self.logger.info("")
+                            self.build()
+                            self.clear()
+                        #build command
+                        self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_vertprof.py"))
+                        cmd = self.get_command()
+                        if cmd is None:
+                            self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                            return
+                        self.logger.info("")
+                        self.build()
+                        self.clear()
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
-                    py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_tsmean.py")
-                    process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                    process.wait()
-                    py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_vertprofmean.py")
-                    process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                    process.wait()
+                    #build command
+                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_tsmean.py"))
+                    cmd = self.get_command()
+                    if cmd is None:
+                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                        return
+                    self.logger.info("")
+                    self.build()
+                    self.clear()
+                    #build command
+                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_vertprofmean.py"))
+                    cmd = self.get_command()
+                    if cmd is None:
+                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                        return
+                    self.logger.info("")
+                    self.build()
+                    self.clear()
             loop_hour += loop_inc
 
     def grid2obs_conus_sfc_plots(self):
         self.logger.info("Making plots for grid2obs-conus_sfc")
-        try:
-            logging_filename = self.logger.parent.handlers[0].baseFilename
-        except:
-            logging_filename = self.logger.handlers[0].baseFilename
+        logging_filename = self.p.getstr('config', 'LOG_METPLUS')
         self.add_env_var("LOGGING_FILENAME", logging_filename)
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
@@ -637,15 +730,26 @@ class MakePlotsWrapper(CommandBuilder):
                         else:
                             lead_string = str(lead)
                         self.add_env_var('LEAD', lead_string)
-                        py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_conus_sfc_ts.py")
-                        process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                        process.wait()
+                        #build command
+                        self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_conus_sfc_ts.py"))
+                        cmd = self.get_command()
+                        if cmd is None:
+                            self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                            return
+                        self.logger.info("")
+                        self.build()
+                        self.clear()
                     self.add_env_var("LEAD_LIST", self.p.getstr('config', 'LEAD_LIST'))
-                    py_cmd = os.path.join("python")+" "+os.path.join(plotting_scripts_dir, "plot_grid2obs_conus_sfc_tsmean.py")
-                    process = subprocess.Popen(py_cmd, env=self.env, shell=True)
-                    process.wait()
+                    #build command
+                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_conus_sfc_tsmean.py"))
+                    cmd = self.get_command()
+                    if cmd is None:
+                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                        return
+                    self.logger.info("")
+                    self.build()
+                    self.clear()
             loop_hour += loop_inc
-
 ########################################################################
 ########################################################################
 ########################################################################
