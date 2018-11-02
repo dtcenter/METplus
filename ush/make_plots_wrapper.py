@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-Program Name: make_plots_mallory_wrapper.py
+Program Name: make_plots_wrapper.py
 Contact(s): Mallory Row
 Abstract: Reads filtered files from stat_analysis_wrapper run_all_times to make plots
 History Log:  Initial version
@@ -65,6 +65,60 @@ class MakePlotsWrapper(CommandBuilder):
                 model_name = self.p.getstr('config', "MODEL"+m+"_NAME")
                 model_list.append(model_name)
         return model_list
+    
+    def parse_vars_with_level_list(self):
+        #need to grab var info in special way that differs from util.parse_var_list
+        #need variables with cooresponding list of levels; logic derived from util.parse_var_list
+        var_info_list = []
+        # find all FCST_VARn_NAME keys in the conf files
+        all_conf = self.p.keys('config')
+        fcst_indices = []
+        regex = re.compile("FCST_VAR(\d+)_NAME")
+        for conf in all_conf:
+           result = regex.match(conf)
+           if result is not None:
+              fcst_indices.append(result.group(1))
+        # loop over all possible variables and add them to list
+        for n in fcst_indices:
+            # get fcst var info if available
+            if self.p.has_option('config', "FCST_VAR"+n+"_NAME"):
+                fcst_name = self.p.getstr('config', "FCST_VAR"+n+"_NAME")
+
+            fcst_extra = ""
+            if self.p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
+                fcst_extra = util.getraw_interp(self.p, 'config', "FCST_VAR"+n+"_OPTIONS")
+
+            fcst_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
+            # if OBS_VARn_X does not exist, use FCST_VARn_X
+            if self.p.has_option('config', "OBS_VAR"+n+"_NAME"):
+                obs_name = self.p.getstr('config', "OBS_VAR"+n+"_NAME")
+            else:
+                obs_name = fcst_name
+
+            obs_extra = ""
+            if self.p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
+                obs_extra = util.getraw_interp(self.p, 'config', "OBS_VAR"+n+"_OPTIONS")
+            ##else:
+            ##    obs_extra = fcst_extra
+            ##fcst_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
+            if self.p.has_option('config', "OBS_VAR"+n+"_LEVELS"):
+                obs_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
+            else:
+                obs_levels = fcst_levels
+
+            if len(fcst_levels) != len(obs_levels):
+                self.logger.error("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
+                          "_LEVELS do not have the same number of elements")
+                exit(1)
+            fo = util.FieldObj()
+            fo.fcst_name = fcst_name
+            fo.obs_name = obs_name
+            fo.fcst_extra = fcst_extra
+            fo.obs_extra = obs_extra
+            fo.fcst_level = fcst_levels
+            fo.obs_level = obs_levels
+            var_info_list.append(fo)
+        return var_info_list
 
     def grid2grid_pres_plots(self):
         self.logger.info("Making plots for grid2grid-pres")
@@ -107,57 +161,7 @@ class MakePlotsWrapper(CommandBuilder):
         self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
         self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
         self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
-        #need to grab var info in special way that differs from util.parse_var_list
-        #need variables with cooresponding list of levels; logic derived from util.parse_var_list
-        var_info_list = []
-        # find all FCST_VARn_NAME keys in the conf files
-        all_conf = self.p.keys('config')
-        fcst_indices = []
-        regex = re.compile("FCST_VAR(\d+)_NAME")
-        for conf in all_conf:
-           result = regex.match(conf)
-           if result is not None:
-              fcst_indices.append(result.group(1))
-        # loop over all possible variables and add them to list
-        for n in fcst_indices:
-            # get fcst var info if available
-            if self.p.has_option('config', "FCST_VAR"+n+"_NAME"):
-                fcst_name = self.p.getstr('config', "FCST_VAR"+n+"_NAME")
-
-            fcst_extra = ""
-            if self.p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                fcst_extra = util.getraw_interp(self.p, 'config', "FCST_VAR"+n+"_OPTIONS")
-
-            fcst_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-            # if OBS_VARn_X does not exist, use FCST_VARn_X
-            if self.p.has_option('config', "OBS_VAR"+n+"_NAME"):
-                obs_name = self.p.getstr('config', "OBS_VAR"+n+"_NAME")
-            else:
-                obs_name = fcst_name
-
-            obs_extra = ""
-            if self.p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                obs_extra = util.getraw_interp(self.p, 'config', "OBS_VAR"+n+"_OPTIONS")
-            ##else:
-            ##    obs_extra = fcst_extra
-            ##fcst_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-            if self.p.has_option('config', "OBS_VAR"+n+"_LEVELS"):
-                obs_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-            else:
-                obs_levels = fcst_levels
-            
-            if len(fcst_levels) != len(obs_levels):
-                self.logger.error("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
-                          "_LEVELS do not have the same number of elements")
-                exit(1)
-            fo = util.FieldObj()
-            fo.fcst_name = fcst_name
-            fo.obs_name = obs_name
-            fo.fcst_extra = fcst_extra
-            fo.obs_extra = obs_extra
-            fo.fcst_level = fcst_levels
-            fo.obs_level = obs_levels
-            var_info_list.append(fo)
+        var_info_list = self.parse_vars_with_level_list()
         loop_hour = loop_beg_hour
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
@@ -262,57 +266,7 @@ class MakePlotsWrapper(CommandBuilder):
         self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
         self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
         self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
-        #need to grab var info in special way that differs from util.parse_var_list
-        #need variables with cooresponding list of levels; logic derived from util.parse_var_list
-        var_info_list = []
-        # find all FCST_VARn_NAME keys in the conf files
-        all_conf = self.p.keys('config')
-        fcst_indices = []
-        regex = re.compile("FCST_VAR(\d+)_NAME")
-        for conf in all_conf:
-           result = regex.match(conf)
-           if result is not None:
-              fcst_indices.append(result.group(1))
-        # loop over all possible variables and add them to list
-        for n in fcst_indices:
-            # get fcst var info if available
-            if self.p.has_option('config', "FCST_VAR"+n+"_NAME"):
-                fcst_name = self.p.getstr('config', "FCST_VAR"+n+"_NAME")
-
-            fcst_extra = ""
-            if self.p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                fcst_extra = util.getraw_interp(self.p, 'config', "FCST_VAR"+n+"_OPTIONS")
-
-            fcst_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-            # if OBS_VARn_X does not exist, use FCST_VARn_X
-            if self.p.has_option('config', "OBS_VAR"+n+"_NAME"):
-                obs_name = self.p.getstr('config', "OBS_VAR"+n+"_NAME")
-            else:
-                obs_name = fcst_name
-
-            obs_extra = ""
-            if self.p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                obs_extra = util.getraw_interp(self.p, 'config', "OBS_VAR"+n+"_OPTIONS")
-            ##else:
-            ##    obs_extra = fcst_extra
-            ##fcst_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-            if self.p.has_option('config', "OBS_VAR"+n+"_LEVELS"):
-                obs_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-            else:
-                obs_levels = fcst_levels
-
-            if len(fcst_levels) != len(obs_levels):
-                self.logger.error("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
-                          "_LEVELS do not have the same number of elements")
-                exit(1)
-            fo = util.FieldObj()
-            fo.fcst_name = fcst_name
-            fo.obs_name = obs_name
-            fo.fcst_extra = fcst_extra
-            fo.obs_extra = obs_extra
-            fo.fcst_level = fcst_levels
-            fo.obs_level = obs_levels
-            var_info_list.append(fo)
+        var_info_list = self.parse_vars_with_level_list()
         loop_hour = loop_beg_hour
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
@@ -545,57 +499,7 @@ class MakePlotsWrapper(CommandBuilder):
         self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
         self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
         self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
-        #need to grab var info in special way that differs from util.parse_var_list
-        #need variables with cooresponding list of levels; logic derived from util.parse_var_list
-        var_info_list = []
-        # find all FCST_VARn_NAME keys in the conf files
-        all_conf = self.p.keys('config')
-        fcst_indices = []
-        regex = re.compile("FCST_VAR(\d+)_NAME")
-        for conf in all_conf:
-           result = regex.match(conf)
-           if result is not None:
-              fcst_indices.append(result.group(1))
-        # loop over all possible variables and add them to list
-        for n in fcst_indices:
-            # get fcst var info if available
-            if self.p.has_option('config', "FCST_VAR"+n+"_NAME"):
-                fcst_name = self.p.getstr('config', "FCST_VAR"+n+"_NAME")
-
-            fcst_extra = ""
-            if self.p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                fcst_extra = util.getraw_interp(self.p, 'config', "FCST_VAR"+n+"_OPTIONS")
-
-            fcst_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-            # if OBS_VARn_X does not exist, use FCST_VARn_X
-            if self.p.has_option('config', "OBS_VAR"+n+"_NAME"):
-                obs_name = self.p.getstr('config', "OBS_VAR"+n+"_NAME")
-            else:
-                obs_name = fcst_name
-
-            obs_extra = ""
-            if self.p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                obs_extra = util.getraw_interp(self.p, 'config', "OBS_VAR"+n+"_OPTIONS")
-            ##else:
-            ##    obs_extra = fcst_extra
-            ##fcst_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-            if self.p.has_option('config', "OBS_VAR"+n+"_LEVELS"):
-                obs_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-            else:
-                obs_levels = fcst_levels
-
-            if len(fcst_levels) != len(obs_levels):
-                self.logger.error("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
-                          "_LEVELS do not have the same number of elements")
-                exit(1)
-            fo = util.FieldObj()
-            fo.fcst_name = fcst_name
-            fo.obs_name = obs_name
-            fo.fcst_extra = fcst_extra
-            fo.obs_extra = obs_extra
-            fo.fcst_level = fcst_levels
-            fo.obs_level = obs_levels
-            var_info_list.append(fo)
+        var_info_list = self.parse_vars_with_level_list()
         loop_hour = loop_beg_hour
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
