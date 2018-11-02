@@ -85,26 +85,25 @@ ci_method = "EMC"
 #ouput info
 logging_filename = os.environ['LOGGING_FILENAME']
 logger = logging.getLogger(logging_filename)
-logger.setLevel("DEBUG")
+logging_level = os.environ['LOGGING_LEVEL']
+logger.setLevel(logging_level)
 formatter = logging.Formatter("%(asctime)s.%(msecs)03d (%(filename)s:%(lineno)d) ""%(levelname)s: %(message)s","%m/%d %H:%M:%S")
 file_handler = logging.FileHandler(logging_filename, mode='a')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
-ch = logging.StreamHandler()
-logger.addHandler(ch)
 plotting_out_dir_base = os.environ['PLOTTING_OUT_DIR']
 plotting_out_dir = os.path.join(plotting_out_dir_base, "upper_air")
 ####################################################################
 logger.info(" ")
-logger.info("------> Running "+os.path.realpath(__file__))
-logger.debug("----- with "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z lead:"+lead+" region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
+logger.info("Running "+os.path.realpath(__file__))
+logger.info("with "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z lead:"+lead+" region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
 #############################################################################
 ##### Create image directory if does not exist
 if not os.path.exists(os.path.join(plotting_out_dir, "imgs", cycle+"Z")):
     os.makedirs(os.path.join(plotting_out_dir, "imgs", cycle+"Z"))
 ##### Read data in data, compute statistics, and plot
 #read in data
-logger.info("---- Gathering data")
+logger.info("Gathering data")
 create_data_arrays = True
 m = 1
 while m <= nmodels: #loop over models
@@ -178,12 +177,12 @@ while m <= nmodels: #loop over models
         logger.warning("Model "+str(m)+" "+model_now+": "+model_now_stat_file+" missing")
     m+=1
 #compute statistics
-logger.info("---- Calculating and plotting statistics")
+logger.info("Calculating and plotting statistics")
 s=1
 while s <= nstats: #loop over statistics
     stat_now = plot_stats_list[s-1]
     stat_formal_name_now = pd.get_stat_formal_name(stat_now)
-    logger.debug("--- "+stat_now)
+    logger.debug(stat_now)
     if data_line_type == 'SL1L2':
         if stat_now == 'avg':
              stat_now_vals = np.ma.masked_invalid(fbar_models_dates)
@@ -294,6 +293,6 @@ while s <= nstats: #loop over statistics
         m+=1
     ax.legend(bbox_to_anchor=(1.025, 1.0, 0.375, 0.0), loc='upper right', ncol=1, fontsize='13', mode="expand", borderaxespad=0.)
     ax.set_title("Fcst: "+fcst_var_name+"_"+fcst_var_level+" Obs: "+obs_var_name+"_"+obs_var_level+" "+str(stat_formal_name_now)+'\n'+grid+"-"+region+" "+date_filter_method+" "+cycle+"Z "+str(sday)+smonth+str(syear)+"-"+str(eday)+emonth+str(eyear)+" forecast hour "+lead+"\n", fontsize=14, fontweight='bold')
-    logger.debug("Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhr"+lead+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_"+grid+region+".png")
+    logger.info("Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhr"+lead+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_"+grid+region+".png")
     plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhr"+lead+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_"+grid+region+".png", bbox_inches='tight')
     s+=1

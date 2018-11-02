@@ -71,30 +71,30 @@ nwave_num = len(wave_num_beg_list)
 #ouput info
 logging_filename = os.environ['LOGGING_FILENAME']
 logger = logging.getLogger(logging_filename)
-logger.setLevel("DEBUG")
+logging_level = os.environ['LOGGING_LEVEL']
+logger.setLevel(logging_level)
 formatter = logging.Formatter("%(asctime)s.%(msecs)03d (%(filename)s:%(lineno)d) ""%(levelname)s: %(message)s","%m/%d %H:%M:%S")
 file_handler = logging.FileHandler(logging_filename, mode='a')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
-ch = logging.StreamHandler()
-logger.addHandler(ch)
 plotting_out_dir_base = os.environ['PLOTTING_OUT_DIR']
 plotting_out_dir = os.path.join(plotting_out_dir_base, "anom")
 ####################################################################
 logger.info(" ")
-logger.info("------> Running "+os.path.realpath(__file__))
-logger.debug("----- for "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z forecast hour means for region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
+logger.info("Running "+os.path.realpath(__file__))
+logger.info("for "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z forecast hour means for region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
 #############################################################################
 ##### Create image directory if does not exist
 if not os.path.exists(os.path.join(plotting_out_dir, "imgs", cycle+"Z")):
     os.makedirs(os.path.join(plotting_out_dir, "imgs", cycle+"Z"))
 ##### Read data in data, compute statistics, and plot
 #read in data
+logger.info("Reading data and plotting means")
 s=1
 while s <= nstats: #loop over statistics
     stat_now = plot_stats_list[s-1]
     stat_formal_name_now = pd.get_stat_formal_name(stat_now)
-    logger.debug("--- "+stat_now)
+    logger.debug(stat_now)
     if nwave_num == 1:
         fig = plt.figure(figsize=(10,12))
         gs = gridspec.GridSpec(2,1)
@@ -118,7 +118,7 @@ while s <= nstats: #loop over statistics
         wb = wave_num_beg_list[wn-1]
         we = wave_num_end_list[wn-1]
         wave_num_pairing = "WV1_"+wb+"-"+we
-        logger.debug("-- "+wave_num_pairing)
+        logger.debug(wave_num_pairing)
         ax1 = plt.subplot(gs[(wn-1)])
         ax2 = plt.subplot(gs[((wn-1)+nwave_num)], sharex=ax1)
         if wn == 1:
@@ -235,6 +235,6 @@ while s <= nstats: #loop over statistics
     'edgecolor': 'black',}
     fig.text(0.0, 0.4, "Note: differences outside the\n outline bars are significant\n at the 95% confidence interval", ha="center", va="center", fontsize=10, bbox=props, transform=ax2.transAxes)
     fig.suptitle("Fcst: "+fcst_var_name+"_"+fcst_var_level+" Obs: "+obs_var_name+"_"+obs_var_level+" Fourier Decomposition "+str(stat_formal_name_now)+'\n'+grid+"-"+region+" "+date_filter_method+" "+cycle+"Z "+str(sday)+smonth+str(syear)+"-"+str(eday)+emonth+str(eyear)+" Means\n\n", fontsize=14, fontweight='bold')
-    logger.debug("--- Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_fourierdecomp_"+grid+region+".png")
+    logger.info("Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_fourierdecomp_"+grid+region+".png")
     plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_fourierdecomp_"+grid+region+".png", bbox_inches='tight')
     s+=1

@@ -120,10 +120,16 @@ class MakePlotsWrapper(CommandBuilder):
             var_info_list.append(fo)
         return var_info_list
 
-    def grid2grid_pres_plots(self):
-        self.logger.info("Making plots for grid2grid-pres")
+    def get_logging_info(self):
         logging_filename = self.p.getstr('config', 'LOG_METPLUS')
         self.add_env_var("LOGGING_FILENAME", logging_filename)
+        logging_level = self.p.getstr('config', 'LOG_LEVEL')
+        self.add_env_var("LOGGING_LEVEL", logging_level)
+
+    def grid2grid_pres_plots(self):
+        self.logger.info("Making plots for grid2grid-pres")
+        #set logging info for plotting scripts
+        self.get_logging_info()
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
@@ -227,8 +233,8 @@ class MakePlotsWrapper(CommandBuilder):
 
     def grid2grid_anom_plots(self):
         self.logger.info("Making plots for grid2grid-anom")
-        logging_filename = self.p.getstr('config', 'LOG_METPLUS')
-        self.add_env_var("LOGGING_FILENAME", logging_filename)
+        #set logging info for plotting scripts
+        self.get_logging_info()
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
@@ -368,8 +374,8 @@ class MakePlotsWrapper(CommandBuilder):
  
     def grid2grid_sfc_plots(self):
         self.logger.info("Making plots for grid2grid-sfc")
-        logging_filename = self.p.getstr('config', 'LOG_METPLUS')
-        self.add_env_var("LOGGING_FILENAME", logging_filename)
+        #set logging info for plotting scripts
+        self.get_logging_info()
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
@@ -454,8 +460,8 @@ class MakePlotsWrapper(CommandBuilder):
 
     def grid2obs_upper_air_plots(self):
         self.logger.info("Making plots for grid2obs-upper_air")
-        logging_filename = self.p.getstr('config', 'LOG_METPLUS')
-        self.add_env_var("LOGGING_FILENAME", logging_filename)
+        #set logging info for plotting scripts
+        self.get_logging_info()
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
@@ -565,8 +571,8 @@ class MakePlotsWrapper(CommandBuilder):
 
     def grid2obs_conus_sfc_plots(self):
         self.logger.info("Making plots for grid2obs-conus_sfc")
-        logging_filename = self.p.getstr('config', 'LOG_METPLUS')
-        self.add_env_var("LOGGING_FILENAME", logging_filename)
+        #set logging info for plotting scripts
+        self.get_logging_info()
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
         #read config
         use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)

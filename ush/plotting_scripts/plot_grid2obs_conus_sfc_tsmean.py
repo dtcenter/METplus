@@ -67,26 +67,26 @@ obs_var_level = os.environ['OBS_VAR_LEVEL']
 #ouput info
 logging_filename = os.environ['LOGGING_FILENAME']
 logger = logging.getLogger(logging_filename)
-logger.setLevel("DEBUG")
+logging_level = os.environ['LOGGING_LEVEL']
+logger.setLevel(logging_level)
 formatter = logging.Formatter("%(asctime)s.%(msecs)03d (%(filename)s:%(lineno)d) ""%(levelname)s: %(message)s","%m/%d %H:%M:%S")
 file_handler = logging.FileHandler(logging_filename, mode='a')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
-ch = logging.StreamHandler()
-logger.addHandler(ch)
 plotting_out_dir_base = os.environ['PLOTTING_OUT_DIR']
 plotting_out_dir = os.path.join(plotting_out_dir_base, "conus_sfc")
 ####################################################################
-
-logger.info("------> Running "+os.path.realpath(__file__))
-logger.debug("----- for "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z forecast hour means for region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
+logger.info(" ")
+logger.info("Running "+os.path.realpath(__file__))
+logger.info("for "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z forecast hour means for region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
 #############################################################################
 ##### Read data in data, compute statistics, and plot
 #read in data
+logger.info("Reading data and plotting means")
 s=1
 while s <= nstats: #loop over statistics
      stat_now = plot_stats_list[s-1]
-     logger.debug("---- "+stat_now)
+     logger.debug(stat_now)
      stat_formal_name_now = pd.get_stat_formal_name(stat_now)
      m=1
      while m <= nmodels: #loop over models
@@ -266,6 +266,6 @@ while s <= nstats: #loop over statistics
      else:
          ax1.legend(bbox_to_anchor=(0.0, 1.02, 1.0, .102), loc=3, ncol=nmodels, fontsize='13', mode="expand", borderaxespad=0.)
      ax1.set_title("Fcst: "+fcst_var_name+"_"+fcst_var_level+" Obs: "+obs_var_name+"_"+obs_var_level+" "+str(stat_formal_name_now)+'\n'+grid+"-"+region+" "+date_filter_method+" "+cycle+"Z "+str(sday)+smonth+str(syear)+"-"+str(eday)+emonth+str(eyear)+" Means\n\n", fontsize=14, fontweight='bold')
-     logger.debug("---- Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_"+grid+region+".png")
+     logger.info("Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_"+grid+region+".png")
      plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhrmeans_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_"+grid+region+".png", bbox_inches='tight')
      s+=1

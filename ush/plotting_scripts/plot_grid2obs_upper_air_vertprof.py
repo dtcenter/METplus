@@ -74,34 +74,34 @@ for vl in range(nlevels):
 #ouput info
 logging_filename = os.environ['LOGGING_FILENAME']
 logger = logging.getLogger(logging_filename)
-logger.setLevel("DEBUG")
+logging_level = os.environ['LOGGING_LEVEL']
+logger.setLevel(logging_level)
 formatter = logging.Formatter("%(asctime)s.%(msecs)03d (%(filename)s:%(lineno)d) ""%(levelname)s: %(message)s","%m/%d %H:%M:%S")
 file_handler = logging.FileHandler(logging_filename, mode='a')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
-ch = logging.StreamHandler()
-logger.addHandler(ch)
 plotting_out_dir_base = os.environ['PLOTTING_OUT_DIR']
 plotting_out_dir = os.path.join(plotting_out_dir_base, "upper_air")
 ####################################################################
 logger.info(" ")
-logger.info("------> Running "+os.path.realpath(__file__))
-logger.debug("----- for "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z lead:"+lead+" mean vertical profile for region:"+region+" fcst var:"+fcst_var_name+" obs var:"+obs_var_name)
+logger.info("Running "+os.path.realpath(__file__))
+logger.info("for "+date_filter_method+" start date:"+sdate+" "+date_filter_method+" end date:"+edate+" cycle:"+cycle+"Z lead:"+lead+" mean vertical profile for region:"+region+" fcst var:"+fcst_var_name+" obs var:"+obs_var_name)
 #############################################################################
 ##### Create image directory if does not exist
 if not os.path.exists(os.path.join(plotting_out_dir, "imgs", cycle+"Z")):
     os.makedirs(os.path.join(plotting_out_dir, "imgs", cycle+"Z"))
 ##### Read data in data, compute statistics, and plot
 #read in data
+logger.info("Reading data and plotting means")
 s=1
 while s <= nstats: #loop over statistics
     stat_now = plot_stats_list[s-1]
-    logger.debug("---- "+stat_now)
+    logger.debug(stat_now)
     stat_formal_name_now = pd.get_stat_formal_name(stat_now)
     m=1
     while m <= nmodels: #loop over models
         model_now = model_names[m-1]
-        logger.debug("--- "+str(m)+" "+model_now)
+        logger.debug(str(m)+" "+model_now)
         model_now_vals_vertprof = np.ones(nlevels) * np.nan
         if stat_now == 'avg':
             model_now_obar_vertprof = np.ones(nlevels) * np.nan
@@ -180,6 +180,6 @@ while s <= nstats: #loop over statistics
         else:
             ax.legend(bbox_to_anchor=(0.025, 1.01, 0.95, .102), loc=3, ncol=nmodels, fontsize='13', mode="expand", borderaxespad=0.)
         ax.set_title("Fcst: "+fcst_var_name+" Obs: "+obs_var_name+" "+str(stat_formal_name_now)+'\n'+grid+"-"+region+" "+date_filter_method+" "+cycle+"Z "+str(sday)+smonth+str(syear)+"-"+str(eday)+emonth+str(eyear)+" forecast hour "+lead+" mean vertical profile\n\n", fontsize=14, fontweight='bold')
-        logger.debug("--- Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhr"+lead+"_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_vp.png")
+        logger.info("Saving image as "+plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhr"+lead+"_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_vp.png")
         plt.savefig(plotting_out_dir+"/imgs/"+cycle+"Z/"+stat_now+"_fhr"+lead+"_fcst"+fcst_var_name+"_obs"+obs_var_name+"_"+grid+region+"_vp.png", bbox_inches='tight')
     s+=1
