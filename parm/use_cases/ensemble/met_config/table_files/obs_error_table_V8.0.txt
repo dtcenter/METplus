@@ -1,0 +1,17 @@
+OBS_VAR       MESSAGE_TYPE PB_REPORT_TYPE IN_REPORT_TYPE INSTRUMENT_TYPE STATION_ID HGT_RANGE PRS_RANGE VAL_RANGE INST_BIAS_SCALE INST_BIAS_OFFSET DIST_TYPE DIST_PARM MIN MAX
+TMP           ADPSFC       ALL            ALL            ALL             ALL        ALL       ALL       ALL       NA              NA               NORMAL    1.1       NA   NA
+TMP           ADPUPA       ALL            ALL            ALL             ALL        ALL       ALL       ALL       NA              NA               NORMAL    1.0       NA   NA
+DPT           ADPSFC       ALL            ALL            ALL             ALL        ALL       ALL       ALL       NA              NA               NORMAL    1.1       NA   NA
+DPT           ADPUPA       ALL            ALL            ALL             ALL        ALL       ALL       ALL       NA              NA               NORMAL    1.25      NA   NA
+WIND          ADPSFC       ALL            ALL            ALL             ALL        ALL       ALL       ALL       NA              NA               NORMAL    1.2       0   NA
+WIND          ADPUPA       ALL            ALL            ALL             ALL        ALL       ALL       ALL       NA              NA               NORMAL    1.75      0   NA
+UGRD          ADPSFC       ALL            ALL            ALL             ALL        ALL       ALL       ALL       NA              NA               NORMAL    1.1       NA  NA
+UGRD          ADPUPA       ALL            ALL            ALL             ALL        ALL       ALL       ALL       NA              NA               NORMAL    1.75      NA  NA
+VGRD          ADPSFC       ALL            ALL            ALL             ALL        ALL       ALL       ALL       NA              NA               NORMAL    1.1       NA  NA
+VGRD          ADPUPA       ALL            ALL            ALL             ALL        ALL       ALL       ALL       NA              NA               NORMAL    1.75      NA  NA
+HGT           ALL          ALL            ALL            ALL             ALL        ALL       ALL       ALL       NA              NA               NORMAL    15.0      0   NA
+APCP_[0-9]*   ALL          ALL            ALL            ALL             ALL        ALL       ALL       0,0.01    NA              NA               NONE      NA        0   NA
+APCP_[0-9]*   ALL          ALL            ALL            ALL             ALL        ALL       ALL       0.01,10   NA              NA               NORMAL    0.1       0   NA
+APCP_[0-9]*   ALL          ALL            ALL            ALL             ALL        ALL       ALL       10,50     NA              NA               NORMAL    1.0       0   NA
+APCP_[0-9]*   ALL          ALL            ALL            ALL             ALL        ALL       ALL       50,200    NA              NA               NORMAL    5.0       0   NA
+APCP_[0-9]*   ALL          ALL            ALL            ALL             ALL        ALL       ALL       200,500   NA              NA               NORMAL    15.0      0   NA

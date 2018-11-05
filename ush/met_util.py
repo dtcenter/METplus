@@ -928,11 +928,7 @@ def getlist(s, logger=None):
          commas in the elements.
          '4,4,2,4,2,4,2, ' or '4,4,2,4,2,4,2 ' or
          '4, 4, 4, 4, ' or '4, 4, 4, 4 '
-<<<<<<< HEAD
          Note: getstr on an empty variable (EMPTY_VAR = ) in
-=======
-         Note: getstr on an empty variable (EMPTY_VAR = ) in 
->>>>>>> origin
          a conf file returns '' an empty string.
 
         @param s the string being converted to a list.
@@ -1017,6 +1013,74 @@ class FieldObj(object):
     __slots__ = 'fcst_name', 'fcst_level', 'fcst_extra', 'fcst_thresh', \
                 'obs_name', 'obs_level', 'obs_extra', 'obs_thresh'
 
+
+# TODO: Check if other characters are only <>!=&|gelt.[0-9] (?)
+def starts_with_comparison(thresh_string):
+    """ Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le
+        Args:
+            @param thresh_string: String to examine, i.e. <=3.4
+        Returns:
+            None if string does not match any valid comparison operators or does
+              not contain a number afterwards
+            regex match object with comparison operator in group 1 and
+            number in group 2 if valid
+    """
+    valid_comparisons = { ">", ">=", "==", "!=", "<", "<=", "gt", "ge", "eq", "ne", "lt", "le" }
+    for comp in valid_comparisons:
+        match = re.match(r'^('+comp+')([+-]?\d*\.?\d+)', thresh_string)
+        if match:
+            return match
+    return None
+
+
+def get_number_from_threshold(thresh_string):
+    """ Removes comparison operator from threshold string.
+        Note: This only gets the first number in a complex comparison
+        Args:
+            @param thresh_string String to examine, i.e. <=3.4
+        Returns:
+            Number without comparison operator if valid string
+            None if invalid
+    """
+    match = starts_with_comparison(thresh_string)
+    if match:
+      return float(match.group(2))
+    return None
+
+def get_comparison_from_threshold(thresh_string):
+    """ Removes number from threshold string
+        Note: This only gets the first comparison in a complex comparison
+        Args:
+            @param thresh_string String to examine, i.e. <=3.4
+        Returns:
+            Comparison operator without number if valid string
+            None if invalid
+    """
+    match = starts_with_comparison(thresh_string)
+    if match:
+      return match.group(1)
+    return None
+
+
+def validate_thresholds(thresh_list):
+    """ Checks list of thresholds to ensure all of them have the correct format
+        Args:
+            @param thresh_list list of strings to check
+        Returns:
+            True if all items in the list are valid format, False if not
+    """
+    valid = True
+    for thresh in thresh_list:
+        match = starts_with_comparison(thresh)
+        if match is None:
+            valid = False
+
+    if valid == False:
+        print("ERROR: Threshold values must start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt, or le")
+        return False;
+    return True
+
+
 def parse_var_list(p):
     """ read conf items and populate list of FieldObj containing
     information about each variable to be compared
@@ -1049,7 +1113,10 @@ def parse_var_list(p):
 
             fcst_thresh = ""
             if p.has_option('config', "FCST_VAR"+n+"_THRESH"):
-                fcst_thresh = getlistfloat(p.getstr('config', "FCST_VAR"+n+"_THRESH"))
+                fcst_thresh = getlist(p.getstr('config', "FCST_VAR"+n+"_THRESH"))
+                if validate_thresholds(fcst_thresh) == False:
+                    print("  Update FCST_VAR"+n+"_THRESH to match this format")
+                    exit(1)
 
             # if OBS_VARn_X does not exist, use FCST_VARn_X
             if p.has_option('config', "OBS_VAR"+n+"_NAME"):
@@ -1074,9 +1141,15 @@ def parse_var_list(p):
 
             # if OBS_VARn_THRESH does not exist, use FCST_VARn_THRESH
             if p.has_option('config', "OBS_VAR"+n+"_THRESH"):
-                obs_thresh = getlistfloat(getstr('config', "OBS_VAR"+n+"_THRESH"))
+                obs_thresh = getlist(p.getstr('config', "OBS_VAR"+n+"_THRESH"))
+                if validate_thresholds(obs_thresh) == False:
+                    print("  Update OBS_VAR"+n+"_THRESH to match this format")
+                    exit(1)
             else:
                 obs_thresh = fcst_thresh
+
+  
+
             for f,o in zip(fcst_levels, obs_levels):
                 fo = FieldObj()
                 fo.fcst_name = fcst_name
@@ -1355,7 +1428,7 @@ def getraw_interp(p, sec, opt):
             var_name = in_template[start_idx+1:i]
             var = None
             if p.has_option(sec,var_name):
-                var = p.getstr(sec,name)
+                var = p.getstr(sec,var_name)
             elif p.has_option('config',var_name):
                 var = p.getstr('config',var_name)
             elif p.has_option('dir',var_name):
