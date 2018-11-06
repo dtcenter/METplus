@@ -1,0 +1,305 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass book
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing onehalf
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip bigskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Chapter
+METplus Python Wrappers
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:METplus Python Wrappers"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This chapter provides a description of each supported Python wrapper in
+ METplus.
+\end_layout
+
+\begin_layout Section
+compare_ensemble_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:compare_ensemble_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+compare_gridded_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:compare_gridded_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+cyclone_plotter_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:cyclone_plotter_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+ensemble_stat_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:ensemble_stat_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+extract_tiles_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:extract_tiles_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+grid_stat_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:grid_stat_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+mode_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:mode_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+pb2nc_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:pb2nc_wrapper"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Section
+pcp_combine_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:pcp_combine_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+point_stat_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:point_stat_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+reformat_gridded_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:reformat_gridded_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+regrid_data_plane_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:regrid_data_plane_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+series_by_init_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:series_by_init_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+series_by_lead_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:series_by_lead_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+stat_analysis_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:stat_analysis_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+tc_pairs_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:tc_pairs_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+tc_stat_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:tc_stat_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+tcmpr_plotter_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:tcmpr_plotter_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+wavelet_stat_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:wavelet_stat_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
