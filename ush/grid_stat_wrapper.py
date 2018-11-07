@@ -68,12 +68,6 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.cg_dict['ONCE_PER_FIELD'] = self.p.getbool('config',
                                                         'GRID_STAT_ONCE_PER_FIELD',
                                                         False)
-        # these are not used by grid_stat, only mode
-        self.cg_dict['QUILT'] = "FALSE"
-        self.cg_dict['CONV_RADIUS'] = 5
-        self.cg_dict['CONV_THRESH'] = 0.5
-        self.cg_dict['MERGE_THRESH'] = 0.45
-        self.cg_dict['MERGE_FLAG'] = "THRESH"
 
 
     def do_wrapper_specific_operations(self):
