@@ -73,7 +73,7 @@ class ModeWrapper(CompareGriddedWrapper):
             exit(1)
 
     def run_at_time_one_field(self, ti, v):
-        """! Runs the MET application for a given time and forecast lead combination
+        """! Runs mode instances for a given time and forecast lead combination
               Args:
                 @param ti task_info object containing timing information
                 @param v var_info object containing variable information
@@ -83,21 +83,27 @@ class ModeWrapper(CompareGriddedWrapper):
         if model_path == "":
             self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR "+ti.getInitTime()+" f"+str(ti.lead))
             return
-#        self.add_input_file(model_path)
 
         # get observation to compare
         obs_path = self.find_obs(ti, v)
         if obs_path == None:
             self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['OBS_INPUT_DIR']+" FOR "+ti.getInitTime()+" f"+str(ti.lead))
             return
-#        self.add_input_file(obs_path)
 
-        # for mode, loop over all variables and levels (and probability thresholds) and call the app for each
-#        fcst_field, obs_field = self.get_field_info(v, obs_path, model_path)
+        # loop over all variables and levels (and probability thresholds) and call the app for each
         self.process_fields_one_thresh(ti, v, model_path, obs_path)
 
 
     def get_field_info_mode(self, v, model_path, obs_path, fcst_thresh, obs_thresh):
+        """! Builds the FCST_FIELD and OBS_FIELD items that are sent to the mode config file
+              Args:
+                @param v var_info object containing variable information
+                @param model_path forecast file
+                @param obs_path observation file
+                @param fcst_thresh probability threshold for forecast
+                @param obs_thresh probability threshold for observation
+                @return returns two strings: forecast and observation info
+        """
         fcst_level_type, fcst_level = self.split_level(v.fcst_level)
         obs_level_type, obs_level = self.split_level(v.obs_level)
 
@@ -122,7 +128,7 @@ class ModeWrapper(CompareGriddedWrapper):
                           fcst_level.zfill(2) + "\"; prob={ name=\"" + \
                             v.fcst_name + \
                             "\"; "+thresh_str+" } },"
-            # TODO: do not use cat_thresh for mode
+
             obs_field += "{ name=\""+v.obs_name+"_"+obs_level.zfill(2) + \
                          "\"; level=\"(*,*)\"; },"
         else:
@@ -153,9 +159,13 @@ class ModeWrapper(CompareGriddedWrapper):
         return fcst_field, obs_field
 
     def process_fields_one_thresh(self, ti, v, model_path, obs_path):
-        # set up environment variables for each run
-        # get fcst and obs thresh parameters
-        # verify they are the same size
+        """! For each threshold, set up environment variables and run mode
+              Args:
+                @param ti task_info object containing timing information
+                @param v var_info object containing variable information
+                @param model_path forecast file
+                @param obs_path observation file
+        """
         for fthresh, othresh in zip(v.fcst_thresh, v.obs_thresh):
             self.set_param_file(self.cg_dict['CONFIG_FILE'])
             self.create_and_set_output_dir(ti)
@@ -186,7 +196,32 @@ class ModeWrapper(CompareGriddedWrapper):
             self.print_env_item("CONFIG_DIR")
             self.print_env_item("MET_VALID_HHMM")
 
-            self.do_wrapper_specific_operations()
+            if self.cg_dict['QUILT']:
+                quilt = "TRUE"
+            else:
+                quilt = "FALSE"
+
+            self.add_env_var("QUILT", quilt )
+            self.add_env_var("CONV_RADIUS", self.cg_dict["CONV_RADIUS"] )
+            self.add_env_var("CONV_THRESH", self.cg_dict["CONV_THRESH"] )
+            self.add_env_var("MERGE_THRESH", self.cg_dict["MERGE_THRESH"] )
+            self.add_env_var("MERGE_FLAG", self.cg_dict["MERGE_FLAG"] )
+
+            self.print_env_item("QUILT")
+            self.print_env_item("CONV_RADIUS")
+            self.print_env_item("CONV_THRESH")
+            self.print_env_item("MERGE_THRESH")
+            self.print_env_item("MERGE_FLAG")
+
+            self.logger.debug("")
+            self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+            self.print_env_copy(["MODEL", "FCST_VAR", "OBS_VAR",
+                                 "LEVEL", "OBTYPE", "CONFIG_DIR",
+                                 "FCST_FIELD", "OBS_FIELD",
+                                 "QUILT", "MET_VALID_HHMM",
+                                 "CONV_RADIUS", "CONV_THRESH",
+                                 "MERGE_THRESH", "MERGE_FLAG"])
+            self.logger.debug("")
 
             cmd = self.get_command()
             if cmd is None:
@@ -196,35 +231,7 @@ class ModeWrapper(CompareGriddedWrapper):
             self.logger.info("")
             self.build()
             self.clear()
-        
-        
-    def do_wrapper_specific_operations(self):
-        if self.cg_dict['QUILT']:
-            quilt = "TRUE"
-        else:
-            quilt = "FALSE"
 
-        self.add_env_var("QUILT", quilt )
-        self.add_env_var("CONV_RADIUS", self.cg_dict["CONV_RADIUS"] )
-        self.add_env_var("CONV_THRESH", self.cg_dict["CONV_THRESH"] )
-        self.add_env_var("MERGE_THRESH", self.cg_dict["MERGE_THRESH"] )
-        self.add_env_var("MERGE_FLAG", self.cg_dict["MERGE_FLAG"] )
-
-        self.print_env_item("QUILT")
-        self.print_env_item("CONV_RADIUS")
-        self.print_env_item("CONV_THRESH")
-        self.print_env_item("MERGE_THRESH")
-        self.print_env_item("MERGE_FLAG")
-
-        self.logger.debug("")
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(["MODEL", "FCST_VAR", "OBS_VAR",
-                             "LEVEL", "OBTYPE", "CONFIG_DIR",
-                             "FCST_FIELD", "OBS_FIELD",
-                             "QUILT", "MET_VALID_HHMM",
-                             "CONV_RADIUS", "CONV_THRESH",
-                             "MERGE_THRESH", "MERGE_FLAG"])
-        self.logger.debug("")   
 
 if __name__ == "__main__":
     util.run_stand_alone("mode_wrapper", "Mode")
