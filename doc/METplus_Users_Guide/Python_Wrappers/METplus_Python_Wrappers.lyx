@@ -88,8 +88,9 @@ name "chap:METplus Python Wrappers"
 \end_layout
 
 \begin_layout Standard
-This chapter provides a description of each supported Python wrapper in
- METplus.
+Each METplus Python wrapper is a Python script that hides the underlying
+ complexity of its corresponding MET tool or MET-related behavior.
+ 
 \end_layout
 
 \begin_layout Section
@@ -145,6 +146,42 @@ name "sec:extract_tiles_wrapper"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Background
+\end_layout
+
+\begin_layout Standard
+The extract_tiles_wrapper does not have a corresponding MET tool, but instead
+ provides support to the tc_pairs_wrapper, where the data of interest is
+ tropical cylone track data.
+ The extract_tiles_wrapper takes as input the output from MET tc_pairs and
+ creates a 2n degree x 2m degree grid/tile with the storm located at the
+ center.
+ The size of the tile and the number of lon and lat points are defined in
+ the METplus configuration file.
+ 
+\end_layout
+
+\begin_layout Subsection
+Configuration 
+\end_layout
+
+\begin_layout Standard
+As stated above, the dimensions and density of the grid/tiles are defined
+ in a METplus configuration file under the [config] header/family.
+ The dimensions of the tile are defined by setting the LON_ADJ and LAT_ADJ
+ values.
+ The number of points in the tile are defined by setting values to NLAT
+ and NLON.
+ The resolution of data, in degrees is defined by setting the DLAT and DLON
+ values.
+ 
+\end_layout
+
+\begin_layout Subsection
+Associated Use Cases
 \end_layout
 
 \begin_layout Section
