@@ -65,10 +65,10 @@ class ModeWrapper(CompareGriddedWrapper):
         self.cg_dict['MERGE_THRESH'] = self.p.getstr('config', 'MODE_MERGE_THRESH', ">0.45")
         self.cg_dict['MERGE_FLAG'] = self.p.getstr('config', 'MODE_MERGE_FLAG', "THRESH")
         # check that values are valid
-        if not util.list_starts_with_comparison(self.cg_dict['CONV_THRESH']):
+        if not util.validate_thresholds(util.getlist(self.cg_dict['CONV_THRESH'])):
             self.logger.error('MODE_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
             exit(1)
-        if not util.list_starts_with_comparison(self.cg_dict['MERGE_THRESH']):
+        if not util.validate_thresholds(util.getlist(self.cg_dict['MERGE_THRESH'])):
             self.logger.error('MODE_MERGE_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
             exit(1)
 

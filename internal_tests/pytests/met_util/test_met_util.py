@@ -202,15 +202,3 @@ def test_get_comparison_from_threshold_complex():
 
 def test_get_number_from_threshold_complex():
     assert(util.get_number_from_threshold("<=2.3||>=4.2") == 2.3)
-
-def test_list_starts_with_comparison():
-    assert(util.list_starts_with_comparison("<0.6, lt0.5"))
-
-def test_list_starts_with_comparison_one_bad():
-    assert(util.list_starts_with_comparison("<0.6, 0.5") == False)
-
-def test_list_starts_with_comparison_single():
-    assert(util.list_starts_with_comparison("<0.6"))
-
-def test_list_starts_with_comparison_single_bad():
-    assert(util.list_starts_with_comparison("0.6") == False)

@@ -1014,13 +1014,6 @@ class FieldObj(object):
                 'obs_name', 'obs_level', 'obs_extra', 'obs_thresh'
 
 
-def list_starts_with_comparison(thresh_string):
-    thresh_list = [x.strip() for x in thresh_string.split(',')]
-    for thresh in thresh_list:
-        if starts_with_comparison(thresh) == None:
-            return False
-    return True
-
 # TODO: Check if other characters are only <>!=&|gelt.[0-9] (?)
 def starts_with_comparison(thresh_string):
     """ Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le
