@@ -235,7 +235,7 @@ that reformat gridded data
                               fcst_level.zfill(2) + "\"; prob={ name=\"" + \
                                 v.fcst_name + \
                                 "\"; "+thresh_str+" } },"
-            # TODO: do not use cat_thresh for mode
+
             for obs_thresh in obs_threshs:
                 obs_field += "{ name=\""+v.obs_name+"_"+obs_level.zfill(2) + \
                              "\"; level=\"(*,*)\"; cat_thresh=[ " + \
@@ -293,6 +293,11 @@ that reformat gridded data
 
 
     def run_at_time_all_fields(self, task_info, var_list):
+        """! Build a single call to MET application with all of the field/level combinations
+              Args:
+                @param task_info task_info object containing timing information
+                @param var_list list of var_infoo objects containing variable information
+        """
         # get model from first var to compare
         model_path = self.find_model(task_info, var_list[0])
         if model_path == "":
