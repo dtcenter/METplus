@@ -4,7 +4,7 @@
 Program Name: make_plots_wrapper.py
 Contact(s): Mallory Row
 Abstract: Reads filtered files from stat_analysis_wrapper run_all_times to make plots
-History Log:  Initial version
+History Log:  Second version
 Usage: 
 Parameters: None
 Input Files: ASCII files
