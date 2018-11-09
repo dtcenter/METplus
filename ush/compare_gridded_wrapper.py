@@ -352,6 +352,7 @@ that reformat gridded data
 
         self.logger.debug("")
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_user_env_items()
         self.print_env_item("MODEL")
         self.print_env_item("FCST_VAR")
         self.print_env_item("OBS_VAR")
