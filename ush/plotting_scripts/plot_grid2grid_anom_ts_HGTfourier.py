@@ -261,6 +261,7 @@ while s <= nstats: #loop over statistics
                 ax.tick_params(axis='y', pad=15)
                 ax.set_ylabel(stat_formal_name_now)
                 #ax.set_ylim()
+                ax.set_title(wave_num_pairing+"\n", loc='right')
             masked_count = np.ma.count_masked(model_now_stat_now_vals)
             vals_count = len(model_now_stat_now_vals) - masked_count
             ax.plot_date(dates,model_now_stat_now_vals, color=colors[m-1], ls='-', linewidth=2.0, marker='o', markersize=7, label=model_now+' '+str(round(model_now_stat_now_vals.mean(),2))+' '+str(vals_count))
