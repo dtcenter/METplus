@@ -161,6 +161,8 @@ The extract_tiles_wrapper does not have a corresponding MET tool, but instead
  center.
  The size of the tile and the number of lon and lat points are defined in
  the METplus configuration file.
+ In addition, the extract_tiles_wrapper supports additional filtering of
+ the TCST files generated as output from the MET tool tc_pairs.
  
 \end_layout
 
@@ -177,11 +179,21 @@ As stated above, the dimensions and density of the grid/tiles are defined
  and NLON.
  The resolution of data, in degrees is defined by setting the DLAT and DLON
  values.
+ Additional filtering is accomplished by invoking the MET tool tc_stat,
+ if the EXTRACT_TILES_FILTER_OPTS is defined.
+ Refer to Chapter 20 in the MET Users Guide (TC-STAT Tools) for all the
+ available options for requesting filtering.
  
 \end_layout
 
 \begin_layout Subsection
 Associated Use Cases
+\end_layout
+
+\begin_layout Standard
+This wrapper is used in the feature relative use case, as it is necessary
+ to regrid the matched pairs of track data onto the same tile.
+ 
 \end_layout
 
 \begin_layout Section
