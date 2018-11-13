@@ -51,7 +51,7 @@ emonth = month_name[emon-1]
 eday = int(edate[6:8])
 date_filter_method = os.environ['DATE_FILTER_METHOD']
 #input info
-model_names = os.environ['MODEL_NAMES'].replace(", ", ",").split(",")
+model_names = os.environ['MODEL_NAMES'].replace(" ", ",").split(",")
 nmodels = len(model_names)
 cycle = os.environ['CYCLE']
 lead_list = os.environ['LEAD_LIST'].replace(", ", ",").split(",")

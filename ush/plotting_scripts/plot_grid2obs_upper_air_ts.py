@@ -67,7 +67,7 @@ date_filter_method = os.environ['DATE_FILTER_METHOD']
 #input info
 stat_files_input_dir_base = os.environ['STAT_FILES_INPUT_DIR']
 stat_files_input_dir = os.path.join(stat_files_input_dir_base, "upper_air")
-model_names = os.environ['MODEL_NAMES'].replace(", ", ",").split(",")
+model_names = os.environ['MODEL_NAMES'].replace(" ", ",").split(",")
 nmodels = len(model_names)
 cycle = os.environ['CYCLE']
 lead = os.environ['LEAD']
