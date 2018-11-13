@@ -252,7 +252,7 @@ while s <= nstats: #loop over statistics
                  logger.debug("Plotting fbar lead forecst hour means for "+model_now)
                  ax1.plot(leads, model_now_stat_now_means, color=colors[m-1], ls='-', linewidth=2.0, marker='o', markersize=7, label=model_now)
                  logger.debug("Plotting "+stat_now+" difference and CIs for "+model_now+" from obs")
-                 ax2.plot(leads, model_now_stat_now_means - model_now_stat_now_means_obar, color=colors[m-1], ls='-', linewidth=2.0)
+                 ax2.plot(leads, model_now_stat_now_means - model_now_stat_now_means_obar, color=colors[m-1], ls='-', linewidth=2.0, marker='o', markersize=7)
                  ax2.bar(leads, 2*model_now_stat_now_CI_obar, bottom=-1*model_now_stat_now_CI_obar, color='None', width=1.5+((m-2)*0.2), edgecolor=colors[m-1], linewidth='1')
              else:
                  logger.debug("Plotting "+stat_now+" lead forecst hour means for "+model_now)
