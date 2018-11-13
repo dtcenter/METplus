@@ -28,6 +28,11 @@ class ModeWrapper(CompareGriddedWrapper):
         self.create_cg_dict()
 
 
+    def add_merge_config_file(self):
+        if self.cg_dict['MERGE_CONFIG_FILE'] != '':
+            self.add_arg('-config_merge {}'.format(self.cg_dict['MERGE_CONFIG_FILE']))
+
+
     def create_cg_dict(self):
         self.cg_dict = dict()
         self.cg_dict['LOOP_BY_INIT'] = self.p.getbool('config', 'LOOP_BY_INIT', True)
@@ -64,6 +69,7 @@ class ModeWrapper(CompareGriddedWrapper):
         self.cg_dict['CONV_THRESH'] = self.p.getstr('config', 'MODE_CONV_THRESH', ">0.5")
         self.cg_dict['MERGE_THRESH'] = self.p.getstr('config', 'MODE_MERGE_THRESH', ">0.45")
         self.cg_dict['MERGE_FLAG'] = self.p.getstr('config', 'MODE_MERGE_FLAG', "THRESH")
+        self.cg_dict['MERGE_CONFIG_FILE'] = self.p.getstr('config', 'MODE_MERGE_CONFIG_FILE', '')
         # check that values are valid
         if not util.validate_thresholds(util.getlist(self.cg_dict['CONV_THRESH'])):
             self.logger.error('MODE_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
@@ -171,6 +177,7 @@ class ModeWrapper(CompareGriddedWrapper):
             self.create_and_set_output_dir(ti)
             self.add_input_file(model_path)
             self.add_input_file(obs_path)
+            self.add_merge_config_file()
         
             fcst_field, obs_field = self.get_field_info_mode(v, model_path, obs_path, fthresh, othresh)
 
