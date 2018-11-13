@@ -330,6 +330,8 @@ while s <= nstats: #loop over statistics
         cax = fig.add_axes([0.1, -0.05, 0.8, 0.05])
         if stat_now == 'bias':
             cbar = fig.colorbar(CFm, cax=cax, orientation='horizontal', ticks=CFm.levels)
+        elif stat_now == 'avg':
+            cbar = fig.colorbar(CFm, cax=cax, orientation='horizontal', ticks=CFm.levels)
         else:
             cbar = fig.colorbar(CFm2, cax=cax, orientation='horizontal', ticks=CFm2.levels)
     fig.suptitle("Fcst: "+fcst_var_name+" Obs: "+obs_var_name+" "+str(stat_formal_name_now)+'\n'+grid+"-"+region+" "+date_filter_method+" "+cycle+"Z "+str(sday)+smonth+str(syear)+"-"+str(eday)+emonth+str(eyear)+" Mean\n", fontsize=14, fontweight='bold') 
