@@ -287,7 +287,7 @@ class TcPairsWrapper(CommandBuilder):
                                 cur_function + "] | There are no dated" +
                                 " sub-directories (YYYYMM) " +
                                 "with input data as expected in: " +
-                                self.config.getdir('TRACK_DATA_DIR'))
+                                "the specified input track directory.")
             exit(0)
 
         # Get a list of files in the dated subdirectories
