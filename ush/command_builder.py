@@ -46,6 +46,7 @@ class CommandBuilder:
         self.env = os.environ.copy()
         self.set_verbose(self.p.getstr('config', 'LOG_MET_VERBOSITY', '2'))
         self.cmdrunner = CommandRunner(self.p, logger=self.logger)
+        self.set_user_environment()
         self.clear()
 
     def clear(self):
@@ -57,6 +58,17 @@ class CommandBuilder:
         self.outdir = ""
         self.outfile = ""
         self.param = ""
+
+
+    def set_user_environment(self):
+        if 'user_env_vars' not in self.p.sections():
+            self.p.add_section('user_env_vars')
+
+        for env_var in self.p.keys('user_env_vars'):
+#            if env_var in self.env:
+#                self.logger.warning("{} is already set in the environment. Overwriting from conf file"
+#                                    .format(env_var))
+            self.add_env_var(env_var, self.p.getstr('user_env_vars', env_var))
 
 
     def set_debug(self, debug):
@@ -132,7 +144,8 @@ class CommandBuilder:
         copied into terminal
         """
         out = ""
-        for v in vars:
+        all_vars = vars + self.p.keys('user_env_vars')
+        for v in all_vars:
             if self.env[v].find('"') != -1:
                 next = 'export '+v+'="'+self.env[v].replace('"', '\\"')+'"'
             else:
@@ -144,6 +157,10 @@ class CommandBuilder:
         """!Print single environment variable in the log file
         """
         self.logger.debug(item+"="+self.env[item])
+
+    def print_user_env_items(self):
+        for k in self.p.keys('user_env_vars'):
+            self.print_env_item(k)
 
     def get_command(self):
         """! Builds the command to run the MET application

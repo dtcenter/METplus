@@ -3,7 +3,7 @@
 '''
 Program Name: compare_ensemble_wrapper.py
 Contact(s): metplus-dev
-Abstract: Initial template based on compare_ensemble_wrapper by George McCabe
+Abstract: Initial template based on compare_gridded_wrapper by George McCabe
 History Log:  Initial version
 Usage: 
 Parameters: None
@@ -272,11 +272,29 @@ that compares ensemble data
             # if var_list is empty [], we infer that means the ens, fcst, obs
             # fields are defined in the MET conf file instead.
             if var_list:
-                for var_info in var_list:
-                    self.run_at_time_once(task_info, var_info)
+                self.logger.error("Exiting, unsupported configuration, "
+                                  "can not run ensemble_stat.")
+                self.logger.error("REMOVE all FCST_VAR type variables from "
+                                  "your METplus config file(s), define the "
+                                  "ens, fcst, obs field types in the MET "
+                                  "ensemble config file.")
+                sys.exit(1)
+                # Note: Do not call, see comment at method run_at_time_once.
+                #for var_info in var_list:
+                #    self.run_at_time_once(task_info, var_info)
             else:
                 self.run_at_time_once_no_var_list(task_info)
 
+    # TODO: jtf FIX ME - method DOES NOT WORK for ensemble_stat, Do NOT call.
+    # This was the original method based off of compare gridded wrapper.
+    # Changes were made in a brief attempt to get it to work. 
+    # It needs to be reviewed, and reimplemented to work with the method
+    # run_at_time_once_no_var_list, and ideally have a single method.
+    # Also ideally used by both ensemble_stat and grid_stat ... if possible ..
+    # Among, inherent differences between grid_stat and ensemble_stat, such
+    # as needing different environment variables, the grids is a list of grids,
+    # etc ... it also needs to be able to handle the MET ens field in addition
+    # to fcst and obs fields ...  
     def run_at_time_once(self, ti, v):
         """! Runs the MET application for a given time and forecast lead combination
               Args:

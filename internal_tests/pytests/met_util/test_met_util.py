@@ -202,4 +202,3 @@ def test_get_comparison_from_threshold_complex():
 
 def test_get_number_from_threshold_complex():
     assert(util.get_number_from_threshold("<=2.3||>=4.2") == 2.3)
-

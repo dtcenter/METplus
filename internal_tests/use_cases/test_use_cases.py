@@ -17,6 +17,10 @@ import met_util as util
 #import config_metplus
 
 # TODO: move test results to separate file for readability
+# TODO: multiple use cases that process the same input may cause a report
+#   that a different number of output fields exist until the last use case runs
+#   potential solution is to run all use cases first then generate report!
+
 
 def run_test_use_case(param_a, param_b, run_a, run_b):
     metplus_home = "/d1/mccabe/METplus"
@@ -107,18 +111,34 @@ def compare_results(p, p_b):
                 glob_string = "{:s}/{:s}/grid_stat/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time))
                 files_b = glob.glob(glob_string.format(out_b, run_time))
-            elif process == "PcpCombineObs":
-                out_a = p.getstr('config', "OBS_PCP_COMBINE_OUTPUT_DIR")
-                out_b = p_b.getstr('config', "OBS_PCP_COMBINE_OUTPUT_DIR")
-                glob_string = "{:s}/{:s}/*"
-                files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
-                files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
-            elif process == "PcpCombineModel":
-                out_a = p.getstr('config', "FCST_PCP_COMBINE_OUTPUT_DIR")
-                out_b = p_b.getstr('config', "FCST_PCP_COMBINE_OUTPUT_DIR")
-                glob_string = "{:s}/{:s}/*"
-                files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
-                files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
+            elif process == "Mode":
+                # out_subdir = "uswrp/met_out/QPF/200508070000/grid_stat"
+                out_a = p.getstr('config', "MODE_OUT_DIR")
+                out_b = p_b.getstr('config', "MODE_OUT_DIR")
+                glob_string = "{:s}/{:s}/mode/*"
+                files_a = glob.glob(glob_string.format(out_a, run_time))
+                files_b = glob.glob(glob_string.format(out_b, run_time))
+            elif process == "PcpCombine":
+                out_a = ""
+                if p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
+                    out_o_a = p.getstr('config', "OBS_PCP_COMBINE_OUTPUT_DIR")
+                    out_o_b = p_b.getstr('config', "OBS_PCP_COMBINE_OUTPUT_DIR")
+                    glob_string = "{:s}/{:s}/*"
+                    files_o_a = glob.glob(glob_string.format(out_o_a, run_time[0:8]))
+                    files_o_b = glob.glob(glob_string.format(out_o_b, run_time[0:8]))
+                if p.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
+                    out_a = p.getstr('config', "FCST_PCP_COMBINE_OUTPUT_DIR")
+                    out_b = p_b.getstr('config', "FCST_PCP_COMBINE_OUTPUT_DIR")
+                    glob_string = "{:s}/{:s}/*"
+                    files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
+                    files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
+                if out_a == "":
+                    files_a = files_o_a
+                    files_b = files_o_b
+                # if both fcst and obs are set, run obs here then fcst will run
+                # at the end of the if blocks
+                elif not compare_output_files(files_o_a, files_o_b, a_dir, b_dir):
+                    good = False
             elif process == "RegridDataPlane":
                 out_a = p.getstr('config', "OBS_REGRID_DATA_PLANE_OUTPUT_DIR")
                 out_b = p_b.getstr('config', "OBS_REGRID_DATA_PLANE_OUTPUT_DIR")
@@ -199,16 +219,18 @@ def compare_output_files(files_a, files_b, a_dir, b_dir):
     return good
 
 def main():
-    run_a = False
-    run_b = False
+    run_a = True
+    run_b = True
 
     metplus_home = "/d1/mccabe/METplus"
     use_case_dir = os.path.join(metplus_home,"parm/use_cases")
     param_files = [
-                    use_case_dir+"/qpf/examples/ruc-vs-s2grib.conf",
-                    use_case_dir+"/qpf/examples/phpt-vs-s4grib.conf",
-                    use_case_dir+"/qpf/examples/hrefmean-vs-qpe.conf",
-                    use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf",
+                    use_case_dir+"/qpf/examples/ruc-vs-s2grib.conf" ,
+                    use_case_dir+"/qpf/examples/phpt-vs-s4grib.conf" ,
+                    use_case_dir+"/qpf/examples/phpt-vs-mrms-qpe.conf" ,
+                    use_case_dir+"/qpf/examples/hrefmean-vs-qpe.conf" ,
+                    use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf" ,
+                    use_case_dir+"/qpf/examples/phpt-vs-mrms-qpe_mode.conf" ,
                     use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" #,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" #,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" #,
