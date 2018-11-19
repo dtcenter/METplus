@@ -276,6 +276,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         total_accum = int(accum)
         level = self.p.getint('config', data_src+'_LEVEL')
         search_accum = level
+
         # loop backwards in time until you have a full set of accum
         while last_time <= start_time:
             if is_forecast:
@@ -325,7 +326,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                             addon = "'name=\"" + ob_str + \
                                     "\"; level=\"(0,*,*)\";'"
                         self.add_input_file(f, addon)
-                        start_time = util.shift_time(start_time+"00", -search_accum)[0:10]
+                        start_time = util.shift_time(start_time+"00", -search_accum)
                         total_accum -= search_accum
                         break
                     search_accum -= 1
