@@ -266,7 +266,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             self.logger.error(self.app_name +
                               ": Must set data dir to run get_accumulation")
             exit
-        self.add_arg("-add")
 
         if self.p.getbool('config', data_src + '_IS_DAILY_FILE', False) is True:
             return self.get_daily_file(valid_time, accum, data_src, file_template)
