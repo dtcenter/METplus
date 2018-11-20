@@ -1470,13 +1470,14 @@ def add_common_items_to_dictionary(p, dictionary):
     dictionary['EGREP_EXE'] = p.getexe('EGREP_EXE')
 
 
-def template_to_init_regex(template, init_time, logger):
+def template_to_init_regex(template, init_time, valid_time, logger):
     in_template = re.sub(r'\.', '\\.', template)
     in_template = re.sub(r'{lead.*?}', '.*', in_template)
-    print(in_template)
+    in_template = re.sub(r'{level.*?}', '.*', in_template)
     sts = StringSub(logger,
                     in_template,
-                    init=init_time)
+                    init=init_time,
+                    valid=valid_time)
     return sts.doStringSub()
 
 if __name__ == "__main__":
