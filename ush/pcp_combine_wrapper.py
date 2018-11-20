@@ -324,7 +324,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                             addon = "'name=\"" + ob_str + \
                                     "\"; level=\"(0,*,*)\";'"
                         self.add_input_file(f, addon)
-                        start_time = util.shift_time(start_time+"00", -search_accum)[0:10]
+                        start_time = util.shift_time(start_time+"00", -search_accum)
                         total_accum -= search_accum
                         break
                     search_accum -= 1
@@ -522,13 +522,15 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             out_accum = out_accum[1:]
         valid_time = task_info.getValidTime()
         init_time = task_info.getInitTime()
+        in_regex = util.template_to_init_regex(in_template,
+                                               init_time, self.logger)
         self.set_method("SUM")
         self.set_init_time(init_time)
         self.set_valid_time(valid_time)
         self.set_in_accum(in_accum)
         self.set_out_accum(out_accum)
         self.set_pcp_dir(in_dir)
-        self.set_pcp_regex(init_time[0:10])
+        self.set_pcp_regex(in_regex)
         self.set_output_dir(out_dir)
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
