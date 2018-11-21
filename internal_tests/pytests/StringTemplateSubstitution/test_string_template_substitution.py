@@ -506,3 +506,14 @@ def test_create_grid2obs_regex_all():
     expected_regex = '/path/to/nam.([0-9]{8})/rap.t([0-9]{2,3})z.' \
                      'awphys([0-9]{1,3}).tm([0-9]{2,3}).grib2'
     assert actual_regex == expected_regex
+
+
+def test_multiple_valid_substitution():
+    valid_string = "2018020112"
+    lead_string = "123"
+    logger = logging.getLogger("testing")
+    templ = "{valid?fmt=%Y%m%d%H}/gfs.t{valid?fmt=%H}.pgrb2.0p25.{lead?fmt=%HHH}"
+    expected_filename = "2018020112/gfs.t12.pgrb2.0p25.123"
+    ss = StringSub(logger, templ, valid=valid_string, lead=lead_string)
+    filename = ss.doStringSub()
+    assert(filename == expected_filename)
