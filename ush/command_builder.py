@@ -233,7 +233,7 @@ class CommandBuilder:
             time_interval = self.p.getint('config', 'VALID_INCREMENT')
         
         if time_interval < 60:
-            print("ERROR: time_interval parameter must be greater than 60 seconds")
+            self.logger.error("time_interval parameter must be greater than 60 seconds")
             exit(1)
         
         loop_time = calendar.timegm(time.strptime(start_t, time_format))
