@@ -339,10 +339,12 @@ that reformat gridded data
         self.add_env_var("OBS_FIELD", obs_field)
         self.add_env_var("INPUT_BASE", input_base)
         self.add_env_var("MET_VALID_HHMM", valid_time[4:8])
+        self.add_env_var("FCST_TIME", str(ti.lead).zfill(3))
         cmd = self.get_command()
 
         self.logger.debug("")
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_user_env_items()
         self.print_env_item("MODEL")
         self.print_env_item("FCST_VAR")
         self.print_env_item("OBS_VAR")
@@ -352,14 +354,15 @@ that reformat gridded data
         self.print_env_item("FCST_FIELD")
         self.print_env_item("OBS_FIELD")
         self.print_env_item("INPUT_BASE")
-        self.print_env_item("MET_VALID_HHMM")        
+        self.print_env_item("MET_VALID_HHMM")
+        self.print_env_item("FCST_TIME")
         self.logger.debug("")
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_copy(["MODEL", "FCST_VAR", "OBS_VAR",
                              "LEVEL", "OBTYPE", "CONFIG_DIR",
                              "FCST_FIELD", "OBS_FIELD",
-                             "INPUT_BASE",
-                             "MET_VALID_HHMM"])
+                             "INPUT_BASE", "MET_VALID_HHMM",
+                             "FCST_TIME"])
         self.logger.debug("")
         cmd = self.get_command()
         if cmd is None:
