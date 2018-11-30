@@ -299,7 +299,7 @@ class PcpCombineWrapper(CommandBuilder):
                             addon = "'name=\"" + ob_str + \
                                     "\"; level=\"(0,*,*)\";'"
                         self.add_input_file(f, addon)
-                        start_time = util.shift_time(start_time+"00", -search_accum)[0:10]
+                        start_time = util.shift_time(start_time+"00", -search_accum)
                         total_accum -= search_accum
                         break
                     search_accum -= 1
