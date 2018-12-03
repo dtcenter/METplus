@@ -202,3 +202,34 @@ def test_get_comparison_from_threshold_complex():
 
 def test_get_number_from_threshold_complex():
     assert(util.get_number_from_threshold("<=2.3||>=4.2") == 2.3)
+
+def test_decompress_file_gz():
+    conf = metplus_config()
+    stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
+    filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile.txt.gz"
+    stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile.txt"
+    outpath = util.decompress_file(filepath, stage_dir)
+    assert(stagepath == outpath and os.path.exists(outpath))
+
+def test_decompress_file_bz2():
+    conf = metplus_config()
+    stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
+    filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile2.txt.bz2"
+    stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile2.txt"
+    outpath = util.decompress_file(filepath, stage_dir)
+    assert(stagepath == outpath and os.path.exists(outpath))
+
+def test_decompress_file_zip():
+    conf = metplus_config()
+    stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
+    filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile3.txt.zip"
+    stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile3.txt"
+    outpath = util.decompress_file(filepath, stage_dir)
+    assert(stagepath == outpath and os.path.exists(outpath))
+
+def test_decompress_file_unzipped():
+    conf = metplus_config()
+    stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
+    filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile4.txt"
+    outpath = util.decompress_file(filepath, stage_dir)
+    assert(filepath == outpath and os.path.exists(outpath))
