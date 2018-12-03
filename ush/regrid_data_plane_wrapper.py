@@ -68,7 +68,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                level=str(level).zfill(2))
         infile = os.path.join(input_dir, pcpSts.doStringSub())
 
-        self.add_input_file(infile)
+        infile = util.decompress_file(infile, self.p.getdir('STAGING_DIR'), self.p, self.logger)
+        if infile is not None:
+            self.add_input_file(infile)
         self.add_input_file(self.p.getstr('config', 'VERIFICATION_GRID'))
         regridSts = sts.StringSub(self.logger,
                                   output_template,
