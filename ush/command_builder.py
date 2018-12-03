@@ -241,7 +241,7 @@ class CommandBuilder:
 
         while loop_time <= end_time:
             run_time = time.strftime("%Y%m%d%H%M", time.gmtime(loop_time))
-            # Set valid time to -1 if using init and vice versa            
+            # Set valid time to -1 if using init and vice versa
             if use_init:
                 self.run_at_time(run_time, -1)
             else:
