@@ -218,9 +218,8 @@ that reformat gridded data
                             "observation thresholds must be the same")
             exit(1)
 
-        # TODO: Allow NetCDF level with more than 2 dimensions i.e. (1,*,*)
-        # TODO: Need to check data type for PROB fcst? non PROB obs?
-
+        # if pcp_combine was run on obs, use name_level, (*,*) format
+        # if not, use user defined name/level combination. name should include _level
         fcst_field = ""
         obs_field = ""
         if self.cg_dict['FCST_IS_PROB']:
@@ -237,30 +236,30 @@ that reformat gridded data
                               fcst_level + "\"; prob={ name=\"" + \
                                 v.fcst_name + \
                                 "\"; "+thresh_str+" } },"
-            # TODO: if pcp_combine was run on obs, use name_level, (*,*) format
-            # if not, use user defined name/level combination. name should include _level
+
             for obs_thresh in obs_threshs:
-                obs_field += "{ name=\""+v.obs_name+"_"+obs_level + \
-                             "\"; level=\"(*,*)\"; cat_thresh=[ " + \
-                             str(obs_thresh)+" ]; },"
+                if self.p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
+                    obs_field += "{ name=\""+v.obs_name+"_"+obs_level + \
+                                 "\"; level=\"(*,*)\"; cat_thresh=[ " + \
+                                 str(obs_thresh)+" ]; },"
+                else:
+                    obs_field += "{ name=\""+v.obs_name + \
+                                 "\"; level=\""+v.obs_level+"\"; cat_thresh=[ " + \
+                                 str(obs_thresh)+" ]; },"
         else:
-            obs_data_type = util.get_filetype(obs_path)
-            model_data_type = util.get_filetype(model_path)
-            if obs_data_type == "NETCDF":
+            if self.p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
                 obs_field += "{ name=\"" + v.obs_name+"_" + obs_level + \
                              "\"; level=\"(*,*)\"; "
             else:
                 obs_field += "{ name=\""+v.obs_name + \
-                             "\"; level=\"["+obs_level_type + \
-                            obs_level+"]\"; "
+                             "\"; level=\""+v.obs_level+"\"; "
 
-            if model_data_type == "NETCDF":
+            if self.p.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
                 fcst_field += "{ name=\""+v.fcst_name+"_"+fcst_level + \
                               "\"; level=\"(*,*)\"; "
             else:
                 fcst_field += "{ name=\""+v.fcst_name + \
-                              "\"; level=\"["+fcst_level_type + \
-                              fcst_level+"]\"; "
+                              "\"; level=\""+v.fcst_level+"\"; "
 
             fcst_field += fcst_cat_thresh+" },"
             obs_field += obs_cat_thresh+ " },"
@@ -328,7 +327,6 @@ that reformat gridded data
 
     def run_at_time_once(self, task_info, var_list):
         # run app once for each field with all levels in each
-        # TODO: implement method to add all fields and levels to a single call
         if self.cg_dict['ONCE_PER_FIELD']:
             for var_info in var_list:
                 self.run_at_time_one_field(task_info, var_info)
