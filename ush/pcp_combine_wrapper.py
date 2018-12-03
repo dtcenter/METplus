@@ -153,7 +153,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                  lead=str(forecast_lead).zfill(2))
             search_file = os.path.join(self.input_dir,
                                        fSts.doStringSub())
-            search_file = util.decompress_file(search_file, self.p.getdir('STAGING_DIR'), self.p, self.logger)
+            search_file = util.preprocess_file(search_file, self.p.getdir('STAGING_DIR'), self.p, self.logger)
 
             if search_file != None:
                 return search_file
@@ -179,7 +179,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 if ftime != None and int(ftime) < int(file_time):
                     out_file = f
         if out_file != "":
-            out_file = util.decompress_file(out_file, self.p.getdir('STAGING_DIR'),
+            out_file = util.preprocess_file(out_file, self.p.getdir('STAGING_DIR'),
                                             self.p, self.logger)
         return out_file
 
@@ -290,7 +290,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                     search_file = os.path.join(self.input_dir,
                                                fSts.doStringSub())
 
-                    search_file = util.decompress_file(search_file,
+                    search_file = util.preprocess_file(search_file,
                                                        self.p.getdir('STAGING_DIR'),
                                                        self.p, self.logger)
                     # if found a file, add it to input list with info
@@ -454,7 +454,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 init=init_time,
                                 lead=str(lead).zfill(2))
         file1 = os.path.join(in_dir, pcpSts1.doStringSub())
-        file1 = util.decompress_file(file1, self.p.getdir('STAGING_DIR'),
+        file1 = util.preprocess_file(file1, self.p.getdir('STAGING_DIR'),
                                      self.p, self.logger)
 
         if file1 is None:
@@ -467,7 +467,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 init=init_time,
                                 lead=str(lead2).zfill(2))
         file2 = os.path.join(in_dir, pcpSts2.doStringSub())
-        file2 = util.decompress_file(file2, self.p.getdir('STAGING_DIR'),
+        file2 = util.preprocess_file(file2, self.p.getdir('STAGING_DIR'),
                                      self.p, self.logger)
 
         if file2 is None:

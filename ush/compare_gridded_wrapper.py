@@ -112,7 +112,7 @@ that reformat gridded data
                                      level=str(level.split('-')[0]).zfill(2))
             model_file = model_ss.doStringSub()
             model_path = os.path.join(model_dir, model_file)
-            model_path = util.decompress_file(model_path,
+            model_path = util.preprocess_file(model_path,
                                               self.p.getdir('STAGING_DIR'),
                                               self.p, self.logger)
             if model_path != None:
@@ -150,7 +150,7 @@ that reformat gridded data
             obs_file = obsSts.doStringSub()
 
             obs_path = os.path.join(obs_dir, obs_file)
-            obs_path = util.decompress_file(obs_path,
+            obs_path = util.preprocess_file(obs_path,
                                             self.p.getdir('STAGING_DIR'),
                                             self.p, self.logger)
             return obs_path
@@ -189,7 +189,7 @@ that reformat gridded data
                         closest_file = fullpath
 
         if closest_file != "":
-            return util.decompress_file(closest_file, self.p.getdir('STAGING_DIR'), self.p, self.logger)
+            return util.preprocess_file(closest_file, self.p.getdir('STAGING_DIR'), self.p, self.logger)
         else:
             return None
 
@@ -239,7 +239,8 @@ that reformat gridded data
                               fcst_level + "\"; prob={ name=\"" + \
                                 v.fcst_name + \
                                 "\"; "+thresh_str+" } },"
-
+            # TODO: if pcp_combine was run on obs, use name_level, (*,*) format
+            # if not, use user defined name/level combination. name should include _level
             for obs_thresh in obs_threshs:
                 obs_field += "{ name=\""+v.obs_name+"_"+obs_level + \
                              "\"; level=\"(*,*)\"; cat_thresh=[ " + \
