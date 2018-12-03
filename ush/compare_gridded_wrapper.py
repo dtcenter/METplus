@@ -113,7 +113,6 @@ that reformat gridded data
             model_file = model_ss.doStringSub()
             model_path = os.path.join(model_dir, model_file)
             model_path = util.preprocess_file(model_path,
-                                              self.p.getdir('STAGING_DIR'),
                                               self.p, self.logger)
             if model_path != None:
                 found = True
@@ -151,7 +150,6 @@ that reformat gridded data
 
             obs_path = os.path.join(obs_dir, obs_file)
             obs_path = util.preprocess_file(obs_path,
-                                            self.p.getdir('STAGING_DIR'),
                                             self.p, self.logger)
             return obs_path
 
@@ -189,7 +187,7 @@ that reformat gridded data
                         closest_file = fullpath
 
         if closest_file != "":
-            return util.preprocess_file(closest_file, self.p.getdir('STAGING_DIR'), self.p, self.logger)
+            return util.preprocess_file(closest_file, self.p, self.logger)
         else:
             return None
 
