@@ -112,8 +112,9 @@ that reformat gridded data
                                      level=str(level.split('-')[0]).zfill(2))
             model_file = model_ss.doStringSub()
             model_path = os.path.join(model_dir, model_file)
-            util.decompress_file(model_path, self.logger)
-            if os.path.exists(model_path):
+            model_path = util.preprocess_file(model_path,
+                                              self.p, self.logger)
+            if model_path != None:
                 found = True
                 break
 
@@ -148,9 +149,10 @@ that reformat gridded data
             obs_file = obsSts.doStringSub()
 
             obs_path = os.path.join(obs_dir, obs_file)
-            if os.path.exists(obs_path):
-                return obs_path
-            return None
+            obs_path = util.preprocess_file(obs_path,
+                                            self.p, self.logger)
+            return obs_path
+
                        
         # convert valid_time to unix time
         valid_seconds = int(datetime.datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
@@ -185,7 +187,7 @@ that reformat gridded data
                         closest_file = fullpath
 
         if closest_file != "":
-            return closest_file
+            return util.preprocess_file(closest_file, self.p, self.logger)
         else:
             return None
 
@@ -232,32 +234,33 @@ that reformat gridded data
                     thresh_str += "thresh_hi="+str(number)+";"
 
                 fcst_field += "{ name=\"PROB\"; level=\""+fcst_level_type + \
-                              fcst_level.zfill(2) + "\"; prob={ name=\"" + \
+                              fcst_level + "\"; prob={ name=\"" + \
                                 v.fcst_name + \
                                 "\"; "+thresh_str+" } },"
-
+            # TODO: if pcp_combine was run on obs, use name_level, (*,*) format
+            # if not, use user defined name/level combination. name should include _level
             for obs_thresh in obs_threshs:
-                obs_field += "{ name=\""+v.obs_name+"_"+obs_level.zfill(2) + \
+                obs_field += "{ name=\""+v.obs_name+"_"+obs_level + \
                              "\"; level=\"(*,*)\"; cat_thresh=[ " + \
                              str(obs_thresh)+" ]; },"
         else:
             obs_data_type = util.get_filetype(obs_path)
             model_data_type = util.get_filetype(model_path)
             if obs_data_type == "NETCDF":
-                obs_field += "{ name=\"" + v.obs_name+"_" + obs_level.zfill(2) + \
+                obs_field += "{ name=\"" + v.obs_name+"_" + obs_level + \
                              "\"; level=\"(*,*)\"; "
             else:
                 obs_field += "{ name=\""+v.obs_name + \
                              "\"; level=\"["+obs_level_type + \
-                            obs_level.zfill(2)+"]\"; "
+                            obs_level+"]\"; "
 
             if model_data_type == "NETCDF":
-                fcst_field += "{ name=\""+v.fcst_name+"_"+fcst_level.zfill(2) + \
+                fcst_field += "{ name=\""+v.fcst_name+"_"+fcst_level + \
                               "\"; level=\"(*,*)\"; "
             else:
                 fcst_field += "{ name=\""+v.fcst_name + \
                               "\"; level=\"["+fcst_level_type + \
-                              fcst_level.zfill(2)+"]\"; "
+                              fcst_level+"]\"; "
 
             fcst_field += fcst_cat_thresh+" },"
             obs_field += obs_cat_thresh+ " },"
@@ -271,7 +274,7 @@ that reformat gridded data
         level_type = ""
         if(level[0].isalpha()):
             level_type = level[0]
-            level = level[1:]
+            level = level[1:].zfill(2)
         return level_type, level
 
     def run_at_time(self, init_time, valid_time):
@@ -301,14 +304,14 @@ that reformat gridded data
         # get model from first var to compare
         model_path = self.find_model(task_info, var_list[0])
         if model_path == "":
-            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR "+task_info.getInitTime()+" f"+str(task_info.lead))
+            self.logger.error("COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR INIT "+task_info.getInitTime()+" f"+str(task_info.lead))
             return
         self.add_input_file(model_path)
 
         # get observation to from first var compare
         obs_path = self.find_obs(task_info, var_list[0])
         if obs_path == None:
-            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['OBS_INPUT_DIR']+" FOR "+task_info.getInitTime()+" f"+str(task_info.lead))
+            self.logger.error("COULD NOT FIND FILE IN "+self.cg_dict['OBS_INPUT_DIR']+" FOR INIT "+task_info.getInitTime()+" f"+str(task_info.lead))
             return
         self.add_input_file(obs_path)
 
@@ -378,7 +381,7 @@ that reformat gridded data
 
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("ERROR: "+self.app_name+\
+            self.logger.error(self.app_name+\
                               " could not generate command")
             return
         self.logger.info("")
@@ -395,14 +398,14 @@ that reformat gridded data
         # get model to compare
         model_path = self.find_model(ti, v)
         if model_path == "":
-            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR "+ti.getInitTime()+" f"+str(ti.lead))
+            self.logger.error("COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR INIT "+ti.getInitTime()+" f"+str(ti.lead))
             return
         self.add_input_file(model_path)
 
         # get observation to compare
         obs_path = self.find_obs(ti, v)
         if obs_path == None:
-            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['OBS_INPUT_DIR']+" FOR "+ti.getInitTime()+" f"+str(ti.lead))
+            self.logger.error("COULD NOT FIND FILE IN "+self.cg_dict['OBS_INPUT_DIR']+" FOR INIT "+ti.getInitTime()+" f"+str(ti.lead))
             return
         self.add_input_file(obs_path)
 

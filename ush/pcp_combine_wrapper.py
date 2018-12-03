@@ -129,7 +129,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.out_accum = out_accum
 
 
-    def getLowestForecastFile(self, valid_time, dtype):
+    def getLowestForecastFile(self, valid_time, dtype, template):
         """!Find the lowest forecast hour that corresponds to the
         valid time
         Args:
@@ -138,37 +138,27 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @rtype string
           @return Path to file with the lowest forecast hour"""
         out_file = None
-        template = util.getraw_interp(self.p, 'filename_templates',
-                                       dtype + '_PCP_COMBINE_INPUT_TEMPLATE')
-        lowest_fcst = 999999
-        num_slashes = template.count('/')
-        search_string = "{:s}/*"
-        for n in range(num_slashes):
-            search_string += "/*"
 
-        for dirpath, dirnames, all_files in os.walk(self.input_dir):
-            for filename in sorted(all_files):
-                fullpath = os.path.join(dirpath, filename)
-                f = fullpath.replace(self.input_dir+"/", "")
-                se = util.get_time_from_file(self.logger, f, template)
+        # search for file with lowest forecast, then loop up into you find a valid one
+        max_forecast = self.p.getint('config', 'FCST_MAX_FORECAST', 256)
+        forecast_lead = 0
+        while forecast_lead <= max_forecast:
+            ti = TaskInfo()
+            ti.valid_time = valid_time
+            ti.lead = forecast_lead
+            fSts = sts.StringSub(self.logger,
+                                 template,
+                                 valid=valid_time,
+                                 init=ti.getInitTime(),
+                                 lead=str(forecast_lead).zfill(2))
+            search_file = os.path.join(self.input_dir,
+                                       fSts.doStringSub())
+            search_file = util.preprocess_file(search_file, self.p, self.logger)
 
-                if se == None:
-                    continue
-
-                fcst = se.leadHour
-                if fcst is -1:
-                    self.logger.error("Could not pull forecast lead from f")
-                    exit
-
-                init = se.getInitTime("%Y%m%d%H%M")
-                if init == "":
-                    continue
-
-                v = util.shift_time(init, fcst)
-                if v == valid_time and fcst < lowest_fcst:
-                    out_file = fullpath
-                    lowest_fcst = fcst
-        return out_file
+            if search_file != None:
+                return search_file
+            forecast_lead += 1
+        return None
 
 
     def search_day(self, dir, file_time, search_time, template):
@@ -183,12 +173,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         out_file = ""
         files = sorted(glob.glob("{:s}/*{:s}*".format(dir, search_time[0:8])))
         for f in files:
-            se = sts.StringExtract(self.logger, template,
-                                   os.path.basename(f))
-            se.parseTemplate()
-            ftime = se.getValidTime("%Y%m%d%H%M")
-            if ftime != None and int(ftime) < int(file_time):
-                out_file = f
+            se = util.get_time_from_file(self.logger, os.path.basename(f), template)
+            if se is not None:
+                ftime = se.getValidTime("%Y%m%d%H%M")
+                if ftime != None and int(ftime) < int(file_time):
+                    out_file = f
+        if out_file != "":
+            out_file = util.preprocess_file(out_file, self.p, self.logger)
         return out_file
 
     def find_closest_before(self, dir, time, template):
@@ -265,12 +256,12 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if self.input_dir == "":
             self.logger.error(self.app_name +
                               ": Must set data dir to run get_accumulation")
-            exit
+            exit(1)
 
         if self.p.getbool('config', data_src + '_IS_DAILY_FILE', False) is True:
             return self.get_daily_file(valid_time, accum, data_src, file_template)
 
-        start_time = valid_time
+        start_time = valid_time.ljust(12, '0')
         last_time = util.shift_time(valid_time, -(int(accum) - 1))
         total_accum = int(accum)
         level = self.p.getint('config', data_src+'_LEVEL')
@@ -278,7 +269,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # loop backwards in time until you have a full set of accum
         while last_time <= start_time:
             if is_forecast:
-                f = self.getLowestForecastFile(start_time, data_src)
+                f = self.getLowestForecastFile(start_time, data_src, file_template)
                 if f == None:
                     break
                 ob_str = self.p.getstr('config',
@@ -289,29 +280,19 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 start_time = util.shift_time(start_time, -1)
                 search_accum -= 1
             else:  # not looking for forecast files
-                start_time = start_time[0:10]
-                # get all files of valid_time (all accums)
-                # NOTE: This assumes dated subdir, template needs to match
-                files = sorted(glob.glob("{:s}/{:s}/*{:s}*"
-                                         .format(self.input_dir,
-                                                 start_time[0:8],
-                                                 start_time)))
                 # look for biggest accum that fits search
                 while search_accum > 0:
                     fSts = sts.StringSub(self.logger,
                                          file_template,
-                                         valid=start_time,
+                                         valid=start_time[0:10],
                                          level=str(search_accum).zfill(2))
                     search_file = os.path.join(self.input_dir,
                                                fSts.doStringSub())
 
-                    f = None
-                    for file in files:
-                        if file == search_file:
-                            f = file
-                            break
+                    search_file = util.preprocess_file(search_file,
+                                                       self.p, self.logger)
                     # if found a file, add it to input list with info
-                    if f is not None:
+                    if search_file is not None:
                         addon = ""
                         d_type = self.p.getstr('config', data_src +
                                                   '_NATIVE_DATA_TYPE')
@@ -323,8 +304,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                                    '_FIELD_NAME')
                             addon = "'name=\"" + ob_str + \
                                     "\"; level=\"(0,*,*)\";'"
-                        self.add_input_file(f, addon)
-                        start_time = util.shift_time(start_time+"00", -search_accum)
+                        self.add_input_file(search_file, addon)
+                        start_time = util.shift_time(start_time, -search_accum)
                         total_accum -= search_accum
                         break
                     search_accum -= 1
@@ -421,7 +402,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         return cmd
 
-    # TODO: change run_* to setup_*, then run app outside of if block
     def run_at_time_once(self, task_info, var_info, rl):
         cmd = None
         if not self.p.has_option('config', 'PCP_COMBINE_METHOD') or \
@@ -471,15 +451,28 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 in_template,
                                 init=init_time,
                                 lead=str(lead).zfill(2))
-        file1 = pcpSts1.doStringSub()
+        file1 = os.path.join(in_dir, pcpSts1.doStringSub())
+        file1 = util.preprocess_file(file1, self.p, self.logger)
+
+        if file1 is None:
+            self.logger.error("Could not find file in {} for init time {} and lead {}"
+                              .format(in_dir, init_time, lead))
+            return None
 
         pcpSts2 = sts.StringSub(self.logger,
                                 in_template,
                                 init=init_time,
                                 lead=str(lead2).zfill(2))
-        file2 = pcpSts2.doStringSub()
-        self.add_input_file(os.path.join(in_dir,file2),lead2)
-        self.add_input_file(os.path.join(in_dir,file1),lead)
+        file2 = os.path.join(in_dir, pcpSts2.doStringSub())
+        file2 = util.preprocess_file(file2, self.p, self.logger)
+
+        if file2 is None:
+            self.logger.error("Could not find file in {} for init time {} and lead {}"
+                              .format(in_dir, init_time, lead2))
+            return None
+
+        self.add_input_file(file2,lead2)
+        self.add_input_file(file1,lead)
 
         outSts = sts.StringSub(self.logger,
                                out_template,
@@ -586,51 +579,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.set_input_dir(input_dir)
-        if self.get_accumulation(valid_time, int(accum), data_src, input_template, is_forecast) is True:
-            # if success, run pcp_combine
-            infiles = self.get_input_files()
-        else:
-            # if failure, check _GEMPAK_INPUT_DIR to get accumulation files
-            if not self.p.has_option('dir', data_src+'_GEMPAK_INPUT_DIR') or \
-              not self.p.has_option('filename_templates', data_src+'_GEMPAK_TEMPLATE'):
-                self.logger.warning(self.app_name + ": Could not find " \
-                                    "files to compute accumulation in " \
-                                    + input_dir)
-                return False
-            gempak_dir = self.p.getdir(data_src+'_GEMPAK_INPUT_DIR')
-            gempak_template = util.getraw_interp(self.p, 'filename_templates', data_src+'_GEMPAK_TEMPLATE')
-            self.clear()
-            self.set_input_dir(gempak_dir)
-            if self.get_accumulation(valid_time, int(accum), data_src, gempak_template, is_forecast) is True:
-                #   if success, run GempakToCF, run pcp_combine
-                infiles = self.get_input_files()
-                for idx, infile in enumerate(infiles):
-                    # replace input_dir with native_dir, check if file exists
-                    nfile = infile.replace(gempak_dir, input_dir)
-                    if not os.path.exists(os.path.dirname(nfile)):
-                        os.makedirs(os.path.dirname(nfile))
-#                    data_type = util.get_filetype(nfile)
-                    data_type = self.p.getstr('config', data_src+'_NATIVE_DATA_TYPE')
-                    if data_type == "NETCDF":
-                        nfile = os.path.splitext(nfile)[0] + '.nc'
-                        if not os.path.isfile(nfile):
-                            self.logger.info("Calling GempakToCF to convert to NetCDF")
-                            run_g2c = GempakToCFWrapper(self.p, self.logger)
-                            run_g2c.add_input_file(infile)
-                            run_g2c.set_output_path(nfile)
-                            cmd = run_g2c.get_command()
-                            if cmd is None:
-                                self.logger.error("GempakToCF could not generate command")
-                                continue
-                            run_g2c.build()
-                    infiles[idx] = nfile
-
-            else:
-                #   if failure, quit
-                self.logger.warning(self.app_name + ": Could not find " \
-                                    "files to compute accumulation in " \
-                                    + gempak_dir)
-                return None
+        self.get_accumulation(valid_time, int(accum), data_src, input_template, is_forecast)
+        infiles = self.get_input_files()
 
         self.set_output_dir(output_dir)
         pcpSts = sts.StringSub(self.logger,
