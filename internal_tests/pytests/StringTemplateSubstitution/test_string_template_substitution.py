@@ -548,3 +548,13 @@ def test_multiple_valid_substitution_init_and_valid_w_lead():
     ss = StringSub(logger, templ, init=init_string, lead=lead_string)
     filename = ss.doStringSub()
     assert(filename == expected_filename)
+
+def test_multiple_valid_substitution_init_complex():
+    init_string = "2016061018"
+    lead_string = "6"
+    logger = logging.getLogger("testing")
+    templ = "ncar.ral.CoSPA.HRRR.{init?fmt=%Y-%m-%dT%H:%M:%S}.PT{lead?fmt=%.2H}:00.nc"
+    expected_filename = "ncar.ral.CoSPA.HRRR.2016-06-10T18:00:00.PT06:00.nc"
+    ss = StringSub(logger, templ, init=init_string, lead=lead_string)
+    filename = ss.doStringSub()
+    assert(filename == expected_filename)
