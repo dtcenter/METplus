@@ -15,6 +15,7 @@ import bz2
 import zipfile
 from collections import namedtuple
 import struct
+from csv import reader
 
 import subprocess
 from produtil.run import exe
@@ -921,7 +922,7 @@ def get_dirs(base_dir):
 
 
 def getlist(s, logger=None):
-    """! Returns a list of string elements from a comma or space
+    """! Returns a list of string elements from a comma
          separated string of values.
          This function MUST also return an empty list [] if s is '' empty.
          This function is meant to handle these possible or similar inputs:
@@ -934,32 +935,15 @@ def getlist(s, logger=None):
 
         @param s the string being converted to a list.
     """
-
-    # Developer NOTE: we could just force this to only operate
-    # on comma separated lists, not space separated.
-
     # FIRST remove surrounding comma, and spaces, form the string.
     s = s.strip().strip(',').strip()
 
-    # splitting an empty string, s with ',', creates a 1 element
-    # list with an empty string element, we don't want to create or
-    # return that, ie. NEVER RETURN THIS [''], If s is '', an
-    # empty string, then return an empty list [].
-    # Doing so allows for proper boolean testing of your
-    # list elsewhere in the code, ie. bool([]) is False.
-
-    # if s is not an empty string, split it on
-    # commas or spaces
-    if s:
-        if ',' in s:
-            s = s.split(',')
-            s = [item.strip() for item in s]
-        else:
-            s = s.split()
-    else:
-        # create an empty list []
-        s = list()
-
+    # remove space around commas
+    s = re.sub(r'\s*,\s*', ',', s)
+    # use csv reader to divide comma list while preserving strings with comma
+    s = reader([s])
+    # convert the csv reader to a list and get first item (which is the whole list)
+    s = list(s)[0]
     return s
 
 
