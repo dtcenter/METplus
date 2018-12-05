@@ -233,3 +233,23 @@ def test_preprocess_file_unzipped():
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile4.txt"
     outpath = util.preprocess_file(filepath, conf)
     assert(filepath == outpath and os.path.exists(outpath))
+
+def test_getlist():
+    l = 'gt2.7, >3.6, eq42'
+    test_list = util.getlist(l)
+    assert(test_list == ['gt2.7', '>3.6', 'eq42'])
+
+def test_getlist_int():
+    l = '6, 7, 42'
+    test_list = util.getlistint(l)
+    assert(test_list == [6, 7, 42])
+
+def test_getlist_float():
+    l = '6.2, 7.8, 42.0'
+    test_list = util.getlistfloat(l)
+    assert(test_list == [6.2, 7.8, 42.0])
+
+def test_getlist_has_commas():
+    l = 'gt2.7, >3.6, eq42, "has,commas,in,it"'
+    test_list = util.getlist(l)
+    assert(test_list == ['gt2.7', '>3.6', 'eq42', 'has,commas,in,it'])
