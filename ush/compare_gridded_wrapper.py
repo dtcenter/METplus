@@ -96,6 +96,8 @@ that reformat gridded data
         lead = ti.getLeadTime()
         init_time = ti.getInitTime()
         level_type, level = self.split_level(v.fcst_level)
+        if not level.isdigit():
+            level = '0'
         model_dir = self.cg_dict['FCST_INPUT_DIR']
         model_template = self.cg_dict['FCST_INPUT_TEMPLATE']
         max_forecast = self.cg_dict['FCST_MAX_FORECAST']
@@ -138,6 +140,8 @@ that reformat gridded data
         valid_time = ti.getValidTime()
         init_time = ti.getInitTime()
         obs_level_type, obs_level = self.split_level(v.obs_level)
+        if not obs_level.isdigit():
+            obs_level = '0'
         obs_template = self.cg_dict['OBS_INPUT_TEMPLATE']
         obs_dir = self.cg_dict['OBS_INPUT_DIR']
         if self.cg_dict['OBS_EXACT_VALID_TIME']:
