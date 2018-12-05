@@ -175,7 +175,7 @@ class ModeWrapper(CompareGriddedWrapper):
             self.add_input_file(model_path)
             self.add_input_file(obs_path)
             self.add_merge_config_file()
-        
+
             fcst_field, obs_field = self.get_field_info_mode(v, model_path, obs_path, fthresh, othresh)
 
             self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
