@@ -42,7 +42,8 @@ def pcp_combine_wrapper():
     # PB2NCWrapper with configuration values determined by what is set in
     # the pb2nc_test.conf file.
     conf = metplus_config()
-    return PcpCombineWrapper(conf, None)
+    logger = logging.getLogger("dummy")
+    return PcpCombineWrapper(conf, logger)
 
 
 @pytest.fixture
@@ -154,33 +155,6 @@ def test_get_lowest_forecast_file_yesterday():
     out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/file.2018013118f012.nc")    
 
-
-def test_search_day():
-    pcw = pcp_combine_wrapper()
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/daily"
-    file_time = "201802010600"
-    search_time = "2018020100"
-    template = "file.{valid?fmt=%Y%m%d}.txt"
-    out_file = pcw.search_day(input_dir, file_time, search_time, template)
-    assert(out_file == input_dir+"/file.20180201.txt")
-
-    
-def test_find_closest_before_today():
-    pcw = pcp_combine_wrapper()
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/daily"
-    file_time = "201802010600"
-    template = "file.{valid?fmt=%Y%m%d}.txt"
-    out_file = pcw.find_closest_before(input_dir, file_time, template)
-    assert(out_file == input_dir+"/file.20180201.txt")
-
-def test_find_closest_before_yesterday():
-    pcw = pcp_combine_wrapper()
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/daily"
-    file_time = "201802080000"
-    template = "file.{valid?fmt=%Y%m%d}.txt"
-    out_file = pcw.find_closest_before(input_dir, file_time, template)
-    assert(out_file == input_dir+"/file.20180207.txt")    
-
 def test_get_daily_file():
     pcw = pcp_combine_wrapper()
     valid_time = "201802010000"
@@ -244,7 +218,6 @@ def test_setup_sum_method():
     out_file = pcw.get_output_path()    
     assert(out_file == output_dir+"/20160904/outfile.2016090418_A06h")
 
-
 def test_setup_subtract_method():
     pcw = pcp_combine_wrapper()
     task_info = TaskInfo()
@@ -260,7 +233,6 @@ def test_setup_subtract_method():
     var_info.obs_level = "A06"
     rl = "FCST"
     pcw.setup_subtract_method(task_info, var_info, rl)
-    
     in_files = pcw.get_input_files()
     out_file = pcw.get_output_path()    
     assert(len(in_files) == 2)
