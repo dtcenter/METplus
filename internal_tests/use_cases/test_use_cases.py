@@ -72,6 +72,8 @@ def compare_results(param_a, param_b):
     print("****************************")
     print("* TEST RESULTS             *")
     print("****************************")
+    print(param_a+" vs")
+    print(param_b)
     good = True
 
     processes = util.getlist(p.getstr('config', 'PROCESS_LIST'))
