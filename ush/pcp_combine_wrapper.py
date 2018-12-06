@@ -452,7 +452,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if not os.path.exists(mk_dir):
             os.makedirs(mk_dir)
 
-        return cmd
+        return self.get_command()
 
 
     def setup_sum_method(self, task_info, var_info, rl):
@@ -478,8 +478,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             out_accum = out_accum[1:]
         valid_time = task_info.getValidTime()
         init_time = task_info.getInitTime()
-        in_regex = util.template_to_init_regex(in_template,
-                                               init_time, self.logger)
+        in_regex = util.template_to_regex(in_template, init_time,
+                                          valid_time, self.logger)
         self.set_method("SUM")
         self.set_init_time(init_time)
         self.set_valid_time(valid_time)
@@ -490,7 +490,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.set_output_dir(out_dir)
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
-        
+
         pcpSts = sts.StringSub(self.logger,
                                 out_template,
                                 init=init_time,
