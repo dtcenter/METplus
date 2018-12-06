@@ -234,6 +234,11 @@ def test_preprocess_file_unzipped():
     outpath = util.preprocess_file(filepath, conf)
     assert(filepath == outpath and os.path.exists(outpath))
 
+def test_preprocess_file_zip():
+    conf = metplus_config()
+    outpath = util.preprocess_file(None, conf)
+    assert(outpath is None)
+
 def test_getlist():
     l = 'gt2.7, >3.6, eq42'
     test_list = util.getlist(l)
