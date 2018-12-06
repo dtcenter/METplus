@@ -1001,7 +1001,7 @@ class StringSub:
                         self.logger.error("ERROR |  [" + cur_filename +
                                           ":" + cur_function + "] | " +
                                           "The key " + split_string[0] +
-                                          "does not exist for template: " +
+                                          " does not exist for template: " +
                                           self.tmpl)
 
                     # Key is in the dictionary
@@ -1222,7 +1222,7 @@ class StringSub:
                         self.logger.error("ERROR |  [" + cur_filename +
                                           ":" + cur_function + "] | " +
                                           "The key " + split_string[0] +
-                                          "does not exist for template: " +
+                                          " does not exist for template: " +
                                           self.tmpl)
 
                     # Key is in the dictionary
@@ -1394,7 +1394,7 @@ class StringSub:
                         self.logger.error("ERROR |  [" + cur_filename +
                                           ":" + cur_function + "] | " +
                                           "The key " + split_string[0] +
-                                          "does not exist for the template: " +
+                                          " does not exist for the template: " +
                                           self.tmpl)
 
                     # Key is in the dictionary

@@ -15,12 +15,14 @@ import bz2
 import zipfile
 from collections import namedtuple
 import struct
+from csv import reader
 
 import subprocess
 from produtil.run import exe
 from produtil.run import runstr,alias
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
+from gempak_to_cf_wrapper import GempakToCFWrapper
 # for run stand alone
 import produtil
 import config_metplus
@@ -920,7 +922,7 @@ def get_dirs(base_dir):
 
 
 def getlist(s, logger=None):
-    """! Returns a list of string elements from a comma or space
+    """! Returns a list of string elements from a comma
          separated string of values.
          This function MUST also return an empty list [] if s is '' empty.
          This function is meant to handle these possible or similar inputs:
@@ -933,32 +935,15 @@ def getlist(s, logger=None):
 
         @param s the string being converted to a list.
     """
-
-    # Developer NOTE: we could just force this to only operate
-    # on comma separated lists, not space separated.
-
     # FIRST remove surrounding comma, and spaces, form the string.
     s = s.strip().strip(',').strip()
 
-    # splitting an empty string, s with ',', creates a 1 element
-    # list with an empty string element, we don't want to create or
-    # return that, ie. NEVER RETURN THIS [''], If s is '', an
-    # empty string, then return an empty list [].
-    # Doing so allows for proper boolean testing of your
-    # list elsewhere in the code, ie. bool([]) is False.
-
-    # if s is not an empty string, split it on
-    # commas or spaces
-    if s:
-        if ',' in s:
-            s = s.split(',')
-            s = [item.strip() for item in s]
-        else:
-            s = s.split()
-    else:
-        # create an empty list []
-        s = list()
-
+    # remove space around commas
+    s = re.sub(r'\s*,\s*', ',', s)
+    # use csv reader to divide comma list while preserving strings with comma
+    s = reader([s])
+    # convert the csv reader to a list and get first item (which is the whole list)
+    s = list(s)[0]
     return s
 
 
@@ -1393,6 +1378,7 @@ def get_filetype(filepath, logger=None):
 
 
 def get_time_from_file(logger, filepath, template):
+    valid_extensions = [ '.gz', '.bz2', '.zip' ]
     if os.path.isdir(filepath):
         return None
 
@@ -1401,6 +1387,12 @@ def get_time_from_file(logger, filepath, template):
     if se.parseTemplate():
         return se
     else:
+        # check to see if zip extension ends file path, try again without extension
+        for ext in valid_extensions:
+            if filepath.endswith(ext):
+                se = StringExtract(logger, template, filepath[:-len(ext)])
+                if se.parseTemplate():
+                    return se
         return None
 
 
@@ -1417,7 +1409,7 @@ def getraw_interp(p, sec, opt):
             Raw string
     """
 
-    in_template = p.getraw(sec, opt)
+    in_template = p.getraw(sec, opt, "")
     out_template = ""
     in_brackets = False
     for i, c in enumerate(in_template):
@@ -1447,38 +1439,83 @@ def getraw_interp(p, sec, opt):
     return out_template
 
 
-def decompress_file(filename, logger=None):
-    """ Decompress gzip, bzip, or zip files
+def preprocess_file(filename, p, logger=None):
+    """ Decompress gzip, bzip, or zip files or convert Gempak files to NetCDF
         Args:
             @param filename: Path to file without zip extensions
+            @param p: Config object
             @param logger: Optional argument to allow logging
         Returns:
-            None
+            Path to staged unzipped file or original file if already unzipped
     """
+    stage_dir = p.getdir('STAGING_DIR')
+    # TODO: move valid_extensions so it can be used by more than one function
+    valid_extensions = [ '.gz', '.bz2', '.zip' ]
     if os.path.exists(filename):
-        return
-    elif os.path.exists(filename+".gz"):
+        for ext in valid_extensions:
+            if filename.endswith(ext):
+                return preprocess_file(filename[:-len(ext)], p, logger)
+        # if extension is grd (Gempak), then look in staging dir for nc file
+        if filename.endswith('.grd'):
+            stagefile = stage_dir + filename[:-3]+"nc"
+            if os.path.exists(stagefile):
+                return stagefile
+            # if it does not exist, run GempakToCF and return staged nc file
+            # Create staging area if it does not exist
+            outdir = os.path.dirname(stagefile)
+            if not os.path.exists(outdir):
+                os.makedirs(outdir, mode=0775)
+            run_g2c = GempakToCFWrapper(p, logger)
+            run_g2c.add_input_file(filename)
+            run_g2c.set_output_path(stagefile)
+            cmd = run_g2c.get_command()
+            if cmd is None:
+                self.logger.error("GempakToCF could not generate command")
+                return None
+            if logger:
+                logger.info("Converting Gempak file")
+            run_g2c.build()
+            return stagefile
+
+        return filename
+
+    # if file exists in the staging area, return that path
+    outpath = stage_dir + filename
+    if os.path.exists(outpath):
+        return outpath
+
+    # Create staging area if it does not exist
+    outdir = os.path.dirname(outpath)
+    if not os.path.exists(outdir):
+        os.makedirs(outdir, mode=0775)
+
+    if os.path.exists(filename+".gz"):
         if logger:
             logger.info("Decompressing gz file")
         with gzip.open(filename+".gz", 'rb') as infile:
-            with open(filename, 'wb') as outfile:
+            with open(outpath, 'wb') as outfile:
                 outfile.write(infile.read())
                 infile.close()
                 outfile.close()
+                return outpath
     elif os.path.exists(filename+".bz2"):
         if logger:
             logger.info("Decompressing bz2 file")
         with open(filename+".bz2", 'rb') as infile:
-            with open(filename, 'wb') as outfile:
+            with open(outpath, 'wb') as outfile:
                 outfile.write(bz2.decompress(infile.read()))
                 infile.close()
                 outfile.close()
+                return outpath
     elif os.path.exists(filename+".zip"):
         if logger:
             logger.info("Decompressing zip file")
         with zipfile.ZipFile(filename+".zip") as z:
-            with open(filename, 'wb') as f:
+            with open(outpath, 'wb') as f:
                 f.write(z.read(os.path.basename(filename)))
+                return outpath
+
+    return None
 
 
 def run_stand_alone(module_name, app_name):
@@ -1547,12 +1584,13 @@ def add_common_items_to_dictionary(p, dictionary):
     dictionary['EGREP_EXE'] = p.getexe('EGREP_EXE')
 
 
-def template_to_init_regex(template, init_time, logger):
+def template_to_regex(template, init_time, valid_time, logger):
     in_template = re.sub(r'\.', '\\.', template)
     in_template = re.sub(r'{lead.*?}', '.*', in_template)
     sts = StringSub(logger,
                     in_template,
-                    init=init_time)
+                    init=init_time,
+                    valid=valid_time)
     return sts.doStringSub()
 
 if __name__ == "__main__":

@@ -85,7 +85,6 @@ def test_find_obs_no_dated():
     
     pcw.cg_dict['OBS_EXACT_VALID_TIME'] = False
     pcw.cg_dict['OBS_INPUT_DIR'] = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
-#    pcw.cg_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d_%H%M}"
     pcw.cg_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
     obs_file = pcw.find_obs(task_info, v)
     assert(obs_file == pcw.cg_dict['OBS_INPUT_DIR']+'/20180201_0045')

@@ -508,12 +508,53 @@ def test_create_grid2obs_regex_all():
     assert actual_regex == expected_regex
 
 
-def test_multiple_valid_substitution():
+def test_multiple_valid_substitution_valid():
     valid_string = "2018020112"
     lead_string = "123"
     logger = logging.getLogger("testing")
     templ = "{valid?fmt=%Y%m%d%H}/gfs.t{valid?fmt=%H}.pgrb2.0p25.{lead?fmt=%HHH}"
     expected_filename = "2018020112/gfs.t12.pgrb2.0p25.123"
     ss = StringSub(logger, templ, valid=valid_string, lead=lead_string)
+    filename = ss.doStringSub()
+    assert(filename == expected_filename)
+
+def test_multiple_valid_substitution_init():
+    init_string = "2017060400"
+    lead_string = "00"
+    logger = logging.getLogger("testing")
+    templ = "{init?fmt=%Y%m%d%H}/gfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%.2H}"
+    expected_filename = "2017060400/gfs.t00z.pgrb2.0p25.f00"
+    ss = StringSub(logger, templ, init=init_string, lead=lead_string)
+    filename = ss.doStringSub()
+    assert(filename == expected_filename)
+
+
+def test_multiple_valid_substitution_init_and_valid():
+    init_string = "2017060400"
+    lead_string = "00"
+    logger = logging.getLogger("testing")
+    templ = "{valid?fmt=%Y%m%d%H}/gfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%.2H}"
+    expected_filename = "2017060400/gfs.t00z.pgrb2.0p25.f00"
+    ss = StringSub(logger, templ, init=init_string, lead=lead_string)
+    filename = ss.doStringSub()
+    assert(filename == expected_filename)
+
+def test_multiple_valid_substitution_init_and_valid_w_lead():
+    init_string = "2017060400"
+    lead_string = "24"
+    logger = logging.getLogger("testing")
+    templ = "{valid?fmt=%Y%m%d%H}/gfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%.2H}"
+    expected_filename = "2017060500/gfs.t00z.pgrb2.0p25.f24"
+    ss = StringSub(logger, templ, init=init_string, lead=lead_string)
+    filename = ss.doStringSub()
+    assert(filename == expected_filename)
+
+def test_multiple_valid_substitution_init_complex():
+    init_string = "2016061018"
+    lead_string = "6"
+    logger = logging.getLogger("testing")
+    templ = "ncar.ral.CoSPA.HRRR.{init?fmt=%Y-%m-%dT%H:%M:%S}.PT{lead?fmt=%.2H}:00.nc"
+    expected_filename = "ncar.ral.CoSPA.HRRR.2016-06-10T18:00:00.PT06:00.nc"
+    ss = StringSub(logger, templ, init=init_string, lead=lead_string)
     filename = ss.doStringSub()
     assert(filename == expected_filename)

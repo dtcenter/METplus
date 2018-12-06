@@ -116,9 +116,6 @@ class ModeWrapper(CompareGriddedWrapper):
         fcst_cat_thresh = "cat_thresh=[ "+fcst_thresh+" ];"
         obs_cat_thresh = "cat_thresh=[ "+obs_thresh+" ];"
 
-        # TODO: Allow NetCDF level with more than 2 dimensions i.e. (1,*,*)
-        # TODO: Need to check data type for PROB fcst? non PROB obs?
-
         fcst_field = ""
         obs_field = ""
         if self.cg_dict['FCST_IS_PROB']:
@@ -135,26 +132,26 @@ class ModeWrapper(CompareGriddedWrapper):
                             v.fcst_name + \
                             "\"; "+thresh_str+" } },"
 
-            obs_field += "{ name=\""+v.obs_name+"_"+obs_level.zfill(2) + \
-                         "\"; level=\"(*,*)\"; },"
+            if self.p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
+                obs_field += "{ name=\""+v.obs_name+"_"+obs_level + \
+                             "\"; level=\"(*,*)\"; },"
+            else:
+                obs_field += "{ name=\""+v.obs_name + \
+                             "\"; level=\""+v.obs_level+"\"; },"
         else:
-            obs_data_type = util.get_filetype(obs_path)
-            model_data_type = util.get_filetype(model_path)
-            if obs_data_type == "NETCDF":
-                obs_field += "{ name=\"" + v.obs_name+"_" + obs_level.zfill(2) + \
+            if self.p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
+                obs_field += "{ name=\"" + v.obs_name+"_" + obs_level + \
                              "\"; level=\"(*,*)\"; "
             else:
                 obs_field += "{ name=\""+v.obs_name + \
-                             "\"; level=\"["+obs_level_type + \
-                            obs_level.zfill(2)+"]\"; "
+                             "\"; level=\""+v.obs_level+"\"; "
 
-            if model_data_type == "NETCDF":
-                fcst_field += "{ name=\""+v.fcst_name+"_"+fcst_level.zfill(2) + \
+            if self.p.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
+                fcst_field += "{ name=\""+v.fcst_name+"_"+fcst_level + \
                               "\"; level=\"(*,*)\"; "
             else:
                 fcst_field += "{ name=\""+v.fcst_name + \
-                              "\"; level=\"["+fcst_level_type + \
-                              fcst_level.zfill(2)+"]\"; "
+                              "\"; level=\""+v.fcst_level+"\"; "
 
             fcst_field += fcst_cat_thresh+" },"
             obs_field += obs_cat_thresh+ " },"
@@ -178,7 +175,7 @@ class ModeWrapper(CompareGriddedWrapper):
             self.add_input_file(model_path)
             self.add_input_file(obs_path)
             self.add_merge_config_file()
-        
+
             fcst_field, obs_field = self.get_field_info_mode(v, model_path, obs_path, fthresh, othresh)
 
             self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])

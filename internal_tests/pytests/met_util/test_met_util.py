@@ -202,3 +202,54 @@ def test_get_comparison_from_threshold_complex():
 
 def test_get_number_from_threshold_complex():
     assert(util.get_number_from_threshold("<=2.3||>=4.2") == 2.3)
+
+def test_preprocess_file_gz():
+    conf = metplus_config()
+    stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
+    filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile.txt.gz"
+    stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile.txt"
+    outpath = util.preprocess_file(filepath, conf)
+    assert(stagepath == outpath and os.path.exists(outpath))
+
+def test_preprocess_file_bz2():
+    conf = metplus_config()
+    stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
+    filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile2.txt.bz2"
+    stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile2.txt"
+    outpath = util.preprocess_file(filepath, conf)
+    assert(stagepath == outpath and os.path.exists(outpath))
+
+def test_preprocess_file_zip():
+    conf = metplus_config()
+    stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
+    filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile3.txt.zip"
+    stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile3.txt"
+    outpath = util.preprocess_file(filepath, conf)
+    assert(stagepath == outpath and os.path.exists(outpath))
+
+def test_preprocess_file_unzipped():
+    conf = metplus_config()
+    stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
+    filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile4.txt"
+    outpath = util.preprocess_file(filepath, conf)
+    assert(filepath == outpath and os.path.exists(outpath))
+
+def test_getlist():
+    l = 'gt2.7, >3.6, eq42'
+    test_list = util.getlist(l)
+    assert(test_list == ['gt2.7', '>3.6', 'eq42'])
+
+def test_getlist_int():
+    l = '6, 7, 42'
+    test_list = util.getlistint(l)
+    assert(test_list == [6, 7, 42])
+
+def test_getlist_float():
+    l = '6.2, 7.8, 42.0'
+    test_list = util.getlistfloat(l)
+    assert(test_list == [6.2, 7.8, 42.0])
+
+def test_getlist_has_commas():
+    l = 'gt2.7, >3.6, eq42, "has,commas,in,it"'
+    test_list = util.getlist(l)
+    assert(test_list == ['gt2.7', '>3.6', 'eq42', 'has,commas,in,it'])
