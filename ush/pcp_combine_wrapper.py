@@ -161,47 +161,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return None
 
 
-    def search_day(self, dir, file_time, search_time, template):
-        """!Find file path within a day before the file_time
-        Args:
-          @param file_time output file must have a timestamp before this value
-          @param search_time time to use to get directory listing
-          @param template filename template to search
-          @rtype string
-          @return path to file
-        """
-        out_file = ""
-        files = sorted(glob.glob("{:s}/*{:s}*".format(dir, search_time[0:8])))
-        for f in files:
-            se = util.get_time_from_file(self.logger, os.path.basename(f), template)
-            if se is not None:
-                ftime = se.getValidTime("%Y%m%d%H%M")
-                if ftime != None and int(ftime) < int(file_time):
-                    out_file = f
-        if out_file != "":
-            out_file = util.preprocess_file(out_file, self.p, self.logger)
-        return out_file
-
-    def find_closest_before(self, dir, time, template):
-        """!Find the closest file that comes before the search time
-        The file may be from the previous day
-        Args:
-          @param dir directory to search
-          @param time search time - output must come before this time
-          @param template filename template to search
-          @rtype string
-          @return path to file"""
-        day_before = util.shift_time(time, -24)
-        yesterday_file = self.search_day(dir, time,
-                                         str(day_before)[0:10], template)
-        today_file = self.search_day(dir, time, str(time)[0:10], template)
-        # need to check valid time to make sure today_file does not come after VT
-        if today_file == "":
-            return yesterday_file
-        else:
-            return today_file
-
-
     def get_daily_file(self, valid_time, accum, data_src, file_template):
         """!Pull accumulation out of file that contains a full day of data
         Args:
@@ -211,34 +170,41 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @param file_template filename template to search
           @rtype bool
           @return True if file was added to output list, False if not"""
-        # loop accum times
-        data_interval = self.p.getint('config',
-                                      data_src + '_DATA_INTERVAL') * 3600
-        for i in range(0, accum, data_interval):
-            search_time = util.shift_time(valid_time, -i)
-            # find closest file before time
-            f = self.find_closest_before(self.input_dir, search_time,
-                                         file_template)
-            if f == "":
-                continue
-            # build level info string
-            se = sts.StringExtract(self.logger, file_template,
-                                   os.path.basename(f))
-            se.parseTemplate()
-            file_time = datetime.datetime.strptime(se.getInitTime("%Y%m%d%H"),"%Y%m%d%H")
-            v_time = datetime.datetime.strptime(search_time[0:10], "%Y%m%d%H")
-            diff = v_time - file_time
 
-            lead = int((diff.days * 24) / (data_interval / 3600))
-            lead += int((v_time - file_time).seconds / data_interval) - 1
-            fname = self.p.getstr('config',
-                                  data_src + '_' + str(
-                                      accum) + '_FIELD_NAME')
-            addon = "'name=\"" + fname + "\"; level=\"(" + \
-                    str(lead) + ",*,*)\";'"
-            self.add_input_file(f, addon)
-            return True
-        return False
+        data_interval = self.p.getint('config',
+                                      data_src + '_DATA_INTERVAL')
+        times_per_file = self.p.getint('config',
+                                      data_src + '_TIMES_PER_FILE')
+        search_file = None
+        # loop from valid_time back to data interval * times per file
+        for i in range(0, times_per_file+1):
+            search_time = util.shift_time(valid_time, -i * data_interval)
+            # check if file exists
+            dSts = sts.StringSub(self.logger,
+                                 file_template,
+                                 valid=search_time[0:10])
+            search_file = os.path.join(self.input_dir,
+                                       dSts.doStringSub())
+            search_file = util.preprocess_file(search_file, self.p, self.logger)
+            if search_file is not None:
+                break
+
+        if search_file == None:
+            return False
+
+        valid_t = datetime.datetime.strptime(valid_time, "%Y%m%d%H%M")
+        search_t = datetime.datetime.strptime(search_time, "%Y%m%d%H%M")
+        diff = valid_t - search_t
+
+        lead = int((diff.days * 24) / (data_interval))
+        lead += int((diff).seconds / (data_interval*3600)) - 1
+        fname = self.p.getstr('config',
+                              data_src + '_' + str(
+                                  accum) + '_FIELD_NAME')
+        addon = "'name=\"" + fname + "\"; level=\"(" + \
+                str(lead) + ",*,*)\";'"
+        self.add_input_file(search_file, addon)
+        return True
         
         
     def get_accumulation(self, valid_time, accum, data_src,
@@ -319,9 +285,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         if len(self.infiles) is 0:
             return False
-        return True
-        self.set_output_dir(self.outdir)
 
+        return True
         
     def get_command(self):
         if self.app_path is None:
@@ -416,7 +381,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             exit(1)
 
         if cmd is None:
-            self.logger.error("pcp_combine could not generate command")
+            self.logger.error("pcp_combine could not generate command for init {} and forecast lead {}".format(task_info.getInitTime(), task_info.lead))
             return
         self.logger.info("")
         self.build()
@@ -487,9 +452,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if not os.path.exists(mk_dir):
             os.makedirs(mk_dir)
 
-        cmd = self.get_command()
-        outfile = self.get_output_path()
-        return outfile
+        return cmd
 
 
     def setup_sum_method(self, task_info, var_info, rl):
@@ -536,12 +499,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         pcp_out = pcpSts.doStringSub()
         self.set_output_filename(pcp_out)
 
-        cmd = self.get_command()
-        if cmd is None:
-            self.logger.error("pcp_combine could not generate command")
-            return
-        outfile = self.get_output_path()
-        return outfile
+        return self.get_command()
 
 
     def setup_add_method(self, task_info, var_info, data_src):
@@ -579,7 +537,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.set_input_dir(input_dir)
-        self.get_accumulation(valid_time, int(accum), data_src, input_template, is_forecast)
+        if not self.get_accumulation(valid_time, int(accum), data_src, input_template, is_forecast):
+            return None
         infiles = self.get_input_files()
 
         self.set_output_dir(output_dir)
@@ -590,12 +549,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         pcp_out = pcpSts.doStringSub()
         self.set_output_filename(pcp_out)
         self.add_arg("-name " + compare_var + "_" + str(accum).zfill(2))
-        cmd = self.get_command()
-        if cmd is None:
-            self.logger.error("pcp_combine could not generate command")
-            return
-        outfile = self.get_output_path()
-        return outfile
+        return self.get_command()
+
 
 if __name__ == "__main__":
         util.run_stand_alone("pcp_combine_wrapper", "PcpCombine")
