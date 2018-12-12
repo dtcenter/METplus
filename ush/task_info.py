@@ -38,6 +38,11 @@ class TaskInfo:
     def __init__(self):
         """!Retrieve parameters from corresponding param file
         """
+        self.clear()
+
+    def clear(self):
+        """!Clear out all values
+        """
         self.init_time = -1
         self.valid_time = -1
         self.lead = -1
