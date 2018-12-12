@@ -106,6 +106,7 @@ that reformat gridded data
         time_check = init_time
         time_offset = 0
         found = False
+        model_path = None
         while lead_check <= max_forecast:
             # split by - to handle a level that is a range, such as 0-10
             model_ss = sts.StringSub(self.logger, model_template,
@@ -123,10 +124,7 @@ that reformat gridded data
             time_check = util.shift_time(time_check, -init_interval)
             lead_check = lead_check + init_interval            
 
-        if found:
-            return model_path
-        else:
-            return ''
+        return model_path
 
 
     def find_obs(self, ti, v):
@@ -161,7 +159,7 @@ that reformat gridded data
         # convert valid_time to unix time
         valid_seconds = int(datetime.datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
         # get time of each file, compare to valid time, save best within range
-        closest_file = ""
+        closest_file = None
         closest_time = 9999999
 
         valid_range_lower = self.cg_dict['WINDOW_RANGE_BEG']
@@ -190,10 +188,7 @@ that reformat gridded data
                         closest_time = diff
                         closest_file = fullpath
 
-        if closest_file != "":
-            return util.preprocess_file(closest_file, self.p, self.logger)
-        else:
-            return None
+        return util.preprocess_file(closest_file, self.p, self.logger)
 
     def get_field_info(self, v, model_path, obs_path):
         fcst_level_type, fcst_level = self.split_level(v.fcst_level)
@@ -306,7 +301,7 @@ that reformat gridded data
         """
         # get model from first var to compare
         model_path = self.find_model(task_info, var_list[0])
-        if model_path == "":
+        if model_path == None:
             self.logger.error("COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR INIT "+task_info.getInitTime()+" f"+str(task_info.lead))
             return
         self.add_input_file(model_path)
@@ -399,7 +394,7 @@ that reformat gridded data
         """
         # get model to compare
         model_path = self.find_model(ti, v)
-        if model_path == "":
+        if model_path == None:
             self.logger.error("COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR INIT "+ti.getInitTime()+" f"+str(ti.lead))
             return
         self.add_input_file(model_path)

@@ -1448,7 +1448,7 @@ def preprocess_file(filename, p, logger=None):
         Returns:
             Path to staged unzipped file or original file if already unzipped
     """
-    if filename is None:
+    if filename is None or filename == "":
         return None
 
     stage_dir = p.getdir('STAGING_DIR')
