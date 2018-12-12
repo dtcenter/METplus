@@ -63,7 +63,6 @@ def run_test_use_case(param_a, param_b, run_a, run_b):
         process = subprocess.Popen(cmd, shell=True)
         process.wait()
 
-
 def compare_results(param_a, param_b):
     p, p_b = get_params(param_a, param_b)
     a_dir = p.getstr('config', 'OUTPUT_BASE')
@@ -77,7 +76,7 @@ def compare_results(param_a, param_b):
     good = True
 
     processes = util.getlist(p.getstr('config', 'PROCESS_LIST'))
-    
+    # TODO: Not all apps that use_init will write dirs on init, could be valid
     use_init = p.getbool('config', 'LOOP_BY_INIT')
     if use_init:
         time_format = p.getstr('config', 'INIT_TIME_FMT')
@@ -112,6 +111,7 @@ def compare_results(param_a, param_b):
                 files_a = glob.glob(glob_string.format(out_a, run_time))
                 files_b = glob.glob(glob_string.format(out_b, run_time))
             elif process == "PcpCombine":
+                out_o_a = ""
                 out_a = ""
                 if p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
                     out_o_a = p.getstr('config', "OBS_PCP_COMBINE_OUTPUT_DIR")
@@ -125,13 +125,14 @@ def compare_results(param_a, param_b):
                     glob_string = "{:s}/{:s}/*"
                     files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
                     files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
-                if out_a == "":
-                    files_a = files_o_a
-                    files_b = files_o_b
                 # if both fcst and obs are set, run obs here then fcst will run
                 # at the end of the if blocks
-                elif not compare_output_files(files_o_a, files_o_b, a_dir, b_dir):
+                if out_o_a != "" and out_a != "" and not compare_output_files(files_o_a, files_o_b, a_dir, b_dir):
                     good = False
+                # if only obs ran, set variables so that it runs at end of if blocks
+                elif out_o_a != "":
+                    files_a = files_o_a
+                    files_b = files_o_b
             elif process == "RegridDataPlane":
                 out_a = p.getstr('config', "OBS_REGRID_DATA_PLANE_OUTPUT_DIR")
                 out_b = p_b.getstr('config', "OBS_REGRID_DATA_PLANE_OUTPUT_DIR")
