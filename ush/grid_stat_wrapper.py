@@ -70,18 +70,5 @@ class GridStatWrapper(CompareGriddedWrapper):
                                                         False)
 
 
-    def do_wrapper_specific_operations(self):
-        self.add_env_var("INPUT_BASE", self.cg_dict["INPUT_BASE"])
-        self.print_env_item("INPUT_BASE")
-        self.logger.debug("")
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(["MODEL", "FCST_VAR", "OBS_VAR",
-                             "LEVEL", "OBTYPE", "CONFIG_DIR",
-                             "FCST_FIELD", "OBS_FIELD",
-                             "INPUT_BASE",
-                             "MET_VALID_HHMM"])
-        self.logger.debug("")
-
-
 if __name__ == "__main__":
         util.run_stand_alone("grid_stat_wrapper", "GridStat")
