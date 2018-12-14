@@ -996,7 +996,7 @@ def shift_time_seconds(time, shift):
 
 class FieldObj(object):
     __slots__ = 'fcst_name', 'fcst_level', 'fcst_extra', 'fcst_thresh', \
-                'obs_name', 'obs_level', 'obs_extra', 'obs_thresh'
+                'obs_name', 'obs_level', 'obs_extra', 'obs_thresh', 'index'
 
 
 # TODO: Check if other characters are only <>!=&|gelt.[0-9] (?)
@@ -1074,77 +1074,108 @@ def parse_var_list(p):
         Returns:
             list of FieldObj with variable information
     """
+    var_list_fcst = parse_var_list_helper(p, "FCST", False)
+    var_list_obs = parse_var_list_helper(p, "OBS", True)
+    var_list = var_list_fcst + var_list_obs
+    return sorted(var_list, key=lambda x: x.index)
+    return var_list
+
+
+def parse_var_list_helper(p, dt, dont_duplicate):
+    """ helper function for parse_var_list
+        Args:
+            @param p: Conf object
+            @param dt: data_type (FCST or OBS)
+            @param dont_duplicate: if true check other data
+              type and don't process if it exists
+        Returns:
+            list of FieldObj with variable information
+    """
+    # get other data type
+    odt = "OBS"
+    if dt == "OBS":
+        odt = "FCST"
+
     # var_list is a list containing an list of FieldObj
     var_list = []
 
     # find all FCST_VARn_NAME keys in the conf files
     all_conf = p.keys('config')
-    fcst_indices = []
-    regex = re.compile("FCST_VAR(\d+)_NAME")
+    indices = []
+    regex = re.compile(dt+"_VAR(\d+)_NAME")
     for conf in all_conf:
         result = regex.match(conf)
         if result is not None:
-          fcst_indices.append(result.group(1))
+          indices.append(result.group(1))
 
     # loop over all possible variables and add them to list
-    for n in fcst_indices:
+    for n in indices:
+        # don't duplicate if already entered into var list
+        if dont_duplicate and p.has_option('config', odt+'_VAR'+n+'_NAME'):
+            continue
+
+        name = {}
+        levels = {}
+        thresh = {}
+        extra = {}
         # get fcst var info if available
-        if p.has_option('config', "FCST_VAR"+n+"_NAME"):
-            fcst_name = p.getstr('config', "FCST_VAR"+n+"_NAME")
+        if p.has_option('config', dt+"_VAR"+n+"_NAME"):
+            name[dt] = p.getstr('config', dt+"_VAR"+n+"_NAME")
 
-            fcst_extra = ""
-            if p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                fcst_extra = getraw_interp(p, 'config', "FCST_VAR"+n+"_OPTIONS")
+            extra[dt] = ""
+            if p.has_option('config', dt+"_VAR"+n+"_OPTIONS"):
+                extra[dt] = getraw_interp(p, 'config', dt+"_VAR"+n+"_OPTIONS")
 
-            fcst_thresh = ""
-            if p.has_option('config', "FCST_VAR"+n+"_THRESH"):
-                fcst_thresh = getlist(p.getstr('config', "FCST_VAR"+n+"_THRESH"))
-                if validate_thresholds(fcst_thresh) == False:
-                    print("  Update FCST_VAR"+n+"_THRESH to match this format")
+            thresh[dt] = ""
+            if p.has_option('config', dt+"_VAR"+n+"_THRESH"):
+                thresh[dt] = getlist(p.getstr('config', dt+"_VAR"+n+"_THRESH"))
+                if validate_thresholds(thresh[dt]) == False:
+                    print("  Update "+dt+"_VAR"+n+"_THRESH to match this format")
                     exit(1)
 
             # if OBS_VARn_X does not exist, use FCST_VARn_X
-            if p.has_option('config', "OBS_VAR"+n+"_NAME"):
-                obs_name = p.getstr('config', "OBS_VAR"+n+"_NAME")
+            if p.has_option('config', odt+"_VAR"+n+"_NAME"):
+                name[odt] = p.getstr('config', odt+"_VAR"+n+"_NAME")
             else:
-                obs_name = fcst_name
+                name[odt] = name[dt]
 
-            obs_extra = ""
-            if p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                obs_extra = getraw_interp(p, 'config', "OBS_VAR"+n+"_OPTIONS")
+            extra[odt] = ""
+            if p.has_option('config', odt+"_VAR"+n+"_OPTIONS"):
+                extra[odt] = getraw_interp(p, 'config', odt+"_VAR"+n+"_OPTIONS")
 
-            fcst_levels = getlist(p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-            if p.has_option('config', "OBS_VAR"+n+"_LEVELS"):
-                obs_levels = getlist(p.getstr('config', "OBS_VAR"+n+"_LEVELS"))
+            levels[dt] = getlist(p.getstr('config', dt+"_VAR"+n+"_LEVELS"))
+            if p.has_option('config', odt+"_VAR"+n+"_LEVELS"):
+                levels[odt] = getlist(p.getstr('config', odt+"_VAR"+n+"_LEVELS"))
             else:
-                obs_levels = fcst_levels
+                levels[odt] = levels[dt]
 
-            if len(fcst_levels) != len(obs_levels):
-                print("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
+            if len(levels[dt]) != len(levels[odt]):
+                print("ERROR: "+dt+"_VAR"+n+"_LEVELS and "+odt+"_VAR"+n+\
                           "_LEVELS do not have the same number of elements")
                 exit(1)
 
             # if OBS_VARn_THRESH does not exist, use FCST_VARn_THRESH
-            if p.has_option('config', "OBS_VAR"+n+"_THRESH"):
-                obs_thresh = getlist(p.getstr('config', "OBS_VAR"+n+"_THRESH"))
-                if validate_thresholds(obs_thresh) == False:
-                    print("  Update OBS_VAR"+n+"_THRESH to match this format")
+            if p.has_option('config', odt+"_VAR"+n+"_THRESH"):
+                thresh[odt] = getlist(p.getstr('config', odt+"_VAR"+n+"_THRESH"))
+                if validate_thresholds(thresh[odt]) == False:
+                    print("  Update "+odt+"_VAR"+n+"_THRESH to match this format")
                     exit(1)
             else:
-                obs_thresh = fcst_thresh
+                thresh[odt] = thresh[dt]
 
   
 
-            for f,o in zip(fcst_levels, obs_levels):
+            for f,o in zip(levels[dt], levels[odt]):
                 fo = FieldObj()
-                fo.fcst_name = fcst_name
-                fo.obs_name = obs_name
-                fo.fcst_extra = fcst_extra
-                fo.obs_extra = obs_extra
-                fo.fcst_thresh = fcst_thresh
-                fo.obs_thresh = obs_thresh
+                fo.fcst_name = name[dt]
+                fo.obs_name = name[odt]
+                fo.fcst_extra = extra[dt]
+                fo.obs_extra = extra[odt]
+                fo.fcst_thresh = thresh[dt]
+                fo.obs_thresh = thresh[odt]
                 fo.fcst_level = f
                 fo.obs_level = o
+                fo.index = n
                 var_list.append(fo)
 
     '''
