@@ -100,66 +100,44 @@ class ModeWrapper(CompareGriddedWrapper):
         self.process_fields_one_thresh(ti, v, model_path, obs_path)
 
 
-    def get_field_info_mode(self, v, model_path, obs_path, fcst_thresh, obs_thresh):
-        """! Builds the FCST_FIELD and OBS_FIELD items that are sent to the mode config file
+    def get_one_field_info(self, v_name, v_level, v_extra, path, thresh, d_type):
+        """! Builds the FCST_FIELD or OBS_FIELD items that are sent to the mode config file
               Args:
-                @param v var_info object containing variable information
-                @param model_path forecast file
-                @param obs_path observation file
-                @param fcst_thresh probability threshold for forecast
-                @param obs_thresh probability threshold for observation
-                @return returns two strings: forecast and observation info
+                @param v_name var_info name
+                @param v_level var_info level
+                @param v_extra var_info extra arguments
+                @param path path to file
+                @param thresh probability threshold
+                @param d_type type of data (FCST or OBS)
+                @return returns a string with field info
         """
-        fcst_level_type, fcst_level = self.split_level(v.fcst_level)
-        obs_level_type, obs_level = self.split_level(v.obs_level)
+        level_type, level = self.split_level(v_level)
+        field = ""
 
-        fcst_cat_thresh = "cat_thresh=[ "+fcst_thresh+" ];"
-        obs_cat_thresh = "cat_thresh=[ "+obs_thresh+" ];"
-
-        fcst_field = ""
-        obs_field = ""
-        if self.cg_dict['FCST_IS_PROB']:
+        if d_type == "FCST" and self.cg_dict['FCST_IS_PROB']:
             thresh_str = ""
-            comparison = util.get_comparison_from_threshold(fcst_thresh)
-            number = util.get_number_from_threshold(fcst_thresh)
+            comparison = util.get_comparison_from_threshold(thresh)
+            number = util.get_number_from_threshold(thresh)
             if comparison in ["gt", "ge", ">", ">=" ]:
                 thresh_str += "thresh_lo="+str(number)+";"
             elif comparison in ["lt", "le", "<", "<=" ]:
                 thresh_str += "thresh_hi="+str(number)+";"
 
-            fcst_field += "{ name=\"PROB\"; level=\""+fcst_level_type + \
-                          fcst_level.zfill(2) + "\"; prob={ name=\"" + \
-                            v.fcst_name + \
-                            "\"; "+thresh_str+" } },"
-
-            if self.p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
-                obs_field += "{ name=\""+v.obs_name+"_"+obs_level + \
-                             "\"; level=\"(*,*)\"; },"
-            else:
-                obs_field += "{ name=\""+v.obs_name + \
-                             "\"; level=\""+v.obs_level+"\"; },"
+            field += "{ name=\"PROB\"; level=\""+level_type + \
+                          level.zfill(2) + "\"; prob={ name=\"" + \
+                            v_name + \
+                            "\"; "+thresh_str+" } "
         else:
-            if self.p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
-                obs_field += "{ name=\"" + v.obs_name+"_" + obs_level + \
+            if self.p.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
+                field += "{ name=\""+v_name+"_"+level + \
                              "\"; level=\"(*,*)\"; "
             else:
-                obs_field += "{ name=\""+v.obs_name + \
-                             "\"; level=\""+v.obs_level+"\"; "
+                field += "{ name=\""+v_name + \
+                             "\"; level=\""+v_level+"\"; "
 
-            if self.p.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
-                fcst_field += "{ name=\""+v.fcst_name+"_"+fcst_level + \
-                              "\"; level=\"(*,*)\"; "
-            else:
-                fcst_field += "{ name=\""+v.fcst_name + \
-                              "\"; level=\""+v.fcst_level+"\"; "
+        field += v_extra+"}"
+        return field
 
-            fcst_field += fcst_cat_thresh+" },"
-            obs_field += obs_cat_thresh+ " },"
-
-        # remove last comma and } to be added back after extra options
-        fcst_field = fcst_field[0:-2] + v.fcst_extra+"}"
-        obs_field = obs_field[0:-2] + v.obs_extra+"}"
-        return fcst_field, obs_field
 
     def process_fields_one_thresh(self, ti, v, model_path, obs_path):
         """! For each threshold, set up environment variables and run mode
@@ -176,7 +154,10 @@ class ModeWrapper(CompareGriddedWrapper):
             self.add_input_file(obs_path)
             self.add_merge_config_file()
 
-            fcst_field, obs_field = self.get_field_info_mode(v, model_path, obs_path, fthresh, othresh)
+            fcst_field = self.get_one_field_info(v.fcst_name, v.fcst_level, v.fcst_extra,
+                                                  model_path, fthresh, 'FCST')
+            obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
+                                                  obs_path, othresh, 'OBS')
 
             self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
             self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])
@@ -187,18 +168,6 @@ class ModeWrapper(CompareGriddedWrapper):
             self.add_env_var("OBS_FIELD", obs_field)
             self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
             self.add_env_var("MET_VALID_HHMM", ti.getValidTime()[4:8])
-
-            self.logger.debug("")
-            self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-            self.print_env_item("MODEL")
-            self.print_env_item("OBTYPE")
-            self.print_env_item("FCST_VAR")
-            self.print_env_item("OBS_VAR")
-            self.print_env_item("LEVEL")
-            self.print_env_item("FCST_FIELD")
-            self.print_env_item("OBS_FIELD")
-            self.print_env_item("CONFIG_DIR")
-            self.print_env_item("MET_VALID_HHMM")
 
             if self.cg_dict['QUILT']:
                 quilt = "TRUE"
@@ -211,20 +180,21 @@ class ModeWrapper(CompareGriddedWrapper):
             self.add_env_var("MERGE_THRESH", self.cg_dict["MERGE_THRESH"] )
             self.add_env_var("MERGE_FLAG", self.cg_dict["MERGE_FLAG"] )
 
-            self.print_env_item("QUILT")
-            self.print_env_item("CONV_RADIUS")
-            self.print_env_item("CONV_THRESH")
-            self.print_env_item("MERGE_THRESH")
-            self.print_env_item("MERGE_FLAG")
+            print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
+                          "LEVEL", "OBTYPE", "CONFIG_DIR",
+                          "FCST_FIELD", "OBS_FIELD",
+                          "QUILT", "MET_VALID_HHMM",
+                          "CONV_RADIUS", "CONV_THRESH",
+                          "MERGE_THRESH", "MERGE_FLAG"]
 
             self.logger.debug("")
+            self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+            self.print_user_env_items()
+            for l in print_list:
+                self.print_env_item(l)
+            self.logger.debug("")
             self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-            self.print_env_copy(["MODEL", "FCST_VAR", "OBS_VAR",
-                                 "LEVEL", "OBTYPE", "CONFIG_DIR",
-                                 "FCST_FIELD", "OBS_FIELD",
-                                 "QUILT", "MET_VALID_HHMM",
-                                 "CONV_RADIUS", "CONV_THRESH",
-                                 "MERGE_THRESH", "MERGE_FLAG"])
+            self.print_env_copy(print_list)
             self.logger.debug("")
 
             cmd = self.get_command()
