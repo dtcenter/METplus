@@ -350,6 +350,11 @@ that reformat gridded data
         # verify they are the same size
         self.set_param_file(self.cg_dict['CONFIG_FILE'])
         self.create_and_set_output_dir(ti)
+
+        print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
+                      "LEVEL", "OBTYPE", "CONFIG_DIR",
+                      "FCST_FIELD", "OBS_FIELD",
+                      "INPUT_BASE", "MET_VALID_HHMM"]
         
         self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
         self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])
@@ -360,21 +365,17 @@ that reformat gridded data
         self.add_env_var("OBS_FIELD", obs_field)
         self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
         self.add_env_var("MET_VALID_HHMM", ti.getValidTime()[4:8])
+        self.add_env_var("INPUT_BASE", self.cg_dict["INPUT_BASE"])
 
         self.logger.debug("")
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_user_env_items()
-        self.print_env_item("MODEL")
-        self.print_env_item("OBTYPE")
-        self.print_env_item("FCST_VAR")
-        self.print_env_item("OBS_VAR")
-        self.print_env_item("LEVEL")
-        self.print_env_item("FCST_FIELD")
-        self.print_env_item("OBS_FIELD")
-        self.print_env_item("CONFIG_DIR")
-        self.print_env_item("MET_VALID_HHMM")
-
-        self.do_wrapper_specific_operations()
+        for l in print_list:
+            self.print_env_item(l)
+        self.logger.debug("")
+        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_env_copy(print_list)
+        self.logger.debug("")
 
         cmd = self.get_command()
         if cmd is None:
