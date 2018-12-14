@@ -46,11 +46,12 @@ class MTDWrapper(ModeWrapper):
     def create_cg_dict(self):
         self.cg_dict = dict()
         self.cg_dict['LOOP_BY_INIT'] = self.p.getbool('config', 'LOOP_BY_INIT', True)
-        self.cg_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
+        self.cg_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
         self.cg_dict['INPUT_BASE'] = self.p.getdir('INPUT_BASE')
-        self.cg_dict['OUTPUT_DIR'] = self.p.getdir('MTD_OUT_DIR')
-        self.cg_dict['CONFIG_DIR'] = self.p.getdir('CONFIG_DIR')
-        self.cg_dict['CONFIG_FILE'] = self.p.getstr('config', 'MTD_CONFIG')
+        self.cg_dict['OUTPUT_DIR'] = self.p.getdir('MTD_OUT_DIR', self.p.getdir('OUTPUT_BASE'))
+        self.cg_dict['CONFIG_DIR'] = self.p.getdir('CONFIG_DIR',
+                                                   self.p.getdir('METPLUS_BASE')+'/parm/met_config')
+        self.cg_dict['CONFIG_FILE'] = self.p.getstr('config', 'MTD_CONFIG', '')
         self.cg_dict['CONV_RADIUS'] = self.p.getstr('config', 'MTD_CONV_RADIUS', "5")
         self.cg_dict['CONV_THRESH'] = self.p.getstr('config', 'MTD_CONV_THRESH', ">0.5")
         self.cg_dict['MIN_VOLUME'] = self.p.getstr('config', 'MTD_MIN_VOLUME', '2000')
