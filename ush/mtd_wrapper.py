@@ -68,8 +68,8 @@ class MTDWrapper(ModeWrapper):
             self.cg_dict['FCST_INPUT_TEMPLATE'] = \
               util.getraw_interp(self.p, 'filename_templates',
                                  'FCST_MTD_INPUT_TEMPLATE')
-            self.cg_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST')
-            self.cg_dict['FCST_INIT_INTERVAL']= self.p.getint('config', 'FCST_INIT_INTERVAL')
+            self.cg_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 256)
+            self.cg_dict['FCST_INIT_INTERVAL']= self.p.getint('config', 'FCST_INIT_INTERVAL', 1)
 
         # only read OBS conf if processing observation data
         if not self.cg_dict['SINGLE_RUN'] or self.cg_dict['SINGLE_DATA_SRC'] == 'OBS':
