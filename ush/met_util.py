@@ -1163,7 +1163,10 @@ def parse_var_list_helper(p, dt, dont_duplicate):
             else:
                 thresh[odt] = thresh[dt]
 
-  
+            if len(thresh[dt]) != len(thresh[odt]):
+                print("ERROR: "+dt+"_VAR"+n+"_THRESH and "+odt+"_VAR"+n+\
+                          "_THRESH do not have the same number of elements")
+                exit(1)
 
             for f,o in zip(levels[dt], levels[odt]):
                 fo = FieldObj()
