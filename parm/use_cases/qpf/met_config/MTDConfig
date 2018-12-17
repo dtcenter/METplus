@@ -60,12 +60,10 @@ fcst = {
    censor_val        = [];
    conv_radius       = ${CONV_RADIUS};
    conv_thresh       = ${CONV_THRESH};
-//   conv_radius       = 60.0/grid_res; // in grid squares
-//   conv_thresh       = >=5.0;
 
 }
 
-//obs = fcst;
+obs = fcst;
 
 obs = {
    field = ${OBS_FIELD};
