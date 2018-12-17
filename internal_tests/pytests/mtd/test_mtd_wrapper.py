@@ -187,3 +187,25 @@ def test_mtd_by_init_miss_both():
            obs_list[0] == os.path.join(obs_dir,'20170510', 'qpe_2017051009_A06.nc') and
            obs_list[1] == os.path.join(obs_dir,'20170510', 'qpe_2017051015_A06.nc')
            )
+
+
+def test_mtd_single():
+    mw = mtd_wrapper()
+    fcst_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    mw.cg_dict['SINGLE_RUN'] = True
+    mw.cg_dict['SINGLE_DATA_SRC'] = 'FCST'
+    mw.cg_dict['FCST_INPUT_DIR'] = fcst_dir
+    mw.cg_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
+    mw.cg_dict['LEAD_SEQ'] = [1, 2, 3]
+    init_time = "201705100300"
+    
+    mw.run_at_time(init_time, -1)
+    single_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_single_APCP_A06.txt')
+    with open(single_list_file) as f:
+        single_list = f.readlines()
+    single_list = [x.strip() for x in single_list]
+
+    assert(single_list[0] == os.path.join(fcst_dir,'20170510', '20170510_i03_f001_HRRRTLE_PHPT.grb2') and
+           single_list[1] == os.path.join(fcst_dir,'20170510', '20170510_i03_f002_HRRRTLE_PHPT.grb2') and
+           single_list[2] == os.path.join(fcst_dir,'20170510', '20170510_i03_f003_HRRRTLE_PHPT.grb2')
+           )
