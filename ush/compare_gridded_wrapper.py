@@ -221,51 +221,64 @@ that reformat gridded data
         # if not, use user defined name/level combination. name should include _level
         fcst_field = ""
         obs_field = ""
+        fcst_fields = []
+        obs_fields = []
         if self.cg_dict['FCST_IS_PROB']:
             for fcst_thresh in fcst_threshs:
                 thresh_str = ""
                 comparison = util.get_comparison_from_threshold(fcst_thresh)
                 number = util.get_number_from_threshold(fcst_thresh)
-                if comparison in ["gt", "ge", ">", ">=" ]:
-                    thresh_str += "thresh_lo="+str(number)+";"
-                elif comparison in ["lt", "le", "<", "<=" ]:
-                    thresh_str += "thresh_hi="+str(number)+";"
+                if comparison in ["gt", "ge", ">", ">=", "==", "eq" ]:
+                    thresh_str += "thresh_lo="+str(number)+"; "
+                if comparison in ["lt", "le", "<", "<=", "==", "eq" ]:
+                    thresh_str += "thresh_hi="+str(number)+"; "
 
-                fcst_field += "{ name=\"PROB\"; level=\""+fcst_level_type + \
-                              fcst_level + "\"; prob={ name=\"" + \
-                                v.fcst_name + \
-                                "\"; "+thresh_str+" } },"
+                prob_cat_thresh = self.cg_dict['FCST_PROB_THRESH']
+                # untested, need NetCDF prob fcst data
+                if model_path[-3:] == ".nc":
+                    fcst_field = "{ name=\"" + v.fcst_name + "\"; level=\"" + \
+                      fcst_level+"\"; prob=TRUE; cat_thresh=["+prob_cat_thresh+"];}"
+                else:
+                    fcst_field = "{ name=\"PROB\"; level=\""+fcst_level_type + \
+                                  fcst_level + "\"; prob={ name=\"" + \
+                                  v.fcst_name + \
+                                  "\"; "+thresh_str+"} cat_thresh=["+prob_cat_thresh+"];"
+                fcst_field += v.fcst_extra + "}"
+                fcst_fields.append(fcst_field)
 
             for obs_thresh in obs_threshs:
                 if self.p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
-                    obs_field += "{ name=\""+v.obs_name+"_"+obs_level + \
+                    obs_field = "{ name=\""+v.obs_name+"_"+obs_level + \
                                  "\"; level=\"(*,*)\"; cat_thresh=[ " + \
-                                 str(obs_thresh)+" ]; },"
+                                 str(obs_thresh)+" ]; "
                 else:
-                    obs_field += "{ name=\""+v.obs_name + \
+                    obs_field = "{ name=\""+v.obs_name + \
                                  "\"; level=\""+v.obs_level+"\"; cat_thresh=[ " + \
-                                 str(obs_thresh)+" ]; },"
+                                 str(obs_thresh)+" ];"
+                obs_field += v.obs_extra + "}"
+                obs_fields.append(obs_field)
         else:
             if self.p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
-                obs_field += "{ name=\"" + v.obs_name+"_" + obs_level + \
+                obs_field = "{ name=\"" + v.obs_name+"_" + obs_level + \
                              "\"; level=\"(*,*)\"; "
             else:
-                obs_field += "{ name=\""+v.obs_name + \
+                obs_field = "{ name=\""+v.obs_name + \
                              "\"; level=\""+v.obs_level+"\"; "
 
             if self.p.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
-                fcst_field += "{ name=\""+v.fcst_name+"_"+fcst_level + \
+                fcst_field = "{ name=\""+v.fcst_name+"_"+fcst_level + \
                               "\"; level=\"(*,*)\"; "
             else:
-                fcst_field += "{ name=\""+v.fcst_name + \
+                fcst_field = "{ name=\""+v.fcst_name + \
                               "\"; level=\""+v.fcst_level+"\"; "
 
-            fcst_field += fcst_cat_thresh+" },"
-            obs_field += obs_cat_thresh+ " },"
+            fcst_field += fcst_cat_thresh + " " + v.fcst_extra+"}"
+            obs_field += obs_cat_thresh + " " + v.obs_extra + "}"
+            fcst_fields.append(fcst_field)
+            obs_fields.append(obs_field)
 
-        # remove last comma and } to be added back after extra options
-        fcst_field = fcst_field[0:-2] + v.fcst_extra+"}"
-        obs_field = obs_field[0:-2] + v.obs_extra+"}"
+        fcst_field = ','.join(fcst_fields)
+        obs_field = ','.join(obs_fields)
         return fcst_field, obs_field
 
     def split_level(self, level):
