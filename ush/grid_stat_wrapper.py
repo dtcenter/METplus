@@ -68,7 +68,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.cg_dict['ONCE_PER_FIELD'] = self.p.getbool('config',
                                                         'GRID_STAT_ONCE_PER_FIELD',
                                                         False)
-
+        self.cg_dict['FCST_PROB_THRESH'] = self.p.getstr('config', 'FCST_GRID_STAT_PROB_THRESH', '==0.1')
 
 if __name__ == "__main__":
         util.run_stand_alone("grid_stat_wrapper", "GridStat")
