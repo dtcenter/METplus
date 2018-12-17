@@ -100,7 +100,7 @@ class ModeWrapper(CompareGriddedWrapper):
         self.process_fields_one_thresh(ti, v, model_path, obs_path)
 
 
-    def get_one_field_info(self, v_name, v_level, v_extra, path, thresh, d_type):
+    def get_one_field_info(self, v_name, v_level, v_extra, thresh, d_type):
         """! Builds the FCST_FIELD or OBS_FIELD items that are sent to the mode config file
               Args:
                 @param v_name var_info name
@@ -155,9 +155,9 @@ class ModeWrapper(CompareGriddedWrapper):
             self.add_merge_config_file()
 
             fcst_field = self.get_one_field_info(v.fcst_name, v.fcst_level, v.fcst_extra,
-                                                  model_path, fthresh, 'FCST')
+                                                 fthresh, 'FCST')
             obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
-                                                  obs_path, othresh, 'OBS')
+                                                othresh, 'OBS')
 
             self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
             self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])

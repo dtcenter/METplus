@@ -252,13 +252,13 @@ class MTDWrapper(ModeWrapper):
                 if self.cg_dict['SINGLE_DATA_SRC'] == 'OBS':
                     self.set_fcst_file(obs_path)
                     obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
-                                                  obs_path, othresh, 'OBS')
+                                                        othresh, 'OBS')
                     self.add_env_var("FCST_FIELD", obs_field)
                     self.add_env_var("OBS_FIELD", obs_field)
                 else:
                     self.set_fcst_file(model_path)
                     fcst_field = self.get_one_field_info(v.fcst_name, v.fcst_level, v.fcst_extra,
-                                                  model_path, fthresh, 'FCST')
+                                                         fthresh, 'FCST')
                     self.add_env_var("FCST_FIELD", fcst_field)
                     self.add_env_var("OBS_FIELD", fcst_field)
 #                self.add_env_var("OBS_FIELD", '{name="IgnoreMe";}')
@@ -267,9 +267,9 @@ class MTDWrapper(ModeWrapper):
                 self.set_obs_file(obs_path)
 
                 fcst_field = self.get_one_field_info(v.fcst_name, v.fcst_level, v.fcst_extra,
-                                                      model_path, fthresh, 'FCST')
+                                                     fthresh, 'FCST')
                 obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
-                                                      obs_path, othresh, 'OBS')
+                                                    othresh, 'OBS')
 
                 self.add_env_var("FCST_FIELD", fcst_field)
                 self.add_env_var("OBS_FIELD", obs_field)
