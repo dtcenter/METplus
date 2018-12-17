@@ -190,96 +190,68 @@ that reformat gridded data
 
         return util.preprocess_file(closest_file, self.p, self.logger)
 
-    def get_field_info(self, v, model_path, obs_path):
-        fcst_level_type, fcst_level = self.split_level(v.fcst_level)
-        obs_level_type, obs_level = self.split_level(v.obs_level)
 
-        fcst_cat_thresh = ""
-        fcst_threshs = []
-        if v.fcst_thresh != "":
-            fcst_threshs = v.fcst_thresh
-            fcst_cat_thresh = "cat_thresh=[ "
-            for fcst_thresh in fcst_threshs:
-                fcst_cat_thresh += str(fcst_thresh)+", "
-            fcst_cat_thresh = fcst_cat_thresh[0:-2]+" ];"
+    def get_one_field_info(self, v_level, v_thresh, v_name, v_extra, path, d_type):
+        level_type, level = self.split_level(v_level)
 
-        obs_cat_thresh = ""
-        obs_threshs = []
-        if v.obs_thresh != "":
-            obs_threshs = v.obs_thresh
-            obs_cat_thresh = "cat_thresh=[ "
-            for obs_thresh in obs_threshs:
-                obs_cat_thresh += str(obs_thresh)+", "
-            obs_cat_thresh = obs_cat_thresh[0:-2]+" ];"
+        cat_thresh = ""
+        threshs = []
+        if v_thresh != "":
+            threshs = v_thresh
+            cat_thresh = "cat_thresh=[ " + ','.join(threshs) + " ];"
 
-        if len(fcst_threshs) != len(obs_threshs):
-            self.logger.error("Number of forecast and "\
-                            "observation thresholds must be the same")
-            exit(1)
-
-        # if pcp_combine was run on obs, use name_level, (*,*) format
+        # if pcp_combine was run, use name_level, (*,*) format
         # if not, use user defined name/level combination. name should include _level
-        fcst_field = ""
-        obs_field = ""
-        fcst_fields = []
-        obs_fields = []
+        fields = []
         if self.cg_dict['FCST_IS_PROB']:
-            for fcst_thresh in fcst_threshs:
-                thresh_str = ""
-                comparison = util.get_comparison_from_threshold(fcst_thresh)
-                number = util.get_number_from_threshold(fcst_thresh)
-                if comparison in ["gt", "ge", ">", ">=", "==", "eq" ]:
-                    thresh_str += "thresh_lo="+str(number)+"; "
-                if comparison in ["lt", "le", "<", "<=", "==", "eq" ]:
-                    thresh_str += "thresh_hi="+str(number)+"; "
+            if d_type == "FCST":
+                for thresh in threshs:
+                    thresh_str = ""
+                    comparison = util.get_comparison_from_threshold(thresh)
+                    number = util.get_number_from_threshold(thresh)
+                    if comparison in ["gt", "ge", ">", ">=", "==", "eq" ]:
+                        thresh_str += "thresh_lo="+str(number)+"; "
+                    if comparison in ["lt", "le", "<", "<=", "==", "eq" ]:
+                        thresh_str += "thresh_hi="+str(number)+"; "
 
-                prob_cat_thresh = self.cg_dict['FCST_PROB_THRESH']
-                # untested, need NetCDF prob fcst data
-                if model_path[-3:] == ".nc":
-                    fcst_field = "{ name=\"" + v.fcst_name + "\"; level=\"" + \
-                      fcst_level+"\"; prob=TRUE; cat_thresh=["+prob_cat_thresh+"];}"
-                else:
-                    fcst_field = "{ name=\"PROB\"; level=\""+fcst_level_type + \
-                                  fcst_level + "\"; prob={ name=\"" + \
-                                  v.fcst_name + \
-                                  "\"; "+thresh_str+"} cat_thresh=["+prob_cat_thresh+"];"
-                fcst_field += v.fcst_extra + "}"
-                fcst_fields.append(fcst_field)
-
-            for obs_thresh in obs_threshs:
-                if self.p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
-                    obs_field = "{ name=\""+v.obs_name+"_"+obs_level + \
-                                 "\"; level=\"(*,*)\"; cat_thresh=[ " + \
-                                 str(obs_thresh)+" ]; "
-                else:
-                    obs_field = "{ name=\""+v.obs_name + \
-                                 "\"; level=\""+v.obs_level+"\"; cat_thresh=[ " + \
-                                 str(obs_thresh)+" ];"
-                obs_field += v.obs_extra + "}"
-                obs_fields.append(obs_field)
+                    prob_cat_thresh = self.cg_dict['FCST_PROB_THRESH']
+                    # untested, need NetCDF prob fcst data
+                    if path[-3:] == ".nc":
+                        field = "{ name=\"" + v_name + "\"; level=\"" + \
+                          level+"\"; prob=TRUE; cat_thresh=["+prob_cat_thresh+"];}"
+                    else:
+                        field = "{ name=\"PROB\"; level=\""+level_type + \
+                                level + "\"; prob={ name=\"" + \
+                                v_name + \
+                                "\"; "+thresh_str+"} cat_thresh=["+prob_cat_thresh+"];"
+                    field += v_extra + "}"
+                    fields.append(field)
+            else: # OBS
+                for thresh in threshs:
+                    if self.p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
+                        field = "{ name=\""+v_name+"_"+level + \
+                                    "\"; level=\"(*,*)\"; cat_thresh=[ " + \
+                                    str(thresh)+" ]; "
+                    else:
+                        field = "{ name=\""+v_name + \
+                                    "\"; level=\""+v_level+"\"; cat_thresh=[ " + \
+                                    str(thresh)+" ];"
+                    field += v_extra + "}"
+                    fields.append(field)
         else:
-            if self.p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
-                obs_field = "{ name=\"" + v.obs_name+"_" + obs_level + \
+            if self.p.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
+                field = "{ name=\"" + v_name+"_" + level + \
                              "\"; level=\"(*,*)\"; "
             else:
-                obs_field = "{ name=\""+v.obs_name + \
-                             "\"; level=\""+v.obs_level+"\"; "
+                field = "{ name=\""+v_name + \
+                             "\"; level=\""+v_level+"\"; "
 
-            if self.p.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
-                fcst_field = "{ name=\""+v.fcst_name+"_"+fcst_level + \
-                              "\"; level=\"(*,*)\"; "
-            else:
-                fcst_field = "{ name=\""+v.fcst_name + \
-                              "\"; level=\""+v.fcst_level+"\"; "
+            field += cat_thresh + " " + v_extra+"}"
+            fields.append(field)
 
-            fcst_field += fcst_cat_thresh + " " + v.fcst_extra+"}"
-            obs_field += obs_cat_thresh + " " + v.obs_extra + "}"
-            fcst_fields.append(fcst_field)
-            obs_fields.append(obs_field)
+        field = ','.join(fields)
+        return field
 
-        fcst_field = ','.join(fcst_fields)
-        obs_field = ','.join(obs_fields)
-        return fcst_field, obs_field
 
     def split_level(self, level):
         level_type = ""
@@ -329,7 +301,8 @@ that reformat gridded data
         fcst_field_list = []
         obs_field_list = []
         for v in var_list:
-            next_fcst, next_obs = self.get_field_info(v, model_path, obs_path)
+            next_fcst = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name, v.fcst_extra, model_path, 'FCST')
+            next_obs = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra, obs_path, 'OBS')
             fcst_field_list.append(next_fcst)
             obs_field_list.append(next_obs)
         fcst_field = ','.join(fcst_field_list)
@@ -422,7 +395,8 @@ that reformat gridded data
 
         # for grid_stat, loop over all variables and all them to the field list, then call the app once
         # for mode, loop over all variables and levels (and probability thresholds) and call the app for each
-        fcst_field, obs_field = self.get_field_info(v, model_path, obs_path)
+        fcst_field = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name, v.fcst_extra, model_path, 'FCST')
+        obs_field = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra, obs_path, 'OBS')
         self.process_fields(ti, v, fcst_field, obs_field)
         
 
