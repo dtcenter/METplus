@@ -242,6 +242,8 @@ def main():
         run_test_use_case(param_a, param_b, run_a, run_b)
 
     for param_file in param_files:
+        param_a = param_file.replace(metplus_home,"/d1/mccabe/METplus.a")
+        param_b = param_file.replace(metplus_home,"/d1/mccabe/METplus.b")
         if not compare_results(param_a, param_b):
             all_good = False
 
