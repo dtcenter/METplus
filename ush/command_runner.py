@@ -155,7 +155,10 @@ class CommandRunner(object):
         self.logger.info("RUNNING: %s" % cmd.to_shell())
         self.logger.debug("RUNNING %s" % repr(cmd))
 
-        ret = run(cmd, **kwargs)
+        ret = 0
+        # run app unless DO_NOT_RUN_EXE is set to True
+        if not self.config.getbool('config', 'DO_NOT_RUN_EXE', False):
+            ret = run(cmd, **kwargs)
 
         return (ret, cmd)
 
