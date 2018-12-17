@@ -230,7 +230,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         start_time = valid_time.ljust(12, '0')
         last_time = util.shift_time(valid_time, -(int(accum) - 1))
         total_accum = int(accum)
-        level = self.p.getint('config', data_src+'_LEVEL')
+        level = self.p.getint('config', data_src+'_LEVEL', accum)
         search_accum = level
         # loop backwards in time until you have a full set of accum
         while last_time <= start_time:
@@ -238,9 +238,18 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 f = self.getLowestForecastFile(start_time, data_src, file_template)
                 if f == None:
                     break
-                ob_str = self.p.getstr('config',
-                                       data_src + '_' + str(level) +
-                                       '_FIELD_NAME')
+                # find accum field in file
+                obs_str = None
+                s_accum = search_accum
+                while s_accum > 0:
+                    ob_str = self.p.getstr('config',
+                                           data_src + '_' + str(s_accum) +
+                                           '_FIELD_NAME', '')
+                    if ob_str != '':
+                        break
+                    s_accum -= 1
+                if ob_str == '':
+                    break
                 addon = "'name=\"" + ob_str + "\"; level=\"(0,*,*)\";'"
                 self.add_input_file(f, addon)
                 start_time = util.shift_time(start_time, -1)

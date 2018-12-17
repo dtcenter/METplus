@@ -1448,6 +1448,9 @@ def preprocess_file(filename, p, logger=None):
         Returns:
             Path to staged unzipped file or original file if already unzipped
     """
+    if filename is None:
+        return None
+
     stage_dir = p.getdir('STAGING_DIR')
     # TODO: move valid_extensions so it can be used by more than one function
     valid_extensions = [ '.gz', '.bz2', '.zip' ]
