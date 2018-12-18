@@ -1,6 +1,0 @@
-[
-  "test_mtd_wrapper.py::test_mtd_by_init_all_found", 
-  "test_mtd_wrapper.py::test_mtd_by_valid_all_found", 
-  "test_mtd_wrapper.py::test_mtd_by_init_miss_fcst", 
-  "test_mtd_wrapper.py::test_mtd_by_init_miss_both"
-]
