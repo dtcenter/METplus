@@ -1126,7 +1126,7 @@ def parse_var_list_helper(p, dt, dont_duplicate):
             if p.has_option('config', dt+"_VAR"+n+"_OPTIONS"):
                 extra[dt] = getraw_interp(p, 'config', dt+"_VAR"+n+"_OPTIONS")
 
-            thresh[dt] = ""
+            thresh[dt] = []
             if p.has_option('config', dt+"_VAR"+n+"_THRESH"):
                 thresh[dt] = getlist(p.getstr('config', dt+"_VAR"+n+"_THRESH"))
                 if validate_thresholds(thresh[dt]) == False:
