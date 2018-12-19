@@ -8898,6 +8898,190 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+MODEL1_NAME
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Define the model name for the first model to be used in the analysis.
+ There can be N number of models defined in configuration files, simply
+ increment the 
+\begin_inset Quotes eld
+\end_inset
+
+MODEL1_
+\begin_inset Quotes erd
+\end_inset
+
+ string to match the total number of models being used, e.g.:
+\begin_inset Newline newline
+\end_inset
+
+MODEL1_NAME
+\begin_inset Newline newline
+\end_inset
+
+MODEL2_NAME
+\begin_inset Newline newline
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+MODELN_NAME
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py, stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+ 
+\shape default
+Varies
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODEL1_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Define the stat file directrory for the first model to be used in the analysis.
+ There can be N number of model directories defined in configuration files,
+ simply increment the 
+\begin_inset Quotes eld
+\end_inset
+
+MODEL1_
+\begin_inset Quotes erd
+\end_inset
+
+ string to match the total number of models being used, e.g.:
+\begin_inset Newline newline
+\end_inset
+
+MODEL1_DIR
+\begin_inset Newline newline
+\end_inset
+
+MODEL2_DIR
+\begin_inset Newline newline
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+MODELN_DIR
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+ 
+\shape default
+Varies
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
 MODEL_DATA_DIR
 \series default
 
@@ -8925,68 +9109,6 @@ Family:
 \series default
 \shape default
  [dir]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-MODEL_LIST
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify the list of models that were used in the analysis.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
 \series bold
 \shape italic
 
