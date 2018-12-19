@@ -68,6 +68,8 @@ class MTDWrapper(ModeWrapper):
             self.cg_dict['FCST_INPUT_TEMPLATE'] = \
               util.getraw_interp(self.p, 'filename_templates',
                                  'FCST_MTD_INPUT_TEMPLATE')
+            self.cg_dict['FCST_INPUT_DATATYPE'] = \
+                self.p.getstr('config', 'FCST_MTD_INPUT_DATATYPE', '')
             self.cg_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 256)
             self.cg_dict['FCST_INIT_INTERVAL']= self.p.getint('config', 'FCST_INIT_INTERVAL', 1)
 
@@ -78,6 +80,8 @@ class MTDWrapper(ModeWrapper):
             self.cg_dict['OBS_INPUT_TEMPLATE'] = \
               util.getraw_interp(self.p, 'filename_templates',
                                    'OBS_MTD_INPUT_TEMPLATE')
+            self.cg_dict['OBS_INPUT_DATATYPE'] = \
+                self.p.getstr('config', 'OBS_MTD_INPUT_DATATYPE', '')
             self.cg_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
                                                                   'OBS_EXACT_VALID_TIME',
                                                                   True)
@@ -100,7 +104,7 @@ class MTDWrapper(ModeWrapper):
                 @param valid_time valid time to run. -1 if not set
         """        
         var_list = util.parse_var_list(self.p)
-        current_task = TaskInfo()
+#        current_task = TaskInfo()
 #        max_lookback = self.cg_dict['MAX_LOOKBACK']
 #        file_interval = self.cg_dict['FILE_INTERVAL']
 
@@ -112,12 +116,18 @@ class MTDWrapper(ModeWrapper):
 
             model_list = []
             obs_list = []
-
+            # find files for each forecast lead time
+            tasks = []
             for lead in lead_seq:
-                current_task.clear()
-                current_task.init_time = init_time
-                current_task.valid_time = valid_time
-                current_task.lead = lead
+                task = TaskInfo()
+                task.init_time = init_time
+                task.valid_time = valid_time
+                task.lead = lead
+                tasks.append(task)
+
+            # TODO: implement mode to keep fcst lead constant and increment init/valid time
+            # loop from valid time to valid time + offset by step, set lead and find files
+            for current_task in tasks:
                 # call find_model/obs as needed
                 model_file = self.find_model(current_task, v)
                 obs_file = self.find_obs(current_task, v)
@@ -215,7 +225,6 @@ class MTDWrapper(ModeWrapper):
             arg_dict['model_path'] = single_list_path
             arg_dict['obs_path'] = None
 
-#        self.process_fields_one_thresh(current_task, v, model_list_path, obs_list_path)
         self.process_fields_one_thresh(current_task, v, **arg_dict)
 
 
@@ -227,72 +236,70 @@ class MTDWrapper(ModeWrapper):
                 @param model_path forecast file list path
                 @param obs_path observation file list path
         """
-        for fthresh, othresh in zip(v.fcst_thresh, v.obs_thresh):
-            self.set_param_file(self.cg_dict['CONFIG_FILE'])
-            self.create_and_set_output_dir(ti)
+        self.set_param_file(self.cg_dict['CONFIG_FILE'])
+        self.create_and_set_output_dir(ti)
 
-            print_list = [ 'CONV_RADIUS', 'CONV_THRESH', 'MIN_VOLUME',
-                           'MODEL', 'FCST_VAR', 'OBTYPE', 'OBS_VAR',
-                           'LEVEL', 'CONFIG_DIR', 'MET_VALID_HHMM',
-                           'FCST_FIELD', 'OBS_FIELD' ]
+        print_list = [ 'CONV_RADIUS', 'CONV_THRESH', 'MIN_VOLUME',
+                       'MODEL', 'FCST_VAR', 'OBTYPE', 'OBS_VAR',
+                       'LEVEL', 'CONFIG_DIR', 'MET_VALID_HHMM',
+                       'FCST_FIELD', 'OBS_FIELD' ]
 
-            self.add_env_var("CONV_RADIUS", self.cg_dict["CONV_RADIUS"] )
-            self.add_env_var("CONV_THRESH", self.cg_dict["CONV_THRESH"] )
-            self.add_env_var("MIN_VOLUME", self.cg_dict["MIN_VOLUME"] )
-            self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
-            self.add_env_var("FCST_VAR", v.fcst_name)
-            self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])
-            self.add_env_var("OBS_VAR", v.obs_name)
-            self.add_env_var("LEVEL", self.split_level(v.fcst_level)[1])
-            self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
-            self.add_env_var("MET_VALID_HHMM", ti.getValidTime()[4:8])
+        self.add_env_var("CONV_RADIUS", self.cg_dict["CONV_RADIUS"] )
+        self.add_env_var("CONV_THRESH", self.cg_dict["CONV_THRESH"] )
+        self.add_env_var("MIN_VOLUME", self.cg_dict["MIN_VOLUME"] )
+        self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
+        self.add_env_var("FCST_VAR", v.fcst_name)
+        self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])
+        self.add_env_var("OBS_VAR", v.obs_name)
+        self.add_env_var("LEVEL", self.split_level(v.fcst_level)[1])
+        self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
+        self.add_env_var("MET_VALID_HHMM", ti.getValidTime()[4:8])
 
-            # single mode - set fcst file, field, etc.
-            if self.cg_dict['SINGLE_RUN']:
-                if self.cg_dict['SINGLE_DATA_SRC'] == 'OBS':
-                    self.set_fcst_file(obs_path)
-                    obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
-                                                        othresh, 'OBS')
-                    self.add_env_var("FCST_FIELD", obs_field)
-                    self.add_env_var("OBS_FIELD", obs_field)
-                else:
-                    self.set_fcst_file(model_path)
-                    fcst_field = self.get_one_field_info(v.fcst_name, v.fcst_level, v.fcst_extra,
-                                                         fthresh, 'FCST')
-                    self.add_env_var("FCST_FIELD", fcst_field)
-                    self.add_env_var("OBS_FIELD", fcst_field)
-#                self.add_env_var("OBS_FIELD", '{name="IgnoreMe";}')
+        # single mode - set fcst file, field, etc.
+        if self.cg_dict['SINGLE_RUN']:
+            if self.cg_dict['SINGLE_DATA_SRC'] == 'OBS':
+                self.set_fcst_file(obs_path)
+                obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
+                                                    'OBS')
+                self.add_env_var("FCST_FIELD", obs_field)
+                self.add_env_var("OBS_FIELD", obs_field)
             else:
                 self.set_fcst_file(model_path)
-                self.set_obs_file(obs_path)
-
                 fcst_field = self.get_one_field_info(v.fcst_name, v.fcst_level, v.fcst_extra,
-                                                     fthresh, 'FCST')
-                obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
-                                                    othresh, 'OBS')
-
+                                                     'FCST')
                 self.add_env_var("FCST_FIELD", fcst_field)
-                self.add_env_var("OBS_FIELD", obs_field)
+                self.add_env_var("OBS_FIELD", fcst_field)
+        else:
+            self.set_fcst_file(model_path)
+            self.set_obs_file(obs_path)
 
-            self.logger.debug("")
-            self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-            self.print_user_env_items()
-            for l in print_list:
-                self.print_env_item(l)
+            fcst_field = self.get_one_field_info(v.fcst_name, v.fcst_level, v.fcst_extra,
+                                                 'FCST')
+            obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
+                                                'OBS')
 
-            self.logger.debug("")
-            self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-            self.print_env_copy(print_list)
-            self.logger.debug("")
+            self.add_env_var("FCST_FIELD", fcst_field)
+            self.add_env_var("OBS_FIELD", obs_field)
 
-            cmd = self.get_command()
-            if cmd is None:
-                self.logger.error("ERROR: "+self.app_name+\
-                                  " could not generate command")
-                return
-            self.logger.info("")
-            self.build()
-            self.clear()
+        self.logger.debug("")
+        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_user_env_items()
+        for l in print_list:
+            self.print_env_item(l)
+
+        self.logger.debug("")
+        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_env_copy(print_list)
+        self.logger.debug("")
+
+        cmd = self.get_command()
+        if cmd is None:
+            self.logger.error("ERROR: "+self.app_name+\
+                              " could not generate command")
+            return
+        self.logger.info("")
+        self.build()
+        self.clear()
 
 
     def get_command(self):
@@ -309,7 +316,6 @@ class MTDWrapper(ModeWrapper):
         for a in self.args:
             cmd += a + " "
 
-        # TODO: Handle -single mode
         if self.cg_dict['SINGLE_RUN']:
             if self.fcst_file == None:
                 self.logger.error(self.app_name+": No file path specified")
