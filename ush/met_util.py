@@ -1473,7 +1473,7 @@ def getraw_interp(p, sec, opt):
     return out_template
 
 
-def preprocess_file(filename, p, logger=None):
+def preprocess_file(filename, data_type, p, logger=None):
     """ Decompress gzip, bzip, or zip files or convert Gempak files to NetCDF
         Args:
             @param filename: Path to file without zip extensions
@@ -1491,10 +1491,13 @@ def preprocess_file(filename, p, logger=None):
     if os.path.exists(filename):
         for ext in valid_extensions:
             if filename.endswith(ext):
-                return preprocess_file(filename[:-len(ext)], p, logger)
+                return preprocess_file(filename[:-len(ext)], data_type, p, logger)
         # if extension is grd (Gempak), then look in staging dir for nc file
-        if filename.endswith('.grd'):
-            stagefile = stage_dir + filename[:-3]+"nc"
+        if filename.endswith('.grd') or data_type == "GEMPAK":
+            if filename.endswith('.grd'):
+                stagefile = stage_dir + filename[:-3]+"nc"
+            else:
+                stagefile = stage_dir + filename+".nc"
             if os.path.exists(stagefile):
                 return stagefile
             # if it does not exist, run GempakToCF and return staged nc file

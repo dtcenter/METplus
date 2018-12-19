@@ -116,6 +116,7 @@ that reformat gridded data
             model_file = model_ss.doStringSub()
             model_path = os.path.join(model_dir, model_file)
             model_path = util.preprocess_file(model_path,
+                                              self.cg_dict['FCST_INPUT_DATATYPE'],
                                               self.p, self.logger)
             if model_path != None:
                 found = True
@@ -152,6 +153,7 @@ that reformat gridded data
 
             obs_path = os.path.join(obs_dir, obs_file)
             obs_path = util.preprocess_file(obs_path,
+                                            self.cg_dict['OBS_INPUT_DATATYPE'],
                                             self.p, self.logger)
             return obs_path
 
@@ -188,7 +190,9 @@ that reformat gridded data
                         closest_time = diff
                         closest_file = fullpath
 
-        return util.preprocess_file(closest_file, self.p, self.logger)
+        return util.preprocess_file(closest_file,
+                                    self.cg_dict['OBS_INPUT_DATATYPE'],
+                                    self.p, self.logger)
 
 
     def get_one_field_info(self, v_level, v_thresh, v_name, v_extra, path, d_type):

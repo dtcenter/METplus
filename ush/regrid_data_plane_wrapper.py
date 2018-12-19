@@ -68,7 +68,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                level=str(level).zfill(2))
         infile = os.path.join(input_dir, pcpSts.doStringSub())
 
-        infile = util.preprocess_file(infile, self.p, self.logger)
+        infile = util.preprocess_file(infile,
+                                      self.p.getstr('config',
+                                                    dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE', ''),
+                                      self.p, self.logger)
         if infile is not None:
             self.add_input_file(infile)
         self.add_input_file(self.p.getstr('config', 'VERIFICATION_GRID'))

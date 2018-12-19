@@ -49,11 +49,15 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.cg_dict['OBS_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'OBS_GRID_STAT_INPUT_TEMPLATE')
+        self.cg_dict['OBS_INPUT_DATATYPE'] = \
+          self.p.getstr('config', 'OBS_GRID_STAT_INPUT_DATATYPE', '')
         self.cg_dict['FCST_INPUT_DIR'] = \
           self.p.getdir('FCST_GRID_STAT_INPUT_DIR', self.p.getdir('OUTPUT_BASE'))
         self.cg_dict['FCST_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'FCST_GRID_STAT_INPUT_TEMPLATE')
+        self.cg_dict['FCST_INPUT_DATATYPE'] = \
+          self.p.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
         self.cg_dict['OUTPUT_DIR'] =  self.p.getdir('GRID_STAT_OUT_DIR', self.p.getdir('OUTPUT_BASE'))
         self.cg_dict['INPUT_BASE'] =  self.p.getdir('INPUT_BASE')
         self.cg_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 24)
