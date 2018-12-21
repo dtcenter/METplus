@@ -205,7 +205,7 @@ def test_preprocess_file_gz():
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile.txt.gz"
     stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile.txt"
-    outpath = util.preprocess_file(filepath, conf)
+    outpath = util.preprocess_file(filepath, None, conf)
     assert(stagepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_bz2():
@@ -213,7 +213,7 @@ def test_preprocess_file_bz2():
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile2.txt.bz2"
     stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile2.txt"
-    outpath = util.preprocess_file(filepath, conf)
+    outpath = util.preprocess_file(filepath, None, conf)
     assert(stagepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_zip():
@@ -221,19 +221,19 @@ def test_preprocess_file_zip():
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile3.txt.zip"
     stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile3.txt"
-    outpath = util.preprocess_file(filepath, conf)
+    outpath = util.preprocess_file(filepath, None, conf)
     assert(stagepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_unzipped():
     conf = metplus_config()
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile4.txt"
-    outpath = util.preprocess_file(filepath, conf)
+    outpath = util.preprocess_file(filepath, None, conf)
     assert(filepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_none():
     conf = metplus_config()
-    outpath = util.preprocess_file(None, conf)
+    outpath = util.preprocess_file(None, None, conf)
     assert(outpath is None)
 
 def test_getlist():

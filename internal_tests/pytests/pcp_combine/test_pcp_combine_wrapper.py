@@ -84,13 +84,15 @@ def test_get_accumulation_1_to_6():
     pcw = pcp_combine_wrapper()
     data_src = "OBS"
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    valid_time = "2016090418"
+    task_info = TaskInfo()
+    task_info.valid_time = "2016090418"
     accum = 6
 
     file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
         
     pcw.set_input_dir(input_dir)
-    pcw.get_accumulation(valid_time, accum, data_src,
+#    pcw.get_accumulation(valid_time, accum, data_src,
+    pcw.get_accumulation(task_info, accum, data_src,
                                            file_template, False)
     in_files = pcw.get_input_files()
     if len(in_files) == 6 and \
@@ -109,13 +111,15 @@ def test_get_accumulation_6_to_6():
     pcw = pcp_combine_wrapper()
     data_src = "FCST"
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    valid_time = "2016090418"
+    task_info = TaskInfo()
+    task_info.valid_time = "2016090418"
     accum = 6
 
     file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
     
     pcw.set_input_dir(input_dir)
-    pcw.get_accumulation(valid_time, accum, data_src,
+#    pcw.get_accumulation(valid_time, accum, data_src,
+    pcw.get_accumulation(task_info, accum, data_src,
                                            file_template, False)
     in_files = pcw.get_input_files()    
     if  len(in_files) == 1 and input_dir+"/20160904/file.2016090418.06h" in in_files:
