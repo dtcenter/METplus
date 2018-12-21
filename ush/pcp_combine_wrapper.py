@@ -189,7 +189,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             search_file = os.path.join(self.input_dir,
                                        dSts.doStringSub())
             search_file = util.preprocess_file(search_file,
-                                            self.p.getstr('config',dtype+\
+                                            self.p.getstr('config',data_src+\
                                               '_PCP_COMBINE_INPUT_DATATYPE', ''),
                                                self.p, self.logger)
             if search_file is not None:
@@ -213,7 +213,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return True
         
         
-    def get_accumulation(self, valid_time, accum, data_src,
+    def get_accumulation(self, task_info, accum, data_src,
                          file_template, is_forecast=False):
         """!Find files to combine to build the desired accumulation
         Args:
@@ -225,6 +225,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @rtype bool
           @return True if full set of files to build accumulation is found
         """
+        valid_time = task_info.getValidTime()
         if self.input_dir == "":
             self.logger.error(self.app_name +
                               ": Must set data dir to run get_accumulation")
@@ -241,8 +242,21 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # loop backwards in time until you have a full set of accum
         while last_time <= start_time:
             if is_forecast:
-                f = self.getLowestForecastFile(start_time, data_src, file_template)
-                if f == None:
+                ti = TaskInfo()
+                ti.valid_time = start_time
+                ti.lead = task_info.lead
+                fSts = sts.StringSub(self.logger,
+                                     file_template,
+                                     valid=ti.valid_time,
+                                     init=ti.getInitTime(),
+                                     lead=str(ti.lead).zfill(2))
+                search_file = os.path.join(self.input_dir,
+                                           fSts.doStringSub())
+                search_file = util.preprocess_file(search_file,
+                                    self.p.getstr('config',data_src+\
+                                                  '_PCP_COMBINE_INPUT_DATATYPE', ''),
+                                                   self.p, self.logger)
+                if search_file == None:
                     break
                 # find accum field in file
                 obs_str = None
@@ -257,7 +271,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 if ob_str == '':
                     break
                 addon = "'name=\"" + ob_str + "\"; level=\"(0,*,*)\";'"
-                self.add_input_file(f, addon)
+                self.add_input_file(search_file, addon)
                 start_time = util.shift_time(start_time, -1)
                 search_accum -= 1
             else:  # not looking for forecast files
@@ -278,7 +292,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                     if search_file is not None:
                         addon = ""
                         d_type = self.p.getstr('config', data_src +
-                                                  '_NATIVE_DATA_TYPE')
+                                                  '_PCP_COMBINE_INPUT_DATATYPE')
                         if d_type == "GRIB":
                             addon = search_accum
                         elif d_type == "NETCDF":
@@ -560,7 +574,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.set_input_dir(input_dir)
-        if not self.get_accumulation(valid_time, int(accum), data_src, input_template, is_forecast):
+        if not self.get_accumulation(task_info, int(accum), data_src, input_template, is_forecast):
             return None
         infiles = self.get_input_files()
 
