@@ -44,6 +44,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.cg_dict['CONFIG_FILE'] = self.p.getstr('config', 'GRID_STAT_CONFIG',
                                                     self.cg_dict['CONFIG_DIR']+'/GridStatConfig_MEAN')
         self.cg_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
+        self.cg_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
         self.cg_dict['OBS_INPUT_DIR'] = \
           self.p.getdir('OBS_GRID_STAT_INPUT_DIR', self.p.getdir('OUTPUT_BASE'))
         self.cg_dict['OBS_INPUT_TEMPLATE'] = \
@@ -68,6 +69,9 @@ class GridStatWrapper(CompareGriddedWrapper):
           self.p.getint('config', 'WINDOW_RANGE_END', 3600)
         self.cg_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
                                                               'OBS_EXACT_VALID_TIME',
+                                                              True)
+        self.cg_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
+                                                              'FCST_EXACT_VALID_TIME',
                                                               True)
         self.cg_dict['ONCE_PER_FIELD'] = self.p.getbool('config',
                                                         'GRID_STAT_ONCE_PER_FIELD',

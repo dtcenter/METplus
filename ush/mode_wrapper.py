@@ -42,6 +42,7 @@ class ModeWrapper(CompareGriddedWrapper):
         self.cg_dict['CONFIG_DIR'] = self.p.getdir('CONFIG_DIR')
         self.cg_dict['CONFIG_FILE'] = self.p.getstr('config', 'MODE_CONFIG')
         self.cg_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB')
+        self.cg_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB')
         self.cg_dict['OBS_INPUT_DIR'] = \
           self.p.getdir('OBS_MODE_INPUT_DIR')
         self.cg_dict['OBS_INPUT_TEMPLATE'] = \
@@ -66,6 +67,9 @@ class ModeWrapper(CompareGriddedWrapper):
           self.p.getint('config', 'WINDOW_RANGE_END', 3600)
         self.cg_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
                                                               'OBS_EXACT_VALID_TIME',
+                                                              True)
+        self.cg_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
+                                                              'FCST_EXACT_VALID_TIME',
                                                               True)
         self.cg_dict['ONCE_PER_FIELD'] = True
         self.cg_dict['QUILT'] = self.p.getbool('config', 'MODE_QUILT', False)
@@ -118,7 +122,8 @@ class ModeWrapper(CompareGriddedWrapper):
         level_type, level = self.split_level(v_level)
         field = ""
 
-        if d_type == "FCST" and self.cg_dict['FCST_IS_PROB']:
+#        if d_type == "FCST" and self.cg_dict['FCST_IS_PROB']:
+        if self.cg_dict[d_type+'_IS_PROB']:
             thresh_str = ""
             comparison = util.get_comparison_from_threshold(v_thresh)
             number = util.get_number_from_threshold(v_thresh)
@@ -127,8 +132,8 @@ class ModeWrapper(CompareGriddedWrapper):
             elif comparison in ["lt", "le", "<", "<=" ]:
                 thresh_str += "thresh_hi="+str(number)+";"
             # TODO: add thresh??
-            if self.cg_dict['FCST_INPUT_DATATYPE'] == "NETCDF" or \
-               self.cg_dict['FCST_INPUT_DATATYPE'] == "GEMPAK":
+            if self.cg_dict[d_type+'_INPUT_DATATYPE'] == "NETCDF" or \
+               self.cg_dict[d_type+'_INPUT_DATATYPE'] == "GEMPAK":
                 field = "{ name=\"" + v_name + "\"; level=\"" + \
                         level+"\"; prob=TRUE; "
             else:
