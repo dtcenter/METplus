@@ -87,46 +87,12 @@ that reformat gridded data
     def find_model(self, ti, v):
         """! Finds the model file to compare
               Args:
-                @param lead forecast lead value
-                @param init_time initialization time
-                @param level
+                @param ti task_info object containing timing information
+                @param v var_info object containing variable information
                 @rtype string
-                @return Returns the path to a model file
+                @return Returns the path to an model file
         """
-        lead = ti.getLeadTime()
-        init_time = ti.getInitTime()
-        level_type, level = self.split_level(v.fcst_level)
-        if not level.isdigit():
-            level = '0'
-        model_dir = self.cg_dict['FCST_INPUT_DIR']
-        model_template = self.cg_dict['FCST_INPUT_TEMPLATE']
-        max_forecast = self.cg_dict['FCST_MAX_FORECAST']
-        init_interval = self.cg_dict['FCST_INIT_INTERVAL']
-        lead_check = lead
-        time_check = init_time
-        time_offset = 0
-        found = False
-        model_path = None
-        while lead_check <= max_forecast:
-            # split by - to handle a level that is a range, such as 0-10
-            model_ss = sts.StringSub(self.logger, model_template,
-                                     init=time_check,
-                                     lead=str(lead_check).zfill(2),
-                                     level=str(level.split('-')[0]).zfill(2))
-            model_file = model_ss.doStringSub()
-            model_path = os.path.join(model_dir, model_file)
-            model_path = util.preprocess_file(model_path,
-                                              self.cg_dict['FCST_INPUT_DATATYPE'],
-                                              self.p, self.logger)
-            if model_path != None:
-                found = True
-                break
-
-            time_check = util.shift_time(time_check, -init_interval)
-            lead_check = lead_check + init_interval            
-
-        return model_path
-
+        return self.find_data(ti, v, "FCST")
 
     def find_obs(self, ti, v):
         """! Finds the observation file to compare
@@ -136,28 +102,46 @@ that reformat gridded data
                 @rtype string
                 @return Returns the path to an observation file
         """
+        return self.find_data(ti, v, "OBS")
+
+
+    def find_data(self, ti, v, data_type):
+        """! Finds the data file to compare
+              Args:
+                @param ti task_info object containing timing information
+                @param v var_info object containing variable information
+                @param data_type type of data to find (FCST or OBS)
+                @rtype string
+                @return Returns the path to an observation file
+        """
+        lead = ti.getLeadTime()
         valid_time = ti.getValidTime()
         init_time = ti.getInitTime()
-        obs_level_type, obs_level = self.split_level(v.obs_level)
-        if not obs_level.isdigit():
-            obs_level = '0'
-        obs_template = self.cg_dict['OBS_INPUT_TEMPLATE']
-        obs_dir = self.cg_dict['OBS_INPUT_DIR']
-        if self.cg_dict['OBS_EXACT_VALID_TIME']:
-            obsSts = sts.StringSub(self.logger,
-                                   obs_template,
+        if data_type == "OBS":
+            v_level = v.obs_level
+        else:
+            v_level = v.fcst_level
+        level_type, level = self.split_level(v_level)
+        if not level.isdigit():
+            level = '0'
+        template = self.cg_dict[data_type+'_INPUT_TEMPLATE']
+        data_dir = self.cg_dict[data_type+'_INPUT_DIR']
+        if self.cg_dict[data_type+'_EXACT_VALID_TIME']:
+            dSts = sts.StringSub(self.logger,
+                                   template,
                                    valid=valid_time,
                                    init=init_time,
-                                   level=str(obs_level.split('-')[0]).zfill(2))
-            obs_file = obsSts.doStringSub()
+                                   lead=str(lead).zfill(2),
+                                   level=str(level.split('-')[0]).zfill(2))
+            filename = dSts.doStringSub()
 
-            obs_path = os.path.join(obs_dir, obs_file)
-            obs_path = util.preprocess_file(obs_path,
-                                            self.cg_dict['OBS_INPUT_DATATYPE'],
-                                            self.p, self.logger)
-            return obs_path
+            path = os.path.join(data_dir, filename)
+            path = util.preprocess_file(path,
+                                        self.cg_dict[data_type+'_INPUT_DATATYPE'],
+                                        self.p, self.logger)
+            return path
 
-                       
+
         # convert valid_time to unix time
         valid_seconds = int(datetime.datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
         # get time of each file, compare to valid time, save best within range
@@ -171,12 +155,12 @@ that reformat gridded data
         upper_limit = int(datetime.datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
                                                  "%Y%m%d%H%M").strftime("%s"))
 
-        for dirpath, dirnames, all_files in os.walk(obs_dir):
+        for dirpath, dirnames, all_files in os.walk(data_dir):
             for filename in sorted(all_files):
                 fullpath = os.path.join(dirpath, filename)
-                f = fullpath.replace(obs_dir+"/", "")
+                f = fullpath.replace(data_dir+"/", "")
                 # check depth of template to crop filepath
-                se = util.get_time_from_file(self.logger, f, obs_template)
+                se = util.get_time_from_file(self.logger, f, template)
                 if se is not None:
                     file_valid_time = se.getValidTime("%Y%m%d%H%M")
                     if file_valid_time == '':
@@ -191,7 +175,7 @@ that reformat gridded data
                         closest_file = fullpath
 
         return util.preprocess_file(closest_file,
-                                    self.cg_dict['OBS_INPUT_DATATYPE'],
+                                    self.cg_dict[data_type+'_INPUT_DATATYPE'],
                                     self.p, self.logger)
 
 
@@ -207,41 +191,28 @@ that reformat gridded data
         # if pcp_combine was run, use name_level, (*,*) format
         # if not, use user defined name/level combination. name should include _level
         fields = []
-        if self.cg_dict['FCST_IS_PROB']:
-            if d_type == "FCST":
-                for thresh in threshs:
-                    thresh_str = ""
-                    comparison = util.get_comparison_from_threshold(thresh)
-                    number = util.get_number_from_threshold(thresh)
-                    if comparison in ["gt", "ge", ">", ">=", "==", "eq" ]:
-                        thresh_str += "thresh_lo="+str(number)+"; "
-                    if comparison in ["lt", "le", "<", "<=", "==", "eq" ]:
-                        thresh_str += "thresh_hi="+str(number)+"; "
+        if self.cg_dict[d_type+'_IS_PROB']:
+            for thresh in threshs:
+                thresh_str = ""
+                comparison = util.get_comparison_from_threshold(thresh)
+                number = util.get_number_from_threshold(thresh)
+                if comparison in ["gt", "ge", ">", ">=", "==", "eq" ]:
+                    thresh_str += "thresh_lo="+str(number)+"; "
+                if comparison in ["lt", "le", "<", "<=", "==", "eq" ]:
+                    thresh_str += "thresh_hi="+str(number)+"; "
 
-                    prob_cat_thresh = self.cg_dict['FCST_PROB_THRESH']
-                    # untested, need NetCDF prob fcst data
-                    if path[-3:] == ".nc":
-                        field = "{ name=\"" + v_name + "\"; level=\"" + \
-                          level+"\"; prob=TRUE; cat_thresh=["+prob_cat_thresh+"];}"
-                    else:
-                        field = "{ name=\"PROB\"; level=\""+level_type + \
-                                level + "\"; prob={ name=\"" + \
-                                v_name + \
-                                "\"; "+thresh_str+"} cat_thresh=["+prob_cat_thresh+"];"
-                    field += v_extra + "}"
-                    fields.append(field)
-            else: # OBS
-                for thresh in threshs:
-                    if self.p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
-                        field = "{ name=\""+v_name+"_"+level + \
-                                    "\"; level=\"(*,*)\"; cat_thresh=[ " + \
-                                    str(thresh)+" ]; "
-                    else:
-                        field = "{ name=\""+v_name + \
-                                    "\"; level=\""+v_level+"\"; cat_thresh=[ " + \
-                                    str(thresh)+" ];"
-                    field += v_extra + "}"
-                    fields.append(field)
+                prob_cat_thresh = self.cg_dict[d_type+'_PROB_THRESH']
+                # untested, need NetCDF prob fcst data
+                if path[-3:] == ".nc":
+                    field = "{ name=\"" + v_name + "\"; level=\"" + \
+                      level+"\"; prob=TRUE; cat_thresh=["+prob_cat_thresh+"];}"
+                else:
+                    field = "{ name=\"PROB\"; level=\""+level_type + \
+                            level + "\"; prob={ name=\"" + \
+                            v_name + \
+                            "\"; "+thresh_str+"} cat_thresh=["+prob_cat_thresh+"];"
+                field += v_extra + "}"
+                fields.append(field)
         else:
             if self.p.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
                 field = "{ name=\"" + v_name+"_" + level + \
