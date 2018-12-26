@@ -118,7 +118,6 @@ def test_get_accumulation_6_to_6():
     file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
     
     pcw.set_input_dir(input_dir)
-#    pcw.get_accumulation(valid_time, accum, data_src,
     pcw.get_accumulation(task_info, accum, data_src,
                                            file_template, False)
     in_files = pcw.get_input_files()    
