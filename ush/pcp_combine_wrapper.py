@@ -292,7 +292,16 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                     if search_file is not None:
                         addon = ""
                         d_type = self.p.getstr('config', data_src +
-                                                  '_PCP_COMBINE_INPUT_DATATYPE')
+                                                  '_PCP_COMBINE_INPUT_DATATYPE', '')
+                        # to handle deprecated config variable, allow *_NATIVE_DATA_TYPE
+                        # but print warning that this will be deprecated and use other
+                        if d_type == '':
+                            d_type = self.p.getstr('config', data_src+'_NATIVE_DATA_TYPE', '')
+                            if d_type == '':
+                                self.logger.error('Must set '+data_src+'_PCP_COMBINE_INPUT_DATATYPE (GRIB or NETCDF)')
+                                exit(1)
+                            self.logger.warning(data_src+'_NATIVE_DATA_TYPE is deprecated. Please use '+data_src+\
+                                         '_PCP_COMBINE_INPUT_DATATYPE instead')
                         if d_type == "GRIB":
                             addon = search_accum
                         elif d_type == "NETCDF":
