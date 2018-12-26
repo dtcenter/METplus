@@ -191,28 +191,40 @@ that reformat gridded data
         # if pcp_combine was run, use name_level, (*,*) format
         # if not, use user defined name/level combination. name should include _level
         fields = []
-        if self.cg_dict[d_type+'_IS_PROB']:
-            for thresh in threshs:
-                thresh_str = ""
-                comparison = util.get_comparison_from_threshold(thresh)
-                number = util.get_number_from_threshold(thresh)
-                if comparison in ["gt", "ge", ">", ">=", "==", "eq" ]:
-                    thresh_str += "thresh_lo="+str(number)+"; "
-                if comparison in ["lt", "le", "<", "<=", "==", "eq" ]:
-                    thresh_str += "thresh_hi="+str(number)+"; "
+        if self.cg_dict['FCST_IS_PROB'] or self.cg_dict['OBS_IS_PROB']:
+            if self.cg_dict[d_type+'_IS_PROB']:
+                for thresh in threshs:
+                    thresh_str = ""
+                    comparison = util.get_comparison_from_threshold(thresh)
+                    number = util.get_number_from_threshold(thresh)
+                    if comparison in ["gt", "ge", ">", ">=", "==", "eq" ]:
+                        thresh_str += "thresh_lo="+str(number)+"; "
+                    if comparison in ["lt", "le", "<", "<=", "==", "eq" ]:
+                        thresh_str += "thresh_hi="+str(number)+"; "
 
-                prob_cat_thresh = self.cg_dict[d_type+'_PROB_THRESH']
-                # untested, need NetCDF prob fcst data
-                if path[-3:] == ".nc":
-                    field = "{ name=\"" + v_name + "\"; level=\"" + \
-                      level+"\"; prob=TRUE; cat_thresh=["+prob_cat_thresh+"];}"
-                else:
-                    field = "{ name=\"PROB\"; level=\""+level_type + \
-                            level + "\"; prob={ name=\"" + \
-                            v_name + \
-                            "\"; "+thresh_str+"} cat_thresh=["+prob_cat_thresh+"];"
-                field += v_extra + "}"
-                fields.append(field)
+                    prob_cat_thresh = self.cg_dict[d_type+'_PROB_THRESH']
+                    # untested, need NetCDF prob fcst data
+                    if path[-3:] == ".nc":
+                        field = "{ name=\"" + v_name + "\"; level=\"" + \
+                          level+"\"; prob=TRUE; cat_thresh=["+prob_cat_thresh+"];}"
+                    else:
+                        field = "{ name=\"PROB\"; level=\""+level_type + \
+                                level + "\"; prob={ name=\"" + \
+                                v_name + \
+                                "\"; "+thresh_str+"} cat_thresh=["+prob_cat_thresh+"];"
+                    field += v_extra + "}"
+                    fields.append(field)
+            else:
+                for thresh in threshs:
+                    if self.p.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
+                        field = "{ name=\""+v_name+"_"+level + \
+                                     "\"; level=\"(*,*)\"; cat_thresh=[ " + \
+                                     str(thresh)+" ]; }"
+                    else:
+                        field = "{ name=\""+v_name + \
+                                     "\"; level=\""+v_level+"\"; cat_thresh=[ " + \
+                                     str(thresh)+" ]; }"
+                    fields.append(field)
         else:
             if self.p.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
                 field = "{ name=\"" + v_name+"_" + level + \
