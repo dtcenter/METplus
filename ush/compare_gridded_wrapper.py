@@ -327,7 +327,8 @@ that reformat gridded data
         print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
                       "LEVEL", "OBTYPE", "CONFIG_DIR",
                       "FCST_FIELD", "OBS_FIELD",
-                      "INPUT_BASE", "MET_VALID_HHMM"]
+                      "INPUT_BASE", "MET_VALID_HHMM",
+                      "FCST_TIME"]
         
         self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
         self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])
@@ -338,6 +339,7 @@ that reformat gridded data
         self.add_env_var("OBS_FIELD", obs_field)
         self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
         self.add_env_var("MET_VALID_HHMM", ti.getValidTime()[4:8])
+        self.add_env_var("FCST_TIME", str(ti.lead).zfill(3))
         self.add_env_var("INPUT_BASE", self.cg_dict["INPUT_BASE"])
 
         self.logger.debug("")
