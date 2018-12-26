@@ -71,17 +71,18 @@ def test_logfile_exists():
     # We are assuming that there can be numerous files in the log directory.
     config = get_test_config()
     log_dir = config.get('config', 'LOG_DIR')
-
     # Only check for the log file if the log directory is present
     if os.path.exists(log_dir):
-        files = [f for f in os.listdir(log_dir)]
-        match = re.match(r'master_metplus.log.[0-9]{8}', files[0])
-        if match:
-            # Check the first file
-            assert match.group(0)
-        else:
-            # This file doesn't match the expected file name format.
-            assert False
+        found = False
+        for f in os.listdir(log_dir):
+            match = re.match(r'master_metplus.log.[0-9]{8}', f)
+            if match:
+                # Check all files, first file may not be master log
+                assert match.group(0)
+                found = True
+                break
+        assert found
+
     else:
         # There is no log directory
         assert False
