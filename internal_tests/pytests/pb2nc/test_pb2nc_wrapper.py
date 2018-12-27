@@ -73,12 +73,12 @@ def metplus_config():
 # ------------------------ TESTS GO HERE --------------------------
 
 
-# ------------------------
-#  test_config
-# ------------------------
+#------------------------
+#test_config
+#------------------------
 @pytest.mark.parametrize(
     'key, value', [
-        ('APP_PATH', '/usr/local/met-6.1/bin/pb2nc'),
+        ('APP_PATH', '/usr/local/met-8.0/bin/pb2nc'),
         ('APP_NAME', 'pb2nc'),
         ('START_DATE', '20170601'),
         ('END_DATE', '20170630'),
@@ -128,8 +128,10 @@ def test_get_obs_bufr_var_list(element):
     var_list_conus_sfc = ['PMO', 'TOB']
     var_list_upper_air = ['QOB', 'TOB']
     # Determine if this is upper air or conus surface from the VERTICAL_LOCATION setting
-    vert_loc = pb2nc_wrapper().pb_dict['VERTICAL_LOCATION']
     print('element ', element)
+    pb = pb2nc_wrapper()
+    vert_loc = pb.pb_dict['VERTICAL_LOCATION']
+
     if vert_loc == 'upper_air':
         assert (element in var_list_upper_air)
     if vert_loc == 'conus_sfc':
