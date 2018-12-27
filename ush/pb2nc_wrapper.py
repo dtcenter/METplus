@@ -135,6 +135,8 @@ class PB2NCWrapper(CommandBuilder):
         pb_dict['PREPBUFR_DIR_REGEX'] = util.getraw_interp(self.p,
                                                            'regex_pattern',
                                                            'PREPBUFR_DIR_REGEX')
+         pb_dict['VERTICAL_LOCATION'] = self.p.getstr('config',
+                                                     'VERTICAL_LOCATION')
 
         return pb_dict
 
