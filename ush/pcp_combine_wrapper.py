@@ -304,7 +304,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                          '_PCP_COMBINE_INPUT_DATATYPE instead')
                         if d_type == "GRIB":
                             addon = search_accum
-                        elif d_type == "NETCDF":
+                        elif d_type == "NETCDF" or d_type == "GEMPAK":
                             ob_str = self.p.getstr('config', data_src +
                                                    '_' + str(search_accum) +
                                                    '_FIELD_NAME')
