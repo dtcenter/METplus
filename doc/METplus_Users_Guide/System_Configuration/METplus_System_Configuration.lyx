@@ -3596,6 +3596,8 @@ FCST_GRID_STAT_PROB_THRESH
 \end_inset
 
 Threshold values to be used for probabilistic data in grid_stat.
+ The value can be a single item or a comma separated list of items that
+ must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
 \end_layout
 
 \begin_layout Standard
@@ -5967,6 +5969,8 @@ FCST_VAR[N]_THRESH
 
 Define the threshold(s) for the [N]th forecast variable to be used in the
  analysis.
+ The value can be a single item or a comma separated list of items that
+ must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
  There can be [N] number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
@@ -11818,7 +11822,8 @@ OBS_GRID_STAT_PROB_THRESH
 
 Threshold values to be used for probabilistic data in grid_stat.
  Used when setting OBS_* variables to probabilistic forecast data for comparison.
- See FCST_GRID_STAT_PROB_THRESH.
+ The value can be a single item or a comma separated list of items that
+ must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
 \end_layout
 
 \begin_layout Standard
@@ -13839,6 +13844,8 @@ OBS_VAR[N]_THRESH
 
 Define the threshold(s) for the [N]th observation variable to be used in
  the analysis where [N] is an integer >= 1.
+ The value can be a single item or a comma separated list of items that
+ must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
  There can be [N] number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
