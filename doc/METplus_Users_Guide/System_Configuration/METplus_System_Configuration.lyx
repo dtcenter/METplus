@@ -542,6 +542,19 @@ Default:
 \shape default
  If it makes sense to include a default value (or value shipped in a release),
  do it here
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -5668,6 +5681,48 @@ FCST_VAR[N]_LEVELS
 
 Define the levels for the [N]th forecast variable to be used in the analysis
  where [N] is an integer >= 1.
+ The value can be a single item or a comma separated list of items.
+ You can define NetCDF levels, such as (0,*,*), but you will need to surround
+ these values with quotation marks so that the commas in the item are not
+ interpreted as an item delimeter.
+ Some examples:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR1_LEVELS = A06, P500
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR2_LEVELS = 
+\begin_inset Quotes eld
+\end_inset
+
+(0,*,*)
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+(1,*,*)
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+If FCST_VAR[N]_LEVELS is not set but OBS_VAR[N]_LEVELS is, the same information
+ will be used for both variables.
  There can be [N] number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
@@ -5689,27 +5744,18 @@ FCST_VAR2_LEVELS
 \begin_inset Newline newline
 \end_inset
 
-.
-\begin_inset Newline newline
-\end_inset
-
-.
-\begin_inset Newline newline
-\end_inset
-
-.
+...
 \begin_inset Newline newline
 \end_inset
 
 FCST_VAR[N]_LEVELS
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-NOTE: If FCST_VAR[N]_LEVELS is not set but OBS_VAR[N]_LEVELS is, the same
- information will be used for both variables.
-\end_layout
 
-\begin_layout Standard
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
@@ -5767,7 +5813,10 @@ FCST_VAR[N]_NAME
 \begin_inset Newline newline
 \end_inset
 
-Define the name for the [N]th forecast variable to be used in the analysis.
+Define the name for the [N]th forecast variable to be used in the analysis
+ where [N] is an integer >= 1.
+ If FCST_VAR[N]_NAME is not set but OBS_VAR[N]_NAME is, the same information
+ will be used for both variables.
  There can be [N] number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
@@ -5789,27 +5838,18 @@ FCST_VAR2_NAME
 \begin_inset Newline newline
 \end_inset
 
-.
-\begin_inset Newline newline
-\end_inset
-
-.
-\begin_inset Newline newline
-\end_inset
-
-.
+...
 \begin_inset Newline newline
 \end_inset
 
 FCST_VAR[N]_NAME
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-NOTE: If FCST_VAR[N]_NAME is not set but OBS_VAR[N]_NAME is, the same informatio
-n will be used for both variables.
-\end_layout
 
-\begin_layout Standard
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
@@ -5867,7 +5907,12 @@ FCST_VAR[N]_OPTIONS
 \begin_inset Newline newline
 \end_inset
 
-Define the options for the [N]th forecast variable to be used in the analysis.
+Define the options for the [N]th forecast variable to be used in the analysis
+ where [N] is an integer >= 1.
+ These addition options will be applied to every name/level/threshold combinatio
+n for VAR[N].
+ If FCST_VAR[N]_OPTIONS is not set but OBS_VAR[N]_OPTIONS is, the same informati
+on will be used for both variables.
  There can be [N] number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
@@ -5889,27 +5934,18 @@ FCST_VAR2_OPTIONS
 \begin_inset Newline newline
 \end_inset
 
-.
-\begin_inset Newline newline
-\end_inset
-
-.
-\begin_inset Newline newline
-\end_inset
-
-.
+...
 \begin_inset Newline newline
 \end_inset
 
 FCST_VAR[N]_OPTIONS
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-NOTE: If FCST_VAR[N]_OPTIONS is not set but OBS_VAR[N]_OPTIONS is, the same
- information will be used for both variables.
-\end_layout
 
-\begin_layout Standard
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
@@ -5968,9 +6004,11 @@ FCST_VAR[N]_THRESH
 \end_inset
 
 Define the threshold(s) for the [N]th forecast variable to be used in the
- analysis.
+ analysis where [N] is an integer >= 1.
  The value can be a single item or a comma separated list of items that
  must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
+ If FCST_VAR[N]_THRESH is not set but OBS_VAR[N]_THRESH is, the same information
+ will be used for both variables.
  There can be [N] number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
@@ -5992,27 +6030,18 @@ FCST_VAR2_THRESH
 \begin_inset Newline newline
 \end_inset
 
-.
-\begin_inset Newline newline
-\end_inset
-
-.
-\begin_inset Newline newline
-\end_inset
-
-.
+...
 \begin_inset Newline newline
 \end_inset
 
 FCST_VAR[N]_THRESH
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-NOTE: If FCST_VAR[N]_THRESH is not set but OBS_VAR[N]_THRESH is, the same
- information will be used for both variables.
-\end_layout
 
-\begin_layout Standard
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
@@ -13601,6 +13630,48 @@ OBS_VAR[N]_LEVELS
 
 Define the levels for the [N]th observation variable to be used in the analysis
  where [N] is an integer >= 1.
+ The value can be a single item or a comma separated list of items.
+ You can define NetCDF levels, such as (0,*,*), but you will need to surround
+ these values with quotation marks so that the commas in the item are not
+ interpreted as an item delimeter.
+ Some examples:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_VAR1_LEVELS = A06, P500
+\begin_inset Newline newline
+\end_inset
+
+OBS_VAR2_LEVELS = 
+\begin_inset Quotes eld
+\end_inset
+
+(0,*,*)
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+(1,*,*)
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+If OBS_VAR[N]_LEVELS is not set but FCST_VAR[N]_LEVELS is, the same information
+ will be used for both variables.
  There can be [N] number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
@@ -13622,27 +13693,18 @@ OBS_VAR2_LEVELS
 \begin_inset Newline newline
 \end_inset
 
-.
-\begin_inset Newline newline
-\end_inset
-
-.
-\begin_inset Newline newline
-\end_inset
-
-.
+...
 \begin_inset Newline newline
 \end_inset
 
 OBS_VAR[N]_LEVELS
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-NOTE: If OBS_VAR[N]_LEVELS is not set but FCST_VAR[N]_LEVELS is, the same
- information will be used for both variables.
-\end_layout
 
-\begin_layout Standard
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
@@ -13702,6 +13764,8 @@ OBS_VAR[N]_NAME
 
 Define the name for the [N]th observation variable to be used in the analysis
  where [N] is an integer >= 1.
+ If OBS_VAR[N]_NAME is not set but FCST_VAR[N]_NAME is, the same information
+ will be used for both variables.
  There can be [N] number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
@@ -13723,27 +13787,18 @@ OBS_VAR2_NAME
 \begin_inset Newline newline
 \end_inset
 
-.
-\begin_inset Newline newline
-\end_inset
-
-.
-\begin_inset Newline newline
-\end_inset
-
-.
+...
 \begin_inset Newline newline
 \end_inset
 
 OBS_VAR[N]_NAME
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-NOTE: If OBS_VAR[N]_NAME is not set but FCST_VAR[N]_NAME is, the same informatio
-n will be used for both variables.
-\end_layout
 
-\begin_layout Standard
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
@@ -13803,6 +13858,10 @@ OBS_VAR[N]_OPTIONS
 
 Define the options for the [N]th observation variable to be used in the
  analysis where [N] is an integer >= 1.
+ These addition options will be applied to every name/level/threshold combinatio
+n for VAR[N].
+ If OBS_VAR[N]_OPTIONS is not set but FCST_VAR[N]_OPTIONS is, the same informati
+on will be used for both variables.
  There can be [N] number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
@@ -13824,27 +13883,18 @@ OBS_VAR2_OPTIONS
 \begin_inset Newline newline
 \end_inset
 
-.
-\begin_inset Newline newline
-\end_inset
-
-.
-\begin_inset Newline newline
-\end_inset
-
-.
+...
 \begin_inset Newline newline
 \end_inset
 
 OBS_VAR[N]_OPTIONS
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-NOTE: If OBS_VAR[N]_OPTIONS is not set but FCST_VAR[N]_OPTIONS is, the same
- information will be used for both variables.
-\end_layout
 
-\begin_layout Standard
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
@@ -13906,6 +13956,8 @@ Define the threshold(s) for the [N]th observation variable to be used in
  the analysis where [N] is an integer >= 1.
  The value can be a single item or a comma separated list of items that
  must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
+ If OBS_VAR[N]_THRESH is not set but FCST_VAR[N]_THRESH is, the same information
+ will be used for both variables.
  There can be [N] number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
@@ -13927,27 +13979,18 @@ OBS_VAR2_THRESH
 \begin_inset Newline newline
 \end_inset
 
-.
-\begin_inset Newline newline
-\end_inset
-
-.
-\begin_inset Newline newline
-\end_inset
-
-.
+...
 \begin_inset Newline newline
 \end_inset
 
 OBS_VAR[N]_THRESH
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-NOTE: If OBS_VAR[N]_THRESH is not set but FCST_VAR[N]_THRESH is, the same
- information will be used for both variables.
-\end_layout
 
-\begin_layout Standard
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
@@ -23018,6 +23061,150 @@ name "sec:SC_Z"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Section
+User Defined Config
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:SC_User_Defined_Config"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You can define your own custom config variables that will be set as environment
+ variables when METplus is run.
+ MET config files can read environment variables, so this is a good way
+ to customize information that is read by those files.
+ To create add a custom config variable, add a section to one of your METplus
+ config files called [user_env_vars].
+ Under this header, add as many variables as you'd like.
+ For example, if you added the following to your METplus config:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+[user_env_vars]
+\begin_inset Newline newline
+\end_inset
+
+VAR_NAME = some_text_for_feb_1_1987_run
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+and you added the following to a MET config file that is used:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+output_prefix = ${VAR_NAME}
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+then at run time, the MET application will be run with the configuration:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+output_prefix = some_text_for_feb_1_1987_run
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+You can also reference other variables in the METplus config file.
+ For example:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+[config]
+\begin_inset Newline newline
+\end_inset
+
+INIT_BEG = 1987020104
+\begin_inset Newline newline
+\end_inset
+
+...
+\begin_inset Newline newline
+\end_inset
+
+[user_env_vars]
+\begin_inset Newline newline
+\end_inset
+
+USE_CASE_TIME_ID = {INIT_BEG}
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the equivalent of calling
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+export USE_CASE_TIME_ID=1987020104
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+at the beginning of your METplus run.
+ You can access the variable in the MET config file with ${USE_CASE_TIME_ID}.
 \end_layout
 
 \end_body
