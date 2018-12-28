@@ -72,7 +72,9 @@ class MTDWrapper(ModeWrapper):
                 self.p.getstr('config', 'FCST_MTD_INPUT_DATATYPE', '')
             self.cg_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 256)
             self.cg_dict['FCST_INIT_INTERVAL']= self.p.getint('config', 'FCST_INIT_INTERVAL', 1)
-
+            self.cg_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
+                                                                  'FCST_EXACT_VALID_TIME',
+                                                                  True)
         # only read OBS conf if processing observation data
         if not self.cg_dict['SINGLE_RUN'] or self.cg_dict['SINGLE_DATA_SRC'] == 'OBS':
             self.cg_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
@@ -85,9 +87,6 @@ class MTDWrapper(ModeWrapper):
                 self.p.getstr('config', 'OBS_MTD_INPUT_DATATYPE', '')
             self.cg_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
                                                                   'OBS_EXACT_VALID_TIME',
-                                                                  True)
-            self.cg_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                                  'FCST_EXACT_VALID_TIME',
                                                                   True)
             self.cg_dict['WINDOW_RANGE_BEG'] = \
               self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
