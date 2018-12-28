@@ -41,8 +41,8 @@ class ModeWrapper(CompareGriddedWrapper):
         self.cg_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE')
         self.cg_dict['CONFIG_DIR'] = self.p.getdir('CONFIG_DIR')
         self.cg_dict['CONFIG_FILE'] = self.p.getstr('config', 'MODE_CONFIG')
-        self.cg_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB')
-        self.cg_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB')
+        self.cg_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
+        self.cg_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
         self.cg_dict['OBS_INPUT_DIR'] = \
           self.p.getdir('OBS_MODE_INPUT_DIR')
         self.cg_dict['OBS_INPUT_TEMPLATE'] = \
