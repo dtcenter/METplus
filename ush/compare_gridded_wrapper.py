@@ -184,7 +184,7 @@ that reformat gridded data
 
         cat_thresh = ""
         threshs = []
-        if v_thresh != "":
+        if len(v_thresh) != 0:
             threshs = v_thresh
             cat_thresh = "cat_thresh=[ " + ','.join(threshs) + " ];"
 
