@@ -9,7 +9,6 @@
 //
 // Output model name to be written
 //
-//model = "${model_fcst_now}";
 model = "${MODEL}";
 
 //
@@ -21,7 +20,6 @@ desc = "NA";
 //
 // Output observation type to be written
 //
-//obtype = "${obs_name}";
 obtype = "${OBTYPE}";
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +42,6 @@ regrid = {
 //
 censor_thresh = [];
 censor_val    = [];
-//cat_thresh    = [ ${threshold_config} ];
 cnt_thresh    = [ NA ];
 cnt_logic     = UNION;
 wind_thresh   = [ NA ];
@@ -55,17 +52,11 @@ eclv_points   = 0.05;
 // Forecast and observation fields to be verified
 //
 fcst = {
-    field = [
-      ${FCST_FIELD}
-//      { name  = "${model_var}"; level = [ "(*,*)" ]; cat_thresh = [ ${threshold_config} ]; }
-    ];
+    field = [ ${FCST_FIELD} ];
     };
 
 obs = {
-    field = [
-//      { name  = "APCP"; level = [ "L0" ]; cat_thresh = [ ${threshold_config} ]; }
-      ${OBS_FIELD}
-    ];
+    field = [ ${OBS_FIELD} ];
     };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -185,11 +176,11 @@ output_flag = {
    pstd   = NONE;
    pjc    = NONE;
    prc    = NONE;
-//   eclv   = NONE;
+   eclv   = NONE;
    nbrctc = NONE;
    nbrcts = NONE;
    nbrcnt = NONE;
-//   grad   = NONE;
+   grad   = NONE;
 }
 
 //
