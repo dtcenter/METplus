@@ -166,7 +166,19 @@ def set_logvars(config, logger=None):
                            'a valid strftime directive: %s' % repr(log_timestamp_template))
             logger.info('Using the following default: %Y%m%d%H')
             log_timestamp_template = '%Y%m%d%H'
-        log_filenametimestamp = datetime.datetime.now().strftime(log_timestamp_template)
+        t = datetime.datetime.now()
+        if config.getbool('config', 'LOG_TIMESTAMP_USE_RUNTIME', False):
+            if config.getbool('config', 'LOOP_BY_INIT'):
+                t = datetime.datetime.strptime(config.getstr('config',
+                                                             'INIT_BEG'),
+                                               config.getstr('config',
+                                                             'INIT_TIME_FMT'))
+            else:
+                t = datetime.datetime.strptime(config.getstr('config',
+                                                             'VALID_BEG'),
+                                               config.getstr('config',
+                                                             'VALID_TIME_FMT'))
+        log_filenametimestamp = t.strftime(log_timestamp_template)
     else:
         log_filenametimestamp=''
 
