@@ -4,6 +4,7 @@ import re
 import sys
 import logging
 import collections
+import datetime
 import produtil.fileop
 import produtil.run
 import produtil.log
@@ -211,6 +212,8 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
 
     conf = METplusLauncher()
     logger = conf.log()
+
+    conf.set('config', 'CLOCK_TIME', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
 
     # Read in and parse all the conf files.
     for filename in file_list:
