@@ -167,7 +167,7 @@ def set_logvars(config, logger=None):
             logger.info('Using the following default: %Y%m%d%H')
             log_timestamp_template = '%Y%m%d%H'
         t = datetime.datetime.now()
-        if config.getbool('config', 'LOG_TIMESTAMP_USE_RUNTIME', False):
+        if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
             if config.getbool('config', 'LOOP_BY_INIT'):
                 t = datetime.datetime.strptime(config.getstr('config',
                                                              'INIT_BEG'),
