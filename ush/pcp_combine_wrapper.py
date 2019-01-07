@@ -234,28 +234,18 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if self.p.getbool('config', data_src + '_IS_DAILY_FILE', False) is True:
             return self.get_daily_file(valid_time, accum, data_src, file_template)
 
-        start_time = valid_time.ljust(12, '0')
+        search_time = valid_time.ljust(12, '0')
         last_time = util.shift_time(valid_time, -(int(accum) - 1))
-        total_accum = int(accum)
-        level = self.p.getint('config', data_src+'_LEVEL', accum)
-        search_accum = level
+        total_accum = accum
+        level = self.p.getint('config', data_src+'_LEVEL', -1)
+        if level == -1:
+            search_accum = accum
+        else:
+            search_accum = level
         # loop backwards in time until you have a full set of accum
-        while last_time <= start_time:
+        while last_time <= search_time:
             if is_forecast:
-                ti = TaskInfo()
-                ti.valid_time = start_time
-                ti.lead = task_info.lead
-                fSts = sts.StringSub(self.logger,
-                                     file_template,
-                                     valid=ti.valid_time,
-                                     init=ti.getInitTime(),
-                                     lead=str(ti.lead).zfill(2))
-                search_file = os.path.join(self.input_dir,
-                                           fSts.doStringSub())
-                search_file = util.preprocess_file(search_file,
-                                    self.p.getstr('config',data_src+\
-                                                  '_PCP_COMBINE_INPUT_DATATYPE', ''),
-                                                   self.p, self.logger)
+                search_file = self.getLowestForecastFile(search_time, data_src, file_template)
                 if search_file == None:
                     break
                 # find accum field in file
@@ -272,14 +262,15 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                     break
                 addon = "'name=\"" + ob_str + "\"; level=\"(0,*,*)\";'"
                 self.add_input_file(search_file, addon)
-                start_time = util.shift_time(start_time, -1)
-                search_accum -= 1
+                search_time = util.shift_time(search_time, -s_accum)
+                search_accum -= s_accum
+                total_accum -= s_accum
             else:  # not looking for forecast files
                 # look for biggest accum that fits search
                 while search_accum > 0:
                     fSts = sts.StringSub(self.logger,
                                          file_template,
-                                         valid=start_time[0:10],
+                                         valid=search_time[0:10],
                                          level=str(search_accum).zfill(2))
                     search_file = os.path.join(self.input_dir,
                                                fSts.doStringSub())
@@ -307,23 +298,37 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                         elif d_type == "NETCDF" or d_type == "GEMPAK":
                             ob_str = self.p.getstr('config', data_src +
                                                    '_' + str(search_accum) +
-                                                   '_FIELD_NAME')
+                                                   '_FIELD_NAME', '')
+                            # if desired accum is not available in data, continue search
+                            if ob_str == '':
+                                search_accum -= 1
+                                continue
                             addon = "'name=\"" + ob_str + \
                                     "\"; level=\"(0,*,*)\";'"
                         self.add_input_file(search_file, addon)
-                        start_time = util.shift_time(start_time, -search_accum)
+                        search_time = util.shift_time(search_time, -search_accum)
                         total_accum -= search_accum
                         break
+
                     search_accum -= 1
 
+            if total_accum == 0:
+                break
 
-                if total_accum == 0:
-                    break
+            # if an accum needed was not found, exit
+            if search_accum == 0:
+                return False
 
-                if search_accum == 0:
-                    return False
+            # if [FCST/OBS]_LEVEL is used, use that value
+            # else use accumulation amount left to find
+            if level == -1:
+                search_accum = total_accum
+            else:
+                search_accum = level
 
-        if len(self.infiles) is 0:
+        # fail if no files were found or if we didn't find
+        #  the entire accumulation needed
+        if len(self.infiles) is 0 or total_accum != 0:
             return False
 
         return True
@@ -562,14 +567,18 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.clear()
         self.set_method("ADD")
 
-        accum = var_info.obs_level
+        if data_src == "FCST":
+            accum = var_info.fcst_level
+            compare_var = var_info.fcst_name
+        else:
+            accum = var_info.obs_level
+            compare_var = var_info.obs_name
+
         if accum[0].isalpha():
             accum = accum[1:]
 
         valid_time = task_info.getValidTime()
         init_time = task_info.getInitTime()
-        # TODO: should this be fcst_name if in forecast mode?
-        compare_var = var_info.obs_name
 
         input_dir = self.p.getdir(data_src+'_PCP_COMBINE_INPUT_DIR')
         input_template = util.getraw_interp(self.p, 'filename_templates', data_src+'_PCP_COMBINE_INPUT_TEMPLATE')
@@ -583,6 +592,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.set_input_dir(input_dir)
+
         if not self.get_accumulation(task_info, int(accum), data_src, input_template, is_forecast):
             return None
         infiles = self.get_input_files()
