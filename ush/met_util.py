@@ -1208,6 +1208,14 @@ def parse_var_list_helper(p, dt, dont_duplicate):
     return var_list
 
 
+def split_level(level):
+    level_type = ""
+    if(level[0].isalpha()):
+        level_type = level[0]
+        level = level[1:].zfill(2)
+    return level_type, level
+
+
 def reformat_fields_for_met(all_vars_list, logger):
         """! Reformat the fcst or obs field values defined in the
              MET+ config file to the MET field dictionary.
@@ -1531,6 +1539,8 @@ def preprocess_file(filename, data_type, p, logger=None):
 
         return filename
 
+    if os.path.exists(filename[:-2]+'grd'):
+        return preprocess_file(filename[:-2]+'grd', data_type, p, logger)
     # if file exists in the staging area, return that path
     outpath = stage_dir + filename
     if os.path.exists(outpath):
