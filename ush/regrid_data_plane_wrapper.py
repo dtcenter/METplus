@@ -46,10 +46,17 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 @param v var_info object containing variable information
         """
         valid_time = task_info.getValidTime()
-        compare_var = var_info.obs_name
-        level = var_info.obs_level
-        if level[0].isalpha():
-            level = var_info.obs_level[1:]
+        if dtype == "FCST":
+            compare_var = var_info.fcst_name
+            level = var_info.fcst_level
+        else:
+            compare_var = var_info.obs_name
+            level = var_info.obs_level
+
+        level_type, level = util.split_level(level)
+
+#        if level[0].isalpha():
+#            level = var_info.obs_level[1:]
 
         input_dir = self.p.getdir(dtype+'_REGRID_DATA_PLANE_INPUT_DIR')
         input_template = util.getraw_interp(self.p, 'filename_templates',
@@ -62,10 +69,15 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if not os.path.exists(os.path.join(output_dir, ymd_v)):
             os.makedirs(os.path.join(output_dir, ymd_v))
 
+        if not level.isdigit():
+            f_level = '0'
+        else:
+            f_level = level
+
         pcpSts = sts.StringSub(self.logger,
                                input_template,
                                valid=valid_time,
-                               level=str(level).zfill(2))
+                               level=str(f_level).zfill(2))
         infile = os.path.join(input_dir, pcpSts.doStringSub())
 
         infile = util.preprocess_file(infile,
@@ -74,16 +86,23 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                       self.p, self.logger)
         if infile is not None:
             self.add_input_file(infile)
+        else:
+            return False
         self.add_input_file(self.p.getstr('config', 'VERIFICATION_GRID'))
         regridSts = sts.StringSub(self.logger,
                                   output_template,
                                   valid=valid_time,
-                                  level=str(level).zfill(2))
+                                  level=str(f_level).zfill(2))
         outfile = regridSts.doStringSub()
         self.set_output_path(os.path.join(output_dir, outfile))
-        field_name = "{:s}_{:s}".format(compare_var, str(level).zfill(2))
-        self.add_arg("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(
-            field_name))
+
+        if self.p.getstr('config', dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE', 'GRIB') == 'GRIB':
+            field_name = "{:s}_{:s}".format(compare_var, str(level).zfill(2))
+            self.add_arg("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(field_name))
+        else:
+            field_name = "{:s}".format(compare_var)
+            self.add_arg("-field 'name=\"{:s}\"; level=\"{:s}\";'".format(field_name, level))
+
         self.add_arg("-method BUDGET")
         self.add_arg("-width 2")
         self.add_arg("-name " + field_name)
