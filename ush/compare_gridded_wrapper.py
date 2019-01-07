@@ -121,7 +121,7 @@ that reformat gridded data
             v_level = v.obs_level
         else:
             v_level = v.fcst_level
-        level_type, level = self.split_level(v_level)
+        level_type, level = util.split_level(v_level)
         if not level.isdigit():
             level = '0'
         template = self.cg_dict[data_type+'_INPUT_TEMPLATE']
@@ -180,7 +180,7 @@ that reformat gridded data
 
 
     def get_one_field_info(self, v_level, v_thresh, v_name, v_extra, path, d_type):
-        level_type, level = self.split_level(v_level)
+        level_type, level = util.split_level(v_level)
 
         cat_thresh = ""
         threshs = []
@@ -239,13 +239,6 @@ that reformat gridded data
         field = ','.join(fields)
         return field
 
-
-    def split_level(self, level):
-        level_type = ""
-        if(level[0].isalpha()):
-            level_type = level[0]
-            level = level[1:].zfill(2)
-        return level_type, level
 
     def run_at_time(self, init_time, valid_time):
         """! Runs the MET application for a given run time. This function loops

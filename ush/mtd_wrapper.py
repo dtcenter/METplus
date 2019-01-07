@@ -253,7 +253,7 @@ class MTDWrapper(ModeWrapper):
             self.add_env_var("FCST_VAR", v.fcst_name)
             self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])
             self.add_env_var("OBS_VAR", v.obs_name)
-            self.add_env_var("LEVEL", self.split_level(v.fcst_level)[1])
+            self.add_env_var("LEVEL", util.split_level(v.fcst_level)[1])
             self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
             self.add_env_var("MET_VALID_HHMM", ti.getValidTime()[4:8])
 

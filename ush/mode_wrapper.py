@@ -119,7 +119,7 @@ class ModeWrapper(CompareGriddedWrapper):
                 @param d_type type of data (FCST or OBS)
                 @return returns a string with field info
         """
-        level_type, level = self.split_level(v_level)
+        level_type, level = util.split_level(v_level)
         field = ""
 
 #        if d_type == "FCST" and self.cg_dict['FCST_IS_PROB']:
@@ -186,7 +186,7 @@ class ModeWrapper(CompareGriddedWrapper):
             self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])
             self.add_env_var("FCST_VAR", v.fcst_name)
             self.add_env_var("OBS_VAR", v.obs_name)
-            self.add_env_var("LEVEL", self.split_level(v.fcst_level)[1])
+            self.add_env_var("LEVEL", util.split_level(v.fcst_level)[1])
             self.add_env_var("FCST_FIELD", fcst_field)
             self.add_env_var("OBS_FIELD", obs_field)
             self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
