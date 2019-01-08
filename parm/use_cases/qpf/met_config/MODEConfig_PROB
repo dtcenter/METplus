@@ -24,7 +24,7 @@ obtype = "${OBTYPE}";
 // Verification grid
 //
 regrid = {
-   to_grid    = NONE;
+   to_grid    = OBS;
    method     = NEAREST;
    width      = 1;
    vld_thresh = 0.5;
