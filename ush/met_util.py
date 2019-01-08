@@ -1474,11 +1474,11 @@ def getraw_interp(p, sec, opt):
             var_name = in_template[start_idx+1:i]
             var = None
             if p.has_option(sec,var_name):
-                var = p.getstr(sec,var_name)
+                var = getraw_interp(p, sec, var_name)
             elif p.has_option('config',var_name):
-                var = p.getstr('config',var_name)
+                var = getraw_interp(p, 'config', var_name)
             elif p.has_option('dir',var_name):
-                var = p.getstr('dir',var_name)
+                var = getraw_interp(p, 'dir', var_name)
             elif var_name[0:3] == "ENV":
                 var = os.environ.get(var_name[4:-1])
 
