@@ -1450,7 +1450,7 @@ def get_time_from_file(logger, filepath, template):
         return None
 
 
-def getraw_interp(p, sec, opt):
+def getraw_interp(p, sec, opt, count=0):
     """ parse parameter and replace any existing parameters
         referenced with the value (looking in same section, then
         config, dir, and os environment)
@@ -1462,6 +1462,9 @@ def getraw_interp(p, sec, opt):
         Returns:
             Raw string
     """
+    count = count + 1
+    if count >= 10:
+        return ''
 
     in_template = p.getraw(sec, opt, "")
     out_template = ""
@@ -1474,11 +1477,11 @@ def getraw_interp(p, sec, opt):
             var_name = in_template[start_idx+1:i]
             var = None
             if p.has_option(sec,var_name):
-                var = getraw_interp(p, sec, var_name)
+                var = getraw_interp(p, sec, var_name, count)
             elif p.has_option('config',var_name):
-                var = getraw_interp(p, 'config', var_name)
+                var = getraw_interp(p, 'config', var_name, count)
             elif p.has_option('dir',var_name):
-                var = getraw_interp(p, 'dir', var_name)
+                var = getraw_interp(p, 'dir', var_name, count)
             elif var_name[0:3] == "ENV":
                 var = os.environ.get(var_name[4:-1])
 
