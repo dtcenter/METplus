@@ -340,25 +340,6 @@ You will replace any
 \end_layout
 
 \begin_layout Itemize
-METPLUS_BASE to the path to where you installed METplus with '
-\shape italic
-ush
-\shape default
-': METplus_INSTALL/all_users/METplus
-\end_layout
-
-\begin_layout Itemize
-PARM_BASE to the path to where you installed METplus, appended with with
- '
-\shape italic
-parm
-\shape default
-': METplus_INSTALL/all_users/METplus/
-\shape italic
-parm
-\end_layout
-
-\begin_layout Itemize
 OUTPUT_BASE to where you wish to save the output:
 \end_layout
 
@@ -9323,68 +9304,6 @@ name "sec:SC_M"
 \end_layout
 
 \begin_layout Standard
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-METPLUS_BASE
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Set the base directory for the METplus installation.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- config_launcher.py, grid_stat_wrapper.py, pb2nc_wrapper.py, point_stat_wrapper.py,
- tc_stat_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [dir]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- /path/to
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
 \begin_inset CommandInset line
 LatexCommand rule
 offset "0.5ex"
