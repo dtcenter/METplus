@@ -41,7 +41,8 @@ def grid_stat_wrapper():
          to over-ride these /path/to values."""
 
     conf = metplus_config()
-    return GridStatWrapper(conf, None)
+    logger = logging.getLogger("dummy")
+    return GridStatWrapper(conf, logger)
 
 
 @pytest.fixture
