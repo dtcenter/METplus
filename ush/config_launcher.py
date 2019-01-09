@@ -78,9 +78,9 @@ if os.environ.get('PARM_BASE', ''):
 # Based on METPLUS_BASE, Will set METPLUS_USH, or PARM_BASE if not
 # already set in the environment.
 if METPLUS_BASE is None:
-    guess_METPLUS_BASE = dirname(dirname(realpath(__file__)))
-    USHguess = os.path.join(guess_METPLUS_BASE, 'ush')
-    PARMguess = os.path.join(guess_METPLUS_BASE, 'parm')
+    METPLUS_BASE = dirname(dirname(realpath(__file__)))
+    USHguess = os.path.join(METPLUS_BASE, 'ush')
+    PARMguess = os.path.join(METPLUS_BASE, 'parm')
     if os.path.isdir(USHguess) and os.path.isdir(PARMguess):
         if METPLUS_USH is None:
             METPLUS_USH = USHguess
@@ -97,10 +97,6 @@ else:
               "Please set $METPLUS_BASE "
               "in the environment.".format(METPLUS_BASE), file=sys.stderr)
         sys.exit(2)
-
-# print("guess_METPLUS_BASE is: {}",guess_METPLUS_BASE)
-# print("METPLUS_USH is: {}",METPLUS_USH)
-# print("PARM_BASE is: {}",PARM_BASE)
 
 # For METplus, this is assumed to already be set.
 if METPLUS_USH not in sys.path:
@@ -282,17 +278,18 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     if not os.path.exists(realpath(dirname(confloc))):
         produtil.fileop.makedirs(realpath(dirname(confloc)), logger=logger)
 
+    conf.set('dir','METPLUS_BASE', METPLUS_BASE)
+
     # logger.info('Expand certain [dir] values to ensure availability ')
     #            'before vitals parsing.
     # frimel: Especially before vitals parsing. THIS IS ONLY NEEDED in
     # order to define the vit dictionary and use of vit|{somevar} in the
     # conf file.
     for var in ('OUTPUT_BASE', 'METPLUS_BASE'):
-        expand = conf.getstr('dir', var)
+        expand = conf.getdir(var)
         logger.info('Replace [dir] %s with %s' % (var, expand))
         conf.set('dir', var, expand)
 
-    # conf.set('dir','METPLUS_BASE',METPLUS_BASE)
 
     # Place holder for when workflow is developed in METplus.
     # if prelaunch is not None:
