@@ -41,6 +41,7 @@ def mtd_wrapper():
          to over-ride these /path/to values."""
 
     conf = metplus_config()
+    conf.set('config', 'DO_NOT_RUN_EXE', True)
     conf.set('config', 'FCST_VAR1_NAME', 'APCP')
     conf.set('config', 'FCST_VAR1_LEVELS', 'A06')
     logger = logging.getLogger("dummy")
