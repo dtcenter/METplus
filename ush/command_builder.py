@@ -137,7 +137,7 @@ class CommandBuilder:
         """!Print all environment variables set for this application
         """
         for x in self.env:
-            self.logger.debug(x+"="+self.env[x])
+            self.logger.debug(x+'="'+self.env[x]+'"')
 
     def print_env_copy(self, vars):
         """!Print list of environment variables that can be easily
@@ -146,10 +146,7 @@ class CommandBuilder:
         out = ""
         all_vars = vars + self.p.keys('user_env_vars')
         for v in all_vars:
-            if self.env[v].find('"') != -1:
-                next = 'export '+v+'="'+self.env[v].replace('"', '\\"')+'"'
-            else:
-                next = 'export '+v+'='+self.env[v]
+            next = 'export '+v+'="'+self.env[v].replace('"', '\\"')+'"'
             out += next+'; '
         self.logger.debug(out)
 
