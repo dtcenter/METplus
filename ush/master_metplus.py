@@ -65,6 +65,7 @@ def main():
     # only logging to tty, not a file.
     logger = logging.getLogger('master_metplus')
     logger.info('logger Top of master_metplus.')
+    logger.info('METplus called with command: '+' '.join(sys.argv))
 
     # Parse arguments, options and return a config instance.
     p = config_metplus.setup(filename=cur_filename)
