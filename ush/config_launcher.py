@@ -278,6 +278,13 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     if not os.path.exists(realpath(dirname(confloc))):
         produtil.fileop.makedirs(realpath(dirname(confloc)), logger=logger)
 
+    # set METPLUS_BASE conf to location of scripts used by METplus
+    # warn if user has set METPLUS_BASE to something different
+    # in their conf file
+    user_metplus_base = conf.getdir('METPLUS_BASE', '')
+    if user_metplus_base != '' and user_metplus_base != METPLUS_BASE:
+        logger.warning('METPLUS_BASE from the conf files has no effect.'+\
+                       ' Overriding to '+METPLUS_BASE)
     conf.set('dir','METPLUS_BASE', METPLUS_BASE)
 
     # logger.info('Expand certain [dir] values to ensure availability ')
