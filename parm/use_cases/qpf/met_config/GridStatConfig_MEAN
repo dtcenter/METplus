@@ -40,10 +40,6 @@ wind_logic  = UNION;
 // Forecast and observation fields to be verified
 //
 fcst = {
-
-   //
-   // Categorical thresholds 
-   //
    field = [ ${FCST_FIELD} ];
 }
 obs = {

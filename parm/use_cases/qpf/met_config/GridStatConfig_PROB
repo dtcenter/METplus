@@ -40,12 +40,6 @@ wind_logic  = UNION;
 // Forecast and observation fields to be verified
 //
 fcst = {
-
-   //
-   // Categorical probabilistic thresholds
-   //
-   cat_thresh = [ >=0.0, >=0.10, >=0.20, >=0.30, >=0.40, >=0.50, >=0.60, >=0.70, >=0.80, >=0.9, >=1.0 ];
-
    field = [ ${FCST_FIELD} ];
 }
 obs = {
