@@ -51,7 +51,7 @@ logger = None
 def main():
     """!Main program.
 
-    Master MET+ script that invokes the necessary Python scripts
+    Master METplus script that invokes the necessary Python scripts
     to perform various activities, such as series analysis."""
 
     # Job Logger
@@ -148,7 +148,7 @@ def main():
         while loop_time <= end_time:
             run_time = time.strftime("%Y%m%d%H%M", time.gmtime(loop_time))
             logger.info("****************************************")
-            logger.info("* RUNNING MET+")
+            logger.info("* RUNNING METplus")
             if use_init:
                 logger.info("*  at init time: " + run_time)
             else:

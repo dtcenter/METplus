@@ -25,15 +25,15 @@ import met_util as util
 from abc import ABCMeta
 
 '''!@namespace TaskInfo
-@brief Utility to handle timing in MET+ wrappers
+@brief Utility to handle timing in METplus wrappers
 @code{.sh}
 Cannot be called directly. These are helper functions
-to be used in other MET+ wrappers
+to be used in other METplus wrappers
 @endcode
 '''
 class TaskInfo:
     __metaclass__ = ABCMeta
-    """!Utility to handle timing in MET+ wrappers
+    """!Utility to handle timing in METplus wrappers
     """
     def __init__(self):
         """!Retrieve parameters from corresponding param file

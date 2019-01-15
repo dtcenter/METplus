@@ -250,7 +250,7 @@ class CommandBuilder:
 
     def run_all_times(self):
         """!Loop over time range specified in conf file and
-        call MET+ wrapper for each time"""
+        call METplus wrapper for each time"""
         use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
             time_format = self.p.getstr('config', 'INIT_TIME_FMT')

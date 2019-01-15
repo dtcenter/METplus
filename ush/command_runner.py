@@ -15,7 +15,7 @@ Output Files: N/A
 
 ##@namespace command_runner
 # The purpose of this class is to run the external MET executables
-# and other ancillary external programs used in MET+, such as
+# and other ancillary external programs used in METplus, such as
 # wgrib2, ncdump, plot_tcmpr.R
 #
 # It also centralizes the output redirection to the

@@ -1218,10 +1218,10 @@ def split_level(level):
 
 def reformat_fields_for_met(all_vars_list, logger):
         """! Reformat the fcst or obs field values defined in the
-             MET+ config file to the MET field dictionary.
+             METplus config file to the MET field dictionary.
              Args:
                  all_vars_list - The list of all variables/fields retrieved
-                                 from the MET+ configuration file
+                                 from the METplus configuration file
                  logger        - The log to which any logging is directed.
              Returns:
                  met_fields - a named tuple containing the fcst field and

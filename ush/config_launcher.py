@@ -50,7 +50,7 @@ baseinputconfs = ['metplus_config/metplus_system.conf',
 # These metplus configuration variables map to the following
 # HWRF variables.
 # METPLUS_BASE == HOMEmetplus, OUTPUT_BASE == WORKmetplus
-# METPLUS_CONF == CONFmetplus, METPUS_USH == USHmetplus
+# METPLUS_CONF == CONFmetplus, METPLUS_USH == USHmetplus
 # PARM_BASE == PARMmetplus
 
 '''!@var METPLUS_BASE
