@@ -10,13 +10,11 @@
 // Output model name to be written
 //
 model = "${MODEL}";
-//model = "WRF";
 
 //
 // Output observation type to be written
 //
 obtype = "${OBTYPE}";
-//obtype = "ANALYS";
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -24,7 +22,7 @@ obtype = "${OBTYPE}";
 // Verification grid
 //
 regrid = {
-   to_grid    = FCST;
+   to_grid    = OBS;
    method     = NEAREST;
    width      = 1;
    vld_thresh = 0.5;
@@ -51,20 +49,25 @@ fcst = {
 
    field = ${FCST_FIELD};
 
-   conv_radius       = [${CONV_RADIUS}];  //5 to start
-   conv_thresh       = [${CONV_THRESH}];  //0.5 to start
+   conv_radius       = [${FCST_CONV_RADIUS}];
+   conv_thresh       = [${FCST_CONV_THRESH}];
    vld_thresh        = 0.5;
    area_thresh       = NA;
    inten_perc_value  = 100;
    inten_perc_thresh = NA;
-   merge_thresh      = [${MERGE_THRESH}]; //0.45 to start
-   merge_flag        = ${MERGE_FLAG};  //THRESH
+   merge_thresh      = [${FCST_MERGE_THRESH}];
+   merge_flag        = ${FCST_MERGE_FLAG};
 }
 
 obs = fcst;
 
 obs = {
    field = ${OBS_FIELD};
+
+   conv_radius       = [${OBS_CONV_RADIUS}];
+   conv_thresh       = [${OBS_CONV_THRESH}];
+   merge_thresh      = [${OBS_MERGE_THRESH}];
+   merge_flag        = ${OBS_MERGE_FLAG};
 }
 
 
@@ -93,8 +96,8 @@ max_centroid_dist = 800.0/grid_res;
 mask = {
    grid      = "";
    grid_flag = NONE; // Apply to NONE, FCST, OBS, or BOTH
-   poly      = "";
-   poly_flag = NONE; // Apply to NONE, FCST, OBS, or BOTH
+   poly      = "MET_BASE/poly/CONUS.poly";
+   poly_flag = BOTH; // Apply to NONE, FCST, OBS, or BOTH
 }
 
 ////////////////////////////////////////////////////////////////////////////////
