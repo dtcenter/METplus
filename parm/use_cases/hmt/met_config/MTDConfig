@@ -58,8 +58,8 @@ fcst = {
 
    censor_thresh     = [];
    censor_val        = [];
-   conv_radius       = ${CONV_RADIUS};
-   conv_thresh       = ${CONV_THRESH};
+   conv_radius       = ${FCST_CONV_RADIUS};
+   conv_thresh       = ${FCST_CONV_THRESH};
 
 }
 
@@ -67,6 +67,9 @@ obs = fcst;
 
 obs = {
    field = ${OBS_FIELD};
+
+   conv_radius       = ${OBS_CONV_RADIUS};
+   conv_thresh       = ${OBS_CONV_THRESH};
 }
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -226,6 +229,4 @@ txt_output = {
 ////////////////////////////////////////////////////////////////////////////////
 
 output_prefix    = "PROB_${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}";
-//version        = "V8.0";
-
 ////////////////////////////////////////////////////////////////////////////////
