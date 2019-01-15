@@ -1,4 +1,4 @@
-#LyX 2.3 created this file. For more info see http://www.lyx.org/
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
 \lyxformat 508
 \begin_document
 \begin_header
@@ -336,14 +336,6 @@ You will replace any
 /path/to
 \shape default
  with actual paths by setting the following:
-\end_layout
-
-\begin_layout Itemize
-METPLUS_BASE to the path to where you installed METplus with '
-\shape italic
-ush
-\shape default
-': METplus_INSTALL/all_users/METplus
 \end_layout
 
 \begin_layout Itemize
@@ -1469,15 +1461,67 @@ Default:
 \series default
 \shape default
  41
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+CLOCK_TIME
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Automatically set by METplus with the time that METplus was started.
+ Setting this variable has no effect as it will be overwritten.
+ Can be used for reference in metplus_final.conf or used with other config
+ variables.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ All
 \series bold
 \shape italic
 
 \begin_inset Newline newline
 \end_inset
 
-
+Family:
 \series default
 \shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Set automatically to current clock time in %Y%m%d%H%M%S format
+\begin_inset Newline newline
+\end_inset
+
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -9342,7 +9386,10 @@ METPLUS_BASE
 \begin_inset Newline newline
 \end_inset
 
-Set the base directory for the METplus installation.
+This variable will automatically be set by METplus when it is started.
+ It will be set to the location of METplus that is currently being run.
+ Setting this variable in a config file will have no effect and will report
+ a warning that it is being overridden.
 \end_layout
 
 \begin_layout Standard
@@ -9352,8 +9399,7 @@ Set the base directory for the METplus installation.
 Used by:
 \series default
 \shape default
- config_launcher.py, grid_stat_wrapper.py, pb2nc_wrapper.py, point_stat_wrapper.py,
- tc_stat_wrapper.py
+ All
 \series bold
 \shape italic
 
@@ -9373,7 +9419,7 @@ Family:
 Default:
 \series default
 \shape default
- /path/to
+ Location METplus is being run from
 \series bold
 \shape italic
 
@@ -10241,7 +10287,10 @@ MODE_CONV_RADIUS
 \begin_inset Newline newline
 \end_inset
 
-Comma separated list of convolution radius values used by mode.
+Comma separated list of convolution radius values used by mode for both
+ forecast and observation fields.
+ Has the same behavior as setting MODE_FCST_CONV_RADIUS and MODE_OBS_CONV_RADIUS
+ to the same value.
 \end_layout
 
 \begin_layout Standard
@@ -10296,7 +10345,10 @@ MODE_CONV_THRESH
 \begin_inset Newline newline
 \end_inset
 
-Comma separated list of convolution threshold values used by mode.
+Comma separated list of convolution threshold values used by mode for both
+ forecast and observation fields.
+ Has the same behavior as setting MODE_FCST_CONV_THRESH and MODE_OBS_CONV_THRESH
+ to the same value.
 \end_layout
 
 \begin_layout Standard
@@ -10327,6 +10379,230 @@ Default:
 \series default
 \shape default
  >0.5
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODE_FCST_CONV_RADIUS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of convolution radius values used by mode for forecast
+ fields.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ mode_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+5
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODE_FCST_CONV_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of convolution threshold values used by mode for forecast
+ fields.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ mode_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+5
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODE_FCST_MERGE_FLAG
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Sets the merge_flag value in the mode config file for forecast fields.
+ Valid values are NONE, THRESH, ENGINE, and BOTH.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ mode_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ THRESH
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODE_FCST_MERGE_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of merge threshold values used by mode for forecast
+ fields.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ mode_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ >0.45
 \begin_inset Newline newline
 \end_inset
 
@@ -10406,7 +10682,10 @@ MODE_MERGE_FLAG
 \begin_inset Newline newline
 \end_inset
 
-Sets the merge_flag value in the mode config file.
+Sets the merge_flag value in the mode config file for both forecast and
+ observation fields.
+ Has the same behavior as setting MODE_FCST_MERGE_FLAG and MODE_OBS_MERGE_FLAG
+ to the same value.
  Valid values are NONE, THRESH, ENGINE, and BOTH.
 \end_layout
 
@@ -10462,7 +10741,234 @@ MODE_MERGE_THRESH
 \begin_inset Newline newline
 \end_inset
 
-Comma separated list of merge threshold values used by mode.
+Comma separated list of merge threshold values used by mode for forecast
+ and observation fields.
+ Has the same behavior as setting MODE_FCST_MERGE_THRESH and MODE_OBS_MERGE_THRE
+SH to the same value.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ mode_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ >0.45
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODE_OBS_CONV_RADIUS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of convolution radius values used by mode for observation
+ fields.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ mode_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+5
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODE_OBS_CONV_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of convolution threshold values used by mode for observatio
+n fields.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ mode_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+5
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODE_OBS_MERGE_FLAG
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Sets the merge_flag value in the mode config file for observation fields.
+ Valid values are NONE, THRESH, ENGINE, and BOTH.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ mode_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ THRESH
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODE_OBS_MERGE_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of merge threshold values used by mode for observation
+ fields.
 \end_layout
 
 \begin_layout Standard
@@ -10683,7 +11189,10 @@ MTD_CONV_RADIUS
 \begin_inset Newline newline
 \end_inset
 
-Comma separated list of convolution radius values used by mode-TD.
+Comma separated list of convolution radius values used by mode-TD for both
+ forecast and observation files.
+ Has the same behavior as setting MTD_FCST_CONV_RADIUS and MTD_OBS_CONV_RADIUS
+ to the same value.
 \end_layout
 
 \begin_layout Standard
@@ -10738,7 +11247,234 @@ MTD_CONV_THRESH
 \begin_inset Newline newline
 \end_inset
 
-Comma separated list of convolution threshold values used by mode-TD.
+Comma separated list of convolution threshold values used by mode-TD for
+ both forecast and observation files.
+ Has the same behavior as setting MTD_FCST_CONV_THRESH and MTD_OBS_CONV_THRESH
+ to the same value.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ mtd_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ >0.5
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MTD_FCST_CONV_RADIUS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of convolution radius values used by mode-TD for forecast
+ files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ mtd_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 5
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MTD_FCST_CONV_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of convolution threshold values used by mode-TD for
+ forecast files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ mtd_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ >0.5
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MTD_OBS_CONV_RADIUS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of convolution radius values used by mode-TD for observatio
+n files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ mtd_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 5
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MTD_OBS_CONV_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of convolution threshold values used by mode-TD for
+ observation files.
 \end_layout
 
 \begin_layout Standard
