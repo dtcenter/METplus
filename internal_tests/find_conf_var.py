@@ -6,7 +6,7 @@
 #
 # Date: 12 Sept 2018
 #
-# Purpose: Locate the use of a configuration variable within MET+ source and conf areas
+# Purpose: Locate the use of a configuration variable within METplus source and conf areas
 #
 # Notes: You can search *just* conf areas via ./find_conf_var.py <var_name> conf, or
 #        search *just* source areas via ./find_conf_var.py <var_name> py, or
@@ -17,7 +17,7 @@
 # Python modules
 import subprocess, sys, string
 
-# Path to MET+ installation
+# Path to METplus installation
 mpinstall = '/home/dadriaan/projects/METplus'
 
 # Get user variables
