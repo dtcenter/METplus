@@ -87,8 +87,8 @@ def test_mtd_by_init_all_found():
     init_time = "201705100300"
     
     mw.run_at_time(init_time, -1)
-    fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_fcst_APCP_A06.txt')
-    obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_obs_APCP_A06.txt')
+    fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -116,8 +116,8 @@ def test_mtd_by_valid_all_found():
     valid_time = "201705100300"
     
     mw.run_at_time(-1, valid_time)
-    fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_fcst_APCP_A06.txt')
-    obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_obs_APCP_A06.txt')
+    fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -145,8 +145,8 @@ def test_mtd_by_init_miss_fcst():
     init_time = "201705100300"
     
     mw.run_at_time(init_time, -1)
-    fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_fcst_APCP_A06.txt')
-    obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_obs_APCP_A06.txt')
+    fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -174,8 +174,8 @@ def test_mtd_by_init_miss_both():
     init_time = "201705100300"
     
     mw.run_at_time(init_time, -1)
-    fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_fcst_APCP_A06.txt')
-    obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_obs_APCP_A06.txt')
+    fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -201,7 +201,7 @@ def test_mtd_single():
     init_time = "201705100300"
     
     mw.run_at_time(init_time, -1)
-    single_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_single_APCP_A06.txt')
+    single_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'mtd_lists', '201705100300_single_APCP.txt')
     with open(single_list_file) as f:
         single_list = f.readlines()
     single_list = [x.strip() for x in single_list]
