@@ -159,6 +159,40 @@ class CommandBuilder:
         for k in self.p.keys('user_env_vars'):
             self.print_env_item(k)
 
+
+    def handle_fcst_and_obs_field(self, gen_name, fcst_name, obs_name, default, sec='config'):
+        has_gen = self.p.has_option(sec, gen_name)
+        has_fcst = self.p.has_option(sec, fcst_name)
+        has_obs = self.p.has_option(sec, obs_name)
+
+        # use fcst and obs if both are set
+        if has_fcst and has_obs:
+            fcst_conf = self.p.getstr(sec, fcst_name)
+            obs_conf = self.p.getstr(sec, obs_name)
+            if has_gen:
+                self.logger.warning('Ignoring conf {} and using {} and {}'
+                                    .format(gen_name, fcst_name, obs_name))
+            return (fcst_conf, obs_conf)
+
+        # if one but not the other is set, error and exit
+        if has_fcst and not has_obs:
+            self.logger.error('Cannot use {} without {}'.format(fcst_name, obs_name))
+            exit(1)
+
+        if has_obs and not has_fcst:
+            self.logger.error('Cannot use {} without {}'.format(obs_name, fcst_name))
+            exit(1)
+
+        # if generic conf is set, use for both
+        if has_gen:
+            gen_conf = self.p.getstr(sec, gen_name)
+            return (gen_conf, gen_conf)
+
+        # if none of the options are set, use default value for both
+        self.logger.warning('Using default values for {}'.format(gen_name))
+        return (default, default)
+
+
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string
