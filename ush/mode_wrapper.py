@@ -71,18 +71,46 @@ class ModeWrapper(CompareGriddedWrapper):
                                                               True)
         self.cg_dict['ONCE_PER_FIELD'] = True
         self.cg_dict['QUILT'] = self.p.getbool('config', 'MODE_QUILT', False)
-        self.cg_dict['CONV_RADIUS'] = self.p.getstr('config', 'MODE_CONV_RADIUS', "5")
-        self.cg_dict['CONV_THRESH'] = self.p.getstr('config', 'MODE_CONV_THRESH', ">0.5")
-        self.cg_dict['MERGE_THRESH'] = self.p.getstr('config', 'MODE_MERGE_THRESH', ">0.45")
-        self.cg_dict['MERGE_FLAG'] = self.p.getstr('config', 'MODE_MERGE_FLAG', "THRESH")
+        fcst_conv_radius, obs_conv_radius = self.handle_fcst_and_obs_field('MODE_CONV_RADIUS',
+                                                                           'MODE_FCST_CONV_RADIUS',
+                                                                           'MODE_OBS_CONV_RADIUS', '5')
+        self.cg_dict['FCST_CONV_RADIUS'] = fcst_conv_radius
+        self.cg_dict['OBS_CONV_RADIUS'] = obs_conv_radius
+
+        fcst_conv_thresh, obs_conv_thresh = self.handle_fcst_and_obs_field('MODE_CONV_THRESH',
+                                                                           'MODE_FCST_CONV_THRESH',
+                                                                           'MODE_OBS_CONV_THRESH', '>0.5')
+
+        self.cg_dict['FCST_CONV_THRESH'] = fcst_conv_thresh
+        self.cg_dict['OBS_CONV_THRESH'] = obs_conv_thresh
+
+        fcst_merge_thresh, obs_merge_thresh = self.handle_fcst_and_obs_field('MODE_MERGE_THRESH',
+                                                                             'MODE_FCST_MERGE_THRESH',
+                                                                             'MODE_OBS_MERGE_THRESH', '>0.45')
+        self.cg_dict['FCST_MERGE_THRESH'] = fcst_merge_thresh
+        self.cg_dict['OBS_MERGE_THRESH'] = obs_merge_thresh
+        fcst_merge_flag, obs_merge_flag = self.handle_fcst_and_obs_field('MODE_MERGE_FLAG',
+                                                                         'MODE_FCST_MERGE_FLAG',
+                                                                         'MODE_OBS_MERGE_FLAG', 'THRESH')
+
+        self.cg_dict['FCST_MERGE_FLAG'] = fcst_merge_flag
+        self.cg_dict['OBS_MERGE_FLAG'] = obs_merge_flag
+
         self.cg_dict['MERGE_CONFIG_FILE'] = self.p.getstr('config', 'MODE_MERGE_CONFIG_FILE', '')
         # check that values are valid
-        if not util.validate_thresholds(util.getlist(self.cg_dict['CONV_THRESH'])):
-            self.logger.error('MODE_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
+        if not util.validate_thresholds(util.getlist(self.cg_dict['FCST_CONV_THRESH'])):
+            self.logger.error('MODE_FCST_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
             exit(1)
-        if not util.validate_thresholds(util.getlist(self.cg_dict['MERGE_THRESH'])):
-            self.logger.error('MODE_MERGE_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
+        if not util.validate_thresholds(util.getlist(self.cg_dict['OBS_CONV_THRESH'])):
+            self.logger.error('MODE_OBS_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
             exit(1)
+        if not util.validate_thresholds(util.getlist(self.cg_dict['FCST_MERGE_THRESH'])):
+            self.logger.error('MODE_FCST_MERGE_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
+            exit(1)
+        if not util.validate_thresholds(util.getlist(self.cg_dict['OBS_MERGE_THRESH'])):
+            self.logger.error('MODE_OBS_MERGE_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
+            exit(1)
+
 
     def run_at_time_one_field(self, ti, v):
         """! Runs mode instances for a given time and forecast lead combination
@@ -146,6 +174,8 @@ class ModeWrapper(CompareGriddedWrapper):
                 field = "{ name=\""+v_name + \
                              "\"; level=\""+v_level+"\"; "
 
+        if v_thresh != 0:
+            field += "cat_thresh=" + str(v_thresh) + "; "
         field += v_extra+"}"
         return field
 
@@ -196,17 +226,23 @@ class ModeWrapper(CompareGriddedWrapper):
                 quilt = "FALSE"
 
             self.add_env_var("QUILT", quilt )
-            self.add_env_var("CONV_RADIUS", self.cg_dict["CONV_RADIUS"] )
-            self.add_env_var("CONV_THRESH", self.cg_dict["CONV_THRESH"] )
-            self.add_env_var("MERGE_THRESH", self.cg_dict["MERGE_THRESH"] )
-            self.add_env_var("MERGE_FLAG", self.cg_dict["MERGE_FLAG"] )
+            self.add_env_var("FCST_CONV_RADIUS", self.cg_dict["FCST_CONV_RADIUS"] )
+            self.add_env_var("OBS_CONV_RADIUS", self.cg_dict["OBS_CONV_RADIUS"] )
+            self.add_env_var("FCST_CONV_THRESH", self.cg_dict["FCST_CONV_THRESH"] )
+            self.add_env_var("OBS_CONV_THRESH", self.cg_dict["OBS_CONV_THRESH"] )
+            self.add_env_var("FCST_MERGE_THRESH", self.cg_dict["FCST_MERGE_THRESH"] )
+            self.add_env_var("OBS_MERGE_THRESH", self.cg_dict["OBS_MERGE_THRESH"] )
+            self.add_env_var("FCST_MERGE_FLAG", self.cg_dict["FCST_MERGE_FLAG"] )
+            self.add_env_var("OBS_MERGE_FLAG", self.cg_dict["OBS_MERGE_FLAG"] )
 
             print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
                           "LEVEL", "OBTYPE", "CONFIG_DIR",
                           "FCST_FIELD", "OBS_FIELD",
                           "QUILT", "MET_VALID_HHMM",
-                          "CONV_RADIUS", "CONV_THRESH",
-                          "MERGE_THRESH", "MERGE_FLAG"]
+                          "FCST_CONV_RADIUS", "FCST_CONV_THRESH",
+                          "OBS_CONV_RADIUS", "OBS_CONV_THRESH",
+                          "FCST_MERGE_THRESH", "FCST_MERGE_FLAG",
+                          "OBS_MERGE_THRESH", "OBS_MERGE_FLAG"]
 
             self.logger.debug("")
             self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
