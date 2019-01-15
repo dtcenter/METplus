@@ -174,8 +174,6 @@ class ModeWrapper(CompareGriddedWrapper):
                 field = "{ name=\""+v_name + \
                              "\"; level=\""+v_level+"\"; "
 
-        if v_thresh != 0:
-            field += "cat_thresh=" + str(v_thresh) + "; "
         field += v_extra+"}"
         return field
 
@@ -189,8 +187,8 @@ class ModeWrapper(CompareGriddedWrapper):
                 @param obs_path observation file
         """
         # if no thresholds are specified, run once
-        fcst_thresh_list = [0]
-        obs_thresh_list = [0]
+        fcst_thresh_list = [None]
+        obs_thresh_list = [None]
         if len(v.fcst_thresh) != 0:
             fcst_thresh_list = v.fcst_thresh
             obs_thresh_list = v.obs_thresh
