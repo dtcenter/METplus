@@ -37,7 +37,51 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                      'bin/regrid_data_plane')
         self.app_name = os.path.basename(self.app_path)
+        self.create_c_dict()
 
+
+    def create_c_dict(self):
+        self.c_dict = dict()
+        if self.p.has_option('filename_templates', 'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE'):
+            self.c_dict['FCST_INPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates',
+                                                   'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE')
+        elif self.p.has_option('filename_templates', 'FCST_REGRID_DATA_PLANE_TEMPLATE'):
+            self.c_dict['FCST_INPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates',
+                                                   'FCST_REGRID_DATA_PLANE_TEMPLATE')
+        else:
+            self.c_dict['FCST_INPUT_TEMPLATE'] = None
+
+        if self.p.has_option('filename_templates', 'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE'):
+            self.c_dict['OBS_INPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates',
+                                                  'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE')
+        elif self.p.has_option('filename_templates', 'OBS_REGRID_DATA_PLANE_TEMPLATE'):
+            self.c_dict['OBS_INPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates',
+                                                  'OBS_REGRID_DATA_PLANE_TEMPLATE')
+        else:
+            self.c_dict['OBS_INPUT_TEMPLATE'] = None
+
+        if self.p.has_option('filename_templates', 'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'):
+            self.c_dict['FCST_OUTPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates',
+                                                   'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE')
+        elif self.p.has_option('filename_templates', 'FCST_REGRID_DATA_PLANE_TEMPLATE'):
+            self.c_dict['FCST_OUTPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates',
+                                                   'FCST_REGRID_DATA_PLANE_TEMPLATE')
+        else:
+            self.c_dict['FCST_OUTPUT_TEMPLATE'] = None
+
+        if self.p.has_option('filename_templates', 'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'):
+            self.c_dict['OBS_OUTPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates',
+                                                  'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE')
+        elif self.p.has_option('filename_templates', 'OBS_REGRID_DATA_PLANE_TEMPLATE'):
+            self.c_dict['OBS_OUTPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates',
+                                                  'OBS_REGRID_DATA_PLANE_TEMPLATE')
+        else:
+            self.c_dict['OBS_OUTPUT_TEMPLATE'] = None
+
+        self.c_dict['FCST_INPUT_DIR'] = self.p.getdir('FCST_REGRID_DATA_PLANE_INPUT_DIR', '')
+        self.c_dict['OBS_INPUT_DIR'] = self.p.getdir('OBS_REGRID_DATA_PLANE_INPUT_DIR', '')
+        self.c_dict['FCST_OUTPUT_DIR'] = self.p.getdir('FCST_REGRID_DATA_PLANE_OUTPUT_DIR', '')
+        self.c_dict['OBS_OUTPUT_DIR'] = self.p.getdir('OBS_REGRID_DATA_PLANE_OUTPUT_DIR', '')
 
     def run_at_time_once(self, task_info, var_info, dtype):
         """! Runs the MET application for a given time and forecast lead combination
@@ -55,15 +99,26 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         level_type, level = util.split_level(level)
 
-#        if level[0].isalpha():
-#            level = var_info.obs_level[1:]
+        if self.c_dict[dtype+'_INPUT_DIR'] is '':
+            self.logger.error('Must set {}_REGRID_DATA_PLANE_INPUT_DIR in config file'.format(dtype))
+            exit(1)
 
-        input_dir = self.p.getdir(dtype+'_REGRID_DATA_PLANE_INPUT_DIR')
-        input_template = util.getraw_interp(self.p, 'filename_templates',
-                                        dtype+'_REGRID_DATA_PLANE_TEMPLATE')
-        output_dir = self.p.getdir(dtype+'_REGRID_DATA_PLANE_OUTPUT_DIR')
-        output_template = util.getraw_interp(self.p, 'filename_templates',
-                                        dtype+'_REGRID_DATA_PLANE_TEMPLATE')
+        if self.c_dict[dtype+'_INPUT_TEMPLATE'] is None:
+            self.logger.error('Must set {}_REGRID_DATA_PLANE_INPUT_TEMPLATE in config file'.format(dtype))
+            exit(1)
+
+        if self.c_dict[dtype+'_OUTPUT_DIR'] is '':
+            self.logger.error('Must set {}_REGRID_DATA_PLANE_OUTPUT_DIR in config file'.format(dtype))
+            exit(1)
+
+        if self.c_dict[dtype+'_OUTPUT_TEMPLATE'] is None:
+            self.logger.error('Must set {}_REGRID_DATA_PLANE_OUTPUT_TEMPLATE in config file'.format(dtype))
+            exit(1)
+
+        input_dir = self.c_dict[dtype+'_INPUT_DIR']
+        input_template = self.c_dict[dtype+'_INPUT_TEMPLATE']
+        output_dir = self.c_dict[dtype+'_OUTPUT_DIR']
+        output_template = self.c_dict[dtype+'_OUTPUT_TEMPLATE']
 
         ymd_v = valid_time[0:8]
         if not os.path.exists(os.path.join(output_dir, ymd_v)):
