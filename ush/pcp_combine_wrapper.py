@@ -428,7 +428,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if cmd is None:
             self.logger.error("pcp_combine could not generate command for init {} and forecast lead {}".format(task_info.getInitTime(), task_info.lead))
             return
-        self.logger.info("")
         self.build()
 
 
