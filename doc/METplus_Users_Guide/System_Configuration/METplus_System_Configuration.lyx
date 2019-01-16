@@ -5410,6 +5410,120 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Template used to specify input filenames for forecast data used by the MET
+ regrid_data_plane tool.
+ It not set, METplus will use FCST_REGRID_DATA_PLANE_TEMPLATE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ regrid_data_plane_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Template used to specify output filenames for forecast data used by the
+ MET regrid_data_plane tool.
+ It not set, METplus will use FCST_REGRID_DATA_PLANE_TEMPLATE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ regrid_data_plane_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 FCST_REGRID_DATA_PLANE_TEMPLATE
 \series default
 
@@ -5418,6 +5532,8 @@ FCST_REGRID_DATA_PLANE_TEMPLATE
 
 Template used to specify filenames for forecast data used by the MET regrid_data
 _plane tool.
+ To specify different templates for input and output files , use FCST_REGRID_DAT
+A_PLANE_INPUT_TEMPLATE and FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -14302,6 +14418,120 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the input filename template to use for observation files (input
+ and output) used by the MET regrid_data_plane tool.
+ If not set, METplus will use OBS_REGRID_DATA_PLANE_TEMPLATE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ regrid_data_plane_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the output filename template to use for observation files (input
+ and output) used by the MET regrid_data_plane tool.
+ If not set, METplus will use OBS_REGRID_DATA_PLANE_TEMPLATE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ regrid_data_plane_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 OBS_REGRID_DATA_PLANE_TEMPLATE
 \series default
 
@@ -14310,6 +14540,8 @@ OBS_REGRID_DATA_PLANE_TEMPLATE
 
 Specify the filename template to use for observation files (input and output)
  used by the MET regrid_data_plane tool.
+ To specify different templates for input and output files , use FCST_REGRID_DAT
+A_PLANE_INPUT_TEMPLATE and FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
