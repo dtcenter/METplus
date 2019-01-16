@@ -89,7 +89,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 @param ti task_info object containing timing information
                 @param v var_info object containing variable information
         """
+        init_time = task_info.getInitTime()
         valid_time = task_info.getValidTime()
+        lead = task_info.getLeadTime()
+
         if dtype == "FCST":
             compare_var = var_info.fcst_name
             level = var_info.fcst_level
@@ -131,7 +134,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         pcpSts = sts.StringSub(self.logger,
                                input_template,
+                               init=init_time,
                                valid=valid_time,
+                               lead=str(lead),
                                level=str(f_level).zfill(2))
         infile = os.path.join(input_dir, pcpSts.doStringSub())
 
@@ -165,7 +170,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if cmd is None:
             self.logger.error(self.app_name+" could not generate command")
             return
-        self.logger.info("")
         self.build()
         self.clear()
 
