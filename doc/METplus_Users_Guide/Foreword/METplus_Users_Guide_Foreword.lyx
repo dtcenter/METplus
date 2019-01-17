@@ -1,4 +1,4 @@
-#LyX 2.3 created this file. For more info see http://www.lyx.org/
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
 \lyxformat 508
 \begin_document
 \begin_header
@@ -152,33 +152,193 @@ name "sec:New-for-METplus"
 
 \begin_layout Standard
 
-\series medium
-METplus v2.0 includes some new wrappers:
+\series bold
+METplus v2.0.3 Release Notes:
+\end_layout
+
+\begin_layout Standard
+Configuration:
 \end_layout
 
 \begin_layout Itemize
-pb2nc_wrapper
+Added DO_NOT_RUN_EXE config variable to prevent applications from actually
+ running
+\end_layout
+
+\begin_layout Itemize
+Added LOG_TIMESTAMP_USE_RUNTIME config variable to use data time in log
+ file names instead of run time
+\end_layout
+
+\begin_layout Itemize
+METPLUS_BASE config variable is automatically set to the location METplus
+ is being run
+\end_layout
+
+\begin_layout Itemize
+Added automatically generated CLOCK_TIME config variable to keep track of
+ time METplus was run
+\end_layout
+
+\begin_layout Standard
+Wrapper specific: 
+\end_layout
+
+\begin_layout Itemize
+mode_wrapper
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-Python wrapper to the MET tool pb2nc
+new python wrapper for MET tool mode
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
-point_stat_wrapper
+mtd_wrapper
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-Python wrapper to the MET tool point_stat
+new python wrapper for MET tool mtd (mode time domain)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+pcp_combine_wrapper
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Threshold values specified in the config files now require a comparison
+ operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le) Previously _THRESH values
+ were assumed to use >= by pcp_combine
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+grid_stat_wrapper
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+grid_stat will now process all name/level/threshold combinations in a single
+ run if desired (some cases require splitting up calls to grid_stat, such
+ as processing probabilistic forecasts or precip accumulations)
+\end_layout
+
+\begin_layout Itemize
+Added probability threshold configs for grid_stat probabilistic forecast
+ evaluation
 \end_layout
 
 \end_deeper
 \begin_layout Standard
-Enhancements, refactorization, and bug fixes have been addressed in the
- following wrappers:
+General:
+\end_layout
+
+\begin_layout Itemize
+Compressed input files with certain file extensions (gz, zip, bz2) will
+ be automatically uncompressed and placed into a staging area for use in
+ METplus (with option to scrub staging directory after run) - Gempak files
+ now can automatically be converted to NetCDF for use in METplus (See [FCST/OBS]
+_[MET-APP]_DATATYPE)
+\end_layout
+
+\begin_layout Itemize
+NetCDF field levels can now be specified in config files, i.e.
+ (0,0,*,*).
+ NOTE: Quotes around these items are required
+\end_layout
+
+\begin_layout Itemize
+Updated MET config files to use MET 8.0
+\end_layout
+
+\begin_layout Itemize
+Cleanup of plotting scripts
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+METplus v2.0.2 Release Notes:
+\end_layout
+
+\begin_layout Standard
+Wrapper specific:
+\end_layout
+
+\begin_layout Itemize
+grid_stat_wrapper
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Forecast lead time set in environment as FCST_TIME to be read by grid_stat
+ MET config file
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+General:
+\end_layout
+
+\begin_layout Itemize
+Users can define custom environment variables in METplus config files to
+ be used in MET config files.
+ (See section 3.5 User Defined Config)
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+METplus v2.0.1 Release Notes:
+\end_layout
+
+\begin_layout Standard
+Configuration:
+\end_layout
+
+\begin_layout Itemize
+OBS_WINDOW_BEG in point_stat_wrapper, grid_to_obs.conf changed to OBS_WINDOW_BEGI
+N
+\end_layout
+
+\begin_layout Standard
+Wrapper specific:
+\end_layout
+
+\begin_layout Itemize
+pcp_combine_wrapper:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+fixed bug selecting accumulation files.
+\end_layout
+
+\begin_layout Itemize
+sum method and file template matching.
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+General:
+\end_layout
+
+\begin_layout Itemize
+Fixed typo in variable name in getraw_interp function.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+METplus v2.0 Release Notes:
+\end_layout
+
+\begin_layout Standard
+Wrapper specific:
 \end_layout
 
 \begin_layout Itemize
@@ -231,45 +391,26 @@ now supports whitespace in plot title, sub-title, and legend
 \end_layout
 
 \end_deeper
-\begin_layout Standard
-
-\series bold
-METplus v2.0.1 Release Notes:
-\end_layout
-
-\begin_layout Standard
-Minor release including bug fixes.
-\end_layout
-
 \begin_layout Itemize
-METplus configuration variable changes
+pb2nc_wrapper
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-OBS_WINDOW_BEG in point_stat_wrapper, grid_to_obs.conf changed to OBS_WINDOW_BEGI
-N
+new python wrapper for the MET tool pb2nc
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
-Fixed pcp_combine_wrapper related to:
+point_stat_wrapper
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-selecting accumulation files.
-\end_layout
-
-\begin_layout Itemize
-sum method and file template matching.
+new python wrapper for the MET tool point_stat
 \end_layout
 
 \end_deeper
-\begin_layout Itemize
-Fixed Typo in variable name in getraw_interp function.
-\end_layout
-
 \begin_layout Chapter*
 TERMS OF USE
 \begin_inset CommandInset label
