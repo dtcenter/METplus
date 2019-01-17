@@ -225,7 +225,7 @@ class PointStatWrapper(CommandBuilder):
 
     def set_environment_variables(self):
         """! Set all the environment variables in the MET config
-             file to the corresponding values in the MET+ config file.
+             file to the corresponding values in the METplus config file.
 
              Args:
 
@@ -253,7 +253,7 @@ class PointStatWrapper(CommandBuilder):
 
         # MET accepts a list of values for POINT_STAT_POLY, POINT_STAT_GRID,
         # POINT_STAT_STATION_ID, and POINT_STAT_MESSAGE_TYPE. If these
-        # values are not set in the MET+ config file, assign them to "[]" so
+        # values are not set in the METplus config file, assign them to "[]" so
         # MET recognizes that these are empty lists, resulting in the
         # expected behavior.
         poly_str = str(self.ps_dict['POINT_STAT_POLY'])
@@ -279,21 +279,21 @@ class PointStatWrapper(CommandBuilder):
             self.add_env_var(b'POINT_STAT_STATION_ID', sid)
 
         tmp_message_type = str(self.ps_dict['POINT_STAT_MESSAGE_TYPE'])
-        # Check for "empty" POINT_STAT_MESSAGE_TYPE in MET+ config file and
+        # Check for "empty" POINT_STAT_MESSAGE_TYPE in METplus config file and
         # set the POINT_STAT_MESSAGE_TYPE environment variable appropriately.
         if not tmp_message_type:
             self.add_env_var('POINT_STAT_MESSAGE_TYPE', "[]")
         else:
             # Not empty, set the POINT_STAT_MESSAGE_TYPE environment
             #  variable to the
-            # message types specified in the MET+ config file.
+            # message types specified in the METplus config file.
             tmp_message_type = str(tmp_message_type).replace("\'", "\"")
             # Remove all whitespace
             tmp_message_type = ''.join(tmp_message_type.split())
             self.add_env_var(b'POINT_STAT_MESSAGE_TYPE', tmp_message_type)
 
         # Retrieve all the fcst and obs field values (name, level, options)
-        # from the MET+ config file, passed into the MET config file via
+        # from the METplus config file, passed into the MET config file via
         # the FCST_FIELD and OBS_FIELD environment variables.
         all_vars_list = util.parse_var_list(self.p)
         met_fields = util.reformat_fields_for_met(all_vars_list, self.logger)

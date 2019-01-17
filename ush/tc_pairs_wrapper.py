@@ -287,7 +287,7 @@ class TcPairsWrapper(CommandBuilder):
                                 cur_function + "] | There are no dated" +
                                 " sub-directories (YYYYMM) " +
                                 "with input data as expected in: " +
-                                self.config.getdir('TRACK_DATA_DIR'))
+                                "the specified input track directory.")
             exit(0)
 
         # Get a list of files in the dated subdirectories
@@ -1197,11 +1197,22 @@ class TcPairsWrapper(CommandBuilder):
             self.add_env_var(b'STORM_NAME', str(storm_name_str))
 
         # Valid time window variables
-        valid_beg = self.tcp_dict['VALID_BEG']
-        self.add_env_var(b'VALID_BEG', str(valid_beg))
+        tmp_valid_beg = self.tcp_dict['VALID_BEG']
+        tmp_valid_end = self.tcp_dict['VALID_END']
 
-        valid_end = self.tcp_dict['VALID_END']
-        self.add_env_var(b'VALID_END', str(valid_end))
+        if not tmp_valid_beg:
+            self.add_env_var(b'VALID_BEG', "")
+        else:
+            valid_beg = str(tmp_valid_beg).replace("\'", "\"")
+            valid_beg_str = ''.join(valid_beg.split())
+            self.add_env_var(b'VALID_BEG', str(valid_beg_str))
+
+        if not tmp_valid_end:
+            self.add_env_var(b'VALID_END', "")
+        else:
+            valid_end = str(tmp_valid_end).replace("\'", "\"")
+            valid_end_str = ''.join(valid_end.split())
+            self.add_env_var(b'VALID_END', str(valid_end_str))
 
         # DLAND_FILE
         tmp_dland_file = self.tcp_dict['DLAND_FILE']

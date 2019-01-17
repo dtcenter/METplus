@@ -101,10 +101,13 @@ def metplus_config():
 #             assert actual_key == key
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 def test_run_at_time_valid_output_created():
+    # Skip this test until we find a solution to hard-coding data paths
+    pytest.skip("Requires hard-coded data path")
+
     # Verify that you have created some output in the output dir
 
     init_time = -1
-    valid_time = '201706010000'
+    valid_time = '201806010000'
 
     # Create a StatAnalysisWrapper object to invoke the methods.
     st = stat_analysis_wrapper()
@@ -122,10 +125,13 @@ def test_run_at_time_valid_output_created():
     assert files_in_dir
 
 def test_run_at_time_valid_check_file():
+    # Skip this test until we find a solution to hard-coding data paths
+    pytest.skip("Requires hard-coded data path")
+
     # Check for a specific file that have expected file size
 
     init_time = -1
-    valid_time = '201706010000'
+    valid_time = '201806010000'
 
     # Create a StatAnalysisWrapper object to invoke the methods.
     st = stat_analysis_wrapper()

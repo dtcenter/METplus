@@ -194,14 +194,14 @@ def test_output_dir_name_creation_for_gdas():
 def test_output_dir_name_creation_for_gdas_vsdb():
     # Verify that the output directory name is being assembled correctly for
     # VSDB files of the format:
-    # /gpfs/hps/nco/ops/com/gfs/prod/gdas.20180706/gdas.t00z.prepbufr
+    # /tmp/gpfs/hps/nco/ops/com/gfs/prod/gdas.20180706/gdas.t00z.prepbufr
     wrapper = pb2nc_wrapper()
     date = '20180706'
     cycle = '00'
     offset = None
     wrapper.pb_dict[
         'PB2NC_OUTPUT_DIR'] = \
-        '/gpfs/hps/nco/ops/com/gfs/prod/gdas.20180706'
+        '/tmp/gpfs/hps/nco/ops/com/gfs/prod/gdas.20180706'
     wrapper.pb_dict['PREPBUFR_DIR_REGEX'] = \
         '.gpfs/hps/nco/ops/com/gfs/prod/gdas.(2[0-9]{7})'
     wrapper.pb_dict['PREPBUFR_FILE_REGEX'] = \
@@ -209,7 +209,7 @@ def test_output_dir_name_creation_for_gdas_vsdb():
     wrapper.pb_dict['NC_FILE_TMPL'] = 'gdas.t{cycle?fmt=%HH}z.nc'
     full_filepath = \
         '/gpfs/hps/nco/ops/com/gfs/prod/gdas.20180706/gdas.t00z.prepbufr'
-    expected_outdir = '/gpfs/hps/nco/ops/com/gfs/prod'
+    expected_outdir = '/tmp/gpfs/hps/nco/ops/com/gfs/prod'
     expected_model = 'gdas.' + date
     expected_filename = 'gdas.t00z.nc'
     expected_outfile = os.path.join(expected_outdir,

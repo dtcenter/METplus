@@ -10,6 +10,7 @@ import pytest
 import config_metplus
 from grid_stat_wrapper import GridStatWrapper
 import met_util as util
+from met_util import FieldObj
 from task_info import TaskInfo
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
@@ -40,7 +41,8 @@ def grid_stat_wrapper():
          to over-ride these /path/to values."""
 
     conf = metplus_config()
-    return GridStatWrapper(conf, None)
+    logger = logging.getLogger("dummy")
+    return GridStatWrapper(conf, logger)
 
 
 @pytest.fixture
@@ -76,51 +78,62 @@ def metplus_config():
 # ------------------------
 def test_find_obs_no_dated():
     pcw = grid_stat_wrapper()
+    v = FieldObj()
+    v.obs_level = "6"
     task_info = TaskInfo()
     task_info.valid_time = "201802010000"
     task_info.lead = 0
-
+    
+    pcw.cg_dict['OBS_EXACT_VALID_TIME'] = False
     pcw.cg_dict['OBS_INPUT_DIR'] = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
-#    pcw.cg_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d_%H%M}"
     pcw.cg_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
-    obs_file = pcw.find_obs(task_info)
+    obs_file = pcw.find_obs(task_info, v)
     assert(obs_file == pcw.cg_dict['OBS_INPUT_DIR']+'/20180201_0045')
 
 
 def test_find_obs_dated():
     pcw = grid_stat_wrapper()
+    v = FieldObj()
+    v.obs_level = "6"
     task_info = TaskInfo()
     task_info.valid_time = "201802010000"
     task_info.lead = 0
 
+    pcw.cg_dict['OBS_EXACT_VALID_TIME'] = False
     pcw.cg_dict['OBS_INPUT_DIR'] = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     pcw.cg_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
-    obs_file = pcw.find_obs(task_info)
+    obs_file = pcw.find_obs(task_info, v)
     assert(obs_file == pcw.cg_dict['OBS_INPUT_DIR']+'/20180201/20180201_0013')
 
 def test_find_obs_dated_previous_day():
     pcw = grid_stat_wrapper()
+    v = FieldObj()
+    v.obs_level = "6"
     task_info = TaskInfo()
     task_info.valid_time = "201802010000"
     task_info.lead = 0
 
+    pcw.cg_dict['OBS_EXACT_VALID_TIME'] = False
     pcw.cg_dict['OBS_INPUT_DIR'] = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     pcw.cg_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
     pcw.cg_dict['WINDOW_RANGE_BEG'] = -3600
     pcw.cg_dict['WINDOW_RANGE_END'] = 0
-    obs_file = pcw.find_obs(task_info)
+    obs_file = pcw.find_obs(task_info, v)
     assert(obs_file == pcw.cg_dict['OBS_INPUT_DIR']+'/20180131/20180131_2345')
 
 def test_find_obs_dated_next_day():
     pcw = grid_stat_wrapper()
+    v = FieldObj()
+    v.obs_level = "6"
     task_info = TaskInfo()
     task_info.valid_time = "201802012345"
     task_info.lead = 0
 
+    pcw.cg_dict['OBS_EXACT_VALID_TIME'] = False
     pcw.cg_dict['OBS_INPUT_DIR'] = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     pcw.cg_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
     pcw.cg_dict['WINDOW_RANGE_BEG'] = 0
     pcw.cg_dict['WINDOW_RANGE_END'] = 3600
-    obs_file = pcw.find_obs(task_info)
+    obs_file = pcw.find_obs(task_info, v)
     assert(obs_file == pcw.cg_dict['OBS_INPUT_DIR']+'/20180202/20180202_0013')
     

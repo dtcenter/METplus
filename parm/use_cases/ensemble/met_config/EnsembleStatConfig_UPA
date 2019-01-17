@@ -1,0 +1,223 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Ensemble-Stat configuration file.
+//
+// For additional information, see the MET_BASE/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Output model name to be written
+//
+model = "${MODEL}_ens_${DOMAIN}";
+
+//
+// Output description to be written
+// May be set separately in each "obs.field" entry
+//
+desc = "NA";
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification masking regions
+//
+mask = {
+   grid = [];
+   poly = [ "${MASKS}/EAST.nc",
+            "${MASKS}/WEST.nc",
+            "${MASKS}/CONUS.nc",
+            "${MASKS}/LMV.nc" ];
+   sid  = [];
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// upa_grib_levels = [ "P925", "P850", "P700", "P500", "P250" ];
+upa_grib_levels = [ "P500" ];
+
+tmp_upa_thresh  = [ >263, >268, >273, >278, >283 ];
+dpt_upa_thresh  = [ >258, >263, >268, >273, >278 ];
+hgt_upa_thresh  = [ >1000, >2000, >3000, >4000, >5000, >6000 ];
+uv_upa_thresh   = [ >-20, >-10, >-5, >5, >10, >20 ];
+wind_upa_thresh = [ >4, >8, >12, >16, >20 ];
+
+//
+// Ensemble product fields to be processed
+//
+ens = {
+   ens_thresh = 1.0;
+   vld_thresh = 1.0;
+
+   field = [
+      { name = "TMP";  level = upa_grib_levels; cat_thresh = tmp_upa_thresh;  },
+      { name = "DPT";  level = upa_grib_levels; cat_thresh = dpt_upa_thresh;  },
+      { name = "HGT";  level = upa_grib_levels; cat_thresh = hgt_upa_thresh;  },
+      { name = "UGRD"; level = upa_grib_levels; cat_thresh = uv_upa_thresh;   },
+      { name = "VGRD"; level = upa_grib_levels; cat_thresh = uv_upa_thresh;   },
+      { name = "WIND"; level = upa_grib_levels; cat_thresh = wind_upa_thresh; }
+   ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+cnt_thresh  = [ NA ];
+cnt_logic   = UNION;
+wind_thresh = [ NA ];
+wind_logic  = UNION;
+
+//
+// Forecast and observation fields to be verified
+//
+fcst = {
+   message_type       = [ "ADPUPA" ];
+   sid_exc            = [];
+   ens_ssvar_bin_size = 1.0;
+   ens_phist_bin_size = 0.05;
+
+   field = [
+      { name = "TMP";  level = upa_grib_levels; cat_thresh = tmp_upa_thresh;  },
+      { name = "DPT";  level = upa_grib_levels; cat_thresh = dpt_upa_thresh;  },
+      { name = "HGT";  level = upa_grib_levels; cat_thresh = hgt_upa_thresh;  },
+      { name = "UGRD"; level = upa_grib_levels; cat_thresh = uv_upa_thresh;   },
+      { name = "VGRD"; level = upa_grib_levels; cat_thresh = uv_upa_thresh;   },
+      { name = "WIND"; level = upa_grib_levels; cat_thresh = wind_upa_thresh; }
+   ];
+};
+
+obs = fcst;
+obs = { wind_thresh = >2.572; };
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation filtering options
+// May be set separately in each "obs.field" entry
+//
+sid_exc            = [];
+obs_thresh         = [ NA ];
+obs_quality        = [];
+duplicate_flag     = UNIQUE;
+obs_summary        = NONE;
+obs_perc_value     = 50;
+skip_const         = TRUE;
+
+//
+// Observation error options
+// Set dist_type to NONE to use the observation error table instead
+// May be set separately in each "obs.field" entry
+//
+obs_error = {
+   flag             = TRUE;    // TRUE or FALSE
+   dist_type        = NONE;    // Distribution type
+   dist_parm        = [];      // Distribution parameters
+   inst_bias_scale  = 1.0;     // Instrument bias scale adjustment
+   inst_bias_offset = 0.0;     // Instrument bias offset adjustment
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Climatology mean data
+//
+climo_mean = {
+
+   file_name = [];
+   field     = [];
+
+   regrid = {
+      vld_thresh = 0.5;
+      method     = BILIN;
+      width      = 2;
+   }
+
+   time_interp_method = DW_MEAN;
+   match_day          = TRUE;
+   time_step          = 21600;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation time window
+//
+obs_window = {
+   beg = -900;
+   end =  900;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Confidence interval settings
+//
+ci_alpha  = [ 0.01 ];
+
+boot = {
+   interval = PCTILE;
+   rep_prop = 1.0;
+   n_rep    = 0;
+   rng      = "mt19937";
+   seed     = "";
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Interpolation methods
+//
+interp = {
+   type       = [ { method = BILIN; width = 2; } ];
+   vld_thresh = 1.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Statistical output types
+//
+output_flag = {
+   ecnt  = STAT;
+   rhist = STAT;
+   phist = STAT;
+   orank = BOTH; //NONE;
+   ssvar = STAT;
+   relp  = STAT;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Ensemble product output types
+//
+ensemble_flag = {
+   mean      = TRUE;
+   stdev     = TRUE;
+   minus     = FALSE;
+   plus      = FALSE;
+   min       = FALSE;
+   max       = FALSE;
+   range     = FALSE;
+   vld_count = TRUE;
+   frequency = TRUE;
+   rank      = FALSE;
+   weight    = FALSE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Random number generator
+//
+rng = {
+   type = "mt19937";
+   seed = "1";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+grid_weight_flag = NONE;
+output_prefix    = "${MODEL}_${DOMAIN}_F${FCST_TIME}_ADPUPA";
+version          = "V7.1";
+
+////////////////////////////////////////////////////////////////////////////////

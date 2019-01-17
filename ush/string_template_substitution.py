@@ -1001,7 +1001,7 @@ class StringSub:
                         self.logger.error("ERROR |  [" + cur_filename +
                                           ":" + cur_function + "] | " +
                                           "The key " + split_string[0] +
-                                          "does not exist for template: " +
+                                          " does not exist for template: " +
                                           self.tmpl)
 
                     # Key is in the dictionary
@@ -1222,7 +1222,7 @@ class StringSub:
                         self.logger.error("ERROR |  [" + cur_filename +
                                           ":" + cur_function + "] | " +
                                           "The key " + split_string[0] +
-                                          "does not exist for template: " +
+                                          " does not exist for template: " +
                                           self.tmpl)
 
                     # Key is in the dictionary
@@ -1394,7 +1394,7 @@ class StringSub:
                         self.logger.error("ERROR |  [" + cur_filename +
                                           ":" + cur_function + "] | " +
                                           "The key " + split_string[0] +
-                                          "does not exist for the template: " +
+                                          " does not exist for the template: " +
                                           self.tmpl)
 
                     # Key is in the dictionary
@@ -1557,16 +1557,31 @@ class StringExtract:
                     i += len(LEAD_STRING) + fmt_len - 1
             elif self.temp[i] == TEMPLATE_IDENTIFIER_END:
                 if inValid:
-                    if yIdx != -1 and self.fstr[yIdx:yIdx+4].isdigit():
-                        validYear = int(self.fstr[yIdx:yIdx+4])
-                    if mIdx != -1 and self.fstr[mIdx:mIdx+2].isdigit():
-                        validMonth = int(self.fstr[mIdx:mIdx+2])
-                    if dIdx != -1 and self.fstr[dIdx:dIdx+2].isdigit():
-                        validDay = int(self.fstr[dIdx:dIdx+2])
-                    if hIdx != -1 and self.fstr[hIdx:hIdx+2].isdigit():
-                        validHour = int(self.fstr[hIdx:hIdx + 2])
-                    if minIdx != -1 and self.fstr[minIdx:minIdx+2].isdigit():
-                        validMin = int(self.fstr[minIdx:minIdx + 2])
+                    if yIdx != -1:
+                        if self.fstr[yIdx:yIdx+4].isdigit():
+                            validYear = int(self.fstr[yIdx:yIdx+4])
+                        else:
+                            return False
+                    if mIdx != -1:
+                        if self.fstr[mIdx:mIdx+2].isdigit():
+                            validMonth = int(self.fstr[mIdx:mIdx+2])
+                        else:
+                            return False
+                    if dIdx != -1:
+                        if self.fstr[dIdx:dIdx+2].isdigit():
+                            validDay = int(self.fstr[dIdx:dIdx+2])
+                        else:
+                            return False
+                    if hIdx != -1:
+                        if self.fstr[hIdx:hIdx+2].isdigit():
+                            validHour = int(self.fstr[hIdx:hIdx + 2])
+                        else:
+                            return False
+                    if minIdx != -1:
+                        if self.fstr[minIdx:minIdx+2].isdigit():
+                            validMin = int(self.fstr[minIdx:minIdx + 2])
+                        else:
+                            return False
 
                     yIdx = -1
                     mIdx = -1
@@ -1576,16 +1591,31 @@ class StringExtract:
                     inValid = False
 
                 if inInit:
-                    if yIdx != -1 and self.fstr[yIdx:yIdx+4].isdigit():
-                        initYear = int(self.fstr[yIdx:yIdx + 4])
-                    if mIdx != -1 and self.fstr[mIdx:mIdx+2].isdigit():
-                        initMonth = int(self.fstr[mIdx:mIdx + 2])
-                    if dIdx != -1 and self.fstr[dIdx:dIdx+2].isdigit():
-                        initDay = int(self.fstr[dIdx:dIdx + 2])
-                    if hIdx != -1 and self.fstr[hIdx:hIdx+2].isdigit():
-                        initHour = int(self.fstr[hIdx:hIdx + 2])
-                    if minIdx != -1 and self.fstr[minIdx:minIdx+2].isdigit():
-                        initMin = int(self.fstr[minIdx:minIdx + 2])
+                    if yIdx != -1:
+                        if self.fstr[yIdx:yIdx+4].isdigit():
+                            initYear = int(self.fstr[yIdx:yIdx + 4])
+                        else:
+                            return False
+                    if mIdx != -1:
+                        if self.fstr[mIdx:mIdx+2].isdigit():
+                            initMonth = int(self.fstr[mIdx:mIdx + 2])
+                        else:
+                            return False
+                    if dIdx != -1:
+                        if self.fstr[dIdx:dIdx+2].isdigit():
+                            initDay = int(self.fstr[dIdx:dIdx + 2])
+                        else:
+                            return False
+                    if hIdx != -1:
+                        if self.fstr[hIdx:hIdx+2].isdigit():
+                            initHour = int(self.fstr[hIdx:hIdx + 2])
+                        else:
+                            return False
+                    if minIdx != -1:
+                        if self.fstr[minIdx:minIdx+2].isdigit():
+                            initMin = int(self.fstr[minIdx:minIdx + 2])
+                        else:
+                            return False
 
                     yIdx = -1
                     mIdx = -1
