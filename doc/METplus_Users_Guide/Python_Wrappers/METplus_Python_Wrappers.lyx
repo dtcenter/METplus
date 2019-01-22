@@ -153,16 +153,17 @@ Background
 \end_layout
 
 \begin_layout Standard
-The extract_tiles_wrapper does not have a corresponding MET tool, but instead
- provides support to the tc_pairs_wrapper, where the data of interest is
- tropical cylone track data.
- The extract_tiles_wrapper takes as input the output from MET tc_pairs and
- creates a 2n degree x 2m degree grid/tile with the storm located at the
- center.
+The extract_tiles_wrapper is used to regrid and extract subregions from
+ paired tropical cyclone tracks that are created by the tc_pairs wrapper.
+ The extract_tiles_wrapper does not have a corresponding MET tool, but instead
+ invokes the tc_stat_wrapper, which in turn calls the MET tc_stat tool to
+ determine the lat/lon positions of the paired track data.
+ The extract_tiles_wrapper creates a 2n degree x 2m degree grid/tile with
+ each storm located at the center.
  The size of the tile and the number of lon and lat points are defined in
  the METplus configuration file.
- In addition, the extract_tiles_wrapper supports additional filtering of
- the TCST files generated as output from the MET tool tc_pairs.
+ The extract_tiles_wrapper supports additional filtering of the TCST files
+ generated as output from the MET tool tc_pairs.
  
 \end_layout
 
@@ -171,10 +172,11 @@ Configuration
 \end_layout
 
 \begin_layout Standard
-As stated above, the dimensions and density of the grid/tiles are defined
- in a METplus configuration file under the [config] header/family.
+As stated above, the dimensions and density of the grid/tiles that comprise
+ the subregions are defined in a METplus configuration file under the [config]
+ header/family.
  The dimensions of the tile are defined by setting the LON_ADJ and LAT_ADJ
- values.
+ values (defining the 2n x 2m).
  The number of points in the tile are defined by setting values to NLAT
  and NLON.
  The resolution of data, in degrees is defined by setting the DLAT and DLON
@@ -182,7 +184,7 @@ As stated above, the dimensions and density of the grid/tiles are defined
  Additional filtering is accomplished by invoking the MET tool tc_stat,
  if the EXTRACT_TILES_FILTER_OPTS is defined.
  Refer to Chapter 20 in the MET Users Guide (TC-STAT Tools) for all the
- available options for requesting filtering.
+ available options for additional filtering.
  
 \end_layout
 
