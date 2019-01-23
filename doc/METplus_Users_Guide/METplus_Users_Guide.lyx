@@ -485,6 +485,17 @@ filename "Installation/METplus_Users_Guide_Installation.lyx"
 \end_inset
 
 
+\begin_inset CommandInset include
+LatexCommand include
+filename "Python_Wrappers/METplus_Python_Wrappers.lyx"
+
+\end_inset
+
+
+\begin_inset Newpage pagebreak
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
