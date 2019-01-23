@@ -9,7 +9,6 @@
 //
 // Output model name to be written
 //
-//model = "${model_fcst_now}";
 model = "${MODEL}";
 
 //
@@ -21,7 +20,6 @@ desc = "NA";
 //
 // Output observation type to be written
 //
-//obtype = "${model_fcst_now}_anl";
 obtype = "${OBTYPE}";
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +28,6 @@ obtype = "${OBTYPE}";
 // Verification grid
 //
 regrid = {
-//   to_grid    = "${GGG}";
    to_grid    = "G002";
    method     = BILIN;
    width      = 2;
@@ -56,12 +53,12 @@ eclv_points   = 0.05;
 // Forecast and observation fields to be verified
 //
 fcst = {
-    field = [
-    ${FCST_FIELD}
-//      { name  = "HGT"; level = [ "P1000", "P700", "P500", "P250" ]; }
-    ];
+    field = [ ${FCST_FIELD} ];
     };
-obs = fcst;
+
+obs = {
+    field = [ ${OBS_FIELD} ];
+    };
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -70,7 +67,7 @@ obs = fcst;
 //
 climo_mean = fcst;
 climo_mean = {
-   file_name = [ "${INPUT_BASE}/nwprod/fix/cmean_1d.1959${MET_VALID_HHMM}" ];
+   file_name = [ "${INPUT_BASE}/grid_to_grid/nwprod/fix/cmean_1d.1959${MET_VALID_HHMM}" ];
 
    regrid = {
       method     = BILIN;
@@ -180,11 +177,11 @@ output_flag = {
    pstd   = NONE;
    pjc    = NONE;
    prc    = NONE;
-//   eclv   = NONE;
+   eclv   = NONE;
    nbrctc = NONE;
    nbrcts = NONE;
    nbrcnt = NONE;
-//   grad   = NONE;
+   grad   = NONE;
 }
 
 //

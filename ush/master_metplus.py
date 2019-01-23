@@ -13,6 +13,7 @@ import config_launcher
 import time
 import datetime
 import calendar
+import shutil
 import produtil.setup
 # from produtil.run import run
 import met_util as util
@@ -29,6 +30,7 @@ from series_by_init_wrapper import SeriesByInitWrapper
 from stat_analysis_wrapper import StatAnalysisWrapper
 from make_plots_wrapper import MakePlotsWrapper
 from mode_wrapper import ModeWrapper
+from mtd_wrapper import MTDWrapper
 from usage_wrapper import UsageWrapper
 from command_builder import CommandBuilder
 from tcmpr_plotter_wrapper import TCMPRPlotterWrapper
@@ -49,7 +51,7 @@ logger = None
 def main():
     """!Main program.
 
-    Master MET+ script that invokes the necessary Python scripts
+    Master METplus script that invokes the necessary Python scripts
     to perform various activities, such as series analysis."""
 
     # Job Logger
@@ -63,9 +65,14 @@ def main():
     # only logging to tty, not a file.
     logger = logging.getLogger('master_metplus')
     logger.info('logger Top of master_metplus.')
+    logger.info('METplus called with command: '+' '.join(sys.argv))
 
     # Parse arguments, options and return a config instance.
     p = config_metplus.setup(filename=cur_filename)
+
+    # set staging dir to OUTPUT_BASE/stage if not set
+    if not p.has_option('dir', 'STAGING_DIR'):
+        p.set('dir', 'STAGING_DIR', os.path.join(p.getdir('OUTPUT_BASE'),"stage"))
 
     # NOW we have a conf object p, we can now get the logger
     # and set the handler to write to the LOG_METPLUS
@@ -132,7 +139,7 @@ def main():
             time_interval = p.getint('config', 'VALID_INCREMENT')
 
         if time_interval < 60:
-            print("ERROR: time_interval parameter must be "
+            logger.error("time_interval parameter must be "
                   "greater than 60 seconds")
             exit(1)
 
@@ -141,7 +148,7 @@ def main():
         while loop_time <= end_time:
             run_time = time.strftime("%Y%m%d%H%M", time.gmtime(loop_time))
             logger.info("****************************************")
-            logger.info("* RUNNING MET+")
+            logger.info("* RUNNING METplus")
             if use_init:
                 logger.info("*  at init time: " + run_time)
             else:
@@ -158,9 +165,15 @@ def main():
             loop_time += time_interval
 
     else:
-        print("ERROR: Invalid LOOP_METHOD defined. " + \
+        logger.error("Invalid LOOP_METHOD defined. " + \
               "Options are processes, times")
         exit()
+
+    # scrub staging directory if requested
+    if p.getbool('config', 'SCRUB_STAGING_DIR', False) and os.path.exists(p.getdir('STAGING_DIR')):
+        logger.info("Scrubbing staging dir: {}".format(p.getdir('STAGING_DIR')))
+        shutil.rmtree(p.getdir('STAGING_DIR'))
+
     exit()
 
     # TODO - remove this, I don't think this is being used.

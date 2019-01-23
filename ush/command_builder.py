@@ -46,6 +46,7 @@ class CommandBuilder:
         self.env = os.environ.copy()
         self.set_verbose(self.p.getstr('config', 'LOG_MET_VERBOSITY', '2'))
         self.cmdrunner = CommandRunner(self.p, logger=self.logger)
+        self.set_user_environment()
         self.clear()
 
     def clear(self):
@@ -57,6 +58,17 @@ class CommandBuilder:
         self.outdir = ""
         self.outfile = ""
         self.param = ""
+
+
+    def set_user_environment(self):
+        if 'user_env_vars' not in self.p.sections():
+            self.p.add_section('user_env_vars')
+
+        for env_var in self.p.keys('user_env_vars'):
+#            if env_var in self.env:
+#                self.logger.warning("{} is already set in the environment. Overwriting from conf file"
+#                                    .format(env_var))
+            self.add_env_var(env_var, self.p.getstr('user_env_vars', env_var))
 
 
     def set_debug(self, debug):
@@ -125,18 +137,16 @@ class CommandBuilder:
         """!Print all environment variables set for this application
         """
         for x in self.env:
-            self.logger.debug(x+"="+self.env[x])
+            self.logger.debug(x+'="'+self.env[x]+'"')
 
     def print_env_copy(self, vars):
         """!Print list of environment variables that can be easily
         copied into terminal
         """
         out = ""
-        for v in vars:
-            if self.env[v].find('"') != -1:
-                next = 'export '+v+'="'+self.env[v].replace('"', '\\"')+'"'
-            else:
-                next = 'export '+v+'='+self.env[v]
+        all_vars = vars + self.p.keys('user_env_vars')
+        for v in all_vars:
+            next = 'export '+v+'="'+self.env[v].replace('"', '\\"')+'"'
             out += next+'; '
         self.logger.debug(out)
 
@@ -144,6 +154,45 @@ class CommandBuilder:
         """!Print single environment variable in the log file
         """
         self.logger.debug(item+"="+self.env[item])
+
+
+    def print_user_env_items(self):
+        for k in self.p.keys('user_env_vars'):
+            self.print_env_item(k)
+
+
+    def handle_fcst_and_obs_field(self, gen_name, fcst_name, obs_name, default, sec='config'):
+        has_gen = self.p.has_option(sec, gen_name)
+        has_fcst = self.p.has_option(sec, fcst_name)
+        has_obs = self.p.has_option(sec, obs_name)
+
+        # use fcst and obs if both are set
+        if has_fcst and has_obs:
+            fcst_conf = self.p.getstr(sec, fcst_name)
+            obs_conf = self.p.getstr(sec, obs_name)
+            if has_gen:
+                self.logger.warning('Ignoring conf {} and using {} and {}'
+                                    .format(gen_name, fcst_name, obs_name))
+            return (fcst_conf, obs_conf)
+
+        # if one but not the other is set, error and exit
+        if has_fcst and not has_obs:
+            self.logger.error('Cannot use {} without {}'.format(fcst_name, obs_name))
+            exit(1)
+
+        if has_obs and not has_fcst:
+            self.logger.error('Cannot use {} without {}'.format(obs_name, fcst_name))
+            exit(1)
+
+        # if generic conf is set, use for both
+        if has_gen:
+            gen_conf = self.p.getstr(sec, gen_name)
+            return (gen_conf, gen_conf)
+
+        # if none of the options are set, use default value for both
+        self.logger.warning('Using default values for {}'.format(gen_name))
+        return (default, default)
+
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -202,7 +251,7 @@ class CommandBuilder:
 
     def run_all_times(self):
         """!Loop over time range specified in conf file and
-        call MET+ wrapper for each time"""
+        call METplus wrapper for each time"""
         use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
         if use_init:
             time_format = self.p.getstr('config', 'INIT_TIME_FMT')
@@ -216,7 +265,7 @@ class CommandBuilder:
             time_interval = self.p.getint('config', 'VALID_INCREMENT')
         
         if time_interval < 60:
-            print("ERROR: time_interval parameter must be greater than 60 seconds")
+            self.logger.error("time_interval parameter must be greater than 60 seconds")
             exit(1)
         
         loop_time = calendar.timegm(time.strptime(start_t, time_format))
@@ -224,7 +273,7 @@ class CommandBuilder:
 
         while loop_time <= end_time:
             run_time = time.strftime("%Y%m%d%H%M", time.gmtime(loop_time))
-            # Set valid time to -1 if using init and vice versa            
+            # Set valid time to -1 if using init and vice versa
             if use_init:
                 self.run_at_time(run_time, -1)
             else:

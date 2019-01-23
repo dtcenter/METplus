@@ -135,6 +135,8 @@ class PB2NCWrapper(CommandBuilder):
         pb_dict['PREPBUFR_DIR_REGEX'] = util.getraw_interp(self.p,
                                                            'regex_pattern',
                                                            'PREPBUFR_DIR_REGEX')
+        pb_dict['VERTICAL_LOCATION'] = self.p.getstr('config',
+                                                     'VERTICAL_LOCATION')
 
         return pb_dict
 
@@ -253,13 +255,13 @@ class PB2NCWrapper(CommandBuilder):
         # then don't allow it to be converted to "", or else MET will
         # search for message type "" in the prepbufr file.
         tmp_message_type = self.pb_dict['PB2NC_MESSAGE_TYPE']
-        # Check for "empty" PB2NC_MESSAGE_TYPE in MET+ config file and
+        # Check for "empty" PB2NC_MESSAGE_TYPE in METplus config file and
         # set the PB2NC_MESSAGE_TYPE environment variable appropriately.
         if not tmp_message_type:
             self.add_env_var('PB2NC_MESSAGE_TYPE', "[]")
         else:
             # Not empty, set the PB2NC_MESSAGE_TYPE environment variable to the
-            # message types specified in the MET+ config file.
+            # message types specified in the METplus config file.
             tmp_message_type = str(tmp_message_type).replace("\'", "\"")
             # Remove all whitespace
             tmp_message_type = ''.join(tmp_message_type.split())
@@ -270,7 +272,7 @@ class PB2NCWrapper(CommandBuilder):
             self.add_env_var('PB2NC_STATION_ID', "[]")
         else:
             # Not empty, set the environment variable to the
-            # value specified in the MET+ config file.
+            # value specified in the METplus config file.
             station_id_string = str(tmp_station_id).replace("\'", "\"")
             # Remove all whitespace
             station_id_string = ''.join(station_id_string.split())
@@ -281,7 +283,7 @@ class PB2NCWrapper(CommandBuilder):
             self.add_env_var('OBS_BUFR_VAR_LIST', "[]")
         else:
             # Not empty, set the environment variable to the
-            # value specified in the MET+ config file.
+            # value specified in the METplus config file.
             tmp_obs_bufr_str = str(tmp_obs_bufr).replace("\'", "\"")
             tmp_obs_bufr_str = ''.join(tmp_obs_bufr_str.split())
             self.add_env_var(b'OBS_BUFR_VAR_LIST', tmp_obs_bufr_str)

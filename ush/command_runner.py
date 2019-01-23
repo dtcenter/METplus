@@ -15,7 +15,7 @@ Output Files: N/A
 
 ##@namespace command_runner
 # The purpose of this class is to run the external MET executables
-# and other ancillary external programs used in MET+, such as
+# and other ancillary external programs used in METplus, such as
 # wgrib2, ncdump, plot_tcmpr.R
 #
 # It also centralizes the output redirection to the
@@ -153,9 +153,11 @@ class CommandRunner(object):
 
 
         self.logger.info("RUNNING: %s" % cmd.to_shell())
-        self.logger.debug("RUNNING %s" % repr(cmd))
 
-        ret = run(cmd, **kwargs)
+        ret = 0
+        # run app unless DO_NOT_RUN_EXE is set to True
+        if not self.config.getbool('config', 'DO_NOT_RUN_EXE', False):
+            ret = run(cmd, **kwargs)
 
         return (ret, cmd)
 

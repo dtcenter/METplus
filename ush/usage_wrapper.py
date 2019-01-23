@@ -26,8 +26,8 @@ class UsageWrapper(CommandBuilder):
         self.logger = logger
         self.available_processes = ['TcPairs', 'ExtractTiles', 'SeriesByInit',
                                     'SeriesByLead', 'PcpCombine',
-                                    'RegridDataPlane',
-                                    'GridStat', 'Mode', 'RegridDataPlane',
+                                    'RegridDataPlane', 'GridStat',
+                                    'Mode', 'MTD', 'RegridDataPlane',
                                     'CyclonePlotter', 'TCMPRPlotter',
                                     'PB2NC', 'PointStat']
 

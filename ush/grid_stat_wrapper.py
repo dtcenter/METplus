@@ -44,17 +44,22 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.cg_dict['CONFIG_FILE'] = self.p.getstr('config', 'GRID_STAT_CONFIG',
                                                     self.cg_dict['CONFIG_DIR']+'/GridStatConfig_MEAN')
         self.cg_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
+        self.cg_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
         self.cg_dict['OBS_INPUT_DIR'] = \
-          self.p.getdir('OBS_GRID_STAT_INPUT_DIR')
+          self.p.getdir('OBS_GRID_STAT_INPUT_DIR', self.p.getdir('OUTPUT_BASE'))
         self.cg_dict['OBS_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'OBS_GRID_STAT_INPUT_TEMPLATE')
+        self.cg_dict['OBS_INPUT_DATATYPE'] = \
+          self.p.getstr('config', 'OBS_GRID_STAT_INPUT_DATATYPE', '')
         self.cg_dict['FCST_INPUT_DIR'] = \
-          self.p.getdir('FCST_GRID_STAT_INPUT_DIR')
+          self.p.getdir('FCST_GRID_STAT_INPUT_DIR', self.p.getdir('OUTPUT_BASE'))
         self.cg_dict['FCST_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'FCST_GRID_STAT_INPUT_TEMPLATE')
-        self.cg_dict['OUTPUT_DIR'] =  self.p.getdir('GRID_STAT_OUT_DIR')
+        self.cg_dict['FCST_INPUT_DATATYPE'] = \
+          self.p.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
+        self.cg_dict['OUTPUT_DIR'] =  self.p.getdir('GRID_STAT_OUT_DIR', self.p.getdir('OUTPUT_BASE'))
         self.cg_dict['INPUT_BASE'] =  self.p.getdir('INPUT_BASE')
         self.cg_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 24)
         self.cg_dict['FCST_INIT_INTERVAL'] = self.p.getint('config', 'FCST_INIT_INTERVAL', 12)
@@ -65,7 +70,14 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.cg_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
                                                               'OBS_EXACT_VALID_TIME',
                                                               True)
-
+        self.cg_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
+                                                              'FCST_EXACT_VALID_TIME',
+                                                              True)
+        self.cg_dict['ONCE_PER_FIELD'] = self.p.getbool('config',
+                                                        'GRID_STAT_ONCE_PER_FIELD',
+                                                        False)
+        self.cg_dict['FCST_PROB_THRESH'] = self.p.getstr('config', 'FCST_GRID_STAT_PROB_THRESH', '==0.1')
+        self.cg_dict['OBS_PROB_THRESH'] = self.p.getstr('config', 'OBS_GRID_STAT_PROB_THRESH', '==0.1')
 
 if __name__ == "__main__":
         util.run_stand_alone("grid_stat_wrapper", "GridStat")

@@ -42,7 +42,8 @@ def pcp_combine_wrapper():
     # PB2NCWrapper with configuration values determined by what is set in
     # the pb2nc_test.conf file.
     conf = metplus_config()
-    return PcpCombineWrapper(conf, None)
+    logger = logging.getLogger("dummy")
+    return PcpCombineWrapper(conf, logger)
 
 
 @pytest.fixture
@@ -83,22 +84,24 @@ def test_get_accumulation_1_to_6():
     pcw = pcp_combine_wrapper()
     data_src = "OBS"
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    valid_time = "2016090418"
+    task_info = TaskInfo()
+    task_info.valid_time = "2016090418"
     accum = 6
 
     file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
         
     pcw.set_input_dir(input_dir)
-    pcw.get_accumulation(valid_time, accum, data_src,
+#    pcw.get_accumulation(valid_time, accum, data_src,
+    pcw.get_accumulation(task_info, accum, data_src,
                                            file_template, False)
     in_files = pcw.get_input_files()
     if len(in_files) == 6 and \
       input_dir+"/20160904/file.2016090418.01h" in in_files and \
-      input_dir+"/20160904/file.2016090418.01h" in in_files and \
-      input_dir+"/20160904/file.2016090418.01h" in in_files and \
-      input_dir+"/20160904/file.2016090418.01h" in in_files and \
-      input_dir+"/20160904/file.2016090418.01h" in in_files and \
-      input_dir+"/20160904/file.2016090418.01h" in in_files:
+      input_dir+"/20160904/file.2016090417.01h" in in_files and \
+      input_dir+"/20160904/file.2016090416.01h" in in_files and \
+      input_dir+"/20160904/file.2016090415.01h" in in_files and \
+      input_dir+"/20160904/file.2016090414.01h" in in_files and \
+      input_dir+"/20160904/file.2016090413.01h" in in_files:
         assert True
     else:
         assert False
@@ -108,13 +111,14 @@ def test_get_accumulation_6_to_6():
     pcw = pcp_combine_wrapper()
     data_src = "FCST"
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    valid_time = "2016090418"
+    task_info = TaskInfo()
+    task_info.valid_time = "2016090418"
     accum = 6
 
     file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
     
     pcw.set_input_dir(input_dir)
-    pcw.get_accumulation(valid_time, accum, data_src,
+    pcw.get_accumulation(task_info, accum, data_src,
                                            file_template, False)
     in_files = pcw.get_input_files()    
     if  len(in_files) == 1 and input_dir+"/20160904/file.2016090418.06h" in in_files:
@@ -128,8 +132,9 @@ def test_get_lowest_forecast_file_dated_subdir():
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = "201802012100"
     dtype = "FCST"
+    template = util.getraw_interp(pcw.p, 'filename_templates', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
-    out_file = pcw.getLowestForecastFile(valid_time, dtype)
+    out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/20180201/file.2018020118f003.nc")
 
 
@@ -138,8 +143,9 @@ def test_get_lowest_forecast_file_no_subdir():
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = "201802012100"
     dtype = "FCST2"
+    template = util.getraw_interp(pcw.p, 'filename_templates', dtype+'_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
-    out_file = pcw.getLowestForecastFile(valid_time, dtype)
+    out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/file.2018020118f003.nc")
 
 def test_get_lowest_forecast_file_yesterday():
@@ -147,36 +153,10 @@ def test_get_lowest_forecast_file_yesterday():
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = "201802010600"
     dtype = "FCST2"
+    template = util.getraw_interp(pcw.p, 'filename_templates', 'FCST2_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
-    out_file = pcw.getLowestForecastFile(valid_time, dtype)
+    out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/file.2018013118f012.nc")    
-
-
-def test_search_day():
-    pcw = pcp_combine_wrapper()
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/daily"
-    file_time = "201802010600"
-    search_time = "2018020100"
-    template = "file.{valid?fmt=%Y%m%d}.txt"
-    out_file = pcw.search_day(input_dir, file_time, search_time, template)
-    assert(out_file == input_dir+"/file.20180201.txt")
-
-    
-def test_find_closest_before_today():
-    pcw = pcp_combine_wrapper()
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/daily"
-    file_time = "201802010600"
-    template = "file.{valid?fmt=%Y%m%d}.txt"
-    out_file = pcw.find_closest_before(input_dir, file_time, template)
-    assert(out_file == input_dir+"/file.20180201.txt")
-
-def test_find_closest_before_yesterday():
-    pcw = pcp_combine_wrapper()
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/daily"
-    file_time = "201802080000"
-    template = "file.{valid?fmt=%Y%m%d}.txt"
-    out_file = pcw.find_closest_before(input_dir, file_time, template)
-    assert(out_file == input_dir+"/file.20180207.txt")    
 
 def test_get_daily_file():
     pcw = pcp_combine_wrapper()
@@ -204,7 +184,7 @@ def test_setup_add_method():
     pcw.setup_add_method(task_info, var_info, rl)
     
     in_files = pcw.get_input_files()
-    out_file = pcw.get_output_path()    
+    out_file = pcw.get_output_path()
     if len(in_files) == 6 and \
       input_dir+"/20160904/file.2016090418.01h" in in_files and \
       input_dir+"/20160904/file.2016090417.01h" in in_files and \
@@ -241,7 +221,6 @@ def test_setup_sum_method():
     out_file = pcw.get_output_path()    
     assert(out_file == output_dir+"/20160904/outfile.2016090418_A06h")
 
-
 def test_setup_subtract_method():
     pcw = pcp_combine_wrapper()
     task_info = TaskInfo()
@@ -257,7 +236,7 @@ def test_setup_subtract_method():
     var_info.obs_level = "A06"
     rl = "FCST"
     pcw.setup_subtract_method(task_info, var_info, rl)
-    
     in_files = pcw.get_input_files()
     out_file = pcw.get_output_path()    
     assert(len(in_files) == 2)
+

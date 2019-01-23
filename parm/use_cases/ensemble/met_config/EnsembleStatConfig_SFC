@@ -165,12 +165,12 @@ interp = {
 // Statistical output types
 //
 output_flag = {
-   ecnt  = STAT;
-   rhist = STAT;
-   phist = STAT;
-   orank = NONE;
-   ssvar = STAT;
-   relp  = STAT;
+   ecnt  = BOTH;
+   rhist = BOTH;
+   phist = BOTH;
+   orank = BOTH;
+   ssvar = BOTH;
+   relp  = BOTH;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -191,6 +191,17 @@ ensemble_flag = {
    rank      = FALSE;
    weight    = FALSE;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Random number generator
+//
+rng = {
+   type = "mt19937";
+   seed = "1";
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 

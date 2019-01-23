@@ -4,34 +4,28 @@ import os
 import glob
 import subprocess
 import filecmp
-#import sys
 import logging
-#import getopt
 import config_launcher
 import time
-#import datetime
 import calendar
-#import produtil.setup
-#from produtil.run import batchexe, run  # , checkrun
 import met_util as util
-#import config_metplus
 
 # TODO: move test results to separate file for readability
 
-def run_test_use_case(param_a, param_b, run_a, run_b):
+def get_param_list(param_a, param_b):
     metplus_home = "/d1/mccabe/METplus"
     a_conf = metplus_home+"/internal_tests/use_cases/system.a.conf"
     b_conf = metplus_home+"/internal_tests/use_cases/system.b.conf"
     params_a = param_a.split(",")
     params_b = param_b.split(",")
-#    params_a = [ params, a_conf ]
-#    params_b = [ params, b_conf ]
     params_a = params_a + [a_conf]
     params_b = params_b + [b_conf]
-    print(params_a)
-    all_good = True
-#    params_a = [ param_file, a_conf ]
-#    params_b = [ param_file, b_conf ]
+    return params_a, params_b
+
+
+def get_params(param_a, param_b):
+    params_a, params_b = get_param_list(param_a, param_b)
+
     logger = logging.getLogger('master_metplus')    
 
     # read A confs
@@ -44,8 +38,13 @@ def run_test_use_case(param_a, param_b, run_a, run_b):
     (parm, infiles, moreopt) = config_launcher.parse_launch_args(params_b,
                                                                  None, None,
                                                                  logger)
-    p_b = config_launcher.launch(infiles, moreopt)    
-    
+    p_b = config_launcher.launch(infiles, moreopt)
+    return p, p_b
+
+
+def run_test_use_case(param_a, param_b, run_a, run_b):
+    params_a, params_b = get_param_list(param_a, param_b)
+    p, p_b = get_params(param_a, param_b)
     # run A
     if run_a:
         cmd = os.path.join(p.getstr('config', "METPLUS_BASE"),"ush","master_metplus.py")
@@ -64,22 +63,20 @@ def run_test_use_case(param_a, param_b, run_a, run_b):
         process = subprocess.Popen(cmd, shell=True)
         process.wait()
 
-    if not compare_results(p, p_b):
-        all_good = False
-
-    return all_good
-
-def compare_results(p, p_b):
+def compare_results(param_a, param_b):
+    p, p_b = get_params(param_a, param_b)
     a_dir = p.getstr('config', 'OUTPUT_BASE')
     b_dir = p_b.getstr('config', 'OUTPUT_BASE')
 
     print("****************************")
     print("* TEST RESULTS             *")
     print("****************************")
+    print(param_a+" vs")
+    print(param_b)
     good = True
 
     processes = util.getlist(p.getstr('config', 'PROCESS_LIST'))
-    
+    # TODO: Not all apps that use_init will write dirs on init, could be valid
     use_init = p.getbool('config', 'LOOP_BY_INIT')
     if use_init:
         time_format = p.getstr('config', 'INIT_TIME_FMT')
@@ -97,7 +94,6 @@ def compare_results(p, p_b):
     while loop_time <= end_time:
         run_time = time.strftime("%Y%m%d%H%M", time.gmtime(loop_time))
         print("Checking "+run_time)
-        # TODO: Handle PcpCombine for each type of run (OBS vs FCST)
         for process in processes:
             print("Checking output from "+process)
             if process == "GridStat":
@@ -107,18 +103,36 @@ def compare_results(p, p_b):
                 glob_string = "{:s}/{:s}/grid_stat/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time))
                 files_b = glob.glob(glob_string.format(out_b, run_time))
-            elif process == "PcpCombineObs":
-                out_a = p.getstr('config', "OBS_PCP_COMBINE_OUTPUT_DIR")
-                out_b = p_b.getstr('config', "OBS_PCP_COMBINE_OUTPUT_DIR")
-                glob_string = "{:s}/{:s}/*"
-                files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
-                files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
-            elif process == "PcpCombineModel":
-                out_a = p.getstr('config', "FCST_PCP_COMBINE_OUTPUT_DIR")
-                out_b = p_b.getstr('config', "FCST_PCP_COMBINE_OUTPUT_DIR")
-                glob_string = "{:s}/{:s}/*"
-                files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
-                files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
+            elif process == "Mode":
+                # out_subdir = "uswrp/met_out/QPF/200508070000/grid_stat"
+                out_a = p.getstr('config', "MODE_OUT_DIR")
+                out_b = p_b.getstr('config', "MODE_OUT_DIR")
+                glob_string = "{:s}/{:s}/mode/*"
+                files_a = glob.glob(glob_string.format(out_a, run_time))
+                files_b = glob.glob(glob_string.format(out_b, run_time))
+            elif process == "PcpCombine":
+                out_o_a = ""
+                out_a = ""
+                if p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
+                    out_o_a = p.getstr('config', "OBS_PCP_COMBINE_OUTPUT_DIR")
+                    out_o_b = p_b.getstr('config', "OBS_PCP_COMBINE_OUTPUT_DIR")
+                    glob_string = "{:s}/{:s}/*"
+                    files_o_a = glob.glob(glob_string.format(out_o_a, run_time[0:8]))
+                    files_o_b = glob.glob(glob_string.format(out_o_b, run_time[0:8]))
+                if p.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
+                    out_a = p.getstr('config', "FCST_PCP_COMBINE_OUTPUT_DIR")
+                    out_b = p_b.getstr('config', "FCST_PCP_COMBINE_OUTPUT_DIR")
+                    glob_string = "{:s}/{:s}/*"
+                    files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
+                    files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
+                # if both fcst and obs are set, run obs here then fcst will run
+                # at the end of the if blocks
+                if out_o_a != "" and out_a != "" and not compare_output_files(files_o_a, files_o_b, a_dir, b_dir):
+                    good = False
+                # if only obs ran, set variables so that it runs at end of if blocks
+                elif out_o_a != "":
+                    files_a = files_o_a
+                    files_b = files_o_b
             elif process == "RegridDataPlane":
                 out_a = p.getstr('config', "OBS_REGRID_DATA_PLANE_OUTPUT_DIR")
                 out_b = p_b.getstr('config', "OBS_REGRID_DATA_PLANE_OUTPUT_DIR")
@@ -200,15 +214,16 @@ def compare_output_files(files_a, files_b, a_dir, b_dir):
 
 def main():
     run_a = False
-    run_b = False
+    run_b = True
 
     metplus_home = "/d1/mccabe/METplus"
     use_case_dir = os.path.join(metplus_home,"parm/use_cases")
     param_files = [
-                    use_case_dir+"/qpf/examples/ruc-vs-s2grib.conf",
-                    use_case_dir+"/qpf/examples/phpt-vs-s4grib.conf",
-                    use_case_dir+"/qpf/examples/hrefmean-vs-qpe.conf",
-                    use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf",
+                    use_case_dir+"/qpf/examples/ruc-vs-s2grib.conf" ,
+                    use_case_dir+"/qpf/examples/phpt-vs-s4grib.conf" ,
+                    use_case_dir+"/qpf/examples/phpt-vs-mrms-qpe.conf" ,
+                    use_case_dir+"/qpf/examples/hrefmean-vs-qpe.conf" ,
+                    use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf" ,
                     use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" #,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" #,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" #,
@@ -223,7 +238,12 @@ def main():
     for param_file in param_files:
         param_a = param_file.replace(metplus_home,"/d1/mccabe/METplus.a")
         param_b = param_file.replace(metplus_home,"/d1/mccabe/METplus.b")
-        if not run_test_use_case(param_a, param_b, run_a, run_b):
+        run_test_use_case(param_a, param_b, run_a, run_b)
+
+    for param_file in param_files:
+        param_a = param_file.replace(metplus_home,"/d1/mccabe/METplus.a")
+        param_b = param_file.replace(metplus_home,"/d1/mccabe/METplus.b")
+        if not compare_results(param_a, param_b):
             all_good = False
 
     if all_good:

@@ -15,12 +15,14 @@ import bz2
 import zipfile
 from collections import namedtuple
 import struct
+from csv import reader
 
 import subprocess
 from produtil.run import exe
 from produtil.run import runstr,alias
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
+from gempak_to_cf_wrapper import GempakToCFWrapper
 # for run stand alone
 import produtil
 import config_metplus
@@ -164,7 +166,19 @@ def set_logvars(config, logger=None):
                            'a valid strftime directive: %s' % repr(log_timestamp_template))
             logger.info('Using the following default: %Y%m%d%H')
             log_timestamp_template = '%Y%m%d%H'
-        log_filenametimestamp = datetime.datetime.now().strftime(log_timestamp_template)
+        t = datetime.datetime.now()
+        if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
+            if config.getbool('config', 'LOOP_BY_INIT', True):
+                t = datetime.datetime.strptime(config.getstr('config',
+                                                             'INIT_BEG'),
+                                               config.getstr('config',
+                                                             'INIT_TIME_FMT'))
+            else:
+                t = datetime.datetime.strptime(config.getstr('config',
+                                                             'VALID_BEG'),
+                                               config.getstr('config',
+                                                             'VALID_TIME_FMT'))
+        log_filenametimestamp = t.strftime(log_timestamp_template)
     else:
         log_filenametimestamp=''
 
@@ -920,7 +934,7 @@ def get_dirs(base_dir):
 
 
 def getlist(s, logger=None):
-    """! Returns a list of string elements from a comma or space
+    """! Returns a list of string elements from a comma
          separated string of values.
          This function MUST also return an empty list [] if s is '' empty.
          This function is meant to handle these possible or similar inputs:
@@ -933,32 +947,15 @@ def getlist(s, logger=None):
 
         @param s the string being converted to a list.
     """
-
-    # Developer NOTE: we could just force this to only operate
-    # on comma separated lists, not space separated.
-
     # FIRST remove surrounding comma, and spaces, form the string.
     s = s.strip().strip(',').strip()
 
-    # splitting an empty string, s with ',', creates a 1 element
-    # list with an empty string element, we don't want to create or
-    # return that, ie. NEVER RETURN THIS [''], If s is '', an
-    # empty string, then return an empty list [].
-    # Doing so allows for proper boolean testing of your
-    # list elsewhere in the code, ie. bool([]) is False.
-
-    # if s is not an empty string, split it on
-    # commas or spaces
-    if s:
-        if ',' in s:
-            s = s.split(',')
-            s = [item.strip() for item in s]
-        else:
-            s = s.split()
-    else:
-        # create an empty list []
-        s = list()
-
+    # remove space around commas
+    s = re.sub(r'\s*,\s*', ',', s)
+    # use csv reader to divide comma list while preserving strings with comma
+    s = reader([s])
+    # convert the csv reader to a list and get first item (which is the whole list)
+    s = list(s)[0]
     return s
 
 
@@ -1011,7 +1008,7 @@ def shift_time_seconds(time, shift):
 
 class FieldObj(object):
     __slots__ = 'fcst_name', 'fcst_level', 'fcst_extra', 'fcst_thresh', \
-                'obs_name', 'obs_level', 'obs_extra', 'obs_thresh'
+                'obs_name', 'obs_level', 'obs_extra', 'obs_thresh', 'index'
 
 
 # TODO: Check if other characters are only <>!=&|gelt.[0-9] (?)
@@ -1089,77 +1086,111 @@ def parse_var_list(p):
         Returns:
             list of FieldObj with variable information
     """
+    var_list_fcst = parse_var_list_helper(p, "FCST", False)
+    var_list_obs = parse_var_list_helper(p, "OBS", True)
+    var_list = var_list_fcst + var_list_obs
+    return sorted(var_list, key=lambda x: x.index)
+    return var_list
+
+
+def parse_var_list_helper(p, dt, dont_duplicate):
+    """ helper function for parse_var_list
+        Args:
+            @param p: Conf object
+            @param dt: data_type (FCST or OBS)
+            @param dont_duplicate: if true check other data
+              type and don't process if it exists
+        Returns:
+            list of FieldObj with variable information
+    """
+    # get other data type
+    odt = "OBS"
+    if dt == "OBS":
+        odt = "FCST"
+
     # var_list is a list containing an list of FieldObj
     var_list = []
 
     # find all FCST_VARn_NAME keys in the conf files
     all_conf = p.keys('config')
-    fcst_indices = []
-    regex = re.compile("FCST_VAR(\d+)_NAME")
+    indices = []
+    regex = re.compile(dt+"_VAR(\d+)_NAME")
     for conf in all_conf:
         result = regex.match(conf)
         if result is not None:
-          fcst_indices.append(result.group(1))
+          indices.append(result.group(1))
 
     # loop over all possible variables and add them to list
-    for n in fcst_indices:
+    for n in indices:
+        # don't duplicate if already entered into var list
+        if dont_duplicate and p.has_option('config', odt+'_VAR'+n+'_NAME'):
+            continue
+
+        name = {}
+        levels = {}
+        thresh = {}
+        extra = {}
         # get fcst var info if available
-        if p.has_option('config', "FCST_VAR"+n+"_NAME"):
-            fcst_name = p.getstr('config', "FCST_VAR"+n+"_NAME")
+        if p.has_option('config', dt+"_VAR"+n+"_NAME"):
+            name[dt] = p.getstr('config', dt+"_VAR"+n+"_NAME")
 
-            fcst_extra = ""
-            if p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                fcst_extra = getraw_interp(p, 'config', "FCST_VAR"+n+"_OPTIONS")
+            extra[dt] = ""
+            if p.has_option('config', dt+"_VAR"+n+"_OPTIONS"):
+                extra[dt] = getraw_interp(p, 'config', dt+"_VAR"+n+"_OPTIONS")
 
-            fcst_thresh = ""
-            if p.has_option('config', "FCST_VAR"+n+"_THRESH"):
-                fcst_thresh = getlist(p.getstr('config', "FCST_VAR"+n+"_THRESH"))
-                if validate_thresholds(fcst_thresh) == False:
-                    print("  Update FCST_VAR"+n+"_THRESH to match this format")
+            thresh[dt] = []
+            if p.has_option('config', dt+"_VAR"+n+"_THRESH"):
+                thresh[dt] = getlist(p.getstr('config', dt+"_VAR"+n+"_THRESH"))
+                if validate_thresholds(thresh[dt]) == False:
+                    print("  Update "+dt+"_VAR"+n+"_THRESH to match this format")
                     exit(1)
 
             # if OBS_VARn_X does not exist, use FCST_VARn_X
-            if p.has_option('config', "OBS_VAR"+n+"_NAME"):
-                obs_name = p.getstr('config', "OBS_VAR"+n+"_NAME")
+            if p.has_option('config', odt+"_VAR"+n+"_NAME"):
+                name[odt] = p.getstr('config', odt+"_VAR"+n+"_NAME")
             else:
-                obs_name = fcst_name
+                name[odt] = name[dt]
 
-            obs_extra = ""
-            if p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                obs_extra = getraw_interp(p, 'config', "OBS_VAR"+n+"_OPTIONS")
+            extra[odt] = ""
+            if p.has_option('config', odt+"_VAR"+n+"_OPTIONS"):
+                extra[odt] = getraw_interp(p, 'config', odt+"_VAR"+n+"_OPTIONS")
 
-            fcst_levels = getlist(p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-            if p.has_option('config', "OBS_VAR"+n+"_LEVELS"):
-                obs_levels = getlist(p.getstr('config', "OBS_VAR"+n+"_LEVELS"))
+            levels[dt] = getlist(p.getstr('config', dt+"_VAR"+n+"_LEVELS"))
+            if p.has_option('config', odt+"_VAR"+n+"_LEVELS"):
+                levels[odt] = getlist(p.getstr('config', odt+"_VAR"+n+"_LEVELS"))
             else:
-                obs_levels = fcst_levels
+                levels[odt] = levels[dt]
 
-            if len(fcst_levels) != len(obs_levels):
-                print("ERROR: FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+\
+            if len(levels[dt]) != len(levels[odt]):
+                print("ERROR: "+dt+"_VAR"+n+"_LEVELS and "+odt+"_VAR"+n+\
                           "_LEVELS do not have the same number of elements")
                 exit(1)
 
             # if OBS_VARn_THRESH does not exist, use FCST_VARn_THRESH
-            if p.has_option('config', "OBS_VAR"+n+"_THRESH"):
-                obs_thresh = getlist(p.getstr('config', "OBS_VAR"+n+"_THRESH"))
-                if validate_thresholds(obs_thresh) == False:
-                    print("  Update OBS_VAR"+n+"_THRESH to match this format")
+            if p.has_option('config', odt+"_VAR"+n+"_THRESH"):
+                thresh[odt] = getlist(p.getstr('config', odt+"_VAR"+n+"_THRESH"))
+                if validate_thresholds(thresh[odt]) == False:
+                    print("  Update "+odt+"_VAR"+n+"_THRESH to match this format")
                     exit(1)
             else:
-                obs_thresh = fcst_thresh
+                thresh[odt] = thresh[dt]
 
-  
+            if len(thresh[dt]) != len(thresh[odt]):
+                print("ERROR: "+dt+"_VAR"+n+"_THRESH and "+odt+"_VAR"+n+\
+                          "_THRESH do not have the same number of elements")
+                exit(1)
 
-            for f,o in zip(fcst_levels, obs_levels):
+            for f,o in zip(levels[dt], levels[odt]):
                 fo = FieldObj()
-                fo.fcst_name = fcst_name
-                fo.obs_name = obs_name
-                fo.fcst_extra = fcst_extra
-                fo.obs_extra = obs_extra
-                fo.fcst_thresh = fcst_thresh
-                fo.obs_thresh = obs_thresh
+                fo.fcst_name = name[dt]
+                fo.obs_name = name[odt]
+                fo.fcst_extra = extra[dt]
+                fo.obs_extra = extra[odt]
+                fo.fcst_thresh = thresh[dt]
+                fo.obs_thresh = thresh[odt]
                 fo.fcst_level = f
                 fo.obs_level = o
+                fo.index = n
                 var_list.append(fo)
 
     '''
@@ -1177,12 +1208,20 @@ def parse_var_list(p):
     return var_list
 
 
+def split_level(level):
+    level_type = ""
+    if(level[0].isalpha()):
+        level_type = level[0]
+        level = level[1:].zfill(2)
+    return level_type, level
+
+
 def reformat_fields_for_met(all_vars_list, logger):
         """! Reformat the fcst or obs field values defined in the
-             MET+ config file to the MET field dictionary.
+             METplus config file to the MET field dictionary.
              Args:
                  all_vars_list - The list of all variables/fields retrieved
-                                 from the MET+ configuration file
+                                 from the METplus configuration file
                  logger        - The log to which any logging is directed.
              Returns:
                  met_fields - a named tuple containing the fcst field and
@@ -1393,6 +1432,7 @@ def get_filetype(filepath, logger=None):
 
 
 def get_time_from_file(logger, filepath, template):
+    valid_extensions = [ '.gz', '.bz2', '.zip' ]
     if os.path.isdir(filepath):
         return None
 
@@ -1401,10 +1441,16 @@ def get_time_from_file(logger, filepath, template):
     if se.parseTemplate():
         return se
     else:
+        # check to see if zip extension ends file path, try again without extension
+        for ext in valid_extensions:
+            if filepath.endswith(ext):
+                se = StringExtract(logger, template, filepath[:-len(ext)])
+                if se.parseTemplate():
+                    return se
         return None
 
 
-def getraw_interp(p, sec, opt):
+def getraw_interp(p, sec, opt, count=0):
     """ parse parameter and replace any existing parameters
         referenced with the value (looking in same section, then
         config, dir, and os environment)
@@ -1416,8 +1462,11 @@ def getraw_interp(p, sec, opt):
         Returns:
             Raw string
     """
+    count = count + 1
+    if count >= 10:
+        return ''
 
-    in_template = p.getraw(sec, opt)
+    in_template = p.getraw(sec, opt, "")
     out_template = ""
     in_brackets = False
     for i, c in enumerate(in_template):
@@ -1428,11 +1477,11 @@ def getraw_interp(p, sec, opt):
             var_name = in_template[start_idx+1:i]
             var = None
             if p.has_option(sec,var_name):
-                var = p.getstr(sec,var_name)
+                var = getraw_interp(p, sec, var_name, count)
             elif p.has_option('config',var_name):
-                var = p.getstr('config',var_name)
+                var = getraw_interp(p, 'config', var_name, count)
             elif p.has_option('dir',var_name):
-                var = p.getstr('dir',var_name)
+                var = getraw_interp(p, 'dir', var_name, count)
             elif var_name[0:3] == "ENV":
                 var = os.environ.get(var_name[4:-1])
 
@@ -1447,38 +1496,91 @@ def getraw_interp(p, sec, opt):
     return out_template
 
 
-def decompress_file(filename, logger=None):
-    """ Decompress gzip, bzip, or zip files
+def preprocess_file(filename, data_type, p, logger=None):
+    """ Decompress gzip, bzip, or zip files or convert Gempak files to NetCDF
         Args:
             @param filename: Path to file without zip extensions
+            @param p: Config object
             @param logger: Optional argument to allow logging
         Returns:
-            None
+            Path to staged unzipped file or original file if already unzipped
     """
+    if filename is None or filename == "":
+        return None
+
+    stage_dir = p.getdir('STAGING_DIR')
+    # TODO: move valid_extensions so it can be used by more than one function
+    valid_extensions = [ '.gz', '.bz2', '.zip' ]
     if os.path.exists(filename):
-        return
-    elif os.path.exists(filename+".gz"):
+        for ext in valid_extensions:
+            if filename.endswith(ext):
+                return preprocess_file(filename[:-len(ext)], data_type, p, logger)
+        # if extension is grd (Gempak), then look in staging dir for nc file
+        if filename.endswith('.grd') or data_type == "GEMPAK":
+            if filename.endswith('.grd'):
+                stagefile = stage_dir + filename[:-3]+"nc"
+            else:
+                stagefile = stage_dir + filename+".nc"
+            if os.path.exists(stagefile):
+                return stagefile
+            # if it does not exist, run GempakToCF and return staged nc file
+            # Create staging area if it does not exist
+            outdir = os.path.dirname(stagefile)
+            if not os.path.exists(outdir):
+                os.makedirs(outdir, mode=0775)
+            run_g2c = GempakToCFWrapper(p, logger)
+            run_g2c.add_input_file(filename)
+            run_g2c.set_output_path(stagefile)
+            cmd = run_g2c.get_command()
+            if cmd is None:
+                self.logger.error("GempakToCF could not generate command")
+                return None
+            if logger:
+                logger.info("Converting Gempak file")
+            run_g2c.build()
+            return stagefile
+
+        return filename
+
+    if os.path.exists(filename[:-2]+'grd'):
+        return preprocess_file(filename[:-2]+'grd', data_type, p, logger)
+    # if file exists in the staging area, return that path
+    outpath = stage_dir + filename
+    if os.path.exists(outpath):
+        return outpath
+
+    # Create staging area if it does not exist
+    outdir = os.path.dirname(outpath)
+    if not os.path.exists(outdir):
+        os.makedirs(outdir, mode=0775)
+
+    if os.path.exists(filename+".gz"):
         if logger:
             logger.info("Decompressing gz file")
         with gzip.open(filename+".gz", 'rb') as infile:
-            with open(filename, 'wb') as outfile:
+            with open(outpath, 'wb') as outfile:
                 outfile.write(infile.read())
                 infile.close()
                 outfile.close()
+                return outpath
     elif os.path.exists(filename+".bz2"):
         if logger:
             logger.info("Decompressing bz2 file")
         with open(filename+".bz2", 'rb') as infile:
-            with open(filename, 'wb') as outfile:
+            with open(outpath, 'wb') as outfile:
                 outfile.write(bz2.decompress(infile.read()))
                 infile.close()
                 outfile.close()
+                return outpath
     elif os.path.exists(filename+".zip"):
         if logger:
             logger.info("Decompressing zip file")
         with zipfile.ZipFile(filename+".zip") as z:
-            with open(filename, 'wb') as f:
+            with open(outpath, 'wb') as f:
                 f.write(z.read(os.path.basename(filename)))
+                return outpath
+
+    return None
 
 
 def run_stand_alone(module_name, app_name):
@@ -1546,6 +1648,15 @@ def add_common_items_to_dictionary(p, dictionary):
     dictionary['NCDUMP_EXE'] = p.getexe('NCDUMP_EXE')
     dictionary['EGREP_EXE'] = p.getexe('EGREP_EXE')
 
+
+def template_to_regex(template, init_time, valid_time, logger):
+    in_template = re.sub(r'\.', '\\.', template)
+    in_template = re.sub(r'{lead.*?}', '.*', in_template)
+    sts = StringSub(logger,
+                    in_template,
+                    init=init_time,
+                    valid=valid_time)
+    return sts.doStringSub()
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")

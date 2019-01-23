@@ -4,6 +4,7 @@ import re
 import sys
 import logging
 import collections
+import datetime
 import produtil.fileop
 import produtil.run
 import produtil.log
@@ -49,7 +50,7 @@ baseinputconfs = ['metplus_config/metplus_system.conf',
 # These metplus configuration variables map to the following
 # HWRF variables.
 # METPLUS_BASE == HOMEmetplus, OUTPUT_BASE == WORKmetplus
-# METPLUS_CONF == CONFmetplus, METPUS_USH == USHmetplus
+# METPLUS_CONF == CONFmetplus, METPLUS_USH == USHmetplus
 # PARM_BASE == PARMmetplus
 
 '''!@var METPLUS_BASE
@@ -77,9 +78,9 @@ if os.environ.get('PARM_BASE', ''):
 # Based on METPLUS_BASE, Will set METPLUS_USH, or PARM_BASE if not
 # already set in the environment.
 if METPLUS_BASE is None:
-    guess_METPLUS_BASE = dirname(dirname(realpath(__file__)))
-    USHguess = os.path.join(guess_METPLUS_BASE, 'ush')
-    PARMguess = os.path.join(guess_METPLUS_BASE, 'parm')
+    METPLUS_BASE = dirname(dirname(realpath(__file__)))
+    USHguess = os.path.join(METPLUS_BASE, 'ush')
+    PARMguess = os.path.join(METPLUS_BASE, 'parm')
     if os.path.isdir(USHguess) and os.path.isdir(PARMguess):
         if METPLUS_USH is None:
             METPLUS_USH = USHguess
@@ -96,10 +97,6 @@ else:
               "Please set $METPLUS_BASE "
               "in the environment.".format(METPLUS_BASE), file=sys.stderr)
         sys.exit(2)
-
-# print("guess_METPLUS_BASE is: {}",guess_METPLUS_BASE)
-# print("METPLUS_USH is: {}",METPLUS_USH)
-# print("PARM_BASE is: {}",PARM_BASE)
 
 # For METplus, this is assumed to already be set.
 if METPLUS_USH not in sys.path:
@@ -212,6 +209,8 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     conf = METplusLauncher()
     logger = conf.log()
 
+    conf.set('config', 'CLOCK_TIME', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+
     # Read in and parse all the conf files.
     for filename in file_list:
         conf.read(filename)
@@ -279,17 +278,25 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     if not os.path.exists(realpath(dirname(confloc))):
         produtil.fileop.makedirs(realpath(dirname(confloc)), logger=logger)
 
+    # set METPLUS_BASE conf to location of scripts used by METplus
+    # warn if user has set METPLUS_BASE to something different
+    # in their conf file
+    user_metplus_base = conf.getdir('METPLUS_BASE', '')
+    if user_metplus_base != '' and user_metplus_base != METPLUS_BASE:
+        logger.warning('METPLUS_BASE from the conf files has no effect.'+\
+                       ' Overriding to '+METPLUS_BASE)
+    conf.set('dir','METPLUS_BASE', METPLUS_BASE)
+
     # logger.info('Expand certain [dir] values to ensure availability ')
     #            'before vitals parsing.
     # frimel: Especially before vitals parsing. THIS IS ONLY NEEDED in
     # order to define the vit dictionary and use of vit|{somevar} in the
     # conf file.
     for var in ('OUTPUT_BASE', 'METPLUS_BASE'):
-        expand = conf.getstr('dir', var)
+        expand = conf.getdir(var)
         logger.info('Replace [dir] %s with %s' % (var, expand))
         conf.set('dir', var, expand)
 
-    # conf.set('dir','METPLUS_BASE',METPLUS_BASE)
 
     # Place holder for when workflow is developed in METplus.
     # if prelaunch is not None:
