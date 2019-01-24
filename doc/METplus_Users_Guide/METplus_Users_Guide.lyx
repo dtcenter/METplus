@@ -5,11 +5,6 @@
 \save_transient_properties true
 \origin unavailable
 \textclass book
-\begin_preamble
-% Added by lyx2lyx
-\renewcommand{\textendash}{--}
-\renewcommand{\textemdash}{---}
-\end_preamble
 \use_default_options true
 \maintain_unincluded_children false
 \language english
@@ -83,7 +78,7 @@
 \begin_layout Title
 
 \series bold
-METplus Version 2.0.1
+METplus Version 2.0
 \begin_inset Newline newline
 \end_inset
 
@@ -412,7 +407,7 @@ Developmental Testbed Center
 \begin_layout Date
 
 \series bold
-November 2018
+September 2018
 \end_layout
 
 \begin_layout Standard
