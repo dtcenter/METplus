@@ -135,10 +135,10 @@ obs_window = {
 //
 mask = {
    grid = [];
-   poly = [ "${CONFIG_DIR}/masks/EAST.nc",
-            "${CONFIG_DIR}/masks/WEST.nc",
-            "${CONFIG_DIR}/masks/CONUS.nc",
-            "${CONFIG_DIR}/masks/LMV.nc" ];
+   poly = [ "${INPUT_BASE}/ensemble/mask/EAST.nc",
+            "${INPUT_BASE}/ensemble/mask/WEST.nc",
+            "${INPUT_BASE}/ensemble/mask/CONUS.nc",
+            "${INPUT_BASE}/ensemble/mask/LMV.nc" ];
    sid  = [];
 }
 

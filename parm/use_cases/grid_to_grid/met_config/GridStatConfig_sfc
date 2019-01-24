@@ -97,18 +97,18 @@ write_cdf_bins = FALSE;
 //
 mask = {
    grid = [ "FULL" ];
-   poly = [ "${CONFIG_DIR}/poly/NHX.nc",
-            "${CONFIG_DIR}/poly/SHX.nc",
-            "${CONFIG_DIR}/poly/N60.nc",
-            "${CONFIG_DIR}/poly/S60.nc",
-            "${CONFIG_DIR}/poly/TRO.nc",
-            "${CONFIG_DIR}/poly/NPO.nc",
-            "${CONFIG_DIR}/poly/SPO.nc",
-            "${CONFIG_DIR}/poly/NAO.nc",
-            "${CONFIG_DIR}/poly/SAO.nc",
-            "${CONFIG_DIR}/poly/CONUS.nc",
-            "${CONFIG_DIR}/poly/CAM.nc",
-            "${CONFIG_DIR}/poly/NSA.nc" ];
+   poly = [ "${INPUT_BASE}/grid_to_grid/poly/NHX.nc",
+            "${INPUT_BASE}/grid_to_grid/poly/SHX.nc",
+            "${INPUT_BASE}/grid_to_grid/poly/N60.nc",
+            "${INPUT_BASE}/grid_to_grid/poly/S60.nc",
+            "${INPUT_BASE}/grid_to_grid/poly/TRO.nc",
+            "${INPUT_BASE}/grid_to_grid/poly/NPO.nc",
+            "${INPUT_BASE}/grid_to_grid/poly/SPO.nc",
+            "${INPUT_BASE}/grid_to_grid/poly/NAO.nc",
+            "${INPUT_BASE}/grid_to_grid/poly/SAO.nc",
+            "${INPUT_BASE}/grid_to_grid/poly/CONUS.nc",
+            "${INPUT_BASE}/grid_to_grid/poly/CAM.nc",
+            "${INPUT_BASE}/grid_to_grid/poly/NSA.nc" ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
