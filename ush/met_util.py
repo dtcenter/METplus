@@ -16,6 +16,7 @@ import zipfile
 from collections import namedtuple
 import struct
 from csv import reader
+from os.path import dirname, realpath
 
 import subprocess
 from produtil.run import exe
@@ -32,11 +33,12 @@ import config_metplus
  @brief Provides  Utility functions for METplus.
 """
 
-def add_version_to_conf(p):
+def get_version_number():
     # read version file and return value
-    version_file_path = os.path.join(p.getdir('METPLUS_BASE'),'doc','version')
-    with open(version_file_path, 'r') as version_file
-        p.set('config', 'METPLUS_VERSION', version_file.read())
+    version_file_path = os.path.join(dirname(dirname(realpath(__file__))),
+                                     'doc','version')
+    with open(version_file_path, 'r') as version_file:
+        return version_file.read()
 
 
 def round_0p5(val):
