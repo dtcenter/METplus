@@ -633,8 +633,6 @@ class PB2NCWrapper(CommandBuilder):
 
                 # Invoke MET pb2nc
                 cmd = self.get_command()
-                self.logger.debug(cur_function + '|' +
-                                  'pb2nc called with: ' + cmd)
                 self.build()
                 self.logger.debug(
                     cur_function + '|' +
