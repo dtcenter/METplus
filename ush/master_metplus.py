@@ -65,7 +65,8 @@ def main():
     # only logging to tty, not a file.
     logger = logging.getLogger('master_metplus')
     logger.info('logger Top of master_metplus.')
-    logger.info('METplus called with command: '+' '.join(sys.argv))
+    logger.info('METplus v{} called with command: {}'
+                .format(util.get_version_number(), ' '.join(sys.argv)))
 
     # Parse arguments, options and return a config instance.
     p = config_metplus.setup(filename=cur_filename)
@@ -84,6 +85,7 @@ def main():
     logger = util.get_logger(p)
     # logger.info('Top of master_metplus after conf file setup.')
 
+    logger.info('Running METplus version {}'.format(util.get_version_number()))
     # This is available in each subprocess from os.system BUT
     # we also set it in each process since they may be called stand alone.
     os.environ['MET_BASE'] = p.getdir('MET_BASE')
