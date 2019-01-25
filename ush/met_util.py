@@ -513,7 +513,7 @@ def get_files(filedir, filename_regex, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    logger.debug("DEBUG|" + cur_filename + "|" + cur_function)
+    logger.debug(cur_function)
     file_paths = []
 
     # pylint:disable=unused-variable

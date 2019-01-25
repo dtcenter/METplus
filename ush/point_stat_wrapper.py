@@ -74,7 +74,7 @@ class PointStatWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+        self.logger.info(cur_function + '| ' +
                          "Creating point-stat dictionary ...")
         ps_dict = dict()
 
@@ -166,14 +166,14 @@ class PointStatWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+        self.logger.info(cur_function + '| ' +
                          "Starting PointStatWrapper...")
 
         loop_method = self.ps_dict['LOOP_METHOD']
         if loop_method == 'processes':
             self.run_all_times()
         else:
-            self.logger.error(cur_function + '|' + cur_filename +
+            self.logger.error(cur_function +
                               '| ' + " loop method defined in configuration "
                                      "file is unsupported.  Only 'processes' "
                                      "is "
@@ -191,7 +191,7 @@ class PointStatWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+        self.logger.info(cur_function + '|' +
                          "Running point-stat for all initialization times...")
 
         # Get a list of all the files in the model/fcst and obs directories
@@ -218,8 +218,8 @@ class PointStatWrapper(CommandBuilder):
             util.mkdir_p(self.outdir)
 
             cmd = self.get_command()
-            self.logger.debug(cur_function + "|" + cur_filename
-                              + "| Command to run MET point_stat: " + cmd)
+            self.logger.debug(cur_function +
+                              "| Command to run MET point_stat: " + cmd)
             self.build()
             self.clear()
 
@@ -240,7 +240,7 @@ class PointStatWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+        self.logger.info(cur_function + '| ' +
                          "Setting all environment variables specified in "
                          "the MET config file...")
 
@@ -307,13 +307,10 @@ class PointStatWrapper(CommandBuilder):
                          str(self.ps_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var(b'OBS_WINDOW_END', str(self.ps_dict['OBS_WINDOW_END']))
 
-        self.logger.debug("")
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_copy(["MODEL_NAME","FCST_FIELD","POINT_STAT_MESSAGE_TYPE",
                             "OBS_WINDOW_BEGIN","OBS_WINDOW_END","POINT_STAT_GRID",
                             "POINT_STAT_POLY"])
-        self.logger.debug("")
-
 
 
     def select_fcst_obs_pairs(self):
@@ -337,7 +334,7 @@ class PointStatWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+        self.logger.info(cur_function + '| ' +
                          "Selecting file pairings by valid time...")
 
         # Get fcst and obs files for all the requested forecast hours for
@@ -406,7 +403,7 @@ class PointStatWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+        self.logger.info(cur_function + '| ' +
                          "Creating file information for model/fcst or obs...")
 
         # Determine which files are within the valid time window.
@@ -489,7 +486,7 @@ class PointStatWrapper(CommandBuilder):
                 all_obs_files, obs_file_regex_tuple)
         else:
             self.logger.error(
-                cur_filename + '|' + cur_function +
+                cur_filename +
                 '| Unsupported file type.  File type must be "fcst" or "obs"')
             sys.exit(1)
 
@@ -534,7 +531,7 @@ class PointStatWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+        self.logger.info(cur_function + '| ' +
                          "Creating file information for model/fcst or obs...")
 
         consolidated_file_info = []
@@ -598,7 +595,7 @@ class PointStatWrapper(CommandBuilder):
                                                     time_info_tuple.lead)
                     consolidated_file_info.append(input_file_info)
         else:
-            self.logger.error(cur_function + '|' + cur_filename + '| '
+            self.logger.error(cur_function + '|'
                               ' No input files for ' + input_file_type +
                               ' found in '
                               'the specified input directory. '
@@ -633,8 +630,7 @@ class PointStatWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.debug(
-            cur_function + '|' + cur_filename + '| ' +
+        self.logger.debug(cur_function + '|' +
             "Retrieving all forecast or obs input files")
         all_input_files = []
 
@@ -654,6 +650,8 @@ class PointStatWrapper(CommandBuilder):
                         all_input_files.extend(input_files_in_subdirs)
         else:
             # Files contain date information in the filename.
+            self.logger.debug(cur_function + '| Looking in {} for regex {}'
+                              .format(dir_to_search, input_file_regex))
             all_input_files = util.get_files(dir_to_search, input_file_regex,
                                              self.logger)
         return all_input_files
@@ -685,9 +683,6 @@ class PointStatWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.debug(
-            cur_function + '|' + cur_filename + '| ' +
-            "Retrieving time information for file")
 
         TimeInfo = namedtuple('TimeInfo', 'date, valid, cycle, lead')
 
@@ -924,9 +919,6 @@ class PointStatWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.debug(
-            cur_function + '|' + cur_filename + '| ' +
-            "Converting date strings to unix times")
 
         if len(date_string) == 8:
             time_tuple = \
@@ -1032,8 +1024,8 @@ class PointStatWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         self.logger.debug(
-            cur_function + '|' + cur_filename +
-            ":Generating the filename regex from the filename_templates "
+            cur_function + '|' +
+            "Generating the filename regex from the filename_templates "
             "section.")
 
         # To filter files on the criteria of date, region, or cyclone
