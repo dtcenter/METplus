@@ -88,9 +88,10 @@ name "chap:METplus Python Wrappers"
 \end_layout
 
 \begin_layout Standard
-Each METplus Python wrapper is a Python script that hides the underlying
- complexity of its corresponding MET tool or MET-related behavior.
- 
+This chapter provides a description of each supported Python wrapper in
+ METplus.
+ A METplus wrapper is a Python script that encapsulates the behavior of
+ a corresponding MET tool.
 \end_layout
 
 \begin_layout Section
@@ -148,26 +149,20 @@ name "sec:extract_tiles_wrapper"
 
 \end_layout
 
-\begin_layout Standard
-a
-\end_layout
-
-\begin_layout Subsection
-Background
+\begin_layout Subsection*
+3.5.1 Description
 \end_layout
 
 \begin_layout Standard
-The extract_tiles_wrapper is used to regrid and extract subregions from
- paired tropical cyclone tracks that are created by the tc_pairs wrapper.
- The extract_tiles_wrapper does not have a corresponding MET tool, but instead
- invokes the tc_stat_wrapper, which in turn calls the MET tc_stat tool to
- determine the lat/lon positions of the paired track data.
+The extract_tiles_wrapper.py script is used to regrid and extract subregions
+ from paired tropical cyclone tracks that are created by the tc_pairs_wrapper.
+ Unlike the other METplus wrappers, the extract_tiles_wrapper does not correspon
+d to a specific MET tool.
+ It invokes the tc_stat_wrapper, which in turn calls the MET tc_stat tool
+ to determine the lat/lon positions of the paired track data.
+ This information is then used to create tiles of subregions.
  The extract_tiles_wrapper creates a 2n degree x 2m degree grid/tile with
  each storm located at the center.
- The size of the tile and the number of lon and lat points are defined in
- the METplus configuration file.
- The extract_tiles_wrapper supports additional filtering of the TCST files
- generated as output from the MET tool tc_pairs.
  
 \end_layout
 
@@ -176,20 +171,58 @@ Configuration
 \end_layout
 
 \begin_layout Standard
-As stated above, the dimensions and density of the grid/tiles that comprise
- the subregions are defined in a METplus configuration file under the [config]
- header/family.
- The dimensions of the tile are defined by setting the LON_ADJ and LAT_ADJ
- values (defining the 2n x 2m).
- The number of points in the tile are defined by setting values to NLAT
- and NLON.
- The resolution of data, in degrees is defined by setting the DLAT and DLON
- values.
- Additional filtering is accomplished by invoking the MET tool tc_stat,
- if the EXTRACT_TILES_FILTER_OPTS is defined.
- Refer to Chapter 20 in the MET Users Guide (TC-STAT Tools) for all the
- available options for additional filtering.
- 
+The following should be set in the METplus configuration file to define
+ the dimensions and density of the tiles comprising the subregion:
+\end_layout
+
+\begin_layout Standard
+LON_ADJ - set to a value in degrees, found under the [config] header/family.
+ This defines the 2n portion of the 2n x 2m subregion tile.
+\end_layout
+
+\begin_layout Standard
+LAT_ADJ - set to a value in degrees, found under the [config] header/family.
+ This defines the 2m portion of the 2n x 2m subregion tile.
+\end_layout
+
+\begin_layout Standard
+NLAT - set to a whole number, found under the [config] header/family.
+ This defines the number of latitude points to incorporate into the subregion
+ (density).
+\end_layout
+
+\begin_layout Standard
+NLON - set to a whole number, found under the [config] header/family.
+ This defines the number of longitude points to incorporate into the subregion
+ (density).
+\end_layout
+
+\begin_layout Standard
+DLON - set to the value that defines the resolution of the data (in decimal
+ degrees).
+ Found under the [config] header/family section of the METplus config file.
+\end_layout
+
+\begin_layout Standard
+DLAT - set to the value that defines the resolution of the data (in decimal
+ degrees).
+ Found under the [config] header/family section of the METplus config file.
+\end_layout
+
+\begin_layout Standard
+EXTRACT_TILES_FILTER_OPTS - Additional filtering by summary (via the MET
+ tc_stat tool).
+ Please refer to Chapter 20 in the MET Users Guide (TC-STAT Tools) for all
+ the available options for filtering by summary method in tc-stat.
+ If no additional filtering is required, simply leave the value to EXTRACT_TILES
+_FILTER_OPTS blank/empty in the METplus configuration file.
+ This is located in the [config] header/family section of the METplus config
+ file.
+\end_layout
+
+\begin_layout Standard
+PROCESS_LIST - set this to ExtractTiles to ensure that the extract_tiles_wrapper.
+py script is run.
 \end_layout
 
 \begin_layout Subsection
@@ -199,7 +232,8 @@ Associated Use Cases
 \begin_layout Standard
 This wrapper is used in the feature relative use case, as it is necessary
  to regrid the matched pairs of track data onto the same tile.
- 
+ This is run after the tc_pairs_wrapper and before the series analysis wrappers
+ (either series_by_init_wrapper, series_by_lead_wrapper).
 \end_layout
 
 \begin_layout Section
@@ -225,13 +259,92 @@ name "sec:mode_wrapper"
 \end_layout
 
 \begin_layout Section
-pb2nc_wrapper 
+pb2nc_wrapper
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:pb2nc_wrapper"
 
 \end_inset
 
+ 
+\end_layout
+
+\begin_layout Subsection
+3.8.1 Description
+\end_layout
+
+\begin_layout Standard
+The pb2nc_wrapper is a Python script that encapsulates the behavior of the
+ MET pb2nc tool to convert prepBUFR files into netCDF.
+\end_layout
+
+\begin_layout Subsection
+Configuration
+\end_layout
+
+\begin_layout Standard
+The following values must be defined in the METplus configuration file:
+\end_layout
+
+\begin_layout Standard
+PREPBUFR_MODEL_DIR_NAME - set this to the name of the model data (e.g.
+ NAM, GFS, nam, gfs).
+ This is found under the [dir] section/family.
+ The output directory will be given this name.
+\end_layout
+
+\begin_layout Standard
+PREPBUFR_DATA_DIR - The full path to the prepBUFR input data.
+ This variable is found under the [dir] section/family section of the METplus
+ config file.
+\end_layout
+
+\begin_layout Standard
+PB2NC_CONFIG_FILE - The full path to the MET pb2nc configuration file.
+ This variable is found under the [config] section/family section of the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+PB2NC_OUTPUT_DIR - The full path to where the netCDF output will be saved.
+ This variable is located under the [config] section/family section of the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+PREPBUFR_DIR_REGEX - The regular expression that describes the input prepBUFR
+ directory name.
+ This variable is located under the [regex_pattern] section/family of the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+PREPBUFR_FILE_REGEX - The regular expression that describes the input prepBUFR
+ file name.
+ This variable is located under the [regex_patter] section/family of the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+NC_FILE_TMPL - The file template that describes the format of the output
+ netCDF files that will be created by MET pb2nc.
+ This variable is located under the [filename_templates] section/family
+ section of the METplus config file.
+ 
+\end_layout
+
+\begin_layout Standard
+PROCESS_LIST - set this to PB2NC to ensure that the pb2nc_wrapper.py script
+ is invoked.
+\end_layout
+
+\begin_layout Subsection
+Associated Use Cases
+\end_layout
+
+\begin_layout Standard
+The pb2nc_wrapper.py is currently part of the grid_to_obs use case, where
+ it is invoked to convert point observation data in prepBUFR format to netCDF.
  
 \end_layout
 
@@ -255,6 +368,47 @@ name "sec:point_stat_wrapper"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+The point_stat_wrapper is a Python script that encapsulates the MET point_stat
+ tool.
+ It provides the infrastructure to read in gridded model data and netCDF
+ point observation data to perform grid-to-point (grid-to-obs) verification.
+ 
+\end_layout
+
+\begin_layout Subsection
+Configuration
+\end_layout
+
+\begin_layout Standard
+FCST_INPUT_DIR - the location (full path) to the input point observation
+ data.
+ This variable is located under the [config] header/family section of the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+PROCESS_LIST - set to PointStat (to ensure that the point_stat_wrapper is
+ run).
+ This variable is located under the [config] header/family section of the
+ METplus config file.
+\end_layout
+
+\begin_layout Subsection
+Associated Use Cases
+\end_layout
+
+\begin_layout Standard
+The point_stat_wrapper is part of the grid_to_obs use case, where point
+ observation data in prepBUFR or netCDF are verified against gridded model
+ data.
+ 
 \end_layout
 
 \begin_layout Section
@@ -288,6 +442,120 @@ name "sec:series_by_init_wrapper"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+The series_by_init_wrapper provides the infrastructure needed to perform
+ a series analysis on tropical cyclone data, based on initialization times.
+ The series_by_init_wrapper creates numerous plots that represent the field,
+ level, and statistic for each initialization time.
+\end_layout
+
+\begin_layout Subsection
+Configuration
+\end_layout
+
+\begin_layout Standard
+The input track and model data files are defined in any one of the user's
+ METplus configuration files.
+ If creating a final configuration file that overrides all other config
+ files, it is customary to define the MODEL_DATA_DIR, pointing to the directory
+ where all model data resides.
+ The full file path to the Adeck and Bdeck track data files are defined
+ in the ADECK_TRACK_DATA_DIR and BDECK_TRACK_DATA_DIR variables respectively.
+ The time window of interest is defined by setting the INIT_BEG and INIT_END
+ variables to a valid begin and end time in YYYYMMDD format.
+ The step size or time increment is defined by setting INIT_INCREMENT to
+ the appropriate number of seconds from the INIT_BEG time.
+ The INIT_HOUR_END defines the last hour in your initialization time to
+ include in your time window.
+ INIT_INCLUDE and INIT_EXCLUDE are used to list the times in YYYYMMDD_HH
+ format to include or exclude from your time window.
+ If these values are undefined (i.e.
+ no value is set for the variable), then all available times in your time
+ window will be considered.
+ For example, if your data is available every 6 hours and you are interested
+ in creating a series analysis from init time 20180601 to 20180615 for all
+ available times, from 00z to 23z, you would set the following:
+\end_layout
+
+\begin_layout Standard
+INIT_BEG = set this to the starting YYYYMMDD of the time window of interest
+ (e.g.
+ 20180601).
+ This variable is found under the [config] header/family section of the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+INIT_END = set this to the ending YYYYMMDD of the time window of interest
+ (e.g.
+ 20180615).
+ This variable is found under the [config] header/family section of the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+INIT_INCREMENT = set this to the step size/increment (in seconds) between
+ your beginning and ending init times of interest (eg.
+ 21600, which corresponds to 6 hours)
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_END = 23
+\end_layout
+
+\begin_layout Standard
+If, for some reason, you wish to exclude the 20180611_12, 20180613_06 data
+ and include the 20180616_12 data, you would specify it in the following
+ manner:
+\end_layout
+
+\begin_layout Standard
+INIT_INCLUDE = 20180616_12
+\end_layout
+
+\begin_layout Standard
+INIT_EXCLUDE = 20180611_12, 20180613_06
+\end_layout
+
+\begin_layout Standard
+If you wish to perform any additional filtering on your input data (this
+ is done via tc_stat_wrapper/tc_stat tool), define this in the SERIES_ANALYSIS_F
+ILTER_OPTS.
+ 
+\end_layout
+
+\begin_layout Standard
+For example:
+\end_layout
+
+\begin_layout Standard
+SERIES_ANALYSIS_FILTER_OPTS = -init_beg {INIT_BEG} -init_end {INIT_END}
+ 
+\end_layout
+
+\begin_layout Standard
+Limits results that lie within the INIT_BEG and INIT_END times that were
+ specified in your METplus configuration file.
+\end_layout
+
+\begin_layout Standard
+Refer to Chapter 20 of the MET User's Guide for the syntax to use for performing
+ filtering via the MET tc_stat tool.
+\end_layout
+
+\begin_layout Subsection
+Associated Use Cases
+\end_layout
+
+\begin_layout Standard
+The series_by_init_wrapper is one wrapper in the feature relative use case.
+ It is run after the tc_pairs_wrapper and extract_tiles_wrapper.
 \end_layout
 
 \begin_layout Section
