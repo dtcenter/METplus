@@ -32,6 +32,12 @@ import config_metplus
  @brief Provides  Utility functions for METplus.
 """
 
+def add_version_to_conf(p):
+    # read version file and return value
+    version_file_path = os.path.join(p.getdir('METPLUS_BASE'),'doc','version')
+    with open(version_file_path, 'r') as version_file
+        p.set('config', 'METPLUS_VERSION', version_file.read())
+
 
 def round_0p5(val):
     """! Round to the nearest point five (ie 3.3 rounds to 3.5, 3.1
