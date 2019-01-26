@@ -218,8 +218,6 @@ class PointStatWrapper(CommandBuilder):
             util.mkdir_p(self.outdir)
 
             cmd = self.get_command()
-            self.logger.debug(cur_function +
-                              "| Command to run MET point_stat: " + cmd)
             self.build()
             self.clear()
 
@@ -643,6 +641,9 @@ class PointStatWrapper(CommandBuilder):
             if fcst_date_dirs:
                 for fcst_entry in fcst_date_dirs:
                     dir_to_search = fcst_entry.subdir_filepath
+                    self.logger.debug(cur_function + \
+                                      '| Looking in {} for regex {}'
+                              .format(dir_to_search, input_file_regex))
                     input_files_in_subdirs = util.get_files(dir_to_search,
                                                             input_file_regex,
                                                             self.logger)
