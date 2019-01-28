@@ -481,10 +481,6 @@ class PB2NCWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info(cur_function + '| ' +
-                         "Retrieving the time info for the prepBufr file of "
-                         "interest, based on init time (YMD + cycle) or valid"
-                         "time (YMDH or [YMD + (cycle - offset)].")
 
         # pylint:disable=invalid-name
         # This is a named tuple, and follows the "standard" practice of
@@ -691,9 +687,6 @@ class PB2NCWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.debug(
-            cur_function + '|' +
-            "Converting date strings to unix times")
         if len(date_string) == 8:
             time_tuple = \
                 time.strptime(date_string, "%Y%m%d")
