@@ -295,7 +295,7 @@ PREPBUFR_MODEL_DIR_NAME - set this to the name of the model data (e.g.
 
 \begin_layout Standard
 PREPBUFR_DATA_DIR - The full path to the prepBUFR input data.
- This variable is found under the [dir] section/family section of the METplus
+ This variable is found under the [dir] header/family section of the METplus
  config file.
 \end_layout
 
@@ -307,14 +307,14 @@ PB2NC_CONFIG_FILE - The full path to the MET pb2nc configuration file.
 
 \begin_layout Standard
 PB2NC_OUTPUT_DIR - The full path to where the netCDF output will be saved.
- This variable is located under the [config] section/family section of the
+ This variable is located under the [config] header/family section of the
  METplus config file.
 \end_layout
 
 \begin_layout Standard
 PREPBUFR_DIR_REGEX - The regular expression that describes the input prepBUFR
  directory name.
- This variable is located under the [regex_pattern] section/family of the
+ This variable is located under the [regex_pattern] header/family of the
  METplus config file.
 \end_layout
 
@@ -328,8 +328,8 @@ PREPBUFR_FILE_REGEX - The regular expression that describes the input prepBUFR
 \begin_layout Standard
 NC_FILE_TMPL - The file template that describes the format of the output
  netCDF files that will be created by MET pb2nc.
- This variable is located under the [filename_templates] section/family
- section of the METplus config file.
+ This variable is located under the [filename_templates] header/family section
+ of the METplus config file.
  
 \end_layout
 
@@ -398,6 +398,104 @@ PROCESS_LIST - set to PointStat (to ensure that the point_stat_wrapper is
  run).
  This variable is located under the [config] header/family section of the
  METplus config file.
+\end_layout
+
+\begin_layout Standard
+POINT_STAT_OUTPUT_DIR - full path to the output files, based on the OUTPUT_BASE
+ value (e.g.: POINT_STAT_OUTPUT_DIR = {OUTPUT_BASE}/path/to).
+ This variable is located in the [dir] header/family section of the METplus
+ config file.
+\end_layout
+
+\begin_layout Standard
+START_HOUR - The beginning hour defining the time window of interest in
+ HH format (e.g.
+ 00).
+ This variable is located under the [config] header/family of the METplus
+ config file.
+\end_layout
+
+\begin_layout Standard
+END_HOUR - The ending hour defining the time window of interest in HH format
+ (e.g.
+ 23).
+ This variable is located under the [config] header/family section of the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+BEG_TIME - The year, month, day (YYYYMMD) defining the start of the time
+ window of interest.
+ This is located under the [config] header/family section of the METplus
+ config file.
+\end_layout
+
+\begin_layout Standard
+FCST_HR_START - The starting hour of the forecast hour of interest.
+ This variable is located under the [config] header/family section in the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+FCST_HR_END - The ending hour of the forecast hour of interest.
+ This variable is located under the [config] header/family section in the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+FCST_HR_INTERVAL - The step size/interval in hours used to define all the
+ forecast hours of interest.
+ This variable is located in the [config] header/family section of the METplus
+ config file.
+\end_layout
+
+\begin_layout Standard
+POINT_STAT_POLY - the verification masking region, corrsesponding to the
+ poly mask dictionary in the MET point-stat config file.
+ This variable is found under the [config] header/family section of the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+POINT_STAT_STATION_ID - corresponds to the sid mask dictionary used for
+ the verification masking regions in the MET point-stat config file.
+ This variable is found under the [config] header/family section of the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+The following variables represent the field names, levels, and options in
+ the fcst dictionary of the MET point-stat config file.
+ Options can be cat_thresholds or GRIB_lvl_val = ###, where ### represents
+ a numerical grib level value:
+\end_layout
+
+\begin_layout Standard
+FCST_VAR1_NAME 
+\end_layout
+
+\begin_layout Standard
+FCST_VAR1_LEVELS
+\end_layout
+
+\begin_layout Standard
+FCST_VAR1_OPTIONS
+\end_layout
+
+\begin_layout Standard
+...
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_NAME
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_LEVELS
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_OPTIONS
 \end_layout
 
 \begin_layout Subsection
@@ -567,6 +665,146 @@ name "sec:series_by_lead_wrapper"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+The series_by_init_wrapper provides the infrastructure needed to perform
+ a series analysis on tropical cyclone data, based on initialization times.
+ The series_by_init_wrapper creates numerous plots that represent the field,
+ level, and statistic for each initialization time.
+\end_layout
+
+\begin_layout Subsection
+Configuration
+\end_layout
+
+\begin_layout Standard
+The input track and model data files are defined in any one of the user's
+ METplus configuration files.
+ If creating a final configuration file that overrides all other config
+ files, it is customary to define the MODEL_DATA_DIR, pointing to the directory
+ where all model data resides.
+ The full file path to the Adeck and Bdeck track data files are defined
+ in the ADECK_TRACK_DATA_DIR and BDECK_TRACK_DATA_DIR variables respectively.
+ The time window of interest is defined by setting the INIT_BEG and INIT_END
+ variables to a valid begin and end time in YYYYMMDD format.
+ The step size or time increment is defined by setting INIT_INCREMENT to
+ the appropriate number of seconds from the INIT_BEG time.
+ The INIT_HOUR_END defines the last hour in your initialization time to
+ include in your time window.
+ INIT_INCLUDE and INIT_EXCLUDE are used to list the times in YYYYMMDD_HH
+ format to include or exclude from your time window.
+ If these values are undefined (i.e.
+ no value is set for the variable), then all available times in your time
+ window will be considered.
+ For example, if your data is available every 6 hours and you are interested
+ in creating a series analysis from init time 20180601 to 20180615 for all
+ available times, from 00z to 23z, you would set the following:
+\end_layout
+
+\begin_layout Standard
+INIT_BEG = set this to the starting YYYYMMDD of the time window of interest
+ (e.g.
+ 20180601).
+ This variable is found under the [config] header/family section of the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+INIT_END = set this to the ending YYYYMMDD of the time window of interest
+ (e.g.
+ 20180615).
+ This variable is found under the [config] header/family section of the
+ METplus config file.
+\end_layout
+
+\begin_layout Standard
+INIT_INCREMENT = set this to the step size/increment (in seconds) between
+ your beginning and ending init times of interest (eg.
+ 21600, which corresponds to 6 hours)
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_END = 23
+\end_layout
+
+\begin_layout Standard
+FHR_BEG - The beginning forecast hour of interest.
+ 
+\end_layout
+
+\begin_layout Standard
+FHR_END - The ending forecast hour of interest.
+ 
+\end_layout
+
+\begin_layout Standard
+FHR_INC - The increment/time step in hours.
+ 
+\end_layout
+
+\begin_layout Standard
+The following should be undefined if you are performing a series analysis
+ for all available forecast hours.
+\end_layout
+
+\begin_layout Standard
+FHR_GROUP_BEG - This variable is found under the [config] header/family
+ section of the METplus config file.
+\end_layout
+
+\begin_layout Standard
+FHR_GROUP_END - This variable is found under the [config] header/family
+ section of the METplus config file.
+\end_layout
+
+\begin_layout Standard
+FHR_GROUP_LABELS - This variable is found under the [config] header/family
+ section of the METplus config file.
+\end_layout
+
+\begin_layout Standard
+If, for some reason, you wish to exclude the 20180611_12, 20180613_06 data
+ and include the 20180616_12 data, you would specify it in the following
+ manner:
+\end_layout
+
+\begin_layout Standard
+INIT_INCLUDE = 20180616_12
+\end_layout
+
+\begin_layout Standard
+INIT_EXCLUDE = 20180611_12, 20180613_06
+\end_layout
+
+\begin_layout Standard
+If you wish to perform any additional filtering on your input data (this
+ is done via tc_stat_wrapper/tc_stat tool), define this in the SERIES_ANALYSIS_F
+ILTER_OPTS.
+ 
+\end_layout
+
+\begin_layout Standard
+For example:
+\end_layout
+
+\begin_layout Standard
+SERIES_ANALYSIS_FILTER_OPTS = -init_beg {INIT_BEG} -init_end {INIT_END}
+ 
+\end_layout
+
+\begin_layout Standard
+Limits results that lie within the INIT_BEG and INIT_END times that were
+ specified in your METplus configuration file.
+\end_layout
+
+\begin_layout Standard
+Refer to Chapter 20 of the MET User's Guide for the syntax to use for performing
+ filtering via the MET tc_stat tool.
 \end_layout
 
 \begin_layout Section
