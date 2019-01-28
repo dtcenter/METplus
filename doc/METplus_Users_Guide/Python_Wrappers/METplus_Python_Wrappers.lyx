@@ -466,8 +466,61 @@ POINT_STAT_STATION_ID - corresponds to the sid mask dictionary used for
 \begin_layout Standard
 The following variables represent the field names, levels, and options in
  the fcst dictionary of the MET point-stat config file.
- Options can be cat_thresholds or GRIB_lvl_val = ###, where ### represents
- a numerical grib level value:
+ The FCST_VARn_NAME corresponds to the fcst and obs dictionary:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+fcst = {
+\end_layout
+
+\begin_layout Plain Layout
+
+field = [ { name = "${NAME}"; level = [ "${LEVEL}" ]; } ];
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+obs = {
+\end_layout
+
+\begin_layout Plain Layout
+
+field = [ { name = "${NAME}"; level = [ "${LEVEL}" ]; } ];
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Options can be cat_thresholds or GRIB_lvl_val = ###, where ### represents
+ a numerical grib level value.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -672,10 +725,24 @@ Description
 \end_layout
 
 \begin_layout Standard
-The series_by_init_wrapper provides the infrastructure needed to perform
- a series analysis on tropical cyclone data, based on initialization times.
- The series_by_init_wrapper creates numerous plots that represent the field,
- level, and statistic for each initialization time.
+The series_by_lead_wrapper provides the infrastructure needed to perform
+ a series analysis on tropical cyclone data, based on lead (forecast hour)
+ times.
+ The series_by_lead_wrapper creates numerous plots that represent the field,
+ level, and statistic for each lead (forecast) time.
+ The series_by_lead can be done in one of two ways: by all forecast hours
+ or by forecast hour groupings.
+ Performing a series analysis by valid time with forecast hour groupings
+ can be useful when analyzing storm tracks based on time 
+\begin_inset Quotes eld
+\end_inset
+
+bins
+\begin_inset Quotes erd
+\end_inset
+
+ such as by days (eg.
+ day 1, day 2, day 3, etc.).
 \end_layout
 
 \begin_layout Subsection
