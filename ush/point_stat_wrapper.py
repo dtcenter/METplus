@@ -82,9 +82,7 @@ class PointStatWrapper(CommandBuilder):
         ps_dict['APP_PATH'] = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                            'bin/point_stat')
         ps_dict['APP_NAME'] = os.path.basename(ps_dict['APP_PATH'])
-        ps_dict['PROJ_DIR'] = self.p.getdir('PROJ_DIR')
         ps_dict['TMP_DIR'] = self.p.getdir('TMP_DIR')
-        ps_dict['METPLUS_BASE'] = self.p.getdir('METPLUS_BASE')
         ps_dict['MET_INSTALL_DIR'] = self.p.getdir('MET_INSTALL_DIR')
         ps_dict['PARM_BASE'] = self.p.getdir('PARM_BASE')
         ps_dict['OUTPUT_BASE'] = self.p.getdir('OUTPUT_BASE')
