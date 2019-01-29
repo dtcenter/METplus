@@ -468,7 +468,6 @@ def get_storm_ids(filter_filename, logger):
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-    logger.debug('DEBUG|' + cur_function + '|' + cur_filename)
 
     # Initialize a set because we want unique storm ids.
     storm_id_list = set()
@@ -513,7 +512,6 @@ def get_files(filedir, filename_regex, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    logger.debug("DEBUG|" + cur_filename + "|" + cur_function)
     file_paths = []
 
     # pylint:disable=unused-variable
@@ -549,10 +547,8 @@ def get_name_level(var_combo, logger):
     # pylint:disable=protected-access
     # Need to call sys.__getframe() to get the filename and method/func
     # for logging information.
-    # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-    logger.debug("DEBUG|" + cur_function + "|" + cur_filename)
 
     match = re.match(r'(.*)/(.*)', var_combo)
     name = match.group(1)
@@ -598,7 +594,7 @@ def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
         # Something is wrong, we are missing
         # either an ANLY tile file or a FCST tile
         # file, this indicates a serious problem.
-        logger.info("INFO: There are a different number of anly "
+        logger.info("There are a different number of anly "
                     "and fcst tiles...")
 
 
@@ -627,7 +623,7 @@ def extract_year_month(init_time, logger):
         year_month = year_month.group(0)
         return year_month
     else:
-        logger.warning("WARNING|" + "[" + cur_filename + ":" + cur_function +
+        logger.warning("[" + cur_function +
                        "]" + " | Cannot extract YYYYMM from "
                        "initialization time, unexpected format")
         raise Warning("Cannot extract YYYYMM from initialization time,"
@@ -673,7 +669,7 @@ def create_grid_specification_string(lat, lon, logger, config):
     lon0 = str(round_0p5(adj_lon))
     lat0 = str(round_0p5(adj_lat))
 
-    msg = ("DEBUG|[" + cur_filename + ":" + cur_function + "]  nlat:" +
+    msg = ("[" + cur_filename + ":" + cur_function + "]  nlat:" +
            nlat + " nlon: " + nlon + " lat0:" + lat0 + " lon0: " + lon0)
     logger.debug(msg)
 
@@ -687,7 +683,7 @@ def create_grid_specification_string(lat, lon, logger, config):
                      lat0, ':', nlat, ':', dlat]
 
     tile_grid_str = ''.join(grid_list)
-    msg = ("INFO|" + cur_filename + ":" + cur_function +
+    msg = (cur_filename + ":" + cur_function +
            "| complete grid specification string: " + tile_grid_str)
     logger.debug(msg)
     return tile_grid_str
@@ -1242,8 +1238,6 @@ def reformat_fields_for_met(all_vars_list, logger):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
-                    "Reformatting field dictionary ...")
 
         # Named tuple (so we don't have to remember the order of the fields)
         # containing the string corresponding to the fcst or obs field

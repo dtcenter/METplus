@@ -66,9 +66,7 @@ class PB2NCWrapper(CommandBuilder):
         pb_dict['APP_PATH'] = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                            'bin/pb2nc')
         pb_dict['APP_NAME'] = os.path.basename(pb_dict['APP_PATH'])
-        pb_dict['PROJ_DIR'] = self.p.getdir('PROJ_DIR')
         pb_dict['TMP_DIR'] = self.p.getdir('TMP_DIR')
-        pb_dict['METPLUS_BASE'] = self.p.getdir('METPLUS_BASE')
         pb_dict['MET_INSTALL_DIR'] = self.p.getdir('MET_INSTALL_DIR')
         pb_dict['PREPBUFR_DATA_DIR'] = self.p.getdir('PREPBUFR_DATA_DIR')
         pb_dict['PREPBUFR_MODEL_DIR_NAME'] = \
@@ -156,7 +154,7 @@ class PB2NCWrapper(CommandBuilder):
         else:
             # For now, we only support running all times (loop method via
             # processes).
-            self.logger.error('ERROR:|:' + cur_function + '|' + cur_filename +
+            self.logger.error(cur_function +
                               '|' + 'Only the loop method of "processes" is ' +
                               'currently supported, please change the ' +
                               'LOOP_METHOD value in your config file.')
@@ -194,7 +192,7 @@ class PB2NCWrapper(CommandBuilder):
         else:
             # Unexpected format
             self.logger.error(
-                'ERROR |:' + cur_function + '|' + cur_filename +
+                cur_function +
                 '|' + 'Grid id in unexpected format of Gn or ' +
                 'Gnn, please check again. Exiting...')
             sys.exit(1)
@@ -210,10 +208,10 @@ class PB2NCWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+        self.logger.info(cur_function + '| ' +
                          "Run for one single initialization time...")
 
-        self.logger.error("ERROR|:" + cur_function + '|' + cur_filename +
+        self.logger.error(cur_function +
                           '|' + 'Not yet supported, only run_all_times() is ' +
                           'currently supported. Set LOOP_METHOD = ' +
                           '"processes" in your configuration file')
@@ -231,7 +229,7 @@ class PB2NCWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+        self.logger.info(cur_function + '|' +
                          "Convert prepbufr files to netCDF for all times...")
 
         # Environment variables
@@ -341,7 +339,7 @@ class PB2NCWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+        self.logger.info(cur_function + '| ' +
                          "Filtering prepbufr files based on time (init or "
                          "valid).")
 
@@ -378,7 +376,7 @@ class PB2NCWrapper(CommandBuilder):
             time_flag = 'valid'
         else:
             # unsupported time method
-            self.logger.error('ERROR|:' + cur_function + '|' + cur_filename +
+            self.logger.error(cur_function + '|' +
                               ' Unrecognized time method, only BY_INIT or ' +
                               'BY_VALID are supported. Check the ' +
                               'TIME_METHOD setting in your configuration ' +
@@ -422,8 +420,8 @@ class PB2NCWrapper(CommandBuilder):
                     else:
                         # No files in subdirectory, continue to next
                         # subdirectory
-                        self.logger.info('INFO:|' + cur_function + '|' +
-                                         cur_filename + ' No files found in '
+                        self.logger.info(cur_function + '|' +
+                                         ' No files found in '
                                                         'current '
                                                         'subdirectory: ' +
                                          pb_subdir + ' continue checking '
@@ -439,12 +437,14 @@ class PB2NCWrapper(CommandBuilder):
                                            self.pb_dict['PREPBUFR_FILE_REGEX'],
                                            self.logger)
             if not pb_files_list:
-                self.logger.error('ERROR:|' + cur_function + '|' +
-                                  cur_filename + ' No files were found.  '
-                                                 'Check the path to '
-                                                 'the prepbufr '
-                                                 'data directory in your '
-                                                 'configuration file.')
+                self.logger.error(cur_function + '|' +
+                                  ' No files were found in {} with regex {}.  '
+                                  'Check the path to '
+                                  'the prepbufr '
+                                  'data directory in your '
+                                  'configuration file.'
+                                  .format(dir_to_search,
+                                          self.pb_dict['PREPBUFR_FILE_REGEX']))
                 sys.exit(1)
             else:
                 for pb_file in pb_files_list:
@@ -479,10 +479,6 @@ class PB2NCWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
-                         "Retrieving the time info for the prepBufr file of "
-                         "interest, based on init time (YMD + cycle) or valid"
-                         "time (YMDH or [YMD + (cycle - offset)].")
 
         # pylint:disable=invalid-name
         # This is a named tuple, and follows the "standard" practice of
@@ -530,8 +526,8 @@ class PB2NCWrapper(CommandBuilder):
             else:
                 # Something is wrong, there should be a cycle time if
                 # there is an offset time.
-                self.logger.error('ERROR |' + cur_function + '|' +
-                                  cur_filename + 'Expected cycle time not'
+                self.logger.error(cur_function + '|' +
+                                  'Expected cycle time not'
                                                  'found. This '
                                                  'data does not have '
                                                  'the expected prepbufr '
@@ -579,7 +575,7 @@ class PB2NCWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+        self.logger.info(cur_function + '|'  +
                          "Building MET pb2nc command...")
 
         # Create the call to MET pb2nc with the following format:
@@ -631,17 +627,15 @@ class PB2NCWrapper(CommandBuilder):
 
                 # Invoke MET pb2nc
                 cmd = self.get_command()
-                self.logger.debug('DEBUG|:' + cur_function + '|' +
-                                  cur_filename + 'pb2nc called with: ' + cmd)
                 self.build()
                 self.logger.debug(
-                    'DEBUG|:' + cur_function + '|' + cur_filename +
+                    cur_function + '|' +
                     ' Finished running pb2nc...')
                 self.clear()
 
             else:
-                self.logger.debug("DEBUG|:" + cur_function + '|' +
-                                  cur_filename + ' Not overwriting existing '
+                self.logger.debug(cur_function + '|' +
+                                  ' Not overwriting existing '
                                                  'files, continue')
 
     def create_full_filepath(self, filename, subdir=None):
@@ -661,7 +655,7 @@ class PB2NCWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+        self.logger.info(cur_function + '| ' +
                          "Creating full filepath for file" + filename)
 
         data_dir = self.pb_dict['PREPBUFR_DATA_DIR']
@@ -691,9 +685,6 @@ class PB2NCWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.debug(
-            "DEBUG|:" + cur_function + '|' + cur_filename + '| ' +
-            "Converting date strings to unix times")
         if len(date_string) == 8:
             time_tuple = \
                 time.strptime(date_string, "%Y%m%d")
@@ -733,7 +724,7 @@ class PB2NCWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
+        self.logger.info(cur_function + '|' +
                          "Creating prepbufr file information")
 
         # For files like GDAS, there are no cycle and offset values in the
@@ -767,8 +758,8 @@ class PB2NCWrapper(CommandBuilder):
             else:
                 # Something is wrong, there should be a cycle time if
                 # there is an offset time.
-                self.logger.error('ERROR |' + cur_function + '|' +
-                                  cur_filename + 'Expected cycle time not'
+                self.logger.error(cur_function + '|' +
+                                  'Expected cycle time not'
                                                  'found. This '
                                                  'data does not have '
                                                  'the expected prepbufr '
@@ -809,7 +800,7 @@ class PB2NCWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
-        self.logger.debug('DEBUG:|' + cur_function + '|' + cur_filename +
+        self.logger.debug(cur_function + '|' +
                           ' Generating output NetCDF file name...')
 
         # Get the output directory
