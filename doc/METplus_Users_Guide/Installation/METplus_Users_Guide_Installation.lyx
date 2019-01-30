@@ -975,15 +975,7 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
-Example: Using a 
-\begin_inset Quotes eld
-\end_inset
-
-default
-\begin_inset Quotes erd
-\end_inset
-
-configuration
+Example: Using a “default”configuration
 \end_layout
 
 \begin_layout Plain Layout
@@ -992,72 +984,58 @@ create your own config file and under the [config] header/family section,
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset listings
-inline false
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
-
 //This is a comment, comments are defined with a // at the beginning of
  the line.
 \end_layout
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
 // Setting the PROCESS_LIST to Usage indicates that we want usage information
+ [config] 
 \end_layout
 
 \begin_layout Plain Layout
-
-[config] PROCESS_LIST = Usage
+PROCESS_LIST = Usage
 \end_layout
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
 // Set the MET_INSTALL_DIR to any real directory.
-  We just need to override the /path/to placeholder set in the
+ We just need to override the /path/to placeholder set in the // metplus_system.c
+onf file [dir] MET_INSTALL_DIR = /home/minnawin/latest/METplus 
 \end_layout
 
 \begin_layout Plain Layout
-
-// metplus_system.conf file
-\end_layout
-
-\begin_layout Plain Layout
-
-[dir] MET_INSTALL_DIR = /home/minnawin/latest/METplus 
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
 // Set these to any valid directory to override the /path/to placeholder
  set in the 
 \end_layout
 
 \begin_layout Plain Layout
-
 TMP_DIR = /tmp 
 \end_layout
 
 \begin_layout Plain Layout
-
 PROJ_DIR = /tmp 
 \end_layout
 
 \begin_layout Plain Layout
-
 OUTPUT_BASE = /tmp 
 \end_layout
 
@@ -1089,109 +1067,115 @@ A usage message appears, indicating that other config files are required
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset listings
-inline false
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
-
-USAGE:   This is a default process, please indicate more  specific processes
+USAGE: This is a default process, please indicate more specific processes
  in the PROCESS_LIST variable in one or more of the following configuration
- files:  
+ files: 
 \end_layout
 
 \begin_layout Plain Layout
-
--parm/metplus_config/metplus_runtime.conf  
+-parm/metplus_config/metplus_runtime.conf 
 \end_layout
 
 \begin_layout Plain Layout
-
--parm/metplus_use_cases/<usecase_name>/<usecase_name>.conf  
+-parm/metplus_use_cases/<usecase_name>/<usecase_name>.conf 
 \end_layout
 
 \begin_layout Plain Layout
-
--parm/metplus_use_cases/<usecase_name>/examples/<example_name>.conf 
+-parm/metplus_use_cases/<usecase_name>/examples/<example_name>.conf Currently
+ available processes are: 
 \end_layout
 
 \begin_layout Plain Layout
-
-Currently available processes are:    
+- TcPairs 
 \end_layout
 
 \begin_layout Plain Layout
-
-- TcPairs   
+- ExtractTiles 
 \end_layout
 
 \begin_layout Plain Layout
-
-- ExtractTiles   
+- SeriesByInit 
 \end_layout
 
 \begin_layout Plain Layout
-
-- SeriesByInit   
+- SeriesByLead 
 \end_layout
 
 \begin_layout Plain Layout
-
-- SeriesByLead   
+- PcpCombine 
 \end_layout
 
 \begin_layout Plain Layout
-
-- PcpCombine   
+- RegridDataPlane 
 \end_layout
 
 \begin_layout Plain Layout
-
-- RegridDataPlane  
+- GridStat 
 \end_layout
 
 \begin_layout Plain Layout
-
-- GridStat   
+- Mode 
 \end_layout
 
 \begin_layout Plain Layout
-
-- Mode   
+- MTD 
 \end_layout
 
 \begin_layout Plain Layout
-
-- MTD   
+- RegridDataPlane 
 \end_layout
 
 \begin_layout Plain Layout
-
-- RegridDataPlane  
+- CyclonePlotter 
 \end_layout
 
 \begin_layout Plain Layout
-
-- CyclonePlotter   
+- TCMPRPlotter
 \end_layout
 
 \begin_layout Plain Layout
-
-- TCMPRPlotter   
+- PB2NC 
 \end_layout
 
 \begin_layout Plain Layout
-
-- PB2NC   
-\end_layout
-
-\begin_layout Plain Layout
-
 - PointStat
 \end_layout
 
 \end_inset
 
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -1225,8 +1209,6 @@ Example: Using a use-case configuration
 
 \begin_layout Plain Layout
 >master_metplus.py -c use_cases/feature_relative/feature_relative.conf 
-\backslash
-
 \end_layout
 
 \begin_layout Plain Layout
