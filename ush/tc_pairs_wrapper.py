@@ -516,10 +516,6 @@ class TcPairsWrapper(CommandBuilder):
                                 bdeck, " -config ",
                                 config_file, " -out ", outfile]
                     self.cmd = ''.join(cmd_list)
-                    self.logger.debug("DEBUG | [" + cur_filename + ":" +
-                                      cur_function + "] | " +
-                                      "Running tc_pairs with command: " +
-                                      self.cmd)
                     self.build()
 
     def get_date_format_info(self, tmpl):
@@ -1320,11 +1316,6 @@ class TcPairsWrapper(CommandBuilder):
                     self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE'),
                     " -out ", pairs_out_file]
         cmd = ''.join(cmd_list)
-        self.logger.debug("DEBUG | [" + cur_filename + ":" +
-                          cur_function + "] | " +
-                          "Running tc_pairs with command: " +
-                          cmd)
-
         return cmd
 
     def get_command(self):
