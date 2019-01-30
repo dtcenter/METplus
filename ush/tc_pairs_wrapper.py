@@ -142,9 +142,6 @@ class TcPairsWrapper(CommandBuilder):
                 @param out_csvfile the output csv file
                 @param logger the log where logging is directed
         """
-
-        self.logger.debug("DEBUG|run_tc_pairs.py|read_modify_write_file")
-
         # pylint:disable=protected-access
         # pylint:disable=protected-access
         # sys._getframe is a legitimate way to access the current
@@ -152,7 +149,6 @@ class TcPairsWrapper(CommandBuilder):
         # Used for logging
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.debug("DEBUG|" + cur_filename + "|" + cur_function)
 
         # Open the output csv file
         out_file = open(out_csvfile, "wb")
@@ -193,8 +189,7 @@ class TcPairsWrapper(CommandBuilder):
 
         csvfile.close()
         out_file.close()
-        self.logger.debug("DEBUG|" + cur_function + "|" + cur_filename +
-                          " finished")
+
 
     def run_all_times(self):
         """! Build up the command to invoke the MET tool tc_pairs.
@@ -413,11 +408,6 @@ class TcPairsWrapper(CommandBuilder):
                         " -out ", outfile]
 
             self.cmd = ''.join(cmd_list)
-            self.logger.debug("DEBUG | [" + cur_filename + ":" +
-                              cur_function + "] | " +
-                              "Running tc_pairs with command: " +
-                              self.cmd)
-
             self.build()
         else:
             # Invoke tc_pairs with A-deck and B-deck filenames. Get a list of all the input files
@@ -526,10 +516,6 @@ class TcPairsWrapper(CommandBuilder):
                                 bdeck, " -config ",
                                 config_file, " -out ", outfile]
                     self.cmd = ''.join(cmd_list)
-                    self.logger.debug("DEBUG | [" + cur_filename + ":" +
-                                      cur_function + "] | " +
-                                      "Running tc_pairs with command: " +
-                                      self.cmd)
                     self.build()
 
     def get_date_format_info(self, tmpl):
@@ -1330,11 +1316,6 @@ class TcPairsWrapper(CommandBuilder):
                     self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE'),
                     " -out ", pairs_out_file]
         cmd = ''.join(cmd_list)
-        self.logger.debug("DEBUG | [" + cur_filename + ":" +
-                          cur_function + "] | " +
-                          "Running tc_pairs with command: " +
-                          cmd)
-
         return cmd
 
     def get_command(self):

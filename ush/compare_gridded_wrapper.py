@@ -255,6 +255,7 @@ that reformat gridded data
         lead_seq = self.cg_dict['LEAD_SEQ']
         for lead in lead_seq:
             task_info.lead = lead
+            self.logger.info("PROCESSING FORECAST LEAD {}".format(lead))
             self.run_at_time_once(task_info, var_list)
 
 

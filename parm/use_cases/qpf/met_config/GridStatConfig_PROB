@@ -74,9 +74,9 @@ climo_mean = {
 //
 mask = {
    grid = [];
-   poly = [ "${CONFIG_DIR}/mask/CONUS_HRRRTLE.nc",
-            "${CONFIG_DIR}/mask/EAST_HRRRTLE.nc",
-            "${CONFIG_DIR}/mask/WEST_HRRRTLE.nc" ];
+   poly = [ "${INPUT_BASE}/qpf/mask/CONUS_HRRRTLE.nc",
+            "${INPUT_BASE}/qpf/mask/EAST_HRRRTLE.nc",
+            "${INPUT_BASE}/qpf/mask/WEST_HRRRTLE.nc" ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
