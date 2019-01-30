@@ -242,22 +242,18 @@ class ModeWrapper(CompareGriddedWrapper):
                           "FCST_MERGE_THRESH", "FCST_MERGE_FLAG",
                           "OBS_MERGE_THRESH", "OBS_MERGE_FLAG"]
 
-            self.logger.debug("")
             self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
             self.print_user_env_items()
             for l in print_list:
                 self.print_env_item(l)
-            self.logger.debug("")
             self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
             self.print_env_copy(print_list)
-            self.logger.debug("")
 
             cmd = self.get_command()
             if cmd is None:
                 self.logger.error("ERROR: "+self.app_name+\
                                   " could not generate command")
                 return
-            self.logger.info("")
             self.build()
             self.clear()
 
