@@ -73,6 +73,12 @@ def main():
     if not p.has_option('dir', 'STAGING_DIR'):
         p.set('dir', 'STAGING_DIR', os.path.join(p.getdir('OUTPUT_BASE'),"stage"))
 
+    # create temp dir if it doesn't exist already
+    tmp_dir = p.getdir('TMP_DIR')
+    if not os.path.exists(tmp_dir):
+        os.makedirs(tmp_dir)
+
+
     # NOW we have a conf object p, we can now get the logger
     # and set the handler to write to the LOG_METPLUS
     # TODO: Frimel setting up logger file handler.
