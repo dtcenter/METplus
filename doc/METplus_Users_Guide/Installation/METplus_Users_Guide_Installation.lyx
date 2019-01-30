@@ -704,22 +704,6 @@ METplus
 \end_layout
 
 \begin_layout Itemize
-To your PYTHONPATH, add: 
-\shape italic
-full-path-to
-\shape default
--
-\shape italic
-METplus
-\shape default
-/ush:
-\shape italic
-full-path-to-METplus
-\shape default
-/parm
-\end_layout
-
-\begin_layout Itemize
 Optional: add JLOGFILE variable and set to 
 \shape italic
 full-path-to-save-jlog-files
@@ -763,10 +747,6 @@ set path = (other_path_entries ~/METplus/ush
 \end_layout
 
 \begin_layout Plain Layout
-setenv PYTHONPATH ~/METplus/ush:~/METplus/parm:$PYTHONPATH
-\end_layout
-
-\begin_layout Plain Layout
 # optional
 \end_layout
 
@@ -793,14 +773,6 @@ To your PATH, add :
 full-path-to-METplus
 \shape default
 /ush
-\end_layout
-
-\begin_layout Itemize
-To your PYTHONPATH, add 
-\shape italic
-full-path-to-METplus
-\shape default
-/parm
 \end_layout
 
 \begin_layout Itemize
@@ -841,18 +813,6 @@ e.g.
 
 \begin_layout Plain Layout
 export PATH=~/METplus/ush:$PATH
-\end_layout
-
-\begin_layout Plain Layout
-export PYTHONPATH=
-\begin_inset Quotes erd
-\end_inset
-
-~/METplus/ush:~/METplus/parm:/$PYTHONPATH
-\begin_inset Quotes erd
-\end_inset
-
-
 \end_layout
 
 \begin_layout Plain Layout
@@ -1015,16 +975,208 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
-Example: Using a default configuration
+Example: Using a “default”configuration
 \end_layout
 
 \begin_layout Plain Layout
->master_metplus.py
+create your own config file and under the [config] header/family section,
+ add the following:
 \end_layout
 
 \begin_layout Plain Layout
-Does nothing, a usage message appears, indicating that other config files
- are required to perform useful tasks.
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+//This is a comment, comments are defined with a // at the beginning of
+ the line.
+\end_layout
+
+\begin_layout Plain Layout
+// Setting the PROCESS_LIST to Usage indicates that we want usage information
+ [config] 
+\end_layout
+
+\begin_layout Plain Layout
+PROCESS_LIST = Usage
+\end_layout
+
+\begin_layout Plain Layout
+// Set the MET_INSTALL_DIR to any real directory.
+ We just need to override the /path/to placeholder set in the // metplus_system.c
+onf file [dir] MET_INSTALL_DIR = /home/minnawin/latest/METplus 
+\end_layout
+
+\begin_layout Plain Layout
+// Set these to any valid directory to override the /path/to placeholder
+ set in the 
+\end_layout
+
+\begin_layout Plain Layout
+TMP_DIR = /tmp 
+\end_layout
+
+\begin_layout Plain Layout
+PROJ_DIR = /tmp 
+\end_layout
+
+\begin_layout Plain Layout
+OUTPUT_BASE = /tmp 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+>master_metplus.py -c ./my_user_config.conf
+\end_layout
+
+\begin_layout Plain Layout
+or
+\end_layout
+
+\begin_layout Plain Layout
+>master_metplus.py -c /username/my_user_config.conf
+\end_layout
+
+\begin_layout Plain Layout
+if you saved your default config in a directory other than where you are
+ running master_metplus.py
+\end_layout
+
+\begin_layout Plain Layout
+A usage message appears, indicating that other config files are required
+ to perform useful tasks and a list of currently supported wrappers:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+USAGE: This is a default process, please indicate more specific processes
+ in the PROCESS_LIST variable in one or more of the following configuration
+ files: 
+\end_layout
+
+\begin_layout Plain Layout
+-parm/metplus_config/metplus_runtime.conf 
+\end_layout
+
+\begin_layout Plain Layout
+-parm/metplus_use_cases/<usecase_name>/<usecase_name>.conf 
+\end_layout
+
+\begin_layout Plain Layout
+-parm/metplus_use_cases/<usecase_name>/examples/<example_name>.conf Currently
+ available processes are: 
+\end_layout
+
+\begin_layout Plain Layout
+- TcPairs 
+\end_layout
+
+\begin_layout Plain Layout
+- ExtractTiles 
+\end_layout
+
+\begin_layout Plain Layout
+- SeriesByInit 
+\end_layout
+
+\begin_layout Plain Layout
+- SeriesByLead 
+\end_layout
+
+\begin_layout Plain Layout
+- PcpCombine 
+\end_layout
+
+\begin_layout Plain Layout
+- RegridDataPlane 
+\end_layout
+
+\begin_layout Plain Layout
+- GridStat 
+\end_layout
+
+\begin_layout Plain Layout
+- Mode 
+\end_layout
+
+\begin_layout Plain Layout
+- MTD 
+\end_layout
+
+\begin_layout Plain Layout
+- RegridDataPlane 
+\end_layout
+
+\begin_layout Plain Layout
+- CyclonePlotter 
+\end_layout
+
+\begin_layout Plain Layout
+- TCMPRPlotter
+\end_layout
+
+\begin_layout Plain Layout
+- PB2NC 
+\end_layout
+
+\begin_layout Plain Layout
+- PointStat
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -1057,8 +1209,6 @@ Example: Using a use-case configuration
 
 \begin_layout Plain Layout
 >master_metplus.py -c use_cases/feature_relative/feature_relative.conf 
-\backslash
-
 \end_layout
 
 \begin_layout Plain Layout
