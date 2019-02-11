@@ -714,7 +714,7 @@ class SeriesByInitWrapper(CommandBuilder):
                @param tile_dir:  The directory where input data resides.
            Returns:
         """
-        convert_exe = self.p.getexe('CONVERT_EXE')
+        convert_exe = util.getexe(self.p, 'CONVERT_EXE', self.logger)
         background_map = self.p.getbool('config', 'BACKGROUND_MAP')
         plot_data_plane_exe = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                            'bin/plot_data_plane')

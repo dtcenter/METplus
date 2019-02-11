@@ -68,10 +68,10 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.plot_data_plane_exe = os.path.join(
             self.p.getdir('MET_INSTALL_DIR'),
             'bin/plot_data_plane')
-        self.convert_exe = p.getexe('CONVERT_EXE')
-        self.ncap2_exe = p.getexe('NCAP2_EXE')
-        self.ncdump_exe = p.getexe('NCDUMP_EXE')
-        self.rm_exe = p.getexe("RM_EXE")
+        self.convert_exe = util.getexe(p, 'CONVERT_EXE', logger)
+        self.ncap2_exe = util.getexe(p, 'NCAP2_EXE', logger)
+        self.ncdump_exe = util.getexe(p, 'NCDUMP_EXE', logger)
+        self.rm_exe = util.getexe(p, "RM_EXE", logger)
         met_install_dir = self.p.getdir('MET_INSTALL_DIR')
         self.series_analysis_exe = os.path.join(met_install_dir,
                                                 'bin/series_analysis')

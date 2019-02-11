@@ -137,14 +137,7 @@ class PointStatWrapper(CommandBuilder):
                                'OBS_INPUT_FILE_TMPL')
 
         # non-MET executables
-        ps_dict['WGRIB2'] = self.p.getexe('WGRIB2')
-        ps_dict['RM_EXE'] = self.p.getexe('RM_EXE')
-        ps_dict['CUT_EXE'] = self.p.getexe('CUT_EXE')
-        ps_dict['TR_EXE'] = self.p.getexe('TR_EXE')
-        ps_dict['NCAP2_EXE'] = self.p.getexe('NCAP2_EXE')
-        ps_dict['CONVERT_EXE'] = self.p.getexe('CONVERT_EXE')
-        ps_dict['NCDUMP_EXE'] = self.p.getexe('NCDUMP_EXE')
-        ps_dict['EGREP_EXE'] = self.p.getexe('EGREP_EXE')
+        util.add_common_items_to_dictionary(p, ps_dict)
 
         return ps_dict
 

@@ -1640,15 +1640,37 @@ def run_stand_alone(module_name, app_name):
         sys.exit(2)
 
 
+# wrap produtil exe with checks to see if option is set and if exe actually exists
+def getexe(p, exe_name, logger=None):
+
+    if not p.has_option('exe', exe_name):
+        if logger:
+            logger.error('Requested exe {} was not set in config file'.format(exe_name))
+        else:
+            print('Requested exe {} was not set in config file'.format(exe_name))
+        exit(1)
+
+    exe_path = p.getexe(exe_name)
+
+    if not os.path.exists(exe_path):
+        if logger:
+            logger.error('Executable {} does not exist at {}'.format(exe_name, exe_path))
+        else:
+            print('Executable {} does not exist at {}'.format(exe_name, exe_path))
+        exit(1)
+
+    return exe_path
+
+
 def add_common_items_to_dictionary(p, dictionary):
-    dictionary['WGRIB2'] = p.getexe('WGRIB2')
-    dictionary['CUT_EXE'] = p.getexe('CUT_EXE')
-    dictionary['TR_EXE'] = p.getexe('TR_EXE')
-    dictionary['RM_EXE'] = p.getexe('RM_EXE')
-    dictionary['NCAP2_EXE'] = p.getexe('NCAP2_EXE')
-    dictionary['CONVERT_EXE'] = p.getexe('CONVERT_EXE')
-    dictionary['NCDUMP_EXE'] = p.getexe('NCDUMP_EXE')
-    dictionary['EGREP_EXE'] = p.getexe('EGREP_EXE')
+    dictionary['WGRIB2'] = getexe(p, 'WGRIB2')
+    dictionary['CUT_EXE'] = getexe(p, 'CUT_EXE')
+    dictionary['TR_EXE'] = getexe(p, 'TR_EXE')
+    dictionary['RM_EXE'] = getexe(p, 'RM_EXE')
+    dictionary['NCAP2_EXE'] = getexe(p, 'NCAP2_EXE')
+    dictionary['CONVERT_EXE'] = getexe(p, 'CONVERT_EXE')
+    dictionary['NCDUMP_EXE'] = getexe(p, 'NCDUMP_EXE')
+    dictionary['EGREP_EXE'] = getexe(p, 'EGREP_EXE')
 
 
 def template_to_regex(template, init_time, valid_time, logger):
