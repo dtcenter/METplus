@@ -153,6 +153,36 @@ name "sec:New-for-METplus"
 \begin_layout Standard
 
 \series bold
+METplus v2.0.4 Release Notes:
+\end_layout
+
+\begin_layout Standard
+Configuration:
+\end_layout
+
+\begin_layout Itemize
+Updated config files to match sample data directory structure
+\end_layout
+
+\begin_layout Standard
+General:
+\end_layout
+
+\begin_layout Itemize
+Moved large mask files from repository to sample data tarballs
+\end_layout
+
+\begin_layout Itemize
+Improved logging message clarity
+\end_layout
+
+\begin_layout Itemize
+List METplus version number in final configuration file and logging output
+\end_layout
+
+\begin_layout Standard
+
+\series bold
 METplus v2.0.3 Release Notes:
 \end_layout
 

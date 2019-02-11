@@ -65,7 +65,6 @@ def main():
     # only logging to tty, not a file.
     logger = logging.getLogger('master_metplus')
     logger.info('logger Top of master_metplus.')
-    logger.info('METplus called with command: '+' '.join(sys.argv))
 
     # Parse arguments, options and return a config instance.
     p = config_metplus.setup(filename=cur_filename)
@@ -73,6 +72,12 @@ def main():
     # set staging dir to OUTPUT_BASE/stage if not set
     if not p.has_option('dir', 'STAGING_DIR'):
         p.set('dir', 'STAGING_DIR', os.path.join(p.getdir('OUTPUT_BASE'),"stage"))
+
+    # create temp dir if it doesn't exist already
+    tmp_dir = p.getdir('TMP_DIR')
+    if not os.path.exists(tmp_dir):
+        os.makedirs(tmp_dir)
+
 
     # NOW we have a conf object p, we can now get the logger
     # and set the handler to write to the LOG_METPLUS
@@ -83,6 +88,9 @@ def main():
     # object has-a logger we want.
     logger = util.get_logger(p)
     # logger.info('Top of master_metplus after conf file setup.')
+
+    logger.info('Running METplus v{} called with command: {}'
+                .format(util.get_version_number(), ' '.join(sys.argv)))
 
     # This is available in each subprocess from os.system BUT
     # we also set it in each process since they may be called stand alone.

@@ -209,6 +209,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     conf = METplusLauncher()
     logger = conf.log()
 
+    # set config variable for current time
     conf.set('config', 'CLOCK_TIME', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
 
     # Read in and parse all the conf files.
@@ -286,6 +287,8 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
         logger.warning('METPLUS_BASE from the conf files has no effect.'+\
                        ' Overriding to '+METPLUS_BASE)
     conf.set('dir','METPLUS_BASE', METPLUS_BASE)
+    version_number = util.get_version_number()
+    conf.set('config', 'METPLUS_VERSION', version_number)
 
     # logger.info('Expand certain [dir] values to ensure availability ')
     #            'before vitals parsing.

@@ -1,5 +1,5 @@
-#LyX 2.3 created this file. For more info see http://www.lyx.org/
-\lyxformat 544
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
 \begin_document
 \begin_header
 \save_transient_properties true
@@ -21,8 +21,6 @@
 \font_osf false
 \font_sf_scale 100 100
 \font_tt_scale 100 100
-\use_microtype false
-\use_dash_ligatures true
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -52,7 +50,6 @@
 \suppress_date false
 \justification true
 \use_refstyle 1
-\use_minted 0
 \index Index
 \shortcut idx
 \color #008000
@@ -65,10 +62,7 @@
 \tocdepth 3
 \paragraph_separation skip
 \defskip bigskip
-\is_math_indent 0
-\math_numbering_side default
-\quotes_style english
-\dynamic_quotes 0
+\quotes_language english
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
@@ -84,7 +78,7 @@
 \begin_layout Title
 
 \series bold
-METplus Version 2.0.1
+METplus Version 2.0.4
 \begin_inset Newline newline
 \end_inset
 
@@ -413,7 +407,7 @@ Developmental Testbed Center
 \begin_layout Date
 
 \series bold
-November 2018
+February 2019
 \end_layout
 
 \begin_layout Standard
