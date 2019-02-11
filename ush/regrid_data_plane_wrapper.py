@@ -168,7 +168,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         self.add_arg("-name " + field_name)
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error(self.app_name+" could not generate command")
+            self.logger.error("Could not generate command")
             return
         self.build()
         self.clear()

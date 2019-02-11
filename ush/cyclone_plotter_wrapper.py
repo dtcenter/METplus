@@ -88,14 +88,14 @@ class CyclonePlotterWrapper(CommandBuilder):
             for init_file in all_init_files:
                 # Ignore empty files
                 if os.stat(init_file).st_size == 0:
-                    self.logger.info("Empty file")
+                    self.logger.info("Ignoring empty file {}".format(init_file))
                     continue
 
                 # logger.info("Consider all files under directory" +
                 #  init_file + " with " + " init time (ymd): " +
                 # self.init_date + " and lead time (hh):" + self.lead_hr)
                 with open(init_file, 'r') as infile:
-                    self.logger.debug("Parsing file " + init_file)
+                    self.logger.debug("Parsing file {}".format(init_file))
 
                     # Extract information from the header, which is
                     # the first line.
@@ -217,7 +217,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                                 # implementation goes here...
                                 # Finishing up, do any cleaning up,
                                 # logging, etc.
-                                self.logger.info("INFO: All criteria met, " +
+                                self.logger.info("All criteria met, " +
                                                  "saving track data init " +
                                                  track_dict['init_time'] +
                                                  " lead " +
@@ -253,8 +253,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                     self.storm_id_dict[cur_unique] = cur_storm_list
 
         else:
-            self.logger.error("Input directory expected, check " +
-                              "configuration file and try again.")
+            self.logger.error("{} should be a directory".format(self.input_data))
             sys.exit(1)
 
     def get_columns_and_indices(self, header):

@@ -159,31 +159,20 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
             # Check if the forecast input file exists. If it doesn't
             # exist, just log it
             if util.file_exists(fcst_filename):
-                msg = ("INFO| [" + cur_filename + ":" + cur_function +
-                       " ] | Forecast file: " + fcst_filename)
-                logger.debug(msg)
+                logger.debug("Forecast file: {}".format(fcst_filename))
             else:
-                msg = ("WARNING| [" + cur_filename + ":" +
-                       cur_function + " ] | " +
-                       "Can't find forecast file, continuing anyway: " +
-                       fcst_filename)
-                logger.debug(msg)
+                logger.warning("Can't find forecast file {}, continuing"\
+                               .format(fcst_filename))
                 continue
 
             # Check if the analysis input file exists. If it doesn't
             # exist, just log it.
             if util.file_exists(anly_filename):
-                msg = ("INFO| [" + cur_filename + ":" +
-                       cur_function + " ] | Analysis file: " +
-                       anly_filename)
-                logger.debug(msg)
+                logger.debug("Analysis file: {}".format(anly_filename))
 
             else:
-                msg = ("WARNING| [" + cur_filename + ":" +
-                       cur_function + " ] | " +
-                       "Can't find analysis file, continuing anyway: " +
-                       anly_filename)
-                logger.debug(msg)
+                logger.warning("Can't find analysis file {}, continuing"\
+                       .format(anly_filename))
                 continue
 
             # Create the arguments used to perform regridding.
@@ -224,9 +213,8 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
             # file does NOT already exist or if the overwrite flag is True.
             # Create new gridded file for fcst tile
             if util.file_exists(fcst_regridded_file) and not overwrite_flag:
-                msg = ("INFO| [" + cur_filename + ":" +
-                       cur_function + " ] | Forecast tile file " +
-                       fcst_regridded_file + " exists, skip regridding")
+                msg = "Forecast tile file {} exists, skip regridding"\
+                  .format(fcst_regridded_file)
                 logger.debug(msg)
             else:
                 # Perform fcst regridding on the records of interest
@@ -249,10 +237,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
                         regrid_cmd_fcst)
                     (ret, regrid_cmd_fcst) = rdp.cmdrunner.run_cmd(
                         regrid_cmd_fcst, app_name=rdp.app_name)
-                    msg = ("INFO|[regrid]| regrid_data_plane regrid " +
-                           "command:" + regrid_cmd_fcst.to_shell())
-                    logger.debug(msg)
-
+                    logger.info("command:" + regrid_cmd_fcst.to_shell())
                 else:
                     # Perform regridding via wgrib2
                     requested_records = retrieve_var_info(config,
@@ -266,15 +251,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
 
                     (ret, wgrb_cmd_fcst) = rdp.cmdrunner.run_cmd(
                         wgrb_cmd_fcst, ismetcmd=False)
-                    msg = ("INFO|[wgrib2]| wgrib2 regrid command:" +
-                           wgrb_cmd_fcst.to_shell())
+                    msg = ("command:" + wgrb_cmd_fcst.to_shell())
                     logger.debug(msg)
 
             # Create new gridded file for anly tile
             if util.file_exists(anly_regridded_file) and not overwrite_flag:
-                logger.debug("INFO| [" + cur_filename + ":" +
-                             cur_function + " ] |" +
-                             " Analysis tile file: " + anly_regridded_file +
+                logger.debug("Analysis tile file: " + anly_regridded_file +
                              " exists, skip regridding")
             else:
                 # Perform anly regridding on the records of interest

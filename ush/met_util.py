@@ -582,11 +582,11 @@ def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
     # (which were, or should have been created earlier by extract_tiles).
     if not anly_tiles:
         # Cannot proceed, the necessary 30x30 degree analysis tiles are missing
-        logger.error("ERROR: No anly tile files were found  " + tile_dir)
+        logger.error("No anly tile files were found  " + tile_dir)
         raise OSError("No 30x30 anlysis tiles were found")
     elif not fcst_tiles:
         # Cannot proceed, the necessary 30x30 degree fcst tiles are missing
-        logger.error("ERROR: No fcst tile files were found  " + tile_dir)
+        logger.error("No fcst tile files were found  " + tile_dir)
         raise OSError("No 30x30 fcst tiles were found")
 
     # Check for same number of fcst and analysis files
@@ -623,8 +623,7 @@ def extract_year_month(init_time, logger):
         year_month = year_month.group(0)
         return year_month
     else:
-        logger.warning("[" + cur_function +
-                       "]" + " | Cannot extract YYYYMM from "
+        logger.warning("Cannot extract YYYYMM from "
                        "initialization time, unexpected format")
         raise Warning("Cannot extract YYYYMM from initialization time,"
                       " unexpected format")
@@ -669,8 +668,8 @@ def create_grid_specification_string(lat, lon, logger, config):
     lon0 = str(round_0p5(adj_lon))
     lat0 = str(round_0p5(adj_lat))
 
-    msg = ("[" + cur_filename + ":" + cur_function + "]  nlat:" +
-           nlat + " nlon: " + nlon + " lat0:" + lat0 + " lon0: " + lon0)
+    msg = ("nlat:" + nlat + " nlon: " + nlon +\
+           " lat0:" + lat0 + " lon0: " + lon0)
     logger.debug(msg)
 
     # Create the specification string based on the requested tool.
@@ -683,9 +682,6 @@ def create_grid_specification_string(lat, lon, logger, config):
                      lat0, ':', nlat, ':', dlat]
 
     tile_grid_str = ''.join(grid_list)
-    msg = (cur_filename + ":" + cur_function +
-           "| complete grid specification string: " + tile_grid_str)
-    logger.debug(msg)
     return tile_grid_str
 
 
@@ -796,12 +792,8 @@ def prune_empty(output_dir, logger):
         for a_file in files:
             a_file = os.path.join(root, a_file)
             if os.stat(a_file).st_size == 0:
-                msg = ("INFO|[" + cur_filename + ":" +
-                       cur_function + "]|" +
-                       "Empty file: " + a_file +
+                logger.debug("Empty file: " + a_file +
                        "...removing")
-
-                logger.debug(msg)
                 os.remove(a_file)
 
     # Now check for any empty directories, some
@@ -811,11 +803,8 @@ def prune_empty(output_dir, logger):
         for direc in dirs:
             full_dir = os.path.join(root, direc)
             if not os.listdir(full_dir):
-                msg = ("INFO|[" + cur_filename + ":" +
-                       cur_function + "]|" +
-                       "Empty directory: " + full_dir +
+                logger.debug("Empty directory: " + full_dir +
                        "...removing")
-                logger.debug(msg)
                 os.rmdir(full_dir)
 
 
@@ -1538,7 +1527,7 @@ def preprocess_file(filename, data_type, p, logger=None):
                 self.logger.error("GempakToCF could not generate command")
                 return None
             if logger:
-                logger.info("Converting Gempak file")
+                logger.debug("Converting Gempak file into {}".format(stagefile))
             run_g2c.build()
             return stagefile
 
@@ -1558,7 +1547,7 @@ def preprocess_file(filename, data_type, p, logger=None):
 
     if os.path.exists(filename+".gz"):
         if logger:
-            logger.info("Decompressing gz file")
+            logger.info("Decompressing gz file to {}".format(outpath))
         with gzip.open(filename+".gz", 'rb') as infile:
             with open(outpath, 'wb') as outfile:
                 outfile.write(infile.read())
@@ -1567,7 +1556,7 @@ def preprocess_file(filename, data_type, p, logger=None):
                 return outpath
     elif os.path.exists(filename+".bz2"):
         if logger:
-            logger.info("Decompressing bz2 file")
+            logger.info("Decompressing bz2 file to {}".format(outpath))
         with open(filename+".bz2", 'rb') as infile:
             with open(outpath, 'wb') as outfile:
                 outfile.write(bz2.decompress(infile.read()))
@@ -1576,7 +1565,7 @@ def preprocess_file(filename, data_type, p, logger=None):
                 return outpath
     elif os.path.exists(filename+".zip"):
         if logger:
-            logger.info("Decompressing zip file")
+            logger.info("Decompressing zip file to {}".format(outpath))
         with zipfile.ZipFile(filename+".zip") as z:
             with open(outpath, 'wb') as f:
                 f.write(z.read(os.path.basename(filename)))

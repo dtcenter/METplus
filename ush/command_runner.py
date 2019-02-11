@@ -219,7 +219,6 @@ class CommandRunner(object):
         # If no metpluslog, cmlog_dest is None, which should be interpreted as tty.
         if metpluslog:
             log_met_output_to_metplus = self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS')
-            self.logger.debug('LOG_MET_OUTPUT_TO_METPLUS log file is %s'% repr(log_met_output_to_metplus))
             # If cmdlog is None send output to metpluslog.
             if log_met_output_to_metplus or not cmdlog:
                 cmdlog_dest = metpluslog

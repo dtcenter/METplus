@@ -202,7 +202,7 @@ class CommandBuilder:
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            (self.logger).error("No app path specified. "\
+            self.logger.error("No app path specified. "\
                                 "You must use a subclass")
             return None
 
@@ -215,7 +215,7 @@ class CommandBuilder:
             cmd += a + " "
 
         if len(self.infiles) == 0:
-            (self.logger).error("No input filenames specified")
+            self.logger.error("No input filenames specified")
             return None
 
         for f in self.infiles:
@@ -225,11 +225,11 @@ class CommandBuilder:
             cmd += self.param + " "
 
         if self.outfile == "":
-            (self.logger).error("No output filename specified")
+            self.logger.error("No output filename specified")
             return None
 
         if self.outdir == "":
-            (self.logger).error("No output directory specified")
+            self.logger.error("No output directory specified")
             return None
 
         cmd += " " + os.path.join(self.outdir, self.outfile)

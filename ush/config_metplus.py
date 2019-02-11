@@ -92,8 +92,6 @@ def setup(filename=None,logger=None):
         print(str(err))        
         usage(filename,logger)
 
-    logger.info('All OPTS and ARGS: %s %s',opts, args)
-
     if opts == []:
         usage(filename, logger)
 

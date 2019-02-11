@@ -319,23 +319,18 @@ class MTDWrapper(ModeWrapper):
                 self.add_env_var("FCST_FIELD", fcst_field)
                 self.add_env_var("OBS_FIELD", obs_field)
 
-            self.logger.debug("")
             self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
             self.print_user_env_items()
             for l in print_list:
                 self.print_env_item(l)
 
-            self.logger.debug("")
             self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
             self.print_env_copy(print_list)
-            self.logger.debug("")
 
             cmd = self.get_command()
             if cmd is None:
-                self.logger.error("ERROR: "+self.app_name+\
-                                  " could not generate command")
+                self.logger.error(self.app_name + " could not generate command")
                 return
-            self.logger.info("")
             self.build()
             self.clear()
 
@@ -356,16 +351,16 @@ class MTDWrapper(ModeWrapper):
 
         if self.cg_dict['SINGLE_RUN']:
             if self.fcst_file == None:
-                self.logger.error(self.app_name+": No file path specified")
+                self.logger.error("No file path specified")
                 return None
             cmd += '-single ' + self.fcst_file + ' '
         else:
             if self.fcst_file == None:
-                self.logger.error(self.app_name+": No forecast file path specified")
+                self.logger.error("No forecast file path specified")
                 return None
 
             if self.obs_file == None:
-                self.logger.error(self.app_name+": No observation file path specified")
+                self.logger.error("No observation file path specified")
                 return None
 
             cmd += '-fcst ' + self.fcst_file + ' '
