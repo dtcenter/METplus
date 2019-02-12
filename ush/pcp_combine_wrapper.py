@@ -336,7 +336,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         search_time = valid_time.ljust(12, '0')
         last_time = util.shift_time(valid_time, -(int(accum) - 1))
         total_accum = accum
-        level = self.c_dict[data_src+'_LEVEL']
+        level = int(self.c_dict[data_src+'_LEVEL'])
         if level == -1:
             search_accum = accum
         else:
