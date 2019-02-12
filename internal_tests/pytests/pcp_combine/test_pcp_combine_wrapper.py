@@ -91,9 +91,7 @@ def test_get_accumulation_1_to_6():
     file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
         
     pcw.set_input_dir(input_dir)
-#    pcw.get_accumulation(valid_time, accum, data_src,
-    pcw.get_accumulation(task_info, accum, data_src,
-                                           file_template, False)
+    pcw.get_accumulation(task_info, accum, data_src, False)
     in_files = pcw.get_input_files()
     if len(in_files) == 6 and \
       input_dir+"/20160904/file.2016090418.01h" in in_files and \
@@ -115,11 +113,10 @@ def test_get_accumulation_6_to_6():
     task_info.valid_time = "2016090418"
     accum = 6
 
-    file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
+    pcw.c_dict['FCST_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
     
     pcw.set_input_dir(input_dir)
-    pcw.get_accumulation(task_info, accum, data_src,
-                                           file_template, False)
+    pcw.get_accumulation(task_info, accum, data_src, False)
     in_files = pcw.get_input_files()    
     if  len(in_files) == 1 and input_dir+"/20160904/file.2016090418.06h" in in_files:
         assert True
@@ -142,8 +139,9 @@ def test_get_lowest_forecast_file_no_subdir():
     pcw = pcp_combine_wrapper()    
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = "201802012100"
-    dtype = "FCST2"
-    template = util.getraw_interp(pcw.p, 'filename_templates', dtype+'_PCP_COMBINE_INPUT_TEMPLATE')
+    dtype = "FCST"
+    template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
+#    template = util.getraw_interp(pcw.p, 'filename_templates', dtype+'_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
     out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/file.2018020118f003.nc")
@@ -152,8 +150,9 @@ def test_get_lowest_forecast_file_yesterday():
     pcw = pcp_combine_wrapper()
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = "201802010600"
-    dtype = "FCST2"
-    template = util.getraw_interp(pcw.p, 'filename_templates', 'FCST2_PCP_COMBINE_INPUT_TEMPLATE')
+    dtype = "FCST"
+    template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
+#    template = util.getraw_interp(pcw.p, 'filename_templates', 'FCST2_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
     out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/file.2018013118f012.nc")    
@@ -225,8 +224,8 @@ def test_setup_subtract_method():
     pcw = pcp_combine_wrapper()
     task_info = TaskInfo()
     task_info.init_time = -1
-    task_info.valid_time = "201609041800"
-    task_info.lead = 3
+    task_info.valid_time = "201609050000"
+    task_info.lead = 9
     var_info = util.FieldObj()
     var_info.fcst_name = "APCP"
     var_info.obs_name = "ACPCP"
