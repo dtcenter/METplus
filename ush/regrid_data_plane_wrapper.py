@@ -34,7 +34,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
     '''
     def __init__(self, p, logger):
         super(RegridDataPlaneWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
+        self.app_path = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR', None, logger),
                                      'bin/regrid_data_plane')
         self.app_name = os.path.basename(self.app_path)
         self.create_c_dict()
@@ -78,10 +78,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         else:
             self.c_dict['OBS_OUTPUT_TEMPLATE'] = None
 
-        self.c_dict['FCST_INPUT_DIR'] = self.p.getdir('FCST_REGRID_DATA_PLANE_INPUT_DIR', '')
-        self.c_dict['OBS_INPUT_DIR'] = self.p.getdir('OBS_REGRID_DATA_PLANE_INPUT_DIR', '')
-        self.c_dict['FCST_OUTPUT_DIR'] = self.p.getdir('FCST_REGRID_DATA_PLANE_OUTPUT_DIR', '')
-        self.c_dict['OBS_OUTPUT_DIR'] = self.p.getdir('OBS_REGRID_DATA_PLANE_OUTPUT_DIR', '')
+        self.c_dict['FCST_INPUT_DIR'] = util.getdir(self.p, 'FCST_REGRID_DATA_PLANE_INPUT_DIR', '', self.logger)
+        self.c_dict['OBS_INPUT_DIR'] = util.getdir(self.p, 'OBS_REGRID_DATA_PLANE_INPUT_DIR', '', self.logger)
+        self.c_dict['FCST_OUTPUT_DIR'] = util.getdir(self.p, 'FCST_REGRID_DATA_PLANE_OUTPUT_DIR', '', self.logger)
+        self.c_dict['OBS_OUTPUT_DIR'] = util.getdir(self.p, 'OBS_REGRID_DATA_PLANE_OUTPUT_DIR', '', self.logger)
 
     def run_at_time_once(self, task_info, var_info, dtype):
         """! Runs the MET application for a given time and forecast lead combination

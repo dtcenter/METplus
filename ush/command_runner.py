@@ -226,10 +226,10 @@ class CommandRunner(object):
             else:
                 log_timestamp = self.config.getstr('config', 'LOG_TIMESTAMP', '')
                 if log_timestamp:
-                    cmdlog_dest = os.path.join(self.config.getdir('LOG_DIR'),
+                    cmdlog_dest = os.path.join(util.getdir(self.config, 'LOG_DIR'),
                                             cmdlog + '_' + log_timestamp)
                 else:
-                    cmdlog_dest = os.path.join(self.config.getdir('LOG_DIR'),cmdlog)
+                    cmdlog_dest = os.path.join(util.getdir(self.config, 'LOG_DIR'),cmdlog)
 
 
         # If cmdlog_dest None we will not redirect output to a log file

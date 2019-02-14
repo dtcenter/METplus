@@ -41,7 +41,6 @@ that reformat gridded data
     """
     def __init__(self, p, logger):
         super(CompareGriddedWrapper, self).__init__(p, logger)
-        met_install_dir = p.getdir('MET_INSTALL_DIR')
         self.cg_dict = self.create_cg_dict()
 
 

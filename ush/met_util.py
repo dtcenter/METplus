@@ -1644,22 +1644,58 @@ def run_stand_alone(module_name, app_name):
 def getexe(p, exe_name, logger=None):
 
     if not p.has_option('exe', exe_name):
+        msg = 'Requested exe {} was not set in config file'.format(exe_name)
         if logger:
-            logger.error('Requested exe {} was not set in config file'.format(exe_name))
+            logger.error(msg)
         else:
-            print('Requested exe {} was not set in config file'.format(exe_name))
+            print(msg)
         exit(1)
 
     exe_path = p.getexe(exe_name)
 
     if not os.path.exists(exe_path):
+        msg = 'Executable {} does not exist at {}'.format(exe_name, exe_path)
         if logger:
-            logger.error('Executable {} does not exist at {}'.format(exe_name, exe_path))
+            logger.error(msg)
         else:
-            print('Executable {} does not exist at {}'.format(exe_name, exe_path))
+            print(msg)
         exit(1)
 
     return exe_path
+
+
+def getdir(p, dir_name, default_val=None, logger=None):
+    if not p.has_option('dir', dir_name):
+        if default_val == None:
+            msg = 'Requested dir {} was not set in config file'.format(dir_name)
+            if logger:
+                logger.error(msg)
+            else:
+                print(msg)
+            exit(1)
+        msg = "Setting {} to default value {}".format(dir_name, default_val)
+        if logger:
+            logger.warning(msg)
+        else:
+            print(msg)
+
+        # set conf with default value so all defaults can be added to the final conf
+        # and warning only appears once per conf item using a default value
+        p.set('dir', dir_name, default_val)
+
+        dir_path = default_val
+
+    dir_path = p.getdir(dir_name)
+
+    if dir_path == '/path/to' or dir_path.startswith('/path/to'):
+        msg = 'Directory {} is set to or contains /path/to. Please set this to a valid location'.format(dir_name)
+        if logger:
+            logger.error(msg)
+        else:
+            print(msg)
+        exit(1)
+
+    return dir_path
 
 
 def add_common_items_to_dictionary(p, dictionary):

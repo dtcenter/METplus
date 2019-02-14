@@ -272,7 +272,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     #    return conf
 
     # Initialize the output directories
-    produtil.fileop.makedirs(conf.getdir('OUTPUT_BASE'), logger=logger)
+    produtil.fileop.makedirs(util.getdir(conf, 'OUTPUT_BASE', logger), logger=logger)
     # A user my set the confloc METPLUS_CONF location in a subdir of OUTPUT_BASE
     # or even in another parent directory altogether, so make thedirectory
     # so the metplus_final.conf file can be written.
@@ -287,6 +287,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
         logger.warning('METPLUS_BASE from the conf files has no effect.'+\
                        ' Overriding to '+METPLUS_BASE)
     conf.set('dir','METPLUS_BASE', METPLUS_BASE)
+
     version_number = util.get_version_number()
     conf.set('config', 'METPLUS_VERSION', version_number)
 

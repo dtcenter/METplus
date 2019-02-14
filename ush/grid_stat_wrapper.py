@@ -27,7 +27,7 @@ class GridStatWrapper(CompareGriddedWrapper):
     '''
     def __init__(self, p, logger):
         super(GridStatWrapper, self).__init__(p, logger)
-        met_install_dir = p.getdir('MET_INSTALL_DIR')
+        met_install_dir = util.getdir(p, 'MET_INSTALL_DIR', None, logger)
         self.app_path = os.path.join(met_install_dir, 'bin/grid_stat')
         self.app_name = os.path.basename(self.app_path)
         self.create_cg_dict()
@@ -39,28 +39,29 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.cg_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
         self.cg_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL_TYPE', 'FCST')
         self.cg_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE', 'OBS')
-        self.cg_dict['CONFIG_DIR'] = self.p.getdir('CONFIG_DIR',
-                                                   self.p.getdir('METPLUS_BASE')+'/parm/met_config')
+        self.cg_dict['CONFIG_DIR'] = util.getdir(self.p, 'CONFIG_DIR',
+                                                 self.p.getdir('METPLUS_BASE')+'/parm/met_config',
+                                                 self.logger)
         self.cg_dict['CONFIG_FILE'] = self.p.getstr('config', 'GRID_STAT_CONFIG',
                                                     self.cg_dict['CONFIG_DIR']+'/GridStatConfig_MEAN')
+        self.cg_dict['INPUT_BASE'] = util.getdir(self.p, 'INPUT_BASE', None, self.logger)
         self.cg_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
         self.cg_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
         self.cg_dict['OBS_INPUT_DIR'] = \
-          self.p.getdir('OBS_GRID_STAT_INPUT_DIR', self.p.getdir('OUTPUT_BASE'))
+          util.getdir(self.p, 'OBS_GRID_STAT_INPUT_DIR', self.p.getdir('OUTPUT_BASE'), self.logger)
         self.cg_dict['OBS_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'OBS_GRID_STAT_INPUT_TEMPLATE')
         self.cg_dict['OBS_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'OBS_GRID_STAT_INPUT_DATATYPE', '')
         self.cg_dict['FCST_INPUT_DIR'] = \
-          self.p.getdir('FCST_GRID_STAT_INPUT_DIR', self.p.getdir('OUTPUT_BASE'))
+          util.getdir(self.p, 'FCST_GRID_STAT_INPUT_DIR', self.p.getdir('OUTPUT_BASE'), self.logger)
         self.cg_dict['FCST_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'FCST_GRID_STAT_INPUT_TEMPLATE')
         self.cg_dict['FCST_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
-        self.cg_dict['OUTPUT_DIR'] =  self.p.getdir('GRID_STAT_OUT_DIR', self.p.getdir('OUTPUT_BASE'))
-        self.cg_dict['INPUT_BASE'] =  self.p.getdir('INPUT_BASE')
+        self.cg_dict['OUTPUT_DIR'] =  util.getdir(self.p, 'GRID_STAT_OUT_DIR', self.p.getdir('OUTPUT_BASE'), self.logger)
         self.cg_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 24)
         self.cg_dict['FCST_INIT_INTERVAL'] = self.p.getint('config', 'FCST_INIT_INTERVAL', 12)
         self.cg_dict['WINDOW_RANGE_BEG'] = \
