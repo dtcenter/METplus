@@ -278,7 +278,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
                         regrid_cmd_anly)
                     (ret, regrid_cmd_anly) = rdp.cmdrunner.run_cmd(
                         regrid_cmd_anly, app_name=rdp.app_name)
-                    msg = ("INFO|[regrid]| on anly file:" +
+                    msg = ("on anly file:" +
                            anly_regridded_file)
                     logger.debug(msg)
                 else:
@@ -294,7 +294,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
 
                     (ret, wgrb_cmd_anly) = rdp.cmdrunner.run_cmd(
                         wgrb_cmd_anly, ismetcmd=False)
-                    msg = ("INFO|[wgrib2]| Regridding via wgrib2:" +
+                    msg = ("Regridding via wgrib2:" +
                            wgrb_cmd_anly.to_shell())
                     logger.debug(msg)
 
@@ -330,8 +330,6 @@ def retrieve_var_info(config, logger):
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-
-    logger.debug("DEBUG|" + cur_filename + "|" + cur_function)
 
     var_list = util.getlist(config.getstr('config', 'VAR_LIST'))
     extra_var_list = util.getlist(config.getstr('config',

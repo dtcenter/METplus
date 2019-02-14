@@ -223,10 +223,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
         """
 
-        self.logger.debug("DEBUG: TCMPR input " + self.input_data)
-        self.logger.debug("DEBUG: TCMPR config file " +
+        self.logger.debug("TCMPR input " + self.input_data)
+        self.logger.debug("TCMPR config file " +
                           self.plot_config_file)
-        self.logger.debug("DEBUG: output " + self.output_base_dir)
+        self.logger.debug("output " + self.output_base_dir)
 
         # Create a dictionary of all the "optional" options and flags.
         cmds_dict = self.retrieve_optionals()
@@ -257,9 +257,9 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # Separate the 'Rscript' portion from the args, to conform to
             # produtil's exe syntax.
             cmd = exe(full_cmd_list[0])[full_cmd_list[1:]] > '/dev/null'
-            self.logger.debug("DEBUG: Command run " +
+            self.logger.debug("Command run " +
                               cmd.to_shell())
-            self.logger.info("INFO: Generating requested plots for " +
+            self.logger.info("Generating requested plots for " +
                              self.input_data)
             # pylint:disable=unnecessary-pass
             # If a tc file is empty, continue to the next, thus the pass
@@ -267,7 +267,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             try:
                 checkrun(cmd)
             except produtil.run.ExitStatusException as ese:
-                self.logger.warn("WARN: plot_tcmpr.R returned non-zero"
+                self.logger.warn("plot_tcmpr.R returned non-zero"
                                  " exit status, "
                                  "tcst file may be missing data, "
                                  "continuing: " + repr(ese))
@@ -287,7 +287,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             cmds_dict['-lookin'] = all_tcst_files
             if self.output_base_dir:
                 cmds_dict['-outdir'] = self.output_base_dir
-                self.logger.debug("DEBUG: Creating dated output dir " +
+                self.logger.debug("Creating dated output dir " +
                                   self.output_base_dir)
 
             # Create the full_cmd_list from the keys and values of the
@@ -345,7 +345,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
                               "exiting...")
             sys.exit(1)
 
-        self.logger.info("INFO: Plotting complete")
+        self.logger.info("Plotting complete")
 
     def create_output_subdir(self, tcst_file):
         """! Extract the base portion of the tcst filename:
@@ -364,7 +364,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         subdir_match = re.match(r'.*/(.*).tcst', tcst_file)
         subdir = subdir_match.group(1)
         dated_output_dir = os.path.join(self.output_base_dir, subdir)
-        self.logger.debug("DEBUG: " + dated_output_dir + " for " + tcst_file)
+        self.logger.debug(dated_output_dir + " for " + tcst_file)
 
         # Create the subdir
         util.mkdir_p(dated_output_dir)

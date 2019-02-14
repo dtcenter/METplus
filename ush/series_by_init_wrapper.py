@@ -94,8 +94,7 @@ class SeriesByInitWrapper(CommandBuilder):
         # Used for logging.
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
-                         "Starting series analysis by init time")
+        self.logger.info("Starting series analysis by init time")
 
         # Set up the environment variable to be used in the Series Analysis
         #   Config file (SERIES_ANALYSIS_BY_INIT_CONFIG_FILE)
@@ -178,7 +177,7 @@ class SeriesByInitWrapper(CommandBuilder):
                 # Applying the filter produced no results.  Rather than
                 # stopping, continue by using the files from extract_
                 # tiles as input.
-                msg = ("INFO| Applied series filter options, no results..." +
+                msg = ("Applied series filter options, no results..." +
                        "using extract tiles data for series analysis input.")
                 self.logger.debug(msg)
                 tile_dir = self.extract_tiles_dir
@@ -211,11 +210,10 @@ class SeriesByInitWrapper(CommandBuilder):
         if self.is_netcdf_created():
             self.generate_plots(sorted_filter_init, tile_dir)
         else:
-            self.logger.error("ERROR|:" + cur_function + "|" + cur_filename +
-                              "No NetCDF files were created by"
+            self.logger.error("No NetCDF files were created by"
                               " series_analysis, exiting...")
             sys.exit(errno.ENODATA)
-        self.logger.info("INFO|" + "Finished series analysis by init time")
+        self.logger.info("Finished series analysis by init time")
 
     def apply_series_filters(self, tile_dir, init_times, series_output_dir,
                              filter_opts, temporary_dir, config):
@@ -251,8 +249,7 @@ class SeriesByInitWrapper(CommandBuilder):
         # Create temporary directory where intermediate files are saved.
         cur_pid = str(os.getpid())
         tmp_dir = os.path.join(temporary_dir, cur_pid)
-        self.logger.debug("DEBUG|" + cur_filename + "|" + cur_function +
-                          " creating tmp dir: " + tmp_dir)
+        self.logger.debug("creating tmp dir: " + tmp_dir)
 
         for cur_init in init_times:
             # Call the tc_stat wrapper to build up the command and invoke
@@ -269,14 +266,12 @@ class SeriesByInitWrapper(CommandBuilder):
             # it is, then use the files from extract_tiles as
             # input (tile_dir = extract_out_dir)
             if not util.file_exists(filter_filename):
-                msg = ("WARN| " + cur_filename + ":" + cur_function +
-                       "]| Non-existent filter file, filter " +
+                msg = ("Non-existent filter file, filter " +
                        " Never created by MET Tool tc_stat.")
                 self.logger.debug(msg)
                 continue
             elif os.stat(filter_filename).st_size == 0:
-                msg = ("WARN| " + cur_filename + ":" + cur_function +
-                       "]| Empty filter file, filter " +
+                msg = ("Empty filter file, filter " +
                        " options yield nothing.")
                 self.logger.debug(msg)
                 continue
@@ -292,8 +287,7 @@ class SeriesByInitWrapper(CommandBuilder):
                     header = filter_file.readline()
 
                 for cur_storm in sorted_storm_ids:
-                    msg = ("INFO| [" + cur_filename + ":" +
-                           cur_function + " ] | Processing storm: " +
+                    msg = ("Processing storm: " +
                            cur_storm + " for file: " + filter_filename)
                     self.logger.debug(msg)
                     storm_output_dir = os.path.join(series_output_dir,
@@ -400,8 +394,7 @@ class SeriesByInitWrapper(CommandBuilder):
                                            self.logger)
         sorted_files = sorted(files_of_interest)
         if not files_of_interest:
-            msg = ("ERROR:|[" + cur_filename + ":" +
-                   cur_function + "]|exiting, no files found for " +
+            msg = ("exiting, no files found for " +
                    "init time of interest" +
                    " and directory:" + dir_to_search)
             self.logger.error(msg)
@@ -420,16 +413,13 @@ class SeriesByInitWrapper(CommandBuilder):
         if match_beg:
             beg = match_beg.group(1)
         else:
-            msg = ("ERROR|[" + cur_filename + ":" + cur_function + "]| " +
-                   "Unexpected file format encountered, exiting...")
+            msg = ("Unexpected file format encountered, exiting...")
             self.logger.error(msg)
             sys.exit(1)
         if match_end:
             end = match_end.group(1)
         else:
-            msg = ("ERROR|[" + cur_filename + ":" + cur_function +
-                   "]| " +
-                   "Unexpected file format encountered, exiting...")
+            msg = ("Unexpected file format encountered, exiting...")
             self.logger.error(msg)
             sys.exit(1)
 
@@ -460,7 +450,6 @@ class SeriesByInitWrapper(CommandBuilder):
         # For logging
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.debug("DEBUG|" + cur_function + '|' + cur_filename)
 
         filter_init_times = util.get_updated_init_times(tile_dir, self.logger)
         sorted_filter_init = sorted(filter_init_times)
@@ -500,9 +489,7 @@ class SeriesByInitWrapper(CommandBuilder):
                     if not anly_grid_files or not fcst_grid_files:
                         # No gridded analysis or forecast
                         # files found, continue
-                        self.logger.info("INFO|:" + cur_function + "|" +
-                                         cur_filename + "| " +
-                                         "no gridded analysis or forecast " +
+                        self.logger.info("no gridded analysis or forecast " +
                                          "file found, continue to next storm")
                         continue
 
@@ -538,7 +525,6 @@ class SeriesByInitWrapper(CommandBuilder):
         # For logging
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.debug("DEBUG|" + cur_function + '|' + cur_filename)
 
         # Now assemble the -fcst, -obs, and -out arguments and invoke the
         # MET Tool: series_analysis.
@@ -605,10 +591,7 @@ class SeriesByInitWrapper(CommandBuilder):
         self.add_input_file(ascii_full_path, param_arg)
         self.get_input_files()
         latest_idx = len(self.get_input_files()) - 1
-        msg = \
-            ("DEBUG|[" + cur_function + ":" + cur_filename + "]" +
-             "first param: " + self.get_input_files()[latest_idx])
-        self.logger.debug(msg)
+        self.logger.debug("first param: " + self.get_input_files()[latest_idx])
 
     def create_out_arg(self, cur_storm, cur_init, name, level):
         """! Create/build the -out portion of the series_analysis command and
@@ -658,8 +641,7 @@ class SeriesByInitWrapper(CommandBuilder):
             series_anly_output_parts)
         self.outfile = self.sbi_plotting_out_dir
 
-        self.logger.debug("DEBUG|" + cur_function + '|' + cur_filename +
-                          '| output arg/output dir for series_analysis: ' +
+        self.logger.debug('output arg/output dir for series_analysis: ' +
                           self.get_output_path())
         self.set_output_dir(self.outdir)
         self.set_output_filename(self.outfile)
@@ -682,10 +664,6 @@ class SeriesByInitWrapper(CommandBuilder):
             for a in self.args:
                 cmd += a + " "
 
-        # if len(self.infiles) == 0:
-        #     self.logger.error("No input filenames specified")
-        #     return None
-
         for idx, f in enumerate(self.infiles):
             cmd += self.inaddons[idx] + " " + f + " "
 
@@ -698,7 +676,6 @@ class SeriesByInitWrapper(CommandBuilder):
             return None
         else:
             cmd += "-out " + os.path.join(self.get_output_path())
-        self.logger.debug("DEBUG|Command= " + cmd)
         return cmd
 
     def generate_plots(self, sorted_filter_init, tile_dir):
@@ -856,7 +833,6 @@ class SeriesByInitWrapper(CommandBuilder):
         # For logging
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.debug("DEBUG|" + cur_function + '|' + cur_filename)
 
         # Retrieve filter files, first create the filename
         # by piecing together the out_dir_base with the cur_init.
@@ -925,9 +901,7 @@ class SeriesByInitWrapper(CommandBuilder):
             with open(fcst_anly_ascii, 'a') as filehandle:
                 filehandle.write(tmp_param)
         except IOError:
-            msg = ("ERROR|[" + cur_filename + ":" +
-                   cur_function + "]| " +
-                   "Could not create requested ASCII file:  " +
+            msg = ("Could not create requested ASCII file:  " +
                    fcst_anly_ascii)
             self.logger.error(msg)
 

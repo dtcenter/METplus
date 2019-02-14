@@ -137,7 +137,7 @@ class PointStatWrapper(CommandBuilder):
                                'OBS_INPUT_FILE_TMPL')
 
         # non-MET executables
-        util.add_common_items_to_dictionary(p, ps_dict)
+        util.add_common_items_to_dictionary(self.p, ps_dict)
 
         return ps_dict
 
