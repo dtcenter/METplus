@@ -28,6 +28,8 @@ FORMATTING_DELIMITER = "?"
 FORMATTING_VALUE_DELIMITER = "="
 FORMAT_STRING = "fmt"
 
+SHIFT_STRING = "shift"
+
 VALID_STRING = "valid"
 LEAD_STRING = "lead"
 INIT_STRING = "init"
@@ -127,8 +129,7 @@ def get_lead_level_time_seconds(logger, time_string):
                 (int(time_string[3:5]) * MINUTES_PER_HOUR) +
                 int(time_string[5:7]))
     else:
-        logger.error("ERROR | [" + cur_filename + ":" + cur_function +
-                     "] | " + "The time string " + time_string +
+        logger.error("The time string " + time_string +
                      " must be in the format [H]HH[MMSS], where a two digit " +
                      "hour is required.  Providing a three digit hour, two " +
                      "digit minutes and a two digit seconds are optional.")
@@ -151,8 +152,7 @@ def get_time_in_hours(logger, time_string):
     elif len(time_string) == 3:
         return int(time_string)
     else:
-        logger.error("ERROR | [" + cur_filename + ":" + cur_function +
-                     "] | " + "The time string " + time_string +
+        logger.error("The time string " + time_string +
                      " must be in the format H, HH or HHH where a one-, two-"
                      " or three-digit" +
                      " hour is required.")
@@ -208,6 +208,7 @@ class StringSub:
         self.negative_level = False
         self.cycle_hours = 0
         self.offset_hour = 0
+        self.shift_seconds = 0
 
         if LEAD_STRING in self.kwargs:
             self.lead_time_seconds = \
@@ -261,8 +262,7 @@ class StringSub:
                 time.strptime(self.kwargs.get(VALID_STRING, None),
                               "%Y%m%d%H%M%S")
         else:
-            self.logger.error("ERROR | [" + cur_filename + ":" +
-                              cur_function + "] | " + "The valid time " +
+            self.logger.error("The valid time " +
                               self.kwargs.get(VALID_STRING, None) +
                               " must be in the format YYYYmmddHH[MMSS].")
             exit(0)
@@ -299,8 +299,7 @@ class StringSub:
                 time.strptime(self.kwargs.get(INIT_STRING, None),
                               "%Y%m%d%H%M%S")
         else:
-            self.logger.error("ERROR | [" + cur_filename + ":" +
-                              cur_function + "] | " + "The init time " +
+            self.logger.error("The init time " +
                               self.kwargs.get(INIT_STRING, None) +
                               " must be in the format YYYYmmddHH[MMSS].")
             exit(0)
@@ -349,8 +348,7 @@ class StringSub:
                 time.strptime(self.kwargs.get(INIT_STRING, None),
                               "%Y%m%d%H%M%S")
         else:
-            self.logger.error("ERROR | [" + cur_filename + ":" +
-                              cur_function + "] | " + "The init time " +
+            self.logger.error("The init time " +
                               self.kwargs.get(INIT_STRING, None) +
                               " must be in the format YYYYmmddHH[MMSS].")
             exit(0)
@@ -395,8 +393,7 @@ class StringSub:
                 time.strptime(self.kwargs.get(INIT_STRING, None),
                               "%Y%m%d%H%M%S")
         else:
-            self.logger.error("ERROR | [" + cur_filename + ":" +
-                              cur_function + "] | " + "The init time " +
+            self.logger.error("The init time " +
                               self.kwargs.get(INIT_STRING, None) +
                               " must be in the format YYYYmmddHH[MMSS].")
             exit(0)
@@ -416,8 +413,7 @@ class StringSub:
                 time.strptime(self.kwargs.get(VALID_STRING, None),
                               "%Y%m%d%H%M%S")
         else:
-            self.logger.error("ERROR | [" + cur_filename + ":" +
-                              cur_function + "] | " + "The valid time " +
+            self.logger.error("The valid time " +
                               self.kwargs.get(VALID_STRING, None) +
                               " must be in the format YYYYmmddHH[MMSS].")
             exit(0)
@@ -485,11 +481,13 @@ class StringSub:
             negative_flag = self.negative_level
         else:
             # Log and exit
-            self.logger.error("ERROR | [" + cur_filename + ":" +
-                              cur_function + "] | Invalid parm_type of " +
+            self.logger.error("Invalid parm_type of " +
                               parm_type + ".  Acceptable parm types are: " +
                               LEAD_STRING + " and " + LEVEL_STRING + ".")
             exit(0)
+
+        # shift date time if set
+        time_seconds = time_seconds + self.shift_seconds
 
         hours_value = math.floor(time_seconds / SECONDS_PER_HOUR)
         time_seconds = time_seconds - (hours_value * SECONDS_PER_HOUR)
@@ -512,9 +510,7 @@ class StringSub:
             if format_string_split[1] == 'HH':
                 hours = hours_value_str.zfill(TWO_DIGIT_PAD)
                 if len(hours) == 3:
-                    self.logger.warn("WARN | [" + cur_filename + ":" +
-                                     cur_function + "] | " +
-                                     "The requested format for hours was " +
+                    self.logger.warn("The requested format for hours was " +
                                      format_string_split[1] +
                                      " but the hours given are " + hours +
                                      ". Returning a three digit hour.")
@@ -527,8 +523,7 @@ class StringSub:
                 padding = int(re.match("\.(.*)H", format_string_split[1]).group(1))
                 hours = hours_value_str.zfill(padding)
             else:
-                self.logger.error("ERROR | [" + cur_filename + ":" +
-                                  cur_function + "] | " + "The time must " +
+                self.logger.error("The time must " +
                                   "be in the format [H]HH[MMSS], where a " +
                                   "two digit hour is required.  Providing a " +
                                   "one-,two-, or three-digit "
@@ -544,9 +539,7 @@ class StringSub:
             if format_string_split[1] == 'HH':
                 hours = hours_value_str.zfill(TWO_DIGIT_PAD)
                 if len(hours) == 3:
-                    self.logger.warn("WARN | [" + cur_filename + ":" +
-                                     cur_function + "] | " +
-                                     "The requested format for hours was " +
+                    self.logger.warn("The requested format for hours was " +
                                      format_string_split[1] +
                                      " but the hours given are " + hours +
                                      ". Returning a three digit hour.")
@@ -558,9 +551,7 @@ class StringSub:
                 padding = int(re.match("\.(.*)H", format_string_split[1]).group(1))
                 hours = hours_value_str.zfill(padding)
             else:
-                self.logger.error("ERROR | [" + cur_filename + ":" +
-                                  cur_function + "] | " +
-                                  "The time must be in the format " +
+                self.logger.error("The time must be in the format " +
                                   "[H]HH[MMSS], where a two digit hour is " +
                                   "required.  Providing a three digit hour, " +
                                   "two digit minutes and a two digit seconds" +
@@ -570,8 +561,7 @@ class StringSub:
             formatted_time_string = hours
 
         else:
-            self.logger.error("ERROR | [" + cur_filename + ":" +
-                              cur_function + "] | " + "The time must be in " +
+            self.logger.error("The time must be in " +
                               "the format [H]HH[MMSS], where a two digit " +
                               "hour is required.  Providing a three digit " +
                               "hour, two digit minutes and a two digit " +
@@ -613,8 +603,7 @@ class StringSub:
             time_hours = self.offset_hour
         else:
             # Log and exit
-            self.logger.error("ERROR | [" + cur_filename + ":" +
-                              cur_function + "] | Invalid parm_type of " +
+            self.logger.error("Invalid parm_type of " +
                               parm_type + ".  Acceptable parm types are: " +
                               CYCLE_STRING + " and " + OFFSET_STRING + ".")
             exit(0)
@@ -682,9 +671,7 @@ class StringSub:
             elif format_string_split[1] == 'ddd':
                 days = days_three_digit
             else:
-                self.logger.error(
-                        "ERROR | [" + cur_filename + ":" + cur_function + "] | "
-                        + "The number of days must be in the format dd where a "
+                self.logger.error("The number of days must be in the format dd where a "
                           "two digit day is required. An  optional 3-digit "
                           "number is also supported.")
                 exit(0)
@@ -719,9 +706,7 @@ class StringSub:
                 hours = hours_three_digit
             else:
                 # The expected dHM or HMS format pattern was not met
-                self.logger.error("ERROR | [" + cur_filename + ":" +
-                                  cur_function + "] | " + "The time must "
-                                                          "" +
+                self.logger.error("The time must " +
                                   "be in the format [ddd][H]HH[MMSS], "
                                   "where a " +
                                   "two digit hour is required.  "
@@ -768,9 +753,7 @@ class StringSub:
                 day_flag = False
             else:
                 # The expected format of day-hour or hour-minute was not met.
-                self.logger.error("ERROR | [" + cur_filename + ":" +
-                                  cur_function + "] | " +
-                                  "The time must be in the format " +
+                self.logger.error("The time must be in the format " +
                                   "[ddd][H]HH[MMSS], where a two digit hour "
                                   "is " +
                                   "required.  Providing a one-, two-, "
@@ -798,9 +781,7 @@ class StringSub:
                 hours_str = str(time_hours)
                 hours = hours_str.zfill(THREE_DIGIT_PAD)
             else:
-                self.logger.error("ERROR | [" + cur_filename + ":" +
-                                  cur_function + "] | " +
-                                  "The time must be in the format " +
+                self.logger.error("The time must be in the format " +
                                   "[ddd][H]HH[MMSS], where a two digit hour "
                                   "is " +
                                   "required.  Providing a one-, two- or "
@@ -811,9 +792,7 @@ class StringSub:
 
             formatted_time_string = hours
         else:
-            self.logger.error("ERROR | [" + cur_filename + ":" +
-                              cur_function + "] | " +
-                              "The time must be in the format " +
+            self.logger.error("The time must be in the format " +
                               "[ddd][H]HH[MMSS], where a two digit hour " +
                               "is required.  Providing a one-, two-, " +
                               "or three-digit day, three digit " +
@@ -822,6 +801,116 @@ class StringSub:
             exit(0)
 
         return formatted_time_string
+
+
+    def getShiftTime(self, split_item):
+        shift_split_string = \
+            split_item.split(FORMATTING_VALUE_DELIMITER)
+
+        if len(shift_split_string) != 2:
+            return
+
+        shift_seconds = shift_split_string[1]
+        self.shift_seconds = int(shift_seconds)
+
+
+    def handleFormatDelimiter(self, split_string, idx, match, replacement_dict):
+                        # Check for formatting/length request by splitting on
+                        # FORMATTING_VALUE_DELIMITER
+                        # split_string[1] holds the formatting/length
+                        # information (e.g. "fmt=%Y%m%d", "len=3")
+                        format_split_string = \
+                            split_string[idx].split(FORMATTING_VALUE_DELIMITER)
+
+                        # Check for requested FORMAT_STRING
+                        # format_split_string[0] holds the formatting/length
+                        # value delimiter (e.g. "fmt", "len")
+                        if format_split_string[0] == FORMAT_STRING:
+                            if (
+                                    split_string[0] == VALID_STRING or
+                                    split_string[0] == INIT_STRING
+                            ):
+                                # Get the value of the valid, init, etc. and
+                                # convert to a datetime object with the
+                                # requested FORMAT_STRING format
+                                date_time_value = \
+                                    self.kwargs.get(split_string[0], None)
+                                dt_obj = \
+                                    date_str_to_datetime_obj(date_time_value)
+
+                                # shift date time if set
+                                dt_obj = dt_obj + datetime.timedelta(seconds=self.shift_seconds)
+                                # Convert the datetime object back to a
+                                # string of the requested format
+                                date_time_str = \
+                                    dt_obj.strftime(format_split_string[idx])
+
+
+                                # Add back the template identifiers to the
+                                # matched string to replace and add the
+                                # key, value pair to the dictionary
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN \
+                                                    + match + \
+                                                    TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = \
+                                    date_time_str
+
+                            elif split_string[0] == LEAD_STRING:
+                                value = \
+                                    self.format_lead_level(LEAD_STRING,
+                                                           format_split_string[
+                                                               idx])
+                                string_to_replace = \
+                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
+                                    TEMPLATE_IDENTIFIER_END
+
+                                replacement_dict[string_to_replace] = value
+
+                            elif split_string[0] == LEVEL_STRING:
+                                value = \
+                                    self.format_lead_level(LEVEL_STRING,
+                                                           format_split_string[
+                                                               idx])
+                                string_to_replace = \
+                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
+                                    TEMPLATE_IDENTIFIER_END
+
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == CYCLE_STRING:
+                                value = self.format_cycle_offset(
+                                        CYCLE_STRING, format_split_string[idx])
+                                string_to_replace = \
+                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
+                                    TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == OFFSET_STRING:
+                                value = self.format_cycle_offset(
+                                        OFFSET_STRING, format_split_string[idx])
+                                string_to_replace = \
+                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
+                                    TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == DATE_STRING:
+                                value = self.date
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match\
+                                                    + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == REGION_STRING:
+                                value = str(self.region).lower()
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match \
+                                                    + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == CYCLONE_STRING:
+                                value = str(self.cyclone)
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match \
+                                                    + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == MISC_STRING:
+                                value = str(self.misc)
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match \
+                                                    + TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+
 
     def doStringSub(self):
 
@@ -896,16 +985,12 @@ class StringSub:
 
         if match_list == 0:
             # Log and exit
-            self.logger.error("ERROR |  [" + cur_filename + ":" +
-                              cur_function + "] | " +
-                              "No matches found for template: " +
+            self.logger.error("No matches found for template: " +
                               self.tmpl)
             exit(0)
         elif len(match_list) != len(match_start_end_list):
             # Log and exit
-            self.logger.error("ERROR |  [" + cur_filename + ":" +
-                              cur_function + "] | " +
-                              "match_list and match_start_end_list should " +
+            self.logger.error("match_list and match_start_end_list should " +
                               "have the same length for template: " +
                               self.tmpl)
             exit(0)
@@ -993,110 +1078,26 @@ class StringSub:
                 # print (self.kwargs).get(split_string[0], None)
 
                 # Formatting is requested or length is requested
-                if len(split_string) == 2:
+                if len(split_string) >= 2:
 
                     # split_string[0] holds the key (e.g. "init", "valid", etc)
                     if split_string[0] not in self.kwargs.keys():
                         # Log and continue
-                        self.logger.error("ERROR |  [" + cur_filename +
-                                          ":" + cur_function + "] | " +
-                                          "The key " + split_string[0] +
+                        self.logger.error("The key " + split_string[0] +
                                           " does not exist for template: " +
                                           self.tmpl)
 
                     # Key is in the dictionary
                     else:
-                        # Check for formatting/length request by splitting on
-                        # FORMATTING_VALUE_DELIMITER
-                        # split_string[1] holds the formatting/length
-                        # information (e.g. "fmt=%Y%m%d", "len=3")
-                        format_split_string = \
-                            split_string[1].split(FORMATTING_VALUE_DELIMITER)
+                        # shift if set, get that value before handling formatting
+                        for split_item in split_string:
+                            if split_item.startswith(SHIFT_STRING):
+                                self.getShiftTime(split_item)
+                        # format times appropriately and add to replacement_dict
+                        for idx, split_item in enumerate(split_string):
+                            if split_item.startswith(FORMAT_STRING):
+                                self.handleFormatDelimiter(split_string, idx, match, replacement_dict)
 
-                        # Check for requested FORMAT_STRING
-                        # format_split_string[0] holds the formatting/length
-                        # value delimiter (e.g. "fmt", "len")
-                        if format_split_string[0] == FORMAT_STRING:
-                            if (
-                                    split_string[0] == VALID_STRING or
-                                    split_string[0] == INIT_STRING
-                            ):
-                                # Get the value of the valid, init, etc. and
-                                # convert to a datetime object with the
-                                # requested FORMAT_STRING format
-                                date_time_value = \
-                                    self.kwargs.get(split_string[0], None)
-                                dt_obj = \
-                                    date_str_to_datetime_obj(date_time_value)
-                                # Convert the datetime object back to a
-                                # string of the requested format
-                                date_time_str = \
-                                    dt_obj.strftime(format_split_string[1])
-
-                                # Add back the template identifiers to the
-                                # matched string to replace and add the
-                                # key, value pair to the dictionary
-                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN \
-                                                    + match + \
-                                                    TEMPLATE_IDENTIFIER_END
-                                replacement_dict[string_to_replace] = \
-                                    date_time_str
-
-                            elif split_string[0] == LEAD_STRING:
-                                value = \
-                                    self.format_lead_level(LEAD_STRING,
-                                                           format_split_string[
-                                                               1])
-                                string_to_replace = \
-                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
-                                    TEMPLATE_IDENTIFIER_END
-
-                                replacement_dict[string_to_replace] = value
-
-                            elif split_string[0] == LEVEL_STRING:
-                                value = \
-                                    self.format_lead_level(LEVEL_STRING,
-                                                           format_split_string[
-                                                               1])
-                                string_to_replace = \
-                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
-                                    TEMPLATE_IDENTIFIER_END
-
-                                replacement_dict[string_to_replace] = value
-                            elif split_string[0] == CYCLE_STRING:
-                                value = self.format_cycle_offset(
-                                        CYCLE_STRING, format_split_string[1])
-                                string_to_replace = \
-                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
-                                    TEMPLATE_IDENTIFIER_END
-                                replacement_dict[string_to_replace] = value
-                            elif split_string[0] == OFFSET_STRING:
-                                value = self.format_cycle_offset(
-                                        OFFSET_STRING, format_split_string[1])
-                                string_to_replace = \
-                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
-                                    TEMPLATE_IDENTIFIER_END
-                                replacement_dict[string_to_replace] = value
-                            elif split_string[0] == DATE_STRING:
-                                value = self.date
-                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match\
-                                                    + TEMPLATE_IDENTIFIER_END
-                                replacement_dict[string_to_replace] = value
-                            elif split_string[0] == REGION_STRING:
-                                value = str(self.region).lower()
-                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match \
-                                                    + TEMPLATE_IDENTIFIER_END
-                                replacement_dict[string_to_replace] = value
-                            elif split_string[0] == CYCLONE_STRING:
-                                value = str(self.cyclone)
-                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match \
-                                                    + TEMPLATE_IDENTIFIER_END
-                                replacement_dict[string_to_replace] = value
-                            elif split_string[0] == MISC_STRING:
-                                value = str(self.misc)
-                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match \
-                                                    + TEMPLATE_IDENTIFIER_END
-                                replacement_dict[string_to_replace] = value
 
                 # No formatting or length is requested
                 elif len(split_string) == 1:
@@ -1108,6 +1109,9 @@ class StringSub:
                                         TEMPLATE_IDENTIFIER_END
                     replacement_dict[string_to_replace] = \
                         self.kwargs.get(split_string[0], None)
+
+                # reset shift seconds so it doesn't apply to next match
+                self.shift_seconds = 0
 
             # Replace regex with properly formatted information
             temp_str = multiple_replace(replacement_dict, self.tmpl)
@@ -1144,16 +1148,12 @@ class StringSub:
 
         if match_list == 0:
             # Log and exit
-            self.logger.error("ERROR |  [" + cur_filename + ":" +
-                              cur_function + "] | " +
-                              "No matches found for template: " +
+            self.logger.error("No matches found for template: " +
                               self.tmpl)
             exit(0)
         elif len(match_list) != len(match_start_end_list):
             # Log and exit
-            self.logger.error("ERROR |  [" + cur_filename + ":" +
-                              cur_function + "] | " +
-                              "match_list and match_start_end_list should " +
+            self.logger.error("match_list and match_start_end_list should " +
                               "have the same length for template: " +
                               self.tmpl)
             exit(0)
@@ -1219,9 +1219,7 @@ class StringSub:
                     # "region", etc)
                     if split_string[0] not in self.kwargs.keys():
                         # Log and continue
-                        self.logger.error("ERROR |  [" + cur_filename +
-                                          ":" + cur_function + "] | " +
-                                          "The key " + split_string[0] +
+                        self.logger.error("The key " + split_string[0] +
                                           " does not exist for template: " +
                                           self.tmpl)
 
@@ -1310,16 +1308,12 @@ class StringSub:
 
         if match_list == 0:
             # Log and exit
-            self.logger.error("ERROR |  [" + cur_filename + ":" +
-                              cur_function + "] | " +
-                              "No matches found for template: " +
+            self.logger.error("No matches found for template: " +
                               self.tmpl)
             exit(0)
         elif len(match_list) != len(match_start_end_list):
             # Log and exit
-            self.logger.error("ERROR |  [" + cur_filename + ":" +
-                              cur_function + "] | " +
-                              "match_list and match_start_end_list should " +
+            self.logger.error("match_list and match_start_end_list should " +
                               "have the same length for template: " +
                               self.tmpl)
             exit(0)
@@ -1391,9 +1385,7 @@ class StringSub:
                     # "offset", etc)
                     if split_string[0] not in self.kwargs.keys():
                         # Log and continue
-                        self.logger.error("ERROR |  [" + cur_filename +
-                                          ":" + cur_function + "] | " +
-                                          "The key " + split_string[0] +
+                        self.logger.error("The key " + split_string[0] +
                                           " does not exist for the template: " +
                                           self.tmpl)
 

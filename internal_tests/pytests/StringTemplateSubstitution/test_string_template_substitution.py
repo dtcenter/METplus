@@ -541,3 +541,32 @@ def test_multiple_valid_substitution_init_complex():
     ss = StringSub(logger, templ, init=init_string, lead=lead_string)
     filename = ss.doStringSub()
     assert(filename == expected_filename)
+
+
+def test_shift_time():
+    init_string = "2017060400"
+    logger = logging.getLogger("testing")
+    templ = "{init?fmt=%Y%m%d%H?shift=86400}"
+    expected_filename = "2017060500"
+    ss = StringSub(logger, templ, init=init_string)
+    filename = ss.doStringSub()
+    assert(filename == expected_filename)
+
+def test_shift_time_negative():
+    init_string = "2017060400"
+    logger = logging.getLogger("testing")
+    templ = "{init?fmt=%Y%m%d%H?shift=-86400}"
+    expected_filename = "2017060300"
+    ss = StringSub(logger, templ, init=init_string)
+    filename = ss.doStringSub()
+    assert(filename == expected_filename)
+
+def test_shift_time_lead_negative():
+    init_string = "2019020700"
+    lead_string = "60"
+    logger = logging.getLogger("testing")
+    templ = "dwd_{init?fmt=%Y%m%d%H}_{lead?fmt=%.3H?shift=-86400}_{lead?fmt=%.3H}"
+    expected_filename = "dwd_2019020700_036_060"
+    ss = StringSub(logger, templ, init=init_string, lead=lead_string)
+    filename = ss.doStringSub()
+    assert(filename == expected_filename)
