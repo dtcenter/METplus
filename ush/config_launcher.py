@@ -154,7 +154,6 @@ def parse_launch_args(args, usage, filename, logger):
     # Now look for any option and conf file arguments:
     bad = False
     for iarg in xrange(len(args)):
-        logger.info(args[iarg])
         m = re.match('''(?x)
           (?P<section>[a-zA-Z][a-zA-Z0-9_]*)
            \.(?P<option>[^=]+)
@@ -165,12 +164,8 @@ def parse_launch_args(args, usage, filename, logger):
                 repr(m.group('value'))))
             moreopt[m.group('section')][m.group('option')] = m.group('value')
         elif os.path.exists(args[iarg]):
-            logger.info('%s: Plan to parse this conf file' % (args[iarg],))
             infiles.append(args[iarg])
         elif os.path.exists(os.path.join(parm, args[iarg])):
-            logger.info('%s: Prepended parm directory, '
-                        'Plan to parse this conf file' %
-                        (os.path.join(parm, args[iarg]),))
             infiles.append(os.path.join(parm, args[iarg]))
         else:
             bad = True
@@ -189,7 +184,6 @@ def parse_launch_args(args, usage, filename, logger):
         elif not produtil.fileop.isnonempty(file):
             logger.warning(
                 file + ': conf file is empty.  Will continue anyway.')
-        logger.info('Conf input: ' + repr(file))
     return (parm, infiles, moreopt)
 
 
