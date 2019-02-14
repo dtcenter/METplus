@@ -219,17 +219,16 @@ class CommandRunner(object):
         # If no metpluslog, cmlog_dest is None, which should be interpreted as tty.
         if metpluslog:
             log_met_output_to_metplus = self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS')
-            self.logger.debug('LOG_MET_OUTPUT_TO_METPLUS log file is %s'% repr(log_met_output_to_metplus))
             # If cmdlog is None send output to metpluslog.
             if log_met_output_to_metplus or not cmdlog:
                 cmdlog_dest = metpluslog
             else:
                 log_timestamp = self.config.getstr('config', 'LOG_TIMESTAMP', '')
                 if log_timestamp:
-                    cmdlog_dest = os.path.join(self.config.getdir('LOG_DIR'),
+                    cmdlog_dest = os.path.join(util.getdir(self.config, 'LOG_DIR'),
                                             cmdlog + '_' + log_timestamp)
                 else:
-                    cmdlog_dest = os.path.join(self.config.getdir('LOG_DIR'),cmdlog)
+                    cmdlog_dest = os.path.join(util.getdir(self.config, 'LOG_DIR'),cmdlog)
 
 
         # If cmdlog_dest None we will not redirect output to a log file
