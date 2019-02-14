@@ -121,13 +121,15 @@ class ModeWrapper(CompareGriddedWrapper):
         # get model to compare
         model_path = self.find_model(ti, v)
         if model_path == None:
-            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR "+ti.getInitTime()+" f"+str(ti.lead))
+            self.logger.error("Could not find file in " + self.cg_dict['FCST_INPUT_DIR'] +\
+                              " for init time " + ti.getInitTime() + " f" + str(ti.lead))
             return
 
         # get observation to compare
         obs_path = self.find_obs(ti, v)
         if obs_path == None:
-            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['OBS_INPUT_DIR']+" FOR "+ti.getInitTime()+" f"+str(ti.lead))
+            self.logger.error("Could not find file in " + self.cg_dict['OBS_INPUT_DIR'] +\
+                              " for valid time "+ti.getValidTime())
             return
 
         # loop over all variables and levels (and probability thresholds) and call the app for each
@@ -251,8 +253,7 @@ class ModeWrapper(CompareGriddedWrapper):
 
             cmd = self.get_command()
             if cmd is None:
-                self.logger.error("ERROR: "+self.app_name+\
-                                  " could not generate command")
+                self.logger.error("Could not generate command")
                 return
             self.build()
             self.clear()

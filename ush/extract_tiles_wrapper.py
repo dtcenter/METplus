@@ -93,11 +93,9 @@ class ExtractTilesWrapper(CommandBuilder):
         # directory
         util.prune_empty(self.filtered_out_dir, self.logger)
 
-        msg = ("INFO|[" + cur_function + ":" + cur_filename +
-               "] | Finished extract tiles")
-        self.logger.info(msg)
+        self.logger.debug("Finished extract tiles")
 
-#    def run_at_time(self, cur_init):
+
     def run_at_time(self, init_time, valid_time):
         """!Get TC-paris data then regrid tiles centered on the storm.
 
@@ -123,23 +121,16 @@ class ExtractTilesWrapper(CommandBuilder):
         # amongst different users and runs.
         cur_pid = str(os.getpid())
         tmp_dir = os.path.join(self.config.getdir('TMP_DIR'), cur_pid)
-        msg = ("INFO|[" + cur_filename + ":" + cur_function + "]"
-               "|Begin extract tiles")
-        self.logger.info(msg)
+        self.logger.info("Begin extract tiles")
 
         cur_init = init_time[0:8]+"_"+init_time[8:10]
 
         # Check that there are tc_pairs data which are used as input
         if util.is_dir_empty(self.tc_pairs_dir):
-            msg = ("ERROR|[" + cur_filename + ":" + cur_function + "]"
-                   "|No tc pairs data found at " + self.tc_pairs_dir +
-                   "Exiting...")
-            self.logger.error(msg)
+            self.logger.error("No tc pairs data found at {}"\
+                              .format(self.tc_pairs_dir))
             sys.exit(1)
 
-        # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
-        # [File : function]| Message logger.info("INFO |  [" +
-        # cur_filename +  ":" + "cur_function] |" + "BEGIN extract_tiles")
         # Process TC pairs by initialization time
         # Begin processing for initialization time, cur_init
         year_month = util.extract_year_month(cur_init, self.logger)
@@ -151,10 +142,8 @@ class ExtractTilesWrapper(CommandBuilder):
                                    filter_filename)
 
         if util.file_exists(filter_name) and not self.overwrite_flag:
-            msg = ("DEBUG| [" + cur_filename + ":" + cur_function +
-                   " ] | Filter file exists, using Track data file: " +
-                   filter_name)
-            self.logger.debug(msg)
+            self.logger.debug("Filter file exists, using Track data file: {}"\
+                              .format(filter_name))
         else:
             # Create the storm track by applying the
             # filter options defined in the config/param file.
@@ -178,9 +167,8 @@ class ExtractTilesWrapper(CommandBuilder):
         # continue to the next time.
         if not sorted_storm_ids:
             # No storms found for init time, cur_init
-            msg = ("DEBUG|[" + cur_filename + ":" + cur_function + " ]|" +
-                   "No storms were found for " + cur_init +
-                   "...continue to next in list")
+            msg = "No storms were found for {} ...continue to next in list"\
+              .format(cur_init)
             self.logger.debug(msg)
             return
 
@@ -221,9 +209,6 @@ class ExtractTilesWrapper(CommandBuilder):
         # Clean up the tmp directory if it exists
         if os.path.isdir(tmp_dir):
             util.rmtree(tmp_dir)
-            msg = ("INFO|[" + cur_function + ":" + cur_filename + "]"
-                   "| Finished extract tiles")
-            self.logger.info(msg)
 
 
 if __name__ == "__main__":

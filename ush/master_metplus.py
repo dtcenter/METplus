@@ -179,6 +179,8 @@ def main():
         logger.info("Scrubbing staging dir: {}".format(p.getdir('STAGING_DIR')))
         shutil.rmtree(p.getdir('STAGING_DIR'))
 
+    logger.info('METplus has successfully finished running.')
+
     exit()
 
     # TODO - remove this, I don't think this is being used.
