@@ -1664,7 +1664,7 @@ def getdir(p, dir_name, default_val=None, logger=None):
             exit(1)
         msg = "Setting {} to default value {}".format(dir_name, default_val)
         if logger:
-            logger.warning(msg)
+            logger.debug(msg)
         else:
             print(msg)
 
