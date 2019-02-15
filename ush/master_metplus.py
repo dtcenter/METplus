@@ -156,8 +156,12 @@ def main():
             logger.info("* RUNNING METplus")
             if use_init:
                 logger.info("*  at init time: " + run_time)
+                p.set('config', 'CURRENT_INIT_TIME', run_time)
+                os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
             else:
                 logger.info("*  at valid time: " + run_time)
+                p.set('config', 'CURRENT_VALID_TIME', run_time)
+                os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
             logger.info("****************************************")
             for process in processes:
                 # Set valid time to -1 if using init and vice versa

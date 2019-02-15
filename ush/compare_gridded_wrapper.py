@@ -255,6 +255,8 @@ that reformat gridded data
         for lead in lead_seq:
             task_info.lead = lead
             self.logger.info("Processing forecast lead {}".format(lead))
+            self.p.set('config', 'CURRENT_LEAD_TIME', lead)
+            os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
             self.run_at_time_once(task_info, var_list)
 
 

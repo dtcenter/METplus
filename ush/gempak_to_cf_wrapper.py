@@ -74,8 +74,11 @@ class GempakToCFWrapper(CommandBuilder):
 
         for lead in lead_seq:
             task_info.lead = lead
+            self.p.set('config', 'CURRENT_LEAD_TIME', lead)
+            os.environ['METPLUS_CURRENT_LEAD_TIME'] = lead
             self.run_at_time_once(task_info)
-                    
+
+
     def run_at_time_once(self, task_info):
         """! Runs the MET application for a given time and forecast lead combination
              Args:
