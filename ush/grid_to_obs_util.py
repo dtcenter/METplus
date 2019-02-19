@@ -49,8 +49,7 @@ def grid2obs_file_info(g2obs_file, subdir_regex, logger):
     # Used for logging.
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
-    logger.info("INFO|:" + cur_function + '|' + cur_filename + '| ' +
-                     "Creating prepbufr file information")
+    logger.info("Creating prepbufr file information")
 
     # For files like GDAS, there are no cycle and offset values in the
     # filename.  These will be set to None.  Some files may not have a
@@ -87,8 +86,7 @@ def grid2obs_file_info(g2obs_file, subdir_regex, logger):
         else:
             # Something is wrong, there should be a cycle time if
             # there is an offset time.
-            logger.error('ERROR |' + cur_function + '|' +
-                         cur_filename + 'Expected cycle time not'
+            logger.error('Expected cycle time not'
                                         'found. This '
                                         'data does not have '
                                         'the expected prepbufr '

@@ -41,7 +41,6 @@ that reformat gridded data
     """
     def __init__(self, p, logger):
         super(CompareGriddedWrapper, self).__init__(p, logger)
-        met_install_dir = p.getdir('MET_INSTALL_DIR')
         self.cg_dict = self.create_cg_dict()
 
 
@@ -59,8 +58,8 @@ that reformat gridded data
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.logger.error(self.app_name + ": No app path specified. \
-                              You must use a subclass")
+            self.logger.error("No app path specified. "\
+                              "You must use a subclass")
             return None
 
         cmd = self.app_path + " "
@@ -68,7 +67,7 @@ that reformat gridded data
             cmd += a + " "
 
         if len(self.infiles) == 0:
-            self.logger.error(self.app_name+": No input filenames specified")
+            self.logger.error("No input filenames specified")
             return None
 
         for f in self.infiles:
@@ -78,7 +77,7 @@ that reformat gridded data
             cmd += self.param + " "
 
         if self.outdir == "":
-            self.logger.error(self.app_name+": No output directory specified")
+            self.logger.error("No output directory specified")
             return None
 
         cmd += self.outdir
@@ -255,7 +254,9 @@ that reformat gridded data
         lead_seq = self.cg_dict['LEAD_SEQ']
         for lead in lead_seq:
             task_info.lead = lead
-            self.logger.info("PROCESSING FORECAST LEAD {}".format(lead))
+            self.logger.info("Processing forecast lead {}".format(lead))
+            self.p.set('config', 'CURRENT_LEAD_TIME', lead)
+            os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
             self.run_at_time_once(task_info, var_list)
 
 
@@ -268,14 +269,16 @@ that reformat gridded data
         # get model from first var to compare
         model_path = self.find_model(task_info, var_list[0])
         if model_path == None:
-            self.logger.error("COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR INIT "+task_info.getInitTime()+" f"+str(task_info.lead))
+            self.logger.error("Could not find file in " + self.cg_dict['FCST_INPUT_DIR'] +\
+                              " for init time " + task_info.getInitTime() + " f" + str(task_info.lead))
             return
         self.add_input_file(model_path)
 
         # get observation to from first var compare
         obs_path = self.find_obs(task_info, var_list[0])
         if obs_path == None:
-            self.logger.error("COULD NOT FIND FILE IN "+self.cg_dict['OBS_INPUT_DIR']+" FOR INIT "+task_info.getInitTime()+" f"+str(task_info.lead))
+            self.logger.error("Could not find file in " + self.cg_dict['OBS_INPUT_DIR'] +\
+                              " for valid time " + task_info.getValidTime())
             return
         self.add_input_file(obs_path)
 
@@ -345,8 +348,7 @@ that reformat gridded data
 
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error(self.app_name+\
-                              " could not generate command")
+            self.logger.error("Could not generate command")
             return
         self.build()
         self.clear()
@@ -361,14 +363,16 @@ that reformat gridded data
         # get model to compare
         model_path = self.find_model(ti, v)
         if model_path == None:
-            self.logger.error("COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR INIT "+ti.getInitTime()+" f"+str(ti.lead))
+            self.logger.error("Could not find file in " + self.cg_dict['FCST_INPUT_DIR'] +\
+                              " for init time " + ti.getInitTime() + " f" + str(ti.lead))
             return
         self.add_input_file(model_path)
 
         # get observation to compare
         obs_path = self.find_obs(ti, v)
         if obs_path == None:
-            self.logger.error("COULD NOT FIND FILE IN "+self.cg_dict['OBS_INPUT_DIR']+" FOR INIT "+ti.getInitTime()+" f"+str(ti.lead))
+            self.logger.error("Could not find file in " + self.cg_dict['OBS_INPUT_DIR'] +\
+                              " for valid time " + ti.getValidTime())
             return
         self.add_input_file(obs_path)
 

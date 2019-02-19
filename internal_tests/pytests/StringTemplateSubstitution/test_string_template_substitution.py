@@ -403,11 +403,6 @@ def test_crow_variable_hour():
 
 
 def test_create_grid2obs_regex_gfs():
-
-    # Skip this test until we find a solution to hard-coding data paths
-    pytest.skip("Requires hard-coded data path")
-
-
     # Test that the regex created from a template is what is expected
     logger = logging.getLogger("test")
     templ = '/path/to/gfs/pgbf{lead?fmt=%H}.gfs.{valid?fmt=%Y%m%d%HH}'
@@ -418,14 +413,11 @@ def test_create_grid2obs_regex_gfs():
 
     ss = StringSub(logger, templ, valid=valid_str, lead=lead_str)
     actual_regex = ss.create_grid2obs_regex()
-    expected_regex = '/path/to/gfs/pgbf([0-9]{1,3}).gfs.([0-9]{10})'
+    expected_regex = '/path/to/gfs/pgbf([0-9]{1,3}).gfs.([0-9]{10})$'
     assert actual_regex == expected_regex
 
 
 def test_create_grid2obs_regex_nam():
-    # Skip this test until we find a solution to hard-coding data paths
-    pytest.skip("Requires hard-coded data path")
-
     # Test that the regex created from a template is what is expected
     logger = logging.getLogger("test")
     templ = \
@@ -439,14 +431,11 @@ def test_create_grid2obs_regex_nam():
     ss = StringSub(logger, templ, cycle=cycle_str, offset=offset_str)
     actual_regex = ss.create_grid2obs_regex()
     expected_regex = \
-        '/path/to/nam.20170811/nam.t([0-9]{2,3})z.prepbufr.tm([0-9]{2,3})'
+        '/path/to/nam.20170811/nam.t([0-9]{2,3})z.prepbufr.tm([0-9]{2,3})$'
     assert actual_regex == expected_regex
 
 
 def test_create_grid2obs_regex_gdas():
-    # Skip this test until we find a solution to hard-coding data paths
-    pytest.skip("Requires hard-coded data path")
-
     # Test that the regex created from a template is what is expected
     logger = logging.getLogger("test")
     templ = \
@@ -460,13 +449,10 @@ def test_create_grid2obs_regex_gdas():
 
     ss = StringSub(logger, templ, valid=valid_str)
     actual_regex = ss.create_grid2obs_regex()
-    expected_regex = '/path/to/gdas/prepbufr.gdas.([0-9]{10})'
+    expected_regex = '/path/to/gdas/prepbufr.gdas.([0-9]{10})$'
     assert actual_regex == expected_regex
 
 def test_create_grid2obs_regex_hrrr():
-    # Skip this test until we find a solution to hard-coding data paths
-    pytest.skip("Requires hard-coded data path")
-
     # Test that the regex created from a template is what is expected
     logger = logging.getLogger("test")
     templ = \
@@ -479,14 +465,11 @@ def test_create_grid2obs_regex_hrrr():
     ss = StringSub(logger, templ, cycle=cycle_str, lead=lead_str)
     actual_regex = ss.create_grid2obs_regex()
     expected_regex = \
-        '/path/to/hrrr/hrrr.t([0-9]{2,3})z.wrfprsf([0-9]{1,3}).grib2'
+        '/path/to/hrrr/hrrr.t([0-9]{2,3})z.wrfprsf([0-9]{1,3}).grib2$'
     assert actual_regex == expected_regex
 
 
 def test_create_grid2obs_regex_all():
-    # Skip this test until we find a solution to hard-coding data paths
-    pytest.skip("Requires hard-coded data path")
-
     # Test that the regex created from the template that has valid
     # cycle, lead and offset is correct (expected).
     logger = logging.getLogger("test")
@@ -504,7 +487,7 @@ def test_create_grid2obs_regex_all():
                    lead=lead_str, offset=offset_str)
     actual_regex = ss.create_grid2obs_regex()
     expected_regex = '/path/to/nam.([0-9]{8})/rap.t([0-9]{2,3})z.' \
-                     'awphys([0-9]{1,3}).tm([0-9]{2,3}).grib2'
+                     'awphys([0-9]{1,3}).tm([0-9]{2,3}).grib2$'
     assert actual_regex == expected_regex
 
 
@@ -555,6 +538,35 @@ def test_multiple_valid_substitution_init_complex():
     logger = logging.getLogger("testing")
     templ = "ncar.ral.CoSPA.HRRR.{init?fmt=%Y-%m-%dT%H:%M:%S}.PT{lead?fmt=%.2H}:00.nc"
     expected_filename = "ncar.ral.CoSPA.HRRR.2016-06-10T18:00:00.PT06:00.nc"
+    ss = StringSub(logger, templ, init=init_string, lead=lead_string)
+    filename = ss.doStringSub()
+    assert(filename == expected_filename)
+
+
+def test_shift_time():
+    init_string = "2017060400"
+    logger = logging.getLogger("testing")
+    templ = "{init?fmt=%Y%m%d%H?shift=86400}"
+    expected_filename = "2017060500"
+    ss = StringSub(logger, templ, init=init_string)
+    filename = ss.doStringSub()
+    assert(filename == expected_filename)
+
+def test_shift_time_negative():
+    init_string = "2017060400"
+    logger = logging.getLogger("testing")
+    templ = "{init?fmt=%Y%m%d%H?shift=-86400}"
+    expected_filename = "2017060300"
+    ss = StringSub(logger, templ, init=init_string)
+    filename = ss.doStringSub()
+    assert(filename == expected_filename)
+
+def test_shift_time_lead_negative():
+    init_string = "2019020700"
+    lead_string = "60"
+    logger = logging.getLogger("testing")
+    templ = "dwd_{init?fmt=%Y%m%d%H}_{lead?fmt=%.3H?shift=-86400}_{lead?fmt=%.3H}"
+    expected_filename = "dwd_2019020700_036_060"
     ss = StringSub(logger, templ, init=init_string, lead=lead_string)
     filename = ss.doStringSub()
     assert(filename == expected_filename)

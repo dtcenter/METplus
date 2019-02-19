@@ -54,9 +54,6 @@ def main():
     Master METplus script that invokes the necessary Python scripts
     to perform various activities, such as series analysis."""
 
-    # Job Logger
-    produtil.log.jlogger.info('Top of master_metplus')
-
     # Used for logging and usage statment
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
@@ -64,7 +61,8 @@ def main():
     # Setup Task logger, Until Conf object is created, Task logger is
     # only logging to tty, not a file.
     logger = logging.getLogger('master_metplus')
-    logger.info('logger Top of master_metplus.')
+    logger.info('Starting METplus v{}'
+                .format(util.get_version_number()))
 
     # Parse arguments, options and return a config instance.
     p = config_metplus.setup(filename=cur_filename)
@@ -74,7 +72,7 @@ def main():
         p.set('dir', 'STAGING_DIR', os.path.join(p.getdir('OUTPUT_BASE'),"stage"))
 
     # create temp dir if it doesn't exist already
-    tmp_dir = p.getdir('TMP_DIR')
+    tmp_dir = util.getdir(p, 'TMP_DIR', logger)
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
 
@@ -87,7 +85,6 @@ def main():
     # than you would get it this way logger=p.log(). The config
     # object has-a logger we want.
     logger = util.get_logger(p)
-    # logger.info('Top of master_metplus after conf file setup.')
 
     logger.info('Running METplus v{} called with command: {}'
                 .format(util.get_version_number(), ' '.join(sys.argv)))
@@ -159,8 +156,12 @@ def main():
             logger.info("* RUNNING METplus")
             if use_init:
                 logger.info("*  at init time: " + run_time)
+                p.set('config', 'CURRENT_INIT_TIME', run_time)
+                os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
             else:
                 logger.info("*  at valid time: " + run_time)
+                p.set('config', 'CURRENT_VALID_TIME', run_time)
+                os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
             logger.info("****************************************")
             for process in processes:
                 # Set valid time to -1 if using init and vice versa
@@ -181,6 +182,8 @@ def main():
     if p.getbool('config', 'SCRUB_STAGING_DIR', False) and os.path.exists(p.getdir('STAGING_DIR')):
         logger.info("Scrubbing staging dir: {}".format(p.getdir('STAGING_DIR')))
         shutil.rmtree(p.getdir('STAGING_DIR'))
+
+    logger.info('METplus has successfully finished running.')
 
     exit()
 
@@ -208,10 +211,8 @@ if __name__ == "__main__":
                                  jlogfile=os.environ['JLOGFILE'])
         else:
             produtil.setup.setup(send_dbn=False, jobname='run-METplus')
-        produtil.log.postmsg('master_metplus is starting')
 
         main()
-        produtil.log.postmsg('master_metplus completed')
     except Exception as e:
         produtil.log.jlogger.critical(
             'master_metplus  failed: %s' % (str(e),), exc_info=True)

@@ -224,14 +224,15 @@ def main():
                     use_case_dir+"/qpf/examples/phpt-vs-mrms-qpe.conf" ,
                     use_case_dir+"/qpf/examples/hrefmean-vs-qpe.conf" ,
                     use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf" ,
-                    use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" #,
+                    use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" ,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" #,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" #,
 #                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_by_fhr_grouping.conf" #,    
-#                    use_case_dir+"/grid_to_grid/examples/anom.conf" ,
-#                    use_case_dir+"/grid_to_grid/examples/anom_height.conf",
-#                    use_case_dir+"/grid_to_grid/examples/sfc.conf" ,
-#                    use_case_dir+"/grid_to_grid/examples/precip.conf"
+                    use_case_dir+"/grid_to_grid/examples/anom.conf" ,
+                    use_case_dir+"/grid_to_grid/examples/anom_height.conf",
+                    use_case_dir+"/grid_to_grid/examples/sfc.conf" ,
+                    use_case_dir+"/grid_to_grid/examples/precip.conf",
+                    use_case_dir+"/grid_to_grid/examples/precip_continuous.conf"
                   ]
 
     all_good = True

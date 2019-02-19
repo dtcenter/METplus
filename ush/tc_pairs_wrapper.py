@@ -76,8 +76,7 @@ class TcPairsWrapper(CommandBuilder):
         # Used for logging
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.debug("DEBUG|" + cur_filename + "|" + cur_function +
-                          ": creating the tc_pairs dictionary with" +
+        self.logger.debug(": creating the tc_pairs dictionary with" +
                           " values from the config file")
         tcp_dict = dict()
         tcp_dict['MISSING_VAL_TO_REPLACE'] = self.config.getstr('config',
@@ -201,8 +200,7 @@ class TcPairsWrapper(CommandBuilder):
         # Used for logging information
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.info(cur_filename + '|' + cur_function +
-                         "|Started run_all_times in TcPairsWrapper")
+        self.logger.info("Started run_all_times in TcPairsWrapper")
 
         # Set up the environment variable to be used in the TCPairs Config
         # file (TC_PAIRS_CONFIG_FILE)
@@ -248,8 +246,7 @@ class TcPairsWrapper(CommandBuilder):
         # Used for logging information
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.debug(cur_filename + '|' + cur_function +
-                          '| building command for non-ATCF_by_pairs track data...')
+        self.logger.debug('building command for non-ATCF_by_pairs track data...')
 
         missing_values = \
             (self.tcp_dict['MISSING_VAL_TO_REPLACE'],
@@ -278,8 +275,7 @@ class TcPairsWrapper(CommandBuilder):
                 dir_list.append(os.path.join(atrack_dir, year_month))
 
         if not dir_list:
-            self.logger.warning("ERROR | [" + cur_filename + ":" +
-                                cur_function + "] | There are no dated" +
+            self.logger.warning("There are no dated" +
                                 " sub-directories (YYYYMM) " +
                                 "with input data as expected in: " +
                                 "the specified input track directory.")
@@ -373,9 +369,7 @@ class TcPairsWrapper(CommandBuilder):
         # Used for logging information
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-        self.logger.debug(
-            cur_filename + '|' + cur_function +
-            '| Processing ATCF_by_pairs track files...')
+        self.logger.debug('Processing ATCF_by_pairs track files...')
 
         # Get the filename templates
         adeck_input_dir = self.tcp_dict['ADECK_TRACK_DATA_DIR']
@@ -505,8 +499,8 @@ class TcPairsWrapper(CommandBuilder):
                     filename_only = m.group(1)
                 else:
                     self.logger.warning(
-                        cur_function + "|" + cur_filename + ": A-deck filename doesn't +"
-                                                            " have .dat extension, using the A-deck filename as the base " +
+                        ": A-deck filename doesn't +"
+                        " have .dat extension, using the A-deck filename as the base " +
                         "output .tcst file")
                     filename_only = adeck
                 outfile = os.path.join(pairs_out_dir, filename_only)
@@ -537,7 +531,7 @@ class TcPairsWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         self.logger.debug(
-            cur_function + '|' + cur_filename + ":Determining date format information...")
+            "Determining date format information...")
         # Determine if we have YYYY, YYYYMM, YYYYMMDD, or YYYYMMDDhh for
         # the date string
         # date_format_match = re.match(r'(?i)\A(?:(%+[a-z])*)\Z', tmpl)
@@ -561,9 +555,9 @@ class TcPairsWrapper(CommandBuilder):
                 date_len = 4
             else:
                 self.logger.error(
-                    'Date format specified in the filename_templates section does not ' +
+                    'Date format specified ({})in the filename_templates section does not ' +
                     'match expected %Y, %Y%m, ' + ''
-                                                  ' %Y%m%d, or %Y%m%d%h format')
+                    ' %Y%m%d, or %Y%m%d%h format'.format(first_match))
                 exit(1)
         else:
             # No match return 0
@@ -593,8 +587,7 @@ class TcPairsWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         self.logger.debug(
-            cur_function + '|' + cur_filename +
-            ":Generating the filename regex from the filename_templates section.")
+            "Generating the filename regex from the filename_templates section.")
 
         # To filter files on the criteria of date, region, or cyclone (or any combination),
         # Use dummy values for the region and cyclone, to create a string template
@@ -678,7 +671,7 @@ class TcPairsWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         self.logger.debug(
-            cur_function + '|' + cur_filename + ": Filtering track file input")
+            "Filtering track file input")
 
         # Eight possible combinations: date only, region only, cyclone only,
         # (date, region, cyclone), (date, region),
@@ -796,8 +789,7 @@ class TcPairsWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         self.logger.debug(
-            cur_function + '|' + cur_filename +
-            ": Filtering track file input by date...")
+            "Filtering track file input by date...")
 
         # Check if filtering by init time is defined in the
         # config file, if not, forgo filtering by date and return
@@ -917,8 +909,7 @@ class TcPairsWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         self.logger.debug(
-            cur_function + '|' + cur_filename +
-            ": Filtering track file input by region...")
+            "Filtering track file input by region...")
         # Get a list of the regions of interest
         regions_from_conf = self.tcp_dict['BASIN']
 
@@ -986,8 +977,7 @@ class TcPairsWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         self.logger.debug(
-            cur_function + '|' + cur_filename +
-            ": Filtering track file input by cyclone...")
+            "Filtering track file input by cyclone...")
 
         # Get a list of the cyclones of interest
         cyclones = self.tcp_dict['CYCLONE']
@@ -1044,8 +1034,7 @@ class TcPairsWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         self.logger.debug(
-            cur_function + '|' + cur_filename +
-            ": Creating a list of input A-deck " +
+            "Creating a list of input A-deck " +
             "or B-deck track files")
 
         # Retrieve full file path for every file in the input directory
@@ -1075,8 +1064,7 @@ class TcPairsWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
-        self.logger.debug(cur_function + '|' + cur_filename +
-                          ': Setting environment variables that will be' +
+        self.logger.debug(': Setting environment variables that will be' +
                           ' used by MET...')
 
         # For all cases below, we need to do some pre-processing so that
@@ -1239,9 +1227,7 @@ class TcPairsWrapper(CommandBuilder):
         # Check for existence of data and overwrite if desired
         if os.path.exists(deck_file_path):
             if self.config.getbool('config', 'TRACK_DATA_MOD_FORCE_OVERWRITE'):
-                self.logger.debug("DEBUG | [" + cur_filename +
-                                  ":" + cur_function + "] | " +
-                                  "Writing modified csv file: "
+                self.logger.debug("Writing modified csv file: "
                                   + deck_file_path +
                                   ", replacing " +
                                   "existing data because " +
@@ -1252,17 +1238,13 @@ class TcPairsWrapper(CommandBuilder):
                                             missing_values,
                                             deck_file_path)
             else:
-                self.logger.debug("DEBUG | [" + cur_filename +
-                                  ":" + cur_function + "] | " +
-                                  "Using existing modified csv"
+                self.logger.debug("Using existing modified csv"
                                   "file: " + deck_file_path +
                                   ", because " +
                                   "track_data_mod_force_" +
                                   "overwrite is set to False")
         else:
-            self.logger.debug("DEBUG | [" + cur_filename + ":"
-                              + cur_function + "] | " +
-                              "Writing modified csv file: " +
+            self.logger.debug("Writing modified csv file: " +
                               deck_file_path)
             self.read_modify_write_file(deck_input_file_path,
                                         storm_month,
@@ -1300,9 +1282,7 @@ class TcPairsWrapper(CommandBuilder):
         pairs_out_file_with_suffix = pairs_out_file + ".tcst"
         if os.path.exists(pairs_out_file_with_suffix):
             if self.config.getbool('config', 'TC_PAIRS_FORCE_OVERWRITE'):
-                self.logger.debug("DEBUG | [" + cur_filename +
-                                  ":" + cur_function + "] | " +
-                                  "Writing tc_pairs output file: "
+                self.logger.debug("Writing tc_pairs output file: "
                                   + pairs_out_file + ", replacing"
                                   + " existing " +
                                   " data because TC_PAIRS_FORCE" +
