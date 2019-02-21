@@ -47,11 +47,11 @@ interp_pnts = [${INTERP_PTS}];
 
 fcst_thresh = [${FCST_THRESH}];
 obs_thresh  = [];
-cov_thresh  = [ ${COV_THRESH} ];
+cov_thresh  = [${COV_THRESH}];
 
 alpha = [];
 
-line_type = [${LINE_TYPE_LIST}];
+line_type = [${LINE_TYPE}];
 
 column = [];
 
