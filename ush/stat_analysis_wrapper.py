@@ -119,7 +119,7 @@ class StatAnalysisWrapper(CommandBuilder):
         interp_pts = util.getlist(self.p.getstr('config', 'INTERP_PTS', ""))
         fcst_thresh = util.getlist(self.p.getstr('config', 'FCST_THRESH', ""))
         cov_thresh = util.getlist(self.p.getstr('config', 'COV_THRESH', ""))
-        line_type = util.getlist(self.p.getstr('config', 'LINE_TYPE_LIST', ""))
+        line_type = util.getlist(self.p.getstr('config', 'LINE_TYPE', ""))
         #set envir vars based on config
         self.add_env_var("MODEL_NAME", '"'+model_name+'"')
         self.add_env_var("OBS_NAME", '"'+obs_name+'"')
@@ -134,7 +134,7 @@ class StatAnalysisWrapper(CommandBuilder):
         self.add_env_var('INTERP_PTS', self.create_variable_list(interp_pts))
         self.add_env_var('FCST_THRESH', self.create_variable_list(fcst_thresh))
         self.add_env_var('COV_THRESH', self.create_variable_list(cov_thresh))
-        self.add_env_var('LINE_TYPE_LIST', self.create_variable_list(line_type))
+        self.add_env_var('LINE_TYPE', self.create_variable_list(line_type))
         #set up lookin agrument
         if "*" in stat_analysis_lookin_dir: 
             for_stat_analysis_lookin = subprocess.check_output("ls -d "+stat_analysis_lookin_dir, shell=True).rstrip('\n')
@@ -313,6 +313,10 @@ class StatAnalysisWrapper(CommandBuilder):
             self.logger.error("ERROR: invalid conf entry for VALID_HOUR_METHOD or INIT_HOUR_METHOD")
             exit
 
+    def gather_by_info(self):
+        #read config
+
+
     class FieldObj(object):
         __slots__ = 'name', 'dir'
 
@@ -338,17 +342,17 @@ class StatAnalysisWrapper(CommandBuilder):
         return model_list
 
     def run_all_times(self):
-        self.logger.info("RUNNING STAT_ANALYSIS FOR PLOTTING FORMAT")
-        verif_case = self.p.getstr('config', 'VERIF_CASE')
-        if verif_case == 'grid2grid':
-            self.grid2grid_plot_format()
-        elif verif_case == 'grid2obs':
-            self.grid2obs_plot_format()
-        elif verif_case == 'precip':
-            self.logger.info("Formatting for plotting for precip")
-        else:
-            self.logger.error("Not a valid VERIF_CASE option")
-            exit(1)
+        self.gather_by_info()
+        #verif_case = self.p.getstr('config', 'VERIF_CASE')
+        #if verif_case == 'grid2grid':
+        #    self.grid2grid_plot_format()
+        #elif verif_case == 'grid2obs':
+        #    self.grid2obs_plot_format()
+        #elif verif_case == 'precip':
+        #    self.logger.info("Formatting for plotting for precip")
+        #else:
+        #    self.logger.error("Not a valid VERIF_CASE option")
+        #    exit(1)
 
     def run_at_time(self, init_time, valid_time):
         self.gather_by_date(init_time, valid_time)
