@@ -169,8 +169,8 @@ class MTDWrapper(ModeWrapper):
 
             # write ascii file with list of files to process
             current_task.lead = 0
-            model_outfile = current_task.getValidTime() + '_fcst_' + v.fcst_name + '.txt'
-            obs_outfile = current_task.getValidTime() + '_obs_' + v.obs_name + '.txt'
+            model_outfile = current_task.getValidTime() + '_mtd_fcst_' + v.fcst_name + '.txt'
+            obs_outfile = current_task.getValidTime() + '_mtd_obs_' + v.obs_name + '.txt'
             model_list_path = self.write_list_file(model_outfile, model_list)
             obs_list_path = self.write_list_file(obs_outfile, obs_list)
 
@@ -212,7 +212,7 @@ class MTDWrapper(ModeWrapper):
 
         # write ascii file with list of files to process
         current_task.lead = 0
-        single_outfile = current_task.getValidTime() + '_single_' + s_name + '.txt'
+        single_outfile = current_task.getValidTime() + '_mtd_single_' + s_name + '.txt'
         single_list_path = self.write_list_file(single_outfile, single_list)
 
         arg_dict = {}
@@ -224,19 +224,6 @@ class MTDWrapper(ModeWrapper):
             arg_dict['obs_path'] = None
 
         self.process_fields_one_thresh(current_task, v, **arg_dict)
-
-
-    def write_list_file(self, filename, file_list):
-        mtd_list_dir = os.path.join(self.p.getdir('STAGING_DIR'), 'mtd_lists')
-        list_path = os.path.join(mtd_list_dir, filename)
-
-        if not os.path.exists(mtd_list_dir):
-            os.makedirs(mtd_list_dir, mode=0775)
-
-        with open(list_path, 'w') as file_handle:
-            for f_path in file_list:
-                file_handle.write(f_path+'\n')
-        return list_path
 
 
     def process_fields_one_thresh(self, ti, v, model_path, obs_path):
