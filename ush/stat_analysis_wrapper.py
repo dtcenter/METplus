@@ -71,9 +71,7 @@ class StatAnalysisWrapper(CommandBuilder):
             else:
                 stat_analysis_out_dir = stat_analysis_out_dir_base
                 stat_analysis_dump_row_filename = stat_analysis_dump_row_info.filename
-            if not os.path.exists(stat_analysis_out_dir):
-                os.makedirs(stat_analysis_out_dir)
-            self.logger.debug("dump_row output: "+stat_analysis_out_dir+"/"+stat_analysis_dump_row_filename)
+            util.mkdir_p(stat_analysis_out_dir)
             job = job.replace("[dump_row_filename]", stat_analysis_out_dir+"/"+stat_analysis_dump_row_filename)
         #check for out_stat
         if stat_analysis_out_stat_info.template_type != "NA":
@@ -84,11 +82,10 @@ class StatAnalysisWrapper(CommandBuilder):
             else:
                 stat_analysis_out_dir = stat_analysis_out_dir_base
                 stat_analysis_out_stat_filename = stat_analysis_out_stat_info.filename
-            if not os.path.exists(stat_analysis_out_dir):
-                os.makedirs(stat_analysis_out_dir)
-            self.logger.debug("out_stat output: "+stat_analysis_out_dir+"/"+stat_analysis_out_stat_filename)
+            util.mkdir_p(stat_analysis_out_dir)
             job = job.replace("[out_stat_filename]", stat_analysis_out_dir+"/"+stat_analysis_out_stat_filename)
         self.add_env_var("JOB", job)
+        return job
        
     def create_hour_group_list(self, loop_hour_beg, loop_hour_end, loop_hour_interval):
         loop_hour_now = loop_hour_beg
@@ -105,10 +102,10 @@ class StatAnalysisWrapper(CommandBuilder):
         conf_var_list=""
         if len(conf_var) > 0:
             for lt in range(len(conf_var)):
-                if lt+1 == len(conf_var):
+                if lt == len(conf_var)-1:
                     conf_var_list = conf_var_list+'"'+str(conf_var[lt]+'"')
                 else:
-                    con_var_list = conf_var_list+'"'+str(conf_var[lt]+'", ')
+                    conf_var_list = conf_var_list+'"'+str(conf_var[lt]+'", ')
         return conf_var_list
 
     class StatAnalysisOutputInfo(object):
@@ -130,7 +127,7 @@ class StatAnalysisWrapper(CommandBuilder):
             if time_info_valid_beg != time_info_valid_end:
                 match = re.search(r'.*\{valid\?fmt=(.*?[%H])\}', filename_template)
                 if match:
-                    self.logger.error("ERROR: Please include valid hour group times in template defined in METplus conf file using VALID_HOUR_BEG and VALID_HOUR_END")
+                    self.logger.error("Please include valid hour group times in template defined in METplus conf file using VALID_HOUR_BEG and VALID_HOUR_END")
                     exit(1)
             #build init_time_filename
             if len(time_info_init_hour) == 1:
@@ -139,13 +136,13 @@ class StatAnalysisWrapper(CommandBuilder):
                 match = re.search(r'.*\{init\?fmt=(.*?)\}', filename_template)
                 if match:
                     if match.group(1) != '%H':
-                        self.logger.error("ERROR: only accepted format {init?fmt=%H}")
+                        self.logger.error("only accepted format {init?fmt=%H}")
                         exit(1)
             else:
                 init_time_filename = "1900010100"
                 match = re.search(r'.*\{init\?fmt=(.*?)\}', filename_template)
                 if match:
-                    self.logger.error("ERROR: Please include init hour group times in template defined in METplus conf file using INIT_HOUR_BEG and INIT_HOUR_END")
+                    self.logger.error("Please include init hour group times in template defined in METplus conf file using INIT_HOUR_BEG and INIT_HOUR_END")
                     exit(1)
         else:
             init_time_filename =  time_info_init_beg
@@ -153,7 +150,7 @@ class StatAnalysisWrapper(CommandBuilder):
             if time_info_init_beg != time_info_init_end:
                 match = re.search(r'.*\{init\?fmt=(.*?[%H])\}', filename_template)
                 if match:
-                    self.logger.error("ERROR: Please include init hour group times in template defined in METplus conf file using INIT_HOUR_BEG and INIT_HOUR_END")
+                    self.logger.error("Please include init hour group times in template defined in METplus conf file using INIT_HOUR_BEG and INIT_HOUR_END")
                     exit(1)
             #build valid_time_filename
             if len(time_info_valid_hour) == 1:
@@ -162,13 +159,13 @@ class StatAnalysisWrapper(CommandBuilder):
                 match = re.search(r'.*\{valid\?fmt=(.*?)\}', filename_template)
                 if match:
                     if match.group(1) != '%H':
-                        self.logger.error("ERROR: only accepted format {valid?fmt=%H}")
+                        self.logger.error("only accepted format {valid?fmt=%H}")
                         exit(1)
             else:
                 valid_time_filename = "1900010100"
                 match = re.search(r'.*\{valid\?fmt=(.*?)\}', filename_template)
                 if match:
-                    self.logger.error("ERROR: Please include valid hour group times in template defined in METplus conf file using VALID_HOUR_BEG and VALID_HOUR_END")
+                    self.logger.error("Please include valid hour group times in template defined in METplus conf file using VALID_HOUR_BEG and VALID_HOUR_END")
                     exit(1)
         #split into chunks to deal with directories
         tmpl_split = filename_template.split("/")
@@ -184,9 +181,40 @@ class StatAnalysisWrapper(CommandBuilder):
                 filled_tmpl_chunk = tmpl_chunk
             filled_tmpl = os.path.join(filled_tmpl, filled_tmpl_chunk)
         return filled_tmpl
+    
+    class ValidInitTimesPairs(object):
+        __slots__ = 'valid', 'init'
+
+    def pair_valid_init_times(self, valid_hour_list, valid_method, init_hour_list, init_method):
+        valid_init_time_pairs = []
+        if valid_method == "GROUP" and init_method == "LOOP":
+            for init_hour in init_hour_list.split(", "):
+                pair = self.ValidInitTimesPairs()
+                pair.valid = valid_hour_list
+                pair.init = init_hour
+                valid_init_time_pairs.append(pair)
+        elif valid_method == "LOOP" and init_method == "GROUP":
+            for valid_hour in valid_hour_list.split(", "):
+                pair = self.ValidInitTimesPairs()
+                pair.valid = valid_hour
+                pair.init = init_hour_list
+                valid_init_time_pairs.append(pair)
+        elif valid_method == "LOOP" and init_method == "LOOP":
+            for init_hour in init_hour_list.split(", "):
+                for valid_hour in valid_hour_list.split(", "):
+                    pair = self.ValidInitTimesPairs()
+                    pair.valid = valid_hour
+                    pair.init = init_hour
+                    valid_init_time_pairs.append(pair)
+        elif valid_method == "GROUP" and init_method == "GROUP":
+            pair = self.ValidInitTimesPairs()
+            pair.valid = valid_hour_list
+            pair.init = init_hour_list
+            valid_init_time_pairs.append(pair)
+        return valid_init_time_pairs
 
     class FieldObj(object):
-        __slots__ = 'name', 'dir'
+        __slots__ = 'name', 'dir', 'obs'
 
     def parse_model_list(self):
         model_list = []
@@ -202,13 +230,48 @@ class StatAnalysisWrapper(CommandBuilder):
                 model_name = self.p.getstr('config', "MODEL"+m+"_NAME")
                 model_dir = ""
                 if self.p.has_option('config', "MODEL"+m+"_STAT_DIR"):
-                    model_dir = self.p.getstr('config', "MODEL"+m+"_STAT_DIR")
+                    model_dir = util.getraw_interp(self.p, 'config', "MODEL"+m+"_STAT_DIR")
+                else:
+                    self.logger.error("MODEL"+m+"_STAT_DIR not defined in METplus conf file")
+                    exit(1)
+                if self.p.has_option('config', "MODEL"+m+"_OBS_NAME"):
+                    model_obs_name = self.p.getstr('config', "MODEL"+m+"_OBS_NAME") 
+                else:
+                    self.logger.error("MODEL"+m+"_OBS_NAME not defined in METplus conf file")
+                    exit(1) 
             mod = self.FieldObj()
             mod.name = model_name
             mod.dir = model_dir
+            mod.obs = model_obs_name
             model_list.append(mod)
         return model_list
+    
+    class FourierDecompInfo(object):
+        __slots__ = 'run_fourier', 'wave_num_pairings'
 
+    def parse_var_fourier_decomp(self):
+        fourier_decom_list = []
+        all_conf = self.p.keys('config')
+        indices = []
+        regex = re.compile("FCST_VAR(\d+)_NAME")
+        for conf in all_conf:
+            result = regex.match(conf)
+            if result is not None:
+                indices.append(result.group(1))
+        for n in indices:
+            if self.p.has_option('config', "FCST_VAR"+n+"_NAME"):
+                levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
+                run_fourier = self.p.getbool('config', "VAR"+n+"_FOURIER_DECOMP", False)
+                fourier_wave_num_pairs = util.getlist(self.p.getstr('config', "VAR"+n+"_WAVE_NUM_LIST", ""))
+                if run_fourier == False:
+                    fourier_wave_num_pairs = ""
+                for level in levels:
+                    fd_info = self.FourierDecompInfo()
+                    fd_info.run_fourier = run_fourier
+                    fd_info.wave_num_pairings = fourier_wave_num_pairs
+                    fourier_decom_list.append(fd_info)
+        return fourier_decom_list
+ 
     def gather_by_date(self, init_time, valid_time):
         #read config
         model_name = self.p.getstr('config', 'MODEL_NAME')
@@ -239,10 +302,10 @@ class StatAnalysisWrapper(CommandBuilder):
         cov_thresh = util.getlist(self.p.getstr('config', 'COV_THRESH', ""))
         line_type = util.getlist(self.p.getstr('config', 'LINE_TYPE', ""))
         #set envir vars based on config
-        self.add_env_var("MODEL_NAME", '"'+model_name+'"')
-        self.add_env_var("OBS_NAME", '"'+obs_name+'"')
-        self.add_env_var("DESC", self.create_variable_list(desc))
-        self.add_env_var("FCST_LEAD", self.create_variable_list(fcst_lead))
+        self.add_env_var('MODEL_NAME', '"'+model_name+'"')
+        self.add_env_var('OBS_NAME', '"'+obs_name+'"')
+        self.add_env_var('DESC', self.create_variable_list(desc))
+        self.add_env_var('FCST_LEAD', self.create_variable_list(fcst_lead))
         self.add_env_var('FCST_VAR_NAME', self.create_variable_list(fcst_var_name))
         self.add_env_var('FCST_VAR_LEVEL', self.create_variable_list(fcst_var_level))
         self.add_env_var('OBS_VAR_NAME', self.create_variable_list(obs_var_name))
@@ -257,7 +320,7 @@ class StatAnalysisWrapper(CommandBuilder):
         if "*" in stat_analysis_lookin_dir: 
             for_stat_analysis_lookin = subprocess.check_output("ls -d "+stat_analysis_lookin_dir, shell=True).rstrip('\n')
         else:
-             for_stat_analysis_lookin = stat_analysis_lookin_dir
+            for_stat_analysis_lookin = stat_analysis_lookin_dir
         self.set_lookin_dir(for_stat_analysis_lookin)
         #set up stat_analysis output options based conf file info
         stat_analysis_dump_row_info = self.StatAnalysisOutputInfo()
@@ -307,7 +370,6 @@ class StatAnalysisWrapper(CommandBuilder):
         init_end = calendar.timegm(time.strptime(init_hour_end, "%H%M"))
         init_interval = int(init_hour_increment)
         if valid_hour_method == "GROUP" and init_hour_method == "LOOP":
-            self.logger.info("stat_analysis run method: valid hour grouping, init hour looping")
             init_now = init_beg
             while init_now <= init_end:
                 init_now_str = str(time.strftime("%H%M%S", time.gmtime(init_now)))
@@ -330,10 +392,6 @@ class StatAnalysisWrapper(CommandBuilder):
                         "FCST_INIT_END": str(init_time[0:8])+'_'+init_now_str,
                         "FCST_INIT_HOUR": ""
                     }
-                self.logger.debug("stat_analysis run date settings")
-                for name, value in fcst_valid_init_dict.items():
-                    self.logger.debug(name+": "+value)
-                    self.add_env_var(name, value)
                 if stat_analysis_dump_row_info.template_type == "default_template":
                     stat_analysis_dump_row_info.filename = stat_analysis_dump_row_info.filename_template+"_valid"+valid_hour_beg+"to"+valid_hour_end+"Z"+"_init"+init_now_str[0:5]+"Z_dumprow.stat"
                 elif stat_analysis_dump_row_info.template_type == "user_template":
@@ -342,18 +400,38 @@ class StatAnalysisWrapper(CommandBuilder):
                     stat_analysis_out_stat_info.filename = stat_analysis_out_stat_info.filename_template+"_valid"+valid_hour_beg+"to"+valid_hour_end+"Z"+"_init"+init_now_str[0:5]+"Z_outstat.stat"
                 elif stat_analysis_out_stat_info.template_type == "user_template":
                     stat_analysis_out_stat_info.filename = self.create_filename_from_user_template(stat_analysis_out_stat_info.filename_template, fcst_valid_init_dict, init_time)
-                self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
+                job = self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
                 self.set_param_file(stat_analysis_config)
+                #print stat_analysis run settings
+                self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
+                for name, value in fcst_valid_init_dict.items():
+                    self.add_env_var(name, value)
+                    self.logger.debug(name+": "+value)
+                self.logger.debug('MODEL_NAME :'+'"'+model_name+'"')
+                self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
+                self.logger.debug('DESC: '+self.create_variable_list(desc))
+                self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
+                self.logger.debug('FCST_VAR_NAME: '+self.create_variable_list(fcst_var_name))
+                self.logger.debug('FCST_VAR_LEVEL: '+self.create_variable_list(fcst_var_level))
+                self.logger.debug('OBS_VAR_NAME: '+self.create_variable_list(obs_var_name))
+                self.logger.debug('OBS_VAR_LEVEL: '+self.create_variable_list(obs_var_level))
+                self.logger.debug('REGION: '+self.create_variable_list(region))
+                self.logger.debug('INTERP: '+self.create_variable_list(interp))
+                self.logger.debug('INTERP_PTS: '+self.create_variable_list(interp_pts))
+                self.logger.debug('FCST_THRESH: '+self.create_variable_list(fcst_thresh))
+                self.logger.debug('COV_THRESH: '+self.create_variable_list(cov_thresh))
+                self.logger.debug('LINE_TYPE: '+self.create_variable_list(line_type))
+                self.logger.debug("JOB: "+job)
+                self.logger.debug("lookin directory: "+for_stat_analysis_lookin)
                 #build command
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error("ERROR: stat_analysis could not generate command")
+                    self.logger.error("stat_analysis could not generate command")
                     return
                 self.build()
                 self.clear()
                 init_now += init_interval
         elif valid_hour_method == "LOOP" and init_hour_method == "GROUP":
-            self.logger.info("stat_analysis run method: valid hour looping, init hour grouping")
             valid_now = valid_beg
             while valid_now <= valid_end:
                 valid_now_str = str(time.strftime("%H%M%S", time.gmtime(valid_now)))
@@ -376,10 +454,6 @@ class StatAnalysisWrapper(CommandBuilder):
                         "FCST_INIT_END": str(init_time[0:8])+'_'+init_hour_end+"00",
                         "FCST_INIT_HOUR": ""
                     }
-                self.logger.debug("stat_analysis run date settings")
-                for name, value in fcst_valid_init_dict.items():
-                    self.logger.debug(name+": "+value)
-                    self.add_env_var(name, value)
                 if stat_analysis_dump_row_info.template_type == "default_template":
                     stat_analysis_dump_row_info.filename = stat_analysis_dump_row_info.filename_template+"_valid"+valid_now_str[0:5]+"Z"+"_init"+init_hour_beg+"to"+init_hour_end+"Z_dumprow.stat"
                 elif stat_analysis_dump_row_info.template_type == "user_template":
@@ -388,18 +462,38 @@ class StatAnalysisWrapper(CommandBuilder):
                     stat_analysis_out_stat_info.filename = stat_analysis_out_stat_info.filename_template+"_valid"+valid_now_str[0:5]+"Z"+"_init"+init_hour_beg+"to"+init_hour_end+"Z_outstat.stat"
                 elif stat_analysis_out_stat_info.template_type == "user_template":
                     stat_analysis_out_stat_info.filename = self.create_filename_from_user_template(stat_analysis_out_stat_info.filename_template, fcst_valid_init_dict, init_time)
-                self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
+                job = self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
                 self.set_param_file(stat_analysis_config)
+                #print stat_analysis run settings
+                self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
+                for name, value in fcst_valid_init_dict.items():
+                    self.add_env_var(name, value)
+                    self.logger.debug(name+": "+value)
+                self.logger.debug('MODEL_NAME :'+'"'+model_name+'"')
+                self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
+                self.logger.debug('DESC: '+self.create_variable_list(desc))
+                self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
+                self.logger.debug('FCST_VAR_NAME: '+self.create_variable_list(fcst_var_name))
+                self.logger.debug('FCST_VAR_LEVEL: '+self.create_variable_list(fcst_var_level))
+                self.logger.debug('OBS_VAR_NAME: '+self.create_variable_list(obs_var_name))
+                self.logger.debug('OBS_VAR_LEVEL: '+self.create_variable_list(obs_var_level))
+                self.logger.debug('REGION: '+self.create_variable_list(region))
+                self.logger.debug('INTERP: '+self.create_variable_list(interp))
+                self.logger.debug('INTERP_PTS: '+self.create_variable_list(interp_pts))
+                self.logger.debug('FCST_THRESH: '+self.create_variable_list(fcst_thresh))
+                self.logger.debug('COV_THRESH: '+self.create_variable_list(cov_thresh))
+                self.logger.debug('LINE_TYPE: '+self.create_variable_list(line_type))
+                self.logger.debug("JOB: "+job)
+                self.logger.debug("lookin directory: "+for_stat_analysis_lookin)
                 #build command
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error("ERROR: stat_analysis could not generate command")
+                    self.logger.error("stat_analysis could not generate command")
                     return
                 self.build()
                 self.clear()
                 valid_now += valid_interval
         elif valid_hour_method == "LOOP" and init_hour_method == "LOOP":
-            self.logger.info("stat_analysis run method: valid hour looping, init hour looping")
             init_now = init_beg
             while init_now <= init_end:
                 init_now_str = str(time.strftime("%H%M%S", time.gmtime(init_now)))
@@ -424,10 +518,6 @@ class StatAnalysisWrapper(CommandBuilder):
                             "FCST_INIT_END": str(init_time[0:8])+'_'+init_now_str,
                             "FCST_INIT_HOUR": ""
                         }
-                    self.logger.debug("stat_analysis run date settings")
-                    for name, value in fcst_valid_init_dict.items():
-                        self.logger.debug(name+": "+value)
-                        self.add_env_var(name, value)
                     if stat_analysis_dump_row_info.template_type == "default_template":
                         stat_analysis_dump_row_info.filename = stat_analysis_dump_row_info.filename_template+"_valid"+valid_now_str[0:5]+"Z"+"_init"+init_now_str[0:5]+"Z_dumprow.stat"
                     elif stat_analysis_dump_row_info.template_type == "user_template":
@@ -436,19 +526,39 @@ class StatAnalysisWrapper(CommandBuilder):
                         stat_analysis_out_stat_info.filename = stat_analysis_out_stat_info.filename_template+"_valid"+valid_now_str[0:5]+"Z"+"_init"+init_now_str[0:5]+"Z_outstat.stat"
                     elif stat_analysis_out_stat_info.template_type == "user_template":
                         stat_analysis_out_stat_info.filename = self.create_filename_from_user_template(stat_analysis_out_stat_info.filename_template, fcst_valid_init_dict, init_time)
-                    self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
+                    job = self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
                     self.set_param_file(stat_analysis_config)
+                    #print stat_analysis run settings
+                    self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
+                    for name, value in fcst_valid_init_dict.items():
+                        self.add_env_var(name, value)
+                        self.logger.debug(name+": "+value)
+                    self.logger.debug('MODEL_NAME :'+'"'+model_name+'"')
+                    self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
+                    self.logger.debug('DESC: '+self.create_variable_list(desc))
+                    self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
+                    self.logger.debug('FCST_VAR_NAME: '+self.create_variable_list(fcst_var_name))
+                    self.logger.debug('FCST_VAR_LEVEL: '+self.create_variable_list(fcst_var_level))
+                    self.logger.debug('OBS_VAR_NAME: '+self.create_variable_list(obs_var_name))
+                    self.logger.debug('OBS_VAR_LEVEL: '+self.create_variable_list(obs_var_level))
+                    self.logger.debug('REGION: '+self.create_variable_list(region))
+                    self.logger.debug('INTERP: '+self.create_variable_list(interp))
+                    self.logger.debug('INTERP_PTS: '+self.create_variable_list(interp_pts))
+                    self.logger.debug('FCST_THRESH: '+self.create_variable_list(fcst_thresh))
+                    self.logger.debug('COV_THRESH: '+self.create_variable_list(cov_thresh))
+                    self.logger.debug('LINE_TYPE: '+self.create_variable_list(line_type))
+                    self.logger.debug("JOB: "+job)
+                    self.logger.debug("lookin directory: "+for_stat_analysis_lookin)
                     #build command
                     cmd = self.get_command()
                     if cmd is None:
-                        self.logger.error("ERROR: stat_analysis could not generate command")
+                        self.logger.error("stat_analysis could not generate command")
                         return
                     self.build()
                     self.clear()
                     valid_now += valid_interval
                 init_now += init_interval
         elif valid_hour_method == "GROUP" and init_hour_method == "GROUP":
-            self.logger.info("stat_analysis run method: valid hour grouping, init hour grouping")
             if init_time == -1:
                 init_hour_group_list = self.create_hour_group_list(init_beg, init_end, init_interval)
                 fcst_valid_init_dict = {
@@ -469,10 +579,6 @@ class StatAnalysisWrapper(CommandBuilder):
                     "FCST_INIT_END": str(init_time[0:8])+'_'+init_hour_end+"00",
                     "FCST_INIT_HOUR": ""
                 }
-            self.logger.debug("stat_analysis run date settings")
-            for name, value in fcst_valid_init_dict.items():
-                self.logger.debug(name+": "+value)
-                self.add_env_var(name, value)
             if stat_analysis_dump_row_info.template_type == "default_template":
                 stat_analysis_dump_row_info.filename = stat_analysis_dump_row_info.filename_template+"_valid"+valid_hour_beg+"to"+valid_hour_end+"Z"+"_init"+init_hour_beg+"to"+init_hour_end+"Z_dumprow.stat"
             elif stat_analysis_dump_row_info.template_type == "user_template":
@@ -481,90 +587,285 @@ class StatAnalysisWrapper(CommandBuilder):
                 stat_analysis_out_stat_info.filename = stat_analysis_out_stat_info.filename_template+"_valid"+valid_hour_beg+"to"+valid_hour_end+"Z"+"_init"+init_hour_beg+"to"+init_hour_end+"Z_outstat.stat"
             elif stat_analysis_out_stat_info.template_type == "user_template":
                 stat_analysis_out_stat_info.filename = self.create_filename_from_user_template(stat_analysis_out_stat_info.filename_template, fcst_valid_init_dict, init_time)
-            self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
+            job = self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
             self.set_param_file(stat_analysis_config)
+            #print stat_analysis run settings
+            self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
+            for name, value in fcst_valid_init_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            self.logger.debug('MODEL_NAME :'+'"'+model_name+'"')
+            self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
+            self.logger.debug('DESC: '+self.create_variable_list(desc))
+            self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
+            self.logger.debug('FCST_VAR_NAME: '+self.create_variable_list(fcst_var_name))
+            self.logger.debug('FCST_VAR_LEVEL: '+self.create_variable_list(fcst_var_level))
+            self.logger.debug('OBS_VAR_NAME: '+self.create_variable_list(obs_var_name))
+            self.logger.debug('OBS_VAR_LEVEL: '+self.create_variable_list(obs_var_level))
+            self.logger.debug('REGION: '+self.create_variable_list(region))
+            self.logger.debug('INTERP: '+self.create_variable_list(interp))
+            self.logger.debug('INTERP_PTS: '+self.create_variable_list(interp_pts))
+            self.logger.debug('FCST_THRESH: '+self.create_variable_list(fcst_thresh))
+            self.logger.debug('COV_THRESH: '+self.create_variable_list(cov_thresh))
+            self.logger.debug('LINE_TYPE: '+self.create_variable_list(line_type))
+            self.logger.debug("JOB: "+job)
+            self.logger.debug("lookin directory: "+for_stat_analysis_lookin)
             #build command
             cmd = self.get_command()
             if cmd is None:
-                self.logger.error("ERROR: stat_analysis could not generate command")
+                self.logger.error("stat_analysis could not generate command")
                 return
             self.build()
             self.clear()
         else:
-            self.logger.error("ERROR: invalid conf entry for VALID_HOUR_METHOD or INIT_HOUR_METHOD")
+            self.logger.error("invalid conf entry for VALID_HOUR_METHOD or INIT_HOUR_METHOD")
             exit(1)
 
-    #def gather_by_info(self):
-    #    #read config
-    #    verif_case = self.p.getstr('config', 'VERIF_CASE')
-    #    verif_type = self.p.getstr('config', 'VERIF_TYPE')
-    #    ##use_init = self.p.getbool('config', 'LOOP_BY_INIT')
-    #    valid_beg_YYYYMMDD = self.p.getstr('config', 'VALID_BEG', "")
-    #    valid_end_YYYYMMDD = self.p.getstr('config', 'VALID_END', "")
-    #    valid_hour_method = self.p.getstr('config', 'VALID_HOUR_METHOD')
-    #    valid_hour_beg = self.p.getstr('config', 'VALID_HOUR_BEG')
-    #    valid_hour_end = self.p.getstr('config', 'VALID_HOUR_END')
-    #    valid_hour_increment = self.p.getstr('config', 'VALID_HOUR_INCREMENT')
-    #    init_beg_YYYYMMDD = self.p.getstr('config', 'INIT_BEG', "")
-    #    init_end_YYYYMMDD = self.p.getstr('config', 'INIT_END', "")
-    #    init_hour_method = self.p.getstr('config', 'INIT_HOUR_METHOD')
-    #    init_hour_beg = self.p.getstr('config', 'INIT_HOUR_BEG')
-    #    init_hour_end = self.p.getstr('config', 'INIT_HOUR_END')
-    #    init_hour_increment = self.p.getstr('config', 'INIT_HOUR_INCREMENT')
-    #    stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
-    #    stat_analysis_config = self.p.getstr('config', 'STAT_ANALYSIS_CONFIG')
-    #    model_list = self.parse_model_list()
-    #    var_list = util.parse_var_list(self.p)
-    #    region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
-    #    lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
-    #    desc = util.getlist(self.p.getstr('config', 'DESC', ""))
-    #    interp = util.getlist(self.p.getstr('config', 'INTERP', ""))
-    #    interp_pts = util.getlist(self.p.getstr('config', 'INTERP_PTS', ""))
-    #    fcst_thresh = util.getlist(self.p.getstr('config', 'FCST_THRESH', ""))
-    #    cov_thresh = util.getlist(self.p.getstr('config', 'COV_THRESH', ""))
-    #    line_type = util.getlist(self.p.getstr('config', 'LINE_TYPE', ""))
-    #    for model_info in model_list:
-    #        model_name = model_info.name
-    #        model_dir = model_info.dir
-    #        self.add_env_var('MODEL_NAME', model_name)
-    #        for var_info in var_list:
-    #            fcst_var_name = var_info.fcst_name
-    #            fcst_var_level = var_info.fcst_level
-    #            obs_var_name = var_info.obs_name
-    #            obs_var_level = var_info.obs_level
-    #            self.add_env_var('FCST_VAR_NAME', fcst_var_name)
-    #            self.add_env_var('FCST_VAR_LEVEL', fcst_var_level)
-    #            self.add_env_var('OBS_VAR_NAME', obs_var_name)
-    #            self.add_env_var('OBS_VAR_LEVEL', obs_var_level)
-    #            for region in region_list:
-    #                self.add_env_var('REGION', region)
-    #                for lead in lead_list:
-    #                    lead_zfill = lead.zfill(2)
-    #                    self.add_env_var('LEAD', lead_string)
-    #    #set envir vars based on config
-    #    ##if use_init:
-    #    ##    init_beg_YYYYMMDD = self.p.getstr('config', 'INIT_BEG')
-    #    ##    init_end_YYYYMMDD = self.p.getstr('config', 'INIT_END')
-    #    ##    valid_beg_YYYYMMDD = ""
-    #    ##    valid_end_YYYYMMDD = ""
-    #    ##else:
-    #    ##    init_beg_YYYYMMDD = self.p.getstr('config', 'INIT_BEG')
-    #    ##    init_end_YYYYMMDD = self.p.getstr('config', 'INIT_END')
-    #    ##    valid_beg_YYYYMMDD = self.p.getstr('config', 'VALID_BEG')
-    #    ##    valid_end_YYYYMMDD = self.p.getstr('config', 'VALID_END')
-    #      
-    #def run_all_times(self):
-    #    self.gather_by_info()
-    #    #verif_case = self.p.getstr('config', 'VERIF_CASE')
-    #    #if verif_case == 'grid2grid':
-    #    #    self.grid2grid_plot_format()
-    #    #elif verif_case == 'grid2obs':
-    #    #    self.grid2obs_plot_format()
-    #    #elif verif_case == 'precip':
-    #    #    self.logger.info("Formatting for plotting for precip")
-    #    #else:
-    #    #    self.logger.error("Not a valid VERIF_CASE option")
-    #    #    exit(1)
+    def gather_by_info(self):
+        #read config
+        verif_case = self.p.getstr('config', 'VERIF_CASE')
+        verif_type = self.p.getstr('config', 'VERIF_TYPE')
+        plot_time = self.p.getstr('config', 'PLOT_TIME')
+        valid_beg_YYYYmmdd = self.p.getstr('config', 'VALID_BEG', "")
+        valid_end_YYYYmmdd = self.p.getstr('config', 'VALID_END', "")
+        valid_hour_method = self.p.getstr('config', 'VALID_HOUR_METHOD')
+        valid_hour_beg = self.p.getstr('config', 'VALID_HOUR_BEG')
+        valid_hour_end = self.p.getstr('config', 'VALID_HOUR_END')
+        valid_hour_increment = self.p.getstr('config', 'VALID_HOUR_INCREMENT')
+        init_beg_YYYYmmdd = self.p.getstr('config', 'INIT_BEG', "")
+        init_end_YYYYmmdd = self.p.getstr('config', 'INIT_END', "")
+        init_hour_method = self.p.getstr('config', 'INIT_HOUR_METHOD')
+        init_hour_beg = self.p.getstr('config', 'INIT_HOUR_BEG')
+        init_hour_end = self.p.getstr('config', 'INIT_HOUR_END')
+        init_hour_increment = self.p.getstr('config', 'INIT_HOUR_INCREMENT')
+        stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_config = self.p.getstr('config', 'STAT_ANALYSIS_CONFIG')
+        model_list = self.parse_model_list()
+        var_list = util.parse_var_list(self.p)
+        fourier_decom_list = self.parse_var_fourier_decomp()
+        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
+        lead_list = util.getlist(self.p.getstr('config', 'LEAD_LIST'))
+        line_type = util.getlist(self.p.getstr('config', 'LINE_TYPE', ""))
+        #set envir vars based on config
+        util.mkdir_p(stat_analysis_out_dir)
+        self.logger.info(line_type)
+        self.add_env_var('LINE_TYPE', self.create_variable_list(line_type))
+        #build valid and init hour information
+        valid_beg_HHMMSS = calendar.timegm(time.strptime(valid_hour_beg, "%H%M"))
+        valid_end_HHMMSS = calendar.timegm(time.strptime(valid_hour_end, "%H%M"))
+        init_beg_HHMMSS = calendar.timegm(time.strptime(init_hour_beg, "%H%M"))
+        init_end_HHMMSS = calendar.timegm(time.strptime(init_hour_end, "%H%M"))
+        valid_hour_list = self.create_hour_group_list(valid_beg_HHMMSS, valid_end_HHMMSS, int(valid_hour_increment))
+        init_hour_list = self.create_hour_group_list(init_beg_HHMMSS, init_end_HHMMSS, int(init_hour_increment))
+        valid_init_time_pairs = self.pair_valid_init_times(valid_hour_list, valid_hour_method, init_hour_list, init_hour_method)
+        #loop through time information
+        for valid_init_time_pair in valid_init_time_pairs:
+            valid_time_info = valid_init_time_pair.valid
+            init_time_info = valid_init_time_pair.init
+            if plot_time == 'valid':
+                 fcst_valid_init_dict = {
+                        "FCST_INIT_BEG": "",
+                        "FCST_INIT_END": "",
+                        "FCST_INIT_HOUR": init_time_info,
+                        "FCST_VALID_HOUR": ""
+                        }
+                 stat_analysis_out_dir_date = "valid"+valid_beg_YYYYmmdd+"to"+valid_end_YYYYmmdd
+                 if len(init_time_info.split(", ")) == 1:
+                     stat_analysis_out_dir_init_time = "init"+init_time_info.replace('"', "")+"to"+init_time_info.replace('"', "")+"Z"
+                 else:
+                     stat_analysis_out_dir_init_time = "init"+init_time_info.replace('"', "").split(", ")[0]+"to"+init_time_info.replace('"', "").split(", ")[-1]+"Z"
+                 if len(valid_time_info.split(", ")) == 1:
+                     fcst_valid_init_dict['FCST_VALID_BEG'] = valid_beg_YYYYmmdd+"_"+valid_time_info.replace('"', "")
+                     fcst_valid_init_dict['FCST_VALID_END'] = valid_end_YYYYmmdd+"_"+valid_time_info.replace('"', "")
+                     stat_analysis_out_dir_valid_time = "valid"+valid_time_info.replace('"', "")+"to"+valid_time_info.replace('"', "")+"Z"
+                 else:
+                     fcst_valid_init_dict['FCST_VALID_BEG'] = valid_beg_YYYYmmdd+"_"+valid_time_info.replace('"', "").split(", ")[0]
+                     fcst_valid_init_dict['FCST_VALID_END'] = valid_end_YYYYmmdd+"_"+valid_time_info.replace('"', "").split(", ")[-1]
+                     stat_analysis_out_dir_valid_time = "valid"+valid_time_info.replace('"', "").split(", ")[0]+"to"+valid_time_info.replace('"', "").split(", ")[-1]+"Z"
+            elif plot_time == 'init':
+                 fcst_valid_init_dict = {
+                        "FCST_VALID_BEG": "",
+                        "FCST_VALID_END": "",
+                        "FCST_VALID_HOUR": valid_time_info,
+                        "FCST_INIT_HOUR": ""
+                        }
+                 stat_analysis_out_dir_date = "init"+init_beg_YYYYmmdd+"to"+init_end_YYYYmmdd
+                 if len(valid_time_info.split(", ")) == 1:
+                     stat_analysis_out_dir_valid_time = "valid"+valid_time_info.replace('"', "")+"to"+valid_time_info.replace('"', "")+"Z"
+                 else:
+                     stat_analysis_out_dir_valid_time = "valid"+valid_time_info.replace('"', "").split(", ")[0]+"to"+valid_time_info.replace('"', "").split(", ")[-1]+"Z"
+                 if len(valid_time_info.split(", ")) == 1:
+                     fcst_valid_init_dict['FCST_INIT_BEG'] = init_beg_YYYYmmdd+"_"+init_time_info.replace('"', "")
+                     fcst_valid_init_dict['FCST_INIT_END'] = init_end_YYYYmmdd+"_"+init_time_info.replace('"', "")
+                     stat_analysis_out_dir_init_time = "init"+init_time_info.replace('"', "")+"to"+init_time_info.replace('"', "")+"Z"
+                 else:
+                     fcst_valid_init_dict['FCST_INIT_BEG'] = init_beg_YYYYmmdd+"_"+init_time_info.replace('"', "").split(", ")[0]
+                     fcst_valid_init_dict['FCST_INIT_END'] = init_end_YYYYmmdd+"_"+init_time_info.replace('"', "").split(", ")[-1]
+                     stat_analysis_out_dir_init_time = "init"+init_time_info.replace('"', "").split(", ")[0]+"to"+init_time_info.replace('"', "").split(", ")[-1]+"Z"
+            else:
+                 self.logger.error("Invalid entry for PLOT_TIME")
+                 exit(1)
+            #loop through variable information
+            for var_info in var_list:
+                fcst_var_name = var_info.fcst_name
+                fcst_var_level = var_info.fcst_level
+                fcst_var_thresh_list = var_info.fcst_thresh
+                fcst_var_extra = var_info.fcst_extra
+                obs_var_name = var_info.obs_name
+                obs_var_level = var_info.obs_level
+                obs_var_thresh_list = var_info.obs_thresh
+                obs_var_extra = var_info.obs_extra
+                var_info_index = var_info.index
+                self.add_env_var('FCST_VAR_NAME', '"'+fcst_var_name+'"')
+                self.add_env_var('FCST_VAR_LEVEL', '"'+fcst_var_level+'"')
+                self.add_env_var('OBS_VAR_NAME', '"'+obs_var_name+'"')
+                self.add_env_var('OBS_VAR_LEVEL', '"'+obs_var_level+'"')
+                #loop through thresholds, need to include if list is empty as these settings are optional
+                if fcst_var_thresh_list == [] or obs_var_thresh_list == []:
+                    fcst_var_thresh_list = ['']
+                    obs_var_thresh_list = ['']
+                for fcst_thresh in fcst_var_thresh_list:
+                    obs_thresh = obs_var_thresh_list[fcst_var_thresh_list.index(fcst_thresh)]
+                    self.add_env_var('FCST_THRESH', '"'+fcst_thresh+'"')
+                    self.add_env_var('OBS_THRESH', '"'+obs_thresh+'"')
+                    stat_analysis_dump_row_filename_fcstvar = "fcst"+fcst_var_name+fcst_var_level+fcst_var_extra.replace(" ", "").replace("=","").replace(";","").replace('"','').replace("'","").replace(",","-").replace("_","")
+                    stat_analysis_dump_row_filename_obsvar = "obs"+obs_var_name+obs_var_level+obs_var_extra.replace(" ", "").replace("=","").replace(";","").replace('"','').replace("'","").replace(",","-").replace("_","")
+                    if len(fcst_thresh) != 0:
+                        self.add_env_var('FCST_THRESH', '"'+fcst_thresh+'"')
+                        self.add_env_var('OBS_THRESH', '"'+obs_thresh+'"')
+                        stat_analysis_dump_row_filename_fcstvar = stat_analysis_dump_row_filename_fcstvar+fcst_thresh.replace(" ","").replace(">=","ge").replace("<=","le").replace(">","gt").replace("<","lt").replace("==","eq").replace("!=","ne")
+                        stat_analysis_dump_row_filename_obsvar = stat_analysis_dump_row_filename_obsvar+obs_thresh.replace(" ","").replace(">=","ge").replace("<=","le").replace(">","gt").replace("<","lt").replace("==","eq").replace("!=","ne")
+                    else:
+                        self.add_env_var('FCST_THRESH', "")
+                        self.add_env_var('OBS_THRESH', "")
+                    #check for fourier decompositon for variable, add to interp list
+                    interp_list = util.getlist(self.p.getstr('config', 'INTERP', ""))
+                    var_fourier_decomp_info = fourier_decom_list[var_list.index(var_info)]
+                    if var_fourier_decomp_info.run_fourier:
+                        for pair in var_fourier_decomp_info.wave_num_pairings:
+                            interp_list.append("WV1_"+pair)
+                    #loop through interpolation
+                    for interp in interp_list:
+                        self.add_env_var('INTERP', '"'+interp+'"')
+                        stat_analysis_dump_row_filename_interp = "interp"+interp
+                        #loop through region information 
+                        for region in region_list:
+                            self.add_env_var('REGION', '"'+region+'"')
+                            stat_analysis_dump_row_filename_region = "region"+region
+                            #loop through lead information
+                            for lead in lead_list:
+                                self.add_env_var('FCST_LEAD', '"'+lead+'"')
+                                stat_analysis_dump_row_filename_lead = "f"+lead
+                                #loop through model information
+                                for model_info in model_list:
+                                    model_name = model_info.name
+                                    self.add_env_var('MODEL_NAME', '"'+model_name+'"')
+                                    obs_name = model_info.obs
+                                    self.add_env_var('OBS_NAME', '"'+obs_name+'"')
+                                    model_dir = model_info.dir
+                                    model_dir_split = model_dir.split("/")
+                                    if model_dir[0] == "/":
+                                        filled_model_dir = "/"
+                                    else:
+                                        filled_model_dir = ""
+                                    #check to see if string subsitution requested, check formmatting, and fill
+                                    if "{valid?fmt=" or "{init?fmt=" in model_dir:
+                                        if valid_hour_method == "LOOP" and "{valid?fmt=" in model_dir and "{valid?fmt=%H}" in model_dir:
+                                            valid_string_sub_date = "19000101"+valid_time_info.replace('"', "")
+                                        elif  valid_hour_method == "LOOP" and "{valid?fmt=" in model_dir and "{valid?fmt=%H}" not in model_dir:
+                                            self.logger.error("Invalid use of {valid?fmt= in directory for model "+model_name+"... use {valid?fmt=%H}")
+                                            exit(1)
+                                        elif valid_hour_method == "GROUP" and "{valid?fmt=" in model_dir:
+                                            self.logger.error("Only use {valid?fmt= if VALID_HOUR_METHOD = LOOP")
+                                            exit(1)
+                                        else:
+                                            valid_string_sub_date = "19000101000000"
+                                        if init_hour_method == "LOOP" and "{init?fmt=" in model_dir and "{init?fmt=%H}" in model_dir:
+                                            init_string_sub_date = "19000101"+init_time_info.replace('"', "")
+                                        elif  init_hour_method == "LOOP" and "{init?fmt=" in model_dir and "{init?fmt=%H}" not in model_dir:
+                                            self.logger.error("Ininit use of {init?fmt= in directory for model "+model_name+"... use {init?fmt=%H}")
+                                            exit(1)
+                                        elif init_hour_method == "GROUP" and "{init?fmt=" in model_dir:
+                                            self.logger.error("Only use {init?fmt= if INIT_HOUR_METHOD = LOOP")
+                                            exit(1)
+                                        else:
+                                            init_string_sub_date = "19000101000000"
+                                        for model_dir_chunk in model_dir_split:
+                                            if "?fmt=%" in model_dir_chunk:
+                                                model_dir_chunkSts = sts.StringSub(self.logger,
+                                                                                   model_dir_chunk,
+                                                                                   init=init_string_sub_date,
+                                                                                   valid=valid_string_sub_date)
+                                                filled_model_dir_chunk = model_dir_chunkSts.doStringSub()
+                                            else:
+                                                filled_model_dir_chunk = model_dir_chunk
+                                            filled_model_dir = os.path.join(filled_model_dir, filled_model_dir_chunk)
+                                    else:
+                                        filled_model_dir = model_dir
+                                    #check and fill wildcard* directory paths
+                                    if "*" in model_dir:
+                                        for_stat_analysis_lookin = subprocess.check_output("ls -d "+filled_model_dir, shell=True).rstrip('\n')
+                                    else:
+                                        for_stat_analysis_lookin = filled_model_dir
+                                    #set up lookin agrument
+                                    self.set_lookin_dir(for_stat_analysis_lookin)
+                                    #set up output directory, job, and dump_row filename
+                                    model_stat_analysis_output_dir = os.path.join(stat_analysis_out_dir, verif_case, verif_type, model_name, stat_analysis_out_dir_date+"_"+stat_analysis_out_dir_valid_time+"_"+stat_analysis_out_dir_init_time)
+                                    util.mkdir_p(model_stat_analysis_output_dir)
+                                    stat_analysis_dump_row_filename = model_name+"_"+stat_analysis_dump_row_filename_lead+"_"+stat_analysis_dump_row_filename_fcstvar+"_"+stat_analysis_dump_row_filename_obsvar+"_"+stat_analysis_dump_row_filename_interp+"_"+stat_analysis_dump_row_filename_region+".stat"
+                                    job = "-job filter -dump_row "+os.path.join(model_stat_analysis_output_dir, stat_analysis_dump_row_filename)
+                                    self.add_env_var('JOB', job)
+                                    self.set_param_file(stat_analysis_config)
+                                    #print stat_analysis run settings
+                                    self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
+                                    for name, value in fcst_valid_init_dict.items():
+                                        self.add_env_var(name, value)
+                                        self.logger.debug(name+": "+value)
+                                    if len(fcst_var_extra) != 0 and len(obs_var_extra) != 0:
+                                        self.logger.debug("FCST_VAR_NAME: "+fcst_var_name)
+                                        self.logger.debug("FCST_VAR_LEVEL: "+fcst_var_level)
+                                        self.logger.debug("FCST_VAR_OPTIONS: "+fcst_var_extra)
+                                        self.logger.debug("OBS_VAR_NAME: "+obs_var_name)
+                                        self.logger.debug("OBS_VAR_LEVEL: "+obs_var_level)
+                                        self.logger.debug("OBS_VAR_OPTIONS: "+obs_var_extra)
+                                    elif len(fcst_var_extra) != 0 and len(obs_var_extra) == 0:
+                                        self.logger.debug("FCST_VAR_NAME: "+fcst_var_name)
+                                        self.logger.debug("FCST_VAR_LEVEL: "+fcst_var_level)
+                                        self.logger.debug("FCST_VAR_OPTIONS: "+fcst_var_extra)
+                                        self.logger.debug("OBS_VAR_NAME: "+obs_var_name)
+                                        self.logger.debug("OBS_VAR_LEVEL: "+obs_var_level)
+                                    elif len(fcst_var_extra) == 0 and len(obs_var_extra) != 0:
+                                        self.logger.debug("FCST_VAR_NAME: "+fcst_var_name)
+                                        self.logger.debug("FCST_VAR_LEVEL: "+fcst_var_level)
+                                        self.logger.debug("OBS_VAR_NAME: "+obs_var_name)
+                                        self.logger.debug("OBS_VAR_LEVEL: "+obs_var_level)
+                                        self.logger.debug("OBS_VAR_OPTIONS: "+obs_var_extra)
+                                    elif len(fcst_var_extra) == 0 and len(obs_var_extra) == 0:
+                                        self.logger.debug("FCST_VAR_NAME: "+fcst_var_name)
+                                        self.logger.debug("FCST_VAR_LEVEL: "+fcst_var_level)
+                                        self.logger.debug("OBS_VAR_NAME: "+obs_var_name)
+                                        self.logger.debug("OBS_VAR_LEVEL: "+obs_var_level)
+                                    if len(fcst_thresh) != 0:
+                                        self.logger.debug("FCST_THRESH: "+fcst_thresh)
+                                        self.logger.debug("OBS_THRESH: "+obs_thresh)
+                                    self.logger.debug("INTERP: "+interp) 
+                                    self.logger.debug("REGION: "+region)
+                                    self.logger.debug("FCST_LEAD: "+lead)
+                                    self.logger.debug("MODEL_NAME: "+model_name)
+                                    self.logger.debug("OBS_NAME: "+obs_name)
+                                    self.logger.debug("LINE_TYPE: "+self.create_variable_list(line_type))
+                                    self.logger.debug("JOB: "+job)
+                                    self.logger.debug("lookin directory: "+for_stat_analysis_lookin)
+                                    #build command
+                                    cmd = self.get_command()
+                                    if cmd is None:
+                                        self.logger.error("stat_analysis could not generate command")
+                                        return
+                                    self.build()
+                                    self.clear()
+
+    def run_all_times(self):
+        self.gather_by_info()
 
     def run_at_time(self, init_time, valid_time):
         self.gather_by_date(init_time, valid_time)
