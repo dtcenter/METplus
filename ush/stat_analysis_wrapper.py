@@ -648,7 +648,6 @@ class StatAnalysisWrapper(CommandBuilder):
         line_type = util.getlist(self.p.getstr('config', 'LINE_TYPE', ""))
         #set envir vars based on config
         util.mkdir_p(stat_analysis_out_dir)
-        self.logger.info(line_type)
         self.add_env_var('LINE_TYPE', self.create_variable_list(line_type))
         #build valid and init hour information
         valid_beg_HHMMSS = calendar.timegm(time.strptime(valid_hour_beg, "%H%M"))
@@ -694,7 +693,7 @@ class StatAnalysisWrapper(CommandBuilder):
                      stat_analysis_out_dir_valid_time = "valid"+valid_time_info.replace('"', "")+"to"+valid_time_info.replace('"', "")+"Z"
                  else:
                      stat_analysis_out_dir_valid_time = "valid"+valid_time_info.replace('"', "").split(", ")[0]+"to"+valid_time_info.replace('"', "").split(", ")[-1]+"Z"
-                 if len(valid_time_info.split(", ")) == 1:
+                 if len(init_time_info.split(", ")) == 1:
                      fcst_valid_init_dict['FCST_INIT_BEG'] = init_beg_YYYYmmdd+"_"+init_time_info.replace('"', "")
                      fcst_valid_init_dict['FCST_INIT_END'] = init_end_YYYYmmdd+"_"+init_time_info.replace('"', "")
                      stat_analysis_out_dir_init_time = "init"+init_time_info.replace('"', "")+"to"+init_time_info.replace('"', "")+"Z"
