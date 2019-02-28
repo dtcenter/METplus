@@ -136,7 +136,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 match = re.search(r'.*\{init\?fmt=(.*?)\}', filename_template)
                 if match:
                     if match.group(1) != '%H':
-                        self.logger.error("only accepted format {init?fmt=%H}")
+                        self.logger.error("Only accepted format {init?fmt=%H}")
                         exit(1)
             else:
                 init_time_filename = "1900010100"
@@ -159,7 +159,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 match = re.search(r'.*\{valid\?fmt=(.*?)\}', filename_template)
                 if match:
                     if match.group(1) != '%H':
-                        self.logger.error("only accepted format {valid?fmt=%H}")
+                        self.logger.error("Only accepted format {valid?fmt=%H}")
                         exit(1)
             else:
                 valid_time_filename = "1900010100"
@@ -618,7 +618,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.build()
             self.clear()
         else:
-            self.logger.error("invalid conf entry for VALID_HOUR_METHOD or INIT_HOUR_METHOD")
+            self.logger.error("Invalid conf entry for VALID_HOUR_METHOD or INIT_HOUR_METHOD")
             exit(1)
 
     def gather_by_info(self):
@@ -782,7 +782,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                         if init_hour_method == "LOOP" and "{init?fmt=" in model_dir and "{init?fmt=%H}" in model_dir:
                                             init_string_sub_date = "19000101"+init_time_info.replace('"', "")
                                         elif  init_hour_method == "LOOP" and "{init?fmt=" in model_dir and "{init?fmt=%H}" not in model_dir:
-                                            self.logger.error("Ininit use of {init?fmt= in directory for model "+model_name+"... use {init?fmt=%H}")
+                                            self.logger.error("Init use of {init?fmt= in directory for model "+model_name+"... use {init?fmt=%H}")
                                             exit(1)
                                         elif init_hour_method == "GROUP" and "{init?fmt=" in model_dir:
                                             self.logger.error("Only use {init?fmt= if INIT_HOUR_METHOD = LOOP")
