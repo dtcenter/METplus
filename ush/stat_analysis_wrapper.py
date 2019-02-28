@@ -666,7 +666,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         "FCST_INIT_BEG": "",
                         "FCST_INIT_END": "",
                         "FCST_INIT_HOUR": init_time_info,
-                        "FCST_VALID_HOUR": ""
+                        "FCST_VALID_HOUR": valid_time_info
                         }
                  stat_analysis_out_dir_date = "valid"+valid_beg_YYYYmmdd+"to"+valid_end_YYYYmmdd
                  if len(init_time_info.split(", ")) == 1:
@@ -686,7 +686,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         "FCST_VALID_BEG": "",
                         "FCST_VALID_END": "",
                         "FCST_VALID_HOUR": valid_time_info,
-                        "FCST_INIT_HOUR": ""
+                        "FCST_INIT_HOUR": init_time_info
                         }
                  stat_analysis_out_dir_date = "init"+init_beg_YYYYmmdd+"to"+init_end_YYYYmmdd
                  if len(valid_time_info.split(", ")) == 1:
