@@ -72,9 +72,11 @@ that reformat gridded data
             exit()
 
         for rl in run_list:
-            self.logger.info("PROCESSING {} DATA".format(rl))
+            self.logger.info("Processing {} data".format(rl))
             for lead in lead_seq:
                 task_info.lead = lead
-                self.logger.info("PROCESSING FORECAST LEAD {}".format(lead))
+                self.p.set('config', 'CURRENT_LEAD_TIME', lead)
+                os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
+                self.logger.info("Processing foreacst lead {}".format(lead))
                 for var_info in var_list:
                     self.run_at_time_once(task_info, var_info, rl)

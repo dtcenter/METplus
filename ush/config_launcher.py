@@ -154,7 +154,6 @@ def parse_launch_args(args, usage, filename, logger):
     # Now look for any option and conf file arguments:
     bad = False
     for iarg in xrange(len(args)):
-        logger.info(args[iarg])
         m = re.match('''(?x)
           (?P<section>[a-zA-Z][a-zA-Z0-9_]*)
            \.(?P<option>[^=]+)
@@ -165,12 +164,8 @@ def parse_launch_args(args, usage, filename, logger):
                 repr(m.group('value'))))
             moreopt[m.group('section')][m.group('option')] = m.group('value')
         elif os.path.exists(args[iarg]):
-            logger.info('%s: Plan to parse this conf file' % (args[iarg],))
             infiles.append(args[iarg])
         elif os.path.exists(os.path.join(parm, args[iarg])):
-            logger.info('%s: Prepended parm directory, '
-                        'Plan to parse this conf file' %
-                        (os.path.join(parm, args[iarg]),))
             infiles.append(os.path.join(parm, args[iarg]))
         else:
             bad = True
@@ -189,7 +184,6 @@ def parse_launch_args(args, usage, filename, logger):
         elif not produtil.fileop.isnonempty(file):
             logger.warning(
                 file + ': conf file is empty.  Will continue anyway.')
-        logger.info('Conf input: ' + repr(file))
     return (parm, infiles, moreopt)
 
 
@@ -272,7 +266,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     #    return conf
 
     # Initialize the output directories
-    produtil.fileop.makedirs(conf.getdir('OUTPUT_BASE'), logger=logger)
+    produtil.fileop.makedirs(util.getdir(conf, 'OUTPUT_BASE', logger), logger=logger)
     # A user my set the confloc METPLUS_CONF location in a subdir of OUTPUT_BASE
     # or even in another parent directory altogether, so make thedirectory
     # so the metplus_final.conf file can be written.
@@ -287,6 +281,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
         logger.warning('METPLUS_BASE from the conf files has no effect.'+\
                        ' Overriding to '+METPLUS_BASE)
     conf.set('dir','METPLUS_BASE', METPLUS_BASE)
+
     version_number = util.get_version_number()
     conf.set('config', 'METPLUS_VERSION', version_number)
 

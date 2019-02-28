@@ -114,6 +114,7 @@ class ModeWrapper(CompareGriddedWrapper):
 
     def run_at_time_one_field(self, ti, v):
         """! Runs mode instances for a given time and forecast lead combination
+              Overrides run_at_time_one_field function in compare_gridded_wrapper.py
               Args:
                 @param ti task_info object containing timing information
                 @param v var_info object containing variable information
@@ -121,61 +122,19 @@ class ModeWrapper(CompareGriddedWrapper):
         # get model to compare
         model_path = self.find_model(ti, v)
         if model_path == None:
-            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['FCST_INPUT_DIR']+" FOR "+ti.getInitTime()+" f"+str(ti.lead))
+            self.logger.error("Could not find file in " + self.cg_dict['FCST_INPUT_DIR'] +\
+                              " for init time " + ti.getInitTime() + " f" + str(ti.lead))
             return
 
         # get observation to compare
         obs_path = self.find_obs(ti, v)
         if obs_path == None:
-            self.logger.error("ERROR: COULD NOT FIND FILE IN "+self.cg_dict['OBS_INPUT_DIR']+" FOR "+ti.getInitTime()+" f"+str(ti.lead))
+            self.logger.error("Could not find file in " + self.cg_dict['OBS_INPUT_DIR'] +\
+                              " for valid time "+ti.getValidTime())
             return
 
         # loop over all variables and levels (and probability thresholds) and call the app for each
         self.process_fields_one_thresh(ti, v, model_path, obs_path)
-
-
-    def get_one_field_info(self, v_name, v_level, v_extra, v_thresh, d_type):
-        """! Builds the FCST_FIELD or OBS_FIELD items that are sent to the mode config file
-              Args:
-                @param v_name var_info name
-                @param v_level var_info level
-                @param v_extra var_info extra arguments
-                @param path path to file
-                @param thresh probability threshold
-                @param d_type type of data (FCST or OBS)
-                @return returns a string with field info
-        """
-        level_type, level = util.split_level(v_level)
-        field = ""
-
-#        if d_type == "FCST" and self.cg_dict['FCST_IS_PROB']:
-        if self.cg_dict[d_type+'_IS_PROB']:
-            thresh_str = ""
-            comparison = util.get_comparison_from_threshold(v_thresh)
-            number = util.get_number_from_threshold(v_thresh)
-            if comparison in ["gt", "ge", ">", ">=" ]:
-                thresh_str += "thresh_lo="+str(number)+";"
-            elif comparison in ["lt", "le", "<", "<=" ]:
-                thresh_str += "thresh_hi="+str(number)+";"
-            # TODO: add thresh??
-            if self.cg_dict[d_type+'_INPUT_DATATYPE'] == "NETCDF" or \
-               self.cg_dict[d_type+'_INPUT_DATATYPE'] == "GEMPAK":
-                field = "{ name=\"" + v_name + "\"; level=\"" + \
-                        level+"\"; prob=TRUE; "
-            else:
-                field = "{ name=\"PROB\"; level=\""+level_type + \
-                          level.zfill(2) + "\"; prob={ name=\"" + \
-                          v_name + "\"; " + thresh_str + "} "
-        else:
-            if self.p.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
-                field = "{ name=\""+v_name+"_"+level + \
-                             "\"; level=\"(*,*)\"; "
-            else:
-                field = "{ name=\""+v_name + \
-                             "\"; level=\""+v_level+"\"; "
-
-        field += v_extra+"}"
-        return field
 
 
     def process_fields_one_thresh(self, ti, v, model_path, obs_path):
@@ -251,11 +210,55 @@ class ModeWrapper(CompareGriddedWrapper):
 
             cmd = self.get_command()
             if cmd is None:
-                self.logger.error("ERROR: "+self.app_name+\
-                                  " could not generate command")
+                self.logger.error("Could not generate command")
                 return
             self.build()
             self.clear()
+
+
+    def get_one_field_info(self, v_name, v_level, v_extra, v_thresh, d_type):
+        """! Builds the FCST_FIELD or OBS_FIELD items that are sent to the mode config file
+              Overrides get_one_field_info in compare_gridded_wrappers.py
+              Args:
+                @param v_name var_info name
+                @param v_level var_info level
+                @param v_extra var_info extra arguments
+                @param path path to file
+                @param thresh probability threshold
+                @param d_type type of data (FCST or OBS)
+                @return returns a string with field info
+        """
+        level_type, level = util.split_level(v_level)
+        field = ""
+
+#        if d_type == "FCST" and self.cg_dict['FCST_IS_PROB']:
+        if self.cg_dict[d_type+'_IS_PROB']:
+            thresh_str = ""
+            comparison = util.get_comparison_from_threshold(v_thresh)
+            number = util.get_number_from_threshold(v_thresh)
+            if comparison in ["gt", "ge", ">", ">=" ]:
+                thresh_str += "thresh_lo="+str(number)+";"
+            elif comparison in ["lt", "le", "<", "<=" ]:
+                thresh_str += "thresh_hi="+str(number)+";"
+            # TODO: add thresh??
+            if self.cg_dict[d_type+'_INPUT_DATATYPE'] == "NETCDF" or \
+               self.cg_dict[d_type+'_INPUT_DATATYPE'] == "GEMPAK":
+                field = "{ name=\"" + v_name + "\"; level=\"" + \
+                        level+"\"; prob=TRUE; "
+            else:
+                field = "{ name=\"PROB\"; level=\""+level_type + \
+                          level.zfill(2) + "\"; prob={ name=\"" + \
+                          v_name + "\"; " + thresh_str + "} "
+        else:
+            if self.p.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
+                field = "{ name=\""+v_name+"_"+level + \
+                             "\"; level=\"(*,*)\"; "
+            else:
+                field = "{ name=\""+v_name + \
+                             "\"; level=\""+v_level+"\"; "
+
+        field += v_extra+"}"
+        return field
 
 
 if __name__ == "__main__":

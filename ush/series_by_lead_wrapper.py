@@ -68,10 +68,10 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.plot_data_plane_exe = os.path.join(
             self.p.getdir('MET_INSTALL_DIR'),
             'bin/plot_data_plane')
-        self.convert_exe = p.getexe('CONVERT_EXE')
-        self.ncap2_exe = p.getexe('NCAP2_EXE')
-        self.ncdump_exe = p.getexe('NCDUMP_EXE')
-        self.rm_exe = p.getexe("RM_EXE")
+        self.convert_exe = util.getexe(p, 'CONVERT_EXE', logger)
+        self.ncap2_exe = util.getexe(p, 'NCAP2_EXE', logger)
+        self.ncdump_exe = util.getexe(p, 'NCDUMP_EXE', logger)
+        self.rm_exe = util.getexe(p, "RM_EXE", logger)
         met_install_dir = self.p.getdir('MET_INSTALL_DIR')
         self.series_analysis_exe = os.path.join(met_install_dir,
                                                 'bin/series_analysis')
@@ -184,8 +184,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             util.check_for_tiles(tile_dir, self.fcst_tile_regex,
                                  self.anly_tile_regex, self.logger)
         except OSError:
-            msg = ("ERROR|[ " + cur_filename + ":" +
-                   cur_function + "]| Missing 30x30 tile files." +
+            msg = ("Missing 30x30 tile files." +
                    "  Extract tiles needs to be run")
             self.logger.error(msg)
 
@@ -202,7 +201,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         if fhr_diff == 0 and self.fhr_inc == 0:
             self.fhr_inc = 1
         elif self.fhr_inc == 0:
-            self.logger.error('ERROR: ' + os.strerror(errno.EINVAL) +
+            self.logger.error(os.strerror(errno.EINVAL) +
                               ' fcst range indicated with increment '
                               'of 0 hrs, please check the configuration' +
                               'file.  Exiting...')
@@ -226,7 +225,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             if start_list_len != end_list_len or \
                     start_list_len != label_list_len or \
                     end_list_len != label_list_len:
-                self.logger.error("ERROR:|" + os.strerror(errno.EINVAL) +
+                self.logger.error(os.strerror(errno.EINVAL) +
                                   " The number of forecast hour begin " +
                                   "and end times, and the number of " +
                                   "corresponding labels must ALL be " +
@@ -302,7 +301,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             else:
                 # No data meet filter criteria, use data from extract
                 #  tiles directory.
-                msg = ("WARN| After applying filter options, no data meet"
+                msg = ("After applying filter options, no data meet"
                        " filter criteria. Continue using all available data "
                        "in extract tiles directory.")
                 self.logger.debug(msg)
@@ -341,8 +340,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         fcst_tiles_list = []
         anly_tiles_list = []
 
-        self.logger.debug('DEBUG|' + cur_filename + '|' + cur_function +
-                          ' Performing series analysis on forecast hour'
+        self.logger.debug(' Performing series analysis on forecast hour'
                           ' groupings.')
 
         # Create the output directory where the series analysis results
@@ -367,8 +365,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             out_dir_parts = [self.series_lead_out_dir, '/', cur_label]
             out_dir = ''.join(out_dir_parts)
             util.mkdir_p(out_dir)
-            msg = ('DEBUG|' + cur_filename + '|' + cur_function + ' | '
-                   'Evaluating forecast hours: ' + cur_beg_str + ' to ' +
+            msg = ('Evaluating forecast hours: ' + cur_beg_str + ' to ' +
                    cur_end_str)
             self.logger.debug(msg)
 
@@ -409,9 +406,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 # For FCST
                 try:
                     if not fcst_tiles_list:
-                        msg = ("INFO|[" + cur_filename + ":" +
-                               cur_function +
-                               " No fcst_tiles for fhr group: " + cur_beg_str +
+                        msg = (" No fcst_tiles for fhr group: " + cur_beg_str +
                                " to " + cur_end_str +
                                " Don't create FCST_F<fhr> ASCII file")
                         self.logger.debug(msg)
@@ -421,16 +416,14 @@ class SeriesByLeadWrapper(CommandBuilder):
                                 file_handle.write(fcst_tiles)
                                 file_handle.write('\n')
                 except IOError as io_error:
-                    msg = ("ERROR: Could not create requested" +
+                    msg = ("Could not create requested" +
                            " ASCII file: " + ascii_fcst_file + " | ")
                     self.logger.error(msg + io_error)
 
                 # For ANLY
                 try:
                     if not anly_tiles_list:
-                        msg = ("INFO|[" + cur_filename + ":" +
-                               cur_function +
-                               " No anly_tiles for fhr group: " +
+                        msg = ("No anly_tiles for fhr group: " +
                                str(cur_beg) + " to " + str(cur_end) +
                                " Don't create ANLY_F<fhr> ASCII file")
                         self.logger.debug(msg)
@@ -441,7 +434,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                 file_handle.write('\n')
 
                 except IOError as io_error:
-                    msg = ("ERROR: Could not create requested" +
+                    msg = ("Could not create requested" +
                            " ASCII file: " + ascii_anly_file + " | ")
                     self.logger.error(msg + io_error)
 
@@ -500,8 +493,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
                         (series_analysis_cmd, app_name=self.app_name)
 
-                    msg = ("INFO:[ " + cur_filename + ":" +
-                           cur_function + "]|series analysis command: " +
+                    msg = ("series analysis command: " +
                            series_analysis_cmd.to_shell())
                     self.logger.debug(msg)
 
@@ -534,8 +526,7 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         for fhr in range(start, end, step):
             cur_fhr = str(fhr).zfill(3)
-            msg = ('INFO|[' + cur_filename + ':' + cur_function +
-                   ']| Evaluating forecast hour ' + cur_fhr)
+            msg = ('Evaluating forecast hour ' + cur_fhr)
             self.logger.debug(msg)
 
             # Create the output directory where the netCDF series files
@@ -561,8 +552,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             # Now create the ASCII files needed for the -fcst and -obs
             try:
                 if not fcst_tiles:
-                    msg = ("INFO|[" + cur_filename + ":" +
-                           cur_function + " No fcst_tiles for fhr: " +
+                    msg = ("No fcst_tiles for fhr: " +
                            cur_fhr + " Don't create FCST_F<fhr> ASCII file")
                     self.logger.debug(msg)
                     continue
@@ -571,7 +561,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                         file_handle.write(fcst_tiles)
 
             except IOError as io_error:
-                msg = ("ERROR: Could not create requested" +
+                msg = ("Could not create requested" +
                        " ASCII file: " + ascii_fcst_file + " | ")
                 self.logger.error(msg + io_error)
 
@@ -592,8 +582,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 # Only write to the ascii_anly_file if
                 # the anly_tiles string isn't empty.
                 if not anly_tiles:
-                    msg = ("INFO|[" + cur_filename + ":" +
-                           cur_function + "No anly_tiles for fhr: " +
+                    msg = ("No anly_tiles for fhr: " +
                            cur_fhr + " Don't create ANLY_F<fhr> ASCII file")
                     self.logger.debug(msg)
                     continue
@@ -602,13 +591,13 @@ class SeriesByLeadWrapper(CommandBuilder):
                         file_handle.write(anly_tiles)
 
             except IOError:
-                self.logger.error("ERROR: Could not create requested " +
+                self.logger.error("Could not create requested " +
                                   "ASCII file: " + ascii_anly_file)
 
             # Remove any empty directories that result from
             # when no files are written.
             util.prune_empty(out_dir, self.logger)
-            self.logger.debug("DEBUG: finished pruning empty files")
+            self.logger.debug("finished pruning empty files")
 
             # -fcst and -obs params
             fcst_param_parts = ['-fcst ', ascii_fcst_file]
@@ -656,8 +645,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
                     (series_analysis_cmd, app_name=self.app_name)
 
-                msg = ("INFO:[ " + cur_filename + ":" +
-                       cur_function + "]|series analysis command: " +
+                msg = ("series analysis command: " +
                        series_analysis_cmd.to_shell())
                 self.logger.debug(msg)
                 # series_analysis_cmd = \
@@ -710,9 +698,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         if match:
             base_nc_dir = match.group(1)
         else:
-            msg = ("ERROR|[" + cur_filename + ":" +
-                   cur_function + "]| " +
-                   "Cannot determine base directory path for " +
+            msg = ("Cannot determine base directory path for " +
                    "netCDF files... exiting")
             self.logger.error(msg)
             sys.exit(1)
@@ -768,8 +754,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                             os.remove(nseries_nc_path)
 
         except IOError:
-            msg = ("ERROR|[" + cur_filename + ":" +
-                   cur_function + "]| cannot open the max text file")
+            msg = ("cannot open the max text file")
             self.logger.error(msg)
 
     def get_netcdf_min_max(self, do_fhr_by_range, nc_var_files, cur_stat):
@@ -819,8 +804,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 base_nc_dir = match.group(1)
                 self.logger.debug("base nc dir: " + base_nc_dir)
             else:
-                msg = ("ERROR|[" + cur_filename + ":" + cur_function +
-                       "]| Cannot determine base directory path " +
+                msg = ("Cannot determine base directory path " +
                        "for netCDF files. Exiting...")
                 self.logger.error(msg)
                 sys.exit(1)
@@ -899,8 +883,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                             if cur_min < vmin:
                                 vmin = cur_min
             except IOError:
-                msg = ("ERROR|[" + cur_filename + ":" + cur_function +
-                       "]| cannot open the min text file")
+                msg = ("cannot open the min text file")
                 self.logger.error(msg)
 
             # Search for 'max' in the max.txt file.
@@ -914,8 +897,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                             if cur_max > vmax:
                                 vmax = cur_max
             except IOError:
-                msg = ("ERROR|[" + cur_filename + ":" + cur_function +
-                       "]| cannot open the max text file")
+                msg = ("cannot open the max text file")
                 self.logger.error(msg)
 
             # Clean up min.nc, min.txt, max.nc and max.txt temporary files.
@@ -1007,7 +989,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     nc_list.append(nc_file)
 
         if not nc_list:
-            self.logger.warn("WARNING: empty nc_list returned")
+            self.logger.warn("empty nc_list returned")
 
         return nc_list
 
@@ -1035,9 +1017,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         for cur_tile in tile_list:
             match = re.match(type_regex, cur_tile)
             if not match:
-                msg = ("ERROR|[" + cur_filename + ":" +
-                       cur_function +
-                       "]| No matching storm id found, exiting...")
+                msg = ("No matching storm id found, exiting...")
                 self.logger.error(msg)
                 return ''
 
@@ -1190,13 +1170,11 @@ class SeriesByLeadWrapper(CommandBuilder):
         # Check that we have netCDF files, if not, something went
         # wrong.
         if not nc_list:
-            self.logger.error("ERROR|" + cur_filename + ":" + cur_function +
-                              "]|  could not find any netCDF files to convert"
+            self.logger.error("could not find any netCDF files to convert"
                               " to PS and PNG.  Exiting...")
             sys.exit(1)
         else:
-            msg = ("INFO|[" + cur_filename + ":" + cur_function +
-                   " Number of nc files found to convert to PS and PNG  : " +
+            msg = ("Number of nc files found to convert to PS and PNG  : " +
                    str(len(nc_list)))
             self.logger.debug(msg)
 
@@ -1218,7 +1196,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             # the current variable.
             nc_var_list = self.get_var_ncfiles(do_fhr_by_range, name, nc_list)
             if not nc_var_list:
-                self.logger.debug("WARNING nc_var_list is empty for " + name +
+                self.logger.debug("nc_var_list is empty for " + name +
                                   "_" + level + ", check for next variable...")
                 continue
 
@@ -1231,8 +1209,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 vmin, vmax = self.get_netcdf_min_max(do_fhr_by_range,
                                                      nc_var_list,
                                                      cur_stat)
-                msg = ("|INFO|[ " + cur_filename + ":" + cur_function +
-                       "]| Plotting range for " + cur_var + " " +
+                msg = ("Plotting range for " + cur_var + " " +
                        cur_stat + ":  " + str(vmin) + " to " + str(vmax))
                 self.logger.debug(msg)
 
@@ -1272,7 +1249,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     if match_fhr:
                         fhr = match_fhr.group(1)
                     else:
-                        msg = ("WARNING: netCDF file format for file: " +
+                        msg = ("netCDF file format for file: " +
                                cur_nc +
                                " is unexpected. Try next file in list...")
                         self.logger.debug(msg)
@@ -1316,8 +1293,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                         (plot_data_plane_cmd, app_name=self.app_name)
                     # plot_data_plane_cmd = \
                     #    batchexe('sh')['-c', plot_data_plane_cmd].err2out()
-                    msg = ("INFO|[" + cur_filename + ":" +
-                           cur_function + "]| plot_data_plane cmd: " +
+                    msg = ("plot_data_plane cmd: " +
                            plot_data_plane_cmd.to_shell())
                     self.logger.debug(msg)
                     # run(plot_data_plane_cmd)
@@ -1352,8 +1328,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         animate_dir = os.path.join(self.series_lead_out_dir, 'series_animate')
-        msg = ('INFO|[' + cur_filename + ':' + cur_function +
-               ']| Creating Animation Plots, create directory:' +
+        msg = ('Creating Animation Plots, create directory:' +
                animate_dir)
         self.logger.debug(msg)
         util.mkdir_p(animate_dir)
@@ -1409,8 +1384,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                          run_inshell=True, log_theoutput=True)
 
                     # animate_cmd = exe('sh')['-c', animate_cmd].err2out()
-                    msg = ("INFO|[" + cur_filename + ":" + cur_function +
-                           "]| animate command: " + animate_cmd.to_shell())
+                    msg = ("animate command: " + animate_cmd.to_shell())
                     self.logger.debug(msg)
                     # run(animate_cmd)
                 else:
@@ -1427,7 +1401,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                         wildcard = ''.join(wildcard_parts)
                         wildcard_list.append(wildcard)
                     wildcard_string = ' '.join(wildcard_list)
-                    self.logger.debug("DEBUG: By group wildcards: " +
+                    self.logger.debug("By group wildcards: " +
                                       wildcard_string)
 
                     gif_parts = [self.convert_exe,
@@ -1444,8 +1418,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                          run_inshell=True, log_theoutput=True)
 
                     # animate_cmd = batchexe('sh')['-c', animate_cmd].err2out()
-                    msg = ("INFO|[" + cur_filename + ":" + cur_function +
-                           "]| animate command: " + animate_cmd.to_shell())
+                    msg = ("animate command: " + animate_cmd.to_shell())
                     self.logger.debug(msg)
                     # run(animate_cmd)
 
@@ -1483,8 +1456,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         # Create temporary directory where intermediate files are saved.
         cur_pid = str(os.getpid())
         tmp_dir = os.path.join(temporary_dir, cur_pid)
-        self.logger.debug("DEBUG|" + cur_filename + "|" + cur_function +
-                          " creating tmp dir: " + tmp_dir)
+        self.logger.debug("creating tmp dir: " + tmp_dir)
 
         for cur_init in init_times:
             # Call the tc_stat wrapper to build up the command and invoke
@@ -1501,14 +1473,12 @@ class SeriesByLeadWrapper(CommandBuilder):
             # it is, then use the files from extract_tiles as
             # input (tile_dir = extract_out_dir)
             if not util.file_exists(filter_filename):
-                msg = ("WARN| " + cur_filename + ":" + cur_function +
-                       "]| Non-existent filter file, filter " +
+                msg = ("Non-existent filter file, filter " +
                        " Never created by MET Tool tc_stat.")
                 self.logger.debug(msg)
                 continue
             elif os.stat(filter_filename).st_size == 0:
-                msg = ("WARN| " + cur_filename + ":" + cur_function +
-                       "]| Empty filter file, filter " +
+                msg = ("Empty filter file, filter " +
                        " options yield nothing.")
                 self.logger.debug(msg)
                 continue
@@ -1524,8 +1494,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     header = filter_file.readline()
 
                 for cur_storm in sorted_storm_ids:
-                    msg = ("INFO| [" + cur_filename + ":" +
-                           cur_function + " ] | Processing storm: " +
+                    msg = ("Processing storm: " +
                            cur_storm + " for file: " + filter_filename)
                     self.logger.debug(msg)
                     storm_output_dir = os.path.join(series_output_dir,

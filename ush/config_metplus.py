@@ -37,9 +37,6 @@ def usage(filename=None,logger=None):
     if filename:
         filename=os.path.basename(filename)
 
-    if logger:
-        logger.critical('Invalid arguments to %s.  Exiting.'%(filename))
-
     # Note: runtime option is not being used. remove it ?
     # -r|--runtime <arg0>     Specify initialization time to process
     print ('''
@@ -82,36 +79,27 @@ def setup(filename=None,logger=None):
     # which are ultimately passed as arguments.
 
     # if option is followed by : or = indicates option requires an argument
-    short_opts = "c:r:h"
+    short_opts = "c:h"
     # Note: r: runtime= option is not being used. remove it ?
     long_opts = ["config=",
-                 "runtime=",
                  "help"]
 
     # All command line input, get options and arguments
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], short_opts, long_opts)
     except getopt.GetoptError as err:
-        #usage('SCRIPT IS EXITING DUE TO UNRECOGNIZED COMMAND LINE OPTION'
+        logger.critical('Invalid arguments to %s.  Exiting.'%(filename))
         print(str(err))        
         usage(filename,logger)
 
-    logger.info('All OPTS and ARGS: %s %s',opts, args)
-
-    # notice -h does not require an argument so its argument is ''
-    # opts=[('-h',''),('-c','path/to/file.conf')]
+    if opts == []:
+        usage(filename, logger)
 
     opts_conf_files = list()
     opts_conf_file = None
     for k, v in opts:
         if k in ('-c', '--config'):
             opts_conf_files.extend(v.split(","))
-        elif k in ('-r', '--runtime'):
-            # If using these they should be added to conf file
-            # via additional options on the command line
-            # config.end_time= and than accessed via the config object.
-            start_time = v
-            end_time = v
         elif k in ('-h', '--help'):
             if logger:
                 logger.info('Help, printing Usage statement')

@@ -44,7 +44,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     precipitation accumulations"""
     def __init__(self, p, logger):
         super(PcpCombineWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
+        self.app_path = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR',
+                                                 None, logger),
                                      'bin/pcp_combine')
         self.app_name = os.path.basename(self.app_path)
         self.inaddons = []
@@ -81,11 +82,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.c_dict[d_type+'_DATA_INTERVAL'] = self.p.getint('config', d_type+'_DATA_INTERVAL', 1)
         self.c_dict[d_type+'_TIMES_PER_FILE'] = self.p.getint('config', d_type+'_TIMES_PER_FILE', -1)
         self.c_dict[d_type+'_IS_DAILY_FILE'] = self.p.getbool('config', d_type+'_IS_DAILY_FILE', False)
-        self.c_dict[d_type+'_LEVEL'] = self.p.getint('config', d_type+'_LEVEL', -1)
-        self.c_dict[d_type+'_INPUT_DIR'] = self.p.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
+        self.c_dict[d_type+'_LEVEL'] = self.p.getstr('config', d_type+'_LEVEL', '-1')
+        self.c_dict[d_type+'_INPUT_DIR'] = util.getdir(self.p, d_type+'_PCP_COMBINE_INPUT_DIR', '', self.logger)
         self.c_dict[d_type+'_INPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates',
                                      d_type+'_PCP_COMBINE_INPUT_TEMPLATE')
-        self.c_dict[d_type+'_OUTPUT_DIR'] = self.p.getdir(d_type+'_PCP_COMBINE_OUTPUT_DIR', '')
+        self.c_dict[d_type+'_OUTPUT_DIR'] = util.getdir(self.p, d_type+'_PCP_COMBINE_OUTPUT_DIR', '', self.logger)
         self.c_dict[d_type+'_OUTPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates',
                                      d_type+'_PCP_COMBINE_OUTPUT_TEMPLATE')
 
@@ -163,6 +164,10 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         if dirr is '':
             self.logger.error(data_type+'_PCP_COMBINE_'+in_or_out+'_DIR must be set.')
+            exit(1)
+
+        if template is '':
+            self.logger.error(data_type+'_PCP_COMBINE_'+in_or_out+'_TEMPLATE must be set.')
             exit(1)
 
         return (dirr, template)

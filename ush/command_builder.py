@@ -202,7 +202,7 @@ class CommandBuilder:
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            (self.logger).error("No app path specified. "\
+            self.logger.error("No app path specified. "\
                                 "You must use a subclass")
             return None
 
@@ -215,7 +215,7 @@ class CommandBuilder:
             cmd += a + " "
 
         if len(self.infiles) == 0:
-            (self.logger).error("No input filenames specified")
+            self.logger.error("No input filenames specified")
             return None
 
         for f in self.infiles:
@@ -225,11 +225,11 @@ class CommandBuilder:
             cmd += self.param + " "
 
         if self.outfile == "":
-            (self.logger).error("No output filename specified")
+            self.logger.error("No output filename specified")
             return None
 
         if self.outdir == "":
-            (self.logger).error("No output directory specified")
+            self.logger.error("No output directory specified")
             return None
 
         cmd += " " + os.path.join(self.outdir, self.outfile)
@@ -277,8 +277,12 @@ class CommandBuilder:
             run_time = time.strftime("%Y%m%d%H%M", time.gmtime(loop_time))
             # Set valid time to -1 if using init and vice versa
             if use_init:
+                self.p.set('config', 'CURRENT_INIT_TIME', run_time)
+                os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
                 self.run_at_time(run_time, -1)
             else:
+                self.p.set('config', 'CURRENT_VALID_TIME', run_time)
+                os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
                 self.run_at_time(-1, run_time)
             loop_time += time_interval
 

@@ -31,17 +31,6 @@ class MTDWrapper(ModeWrapper):
         self.create_cg_dict()
 
 
-    def set_fcst_file(self, fcst_file):
-        self.fcst_file = fcst_file
-
-    def set_obs_file(self, obs_file):
-        self.obs_file = obs_file
-
-    def clear(self):
-        super(MTDWrapper, self).clear()
-        self.fcst_file = None
-        self.obs_file = None
-
     # TODO : Set defaults for all items that need them
     def create_cg_dict(self):
         self.cg_dict = dict()
@@ -124,21 +113,10 @@ class MTDWrapper(ModeWrapper):
           self.p.getint('config', 'WINDOW_RANGE_END', 3600)
 
 
-    def write_list_file(self, filename, file_list):
-        mtd_list_dir = os.path.join(self.p.getdir('STAGING_DIR'), 'mtd_lists')
-        list_path = os.path.join(mtd_list_dir, filename)
-
-        if not os.path.exists(mtd_list_dir):
-            os.makedirs(mtd_list_dir, mode=0775)
-
-        with open(list_path, 'w') as file_handle:
-            for f_path in file_list:
-                file_handle.write(f_path+'\n')
-        return list_path
-
     def run_at_time(self, init_time, valid_time):
         """! Runs the MET application for a given run time. This function loops
               over the list of forecast leads and runs the application for each.
+              Overrides run_at_time in compare_gridded_wrapper.py
               Args:
                 @param init_time initialization time to run. -1 if not set
                 @param valid_time valid time to run. -1 if not set
@@ -191,8 +169,8 @@ class MTDWrapper(ModeWrapper):
 
             # write ascii file with list of files to process
             current_task.lead = 0
-            model_outfile = current_task.getValidTime() + '_fcst_' + v.fcst_name + '.txt'
-            obs_outfile = current_task.getValidTime() + '_obs_' + v.obs_name + '.txt'
+            model_outfile = current_task.getValidTime() + '_mtd_fcst_' + v.fcst_name + '.txt'
+            obs_outfile = current_task.getValidTime() + '_mtd_obs_' + v.obs_name + '.txt'
             model_list_path = self.write_list_file(model_outfile, model_list)
             obs_list_path = self.write_list_file(obs_outfile, obs_list)
 
@@ -234,7 +212,7 @@ class MTDWrapper(ModeWrapper):
 
         # write ascii file with list of files to process
         current_task.lead = 0
-        single_outfile = current_task.getValidTime() + '_single_' + s_name + '.txt'
+        single_outfile = current_task.getValidTime() + '_mtd_single_' + s_name + '.txt'
         single_list_path = self.write_list_file(single_outfile, single_list)
 
         arg_dict = {}
@@ -319,25 +297,34 @@ class MTDWrapper(ModeWrapper):
                 self.add_env_var("FCST_FIELD", fcst_field)
                 self.add_env_var("OBS_FIELD", obs_field)
 
-            self.logger.debug("")
             self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
             self.print_user_env_items()
             for l in print_list:
                 self.print_env_item(l)
 
-            self.logger.debug("")
             self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
             self.print_env_copy(print_list)
-            self.logger.debug("")
 
             cmd = self.get_command()
             if cmd is None:
-                self.logger.error("ERROR: "+self.app_name+\
-                                  " could not generate command")
+                self.logger.error(self.app_name + " could not generate command")
                 return
-            self.logger.info("")
             self.build()
             self.clear()
+
+
+    def set_fcst_file(self, fcst_file):
+        self.fcst_file = fcst_file
+
+
+    def set_obs_file(self, obs_file):
+        self.obs_file = obs_file
+
+
+    def clear(self):
+        super(MTDWrapper, self).clear()
+        self.fcst_file = None
+        self.obs_file = None
 
 
     def get_command(self):
@@ -356,16 +343,16 @@ class MTDWrapper(ModeWrapper):
 
         if self.cg_dict['SINGLE_RUN']:
             if self.fcst_file == None:
-                self.logger.error(self.app_name+": No file path specified")
+                self.logger.error("No file path specified")
                 return None
             cmd += '-single ' + self.fcst_file + ' '
         else:
             if self.fcst_file == None:
-                self.logger.error(self.app_name+": No forecast file path specified")
+                self.logger.error("No forecast file path specified")
                 return None
 
             if self.obs_file == None:
-                self.logger.error(self.app_name+": No observation file path specified")
+                self.logger.error("No observation file path specified")
                 return None
 
             cmd += '-fcst ' + self.fcst_file + ' '

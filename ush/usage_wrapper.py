@@ -8,7 +8,7 @@ from command_builder import CommandBuilder
 import config_metplus
  
 
-## @namespace UsageWrapper 
+## @namespace UsageWrapper
 # @brief Provides a default process for master_metplus.py.  Indicates what
 # processes are currently available.
 # Call as follows:
@@ -23,6 +23,7 @@ class UsageWrapper(CommandBuilder):
     """
     def __init__(self, p, logger):
         super(UsageWrapper, self).__init__(p, logger)
+        self.app_name = 'Usage'
         self.logger = logger
         self.available_processes = ['TcPairs', 'ExtractTiles', 'SeriesByInit',
                                     'SeriesByLead', 'PcpCombine',
@@ -42,27 +43,3 @@ class UsageWrapper(CommandBuilder):
         print("Currently available processes are: ")
         for process in self.available_processes:
             print("  - {}".format(process))
-
-
-if __name__ == "__main__":
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='SeriesByLeadWrapper',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='SeriesByLeadWrapper')
-        produtil.log.postmsg('SeriesByLeadWrapper is starting')
-
-        # Read in the configuration object CONFIG
-        CONFIG = config_metplus.setup()
-        if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = CONFIG.getdir('MET_BASE')
-
-        UW = UsageWrapper(CONFIG, logger=None)
-        UW.run_all_times()
-
-        produtil.log.postmsg('series analysis by lead time completed')
-    except Exception as exc:
-        produtil.log.jlogger.critical(
-            'SeriesByLeadWrapper failed: %s' % (str(exc),), exc_info=True)
-        sys.exit(2)

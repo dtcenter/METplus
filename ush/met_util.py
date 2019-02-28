@@ -582,11 +582,11 @@ def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
     # (which were, or should have been created earlier by extract_tiles).
     if not anly_tiles:
         # Cannot proceed, the necessary 30x30 degree analysis tiles are missing
-        logger.error("ERROR: No anly tile files were found  " + tile_dir)
+        logger.error("No anly tile files were found  " + tile_dir)
         raise OSError("No 30x30 anlysis tiles were found")
     elif not fcst_tiles:
         # Cannot proceed, the necessary 30x30 degree fcst tiles are missing
-        logger.error("ERROR: No fcst tile files were found  " + tile_dir)
+        logger.error("No fcst tile files were found  " + tile_dir)
         raise OSError("No 30x30 fcst tiles were found")
 
     # Check for same number of fcst and analysis files
@@ -623,8 +623,7 @@ def extract_year_month(init_time, logger):
         year_month = year_month.group(0)
         return year_month
     else:
-        logger.warning("[" + cur_function +
-                       "]" + " | Cannot extract YYYYMM from "
+        logger.warning("Cannot extract YYYYMM from "
                        "initialization time, unexpected format")
         raise Warning("Cannot extract YYYYMM from initialization time,"
                       " unexpected format")
@@ -669,8 +668,8 @@ def create_grid_specification_string(lat, lon, logger, config):
     lon0 = str(round_0p5(adj_lon))
     lat0 = str(round_0p5(adj_lat))
 
-    msg = ("[" + cur_filename + ":" + cur_function + "]  nlat:" +
-           nlat + " nlon: " + nlon + " lat0:" + lat0 + " lon0: " + lon0)
+    msg = ("nlat:" + nlat + " nlon: " + nlon +\
+           " lat0:" + lat0 + " lon0: " + lon0)
     logger.debug(msg)
 
     # Create the specification string based on the requested tool.
@@ -683,9 +682,6 @@ def create_grid_specification_string(lat, lon, logger, config):
                      lat0, ':', nlat, ':', dlat]
 
     tile_grid_str = ''.join(grid_list)
-    msg = (cur_filename + ":" + cur_function +
-           "| complete grid specification string: " + tile_grid_str)
-    logger.debug(msg)
     return tile_grid_str
 
 
@@ -796,12 +792,8 @@ def prune_empty(output_dir, logger):
         for a_file in files:
             a_file = os.path.join(root, a_file)
             if os.stat(a_file).st_size == 0:
-                msg = ("INFO|[" + cur_filename + ":" +
-                       cur_function + "]|" +
-                       "Empty file: " + a_file +
+                logger.debug("Empty file: " + a_file +
                        "...removing")
-
-                logger.debug(msg)
                 os.remove(a_file)
 
     # Now check for any empty directories, some
@@ -811,11 +803,8 @@ def prune_empty(output_dir, logger):
         for direc in dirs:
             full_dir = os.path.join(root, direc)
             if not os.listdir(full_dir):
-                msg = ("INFO|[" + cur_filename + ":" +
-                       cur_function + "]|" +
-                       "Empty directory: " + full_dir +
+                logger.debug("Empty directory: " + full_dir +
                        "...removing")
-                logger.debug(msg)
                 os.rmdir(full_dir)
 
 
@@ -1538,7 +1527,7 @@ def preprocess_file(filename, data_type, p, logger=None):
                 self.logger.error("GempakToCF could not generate command")
                 return None
             if logger:
-                logger.info("Converting Gempak file")
+                logger.debug("Converting Gempak file into {}".format(stagefile))
             run_g2c.build()
             return stagefile
 
@@ -1558,7 +1547,7 @@ def preprocess_file(filename, data_type, p, logger=None):
 
     if os.path.exists(filename+".gz"):
         if logger:
-            logger.info("Decompressing gz file")
+            logger.info("Decompressing gz file to {}".format(outpath))
         with gzip.open(filename+".gz", 'rb') as infile:
             with open(outpath, 'wb') as outfile:
                 outfile.write(infile.read())
@@ -1567,7 +1556,7 @@ def preprocess_file(filename, data_type, p, logger=None):
                 return outpath
     elif os.path.exists(filename+".bz2"):
         if logger:
-            logger.info("Decompressing bz2 file")
+            logger.info("Decompressing bz2 file to {}".format(outpath))
         with open(filename+".bz2", 'rb') as infile:
             with open(outpath, 'wb') as outfile:
                 outfile.write(bz2.decompress(infile.read()))
@@ -1576,7 +1565,7 @@ def preprocess_file(filename, data_type, p, logger=None):
                 return outpath
     elif os.path.exists(filename+".zip"):
         if logger:
-            logger.info("Decompressing zip file")
+            logger.info("Decompressing zip file to {}".format(outpath))
         with zipfile.ZipFile(filename+".zip") as z:
             with open(outpath, 'wb') as f:
                 f.write(z.read(os.path.basename(filename)))
@@ -1640,15 +1629,73 @@ def run_stand_alone(module_name, app_name):
         sys.exit(2)
 
 
+# wrap produtil exe with checks to see if option is set and if exe actually exists
+def getexe(p, exe_name, logger=None):
+
+    if not p.has_option('exe', exe_name):
+        msg = 'Requested exe {} was not set in config file'.format(exe_name)
+        if logger:
+            logger.error(msg)
+        else:
+            print(msg)
+        exit(1)
+
+    exe_path = p.getexe(exe_name)
+
+    if not os.path.exists(exe_path):
+        msg = 'Executable {} does not exist at {}'.format(exe_name, exe_path)
+        if logger:
+            logger.error(msg)
+        else:
+            print(msg)
+        exit(1)
+
+    return exe_path
+
+
+def getdir(p, dir_name, default_val=None, logger=None):
+    if not p.has_option('dir', dir_name):
+        if default_val == None:
+            msg = 'Requested dir {} was not set in config file'.format(dir_name)
+            if logger:
+                logger.error(msg)
+            else:
+                print(msg)
+            exit(1)
+        msg = "Setting {} to default value {}".format(dir_name, default_val)
+        if logger:
+            logger.debug(msg)
+        else:
+            print(msg)
+
+        # set conf with default value so all defaults can be added to the final conf
+        # and warning only appears once per conf item using a default value
+        p.set('dir', dir_name, default_val)
+
+        dir_path = default_val
+
+    dir_path = p.getdir(dir_name)
+
+    if dir_path == '/path/to' or dir_path.startswith('/path/to'):
+        msg = 'Directory {} is set to or contains /path/to. Please set this to a valid location'.format(dir_name)
+        if logger:
+            logger.error(msg)
+        else:
+            print(msg)
+        exit(1)
+
+    return dir_path
+
+
 def add_common_items_to_dictionary(p, dictionary):
-    dictionary['WGRIB2'] = p.getexe('WGRIB2')
-    dictionary['CUT_EXE'] = p.getexe('CUT_EXE')
-    dictionary['TR_EXE'] = p.getexe('TR_EXE')
-    dictionary['RM_EXE'] = p.getexe('RM_EXE')
-    dictionary['NCAP2_EXE'] = p.getexe('NCAP2_EXE')
-    dictionary['CONVERT_EXE'] = p.getexe('CONVERT_EXE')
-    dictionary['NCDUMP_EXE'] = p.getexe('NCDUMP_EXE')
-    dictionary['EGREP_EXE'] = p.getexe('EGREP_EXE')
+    dictionary['WGRIB2'] = getexe(p, 'WGRIB2')
+    dictionary['CUT_EXE'] = getexe(p, 'CUT_EXE')
+    dictionary['TR_EXE'] = getexe(p, 'TR_EXE')
+    dictionary['RM_EXE'] = getexe(p, 'RM_EXE')
+    dictionary['NCAP2_EXE'] = getexe(p, 'NCAP2_EXE')
+    dictionary['CONVERT_EXE'] = getexe(p, 'CONVERT_EXE')
+    dictionary['NCDUMP_EXE'] = getexe(p, 'NCDUMP_EXE')
+    dictionary['EGREP_EXE'] = getexe(p, 'EGREP_EXE')
 
 
 def template_to_regex(template, init_time, valid_time, logger):
