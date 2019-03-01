@@ -214,13 +214,13 @@ class StatAnalysisWrapper(CommandBuilder):
         return valid_init_time_pairs
 
     class FieldObj(object):
-        __slots__ = 'name', 'dir', 'obs'
+        __slots__ = 'name', 'plot_name', 'dir', 'obs'
 
     def parse_model_list(self):
         model_list = []
         all_conf = self.p.keys('config')
         model_indices = []
-        regex = re.compile("MODEL(\d+)_NAME")
+        regex = re.compile("MODEL(\d+)_NAME$")
         for conf in all_conf:
             result = regex.match(conf)
             if result is not None:
@@ -228,7 +228,10 @@ class StatAnalysisWrapper(CommandBuilder):
         for m in model_indices:
             if self.p.has_option('config', "MODEL"+m+"_NAME"):
                 model_name = self.p.getstr('config', "MODEL"+m+"_NAME")
-                model_dir = ""
+                if self.p.has_option('config', "MODEL"+m+"_NAME_ON_PLOT"):
+                    model_plot_name = self.p.getstr('config', "MODEL"+m+"_NAME_ON_PLOT")
+                else:
+                    model_plot_name = model_name
                 if self.p.has_option('config', "MODEL"+m+"_STAT_DIR"):
                     model_dir = util.getraw_interp(self.p, 'config', "MODEL"+m+"_STAT_DIR")
                 else:
@@ -238,9 +241,13 @@ class StatAnalysisWrapper(CommandBuilder):
                     model_obs_name = self.p.getstr('config', "MODEL"+m+"_OBS_NAME") 
                 else:
                     self.logger.error("MODEL"+m+"_OBS_NAME not defined in METplus conf file")
-                    exit(1) 
+                    exit(1)
+            else:
+                self.logger.error("MODEL"+m+"_NAME not defined in METplus conf file")
+                exit(1)
             mod = self.FieldObj()
             mod.name = model_name
+            mod.plot_name = model_plot_name
             mod.dir = model_dir
             mod.obs = model_obs_name
             model_list.append(mod)
@@ -763,6 +770,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                     self.add_env_var('OBS_NAME', '"'+obs_name+'"')
                                     model_dir = model_info.dir
                                     model_dir_split = model_dir.split("/")
+                                    model_plot_name = model_info.plot_name
                                     if model_dir[0] == "/":
                                         filled_model_dir = "/"
                                     else:
@@ -809,9 +817,9 @@ class StatAnalysisWrapper(CommandBuilder):
                                     #set up lookin agrument
                                     self.set_lookin_dir(for_stat_analysis_lookin)
                                     #set up output directory, job, and dump_row filename
-                                    model_stat_analysis_output_dir = os.path.join(stat_analysis_out_dir, verif_case, verif_type, model_name, stat_analysis_out_dir_date+"_"+stat_analysis_out_dir_valid_time+"_"+stat_analysis_out_dir_init_time)
+                                    model_stat_analysis_output_dir = os.path.join(stat_analysis_out_dir, verif_case, verif_type, model_plot_name, stat_analysis_out_dir_date+"_"+stat_analysis_out_dir_valid_time+"_"+stat_analysis_out_dir_init_time)
                                     util.mkdir_p(model_stat_analysis_output_dir)
-                                    stat_analysis_dump_row_filename = model_name+"_"+stat_analysis_dump_row_filename_lead+"_"+stat_analysis_dump_row_filename_fcstvar+"_"+stat_analysis_dump_row_filename_obsvar+"_"+stat_analysis_dump_row_filename_interp+"_"+stat_analysis_dump_row_filename_region+".stat"
+                                    stat_analysis_dump_row_filename = model_plot_name+"_"+stat_analysis_dump_row_filename_lead+"_"+stat_analysis_dump_row_filename_fcstvar+"_"+stat_analysis_dump_row_filename_obsvar+"_"+stat_analysis_dump_row_filename_interp+"_"+stat_analysis_dump_row_filename_region+".stat"
                                     job = "-job filter -dump_row "+os.path.join(model_stat_analysis_output_dir, stat_analysis_dump_row_filename)
                                     self.add_env_var('JOB', job)
                                     self.set_param_file(stat_analysis_config)
