@@ -1,6 +1,6 @@
 import numpy as np
 
-__all__ = ['get_stat_formal_name', 'get_clevels', 'cintvl_emc']
+__all__ = ['get_stat_formal_name', 'get_clevels', 'cintvl_emc', 'get_date_arrays']
 
 def get_stat_formal_name(stat_now):
     if stat_now == 'bias':
@@ -57,3 +57,8 @@ def cintvl_emc(model1, model2, total_days):
     elif ndays < 20:
         intvl = 2.228*model2_model1_std/np.sqrt(ndays-1)
     return intvl
+
+def get_date_arrays(plot_time, start_date_YYYYmmdd, end_date_YYYYmmdd, valid_time_info, init_time_info, lead):
+    plot_time_dates = []
+    expected_stat_file_dates = []
+    return plot_time_dates, expected_stat_file_dates
