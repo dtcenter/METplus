@@ -1,6 +1,5 @@
 import numpy as np
-
-__all__ = ['get_stat_formal_name', 'get_clevels', 'cintvl_emc', 'get_date_arrays']
+import datetime as datetime
 
 def get_stat_formal_name(stat_now):
     if stat_now == 'bias':
@@ -61,4 +60,30 @@ def cintvl_emc(model1, model2, total_days):
 def get_date_arrays(plot_time, start_date_YYYYmmdd, end_date_YYYYmmdd, valid_time_info, init_time_info, lead):
     plot_time_dates = []
     expected_stat_file_dates = []
+    if plot_time == 'valid':
+        if len(valid_time_info) == 1:
+            delta_t = datetime.timedelta(seconds=86400)
+        else:
+            delta_t = datetime.timedelta(seconds=(datetime.datetime.strptime(valid_time_info[1], '%H%M%S') - datetime.datetime.strptime(valid_time_info[0], '%H%M%S')).total_seconds())
+        plot_start_date_YYYYmmddHHMMSS = datetime.datetime.strptime(start_date_YYYYmmdd+valid_time_info[0], '%Y%m%d%H%M%S')
+        plot_end_date_YYYYmmddHHMMSS = datetime.datetime.strptime(end_date_YYYYmmdd+valid_time_info[-1], '%Y%m%d%H%M%S') + delta_t
+        dates = np.arange(plot_start_date_YYYYmmddHHMMSS, plot_end_date_YYYYmmddHHMMSS, delta_t).astype(datetime.datetime)
+        for date in dates:
+            dt = date.time()
+            seconds = (dt.hour * 60 + dt.minute) * 60 + dt.second
+            plot_time_dates.append(date.toordinal() + seconds/86400.)
+            expected_stat_file_dates.append(date.strftime('%Y%m%d'+"_"+'%H%M%S'))
+    elif plot_time == 'init':
+        if len(init_time_info) == 1:
+            delta_t = datetime.timedelta(seconds=86400)
+        else:
+            delta_t = datetime.timedelta(seconds=(datetime.datetime.strptime(init_time_info[1], '%H%M%S') - datetime.datetime.strptime(init_time_info[0], '%H%M%S')).total_seconds())
+        plot_start_date_YYYYmmddHHMMSS = datetime.datetime.strptime(start_date_YYYYmmdd+init_time_info[0], '%Y%m%d%H%M%S')
+        plot_end_date_YYYYmmddHHMMSS = datetime.datetime.strptime(end_date_YYYYmmdd+init_time_info[-1], '%Y%m%d%H%M%S') + delta_t
+        dates = np.arange(plot_start_date_YYYYmmddHHMMSS, plot_end_date_YYYYmmddHHMMSS, delta_t).astype(datetime.datetime)
+        for date in dates:
+            dt = date.time()
+            seconds = (dt.hour * 60 + dt.minute) * 60 + dt.second
+            plot_time_dates.append(date.toordinal() + seconds/86400.)
+            expected_stat_file_dates.append((datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(hours=int(lead))).strftime('%Y%m%d'+"_"+'%H%M%S'))
     return plot_time_dates, expected_stat_file_dates
