@@ -221,8 +221,7 @@ class MakePlotsWrapper(CommandBuilder):
                         return
                     self.build()
                     self.clear()
-                    exit()
-        
+ 
     def create_plots_grid2grid_anom(self, fcst_var_level_list, obs_var_level_list,
                                     fcst_var_thresh_list, obs_var_thresh_list,
                                     interp, region, lead_list, plotting_scripts_dir):
@@ -317,10 +316,13 @@ class MakePlotsWrapper(CommandBuilder):
         self.add_env_var('EVENT_EQUALIZATION', event_equalization)
         self.add_env_var("LOGGING_FILENAME", logging_filename)
         self.add_env_var("LOGGING_LEVEL", logging_level)
-        if os.path.exists(plotting_out_dir):
-            self.logger.info(plotting_out_dir+" exists, removing")
-            util.rmtree(plotting_out_dir)
-        util.mkdir_p(plotting_out_dir)
+        plotting_out_dir_full = os.path.join(plotting_out_dir, verif_case, verif_type)
+        if os.path.exists(plotting_out_dir_full):
+            self.logger.info(plotting_out_dir_full+" exists, removing")
+            util.rmtree(plotting_out_dir_full)
+        util.mkdir_p(os.path.join(plotting_out_dir_full, "imgs"))
+        util.mkdir_p(os.path.join(plotting_out_dir_full, "data"))
+        self.add_env_var('PLOTTING_OUT_DIR_FULL', plotting_out_dir_full)
         #build valid and init hour information
         valid_beg_HHMMSS = calendar.timegm(time.strptime(valid_hour_beg, "%H%M"))
         valid_end_HHMMSS = calendar.timegm(time.strptime(valid_hour_end, "%H%M"))
