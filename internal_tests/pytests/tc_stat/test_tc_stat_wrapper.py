@@ -67,7 +67,7 @@ def metplus_config():
 
 @pytest.mark.parametrize(
     'key, value', [
-        ('APP_PATH', '/usr/local/met-6.1/bin/tc_stat'),
+        ('APP_PATH', '/usr/local/met-8.0/bin/tc_stat'),
         ('APP_NAME', 'tc_stat'),
         ('INIT_BEG', '20141213'),
         ('INIT_END', '20141220'),
