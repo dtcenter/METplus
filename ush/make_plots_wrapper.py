@@ -295,7 +295,6 @@ class MakePlotsWrapper(CommandBuilder):
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlist(self.p.getstr('config', 'LEAD_LIST'))
         model_name_str_list, model_plot_name_str_list = self.parse_model_list()
-        line_type = self.p.getstr('config', 'LINE_TYPE', "")
         logging_filename = self.p.getstr('config', 'LOG_METPLUS')
         logging_level = self.p.getstr('config', 'LOG_LEVEL')
         met_base = self.p.getstr('config', 'MET_BASE')
@@ -317,7 +316,6 @@ class MakePlotsWrapper(CommandBuilder):
         self.add_env_var('EVENT_EQUALIZATION', event_equalization)
         self.add_env_var('LOGGING_FILENAME', logging_filename)
         self.add_env_var('LOGGING_LEVEL', logging_level)
-        self.add_env_var('LINE_TYPE', line_type)
         plotting_out_dir_full = os.path.join(plotting_out_dir, verif_case, verif_type)
         if os.path.exists(plotting_out_dir_full):
             self.logger.info(plotting_out_dir_full+" exists, removing")
@@ -327,9 +325,9 @@ class MakePlotsWrapper(CommandBuilder):
         self.add_env_var('PLOTTING_OUT_DIR_FULL', plotting_out_dir_full)
         with open(met_base+'/version.txt') as met_version_txt:  
             met_version_line = met_version_txt.readline()
-            met_version = met_version_line.strip('\n').partition('/met-')[2]
-        self.add_env_var('MET_VERSION', met_version)
-        if met_version < "6.0":
+            met_version = float(met_version_line.strip('\n').partition('/met-')[2].partition('_')[0])
+        self.add_env_var('MET_VERSION', str(met_version))
+        if met_version < 6.0:
              self.logger.exit("Please run with MET version >= 6.0")
              exit(1)
         #build valid and init hour information
