@@ -201,7 +201,7 @@ class MakePlotsWrapper(CommandBuilder):
                     model_plot_name = model_name
                 model_name_list.append(model_name)
                 model_plot_name_list.append(model_plot_name)
-        return ' '.join(model_name_list),' '.join(model_plot_name_list)
+        return ' '.join(model_name_list), ' '.join(model_plot_name_list)
  
     def create_plots_grid2grid_pres(self, fcst_var_level_list, obs_var_level_list,
                                     fcst_var_thresh_list, obs_var_thresh_list,
@@ -221,6 +221,7 @@ class MakePlotsWrapper(CommandBuilder):
                         return
                     self.build()
                     self.clear()
+                    exit()
  
     def create_plots_grid2grid_anom(self, fcst_var_level_list, obs_var_level_list,
                                     fcst_var_thresh_list, obs_var_thresh_list,
@@ -266,7 +267,6 @@ class MakePlotsWrapper(CommandBuilder):
         self.logger.error("Plotting for precip not incorporated in METplus yet")
         exit(1)
         
-    #{STAT_FILES_INPUT_DIR}/grid2grid/pres/gfs/valid20180601to20180610_valid000000to000000Z_init000000to180000Z/gfs_f12_fcstHGTP1000_obsHGTP1000_interpNEAREST_regionNHX.stat
     def create_plots(self, verif_case, verif_type):
         self.logger.info("Running plots for VERIF_CASE = "+verif_case+", VERIF_TYPE = "+verif_type)
         #read config
@@ -286,18 +286,19 @@ class MakePlotsWrapper(CommandBuilder):
         stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
         plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
         plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
-        plot_stats_list = self.p.getdir('PLOT_STATS_LIST')
+        plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
         ci_method = self.p.getstr('config', 'CI_METHOD')
         verif_grid = self.p.getstr('config', 'VERIF_GRID')
-        event_equalization = self.p.getstr('config', "EVENT_EQUALIZATION", "True")
+        event_equalization = self.p.getstr('config', 'EVENT_EQUALIZATION', "True")
         var_list = self.parse_vars_with_level_thresh_list()
         fourier_decom_list = self.parse_var_fourier_decomp()
         region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
         lead_list = util.getlist(self.p.getstr('config', 'LEAD_LIST'))
         model_name_str_list, model_plot_name_str_list = self.parse_model_list()
-        plot_stats_list = self.p.getdir('PLOT_STATS_LIST')
+        line_type = self.p.getstr('config', 'LINE_TYPE', "")
         logging_filename = self.p.getstr('config', 'LOG_METPLUS')
         logging_level = self.p.getstr('config', 'LOG_LEVEL')
+        met_base = self.p.getstr('config', 'MET_BASE')
         #set envir vars based on config
         self.add_env_var('PLOT_TIME', plot_time)
         if plot_time == 'valid':
@@ -314,8 +315,9 @@ class MakePlotsWrapper(CommandBuilder):
         self.add_env_var('CI_METHOD', ci_method)
         self.add_env_var('VERIF_GRID', verif_grid)
         self.add_env_var('EVENT_EQUALIZATION', event_equalization)
-        self.add_env_var("LOGGING_FILENAME", logging_filename)
-        self.add_env_var("LOGGING_LEVEL", logging_level)
+        self.add_env_var('LOGGING_FILENAME', logging_filename)
+        self.add_env_var('LOGGING_LEVEL', logging_level)
+        self.add_env_var('LINE_TYPE', line_type)
         plotting_out_dir_full = os.path.join(plotting_out_dir, verif_case, verif_type)
         if os.path.exists(plotting_out_dir_full):
             self.logger.info(plotting_out_dir_full+" exists, removing")
@@ -323,6 +325,13 @@ class MakePlotsWrapper(CommandBuilder):
         util.mkdir_p(os.path.join(plotting_out_dir_full, "imgs"))
         util.mkdir_p(os.path.join(plotting_out_dir_full, "data"))
         self.add_env_var('PLOTTING_OUT_DIR_FULL', plotting_out_dir_full)
+        with open(met_base+'/version.txt') as met_version_txt:  
+            met_version_line = met_version_txt.readline()
+            met_version = met_version_line.strip('\n').partition('/met-')[2]
+        self.add_env_var('MET_VERSION', met_version)
+        if met_version < "6.0":
+             self.logger.exit("Please run with MET version >= 6.0")
+             exit(1)
         #build valid and init hour information
         valid_beg_HHMMSS = calendar.timegm(time.strptime(valid_hour_beg, "%H%M"))
         valid_end_HHMMSS = calendar.timegm(time.strptime(valid_hour_end, "%H%M"))
