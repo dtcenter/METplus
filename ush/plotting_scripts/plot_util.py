@@ -85,5 +85,7 @@ def get_date_arrays(plot_time, start_date_YYYYmmdd, end_date_YYYYmmdd, valid_tim
             dt = date.time()
             seconds = (dt.hour * 60 + dt.minute) * 60 + dt.second
             plot_time_dates.append(date.toordinal() + seconds/86400.)
-            expected_stat_file_dates.append((datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(hours=int(lead))).strftime('%Y%m%d'+"_"+'%H%M%S'))
+            lead_time_HHMMSS = lead.ljust(6,'0')
+            delta_lead = datetime.timedelta(hours=int(lead_time_HHMMSS[0:2]), minutes=int(lead_time_HHMMSS[2:4]), seconds=int(lead_time_HHMMSS[4:]))
+            expected_stat_file_dates.append((datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S') + delta_lead).strftime('%Y%m%d'+"_"+'%H%M%S'))
     return plot_time_dates, expected_stat_file_dates
