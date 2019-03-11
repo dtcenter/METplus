@@ -307,7 +307,7 @@ class MakePlotsWrapper(CommandBuilder):
             self.add_env_var('START_DATE_YYYYmmdd', init_beg_YYYYmmdd)
             self.add_env_var('END_DATE_YYYYmmdd', init_end_YYYYmmdd)
         else:
-            self.logger.error("Invalid entry for PLOT_TIME")
+            self.logger.error("Invalid entry for PLOT_TIME, use 'valid' or 'init'")
             exit(1)
         self.add_env_var('STAT_FILES_INPUT_DIR', stat_files_input_dir)
         self.add_env_var('PLOTTING_OUT_DIR', plotting_out_dir)

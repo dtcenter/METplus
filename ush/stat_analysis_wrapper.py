@@ -625,7 +625,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.build()
             self.clear()
         else:
-            self.logger.error("Invalid conf entry for VALID_HOUR_METHOD or INIT_HOUR_METHOD")
+            self.logger.error("Invalid conf entry for VALID_HOUR_METHOD or INIT_HOUR_METHOD, use 'GROUP' or 'LOOP'")
             exit(1)
 
     def gather_by_info(self):
@@ -709,7 +709,7 @@ class StatAnalysisWrapper(CommandBuilder):
                      fcst_valid_init_dict['FCST_INIT_END'] = init_end_YYYYmmdd+"_"+init_time_info.replace('"', "").split(", ")[-1]
                      stat_analysis_out_dir_init_time = "init"+init_time_info.replace('"', "").split(", ")[0]+"to"+init_time_info.replace('"', "").split(", ")[-1]+"Z"
             else:
-                 self.logger.error("Invalid entry for PLOT_TIME")
+                 self.logger.error("Invalid entry for PLOT_TIME, use 'valid' or 'init'")
                  exit(1)
             #loop through variable information
             for var_info in var_list:
