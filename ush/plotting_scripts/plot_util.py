@@ -82,21 +82,25 @@ def get_clevels(data):
    clevels = np.linspace(cmin,cmax,11, endpoint=True)
    return clevels
 
-def cintvl_emc(model1, model2, total_days):
-    model2_model1_diff = model2-model1
-    ndays = total_days - np.ma.count_masked(model2_model1_diff)
-    model2_model1_diff_mean = model2_model1_diff.mean()
-    model2_model1_std = np.sqrt(((model2_model1_diff - model2_model1_diff_mean)**2).mean())
-    if ndays >= 80:
-        intvl = 1.960*model2_model1_std/np.sqrt(ndays-1)
-    elif ndays >= 40 and ndays < 80:
-        intvl = 2.000*model2_model1_std/np.sqrt(ndays-1)
-    elif ndays >= 20 and ndays < 40:
-        intvl = 2.042*model2_model1_std/np.sqrt(ndays-1)
-    elif ndays < 20:
-        intvl = 2.228*model2_model1_std/np.sqrt(ndays-1)
+def calculate_ci(logger, ci_method, modelB_values, modelA_values, total_days):
+    modelB_modelA_diff = modelB_values - modelA_values
+    ndays = total_days - np.ma.count_masked(modelB_modelA_diff)
+    modelB_modelA_diff_mean = modelB_modelA_diff.mean()
+    modelB_modelA_std = 2.0
+    #modelB_modelA_std = np.sqrt((modelB_modelA_diff - modelB_modelA_diff_mean)**2.mean())
+    if ci_method == "EMC":
+        if ndays >= 80:
+            intvl = 1.960*modelB_modelA_std/np.sqrt(ndays-1)
+        elif ndays >= 40 and ndays < 80:
+            intvl = 2.000*modelB_modelA_std/np.sqrt(ndays-1)
+        elif ndays >= 20 and ndays < 40:
+            intvl = 2.042*modelB_modelA_std/np.sqrt(ndays-1)
+        elif ndays < 20:
+            intvl = 2.228*modelB_modelA_std/np.sqrt(ndays-1)
+    else:
+        self.logger.error("Invalid entry for CI_METHOD, use 'EMC'")
+        exit(1)
     return intvl
-
 
 def calculate_stat(logger, model_data, stat):
     model_data_columns = model_data.columns.values.tolist()
