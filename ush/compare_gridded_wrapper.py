@@ -191,7 +191,7 @@ that reformat gridded data
         init_time = ti.getInitTime()
 
         # set level based on input data type
-        if data_type == "OBS":
+        if data_type.startswith("OBS"):
             v_level = v.obs_level
         else:
             v_level = v.fcst_level

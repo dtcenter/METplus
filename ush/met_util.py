@@ -1191,9 +1191,11 @@ def parse_var_list_helper(p, dt, dont_duplicate):
     for v in var_list:
         print(" fcst_name:"+v.fcst_name)
         print(" fcst_level:"+v.fcst_level)
+        print(" fcst_thresh:"+str(v.fcst_thresh))
         print(" fcst_extra:"+v.fcst_extra)
         print(" obs_name:"+v.obs_name)
         print(" obs_level:"+v.obs_level)
+        print(" obs_thresh:"+str(v.obs_thresh))
         print(" obs_extra:"+v.obs_extra)
         print("")
         count += 1

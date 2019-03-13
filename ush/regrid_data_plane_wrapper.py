@@ -147,6 +147,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if infile is not None:
             self.add_input_file(infile)
         else:
+            self.logger.error('Could not find input file in {} matching template {}'
+                              .format(input_dir, input_template))
             return False
         self.add_input_file(self.p.getstr('config', 'VERIFICATION_GRID'))
         regridSts = sts.StringSub(self.logger,

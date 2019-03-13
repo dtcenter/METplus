@@ -32,11 +32,6 @@ regrid = {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-tmp_z2_thresh   = [ >=283, >=288, >=293, >=298, >=303 ];
-dpt_z2_thresh   = [ >=278, >=283, >=288, >=293, >=298 ];
-uv_z10_thresh   = [ <=-10, <=-5, <=-2, >=2, >=5, >=10 ];
-wind_z10_thresh = [ >=2, >=4, >=6, >=8, >=10 ];
-
 //
 // Ensemble product fields to be processed
 //
@@ -44,13 +39,7 @@ ens = {
    ens_thresh = 1.0;
    vld_thresh = 1.0;
 
-   field = [
-      { name = "TMP";  level = [ "Z2" ];  cat_thresh = tmp_z2_thresh;   },
-      { name = "DPT";  level = [ "Z2" ];  cat_thresh = dpt_z2_thresh;   },
-      { name = "UGRD"; level = [ "Z10" ]; cat_thresh = uv_z10_thresh;   },   
-      { name = "VGRD"; level = [ "Z10" ]; cat_thresh = uv_z10_thresh;   },
-      { name = "WIND"; level = [ "Z10" ]; cat_thresh = wind_z10_thresh; }
-   ];
+   field = [ ${FCST_FIELD}  ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -64,13 +53,7 @@ wind_logic  = UNION;
 // Forecast and observation fields to be verified
 //
 fcst = {
-   field = [
-      { name = "TMP";  level = [ "Z2" ];  cat_thresh = tmp_z2_thresh;   },
-      { name = "DPT";  level = [ "Z2" ];  cat_thresh = dpt_z2_thresh;   },
-      { name = "UGRD"; level = [ "Z10" ]; cat_thresh = uv_z10_thresh;   },   
-      { name = "VGRD"; level = [ "Z10" ]; cat_thresh = uv_z10_thresh;   },
-      { name = "WIND"; level = [ "Z10" ]; cat_thresh = wind_z10_thresh; }
-   ];
+   field = [ ${FCST_FIELD}  ];
 };
 
 //
@@ -78,13 +61,7 @@ fcst = {
 // May be set separately in each "obs.field" entry
 //
 obs = {
-   field = [
-      { name = "TMP";  level = [ "Z2" ];  cat_thresh = tmp_z2_thresh; ens_ssvar_bin_size = 1.0; ens_phist_bin_size = 0.05;   },
-      { name = "DPT";  level = [ "Z2" ];  cat_thresh = dpt_z2_thresh; ens_ssvar_bin_size = 1.0; ens_phist_bin_size = 0.05;   },
-      { name = "UGRD"; level = [ "Z10" ]; cat_thresh = uv_z10_thresh; ens_ssvar_bin_size = 1.0; ens_phist_bin_size = 0.05;   },
-      { name = "VGRD"; level = [ "Z10" ]; cat_thresh = uv_z10_thresh; ens_ssvar_bin_size = 1.0; ens_phist_bin_size = 0.05;   },
-      { name = "WIND"; level = [ "Z10" ]; cat_thresh = wind_z10_thresh; ens_ssvar_bin_size = 1.0; ens_phist_bin_size = 0.05; }
-   ];
+   field = [ ${OBS_FIELD}   ];
 };
 obs = { wind_thresh = >2.572; };
 
