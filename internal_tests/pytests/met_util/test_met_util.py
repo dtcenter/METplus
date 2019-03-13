@@ -397,3 +397,27 @@ def test_parse_var_list_fcst_and_obs_and_both():
            var_list[4].obs_level == "OLEVELS31" and \
            var_list[5].fcst_level == "FLEVELS32" and \
            var_list[5].obs_level == "OLEVELS32" )
+
+# option defined in obs only
+def test_parse_var_list_fcst_only():
+    conf = metplus_config()
+    conf.set('config', 'FCST_VAR1_NAME', "NAME1")
+    conf.set('config', 'FCST_VAR1_LEVELS', "LEVELS11, LEVELS12")
+    conf.set('config', 'FCST_VAR1_THRESH', ">1, >2")
+    conf.set('config', 'OBS_VAR1_OPTIONS', "OOPTIONS11")
+    var_list = util.parse_var_list(conf)
+    assert(var_list[0].fcst_name == "NAME1" and \
+           var_list[0].obs_name == "NAME1" and \
+           var_list[1].fcst_name == "NAME1" and \
+           var_list[1].obs_name == "NAME1" and \
+           var_list[0].fcst_level == "LEVELS11" and \
+           var_list[0].obs_level == "LEVELS11" and \
+           var_list[1].fcst_level == "LEVELS12" and \
+           var_list[1].obs_level == "LEVELS12" and \
+           var_list[0].fcst_thresh ==  var_list[0].obs_thresh and \
+           var_list[1].fcst_thresh ==  var_list[1].obs_thresh and \
+           var_list[0].fcst_extra == "" and \
+           var_list[0].obs_extra == "OOPTIONS11" and \
+           var_list[1].fcst_extra == "" and \
+           var_list[1].obs_extra == "OOPTIONS11"
+           )
