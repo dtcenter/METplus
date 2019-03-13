@@ -570,3 +570,25 @@ def test_shift_time_lead_negative():
     ss = StringSub(logger, templ, init=init_string, lead=lead_string)
     filename = ss.doStringSub()
     assert(filename == expected_filename)
+
+def test_ccpa_template():
+    passed = True
+    valid_string = "2019022403"
+    lead_string = "3"
+    logger = logging.getLogger("testing")
+    templ = "ccpa.{valid?fmt=%Y%m%d}/06/ccpa.t{valid?fmt=%H}z.{lead?fmt=%.2H}h.hrap.conus.gb2"
+    expected_filename = "ccpa.20190224/06/ccpa.t03z.03h.hrap.conus.gb2"
+    ss = StringSub(logger, templ, valid=valid_string, lead=lead_string)
+    filename = ss.doStringSub()
+    if filename != expected_filename:
+        passed = False
+
+    valid_string = "2019022406"
+    lead_string = "6"
+    expected_filename = "ccpa.20190224/06/ccpa.t06z.06h.hrap.conus.gb2"
+    ss = StringSub(logger, templ, valid=valid_string, lead=lead_string)
+    filename = ss.doStringSub()
+    if filename == expected_filename:
+        passed = False
+
+    return passed
