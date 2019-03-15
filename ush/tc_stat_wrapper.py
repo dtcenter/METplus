@@ -768,7 +768,7 @@ class TcStatWrapper(CommandBuilder):
         # If we got here, all corresponding lists have the same length
         return is_ok
 
-    def build_tc_stat(self, tc_stat_output_dir, cur_init, tc_input_dir,
+    def build_tc_stat(self, tc_stat_output_dir, cur_init, tc_input_list,
                       filter_opts):
         """!This is called from extract_tiles_wrapper and from any other
             wrapper to provide additional filtering WITHOUT the need for
@@ -782,8 +782,9 @@ class TcStatWrapper(CommandBuilder):
             @param tc_stat_output_dir:  The output directory where filtered
                                        results are saved.
             @param cur_init:  The initialization time
-            @param tc_input_dir:  The input data directory (location of the
-                                  tc pair data to be filtered)
+            @param tc_input_list:  The "list" of input data (the files containing
+                                   the tc pair data to be filtered) in a
+                                   string
             @param filter_opts:  The list of filter options to apply
 
             Returns:
@@ -812,7 +813,7 @@ class TcStatWrapper(CommandBuilder):
 
         # This is for extract_tiles to call without a config file
         tc_cmd_list = [self.tc_exe, " -job filter ",
-                       " -lookin ", tc_input_dir,
+                       " -lookin ", tc_input_list,
                        " -match_points true ",
                        " -init_inc ", cur_init,
                        " -dump_row ", filter_name,
