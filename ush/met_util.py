@@ -1001,7 +1001,8 @@ def shift_time_seconds(time, shift):
 
 class FieldObj(object):
     __slots__ = 'fcst_name', 'fcst_level', 'fcst_extra', 'fcst_thresh', \
-                'obs_name', 'obs_level', 'obs_extra', 'obs_thresh', 'index'
+                'obs_name', 'obs_level', 'obs_extra', 'obs_thresh', \
+                'ens_name', 'ens_level', 'ens_extra', 'ens_thresh', 'index'
 
 
 # TODO: Check if other characters are only <>!=&|gelt.[0-9] (?)
@@ -1168,11 +1169,29 @@ def parse_var_list_helper(p, dt, dont_duplicate):
             else:
                 thresh[odt] = thresh[dt]
 
-            if len(thresh[dt]) != len(thresh[odt]):
-                print("ERROR: "+dt+"_VAR"+n+"_THRESH and "+odt+"_VAR"+n+\
-                          "_THRESH do not have the same number of elements")
-                exit(1)
+            # get ensemble var info if available
+            if p.has_option('config', "ENS_VAR"+n+"_NAME"):
+                name['ENS'] = p.getstr('config', "ENS_VAR"+n+"_NAME")
 
+                levels['ENS'] = getlist(p.getstr('config', "ENS_VAR"+n+"_LEVELS"))
+
+                extra['ENS'] = ""
+                if p.has_option('config', "ENS_VAR"+n+"_OPTIONS"):
+                    extra['ENS'] = getraw_interp(p, 'config', "ENS_VAR"+n+"_OPTIONS")
+
+                thresh['ENS'] = []
+                if p.has_option('config', "ENS_VAR"+n+"_THRESH"):
+                    thresh['ENS'] = getlist(p.getstr('config', "ENS_VAR"+n+"_THRESH"))
+                    if validate_thresholds(thresh['ENS']) == False:
+                        print("  Update ENS_VAR"+n+"_THRESH to match this format")
+                        exit(1)
+
+                if len(thresh[dt]) != len(thresh[odt]):
+                    print("ERROR: "+dt+"_VAR"+n+"_THRESH and "+odt+"_VAR"+n+\
+                          "_THRESH do not have the same number of elements")
+                    exit(1)
+
+            count = 0
             for f,o in zip(levels[dt], levels[odt]):
                 fo = FieldObj()
                 fo.fcst_name = name[dt]
@@ -1183,18 +1202,36 @@ def parse_var_list_helper(p, dt, dont_duplicate):
                 fo.obs_thresh = thresh[odt]
                 fo.fcst_level = f
                 fo.obs_level = o
+                if 'ENS' in name:
+                    fo.ens_name = name['ENS']
+                    fo.ens_level = levels['ENS'][count]
+                    if 'ENS' in extra:
+                        fo.ens_extra = extra['ENS']
+                    if 'ENS' in thresh:
+                        fo.ens_thresh = thresh['ENS']
+
                 fo.index = n
                 var_list.append(fo)
+                count += 1
 
     '''
     count = 0
     for v in var_list:
         print(" fcst_name:"+v.fcst_name)
         print(" fcst_level:"+v.fcst_level)
+        print(" fcst_thresh:"+str(v.fcst_thresh))
         print(" fcst_extra:"+v.fcst_extra)
         print(" obs_name:"+v.obs_name)
         print(" obs_level:"+v.obs_level)
+        print(" obs_thresh:"+str(v.obs_thresh))
         print(" obs_extra:"+v.obs_extra)
+        if hasattr(v, 'ens_name'):
+            print(" ens_name:"+v.ens_name)
+            print(" ens_level:"+v.ens_level)
+        if hasattr(v, 'ens_thresh'):
+            print(" ens_thresh:"+str(v.ens_thresh))
+        if hasattr(v, 'ens_extra'):
+            print(" ens_extra:"+v.ens_extra)
         print("")
         count += 1
     '''

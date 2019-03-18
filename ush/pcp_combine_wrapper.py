@@ -458,7 +458,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             (self.logger).error("No output directory specified")
             return None
 
-        cmd += os.path.join(self.outdir, self.outfile)
+        out_path = os.path.join(self.outdir, self.outfile)
+
+        # create outdir (including subdir in outfile) if it doesn't exist
+        if not os.path.exists(os.path.dirname(out_path)):
+            os.makedirs(os.path.dirname(out_path))
+
+        cmd += " " + out_path
 
         if self.pcp_dir != "":
             cmd += " -pcpdir "+self.pcp_dir
@@ -568,11 +574,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         out_file = outSts.doStringSub()
         self.set_output_filename(out_file)
         self.set_output_dir(out_dir)
-
-        # If out template has a subdir, make that directory
-        mk_dir = os.path.join(out_dir, os.path.dirname(out_file))
-        if not os.path.exists(mk_dir):
-            os.makedirs(mk_dir)
 
         return self.get_command()
 
