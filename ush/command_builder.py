@@ -232,7 +232,13 @@ class CommandBuilder:
             self.logger.error("No output directory specified")
             return None
 
-        cmd += " " + os.path.join(self.outdir, self.outfile)
+        out_path = os.path.join(self.outdir, self.outfile)
+
+        # create outdir (including subdir in outfile) if it doesn't exist
+        if not os.path.exists(os.path.dirname(out_path)):
+            os.makedirs(os.path.dirname(out_path))
+
+        cmd += " " + out_path
 
         return cmd
 

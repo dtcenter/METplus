@@ -123,10 +123,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         output_dir = self.c_dict[dtype+'_OUTPUT_DIR']
         output_template = self.c_dict[dtype+'_OUTPUT_TEMPLATE']
 
-        ymd_v = valid_time[0:8]
-        if not os.path.exists(os.path.join(output_dir, ymd_v)):
-            os.makedirs(os.path.join(output_dir, ymd_v))
-
         if not level.isdigit():
             f_level = '0'
         else:
