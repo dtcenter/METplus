@@ -56,7 +56,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         cg_dict['FCST_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'FCST_ENSEMBLE_STAT_INPUT_DATATYPE', '')
 
-        cg_dict['OBS_INPUT_DATATYPE'] = \
+        cg_dict['OBS_POINT_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE', '')
 
         cg_dict['OBS_GRID_INPUT_DATATYPE'] = \
@@ -88,19 +88,17 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         cg_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
         cg_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
 
-#        cg_dict['POINT_OBS_INPUT_DIR'] = \
-        cg_dict['OBS_INPUT_DIR'] = \
+        cg_dict['OBS_POINT_INPUT_DIR'] = \
           util.getdir(self.p, 'OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
 
-#        cg_dict['POINT_OBS_INPUT_TEMPLATE'] = \
-        cg_dict['OBS_INPUT_TEMPLATE'] = \
+        cg_dict['OBS_POINT_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE')
 
-        cg_dict['GRID_OBS_INPUT_DIR'] = \
+        cg_dict['OBS_GRID_INPUT_DIR'] = \
           util.getdir(self.p, 'OBS_ENSEMBLE_STAT_GRID_INPUT_DIR', '')
 
-        cg_dict['GRID_OBS_INPUT_TEMPLATE'] = \
+        cg_dict['OBS_GRID_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE')
 
@@ -123,8 +121,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
           self.p.getint('config', 'OBS_WINDOW_BEGIN', -3600)
         cg_dict['OBS_WINDOW_END'] = \
           self.p.getint('config', 'OBS_WINDOW_END', 3600)
-        cg_dict['OBS_EXACT_VALID_TIME'] = \
-            self.p.getbool('config','OBS_EXACT_VALID_TIME',True)
+        cg_dict['OBS_POINT_EXACT_VALID_TIME'] = \
+            self.p.getbool('config','OBS_POINT_EXACT_VALID_TIME',True)
         return cg_dict
 
 
@@ -132,6 +130,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.logger("ERROR: run_at_time_one_field not implemented yet for {}"
                     .format(self.app_name))
         exit()
+
 
     def run_at_time_all_fields(self, ti, v):
         """! Runs the MET application for a given time and forecast lead combination
@@ -149,30 +148,65 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_input_file(fcst_file_list)
 
         # Add the number of ensemble members to the MET command
-        self.input_file_num = self.cg_dict['N_ENSEMBLE_MEMBERS']
+#        self.input_file_num = self.cg_dict['N_ENSEMBLE_MEMBERS']
 
 
-        # get observation file (point and/or grid)
-        obs_path = self.find_obs(ti, v[0])
-        if obs_path == None:
-            self.logger.error("Could not find file in " + self.cg_dict['OBS_INPUT_DIR'] +\
-                              " for valid time " + ti.getValidTime())
-            return
-        self.add_point_obs_file(obs_path)
+        # get point observation file if requested
+        if self.cg_dict['OBS_POINT_INPUT_DIR'] != '':
+            point_obs_path = self.find_data(ti, v[0], 'OBS_POINT')
+            if point_obs_path == None:
+                self.logger.error("Could not find point obs file in " + self.cg_dict['OBS_POINT_INPUT_DIR'] +\
+                                  " for valid time " + ti.getValidTime())
+                return
+            self.point_obs_files.append(point_obs_path)
+
+        # get grid observation file if requested
+        if self.cg_dict['OBS_GRID_INPUT_DIR'] != '':
+            grid_obs_path = self.find_data(ti, v[0], 'OBS_GRID')
+            if grid_obs_path == None:
+                self.logger.error("Could not find grid obs file in " + self.cg_dict['OBS_GRID_INPUT_DIR'] +\
+                                  " for valid time " + ti.getValidTime())
+                return
+            self.grid_obs_files.append(grid_obs_path)
 
 
         # set field info
         fcst_field = self.get_field_info(v, "something.grb2", 'FCST')
         obs_field = self.get_field_info(v, "something.grb2", 'OBS')
+        ens_field = self.get_field_info(v, 'something.grb2', 'ENS')
 
         # run
-        self.process_fields(ti, v, fcst_field, obs_field)
+        self.process_fields(ti, v, fcst_field, obs_field, ens_field)
 
 
     def get_field_info(self, var_list, model_path, data_type):
         field_list = []
         for v in var_list:
-            next_field = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name, v.fcst_extra, model_path, data_type)
+            if data_type == 'FCST':
+                level = v.fcst_level
+                thresh = v.fcst_thresh
+                name = v.fcst_name
+                extra = v.fcst_extra
+            elif data_type == 'OBS':
+                level = v.obs_level
+                thresh = v.obs_thresh
+                name = v.obs_name
+                extra = v.obs_extra
+            elif data_type == 'ENS':
+                if hasattr(v, 'ens_name'):
+                    level = v.ens_level
+                    thresh = v.ens_thresh
+                    name = v.ens_name
+                    extra = v.ens_extra
+                else:
+                    level = v.fcst_level
+                    thresh = v.fcst_thresh
+                    name = v.fcst_name
+                    extra = v.fcst_extra
+            else:
+                return ''
+
+            next_field = self.get_one_field_info(level, thresh, name, extra, model_path, data_type)
             field_list.append(next_field)
 
         return ','.join(field_list)
@@ -211,6 +245,15 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
             ens_members_path.append(member_path)
 
+        # get filetype and save it in dictionary if it is not set
+        filetype = util.get_filetype(member_path)
+        if self.cg_dict['FCST_INPUT_DATATYPE'] == '':
+            self.cg_dict['FCST_INPUT_DATATYPE'] = filetype
+        elif self.cg_dict['FCST_INPUT_DATATYPE'] != filetype:
+            self.logger.warning('FCST_INPUT_DATTYPE set to {} while get_filetype determined'\
+                                ' data type is {}'.format(self.cg_dict['FCST_INPUT_DATATYPE'], filetype))
+
+
         if int(self.cg_dict['N_ENSEMBLE_MEMBERS']) != \
                 len(ens_members_path):
             self.logger.error("MISMATCH: Members matching File Pattern: %s "
@@ -245,7 +288,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return self.write_list_file(list_filename, ens_members_path)
 
 
-    def process_fields(self, ti, v, fcst_field, obs_field):
+    def process_fields(self, ti, v, fcst_field, obs_field, ens_field):
         """! Set and print environment variables, then build/run MET command
               Args:
                 @param ti task_info object with time information
@@ -263,8 +306,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         print_list = ["MODEL", "GRID_VX", "OBTYPE",
                       "CONFIG_DIR", "FCST_LEAD",
                       "FCST_FIELD", "OBS_FIELD",
-                      "INPUT_BASE", "OBS_WINDOW_BEGIN",
-                      "OBS_WINDOW_END"]
+                      'ENS_FIELD', "INPUT_BASE",
+                      "OBS_WINDOW_BEGIN", "OBS_WINDOW_END"]
 
         if self.cg_dict["MET_OBS_ERROR_TABLE"]:
             self.add_env_var("MET_OBS_ERROR_TABLE",
@@ -273,6 +316,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
+        if ens_field != '':
+            self.add_env_var("ENS_FIELD", ens_field)
+        else:
+            self.add_env_var("ENS_FIELD", fcst_field)
         self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
         self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])
         self.add_env_var("GRID_VX", self.cg_dict['GRID_VX'])
@@ -313,6 +360,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.outfile = ""
         self.param = ""
         self.point_obs_files = []
+        self.grid_obs_files = []
 
 
     def get_command(self):
@@ -342,20 +390,15 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         for f in self.point_obs_files:
             cmd += "-point_obs " + f + " "
 
+        for f in self.grid_obs_files:
+            cmd += "-grid_obs " + f + " "
+
         if self.outdir == "":
             self.logger.error(self.app_name+": No output directory specified")
             return None
 
         cmd += self.outdir
         return cmd
-
-
-    def add_point_obs_file(self,point_obs_file):
-        """!Add a point obs file to MET application command line
-            Args:
-                @param point_obs_file
-        """
-        self.point_obs_files.append(point_obs_file)
 
 
 if __name__ == "__main__":
