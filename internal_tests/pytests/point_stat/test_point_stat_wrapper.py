@@ -79,7 +79,7 @@ def metplus_config():
 
 @pytest.mark.parametrize(
     'key, value', [
-        ('app_path', '/usr/local/met-6.1/bin/point_stat'),
+        ('app_path', '/usr/local/met-8.0/bin/point_stat'),
         ('app_name', 'point_stat')
 
     ]
