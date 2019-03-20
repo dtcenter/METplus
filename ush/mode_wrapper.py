@@ -112,35 +112,35 @@ class ModeWrapper(CompareGriddedWrapper):
             exit(1)
 
 
-    def run_at_time_one_field(self, ti, v):
+    def run_at_time_one_field(self, time_info, v):
         """! Runs mode instances for a given time and forecast lead combination
               Overrides run_at_time_one_field function in compare_gridded_wrapper.py
               Args:
-                @param ti task_info object containing timing information
+                @param time_info dictionary containing timing information
                 @param v var_info object containing variable information
         """
         # get model to compare
-        model_path = self.find_model(ti, v)
+        model_path = self.find_model(time_info, v)
         if model_path == None:
             self.logger.error("Could not find file in " + self.cg_dict['FCST_INPUT_DIR'] +\
-                              " for init time " + ti.getInitTime() + " f" + str(ti.lead))
+                              " for init time " + time_info['init_fmt'] + " f" + str(time_info['lead_hours']))
             return
 
         # get observation to compare
-        obs_path = self.find_obs(ti, v)
+        obs_path = self.find_obs(time_info, v)
         if obs_path == None:
             self.logger.error("Could not find file in " + self.cg_dict['OBS_INPUT_DIR'] +\
-                              " for valid time "+ti.getValidTime())
+                              " for valid time "+time_info['valid_fmt'])
             return
 
         # loop over all variables and levels (and probability thresholds) and call the app for each
-        self.process_fields_one_thresh(ti, v, model_path, obs_path)
+        self.process_fields_one_thresh(time_info, v, model_path, obs_path)
 
 
-    def process_fields_one_thresh(self, ti, v, model_path, obs_path):
+    def process_fields_one_thresh(self, time_info, v, model_path, obs_path):
         """! For each threshold, set up environment variables and run mode
               Args:
-                @param ti task_info object containing timing information
+                @param time_info dictionary containing timing information
                 @param v var_info object containing variable information
                 @param model_path forecast file
                 @param obs_path observation file
@@ -157,7 +157,7 @@ class ModeWrapper(CompareGriddedWrapper):
 
         for fthresh, othresh in zip(fcst_thresh_list, obs_thresh_list):
             self.set_param_file(self.cg_dict['CONFIG_FILE'])
-            self.create_and_set_output_dir(ti)
+            self.create_and_set_output_dir(time_info)
             self.add_input_file(model_path)
             self.add_input_file(obs_path)
             self.add_merge_config_file()
@@ -175,7 +175,7 @@ class ModeWrapper(CompareGriddedWrapper):
             self.add_env_var("FCST_FIELD", fcst_field)
             self.add_env_var("OBS_FIELD", obs_field)
             self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
-            self.add_env_var("MET_VALID_HHMM", ti.getValidTime()[4:8])
+            self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
 
             if self.cg_dict['QUILT']:
                 quilt = "TRUE"

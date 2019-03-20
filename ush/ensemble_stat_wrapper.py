@@ -126,23 +126,24 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return cg_dict
 
 
-    def run_at_time_one_field(self, ti, v):
+    def run_at_time_one_field(self, time_info, v):
         self.logger("ERROR: run_at_time_one_field not implemented yet for {}"
                     .format(self.app_name))
         exit()
 
 
-    def run_at_time_all_fields(self, ti, v):
+    def run_at_time_all_fields(self, time_info, v):
         """! Runs the MET application for a given time and forecast lead combination
               Args:
                 @param ti task_info object containing timing information
                 @param v var_info object list containing variable information
         """
         # get ensemble model files
-        fcst_file_list = self.find_model_members(ti.getLeadTime(), ti.getInitTime())
+        fcst_file_list = self.find_model_members(time_info)
         if not fcst_file_list:
             self.logger.error("Missing Ensemble Member FILEs IN "
-                              + model_dir + " FOR " + init_time + " f" + str(ti.getLeadTime()))
+                              + model_dir + " FOR " + time_info['init_fmt'] +\
+                              "f" + str(time_info['lead_hours']))
             return
 
         self.add_input_file(fcst_file_list)
@@ -153,19 +154,19 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # get point observation file if requested
         if self.cg_dict['OBS_POINT_INPUT_DIR'] != '':
-            point_obs_path = self.find_data(ti, v[0], 'OBS_POINT')
+            point_obs_path = self.find_data(time_info, v[0], 'OBS_POINT')
             if point_obs_path == None:
                 self.logger.error("Could not find point obs file in " + self.cg_dict['OBS_POINT_INPUT_DIR'] +\
-                                  " for valid time " + ti.getValidTime())
+                                  " for valid time " + time_info['valid_fmt'])
                 return
             self.point_obs_files.append(point_obs_path)
 
         # get grid observation file if requested
         if self.cg_dict['OBS_GRID_INPUT_DIR'] != '':
-            grid_obs_path = self.find_data(ti, v[0], 'OBS_GRID')
+            grid_obs_path = self.find_data(time_info, v[0], 'OBS_GRID')
             if grid_obs_path == None:
                 self.logger.error("Could not find grid obs file in " + self.cg_dict['OBS_GRID_INPUT_DIR'] +\
-                                  " for valid time " + ti.getValidTime())
+                                  " for valid time " + time_info['valid_fmt'])
                 return
             self.grid_obs_files.append(grid_obs_path)
 
@@ -176,7 +177,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         ens_field = self.get_field_info(v, 'something.grb2', 'ENS')
 
         # run
-        self.process_fields(ti, v, fcst_field, obs_field, ens_field)
+        self.process_fields(time_info, v, fcst_field, obs_field, ens_field)
 
 
     def get_field_info(self, var_list, model_path, data_type):
@@ -212,7 +213,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return ','.join(field_list)
 
 
-    def find_model_members(self, lead, init_time, level='0'):
+    def find_model_members(self, time_info, level='0'):
         """! Finds the model member files to compare
               Args:
                 @param lead forecast lead value
@@ -225,8 +226,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # model_template is a list of 1 or more.
         ens_members_template = self.cg_dict['FCST_INPUT_TEMPLATE']
-        lead_check = lead
-        time_check = init_time
         time_offset = 0
         found = False
 
@@ -234,9 +233,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # This is for all the members defined in the template.
         for ens_member_template in ens_members_template:
             model_ss = sts.StringSub(self.logger, ens_member_template,
-                                     init=time_check,
-                                     lead=str(lead_check),
-                                     level=str(level.split('-')[0]).zfill(2))
+                                     level=(int(level.split('-')[0]) * 3600),
+                                     **time_info)
             member_file = model_ss.doStringSub()
             member_path = os.path.join(model_dir, member_file)
             member_path = util.preprocess_file(member_path,
@@ -284,11 +282,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                               str(len(ens_members_path)))
 
 #        list_filename = current_task.getValidTime() + '_ensemble_.txt'
-        list_filename = init_time + '_' + str(lead) + '_ensemble.txt'
+        list_filename = time_info['init_fmt'] + '_' + \
+          str(time_info['lead_hours']) + '_ensemble.txt'
         return self.write_list_file(list_filename, ens_members_path)
 
 
-    def process_fields(self, ti, v, fcst_field, obs_field, ens_field):
+    def process_fields(self, time_info, v, fcst_field, obs_field, ens_field):
         """! Set and print environment variables, then build/run MET command
               Args:
                 @param ti task_info object with time information
@@ -300,7 +299,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.set_param_file(self.cg_dict['CONFIG_FILE'])
 
         # set up output dir with time info
-        self.create_and_set_output_dir(ti)
+        self.create_and_set_output_dir(time_info)
 
         # list of fields to print to log
         print_list = ["MODEL", "GRID_VX", "OBTYPE",
@@ -325,7 +324,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_env_var("GRID_VX", self.cg_dict['GRID_VX'])
         self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
         self.add_env_var("INPUT_BASE", self.cg_dict['INPUT_BASE'])
-        self.add_env_var("FCST_LEAD", str(ti.lead).zfill(3))
+        self.add_env_var("FCST_LEAD", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("OBS_WINDOW_BEGIN", str(self.cg_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var("OBS_WINDOW_END", str(self.cg_dict['OBS_WINDOW_END']))
 

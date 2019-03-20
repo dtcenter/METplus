@@ -83,15 +83,15 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         self.c_dict['FCST_OUTPUT_DIR'] = util.getdir(self.p, 'FCST_REGRID_DATA_PLANE_OUTPUT_DIR', '', self.logger)
         self.c_dict['OBS_OUTPUT_DIR'] = util.getdir(self.p, 'OBS_REGRID_DATA_PLANE_OUTPUT_DIR', '', self.logger)
 
-    def run_at_time_once(self, task_info, var_info, dtype):
+    def run_at_time_once(self, time_info, var_info, dtype):
         """! Runs the MET application for a given time and forecast lead combination
               Args:
-                @param ti task_info object containing timing information
+                @param ti time_info object containing timing information
                 @param v var_info object containing variable information
         """
-        init_time = task_info.getInitTime()
-        valid_time = task_info.getValidTime()
-        lead = task_info.getLeadTime()
+        init_time = time_info['init_fmt']
+        valid_time = time_info['valid_fmt']
+        lead = time_info['lead_hours']
 
         if dtype == "FCST":
             compare_var = var_info.fcst_name
@@ -130,10 +130,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         pcpSts = sts.StringSub(self.logger,
                                input_template,
-                               init=init_time,
-                               valid=valid_time,
-                               lead=str(lead),
-                               level=str(f_level).zfill(2))
+                               level=(int(f_level)*3600),
+                               **time_info)
         infile = os.path.join(input_dir, pcpSts.doStringSub())
 
         infile = util.preprocess_file(infile,
@@ -149,8 +147,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         self.add_input_file(self.p.getstr('config', 'VERIFICATION_GRID'))
         regridSts = sts.StringSub(self.logger,
                                   output_template,
-                                  valid=valid_time,
-                                  level=str(f_level).zfill(2))
+                                  level=(int(f_level)*3600),
+                                  **time_info)
         outfile = regridSts.doStringSub()
         self.set_output_path(os.path.join(output_dir, outfile))
 

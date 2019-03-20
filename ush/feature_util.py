@@ -5,6 +5,7 @@ from __future__ import print_function, division, unicode_literals
 import os
 import sys
 import re
+import datetime
 import met_util as util
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from string_template_substitution import StringSub
@@ -137,6 +138,9 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
             valid_ymdh_split = valid_ymdh.split("_")
             valid_yyyymmddhh = "".join(valid_ymdh_split)
 
+            init_dt = datetime.datetime.strptime(init_yyyymmddhh, '%Y%m%d%H')
+            valid_dt = datetime.datetime.strptime(valid_yyyymmddhh, '%Y%m%d%H')
+            lead_seconds = int(fcst_hr * 3600)
             # Create output filenames for regridding
             # wgrib2 used to regrid.
             # Create the filename for the regridded file, which is a
@@ -144,12 +148,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
             fcst_sts = \
                 StringSub(logger, config.getraw('filename_templates',
                                                 'GFS_FCST_FILE_TMPL'),
-                          init=init_yyyymmddhh, lead=lead_str)
+                          init=init_dt, lead=lead_seconds)
 
             anly_sts = \
                 StringSub(logger, config.getraw('filename_templates',
                                                 'GFS_ANLY_FILE_TMPL'),
-                          valid=valid_yyyymmddhh, lead=lead_str)
+                          valid=valid_dt, lead=lead_seconds)
 
             fcst_file = fcst_sts.doStringSub()
             fcst_filename = os.path.join(fcst_dir, fcst_file)

@@ -21,7 +21,6 @@ import met_util as util
 import re
 import csv
 import subprocess
-import string_template_substitution as sts
 from task_info import TaskInfo
 from command_builder import CommandBuilder
 

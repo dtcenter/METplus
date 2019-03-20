@@ -11,6 +11,7 @@ from command_builder import CommandBuilder
 import config_metplus
 import met_util as util
 import produtil.setup
+import datetime
 from string_template_substitution import StringSub
 
 """
@@ -816,8 +817,19 @@ class PB2NCWrapper(CommandBuilder):
             offset = prepbufr_file_info.offset
             date = prepbufr_file_info.date
 
+            init_dt = ''
+            if len(date) == 8:
+                init_dt = datetime.datetime.strptime(date, '%Y%m%d')
+            elif len(date) == 10:
+                init_dt = datetime.datetime.strptime(date, '%Y%m%d%H')
+
+            cycle_seconds = int(cycle) * 3600
+            offset_seconds = int(offset) * 3600
+
             string_sub = StringSub(self.logger, self.pb_dict['NC_FILE_TMPL'],
-                                   init=str(date), cycle=cycle, offset=offset)
+                                   init=init_dt, cycle=cycle_seconds,
+                                   offset=offset_seconds)
+#                                   init=str(date), cycle=cycle, offset=offset)
             nc_output_filename = string_sub.doStringSub()
             nc_output_filepath = os.path.join(pb2nc_output_dir,
                                               nc_output_filename)

@@ -595,7 +595,7 @@ class TcPairsWrapper(CommandBuilder):
         # replace the key-values in the filename template with its corresponding regex.
         region = 'yz'
         cyclone = '00'
-        date = '20170704'
+        date = datetime.datetime.strptime('20170704', '%Y%m%d')
         misc = 'misc_stuff'
 
         # The string template substitution object will be initialized based on what

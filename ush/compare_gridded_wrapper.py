@@ -24,7 +24,7 @@ import subprocess
 import datetime
 import glob
 from command_builder import CommandBuilder
-from task_info import TaskInfo
+import time_util
 import string_template_substitution as sts
 
 '''!@namespace CompareGriddedWrapper
@@ -44,69 +44,67 @@ that reformat gridded data
         self.cg_dict = self.create_cg_dict()
 
 
-    def run_at_time(self, init_time, valid_time):
+#    def run_at_time(self, init_time, valid_time):
+    def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
               over the list of forecast leads and runs the application for each.
               Args:
                 @param init_time initialization time to run. -1 if not set
                 @param valid_time valid time to run. -1 if not set
-        """        
-        task_info = TaskInfo()
-        task_info.init_time = init_time
-        task_info.valid_time = valid_time        
+        """
         var_list = util.parse_var_list(self.p)
 
         # loop of forecast leads and process each
         lead_seq = self.cg_dict['LEAD_SEQ']
         for lead in lead_seq:
-            task_info.lead = lead
+            input_dict['lead_hours'] = lead
 
             self.logger.info("Processing forecast lead {}".format(lead))
 
             # set current lead time config and environment variables
             self.p.set('config', 'CURRENT_LEAD_TIME', lead)
             os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
-
+            time_info = time_util.ti_calculate(input_dict)
             # Run for given init/valid time and forecast lead combination
-            self.run_at_time_once(task_info, var_list)
+            self.run_at_time_once(time_info, var_list)
 
 
-    def run_at_time_once(self, task_info, var_list):
+    def run_at_time_once(self, time_info, var_list):
         """! Build MET command for a given init/valid time and forecast lead combination
               Args:
-                @param task_info task_info object containing timing information
+                @param time_info dictionary containing timing information
                 @param var_list var_info object list containing variable information
         """
         if self.cg_dict['ONCE_PER_FIELD']:
             # loop over all fields and levels (and probability thresholds) and
             # call the app once for each
             for var_info in var_list:
-                self.run_at_time_one_field(task_info, var_info)
+                self.run_at_time_one_field(time_info, var_info)
         else:
             # loop over all variables and all them to the field list, then call the app once
-            self.run_at_time_all_fields(task_info, var_list)
+            self.run_at_time_all_fields(time_info, var_list)
 
 
-    def run_at_time_one_field(self, ti, v):
+    def run_at_time_one_field(self, time_info, v):
         """! Build MET command for a single field for a given
              init/valid time and forecast lead combination
               Args:
-                @param ti task_info object containing timing information
+                @param ti dictionary containing timing information
                 @param v var_info object containing variable information
         """
         # get model to compare
-        model_path = self.find_model(ti, v)
+        model_path = self.find_model(time_info, v)
         if model_path == None:
             self.logger.error("Could not find file in " + self.cg_dict['FCST_INPUT_DIR'] +\
-                              " for init time " + ti.getInitTime() + " f" + str(ti.lead))
+                              " for init time " + time_info['init_fmt'] + " f" + str(time_info['lead_hours']))
             return
         self.add_input_file(model_path)
 
         # get observation to compare
-        obs_path = self.find_obs(ti, v)
+        obs_path = self.find_obs(time_info, v)
         if obs_path == None:
             self.logger.error("Could not find file in " + self.cg_dict['OBS_INPUT_DIR'] +\
-                              " for valid time " + ti.getValidTime())
+                              " for valid time " + time_info['valid_fmt'])
             return
         self.add_input_file(obs_path)
 
@@ -116,29 +114,29 @@ that reformat gridded data
         obs_field = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra,
                                             obs_path, 'OBS')
 
-        self.process_fields(ti, v, fcst_field, obs_field)
+        self.process_fields(time_info, v, fcst_field, obs_field)
 
 
-    def run_at_time_all_fields(self, task_info, var_list):
+    def run_at_time_all_fields(self, time_info, var_list):
         """! Build MET command for all of the field/level combinations for a given init/valid time and
              forecast lead combination
               Args:
-                @param task_info task_info object containing timing information
+                @param time_info dictionary containing timing information
                 @param var_list list of var_infoo objects containing variable information
         """
         # get model from first var to compare
-        model_path = self.find_model(task_info, var_list[0])
+        model_path = self.find_model(time_info, var_list[0])
         if model_path == None:
             self.logger.error("Could not find file in " + self.cg_dict['FCST_INPUT_DIR'] +\
-                              " for init time " + task_info.getInitTime() + " f" + str(task_info.lead))
+                              " for init time " + time_info['init_fmt'] + " f" + str(time_info['lead_hours']))
             return
         self.add_input_file(model_path)
 
         # get observation to from first var compare
-        obs_path = self.find_obs(task_info, var_list[0])
+        obs_path = self.find_obs(time_info, var_list[0])
         if obs_path == None:
             self.logger.error("Could not find file in " + self.cg_dict['OBS_INPUT_DIR'] +\
-                              " for valid time " + task_info.getValidTime())
+                              " for valid time " + time_info['valid_fmt'])
             return
         self.add_input_file(obs_path)
 
@@ -152,43 +150,44 @@ that reformat gridded data
         fcst_field = ','.join(fcst_field_list)
         obs_field = ','.join(obs_field_list)
 
-        self.process_fields(task_info, v, fcst_field, obs_field)
+        self.process_fields(time_info, v, fcst_field, obs_field)
 
 
-    def find_model(self, ti, v):
+    def find_model(self, time_info, v):
         """! Finds the model file to compare
               Args:
-                @param ti task_info object containing timing information
+                @param time_info dictionary containing timing information
                 @param v var_info object containing variable information
                 @rtype string
                 @return Returns the path to an model file
         """
-        return self.find_data(ti, v, "FCST")
+        return self.find_data(time_info, v, "FCST")
 
-    def find_obs(self, ti, v):
+
+    def find_obs(self, time_info, v):
         """! Finds the observation file to compare
               Args:
-                @param ti task_info object containing timing information
+                @param time_info dictionary containing timing information
                 @param v var_info object containing variable information
                 @rtype string
                 @return Returns the path to an observation file
         """
-        return self.find_data(ti, v, "OBS")
+        return self.find_data(time_info, v, "OBS")
 
 
-    def find_data(self, ti, v, data_type):
+    def find_data(self, time_info, v, data_type):
         """! Finds the data file to compare
               Args:
-                @param ti task_info object containing timing information
+                @param time_info dictionary containing timing information
                 @param v var_info object containing variable information
                 @param data_type type of data to find (FCST or OBS)
                 @rtype string
                 @return Returns the path to an observation file
         """
         # get time info
-        lead = ti.getLeadTime()
-        valid_time = ti.getValidTime()
-        init_time = ti.getInitTime()
+        lead = time_info['lead_hours']
+        valid_time = time_info['valid_fmt']
+        init_time = time_info['init_fmt']
 
         # set level based on input data type
         if data_type.startswith("OBS"):
@@ -211,10 +210,8 @@ that reformat gridded data
             # perform string substitution
             dSts = sts.StringSub(self.logger,
                                    template,
-                                   valid=valid_time,
-                                   init=init_time,
-                                   lead=str(lead).zfill(2),
-                                   level=str(level.split('-')[0]).zfill(2))
+                                   level=(int(level.split('-')[0]) * 3600),
+                                   **time_info)
             filename = dSts.doStringSub()
 
             # build full path with data directory and filename
@@ -360,10 +357,10 @@ that reformat gridded data
         return field_list
 
 
-    def process_fields(self, ti, v, fcst_field, obs_field):
+    def process_fields(self, time_info, v, fcst_field, obs_field):
         """! Set and print environment variables, then build/run MET command
               Args:
-                @param ti task_info object with time information
+                @param time_info dictionary with time information
                 @param v var_info object with field information
                 @param fcst_field field information formatted for MET config file
                 @param obs_field field information formatted for MET config file
@@ -372,7 +369,7 @@ that reformat gridded data
         self.set_param_file(self.cg_dict['CONFIG_FILE'])
 
         # set up output dir with time info
-        self.create_and_set_output_dir(ti)
+        self.create_and_set_output_dir(time_info)
 
         # list of fields to print to log
         print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
@@ -390,8 +387,8 @@ that reformat gridded data
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
         self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
-        self.add_env_var("MET_VALID_HHMM", ti.getValidTime()[4:8])
-        self.add_env_var("FCST_TIME", str(ti.lead).zfill(3))
+        self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
+        self.add_env_var("FCST_TIME", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("INPUT_BASE", self.cg_dict["INPUT_BASE"])
 
         # send environment variables to logger
@@ -415,19 +412,19 @@ that reformat gridded data
         self.clear()
 
 
-    def create_and_set_output_dir(self, ti):
+    def create_and_set_output_dir(self, time_info):
         """! Builds the full output dir path with valid or init time
               Creates output directory if it doesn't already exist
               Args:
-                @param ti task_info object with time information
+                @param time_info dictionary with time information
         """
         base_dir = self.cg_dict['OUTPUT_DIR']
         if self.cg_dict['LOOP_BY_INIT']:
             out_dir = os.path.join(base_dir,
-                                   ti.getInitTime(), self.app_name)
+                                   time_info['init_fmt'], self.app_name)
         else:
             out_dir = os.path.join(base_dir,
-                                   ti.getValidTime(), self.app_name)
+                                   time_info['valid_fmt'], self.app_name)
 
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)

@@ -11,13 +11,15 @@ from collections import OrderedDict
 import itertools
 import copy
 import pdb
+import datetime
 
 import config_metplus
 import met_util as util
 import grid_to_obs_util as g2o_util
 import produtil.setup
 from command_builder import CommandBuilder
-from string_template_substitution import StringSub
+from string_template_substitution_new import StringSub
+
 
 """
 Program Name: point_stat_wrapper.py
@@ -1027,12 +1029,12 @@ class PointStatWrapper(CommandBuilder):
         # object will be used to
         # replace the key-values in the filename template with its
         #  corresponding regex.
-        offset = '00'
-        cycle = '00'
-        lead = '00'
+        offset = 0
+#        cycle = 0
+        lead = 0
         # support either init or valid time in the filename
-        init = '20170704'
-        valid = '2017070412'
+        init = datetime.datetime.strptime('2017070400', '%Y%m%d%H')
+        valid = datetime.datetime.strptime('2017070412', '%Y%m%d%H')
 
         # The string template substitution object will be initialized
         # based on the combination of the keywords have been specified in the
@@ -1080,7 +1082,7 @@ class PointStatWrapper(CommandBuilder):
              re.finditer(r".*\{valid\?fmt=(.*?)\}", tmpl)]
             keyword_index['valid'] = m.start(1)
         if cycle_match:
-            kwargs['cycle'] = cycle
+            kwargs['cycle'] = init #cycle
             [(m.start(), m.end()) for m in
              re.finditer(r".*\{cycle\?fmt=(.*?)\}", tmpl)]
             keyword_index['cycle'] = m.start(1)

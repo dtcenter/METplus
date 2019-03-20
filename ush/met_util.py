@@ -33,6 +33,15 @@ import config_metplus
  @brief Provides  Utility functions for METplus.
 """
 
+
+def get_time_obj(t, fmt, clock_time, logger=None):
+    sts = StringSub(logger, t,
+                    now=clock_time,
+                    today=clock_time.strftime('%Y%m%d'))
+    time_str = sts.doStringSub()
+    return datetime.datetime.strptime(time_str, fmt)
+
+
 def get_version_number():
     # read version file and return value
     version_file_path = os.path.join(dirname(dirname(realpath(__file__))),
@@ -1735,13 +1744,12 @@ def add_common_items_to_dictionary(p, dictionary):
     dictionary['EGREP_EXE'] = getexe(p, 'EGREP_EXE')
 
 
-def template_to_regex(template, init_time, valid_time, logger):
+def template_to_regex(template, time_info, logger):
     in_template = re.sub(r'\.', '\\.', template)
     in_template = re.sub(r'{lead.*?}', '.*', in_template)
     sts = StringSub(logger,
                     in_template,
-                    init=init_time,
-                    valid=valid_time)
+                    **time_info)
     return sts.doStringSub()
 
 if __name__ == "__main__":

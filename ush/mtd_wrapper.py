@@ -16,7 +16,7 @@ from __future__ import (print_function, division)
 
 import os
 import met_util as util
-from task_info import TaskInfo
+import time_util
 from mode_wrapper import ModeWrapper
 
 class MTDWrapper(ModeWrapper):
@@ -113,7 +113,7 @@ class MTDWrapper(ModeWrapper):
           self.p.getint('config', 'WINDOW_RANGE_END', 3600)
 
 
-    def run_at_time(self, init_time, valid_time):
+    def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
               over the list of forecast leads and runs the application for each.
               Overrides run_at_time in compare_gridded_wrapper.py
@@ -129,7 +129,7 @@ class MTDWrapper(ModeWrapper):
         lead_seq = self.cg_dict['LEAD_SEQ']
         for v in var_list:
             if self.cg_dict['SINGLE_RUN']:
-                self.run_single_mode(init_time, valid_time, v)
+                self.run_single_mode(input_dict, v)
                 continue
 
             model_list = []
@@ -137,11 +137,9 @@ class MTDWrapper(ModeWrapper):
             # find files for each forecast lead time
             tasks = []
             for lead in lead_seq:
-                task = TaskInfo()
-                task.init_time = init_time
-                task.valid_time = valid_time
-                task.lead = lead
-                tasks.append(task)
+                input_dict['lead_hours'] = lead
+                time_info = time_util.ti_calculate(input_dict)
+                tasks.append(time_info)
 
             # TODO: implement mode to keep fcst lead constant and increment init/valid time
             # loop from valid time to valid time + offset by step, set lead and find files
@@ -151,15 +149,15 @@ class MTDWrapper(ModeWrapper):
                 obs_file = self.find_obs(current_task, v)
                 if model_file is None and obs_file is None:
                     self.logger.warning('Obs and fcst files were not found for init {} and lead {}'.
-                                        format(current_task.getInitTime(), current_task.lead))
+                                        format(current_task['init_fmt'], current_task['lead_hours']))
                     continue
                 if model_file is None:
                     self.logger.warning('Forecast file was not found for init {} and lead {}'.
-                                        format(current_task.getInitTime(), current_task.lead))
+                                        format(current_task['init_fmt'], current_task['lead_hours']))
                     continue
                 if obs_file is None:
                     self.logger.warning('Observation file was not found for init {} and lead {}'.
-                                        format(current_task.getInitTime(), current_task.lead))
+                                        format(current_task['init_fmt'], current_task['lead_hours']))
                     continue
                 model_list.append(model_file)
                 obs_list.append(obs_file)
@@ -168,9 +166,10 @@ class MTDWrapper(ModeWrapper):
                 return
 
             # write ascii file with list of files to process
-            current_task.lead = 0
-            model_outfile = current_task.getValidTime() + '_mtd_fcst_' + v.fcst_name + '.txt'
-            obs_outfile = current_task.getValidTime() + '_mtd_obs_' + v.obs_name + '.txt'
+            input_dict['lead_hours'] = 0
+            time_info = time_util.ti_calculate(input_dict)
+            model_outfile = time_info['valid_fmt'] + '_mtd_fcst_' + v.fcst_name + '.txt'
+            obs_outfile = time_info['valid_fmt'] + '_mtd_obs_' + v.obs_name + '.txt'
             model_list_path = self.write_list_file(model_outfile, model_list)
             obs_list_path = self.write_list_file(obs_outfile, obs_list)
 
@@ -180,7 +179,7 @@ class MTDWrapper(ModeWrapper):
             self.process_fields_one_thresh(current_task, v, **arg_dict)
 
 
-    def run_single_mode(self, init_time, valid_time, v):
+    def run_single_mode(self, input_dict, v):
         single_list = []
 
         if self.cg_dict['SINGLE_DATA_SRC'] == 'OBS':
@@ -193,17 +192,14 @@ class MTDWrapper(ModeWrapper):
             s_level = v.fcst_level
 
         lead_seq = self.cg_dict['LEAD_SEQ']
-        current_task = TaskInfo()
         for lead in lead_seq:
-            current_task.clear()
-            current_task.init_time = init_time
-            current_task.valid_time = valid_time
-            current_task.lead = lead
+            input_dict['lead'] = lead
+            current_task = time_util.ti_calculate(input_dict)
 
             single_file = find_method(current_task, v)
             if single_file is None:
                 self.logger.warning('Single file was not found for init {} and lead {}'.
-                                    format(current_task.getInitTime(), current_task.lead))
+                                    format(current_task['init_fmt'], current_task['lead_hours']))
                 continue
             single_list.append(single_file)
 
@@ -212,7 +208,7 @@ class MTDWrapper(ModeWrapper):
 
         # write ascii file with list of files to process
         current_task.lead = 0
-        single_outfile = current_task.getValidTime() + '_mtd_single_' + s_name + '.txt'
+        single_outfile = current_task['valid_fmt'] + '_mtd_single_' + s_name + '.txt'
         single_list_path = self.write_list_file(single_outfile, single_list)
 
         arg_dict = {}
@@ -226,10 +222,10 @@ class MTDWrapper(ModeWrapper):
         self.process_fields_one_thresh(current_task, v, **arg_dict)
 
 
-    def process_fields_one_thresh(self, ti, v, model_path, obs_path):
+    def process_fields_one_thresh(self, time_info, v, model_path, obs_path):
         """! For each threshold, set up environment variables and run mode
               Args:
-                @param ti task_info object containing timing information
+                @param time_info dictionary containing timing information
                 @param v var_info object containing variable information
                 @param model_path forecast file list path
                 @param obs_path observation file list path
@@ -243,7 +239,7 @@ class MTDWrapper(ModeWrapper):
 
         for fthresh, othresh in zip(fcst_thresh_list, obs_thresh_list):
             self.set_param_file(self.cg_dict['CONFIG_FILE'])
-            self.create_and_set_output_dir(ti)
+            self.create_and_set_output_dir(time_info)
 
             print_list = [ 'MIN_VOLUME', 'MODEL', 'FCST_VAR', 'OBTYPE',
                            'OBS_VAR', 'LEVEL', 'CONFIG_DIR',
@@ -257,7 +253,7 @@ class MTDWrapper(ModeWrapper):
             self.add_env_var("OBS_VAR", v.obs_name)
             self.add_env_var("LEVEL", util.split_level(v.fcst_level)[1])
             self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
-            self.add_env_var("MET_VALID_HHMM", ti.getValidTime()[4:8])
+            self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
 
             # single mode - set fcst file, field, etc.
             if self.cg_dict['SINGLE_RUN']:

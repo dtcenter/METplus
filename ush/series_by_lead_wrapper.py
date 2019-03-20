@@ -18,7 +18,6 @@ from command_builder import CommandBuilder
 import config_metplus
 from tc_stat_wrapper import TcStatWrapper
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
-from string_template_substitution import StringSub
 
 
 ## @namespace SeriesByLeadWrapper

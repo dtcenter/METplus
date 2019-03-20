@@ -19,9 +19,8 @@ import re
 import csv
 import time
 import subprocess
-import datetime
+from datetime import datetime, timedelta
 import calendar
-import string_template_substitution as sts
 from command_runner import CommandRunner
 from abc import ABCMeta
 
@@ -275,22 +274,28 @@ class CommandBuilder:
         if time_interval < 60:
             self.logger.error("time_interval parameter must be greater than 60 seconds")
             exit(1)
-        
-        loop_time = calendar.timegm(time.strptime(start_t, time_format))
-        end_time = calendar.timegm(time.strptime(end_t, time_format))
 
+        clock_time_obj = datetime.strptime(self.p.getstr('config', 'CLOCK_TIME'), '%Y%m%d%H%M%S')
+        loop_time = util.get_time_obj(start_t, time_format,
+                                      clock_time_obj, logger)
+        end_time = util.get_time_obj(end_t, time_format,
+                                     clock_time_obj, logger)
         while loop_time <= end_time:
-            run_time = time.strftime("%Y%m%d%H%M", time.gmtime(loop_time))
+            run_time = loop_time.strftime("%Y%m%d%H%M")
+            input_dict = {}
+            input_dict['now'] = clock_time_obj
             # Set valid time to -1 if using init and vice versa
             if use_init:
                 self.p.set('config', 'CURRENT_INIT_TIME', run_time)
                 os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
-                self.run_at_time(run_time, -1)
+                input_dict['init'] = loop_time
             else:
                 self.p.set('config', 'CURRENT_VALID_TIME', run_time)
                 os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
-                self.run_at_time(-1, run_time)
-            loop_time += time_interval
+                input_dict['valid'] = loop_time
+
+            self.run_at_time(input_dict)
+            loop_time += timedelta(seconds=time_interval)
 
 
 
