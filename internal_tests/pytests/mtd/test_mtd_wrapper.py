@@ -4,6 +4,7 @@ import os
 import sys
 import re
 import logging
+import datetime
 from collections import namedtuple
 import produtil
 import pytest
@@ -84,9 +85,9 @@ def test_mtd_by_init_all_found():
     mw.cg_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
     mw.cg_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
     mw.cg_dict['LEAD_SEQ'] = [1, 2, 3]
-    init_time = "201705100300"
+    input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
-    mw.run_at_time(init_time, -1)
+    mw.run_at_time(input_dict)
     fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
     obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
@@ -113,9 +114,9 @@ def test_mtd_by_valid_all_found():
     mw.cg_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
     mw.cg_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
     mw.cg_dict['LEAD_SEQ'] = [1, 2, 3]
-    valid_time = "201705100300"
+    input_dict = {'valid' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
-    mw.run_at_time(-1, valid_time)
+    mw.run_at_time(input_dict)
     fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
     obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
@@ -142,9 +143,9 @@ def test_mtd_by_init_miss_fcst():
     mw.cg_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
     mw.cg_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
     mw.cg_dict['LEAD_SEQ'] = [3, 6, 9, 12]
-    init_time = "201705100300"
+    input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
-    mw.run_at_time(init_time, -1)
+    mw.run_at_time(input_dict)
     fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
     obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
@@ -171,9 +172,9 @@ def test_mtd_by_init_miss_both():
     mw.cg_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
     mw.cg_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
     mw.cg_dict['LEAD_SEQ'] = [6, 12, 18]
-    init_time = "201705100300"
+    input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
-    mw.run_at_time(init_time, -1)
+    mw.run_at_time(input_dict)
     fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
     obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
@@ -198,9 +199,9 @@ def test_mtd_single():
     mw.cg_dict['FCST_INPUT_DIR'] = fcst_dir
     mw.cg_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
     mw.cg_dict['LEAD_SEQ'] = [1, 2, 3]
-    init_time = "201705100300"
+    input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
-    mw.run_at_time(init_time, -1)
+    mw.run_at_time(input_dict)
     single_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_single_APCP.txt')
     with open(single_list_file) as f:
         single_list = f.readlines()
