@@ -191,7 +191,7 @@ that reformat gridded data
         init_time = ti.getInitTime()
 
         # set level based on input data type
-        if data_type == "OBS":
+        if data_type.startswith("OBS"):
             v_level = v.obs_level
         else:
             v_level = v.fcst_level
@@ -316,7 +316,8 @@ that reformat gridded data
                     prob_cat_thresh = self.cg_dict[d_type+'_PROB_THRESH']
                     # TODO: replace with better check for data type to remove path
                     # untested, need NetCDF prob fcst data
-                    if path[-3:] == ".nc":
+                    if self.cg_dict[d_type+'_INPUT_DATATYPE'] == 'NETCDF':
+#                    if path[-3:] == ".nc":
                         field = "{ name=\"" + v_name + "\"; level=\"" + \
                           level+"\"; prob=TRUE; cat_thresh=["+prob_cat_thresh+"];}"
                     else:
@@ -427,6 +428,7 @@ that reformat gridded data
         else:
             out_dir = os.path.join(base_dir,
                                    ti.getValidTime(), self.app_name)
+
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
         self.set_output_dir(out_dir)

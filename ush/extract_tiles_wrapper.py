@@ -131,10 +131,6 @@ class ExtractTilesWrapper(CommandBuilder):
                               .format(self.tc_pairs_dir))
             sys.exit(1)
 
-        # Process TC pairs by initialization time
-        # Begin processing for initialization time, cur_init
-        year_month = util.extract_year_month(cur_init, self.logger)
-
         # Create the name of the filter file we need to find.  If
         # the file doesn't exist, then run TC_STAT
         filter_filename = "filter_" + cur_init + ".tcst"
@@ -147,13 +143,14 @@ class ExtractTilesWrapper(CommandBuilder):
         else:
             # Create the storm track by applying the
             # filter options defined in the config/param file.
-            tile_dir_parts = [self.tc_pairs_dir, "/", year_month]
-            tile_dir = ''.join(tile_dir_parts)
             # Use TcStatWrapper to build up the tc_stat command and invoke
             # the MET tool tc_stat to perform the filtering.
+            tiles_list = str(util.get_files(self.tc_pairs_dir, ".*tcst", self.logger))
+            tiles_list_str = tiles_list.replace(",", " ")
+
             tcs = TcStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(self.filtered_out_dir, cur_init,
-                              tile_dir, self.addl_filter_opts)
+                              tiles_list_str, self.addl_filter_opts)
 
             # Remove any empty files and directories that can occur
             # from filtering.

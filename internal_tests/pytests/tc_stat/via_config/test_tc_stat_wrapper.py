@@ -44,6 +44,7 @@ def tc_stat_wrapper():
     return TcStatWrapper(conf, None)
 
 
+
 @pytest.fixture
 def metplus_config():
     """! Generate the METplus config object"""
@@ -67,10 +68,10 @@ def metplus_config():
 
 @pytest.mark.parametrize(
     'key, value', [
-        ('APP_PATH', '/usr/local/met-6.1/bin/tc_stat'),
+        ('APP_PATH', '/usr/local/met-8.0/bin/tc_stat'),
         ('APP_NAME', 'tc_stat'),
-        ('INIT_BEG', '20141213'),
-        ('INIT_END', '20141220'),
+        ('INIT_BEG', '20170705'),
+        ('INIT_END', '20170901'),
         ('INIT_HOUR', ['00'])
     ]
 )
@@ -98,17 +99,17 @@ def test_config_lists():
     assert tcsw.config_lists_ok() is False
 
 
-def test_filter_by_si_basin():
+def test_filter_by_al_basin():
     """! Test that for a given time window of SBU GFS data, the expected number
-         of results is returned when additional filtering by basin=["SI"].
+         of results is returned when additional filtering by basin=["AL"].
     """
 
     tcsw = tc_stat_wrapper()
-    tcsw.tc_stat_dict['INIT_BEG'] = "20141213"
-    tcsw.tc_stat_dict['INIT_END'] = "20141220"
-    tcsw.tc_stat_dict['BASIN'] = ["SI"]
-    # expect only 6 lines of output (including the header) for SBU data
-    expected_num_lines = 6
+    tcsw.tc_stat_dict['INIT_BEG'] = "20170705"
+    tcsw.tc_stat_dict['INIT_END'] = "20170901"
+    tcsw.tc_stat_dict['BASIN'] = ["AL"]
+    # expect only 13 lines of output (including the header) for SBU data
+    expected_num_lines = 13
     tcsw.run_all_times()
     output_file = \
         tcsw.tc_stat_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
@@ -125,12 +126,12 @@ def test_filter_by_cyclone():
     """
 
     tcsw = tc_stat_wrapper()
-    tcsw.tc_stat_dict['INIT_BEG'] = "20141213"
-    tcsw.tc_stat_dict['INIT_END'] = "20141220"
-    tcsw.tc_stat_dict['CYCLONE'] = ["120126", "120099", "1203S"]
+    tcsw.tc_stat_dict['INIT_BEG'] = "20170705"
+    tcsw.tc_stat_dict['INIT_END'] = "20170901"
+    tcsw.tc_stat_dict['CYCLONE'] = ["10"]
 
-    # expect only 6 lines of output (including the header) for SBU data
-    expected_num_lines = 23
+    # expect only 13 lines of output (including the header) for SBU data
+    expected_num_lines = 13
     tcsw.run_all_times()
     output_file = \
         tcsw.tc_stat_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
@@ -147,11 +148,11 @@ def test_filter_by_storm_name():
     """
 
     tcsw = tc_stat_wrapper()
-    tcsw.tc_stat_dict['INIT_BEG'] = "20141213"
-    tcsw.tc_stat_dict['INIT_END'] = "20141220"
-    tcsw.tc_stat_dict['STORM_NAME'] = ["-183", "-143", "-100", "-213", "141"]
-    # expect only 6 lines of output (including the header) for SBU data
-    expected_num_lines = 30
+    tcsw.tc_stat_dict['INIT_BEG'] = "20170705"
+    tcsw.tc_stat_dict['INIT_END'] = "20170901"
+    tcsw.tc_stat_dict['STORM_NAME'] = ["TEN"]
+    # expect only 13 lines of output (including the header) for SBU data
+    expected_num_lines = 13
     tcsw.run_all_times()
     output_file = \
         tcsw.tc_stat_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
@@ -170,36 +171,9 @@ def test_filter_by_storm_id():
     """
 
     tcsw = tc_stat_wrapper()
-    tcsw.tc_stat_dict['INIT_BEG'] = "20141213"
-    tcsw.tc_stat_dict['INIT_END'] = "20141220"
-    tcsw.tc_stat_dict['STORM_ID'] = ["SI1203S2014"]
-    # expect only 6 lines of output (including the header) for SBU data
-    expected_num_lines = 23
-    tcsw.run_all_times()
-    output_file = \
-        tcsw.tc_stat_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
-    with open(output_file, 'r') as out_file:
-        lines = len(out_file.readlines())
-        print("Num lines: ", str(lines))
-    # Note that the number of lines does NOT match what is expected.  For
-    # this data, the stratify by storm_id produces 0 results.  This may
-    # be due to the long cyclone name???
-    assert lines != expected_num_lines
-
-
-def test_filter_by_basin_cyclone():
-    """! Test that for a given time window of SBU GFS data, the expected number
-         of results is returned when additional filtering by basin and cyclone
-         to get the same results as if filtering by storm_id (which doesn't
-         work, perhaps because the storm_id is greater than 2-digits?).
-    """
-
-    tcsw = tc_stat_wrapper()
-    tcsw.tc_stat_dict['INIT_BEG'] = "20141213"
-    tcsw.tc_stat_dict['INIT_END'] = "20141220"
-    tcsw.tc_stat_dict['CYCLONE'] = ["120126"]
-    tcsw.tc_stat_dict['BASIN'] = ["ML"]
-
+    tcsw.tc_stat_dict['INIT_BEG'] = "20170105"
+    tcsw.tc_stat_dict['INIT_END'] = "20170901"
+    tcsw.tc_stat_dict['STORM_ID'] = ["AL102017"]
     # expect only 13 lines of output (including the header) for SBU data
     expected_num_lines = 13
     tcsw.run_all_times()
@@ -212,53 +186,31 @@ def test_filter_by_basin_cyclone():
     assert lines == expected_num_lines
 
 
-def test_run_via_command_line():
-    """! Test that running via command line produces the expected results for
-         a specific time window for the SBU GFS data.
+def test_filter_by_basin_cyclone():
+    """! Test that for a given time window of SBU GFS data, the expected number
+         of results is returned when additional filtering by basin and cyclone
+         to get the same results as if filtering by storm_id (which doesn't
+         work, perhaps because the storm_id is greater than 2-digits?).
     """
-    tcsw = tc_stat_wrapper()
-    tcsw.by_config = False
-    tcsw.tc_stat_dict['INIT_BEG'] = '20141213'
-    tcsw.tc_stat_dict['INIT_END'] = '20141220'
-    output_base = tcsw.tc_stat_dict['OUTPUT_BASE']
 
-    tcsw.tc_stat_dict['CMD_LINE_JOB'] = '-job filter -dump_row ' + \
-                                        output_base + \
-                                        '/tc_stat/tc_stat_filter.out' + \
-                                        ' -basin SI -init_hour 00'
-    # For the SBU data within this time window, there should be 6 rows of
-    # data including one row for the header
-    expected_num_rows = 6
+    tcsw = tc_stat_wrapper()
+    tcsw.tc_stat_dict['INIT_BEG'] = "20170705"
+    tcsw.tc_stat_dict['INIT_END'] = "20170901"
+    tcsw.tc_stat_dict['CYCLONE'] = ["10"]
+    tcsw.tc_stat_dict['BASIN'] = ["AL"]
+
+    # expect only 13 lines of output (including the header) for SBU data
+    expected_num_lines = 13
     tcsw.run_all_times()
-    output_file = output_base + '/tc_stat/tc_stat_filter.out'
+    output_file = \
+        tcsw.tc_stat_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
     with open(output_file, 'r') as out_file:
         lines = len(out_file.readlines())
-        print('Number of lines: ', lines)
-    assert lines == expected_num_rows
+        print("Num lines: ", str(lines))
+
+    assert lines == expected_num_lines
+
+#
 
 
-def test_run_via_config_file():
-    """! Test that running via the config file on a specific time window
-         produces the expected number of results for SBU GFS data.
-    """
-    tcsw = tc_stat_wrapper()
-    tcsw.by_config = True
-    tcsw.tc_stat_dict['INIT_BEG'] = '20141213'
-    tcsw.tc_stat_dict['INIT_END'] = '20141220'
-    tcsw.tc_stat_dict['CYCLONE'] = ["120126"]
-    tcsw.tc_stat_dict['BASIN'] = ["ML"]
-    output_path = os.path.join(tcsw.tc_stat_dict['OUTPUT_BASE'],
-                               'by_conf/tc_stat')
-    tcsw.tc_stat_dict['OUTPUT_DIR'] = output_path
-    output_file = os.path.join(output_path, "tc_stat_summary.txt")
-    tcsw.tc_stat_dict['JOBS_LIST'] =\
-        "-job summary -line_type TCMPR -column 'ABS(AMAX_WIND-BMAX_WIND)'" +\
-        " -dump_row " + output_file
-    tcsw.run_all_times()
 
-    # Expect 13 lines of output (including the header)
-    num_expected_lines = 13
-    with open(output_file, 'r') as out_file:
-        lines = len(out_file.readlines())
-        print("Number of lines: ", lines)
-    assert lines == num_expected_lines

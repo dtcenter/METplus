@@ -123,10 +123,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         output_dir = self.c_dict[dtype+'_OUTPUT_DIR']
         output_template = self.c_dict[dtype+'_OUTPUT_TEMPLATE']
 
-        ymd_v = valid_time[0:8]
-        if not os.path.exists(os.path.join(output_dir, ymd_v)):
-            os.makedirs(os.path.join(output_dir, ymd_v))
-
         if not level.isdigit():
             f_level = '0'
         else:
@@ -147,6 +143,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if infile is not None:
             self.add_input_file(infile)
         else:
+            self.logger.error('Could not find input file in {} matching template {}'
+                              .format(input_dir, input_template))
             return False
         self.add_input_file(self.p.getstr('config', 'VERIFICATION_GRID'))
         regridSts = sts.StringSub(self.logger,
