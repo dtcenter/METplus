@@ -166,6 +166,7 @@ class StringSub:
             out_str += self.format_one_time_item(item, hours, 'H')
             out_str += self.format_one_time_item(item, minutes, 'M')
             out_str += self.format_one_time_item(item, seconds, 'S')
+            out_str += self.format_one_time_item(item, obj, 's')
 
         return out_str
 
