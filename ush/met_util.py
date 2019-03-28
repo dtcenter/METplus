@@ -1548,7 +1548,7 @@ def preprocess_file(filename, data_type, p, logger=None):
     stage_dir = p.getdir('STAGING_DIR')
     # TODO: move valid_extensions so it can be used by more than one function
     valid_extensions = [ '.gz', '.bz2', '.zip' ]
-    if os.path.exists(filename):
+    if os.path.isfile(filename):
         for ext in valid_extensions:
             if filename.endswith(ext):
                 return preprocess_file(filename[:-len(ext)], data_type, p, logger)
@@ -1558,7 +1558,7 @@ def preprocess_file(filename, data_type, p, logger=None):
                 stagefile = stage_dir + filename[:-3]+"nc"
             else:
                 stagefile = stage_dir + filename+".nc"
-            if os.path.exists(stagefile):
+            if os.path.isfile(stagefile):
                 return stagefile
             # if it does not exist, run GempakToCF and return staged nc file
             # Create staging area if it does not exist
@@ -1579,11 +1579,11 @@ def preprocess_file(filename, data_type, p, logger=None):
 
         return filename
 
-    if os.path.exists(filename[:-2]+'grd'):
+    if os.path.isfile(filename[:-2]+'grd'):
         return preprocess_file(filename[:-2]+'grd', data_type, p, logger)
     # if file exists in the staging area, return that path
     outpath = stage_dir + filename
-    if os.path.exists(outpath):
+    if os.path.isfile(outpath):
         return outpath
 
     # Create staging area if it does not exist
@@ -1591,7 +1591,7 @@ def preprocess_file(filename, data_type, p, logger=None):
     if not os.path.exists(outdir):
         os.makedirs(outdir, mode=0775)
 
-    if os.path.exists(filename+".gz"):
+    if os.path.isfile(filename+".gz"):
         if logger:
             logger.info("Decompressing gz file to {}".format(outpath))
         with gzip.open(filename+".gz", 'rb') as infile:
@@ -1600,7 +1600,7 @@ def preprocess_file(filename, data_type, p, logger=None):
                 infile.close()
                 outfile.close()
                 return outpath
-    elif os.path.exists(filename+".bz2"):
+    elif os.path.isfile(filename+".bz2"):
         if logger:
             logger.info("Decompressing bz2 file to {}".format(outpath))
         with open(filename+".bz2", 'rb') as infile:
@@ -1609,7 +1609,7 @@ def preprocess_file(filename, data_type, p, logger=None):
                 infile.close()
                 outfile.close()
                 return outpath
-    elif os.path.exists(filename+".zip"):
+    elif os.path.isfile(filename+".zip"):
         if logger:
             logger.info("Decompressing zip file to {}".format(outpath))
         with zipfile.ZipFile(filename+".zip") as z:
@@ -1688,7 +1688,7 @@ def getexe(p, exe_name, logger=None):
 
     exe_path = p.getexe(exe_name)
 
-    if not os.path.exists(exe_path):
+    if not os.path.isfile(exe_path):
         msg = 'Executable {} does not exist at {}'.format(exe_name, exe_path)
         if logger:
             logger.error(msg)
