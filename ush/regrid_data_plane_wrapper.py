@@ -102,19 +102,19 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         level_type, level = util.split_level(level)
 
-        if self.c_dict[dtype+'_INPUT_DIR'] is '':
+        if self.c_dict[dtype+'_INPUT_DIR'] == '':
             self.logger.error('Must set {}_REGRID_DATA_PLANE_INPUT_DIR in config file'.format(dtype))
             exit(1)
 
-        if self.c_dict[dtype+'_INPUT_TEMPLATE'] is None:
+        if self.c_dict[dtype+'_INPUT_TEMPLATE'] == '':
             self.logger.error('Must set {}_REGRID_DATA_PLANE_INPUT_TEMPLATE in config file'.format(dtype))
             exit(1)
 
-        if self.c_dict[dtype+'_OUTPUT_DIR'] is '':
+        if self.c_dict[dtype+'_OUTPUT_DIR'] == '':
             self.logger.error('Must set {}_REGRID_DATA_PLANE_OUTPUT_DIR in config file'.format(dtype))
             exit(1)
 
-        if self.c_dict[dtype+'_OUTPUT_TEMPLATE'] is None:
+        if self.c_dict[dtype+'_OUTPUT_TEMPLATE'] == '':
             self.logger.error('Must set {}_REGRID_DATA_PLANE_OUTPUT_TEMPLATE in config file'.format(dtype))
             exit(1)
 
