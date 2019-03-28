@@ -15,10 +15,11 @@ import datetime
 
 import config_metplus
 import met_util as util
+import time_util
 import grid_to_obs_util as g2o_util
 import produtil.setup
-from command_builder import CommandBuilder
-from string_template_substitution_new import StringSub
+from compare_gridded_wrapper import CompareGriddedWrapper
+from string_template_substitution import StringSub
 
 
 """
@@ -35,7 +36,7 @@ Condition codes: 0 for success, 1 for failure
 """
 
 
-class PointStatWrapper(CommandBuilder):
+class PointStatWrapper(CompareGriddedWrapper):
     """! Wrapper to the MET tool, Point-Stat."""
 
     def __init__(self, p, logger):
@@ -44,12 +45,12 @@ class PointStatWrapper(CommandBuilder):
             self.logger = util.get_logger(p)
 
         self.p = p
-        self.ps_dict = self.create_point_stat_dict()
+        self.c_dict = self.create_point_stat_dict()
 
         # For building the argument string via
         # CommandBuilder:
-        self.app_path = self.ps_dict['APP_PATH']
-        self.app_name = self.ps_dict['APP_NAME']
+        self.app_path = self.c_dict['APP_PATH']
+        self.app_name = self.c_dict['APP_NAME']
         self.app_name = os.path.basename(self.app_path)
         self.outdir = ""
         self.outfile = ""
@@ -66,7 +67,7 @@ class PointStatWrapper(CommandBuilder):
              Args:
                  None
              Returns:
-                 ps_dict   - A dictionary containing the key-value pairs set
+                 c_dict   - A dictionary containing the key-value pairs set
                              in the METplus configuration file.
         """
         # pylint:disable=protected-access
@@ -78,70 +79,194 @@ class PointStatWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
         self.logger.info(cur_function + '| ' +
                          "Creating point-stat dictionary ...")
-        ps_dict = dict()
+        c_dict = dict()
+        # TODO: These are all required by CompareGridded, put into function?
+        # pass in all caps MET app name, i.e. POINT_STAT or PB2NC
+        c_dict['LOOP_BY_INIT'] = self.p.getbool('config', 'LOOP_BY_INIT', True)
+        c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config',
+                                                            'LEAD_SEQ', '0'))
+        c_dict['OFFSETS'] = util.getlistint(self.p.getstr('config', 'POINT_STAT_OFFSETS', '0'))
+        c_dict['FCST_INPUT_TEMPLATE'] = \
+            util.getraw_interp(self.p, 'filename_templates',
+                               'FCST_POINT_STAT_INPUT_TEMPLATE')
+        c_dict['OBS_INPUT_TEMPLATE'] = \
+            util.getraw_interp(self.p, 'filename_templates',
+                               'OBS_POINT_STAT_INPUT_TEMPLATE')
 
+        c_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
+                                                         'OBS_EXACT_VALID_TIME',
+                                                         True)
+        c_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
+                                                          'FCST_EXACT_VALID_TIME',
+                                                          True)
+        c_dict['FCST_INPUT_DATATYPE'] = \
+          self.p.getstr('config', 'FCST_POINT_STAT_INPUT_DATATYPE', '')
+        c_dict['OBS_INPUT_DATATYPE'] = \
+          self.p.getstr('config', 'OBS_POINT_STAT_INPUT_DATATYPE', '')
+        c_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
+        c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
+
+
+x
         # directories
-        ps_dict['APP_PATH'] = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
+        c_dict['APP_PATH'] = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                            'bin/point_stat')
-        ps_dict['APP_NAME'] = os.path.basename(ps_dict['APP_PATH'])
-        ps_dict['TMP_DIR'] = self.p.getdir('TMP_DIR')
-        ps_dict['MET_INSTALL_DIR'] = self.p.getdir('MET_INSTALL_DIR')
-        ps_dict['PARM_BASE'] = self.p.getdir('PARM_BASE')
-        ps_dict['OUTPUT_BASE'] = self.p.getdir('OUTPUT_BASE')
-        ps_dict['FCST_INPUT_DIR'] = self.p.getdir('FCST_INPUT_DIR')
-        ps_dict['OBS_INPUT_DIR'] = self.p.getdir('OBS_INPUT_DIR')
-        ps_dict['POINT_STAT_OUTPUT_DIR'] = \
+        c_dict['APP_NAME'] = os.path.basename(c_dict['APP_PATH'])
+        c_dict['TMP_DIR'] = self.p.getdir('TMP_DIR')
+        c_dict['MET_INSTALL_DIR'] = self.p.getdir('MET_INSTALL_DIR')
+        c_dict['PARM_BASE'] = self.p.getdir('PARM_BASE')
+        c_dict['OUTPUT_BASE'] = self.p.getdir('OUTPUT_BASE')
+        c_dict['FCST_INPUT_DIR'] = self.p.getdir('FCST_POINT_STAT_INPUT_DIR')
+        c_dict['OBS_INPUT_DIR'] = self.p.getdir('OBS_POINT_STAT_INPUT_DIR')
+        c_dict['OUTPUT_DIR'] = \
+            self.p.getdir('POINT_STAT_OUTPUT_DIR')
+        c_dict['POINT_STAT_OUTPUT_DIR'] = \
             self.p.getdir('POINT_STAT_OUTPUT_DIR')
 
         # Configuration
-        ps_dict['TIME_METHOD'] = self.p.getstr('config', 'TIME_METHOD')
-        ps_dict['LOOP_METHOD'] = self.p.getstr('config', 'LOOP_METHOD')
-        ps_dict['MODEL_NAME'] = self.p.getstr('config', 'MODEL_NAME')
-        ps_dict['OBS_NAME'] = self.p.getstr('config', 'OBS_NAME')
-        ps_dict['POINT_STAT_CONFIG_FILE'] = \
+        c_dict['CONFIG_FILE'] = \
             self.p.getstr('config', 'POINT_STAT_CONFIG_FILE')
-        ps_dict['REGRID_TO_GRID'] = self.p.getstr('config', 'REGRID_TO_GRID')
-        ps_dict['POINT_STAT_GRID'] = self.p.getstr('config', 'POINT_STAT_GRID')
 
-        ps_dict['POINT_STAT_POLY'] = util.getlist(
-            self.p.getstr('config', 'POINT_STAT_POLY'))
-        ps_dict['POINT_STAT_STATION_ID'] = util.getlist(
-            self.p.getstr('config', 'POINT_STAT_STATION_ID'))
-        ps_dict['POINT_STAT_MESSAGE_TYPE'] = util.getlist(
-            self.p.getstr('config', 'POINT_STAT_MESSAGE_TYPE'))
+
+        c_dict['TIME_METHOD'] = self.p.getstr('config', 'TIME_METHOD')
+        c_dict['LOOP_METHOD'] = self.p.getstr('config', 'LOOP_METHOD')
+        c_dict['MODEL_NAME'] = self.p.getstr('config', 'MODEL_NAME')
+        c_dict['OBS_NAME'] = self.p.getstr('config', 'OBS_NAME')
+        c_dict['POINT_STAT_CONFIG_FILE'] = \
+            self.p.getstr('config', 'POINT_STAT_CONFIG_FILE')
+        c_dict['REGRID_TO_GRID'] = self.p.getstr('config', 'REGRID_TO_GRID')
+        c_dict['POINT_STAT_GRID'] = self.p.getstr('config', 'POINT_STAT_GRID')
+
+        c_dict['POINT_STAT_POLY'] = util.getlist(
+            self.p.getstr('config', 'POINT_STAT_POLY', ''))
+        c_dict['POINT_STAT_STATION_ID'] = util.getlist(
+            self.p.getstr('config', 'POINT_STAT_STATION_ID', ''))
+        c_dict['POINT_STAT_MESSAGE_TYPE'] = util.getlist(
+            self.p.getstr('config', 'POINT_STAT_MESSAGE_TYPE', ''))
 
         # Retrieve YYYYMMDD begin and end time
-        ps_dict['BEG_TIME'] = self.p.getstr('config', 'BEG_TIME')[0:8]
-        ps_dict['END_TIME'] = self.p.getstr('config', 'END_TIME')[0:8]
-        ps_dict['START_HOUR'] = self.p.getstr('config', 'START_HOUR')
-        ps_dict['END_HOUR'] = self.p.getstr('config', 'END_HOUR')
-        ps_dict['START_DATE'] = self.p.getstr('config', 'START_DATE')
-        ps_dict['END_DATE'] = self.p.getstr('config', 'END_DATE')
-        ps_dict['FCST_HR_START'] = self.p.getstr('config', 'FCST_HR_START')
-        ps_dict['FCST_HR_END'] = self.p.getstr('config', 'FCST_HR_END')
-        ps_dict['FCST_HR_INTERVAL'] = self.p.getstr('config',
+        c_dict['BEG_TIME'] = self.p.getstr('config', 'BEG_TIME')[0:8]
+        c_dict['END_TIME'] = self.p.getstr('config', 'END_TIME')[0:8]
+        c_dict['START_HOUR'] = self.p.getstr('config', 'START_HOUR')
+        c_dict['END_HOUR'] = self.p.getstr('config', 'END_HOUR')
+        c_dict['START_DATE'] = self.p.getstr('config', 'START_DATE')
+        c_dict['END_DATE'] = self.p.getstr('config', 'END_DATE')
+        c_dict['FCST_HR_START'] = self.p.getstr('config', 'FCST_HR_START')
+        c_dict['FCST_HR_END'] = self.p.getstr('config', 'FCST_HR_END')
+        c_dict['FCST_HR_INTERVAL'] = self.p.getstr('config',
                                                     'FCST_HR_INTERVAL')
 
-        ps_dict['OBS_WINDOW_BEGIN'] = self.p.getstr('config',
+        c_dict['OBS_WINDOW_BEGIN'] = self.p.getstr('config',
                                                     'OBS_WINDOW_BEGIN')
-        ps_dict['OBS_WINDOW_END'] = self.p.getstr('config', 'OBS_WINDOW_END')
+        c_dict['OBS_WINDOW_END'] = self.p.getstr('config', 'OBS_WINDOW_END')
 
         # Filename templates and regex patterns for input dirs and filenames
-        ps_dict['FCST_INPUT_DIR_REGEX'] = \
+        c_dict['FCST_INPUT_DIR_REGEX'] = \
             util.getraw_interp(self.p, 'regex_pattern', 'FCST_INPUT_DIR_REGEX')
-        ps_dict['OBS_INPUT_DIR_REGEX'] = \
+        c_dict['OBS_INPUT_DIR_REGEX'] = \
             util.getraw_interp(self.p, 'regex_pattern', 'OBS_INPUT_DIR_REGEX')
-        ps_dict['FCST_INPUT_FILE_TMPL'] = \
+        c_dict['FCST_INPUT_FILE_TMPL'] = \
             util.getraw_interp(self.p, 'filename_templates',
                                'FCST_INPUT_FILE_TMPL')
-        ps_dict['OBS_INPUT_FILE_TMPL'] = \
+        c_dict['OBS_INPUT_FILE_TMPL'] = \
             util.getraw_interp(self.p, 'filename_templates',
                                'OBS_INPUT_FILE_TMPL')
 
         # non-MET executables
-        util.add_common_items_to_dictionary(self.p, ps_dict)
+        util.add_common_items_to_dictionary(self.p, c_dict)
 
-        return ps_dict
+        return c_dict
+
+
+    def run_at_time(self, input_dict):
+        """! Stub, not yet implemented """
+
+        # get field variables to compare
+        var_list = util.parse_var_list(self.p)
+
+        # loop of forecast leads and process each
+        lead_seq = self.c_dict['LEAD_SEQ']
+        for lead in lead_seq:
+            self.clear()
+            input_dict['lead_hours'] = lead
+
+            self.logger.info("Processing forecast lead {}".format(lead))
+
+            # set current lead time config and environment variables
+            self.p.set('config', 'CURRENT_LEAD_TIME', lead)
+            os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
+
+            # Run for given init/valid time and forecast lead combination
+            self.run_at_time_once(input_dict, var_list)
+
+
+    def run_at_time_once(self, input_dict, var_list):
+        if self.c_dict['FCST_INPUT_DIR'] == '':
+            self.logger.error('Must set FCST_POINT_STAT_INPUT_DIR in config file')
+            exit(1)
+
+        if self.c_dict['FCST_INPUT_TEMPLATE'] == '':
+            self.logger.error('Must set FCST_POINT_STAT_INPUT_TEMPLATE in config file')
+            exit(1)
+
+        if self.c_dict['OBS_INPUT_DIR'] == '':
+            self.logger.error('Must set OBS_POINT_STAT_INPUT_DIR in config file')
+            exit(1)
+
+        if self.c_dict['OBS_INPUT_TEMPLATE'] == '':
+            self.logger.error('Must set OBS_POINT_STAT_INPUT_TEMPLATE in config file')
+            exit(1)
+
+        if self.c_dict['OUTPUT_DIR'] == '':
+            self.logger.error('Must set POINT_STAT_OUTPUT_DIR in config file')
+            exit(1)
+
+        # get model to compare
+        time_info = time_util.ti_calculate(input_dict)
+        model_path = self.find_model(time_info, var_list[0])
+        if model_path == None:
+            self.logger.error('Could not find file in {} matching template {}'
+                              .format(self.c_dict['FCST_INPUT_DIR'],
+                                      self.c_dict['FCST_INPUT_TEMPLATE']))
+            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] +\
+                              " for init time " + time_info['init_fmt'] + " f" + str(time_info['lead_hours']))
+            return False
+
+        # get observation to compare
+        obs_path = None
+        # loop over offset list and find first file that matches
+        for offset in self.c_dict['OFFSETS']:
+            input_dict['offset'] = offset
+            time_info = time_util.ti_calculate(input_dict)
+            obs_path = self.find_obs(time_info, var_list[0])
+
+            if obs_path is not None:
+                break
+
+        if obs_path is None:
+            self.logger.error('Could not find observation file in {} '
+                              'matching template {}'
+                              .format(self.c_dict['OBS_INPUT_DIR'],
+                                      self.c_dict['OBS_INPUT_TEMPLATE']))
+            return False
+
+        # found both fcst and obs
+        self.add_input_file(model_path)
+        self.add_input_file(obs_path)
+
+        # get field information
+        fcst_field_list = []
+        obs_field_list = []
+        for v in var_list:
+            next_fcst = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name, v.fcst_extra, model_path, 'FCST')
+            next_obs = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra, obs_path, 'OBS')
+            fcst_field_list.append(next_fcst)
+            obs_field_list.append(next_obs)
+        fcst_field = ','.join(fcst_field_list)
+        obs_field = ','.join(obs_field_list)
+
+        self.process_fields(time_info, fcst_field, obs_field)
+
 
     def main(self):
 
@@ -162,7 +287,7 @@ class PointStatWrapper(CommandBuilder):
         self.logger.info(cur_function + '| ' +
                          "Starting PointStatWrapper...")
 
-        loop_method = self.ps_dict['LOOP_METHOD']
+        loop_method = self.c_dict['LOOP_METHOD']
         if loop_method == 'processes':
             self.run_all_times()
         else:
@@ -173,7 +298,7 @@ class PointStatWrapper(CommandBuilder):
                                      "currently supported for this wrapper.")
             sys.exit(1)
 
-    def run_all_times(self):
+    def run_all_times_old(self):
         """! Runs MET Point_ for all times indicated in the configuration
              file"""
 
@@ -204,17 +329,17 @@ class PointStatWrapper(CommandBuilder):
             self.add_arg(pairs[1])
 
             # MET point_stat config file
-            self.set_param_file(self.ps_dict['POINT_STAT_CONFIG_FILE'])
+            self.set_param_file(self.c_dict['POINT_STAT_CONFIG_FILE'])
 
             # Output directory
-            self.set_output_dir(self.ps_dict['POINT_STAT_OUTPUT_DIR'])
+            self.set_output_dir(self.c_dict['POINT_STAT_OUTPUT_DIR'])
             util.mkdir_p(self.outdir)
 
             cmd = self.get_command()
             self.build()
             self.clear()
 
-    def set_environment_variables(self):
+    def set_environment_variables(self, a=None, b=None, c=None):
         """! Set all the environment variables in the MET config
              file to the corresponding values in the METplus config file.
 
@@ -225,36 +350,33 @@ class PointStatWrapper(CommandBuilder):
 
         """
         # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-
-        # Used for logging.
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-        self.logger.info(cur_function + '| ' +
-                         "Setting all environment variables specified in "
-                         "the MET config file...")
+        # list of fields to print to log
+        print_list = ["MODEL_NAME", "REGRID_TO_GRID",
+                      "FCST_FIELD", "OBS_FIELD",
+                      "OBS_WINDOW_BEGIN", "OBS_WINDOW_END",
+                      "POINT_STAT_MESSAGE_TYPE", "POINT_STAT_GRID",
+                      "POINT_STAT_POLY","POINT_STAT_STATION_ID"]
 
         # Set the environment variables
-        self.add_env_var(b'MODEL_NAME', str(self.ps_dict['MODEL_NAME']))
+        self.add_env_var(b'MODEL_NAME', str(self.c_dict['MODEL_NAME']))
 
-        regrid_to_grid = str(self.ps_dict['REGRID_TO_GRID'])
+        regrid_to_grid = str(self.c_dict['REGRID_TO_GRID'])
         self.add_env_var(b'REGRID_TO_GRID', regrid_to_grid)
-        os.environ['REGRID_TO_GRID'] = regrid_to_grid
+#        os.environ['REGRID_TO_GRID'] = regrid_to_grid
 
         # MET accepts a list of values for POINT_STAT_POLY, POINT_STAT_GRID,
         # POINT_STAT_STATION_ID, and POINT_STAT_MESSAGE_TYPE. If these
         # values are not set in the METplus config file, assign them to "[]" so
         # MET recognizes that these are empty lists, resulting in the
         # expected behavior.
-        poly_str = str(self.ps_dict['POINT_STAT_POLY'])
+        poly_str = str(self.c_dict['POINT_STAT_POLY'])
         if not poly_str:
             self.add_env_var(b'POINT_STAT_POLY', "[]")
         else:
             poly = poly_str.replace("\'", "\"")
             self.add_env_var(b'POINT_STAT_POLY', poly)
 
-        grid_str = str(self.ps_dict['POINT_STAT_GRID'])
+        grid_str = str(self.c_dict['POINT_STAT_GRID'])
         if not grid_str:
             self.add_env_var(b'POINT_STAT_GRID', "[]")
         else:
@@ -262,14 +384,14 @@ class PointStatWrapper(CommandBuilder):
             grid = '"' + grid_str + '"'
             self.add_env_var(b'POINT_STAT_GRID', grid)
 
-        sid_str = str(self.ps_dict['POINT_STAT_STATION_ID'])
+        sid_str = str(self.c_dict['POINT_STAT_STATION_ID'])
         if not sid_str:
             self.add_env_var(b'POINT_STAT_STATION_ID', "[]")
         else:
             sid = sid_str.replace("\'", "\"")
             self.add_env_var(b'POINT_STAT_STATION_ID', sid)
 
-        tmp_message_type = str(self.ps_dict['POINT_STAT_MESSAGE_TYPE'])
+        tmp_message_type = str(self.c_dict['POINT_STAT_MESSAGE_TYPE'])
         # Check for "empty" POINT_STAT_MESSAGE_TYPE in METplus config file and
         # set the POINT_STAT_MESSAGE_TYPE environment variable appropriately.
         if not tmp_message_type:
@@ -295,13 +417,16 @@ class PointStatWrapper(CommandBuilder):
         # Set the environment variables corresponding to the obs_window
         # dictionary.
         self.add_env_var(b'OBS_WINDOW_BEGIN',
-                         str(self.ps_dict['OBS_WINDOW_BEGIN']))
-        self.add_env_var(b'OBS_WINDOW_END', str(self.ps_dict['OBS_WINDOW_END']))
+                         str(self.c_dict['OBS_WINDOW_BEGIN']))
+        self.add_env_var(b'OBS_WINDOW_END', str(self.c_dict['OBS_WINDOW_END']))
 
+        # send environment variables to logger
+        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_user_env_items()
+        for l in print_list:
+            self.print_env_item(l)
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(["MODEL_NAME","FCST_FIELD","POINT_STAT_MESSAGE_TYPE",
-                            "OBS_WINDOW_BEGIN","OBS_WINDOW_END","POINT_STAT_GRID",
-                            "POINT_STAT_POLY"])
+        self.print_env_copy(print_list)
 
 
     def select_fcst_obs_pairs(self):
@@ -401,13 +526,13 @@ class PointStatWrapper(CommandBuilder):
         # Whenever there is more than one fcst file with the same valid time,
         # keep it, because we want to perform verification for all fcst/model
         # forecast hours.
-        time_method = self.ps_dict['TIME_METHOD']
-        valid_start = self.ps_dict['START_DATE']
-        valid_end = self.ps_dict['END_DATE']
+        time_method = self.c_dict['TIME_METHOD']
+        valid_start = self.c_dict['START_DATE']
+        valid_end = self.c_dict['END_DATE']
 
-        fhr_start = self.ps_dict['FCST_HR_START']
-        fhr_end = self.ps_dict['FCST_HR_END']
-        fhr_interval = self.ps_dict['FCST_HR_INTERVAL']
+        fhr_start = self.c_dict['FCST_HR_START']
+        fhr_end = self.c_dict['FCST_HR_END']
+        fhr_interval = self.c_dict['FCST_HR_INTERVAL']
 
         fhr_start_secs = int(fhr_start) * self.HOURS_TO_SECONDS
         fhr_end_secs = int(fhr_end) * self.HOURS_TO_SECONDS
@@ -445,10 +570,10 @@ class PointStatWrapper(CommandBuilder):
 
         if file_type == "fcst":
             # Get a list of all the model/fcst files
-            dir_to_search = self.ps_dict['FCST_INPUT_DIR']
-            fcst_file_tmpl = self.ps_dict['FCST_INPUT_FILE_TMPL']
+            dir_to_search = self.c_dict['FCST_INPUT_DIR']
+            fcst_file_tmpl = self.c_dict['FCST_INPUT_FILE_TMPL']
             fcst_file_regex_tuple = self.create_filename_regex(fcst_file_tmpl)
-            fcst_dir_regex = self.ps_dict['FCST_INPUT_DIR_REGEX']
+            fcst_dir_regex = self.c_dict['FCST_INPUT_DIR_REGEX']
 
             # Get a list of dates (YYYYMMDD or YYYYMMDDHH) from dated subdirs
             # (if data is not arranged
@@ -464,9 +589,9 @@ class PointStatWrapper(CommandBuilder):
         elif file_type == "obs":
 
             # Get a list of all the obs files
-            dir_to_search = self.ps_dict['OBS_INPUT_DIR']
-            obs_file_tmpl = self.ps_dict['OBS_INPUT_FILE_TMPL']
-            obs_dir_regex = self.ps_dict['OBS_INPUT_DIR_REGEX']
+            dir_to_search = self.c_dict['OBS_INPUT_DIR']
+            obs_file_tmpl = self.c_dict['OBS_INPUT_FILE_TMPL']
+            obs_dir_regex = self.c_dict['OBS_INPUT_DIR_REGEX']
             obs_file_regex_tuple = self.create_filename_regex(obs_file_tmpl)
 
             all_obs_files = self.get_all_input_files(dir_to_search,
@@ -537,7 +662,7 @@ class PointStatWrapper(CommandBuilder):
         # our data is organized by subdirectories with init dates.
         full_input_keywords = copy.deepcopy(input_regex_tuple[1])
         if input_file_type == 'fcst':
-            fcst_dir_regex = self.ps_dict['FCST_INPUT_DIR_REGEX']
+            fcst_dir_regex = self.c_dict['FCST_INPUT_DIR_REGEX']
             if fcst_dir_regex:
                 # If the data is organized by date subdirectories
                 full_input_regex = '.*' + fcst_dir_regex + '/' + \
@@ -547,7 +672,7 @@ class PointStatWrapper(CommandBuilder):
                 full_input_regex = '.*' + str(input_regex_tuple[0])
 
         elif input_file_type == 'obs':
-            obs_dir_regex = self.ps_dict['OBS_INPUT_DIR_REGEX']
+            obs_dir_regex = self.c_dict['OBS_INPUT_DIR_REGEX']
             if obs_dir_regex:
                 # If the data is organized by date subdirectories
                 full_input_regex = '.*' + obs_dir_regex + '/' +\
@@ -976,7 +1101,7 @@ class PointStatWrapper(CommandBuilder):
         self.outfile = ""
         self.param = ""
 
-    def get_command(self):
+    def get_command_old(self):
         if self.app_path is None:
             self.logger.error("No app path specified. You must use a subclass")
             return None
@@ -1110,23 +1235,4 @@ class PointStatWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='point_stat',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='point_stat')
-        produtil.log.postmsg('PointStatWrapper  is starting')
-
-        # Read in the configuration object conf
-        conf = config_metplus.setup()
-        if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = conf.getdir('MET_BASE')
-
-        PSW = PointStatWrapper(conf, logger=None)
-        PSW.main()
-        produtil.log.postmsg('PointStatWrapper completed')
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'point_stat_wrapper failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
+        util.run_stand_alone("point_stat_wrapper", "PointStat")
