@@ -106,8 +106,6 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
         c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
 
-
-x
         # directories
         c_dict['APP_PATH'] = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                            'bin/point_stat')
