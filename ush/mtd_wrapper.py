@@ -28,88 +28,89 @@ class MTDWrapper(ModeWrapper):
         self.app_name = os.path.basename(self.app_path)
         self.fcst_file = None
         self.obs_file = None
-        self.create_cg_dict()
+        self.create_c_dict()
 
 
     # TODO : Set defaults for all items that need them
-    def create_cg_dict(self):
-        self.cg_dict = dict()
-        self.cg_dict['LOOP_BY_INIT'] = self.p.getbool('config', 'LOOP_BY_INIT', True)
-        self.cg_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
-        self.cg_dict['INPUT_BASE'] = self.p.getdir('INPUT_BASE')
-        self.cg_dict['OUTPUT_DIR'] = self.p.getdir('MTD_OUT_DIR', self.p.getdir('OUTPUT_BASE'))
-        self.cg_dict['CONFIG_DIR'] = self.p.getdir('CONFIG_DIR',
+    def create_c_dict(self):
+        self.c_dict = dict()
+        self.c_dict['var_list'] = util.parse_var_list(self.p)
+        self.c_dict['LOOP_BY_INIT'] = self.p.getbool('config', 'LOOP_BY_INIT', True)
+        self.c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
+        self.c_dict['INPUT_BASE'] = self.p.getdir('INPUT_BASE')
+        self.c_dict['OUTPUT_DIR'] = self.p.getdir('MTD_OUT_DIR', self.p.getdir('OUTPUT_BASE'))
+        self.c_dict['CONFIG_DIR'] = self.p.getdir('CONFIG_DIR',
                                                    self.p.getdir('METPLUS_BASE')+'/parm/met_config')
-        self.cg_dict['CONFIG_FILE'] = self.p.getstr('config', 'MTD_CONFIG', '')
-        self.cg_dict['MIN_VOLUME'] = self.p.getstr('config', 'MTD_MIN_VOLUME', '2000')
-        self.cg_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL_TYPE', '')
-        self.cg_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE', '')
-        self.cg_dict['SINGLE_RUN'] = self.p.getbool('config', 'MTD_SINGLE_RUN', False)
-        self.cg_dict['SINGLE_DATA_SRC'] = self.p.getstr('config', 'MTD_SINGLE_DATA_SRC', 'FCST')
+        self.c_dict['CONFIG_FILE'] = self.p.getstr('config', 'MTD_CONFIG', '')
+        self.c_dict['MIN_VOLUME'] = self.p.getstr('config', 'MTD_MIN_VOLUME', '2000')
+        self.c_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL_TYPE', '')
+        self.c_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE', '')
+        self.c_dict['SINGLE_RUN'] = self.p.getbool('config', 'MTD_SINGLE_RUN', False)
+        self.c_dict['SINGLE_DATA_SRC'] = self.p.getstr('config', 'MTD_SINGLE_DATA_SRC', 'FCST')
 
         # only read FCST conf if processing forecast data
-        if not self.cg_dict['SINGLE_RUN'] or self.cg_dict['SINGLE_DATA_SRC'] == 'FCST':
-            self.cg_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
-            self.cg_dict['FCST_INPUT_DIR'] = \
-              self.p.getdir('FCST_MTD_INPUT_DIR', self.cg_dict['INPUT_BASE'])
-            self.cg_dict['FCST_INPUT_TEMPLATE'] = \
+        if not self.c_dict['SINGLE_RUN'] or self.c_dict['SINGLE_DATA_SRC'] == 'FCST':
+            self.c_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
+            self.c_dict['FCST_INPUT_DIR'] = \
+              self.p.getdir('FCST_MTD_INPUT_DIR', self.c_dict['INPUT_BASE'])
+            self.c_dict['FCST_INPUT_TEMPLATE'] = \
               util.getraw_interp(self.p, 'filename_templates',
                                  'FCST_MTD_INPUT_TEMPLATE')
-            self.cg_dict['FCST_INPUT_DATATYPE'] = \
+            self.c_dict['FCST_INPUT_DATATYPE'] = \
                 self.p.getstr('config', 'FCST_MTD_INPUT_DATATYPE', '')
-            self.cg_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 256)
-            self.cg_dict['FCST_INIT_INTERVAL']= self.p.getint('config', 'FCST_INIT_INTERVAL', 1)
-            self.cg_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
+            self.c_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 256)
+            self.c_dict['FCST_INIT_INTERVAL']= self.p.getint('config', 'FCST_INIT_INTERVAL', 1)
+            self.c_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
                                                                   'FCST_EXACT_VALID_TIME',
                                                                   True)
 
             if self.p.has_option('config', 'MTD_FCST_CONV_RADIUS'):
-                self.cg_dict['FCST_CONV_RADIUS'] = self.p.getstr('config', 'MTD_FCST_CONV_RADIUS')
+                self.c_dict['FCST_CONV_RADIUS'] = self.p.getstr('config', 'MTD_FCST_CONV_RADIUS')
             else:
-                self.cg_dict['FCST_CONV_RADIUS'] = self.p.getstr('config', 'MTD_CONV_RADIUS', '5')
+                self.c_dict['FCST_CONV_RADIUS'] = self.p.getstr('config', 'MTD_CONV_RADIUS', '5')
 
             if self.p.has_option('config', 'MTD_FCST_CONV_THRESH'):
-                self.cg_dict['FCST_CONV_THRESH'] = self.p.getstr('config', 'MTD_FCST_CONV_THRESH')
+                self.c_dict['FCST_CONV_THRESH'] = self.p.getstr('config', 'MTD_FCST_CONV_THRESH')
             else:
-                self.cg_dict['FCST_CONV_THRESH'] = self.p.getstr('config', 'MTD_CONV_THRESH', '>0.5')
+                self.c_dict['FCST_CONV_THRESH'] = self.p.getstr('config', 'MTD_CONV_THRESH', '>0.5')
 
             # check that values are valid
-            if not util.validate_thresholds(util.getlist(self.cg_dict['FCST_CONV_THRESH'])):
+            if not util.validate_thresholds(util.getlist(self.c_dict['FCST_CONV_THRESH'])):
                 self.logger.error('MTD_FCST_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
                 exit(1)
 
         # only read OBS conf if processing observation data
-        if not self.cg_dict['SINGLE_RUN'] or self.cg_dict['SINGLE_DATA_SRC'] == 'OBS':
-            self.cg_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
-            self.cg_dict['OBS_INPUT_DIR'] = \
-            self.p.getdir('OBS_MTD_INPUT_DIR', self.cg_dict['INPUT_BASE'])
-            self.cg_dict['OBS_INPUT_TEMPLATE'] = \
+        if not self.c_dict['SINGLE_RUN'] or self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
+            self.c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
+            self.c_dict['OBS_INPUT_DIR'] = \
+            self.p.getdir('OBS_MTD_INPUT_DIR', self.c_dict['INPUT_BASE'])
+            self.c_dict['OBS_INPUT_TEMPLATE'] = \
               util.getraw_interp(self.p, 'filename_templates',
                                    'OBS_MTD_INPUT_TEMPLATE')
-            self.cg_dict['OBS_INPUT_DATATYPE'] = \
+            self.c_dict['OBS_INPUT_DATATYPE'] = \
                 self.p.getstr('config', 'OBS_MTD_INPUT_DATATYPE', '')
-            self.cg_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
+            self.c_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
                                                                   'OBS_EXACT_VALID_TIME',
                                                                   True)
 
             if self.p.has_option('config', 'MTD_OBS_CONV_RADIUS'):
-                self.cg_dict['OBS_CONV_RADIUS'] = self.p.getstr('config', 'MTD_OBS_CONV_RADIUS')
+                self.c_dict['OBS_CONV_RADIUS'] = self.p.getstr('config', 'MTD_OBS_CONV_RADIUS')
             else:
-                self.cg_dict['OBS_CONV_RADIUS'] = self.p.getstr('config', 'MTD_CONV_RADIUS', '5')
+                self.c_dict['OBS_CONV_RADIUS'] = self.p.getstr('config', 'MTD_CONV_RADIUS', '5')
 
             if self.p.has_option('config', 'MTD_OBS_CONV_THRESH'):
-                self.cg_dict['OBS_CONV_THRESH'] = self.p.getstr('config', 'MTD_OBS_CONV_THRESH')
+                self.c_dict['OBS_CONV_THRESH'] = self.p.getstr('config', 'MTD_OBS_CONV_THRESH')
             else:
-                self.cg_dict['OBS_CONV_THRESH'] = self.p.getstr('config', 'MTD_CONV_THRESH', '>0.5')
+                self.c_dict['OBS_CONV_THRESH'] = self.p.getstr('config', 'MTD_CONV_THRESH', '>0.5')
 
             # check that values are valid
-            if not util.validate_thresholds(util.getlist(self.cg_dict['OBS_CONV_THRESH'])):
+            if not util.validate_thresholds(util.getlist(self.c_dict['OBS_CONV_THRESH'])):
                 self.logger.error('MTD_OBS_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
                 exit(1)
 
-        self.cg_dict['WINDOW_RANGE_BEG'] = \
+        self.c_dict['WINDOW_RANGE_BEG'] = \
           self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
-        self.cg_dict['WINDOW_RANGE_END'] = \
+        self.c_dict['WINDOW_RANGE_END'] = \
           self.p.getint('config', 'WINDOW_RANGE_END', 3600)
 
 
@@ -123,12 +124,12 @@ class MTDWrapper(ModeWrapper):
         """        
         var_list = util.parse_var_list(self.p)
 #        current_task = TaskInfo()
-#        max_lookback = self.cg_dict['MAX_LOOKBACK']
-#        file_interval = self.cg_dict['FILE_INTERVAL']
+#        max_lookback = self.c_dict['MAX_LOOKBACK']
+#        file_interval = self.c_dict['FILE_INTERVAL']
 
-        lead_seq = self.cg_dict['LEAD_SEQ']
+        lead_seq = self.c_dict['LEAD_SEQ']
         for v in var_list:
-            if self.cg_dict['SINGLE_RUN']:
+            if self.c_dict['SINGLE_RUN']:
                 self.run_single_mode(input_dict, v)
                 continue
 
@@ -182,7 +183,7 @@ class MTDWrapper(ModeWrapper):
     def run_single_mode(self, input_dict, v):
         single_list = []
 
-        if self.cg_dict['SINGLE_DATA_SRC'] == 'OBS':
+        if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
             find_method = self.find_obs
             s_name = v.obs_name
             s_level = v.obs_level
@@ -191,7 +192,7 @@ class MTDWrapper(ModeWrapper):
             s_name = v.fcst_name
             s_level = v.fcst_level
 
-        lead_seq = self.cg_dict['LEAD_SEQ']
+        lead_seq = self.c_dict['LEAD_SEQ']
         for lead in lead_seq:
             input_dict['lead'] = lead
             current_task = time_util.ti_calculate(input_dict)
@@ -212,7 +213,7 @@ class MTDWrapper(ModeWrapper):
         single_list_path = self.write_list_file(single_outfile, single_list)
 
         arg_dict = {}
-        if self.cg_dict['SINGLE_DATA_SRC'] == 'OBS':
+        if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
             arg_dict['obs_path'] = single_list_path
             arg_dict['model_path'] = None
         else:
@@ -238,7 +239,7 @@ class MTDWrapper(ModeWrapper):
             obs_thresh_list = v.obs_thresh
 
         for fthresh, othresh in zip(fcst_thresh_list, obs_thresh_list):
-            self.set_param_file(self.cg_dict['CONFIG_FILE'])
+            self.set_param_file(self.c_dict['CONFIG_FILE'])
             self.create_and_set_output_dir(time_info)
 
             print_list = [ 'MIN_VOLUME', 'MODEL', 'FCST_VAR', 'OBTYPE',
@@ -246,44 +247,44 @@ class MTDWrapper(ModeWrapper):
                            'MET_VALID_HHMM', 'FCST_FIELD', 'OBS_FIELD',
                            'FCST_CONV_RADIUS', 'FCST_CONV_THRESH',
                            'OBS_CONV_RADIUS', 'OBS_CONV_THRESH' ]
-            self.add_env_var("MIN_VOLUME", self.cg_dict["MIN_VOLUME"] )
-            self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
+            self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"] )
+            self.add_env_var("MODEL", self.c_dict['MODEL_TYPE'])
             self.add_env_var("FCST_VAR", v.fcst_name)
-            self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])
+            self.add_env_var("OBTYPE", self.c_dict['OB_TYPE'])
             self.add_env_var("OBS_VAR", v.obs_name)
             self.add_env_var("LEVEL", util.split_level(v.fcst_level)[1])
-            self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
+            self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
             self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
 
             # single mode - set fcst file, field, etc.
-            if self.cg_dict['SINGLE_RUN']:
-                if self.cg_dict['SINGLE_DATA_SRC'] == 'OBS':
+            if self.c_dict['SINGLE_RUN']:
+                if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
                     self.set_fcst_file(obs_path)
                     obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
                                                         othresh, 'OBS')
                     self.add_env_var("FCST_FIELD", obs_field)
                     self.add_env_var("OBS_FIELD", obs_field)
-                    self.add_env_var("OBS_CONV_RADIUS", self.cg_dict["OBS_CONV_RADIUS"] )
-                    self.add_env_var("FCST_CONV_RADIUS", self.cg_dict["OBS_CONV_RADIUS"] )
-                    self.add_env_var("OBS_CONV_THRESH", self.cg_dict["OBS_CONV_THRESH"] )
-                    self.add_env_var("FCST_CONV_THRESH", self.cg_dict["OBS_CONV_THRESH"] )
+                    self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"] )
+                    self.add_env_var("FCST_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"] )
+                    self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
+                    self.add_env_var("FCST_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
                 else:
                     self.set_fcst_file(model_path)
                     fcst_field = self.get_one_field_info(v.fcst_name, v.fcst_level, v.fcst_extra,
                                                          fthresh, 'FCST')
                     self.add_env_var("FCST_FIELD", fcst_field)
                     self.add_env_var("OBS_FIELD", fcst_field)
-                    self.add_env_var("FCST_CONV_RADIUS", self.cg_dict["FCST_CONV_RADIUS"] )
-                    self.add_env_var("OBS_CONV_RADIUS", self.cg_dict["FCST_CONV_RADIUS"] )
-                    self.add_env_var("FCST_CONV_THRESH", self.cg_dict["FCST_CONV_THRESH"] )
-                    self.add_env_var("OBS_CONV_THRESH", self.cg_dict["FCST_CONV_THRESH"] )
+                    self.add_env_var("FCST_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"] )
+                    self.add_env_var("OBS_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"] )
+                    self.add_env_var("FCST_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"] )
+                    self.add_env_var("OBS_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"] )
             else:
                 self.set_fcst_file(model_path)
                 self.set_obs_file(obs_path)
-                self.add_env_var("FCST_CONV_RADIUS", self.cg_dict["FCST_CONV_RADIUS"] )
-                self.add_env_var("FCST_CONV_THRESH", self.cg_dict["FCST_CONV_THRESH"] )
-                self.add_env_var("OBS_CONV_RADIUS", self.cg_dict["OBS_CONV_RADIUS"] )
-                self.add_env_var("OBS_CONV_THRESH", self.cg_dict["OBS_CONV_THRESH"] )
+                self.add_env_var("FCST_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"] )
+                self.add_env_var("FCST_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"] )
+                self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"] )
+                self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
 
                 fcst_field = self.get_one_field_info(v.fcst_name, v.fcst_level, v.fcst_extra,
                                                      fthresh, 'FCST')
@@ -337,7 +338,7 @@ class MTDWrapper(ModeWrapper):
         for a in self.args:
             cmd += a + " "
 
-        if self.cg_dict['SINGLE_RUN']:
+        if self.c_dict['SINGLE_RUN']:
             if self.fcst_file == None:
                 self.logger.error("No file path specified")
                 return None
