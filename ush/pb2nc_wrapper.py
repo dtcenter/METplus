@@ -64,6 +64,7 @@ class PB2NCWrapper(ReformatGriddedWrapper):
                            config files.
         """
         c_dict = dict()
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.p.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', True)
         c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
         c_dict['OFFSETS'] = util.getlistint(self.p.getstr('config', 'PB2NC_OFFSETS', '0'))
 
@@ -142,7 +143,7 @@ class PB2NCWrapper(ReformatGriddedWrapper):
         c_dict['OBS_WINDOW_END'] = self.p.getstr('config', 'OBS_WINDOW_END')
 
         c_dict['OVERWRITE_NC_OUTPUT'] = \
-            self.p.getstr('config', 'OVERWRITE_NC_OUTPUT').lower()
+            self.p.getbool('config', 'OVERWRITE_NC_OUTPUT')
 
         # Filename templates and regex patterns for input dirs and filenames
         c_dict['NC_FILE_TMPL'] = util.getraw_interp(self.p,
@@ -260,13 +261,13 @@ class PB2NCWrapper(ReformatGriddedWrapper):
         self.set_output_path(os.path.join(output_dir, outfile))
 
         # if we don't overwrite and the output file exists, warn and continue
-        if self.c_dict['OVERWRITE_NC_OUTPUT'] is False and \
-           os.path.exists(outfile):
+        if os.path.exists(outfile) and \
+          (self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True or
+           self.c_dict['OVERWRITE_NC_OUTPUT'] is False):
             self.logger.debug('Skip writing output file {} because it already '
                               'exists. Remove file or change '
                               'OVERWRITE_NC_OUTPUT to True to process'
                               .format(outfile))
-            self.clear()
             return True
 
         # set config file since command is reset after each run
