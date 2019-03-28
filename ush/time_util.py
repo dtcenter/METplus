@@ -73,7 +73,7 @@ def ti_calculate(input_dict):
         exit(1)
 
     # calculate da_init from valid and offset
-    out_dict['da_init'] = out_dict['valid'] - out_dict['offset']
+    out_dict['da_init'] = out_dict['valid'] + out_dict['offset']
         
     # add common formatted items
     out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M')
