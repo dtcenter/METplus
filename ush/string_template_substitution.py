@@ -147,6 +147,8 @@ class StringSub:
                        rest = res.group(1)
 
             # add formatted time
+            if padding < 2:
+                padding = 2
             return str(t).zfill(padding)+rest
 
         # return empty string if no match
@@ -602,7 +604,6 @@ class StringExtract:
             if self.temp[i] == TEMPLATE_IDENTIFIER_BEGIN:
                 # increment past TEMPLATE_IDENTIFIER_BEGIN
                 i += 1
-                # TODO: change 9 and 8 to len(VALID_STRING) + len(?fmt=)
                 if self.temp[
                    i:i + len(VALID_STRING) + fmt_len] == VALID_STRING + "?fmt=":
                     inValid = True
