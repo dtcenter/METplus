@@ -41,7 +41,6 @@ that reformat gridded data
     """
     def __init__(self, p, logger):
         super(CompareGriddedWrapper, self).__init__(p, logger)
-        self.cg_dict = self.create_cg_dict()
 
 
 #    def run_at_time(self, init_time, valid_time):
@@ -52,10 +51,9 @@ that reformat gridded data
                 @param init_time initialization time to run. -1 if not set
                 @param valid_time valid time to run. -1 if not set
         """
-        var_list = util.parse_var_list(self.p)
 
         # loop of forecast leads and process each
-        lead_seq = self.cg_dict['LEAD_SEQ']
+        lead_seq = self.c_dict['LEAD_SEQ']
         for lead in lead_seq:
             input_dict['lead_hours'] = lead
 
@@ -66,23 +64,28 @@ that reformat gridded data
             os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
             time_info = time_util.ti_calculate(input_dict)
             # Run for given init/valid time and forecast lead combination
-            self.run_at_time_once(time_info, var_list)
+            self.run_at_time_once(time_info)
 
 
-    def run_at_time_once(self, time_info, var_list):
+    def run_at_time_once(self, time_info):
         """! Build MET command for a given init/valid time and forecast lead combination
               Args:
                 @param time_info dictionary containing timing information
                 @param var_list var_info object list containing variable information
         """
-        if self.cg_dict['ONCE_PER_FIELD']:
+
+        # clear out the class variables
+        self.clear()
+
+        if self.c_dict['ONCE_PER_FIELD']:
             # loop over all fields and levels (and probability thresholds) and
             # call the app once for each
-            for var_info in var_list:
+            for var_info in self.c_dict['var_list']:
+                self.c_dict['CURRENT_VAR_INFO'] = var_info
                 self.run_at_time_one_field(time_info, var_info)
         else:
             # loop over all variables and all them to the field list, then call the app once
-            self.run_at_time_all_fields(time_info, var_list)
+            self.run_at_time_all_fields(time_info)
 
 
     def run_at_time_one_field(self, time_info, v):
@@ -95,7 +98,7 @@ that reformat gridded data
         # get model to compare
         model_path = self.find_model(time_info, v)
         if model_path == None:
-            self.logger.error("Could not find file in " + self.cg_dict['FCST_INPUT_DIR'] +\
+            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] +\
                               " for init time " + time_info['init_fmt'] + " f" + str(time_info['lead_hours']))
             return
         self.add_input_file(model_path)
@@ -103,7 +106,7 @@ that reformat gridded data
         # get observation to compare
         obs_path = self.find_obs(time_info, v)
         if obs_path == None:
-            self.logger.error("Could not find file in " + self.cg_dict['OBS_INPUT_DIR'] +\
+            self.logger.error("Could not find file in " + self.c_dict['OBS_INPUT_DIR'] +\
                               " for valid time " + time_info['valid_fmt'])
             return
         self.add_input_file(obs_path)
@@ -114,35 +117,34 @@ that reformat gridded data
         obs_field = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra,
                                             obs_path, 'OBS')
 
-        self.process_fields(time_info, v, fcst_field, obs_field)
+        self.process_fields(time_info, fcst_field, obs_field)
 
 
-    def run_at_time_all_fields(self, time_info, var_list):
+    def run_at_time_all_fields(self, time_info):
         """! Build MET command for all of the field/level combinations for a given init/valid time and
              forecast lead combination
               Args:
                 @param time_info dictionary containing timing information
-                @param var_list list of var_infoo objects containing variable information
         """
         # get model from first var to compare
-        model_path = self.find_model(time_info, var_list[0])
+        model_path = self.find_model(time_info, self.c_dict['var_list'][0])
         if model_path == None:
-            self.logger.error("Could not find file in " + self.cg_dict['FCST_INPUT_DIR'] +\
+            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] +\
                               " for init time " + time_info['init_fmt'] + " f" + str(time_info['lead_hours']))
             return
         self.add_input_file(model_path)
 
         # get observation to from first var compare
-        obs_path = self.find_obs(time_info, var_list[0])
+        obs_path = self.find_obs(time_info, self.c_dict['var_list'][0])
         if obs_path == None:
-            self.logger.error("Could not find file in " + self.cg_dict['OBS_INPUT_DIR'] +\
+            self.logger.error("Could not find file in " + self.c_dict['OBS_INPUT_DIR'] +\
                               " for valid time " + time_info['valid_fmt'])
             return
         self.add_input_file(obs_path)
 
         fcst_field_list = []
         obs_field_list = []
-        for v in var_list:
+        for v in self.c_dict['var_list']:
             next_fcst = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name, v.fcst_extra, model_path, 'FCST')
             next_obs = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra, obs_path, 'OBS')
             fcst_field_list.append(next_fcst)
@@ -150,126 +152,7 @@ that reformat gridded data
         fcst_field = ','.join(fcst_field_list)
         obs_field = ','.join(obs_field_list)
 
-        self.process_fields(time_info, v, fcst_field, obs_field)
-
-
-    def find_model(self, time_info, v):
-        """! Finds the model file to compare
-              Args:
-                @param time_info dictionary containing timing information
-                @param v var_info object containing variable information
-                @rtype string
-                @return Returns the path to an model file
-        """
-        return self.find_data(time_info, v, "FCST")
-
-
-    def find_obs(self, time_info, v):
-        """! Finds the observation file to compare
-              Args:
-                @param time_info dictionary containing timing information
-                @param v var_info object containing variable information
-                @rtype string
-                @return Returns the path to an observation file
-        """
-        return self.find_data(time_info, v, "OBS")
-
-
-    def find_data(self, time_info, v, data_type):
-        """! Finds the data file to compare
-              Args:
-                @param time_info dictionary containing timing information
-                @param v var_info object containing variable information
-                @param data_type type of data to find (FCST or OBS)
-                @rtype string
-                @return Returns the path to an observation file
-        """
-        # get time info
-        lead = time_info['lead_hours']
-        valid_time = time_info['valid_fmt']
-        init_time = time_info['init_fmt']
-
-        # set level based on input data type
-        if data_type.startswith("OBS"):
-            v_level = v.obs_level
-        else:
-            v_level = v.fcst_level
-
-        # separate character from beginning of numeric level value if applicable
-        level_type, level = util.split_level(v_level)
-
-        # set level to 0 character if it is not a number
-        if not level.isdigit():
-            level = '0'
-
-        template = self.cg_dict[data_type+'_INPUT_TEMPLATE']
-        data_dir = self.cg_dict[data_type+'_INPUT_DIR']
-
-        # if looking for a file with an exact time match:
-        if self.cg_dict[data_type+'_EXACT_VALID_TIME']:
-            # perform string substitution
-            dSts = sts.StringSub(self.logger,
-                                   template,
-                                   level=(int(level.split('-')[0]) * 3600),
-                                   **time_info)
-            filename = dSts.doStringSub()
-
-            # build full path with data directory and filename
-            path = os.path.join(data_dir, filename)
-
-            # check if desired data file exists and if it needs to be preprocessed
-            path = util.preprocess_file(path,
-                                        self.cg_dict[data_type+'_INPUT_DATATYPE'],
-                                        self.p, self.logger)
-            return path
-
-        # if looking for a file within a time window:
-        # convert valid_time to unix time
-        valid_seconds = int(datetime.datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
-        # get time of each file, compare to valid time, save best within range
-        closest_file = None
-        closest_time = 9999999
-
-        # get range of times that will be considered
-        valid_range_lower = self.cg_dict['WINDOW_RANGE_BEG']
-        valid_range_upper = self.cg_dict['WINDOW_RANGE_END']
-        lower_limit = int(datetime.datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
-                                                 "%Y%m%d%H%M").strftime("%s"))
-        upper_limit = int(datetime.datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
-                                                 "%Y%m%d%H%M").strftime("%s"))
-
-        # step through all files under input directory in sorted order
-        for dirpath, dirnames, all_files in os.walk(data_dir):
-            for filename in sorted(all_files):
-                fullpath = os.path.join(dirpath, filename)
-
-                # remove input data directory to get relative path
-                f = fullpath.replace(data_dir+"/", "")
-
-                # extract time information from relative path using template
-                se = util.get_time_from_file(self.logger, f, template)
-                if se is not None:
-                    # get valid time and check if it is within the time range
-                    file_valid_time = se.getValidTime("%Y%m%d%H%M")
-                    # skip if could not extract valid time
-                    if file_valid_time == '':
-                        continue
-                    file_valid_dt = datetime.datetime.strptime(file_valid_time, "%Y%m%d%H%M")
-                    file_valid_seconds = int(file_valid_dt.strftime("%s"))
-                    # skip if outside time range
-                    if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
-                        continue
-
-                    # check if file is closer to desired valid time than previous match
-                    diff = abs(valid_seconds - file_valid_seconds)
-                    if diff < closest_time:
-                        closest_time = diff
-                        closest_file = fullpath
-
-        # check if file needs to be preprocessed before returning the path
-        return util.preprocess_file(closest_file,
-                                    self.cg_dict[data_type+'_INPUT_DATATYPE'],
-                                    self.p, self.logger)
+        self.process_fields(time_info, fcst_field, obs_field)
 
 
     def get_one_field_info(self, v_level, v_thresh, v_name, v_extra, path, d_type):
@@ -298,9 +181,9 @@ that reformat gridded data
             cat_thresh = "cat_thresh=[ " + ','.join(threshs) + " ];"
 
         # if either input is probabilistic, create separate item for each threshold
-        if self.cg_dict['FCST_IS_PROB'] or self.cg_dict['OBS_IS_PROB']:
+        if self.c_dict['FCST_IS_PROB'] or self.c_dict['OBS_IS_PROB']:
             # if input being processed if probabilistic, format accordingly
-            if self.cg_dict[d_type+'_IS_PROB']:
+            if self.c_dict[d_type+'_IS_PROB']:
                 for thresh in threshs:
                     thresh_str = ""
                     comparison = util.get_comparison_from_threshold(thresh)
@@ -310,10 +193,10 @@ that reformat gridded data
                     if comparison in ["lt", "le", "<", "<=", "==", "eq" ]:
                         thresh_str += "thresh_hi="+str(number)+"; "
 
-                    prob_cat_thresh = self.cg_dict[d_type+'_PROB_THRESH']
+                    prob_cat_thresh = self.c_dict[d_type+'_PROB_THRESH']
                     # TODO: replace with better check for data type to remove path
                     # untested, need NetCDF prob fcst data
-                    if self.cg_dict[d_type+'_INPUT_DATATYPE'] == 'NETCDF':
+                    if self.c_dict[d_type+'_INPUT_DATATYPE'] == 'NETCDF':
 #                    if path[-3:] == ".nc":
                         field = "{ name=\"" + v_name + "\"; level=\"" + \
                           level+"\"; prob=TRUE; cat_thresh=["+prob_cat_thresh+"];}"
@@ -357,20 +240,7 @@ that reformat gridded data
         return field_list
 
 
-    def process_fields(self, time_info, v, fcst_field, obs_field):
-        """! Set and print environment variables, then build/run MET command
-              Args:
-                @param time_info dictionary with time information
-                @param v var_info object with field information
-                @param fcst_field field information formatted for MET config file
-                @param obs_field field information formatted for MET config file
-        """
-        # set config file since command is reset after each run
-        self.set_param_file(self.cg_dict['CONFIG_FILE'])
-
-        # set up output dir with time info
-        self.create_and_set_output_dir(time_info)
-
+    def set_environment_variables(self, fcst_field, obs_field, time_info):
         # list of fields to print to log
         print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
                       "LEVEL", "OBTYPE", "CONFIG_DIR",
@@ -378,18 +248,22 @@ that reformat gridded data
                       "INPUT_BASE", "MET_VALID_HHMM",
                       "FCST_TIME"]
 
+        v = self.c_dict['var_list'][0]
+        if 'CURRENT_VAR_INFO' in self.c_dict.keys():
+            v = self.c_dict['CURRENT_VAR_INFO']
+
         # set environment variables needed for MET application
-        self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
-        self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])
+        self.add_env_var("MODEL", self.c_dict['MODEL_TYPE'])
+        self.add_env_var("OBTYPE", self.c_dict['OB_TYPE'])
         self.add_env_var("FCST_VAR", v.fcst_name)
         self.add_env_var("OBS_VAR", v.obs_name)
         self.add_env_var("LEVEL", v.fcst_level)
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
-        self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
+        self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
         self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
         self.add_env_var("FCST_TIME", str(time_info['lead_hours']).zfill(3))
-        self.add_env_var("INPUT_BASE", self.cg_dict["INPUT_BASE"])
+        self.add_env_var("INPUT_BASE", self.c_dict["INPUT_BASE"])
 
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
@@ -398,6 +272,24 @@ that reformat gridded data
             self.print_env_item(l)
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_copy(print_list)
+
+
+
+    def process_fields(self, time_info, fcst_field, obs_field):
+        """! Set and print environment variables, then build/run MET command
+              Args:
+                @param time_info dictionary with time information
+                @param fcst_field field information formatted for MET config file
+                @param obs_field field information formatted for MET config file
+        """
+        # set config file since command is reset after each run
+        self.set_param_file(self.c_dict['CONFIG_FILE'])
+
+        # set up output dir with time info
+        self.create_and_set_output_dir(time_info)
+
+        # set environment variables needed by MET config file
+        self.set_environment_variables(fcst_field, obs_field, time_info)
 
         # check if METplus can generate the command successfully
         cmd = self.get_command()
@@ -408,8 +300,8 @@ that reformat gridded data
         # run the MET command
         self.build()
 
-        # clear out the class variables for the next run
-        self.clear()
+        # clear out the class variables for the next run move to start of run
+#        self.clear()
 
 
     def create_and_set_output_dir(self, time_info):
@@ -418,8 +310,8 @@ that reformat gridded data
               Args:
                 @param time_info dictionary with time information
         """
-        base_dir = self.cg_dict['OUTPUT_DIR']
-        if self.cg_dict['LOOP_BY_INIT']:
+        base_dir = self.c_dict['OUTPUT_DIR']
+        if self.c_dict['LOOP_BY_INIT']:
             out_dir = os.path.join(base_dir,
                                    time_info['init_fmt'], self.app_name)
         else:
