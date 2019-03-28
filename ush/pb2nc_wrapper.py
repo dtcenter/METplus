@@ -64,6 +64,7 @@ class PB2NCWrapper(ReformatGriddedWrapper):
                            config files.
         """
         c_dict = dict()
+
         c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
         c_dict['OFFSETS'] = util.getlistint(self.p.getstr('config', 'PB2NC_OFFSETS', '0'))
 
@@ -142,7 +143,7 @@ class PB2NCWrapper(ReformatGriddedWrapper):
         c_dict['OBS_WINDOW_END'] = self.p.getstr('config', 'OBS_WINDOW_END')
 
         c_dict['OVERWRITE_NC_OUTPUT'] = \
-            self.p.getstr('config', 'OVERWRITE_NC_OUTPUT').lower()
+            self.p.getbool('config', 'OVERWRITE_NC_OUTPUT', True)
 
         # Filename templates and regex patterns for input dirs and filenames
         c_dict['NC_FILE_TMPL'] = util.getraw_interp(self.p,
@@ -257,7 +258,8 @@ class PB2NCWrapper(ReformatGriddedWrapper):
                            output_template,
                            **time_info)
         outfile = outSts.doStringSub()
-        self.set_output_path(os.path.join(output_dir, outfile))
+        outfile = os.path.join(output_dir, outfile)
+        self.set_output_path(outfile)
 
         # if we don't overwrite and the output file exists, warn and continue
         if self.c_dict['OVERWRITE_NC_OUTPUT'] is False and \
