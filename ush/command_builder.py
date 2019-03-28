@@ -22,6 +22,8 @@ import subprocess
 from datetime import datetime, timedelta
 import calendar
 from command_runner import CommandRunner
+import met_util as util
+import string_template_substitution as sts
 from abc import ABCMeta
 
 '''!@namespace CommandBuilder
@@ -195,6 +197,129 @@ class CommandBuilder:
         return (default, default)
 
 
+    def find_model(self, time_info, v):
+        """! Finds the model file to compare
+              Args:
+                @param time_info dictionary containing timing information
+                @param v var_info object containing variable information
+                @rtype string
+                @return Returns the path to an model file
+        """
+        return self.find_data(time_info, v, "FCST")
+
+
+    def find_obs(self, time_info, v):
+        """! Finds the observation file to compare
+              Args:
+                @param time_info dictionary containing timing information
+                @param v var_info object containing variable information
+                @rtype string
+                @return Returns the path to an observation file
+        """
+        return self.find_data(time_info, v, "OBS")
+
+
+    def find_data(self, time_info, v, data_type):
+        """! Finds the data file to compare
+              Args:
+                @param time_info dictionary containing timing information
+                @param v var_info object containing variable information
+                @param data_type type of data to find (FCST or OBS)
+                @rtype string
+                @return Returns the path to an observation file
+        """
+        # get time info
+        lead = time_info['lead_hours']
+        valid_time = time_info['valid_fmt']
+        init_time = time_info['init_fmt']
+
+        if v != None:
+            # set level based on input data type
+            if data_type.startswith("OBS"):
+                v_level = v.obs_level
+            else:
+                v_level = v.fcst_level
+
+            # separate character from beginning of numeric level value if applicable
+            level_type, level = util.split_level(v_level)
+
+            # set level to 0 character if it is not a number
+            if not level.isdigit():
+                level = '0'
+        else:
+                level = '0'
+
+        template = self.c_dict[data_type+'_INPUT_TEMPLATE']
+        data_dir = self.c_dict[data_type+'_INPUT_DIR']
+
+        # if looking for a file with an exact time match:
+        if self.c_dict[data_type+'_EXACT_VALID_TIME']:
+            # perform string substitution
+            dSts = sts.StringSub(self.logger,
+                                   template,
+                                   level=(int(level.split('-')[0]) * 3600),
+                                   **time_info)
+            filename = dSts.doStringSub()
+
+            # build full path with data directory and filename
+            path = os.path.join(data_dir, filename)
+
+            # check if desired data file exists and if it needs to be preprocessed
+            path = util.preprocess_file(path,
+                                        self.c_dict[data_type+'_INPUT_DATATYPE'],
+                                        self.p, self.logger)
+            return path
+
+        # if looking for a file within a time window:
+        # convert valid_time to unix time
+        valid_seconds = int(datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
+        # get time of each file, compare to valid time, save best within range
+        closest_file = None
+        closest_time = 9999999
+
+        # get range of times that will be considered
+        valid_range_lower = self.c_dict['WINDOW_RANGE_BEG']
+        valid_range_upper = self.c_dict['WINDOW_RANGE_END']
+        lower_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
+                                                 "%Y%m%d%H%M").strftime("%s"))
+        upper_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
+                                                 "%Y%m%d%H%M").strftime("%s"))
+
+        # step through all files under input directory in sorted order
+        for dirpath, dirnames, all_files in os.walk(data_dir):
+            for filename in sorted(all_files):
+                fullpath = os.path.join(dirpath, filename)
+
+                # remove input data directory to get relative path
+                f = fullpath.replace(data_dir+"/", "")
+
+                # extract time information from relative path using template
+                se = util.get_time_from_file(self.logger, f, template)
+                if se is not None:
+                    # get valid time and check if it is within the time range
+                    file_valid_time = se.getValidTime("%Y%m%d%H%M")
+                    # skip if could not extract valid time
+                    if file_valid_time == '':
+                        continue
+                    file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M")
+                    file_valid_seconds = int(file_valid_dt.strftime("%s"))
+                    # skip if outside time range
+                    if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
+                        continue
+
+                    # check if file is closer to desired valid time than previous match
+                    diff = abs(valid_seconds - file_valid_seconds)
+                    if diff < closest_time:
+                        closest_time = diff
+                        closest_file = fullpath
+
+        # check if file needs to be preprocessed before returning the path
+        return util.preprocess_file(closest_file,
+                                    self.c_dict[data_type+'_INPUT_DATATYPE'],
+                                    self.p, self.logger)
+
+
+
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string
@@ -220,9 +345,6 @@ class CommandBuilder:
         for f in self.infiles:
             cmd += f + " "
 
-        if self.param != "":
-            cmd += self.param + " "
-
         if self.outfile == "":
             self.logger.error("No output filename specified")
             return None
@@ -238,6 +360,9 @@ class CommandBuilder:
             os.makedirs(os.path.dirname(out_path))
 
         cmd += " " + out_path
+
+        if self.param != "":
+            cmd += ' ' + self.param
 
         return cmd
 
@@ -277,11 +402,22 @@ class CommandBuilder:
 
         clock_time_obj = datetime.strptime(self.p.getstr('config', 'CLOCK_TIME'), '%Y%m%d%H%M%S')
         loop_time = util.get_time_obj(start_t, time_format,
-                                      clock_time_obj, logger)
+                                      clock_time_obj, self.logger)
         end_time = util.get_time_obj(end_t, time_format,
-                                     clock_time_obj, logger)
+                                     clock_time_obj, self.logger)
         while loop_time <= end_time:
             run_time = loop_time.strftime("%Y%m%d%H%M")
+            self.logger.info("****************************************")
+            self.logger.info("* RUNNING METplus")
+            if use_init:
+                self.logger.info("*  at init time: " + run_time)
+                self.p.set('config', 'CURRENT_INIT_TIME', run_time)
+                os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
+            else:
+                self.logger.info("*  at valid time: " + run_time)
+                self.p.set('config', 'CURRENT_VALID_TIME', run_time)
+                os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
+            self.logger.info("****************************************")
             input_dict = {}
             input_dict['now'] = clock_time_obj
             # Set valid time to -1 if using init and vice versa
