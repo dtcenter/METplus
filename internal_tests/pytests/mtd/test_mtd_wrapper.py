@@ -80,11 +80,11 @@ def test_mtd_by_init_all_found():
     mw = mtd_wrapper()
     obs_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     fcst_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
-    mw.cg_dict['OBS_INPUT_DIR'] = obs_dir
-    mw.cg_dict['FCST_INPUT_DIR'] = fcst_dir
-    mw.cg_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
-    mw.cg_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
-    mw.cg_dict['LEAD_SEQ'] = [1, 2, 3]
+    mw.c_dict['OBS_INPUT_DIR'] = obs_dir
+    mw.c_dict['FCST_INPUT_DIR'] = fcst_dir
+    mw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
+    mw.c_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
+    mw.c_dict['LEAD_SEQ'] = [1, 2, 3]
     input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
     mw.run_at_time(input_dict)
@@ -109,11 +109,11 @@ def test_mtd_by_valid_all_found():
     mw = mtd_wrapper()
     obs_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     fcst_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
-    mw.cg_dict['OBS_INPUT_DIR'] = obs_dir
-    mw.cg_dict['FCST_INPUT_DIR'] = fcst_dir
-    mw.cg_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
-    mw.cg_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
-    mw.cg_dict['LEAD_SEQ'] = [1, 2, 3]
+    mw.c_dict['OBS_INPUT_DIR'] = obs_dir
+    mw.c_dict['FCST_INPUT_DIR'] = fcst_dir
+    mw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
+    mw.c_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
+    mw.c_dict['LEAD_SEQ'] = [1, 2, 3]
     input_dict = {'valid' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
     mw.run_at_time(input_dict)
@@ -138,11 +138,11 @@ def test_mtd_by_init_miss_fcst():
     mw = mtd_wrapper()
     obs_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     fcst_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
-    mw.cg_dict['OBS_INPUT_DIR'] = obs_dir
-    mw.cg_dict['FCST_INPUT_DIR'] = fcst_dir
-    mw.cg_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
-    mw.cg_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
-    mw.cg_dict['LEAD_SEQ'] = [3, 6, 9, 12]
+    mw.c_dict['OBS_INPUT_DIR'] = obs_dir
+    mw.c_dict['FCST_INPUT_DIR'] = fcst_dir
+    mw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
+    mw.c_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
+    mw.c_dict['LEAD_SEQ'] = [3, 6, 9, 12]
     input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
     mw.run_at_time(input_dict)
@@ -167,11 +167,11 @@ def test_mtd_by_init_miss_both():
     mw = mtd_wrapper()
     obs_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     fcst_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
-    mw.cg_dict['OBS_INPUT_DIR'] = obs_dir
-    mw.cg_dict['FCST_INPUT_DIR'] = fcst_dir
-    mw.cg_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
-    mw.cg_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
-    mw.cg_dict['LEAD_SEQ'] = [6, 12, 18]
+    mw.c_dict['OBS_INPUT_DIR'] = obs_dir
+    mw.c_dict['FCST_INPUT_DIR'] = fcst_dir
+    mw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
+    mw.c_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
+    mw.c_dict['LEAD_SEQ'] = [6, 12, 18]
     input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
     mw.run_at_time(input_dict)
@@ -194,11 +194,11 @@ def test_mtd_by_init_miss_both():
 def test_mtd_single():
     mw = mtd_wrapper()
     fcst_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
-    mw.cg_dict['SINGLE_RUN'] = True
-    mw.cg_dict['SINGLE_DATA_SRC'] = 'FCST'
-    mw.cg_dict['FCST_INPUT_DIR'] = fcst_dir
-    mw.cg_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
-    mw.cg_dict['LEAD_SEQ'] = [1, 2, 3]
+    mw.c_dict['SINGLE_RUN'] = True
+    mw.c_dict['SINGLE_DATA_SRC'] = 'FCST'
+    mw.c_dict['FCST_INPUT_DIR'] = fcst_dir
+    mw.c_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
+    mw.c_dict['LEAD_SEQ'] = [1, 2, 3]
     input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
     mw.run_at_time(input_dict)
