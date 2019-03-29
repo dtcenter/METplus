@@ -94,6 +94,7 @@ class ModeWrapper(CompareGriddedWrapper):
 
         self.c_dict['FCST_MERGE_FLAG'] = fcst_merge_flag
         self.c_dict['OBS_MERGE_FLAG'] = obs_merge_flag
+        self.c_dict['ALLOW_MULTIPLE_FILES'] = False
 
         self.c_dict['MERGE_CONFIG_FILE'] = self.p.getstr('config', 'MODE_MERGE_CONFIG_FILE', '')
         # check that values are valid

@@ -80,6 +80,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.c_dict['FCST_PROB_THRESH'] = self.p.getstr('config', 'FCST_GRID_STAT_PROB_THRESH', '==0.1')
         self.c_dict['OBS_PROB_THRESH'] = self.p.getstr('config', 'OBS_GRID_STAT_PROB_THRESH', '==0.1')
 
+        self.c_dict['ALLOW_MULTIPLE_FILES'] = False
         util.add_common_items_to_dictionary(self.p, self.c_dict)
 
 

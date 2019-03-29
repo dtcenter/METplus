@@ -274,7 +274,7 @@ class CommandBuilder:
         # convert valid_time to unix time
         valid_seconds = int(datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
         # get time of each file, compare to valid time, save best within range
-        closest_file = None
+        closest_files = []
         closest_time = 9999999
 
         # get range of times that will be considered
@@ -307,16 +307,37 @@ class CommandBuilder:
                     if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
                         continue
 
-                    # check if file is closer to desired valid time than previous match
-                    diff = abs(valid_seconds - file_valid_seconds)
-                    if diff < closest_time:
-                        closest_time = diff
-                        closest_file = fullpath
+                    # if only 1 file is allowed, check if file is
+                    # closer to desired valid time than previous match
+                    if not self.c_dict['ALLOW_MULTIPLE_FILES']:
+                        diff = abs(valid_seconds - file_valid_seconds)
+                        if diff < closest_time:
+                            closest_time = diff
+                            del closest_files[:]
+                            closest_files.append(fullpath)
+                    # if multiple files are allowed, get all files within range
+                    else:
+                        closest_files.append(fullpath)
 
-        # check if file needs to be preprocessed before returning the path
-        return util.preprocess_file(closest_file,
-                                    self.c_dict[data_type+'_INPUT_DATATYPE'],
-                                    self.p, self.logger)
+        if not closest_files:
+            return None
+
+        # check if file(s) needs to be preprocessed before returning the path
+        # return single file path if 1 file was found
+        if len(closest_files) == 1:
+            return util.preprocess_file(closest_files[0],
+                                       self.c_dict[data_type+'_INPUT_DATATYPE'],
+                                       self.p, self.logger)
+
+        # return list if multiple files are found
+        out = []
+        for f in closest_files:
+            outfile = util.preprocess_file(f,
+                                       self.c_dict[data_type+'_INPUT_DATATYPE'],
+                                       self.p, self.logger)
+            out.append(outfiles)
+
+        return out
 
 
 

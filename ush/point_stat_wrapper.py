@@ -63,6 +63,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         # pass in all caps MET app name, i.e. POINT_STAT or PB2NC
         c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config',
                                                             'LEAD_SEQ', '0'))
+        c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['OFFSETS'] = util.getlistint(self.p.getstr('config', 'POINT_STAT_OFFSETS', '0'))
         c_dict['FCST_INPUT_TEMPLATE'] = \
             util.getraw_interp(self.p, 'filename_templates',
@@ -192,7 +193,11 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         # found both fcst and obs
         self.add_input_file(model_path)
-        self.add_input_file(obs_path)
+        if type(obs_path) is list:
+            for obs in obs_path:
+                self.add_input_file(obs)
+        else:
+            self.add_input_file(obs_path)
 
         # get field information
         fcst_field_list = []
