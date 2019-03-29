@@ -21,6 +21,8 @@ import calendar
 import math
 import sys
 
+import time_util
+
 TEMPLATE_IDENTIFIER_BEGIN = "{"
 TEMPLATE_IDENTIFIER_END = "}"
 
@@ -56,6 +58,13 @@ THREE_DIGIT_PAD = 3
 
 GLOBAL_LOGGER = None
 
+# TODO: how to handle %H being 2 precision in YMDH but 1 in HMS
+length_dict = { '%Y': 4,
+                '%m' : 2,
+                '%d' : 2,
+                '%H' : 2,
+                '%M' : 2,
+                '%S' : 2}
 
 def multiple_replace(dict, text):
     """ Replace in 'text' all occurrences of any key in the
@@ -130,7 +139,7 @@ class StringSub:
         count = item.count(c)
         if count > 0:
             rest = ''
-            # get precision
+            # get precision from number (%3H)
             res = re.match("^\.*(\d+)"+c+"(.*)", item)
             if res:
                 padding = int(res.group(1))
@@ -523,255 +532,192 @@ class StringSub:
 class StringExtract:
     def __init__(self, log, temp, fstr):
         self.logger = log
-        self.temp = temp
-        self.fstr = fstr
+        self.template = temp
+        self.full_str = fstr
 
         self.validTime = None
         self.initTime = None
         self.leadTime = 0
         self.levelTime = -1
 
-    def getValidTime(self, fmt):
-        if self.validTime is None:
-            if self.initTime is None:
-                return ""
-            return (self.initTime +
-                    datetime.timedelta(seconds=self.leadTime)).strftime(fmt)
+    def add_to_dict(self, match, match_dict, full_str, new_len):
+        if not full_str[0:new_len].isdigit():
+            return False
+        if match not in match_dict.keys():
+            match_dict[match] = full_str[0:new_len]
+        elif match_dict[match].zfill(new_len) != full_str[0:new_len]:
+            return False
+#        print("Added {} to dict under {}".format(full_str[0:new_len], match))
+        return True
 
-        return self.validTime.strftime(fmt)
+    def get_fmt_info(self, fmt, full_str, match_dict, identifier):
+        length = 0
+        match_list = re.findall('%[^%]+', fmt)
+        for match in match_list:
+            new_len = 0
+            extra_len = 0
+#            print("MATCH {}".format(match))
+            # exact match, i.e. %Y
+            if match in length_dict.keys():
+                # handle lead and level that have 1 digit precision
+                new_len = length_dict[match]
+                if match == '%H' and identifier == 'lead' or \
+                   identifier == 'level':
+                    # look forward until non-digit is found
+                    new_len = 0
+                    while full_str[new_len].isdigit():
+                        new_len += 1
+#                print("ADD {}".format(new_len))
+                length += new_len
+                if not self.add_to_dict(identifier+'+'+match[1:], match_dict, full_str, new_len):
+                    return -1
+            # if match starts with key, find new length, i.e. %Y: or %HH
+            elif match[0:2] in length_dict.keys():
+                c = match[1]
+                x = re.match('%(['+c+']+)(.*)', match)
+                if x:
+                    new_len = len(x.group(1))
+                    if new_len > 1:
+#                        print("ADD {} from multi letter".format(len(x.group(1))))
+                        length += new_len
+                    else:
+                        m = match[0:2]
+#                        print("ADD {}".format(length_dict[m]))
+                        new_len = length_dict[m]
+                        length += new_len
+                    if not self.add_to_dict(identifier+'+'+c, match_dict, full_str, new_len):
+                        return -1
 
-    def getInitTime(self, fmt):
-        if self.initTime is None:
-            if self.validTime is None:
-                return ""
-            return (self.validTime -
-                    datetime.timedelta(seconds=self.leadTime)).strftime(fmt)
-        return self.initTime.strftime(fmt)
+                    if len(x.group(2)) > 0:
+#                        print("ADD extra chars {}".format(len(x.group(2))))
+                        extra_len = len(x.group(2))
+                        length += extra_len
+            else:
+                # match %2H or %.2H
+                x = re.match('%\.*(\d+)(\D)$', match)
+                if x:
+#                    print("LEN ADDED IS {}".format(x.group(1)))
+                    new_len = int(x.group(1))
+                    length += new_len
+                    if not self.add_to_dict(identifier+'+'+x.group(2)[0], match_dict, full_str, new_len):
+                        return -1
+                else:
+#                    print("Unknown time format: {}".format(match))
+                    return -1
 
-    @property
-    def leadHour(self):
-        if self.leadTime == -1:
-            return -1
-        return self.leadTime / 3600
+            full_str = full_str[new_len+extra_len:]
 
-    @property
-    def levelHour(self):
-        if self.levelTime == -1:
-            return -1
-        return self.levelTime / 3600
+#        print("TOTAL LEN IS {}\n".format(length))
+        return length
 
     def parseTemplate(self):
-        tempLen = len(self.temp)
+        template_len = len(self.template)
         i = 0
-        idx = 0
-        yIdx = -1
-        mIdx = -1
-        dIdx = -1
-        hIdx = -1
-        minIdx = -1
-        lead = -1
-        level = -1
+        str_i = 0
+        match_dict = {}
+        shift_dict = {}
 
-        validYear = -1
-        validMonth = -1
-        validDay = -1
-        validHour = 0
-        validMin = 0
+        while i < template_len:
+            # if a tag is found, split contents and extract time
+            if self.template[i] == TEMPLATE_IDENTIFIER_BEGIN:
+                end_i = self.template.find(TEMPLATE_IDENTIFIER_END, i)
+                tag = self.template[i+1:end_i]
+                sections = tag.split('?')
+                identifier = sections[0]
+                format = ''
+                shift = 0
+                for section in sections[1:]:
+                    items = section.split('=')
+                    if items[0] == 'fmt':
+                        format = items[1]
+#                        print("Format for {} is {}".format(identifier, format))
+                        fmt_len = self.get_fmt_info(format, self.full_str[str_i:],
+                                               match_dict, identifier)
+                        if fmt_len == -1:
+                            return None
+                        # extract string that corresponds to format
+                    if items[0] == 'shift':
+                        shift = int(items[1])
+                        self.logger.warning("Shift for {} is {}. Shift not yet supported".format(identifier, shift))
+                        shift_dict[identifier] = shift
 
-        initYear = -1
-        initMonth = -1
-        initDay = -1
-        initHour = 0
-        initMin = 0
-
-        inValid = False
-        inLevel = False
-        inLead = False
-        inInit = False
-
-        fmt_len = len(FORMATTING_DELIMITER + \
-                      FORMATTING_VALUE_DELIMITER + \
-                      FORMAT_STRING)
-
-        while i < tempLen:
-            if self.temp[i] == TEMPLATE_IDENTIFIER_BEGIN:
-                # increment past TEMPLATE_IDENTIFIER_BEGIN
-                i += 1
-                if self.temp[
-                   i:i + len(VALID_STRING) + fmt_len] == VALID_STRING + "?fmt=":
-                    inValid = True
-                    i += len(VALID_STRING) + fmt_len - 1
-                if self.temp[
-                   i:i + len(LEVEL_STRING) + fmt_len] == LEVEL_STRING + "?fmt=":
-                    inLevel = True
-                    i += len(LEVEL_STRING) + fmt_len - 1
-                if self.temp[
-                   i:i + len(INIT_STRING) + fmt_len] == INIT_STRING + "?fmt=":
-                    inInit = True
-                    i += len(INIT_STRING) + fmt_len - 1
-                if self.temp[
-                   i:i + len(LEAD_STRING) + fmt_len] == LEAD_STRING + "?fmt=":
-                    inLead = True
-                    i += len(LEAD_STRING) + fmt_len - 1
-            elif self.temp[i] == TEMPLATE_IDENTIFIER_END:
-                if inValid:
-                    if yIdx != -1:
-                        if self.fstr[yIdx:yIdx+4].isdigit():
-                            validYear = int(self.fstr[yIdx:yIdx+4])
-                        else:
-                            return False
-                    if mIdx != -1:
-                        if self.fstr[mIdx:mIdx+2].isdigit():
-                            validMonth = int(self.fstr[mIdx:mIdx+2])
-                        else:
-                            return False
-                    if dIdx != -1:
-                        if self.fstr[dIdx:dIdx+2].isdigit():
-                            validDay = int(self.fstr[dIdx:dIdx+2])
-                        else:
-                            return False
-                    if hIdx != -1:
-                        if self.fstr[hIdx:hIdx+2].isdigit():
-                            validHour = int(self.fstr[hIdx:hIdx + 2])
-                        else:
-                            return False
-                    if minIdx != -1:
-                        if self.fstr[minIdx:minIdx+2].isdigit():
-                            validMin = int(self.fstr[minIdx:minIdx + 2])
-                        else:
-                            return False
-
-                    yIdx = -1
-                    mIdx = -1
-                    dIdx = -1
-                    hIdx = -1
-                    minIdx = -1
-                    inValid = False
-
-                if inInit:
-                    if yIdx != -1:
-                        if self.fstr[yIdx:yIdx+4].isdigit():
-                            initYear = int(self.fstr[yIdx:yIdx + 4])
-                        else:
-                            return False
-                    if mIdx != -1:
-                        if self.fstr[mIdx:mIdx+2].isdigit():
-                            initMonth = int(self.fstr[mIdx:mIdx + 2])
-                        else:
-                            return False
-                    if dIdx != -1:
-                        if self.fstr[dIdx:dIdx+2].isdigit():
-                            initDay = int(self.fstr[dIdx:dIdx + 2])
-                        else:
-                            return False
-                    if hIdx != -1:
-                        if self.fstr[hIdx:hIdx+2].isdigit():
-                            initHour = int(self.fstr[hIdx:hIdx + 2])
-                        else:
-                            return False
-                    if minIdx != -1:
-                        if self.fstr[minIdx:minIdx+2].isdigit():
-                            initMin = int(self.fstr[minIdx:minIdx + 2])
-                        else:
-                            return False
-
-                    yIdx = -1
-                    mIdx = -1
-                    dIdx = -1
-                    hIdx = -1
-                    minIdx = -1
-                    inInit = False
-
-                elif inLevel:
-                    if level == -1 or level == None or not level.isdigit():
-                        return False
-                    self.levelTime = int(level) * SECONDS_PER_HOUR
-                    level = -1
-                    inLevel = False
-
-                elif inLead:
-                    if lead == -1 or lead == None or not lead.isdigit():
-                        return False
-                    self.leadTime = int(lead) * SECONDS_PER_HOUR
-                    lead = -1
-                    inLead = False
-
-            elif inValid or inInit:
-                if idx > len(self.fstr):
-                    return False
-                if self.temp[i:i + 2] == "%Y":
-                    yIdx = idx
-                    idx += 4
-                    i += 1
-                elif self.temp[i:i + 2] == "%m":
-                    mIdx = idx
-                    idx += 2
-                    i += 1
-                elif self.temp[i:i + 2] == "%d":
-                    dIdx = idx
-                    idx += 2
-                    i += 1
-                elif self.temp[i:i + 2] == "%H":
-                    hIdx = idx
-                    idx += 2
-                    i += 1
-                elif self.temp[i:i + 2] == "%M":
-                    minIdx = idx
-                    idx += 2
-                    i += 1
-            elif inLevel:
-                if self.temp[i:i + 4] == "%HHH":
-                    level = self.fstr[idx:idx + 3]
-                    idx += 3
-                    i += 3
-                elif self.temp[i:i + 3] == "%HH":
-                    level = self.fstr[idx:idx + 2]
-                    idx += 2
-                    i += 2
-            elif inLead:
-                if self.temp[i:i + 4] == "%HHH":
-                    lead = self.fstr[idx:idx + 3]
-                    idx += 3
-                    i += 3
-                elif self.temp[i:i + 3] == "%HH":
-                    lead = self.fstr[idx:idx + 2]
-                    idx += 2
-                    i += 2
-                elif re.match("%\..*H", self.temp[i:i+4]):
-                    padding = int(re.match("%\.(.*)H", self.temp[i:i+4]).group(1))
-                    lead = self.fstr[idx:idx + padding]
-                    idx += padding
-                    i += padding
-                elif self.temp[i:i + 2] == "%H":
-                    # check for digit until non-digit comes up
-                    lead = ""
-                    while self.fstr[idx].isdigit():
-                        lead += self.fstr[idx]
-                        idx += 1
-
-                    i += 1
-                    if lead == "":
-                        lead = -1
-                        return False
+                    # check if duplicate formatters are found
+                i = end_i + 1
+                str_i += fmt_len
             else:
-                idx += 1
-            # increment past TEMPLATE_IDENTIFIER_END
-            i += 1
+                i += 1
+                str_i += 1
 
-        if validYear != -1 and validMonth != -1 and validDay != -1:
-            self.validTime = \
-                datetime.datetime(validYear,
-                                  validMonth,
-                                  validDay,
-                                  validHour,
-                                  validMin)
+        # combine common items and get datetime
+        output_dict = {}
 
-        if initYear != -1 and initMonth != -1 and initDay != -1:
-            self.initTime = \
-                datetime.datetime(initYear,
-                                  initMonth,
-                                  initDay,
-                                  initHour,
-                                  initMin)
-        # TODO: Check if success? Or wrap getValid/InitTime with == None check?
-        return True
+        valid = {}
+        init = {}
+        da_init = {}
+        lead = {}
+        offset = {}
+
+        valid['Y'] = -1
+        valid['m'] = -1
+        valid['d'] = -1
+        valid['H'] = 0
+        valid['M'] = 0
+
+        init['Y'] = -1
+        init['m'] = -1
+        init['d'] = -1
+        init['H'] = 0
+        init['M'] = 0
+
+        da_init['Y'] = -1
+        da_init['m'] = -1
+        da_init['d'] = -1
+        da_init['H'] = 0
+        da_init['M'] = 0
+
+        lead['H'] = 0
+        lead['M'] = 0
+        lead['S'] = 0
+
+        offset['H'] = 0
+#        offset['M'] = 0
+#        offset['S'] = 0
+
+        for key, value in match_dict.iteritems():
+            if key.startswith('valid'):
+                valid[key.split('+')[1]] = int(value)
+
+        if valid['Y'] != -1 and valid['m'] != -1 and valid['d'] != -1:
+            output_dict['valid'] = datetime.datetime(valid['Y'],
+                                          valid['m'],
+                                          valid['d'],
+                                          valid['H'],
+                                          valid['M'])
+
+        for key, value in match_dict.iteritems():
+            if key.startswith('init'):
+                init[key.split('+')[1]] = int(value)
+
+        if init['Y'] != -1 and init['m'] != -1 and init['d'] != -1:
+            output_dict['init'] = datetime.datetime(init['Y'],
+                                              init['m'],
+                                              init['d'],
+                                              init['H'],
+                                              init['M'])
+
+        for key, value in match_dict.iteritems():
+            if key.startswith('lead'):
+                lead[key.split('+')[1]] = int(value)
+
+        lead_seconds = lead['H'] * 3600 + lead['M'] * 60 + lead['S']
+        output_dict['lead'] = lead_seconds
+
+        for key, value in match_dict.iteritems():
+            if key.startswith('offset'):
+                offset[key.split('+')[1]] = int(value)
+
+        output_dict['offset'] = offset['H']
+
+        time_info = time_util.ti_calculate(output_dict)
+#        print(time_info)
+        return time_info
