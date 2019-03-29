@@ -33,6 +33,87 @@ import config_metplus
  @brief Provides  Utility functions for METplus.
 """
 
+def check_for_deprecated_config(p, logger):
+    deprecated_dict = {
+      'LOOP_BY_INIT' : { 'sec' : 'config', 'alt' : 'LOOP_BY', 'req' : False},
+      'LOOP_METHOD' : { 'sec' : 'config', 'alt' : 'LOOP_ORDER', 'req' : False},
+      'PREPBUFR_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
+      'PREPBUFR_FILE_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
+      'OBS_INPUT_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
+      'FCST_INPUT_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
+      'PREPBUFR_DATA_DIR' : { 'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR'},
+      'PREPBUFR_MODEL_DIR_NAME' : { 'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR'},
+      'OBS_INPUT_FILE_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'OBS_POINT_STAT_INPUT_TEMPLATE'},
+      'FCST_INPUT_FILE_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'FCST_POINT_STAT_INPUT_TEMPLATE'},
+      'NC_FILE_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'PB2NC_OUTPUT_TEMPLATE'},
+      'FCST_INPUT_DIR' : { 'sec' : 'dir', 'alt' : 'FCST_POINT_STAT_INPUT_DIR'},
+      'OBS_INPUT_DIR' : { 'sec' : 'dir', 'alt' : 'OBS_POINT_STAT_INPUT_DIR'},
+      'REGRID_TO_GRID' : { 'sec' : 'config', 'alt' : 'POINT_STAT_REGRID_TO_GRID'},
+      'FCST_HR_START' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+      'FCST_HR_END' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+      'FCST_HR_INTERVAL' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+      'START_DATE' : { 'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
+      'END_DATE' : { 'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
+      'INTERVAL_TIME' : { 'sec' : 'config', 'alt' : 'INIT_INCREMENT or VALID_INCREMENT'},
+      'BEG_TIME' : { 'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
+      'END_TIME' : { 'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
+      'START_HOUR' : { 'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
+      'END_HOUR' : { 'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
+      'OBS_BUFR_VAR_LIST' : { 'sec' : 'config', 'alt' : 'PB2NC_OBS_BUFR_VAR_LIST'},
+      'TIME_SUMMARY_FLAG' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_FLAG'},
+      'TIME_SUMMARY_BEG' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_BEG'},
+      'TIME_SUMMARY_END' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_END'},
+      'TIME_SUMMARY_VAR_NAMES' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_VAR_NAMES'},
+      'TIME_SUMMARY_TYPE' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_TYPE'},
+      'OVERWRITE_NC_OUTPUT' : { 'sec' : 'config', 'alt' : 'PB2NC_SKIP_IF_OUTPUT_EXISTS'},
+      'VERTICAL_LOCATION' : { 'sec' : 'config', 'alt' : 'PB2NC_VERTICAL_LOCATION'}
+# template       '' : { 'sec' : '', 'alt' : ''}
+    }
+
+    e_list = []
+    w_list = []
+    for old, v in deprecated_dict.iteritems():
+        if isinstance(v, dict):
+            sec = v['sec']
+            alt = v['alt']
+            # if deprecated config item is found
+            if p.has_option(sec, old):
+                # if it is not required to remove, add to warning list
+                if 'req' in v.keys() and v['req'] is False:
+                    msg = "[{}] {} is deprecated and will be removed in a future version of METplus".format(sec, old)
+                    if alt != None:
+                        msg += ". Please replace with {}".format(alt)
+                    w_list.append(msg)
+                # if it is required to remove, add to error list
+                else:
+                    if alt is None:
+                        e_list.append("[{}] {} should be removed".format(sec, old))
+                    else:
+                        e_list.append("[{}] {} should be replaced with {}".format(sec, old, alt))
+
+    # if any warning exist, report them
+    if w_list:
+        for w in w_list:
+            logger.warning(w)
+
+    # if any errors exist, report them and exit
+    if e_list:
+        logger.error("DEPRECATED CONFIG ITEMS WERE FOUND. PLEASE REMOVE/REPLACE THEM FROM CONFIG FILES")
+        for e in e_list:
+            logger.error(e)
+        exit(1)
+
+
+def is_loop_by_init(p):
+    if p.has_option('config', 'LOOP_BY'):
+        if ['INIT', 'RETRO' , ''] in p.getstr('config', 'LOOP_BY'):
+            return True
+
+    if p.has_option('config', 'LOOP_BY_INIT'):
+        return p.getbool('config', 'LOOP_BY_INIT', True)
+
+    return False
+
 
 def get_time_obj(t, fmt, clock_time, logger=None):
     sts = StringSub(logger, t,
@@ -185,7 +266,7 @@ def set_logvars(config, logger=None):
             log_timestamp_template = '%Y%m%d%H'
         t = datetime.datetime.now()
         if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
-            if config.getbool('config', 'LOOP_BY_INIT', True):
+            if is_loop_by_init(config):
                 t = datetime.datetime.strptime(config.getstr('config',
                                                              'INIT_BEG'),
                                                config.getstr('config',

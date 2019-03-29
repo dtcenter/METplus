@@ -67,6 +67,9 @@ def main():
     # Parse arguments, options and return a config instance.
     p = config_metplus.setup(filename=cur_filename)
 
+    # check for deprecated config items and warn user to remove/replace them
+    util.check_for_deprecated_config(p, logger)
+
     # set staging dir to OUTPUT_BASE/stage if not set
     if not p.has_option('dir', 'STAGING_DIR'):
         p.set('dir', 'STAGING_DIR', os.path.join(p.getdir('OUTPUT_BASE'),"stage"))
@@ -122,7 +125,11 @@ def main():
 
         processes.append(command_builder)
 
-    if p.getstr('config', 'LOOP_METHOD') == "processes":
+    loop_order = p.getstr('config', 'LOOP_ORDER', '')
+    if loop_order == '':
+        loop_order = p.getstr('config', 'LOOP_METHOD')
+
+    if loop_order == "processes":
         for process in processes:
             # referencing using repr(process.app_name) in
             # log since it may be None,
@@ -132,8 +139,8 @@ def main():
                                  'in: %s wrapper.' % repr(process.app_name))
             process.run_all_times()
 
-    elif p.getstr('config', 'LOOP_METHOD') == "times":
-        use_init = p.getbool('config', 'LOOP_BY_INIT', True)
+    elif loop_order == "times":
+        use_init = util.is_loop_by_init(p)
         if use_init:
             time_format = p.getstr('config', 'INIT_TIME_FMT')
             start_t = util.getraw_interp(p, 'config', 'INIT_BEG')
