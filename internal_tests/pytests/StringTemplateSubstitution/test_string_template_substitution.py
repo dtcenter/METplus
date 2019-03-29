@@ -154,8 +154,8 @@ def test_hh_lead():
     filepath = "1987020103_A03h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
 
@@ -165,8 +165,8 @@ def test_hhh_lead():
     filepath = "1987020103_A003h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
 
@@ -176,8 +176,8 @@ def test_2h_lead():
     filepath = "1987020103_A03h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
 
@@ -187,8 +187,8 @@ def test_3h_lead():
     filepath = "1987020103_A003h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
 
@@ -198,8 +198,8 @@ def test_h_lead_no_pad_1_digit():
     filepath = "1987020103_A3h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
 
@@ -209,8 +209,8 @@ def test_h_lead_no_pad_2_digit():
     filepath = "1987020103_A12h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702011500")
 
 
@@ -220,8 +220,8 @@ def test_h_lead_no_pad_3_digit():
     filepath = "1987020103_A102h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702050900")
 
 
