@@ -125,13 +125,13 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return c_dict
 
 
-    def run_at_time_one_field(self, time_info, v):
+    def run_at_time_one_field(self, time_info):
         self.logger("ERROR: run_at_time_one_field not implemented yet for {}"
                     .format(self.app_name))
         exit()
 
 
-    def run_at_time_all_fields(self, time_info, v):
+    def run_at_time_all_fields(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination
               Args:
                 @param ti task_info object containing timing information
@@ -151,6 +151,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 #        self.input_file_num = self.c_dict['N_ENSEMBLE_MEMBERS']
 
 
+        v = self.c_dict['var_list']
         # get point observation file if requested
         if self.c_dict['OBS_POINT_INPUT_DIR'] != '':
             point_obs_path = self.find_data(time_info, v[0], 'OBS_POINT')
