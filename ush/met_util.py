@@ -1556,15 +1556,17 @@ def get_time_from_file(logger, filepath, template):
 
     se = StringExtract(logger, template, filepath)
 
-    if se.parseTemplate():
-        return se
+    out = se.parseTemplate()
+    if se:
+        return out
     else:
         # check to see if zip extension ends file path, try again without extension
         for ext in valid_extensions:
             if filepath.endswith(ext):
                 se = StringExtract(logger, template, filepath[:-len(ext)])
-                if se.parseTemplate():
-                    return se
+                out = se.parseTemplate()
+                if se:
+                    return out
         return None
 
 
