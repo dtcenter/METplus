@@ -131,24 +131,17 @@ class StringSub:
         if count > 0:
             rest = ''
             # get precision
-            res = re.match("^\.(\d+)"+c+"(.*)", item)
+            res = re.match("^\.*(\d+)"+c+"(.*)", item)
             if res:
                 padding = int(res.group(1))
                 rest = res.group(2)
             else:
-                res = re.match("^(\d+)"+c+"(.*)", item)
-                if res:
-                    padding = int(res.group(1))
-                    rest = res.group(2)
-                else:
-                    padding = count
-                    res = re.match("^"+c+"+(.*)", item)
-                    if rest:
-                       rest = res.group(1)
+                padding = count
+                res = re.match("^"+c+"+(.*)", item)
+                if rest:
+                    rest = res.group(1)
 
             # add formatted time
-            if padding < 2:
-                padding = 2
             return str(t).zfill(padding)+rest
 
         # return empty string if no match
