@@ -384,7 +384,7 @@ class CommandBuilder:
     def run_all_times(self):
         """!Loop over time range specified in conf file and
         call METplus wrapper for each time"""
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
+        use_init = util.is_loop_by_init(self.p)
         if use_init:
             time_format = self.p.getstr('config', 'INIT_TIME_FMT')
             start_t = self.p.getstr('config', 'INIT_BEG')

@@ -209,7 +209,7 @@ class StatAnalysisWrapper(CommandBuilder):
         verif_type = self.p.getstr('config', 'VERIF_TYPE')
         if verif_type == 'pres' or verif_type == 'anom' or verif_type == 'sfc':
             self.logger.info("Formatting for plotting for grid2grid-"+verif_type)
-            use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
+            use_init = util.is_loop_by_init(self.p)
             if use_init:
                 start_t = self.p.getstr('config', 'INIT_BEG')
                 end_t = self.p.getstr('config', 'INIT_END')
@@ -328,7 +328,7 @@ class StatAnalysisWrapper(CommandBuilder):
         verif_type = self.p.getstr('config', 'VERIF_TYPE')
         if verif_type == 'upper_air' or verif_type == 'conus_sfc':
            self.logger.info("Formatting for plotting for grid2obs-"+verif_type)
-           use_init = self.p.getbool('config', 'LOOP_BY_INIT')
+           use_init = util.is_loop_by_init(self.p)
            self.add_env_var('INTERP', 'BILIN')
            if use_init:
                init_beg_hour = self.p.getstr('config', 'INIT_BEG_HOUR')

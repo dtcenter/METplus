@@ -126,7 +126,7 @@ class MakePlotsWrapper(CommandBuilder):
         self.add_env_var("LOGGING_LEVEL", logging_level)
     
     def get_grid2grid_date_info(self):
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
+        use_init = util.is_loop_by_init(self.p)
         if use_init:
             start_t = self.p.getstr('config', 'INIT_BEG')
             end_t = self.p.getstr('config', 'INIT_END')
@@ -150,7 +150,7 @@ class MakePlotsWrapper(CommandBuilder):
         return loop_beg_hour, loop_end_hour, loop_inc    
 
     def get_grid2obs_date_info(self):
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
+        use_init = util.is_loop_by_init(self.p)
         if use_init:
             start_t = self.p.getstr('config', 'INIT_BEG')
             end_t = self.p.getstr('config', 'INIT_END')

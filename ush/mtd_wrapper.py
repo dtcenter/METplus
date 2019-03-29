@@ -35,7 +35,6 @@ class MTDWrapper(ModeWrapper):
     def create_c_dict(self):
         self.c_dict = dict()
         self.c_dict['var_list'] = util.parse_var_list(self.p)
-        self.c_dict['LOOP_BY_INIT'] = self.p.getbool('config', 'LOOP_BY_INIT', True)
         self.c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
         self.c_dict['INPUT_BASE'] = self.p.getdir('INPUT_BASE')
         self.c_dict['OUTPUT_DIR'] = self.p.getdir('MTD_OUT_DIR', self.p.getdir('OUTPUT_BASE'))
