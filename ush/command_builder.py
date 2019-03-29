@@ -297,7 +297,7 @@ class CommandBuilder:
                 se = util.get_time_from_file(self.logger, f, template)
                 if se is not None:
                     # get valid time and check if it is within the time range
-                    file_valid_time = se.getValidTime("%Y%m%d%H%M")
+                    file_valid_time = se['valid'].strftime("%Y%m%d%H%M")
                     # skip if could not extract valid time
                     if file_valid_time == '':
                         continue
