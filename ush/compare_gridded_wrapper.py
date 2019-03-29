@@ -311,7 +311,8 @@ that reformat gridded data
                 @param time_info dictionary with time information
         """
         base_dir = self.c_dict['OUTPUT_DIR']
-        if self.c_dict['LOOP_BY_INIT']:
+        use_init = util.is_loop_by_init(self.p)
+        if use_init:
             out_dir = os.path.join(base_dir,
                                    time_info['init_fmt'], self.app_name)
         else:

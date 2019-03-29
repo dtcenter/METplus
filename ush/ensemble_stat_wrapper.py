@@ -47,7 +47,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict = dict()
 
         c_dict['var_list'] = util.parse_var_list(self.p)
-        c_dict['LOOP_BY_INIT'] = self.p.getbool('config', 'LOOP_BY_INIT', True)
         c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
         c_dict['ONCE_PER_FIELD'] = self.p.getbool('config',
                                                         'ENSEMBLE_STAT_ONCE_PER_FIELD',
