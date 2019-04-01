@@ -257,7 +257,7 @@ class ModeWrapper(CompareGriddedWrapper):
                 field = "{ name=\""+v_name + \
                              "\"; level=\""+v_level+"\"; "
 
-        field += v_extra+"}"
+        field += v_extra+" }"
         return field
 
 

@@ -232,7 +232,7 @@ that reformat gridded data
                 field = "{ name=\""+v_name + \
                              "\"; level=\""+v_level+"\"; "
 
-            field += cat_thresh + " " + v_extra+"}"
+            field += cat_thresh + " " + v_extra+" }"
             fields.append(field)
 
         # combine all fields into a comma separated string and return
