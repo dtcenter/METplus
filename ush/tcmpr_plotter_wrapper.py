@@ -69,7 +69,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
         # Optional arguments
         self.plot_config_file = p.getstr('config', 'CONFIG_FILE')
-        self.output_base_dir = p.getdir('TCMPR_PLOT_OUT_DIR')
+        self.output_base_dir = util.getdir(p, 'TCMPR_PLOT_OUT_DIR')
         self.prefix = p.getstr('config', 'PREFIX')
         self.title = p.getstr('config', 'TITLE')
         self.subtitle = p.getstr('config', 'SUBTITLE')
@@ -148,9 +148,9 @@ class TCMPRPlotterWrapper(CommandBuilder):
             if self.p.has_option('dir', 'MET_BUILD_BASE'):
                 if self.p.has_option('dir', 'MET_INSTALL_DIR'):
                     os.environ['MET_INSTALL_DIR'] = \
-                        self.p.getdir('MET_INSTALL_DIR')
+                        util.getdir(self.p, 'MET_INSTALL_DIR')
             else:
-                os.environ['MET_INSTALL_DIR'] = self.p.getdir('MET_INSTALL_DIR')
+                os.environ['MET_INSTALL_DIR'] = util.getdir(self.p, 'MET_INSTALL_DIR')
 
         # MET_BASE has always been defined in METplus, so it 'should'
         # exist, so we will throw an error, if it is not defined,
@@ -163,9 +163,9 @@ class TCMPRPlotterWrapper(CommandBuilder):
             met_base_tcmpr_script = \
                 os.path.join(os.environ['MET_BASE'], 'Rscripts/plot_tcmpr.R')
         else:
-            os.environ['MET_BASE'] = self.p.getdir('MET_BASE')
+            os.environ['MET_BASE'] = util.getdir(self.p, 'MET_BASE')
             met_base_tcmpr_script = \
-                os.path.join(self.p.getdir('MET_BASE'), 'Rscripts/plot_tcmpr.R')
+                os.path.join(util.getdir(self.p, 'MET_BASE'), 'Rscripts/plot_tcmpr.R')
 
         # RSCRIPTS_BASE introduced and used ONLY in met-6.0 release.
         # Will go away when we no longer support met-6.0 and earlier.
@@ -179,7 +179,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # running with met-6.0 and earlier. Which means RSCRIPTS_BASE
             # is required, so throw an error, if it is not defined.
             if self.p.has_option('dir', 'MET_BUILD_BASE'):
-                os.environ['RSCRIPTS_BASE'] = self.p.getdir('RSCRIPTS_BASE')
+                os.environ['RSCRIPTS_BASE'] = util.getdir(self.p, 'RSCRIPTS_BASE')
 
         # MET_BUILD_BASE has always been defined in METplus.
         # Will go away when we no longer support met-6.0 and earlier.
@@ -192,9 +192,9 @@ class TCMPRPlotterWrapper(CommandBuilder):
                              'scripts/Rscripts/plot_tcmpr.R')
         else:
             if self.p.has_option('dir', 'MET_BUILD_BASE'):
-                os.environ['MET_BUILD_BASE'] = self.p.getdir('MET_BUILD_BASE')
+                os.environ['MET_BUILD_BASE'] = util.getdir(self.p, 'MET_BUILD_BASE')
                 met_build_base_tcmpr_script = os.path.join(
-                    self.p.getdir('MET_BUILD_BASE'),
+                    util.getdir(self.p, 'MET_BUILD_BASE'),
                     'scripts/Rscripts/plot_tcmpr.R')
             else:
                 # Set to empty string since we test it later.
@@ -472,21 +472,4 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='TCMPRPlotterWrapper',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='TCMPRPlotterWrapper')
-        produtil.log.postmsg('TCMPRPlotterWrapper is starting')
-
-        # Read in the configuration object CONFIG
-        CONFIG = config_metplus.setup()
-
-        TCP = TCMPRPlotterWrapper(CONFIG, logger=None)
-        TCP.run_all_times()
-        produtil.log.postmsg('TCMPRPlotterWrapper completed')
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'TCMPRPlotterWrapper failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
+    util.run_stand_alone("tcmpr_plotter_wrapper", "TCMPRPlotter")

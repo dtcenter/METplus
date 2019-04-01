@@ -65,20 +65,20 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
         self.stat_list = util.getlist(p.getstr('config', 'STAT_LIST'))
         self.plot_data_plane_exe = os.path.join(
-            self.p.getdir('MET_INSTALL_DIR'),
+            util.getdir(self.p, 'MET_INSTALL_DIR'),
             'bin/plot_data_plane')
         self.convert_exe = util.getexe(p, 'CONVERT_EXE', logger)
         self.ncap2_exe = util.getexe(p, 'NCAP2_EXE', logger)
         self.ncdump_exe = util.getexe(p, 'NCDUMP_EXE', logger)
         self.rm_exe = util.getexe(p, "RM_EXE", logger)
-        met_install_dir = self.p.getdir('MET_INSTALL_DIR')
+        met_install_dir = util.getdir(p, 'MET_INSTALL_DIR')
         self.series_analysis_exe = os.path.join(met_install_dir,
                                                 'bin/series_analysis')
-        self.extract_tiles_dir = p.getdir('EXTRACT_OUT_DIR')
+        self.extract_tiles_dir = util.getdir(p, 'EXTRACT_OUT_DIR')
         self.series_lead_filtered_out_dir = \
-            p.getdir('SERIES_LEAD_FILTERED_OUT_DIR')
-        self.series_lead_out_dir = p.getdir('SERIES_LEAD_OUT_DIR')
-        self.tmp_dir = p.getdir('TMP_DIR')
+            util.getdir(p, 'SERIES_LEAD_FILTERED_OUT_DIR')
+        self.series_lead_out_dir = util.getdir(p, 'SERIES_LEAD_OUT_DIR')
+        self.tmp_dir = util.getdir(p, 'TMP_DIR')
         self.background_map = p.getbool('config', 'BACKGROUND_MAP')
         self.regrid_with_met_tool = \
             p.getbool('config', 'REGRID_USING_MET_TOOL')
@@ -1526,27 +1526,4 @@ class SeriesByLeadWrapper(CommandBuilder):
         util.rmtree(tmp_dir)
 
 if __name__ == "__main__":
-    """! Set up the logging, configuration launcher, and environment
-         variables.
-    """
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='SeriesByLeadWrapper',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='SeriesByLeadWrapper')
-        produtil.log.postmsg('SeriesByLeadWrapper is starting')
-
-        # Read in the configuration object CONFIG
-        CONFIG = config_metplus.setup()
-        if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = CONFIG.getdir('MET_BASE')
-
-        SBL = SeriesByLeadWrapper(CONFIG, logger=None)
-        SBL.run_all_times()
-
-        produtil.log.postmsg('series analysis by lead time completed')
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'SeriesByLeadWrapper failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
+        util.run_stand_alone("series_by_lead_wrapper", "SeriesByLead")
