@@ -61,12 +61,8 @@ class PB2NCWrapper(CommandBuilder):
         c_dict['OFFSETS'] = util.getlistint(self.p.getstr('config', 'PB2NC_OFFSETS', '0'))
 
         # Directories
-        c_dict['APP_PATH'] = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
-                                           'bin/pb2nc')
-        c_dict['APP_NAME'] = os.path.basename(c_dict['APP_PATH'])
-
-        c_dict['OBS_INPUT_DIR'] = self.p.getdir('PB2NC_INPUT_DIR')
-        c_dict['OUTPUT_DIR'] = self.p.getdir('PB2NC_OUTPUT_DIR')
+        c_dict['OBS_INPUT_DIR'] = util.getdir(self.p, 'PB2NC_INPUT_DIR')
+        c_dict['OUTPUT_DIR'] = util.getdir(self.p, 'PB2NC_OUTPUT_DIR')
 
         c_dict['OBS_INPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates', 'PB2NC_INPUT_TEMPLATE')
         c_dict['OUTPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates', 'PB2NC_OUTPUT_TEMPLATE')

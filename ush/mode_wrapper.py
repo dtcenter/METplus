@@ -22,7 +22,7 @@ class ModeWrapper(CompareGriddedWrapper):
 
     def __init__(self, p, logger):
         super(ModeWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
+        self.app_path = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR'),
                                      'bin/mode')
         self.app_name = os.path.basename(self.app_path)
         self.c_dict = self.create_c_dict()
@@ -37,20 +37,20 @@ class ModeWrapper(CompareGriddedWrapper):
 
         c_dict['CONFIG_FILE'] = self.p.getstr('config', 'MODE_CONFIG')
         c_dict['OBS_INPUT_DIR'] = \
-          self.p.getdir('OBS_MODE_INPUT_DIR')
+          util.getdir(self.p, 'OBS_MODE_INPUT_DIR')
         c_dict['OBS_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'OBS_MODE_INPUT_TEMPLATE')
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'OBS_MODE_INPUT_DATATYPE', '')
         c_dict['FCST_INPUT_DIR'] = \
-          self.p.getdir('FCST_MODE_INPUT_DIR')
+          util.getdir(self.p, 'FCST_MODE_INPUT_DIR')
         c_dict['FCST_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'FCST_MODE_INPUT_TEMPLATE')
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'FCST_MODE_INPUT_DATATYPE', '')
-        c_dict['OUTPUT_DIR'] = self.p.getdir('MODE_OUT_DIR')
+        c_dict['OUTPUT_DIR'] = util.getdir(self.p, 'MODE_OUT_DIR')
         c_dict['ONCE_PER_FIELD'] = True
         c_dict['QUILT'] = self.p.getbool('config', 'MODE_QUILT', False)
         fcst_conv_radius, obs_conv_radius = self.handle_fcst_and_obs_field('MODE_CONV_RADIUS',

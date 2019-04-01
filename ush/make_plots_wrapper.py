@@ -178,10 +178,10 @@ class MakePlotsWrapper(CommandBuilder):
         return loop_beg_hour, loop_end_hour, loop_inc
        
     def get_plotting_info(self):
-        plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
-        stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
+        plotting_scripts_dir = util.getdir(self.p, 'PLOTTING_SCRIPTS_DIR')
+        stat_files_input_dir = util.getdir(self.p, 'STAT_FILES_INPUT_DIR')
         self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
-        plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
+        plotting_out_dir = util.getdir(self.p, 'PLOTTING_OUT_DIR')
         self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
         plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
         self.add_env_var("PLOT_STATS_LIST", plot_stats_list)

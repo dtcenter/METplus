@@ -72,7 +72,7 @@ def main():
 
     # set staging dir to OUTPUT_BASE/stage if not set
     if not p.has_option('dir', 'STAGING_DIR'):
-        p.set('dir', 'STAGING_DIR', os.path.join(p.getdir('OUTPUT_BASE'),"stage"))
+        p.set('dir', 'STAGING_DIR', os.path.join(util.getdir(p, 'OUTPUT_BASE'),"stage"))
 
     # create temp dir if it doesn't exist already
     tmp_dir = util.getdir(p, 'TMP_DIR', logger)
@@ -94,7 +94,7 @@ def main():
 
     # This is available in each subprocess from os.system BUT
     # we also set it in each process since they may be called stand alone.
-    os.environ['MET_BASE'] = p.getdir('MET_BASE')
+    os.environ['MET_BASE'] = util.getdir(p, 'MET_BASE')
 
     # Use config object to get the list of processes to call
     process_list = util.getlist(p.getstr('config', 'PROCESS_LIST'))
@@ -146,9 +146,10 @@ def main():
         exit()
 
     # scrub staging directory if requested
-    if p.getbool('config', 'SCRUB_STAGING_DIR', False) and os.path.exists(p.getdir('STAGING_DIR')):
-        logger.info("Scrubbing staging dir: {}".format(p.getdir('STAGING_DIR')))
-        shutil.rmtree(p.getdir('STAGING_DIR'))
+    if p.getbool('config', 'SCRUB_STAGING_DIR', False) and os.path.exists(util.getdir(p, 'STAGING_DIR')):
+        staging_dir = util.getdir(p, 'STAGING_DIR')
+        logger.info("Scrubbing staging dir: {}".format(staging_dir))
+        shutil.rmtree(staging_dir)
 
     logger.info('METplus has successfully finished running.')
 

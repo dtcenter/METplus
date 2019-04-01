@@ -28,7 +28,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
     """
     def __init__(self, p, logger):
         super(EnsembleStatWrapper, self).__init__(p, logger)
-        self.met_install_dir = p.getdir('MET_INSTALL_DIR')
+        self.met_install_dir = util.getdir(p, 'MET_INSTALL_DIR')
         self.app_path = os.path.join(self.met_install_dir, 'bin/ensemble_stat')
         self.app_name = os.path.basename(self.app_path)
 
@@ -99,7 +99,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE'))
 
 
-        c_dict['OUTPUT_DIR'] =  self.p.getdir('ENSEMBLE_STAT_OUT_DIR')
+        c_dict['OUTPUT_DIR'] =  util.getdir(self.p, 'ENSEMBLE_STAT_OUT_DIR')
 
         c_dict['OBS_POINT_EXACT_VALID_TIME'] = \
             self.p.getbool('config','OBS_POINT_EXACT_VALID_TIME',True)

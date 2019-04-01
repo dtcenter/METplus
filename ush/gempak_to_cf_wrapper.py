@@ -84,10 +84,10 @@ class GempakToCFWrapper(CommandBuilder):
                 @param time_info dictionary containing timing information
         """
         valid_time = time_info['valid']
-        input_dir = self.p.getdir('GEMPAKTOCF_INPUT_DIR')
+        input_dir = util.getdir(self.p, 'GEMPAKTOCF_INPUT_DIR')
         input_template = util.getraw_interp(self.p, 'filename_templates',
                                         'GEMPAKTOCF_INPUT_TEMPLATE')
-        output_dir = self.p.getdir('GEMPAKTOCF_OUTPUT_DIR')
+        output_dir = util.getdir(self.p, 'GEMPAKTOCF_OUTPUT_DIR')
         output_template = util.getraw_interp(self.p, 'filename_templates',
                                         'GEMPAKTOCF_OUTPUT_TEMPLATE')
 

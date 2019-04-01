@@ -335,7 +335,7 @@ def set_logvars(config, logger=None):
     else:
         log_filenametimestamp=''
 
-    log_dir = config.getdir('LOG_DIR')
+    log_dir = getdir(config, 'LOG_DIR')
 
     # NOTE: LOG_METPLUS or metpluslog is meant to include the absolute path
     #       and the metpluslog_filename,
@@ -406,7 +406,7 @@ def get_logger(config, sublog=None):
     """
 
     # Retrieve all logging related parameters from the param file
-    log_dir = config.getdir('LOG_DIR')
+    log_dir = getdir(config, 'LOG_DIR')
     log_level = config.getstr('config', 'LOG_LEVEL')
 
     # TODO review, use builtin produtil.fileop vs. mkdir_p ?
@@ -1683,7 +1683,7 @@ def preprocess_file(filename, data_type, p, logger=None):
     if filename is None or filename == "":
         return None
 
-    stage_dir = p.getdir('STAGING_DIR')
+    stage_dir = getdir(p, 'STAGING_DIR')
     # TODO: move valid_extensions so it can be used by more than one function
     valid_extensions = [ '.gz', '.bz2', '.zip' ]
     if os.path.isfile(filename):
@@ -1800,7 +1800,7 @@ def run_stand_alone(module_name, app_name):
         wrapper_class = getattr(module, app_name + "Wrapper")
         wrapper = wrapper_class(p, logger)
 
-        os.environ['MET_BASE'] = p.getdir('MET_BASE')
+        os.environ['MET_BASE'] = getdir(p, 'MET_BASE')
 
         produtil.log.postmsg(app_name + ' Calling run_all_times.')
 

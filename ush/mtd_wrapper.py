@@ -23,7 +23,7 @@ class MTDWrapper(ModeWrapper):
 
     def __init__(self, p, logger):
         super(MTDWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
+        self.app_path = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR'),
                                      'bin/mtd')
         self.app_name = os.path.basename(self.app_path)
         self.fcst_file = None
@@ -39,7 +39,8 @@ class MTDWrapper(ModeWrapper):
         #  a time window. Does not refer to time series of files
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
-        c_dict['OUTPUT_DIR'] = self.p.getdir('MTD_OUT_DIR', self.p.getdir('OUTPUT_BASE'))
+        c_dict['OUTPUT_DIR'] = util.getdir(self.p, 'MTD_OUT_DIR',
+                                           util.getdir(self.p, 'OUTPUT_BASE'))
         c_dict['CONFIG_FILE'] = self.p.getstr('config', 'MTD_CONFIG', '')
         c_dict['MIN_VOLUME'] = self.p.getstr('config', 'MTD_MIN_VOLUME', '2000')
         c_dict['SINGLE_RUN'] = self.p.getbool('config', 'MTD_SINGLE_RUN', False)
@@ -49,7 +50,7 @@ class MTDWrapper(ModeWrapper):
         if not c_dict['SINGLE_RUN'] or c_dict['SINGLE_DATA_SRC'] == 'FCST':
             c_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
             c_dict['FCST_INPUT_DIR'] = \
-              self.p.getdir('FCST_MTD_INPUT_DIR', c_dict['INPUT_BASE'])
+              util.getdir(self.p, 'FCST_MTD_INPUT_DIR', c_dict['INPUT_BASE'])
             c_dict['FCST_INPUT_TEMPLATE'] = \
               util.getraw_interp(self.p, 'filename_templates',
                                  'FCST_MTD_INPUT_TEMPLATE')
@@ -80,7 +81,7 @@ class MTDWrapper(ModeWrapper):
         if not c_dict['SINGLE_RUN'] or c_dict['SINGLE_DATA_SRC'] == 'OBS':
             c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
             c_dict['OBS_INPUT_DIR'] = \
-            self.p.getdir('OBS_MTD_INPUT_DIR', c_dict['INPUT_BASE'])
+            util.getdir(self.p, 'OBS_MTD_INPUT_DIR', c_dict['INPUT_BASE'])
             c_dict['OBS_INPUT_TEMPLATE'] = \
               util.getraw_interp(self.p, 'filename_templates',
                                    'OBS_MTD_INPUT_TEMPLATE')

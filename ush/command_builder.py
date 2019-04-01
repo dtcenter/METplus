@@ -72,7 +72,7 @@ class CommandBuilder:
             self.add_env_var(env_var, self.p.getstr('user_env_vars', env_var))
 
         # set MET_TMP_DIR to conf TMP_DIR
-        self.add_env_var('MET_TMP_DIR', self.p.getdir('TMP_DIR'))
+        self.add_env_var('MET_TMP_DIR', util.getdir(self.p, 'TMP_DIR'))
 
     def set_debug(self, debug):
         self.debug = debug

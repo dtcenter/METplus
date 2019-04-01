@@ -75,10 +75,10 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'OBS_POINT_STAT_INPUT_DATATYPE', '')
 
-        c_dict['FCST_INPUT_DIR'] = self.p.getdir('FCST_POINT_STAT_INPUT_DIR')
-        c_dict['OBS_INPUT_DIR'] = self.p.getdir('OBS_POINT_STAT_INPUT_DIR')
+        c_dict['FCST_INPUT_DIR'] = util.getdir(self.p, 'FCST_POINT_STAT_INPUT_DIR')
+        c_dict['OBS_INPUT_DIR'] = util.getdir(self.p, 'OBS_POINT_STAT_INPUT_DIR')
         c_dict['OUTPUT_DIR'] = \
-            self.p.getdir('POINT_STAT_OUTPUT_DIR')
+            util.getdir(self.p, 'POINT_STAT_OUTPUT_DIR')
 
         # Configuration
         c_dict['CONFIG_FILE'] = \

@@ -28,7 +28,7 @@ from command_builder import CommandBuilder
 class StatAnalysisWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(StatAnalysisWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
+        self.app_path = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR'),
                                      'bin/stat_analysis')
         self.app_name = os.path.basename(self.app_path)
         if self.logger is None:
@@ -64,8 +64,8 @@ class StatAnalysisWrapper(CommandBuilder):
         ob_type = self.p.getstr('config', 'OB_TYPE')
         self.add_env_var("MODEL_TYPE", model_type)
         self.add_env_var("OB_TYPE", ob_type)
-        stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_lookin_dir = util.getdir(self.p, 'STAT_ANALYSIS_LOOKIN_DIR')
+        stat_analysis_out_dir = util.getdir(self.p, 'STAT_ANALYSIS_OUT_DIR')
         #filtering times based on if files made based on init_time or valid_time
         if init_time == -1:
             self.logger.info("Valid on: "+valid_time)
@@ -119,8 +119,8 @@ class StatAnalysisWrapper(CommandBuilder):
         ob_type = self.p.getstr('config', 'OB_TYPE')
         self.add_env_var("MODEL_TYPE", model_type)
         self.add_env_var("OB_TYPE", ob_type)
-        stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_lookin_dir = util.getdir(self.p, 'STAT_ANALYSIS_LOOKIN_DIR')
+        stat_analysis_out_dir = util.getdir(self.p, 'STAT_ANALYSIS_OUT_DIR')
         if init_time == -1:
             date_YYYYMMDD = valid_time[0:8]
             valid_beg_hour = self.p.getstr('config', 'VALID_BEG_HOUR')
@@ -230,7 +230,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 loop_beg_hour = self.p.getint('config', 'VALID_BEG_HOUR')
                 loop_end_hour = self.p.getint('config', 'VALID_END_HOUR')
                 loop_inc = self.p.getint('config', 'VALID_INCREMENT')
-            stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
+            stat_analysis_out_dir = util.getdir(self.p, 'STAT_ANALYSIS_OUT_DIR')
             region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
             lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
             model_list = self.parse_model_list()
@@ -342,7 +342,7 @@ class StatAnalysisWrapper(CommandBuilder):
                loop_beg_hour = self.p.getint('config', 'INIT_BEG_HOUR')
                loop_end_hour = self.p.getint('config', 'INIT_END_HOUR')
                loop_inc = self.p.getint('config', 'INIT_INCREMENT')
-           stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
+           stat_analysis_out_dir = util.getdir(self.p, 'STAT_ANALYSIS_OUT_DIR')
            region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
            lead_list = util.getlistint(self.p.getstr('config', 'LEAD_LIST'))
            model_list = self.parse_model_list()

@@ -357,7 +357,7 @@ that reformat gridded data
 
 
     def write_list_file(self, filename, file_list):
-        list_dir = os.path.join(self.p.getdir('STAGING_DIR'), 'file_lists')
+        list_dir = os.path.join(util.getdir(self.p, 'STAGING_DIR'), 'file_lists')
         list_path = os.path.join(list_dir, filename)
 
         if not os.path.exists(list_dir):
