@@ -31,34 +31,15 @@ FORMATTING_VALUE_DELIMITER = "="
 FORMAT_STRING = "fmt"
 
 SHIFT_STRING = "shift"
+TRUNCATE_STRING = "truncate"
 
 VALID_STRING = "valid"
 LEAD_STRING = "lead"
 INIT_STRING = "init"
-LEVEL_STRING = "level"
-CYCLE_STRING = "cycle"
 OFFSET_STRING = "offset"
-# These three were added in response to the tropical cyclone use case
-DATE_STRING = "date"
-REGION_STRING = "region"
-CYCLONE_STRING = "cyclone"
-MISC_STRING = "misc"
-
-LEAD_LEVEL_FORMATTING_DELIMITER = "%"
-# Use the same formatting delimiter used for level:
-CYCLE_OFFSET_FORMATTING_DELIMITER = LEAD_LEVEL_FORMATTING_DELIMITER
-
-SECONDS_PER_HOUR = 3600.
-MINUTES_PER_HOUR = 60.
-SECONDS_PER_MINUTE = 60.
-HOURS_PER_DAY = 24.
-
-TWO_DIGIT_PAD = 2
-THREE_DIGIT_PAD = 3
 
 GLOBAL_LOGGER = None
 
-# TODO: how to handle %H being 2 precision in YMDH but 1 in HMS
 length_dict = { '%Y': 4,
                 '%m' : 2,
                 '%d' : 2,
@@ -117,6 +98,7 @@ class StringSub:
         self.tmpl = tmpl
         self.kwargs = kwargs
         self.shift_seconds = 0
+        self.truncate_seconds = 0
 
         if self.kwargs is not None:
             for key, value in kwargs.iteritems():
@@ -124,15 +106,27 @@ class StringSub:
                 setattr(self, key, value)
 
 
-    def getShiftTime(self, split_item):
+    def getSecondsFromTemplate(self, split_item):
         shift_split_string = \
             split_item.split(FORMATTING_VALUE_DELIMITER)
 
         if len(shift_split_string) != 2:
             return
 
-        shift_seconds = shift_split_string[1]
-        self.shift_seconds = int(shift_seconds)
+        seconds = shift_split_string[1]
+        return int(seconds)
+
+
+    def roundTimeDown(self, obj):
+        if self.truncate_seconds == 0:
+            return obj
+
+        trunc = self.truncate_seconds
+        seconds = (obj.replace(tzinfo=None) - obj.min).seconds
+        rounding = seconds // trunc * trunc
+        new_obj  = obj + datetime.timedelta(0, rounding-seconds,
+                                            -obj.microsecond)
+        return new_obj
 
 
     def format_one_time_item(self, item, t, c):
@@ -202,6 +196,9 @@ class StringSub:
             if isinstance(obj, datetime.datetime):
                 # shift date time if set
                 obj = obj + datetime.timedelta(seconds=self.shift_seconds)
+
+                # truncate date time if set
+                obj = self.roundTimeDown(obj)
 
                 return obj.strftime(fmt)
             # if input is integer, format with H, M, and S
@@ -321,10 +318,15 @@ class StringSub:
                                   " for template: " + self.tmpl)
                 exit(1)
 
-            # shift if set, get that value before handling formatting
+            # if shift is set, get that value before handling formatting
             for split_item in split_string:
                 if split_item.startswith(SHIFT_STRING):
-                    self.getShiftTime(split_item)
+                    self.shift_seconds = self.getSecondsFromTemplate(split_item)
+
+            # if truncate is set, get that value before handling formatting
+            for split_item in split_string:
+                if split_item.startswith(TRUNCATE_STRING):
+                    self.truncate_seconds = self.getSecondsFromTemplate(split_item)
 
             # format times appropriately and add to replacement_dict
             formatted = False
@@ -345,188 +347,11 @@ class StringSub:
 
             # reset shift seconds so it doesn't apply to next match
             self.shift_seconds = 0
+            self.truncate_seconds = 0
 
         # Replace regex with properly formatted information
         self.tmpl = multiple_replace(replacement_dict, self.tmpl)
         return self.tmpl
-
-    # TODO: Remove this after wrapper refactor
-    def create_grid2obs_regex(self):
-        """! Create the regex that describes a grid to obs filename based on
-             what is defined in the config file's filename template section.
-             Similar logic to doStringSub() except
-             replace the date, cycle, lead, and offset with the appropriate
-             regex.
-
-        """
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
-        # The . matches any single character except newline, and the
-        # following + matches 1 or more occurrence of preceding expression.
-        # The ? after the .+ makes it a lazy match so that it stops
-        # after the first "}" instead of continuing to match as many
-        # characters as possible
-
-        # findall searches through the string and finds all non-overlapping
-        # matches and returns the group
-        # match_list is a list with the contents being the data between the
-        # curly braces
-        match_list = re.findall('\{(.+?)\}', self.tmpl)
-
-        # finditer gets the start and end indices
-        # Iterate over each match to get the starting and ending indices
-        matches = re.finditer('\{(.+?)\}', self.tmpl)
-        match_start_end_list = []
-        for match in matches:
-            match_start_end_list.append((match.start(), match.end()))
-
-        if match_list == 0:
-            # Log and exit
-            self.logger.error("No matches found for template: " +
-                              self.tmpl)
-            exit(0)
-        elif len(match_list) != len(match_start_end_list):
-            # Log and exit
-            self.logger.error("match_list and match_start_end_list should " +
-                              "have the same length for template: " +
-                              self.tmpl)
-            exit(0)
-        else:
-            # No times to compute, create the regex expressions that describe
-            # the date (YYYY, YYYYMM, YYYYMMMDD, or YYYYMMDDhh),  cycle, lead
-            # and offset portions of the filename template (as applicable).
-            if VALID_STRING in self.kwargs:
-                self.kwargs[VALID_STRING] = self.valid
-            # Cycle only
-            elif CYCLE_STRING in self.kwargs:
-                self.kwargs[CYCLE_STRING] = self.cycle
-
-            # Valid and cycle only
-            elif (VALID_STRING in self.kwargs and
-                  CYCLE_STRING in self.kwargs):
-
-                self.kwargs[VALID_STRING] = self.valid
-                self.kwargs[CYCLE_STRING] = self.cycle
-
-            # Cycle and lead
-            elif (CYCLE_STRING in self.kwargs and
-                  LEAD_STRING in self.kwargs):
-                self.kwargs[CYCLE_STRING] = self.cycle
-                self.kwargs[LEAD_STRING] = self.lead
-            # Cycle and offset
-            elif (CYCLE_STRING in self.kwargs and
-                  OFFSET_STRING in self.kwargs):
-                self.kwargs[CYCLE_STRING] = self.date
-                self.kwargs[OFFSET_STRING] = self.region
-            # Valid and lead
-            elif (VALID_STRING in self.kwargs and
-                  LEAD_STRING in self.kwargs):
-                self.kwargs[VALID_STRING] = self.valid
-                self.kwargs[LEAD_STRING] = self.lead
-            # init and lead
-            # This combination hasn't been observed, but including it
-            # in the event it is needed.
-            elif (INIT_STRING in self.kwargs and
-                  LEAD_STRING in self.kwargs):
-                self.kwargs[INIT_STRING] = self.init
-                self.kwargs[LEAD_STRING] = self.lead
-
-            # Cycle, lead, and offset
-            elif (CYCLE_STRING in self.kwargs and
-                  LEAD_STRING in self.kwargs and
-                  OFFSET_STRING in self.kwargs):
-                self.kwargs[CYCLE_STRING] = self.cycle
-                self.kwargs[LEAD_STRING] = self.lead
-                self.kwargs[OFFSET_STRING] = self.offset
-
-            # A dictionary that will contain the string to replace (key)
-            # and the string to replace it with (value)
-            replacement_dict = {}
-
-            # Search for the FORMATTING_DELIMITER within the first string
-            for index, match in enumerate(match_list):
-                split_string = match.split(FORMATTING_DELIMITER)
-
-                # valid, init, lead, etc.
-                # print split_string[0]
-                # value e.g. 2016012606, 3
-                # print (self.kwargs).get(split_string[0], None)
-
-                # Formatting is requested or length is requested
-                if len(split_string) == 2:
-
-                    # split_string[0] holds the key (e.g. "cycle",
-                    # "offset", etc)
-                    if split_string[0] not in self.kwargs.keys():
-                        # Log and continue
-                        self.logger.error("The key " + split_string[0] +
-                                          " does not exist for the template: " +
-                                          self.tmpl)
-
-                    # Key is in the dictionary
-                    else:
-                        # Check for formatting/length request by splitting on
-                        # FORMATTING_VALUE_DELIMITER
-                        # split_string[1] holds the formatting/length
-                        # information (e.g. "fmt=%Y%m%d", "len=3")
-                        format_split_string = \
-                            split_string[1].split(FORMATTING_VALUE_DELIMITER)
-                        # Check for requested FORMAT_STRING
-                        # format_split_string[0] holds the formatting/length
-                        # value delimiter (e.g. "fmt", "len")
-                        if format_split_string[0] == FORMAT_STRING:
-                            if split_string[0] == VALID_STRING:
-                                value = "([0-9]{10})"
-                                string_to_replace = \
-                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
-                                    TEMPLATE_IDENTIFIER_END
-                                replacement_dict[string_to_replace] = value
-                            elif split_string[0] == INIT_STRING:
-                                value = "([0-9]{8})"
-                                string_to_replace = \
-                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
-                                    TEMPLATE_IDENTIFIER_END
-                                replacement_dict[string_to_replace] = value
-                            elif split_string[0] == CYCLE_STRING:
-                                value = "([0-9]{2,3})"
-                                string_to_replace = \
-                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
-                                    TEMPLATE_IDENTIFIER_END
-                                replacement_dict[string_to_replace] = value
-                            elif split_string[0] == LEAD_STRING:
-                                value = "([0-9]{1,3})"
-                                string_to_replace = \
-                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
-                                    TEMPLATE_IDENTIFIER_END
-                                replacement_dict[string_to_replace] = value
-                            elif split_string[0] == OFFSET_STRING:
-                                value = "([0-9]{2,3})"
-                                string_to_replace = \
-                                    TEMPLATE_IDENTIFIER_BEGIN + match + \
-                                    TEMPLATE_IDENTIFIER_END
-                                replacement_dict[string_to_replace] = value
-
-                # No formatting or length is requested
-                elif len(split_string) == 1:
-
-                    # Add back the template identifiers to the matched
-                    # string to replace and add the key, value pair to the
-                    # dictionary
-                    string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + \
-                                        TEMPLATE_IDENTIFIER_END
-                    replacement_dict[string_to_replace] = \
-                        self.kwargs.get(split_string[0], None)
-
-            # Replace regex with properly formatted information
-            temp_str = multiple_replace(replacement_dict, self.tmpl)
-
-            # Add the $ to the end of the filename to
-            # ensure that no other files with unorthodox extensions
-            #  (e.g. file1.grb2.idx) are matched, thereby improving performance.
-            self.tmpl = temp_str + "$"
-            return self.tmpl
-
 
 
 class StringExtract:
@@ -636,7 +461,7 @@ class StringExtract:
                         if fmt_len == -1:
                             return None
                         # extract string that corresponds to format
-                    if items[0] == 'shift':
+                    if items[0] == SHIFT_STRING:
                         shift = int(items[1])
                         self.logger.warning("Shift for {} is {}. Shift not yet supported".format(identifier, shift))
                         shift_dict[identifier] = shift
@@ -684,7 +509,7 @@ class StringExtract:
 #        offset['S'] = 0
 
         for key, value in match_dict.iteritems():
-            if key.startswith('valid'):
+            if key.startswith(VALID_STRING):
                 valid[key.split('+')[1]] = int(value)
 
         if valid['Y'] != -1 and valid['m'] != -1 and valid['d'] != -1:
@@ -695,7 +520,7 @@ class StringExtract:
                                           valid['M'])
 
         for key, value in match_dict.iteritems():
-            if key.startswith('init'):
+            if key.startswith(INIT_STRING):
                 init[key.split('+')[1]] = int(value)
 
         if init['Y'] != -1 and init['m'] != -1 and init['d'] != -1:
@@ -706,14 +531,14 @@ class StringExtract:
                                               init['M'])
 
         for key, value in match_dict.iteritems():
-            if key.startswith('lead'):
+            if key.startswith(LEAD_STRING):
                 lead[key.split('+')[1]] = int(value)
 
         lead_seconds = lead['H'] * 3600 + lead['M'] * 60 + lead['S']
         output_dict['lead'] = lead_seconds
 
         for key, value in match_dict.iteritems():
-            if key.startswith('offset'):
+            if key.startswith(OFFSET_STRING):
                 offset[key.split('+')[1]] = int(value)
 
         output_dict['offset'] = offset['H']
