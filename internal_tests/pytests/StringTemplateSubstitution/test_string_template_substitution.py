@@ -471,6 +471,7 @@ def test_create_grid2obs_regex_gdas():
 
 
 def test_create_grid2obs_regex_hrrr():
+    pytest.skip('deprecated function')
     # Test that the regex created from a template is what is expected
     logger = logging.getLogger("test")
     templ = \
@@ -488,6 +489,7 @@ def test_create_grid2obs_regex_hrrr():
 
 
 def test_create_grid2obs_regex_all():
+    pytest.skip('deprecated function')
     # Test that the regex created from the template that has valid
     # cycle, lead and offset is correct (expected).
     logger = logging.getLogger("test")
