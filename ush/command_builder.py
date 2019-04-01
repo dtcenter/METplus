@@ -402,59 +402,13 @@ class CommandBuilder:
         self.cmdrunner.run_cmd(cmd, app_name=self.app_name)
 
 
+    def run_at_time(self, input_dict):
+        self.logger.error('run_at_time not implemented for {} wrapper. '
+                          'Cannot run with LOOP_ORDER = times'.format(self.app_name))
+        exit(1)
+
+
     def run_all_times(self):
         """!Loop over time range specified in conf file and
         call METplus wrapper for each time"""
-        use_init = util.is_loop_by_init(self.p)
-        if use_init:
-            time_format = self.p.getstr('config', 'INIT_TIME_FMT')
-            start_t = self.p.getstr('config', 'INIT_BEG')
-            end_t = self.p.getstr('config', 'INIT_END')
-            time_interval = self.p.getint('config', 'INIT_INCREMENT')
-        else:
-            time_format = self.p.getstr('config', 'VALID_TIME_FMT')
-            start_t = self.p.getstr('config', 'VALID_BEG')
-            end_t = self.p.getstr('config', 'VALID_END')
-            time_interval = self.p.getint('config', 'VALID_INCREMENT')
-        
-        if time_interval < 60:
-            self.logger.error("time_interval parameter must be greater than 60 seconds")
-            exit(1)
-
-        clock_time_obj = datetime.strptime(self.p.getstr('config', 'CLOCK_TIME'), '%Y%m%d%H%M%S')
-        loop_time = util.get_time_obj(start_t, time_format,
-                                      clock_time_obj, self.logger)
-        end_time = util.get_time_obj(end_t, time_format,
-                                     clock_time_obj, self.logger)
-        while loop_time <= end_time:
-            run_time = loop_time.strftime("%Y%m%d%H%M")
-            self.logger.info("****************************************")
-            self.logger.info("* RUNNING METplus")
-            if use_init:
-                self.logger.info("*  at init time: " + run_time)
-                self.p.set('config', 'CURRENT_INIT_TIME', run_time)
-                os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
-            else:
-                self.logger.info("*  at valid time: " + run_time)
-                self.p.set('config', 'CURRENT_VALID_TIME', run_time)
-                os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
-            self.logger.info("****************************************")
-            input_dict = {}
-            input_dict['now'] = clock_time_obj
-            # Set valid time to -1 if using init and vice versa
-            if use_init:
-                self.p.set('config', 'CURRENT_INIT_TIME', run_time)
-                os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
-                input_dict['init'] = loop_time
-            else:
-                self.p.set('config', 'CURRENT_VALID_TIME', run_time)
-                os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
-                input_dict['valid'] = loop_time
-
-            self.run_at_time(input_dict)
-            loop_time += timedelta(seconds=time_interval)
-
-
-
-#if __name__ == "__main__":
-#  main()
+        util.loop_over_times_and_call(self.p, self.logger, self)

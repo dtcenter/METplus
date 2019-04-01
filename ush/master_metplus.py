@@ -99,8 +99,6 @@ def main():
     # Use config object to get the list of processes to call
     process_list = util.getlist(p.getstr('config', 'PROCESS_LIST'))
 
-    clock_time_obj = datetime.strptime(p.getstr('config', 'CLOCK_TIME'), '%Y%m%d%H%M%S')
-
     # Keep this comment.
     # When running commands in the process_list, reprocess the
     # original command line using (item))[sys.argv[1:]].
@@ -140,53 +138,7 @@ def main():
             process.run_all_times()
 
     elif loop_order == "times":
-        use_init = util.is_loop_by_init(p)
-        if use_init:
-            time_format = p.getstr('config', 'INIT_TIME_FMT')
-            start_t = util.getraw_interp(p, 'config', 'INIT_BEG')
-            end_t = util.getraw_interp(p, 'config', 'INIT_END')
-            time_interval = p.getint('config', 'INIT_INCREMENT')
-        else:
-            time_format = p.getstr('config', 'VALID_TIME_FMT')
-            start_t = util.getraw_interp(p, 'config', 'VALID_BEG')
-            end_t = util.getraw_interp(p, 'config', 'VALID_END')
-            time_interval = p.getint('config', 'VALID_INCREMENT')
-
-        if time_interval < 60:
-            logger.error("time_interval parameter must be "
-                  "greater than 60 seconds")
-            exit(1)
-
-        loop_time = util.get_time_obj(start_t, time_format,
-                                      clock_time_obj, logger)
-        end_time = util.get_time_obj(end_t, time_format,
-                                     clock_time_obj, logger)
-        while loop_time <= end_time:
-            run_time = loop_time.strftime("%Y%m%d%H%M")
-            logger.info("****************************************")
-            logger.info("* RUNNING METplus")
-            if use_init:
-                logger.info("*  at init time: " + run_time)
-                p.set('config', 'CURRENT_INIT_TIME', run_time)
-                os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
-            else:
-                logger.info("*  at valid time: " + run_time)
-                p.set('config', 'CURRENT_VALID_TIME', run_time)
-                os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
-            logger.info("****************************************")
-            for process in processes:
-                input_dict = {}
-                input_dict['now'] = clock_time_obj
-
-                if use_init:
-                    input_dict['init'] = loop_time
-                else:
-                    input_dict['valid'] = loop_time
-
-                process.run_at_time(input_dict)
-                process.clear()
-
-            loop_time += timedelta(seconds=time_interval)
+        util.loop_over_times_and_call(p, logger, processes)
 
     else:
         logger.error("Invalid LOOP_METHOD defined. " + \

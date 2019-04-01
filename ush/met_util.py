@@ -123,6 +123,61 @@ def get_time_obj(t, fmt, clock_time, logger=None):
     return datetime.datetime.strptime(time_str, fmt)
 
 
+def loop_over_times_and_call(p, logger, processes):
+    clock_time_obj = datetime.datetime.strptime(p.getstr('config', 'CLOCK_TIME'),
+                                       '%Y%m%d%H%M%S')
+    use_init = is_loop_by_init(p)
+    if use_init:
+        time_format = p.getstr('config', 'INIT_TIME_FMT')
+        start_t = getraw_interp(p, 'config', 'INIT_BEG')
+        end_t = getraw_interp(p, 'config', 'INIT_END')
+        time_interval = p.getint('config', 'INIT_INCREMENT')
+    else:
+        time_format = p.getstr('config', 'VALID_TIME_FMT')
+        start_t = getraw_interp(p, 'config', 'VALID_BEG')
+        end_t = getraw_interp(p, 'config', 'VALID_END')
+        time_interval = p.getint('config', 'VALID_INCREMENT')
+
+    if time_interval < 60:
+        logger.error("time_interval parameter must be "
+              "greater than 60 seconds")
+        exit(1)
+
+    loop_time = get_time_obj(start_t, time_format,
+                             clock_time_obj, logger)
+    end_time = get_time_obj(end_t, time_format,
+                            clock_time_obj, logger)
+
+    while loop_time <= end_time:
+        run_time = loop_time.strftime("%Y%m%d%H%M")
+        logger.info("****************************************")
+        logger.info("* RUNNING METplus")
+        if use_init:
+            logger.info("*  at init time: " + run_time)
+            p.set('config', 'CURRENT_INIT_TIME', run_time)
+            os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
+        else:
+            logger.info("*  at valid time: " + run_time)
+            p.set('config', 'CURRENT_VALID_TIME', run_time)
+            os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
+        logger.info("****************************************")
+        if not isinstance(processes, list):
+            processes = [processes]
+        for process in processes:
+            input_dict = {}
+            input_dict['now'] = clock_time_obj
+
+            if use_init:
+                input_dict['init'] = loop_time
+            else:
+                input_dict['valid'] = loop_time
+
+            process.run_at_time(input_dict)
+            process.clear()
+
+        loop_time += datetime.timedelta(seconds=time_interval)
+
+
 def get_version_number():
     # read version file and return value
     version_file_path = os.path.join(dirname(dirname(realpath(__file__))),
