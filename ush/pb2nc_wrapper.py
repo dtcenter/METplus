@@ -118,6 +118,7 @@ class PB2NCWrapper(CommandBuilder):
 
         c_dict['VERTICAL_LOCATION'] = self.p.getstr('config',
                                                      'PB2NC_VERTICAL_LOCATION')
+        c_dict['ALLOW_MULTIPLE_FILES'] = True
 
         return c_dict
 

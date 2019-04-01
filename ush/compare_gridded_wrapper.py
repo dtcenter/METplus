@@ -43,6 +43,38 @@ that reformat gridded data
         super(CompareGriddedWrapper, self).__init__(p, logger)
 
 
+    def create_c_dict(self):
+        c_dict = dict()
+        c_dict['var_list'] = util.parse_var_list(self.p)
+        c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
+        c_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL_TYPE', 'FCST')
+        c_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE', 'OBS')
+        c_dict['CONFIG_DIR'] = util.getdir(self.p, 'CONFIG_DIR', '')
+        c_dict['INPUT_BASE'] = util.getdir(self.p, 'INPUT_BASE', None, self.logger)
+        c_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
+        c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
+        c_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 24)
+        c_dict['FCST_INIT_INTERVAL'] = self.p.getint('config', 'FCST_INIT_INTERVAL', 12)
+        c_dict['WINDOW_RANGE_BEG'] = \
+          self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
+        c_dict['WINDOW_RANGE_END'] = \
+          self.p.getint('config', 'WINDOW_RANGE_END', 3600)
+
+        c_dict['OBS_WINDOW_BEGIN'] = \
+          self.p.getint('config', 'OBS_WINDOW_BEGIN', -3600)
+        c_dict['OBS_WINDOW_END'] = \
+          self.p.getint('config', 'OBS_WINDOW_END', 3600)
+
+        c_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
+                                                              'OBS_EXACT_VALID_TIME',
+                                                              True)
+        c_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
+                                                              'FCST_EXACT_VALID_TIME',
+                                                              True)
+        c_dict['ALLOW_MULTIPLE_FILES'] = False
+        util.add_common_items_to_dictionary(self.p, c_dict)
+        return c_dict
+
 #    def run_at_time(self, init_time, valid_time):
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops

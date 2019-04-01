@@ -28,92 +28,84 @@ class MTDWrapper(ModeWrapper):
         self.app_name = os.path.basename(self.app_path)
         self.fcst_file = None
         self.obs_file = None
-        self.create_c_dict()
+        self.c_dict = self.create_c_dict()
 
 
     # TODO : Set defaults for all items that need them
     def create_c_dict(self):
-        self.c_dict = dict()
-        self.c_dict['var_list'] = util.parse_var_list(self.p)
+        c_dict = super(ModeWrapper, self).create_c_dict()
+
         # set to prevent find_obs from getting multiple files within
         #  a time window. Does not refer to time series of files
-        self.c_dict['ALLOW_MULTIPLE_FILES'] = False
-        self.c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
-        self.c_dict['INPUT_BASE'] = self.p.getdir('INPUT_BASE')
-        self.c_dict['OUTPUT_DIR'] = self.p.getdir('MTD_OUT_DIR', self.p.getdir('OUTPUT_BASE'))
-        self.c_dict['CONFIG_DIR'] = self.p.getdir('CONFIG_DIR',
-                                                   self.p.getdir('METPLUS_BASE')+'/parm/met_config')
-        self.c_dict['CONFIG_FILE'] = self.p.getstr('config', 'MTD_CONFIG', '')
-        self.c_dict['MIN_VOLUME'] = self.p.getstr('config', 'MTD_MIN_VOLUME', '2000')
-        self.c_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL_TYPE', '')
-        self.c_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE', '')
-        self.c_dict['SINGLE_RUN'] = self.p.getbool('config', 'MTD_SINGLE_RUN', False)
-        self.c_dict['SINGLE_DATA_SRC'] = self.p.getstr('config', 'MTD_SINGLE_DATA_SRC', 'FCST')
+        c_dict['ALLOW_MULTIPLE_FILES'] = False
+
+        c_dict['OUTPUT_DIR'] = self.p.getdir('MTD_OUT_DIR', self.p.getdir('OUTPUT_BASE'))
+        c_dict['CONFIG_FILE'] = self.p.getstr('config', 'MTD_CONFIG', '')
+        c_dict['MIN_VOLUME'] = self.p.getstr('config', 'MTD_MIN_VOLUME', '2000')
+        c_dict['SINGLE_RUN'] = self.p.getbool('config', 'MTD_SINGLE_RUN', False)
+        c_dict['SINGLE_DATA_SRC'] = self.p.getstr('config', 'MTD_SINGLE_DATA_SRC', 'FCST')
 
         # only read FCST conf if processing forecast data
-        if not self.c_dict['SINGLE_RUN'] or self.c_dict['SINGLE_DATA_SRC'] == 'FCST':
-            self.c_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
-            self.c_dict['FCST_INPUT_DIR'] = \
-              self.p.getdir('FCST_MTD_INPUT_DIR', self.c_dict['INPUT_BASE'])
-            self.c_dict['FCST_INPUT_TEMPLATE'] = \
+        if not c_dict['SINGLE_RUN'] or c_dict['SINGLE_DATA_SRC'] == 'FCST':
+            c_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
+            c_dict['FCST_INPUT_DIR'] = \
+              self.p.getdir('FCST_MTD_INPUT_DIR', c_dict['INPUT_BASE'])
+            c_dict['FCST_INPUT_TEMPLATE'] = \
               util.getraw_interp(self.p, 'filename_templates',
                                  'FCST_MTD_INPUT_TEMPLATE')
-            self.c_dict['FCST_INPUT_DATATYPE'] = \
+            c_dict['FCST_INPUT_DATATYPE'] = \
                 self.p.getstr('config', 'FCST_MTD_INPUT_DATATYPE', '')
-            self.c_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 256)
-            self.c_dict['FCST_INIT_INTERVAL']= self.p.getint('config', 'FCST_INIT_INTERVAL', 1)
-            self.c_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
+            c_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 256)
+            c_dict['FCST_INIT_INTERVAL']= self.p.getint('config', 'FCST_INIT_INTERVAL', 1)
+            c_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
                                                                   'FCST_EXACT_VALID_TIME',
                                                                   True)
 
             if self.p.has_option('config', 'MTD_FCST_CONV_RADIUS'):
-                self.c_dict['FCST_CONV_RADIUS'] = self.p.getstr('config', 'MTD_FCST_CONV_RADIUS')
+                c_dict['FCST_CONV_RADIUS'] = self.p.getstr('config', 'MTD_FCST_CONV_RADIUS')
             else:
-                self.c_dict['FCST_CONV_RADIUS'] = self.p.getstr('config', 'MTD_CONV_RADIUS', '5')
+                c_dict['FCST_CONV_RADIUS'] = self.p.getstr('config', 'MTD_CONV_RADIUS', '5')
 
             if self.p.has_option('config', 'MTD_FCST_CONV_THRESH'):
-                self.c_dict['FCST_CONV_THRESH'] = self.p.getstr('config', 'MTD_FCST_CONV_THRESH')
+                c_dict['FCST_CONV_THRESH'] = self.p.getstr('config', 'MTD_FCST_CONV_THRESH')
             else:
-                self.c_dict['FCST_CONV_THRESH'] = self.p.getstr('config', 'MTD_CONV_THRESH', '>0.5')
+                c_dict['FCST_CONV_THRESH'] = self.p.getstr('config', 'MTD_CONV_THRESH', '>0.5')
 
             # check that values are valid
-            if not util.validate_thresholds(util.getlist(self.c_dict['FCST_CONV_THRESH'])):
+            if not util.validate_thresholds(util.getlist(c_dict['FCST_CONV_THRESH'])):
                 self.logger.error('MTD_FCST_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
                 exit(1)
 
         # only read OBS conf if processing observation data
-        if not self.c_dict['SINGLE_RUN'] or self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
-            self.c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
-            self.c_dict['OBS_INPUT_DIR'] = \
-            self.p.getdir('OBS_MTD_INPUT_DIR', self.c_dict['INPUT_BASE'])
-            self.c_dict['OBS_INPUT_TEMPLATE'] = \
+        if not c_dict['SINGLE_RUN'] or c_dict['SINGLE_DATA_SRC'] == 'OBS':
+            c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
+            c_dict['OBS_INPUT_DIR'] = \
+            self.p.getdir('OBS_MTD_INPUT_DIR', c_dict['INPUT_BASE'])
+            c_dict['OBS_INPUT_TEMPLATE'] = \
               util.getraw_interp(self.p, 'filename_templates',
                                    'OBS_MTD_INPUT_TEMPLATE')
-            self.c_dict['OBS_INPUT_DATATYPE'] = \
+            c_dict['OBS_INPUT_DATATYPE'] = \
                 self.p.getstr('config', 'OBS_MTD_INPUT_DATATYPE', '')
-            self.c_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                                  'OBS_EXACT_VALID_TIME',
-                                                                  True)
+            c_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
+                                                            'OBS_EXACT_VALID_TIME',
+                                                            True)
 
             if self.p.has_option('config', 'MTD_OBS_CONV_RADIUS'):
-                self.c_dict['OBS_CONV_RADIUS'] = self.p.getstr('config', 'MTD_OBS_CONV_RADIUS')
+                c_dict['OBS_CONV_RADIUS'] = self.p.getstr('config', 'MTD_OBS_CONV_RADIUS')
             else:
-                self.c_dict['OBS_CONV_RADIUS'] = self.p.getstr('config', 'MTD_CONV_RADIUS', '5')
+                c_dict['OBS_CONV_RADIUS'] = self.p.getstr('config', 'MTD_CONV_RADIUS', '5')
 
             if self.p.has_option('config', 'MTD_OBS_CONV_THRESH'):
-                self.c_dict['OBS_CONV_THRESH'] = self.p.getstr('config', 'MTD_OBS_CONV_THRESH')
+                c_dict['OBS_CONV_THRESH'] = self.p.getstr('config', 'MTD_OBS_CONV_THRESH')
             else:
-                self.c_dict['OBS_CONV_THRESH'] = self.p.getstr('config', 'MTD_CONV_THRESH', '>0.5')
+                c_dict['OBS_CONV_THRESH'] = self.p.getstr('config', 'MTD_CONV_THRESH', '>0.5')
 
             # check that values are valid
-            if not util.validate_thresholds(util.getlist(self.c_dict['OBS_CONV_THRESH'])):
+            if not util.validate_thresholds(util.getlist(c_dict['OBS_CONV_THRESH'])):
                 self.logger.error('MTD_OBS_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
                 exit(1)
 
-        self.c_dict['WINDOW_RANGE_BEG'] = \
-          self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
-        self.c_dict['WINDOW_RANGE_END'] = \
-          self.p.getint('config', 'WINDOW_RANGE_END', 3600)
+        return c_dict
 
 
     def run_at_time(self, input_dict):

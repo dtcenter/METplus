@@ -25,7 +25,7 @@ class ModeWrapper(CompareGriddedWrapper):
         self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
                                      'bin/mode')
         self.app_name = os.path.basename(self.app_path)
-        self.create_c_dict()
+        self.c_dict = self.create_c_dict()
 
     def add_merge_config_file(self):
         if self.c_dict['MERGE_CONFIG_FILE'] != '':
@@ -33,83 +33,68 @@ class ModeWrapper(CompareGriddedWrapper):
 
 
     def create_c_dict(self):
-        self.c_dict = dict()
-        self.c_dict['var_list'] = util.parse_var_list(self.p)
-        self.c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
-        self.c_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL_TYPE')
-        self.c_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE')
-        self.c_dict['CONFIG_DIR'] = self.p.getdir('CONFIG_DIR')
-        self.c_dict['CONFIG_FILE'] = self.p.getstr('config', 'MODE_CONFIG')
-        self.c_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
-        self.c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
-        self.c_dict['OBS_INPUT_DIR'] = \
+        c_dict = super(ModeWrapper, self).create_c_dict()
+
+        c_dict['CONFIG_FILE'] = self.p.getstr('config', 'MODE_CONFIG')
+        c_dict['OBS_INPUT_DIR'] = \
           self.p.getdir('OBS_MODE_INPUT_DIR')
-        self.c_dict['OBS_INPUT_TEMPLATE'] = \
+        c_dict['OBS_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'OBS_MODE_INPUT_TEMPLATE')
-        self.c_dict['OBS_INPUT_DATATYPE'] = \
+        c_dict['OBS_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'OBS_MODE_INPUT_DATATYPE', '')
-        self.c_dict['FCST_INPUT_DIR'] = \
+        c_dict['FCST_INPUT_DIR'] = \
           self.p.getdir('FCST_MODE_INPUT_DIR')
-        self.c_dict['FCST_INPUT_TEMPLATE'] = \
+        c_dict['FCST_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'FCST_MODE_INPUT_TEMPLATE')
-        self.c_dict['FCST_INPUT_DATATYPE'] = \
+        c_dict['FCST_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'FCST_MODE_INPUT_DATATYPE', '')
-        self.c_dict['OUTPUT_DIR'] = self.p.getdir('MODE_OUT_DIR')
-        self.c_dict['INPUT_BASE'] = self.p.getdir('INPUT_BASE')
-        self.c_dict['WINDOW_RANGE_BEG'] = \
-          self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
-        self.c_dict['WINDOW_RANGE_END'] = \
-          self.p.getint('config', 'WINDOW_RANGE_END', 3600)
-        self.c_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                              'OBS_EXACT_VALID_TIME',
-                                                              True)
-        self.c_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                              'FCST_EXACT_VALID_TIME',
-                                                              True)
-        self.c_dict['ONCE_PER_FIELD'] = True
-        self.c_dict['QUILT'] = self.p.getbool('config', 'MODE_QUILT', False)
+        c_dict['OUTPUT_DIR'] = self.p.getdir('MODE_OUT_DIR')
+        c_dict['ONCE_PER_FIELD'] = True
+        c_dict['QUILT'] = self.p.getbool('config', 'MODE_QUILT', False)
         fcst_conv_radius, obs_conv_radius = self.handle_fcst_and_obs_field('MODE_CONV_RADIUS',
                                                                            'MODE_FCST_CONV_RADIUS',
                                                                            'MODE_OBS_CONV_RADIUS', '5')
-        self.c_dict['FCST_CONV_RADIUS'] = fcst_conv_radius
-        self.c_dict['OBS_CONV_RADIUS'] = obs_conv_radius
+        c_dict['FCST_CONV_RADIUS'] = fcst_conv_radius
+        c_dict['OBS_CONV_RADIUS'] = obs_conv_radius
 
         fcst_conv_thresh, obs_conv_thresh = self.handle_fcst_and_obs_field('MODE_CONV_THRESH',
                                                                            'MODE_FCST_CONV_THRESH',
                                                                            'MODE_OBS_CONV_THRESH', '>0.5')
 
-        self.c_dict['FCST_CONV_THRESH'] = fcst_conv_thresh
-        self.c_dict['OBS_CONV_THRESH'] = obs_conv_thresh
+        c_dict['FCST_CONV_THRESH'] = fcst_conv_thresh
+        c_dict['OBS_CONV_THRESH'] = obs_conv_thresh
 
         fcst_merge_thresh, obs_merge_thresh = self.handle_fcst_and_obs_field('MODE_MERGE_THRESH',
                                                                              'MODE_FCST_MERGE_THRESH',
                                                                              'MODE_OBS_MERGE_THRESH', '>0.45')
-        self.c_dict['FCST_MERGE_THRESH'] = fcst_merge_thresh
-        self.c_dict['OBS_MERGE_THRESH'] = obs_merge_thresh
+        c_dict['FCST_MERGE_THRESH'] = fcst_merge_thresh
+        c_dict['OBS_MERGE_THRESH'] = obs_merge_thresh
         fcst_merge_flag, obs_merge_flag = self.handle_fcst_and_obs_field('MODE_MERGE_FLAG',
                                                                          'MODE_FCST_MERGE_FLAG',
                                                                          'MODE_OBS_MERGE_FLAG', 'THRESH')
 
-        self.c_dict['FCST_MERGE_FLAG'] = fcst_merge_flag
-        self.c_dict['OBS_MERGE_FLAG'] = obs_merge_flag
-        self.c_dict['ALLOW_MULTIPLE_FILES'] = False
+        c_dict['FCST_MERGE_FLAG'] = fcst_merge_flag
+        c_dict['OBS_MERGE_FLAG'] = obs_merge_flag
+        c_dict['ALLOW_MULTIPLE_FILES'] = False
 
-        self.c_dict['MERGE_CONFIG_FILE'] = self.p.getstr('config', 'MODE_MERGE_CONFIG_FILE', '')
+        c_dict['MERGE_CONFIG_FILE'] = self.p.getstr('config', 'MODE_MERGE_CONFIG_FILE', '')
         # check that values are valid
-        if not util.validate_thresholds(util.getlist(self.c_dict['FCST_CONV_THRESH'])):
+        if not util.validate_thresholds(util.getlist(c_dict['FCST_CONV_THRESH'])):
             self.logger.error('MODE_FCST_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
             exit(1)
-        if not util.validate_thresholds(util.getlist(self.c_dict['OBS_CONV_THRESH'])):
+        if not util.validate_thresholds(util.getlist(c_dict['OBS_CONV_THRESH'])):
             self.logger.error('MODE_OBS_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
             exit(1)
-        if not util.validate_thresholds(util.getlist(self.c_dict['FCST_MERGE_THRESH'])):
+        if not util.validate_thresholds(util.getlist(c_dict['FCST_MERGE_THRESH'])):
             self.logger.error('MODE_FCST_MERGE_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
             exit(1)
-        if not util.validate_thresholds(util.getlist(self.c_dict['OBS_MERGE_THRESH'])):
+        if not util.validate_thresholds(util.getlist(c_dict['OBS_MERGE_THRESH'])):
             self.logger.error('MODE_OBS_MERGE_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
             exit(1)
+
+        return c_dict
 
 
     def run_at_time_one_field(self, time_info, v):

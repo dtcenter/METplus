@@ -44,13 +44,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                @returns A dictionary of the ensemble stat values 
                         from the config file.
         """
-        c_dict = dict()
+        c_dict = super(EnsembleStatWrapper, self).create_c_dict()
 
-        c_dict['var_list'] = util.parse_var_list(self.p)
-        # set to prevent find_obs from getting multiple files within
-        #  a time window. Does not refer to time series of files
-        c_dict['ALLOW_MULTIPLE_FILES'] = False
-        c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
         c_dict['ONCE_PER_FIELD'] = self.p.getbool('config',
                                                         'ENSEMBLE_STAT_ONCE_PER_FIELD',
                                                         False)
@@ -64,16 +59,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_GRID_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE', '')
 
-        c_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL', 'HRRRE')
+        c_dict['GRID_VX'] = self.p.getstr('config', 'ENSEMBLE_STAT_GRID_VX', 'FCST')
 
-        c_dict['GRID_VX'] = self.p.getstr('config', 'GRID_VX', 'FCST')
-
-        c_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE', 'OBS')
-
-        # CONFIG_DIR is passed to MET via an environment variable.
-        c_dict['CONFIG_DIR'] = \
-            self.p.getdir('CONFIG_DIR',
-                          self.p.getdir('PARM_BASE')+'/use_cases/ensemble/met_config')
         c_dict['CONFIG_FILE'] = \
             self.p.getstr('config', 'ENSEMBLE_STAT_CONFIG',
                           c_dict['CONFIG_DIR']+'/EnsembleStatConfig_SFC')
@@ -81,14 +68,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # met_obs_error_table is not required, if it is not defined
         # set it to the empty string '', that way the MET default is used.
         c_dict['MET_OBS_ERROR_TABLE'] = \
-            self.p.getstr('config', 'MET_OBS_ERROR_TABLE','')
+            self.p.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE','')
 
         # No Default being set this is REQUIRED TO BE DEFINED in conf file.
         c_dict['N_ENSEMBLE_MEMBERS'] = \
-            self.p.getstr('filename_templates','N_ENSEMBLE_MEMBERS')
-
-        c_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
-        c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
+            self.p.getstr('filename_templates','ENSEMBLE_STAT_N_MEMBERS')
 
         c_dict['OBS_POINT_INPUT_DIR'] = \
           util.getdir(self.p, 'OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
@@ -116,15 +100,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
 
         c_dict['OUTPUT_DIR'] =  self.p.getdir('ENSEMBLE_STAT_OUT_DIR')
-        c_dict['INPUT_BASE'] =  self.p.getdir('INPUT_BASE')
 
-
-        c_dict['OBS_WINDOW_BEGIN'] = \
-          self.p.getint('config', 'OBS_WINDOW_BEGIN', -3600)
-        c_dict['OBS_WINDOW_END'] = \
-          self.p.getint('config', 'OBS_WINDOW_END', 3600)
         c_dict['OBS_POINT_EXACT_VALID_TIME'] = \
             self.p.getbool('config','OBS_POINT_EXACT_VALID_TIME',True)
+
         return c_dict
 
 

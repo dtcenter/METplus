@@ -58,11 +58,9 @@ class PointStatWrapper(CompareGriddedWrapper):
                  c_dict   - A dictionary containing the key-value pairs set
                              in the METplus configuration file.
         """
-        c_dict = dict()
+        c_dict = super(PointStatWrapper, self).create_c_dict()
         # TODO: These are all required by CompareGridded, put into function?
         # pass in all caps MET app name, i.e. POINT_STAT or PB2NC
-        c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config',
-                                                            'LEAD_SEQ', '0'))
         c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['OFFSETS'] = util.getlistint(self.p.getstr('config', 'POINT_STAT_OFFSETS', '0'))
         c_dict['FCST_INPUT_TEMPLATE'] = \
@@ -72,18 +70,10 @@ class PointStatWrapper(CompareGriddedWrapper):
             util.getraw_interp(self.p, 'filename_templates',
                                'OBS_POINT_STAT_INPUT_TEMPLATE')
 
-        c_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                         'OBS_EXACT_VALID_TIME',
-                                                         True)
-        c_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                          'FCST_EXACT_VALID_TIME',
-                                                          True)
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'FCST_POINT_STAT_INPUT_DATATYPE', '')
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'OBS_POINT_STAT_INPUT_DATATYPE', '')
-        c_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
-        c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
 
         c_dict['FCST_INPUT_DIR'] = self.p.getdir('FCST_POINT_STAT_INPUT_DIR')
         c_dict['OBS_INPUT_DIR'] = self.p.getdir('OBS_POINT_STAT_INPUT_DIR')
@@ -106,13 +96,6 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.p.getstr('config', 'POINT_STAT_STATION_ID', ''))
         c_dict['POINT_STAT_MESSAGE_TYPE'] = util.getlist(
             self.p.getstr('config', 'POINT_STAT_MESSAGE_TYPE', ''))
-
-        c_dict['OBS_WINDOW_BEGIN'] = self.p.getstr('config',
-                                                    'OBS_WINDOW_BEGIN')
-        c_dict['OBS_WINDOW_END'] = self.p.getstr('config', 'OBS_WINDOW_END')
-
-        # non-MET executables
-        util.add_common_items_to_dictionary(self.p, c_dict)
 
         return c_dict
 
