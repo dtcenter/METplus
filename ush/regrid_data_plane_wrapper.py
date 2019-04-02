@@ -89,6 +89,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 @param ti time_info object containing timing information
                 @param v var_info object containing variable information
         """
+        self.clear()
+
         init_time = time_info['init_fmt']
         valid_time = time_info['valid_fmt']
         lead = time_info['lead_hours']
@@ -167,7 +169,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             self.logger.error("Could not generate command")
             return
         self.build()
-        self.clear()
 
 
 if __name__ == "__main__":

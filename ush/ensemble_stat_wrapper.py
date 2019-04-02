@@ -327,9 +327,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # run the MET command
         self.build()
 
-        # clear out the class variables for the next run
-        self.clear()
-
 
     def clear(self):
         """!Unset class variables to prepare for next run time

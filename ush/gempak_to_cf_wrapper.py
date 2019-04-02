@@ -71,6 +71,7 @@ class GempakToCFWrapper(CommandBuilder):
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
 
         for lead in lead_seq:
+            self.clear()
             input_dict['lead_hours'] = lead
             self.p.set('config', 'CURRENT_LEAD_TIME', lead)
             os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
@@ -112,4 +113,4 @@ class GempakToCFWrapper(CommandBuilder):
             return
 
         self.build()
-        self.clear()
+

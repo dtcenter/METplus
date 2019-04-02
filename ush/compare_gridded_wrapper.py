@@ -105,18 +105,16 @@ that reformat gridded data
                 @param time_info dictionary containing timing information
                 @param var_list var_info object list containing variable information
         """
-
-        # clear out the class variables
-        self.clear()
-
         if self.c_dict['ONCE_PER_FIELD']:
             # loop over all fields and levels (and probability thresholds) and
             # call the app once for each
             for var_info in self.c_dict['var_list']:
+                self.clear()
                 self.c_dict['CURRENT_VAR_INFO'] = var_info
                 self.run_at_time_one_field(time_info, var_info)
         else:
             # loop over all variables and all them to the field list, then call the app once
+            self.clear()
             self.run_at_time_all_fields(time_info)
 
 
@@ -331,9 +329,6 @@ that reformat gridded data
 
         # run the MET command
         self.build()
-
-        # clear out the class variables for the next run move to start of run
-#        self.clear()
 
 
     def create_and_set_output_dir(self, time_info):
