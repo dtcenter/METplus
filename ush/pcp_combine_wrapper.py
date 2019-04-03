@@ -546,10 +546,14 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                               .format(in_dir, time_info['init_fmt'], lead))
             return None
 
+        # set time info for second lead
+        input_dict2 = { 'init' : time_info['init'],
+                       'lead_hours' : lead2 }
+        time_info2 = time_util.ti_calculate(input_dict2)
         pcpSts2 = sts.StringSub(self.logger,
                                 in_template,
                                 level=(int(accum) * 3600),
-                                **time_info)
+                                **time_info2)
         file2 = os.path.join(in_dir, pcpSts2.doStringSub())
         file2 = util.preprocess_file(file2, self.c_dict[rl+'_INPUT_DATATYPE'],
                                      self.p, self.logger)
