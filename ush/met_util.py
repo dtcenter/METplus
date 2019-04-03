@@ -33,6 +33,151 @@ import config_metplus
  @brief Provides  Utility functions for METplus.
 """
 
+def check_for_deprecated_config(p, logger):
+    deprecated_dict = {
+      'LOOP_BY_INIT' : { 'sec' : 'config', 'alt' : 'LOOP_BY', 'req' : False},
+      'LOOP_METHOD' : { 'sec' : 'config', 'alt' : 'LOOP_ORDER', 'req' : False},
+      'PREPBUFR_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
+      'PREPBUFR_FILE_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
+      'OBS_INPUT_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
+      'FCST_INPUT_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
+      'PREPBUFR_DATA_DIR' : { 'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR'},
+      'PREPBUFR_MODEL_DIR_NAME' : { 'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR'},
+      'OBS_INPUT_FILE_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'OBS_POINT_STAT_INPUT_TEMPLATE'},
+      'FCST_INPUT_FILE_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'FCST_POINT_STAT_INPUT_TEMPLATE'},
+      'NC_FILE_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'PB2NC_OUTPUT_TEMPLATE'},
+      'FCST_INPUT_DIR' : { 'sec' : 'dir', 'alt' : 'FCST_POINT_STAT_INPUT_DIR'},
+      'OBS_INPUT_DIR' : { 'sec' : 'dir', 'alt' : 'OBS_POINT_STAT_INPUT_DIR'},
+      'REGRID_TO_GRID' : { 'sec' : 'config', 'alt' : 'POINT_STAT_REGRID_TO_GRID'},
+      'FCST_HR_START' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+      'FCST_HR_END' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+      'FCST_HR_INTERVAL' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+      'START_DATE' : { 'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
+      'END_DATE' : { 'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
+      'INTERVAL_TIME' : { 'sec' : 'config', 'alt' : 'INIT_INCREMENT or VALID_INCREMENT'},
+      'BEG_TIME' : { 'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
+      'END_TIME' : { 'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
+      'START_HOUR' : { 'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
+      'END_HOUR' : { 'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
+      'OBS_BUFR_VAR_LIST' : { 'sec' : 'config', 'alt' : 'PB2NC_OBS_BUFR_VAR_LIST'},
+      'TIME_SUMMARY_FLAG' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_FLAG'},
+      'TIME_SUMMARY_BEG' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_BEG'},
+      'TIME_SUMMARY_END' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_END'},
+      'TIME_SUMMARY_VAR_NAMES' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_VAR_NAMES'},
+      'TIME_SUMMARY_TYPE' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_TYPE'},
+      'OVERWRITE_NC_OUTPUT' : { 'sec' : 'config', 'alt' : 'PB2NC_SKIP_IF_OUTPUT_EXISTS'},
+      'VERTICAL_LOCATION' : { 'sec' : 'config', 'alt' : 'PB2NC_VERTICAL_LOCATION'}
+# template       '' : { 'sec' : '', 'alt' : ''}
+    }
+
+    e_list = []
+    w_list = []
+    for old, v in deprecated_dict.iteritems():
+        if isinstance(v, dict):
+            sec = v['sec']
+            alt = v['alt']
+            # if deprecated config item is found
+            if p.has_option(sec, old):
+                # if it is not required to remove, add to warning list
+                if 'req' in v.keys() and v['req'] is False:
+                    msg = "[{}] {} is deprecated and will be removed in a future version of METplus".format(sec, old)
+                    if alt != None:
+                        msg += ". Please replace with {}".format(alt)
+                    w_list.append(msg)
+                # if it is required to remove, add to error list
+                else:
+                    if alt is None:
+                        e_list.append("[{}] {} should be removed".format(sec, old))
+                    else:
+                        e_list.append("[{}] {} should be replaced with {}".format(sec, old, alt))
+
+    # if any warning exist, report them
+    if w_list:
+        for w in w_list:
+            logger.warning(w)
+
+    # if any errors exist, report them and exit
+    if e_list:
+        logger.error("DEPRECATED CONFIG ITEMS WERE FOUND. PLEASE REMOVE/REPLACE THEM FROM CONFIG FILES")
+        for e in e_list:
+            logger.error(e)
+#        exit(1)
+
+
+def is_loop_by_init(p):
+    if p.has_option('config', 'LOOP_BY'):
+        if ['INIT', 'RETRO' , ''] in p.getstr('config', 'LOOP_BY'):
+            return True
+
+    if p.has_option('config', 'LOOP_BY_INIT'):
+        return p.getbool('config', 'LOOP_BY_INIT', True)
+
+    return False
+
+
+def get_time_obj(t, fmt, clock_time, logger=None):
+    sts = StringSub(logger, t,
+                    now=clock_time,
+                    today=clock_time.strftime('%Y%m%d'))
+    time_str = sts.doStringSub()
+    return datetime.datetime.strptime(time_str, fmt)
+
+
+def loop_over_times_and_call(p, logger, processes):
+    clock_time_obj = datetime.datetime.strptime(p.getstr('config', 'CLOCK_TIME'),
+                                       '%Y%m%d%H%M%S')
+    use_init = is_loop_by_init(p)
+    if use_init:
+        time_format = p.getstr('config', 'INIT_TIME_FMT')
+        start_t = getraw_interp(p, 'config', 'INIT_BEG')
+        end_t = getraw_interp(p, 'config', 'INIT_END')
+        time_interval = p.getint('config', 'INIT_INCREMENT')
+    else:
+        time_format = p.getstr('config', 'VALID_TIME_FMT')
+        start_t = getraw_interp(p, 'config', 'VALID_BEG')
+        end_t = getraw_interp(p, 'config', 'VALID_END')
+        time_interval = p.getint('config', 'VALID_INCREMENT')
+
+    if time_interval < 60:
+        logger.error("time_interval parameter must be "
+              "greater than 60 seconds")
+        exit(1)
+
+    loop_time = get_time_obj(start_t, time_format,
+                             clock_time_obj, logger)
+    end_time = get_time_obj(end_t, time_format,
+                            clock_time_obj, logger)
+
+    while loop_time <= end_time:
+        run_time = loop_time.strftime("%Y%m%d%H%M")
+        logger.info("****************************************")
+        logger.info("* RUNNING METplus")
+        if use_init:
+            logger.info("*  at init time: " + run_time)
+            p.set('config', 'CURRENT_INIT_TIME', run_time)
+            os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
+        else:
+            logger.info("*  at valid time: " + run_time)
+            p.set('config', 'CURRENT_VALID_TIME', run_time)
+            os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
+        logger.info("****************************************")
+        if not isinstance(processes, list):
+            processes = [processes]
+        for process in processes:
+            input_dict = {}
+            input_dict['now'] = clock_time_obj
+
+            if use_init:
+                input_dict['init'] = loop_time
+            else:
+                input_dict['valid'] = loop_time
+
+            process.run_at_time(input_dict)
+            process.clear()
+
+        loop_time += datetime.timedelta(seconds=time_interval)
+
+
 def get_version_number():
     # read version file and return value
     version_file_path = os.path.join(dirname(dirname(realpath(__file__))),
@@ -176,7 +321,7 @@ def set_logvars(config, logger=None):
             log_timestamp_template = '%Y%m%d%H'
         t = datetime.datetime.now()
         if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
-            if config.getbool('config', 'LOOP_BY_INIT', True):
+            if is_loop_by_init(config):
                 t = datetime.datetime.strptime(config.getstr('config',
                                                              'INIT_BEG'),
                                                config.getstr('config',
@@ -190,7 +335,7 @@ def set_logvars(config, logger=None):
     else:
         log_filenametimestamp=''
 
-    log_dir = config.getdir('LOG_DIR')
+    log_dir = getdir(config, 'LOG_DIR')
 
     # NOTE: LOG_METPLUS or metpluslog is meant to include the absolute path
     #       and the metpluslog_filename,
@@ -261,7 +406,7 @@ def get_logger(config, sublog=None):
     """
 
     # Retrieve all logging related parameters from the param file
-    log_dir = config.getdir('LOG_DIR')
+    log_dir = getdir(config, 'LOG_DIR')
     log_level = config.getstr('config', 'LOG_LEVEL')
 
     # TODO review, use builtin produtil.fileop vs. mkdir_p ?
@@ -1466,15 +1611,17 @@ def get_time_from_file(logger, filepath, template):
 
     se = StringExtract(logger, template, filepath)
 
-    if se.parseTemplate():
-        return se
+    out = se.parseTemplate()
+    if se:
+        return out
     else:
         # check to see if zip extension ends file path, try again without extension
         for ext in valid_extensions:
             if filepath.endswith(ext):
                 se = StringExtract(logger, template, filepath[:-len(ext)])
-                if se.parseTemplate():
-                    return se
+                out = se.parseTemplate()
+                if se:
+                    return out
         return None
 
 
@@ -1536,10 +1683,10 @@ def preprocess_file(filename, data_type, p, logger=None):
     if filename is None or filename == "":
         return None
 
-    stage_dir = p.getdir('STAGING_DIR')
+    stage_dir = getdir(p, 'STAGING_DIR')
     # TODO: move valid_extensions so it can be used by more than one function
     valid_extensions = [ '.gz', '.bz2', '.zip' ]
-    if os.path.exists(filename):
+    if os.path.isfile(filename):
         for ext in valid_extensions:
             if filename.endswith(ext):
                 return preprocess_file(filename[:-len(ext)], data_type, p, logger)
@@ -1549,7 +1696,7 @@ def preprocess_file(filename, data_type, p, logger=None):
                 stagefile = stage_dir + filename[:-3]+"nc"
             else:
                 stagefile = stage_dir + filename+".nc"
-            if os.path.exists(stagefile):
+            if os.path.isfile(stagefile):
                 return stagefile
             # if it does not exist, run GempakToCF and return staged nc file
             # Create staging area if it does not exist
@@ -1570,11 +1717,11 @@ def preprocess_file(filename, data_type, p, logger=None):
 
         return filename
 
-    if os.path.exists(filename[:-2]+'grd'):
+    if os.path.isfile(filename[:-2]+'grd'):
         return preprocess_file(filename[:-2]+'grd', data_type, p, logger)
     # if file exists in the staging area, return that path
     outpath = stage_dir + filename
-    if os.path.exists(outpath):
+    if os.path.isfile(outpath):
         return outpath
 
     # Create staging area if it does not exist
@@ -1582,7 +1729,7 @@ def preprocess_file(filename, data_type, p, logger=None):
     if not os.path.exists(outdir):
         os.makedirs(outdir, mode=0775)
 
-    if os.path.exists(filename+".gz"):
+    if os.path.isfile(filename+".gz"):
         if logger:
             logger.info("Decompressing gz file to {}".format(outpath))
         with gzip.open(filename+".gz", 'rb') as infile:
@@ -1591,7 +1738,7 @@ def preprocess_file(filename, data_type, p, logger=None):
                 infile.close()
                 outfile.close()
                 return outpath
-    elif os.path.exists(filename+".bz2"):
+    elif os.path.isfile(filename+".bz2"):
         if logger:
             logger.info("Decompressing bz2 file to {}".format(outpath))
         with open(filename+".bz2", 'rb') as infile:
@@ -1600,7 +1747,7 @@ def preprocess_file(filename, data_type, p, logger=None):
                 infile.close()
                 outfile.close()
                 return outpath
-    elif os.path.exists(filename+".zip"):
+    elif os.path.isfile(filename+".zip"):
         if logger:
             logger.info("Decompressing zip file to {}".format(outpath))
         with zipfile.ZipFile(filename+".zip") as z:
@@ -1653,7 +1800,7 @@ def run_stand_alone(module_name, app_name):
         wrapper_class = getattr(module, app_name + "Wrapper")
         wrapper = wrapper_class(p, logger)
 
-        os.environ['MET_BASE'] = p.getdir('MET_BASE')
+        os.environ['MET_BASE'] = getdir(p, 'MET_BASE')
 
         produtil.log.postmsg(app_name + ' Calling run_all_times.')
 
@@ -1679,7 +1826,7 @@ def getexe(p, exe_name, logger=None):
 
     exe_path = p.getexe(exe_name)
 
-    if not os.path.exists(exe_path):
+    if not os.path.isfile(exe_path):
         msg = 'Executable {} does not exist at {}'.format(exe_name, exe_path)
         if logger:
             logger.error(msg)
@@ -1735,13 +1882,12 @@ def add_common_items_to_dictionary(p, dictionary):
     dictionary['EGREP_EXE'] = getexe(p, 'EGREP_EXE')
 
 
-def template_to_regex(template, init_time, valid_time, logger):
+def template_to_regex(template, time_info, logger):
     in_template = re.sub(r'\.', '\\.', template)
     in_template = re.sub(r'{lead.*?}', '.*', in_template)
     sts = StringSub(logger,
                     in_template,
-                    init=init_time,
-                    valid=valid_time)
+                    **time_info)
     return sts.doStringSub()
 
 if __name__ == "__main__":

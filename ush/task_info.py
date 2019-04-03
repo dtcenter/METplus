@@ -19,7 +19,6 @@ import re
 import csv
 import subprocess
 import datetime
-import string_template_substitution as sts
 import met_util as util
 
 from abc import ABCMeta

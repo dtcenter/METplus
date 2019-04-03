@@ -19,10 +19,11 @@ import re
 import csv
 import time
 import subprocess
-import datetime
+from datetime import datetime, timedelta
 import calendar
-import string_template_substitution as sts
 from command_runner import CommandRunner
+import met_util as util
+import string_template_substitution as sts
 from abc import ABCMeta
 
 '''!@namespace CommandBuilder
@@ -71,7 +72,7 @@ class CommandBuilder:
             self.add_env_var(env_var, self.p.getstr('user_env_vars', env_var))
 
         # set MET_TMP_DIR to conf TMP_DIR
-        self.add_env_var('MET_TMP_DIR', self.p.getdir('TMP_DIR'))
+        self.add_env_var('MET_TMP_DIR', util.getdir(self.p, 'TMP_DIR'))
 
     def set_debug(self, debug):
         self.debug = debug
@@ -196,6 +197,150 @@ class CommandBuilder:
         return (default, default)
 
 
+    def find_model(self, time_info, v):
+        """! Finds the model file to compare
+              Args:
+                @param time_info dictionary containing timing information
+                @param v var_info object containing variable information
+                @rtype string
+                @return Returns the path to an model file
+        """
+        return self.find_data(time_info, v, "FCST")
+
+
+    def find_obs(self, time_info, v):
+        """! Finds the observation file to compare
+              Args:
+                @param time_info dictionary containing timing information
+                @param v var_info object containing variable information
+                @rtype string
+                @return Returns the path to an observation file
+        """
+        return self.find_data(time_info, v, "OBS")
+
+
+    def find_data(self, time_info, v, data_type):
+        """! Finds the data file to compare
+              Args:
+                @param time_info dictionary containing timing information
+                @param v var_info object containing variable information
+                @param data_type type of data to find (FCST or OBS)
+                @rtype string
+                @return Returns the path to an observation file
+        """
+        # get time info
+        lead = time_info['lead_hours']
+        valid_time = time_info['valid_fmt']
+        init_time = time_info['init_fmt']
+
+        if v != None:
+            # set level based on input data type
+            if data_type.startswith("OBS"):
+                v_level = v.obs_level
+            else:
+                v_level = v.fcst_level
+
+            # separate character from beginning of numeric level value if applicable
+            level_type, level = util.split_level(v_level)
+
+            # set level to 0 character if it is not a number
+            if not level.isdigit():
+                level = '0'
+        else:
+                level = '0'
+
+        template = self.c_dict[data_type+'_INPUT_TEMPLATE']
+        data_dir = self.c_dict[data_type+'_INPUT_DIR']
+
+        # if looking for a file with an exact time match:
+        if self.c_dict[data_type+'_EXACT_VALID_TIME']:
+            # perform string substitution
+            dSts = sts.StringSub(self.logger,
+                                   template,
+                                   level=(int(level.split('-')[0]) * 3600),
+                                   **time_info)
+            filename = dSts.doStringSub()
+
+            # build full path with data directory and filename
+            path = os.path.join(data_dir, filename)
+
+            # check if desired data file exists and if it needs to be preprocessed
+            path = util.preprocess_file(path,
+                                        self.c_dict[data_type+'_INPUT_DATATYPE'],
+                                        self.p, self.logger)
+            return path
+
+        # if looking for a file within a time window:
+        # convert valid_time to unix time
+        valid_seconds = int(datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
+        # get time of each file, compare to valid time, save best within range
+        closest_files = []
+        closest_time = 9999999
+
+        # get range of times that will be considered
+        valid_range_lower = self.c_dict['WINDOW_RANGE_BEG']
+        valid_range_upper = self.c_dict['WINDOW_RANGE_END']
+        lower_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
+                                                 "%Y%m%d%H%M").strftime("%s"))
+        upper_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
+                                                 "%Y%m%d%H%M").strftime("%s"))
+
+        # step through all files under input directory in sorted order
+        for dirpath, dirnames, all_files in os.walk(data_dir):
+            for filename in sorted(all_files):
+                fullpath = os.path.join(dirpath, filename)
+
+                # remove input data directory to get relative path
+                f = fullpath.replace(data_dir+"/", "")
+
+                # extract time information from relative path using template
+                se = util.get_time_from_file(self.logger, f, template)
+                if se is not None:
+                    # get valid time and check if it is within the time range
+                    file_valid_time = se['valid'].strftime("%Y%m%d%H%M")
+                    # skip if could not extract valid time
+                    if file_valid_time == '':
+                        continue
+                    file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M")
+                    file_valid_seconds = int(file_valid_dt.strftime("%s"))
+                    # skip if outside time range
+                    if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
+                        continue
+
+                    # if only 1 file is allowed, check if file is
+                    # closer to desired valid time than previous match
+                    if not self.c_dict['ALLOW_MULTIPLE_FILES']:
+                        diff = abs(valid_seconds - file_valid_seconds)
+                        if diff < closest_time:
+                            closest_time = diff
+                            del closest_files[:]
+                            closest_files.append(fullpath)
+                    # if multiple files are allowed, get all files within range
+                    else:
+                        closest_files.append(fullpath)
+
+        if not closest_files:
+            return None
+
+        # check if file(s) needs to be preprocessed before returning the path
+        # return single file path if 1 file was found
+        if len(closest_files) == 1:
+            return util.preprocess_file(closest_files[0],
+                                       self.c_dict[data_type+'_INPUT_DATATYPE'],
+                                       self.p, self.logger)
+
+        # return list if multiple files are found
+        out = []
+        for f in closest_files:
+            outfile = util.preprocess_file(f,
+                                       self.c_dict[data_type+'_INPUT_DATATYPE'],
+                                       self.p, self.logger)
+            out.append(outfiles)
+
+        return out
+
+
+
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string
@@ -221,9 +366,6 @@ class CommandBuilder:
         for f in self.infiles:
             cmd += f + " "
 
-        if self.param != "":
-            cmd += self.param + " "
-
         if self.outfile == "":
             self.logger.error("No output filename specified")
             return None
@@ -239,6 +381,9 @@ class CommandBuilder:
             os.makedirs(os.path.dirname(out_path))
 
         cmd += " " + out_path
+
+        if self.param != "":
+            cmd += ' ' + self.param
 
         return cmd
 
@@ -257,42 +402,13 @@ class CommandBuilder:
         self.cmdrunner.run_cmd(cmd, app_name=self.app_name)
 
 
+    def run_at_time(self, input_dict):
+        self.logger.error('run_at_time not implemented for {} wrapper. '
+                          'Cannot run with LOOP_ORDER = times'.format(self.app_name))
+        exit(1)
+
+
     def run_all_times(self):
         """!Loop over time range specified in conf file and
         call METplus wrapper for each time"""
-        use_init = self.p.getbool('config', 'LOOP_BY_INIT', True)
-        if use_init:
-            time_format = self.p.getstr('config', 'INIT_TIME_FMT')
-            start_t = self.p.getstr('config', 'INIT_BEG')
-            end_t = self.p.getstr('config', 'INIT_END')
-            time_interval = self.p.getint('config', 'INIT_INCREMENT')
-        else:
-            time_format = self.p.getstr('config', 'VALID_TIME_FMT')
-            start_t = self.p.getstr('config', 'VALID_BEG')
-            end_t = self.p.getstr('config', 'VALID_END')
-            time_interval = self.p.getint('config', 'VALID_INCREMENT')
-        
-        if time_interval < 60:
-            self.logger.error("time_interval parameter must be greater than 60 seconds")
-            exit(1)
-        
-        loop_time = calendar.timegm(time.strptime(start_t, time_format))
-        end_time = calendar.timegm(time.strptime(end_t, time_format))
-
-        while loop_time <= end_time:
-            run_time = time.strftime("%Y%m%d%H%M", time.gmtime(loop_time))
-            # Set valid time to -1 if using init and vice versa
-            if use_init:
-                self.p.set('config', 'CURRENT_INIT_TIME', run_time)
-                os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
-                self.run_at_time(run_time, -1)
-            else:
-                self.p.set('config', 'CURRENT_VALID_TIME', run_time)
-                os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
-                self.run_at_time(-1, run_time)
-            loop_time += time_interval
-
-
-
-#if __name__ == "__main__":
-#  main()
+        util.loop_over_times_and_call(self.p, self.logger, self)

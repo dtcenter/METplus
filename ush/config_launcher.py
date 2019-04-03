@@ -276,7 +276,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # set METPLUS_BASE conf to location of scripts used by METplus
     # warn if user has set METPLUS_BASE to something different
     # in their conf file
-    user_metplus_base = conf.getdir('METPLUS_BASE', '')
+    user_metplus_base = util.getdir(conf, 'METPLUS_BASE', '')
     if user_metplus_base != '' and user_metplus_base != METPLUS_BASE:
         logger.warning('METPLUS_BASE from the conf files has no effect.'+\
                        ' Overriding to '+METPLUS_BASE)
@@ -291,7 +291,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # order to define the vit dictionary and use of vit|{somevar} in the
     # conf file.
     for var in ('OUTPUT_BASE', 'METPLUS_BASE'):
-        expand = conf.getdir(var)
+        expand = util.getdir(conf, var)
         logger.info('Replace [dir] %s with %s' % (var, expand))
         conf.set('dir', var, expand)
 
@@ -327,7 +327,7 @@ def load(filename):
     # strcycle=cycle.strftime('%Y%m%d%H')
     # logger.info('Running cycle: '+cycle.strftime('%Y%m%d%H'))
 
-    #    OUTPUT_BASE = conf.getdir('OUTPUT_BASE')
+    #    OUTPUT_BASE = util.getdir(conf, 'OUTPUT_BASE')
 
     return conf
 
@@ -448,7 +448,7 @@ def test_gen_conf(file_list, cycle=None):
         logger.info("%s: parse this file" % (filename,))
         conf.read(filename)
 
-    produtil.fileop.makedirs(conf.getdir('OUTPUT_BASE'), logger=logger)
+    produtil.fileop.makedirs(util.getdir(conf, 'OUTPUT_BASE'), logger=logger)
 
     for var in ('OUTPUT_BASE', 'METPLUS_BASE'):
         expand = conf.getstr('dir', var)

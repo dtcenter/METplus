@@ -30,57 +30,43 @@ class GridStatWrapper(CompareGriddedWrapper):
         met_install_dir = util.getdir(p, 'MET_INSTALL_DIR', None, logger)
         self.app_path = os.path.join(met_install_dir, 'bin/grid_stat')
         self.app_name = os.path.basename(self.app_path)
-        self.create_cg_dict()
+        self.c_dict = self.create_c_dict()
 
 
-    def create_cg_dict(self):
-        self.cg_dict = dict()
-        self.cg_dict['LOOP_BY_INIT'] = self.p.getbool('config', 'LOOP_BY_INIT', True)
-        self.cg_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
-        self.cg_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL_TYPE', 'FCST')
-        self.cg_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE', 'OBS')
-        self.cg_dict['CONFIG_DIR'] = util.getdir(self.p, 'CONFIG_DIR',
-                                                 self.p.getdir('METPLUS_BASE')+'/parm/met_config',
-                                                 self.logger)
-        self.cg_dict['CONFIG_FILE'] = self.p.getstr('config', 'GRID_STAT_CONFIG',
-                                                    self.cg_dict['CONFIG_DIR']+'/GridStatConfig_MEAN')
-        self.cg_dict['INPUT_BASE'] = util.getdir(self.p, 'INPUT_BASE', None, self.logger)
-        self.cg_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
-        self.cg_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
-        self.cg_dict['OBS_INPUT_DIR'] = \
+    def create_c_dict(self):
+        c_dict = super(GridStatWrapper, self).create_c_dict()
+        c_dict['CONFIG_FILE'] = self.p.getstr('config', 'GRID_STAT_CONFIG', '')
+        c_dict['OBS_INPUT_DIR'] = \
           util.getdir(self.p, 'OBS_GRID_STAT_INPUT_DIR', self.p.getdir('OUTPUT_BASE'), self.logger)
-        self.cg_dict['OBS_INPUT_TEMPLATE'] = \
+        c_dict['OBS_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'OBS_GRID_STAT_INPUT_TEMPLATE')
-        self.cg_dict['OBS_INPUT_DATATYPE'] = \
+        c_dict['OBS_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'OBS_GRID_STAT_INPUT_DATATYPE', '')
-        self.cg_dict['FCST_INPUT_DIR'] = \
+
+        c_dict['FCST_INPUT_DIR'] = \
           util.getdir(self.p, 'FCST_GRID_STAT_INPUT_DIR', self.p.getdir('OUTPUT_BASE'), self.logger)
-        self.cg_dict['FCST_INPUT_TEMPLATE'] = \
+        c_dict['FCST_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'FCST_GRID_STAT_INPUT_TEMPLATE')
-        self.cg_dict['FCST_INPUT_DATATYPE'] = \
+        c_dict['FCST_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
-        self.cg_dict['OUTPUT_DIR'] =  util.getdir(self.p, 'GRID_STAT_OUT_DIR', self.p.getdir('OUTPUT_BASE'), self.logger)
-        self.cg_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 24)
-        self.cg_dict['FCST_INIT_INTERVAL'] = self.p.getint('config', 'FCST_INIT_INTERVAL', 12)
-        self.cg_dict['WINDOW_RANGE_BEG'] = \
-          self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
-        self.cg_dict['WINDOW_RANGE_END'] = \
-          self.p.getint('config', 'WINDOW_RANGE_END', 3600)
-        self.cg_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                              'OBS_EXACT_VALID_TIME',
-                                                              True)
-        self.cg_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                              'FCST_EXACT_VALID_TIME',
-                                                              True)
-        self.cg_dict['ONCE_PER_FIELD'] = self.p.getbool('config',
+
+        c_dict['CLIMO_INPUT_DIR'] = \
+          util.getdir(self.p, 'CLIMO_GRID_STAT_INPUT_DIR', '', self.logger)
+        c_dict['CLIMO_INPUT_TEMPLATE'] = \
+          util.getraw_interp(self.p, 'filename_templates',
+                               'CLIMO_GRID_STAT_INPUT_TEMPLATE')
+
+        c_dict['OUTPUT_DIR'] =  util.getdir(self.p, 'GRID_STAT_OUT_DIR', self.p.getdir('OUTPUT_BASE'), self.logger)
+        c_dict['ONCE_PER_FIELD'] = self.p.getbool('config',
                                                         'GRID_STAT_ONCE_PER_FIELD',
                                                         False)
-        self.cg_dict['FCST_PROB_THRESH'] = self.p.getstr('config', 'FCST_GRID_STAT_PROB_THRESH', '==0.1')
-        self.cg_dict['OBS_PROB_THRESH'] = self.p.getstr('config', 'OBS_GRID_STAT_PROB_THRESH', '==0.1')
+        c_dict['FCST_PROB_THRESH'] = self.p.getstr('config', 'FCST_GRID_STAT_PROB_THRESH', '==0.1')
+        c_dict['OBS_PROB_THRESH'] = self.p.getstr('config', 'OBS_GRID_STAT_PROB_THRESH', '==0.1')
 
-        util.add_common_items_to_dictionary(self.p, self.cg_dict)
+        c_dict['ALLOW_MULTIPLE_FILES'] = False
+        return c_dict
 
 
 if __name__ == "__main__":

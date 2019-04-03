@@ -84,13 +84,13 @@ class TcStatWrapper(CommandBuilder):
 
         # Check for the MET_INSTALL_DIR, if it is missing, then
         # we cannot invoke the MET tool.
-        if not self.p.getdir('MET_INSTALL_DIR'):
+        if not util.getdir(self.p, 'MET_INSTALL_DIR'):
             self.logger.error(
                 cur_filename + '|' + cur_function + ': MET install ' +
                 'directory not found in config file. Exiting.')
             sys.exit(1)
         tc_stat_dict['APP_PATH'] = os.path.join(
-            self.p.getdir('MET_INSTALL_DIR'), 'bin/tc_stat')
+            util.getdir(self.p, 'MET_INSTALL_DIR'), 'bin/tc_stat')
 
         tc_stat_dict['APP_NAME'] = os.path.basename(tc_stat_dict['APP_PATH'])
 
@@ -230,21 +230,21 @@ class TcStatWrapper(CommandBuilder):
 
         tc_stat_dict['MATCH_POINTS'] = \
             self.p.getstr('config', 'TC_STAT_MATCH_POINTS').upper()
-        tc_stat_dict['OUTPUT_BASE'] = self.p.getdir('OUTPUT_BASE')
+        tc_stat_dict['OUTPUT_BASE'] = util.getdir(self.p, 'OUTPUT_BASE')
 
-        tc_stat_dict['TMP_DIR'] = self.p.getdir('TMP_DIR')
+        tc_stat_dict['TMP_DIR'] = util.getdir(self.p, 'TMP_DIR')
 
-        tc_stat_dict['METPLUS_BASE'] = self.p.getdir('METPLUS_BASE')
+        tc_stat_dict['METPLUS_BASE'] = util.getdir(self.p, 'METPLUS_BASE')
 
-        tc_stat_dict['MET_INSTALL_DIR'] = self.p.getdir('MET_INSTALL_DIR')
+        tc_stat_dict['MET_INSTALL_DIR'] = util.getdir(self.p, 'MET_INSTALL_DIR')
 
-        tc_stat_dict['INPUT_DIR'] = self.p.getdir('TC_STAT_INPUT_DIR')
+        tc_stat_dict['INPUT_DIR'] = util.getdir(self.p, 'TC_STAT_INPUT_DIR')
 
-        tc_stat_dict['OUTPUT_DIR'] = self.p.getdir('TC_STAT_OUTPUT_DIR')
+        tc_stat_dict['OUTPUT_DIR'] = util.getdir(self.p, 'TC_STAT_OUTPUT_DIR')
 
-        tc_stat_dict['PARM_BASE'] = self.p.getdir('PARM_BASE')
+        tc_stat_dict['PARM_BASE'] = util.getdir(self.p, 'PARM_BASE')
 
-        tc_stat_dict['CONFIG_FILE'] = self.p.getdir('TC_STAT_CONFIG_FILE')
+        tc_stat_dict['CONFIG_FILE'] = self.p.getstr('config', 'TC_STAT_CONFIG_FILE')
 
         return tc_stat_dict
 
@@ -840,29 +840,4 @@ class TcStatWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='run_tc_stat',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='run_tc_stat')
-        produtil.log.postmsg('run_tc_stat is starting')
-
-        CONFIG = config_metplus.setup()
-        if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = CONFIG.getdir('MET_BASE')
-
-        TCS = TcStatWrapper(CONFIG, logger=None)
-        # TCS.<call_some_method>
-
-        #        util.gen_init_list(TCS.init_date_beg, TCS.init_date_end,
-        #                           TCS.init_hour_inc, CONFIG.getstr('config',
-        #                                                            'INIT_HOUR_END'))
-
-        produtil.log.postmsg('run_tc_stat completed')
-
-    except Exception as exception:
-        produtil.log.jlogger.critical(
-            'run_tc_stat failed: %s' % (str(exception),), exc_info=True)
-        sys.exit(2)
+    util.run_stand_alone("tc_stat_wrapper", "TcStat")

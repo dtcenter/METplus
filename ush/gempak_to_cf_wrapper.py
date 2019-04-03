@@ -18,7 +18,7 @@ import os
 import logging
 import met_util as util
 import string_template_substitution as sts
-from task_info import TaskInfo
+import time_util
 from command_builder import CommandBuilder
 
 
@@ -56,7 +56,7 @@ class GempakToCFWrapper(CommandBuilder):
         cmd += self.get_output_path()
         return cmd
 
-    def run_at_time(self, init_time, valid_time):
+    def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. Processing forecast
               or observation data is determined by conf variables. This function
               loops over the list of forecast leads and runs the application for
@@ -67,35 +67,30 @@ class GempakToCFWrapper(CommandBuilder):
         """        
         app_name_caps = self.app_name.upper()
         class_name = self.__class__.__name__[0: -7]
-        task_info = TaskInfo()
-        task_info.init_time = init_time
-        task_info.valid_time = valid_time
+
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
 
         for lead in lead_seq:
-            task_info.lead = lead
+            self.clear()
+            input_dict['lead_hours'] = lead
             self.p.set('config', 'CURRENT_LEAD_TIME', lead)
-            os.environ['METPLUS_CURRENT_LEAD_TIME'] = lead
-            self.run_at_time_once(task_info)
+            os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
+            time_info = time_util.ti_calculate(input_dict)
+            self.run_at_time_once(time_info)
 
 
-    def run_at_time_once(self, task_info):
+    def run_at_time_once(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination
              Args:
-                @param task_info task_info object containing timing information
+                @param time_info dictionary containing timing information
         """
-        valid_time = task_info.getValidTime()
-        input_dir = self.p.getdir('GEMPAKTOCF_INPUT_DIR')
+        valid_time = time_info['valid']
+        input_dir = util.getdir(self.p, 'GEMPAKTOCF_INPUT_DIR')
         input_template = util.getraw_interp(self.p, 'filename_templates',
                                         'GEMPAKTOCF_INPUT_TEMPLATE')
-        output_dir = self.p.getdir('GEMPAKTOCF_OUTPUT_DIR')
+        output_dir = util.getdir(self.p, 'GEMPAKTOCF_OUTPUT_DIR')
         output_template = util.getraw_interp(self.p, 'filename_templates',
                                         'GEMPAKTOCF_OUTPUT_TEMPLATE')
-
-        ymd_v = valid_time[0:8]
-        if not os.path.exists(os.path.join(output_dir, ymd_v)):
-            self.logger.info("Output directory does not exist, creating.")
-            os.makedirs(os.path.join(output_dir, ymd_v))
 
         gempakSts = sts.StringSub(self.logger,
                                input_template,
@@ -109,10 +104,13 @@ class GempakToCFWrapper(CommandBuilder):
         outfile = os.path.join(output_dir, gempakToCfSts.doStringSub())
         self.set_output_path(outfile)
 
+        if not os.path.exists(os.path.dirname(outfile)):
+            os.makedirs(os.path.dirname(outfile))
+
         cmd = self.get_command()
         if cmd is None:
             self.logger.error("Could not generate command")
             return
 
         self.build()
-        self.clear()
+

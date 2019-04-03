@@ -11,7 +11,7 @@ import logging
 import getopt
 import config_launcher
 import time
-import datetime
+from datetime import datetime, timedelta
 import calendar
 import shutil
 import produtil.setup
@@ -67,9 +67,12 @@ def main():
     # Parse arguments, options and return a config instance.
     p = config_metplus.setup(filename=cur_filename)
 
+    # check for deprecated config items and warn user to remove/replace them
+    util.check_for_deprecated_config(p, logger)
+
     # set staging dir to OUTPUT_BASE/stage if not set
     if not p.has_option('dir', 'STAGING_DIR'):
-        p.set('dir', 'STAGING_DIR', os.path.join(p.getdir('OUTPUT_BASE'),"stage"))
+        p.set('dir', 'STAGING_DIR', os.path.join(util.getdir(p, 'OUTPUT_BASE'),"stage"))
 
     # create temp dir if it doesn't exist already
     tmp_dir = util.getdir(p, 'TMP_DIR', logger)
@@ -91,7 +94,7 @@ def main():
 
     # This is available in each subprocess from os.system BUT
     # we also set it in each process since they may be called stand alone.
-    os.environ['MET_BASE'] = p.getdir('MET_BASE')
+    os.environ['MET_BASE'] = util.getdir(p, 'MET_BASE')
 
     # Use config object to get the list of processes to call
     process_list = util.getlist(p.getstr('config', 'PROCESS_LIST'))
@@ -120,7 +123,11 @@ def main():
 
         processes.append(command_builder)
 
-    if p.getstr('config', 'LOOP_METHOD') == "processes":
+    loop_order = p.getstr('config', 'LOOP_ORDER', '')
+    if loop_order == '':
+        loop_order = p.getstr('config', 'LOOP_METHOD')
+
+    if loop_order == "processes":
         for process in processes:
             # referencing using repr(process.app_name) in
             # log since it may be None,
@@ -130,48 +137,8 @@ def main():
                                  'in: %s wrapper.' % repr(process.app_name))
             process.run_all_times()
 
-    elif p.getstr('config', 'LOOP_METHOD') == "times":
-        use_init = p.getbool('config', 'LOOP_BY_INIT', True)
-        if use_init:
-            time_format = p.getstr('config', 'INIT_TIME_FMT')
-            start_t = p.getstr('config', 'INIT_BEG')
-            end_t = p.getstr('config', 'INIT_END')
-            time_interval = p.getint('config', 'INIT_INCREMENT')
-        else:
-            time_format = p.getstr('config', 'VALID_TIME_FMT')
-            start_t = p.getstr('config', 'VALID_BEG')
-            end_t = p.getstr('config', 'VALID_END')
-            time_interval = p.getint('config', 'VALID_INCREMENT')
-
-        if time_interval < 60:
-            logger.error("time_interval parameter must be "
-                  "greater than 60 seconds")
-            exit(1)
-
-        loop_time = calendar.timegm(time.strptime(start_t, time_format))
-        end_time = calendar.timegm(time.strptime(end_t, time_format))
-        while loop_time <= end_time:
-            run_time = time.strftime("%Y%m%d%H%M", time.gmtime(loop_time))
-            logger.info("****************************************")
-            logger.info("* RUNNING METplus")
-            if use_init:
-                logger.info("*  at init time: " + run_time)
-                p.set('config', 'CURRENT_INIT_TIME', run_time)
-                os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
-            else:
-                logger.info("*  at valid time: " + run_time)
-                p.set('config', 'CURRENT_VALID_TIME', run_time)
-                os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
-            logger.info("****************************************")
-            for process in processes:
-                # Set valid time to -1 if using init and vice versa
-                if use_init:
-                    process.run_at_time(run_time, -1)
-                else:
-                    process.run_at_time(-1, run_time)
-                process.clear()
-
-            loop_time += time_interval
+    elif loop_order == "times":
+        util.loop_over_times_and_call(p, logger, processes)
 
     else:
         logger.error("Invalid LOOP_METHOD defined. " + \
@@ -179,9 +146,10 @@ def main():
         exit()
 
     # scrub staging directory if requested
-    if p.getbool('config', 'SCRUB_STAGING_DIR', False) and os.path.exists(p.getdir('STAGING_DIR')):
-        logger.info("Scrubbing staging dir: {}".format(p.getdir('STAGING_DIR')))
-        shutil.rmtree(p.getdir('STAGING_DIR'))
+    if p.getbool('config', 'SCRUB_STAGING_DIR', False) and os.path.exists(util.getdir(p, 'STAGING_DIR')):
+        staging_dir = util.getdir(p, 'STAGING_DIR')
+        logger.info("Scrubbing staging dir: {}".format(staging_dir))
+        shutil.rmtree(staging_dir)
 
     logger.info('METplus has successfully finished running.')
 

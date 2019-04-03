@@ -6,25 +6,27 @@ import pytest
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
 import logging
-
+import datetime
 
 def test_cycle_hour():
-    cycle_string = "00"
-    valid_string = "20180103"
+    cycle_string = 0
+    valid_string = datetime.datetime.strptime("20180103", '%Y%m%d')
     logger = logging.getLogger("dummy")
-    templ = "prefix.{valid?fmt=%Y%m%d}.tm{cycle?fmt=%H}"
+    templ = "prefix.{valid?fmt=%Y%m%d}.tm{cycle?fmt=%2H}"
+    expected_filename = "prefix.20180103.tm00"
     ss = StringSub(logger, templ, valid=valid_string, cycle=cycle_string)
-    expected_hours = int(0)
-    assert (ss.cycle_time_hours == expected_hours)
+    filename = ss.doStringSub()
+    assert(filename == expected_filename)
 
 
 def test_offset_hour():
     logger = logging.getLogger("dummy")
-    expected_hour = int(3)
-    offset = "03"
-    templ = "prefix.{valid?fmt=%Y%m%d}.tm{offset?fmt=%H}"
+    expected_hour = "03"
+    offset = 10800
+    templ = "{offset?fmt=%2H}"
     ss = StringSub(logger, templ, offset=offset)
-    assert (ss.offset_hour == expected_hour)
+    offset_hour = ss.doStringSub()
+    assert (offset_hour == expected_hour)
 
 
 @pytest.mark.parametrize(
@@ -35,7 +37,9 @@ def test_offset_hour():
         ('72', '20171231060000')
     ]
 )
+
 def test_calc_valid_for_prepbufr(key, value):
+    pytest.skip('deprecated function')
     # Verify that the previous day is correctly calculated when
     # the negative_offset_hour > cycle_hour
     cycle_hour = "00"
@@ -55,26 +59,30 @@ def test_gdas_substitution():
     # prepbufr files, which do not make use of the cycle hour or the offset
     # to generate the valid time.
     valid_string = "2018010411"
+    valid_obj = datetime.datetime.strptime(valid_string, '%Y%m%d%H')
     logger = logging.getLogger("testing")
     templ = "prepbufr.gdas.{valid?fmt=%Y%m%d%H}.nc"
     expected_filename = 'prepbufr.gdas.' + valid_string + '.nc'
-    ss = StringSub(logger, templ, valid=valid_string)
+    ss = StringSub(logger, templ, valid=valid_obj)
     filename = ss.doStringSub()
     assert(filename == expected_filename)
 
 @pytest.mark.parametrize(
     'key, value', [
-        ('38', 'prepbufr.nam.2018010311.t38z.tm03.nc'),
-        ('380', 'prepbufr.nam.2018011717.t380z.tm03.nc')
+        (136800, 'prepbufr.nam.2018010311.t38z.tm03.nc'),
+        (1368000, 'prepbufr.nam.2018011717.t380z.tm03.nc')
+#        ('38', 'prepbufr.nam.2018010311.t38z.tm03.nc'),
+#        ('380', 'prepbufr.nam.2018011717.t380z.tm03.nc')
 
     ]
 )
 def test_nam_substitution_HH(key, value):
+    pytest.skip('time offsets no longer computed in StringSub')
     # Test that the substitution works correctly when given an init time,
     # cycle hour, and negative offset hour.
-    init_string = "20180102"
+    init_string = datetime.datetime.strptime("20180102", '%Y%m%d')
     cycle_string = key
-    offset_string = '03'
+    offset_string = 10800 #'03'
     expected_filename = value
     logger = logging.getLogger("test")
     templ = \
@@ -89,17 +97,20 @@ def test_nam_substitution_HH(key, value):
 
 @pytest.mark.parametrize(
     'key, value', [
-        ('18', 'prepbufr.nam.2018010215.t018z.tm03.nc'),
-        ('03', 'prepbufr.nam.2018010200.t003z.tm03.nc'),
+        (64800, 'prepbufr.nam.2018010215.t018z.tm03.nc'),
+        (10800, 'prepbufr.nam.2018010200.t003z.tm03.nc'),
+#        ('18', 'prepbufr.nam.2018010215.t018z.tm03.nc'),
+#        ('03', 'prepbufr.nam.2018010200.t003z.tm03.nc'),
 
     ]
 )
 def test_nam_substitution_HHH(key, value):
+    pytest.skip('time offsets no longer computed in StringSub')
     # Test that the substitution works correctly when given an init time,
     # cycle hour, and negative offset hour.
-    init_string = "20180102"
+    init_string = datetime.datetime.strptime("20180102", '%Y%m%d')
     cycle_string = key
-    offset_string = '03'
+    offset_string = int('03') * 3600
     expected_filename = value
     logger = logging.getLogger("test")
     templ = \
@@ -119,11 +130,12 @@ def test_nam_substitution_HHH(key, value):
     ]
 )
 def test_nam_substitution_dHMS(key, value):
+        pytest.skip('time offsets no longer computed in StringSub')
         # Test that the substitution works correctly when given an init time,
         # cycle hour, and negative offset hour.
-        init_string = "20180102"
-        cycle_string = key
-        offset_string = '03'
+        init_string = datetime.datetime.strptime("20180102", '%Y%m%d')
+        cycle_string = int(key) * 3600
+        offset_string = int('03') * 3600
         expected_filename = value
         logger = logging.getLogger("test")
         templ = \
@@ -142,8 +154,8 @@ def test_hh_lead():
     filepath = "1987020103_A03h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
 
@@ -153,8 +165,8 @@ def test_hhh_lead():
     filepath = "1987020103_A003h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
 
@@ -164,8 +176,8 @@ def test_2h_lead():
     filepath = "1987020103_A03h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
 
@@ -175,8 +187,8 @@ def test_3h_lead():
     filepath = "1987020103_A003h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
 
@@ -186,8 +198,8 @@ def test_h_lead_no_pad_1_digit():
     filepath = "1987020103_A3h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
 
@@ -197,8 +209,8 @@ def test_h_lead_no_pad_2_digit():
     filepath = "1987020103_A12h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702011500")
 
 
@@ -208,16 +220,16 @@ def test_h_lead_no_pad_3_digit():
     filepath = "1987020103_A102h"
     se = StringExtract(logger, template,
                            filepath)
-    se.parseTemplate()
-    ftime = se.getValidTime("%Y%m%d%H%M")
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702050900")
 
 
 def test_h_lead_no_pad_1_digit_sub():
     logger = logging.getLogger("test")
     file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
-    init_time = "1987020103"
-    lead_time = "3"
+    init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
+    lead_time = int("3") * 3600
     fSts = StringSub(logger,
                      file_template,
                      init=init_time,
@@ -229,8 +241,8 @@ def test_h_lead_no_pad_1_digit_sub():
 def test_h_lead_no_pad_2_digit_sub():
     logger = logging.getLogger("test")
     file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
-    init_time = "1987020103"
-    lead_time = "12"
+    init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
+    lead_time = int("12") * 3600
     fSts = StringSub(logger,
                      file_template,
                      init=init_time,
@@ -242,8 +254,8 @@ def test_h_lead_no_pad_2_digit_sub():
 def test_h_lead_no_pad_3_digit_sub():
     logger = logging.getLogger("test")
     file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
-    init_time = "1987020103"
-    lead_time = "102"
+    init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
+    lead_time = int("102") * 3600
     fSts = StringSub(logger,
                      file_template,
                      init=init_time,
@@ -255,8 +267,8 @@ def test_h_lead_no_pad_3_digit_sub():
 def test_h_lead_pad_1_digit_sub():
     logger = logging.getLogger("test")
     file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.1H}h"
-    init_time = "1987020103"
-    lead_time = "3"
+    init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
+    lead_time = int("3") * 3600
     fSts = StringSub(logger,
                      file_template,
                      init=init_time,
@@ -268,8 +280,8 @@ def test_h_lead_pad_1_digit_sub():
 def test_h_lead_pad_2_digit_sub():
     logger = logging.getLogger("test")
     file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.2H}h"
-    init_time = "1987020103"
-    lead_time = "3"
+    init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
+    lead_time = int("3") * 3600
     fSts = StringSub(logger,
                      file_template,
                      init=init_time,
@@ -281,8 +293,8 @@ def test_h_lead_pad_2_digit_sub():
 def test_h_lead_pad_2_digit_sub():
     logger = logging.getLogger("test")
     file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.3H}h"
-    init_time = "1987020103"
-    lead_time = "3"
+    init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
+    lead_time = int("3") * 3600
     fSts = StringSub(logger,
                      file_template,
                      init=init_time,
@@ -295,7 +307,7 @@ def test_ym_date_dir_init():
     # Test that the ym directory can be read in and does substitution correctly
     logger = logging.getLogger("test")
     # e.g. /d1/METplus_TC/adeck_orig/201708/atcfunix.gfs.2017080100
-    init_str = '2017080100'
+    init_str = datetime.datetime.strptime("2017080100", '%Y%m%d%H')
     date_str = '201708'
     templ = '/d1/METplus_TC/adeck_orig/{date?fmt=%s}/' \
             'atcfunix.gfs.{init?fmt=%Y%m%d%H}.dat'
@@ -324,7 +336,7 @@ def test_ymd_date_dir():
     # Test that the ymd directory can be read in and does substitution correctly
     logger = logging.getLogger("test")
     # e.g. /d1/METplus_TC/adeck_orig/20170811/atcfunix.gfs.2017080100
-    init_str = '2017081118'
+    init_str = datetime.datetime.strptime('2017081118', '%Y%m%d%H')
     date_str = '20170811'
     templ = '/d1/METplus_TC/adeck_orig/{date?fmt=%s}/atcfunix.gfs.' \
             '{init?fmt=%Y%m%d%H}.dat'
@@ -355,6 +367,7 @@ def test_ymd_region_cyclone():
 
 
 def test_create_cyclone_regex():
+    pytest.skip('deprecated function')
     # Test that the regex created from a template is what is expected
     logger = logging.getLogger("test")
     templ = '/d1/METplus_TC/bdeck/{date?fmt=%s}/b{region?fmt=%s}' \
@@ -382,11 +395,11 @@ def test_crow_variable_hour():
     crow_input_file_3 = 'pgbf219.gfs.2017060418'
     crow_input_file_2 = 'pgbf18.gfs.2017062000'
     crow_input_file_1 = 'pgbf3.gfs.2017060418'
-    lead_1 = '3'
-    lead_2 = '18'
-    lead_3 = '219'
-    valid_2 = '2017062000'
-    valid_1 = valid_3 = '2017060418'
+    lead_1 = int('3') * 3600
+    lead_2 = int('18') * 3600
+    lead_3 = int('219') * 3600
+    valid_2 = datetime.datetime.strptime('2017062000', '%Y%m%d%H')
+    valid_1 = valid_3 = datetime.datetime.strptime('2017060418', '%Y%m%d%H')
     templ = 'pgbf{lead?fmt=%H}.gfs.{valid?fmt=%Y%m%d%H}'
     ss_1 = StringSub(logger, templ, valid=valid_1, lead=lead_1)
     ss_2 = StringSub(logger, templ, valid=valid_2, lead=lead_2)
@@ -403,13 +416,14 @@ def test_crow_variable_hour():
 
 
 def test_create_grid2obs_regex_gfs():
+    pytest.skip('deprecated function')
     # Test that the regex created from a template is what is expected
     logger = logging.getLogger("test")
     templ = '/path/to/gfs/pgbf{lead?fmt=%H}.gfs.{valid?fmt=%Y%m%d%HH}'
 
     # variables to pass into StringSub
-    valid_str = '2017081118'
-    lead_str = '00'
+    valid_str = datetime.datetime.strptime('2017081118', '%Y%m%d%H')
+    lead_str = 0
 
     ss = StringSub(logger, templ, valid=valid_str, lead=lead_str)
     actual_regex = ss.create_grid2obs_regex()
@@ -418,6 +432,7 @@ def test_create_grid2obs_regex_gfs():
 
 
 def test_create_grid2obs_regex_nam():
+    pytest.skip('deprecated function')
     # Test that the regex created from a template is what is expected
     logger = logging.getLogger("test")
     templ = \
@@ -435,7 +450,9 @@ def test_create_grid2obs_regex_nam():
     assert actual_regex == expected_regex
 
 
+
 def test_create_grid2obs_regex_gdas():
+    pytest.skip('deprecated function')
     # Test that the regex created from a template is what is expected
     logger = logging.getLogger("test")
     templ = \
@@ -452,7 +469,9 @@ def test_create_grid2obs_regex_gdas():
     expected_regex = '/path/to/gdas/prepbufr.gdas.([0-9]{10})$'
     assert actual_regex == expected_regex
 
+
 def test_create_grid2obs_regex_hrrr():
+    pytest.skip('deprecated function')
     # Test that the regex created from a template is what is expected
     logger = logging.getLogger("test")
     templ = \
@@ -470,6 +489,7 @@ def test_create_grid2obs_regex_hrrr():
 
 
 def test_create_grid2obs_regex_all():
+    pytest.skip('deprecated function')
     # Test that the regex created from the template that has valid
     # cycle, lead and offset is correct (expected).
     logger = logging.getLogger("test")
@@ -492,8 +512,8 @@ def test_create_grid2obs_regex_all():
 
 
 def test_multiple_valid_substitution_valid():
-    valid_string = "2018020112"
-    lead_string = "123"
+    valid_string = datetime.datetime.strptime("2018020112", '%Y%m%d%H')
+    lead_string = int("123") * 3600
     logger = logging.getLogger("testing")
     templ = "{valid?fmt=%Y%m%d%H}/gfs.t{valid?fmt=%H}.pgrb2.0p25.{lead?fmt=%HHH}"
     expected_filename = "2018020112/gfs.t12.pgrb2.0p25.123"
@@ -502,8 +522,8 @@ def test_multiple_valid_substitution_valid():
     assert(filename == expected_filename)
 
 def test_multiple_valid_substitution_init():
-    init_string = "2017060400"
-    lead_string = "00"
+    init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
+    lead_string = 0
     logger = logging.getLogger("testing")
     templ = "{init?fmt=%Y%m%d%H}/gfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%.2H}"
     expected_filename = "2017060400/gfs.t00z.pgrb2.0p25.f00"
@@ -513,28 +533,32 @@ def test_multiple_valid_substitution_init():
 
 
 def test_multiple_valid_substitution_init_and_valid():
-    init_string = "2017060400"
-    lead_string = "00"
+    init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
+    valid_string = init_string
+    lead_string = 0
     logger = logging.getLogger("testing")
     templ = "{valid?fmt=%Y%m%d%H}/gfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%.2H}"
     expected_filename = "2017060400/gfs.t00z.pgrb2.0p25.f00"
-    ss = StringSub(logger, templ, init=init_string, lead=lead_string)
+    ss = StringSub(logger, templ, init=init_string,
+                   lead=lead_string, valid=valid_string)
     filename = ss.doStringSub()
     assert(filename == expected_filename)
 
 def test_multiple_valid_substitution_init_and_valid_w_lead():
-    init_string = "2017060400"
-    lead_string = "24"
+    init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
+    valid_string = datetime.datetime.strptime("2017060500", '%Y%m%d%H')
+    lead_string = int("24") * 3600
     logger = logging.getLogger("testing")
     templ = "{valid?fmt=%Y%m%d%H}/gfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%.2H}"
     expected_filename = "2017060500/gfs.t00z.pgrb2.0p25.f24"
-    ss = StringSub(logger, templ, init=init_string, lead=lead_string)
+    ss = StringSub(logger, templ, init=init_string,
+                   lead=lead_string, valid=valid_string)
     filename = ss.doStringSub()
     assert(filename == expected_filename)
 
 def test_multiple_valid_substitution_init_complex():
-    init_string = "2016061018"
-    lead_string = "6"
+    init_string = datetime.datetime.strptime("2016061018", '%Y%m%d%H')
+    lead_string = int("6") * 3600
     logger = logging.getLogger("testing")
     templ = "ncar.ral.CoSPA.HRRR.{init?fmt=%Y-%m-%dT%H:%M:%S}.PT{lead?fmt=%.2H}:00.nc"
     expected_filename = "ncar.ral.CoSPA.HRRR.2016-06-10T18:00:00.PT06:00.nc"
@@ -544,7 +568,7 @@ def test_multiple_valid_substitution_init_complex():
 
 
 def test_shift_time():
-    init_string = "2017060400"
+    init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
     logger = logging.getLogger("testing")
     templ = "{init?fmt=%Y%m%d%H?shift=86400}"
     expected_filename = "2017060500"
@@ -553,7 +577,7 @@ def test_shift_time():
     assert(filename == expected_filename)
 
 def test_shift_time_negative():
-    init_string = "2017060400"
+    init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
     logger = logging.getLogger("testing")
     templ = "{init?fmt=%Y%m%d%H?shift=-86400}"
     expected_filename = "2017060300"
@@ -562,8 +586,8 @@ def test_shift_time_negative():
     assert(filename == expected_filename)
 
 def test_shift_time_lead_negative():
-    init_string = "2019020700"
-    lead_string = "60"
+    init_string = datetime.datetime.strptime("2019020700", '%Y%m%d%H')
+    lead_string = int("60") * 3600
     logger = logging.getLogger("testing")
     templ = "dwd_{init?fmt=%Y%m%d%H}_{lead?fmt=%.3H?shift=-86400}_{lead?fmt=%.3H}"
     expected_filename = "dwd_2019020700_036_060"
@@ -573,8 +597,8 @@ def test_shift_time_lead_negative():
 
 def test_ccpa_template():
     passed = True
-    valid_string = "2019022403"
-    lead_string = "3"
+    valid_string = datetime.datetime.strptime("2019022403", '%Y%m%d%H')
+    lead_string = 10800
     logger = logging.getLogger("testing")
     templ = "ccpa.{valid?fmt=%Y%m%d}/06/ccpa.t{valid?fmt=%H}z.{lead?fmt=%.2H}h.hrap.conus.gb2"
     expected_filename = "ccpa.20190224/06/ccpa.t03z.03h.hrap.conus.gb2"
@@ -583,8 +607,8 @@ def test_ccpa_template():
     if filename != expected_filename:
         passed = False
 
-    valid_string = "2019022406"
-    lead_string = "6"
+    valid_string = datetime.datetime.strptime("2019022406", '%Y%m%d%H')
+    lead_string = int("6") * 3600
     expected_filename = "ccpa.20190224/06/ccpa.t06z.06h.hrap.conus.gb2"
     ss = StringSub(logger, templ, valid=valid_string, lead=lead_string)
     filename = ss.doStringSub()

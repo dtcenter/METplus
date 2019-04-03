@@ -40,11 +40,11 @@ class CyclonePlotterWrapper(CommandBuilder):
             self.logger = util.get_logger(self.p)
         else:
             self.logger = logger
-        self.app_path = os.path.join(p.getdir('MET_INSTALL_DIR'),
+        self.app_path = os.path.join(util.getdir(p, 'MET_INSTALL_DIR'),
                                      'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
-        self.input_data = p.getdir('CYCLONE_INPUT_DIR')
-        self.output_dir = p.getdir('CYCLONE_OUT_DIR')
+        self.input_data = util.getdir(p, 'CYCLONE_INPUT_DIR')
+        self.output_dir = util.getdir(p, 'CYCLONE_OUT_DIR')
         self.init_date = p.getstr('config', 'CYCLONE_INIT_DATE')
         self.init_hr = p.getstr('config', 'CYCLONE_INIT_HR')
         self.model = p.getstr('config', 'CYCLONE_MODEL')
@@ -561,7 +561,7 @@ if __name__ == "__main__":
         # pylint:disable=invalid-name
         p = config_metplus.setup()
         if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = p.getdir('MET_BASE')
+            os.environ['MET_BASE'] = util.getdir(p, 'MET_BASE')
 
         # Request data extraction and plot generation.
         # pylint:disable=invalid-name

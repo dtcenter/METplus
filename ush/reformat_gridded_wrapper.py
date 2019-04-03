@@ -21,8 +21,7 @@ import met_util as util
 import re
 import csv
 import subprocess
-import string_template_substitution as sts
-from task_info import TaskInfo
+import time_util
 from command_builder import CommandBuilder
 
 '''!@namespace ReformatGriddedWrapper
@@ -41,7 +40,7 @@ that reformat gridded data
         super(ReformatGriddedWrapper, self).__init__(p, logger)
  
 
-    def run_at_time(self, init_time, valid_time):
+    def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. Processing forecast
               or observation data is determined by conf variables. This function
               loops over the list of forecast leads and runs the application for
@@ -52,9 +51,6 @@ that reformat gridded data
         """        
         app_name_caps = self.app_name.upper()
         class_name = self.__class__.__name__[0: -7]
-        task_info = TaskInfo()
-        task_info.init_time = init_time
-        task_info.valid_time = valid_time
         var_list = util.parse_var_list(self.p)
         lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
 
@@ -74,9 +70,11 @@ that reformat gridded data
         for rl in run_list:
             self.logger.info("Processing {} data".format(rl))
             for lead in lead_seq:
-                task_info.lead = lead
+                input_dict['lead_hours'] = lead
                 self.p.set('config', 'CURRENT_LEAD_TIME', lead)
                 os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
-                self.logger.info("Processing foreacst lead {}".format(lead))
+                self.logger.info("Processing forecast lead {}".format(lead))
+                time_info = time_util.ti_calculate(input_dict)
                 for var_info in var_list:
-                    self.run_at_time_once(task_info, var_info, rl)
+                    self.run_at_time_once(time_info, var_info, rl)
+

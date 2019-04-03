@@ -23,7 +23,6 @@ import csv
 import subprocess
 import time
 import calendar
-import string_template_substitution as sts
 from task_info import TaskInfo
 from command_builder import CommandBuilder
 
@@ -287,9 +286,9 @@ class MakePlotsWrapper(CommandBuilder):
         init_hour_beg = self.p.getstr('config', 'INIT_HOUR_BEG')
         init_hour_end = self.p.getstr('config', 'INIT_HOUR_END')
         init_hour_increment = self.p.getstr('config', 'INIT_HOUR_INCREMENT')
-        stat_files_input_dir = self.p.getdir('STAT_FILES_INPUT_DIR')
-        plotting_out_dir = self.p.getdir('PLOTTING_OUT_DIR')
-        plotting_scripts_dir = self.p.getdir('PLOTTING_SCRIPTS_DIR')
+        stat_files_input_dir = util.getdir(self.p, 'STAT_FILES_INPUT_DIR')
+        plotting_out_dir = util.getdir(self.p, 'PLOTTING_OUT_DIR')
+        plotting_scripts_dir = util.getdir(self.p, 'PLOTTING_SCRIPTS_DIR')
         plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
         ci_method = self.p.getstr('config', 'CI_METHOD')
         verif_grid = self.p.getstr('config', 'VERIF_GRID')

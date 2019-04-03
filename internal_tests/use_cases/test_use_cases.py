@@ -77,7 +77,7 @@ def compare_results(param_a, param_b):
 
     processes = util.getlist(p.getstr('config', 'PROCESS_LIST'))
     # TODO: Not all apps that use_init will write dirs on init, could be valid
-    use_init = p.getbool('config', 'LOOP_BY_INIT')
+    use_init = util.is_loop_by_init(p)
     if use_init:
         time_format = p.getstr('config', 'INIT_TIME_FMT')
         start_t = p.getstr('config', 'INIT_BEG')
@@ -225,14 +225,20 @@ def main():
                     use_case_dir+"/qpf/examples/hrefmean-vs-qpe.conf" ,
                     use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf" ,
                     use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" ,
-#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" #,
-#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" #,
-#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_by_fhr_grouping.conf" #,    
+#                    use_case_dir+"/feature_relative/feature_relative.conf",
+#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" ,
+#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" ,
+#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_by_fhr_grouping.conf" ,
                     use_case_dir+"/grid_to_grid/examples/anom.conf" ,
                     use_case_dir+"/grid_to_grid/examples/anom_height.conf",
                     use_case_dir+"/grid_to_grid/examples/sfc.conf" ,
                     use_case_dir+"/grid_to_grid/examples/precip.conf",
-                    use_case_dir+"/grid_to_grid/examples/precip_continuous.conf"
+                    use_case_dir+"/grid_to_grid/examples/precip_continuous.conf" ,
+                    use_case_dir+"/mode/examples/hrefmean-vs-mrms-qpe.conf",
+                    use_case_dir+"/mode/examples/phpt-vs-qpe.conf",
+                    use_case_dir+"/ensemble/examples/hrrr_ensemble_sfc.conf" #,
+#                   use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/conus_surface.conf",
+#                   use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/upper_air.conf"
                   ]
 
     all_good = True

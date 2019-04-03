@@ -21,8 +21,6 @@ import met_util as util
 import re
 import csv
 import subprocess
-import time
-import calendar
 import string_template_substitution as sts
 from task_info import TaskInfo
 from command_builder import CommandBuilder
@@ -31,7 +29,7 @@ from command_builder import CommandBuilder
 class StatAnalysisWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(StatAnalysisWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
+        self.app_path = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR'),
                                      'bin/stat_analysis')
         self.app_name = os.path.basename(self.app_path)
         if self.logger is None:
@@ -291,8 +289,8 @@ class StatAnalysisWrapper(CommandBuilder):
         init_hour_beg = self.p.getstr('config', 'INIT_HOUR_BEG')
         init_hour_end = self.p.getstr('config', 'INIT_HOUR_END')
         init_hour_increment = self.p.getstr('config', 'INIT_HOUR_INCREMENT')
-        stat_analysis_lookin_dir = self.p.getdir('STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_lookin_dir = util.getdir(self.p, 'STAT_ANALYSIS_LOOKIN_DIR')
+        stat_analysis_out_dir = util.getdir(self.p, 'STAT_ANALYSIS_OUT_DIR')
         stat_analysis_config = self.p.getstr('config', 'STAT_ANALYSIS_CONFIG')
         job_name = self.p.getstr('config', 'JOB_NAME')
         job_args = self.p.getstr('config', 'JOB_ARGS')
@@ -645,7 +643,7 @@ class StatAnalysisWrapper(CommandBuilder):
         init_hour_beg = self.p.getstr('config', 'INIT_HOUR_BEG')
         init_hour_end = self.p.getstr('config', 'INIT_HOUR_END')
         init_hour_increment = self.p.getstr('config', 'INIT_HOUR_INCREMENT')
-        stat_analysis_out_dir = self.p.getdir('STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_out_dir = util.getdir(self.p, 'STAT_ANALYSIS_OUT_DIR')
         stat_analysis_config = self.p.getstr('config', 'STAT_ANALYSIS_CONFIG')
         model_list = self.parse_model_list()
         var_list = util.parse_var_list(self.p)

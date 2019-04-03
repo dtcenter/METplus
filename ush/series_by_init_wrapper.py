@@ -53,10 +53,10 @@ class SeriesByInitWrapper(CommandBuilder):
 
         self.regrid_with_met_tool = p.getbool('config',
                                               'REGRID_USING_MET_TOOL')
-        self.extract_tiles_dir = p.getdir('EXTRACT_OUT_DIR')
-        self.series_out_dir = p.getdir('SERIES_INIT_OUT_DIR')
+        self.extract_tiles_dir = util.getdir(p, 'EXTRACT_OUT_DIR')
+        self.series_out_dir = util.getdir(p, 'SERIES_INIT_OUT_DIR')
         self.series_filtered_out_dir = \
-            p.getdir('SERIES_INIT_FILTERED_OUT_DIR')
+            util.getdir(p, 'SERIES_INIT_FILTERED_OUT_DIR')
         self.filter_opts = \
             p.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
         self.fcst_ascii_file_prefix = 'FCST_ASCII_FILES_'
@@ -67,7 +67,7 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # For building the argument string via
         # CommandBuilder:
-        met_install_dir = p.getdir('MET_INSTALL_DIR')
+        met_install_dir = util.getdir(p, 'MET_INSTALL_DIR')
         self.app_path = os.path.join(met_install_dir, 'bin/series_analysis')
         self.app_name = os.path.basename(self.app_path)
         self.inaddons = []
@@ -142,7 +142,7 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # If applicable, apply any filtering via tc_stat, as indicated in the
         # parameter/config file.
-        tmp_dir = os.path.join(self.p.getdir('TMP_DIR'), str(os.getpid()))
+        tmp_dir = os.path.join(util.getdir(self.p, 'TMP_DIR'), str(os.getpid()))
         if series_filter_opts:
             self.apply_series_filters(tile_dir, init_times,
                                       self.series_filtered_out_dir,
@@ -693,7 +693,7 @@ class SeriesByInitWrapper(CommandBuilder):
         """
         convert_exe = util.getexe(self.p, 'CONVERT_EXE', self.logger)
         background_map = self.p.getbool('config', 'BACKGROUND_MAP')
-        plot_data_plane_exe = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
+        plot_data_plane_exe = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR'),
                                            'bin/plot_data_plane')
         for cur_var in self.var_list:
             name, level = util.get_name_level(cur_var, self.logger)
@@ -915,24 +915,4 @@ class SeriesByInitWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='SeriesByInit',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='SeriesByInit')
-        produtil.log.postmsg('series_by_init is starting')
-
-        # Read in the configuration object CONFIG
-        CONFIG = config_metplus.setup()
-        LOG = util.get_logger(CONFIG)
-        if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = CONFIG.getdir('MET_BASE')
-
-        SBI = SeriesByInitWrapper(CONFIG, LOG)
-        SBI.run_all_times()
-        produtil.log.postmsg('series_by_init completed')
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'series_by_init failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
+        util.run_stand_alone("series_by_init_wrapper", "SeriesByInit")

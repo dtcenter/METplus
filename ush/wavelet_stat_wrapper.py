@@ -26,7 +26,7 @@ class WaveletStatWrapper(CompareGriddedWrapper):
     '''
     def __init__(self, p, logger):
         super(WaveletStatWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
+        self.app_path = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR'),
                                      'bin/wavelet_stat')
         self.app_name = os.path.basename(self.app_path)
 

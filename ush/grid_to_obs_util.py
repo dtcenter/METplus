@@ -5,7 +5,6 @@ import sys
 import re
 import os
 from collections import namedtuple
-from string_template_substitution import StringSub
 import met_util as util
 
 """!@namespace feature_util

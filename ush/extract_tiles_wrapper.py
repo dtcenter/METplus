@@ -47,15 +47,15 @@ class ExtractTilesWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
         super(ExtractTilesWrapper, self).__init__(p, logger)
-        met_install_dir = p.getdir('MET_INSTALL_DIR')
-        self.app_path = os.path.join(p.getdir('MET_INSTALL_DIR'), 'bin/tc_pairs')
+        met_install_dir = util.getdir(p, 'MET_INSTALL_DIR')
+        self.app_path = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR'), 'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
-        self.tc_pairs_dir = self.p.getdir('TC_PAIRS_DIR')
+        self.tc_pairs_dir = util.getdir(self.p, 'TC_PAIRS_DIR')
         self.overwrite_flag = self.p.getbool('config',
                                              'OVERWRITE_TRACK')
         self.addl_filter_opts = \
             self.p.getstr('config', 'EXTRACT_TILES_FILTER_OPTS')
-        self.filtered_out_dir = self.p.getdir('EXTRACT_OUT_DIR')
+        self.filtered_out_dir = util.getdir(self.p, 'EXTRACT_OUT_DIR')
         self.tc_stat_exe = os.path.join(met_install_dir, 'bin/tc_stat')
         self.init_beg = self.p.getstr('config', 'INIT_BEG')[0:8]
         self.init_end = self.p.getstr('config', 'INIT_END')[0:8]
@@ -120,7 +120,7 @@ class ExtractTilesWrapper(CommandBuilder):
         # get the process id to be used to identify the output
         # amongst different users and runs.
         cur_pid = str(os.getpid())
-        tmp_dir = os.path.join(self.config.getdir('TMP_DIR'), cur_pid)
+        tmp_dir = os.path.join(util.getdir(self.config, 'TMP_DIR'), cur_pid)
         self.logger.info("Begin extract tiles")
 
         cur_init = init_time[0:8]+"_"+init_time[8:10]
@@ -209,24 +209,4 @@ class ExtractTilesWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='extract_tiles',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='extract_tiles')
-        produtil.log.postmsg('extract_tiles is starting')
-
-        # Read in the configuration object CONFIG_INST
-        CONFIG_INST = config_metplus.setup()
-        if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = CONFIG_INST.getdir('MET_BASE')
-
-        ET = ExtractTilesWrapper(CONFIG_INST, logger=None)
-        ET.run_all_times()
-        produtil.log.postmsg('extract_tiles completed')
-    except Exception as exception:
-        produtil.log.jlogger.critical(
-            'extract_tiles failed: %s' % (str(exception),), exc_info=True)
-        sys.exit(2)
+    util.run_stand_alone("extract_tiles_wrapper", "ExtractTiles")

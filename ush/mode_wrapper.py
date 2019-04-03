@@ -22,125 +22,110 @@ class ModeWrapper(CompareGriddedWrapper):
 
     def __init__(self, p, logger):
         super(ModeWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'),
+        self.app_path = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR'),
                                      'bin/mode')
         self.app_name = os.path.basename(self.app_path)
-        self.create_cg_dict()
-
+        self.c_dict = self.create_c_dict()
 
     def add_merge_config_file(self):
-        if self.cg_dict['MERGE_CONFIG_FILE'] != '':
-            self.add_arg('-config_merge {}'.format(self.cg_dict['MERGE_CONFIG_FILE']))
+        if self.c_dict['MERGE_CONFIG_FILE'] != '':
+            self.add_arg('-config_merge {}'.format(self.c_dict['MERGE_CONFIG_FILE']))
 
 
-    def create_cg_dict(self):
-        self.cg_dict = dict()
-        self.cg_dict['LOOP_BY_INIT'] = self.p.getbool('config', 'LOOP_BY_INIT', True)
-        self.cg_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
-        self.cg_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL_TYPE')
-        self.cg_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE')
-        self.cg_dict['CONFIG_DIR'] = self.p.getdir('CONFIG_DIR')
-        self.cg_dict['CONFIG_FILE'] = self.p.getstr('config', 'MODE_CONFIG')
-        self.cg_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
-        self.cg_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
-        self.cg_dict['OBS_INPUT_DIR'] = \
-          self.p.getdir('OBS_MODE_INPUT_DIR')
-        self.cg_dict['OBS_INPUT_TEMPLATE'] = \
+    def create_c_dict(self):
+        c_dict = super(ModeWrapper, self).create_c_dict()
+
+        c_dict['CONFIG_FILE'] = self.p.getstr('config', 'MODE_CONFIG')
+        c_dict['OBS_INPUT_DIR'] = \
+          util.getdir(self.p, 'OBS_MODE_INPUT_DIR')
+        c_dict['OBS_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'OBS_MODE_INPUT_TEMPLATE')
-        self.cg_dict['OBS_INPUT_DATATYPE'] = \
+        c_dict['OBS_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'OBS_MODE_INPUT_DATATYPE', '')
-        self.cg_dict['FCST_INPUT_DIR'] = \
-          self.p.getdir('FCST_MODE_INPUT_DIR')
-        self.cg_dict['FCST_INPUT_TEMPLATE'] = \
+        c_dict['FCST_INPUT_DIR'] = \
+          util.getdir(self.p, 'FCST_MODE_INPUT_DIR')
+        c_dict['FCST_INPUT_TEMPLATE'] = \
           util.getraw_interp(self.p, 'filename_templates',
                                'FCST_MODE_INPUT_TEMPLATE')
-        self.cg_dict['FCST_INPUT_DATATYPE'] = \
+        c_dict['FCST_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'FCST_MODE_INPUT_DATATYPE', '')
-        self.cg_dict['OUTPUT_DIR'] = self.p.getdir('MODE_OUT_DIR')
-        self.cg_dict['INPUT_BASE'] = self.p.getdir('INPUT_BASE')
-        self.cg_dict['WINDOW_RANGE_BEG'] = \
-          self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
-        self.cg_dict['WINDOW_RANGE_END'] = \
-          self.p.getint('config', 'WINDOW_RANGE_END', 3600)
-        self.cg_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                              'OBS_EXACT_VALID_TIME',
-                                                              True)
-        self.cg_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                              'FCST_EXACT_VALID_TIME',
-                                                              True)
-        self.cg_dict['ONCE_PER_FIELD'] = True
-        self.cg_dict['QUILT'] = self.p.getbool('config', 'MODE_QUILT', False)
+        c_dict['OUTPUT_DIR'] = util.getdir(self.p, 'MODE_OUT_DIR')
+        c_dict['ONCE_PER_FIELD'] = True
+        c_dict['QUILT'] = self.p.getbool('config', 'MODE_QUILT', False)
         fcst_conv_radius, obs_conv_radius = self.handle_fcst_and_obs_field('MODE_CONV_RADIUS',
                                                                            'MODE_FCST_CONV_RADIUS',
                                                                            'MODE_OBS_CONV_RADIUS', '5')
-        self.cg_dict['FCST_CONV_RADIUS'] = fcst_conv_radius
-        self.cg_dict['OBS_CONV_RADIUS'] = obs_conv_radius
+        c_dict['FCST_CONV_RADIUS'] = fcst_conv_radius
+        c_dict['OBS_CONV_RADIUS'] = obs_conv_radius
 
         fcst_conv_thresh, obs_conv_thresh = self.handle_fcst_and_obs_field('MODE_CONV_THRESH',
                                                                            'MODE_FCST_CONV_THRESH',
                                                                            'MODE_OBS_CONV_THRESH', '>0.5')
 
-        self.cg_dict['FCST_CONV_THRESH'] = fcst_conv_thresh
-        self.cg_dict['OBS_CONV_THRESH'] = obs_conv_thresh
+        c_dict['FCST_CONV_THRESH'] = fcst_conv_thresh
+        c_dict['OBS_CONV_THRESH'] = obs_conv_thresh
 
         fcst_merge_thresh, obs_merge_thresh = self.handle_fcst_and_obs_field('MODE_MERGE_THRESH',
                                                                              'MODE_FCST_MERGE_THRESH',
                                                                              'MODE_OBS_MERGE_THRESH', '>0.45')
-        self.cg_dict['FCST_MERGE_THRESH'] = fcst_merge_thresh
-        self.cg_dict['OBS_MERGE_THRESH'] = obs_merge_thresh
+        c_dict['FCST_MERGE_THRESH'] = fcst_merge_thresh
+        c_dict['OBS_MERGE_THRESH'] = obs_merge_thresh
         fcst_merge_flag, obs_merge_flag = self.handle_fcst_and_obs_field('MODE_MERGE_FLAG',
                                                                          'MODE_FCST_MERGE_FLAG',
                                                                          'MODE_OBS_MERGE_FLAG', 'THRESH')
 
-        self.cg_dict['FCST_MERGE_FLAG'] = fcst_merge_flag
-        self.cg_dict['OBS_MERGE_FLAG'] = obs_merge_flag
+        c_dict['FCST_MERGE_FLAG'] = fcst_merge_flag
+        c_dict['OBS_MERGE_FLAG'] = obs_merge_flag
+        c_dict['ALLOW_MULTIPLE_FILES'] = False
 
-        self.cg_dict['MERGE_CONFIG_FILE'] = self.p.getstr('config', 'MODE_MERGE_CONFIG_FILE', '')
+        c_dict['MERGE_CONFIG_FILE'] = self.p.getstr('config', 'MODE_MERGE_CONFIG_FILE', '')
         # check that values are valid
-        if not util.validate_thresholds(util.getlist(self.cg_dict['FCST_CONV_THRESH'])):
+        if not util.validate_thresholds(util.getlist(c_dict['FCST_CONV_THRESH'])):
             self.logger.error('MODE_FCST_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
             exit(1)
-        if not util.validate_thresholds(util.getlist(self.cg_dict['OBS_CONV_THRESH'])):
+        if not util.validate_thresholds(util.getlist(c_dict['OBS_CONV_THRESH'])):
             self.logger.error('MODE_OBS_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
             exit(1)
-        if not util.validate_thresholds(util.getlist(self.cg_dict['FCST_MERGE_THRESH'])):
+        if not util.validate_thresholds(util.getlist(c_dict['FCST_MERGE_THRESH'])):
             self.logger.error('MODE_FCST_MERGE_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
             exit(1)
-        if not util.validate_thresholds(util.getlist(self.cg_dict['OBS_MERGE_THRESH'])):
+        if not util.validate_thresholds(util.getlist(c_dict['OBS_MERGE_THRESH'])):
             self.logger.error('MODE_OBS_MERGE_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
             exit(1)
 
+        return c_dict
 
-    def run_at_time_one_field(self, ti, v):
+
+    def run_at_time_one_field(self, time_info, v):
         """! Runs mode instances for a given time and forecast lead combination
               Overrides run_at_time_one_field function in compare_gridded_wrapper.py
               Args:
-                @param ti task_info object containing timing information
+                @param time_info dictionary containing timing information
                 @param v var_info object containing variable information
         """
         # get model to compare
-        model_path = self.find_model(ti, v)
+        model_path = self.find_model(time_info, v)
         if model_path == None:
-            self.logger.error("Could not find file in " + self.cg_dict['FCST_INPUT_DIR'] +\
-                              " for init time " + ti.getInitTime() + " f" + str(ti.lead))
+            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] +\
+                              " for init time " + time_info['init_fmt'] + " f" + str(time_info['lead_hours']))
             return
 
         # get observation to compare
-        obs_path = self.find_obs(ti, v)
+        obs_path = self.find_obs(time_info, v)
         if obs_path == None:
-            self.logger.error("Could not find file in " + self.cg_dict['OBS_INPUT_DIR'] +\
-                              " for valid time "+ti.getValidTime())
+            self.logger.error("Could not find file in " + self.c_dict['OBS_INPUT_DIR'] +\
+                              " for valid time "+time_info['valid_fmt'])
             return
 
         # loop over all variables and levels (and probability thresholds) and call the app for each
-        self.process_fields_one_thresh(ti, v, model_path, obs_path)
+        self.process_fields_one_thresh(time_info, v, model_path, obs_path)
 
 
-    def process_fields_one_thresh(self, ti, v, model_path, obs_path):
+    def process_fields_one_thresh(self, time_info, v, model_path, obs_path):
         """! For each threshold, set up environment variables and run mode
               Args:
-                @param ti task_info object containing timing information
+                @param time_info dictionary containing timing information
                 @param v var_info object containing variable information
                 @param model_path forecast file
                 @param obs_path observation file
@@ -151,13 +136,13 @@ class ModeWrapper(CompareGriddedWrapper):
         if len(v.fcst_thresh) != 0:
             fcst_thresh_list = v.fcst_thresh
             obs_thresh_list = v.obs_thresh
-        elif self.cg_dict['FCST_IS_PROB']:
+        elif self.c_dict['FCST_IS_PROB']:
             self.logger.error('Must specify field threshold value to process probabilistic forecast')
             return
 
         for fthresh, othresh in zip(fcst_thresh_list, obs_thresh_list):
-            self.set_param_file(self.cg_dict['CONFIG_FILE'])
-            self.create_and_set_output_dir(ti)
+            self.set_param_file(self.c_dict['CONFIG_FILE'])
+            self.create_and_set_output_dir(time_info)
             self.add_input_file(model_path)
             self.add_input_file(obs_path)
             self.add_merge_config_file()
@@ -167,30 +152,30 @@ class ModeWrapper(CompareGriddedWrapper):
             obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
                                                 othresh, 'OBS')
 
-            self.add_env_var("MODEL", self.cg_dict['MODEL_TYPE'])
-            self.add_env_var("OBTYPE", self.cg_dict['OB_TYPE'])
+            self.add_env_var("MODEL", self.c_dict['MODEL_TYPE'])
+            self.add_env_var("OBTYPE", self.c_dict['OB_TYPE'])
             self.add_env_var("FCST_VAR", v.fcst_name)
             self.add_env_var("OBS_VAR", v.obs_name)
             self.add_env_var("LEVEL", util.split_level(v.fcst_level)[1])
             self.add_env_var("FCST_FIELD", fcst_field)
             self.add_env_var("OBS_FIELD", obs_field)
-            self.add_env_var("CONFIG_DIR", self.cg_dict['CONFIG_DIR'])
-            self.add_env_var("MET_VALID_HHMM", ti.getValidTime()[4:8])
+            self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
+            self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
 
-            if self.cg_dict['QUILT']:
+            if self.c_dict['QUILT']:
                 quilt = "TRUE"
             else:
                 quilt = "FALSE"
 
             self.add_env_var("QUILT", quilt )
-            self.add_env_var("FCST_CONV_RADIUS", self.cg_dict["FCST_CONV_RADIUS"] )
-            self.add_env_var("OBS_CONV_RADIUS", self.cg_dict["OBS_CONV_RADIUS"] )
-            self.add_env_var("FCST_CONV_THRESH", self.cg_dict["FCST_CONV_THRESH"] )
-            self.add_env_var("OBS_CONV_THRESH", self.cg_dict["OBS_CONV_THRESH"] )
-            self.add_env_var("FCST_MERGE_THRESH", self.cg_dict["FCST_MERGE_THRESH"] )
-            self.add_env_var("OBS_MERGE_THRESH", self.cg_dict["OBS_MERGE_THRESH"] )
-            self.add_env_var("FCST_MERGE_FLAG", self.cg_dict["FCST_MERGE_FLAG"] )
-            self.add_env_var("OBS_MERGE_FLAG", self.cg_dict["OBS_MERGE_FLAG"] )
+            self.add_env_var("FCST_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"] )
+            self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"] )
+            self.add_env_var("FCST_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"] )
+            self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
+            self.add_env_var("FCST_MERGE_THRESH", self.c_dict["FCST_MERGE_THRESH"] )
+            self.add_env_var("OBS_MERGE_THRESH", self.c_dict["OBS_MERGE_THRESH"] )
+            self.add_env_var("FCST_MERGE_FLAG", self.c_dict["FCST_MERGE_FLAG"] )
+            self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"] )
 
             print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
                           "LEVEL", "OBTYPE", "CONFIG_DIR",
@@ -231,8 +216,8 @@ class ModeWrapper(CompareGriddedWrapper):
         level_type, level = util.split_level(v_level)
         field = ""
 
-#        if d_type == "FCST" and self.cg_dict['FCST_IS_PROB']:
-        if self.cg_dict[d_type+'_IS_PROB']:
+#        if d_type == "FCST" and self.c_dict['FCST_IS_PROB']:
+        if self.c_dict[d_type+'_IS_PROB']:
             thresh_str = ""
             comparison = util.get_comparison_from_threshold(v_thresh)
             number = util.get_number_from_threshold(v_thresh)
@@ -241,8 +226,8 @@ class ModeWrapper(CompareGriddedWrapper):
             elif comparison in ["lt", "le", "<", "<=" ]:
                 thresh_str += "thresh_hi="+str(number)+";"
             # TODO: add thresh??
-            if self.cg_dict[d_type+'_INPUT_DATATYPE'] == "NETCDF" or \
-               self.cg_dict[d_type+'_INPUT_DATATYPE'] == "GEMPAK":
+            if self.c_dict[d_type+'_INPUT_DATATYPE'] == "NETCDF" or \
+               self.c_dict[d_type+'_INPUT_DATATYPE'] == "GEMPAK":
                 field = "{ name=\"" + v_name + "\"; level=\"" + \
                         level+"\"; prob=TRUE; "
             else:
@@ -257,7 +242,7 @@ class ModeWrapper(CompareGriddedWrapper):
                 field = "{ name=\""+v_name + \
                              "\"; level=\""+v_level+"\"; "
 
-        field += v_extra+"}"
+        field += v_extra+" }"
         return field
 
 

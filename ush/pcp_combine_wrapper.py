@@ -27,7 +27,7 @@ import datetime
 import string_template_substitution as sts
 
 from reformat_gridded_wrapper import ReformatGriddedWrapper
-from task_info import TaskInfo
+import time_util
 from gempak_to_cf_wrapper import GempakToCFWrapper
 
 '''!@namespace PcpCombineWrapper
@@ -187,14 +187,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         max_forecast = self.c_dict[dtype+'_MAX_FORECAST']
         forecast_lead = 0
         while forecast_lead <= max_forecast:
-            ti = TaskInfo()
-            ti.valid_time = valid_time
-            ti.lead = forecast_lead
+            input_dict = {}
+            input_dict['valid'] = valid_time
+            input_dict['lead_hours'] = forecast_lead
+            time_info = time_util.ti_calculate(input_dict)
             fSts = sts.StringSub(self.logger,
                                  template,
-                                 valid=valid_time,
-                                 init=ti.getInitTime(),
-                                 lead=str(forecast_lead).zfill(2))
+                                 **time_info)
             search_file = os.path.join(self.input_dir,
                                        fSts.doStringSub())
             search_file = util.preprocess_file(search_file,
@@ -207,7 +206,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return None
 
 
-    def get_daily_file(self, valid_time, accum, data_src, file_template):
+    def get_daily_file(self, time_info, accum, data_src, file_template):
         """!Pull accumulation out of file that contains a full day of data
         Args:
           @param valid_time valid time to search
@@ -222,11 +221,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         search_file = None
         # loop from valid_time back to data interval * times per file
         for i in range(0, times_per_file+1):
-            search_time = util.shift_time(valid_time, -i * data_interval)
+            search_time = time_info['valid'] - datetime.timedelta(hours=(i * data_interval))
             # check if file exists
             dSts = sts.StringSub(self.logger,
                                  file_template,
-                                 valid=search_time[0:10])
+                                 valid=search_time)
             search_file = os.path.join(self.input_dir,
                                        dSts.doStringSub())
             search_file = util.preprocess_file(search_file,
@@ -239,9 +238,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if search_file == None:
             return False
 
-        valid_t = datetime.datetime.strptime(valid_time, "%Y%m%d%H%M")
-        search_t = datetime.datetime.strptime(search_time, "%Y%m%d%H%M")
-        diff = valid_t - search_t
+        diff = time_info['valid'] - search_time
 
         lead = int((diff.days * 24) / (data_interval))
         lead += int((diff).seconds / (data_interval*3600)) - 1
@@ -291,9 +288,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     def find_input_file(self, in_template, search_time, search_accum, data_src):
         fSts = sts.StringSub(self.logger,
                              in_template,
-#                             valid=search_time[0:10],
                              valid=search_time,
-                             level=str(search_accum).zfill(2))
+                             level=(int(search_accum)*3600))
         search_file = os.path.join(self.input_dir,
                                    fSts.doStringSub())
 
@@ -316,7 +312,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return field_name, s_accum
 
 
-    def get_accumulation(self, task_info, accum, data_src,
+    def get_accumulation(self, time_info, accum, data_src,
                          is_forecast=False):
         """!Find files to combine to build the desired accumulation
         Args:
@@ -329,17 +325,17 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @return True if full set of files to build accumulation is found
         """
         in_template = self.c_dict[data_src+'_INPUT_TEMPLATE']
-        valid_time = task_info.getValidTime()
+        valid_time = time_info['valid_fmt']
         if self.input_dir == "":
             self.logger.error(self.app_name +
                               ": Must set data dir to run get_accumulation")
             exit(1)
 
         if self.c_dict[data_src + '_IS_DAILY_FILE'] is True:
-            return self.get_daily_file(valid_time, accum, data_src, in_template)
+            return self.get_daily_file(time_info, accum, data_src, in_template)
 
-        search_time = valid_time.ljust(12, '0')
-        last_time = util.shift_time(valid_time, -(int(accum) - 1))
+        search_time = time_info['valid']
+        last_time = time_info['valid'] - datetime.timedelta(hours=(int(accum) - 1))
         total_accum = accum
         level = int(self.c_dict[data_src+'_LEVEL'])
         if level == -1:
@@ -359,7 +355,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                     break
                 addon = "'name=\"" + field_name + "\"; level=\"(0,*,*)\";'"
                 self.add_input_file(search_file, addon)
-                search_time = util.shift_time(search_time, -s_accum)
+                search_time = search_time - datetime.timedelta(hours=s_accum)
                 search_accum -= s_accum
                 total_accum -= s_accum
             else:  # not looking for forecast files
@@ -378,7 +374,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
                         # add file to input list and step back in time to find more data
                         self.add_input_file(search_file, addon)
-                        search_time = util.shift_time(search_time, -search_accum)
+                        search_time = search_time - datetime.timedelta(hours=search_accum)
                         total_accum -= search_accum
                         break
                     # if file/field not found, look for a smaller accumulation
@@ -492,30 +488,32 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         return cmd
 
-    def run_at_time_once(self, task_info, var_info, rl):
+    def run_at_time_once(self, time_info, var_info, rl):
         cmd = None
         run_method = self.c_dict['RUN_METHOD']
         if run_method == "ADD":
-            cmd = self.setup_add_method(task_info, var_info, rl)
+            cmd = self.setup_add_method(time_info, var_info, rl)
         elif run_method == "SUM":
-            cmd = self.setup_sum_method(task_info, var_info, rl)
+            cmd = self.setup_sum_method(time_info, var_info, rl)
         elif run_method == "SUBTRACT":
-            cmd = self.setup_subtract_method(task_info, var_info, rl)
+            cmd = self.setup_subtract_method(time_info, var_info, rl)
         else:
             self.logger.error('Invalid PCP_COMBINE_METHOD specified.'+\
                               ' Options are ADD, SUM, and SUBTRACT.')
             exit(1)
 
         if cmd is None:
-            self.logger.error("pcp_combine could not generate command for init {} and forecast lead {}".format(task_info.getInitTime(), task_info.lead))
+            init_time = time_info['init_fmt']
+            lead = time_info['lead_hours']
+            self.logger.error("pcp_combine could not generate command for init {} and forecast lead {}".format(init_time, lead))
             return
         self.build()
 
 
-    def setup_subtract_method(self, task_info, var_info, rl):
+    def setup_subtract_method(self, time_info, var_info, rl):
         """!Setup pcp_combine to subtract two files to build desired accumulation
         Args:
-          @param ti task_info object containing timing information
+          @param ti time_info object containing timing information
           @param v var_info object containing variable information
           @params rl data type (FCST or OBS)
           @rtype string
@@ -524,7 +522,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         in_dir, in_template = self.get_dir_and_template(rl, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
 
-        # TODO: get accum based on rl!
         if rl == 'FCST':
             accum = var_info.fcst_level
         else:
@@ -532,29 +529,27 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         if accum[0].isalpha():
             accum = accum[1:]
-        init_time = task_info.getInitTime()
-        valid_time = task_info.getValidTime()
-        lead = task_info.getLeadTime()
+        lead = time_info['lead_hours']
         lead2 = lead - int(accum)
 
         self.set_method("SUBTRACT")
         pcpSts1 = sts.StringSub(self.logger,
                                 in_template,
-                                init=init_time,
-                                lead=str(lead).zfill(2))
+                                level=(int(accum) * 3600),
+                                **time_info)
         file1 = os.path.join(in_dir, pcpSts1.doStringSub())
         file1 = util.preprocess_file(file1, self.c_dict[rl+'_INPUT_DATATYPE'],
                                     self.p, self.logger)
 
         if file1 is None:
             self.logger.error("Could not find file in {} for init time {} and lead {}"
-                              .format(in_dir, init_time, lead))
+                              .format(in_dir, time_info['init_fmt'], lead))
             return None
 
         pcpSts2 = sts.StringSub(self.logger,
                                 in_template,
-                                init=init_time,
-                                lead=str(lead2).zfill(2))
+                                level=(int(accum) * 3600),
+                                **time_info)
         file2 = os.path.join(in_dir, pcpSts2.doStringSub())
         file2 = util.preprocess_file(file2, self.c_dict[rl+'_INPUT_DATATYPE'],
                                      self.p, self.logger)
@@ -569,8 +564,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         outSts = sts.StringSub(self.logger,
                                out_template,
-                               valid=valid_time,
-                               level=str(accum))
+                               level=(int(accum) * 3600),
+                               **time_info)
         out_file = outSts.doStringSub()
         self.set_output_filename(out_file)
         self.set_output_dir(out_dir)
@@ -578,11 +573,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return self.get_command()
 
 
-    def setup_sum_method(self, task_info, var_info, rl):
+    def setup_sum_method(self, time_info, var_info, rl):
         """!Setup pcp_combine to build desired accumulation based on
         init/valid times and accumulations
         Args:
-          @param ti task_info object containing timing information
+          @param ti time_info object containing timing information
           @param v var_info object containing variable information
           @params rl data type (FCST or OBS)
           @rtype string
@@ -595,10 +590,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         out_accum = var_info.obs_level
         if out_accum[0].isalpha():
             out_accum = out_accum[1:]
-        valid_time = task_info.getValidTime()
-        init_time = task_info.getInitTime()
-        in_regex = util.template_to_regex(in_template, init_time,
-                                          valid_time, self.logger)
+
+        init_time = time_info['init_fmt']
+        valid_time = time_info['valid_fmt']
+
+        time_info['level'] = int(out_accum) * 3600
+        in_regex = util.template_to_regex(in_template, time_info,
+                                          self.logger)
         self.set_method("SUM")
         self.set_init_time(init_time)
         self.set_valid_time(valid_time)
@@ -612,19 +610,17 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         pcpSts = sts.StringSub(self.logger,
                                 out_template,
-                                init=init_time,
-                                valid=valid_time,
-                                level=str(out_accum).zfill(2))
+                                **time_info)
         pcp_out = pcpSts.doStringSub()
         self.set_output_filename(pcp_out)
 
         return self.get_command()
 
 
-    def setup_add_method(self, task_info, var_info, data_src):
+    def setup_add_method(self, time_info, var_info, data_src):
         """!Setup pcp_combine to add files to build desired accumulation
         Args:
-          @param ti task_info object containing timing information
+          @param ti time_info object containing timing information
           @param v var_info object containing variable information
           @params rl data type (FCST or OBS)
           @rtype string
@@ -645,28 +641,24 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if accum[0].isalpha():
             accum = accum[1:]
 
-        valid_time = task_info.getValidTime()
-        init_time = task_info.getInitTime()
+        init_time = time_info['init_fmt']
+        valid_time = time_info['valid_fmt']
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
 
-        ymd = valid_time[0:8]
-        if not os.path.exists(os.path.join(out_dir, ymd)):
-            os.makedirs(os.path.join(out_dir, ymd))
-
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.set_input_dir(in_dir)
 
-        if not self.get_accumulation(task_info, int(accum), data_src, is_forecast):
+        if not self.get_accumulation(time_info, int(accum), data_src, is_forecast):
             return None
         infiles = self.get_input_files()
 
         self.set_output_dir(out_dir)
+        time_info['level'] = int(accum) * 3600
         pcpSts = sts.StringSub(self.logger,
                                 out_template,
-                                valid=valid_time,
-                                level=str(accum).zfill(2))
+                                **time_info)
         pcp_out = pcpSts.doStringSub()
         self.set_output_filename(pcp_out)
         self.add_arg("-name " + compare_var + "_" + str(accum).zfill(2))

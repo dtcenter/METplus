@@ -50,7 +50,7 @@ class TcPairsWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(TcPairsWrapper, self).__init__(p, logger)
         self.config = p
-        self.app_path = os.path.join(p.getdir('MET_INSTALL_DIR'),
+        self.app_path = os.path.join(util.getdir(p, 'MET_INSTALL_DIR'),
                                      'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
         if self.logger is None:
@@ -97,22 +97,22 @@ class TcPairsWrapper(CommandBuilder):
             self.config.getstr('config', 'INIT_EXCLUDE'))
         tcp_dict['VALID_BEG'] = self.config.getstr('config', 'VALID_BEG')
         tcp_dict['VALID_END'] = self.config.getstr('config', 'VALID_END')
-        tcp_dict['ADECK_TRACK_DATA_DIR'] = self.config.getdir(
+        tcp_dict['ADECK_TRACK_DATA_DIR'] = util.getdir(self.config,
             'ADECK_TRACK_DATA_DIR')
-        tcp_dict['BDECK_TRACK_DATA_DIR'] = self.config.getdir(
+        tcp_dict['BDECK_TRACK_DATA_DIR'] = util.getdir(self.config,
             'BDECK_TRACK_DATA_DIR')
-        tcp_dict['TRACK_DATA_SUBDIR_MOD'] = self.config.getdir(
+        tcp_dict['TRACK_DATA_SUBDIR_MOD'] = util.getdir(self.config, 
             'TRACK_DATA_SUBDIR_MOD')
         tcp_dict['ADECK_FILE_PREFIX'] = self.config.getstr('config',
                                                            'ADECK_FILE_PREFIX')
-        tcp_dict['TC_PAIRS_DIR'] = self.config.getdir('TC_PAIRS_DIR')
+        tcp_dict['TC_PAIRS_DIR'] = util.getdir(self.config, 'TC_PAIRS_DIR')
         tcp_dict['ADECK_FILE_PREFIX'] = self.config.getstr('config',
                                                            'ADECK_FILE_PREFIX')
         tcp_dict['BDECK_FILE_PREFIX'] = self.config.getstr('config',
                                                            'BDECK_FILE_PREFIX')
         tcp_dict['TOP_LEVEL_DIRS'] = self.config.getstr('config',
                                                         'TOP_LEVEL_DIRS')
-        tcp_dict['MET_INSTALL_DIR'] = self.config.getdir('MET_INSTALL_DIR')
+        tcp_dict['MET_INSTALL_DIR'] = util.getdir(self.config, 'MET_INSTALL_DIR')
         tcp_dict['OUTPUT_BASE'] = self.config.getstr('dir', 'OUTPUT_BASE')
         tcp_dict['CYCLONE'] = util.getlist(
             self.config.getstr('config', 'CYCLONE'))
@@ -595,7 +595,7 @@ class TcPairsWrapper(CommandBuilder):
         # replace the key-values in the filename template with its corresponding regex.
         region = 'yz'
         cyclone = '00'
-        date = '20170704'
+        date = datetime.datetime.strptime('20170704', '%Y%m%d')
         misc = 'misc_stuff'
 
         # The string template substitution object will be initialized based on what
@@ -1288,7 +1288,7 @@ class TcPairsWrapper(CommandBuilder):
                                   " data because TC_PAIRS_FORCE" +
                                   "_OVERWRITE is set to True")
 
-        tc_pairs_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
+        tc_pairs_exe = os.path.join(util.getdir(self.config, 'MET_INSTALL_DIR'),
                                     'bin/tc_pairs')
         cmd_list = [tc_pairs_exe, " -adeck ",
                     adeck_file_path, " -bdeck ",
@@ -1335,22 +1335,4 @@ class TcPairsWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False,
-                                 jobname='run_tc_pairs',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='run_tc_pairs')
-        produtil.log.postmsg('run_tc_pairs is starting')
-
-        CONFIG_INST = config_metplus.setup()
-        if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = CONFIG_INST.getdir('MET_BASE')
-        TCP = TcPairsWrapper(CONFIG_INST, logger=None)
-        TCP.run_all_times()
-        produtil.log.postmsg('run_tc_pairs completed')
-    except Exception as exc:
-        produtil.log.jlogger.critical(
-            'run_tc_pairs failed: %s' % (str(exc),), exc_info=True)
-        sys.exit(2)
+    util.run_stand_alone("tc_pairs_wrapper", "TcPairs")

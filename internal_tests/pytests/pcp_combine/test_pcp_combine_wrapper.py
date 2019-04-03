@@ -4,11 +4,13 @@ import os
 import sys
 import re
 import logging
+import datetime
 from collections import namedtuple
 import produtil
 import pytest
 import config_metplus
 from pcp_combine_wrapper import PcpCombineWrapper
+import time_util
 import met_util as util
 from task_info import TaskInfo
 
@@ -33,7 +35,7 @@ from task_info import TaskInfo
 
 # -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
 @pytest.fixture
-def pcp_combine_wrapper():
+def pcp_combine_wrapper(d_type):
     """! Returns a default PcpCombineWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -42,6 +44,10 @@ def pcp_combine_wrapper():
     # PB2NCWrapper with configuration values determined by what is set in
     # the pb2nc_test.conf file.
     conf = metplus_config()
+    if d_type == "FCST":
+        conf.set('config', 'FCST_PCP_COMBINE_RUN', True)
+    elif d_type == "OBS":
+        conf.set('config', 'OBS_PCP_COMBINE_RUN', True)
     logger = logging.getLogger("dummy")
     return PcpCombineWrapper(conf, logger)
 
@@ -81,17 +87,18 @@ def metplus_config():
 # they could be empty files, they just need to exist so we can find the files
 
 def test_get_accumulation_1_to_6():
-    pcw = pcp_combine_wrapper()
     data_src = "OBS"
+    pcw = pcp_combine_wrapper(data_src)
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    task_info = TaskInfo()
-    task_info.valid_time = "2016090418"
+    task_info = {}
+    task_info['valid'] = datetime.datetime.strptime("2016090418", '%Y%m%d%H')
+    time_info = time_util.ti_calculate(task_info)
     accum = 6
 
     file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
         
     pcw.set_input_dir(input_dir)
-    pcw.get_accumulation(task_info, accum, data_src, False)
+    pcw.get_accumulation(time_info, accum, data_src, False)
     in_files = pcw.get_input_files()
     if len(in_files) == 6 and \
       input_dir+"/20160904/file.2016090418.01h" in in_files and \
@@ -106,17 +113,18 @@ def test_get_accumulation_1_to_6():
 
 
 def test_get_accumulation_6_to_6():
-    pcw = pcp_combine_wrapper()
     data_src = "FCST"
+    pcw = pcp_combine_wrapper(data_src)
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    task_info = TaskInfo()
-    task_info.valid_time = "2016090418"
+    task_info = {}
+    task_info['valid'] = datetime.datetime.strptime("2016090418", '%Y%m%d%H')
+    time_info = time_util.ti_calculate(task_info)
     accum = 6
 
     pcw.c_dict['FCST_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
     
     pcw.set_input_dir(input_dir)
-    pcw.get_accumulation(task_info, accum, data_src, False)
+    pcw.get_accumulation(time_info, accum, data_src, False)
     in_files = pcw.get_input_files()    
     if  len(in_files) == 1 and input_dir+"/20160904/file.2016090418.06h" in in_files:
         assert True
@@ -125,10 +133,10 @@ def test_get_accumulation_6_to_6():
 
 
 def test_get_lowest_forecast_file_dated_subdir():
-    pcw = pcp_combine_wrapper()    
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
-    valid_time = "201802012100"
     dtype = "FCST"
+    pcw = pcp_combine_wrapper(dtype)
+    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    valid_time = datetime.datetime.strptime("201802012100", '%Y%m%d%H%M')
     template = util.getraw_interp(pcw.p, 'filename_templates', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
     out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
@@ -136,10 +144,11 @@ def test_get_lowest_forecast_file_dated_subdir():
 
 
 def test_get_lowest_forecast_file_no_subdir():
-    pcw = pcp_combine_wrapper()    
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
-    valid_time = "201802012100"
     dtype = "FCST"
+    pcw = pcp_combine_wrapper(dtype)
+    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    valid_time = datetime.datetime.strptime("201802012100", '%Y%m%d%H%M')
+
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
 #    template = util.getraw_interp(pcw.p, 'filename_templates', dtype+'_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
@@ -147,10 +156,10 @@ def test_get_lowest_forecast_file_no_subdir():
     assert(out_file == input_dir+"/file.2018020118f003.nc")
 
 def test_get_lowest_forecast_file_yesterday():
-    pcw = pcp_combine_wrapper()
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
-    valid_time = "201802010600"
     dtype = "FCST"
+    pcw = pcp_combine_wrapper(dtype)
+    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    valid_time = datetime.datetime.strptime("201802010600", '%Y%m%d%H%M')
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
 #    template = util.getraw_interp(pcw.p, 'filename_templates', 'FCST2_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
@@ -158,18 +167,19 @@ def test_get_lowest_forecast_file_yesterday():
     assert(out_file == input_dir+"/file.2018013118f012.nc")    
 
 def test_get_daily_file():
-    pcw = pcp_combine_wrapper()
-    valid_time = "201802010000"
-    accum = 1
     data_src = "OBS"
+    pcw = pcp_combine_wrapper(data_src)
+    time_info = {'valid' : datetime.datetime.strptime("201802010000", '%Y%m%d%H%M') }
+    accum = 1
     file_template = "file.{valid?fmt=%Y%m%d}.txt"
-    pcw.get_daily_file(valid_time,accum, data_src, file_template)
+    pcw.get_daily_file(time_info, accum, data_src, file_template)
 
 def test_setup_add_method():
-    pcw = pcp_combine_wrapper()
-    task_info = TaskInfo()
-    task_info.init_time = -1
-    task_info.valid_time = "2016090418"
+    rl = "OBS"
+    pcw = pcp_combine_wrapper(rl)
+    task_info = {}
+    task_info['valid'] = datetime.datetime.strptime("2016090418", '%Y%m%d%H')
+    time_info = time_util.ti_calculate(task_info)
     var_info = util.FieldObj()
     var_info.fcst_name = "APCP"
     var_info.obs_name = "ACPCP"
@@ -177,10 +187,9 @@ def test_setup_add_method():
     var_info.obs_extra = ""
     var_info.fcst_level = "A06"
     var_info.obs_level = "A06"
-    rl = "OBS"
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
     output_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
-    pcw.setup_add_method(task_info, var_info, rl)
+    pcw.setup_add_method(time_info, var_info, rl)
     
     in_files = pcw.get_input_files()
     out_file = pcw.get_output_path()
@@ -199,11 +208,12 @@ def test_setup_add_method():
 
 # how to test? check output?
 def test_setup_sum_method():
-    pcw = pcp_combine_wrapper()
-    task_info = TaskInfo()
-    task_info.init_time = -1
-    task_info.valid_time = "2016090418"
-    task_info.lead = 0
+    rl = "OBS"
+    pcw = pcp_combine_wrapper(rl)
+    task_info = {}
+    task_info['valid'] = datetime.datetime.strptime("2016090418", '%Y%m%d%H')
+    task_info['lead'] = 0
+    time_info = time_util.ti_calculate(task_info)
     var_info = util.FieldObj()
     var_info.fcst_name = "APCP"
     var_info.obs_name = "ACPCP"
@@ -211,21 +221,21 @@ def test_setup_sum_method():
     var_info.obs_extra = ""
     var_info.fcst_level = "A06"
     var_info.obs_level = "A06"
-    rl = "OBS"
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
     output_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
-    pcw.setup_sum_method(task_info, var_info, rl)
+    pcw.setup_sum_method(time_info, var_info, rl)
     
     in_files = pcw.get_input_files()
     out_file = pcw.get_output_path()    
     assert(out_file == output_dir+"/20160904/outfile.2016090418_A06h")
 
 def test_setup_subtract_method():
-    pcw = pcp_combine_wrapper()
-    task_info = TaskInfo()
-    task_info.init_time = -1
-    task_info.valid_time = "201609050000"
-    task_info.lead = 9
+    rl = "FCST"
+    pcw = pcp_combine_wrapper(rl)
+    task_info = {}
+    task_info['valid'] = datetime.datetime.strptime("201609050000", '%Y%m%d%H%M')
+    task_info['lead_hours'] = 9
+    time_info = time_util.ti_calculate(task_info)
     var_info = util.FieldObj()
     var_info.fcst_name = "APCP"
     var_info.obs_name = "ACPCP"
@@ -233,8 +243,7 @@ def test_setup_subtract_method():
     var_info.obs_extra = ""
     var_info.fcst_level = "A06"
     var_info.obs_level = "A06"
-    rl = "FCST"
-    pcw.setup_subtract_method(task_info, var_info, rl)
+    pcw.setup_subtract_method(time_info, var_info, rl)
     in_files = pcw.get_input_files()
     out_file = pcw.get_output_path()    
     assert(len(in_files) == 2)
