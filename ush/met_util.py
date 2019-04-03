@@ -152,7 +152,7 @@ def loop_over_times_and_call(p, logger, processes):
     while loop_time <= end_time:
         run_time = loop_time.strftime("%Y%m%d%H%M")
         logger.info("****************************************")
-        logger.info("* RUNNING METplus")
+        logger.info("* Running METplus")
         if use_init:
             logger.info("*  at init time: " + run_time)
             p.set('config', 'CURRENT_INIT_TIME', run_time)
