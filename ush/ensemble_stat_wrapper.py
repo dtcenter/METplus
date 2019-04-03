@@ -189,7 +189,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             else:
                 return ''
 
-            next_field = self.get_one_field_info(level, thresh, name, extra, model_path, data_type)
+            next_field = self.get_one_field_info(level, thresh, name, extra, data_type)
             field_list.append(next_field)
 
         return ','.join(field_list)
