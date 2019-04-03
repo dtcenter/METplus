@@ -57,7 +57,6 @@ class PB2NCWrapper(CommandBuilder):
         """
         c_dict = dict()
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.p.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', True)
-        c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
         c_dict['OFFSETS'] = util.getlistint(self.p.getstr('config', 'PB2NC_OFFSETS', '0'))
 
         # Directories
@@ -159,7 +158,7 @@ class PB2NCWrapper(CommandBuilder):
     def run_at_time(self, input_dict):
         """! Stub, not yet implemented """
         # loop of forecast leads and process each
-        lead_seq = self.c_dict['LEAD_SEQ']
+        lead_seq = util.get_lead_sequence(self.p, self.logger, input_dict)
         for lead in lead_seq:
             input_dict['lead_hours'] = lead
 

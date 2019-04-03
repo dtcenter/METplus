@@ -66,7 +66,8 @@ def check_for_deprecated_config(p, logger):
       'TIME_SUMMARY_VAR_NAMES' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_VAR_NAMES'},
       'TIME_SUMMARY_TYPE' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_TYPE'},
       'OVERWRITE_NC_OUTPUT' : { 'sec' : 'config', 'alt' : 'PB2NC_SKIP_IF_OUTPUT_EXISTS'},
-      'VERTICAL_LOCATION' : { 'sec' : 'config', 'alt' : 'PB2NC_VERTICAL_LOCATION'}
+      'VERTICAL_LOCATION' : { 'sec' : 'config', 'alt' : 'PB2NC_VERTICAL_LOCATION'},
+      'VERIFICATION_GRID' : { 'sec' : 'config', 'alt' : 'REGRID_DATA_PLANE_VERIF_GRID'}
 # template       '' : { 'sec' : '', 'alt' : ''}
     }
 
@@ -172,10 +173,45 @@ def loop_over_times_and_call(p, logger, processes):
             else:
                 input_dict['valid'] = loop_time
 
-            process.run_at_time(input_dict)
             process.clear()
+            process.run_at_time(input_dict)
 
         loop_time += datetime.timedelta(seconds=time_interval)
+
+def get_lead_sequence(p, logger, input_dict):
+    if p.has_option('config', 'LEAD_SEQ'):
+        # return list of forecast leads
+        return getlistint(p.getstr('config', 'LEAD_SEQ'))
+    if p.has_option('config', 'INIT_SEQ'):
+        # if looping by init, fail and exit
+        if 'init' in input_dict.keys():
+            log_msg = 'INIT_SEQ specified while looping by init time.' + \
+                      ' Use LEAD_SEQ or change to loop by valid time'
+            if logger:
+                logger.error(log_msg)
+            else:
+                print(log_msg)
+            exit(1)
+
+        valid_hr = int(input_dict['valid'].strftime('%H'))
+        init_seq = getlistint(p.getstr('config', 'INIT_SEQ'))
+        min_forecast = p.getint('config', 'FCST_MIN_FORECAST', 0)
+        max_forecast = p.getint('config', 'FCST_MAX_FORECAST', 256)
+        lead_seq = []
+        for i in init_seq:
+            if valid_hr >= i:
+                current_lead = valid_hr - i
+            else:
+                current_lead = valid_hr + (24 - i)
+
+            while current_lead <= max_forecast:
+                if current_lead >= min_forecast:
+                    lead_seq.append(current_lead)
+                current_lead += 24
+
+        return sorted(lead_seq)
+    else:
+        return 0
 
 
 def get_version_number():

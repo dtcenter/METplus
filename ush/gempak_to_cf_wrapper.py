@@ -68,8 +68,7 @@ class GempakToCFWrapper(CommandBuilder):
         app_name_caps = self.app_name.upper()
         class_name = self.__class__.__name__[0: -7]
 
-        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
-
+        lead_seq = util.get_lead_sequence(self.p, self.logger, input_dict)
         for lead in lead_seq:
             self.clear()
             input_dict['lead_hours'] = lead
