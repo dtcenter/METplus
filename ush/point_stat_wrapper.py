@@ -107,7 +107,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         var_list = util.parse_var_list(self.p)
 
         # loop of forecast leads and process each
-        lead_seq = self.c_dict['LEAD_SEQ']
+        lead_seq = util.get_lead_sequence(self.p, self.logger, input_dict)
         for lead in lead_seq:
             input_dict['lead_hours'] = lead
 
@@ -186,8 +186,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         fcst_field_list = []
         obs_field_list = []
         for v in var_list:
-            next_fcst = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name, v.fcst_extra, model_path, 'FCST')
-            next_obs = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra, obs_path, 'OBS')
+            next_fcst = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name, v.fcst_extra, 'FCST')
+            next_obs = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra, 'OBS')
             fcst_field_list.append(next_fcst)
             obs_field_list.append(next_obs)
         fcst_field = ','.join(fcst_field_list)
