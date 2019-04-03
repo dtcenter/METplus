@@ -122,7 +122,7 @@ class MTDWrapper(ModeWrapper):
 #        max_lookback = self.c_dict['MAX_LOOKBACK']
 #        file_interval = self.c_dict['FILE_INTERVAL']
 
-        lead_seq = self.c_dict['LEAD_SEQ']
+        lead_seq = util.get_lead_sequence(self.p, self.logger, input_dict)
         for v in var_list:
             if self.c_dict['SINGLE_RUN']:
                 self.run_single_mode(input_dict, v)
