@@ -264,8 +264,12 @@ class MakePlotsWrapper(CommandBuilder):
                     self.logger.info(fcst_var_thresh_list[vt]+" "+obs_var_thresh_list[vt])
  
     def create_plots_precip(self):
-        self.logger.error("Plotting for precip not incorporated in METplus yet")
-        exit(1)
+        for lead in lead_list:
+            self.logger.info(lead)
+            for vl in range(len(fcst_var_level_list)):
+                self.logger.info(fcst_var_level_list[vl]+" "+obs_var_level_list[vl])
+                for vt in range(len(fcst_var_thresh_list)):
+                    self.logger.info(fcst_var_thresh_list[vt]+" "+obs_var_thresh_list[vt])
         
     def create_plots(self, verif_case, verif_type):
         self.logger.info("Running plots for VERIF_CASE = "+verif_case+", VERIF_TYPE = "+verif_type)
@@ -399,7 +403,9 @@ class MakePlotsWrapper(CommandBuilder):
                                                                  fcst_var_thresh_list, obs_var_thresh_list,
                                                                  interp, region, lead_list, plotting_scripts_dir)
                         elif verif_case == "precip":
-                            self.create_plots_precip()
+                            self.create_plots_precip(fcst_var_level_list, obs_var_level_list,
+                                                     fcst_var_thresh_list, obs_var_thresh_list,
+                                                     interp, region, lead_list, plotting_scripts_dir)
 
     def run_all_times(self):
         verif_case = self.p.getstr('config', 'VERIF_CASE')
