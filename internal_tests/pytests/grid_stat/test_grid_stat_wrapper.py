@@ -87,7 +87,8 @@ def test_find_obs_no_dated():
     task_info['lead'] = 0
     time_info = time_util.ti_calculate(task_info)
     
-    pcw.c_dict['OBS_EXACT_VALID_TIME'] = False
+    pcw.c_dict['OBS_WINDOW_BEGIN'] = -3600
+    pcw.c_dict['OBS_WINDOW_END'] = 3600
     pcw.c_dict['OBS_INPUT_DIR'] = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
     obs_file = pcw.find_obs(time_info, v)
@@ -103,7 +104,8 @@ def test_find_obs_dated():
     task_info['lead'] = 0
     time_info = time_util.ti_calculate(task_info)
 
-    pcw.c_dict['OBS_EXACT_VALID_TIME'] = False
+    pcw.c_dict['OBS_WINDOW_BEGIN'] = -3600
+    pcw.c_dict['OBS_WINDOW_END'] = 3600
     pcw.c_dict['OBS_INPUT_DIR'] = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
     obs_file = pcw.find_obs(time_info, v)
@@ -118,11 +120,10 @@ def test_find_obs_dated_previous_day():
     task_info['lead'] = 0
     time_info = time_util.ti_calculate(task_info)
 
-    pcw.c_dict['OBS_EXACT_VALID_TIME'] = False
     pcw.c_dict['OBS_INPUT_DIR'] = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
-    pcw.c_dict['WINDOW_RANGE_BEG'] = -3600
-    pcw.c_dict['WINDOW_RANGE_END'] = 0
+    pcw.c_dict['OBS_WINDOW_BEGIN'] = -3600
+    pcw.c_dict['OBS_WINDOW_END'] = 0
     obs_file = pcw.find_obs(time_info, v)
     assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180131/20180131_2345')
 
@@ -135,11 +136,10 @@ def test_find_obs_dated_next_day():
     task_info['lead'] = 0
     time_info = time_util.ti_calculate(task_info)
     
-    pcw.c_dict['OBS_EXACT_VALID_TIME'] = False
     pcw.c_dict['OBS_INPUT_DIR'] = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
-    pcw.c_dict['WINDOW_RANGE_BEG'] = 0
-    pcw.c_dict['WINDOW_RANGE_END'] = 3600
+    pcw.c_dict['OBS_WINDOW_BEGIN'] = 0
+    pcw.c_dict['OBS_WINDOW_END'] = 3600
     obs_file = pcw.find_obs(time_info, v)
     assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180202/20180202_0013')
     
