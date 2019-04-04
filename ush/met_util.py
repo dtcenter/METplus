@@ -67,7 +67,11 @@ def check_for_deprecated_config(p, logger):
       'TIME_SUMMARY_TYPE' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_TYPE'},
       'OVERWRITE_NC_OUTPUT' : { 'sec' : 'config', 'alt' : 'PB2NC_SKIP_IF_OUTPUT_EXISTS'},
       'VERTICAL_LOCATION' : { 'sec' : 'config', 'alt' : 'PB2NC_VERTICAL_LOCATION'},
-      'VERIFICATION_GRID' : { 'sec' : 'config', 'alt' : 'REGRID_DATA_PLANE_VERIF_GRID'}
+      'VERIFICATION_GRID' : { 'sec' : 'config', 'alt' : 'REGRID_DATA_PLANE_VERIF_GRID'},
+      'WINDOW_RANGE_BEG' : { 'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN'},
+      'WINDOW_RANGE_END' : { 'sec' : 'config', 'alt' : 'OBS_WINDOW_END'},
+      'OBS_EXACT_VALID_TIME' : { 'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN and OBS_WINDOW_END'},
+      'FCST_EXACT_VALID_TIME' : { 'sec' : 'config', 'alt' : 'FCST_WINDOW_BEGIN and FCST_WINDOW_END'}
 # template       '' : { 'sec' : '', 'alt' : ''}
     }
 
@@ -211,7 +215,7 @@ def get_lead_sequence(p, logger, input_dict):
 
         return sorted(lead_seq)
     else:
-        return 0
+        return [0]
 
 
 def get_version_number():
