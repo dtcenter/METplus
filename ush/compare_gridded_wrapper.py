@@ -54,22 +54,15 @@ that reformat gridded data
         c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
         c_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 24)
         c_dict['FCST_INIT_INTERVAL'] = self.p.getint('config', 'FCST_INIT_INTERVAL', 12)
-        c_dict['WINDOW_RANGE_BEG'] = \
-          self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
-        c_dict['WINDOW_RANGE_END'] = \
-          self.p.getint('config', 'WINDOW_RANGE_END', 3600)
-
         c_dict['OBS_WINDOW_BEGIN'] = \
-          self.p.getint('config', 'OBS_WINDOW_BEGIN', -3600)
+          self.p.getint('config', 'OBS_WINDOW_BEGIN', 0)
         c_dict['OBS_WINDOW_END'] = \
-          self.p.getint('config', 'OBS_WINDOW_END', 3600)
+          self.p.getint('config', 'OBS_WINDOW_END', 0)
 
-        c_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                              'OBS_EXACT_VALID_TIME',
-                                                              True)
-        c_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                              'FCST_EXACT_VALID_TIME',
-                                                              True)
+        c_dict['FCST_WINDOW_BEGIN'] = \
+          self.p.getint('config', 'FCST_WINDOW_BEGIN', 0)
+        c_dict['FCST_WINDOW_END'] = \
+          self.p.getint('config', 'FCST_WINDOW_END', 0)
         c_dict['ALLOW_MULTIPLE_FILES'] = False
         c_dict['NEIGHBORHOOD_WIDTH'] = ''
         c_dict['NEIGHBORHOOD_SHAPE'] = ''
