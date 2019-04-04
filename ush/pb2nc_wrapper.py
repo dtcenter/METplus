@@ -65,7 +65,6 @@ class PB2NCWrapper(CommandBuilder):
 
         c_dict['OBS_INPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates', 'PB2NC_INPUT_TEMPLATE')
         c_dict['OUTPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates', 'PB2NC_OUTPUT_TEMPLATE')
-        c_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config', 'PB2NC_EXACT_VALID_TIME', True)
         c_dict['OBS_INPUT_DATATYPE'] = self.p.getstr('config', 'PB2NC_INPUT_DATATYPE', '')
 
         # Configuration
@@ -107,9 +106,10 @@ class PB2NCWrapper(CommandBuilder):
             self.p.getstr('conf', 'PB2NC_TIME_SUMMARY_VAR_NAMES'))
         c_dict['TIME_SUMMARY_TYPES'] = util.getlist(
             self.p.getstr('config', 'PB2NC_TIME_SUMMARY_TYPES'))
-        c_dict['OBS_WINDOW_BEGIN'] = self.p.getstr('config',
-                                                    'OBS_WINDOW_BEGIN')
-        c_dict['OBS_WINDOW_END'] = self.p.getstr('config', 'OBS_WINDOW_END')
+        c_dict['OBS_WINDOW_BEGIN'] = \
+          self.p.getstr('config', 'PB2NC_WINDOW_BEGIN', 0)
+        c_dict['OBS_WINDOW_END'] = \
+          self.p.getstr('config', 'PB2NC_WINDOW_END', 0)
 
         c_dict['VERTICAL_LOCATION'] = self.p.getstr('config',
                                                      'PB2NC_VERTICAL_LOCATION')
@@ -203,7 +203,11 @@ class PB2NCWrapper(CommandBuilder):
             infile = self.find_obs(time_info, None)
 
             if infile is not None:
-                self.add_input_file(infile)
+                if isinstance(infile, list):
+                    for f in infile:
+                        self.add_input_file(f)
+                else:
+                    self.add_input_file(infile)
                 self.logger.debug('Adding input file {}'.format(infile))
                 break
 
@@ -272,6 +276,60 @@ class PB2NCWrapper(CommandBuilder):
             self.logger.error("Could not generate command")
             return
         self.build()
+
+
+    def get_command(self):
+        """! Builds the command to run the MET application
+           @rtype string
+           @return Returns a MET command with arguments that you can run
+        """
+        if self.app_path is None:
+            self.logger.error("No app path specified. "\
+                                "You must use a subclass")
+            return None
+
+        cmd = self.app_path + " "
+
+        if self.verbose != -1:
+            cmd += "-v "+str(self.verbose) + " "
+
+        for a in self.args:
+            cmd += a + " "
+
+        if len(self.infiles) == 0:
+            self.logger.error("No input filenames specified")
+            return None
+
+        # if multiple input files, add first now, then add rest with
+        # -pbfile argument
+        cmd += self.infiles[0] + " "
+
+        if self.outfile == "":
+            self.logger.error("No output filename specified")
+            return None
+
+        if self.outdir == "":
+            self.logger.error("No output directory specified")
+            return None
+
+        out_path = os.path.join(self.outdir, self.outfile)
+
+        # create outdir (including subdir in outfile) if it doesn't exist
+        if not os.path.exists(os.path.dirname(out_path)):
+            os.makedirs(os.path.dirname(out_path))
+
+        cmd += " " + out_path
+
+        if self.param != "":
+            cmd += ' ' + self.param
+
+        if len(self.infiles) > 1:
+            for f in self.infiles[1:]:
+                cmd += ' -pbfile' + f
+
+        return cmd
+
+
 
 
 if __name__ == "__main__":
