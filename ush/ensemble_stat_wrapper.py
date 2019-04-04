@@ -101,8 +101,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         c_dict['OUTPUT_DIR'] =  util.getdir(self.p, 'ENSEMBLE_STAT_OUT_DIR')
 
-        c_dict['OBS_POINT_EXACT_VALID_TIME'] = \
-            self.p.getbool('config','OBS_POINT_EXACT_VALID_TIME',True)
+        c_dict['OBS_WINDOW_BEGIN'] = self.p.getint('config', 'OBS_ENSEMBLE_STAT_WINDOW_BEGIN', 0)
+        c_dict['OBS_WINDOW_END'] = self.p.getint('config', 'OBS_ENSEMBLE_STAT_WINDOW_END', 0)
 
         return c_dict
 
