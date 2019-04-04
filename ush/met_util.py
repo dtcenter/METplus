@@ -102,7 +102,7 @@ def check_for_deprecated_config(p, logger):
         logger.error("DEPRECATED CONFIG ITEMS WERE FOUND. PLEASE REMOVE/REPLACE THEM FROM CONFIG FILES")
         for e in e_list:
             logger.error(e)
-#        exit(1)
+        exit(1)
 
 
 def is_loop_by_init(p):
