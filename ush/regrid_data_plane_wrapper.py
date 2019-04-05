@@ -42,6 +42,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
     def create_c_dict(self):
         self.c_dict = dict()
+        self.c_dict['SKIP_IF_OUTPUT_EXISTS'] = \
+          self.p.getbool('config', 'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS',
+                         False)
         if self.p.has_option('filename_templates',
                              'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE'):
             self.c_dict['FCST_INPUT_TEMPLATE'] = \
@@ -108,8 +111,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                         '', self.logger)
 
         self.c_dict['VERIFICATION_GRID'] = \
-            self.p.getstr('config', 'REGRID_DATA_PLANE_VERIF_GRID',
-                          self.p.getstr('config', 'VERIFICATION_GRID'))
+            self.p.getstr('config', 'REGRID_DATA_PLANE_VERIF_GRID', '')
 
 
     def run_at_time_once(self, time_info, var_info, dtype):
@@ -175,13 +177,30 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             self.logger.error('Could not find input file in {} matching template {}'
                               .format(input_dir, input_template))
             return False
-        self.add_input_file(self.c_dict['VERIFICATION_GRID'])
+        verif_grid = self.c_dict['VERIFICATION_GRID']
+        if verif_grid == '':
+            self.logger.error('No verification grid specified! ' + \
+                              'Set REGRID_DATA_PLANE_VERIF_GRID')
+            return False
+
+        self.add_input_file(verif_grid)
         regridSts = sts.StringSub(self.logger,
                                   output_template,
                                   level=(int(f_level)*3600),
                                   **time_info)
         outfile = regridSts.doStringSub()
         self.set_output_path(os.path.join(output_dir, outfile))
+
+        outpath = self.get_output_path()
+        if os.path.exists(outpath) and \
+          self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
+            self.logger.debug('Skip writing output file {} because it already '
+                              'exists. Remove file or change '
+                              'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS to True to process'
+                              .format(outpath))
+            return True
+
+
 
         if self.p.getstr('config', dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE', 'GRIB') == 'GRIB':
             field_name = "{:s}_{:s}".format(compare_var, str(level).zfill(2))
