@@ -56,7 +56,7 @@ class PB2NCWrapper(CommandBuilder):
                            config files.
         """
         c_dict = dict()
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.p.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', True)
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.p.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', False)
         c_dict['OFFSETS'] = util.getlistint(self.p.getstr('config', 'PB2NC_OFFSETS', '0'))
 
         # Directories

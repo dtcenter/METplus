@@ -61,11 +61,12 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.name = ""
         self.logfile = ""
         self.compress = -1
-        self.create_config_dict()
+        self.create_c_dict()
 
 
-    def create_config_dict(self):
+    def create_c_dict(self):
         self.c_dict = dict()
+        self.c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.p.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
         self.c_dict['RUN_METHOD'] = self.p.getstr('config', 'PCP_COMBINE_METHOD', 'ADD')
 
         if self.p.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
@@ -454,7 +455,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             (self.logger).error("No output directory specified")
             return None
 
-        out_path = os.path.join(self.outdir, self.outfile)
+        out_path = self.get_output_path()
 
         # create outdir (including subdir in outfile) if it doesn't exist
         if not os.path.exists(os.path.dirname(out_path)):
@@ -507,6 +508,17 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             lead = time_info['lead_hours']
             self.logger.error("pcp_combine could not generate command for init {} and forecast lead {}".format(init_time, lead))
             return
+
+        # if output file exists and we want to skip it, warn and continue
+        outfile = self.get_output_path()
+        if os.path.exists(outfile) and \
+          self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
+            self.logger.debug('Skip writing output file {} because it already '
+                              'exists. Remove file or change '
+                              'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS to True to process'
+                              .format(outfile))
+            return True
+
         self.build()
 
 
