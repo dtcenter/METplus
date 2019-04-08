@@ -111,7 +111,7 @@ def check_for_deprecated_config(p, logger):
 
 def is_loop_by_init(p):
     if p.has_option('config', 'LOOP_BY'):
-        if ['INIT', 'RETRO' , ''] in p.getstr('config', 'LOOP_BY'):
+        if p.getstr('config', 'LOOP_BY').lower() in ['init', 'retro' , '']:
             return True
 
     if p.has_option('config', 'LOOP_BY_INIT'):
