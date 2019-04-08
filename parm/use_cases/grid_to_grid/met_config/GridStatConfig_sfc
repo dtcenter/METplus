@@ -48,6 +48,8 @@ cnt_logic     = UNION;
 wind_thresh   = [ NA ];
 wind_logic    = UNION;
 eclv_points   = 0.05;
+nc_pairs_var_str = "";
+rank_corr_flag   = FALSE;
 
 //
 // Forecast and observation fields to be verified
@@ -78,6 +80,7 @@ climo_mean = {
    }
 
    time_interp_method = NEAREST;
+   match_month        = TRUE;
    match_day          = TRUE;
    time_step          = 21600;
 }
@@ -150,6 +153,7 @@ interp = {
 // Neighborhood methods
 //
 nbrhd = {
+   field      = BOTH;
    width      = [ 1 ];
    cov_thresh = [ >=0.5 ];
    vld_thresh = 1.0;
@@ -169,6 +173,17 @@ fourier = {
 ////////////////////////////////////////////////////////////////////////////////
 
 //
+// Gradient statistics
+// May be set separately in each "obs.field" entry
+//
+gradient = {
+   dx = [ 1 ];
+   dy = [ 1 ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
 // Statistical output types
 //
 output_flag = {
@@ -182,6 +197,7 @@ output_flag = {
    sal1l2 = NONE;
    vl1l2  = NONE;
    val1l2 = NONE;
+   vcnt   = NONE;
    pct    = NONE;
    pstd   = NONE;
    pjc    = NONE;
@@ -211,8 +227,8 @@ nc_pairs_flag   = {
 ////////////////////////////////////////////////////////////////////////////////
 
 grid_weight_flag = COS_LAT;
-rank_corr_flag   = FALSE;
 tmp_dir          = "/tmp";
 output_prefix    = "${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${LEVEL}";
+//version          = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////

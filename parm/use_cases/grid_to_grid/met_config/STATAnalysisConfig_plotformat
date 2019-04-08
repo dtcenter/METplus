@@ -83,8 +83,22 @@ boot = {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+//
+// WMO mean computation logic
+//
+wmo_sqrt_stats   = [ "CNT:FSTDEV",  "CNT:OSTDEV",  "CNT:ESTDEV",
+                     "CNT:RMSE",    "CNT:RMSFA",   "CNT:RMSOA",
+                     "VCNT:FS_RMS", "VCNT:OS_RMS", "VCNT:RMSVE",
+                     "VCNT:FSTDEV", "VCNT:OSTDEV" ];
+
+wmo_fisher_stats = [ "CNT:PR_CORR", "CNT:SP_CORR",
+                     "CNT:KT_CORR", "CNT:ANOM_CORR" ];
+
+////////////////////////////////////////////////////////////////////////////////
+
 rank_corr_flag = FALSE;
 vif_flag       = FALSE;
 tmp_dir        = "/tmp";
+//version        = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////

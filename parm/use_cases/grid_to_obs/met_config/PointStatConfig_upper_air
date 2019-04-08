@@ -9,7 +9,6 @@
 //
 // Output model name to be written
 //
-//model = "${MODEL_NAME}";
 model = "gfs";
 
 //
@@ -44,23 +43,11 @@ cnt_logic     = UNION;
 wind_thresh   = [ NA ];
 wind_logic    = UNION;
 eclv_points   = 0.05;
+rank_corr_flag = FALSE;
 
 //
 // Forecast and observation fields to be verified
 //
-//fcst = {
-   //field = [
-   //   { name  = "TMP"; level = [ "P1000", "P925", "P850", "P700", "P500",
-  //"P400", "P300", "P250", "P200", "P150", "P100", "P50", "P20", "P10" ]; },
- //     { name  = "RH"; level = [ "P1000", "P925", "P850", "P700", "P500",
- // "P400", "P300" ]; },
- //     { name  = "UGRD"; level = [ "P1000", "P925", "P850", "P700", "P500",
- //"P400", "P300", "P250", "P200", "P150", "P100", "P50", "P20", "P10" ]; },
- //     { name  = "VGRD"; level = [ "P1000", "P925", "P850", "P700", "P500",
- // "P400", "P300", "P250", "P200", "P150", "P100", "P50", "P20", "P10" ]; },
- //     { name  = "HGT"; level = [ "P1000", "P925", "P850", "P700", "P500",
- // "P400", "P300", "P250", "P200", "P150", "P100", "P50", "P20", "P10" ]; }
-  // ];
 
 fcst = {
   field = [ ${FCST_FIELD} ];
@@ -74,13 +61,22 @@ obs = fcst;
 // Point observation filtering options
 // May be set separately in each "obs.field" entry
 //
-//message_type   = [ "ADPUPA" ];
 message_type = ${POINT_STAT_MESSAGE_TYPE};
 sid_exc        = [];
 obs_quality    = [ "1", "2", "3" ];
 duplicate_flag = NONE;
 obs_summary    = NONE;
 obs_perc_value = 50;
+
+//
+// Mapping of message type group name to comma-separated list of values.
+//
+message_type_group_map = [
+   { key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";               },
+   { key = "ANYAIR";  val = "AIRCAR,AIRCFT";                      },
+   { key = "ANYSFC";  val = "ADPSFC,SFCSHP,ADPUPA,PROFLR,MSONET"; },
+   { key = "ONLYSF";  val = "ADPSFC,SFCSHP";                      }
+];
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -100,6 +96,7 @@ climo_mean = {
    }
 
    time_interp_method = NEAREST;
+   match_month        = TRUE;
    match_day          = TRUE;
    time_step          = 21600;
 }
@@ -118,8 +115,6 @@ write_cdf_bins = FALSE;
 // Point observation time window
 //
 obs_window = {
-   // beg = -2700;
-  // end =  2700;
   beg = ${OBS_WINDOW_BEGIN};
   end = ${OBS_WINDOW_END};
 }
@@ -130,11 +125,10 @@ obs_window = {
 // Verification masking regions
 //
 mask = {
-   //grid    = ["FULL"];
    poly    = [];
-   //sid     = [];
    grid = ${POINT_STAT_GRID};
    sid = ${POINT_STAT_STATION_ID};
+   llpnt = [];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -198,18 +192,20 @@ output_flag = {
    sal1l2 = NONE;
    vl1l2  = STAT;
    val1l2 = NONE;
+   vcnt   = NONE;
    pct    = NONE;
    pstd   = NONE;
    pjc    = NONE;
    prc    = NONE;
+   ecnt   = NONE; // Only for HiRA.
    eclv   = NONE;
    mpr    = NONE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-rank_corr_flag = FALSE;
 tmp_dir        = "/tmp";
 output_prefix  = "";
+version        = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////

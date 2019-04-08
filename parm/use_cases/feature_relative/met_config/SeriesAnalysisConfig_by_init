@@ -12,6 +12,11 @@
 model = "WRF";
 
 //
+// Output description to be written
+//
+desc = "NA";
+
+//
 // Output observation type to be written
 //
 obtype = "ANALYS";
@@ -26,10 +31,13 @@ regrid = {
    method     = FORCE;
    width      = 1;
    vld_thresh = 0.5;
+   shape      = SQUARE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
+censor_thresh = [];
+censor_val    = [];
 cat_thresh  = [ NA ];
 cnt_thresh  = [ NA ];
 cnt_logic   = UNION;
@@ -63,9 +71,11 @@ climo_mean = {
       method     = NEAREST;
       width      = 1;
       vld_thresh = 0.5;
+      shape      = SQUARE;
    }
 
    time_interp_method = DW_MEAN;
+   match_month        = TRUE;
    match_day          = FALSE;
    time_step          = 21600;
 }
@@ -130,5 +140,6 @@ output_stats = {
 
 rank_corr_flag = FALSE;
 tmp_dir        = "/tmp";
+//version        = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////
