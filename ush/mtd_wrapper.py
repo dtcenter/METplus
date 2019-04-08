@@ -58,9 +58,6 @@ class MTDWrapper(ModeWrapper):
                 self.p.getstr('config', 'FCST_MTD_INPUT_DATATYPE', '')
             c_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 256)
             c_dict['FCST_INIT_INTERVAL']= self.p.getint('config', 'FCST_INIT_INTERVAL', 1)
-            c_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                                  'FCST_EXACT_VALID_TIME',
-                                                                  True)
 
             if self.p.has_option('config', 'MTD_FCST_CONV_RADIUS'):
                 c_dict['FCST_CONV_RADIUS'] = self.p.getstr('config', 'MTD_FCST_CONV_RADIUS')
@@ -87,9 +84,6 @@ class MTDWrapper(ModeWrapper):
                                    'OBS_MTD_INPUT_TEMPLATE')
             c_dict['OBS_INPUT_DATATYPE'] = \
                 self.p.getstr('config', 'OBS_MTD_INPUT_DATATYPE', '')
-            c_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                            'OBS_EXACT_VALID_TIME',
-                                                            True)
 
             if self.p.has_option('config', 'MTD_OBS_CONV_RADIUS'):
                 c_dict['OBS_CONV_RADIUS'] = self.p.getstr('config', 'MTD_OBS_CONV_RADIUS')
@@ -122,7 +116,7 @@ class MTDWrapper(ModeWrapper):
 #        max_lookback = self.c_dict['MAX_LOOKBACK']
 #        file_interval = self.c_dict['FILE_INTERVAL']
 
-        lead_seq = self.c_dict['LEAD_SEQ']
+        lead_seq = util.get_lead_sequence(self.p, self.logger, input_dict)
         for v in var_list:
             if self.c_dict['SINGLE_RUN']:
                 self.run_single_mode(input_dict, v)
@@ -187,9 +181,9 @@ class MTDWrapper(ModeWrapper):
             s_name = v.fcst_name
             s_level = v.fcst_level
 
-        lead_seq = self.c_dict['LEAD_SEQ']
+        lead_seq = util.get_lead_sequence(self.p, self.logger, input_dict)
         for lead in lead_seq:
-            input_dict['lead'] = lead
+            input_dict['lead_hours'] = lead
             current_task = time_util.ti_calculate(input_dict)
 
             single_file = find_method(current_task, v)
@@ -203,8 +197,9 @@ class MTDWrapper(ModeWrapper):
             return
 
         # write ascii file with list of files to process
-        current_task.lead = 0
-        single_outfile = current_task['valid_fmt'] + '_mtd_single_' + s_name + '.txt'
+        input_dict['lead_hours'] = 0
+        time_info = time_util.ti_calculate(input_dict)
+        single_outfile = time_info['valid_fmt'] + '_mtd_single_' + s_name + '.txt'
         single_list_path = self.write_list_file(single_outfile, single_list)
 
         arg_dict = {}

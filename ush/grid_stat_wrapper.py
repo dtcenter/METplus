@@ -66,6 +66,12 @@ class GridStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_PROB_THRESH'] = self.p.getstr('config', 'OBS_GRID_STAT_PROB_THRESH', '==0.1')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
+        c_dict['NEIGHBORHOOD_WIDTH'] = self.p.getstr('config', 'GRID_STAT_NEIGHBORHOOD_WIDTH', '')
+        c_dict['NEIGHBORHOOD_SHAPE'] = self.p.getstr('config', 'GRID_STAT_NEIGHBORHOOD_SHAPE', '')
+        c_dict['VERIFICATION_MASK_TEMPLATE'] = \
+            util.getraw_interp(self.p, 'filename_templates',
+                               'GRID_STAT_VERIFICATION_MASK_TEMPLATE')
+        c_dict['VERIFICATION_MASK'] = ''
         return c_dict
 
 

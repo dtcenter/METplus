@@ -15,7 +15,6 @@ from datetime import datetime, timedelta
 import calendar
 import shutil
 import produtil.setup
-# from produtil.run import run
 import met_util as util
 import config_metplus
 

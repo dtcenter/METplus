@@ -46,7 +46,6 @@ that reformat gridded data
     def create_c_dict(self):
         c_dict = dict()
         c_dict['var_list'] = util.parse_var_list(self.p)
-        c_dict['LEAD_SEQ'] = util.getlistint(self.p.getstr('config', 'LEAD_SEQ', '0'))
         c_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL_TYPE', 'FCST')
         c_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE', 'OBS')
         c_dict['CONFIG_DIR'] = util.getdir(self.p, 'CONFIG_DIR', '')
@@ -55,27 +54,24 @@ that reformat gridded data
         c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
         c_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 24)
         c_dict['FCST_INIT_INTERVAL'] = self.p.getint('config', 'FCST_INIT_INTERVAL', 12)
-        c_dict['WINDOW_RANGE_BEG'] = \
-          self.p.getint('config', 'WINDOW_RANGE_BEG', -3600)
-        c_dict['WINDOW_RANGE_END'] = \
-          self.p.getint('config', 'WINDOW_RANGE_END', 3600)
-
         c_dict['OBS_WINDOW_BEGIN'] = \
-          self.p.getint('config', 'OBS_WINDOW_BEGIN', -3600)
+          self.p.getint('config', 'OBS_WINDOW_BEGIN', 0)
         c_dict['OBS_WINDOW_END'] = \
-          self.p.getint('config', 'OBS_WINDOW_END', 3600)
+          self.p.getint('config', 'OBS_WINDOW_END', 0)
 
-        c_dict['OBS_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                              'OBS_EXACT_VALID_TIME',
-                                                              True)
-        c_dict['FCST_EXACT_VALID_TIME'] = self.p.getbool('config',
-                                                              'FCST_EXACT_VALID_TIME',
-                                                              True)
+        c_dict['FCST_WINDOW_BEGIN'] = \
+          self.p.getint('config', 'FCST_WINDOW_BEGIN', 0)
+        c_dict['FCST_WINDOW_END'] = \
+          self.p.getint('config', 'FCST_WINDOW_END', 0)
         c_dict['ALLOW_MULTIPLE_FILES'] = False
+        c_dict['NEIGHBORHOOD_WIDTH'] = ''
+        c_dict['NEIGHBORHOOD_SHAPE'] = ''
+        c_dict['VERIFICATION_MASK_TEMPLATE'] = ''
+        c_dict['VERIFICATION_MASK'] = ''
         util.add_common_items_to_dictionary(self.p, c_dict)
         return c_dict
 
-#    def run_at_time(self, init_time, valid_time):
+
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
               over the list of forecast leads and runs the application for each.
@@ -85,7 +81,7 @@ that reformat gridded data
         """
 
         # loop of forecast leads and process each
-        lead_seq = self.c_dict['LEAD_SEQ']
+        lead_seq = util.get_lead_sequence(self.p, self.logger, input_dict)
         for lead in lead_seq:
             input_dict['lead_hours'] = lead
 
@@ -105,6 +101,10 @@ that reformat gridded data
                 @param time_info dictionary containing timing information
                 @param var_list var_info object list containing variable information
         """
+
+        # get verification mask if available
+        self.get_verification_mask(time_info)
+
         if self.c_dict['ONCE_PER_FIELD']:
             # loop over all fields and levels (and probability thresholds) and
             # call the app once for each
@@ -142,10 +142,10 @@ that reformat gridded data
         self.add_input_file(obs_path)
 
         # get field info field a single field to pass to the MET config file
-        fcst_field = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name, v.fcst_extra,
-                                             model_path, 'FCST')
-        obs_field = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra,
-                                            obs_path, 'OBS')
+        fcst_field = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name,
+                                             v.fcst_extra, 'FCST')
+        obs_field = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name,
+                                            v.obs_extra, 'OBS')
 
         self.process_fields(time_info, fcst_field, obs_field)
 
@@ -175,8 +175,10 @@ that reformat gridded data
         fcst_field_list = []
         obs_field_list = []
         for v in self.c_dict['var_list']:
-            next_fcst = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name, v.fcst_extra, model_path, 'FCST')
-            next_obs = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra, obs_path, 'OBS')
+            next_fcst = self.get_one_field_info(v.fcst_level, v.fcst_thresh,
+                                                v.fcst_name, v.fcst_extra, 'FCST')
+            next_obs = self.get_one_field_info(v.obs_level, v.obs_thresh,
+                                               v.obs_name, v.obs_extra, 'OBS')
             fcst_field_list.append(next_fcst)
             obs_field_list.append(next_obs)
         fcst_field = ','.join(fcst_field_list)
@@ -185,7 +187,7 @@ that reformat gridded data
         self.process_fields(time_info, fcst_field, obs_field)
 
 
-    def get_one_field_info(self, v_level, v_thresh, v_name, v_extra, path, d_type):
+    def get_one_field_info(self, v_level, v_thresh, v_name, v_extra, d_type):
         """! Format field information into format expected by MET config file
               Args:
                 @param v_level level of data to extract
@@ -227,7 +229,6 @@ that reformat gridded data
                     # TODO: replace with better check for data type to remove path
                     # untested, need NetCDF prob fcst data
                     if self.c_dict[d_type+'_INPUT_DATATYPE'] == 'NETCDF':
-#                    if path[-3:] == ".nc":
                         field = "{ name=\"" + v_name + "\"; level=\"" + \
                           level+"\"; prob=TRUE; cat_thresh=["+prob_cat_thresh+"];}"
                     else:
@@ -295,6 +296,22 @@ that reformat gridded data
         self.add_env_var("FCST_TIME", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("INPUT_BASE", self.c_dict["INPUT_BASE"])
 
+        # add additional env vars if they are specified
+        if self.c_dict['NEIGHBORHOOD_WIDTH'] != '':
+            self.add_env_var('NEIGHBORHOOD_WIDTH',
+                             self.c_dict['NEIGHBORHOOD_WIDTH'])
+            print_list.append('NEIGHBORHOOD_WIDTH')
+
+        if self.c_dict['NEIGHBORHOOD_SHAPE'] != '':
+            self.add_env_var('NEIGHBORHOOD_SHAPE',
+                             self.c_dict['NEIGHBORHOOD_SHAPE'])
+            print_list.append('NEIGHBORHOOD_SHAPE')
+
+        if self.c_dict['VERIFICATION_MASK'] != '':
+            self.add_env_var('VERIF_MASK',
+                             self.c_dict['VERIFICATION_MASK'])
+            print_list.append('VERIF_MASK')
+
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_user_env_items()
@@ -349,6 +366,18 @@ that reformat gridded data
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
         self.set_output_dir(out_dir)
+
+
+    def get_verification_mask(self, time_info):
+        self.c_dict['VERIFICATION_MASK'] = ''
+        if self.c_dict['VERIFICATION_MASK_TEMPLATE'] != '':
+            template = self.c_dict['VERIFICATION_MASK_TEMPLATE']
+            ss = sts.StringSub(self.logger,
+                                   template,
+                                   **time_info)
+            filename = ss.doStringSub()
+            self.c_dict['VERIFICATION_MASK'] = filename
+        return
 
 
     def write_list_file(self, filename, file_list):

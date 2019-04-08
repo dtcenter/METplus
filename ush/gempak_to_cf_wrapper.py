@@ -68,8 +68,7 @@ class GempakToCFWrapper(CommandBuilder):
         app_name_caps = self.app_name.upper()
         class_name = self.__class__.__name__[0: -7]
 
-        lead_seq = util.getlistint(self.p.getstr('config', 'LEAD_SEQ'))
-
+        lead_seq = util.get_lead_sequence(self.p, self.logger, input_dict)
         for lead in lead_seq:
             self.clear()
             input_dict['lead_hours'] = lead
@@ -102,6 +101,15 @@ class GempakToCFWrapper(CommandBuilder):
                                   output_template,
                                   valid=valid_time)
         outfile = os.path.join(output_dir, gempakToCfSts.doStringSub())
+
+        if os.path.exists(outfile) and \
+          self.p.getbool('config', 'GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS', False) is True:
+            self.logger.debug('Skip writing output file {} because it already '
+                              'exists. Remove file or change '
+                              'GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS to True to process'
+                              .format(outfile))
+            return
+
         self.set_output_path(outfile)
 
         if not os.path.exists(os.path.dirname(outfile)):

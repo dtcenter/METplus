@@ -97,6 +97,11 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['POINT_STAT_MESSAGE_TYPE'] = util.getlist(
             self.p.getstr('config', 'POINT_STAT_MESSAGE_TYPE', ''))
 
+        c_dict['OBS_WINDOW_BEGIN'] = \
+          self.p.getstr('config', 'OBS_POINT_STAT_WINDOW_BEGIN', 0)
+        c_dict['OBS_WINDOW_END'] = \
+          self.p.getstr('config', 'OBS_POINT_STAT_WINDOW_END', 0)
+
         return c_dict
 
 
@@ -107,7 +112,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         var_list = util.parse_var_list(self.p)
 
         # loop of forecast leads and process each
-        lead_seq = self.c_dict['LEAD_SEQ']
+        lead_seq = util.get_lead_sequence(self.p, self.logger, input_dict)
         for lead in lead_seq:
             input_dict['lead_hours'] = lead
 
@@ -186,8 +191,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         fcst_field_list = []
         obs_field_list = []
         for v in var_list:
-            next_fcst = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name, v.fcst_extra, model_path, 'FCST')
-            next_obs = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra, obs_path, 'OBS')
+            next_fcst = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name, v.fcst_extra, 'FCST')
+            next_obs = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra, 'OBS')
             fcst_field_list.append(next_fcst)
             obs_field_list.append(next_obs)
         fcst_field = ','.join(fcst_field_list)

@@ -2,6 +2,7 @@
 from __future__ import print_function
 import sys
 import pytest
+import datetime
 import met_util as util
 import produtil
 import os
@@ -421,3 +422,58 @@ def test_parse_var_list_fcst_only():
            var_list[1].fcst_extra == "" and \
            var_list[1].obs_extra == "OOPTIONS11"
            )
+
+def test_get_lead_sequence_lead():
+    input_dict = { 'valid' : datetime.datetime(2019, 02, 01, 13) }
+    conf = metplus_config()
+    conf.set('config', 'LEAD_SEQ', "3,6,9,12")
+    test_seq = util.get_lead_sequence(conf, None, input_dict)
+    lead_seq = [ 3, 6, 9, 12 ]
+    assert(test_seq == lead_seq)
+
+@pytest.mark.parametrize(
+    'key, value', [
+        (0,  [ 0, 12, 24, 36]),
+        (1,  [ 1, 13, 25 ]),
+        (2,  [ 2, 14, 26 ]),
+        (3,  [ 3, 15, 27 ]),
+        (4,  [ 4, 16, 28 ]),
+        (5,  [ 5, 17, 29 ]),
+        (6,  [ 6, 18, 30 ]),
+        (7,  [ 7, 19, 31 ]),
+        (8,  [ 8, 20, 32 ]),
+        (9,  [ 9, 21, 33 ]),
+        (10, [ 10, 22, 34 ]),
+        (11, [ 11, 23, 35 ]),
+        (12, [ 0, 12, 24, 36 ]),
+        (13, [ 1, 13, 25 ]),
+        (14, [ 2, 14, 26 ]),
+        (15, [ 3, 15, 27 ]),
+        (16, [ 4, 16, 28 ]),
+        (17, [ 5, 17, 29 ]),
+        (18, [ 6, 18, 30 ]),
+        (19, [ 7, 19, 31 ]),
+        (20, [ 8, 20, 32 ]),
+        (21, [ 9, 21, 33 ]),
+        (22, [ 10, 22, 34 ]),
+        (23, [ 11, 23, 35 ])
+    ]
+)
+def test_get_lead_sequence_init(key, value):
+    input_dict = { 'valid' : datetime.datetime(2019, 02, 01, key) }
+    conf = metplus_config()
+    conf.set('config', 'INIT_SEQ', "0, 12")
+    conf.set('config', 'FCST_MAX_FORECAST', 36)
+    test_seq = util.get_lead_sequence(conf, None, input_dict)
+    lead_seq = value
+    assert(test_seq == lead_seq)
+
+def test_get_lead_sequence_init_min_10():
+    input_dict = { 'valid' : datetime.datetime(2019, 02, 01, 12) }
+    conf = metplus_config()
+    conf.set('config', 'INIT_SEQ', "0, 12")
+    conf.set('config', 'FCST_MAX_FORECAST', 24)
+    conf.set('config', 'FCST_MIN_FORECAST', 10)
+    test_seq = util.get_lead_sequence(conf, None, input_dict)
+    lead_seq = [ 12, 24 ]
+    assert(test_seq == lead_seq)
