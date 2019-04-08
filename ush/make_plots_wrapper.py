@@ -213,7 +213,7 @@ class MakePlotsWrapper(CommandBuilder):
                 for vt in range(len(fcst_var_thresh_list)):
                     self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                     self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_test.py"))
+                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
                     cmd = self.get_command()
                     if cmd is None:
                         self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
@@ -226,50 +226,104 @@ class MakePlotsWrapper(CommandBuilder):
                                     fcst_var_thresh_list, obs_var_thresh_list,
                                     interp, region, lead_list, plotting_scripts_dir):
         for lead in lead_list:
-            self.logger.info(lead)
+            self.add_env_var('LEAD', lead)
             for vl in range(len(fcst_var_level_list)):
-                self.logger.info(fcst_var_level_list[vl]+" "+obs_var_level_list[vl])
+                self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
+                self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
                 for vt in range(len(fcst_var_thresh_list)):
-                    self.logger.info(fcst_var_thresh_list[vt]+" "+obs_var_thresh_list[vt])
+                    self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
+                    self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
+                    cmd = self.get_command()
+                    if cmd is None:
+                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                        return
+                    self.build()
+                    self.clear()
+                    exit()
+
      
     def create_plots_grid2grid_sfc(self, fcst_var_level_list, obs_var_level_list,
                                    fcst_var_thresh_list, obs_var_thresh_list,
                                    interp, region, lead_list, plotting_scripts_dir):
         for lead in lead_list:
-            self.logger.info(lead)
+            self.add_env_var('LEAD', lead)
             for vl in range(len(fcst_var_level_list)):
-                self.logger.info(fcst_var_level_list[vl]+" "+obs_var_level_list[vl])
+                self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
+                self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
                 for vt in range(len(fcst_var_thresh_list)):
-                    self.logger.info(fcst_var_thresh_list[vt]+" "+obs_var_thresh_list[vt])
+                    self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
+                    self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
+                    cmd = self.get_command()
+                    if cmd is None:
+                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                        return
+                    self.build()
+                    self.clear()
+                    exit()
+
 
     def create_plots_grid2obs_upper_air(self, fcst_var_level_list, obs_var_level_list,
                                         fcst_var_thresh_list, obs_var_thresh_list,
                                         interp, region, lead_list, plotting_scripts_dir):
         for lead in lead_list:
-            self.logger.info(lead)
+            self.add_env_var('LEAD', lead)
             for vl in range(len(fcst_var_level_list)):
-                self.logger.info(fcst_var_level_list[vl]+" "+obs_var_level_list[vl])
+                self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
+                self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
                 for vt in range(len(fcst_var_thresh_list)):
-                    self.logger.info(fcst_var_thresh_list[vt]+" "+obs_var_thresh_list[vt])
-     
+                    self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
+                    self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
+                    cmd = self.get_command()
+                    if cmd is None:
+                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                        return
+                    self.build()
+                    self.clear()
+                    exit()
+ 
     def create_plots_grid2obs_conus_sfc(self, fcst_var_level_list, obs_var_level_list,
                                         fcst_var_thresh_list, obs_var_thresh_list,
                                         interp, region, lead_list, plotting_scripts_dir):
         for lead in lead_list:
-            self.logger.info(lead)
+            self.add_env_var('LEAD', lead)
             for vl in range(len(fcst_var_level_list)):
-                self.logger.info(fcst_var_level_list[vl]+" "+obs_var_level_list[vl])
+                self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
+                self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
                 for vt in range(len(fcst_var_thresh_list)):
-                    self.logger.info(fcst_var_thresh_list[vt]+" "+obs_var_thresh_list[vt])
+                    self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
+                    self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
+                    cmd = self.get_command()
+                    if cmd is None:
+                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                        return
+                    self.build()
+                    self.clear()
+                    exit()
  
-    def create_plots_precip(self):
+    def create_plots_precip(self, fcst_var_level_list, obs_var_level_list,
+                                        fcst_var_thresh_list, obs_var_thresh_list,
+                                        interp, region, lead_list, plotting_scripts_dir):
         for lead in lead_list:
-            self.logger.info(lead)
+            self.add_env_var('LEAD', lead)
             for vl in range(len(fcst_var_level_list)):
-                self.logger.info(fcst_var_level_list[vl]+" "+obs_var_level_list[vl])
+                self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
+                self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
                 for vt in range(len(fcst_var_thresh_list)):
-                    self.logger.info(fcst_var_thresh_list[vt]+" "+obs_var_thresh_list[vt])
-        
+                    self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
+                    self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
+                    cmd = self.get_command()
+                    if cmd is None:
+                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                        return
+                    self.build()
+                    self.clear()
+                    exit()
+ 
     def create_plots(self, verif_case, verif_type):
         self.logger.info("Running plots for VERIF_CASE = "+verif_case+", VERIF_TYPE = "+verif_type)
         #read config
