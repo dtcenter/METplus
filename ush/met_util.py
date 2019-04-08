@@ -71,7 +71,8 @@ def check_for_deprecated_config(p, logger):
       'WINDOW_RANGE_BEG' : { 'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN'},
       'WINDOW_RANGE_END' : { 'sec' : 'config', 'alt' : 'OBS_WINDOW_END'},
       'OBS_EXACT_VALID_TIME' : { 'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN and OBS_WINDOW_END'},
-      'FCST_EXACT_VALID_TIME' : { 'sec' : 'config', 'alt' : 'FCST_WINDOW_BEGIN and FCST_WINDOW_END'}
+      'FCST_EXACT_VALID_TIME' : { 'sec' : 'config', 'alt' : 'FCST_WINDOW_BEGIN and FCST_WINDOW_END'},
+      'PCP_COMBINE_RUN_METHOD' : { 'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_RUN_METHOD and/or OBS_PCP_COMBINE_RUN_METHOD'}
 # template       '' : { 'sec' : '', 'alt' : ''}
     }
 
