@@ -102,6 +102,13 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_WINDOW_END'] = \
           self.p.getstr('config', 'OBS_POINT_STAT_WINDOW_END', 0)
 
+        c_dict['NEIGHBORHOOD_WIDTH'] = self.p.getstr('config', 'POINT_STAT_NEIGHBORHOOD_WIDTH', '')
+        c_dict['NEIGHBORHOOD_SHAPE'] = self.p.getstr('config', 'POINT_STAT_NEIGHBORHOOD_SHAPE', '')
+        c_dict['VERIFICATION_MASK_TEMPLATE'] = \
+            util.getraw_interp(self.p, 'filename_templates',
+                               'POINT_STAT_VERIFICATION_MASK_TEMPLATE')
+        c_dict['VERIFICATION_MASK'] = ''
+
         return c_dict
 
 
