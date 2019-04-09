@@ -9,10 +9,18 @@
 //
 // PrepBufr message type
 //
-//message_type = [ "ONLYSF", "MSONET", "GPSIPW" ];
-//message_type = [];
 message_type = ${PB2NC_MESSAGE_TYPE} ;
 
+//
+// Mapping of message type group name to comma-separated list of values
+// Derive PRMSL only for SURFACE message types
+//
+message_type_group_map = [
+   { key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";               },
+   { key = "ANYAIR";  val = "AIRCAR,AIRCFT";                      },
+   { key = "ANYSFC";  val = "ADPSFC,SFCSHP,ADPUPA,PROFLR,MSONET"; },
+   { key = "ONLYSF";  val = "ADPSFC,SFCSHP";                      }
+];
 
 //
 // Mapping of input PrepBufr message types to output message types
@@ -30,8 +38,6 @@ station_id = ${PB2NC_STATION_ID} ;
 // Observation time window
 //
 obs_window = {
-  // beg = -2700;
-  // end =  2700;
   beg = ${OBS_WINDOW_BEGIN};
   end = ${OBS_WINDOW_END};
 }
@@ -44,8 +50,6 @@ obs_window = {
 mask = {
    grid = "${PB2NC_GRID}";
    poly = "${PB2NC_POLY}";
-   //grid = "";
-   //poly = "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +91,6 @@ level_category = [0, 1, 4, 5, 6];
 // BUFR variable names to retain or derive.
 // If emtpy, process all available variables.
 //
-//obs_bufr_var = [ "PMO", "TOB", "TDO", "UOB", "VOB", "PWO", "TOCC" ];
 obs_bufr_var = ${OBS_BUFR_VAR_LIST};
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +110,6 @@ obs_prefbufr_map = [
    { key = "ZOB";     val = "HGT";   },
    { key = "UOB";     val = "UGRD";  },
    { key = "VOB";     val = "VGRD";  },
-   { key = "PMO";     val = "PRMSL"; },
    { key = "D_DPT";   val = "DPT";   },
    { key = "D_WDIR";  val = "WDIR";  },
    { key = "D_WIND";  val = "WIND";  },
@@ -127,16 +129,14 @@ event_stack_flag    = TOP;
 //
 time_summary = {
   flag = FALSE;
+  raw_data = FALSE;
   beg = "000000";
-  //beg = ${TIME_SUMMARY_BEG};
   end = "235959";
-  //end = ${TIME_SUMMARY_END};
   step = 3600;
   width = 3600;
-  var_name = [ "TMP", "WDIR", "RH" ];
-  //var_name = [ ${TIME_SUMMARY_VAR_NAMES} ];
+  grib_code = [];
+  obs_var   = [ "TMP", "WDIR", "RH" ];
   type = [ "min", "max", "range", "mean", "stdev", "median", "p80" ];
-  //type = [ ${TIME_SUMMARY_TYPES} ];
   vld_freq = 0;
   vld_thresh = 0.0;
 }
@@ -144,5 +144,6 @@ time_summary = {
 ////////////////////////////////////////////////////////////////////////////////
 
 tmp_dir = "/tmp";
+//version = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////

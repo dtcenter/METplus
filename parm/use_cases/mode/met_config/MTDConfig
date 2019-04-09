@@ -77,7 +77,6 @@ obs = {
    //  Throw away 3D objects with volumes smaller than this
    //
 
-//min_volume = 2000;
 min_volume = ${MIN_VOLUME};
 
 
@@ -229,7 +228,6 @@ txt_output = {
 ////////////////////////////////////////////////////////////////////////////////
 
 output_prefix    = "PROB_${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_A${LEVEL}";
-
-version        = "V8.0";
+//version        = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////

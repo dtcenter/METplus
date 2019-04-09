@@ -288,6 +288,12 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_env_var(b'OBS_WINDOW_BEGIN',
                          str(self.c_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var(b'OBS_WINDOW_END', str(self.c_dict['OBS_WINDOW_END']))
+        
+        # add additional env vars if they are specified
+        if self.c_dict['VERIFICATION_MASK'] != '':
+            self.add_env_var('VERIF_MASK',
+                             self.c_dict['VERIFICATION_MASK'])
+            print_list.append('VERIF_MASK')
 
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")

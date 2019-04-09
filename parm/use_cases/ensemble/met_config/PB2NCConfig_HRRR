@@ -9,15 +9,27 @@
 //
 // PrepBufr message type
 //
-//message_type = [ "ADPUPA", "ADPSFC", "SFCSHP", "AIRCAR", "AIRCFT",
-//                 "MSONET", "PROFLR", "RASSDA", "VADWND" ];
-//message_type = [ "ADPUPA", "ADPSFC", "AIRCFT", "PROFLR" ];
 message_type = ${PB2NC_MESSAGE_TYPE} ;
+
+//
+// Mapping of message type group name to comma-separated list of values
+// Derive PRMSL only for SURFACE message types
+//
+message_type_group_map = [
+   { key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";               },
+   { key = "ANYAIR";  val = "AIRCAR,AIRCFT";                      },
+   { key = "ANYSFC";  val = "ADPSFC,SFCSHP,ADPUPA,PROFLR,MSONET"; },
+   { key = "ONLYSF";  val = "ADPSFC,SFCSHP";                      }
+];
+
+//
+// Mapping of input PrepBufr message types to output message types
+//
+message_type_map = [];
 
 //
 // PrepBufr station ID
 //
-//station_id = [];
 station_id = ${PB2NC_STATION_ID} ;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,8 +38,6 @@ station_id = ${PB2NC_STATION_ID} ;
 // Observation time window
 //
 // For RC processing, set explicitly on command line
-//   beg = -900;
-//   end =  900;
 obs_window = {
    beg = ${OBS_WINDOW_BEGIN};
    end = ${OBS_WINDOW_END};
@@ -38,8 +48,6 @@ obs_window = {
 //
 // Observation retention regions
 //
-//   grid = "";
-//   poly = "";
 mask = {
    grid = "${PB2NC_GRID}";
    poly = "${PB2NC_POLY}";
@@ -84,7 +92,6 @@ level_category = [];
 // BUFR variable names to retain or derive.
 // If emtpy, process all available variables.
 //
-//obs_bufr_var = [ "POB", "QOB", "TOB", "ZOB", "UOB", "VOB", "D_DPT", "D_WDIR", "D_WIND", "D_RH", "D_MIXR", "D_PRMSL" ];
 obs_bufr_var = ${OBS_BUFR_VAR_LIST};
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -124,11 +131,13 @@ event_stack_flag    = TOP;
 //
 time_summary = {
   flag = FALSE;
+  raw_data = FALSE;
   beg = "000000";
   end = "235959";
   step = 300;
   width = 600;
-  var_name = [];
+  grib_code = [];
+  obs_var   = [ "TMP", "WDIR", "RH" ];
   type = [];
   vld_freq = 0;
   vld_thresh = 0.0;
@@ -136,11 +145,6 @@ time_summary = {
 ////////////////////////////////////////////////////////////////////////////////
 
 tmp_dir = "/tmp";
-
-//
-// Indicate a version number for the contents of this configuration file.
-// The value should generally not be modified.
-//
-//version =
+//version = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////
