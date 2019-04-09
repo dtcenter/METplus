@@ -23,7 +23,7 @@ desc = "NA";
 // Verification grid
 //
 regrid = {
-   to_grid    = "${REGRID_TO_GRID}";
+   to_grid    = ${REGRID_TO_GRID};
    method     = BILIN;
    width      = 2;
    vld_thresh = 0.5;
@@ -111,8 +111,8 @@ obs_window = {
 // Verification masking regions
 //
 mask = {
-   grid = ${POINT_STAT_GRID};
-   poly = ${VERIF_MASK};
+   grid = [ "FULL" ];
+   poly = [ "${VERIF_MASK}" ];
    sid     = [];
 }
 
