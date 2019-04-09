@@ -247,8 +247,8 @@ class PB2NCWrapper(CommandBuilder):
         # set environment variables needed for MET application
         self.add_env_var("PB2NC_MESSAGE_TYPE", self.c_dict['MESSAGE_TYPE'])
         self.add_env_var("PB2NC_STATION_ID", self.c_dict['STATION_ID'])
-        self.add_env_var("OBS_WINDOW_BEGIN", self.c_dict['OBS_WINDOW_BEGIN'])
-        self.add_env_var("OBS_WINDOW_END", self.c_dict['OBS_WINDOW_END'])
+        self.add_env_var("OBS_WINDOW_BEGIN", str(self.c_dict['OBS_WINDOW_BEGIN']))
+        self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
         self.add_env_var("PB2NC_GRID", self.c_dict['GRID'])
         self.add_env_var("PB2NC_POLY", self.c_dict['POLY'])
         self.add_env_var("OBS_BUFR_VAR_LIST", self.c_dict['BUFR_VAR_LIST'])
