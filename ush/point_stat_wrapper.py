@@ -157,8 +157,12 @@ class PointStatWrapper(CompareGriddedWrapper):
         # clear any settings leftover from previous run
         self.clear()
 
-        # get model to compare
         time_info = time_util.ti_calculate(input_dict)
+
+        # get verification mask if available
+        self.get_verification_mask(time_info)
+
+        # get model to compare
         model_path = self.find_model(time_info, var_list[0])
         if model_path == None:
             self.logger.error('Could not find file in {} matching template {}'
@@ -295,7 +299,6 @@ class PointStatWrapper(CompareGriddedWrapper):
                              self.c_dict['VERIFICATION_MASK'])
             print_list.append('VERIF_MASK')
 
-        # add additional env vars if they are specified
         if self.c_dict['NEIGHBORHOOD_WIDTH'] != '':
             self.add_env_var('NEIGHBORHOOD_WIDTH',
                              self.c_dict['NEIGHBORHOOD_WIDTH'])
@@ -305,11 +308,6 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.add_env_var('NEIGHBORHOOD_SHAPE',
                              self.c_dict['NEIGHBORHOOD_SHAPE'])
             print_list.append('NEIGHBORHOOD_SHAPE')
-
-        if self.c_dict['VERIFICATION_MASK'] != '':
-            self.add_env_var('VERIF_MASK',
-                             self.c_dict['VERIFICATION_MASK'])
-            print_list.append('VERIF_MASK')
 
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
