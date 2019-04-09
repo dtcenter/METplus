@@ -1,0 +1,28 @@
+To run the tc_stat_filter example, run with the following config files and in the following order:
+ -c parm/use_cases/track_and_intensity/track_and_intensity.conf
+ -c parm/use_cases/track_and_intensity/examples/tc_stat_filter.conf
+ -c <path/to>/my_custom.conf
+
+ where my_custom.conf is your custom config file where you define
+ PROJ_DIR, OUTPUT_BASE, MET_INSTALL_DIR, and TMP_DIR under the [dir] header/family.
+
+
+To run the tcmpr_mean_median.conf example, run with the following config files in the following order:
+    -c parm/use_cases/track_and_intensity/track_and_intensity.conf
+    -c parm/use_cases/track_and_intensity/examples/tcmpr_mean_median.conf
+    -c <path/to>/my_custom.conf
+
+  where my_custom.conf is your custom config file where you define
+  PROJ_DIR, OUTPUT_BASE, MET_INSTALL_DIR, and TMP_DIR under the [dir] header/family.
+
+
+To run the track_and_intensity_ATCF example, run with the following config files in the following order:
+    -c parm/use_cases/track_and_intensity/track_and_intensity.conf
+    -c parm/use_cases/track_and_intensity/examples/track_and_intensity_ATCF.conf
+    -c <path/to>/my_custom.conf
+
+  where my_custom.conf is your custom config file where you define
+  PROJ_DIR, OUTPUT_BASE, MET_INSTALL_DIR, and TMP_DIR under the [dir] header/family.
+
+
+

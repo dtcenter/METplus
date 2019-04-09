@@ -12,6 +12,12 @@
 model = "${MODEL}";
 
 //
+// Output description to be written
+// May be set separately in each "obs.field" entry
+//
+desc = "NA";
+
+//
 // Output observation type to be written
 //
 obtype = "${OBTYPE}";
@@ -26,15 +32,24 @@ regrid = {
    method     = NEAREST;
    width      = 1;
    vld_thresh = 0.5;
+   shape      = SQUARE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
+//
+// May be set separately in each "field" entry
+//
+censor_thresh    = [];
+censor_val       = [];
 cat_thresh  = [ NA ];
 cnt_thresh  = [ NA ];
 cnt_logic   = UNION;
 wind_thresh = [ NA ];
 wind_logic  = UNION;
+eclv_points      = 0.05;
+nc_pairs_var_str = "";
+rank_corr_flag   = FALSE;
 
 //
 // Forecast and observation fields to be verified
@@ -60,12 +75,21 @@ climo_mean = {
       method     = NEAREST;
       width      = 1;
       vld_thresh = 0.5;
+      shape      = SQUARE;
    }
 
    time_interp_method = DW_MEAN;
+   match_month        = TRUE;
    match_day          = FALSE;
    time_step          = 21600;
 }
+
+climo_stdev = climo_mean;
+climo_stdev = {
+   file_name = [];
+}
+
+climo_cdf_bins = 1;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -102,6 +126,7 @@ boot = {
 interp = {
    field      = BOTH;
    vld_thresh = 1.0;
+   shape      = SQUARE;
 
    type = [
       {
@@ -117,9 +142,33 @@ interp = {
 // Neighborhood methods
 //
 nbrhd = {
+   field      = BOTH;
+   shape      = SQUARE;
    width      = [ 1 ];
    cov_thresh = [ >=0.5 ];
    vld_thresh = 1.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Fourier decomposition
+// May be set separately in each "obs.field" entry
+//
+fourier = {
+   wave_1d_beg = [];
+   wave_1d_end = [];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Gradient statistics
+// May be set separately in each "obs.field" entry
+//
+gradient = {
+   dx = [ 1 ];
+   dy = [ 1 ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,14 +201,25 @@ output_flag = {
 
 //
 // NetCDF matched pairs output file
+// May be set separately in each "obs.field" entry
 //
-nc_pairs_flag   = FALSE;
+nc_pairs_flag = {
+   latlon     = TRUE;
+   raw        = TRUE;
+   diff       = TRUE;
+   climo      = TRUE;
+   weight     = FALSE;
+   nbrhd      = FALSE;
+   fourier    = FALSE;
+   gradient   = FALSE;
+   apply_mask = TRUE;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 grid_weight_flag = NONE;
-rank_corr_flag   = FALSE;
 tmp_dir          = "/tmp";
 output_prefix    = "PROB_${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${LEVEL}";
+//version		 = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////

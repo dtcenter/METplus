@@ -67,7 +67,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     def create_c_dict(self):
         self.c_dict = dict()
         self.c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.p.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
-        self.c_dict['RUN_METHOD'] = self.p.getstr('config', 'PCP_COMBINE_METHOD', 'ADD')
 
         if self.p.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
             self.set_fcst_or_obs_dict_items('FCST')
@@ -90,6 +89,22 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.c_dict[d_type+'_OUTPUT_DIR'] = util.getdir(self.p, d_type+'_PCP_COMBINE_OUTPUT_DIR', '', self.logger)
         self.c_dict[d_type+'_OUTPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates',
                                      d_type+'_PCP_COMBINE_OUTPUT_TEMPLATE')
+        self.c_dict[d_type+'_STAT_LIST'] = \
+            util.getlist(self.p.getstr('config',
+                                       d_type+'_PCP_COMBINE_STAT_LIST', ''))
+
+        self.c_dict[d_type+'_RUN_METHOD'] = \
+            self.p.getstr('config', d_type+'_PCP_COMBINE_METHOD', 'ADD')
+
+        if self.c_dict[d_type+'_RUN_METHOD'] == 'DERIVE' and \
+           len(self.c_dict[d_type+'_STAT_LIST']) == 0:
+            self.logger.error('Statistic list is empty. ' + \
+              'Must set ' + d_type + '_PCP_COMBINE_STAT_LIST if running ' +\
+                              'derive mode')
+            exit(1)
+
+        self.c_dict[d_type+'_DERIVE_LOOKBACK'] = \
+            self.p.getint('config', d_type+'_PCP_COMBINE_DERIVE_LOOKBACK', 0)
 
 
     def clear(self):
@@ -104,6 +119,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.out_accum = -1
         self.field_name = ""
         self.field_level = ""
+        self.field_extra = ""
         self.name = ""
         self.logfile = ""
         self.compress = -1
@@ -438,14 +454,29 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 cmd += "-add "
             elif self.method == "SUBTRACT":
                 cmd += "-subtract "
+            elif self.method == 'DERIVE':
+                cmd += '-derive '
+                cmd += ','.join(self.c_dict['STAT_LIST'])
 
             if len(self.infiles) == 0:
                 (self.logger).error("No input filenames specified")
                 return None
 
             for idx, f in enumerate(self.infiles):
-                cmd += f + " " + self.inaddons[idx] + " "
+                cmd += f + " "
+                if self.method != 'DERIVE':
+                    cmd += self.inaddons[idx] + " "
 
+
+        # set -field options if set
+        if self.field_name != "":
+            cmd += " -field 'name=\""+self.field_name+"\";"
+            if self.field_level != "":
+                cmd += " level=\""+self.field_level+"\";"
+            if self.field_extra != "":
+                # TODO: do we need to change ; to \;
+                cmd += ' ' + self.field_extra
+            cmd += "'"
 
         if self.outfile == "":
             (self.logger).error("No output filename specified")
@@ -469,12 +500,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if self.pcp_regex != "":
             cmd += " -pcprx "+self.pcp_regex
 
-        if self.field_name != "":
-            cmd += " -field 'name=\""+self.field_name+"\";"
-            if self.field_level != "":
-                cmd += " level=\""+self.field_level+"\";"
-            cmd += "'"
-
         if self.name != "":
             cmd += " -name "+self.name
 
@@ -491,15 +516,17 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
     def run_at_time_once(self, time_info, var_info, rl):
         cmd = None
-        run_method = self.c_dict['RUN_METHOD']
+        run_method = self.c_dict[rl+'_RUN_METHOD']
         if run_method == "ADD":
             cmd = self.setup_add_method(time_info, var_info, rl)
         elif run_method == "SUM":
             cmd = self.setup_sum_method(time_info, var_info, rl)
         elif run_method == "SUBTRACT":
             cmd = self.setup_subtract_method(time_info, var_info, rl)
+        elif run_method == "DERIVE":
+            cmd = self.setup_derive_method(time_info, var_info, rl)
         else:
-            self.logger.error('Invalid PCP_COMBINE_METHOD specified.'+\
+            self.logger.error('Invalid ' + rl + '_PCP_COMBINE_METHOD specified.'+\
                               ' Options are ADD, SUM, and SUBTRACT.')
             exit(1)
 
@@ -621,8 +648,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.set_pcp_dir(in_dir)
         self.set_pcp_regex(in_regex)
         self.set_output_dir(out_dir)
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
 
         pcpSts = sts.StringSub(self.logger,
                                 out_template,
@@ -678,6 +703,51 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         pcp_out = pcpSts.doStringSub()
         self.set_output_filename(pcp_out)
         self.add_arg("-name " + compare_var + "_" + str(accum).zfill(2))
+        return self.get_command()
+
+
+    def setup_derive_method(self, time_info, var_info, data_src):
+        """!Setup pcp_combine to derive stats
+        Args:
+          @param ti time_info object containing timing information
+          @param var_info object containing variable information
+          @params data_src data type (FCST or OBS)
+          @rtype string
+          @return path to output file"""
+        is_forecast = False
+        if data_src == "FCST":
+            is_forecast = True
+        self.clear()
+        self.set_method("DERIVE")
+
+        # set field info
+        if data_src == "FCST":
+            self.field_level = var_info.fcst_level
+            self.field_name = var_info.fcst_name
+            self.field_extra = var_info.fcst_extra
+        else:
+            self.field_level = var_info.obs_level
+            self.field_name = var_info.obs_name
+            self.field_extra = var_info.obs_extra
+
+        in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
+        out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
+
+        # get files
+        lookback = self.c_dict[data_src+'_DERIVE_LOOKBACK']
+        if not self.get_accumulation(time_info, lookback, data_src, is_forecast):
+            return None
+
+        infiles = self.get_input_files()
+
+        # set output
+        self.set_output_dir(out_dir)
+        time_info['level'] = int(accum) * 3600
+        pcpSts = sts.StringSub(self.logger,
+                                out_template,
+                                **time_info)
+        pcp_out = pcpSts.doStringSub()
+        self.set_output_filename(pcp_out)
         return self.get_command()
 
 

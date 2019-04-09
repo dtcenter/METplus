@@ -12,6 +12,11 @@
 model = "${MODEL}";
 
 //
+// Output description to be written
+//
+desc = "NA";
+
+//
 // Output observation type to be written
 //
 obtype = "${OBTYPE}";
@@ -26,6 +31,7 @@ regrid = {
    method     = NEAREST;
    width      = 1;
    vld_thresh = 0.5;
+   shape      = SQUARE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,12 +55,16 @@ fcst = {
 
    field = ${FCST_FIELD};
 
+   censor_thresh      = [];
+   censor_val         = [];
    conv_radius       = [${FCST_CONV_RADIUS}];
    conv_thresh       = [${FCST_CONV_THRESH}];
    vld_thresh        = 0.5;
    area_thresh       = NA;
    inten_perc_value  = 100;
    inten_perc_thresh = NA;
+   filter_attr_name   = [];
+   filter_attr_thresh = [];
    merge_thresh      = [${FCST_MERGE_THRESH}];
    merge_flag        = ${FCST_MERGE_FLAG};
 }
@@ -110,6 +120,7 @@ weight = {
    boundary_dist    = 4.0;
    convex_hull_dist = 0.0;
    angle_diff       = 1.0;
+   aspect_diff      = 0.0;
    area_ratio       = 1.0;
    int_area_ratio   = 2.0;
    complexity_ratio = 0.0;
@@ -146,6 +157,12 @@ interest_function = {
       ( 90.0, 0.0 )
    );
 
+   aspect_diff = (
+      (  0.00, 1.0 )
+      (  0.10, 1.0 )
+      (  0.75, 0.0 )
+   );
+
    corner   = 0.8;
    ratio_if = (
       (    0.0, 0.0 )
@@ -161,6 +178,8 @@ interest_function = {
       ( 0.25, 1.00 )
       ( 1.00, 1.00 )
    );
+
+   curvature_ratio = ratio_if;
 
    complexity_ratio = ratio_if;
 
@@ -243,6 +262,6 @@ shift_right = 0;   //  grid squares
 ////////////////////////////////////////////////////////////////////////////////
 
 output_prefix    = "PROB_${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}";
-//version        = "V8.0";
+//version        = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////

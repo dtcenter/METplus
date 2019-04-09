@@ -1,0 +1,9 @@
+To run the track and intensity example (the default/easiest example), run the following configuration files in the
+following order:
+
+    -c parm/use_cases/track_and_intensity/track_and_intensity.conf
+    -c <path/to>/my_custom.conf
+
+
+  where my_custom.conf is your custom config file where you define
+  PROJ_DIR, OUTPUT_BASE, MET_INSTALL_DIR, and TMP_DIR under the [dir] header/family.

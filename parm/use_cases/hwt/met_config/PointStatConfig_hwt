@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Grid-Stat configuration file.
+// Point-Stat configuration file.
 //
 // For additional information, see the MET_BASE/config/README file.
 //
@@ -9,7 +9,7 @@
 //
 // Output model name to be written
 //
-model = "${MODEL}";
+model = "${MODEL_NAME}";
 
 //
 // Output description to be written
@@ -17,20 +17,15 @@ model = "${MODEL}";
 //
 desc = "NA";
 
-//
-// Output observation type to be written
-//
-obtype = "${OBTYPE}";
-
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Verification grid
 //
 regrid = {
-   to_grid    = FCST;
-   method     = NEAREST;
-   width      = 1;
+   to_grid    = "${REGRID_TO_GRID}";
+   method     = BILIN;
+   width      = 2;
    vld_thresh = 0.5;
    shape      = SQUARE;
 }
@@ -42,7 +37,7 @@ regrid = {
 //
 censor_thresh = [];
 censor_val    = [];
-cat_thresh    = [];
+cat_thresh    = [ NA ];
 cnt_thresh    = [ NA ];
 cnt_logic     = UNION;
 wind_thresh   = [ NA ];
@@ -53,15 +48,22 @@ eclv_points   = 0.05;
 // Forecast and observation fields to be verified
 //
 fcst = {
-    field = [
-    ${FCST_FIELD}
-    ];
-    };
-obs = {
-    field = [
-    ${OBS_FIELD}
-    ];
-    };
+  field = [ ${FCST_FIELD} ];
+}
+obs = fcst;
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation filtering options
+// May be set separately in each "obs.field" entry
+//
+message_type = ${POINT_STAT_MESSAGE_TYPE};
+sid_exc        = [];
+obs_quality    = [ "1", "2", "3" ];
+duplicate_flag = NONE;
+obs_summary    = NONE;
+obs_perc_value = 50;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -80,8 +82,8 @@ climo_mean = {
       shape      = SQUARE;
    }
 
-   time_interp_method = DW_MEAN;
-   match_day          = FALSE;
+   time_interp_method = NEAREST;
+   match_day          = TRUE;
    time_step          = 21600;
 }
 
@@ -96,11 +98,22 @@ write_cdf_bins = FALSE;
 ////////////////////////////////////////////////////////////////////////////////
 
 //
+// Point observation time window
+//
+obs_window = {
+  beg = ${OBS_WINDOW_BEGIN};
+  end = ${OBS_WINDOW_END};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
 // Verification masking regions
 //
 mask = {
-   grid = [ "FULL" ];
-   poly = ["${VERIF_MASK}"]; 
+   grid = ${POINT_STAT_GRID};
+   poly = ${VERIF_MASK};
+   sid     = [];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -121,17 +134,16 @@ boot = {
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// Data smoothing methods
+// Interpolation methods
 //
 interp = {
-   field      = NONE;
    vld_thresh = 1.0;
    shape      = SQUARE;
 
    type = [
       {
-         method = NEAREST;
-         width  = 1;
+         method = BILIN;
+         width  = 2;
       }
    ];
 }
@@ -139,24 +151,14 @@ interp = {
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// Neighborhood methods
+// HiRA verification method
 //
-nbrhd = {
-   field      = BOTH;
+hira = {
+   flag       = FALSE;
+   width      = [ 2, 3, 4, 5 ];
    vld_thresh = 1.0;
-   width      = [ ${NEIGHBORHOOD_WIDTH} ];
-   cov_thresh = [ >=0.5 ];
-   shape      = ${NEIGHBORHOOD_SHAPE};
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-//
-// Fourier decomposition
-//
-fourier = {
-   wave_1d_beg = [];
-   wave_1d_end = [];
+   cov_thresh = [ ==0.25 ];
+   shape      = SQUARE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -165,47 +167,29 @@ fourier = {
 // Statistical output types
 //
 output_flag = {
-   fho    = NONE;
-   ctc    = NONE;
-   cts    = NONE;
+   fho    = STAT;
+   ctc    = STAT;
+   cts    = STAT;
    mctc   = NONE;
    mcts   = NONE;
-   cnt    = NONE;
+   cnt    = STAT;
    sl1l2  = NONE;
    sal1l2 = NONE;
    vl1l2  = NONE;
    val1l2 = NONE;
+   vcnt   = STAT;
    pct    = NONE;
    pstd   = NONE;
    pjc    = NONE;
    prc    = NONE;
    eclv   = NONE;
-   nbrctc = NONE;
-   nbrcts = NONE;
-   nbrcnt = BOTH;
-   grad   = NONE;
-}
-
-//
-// NetCDF matched pairs output file
-//
-nc_pairs_flag   = {
-   latlon     = FALSE;
-   raw        = FALSE;
-   diff       = FALSE;
-   climo      = FALSE;
-   weight     = FALSE;
-   nbrhd      = FALSE;
-   fourier    = FALSE;
-   gradient   = FALSE;
-   apply_mask = FALSE;
+   mpr    = NONE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-grid_weight_flag = NONE;
-rank_corr_flag   = FALSE;
-tmp_dir          = "/tmp";
-output_prefix    = "${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}";
+rank_corr_flag = FALSE;
+tmp_dir        = "/tmp";
+output_prefix  = "";
 
 ////////////////////////////////////////////////////////////////////////////////
