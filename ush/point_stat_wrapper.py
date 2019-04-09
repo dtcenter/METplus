@@ -289,6 +289,22 @@ class PointStatWrapper(CompareGriddedWrapper):
                          str(self.c_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var(b'OBS_WINDOW_END', str(self.c_dict['OBS_WINDOW_END']))
 
+        # add additional env vars if they are specified
+        if self.c_dict['NEIGHBORHOOD_WIDTH'] != '':
+            self.add_env_var('NEIGHBORHOOD_WIDTH',
+                             self.c_dict['NEIGHBORHOOD_WIDTH'])
+            print_list.append('NEIGHBORHOOD_WIDTH')
+
+        if self.c_dict['NEIGHBORHOOD_SHAPE'] != '':
+            self.add_env_var('NEIGHBORHOOD_SHAPE',
+                             self.c_dict['NEIGHBORHOOD_SHAPE'])
+            print_list.append('NEIGHBORHOOD_SHAPE')
+
+        if self.c_dict['VERIFICATION_MASK'] != '':
+            self.add_env_var('VERIF_MASK',
+                             self.c_dict['VERIFICATION_MASK'])
+            print_list.append('VERIF_MASK')
+
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_user_env_items()
