@@ -111,8 +111,8 @@ obs_window = {
 // Verification masking regions
 //
 mask = {
-   grid = ${POINT_STAT_GRID};
-   poly = ${VERIF_MASK};
+   grid = [ "FULL" ];
+   poly = [ "${VERIF_MASK}" ];
    sid     = [];
 }
 
