@@ -21,6 +21,9 @@ import met_util as util
 import re
 import csv
 import subprocess
+import datetime
+import time
+import calendar
 import string_template_substitution as sts
 from task_info import TaskInfo
 from command_builder import CommandBuilder
@@ -137,7 +140,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         self.logger.error("Only accepted format {init?fmt=%H}")
                         exit(1)
             else:
-                init_time_filename = "1900010100"
+                init_time_filename = "19000101000000"
                 match = re.search(r'.*\{init\?fmt=(.*?)\}', filename_template)
                 if match:
                     self.logger.error("Please include init hour group times in template defined in METplus conf file using INIT_HOUR_BEG and INIT_HOUR_END")
@@ -160,20 +163,22 @@ class StatAnalysisWrapper(CommandBuilder):
                         self.logger.error("Only accepted format {valid?fmt=%H}")
                         exit(1)
             else:
-                valid_time_filename = "1900010100"
+                valid_time_filename = "19000101000000"
                 match = re.search(r'.*\{valid\?fmt=(.*?)\}', filename_template)
                 if match:
                     self.logger.error("Please include valid hour group times in template defined in METplus conf file using VALID_HOUR_BEG and VALID_HOUR_END")
                     exit(1)
         #split into chunks to deal with directories
+        tmpl_time_info = {"valid": datetime.datetime.strptime(valid_time_filename, "%Y%m%d%H%M%S"),
+                          "init": datetime.datetime.strptime(init_time_filename, "%Y%m%d%H%M%S")
+                         }
         tmpl_split = filename_template.split("/")
         filled_tmpl = ""
         for tmpl_chunk in tmpl_split:
             if "?fmt=%" in tmpl_chunk:
                 tmpl_chunkSts = sts.StringSub(self.logger,
                                               tmpl_chunk,
-                                              init=init_time_filename,
-                                              valid=valid_time_filename)
+                                              **tmpl_time_info)
                 filled_tmpl_chunk = tmpl_chunkSts.doStringSub()
             else:
                 filled_tmpl_chunk = tmpl_chunk
@@ -795,12 +800,14 @@ class StatAnalysisWrapper(CommandBuilder):
                                             exit(1)
                                         else:
                                             init_string_sub_date = "19000101000000"
+                                        model_dir_time_info =  {"valid": datetime.datetime.strptime(valid_string_sub_date, "%Y%m%d%H%M%S"),
+                                                                "init": datetime.datetime.strptime(init_string_sub_date, "%Y%m%d%H%M%S")
+                                                               } 
                                         for model_dir_chunk in model_dir_split:
                                             if "?fmt=%" in model_dir_chunk:
                                                 model_dir_chunkSts = sts.StringSub(self.logger,
                                                                                    model_dir_chunk,
-                                                                                   init=init_string_sub_date,
-                                                                                   valid=valid_string_sub_date)
+                                                                                   **model_dir_time_info)
                                                 filled_model_dir_chunk = model_dir_chunkSts.doStringSub()
                                             else:
                                                 filled_model_dir_chunk = model_dir_chunk
@@ -872,5 +879,14 @@ class StatAnalysisWrapper(CommandBuilder):
     def run_all_times(self):
         self.gather_by_info()
 
-    def run_at_time(self, init_time, valid_time):
+    def run_at_time(self, input_dict):
+        if "valid" in input_dict.keys():
+            init_time = -1
+            valid_time = input_dict["valid"].strftime("%Y%m%d%H%M%S")
+        elif "init" in input_dict.keys():
+            init_time = input_dict["valid"].strftime("%Y%m%d%H%M%S")
+            valid_time = -1
+        else:
+            self.logger.error("LOOP_BY must be VALID or INIT")
+            exit(1)
         self.gather_by_date(init_time, valid_time)
