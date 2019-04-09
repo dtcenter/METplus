@@ -112,7 +112,7 @@ obs_window = {
 //
 mask = {
    grid = ${POINT_STAT_GRID};
-   poly = ${POINT_STAT_POLY};
+   poly = ${VERIF_MASK};
    sid     = [];
 }
 
