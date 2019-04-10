@@ -63,6 +63,7 @@ that reformat gridded data
           self.p.getint('config', 'FCST_WINDOW_BEGIN', 0)
         c_dict['FCST_WINDOW_END'] = \
           self.p.getint('config', 'FCST_WINDOW_END', 0)
+
         c_dict['ALLOW_MULTIPLE_FILES'] = False
         c_dict['NEIGHBORHOOD_WIDTH'] = ''
         c_dict['NEIGHBORHOOD_SHAPE'] = ''
