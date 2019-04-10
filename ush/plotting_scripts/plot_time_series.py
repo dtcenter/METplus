@@ -76,8 +76,8 @@ region = os.environ['REGION']
 lead = os.environ['LEAD']
 stat_file_input_dir_base = os.environ['STAT_FILES_INPUT_DIR']
 plotting_out_dir = os.environ['PLOTTING_OUT_DIR_FULL']
-plotting_out_dir_data = os.path.join(plotting_out_dir, "data")
-plotting_out_dir_imgs = os.path.join(plotting_out_dir, "imgs")
+plotting_out_dir_data = os.path.join(plotting_out_dir, "data", plot_time+start_date_YYYYmmdd+"to"+end_date_YYYYmmdd+"_valid"+valid_time_info[0]+"to"+valid_time_info[-1]+"Z_init"+init_time_info[0]+"to"+init_time_info[-1]+"Z")
+plotting_out_dir_imgs = os.path.join(plotting_out_dir, "imgs", plot_time+start_date_YYYYmmdd+"to"+end_date_YYYYmmdd+"_valid"+valid_time_info[0]+"to"+valid_time_info[-1]+"Z_init"+init_time_info[0]+"to"+init_time_info[-1]+"Z")
 if not os.path.exists(plotting_out_dir_data):
     os.makedirs(plotting_out_dir_data)
 if not os.path.exists(plotting_out_dir_imgs):
