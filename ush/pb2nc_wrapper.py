@@ -107,9 +107,9 @@ class PB2NCWrapper(CommandBuilder):
         c_dict['TIME_SUMMARY_TYPES'] = util.getlist(
             self.p.getstr('config', 'PB2NC_TIME_SUMMARY_TYPES'))
         c_dict['OBS_WINDOW_BEGIN'] = \
-          self.p.getstr('config', 'PB2NC_WINDOW_BEGIN', 0)
+          self.p.getint('config', 'PB2NC_WINDOW_BEGIN', 0)
         c_dict['OBS_WINDOW_END'] = \
-          self.p.getstr('config', 'PB2NC_WINDOW_END', 0)
+          self.p.getint('config', 'PB2NC_WINDOW_END', 0)
 
         c_dict['VERTICAL_LOCATION'] = self.p.getstr('config',
                                                      'PB2NC_VERTICAL_LOCATION')
@@ -228,7 +228,7 @@ class PB2NCWrapper(CommandBuilder):
           self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
             self.logger.debug('Skip writing output file {} because it already '
                               'exists. Remove file or change '
-                              'OVERWRITE_NC_OUTPUT to True to process'
+                              'PB2NC_SKIP_IF_OUTPUT_EXISTS to False to process'
                               .format(outfile))
             return True
 
