@@ -281,6 +281,36 @@ class StatAnalysisWrapper(CommandBuilder):
                     fd_info.wave_num_pairings = fourier_wave_num_pairs
                     fourier_decom_list.append(fd_info)
         return fourier_decom_list
+   
+    def thresh_format(self, thresh):
+        if "ge" or ">=" in thresh:
+            thresh_value = thresh.replace("ge", "").replace(">=", "")
+            thresh_symbol = ">="+thresh_value
+            thresh_letters = "ge"+thresh_value
+        elif "gt" or ">" in thresh:
+            thresh_value = thresh.replace("gt", "").replace(">", "")
+            thresh_symbol = ">"+thresh_value
+            thresh_letters = "gt"+thresh_value
+        elif "le" or "<=" in thresh:
+            thresh_value = thresh.replace("le", "").replace("<=", "")
+            thresh_symbol = "<="+thresh_value
+            thresh_letters = "le"+thresh_value
+        elif "lt" or "<" in thresh:
+            thresh_value = thresh.replace("lt", "").replace("<", "")
+            thresh_symbol = "<"+thresh_value
+            thresh_letters = "lt"+thresh_value
+        elif "eq" or "==" in thresh:
+            thresh_value = thresh.replace("eq", "").replace("==", "")
+            thresh_symbol = "=="+thresh_value
+            thresh_letters = "eq"+thresh_value
+        elif "ne" or "!=" in thresh:
+            thresh_value = thresh.replace("ne", "").replace("!=", "")
+            thresh_symbol = "!="+thresh_value
+            thresh_letters = "ne"+thresh_value
+        else:
+             self.logger.error("Threshold operator not valid "+thresh)
+             exit(1)
+        return thresh_symbol, thresh_letters
  
     def gather_by_date(self, init_time, valid_time):
         #read config
@@ -308,7 +338,12 @@ class StatAnalysisWrapper(CommandBuilder):
         region = util.getlist(self.p.getstr('config', 'REGION', ""))
         interp = util.getlist(self.p.getstr('config', 'INTERP', ""))
         interp_pts = util.getlist(self.p.getstr('config', 'INTERP_PTS', ""))
-        fcst_thresh = util.getlist(self.p.getstr('config', 'FCST_THRESH', ""))
+        fcst_thresh_from_config = util.getlist(self.p.getstr('config', 'FCST_THRESH', ""))
+        fcst_thresh = []
+        for ft in fcst_thresh_from_config:
+            fcst_thresh_symbol, fcst_thresh_letters = self.thresh_format(ft)
+            fcst_thresh.append(fcst_thresh_symbol)
+        fcst_thresh = ', '.join(fcst_thresh)
         cov_thresh = util.getlist(self.p.getstr('config', 'COV_THRESH', ""))
         line_type = util.getlist(self.p.getstr('config', 'LINE_TYPE', ""))
         #set envir vars based on config
@@ -323,7 +358,7 @@ class StatAnalysisWrapper(CommandBuilder):
         self.add_env_var('REGION', self.create_variable_list(region))
         self.add_env_var('INTERP', self.create_variable_list(interp))
         self.add_env_var('INTERP_PTS', self.create_variable_list(interp_pts))
-        self.add_env_var('FCST_THRESH', self.create_variable_list(fcst_thresh))
+        self.add_env_var('FCST_THRESH', fcst_thresh)
         self.add_env_var('COV_THRESH', self.create_variable_list(cov_thresh))
         self.add_env_var('LINE_TYPE', self.create_variable_list(line_type))
         #set up lookin agrument
@@ -417,7 +452,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 for name, value in fcst_valid_init_dict.items():
                     self.add_env_var(name, value)
                     self.logger.debug(name+": "+value)
-                self.logger.debug('MODEL_NAME :'+'"'+model_name+'"')
+                self.logger.debug('MODEL_NAME: '+'"'+model_name+'"')
                 self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
                 self.logger.debug('DESC: '+self.create_variable_list(desc))
                 self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
@@ -428,7 +463,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.logger.debug('REGION: '+self.create_variable_list(region))
                 self.logger.debug('INTERP: '+self.create_variable_list(interp))
                 self.logger.debug('INTERP_PTS: '+self.create_variable_list(interp_pts))
-                self.logger.debug('FCST_THRESH: '+self.create_variable_list(fcst_thresh))
+                self.logger.debug('FCST_THRESH: '+fcst_thresh)
                 self.logger.debug('COV_THRESH: '+self.create_variable_list(cov_thresh))
                 self.logger.debug('LINE_TYPE: '+self.create_variable_list(line_type))
                 self.logger.debug("JOB: "+job)
@@ -479,7 +514,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 for name, value in fcst_valid_init_dict.items():
                     self.add_env_var(name, value)
                     self.logger.debug(name+": "+value)
-                self.logger.debug('MODEL_NAME :'+'"'+model_name+'"')
+                self.logger.debug('MODEL_NAME: '+'"'+model_name+'"')
                 self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
                 self.logger.debug('DESC: '+self.create_variable_list(desc))
                 self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
@@ -490,7 +525,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.logger.debug('REGION: '+self.create_variable_list(region))
                 self.logger.debug('INTERP: '+self.create_variable_list(interp))
                 self.logger.debug('INTERP_PTS: '+self.create_variable_list(interp_pts))
-                self.logger.debug('FCST_THRESH: '+self.create_variable_list(fcst_thresh))
+                self.logger.debug('FCST_THRESH: '+fcst_thresh)
                 self.logger.debug('COV_THRESH: '+self.create_variable_list(cov_thresh))
                 self.logger.debug('LINE_TYPE: '+self.create_variable_list(line_type))
                 self.logger.debug("JOB: "+job)
@@ -543,7 +578,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     for name, value in fcst_valid_init_dict.items():
                         self.add_env_var(name, value)
                         self.logger.debug(name+": "+value)
-                    self.logger.debug('MODEL_NAME :'+'"'+model_name+'"')
+                    self.logger.debug('MODEL_NAME: '+'"'+model_name+'"')
                     self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
                     self.logger.debug('DESC: '+self.create_variable_list(desc))
                     self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
@@ -554,7 +589,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.logger.debug('REGION: '+self.create_variable_list(region))
                     self.logger.debug('INTERP: '+self.create_variable_list(interp))
                     self.logger.debug('INTERP_PTS: '+self.create_variable_list(interp_pts))
-                    self.logger.debug('FCST_THRESH: '+self.create_variable_list(fcst_thresh))
+                    self.logger.debug('FCST_THRESH: '+fcst_thresh)
                     self.logger.debug('COV_THRESH: '+self.create_variable_list(cov_thresh))
                     self.logger.debug('LINE_TYPE: '+self.create_variable_list(line_type))
                     self.logger.debug("JOB: "+job)
@@ -604,7 +639,7 @@ class StatAnalysisWrapper(CommandBuilder):
             for name, value in fcst_valid_init_dict.items():
                 self.add_env_var(name, value)
                 self.logger.debug(name+": "+value)
-            self.logger.debug('MODEL_NAME :'+'"'+model_name+'"')
+            self.logger.debug('MODEL_NAME: '+'"'+model_name+'"')
             self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
             self.logger.debug('DESC: '+self.create_variable_list(desc))
             self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
@@ -615,7 +650,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.logger.debug('REGION: '+self.create_variable_list(region))
             self.logger.debug('INTERP: '+self.create_variable_list(interp))
             self.logger.debug('INTERP_PTS: '+self.create_variable_list(interp_pts))
-            self.logger.debug('FCST_THRESH: '+self.create_variable_list(fcst_thresh))
+            self.logger.debug('FCST_THRESH: '+fcst_thresh)
             self.logger.debug('COV_THRESH: '+self.create_variable_list(cov_thresh))
             self.logger.debug('LINE_TYPE: '+self.create_variable_list(line_type))
             self.logger.debug("JOB: "+job)
@@ -734,16 +769,16 @@ class StatAnalysisWrapper(CommandBuilder):
                     fcst_var_thresh_list = ['']
                     obs_var_thresh_list = ['']
                 for fcst_thresh in fcst_var_thresh_list:
-                    obs_thresh = obs_var_thresh_list[fcst_var_thresh_list.index(fcst_thresh)]
-                    self.add_env_var('FCST_THRESH', '"'+fcst_thresh+'"')
-                    self.add_env_var('OBS_THRESH', '"'+obs_thresh+'"')
                     stat_analysis_dump_row_filename_fcstvar = "fcst"+fcst_var_name+fcst_var_level+fcst_var_extra.replace(" ", "").replace("=","").replace(";","").replace('"','').replace("'","").replace(",","-").replace("_","")
                     stat_analysis_dump_row_filename_obsvar = "obs"+obs_var_name+obs_var_level+obs_var_extra.replace(" ", "").replace("=","").replace(";","").replace('"','').replace("'","").replace(",","-").replace("_","")
                     if len(fcst_thresh) != 0:
-                        self.add_env_var('FCST_THRESH', '"'+fcst_thresh+'"')
-                        self.add_env_var('OBS_THRESH', '"'+obs_thresh+'"')
-                        stat_analysis_dump_row_filename_fcstvar = stat_analysis_dump_row_filename_fcstvar+fcst_thresh.replace(" ","").replace(">=","ge").replace("<=","le").replace(">","gt").replace("<","lt").replace("==","eq").replace("!=","ne")
-                        stat_analysis_dump_row_filename_obsvar = stat_analysis_dump_row_filename_obsvar+obs_thresh.replace(" ","").replace(">=","ge").replace("<=","le").replace(">","gt").replace("<","lt").replace("==","eq").replace("!=","ne")
+                        obs_thresh = obs_var_thresh_list[fcst_var_thresh_list.index(fcst_thresh)]
+                        fcst_thresh_symbol, fcst_thresh_letters = self.thresh_format(fcst_thresh)
+                        obs_thresh_symbol, obs_thresh_letters = self.thresh_format(obs_thresh)
+                        self.add_env_var('FCST_THRESH', fcst_thresh_symbol)
+                        self.add_env_var('OBS_THRESH', obs_thresh_symbol)
+                        stat_analysis_dump_row_filename_fcstvar = stat_analysis_dump_row_filename_fcstvar+fcst_thresh_letters
+                        stat_analysis_dump_row_filename_obsvar = stat_analysis_dump_row_filename_obsvar+obs_thresh_letters
                     else:
                         self.add_env_var('FCST_THRESH', "")
                         self.add_env_var('OBS_THRESH', "")
@@ -858,8 +893,8 @@ class StatAnalysisWrapper(CommandBuilder):
                                         self.logger.debug("OBS_VAR_NAME: "+obs_var_name)
                                         self.logger.debug("OBS_VAR_LEVEL: "+obs_var_level)
                                     if len(fcst_thresh) != 0:
-                                        self.logger.debug("FCST_THRESH: "+fcst_thresh)
-                                        self.logger.debug("OBS_THRESH: "+obs_thresh)
+                                        self.logger.debug("FCST_THRESH: "+fcst_thresh_symbol)
+                                        self.logger.debug("OBS_THRESH: "+obs_thresh_symbol)
                                     self.logger.debug("INTERP: "+interp) 
                                     self.logger.debug("REGION: "+region)
                                     self.logger.debug("FCST_LEAD: "+lead)
