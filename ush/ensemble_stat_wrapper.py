@@ -242,8 +242,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             member_path = util.preprocess_file(member_path,
                                 self.c_dict['FCST_INPUT_DATATYPE'],
                                 self.p, self.logger)
-
-            ens_members_path.append(member_path)
+            if member_path != None:
+                ens_members_path.append(member_path)
 
         # get filetype and save it in dictionary if it is not set
         filetype = util.get_filetype(member_path)
