@@ -225,8 +225,7 @@ class PB2NCWrapper(CommandBuilder):
 
         # if we don't overwrite and the output file exists, warn and continue
         if os.path.exists(outfile) and \
-          (self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True or
-           self.c_dict['OVERWRITE_NC_OUTPUT'] is False):
+          self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
             self.logger.debug('Skip writing output file {} because it already '
                               'exists. Remove file or change '
                               'OVERWRITE_NC_OUTPUT to True to process'

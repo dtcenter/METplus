@@ -95,6 +95,24 @@ class MTDWrapper(ModeWrapper):
             else:
                 c_dict['OBS_CONV_THRESH'] = self.p.getstr('config', 'MTD_CONV_THRESH', '>0.5')
 
+
+        # if window begin/end is set specific to mode, override
+        # OBS_WINDOW_BEGIN/END
+        if self.p.has_option('config', 'OBS_MTD_WINDOW_BEGIN'):
+            c_dict['OBS_WINDOW_BEGIN'] = \
+              self.p.getint('config', 'OBS_MTD_WINDOW_BEGIN')
+        if self.p.has_option('config', 'OBS_MTD_WINDOW_END'):
+            c_dict['OBS_WINDOW_END'] = \
+              self.p.getint('config', 'OBS_MTD_WINDOW_END')
+
+        # same for FCST_WINDOW_BEGIN/END
+        if self.p.has_option('config', 'FCST_MTD_WINDOW_BEGIN'):
+            c_dict['FCST_WINDOW_BEGIN'] = \
+              self.p.getint('config', 'FCST_MTD_WINDOW_BEGIN')
+        if self.p.has_option('config', 'FCST_MTD_WINDOW_END'):
+            c_dict['FCST_WINDOW_END'] = \
+              self.p.getint('config', 'FCST_MTD_WINDOW_END')
+
             # check that values are valid
             if not util.validate_thresholds(util.getlist(c_dict['OBS_CONV_THRESH'])):
                 self.logger.error('MTD_OBS_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')

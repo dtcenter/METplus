@@ -101,8 +101,28 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         c_dict['OUTPUT_DIR'] =  util.getdir(self.p, 'ENSEMBLE_STAT_OUT_DIR')
 
-        c_dict['OBS_WINDOW_BEGIN'] = self.p.getint('config', 'OBS_ENSEMBLE_STAT_WINDOW_BEGIN', 0)
-        c_dict['OBS_WINDOW_END'] = self.p.getint('config', 'OBS_ENSEMBLE_STAT_WINDOW_END', 0)
+        # if window begin/end is set specific to ensemble_stat, override
+        # OBS_WINDOW_BEGIN/END
+        if self.p.has_option('config', 'OBS_ENSEMBLE_STAT_WINDOW_BEGIN'):
+            c_dict['OBS_WINDOW_BEGIN'] = \
+              self.p.getint('config', 'OBS_ENSEMBLE_STAT_WINDOW_BEGIN')
+        if self.p.has_option('config', 'OBS_ENSEMBLE_STAT_WINDOW_END'):
+            c_dict['OBS_WINDOW_END'] = \
+              self.p.getint('config', 'OBS_ENSEMBLE_STAT_WINDOW_END')
+
+        # same for FCST_WINDOW_BEGIN/END
+        if self.p.has_option('config', 'FCST_ENSEMBLE_STAT_WINDOW_BEGIN'):
+            c_dict['FCST_WINDOW_BEGIN'] = \
+              self.p.getint('config', 'FCST_ENSEMBLE_STAT_WINDOW_BEGIN')
+        if self.p.has_option('config', 'FCST_ENSEMBLE_STAT_WINDOW_END'):
+            c_dict['FCST_WINDOW_END'] = \
+              self.p.getint('config', 'FCST_ENSEMBLE_STAT_WINDOW_END')
+
+        # need to set these so that find_data will succeed
+        c_dict['OBS_POINT_WINDOW_BEGIN'] = c_dict['OBS_WINDOW_BEGIN']
+        c_dict['OBS_POINT_WINDOW_END'] = c_dict['OBS_WINDOW_END']
+        c_dict['OBS_GRID_WINDOW_BEGIN'] = c_dict['OBS_WINDOW_BEGIN']
+        c_dict['OBS_GRID_WINDOW_END'] = c_dict['OBS_WINDOW_END']
 
         return c_dict
 
