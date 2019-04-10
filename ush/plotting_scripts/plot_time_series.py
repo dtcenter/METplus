@@ -1,8 +1,8 @@
 '''
-Name: plot_grid2grid_pres_ts.py
+Name: plot_time_series.py
 Contact(s): Mallory Row
 Abstract: Reads filtered files from stat_analysis_wrapper run_all_times to make time series plots
-History Log: Third version
+History Log: First version
 Usage: 
 Parameters: None
 Input Files: ASCII files
