@@ -479,11 +479,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             cmd += "'"
 
         if self.outfile == "":
-            (self.logger).error("No output filename specified")
+            self.logger.error("No output filename specified")
             return None
 
         if self.outdir == "":
-            (self.logger).error("No output directory specified")
+            self.logger.error("No output directory specified")
             return None
 
         out_path = self.get_output_path()
