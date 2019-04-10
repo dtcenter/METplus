@@ -52,11 +52,15 @@ class GridStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.p.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
 
-        c_dict['CLIMO_INPUT_DIR'] = \
-          util.getdir(self.p, 'CLIMO_GRID_STAT_INPUT_DIR', '', self.logger)
-        c_dict['CLIMO_INPUT_TEMPLATE'] = \
-          util.getraw_interp(self.p, 'filename_templates',
-                               'CLIMO_GRID_STAT_INPUT_TEMPLATE')
+
+        c_dict['CLIMO_INPUT_DIR'] = ''
+        c_dict['CLIMO_INPUT_TEMPLATE'] = ''
+        if self.p.has_option('dir', 'CLIMO_GRID_STAT_INPUT_DIR'):
+            c_dict['CLIMO_INPUT_DIR'] = \
+              util.getdir(self.p, 'CLIMO_GRID_STAT_INPUT_DIR', '', self.logger)
+            c_dict['CLIMO_INPUT_TEMPLATE'] = \
+              util.getraw_interp(self.p, 'filename_templates',
+                                   'CLIMO_GRID_STAT_INPUT_TEMPLATE')
 
         c_dict['OUTPUT_DIR'] =  util.getdir(self.p, 'GRID_STAT_OUT_DIR', self.p.getdir('OUTPUT_BASE'), self.logger)
         c_dict['ONCE_PER_FIELD'] = self.p.getbool('config',
