@@ -101,7 +101,7 @@ plot_time_dates, expected_stat_file_dates = plot_util.get_date_arrays(plot_time,
 total_days = len(plot_time_dates)
 stat_file_base_columns = plot_util.get_stat_file_base_columns(met_version)
 
-logger.info("Reading in model data....")
+logger.info("Reading in model data")
 for model in model_info:
     model_num = model_info.index(model) + 1
     model_name= model[0]
@@ -136,7 +136,7 @@ for model in model_info:
     else:
         model_data = model_now_data
 
-logger.info("Calculating and plotting statistics....")
+logger.info("Calculating and plotting statistics")
 for stat in plot_stats_list:
     logger.debug("Working on "+stat)
     stat_values, stat_values_array, stat_plot_name = plot_util.calculate_stat(logger, model_data, stat)
