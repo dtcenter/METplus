@@ -60,9 +60,6 @@ fcst = {
    conv_radius       = [${FCST_CONV_RADIUS}];
    conv_thresh       = [${FCST_CONV_THRESH}];
    vld_thresh        = 0.5;
-   area_thresh       = NA;
-   inten_perc_value  = 100;
-   inten_perc_thresh = NA;
    filter_attr_name   = [];
    filter_attr_thresh = [];
    merge_thresh      = [${FCST_MERGE_THRESH}];
@@ -222,12 +219,6 @@ obs_raw_plot = {
 object_plot = {
    color_table      = "MET_BASE/colortables/mode_obj.ctable";
 }
-
-//
-// Number of grid boxes to fill with bad data values along the edge of the field
-// to avoid edge effects.
-//
-zero_border_size = 1;
 
 //
 // Boolean for plotting on the region of valid data within the domain

@@ -107,9 +107,9 @@ class PB2NCWrapper(CommandBuilder):
         c_dict['TIME_SUMMARY_TYPES'] = util.getlist(
             self.p.getstr('config', 'PB2NC_TIME_SUMMARY_TYPES'))
         c_dict['OBS_WINDOW_BEGIN'] = \
-          self.p.getstr('config', 'PB2NC_WINDOW_BEGIN', 0)
+          self.p.getint('config', 'PB2NC_WINDOW_BEGIN', 0)
         c_dict['OBS_WINDOW_END'] = \
-          self.p.getstr('config', 'PB2NC_WINDOW_END', 0)
+          self.p.getint('config', 'PB2NC_WINDOW_END', 0)
 
         c_dict['VERTICAL_LOCATION'] = self.p.getstr('config',
                                                      'PB2NC_VERTICAL_LOCATION')
@@ -225,11 +225,10 @@ class PB2NCWrapper(CommandBuilder):
 
         # if we don't overwrite and the output file exists, warn and continue
         if os.path.exists(outfile) and \
-          (self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True or
-           self.c_dict['OVERWRITE_NC_OUTPUT'] is False):
+          self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
             self.logger.debug('Skip writing output file {} because it already '
                               'exists. Remove file or change '
-                              'OVERWRITE_NC_OUTPUT to True to process'
+                              'PB2NC_SKIP_IF_OUTPUT_EXISTS to False to process'
                               .format(outfile))
             return True
 
@@ -247,8 +246,8 @@ class PB2NCWrapper(CommandBuilder):
         # set environment variables needed for MET application
         self.add_env_var("PB2NC_MESSAGE_TYPE", self.c_dict['MESSAGE_TYPE'])
         self.add_env_var("PB2NC_STATION_ID", self.c_dict['STATION_ID'])
-        self.add_env_var("OBS_WINDOW_BEGIN", self.c_dict['OBS_WINDOW_BEGIN'])
-        self.add_env_var("OBS_WINDOW_END", self.c_dict['OBS_WINDOW_END'])
+        self.add_env_var("OBS_WINDOW_BEGIN", str(self.c_dict['OBS_WINDOW_BEGIN']))
+        self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
         self.add_env_var("PB2NC_GRID", self.c_dict['GRID'])
         self.add_env_var("PB2NC_POLY", self.c_dict['POLY'])
         self.add_env_var("OBS_BUFR_VAR_LIST", self.c_dict['BUFR_VAR_LIST'])

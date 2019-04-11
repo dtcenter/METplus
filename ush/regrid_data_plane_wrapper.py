@@ -97,18 +97,22 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         else:
             self.c_dict['OBS_OUTPUT_TEMPLATE'] = None
 
-        self.c_dict['FCST_INPUT_DIR'] = \
-            util.getdir(self.p, 'FCST_REGRID_DATA_PLANE_INPUT_DIR',
-                        '', self.logger)
-        self.c_dict['OBS_INPUT_DIR'] = \
-            util.getdir(self.p, 'OBS_REGRID_DATA_PLANE_INPUT_DIR',
-                        '', self.logger)
-        self.c_dict['FCST_OUTPUT_DIR'] = \
-            util.getdir(self.p, 'FCST_REGRID_DATA_PLANE_OUTPUT_DIR',
-                        '', self.logger)
-        self.c_dict['OBS_OUTPUT_DIR'] = \
-            util.getdir(self.p, 'OBS_REGRID_DATA_PLANE_OUTPUT_DIR',
-                        '', self.logger)
+        if self.p.getbool('config', 'FCST_REGRID_DATA_PLANE_RUN', False):
+            self.c_dict['FCST_INPUT_DIR'] = \
+                util.getdir(self.p, 'FCST_REGRID_DATA_PLANE_INPUT_DIR',
+                            '', self.logger)
+            self.c_dict['FCST_OUTPUT_DIR'] = \
+                util.getdir(self.p, 'FCST_REGRID_DATA_PLANE_OUTPUT_DIR',
+                            '', self.logger)
+
+        if self.p.getbool('config', 'OBS_REGRID_DATA_PLANE_RUN', False):
+            self.c_dict['OBS_INPUT_DIR'] = \
+                util.getdir(self.p, 'OBS_REGRID_DATA_PLANE_INPUT_DIR',
+                            '', self.logger)
+
+            self.c_dict['OBS_OUTPUT_DIR'] = \
+                util.getdir(self.p, 'OBS_REGRID_DATA_PLANE_OUTPUT_DIR',
+                            '', self.logger)
 
         self.c_dict['VERIFICATION_GRID'] = \
             self.p.getstr('config', 'REGRID_DATA_PLANE_VERIF_GRID', '')
