@@ -86,8 +86,7 @@ def calculate_ci(logger, ci_method, modelB_values, modelA_values, total_days):
     modelB_modelA_diff = modelB_values - modelA_values
     ndays = total_days - np.ma.count_masked(modelB_modelA_diff)
     modelB_modelA_diff_mean = modelB_modelA_diff.mean()
-    modelB_modelA_std = 2.0
-    #modelB_modelA_std = np.sqrt((modelB_modelA_diff - modelB_modelA_diff_mean)**2.mean())
+    modelB_modelA_std = np.sqrt((modelB_modelA_diff - modelB_modelA_diff_mean)**2.mean())
     if ci_method == "EMC":
         if ndays >= 80:
             intvl = 1.960*modelB_modelA_std/np.sqrt(ndays-1)
