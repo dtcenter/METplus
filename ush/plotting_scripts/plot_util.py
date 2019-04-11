@@ -264,15 +264,15 @@ def calculate_stat(logger, model_data, stat):
     elif stat == "rmse_pv":
         stat_plot_name = "Root Mean Square Error from Pattern Variation"
         if line_type == "SL1L2":
-            var_f = ffbar - fbar*fbar
-            var_o = oobar - obar*obar
-            R = (fobar - fbar*obar)/(np.sqrt(var_f*var_o))
-            stat_values = var_f + var_o - 2*np.sqrt(var_f*var_o)*R
+            var_f = ffbar - fbar**2
+            var_o = oobar - obar**2
+            R = (fobar - (fbar*obar))/(np.sqrt(var_f*var_o))
+            stat_values = np.sqrt(var_f + var_o - 2*np.sqrt(var_f*var_o)*R)
         elif line_type == "VL1L2":
             var_f = uvffbar - ufbar*ufbar - vfbar*vfbar
             var_o = uvoobar - uobar*uobar - vobar*vobar
             R = (uvfobar - ufbar*uobar - vfbar*vobar)/(np.sqrt(var_f*var_o))
-            stat_values = var_f + var_o - 2*np.sqrt(var_f*var_o)*R
+            stat_values = np.sqrt(var_f + var_o - 2*np.sqrt(var_f*var_o)*R)
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
