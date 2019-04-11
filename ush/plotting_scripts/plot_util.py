@@ -4,26 +4,26 @@ import datetime as datetime
 def get_date_arrays(plot_time, start_date_YYYYmmdd, end_date_YYYYmmdd, valid_time_info, init_time_info, lead):
     plot_time_dates = []
     expected_stat_file_dates = []
-    if plot_time == 'valid':
+    if plot_time == "valid":
         if len(valid_time_info) == 1:
             delta_t = datetime.timedelta(seconds=86400)
         else:
-            delta_t = datetime.timedelta(seconds=(datetime.datetime.strptime(valid_time_info[1], '%H%M%S') - datetime.datetime.strptime(valid_time_info[0], '%H%M%S')).total_seconds())
-        plot_start_date_YYYYmmddHHMMSS = datetime.datetime.strptime(start_date_YYYYmmdd+valid_time_info[0], '%Y%m%d%H%M%S')
-        plot_end_date_YYYYmmddHHMMSS = datetime.datetime.strptime(end_date_YYYYmmdd+valid_time_info[-1], '%Y%m%d%H%M%S') + delta_t
+            delta_t = datetime.timedelta(seconds=(datetime.datetime.strptime(valid_time_info[1], "%H%M%S") - datetime.datetime.strptime(valid_time_info[0], "%H%M%S")).total_seconds())
+        plot_start_date_YYYYmmddHHMMSS = datetime.datetime.strptime(start_date_YYYYmmdd+valid_time_info[0], "%Y%m%d%H%M%S")
+        plot_end_date_YYYYmmddHHMMSS = datetime.datetime.strptime(end_date_YYYYmmdd+valid_time_info[-1], "%Y%m%d%H%M%S") + delta_t
         dates = np.arange(plot_start_date_YYYYmmddHHMMSS, plot_end_date_YYYYmmddHHMMSS, delta_t).astype(datetime.datetime)
         for date in dates:
             dt = date.time()
             seconds = (dt.hour * 60 + dt.minute) * 60 + dt.second
             plot_time_dates.append(date.toordinal() + seconds/86400.)
-            expected_stat_file_dates.append(date.strftime('%Y%m%d'+"_"+'%H%M%S'))
-    elif plot_time == 'init':
+            expected_stat_file_dates.append(date.strftime("%Y%m%d"+"_"+"%H%M%S"))
+    elif plot_time == "init":
         if len(init_time_info) == 1:
             delta_t = datetime.timedelta(seconds=86400)
         else:
-            delta_t = datetime.timedelta(seconds=(datetime.datetime.strptime(init_time_info[1], '%H%M%S') - datetime.datetime.strptime(init_time_info[0], '%H%M%S')).total_seconds())
-        plot_start_date_YYYYmmddHHMMSS = datetime.datetime.strptime(start_date_YYYYmmdd+init_time_info[0], '%Y%m%d%H%M%S')
-        plot_end_date_YYYYmmddHHMMSS = datetime.datetime.strptime(end_date_YYYYmmdd+init_time_info[-1], '%Y%m%d%H%M%S') + delta_t
+            delta_t = datetime.timedelta(seconds=(datetime.datetime.strptime(init_time_info[1], "%H%M%S") - datetime.datetime.strptime(init_time_info[0], "%H%M%S")).total_seconds())
+        plot_start_date_YYYYmmddHHMMSS = datetime.datetime.strptime(start_date_YYYYmmdd+init_time_info[0], "%Y%m%d%H%M%S")
+        plot_end_date_YYYYmmddHHMMSS = datetime.datetime.strptime(end_date_YYYYmmdd+init_time_info[-1], "%Y%m%d%H%M%S") + delta_t
         dates = np.arange(plot_start_date_YYYYmmddHHMMSS, plot_end_date_YYYYmmddHHMMSS, delta_t).astype(datetime.datetime)
         for date in dates:
             dt = date.time()
@@ -31,7 +31,7 @@ def get_date_arrays(plot_time, start_date_YYYYmmdd, end_date_YYYYmmdd, valid_tim
             plot_time_dates.append(date.toordinal() + seconds/86400.)
             lead_time_HHMMSS = lead.ljust(6,'0')
             delta_lead = datetime.timedelta(hours=int(lead_time_HHMMSS[0:2]), minutes=int(lead_time_HHMMSS[2:4]), seconds=int(lead_time_HHMMSS[4:]))
-            expected_stat_file_dates.append((datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S') + delta_lead).strftime('%Y%m%d'+"_"+'%H%M%S'))
+            expected_stat_file_dates.append((datetime.datetime.strptime(str(date), "%Y-%m-%d %H:%M:%S") + delta_lead).strftime("%Y%m%d"+"_"+"%H%M%S"))
     return plot_time_dates, expected_stat_file_dates
 
 def get_stat_file_base_columns(met_version):
@@ -79,14 +79,14 @@ def get_clevels(data):
    else:
       cmin = round(cmin-0.1,1)
       cmax = round(cmax+0.1,1)
-   clevels = np.linspace(cmin,cmax,11, endpoint=True)
+   clevels = np.linspace(cmin, cmax, 11, endpoint=True)
    return clevels
 
 def calculate_ci(logger, ci_method, modelB_values, modelA_values, total_days):
     modelB_modelA_diff = modelB_values - modelA_values
     ndays = total_days - np.ma.count_masked(modelB_modelA_diff)
     modelB_modelA_diff_mean = modelB_modelA_diff.mean()
-    modelB_modelA_std = np.sqrt((modelB_modelA_diff - modelB_modelA_diff_mean)**2.mean())
+    modelB_modelA_std = np.sqrt(((modelB_modelA_diff - modelB_modelA_diff_mean)**2).mean())
     if ci_method == "EMC":
         if ndays >= 80:
             intvl = 1.960*modelB_modelA_std/np.sqrt(ndays-1)
@@ -97,71 +97,115 @@ def calculate_ci(logger, ci_method, modelB_values, modelA_values, total_days):
         elif ndays < 20:
             intvl = 2.228*modelB_modelA_std/np.sqrt(ndays-1)
     else:
-        self.logger.error("Invalid entry for CI_METHOD, use 'EMC'")
+        logger.error("Invalid entry for CI_METHOD, use EMC")
         exit(1)
     return intvl
 
+def get_stat_plot_name(logger, stat):
+    if stat == "bias":
+        stat_plot_name = "Bias"
+    elif stat == "rmse":
+        stat_plot_name = "Root Mean Square Error"
+    elif stat == "msess":
+        stat_plot_name = "Murphy's Mean Square Error Skill Score"
+    elif stat == "rsd":
+        stat_plot_name = "Ratio of Standard Deviation"
+    elif stat == "rmse_md":
+        stat_plot_name = "Root Mean Square Error from Mean Error"
+    elif stat == "rmse_pv":
+        stat_plot_name = "Root Mean Square Error from Pattern Variation"
+    elif stat == "pcor":
+        stat_plot_name = "Pattern Correlation"
+    elif stat == "acc":
+        stat_plot_name = "Anomaly Correlation Coefficient"
+    elif stat == "fbar":
+        stat_plot_name = "Forecast Averages"
+    elif stat == "fbar_obar":
+        stat_plot_name = "Average"
+    elif stat_ == "speed_err":
+        stat_plot_name = "Difference in Average FCST and OBS Wind Vector Speeds"
+    elif stat_ == "dir_err":
+        stat_plot_name = "Difference in Average FCST and OBS Wind Vector Direction"
+    elif stat_ == "rmsve":
+        stat_plot_name = "Root Mean Square Difference Vector Error"
+    elif stat_ == "vdiff_speed":
+        stat_plot_name = "Difference Vector Speed"
+    elif stat_ == "vdiff_dir":
+        stat_plot_name = "Difference Vector Direction"
+    elif stat_ == "fbar_obar_speed":
+        stat_plot_name = "Average Wind Vector Speed"
+    elif stat_ == "fbar_obar_dir":
+        stat_plot_name = "Average Wind Vector Direction"
+    elif stat_ == "fbar_speed":
+        stat_plot_name = "Average Forecast Wind Vector Speed"
+    elif stat_ == "fbar_dir":
+        stat_plot_name = "Average Forecast Wind Vector Direction"
+    else:
+        logger.error(stat+" is not a valid option")
+        exit(1)
+    return stat_plot_name
+
 def calculate_stat(logger, model_data, stat):
     model_data_columns = model_data.columns.values.tolist()
-    if model_data_columns == [ 'TOTAL' ]:
+    if model_data_columns == [ "TOTAL" ]:
         logger.warning("Empty model_data dataframe")
-        stat_values = model_data.loc[:]['TOTAL']
+        stat_values = model_data.loc[:]["TOTAL"]
     else:
         if "FBAR" and "OBAR" and "MAE" in model_data_columns:
             line_type = "SL1L2"
-            fbar = model_data.loc[:]['FBAR']
-            obar = model_data.loc[:]['OBAR']
-            fobar = model_data.loc[:]['FOBAR']
-            ffbar = model_data.loc[:]['FFBAR']
-            oobar = model_data.loc[:]['OOBAR']
+            fbar = model_data.loc[:]["FBAR"]
+            obar = model_data.loc[:]["OBAR"]
+            fobar = model_data.loc[:]["FOBAR"]
+            ffbar = model_data.loc[:]["FFBAR"]
+            oobar = model_data.loc[:]["OOBAR"]
         elif "FABAR" and "OABAR" and "MAE" in model_data_columns:
             line_type = "SAL1L2"
-            fabar = model_data.loc[:]['FABAR']
-            oabar = model_data.loc[:]['OABAR']
-            foabar = model_data.loc[:]['FOABAR']
-            ffabar = model_data.loc[:]['FFABAR']
-            ooabar = model_data.loc[:]['OOABAR']
+            fabar = model_data.loc[:]["FABAR"]
+            oabar = model_data.loc[:]["OABAR"]
+            foabar = model_data.loc[:]["FOABAR"]
+            ffabar = model_data.loc[:]["FFABAR"]
+            ooabar = model_data.loc[:]["OOABAR"]
         elif "UFBAR" and "VFBAR" in model_data_columns:
             line_type = "VL1L2"
-            ufbar = model_data.loc[:]['UFBAR']
-            vfbar = model_data.loc[:]['VFBAR']
-            uobar = model_data.loc[:]['UOBAR']
-            vobar = model_data.loc[:]['VOBAR']
-            uvfobar = model_data.loc[:]['UVFOBAR']
-            uvffbar = model_data.loc[:]['UVFFBAR']
-            uvoobar = model_data.loc[:]['UVOOBAR']
+            ufbar = model_data.loc[:]["UFBAR"]
+            vfbar = model_data.loc[:]["VFBAR"]
+            uobar = model_data.loc[:]["UOBAR"]
+            vobar = model_data.loc[:]["VOBAR"]
+            uvfobar = model_data.loc[:]["UVFOBAR"]
+            uvffbar = model_data.loc[:]["UVFFBAR"]
+            uvoobar = model_data.loc[:]["UVOOBAR"]
         elif "UFABAR" and "VFABAR" in model_data_columns:
             line_type = "VAL1L2"
-            ufabar = model_data.loc[:]['UFABAR']
-            vfabar = model_data.loc[:]['VFABAR']
-            uoabar = model_data.loc[:]['UOABAR']
-            voabar = model_data.loc[:]['VOABAR']
-            uvfoabar = model_data.loc[:]['UVFOABAR']
-            uvffabar = model_data.loc[:]['UVFFABAR']
-            uvooabar = model_data.loc[:]['UVOOABAR']
+            ufabar = model_data.loc[:]["UFABAR"]
+            vfabar = model_data.loc[:]["VFABAR"]
+            uoabar = model_data.loc[:]["UOABAR"]
+            voabar = model_data.loc[:]["VOABAR"]
+            uvfoabar = model_data.loc[:]["UVFOABAR"]
+            uvffabar = model_data.loc[:]["UVFFABAR"]
+            uvooabar = model_data.loc[:]["UVOOABAR"]
         elif "VDIFF_SPEED" and "VDIFF_DIR" in model_data_columns:
             line_type = "VCNT"
-            fbar = model_data.loc[:]['FBAR']
-            obar = model_data.loc[:]['OBAR']
-            fs_rms = model_data.loc[:]['FS_RMS']
-            os_rms = model_data.loc[:]['OS_RMS']
-            msve = model_data.loc[:]['MSVE']
-            rmsve = model_data.loc[:]['RMSVE']
-            fstdev = model_data.loc[:]['FSTDEV']
-            ostdev = model_data.loc[:]['OSTDEV']
-            fdir = model_data.loc[:]['FDIR']
-            odir = model_data.loc[:]['ODIR']
-            fbar_speed = model_data.loc[:]['FBAR_SPEED']
-            obar_speed = model_data.loc[:]['OBAR_SPEED']
-            vdiff_speed = model_data.loc[:]['VDIFF_SPEED']
-            vdiff_dir =  model_data.loc[:]['VDIFF_DIR']
-            speed_err = model_data.loc[:]['SPEED_ERR']
-            dir_err = model_data.loc[:]['DIR_ERR']
+            fbar = model_data.loc[:]["FBAR"]
+            obar = model_data.loc[:]["OBAR"]
+            fs_rms = model_data.loc[:]["FS_RMS"]
+            os_rms = model_data.loc[:]["OS_RMS"]
+            msve = model_data.loc[:]["MSVE"]
+            rmsve = model_data.loc[:]["RMSVE"]
+            fstdev = model_data.loc[:]["FSTDEV"]
+            ostdev = model_data.loc[:]["OSTDEV"]
+            fdir = model_data.loc[:]["FDIR"]
+            odir = model_data.loc[:]["ODIR"]
+            fbar_speed = model_data.loc[:]["FBAR_SPEED"]
+            obar_speed = model_data.loc[:]["OBAR_SPEED"]
+            vdiff_speed = model_data.loc[:]["VDIFF_SPEED"]
+            vdiff_dir =  model_data.loc[:]["VDIFF_DIR"]
+            speed_err = model_data.loc[:]["SPEED_ERR"]
+            dir_err = model_data.loc[:]["DIR_ERR"]
         else:
             logger.error("Could not recognize line type from columns")
             exit(1)
-    if stat == 'bias':
-        stat_plot_name = 'Bias'
+    if stat == "bias":
+        stat_plot_name = "Bias"
         if line_type == "SL1L2":
             stat_values = fbar - obar
         elif line_type == "VL1L2":
@@ -171,8 +215,8 @@ def calculate_stat(logger, model_data, stat):
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat == 'rmse':
-        stat_plot_name = 'Root Mean Square Error'
+    elif stat == "rmse":
+        stat_plot_name = "Root Mean Square Error"
         if line_type == "SL1L2":
             stat_values = np.sqrt(ffbar + oobar - 2*fobar)
         elif line_type == "VL1L2":
@@ -180,7 +224,7 @@ def calculate_stat(logger, model_data, stat):
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat == 'msess':
+    elif stat == "msess":
         stat_plot_name = "Murphy's Mean Square Error Skill Score"
         if line_type == "SL1L2":
             mse = ffbar + oobar - 2*fobar
@@ -193,8 +237,8 @@ def calculate_stat(logger, model_data, stat):
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat == 'rsd':
-        stat_plot_name = 'Ratio of Standard Deviation'
+    elif stat == "rsd":
+        stat_plot_name = "Ratio of Standard Deviation"
         if line_type == "SL1L2":
             var_f = ffbar - fbar*fbar
             var_o = oobar - obar*obar
@@ -208,8 +252,8 @@ def calculate_stat(logger, model_data, stat):
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat == 'rmse_md':
-        stat_plot_name = 'Root Mean Square Error from Mean Error'
+    elif stat == "rmse_md":
+        stat_plot_name = "Root Mean Square Error from Mean Error"
         if line_type == "SL1L2":
             stat_values = np.sqrt((fbar-obar)**2)
         elif line_type == "VL1L2":
@@ -217,8 +261,8 @@ def calculate_stat(logger, model_data, stat):
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat == 'rmse_pv':
-        stat_plot_name = 'Root Mean Square Error from Pattern Variation'
+    elif stat == "rmse_pv":
+        stat_plot_name = "Root Mean Square Error from Pattern Variation"
         if line_type == "SL1L2":
             var_f = ffbar - fbar*fbar
             var_o = oobar - obar*obar
@@ -232,8 +276,8 @@ def calculate_stat(logger, model_data, stat):
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat == 'pcor':
-        stat_plot_name = 'Pattern Correlation'
+    elif stat == "pcor":
+        stat_plot_name = "Pattern Correlation"
         if line_type == "SL1L2":
             var_f = ffbar - fbar*fbar
             var_o = oobar - obar*obar
@@ -245,8 +289,8 @@ def calculate_stat(logger, model_data, stat):
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat == 'acc':
-        stat_plot_name = 'Anomaly Correlation Coefficient'
+    elif stat == "acc":
+        stat_plot_name = "Anomaly Correlation Coefficient"
         if line_type == "SAL1L2":
             stat_values = (foabar - fabar*oabar)/(np.sqrt((ffabar - fabar*fabar)*(ooabar - oabar*oabar)))
         elif line_type == "VAL1L2":
@@ -254,8 +298,8 @@ def calculate_stat(logger, model_data, stat):
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat == 'fbar':
-        stat_plot_name = 'Forecast Averages'
+    elif stat == "fbar":
+        stat_plot_name = "Forecast Averages"
         if line_type == "SL1L2":
             stat_values = fbar
         elif line_type == "VL1L2":
@@ -265,75 +309,75 @@ def calculate_stat(logger, model_data, stat):
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat == 'fbar_obar':
-        stat_plot_name = 'Average'
+    elif stat == "fbar_obar":
+        stat_plot_name = "Average"
         if line_type == "SL1L2":
-            stat_values = model_data.loc[:][('FBAR', 'OBAR')]
+            stat_values = model_data.loc[:][("FBAR", "OBAR")]
         elif line_type == "VL1L2":
-            stat_values = np.sqrt(model_data.loc[:][('UVFFBAR', 'UVOOBAR')])
+            stat_values = np.sqrt(model_data.loc[:][("UVFFBAR", "UVOOBAR")])
         elif line_type == "VCNT":
-            stat_values = model_data.loc[:][('FBAR', 'OBAR')]
+            stat_values = model_data.loc[:][("FBAR", "OBAR")]
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat_ == 'speed_err':
-        stat_plot_name = 'Difference in Average FCST and OBS Wind Vector Speeds'
+    elif stat_ == "speed_err":
+        stat_plot_name = "Difference in Average FCST and OBS Wind Vector Speeds"
         if line_type == "VCNT":
             stat_values = speed_err
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat_ == 'dir_err':
-        stat_plot_name = 'Difference in Average FCST and OBS Wind Vector Direction'
+    elif stat_ == "dir_err":
+        stat_plot_name = "Difference in Average FCST and OBS Wind Vector Direction"
         if line_type == "VCNT":
            stat_values = dir_err
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat_ == 'rmsve':
-        stat_plot_name = 'Root Mean Square Difference Vector Error'
+    elif stat_ == "rmsve":
+        stat_plot_name = "Root Mean Square Difference Vector Error"
         if line_type == "VCNT":
            stat_values = rmsve
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat_ == 'vdiff_speed':
-        stat_plot_name = 'Difference Vector Speed'
+    elif stat_ == "vdiff_speed":
+        stat_plot_name = "Difference Vector Speed"
         if line_type == "VCNT":
             stat_values = vdiff_speed
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat_ == 'vdiff_dir':
-        stat_plot_name = 'Difference Vector Direction'
+    elif stat_ == "vdiff_dir":
+        stat_plot_name = "Difference Vector Direction"
         if line_type == "VCNT":
            stat_values = vdiff_dir
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat_ == 'fbar_obar_speed':
-        stat_plot_name = 'Average Wind Vector Speed'
+    elif stat_ == "fbar_obar_speed":
+        stat_plot_name = "Average Wind Vector Speed"
         if line_type == "VCNT":
-            stat_values = model_data.loc[:][('FBAR_SPEED', 'OBAR_SPEED')]
+            stat_values = model_data.loc[:][("FBAR_SPEED", "OBAR_SPEED")]
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat_ == 'fbar_obar_dir':
-        stat_plot_name = 'Average Wind Vector Direction'
+    elif stat_ == "fbar_obar_dir":
+        stat_plot_name = "Average Wind Vector Direction"
         if line_type == "VCNT":
-           stat_values = model_data.loc[:][('FDIR', 'ODIR')]
+           stat_values = model_data.loc[:][("FDIR", "ODIR")]
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat_ == 'fbar_speed':
-        stat_plot_name = 'Average Forecast Wind Vector Speed'
+    elif stat_ == "fbar_speed":
+        stat_plot_name = "Average Forecast Wind Vector Speed"
         if line_type == "VCNT":
             stat_values = fbar_speed
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
-    elif stat_ == 'fbar_dir':
-        stat_plot_name = 'Average Forecast Wind Vector Direction'
+    elif stat_ == "fbar_dir":
+        stat_plot_name = "Average Forecast Wind Vector Direction"
         if line_type == "VCNT":
             stat_values = fdir
         else:
