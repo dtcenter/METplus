@@ -146,7 +146,7 @@ for stat in plot_stats_list:
     for model in model_info:
         model_num = model_info.index(model) + 1
         model_index = model_info.index(model)
-        model_name= model[0]
+        model_name = model[0]
         model_plot_name = model[1]
         model_stat_values_array = stat_values_array[model_index,:]
         lead_mean_filename = os.path.join(plotting_out_dir_data, model_plot_name+"_"+stat+"_"+plot_time+start_date_YYYYmmdd+"to"+end_date_YYYYmmdd+"_valid"+valid_time_info[0]+"to"+valid_time_info[-1]+"Z_init"+init_time_info[0]+"to"+init_time_info[-1]+"Z"+"_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+fcst_var_thresh+"_obs"+obs_var_name+obs_var_level+obs_var_extra+obs_var_thresh+"_interp"+interp+"_region"+region+"_LEAD_MEAN.txt")
