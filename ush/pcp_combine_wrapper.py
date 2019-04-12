@@ -44,8 +44,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     precipitation accumulations"""
     def __init__(self, p, logger):
         super(PcpCombineWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR',
-                                                 None, logger),
+        self.app_path = os.path.join(self.cu.getdir('MET_INSTALL_DIR'),
                                      'bin/pcp_combine')
         self.app_name = os.path.basename(self.app_path)
         self.inaddons = []
@@ -66,35 +65,35 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
     def create_c_dict(self):
         self.c_dict = dict()
-        self.c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.p.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
+        self.c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.cu.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
 
-        if self.p.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
+        if self.cu.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
             self.set_fcst_or_obs_dict_items('FCST')
 
-        if self.p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
+        if self.cu.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
             self.set_fcst_or_obs_dict_items('OBS')
 
 
     def set_fcst_or_obs_dict_items(self, d_type):
-        self.c_dict[d_type+'_MAX_FORECAST'] = self.p.getint('config', d_type+'_MAX_FORECAST', 256)
-        self.c_dict[d_type+'_INPUT_DATATYPE'] = self.p.getstr('config',
+        self.c_dict[d_type+'_MAX_FORECAST'] = self.cu.getint('config', d_type+'_MAX_FORECAST', 256)
+        self.c_dict[d_type+'_INPUT_DATATYPE'] = self.cu.getstr('config',
                                               d_type+'_PCP_COMBINE_INPUT_DATATYPE', '')
-        self.c_dict[d_type+'_DATA_INTERVAL'] = self.p.getint('config', d_type+'_DATA_INTERVAL', 1)
-        self.c_dict[d_type+'_TIMES_PER_FILE'] = self.p.getint('config', d_type+'_TIMES_PER_FILE', -1)
-        self.c_dict[d_type+'_IS_DAILY_FILE'] = self.p.getbool('config', d_type+'_IS_DAILY_FILE', False)
-        self.c_dict[d_type+'_LEVEL'] = self.p.getstr('config', d_type+'_LEVEL', '-1')
-        self.c_dict[d_type+'_INPUT_DIR'] = util.getdir(self.p, d_type+'_PCP_COMBINE_INPUT_DIR', '', self.logger)
-        self.c_dict[d_type+'_INPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates',
+        self.c_dict[d_type+'_DATA_INTERVAL'] = self.cu.getint('config', d_type+'_DATA_INTERVAL', 1)
+        self.c_dict[d_type+'_TIMES_PER_FILE'] = self.cu.getint('config', d_type+'_TIMES_PER_FILE', -1)
+        self.c_dict[d_type+'_IS_DAILY_FILE'] = self.cu.getbool('config', d_type+'_IS_DAILY_FILE', False)
+        self.c_dict[d_type+'_LEVEL'] = self.cu.getstr('config', d_type+'_LEVEL', '-1')
+        self.c_dict[d_type+'_INPUT_DIR'] = self.cu.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
+        self.c_dict[d_type+'_INPUT_TEMPLATE'] = self.cu.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_INPUT_TEMPLATE')
-        self.c_dict[d_type+'_OUTPUT_DIR'] = util.getdir(self.p, d_type+'_PCP_COMBINE_OUTPUT_DIR', '', self.logger)
-        self.c_dict[d_type+'_OUTPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates',
+        self.c_dict[d_type+'_OUTPUT_DIR'] = self.cu.getdir(d_type+'_PCP_COMBINE_OUTPUT_DIR', '')
+        self.c_dict[d_type+'_OUTPUT_TEMPLATE'] = self.cu.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_OUTPUT_TEMPLATE')
         self.c_dict[d_type+'_STAT_LIST'] = \
-            util.getlist(self.p.getstr('config',
+            util.getlist(self.cu.getstr('config',
                                        d_type+'_PCP_COMBINE_STAT_LIST', ''))
 
         self.c_dict[d_type+'_RUN_METHOD'] = \
-            self.p.getstr('config', d_type+'_PCP_COMBINE_METHOD', 'ADD')
+            self.cu.getstr('config', d_type+'_PCP_COMBINE_METHOD')
 
         if self.c_dict[d_type+'_RUN_METHOD'] == 'DERIVE' and \
            len(self.c_dict[d_type+'_STAT_LIST']) == 0:
@@ -104,13 +103,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             exit(1)
 
         self.c_dict[d_type+'_DERIVE_LOOKBACK'] = \
-            self.p.getint('config', d_type+'_PCP_COMBINE_DERIVE_LOOKBACK', 0)
+            self.cu.getint('config', d_type+'_PCP_COMBINE_DERIVE_LOOKBACK', 0)
 
 
     def clear(self):
         super(PcpCombineWrapper, self).clear()
         self.inaddons = []
-        self.method = "ADD"
+        self.method = ""
         self.pcp_dir = ""
         self.pcp_regex = ""
         self.init_time = -1
@@ -215,7 +214,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                        fSts.doStringSub())
             search_file = util.preprocess_file(search_file,
                                 self.c_dict[dtype+'_INPUT_DATATYPE'],
-                                               self.p, self.logger)
+                                               self.cu)
 
             if search_file != None:
                 return search_file
@@ -248,7 +247,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             search_file = util.preprocess_file(search_file,
                                             self.c_dict[data_src+\
                                               '_INPUT_DATATYPE'],
-                                               self.p, self.logger)
+                                               self.cu)
             if search_file is not None:
                 break
 
@@ -259,7 +258,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         lead = int((diff.days * 24) / (data_interval))
         lead += int((diff).seconds / (data_interval*3600)) - 1
-        fname = self.p.getstr('config',
+        fname = self.cu.getstr('config',
                               data_src + '_' + str(
                                   accum) + '_FIELD_NAME', '')
         if fname == '':
@@ -278,7 +277,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # to handle deprecated config variable, allow *_NATIVE_DATA_TYPE
         # but print warning that this will be deprecated and use other
         if d_type == '':
-            d_type = self.p.getstr('config', data_src+'_NATIVE_DATA_TYPE', '')
+            d_type = self.cu.getstr('config', data_src+'_NATIVE_DATA_TYPE', '')
             if d_type == '':
                 self.logger.error('Must set '+data_src+\
                                   '_PCP_COMBINE_INPUT_DATATYPE (GRIB or NETCDF)')
@@ -293,7 +292,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if d_type == "GRIB":
             return search_accum
         # if NETCDF or GEMPAK
-        field_name = self.p.getstr('config', data_src +
+        field_name = self.cu.getstr('config', data_src +
                                '_' + str(search_accum) +
                                '_FIELD_NAME', '')
         if field_name == '':
@@ -312,13 +311,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         return util.preprocess_file(search_file,
                                     self.c_dict[data_src+'_INPUT_DATATYPE'],
-                                    self.p, self.logger)
+                                    self.cu)
 
 
     def find_highest_accum_field(self, data_src, s_accum):
         field_name = ''
         while s_accum > 0:
-            field_name = self.p.getstr('config',
+            field_name = self.cu.getstr('config',
                                    data_src + '_' + str(s_accum) +
                                    '_FIELD_NAME', '')
             if field_name != '':
@@ -578,7 +577,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 **time_info)
         file1 = os.path.join(in_dir, pcpSts1.doStringSub())
         file1 = util.preprocess_file(file1, self.c_dict[rl+'_INPUT_DATATYPE'],
-                                    self.p, self.logger)
+                                    self.cu)
 
         if file1 is None:
             self.logger.error("Could not find file in {} for init time {} and lead {}"
@@ -595,7 +594,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 **time_info2)
         file2 = os.path.join(in_dir, pcpSts2.doStringSub())
         file2 = util.preprocess_file(file2, self.c_dict[rl+'_INPUT_DATATYPE'],
-                                     self.p, self.logger)
+                                     self.cu)
 
         if file2 is None:
             self.logger.error("Could not find file in {} for init time {} and lead {}"
