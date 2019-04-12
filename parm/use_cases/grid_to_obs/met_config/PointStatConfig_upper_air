@@ -50,10 +50,12 @@ rank_corr_flag = FALSE;
 //
 
 fcst = {
-  field = [ ${FCST_FIELD} ];
+    field = [ ${FCST_FIELD} ];
+    };
 
-}
-obs = fcst;
+obs = {
+    field = [ ${OBS_FIELD} ];
+    };
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -9,7 +9,7 @@
 //
 // Filtering input STAT lines by the contents of each column
 //
-model = [ "${MODEL_TYPE}" ];
+model = [ "${MODEL}" ];
 desc  = [];
 
 fcst_lead = [];
