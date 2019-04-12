@@ -386,7 +386,14 @@ def calculate_stat(logger, model_data, stat):
     else:
         logger.error(stat+" is not a valid option")
         exit(1)
-    nmodels = len(stat_values.index.get_level_values(0).unique())
-    ndates = len(stat_values.index.get_level_values(1).unique())
-    stat_values_array = np.ma.masked_invalid(stat_values.values.reshape(nmodels,ndates))
+    nindex = stat_values.index.nlevels 
+    if nindex == 2:
+        nmodels = len(stat_values.index.get_level_values(0).unique())
+        ndates = len(stat_values.index.get_level_values(1).unique())
+        stat_values_array = np.ma.masked_invalid(stat_values.values.reshape(nmodels,ndates))
+    elif nindex == 3:
+        nmodels = len(stat_values.index.get_level_values(0).unique())
+        nlevels = len(stat_values.index.get_level_values(1).unique())
+        ndates = len(stat_values.index.get_level_values(2).unique())
+        stat_values_array = np.ma.masked_invalid(stat_values.values.reshape(nmodels,nlevels,ndates))
     return stat_values, stat_values_array, stat_plot_name
