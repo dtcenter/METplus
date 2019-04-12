@@ -130,7 +130,7 @@ for stat in plot_stats_list:
             logger.warning("Model "+str(model_num)+" "+model_name+" with plot name "+model_plot_name+" file: "+model_mean_file+" does not exist")
         if model_num == 1:
             fig, (ax1, ax2) = plt.subplots(2,1,figsize=(10,12), sharex=True)
-            fig.suptitle(stat_plot_name+"\n"+"Fcst: "+fcst_var_name+"_"+fcst_var_level+fcst_var_extra_title+fcst_var_thresh_title+", Obs: "+obs_var_name+"_"+obs_var_level+obs_var_extra_title+obs_var_thresh_title+" "+interp+" "+grid+"-"+region+"\n"+plot_time+": "+start_date_YYYYmmdd_dt.strftime("%d%b%Y")+"-"+end_date_YYYYmmdd_dt.strftime("%d%b%Y")+", valid: "+valid_time_info[0][0:4]+"-"+valid_time_info[-1][0:4]+"Z, init: "+init_time_info[0][0:4]+"-"+init_time_info[-1][0:4]+"Z, forecast hour means\n", fontsize=14, fontweight='bold')
+            fig.suptitle(stat_plot_name+"\n"+"Fcst: "+fcst_var_name+"_"+fcst_var_level+fcst_var_extra_title+fcst_var_thresh_title+" Obs: "+obs_var_name+"_"+obs_var_level+obs_var_extra_title+obs_var_thresh_title+" "+interp+" "+grid+"-"+region+"\n"+plot_time+": "+start_date_YYYYmmdd_dt.strftime("%d%b%Y")+"-"+end_date_YYYYmmdd_dt.strftime("%d%b%Y")+", valid: "+valid_time_info[0][0:4]+"-"+valid_time_info[-1][0:4]+"Z, init: "+init_time_info[0][0:4]+"-"+init_time_info[-1][0:4]+"Z, forecast hour means\n", fontsize=14, fontweight='bold')
             ax1.grid(True)
             ax1.tick_params(axis='x', pad=10)
             ax1.set_xticks(leads)
