@@ -254,7 +254,7 @@ for stat in plot_stats_list:
         else:
             cbar = fig.colorbar(CF2, cax=cax, orientation='horizontal', ticks=CF2.levels)
     fig.suptitle(stat_plot_name+"\n"+"Fcst: "+fcst_var_name+" "+fcst_var_extra_title+fcst_var_thresh_title+" Obs: "+obs_var_name+" "+obs_var_extra_title+obs_var_thresh_title+" "+interp+" "+grid+"-"+region+"\n"+plot_time+": "+str(datetime.date.fromordinal(int(plot_time_dates[0])).strftime('%d%b%Y'))+"-"+str(datetime.date.fromordinal(int(plot_time_dates[-1])).strftime('%d%b%Y'))+", valid: "+valid_time_info[0][0:4]+"-"+valid_time_info[-1][0:4]+"Z, init: "+init_time_info[0][0:4]+"-"+init_time_info[-1][0:4]+"Z, forecast hour "+lead+"\n", fontsize=14, fontweight='bold')
-    savefig_name = os.path.join(plotting_out_dir_imgs, stat+"_fhr"+lead+"_fcst"+fcst_var_name+fcst_var_extra+fcst_var_thresh+"_obs"+obs_var_name+obs_var_extra+obs_var_thresh+"_"+interp+"_"+grid+region+"_datelevel.png")
+    savefig_name = os.path.join(plotting_out_dir_imgs, stat+"_fhr"+lead+"_fcst"+fcst_var_name+fcst_var_extra+fcst_var_thresh+"_obs"+obs_var_name+obs_var_extra+obs_var_thresh+"_"+interp+"_"+grid+region+".png")
     logger.info("Saving image as "+savefig_name)
     plt.savefig(savefig_name, bbox_inches='tight')
     plt.close()
