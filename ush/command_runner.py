@@ -38,6 +38,7 @@ Output Files: N/A
 import os
 from produtil.run import exe, run
 import met_util as util
+from config_util import ConfigUtil
 import shlex
 
 class CommandRunner(object):
@@ -47,11 +48,11 @@ class CommandRunner(object):
         """!Class for Creating and Running External Programs.
             It was intended to handle the MET executables but
             can be used by other executables."""
-        self.config = config
         self.logger = logger
         if self.logger == None:
-            self.logger = util.get_logger(self.config,sublog='CommandRunner')
-        self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
+            self.logger = util.get_logger(config,sublog='CommandRunner')
+        self.cu = ConfigUtil(config, self.logger)
+        self.verbose = self.cu.getstr('config', 'LOG_MET_VERBOSITY', '2')
 
 
     def run_cmd(self, cmd, ismetcmd = True, app_name=None, run_inshell=False,
@@ -156,7 +157,8 @@ class CommandRunner(object):
 
         ret = 0
         # run app unless DO_NOT_RUN_EXE is set to True
-        if not self.config.getbool('config', 'DO_NOT_RUN_EXE', False):
+#        if not self.cu.getbool('config', 'DO_NOT_RUN_EXE', False):
+        if not self.cu.getbool('config', 'DO_NOT_RUN_EXE', False):
             ret = run(cmd, **kwargs)
 
         return (ret, cmd)
@@ -212,23 +214,24 @@ class CommandRunner(object):
         # metpluslog is the setting used to determine if output is sent to either
         # a log file or tty.
         # metpluslog includes /path/filename.
-        metpluslog = self.config.getstr('config', 'LOG_METPLUS', '')
+        metpluslog = self.cu.getstr('config', 'LOG_METPLUS', '')
 
         # This block determines where to send the command output, cmdlog_dest.
         # To the METplus log, a MET log, or tty.
         # If no metpluslog, cmlog_dest is None, which should be interpreted as tty.
         if metpluslog:
-            log_met_output_to_metplus = self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS')
+            log_met_output_to_metplus = self.cu.getbool('config',
+                                                     'LOG_MET_OUTPUT_TO_METPLUS')
             # If cmdlog is None send output to metpluslog.
             if log_met_output_to_metplus or not cmdlog:
                 cmdlog_dest = metpluslog
             else:
-                log_timestamp = self.config.getstr('config', 'LOG_TIMESTAMP', '')
+                log_timestamp = self.cu.getstr('config', 'LOG_TIMESTAMP', '')
                 if log_timestamp:
-                    cmdlog_dest = os.path.join(util.getdir(self.config, 'LOG_DIR'),
+                    cmdlog_dest = os.path.join(self.cu.getdir('LOG_DIR'),
                                             cmdlog + '_' + log_timestamp)
                 else:
-                    cmdlog_dest = os.path.join(util.getdir(self.config, 'LOG_DIR'),cmdlog)
+                    cmdlog_dest = os.path.join(self.cu.getdir('LOG_DIR'),cmdlog)
 
 
         # If cmdlog_dest None we will not redirect output to a log file

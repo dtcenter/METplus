@@ -51,13 +51,13 @@ that reformat gridded data
         """        
         app_name_caps = self.app_name.upper()
         class_name = self.__class__.__name__[0: -7]
-        var_list = util.parse_var_list(self.p)
-        lead_seq = util.get_lead_sequence(self.p, self.logger, input_dict)
+        var_list = util.parse_var_list(self.cu)
+        lead_seq = util.get_lead_sequence(self.cu, input_dict)
 
         run_list = []
-        if self.p.getstr('config', 'FCST_'+app_name_caps+'_RUN', False):
+        if self.cu.getbool('config', 'FCST_'+app_name_caps+'_RUN', False):
             run_list.append("FCST")
-        if self.p.getstr('config', 'OBS_'+app_name_caps+'_RUN', False):
+        if self.cu.getbool('config', 'OBS_'+app_name_caps+'_RUN', False):
             run_list.append("OBS")
 
         if len(run_list) == 0:

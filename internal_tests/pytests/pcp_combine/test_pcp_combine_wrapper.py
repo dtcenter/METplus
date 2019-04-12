@@ -11,6 +11,7 @@ import pytest
 import config_metplus
 from pcp_combine_wrapper import PcpCombineWrapper
 import time_util
+from config_util import ConfigUtil
 import met_util as util
 from task_info import TaskInfo
 
@@ -135,9 +136,10 @@ def test_get_accumulation_6_to_6():
 def test_get_lowest_forecast_file_dated_subdir():
     dtype = "FCST"
     pcw = pcp_combine_wrapper(dtype)
+    cu = ConfigUtil(pcw.p, pcw.logger)
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = datetime.datetime.strptime("201802012100", '%Y%m%d%H%M')
-    template = util.getraw_interp(pcw.p, 'filename_templates', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
+    template = cu.getraw('filename_templates', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
     out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/20180201/file.2018020118f003.nc")
@@ -150,7 +152,7 @@ def test_get_lowest_forecast_file_no_subdir():
     valid_time = datetime.datetime.strptime("201802012100", '%Y%m%d%H%M')
 
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
-#    template = util.getraw_interp(pcw.p, 'filename_templates', dtype+'_PCP_COMBINE_INPUT_TEMPLATE')
+#    template = util.getraw(pcw.p, 'filename_templates', dtype+'_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
     out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/file.2018020118f003.nc")
@@ -161,7 +163,7 @@ def test_get_lowest_forecast_file_yesterday():
     input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = datetime.datetime.strptime("201802010600", '%Y%m%d%H%M')
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
-#    template = util.getraw_interp(pcw.p, 'filename_templates', 'FCST2_PCP_COMBINE_INPUT_TEMPLATE')
+#    template = util.getraw(pcw.p, 'filename_templates', 'FCST2_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
     out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/file.2018013118f012.nc")    

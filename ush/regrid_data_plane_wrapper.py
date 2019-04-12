@@ -34,7 +34,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
     '''
     def __init__(self, p, logger):
         super(RegridDataPlaneWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR', None, logger),
+        self.app_path = os.path.join(self.cu.getdir('MET_INSTALL_DIR'),
                                      'bin/regrid_data_plane')
         self.app_name = os.path.basename(self.app_path)
         self.create_c_dict()
@@ -43,17 +43,17 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
     def create_c_dict(self):
         self.c_dict = dict()
         self.c_dict['SKIP_IF_OUTPUT_EXISTS'] = \
-          self.p.getbool('config', 'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS',
+          self.cu.getbool('config', 'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS',
                          False)
         if self.p.has_option('filename_templates',
                              'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE'):
             self.c_dict['FCST_INPUT_TEMPLATE'] = \
-                util.getraw_interp(self.p, 'filename_templates',
+                self.cu.getraw('filename_templates',
                                    'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE')
         elif self.p.has_option('filename_templates',
                                'FCST_REGRID_DATA_PLANE_TEMPLATE'):
             self.c_dict['FCST_INPUT_TEMPLATE'] = \
-                util.getraw_interp(self.p, 'filename_templates',
+                self.cu.getraw('filename_templates',
                                    'FCST_REGRID_DATA_PLANE_TEMPLATE')
         else:
             self.c_dict['FCST_INPUT_TEMPLATE'] = None
@@ -61,12 +61,12 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if self.p.has_option('filename_templates',
                              'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE'):
             self.c_dict['OBS_INPUT_TEMPLATE'] = \
-                util.getraw_interp(self.p, 'filename_templates',
+                self.cu.getraw('filename_templates',
                                    'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE')
         elif self.p.has_option('filename_templates',
                                'OBS_REGRID_DATA_PLANE_TEMPLATE'):
             self.c_dict['OBS_INPUT_TEMPLATE'] = \
-                util.getraw_interp(self.p, 'filename_templates',
+                self.cu.getraw('filename_templates',
                                    'OBS_REGRID_DATA_PLANE_TEMPLATE')
         else:
             self.c_dict['OBS_INPUT_TEMPLATE'] = None
@@ -74,12 +74,12 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if self.p.has_option('filename_templates',
                              'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'):
             self.c_dict['FCST_OUTPUT_TEMPLATE'] = \
-                util.getraw_interp(self.p, 'filename_templates',
+                self.cu.getraw('filename_templates',
                                    'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE')
         elif self.p.has_option('filename_templates',
                                'FCST_REGRID_DATA_PLANE_TEMPLATE'):
             self.c_dict['FCST_OUTPUT_TEMPLATE'] = \
-                util.getraw_interp(self.p, 'filename_templates',
+                self.cu.getraw('filename_templates',
                                    'FCST_REGRID_DATA_PLANE_TEMPLATE')
         else:
             self.c_dict['FCST_OUTPUT_TEMPLATE'] = None
@@ -87,35 +87,32 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if self.p.has_option('filename_templates',
                              'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'):
             self.c_dict['OBS_OUTPUT_TEMPLATE'] = \
-                util.getraw_interp(self.p, 'filename_templates',
+                self.cu.getraw('filename_templates',
                                    'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE')
         elif self.p.has_option('filename_templates',
                                'OBS_REGRID_DATA_PLANE_TEMPLATE'):
             self.c_dict['OBS_OUTPUT_TEMPLATE'] = \
-                util.getraw_interp(self.p, 'filename_templates',
+                self.cu.getraw('filename_templates',
                                    'OBS_REGRID_DATA_PLANE_TEMPLATE')
         else:
             self.c_dict['OBS_OUTPUT_TEMPLATE'] = None
 
-        if self.p.getbool('config', 'FCST_REGRID_DATA_PLANE_RUN', False):
+        if self.cu.getbool('config', 'FCST_REGRID_DATA_PLANE_RUN', False):
             self.c_dict['FCST_INPUT_DIR'] = \
-                util.getdir(self.p, 'FCST_REGRID_DATA_PLANE_INPUT_DIR',
-                            '', self.logger)
+                self.cu.getdir('FCST_REGRID_DATA_PLANE_INPUT_DIR', '')
             self.c_dict['FCST_OUTPUT_DIR'] = \
-                util.getdir(self.p, 'FCST_REGRID_DATA_PLANE_OUTPUT_DIR',
+                self.cu.getdir('FCST_REGRID_DATA_PLANE_OUTPUT_DIR',
                             '', self.logger)
 
-        if self.p.getbool('config', 'OBS_REGRID_DATA_PLANE_RUN', False):
+        if self.cu.getbool('config', 'OBS_REGRID_DATA_PLANE_RUN', False):
             self.c_dict['OBS_INPUT_DIR'] = \
-                util.getdir(self.p, 'OBS_REGRID_DATA_PLANE_INPUT_DIR',
-                            '', self.logger)
+                self.cu.getdir('OBS_REGRID_DATA_PLANE_INPUT_DIR', '')
 
             self.c_dict['OBS_OUTPUT_DIR'] = \
-                util.getdir(self.p, 'OBS_REGRID_DATA_PLANE_OUTPUT_DIR',
-                            '', self.logger)
+                self.cu.getdir('OBS_REGRID_DATA_PLANE_OUTPUT_DIR', '')
 
         self.c_dict['VERIFICATION_GRID'] = \
-            self.p.getstr('config', 'REGRID_DATA_PLANE_VERIF_GRID', '')
+            self.cu.getstr('config', 'REGRID_DATA_PLANE_VERIF_GRID', '')
 
 
     def run_at_time_once(self, time_info, var_info, dtype):
@@ -172,9 +169,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         infile = os.path.join(input_dir, pcpSts.doStringSub())
 
         infile = util.preprocess_file(infile,
-                                      self.p.getstr('config',
+                                      self.cu.getstr('config',
                                                     dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE', ''),
-                                      self.p, self.logger)
+                                      self.cu)
         if infile is not None:
             self.add_input_file(infile)
         else:
@@ -204,9 +201,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                               .format(outpath))
             return True
 
-
-
-        if self.p.getstr('config', dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE', 'GRIB') == 'GRIB':
+        if self.cu.getstr('config', dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE', 'GRIB') in ['', 'GRIB'] :
             field_name = "{:s}_{:s}".format(compare_var, str(level).zfill(2))
             self.add_arg("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(field_name))
         else:

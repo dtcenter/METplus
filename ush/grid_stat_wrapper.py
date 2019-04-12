@@ -27,7 +27,7 @@ class GridStatWrapper(CompareGriddedWrapper):
     '''
     def __init__(self, p, logger):
         super(GridStatWrapper, self).__init__(p, logger)
-        met_install_dir = util.getdir(p, 'MET_INSTALL_DIR', None, logger)
+        met_install_dir = self.cu.getdir('MET_INSTALL_DIR')
         self.app_path = os.path.join(met_install_dir, 'bin/grid_stat')
         self.app_name = os.path.basename(self.app_path)
         self.c_dict = self.create_c_dict()
@@ -35,45 +35,45 @@ class GridStatWrapper(CompareGriddedWrapper):
 
     def create_c_dict(self):
         c_dict = super(GridStatWrapper, self).create_c_dict()
-        c_dict['CONFIG_FILE'] = self.p.getstr('config', 'GRID_STAT_CONFIG', '')
+        c_dict['CONFIG_FILE'] = self.cu.getstr('config', 'GRID_STAT_CONFIG', '')
         c_dict['OBS_INPUT_DIR'] = \
-          util.getdir(self.p, 'OBS_GRID_STAT_INPUT_DIR', self.p.getdir('OUTPUT_BASE'), self.logger)
+          self.cu.getdir('OBS_GRID_STAT_INPUT_DIR', self.cu.getdir('OUTPUT_BASE'))
         c_dict['OBS_INPUT_TEMPLATE'] = \
-          util.getraw_interp(self.p, 'filename_templates',
+          self.cu.getraw('filename_templates',
                                'OBS_GRID_STAT_INPUT_TEMPLATE')
         c_dict['OBS_INPUT_DATATYPE'] = \
-          self.p.getstr('config', 'OBS_GRID_STAT_INPUT_DATATYPE', '')
+          self.cu.getstr('config', 'OBS_GRID_STAT_INPUT_DATATYPE', '')
 
         c_dict['FCST_INPUT_DIR'] = \
-          util.getdir(self.p, 'FCST_GRID_STAT_INPUT_DIR', self.p.getdir('OUTPUT_BASE'), self.logger)
+          self.cu.getdir('FCST_GRID_STAT_INPUT_DIR', self.cu.getdir('OUTPUT_BASE'))
         c_dict['FCST_INPUT_TEMPLATE'] = \
-          util.getraw_interp(self.p, 'filename_templates',
+          self.cu.getraw('filename_templates',
                                'FCST_GRID_STAT_INPUT_TEMPLATE')
         c_dict['FCST_INPUT_DATATYPE'] = \
-          self.p.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
+          self.cu.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
 
 
         c_dict['CLIMO_INPUT_DIR'] = ''
         c_dict['CLIMO_INPUT_TEMPLATE'] = ''
         if self.p.has_option('dir', 'CLIMO_GRID_STAT_INPUT_DIR'):
             c_dict['CLIMO_INPUT_DIR'] = \
-              util.getdir(self.p, 'CLIMO_GRID_STAT_INPUT_DIR', '', self.logger)
+              self.cu.getdir('CLIMO_GRID_STAT_INPUT_DIR', '')
             c_dict['CLIMO_INPUT_TEMPLATE'] = \
-              util.getraw_interp(self.p, 'filename_templates',
+              self.cu.getraw('filename_templates',
                                    'CLIMO_GRID_STAT_INPUT_TEMPLATE')
 
-        c_dict['OUTPUT_DIR'] =  util.getdir(self.p, 'GRID_STAT_OUT_DIR', self.p.getdir('OUTPUT_BASE'), self.logger)
-        c_dict['ONCE_PER_FIELD'] = self.p.getbool('config',
+        c_dict['OUTPUT_DIR'] =  self.cu.getdir('GRID_STAT_OUT_DIR', self.cu.getdir('OUTPUT_BASE'))
+        c_dict['ONCE_PER_FIELD'] = self.cu.getbool('config',
                                                         'GRID_STAT_ONCE_PER_FIELD',
                                                         False)
-        c_dict['FCST_PROB_THRESH'] = self.p.getstr('config', 'FCST_GRID_STAT_PROB_THRESH', '==0.1')
-        c_dict['OBS_PROB_THRESH'] = self.p.getstr('config', 'OBS_GRID_STAT_PROB_THRESH', '==0.1')
+        c_dict['FCST_PROB_THRESH'] = self.cu.getstr('config', 'FCST_GRID_STAT_PROB_THRESH', '==0.1')
+        c_dict['OBS_PROB_THRESH'] = self.cu.getstr('config', 'OBS_GRID_STAT_PROB_THRESH', '==0.1')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
-        c_dict['NEIGHBORHOOD_WIDTH'] = self.p.getstr('config', 'GRID_STAT_NEIGHBORHOOD_WIDTH', '')
-        c_dict['NEIGHBORHOOD_SHAPE'] = self.p.getstr('config', 'GRID_STAT_NEIGHBORHOOD_SHAPE', '')
+        c_dict['NEIGHBORHOOD_WIDTH'] = self.cu.getstr('config', 'GRID_STAT_NEIGHBORHOOD_WIDTH', '')
+        c_dict['NEIGHBORHOOD_SHAPE'] = self.cu.getstr('config', 'GRID_STAT_NEIGHBORHOOD_SHAPE', '')
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
-            util.getraw_interp(self.p, 'filename_templates',
+            self.cu.getraw('filename_templates',
                                'GRID_STAT_VERIFICATION_MASK_TEMPLATE')
         c_dict['VERIFICATION_MASK'] = ''
 
@@ -81,18 +81,18 @@ class GridStatWrapper(CompareGriddedWrapper):
         # OBS_WINDOW_BEGIN/END
         if self.p.has_option('config', 'OBS_GRID_STAT_WINDOW_BEGIN'):
             c_dict['OBS_WINDOW_BEGIN'] = \
-              self.p.getint('config', 'OBS_GRID_STAT_WINDOW_BEGIN')
+              self.cu.getint('config', 'OBS_GRID_STAT_WINDOW_BEGIN')
         if self.p.has_option('config', 'OBS_GRID_STAT_WINDOW_END'):
             c_dict['OBS_WINDOW_END'] = \
-              self.p.getint('config', 'OBS_GRID_STAT_WINDOW_END')
+              self.cu.getint('config', 'OBS_GRID_STAT_WINDOW_END')
 
         # same for FCST_WINDOW_BEGIN/END
         if self.p.has_option('config', 'FCST_GRID_STAT_WINDOW_BEGIN'):
             c_dict['FCST_WINDOW_BEGIN'] = \
-              self.p.getint('config', 'FCST_GRID_STAT_WINDOW_BEGIN')
+              self.cu.getint('config', 'FCST_GRID_STAT_WINDOW_BEGIN')
         if self.p.has_option('config', 'FCST_GRID_STAT_WINDOW_END'):
             c_dict['FCST_WINDOW_END'] = \
-              self.p.getint('config', 'FCST_GRID_STAT_WINDOW_END')
+              self.cu.getint('config', 'FCST_GRID_STAT_WINDOW_END')
 
         return c_dict
 

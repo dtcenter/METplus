@@ -51,60 +51,60 @@ class SeriesByLeadWrapper(CommandBuilder):
             self.logger = util.get_logger(self.p, sublog='SeriesByLead')
 
         # Retrieve any necessary values from the parm file(s)
-        self.fhr_beg = p.getint('config', 'FHR_BEG')
-        self.fhr_end = p.getint('config', 'FHR_END')
-        self.fhr_inc = p.getstr('config', 'FHR_INC')
-        self.fhr_group_beg_str = util.getlist(p.getstr('config',
+        self.fhr_beg = self.cu.getint('config', 'FHR_BEG')
+        self.fhr_end = self.cu.getint('config', 'FHR_END')
+        self.fhr_inc = self.cu.getstr('config', 'FHR_INCREMENT')
+        self.fhr_group_beg_str = util.getlist(self.cu.getstr('config',
                                                        'FHR_GROUP_BEG'))
-        self.fhr_group_end_str = util.getlist(p.getstr('config',
+        self.fhr_group_end_str = util.getlist(self.cu.getstr('config',
                                                        'FHR_GROUP_END'))
         self.fhr_group_beg = [int(beg) for beg in self.fhr_group_beg_str]
         self.fhr_group_end = [map(int, end) for end in self.fhr_group_end_str]
-        self.fhr_group_labels = util.getlist(p.getstr('config',
+        self.fhr_group_labels = util.getlist(self.cu.getstr('config',
                                                       'FHR_GROUP_LABELS'))
-        self.var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
-        self.stat_list = util.getlist(p.getstr('config', 'STAT_LIST'))
+        self.var_list = util.getlist(self.cu.getstr('config', 'VAR_LIST'))
+        self.stat_list = util.getlist(self.cu.getstr('config', 'STAT_LIST'))
         self.plot_data_plane_exe = os.path.join(
-            util.getdir(self.p, 'MET_INSTALL_DIR'),
+            self.cu.getdir('MET_INSTALL_DIR'),
             'bin/plot_data_plane')
-        self.convert_exe = util.getexe(p, 'CONVERT_EXE', logger)
-        self.ncap2_exe = util.getexe(p, 'NCAP2_EXE', logger)
-        self.ncdump_exe = util.getexe(p, 'NCDUMP_EXE', logger)
-        self.rm_exe = util.getexe(p, "RM_EXE", logger)
-        met_install_dir = util.getdir(p, 'MET_INSTALL_DIR')
+        self.convert_exe = self.cu.getexe('CONVERT_EXE')
+        self.ncap2_exe = self.cu.getexe('NCAP2_EXE')
+        self.ncdump_exe = self.cu.getexe('NCDUMP_EXE')
+        self.rm_exe = self.cu.getexe("RM_EXE")
+        met_install_dir = self.cu.getdir('MET_INSTALL_DIR')
         self.series_analysis_exe = os.path.join(met_install_dir,
                                                 'bin/series_analysis')
-        self.extract_tiles_dir = util.getdir(p, 'EXTRACT_OUT_DIR')
+        self.extract_tiles_dir = self.cu.getdir('EXTRACT_OUT_DIR')
         self.series_lead_filtered_out_dir = \
-            util.getdir(p, 'SERIES_LEAD_FILTERED_OUT_DIR')
-        self.series_lead_out_dir = util.getdir(p, 'SERIES_LEAD_OUT_DIR')
-        self.tmp_dir = util.getdir(p, 'TMP_DIR')
-        self.background_map = p.getbool('config', 'BACKGROUND_MAP')
+            self.cu.getdir('SERIES_LEAD_FILTERED_OUT_DIR')
+        self.series_lead_out_dir = self.cu.getdir('SERIES_LEAD_OUT_DIR')
+        self.tmp_dir = self.cu.getdir('TMP_DIR')
+        self.background_map = self.cu.getbool('config', 'BACKGROUND_MAP')
         self.regrid_with_met_tool = \
-            p.getbool('config', 'REGRID_USING_MET_TOOL')
+            self.cu.getbool('config', 'REGRID_USING_MET_TOOL')
         self.series_filter_opts = \
-            p.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
+            self.cu.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
         self.series_filter_opts.strip()
         self.fcst_ascii_regex = \
-            p.getstr('regex_pattern', 'FCST_ASCII_REGEX_LEAD')
+            self.cu.getstr('regex_pattern', 'FCST_ASCII_REGEX_LEAD')
         self.anly_ascii_regex = \
-            p.getstr('regex_pattern', 'ANLY_ASCII_REGEX_LEAD')
+            self.cu.getstr('regex_pattern', 'ANLY_ASCII_REGEX_LEAD')
         self.series_anly_configuration_file = \
-            p.getstr('config', 'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE')
-        self.var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
-        self.regrid_with_met_tool = p.getbool('config',
+            self.cu.getstr('config', 'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE')
+        self.var_list = util.getlist(self.cu.getstr('config', 'VAR_LIST'))
+        self.regrid_with_met_tool = self.cu.getbool('config',
                                               'REGRID_USING_MET_TOOL')
         if self.regrid_with_met_tool:
             # Re-gridding via MET Tool regrid_data_plane.
             self.fcst_tile_regex = \
-                self.p.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
+                self.cu.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
             self.anly_tile_regex = \
-                self.p.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
+                self.cu.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
         else:
             # Re-gridding via wgrib2 tool.
-            self.fcst_tile_regex = self.p.getstr('regex_pattern',
+            self.fcst_tile_regex = self.cu.getstr('regex_pattern',
                                                  'FCST_TILE_REGEX')
-            self.anly_tile_regex = self.p.getstr('regex_pattern',
+            self.anly_tile_regex = self.cu.getstr('regex_pattern',
                                                  'ANLY_TILE_REGEX')
 
         self.logger.info("Initialized SeriesByLeadWrapper")

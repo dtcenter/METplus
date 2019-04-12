@@ -40,16 +40,16 @@ class CyclonePlotterWrapper(CommandBuilder):
             self.logger = util.get_logger(self.p)
         else:
             self.logger = logger
-        self.app_path = os.path.join(util.getdir(p, 'MET_INSTALL_DIR'),
+        self.app_path = os.path.join(self.cu.getdir('MET_INSTALL_DIR'),
                                      'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
-        self.input_data = util.getdir(p, 'CYCLONE_INPUT_DIR')
-        self.output_dir = util.getdir(p, 'CYCLONE_OUT_DIR')
-        self.init_date = p.getstr('config', 'CYCLONE_INIT_DATE')
-        self.init_hr = p.getstr('config', 'CYCLONE_INIT_HR')
-        self.model = p.getstr('config', 'CYCLONE_MODEL')
-        self.title = p.getstr('config', 'CYCLONE_PLOT_TITLE')
-        self.gen_ascii = p.getbool('config', 'GENERATE_TRACK_ASCII')
+        self.input_data = self.cu.getdir('CYCLONE_INPUT_DIR')
+        self.output_dir = self.cu.getdir('CYCLONE_OUT_DIR')
+        self.init_date = self.cu.getstr('config', 'CYCLONE_INIT_DATE')
+        self.init_hr = self.cu.getstr('config', 'CYCLONE_INIT_HR')
+        self.model = self.cu.getstr('config', 'CYCLONE_MODEL')
+        self.title = self.cu.getstr('config', 'CYCLONE_PLOT_TITLE')
+        self.gen_ascii = self.cu.getbool('config', 'GENERATE_TRACK_ASCII')
         # Create a set to keep track of unique storm_ids for each track file.
         self.unique_storm_id = set()
         # Data structure to separate data based on storm id.
@@ -58,8 +58,8 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.columns_of_interest = ['AMODEL', 'STORM_ID', 'BASIN', 'INIT',
                                     'LEAD', 'VALID', 'ALAT', 'ALON', 'BLAT',
                                     'BLON', 'AMSLP', 'BMSLP']
-        self.circle_marker = p.getint('config', 'CIRCLE_MARKER_SIZE')
-        self.cross_marker = p.getint('config', 'CROSS_MARKER_SIZE')
+        self.circle_marker = self.cu.getint('config', 'CIRCLE_MARKER_SIZE')
+        self.cross_marker = self.cu.getint('config', 'CROSS_MARKER_SIZE')
 
     def run_all_times(self):
         """! Calls the defs needed to create the cyclone plots
@@ -561,7 +561,7 @@ if __name__ == "__main__":
         # pylint:disable=invalid-name
         p = config_metplus.setup()
         if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = util.getdir(p, 'MET_BASE')
+            os.environ['MET_BASE'] = self.cu.getdir('MET_BASE')
 
         # Request data extraction and plot generation.
         # pylint:disable=invalid-name

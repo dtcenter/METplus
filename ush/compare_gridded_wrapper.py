@@ -45,31 +45,31 @@ that reformat gridded data
 
     def create_c_dict(self):
         c_dict = dict()
-        c_dict['var_list'] = util.parse_var_list(self.p)
-        c_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL_TYPE', 'FCST')
-        c_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE', 'OBS')
-        c_dict['CONFIG_DIR'] = util.getdir(self.p, 'CONFIG_DIR', '')
-        c_dict['INPUT_BASE'] = util.getdir(self.p, 'INPUT_BASE', None, self.logger)
-        c_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
-        c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
-        c_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 24)
-        c_dict['FCST_INIT_INTERVAL'] = self.p.getint('config', 'FCST_INIT_INTERVAL', 12)
+        c_dict['var_list'] = util.parse_var_list(self.cu)
+        c_dict['MODEL'] = self.cu.getstr('config', 'MODEL', 'FCST')
+        c_dict['OB_TYPE'] = self.cu.getstr('config', 'OB_TYPE', 'OBS')
+        c_dict['CONFIG_DIR'] = self.cu.getdir('CONFIG_DIR', '')
+        c_dict['INPUT_BASE'] = self.cu.getdir('INPUT_BASE', None)
+        c_dict['FCST_IS_PROB'] = self.cu.getbool('config', 'FCST_IS_PROB', False)
+        c_dict['OBS_IS_PROB'] = self.cu.getbool('config', 'OBS_IS_PROB', False)
+        c_dict['FCST_MAX_FORECAST'] = self.cu.getint('config', 'FCST_MAX_FORECAST', 24)
+        c_dict['FCST_INIT_INTERVAL'] = self.cu.getint('config', 'FCST_INIT_INTERVAL', 12)
         c_dict['OBS_WINDOW_BEGIN'] = \
-          self.p.getint('config', 'OBS_WINDOW_BEGIN', 0)
+          self.cu.getint('config', 'OBS_WINDOW_BEGIN', 0)
         c_dict['OBS_WINDOW_END'] = \
-          self.p.getint('config', 'OBS_WINDOW_END', 0)
+          self.cu.getint('config', 'OBS_WINDOW_END', 0)
 
         c_dict['FCST_WINDOW_BEGIN'] = \
-          self.p.getint('config', 'FCST_WINDOW_BEGIN', 0)
+          self.cu.getint('config', 'FCST_WINDOW_BEGIN', 0)
         c_dict['FCST_WINDOW_END'] = \
-          self.p.getint('config', 'FCST_WINDOW_END', 0)
+          self.cu.getint('config', 'FCST_WINDOW_END', 0)
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
         c_dict['NEIGHBORHOOD_WIDTH'] = ''
         c_dict['NEIGHBORHOOD_SHAPE'] = ''
         c_dict['VERIFICATION_MASK_TEMPLATE'] = ''
         c_dict['VERIFICATION_MASK'] = ''
-        util.add_common_items_to_dictionary(self.p, c_dict)
+        util.add_common_items_to_dictionary(self.cu, c_dict)
         return c_dict
 
 
@@ -82,7 +82,7 @@ that reformat gridded data
         """
 
         # loop of forecast leads and process each
-        lead_seq = util.get_lead_sequence(self.p, self.logger, input_dict)
+        lead_seq = util.get_lead_sequence(self.cu, input_dict)
         for lead in lead_seq:
             input_dict['lead_hours'] = lead
 
@@ -244,7 +244,7 @@ that reformat gridded data
                 for thresh in threshs:
                     # if pcp_combine was run, use name_level, (*,*) format
                     # if not, use user defined name/level combination
-                    if self.p.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
+                    if self.cu.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
                         field = "{ name=\""+v_name+"_"+level + \
                                      "\"; level=\"(*,*)\"; cat_thresh=[ " + \
                                      str(thresh)+" ]; }"
@@ -257,7 +257,7 @@ that reformat gridded data
             # if neither input is probabilistic, add all cat thresholds to same field info item
             # if pcp_combine was run, use name_level, (*,*) format
             # if not, use user defined name/level combination
-            if self.p.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
+            if self.cu.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
                 field = "{ name=\"" + v_name+"_" + level + \
                              "\"; level=\"(*,*)\"; "
             else:
@@ -285,7 +285,7 @@ that reformat gridded data
             v = self.c_dict['CURRENT_VAR_INFO']
 
         # set environment variables needed for MET application
-        self.add_env_var("MODEL", self.c_dict['MODEL_TYPE'])
+        self.add_env_var("MODEL", self.c_dict['MODEL'])
         self.add_env_var("OBTYPE", self.c_dict['OB_TYPE'])
         self.add_env_var("FCST_VAR", v.fcst_name)
         self.add_env_var("OBS_VAR", v.obs_name)
@@ -356,7 +356,7 @@ that reformat gridded data
                 @param time_info dictionary with time information
         """
         base_dir = self.c_dict['OUTPUT_DIR']
-        use_init = util.is_loop_by_init(self.p)
+        use_init = util.is_loop_by_init(self.cu)
         if use_init:
             out_dir = os.path.join(base_dir,
                                    time_info['init_fmt'], self.app_name)
@@ -382,7 +382,7 @@ that reformat gridded data
 
 
     def write_list_file(self, filename, file_list):
-        list_dir = os.path.join(util.getdir(self.p, 'STAGING_DIR'), 'file_lists')
+        list_dir = os.path.join(self.cu.getdir('STAGING_DIR'), 'file_lists')
         list_path = os.path.join(list_dir, filename)
 
         if not os.path.exists(list_dir):

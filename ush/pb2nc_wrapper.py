@@ -36,7 +36,7 @@ class PB2NCWrapper(CommandBuilder):
 
     def __init__(self, p, logger):
         super(PB2NCWrapper, self).__init__(p, logger)
-        met_install_dir = util.getdir(p, 'MET_INSTALL_DIR', None, logger)
+        met_install_dir = self.cu.getdir('MET_INSTALL_DIR')
         self.app_path = os.path.join(met_install_dir, 'bin/pb2nc')
         self.app_name = os.path.basename(self.app_path)
 
@@ -56,32 +56,32 @@ class PB2NCWrapper(CommandBuilder):
                            config files.
         """
         c_dict = dict()
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.p.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', False)
-        c_dict['OFFSETS'] = util.getlistint(self.p.getstr('config', 'PB2NC_OFFSETS', '0'))
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.cu.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', False)
+        c_dict['OFFSETS'] = util.getlistint(self.cu.getstr('config', 'PB2NC_OFFSETS', '0'))
 
         # Directories
-        c_dict['OBS_INPUT_DIR'] = util.getdir(self.p, 'PB2NC_INPUT_DIR')
-        c_dict['OUTPUT_DIR'] = util.getdir(self.p, 'PB2NC_OUTPUT_DIR')
+        c_dict['OBS_INPUT_DIR'] = self.cu.getdir('PB2NC_INPUT_DIR')
+        c_dict['OUTPUT_DIR'] = self.cu.getdir('PB2NC_OUTPUT_DIR')
 
-        c_dict['OBS_INPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates', 'PB2NC_INPUT_TEMPLATE')
-        c_dict['OUTPUT_TEMPLATE'] = util.getraw_interp(self.p, 'filename_templates', 'PB2NC_OUTPUT_TEMPLATE')
-        c_dict['OBS_INPUT_DATATYPE'] = self.p.getstr('config', 'PB2NC_INPUT_DATATYPE', '')
+        c_dict['OBS_INPUT_TEMPLATE'] = self.cu.getraw('filename_templates', 'PB2NC_INPUT_TEMPLATE')
+        c_dict['OUTPUT_TEMPLATE'] = self.cu.getraw('filename_templates', 'PB2NC_OUTPUT_TEMPLATE')
+        c_dict['OBS_INPUT_DATATYPE'] = self.cu.getstr('config', 'PB2NC_INPUT_DATATYPE', '')
 
         # Configuration
-        c_dict['CONFIG_FILE'] = self.p.getstr('config',
+        c_dict['CONFIG_FILE'] = self.cu.getstr('config',
                                                      'PB2NC_CONFIG_FILE')
         c_dict['MESSAGE_TYPE'] = util.getlist(
-            self.p.getstr('config', 'PB2NC_MESSAGE_TYPE', '[]'))
+            self.cu.getstr('config', 'PB2NC_MESSAGE_TYPE', '[]'))
 
         tmp_message_type = str(c_dict['MESSAGE_TYPE']).replace("\'", "\"")
         c_dict['MESSAGE_TYPE'] = ''.join(tmp_message_type)
 
         c_dict['STATION_ID'] = util.getlist(
-            self.p.getstr('config', 'PB2NC_STATION_ID', '[]'))
+            self.cu.getstr('config', 'PB2NC_STATION_ID', '[]'))
         tmp_message_type = str(c_dict['STATION_ID']).replace("\'", "\"")
         c_dict['STATION_ID'] = ''.join(tmp_message_type.split())
 
-        grid_id = self.p.getstr('config', 'PB2NC_GRID')
+        grid_id = self.cu.getstr('config', 'PB2NC_GRID')
         if grid_id.startswith('G'):
             # Reformat grid ids that begin with 'G' ( G10, G1, etc.) to format
             # Gnnn
@@ -89,29 +89,29 @@ class PB2NCWrapper(CommandBuilder):
         else:
             c_dict['GRID'] = grid_id
 
-        c_dict['POLY'] = self.p.getstr('config', 'PB2NC_POLY')
+        c_dict['POLY'] = self.cu.getstr('config', 'PB2NC_POLY')
 
         c_dict['BUFR_VAR_LIST'] = util.getlist(
-            self.p.getstr('config', 'PB2NC_OBS_BUFR_VAR_LIST', '[]'))
+            self.cu.getstr('config', 'PB2NC_OBS_BUFR_VAR_LIST', '[]'))
         tmp_message_type = str(c_dict['BUFR_VAR_LIST']).replace("\'", "\"")
         c_dict['BUFR_VAR_LIST'] = ''.join(tmp_message_type.split())
 
-        c_dict['TIME_SUMMARY_FLAG'] = self.p.getbool('config',
+        c_dict['TIME_SUMMARY_FLAG'] = self.cu.getbool('config',
                                                       'PB2NC_TIME_SUMMARY_FLAG')
-        c_dict['TIME_SUMMARY_BEG'] = self.p.getstr('config',
+        c_dict['TIME_SUMMARY_BEG'] = self.cu.getstr('config',
                                                     'PB2NC_TIME_SUMMARY_BEG')
-        c_dict['TIME_SUMMARY_END'] = self.p.getstr('config',
+        c_dict['TIME_SUMMARY_END'] = self.cu.getstr('config',
                                                     'PB2NC_TIME_SUMMARY_END')
         c_dict['TIME_SUMMARY_VAR_NAMES'] = util.getlist(
-            self.p.getstr('conf', 'PB2NC_TIME_SUMMARY_VAR_NAMES'))
+            self.cu.getstr('config', 'PB2NC_TIME_SUMMARY_VAR_NAMES'))
         c_dict['TIME_SUMMARY_TYPES'] = util.getlist(
-            self.p.getstr('config', 'PB2NC_TIME_SUMMARY_TYPES'))
+            self.cu.getstr('config', 'PB2NC_TIME_SUMMARY_TYPES'))
         c_dict['OBS_WINDOW_BEGIN'] = \
-          self.p.getint('config', 'PB2NC_WINDOW_BEGIN', 0)
+          self.cu.getint('config', 'PB2NC_WINDOW_BEGIN', 0)
         c_dict['OBS_WINDOW_END'] = \
-          self.p.getint('config', 'PB2NC_WINDOW_END', 0)
+          self.cu.getint('config', 'PB2NC_WINDOW_END', 0)
 
-        c_dict['VERTICAL_LOCATION'] = self.p.getstr('config',
+        c_dict['VERTICAL_LOCATION'] = self.cu.getstr('config',
                                                      'PB2NC_VERTICAL_LOCATION')
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
@@ -158,7 +158,7 @@ class PB2NCWrapper(CommandBuilder):
     def run_at_time(self, input_dict):
         """! Stub, not yet implemented """
         # loop of forecast leads and process each
-        lead_seq = util.get_lead_sequence(self.p, self.logger, input_dict)
+        lead_seq = util.get_lead_sequence(self.cu, input_dict)
         for lead in lead_seq:
             input_dict['lead_hours'] = lead
 

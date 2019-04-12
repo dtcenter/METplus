@@ -65,42 +65,42 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
         # The only required argument for plot_tcmpr.R, the name of
         # the tcst file to plot.
-        self.input_data = p.getstr('config', 'TCMPR_DATA')
+        self.input_data = self.cu.getstr('config', 'TCMPR_DATA')
 
         # Optional arguments
-        self.plot_config_file = p.getstr('config', 'CONFIG_FILE')
-        self.output_base_dir = util.getdir(p, 'TCMPR_PLOT_OUT_DIR')
-        self.prefix = p.getstr('config', 'PREFIX')
-        self.title = p.getstr('config', 'TITLE')
-        self.subtitle = p.getstr('config', 'SUBTITLE')
-        self.xlab = p.getstr('config', 'XLAB')
-        self.ylab = p.getstr('config', 'YLAB')
-        self.xlim = p.getstr('config', 'XLIM')
-        self.ylim = p.getstr('config', 'YLIM')
-        self.filter = p.getstr('config', 'FILTER')
-        self.filtered_tcst_data = p.getstr('config',
+        self.plot_config_file = self.cu.getstr('config', 'CONFIG_FILE')
+        self.output_base_dir = self.cu.getdir('TCMPR_PLOT_OUT_DIR')
+        self.prefix = self.cu.getstr('config', 'PREFIX')
+        self.title = self.cu.getstr('config', 'TITLE')
+        self.subtitle = self.cu.getstr('config', 'SUBTITLE')
+        self.xlab = self.cu.getstr('config', 'XLAB')
+        self.ylab = self.cu.getstr('config', 'YLAB')
+        self.xlim = self.cu.getstr('config', 'XLIM')
+        self.ylim = self.cu.getstr('config', 'YLIM')
+        self.filter = self.cu.getstr('config', 'FILTER')
+        self.filtered_tcst_data = self.cu.getstr('config',
                                            'FILTERED_TCST_DATA_FILE')
-        self.dep_vars = util.getlist(p.getstr('config', 'DEP_VARS'))
-        self.scatter_x = p.getstr('config', 'SCATTER_X')
-        self.scatter_y = p.getstr('config', 'SCATTER_Y')
-        self.skill_ref = p.getstr('config', 'SKILL_REF')
-        self.series = p.getstr('config', 'SERIES')
-        self.series_ci = p.getstr('config', 'SERIES_CI')
-        self.legend = p.getstr('config', 'LEGEND')
-        self.lead = p.getstr('config', 'LEAD')
-        self.plot_types = util.getlist(p.getstr('config', 'PLOT_TYPES'))
-        self.rp_diff = p.getstr('config', 'RP_DIFF')
-        self.demo_year = p.getstr('config', 'DEMO_YR')
-        self.hfip_baseline = p.getstr('config', 'HFIP_BASELINE')
-        self.footnote_flag = p.getstr('config', 'FOOTNOTE_FLAG')
-        self.plot_config_options = p.getstr('config', 'PLOT_CONFIG_OPTS')
-        self.save_data = p.getstr('config', 'SAVE_DATA')
+        self.dep_vars = util.getlist(self.cu.getstr('config', 'DEP_VARS'))
+        self.scatter_x = self.cu.getstr('config', 'SCATTER_X')
+        self.scatter_y = self.cu.getstr('config', 'SCATTER_Y')
+        self.skill_ref = self.cu.getstr('config', 'SKILL_REF')
+        self.series = self.cu.getstr('config', 'SERIES')
+        self.series_ci = self.cu.getstr('config', 'SERIES_CI')
+        self.legend = self.cu.getstr('config', 'LEGEND')
+        self.lead = self.cu.getstr('config', 'LEAD')
+        self.plot_types = util.getlist(self.cu.getstr('config', 'PLOT_TYPES'))
+        self.rp_diff = self.cu.getstr('config', 'RP_DIFF')
+        self.demo_year = self.cu.getstr('config', 'DEMO_YR')
+        self.hfip_baseline = self.cu.getstr('config', 'HFIP_BASELINE')
+        self.footnote_flag = self.cu.getstr('config', 'FOOTNOTE_FLAG')
+        self.plot_config_options = self.cu.getstr('config', 'PLOT_CONFIG_OPTS')
+        self.save_data = self.cu.getstr('config', 'SAVE_DATA')
 
         # Optional flags, by default these will be set to False in the
         # produtil config files.
-        self.no_ee = p.getbool('config', 'NO_EE')
-        self.no_log = p.getbool('config', 'NO_LOG')
-        self.save = p.getbool('config', 'SAVE')
+        self.no_ee = self.cu.getbool('config', 'NO_EE')
+        self.no_log = self.cu.getbool('config', 'NO_LOG')
+        self.save = self.cu.getbool('config', 'SAVE')
 
     def _init_tcmpr_script(self):
         """! Called by the constructor to set up the environment variables
@@ -148,9 +148,9 @@ class TCMPRPlotterWrapper(CommandBuilder):
             if self.p.has_option('dir', 'MET_BUILD_BASE'):
                 if self.p.has_option('dir', 'MET_INSTALL_DIR'):
                     os.environ['MET_INSTALL_DIR'] = \
-                        util.getdir(self.p, 'MET_INSTALL_DIR')
+                        self.cu.getdir('MET_INSTALL_DIR')
             else:
-                os.environ['MET_INSTALL_DIR'] = util.getdir(self.p, 'MET_INSTALL_DIR')
+                os.environ['MET_INSTALL_DIR'] = self.cu.getdir('MET_INSTALL_DIR')
 
         # MET_BASE has always been defined in METplus, so it 'should'
         # exist, so we will throw an error, if it is not defined,
@@ -163,9 +163,9 @@ class TCMPRPlotterWrapper(CommandBuilder):
             met_base_tcmpr_script = \
                 os.path.join(os.environ['MET_BASE'], 'Rscripts/plot_tcmpr.R')
         else:
-            os.environ['MET_BASE'] = util.getdir(self.p, 'MET_BASE')
+            os.environ['MET_BASE'] = self.cu.getdir('MET_BASE')
             met_base_tcmpr_script = \
-                os.path.join(util.getdir(self.p, 'MET_BASE'), 'Rscripts/plot_tcmpr.R')
+                os.path.join(self.cu.getdir('MET_BASE'), 'Rscripts/plot_tcmpr.R')
 
         # RSCRIPTS_BASE introduced and used ONLY in met-6.0 release.
         # Will go away when we no longer support met-6.0 and earlier.
@@ -179,7 +179,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # running with met-6.0 and earlier. Which means RSCRIPTS_BASE
             # is required, so throw an error, if it is not defined.
             if self.p.has_option('dir', 'MET_BUILD_BASE'):
-                os.environ['RSCRIPTS_BASE'] = util.getdir(self.p, 'RSCRIPTS_BASE')
+                os.environ['RSCRIPTS_BASE'] = self.cu.getdir('RSCRIPTS_BASE')
 
         # MET_BUILD_BASE has always been defined in METplus.
         # Will go away when we no longer support met-6.0 and earlier.
@@ -192,9 +192,9 @@ class TCMPRPlotterWrapper(CommandBuilder):
                              'scripts/Rscripts/plot_tcmpr.R')
         else:
             if self.p.has_option('dir', 'MET_BUILD_BASE'):
-                os.environ['MET_BUILD_BASE'] = util.getdir(self.p, 'MET_BUILD_BASE')
+                os.environ['MET_BUILD_BASE'] = self.cu.getdir('MET_BUILD_BASE')
                 met_build_base_tcmpr_script = os.path.join(
-                    util.getdir(self.p, 'MET_BUILD_BASE'),
+                    self.cu.getdir('MET_BUILD_BASE'),
                     'scripts/Rscripts/plot_tcmpr.R')
             else:
                 # Set to empty string since we test it later.

@@ -50,7 +50,7 @@ class TcPairsWrapper(CommandBuilder):
     def __init__(self, p, logger):
         super(TcPairsWrapper, self).__init__(p, logger)
         self.config = p
-        self.app_path = os.path.join(util.getdir(p, 'MET_INSTALL_DIR'),
+        self.app_path = os.path.join(self.cu.getdir('MET_INSTALL_DIR'),
                                      'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
         if self.logger is None:
@@ -79,55 +79,55 @@ class TcPairsWrapper(CommandBuilder):
         self.logger.debug(": creating the tc_pairs dictionary with" +
                           " values from the config file")
         tcp_dict = dict()
-        tcp_dict['MISSING_VAL_TO_REPLACE'] = self.config.getstr('config',
+        tcp_dict['MISSING_VAL_TO_REPLACE'] = self.cu.getstr('config',
                                                                 'MISSING_VAL_TO_REPLACE')
-        tcp_dict['MISSING_VAL'] = self.config.getstr('config', 'MISSING_VAL')
-        tcp_dict['TRACK_TYPE'] = self.config.getstr('config', 'TRACK_TYPE')
-        tcp_dict['TC_PAIRS_CONFIG_FILE'] = self.config.getstr('config',
+        tcp_dict['MISSING_VAL'] = self.cu.getstr('config', 'MISSING_VAL')
+        tcp_dict['TRACK_TYPE'] = self.cu.getstr('config', 'TRACK_TYPE')
+        tcp_dict['TC_PAIRS_CONFIG_FILE'] = self.cu.getstr('config',
                                                               'TC_PAIRS_CONFIG_FILE')
-        tcp_dict['INIT_BEG'] = self.config.getstr('config', 'INIT_BEG')
-        tcp_dict['INIT_END'] = self.config.getstr('config', 'INIT_END')
+        tcp_dict['INIT_BEG'] = self.cu.getstr('config', 'INIT_BEG')
+        tcp_dict['INIT_END'] = self.cu.getstr('config', 'INIT_END')
         tcp_dict['INIT_INCREMENT'] = int(
-            self.config.getint('config', 'INIT_INCREMENT') / 3600)
-        tcp_dict['INIT_HOUR_END'] = self.config.getstr('config',
+            self.cu.getint('config', 'INIT_INCREMENT') / 3600)
+        tcp_dict['INIT_HOUR_END'] = self.cu.getstr('config',
                                                        'INIT_HOUR_END')
         tcp_dict['INIT_INCLUDE'] = util.getlist(
-            self.config.getstr('config', 'INIT_INCLUDE'))
+            self.cu.getstr('config', 'INIT_INCLUDE'))
         tcp_dict['INIT_EXCLUDE'] = util.getlist(
-            self.config.getstr('config', 'INIT_EXCLUDE'))
-        tcp_dict['VALID_BEG'] = self.config.getstr('config', 'VALID_BEG')
-        tcp_dict['VALID_END'] = self.config.getstr('config', 'VALID_END')
-        tcp_dict['ADECK_TRACK_DATA_DIR'] = util.getdir(self.config,
-            'ADECK_TRACK_DATA_DIR')
-        tcp_dict['BDECK_TRACK_DATA_DIR'] = util.getdir(self.config,
-            'BDECK_TRACK_DATA_DIR')
-        tcp_dict['TRACK_DATA_SUBDIR_MOD'] = util.getdir(self.config, 
+            self.cu.getstr('config', 'INIT_EXCLUDE'))
+        tcp_dict['VALID_BEG'] = self.cu.getstr('config', 'VALID_BEG')
+        tcp_dict['VALID_END'] = self.cu.getstr('config', 'VALID_END')
+        tcp_dict['ADECK_TRACK_DATA_DIR'] = \
+                self.cu.getdir('ADECK_TRACK_DATA_DIR')
+        tcp_dict['BDECK_TRACK_DATA_DIR'] = \
+                self.cu.getdir('BDECK_TRACK_DATA_DIR')
+        tcp_dict['TRACK_DATA_SUBDIR_MOD'] = self.cu.getdir(
             'TRACK_DATA_SUBDIR_MOD')
-        tcp_dict['ADECK_FILE_PREFIX'] = self.config.getstr('config',
+        tcp_dict['ADECK_FILE_PREFIX'] = self.cu.getstr('config',
                                                            'ADECK_FILE_PREFIX')
-        tcp_dict['TC_PAIRS_DIR'] = util.getdir(self.config, 'TC_PAIRS_DIR')
-        tcp_dict['ADECK_FILE_PREFIX'] = self.config.getstr('config',
+        tcp_dict['TC_PAIRS_DIR'] = self.cu.getdir('TC_PAIRS_DIR')
+        tcp_dict['ADECK_FILE_PREFIX'] = self.cu.getstr('config',
                                                            'ADECK_FILE_PREFIX')
-        tcp_dict['BDECK_FILE_PREFIX'] = self.config.getstr('config',
+        tcp_dict['BDECK_FILE_PREFIX'] = self.cu.getstr('config',
                                                            'BDECK_FILE_PREFIX')
-        tcp_dict['TOP_LEVEL_DIRS'] = self.config.getstr('config',
+        tcp_dict['TOP_LEVEL_DIRS'] = self.cu.getstr('config',
                                                         'TOP_LEVEL_DIRS')
-        tcp_dict['MET_INSTALL_DIR'] = util.getdir(self.config, 'MET_INSTALL_DIR')
-        tcp_dict['OUTPUT_BASE'] = self.config.getstr('dir', 'OUTPUT_BASE')
+        tcp_dict['MET_INSTALL_DIR'] = self.cu.getdir('MET_INSTALL_DIR')
+        tcp_dict['OUTPUT_BASE'] = self.cu.getstr('dir', 'OUTPUT_BASE')
         tcp_dict['CYCLONE'] = util.getlist(
-            self.config.getstr('config', 'CYCLONE'))
-        tcp_dict['MODEL'] = util.getlist(self.config.getstr('config', 'MODEL'))
+            self.cu.getstr('config', 'CYCLONE'))
+        tcp_dict['MODEL'] = util.getlist(self.cu.getstr('config', 'MODEL'))
         tcp_dict['STORM_ID'] = util.getlist(
-            self.config.getstr('config', 'STORM_ID'))
-        tcp_dict['BASIN'] = util.getlist(self.config.getstr('config', 'BASIN'))
+            self.cu.getstr('config', 'STORM_ID'))
+        tcp_dict['BASIN'] = util.getlist(self.cu.getstr('config', 'BASIN'))
         tcp_dict['STORM_NAME'] = util.getlist(
-            self.config.getstr('config', 'STORM_NAME'))
-        tcp_dict['DLAND_FILE'] = self.config.getstr('config', 'DLAND_FILE')
+            self.cu.getstr('config', 'STORM_NAME'))
+        tcp_dict['DLAND_FILE'] = self.cu.getstr('config', 'DLAND_FILE')
         if tcp_dict['TRACK_TYPE'].lower() != 'extra_tropical_cyclone':
-            tcp_dict['FORECAST_TMPL'] = self.config.getraw('filename_templates',
-                                                           'FORECAST_TMPL')
-            tcp_dict['REFERENCE_TMPL'] = self.config.getraw(
-                'filename_templates', 'REFERENCE_TMPL')
+            tcp_dict['FORECAST_TMPL'] = self.cu.getraw('filename_templates',
+                                                       'FORECAST_TMPL')
+            tcp_dict['REFERENCE_TMPL'] = self.cu.getraw('filename_templates',
+                                                        'REFERENCE_TMPL')
         return tcp_dict
 
     def read_modify_write_file(self, in_csvfile, storm_month, missing_values,
@@ -1226,7 +1226,7 @@ class TcPairsWrapper(CommandBuilder):
         # write a new adeck/bdeck file
         # Check for existence of data and overwrite if desired
         if os.path.exists(deck_file_path):
-            if self.config.getbool('config', 'TRACK_DATA_MOD_FORCE_OVERWRITE'):
+            if self.cu.getbool('config', 'TRACK_DATA_MOD_FORCE_OVERWRITE'):
                 self.logger.debug("Writing modified csv file: "
                                   + deck_file_path +
                                   ", replacing " +
@@ -1281,19 +1281,19 @@ class TcPairsWrapper(CommandBuilder):
         pairs_out_file = os.path.join(pairs_output_dir, date_file)
         pairs_out_file_with_suffix = pairs_out_file + ".tcst"
         if os.path.exists(pairs_out_file_with_suffix):
-            if self.config.getbool('config', 'TC_PAIRS_FORCE_OVERWRITE'):
+            if self.cu.getbool('config', 'TC_PAIRS_FORCE_OVERWRITE'):
                 self.logger.debug("Writing tc_pairs output file: "
                                   + pairs_out_file + ", replacing"
                                   + " existing " +
                                   " data because TC_PAIRS_FORCE" +
                                   "_OVERWRITE is set to True")
 
-        tc_pairs_exe = os.path.join(util.getdir(self.config, 'MET_INSTALL_DIR'),
+        tc_pairs_exe = os.path.join(self.cu.getdir('MET_INSTALL_DIR'),
                                     'bin/tc_pairs')
         cmd_list = [tc_pairs_exe, " -adeck ",
                     adeck_file_path, " -bdeck ",
                     bdeck_file_path, " -config ",
-                    self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE'),
+                    self.cu.getstr('config', 'TC_PAIRS_CONFIG_FILE'),
                     " -out ", pairs_out_file]
         cmd = ''.join(cmd_list)
         return cmd
