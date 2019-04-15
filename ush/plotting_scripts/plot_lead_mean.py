@@ -158,7 +158,7 @@ for stat in plot_stats_list:
         else:
             ax1.plot(leads, model_mean_data, color=colors[model_index], ls='-', linewidth=2.0, marker='o', markersize=7, label=model_plot_name)
             ax2.plot(leads, model_mean_data-model1_mean_data, color=colors[model_index], ls='-', linewidth=2.0,  marker='o', markersize=7)
-            if ci_method != "None":
+            if ci_method != "NONE":
                 model_ci_data = np.empty(len(lead_list))
                 model_ci_data.fill(np.nan)
                 model_ci_file = os.path.join(plotting_out_dir_data, model_plot_name+"_"+stat+"_"+plot_time+start_date_YYYYmmdd+"to"+end_date_YYYYmmdd+"_valid"+valid_time_info[0]+"to"+valid_time_info[-1]+"Z_init"+init_time_info[0]+"to"+init_time_info[-1]+"Z"+"_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+fcst_var_thresh+"_obs"+obs_var_name+obs_var_level+obs_var_extra+obs_var_thresh+"_interp"+interp+"_region"+region+"_CI_"+ci_method+".txt")

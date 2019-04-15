@@ -153,7 +153,7 @@ for stat in plot_stats_list:
         logger.debug("Writing model "+str(model_num)+" "+model_name+" with name on plot "+model_plot_name+" lead "+lead+" mean to file: "+lead_mean_filename)
         with open(lead_mean_filename, 'a') as lead_mean_file:
             lead_mean_file.write(lead.ljust(6,'0')+' '+str(model_stat_values_array.mean())+ '\n')
-        if ci_method == "None":
+        if ci_method == "NONE":
             logger.debug("Not calculating confidence intervals")
         else:
             if model_num == 1:
