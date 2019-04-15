@@ -312,11 +312,11 @@ def calculate_stat(logger, model_data, stat):
     elif stat == "fbar_obar":
         stat_plot_name = "Average"
         if line_type == "SL1L2":
-            stat_values = model_data.loc[:][("FBAR", "OBAR")]
+            stat_values = model_data.loc[:][["FBAR", "OBAR"]]
         elif line_type == "VL1L2":
-            stat_values = np.sqrt(model_data.loc[:][("UVFFBAR", "UVOOBAR")])
+            stat_values = np.sqrt(model_data.loc[:][["UVFFBAR", "UVOOBAR"]])
         elif line_type == "VCNT":
-            stat_values = model_data.loc[:][("FBAR", "OBAR")]
+            stat_values = model_data.loc[:][["FBAR", "OBAR"]]
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
