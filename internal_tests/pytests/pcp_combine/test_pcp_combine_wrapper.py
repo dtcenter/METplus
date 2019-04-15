@@ -11,7 +11,6 @@ import pytest
 import config_metplus
 from pcp_combine_wrapper import PcpCombineWrapper
 import time_util
-from config_util import ConfigUtil
 import met_util as util
 from task_info import TaskInfo
 
@@ -90,7 +89,7 @@ def metplus_config():
 def test_get_accumulation_1_to_6():
     data_src = "OBS"
     pcw = pcp_combine_wrapper(data_src)
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
+    input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("2016090418", '%Y%m%d%H')
     time_info = time_util.ti_calculate(task_info)
@@ -116,7 +115,7 @@ def test_get_accumulation_1_to_6():
 def test_get_accumulation_6_to_6():
     data_src = "FCST"
     pcw = pcp_combine_wrapper(data_src)
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
+    input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("2016090418", '%Y%m%d%H')
     time_info = time_util.ti_calculate(task_info)
@@ -136,10 +135,9 @@ def test_get_accumulation_6_to_6():
 def test_get_lowest_forecast_file_dated_subdir():
     dtype = "FCST"
     pcw = pcp_combine_wrapper(dtype)
-    cu = ConfigUtil(pcw.p, pcw.logger)
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = datetime.datetime.strptime("201802012100", '%Y%m%d%H%M')
-    template = cu.getraw('filename_templates', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
+    template = pcw.config.getraw('filename_templates', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
     out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/20180201/file.2018020118f003.nc")
@@ -148,11 +146,11 @@ def test_get_lowest_forecast_file_dated_subdir():
 def test_get_lowest_forecast_file_no_subdir():
     dtype = "FCST"
     pcw = pcp_combine_wrapper(dtype)
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = datetime.datetime.strptime("201802012100", '%Y%m%d%H%M')
 
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
-#    template = util.getraw(pcw.p, 'filename_templates', dtype+'_PCP_COMBINE_INPUT_TEMPLATE')
+#    template = util.getraw(pcw.config, 'filename_templates', dtype+'_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
     out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/file.2018020118f003.nc")
@@ -160,10 +158,10 @@ def test_get_lowest_forecast_file_no_subdir():
 def test_get_lowest_forecast_file_yesterday():
     dtype = "FCST"
     pcw = pcp_combine_wrapper(dtype)
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = datetime.datetime.strptime("201802010600", '%Y%m%d%H%M')
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
-#    template = util.getraw(pcw.p, 'filename_templates', 'FCST2_PCP_COMBINE_INPUT_TEMPLATE')
+#    template = util.getraw(pcw.config, 'filename_templates', 'FCST2_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.set_input_dir(input_dir)
     out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/file.2018013118f012.nc")    
@@ -189,8 +187,8 @@ def test_setup_add_method():
     var_info.obs_extra = ""
     var_info.fcst_level = "A06"
     var_info.obs_level = "A06"
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    output_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
+    input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
+    output_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
     pcw.setup_add_method(time_info, var_info, rl)
     
     in_files = pcw.get_input_files()
@@ -223,8 +221,8 @@ def test_setup_sum_method():
     var_info.obs_extra = ""
     var_info.fcst_level = "A06"
     var_info.obs_level = "A06"
-    input_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    output_dir = pcw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
+    input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
+    output_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
     pcw.setup_sum_method(time_info, var_info, rl)
     
     in_files = pcw.get_input_files()
