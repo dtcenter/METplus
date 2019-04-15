@@ -1,0 +1,84 @@
+1) To run the conus surface use case, run with these configuration files in the prescribed order:
+-c parm/use_cases/grid_to_obs/grid_to_obs.conf -c parm/use_cases/grid_to_obs/examples/conus_surface.conf -c <path/to>/my_custom.conf
+
+where my_custom.conf is the user's custom configuration file which overrides settings for the following (fill in the
+full path where the variable is unset):
+
+[dir]
+INPUT_BASE =
+OUTPUT_BASE =
+TMP_DIR = {OUTPUT_BASE}/tmp
+LOG_DIR = {OUTPUT_BASE}/logs
+PARM_BASE =
+MET_INSTALL_DIR =
+
+# POINT STAT
+FCST_POINT_STAT_INPUT_DIR =
+OBS_POINT_STAT_INPUT_DIR = {PB2NC_OUTPUT_DIR}
+POINT_STAT_REGRID_TO_GRID =
+
+[exe]
+WGRIB2 =
+RM_EXE =
+CUT_EXE =
+TR_EXE =
+NCAP2_EXE =
+CONVERT_EXE =
+NCDUMP_EXE =
+EGREP_EXE =
+
+*NOTE*:
+the WGRIB2, RM_EXE, CUT_EXE, TR_EXE, NCAP2_EXE, CONVERT_EXE, NCDUMP_EXE, and EGREP_EXE need to be define only if they
+are not already defined in the parm/metplus_config/metplus_system.conf file
+
+[dir]
+INPUT_BASE = /d1/METplus_Data
+OUTPUT_BASE = /d1/minnawin/feature_162_g2o_conus
+TMP_DIR = {OUTPUT_BASE}/tmp
+LOG_DIR = {OUTPUT_BASE}/logs
+PARM_BASE = /home/minnawin/feature_162_cleanup_grid_to_obs/METplus/parm
+MET_INSTALL_DIR = /usr/local/met-8.0
+
+
+
+2) To run the upper air use case, run with these configuration files in the prescribed order:
+-c parm/use_cases/grid_to_obs/grid_to_obs.conf -c parm/use_cases/grid_to_obs/examples/upper_air.conf -c <path/to>/my_custom.conf
+
+where my_custom.conf is the user's custom configuration file which overrides settings for the following (fill in full path
+wherever the variable is unset):
+
+[dir]
+INPUT_BASE =
+OUTPUT_BASE =
+TMP_DIR = {OUTPUT_BASE}/tmp
+LOG_DIR = {OUTPUT_BASE}/logs
+PARM_BASE =
+MET_INSTALL_DIR =
+
+# POINT STAT
+FCST_POINT_STAT_INPUT_DIR =
+OBS_POINT_STAT_INPUT_DIR = {PB2NC_OUTPUT_DIR}
+POINT_STAT_REGRID_TO_GRID =
+
+[exe]
+WGRIB2 =
+RM_EXE =
+CUT_EXE =
+TR_EXE =
+NCAP2_EXE =
+CONVERT_EXE =
+NCDUMP_EXE =
+EGREP_EXE =
+
+*NOTE*:
+the WGRIB2, RM_EXE, CUT_EXE, TR_EXE, NCAP2_EXE, CONVERT_EXE, NCDUMP_EXE, and EGREP_EXE need to be define only if they
+are not already defined in the parm/metplus_config/metplus_system.conf file
+
+[dir]
+INPUT_BASE = /d1/METplus_Data
+OUTPUT_BASE = /d1/minnawin/feature_162_g2o_conus
+TMP_DIR = {OUTPUT_BASE}/tmp
+LOG_DIR = {OUTPUT_BASE}/logs
+PARM_BASE = /home/minnawin/feature_162_cleanup_grid_to_obs/METplus/parm
+MET_INSTALL_DIR = /usr/local/met-8.0
+

@@ -276,16 +276,33 @@ The following values must be defined in the METplus configuration file:
 \end_layout
 
 \begin_layout Standard
-PREPBUFR_MODEL_DIR_NAME - set this to the name of the model data (e.g.
+PREPBUFR_MODEL_DIR_NAME - 
+\emph on
+Deprecated.
+ Please use PB2NC_INPUT_DIR instead
+\emph default
+.
+ Set this to the name of the model data (e.g.
  NAM, GFS, nam, gfs).
  This is found under the [dir] section/family.
  The output directory will be given this name.
 \end_layout
 
 \begin_layout Standard
-PREPBUFR_DATA_DIR - The full path to the prepBUFR input data.
+PREPBUFR_DATA_DIR - 
+\emph on
+Deprecated.
+ Please use PB2NC_INPUT_DIR instead.
+
+\emph default
+ The full path to the prepBUFR input data.
  This variable is found under the [dir] header/family section of the METplus
  config file.
+\end_layout
+
+\begin_layout Standard
+PB2NC_INPUT_DIR - The full path to the prepBUFR input data.
+ This variable is found under the [dir] section of the METplus config file.
 \end_layout
 
 \begin_layout Standard
@@ -325,6 +342,84 @@ NC_FILE_TMPL - The file template that describes the format of the output
 \begin_layout Standard
 PROCESS_LIST - set this to PB2NC to ensure that the pb2nc_wrapper.py script
  is invoked.
+ This variable is located under the [config] section/family of the METplus
+ config file.
+\end_layout
+
+\begin_layout Standard
+PB2NC_VERTICAL_LEVEL - Indicate whether the data is for conus surface or
+ upper air.
+ Set to conus_sfc for conus surface data, or upper_air for upper air data.
+ This variable is located under the [config] header/family of the METplus
+ config file.
+\end_layout
+
+\begin_layout Standard
+PB2NC_TIME_SUMMARY_FLAG - set this to False if no time summarization is
+ to be performed, True otherwise.
+ This variable is located under the [config] header/family of the METplus
+ config file.
+\end_layout
+
+\begin_layout Standard
+PB2NC_TIME_SUMMARY_BEG - if the PB2NC_TIME_SUMMARY_FLAG is set to True,
+ then indicate the start time of the time summary in HHMMSS format.
+ This variable is located under the [config] header/family of the METplus
+ config file.
+\end_layout
+
+\begin_layout Standard
+PB2NC_TIME_SUMMARY_END - if the PB2NC_TIME_SUMMARY_FLAG is set to True,
+ then indicate the end time of the time summary in HHMMSS format.
+ This variable is located under the [config] header/family of the METplus
+ config file.
+\end_layout
+
+\begin_layout Standard
+PB2NC_TIME_SUMMARY_VAR_NAMES - if the PB2NC_TIME_SUMMARY_FLAG is set to
+ True, then indicate the list of statistics to summarize.
+ Refer to MET documentation for pb2nc (Chapter 4 in MET Users Guide).
+ This variable is located under the [config] header/family of the METplus
+ config file.
+\end_layout
+
+\begin_layout Standard
+The following executable paths need to be defined if they are not already
+ defined in the parm/metplus_config/metplus_system.conf file, under the [exe]
+ header/family section:
+\end_layout
+
+\begin_layout Standard
+WGRIB2 -path to the NOAA wgrib2 tool for reading and manipulating grib2
+ files
+\end_layout
+
+\begin_layout Standard
+RM - path to the Unix rm utility
+\end_layout
+
+\begin_layout Standard
+CUT -path to the Unix cut utility
+\end_layout
+
+\begin_layout Standard
+TR - path to the Unix tr utility
+\end_layout
+
+\begin_layout Standard
+NCAP2 - path to the NCO tool ncap2 utility
+\end_layout
+
+\begin_layout Standard
+CONVERT - path to the Unix convert utility
+\end_layout
+
+\begin_layout Standard
+NCDUMP - path to the netCDF ncdump utility
+\end_layout
+
+\begin_layout Standard
+EGREP - path to the Unix egrep utility
 \end_layout
 
 \begin_layout Section
@@ -528,6 +623,45 @@ FCST_VARn_LEVELS
 
 \begin_layout Standard
 FCST_VARn_OPTIONS
+\end_layout
+
+\begin_layout Standard
+The following executable paths need to be defined if they are not already
+ defined in the parm/metplus_config/metplus_system.conf file, under the [exe]
+ header/family section:
+\end_layout
+
+\begin_layout Standard
+WGRIB2 -path to the NOAA wgrib2 tool for reading and manipulating grib2
+ files
+\end_layout
+
+\begin_layout Standard
+RM - path to the Unix rm utility
+\end_layout
+
+\begin_layout Standard
+CUT -path to the Unix cut utility
+\end_layout
+
+\begin_layout Standard
+TR - path to the Unix tr utility
+\end_layout
+
+\begin_layout Standard
+NCAP2 - path to the NCO tool ncap2 utility
+\end_layout
+
+\begin_layout Standard
+CONVERT - path to the Unix convert utility
+\end_layout
+
+\begin_layout Standard
+NCDUMP - path to the netCDF ncdump utility
+\end_layout
+
+\begin_layout Standard
+EGREP - path to the Unix egrep utility
 \end_layout
 
 \begin_layout Section
