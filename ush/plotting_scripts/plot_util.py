@@ -151,21 +151,21 @@ def calculate_stat(logger, model_data, stat):
         logger.warning("Empty model_data dataframe")
         stat_values = model_data.loc[:]["TOTAL"]
     else:
-        if "FBAR" and "OBAR" and "MAE" in model_data_columns:
+        if all(elem in model_data_columns  for elem in ["FBAR", "OBAR", "MAE"]):
             line_type = "SL1L2"
             fbar = model_data.loc[:]["FBAR"]
             obar = model_data.loc[:]["OBAR"]
             fobar = model_data.loc[:]["FOBAR"]
             ffbar = model_data.loc[:]["FFBAR"]
             oobar = model_data.loc[:]["OOBAR"]
-        elif "FABAR" and "OABAR" and "MAE" in model_data_columns:
+        elif all(elem in model_data_columns  for elem in ["FABAR", "OABAR", "MAE"]):
             line_type = "SAL1L2"
             fabar = model_data.loc[:]["FABAR"]
             oabar = model_data.loc[:]["OABAR"]
             foabar = model_data.loc[:]["FOABAR"]
             ffabar = model_data.loc[:]["FFABAR"]
             ooabar = model_data.loc[:]["OOABAR"]
-        elif "UFBAR" and "VFBAR" in model_data_columns:
+        elif all(elem in model_data_columns  for elem in ["UFBAR", "VFBAR"]):
             line_type = "VL1L2"
             ufbar = model_data.loc[:]["UFBAR"]
             vfbar = model_data.loc[:]["VFBAR"]
@@ -174,7 +174,7 @@ def calculate_stat(logger, model_data, stat):
             uvfobar = model_data.loc[:]["UVFOBAR"]
             uvffbar = model_data.loc[:]["UVFFBAR"]
             uvoobar = model_data.loc[:]["UVOOBAR"]
-        elif "UFABAR" and "VFABAR" in model_data_columns:
+        elif all(elem in model_data_columns  for elem in ["UFABAR", "VFABAR"]):
             line_type = "VAL1L2"
             ufabar = model_data.loc[:]["UFABAR"]
             vfabar = model_data.loc[:]["VFABAR"]
@@ -183,7 +183,7 @@ def calculate_stat(logger, model_data, stat):
             uvfoabar = model_data.loc[:]["UVFOABAR"]
             uvffabar = model_data.loc[:]["UVFFABAR"]
             uvooabar = model_data.loc[:]["UVOOABAR"]
-        elif "VDIFF_SPEED" and "VDIFF_DIR" in model_data_columns:
+        elif all(elem in model_data_columns  for elem in ["VDIFF_SPEED", "VDIFF_DIR"]):
             line_type = "VCNT"
             fbar = model_data.loc[:]["FBAR"]
             obar = model_data.loc[:]["OBAR"]
@@ -388,12 +388,12 @@ def calculate_stat(logger, model_data, stat):
         exit(1)
     nindex = stat_values.index.nlevels 
     if nindex == 2:
-        nmodels = len(stat_values.index.get_level_values(0).unique())
-        ndates = len(stat_values.index.get_level_values(1).unique())
-        stat_values_array = np.ma.masked_invalid(stat_values.values.reshape(nmodels,ndates))
+        index0 = len(stat_values.index.get_level_values(0).unique())
+        index1 = len(stat_values.index.get_level_values(1).unique())
+        stat_values_array = np.ma.masked_invalid(stat_values.values.reshape(index0,index1))
     elif nindex == 3:
-        nmodels = len(stat_values.index.get_level_values(0).unique())
-        nlevels = len(stat_values.index.get_level_values(1).unique())
-        ndates = len(stat_values.index.get_level_values(2).unique())
-        stat_values_array = np.ma.masked_invalid(stat_values.values.reshape(nmodels,nlevels,ndates))
+        index0 = len(stat_values.index.get_level_values(0).unique())
+        index1 = len(stat_values.index.get_level_values(1).unique())
+        index2 = len(stat_values.index.get_level_values(2).unique())
+        stat_values_array = np.ma.masked_invalid(stat_values.values.reshape(index0,index1,index2))
     return stat_values, stat_values_array, stat_plot_name
