@@ -36,8 +36,8 @@ class ReformatGriddedWrapper(CommandBuilder):
     """!Common functionality to wrap similar MET applications
 that reformat gridded data
     """    
-    def __init__(self, p, logger):
-        super(ReformatGriddedWrapper, self).__init__(p, logger)
+    def __init__(self, config, logger):
+        super(ReformatGriddedWrapper, self).__init__(config, logger)
  
 
     def run_at_time(self, input_dict):
@@ -51,13 +51,13 @@ that reformat gridded data
         """        
         app_name_caps = self.app_name.upper()
         class_name = self.__class__.__name__[0: -7]
-        var_list = util.parse_var_list(self.cu)
-        lead_seq = util.get_lead_sequence(self.cu, input_dict)
+        var_list = util.parse_var_list(self.config)
+        lead_seq = util.get_lead_sequence(self.config, input_dict)
 
         run_list = []
-        if self.cu.getbool('config', 'FCST_'+app_name_caps+'_RUN', False):
+        if self.config.getbool('config', 'FCST_'+app_name_caps+'_RUN', False):
             run_list.append("FCST")
-        if self.cu.getbool('config', 'OBS_'+app_name_caps+'_RUN', False):
+        if self.config.getbool('config', 'OBS_'+app_name_caps+'_RUN', False):
             run_list.append("OBS")
 
         if len(run_list) == 0:
@@ -71,7 +71,7 @@ that reformat gridded data
             self.logger.info("Processing {} data".format(rl))
             for lead in lead_seq:
                 input_dict['lead_hours'] = lead
-                self.p.set('config', 'CURRENT_LEAD_TIME', lead)
+                self.config.set('config', 'CURRENT_LEAD_TIME', lead)
                 os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
                 self.logger.info("Processing forecast lead {}".format(lead))
                 time_info = time_util.ti_calculate(input_dict)

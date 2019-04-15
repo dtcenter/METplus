@@ -26,9 +26,9 @@ import string_template_substitution as sts
 class EnsembleStatWrapper(CompareGriddedWrapper):
     """!Wraps the MET tool ensemble_stat to compare ensemble datasets
     """
-    def __init__(self, p, logger):
-        super(EnsembleStatWrapper, self).__init__(p, logger)
-        self.met_install_dir = self.cu.getdir('MET_INSTALL_DIR')
+    def __init__(self, config, logger):
+        super(EnsembleStatWrapper, self).__init__(config, logger)
+        self.met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.app_path = os.path.join(self.met_install_dir, 'bin/ensemble_stat')
         self.app_name = os.path.basename(self.app_path)
 
@@ -46,77 +46,77 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         """
         c_dict = super(EnsembleStatWrapper, self).create_c_dict()
 
-        c_dict['ONCE_PER_FIELD'] = self.cu.getbool('config',
+        c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
                                                 'ENSEMBLE_STAT_ONCE_PER_FIELD',
                                                 False)
 
         c_dict['FCST_INPUT_DATATYPE'] = \
-          self.cu.getstr('config', 'FCST_ENSEMBLE_STAT_INPUT_DATATYPE', '')
+          self.config.getstr('config', 'FCST_ENSEMBLE_STAT_INPUT_DATATYPE', '')
 
         c_dict['OBS_POINT_INPUT_DATATYPE'] = \
-          self.cu.getstr('config', 'OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE', '')
+          self.config.getstr('config', 'OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE', '')
 
         c_dict['OBS_GRID_INPUT_DATATYPE'] = \
-          self.cu.getstr('config', 'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE', '')
+          self.config.getstr('config', 'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE', '')
 
-        c_dict['GRID_VX'] = self.cu.getstr('config', 'ENSEMBLE_STAT_GRID_VX', 'FCST')
+        c_dict['GRID_VX'] = self.config.getstr('config', 'ENSEMBLE_STAT_GRID_VX', 'FCST')
 
         c_dict['CONFIG_FILE'] = \
-            self.cu.getstr('config', 'ENSEMBLE_STAT_CONFIG',
+            self.config.getstr('config', 'ENSEMBLE_STAT_CONFIG',
                           c_dict['CONFIG_DIR']+'/EnsembleStatConfig_SFC')
 
         # met_obs_error_table is not required, if it is not defined
         # set it to the empty string '', that way the MET default is used.
         c_dict['MET_OBS_ERROR_TABLE'] = \
-            self.cu.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE','')
+            self.config.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE','')
 
         # No Default being set this is REQUIRED TO BE DEFINED in conf file.
         c_dict['N_ENSEMBLE_MEMBERS'] = \
-            self.cu.getstr('filename_templates','ENSEMBLE_STAT_N_MEMBERS')
+            self.config.getstr('filename_templates','ENSEMBLE_STAT_N_MEMBERS')
 
         c_dict['OBS_POINT_INPUT_DIR'] = \
-          self.cu.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
+          self.config.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
 
         c_dict['OBS_POINT_INPUT_TEMPLATE'] = \
-          self.cu.getraw('filename_templates',
+          self.config.getraw('filename_templates',
                                'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE')
 
         c_dict['OBS_GRID_INPUT_DIR'] = \
-          self.cu.getdir('OBS_ENSEMBLE_STAT_GRID_INPUT_DIR', '')
+          self.config.getdir('OBS_ENSEMBLE_STAT_GRID_INPUT_DIR', '')
 
         c_dict['OBS_GRID_INPUT_TEMPLATE'] = \
-          self.cu.getraw('filename_templates',
+          self.config.getraw('filename_templates',
                                'OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE')
 
         # The ensemble forecast files input directory and filename templates
         c_dict['FCST_INPUT_DIR'] = \
-          self.cu.getdir('FCST_ENSEMBLE_STAT_INPUT_DIR', '')
+          self.config.getdir('FCST_ENSEMBLE_STAT_INPUT_DIR', '')
 
         # This is a raw string and will be interpreted to generate the 
         # ensemble member filenames. This may be a list of 1 or n members.
         c_dict['FCST_INPUT_TEMPLATE'] = \
-          util.getlist(self.cu.getraw('filename_templates',
+          util.getlist(self.config.getraw('filename_templates',
                                'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE'))
 
 
-        c_dict['OUTPUT_DIR'] =  self.cu.getdir('ENSEMBLE_STAT_OUT_DIR')
+        c_dict['OUTPUT_DIR'] =  self.config.getdir('ENSEMBLE_STAT_OUT_DIR')
 
         # if window begin/end is set specific to ensemble_stat, override
         # OBS_WINDOW_BEGIN/END
-        if self.p.has_option('config', 'OBS_ENSEMBLE_STAT_WINDOW_BEGIN'):
+        if self.config.has_option('config', 'OBS_ENSEMBLE_STAT_WINDOW_BEGIN'):
             c_dict['OBS_WINDOW_BEGIN'] = \
-              self.cu.getint('config', 'OBS_ENSEMBLE_STAT_WINDOW_BEGIN')
-        if self.p.has_option('config', 'OBS_ENSEMBLE_STAT_WINDOW_END'):
+              self.config.getint('config', 'OBS_ENSEMBLE_STAT_WINDOW_BEGIN')
+        if self.config.has_option('config', 'OBS_ENSEMBLE_STAT_WINDOW_END'):
             c_dict['OBS_WINDOW_END'] = \
-              self.cu.getint('config', 'OBS_ENSEMBLE_STAT_WINDOW_END')
+              self.config.getint('config', 'OBS_ENSEMBLE_STAT_WINDOW_END')
 
         # same for FCST_WINDOW_BEGIN/END
-        if self.p.has_option('config', 'FCST_ENSEMBLE_STAT_WINDOW_BEGIN'):
+        if self.config.has_option('config', 'FCST_ENSEMBLE_STAT_WINDOW_BEGIN'):
             c_dict['FCST_WINDOW_BEGIN'] = \
-              self.cu.getint('config', 'FCST_ENSEMBLE_STAT_WINDOW_BEGIN')
-        if self.p.has_option('config', 'FCST_ENSEMBLE_STAT_WINDOW_END'):
+              self.config.getint('config', 'FCST_ENSEMBLE_STAT_WINDOW_BEGIN')
+        if self.config.has_option('config', 'FCST_ENSEMBLE_STAT_WINDOW_END'):
             c_dict['FCST_WINDOW_END'] = \
-              self.cu.getint('config', 'FCST_ENSEMBLE_STAT_WINDOW_END')
+              self.config.getint('config', 'FCST_ENSEMBLE_STAT_WINDOW_END')
 
         # need to set these so that find_data will succeed
         c_dict['OBS_POINT_WINDOW_BEGIN'] = c_dict['OBS_WINDOW_BEGIN']
@@ -241,7 +241,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             member_path = os.path.join(model_dir, member_file)
             member_path = util.preprocess_file(member_path,
                                 self.c_dict['FCST_INPUT_DATATYPE'],
-                                self.cu)
+                                               self.config)
             if member_path != None:
                 ens_members_path.append(member_path)
 

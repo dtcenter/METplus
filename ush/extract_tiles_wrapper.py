@@ -19,11 +19,10 @@ import os
 import sys
 import datetime
 import produtil.setup
-from command_builder import CommandBuilder
 import met_util as util
 import feature_util
-import config_metplus
 from tc_stat_wrapper import TcStatWrapper
+from command_builder import CommandBuilder
 
 '''!@namespace ExtractTilesWrapper
 @brief Runs  Extracts tiles to be used by series_analysis.
@@ -45,25 +44,23 @@ class ExtractTilesWrapper(CommandBuilder):
     # Much of the data in the class are used to perform tasks, rather than
     # having methods operating on them.
 
-    def __init__(self, p, logger):
-        super(ExtractTilesWrapper, self).__init__(p, logger)
-        met_install_dir = self.cu.getdir('MET_INSTALL_DIR')
-        self.app_path = os.path.join(self.cu.getdir('MET_INSTALL_DIR'), 'bin/tc_pairs')
+    def __init__(self, config, logger):
+        super(ExtractTilesWrapper, self).__init__(config, logger)
+        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
+        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'), 'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
-        self.tc_pairs_dir = self.cu.getdir('TC_PAIRS_DIR')
-        self.overwrite_flag = self.cu.getbool('config',
+        self.tc_pairs_dir = self.config.getdir('TC_PAIRS_DIR')
+        self.overwrite_flag = self.config.getbool('config',
                                               'OVERWRITE_TRACK')
         self.addl_filter_opts = \
-            self.cu.getstr('config', 'EXTRACT_TILES_FILTER_OPTS')
-        self.filtered_out_dir = self.cu.getdir('EXTRACT_OUT_DIR')
+            self.config.getstr('config', 'EXTRACT_TILES_FILTER_OPTS')
+        self.filtered_out_dir = self.config.getdir('EXTRACT_OUT_DIR')
         self.tc_stat_exe = os.path.join(met_install_dir, 'bin/tc_stat')
-        self.init_beg = self.cu.getstr('config', 'INIT_BEG')[0:8]
-        self.init_end = self.cu.getstr('config', 'INIT_END')[0:8]
-        self.init_hour_inc = int(self.cu.getint('config', 'INIT_INCREMENT') / 3600)
-        self.init_hour_end = self.cu.getint('config', 'INIT_HOUR_END')
-        if self.logger is None:
-            self.logger = util.get_logger(self.p)
-        self.config = self.p
+        self.init_beg = self.config.getstr('config', 'INIT_BEG')[0:8]
+        self.init_end = self.config.getstr('config', 'INIT_END')[0:8]
+        self.init_hour_inc = int(self.config.getint('config', 'INIT_INCREMENT') / 3600)
+        self.init_hour_end = self.config.getint('config', 'INIT_HOUR_END')
+
 
     # pylint: disable=too-many-locals
     # 23 local variables are needed to perform the necessary work.
@@ -120,7 +117,7 @@ class ExtractTilesWrapper(CommandBuilder):
         # get the process id to be used to identify the output
         # amongst different users and runs.
         cur_pid = str(os.getpid())
-        tmp_dir = os.path.join(self.cu.getdir('TMP_DIR'), cur_pid)
+        tmp_dir = os.path.join(self.config.getdir('TMP_DIR'), cur_pid)
         self.logger.info("Begin extract tiles")
 
         cur_init = init_time[0:8]+"_"+init_time[8:10]

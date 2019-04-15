@@ -42,69 +42,64 @@ class SeriesByLeadWrapper(CommandBuilder):
          file.
     """
 
-    def __init__(self, p, logger):
-        super(SeriesByLeadWrapper, self).__init__(p, logger)
+    def __init__(self, config, logger):
+        super(SeriesByLeadWrapper, self).__init__(config, logger)
         self.app_name = 'SeriesByLead'
-        self.p = p
-        self.logger = logger
-        if self.logger is None:
-            self.logger = util.get_logger(self.p, sublog='SeriesByLead')
-
         # Retrieve any necessary values from the parm file(s)
-        self.fhr_beg = self.cu.getint('config', 'FHR_BEG')
-        self.fhr_end = self.cu.getint('config', 'FHR_END')
-        self.fhr_inc = self.cu.getstr('config', 'FHR_INCREMENT')
-        self.fhr_group_beg_str = util.getlist(self.cu.getstr('config',
+        self.fhr_beg = self.config.getint('config', 'FHR_BEG')
+        self.fhr_end = self.config.getint('config', 'FHR_END')
+        self.fhr_inc = self.config.getstr('config', 'FHR_INCREMENT')
+        self.fhr_group_beg_str = util.getlist(self.config.getstr('config',
                                                        'FHR_GROUP_BEG'))
-        self.fhr_group_end_str = util.getlist(self.cu.getstr('config',
+        self.fhr_group_end_str = util.getlist(self.config.getstr('config',
                                                        'FHR_GROUP_END'))
         self.fhr_group_beg = [int(beg) for beg in self.fhr_group_beg_str]
         self.fhr_group_end = [map(int, end) for end in self.fhr_group_end_str]
-        self.fhr_group_labels = util.getlist(self.cu.getstr('config',
+        self.fhr_group_labels = util.getlist(self.config.getstr('config',
                                                       'FHR_GROUP_LABELS'))
-        self.var_list = util.getlist(self.cu.getstr('config', 'VAR_LIST'))
-        self.stat_list = util.getlist(self.cu.getstr('config', 'STAT_LIST'))
+        self.var_list = util.getlist(self.config.getstr('config', 'VAR_LIST'))
+        self.stat_list = util.getlist(self.config.getstr('config', 'STAT_LIST'))
         self.plot_data_plane_exe = os.path.join(
-            self.cu.getdir('MET_INSTALL_DIR'),
+            self.config.getdir('MET_INSTALL_DIR'),
             'bin/plot_data_plane')
-        self.convert_exe = self.cu.getexe('CONVERT_EXE')
-        self.ncap2_exe = self.cu.getexe('NCAP2_EXE')
-        self.ncdump_exe = self.cu.getexe('NCDUMP_EXE')
-        self.rm_exe = self.cu.getexe("RM_EXE")
-        met_install_dir = self.cu.getdir('MET_INSTALL_DIR')
+        self.convert_exe = self.config.getexe('CONVERT_EXE')
+        self.ncap2_exe = self.config.getexe('NCAP2_EXE')
+        self.ncdump_exe = self.config.getexe('NCDUMP_EXE')
+        self.rm_exe = self.config.getexe("RM_EXE")
+        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.series_analysis_exe = os.path.join(met_install_dir,
                                                 'bin/series_analysis')
-        self.extract_tiles_dir = self.cu.getdir('EXTRACT_OUT_DIR')
+        self.extract_tiles_dir = self.config.getdir('EXTRACT_OUT_DIR')
         self.series_lead_filtered_out_dir = \
-            self.cu.getdir('SERIES_LEAD_FILTERED_OUT_DIR')
-        self.series_lead_out_dir = self.cu.getdir('SERIES_LEAD_OUT_DIR')
-        self.tmp_dir = self.cu.getdir('TMP_DIR')
-        self.background_map = self.cu.getbool('config', 'BACKGROUND_MAP')
+            self.config.getdir('SERIES_LEAD_FILTERED_OUT_DIR')
+        self.series_lead_out_dir = self.config.getdir('SERIES_LEAD_OUT_DIR')
+        self.tmp_dir = self.config.getdir('TMP_DIR')
+        self.background_map = self.config.getbool('config', 'BACKGROUND_MAP')
         self.regrid_with_met_tool = \
-            self.cu.getbool('config', 'REGRID_USING_MET_TOOL')
+            self.config.getbool('config', 'REGRID_USING_MET_TOOL')
         self.series_filter_opts = \
-            self.cu.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
+            self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
         self.series_filter_opts.strip()
         self.fcst_ascii_regex = \
-            self.cu.getstr('regex_pattern', 'FCST_ASCII_REGEX_LEAD')
+            self.config.getstr('regex_pattern', 'FCST_ASCII_REGEX_LEAD')
         self.anly_ascii_regex = \
-            self.cu.getstr('regex_pattern', 'ANLY_ASCII_REGEX_LEAD')
+            self.config.getstr('regex_pattern', 'ANLY_ASCII_REGEX_LEAD')
         self.series_anly_configuration_file = \
-            self.cu.getstr('config', 'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE')
-        self.var_list = util.getlist(self.cu.getstr('config', 'VAR_LIST'))
-        self.regrid_with_met_tool = self.cu.getbool('config',
+            self.config.getstr('config', 'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE')
+        self.var_list = util.getlist(self.config.getstr('config', 'VAR_LIST'))
+        self.regrid_with_met_tool = self.config.getbool('config',
                                               'REGRID_USING_MET_TOOL')
         if self.regrid_with_met_tool:
             # Re-gridding via MET Tool regrid_data_plane.
             self.fcst_tile_regex = \
-                self.cu.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
+                self.config.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
             self.anly_tile_regex = \
-                self.cu.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
+                self.config.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
         else:
             # Re-gridding via wgrib2 tool.
-            self.fcst_tile_regex = self.cu.getstr('regex_pattern',
+            self.fcst_tile_regex = self.config.getstr('regex_pattern',
                                                  'FCST_TILE_REGEX')
-            self.anly_tile_regex = self.cu.getstr('regex_pattern',
+            self.anly_tile_regex = self.config.getstr('regex_pattern',
                                                  'ANLY_TILE_REGEX')
 
         self.logger.info("Initialized SeriesByLeadWrapper")
@@ -271,7 +266,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                       self.series_lead_filtered_out_dir,
                                       self.series_filter_opts,
                                       self.tmp_dir,
-                                      self.p)
+                                      self.config)
 
             # Remove any empty files and directories to avoid
             # errors or performance degradation when performing
@@ -749,7 +744,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     else:
                         # Remove the nseries.nc file, it is no longer needed
                         if os.path.isfile(nseries_nc_path):
-                            print("REMOVING OLD nc path file")
+                            self.logger.debug("REMOVING OLD nc path file")
                             os.remove(nseries_nc_path)
 
         except IOError:
@@ -981,7 +976,6 @@ class SeriesByLeadWrapper(CommandBuilder):
             nc_files_list = [f for f in os.listdir(full_path) if
                              os.path.isfile(os.path.join(full_path, f))]
             for cur_nc in nc_files_list:
-                print("cur_nc: {}".format(cur_nc))
                 match = re.match(filename_regex, cur_nc)
                 if match:
                     nc_file = os.path.join(full_path, cur_nc)

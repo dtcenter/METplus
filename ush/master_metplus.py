@@ -9,7 +9,7 @@ import os
 import sys
 import logging
 import getopt
-from config_util import ConfigUtil
+from config_wrapper import ConfigWrapper
 import config_launcher
 import time
 from datetime import datetime, timedelta
@@ -66,9 +66,6 @@ def main():
     # Parse arguments, options and return a config instance.
     p = config_metplus.setup(filename=cur_filename)
 
-    # check for deprecated config items and warn user to remove/replace them
-    util.check_for_deprecated_config(p, logger)
-
     # NOW we have a conf object p, we can now get the logger
     # and set the handler to write to the LOG_METPLUS
     # TODO: Frimel setting up logger file handler.
@@ -81,23 +78,26 @@ def main():
     logger.info('Running METplus v{} called with command: {}'
                 .format(util.get_version_number(), ' '.join(sys.argv)))
 
+    # check for deprecated config items and warn user to remove/replace them
+    util.check_for_deprecated_config(p, logger)
 
-    cu = ConfigUtil(p, logger)
+    config = ConfigWrapper(p, logger)
+
     # set staging dir to OUTPUT_BASE/stage if not set
-    if not p.has_option('dir', 'STAGING_DIR'):
-        p.set('dir', 'STAGING_DIR', os.path.join(cu.getdir('OUTPUT_BASE'),"stage"))
+    if not config.has_option('dir', 'STAGING_DIR'):
+        config.set('dir', 'STAGING_DIR', os.path.join(config.getdir('OUTPUT_BASE'),"stage"))
 
     # create temp dir if it doesn't exist already
-    tmp_dir = cu.getdir('TMP_DIR', logger)
+    tmp_dir = config.getdir('TMP_DIR', logger)
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
 
     # This is available in each subprocess from os.system BUT
     # we also set it in each process since they may be called stand alone.
-    os.environ['MET_BASE'] = cu.getdir('MET_BASE')
+    os.environ['MET_BASE'] = config.getdir('MET_BASE')
 
     # Use config object to get the list of processes to call
-    process_list = util.getlist(cu.getstr('config', 'PROCESS_LIST'))
+    process_list = util.getlist(config.getstr('config', 'PROCESS_LIST'))
 
     # Keep this comment.
     # When running commands in the process_list, reprocess the
@@ -114,18 +114,19 @@ def main():
     processes = []
     for item in process_list:
         try:
-            logger = p.log(item)
-            command_builder = getattr(sys.modules[__name__], item + "Wrapper")(
-                p, logger)
+            logger = config.log(item)
+            command_builder = \
+                getattr(sys.modules[__name__],
+                        item + "Wrapper")(p, logger)
         except AttributeError:
             raise NameError("Process %s doesn't exist" % item)
             exit()
 
         processes.append(command_builder)
 
-    loop_order = cu.getstr('config', 'LOOP_ORDER', '')
+    loop_order = config.getstr('config', 'LOOP_ORDER', '')
     if loop_order == '':
-        loop_order = cu.getstr('config', 'LOOP_METHOD')
+        loop_order = config.getstr('config', 'LOOP_METHOD')
 
     if loop_order == "processes":
         for process in processes:
@@ -138,7 +139,7 @@ def main():
             process.run_all_times()
 
     elif loop_order == "times":
-        util.loop_over_times_and_call(cu, processes)
+        util.loop_over_times_and_call(config, processes)
 
     else:
         logger.error("Invalid LOOP_METHOD defined. " + \
@@ -146,8 +147,8 @@ def main():
         exit()
 
     # scrub staging directory if requested
-    if cu.getbool('config', 'SCRUB_STAGING_DIR', False) and os.path.exists(cu.getdir('STAGING_DIR')):
-        staging_dir = cu.getdir('STAGING_DIR')
+    if config.getbool('config', 'SCRUB_STAGING_DIR', False) and os.path.exists(config.getdir('STAGING_DIR')):
+        staging_dir = config.getdir('STAGING_DIR')
         logger.info("Scrubbing staging dir: {}".format(staging_dir))
         shutil.rmtree(staging_dir)
 

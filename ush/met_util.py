@@ -27,7 +27,7 @@ from gempak_to_cf_wrapper import GempakToCFWrapper
 # for run stand alone
 import produtil
 import config_metplus
-from config_util import ConfigUtil
+from config_wrapper import ConfigWrapper
 
 
 """!@namespace met_util
@@ -118,13 +118,13 @@ def write_final_conf(conf, logger):
         conf.write(f)
 
 
-def is_loop_by_init(cu):
-    if cu.p.has_option('config', 'LOOP_BY'):
-        if cu.getstr('config', 'LOOP_BY').lower() in ['init', 'retro' , '']:
+def is_loop_by_init(config):
+    if config.p.has_option('config', 'LOOP_BY'):
+        if config.getstr('config', 'LOOP_BY').lower() in ['init', 'retro' , '']:
             return True
 
-    if cu.p.has_option('config', 'LOOP_BY_INIT'):
-        return cu.getbool('config', 'LOOP_BY_INIT', True)
+    if config.p.has_option('config', 'LOOP_BY_INIT'):
+        return config.getbool('config', 'LOOP_BY_INIT', True)
 
     return False
 
@@ -137,44 +137,44 @@ def get_time_obj(t, fmt, clock_time, logger=None):
     return datetime.datetime.strptime(time_str, fmt)
 
 
-def loop_over_times_and_call(cu, processes):
-    clock_time_obj = datetime.datetime.strptime(cu.getstr('config', 'CLOCK_TIME'),
+def loop_over_times_and_call(config, processes):
+    clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
                                        '%Y%m%d%H%M%S')
-    use_init = is_loop_by_init(cu)
+    use_init = is_loop_by_init(config)
     if use_init:
-        time_format = cu.getstr('config', 'INIT_TIME_FMT')
-        start_t = cu.getraw('config', 'INIT_BEG')
-        end_t = cu.getraw('config', 'INIT_END')
-        time_interval = cu.getint('config', 'INIT_INCREMENT')
+        time_format = config.getstr('config', 'INIT_TIME_FMT')
+        start_t = config.getraw('config', 'INIT_BEG')
+        end_t = config.getraw('config', 'INIT_END')
+        time_interval = config.getint('config', 'INIT_INCREMENT')
     else:
-        time_format = cu.getstr('config', 'VALID_TIME_FMT')
-        start_t = cu.getraw('config', 'VALID_BEG')
-        end_t = cu.getraw('config', 'VALID_END')
-        time_interval = cu.getint('config', 'VALID_INCREMENT')
+        time_format = config.getstr('config', 'VALID_TIME_FMT')
+        start_t = config.getraw('config', 'VALID_BEG')
+        end_t = config.getraw('config', 'VALID_END')
+        time_interval = config.getint('config', 'VALID_INCREMENT')
 
     if time_interval < 60:
-        cu.logger.error("time_interval parameter must be "
+        config.logger.error("time_interval parameter must be "
               "greater than 60 seconds")
         exit(1)
 
     loop_time = get_time_obj(start_t, time_format,
-                             clock_time_obj, cu.logger)
+                             clock_time_obj, config.logger)
     end_time = get_time_obj(end_t, time_format,
-                            clock_time_obj, cu.logger)
+                            clock_time_obj, config.logger)
 
     while loop_time <= end_time:
         run_time = loop_time.strftime("%Y%m%d%H%M")
-        cu.logger.info("****************************************")
-        cu.logger.info("* Running METplus")
+        config.logger.info("****************************************")
+        config.logger.info("* Running METplus")
         if use_init:
-            cu.logger.info("*  at init time: " + run_time)
-            cu.p.set('config', 'CURRENT_INIT_TIME', run_time)
+            config.logger.info("*  at init time: " + run_time)
+            config.p.set('config', 'CURRENT_INIT_TIME', run_time)
             os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
         else:
-            cu.logger.info("*  at valid time: " + run_time)
-            cu.p.set('config', 'CURRENT_VALID_TIME', run_time)
+            config.logger.info("*  at valid time: " + run_time)
+            config.p.set('config', 'CURRENT_VALID_TIME', run_time)
             os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
-        cu.logger.info("****************************************")
+        config.logger.info("****************************************")
         if not isinstance(processes, list):
             processes = [processes]
         for process in processes:
@@ -192,25 +192,25 @@ def loop_over_times_and_call(cu, processes):
         loop_time += datetime.timedelta(seconds=time_interval)
 
 
-def get_lead_sequence(cu, input_dict):
-    if cu.p.has_option('config', 'LEAD_SEQ'):
+def get_lead_sequence(config, input_dict):
+    if config.p.has_option('config', 'LEAD_SEQ'):
         # return list of forecast leads
-        return getlistint(cu.getstr('config', 'LEAD_SEQ'))
-    if cu.p.has_option('config', 'INIT_SEQ'):
+        return getlistint(config.getstr('config', 'LEAD_SEQ'))
+    if config.p.has_option('config', 'INIT_SEQ'):
         # if looping by init, fail and exit
         if 'init' in input_dict.keys():
             log_msg = 'INIT_SEQ specified while looping by init time.' + \
                       ' Use LEAD_SEQ or change to loop by valid time'
-            if cu.logger:
-                cu.logger.error(log_msg)
+            if config.logger:
+                config.logger.error(log_msg)
             else:
                 print(log_msg)
             exit(1)
 
         valid_hr = int(input_dict['valid'].strftime('%H'))
-        init_seq = getlistint(cu.getstr('config', 'INIT_SEQ'))
-        min_forecast = cu.getint('config', 'FCST_MIN_FORECAST', 0)
-        max_forecast = cu.getint('config', 'FCST_MAX_FORECAST', 256)
+        init_seq = getlistint(config.getstr('config', 'INIT_SEQ'))
+        min_forecast = config.getint('config', 'FCST_MIN_FORECAST', 0)
+        max_forecast = config.getint('config', 'FCST_MAX_FORECAST', 256)
         lead_seq = []
         for i in init_seq:
             if valid_hr >= i:
@@ -346,12 +346,9 @@ def set_logvars(config, logger=None):
     if logger is None:
         logger = config.log()
 
-
-    cu = ConfigUtil(config, logger)
-
     # LOG_TIMESTAMP_TEMPLATE is not required in the conf file,
     # so lets first test for that.
-    log_timestamp_template = cu.getstr('config','LOG_TIMESTAMP_TEMPLATE','')
+    log_timestamp_template = config.getstr('config','LOG_TIMESTAMP_TEMPLATE','')
     if log_timestamp_template:
         # Note: strftime appears to handle if log_timestamp_template
         # is a string ie. 'blah' and not a valid set of % directives %Y%m%d,
@@ -373,22 +370,22 @@ def set_logvars(config, logger=None):
             logger.info('Using the following default: %Y%m%d%H')
             log_timestamp_template = '%Y%m%d%H'
         t = datetime.datetime.now()
-        if cu.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
-            if is_loop_by_init(cu):
-                t = datetime.datetime.strptime(cu.getstr('config',
+        if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
+            if is_loop_by_init(config):
+                t = datetime.datetime.strptime(config.getstr('config',
                                                              'INIT_BEG'),
-                                               cu.getstr('config',
+                                               config.getstr('config',
                                                              'INIT_TIME_FMT'))
             else:
-                t = datetime.datetime.strptime(cu.getstr('config',
+                t = datetime.datetime.strptime(config.getstr('config',
                                                              'VALID_BEG'),
-                                               cu.getstr('config',
+                                               config.getstr('config',
                                                              'VALID_TIME_FMT'))
         log_filenametimestamp = t.strftime(log_timestamp_template)
     else:
         log_filenametimestamp=''
 
-    log_dir = cu.getdir('LOG_DIR')
+    log_dir = config.getdir('LOG_DIR')
 
     # NOTE: LOG_METPLUS or metpluslog is meant to include the absolute path
     #       and the metpluslog_filename,
@@ -844,7 +841,7 @@ def create_grid_specification_string(lat, lon, logger, config):
     # Need to access sys._getframe to capture current file and function for
     # logging information
 
-    cu = ConfigUtil(config, logger)
+    cu = ConfigWrapper(config, logger)
 
     # Useful for logging
     cur_filename = sys._getframe().f_code.co_filename
@@ -1287,25 +1284,25 @@ def validate_thresholds(thresh_list):
     return True
 
 
-def parse_var_list(cu):
+def parse_var_list(config):
     """ read conf items and populate list of FieldObj containing
     information about each variable to be compared
         Args:
-            @param cu: ConfigUtil object
+            @param config: ConfigWrapper object
         Returns:
             list of FieldObj with variable information
     """
-    var_list_fcst = parse_var_list_helper(cu, "FCST", False)
-    var_list_obs = parse_var_list_helper(cu, "OBS", True)
+    var_list_fcst = parse_var_list_helper(config, "FCST", False)
+    var_list_obs = parse_var_list_helper(config, "OBS", True)
     var_list = var_list_fcst + var_list_obs
     return sorted(var_list, key=lambda x: x.index)
     return var_list
 
 
-def parse_var_list_helper(cu, dt, dont_duplicate):
+def parse_var_list_helper(config, dt, dont_duplicate):
     """ helper function for parse_var_list
         Args:
-            @param cu: ConfigUtil object
+            @param config: ConfigWrapper object
             @param dt: data_type (FCST or OBS)
             @param dont_duplicate: if true check other data
               type and don't process if it exists
@@ -1321,7 +1318,7 @@ def parse_var_list_helper(cu, dt, dont_duplicate):
     var_list = []
 
     # find all FCST_VARn_NAME keys in the conf files
-    all_conf = cu.p.keys('config')
+    all_conf = config.p.keys('config')
     indices = []
     regex = re.compile(dt+"_VAR(\d+)_NAME")
     for conf in all_conf:
@@ -1332,7 +1329,7 @@ def parse_var_list_helper(cu, dt, dont_duplicate):
     # loop over all possible variables and add them to list
     for n in indices:
         # don't duplicate if already entered into var list
-        if dont_duplicate and cu.p.has_option('config', odt+'_VAR'+n+'_NAME'):
+        if dont_duplicate and config.p.has_option('config', odt+'_VAR'+n+'_NAME'):
             continue
 
         name = {}
@@ -1340,52 +1337,52 @@ def parse_var_list_helper(cu, dt, dont_duplicate):
         thresh = {}
         extra = {}
         # get fcst var info if available
-        if cu.p.has_option('config', dt+"_VAR"+n+"_NAME"):
-            name[dt] = cu.getstr('config', dt+"_VAR"+n+"_NAME")
+        if config.p.has_option('config', dt+"_VAR"+n+"_NAME"):
+            name[dt] = config.getstr('config', dt+"_VAR"+n+"_NAME")
 
             extra[dt] = ""
-            if cu.p.has_option('config', dt+"_VAR"+n+"_OPTIONS"):
-                extra[dt] = cu.getraw('config', dt+"_VAR"+n+"_OPTIONS")
+            if config.p.has_option('config', dt+"_VAR"+n+"_OPTIONS"):
+                extra[dt] = config.getraw('config', dt+"_VAR"+n+"_OPTIONS")
 
             thresh[dt] = []
-            if cu.p.has_option('config', dt+"_VAR"+n+"_THRESH"):
-                thresh[dt] = getlist(cu.getstr('config', dt+"_VAR"+n+"_THRESH"))
+            if config.p.has_option('config', dt+"_VAR"+n+"_THRESH"):
+                thresh[dt] = getlist(config.getstr('config', dt+"_VAR"+n+"_THRESH"))
                 if validate_thresholds(thresh[dt]) == False:
                     msg = "  Update "+dt+"_VAR"+n+"_THRESH to match this format"
-                    if cu.logger:
-                        cu.logger.error(msg)
+                    if config.logger:
+                        config.logger.error(msg)
                     else:
                         print(msg)
                     exit(1)
 
             # if OBS_VARn_X does not exist, use FCST_VARn_X
-            if cu.p.has_option('config', odt+"_VAR"+n+"_NAME"):
-                name[odt] = cu.getstr('config', odt+"_VAR"+n+"_NAME")
+            if config.p.has_option('config', odt+"_VAR"+n+"_NAME"):
+                name[odt] = config.getstr('config', odt+"_VAR"+n+"_NAME")
             else:
                 name[odt] = name[dt]
 
             extra[odt] = ""
-            if cu.p.has_option('config', odt+"_VAR"+n+"_OPTIONS"):
-                extra[odt] = cu.getraw('config', odt+"_VAR"+n+"_OPTIONS")
+            if config.p.has_option('config', odt+"_VAR"+n+"_OPTIONS"):
+                extra[odt] = config.getraw('config', odt+"_VAR"+n+"_OPTIONS")
 
-            levels[dt] = getlist(cu.getstr('config', dt+"_VAR"+n+"_LEVELS"))
-            if cu.p.has_option('config', odt+"_VAR"+n+"_LEVELS"):
-                levels[odt] = getlist(cu.getstr('config', odt+"_VAR"+n+"_LEVELS"))
+            levels[dt] = getlist(config.getstr('config', dt+"_VAR"+n+"_LEVELS"))
+            if config.p.has_option('config', odt+"_VAR"+n+"_LEVELS"):
+                levels[odt] = getlist(config.getstr('config', odt+"_VAR"+n+"_LEVELS"))
             else:
                 levels[odt] = levels[dt]
 
             if len(levels[dt]) != len(levels[odt]):
                 msg = dt+"_VAR"+n+"_LEVELS and "+odt+"_VAR"+n+\
                           "_LEVELS do not have the same number of elements"
-                if cu.logger:
-                    cu.logger.error(msg)
+                if config.logger:
+                    config.logger.error(msg)
                 else:
                     print(msg)
                 exit(1)
 
             # if OBS_VARn_THRESH does not exist, use FCST_VARn_THRESH
-            if cu.p.has_option('config', odt+"_VAR"+n+"_THRESH"):
-                thresh[odt] = getlist(cu.getstr('config', odt+"_VAR"+n+"_THRESH"))
+            if config.p.has_option('config', odt+"_VAR"+n+"_THRESH"):
+                thresh[odt] = getlist(config.getstr('config', odt+"_VAR"+n+"_THRESH"))
                 if validate_thresholds(thresh[odt]) == False:
                     print("  Update "+odt+"_VAR"+n+"_THRESH to match this format")
                     exit(1)
@@ -1393,22 +1390,22 @@ def parse_var_list_helper(cu, dt, dont_duplicate):
                 thresh[odt] = thresh[dt]
 
             # get ensemble var info if available
-            if cu.p.has_option('config', "ENS_VAR"+n+"_NAME"):
-                name['ENS'] = cu.getstr('config', "ENS_VAR"+n+"_NAME")
+            if config.p.has_option('config', "ENS_VAR"+n+"_NAME"):
+                name['ENS'] = config.getstr('config', "ENS_VAR"+n+"_NAME")
 
-                levels['ENS'] = getlist(cu.getstr('config', "ENS_VAR"+n+"_LEVELS"))
+                levels['ENS'] = getlist(config.getstr('config', "ENS_VAR"+n+"_LEVELS"))
 
                 extra['ENS'] = ""
-                if cu.p.has_option('config', "ENS_VAR"+n+"_OPTIONS"):
-                    extra['ENS'] = cu.getraw('config', "ENS_VAR"+n+"_OPTIONS")
+                if config.p.has_option('config', "ENS_VAR"+n+"_OPTIONS"):
+                    extra['ENS'] = config.getraw('config', "ENS_VAR"+n+"_OPTIONS")
 
                 thresh['ENS'] = []
-                if cu.p.has_option('config', "ENS_VAR"+n+"_THRESH"):
-                    thresh['ENS'] = getlist(cu.getstr('config', "ENS_VAR"+n+"_THRESH"))
+                if config.p.has_option('config', "ENS_VAR"+n+"_THRESH"):
+                    thresh['ENS'] = getlist(config.getstr('config', "ENS_VAR"+n+"_THRESH"))
                     if validate_thresholds(thresh['ENS']) == False:
                         msg = "  Update ENS_VAR"+n+"_THRESH to match this format"
-                        if cu.logger:
-                            cu.logger.error(msg)
+                        if config.logger:
+                            config.logger.error(msg)
                         else:
                             print(msg)
                         exit(1)
@@ -1416,8 +1413,8 @@ def parse_var_list_helper(cu, dt, dont_duplicate):
                 if len(thresh[dt]) != len(thresh[odt]):
                     msg = dt+"_VAR"+n+"_THRESH and "+odt+"_VAR"+n+\
                           "_THRESH do not have the same number of elements"
-                    if cu.logger:
-                        cu.logger.error(msg)
+                    if config.logger:
+                        config.logger.error(msg)
                     else:
                         print(msg)
                     exit(1)
@@ -1711,7 +1708,7 @@ def get_time_from_file(logger, filepath, template):
         return None
 
 
-def preprocess_file(filename, data_type, cu):
+def preprocess_file(filename, data_type, config):
     """ Decompress gzip, bzip, or zip files or convert Gempak files to NetCDF
         Args:
             @param filename: Path to file without zip extensions
@@ -1723,13 +1720,13 @@ def preprocess_file(filename, data_type, cu):
     if filename is None or filename == "":
         return None
 
-    stage_dir = cu.getdir('STAGING_DIR')
+    stage_dir = config.getdir('STAGING_DIR')
     # TODO: move valid_extensions so it can be used by more than one function
     valid_extensions = [ '.gz', '.bz2', '.zip' ]
     if os.path.isfile(filename):
         for ext in valid_extensions:
             if filename.endswith(ext):
-                return preprocess_file(filename[:-len(ext)], data_type, cu)
+                return preprocess_file(filename[:-len(ext)], data_type, config)
         # if extension is grd (Gempak), then look in staging dir for nc file
         if filename.endswith('.grd') or data_type == "GEMPAK":
             if filename.endswith('.grd'):
@@ -1743,22 +1740,22 @@ def preprocess_file(filename, data_type, cu):
             outdir = os.path.dirname(stagefile)
             if not os.path.exists(outdir):
                 os.makedirs(outdir, mode=0775)
-            run_g2c = GempakToCFWrapper(cu.p, cu.logger)
+            run_g2c = GempakToCFWrapper(config.p, config.logger)
             run_g2c.add_input_file(filename)
             run_g2c.set_output_path(stagefile)
             cmd = run_g2c.get_command()
             if cmd is None:
                 self.logger.error("GempakToCF could not generate command")
                 return None
-            if cu.logger:
-                cu.logger.debug("Converting Gempak file into {}".format(stagefile))
+            if config.logger:
+                config.logger.debug("Converting Gempak file into {}".format(stagefile))
             run_g2c.build()
             return stagefile
 
         return filename
 
     if os.path.isfile(filename[:-2]+'grd'):
-        return preprocess_file(filename[:-2]+'grd', data_type, cu)
+        return preprocess_file(filename[:-2]+'grd', data_type, config)
     # if file exists in the staging area, return that path
     outpath = stage_dir + filename
     if os.path.isfile(outpath):
@@ -1770,8 +1767,8 @@ def preprocess_file(filename, data_type, cu):
         os.makedirs(outdir, mode=0775)
 
     if os.path.isfile(filename+".gz"):
-        if cu.logger:
-            cu.logger.info("Decompressing gz file to {}".format(outpath))
+        if config.logger:
+            config.logger.info("Decompressing gz file to {}".format(outpath))
         with gzip.open(filename+".gz", 'rb') as infile:
             with open(outpath, 'wb') as outfile:
                 outfile.write(infile.read())
@@ -1779,8 +1776,8 @@ def preprocess_file(filename, data_type, cu):
                 outfile.close()
                 return outpath
     elif os.path.isfile(filename+".bz2"):
-        if cu.logger:
-            cu.logger.info("Decompressing bz2 file to {}".format(outpath))
+        if config.logger:
+            config.logger.info("Decompressing bz2 file to {}".format(outpath))
         with open(filename+".bz2", 'rb') as infile:
             with open(outpath, 'wb') as outfile:
                 outfile.write(bz2.decompress(infile.read()))
@@ -1788,8 +1785,8 @@ def preprocess_file(filename, data_type, cu):
                 outfile.close()
                 return outpath
     elif os.path.isfile(filename+".zip"):
-        if cu.logger:
-            cu.logger.info("Decompressing zip file to {}".format(outpath))
+        if config.logger:
+            config.logger.info("Decompressing zip file to {}".format(outpath))
         with zipfile.ZipFile(filename+".zip") as z:
             with open(outpath, 'wb') as f:
                 f.write(z.read(os.path.basename(filename)))
@@ -1835,13 +1832,13 @@ def run_stand_alone(module_name, app_name):
         p = config_metplus.setup(filename=cur_filename)
 
         logger = get_logger(p)
-        cu = ConfigUtil(p, logger)
+        config = ConfigWrapper(p, logger)
 
         module = __import__(module_name)
         wrapper_class = getattr(module, app_name + "Wrapper")
         wrapper = wrapper_class(p, logger)
 
-        os.environ['MET_BASE'] = cu.getdir('MET_BASE')
+        os.environ['MET_BASE'] = config.getdir('MET_BASE')
 
         produtil.log.postmsg(app_name + ' Calling run_all_times.')
 
@@ -1854,15 +1851,15 @@ def run_stand_alone(module_name, app_name):
         sys.exit(2)
 
 
-def add_common_items_to_dictionary(cu, dictionary):
-    dictionary['WGRIB2'] = cu.getexe('WGRIB2')
-    dictionary['CUT_EXE'] = cu.getexe('CUT_EXE')
-    dictionary['TR_EXE'] = cu.getexe('TR_EXE')
-    dictionary['RM_EXE'] = cu.getexe('RM_EXE')
-    dictionary['NCAP2_EXE'] = cu.getexe('NCAP2_EXE')
-    dictionary['CONVERT_EXE'] = cu.getexe('CONVERT_EXE')
-    dictionary['NCDUMP_EXE'] = cu.getexe('NCDUMP_EXE')
-    dictionary['EGREP_EXE'] = cu.getexe('EGREP_EXE')
+def add_common_items_to_dictionary(config, dictionary):
+    dictionary['WGRIB2'] = config.getexe('WGRIB2')
+    dictionary['CUT_EXE'] = config.getexe('CUT_EXE')
+    dictionary['TR_EXE'] = config.getexe('TR_EXE')
+    dictionary['RM_EXE'] = config.getexe('RM_EXE')
+    dictionary['NCAP2_EXE'] = config.getexe('NCAP2_EXE')
+    dictionary['CONVERT_EXE'] = config.getexe('CONVERT_EXE')
+    dictionary['NCDUMP_EXE'] = config.getexe('NCDUMP_EXE')
+    dictionary['EGREP_EXE'] = config.getexe('EGREP_EXE')
 
 
 def template_to_regex(template, time_info, logger):

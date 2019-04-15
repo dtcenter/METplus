@@ -26,13 +26,12 @@ from command_builder import CommandBuilder
 
 
 class StatAnalysisWrapper(CommandBuilder):
-    def __init__(self, p, logger):
-        super(StatAnalysisWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.cu.getdir('MET_INSTALL_DIR'),
+    def __init__(self, config, logger):
+        super(StatAnalysisWrapper, self).__init__(config, logger)
+        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                      'bin/stat_analysis')
         self.app_name = os.path.basename(self.app_path)
-        if self.logger is None:
-            self.logger = util.get_logger(self.p,sublog='StatAnalysis')
+
    
     def set_lookin_dir(self, lookindir):
         self.lookindir = "-lookin "+lookindir+" "
@@ -60,12 +59,12 @@ class StatAnalysisWrapper(CommandBuilder):
     def grid2grid_VSDB_format(self, valid_time, init_time):
         self.logger.info("Formatting in VSDB style for grid2grid")
         #read config
-        model_type = self.cu.getstr('config', 'MODEL')
-        ob_type = self.cu.getstr('config', 'OB_TYPE')
+        model_type = self.config.getstr('config', 'MODEL')
+        ob_type = self.config.getstr('config', 'OB_TYPE')
         self.add_env_var("MODEL", model_type)
         self.add_env_var("OB_TYPE", ob_type)
-        stat_analysis_lookin_dir = self.cu.getdir('STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = self.cu.getdir('STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_lookin_dir = self.config.getdir('STAT_ANALYSIS_LOOKIN_DIR')
+        stat_analysis_out_dir = self.config.getdir('STAT_ANALYSIS_OUT_DIR')
         #filtering times based on if files made based on init_time or valid_time
         if init_time == -1:
             self.logger.info("Valid on: "+valid_time)
@@ -92,7 +91,7 @@ class StatAnalysisWrapper(CommandBuilder):
         #build -lookin directory
         self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir, filter_time, "grid_stat"))
         #save output like VSDB
-        verif_type = self.cu.getstr('config', "VERIF_TYPE")
+        verif_type = self.config.getstr('config', "VERIF_TYPE")
         if not os.path.exists(os.path.join(stat_analysis_out_dir,
                               verif_type ,cycle+"Z", model_type)):
            os.makedirs(os.path.join(stat_analysis_out_dir,
@@ -102,7 +101,7 @@ class StatAnalysisWrapper(CommandBuilder):
         job = "-job filter -dump_row "+dump_row_file
         self.add_env_var("JOB", job)
         #get stat_analysis config file
-        self.set_param_file(self.cu.getstr('config', 'STAT_ANALYSIS_CONFIG'))
+        self.set_param_file(self.config.getstr('config', 'STAT_ANALYSIS_CONFIG'))
         #build command
         cmd = self.get_command()
         if cmd is None:
@@ -115,28 +114,28 @@ class StatAnalysisWrapper(CommandBuilder):
     def grid2obs_VSDB_format(self, valid_time, init_time):
         #read config
         self.logger.info("Formatting in VSDB style for grid2obs")
-        model_type = self.cu.getstr('config', 'MODEL')
-        ob_type = self.cu.getstr('config', 'OB_TYPE')
+        model_type = self.config.getstr('config', 'MODEL')
+        ob_type = self.config.getstr('config', 'OB_TYPE')
         self.add_env_var("MODEL", model_type)
         self.add_env_var("OB_TYPE", ob_type)
-        stat_analysis_lookin_dir = self.cu.getdir('STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = self.cu.getdir('STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_lookin_dir = self.config.getdir('STAT_ANALYSIS_LOOKIN_DIR')
+        stat_analysis_out_dir = self.config.getdir('STAT_ANALYSIS_OUT_DIR')
         if init_time == -1:
             date_YYYYMMDD = valid_time[0:8]
-            valid_beg_hour = self.cu.getstr('config', 'VALID_BEG_HOUR')
-            valid_end_hour = self.cu.getstr('config', 'VALID_END_HOUR')
+            valid_beg_hour = self.config.getstr('config', 'VALID_BEG_HOUR')
+            valid_end_hour = self.config.getstr('config', 'VALID_END_HOUR')
             self.logger.info("Valid on: "+date_YYYYMMDD+" between "+valid_beg_hour+"-"+valid_end_hour)
-            loop_beg_hour = self.cu.getint('config', 'INIT_BEG_HOUR')
-            loop_end_hour = self.cu.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.cu.getint('config', 'INIT_INCREMENT')
+            loop_beg_hour = self.config.getint('config', 'INIT_BEG_HOUR')
+            loop_end_hour = self.config.getint('config', 'INIT_END_HOUR')
+            loop_inc = self.config.getint('config', 'INIT_INCREMENT')
         else:
             date_YYYYMMDD = init_time[0:8]
-            init_beg_hour = self.cu.getstr('config', 'INIT_BEG_HOUR')
-            init_end_hour = self.cu.getstr('config', 'INIT_END_HOUR')
+            init_beg_hour = self.config.getstr('config', 'INIT_BEG_HOUR')
+            init_end_hour = self.config.getstr('config', 'INIT_END_HOUR')
             self.logger.info("Initialized on: "+date_YYYYMMDD+" between "+init_beg_hour+"-"+init_end_hour)
-            loop_beg_hour = self.cu.getint('config', 'VALID_BEG_HOUR')
-            loop_end_hour = self.cu.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.cu.getint('config', 'VALID_INCREMENT')
+            loop_beg_hour = self.config.getint('config', 'VALID_BEG_HOUR')
+            loop_end_hour = self.config.getint('config', 'VALID_END_HOUR')
+            loop_inc = self.config.getint('config', 'VALID_INCREMENT')
         loop_hour = loop_beg_hour 
         while loop_hour <= loop_end_hour:
             loop_hour_str = str(loop_hour).zfill(2)
@@ -160,7 +159,7 @@ class StatAnalysisWrapper(CommandBuilder):
             #build -lookin directory
             self.set_lookin_dir(os.path.join(stat_analysis_lookin_dir))
             #save output like VSDB
-            verif_type = self.cu.getstr('config', "VERIF_TYPE")
+            verif_type = self.config.getstr('config', "VERIF_TYPE")
             if not os.path.exists(os.path.join(stat_analysis_out_dir,
                                   verif_type, loop_hour_str+"Z", model_type)):
                os.makedirs(os.path.join(stat_analysis_out_dir,
@@ -170,7 +169,7 @@ class StatAnalysisWrapper(CommandBuilder):
             job = "-job filter -dump_row "+dump_row_file
             self.add_env_var("JOB", job)
             #get stat_analysis config file
-            self.set_param_file(self.cu.getstr('config', 'STAT_ANALYSIS_CONFIG'))
+            self.set_param_file(self.config.getstr('config', 'STAT_ANALYSIS_CONFIG'))
             #build command
             cmd = self.get_command()
             if cmd is None:
@@ -186,7 +185,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def parse_model_list(self):
         model_list = []
-        all_conf = self.p.keys('config')
+        all_conf = self.config.keys('config')
         model_indices = []
         regex = re.compile("MODEL(\d+)_NAME")
         for conf in all_conf:
@@ -194,11 +193,11 @@ class StatAnalysisWrapper(CommandBuilder):
             if result is not None:
                 model_indices.append(result.group(1))
         for m in model_indices:
-            if self.p.has_option('config', "MODEL"+m+"_NAME"):
-                model_name = self.cu.getstr('config', "MODEL"+m+"_NAME")
+            if self.config.has_option('config', "MODEL"+m+"_NAME"):
+                model_name = self.config.getstr('config', "MODEL"+m+"_NAME")
                 model_dir = ""
-                if self.p.has_option('config', "MODEL"+m+"_STAT_DIR"):
-                    model_dir = self.cu.getstr('config', "MODEL"+m+"_STAT_DIR")
+                if self.config.has_option('config', "MODEL"+m+"_STAT_DIR"):
+                    model_dir = self.config.getstr('config', "MODEL"+m+"_STAT_DIR")
             mod = self.FieldObj()
             mod.name = model_name
             mod.dir = model_dir
@@ -206,43 +205,43 @@ class StatAnalysisWrapper(CommandBuilder):
         return model_list
 
     def grid2grid_plot_format(self):
-        verif_type = self.cu.getstr('config', 'VERIF_TYPE')
+        verif_type = self.config.getstr('config', 'VERIF_TYPE')
         if verif_type == 'pres' or verif_type == 'anom' or verif_type == 'sfc':
             self.logger.info("Formatting for plotting for grid2grid-"+verif_type)
-            use_init = util.is_loop_by_init(self.p)
+            use_init = util.is_loop_by_init(self.config)
             if use_init:
-                start_t = self.cu.getstr('config', 'INIT_BEG')
-                end_t = self.cu.getstr('config', 'INIT_END')
+                start_t = self.config.getstr('config', 'INIT_BEG')
+                end_t = self.config.getstr('config', 'INIT_END')
                 self.add_env_var("FCST_VALID_BEG", "")
                 self.add_env_var("FCST_VALID_END", "")
                 self.add_env_var("FCST_INIT_BEG", start_t)
                 self.add_env_var("FCST_INIT_END", end_t)
-                loop_beg_hour = self.cu.getint('config', 'INIT_BEG_HOUR')
-                loop_end_hour = self.cu.getint('config', 'INIT_END_HOUR')
-                loop_inc = self.cu.getint('config', 'INIT_INCREMENT')
+                loop_beg_hour = self.config.getint('config', 'INIT_BEG_HOUR')
+                loop_end_hour = self.config.getint('config', 'INIT_END_HOUR')
+                loop_inc = self.config.getint('config', 'INIT_INCREMENT')
             else:
-                start_t = self.cu.getstr('config', 'VALID_BEG')
-                end_t = self.cu.getstr('config', 'VALID_END')
+                start_t = self.config.getstr('config', 'VALID_BEG')
+                end_t = self.config.getstr('config', 'VALID_END')
                 self.add_env_var("FCST_VALID_BEG", start_t)
                 self.add_env_var("FCST_VALID_END", end_t)
                 self.add_env_var("FCST_INIT_BEG", "")
                 self.add_env_var("FCST_INIT_END", "")
-                loop_beg_hour = self.cu.getint('config', 'VALID_BEG_HOUR')
-                loop_end_hour = self.cu.getint('config', 'VALID_END_HOUR')
-                loop_inc = self.cu.getint('config', 'VALID_INCREMENT')
-            stat_analysis_out_dir = self.cu.getdir('STAT_ANALYSIS_OUT_DIR')
-            region_list = util.getlist(self.cu.getstr('config', 'REGION_LIST'))
-            lead_list = util.getlistint(self.cu.getstr('config', 'LEAD_LIST'))
+                loop_beg_hour = self.config.getint('config', 'VALID_BEG_HOUR')
+                loop_end_hour = self.config.getint('config', 'VALID_END_HOUR')
+                loop_inc = self.config.getint('config', 'VALID_INCREMENT')
+            stat_analysis_out_dir = self.config.getdir('STAT_ANALYSIS_OUT_DIR')
+            region_list = util.getlist(self.config.getstr('config', 'REGION_LIST'))
+            lead_list = util.getlistint(self.config.getstr('config', 'LEAD_LIST'))
             model_list = self.parse_model_list()
-            var_list = util.parse_var_list(self.cu)
+            var_list = util.parse_var_list(self.config)
             interp_list = [ 'NEAREST' ]
             #start looping to run stat_analysis
             loop_hour = loop_beg_hour
             while loop_hour <= loop_end_hour:
                loop_hour_str = str(loop_hour).zfill(2)
                if use_init:
-                    start_t = self.cu.getstr('config', 'INIT_BEG')
-                    end_t = self.cu.getstr('config', 'INIT_END')
+                    start_t = self.config.getstr('config', 'INIT_BEG')
+                    end_t = self.config.getstr('config', 'INIT_END')
                     self.add_env_var("FCST_VALID_BEG", "")
                     self.add_env_var("FCST_VALID_END", "")
                     self.add_env_var("FCST_VALID_HOUR", "")
@@ -250,8 +249,8 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.add_env_var("FCST_INIT_END", end_t+"_"+loop_hour_str+"0000")
                     self.add_env_var("FCST_INIT_HOUR", '"'+loop_hour_str+'"')
                else:
-                    start_t = self.cu.getstr('config', 'VALID_BEG')
-                    end_t = self.cu.getstr('config', 'VALID_END')
+                    start_t = self.config.getstr('config', 'VALID_BEG')
+                    end_t = self.config.getstr('config', 'VALID_END')
                     self.add_env_var("FCST_VALID_BEG", start_t+"_"+loop_hour_str+"0000")
                     self.add_env_var("FCST_VALID_END", end_t+"_"+loop_hour_str+"0000")
                     self.add_env_var("FCST_VALID_HOUR", '"'+loop_hour_str+'"')
@@ -274,10 +273,10 @@ class StatAnalysisWrapper(CommandBuilder):
                        self.add_env_var('OBS_VAR_LEVEL', obs_var_level)
                        if verif_type == 'anom':
                           if fcst_var_name == 'HGT' or obs_var_name == 'HGT':
-                              fourier_decomp_height = self.cu.getbool('config', 'FOURIER_HEIGHT_DECOMP')
+                              fourier_decomp_height = self.config.getbool('config', 'FOURIER_HEIGHT_DECOMP')
                               if fourier_decomp_height:
-                                  wave_num_beg_list = util.getlist(self.cu.getstr('config', 'WAVE_NUM_BEG_LIST'))
-                                  wave_num_end_list = util.getlist(self.cu.getstr('config', 'WAVE_NUM_END_LIST'))
+                                  wave_num_beg_list = util.getlist(self.config.getstr('config', 'WAVE_NUM_BEG_LIST'))
+                                  wave_num_end_list = util.getlist(self.config.getstr('config', 'WAVE_NUM_END_LIST'))
                                   if len(wave_num_beg_list) != len(wave_num_end_list):
                                       self.logger.error("ERROR: WAVE_NUM_BEG_LIST and WAVE_NUM_END_LIST do not have the same number of elements")
                                       exit(1)
@@ -310,7 +309,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                                                     model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+"_"+interp+".stat")
                                    job = "-job filter -dump_row "+dump_row_file
                                    self.add_env_var("JOB", job)
-                                   self.set_param_file(self.cu.getstr('config', 'STAT_ANALYSIS_CONFIG'))
+                                   self.set_param_file(self.config.getstr('config', 'STAT_ANALYSIS_CONFIG'))
                                    #build command
                                    cmd = self.get_command()
                                    if cmd is None:
@@ -325,28 +324,28 @@ class StatAnalysisWrapper(CommandBuilder):
             exit(1)
 
     def grid2obs_plot_format(self):
-        verif_type = self.cu.getstr('config', 'VERIF_TYPE')
+        verif_type = self.config.getstr('config', 'VERIF_TYPE')
         if verif_type == 'upper_air' or verif_type == 'conus_sfc':
            self.logger.info("Formatting for plotting for grid2obs-"+verif_type)
-           use_init = util.is_loop_by_init(self.p)
+           use_init = util.is_loop_by_init(self.config)
            self.add_env_var('INTERP', 'BILIN')
            if use_init:
-               init_beg_hour = self.cu.getstr('config', 'INIT_BEG_HOUR')
-               init_end_hour = self.cu.getstr('config', 'INIT_END_HOUR')
-               loop_beg_hour = self.cu.getint('config', 'VALID_BEG_HOUR')
-               loop_end_hour = self.cu.getint('config', 'VALID_END_HOUR')
-               loop_inc = self.cu.getint('config', 'VALID_INCREMENT')
+               init_beg_hour = self.config.getstr('config', 'INIT_BEG_HOUR')
+               init_end_hour = self.config.getstr('config', 'INIT_END_HOUR')
+               loop_beg_hour = self.config.getint('config', 'VALID_BEG_HOUR')
+               loop_end_hour = self.config.getint('config', 'VALID_END_HOUR')
+               loop_inc = self.config.getint('config', 'VALID_INCREMENT')
            else:
-               valid_beg_hour = self.cu.getstr('config', 'VALID_BEG_HOUR')
-               valid_end_hour = self.cu.getstr('config', 'VALID_END_HOUR')
-               loop_beg_hour = self.cu.getint('config', 'INIT_BEG_HOUR')
-               loop_end_hour = self.cu.getint('config', 'INIT_END_HOUR')
-               loop_inc = self.cu.getint('config', 'INIT_INCREMENT')
-           stat_analysis_out_dir = self.cu.getdir('STAT_ANALYSIS_OUT_DIR')
-           region_list = util.getlist(self.cu.getstr('config', 'REGION_LIST'))
-           lead_list = util.getlistint(self.cu.getstr('config', 'LEAD_LIST'))
+               valid_beg_hour = self.config.getstr('config', 'VALID_BEG_HOUR')
+               valid_end_hour = self.config.getstr('config', 'VALID_END_HOUR')
+               loop_beg_hour = self.config.getint('config', 'INIT_BEG_HOUR')
+               loop_end_hour = self.config.getint('config', 'INIT_END_HOUR')
+               loop_inc = self.config.getint('config', 'INIT_INCREMENT')
+           stat_analysis_out_dir = self.config.getdir('STAT_ANALYSIS_OUT_DIR')
+           region_list = util.getlist(self.config.getstr('config', 'REGION_LIST'))
+           lead_list = util.getlistint(self.config.getstr('config', 'LEAD_LIST'))
            model_list = self.parse_model_list()
-           var_list = util.parse_var_list(self.cu)
+           var_list = util.parse_var_list(self.config)
            self.add_env_var('INTERP', 'BILIN')
            #start looping to run stat_analysis
            loop_hour = loop_beg_hour
@@ -354,8 +353,8 @@ class StatAnalysisWrapper(CommandBuilder):
                loop_hour_str = str(loop_hour).zfill(2)
                #filtering times based on if files made based on init_time or valid_time
                if use_init:
-                   start_t = self.cu.getstr('config', 'INIT_BEG')
-                   end_t = self.cu.getstr('config', 'INIT_END')
+                   start_t = self.config.getstr('config', 'INIT_BEG')
+                   end_t = self.config.getstr('config', 'INIT_END')
                    self.add_env_var("FCST_VALID_BEG", "")
                    self.add_env_var("FCST_VALID_END", "")
                    self.add_env_var("FCST_VALID_HOUR", '"'+loop_hour_str+'"')
@@ -363,8 +362,8 @@ class StatAnalysisWrapper(CommandBuilder):
                    self.add_env_var("FCST_INIT_END", end_t+"_"+init_end_hour+"0000")
                    self.add_env_var("FCST_INIT_HOUR", "")
                else:
-                   start_t = self.cu.getstr('config', 'VALID_BEG')
-                   end_t = self.cu.getstr('config', 'VALID_END')
+                   start_t = self.config.getstr('config', 'VALID_BEG')
+                   end_t = self.config.getstr('config', 'VALID_END')
                    self.add_env_var("FCST_VALID_BEG", start_t+"_"+valid_beg_hour+"0000")
                    self.add_env_var("FCST_VALID_END", end_t+"_"+valid_end_hour+"0000")
                    self.add_env_var("FCST_VALID_HOUR", "")
@@ -400,7 +399,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                                             verif_type, loop_hour_str+"Z", model, region, model+"_f"+lead_string+"_fcst"+fcst_var_name+fcst_var_level+"_obs"+obs_var_name+obs_var_level+".stat")
                                job = "-job filter -dump_row "+dump_row_file
                                self.add_env_var("JOB", job)
-                               self.set_param_file(self.cu.getstr('config', 'STAT_ANALYSIS_CONFIG'))
+                               self.set_param_file(self.config.getstr('config', 'STAT_ANALYSIS_CONFIG'))
                                #build command
                                cmd = self.get_command()
                                if cmd is None:
@@ -418,7 +417,7 @@ class StatAnalysisWrapper(CommandBuilder):
 ########################################################################
     def run_all_times(self):
         self.logger.info("RUNNING STAT_ANALYSIS FOR PLOTTING FORMAT")
-        verif_case = self.cu.getstr('config', 'VERIF_CASE')
+        verif_case = self.config.getstr('config', 'VERIF_CASE')
         if verif_case == 'grid2grid':
             self.grid2grid_plot_format()
         elif verif_case == 'grid2obs':
@@ -431,7 +430,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def run_at_time(self, init_time, valid_time):
         self.logger.info("RUNNING STAT_ANALYSIS FOR VSDB FORMAT")
-        verif_case = self.cu.getstr('config', 'VERIF_CASE')
+        verif_case = self.config.getstr('config', 'VERIF_CASE')
         if verif_case == 'grid2grid':
              self.grid2grid_VSDB_format(valid_time, init_time)
         elif verif_case == 'grid2obs':

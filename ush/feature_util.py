@@ -7,7 +7,7 @@ import sys
 import re
 import datetime
 import met_util as util
-from config_util import ConfigUtil
+from config_wrapper import ConfigWrapper
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from string_template_substitution import StringSub
 
@@ -62,7 +62,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
     # and redirects logging based on the conf settings.
     # Instantiate a RegridDataPlaneWrapper
     rdp = RegridDataPlaneWrapper(config, logger)
-    cu = ConfigUtil(config, logger)
+    cu = ConfigWrapper(config, logger)
 
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
@@ -337,7 +337,7 @@ def retrieve_var_info(config, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    cu = ConfigUtil(config, logger)
+    cu = ConfigWrapper(config, logger)
     var_list = util.getlist(cu.getstr('config', 'VAR_LIST'))
     extra_var_list = util.getlist(cu.getstr('config',
                                             'EXTRACT_TILES_VAR_LIST'))

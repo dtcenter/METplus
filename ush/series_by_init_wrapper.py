@@ -10,12 +10,9 @@ import sys
 import config_metplus
 import met_util as util
 import produtil.setup
-from command_builder import CommandBuilder
-#TODO after testing, remove these produtil.run imports
-#from produtil.run import exe
-#from produtil.run import run
 from tc_stat_wrapper import TcStatWrapper
 import feature_util
+from command_builder import CommandBuilder
 
 '''! @namespace SeriesByInitWrapper
 @brief Performs any optional filtering of input tcst data then performs
@@ -38,27 +35,22 @@ class SeriesByInitWrapper(CommandBuilder):
           series_analysis is done
     """
 
-    def __init__(self, p, logger):
-        super(SeriesByInitWrapper, self).__init__(p, logger)
+    def __init__(self, config, logger):
+        super(SeriesByInitWrapper, self).__init__(config, logger)
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
         self.app_name = 'SeriesByInit'
-        self.p = p
-        self.logger=logger
-        if self.logger is None:
-            self.logger = util.get_logger(self.p,sublog='SeriesByInit')
+        self.var_list = util.getlist(self.config.getstr('config', 'VAR_LIST'))
+        self.stat_list = util.getlist(self.config.getstr('config', 'STAT_LIST'))
 
-        self.var_list = util.getlist(self.cu.getstr('config', 'VAR_LIST'))
-        self.stat_list = util.getlist(self.cu.getstr('config', 'STAT_LIST'))
-
-        self.regrid_with_met_tool = self.cu.getbool('config',
+        self.regrid_with_met_tool = self.config.getbool('config',
                                               'REGRID_USING_MET_TOOL')
-        self.extract_tiles_dir = self.cu.getdir('EXTRACT_OUT_DIR')
-        self.series_out_dir = self.cu.getdir('SERIES_INIT_OUT_DIR')
+        self.extract_tiles_dir = self.config.getdir('EXTRACT_OUT_DIR')
+        self.series_out_dir = self.config.getdir('SERIES_INIT_OUT_DIR')
         self.series_filtered_out_dir = \
-            self.cu.getdir('SERIES_INIT_FILTERED_OUT_DIR')
+            self.config.getdir('SERIES_INIT_FILTERED_OUT_DIR')
         self.filter_opts = \
-            self.cu.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
+            self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
         self.fcst_ascii_file_prefix = 'FCST_ASCII_FILES_'
         self.anly_ascii_file_prefix = 'ANLY_ASCII_FILES_'
 
@@ -67,7 +59,7 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # For building the argument string via
         # CommandBuilder:
-        met_install_dir = self.cu.getdir('MET_INSTALL_DIR')
+        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.app_path = os.path.join(met_install_dir, 'bin/series_analysis')
         self.app_name = os.path.basename(self.app_path)
         self.inaddons = []
@@ -111,19 +103,19 @@ class SeriesByInitWrapper(CommandBuilder):
         self.add_env_var('STAT_LIST', tmp_stat_string)
 
         series_filter_opts = \
-            self.cu.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
+            self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
 
         if self.regrid_with_met_tool:
             # Regridding via MET Tool regrid_data_plane.
-            fcst_tile_regex = self.cu.getstr('regex_pattern',
+            fcst_tile_regex = self.config.getstr('regex_pattern',
                                             'FCST_NC_TILE_REGEX')
-            anly_tile_regex = self.cu.getstr('regex_pattern',
+            anly_tile_regex = self.config.getstr('regex_pattern',
                                             'ANLY_NC_TILE_REGEX')
         else:
             # Regridding via wgrib2 tool.
-            fcst_tile_regex = self.cu.getstr('regex_pattern',
+            fcst_tile_regex = self.config.getstr('regex_pattern',
                                             'FCST_TILE_REGEX')
-            anly_tile_regex = self.cu.getstr('regex_pattern',
+            anly_tile_regex = self.config.getstr('regex_pattern',
                                             'ANLY_TILE_REGEX')
         # Initialize the tile_dir to point to the extract_tiles_dir.
         # And retrieve a list of init times based on the data available in
@@ -142,12 +134,12 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # If applicable, apply any filtering via tc_stat, as indicated in the
         # parameter/config file.
-        tmp_dir = os.path.join(self.cu.getdir('TMP_DIR'), str(os.getpid()))
+        tmp_dir = os.path.join(self.config.getdir('TMP_DIR'), str(os.getpid()))
         if series_filter_opts:
             self.apply_series_filters(tile_dir, init_times,
                                       self.series_filtered_out_dir,
                                       self.filter_opts,
-                                      tmp_dir, self.p)
+                                      tmp_dir, self.config)
 
             # Clean up any empty files and directories that could arise as
             # a result of filtering
@@ -542,7 +534,7 @@ class SeriesByInitWrapper(CommandBuilder):
                     for cur_var in self.var_list:
                         name, level = util.get_name_level(cur_var, self.logger)
                         param = \
-                            self.cu.getstr(
+                            self.config.getstr(
                                 'config',
                                 'SERIES_ANALYSIS_BY_INIT_CONFIG_FILE')
                         self.set_param_file(param)
@@ -691,9 +683,9 @@ class SeriesByInitWrapper(CommandBuilder):
                @param tile_dir:  The directory where input data resides.
            Returns:
         """
-        convert_exe = self.cu.getexe('CONVERT_EXE')
-        background_map = self.cu.getbool('config', 'BACKGROUND_MAP')
-        plot_data_plane_exe = os.path.join(self.cu.getdir('MET_INSTALL_DIR'),
+        convert_exe = self.config.getexe('CONVERT_EXE')
+        background_map = self.config.getbool('config', 'BACKGROUND_MAP')
+        plot_data_plane_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                            'bin/plot_data_plane')
         for cur_var in self.var_list:
             name, level = util.get_name_level(cur_var, self.logger)

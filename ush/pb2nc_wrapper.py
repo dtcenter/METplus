@@ -34,9 +34,9 @@ class PB2NCWrapper(CommandBuilder):
          to NetCDF for MET's point_stat tool can recognize.
     """
 
-    def __init__(self, p, logger):
-        super(PB2NCWrapper, self).__init__(p, logger)
-        met_install_dir = self.cu.getdir('MET_INSTALL_DIR')
+    def __init__(self, config, logger):
+        super(PB2NCWrapper, self).__init__(config, logger)
+        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.app_path = os.path.join(met_install_dir, 'bin/pb2nc')
         self.app_name = os.path.basename(self.app_path)
 
@@ -56,32 +56,32 @@ class PB2NCWrapper(CommandBuilder):
                            config files.
         """
         c_dict = dict()
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.cu.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', False)
-        c_dict['OFFSETS'] = util.getlistint(self.cu.getstr('config', 'PB2NC_OFFSETS', '0'))
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', False)
+        c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'PB2NC_OFFSETS', '0'))
 
         # Directories
-        c_dict['OBS_INPUT_DIR'] = self.cu.getdir('PB2NC_INPUT_DIR')
-        c_dict['OUTPUT_DIR'] = self.cu.getdir('PB2NC_OUTPUT_DIR')
+        c_dict['OBS_INPUT_DIR'] = self.config.getdir('PB2NC_INPUT_DIR')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('PB2NC_OUTPUT_DIR')
 
-        c_dict['OBS_INPUT_TEMPLATE'] = self.cu.getraw('filename_templates', 'PB2NC_INPUT_TEMPLATE')
-        c_dict['OUTPUT_TEMPLATE'] = self.cu.getraw('filename_templates', 'PB2NC_OUTPUT_TEMPLATE')
-        c_dict['OBS_INPUT_DATATYPE'] = self.cu.getstr('config', 'PB2NC_INPUT_DATATYPE', '')
+        c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates', 'PB2NC_INPUT_TEMPLATE')
+        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates', 'PB2NC_OUTPUT_TEMPLATE')
+        c_dict['OBS_INPUT_DATATYPE'] = self.config.getstr('config', 'PB2NC_INPUT_DATATYPE', '')
 
         # Configuration
-        c_dict['CONFIG_FILE'] = self.cu.getstr('config',
+        c_dict['CONFIG_FILE'] = self.config.getstr('config',
                                                      'PB2NC_CONFIG_FILE')
         c_dict['MESSAGE_TYPE'] = util.getlist(
-            self.cu.getstr('config', 'PB2NC_MESSAGE_TYPE', '[]'))
+            self.config.getstr('config', 'PB2NC_MESSAGE_TYPE', '[]'))
 
         tmp_message_type = str(c_dict['MESSAGE_TYPE']).replace("\'", "\"")
         c_dict['MESSAGE_TYPE'] = ''.join(tmp_message_type)
 
         c_dict['STATION_ID'] = util.getlist(
-            self.cu.getstr('config', 'PB2NC_STATION_ID', '[]'))
+            self.config.getstr('config', 'PB2NC_STATION_ID', '[]'))
         tmp_message_type = str(c_dict['STATION_ID']).replace("\'", "\"")
         c_dict['STATION_ID'] = ''.join(tmp_message_type.split())
 
-        grid_id = self.cu.getstr('config', 'PB2NC_GRID')
+        grid_id = self.config.getstr('config', 'PB2NC_GRID')
         if grid_id.startswith('G'):
             # Reformat grid ids that begin with 'G' ( G10, G1, etc.) to format
             # Gnnn
@@ -89,29 +89,29 @@ class PB2NCWrapper(CommandBuilder):
         else:
             c_dict['GRID'] = grid_id
 
-        c_dict['POLY'] = self.cu.getstr('config', 'PB2NC_POLY')
+        c_dict['POLY'] = self.config.getstr('config', 'PB2NC_POLY')
 
         c_dict['BUFR_VAR_LIST'] = util.getlist(
-            self.cu.getstr('config', 'PB2NC_OBS_BUFR_VAR_LIST', '[]'))
+            self.config.getstr('config', 'PB2NC_OBS_BUFR_VAR_LIST', '[]'))
         tmp_message_type = str(c_dict['BUFR_VAR_LIST']).replace("\'", "\"")
         c_dict['BUFR_VAR_LIST'] = ''.join(tmp_message_type.split())
 
-        c_dict['TIME_SUMMARY_FLAG'] = self.cu.getbool('config',
+        c_dict['TIME_SUMMARY_FLAG'] = self.config.getbool('config',
                                                       'PB2NC_TIME_SUMMARY_FLAG')
-        c_dict['TIME_SUMMARY_BEG'] = self.cu.getstr('config',
+        c_dict['TIME_SUMMARY_BEG'] = self.config.getstr('config',
                                                     'PB2NC_TIME_SUMMARY_BEG')
-        c_dict['TIME_SUMMARY_END'] = self.cu.getstr('config',
+        c_dict['TIME_SUMMARY_END'] = self.config.getstr('config',
                                                     'PB2NC_TIME_SUMMARY_END')
         c_dict['TIME_SUMMARY_VAR_NAMES'] = util.getlist(
-            self.cu.getstr('config', 'PB2NC_TIME_SUMMARY_VAR_NAMES'))
+            self.config.getstr('config', 'PB2NC_TIME_SUMMARY_VAR_NAMES'))
         c_dict['TIME_SUMMARY_TYPES'] = util.getlist(
-            self.cu.getstr('config', 'PB2NC_TIME_SUMMARY_TYPES'))
+            self.config.getstr('config', 'PB2NC_TIME_SUMMARY_TYPES'))
         c_dict['OBS_WINDOW_BEGIN'] = \
-          self.cu.getint('config', 'PB2NC_WINDOW_BEGIN', 0)
+          self.config.getint('config', 'PB2NC_WINDOW_BEGIN', 0)
         c_dict['OBS_WINDOW_END'] = \
-          self.cu.getint('config', 'PB2NC_WINDOW_END', 0)
+          self.config.getint('config', 'PB2NC_WINDOW_END', 0)
 
-        c_dict['VERTICAL_LOCATION'] = self.cu.getstr('config',
+        c_dict['VERTICAL_LOCATION'] = self.config.getstr('config',
                                                      'PB2NC_VERTICAL_LOCATION')
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
@@ -158,14 +158,14 @@ class PB2NCWrapper(CommandBuilder):
     def run_at_time(self, input_dict):
         """! Stub, not yet implemented """
         # loop of forecast leads and process each
-        lead_seq = util.get_lead_sequence(self.cu, input_dict)
+        lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             input_dict['lead_hours'] = lead
 
             self.logger.info("Processing forecast lead {}".format(lead))
 
             # set current lead time config and environment variables
-            self.p.set('config', 'CURRENT_LEAD_TIME', lead)
+            self.config.set('config', 'CURRENT_LEAD_TIME', lead)
             os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
 
             # Run for given init/valid time and forecast lead combination

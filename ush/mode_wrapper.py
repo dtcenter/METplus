@@ -22,7 +22,7 @@ class ModeWrapper(CompareGriddedWrapper):
 
     def __init__(self, p, logger):
         super(ModeWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.cu.getdir('MET_INSTALL_DIR'),
+        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                      'bin/mode')
         self.app_name = os.path.basename(self.app_path)
         self.c_dict = self.create_c_dict()
@@ -35,24 +35,24 @@ class ModeWrapper(CompareGriddedWrapper):
     def create_c_dict(self):
         c_dict = super(ModeWrapper, self).create_c_dict()
 
-        c_dict['CONFIG_FILE'] = self.cu.getstr('config', 'MODE_CONFIG')
+        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG')
         c_dict['OBS_INPUT_DIR'] = \
-          self.cu.getdir('OBS_MODE_INPUT_DIR')
+          self.config.getdir('OBS_MODE_INPUT_DIR')
         c_dict['OBS_INPUT_TEMPLATE'] = \
-          self.cu.getraw('filename_templates',
+          self.config.getraw('filename_templates',
                                'OBS_MODE_INPUT_TEMPLATE')
         c_dict['OBS_INPUT_DATATYPE'] = \
-          self.cu.getstr('config', 'OBS_MODE_INPUT_DATATYPE', '')
+          self.config.getstr('config', 'OBS_MODE_INPUT_DATATYPE', '')
         c_dict['FCST_INPUT_DIR'] = \
-          self.cu.getdir('FCST_MODE_INPUT_DIR')
+          self.config.getdir('FCST_MODE_INPUT_DIR')
         c_dict['FCST_INPUT_TEMPLATE'] = \
-          self.cu.getraw('filename_templates',
+          self.config.getraw('filename_templates',
                                'FCST_MODE_INPUT_TEMPLATE')
         c_dict['FCST_INPUT_DATATYPE'] = \
-          self.cu.getstr('config', 'FCST_MODE_INPUT_DATATYPE', '')
-        c_dict['OUTPUT_DIR'] = self.cu.getdir('MODE_OUT_DIR')
+          self.config.getstr('config', 'FCST_MODE_INPUT_DATATYPE', '')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('MODE_OUT_DIR')
         c_dict['ONCE_PER_FIELD'] = True
-        c_dict['QUILT'] = self.cu.getbool('config', 'MODE_QUILT', False)
+        c_dict['QUILT'] = self.config.getbool('config', 'MODE_QUILT', False)
         fcst_conv_radius, obs_conv_radius = self.handle_fcst_and_obs_field('MODE_CONV_RADIUS',
                                                                            'MODE_FCST_CONV_RADIUS',
                                                                            'MODE_OBS_CONV_RADIUS', '5')
@@ -79,24 +79,24 @@ class ModeWrapper(CompareGriddedWrapper):
         c_dict['OBS_MERGE_FLAG'] = obs_merge_flag
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
-        c_dict['MERGE_CONFIG_FILE'] = self.cu.getstr('config', 'MODE_MERGE_CONFIG_FILE', '')
+        c_dict['MERGE_CONFIG_FILE'] = self.config.getstr('config', 'MODE_MERGE_CONFIG_FILE', '')
 
         # if window begin/end is set specific to mode, override
         # OBS_WINDOW_BEGIN/END
-        if self.p.has_option('config', 'OBS_MODE_WINDOW_BEGIN'):
+        if self.config.has_option('config', 'OBS_MODE_WINDOW_BEGIN'):
             c_dict['OBS_WINDOW_BEGIN'] = \
-              self.cu.getint('config', 'OBS_MODE_WINDOW_BEGIN')
-        if self.p.has_option('config', 'OBS_MODE_WINDOW_END'):
+              self.config.getint('config', 'OBS_MODE_WINDOW_BEGIN')
+        if self.config.has_option('config', 'OBS_MODE_WINDOW_END'):
             c_dict['OBS_WINDOW_END'] = \
-              self.cu.getint('config', 'OBS_MODE_WINDOW_END')
+              self.config.getint('config', 'OBS_MODE_WINDOW_END')
 
         # same for FCST_WINDOW_BEGIN/END
-        if self.p.has_option('config', 'FCST_MODE_WINDOW_BEGIN'):
+        if self.config.has_option('config', 'FCST_MODE_WINDOW_BEGIN'):
             c_dict['FCST_WINDOW_BEGIN'] = \
-              self.cu.getint('config', 'FCST_MODE_WINDOW_BEGIN')
-        if self.p.has_option('config', 'FCST_MODE_WINDOW_END'):
+              self.config.getint('config', 'FCST_MODE_WINDOW_BEGIN')
+        if self.config.has_option('config', 'FCST_MODE_WINDOW_END'):
             c_dict['FCST_WINDOW_END'] = \
-              self.cu.getint('config', 'FCST_MODE_WINDOW_END')
+              self.config.getint('config', 'FCST_MODE_WINDOW_END')
 
         # check that values are valid
         if not util.validate_thresholds(util.getlist(c_dict['FCST_CONV_THRESH'])):
@@ -253,7 +253,7 @@ class ModeWrapper(CompareGriddedWrapper):
                           level.zfill(2) + "\"; prob={ name=\"" + \
                           v_name + "\"; " + thresh_str + "} "
         else:
-            if self.cu.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
+            if self.config.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
                 field = "{ name=\""+v_name+"_"+level + \
                              "\"; level=\"(*,*)\"; "
             else:

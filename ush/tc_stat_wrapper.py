@@ -40,19 +40,14 @@ class TcStatWrapper(CommandBuilder):
          cyclone pair data.
     """
 
-    def __init__(self, p, logger):
-        super(TcStatWrapper, self).__init__(p, logger)
+    def __init__(self, config, logger):
+        super(TcStatWrapper, self).__init__(config, logger)
         self.app_name = 'tc_stat'
-        self.config = self.p
-        self.logger = logger
 
         # Check whether we are running MET tc_stat from the command line
         # or with the MET config file.
-        run_method = self.cu.getstr('config', 'TC_STAT_RUN_VIA')
+        run_method = self.config.getstr('config', 'TC_STAT_RUN_VIA')
         self.by_config = bool(run_method == 'CONFIG')
-
-        if self.logger is None:
-            self.logger = util.get_logger(self.p, sublog='TcStat')
         self.tc_stat_dict = self.create_tc_stat_dictionary()
         self.tc_exe = self.tc_stat_dict['APP_PATH']
         self.logger.info("Initialized TcStatWrapper")
@@ -84,116 +79,116 @@ class TcStatWrapper(CommandBuilder):
 
         # Check for the MET_INSTALL_DIR, if it is missing, then
         # we cannot invoke the MET tool.
-        if not self.cu.getdir('MET_INSTALL_DIR'):
+        if not self.config.getdir('MET_INSTALL_DIR'):
             self.logger.error(
                 cur_filename + '|' + cur_function + ': MET install ' +
                 'directory not found in config file. Exiting.')
             sys.exit(1)
         tc_stat_dict['APP_PATH'] = os.path.join(
-            self.cu.getdir('MET_INSTALL_DIR'), 'bin/tc_stat')
+            self.config.getdir('MET_INSTALL_DIR'), 'bin/tc_stat')
 
         tc_stat_dict['APP_NAME'] = os.path.basename(tc_stat_dict['APP_PATH'])
 
         if self.by_config:
             tc_stat_dict['AMODEL'] = \
-                util.getlist(self.cu.getstr('config', 'TC_STAT_AMODEL'))
+                util.getlist(self.config.getstr('config', 'TC_STAT_AMODEL'))
 
             tc_stat_dict['BMODEL'] = \
-                util.getlist(self.cu.getstr('config', 'TC_STAT_BMODEL'))
+                util.getlist(self.config.getstr('config', 'TC_STAT_BMODEL'))
 
             tc_stat_dict['DESC'] = \
-                util.getlist(self.cu.getstr('config', 'TC_STAT_DESC'))
+                util.getlist(self.config.getstr('config', 'TC_STAT_DESC'))
 
             tc_stat_dict['STORM_ID'] = \
-                util.getlist(self.cu.getstr('config', 'TC_STAT_STORM_ID'))
+                util.getlist(self.config.getstr('config', 'TC_STAT_STORM_ID'))
 
             tc_stat_dict['BASIN'] = util.getlist(
-                self.cu.getstr('config', 'TC_STAT_BASIN'))
+                self.config.getstr('config', 'TC_STAT_BASIN'))
 
             tc_stat_dict['CYCLONE'] = util.getlist(
-                self.cu.getstr('config', 'TC_STAT_CYCLONE'))
+                self.config.getstr('config', 'TC_STAT_CYCLONE'))
 
             tc_stat_dict['STORM_NAME'] = util.getlist(
-                self.cu.getstr('config', 'TC_STAT_STORM_NAME'))
+                self.config.getstr('config', 'TC_STAT_STORM_NAME'))
 
-            tc_stat_dict['INIT_BEG'] = self.cu.getstr('config',
+            tc_stat_dict['INIT_BEG'] = self.config.getstr('config',
                                                           'TC_STAT_INIT_BEG')
 
-            tc_stat_dict['INIT_END'] = self.cu.getstr('config',
+            tc_stat_dict['INIT_END'] = self.config.getstr('config',
                                                           'TC_STAT_INIT_END')
 
             tc_stat_dict['INIT_INCLUDE'] = util.getlist(
-                self.cu.getstr('config', 'TC_STAT_INIT_INCLUDE'))
+                self.config.getstr('config', 'TC_STAT_INIT_INCLUDE'))
 
             tc_stat_dict['INIT_EXCLUDE'] = util.getlist(
-                self.cu.getstr('config', 'TC_STAT_INIT_EXCLUDE'))
+                self.config.getstr('config', 'TC_STAT_INIT_EXCLUDE'))
 
             tc_stat_dict['INIT_HOUR'] = util.getlist(
-                self.cu.getstr('config', 'TC_STAT_INIT_HOUR'))
+                self.config.getstr('config', 'TC_STAT_INIT_HOUR'))
 
-            tc_stat_dict['VALID_BEG'] = self.cu.getstr('config',
+            tc_stat_dict['VALID_BEG'] = self.config.getstr('config',
                                                            'TC_STAT_INIT_BEG')
 
-            tc_stat_dict['VALID_END'] = self.cu.getstr('config',
+            tc_stat_dict['VALID_END'] = self.config.getstr('config',
                                                            'TC_STAT_INIT_END')
 
             tc_stat_dict['VALID_INCLUDE'] = util.getlist(
-                self.cu.getstr('config', 'TC_STAT_VALID_INCLUDE'))
+                self.config.getstr('config', 'TC_STAT_VALID_INCLUDE'))
 
             tc_stat_dict['VALID_EXCLUDE'] = util.getlist(
-                self.cu.getstr('config', 'TC_STAT_VALID_EXCLUDE'))
+                self.config.getstr('config', 'TC_STAT_VALID_EXCLUDE'))
 
             tc_stat_dict['LEAD_REQ'] = \
-                util.getlist(self.cu.getstr('config', 'TC_STAT_LEAD_REQ'))
+                util.getlist(self.config.getstr('config', 'TC_STAT_LEAD_REQ'))
 
             tc_stat_dict['INIT_MASK'] = \
-                util.getlist(self.cu.getstr('config', 'TC_STAT_INIT_MASK'))
+                util.getlist(self.config.getstr('config', 'TC_STAT_INIT_MASK'))
 
             tc_stat_dict['VALID_MASK'] = \
-                util.getlist(self.cu.getstr('config', 'TC_STAT_VALID_MASK'))
+                util.getlist(self.config.getstr('config', 'TC_STAT_VALID_MASK'))
 
             tc_stat_dict['VALID_HOUR'] = \
-                util.getlist(self.cu.getstr('config', 'TC_STAT_VALID_HOUR'))
+                util.getlist(self.config.getstr('config', 'TC_STAT_VALID_HOUR'))
 
             tc_stat_dict['LEAD'] = \
-                util.getlist(self.cu.getstr('config', 'TC_STAT_LEAD'))
+                util.getlist(self.config.getstr('config', 'TC_STAT_LEAD'))
 
             tc_stat_dict['TRACK_WATCH_WARN'] = \
                 util.getlist(
-                    self.cu.getstr('config', 'TC_STAT_TRACK_WATCH_WARN'))
+                    self.config.getstr('config', 'TC_STAT_TRACK_WATCH_WARN'))
 
             tc_stat_dict['COLUMN_THRESH_NAME'] = \
                 util.getlist(
-                    self.cu.getstr('config', 'TC_STAT_COLUMN_THRESH_NAME'))
+                    self.config.getstr('config', 'TC_STAT_COLUMN_THRESH_NAME'))
 
             tc_stat_dict['COLUMN_THRESH_VAL'] = util.getlist(
-                self.cu.getstr('config', 'TC_STAT_COLUMN_THRESH_VAL'))
+                self.config.getstr('config', 'TC_STAT_COLUMN_THRESH_VAL'))
 
             tc_stat_dict['COLUMN_STR_NAME'] = \
                 util.getlist(
-                    self.cu.getstr('config', 'TC_STAT_COLUMN_STR_NAME'))
+                    self.config.getstr('config', 'TC_STAT_COLUMN_STR_NAME'))
 
             tc_stat_dict['COLUMN_STR_VAL'] = \
                 util.getlist(
-                    self.cu.getstr('config', 'TC_STAT_COLUMN_STR_VAL'))
+                    self.config.getstr('config', 'TC_STAT_COLUMN_STR_VAL'))
 
             tc_stat_dict['INIT_THRESH_NAME'] = util.getlist(
-                self.cu.getstr('config', 'TC_STAT_INIT_THRESH_NAME'))
+                self.config.getstr('config', 'TC_STAT_INIT_THRESH_NAME'))
 
             tc_stat_dict['INIT_THRESH_VAL'] = util.getlist(
-                self.cu.getstr('config', 'TC_STAT_INIT_THRESH_VAL'))
+                self.config.getstr('config', 'TC_STAT_INIT_THRESH_VAL'))
 
             tc_stat_dict['INIT_STR_NAME'] = \
                 util.getlist(
-                    self.cu.getstr('config', 'TC_STAT_INIT_STR_NAME'))
+                    self.config.getstr('config', 'TC_STAT_INIT_STR_NAME'))
 
             tc_stat_dict['INIT_STR_VAL'] = \
                 util.getlist(
-                    self.cu.getstr('config', 'TC_STAT_INIT_STR_VAL'))
+                    self.config.getstr('config', 'TC_STAT_INIT_STR_VAL'))
 
             try:
                 tc_stat_dict['WATER_ONLY'] = \
-                    self.cu.getbool('config', 'TC_STAT_WATER_ONLY')
+                    self.config.getbool('config', 'TC_STAT_WATER_ONLY')
             except ValueError:
                 # WATER_ONLY not defined in any configuration files,
                 # set to False and proceed.
@@ -205,7 +200,7 @@ class TcStatWrapper(CommandBuilder):
 
             try:
                 tc_stat_dict['LANDFALL'] = \
-                    self.cu.getbool('config', 'TC_STAT_LANDFALL')
+                    self.config.getbool('config', 'TC_STAT_LANDFALL')
             except ValueError:
                 # Not set by user in MET tc_stat config file or METplus config
                 # file.  Set to False and continue ingesting config file values.
@@ -216,35 +211,35 @@ class TcStatWrapper(CommandBuilder):
                 pass
 
             tc_stat_dict['LANDFALL_BEG'] = \
-                self.cu.getstr('config', 'TC_STAT_LANDFALL_BEG')
+                self.config.getstr('config', 'TC_STAT_LANDFALL_BEG')
 
             tc_stat_dict['LANDFALL_END'] = \
-                self.cu.getstr('config', 'TC_STAT_LANDFALL_END')
+                self.config.getstr('config', 'TC_STAT_LANDFALL_END')
 
             tc_stat_dict['JOBS_LIST'] = \
-                self.cu.getstr('config', 'TC_STAT_JOBS_LIST')
+                self.config.getstr('config', 'TC_STAT_JOBS_LIST')
         else:
             # via command line, only one job requested
-            tc_stat_dict['CMD_LINE_JOB'] = self.cu.getstr(
+            tc_stat_dict['CMD_LINE_JOB'] = self.config.getstr(
                 'config', 'TC_STAT_CMD_LINE_JOB')
 
         tc_stat_dict['MATCH_POINTS'] = \
-            self.cu.getstr('config', 'TC_STAT_MATCH_POINTS').upper()
-        tc_stat_dict['OUTPUT_BASE'] = self.cu.getdir('OUTPUT_BASE')
+            self.config.getstr('config', 'TC_STAT_MATCH_POINTS').upper()
+        tc_stat_dict['OUTPUT_BASE'] = self.config.getdir('OUTPUT_BASE')
 
-        tc_stat_dict['TMP_DIR'] = self.cu.getdir('TMP_DIR')
+        tc_stat_dict['TMP_DIR'] = self.config.getdir('TMP_DIR')
 
-        tc_stat_dict['METPLUS_BASE'] = self.cu.getdir('METPLUS_BASE')
+        tc_stat_dict['METPLUS_BASE'] = self.config.getdir('METPLUS_BASE')
 
-        tc_stat_dict['MET_INSTALL_DIR'] = self.cu.getdir('MET_INSTALL_DIR')
+        tc_stat_dict['MET_INSTALL_DIR'] = self.config.getdir('MET_INSTALL_DIR')
 
-        tc_stat_dict['INPUT_DIR'] = self.cu.getdir('TC_STAT_INPUT_DIR')
+        tc_stat_dict['INPUT_DIR'] = self.config.getdir('TC_STAT_INPUT_DIR')
 
-        tc_stat_dict['OUTPUT_DIR'] = self.cu.getdir('TC_STAT_OUTPUT_DIR')
+        tc_stat_dict['OUTPUT_DIR'] = self.config.getdir('TC_STAT_OUTPUT_DIR')
 
-        tc_stat_dict['PARM_BASE'] = self.cu.getdir('PARM_BASE')
+        tc_stat_dict['PARM_BASE'] = self.config.getdir('PARM_BASE')
 
-        tc_stat_dict['CONFIG_FILE'] = self.cu.getstr('config', 'TC_STAT_CONFIG_FILE')
+        tc_stat_dict['CONFIG_FILE'] = self.config.getstr('config', 'TC_STAT_CONFIG_FILE')
 
         return tc_stat_dict
 

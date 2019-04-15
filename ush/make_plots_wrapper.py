@@ -26,12 +26,10 @@ from command_builder import CommandBuilder
 
 
 class MakePlotsWrapper(CommandBuilder):
-    def __init__(self, p, logger):
-        super(MakePlotsWrapper, self).__init__(p, logger)
+    def __init__(self, config, logger):
+        super(MakePlotsWrapper, self).__init__(config, logger)
         self.app_path = 'python'
         self.app_name = 'make_plots'
-        if self.logger is None:
-            self.logger = util.get_logger(self.p,sublog='MakePlots')
 
     def set_plotting_script(self, plotting_script_path):
         self.plotting_script = plotting_script_path
@@ -52,7 +50,7 @@ class MakePlotsWrapper(CommandBuilder):
 
     def parse_model_list(self):
         model_list = []
-        all_conf = self.p.keys('config')
+        all_conf = self.config.keys('config')
         model_indices = []
         regex = re.compile("MODEL(\d+)_NAME")
         for conf in all_conf:
@@ -60,8 +58,8 @@ class MakePlotsWrapper(CommandBuilder):
             if result is not None:
                 model_indices.append(result.group(1))
         for m in model_indices:
-            if self.p.has_option('config', "MODEL"+m+"_NAME"):
-                model_name = self.cu.getstr('config', "MODEL"+m+"_NAME")
+            if self.config.has_option('config', "MODEL"+m+"_NAME"):
+                model_name = self.config.getstr('config', "MODEL"+m+"_NAME")
                 model_list.append(model_name)
         return model_list
     
@@ -70,7 +68,7 @@ class MakePlotsWrapper(CommandBuilder):
         #need variables with cooresponding list of levels; logic derived from util.parse_var_list
         var_info_list = []
         # find all FCST_VARn_NAME keys in the conf files
-        all_conf = self.p.keys('config')
+        all_conf = self.config.keys('config')
         fcst_indices = []
         regex = re.compile("FCST_VAR(\d+)_NAME")
         for conf in all_conf:
@@ -80,28 +78,28 @@ class MakePlotsWrapper(CommandBuilder):
         # loop over all possible variables and add them to list
         for n in fcst_indices:
             # get fcst var info if available
-            if self.p.has_option('config', "FCST_VAR"+n+"_NAME"):
-                fcst_name = self.cu.getstr('config', "FCST_VAR"+n+"_NAME")
+            if self.config.has_option('config', "FCST_VAR"+n+"_NAME"):
+                fcst_name = self.config.getstr('config', "FCST_VAR"+n+"_NAME")
 
             fcst_extra = ""
-            if self.p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                fcst_extra = self.cu.getraw('config', "FCST_VAR"+n+"_OPTIONS")
+            if self.config.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
+                fcst_extra = self.config.getraw('config', "FCST_VAR"+n+"_OPTIONS")
 
-            fcst_levels = util.getlist(self.cu.getstr('config', "FCST_VAR"+n+"_LEVELS"))
+            fcst_levels = util.getlist(self.config.getstr('config', "FCST_VAR"+n+"_LEVELS"))
             # if OBS_VARn_X does not exist, use FCST_VARn_X
-            if self.p.has_option('config', "OBS_VAR"+n+"_NAME"):
-                obs_name = self.cu.getstr('config', "OBS_VAR"+n+"_NAME")
+            if self.config.has_option('config', "OBS_VAR"+n+"_NAME"):
+                obs_name = self.config.getstr('config', "OBS_VAR"+n+"_NAME")
             else:
                 obs_name = fcst_name
 
             obs_extra = ""
-            if self.p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                obs_extra = self.cu.getraw('config', "OBS_VAR"+n+"_OPTIONS")
+            if self.config.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
+                obs_extra = self.config.getraw('config', "OBS_VAR"+n+"_OPTIONS")
             ##else:
             ##    obs_extra = fcst_extra
-            ##fcst_levels = util.getlist(self.cu.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-            if self.p.has_option('config', "OBS_VAR"+n+"_LEVELS"):
-                obs_levels = util.getlist(self.cu.getstr('config', "FCST_VAR"+n+"_LEVELS"))
+            ##fcst_levels = util.getlist(self.config.getstr('config', "FCST_VAR"+n+"_LEVELS"))
+            if self.config.has_option('config', "OBS_VAR"+n+"_LEVELS"):
+                obs_levels = util.getlist(self.config.getstr('config', "FCST_VAR"+n+"_LEVELS"))
             else:
                 obs_levels = fcst_levels
 
@@ -120,29 +118,29 @@ class MakePlotsWrapper(CommandBuilder):
         return var_info_list
 
     def get_logging_info(self):
-        logging_filename = self.cu.getstr('config', 'LOG_METPLUS')
+        logging_filename = self.config.getstr('config', 'LOG_METPLUS')
         self.add_env_var("LOGGING_FILENAME", logging_filename)
-        logging_level = self.cu.getstr('config', 'LOG_LEVEL')
+        logging_level = self.config.getstr('config', 'LOG_LEVEL')
         self.add_env_var("LOGGING_LEVEL", logging_level)
     
     def get_grid2grid_date_info(self):
-        use_init = util.is_loop_by_init(self.cu)
+        use_init = util.is_loop_by_init(self.config)
         if use_init:
-            start_t = self.cu.getstr('config', 'INIT_BEG')
-            end_t = self.cu.getstr('config', 'INIT_END')
-            loop_beg_hour = self.cu.getint('config', 'INIT_BEG_HOUR')
-            loop_end_hour = self.cu.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.cu.getint('config', 'INIT_INCREMENT')
+            start_t = self.config.getstr('config', 'INIT_BEG')
+            end_t = self.config.getstr('config', 'INIT_END')
+            loop_beg_hour = self.config.getint('config', 'INIT_BEG_HOUR')
+            loop_end_hour = self.config.getint('config', 'INIT_END_HOUR')
+            loop_inc = self.config.getint('config', 'INIT_INCREMENT')
             date_filter_method = "Initialization"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
             self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
         else:
-            start_t = self.cu.getstr('config', 'VALID_BEG')
-            end_t = self.cu.getstr('config', 'VALID_END')
-            loop_beg_hour = self.cu.getint('config', 'VALID_BEG_HOUR')
-            loop_end_hour = self.cu.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.cu.getint('config', 'VALID_INCREMENT')
+            start_t = self.config.getstr('config', 'VALID_BEG')
+            end_t = self.config.getstr('config', 'VALID_END')
+            loop_beg_hour = self.config.getint('config', 'VALID_BEG_HOUR')
+            loop_end_hour = self.config.getint('config', 'VALID_END_HOUR')
+            loop_inc = self.config.getint('config', 'VALID_INCREMENT')
             date_filter_method = "Valid"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -150,27 +148,27 @@ class MakePlotsWrapper(CommandBuilder):
         return loop_beg_hour, loop_end_hour, loop_inc    
 
     def get_grid2obs_date_info(self):
-        use_init = util.is_loop_by_init(self.cu)
+        use_init = util.is_loop_by_init(self.config)
         if use_init:
-            start_t = self.cu.getstr('config', 'INIT_BEG')
-            end_t = self.cu.getstr('config', 'INIT_END')
-            init_beg_hour = self.cu.getstr('config', 'INIT_BEG_HOUR')
-            init_end_hour = self.cu.getstr('config', 'INIT_END_HOUR')
-            loop_beg_hour = self.cu.getint('config', 'VALID_BEG_HOUR')
-            loop_end_hour = self.cu.getint('config', 'VALID_END_HOUR')
-            loop_inc = self.cu.getint('config', 'VALID_INCREMENT')
+            start_t = self.config.getstr('config', 'INIT_BEG')
+            end_t = self.config.getstr('config', 'INIT_END')
+            init_beg_hour = self.config.getstr('config', 'INIT_BEG_HOUR')
+            init_end_hour = self.config.getstr('config', 'INIT_END_HOUR')
+            loop_beg_hour = self.config.getint('config', 'VALID_BEG_HOUR')
+            loop_end_hour = self.config.getint('config', 'VALID_END_HOUR')
+            loop_inc = self.config.getint('config', 'VALID_INCREMENT')
             date_filter_method = "Initialization"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
             self.add_env_var("DATE_FILTER_METHOD", date_filter_method)
         else:
-            start_t = self.cu.getstr('config', 'VALID_BEG')
-            end_t = self.cu.getstr('config', 'VALID_END')
-            valid_beg_hour = self.cu.getstr('config', 'VALID_BEG_HOUR')
-            valid_end_hour = self.cu.getstr('config', 'VALID_END_HOUR')
-            loop_beg_hour = self.cu.getint('config', 'INIT_BEG_HOUR')
-            loop_end_hour = self.cu.getint('config', 'INIT_END_HOUR')
-            loop_inc = self.cu.getint('config', 'INIT_INCREMENT')
+            start_t = self.config.getstr('config', 'VALID_BEG')
+            end_t = self.config.getstr('config', 'VALID_END')
+            valid_beg_hour = self.config.getstr('config', 'VALID_BEG_HOUR')
+            valid_end_hour = self.config.getstr('config', 'VALID_END_HOUR')
+            loop_beg_hour = self.config.getint('config', 'INIT_BEG_HOUR')
+            loop_end_hour = self.config.getint('config', 'INIT_END_HOUR')
+            loop_inc = self.config.getint('config', 'INIT_INCREMENT')
             date_filter_method = "Valid"
             self.add_env_var("START_T", start_t)
             self.add_env_var("END_T", end_t)
@@ -178,14 +176,14 @@ class MakePlotsWrapper(CommandBuilder):
         return loop_beg_hour, loop_end_hour, loop_inc
        
     def get_plotting_info(self):
-        plotting_scripts_dir = self.cu.getdir('PLOTTING_SCRIPTS_DIR')
-        stat_files_input_dir = self.cu.getdir('STAT_FILES_INPUT_DIR')
+        plotting_scripts_dir = self.config.getdir('PLOTTING_SCRIPTS_DIR')
+        stat_files_input_dir = self.config.getdir('STAT_FILES_INPUT_DIR')
         self.add_env_var("STAT_FILES_INPUT_DIR", stat_files_input_dir)
-        plotting_out_dir = self.cu.getdir('PLOTTING_OUT_DIR')
+        plotting_out_dir = self.config.getdir('PLOTTING_OUT_DIR')
         self.add_env_var("PLOTTING_OUT_DIR", plotting_out_dir)
-        plot_stats_list = self.cu.getstr('config', 'PLOT_STATS_LIST')
+        plot_stats_list = self.config.getstr('config', 'PLOT_STATS_LIST')
         self.add_env_var("PLOT_STATS_LIST", plot_stats_list)
-        verif_type = self.cu.getstr('config', 'VERIF_TYPE')
+        verif_type = self.config.getstr('config', 'VERIF_TYPE')
         plotting_out_dir_type = os.path.join(plotting_out_dir, verif_type)
         if os.path.exists(plotting_out_dir_type):
             self.logger.info(plotting_out_dir_type+" exist, removing")
@@ -205,9 +203,9 @@ class MakePlotsWrapper(CommandBuilder):
         #get variable info 
         var_info_list = self.parse_vars_with_level_list()
         #get lead info
-        lead_list = util.getlistint(self.cu.getstr('config', 'LEAD_LIST'))
+        lead_list = util.getlistint(self.config.getstr('config', 'LEAD_LIST'))
         #get region info
-        region_list = util.getlist(self.cu.getstr('config', 'REGION_LIST'))
+        region_list = util.getlist(self.config.getstr('config', 'REGION_LIST'))
         #get plotting script directory and other plotting info
         plotting_scripts_dir = self.get_plotting_info()
         #start loops to run plotting scripts 
@@ -251,7 +249,7 @@ class MakePlotsWrapper(CommandBuilder):
                             return
                         self.build()
                         self.clear()
-                    self.add_env_var("LEAD_LIST", self.cu.getstr('config', 'LEAD_LIST'))
+                    self.add_env_var("LEAD_LIST", self.config.getstr('config', 'LEAD_LIST'))
                     #build command
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_pres_tsmean.py"))
                     self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+v.fcst_name+" obs var:"+v.obs_name)
@@ -284,9 +282,9 @@ class MakePlotsWrapper(CommandBuilder):
         #get variable info 
         var_info_list = self.parse_vars_with_level_list()
         #get lead info
-        lead_list = util.getlistint(self.cu.getstr('config', 'LEAD_LIST'))
+        lead_list = util.getlistint(self.config.getstr('config', 'LEAD_LIST'))
         #get region info
-        region_list = util.getlist(self.cu.getstr('config', 'REGION_LIST'))
+        region_list = util.getlist(self.config.getstr('config', 'REGION_LIST'))
         #get plotting script directory and other plotting info
         plotting_scripts_dir = self.get_plotting_info()
         #start loops to run plotting scripts
@@ -323,16 +321,16 @@ class MakePlotsWrapper(CommandBuilder):
                              self.build()
                              self.clear()
                              if v.fcst_name == 'HGT' or v.obs_name == 'HGT':
-                                  fourier_decomp_height = self.cu.getbool('config', 'FOURIER_HEIGHT_DECOMP')
+                                  fourier_decomp_height = self.config.getbool('config', 'FOURIER_HEIGHT_DECOMP')
                                   if fourier_decomp_height:
-                                      wave_num_beg_list = util.getlist(self.cu.getstr('config', 'WAVE_NUM_BEG_LIST'))
-                                      wave_num_end_list = util.getlist(self.cu.getstr('config', 'WAVE_NUM_END_LIST'))
+                                      wave_num_beg_list = util.getlist(self.config.getstr('config', 'WAVE_NUM_BEG_LIST'))
+                                      wave_num_end_list = util.getlist(self.config.getstr('config', 'WAVE_NUM_END_LIST'))
                                       if len(wave_num_beg_list) != len(wave_num_end_list):
                                           self.logger.error("ERROR: WAVE_NUM_BEG_LIST and WAVE_NUM_END_LIST do not have the same number of elements")
                                           exit(1)
                                       else:
-                                           wave_num_beg_list_str = self.cu.getstr('config', 'WAVE_NUM_BEG_LIST')
-                                           wave_num_end_list_str = self.cu.getstr('config', 'WAVE_NUM_END_LIST')
+                                           wave_num_beg_list_str = self.config.getstr('config', 'WAVE_NUM_BEG_LIST')
+                                           wave_num_end_list_str = self.config.getstr('config', 'WAVE_NUM_END_LIST')
                                            self.add_env_var('WAVE_NUM_BEG_LIST', wave_num_beg_list_str)
                                            self.add_env_var('WAVE_NUM_END_LIST', wave_num_end_list_str)
                                            #build command
@@ -344,7 +342,7 @@ class MakePlotsWrapper(CommandBuilder):
                                                return
                                            self.build()
                                            self.clear() 
-                         self.add_env_var("LEAD_LIST", self.cu.getstr('config', 'LEAD_LIST'))
+                         self.add_env_var("LEAD_LIST", self.config.getstr('config', 'LEAD_LIST'))
                          #build command
                          self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_anom_tsmean.py"))
                          self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+v.fcst_name+"_"+fcst_var_levels_list[vl]+" obs var:"+v.obs_name+"_"+obs_var_levels_list[vl])
@@ -355,16 +353,16 @@ class MakePlotsWrapper(CommandBuilder):
                          self.build()
                          self.clear()
                          if v.fcst_name == 'HGT' or v.obs_name == 'HGT':
-                             fourier_decomp_height = self.cu.getbool('config', 'FOURIER_HEIGHT_DECOMP')
+                             fourier_decomp_height = self.config.getbool('config', 'FOURIER_HEIGHT_DECOMP')
                              if fourier_decomp_height:
-                                 wave_num_beg_list = util.getlist(self.cu.getstr('config', 'WAVE_NUM_BEG_LIST'))
-                                 wave_num_end_list = util.getlist(self.cu.getstr('config', 'WAVE_NUM_END_LIST'))
+                                 wave_num_beg_list = util.getlist(self.config.getstr('config', 'WAVE_NUM_BEG_LIST'))
+                                 wave_num_end_list = util.getlist(self.config.getstr('config', 'WAVE_NUM_END_LIST'))
                                  if len(wave_num_beg_list) != len(wave_num_end_list):
                                       self.logger.error("ERROR: WAVE_NUM_BEG_LIST and WAVE_NUM_END_LIST do not have the same number of elements")
                                       exit(1)
                                  else:
-                                      wave_num_beg_list_str = self.cu.getstr('config', 'WAVE_NUM_BEG_LIST')
-                                      wave_num_end_list_str = self.cu.getstr('config', 'WAVE_NUM_END_LIST')
+                                      wave_num_beg_list_str = self.config.getstr('config', 'WAVE_NUM_BEG_LIST')
+                                      wave_num_end_list_str = self.config.getstr('config', 'WAVE_NUM_END_LIST')
                                       self.add_env_var('WAVE_NUM_BEG_LIST', wave_num_beg_list_str)
                                       self.add_env_var('WAVE_NUM_END_LIST', wave_num_end_list_str)
                                       #build command
@@ -397,11 +395,11 @@ class MakePlotsWrapper(CommandBuilder):
         model_names = self.parse_model_list()
         self.add_env_var("MODEL_NAMES", ' '.join(model_names))
         #get variable info 
-        var_list = util.parse_var_list(self.cu)
+        var_list = util.parse_var_list(self.config)
         #get lead info
-        lead_list = util.getlistint(self.cu.getstr('config', 'LEAD_LIST'))
+        lead_list = util.getlistint(self.config.getstr('config', 'LEAD_LIST'))
         #get region info
-        region_list = util.getlist(self.cu.getstr('config', 'REGION_LIST'))
+        region_list = util.getlist(self.config.getstr('config', 'REGION_LIST'))
         #get plotting script directory and other plotting info
         plotting_scripts_dir = self.get_plotting_info()
         #start loops to run plotting scripts
@@ -435,7 +433,7 @@ class MakePlotsWrapper(CommandBuilder):
                             return
                         self.build()
                         self.clear()
-                    self.add_env_var("LEAD_LIST", self.cu.getstr('config', 'LEAD_LIST'))
+                    self.add_env_var("LEAD_LIST", self.config.getstr('config', 'LEAD_LIST'))
                     #build command
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2grid_sfc_tsmean.py"))
                     self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
@@ -459,11 +457,11 @@ class MakePlotsWrapper(CommandBuilder):
         #get variable info 
         var_info_list = self.parse_vars_with_level_list()
         #get lead info
-        lead_list = util.getlistint(self.cu.getstr('config', 'LEAD_LIST'))
+        lead_list = util.getlistint(self.config.getstr('config', 'LEAD_LIST'))
         #get region info
-        region_list = util.getlist(self.cu.getstr('config', 'REGION_LIST'))
+        region_list = util.getlist(self.config.getstr('config', 'REGION_LIST'))
         #get grid info
-        regrid_to_grid = self.cu.getstr('config', 'REGRID_TO_GRID')
+        regrid_to_grid = self.config.getstr('config', 'REGRID_TO_GRID')
         self.add_env_var("REGRID_TO_GRID", regrid_to_grid)
         #get plotting script directory and other plotting info
         plotting_scripts_dir = self.get_plotting_info()
@@ -508,7 +506,7 @@ class MakePlotsWrapper(CommandBuilder):
                             return
                         self.build()
                         self.clear()
-                    self.add_env_var("LEAD_LIST", self.cu.getstr('config', 'LEAD_LIST'))
+                    self.add_env_var("LEAD_LIST", self.config.getstr('config', 'LEAD_LIST'))
                     #build command
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_upper_air_tsmean.py"))
                     self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+v.fcst_name+" obs var:"+v.obs_name)
@@ -539,13 +537,13 @@ class MakePlotsWrapper(CommandBuilder):
         model_names = self.parse_model_list()
         self.add_env_var("MODEL_NAMES", ' '.join(model_names))
         #get variable info 
-        var_list = util.parse_var_list(self.cu)
+        var_list = util.parse_var_list(self.config)
         #get lead info
-        lead_list = util.getlistint(self.cu.getstr('config', 'LEAD_LIST'))
+        lead_list = util.getlistint(self.config.getstr('config', 'LEAD_LIST'))
         #get region info
-        region_list = util.getlist(self.cu.getstr('config', 'REGION_LIST'))
+        region_list = util.getlist(self.config.getstr('config', 'REGION_LIST'))
         #get grid info
-        regrid_to_grid = self.cu.getstr('config', 'REGRID_TO_GRID')
+        regrid_to_grid = self.config.getstr('config', 'REGRID_TO_GRID')
         self.add_env_var("REGRID_TO_GRID", regrid_to_grid)
         #get plotting script directory and other plotting info
         plotting_scripts_dir = self.get_plotting_info()
@@ -580,7 +578,7 @@ class MakePlotsWrapper(CommandBuilder):
                             return
                         self.build()
                         self.clear()
-                    self.add_env_var("LEAD_LIST", self.cu.getstr('config', 'LEAD_LIST'))
+                    self.add_env_var("LEAD_LIST", self.config.getstr('config', 'LEAD_LIST'))
                     #build command
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_grid2obs_conus_sfc_tsmean.py"))
                     self.logger.info("Building command for "+self.plotting_script+" cycle:"+str(loop_hour)+"Z region:"+region+" fcst var:"+fcst_var_name+"_"+fcst_var_level+" obs var:"+obs_var_name+"_"+obs_var_level)
@@ -596,8 +594,8 @@ class MakePlotsWrapper(CommandBuilder):
 ########################################################################
     def run_all_times(self):
         self.logger.info("RUNNING SCRIPTS FOR PLOTTING")
-        verif_case = self.cu.getstr('config', 'VERIF_CASE')
-        verif_type = self.cu.getstr('config', 'VERIF_TYPE')
+        verif_case = self.config.getstr('config', 'VERIF_CASE')
+        verif_type = self.config.getstr('config', 'VERIF_TYPE')
         if verif_case == 'grid2grid':
             if verif_type == 'pres':
                  self.grid2grid_pres_plots()

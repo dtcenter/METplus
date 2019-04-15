@@ -15,7 +15,7 @@ from os.path import dirname, realpath
 # from random import Random
 from produtil.config import ProdConfig
 import met_util as util
-from config_util import ConfigUtil
+from config_wrapper import ConfigWrapper
 
 """!Creates the initial METplus directory structure,
 loads information into each job.
@@ -203,7 +203,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
 
     conf = METplusLauncher()
     logger = conf.log()
-    cu = ConfigUtil(conf, logger)
+    cu = ConfigWrapper(conf, logger)
 
     # set config variable for current time
     conf.set('config', 'CLOCK_TIME', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
@@ -436,7 +436,7 @@ def test_gen_conf(file_list, cycle=None):
                             'must be a list of strings.')
     conf = ProdConfig()
     logger = conf.log()
-    cu = ConfigUtil(conf, logger)
+    cu = ConfigWrapper(conf, logger)
 
     for filename in file_list:
         logger.info("%s: parse this file" % (filename,))

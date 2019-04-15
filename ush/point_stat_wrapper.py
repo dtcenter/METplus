@@ -39,9 +39,9 @@ Condition codes: 0 for success, 1 for failure
 class PointStatWrapper(CompareGriddedWrapper):
     """! Wrapper to the MET tool, Point-Stat."""
 
-    def __init__(self, p, logger):
-        super(PointStatWrapper, self).__init__(p, logger)
-        met_install_dir = self.cu.getdir('MET_INSTALL_DIR')
+    def __init__(self, config, logger):
+        super(PointStatWrapper, self).__init__(config, logger)
+        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.app_path = os.path.join(met_install_dir, 'bin/point_stat')
         self.app_name = os.path.basename(self.app_path)
 
@@ -62,62 +62,62 @@ class PointStatWrapper(CompareGriddedWrapper):
         # TODO: These are all required by CompareGridded, put into function?
         # pass in all caps MET app name, i.e. POINT_STAT or PB2NC
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['OFFSETS'] = util.getlistint(self.cu.getstr('config', 'POINT_STAT_OFFSETS', '0'))
+        c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'POINT_STAT_OFFSETS', '0'))
         c_dict['FCST_INPUT_TEMPLATE'] = \
-            self.cu.getraw('filename_templates',
+            self.config.getraw('filename_templates',
                                'FCST_POINT_STAT_INPUT_TEMPLATE')
         c_dict['OBS_INPUT_TEMPLATE'] = \
-            self.cu.getraw('filename_templates',
+            self.config.getraw('filename_templates',
                                'OBS_POINT_STAT_INPUT_TEMPLATE')
 
         c_dict['FCST_INPUT_DATATYPE'] = \
-          self.cu.getstr('config', 'FCST_POINT_STAT_INPUT_DATATYPE', '')
+          self.config.getstr('config', 'FCST_POINT_STAT_INPUT_DATATYPE', '')
         c_dict['OBS_INPUT_DATATYPE'] = \
-          self.cu.getstr('config', 'OBS_POINT_STAT_INPUT_DATATYPE', '')
+          self.config.getstr('config', 'OBS_POINT_STAT_INPUT_DATATYPE', '')
 
-        c_dict['FCST_INPUT_DIR'] = self.cu.getdir('FCST_POINT_STAT_INPUT_DIR')
-        c_dict['OBS_INPUT_DIR'] = self.cu.getdir('OBS_POINT_STAT_INPUT_DIR')
+        c_dict['FCST_INPUT_DIR'] = self.config.getdir('FCST_POINT_STAT_INPUT_DIR')
+        c_dict['OBS_INPUT_DIR'] = self.config.getdir('OBS_POINT_STAT_INPUT_DIR')
         c_dict['OUTPUT_DIR'] = \
-            self.cu.getdir('POINT_STAT_OUTPUT_DIR')
+            self.config.getdir('POINT_STAT_OUTPUT_DIR')
 
         # Configuration
         c_dict['CONFIG_FILE'] = \
-            self.cu.getstr('config', 'POINT_STAT_CONFIG_FILE')
+            self.config.getstr('config', 'POINT_STAT_CONFIG_FILE')
 
-        c_dict['MODEL'] = self.cu.getstr('config', 'MODEL')
+        c_dict['MODEL'] = self.config.getstr('config', 'MODEL')
         c_dict['POINT_STAT_CONFIG_FILE'] = \
-            self.cu.getstr('config', 'POINT_STAT_CONFIG_FILE')
-        c_dict['REGRID_TO_GRID'] = self.cu.getstr('config', 'POINT_STAT_REGRID_TO_GRID')
-        c_dict['POINT_STAT_GRID'] = self.cu.getstr('config', 'POINT_STAT_GRID')
+            self.config.getstr('config', 'POINT_STAT_CONFIG_FILE')
+        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'POINT_STAT_REGRID_TO_GRID')
+        c_dict['POINT_STAT_GRID'] = self.config.getstr('config', 'POINT_STAT_GRID')
 
         c_dict['POINT_STAT_POLY'] = util.getlist(
-            self.cu.getstr('config', 'POINT_STAT_POLY', ''))
+            self.config.getstr('config', 'POINT_STAT_POLY', ''))
         c_dict['POINT_STAT_STATION_ID'] = util.getlist(
-            self.cu.getstr('config', 'POINT_STAT_STATION_ID', ''))
+            self.config.getstr('config', 'POINT_STAT_STATION_ID', ''))
         c_dict['POINT_STAT_MESSAGE_TYPE'] = util.getlist(
-            self.cu.getstr('config', 'POINT_STAT_MESSAGE_TYPE', ''))
+            self.config.getstr('config', 'POINT_STAT_MESSAGE_TYPE', ''))
 
         # if window begin/end is set specific to ensemble_stat, override
         # OBS_WINDOW_BEGIN/END
-        if self.p.has_option('config', 'OBS_POINT_STAT_WINDOW_BEGIN'):
+        if self.config.has_option('config', 'OBS_POINT_STAT_WINDOW_BEGIN'):
             c_dict['OBS_WINDOW_BEGIN'] = \
-              self.cu.getint('config', 'OBS_POINT_STAT_WINDOW_BEGIN')
-        if self.p.has_option('config', 'OBS_POINT_STAT_WINDOW_END'):
+              self.config.getint('config', 'OBS_POINT_STAT_WINDOW_BEGIN')
+        if self.config.has_option('config', 'OBS_POINT_STAT_WINDOW_END'):
             c_dict['OBS_WINDOW_END'] = \
-              self.cu.getint('config', 'OBS_POINT_STAT_WINDOW_END')
+              self.config.getint('config', 'OBS_POINT_STAT_WINDOW_END')
 
         # same for FCST_WINDOW_BEGIN/END
-        if self.p.has_option('config', 'FCST_POINT_STAT_WINDOW_BEGIN'):
+        if self.config.has_option('config', 'FCST_POINT_STAT_WINDOW_BEGIN'):
             c_dict['FCST_WINDOW_BEGIN'] = \
-              self.cu.getint('config', 'FCST_POINT_STAT_WINDOW_BEGIN')
-        if self.p.has_option('config', 'FCST_POINT_STAT_WINDOW_END'):
+              self.config.getint('config', 'FCST_POINT_STAT_WINDOW_BEGIN')
+        if self.config.has_option('config', 'FCST_POINT_STAT_WINDOW_END'):
             c_dict['FCST_WINDOW_END'] = \
-              self.cu.getint('config', 'FCST_POINT_STAT_WINDOW_END')
+              self.config.getint('config', 'FCST_POINT_STAT_WINDOW_END')
 
-        c_dict['NEIGHBORHOOD_WIDTH'] = self.cu.getstr('config', 'POINT_STAT_NEIGHBORHOOD_WIDTH', '')
-        c_dict['NEIGHBORHOOD_SHAPE'] = self.cu.getstr('config', 'POINT_STAT_NEIGHBORHOOD_SHAPE', '')
+        c_dict['NEIGHBORHOOD_WIDTH'] = self.config.getstr('config', 'POINT_STAT_NEIGHBORHOOD_WIDTH', '')
+        c_dict['NEIGHBORHOOD_SHAPE'] = self.config.getstr('config', 'POINT_STAT_NEIGHBORHOOD_SHAPE', '')
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
-            self.cu.getraw('filename_templates',
+            self.config.getraw('filename_templates',
                                'POINT_STAT_VERIFICATION_MASK_TEMPLATE')
         c_dict['VERIFICATION_MASK'] = ''
 
@@ -128,17 +128,17 @@ class PointStatWrapper(CompareGriddedWrapper):
         """! Stub, not yet implemented """
 
         # get field variables to compare
-        var_list = util.parse_var_list(self.cu)
+        var_list = util.parse_var_list(self.config)
 
         # loop of forecast leads and process each
-        lead_seq = util.get_lead_sequence(self.cu, input_dict)
+        lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             input_dict['lead_hours'] = lead
 
             self.logger.info("Processing forecast lead {}".format(lead))
 
             # set current lead time config and environment variables
-            self.p.set('config', 'CURRENT_LEAD_TIME', lead)
+            self.config.set('config', 'CURRENT_LEAD_TIME', lead)
             os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
 
             # Run for given init/valid time and forecast lead combination
@@ -293,7 +293,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         # Retrieve all the fcst and obs field values (name, level, options)
         # from the METplus config file, passed into the MET config file via
         # the FCST_FIELD and OBS_FIELD environment variables.
-        all_vars_list = util.parse_var_list(self.cu)
+        all_vars_list = util.parse_var_list(self.config)
         met_fields = util.reformat_fields_for_met(all_vars_list, self.logger)
 
         self.add_env_var(b'FCST_FIELD', met_fields.fcst_field)
