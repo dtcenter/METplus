@@ -36,6 +36,7 @@ TRUNCATE_STRING = "truncate"
 VALID_STRING = "valid"
 LEAD_STRING = "lead"
 INIT_STRING = "init"
+DA_INIT_STRING = "da_init"
 OFFSET_STRING = "offset"
 
 GLOBAL_LOGGER = None
@@ -45,7 +46,8 @@ length_dict = { '%Y': 4,
                 '%d' : 2,
                 '%H' : 2,
                 '%M' : 2,
-                '%S' : 2}
+                '%S' : 2,
+                '%j' : 3}
 
 def multiple_replace(dict, text):
     """ Replace in 'text' all occurrences of any key in the
@@ -435,6 +437,23 @@ class StringExtract:
 #        print("TOTAL LEN IS {}\n".format(length))
         return length
 
+
+    def set_output_dict_from_time_info(self, time_dict, output_dict, key):
+        # get month and day from julian date if applicable
+        if time_dict['Y'] != -1 and time_dict['j'] != -1:
+            dt = datetime.datetime.strptime(str(time_dict['Y'])+'_'+str(time_dict['j']),
+                                            '%Y_%j')
+            time_dict['m'] = int(dt.strftime('%m'))
+            time_dict['d'] = int(dt.strftime('%d'))
+
+        if time_dict['Y'] != -1 and time_dict['m'] != -1 and time_dict['d'] != -1:
+            output_dict[key] = datetime.datetime(time_dict['Y'],
+                                          time_dict['m'],
+                                          time_dict['d'],
+                                          time_dict['H'],
+                                          time_dict['M'])
+
+
     def parseTemplate(self):
         template_len = len(self.template)
         i = 0
@@ -485,18 +504,21 @@ class StringExtract:
         valid['Y'] = -1
         valid['m'] = -1
         valid['d'] = -1
+        valid['j'] = -1
         valid['H'] = 0
         valid['M'] = 0
 
         init['Y'] = -1
         init['m'] = -1
         init['d'] = -1
+        init['j'] = -1
         init['H'] = 0
         init['M'] = 0
 
         da_init['Y'] = -1
         da_init['m'] = -1
         da_init['d'] = -1
+        da_init['j'] = -1
         da_init['H'] = 0
         da_init['M'] = 0
 
@@ -512,23 +534,22 @@ class StringExtract:
             if key.startswith(VALID_STRING):
                 valid[key.split('+')[1]] = int(value)
 
-        if valid['Y'] != -1 and valid['m'] != -1 and valid['d'] != -1:
-            output_dict['valid'] = datetime.datetime(valid['Y'],
-                                          valid['m'],
-                                          valid['d'],
-                                          valid['H'],
-                                          valid['M'])
+        self.set_output_dict_from_time_info(valid, output_dict, 'valid')
+
 
         for key, value in match_dict.iteritems():
             if key.startswith(INIT_STRING):
                 init[key.split('+')[1]] = int(value)
 
-        if init['Y'] != -1 and init['m'] != -1 and init['d'] != -1:
-            output_dict['init'] = datetime.datetime(init['Y'],
-                                              init['m'],
-                                              init['d'],
-                                              init['H'],
-                                              init['M'])
+        self.set_output_dict_from_time_info(init, output_dict, 'init')
+
+
+        for key, value in match_dict.iteritems():
+            if key.startswith(DA_INIT_STRING):
+                da_init[key.split('+')[1]] = int(value)
+
+        self.set_output_dict_from_time_info(da_init, output_dict, 'da_init')
+
 
         for key, value in match_dict.iteritems():
             if key.startswith(LEAD_STRING):
