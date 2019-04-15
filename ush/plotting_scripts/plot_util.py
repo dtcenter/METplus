@@ -5,12 +5,33 @@ def get_date_arrays(plot_time, start_date_YYYYmmdd, end_date_YYYYmmdd, valid_tim
     plot_time_dates = []
     expected_stat_file_dates = []
     if plot_time == "valid":
-        if len(valid_time_info) == 1:
-            delta_t = datetime.timedelta(seconds=86400)
+        if len(init_time_info) > 1:
+             valid_start_hour = valid_time_info[0]
+             valid_end_hour = valid_time_info[-1]
         else:
+             lead_hour_seconds = int(int(lead[0:2])%24) * 3600
+             if lead[2:]:
+                 lead_min_seconds = int(lead[2:]) * 60
+             else:
+                  lead_min_seconds = 0
+             init_hour_seconds = int(int(init_time_info[0][0:2])%24) * 3600
+             if init_time_info[0][2:]:
+                 init_min_seconds = int(init_time_info[0][2:]) * 60
+             else:
+                 init_min_seconds = 0
+             lead_init_offset = datetime.timedelta(seconds=lead_hour_seconds + lead_min_seconds + init_hour_seconds + init_min_seconds)
+             totsec = lead_init_offset.total_seconds()
+             valid_hour = int(totsec//3600)
+             valid_min = int((totsec%3600) // 60)
+             valid_sec = int((totsec%3600)%60)
+             valid_start_hour = str(valid_hour).zfill(2)+str(valid_min).zfill(2)+str(valid_sec).zfill(2)
+             valid_end_hour = valid_start_hour
+        if len(valid_time_info) > 1 and len(init_time_info) > 1:
             delta_t = datetime.timedelta(seconds=(datetime.datetime.strptime(valid_time_info[1], "%H%M%S") - datetime.datetime.strptime(valid_time_info[0], "%H%M%S")).total_seconds())
-        plot_start_date_YYYYmmddHHMMSS = datetime.datetime.strptime(start_date_YYYYmmdd+valid_time_info[0], "%Y%m%d%H%M%S")
-        plot_end_date_YYYYmmddHHMMSS = datetime.datetime.strptime(end_date_YYYYmmdd+valid_time_info[-1], "%Y%m%d%H%M%S") + delta_t
+        else:
+            delta_t = datetime.timedelta(seconds=86400)
+        plot_start_date_YYYYmmddHHMMSS = datetime.datetime.strptime(start_date_YYYYmmdd+valid_start_hour, "%Y%m%d%H%M%S")
+        plot_end_date_YYYYmmddHHMMSS = datetime.datetime.strptime(end_date_YYYYmmdd+valid_end_hour, "%Y%m%d%H%M%S") + delta_t
         dates = np.arange(plot_start_date_YYYYmmddHHMMSS, plot_end_date_YYYYmmddHHMMSS, delta_t).astype(datetime.datetime)
         for date in dates:
             dt = date.time()
@@ -18,12 +39,33 @@ def get_date_arrays(plot_time, start_date_YYYYmmdd, end_date_YYYYmmdd, valid_tim
             plot_time_dates.append(date.toordinal() + seconds/86400.)
             expected_stat_file_dates.append(date.strftime("%Y%m%d"+"_"+"%H%M%S"))
     elif plot_time == "init":
-        if len(init_time_info) == 1:
-            delta_t = datetime.timedelta(seconds=86400)
+        if len(valid_time_info) > 1:
+           init_start_hour = init_time_info[0]
+           init_end_hour = init_time_info[-1]
         else:
+           lead_hour_seconds = int(int(lead[0:2])%24) * 3600
+           if lead[2:]:
+               lead_min_seconds = int(lead[2:]) * 60
+           else:
+               lead_min_seconds = 0
+           valid_hour_seconds = int(int(valid_time_info[0][0:2])%24) * 3600
+           if valid_time_info[0][2:]:
+               valid_min_seconds = int(valid_time_info[0][2:]) * 60
+           else:
+               valid_min_seconds = 0
+           lead_init_offset = datetime.timedelta(seconds=lead_hour_seconds + lead_min_seconds - valid_hour_seconds - valid_min_seconds)
+           totsec = lead_init_offset.total_seconds()
+           init_hour = int(totsec//3600)
+           init_min = int((totsec%3600) // 60)
+           init_sec = int((totsec%3600)%60)
+           init_start_hour = str(init_hour).zfill(2)+str(init_min).zfill(2)+str(init_sec).zfill(2)
+           init_end_hour = init_start_hour
+        if len(valid_time_info) > 1 and len(init_time_info) > 1:
             delta_t = datetime.timedelta(seconds=(datetime.datetime.strptime(init_time_info[1], "%H%M%S") - datetime.datetime.strptime(init_time_info[0], "%H%M%S")).total_seconds())
-        plot_start_date_YYYYmmddHHMMSS = datetime.datetime.strptime(start_date_YYYYmmdd+init_time_info[0], "%Y%m%d%H%M%S")
-        plot_end_date_YYYYmmddHHMMSS = datetime.datetime.strptime(end_date_YYYYmmdd+init_time_info[-1], "%Y%m%d%H%M%S") + delta_t
+        else:
+            delta_t = datetime.timedelta(seconds=86400)
+        plot_start_date_YYYYmmddHHMMSS = datetime.datetime.strptime(start_date_YYYYmmdd+init_start_hour, "%Y%m%d%H%M%S")
+        plot_end_date_YYYYmmddHHMMSS = datetime.datetime.strptime(end_date_YYYYmmdd+init_end_hour, "%Y%m%d%H%M%S") + delta_t
         dates = np.arange(plot_start_date_YYYYmmddHHMMSS, plot_end_date_YYYYmmddHHMMSS, delta_t).astype(datetime.datetime)
         for date in dates:
             dt = date.time()
