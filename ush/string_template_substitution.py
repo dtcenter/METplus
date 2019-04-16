@@ -36,6 +36,7 @@ TRUNCATE_STRING = "truncate"
 VALID_STRING = "valid"
 LEAD_STRING = "lead"
 INIT_STRING = "init"
+DA_INIT_STRING = "da_init"
 OFFSET_STRING = "offset"
 
 GLOBAL_LOGGER = None
@@ -45,7 +46,8 @@ length_dict = { '%Y': 4,
                 '%d' : 2,
                 '%H' : 2,
                 '%M' : 2,
-                '%S' : 2}
+                '%S' : 2,
+                '%j' : 3}
 
 def multiple_replace(dict, text):
     """ Replace in 'text' all occurrences of any key in the
@@ -354,6 +356,171 @@ class StringSub:
         return self.tmpl
 
 
+    def create_cyclone_regex(self):
+        """! Create the regex that describes the tropical cyclone string.
+             Similar logic to doStringSub() except
+             replace the date, region, and cyclone with the appropriate regex.
+
+        """
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
+        # The . matches any single character except newline, and the
+        # following + matches 1 or more occurrence of preceding expression.
+        # The ? after the .+ makes it a lazy match so that it stops
+        # after the first "}" instead of continuing to match as many
+        # characters as possible
+
+        # findall searches through the string and finds all non-overlapping
+        # matches and returns the group
+        # match_list is a list with the contents being the data between the
+        # curly braces
+        match_list = re.findall('\{(.+?)\}', self.tmpl)
+
+        # finditer gets the start and end indices
+        # Iterate over each match to get the starting and ending indices
+        matches = re.finditer('\{(.+?)\}', self.tmpl)
+        match_start_end_list = []
+        for match in matches:
+            match_start_end_list.append((match.start(), match.end()))
+
+        if match_list == 0:
+            # Log and exit
+            self.logger.error("ERROR |  [" + cur_filename + ":" +
+                              cur_function + "] | " +
+                              "No matches found for template: " +
+                              self.tmpl)
+            exit(0)
+        elif len(match_list) != len(match_start_end_list):
+            # Log and exit
+            self.logger.error("ERROR |  [" + cur_filename + ":" +
+                              cur_function + "] | " +
+                              "match_list and match_start_end_list should " +
+                              "have the same length for template: " +
+                              self.tmpl)
+            exit(0)
+        else:
+            # No times to compute, create the regex expressions that describe
+            # the date (YYYY, YYYYMM, YYYYMMMDD, or YYYYMMDDhh),  region,
+            # cyclone, and misc portions of the
+            # filename template.
+            if (
+                    DATE_STRING in self.kwargs or
+                    (DATE_STRING in self.kwargs and INIT_STRING in self.kwargs)
+
+            ):
+                self.kwargs[DATE_STRING] = self.date
+            # Date and cyclone only
+            elif (
+                    DATE_STRING in self.kwargs and
+                    CYCLONE_STRING in self.kwargs):
+                self.kwargs[DATE_STRING] = self.date
+                self.kwargs[CYCLONE_STRING] = self.cyclone
+
+            # Date and region only
+            elif (
+                    DATE_STRING in self.kwargs and
+                    REGION_STRING in self.kwargs
+            ):
+
+                self.kwargs[DATE_STRING] = self.date
+                self.kwargs[REGION_STRING] = self.region
+
+            # Date, region, and cyclone
+            elif (
+                    DATE_STRING in self.kwargs and
+                    REGION_STRING in self.kwargs and
+                    CYCLONE_STRING in self.kwargs
+            ):
+                self.kwargs[DATE_STRING] = self.date
+                self.kwargs[REGION_STRING] = self.region
+                self.kwargs[CYCLONE_STRING] = self.cyclone
+
+            # Finally, check for misc string, which can occur with any
+            # combination of the above
+            if MISC_STRING in self.kwargs:
+                self.kwargs[MISC_STRING] = self.misc
+
+            # A dictionary that will contain the string to replace (key)
+            # and the string to replace it with (value)
+            replacement_dict = {}
+
+            # Search for the FORMATTING_DELIMITER within the first string
+            for index, match in enumerate(match_list):
+                split_string = match.split(FORMATTING_DELIMITER)
+
+                # valid, init, lead, etc.
+                # print split_string[0]
+                # value e.g. 2016012606, 3
+                # print (self.kwargs).get(split_string[0], None)
+
+                # Formatting is requested or length is requested
+                if len(split_string) == 2:
+
+                    # split_string[0] holds the key (e.g. "cyclone",
+                    # "region", etc)
+                    if split_string[0] not in self.kwargs.keys():
+                        # Log and continue
+                        self.logger.error("ERROR |  [" + cur_filename +
+                                          ":" + cur_function + "] | " +
+                                          "The key " + split_string[0] +
+                                          " does not exist for template: " +
+                                          self.tmpl)
+
+                    # Key is in the dictionary
+                    else:
+                        # Check for formatting/length request by splitting on
+                        # FORMATTING_VALUE_DELIMITER
+                        # split_string[1] holds the formatting/length
+                        # information (e.g. "fmt=%Y%m%d", "len=3")
+                        format_split_string = \
+                            split_string[1].split(FORMATTING_VALUE_DELIMITER)
+                        # Check for requested FORMAT_STRING
+                        # format_split_string[0] holds the formatting/length
+                        # value delimiter (e.g. "fmt", "len")
+                        if format_split_string[0] == FORMAT_STRING:
+                            if split_string[0] == DATE_STRING:
+                                value = "([0-9]{4,10})"
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN\
+                                                    + match +\
+                                                    TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == REGION_STRING:
+                                value = "([a-zA-Z]{2})"
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN\
+                                                    + match +\
+                                                    TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == CYCLONE_STRING:
+                                value = "([0-9]{2,3})"
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN \
+                                                    + match + \
+                                                    TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+                            elif split_string[0] == MISC_STRING:
+                                value = "([a-zA-Z0-9-_.]+)"
+                                string_to_replace = TEMPLATE_IDENTIFIER_BEGIN\
+                                                    + match + \
+                                                    TEMPLATE_IDENTIFIER_END
+                                replacement_dict[string_to_replace] = value
+
+                # No formatting or length is requested
+                elif len(split_string) == 1:
+
+                    # Add back the template identifiers to the matched
+                    # string to replace and add the key, value pair to the
+                    # dictionary
+                    string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + \
+                                        TEMPLATE_IDENTIFIER_END
+                    replacement_dict[string_to_replace] = \
+                        self.kwargs.get(split_string[0], None)
+
+            # Replace regex with properly formatted information
+            temp_str = multiple_replace(replacement_dict, self.tmpl)
+            self.tmpl = temp_str
+            return self.tmpl
+    
+
 class StringExtract:
     def __init__(self, log, temp, fstr):
         self.logger = log
@@ -435,6 +602,23 @@ class StringExtract:
 #        print("TOTAL LEN IS {}\n".format(length))
         return length
 
+
+    def set_output_dict_from_time_info(self, time_dict, output_dict, key):
+        # get month and day from julian date if applicable
+        if time_dict['Y'] != -1 and time_dict['j'] != -1:
+            dt = datetime.datetime.strptime(str(time_dict['Y'])+'_'+str(time_dict['j']),
+                                            '%Y_%j')
+            time_dict['m'] = int(dt.strftime('%m'))
+            time_dict['d'] = int(dt.strftime('%d'))
+
+        if time_dict['Y'] != -1 and time_dict['m'] != -1 and time_dict['d'] != -1:
+            output_dict[key] = datetime.datetime(time_dict['Y'],
+                                          time_dict['m'],
+                                          time_dict['d'],
+                                          time_dict['H'],
+                                          time_dict['M'])
+
+
     def parseTemplate(self):
         template_len = len(self.template)
         i = 0
@@ -485,18 +669,21 @@ class StringExtract:
         valid['Y'] = -1
         valid['m'] = -1
         valid['d'] = -1
+        valid['j'] = -1
         valid['H'] = 0
         valid['M'] = 0
 
         init['Y'] = -1
         init['m'] = -1
         init['d'] = -1
+        init['j'] = -1
         init['H'] = 0
         init['M'] = 0
 
         da_init['Y'] = -1
         da_init['m'] = -1
         da_init['d'] = -1
+        da_init['j'] = -1
         da_init['H'] = 0
         da_init['M'] = 0
 
@@ -512,23 +699,22 @@ class StringExtract:
             if key.startswith(VALID_STRING):
                 valid[key.split('+')[1]] = int(value)
 
-        if valid['Y'] != -1 and valid['m'] != -1 and valid['d'] != -1:
-            output_dict['valid'] = datetime.datetime(valid['Y'],
-                                          valid['m'],
-                                          valid['d'],
-                                          valid['H'],
-                                          valid['M'])
+        self.set_output_dict_from_time_info(valid, output_dict, 'valid')
+
 
         for key, value in match_dict.iteritems():
             if key.startswith(INIT_STRING):
                 init[key.split('+')[1]] = int(value)
 
-        if init['Y'] != -1 and init['m'] != -1 and init['d'] != -1:
-            output_dict['init'] = datetime.datetime(init['Y'],
-                                              init['m'],
-                                              init['d'],
-                                              init['H'],
-                                              init['M'])
+        self.set_output_dict_from_time_info(init, output_dict, 'init')
+
+
+        for key, value in match_dict.iteritems():
+            if key.startswith(DA_INIT_STRING):
+                da_init[key.split('+')[1]] = int(value)
+
+        self.set_output_dict_from_time_info(da_init, output_dict, 'da_init')
+
 
         for key, value in match_dict.iteritems():
             if key.startswith(LEAD_STRING):
