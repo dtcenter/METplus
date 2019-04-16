@@ -116,7 +116,7 @@ def get_date_arrays(plot_time, start_date_YYYYmmdd, end_date_YYYYmmdd,
                                        init_start_hour, "%Y%m%d%H%M%S")
         plot_end_date_YYYYmmddHHMMSS = \
             datetime.datetime.strptime(end_date_YYYYmmdd+ \
-                                       init_end_hour, "%Y%m%d%H%M%S")
+                                       init_end_hour, "%Y%m%d%H%M%S") \
             + delta_t
         dates = np.arange(plot_start_date_YYYYmmddHHMMSS,
                           plot_end_date_YYYYmmddHHMMSS,
