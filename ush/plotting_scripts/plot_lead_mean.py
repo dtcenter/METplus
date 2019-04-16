@@ -225,7 +225,10 @@ for stat in plot_stats_list:
                 else:
                     logger.warning("Model "+str(model_num)+" "+model_name+" with plot name "+model_plot_name+" file: "+model_mean_file+" does not exist")
                 ax2.bar(leads, 2*model_ci_data, bottom=-1*model_ci_data, color='None', width=1.5+((model_num-2)*0.2), edgecolor=colors[model_index], linewidth='1')
-    ax1.legend(bbox_to_anchor=(0.0, 1.02, 1.0, .102), loc=3, ncol=len(model_name_list), fontsize='13', mode="expand", borderaxespad=0.)
+    if stat == "fbar_obar":
+        ax1.legend(bbox_to_anchor=(0.0, 1.02, 1.0, .102), loc=3, ncol=len(model_name_list)+1, fontsize='13', mode="expand", borderaxespad=0.)
+    else:
+        ax1.legend(bbox_to_anchor=(0.0, 1.02, 1.0, .102), loc=3, ncol=len(model_name_list), fontsize='13', mode="expand", borderaxespad=0.)
     savefig_name = os.path.join(plotting_out_dir_imgs, stat+"_fhrmeans_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+fcst_var_thresh+"_obs"+obs_var_name+obs_var_level+obs_var_extra+obs_var_thresh+"_"+interp+"_"+grid+region+".png")
     logger.info("Saving image as "+savefig_name)
     plt.savefig(savefig_name, bbox_inches='tight')
