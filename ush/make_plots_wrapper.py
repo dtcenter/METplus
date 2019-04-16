@@ -5,9 +5,9 @@ Program Name: make_plots_wrapper.py
 Contact(s): Mallory Row
 Abstract: Reads filtered files from stat_analysis_wrapper run_all_times to make plots
 History Log:  Third version
-Usage: 
+Usage: make_plots_wrapper.py 
 Parameters: None
-Input Files: ASCII files
+Input Files: MET .stat files
 Output Files: .png images
 Condition codes: 0 for success, 1 for failure
 '''
@@ -28,6 +28,10 @@ from command_builder import CommandBuilder
 
 
 class MakePlotsWrapper(CommandBuilder):
+    """! Wrapper to create plots using python
+         from MET .stat files
+    """
+
     def __init__(self, p, logger):
         super(MakePlotsWrapper, self).__init__(p, logger)
         self.app_path = 'python'
@@ -52,7 +56,19 @@ class MakePlotsWrapper(CommandBuilder):
 
         return cmd
 
-    def create_hour_group_list(self, loop_hour_beg, loop_hour_end, loop_hour_interval):
+    def create_hour_group_list(self, loop_hour_beg, loop_hour_end,
+                               loop_hour_interval):
+        """! Creates a list of hours formatted in %H%M%S
+                 
+             Args:
+                loop_hour_beg - Unix timestamp value of the start hour
+                loop_hour_end - Unix timestamp value of the end hour 
+                loop_hours_interval - integer of increments to include
+                                      list
+
+             Returns:
+                hour_group_list - list of hours formatted in %H%M%S
+        """
         loop_hour_now = loop_hour_beg
         hour_group_list = ""
         while loop_hour_now <= loop_hour_end:
@@ -66,7 +82,25 @@ class MakePlotsWrapper(CommandBuilder):
     class ValidInitTimesPairs(object):
         __slots__ = 'valid', 'init'
 
-    def pair_valid_init_times(self, valid_hour_list, valid_method, init_hour_list, init_method):
+    def pair_valid_init_times(self, valid_hour_list, valid_method,
+                              init_hour_list, init_method):
+        """! Pairs the valid and initialization hour information
+                 
+             Args:
+                valid_hour_list - foramatted valid hours from
+                                  create_hour_group_list
+                valid_method - string of how to treat valid hour
+                               information, either GROUP or LOOP
+                init_hour_list - foramatted initialization hours from
+                                 create_hour_group_list
+                init_method - string of how to treat initialization hour
+                              information, either GROUP or LOOP
+
+             Returns:
+                valid_init_time_pairs - list of objects with the 
+                                        valid and initialization hour
+                                        information
+        """
         valid_init_time_pairs = []
         if valid_method == "GROUP" and init_method == "LOOP":
             for init_hour in init_hour_list.split(", "):
@@ -95,6 +129,15 @@ class MakePlotsWrapper(CommandBuilder):
         return valid_init_time_pairs
 
     def parse_vars_with_level_thresh_list(self):
+        """! Parse metplus_final.conf for variable information,
+             collecting the variable level information as a list
+             
+             Args:
+                
+             Returns:
+                 var_info - list of objects containing variable
+                            information
+        """
         var_info = []
         all_conf = self.p.keys('config')
         fcst_indices = []
@@ -161,6 +204,16 @@ class MakePlotsWrapper(CommandBuilder):
         __slots__ = 'run_fourier', 'wave_num_pairings'
 
     def parse_var_fourier_decomp(self):
+        """! Parse metplus_final.conf for variable information
+             on the Fourier decomposition
+             
+             Args:
+                
+             Returns:
+                 fourier_decom_list - list of objects containing
+                                      Fourier decomposition information
+                                      for the variables
+        """
         fourier_decom_list = []
         all_conf = self.p.keys('config')
         indices = []
@@ -182,6 +235,14 @@ class MakePlotsWrapper(CommandBuilder):
         return fourier_decom_list
     
     def parse_model_list(self):
+        """! Parse metplus_final.conf for model information
+             
+             Args:
+                
+             Returns:
+                 model_list - list of objects containing
+                              model information
+        """
         model_name_list = []
         model_plot_name_list = []
         all_conf = self.p.keys('config')
@@ -205,6 +266,24 @@ class MakePlotsWrapper(CommandBuilder):
     def create_plots_grid2grid_pres(self, fcst_var_level_list, obs_var_level_list,
                                     fcst_var_thresh_list, obs_var_thresh_list,
                                     lead_list, plotting_scripts_dir):
+        """! Create plots for the grid-to-grid verification for variables
+             on pressure levels. Runs plotting scripts: plot_time_series.py,
+             plot_lead_mean.py, plot_date_by_level.py, plot_lead_by_level.py
+             
+             Args:
+                 fcst_var_level_list - list of forecst variable level
+                                       information
+                 obs_var_level_list -  list of observation variable level
+                                       information
+                 fcst_var_thresh_list - list of forecast variable threshold
+                                        information
+                 obs_var_thresh_list - list of observation variable threshold
+                                        information
+                 lead_list - list of forecast hour leads
+                 plotting_scripts_dir - directory to put images and data
+                
+             Returns:
+        """
         self.add_env_var("LEAD_LIST", ', '.join(lead_list))
         self.add_env_var('FCST_VAR_LEVEL_LIST', ' '.join(fcst_var_level_list))
         self.add_env_var('OBS_VAR_LEVEL_LIST', ' '.join(obs_var_level_list))
@@ -328,6 +407,24 @@ class MakePlotsWrapper(CommandBuilder):
     def create_plots_grid2grid_anom(self, fcst_var_level_list, obs_var_level_list,
                                     fcst_var_thresh_list, obs_var_thresh_list,
                                     lead_list, plotting_scripts_dir):
+        """! Create plots for the grid-to-grid verification for variables
+             on pressure levels with anomaly data. Runs plotting scripts: 
+             plot_time_series.py, plot_lead_mean.py, plot_lead_by_date.py
+             
+             Args:
+                 fcst_var_level_list - list of forecst variable level
+                                       information
+                 obs_var_level_list -  list of observation variable level
+                                       information
+                 fcst_var_thresh_list - list of forecast variable threshold
+                                        information
+                 obs_var_thresh_list - list of observation variable threshold
+                                        information
+                 lead_list - list of forecast hour leads
+                 plotting_scripts_dir - directory to put images and data
+                
+             Returns:
+        """
         self.add_env_var("LEAD_LIST", ', '.join(lead_list))
         #time series plot
         for lead in lead_list:
@@ -416,6 +513,24 @@ class MakePlotsWrapper(CommandBuilder):
     def create_plots_grid2grid_sfc(self, fcst_var_level_list, obs_var_level_list,
                                    fcst_var_thresh_list, obs_var_thresh_list,
                                    lead_list, plotting_scripts_dir):
+        """! Create plots for the grid-to-grid verification for variables
+             on single level. Runs plotting scripts: plot_time_series.py,
+             plot_lead_mean.py
+             
+             Args:
+                 fcst_var_level_list - list of forecst variable level
+                                       information
+                 obs_var_level_list -  list of observation variable level
+                                       information
+                 fcst_var_thresh_list - list of forecast variable threshold
+                                        information
+                 obs_var_thresh_list - list of observation variable threshold
+                                        information
+                 lead_list - list of forecast hour leads
+                 plotting_scripts_dir - directory to put images and data
+                
+             Returns:
+        """
         self.add_env_var("LEAD_LIST", ', '.join(lead_list))
         #time series plot
         for lead in lead_list:
@@ -481,6 +596,24 @@ class MakePlotsWrapper(CommandBuilder):
     def create_plots_grid2obs_upper_air(self, fcst_var_level_list, obs_var_level_list,
                                         fcst_var_thresh_list, obs_var_thresh_list,
                                         lead_list, plotting_scripts_dir):
+        """! Create plots for the grid-to-observations verification for variables
+             on pressure levels. Runs plotting scripts: plot_time_series.py,
+             plot_lead_mean.py, plot_stat_by_level.py, plot_lead_by_level.py
+             
+             Args:
+                 fcst_var_level_list - list of forecst variable level
+                                       information 
+                 obs_var_level_list -  list of observation variable level
+                                       information
+                 fcst_var_thresh_list - list of forecast variable threshold
+                                        information
+                 obs_var_thresh_list - list of observation variable threshold
+                                        information
+                 lead_list - list of forecast hour leads
+                 plotting_scripts_dir - directory to put images and data
+                
+             Returns:
+        """
         self.add_env_var("LEAD_LIST", ', '.join(lead_list))
         self.add_env_var('FCST_VAR_LEVEL_LIST', ' '.join(fcst_var_level_list))
         self.add_env_var('OBS_VAR_LEVEL_LIST', ' '.join(obs_var_level_list))
@@ -604,6 +737,24 @@ class MakePlotsWrapper(CommandBuilder):
     def create_plots_grid2obs_conus_sfc(self, fcst_var_level_list, obs_var_level_list,
                                         fcst_var_thresh_list, obs_var_thresh_list,
                                         lead_list, plotting_scripts_dir):
+        """! Create plots for the grid-to-observation verification for variables
+             on single level. Runs plotting scripts: plot_time_series.py,
+             plot_lead_mean.py
+             
+             Args:
+                 fcst_var_level_list - list of forecst variable level
+                                       information 
+                 obs_var_level_list -  list of observation variable level
+                                       information
+                 fcst_var_thresh_list - list of forecast variable threshold
+                                        information
+                 obs_var_thresh_list - list of observation variable threshold
+                                        information
+                 lead_list - list of forecast hour leads
+                 plotting_scripts_dir - directory to put images and data
+                
+             Returns:
+        """
         self.add_env_var("LEAD_LIST", ', '.join(lead_list))
         #time series plot
         for lead in lead_list:
@@ -702,6 +853,17 @@ class MakePlotsWrapper(CommandBuilder):
                     exit()
  
     def create_plots(self, verif_case, verif_type):
+        """! Read in metplus_final.conf variables and call function
+             for the specific verification plots to run
+            
+             Args:
+                 verif_case - string of the verification case to make
+                              plots for
+                 verif_type - string of the verification type to make
+                              plots for
+               
+             Returns:
+        """
         self.logger.info("Running plots for VERIF_CASE = "+verif_case+", VERIF_TYPE = "+verif_type)
         #read config
         plot_time = self.p.getstr('config', 'PLOT_TIME')

@@ -3,9 +3,9 @@ Name: plot_lead_by_level.py
 Contact(s): Mallory Row
 Abstract: Reads mean forecast hour files from plot_time_series.py to make lead-pressue plots
 History Log: First version
-Usage: 
+Usage: Called by make_plots_wrapper.py
 Parameters: None
-Input Files: ASCII files
+Input Files: Text files
 Output Files: .png images
 Condition codes: 0 for success, 1 for failure
 '''

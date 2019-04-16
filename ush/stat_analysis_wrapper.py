@@ -5,10 +5,10 @@ Program Name: stat_analysis_wrapper.py
 Contact(s): Mallory Row
 Abstract: Runs stat_analysis
 History Log:  Third version
-Usage: 
+Usage: stat_analysis_wrapper.py
 Parameters: None
-Input Files: ASCII files
-Output Files: ASCII files
+Input Files: MET .stat files
+Output Files: MET .stat files
 Condition codes: 0 for success, 1 for failure
 '''
 
@@ -30,6 +30,11 @@ from command_builder import CommandBuilder
 
 
 class StatAnalysisWrapper(CommandBuilder):
+    """! Wrapper to the MET tool stat_analysis
+         which filters MET .stat files for
+         for criteria
+    """
+
     def __init__(self, p, logger):
         super(StatAnalysisWrapper, self).__init__(p, logger)
         self.app_path = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR'),
@@ -61,7 +66,35 @@ class StatAnalysisWrapper(CommandBuilder):
             cmd += "-config " + self.param + " "
         return cmd
 
-    def create_job_filename(self, job_name, job_args, stat_analysis_out_dir_base, stat_analysis_dump_row_info, stat_analysis_out_stat_info):
+    def create_job_filename(self, job_name,
+                            job_args, stat_analysis_out_dir_base,
+                            stat_analysis_dump_row_info,
+                            stat_analysis_out_stat_info):
+        """! Create the stat_analysis job command and set environment variable
+             for the MET stat_analysis config file
+                 
+             Args:
+                job_name - string containing the user requested stat_analysis job
+                           to run
+                job_args - string containig the user requested job related
+                           arguements
+                stat_analysis_out_dir_base - directory where the output from
+                                             stat_analysis will be placed
+                stat_analysis_dump_row_info - dictionary containing
+                                              information to build a file
+                                              name for a stat_analysis 
+                                              dump_row file
+                stat_analysis_out_stat_info - dictionary containing
+                                              information to build a file
+                                              name for a stat_analysis 
+                                              out_stat file
+
+             Returns:
+                job - string containing the user requested job information for 
+                      stat_analysis, the enivronment variable JOB is set to 
+                      this and is used the MET stat_analysis config file
+                       
+        """
         job = "-job "+job_name+" "+job_args
         #check for dump_row
         if stat_analysis_dump_row_info.template_type != "NA":
@@ -88,7 +121,19 @@ class StatAnalysisWrapper(CommandBuilder):
         self.add_env_var("JOB", job)
         return job
        
-    def create_hour_group_list(self, loop_hour_beg, loop_hour_end, loop_hour_interval):
+    def create_hour_group_list(self, loop_hour_beg, loop_hour_end,
+                               loop_hour_interval):
+        """! Creates a list of hours formatted in %H%M%S
+                 
+             Args:
+                loop_hour_beg - Unix timestamp value of the start hour
+                loop_hour_end - Unix timestamp value of the end hour 
+                loop_hours_interval - integer of increments to include
+                                      list
+
+             Returns:
+                hour_group_list - list of hours formatted in %H%M%S
+        """
         loop_hour_now = loop_hour_beg
         hour_group_list = ""
         while loop_hour_now <= loop_hour_end:
@@ -100,6 +145,17 @@ class StatAnalysisWrapper(CommandBuilder):
         return hour_group_list
 
     def create_variable_list(self, conf_var):
+        """! Creates a string from a list to be used in the MET stat_analysis
+             config file
+                 
+             Args:
+                conf_var - list of values 
+
+             Returns:
+                conf_var_list - string that can be set as an 
+                                environment variable to be read in 
+                                the MET stat_analysis config_file
+        """
         conf_var_list=""
         if len(conf_var) > 0:
             for lt in range(len(conf_var)):
@@ -112,7 +168,26 @@ class StatAnalysisWrapper(CommandBuilder):
     class StatAnalysisOutputInfo(object):
         __slots__ = 'template_type', 'filename_template', 'filename'
         
-    def create_filename_from_user_template(self, filename_template, valid_init_time_info, init_time):
+    def create_filename_from_user_template(self, filename_template, 
+                                           valid_init_time_info, init_time):
+        """! Creates a file name for stat_analysis output based on user 
+             requested template
+                 
+             Args:
+                filename_template - string with the string substitution
+                                    information to be filled
+                valid_init_time_info - dictionary containing the
+                                       valid and initialization hour
+                                       information
+                init_time - integer for containing the initialization
+                            date information (is -1 if looping over
+                            valid times)
+
+             Returns:
+                filled_tmpl - string filled with the valid and 
+                              initialization time information for
+                              a filename
+        """
         time_info_valid_beg = valid_init_time_info["FCST_VALID_BEG"].replace("_", "")
         time_info_valid_end = valid_init_time_info["FCST_VALID_END"].replace("_", "")
         time_info_valid_hour = valid_init_time_info["FCST_VALID_HOUR"].replace('"','').split(",")
@@ -188,7 +263,25 @@ class StatAnalysisWrapper(CommandBuilder):
     class ValidInitTimesPairs(object):
         __slots__ = 'valid', 'init'
 
-    def pair_valid_init_times(self, valid_hour_list, valid_method, init_hour_list, init_method):
+    def pair_valid_init_times(self, valid_hour_list, valid_method,
+                              init_hour_list, init_method):
+        """! Pairs the valid and initialization hour information
+                 
+             Args:
+                valid_hour_list - foramatted valid hours from
+                                  create_hour_group_list
+                valid_method - string of how to treat valid hour
+                               information, either GROUP or LOOP
+                init_hour_list - foramatted initialization hours from
+                                 create_hour_group_list
+                init_method - string of how to treat initialization hour
+                              information, either GROUP or LOOP
+
+             Returns:
+                valid_init_time_pairs - list of objects with the 
+                                        valid and initialization hour
+                                        information
+        """
         valid_init_time_pairs = []
         if valid_method == "GROUP" and init_method == "LOOP":
             for init_hour in init_hour_list.split(", "):
@@ -220,6 +313,14 @@ class StatAnalysisWrapper(CommandBuilder):
         __slots__ = 'name', 'plot_name', 'dir', 'obs'
 
     def parse_model_list(self):
+        """! Parse metplus_final.conf for model information
+             
+             Args:
+                
+             Returns:
+                 model_list - list of objects containing
+                              model information
+        """
         model_list = []
         all_conf = self.p.keys('config')
         model_indices = []
@@ -260,6 +361,16 @@ class StatAnalysisWrapper(CommandBuilder):
         __slots__ = 'run_fourier', 'wave_num_pairings'
 
     def parse_var_fourier_decomp(self):
+        """! Parse metplus_final.conf for variable information
+             on the Fourier decomposition
+             
+             Args:
+                
+             Returns:
+                 fourier_decom_list - list of objects containing
+                                      Fourier decomposition information
+                                      for the variables
+        """
         fourier_decom_list = []
         all_conf = self.p.keys('config')
         indices = []
@@ -283,6 +394,18 @@ class StatAnalysisWrapper(CommandBuilder):
         return fourier_decom_list
    
     def thresh_format(self, thresh):
+        """! Format the variable threshhold information using symbols and
+             letters
+ 
+             Args:
+                 thresh - string containing the threshold information
+                
+             Returns:
+                 thresh_symbol - string containing the threshold 
+                                 formatted using symbols
+                 thresh_letters - string containing the threshold 
+                                  formatted using letters
+        """
         if "ge" or ">=" in thresh:
             thresh_value = thresh.replace("ge", "").replace(">=", "")
             thresh_symbol = ">="+thresh_value
@@ -313,6 +436,19 @@ class StatAnalysisWrapper(CommandBuilder):
         return thresh_symbol, thresh_letters
  
     def gather_by_date(self, init_time, valid_time):
+        """! Runs with run_at_time. Runs stat_analysis filtering file
+             stat information for a single date
+ 
+             Args:
+                 init_time - string containing the initialization time
+                             as %Y%m%d%H%M%S, set to -1 if looping
+                             over valid time
+                 valid_time - string containing the valid time as 
+                              %Y%m%d%H%M%S, set to -1 if looping
+                              over initialization time
+                
+             Returns:
+        """
         #read config
         model_name = self.p.getstr('config', 'MODEL_NAME')
         obs_name = self.p.getstr('config', 'OBS_NAME')
@@ -667,6 +803,14 @@ class StatAnalysisWrapper(CommandBuilder):
             exit(1)
 
     def gather_by_info(self):
+        """! Runs with run_all_times. Runs stat_analysis filtering file
+             stat information for a span of dates looking for specific
+             criteria
+ 
+             Args:
+ 
+             Returns:
+        """
         #read config
         verif_case = self.p.getstr('config', 'VERIF_CASE')
         verif_type = self.p.getstr('config', 'VERIF_TYPE')
