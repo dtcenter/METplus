@@ -149,13 +149,14 @@ for model in model_info:
     else:
         model_data = model_now_data
 
-#xx, yy = np.meshgrid(leads, plot_time_dates)
-#xx, yy = np.meshgrid(plot_time_dates, leads)
 yy, xx = np.meshgrid(plot_time_dates, leads)
 logger.info("Calculating and plotting statistics")
 for stat in plot_stats_list:
     logger.debug("Working on "+stat)
     stat_values, stat_values_array, stat_plot_name = plot_util.calculate_stat(logger, model_data, stat)
+    if stat == "fbar_obar":
+        logger.warning(stat+" is not currently supported for this type of plot")
+        continue
     if event_equalization == "True":
         logger.debug("Doing event equalization")
         for l in range(len(lead_list)):

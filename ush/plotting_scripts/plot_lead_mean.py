@@ -89,7 +89,7 @@ plot_stats_list = os.environ['PLOT_STATS_LIST'].split(", ")
 model_name_list = os.environ['MODEL_NAME_LIST'].split(" ")
 model_plot_name_list = os.environ['MODEL_PLOT_NAME_LIST'].split(" ")
 model_info = zip(model_name_list, model_plot_name_list)
-mean_file_cols = [ "LEADS", "VALS" ]
+mean_file_cols = [ "LEADS", "VALS", "OVALS" ]
 ci_file_cols = [ "LEADS", "VALS" ]
 ci_method = os.environ['CI_METHOD']
 grid = os.environ['VERIF_GRID']
@@ -109,7 +109,10 @@ for stat in plot_stats_list:
         model_index = model_info.index(model)
         model_name = model[0]
         model_plot_name = model[1]
-        model_mean_data = np.empty(len(lead_list))
+        if stat == "fbar_obar":
+            model_mean_data = np.empty([2,len(lead_list)])
+        else:
+            model_mean_data = np.empty(len(lead_list))
         model_mean_data.fill(np.nan)
         model_mean_file = os.path.join(plotting_out_dir_data, model_plot_name+"_"+stat+"_"+plot_time+start_date_YYYYmmdd+"to"+end_date_YYYYmmdd+"_valid"+valid_time_info[0]+"to"+valid_time_info[-1]+"Z_init"+init_time_info[0]+"to"+init_time_info[-1]+"Z"+"_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+fcst_var_thresh+"_obs"+obs_var_name+obs_var_level+obs_var_extra+obs_var_thresh+"_interp"+interp+"_region"+region+"_LEAD_MEAN.txt")
         if os.path.exists(model_mean_file):
@@ -119,13 +122,24 @@ for stat in plot_stats_list:
             else:
                 logger.debug("Model "+str(model_num)+" "+model_name+" with plot name "+model_plot_name+" file: "+model_mean_file+" exists")
                 model_mean_file_data = pd.read_csv(model_mean_file, sep=" ", header=None, names=mean_file_cols, dtype=str)
-                model_mean_file_data_leads = model_mean_file_data.loc[:]['LEADS'].tolist()
-                model_mean_file_data_vals = model_mean_file_data.loc[:]['VALS'].tolist()
-                for lead in lead_list:
-                    lead_index = lead_list.index(lead)
-                    if lead.ljust(6,'0') in model_mean_file_data_leads:
-                        model_mean_file_data_lead_index = model_mean_file_data_leads.index(lead.ljust(6,'0'))
-                        model_mean_data[lead_index] = float(model_mean_file_data_vals[model_mean_file_data_lead_index])
+                if stat == "fbar_obar":
+                    model_mean_file_data_leads = model_mean_file_data.loc[:]['LEADS'].tolist()
+                    model_mean_file_data_vals = model_mean_file_data.loc[:]['VALS'].tolist()
+                    model_mean_file_data_ovals = model_mean_file_data.loc[:]['OVALS'].tolist()
+                    for lead in lead_list:
+                        lead_index = lead_list.index(lead)
+                        if lead.ljust(6,'0') in model_mean_file_data_leads:
+                            model_mean_file_data_lead_index = model_mean_file_data_leads.index(lead.ljust(6,'0'))
+                            model_mean_data[0,lead_index] = float(model_mean_file_data_vals[model_mean_file_data_lead_index])
+                            model_mean_data[1,lead_index] = float(model_mean_file_data_ovals[model_mean_file_data_lead_index])
+                else:
+                    model_mean_file_data_leads = model_mean_file_data.loc[:]['LEADS'].tolist()
+                    model_mean_file_data_vals = model_mean_file_data.loc[:]['VALS'].tolist()
+                    for lead in lead_list:
+                        lead_index = lead_list.index(lead)
+                        if lead.ljust(6,'0') in model_mean_file_data_leads:
+                            model_mean_file_data_lead_index = model_mean_file_data_leads.index(lead.ljust(6,'0'))
+                            model_mean_data[lead_index] = float(model_mean_file_data_vals[model_mean_file_data_lead_index])
         else:
             logger.warning("Model "+str(model_num)+" "+model_name+" with plot name "+model_plot_name+" file: "+model_mean_file+" does not exist")
         if model_num == 1:
@@ -151,13 +165,45 @@ for stat in plot_stats_list:
             'linewidth': 1,
             'edgecolor': 'black',}
             ax2.text(0.7055, 1.05, "Note: differences outside the outline bars are significant\n at the 95% confidence interval", ha="center", va="center", fontsize=10, bbox=props, transform=ax2.transAxes)
-            ax2.set_title("Difference from "+model_plot_name, loc="left")
-            ax1.plot(leads, model_mean_data, color=colors[model_index], ls='-', linewidth=2.0, marker='o', markersize=7, label=model_plot_name)
-            ax2.plot(leads, np.zeros_like(leads), color=colors[model_index], ls='-', linewidth=2.0)
-            model1_mean_data = model_mean_data
+            if stat == "fbar_obar":
+                ax2.set_title("Difference from obs", loc="left")
+                ax1.plot(leads, model_mean_data[0,:], color=colors[model_index], ls='-', linewidth=2.0, marker='o', markersize=7, label=model_plot_name)
+                ax1.plot(leads, model_mean_data[1,:], color='dimgrey', ls='-', linewidth=2.0, marker='o', markersize=7, label="obs.")
+                ax2.plot(leads, np.zeros_like(leads), color='black', ls='-', linewidth=2.0)
+                ax2.plot(leads, model_mean_data[0,:]-model_mean_data[1,:], color=colors[model_index], ls='-', linewidth=2.0, marker='o', markersize=7)
+                if ci_method != "NONE":
+                    model_ci_data = np.empty(len(lead_list))
+                    model_ci_data.fill(np.nan)
+                    model_ci_file = os.path.join(plotting_out_dir_data, model_plot_name+"_"+stat+"_"+plot_time+start_date_YYYYmmdd+"to"+end_date_YYYYmmdd+"_valid"+valid_time_info[0]+"to"+valid_time_info[-1]+"Z_init"+init_time_info[0]+"to"+init_time_info[-1]+"Z"+"_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+fcst_var_thresh+"_obs"+obs_var_name+obs_var_level+obs_var_extra+obs_var_thresh+"_interp"+interp+"_region"+region+"_CI_"+ci_method+".txt")
+                    if os.path.exists(model_ci_file):
+                        nrow = sum(1 for line in open(model_ci_file))
+                        if nrow == 0:
+                            logger.warning("Model "+str(model_num)+" "+model_name+" with plot name "+model_plot_name+" file: "+model_ci_file+" empty")
+                        else:
+                            logger.debug("Model "+str(model_num)+" "+model_name+" with plot name "+model_plot_name+" file: "+model_ci_file+" exists")
+                            model_ci_file_data = pd.read_csv(model_ci_file, sep=" ", header=None, names=ci_file_cols, dtype=str)
+                            model_ci_file_data_leads = model_ci_file_data.loc[:]['LEADS'].tolist()
+                            model_ci_file_data_vals = model_ci_file_data.loc[:]['VALS'].tolist()
+                            for lead in lead_list:
+                                lead_index = lead_list.index(lead)
+                                if lead.ljust(6,'0') in model_ci_file_data_leads:
+                                    model_ci_file_data_lead_index = model_ci_file_data_leads.index(lead.ljust(6,'0'))
+                                    model_ci_data[lead_index] = float(model_ci_file_data_vals[model_ci_file_data_lead_index])
+                    else:
+                        logger.warning("Model "+str(model_num)+" "+model_name+" with plot name "+model_plot_name+" file: "+model_mean_file+" does not exist")
+                    ax2.bar(leads, 2*model_ci_data, bottom=-1*model_ci_data, color='None', width=1.5+((model_num-2)*0.2), edgecolor=colors[model_index], linewidth='1')
+            else:
+                ax2.set_title("Difference from "+model_plot_name, loc="left")
+                ax1.plot(leads, model_mean_data, color=colors[model_index], ls='-', linewidth=2.0, marker='o', markersize=7, label=model_plot_name)
+                ax2.plot(leads, np.zeros_like(leads), color=colors[model_index], ls='-', linewidth=2.0)
+                model1_mean_data = model_mean_data
         else:
-            ax1.plot(leads, model_mean_data, color=colors[model_index], ls='-', linewidth=2.0, marker='o', markersize=7, label=model_plot_name)
-            ax2.plot(leads, model_mean_data-model1_mean_data, color=colors[model_index], ls='-', linewidth=2.0,  marker='o', markersize=7)
+            if stat == "fbar_obar":
+                 ax1.plot(leads, model_mean_data[0,:], color=colors[model_index], ls='-', linewidth=2.0, marker='o', markersize=7, label=model_plot_name)
+                 ax2.plot(leads, model_mean_data[0,:]-model_mean_data[1,:], color=colors[model_index], ls='-', linewidth=2.0,  marker='o', markersize=7)
+            else:
+                ax1.plot(leads, model_mean_data, color=colors[model_index], ls='-', linewidth=2.0, marker='o', markersize=7, label=model_plot_name)
+                ax2.plot(leads, model_mean_data-model1_mean_data, color=colors[model_index], ls='-', linewidth=2.0,  marker='o', markersize=7)
             if ci_method != "NONE":
                 model_ci_data = np.empty(len(lead_list))
                 model_ci_data.fill(np.nan)

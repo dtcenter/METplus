@@ -148,24 +148,38 @@ for stat in plot_stats_list:
         model_index = model_info.index(model)
         model_name = model[0]
         model_plot_name = model[1]
-        model_stat_values_array = stat_values_array[model_index,:]
+        if stat == "fbar_obar":
+            model_stat_values_array = stat_values_array[0,model_index,:]
+            obs_stat_values_array = stat_values_array[1,model_index,:]
+        else:
+            model_stat_values_array = stat_values_array[model_index,:]
         lead_mean_filename = os.path.join(plotting_out_dir_data, model_plot_name+"_"+stat+"_"+plot_time+start_date_YYYYmmdd+"to"+end_date_YYYYmmdd+"_valid"+valid_time_info[0]+"to"+valid_time_info[-1]+"Z_init"+init_time_info[0]+"to"+init_time_info[-1]+"Z"+"_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+fcst_var_thresh+"_obs"+obs_var_name+obs_var_level+obs_var_extra+obs_var_thresh+"_interp"+interp+"_region"+region+"_LEAD_MEAN.txt")
         logger.debug("Writing model "+str(model_num)+" "+model_name+" with name on plot "+model_plot_name+" lead "+lead+" mean to file: "+lead_mean_filename)
         with open(lead_mean_filename, 'a') as lead_mean_file:
-            lead_mean_file.write(lead.ljust(6,'0')+' '+str(model_stat_values_array.mean())+ '\n')
+            if stat == "fbar_obar":
+                lead_mean_file.write(lead.ljust(6,'0')+' '+str(model_stat_values_array.mean())+' '+str(obs_stat_values_array.mean())+'\n')
+            else:
+                lead_mean_file.write(lead.ljust(6,'0')+' '+str(model_stat_values_array.mean())+'\n')
         if ci_method == "NONE":
             logger.debug("Not calculating confidence intervals")
         else:
-            if model_num == 1:
-                model1_stat_values_array = model_stat_values_array
-                model1_plot_name = model_plot_name
-                model1_name = model_name
-            elif model_num > 1:
+            if stat == "fbar_obar":
                 CI_filename = os.path.join(plotting_out_dir_data, model_plot_name+"_"+stat+"_"+plot_time+start_date_YYYYmmdd+"to"+end_date_YYYYmmdd+"_valid"+valid_time_info[0]+"to"+valid_time_info[-1]+"Z_init"+init_time_info[0]+"to"+init_time_info[-1]+"Z"+"_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+fcst_var_thresh+"_obs"+obs_var_name+obs_var_level+obs_var_extra+obs_var_thresh+"_interp"+interp+"_region"+region+"_CI_"+ci_method+".txt")
-                stat_CI = plot_util.calculate_ci(logger, ci_method, model_stat_values_array, model1_stat_values_array, total_days)
-                logger.debug("Writing "+ci_method+" confidence intervals for difference between model "+str(model_num)+" "+model_name+" with name on plot "+model_plot_name+" and model 1 "+model1_name+" with name on plot "+model1_plot_name+" lead "+lead+" to file: "+CI_filename)
+                stat_CI = plot_util.calculate_ci(logger, ci_method, model_stat_values_array, obs_stat_values_array, total_days)
+                logger.debug("Writing "+ci_method+" confidence intervals for difference between model "+str(model_num)+" "+model_name+" with name on plot "+model_plot_name+" and the observations lead "+lead+" to file: "+CI_filename)
                 with open(CI_filename, 'a') as CI_file:
                     CI_file.write(lead.ljust(6,'0')+' '+str(stat_CI)+ '\n')
+            else:
+                if model_num == 1:
+                    model1_stat_values_array = model_stat_values_array
+                    model1_plot_name = model_plot_name
+                    model1_name = model_name
+                elif model_num > 1:
+                    CI_filename = os.path.join(plotting_out_dir_data, model_plot_name+"_"+stat+"_"+plot_time+start_date_YYYYmmdd+"to"+end_date_YYYYmmdd+"_valid"+valid_time_info[0]+"to"+valid_time_info[-1]+"Z_init"+init_time_info[0]+"to"+init_time_info[-1]+"Z"+"_fcst"+fcst_var_name+fcst_var_level+fcst_var_extra+fcst_var_thresh+"_obs"+obs_var_name+obs_var_level+obs_var_extra+obs_var_thresh+"_interp"+interp+"_region"+region+"_CI_"+ci_method+".txt")
+                    stat_CI = plot_util.calculate_ci(logger, ci_method, model_stat_values_array, model1_stat_values_array, total_days)
+                    logger.debug("Writing "+ci_method+" confidence intervals for difference between model "+str(model_num)+" "+model_name+" with name on plot "+model_plot_name+" and model 1 "+model1_name+" with name on plot "+model1_plot_name+" lead "+lead+" to file: "+CI_filename)
+                    with open(CI_filename, 'a') as CI_file:
+                        CI_file.write(lead.ljust(6,'0')+' '+str(stat_CI)+ '\n')
         logger.debug("Plotting model "+str(model_num)+" "+model_name+" with name on plot "+model_plot_name)
         if model_num == 1:
             fig, ax = plt.subplots(1,1,figsize=(10,6))
@@ -182,6 +196,9 @@ for stat in plot_stats_list:
             ax.xaxis.set_minor_locator(md.DayLocator())
             ax.tick_params(axis='y', pad=15)
             ax.set_ylabel(stat_plot_name)
+            if stat == "fbar_obar":
+                obs_count = len(obs_stat_values_array) - np.ma.count_masked(obs_stat_values_array)
+                ax.plot_date(plot_time_dates, obs_stat_values_array, color='dimgrey', ls='-', linewidth=2.0, marker='o', markersize=7, label='obs '+str(round(obs_stat_values_array.mean(),2))+' '+str(obs_count))
             #ax.set_ylim()
         count = len(model_stat_values_array) - np.ma.count_masked(model_stat_values_array)
         ax.plot_date(plot_time_dates, model_stat_values_array, color=colors[model_index], ls='-', linewidth=2.0, marker='o', markersize=7, label=model_plot_name+' '+str(round(model_stat_values_array.mean(),2))+' '+str(count))

@@ -115,6 +115,9 @@ xx, yy = np.meshgrid(leads, fcst_var_levels)
 
 for stat in plot_stats_list:
     logger.debug("Working on "+stat)
+    if stat == "fbar_obar":
+        logger.warning(stat+" is not currently supported for this type of plot")
+        continue
     stat_plot_name = plot_util.get_stat_plot_name(logger, stat)
     logger.info("Reading in model data")
     for model in model_info:

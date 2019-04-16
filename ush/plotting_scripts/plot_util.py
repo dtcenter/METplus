@@ -355,10 +355,16 @@ def calculate_stat(logger, model_data, stat):
         stat_plot_name = "Average"
         if line_type == "SL1L2":
             stat_values = model_data.loc[:][["FBAR", "OBAR"]]
+            stat_values_fbar = model_data.loc[:]["FBAR"]
+            stat_values_obar = model_data.loc[:]["OBAR"]
         elif line_type == "VL1L2":
-            stat_values = np.sqrt(model_data.loc[:][["UVFFBAR", "UVOOBAR"]])
+            stat_values = model_data.loc[:][["UVFFBAR", "UVOOBAR"]]
+            stat_values_fbar = np.sqrt(model_data.loc[:]["UVFFBAR"])
+            stat_values_obar = np.sqrt(model_data.loc[:]["UVOOBAR"])
         elif line_type == "VCNT":
             stat_values = model_data.loc[:][["FBAR", "OBAR"]]
+            stat_values_fbar = model_data.loc[:]["FBAR"]
+            stat_values_obar = model_data.loc[:]["OBAR"]
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
@@ -429,13 +435,32 @@ def calculate_stat(logger, model_data, stat):
         logger.error(stat+" is not a valid option")
         exit(1)
     nindex = stat_values.index.nlevels 
-    if nindex == 2:
-        index0 = len(stat_values.index.get_level_values(0).unique())
-        index1 = len(stat_values.index.get_level_values(1).unique())
-        stat_values_array = np.ma.masked_invalid(stat_values.values.reshape(index0,index1))
-    elif nindex == 3:
-        index0 = len(stat_values.index.get_level_values(0).unique())
-        index1 = len(stat_values.index.get_level_values(1).unique())
-        index2 = len(stat_values.index.get_level_values(2).unique())
-        stat_values_array = np.ma.masked_invalid(stat_values.values.reshape(index0,index1,index2))
+    if stat == "fbar_obar":
+        if nindex == 2:
+            index0 = len(stat_values_fbar.index.get_level_values(0).unique())
+            index1 = len(stat_values_fbar.index.get_level_values(1).unique())
+            stat_values_array_fbar = np.ma.masked_invalid(stat_values_fbar.values.reshape(index0,index1))
+            index0 = len(stat_values_obar.index.get_level_values(0).unique())
+            index1 = len(stat_values_obar.index.get_level_values(1).unique())
+            stat_values_array_obar = np.ma.masked_invalid(stat_values_obar.values.reshape(index0,index1))
+        elif nindex == 3:
+            index0 = len(stat_values_fbar.index.get_level_values(0).unique())
+            index1 = len(stat_values_fbar.index.get_level_values(1).unique())
+            index2 = len(stat_values_fbar.index.get_level_values(2).unique())
+            stat_values_array_fbar = np.ma.masked_invalid(stat_values_fbar.values.reshape(index0,index1,index2))
+            index0 = len(stat_values_obar.index.get_level_values(0).unique())
+            index1 = len(stat_values_obar.index.get_level_values(1).unique())
+            index2 = len(stat_values_obar.index.get_level_values(2).unique())
+            stat_values_array_obar = np.ma.masked_invalid(stat_values_obar.values.reshape(index0,index1,index2))
+        stat_values_array = np.ma.array([stat_values_array_fbar, stat_values_array_obar])
+    else:
+        if nindex == 2:
+            index0 = len(stat_values.index.get_level_values(0).unique())
+            index1 = len(stat_values.index.get_level_values(1).unique())
+            stat_values_array = np.ma.masked_invalid(stat_values.values.reshape(index0,index1))
+        elif nindex == 3:
+            index0 = len(stat_values.index.get_level_values(0).unique())
+            index1 = len(stat_values.index.get_level_values(1).unique())
+            index2 = len(stat_values.index.get_level_values(2).unique())
+            stat_values_array = np.ma.masked_invalid(stat_values.values.reshape(index0,index1,index2))
     return stat_values, stat_values_array, stat_plot_name

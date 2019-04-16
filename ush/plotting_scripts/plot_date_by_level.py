@@ -159,6 +159,9 @@ logger.info("Calculating and plotting statistics")
 for stat in plot_stats_list:
     logger.debug("Working on "+stat)
     stat_values, stat_values_array, stat_plot_name = plot_util.calculate_stat(logger, model_data, stat)
+    if stat == "fbar_obar":
+        logger.warning(stat+" is not currently supported for this type of plot")
+        continue
     if event_equalization == "True":
         logger.debug("Doing event equalization")
         for vl in range(len(fcst_var_level_list)):
