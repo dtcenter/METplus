@@ -145,7 +145,10 @@ for stat in plot_stats_list:
                         lead_index = lead_list.index(lead)
                         if lead.ljust(6,'0') in model_mean_file_data_leads:
                             model_mean_file_data_lead_index = model_mean_file_data_leads.index(lead.ljust(6,'0'))
-                            model_level_mean_data[vl,lead_index] = float(model_mean_file_data_vals[model_mean_file_data_lead_index])
+                            if model_mean_file_data_vals[model_mean_file_data_lead_index] == "--":
+                                model_level_mean_data[vl,lead_index] = np.nan
+                            else:
+                                model_level_mean_data[vl,lead_index] = float(model_mean_file_data_vals[model_mean_file_data_lead_index])
             else:
                 logger.warning("Model "+str(model_num)+" "+model_name+" with plot name "+model_plot_name+" file: "+model_mean_file+" does not exist")
         if model_num == 1:

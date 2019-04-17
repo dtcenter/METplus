@@ -130,8 +130,14 @@ for stat in plot_stats_list:
                         lead_index = lead_list.index(lead)
                         if lead.ljust(6,'0') in model_mean_file_data_leads:
                             model_mean_file_data_lead_index = model_mean_file_data_leads.index(lead.ljust(6,'0'))
-                            model_mean_data[0,lead_index] = float(model_mean_file_data_vals[model_mean_file_data_lead_index])
-                            model_mean_data[1,lead_index] = float(model_mean_file_data_ovals[model_mean_file_data_lead_index])
+                            if model_mean_file_data_vals[model_mean_file_data_lead_index] == "--":
+                                 model_mean_data[0,lead_index] = np.nan
+                            else:
+                                model_mean_data[0,lead_index] = float(model_mean_file_data_vals[model_mean_file_data_lead_index])
+                            if model_mean_file_data_ovals[model_mean_file_data_lead_index] == "--":
+                                model_mean_data[1,lead_index] = np.nan
+                            else:
+                                model_mean_data[1,lead_index] = float(model_mean_file_data_ovals[model_mean_file_data_lead_index])
                 else:
                     model_mean_file_data_leads = model_mean_file_data.loc[:]['LEADS'].tolist()
                     model_mean_file_data_vals = model_mean_file_data.loc[:]['VALS'].tolist()
@@ -139,7 +145,10 @@ for stat in plot_stats_list:
                         lead_index = lead_list.index(lead)
                         if lead.ljust(6,'0') in model_mean_file_data_leads:
                             model_mean_file_data_lead_index = model_mean_file_data_leads.index(lead.ljust(6,'0'))
-                            model_mean_data[lead_index] = float(model_mean_file_data_vals[model_mean_file_data_lead_index])
+                            if model_mean_file_data_vals[model_mean_file_data_lead_index] == "--":
+                                model_mean_data[lead_index] = np.nan
+                            else:
+                                model_mean_data[lead_index] = float(model_mean_file_data_vals[model_mean_file_data_lead_index])
         else:
             logger.warning("Model "+str(model_num)+" "+model_name+" with plot name "+model_plot_name+" file: "+model_mean_file+" does not exist")
         if model_num == 1:
@@ -188,7 +197,10 @@ for stat in plot_stats_list:
                                 lead_index = lead_list.index(lead)
                                 if lead.ljust(6,'0') in model_ci_file_data_leads:
                                     model_ci_file_data_lead_index = model_ci_file_data_leads.index(lead.ljust(6,'0'))
-                                    model_ci_data[lead_index] = float(model_ci_file_data_vals[model_ci_file_data_lead_index])
+                                    if model_ci_file_data_vals[model_ci_file_data_lead_index] == "--":
+                                        model_ci_data[lead_index] = np.nan
+                                    else:
+                                        model_ci_data[lead_index] = float(model_ci_file_data_vals[model_ci_file_data_lead_index])
                     else:
                         logger.warning("Model "+str(model_num)+" "+model_name+" with plot name "+model_plot_name+" file: "+model_mean_file+" does not exist")
                     ax2.bar(leads, 2*model_ci_data, bottom=-1*model_ci_data, color='None', width=1.5+((model_num-2)*0.2), edgecolor=colors[model_index], linewidth='1')
@@ -221,7 +233,10 @@ for stat in plot_stats_list:
                             lead_index = lead_list.index(lead)
                             if lead.ljust(6,'0') in model_ci_file_data_leads:
                                 model_ci_file_data_lead_index = model_ci_file_data_leads.index(lead.ljust(6,'0'))
-                                model_ci_data[lead_index] = float(model_ci_file_data_vals[model_ci_file_data_lead_index])
+                                if model_ci_file_data_vals[model_ci_file_data_lead_index] == "--":
+                                    model_ci_data[lead_index] = np.nan
+                                else:
+                                    model_ci_data[lead_index] = float(model_ci_file_data_vals[model_ci_file_data_lead_index])
                 else:
                     logger.warning("Model "+str(model_num)+" "+model_name+" with plot name "+model_plot_name+" file: "+model_mean_file+" does not exist")
                 ax2.bar(leads, 2*model_ci_data, bottom=-1*model_ci_data, color='None', width=1.5+((model_num-2)*0.2), edgecolor=colors[model_index], linewidth='1')
