@@ -23,6 +23,7 @@ import met_util as util
 import feature_util
 from tc_stat_wrapper import TcStatWrapper
 from command_builder import CommandBuilder
+import time_util
 
 '''!@namespace ExtractTilesWrapper
 @brief Runs  Extracts tiles to be used by series_analysis.
@@ -59,60 +60,23 @@ class ExtractTilesWrapper(CommandBuilder):
         self.init_beg = self.config.getstr('config', 'INIT_BEG')[0:8]
         self.init_end = self.config.getstr('config', 'INIT_END')[0:8]
         self.init_hour_inc = int(self.config.getint('config', 'INIT_INCREMENT') / 3600)
-        self.init_hour_end = self.config.getint('config', 'INIT_HOUR_END')
 
 
-    # pylint: disable=too-many-locals
-    # 23 local variables are needed to perform the necessary work.
-    def run_all_times(self):
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-        init_time = datetime.datetime.strptime(self.init_beg, "%Y%m%d")
-        end_time = datetime.datetime.strptime(self.init_end, "%Y%m%d")
-        end_time = end_time + datetime.timedelta(hours=self.init_hour_end)
-
-        # This is functionally equivalent to while loop below.
-        # Get the desired YYYYMMDD_HH init increment list
-        # init_list = util.gen_init_list(
-        #    self.init_beg, self.init_end, self.init_hour_inc,
-        #    str(self.init_hour_end))
-        # while init_time in init_list
-        #     self.run_at_time(init_time)
-
-        # Loop from begYYYYMMDD to endYYYYMMDD incrementing by HH
-        # and ending on the endYYYYMMDD_HH End Hour.
-        while init_time <= end_time:
-            self.run_at_time(init_time.strftime("%Y%m%d%H%M"), -1)
-            init_time = init_time + datetime.timedelta(
-                hours=self.init_hour_inc)
-
-        # Remove any empty files and directories in the extract_tiles output
-        # directory
-        util.prune_empty(self.filtered_out_dir, self.logger)
-
-        self.logger.debug("Finished extract tiles")
-
-
-    def run_at_time(self, init_time, valid_time):
+    def run_at_time(self, input_dict):
         """!Get TC-paris data then regrid tiles centered on the storm.
 
         Get TC-pairs track data and GFS model data, do any necessary
         processing then regrid the forecast and analysis files to a
         30 x 30 degree tile centered on the storm.
         Args:
-            init_time:  The init time of interest
-            valid_time:  The valid time of interest, not currently in use.
+            input_dict:  Time dictionary
         Returns:
 
             None: invokes regrid_data_plane to create a netCDF file from two
                     extratropical storm track files.
         """
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-        # Used in logging
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
+        time_info = time_util.ti_calculate(input_dict)
+        init_time = time_info['init_fmt']
 
         # get the process id to be used to identify the output
         # amongst different users and runs.
@@ -142,8 +106,8 @@ class ExtractTilesWrapper(CommandBuilder):
             # filter options defined in the config/param file.
             # Use TcStatWrapper to build up the tc_stat command and invoke
             # the MET tool tc_stat to perform the filtering.
-            tiles_list = str(util.get_files(self.tc_pairs_dir, ".*tcst", self.logger))
-            tiles_list_str = tiles_list.replace(",", " ")
+            tiles_list = util.get_files(self.tc_pairs_dir, ".*tcst", self.logger)
+            tiles_list_str = ' '.join(tiles_list)
 
             tcs = TcStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(self.filtered_out_dir, cur_init,
