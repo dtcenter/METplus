@@ -341,6 +341,18 @@ class CommandBuilder:
         return out
 
 
+    def write_list_file(self, filename, file_list):
+        list_dir = os.path.join(self.config.getdir('STAGING_DIR'), 'file_lists')
+        list_path = os.path.join(list_dir, filename)
+
+        if not os.path.exists(list_dir):
+            os.makedirs(list_dir, mode=0775)
+
+        with open(list_path, 'w') as file_handle:
+            for f_path in file_list:
+                file_handle.write(f_path+'\n')
+        return list_path
+
 
     def get_command(self):
         """! Builds the command to run the MET application
