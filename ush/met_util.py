@@ -73,7 +73,14 @@ def check_for_deprecated_config(p, logger):
       'WINDOW_RANGE_END' : { 'sec' : 'config', 'alt' : 'OBS_WINDOW_END'},
       'OBS_EXACT_VALID_TIME' : { 'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN and OBS_WINDOW_END'},
       'FCST_EXACT_VALID_TIME' : { 'sec' : 'config', 'alt' : 'FCST_WINDOW_BEGIN and FCST_WINDOW_END'},
-      'PCP_COMBINE_METHOD' : { 'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_METHOD and/or OBS_PCP_COMBINE_METHOD'}
+      'PCP_COMBINE_METHOD' : { 'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_METHOD and/or OBS_PCP_COMBINE_METHOD'},
+      'FHR_BEG' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+      'FHR_END' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+      'FHR_INC' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+      'FHR_GROUP_BEG' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]'},
+      'FHR_GROUP_END' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]'},
+      'FHR_GROUP_LABELS' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]_LABEL'},
+      'INIT_HOUR_END' : { 'sec' : 'config', 'alt' : 'INIT_BEG, INIT_END, and INIT_TIME_FMT (add hour)'}
 # template       '' : { 'sec' : '', 'alt' : ''}
     }
 
@@ -120,13 +127,17 @@ def write_final_conf(conf, logger):
 
 def is_loop_by_init(config):
     if config.p.has_option('config', 'LOOP_BY'):
-        if config.getstr('config', 'LOOP_BY').lower() in ['init', 'retro' , '']:
+        loop_by = config.getstr('config', 'LOOP_BY').lower()
+        if loop_by in ['init', 'retro']:
             return True
+        elif loop_by in ['valid', 'realtime']:
+            return False
 
     if config.p.has_option('config', 'LOOP_BY_INIT'):
-        return config.getbool('config', 'LOOP_BY_INIT', True)
+        return config.getbool('config', 'LOOP_BY_INIT')
 
-    return False
+    config.logger.error('MUST SET LOOP_BY to VALID, INIT, RETRO, or REALTIME')
+    exit(1)
 
 
 def get_time_obj(t, fmt, clock_time, logger=None):
@@ -192,11 +203,21 @@ def loop_over_times_and_call(config, processes):
         loop_time += datetime.timedelta(seconds=time_interval)
 
 
-def get_lead_sequence(config, input_dict):
+def get_lead_sequence(config, input_dict=None):
     if config.p.has_option('config', 'LEAD_SEQ'):
         # return list of forecast leads
         return getlistint(config.getstr('config', 'LEAD_SEQ'))
     if config.p.has_option('config', 'INIT_SEQ'):
+        # if input dictionary not passed in, cannot compute lead sequence
+        #  from it, so exit
+        if input_dict == None:
+            log_msg = 'LEAD_SEQ must be specified to run'
+            if config.logger:
+                config.logger.erro(log_msg)
+            else:
+                print(log_msg)
+            exit(1)
+
         # if looping by init, fail and exit
         if 'init' in input_dict.keys():
             log_msg = 'INIT_SEQ specified while looping by init time.' + \
