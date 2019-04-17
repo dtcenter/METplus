@@ -9,10 +9,10 @@
 //
 // Filtering input STAT lines by the contents of each column
 //
-model = [ "${MODEL}" ];
+model = [${MODEL_NAME}];
 desc  = [];
 
-fcst_lead = [ "${LEAD}" ];
+fcst_lead = [${FCST_LEAD}];
 obs_lead  = [];
 
 fcst_valid_beg  = "${FCST_VALID_BEG}";
@@ -31,27 +31,27 @@ obs_init_beg    = "";
 obs_init_end    = "";
 obs_init_hour   = [];
 
-fcst_var = [ "${FCST_VAR_NAME}" ];
-obs_var  = [ "${OBS_VAR_NAME}" ];
+fcst_var = [${FCST_VAR_NAME}];
+obs_var  = [${OBS_VAR_NAME}];
 
-fcst_lev = [ "${FCST_VAR_LEVEL}" ];
-obs_lev  = [ "${OBS_VAR_LEVEL}" ];
+fcst_lev = [${FCST_VAR_LEVEL}];
+obs_lev  = [${OBS_VAR_LEVEL}];
 
-obtype = [];
+obtype = [${OBS_NAME}];
 
-vx_mask = [ "${REGION}" ];
+vx_mask = [${REGION}];
 
-interp_mthd = [ "${INTERP}" ];
+interp_mthd = [${INTERP}];
 
 interp_pnts = [];
 
-fcst_thresh = [];
-obs_thresh  = [];
+fcst_thresh = [${FCST_THRESH}];
+obs_thresh  = [${OBS_THRESH}];
 cov_thresh  = [];
 
 alpha = [];
 
-line_type = [];
+line_type = [${LINE_TYPE}];
 
 column = [];
 
@@ -63,7 +63,7 @@ weight = [];
 // Array of STAT-Analysis jobs to be performed on the filtered data
 //
 jobs = [
-     "${JOB}"
+   "${JOB}"
 ];
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,19 +80,6 @@ boot = {
    rng      = "mt19937";
    seed     = "";
 }
-
-////////////////////////////////////////////////////////////////////////////////
-
-//
-// WMO mean computation logic
-//
-wmo_sqrt_stats   = [ "CNT:FSTDEV",  "CNT:OSTDEV",  "CNT:ESTDEV",
-                     "CNT:RMSE",    "CNT:RMSFA",   "CNT:RMSOA",
-                     "VCNT:FS_RMS", "VCNT:OS_RMS", "VCNT:RMSVE",
-                     "VCNT:FSTDEV", "VCNT:OSTDEV" ];
-
-wmo_fisher_stats = [ "CNT:PR_CORR", "CNT:SP_CORR",
-                     "CNT:KT_CORR", "CNT:ANOM_CORR" ];
 
 ////////////////////////////////////////////////////////////////////////////////
 

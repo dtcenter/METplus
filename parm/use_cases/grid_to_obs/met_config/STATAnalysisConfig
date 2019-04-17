@@ -9,10 +9,10 @@
 //
 // Filtering input STAT lines by the contents of each column
 //
-model = [ "${MODEL_TYPE}" ];
-desc  = [];
+model = [${MODEL_NAME}];
+desc  = [${DESC}];
 
-fcst_lead = [];
+fcst_lead = [${FCST_LEAD}];
 obs_lead  = [];
 
 fcst_valid_beg  = "${FCST_VALID_BEG}";
@@ -31,27 +31,27 @@ obs_init_beg    = "";
 obs_init_end    = "";
 obs_init_hour   = [];
 
-fcst_var = [];
-obs_var  = [];
+fcst_var = [${FCST_VAR_NAME}];
+obs_var  = [${OBS_VAR_NAME}];
 
-fcst_lev = [];
-obs_lev  = [];
+fcst_lev = [${FCST_VAR_LEVEL}];
+obs_lev  = [${OBS_VAR_LEVEL}];
 
-obtype = [ "${OB_TYPE}" ];
+obtype = [${OBS_NAME}];
 
-vx_mask = [];
+vx_mask = [${REGION}];
 
-interp_mthd = [];
+interp_mthd = [${INTERP}];
 
-interp_pnts = [];
+interp_pnts = [${INTERP_PTS}];
 
-fcst_thresh = [];
+fcst_thresh = [${FCST_THRESH}];
 obs_thresh  = [];
-cov_thresh  = [];
+cov_thresh  = [${COV_THRESH}];
 
 alpha = [];
 
-line_type = [];
+line_type = [${LINE_TYPE}];
 
 column = [];
 
