@@ -370,7 +370,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
                 if field_name == '':
                     break
-                addon = "'name=\"" + field_name + "\"; level=\"(0,*,*)\";'"
+
+                if self.get_data_type(data_src) == "GRIB":
+                    addon = search_accum
+                else:
+                    addon = "'name=\"" + field_name + "\"; level=\"(0,*,*)\";'"
                 self.add_input_file(search_file, addon)
                 search_time = search_time - datetime.timedelta(hours=s_accum)
                 search_accum -= s_accum
