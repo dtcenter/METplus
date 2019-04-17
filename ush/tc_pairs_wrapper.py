@@ -23,6 +23,7 @@ import os
 import sys
 import re
 import csv
+import datetime
 import produtil.setup
 from produtil.run import ExitStatusException
 # TODO - critical  must import grid_to_obs_util before CommandBuilder
@@ -82,12 +83,12 @@ class TcPairsWrapper(CommandBuilder):
         tcp_dict['TRACK_TYPE'] = self.config.getstr('config', 'TRACK_TYPE')
         tcp_dict['TC_PAIRS_CONFIG_FILE'] = self.config.getstr('config',
                                                               'TC_PAIRS_CONFIG_FILE')
-        tcp_dict['INIT_BEG'] = self.config.getstr('config', 'INIT_BEG')
-        tcp_dict['INIT_END'] = self.config.getstr('config', 'INIT_END')
-        tcp_dict['INIT_INCREMENT'] = int(
-            self.config.getint('config', 'INIT_INCREMENT') / 3600)
-        tcp_dict['INIT_HOUR_END'] = self.config.getstr('config',
-                                                       'INIT_HOUR_END')
+
+        tcp_dict['INIT_BEG'] = self.config.getraw('config', 'INIT_BEG')
+        tcp_dict['INIT_END'] = self.config.getraw('config', 'INIT_END')
+        tcp_dict['INIT_TIME_FMT'] = self.config.getstr('config', 'INIT_TIME_FMT')
+        tcp_dict['INIT_INCREMENT'] = self.config.getint('config', 'INIT_INCREMENT')
+
         tcp_dict['INIT_INCLUDE'] = util.getlist(
             self.config.getstr('config', 'INIT_INCLUDE'))
         tcp_dict['INIT_EXCLUDE'] = util.getlist(
@@ -203,13 +204,22 @@ class TcPairsWrapper(CommandBuilder):
         # file (TC_PAIRS_CONFIG_FILE)
         self.set_env_vars()
 
-        # Get the desired YYYYMMDD_HH init increment list
-        # convert the increment INIT_INCREMENT from seconds to hours
-        init_list = util.gen_init_list(
-            self.tcp_dict['INIT_BEG'],
-            self.tcp_dict['INIT_END'],
-            self.tcp_dict['INIT_INCREMENT'],
-            self.tcp_dict['INIT_HOUR_END'])
+        # Get the desired YYYYMMDD_HH init list
+        time_interval = self.tcp_dict['INIT_INCREMENT']
+        if time_interval < 60:
+            self.logger.error("INIT_INCREMENT parameter must be "
+              "greater than 60 seconds")
+            exit(1)
+
+        loop_time = datetime.datetime.strptime(self.tcp_dict['INIT_BEG'],
+                                               self.tcp_dict['INIT_TIME_FMT'])
+        end_time = datetime.datetime.strptime(self.tcp_dict['INIT_END'],
+                                               self.tcp_dict['INIT_TIME_FMT'])
+
+        init_list = []
+        while loop_time <= end_time:
+            init_list.append(loop_time.strftime("%Y%m%d_%H"))
+            loop_time += datetime.timedelta(seconds=time_interval)
 
         # Differentiate between non-ATCF_by_pairs data and ATCF_by_pairs track data based on
         # the TRACK_TYPE
@@ -1069,8 +1079,9 @@ class TcPairsWrapper(CommandBuilder):
         # support single-quotes.
 
         # INIT_BEG, INIT_END
-        tmp_init_beg = self.tcp_dict['INIT_BEG']
-        tmp_init_end = self.tcp_dict['INIT_END']
+        # pull out YYYYMMDD from INIT_BEG/END
+        tmp_init_beg = self.tcp_dict['INIT_BEG'][0:8]
+        tmp_init_end = self.tcp_dict['INIT_END'][0:8]
 
         if not tmp_init_beg:
             self.add_env_var(b'INIT_BEG', "")
