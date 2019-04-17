@@ -31,13 +31,13 @@ class MakePlotsWrapper(CommandBuilder):
     """! Wrapper to create plots using python
          from MET .stat files
     """
-
     def __init__(self, p, logger):
         super(MakePlotsWrapper, self).__init__(p, logger)
+        self.config = p
         self.app_path = 'python'
         self.app_name = 'make_plots'
         if self.logger is None:
-            self.logger = util.get_logger(self.p,sublog='MakePlots')
+            self.logger = util.get_logger(self.config,sublog='MakePlots')
 
     def set_plotting_script(self, plotting_script_path):
         self.plotting_script = plotting_script_path
@@ -139,7 +139,7 @@ class MakePlotsWrapper(CommandBuilder):
                             information
         """
         var_info = []
-        all_conf = self.p.keys('config')
+        all_conf = self.config.keys('config')
         fcst_indices = []
         regex = re.compile("FCST_VAR(\d+)_NAME")
         for conf in all_conf:
@@ -147,38 +147,38 @@ class MakePlotsWrapper(CommandBuilder):
            if result is not None:
               fcst_indices.append(result.group(1))
         for n in fcst_indices:
-            if self.p.has_option('config', "FCST_VAR"+n+"_NAME"):
-                fcst_name = self.p.getstr('config', "FCST_VAR"+n+"_NAME")
-                if self.p.has_option('config', "FCST_VAR"+n+"_LEVELS"):
-                    fcst_levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
+            if self.config.has_option('config', "FCST_VAR"+n+"_NAME"):
+                fcst_name = self.config.getstr('config', "FCST_VAR"+n+"_NAME")
+                if self.config.has_option('config', "FCST_VAR"+n+"_LEVELS"):
+                    fcst_levels = util.getlist(self.config.getstr('config', "FCST_VAR"+n+"_LEVELS"))
                 else:
                     self.logger.error("FCST_VAR"+n+"_LEVELS not defined")
                     exit(1)
-                if self.p.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                    fcst_extra = util.getraw_interp(self.p, 'config', "FCST_VAR"+n+"_OPTIONS")
+                if self.config.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
+                    fcst_extra = util.getraw_interp(self.config, 'config', "FCST_VAR"+n+"_OPTIONS")
                 else:
                     fcst_extra = ""
-                if self.p.has_option('config', "FCST_VAR"+n+"_THRESH"):
-                    fcst_thresh = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_THRESH"))
+                if self.config.has_option('config', "FCST_VAR"+n+"_THRESH"):
+                    fcst_thresh = util.getlist(self.config.getstr('config', "FCST_VAR"+n+"_THRESH"))
                 else:
                     fcst_thresh = ""
-                if self.p.has_option('config', "OBS_VAR"+n+"_NAME"):
-                    obs_name = self.p.getstr('config', "OBS_VAR"+n+"_NAME")
+                if self.config.has_option('config', "OBS_VAR"+n+"_NAME"):
+                    obs_name = self.config.getstr('config', "OBS_VAR"+n+"_NAME")
                 else:
                     obs_name = fcst_name
-                if self.p.has_option('config', "OBS_VAR"+n+"_LEVELS"):
-                    obs_levels = util.getlist(self.p.getstr('config', "OBS_VAR"+n+"_LEVELS"))
+                if self.config.has_option('config', "OBS_VAR"+n+"_LEVELS"):
+                    obs_levels = util.getlist(self.config.getstr('config', "OBS_VAR"+n+"_LEVELS"))
                     if len(fcst_levels) != len(obs_levels):
                         self.logger.error("FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+"_LEVELS do not have the same number of elements")
                         exit(1)
                 else:
                     obs_levels = fcst_levels
-                if self.p.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                    obs_extra = util.getraw_interp(self.p, 'config', "OBS_VAR"+n+"_OPTIONS")
+                if self.config.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
+                    obs_extra = util.getraw_interp(self.config, 'config', "OBS_VAR"+n+"_OPTIONS")
                 else:
                     obs_extra = ""
-                if self.p.has_option('config', "OBS_VAR"+n+"_THRESH"):
-                    obs_thresh = util.getlist(self.p.getstr('config', "OBS_VAR"+n+"_THRESH"))
+                if self.config.has_option('config', "OBS_VAR"+n+"_THRESH"):
+                    obs_thresh = util.getlist(self.config.getstr('config', "OBS_VAR"+n+"_THRESH"))
                     if len(fcst_thresh) != len(obs_thresh):
                         self.logger.error("FCST_VAR"+n+"_THRESH and OBS_VAR"+n+"_THRESH do not have the same number of elements")
                         exit(1)
@@ -215,7 +215,7 @@ class MakePlotsWrapper(CommandBuilder):
                                       for the variables
         """
         fourier_decom_list = []
-        all_conf = self.p.keys('config')
+        all_conf = self.config.keys('config')
         indices = []
         regex = re.compile("FCST_VAR(\d+)_NAME")
         for conf in all_conf:
@@ -223,9 +223,9 @@ class MakePlotsWrapper(CommandBuilder):
             if result is not None:
                 indices.append(result.group(1))
         for n in indices:
-            if self.p.has_option('config', "FCST_VAR"+n+"_NAME"):
-                run_fourier = self.p.getbool('config', "VAR"+n+"_FOURIER_DECOMP", False)
-                fourier_wave_num_pairs = util.getlist(self.p.getstr('config', "VAR"+n+"_WAVE_NUM_LIST", ""))
+            if self.config.has_option('config', "FCST_VAR"+n+"_NAME"):
+                run_fourier = self.config.getbool('config', "VAR"+n+"_FOURIER_DECOMP", False)
+                fourier_wave_num_pairs = util.getlist(self.config.getstr('config', "VAR"+n+"_WAVE_NUM_LIST", ""))
                 if run_fourier == False:
                     fourier_wave_num_pairs = ""
                 fd_info = self.FourierDecompInfo()
@@ -245,7 +245,7 @@ class MakePlotsWrapper(CommandBuilder):
         """
         model_name_list = []
         model_plot_name_list = []
-        all_conf = self.p.keys('config')
+        all_conf = self.config.keys('config')
         model_indices = []
         regex = re.compile("MODEL(\d+)_NAME$")
         for conf in all_conf:
@@ -253,10 +253,10 @@ class MakePlotsWrapper(CommandBuilder):
             if result is not None:
                 model_indices.append(result.group(1))
         for m in model_indices:
-            if self.p.has_option('config', "MODEL"+m+"_NAME"):
-                model_name = self.p.getstr('config', "MODEL"+m+"_NAME")
-                if self.p.has_option('config', "MODEL"+m+"_NAME_ON_PLOT"):
-                    model_plot_name = self.p.getstr('config', "MODEL"+m+"_NAME_ON_PLOT")
+            if self.config.has_option('config', "MODEL"+m+"_NAME"):
+                model_name = self.config.getstr('config', "MODEL"+m+"_NAME")
+                if self.config.has_option('config', "MODEL"+m+"_NAME_ON_PLOT"):
+                    model_plot_name = self.config.getstr('config', "MODEL"+m+"_NAME_ON_PLOT")
                 else:
                     model_plot_name = model_name
                 model_name_list.append(model_name)
@@ -866,34 +866,34 @@ class MakePlotsWrapper(CommandBuilder):
         """
         self.logger.info("Running plots for VERIF_CASE = "+verif_case+", VERIF_TYPE = "+verif_type)
         #read config
-        plot_time = self.p.getstr('config', 'PLOT_TIME')
-        valid_beg_YYYYmmdd = self.p.getstr('config', 'VALID_BEG', "")
-        valid_end_YYYYmmdd = self.p.getstr('config', 'VALID_END', "")
-        valid_hour_method = self.p.getstr('config', 'VALID_HOUR_METHOD')
-        valid_hour_beg = self.p.getstr('config', 'VALID_HOUR_BEG')
-        valid_hour_end = self.p.getstr('config', 'VALID_HOUR_END')
-        valid_hour_increment = self.p.getstr('config', 'VALID_HOUR_INCREMENT')
-        init_beg_YYYYmmdd = self.p.getstr('config', 'INIT_BEG', "")
-        init_end_YYYYmmdd = self.p.getstr('config', 'INIT_END', "")
-        init_hour_method = self.p.getstr('config', 'INIT_HOUR_METHOD')
-        init_hour_beg = self.p.getstr('config', 'INIT_HOUR_BEG')
-        init_hour_end = self.p.getstr('config', 'INIT_HOUR_END')
-        init_hour_increment = self.p.getstr('config', 'INIT_HOUR_INCREMENT')
-        stat_files_input_dir = util.getdir(self.p, 'STAT_FILES_INPUT_DIR')
-        plotting_out_dir = util.getdir(self.p, 'PLOTTING_OUT_DIR')
-        plotting_scripts_dir = util.getdir(self.p, 'PLOTTING_SCRIPTS_DIR')
-        plot_stats_list = self.p.getstr('config', 'PLOT_STATS_LIST')
-        ci_method = self.p.getstr('config', 'CI_METHOD')
-        verif_grid = self.p.getstr('config', 'VERIF_GRID')
-        event_equalization = self.p.getstr('config', 'EVENT_EQUALIZATION', "True")
+        plot_time = self.config.getstr('config', 'PLOT_TIME')
+        valid_beg_YYYYmmdd = self.config.getstr('config', 'VALID_BEG', "")
+        valid_end_YYYYmmdd = self.config.getstr('config', 'VALID_END', "")
+        valid_hour_method = self.config.getstr('config', 'VALID_HOUR_METHOD')
+        valid_hour_beg = self.config.getstr('config', 'VALID_HOUR_BEG')
+        valid_hour_end = self.config.getstr('config', 'VALID_HOUR_END')
+        valid_hour_increment = self.config.getstr('config', 'VALID_HOUR_INCREMENT')
+        init_beg_YYYYmmdd = self.config.getstr('config', 'INIT_BEG', "")
+        init_end_YYYYmmdd = self.config.getstr('config', 'INIT_END', "")
+        init_hour_method = self.config.getstr('config', 'INIT_HOUR_METHOD')
+        init_hour_beg = self.config.getstr('config', 'INIT_HOUR_BEG')
+        init_hour_end = self.config.getstr('config', 'INIT_HOUR_END')
+        init_hour_increment = self.config.getstr('config', 'INIT_HOUR_INCREMENT')
+        stat_files_input_dir = util.getdir(self.config, 'STAT_FILES_INPUT_DIR')
+        plotting_out_dir = util.getdir(self.config, 'PLOTTING_OUT_DIR')
+        plotting_scripts_dir = util.getdir(self.config, 'PLOTTING_SCRIPTS_DIR')
+        plot_stats_list = self.config.getstr('config', 'PLOT_STATS_LIST')
+        ci_method = self.config.getstr('config', 'CI_METHOD')
+        verif_grid = self.config.getstr('config', 'VERIF_GRID')
+        event_equalization = self.config.getstr('config', 'EVENT_EQUALIZATION', "True")
         var_list = self.parse_vars_with_level_thresh_list()
         fourier_decom_list = self.parse_var_fourier_decomp()
-        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
-        lead_list = util.getlist(self.p.getstr('config', 'LEAD_LIST'))
+        region_list = util.getlist(self.config.getstr('config', 'REGION_LIST'))
+        lead_list = util.getlist(self.config.getstr('config', 'LEAD_LIST'))
         model_name_str_list, model_plot_name_str_list = self.parse_model_list()
-        logging_filename = self.p.getstr('config', 'LOG_METPLUS')
-        logging_level = self.p.getstr('config', 'LOG_LEVEL')
-        met_base = self.p.getstr('config', 'MET_BASE')
+        logging_filename = self.config.getstr('config', 'LOG_METPLUS')
+        logging_level = self.config.getstr('config', 'LOG_LEVEL')
+        met_base = self.config.getstr('config', 'MET_BASE')
         #set envir vars based on config
         self.add_env_var('PLOT_TIME', plot_time)
         if plot_time == 'valid':
@@ -962,7 +962,7 @@ class MakePlotsWrapper(CommandBuilder):
                     fcst_var_thresh_list = var_info.fcst_thresh
                     obs_var_thresh_list = var_info.obs_thresh
                 #check for fourier decompositon for variable, add to interp list
-                interp_list = util.getlist(self.p.getstr('config', 'INTERP', ""))
+                interp_list = util.getlist(self.config.getstr('config', 'INTERP', ""))
                 var_fourier_decomp_info = fourier_decom_list[var_list.index(var_info)]
                 if var_fourier_decomp_info.run_fourier:
                     for pair in var_fourier_decomp_info.wave_num_pairings:
@@ -1000,8 +1000,8 @@ class MakePlotsWrapper(CommandBuilder):
                                                      lead_list, plotting_scripts_dir)
 
     def run_all_times(self):
-        verif_case = self.p.getstr('config', 'VERIF_CASE')
-        verif_type = self.p.getstr('config', 'VERIF_TYPE')
+        verif_case = self.config.getstr('config', 'VERIF_CASE')
+        verif_type = self.config.getstr('config', 'VERIF_TYPE')
         self.add_env_var('VERIF_CASE', verif_case)
         self.add_env_var('VERIF_TYPE', verif_type)
         if verif_case == "grid2grid":

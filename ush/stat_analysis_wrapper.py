@@ -34,14 +34,14 @@ class StatAnalysisWrapper(CommandBuilder):
          which filters MET .stat files for
          for criteria
     """
-
     def __init__(self, p, logger):
         super(StatAnalysisWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(util.getdir(self.p, 'MET_INSTALL_DIR'),
-                                     'bin/stat_analysis')
+        self.config = p
+        self.app_path = os.path.join(util.getdir(self.config, 'MET_INSTALL_DIR'),
+            'bin/stat_analysis')
         self.app_name = os.path.basename(self.app_path)
         if self.logger is None:
-            self.logger = util.get_logger(self.p,sublog='StatAnalysis')
+            self.logger = util.get_logger(self.config,sublog='StatAnalysis')
    
     def set_lookin_dir(self, lookindir):
         self.lookindir = "-lookin "+lookindir+" "
@@ -322,7 +322,7 @@ class StatAnalysisWrapper(CommandBuilder):
                               model information
         """
         model_list = []
-        all_conf = self.p.keys('config')
+        all_conf = self.config.keys('config')
         model_indices = []
         regex = re.compile("MODEL(\d+)_NAME$")
         for conf in all_conf:
@@ -330,19 +330,19 @@ class StatAnalysisWrapper(CommandBuilder):
             if result is not None:
                 model_indices.append(result.group(1))
         for m in model_indices:
-            if self.p.has_option('config', "MODEL"+m+"_NAME"):
-                model_name = self.p.getstr('config', "MODEL"+m+"_NAME")
-                if self.p.has_option('config', "MODEL"+m+"_NAME_ON_PLOT"):
-                    model_plot_name = self.p.getstr('config', "MODEL"+m+"_NAME_ON_PLOT")
+            if self.config.has_option('config', "MODEL"+m+"_NAME"):
+                model_name = self.config.getstr('config', "MODEL"+m+"_NAME")
+                if self.config.has_option('config', "MODEL"+m+"_NAME_ON_PLOT"):
+                    model_plot_name = self.config.getstr('config', "MODEL"+m+"_NAME_ON_PLOT")
                 else:
                     model_plot_name = model_name
-                if self.p.has_option('config', "MODEL"+m+"_STAT_DIR"):
-                    model_dir = util.getraw_interp(self.p, 'config', "MODEL"+m+"_STAT_DIR")
+                if self.config.has_option('config', "MODEL"+m+"_STAT_DIR"):
+                    model_dir = util.getraw_interp(self.config, 'config', "MODEL"+m+"_STAT_DIR")
                 else:
                     self.logger.error("MODEL"+m+"_STAT_DIR not defined in METplus conf file")
                     exit(1)
-                if self.p.has_option('config', "MODEL"+m+"_OBS_NAME"):
-                    model_obs_name = self.p.getstr('config', "MODEL"+m+"_OBS_NAME") 
+                if self.config.has_option('config', "MODEL"+m+"_OBS_NAME"):
+                    model_obs_name = self.config.getstr('config', "MODEL"+m+"_OBS_NAME") 
                 else:
                     self.logger.error("MODEL"+m+"_OBS_NAME not defined in METplus conf file")
                     exit(1)
@@ -372,7 +372,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                       for the variables
         """
         fourier_decom_list = []
-        all_conf = self.p.keys('config')
+        all_conf = self.config.keys('config')
         indices = []
         regex = re.compile("FCST_VAR(\d+)_NAME")
         for conf in all_conf:
@@ -380,10 +380,10 @@ class StatAnalysisWrapper(CommandBuilder):
             if result is not None:
                 indices.append(result.group(1))
         for n in indices:
-            if self.p.has_option('config', "FCST_VAR"+n+"_NAME"):
-                levels = util.getlist(self.p.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-                run_fourier = self.p.getbool('config', "VAR"+n+"_FOURIER_DECOMP", False)
-                fourier_wave_num_pairs = util.getlist(self.p.getstr('config', "VAR"+n+"_WAVE_NUM_LIST", ""))
+            if self.config.has_option('config', "FCST_VAR"+n+"_NAME"):
+                levels = util.getlist(self.config.getstr('config', "FCST_VAR"+n+"_LEVELS"))
+                run_fourier = self.config.getbool('config', "VAR"+n+"_FOURIER_DECOMP", False)
+                fourier_wave_num_pairs = util.getlist(self.config.getstr('config', "VAR"+n+"_WAVE_NUM_LIST", ""))
                 if run_fourier == False:
                     fourier_wave_num_pairs = ""
                 for level in levels:
@@ -450,38 +450,38 @@ class StatAnalysisWrapper(CommandBuilder):
              Returns:
         """
         #read config
-        model_name = self.p.getstr('config', 'MODEL_NAME')
-        obs_name = self.p.getstr('config', 'OBS_NAME')
-        valid_hour_method = self.p.getstr('config', 'VALID_HOUR_METHOD')
-        valid_hour_beg = self.p.getstr('config', 'VALID_HOUR_BEG')
-        valid_hour_end = self.p.getstr('config', 'VALID_HOUR_END')
-        valid_hour_increment = self.p.getstr('config', 'VALID_HOUR_INCREMENT')
-        init_hour_method = self.p.getstr('config', 'INIT_HOUR_METHOD')
-        init_hour_beg = self.p.getstr('config', 'INIT_HOUR_BEG')
-        init_hour_end = self.p.getstr('config', 'INIT_HOUR_END')
-        init_hour_increment = self.p.getstr('config', 'INIT_HOUR_INCREMENT')
-        stat_analysis_lookin_dir = util.getdir(self.p, 'STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = util.getdir(self.p, 'STAT_ANALYSIS_OUT_DIR')
-        stat_analysis_config = self.p.getstr('config', 'STAT_ANALYSIS_CONFIG')
-        job_name = self.p.getstr('config', 'JOB_NAME')
-        job_args = self.p.getstr('config', 'JOB_ARGS')
-        desc = util.getlist(self.p.getstr('config', 'DESC', ""))
-        fcst_lead = util.getlist(self.p.getstr('config', 'FCST_LEAD', ""))
-        fcst_var_name = util.getlist(self.p.getstr('config', 'FCST_VAR_NAME', ""))
-        fcst_var_level = util.getlist(self.p.getstr('config', 'FCST_VAR_LEVEL', ""))
-        obs_var_name = util.getlist(self.p.getstr('config', 'OBS_VAR_NAME', ""))
-        obs_var_level = util.getlist(self.p.getstr('config', 'OBS_VAR_LEVEL', ""))
-        region = util.getlist(self.p.getstr('config', 'REGION', ""))
-        interp = util.getlist(self.p.getstr('config', 'INTERP', ""))
-        interp_pts = util.getlist(self.p.getstr('config', 'INTERP_PTS', ""))
-        fcst_thresh_from_config = util.getlist(self.p.getstr('config', 'FCST_THRESH', ""))
+        model_name = self.config.getstr('config', 'MODEL_NAME')
+        obs_name = self.config.getstr('config', 'OBS_NAME')
+        valid_hour_method = self.config.getstr('config', 'VALID_HOUR_METHOD')
+        valid_hour_beg = self.config.getstr('config', 'VALID_HOUR_BEG')
+        valid_hour_end = self.config.getstr('config', 'VALID_HOUR_END')
+        valid_hour_increment = self.config.getstr('config', 'VALID_HOUR_INCREMENT')
+        init_hour_method = self.config.getstr('config', 'INIT_HOUR_METHOD')
+        init_hour_beg = self.config.getstr('config', 'INIT_HOUR_BEG')
+        init_hour_end = self.config.getstr('config', 'INIT_HOUR_END')
+        init_hour_increment = self.config.getstr('config', 'INIT_HOUR_INCREMENT')
+        stat_analysis_lookin_dir = util.getdir(self.config, 'STAT_ANALYSIS_LOOKIN_DIR')
+        stat_analysis_out_dir = util.getdir(self.config, 'STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_config = self.config.getstr('config', 'STAT_ANALYSIS_CONFIG')
+        job_name = self.config.getstr('config', 'JOB_NAME')
+        job_args = self.config.getstr('config', 'JOB_ARGS')
+        desc = util.getlist(self.config.getstr('config', 'DESC', ""))
+        fcst_lead = util.getlist(self.config.getstr('config', 'FCST_LEAD', ""))
+        fcst_var_name = util.getlist(self.config.getstr('config', 'FCST_VAR_NAME', ""))
+        fcst_var_level = util.getlist(self.config.getstr('config', 'FCST_VAR_LEVEL', ""))
+        obs_var_name = util.getlist(self.config.getstr('config', 'OBS_VAR_NAME', ""))
+        obs_var_level = util.getlist(self.config.getstr('config', 'OBS_VAR_LEVEL', ""))
+        region = util.getlist(self.config.getstr('config', 'REGION', ""))
+        interp = util.getlist(self.config.getstr('config', 'INTERP', ""))
+        interp_pts = util.getlist(self.config.getstr('config', 'INTERP_PTS', ""))
+        fcst_thresh_from_config = util.getlist(self.config.getstr('config', 'FCST_THRESH', ""))
         fcst_thresh = []
         for ft in fcst_thresh_from_config:
             fcst_thresh_symbol, fcst_thresh_letters = self.thresh_format(ft)
             fcst_thresh.append(fcst_thresh_symbol)
         fcst_thresh = ', '.join(fcst_thresh)
-        cov_thresh = util.getlist(self.p.getstr('config', 'COV_THRESH', ""))
-        line_type = util.getlist(self.p.getstr('config', 'LINE_TYPE', ""))
+        cov_thresh = util.getlist(self.config.getstr('config', 'COV_THRESH', ""))
+        line_type = util.getlist(self.config.getstr('config', 'LINE_TYPE', ""))
         #set envir vars based on config
         self.add_env_var('MODEL_NAME', '"'+model_name+'"')
         self.add_env_var('OBS_NAME', '"'+obs_name+'"')
@@ -506,7 +506,7 @@ class StatAnalysisWrapper(CommandBuilder):
         #set up stat_analysis output options based conf file info
         stat_analysis_dump_row_info = self.StatAnalysisOutputInfo()
         if "-dump_row" in job_args:
-            stat_analysis_dump_row_tmpl = util.getraw_interp(self.p, 'filename_templates','STAT_ANALYSIS_DUMP_ROW_TMPL')
+            stat_analysis_dump_row_tmpl = util.getraw_interp(self.config, 'filename_templates','STAT_ANALYSIS_DUMP_ROW_TMPL')
             if len(stat_analysis_dump_row_tmpl) == 0:
                 self.logger.debug("-dump_row requested but no STAT_ANALYSIS_DUMP_ROW_TMPL in conf file under filename_templates....using code default")
                 stat_analysis_dump_row_info.template_type = "default_template"
@@ -525,7 +525,7 @@ class StatAnalysisWrapper(CommandBuilder):
             stat_analysis_dump_row_info.filename = "NA"
         stat_analysis_out_stat_info = self.StatAnalysisOutputInfo()
         if "-out_stat" in job_args:
-            stat_analysis_out_stat_tmpl = util.getraw_interp(self.p, 'filename_templates','STAT_ANALYSIS_OUT_STAT_TMPL')
+            stat_analysis_out_stat_tmpl = util.getraw_interp(self.config, 'filename_templates','STAT_ANALYSIS_OUT_STAT_TMPL')
             if len(stat_analysis_out_stat_tmpl) == 0:
                 self.logger.debug("-out_stat requested but no STAT_ANALYSIS_OUT_STAT_TMPL in conf file under filename_templates....using code default")
                 stat_analysis_out_stat_info.template_type = "default_template"
@@ -812,29 +812,29 @@ class StatAnalysisWrapper(CommandBuilder):
              Returns:
         """
         #read config
-        verif_case = self.p.getstr('config', 'VERIF_CASE')
-        verif_type = self.p.getstr('config', 'VERIF_TYPE')
-        plot_time = self.p.getstr('config', 'PLOT_TIME')
-        valid_beg_YYYYmmdd = self.p.getstr('config', 'VALID_BEG', "")
-        valid_end_YYYYmmdd = self.p.getstr('config', 'VALID_END', "")
-        valid_hour_method = self.p.getstr('config', 'VALID_HOUR_METHOD')
-        valid_hour_beg = self.p.getstr('config', 'VALID_HOUR_BEG')
-        valid_hour_end = self.p.getstr('config', 'VALID_HOUR_END')
-        valid_hour_increment = self.p.getstr('config', 'VALID_HOUR_INCREMENT')
-        init_beg_YYYYmmdd = self.p.getstr('config', 'INIT_BEG', "")
-        init_end_YYYYmmdd = self.p.getstr('config', 'INIT_END', "")
-        init_hour_method = self.p.getstr('config', 'INIT_HOUR_METHOD')
-        init_hour_beg = self.p.getstr('config', 'INIT_HOUR_BEG')
-        init_hour_end = self.p.getstr('config', 'INIT_HOUR_END')
-        init_hour_increment = self.p.getstr('config', 'INIT_HOUR_INCREMENT')
-        stat_analysis_out_dir = util.getdir(self.p, 'STAT_ANALYSIS_OUT_DIR')
-        stat_analysis_config = self.p.getstr('config', 'STAT_ANALYSIS_CONFIG')
+        verif_case = self.config.getstr('config', 'VERIF_CASE')
+        verif_type = self.config.getstr('config', 'VERIF_TYPE')
+        plot_time = self.config.getstr('config', 'PLOT_TIME')
+        valid_beg_YYYYmmdd = self.config.getstr('config', 'VALID_BEG', "")
+        valid_end_YYYYmmdd = self.config.getstr('config', 'VALID_END', "")
+        valid_hour_method = self.config.getstr('config', 'VALID_HOUR_METHOD')
+        valid_hour_beg = self.config.getstr('config', 'VALID_HOUR_BEG')
+        valid_hour_end = self.config.getstr('config', 'VALID_HOUR_END')
+        valid_hour_increment = self.config.getstr('config', 'VALID_HOUR_INCREMENT')
+        init_beg_YYYYmmdd = self.config.getstr('config', 'INIT_BEG', "")
+        init_end_YYYYmmdd = self.config.getstr('config', 'INIT_END', "")
+        init_hour_method = self.config.getstr('config', 'INIT_HOUR_METHOD')
+        init_hour_beg = self.config.getstr('config', 'INIT_HOUR_BEG')
+        init_hour_end = self.config.getstr('config', 'INIT_HOUR_END')
+        init_hour_increment = self.config.getstr('config', 'INIT_HOUR_INCREMENT')
+        stat_analysis_out_dir = util.getdir(self.config, 'STAT_ANALYSIS_OUT_DIR')
+        stat_analysis_config = self.config.getstr('config', 'STAT_ANALYSIS_CONFIG')
         model_list = self.parse_model_list()
-        var_list = util.parse_var_list(self.p)
+        var_list = util.parse_var_list(self.config)
         fourier_decom_list = self.parse_var_fourier_decomp()
-        region_list = util.getlist(self.p.getstr('config', 'REGION_LIST'))
-        lead_list = util.getlist(self.p.getstr('config', 'LEAD_LIST'))
-        line_type = util.getlist(self.p.getstr('config', 'LINE_TYPE', ""))
+        region_list = util.getlist(self.config.getstr('config', 'REGION_LIST'))
+        lead_list = util.getlist(self.config.getstr('config', 'LEAD_LIST'))
+        line_type = util.getlist(self.config.getstr('config', 'LINE_TYPE', ""))
         #set envir vars based on config
         util.mkdir_p(stat_analysis_out_dir)
         self.add_env_var('LINE_TYPE', self.create_variable_list(line_type))
@@ -927,7 +927,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         self.add_env_var('FCST_THRESH', "")
                         self.add_env_var('OBS_THRESH', "")
                     #check for fourier decompositon for variable, add to interp list
-                    interp_list = util.getlist(self.p.getstr('config', 'INTERP', ""))
+                    interp_list = util.getlist(self.config.getstr('config', 'INTERP', ""))
                     var_fourier_decomp_info = fourier_decom_list[var_list.index(var_info)]
                     if var_fourier_decomp_info.run_fourier:
                         for pair in var_fourier_decomp_info.wave_num_pairings:
