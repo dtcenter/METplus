@@ -224,7 +224,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.process_fields(time_info, fcst_field, obs_field)
 
 
-    def set_environment_variables(self, a=None, b=None, c=None):
+    def set_environment_variables(self, fcst_field=None, obs_field=None, c=None):
         """! Set all the environment variables in the MET config
              file to the corresponding values in the METplus config file.
 
@@ -290,14 +290,8 @@ class PointStatWrapper(CompareGriddedWrapper):
             tmp_message_type = ''.join(tmp_message_type.split())
             self.add_env_var(b'POINT_STAT_MESSAGE_TYPE', tmp_message_type)
 
-        # Retrieve all the fcst and obs field values (name, level, options)
-        # from the METplus config file, passed into the MET config file via
-        # the FCST_FIELD and OBS_FIELD environment variables.
-        all_vars_list = util.parse_var_list(self.config)
-        met_fields = util.reformat_fields_for_met(all_vars_list, self.logger)
-
-        self.add_env_var(b'FCST_FIELD', met_fields.fcst_field)
-        self.add_env_var(b'OBS_FIELD', met_fields.obs_field)
+        self.add_env_var(b'FCST_FIELD', fcst_field)
+        self.add_env_var(b'OBS_FIELD', obs_field)
 
         # Set the environment variables corresponding to the obs_window
         # dictionary.
