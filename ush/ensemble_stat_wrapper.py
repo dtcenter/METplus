@@ -72,7 +72,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # No Default being set this is REQUIRED TO BE DEFINED in conf file.
         c_dict['N_ENSEMBLE_MEMBERS'] = \
-            self.config.getstr('filename_templates','ENSEMBLE_STAT_N_MEMBERS')
+            self.config.getstr('config','ENSEMBLE_STAT_N_MEMBERS')
 
         c_dict['OBS_POINT_INPUT_DIR'] = \
           self.config.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
