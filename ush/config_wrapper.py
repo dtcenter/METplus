@@ -158,7 +158,7 @@ class ConfigWrapper:
         else:
             dir_path = self.p.getdir(dir_name)
 
-        if dir_path == '/path/to' or dir_path.startswith('/path/to'):
+        if '/path/to' in dir_path:
             msg = 'Directory {} is set to or contains /path/to. Please set this to a valid location'.format(dir_name)
             if self.logger:
                 self.logger.error(msg)
