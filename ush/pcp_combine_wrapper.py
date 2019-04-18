@@ -75,14 +75,14 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
 
     def set_fcst_or_obs_dict_items(self, d_type):
-        self.c_dict[d_type+'_MIN_FORECAST'] = self.config.getint('config', d_type+'_MIN_FORECAST', 0)
-        self.c_dict[d_type+'_MAX_FORECAST'] = self.config.getint('config', d_type+'_MAX_FORECAST', 256)
+        self.c_dict[d_type+'_MIN_FORECAST'] = self.config.getint('config', d_type+'_PCP_COMBINE_MIN_FORECAST', 0)
+        self.c_dict[d_type+'_MAX_FORECAST'] = self.config.getint('config', d_type+'_PCP_COMBINE_MAX_FORECAST', 256)
         self.c_dict[d_type+'_INPUT_DATATYPE'] = self.config.getstr('config',
                                               d_type+'_PCP_COMBINE_INPUT_DATATYPE', '')
-        self.c_dict[d_type+'_DATA_INTERVAL'] = self.config.getint('config', d_type+'_DATA_INTERVAL', 1)
-        self.c_dict[d_type+'_TIMES_PER_FILE'] = self.config.getint('config', d_type+'_TIMES_PER_FILE', -1)
-        self.c_dict[d_type+'_IS_DAILY_FILE'] = self.config.getbool('config', d_type+'_IS_DAILY_FILE', False)
-        self.c_dict[d_type+'_LEVEL'] = self.config.getstr('config', d_type+'_LEVEL', '-1')
+        self.c_dict[d_type+'_DATA_INTERVAL'] = self.config.getint('config', d_type+'_PCP_COMBINE_DATA_INTERVAL', 1)
+        self.c_dict[d_type+'_TIMES_PER_FILE'] = self.config.getint('config', d_type+'_PCP_COMBINE_TIMES_PER_FILE', -1)
+        self.c_dict[d_type+'_IS_DAILY_FILE'] = self.config.getbool('config', d_type+'_PCP_COMBINE_IS_DAILY_FILE', False)
+        self.c_dict[d_type+'_LEVEL'] = self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_LEVEL', '-1')
         self.c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
         self.c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_INPUT_TEMPLATE')
@@ -263,11 +263,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # calling config.p version of getter so default value is not
         # set in log and final conf because it is unnecessary
         fname = self.config.p.getstr('config',
-                              data_src + '_' + str(
+                              data_src + '_PCP_COMBINE_' + str(
                                   accum) + '_FIELD_NAME', '')
         if fname == '':
             self.logger.error('NetCDF field name was not set in config: {}'
-                              .format(data_src+'_'+str(accum)+'_FIELD_NAME'))
+                              .format(data_src+'_PCP_COMBINE_'+str(accum)+'_FIELD_NAME'))
             return False
 
         addon = "'name=\"" + fname + "\"; level=\"(" + \
@@ -299,7 +299,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # calling config.p version of getter so default value is not
         # set in log and final conf because it is unnecessary
         field_name = self.config.p.getstr('config', data_src +
-                               '_' + str(search_accum) +
+                               '_PCP_COMBINE_' + str(search_accum) +
                                '_FIELD_NAME', '')
         if field_name == '':
             return ''
@@ -326,7 +326,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             # calling config.p version of getter so default value is not
             # set in log and final conf because it is unnecessary
             field_name = self.config.p.getstr('config',
-                                   data_src + '_' + str(s_accum) +
+                                   data_src + '_PCP_COMBINE_' + str(s_accum) +
                                    '_FIELD_NAME', '')
             if field_name != '':
                 break
@@ -527,7 +527,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
     def run_at_time_once(self, time_info, var_info, rl):
         cmd = None
-        run_method = self.c_dict[rl+'_RUN_METHOD']
+        run_method = self.c_dict[rl+'_RUN_METHOD'].upper()
         if run_method == "ADD":
             cmd = self.setup_add_method(time_info, var_info, rl)
         elif run_method == "SUM":

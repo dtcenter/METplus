@@ -56,8 +56,6 @@ class MTDWrapper(ModeWrapper):
                                  'FCST_MTD_INPUT_TEMPLATE')
             c_dict['FCST_INPUT_DATATYPE'] = \
                 self.config.getstr('config', 'FCST_MTD_INPUT_DATATYPE', '')
-            c_dict['FCST_MAX_FORECAST'] = self.config.getint('config', 'FCST_MAX_FORECAST', 256)
-            c_dict['FCST_INIT_INTERVAL']= self.config.getint('config', 'FCST_INIT_INTERVAL', 1)
 
             if self.config.has_option('config', 'MTD_FCST_CONV_RADIUS'):
                 c_dict['FCST_CONV_RADIUS'] = self.config.getstr('config', 'MTD_FCST_CONV_RADIUS')
