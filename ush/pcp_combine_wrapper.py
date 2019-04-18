@@ -651,6 +651,10 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         time_info['level'] = int(out_accum) * 3600
         in_regex = util.template_to_regex(in_template, time_info,
                                           self.logger)
+        in_regex_split = in_regex.split('/')
+        in_dir = os.path.join(in_dir, *in_regex_split[0:-1])
+        in_regex = in_regex_split[-1]
+
         self.set_method("SUM")
         self.set_init_time(init_time)
         self.set_valid_time(valid_time)
