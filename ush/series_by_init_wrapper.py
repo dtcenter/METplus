@@ -45,10 +45,10 @@ class SeriesByInitWrapper(CommandBuilder):
 
         self.regrid_with_met_tool = self.config.getbool('config',
                                               'REGRID_USING_MET_TOOL')
-        self.extract_tiles_dir = self.config.getdir('EXTRACT_OUT_DIR')
-        self.series_out_dir = self.config.getdir('SERIES_INIT_OUT_DIR')
+        self.extract_tiles_dir = self.config.getdir('EXTRACT_TILES_OUTPUT_DIR')
+        self.series_out_dir = self.config.getdir('SERIES_BY_INIT_OUTPUT_DIR')
         self.series_filtered_out_dir = \
-            self.config.getdir('SERIES_INIT_FILTERED_OUT_DIR')
+            self.config.getdir('SERIES_BY_INIT_FILTERED_OUTPUT_DIR')
         self.filter_opts = \
             self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
         self.fcst_ascii_file_prefix = 'FCST_ASCII_FILES_'

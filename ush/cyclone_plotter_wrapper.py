@@ -40,7 +40,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                                      'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
         self.input_data = self.config.getdir('CYCLONE_INPUT_DIR')
-        self.output_dir = self.config.getdir('CYCLONE_OUT_DIR')
+        self.output_dir = self.config.getdir('CYCLONE_OUTPUT_DIR')
         self.init_date = self.config.getstr('config', 'CYCLONE_INIT_DATE')
         self.init_hr = self.config.getstr('config', 'CYCLONE_INIT_HR')
         self.model = self.config.getstr('config', 'CYCLONE_MODEL')

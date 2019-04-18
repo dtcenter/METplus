@@ -65,7 +65,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
         # Optional arguments
         self.plot_config_file = self.config.getstr('config', 'CONFIG_FILE')
-        self.output_base_dir = self.config.getdir('TCMPR_PLOT_OUT_DIR')
+        self.output_base_dir = self.config.getdir('TCMPR_PLOT_OUTPUT_DIR')
         self.prefix = self.config.getstr('config', 'PREFIX')
         self.title = self.config.getstr('config', 'TITLE')
         self.subtitle = self.config.getstr('config', 'SUBTITLE')

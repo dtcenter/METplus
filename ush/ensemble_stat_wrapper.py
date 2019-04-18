@@ -99,7 +99,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE'))
 
 
-        c_dict['OUTPUT_DIR'] =  self.config.getdir('ENSEMBLE_STAT_OUT_DIR')
+        c_dict['OUTPUT_DIR'] =  self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR')
 
         # if window begin/end is set specific to ensemble_stat, override
         # OBS_WINDOW_BEGIN/END

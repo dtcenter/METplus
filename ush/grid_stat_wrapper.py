@@ -62,7 +62,7 @@ class GridStatWrapper(CompareGriddedWrapper):
               self.config.getraw('filename_templates',
                                    'CLIMO_GRID_STAT_INPUT_TEMPLATE')
 
-        c_dict['OUTPUT_DIR'] =  self.config.getdir('GRID_STAT_OUT_DIR', self.config.getdir('OUTPUT_BASE'))
+        c_dict['OUTPUT_DIR'] =  self.config.getdir('GRID_STAT_OUTPUT_DIR', self.config.getdir('OUTPUT_BASE'))
         c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
                                                         'GRID_STAT_ONCE_PER_FIELD',
                                                         False)

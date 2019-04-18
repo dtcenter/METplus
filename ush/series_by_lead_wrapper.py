@@ -61,10 +61,10 @@ class SeriesByLeadWrapper(CommandBuilder):
         met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.series_analysis_exe = os.path.join(met_install_dir,
                                                 'bin/series_analysis')
-        self.extract_tiles_dir = self.config.getdir('EXTRACT_OUT_DIR')
+        self.extract_tiles_dir = self.config.getdir('EXTRACT_TILES_OUTPUT_DIR')
         self.series_lead_filtered_out_dir = \
-            self.config.getdir('SERIES_LEAD_FILTERED_OUT_DIR')
-        self.series_lead_out_dir = self.config.getdir('SERIES_LEAD_OUT_DIR')
+            self.config.getdir('SERIES_BY_LEAD_FILTERED_OUTPUT_DIR')
+        self.series_lead_out_dir = self.config.getdir('SERIES_BY_LEAD_OUTPUT_DIR')
         self.tmp_dir = self.config.getdir('TMP_DIR')
         self.background_map = self.config.getbool('config', 'BACKGROUND_MAP')
         self.regrid_with_met_tool = \

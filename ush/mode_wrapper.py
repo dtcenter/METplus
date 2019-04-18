@@ -50,7 +50,7 @@ class ModeWrapper(CompareGriddedWrapper):
                                'FCST_MODE_INPUT_TEMPLATE')
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'FCST_MODE_INPUT_DATATYPE', '')
-        c_dict['OUTPUT_DIR'] = self.config.getdir('MODE_OUT_DIR')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('MODE_OUTPUT_DIR')
         c_dict['ONCE_PER_FIELD'] = True
         c_dict['QUILT'] = self.config.getbool('config', 'MODE_QUILT', False)
         fcst_conv_radius, obs_conv_radius = self.handle_fcst_and_obs_field('MODE_CONV_RADIUS',

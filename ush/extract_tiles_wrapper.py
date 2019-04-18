@@ -55,7 +55,7 @@ class ExtractTilesWrapper(CommandBuilder):
                                               'OVERWRITE_TRACK')
         self.addl_filter_opts = \
             self.config.getstr('config', 'EXTRACT_TILES_FILTER_OPTS')
-        self.filtered_out_dir = self.config.getdir('EXTRACT_OUT_DIR')
+        self.filtered_out_dir = self.config.getdir('EXTRACT_TILES_OUTPUT_DIR')
         self.tc_stat_exe = os.path.join(met_install_dir, 'bin/tc_stat')
         self.init_beg = self.config.getstr('config', 'INIT_BEG')[0:8]
         self.init_end = self.config.getstr('config', 'INIT_END')[0:8]

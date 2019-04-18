@@ -39,7 +39,7 @@ class MTDWrapper(ModeWrapper):
         #  a time window. Does not refer to time series of files
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('MTD_OUT_DIR',
+        c_dict['OUTPUT_DIR'] = self.config.getdir('MTD_OUTPUT_DIR',
                                            self.config.getdir('OUTPUT_BASE'))
         c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MTD_CONFIG', '')
         c_dict['MIN_VOLUME'] = self.config.getstr('config', 'MTD_MIN_VOLUME', '2000')
