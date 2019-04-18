@@ -92,7 +92,23 @@ def check_for_deprecated_config(p, logger):
       'SERIES_INIT_FILTERED_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'SERIES_BY_INIT_FILTERED_OUTPUT_DIR'},
       'SERIES_LEAD_FILTERED_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'SERIES_BY_LEAD_FILTERED_OUTPUT_DIR'},
       'STAT_ANALYSIS_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'STAT_ANALYSIS_OUTPUT_DIR'},
-      'TCMPR_PLOT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'TCMPR_PLOT_OUTPUT_DIR'}
+      'TCMPR_PLOT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'TCMPR_PLOT_OUTPUT_DIR'},
+      'FCST_MIN_FORECAST' : { 'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_MIN_FORECAST'},
+      'FCST_MAX_FORECAST' : { 'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_MAX_FORECAST'},
+      'OBS_MIN_FORECAST' : { 'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MIN_FORECAST'},
+      'OBS_MAX_FORECAST' : { 'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MAX_FORECAST'},
+      'FCST_INIT_INTERVAL' : { 'sec' : 'config', 'alt' : None},
+      'OBS_INIT_INTERVAL' : { 'sec' : 'config', 'alt' : None},
+      'FCST_DATA_INTERVAL' : { 'sec' : '', 'alt' : 'FCST_PCP_COMBINE_DATA_INTERVAL'},
+      'OBS_DATA_INTERVAL' : { 'sec' : '', 'alt' : 'OBS_PCP_COMBINE_DATA_INTERVAL'},
+      'FCST_IS_DAILY_FILE' : { 'sec' : '', 'alt' : 'FCST_PCP_COMBINE_IS_DAILY_FILE'},
+      'OBS_IS_DAILY_FILE' : { 'sec' : '', 'alt' : 'OBS_PCP_COMBINE_IS_DAILY_FILE'},
+      'FCST_TIMES_PER_FILE' : { 'sec' : '', 'alt' : 'FCST_PCP_COMBINE_TIMES_PER_FILE'},
+      'OBS_TIMES_PER_FILE' : { 'sec' : '', 'alt' : 'OBS_PCP_COMBINE_TIMES_PER_FILE'},
+      'FCST_LEVEL' : { 'sec' : '', 'alt' : 'FCST_PCP_COMBINE_INPUT_LEVEL'},
+      'OBS_LEVEL' : { 'sec' : '', 'alt' : 'OBS_PCP_COMBINE_INPUT_LEVEL'}
+      # TODO: need to use regex to check for items that have different numbers in them
+      # i.e. FCST_1_FIELD_NAME or FCST_6_FIELD_NAME to FCST_PCP_COMBINE_1_FIELD_NAME, etc.
 # template       '' : { 'sec' : '', 'alt' : ''}
     }
 
