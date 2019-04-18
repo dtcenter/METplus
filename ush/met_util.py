@@ -80,7 +80,19 @@ def check_for_deprecated_config(p, logger):
       'FHR_GROUP_BEG' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]'},
       'FHR_GROUP_END' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]'},
       'FHR_GROUP_LABELS' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]_LABEL'},
-      'INIT_HOUR_END' : { 'sec' : 'config', 'alt' : 'INIT_BEG, INIT_END, and INIT_TIME_FMT (add hour)'}
+      'INIT_HOUR_END' : { 'sec' : 'config', 'alt' : 'INIT_BEG, INIT_END, and INIT_TIME_FMT (add hour)'},
+      'CYCLONE_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'CYCLONE_OUTPUT_DIR'},
+      'ENSEMBLE_STAT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'ENSEMBLE_STAT_OUTPUT_DIR'},
+      'EXTRACT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'EXTRACT_TILES_OUTPUT_DIR'},
+      'GRID_STAT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'GRID_STAT_OUTPUT_DIR'},
+      'MODE_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'MODE_OUTPUT_DIR'},
+      'MTD_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'MTD_OUTPUT_DIR'},
+      'SERIES_INIT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'SERIES_BY_INIT_OUTPUT_DIR'},
+      'SERIES_LEAD_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'SERIES_BY_LEAD_OUTPUT_DIR'},
+      'SERIES_INIT_FILTERED_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'SERIES_BY_INIT_FILTERED_OUTPUT_DIR'},
+      'SERIES_LEAD_FILTERED_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'SERIES_BY_LEAD_FILTERED_OUTPUT_DIR'},
+      'STAT_ANALYSIS_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'STAT_ANALYSIS_OUTPUT_DIR'},
+      'TCMPR_PLOT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'TCMPR_PLOT_OUTPUT_DIR'}
 # template       '' : { 'sec' : '', 'alt' : ''}
     }
 
