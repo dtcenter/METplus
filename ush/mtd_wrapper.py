@@ -258,7 +258,7 @@ class MTDWrapper(ModeWrapper):
             self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"] )
             self.add_env_var("MODEL", self.c_dict['MODEL'])
             self.add_env_var("FCST_VAR", v.fcst_name)
-            self.add_env_var("OBTYPE", self.c_dict['OB_TYPE'])
+            self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
             self.add_env_var("OBS_VAR", v.obs_name)
             self.add_env_var("LEVEL", util.split_level(v.fcst_level)[1])
             self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])

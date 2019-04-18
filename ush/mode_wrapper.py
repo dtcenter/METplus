@@ -171,7 +171,7 @@ class ModeWrapper(CompareGriddedWrapper):
                                                 othresh, 'OBS')
 
             self.add_env_var("MODEL", self.c_dict['MODEL'])
-            self.add_env_var("OBTYPE", self.c_dict['OB_TYPE'])
+            self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
             self.add_env_var("FCST_VAR", v.fcst_name)
             self.add_env_var("OBS_VAR", v.obs_name)
             self.add_env_var("LEVEL", util.split_level(v.fcst_level)[1])

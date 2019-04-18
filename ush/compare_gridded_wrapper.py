@@ -47,7 +47,7 @@ that reformat gridded data
         c_dict = dict()
         c_dict['var_list'] = util.parse_var_list(self.config)
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
-        c_dict['OB_TYPE'] = self.config.getstr('config', 'OB_TYPE', 'OBS')
+        c_dict['OBTYPE'] = self.config.getstr('config', 'OBTYPE', 'OBS')
         c_dict['CONFIG_DIR'] = self.config.getdir('CONFIG_DIR', '')
         c_dict['INPUT_BASE'] = self.config.getdir('INPUT_BASE', None)
         c_dict['FCST_IS_PROB'] = self.config.getbool('config', 'FCST_IS_PROB', False)
@@ -286,7 +286,7 @@ that reformat gridded data
 
         # set environment variables needed for MET application
         self.add_env_var("MODEL", self.c_dict['MODEL'])
-        self.add_env_var("OBTYPE", self.c_dict['OB_TYPE'])
+        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("FCST_VAR", v.fcst_name)
         self.add_env_var("OBS_VAR", v.obs_name)
         self.add_env_var("LEVEL", v.fcst_level)

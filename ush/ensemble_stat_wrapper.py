@@ -322,7 +322,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         else:
             self.add_env_var("ENS_FIELD", fcst_field)
         self.add_env_var("MODEL", self.c_dict['MODEL'])
-        self.add_env_var("OBTYPE", self.c_dict['OB_TYPE'])
+        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("GRID_VX", self.c_dict['GRID_VX'])
         self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
         self.add_env_var("INPUT_BASE", self.c_dict['INPUT_BASE'])
