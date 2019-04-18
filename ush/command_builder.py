@@ -23,6 +23,7 @@ from datetime import datetime, timedelta
 import calendar
 from command_runner import CommandRunner
 import met_util as util
+from config_wrapper import ConfigWrapper
 import string_template_substitution as sts
 from abc import ABCMeta
 
@@ -38,15 +39,15 @@ class CommandBuilder:
 
     """!Common functionality to wrap all MET applications
     """
-    def __init__(self, p, logger):
-        self.p = p
+    def __init__(self, config, logger):
         self.logger = logger
+        self.config = ConfigWrapper(config, logger)
         self.debug = False
         self.app_name = None
         self.app_path = None
         self.env = os.environ.copy()
-        self.set_verbose(self.p.getstr('config', 'LOG_MET_VERBOSITY', '2'))
-        self.cmdrunner = CommandRunner(self.p, logger=self.logger)
+        self.set_verbose(self.config.getstr('config', 'LOG_MET_VERBOSITY', '2'))
+        self.cmdrunner = CommandRunner(self.config, logger=self.logger)
         self.set_user_environment()
         self.clear()
 
@@ -62,17 +63,17 @@ class CommandBuilder:
 
 
     def set_user_environment(self):
-        if 'user_env_vars' not in self.p.sections():
-            self.p.add_section('user_env_vars')
+        if 'user_env_vars' not in self.config.sections():
+            self.config.add_section('user_env_vars')
 
-        for env_var in self.p.keys('user_env_vars'):
+        for env_var in self.config.keys('user_env_vars'):
 #            if env_var in self.env:
 #                self.logger.warning("{} is already set in the environment. Overwriting from conf file"
 #                                    .format(env_var))
-            self.add_env_var(env_var, self.p.getstr('user_env_vars', env_var))
+            self.add_env_var(env_var, self.config.getstr('user_env_vars', env_var))
 
         # set MET_TMP_DIR to conf TMP_DIR
-        self.add_env_var('MET_TMP_DIR', util.getdir(self.p, 'TMP_DIR'))
+        self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
 
     def set_debug(self, debug):
         self.debug = debug
@@ -147,7 +148,7 @@ class CommandBuilder:
         copied into terminal
         """
         out = ""
-        all_vars = vars + self.p.keys('user_env_vars')
+        all_vars = vars + self.config.keys('user_env_vars')
         for v in all_vars:
             next = 'export '+v+'="'+self.env[v].replace('"', '\\"')+'"'
             out += next+'; '
@@ -160,19 +161,19 @@ class CommandBuilder:
 
 
     def print_user_env_items(self):
-        for k in self.p.keys('user_env_vars'):
+        for k in self.config.keys('user_env_vars'):
             self.print_env_item(k)
 
 
     def handle_fcst_and_obs_field(self, gen_name, fcst_name, obs_name, default, sec='config'):
-        has_gen = self.p.has_option(sec, gen_name)
-        has_fcst = self.p.has_option(sec, fcst_name)
-        has_obs = self.p.has_option(sec, obs_name)
+        has_gen = self.config.has_option(sec, gen_name)
+        has_fcst = self.config.has_option(sec, fcst_name)
+        has_obs = self.config.has_option(sec, obs_name)
 
         # use fcst and obs if both are set
         if has_fcst and has_obs:
-            fcst_conf = self.p.getstr(sec, fcst_name)
-            obs_conf = self.p.getstr(sec, obs_name)
+            fcst_conf = self.config.getstr(sec, fcst_name)
+            obs_conf = self.config.getstr(sec, obs_name)
             if has_gen:
                 self.logger.warning('Ignoring conf {} and using {} and {}'
                                     .format(gen_name, fcst_name, obs_name))
@@ -189,7 +190,7 @@ class CommandBuilder:
 
         # if generic conf is set, use for both
         if has_gen:
-            gen_conf = self.p.getstr(sec, gen_name)
+            gen_conf = self.config.getstr(sec, gen_name)
             return (gen_conf, gen_conf)
 
         # if none of the options are set, use default value for both
@@ -268,7 +269,7 @@ class CommandBuilder:
             # check if desired data file exists and if it needs to be preprocessed
             path = util.preprocess_file(path,
                                         self.c_dict[data_type+'_INPUT_DATATYPE'],
-                                        self.p, self.logger)
+                                        self.config)
             return path
 
         # if looking for a file within a time window:
@@ -293,7 +294,6 @@ class CommandBuilder:
 
                 # remove input data directory to get relative path
                 f = fullpath.replace(data_dir+"/", "")
-
                 # extract time information from relative path using template
                 se = util.get_time_from_file(self.logger, f, template)
                 if se is not None:
@@ -328,18 +328,30 @@ class CommandBuilder:
         if len(closest_files) == 1:
             return util.preprocess_file(closest_files[0],
                                        self.c_dict[data_type+'_INPUT_DATATYPE'],
-                                       self.p, self.logger)
+                                       self.config)
 
         # return list if multiple files are found
         out = []
         for f in closest_files:
             outfile = util.preprocess_file(f,
                                        self.c_dict[data_type+'_INPUT_DATATYPE'],
-                                       self.p, self.logger)
+                                       self.config)
             out.append(outfiles)
 
         return out
 
+
+    def write_list_file(self, filename, file_list):
+        list_dir = os.path.join(self.config.getdir('STAGING_DIR'), 'file_lists')
+        list_path = os.path.join(list_dir, filename)
+
+        if not os.path.exists(list_dir):
+            os.makedirs(list_dir, mode=0775)
+
+        with open(list_path, 'w') as file_handle:
+            for f_path in file_list:
+                file_handle.write(f_path+'\n')
+        return list_path
 
 
     def get_command(self):
@@ -412,4 +424,4 @@ class CommandBuilder:
     def run_all_times(self):
         """!Loop over time range specified in conf file and
         call METplus wrapper for each time"""
-        util.loop_over_times_and_call(self.p, self.logger, self)
+        util.loop_over_times_and_call(self.config, self)

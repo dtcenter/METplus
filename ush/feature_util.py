@@ -7,6 +7,7 @@ import sys
 import re
 import datetime
 import met_util as util
+from config_wrapper import ConfigWrapper
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from string_template_substitution import StringSub
 
@@ -61,21 +62,22 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
     # and redirects logging based on the conf settings.
     # Instantiate a RegridDataPlaneWrapper
     rdp = RegridDataPlaneWrapper(config, logger)
+    cu = ConfigWrapper(config, logger)
 
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
     # Get variables, etc. from param/config file.
-    model_data_dir = util.getdir(config, 'MODEL_DATA_DIR')
-    met_install_dir = util.getdir(config, 'MET_INSTALL_DIR')
+    model_data_dir = cu.getdir('MODEL_DATA_DIR')
+    met_install_dir = cu.getdir('MET_INSTALL_DIR')
     regrid_data_plane_exe = os.path.join(met_install_dir,
                                          'bin/regrid_data_plane')
     # regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE_EXE')
-    wgrib2_exe = util.getexe(config, 'WGRIB2', logger)
-    egrep_exe = util.getexe(config, 'EGREP_EXE', logger)
-    regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
-    overwrite_flag = config.getbool('config', 'OVERWRITE_TRACK')
+    wgrib2_exe = cu.getexe('WGRIB2')
+    egrep_exe = cu.getexe('EGREP_EXE')
+    regrid_with_met_tool = cu.getbool('config', 'REGRID_USING_MET_TOOL')
+    overwrite_flag = cu.getbool('config', 'OVERWRITE_TRACK')
 
     # Extract the columns of interest: init time, lead time,
     # valid time lat and lon of both tropical cyclone tracks, etc.
@@ -146,13 +148,13 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
             # Create the filename for the regridded file, which is a
             # grib2 file.
             fcst_sts = \
-                StringSub(logger, config.getraw('filename_templates',
-                                                'GFS_FCST_FILE_TMPL'),
+                StringSub(logger, cu.getraw('filename_templates',
+                                            'GFS_FCST_FILE_TMPL'),
                           init=init_dt, lead=lead_seconds)
 
             anly_sts = \
-                StringSub(logger, config.getraw('filename_templates',
-                                                'GFS_ANLY_FILE_TMPL'),
+                StringSub(logger, cu.getraw('filename_templates',
+                                            'GFS_ANLY_FILE_TMPL'),
                           valid=valid_dt, lead=lead_seconds)
 
             fcst_file = fcst_sts.doStringSub()
@@ -203,12 +205,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
             fcst_hr_str = str(fcst_hr).zfill(3)
 
             fcst_regridded_filename = \
-                config.getstr('regex_pattern', 'FCST_TILE_PREFIX') + \
+                cu.getstr('regex_pattern', 'FCST_TILE_PREFIX') + \
                 fcst_hr_str + "_" + fcst_anly_base
             fcst_regridded_file = os.path.join(tile_dir,
                                                fcst_regridded_filename)
             anly_regridded_filename = \
-                config.getstr('regex_pattern', 'ANLY_TILE_PREFIX') + \
+                cu.getstr('regex_pattern', 'ANLY_TILE_PREFIX') + \
                 fcst_hr_str + "_" + fcst_anly_base
             anly_regridded_file = os.path.join(tile_dir,
                                                anly_regridded_filename)
@@ -335,10 +337,11 @@ def retrieve_var_info(config, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    var_list = util.getlist(config.getstr('config', 'VAR_LIST'))
-    extra_var_list = util.getlist(config.getstr('config',
-                                                'EXTRACT_TILES_VAR_LIST'))
-    regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
+    cu = ConfigWrapper(config, logger)
+    var_list = util.getlist(cu.getstr('config', 'VAR_LIST'))
+    extra_var_list = util.getlist(cu.getstr('config',
+                                            'EXTRACT_TILES_VAR_LIST'))
+    regrid_with_met_tool = cu.getbool('config', 'REGRID_USING_MET_TOOL')
     full_list = []
 
     # Append the extra_var list to the var_list

@@ -30,19 +30,12 @@ from command_builder import CommandBuilder
 
 
 class StatAnalysisWrapper(CommandBuilder):
-    """! Wrapper to the MET tool stat_analysis
-         which filters MET .stat files for
-         for criteria
-    """
-    def __init__(self, p, logger):
-        super(StatAnalysisWrapper, self).__init__(p, logger)
-        self.config = p
-        self.app_path = os.path.join(util.getdir(self.config, 'MET_INSTALL_DIR'),
-            'bin/stat_analysis')
+    def __init__(self, config, logger):
+        super(StatAnalysisWrapper, self).__init__(config, logger)
+        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
+                                     'bin/stat_analysis')
         self.app_name = os.path.basename(self.app_path)
-        if self.logger is None:
-            self.logger = util.get_logger(self.config,sublog='StatAnalysis')
-   
+
     def set_lookin_dir(self, lookindir):
         self.lookindir = "-lookin "+lookindir+" "
    
@@ -65,6 +58,7 @@ class StatAnalysisWrapper(CommandBuilder):
         if self.param != "":
             cmd += "-config " + self.param + " "
         return cmd
+
 
     def create_job_filename(self, job_name,
                             job_args, stat_analysis_out_dir_base,
@@ -309,6 +303,7 @@ class StatAnalysisWrapper(CommandBuilder):
             valid_init_time_pairs.append(pair)
         return valid_init_time_pairs
 
+
     class FieldObj(object):
         __slots__ = 'name', 'plot_name', 'dir', 'obs'
 
@@ -349,6 +344,7 @@ class StatAnalysisWrapper(CommandBuilder):
             else:
                 self.logger.error("MODEL"+m+"_NAME not defined in METplus conf file")
                 exit(1)
+
             mod = self.FieldObj()
             mod.name = model_name
             mod.plot_name = model_plot_name
@@ -450,7 +446,7 @@ class StatAnalysisWrapper(CommandBuilder):
              Returns:
         """
         #read config
-        model_name = self.config.getstr('config', 'MODEL_NAME')
+        model_name = self.config.getstr('config', 'MODEL')
         obs_name = self.config.getstr('config', 'OBS_NAME')
         valid_hour_method = self.config.getstr('config', 'VALID_HOUR_METHOD')
         valid_hour_beg = self.config.getstr('config', 'VALID_HOUR_BEG')
@@ -483,7 +479,7 @@ class StatAnalysisWrapper(CommandBuilder):
         cov_thresh = util.getlist(self.config.getstr('config', 'COV_THRESH', ""))
         line_type = util.getlist(self.config.getstr('config', 'LINE_TYPE', ""))
         #set envir vars based on config
-        self.add_env_var('MODEL_NAME', '"'+model_name+'"')
+        self.add_env_var('MODEL', '"'+model_name+'"')
         self.add_env_var('OBS_NAME', '"'+obs_name+'"')
         self.add_env_var('DESC', self.create_variable_list(desc))
         self.add_env_var('FCST_LEAD', self.create_variable_list(fcst_lead))
@@ -588,7 +584,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 for name, value in fcst_valid_init_dict.items():
                     self.add_env_var(name, value)
                     self.logger.debug(name+": "+value)
-                self.logger.debug('MODEL_NAME: '+'"'+model_name+'"')
+                self.logger.debug('MODEL: '+'"'+model_name+'"')
                 self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
                 self.logger.debug('DESC: '+self.create_variable_list(desc))
                 self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
@@ -650,7 +646,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 for name, value in fcst_valid_init_dict.items():
                     self.add_env_var(name, value)
                     self.logger.debug(name+": "+value)
-                self.logger.debug('MODEL_NAME: '+'"'+model_name+'"')
+                self.logger.debug('MODEL: '+'"'+model_name+'"')
                 self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
                 self.logger.debug('DESC: '+self.create_variable_list(desc))
                 self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
@@ -714,7 +710,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     for name, value in fcst_valid_init_dict.items():
                         self.add_env_var(name, value)
                         self.logger.debug(name+": "+value)
-                    self.logger.debug('MODEL_NAME: '+'"'+model_name+'"')
+                    self.logger.debug('MODEL: '+'"'+model_name+'"')
                     self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
                     self.logger.debug('DESC: '+self.create_variable_list(desc))
                     self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
@@ -775,7 +771,7 @@ class StatAnalysisWrapper(CommandBuilder):
             for name, value in fcst_valid_init_dict.items():
                 self.add_env_var(name, value)
                 self.logger.debug(name+": "+value)
-            self.logger.debug('MODEL_NAME: '+'"'+model_name+'"')
+            self.logger.debug('MODEL: '+'"'+model_name+'"')
             self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
             self.logger.debug('DESC: '+self.create_variable_list(desc))
             self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
@@ -801,6 +797,7 @@ class StatAnalysisWrapper(CommandBuilder):
         else:
             self.logger.error("Invalid conf entry for VALID_HOUR_METHOD or INIT_HOUR_METHOD, use 'GROUP' or 'LOOP'")
             exit(1)
+
 
     def gather_by_info(self):
         """! Runs with run_all_times. Runs stat_analysis filtering file
@@ -947,7 +944,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                 #loop through model information
                                 for model_info in model_list:
                                     model_name = model_info.name
-                                    self.add_env_var('MODEL_NAME', '"'+model_name+'"')
+                                    self.add_env_var('MODEL', '"'+model_name+'"')
                                     obs_name = model_info.obs
                                     self.add_env_var('OBS_NAME', '"'+obs_name+'"')
                                     model_dir = model_info.dir
@@ -1042,7 +1039,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                     self.logger.debug("INTERP: "+interp) 
                                     self.logger.debug("REGION: "+region)
                                     self.logger.debug("FCST_LEAD: "+lead)
-                                    self.logger.debug("MODEL_NAME: "+model_name)
+                                    self.logger.debug("MODEL: "+model_name)
                                     self.logger.debug("OBS_NAME: "+obs_name)
                                     self.logger.debug("LINE_TYPE: "+self.create_variable_list(line_type))
                                     self.logger.debug("JOB: "+job)

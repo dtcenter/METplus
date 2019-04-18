@@ -28,16 +28,10 @@ from command_builder import CommandBuilder
 
 
 class MakePlotsWrapper(CommandBuilder):
-    """! Wrapper to create plots using python
-         from MET .stat files
-    """
-    def __init__(self, p, logger):
-        super(MakePlotsWrapper, self).__init__(p, logger)
-        self.config = p
+    def __init__(self, config, logger):
+        super(MakePlotsWrapper, self).__init__(config, logger)
         self.app_path = 'python'
         self.app_name = 'make_plots'
-        if self.logger is None:
-            self.logger = util.get_logger(self.config,sublog='MakePlots')
 
     def set_plotting_script(self, plotting_script_path):
         self.plotting_script = plotting_script_path
@@ -55,6 +49,7 @@ class MakePlotsWrapper(CommandBuilder):
         cmd += self.plotting_script
 
         return cmd
+
 
     def create_hour_group_list(self, loop_hour_beg, loop_hour_end,
                                loop_hour_interval):
@@ -199,6 +194,7 @@ class MakePlotsWrapper(CommandBuilder):
             fo.index = n
             var_info.append(fo)
         return var_info
+
 
     class FourierDecompInfo(object):
         __slots__ = 'run_fourier', 'wave_num_pairings'
@@ -456,6 +452,7 @@ class MakePlotsWrapper(CommandBuilder):
                         return
                     self.build()
                     self.clear()
+
         #lead mean plot and lead by date plot
         for vl in range(len(fcst_var_level_list)):
             self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
@@ -557,6 +554,7 @@ class MakePlotsWrapper(CommandBuilder):
                     self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
                     self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
                     self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
+
                     cmd = self.get_command()
                     if cmd is None:
                         self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
@@ -592,6 +590,7 @@ class MakePlotsWrapper(CommandBuilder):
                     return
                 self.build()
                 self.clear()
+
 
     def create_plots_grid2obs_upper_air(self, fcst_var_level_list, obs_var_level_list,
                                         fcst_var_thresh_list, obs_var_thresh_list,
@@ -787,6 +786,7 @@ class MakePlotsWrapper(CommandBuilder):
                         return
                     self.build()
                     self.clear()
+
         #lead mean plot
         for vl in range(len(fcst_var_level_list)):
             self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])

@@ -9,6 +9,7 @@ import config_launcher
 import time
 import calendar
 import met_util as util
+from config_wrapper import ConfigWrapper
 
 # TODO: move test results to separate file for readability
 
@@ -32,13 +33,13 @@ def get_params(param_a, param_b):
     (parm, infiles, moreopt) = config_launcher.parse_launch_args(params_a,
                                                                  None, None,
                                                                  logger)
-    p = config_launcher.launch(infiles, moreopt)
+    p = ConfigWrapper(config_launcher.launch(infiles, moreopt), None)
 
     # read B confs     
     (parm, infiles, moreopt) = config_launcher.parse_launch_args(params_b,
                                                                  None, None,
                                                                  logger)
-    p_b = config_launcher.launch(infiles, moreopt)
+    p_b = ConfigWrapper(config_launcher.launch(infiles, moreopt), None)
     return p, p_b
 
 
@@ -47,7 +48,7 @@ def run_test_use_case(param_a, param_b, run_a, run_b):
     p, p_b = get_params(param_a, param_b)
     # run A
     if run_a:
-        cmd = os.path.join(p.getstr('config', "METPLUS_BASE"),"ush","master_metplus.py")
+        cmd = os.path.join(p.getdir("METPLUS_BASE"),"ush","master_metplus.py")
         for parm in params_a:
             cmd += " -c "+parm
         print("CMD A:"+cmd)
@@ -56,7 +57,7 @@ def run_test_use_case(param_a, param_b, run_a, run_b):
 
     # run B
     if run_b:
-        cmd = os.path.join(p_b.getstr('config', "METPLUS_BASE"),"ush","master_metplus.py")
+        cmd = os.path.join(p_b.getdir("METPLUS_BASE"),"ush","master_metplus.py")
         for parm in params_b:
             cmd += " -c "+parm
         print("CMD B:"+cmd)
@@ -65,8 +66,8 @@ def run_test_use_case(param_a, param_b, run_a, run_b):
 
 def compare_results(param_a, param_b):
     p, p_b = get_params(param_a, param_b)
-    a_dir = p.getstr('config', 'OUTPUT_BASE')
-    b_dir = p_b.getstr('config', 'OUTPUT_BASE')
+    a_dir = p.getdir('OUTPUT_BASE')
+    b_dir = p_b.getdir('OUTPUT_BASE')
 
     print("****************************")
     print("* TEST RESULTS             *")
@@ -98,15 +99,15 @@ def compare_results(param_a, param_b):
             print("Checking output from "+process)
             if process == "GridStat":
                 # out_subdir = "uswrp/met_out/QPF/200508070000/grid_stat"
-                out_a = p.getstr('config', "GRID_STAT_OUT_DIR")
-                out_b = p_b.getstr('config', "GRID_STAT_OUT_DIR")
+                out_a = p.getdir("GRID_STAT_OUT_DIR")
+                out_b = p_b.getdir("GRID_STAT_OUT_DIR")
                 glob_string = "{:s}/{:s}/grid_stat/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time))
                 files_b = glob.glob(glob_string.format(out_b, run_time))
             elif process == "Mode":
                 # out_subdir = "uswrp/met_out/QPF/200508070000/grid_stat"
-                out_a = p.getstr('config', "MODE_OUT_DIR")
-                out_b = p_b.getstr('config', "MODE_OUT_DIR")
+                out_a = p.getdir("MODE_OUT_DIR")
+                out_b = p_b.getdir("MODE_OUT_DIR")
                 glob_string = "{:s}/{:s}/mode/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time))
                 files_b = glob.glob(glob_string.format(out_b, run_time))
@@ -114,14 +115,14 @@ def compare_results(param_a, param_b):
                 out_o_a = ""
                 out_a = ""
                 if p.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
-                    out_o_a = p.getstr('config', "OBS_PCP_COMBINE_OUTPUT_DIR")
-                    out_o_b = p_b.getstr('config', "OBS_PCP_COMBINE_OUTPUT_DIR")
+                    out_o_a = p.getdir("OBS_PCP_COMBINE_OUTPUT_DIR")
+                    out_o_b = p_b.getdir("OBS_PCP_COMBINE_OUTPUT_DIR")
                     glob_string = "{:s}/{:s}/*"
                     files_o_a = glob.glob(glob_string.format(out_o_a, run_time[0:8]))
                     files_o_b = glob.glob(glob_string.format(out_o_b, run_time[0:8]))
                 if p.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
-                    out_a = p.getstr('config', "FCST_PCP_COMBINE_OUTPUT_DIR")
-                    out_b = p_b.getstr('config', "FCST_PCP_COMBINE_OUTPUT_DIR")
+                    out_a = p.getdir("FCST_PCP_COMBINE_OUTPUT_DIR")
+                    out_b = p_b.getdir("FCST_PCP_COMBINE_OUTPUT_DIR")
                     glob_string = "{:s}/{:s}/*"
                     files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
                     files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
@@ -134,35 +135,35 @@ def compare_results(param_a, param_b):
                     files_a = files_o_a
                     files_b = files_o_b
             elif process == "RegridDataPlane":
-                out_a = p.getstr('config', "OBS_REGRID_DATA_PLANE_OUTPUT_DIR")
-                out_b = p_b.getstr('config', "OBS_REGRID_DATA_PLANE_OUTPUT_DIR")
+                out_a = p.getdir("OBS_REGRID_DATA_PLANE_OUTPUT_DIR")
+                out_b = p_b.getdir("OBS_REGRID_DATA_PLANE_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
                 files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
             elif process == "TcPairs":
-                out_a = p.getstr('config', "TC_PAIRS_DIR")
-                out_b = p_b.getstr('config', "TC_PAIRS_DIR")
+                out_a = p.getdir("TC_PAIRS_DIR")
+                out_b = p_b.getdir("TC_PAIRS_DIR")
                 glob_string = "{:s}/{:s}/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
                 files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
             elif process == "ExtractTiles":
                 # TODO FIX DIR
-                out_a = p.getstr('config', "EXTRACT_OUT_DIR")
-                out_b = p_b.getstr('config', "EXTRACT_OUT_DIR")
+                out_a = p.getdir("EXTRACT_OUT_DIR")
+                out_b = p_b.getdir("EXTRACT_OUT_DIR")
                 glob_string = "{:s}/{:s}/*/*"
                 date_dir = run_time[0:8]+"_"+run_time[8:10]
                 files_a = glob.glob(glob_string.format(out_a, date_dir))
                 files_b = glob.glob(glob_string.format(out_b, date_dir))
             elif process == "SeriesByInit": # TODO FIX DIR
-                out_a = p.getstr('config', "SERIES_INIT_FILTERED_OUT_DIR")
-                out_b = p_b.getstr('config', "SERIES_INIT_FILTERED_OUT_DIR")
+                out_a = p.getdir("SERIES_INIT_FILTERED_OUT_DIR")
+                out_b = p_b.getdir("SERIES_INIT_FILTERED_OUT_DIR")
                 glob_string = "{:s}/{:s}/*/*"
                 date_dir = run_time[0:8]+"_"+run_time[8:10]
                 files_a = glob.glob(glob_string.format(out_a, date_dir))
                 files_b = glob.glob(glob_string.format(out_b, date_dir))
             elif process == "SeriesByLead": # TODO FIX DIR
-                out_a = p.getstr('config', "SERIES_LEAD_FILTERED_OUT_DIR")
-                out_b = p_b.getstr('config', "SERIES_LEAD_FILTERED_OUT_DIR")
+                out_a = p.getdir("SERIES_LEAD_FILTERED_OUT_DIR")
+                out_b = p_b.getdir("SERIES_LEAD_FILTERED_OUT_DIR")
                 glob_string = "{:s}/{:s}/*/*"
                 date_dir = run_time[0:8]+"_"+run_time[8:10]
                 files_a = glob.glob(glob_string.format(out_a, date_dir))

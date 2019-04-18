@@ -42,72 +42,97 @@ class SeriesByLeadWrapper(CommandBuilder):
          file.
     """
 
-    def __init__(self, p, logger):
-        super(SeriesByLeadWrapper, self).__init__(p, logger)
+    def __init__(self, config, logger):
+        super(SeriesByLeadWrapper, self).__init__(config, logger)
         self.app_name = 'SeriesByLead'
-        self.p = p
-        self.logger = logger
-        if self.logger is None:
-            self.logger = util.get_logger(self.p, sublog='SeriesByLead')
-
         # Retrieve any necessary values from the parm file(s)
-        self.fhr_beg = p.getint('config', 'FHR_BEG')
-        self.fhr_end = p.getint('config', 'FHR_END')
-        self.fhr_inc = p.getstr('config', 'FHR_INC')
-        self.fhr_group_beg_str = util.getlist(p.getstr('config',
-                                                       'FHR_GROUP_BEG'))
-        self.fhr_group_end_str = util.getlist(p.getstr('config',
-                                                       'FHR_GROUP_END'))
-        self.fhr_group_beg = [int(beg) for beg in self.fhr_group_beg_str]
-        self.fhr_group_end = [map(int, end) for end in self.fhr_group_end_str]
-        self.fhr_group_labels = util.getlist(p.getstr('config',
-                                                      'FHR_GROUP_LABELS'))
-        self.var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
-        self.stat_list = util.getlist(p.getstr('config', 'STAT_LIST'))
+        self.do_fhr_by_group = self.config.getbool('config',
+                                                   'SERIES_BY_LEAD_GROUP_FCSTS')
+        self.fhr_group_labels = []
+        self.var_list = util.getlist(self.config.getstr('config', 'VAR_LIST'))
+        self.stat_list = util.getlist(self.config.getstr('config', 'STAT_LIST'))
         self.plot_data_plane_exe = os.path.join(
-            util.getdir(self.p, 'MET_INSTALL_DIR'),
+            self.config.getdir('MET_INSTALL_DIR'),
             'bin/plot_data_plane')
-        self.convert_exe = util.getexe(p, 'CONVERT_EXE', logger)
-        self.ncap2_exe = util.getexe(p, 'NCAP2_EXE', logger)
-        self.ncdump_exe = util.getexe(p, 'NCDUMP_EXE', logger)
-        self.rm_exe = util.getexe(p, "RM_EXE", logger)
-        met_install_dir = util.getdir(p, 'MET_INSTALL_DIR')
+        self.convert_exe = self.config.getexe('CONVERT_EXE')
+        self.ncap2_exe = self.config.getexe('NCAP2_EXE')
+        self.ncdump_exe = self.config.getexe('NCDUMP_EXE')
+        self.rm_exe = self.config.getexe("RM_EXE")
+        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.series_analysis_exe = os.path.join(met_install_dir,
                                                 'bin/series_analysis')
-        self.extract_tiles_dir = util.getdir(p, 'EXTRACT_OUT_DIR')
+        self.extract_tiles_dir = self.config.getdir('EXTRACT_OUT_DIR')
         self.series_lead_filtered_out_dir = \
-            util.getdir(p, 'SERIES_LEAD_FILTERED_OUT_DIR')
-        self.series_lead_out_dir = util.getdir(p, 'SERIES_LEAD_OUT_DIR')
-        self.tmp_dir = util.getdir(p, 'TMP_DIR')
-        self.background_map = p.getbool('config', 'BACKGROUND_MAP')
+            self.config.getdir('SERIES_LEAD_FILTERED_OUT_DIR')
+        self.series_lead_out_dir = self.config.getdir('SERIES_LEAD_OUT_DIR')
+        self.tmp_dir = self.config.getdir('TMP_DIR')
+        self.background_map = self.config.getbool('config', 'BACKGROUND_MAP')
         self.regrid_with_met_tool = \
-            p.getbool('config', 'REGRID_USING_MET_TOOL')
+            self.config.getbool('config', 'REGRID_USING_MET_TOOL')
         self.series_filter_opts = \
-            p.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
+            self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
         self.series_filter_opts.strip()
         self.fcst_ascii_regex = \
-            p.getstr('regex_pattern', 'FCST_ASCII_REGEX_LEAD')
+            self.config.getstr('regex_pattern', 'FCST_ASCII_REGEX_LEAD')
         self.anly_ascii_regex = \
-            p.getstr('regex_pattern', 'ANLY_ASCII_REGEX_LEAD')
+            self.config.getstr('regex_pattern', 'ANLY_ASCII_REGEX_LEAD')
         self.series_anly_configuration_file = \
-            p.getstr('config', 'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE')
-        self.var_list = util.getlist(p.getstr('config', 'VAR_LIST'))
-        self.regrid_with_met_tool = p.getbool('config',
+            self.config.getstr('config', 'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE')
+        self.regrid_with_met_tool = self.config.getbool('config',
                                               'REGRID_USING_MET_TOOL')
         if self.regrid_with_met_tool:
             # Re-gridding via MET Tool regrid_data_plane.
             self.fcst_tile_regex = \
-                self.p.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
+                self.config.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
             self.anly_tile_regex = \
-                self.p.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
+                self.config.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
         else:
             # Re-gridding via wgrib2 tool.
-            self.fcst_tile_regex = self.p.getstr('regex_pattern',
+            self.fcst_tile_regex = self.config.getstr('regex_pattern',
                                                  'FCST_TILE_REGEX')
-            self.anly_tile_regex = self.p.getstr('regex_pattern',
+            self.anly_tile_regex = self.config.getstr('regex_pattern',
                                                  'ANLY_TILE_REGEX')
 
         self.logger.info("Initialized SeriesByLeadWrapper")
+
+
+    def get_lead_sequences(self, config):
+        # output will be a dictionary where the key will be the
+        #  label specified and the value will be the list of forecast leads
+        lead_seq_dict = {}
+        # used in plotting
+        self.fhr_group_labels = []
+        all_conf = config.keys('config')
+        indices = []
+        regex = re.compile("LEAD_SEQ_(\d+)")
+        for conf in all_conf:
+            result = regex.match(conf)
+            if result is not None:
+                indices.append(result.group(1))
+
+        # loop over all possible variables and add them to list
+        for n in indices:
+            if config.has_option('config', "LEAD_SEQ_"+n+"_LABEL"):
+                label = config.getstr('config', "LEAD_SEQ_"+n+"_LABEL")
+            else:
+                log_msg = 'Need to set LEAD_SEQ_{}_LABEL to describe ' +\
+                          'LEAD_SEQ_{}'.format(n, n)
+                if config.logger:
+                    config.logger.error(log_msg)
+                else:
+                    print(log_msg)
+                exit(1)
+
+            # get forecast list for n
+            lead_seq = util.getlistint(config.getstr('config', 'LEAD_SEQ_'+n))
+
+            # add to output dictionary
+            lead_seq_dict[label] = lead_seq
+
+            self.fhr_group_labels.append(label)
+
+        return lead_seq_dict
+
 
     def run_all_times(self):
         """! Perform a series analysis of extra tropical cyclone
@@ -135,26 +160,10 @@ class SeriesByLeadWrapper(CommandBuilder):
                         each forecast lead time.
     """
 
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
         # Flag used to determine whether to use the forecast hour range and
         # increment, or the specified list of forecast hours in creating the
         # Series-analysis command.
-        # Support for GitHub Issue #3
-        do_fhr_by_range = True
-
-        # pylint:disable=len-as-condition
-        # modifying to if self.fhr_group_beg never sets do_fhr_by_range=False
-        # when the fhr_group_beg is empty.  In this case, pylint warning
-        # should be ignored.
-        # GitHub Issue #3 support grouping forecast hours.
-        if len(self.fhr_group_beg) > 0:
-            do_fhr_by_range = False
+        do_fhr_by_range = not self.do_fhr_by_group
 
         # Set up the environment variable to be used in the Series Analysis
         #   Config file (SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE)
@@ -191,53 +200,11 @@ class SeriesByLeadWrapper(CommandBuilder):
         # parameter/config file.
         tile_dir = self.filter_with_tc_stat(tile_dir, init_times)
 
-        # GitHub issue #30
-        # gracefully handle user's intent to process only one forecast hour:
-        # i.e.: FCST_INIT=FCST_END and FCST_INCR=0
-        # If the user sets FCST_INCR=0 but has FCST_INIT != FCST_END, then
-        # log an error and exit.
-        fhr_diff = self.fhr_end - self.fhr_beg
-        if fhr_diff == 0 and self.fhr_inc == 0:
-            self.fhr_inc = 1
-        elif self.fhr_inc == 0:
-            self.logger.error(os.strerror(errno.EINVAL) +
-                              ' fcst range indicated with increment '
-                              'of 0 hrs, please check the configuration' +
-                              'file.  Exiting...')
-            sys.exit(errno.EINVAL)
-        # GitHub Issue #3 support grouping by forecast hours:
         if do_fhr_by_range:
             # entire range of forecast hours
-            start = int(self.fhr_beg)
-            end = int(self.fhr_end) + 1
-            step = int(self.fhr_inc)
-        else:
-            # Grouping by forecast hours
-            start_list_len = len(self.fhr_group_beg)
-            end_list_len = len(self.fhr_group_end)
-            label_list_len = len(self.fhr_group_labels)
-            step = self.fhr_inc
-
-            # Check that the number of start and end fhrs are the same, ie
-            # each value in FHR_GROUP_BEG has a corresponding ending fhr in
-            # FHR_GROUP_END.
-            if start_list_len != end_list_len or \
-                    start_list_len != label_list_len or \
-                    end_list_len != label_list_len:
-                self.logger.error(os.strerror(errno.EINVAL) +
-                                  " The number of forecast hour begin " +
-                                  "and end times, and the number of " +
-                                  "corresponding labels must ALL be " +
-                                  "identical.  Exiting...")
-                sys.exit(errno.EINVAL)
-
-        # Build up the command for MET series-analysis using either a list of
-        # specified forecast hours, or a range of forecast hours with
-        # increment.
-        if do_fhr_by_range:
             self.logger.debug("performing series analysis on entire range"
                               " of fhrs...")
-            self.perform_series_for_all_fhrs(tile_dir, start, end, step)
+            self.perform_series_for_all_fhrs(tile_dir)
         else:
             # Perform series analysis on groupings of forecast hours
             # specified in the METplus config file.
@@ -271,7 +238,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                       self.series_lead_filtered_out_dir,
                                       self.series_filter_opts,
                                       self.tmp_dir,
-                                      self.p)
+                                      self.config)
 
             # Remove any empty files and directories to avoid
             # errors or performance degradation when performing
@@ -322,22 +289,7 @@ class SeriesByLeadWrapper(CommandBuilder):
               Returns:       None
 
         """
-
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-
-        # Used for logging.
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
-        # Since we checked that the number of fhr start, end, and labels
-        # were requested, we can use the size of one of these lists to
-        # determine how many forecast hour groupings exist.
-        num_of_groups = len(self.fhr_group_beg)
-
-        fcst_tiles_list = []
-        anly_tiles_list = []
+        lead_seq_dict = self.get_lead_sequences(self.config)
 
         self.logger.debug(' Performing series analysis on forecast hour'
                           ' groupings.')
@@ -354,41 +306,36 @@ class SeriesByLeadWrapper(CommandBuilder):
         #    combining the -fcst -obs, -out and other arguments.
 
         util.mkdir_p(self.series_lead_out_dir)
-        for group in range(num_of_groups):
-            cur_label = self.fhr_group_labels[group]
-            cur_beg_str = self.fhr_group_beg_str[group].zfill(3)
-            cur_end_str = self.fhr_group_end_str[group].zfill(3)
-            cur_beg = int(cur_beg_str)
-            cur_end = int(cur_end_str)
+
+        for cur_label, lead_seq in lead_seq_dict.items():
+            fcst_tiles_list = []
+            anly_tiles_list = []
+            cur_beg_str = str(lead_seq[0]).zfill(3)
+            cur_end_str = str(lead_seq[-1]).zfill(3)
 
             out_dir_parts = [self.series_lead_out_dir, '/', cur_label]
             out_dir = ''.join(out_dir_parts)
             util.mkdir_p(out_dir)
-            msg = ('Evaluating forecast hours: ' + cur_beg_str + ' to ' +
-                   cur_end_str)
+
+            # Location of "grouped" FCST_FILES_Fhhh and ANLY_FILES_Fhhh
+            ascii_fcst_file_parts = [out_dir, '/FCST_FILES_F',
+                                     cur_beg_str + '_to_F' + cur_end_str]
+            ascii_anly_file_parts = [out_dir, '/ANLY_FILES_F',
+                                     cur_beg_str + '_to_F' + cur_end_str]
+            ascii_fcst_file = ''.join(ascii_fcst_file_parts)
+            ascii_anly_file = ''.join(ascii_anly_file_parts)
+
+            msg = 'Evaluating forecast hours: {}'.format(lead_seq)
             self.logger.debug(msg)
 
             # Loop over each forecast hour within each group
-            # for example, if the FHR_GROUP_BEG of the first group is 24 hours
-            # and the FHR_GROUP_END of the first group is 42 hours and the
-            # forecast hours are incremented by 6 hours, then we will iterate
-            # over the 24, 30, 36, and 42 hour forecast times.
-            inc_hr = int(self.fhr_inc)
-            for cur_fhr in range(cur_beg, cur_end + inc_hr, inc_hr):
+            for cur_fhr in lead_seq:
                 cur_fcst_tiles_list = self.get_anly_or_fcst_files(
                     tile_dir, "FCST", self.fcst_tile_regex,
                     cur_fhr)
 
                 cur_anly_tiles_list = self.get_anly_or_fcst_files(
                     tile_dir, "ANLY", self.anly_tile_regex, cur_fhr)
-
-                # Location of "grouped" FCST_FILES_Fhhh and ANLY_FILES_Fhhh
-                ascii_fcst_file_parts = [out_dir, '/FCST_FILES_F',
-                                         cur_beg_str + '_to_F' + cur_end_str]
-                ascii_anly_file_parts = [out_dir, '/ANLY_FILES_F',
-                                         cur_beg_str + '_to_F' + cur_end_str]
-                ascii_fcst_file = ''.join(ascii_fcst_file_parts)
-                ascii_anly_file = ''.join(ascii_anly_file_parts)
 
                 # Iterate over each forecast hour beg, end pair in this
                 # grouping
@@ -398,132 +345,123 @@ class SeriesByLeadWrapper(CommandBuilder):
                 for cur_anly in cur_anly_tiles_list:
                     anly_tiles_list.append(cur_anly)
 
-                # Create the FCST and ANLY ASCII files that are the args
-                # to the -fcst and -obs portion of the series_analysis
-                # command.
+            # Create the FCST and ANLY ASCII files that are the args
+            # to the -fcst and -obs portion of the series_analysis
+            # command.
 
-                # For FCST
-                try:
-                    if not fcst_tiles_list:
-                        msg = (" No fcst_tiles for fhr group: " + cur_beg_str +
-                               " to " + cur_end_str +
-                               " Don't create FCST_F<fhr> ASCII file")
-                        self.logger.debug(msg)
-                    else:
-                        with open(ascii_fcst_file, 'a') as file_handle:
-                            for fcst_tiles in fcst_tiles_list:
-                                file_handle.write(fcst_tiles)
-                                file_handle.write('\n')
-                except IOError as io_error:
-                    msg = ("Could not create requested" +
-                           " ASCII file: " + ascii_fcst_file + " | ")
-                    self.logger.error(msg + io_error)
-
-                # For ANLY
-                try:
-                    if not anly_tiles_list:
-                        msg = ("No anly_tiles for fhr group: " +
-                               str(cur_beg) + " to " + str(cur_end) +
-                               " Don't create ANLY_F<fhr> ASCII file")
-                        self.logger.debug(msg)
-                    else:
-                        with open(ascii_anly_file, 'a') as file_handle:
-                            for anly_tiles in anly_tiles_list:
-                                file_handle.write(anly_tiles)
-                                file_handle.write('\n')
-
-                except IOError as io_error:
-                    msg = ("Could not create requested" +
-                           " ASCII file: " + ascii_anly_file + " | ")
-                    self.logger.error(msg + io_error)
-
-                # Remove any empty directories that were created when no
-                # files were written.
-                util.prune_empty(out_dir, self.logger)
-
-                # Create the -fcst and -obs portion of the series_analysis
-                # command.
-                fcst_param_parts = ['-fcst ', ascii_fcst_file]
-                fcst_param = ''.join(fcst_param_parts)
-                obs_param_parts = ['-obs ', ascii_anly_file]
-                obs_param = ''.join(obs_param_parts)
-                self.logger.debug('fcst param: ' + fcst_param)
-                self.logger.debug('obs param: ' + obs_param)
-
-                # Create the -out portion of the series_analysis command.
-                for cur_var in self.var_list:
-                    # Get the name and level to create the -out param
-                    # and set the NAME and LEVEL environment variables that
-                    # are needed by the MET series analysis binary.
-                    match = re.match(r'(.*)/(.*)', cur_var)
-                    name = match.group(1)
-                    level = match.group(2)
-                    os.environ['NAME'] = name
-                    os.environ['LEVEL'] = level
-
-                    # Set the NAME environment to <name>_<level> format if
-                    # regridding method is to be done with the MET tool
-                    # regrid_data_plane (which is  indicated in the
-                    # config/param file).
-                    if self.regrid_with_met_tool:
-                        os.environ['NAME'] = name + '_' + level
-                    out_param_parts = ['-out ', out_dir, '/series_F',
-                                       cur_beg_str, '_to_F', cur_end_str,
-                                       '_', name, '_', level, '.nc']
-                    out_param = ''.join(out_param_parts)
-
-                    # Create the full series analysis command.
-                    config_param_parts = ['-config ',
-                                          self.series_anly_configuration_file]
-                    config_param = ''.join(config_param_parts)
-                    series_analysis_cmd_parts = [self.series_analysis_exe, ' ',
-                                                 fcst_param, ' ',
-                                                 obs_param, ' ', config_param,
-                                                 ' ', out_param]
-                    series_analysis_cmd = ''.join(series_analysis_cmd_parts)
-
-                    # Since this wrapper is not using the CommandBuilder
-                    # to build the cmd, we need to add the met verbosity
-                    # level to the MET cmd created before we run
-                    # the command.
-                    series_analysis_cmd =\
-                        self.cmdrunner.insert_metverbosity_opt \
-                        (series_analysis_cmd)
-                    (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                        (series_analysis_cmd, app_name=self.app_name)
-
-                    msg = ("series analysis command: " +
-                           series_analysis_cmd.to_shell())
+            # For FCST
+            try:
+                if not fcst_tiles_list:
+                    msg = (" No fcst_tiles for fhr group: " + cur_beg_str +
+                            " to " + cur_end_str +
+                            " Don't create FCST_F<fhr> ASCII file")
                     self.logger.debug(msg)
+                else:
+                    with open(ascii_fcst_file, 'w') as file_handle:
+                        for fcst_tiles in fcst_tiles_list:
+                            file_handle.write(fcst_tiles)
+                            file_handle.write('\n')
+            except IOError as io_error:
+                msg = ("Could not create requested" +
+                        " ASCII file: " + ascii_fcst_file + " | ")
+                self.logger.error(msg + io_error)
 
-                    # Clean up any empty files and directories that still
-                    # persist.
-                    util.prune_empty(self.series_lead_out_dir, self.logger)
+            # For ANLY
+            try:
+                if not anly_tiles_list:
+                    msg = ("No anly_tiles for fhr group: " +
+                            cur_beg_str + " to " + cur_end_str +
+                            " Don't create ANLY_F<fhr> ASCII file")
+                    self.logger.debug(msg)
+                else:
+                    with open(ascii_anly_file, 'w') as file_handle:
+                        for anly_tiles in anly_tiles_list:
+                            file_handle.write(anly_tiles)
+                            file_handle.write('\n')
 
-    def perform_series_for_all_fhrs(self, tile_dir, start, end, step):
+            except IOError as io_error:
+                msg = ("Could not create requested" +
+                        " ASCII file: " + ascii_anly_file + " | ")
+                self.logger.error(msg + io_error)
+
+            # Remove any empty directories that were created when no
+            # files were written.
+            util.prune_empty(out_dir, self.logger)
+
+            # Create the -fcst and -obs portion of the series_analysis
+            # command.
+            fcst_param_parts = ['-fcst ', ascii_fcst_file]
+            fcst_param = ''.join(fcst_param_parts)
+            obs_param_parts = ['-obs ', ascii_anly_file]
+            obs_param = ''.join(obs_param_parts)
+            self.logger.debug('fcst param: ' + fcst_param)
+            self.logger.debug('obs param: ' + obs_param)
+
+            # Create the -out portion of the series_analysis command.
+            for cur_var in self.var_list:
+                # Get the name and level to create the -out param
+                # and set the NAME and LEVEL environment variables that
+                # are needed by the MET series analysis binary.
+                match = re.match(r'(.*)/(.*)', cur_var)
+                name = match.group(1)
+                level = match.group(2)
+                os.environ['NAME'] = name
+                os.environ['LEVEL'] = level
+
+                # Set the NAME environment to <name>_<level> format if
+                # regridding method is to be done with the MET tool
+                # regrid_data_plane (which is  indicated in the
+                # config/param file).
+                if self.regrid_with_met_tool:
+                    os.environ['NAME'] = name + '_' + level
+                out_param_parts = ['-out ', out_dir, '/series_F',
+                                    cur_beg_str, '_to_F', cur_end_str,
+                                    '_', name, '_', level, '.nc']
+                out_param = ''.join(out_param_parts)
+
+                # Create the full series analysis command.
+                config_param_parts = ['-config ',
+                                        self.series_anly_configuration_file]
+                config_param = ''.join(config_param_parts)
+                series_analysis_cmd_parts = [self.series_analysis_exe, ' ',
+                                                fcst_param, ' ',
+                                                obs_param, ' ', config_param,
+                                                ' ', out_param]
+                series_analysis_cmd = ''.join(series_analysis_cmd_parts)
+
+                # Since this wrapper is not using the CommandBuilder
+                # to build the cmd, we need to add the met verbosity
+                # level to the MET cmd created before we run
+                # the command.
+                series_analysis_cmd =\
+                    self.cmdrunner.insert_metverbosity_opt \
+                    (series_analysis_cmd)
+                (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
+                    (series_analysis_cmd, app_name=self.app_name)
+
+                msg = ("series analysis command: " +
+                        series_analysis_cmd.to_shell())
+                self.logger.debug(msg)
+
+                # Clean up any empty files and directories that still
+                # persist.
+                util.prune_empty(self.series_lead_out_dir, self.logger)
+
+
+    def perform_series_for_all_fhrs(self, tile_dir):
         """! Performs a series analysis by lead time, based on a range and
              increment of forecast hours. Invokes the MET tool Series-analysis
 
              Args:
                    @param tile_dir:  The location of the input data (output
                                      from running ExtractTiles.py)
-                   @param start:     The first forecast hour
-                   @param end:       The last forecast hour
-                   @param step:      The time increment/step size between
-                                     forecast hours
+                   @param lead_seq:     List of forecast hours to process
 
              Returns:          None
         """
+        lead_seq = util.get_lead_sequence(self.config, None)
 
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-
-        # Used for logging.
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
-        for fhr in range(start, end, step):
+        for fhr in lead_seq:
             cur_fhr = str(fhr).zfill(3)
             msg = ('Evaluating forecast hour ' + cur_fhr)
             self.logger.debug(msg)
@@ -556,7 +494,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     self.logger.debug(msg)
                     continue
                 else:
-                    with open(ascii_fcst_file, 'a') as file_handle:
+                    with open(ascii_fcst_file, 'w') as file_handle:
                         file_handle.write(fcst_tiles)
 
             except IOError as io_error:
@@ -586,7 +524,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     self.logger.debug(msg)
                     continue
                 else:
-                    with open(ascii_anly_file, 'a') as file_handle:
+                    with open(ascii_anly_file, 'w') as file_handle:
                         file_handle.write(anly_tiles)
 
             except IOError:
@@ -749,7 +687,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     else:
                         # Remove the nseries.nc file, it is no longer needed
                         if os.path.isfile(nseries_nc_path):
-                            print("REMOVING OLD nc path file")
+                            self.logger.debug("REMOVING OLD nc path file")
                             os.remove(nseries_nc_path)
 
         except IOError:
@@ -981,7 +919,6 @@ class SeriesByLeadWrapper(CommandBuilder):
             nc_files_list = [f for f in os.listdir(full_path) if
                              os.path.isfile(os.path.join(full_path, f))]
             for cur_nc in nc_files_list:
-                print("cur_nc: {}".format(cur_nc))
                 match = re.match(filename_regex, cur_nc)
                 if match:
                     nc_file = os.path.join(full_path, cur_nc)
@@ -1107,35 +1044,6 @@ class SeriesByLeadWrapper(CommandBuilder):
                     continue
         return file_paths
 
-    def cleanup_lead_ascii(self):
-        """! Remove any pre-existing FCST and ANLY ASCII files
-            created by previous runs of series_by_lead.
-
-            Args:
-
-            Returns:
-                None:    Removes any existing FCST and ANLY ASCII files
-                         which contains all the forecast and analysis
-                         gridded tiles.
-        """
-
-        for fhr in range(self.fhr_beg, self.fhr_end + 1, self.fhr_inc):
-            cur_fhr = str(fhr).zfill(3)
-            out_dir_parts = [self.series_lead_out_dir, '/', 'series_F',
-                             cur_fhr]
-            out_dir = ''.join(out_dir_parts)
-
-            for root, directories, files in os.walk(out_dir):
-                for cur_file in files:
-                    fcst_match = re.match(self.fcst_ascii_regex, cur_file)
-                    anly_match = re.match(self.anly_ascii_regex, cur_file)
-                    rm_file = os.path.join(self.series_lead_out_dir, cur_file)
-                    if fcst_match:
-                        self.logger.debug("Cleaning up pre-existing "
-                                          "forecast files")
-                        os.remove(rm_file)
-                    if anly_match:
-                        os.remove(rm_file)
 
     def generate_plots(self, do_fhr_by_range):
         """! Generate the plots and animation GIFs for the series analysis
@@ -1456,6 +1364,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         cur_pid = str(os.getpid())
         tmp_dir = os.path.join(temporary_dir, cur_pid)
         self.logger.debug("creating tmp dir: " + tmp_dir)
+        util.mkdir_p(tmp_dir)
 
         for cur_init in init_times:
             # Call the tc_stat wrapper to build up the command and invoke
@@ -1499,7 +1408,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     storm_output_dir = os.path.join(series_output_dir,
                                                     cur_init, cur_storm)
                     util.mkdir_p(storm_output_dir)
-                    util.mkdir_p(tmp_dir)
+
                     tmp_file = "filter_" + cur_init + "_" + cur_storm
                     tmp_filename = os.path.join(tmp_dir, tmp_file)
                     storm_match_list = util.grep(cur_storm, filter_filename)

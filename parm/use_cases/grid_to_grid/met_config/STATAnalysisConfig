@@ -9,8 +9,9 @@
 //
 // Filtering input STAT lines by the contents of each column
 //
-model = [${MODEL_NAME}];
+model = [${MODEL}];
 desc  = [${DESC}];
+
 
 fcst_lead = [${FCST_LEAD}];
 obs_lead  = [];

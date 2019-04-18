@@ -9,7 +9,7 @@
 //
 // Output model name to be written
 //
-model = "${MODEL_NAME}";
+model = "${MODEL}";
 
 //
 // Output description to be written
@@ -49,9 +49,12 @@ rank_corr_flag = FALSE;
 // Forecast and observation fields to be verified
 //
 fcst = {
-  field = [ ${FCST_FIELD} ];
-}
-obs = fcst;
+    field = [ ${FCST_FIELD} ];
+    };
+
+obs = {
+    field = [ ${OBS_FIELD} ];
+    };
 
 ////////////////////////////////////////////////////////////////////////////////
 

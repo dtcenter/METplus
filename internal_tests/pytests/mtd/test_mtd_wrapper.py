@@ -45,6 +45,7 @@ def mtd_wrapper(lead_seq=None):
     conf.set('config', 'DO_NOT_RUN_EXE', True)
     conf.set('config', 'FCST_VAR1_NAME', 'APCP')
     conf.set('config', 'FCST_VAR1_LEVELS', 'A06')
+    conf.set('config', 'LOOP_BY', 'VALID')
     if lead_seq:
         conf.set('config', 'LEAD_SEQ', lead_seq)
     logger = logging.getLogger("dummy")
@@ -80,8 +81,8 @@ def metplus_config():
 
 def test_mtd_by_init_all_found():
     mw = mtd_wrapper('1,2,3')
-    obs_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
-    fcst_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    obs_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
+    fcst_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     mw.c_dict['OBS_INPUT_DIR'] = obs_dir
     mw.c_dict['FCST_INPUT_DIR'] = fcst_dir
     mw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
@@ -89,8 +90,8 @@ def test_mtd_by_init_all_found():
     input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
     mw.run_at_time(input_dict)
-    fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
-    obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
+    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -108,8 +109,8 @@ def test_mtd_by_init_all_found():
 
 def test_mtd_by_valid_all_found():
     mw = mtd_wrapper('1, 2, 3')
-    obs_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
-    fcst_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    obs_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
+    fcst_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     mw.c_dict['OBS_INPUT_DIR'] = obs_dir
     mw.c_dict['FCST_INPUT_DIR'] = fcst_dir
     mw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
@@ -117,8 +118,8 @@ def test_mtd_by_valid_all_found():
     input_dict = {'valid' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
     mw.run_at_time(input_dict)
-    fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
-    obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
+    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -136,8 +137,8 @@ def test_mtd_by_valid_all_found():
            
 def test_mtd_by_init_miss_fcst():
     mw = mtd_wrapper('3, 6, 9, 12')
-    obs_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
-    fcst_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    obs_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
+    fcst_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     mw.c_dict['OBS_INPUT_DIR'] = obs_dir
     mw.c_dict['FCST_INPUT_DIR'] = fcst_dir
     mw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
@@ -145,8 +146,8 @@ def test_mtd_by_init_miss_fcst():
     input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
     mw.run_at_time(input_dict)
-    fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
-    obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
+    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -164,8 +165,8 @@ def test_mtd_by_init_miss_fcst():
 
 def test_mtd_by_init_miss_both():
     mw = mtd_wrapper('6, 12, 18')
-    obs_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
-    fcst_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    obs_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
+    fcst_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     mw.c_dict['OBS_INPUT_DIR'] = obs_dir
     mw.c_dict['FCST_INPUT_DIR'] = fcst_dir
     mw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
@@ -173,8 +174,8 @@ def test_mtd_by_init_miss_both():
     input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
     mw.run_at_time(input_dict)
-    fcst_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
-    obs_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
+    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -191,7 +192,7 @@ def test_mtd_by_init_miss_both():
 
 def test_mtd_single():
     mw = mtd_wrapper('1, 2, 3')
-    fcst_dir = mw.p.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    fcst_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     mw.c_dict['SINGLE_RUN'] = True
     mw.c_dict['SINGLE_DATA_SRC'] = 'FCST'
     mw.c_dict['FCST_INPUT_DIR'] = fcst_dir
@@ -199,7 +200,7 @@ def test_mtd_single():
     input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
     mw.run_at_time(input_dict)
-    single_list_file = os.path.join(mw.p.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_single_APCP.txt')
+    single_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_single_APCP.txt')
     with open(single_list_file) as f:
         single_list = f.readlines()
     single_list = [x.strip() for x in single_list]

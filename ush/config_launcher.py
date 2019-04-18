@@ -15,6 +15,7 @@ from os.path import dirname, realpath
 # from random import Random
 from produtil.config import ProdConfig
 import met_util as util
+from config_wrapper import ConfigWrapper
 
 """!Creates the initial METplus directory structure,
 loads information into each job.
@@ -202,6 +203,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
 
     conf = METplusLauncher()
     logger = conf.log()
+    cu = ConfigWrapper(conf, logger)
 
     # set config variable for current time
     conf.set('config', 'CLOCK_TIME', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
@@ -266,7 +268,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     #    return conf
 
     # Initialize the output directories
-    produtil.fileop.makedirs(util.getdir(conf, 'OUTPUT_BASE', logger), logger=logger)
+    produtil.fileop.makedirs(cu.getdir('OUTPUT_BASE', logger), logger=logger)
     # A user my set the confloc METPLUS_CONF location in a subdir of OUTPUT_BASE
     # or even in another parent directory altogether, so make thedirectory
     # so the metplus_final.conf file can be written.
@@ -276,7 +278,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # set METPLUS_BASE conf to location of scripts used by METplus
     # warn if user has set METPLUS_BASE to something different
     # in their conf file
-    user_metplus_base = util.getdir(conf, 'METPLUS_BASE', '')
+    user_metplus_base = cu.getdir('METPLUS_BASE', '')
     if user_metplus_base != '' and user_metplus_base != METPLUS_BASE:
         logger.warning('METPLUS_BASE from the conf files has no effect.'+\
                        ' Overriding to '+METPLUS_BASE)
@@ -291,7 +293,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # order to define the vit dictionary and use of vit|{somevar} in the
     # conf file.
     for var in ('OUTPUT_BASE', 'METPLUS_BASE'):
-        expand = util.getdir(conf, var)
+        expand = cu.getdir(var)
         logger.info('Replace [dir] %s with %s' % (var, expand))
         conf.set('dir', var, expand)
 
@@ -320,15 +322,6 @@ def load(filename):
 
     conf = METplusLauncher()
     conf.read(filename)
-    # logger = conf.log()
-
-    # cycle=conf.cycle
-    # assert(cycle is not None)
-    # strcycle=cycle.strftime('%Y%m%d%H')
-    # logger.info('Running cycle: '+cycle.strftime('%Y%m%d%H'))
-
-    #    OUTPUT_BASE = util.getdir(conf, 'OUTPUT_BASE')
-
     return conf
 
 
@@ -443,12 +436,13 @@ def test_gen_conf(file_list, cycle=None):
                             'must be a list of strings.')
     conf = ProdConfig()
     logger = conf.log()
+    cu = ConfigWrapper(conf, logger)
 
     for filename in file_list:
         logger.info("%s: parse this file" % (filename,))
         conf.read(filename)
 
-    produtil.fileop.makedirs(util.getdir(conf, 'OUTPUT_BASE'), logger=logger)
+    produtil.fileop.makedirs(cu.getdir('OUTPUT_BASE'), logger=logger)
 
     for var in ('OUTPUT_BASE', 'METPLUS_BASE'):
         expand = conf.getstr('dir', var)
@@ -456,10 +450,7 @@ def test_gen_conf(file_list, cycle=None):
         conf.set('dir', var, expand)
 
     # writes metplus.conf used by all tasks.
-    confloc = conf.getloc('METPLUS_CONF')
-    logger.info('%s: write metplus.conf here' % (confloc,))
-    with open(confloc, 'wt') as f:
-        conf.write(f)
+    util.write_final_conf(conf, logger)
 
     return conf
 

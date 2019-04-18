@@ -3,6 +3,7 @@ from __future__ import print_function
 import sys
 import pytest
 import datetime
+from config_wrapper import ConfigWrapper
 import met_util as util
 import produtil
 import os
@@ -202,7 +203,7 @@ def test_get_number_from_threshold_complex():
     assert(util.get_number_from_threshold("<=2.3||>=4.2") == 2.3)
 
 def test_preprocess_file_gz():
-    conf = metplus_config()
+    conf = ConfigWrapper(metplus_config(), None)
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile.txt.gz"
     stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile.txt"
@@ -260,11 +261,12 @@ def test_getlist_has_commas():
 # field info only defined in the FCST_* variables
 def test_parse_var_list_fcst_only():
     conf = metplus_config()
+    cu = ConfigWrapper(conf, None)
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "LEVELS11, LEVELS12")
     conf.set('config', 'FCST_VAR2_NAME', "NAME2")
     conf.set('config', 'FCST_VAR2_LEVELS', "LEVELS21, LEVELS22")
-    var_list = util.parse_var_list(conf)
+    var_list = util.parse_var_list(cu)
     assert(var_list[0].fcst_name == "NAME1" and \
            var_list[0].obs_name == "NAME1" and \
            var_list[1].fcst_name == "NAME1" and \
@@ -285,11 +287,12 @@ def test_parse_var_list_fcst_only():
 # field info only defined in the OBS_* variables
 def test_parse_var_list_obs():
     conf = metplus_config()
+    cu = ConfigWrapper(conf, None)
     conf.set('config', 'OBS_VAR1_NAME', "NAME1")
     conf.set('config', 'OBS_VAR1_LEVELS', "LEVELS11, LEVELS12")
     conf.set('config', 'OBS_VAR2_NAME', "NAME2")
     conf.set('config', 'OBS_VAR2_LEVELS', "LEVELS21, LEVELS22")
-    var_list = util.parse_var_list(conf)
+    var_list = util.parse_var_list(cu)
     assert(var_list[0].fcst_name == "NAME1" and \
            var_list[0].obs_name == "NAME1" and \
            var_list[1].fcst_name == "NAME1" and \
@@ -310,6 +313,7 @@ def test_parse_var_list_obs():
 # field info defined in both FCST_* and OBS_* variables
 def test_parse_var_list_fcst_and_obs():
     conf = metplus_config()
+    cu = ConfigWrapper(conf, None)
     conf.set('config', 'FCST_VAR1_NAME', "FNAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "FLEVELS11, FLEVELS12")
     conf.set('config', 'FCST_VAR2_NAME', "FNAME2")
@@ -318,7 +322,7 @@ def test_parse_var_list_fcst_and_obs():
     conf.set('config', 'OBS_VAR1_LEVELS', "OLEVELS11, OLEVELS12")
     conf.set('config', 'OBS_VAR2_NAME', "ONAME2")
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
-    var_list = util.parse_var_list(conf)
+    var_list = util.parse_var_list(cu)
     assert(var_list[0].fcst_name == "FNAME1" and \
            var_list[0].obs_name == "ONAME1" and \
            var_list[1].fcst_name == "FNAME1" and \
@@ -339,11 +343,12 @@ def test_parse_var_list_fcst_and_obs():
 # VAR1 defined by FCST, VAR2 defined by OBS
 def test_parse_var_list_fcst_and_obs_alternate():
     conf = metplus_config()
+    cu = ConfigWrapper(conf, None)
     conf.set('config', 'FCST_VAR1_NAME', "FNAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "FLEVELS11, FLEVELS12")
     conf.set('config', 'OBS_VAR2_NAME', "ONAME2")
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
-    var_list = util.parse_var_list(conf)
+    var_list = util.parse_var_list(cu)
     assert(var_list[0].fcst_name == "FNAME1" and \
            var_list[0].obs_name == "FNAME1" and \
            var_list[1].fcst_name == "FNAME1" and \
@@ -364,6 +369,7 @@ def test_parse_var_list_fcst_and_obs_alternate():
 # VAR1 defined by OBS, VAR2 by FCST, VAR3 by both FCST AND OBS
 def test_parse_var_list_fcst_and_obs_and_both():
     conf = metplus_config()
+    cu = ConfigWrapper(conf, None)
     conf.set('config', 'OBS_VAR1_NAME', "ONAME1")
     conf.set('config', 'OBS_VAR1_LEVELS', "OLEVELS11, OLEVELS12")
     conf.set('config', 'FCST_VAR2_NAME', "FNAME2")
@@ -373,7 +379,7 @@ def test_parse_var_list_fcst_and_obs_and_both():
     conf.set('config', 'OBS_VAR3_NAME', "ONAME3")
     conf.set('config', 'OBS_VAR3_LEVELS', "OLEVELS31, OLEVELS32")
 
-    var_list = util.parse_var_list(conf)
+    var_list = util.parse_var_list(cu)
     assert(var_list[0].fcst_name == "ONAME1" and \
            var_list[0].obs_name == "ONAME1" and \
            var_list[1].fcst_name == "ONAME1" and \
@@ -402,11 +408,12 @@ def test_parse_var_list_fcst_and_obs_and_both():
 # option defined in obs only
 def test_parse_var_list_fcst_only():
     conf = metplus_config()
+    cu = ConfigWrapper(conf, None)
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "LEVELS11, LEVELS12")
     conf.set('config', 'FCST_VAR1_THRESH', ">1, >2")
     conf.set('config', 'OBS_VAR1_OPTIONS', "OOPTIONS11")
-    var_list = util.parse_var_list(conf)
+    var_list = util.parse_var_list(cu)
     assert(var_list[0].fcst_name == "NAME1" and \
            var_list[0].obs_name == "NAME1" and \
            var_list[1].fcst_name == "NAME1" and \
@@ -426,9 +433,29 @@ def test_parse_var_list_fcst_only():
 def test_get_lead_sequence_lead():
     input_dict = { 'valid' : datetime.datetime(2019, 02, 01, 13) }
     conf = metplus_config()
+    cu = ConfigWrapper(conf, None)
     conf.set('config', 'LEAD_SEQ', "3,6,9,12")
-    test_seq = util.get_lead_sequence(conf, None, input_dict)
+    test_seq = util.get_lead_sequence(cu, input_dict)
     lead_seq = [ 3, 6, 9, 12 ]
+    assert(test_seq == lead_seq)
+
+@pytest.mark.parametrize(
+    'key, value', [
+        ('list(3,12,3)',  [ 3, 6, 9, 12]),
+        ('list( 3,12 , 3)',  [ 3, 6, 9, 12]),
+        ('list(0,10,2)',  [ 0, 2, 4, 6, 8, 10]),
+        ('list(10,0,-2)',  [ 10, 8, 6, 4, 2, 0]),
+        ('list(2,2,20)',  [ 2 ]),
+        ('list(72,72,6)',  [ 72 ])
+    ]
+)
+def test_get_lead_sequence_lead_list(key, value):
+    input_dict = { 'valid' : datetime.datetime(2019, 02, 01, 13) }
+    conf = metplus_config()
+    cu = ConfigWrapper(conf, None)
+    conf.set('config', 'LEAD_SEQ', key)
+    test_seq = util.get_lead_sequence(cu, input_dict)
+    lead_seq = value
     assert(test_seq == lead_seq)
 
 @pytest.mark.parametrize(
@@ -462,18 +489,20 @@ def test_get_lead_sequence_lead():
 def test_get_lead_sequence_init(key, value):
     input_dict = { 'valid' : datetime.datetime(2019, 02, 01, key) }
     conf = metplus_config()
+    cu = ConfigWrapper(conf, None)
     conf.set('config', 'INIT_SEQ', "0, 12")
     conf.set('config', 'FCST_MAX_FORECAST', 36)
-    test_seq = util.get_lead_sequence(conf, None, input_dict)
+    test_seq = util.get_lead_sequence(cu, input_dict)
     lead_seq = value
     assert(test_seq == lead_seq)
 
 def test_get_lead_sequence_init_min_10():
     input_dict = { 'valid' : datetime.datetime(2019, 02, 01, 12) }
     conf = metplus_config()
+    cu = ConfigWrapper(conf, None)
     conf.set('config', 'INIT_SEQ', "0, 12")
     conf.set('config', 'FCST_MAX_FORECAST', 24)
     conf.set('config', 'FCST_MIN_FORECAST', 10)
-    test_seq = util.get_lead_sequence(conf, None, input_dict)
+    test_seq = util.get_lead_sequence(cu, input_dict)
     lead_seq = [ 12, 24 ]
     assert(test_seq == lead_seq)

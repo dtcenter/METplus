@@ -40,19 +40,14 @@ class TcStatWrapper(CommandBuilder):
          cyclone pair data.
     """
 
-    def __init__(self, p, logger):
-        super(TcStatWrapper, self).__init__(p, logger)
+    def __init__(self, config, logger):
+        super(TcStatWrapper, self).__init__(config, logger)
         self.app_name = 'tc_stat'
-        self.config = self.p
-        self.logger = logger
 
         # Check whether we are running MET tc_stat from the command line
         # or with the MET config file.
-        run_method = self.p.getstr('config', 'TC_STAT_RUN_VIA')
+        run_method = self.config.getstr('config', 'TC_STAT_RUN_VIA')
         self.by_config = bool(run_method == 'CONFIG')
-
-        if self.logger is None:
-            self.logger = util.get_logger(self.p, sublog='TcStat')
         self.tc_stat_dict = self.create_tc_stat_dictionary()
         self.tc_exe = self.tc_stat_dict['APP_PATH']
         self.logger.info("Initialized TcStatWrapper")
@@ -84,13 +79,13 @@ class TcStatWrapper(CommandBuilder):
 
         # Check for the MET_INSTALL_DIR, if it is missing, then
         # we cannot invoke the MET tool.
-        if not util.getdir(self.p, 'MET_INSTALL_DIR'):
+        if not self.config.getdir('MET_INSTALL_DIR'):
             self.logger.error(
                 cur_filename + '|' + cur_function + ': MET install ' +
                 'directory not found in config file. Exiting.')
             sys.exit(1)
         tc_stat_dict['APP_PATH'] = os.path.join(
-            util.getdir(self.p, 'MET_INSTALL_DIR'), 'bin/tc_stat')
+            self.config.getdir('MET_INSTALL_DIR'), 'bin/tc_stat')
 
         tc_stat_dict['APP_NAME'] = os.path.basename(tc_stat_dict['APP_PATH'])
 
@@ -222,29 +217,29 @@ class TcStatWrapper(CommandBuilder):
                 self.config.getstr('config', 'TC_STAT_LANDFALL_END')
 
             tc_stat_dict['JOBS_LIST'] = \
-                self.p.getstr('config', 'TC_STAT_JOBS_LIST')
+                self.config.getstr('config', 'TC_STAT_JOBS_LIST')
         else:
             # via command line, only one job requested
             tc_stat_dict['CMD_LINE_JOB'] = self.config.getstr(
                 'config', 'TC_STAT_CMD_LINE_JOB')
 
         tc_stat_dict['MATCH_POINTS'] = \
-            self.p.getstr('config', 'TC_STAT_MATCH_POINTS').upper()
-        tc_stat_dict['OUTPUT_BASE'] = util.getdir(self.p, 'OUTPUT_BASE')
+            self.config.getstr('config', 'TC_STAT_MATCH_POINTS').upper()
+        tc_stat_dict['OUTPUT_BASE'] = self.config.getdir('OUTPUT_BASE')
 
-        tc_stat_dict['TMP_DIR'] = util.getdir(self.p, 'TMP_DIR')
+        tc_stat_dict['TMP_DIR'] = self.config.getdir('TMP_DIR')
 
-        tc_stat_dict['METPLUS_BASE'] = util.getdir(self.p, 'METPLUS_BASE')
+        tc_stat_dict['METPLUS_BASE'] = self.config.getdir('METPLUS_BASE')
 
-        tc_stat_dict['MET_INSTALL_DIR'] = util.getdir(self.p, 'MET_INSTALL_DIR')
+        tc_stat_dict['MET_INSTALL_DIR'] = self.config.getdir('MET_INSTALL_DIR')
 
-        tc_stat_dict['INPUT_DIR'] = util.getdir(self.p, 'TC_STAT_INPUT_DIR')
+        tc_stat_dict['INPUT_DIR'] = self.config.getdir('TC_STAT_INPUT_DIR')
 
-        tc_stat_dict['OUTPUT_DIR'] = util.getdir(self.p, 'TC_STAT_OUTPUT_DIR')
+        tc_stat_dict['OUTPUT_DIR'] = self.config.getdir('TC_STAT_OUTPUT_DIR')
 
-        tc_stat_dict['PARM_BASE'] = util.getdir(self.p, 'PARM_BASE')
+        tc_stat_dict['PARM_BASE'] = self.config.getdir('PARM_BASE')
 
-        tc_stat_dict['CONFIG_FILE'] = self.p.getstr('config', 'TC_STAT_CONFIG_FILE')
+        tc_stat_dict['CONFIG_FILE'] = self.config.getstr('config', 'TC_STAT_CONFIG_FILE')
 
         return tc_stat_dict
 

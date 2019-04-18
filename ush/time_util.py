@@ -68,8 +68,22 @@ def ti_calculate(input_dict):
 
         # compute init from valid and lead
         out_dict['init'] = out_dict['valid'] - out_dict['lead']
+
+    # if da_init is provided, compute init and valid
+    elif 'da_init' in input_dict.keys():
+        out_dict['da_init'] = input_dict['da_init']
+
+        if 'valid' in input_dict.keys():
+            print("ERROR: Cannot specify both valid and da_init to time utility")
+            exit(1)
+
+        # compute valid from da_init and offset
+        out_dict['valid'] = out_dict['da_init'] - out_dict['offset']
+
+        # compute init from valid and lead
+        out_dict['init'] = out_dict['valid'] - out_dict['lead']
     else:
-        print("ERROR: Need to specify valid or init to time utility")
+        print("ERROR: Need to specify valid, init, or da_init to time utility")
         exit(1)
 
     # calculate da_init from valid and offset

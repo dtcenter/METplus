@@ -39,37 +39,37 @@ class CompareGriddedWrapper(CommandBuilder):
     """!Common functionality to wrap similar MET applications
 that reformat gridded data
     """
-    def __init__(self, p, logger):
-        super(CompareGriddedWrapper, self).__init__(p, logger)
+    def __init__(self, config, logger):
+        super(CompareGriddedWrapper, self).__init__(config, logger)
 
 
     def create_c_dict(self):
         c_dict = dict()
-        c_dict['var_list'] = util.parse_var_list(self.p)
-        c_dict['MODEL_TYPE'] = self.p.getstr('config', 'MODEL_TYPE', 'FCST')
-        c_dict['OB_TYPE'] = self.p.getstr('config', 'OB_TYPE', 'OBS')
-        c_dict['CONFIG_DIR'] = util.getdir(self.p, 'CONFIG_DIR', '')
-        c_dict['INPUT_BASE'] = util.getdir(self.p, 'INPUT_BASE', None, self.logger)
-        c_dict['FCST_IS_PROB'] = self.p.getbool('config', 'FCST_IS_PROB', False)
-        c_dict['OBS_IS_PROB'] = self.p.getbool('config', 'OBS_IS_PROB', False)
-        c_dict['FCST_MAX_FORECAST'] = self.p.getint('config', 'FCST_MAX_FORECAST', 24)
-        c_dict['FCST_INIT_INTERVAL'] = self.p.getint('config', 'FCST_INIT_INTERVAL', 12)
+        c_dict['var_list'] = util.parse_var_list(self.config)
+        c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
+        c_dict['OB_TYPE'] = self.config.getstr('config', 'OB_TYPE', 'OBS')
+        c_dict['CONFIG_DIR'] = self.config.getdir('CONFIG_DIR', '')
+        c_dict['INPUT_BASE'] = self.config.getdir('INPUT_BASE', None)
+        c_dict['FCST_IS_PROB'] = self.config.getbool('config', 'FCST_IS_PROB', False)
+        c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
+        c_dict['FCST_MAX_FORECAST'] = self.config.getint('config', 'FCST_MAX_FORECAST', 24)
+        c_dict['FCST_INIT_INTERVAL'] = self.config.getint('config', 'FCST_INIT_INTERVAL', 12)
         c_dict['OBS_WINDOW_BEGIN'] = \
-          self.p.getint('config', 'OBS_WINDOW_BEGIN', 0)
+          self.config.getint('config', 'OBS_WINDOW_BEGIN', 0)
         c_dict['OBS_WINDOW_END'] = \
-          self.p.getint('config', 'OBS_WINDOW_END', 0)
+          self.config.getint('config', 'OBS_WINDOW_END', 0)
 
         c_dict['FCST_WINDOW_BEGIN'] = \
-          self.p.getint('config', 'FCST_WINDOW_BEGIN', 0)
+          self.config.getint('config', 'FCST_WINDOW_BEGIN', 0)
         c_dict['FCST_WINDOW_END'] = \
-          self.p.getint('config', 'FCST_WINDOW_END', 0)
+          self.config.getint('config', 'FCST_WINDOW_END', 0)
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
         c_dict['NEIGHBORHOOD_WIDTH'] = ''
         c_dict['NEIGHBORHOOD_SHAPE'] = ''
         c_dict['VERIFICATION_MASK_TEMPLATE'] = ''
         c_dict['VERIFICATION_MASK'] = ''
-        util.add_common_items_to_dictionary(self.p, c_dict)
+        util.add_common_items_to_dictionary(self.config, c_dict)
         return c_dict
 
 
@@ -82,14 +82,14 @@ that reformat gridded data
         """
 
         # loop of forecast leads and process each
-        lead_seq = util.get_lead_sequence(self.p, self.logger, input_dict)
+        lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             input_dict['lead_hours'] = lead
 
             self.logger.info("Processing forecast lead {}".format(lead))
 
             # set current lead time config and environment variables
-            self.p.set('config', 'CURRENT_LEAD_TIME', lead)
+            self.config.set('config', 'CURRENT_LEAD_TIME', lead)
             os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
             time_info = time_util.ti_calculate(input_dict)
             # Run for given init/valid time and forecast lead combination
@@ -244,7 +244,7 @@ that reformat gridded data
                 for thresh in threshs:
                     # if pcp_combine was run, use name_level, (*,*) format
                     # if not, use user defined name/level combination
-                    if self.p.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
+                    if self.config.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
                         field = "{ name=\""+v_name+"_"+level + \
                                      "\"; level=\"(*,*)\"; cat_thresh=[ " + \
                                      str(thresh)+" ]; }"
@@ -257,7 +257,7 @@ that reformat gridded data
             # if neither input is probabilistic, add all cat thresholds to same field info item
             # if pcp_combine was run, use name_level, (*,*) format
             # if not, use user defined name/level combination
-            if self.p.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
+            if self.config.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
                 field = "{ name=\"" + v_name+"_" + level + \
                              "\"; level=\"(*,*)\"; "
             else:
@@ -285,7 +285,7 @@ that reformat gridded data
             v = self.c_dict['CURRENT_VAR_INFO']
 
         # set environment variables needed for MET application
-        self.add_env_var("MODEL", self.c_dict['MODEL_TYPE'])
+        self.add_env_var("MODEL", self.c_dict['MODEL'])
         self.add_env_var("OBTYPE", self.c_dict['OB_TYPE'])
         self.add_env_var("FCST_VAR", v.fcst_name)
         self.add_env_var("OBS_VAR", v.obs_name)
@@ -356,7 +356,7 @@ that reformat gridded data
                 @param time_info dictionary with time information
         """
         base_dir = self.c_dict['OUTPUT_DIR']
-        use_init = util.is_loop_by_init(self.p)
+        use_init = util.is_loop_by_init(self.config)
         if use_init:
             out_dir = os.path.join(base_dir,
                                    time_info['init_fmt'], self.app_name)
@@ -379,19 +379,6 @@ that reformat gridded data
             filename = ss.doStringSub()
             self.c_dict['VERIFICATION_MASK'] = filename
         return
-
-
-    def write_list_file(self, filename, file_list):
-        list_dir = os.path.join(util.getdir(self.p, 'STAGING_DIR'), 'file_lists')
-        list_path = os.path.join(list_dir, filename)
-
-        if not os.path.exists(list_dir):
-            os.makedirs(list_dir, mode=0775)
-
-        with open(list_path, 'w') as file_handle:
-            for f_path in file_list:
-                file_handle.write(f_path+'\n')
-        return list_path
 
 
     def set_output_dir(self, outdir):

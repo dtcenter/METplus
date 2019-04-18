@@ -37,7 +37,7 @@ Output Files: N/A
 #
 import os
 from produtil.run import exe, run
-import met_util as util
+from config_wrapper import ConfigWrapper
 import shlex
 
 class CommandRunner(object):
@@ -47,10 +47,8 @@ class CommandRunner(object):
         """!Class for Creating and Running External Programs.
             It was intended to handle the MET executables but
             can be used by other executables."""
-        self.config = config
         self.logger = logger
-        if self.logger == None:
-            self.logger = util.get_logger(self.config,sublog='CommandRunner')
+        self.config = ConfigWrapper(config, self.logger)
         self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
 
 
@@ -218,17 +216,18 @@ class CommandRunner(object):
         # To the METplus log, a MET log, or tty.
         # If no metpluslog, cmlog_dest is None, which should be interpreted as tty.
         if metpluslog:
-            log_met_output_to_metplus = self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS')
+            log_met_output_to_metplus = self.config.getbool('config',
+                                                     'LOG_MET_OUTPUT_TO_METPLUS')
             # If cmdlog is None send output to metpluslog.
             if log_met_output_to_metplus or not cmdlog:
                 cmdlog_dest = metpluslog
             else:
                 log_timestamp = self.config.getstr('config', 'LOG_TIMESTAMP', '')
                 if log_timestamp:
-                    cmdlog_dest = os.path.join(util.getdir(self.config, 'LOG_DIR'),
+                    cmdlog_dest = os.path.join(self.config.getdir('LOG_DIR'),
                                             cmdlog + '_' + log_timestamp)
                 else:
-                    cmdlog_dest = os.path.join(util.getdir(self.config, 'LOG_DIR'),cmdlog)
+                    cmdlog_dest = os.path.join(self.config.getdir('LOG_DIR'),cmdlog)
 
 
         # If cmdlog_dest None we will not redirect output to a log file

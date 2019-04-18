@@ -23,14 +23,15 @@ import os
 import sys
 import re
 import csv
+import datetime
 import produtil.setup
 from produtil.run import ExitStatusException
 # TODO - critical  must import grid_to_obs_util before CommandBuilder
 # MUST import grid_to_obs_util BEFORE command_builder, else it breaks stand-alone
-from command_builder import CommandBuilder
 import met_util as util
 import config_metplus
 from string_template_substitution import StringSub
+from command_builder import CommandBuilder
 
 '''!@namespace TcPairsWrapper
 @brief Wraps the MET tool tc_pairs to parse ADeck and BDeck ATCF_by_pairs files,
@@ -47,14 +48,11 @@ class TcPairsWrapper(CommandBuilder):
        bdeck files.  Pre-processes extra tropical cyclone data.
     """
 
-    def __init__(self, p, logger):
-        super(TcPairsWrapper, self).__init__(p, logger)
-        self.config = p
-        self.app_path = os.path.join(util.getdir(p, 'MET_INSTALL_DIR'),
+    def __init__(self, config, logger):
+        super(TcPairsWrapper, self).__init__(config, logger)
+        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                      'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
-        if self.logger is None:
-            self.logger = util.get_logger(self.p, sublog='TcPairs')
         self.cmd = ''
         self.logger.info("Initialized TcPairsWrapper")
         self.tcp_dict = self.create_tcp_dict()
@@ -85,34 +83,34 @@ class TcPairsWrapper(CommandBuilder):
         tcp_dict['TRACK_TYPE'] = self.config.getstr('config', 'TRACK_TYPE')
         tcp_dict['TC_PAIRS_CONFIG_FILE'] = self.config.getstr('config',
                                                               'TC_PAIRS_CONFIG_FILE')
-        tcp_dict['INIT_BEG'] = self.config.getstr('config', 'INIT_BEG')
-        tcp_dict['INIT_END'] = self.config.getstr('config', 'INIT_END')
-        tcp_dict['INIT_INCREMENT'] = int(
-            self.config.getint('config', 'INIT_INCREMENT') / 3600)
-        tcp_dict['INIT_HOUR_END'] = self.config.getstr('config',
-                                                       'INIT_HOUR_END')
+
+        tcp_dict['INIT_BEG'] = self.config.getraw('config', 'INIT_BEG')
+        tcp_dict['INIT_END'] = self.config.getraw('config', 'INIT_END')
+        tcp_dict['INIT_TIME_FMT'] = self.config.getstr('config', 'INIT_TIME_FMT')
+        tcp_dict['INIT_INCREMENT'] = self.config.getint('config', 'INIT_INCREMENT')
+
         tcp_dict['INIT_INCLUDE'] = util.getlist(
             self.config.getstr('config', 'INIT_INCLUDE'))
         tcp_dict['INIT_EXCLUDE'] = util.getlist(
             self.config.getstr('config', 'INIT_EXCLUDE'))
         tcp_dict['VALID_BEG'] = self.config.getstr('config', 'VALID_BEG')
         tcp_dict['VALID_END'] = self.config.getstr('config', 'VALID_END')
-        tcp_dict['ADECK_TRACK_DATA_DIR'] = util.getdir(self.config,
-            'ADECK_TRACK_DATA_DIR')
-        tcp_dict['BDECK_TRACK_DATA_DIR'] = util.getdir(self.config,
-            'BDECK_TRACK_DATA_DIR')
-        tcp_dict['TRACK_DATA_SUBDIR_MOD'] = util.getdir(self.config, 
+        tcp_dict['ADECK_TRACK_DATA_DIR'] = \
+                self.config.getdir('ADECK_TRACK_DATA_DIR')
+        tcp_dict['BDECK_TRACK_DATA_DIR'] = \
+                self.config.getdir('BDECK_TRACK_DATA_DIR')
+        tcp_dict['TRACK_DATA_SUBDIR_MOD'] = self.config.getdir(
             'TRACK_DATA_SUBDIR_MOD')
         tcp_dict['ADECK_FILE_PREFIX'] = self.config.getstr('config',
                                                            'ADECK_FILE_PREFIX')
-        tcp_dict['TC_PAIRS_DIR'] = util.getdir(self.config, 'TC_PAIRS_DIR')
+        tcp_dict['TC_PAIRS_DIR'] = self.config.getdir('TC_PAIRS_DIR')
         tcp_dict['ADECK_FILE_PREFIX'] = self.config.getstr('config',
                                                            'ADECK_FILE_PREFIX')
         tcp_dict['BDECK_FILE_PREFIX'] = self.config.getstr('config',
                                                            'BDECK_FILE_PREFIX')
         tcp_dict['TOP_LEVEL_DIRS'] = self.config.getstr('config',
                                                         'TOP_LEVEL_DIRS')
-        tcp_dict['MET_INSTALL_DIR'] = util.getdir(self.config, 'MET_INSTALL_DIR')
+        tcp_dict['MET_INSTALL_DIR'] = self.config.getdir('MET_INSTALL_DIR')
         tcp_dict['OUTPUT_BASE'] = self.config.getstr('dir', 'OUTPUT_BASE')
         tcp_dict['CYCLONE'] = util.getlist(
             self.config.getstr('config', 'CYCLONE'))
@@ -125,9 +123,9 @@ class TcPairsWrapper(CommandBuilder):
         tcp_dict['DLAND_FILE'] = self.config.getstr('config', 'DLAND_FILE')
         if tcp_dict['TRACK_TYPE'].lower() != 'extra_tropical_cyclone':
             tcp_dict['FORECAST_TMPL'] = self.config.getraw('filename_templates',
-                                                           'FORECAST_TMPL')
-            tcp_dict['REFERENCE_TMPL'] = self.config.getraw(
-                'filename_templates', 'REFERENCE_TMPL')
+                                                       'FORECAST_TMPL')
+            tcp_dict['REFERENCE_TMPL'] = self.config.getraw('filename_templates',
+                                                        'REFERENCE_TMPL')
         return tcp_dict
 
     def read_modify_write_file(self, in_csvfile, storm_month, missing_values,
@@ -206,13 +204,22 @@ class TcPairsWrapper(CommandBuilder):
         # file (TC_PAIRS_CONFIG_FILE)
         self.set_env_vars()
 
-        # Get the desired YYYYMMDD_HH init increment list
-        # convert the increment INIT_INCREMENT from seconds to hours
-        init_list = util.gen_init_list(
-            self.tcp_dict['INIT_BEG'],
-            self.tcp_dict['INIT_END'],
-            self.tcp_dict['INIT_INCREMENT'],
-            self.tcp_dict['INIT_HOUR_END'])
+        # Get the desired YYYYMMDD_HH init list
+        time_interval = self.tcp_dict['INIT_INCREMENT']
+        if time_interval < 60:
+            self.logger.error("INIT_INCREMENT parameter must be "
+              "greater than 60 seconds")
+            exit(1)
+
+        loop_time = datetime.datetime.strptime(self.tcp_dict['INIT_BEG'],
+                                               self.tcp_dict['INIT_TIME_FMT'])
+        end_time = datetime.datetime.strptime(self.tcp_dict['INIT_END'],
+                                               self.tcp_dict['INIT_TIME_FMT'])
+
+        init_list = []
+        while loop_time <= end_time:
+            init_list.append(loop_time.strftime("%Y%m%d_%H"))
+            loop_time += datetime.timedelta(seconds=time_interval)
 
         # Differentiate between non-ATCF_by_pairs data and ATCF_by_pairs track data based on
         # the TRACK_TYPE
@@ -1072,8 +1079,9 @@ class TcPairsWrapper(CommandBuilder):
         # support single-quotes.
 
         # INIT_BEG, INIT_END
-        tmp_init_beg = self.tcp_dict['INIT_BEG']
-        tmp_init_end = self.tcp_dict['INIT_END']
+        # pull out YYYYMMDD from INIT_BEG/END
+        tmp_init_beg = self.tcp_dict['INIT_BEG'][0:8]
+        tmp_init_end = self.tcp_dict['INIT_END'][0:8]
 
         if not tmp_init_beg:
             self.add_env_var(b'INIT_BEG', "")
@@ -1288,7 +1296,7 @@ class TcPairsWrapper(CommandBuilder):
                                   " data because TC_PAIRS_FORCE" +
                                   "_OVERWRITE is set to True")
 
-        tc_pairs_exe = os.path.join(util.getdir(self.config, 'MET_INSTALL_DIR'),
+        tc_pairs_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                     'bin/tc_pairs')
         cmd_list = [tc_pairs_exe, " -adeck ",
                     adeck_file_path, " -bdeck ",
