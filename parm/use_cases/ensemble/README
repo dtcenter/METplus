@@ -75,7 +75,7 @@ YOU MUST USE THE following METplus CONF settings ...
 Anything other than the following has not been tested
 for the ensemble stat use case.
 
-LOOP_METHOD = processes  (pb2nc, ensemble_stat)
+LOOP_ORDER = processes  (pb2nc, ensemble_stat)
 TIME_METHOD = BY_INIT    (pb2nc)
 
 LOOP_BY_INIT = true      (ensemble_stat) see below for details.
