@@ -75,6 +75,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
 
     def set_fcst_or_obs_dict_items(self, d_type):
+        self.c_dict[d_type+'_MIN_FORECAST'] = self.config.getint('config', d_type+'_MIN_FORECAST', 0)
         self.c_dict[d_type+'_MAX_FORECAST'] = self.config.getint('config', d_type+'_MAX_FORECAST', 256)
         self.c_dict[d_type+'_INPUT_DATATYPE'] = self.config.getstr('config',
                                               d_type+'_PCP_COMBINE_INPUT_DATATYPE', '')
@@ -200,8 +201,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         out_file = None
 
         # search for file with lowest forecast, then loop up into you find a valid one
+        min_forecast = self.c_dict[dtype+'_MIN_FORECAST']
         max_forecast = self.c_dict[dtype+'_MAX_FORECAST']
-        forecast_lead = 0
+        forecast_lead = min_forecast
         while forecast_lead <= max_forecast:
             input_dict = {}
             input_dict['valid'] = valid_time
