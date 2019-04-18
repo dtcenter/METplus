@@ -52,7 +52,7 @@ that reformat gridded data
         c_dict['INPUT_BASE'] = self.config.getdir('INPUT_BASE', None)
         c_dict['FCST_IS_PROB'] = self.config.getbool('config', 'FCST_IS_PROB', False)
         c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
-        c_dict['FCST_MAX_FORECAST'] = self.config.getint('config', 'FCST_MAX_FORECAST', 24)
+        c_dict['FCST_MAX_FORECAST'] = self.config.getint('config', 'FCST_MAX_FORECAST', 256)
         c_dict['FCST_INIT_INTERVAL'] = self.config.getint('config', 'FCST_INIT_INTERVAL', 12)
         c_dict['OBS_WINDOW_BEGIN'] = \
           self.config.getint('config', 'OBS_WINDOW_BEGIN', 0)
