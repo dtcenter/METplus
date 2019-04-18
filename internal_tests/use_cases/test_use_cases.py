@@ -100,14 +100,14 @@ def compare_results(param_a, param_b):
             if process == "GridStat":
                 # out_subdir = "uswrp/met_out/QPF/200508070000/grid_stat"
                 out_a = p.getdir("GRID_STAT_OUT_DIR")
-                out_b = p_b.getdir("GRID_STAT_OUT_DIR")
+                out_b = p_b.getdir("GRID_STAT_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/grid_stat/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time))
                 files_b = glob.glob(glob_string.format(out_b, run_time))
             elif process == "Mode":
                 # out_subdir = "uswrp/met_out/QPF/200508070000/grid_stat"
                 out_a = p.getdir("MODE_OUT_DIR")
-                out_b = p_b.getdir("MODE_OUT_DIR")
+                out_b = p_b.getdir("MODE_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/mode/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time))
                 files_b = glob.glob(glob_string.format(out_b, run_time))
@@ -149,21 +149,21 @@ def compare_results(param_a, param_b):
             elif process == "ExtractTiles":
                 # TODO FIX DIR
                 out_a = p.getdir("EXTRACT_OUT_DIR")
-                out_b = p_b.getdir("EXTRACT_OUT_DIR")
+                out_b = p_b.getdir("EXTRACT_TILES_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/*/*"
                 date_dir = run_time[0:8]+"_"+run_time[8:10]
                 files_a = glob.glob(glob_string.format(out_a, date_dir))
                 files_b = glob.glob(glob_string.format(out_b, date_dir))
             elif process == "SeriesByInit": # TODO FIX DIR
                 out_a = p.getdir("SERIES_INIT_FILTERED_OUT_DIR")
-                out_b = p_b.getdir("SERIES_INIT_FILTERED_OUT_DIR")
+                out_b = p_b.getdir("SERIES_BY_INIT_FILTERED_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/*/*"
                 date_dir = run_time[0:8]+"_"+run_time[8:10]
                 files_a = glob.glob(glob_string.format(out_a, date_dir))
                 files_b = glob.glob(glob_string.format(out_b, date_dir))
             elif process == "SeriesByLead": # TODO FIX DIR
                 out_a = p.getdir("SERIES_LEAD_FILTERED_OUT_DIR")
-                out_b = p_b.getdir("SERIES_LEAD_FILTERED_OUT_DIR")
+                out_b = p_b.getdir("SERIES_BY_LEAD_FILTERED_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/*/*"
                 date_dir = run_time[0:8]+"_"+run_time[8:10]
                 files_a = glob.glob(glob_string.format(out_a, date_dir))
