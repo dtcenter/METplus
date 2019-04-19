@@ -6,4 +6,5 @@ following order:
 
 
   where my_custom.conf is your custom config file where you define
-  PROJ_DIR, OUTPUT_BASE, MET_INSTALL_DIR, and TMP_DIR under the [dir] header/family.
+  PROJ_DIR, OUTPUT_BASE, MET_INSTALL_DIR, TCMPR_PLOT_OUT_DIR, and TMP_DIR under the [dir] header/family.
+TCMPR_PLOT_OUT_DIR
