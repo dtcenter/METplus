@@ -150,7 +150,7 @@ class MakePlotsWrapper(CommandBuilder):
                     self.logger.error("FCST_VAR"+n+"_LEVELS not defined")
                     exit(1)
                 if self.config.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                    fcst_extra = util.getraw_interp(self.config, 'config', "FCST_VAR"+n+"_OPTIONS")
+                    fcst_extra = self.config.getraw('config', "FCST_VAR"+n+"_OPTIONS")
                 else:
                     fcst_extra = ""
                 if self.config.has_option('config', "FCST_VAR"+n+"_THRESH"):
@@ -169,7 +169,7 @@ class MakePlotsWrapper(CommandBuilder):
                 else:
                     obs_levels = fcst_levels
                 if self.config.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                    obs_extra = util.getraw_interp(self.config, 'config', "OBS_VAR"+n+"_OPTIONS")
+                    obs_extra = self.config.getraw('config', "OBS_VAR"+n+"_OPTIONS")
                 else:
                     obs_extra = ""
                 if self.config.has_option('config', "OBS_VAR"+n+"_THRESH"):
@@ -879,9 +879,9 @@ class MakePlotsWrapper(CommandBuilder):
         init_hour_beg = self.config.getstr('config', 'INIT_HOUR_BEG')
         init_hour_end = self.config.getstr('config', 'INIT_HOUR_END')
         init_hour_increment = self.config.getstr('config', 'INIT_HOUR_INCREMENT')
-        stat_files_input_dir = util.getdir(self.config, 'STAT_FILES_INPUT_DIR')
-        plotting_out_dir = util.getdir(self.config, 'PLOTTING_OUT_DIR')
-        plotting_scripts_dir = util.getdir(self.config, 'PLOTTING_SCRIPTS_DIR')
+        stat_files_input_dir = self.config.getdir('STAT_FILES_INPUT_DIR')
+        plotting_out_dir = self.config.getdir('PLOTTING_OUTPUT_DIR')
+        plotting_scripts_dir = self.config.getdir('PLOTTING_SCRIPTS_DIR')
         plot_stats_list = self.config.getstr('config', 'PLOT_STATS_LIST')
         ci_method = self.config.getstr('config', 'CI_METHOD')
         verif_grid = self.config.getstr('config', 'VERIF_GRID')
@@ -893,7 +893,7 @@ class MakePlotsWrapper(CommandBuilder):
         model_name_str_list, model_plot_name_str_list = self.parse_model_list()
         logging_filename = self.config.getstr('config', 'LOG_METPLUS')
         logging_level = self.config.getstr('config', 'LOG_LEVEL')
-        met_base = self.config.getstr('config', 'MET_BASE')
+        met_base = self.config.getstr('dir', 'MET_BASE')
         #set envir vars based on config
         self.add_env_var('PLOT_TIME', plot_time)
         if plot_time == 'valid':
