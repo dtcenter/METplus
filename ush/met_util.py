@@ -164,7 +164,12 @@ def is_loop_by_init(config):
     if config.p.has_option('config', 'LOOP_BY_INIT'):
         return config.getbool('config', 'LOOP_BY_INIT')
 
-    config.logger.error('MUST SET LOOP_BY to VALID, INIT, RETRO, or REALTIME')
+    msg = 'MUST SET LOOP_BY to VALID, INIT, RETRO, or REALTIME'
+    if config.logger != None:
+        config.logger.error(msg)
+    else:
+        print(msg)
+
     exit(1)
 
 
