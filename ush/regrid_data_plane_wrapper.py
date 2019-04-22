@@ -201,7 +201,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                               .format(outpath))
             return True
 
-        if self.config.getstr('config', dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE', 'GRIB') in ['', 'GRIB'] :
+        if self.config.getstr('config', dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE', '') in ['', 'NETCDF'] :
             field_name = "{:s}_{:s}".format(compare_var, str(level).zfill(2))
             self.add_arg("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(field_name))
         else:
