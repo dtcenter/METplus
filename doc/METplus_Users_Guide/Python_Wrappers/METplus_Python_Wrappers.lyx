@@ -237,6 +237,279 @@ name "sec:grid_stat_wrapper"
 \end_layout
 
 \begin_layout Section
+make_plots_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:make_plots_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+The make_plots_wrapper creates various statistical plots using python scripts
+ for the various METplus use cases.
+ This can only be run following stat_analysis_wrapper when LOOP_ORDER =
+ processes.
+ To run make_plots_wrapper, include MakePlots in PROCESS_LIST.
+\end_layout
+
+\begin_layout Subsection
+Configuration
+\end_layout
+
+\begin_layout Standard
+The following values must be defined in the METplus configuration file:
+\end_layout
+
+\begin_layout Standard
+PLOTTING_SCRIPTS_DIR - This variable is found under the [dir] header/family
+ section of the METplus config file.
+ This is the directory containing all the python plotting scripts that make_plot
+s_wrapper calls.
+ It is recommended {METPLUS_BASE}/ush/plotting_scripts.
+\end_layout
+
+\begin_layout Standard
+STAT_FILES_INPUT_DIR - This variable is found under the [dir] header/family
+ section of the METplus config file.
+ This is the directory where the files from running previously running stat_anal
+ysis_wrapper are located.
+ These are the files used as the data to create the plots.
+ It is recommended to set this to {STAT_ANALYSIS_OUTPUT_DIR}.
+\end_layout
+
+\begin_layout Standard
+PLOTTING_OUTPUT_DIR - This variable is found under the [dir] header/family
+ section of the METplus config file.
+ This is the base directory where the output from running make_plots_wrapper
+ will be put.
+\end_layout
+
+\begin_layout Standard
+VERIF_CASE - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the specific use case being run.
+ Valid options are grid2grid, grid2obs, and precip.
+\end_layout
+
+\begin_layout Standard
+VERIF_TYPE - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the type of verification being run for the specific use case.
+ For VERIF_CASE = grid2grid, valid options are anom, pres, and sfc.
+ For VERIF_CASE = grid2obs, valid options are conus_sfc and upper_air.
+ For VERIF_CASE = precip, any accumulation amount is valid, ex.
+ A24.
+\end_layout
+
+\begin_layout Standard
+PLOT_TIME - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This specifies the way to treat the date information.
+ Valid options are valid and init.
+\end_layout
+
+\begin_layout Standard
+VALID/INIT_BEG - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the starting date in YYYYMMDD form.
+ It is named accordingly to the value set for PLOT_TIME.
+\end_layout
+
+\begin_layout Standard
+VALID/INIT_END - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the ending date in YYYYMMDD form.
+ It is named accordingly to the value set for PLOT_TIME.
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_METHOD - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This specifies the way to treat the valid hour information.
+ Valid options are LOOP or GROUP.
+ LOOP will consider the valid hours individually, and GROUP will consider
+ them valid hours as a whole.
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_BEG - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the starting valid hour in HHMM form.
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_END - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the ending valid hourin HHMM form.
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_INCREMENT - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the increment used build the list of all valid hours to be used.
+ This is an integer defined in seconds.
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_METHOD - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This specifies the way to treat the initialization hour information.
+ Valid options are LOOP or GROUP.
+ LOOP will consider the initialization hours individually, and GROUP will
+ consider them as a whole.
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_BEG - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the starting initialization hour in HHMM form.
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_END - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the ending initialization hour in HHMM form.
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_INCREMENT - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the increment used build the list of all initialization hours to
+ be used.
+ This is an integer defined in seconds.
+\end_layout
+
+\begin_layout Standard
+MODELn_NAME - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the name of the model.
+ Particularly, this is the model name listed in the MET .stat files.
+\end_layout
+
+\begin_layout Standard
+MODELn_OBS_NAME - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the name of the observations that were used as truth to compare
+ MODELn_NAME to.
+ Particularly, this is the observation name listed in the MET .stat files.
+\end_layout
+
+\begin_layout Standard
+MODELn_NAME_ON_PLOT - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the name that will appear on the plots for MODELn_NAME and is used
+ to define subsequent data paths pertaining to MODELn_NAME.
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_NAME - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the variable name 
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_LEVELS - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the list of variable levels that coorespond to FCST_VARn_NAME.
+\end_layout
+
+\begin_layout Standard
+REGION_LIST - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the list of regions for plotting verification.
+ 
+\end_layout
+
+\begin_layout Standard
+LEAD_LIST - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the list of forecast hour leads for plotting verification.
+\end_layout
+
+\begin_layout Standard
+INTERP - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the type of interpolation the verification was done on.
+ It cooresponds to the interpolation in the MET .stat files.
+\end_layout
+
+\begin_layout Standard
+PLOT_STATS_LIST - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is a list of the statistics to calculate and create plots for.
+ The list of valid options varies depending on line type that was used during
+ the filtering of stat_analysis_wrapper.
+ For SL1L2, VL1L2 valid options are bias, rms, msess, rsd, rmse_md, rmse_pv,
+ pcor, fbar, and fbar_obar.
+ For SAL1L2, VAL1L2, the valid options is acc.
+ For VCNT, bias, fbar, fbar_obar, speed_err, dir_err, rmsve, vdiff_speed,
+ vdiff_dir, rsd, fbar_speed, fbar_dir, fbar_obar_speed, and fbar_obar_dir.
+\end_layout
+
+\begin_layout Standard
+CI_METHOD - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the method used to create confidence intervals for.
+ Valid options are EMC, or NONE.
+\end_layout
+
+\begin_layout Standard
+VERIF_GRID - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the name of the grid the verification was done on, ex.
+ G002.
+\end_layout
+
+\begin_layout Standard
+EVENT_EQUALIZATION - This variable is found under the [config] header/family
+ section of the METplus config file.
+ If set to True, if any of the listed models are missing data for a particular
+ time, data for all models will be masked out for this time.
+ If set to False, there are no changes to the data.
+\end_layout
+
+\begin_layout Standard
+The following values are optional in the METplus configuration file:
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_THRESH - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is a list of threshold for plotting verificating that cooresponds
+ to FCS_VARn_NAME.
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_OPTIONS - This variable is found under the [config] header/family
+ section of the METplus config file.
+ These are extra settings used to describe FCS_VARn_NAME.
+\end_layout
+
+\begin_layout Standard
+VARn_FOURIER_DECOMP - This variable is found under the [config] header/family
+ section of the METplus config file.
+ If this is set to True, plots will be made for the Fourier decomposition
+ of FCS_VARn_NAME.
+ This should have been previously run in grid_stat_wrapper.
+ The default value to False.
+\end_layout
+
+\begin_layout Standard
+VARn_WAVE_NUM_LIST - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is a list of the Fourier decomposition wave numbers to create plots
+ for.
+ 
+\end_layout
+
+\begin_layout Section
 mode_wrapper 
 \begin_inset CommandInset label
 LatexCommand label
@@ -1002,6 +1275,479 @@ name "sec:stat_analysis_wrapper"
 
 \end_layout
 
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+The stat_analysis_wrapper encapsulates the behavior of the MET stat_analysis
+ tool.
+ It provides the infrastructure to summarize and filter the MET .stat files.
+ stat_analysis_wrapper can be run in two different methods.
+ First is to look at the STAT lines for a single date, to use this method
+ set LOOP_ORDER = times.
+ Second is to look at the STAT lines over a span of dates, to use this method
+ set LOOP_ORDER = processes.
+ To run stat_analysis_wrapper, include StatAnalysis in PROCESS_LIST.
+\end_layout
+
+\begin_layout Subsection
+Configuration
+\end_layout
+
+\begin_layout Standard
+The following values must be defined in the METplus configuration file for
+ running with LOOP_ORDER = times:
+\end_layout
+
+\begin_layout Standard
+STAT_ANALYSIS_LOOKIN_DIR - This variable is found under the [dir] header/family
+ section of the METplus config file.
+ This is the directory that the stat_analysis wrapper will use to build
+ the agrument to -lookin for the MET stat_analysis tool.
+ It can contain wildcards, i.e.
+ *.
+\end_layout
+
+\begin_layout Standard
+STAT_ANALYSIS_OUTPUT_DIR - This variable is found under the [dir] header/family
+ section of the METplus config file.
+ This is the base directory where the output from running stat_analysis_wrapper
+ will be put.
+\end_layout
+
+\begin_layout Standard
+LOOP_BY - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This defines the way to treat the looping of the date information.
+\end_layout
+
+\begin_layout Standard
+VALID/INIT_TIME_FMT - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This describes the formating of the BEG and END dates, ex.
+ %Y%m%d.
+\end_layout
+
+\begin_layout Standard
+VALID/INIT_BEG - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the starting date in the format set in the TIME_FMT.
+ It is named accordingly to the value set for LOOP_BY.
+\end_layout
+
+\begin_layout Standard
+VALID/INIT_END - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the starting date in the format set in the TIME_FMT.
+ It is named accordingly to the value set for LOOP_BY.
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_METHOD - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This specifies the way to treat the valid hour information.
+ Valid options are LOOP or GROUP.
+ LOOP will consider the valid hours individually, and GROUP will consider
+ them valid hours as a whole.
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_BEG - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the starting in HHMM form.
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_END - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the ending valid hour in HHMM form.
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_INCREMENT - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the increment used build the list of all valid hours to be used.
+ This is an integer defined in seconds.
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_METHOD - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This specifies the way to treat the initialization hour information.
+ Valid options are LOOP or GROUP.
+ LOOP will consider the initialization hours individually, and GROUP will
+ consider them as a whole.
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_BEG - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the starting initialization hour in HHMM form.
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_END - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the ending initialization hour in HHMM form.
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_INCREMENT - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the increment used build the list of all initialization hours to
+ be used.
+ This is an integer defined in seconds.
+\end_layout
+
+\begin_layout Standard
+STAT_ANALYSIS_CONFIG - This variable is found under the [config] header/family
+ section of the METplus config file.
+ It is recommended to set this to {PARM_BASE}/use_cases/plotting/met_config/STAT
+AnalysisConfig.
+ 
+\end_layout
+
+\begin_layout Standard
+MODEL - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the model name.
+ Particularly, this is the model name listed in the MET .stat files.
+\end_layout
+
+\begin_layout Standard
+OBTYPE - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the observation type.
+ Particularly, this is the observation time listed in the MET .stat files.
+\end_layout
+
+\begin_layout Standard
+JOB_NAME - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the MET stat_analysis job name that is to be run.
+ Valid options are filter, summary, aggregate, aggregate_stat, go_index,
+ and ramp.
+ For more information on these job names and what they do, please see the
+ MET Users Guide.
+\end_layout
+
+\begin_layout Standard
+JOB_ARGS - This variable is found under the [config] header/family section
+ of the METplus config file.
+ The job agruments that are to be run with the cooresponding JOB_NAME.
+ If using -dump_row, use -dump_row [dump_row_filename].
+ If using -out_stat, -out_stat [out_stat_filename].
+ For more information on these job agruments, please see the MET Users Guide.
+\end_layout
+
+\begin_layout Standard
+The following values are optional in the METplus configuration file for
+ running with LOOP_ORDER = times:
+\end_layout
+
+\begin_layout Standard
+DESC - This variable is found under the [config] header/family section of
+ the METplus config file.
+ A single value or list of values used in the stat_analysis data stratification.
+\end_layout
+
+\begin_layout Standard
+FCST_LEAD - This variable is found under the [config] header/family section
+ of the METplus config file.
+ A single value or list of values used in the stat_analysis data stratification.
+\end_layout
+
+\begin_layout Standard
+FCST_VAR_NAME - This variable is found under the [config] header/family
+ section of the METplus config file.
+ A single value or list of values used in the stat_analysis data stratification.
+\end_layout
+
+\begin_layout Standard
+FCST_VAR_LEVEL - This variable is found under the [config] header/family
+ section of the METplus config file.
+ A single value or list of values used in the stat_analysis data stratification.
+\end_layout
+
+\begin_layout Standard
+OBS_VAR_NAME - This variable is found under the [config] header/family section
+ of the METplus config file.
+ A single value or list of values used in the stat_analysis data stratification.
+\end_layout
+
+\begin_layout Standard
+OBS_VAR_LEVEL - This variable is found under the [config] header/family
+ section of the METplus config file.
+ A single value or list of values used in the stat_analysis data stratification.
+\end_layout
+
+\begin_layout Standard
+REGION - This variable is found under the [config] header/family section
+ of the METplus config file.
+ A single value or list of values used in the stat_analysis data stratification.
+\end_layout
+
+\begin_layout Standard
+INTERP - This variable is found under the [config] header/family section
+ of the METplus config file.
+ A single value or list of values used in the stat_analysis data stratification.
+\end_layout
+
+\begin_layout Standard
+INTERP_PTS - This variable is found under the [config] header/family section
+ of the METplus config file.
+ A single value or list of values used in the stat_analysis data stratification.
+\end_layout
+
+\begin_layout Standard
+FCST_THRESH - This variable is found under the [config] header/family section
+ of the METplus config file.
+ A single value or list of values used in the stat_analysis data stratification.
+\end_layout
+
+\begin_layout Standard
+COV_THRESH - This variable is found under the [config] header/family section
+ of the METplus config file.
+ A single value or list of values used in the stat_analysis data stratification.
+\end_layout
+
+\begin_layout Standard
+LINE_TYPE - This variable is found under the [config] header/family section
+ of the METplus config file.
+ A single value or list of values used in the stat_analysis data stratification.
+\end_layout
+
+\begin_layout Standard
+STAT_ANALYSIS_DUMP_ROW_TMPL - This variable is found under the [filename_templat
+es] header/family section of the METplus config file.
+ A user customized template to use for the dump_row file.
+ If left blank and a dump_row file is requested, a default version will
+ be used.
+\end_layout
+
+\begin_layout Standard
+STAT_ANALYSIS_OUT_STAT_TMPL - This variable is found under the [filename_templat
+es] header/family section of the METplus config file.
+ A user customized template to use for the out_stat file.
+ If left blank and a out_stat file is requested, a default version will
+ be used.
+\end_layout
+
+\begin_layout Standard
+The following values must be defined in the METplus configuration file for
+ running with LOOP_ORDER = processes:
+\end_layout
+
+\begin_layout Standard
+STAT_ANALYSIS_OUTPUT_DIR - This variable is found under the [dir] header/family
+ section of the METplus config file.
+ This is the base directory where the output from running stat_analysis_wrapper
+ will be put.
+\end_layout
+
+\begin_layout Standard
+VERIF_CASE - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the specific use case being run.
+ Valid options are grid2grid, grid2obs, and precip.
+\end_layout
+
+\begin_layout Standard
+VERIF_TYPE - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the type of verification being run for the specific use case.
+ For VERIF_CASE = grid2grid, valid options are anom, pres, and sfc.
+ For VERIF_CASE = grid2obs, valid options are conus_sfc and upper_air.
+ For VERIF_CASE = precip, any accumulation amount is valid, ex.
+ A24.
+\end_layout
+
+\begin_layout Standard
+PLOT_TIME - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This specifies the way to treat the date information.
+ Valid options are valid and init.
+\end_layout
+
+\begin_layout Standard
+VALID/INIT_BEG - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the starting date in YYYYMMDD form.
+ It is named accordingly to the value set for PLOT_TIME.
+\end_layout
+
+\begin_layout Standard
+VALID/INIT_END - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the ending date in YYYYMMDD form.
+ It is named accordingly to the value set for PLOT_TIME.
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_METHOD - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This specifies the way to treat the valid hour information.
+ Valid options are LOOP or GROUP.
+ LOOP will consider the valid hours individually, and GROUP will consider
+ them valid hours as a whole.
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_BEG - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the starting valid hour in HHMM form.
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_END - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the ending valid hourin HHMM form.
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_INCREMENT - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the increment used build the list of all valid hours to be used.
+ This is an integer defined in seconds.
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_METHOD - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This specifies the way to treat the initialization hour information.
+ Valid options are LOOP or GROUP.
+ LOOP will consider the initialization hours individually, and GROUP will
+ consider them as a whole.
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_BEG - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the starting initialization hour in HHMM form.
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_END - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the ending initialization hour in HHMM form.
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_INCREMENT - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the increment used build the list of all initialization hours to
+ be used.
+ This is an integer defined in seconds.
+\end_layout
+
+\begin_layout Standard
+STAT_ANALYSIS_CONFIG - This variable is found under the [config] header/family
+ section of the METplus config file.
+ It is recommended to set this to {PARM_BASE}/use_cases/plotting/met_config/STAT
+AnalysisConfig.
+ 
+\end_layout
+
+\begin_layout Standard
+MODELn_NAME - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the name of the model.
+ Particularly, this is the model name listed in the MET .stat files.
+\end_layout
+
+\begin_layout Standard
+MODELn_OBS_NAME - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the name of the observations that were used as truth to compare
+ MODELn_NAME to.
+ Particularly, this is the observation name listed in the MET .stat files.
+\end_layout
+
+\begin_layout Standard
+MODELn_NAME_ON_PLOT - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the name that will appear on the plots for MODELn_NAME and is used
+ to define subsequent data paths pertaining to MODELn_NAME.
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_NAME - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the variable name 
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_LEVELS - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is the list of variable levels that coorespond to FCST_VARn_NAME.
+\end_layout
+
+\begin_layout Standard
+REGION_LIST - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the list of regions for plotting verification.
+ 
+\end_layout
+
+\begin_layout Standard
+LEAD_LIST - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the list of forecast hour leads for plotting verification.
+\end_layout
+
+\begin_layout Standard
+INTERP - This variable is found under the [config] header/family section
+ of the METplus config file.
+ This is the type of interpolation the verification was done on.
+ It cooresponds to the interpolation in the MET .stat files.
+\end_layout
+
+\begin_layout Standard
+LINE_TYPE - This variable is found under the [config] header/family section
+ of the METplus config file.
+ A single value or list of values used in the stat_analysis data stratification.
+\end_layout
+
+\begin_layout Standard
+The following values are optional in the METplus configuration file for
+ running with LOOP_ORDER = processes:
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_THRESH - This variable is found under the [config] header/family
+ section of the METplus config file.
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_THRESH - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is a list of thresholds that cooresponds to FCS_VARn_NAME.
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_OPTIONS - This variable is found under the [config] header/family
+ section of the METplus config file.
+ These are extra settings used to describe FCS_VARn_NAME.
+\end_layout
+
+\begin_layout Standard
+VARn_FOURIER_DECOMP - This variable is found under the [config] header/family
+ section of the METplus config file.
+ If this is set to True, data stratification will be done for the Fourier
+ decomposition of FCS_VARn_NAME.
+ This should have been previously run in grid_stat_wrapper.
+ The default value to False.
+\end_layout
+
+\begin_layout Standard
+VARn_WAVE_NUM_LIST - This variable is found under the [config] header/family
+ section of the METplus config file.
+ This is a list of the Fourier decomposition wave numbers to do data stratificat
+ion.
+ 
+\end_layout
+
 \begin_layout Section
 tc_pairs_wrapper 
 \begin_inset CommandInset label
@@ -1018,7 +1764,7 @@ Description
 \end_layout
 
 \begin_layout Standard
-The tc_pairs_wrapper encapsulates the behavior of the the MET tc_pairs tool.
+The tc_pairs_wrapper encapsulates the behavior of the MET tc_pairs tool.
  The wrapper accepts Adeck and Bdeck (Best track) cyclone track data in
  extra tropical cyclone format (such as the data used by sample data provided
  in the METplus tutorial), or ATCF formatted track data.

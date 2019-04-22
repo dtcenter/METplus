@@ -140,7 +140,7 @@ This User's Guide was prepared by the developers of the METplus, including
 \end_layout
 
 \begin_layout Section*
-New for METplus v2.0
+New for METplus v2.1
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:New-for-METplus"
@@ -148,6 +148,52 @@ name "sec:New-for-METplus"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+METplus v2.1 Release Notes:
+\end_layout
+
+\begin_layout Standard
+Configuration:
+\end_layout
+
+\begin_layout Itemize
+Added gather_by_date.conf for grid-to-grid and grid-to-obs use cases
+\end_layout
+
+\begin_layout Itemize
+Created specific directory for plotting use case config files
+\end_layout
+
+\begin_layout Standard
+Wrapper specific:
+\end_layout
+
+\begin_layout Itemize
+make_plots_wrapper.py
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Reworked following the changes to the work done on stat_analysis_wrapper.py
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+stat_analysis_wrapper.py
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Reworked to give users greater use of the MET stat_analysis tool
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+General:
 \end_layout
 
 \begin_layout Standard

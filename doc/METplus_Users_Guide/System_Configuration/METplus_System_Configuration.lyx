@@ -1424,6 +1424,57 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+CI_METHOD
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+The method for creating confidence intervals.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
 CIRCLE_MARKER_SIZE
 \series default
 
@@ -1554,7 +1605,7 @@ Used by:
 \series default
 \shape default
  compare_gridded_wrapper.py, ensemble_stat_wrapper.py, grid_stat_wrapper.py,
- mode_wrapper.py
+ mode_wrapper.py, stat_analysis_wrapper.py
 \series bold
 \shape italic
 
@@ -1730,6 +1781,63 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+COV_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the values of the COV_THRESH column in the MET .stat file to use.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
 CROSS_MARKER_SIZE
 \series default
 
@@ -2447,6 +2555,63 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+DESC
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the values of the DESC column in the MET .stat file to use.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
 DLAND_FILE
 \series default
 
@@ -2962,6 +3127,63 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+EVENT_EQUALIZATION
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+If event equalization is to be used (True) or not (False).
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ True
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
 EXTRACT_OUT_DIR
 \series default
 
@@ -4328,6 +4550,67 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+FCST_LEAD
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the values of the FCST_LEAD column in the MET .stat file to use.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 FCST_LEVEL
 \series default
 
@@ -5644,6 +5927,67 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+FCST_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the values of the FCST_THRESH column in the MET .stat file to use.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_lead_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 FCST_TILE_PREFIX
 \series default
 
@@ -5788,6 +6132,123 @@ Used by:
 \shape default
  compare_gridded_wrapper.py, ensemble_stat_wrapper.py, make_plots_wrapper.py,
  met_util.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR_LEVEL
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the values of the FCST_VAR_LEVEL column in the MET .stat file to
+ use.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR_NAME
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the values of the FCST_VAR_NAME column in the MET .stat file to use.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_wrapper.py
 \series bold
 \shape italic
 
@@ -6207,7 +6668,7 @@ FCST_VAR[N]_THRESH
 Used by:
 \series default
 \shape default
- met_util.py
+ make_plots_wrapper.py, met_util.py
 \series bold
 \shape italic
 
@@ -6893,75 +7354,6 @@ Family:
 \series default
 \shape default
  [filename_templates]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-FOURIER_HEIGHT_DECOMP
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify whether to perform a Fourier height decomposition or not.
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-Acceptable values: true/false
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
 \series bold
 \shape italic
 
@@ -7841,68 +8233,6 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-INIT_BEG_HOUR
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify the beginning initialization hour to be used in the analysis.
- Format is HH.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
 INIT_END
 \series default
 
@@ -7922,68 +8252,6 @@ Used by:
 \shape default
  command_builder.py, extract_tiles_wrapper.py, make_plots_wrapper.py, master_metplu
 s.py, stat_analysis_wrapper.py, tc_pairs_wrapper.py, tc_stat_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-INIT_END_HOUR
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify the ending initialization hour to be used in the analysis.
- Format is HH.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
 \series bold
 \shape italic
 
@@ -8089,14 +8357,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-INIT_HOUR_END
+INIT_HOUR_BEG
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the ending initialization hour to be used in the analysis.
- Format is HH.
+Specify the beginning initialization hour to be used in the analysis.
+ Format is HHMM.
 \end_layout
 
 \begin_layout Standard
@@ -8106,7 +8374,7 @@ Specify the ending initialization hour to be used in the analysis.
 Used by:
 \series default
 \shape default
- extract_tiles_wrapper.py, tc_pairs_wrapper.py, tc_stat_wrapper.py
+ make_plots_wrapper.py, stat_analysis_wrapper.py
 \series bold
 \shape italic
 
@@ -8137,6 +8405,173 @@ Default:
 \series default
 \shape default
 
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+INIT_HOUR_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the ending initialization hour to be used in the analysis.
+ Format is HH or HHMM.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ extract_tiles_wrapper.py, make_plots_wrapper.py, stat_analysis_wrapper.py,
+ tc_pairs_wrapper.py, tc_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+INIT_HOUR_INCREMENT
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify a time increment for valid times for use in the analysis.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py, stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+INIT_HOUR_METHOD
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the method for the treatment of valid hours.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py, stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
 \begin_inset CommandInset line
 LatexCommand rule
 offset "0.5ex"
@@ -8325,6 +8760,112 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+INTERP
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the interpolation used to create the MET .stat files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py, stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+ 
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+INTERP_PTS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the number of interpolation used to create the MET .stat files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py, stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+ 
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
 INTERVAL_TIME
 \series default
 
@@ -8382,6 +8923,140 @@ J
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:SC_J"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+JOB_ARGS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify stat_analysis job arguments to run.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+JOB_NAME
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify stat_analysis job name to run.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
 
 \end_inset
 
@@ -8759,6 +9434,63 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+LINE_TYPE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the MET STAT line types to be considered.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ tcmpr_plotter_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
 LOG_DIR
 \series default
 
@@ -9316,15 +10048,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-LOOP_BY_INIT
+LOOP_BY
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Control whether the analysis is processed across initialization times or
- not.
- If set to false, loop by valid time
+Control whether the analysis is processed across valid or initialization
+ times.
 \end_layout
 
 \begin_layout Standard
@@ -9381,13 +10112,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-LOOP_METHOD
+LOOP_ORDER
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Control the looping method for METplus.
+Control the looping order for METplus.
  Valid options are 
 \begin_inset Quotes eld
 \end_inset
@@ -9434,7 +10165,8 @@ processes
 Used by:
 \series default
 \shape default
- master_metplus.py, pb2nc_wrapper.py, point_stat_wrapper.py
+ make_plots_wrapper.py, master_metplus.py, pb2nc_wrapper.py, point_stat_wrapper.py,
+ stat_analysis_wrapper.py
 \series bold
 \shape italic
 
@@ -10130,7 +10862,196 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MODEL1_DIR
+MODEL1_NAME_ON_PLOT
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Define the name he first model will be listed as on the plots.
+ There can be N number of models defined in configuration files, simply
+ increment the 
+\begin_inset Quotes eld
+\end_inset
+
+MODEL1_
+\begin_inset Quotes erd
+\end_inset
+
+ string to match the total number of models being used, e.g.:
+\begin_inset Newline newline
+\end_inset
+
+MODEL1_NAME_ON_PLOT
+\begin_inset Newline newline
+\end_inset
+
+MODEL2_NAME_ON_PLOT
+\begin_inset Newline newline
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+MODELN_NAME_ON_PLOT
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py, stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+ 
+\shape default
+Varies
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODEL1_OBS_NAME
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Define the observation name that was used to compare the first model to
+ be.
+ There can be N number of observation names defined in configuration files,
+ simply increment the 
+\begin_inset Quotes eld
+\end_inset
+
+MODEL1_
+\begin_inset Quotes erd
+\end_inset
+
+ string to match the total number of models being used, e.g.:
+\begin_inset Newline newline
+\end_inset
+
+MODEL1_OBS_NAME
+\begin_inset Newline newline
+\end_inset
+
+MODEL2_OBS_NAME
+\begin_inset Newline newline
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+MODELN_OBS_NAME
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py, stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+ 
+\shape default
+Varies
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODEL1_STAT_DIR
 \series default
 
 \begin_inset Newline newline
@@ -14653,6 +15574,132 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+OBS_VAR_LEVEL
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the values of the OBS_VAR_LEVEL column in the MET .stat file to use.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_VAR_NAME
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the values of the OBS_VAR_NAME column in the MET .stat file to use.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 OBS_VAR[N]_LEVELS
 \series default
 
@@ -15971,7 +17018,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-PLOTTING_OUT_DIR
+PLOTTING_OUTPUT_DIR
 \series default
 
 \begin_inset Newline newline
@@ -16201,6 +17248,63 @@ Default:
 \begin_inset Newline newline
 \end_inset
 
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PLOT_TIME
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the treatment of the plotting dates/times.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ tcmpr_plotter_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
 
 \begin_inset Newline newline
 \end_inset
@@ -17175,6 +18279,64 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+REGION
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the values of the VX_MASK column in the MET .stat file to use.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
 REGION_LIST
 \series default
 
@@ -18695,6 +19857,67 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+STAT_ANALYSIS_DUMP_ROW_TMPL
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the template to use for the stat_analysis dump_row file.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 STAT_ANALYSIS_LOOKIN_DIR
 \series default
 
@@ -18757,7 +19980,64 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-STAT_ANALYSIS_OUT_DIR
+STAT_ANALYSIS_OUT_STAT_TMPL
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the template to use for the stat_analysis out_stat file.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+STAT_ANALYSIS_OUTPUT_DIR
 \series default
 
 \begin_inset Newline newline
@@ -22966,75 +24246,6 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-VALID_BEG_HOUR
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify a beginning hour for valid times for use in the analysis.
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-Acceptable formats: HH
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
 VALID_END
 \series default
 
@@ -23105,7 +24316,76 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-VALID_END_HOUR
+VALID_HOUR_BEG
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify a beginning hour for valid times for use in the analysis.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Acceptable formats: HHMM
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py, stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+VALID_HOUR_END
 \series default
 
 \begin_inset Newline newline
@@ -23119,7 +24399,143 @@ Specify an end hour for valid times for use in the analysis.
 \begin_inset Newline newline
 \end_inset
 
-Acceptable formats: controlled via VALID_TIME_FMT
+Acceptable formats: HHMM
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py, stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+VALID_HOUR_INCREMENT
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify a time increment for valid times for use in the analysis.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Acceptable formats: seconds
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py, stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+VALID_HOUR_METHOD
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the method for the treatment of valid hours.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Acceptable formats: LOOP or GROUP
 \end_layout
 
 \begin_layout Standard
@@ -23367,6 +24783,129 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+VARn_FOURIER_DECOMP
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify if Fourier decomposition is to be considered (True) or not (False).
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py, stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ False
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+VARn_WAVE_NUM_LIST
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify a comma separated list of wave numbers pairings of the Fourier decomposi
+tion.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py, stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 VERIFICATION_GRID
 \series default
 
@@ -23490,6 +25029,63 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+VERIF_GRID
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify a string describing the grid the verification was performed on.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ make_plots_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
 VERIF_TYPE
 \series default
 
@@ -23615,128 +25211,6 @@ name "sec:SC_W"
 \end_layout
 
 \begin_layout Standard
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-WAVE_NUM_BEG_LIST
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify a comma separated list of desired beginning wave numbers.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-WAVE_NUM_END_LIST
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify a comma separated list of desired ending wave numbers.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
 \begin_inset CommandInset line
 LatexCommand rule
 offset "0.5ex"
