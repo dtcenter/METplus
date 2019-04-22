@@ -332,7 +332,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 else:
                     model_plot_name = model_name
                 if self.config.has_option('config', "MODEL"+m+"_STAT_DIR"):
-                    model_dir = util.getraw_interp(self.config, 'config', "MODEL"+m+"_STAT_DIR")
+                    model_dir = self.config.getraw('config', "MODEL"+m+"_STAT_DIR")
                 else:
                     self.logger.error("MODEL"+m+"_STAT_DIR not defined in METplus conf file")
                     exit(1)
@@ -447,7 +447,7 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         #read config
         model_name = self.config.getstr('config', 'MODEL')
-        obs_name = self.config.getstr('config', 'OBS_NAME')
+        obs_name = self.config.getstr('config', 'OBTYPE')
         valid_hour_method = self.config.getstr('config', 'VALID_HOUR_METHOD')
         valid_hour_beg = self.config.getstr('config', 'VALID_HOUR_BEG')
         valid_hour_end = self.config.getstr('config', 'VALID_HOUR_END')
@@ -456,8 +456,8 @@ class StatAnalysisWrapper(CommandBuilder):
         init_hour_beg = self.config.getstr('config', 'INIT_HOUR_BEG')
         init_hour_end = self.config.getstr('config', 'INIT_HOUR_END')
         init_hour_increment = self.config.getstr('config', 'INIT_HOUR_INCREMENT')
-        stat_analysis_lookin_dir = util.getdir(self.config, 'STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = util.getdir(self.config, 'STAT_ANALYSIS_OUTPUT_DIR')
+        stat_analysis_lookin_dir = self.config.getdir('STAT_ANALYSIS_LOOKIN_DIR')
+        stat_analysis_out_dir = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR')
         stat_analysis_config = self.config.getstr('config', 'STAT_ANALYSIS_CONFIG')
         job_name = self.config.getstr('config', 'JOB_NAME')
         job_args = self.config.getstr('config', 'JOB_ARGS')
@@ -502,7 +502,7 @@ class StatAnalysisWrapper(CommandBuilder):
         #set up stat_analysis output options based conf file info
         stat_analysis_dump_row_info = self.StatAnalysisOutputInfo()
         if "-dump_row" in job_args:
-            stat_analysis_dump_row_tmpl = util.getraw_interp(self.config, 'filename_templates','STAT_ANALYSIS_DUMP_ROW_TMPL')
+            stat_analysis_dump_row_tmpl = self.config.getraw('filename_templates','STAT_ANALYSIS_DUMP_ROW_TMPL')
             if len(stat_analysis_dump_row_tmpl) == 0:
                 self.logger.debug("-dump_row requested but no STAT_ANALYSIS_DUMP_ROW_TMPL in conf file under filename_templates....using code default")
                 stat_analysis_dump_row_info.template_type = "default_template"
@@ -521,7 +521,7 @@ class StatAnalysisWrapper(CommandBuilder):
             stat_analysis_dump_row_info.filename = "NA"
         stat_analysis_out_stat_info = self.StatAnalysisOutputInfo()
         if "-out_stat" in job_args:
-            stat_analysis_out_stat_tmpl = util.getraw_interp(self.config, 'filename_templates','STAT_ANALYSIS_OUT_STAT_TMPL')
+            stat_analysis_out_stat_tmpl = self.config.getraw('filename_templates','STAT_ANALYSIS_OUT_STAT_TMPL')
             if len(stat_analysis_out_stat_tmpl) == 0:
                 self.logger.debug("-out_stat requested but no STAT_ANALYSIS_OUT_STAT_TMPL in conf file under filename_templates....using code default")
                 stat_analysis_out_stat_info.template_type = "default_template"
@@ -585,7 +585,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.add_env_var(name, value)
                     self.logger.debug(name+": "+value)
                 self.logger.debug('MODEL: '+'"'+model_name+'"')
-                self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
+                self.logger.debug('OBTYPE: '+'"'+obs_name+'"')
                 self.logger.debug('DESC: '+self.create_variable_list(desc))
                 self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
                 self.logger.debug('FCST_VAR_NAME: '+self.create_variable_list(fcst_var_name))
@@ -647,7 +647,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.add_env_var(name, value)
                     self.logger.debug(name+": "+value)
                 self.logger.debug('MODEL: '+'"'+model_name+'"')
-                self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
+                self.logger.debug('OBTYPE: '+'"'+obs_name+'"')
                 self.logger.debug('DESC: '+self.create_variable_list(desc))
                 self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
                 self.logger.debug('FCST_VAR_NAME: '+self.create_variable_list(fcst_var_name))
@@ -711,7 +711,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         self.add_env_var(name, value)
                         self.logger.debug(name+": "+value)
                     self.logger.debug('MODEL: '+'"'+model_name+'"')
-                    self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
+                    self.logger.debug('OBTYPE: '+'"'+obs_name+'"')
                     self.logger.debug('DESC: '+self.create_variable_list(desc))
                     self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
                     self.logger.debug('FCST_VAR_NAME: '+self.create_variable_list(fcst_var_name))
@@ -772,7 +772,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.add_env_var(name, value)
                 self.logger.debug(name+": "+value)
             self.logger.debug('MODEL: '+'"'+model_name+'"')
-            self.logger.debug('OBS_NAME: '+'"'+obs_name+'"')
+            self.logger.debug('OBTYPE: '+'"'+obs_name+'"')
             self.logger.debug('DESC: '+self.create_variable_list(desc))
             self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
             self.logger.debug('FCST_VAR_NAME: '+self.create_variable_list(fcst_var_name))
@@ -824,7 +824,7 @@ class StatAnalysisWrapper(CommandBuilder):
         init_hour_beg = self.config.getstr('config', 'INIT_HOUR_BEG')
         init_hour_end = self.config.getstr('config', 'INIT_HOUR_END')
         init_hour_increment = self.config.getstr('config', 'INIT_HOUR_INCREMENT')
-        stat_analysis_out_dir = util.getdir(self.config, 'STAT_ANALYSIS_OUTPUT_DIR')
+        stat_analysis_out_dir = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR')
         stat_analysis_config = self.config.getstr('config', 'STAT_ANALYSIS_CONFIG')
         model_list = self.parse_model_list()
         var_list = util.parse_var_list(self.config)
@@ -1040,7 +1040,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                     self.logger.debug("REGION: "+region)
                                     self.logger.debug("FCST_LEAD: "+lead)
                                     self.logger.debug("MODEL: "+model_name)
-                                    self.logger.debug("OBS_NAME: "+obs_name)
+                                    self.logger.debug("OBTYPE: "+obs_name)
                                     self.logger.debug("LINE_TYPE: "+self.create_variable_list(line_type))
                                     self.logger.debug("JOB: "+job)
                                     self.logger.debug("lookin directory: "+for_stat_analysis_lookin)

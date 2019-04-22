@@ -1160,6 +1160,14 @@ USAGE: This is a default process, please indicate more specific processes
 - PointStat
 \end_layout
 
+\begin_layout Plain Layout
+- StatAnalysis
+\end_layout
+
+\begin_layout Plain Layout
+- MakePlots
+\end_layout
+
 \end_inset
 
 
