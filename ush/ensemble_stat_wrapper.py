@@ -128,7 +128,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
 
     def run_at_time_one_field(self, time_info):
-        self.logger("ERROR: run_at_time_one_field not implemented yet for {}"
+        self.logger.error("run_at_time_one_field not implemented yet for {}"
                     .format(self.app_name))
         exit()
 
