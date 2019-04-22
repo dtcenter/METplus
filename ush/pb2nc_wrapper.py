@@ -107,9 +107,11 @@ class PB2NCWrapper(CommandBuilder):
         c_dict['TIME_SUMMARY_TYPES'] = util.getlist(
             self.config.getstr('config', 'PB2NC_TIME_SUMMARY_TYPES'))
         c_dict['OBS_WINDOW_BEGIN'] = \
-          self.config.getint('config', 'PB2NC_WINDOW_BEGIN', 0)
+          self.config.getint('config', 'PB2NC_WINDOW_BEGIN',
+                             self.config.getint('config', 'OBS_WINDOW_BEGIN', 0))
         c_dict['OBS_WINDOW_END'] = \
-          self.config.getint('config', 'PB2NC_WINDOW_END', 0)
+          self.config.getint('config', 'PB2NC_WINDOW_END',
+                             self.config.getint('config', 'OBS_WINDOW_END', 0))
 
         c_dict['VERTICAL_LOCATION'] = self.config.getstr('config',
                                                      'PB2NC_VERTICAL_LOCATION')
