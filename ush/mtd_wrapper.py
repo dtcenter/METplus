@@ -128,7 +128,6 @@ class MTDWrapper(ModeWrapper):
                 @param valid_time valid time to run. -1 if not set
         """        
         var_list = util.parse_var_list(self.config)
-#        current_task = TaskInfo()
 #        max_lookback = self.c_dict['MAX_LOOKBACK']
 #        file_interval = self.c_dict['FILE_INTERVAL']
 

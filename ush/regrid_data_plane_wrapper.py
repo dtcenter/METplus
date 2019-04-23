@@ -22,7 +22,6 @@ import re
 import csv
 import subprocess
 import string_template_substitution as sts
-from task_info import TaskInfo
 from reformat_gridded_wrapper import ReformatGriddedWrapper
 
 '''!@namespace RegridDataPlaneWrapper

@@ -144,6 +144,15 @@ def check_for_deprecated_config(p, logger):
         exit(1)
 
 
+def skip_time(time_info, config):
+    # never skip until this is implemented correctly
+    return False
+
+    # get list of times to skip
+
+    # check skip times against current time_info object and skip if it matches
+
+
 def write_final_conf(conf, logger):
     confloc = conf.getloc('METPLUS_CONF')
     logger.info('%s: write metplus.conf here' % (confloc,))

@@ -25,7 +25,6 @@ import datetime
 import time
 import calendar
 import string_template_substitution as sts
-from task_info import TaskInfo
 from command_builder import CommandBuilder
 
 
