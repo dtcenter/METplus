@@ -95,17 +95,6 @@ This chapter provides a description of each supported Python wrapper in
 \end_layout
 
 \begin_layout Section
-compare_ensemble_wrapper 
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:compare_ensemble_wrapper"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section
 compare_gridded_wrapper 
 \begin_inset CommandInset label
 LatexCommand label
@@ -114,6 +103,17 @@ name "sec:compare_gridded_wrapper"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+This file contains the parent class for EnsembleStatWrapper, GridStatWrapper,
+ ModeWrapper, PointStatWrapper, and WaveletStatWrapper.
+ It contains functionality that can be utilized by multiple wrappers that
+ perform comparisons.
 \end_layout
 
 \begin_layout Section
@@ -127,6 +127,10 @@ name "sec:cyclone_plotter_wrapper"
 
 \end_layout
 
+\begin_layout Subsection
+Description
+\end_layout
+
 \begin_layout Section
 ensemble_stat_wrapper 
 \begin_inset CommandInset label
@@ -136,6 +140,14 @@ name "sec:ensemble_stat_wrapper"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+Used to configure the MET tool ensemble_stat.
 \end_layout
 
 \begin_layout Section
@@ -226,6 +238,25 @@ py script is run.
 \end_layout
 
 \begin_layout Section
+gempak_to_cf_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:gempak_to_cf_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+Used to configure the utility GempakToCF.
+\end_layout
+
+\begin_layout Section
 grid_stat_wrapper 
 \begin_inset CommandInset label
 LatexCommand label
@@ -234,6 +265,14 @@ name "sec:grid_stat_wrapper"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+Used to configure the MET tool grid_stat.
 \end_layout
 
 \begin_layout Section
@@ -520,6 +559,33 @@ name "sec:mode_wrapper"
 
 \end_layout
 
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+Used to configure the MET tool mode.
+\end_layout
+
+\begin_layout Section
+mtd_wrapper 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:mtd_wrapper"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+Used to configure the MET tool mtd (mode time domain).
+\end_layout
+
 \begin_layout Section
 pb2nc_wrapper
 \begin_inset CommandInset label
@@ -532,7 +598,7 @@ name "sec:pb2nc_wrapper"
 \end_layout
 
 \begin_layout Subsection
-3.8.1 Description
+Description
 \end_layout
 
 \begin_layout Standard
@@ -735,6 +801,97 @@ name "sec:pcp_combine_wrapper"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+The pcp_combine_wrapper is a Python script that encapsulates the MET pcp_combine
+ tool.
+ It provides the infrastructure to combine or extract from files to build
+ desired accumulations.
+\end_layout
+
+\begin_layout Subsection
+Configuration
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_IS_PROB
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_[N]_FIELD_NAME
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_DATA_INTERVAL
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_TIMES_PER_FILE
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_IS_DAILY_FILE
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_INPUT_DATATYPE
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_INPUT_DIR
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_INPUT_LEVEL
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_INPUT_TEMPLATE
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_OUTPUT_DIR
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_OUTPUT_TEMPLATE
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_METHOD
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_MIN_FORECAST
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_MAX_FORECASAT
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_RUN
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_STAT_LIST
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_PCP_COMBINE_DERIVE_LOOKBACK
+\end_layout
+
+\begin_layout Standard
+[FCST/OBS]_VAR[N]_[NAME/LEVEL/THRESH/OPTIONS]
+\end_layout
+
+\begin_layout Standard
+PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS
 \end_layout
 
 \begin_layout Section
@@ -979,6 +1136,16 @@ name "sec:reformat_gridded_wrapper"
 
 \end_layout
 
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+This is the parent class to wrappers that reformat data: GempakToCFWrapper
+ and RegridDataPlaneWrapper.
+ It contains functionality common to all of the child classes.
+\end_layout
+
 \begin_layout Section
 regrid_data_plane_wrapper 
 \begin_inset CommandInset label
@@ -988,6 +1155,14 @@ name "sec:regrid_data_plane_wrapper"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+Used to configure the MET tool regrid_data_plane.
 \end_layout
 
 \begin_layout Section
@@ -1982,6 +2157,14 @@ name "sec:tc_stat_wrapper"
 
 \end_layout
 
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+Used to configure the MET tool tc_stat.
+\end_layout
+
 \begin_layout Section
 tcmpr_plotter_wrapper 
 \end_layout
@@ -2147,6 +2330,14 @@ name "sec:wavelet_stat_wrapper"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Description
+\end_layout
+
+\begin_layout Standard
+NOTE: This wrapper has not been tested for use in METplus.
 \end_layout
 
 \end_body

@@ -168,6 +168,54 @@ Added gather_by_date.conf for grid-to-grid and grid-to-obs use cases
 Created specific directory for plotting use case config files
 \end_layout
 
+\begin_layout Itemize
+Added error checking so it is more clear what config items need to be added
+ or changed to run
+\end_layout
+
+\begin_layout Itemize
+Renamed many config variables for clarity
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Variables specific to a wrapper will contain the app name in the variable
+ name
+\end_layout
+
+\begin_layout Itemize
+Error message at startup listing all deprecated config items and the suggested
+ new item to use
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+MET configuration files updated to contain new default values that were
+ recently added
+\end_layout
+
+\begin_layout Itemize
+Current time environment variables set to be used in MET or METplus config
+ files if needed (See ...).
+\end_layout
+
+\begin_layout Itemize
+Added INIT_SEQ for looping by valid time to calculate forecast lead list
+ (instead of specifying with LEAD_SEQ)
+\end_layout
+
+\begin_layout Itemize
+Adding window begin and end variables for individual wrappers instead of
+ having the same window for every wrapper (See OBS_WINDOW_BEGIN and OBS_WINDOW_E
+ND in section 4.4 A-Z Config Glossary)
+\end_layout
+
+\begin_layout Itemize
+Added option to skip processing of a file in some wrappers (i.e.
+ pb2nc or regrid_data_plane) if the output file already exists (See PB2NC_SKIP_I
+F_OUTPUT_EXISTS in section 4.4 A-Z Config Glossary)
+\end_layout
+
 \begin_layout Standard
 Wrapper specific:
 \end_layout
@@ -192,8 +240,103 @@ Reworked to give users greater use of the MET stat_analysis tool
 \end_layout
 
 \end_deeper
+\begin_layout Itemize
+pcp_combine_wrapper.py
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Added support for -derive mode
+\end_layout
+
+\begin_layout Itemize
+Fixed bugs in -subtract mode and -sum mode
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+pb2nc_wrapper.py
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Refactored to allow looping by valid time and utilize filename templates
+ instead of regex
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+point_stat_wrapper.py
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Refactored to allow looping by valid time and utilize filename templates
+ instead of regex
+\end_layout
+
+\begin_layout Itemize
+Added verification mask and neighborhood width/shape configurations
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+ensemble_stat_wrapper.py
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Refactored to allow looping by valid time
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+grid_stat_wrapper.py
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Added verification mask and neighborhood width/shape configurations
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+series_by_lead_wrapper.py
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Changed configuration names for forecast hour to more closely match other
+ wrappers (See LEAD_SEQ_[N], LEAD_SEQ_[N]_LABEL, SERIES_BY_LEAD_GROUP_FCSTS,
+ and LEAD_SEQ in section 4.4 A-Z Config Glossary)
+\end_layout
+
+\end_deeper
 \begin_layout Standard
 General:
+\end_layout
+
+\begin_layout Itemize
+Improved string template substitution and extraction functionality to be
+ more flexible and to allow time shifting/truncating (See ...)
+\end_layout
+
+\begin_layout Itemize
+Improve timed handling so filename templates can be more flexible
+\end_layout
+
+\begin_layout Itemize
+Added 'now' time item to allow start and end time of run to be defined relative
+ to the current time at execution (See ...)
+\end_layout
+
+\begin_layout Itemize
+Logfiles now contains METplus version number and start/end logs to easily
+ discern multiple runs within a single log file
+\end_layout
+
+\begin_layout Itemize
+Various bug fixes
 \end_layout
 
 \begin_layout Standard
