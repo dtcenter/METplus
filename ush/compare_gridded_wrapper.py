@@ -90,6 +90,11 @@ that reformat gridded data
             self.config.set('config', 'CURRENT_LEAD_TIME', lead)
             os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
             time_info = time_util.ti_calculate(input_dict)
+
+            if util.skip_time(time_info, self.config):
+                self.logger.debug('Skipping run time')
+                continue
+
             # Run for given init/valid time and forecast lead combination
             self.run_at_time_once(time_info)
 
