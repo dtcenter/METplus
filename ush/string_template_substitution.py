@@ -624,7 +624,7 @@ class StringExtract:
         i = 0
         str_i = 0
         match_dict = {}
-        shift_dict = {}
+        valid_shift = 0
 
         while i < template_len:
             # if a tag is found, split contents and extract time
@@ -647,8 +647,25 @@ class StringExtract:
                         # extract string that corresponds to format
                     if items[0] == SHIFT_STRING:
                         shift = int(items[1])
-                        self.logger.warning("Shift for {} is {}. Shift not yet supported".format(identifier, shift))
-                        shift_dict[identifier] = shift
+#                        self.logger.warning("Shift for {} is {}. Shift not yet supported".format(identifier, shift))
+                        # don't allow shift on any identifier except valid
+                        if identifier != VALID_STRING:
+                            self.logger.error('Cannot apply a shift to template ' +
+                                              'item {} when processing inexact ' +
+                                              'times. Only {} is accepted'
+                                              .format(identifier, VALID_STRING))
+                            exit(1)
+
+                        # if shift has been set before (other than 0) and
+                        # this shift differs, report error and exit
+                        if valid_shift != 0 and shift != valid_shift:
+                            self.logger.error('Found multiple shifts for valid time' +
+                                              '{} differs from {}'
+                                              .format(shift, valid_shift))
+                            exit(1)
+
+                        # save valid shift to apply to valid time later
+                        valid_shift = shift
 
                     # check if duplicate formatters are found
                 i = end_i + 1
@@ -700,6 +717,10 @@ class StringExtract:
                 valid[key.split('+')[1]] = int(value)
 
         self.set_output_dict_from_time_info(valid, output_dict, 'valid')
+
+        # shift valid time if applicable
+        if valid_shift != 0:
+            output_dict['valid'] -= datetime.timedelta(seconds=valid_shift)
 
 
         for key, value in match_dict.iteritems():

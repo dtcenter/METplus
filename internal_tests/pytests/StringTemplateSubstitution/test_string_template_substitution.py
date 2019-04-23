@@ -566,7 +566,9 @@ def test_multiple_valid_substitution_init_complex():
     filename = ss.doStringSub()
     assert(filename == expected_filename)
 
-
+# NOTE: this test has a shift in init time, which may not be supported
+#  StringExtract will currently error out if it finds a shift that is not
+#  on valid time
 def test_shift_time():
     init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
     logger = logging.getLogger("testing")
@@ -576,6 +578,9 @@ def test_shift_time():
     filename = ss.doStringSub()
     assert(filename == expected_filename)
 
+# NOTE: this test has a shift in init time, which may not be supported
+#  StringExtract will currently error out if it finds a shift that is not
+#  on valid time
 def test_shift_time_negative():
     init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
     logger = logging.getLogger("testing")
@@ -585,6 +590,9 @@ def test_shift_time_negative():
     filename = ss.doStringSub()
     assert(filename == expected_filename)
 
+# NOTE: this test has a shift in lead time, which may not be supported
+#  StringExtract will currently error out if it finds a shift that is not
+#  on valid time
 def test_shift_time_lead_negative():
     init_string = datetime.datetime.strptime("2019020700", '%Y%m%d%H')
     lead_string = int("60") * 3600
@@ -594,6 +602,15 @@ def test_shift_time_lead_negative():
     ss = StringSub(logger, templ, init=init_string, lead=lead_string)
     filename = ss.doStringSub()
     assert(filename == expected_filename)
+
+def test_shift_time_extract():
+    valid_dt = datetime.datetime.strptime("2017060406", '%Y%m%d%H')
+    logger = logging.getLogger("testing")
+    templ = "{valid?fmt=%Y%m%d%H?shift=-21600}"
+    filename = "2017060400"
+    se = StringExtract(logger, templ, filename)
+    dt = se.parseTemplate()['valid']
+    assert(dt.strftime('%Y%m%d%H') == valid_dt.strftime('%Y%m%d%H'))
 
 def test_ccpa_template():
     passed = True
