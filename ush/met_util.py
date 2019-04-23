@@ -93,8 +93,6 @@ def check_for_deprecated_config(p, logger):
       'SERIES_LEAD_FILTERED_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'SERIES_BY_LEAD_FILTERED_OUTPUT_DIR'},
       'STAT_ANALYSIS_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'STAT_ANALYSIS_OUTPUT_DIR'},
       'TCMPR_PLOT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'TCMPR_PLOT_OUTPUT_DIR'},
-      'FCST_MIN_FORECAST' : { 'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_MIN_FORECAST'},
-      'FCST_MAX_FORECAST' : { 'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_MAX_FORECAST'},
       'OBS_MIN_FORECAST' : { 'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MIN_FORECAST'},
       'OBS_MAX_FORECAST' : { 'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MAX_FORECAST'},
       'FCST_INIT_INTERVAL' : { 'sec' : 'config', 'alt' : None},
