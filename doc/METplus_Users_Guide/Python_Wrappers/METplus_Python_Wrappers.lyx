@@ -663,36 +663,67 @@ The following executable paths need to be defined if they are not already
 \end_layout
 
 \begin_layout Standard
-WGRIB2 -path to the NOAA wgrib2 tool for reading and manipulating grib2
- files
+WGRIB2 -path to the NOAA 
+\emph on
+wgrib2
+\emph default
+ tool for reading and manipulating grib2 files
 \end_layout
 
 \begin_layout Standard
-RM - path to the Unix rm utility
+RM - path to the Unix 
+\emph on
+rm
+\emph default
+ utility
 \end_layout
 
 \begin_layout Standard
-CUT -path to the Unix cut utility
+CUT -path to the Unix 
+\emph on
+cut
+\emph default
+ utility
 \end_layout
 
 \begin_layout Standard
-TR - path to the Unix tr utility
+TR - path to the Unix 
+\emph on
+tr
+\emph default
+ utility
 \end_layout
 
 \begin_layout Standard
-NCAP2 - path to the NCO tool ncap2 utility
+NCAP2 - path to the NCO tool 
+\emph on
+ncap2
+\emph default
+ utility
 \end_layout
 
 \begin_layout Standard
-CONVERT - path to the Unix convert utility
+CONVERT - path to the Unix 
+\emph on
+convert
+\emph default
+ utility
 \end_layout
 
 \begin_layout Standard
-NCDUMP - path to the netCDF ncdump utility
+NCDUMP - path to the netCDF 
+\emph on
+ncdump
+\emph default
+ utility
 \end_layout
 
 \begin_layout Standard
-EGREP - path to the Unix egrep utility
+EGREP - path to the Unix 
+\emph on
+egrep
+\emph default
+ utility
 \end_layout
 
 \begin_layout Section
@@ -1304,7 +1335,7 @@ The following values must be defined in the METplus configuration file for
 STAT_ANALYSIS_LOOKIN_DIR - This variable is found under the [dir] header/family
  section of the METplus config file.
  This is the directory that the stat_analysis wrapper will use to build
- the agrument to -lookin for the MET stat_analysis tool.
+ the argument to -lookin for the MET stat_analysis tool.
  It can contain wildcards, i.e.
  *.
 \end_layout
@@ -1837,8 +1868,10 @@ INIT_EXCLUDE - The list of initialization times in YYYYMMDD_hh format to
 \begin_layout Standard
 TOP_LEVEL_DIRS - This defines how to run the MET tc-pairs tool.
  If set to 'yes', then the MET tc-pairs tools will search the input file
- directory and all its subdirectories for input data.
- If set to 'no', then 
+ directory and all its subdirectories for input data (ADeck and BDeck files).
+ If set to 'no', then the tc_pairs wrapper generates the matched ADeck and
+ BDeck files (based on beginning and end times of the time window of interest)
+ that the MET tc-pairs tools takes as input.
 \end_layout
 
 \begin_layout Standard
@@ -1951,13 +1984,158 @@ name "sec:tc_stat_wrapper"
 
 \begin_layout Section
 tcmpr_plotter_wrapper 
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:tcmpr_plotter_wrapper"
+\end_layout
 
-\end_inset
+\begin_layout Subsection
+Description
+\end_layout
 
+\begin_layout Standard
+The tcmpr_plotter_wrapper is a Python script that wraps the R script plot_tcmpr.R.
+ This script is usefule for plotting the calculated statistics for the output
+ from the MET-TC tools.
+ This script, and other R scripts are included in the MET installation.
+ Please refer to section 21.2.3 of the MET User's Guide for usage information.
+\end_layout
 
+\begin_layout Subsection
+Configuration
+\end_layout
+
+\begin_layout Standard
+The following are configuration settings that correspond to the tcmpr_plotter
+ wrapper.
+ A description of what these values represent are found in the appendix
+ in chapter 4, METplus System Configuration
+\end_layout
+
+\begin_layout Standard
+LOOP ORDER 
+\end_layout
+
+\begin_layout Standard
+CONFIG_FILE 
+\end_layout
+
+\begin_layout Standard
+PREFIX 
+\end_layout
+
+\begin_layout Standard
+TITLE 
+\end_layout
+
+\begin_layout Standard
+SUBTITLE 
+\end_layout
+
+\begin_layout Standard
+XLAB 
+\end_layout
+
+\begin_layout Standard
+YLAB
+\end_layout
+
+\begin_layout Standard
+XLIM
+\end_layout
+
+\begin_layout Standard
+YLIM
+\end_layout
+
+\begin_layout Standard
+FILTER
+\end_layout
+
+\begin_layout Standard
+FILTERED_TCST_DATA_FILE
+\end_layout
+
+\begin_layout Standard
+DEP_VARS 
+\end_layout
+
+\begin_layout Standard
+SCATTER_X
+\end_layout
+
+\begin_layout Standard
+SCATTER_Y
+\end_layout
+
+\begin_layout Standard
+SKILL_REF
+\end_layout
+
+\begin_layout Standard
+SERIES
+\end_layout
+
+\begin_layout Standard
+SERIES_CI
+\end_layout
+
+\begin_layout Standard
+LEGEND
+\end_layout
+
+\begin_layout Standard
+LEAD
+\end_layout
+
+\begin_layout Standard
+PLOT_TYPES
+\end_layout
+
+\begin_layout Standard
+RP_DIFF
+\end_layout
+
+\begin_layout Standard
+DEMO_YR
+\end_layout
+
+\begin_layout Standard
+HFIP_BASELINE
+\end_layout
+
+\begin_layout Standard
+FOOTNOTE_FLAG
+\end_layout
+
+\begin_layout Standard
+PLOT_CONFIG_OPTS
+\end_layout
+
+\begin_layout Standard
+SAVE_DATA
+\end_layout
+
+\begin_layout Standard
+The following are TCMPR flags, if set to 'no', then don't set flag, if set
+ to 'yes', then set the flag
+\end_layout
+
+\begin_layout Standard
+NO_EE
+\end_layout
+
+\begin_layout Standard
+NO_LOG
+\end_layout
+
+\begin_layout Standard
+SAVE
+\end_layout
+
+\begin_layout Standard
+TCMPR_DATA 
+\end_layout
+
+\begin_layout Standard
+TCMPR_PLOT_OUTPUT_DIR 
 \end_layout
 
 \begin_layout Section
