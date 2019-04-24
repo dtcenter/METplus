@@ -247,6 +247,89 @@ Additional configuration files are optional and the key-values defined there
 \end_layout
 
 \begin_layout Section
+Common Config Variables
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:SC_Common_Config_Variables"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Timing Control
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:SC_Timing_Control"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Mention LOOP_BY (deprecated LOOP_BY_INIT), [INIT/VALID]_TIME_FMT, [INIT/VALID]_B
+EG, [INIT/VALID]_END, [INIT/VALID]_INCREMENT, LEAD_SEQ, INIT_SEQ, LEAD_SEQ_[MIN/
+MAX]
+\end_layout
+
+\begin_layout Standard
+Describe 'now' functionality including shift and truncate
+\end_layout
+
+\begin_layout Subsection
+Field Info
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:SC_Field_Info"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Mention [FCST/OBS]_VAR[N]_[NAME/LEVEL/THRESH/OPTIONS] and how they translate
+ to MET field info dictionary format
+\end_layout
+
+\begin_layout Standard
+Mention if FCST_VAR[N]_NAME or LEVEL is missing but OBS_ equivalent is,
+ it will use the same value for both.
+ The same is not true for THRESH and OPTIONS
+\end_layout
+
+\begin_layout Standard
+ENS_* equivalents are also available for use in ensemble_stat if you want
+ different ensemble info from fcst and obs
+\end_layout
+
+\begin_layout Subsection
+Directory and Filename Template Info
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Mention how filename templates work in regard to time
+\end_layout
+
+\begin_layout Standard
+Mention how input directories are traversed if OBS_[APP_NAME]_WINDOW_[BEGIN/END]
+ are non-zero
+\end_layout
+
+\begin_layout Standard
+Mention time shifting in filename templates
+\end_layout
+
+\begin_layout Section
 Config Quick Start Example
 \begin_inset CommandInset label
 LatexCommand label
@@ -520,7 +603,7 @@ Which METplus utility is this used by?
 Family: 
 \series default
 \shape default
-Which family? [dir], [config], [filename_templates], [exe], [regex_pattern],
+Which family? [dir], [config], [filename_temUplates], [exe], [regex_pattern],
  etc...
 \series bold
 \shape italic
@@ -3389,15 +3472,16 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_EXACT_VALID_TIME
+[deprecated] FCST_EXACT_VALID_TIME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Used when setting FCST_* variables to process observation data for comparisons.
- See OBS_EXACT_VALID_TIME.
- Rarely used.
+No longer used.
+ Please use FCST_WINDOW_BEGIN and FCST_WINDOW_END instead.
+ If both of those variables are set to 0, the functionality is the same
+ as FCST_EXACT_VALID_TIME = True.
 \end_layout
 
 \begin_layout Standard
@@ -3589,11 +3673,8 @@ Used by:
 \series default
 \shape default
  
-\shape italic
-\emph on
-pcp_combine_wrapper.py
 \series bold
-\emph default
+\shape italic
 
 \begin_inset Newline newline
 \end_inset
@@ -3653,7 +3734,7 @@ Template used to specify input filenames for GEMPAK formatted forecast files.
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ 
 \series bold
 \shape italic
 
@@ -3935,13 +4016,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_HR_END
+[deprecated] FCST_HR_END
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the maximum forecast hour to use.
+Please use LEAD_SEQ instead.
 \end_layout
 
 \begin_layout Standard
@@ -3951,7 +4032,7 @@ Specify the maximum forecast hour to use.
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ 
 \series bold
 \shape italic
 
@@ -3971,7 +4052,7 @@ Family:
 Default:
 \series default
 \shape default
- Varies
+ 
 \series bold
 \shape italic
 
@@ -3996,13 +4077,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_HR_INTERVAL
+[deprecated] FCST_HR_INTERVAL
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the stride for forecast lead times.
+Please use LEAD_SEQ instead.
 \end_layout
 
 \begin_layout Standard
@@ -4012,7 +4093,7 @@ Specify the stride for forecast lead times.
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ 
 \series bold
 \shape italic
 
@@ -4032,7 +4113,7 @@ Family:
 Default:
 \series default
 \shape default
- Varies
+ 
 \series bold
 \shape italic
 
@@ -4057,13 +4138,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_HR_START
+[deprecated] FCST_HR_START
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the starting forecast hour to use.
+Please use LEAD_SEQ instead.
 \end_layout
 
 \begin_layout Standard
@@ -4073,7 +4154,7 @@ Specify the starting forecast hour to use.
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ 
 \series bold
 \shape italic
 
@@ -4093,7 +4174,7 @@ Family:
 Default:
 \series default
 \shape default
- Varies
+ 
 \series bold
 \shape italic
 
@@ -4180,14 +4261,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_INPUT_DIR_REGEX
+[deprecated] FCST_INPUT_DIR_REGEX
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the regular expression used for searching for forecast file input
- directories.
+Please use FCST_POINT_STAT_INPUT_DIR instead.
 \end_layout
 
 \begin_layout Standard
@@ -4294,7 +4374,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_INPUT_FILE_REGEX
+[deprecated] FCST_INPUT_FILE_REGEX
 \series default
 
 \begin_inset Newline newline
@@ -4355,13 +4435,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_INPUT_FILE_TMPL
+[deprecated] FCST_INPUT_FILE_TMPL
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the filename template for input forecast files.
+Please use FCST_POINT_STAT_INPUT_TEMPLATE instead.
 \end_layout
 
 \begin_layout Standard
@@ -4416,13 +4496,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_IS_DAILY_FILE
+[deprecated] FCST_IS_DAILY_FILE
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify whether the forecast file is a daily file or not.
+Please use FCST_PCP_COMBINE_IS_DAILY_FILE instead.
 \begin_inset Newline newline
 \end_inset
 
@@ -4616,17 +4696,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_LEVEL
+[deprecated] FCST_LEVEL
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify what accumulation level should be used from the forecast data for
- the analysis.
- Used only when running pcp_combine with SUBTRACT mode set or processing
- accumulation files that do not have the accumulation specified in the filename
- template.
+Please use FCST_PCP_COMBINE_INPUT_LEVEL instead.
 \end_layout
 
 \begin_layout Standard
@@ -4681,7 +4757,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-[deprecated] FCST_MAX_FORECAST
+FCST_MAX_FORECAST
 \series default
 
 \begin_inset Newline newline
@@ -5214,6 +5290,116 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+FCST_PCP_COMBINE_DATA_INTERVAL
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the accumulation interval of the forecast dataset used by the MET
+ pcp_combine tool when processing daily input files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ pcp_combine_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_PCP_COMBINE_DERIVE_LOOKBACK
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify how far to look back in time in hours to find files for running
+ the MET pcp_combine tool in derive mode.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ pcp_combine_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\shape italic
+\emph on
+ADD
+\shape default
+\emph default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 FCST_PCP_COMBINE_INPUT_DATATYPE
 \series default
 
@@ -5335,6 +5521,61 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+FCST_PCP_COMBINE_INPUT_LEVEL
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify what accumulation level should be used from the forecast data for
+ the analysis.
+ Used only when running pcp_combine with SUBTRACT mode set or processing
+ accumulation files that do not have the accumulation specified in the filename
+ template.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ pcp_combine_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 FCST_PCP_COMBINE_INPUT_TEMPLATE
 \series default
 
@@ -5383,6 +5624,188 @@ Default:
 \series default
 \shape default
 
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_PCP_COMBINE_IS_DAILY_FILE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify whether the forecast file is a daily file or not.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Acceptable values: true/false
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ pcp_combine_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ False
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_PCP_COMBINE_METHOD
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the method to be used with the MET pcp_combine tool processing forecast
+ data.
+\begin_inset Newline newline
+\end_inset
+
+Valid options are ADD, SUM, SUBTRACT, and DERIVE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ pcp_combine_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+None
+\begin_inset Newline newline
+\end_inset
+
+
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_PCP_COMBINE_[MIN/MAX]_FORECAST
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the minimum or maximum forecast lead time to use when finding the
+ lowest forecast lead to use in pcp_combine.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ pcp_combine_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
 \begin_inset CommandInset line
 LatexCommand rule
 offset "0.5ex"
@@ -5569,6 +5992,118 @@ Default:
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_PCP_COMBINE_STAT_LIST
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+List of statistics to process when using the MET pcp_combine tool on forecast
+ data in derive mode.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Acceptable values: sum, min, max, range, mean, stdev, vld_count
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ pcp_combine_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_PCP_COMBINE_TIMES_PER_FILE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the number of accumulation intervals of the forecast dataset used
+ by the MET pcp_combine tool when processing daily input files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ pcp_combine_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -7955,7 +8490,7 @@ GRID_STAT_ONCE_PER_FIELD
 \begin_inset Newline newline
 \end_inset
 
-STrue/False.
+True/False.
  If True, grid_stat will run once to process all name/level/threshold combinatio
 ns specified.
  If False, it will run once for each name/level.
@@ -11207,13 +11742,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MODEL_NAME
+[deprecated] MODEL_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the model name.
+Please use MODEL instead.
 \end_layout
 
 \begin_layout Standard
@@ -14788,8 +15323,14 @@ OBS_PCP_COMBINE_INPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-Specify the input directory for the observation data used by the MET pcp_combine
- tool.
+See FCST_PCP_COMBINE_INPUT_DIR
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -16125,14 +16666,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_WINDOW_BEG
+[deprecated] OBS_WINDOW_BEG
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Corresponds to the OBS_WINDOW_BEG in the MET config file for pb2nc.
- Please refer to Chapter 4 of the MET User's Guide.
+Please use OBS_WINDOW_BEGIN.
 \end_layout
 
 \begin_layout Standard
@@ -16172,6 +16712,62 @@ Default:
 
 \series default
 \shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+Corresponds to the OBS_WINDOW_BEG in the MET config file for pb2nc.
+ Please refer to Chapter 4 of the MET User's Guide.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ pb2nc_wrapper.py, point_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -16249,7 +16845,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OB_TYPE
+OBTYPE
 \series default
 
 \begin_inset Newline newline
@@ -16257,9 +16853,77 @@ OB_TYPE
 
 Provide a string to represent the type of observation data used in the analysis.
  Used in setting output filename
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ compare_gridded_wrapper.py, ensemble_stat_wrapper.py, grid_stat_wrapper.py,
+ mode_wrapper.py, stat_analysis_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+[deprecated] OB_TYPE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Please use OBTYPE instead.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
@@ -16958,14 +17622,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-PCP_COMBINE_METHOD
+[deprecated] PCP_COMBINE_METHOD
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the method to be used with the MET pcp_combine tool.
- Valid options are ADD, SUM, and SUBTRACT.
+SPlease use [FCST/OBS]_PCP_COMBINE_METHOD instead.
 \end_layout
 
 \begin_layout Standard
