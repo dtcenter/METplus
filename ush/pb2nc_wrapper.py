@@ -113,8 +113,6 @@ class PB2NCWrapper(CommandBuilder):
           self.config.getint('config', 'PB2NC_WINDOW_END',
                              self.config.getint('config', 'OBS_WINDOW_END', 0))
 
-        c_dict['VERTICAL_LOCATION'] = self.config.getstr('config',
-                                                     'PB2NC_VERTICAL_LOCATION')
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
         return c_dict
