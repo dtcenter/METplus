@@ -57,19 +57,19 @@ class MTDWrapper(ModeWrapper):
             c_dict['FCST_INPUT_DATATYPE'] = \
                 self.config.getstr('config', 'FCST_MTD_INPUT_DATATYPE', '')
 
-            if self.config.has_option('config', 'MTD_FCST_CONV_RADIUS'):
-                c_dict['FCST_CONV_RADIUS'] = self.config.getstr('config', 'MTD_FCST_CONV_RADIUS')
+            if self.config.has_option('config', 'FCST_MTD_CONV_RADIUS'):
+                c_dict['FCST_CONV_RADIUS'] = self.config.getstr('config', 'FCST_MTD_CONV_RADIUS')
             else:
                 c_dict['FCST_CONV_RADIUS'] = self.config.getstr('config', 'MTD_CONV_RADIUS', '5')
 
-            if self.config.has_option('config', 'MTD_FCST_CONV_THRESH'):
-                c_dict['FCST_CONV_THRESH'] = self.config.getstr('config', 'MTD_FCST_CONV_THRESH')
+            if self.config.has_option('config', 'FCST_MTD_CONV_THRESH'):
+                c_dict['FCST_CONV_THRESH'] = self.config.getstr('config', 'FCST_MTD_CONV_THRESH')
             else:
                 c_dict['FCST_CONV_THRESH'] = self.config.getstr('config', 'MTD_CONV_THRESH', '>0.5')
 
             # check that values are valid
             if not util.validate_thresholds(util.getlist(c_dict['FCST_CONV_THRESH'])):
-                self.logger.error('MTD_FCST_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
+                self.logger.error('FCST_MTD_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
                 exit(1)
 
         # only read OBS conf if processing observation data
@@ -83,13 +83,13 @@ class MTDWrapper(ModeWrapper):
             c_dict['OBS_INPUT_DATATYPE'] = \
                 self.config.getstr('config', 'OBS_MTD_INPUT_DATATYPE', '')
 
-            if self.config.has_option('config', 'MTD_OBS_CONV_RADIUS'):
-                c_dict['OBS_CONV_RADIUS'] = self.config.getstr('config', 'MTD_OBS_CONV_RADIUS')
+            if self.config.has_option('config', 'OBS_MTD_CONV_RADIUS'):
+                c_dict['OBS_CONV_RADIUS'] = self.config.getstr('config', 'OBS_MTD_CONV_RADIUS')
             else:
                 c_dict['OBS_CONV_RADIUS'] = self.config.getstr('config', 'MTD_CONV_RADIUS', '5')
 
-            if self.config.has_option('config', 'MTD_OBS_CONV_THRESH'):
-                c_dict['OBS_CONV_THRESH'] = self.config.getstr('config', 'MTD_OBS_CONV_THRESH')
+            if self.config.has_option('config', 'OBS_MTD_CONV_THRESH'):
+                c_dict['OBS_CONV_THRESH'] = self.config.getstr('config', 'OBS_MTD_CONV_THRESH')
             else:
                 c_dict['OBS_CONV_THRESH'] = self.config.getstr('config', 'MTD_CONV_THRESH', '>0.5')
 
@@ -113,7 +113,7 @@ class MTDWrapper(ModeWrapper):
 
             # check that values are valid
             if not util.validate_thresholds(util.getlist(c_dict['OBS_CONV_THRESH'])):
-                self.logger.error('MTD_OBS_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
+                self.logger.error('OBS_MTD_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
                 exit(1)
 
         return c_dict
