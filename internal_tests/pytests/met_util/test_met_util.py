@@ -491,7 +491,7 @@ def test_get_lead_sequence_init(key, value):
     conf = metplus_config()
     cu = ConfigWrapper(conf, None)
     conf.set('config', 'INIT_SEQ', "0, 12")
-    conf.set('config', 'FCST_MAX_FORECAST', 36)
+    conf.set('config', 'LEAD_SEQ_MAX', 36)
     test_seq = util.get_lead_sequence(cu, input_dict)
     lead_seq = value
     assert(test_seq == lead_seq)
@@ -501,8 +501,8 @@ def test_get_lead_sequence_init_min_10():
     conf = metplus_config()
     cu = ConfigWrapper(conf, None)
     conf.set('config', 'INIT_SEQ', "0, 12")
-    conf.set('config', 'FCST_MAX_FORECAST', 24)
-    conf.set('config', 'FCST_MIN_FORECAST', 10)
+    conf.set('config', 'LEAD_SEQ_MAX', 24)
+    conf.set('config', 'LEAD_SEQ_MIN', 10)
     test_seq = util.get_lead_sequence(cu, input_dict)
     lead_seq = [ 12, 24 ]
     assert(test_seq == lead_seq)
