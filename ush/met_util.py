@@ -40,8 +40,10 @@ def check_for_deprecated_config(p, logger):
       'LOOP_METHOD' : { 'sec' : 'config', 'alt' : 'LOOP_ORDER', 'req' : False},
       'PREPBUFR_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
       'PREPBUFR_FILE_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
-      'OBS_INPUT_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
-      'FCST_INPUT_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
+      'OBS_INPUT_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_DIR'},
+      'FCST_INPUT_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : 'FCST_POINT_STAT_INPUT_DIR'},
+      'FCST_INPUT_FILE_REGEX' : { 'sec' : 'regex_pattern', 'alt' : 'FCST_POINT_STAT_INPUT_TEMPLATE'},
+      'OBS_INPUT_FILE_REGEX' : { 'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_TEMPLATE'},
       'PREPBUFR_DATA_DIR' : { 'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR'},
       'PREPBUFR_MODEL_DIR_NAME' : { 'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR'},
       'OBS_INPUT_FILE_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'OBS_POINT_STAT_INPUT_TEMPLATE'},
@@ -93,8 +95,10 @@ def check_for_deprecated_config(p, logger):
       'SERIES_LEAD_FILTERED_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'SERIES_BY_LEAD_FILTERED_OUTPUT_DIR'},
       'STAT_ANALYSIS_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'STAT_ANALYSIS_OUTPUT_DIR'},
       'TCMPR_PLOT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'TCMPR_PLOT_OUTPUT_DIR'},
-      'OBS_MIN_FORECAST' : { 'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MIN_FORECAST'},
-      'OBS_MAX_FORECAST' : { 'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MAX_FORECAST'},
+      'FCST_MIN_FORECAST' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ_MIN'},
+      'FCST_MAX_FORECAST' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ_MAX'},
+      'OBS_MIN_FORECAST' : { 'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MIN_LEAD'},
+      'OBS_MAX_FORECAST' : { 'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MAX_LEAD'},
       'FCST_INIT_INTERVAL' : { 'sec' : 'config', 'alt' : None},
       'OBS_INIT_INTERVAL' : { 'sec' : 'config', 'alt' : None},
       'FCST_DATA_INTERVAL' : { 'sec' : '', 'alt' : 'FCST_PCP_COMBINE_DATA_INTERVAL'},
@@ -246,20 +250,33 @@ def loop_over_times_and_call(config, processes):
 def get_lead_sequence(config, input_dict=None):
     if config.p.has_option('config', 'LEAD_SEQ'):
         # return list of forecast leads
-        return getlistint(config.getstr('config', 'LEAD_SEQ'))
+        leads = getlistint(config.getstr('config', 'LEAD_SEQ'))
+
+        # remove any items that are outside of the range specified
+        #  by LEAD_SEQ_MIN and LEAD_SEQ_MAX
+        out_leads = []
+        lead_min = config.getint('config', 'LEAD_SEQ_MIN', min(leads))
+        lead_max = config.getint('config', 'LEAD_SEQ_MAX', max(leads))
+        for lead in leads:
+            if lead >= lead_min and lead <= lead_max:
+                out_leads.append(lead)
+
+        return out_leads
+
+    # use INIT_SEQ to build lead list based on the valid time
     if config.p.has_option('config', 'INIT_SEQ'):
         # if input dictionary not passed in, cannot compute lead sequence
         #  from it, so exit
         if input_dict == None:
             log_msg = 'LEAD_SEQ must be specified to run'
             if config.logger:
-                config.logger.erro(log_msg)
+                config.logger.error(log_msg)
             else:
                 print(log_msg)
             exit(1)
 
         # if looping by init, fail and exit
-        if 'init' in input_dict.keys():
+        if 'valid' not in input_dict.keys():
             log_msg = 'INIT_SEQ specified while looping by init time.' + \
                       ' Use LEAD_SEQ or change to loop by valid time'
             if config.logger:
@@ -270,8 +287,8 @@ def get_lead_sequence(config, input_dict=None):
 
         valid_hr = int(input_dict['valid'].strftime('%H'))
         init_seq = getlistint(config.getstr('config', 'INIT_SEQ'))
-        min_forecast = config.getint('config', 'FCST_MIN_FORECAST', 0)
-        max_forecast = config.getint('config', 'FCST_MAX_FORECAST', 256)
+        min_forecast = config.getint('config', 'LEAD_SEQ_MIN', 0)
+        max_forecast = config.getint('config', 'LEAD_SEQ_MAX')
         lead_seq = []
         for i in init_seq:
             if valid_hr >= i:
