@@ -87,7 +87,13 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL')
         c_dict['POINT_STAT_CONFIG_FILE'] = \
             self.config.getstr('config', 'POINT_STAT_CONFIG_FILE')
-        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'POINT_STAT_REGRID_TO_GRID')
+
+        regrid = self.config.getstr('config', 'POINT_STAT_REGRID_TO_GRID')
+        # if not surrounded by quotes and not NONE, add quotes
+        if regrid[0] != '"' and regrid != 'NONE':
+            regrid = '"' + regrid + '"'
+
+        c_dict['REGRID_TO_GRID'] = regrid
         c_dict['POINT_STAT_GRID'] = self.config.getstr('config', 'POINT_STAT_GRID')
 
         c_dict['POINT_STAT_POLY'] = util.getlist(
