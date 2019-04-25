@@ -59,13 +59,19 @@ class MTDWrapper(ModeWrapper):
 
             if self.config.has_option('config', 'FCST_MTD_CONV_RADIUS'):
                 c_dict['FCST_CONV_RADIUS'] = self.config.getstr('config', 'FCST_MTD_CONV_RADIUS')
+            elif self.config.has_option('config', 'MTD_CONV_RADIUS'):
+                c_dict['FCST_CONV_RADIUS'] = self.config.getstr('config', 'MTD_CONV_RADIUS')
             else:
-                c_dict['FCST_CONV_RADIUS'] = self.config.getstr('config', 'MTD_CONV_RADIUS', '5')
+                self.logger.error('[config] FCST_MTD_CONV_RADIUS not set in config')
+                exit(1)
 
             if self.config.has_option('config', 'FCST_MTD_CONV_THRESH'):
                 c_dict['FCST_CONV_THRESH'] = self.config.getstr('config', 'FCST_MTD_CONV_THRESH')
+            elif self.config.has_option('config', 'MTD_CONV_THRESH'):
+                c_dict['FCST_CONV_THRESH'] = self.config.getstr('config', 'MTD_CONV_THRESH')
             else:
-                c_dict['FCST_CONV_THRESH'] = self.config.getstr('config', 'MTD_CONV_THRESH', '>0.5')
+                self.logger.error('[config] FCST_MTD_CONV_THRESH not set in config')
+                exit(1)
 
             # check that values are valid
             if not util.validate_thresholds(util.getlist(c_dict['FCST_CONV_THRESH'])):
@@ -85,13 +91,19 @@ class MTDWrapper(ModeWrapper):
 
             if self.config.has_option('config', 'OBS_MTD_CONV_RADIUS'):
                 c_dict['OBS_CONV_RADIUS'] = self.config.getstr('config', 'OBS_MTD_CONV_RADIUS')
+            elif self.config.has_option('config', 'MTD_CONV_RADIUS'):
+                c_dict['OBS_CONV_RADIUS'] = self.config.getstr('config', 'MTD_CONV_RADIUS')
             else:
-                c_dict['OBS_CONV_RADIUS'] = self.config.getstr('config', 'MTD_CONV_RADIUS', '5')
+                self.logger.error('[config] OBS_MTD_CONV_RADIUS not set in config')
+                exit(1)
 
             if self.config.has_option('config', 'OBS_MTD_CONV_THRESH'):
                 c_dict['OBS_CONV_THRESH'] = self.config.getstr('config', 'OBS_MTD_CONV_THRESH')
+            elif self.config.has_option('config', 'MTD_CONV_THRESH'):
+                c_dict['OBS_CONV_THRESH'] = self.config.getstr('config', 'MTD_CONV_THRESH')
             else:
-                c_dict['OBS_CONV_THRESH'] = self.config.getstr('config', 'MTD_CONV_THRESH', '>0.5')
+                self.logger.error('[config] OBS_MTD_CONV_THRESH not set in config')
+                exit(1)
 
 
         # if window begin/end is set specific to mode, override

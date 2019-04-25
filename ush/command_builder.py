@@ -165,7 +165,7 @@ class CommandBuilder:
             self.print_env_item(k)
 
 
-    def handle_fcst_and_obs_field(self, gen_name, fcst_name, obs_name, default, sec='config'):
+    def handle_fcst_and_obs_field(self, gen_name, fcst_name, obs_name, default=None, sec='config'):
         has_gen = self.config.has_option(sec, gen_name)
         has_fcst = self.config.has_option(sec, fcst_name)
         has_obs = self.config.has_option(sec, obs_name)
@@ -193,7 +193,12 @@ class CommandBuilder:
             gen_conf = self.config.getstr(sec, gen_name)
             return (gen_conf, gen_conf)
 
-        # if none of the options are set, use default value for both
+        # if none of the options are set, use default value for both if specified
+        if default == None:
+            self.logger.error('Must set both {} and {} in the config files.'
+                              .format(fcst_name, obs_name) + ' Or set ' +\
+                              '{} instead'.format(gen_name))
+            exit(1)
         self.logger.warning('Using default values for {}'.format(gen_name))
         return (default, default)
 

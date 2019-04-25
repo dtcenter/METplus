@@ -54,26 +54,26 @@ class ModeWrapper(CompareGriddedWrapper):
         c_dict['ONCE_PER_FIELD'] = True
         c_dict['QUILT'] = self.config.getbool('config', 'MODE_QUILT', False)
         fcst_conv_radius, obs_conv_radius = self.handle_fcst_and_obs_field('MODE_CONV_RADIUS',
-                                                                           'MODE_FCST_CONV_RADIUS',
-                                                                           'MODE_OBS_CONV_RADIUS', '5')
+                                                                           'FCST_MODE_CONV_RADIUS',
+                                                                           'OBS_MODE_CONV_RADIUS')
         c_dict['FCST_CONV_RADIUS'] = fcst_conv_radius
         c_dict['OBS_CONV_RADIUS'] = obs_conv_radius
 
         fcst_conv_thresh, obs_conv_thresh = self.handle_fcst_and_obs_field('MODE_CONV_THRESH',
-                                                                           'MODE_FCST_CONV_THRESH',
-                                                                           'MODE_OBS_CONV_THRESH', '>0.5')
+                                                                           'FCST_MODE_CONV_THRESH',
+                                                                           'OBS_MODE_CONV_THRESH')
 
         c_dict['FCST_CONV_THRESH'] = fcst_conv_thresh
         c_dict['OBS_CONV_THRESH'] = obs_conv_thresh
 
         fcst_merge_thresh, obs_merge_thresh = self.handle_fcst_and_obs_field('MODE_MERGE_THRESH',
-                                                                             'MODE_FCST_MERGE_THRESH',
-                                                                             'MODE_OBS_MERGE_THRESH', '>0.45')
+                                                                             'FCST_MODE_MERGE_THRESH',
+                                                                             'OBS_MODE_MERGE_THRESH')
         c_dict['FCST_MERGE_THRESH'] = fcst_merge_thresh
         c_dict['OBS_MERGE_THRESH'] = obs_merge_thresh
         fcst_merge_flag, obs_merge_flag = self.handle_fcst_and_obs_field('MODE_MERGE_FLAG',
-                                                                         'MODE_FCST_MERGE_FLAG',
-                                                                         'MODE_OBS_MERGE_FLAG', 'THRESH')
+                                                                         'FCST_MODE_MERGE_FLAG',
+                                                                         'OBS_MODE_MERGE_FLAG')
 
         c_dict['FCST_MERGE_FLAG'] = fcst_merge_flag
         c_dict['OBS_MERGE_FLAG'] = obs_merge_flag
