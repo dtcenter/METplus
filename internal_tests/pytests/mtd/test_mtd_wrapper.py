@@ -46,6 +46,8 @@ def mtd_wrapper(lead_seq=None):
     conf.set('config', 'FCST_VAR1_NAME', 'APCP')
     conf.set('config', 'FCST_VAR1_LEVELS', 'A06')
     conf.set('config', 'LOOP_BY', 'VALID')
+    conf.set('config', 'MTD_CONV_THRESH', '>=10')
+    conf.set('config', 'MTD_CONV_RADIUS', '15')
     if lead_seq:
         conf.set('config', 'LEAD_SEQ', lead_seq)
     logger = logging.getLogger("dummy")
