@@ -233,7 +233,7 @@ ENSEMBLE_STAT_GRID_VX
 \end_layout
 
 \begin_layout Standard
-ENSEMBLE_STAT_CONFIG
+ENSEMBLE_STAT_CONFIG_FILE
 \end_layout
 
 \begin_layout Standard
@@ -260,6 +260,10 @@ Deprecated:
 
 \begin_layout Standard
 ENSEMBLE_STAT_OUT_DIR
+\end_layout
+
+\begin_layout Standard
+ENSEMBLE_STAT_CONFIG
 \end_layout
 
 \begin_layout Section
@@ -457,10 +461,6 @@ GRID_STAT_OUTPUT_DIR
 \end_layout
 
 \begin_layout Standard
-CLIMO_GRID_STAT_INPUT_DIR (optional)
-\end_layout
-
-\begin_layout Standard
 [filename_templates] 
 \end_layout
 
@@ -473,10 +473,6 @@ OBS_GRID_STAT_INPUT_TEMPLATE
 \end_layout
 
 \begin_layout Standard
-CLIMO_GRID_STAT_INPUT_TEMPLATE (optional)
-\end_layout
-
-\begin_layout Standard
 GRID_STAT_VERIFICATION_MASK_TEMPLATE (optional)
 \end_layout
 
@@ -485,7 +481,7 @@ GRID_STAT_VERIFICATION_MASK_TEMPLATE (optional)
 \end_layout
 
 \begin_layout Standard
-GRID_STAT_CONFIG
+GRID_STAT_CONFIG_FILE
 \end_layout
 
 \begin_layout Standard
@@ -540,6 +536,10 @@ Deprecated:
 
 \begin_layout Standard
 GRID_STAT_OUT_DIR
+\end_layout
+
+\begin_layout Standard
+GRID_STAT_CONFIG
 \end_layout
 
 \begin_layout Section
@@ -871,7 +871,7 @@ OBS_MODE_INPUT_TEMPLATE
 \end_layout
 
 \begin_layout Standard
-MODE_CONFIG
+MODE_CONFIG_FILE
 \end_layout
 
 \begin_layout Standard
@@ -891,11 +891,11 @@ MODE_CONV_RADIUS
 \end_layout
 
 \begin_layout Standard
-MODE_FCST_CONV_RADIUS
+FCST_MODE_CONV_RADIUS
 \end_layout
 
 \begin_layout Standard
-MODE_OBS_CONV_RADIUS
+OBS_MODE_CONV_RADIUS
 \end_layout
 
 \begin_layout Standard
@@ -903,11 +903,11 @@ MODE_CONV_THRESH
 \end_layout
 
 \begin_layout Standard
-MODE_FCST_CONV_THRESH
+FCST_MODE_CONV_THRESH
 \end_layout
 
 \begin_layout Standard
-MODE_OBS_CONV_THRESH
+OBS_MODE_CONV_THRESH
 \end_layout
 
 \begin_layout Standard
@@ -915,11 +915,11 @@ MODE_MERGE_THRESH
 \end_layout
 
 \begin_layout Standard
-MODE_FCST_MERGE_THRESH
+FCST_MODE_MERGE_THRESH
 \end_layout
 
 \begin_layout Standard
-MODE_OBS_MERGE_THRESH
+OBS_MODE_MERGE_THRESH
 \end_layout
 
 \begin_layout Standard
@@ -927,11 +927,11 @@ MODE_MERGE_FLAG
 \end_layout
 
 \begin_layout Standard
-MODE_FCST_MERGE_FLAG
+FCST_MODE_MERGE_FLAG
 \end_layout
 
 \begin_layout Standard
-MODE_OBS_MERGE_FLAG
+OBS_MODE_MERGE_FLAG
 \end_layout
 
 \begin_layout Standard
@@ -962,6 +962,10 @@ Deprecated:
 
 \begin_layout Standard
 MODE_OUT_DIR
+\end_layout
+
+\begin_layout Standard
+MODE_CONFIG
 \end_layout
 
 \begin_layout Section
@@ -1020,7 +1024,7 @@ OBS_MTD_INPUT_TEMPLATE
 \end_layout
 
 \begin_layout Standard
-MTD_CONFIG
+MTD_CONFIG_FILE
 \end_layout
 
 \begin_layout Standard
@@ -1067,6 +1071,10 @@ Deprecated:
 
 \begin_layout Standard
 MTD_OUT_DIR
+\end_layout
+
+\begin_layout Standard
+MTD_CONFIG
 \end_layout
 
 \begin_layout Section
