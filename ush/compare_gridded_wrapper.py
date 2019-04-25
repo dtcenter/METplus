@@ -359,16 +359,34 @@ that reformat gridded data
                 @param time_info dictionary with time information
         """
         base_dir = self.c_dict['OUTPUT_DIR']
-        use_init = util.is_loop_by_init(self.config)
-        if use_init:
-            out_dir = os.path.join(base_dir,
-                                   time_info['init_fmt'], self.app_name)
+        out_template_name = '{}_OUTPUT_TEMPLATE'.format(self.app_name.upper())
+        # use output template if it is set
+        if self.config.has_option('filename_templates',
+                                  out_template_name):
+            template = self.config.getraw('filename_templates',
+                               out_template_name)
+        # if not use previous default: YYYYMMDDHHMM/app_name
         else:
-            out_dir = os.path.join(base_dir,
-                                   time_info['valid_fmt'], self.app_name)
+            # set template based on loop by init or valid
+            use_init = util.is_loop_by_init(self.config)
+            if use_init:
+                temp = '{init?fmt=%Y%m%d%H%M}'
+            else:
+                temp = '{valid?fmt=%Y%m%d%H%M}'
+            template = '{}/{}'.format(temp, self.app_name)
 
+        # perform string substitution to get full path
+        ss = sts.StringSub(self.logger,
+                           template,
+                           **time_info)
+        extra_path = ss.doStringSub()
+
+        out_dir = os.path.join(base_dir, extra_path)
+        # create full output dir if it doesn't already exist
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
+
+        # set output dir for wrapper
         self.set_output_dir(out_dir)
 
 
