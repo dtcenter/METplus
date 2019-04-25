@@ -253,6 +253,22 @@ OBS_ENSEMBLE_STAT_WINDOW_END
 \end_layout
 
 \begin_layout Standard
+ENS_VAR[N]_NAME (optional)
+\end_layout
+
+\begin_layout Standard
+ENS_VAR[N]_LEVELS (optional)
+\end_layout
+
+\begin_layout Standard
+ENS_VAR[N]_THRESH (optional)
+\end_layout
+
+\begin_layout Standard
+ENS_VAR[N]_OPTIONS (optional)
+\end_layout
+
+\begin_layout Standard
 
 \series bold
 Deprecated:

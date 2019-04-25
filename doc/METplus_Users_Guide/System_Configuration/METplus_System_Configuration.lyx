@@ -1368,13 +1368,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-BEG_TIME
+[deprecated] BEG_TIME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Beginning time for analysis in YYYYMMDD format.
+Please use INIT_BEG or VALID_BEG instead.
+ Beginning time for analysis in YYYYMMDD format.
 \end_layout
 
 \begin_layout Standard
@@ -1749,7 +1750,7 @@ Specific configuration file name to use for MET tools.
 Used by:
 \series default
 \shape default
- grid_stat_wrapper.py, mode_wrapper.py, tcmpr_plotter_wrapper.py, tc_stat_wrapper.py
+ tcmpr_plotter_wrapper.py
 \series bold
 \shape italic
 
@@ -3032,13 +3033,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-END_DATE
+[deprecated] END_DATE
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Ending time/date string for analysis with format YYYYMMDDHH.
+Please use INIT_END or VALID_END instead.
 \end_layout
 
 \begin_layout Standard
@@ -3093,7 +3094,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-END_HOUR
+[deprecated] END_HOUR
 \series default
 
 \begin_inset Newline newline
@@ -3154,7 +3155,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-END_TIME
+[deprecated] END_TIME
 \series default
 
 \begin_inset Newline newline
@@ -3171,6 +3172,760 @@ Used by:
 \series default
 \shape default
  pb2nc_wrapper.py, point_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+ENSEMBLE_STAT_CONFIG_FILE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the absolute path to the configuration file for the MET ensemble_stat
+ tool.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+ENSEMBLE_STAT_GRID_VX
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Used to set the regrid dictionary item 'to_grid' in the MET ensemble_stat
+ config file.
+ See the MET User's Guide for more information.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ FCST
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+ENSEMBLE_STAT_MET_OBS_ERROR_TABLE
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+ENSEMBLE_STAT_N_MEMBERS
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+Expected number of ensemble members found.
+ This should correspond to the number of items in FCST_ENSEMBLE_STAT_INPUT_TEMPL
+ATE.
+ If this number differs from the number of files are found for a given run,
+ then ensemble_stat will not run for that time.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+ENSEMBLE_STAT_ONCE_PER_FIELD
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+If True, run ensemble_stat separately for each field name/level combination
+ specified in the configuration file.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Field_Info"
+
+\end_inset
+
+ for more information on how fields are specified.
+ If False, run ensemble_stat once with all of the fields specified.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ False
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+ENSEMBLE_STAT_OUTPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the output directory where files from the MET ensemble_stat tool
+ are written.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR[N]_LEVELS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Define the levels for the [N]th ensemble variable to be used in the analysis
+ where [N] is an integer >= 1.
+ The value can be a single item or a comma separated list of items.
+ You can define NetCDF levels, such as (0,*,*), but you will need to surround
+ these values with quotation marks so that the commas in the item are not
+ interpreted as an item delimeter.
+ Some examples:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR1_LEVELS = A06, P500
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR2_LEVELS = 
+\begin_inset Quotes eld
+\end_inset
+
+(0,*,*)
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+(1,*,*)
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+There can be [N] number of these variables defined in configuration files,
+ simply increment the 
+\begin_inset Quotes eld
+\end_inset
+
+_VAR1_
+\begin_inset Quotes erd
+\end_inset
+
+ string to match the total number of variables being used, e.g.:
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR1_LEVELS
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR2_LEVELS
+\begin_inset Newline newline
+\end_inset
+
+...
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR[N]_LEVELS
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR[N]_NAME
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Define the name for the [N]th ensemble variable to be used in the analysis
+ where [N] is an integer >= 1.
+ There can be [N] number of these variables defined in configuration files,
+ simply increment the 
+\begin_inset Quotes eld
+\end_inset
+
+_VAR1_
+\begin_inset Quotes erd
+\end_inset
+
+ string to match the total number of variables being used, e.g.:
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR1_NAME
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR2_NAME
+\begin_inset Newline newline
+\end_inset
+
+...
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR[N]_NAME
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR[N]_OPTIONS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Define the options for the [N]th ensemble variable to be used in the analysis
+ where [N] is an integer >= 1.
+ These addition options will be applied to every name/level/threshold combinatio
+n for VAR[N].
+ There can be [N] number of these variables defined in configuration files,
+ simply increment the 
+\begin_inset Quotes eld
+\end_inset
+
+_VAR1_
+\begin_inset Quotes erd
+\end_inset
+
+ string to match the total number of variables being used, e.g.:
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR1_OPTIONS
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR2_OPTIONS
+\begin_inset Newline newline
+\end_inset
+
+...
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR[N]_OPTIONS
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR[N]_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Define the threshold(s) for the [N]th ensemble variable to be used in the
+ analysis where [N] is an integer >= 1.
+ The value can be a single item or a comma separated list of items that
+ must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
+ There can be [N] number of these variables defined in configuration files,
+ simply increment the 
+\begin_inset Quotes eld
+\end_inset
+
+_VAR1_
+\begin_inset Quotes erd
+\end_inset
+
+ string to match the total number of variables being used, e.g.:
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR1_THRESH
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR2_THRESH
+\begin_inset Newline newline
+\end_inset
+
+...
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR[N]_THRESH
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
 \series bold
 \shape italic
 
@@ -3530,15 +4285,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_[N]_FIELD_NAME
+[deprecated] FCST_[N]_FIELD_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-This variable is used to define a [N] hour accumulation NetCDF field in
- the forecast dataset used in the MET tool pcp_combine.
- [N] must be an integer >= 1.
+Please use FCST_PCP_COMBINE_[N]_FIELD_NAME where N >=1 instead.
 \end_layout
 
 \begin_layout Standard
@@ -3640,6 +4393,120 @@ Default:
 
 \series default
 \shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_ENSEMBLE_STAT_INPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Input directory for forecast files to use with the MET tool ensemble_stat.
+ A corresponding variable exists for observation data called OBS_ENSEMBLE_STAT_I
+NPUT_DIR.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_ENSEMBLE_STAT_INPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Template used to specify forecast input filenames for the MET tool ensemble_stat.
+ A corresponding variable exists for observation data called OBS_ENSEMBLE_STAT_I
+NPUT_TEMPLATE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -3783,6 +4650,8 @@ Specify the data type of the input directory for forecast files used with
  the MET grid_stat tool.
  Currently valid options are NETCDF, GRIB, and GEMPAK.
  If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
+ A corresponding variable exists for observation data called OBS_GRID_STAT_INPUT
+_DATATYPE.
 \end_layout
 
 \begin_layout Standard
@@ -3792,7 +4661,7 @@ Specify the data type of the input directory for forecast files used with
 Used by:
 \series default
 \shape default
- grid_stat_wrapper.py
+ GridStat
 \series bold
 \shape italic
 
@@ -3844,6 +4713,8 @@ FCST_GRID_STAT_INPUT_DIR
 \end_inset
 
 Input directory for forecast files to use with the MET tool grid_stat.
+ A corresponding variable exists for observation data called OBS_GRID_STAT_INPUT
+_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -3853,7 +4724,7 @@ Input directory for forecast files to use with the MET tool grid_stat.
 Used by:
 \series default
 \shape default
- grid_stat_wrapper.py
+ GridStat
 \series bold
 \shape italic
 
@@ -3905,6 +4776,8 @@ FCST_GRID_STAT_INPUT_TEMPLATE
 \end_inset
 
 Template used to specify forecast input filenames for the MET tool grid_stat.
+ A corresponding variable exists for observation data called OBS_GRID_STAT_INPUT
+_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -3914,7 +4787,7 @@ Template used to specify forecast input filenames for the MET tool grid_stat.
 Used by:
 \series default
 \shape default
- grid_stat_wrapper.py
+ GridStat
 \series bold
 \shape italic
 
@@ -3962,6 +4835,8 @@ FCST_GRID_STAT_PROB_THRESH
 Threshold values to be used for probabilistic data in grid_stat.
  The value can be a single item or a comma separated list of items that
  must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
+ A corresponding variable exists for observation data called OBS_GRID_STAT_PROB_
+THRESH.
 \end_layout
 
 \begin_layout Standard
@@ -3971,7 +4846,7 @@ Threshold values to be used for probabilistic data in grid_stat.
 Used by:
 \series default
 \shape default
- grid_stat_wrapper.py
+ GridStat
 \series bold
 \shape italic
 
@@ -4589,8 +5464,7 @@ Acceptable values: true/false
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, ensemble_stat_wrapper.py, grid_stat_wrapper.py,
- mode_wrapper.py
+ EnsembleStat, GridStat, Mode, MTD, PointStat
 \series bold
 \shape italic
 
@@ -4757,13 +5631,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_MAX_FORECAST
+[deprecated] FCST_MAX_FORECAST
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the maximum forecast lead time to use for the analysis.
+Please use LEAD_SEQ_MAX instead.
+ Specify the maximum forecast lead time to use for the analysis.
 \end_layout
 
 \begin_layout Standard
@@ -4813,6 +5688,237 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+FCST_MODE_CONV_RADIUS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of convolution radius values used by mode for forecast
+ fields.
+ A corresponding variable exists for observation data called OBS_MODE_CONV_RADIU
+S.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_MODE_CONV_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of convolution threshold values used by mode for forecast
+ fields.
+ A corresponding variable exists for observation data called OBS_MODE_CONV_THRES
+H.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_MODE_MERGE_FLAG
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Sets the merge_flag value in the mode config file for forecast fields.
+ Valid values are NONE, THRESH, ENGINE, and BOTH.
+ A corresponding variable exists for observation data called OBS_MODE_MERGE_FLAG.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_MODE_MERGE_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of merge threshold values used by mode for forecast
+ fields.
+ A corresponding variable exists for observation data called OBS_MODE_MERGE_THRE
+SH.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 FCST_MODE_INPUT_DATATYPE
 \series default
 
@@ -4823,6 +5929,8 @@ Specify the data type of the input directory for forecast files used with
  the MET mode tool.
  Currently valid options are NETCDF, GRIB, and GEMPAK.
  If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
+ A corresponding variable exists for observation data called OBS_MODE_INPUT_DATA
+TYPE.
 \end_layout
 
 \begin_layout Standard
@@ -4832,7 +5940,7 @@ Specify the data type of the input directory for forecast files used with
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -4884,6 +5992,7 @@ FCST_MODE_INPUT_DIR
 \end_inset
 
 Input directory for forecast files to use with the MET tool mode.
+ A corresponding variable exists for observation data called OBS_MODE_INPUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -4893,7 +6002,7 @@ Input directory for forecast files to use with the MET tool mode.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -4945,6 +6054,8 @@ FCST_MODE_INPUT_TEMPLATE
 \end_inset
 
 Template used to specify forecast input filenames for the MET tool mode.
+ A corresponding variable exists for observation data called OBS_MODE_INPUT_TEMP
+LATE.
 \end_layout
 
 \begin_layout Standard
@@ -4954,7 +6065,7 @@ Template used to specify forecast input filenames for the MET tool mode.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -4993,6 +6104,120 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+FCST_MTD_CONV_RADIUS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of convolution radius values used by mode-TD for forecast
+ files.
+ A corresponding variable exists for observation data called OBS_MTD_CONV_RADIUS.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ MTD
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_MTD_CONV_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of convolution threshold values used by mode-TD for
+ forecast files.
+ A corresponding variable exists for observation data called OBS_MTD_CONV_THRESH.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ MTD
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 FCST_MTD_INPUT_DATATYPE
 \series default
 
@@ -5003,6 +6228,8 @@ Specify the data type of the input directory for forecast files used with
  the MET mode-TD tool.
  Currently valid options are NETCDF, GRIB, and GEMPAK.
  If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
+ A corresponding variable exists for observation data called OBS_MTD_INPUT_DATAT
+YPE.
 \end_layout
 
 \begin_layout Standard
@@ -5012,7 +6239,7 @@ Specify the data type of the input directory for forecast files used with
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -5058,6 +6285,7 @@ FCST_MTD_INPUT_DIR
 \end_inset
 
 Input directory for forecast files to use with the MET tool mode-TD.
+ A corresponding variable exists for observation data called OBS_MTD_INPUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -5067,7 +6295,7 @@ Input directory for forecast files to use with the MET tool mode-TD.
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -5119,6 +6347,8 @@ FCST_MTD_INPUT_TEMPLATE
 \end_inset
 
 Template used to specify forecast input filenames for the MET tool mode-TD.
+ A corresponding variable exists for observation data called OBS_MTD_INPUT_TEMPL
+ATE.
 \end_layout
 
 \begin_layout Standard
@@ -5128,7 +6358,7 @@ Template used to specify forecast input filenames for the MET tool mode-TD.
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -5290,14 +6520,17 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_PCP_COMBINE_DATA_INTERVAL
+FCST_PCP_COMBINE_[N]_FIELD_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the accumulation interval of the forecast dataset used by the MET
- pcp_combine tool when processing daily input files.
+This variable is used to define a [N] hour accumulation NetCDF field in
+ the forecast dataset used in the MET tool pcp_combine.
+ [N] must be an integer >= 1.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_[N]
+_FIELD_NAME.
 \end_layout
 
 \begin_layout Standard
@@ -5307,7 +6540,7 @@ Specify the accumulation interval of the forecast dataset used by the MET
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -5328,6 +6561,68 @@ Default:
 \series default
 \shape default
  Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_PCP_COMBINE_DATA_INTERVAL
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the accumulation interval of the forecast dataset used by the MET
+ pcp_combine tool when processing daily input files.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_DAT
+A_INTERVAL.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PcpCombine
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset CommandInset line
 LatexCommand rule
 offset "0.5ex"
@@ -5350,6 +6645,8 @@ FCST_PCP_COMBINE_DERIVE_LOOKBACK
 
 Specify how far to look back in time in hours to find files for running
  the MET pcp_combine tool in derive mode.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_DER
+IVE_LOOKBACK.
 \end_layout
 
 \begin_layout Standard
@@ -5359,7 +6656,7 @@ Specify how far to look back in time in hours to find files for running
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -5383,6 +6680,10 @@ Default:
 \shape italic
 \emph on
 ADD
+\begin_inset Newline newline
+\end_inset
+
+
 \shape default
 \emph default
 
@@ -5411,6 +6712,8 @@ Specify the data type of the input directory for forecast files used with
  Currently valid options are NETCDF, GRIB, and GEMPAK.
  Required by pcp_combine if FCST_PCP_COMBINE_RUN is True.
  Replaces deprecated variable FCST_NATIVE_DATA_TYPE.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_INP
+UT_DATA_TYPE.
 \end_layout
 
 \begin_layout Standard
@@ -5420,7 +6723,7 @@ Specify the data type of the input directory for forecast files used with
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -5467,6 +6770,8 @@ FCST_PCP_COMBINE_INPUT_DIR
 
 Specify the input directory for forecast files used with the MET pcp_combine
  tool.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_INP
+UT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -5476,7 +6781,7 @@ Specify the input directory for forecast files used with the MET pcp_combine
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -5532,6 +6837,8 @@ Specify what accumulation level should be used from the forecast data for
  Used only when running pcp_combine with SUBTRACT mode set or processing
  accumulation files that do not have the accumulation specified in the filename
  template.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_INP
+UT_LEVEL.
 \end_layout
 
 \begin_layout Standard
@@ -5541,7 +6848,7 @@ Specify what accumulation level should be used from the forecast data for
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -5584,6 +6891,8 @@ FCST_PCP_COMBINE_INPUT_TEMPLATE
 
 Template used to specify input filenames for forecast files used by the
  MET pcp_combine tool.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_INP
+UT_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -5593,7 +6902,7 @@ Template used to specify input filenames for forecast files used by the
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -5645,6 +6954,8 @@ FCST_PCP_COMBINE_IS_DAILY_FILE
 \end_inset
 
 Specify whether the forecast file is a daily file or not.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_IS_
+DAILY_FILE.
 \begin_inset Newline newline
 \end_inset
 
@@ -5662,7 +6973,7 @@ Acceptable values: true/false
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -5719,6 +7030,8 @@ Specify the method to be used with the MET pcp_combine tool processing forecast
 \end_inset
 
 Valid options are ADD, SUM, SUBTRACT, and DERIVE.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_MET
+HOD.
 \end_layout
 
 \begin_layout Standard
@@ -5728,7 +7041,7 @@ Valid options are ADD, SUM, SUBTRACT, and DERIVE.
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -5768,14 +7081,16 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_PCP_COMBINE_[MIN/MAX]_FORECAST
+FCST_PCP_COMBINE_MIN_FORECAST
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the minimum or maximum forecast lead time to use when finding the
- lowest forecast lead to use in pcp_combine.
+Specify the minimum forecast lead time to use when finding the lowest forecast
+ lead to use in pcp_combine.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_MIN
+_FORECAST.
 \end_layout
 
 \begin_layout Standard
@@ -5785,7 +7100,7 @@ Specify the minimum or maximum forecast lead time to use when finding the
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -5806,6 +7121,68 @@ Default:
 \series default
 \shape default
  Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_PCP_COMBINE_MAX_FORECAST
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the maximum forecast lead time to use when finding the lowest forecast
+ lead to use in pcp_combine.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_MAX
+_FORECAST.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PcpCombine
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset CommandInset line
 LatexCommand rule
 offset "0.5ex"
@@ -5828,6 +7205,8 @@ FCST_PCP_COMBINE_OUTPUT_DIR
 
 Specify the output directory for forecast files generated by the MET pcp_combine
  tool.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_OUT
+PUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -5837,7 +7216,7 @@ Specify the output directory for forecast files generated by the MET pcp_combine
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -5890,6 +7269,8 @@ FCST_PCP_COMBINE_OUTPUT_TEMPLATE
 
 Template used to specify output filenames for forecast files generated by
  the MET pcp_combine tool.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_OUT
+PUT_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -5899,7 +7280,7 @@ Template used to specify output filenames for forecast files generated by
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -5951,6 +7332,7 @@ FCST_PCP_COMBINE_RUN
 \end_inset
 
 Specify whether to run the MET pcp_combine tool on forecast data or not.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_RUN.
 \begin_inset Newline newline
 \end_inset
 
@@ -5968,7 +7350,7 @@ Acceptable values: true/false
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -6015,6 +7397,8 @@ FCST_PCP_COMBINE_STAT_LIST
 
 List of statistics to process when using the MET pcp_combine tool on forecast
  data in derive mode.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_STA
+T_LIST.
 \begin_inset Newline newline
 \end_inset
 
@@ -6032,7 +7416,7 @@ Acceptable values: sum, min, max, range, mean, stdev, vld_count
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -6053,6 +7437,10 @@ Default:
 \series default
 \shape default
  Varies
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset CommandInset line
 LatexCommand rule
 offset "0.5ex"
@@ -6075,6 +7463,8 @@ FCST_PCP_COMBINE_TIMES_PER_FILE
 
 Specify the number of accumulation intervals of the forecast dataset used
  by the MET pcp_combine tool when processing daily input files.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_TIM
+ES_PER_FILE.
 \end_layout
 
 \begin_layout Standard
@@ -6084,7 +7474,7 @@ Specify the number of accumulation intervals of the forecast dataset used
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -6104,6 +7494,192 @@ Family:
 Default:
 \series default
 \shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_POINT_STAT_INPUT_DATATYPE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the data type of the input directory for forecast files used with
+ the MET point_stat tool.
+ Currently valid options are NETCDF, GRIB, and GEMPAK.
+ If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
+ A corresponding variable exists for observation data called OBS_POINT_STAT_INPU
+T_DATATYPE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_POINT_STAT_INPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Input directory for forecast files to use with the MET tool point_stat.
+ A corresponding variable exists for observation data called OBS_POINT_STAT_INPU
+T_DIR.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_POINT_STAT_INPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Template used to specify forecast input filenames for the MET tool point_stat.
+ A corresponding variable exists for observation data called OBS_POINT_STAT_INPU
+T_TEMPLATE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GriPointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -6129,6 +7705,8 @@ Specify the data type of the input directory for forecast files used with
  the MET regrid_data_plane tool.
  Currently valid options are NETCDF, GRIB, and GEMPAK.
  Required by pcp_combine.
+ A corresponding variable exists for observation data called OBS_REGRID_DATA_PLA
+NE_INPUT_DATATYPE.
 \end_layout
 
 \begin_layout Standard
@@ -6138,7 +7716,7 @@ Specify the data type of the input directory for forecast files used with
 Used by:
 \series default
 \shape default
- regrid_data_plane_wrapper.py
+ RegridDataPlane
 \series bold
 \shape italic
 
@@ -6185,6 +7763,8 @@ FCST_REGRID_DATA_PLANE_INPUT_DIR
 
 Specify the input directory for forecast files used with the MET regrid_data_pla
 ne tool.
+ A corresponding variable exists for observation data called OBS_REGRID_DATA_PLA
+NE_INPUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -6194,7 +7774,7 @@ ne tool.
 Used by:
 \series default
 \shape default
- regrid_data_plane_wrapper.py
+ RegridDataPlane
 \series bold
 \shape italic
 
@@ -6242,6 +7822,8 @@ FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE
 Template used to specify input filenames for forecast data used by the MET
  regrid_data_plane tool.
  It not set, METplus will use FCST_REGRID_DATA_PLANE_TEMPLATE.
+ A corresponding variable exists for observation data called OBS_REGRID_DATA_PLA
+NE_INPUT_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -6251,7 +7833,7 @@ Template used to specify input filenames for forecast data used by the MET
 Used by:
 \series default
 \shape default
- regrid_data_plane_wrapper.py
+ RegridDataPlane
 \series bold
 \shape italic
 
@@ -6299,6 +7881,8 @@ FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE
 Template used to specify output filenames for forecast data used by the
  MET regrid_data_plane tool.
  It not set, METplus will use FCST_REGRID_DATA_PLANE_TEMPLATE.
+ A corresponding variable exists for observation data called OBS_REGRID_DATA_PLA
+NE_OUTPUT_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -6308,7 +7892,7 @@ Template used to specify output filenames for forecast data used by the
 Used by:
 \series default
 \shape default
- regrid_data_plane_wrapper.py
+ RegridDataPlane
 \series bold
 \shape italic
 
@@ -6357,6 +7941,8 @@ Template used to specify filenames for forecast data used by the MET regrid_data
 _plane tool.
  To specify different templates for input and output files , use FCST_REGRID_DAT
 A_PLANE_INPUT_TEMPLATE and FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE.
+ A corresponding variable exists for observation data called OBS_REGRID_DATA_PLA
+NE_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -6366,7 +7952,7 @@ A_PLANE_INPUT_TEMPLATE and FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE.
 Used by:
 \series default
 \shape default
- regrid_data_plane_wrapper.py
+ RegridDataPlane
 \series bold
 \shape italic
 
@@ -6413,6 +7999,8 @@ FCST_REGRID_DATA_PLANE_OUTPUT_DIR
 
 Specify the output directory for forecast files used with the MET regrid_data_pl
 ane tool.
+ A corresponding variable exists for observation data called OBS_REGRID_DATA_PLA
+NE_OUTPUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -6422,7 +8010,7 @@ ane tool.
 Used by:
 \series default
 \shape default
- regrid_data_plane_wrapper.py
+ RegridDataPlane
 \series bold
 \shape italic
 
@@ -7945,6 +9533,68 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+GEMPAKTOCF_CLASSPATH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Path to the GempakToCF binary file and the NetCDF jar file required to run
+ GempakToCF.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GempakToCF
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [exe]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 GEMPAKTOCF_INPUT_DIR
 \series default
 
@@ -7962,7 +9612,7 @@ Specify the input directory for the tool used to convert GEMPAK files to
 Used by:
 \series default
 \shape default
- gempak_to_cf_wrapper.py
+ GempakToCF
 \series bold
 \shape italic
 
@@ -8024,7 +9674,7 @@ Filename template used for input files to the tool used to convert GEMPAK
 Used by:
 \series default
 \shape default
- gempak_to_cf_wrapper.py
+ GempakToCF
 \series bold
 \shape italic
 
@@ -8086,7 +9736,7 @@ Specify the output directory for files generated by the tool used to convert
 Used by:
 \series default
 \shape default
- gempak_to_cf_wrapper.py
+ GempakToCF
 \series bold
 \shape italic
 
@@ -8148,7 +9798,7 @@ Filename template used for output files from the tool used to convert GEMPAK
 Used by:
 \series default
 \shape default
- gempak_to_cf_wrapper.py
+ GempakToCF
 \series bold
 \shape italic
 
@@ -8159,6 +9809,68 @@ Family:
 \series default
 \shape default
  [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+If True, do not run GempakToCF if output file already exists.
+ Set to False to overwrite files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GempakToCF
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
 \series bold
 \shape italic
 
@@ -8428,9 +10140,66 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-GRID_STAT_CONFIG
+[deprecated] GRID_STAT_CONFIG
 \series default
 
+\begin_inset Newline newline
+\end_inset
+
+Please use GRID_STAT_CONFIG_FILE instead.
+ Specify the absolute path to the configuration file used by the MET grid_stat
+ tool.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GridStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default: 
+\series default
+\shape default
+Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+GRID_STAT_CONFIG
+\series default
+_FILE
 \begin_inset Newline newline
 \end_inset
 
@@ -8445,7 +10214,7 @@ Specify the absolute path to the configuration file used by the MET grid_stat
 Used by:
 \series default
 \shape default
- grid_stat_wrapper.py
+ GridStat
 \series bold
 \shape italic
 
@@ -8505,7 +10274,7 @@ ns specified.
 Used by:
 \series default
 \shape default
- grid_stat_wrapper.py
+ GridStat
 \series bold
 \shape italic
 
@@ -8550,7 +10319,64 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-GRID_STAT_OUT_DIR
+[deprecated] GRID_STAT_OUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the output directory where files from the MET grid_stat tool are
+ written.
+ Please use GRID_STAT_OUTPUT_DIR instead.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GridStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+GRID_STAT_OUTPUT_DIR
 \series default
 
 \begin_inset Newline newline
@@ -8567,7 +10393,7 @@ Specify the output directory where files from the MET grid_stat tool are
 Used by:
 \series default
 \shape default
- grid_stat_wrapper.py
+ GridStat
 \series bold
 \shape italic
 
@@ -8578,6 +10404,62 @@ Family:
 \series default
 \shape default
  [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+GRID_STAT_VERIFICATION_MASK_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Template used to specify the verification mask filename for the MET tool
+ grid_stat.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GridStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
 \series bold
 \shape italic
 
@@ -9867,8 +11749,8 @@ Specify the sequence of forecast lead times to include in the analysis.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, ensemble_stat_wrapper.py, gempak_to_cf_wrapper.py,
- grid_stat_wrapper.py, mode_wrapper.py, reformat_gridded_wrapper.py
+ EnsembleStat, GridStat, Mode, MTD, PB2NC, PcpCombine, PointStat, RegridDataPlan
+e, SeriesByLead
 \series bold
 \shape italic
 
@@ -11803,13 +13685,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MODE_CONFIG
+[deprecated] MODE_CONFIG
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Path to mode configuration file.
+Please use MODE_CONFIG_FILE instead.
+ Path to mode configuration file.
 \end_layout
 
 \begin_layout Standard
@@ -11858,16 +13741,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MODE_CONV_RADIUS
+MODE_CONFIG
 \series default
-
+_FILE
 \begin_inset Newline newline
 \end_inset
 
-Comma separated list of convolution radius values used by mode for both
- forecast and observation fields.
- Has the same behavior as setting MODE_FCST_CONV_RADIUS and MODE_OBS_CONV_RADIUS
- to the same value.
+Path to mode configuration file.
 \end_layout
 
 \begin_layout Standard
@@ -11877,7 +13757,7 @@ Comma separated list of convolution radius values used by mode for both
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -11897,7 +13777,65 @@ Family:
 Default:
 \series default
 \shape default
- 5
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODE_CONV_RADIUS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Comma separated list of convolution radius values used by mode for both
+ forecast and observation fields.
+ Has the same behavior as setting FCST_MODE_CONV_RADIUS and OBS_MODE_CONV_RADIUS
+ to the same value.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
 \begin_inset Newline newline
 \end_inset
 
@@ -11924,7 +13862,7 @@ MODE_CONV_THRESH
 
 Comma separated list of convolution threshold values used by mode for both
  forecast and observation fields.
- Has the same behavior as setting MODE_FCST_CONV_THRESH and MODE_OBS_CONV_THRESH
+ Has the same behavior as setting FCST_MODE_CONV_THRESH and OBS_MODE_CONV_THRESH
  to the same value.
 \end_layout
 
@@ -11935,7 +13873,7 @@ Comma separated list of convolution threshold values used by mode for both
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -11955,7 +13893,7 @@ Family:
 Default:
 \series default
 \shape default
- >0.5
+ 
 \begin_inset Newline newline
 \end_inset
 
@@ -12370,13 +14308,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MODE_OBS_CONV_RADIUS
+[deprecated]MODE_OBS_CONV_RADIUS
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Comma separated list of convolution radius values used by mode for observation
+Please use OBS_CONV_MODE_RADIUS instead.
+ Comma separated list of convolution radius values used by mode for observation
  fields.
 \end_layout
 
@@ -12426,14 +14365,15 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MODE_OBS_CONV_THRESH
+[deprecated]MODE_OBS_CONV_THRESH
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Comma separated list of convolution threshold values used by mode for observatio
-n fields.
+Please use OBS_MODE_CONV_THRESH instead.
+ Comma separated list of convolution threshold values used by mode for observati
+on fields.
 \end_layout
 
 \begin_layout Standard
@@ -12482,13 +14422,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MODE_OBS_MERGE_FLAG
+[deprecated] MODE_OBS_MERGE_FLAG
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Sets the merge_flag value in the mode config file for observation fields.
+Please use OBS_MODE_MERGE_FLAG instead.
+ Sets the merge_flag value in the mode config file for observation fields.
  Valid values are NONE, THRESH, ENGINE, and BOTH.
 \end_layout
 
@@ -12538,13 +14479,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MODE_OBS_MERGE_THRESH
+[deprecated]MODE_OBS_MERGE_THRESH
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Comma separated list of merge threshold values used by mode for observation
+Please use OBS_MODE_MERGE_THRESH_INSTEAD.
+ Comma separated list of merge threshold values used by mode for observation
  fields.
 \end_layout
 
@@ -12594,7 +14536,63 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MODE_OUT_DIR
+[deprecated]MODE_OUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Please use MODE_OUTPUT_DIR instead.
+ Ouptut directory to write mode files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODE_OUTPUT_DIR
 \series default
 
 \begin_inset Newline newline
@@ -12610,7 +14608,7 @@ Ouptut directory to write mode files.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -12666,7 +14664,7 @@ True/False.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -12705,7 +14703,63 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MTD_CONFIG
+[deprecated]MTD_CONFIG
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Please use MTD_CONFIG_FILE instead.
+ Path to mode-TD configuration file.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ MTD
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MTD_CONFIG_FILE
 \series default
 
 \begin_inset Newline newline
@@ -12721,7 +14775,7 @@ Path to mode-TD configuration file.
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -12768,7 +14822,7 @@ MTD_CONV_RADIUS
 
 Comma separated list of convolution radius values used by mode-TD for both
  forecast and observation files.
- Has the same behavior as setting MTD_FCST_CONV_RADIUS and MTD_OBS_CONV_RADIUS
+ Has the same behavior as setting FCST_MTD_CONV_RADIUS and OBS_MTD_CONV_RADIUS
  to the same value.
 \end_layout
 
@@ -12779,7 +14833,7 @@ Comma separated list of convolution radius values used by mode-TD for both
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -12799,7 +14853,7 @@ Family:
 Default:
 \series default
 \shape default
- 5
+ 
 \begin_inset Newline newline
 \end_inset
 
@@ -12826,7 +14880,7 @@ MTD_CONV_THRESH
 
 Comma separated list of convolution threshold values used by mode-TD for
  both forecast and observation files.
- Has the same behavior as setting MTD_FCST_CONV_THRESH and MTD_OBS_CONV_THRESH
+ Has the same behavior as setting FCST_MTD_CONV_THRESH and OBS_MTD_CONV_THRESH
  to the same value.
 \end_layout
 
@@ -12837,7 +14891,7 @@ Comma separated list of convolution threshold values used by mode-TD for
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -12857,7 +14911,7 @@ Family:
 Default:
 \series default
 \shape default
- >0.5
+ 
 \begin_inset Newline newline
 \end_inset
 
@@ -12914,6 +14968,174 @@ Default:
 \series default
 \shape default
  5
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MTD_MIN_VOLUME
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Sets min_volume in the MET Mode-TD config file.
+ Refer to the MET User's Guide for more information.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ MTD
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MTD_SINGLE_RUN
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Set to True to only process one data set (forecast or observation) in Mode-TD.
+ If True, must set MTD_SINGLE_RUN_SRC to either 'FCST' or 'OBS'.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ MTD
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MTD_SINGLE_RUN
+\series default
+_SRC
+\begin_inset Newline newline
+\end_inset
+
+Used only if MTD_SINGLE_RUN is set to True.
+ Valid options are 'FCST' or 'OBS'.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ MTD
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
 \begin_inset Newline newline
 \end_inset
 
@@ -13783,13 +16005,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_[N]_FIELD_NAME
+[deprecated] OBS_[N]_FIELD_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-This variable is used to define a [N] hour accumulation NetCDF field in
+Please use OBS_PCP_COMBINE_[N]_FIELD_NAME instead.
+ This variable is used to define a [N] hour accumulation NetCDF field in
  the observation dataset used in the MET tool pcp_combine.
  [N] must be an integer >= 1.
 \end_layout
@@ -13846,13 +16069,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_BUFR_VAR_LIST
+[deprecated] OBS_BUFR_VAR_LIST
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify which BUFR codes to use from the observation dataset when using
+Please use PB2NC_OBS_BUFR_VAR_LIST instead.
+ Specify which BUFR codes to use from the observation dataset when using
  the MET pb2nc tool.
  Format is comma separated list, e.g.:
 \begin_inset Newline newline
@@ -13935,6 +16159,796 @@ Used by:
 \series default
 \shape default
  pcp_combine_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_ENSEMBLE_STAT_GRID_INPUT_DATATYPE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the data type of the input directory for grid observation files
+ used with the MET ensemble_stat tool.
+ Currently valid options are NETCDF, GRIB, and GEMPAK.
+ If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ ensemble_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_ENSEMBLE_STAT_GRID_INPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Input directory for grid observation files to use with the MET tool ensemble_sta
+t.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ ensemble_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Template used to specify grid observation input filenames for the MET tool
+ ensemble_stat.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ ensemble_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_ENSEMBLE_STAT_POINT_INPUT_DATATYPE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the data type of the input directory for point observation files
+ used with the MET ensemble_stat tool.
+ Currently valid options are NETCDF, GRIB, and GEMPAK.
+ If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ ensemble_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_ENSEMBLE_STAT_POINT_INPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Input directory for point observation files to use with the MET tool ensemble_st
+at.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ ensemble_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Template used to specify point observation input filenames for the MET tool
+ ensemble_stat.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ ensemble_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_ENSEMBLE_STAT_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+1) Used to control the lower bound of the window around the valid time to
+ determine if a file should be used for processing.
+\begin_inset Newline newline
+\end_inset
+
+2) Passed to the MET config file to determine the range of data within a
+ file that should be used for processing.
+\begin_inset Newline newline
+\end_inset
+
+Units are seconds.
+ If OBS_ENSEMBLE_STAT_WINDOW_BEGIN is not set in the config file, the value
+ of OBS_WINDOW_BEGIN will be used instead.
+ If both window begin and window end values are set to 0, then METplus will
+ require an input file with an exact time match to process.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ ensemble_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_ENSEMBLE_STAT_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+1) Used to control the upper bound of the window around the valid time to
+ determine if a file should be used for processing.
+\begin_inset Newline newline
+\end_inset
+
+2) Passed to the MET config file to determine the range of data within a
+ file that should be used for processing.
+\begin_inset Newline newline
+\end_inset
+
+Units are seconds.
+ If OBS_ENSEMBLE_STAT_WINDOW_END is not set in the config file, the value
+ of OBS_WINDOW_END will be used instead.
+ If both window begin and window end values are set to 0, then METplus will
+ require an input file with an exact time match to process.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ ensemble_stat_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_GRID_STAT_INPUT_DATATYPE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_GRID_STAT_INPUT_DATATYPE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GridStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_GRID_STAT_INPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_GRID_STAT_INPUT_DIR.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GridStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_GRID_STAT_INPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_GRID_STAT_INPUT_TEMPLATE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GridStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_GRID_STAT_PROB_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_GRID_STAT_PROB_THRESH.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GridStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ ==0.1
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Corresponds to the OBS_WINDOW_END in the MET config file for pb2nc.
+ Please refer to Chapter 4 of the MET User's Guide.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ pb2nc_wrapper.py, point_stat_wrapper.py
 \series bold
 \shape italic
 
@@ -14527,13 +17541,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_INPUT_FILE_TEMPL
+[deprecated] OBS_INPUT_FILE_TEMPL
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the filename template to use for observation input files.
+Please use OBS_POINT_STAT_INPUT_TEMPLATE instead.
+ Specify the filename template to use for observation input files.
 \end_layout
 
 \begin_layout Standard
@@ -14588,13 +17603,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_IS_DAILY_FILE
+[deprecated] OBS_IS_DAILY_FILE
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify whether the forecast file is a daily file or not.
+Please use OBS_PCP_COMBINE_IS_DAILY_FILE instead.
+ Specify whether the forecast file is a daily file or not.
 \begin_inset Newline newline
 \end_inset
 
@@ -14678,7 +17694,7 @@ Acceptable values: true/false
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ EnsembleStat, GridStat, Mode, MTD, PointStat
 \series bold
 \shape italic
 
@@ -14723,13 +17739,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_LEVEL
+[deprecated] OBS_LEVEL
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify what accumulation level should be used from the observation data
+Please use OBS_PCP_COMBINE_INPUT_LEVEL instead.
+ Specify what accumulation level should be used from the observation data
  for the analysis.
  See FCST_LEVEL for more information
 \end_layout
@@ -14780,16 +17797,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_MODE_INPUT_DATATYPE
+OBS_MODE_CONV_RADIUS
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the data type of the input directory for observation files used
- with the MET mode tool.
- Currently valid options are NETCDF, GRIB, and GEMPAK.
- If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
+See FCST_MODE_CONV_RADIUS.
 \end_layout
 
 \begin_layout Standard
@@ -14799,7 +17813,227 @@ Specify the data type of the input directory for observation files used
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_MODE_CONV_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_MODE_CONV_THRESH.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_MODE_MERGE_FLAG
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_MODE_MERGE_FLAG.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_MODE_MERGE_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_MODE_MERGE_THRESH.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_MODE_INPUT_DATATYPE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_MODE_INPUT_DATATYPE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
 \series bold
 \shape italic
 
@@ -14820,9 +18054,15 @@ Default:
 \series default
 \shape default
  Varies
+\series bold
+\shape italic
+
 \begin_inset Newline newline
 \end_inset
 
+
+\series default
+\shape default
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -14844,7 +18084,7 @@ OBS_MODE_INPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-Input directory for observation files to use with the MET tool mode.
+See FCST_MODE_INPUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -14854,7 +18094,7 @@ Input directory for observation files to use with the MET tool mode.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -14905,7 +18145,7 @@ OBS_MODE_INPUT_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-Template used to specify observation input filenames for the MET tool mode.
+See FCST_MODE_INPUT_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -14915,7 +18155,7 @@ Template used to specify observation input filenames for the MET tool mode.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -14954,16 +18194,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_MTD_INPUT_DATATYPE
+OBS_MTD_CONV_RADIUS
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the data type of the input directory for observation files used
- with the MET mode-TD tool.
- Currently valid options are NETCDF, GRIB, and GEMPAK.
- If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
+See FCST_MTD_CONV_RADIUS.
 \end_layout
 
 \begin_layout Standard
@@ -14973,7 +18210,117 @@ Specify the data type of the input directory for observation files used
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_MTD_CONV_THRESH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_MTD_CONV_THRESH.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ MTD
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_MTD_INPUT_DATATYPE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_MTD_INPUT_DATATYPE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ MTD
 \series bold
 \shape italic
 
@@ -15018,7 +18365,7 @@ OBS_MTD_INPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-Input directory for observation files to use with the MET tool mode-TD.
+See FCST_MTD_INPUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -15028,7 +18375,7 @@ Input directory for observation files to use with the MET tool mode-TD.
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -15079,7 +18426,7 @@ OBS_MTD_INPUT_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-Template used to specify observation input filenames for the MET tool mode-TD.
+See FCST_MTD_INPUT_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -15089,7 +18436,7 @@ Template used to specify observation input filenames for the MET tool mode-TD.
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -15110,15 +18457,9 @@ Default:
 \series default
 \shape default
  Varies
-\series bold
-\shape italic
-
 \begin_inset Newline newline
 \end_inset
 
-
-\series default
-\shape default
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -15251,18 +18592,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_PCP_COMBINE_INPUT_DATATYPE
+OBS_PCP_COMBINE_[N]_FIELD_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the data type of the input directory for observation files used
- with the MET pcp_combine tool.
- Currently valid options are NETCDF, GRIB, and GEMPAK.
- If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
- Required by pcp_combine if OBS_PCP_COMBINE_RUN is True.
- Replaces deprecated variable OBS_NATIVE_DATA_TYPE.
+See FCST_PCP_COMBINE_[N]_FIELD_NAME.
 \end_layout
 
 \begin_layout Standard
@@ -15272,7 +18608,7 @@ Specify the data type of the input directory for observation files used
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -15293,15 +18629,180 @@ Default:
 \series default
 \shape default
  Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_PCP_COMBINE_DATA_INTERVAL
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_PCP_COMBINE_DATA_INTERVAL.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PcpCombine
 \series bold
 \shape italic
 
 \begin_inset Newline newline
 \end_inset
 
-
+Family:
 \series default
 \shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_PCP_COMBINE_DERIVE_LOOKBACK
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_PCP_COMBINE_DERIVE_LOOKBACK.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PcpCombine
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\shape italic
+\emph on
+ADD
+\begin_inset Newline newline
+\end_inset
+
+
+\shape default
+\emph default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_PCP_COMBINE_INPUT_DATATYPE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_PCP_COMBINE_INPUT_DATA_TYPE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PcpCombine
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -15323,14 +18824,7 @@ OBS_PCP_COMBINE_INPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_INPUT_DIR
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:SC_F"
-
-\end_inset
-
-.
+See FCST_PCP_COMBINE_INPUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -15340,7 +18834,7 @@ reference "sec:SC_F"
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -15385,14 +18879,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_PCP_COMBINE_INPUT_TEMPLATE
+OBS_PCP_COMBINE_INPUT_LEVEL
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Filename template used to filter input observation files used by the MET
- pcp_combine tool.
+See FCST_PCP_COMBINE_INPUT_LEVEL.
 \end_layout
 
 \begin_layout Standard
@@ -15402,7 +18895,58 @@ Filename template used to filter input observation files used by the MET
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_PCP_COMBINE_INPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_PCP_COMBINE_INPUT_TEMPLATE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PcpCombine
 \series bold
 \shape italic
 
@@ -15447,14 +18991,21 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_PCP_COMBINE_OUTPUT_DIR
+OBS_PCP_COMBINE_IS_DAILY_FILE
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the output directory where files from the MET pcp_combine tool are
- written.
+See FCST_PCP_COMBINE_IS_DAILY_FILE.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Acceptable values: true/false
 \end_layout
 
 \begin_layout Standard
@@ -15464,7 +19015,234 @@ Specify the output directory where files from the MET pcp_combine tool are
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ False
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_PCP_COMBINE_METHOD
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_PCP_COMBINE_METHOD.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PcpCombine
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+None
+\begin_inset Newline newline
+\end_inset
+
+
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_PCP_COMBINE_MIN_FORECAST
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_PCP_COMBINE_MIN_FORECAST.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PcpCombine
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_PCP_COMBINE_MAX_FORECAST
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_PCP_COMBINE_MAX_FORECAST.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PcpCombine
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_PCP_COMBINE_OUTPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_PCP_COMBINE_OUTPUT_DIR.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PcpCombine
 \series bold
 \shape italic
 
@@ -15515,8 +19293,7 @@ OBS_PCP_COMBINE_OUTPUT_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-Filename template used for writing output files from the MET pcp_combine
- tool.
+See FCST_PCP_COMBINE_OUTPUT_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -15526,7 +19303,7 @@ Filename template used for writing output files from the MET pcp_combine
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -15577,7 +19354,7 @@ OBS_PCP_COMBINE_RUN
 \begin_inset Newline newline
 \end_inset
 
-Specify whether to run pcp_combine on the observation data or not.
+See FCST_PCP_COMBINE_RUN.
 \begin_inset Newline newline
 \end_inset
 
@@ -15585,7 +19362,7 @@ Specify whether to run pcp_combine on the observation data or not.
 \begin_inset Newline newline
 \end_inset
 
-Acceptable values: True/False
+Acceptable values: true/false
 \end_layout
 
 \begin_layout Standard
@@ -15595,7 +19372,7 @@ Acceptable values: True/False
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -15606,6 +19383,301 @@ Family:
 \series default
 \shape default
  [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_PCP_COMBINE_STAT_LIST
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_PCP_COMBINE_STAT_LIST.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Acceptable values: sum, min, max, range, mean, stdev, vld_count
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PcpCombine
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_PCP_COMBINE_TIMES_PER_FILE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_PCP_COMBINE_TIMES_PER_FILE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PcpCombine
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_POINT_STAT_INPUT_DATATYPE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_POINT_STAT_INPUT_DATATYPE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_POINT_STAT_INPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_POINT_STAT_INPUT_DIR.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_POINT_STAT_INPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_POINT_STAT_INPUT_TEMPLATE.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GriPointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
 \series bold
 \shape italic
 
@@ -15640,10 +19712,7 @@ OBS_REGRID_DATA_PLANE_INPUT_DATATYPE
 \begin_inset Newline newline
 \end_inset
 
-Specify the data type of the input directory for observation files used
- with the MET regrid_data_plane tool.
- Currently valid options are NETCDF, GRIB, and GEMPAK.
- If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
+See FCST_REGRID_DATA_PLANE_INPUT_DATATYPE.
 \end_layout
 
 \begin_layout Standard
@@ -15653,7 +19722,7 @@ Specify the data type of the input directory for observation files used
 Used by:
 \series default
 \shape default
- regrid_data_plane_wrapper.py
+ RegridDataPlane
 \series bold
 \shape italic
 
@@ -15674,15 +19743,9 @@ Default:
 \series default
 \shape default
  Varies
-\series bold
-\shape italic
-
 \begin_inset Newline newline
 \end_inset
 
-
-\series default
-\shape default
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -15704,8 +19767,7 @@ OBS_REGRID_DATA_PLANE_INPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-Specify the input directory for observation files used by the MET regrid_data_pl
-ane tool.
+See FCST_REGRID_DATA_PLANE_INPUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -15715,7 +19777,7 @@ ane tool.
 Used by:
 \series default
 \shape default
- regrid_data_plane_wrapper.py
+ RegridDataPlane
 \series bold
 \shape italic
 
@@ -15726,137 +19788,6 @@ Family:
 \series default
 \shape default
  [dir]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-OBS_REGRID_DATA_PLANE_OUTPUT_DIR
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify the output directory where files are written from the MET regrid_data_pl
-ane tool.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- regrid_data_plane_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [dir]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-OBS_REGRID_DATA_PLANE_RUN
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify whether to run regrid_data_plane on the observation data or not.
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-Acceptable values: True/False
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- regrid_data_plane_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
 \series bold
 \shape italic
 
@@ -15891,9 +19822,7 @@ OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-Specify the input filename template to use for observation files (input
- and output) used by the MET regrid_data_plane tool.
- If not set, METplus will use OBS_REGRID_DATA_PLANE_TEMPLATE.
+See FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -15903,7 +19832,7 @@ Specify the input filename template to use for observation files (input
 Used by:
 \series default
 \shape default
- regrid_data_plane_wrapper.py
+ RegridDataPlane
 \series bold
 \shape italic
 
@@ -15948,9 +19877,7 @@ OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-Specify the output filename template to use for observation files (input
- and output) used by the MET regrid_data_plane tool.
- If not set, METplus will use OBS_REGRID_DATA_PLANE_TEMPLATE.
+See FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -15960,7 +19887,7 @@ Specify the output filename template to use for observation files (input
 Used by:
 \series default
 \shape default
- regrid_data_plane_wrapper.py
+ RegridDataPlane
 \series bold
 \shape italic
 
@@ -16005,10 +19932,7 @@ OBS_REGRID_DATA_PLANE_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-Specify the filename template to use for observation files (input and output)
- used by the MET regrid_data_plane tool.
- To specify different templates for input and output files , use FCST_REGRID_DAT
-A_PLANE_INPUT_TEMPLATE and FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE.
+See FCST_REGRID_DATA_PLANE_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -16018,7 +19942,7 @@ A_PLANE_INPUT_TEMPLATE and FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE.
 Used by:
 \series default
 \shape default
- regrid_data_plane_wrapper.py
+ RegridDataPlane
 \series bold
 \shape italic
 
@@ -16029,6 +19953,61 @@ Family:
 \series default
 \shape default
  [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_REGRID_DATA_PLANE_OUTPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See FCST_REGRID_DATA_PLANE_OUTPUT_DIR.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ RegridDataPlane
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
 \series bold
 \shape italic
 
@@ -16733,8 +20712,23 @@ IN
 \begin_inset Newline newline
 \end_inset
 
-Corresponds to the OBS_WINDOW_BEG in the MET config file for pb2nc.
- Please refer to Chapter 4 of the MET User's Guide.
+1) Used to control the lower bound of the window around the valid time to
+ determine if a file should be used for processing.
+\begin_inset Newline newline
+\end_inset
+
+2) Passed to the MET config file to determine the range of data within a
+ file that should be used for processing.
+\begin_inset Newline newline
+\end_inset
+
+Units are seconds.
+ This value will be used for all wrappers that look for an observation file
+ unless it is overridden by a wrapper specific configuration variable.
+ For example, if OBS_GRID_STAT_WINDOW_BEGIN is set, the GridStat wrapper
+ will use that value.
+ If PB2NC_WINDOW_BEGIN is not set, then the PB2NC wrapper will use OBS_WINDOW_BE
+GIN.
 \end_layout
 
 \begin_layout Standard
@@ -16744,7 +20738,7 @@ Corresponds to the OBS_WINDOW_BEG in the MET config file for pb2nc.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py
+ EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -16789,8 +20783,22 @@ OBS_WINDOW_END
 \begin_inset Newline newline
 \end_inset
 
-Corresponds to the OBS_WINDOW_END in the MET config file for pb2nc.
- Please refer to Chapter 4 of the MET User's Guide.
+1) Used to control the upper bound of the window around the valid time to
+ determine if a file should be used for processing.
+\begin_inset Newline newline
+\end_inset
+
+2) Passed to the MET config file to determine the range of data within a
+ file that should be used for processing.
+\begin_inset Newline newline
+\end_inset
+
+Units are seconds.
+ This value will be used for all wrappers that look for an observation file
+ unless it is overridden by a wrapper specific configuration variable.
+ For example, if OBS_GRID_STAT_WINDOW_END is set, the GridStat wrapper will
+ use that value.
+ If PB2NC_WINDOW_END is not set, then the PB2NC wrapper will use OBS_WINDOW_END.
 \end_layout
 
 \begin_layout Standard
@@ -16800,7 +20808,7 @@ Corresponds to the OBS_WINDOW_END in the MET config file for pb2nc.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py
+ EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -17038,13 +21046,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OVERWRITE_NC_OUTPUT
+[deprecated] OVERWRITE_NC_OUTPUT
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify whether to overwrite the netCDF output or not when using the MET
+Please use PB2NC_SKIP_IF_OUTPUT_EXISTS instead.
+ Specify whether to overwrite the netCDF output or not when using the MET
  pb2nc tool.
 \begin_inset Newline newline
 \end_inset
@@ -17271,7 +21280,7 @@ Specify the absolute path to the configuration file for the MET pb2nc tool.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -17332,7 +21341,71 @@ Specify a grid to use with the MET pb2nc tool.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_INPUT_DATATYPE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the data type of the input directory for prepbufr files used with
+ the MET pb2nc tool.
+ Currently valid options are NETCDF, GRIB, and GEMPAK.
+ If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC
 \series bold
 \shape italic
 
@@ -17394,7 +21467,142 @@ Specify which PREPBUFR (PB) message types to convert using the MET pb2nc
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_OBS_BUFR_VAR_LIST
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify which BUFR codes to use from the observation dataset when using
+ the MET pb2nc tool.
+ Format is comma separated list, e.g.:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+PMO, TOB, TDO
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_OFFSETS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+A list of potential offsets (in hours) that can be found in the prepbufr
+ input template.
+ METplus will check if a file with a given offset exists in the order specified
+ in this list, to be sure to put favored offset values first.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC
 \series bold
 \shape italic
 
@@ -17455,7 +21663,7 @@ Specify the directory where files will be written from the MET pb2nc tool.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -17516,7 +21724,69 @@ Specify a polygon to be used with the MET pb2nc tool.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_SKIP_IF_OUTPUT_EXISTS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+If True, do not run PB2NC if output file already exists.
+ Set to False to overwrite files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC
 \series bold
 \shape italic
 
@@ -17577,7 +21847,317 @@ Specify the ID of the station to use with the MET pb2nc tool.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_TIME_SUMMARY_FLAG
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the time summary flag item in the MET pb2nc config file.
+ Refer to the MET User's Guide for more information.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_TIME_SUMMARY_BEG
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the time summary beg item in the MET pb2nc config file.
+ Refer to the MET User's Guide for more information.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_TIME_SUMMARY_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the time summary end item in the MET pb2nc config file.
+ Refer to the MET User's Guide for more information.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_TIME_SUMMARY_VAR_NAMES
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the time summary obs_var list item in the MET pb2nc config file.
+ Refer to the MET User's Guide for more information.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_TIME_SUMMARY_TYPES
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the time summary type list item in the MET pb2nc config file.
+ Refer to the MET User's Guide for more information.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC
 \series bold
 \shape italic
 
@@ -18499,13 +23079,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-PREPBUFR_DATA_DIR
+[deprecated] PREPBUFR_DATA_DIR
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the directory where the PREPBUFR data are located for the MET pb2nc
+Please use PB2NC_INPUT_DIR instead.
+ Specify the directory where the PREPBUFR data are located for the MET pb2nc
  tool.
 \end_layout
 
@@ -18561,7 +23142,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-PREPBUFR_DIR_REGEX
+[deprecated] PREPBUFR_DIR_REGEX
 \series default
 
 \begin_inset Newline newline
@@ -18622,7 +23203,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-PREPBUFR_FILE_REGEX
+[deprecated] PREPBUFR_FILE_REGEX
 \series default
 
 \begin_inset Newline newline
@@ -18683,13 +23264,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-PREPBUFR_MODEL_DIR_NAME
+[deprecated] PREPBUFR_MODEL_DIR_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the name of the model being used with the MET pb2nc tool.
+Please put the value previously used here in the PB2NC_INPUT_DIR path.
+ Specify the name of the model being used with the MET pb2nc tool.
 \end_layout
 
 \begin_layout Standard
@@ -18806,7 +23388,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-PROJ_DIR
+[deprecated] PROJ_DIR
 \series default
 
 \begin_inset Newline newline
@@ -23980,13 +28562,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-TIME_SUMMARY_BEG
+[deprecated] TIME_SUMMARY_BEG
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the starting time of the summary when using the MET pb2nc tool.
+Please use PB2NC_TIME_SUMMARY_BEG instead.
+ Specify the starting time of the summary when using the MET pb2nc tool.
 \begin_inset Newline newline
 \end_inset
 
@@ -24049,13 +28632,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-TIME_SUMMARY_END
+[deprecated] TIME_SUMMARY_END
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the ending time of the summary when using the MET pb2nc tool.
+Please use PB2NC_TIME_SUMMARY_END instead.
+ Specify the ending time of the summary when using the MET pb2nc tool.
 \begin_inset Newline newline
 \end_inset
 
@@ -24118,13 +28702,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-TIME_SUMMARY_FLAG
+[deprecated] TIME_SUMMARY_FLAG
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify whether to receive a time summary from the MET pb2nc tool or not.
+Please use PB2NC_TIME_SUMMARY_FLAG instead.
+ Specify whether to receive a time summary from the MET pb2nc tool or not.
 \begin_inset Newline newline
 \end_inset
 
@@ -24187,13 +28772,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-TIME_SUMMARY_TYPES
+[deprecated] TIME_SUMMARY_TYPES
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify a comma separated list of time summary types to receive from the
+Please use PB2NC_TIME_SUMMARY_TYPES instead.
+ Specify a comma separated list of time summary types to receive from the
  MET pb2nc tool.
 \end_layout
 
@@ -24249,13 +28835,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-TIME_SUMMARY_VAR_NAMES
+[deprecated]TIME_SUMMARY_VAR_NAMES
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify a comma separated list of time summary variable names to receive
+Please use PB2NC_TIME_SUMMARY_VAR_NAMES instead.
+ Specify a comma separated list of time summary variable names to receive
  from the MET pb2nc tool.
 \end_layout
 
@@ -25585,13 +30172,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-VERIFICATION_GRID
+[deprecated] VERIFICATION_GRID
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the absolute path to a file containing information about the desired
+Please use REGRID_DATA_PLANE_VERIF_GRID.
+ Specify the absolute path to a file containing information about the desired
  output grid from the MET regrid_data_plane tool.
 \end_layout
 
@@ -25826,7 +30414,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-VERTICAL_LOCATION
+[deprecated] VERTICAL_LOCATION
 \series default
 
 \begin_inset Newline newline
