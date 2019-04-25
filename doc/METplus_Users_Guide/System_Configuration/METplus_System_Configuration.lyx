@@ -400,11 +400,11 @@ etplus_data.conf and METplus_INSTALL/parm/metplus_conf/metplus_system.conf
 
 \begin_layout Itemize
 Two configuration files are used in this use case, track_and_intensity.conf
- file and tcmp_mean_median.conf to take cyclone track data, and using tc_pairs_wr
-apper.py which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone
- tracks to generate matched pairs and error statistics).
- The tcmpr_plotter_wrapper.py is then used (wraps the MET tool plot_tcmpr.R)
- to generate a mean and median plots for these matched pairs.
+ file and tcmp_mean_median.conf to take cyclone track data, and using TcPairs
+ which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone tracks
+ to generate matched pairs and error statistics).
+ The TCMPRPlotter is then used (wraps the MET tool plot_tcmpr.R) to generate
+ a mean and median plots for these matched pairs.
 \end_layout
 
 \begin_layout Itemize
@@ -682,7 +682,7 @@ adeck
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -752,7 +752,7 @@ adeck
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -813,7 +813,7 @@ The model name of the ADeck model data
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py, tc_stat_wrapper.py
+ CyclonePlotter, TcStat
 \series bold
 \shape italic
 
@@ -870,7 +870,7 @@ The regular expression describing the analysis (obs) file name (in ASCII
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py
+ SeriesByLead
 \series bold
 \shape italic
 
@@ -926,7 +926,7 @@ The regular expression used to search the input files that are in netCDF
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py, series_by_init_wrapper.py
+ SeriesByLead, SeriesByInit
 \series bold
 \shape italic
 
@@ -1037,7 +1037,7 @@ The regular expression for the analysis input file the file is in GRIB2.
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py, series_by_init_wrapper.py
+ SeriesByLead, SeriesByInit
 \series bold
 \shape italic
 
@@ -1104,7 +1104,7 @@ Control whether or not a background map shows up for series analysis plots.
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py, series_by_init_wrapper.py
+ SeriesByLead, SeriesByInit
 \series bold
 \shape italic
 
@@ -1202,7 +1202,7 @@ SL = Southern Atlantic
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py, tc_pairs_wrapper.py, tc_stat_wrapper.py
+ CyclonePlotter, TcPairs, TcStat
 \series bold
 \shape italic
 
@@ -1262,7 +1262,7 @@ Relevant for non-ATCF tropical cyclone data.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -1323,7 +1323,7 @@ The input directory where the BDeck track data resides.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -1385,7 +1385,7 @@ Please use INIT_BEG or VALID_BEG instead.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -1446,7 +1446,7 @@ The model name of the BDeck model data.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -1524,7 +1524,7 @@ The method for creating confidence intervals.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py
+ MakePlots
 \series bold
 \shape italic
 
@@ -1575,7 +1575,7 @@ Control the size of the circle marker in the cyclone plotter.
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py
+ CyclonePlotter
 \series bold
 \shape italic
 
@@ -1688,8 +1688,7 @@ Directory containing config files relevant to MET tools.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, ensemble_stat_wrapper.py, grid_stat_wrapper.py,
- mode_wrapper.py, stat_analysis_wrapper.py
+ compare_gridded_wrapper.py, EnsembleStat, GridStat, Mode, StatAnalysis
 \series bold
 \shape italic
 
@@ -1750,7 +1749,7 @@ Specific configuration file name to use for MET tools.
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -1819,8 +1818,7 @@ convert
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py, series_by_init_wrapper.py, series_by_lead
-_wrapper.py
+ PB2NC, PointStat, SeriesByInit, SeriesByLead
 \series bold
 \shape italic
 
@@ -1881,7 +1879,7 @@ Specify the values of the COV_THRESH column in the MET .stat file to use.
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -1938,7 +1936,7 @@ Control the size of the cross marker in the cyclone plotter.
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py
+ CyclonePlotter
 \series bold
 \shape italic
 
@@ -2007,7 +2005,7 @@ cut
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -2071,7 +2069,7 @@ Specify which cyclone numbers to include in the tropical cyclone analysis.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py, tc_stat_wrapper.py
+ TcPairs, TcStat
 \series bold
 \shape italic
 
@@ -2132,7 +2130,7 @@ Initialization date for the cyclone forecasts in YYYYMMDD format.
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py
+ CyclonePlotter
 \series bold
 \shape italic
 
@@ -2193,7 +2191,7 @@ Initialization hour for the cyclone forecasts in HH format.
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py
+ CyclonePlotter
 \series bold
 \shape italic
 
@@ -2255,7 +2253,7 @@ Input directory for the cyclone plotter.
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py
+ CyclonePlotter
 \series bold
 \shape italic
 
@@ -2316,7 +2314,7 @@ Define the model being used for the tropical cyclone forecasts.
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py
+ CyclonePlotter
 \series bold
 \shape italic
 
@@ -2377,7 +2375,7 @@ Specify the directory where the output from the cyclone plotter should go.
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py
+ CyclonePlotter
 \series bold
 \shape italic
 
@@ -2438,7 +2436,7 @@ Title string for the cyclone plotter.
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py
+ CyclonePlotter
 \series bold
 \shape italic
 
@@ -2518,7 +2516,7 @@ DEMO_YR
 
 The demo year.
  This is an optional value used by the plot_TCMPR.R script, (which is wrapped
- by tcmpr_plotter_wrapper.py).
+ by TCMPRPlotter).
  Please refer to Chapter 21 in the MET User's Guide for more details.
 \end_layout
 
@@ -2529,7 +2527,7 @@ The demo year.
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -2581,7 +2579,7 @@ DEP_VARS
 \end_inset
 
 Corresponds to the optional flag -dep in the plot_TCMPR.R script, which is
- wrapped by tcmpr_plotter_wrapper.py.
+ wrapped by TCMPRPlotter.
  The value to this flag is a comma-separated list (no whitespace) of dependent
  variable columns to plot ( e.g.
  AMSLP-BMSLP, AMAX_WIND-BMAX_WIND, TK_ERR).
@@ -2599,7 +2597,7 @@ Corresponds to the optional flag -dep in the plot_TCMPR.R script, which is
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -2660,7 +2658,7 @@ Specify the values of the DESC column in the MET .stat file to use.
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -2720,7 +2718,7 @@ on of the minimum distance to land.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -2988,7 +2986,7 @@ egrep
 Used by:
 \series default
 \shape default
- feature_util.py, pb2nc_wrapper.py, point_stat_wrapper.py
+ feature_util.py, PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -3049,7 +3047,7 @@ Please use INIT_END or VALID_END instead.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -3110,7 +3108,7 @@ Ending hour for analysis with format HH.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -3171,7 +3169,7 @@ Ending date string for analysis with format YYYYMMDD.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -3986,7 +3984,7 @@ If event equalization is to be used (True) or not (False).
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py
+ MakePlots
 \series bold
 \shape italic
 
@@ -4043,7 +4041,7 @@ Set the output directory for the METplus extract_tiles utility.
 Used by:
 \series default
 \shape default
- extract_tiles_wrapper.py, series_by_init_wrapper.py, series_by_lead_wrapper.py
+ ExtractTiles, SeriesByInit, SeriesByLead
 \series bold
 \shape italic
 
@@ -4104,7 +4102,7 @@ Control what options are passed to the METplus extract_tiles utility.
 Used by:
 \series default
 \shape default
- extract_tiles_wrapper.py
+ ExtractTiles
 \series bold
 \shape italic
 
@@ -4246,7 +4244,7 @@ No longer used.
 Used by:
 \series default
 \shape default
- grid_stat_wrapper.py mode_wrapper.py, mtd_wrapper.py
+ GridStat Mode, mtd_wrapper.py
 \series bold
 \shape italic
 
@@ -4301,7 +4299,7 @@ Please use FCST_PCP_COMBINE_[N]_FIELD_NAME where N >=1 instead.
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -4363,7 +4361,7 @@ Regular expression used to find the forecast file (ASCII format) generated
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py
+ SeriesByLead
 \series bold
 \shape italic
 
@@ -5090,8 +5088,7 @@ Specify the stride for forecast initializations.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, ensemble_stat_wrapper.py, grid_stat_wrapper.py,
- mode_wrapper.py
+ compare_gridded_wrapper.py, EnsembleStat, GridStat, Mode
 \series bold
 \shape italic
 
@@ -5152,7 +5149,7 @@ Please use FCST_POINT_STAT_INPUT_DIR instead.
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ PointStat
 \series bold
 \shape italic
 
@@ -5209,8 +5206,7 @@ Specify the input directory for the forecast files.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, grid_stat_wrapper.py, mode_wrapper.py, point_stat_wrap
-per.py, pcp_combine_wrapper.py
+ compare_gridded_wrapper.py, GridStat, Mode, PointStat, PcpCombine
 \series bold
 \shape italic
 
@@ -5265,7 +5261,7 @@ Regular expression to use when identifying which forecast file to use.
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ PointStat
 \series bold
 \shape italic
 
@@ -5326,7 +5322,7 @@ Please use FCST_POINT_STAT_INPUT_TEMPLATE instead.
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ PointStat
 \series bold
 \shape italic
 
@@ -5395,7 +5391,7 @@ Acceptable values: true/false
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -5525,7 +5521,7 @@ Specify the values of the FCST_LEAD column in the MET .stat file to use.
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -5586,7 +5582,7 @@ Please use FCST_PCP_COMBINE_INPUT_LEVEL instead.
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -5648,8 +5644,7 @@ Please use LEAD_SEQ_MAX instead.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, ensemble_stat_wrapper.py, grid_stat_wrapper.py,
- mode_wrapper.py
+ compare_gridded_wrapper.py, EnsembleStat, GridStat, Mode
 \series bold
 \shape italic
 
@@ -6414,7 +6409,7 @@ Specify the data format of the forecast data.
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -6475,7 +6470,7 @@ Define the regular expression for input forecast files that are in netCDF.
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py, series_by_init_wrapper.py
+ SeriesByLead, SeriesByInit
 \series bold
 \shape italic
 
@@ -8195,7 +8190,7 @@ Regular expression for forecast input files that are in GRIB2.
 Used by:
 \series default
 \shape default
- series_by_init_wrapper.py, series_by_lead_wrapper.py
+ SeriesByInit, SeriesByLead
 \series bold
 \shape italic
 
@@ -8258,8 +8253,7 @@ PTIONS where [N] = integer >= 1.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, ensemble_stat_wrapper.py, make_plots_wrapper.py,
- met_util.py
+ compare_gridded_wrapper.py, EnsembleStat, MakePlots, met_util.py
 \series bold
 \shape italic
 
@@ -8311,7 +8305,7 @@ Specify the values of the FCST_VAR_LEVEL column in the MET .stat file to
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -8376,7 +8370,7 @@ Specify the values of the FCST_VAR_NAME column in the MET .stat file to use.
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -8510,7 +8504,7 @@ FCST_VAR[N]_LEVELS
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, met_util.py
+ MakePlots, met_util.py
 \series bold
 \shape italic
 
@@ -8604,7 +8598,7 @@ FCST_VAR[N]_NAME
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, met_util.py
+ MakePlots, met_util.py
 \series bold
 \shape italic
 
@@ -8700,7 +8694,7 @@ FCST_VAR[N]_OPTIONS
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, met_util.py
+ MakePlots, met_util.py
 \series bold
 \shape italic
 
@@ -8796,7 +8790,7 @@ FCST_VAR[N]_THRESH
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, met_util.py
+ MakePlots, met_util.py
 \series bold
 \shape italic
 
@@ -8858,7 +8852,7 @@ Specify the first forecast lead time to use in the analysis.
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py
+ SeriesByLead
 \series bold
 \shape italic
 
@@ -8920,7 +8914,7 @@ Specify the last forecast lead time to use in the analysis.
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py
+ SeriesByLead
 \series bold
 \shape italic
 
@@ -9007,7 +9001,7 @@ List of forecast leads processed: [24, 30, 36, 42]
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py
+ SeriesByLead
 \series bold
 \shape italic
 
@@ -9095,7 +9089,7 @@ List of forecast leads processed: [24, 30, 36, 42]
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py
+ SeriesByLead
 \series bold
 \shape italic
 
@@ -9156,7 +9150,7 @@ Label strings to use for the forecast groups.
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py
+ SeriesByLead
 \series bold
 \shape italic
 
@@ -9218,7 +9212,7 @@ Stride to use for incrementing forecast lead times used in the analysis.
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py
+ SeriesByLead
 \series bold
 \shape italic
 
@@ -9270,7 +9264,7 @@ FILTER
 \end_inset
 
 Corresponds to the optional -filter argument to the plot_TCMPR.R script which
- is wrapped by tcmpr_plotter_wrapper.py.
+ is wrapped by TCMPRPlotter.
  This is a list of filtering options for the tc_stat tool.
 \end_layout
 
@@ -9281,7 +9275,7 @@ Corresponds to the optional -filter argument to the plot_TCMPR.R script which
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -9333,7 +9327,7 @@ FILTERED_TCST_DATA_FILE
 \end_inset
 
 Corresponds to the optional -tcst argument to the plot_TCMPR.R script which
- is wrapped by tcmpr_plotter_wrapper.py.
+ is wrapped by TCMPRPlotter.
  This is a tcst data file to be used instead of running the tc_stat tool.
  Indicate a full path to the data file.
 \end_layout
@@ -9345,7 +9339,7 @@ Corresponds to the optional -tcst argument to the plot_TCMPR.R script which
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -9397,7 +9391,7 @@ FOOTNOTE_FLAG
 \end_inset
 
 This corresponds to the optional -footnote flag in the plot_TCMPR.R script
- which is wrapped by tcmpr_plotter_wrapper.py.
+ which is wrapped by TCMPRPlotter.
  According to the plot_TCMPR.R usage, this flag is used to disable footnote
  (date).
  
@@ -9410,7 +9404,7 @@ This corresponds to the optional -footnote flag in the plot_TCMPR.R script
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -9471,7 +9465,7 @@ Filename template used to filter forecast files.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -9930,7 +9924,7 @@ Acceptable values: true/false
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py
+ CyclonePlotter
 \series bold
 \shape italic
 
@@ -10518,7 +10512,7 @@ HFIP_BASELINE
 \end_inset
 
 Corresponds to the optional -hfip_bsln flag in the plot_TCMPR.R script which
- is wrapped by tcmpr_plotter_wrapper.py.
+ is wrapped by TCMPRPlotter.
  This is a string that indicates whether to add the HFIP baseline, and indicates
  the version (no, 0, 5, 10 year goal).
 \end_layout
@@ -10530,7 +10524,7 @@ Corresponds to the optional -hfip_bsln flag in the plot_TCMPR.R script which
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -10609,8 +10603,8 @@ Specify the beginning initialization time to be used in the analysis.
 Used by:
 \series default
 \shape default
- command_builder.py, extract_tiles_wrapper.py, make_plots_wrapper.py, master_metplu
-s.py, stat_analysis_wrapper.py, tc_pairs_wrapper.py, tc_stat_wrapper.py
+ command_builder.py, ExtractTiles, MakePlots, master_metplus.py, StatAnalysis,
+ TcPairs, TcStat
 \series bold
 \shape italic
 
@@ -10672,8 +10666,8 @@ Specify the ending initialization time to be used in the analysis.
 Used by:
 \series default
 \shape default
- command_builder.py, extract_tiles_wrapper.py, make_plots_wrapper.py, master_metplu
-s.py, stat_analysis_wrapper.py, tc_pairs_wrapper.py, tc_stat_wrapper.py
+ command_builder.py, ExtractTiles, MakePlots, master_metplus.py, StatAnalysis,
+ TcPairs, TcStat
 \series bold
 \shape italic
 
@@ -10734,7 +10728,7 @@ Specify which, if any, forecast initializations to exclude from the analysis.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py, tc_stat_wrapper.py
+ TcPairs, TcStat
 \series bold
 \shape italic
 
@@ -10796,7 +10790,7 @@ Specify the beginning initialization hour to be used in the analysis.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -10854,8 +10848,7 @@ Specify the ending initialization hour to be used in the analysis.
 Used by:
 \series default
 \shape default
- extract_tiles_wrapper.py, make_plots_wrapper.py, stat_analysis_wrapper.py,
- tc_pairs_wrapper.py, tc_stat_wrapper.py
+ ExtractTiles, MakePlots, StatAnalysis, TcPairs, TcStat
 \series bold
 \shape italic
 
@@ -10916,7 +10909,7 @@ Specify a time increment for valid times for use in the analysis.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -10973,7 +10966,7 @@ Specify the method for the treatment of valid hours.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -11024,7 +11017,7 @@ Specify which forecast initializations to include in the analysis.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py, tc_stat_wrapper.py
+ TcPairs, TcStat
 \series bold
 \shape italic
 
@@ -11087,8 +11080,8 @@ tions.
 Used by:
 \series default
 \shape default
- command_builder.py, extract_tiles_wrapper.py, make_plots_wrapper.py, master_metplu
-s.py, stat_analysis_wrapper.py, tc_pairs_wrapper.py, tc_stat_wrapper.py
+ command_builder.py, ExtractTiles, MakePlots, master_metplus.py, StatAnalysis,
+ TcPairs, TcStat
 \series bold
 \shape italic
 
@@ -11198,7 +11191,7 @@ Specify the interpolation used to create the MET .stat files.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -11253,7 +11246,7 @@ Specify the number of interpolation used to create the MET .stat files.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -11304,7 +11297,7 @@ Define the interval time in hours (HH) to be used by the MET pb2nc tool.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -11382,7 +11375,7 @@ Specify stat_analysis job arguments to run.
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -11443,7 +11436,7 @@ Specify stat_analysis job name to run.
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -11589,13 +11582,13 @@ LEAD
 \begin_inset Newline newline
 \end_inset
 
-For cyclone_plotter_wrapper.py, this refers to the column of interest in
- the input ASCII cyclone file.
+For CyclonePlotter, this refers to the column of interest in the input ASCII
+ cyclone file.
 \end_layout
 
 \begin_layout Standard
-In the tcmpr_plotter_wrapper.py, this corresponds to the optional -lead argument
- in the plot_TCMPR.R script (which is wrapped by tcmpr_plotter.py).
+In the TCMPRPlotter, this corresponds to the optional -lead argument in
+ the plot_TCMPR.R script (which is wrapped by tcmpr_plotter.py).
  This argument is set to a comma-separted list of lead times (h) to be plotted.
 \end_layout
 
@@ -11605,8 +11598,8 @@ In feature_util.py, this corresponds to the name of the column of interest
 \end_layout
 
 \begin_layout Standard
-In tc_stat_wrapper.py, this corresponds to the name of the column of interest
- in the input ASCII data file.
+In TcStat, this corresponds to the name of the column of interest in the
+ input ASCII data file.
 \end_layout
 
 \begin_layout Standard
@@ -11616,8 +11609,7 @@ In tc_stat_wrapper.py, this corresponds to the name of the column of interest
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py, tcmpr_plotter_wrapper.py, feature_util.py, tc_stat_wra
-pper.py
+ CyclonePlotter, TCMPRPlotter, feature_util.py, TcStat
 \series bold
 \shape italic
 
@@ -11683,7 +11675,7 @@ Specify a list of forecast leads to include in the analysis.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -11811,7 +11803,7 @@ The text to be includede in the legend of your plot.
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -11872,7 +11864,7 @@ Specify the MET STAT line types to be considered.
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -12487,9 +12479,8 @@ Control whether the analysis is processed across valid or initialization
 Used by:
 \series default
 \shape default
- command_builder.py, compare_gridded_wrapper.py, ensemble_stat_wrapper.py,
- grid_stat_wrapper.py, make_plots_wrapper.py, master_metplus.py, mode_wrapper.py,
- stat_analysis_wrapper.py
+ command_builder.py, compare_gridded_wrapper.py, EnsembleStat, GridStat, MakePlots
+, master_metplus.py, Mode, StatAnalysis
 \series bold
 \shape italic
 
@@ -12587,8 +12578,7 @@ processes
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, master_metplus.py, pb2nc_wrapper.py, point_stat_wrapper.py,
- stat_analysis_wrapper.py
+ MakePlots, master_metplus.py, PB2NC, PointStat, StatAnalysis
 \series bold
 \shape italic
 
@@ -12793,9 +12783,8 @@ The base directory where your MET installation resides.
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py, extract_tiles_wrapper.py, master_metplus.py, met_util.p
-y, pb2nc_wrapper.py, point_stat_wrapper.py, series_by_init_wrapper.py, series_by_le
-ad_wrapper.py, tcmpr_plotter_wrapper.py, tc_pairs_wrapper.py, usage_wrapper.py
+ CyclonePlotter, ExtractTiles, master_metplus.py, met_util.py, PB2NC, PointStat,
+ SeriesByInit, SeriesByLead, TCMPRPlotter, TcPairs, usage_wrapper.py
 \series bold
 \shape italic
 
@@ -12894,7 +12883,7 @@ The base directory of the MET install.
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -12956,12 +12945,10 @@ The base directory of the MET install.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, cyclone_plotter_wrapper.py, ensemble_stat_wrapper.py,
- extract_tiles_wrapper.py, feature_util.py, grid_stat_wrapper.py, mode_wrapper.py,
- pb2nc_wrapper.py, pcp_combine_wrapper.py, point_stat_wrapper.py, regrid_data_plane
-_wrapper.py, series_by_init_wrapper.py, series_by_lead_wrapper.py, stat_analysis_wr
-apper.py, tcmpr_plotter_wrapper.py, tc_pairs_wrapper.py, tc_stat_wrapper.py,
- wavelet_stat_wrapper.py
+ compare_gridded_wrapper.py, CyclonePlotter, EnsembleStat, ExtractTiles,
+ feature_util.py, GridStat, Mode, PB2NC, PcpCombine, PointStat, regrid_data_plane
+_wrapper.py, SeriesByInit, SeriesByLead, StatAnalysis, TCMPRPlotter, TcPairs,
+ TcStat, wavelet_stat_wrapper.py
 \series bold
 \shape italic
 
@@ -13022,7 +13009,7 @@ Specify the missing value code.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -13083,7 +13070,7 @@ Specify the missing value code to replace.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -13144,8 +13131,7 @@ Specify the model name.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, ensemble_stat_wrapper.py, stat_analysis_wrapper.py,
- tc_pairs_wrapper.py
+ compare_gridded_wrapper.py, EnsembleStat, StatAnalysis, TcPairs
 \series bold
 \shape italic
 
@@ -13240,7 +13226,7 @@ MODELN_NAME
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -13334,7 +13320,7 @@ MODELN_NAME_ON_PLOT
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -13429,7 +13415,7 @@ MODELN_OBS_NAME
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -13523,7 +13509,7 @@ MODELN_DIR
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -13640,7 +13626,7 @@ Please use MODEL instead.
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ PointStat
 \series bold
 \shape italic
 
@@ -13702,7 +13688,7 @@ Please use MODE_CONFIG_FILE instead.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -13929,7 +13915,7 @@ Comma separated list of convolution radius values used by mode for forecast
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -13985,7 +13971,7 @@ Comma separated list of convolution threshold values used by mode for forecast
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -14041,7 +14027,7 @@ Sets the merge_flag value in the mode config file for forecast fields.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -14097,7 +14083,7 @@ Comma separated list of merge threshold values used by mode for forecast
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -14152,7 +14138,7 @@ Path to mode merge config file.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -14211,7 +14197,7 @@ Sets the merge_flag value in the mode config file for both forecast and
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -14269,7 +14255,7 @@ SH to the same value.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -14326,7 +14312,7 @@ Please use OBS_CONV_MODE_RADIUS instead.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -14383,7 +14369,7 @@ on fields.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -14440,7 +14426,7 @@ Please use OBS_MODE_MERGE_FLAG instead.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -14497,7 +14483,7 @@ Please use OBS_MODE_MERGE_THRESH_INSTEAD.
 Used by:
 \series default
 \shape default
- mode_wrapper.py
+ Mode
 \series bold
 \shape italic
 
@@ -15537,7 +15523,7 @@ ncap2
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py, series_by_lead_wrapper.py
+ PB2NC, PointStat, SeriesByLead
 \series bold
 \shape italic
 
@@ -15606,7 +15592,7 @@ ncdump
 Used by:
 \series default
 \shape default
- met_util.py, pb2nc_wrapper.py, point_stat_wrapper.py, series_by_lead_wrapper.py
+ met_util.py, PB2NC, PointStat, SeriesByLead
 \series bold
 \shape italic
 
@@ -15667,7 +15653,7 @@ File template used to match netCDF files used for analysis.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -15866,7 +15852,7 @@ Acceptable values: yes/no
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -15943,7 +15929,7 @@ Acceptable values: yes/no
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -16024,7 +16010,7 @@ Please use OBS_PCP_COMBINE_[N]_FIELD_NAME instead.
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -16096,7 +16082,7 @@ PMO, TOB, TDO
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -16158,7 +16144,7 @@ Specify the accumulation interval of the observation dataset used by the
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -16213,6 +16199,8 @@ Specify the data type of the input directory for grid observation files
  used with the MET ensemble_stat tool.
  Currently valid options are NETCDF, GRIB, and GEMPAK.
  If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
+ A similar variable exists for forecast data called FCST_ENSEMBLE_STAT_INPUT_DAT
+ATYPE.
 \end_layout
 
 \begin_layout Standard
@@ -16222,7 +16210,7 @@ Specify the data type of the input directory for grid observation files
 Used by:
 \series default
 \shape default
- ensemble_stat_wrapper.py
+ EnsembleStat
 \series bold
 \shape italic
 
@@ -16275,6 +16263,7 @@ OBS_ENSEMBLE_STAT_GRID_INPUT_DIR
 
 Input directory for grid observation files to use with the MET tool ensemble_sta
 t.
+ A similar variable exists for forecast data called FCST_ENSEMBLE_STAT_INPUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -16284,7 +16273,7 @@ t.
 Used by:
 \series default
 \shape default
- ensemble_stat_wrapper.py
+ EnsembleStat
 \series bold
 \shape italic
 
@@ -16331,6 +16320,8 @@ OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE
 
 Template used to specify grid observation input filenames for the MET tool
  ensemble_stat.
+ A similar variable exists for forecast data called FCST_ENSEMBLE_STAT_INPUT_TEM
+PLATE.
 \end_layout
 
 \begin_layout Standard
@@ -16340,7 +16331,7 @@ Template used to specify grid observation input filenames for the MET tool
 Used by:
 \series default
 \shape default
- ensemble_stat_wrapper.py
+ EnsembleStat
 \series bold
 \shape italic
 
@@ -16389,6 +16380,8 @@ Specify the data type of the input directory for point observation files
  used with the MET ensemble_stat tool.
  Currently valid options are NETCDF, GRIB, and GEMPAK.
  If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
+ A similar variable exists for forecast data called FCST_ENSEMBLE_STAT_INPUT_DAT
+ATYPE.
 \end_layout
 
 \begin_layout Standard
@@ -16398,7 +16391,7 @@ Specify the data type of the input directory for point observation files
 Used by:
 \series default
 \shape default
- ensemble_stat_wrapper.py
+ EnsembleStat
 \series bold
 \shape italic
 
@@ -16451,6 +16444,7 @@ OBS_ENSEMBLE_STAT_POINT_INPUT_DIR
 
 Input directory for point observation files to use with the MET tool ensemble_st
 at.
+ A similar variable exists for forecast data called FCST_ENSEMBLE_STAT_INPUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -16460,7 +16454,7 @@ at.
 Used by:
 \series default
 \shape default
- ensemble_stat_wrapper.py
+ EnsembleStat
 \series bold
 \shape italic
 
@@ -16507,6 +16501,8 @@ OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE
 
 Template used to specify point observation input filenames for the MET tool
  ensemble_stat.
+ A similar variable exists for forecast data called FCST_ENSEMBLE_STAT_INPUT_TEM
+PLATE.
 \end_layout
 
 \begin_layout Standard
@@ -16516,7 +16512,7 @@ Template used to specify point observation input filenames for the MET tool
 Used by:
 \series default
 \shape default
- ensemble_stat_wrapper.py
+ EnsembleStat
 \series bold
 \shape italic
 
@@ -16585,7 +16581,7 @@ Units are seconds.
 Used by:
 \series default
 \shape default
- ensemble_stat_wrapper.py
+ EnsembleStat
 \series bold
 \shape italic
 
@@ -16654,7 +16650,7 @@ Units are seconds.
 Used by:
 \series default
 \shape default
- ensemble_stat_wrapper.py
+ EnsembleStat
 \series bold
 \shape italic
 
@@ -16699,7 +16695,14 @@ OBS_GRID_STAT_INPUT_DATATYPE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_GRID_STAT_INPUT_DATATYPE.
+See FCST_GRID_STAT_INPUT_DATATYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -16760,7 +16763,14 @@ OBS_GRID_STAT_INPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-See FCST_GRID_STAT_INPUT_DIR.
+See FCST_GRID_STAT_INPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -16821,7 +16831,14 @@ OBS_GRID_STAT_INPUT_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_GRID_STAT_INPUT_TEMPLATE.
+See FCST_GRID_STAT_INPUT_TEMPLATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -16876,7 +16893,14 @@ OBS_GRID_STAT_PROB_THRESH
 \begin_inset Newline newline
 \end_inset
 
-See FCST_GRID_STAT_PROB_THRESH.
+See FCST_GRID_STAT_PROB_THRESH 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -16948,7 +16972,7 @@ Corresponds to the OBS_WINDOW_END in the MET config file for pb2nc.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -17010,7 +17034,7 @@ Specify the input directory for GEMPAK formatted observation files.
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -17072,7 +17096,7 @@ Filename template used to filter GEMPAK formatted observation files.
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -17111,16 +17135,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_GRID_STAT_INPUT_DATATYPE
+[deprecated] OBS_INPUT_DIR
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the data type of the input directory for observation files used
- with the MET grid_stat tool.
- Currently valid options are NETCDF, GRIB, and GEMPAK.
- If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF.
+Please use OBS_POINT_STAT_INPUT_DIR instead.
+ Specify the input directory for observation files.
 \end_layout
 
 \begin_layout Standard
@@ -17130,69 +17152,7 @@ Specify the data type of the input directory for observation files used
 Used by:
 \series default
 \shape default
- grid_stat_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-OBS_GRID_STAT_INPUT_DIR
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify the directory where the input observation files are for the MET
- grid_stat tool.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- grid_stat_wrapper.py
+ PointStat
 \series bold
 \shape italic
 
@@ -17237,194 +17197,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_GRID_STAT_INPUT_TEMPLATE
+[deprecated] OBS_INPUT_DIR_REGEX
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Filename template used to filter input observation files used by the MET
- grid_stat tool.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- grid_stat_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [filename_templates]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-OBS_GRID_STAT_PROB_THRESH
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Threshold values to be used for probabilistic data in grid_stat.
- Used when setting OBS_* variables to probabilistic forecast data for comparison.
- The value can be a single item or a comma separated list of items that
- must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- grid_stat_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- ==0.1
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-OBS_INPUT_DIR
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify the input directory for observation files.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- point_stat_wrapper.py
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [dir]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-OBS_INPUT_DIR_REGEX
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify the regular expression to use when searching for observation file
+Please use OBS_POINT_STAT_INPUT_DIR instead.
+ Specify the regular expression to use when searching for observation file
  input directories.
 \end_layout
 
@@ -17435,7 +17215,7 @@ Specify the regular expression to use when searching for observation file
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ PointStat
 \series bold
 \shape italic
 
@@ -17480,13 +17260,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_INPUT_FILE_REGEX
+[deprecated] OBS_INPUT_FILE_REGEX
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Regular expression used to filter observation input files used in the analysis.
+Please use OBS_POINT_STAT_INPUT_TEMPLATE instead.
+ Regular expression used to filter observation input files used in the analysis.
 \end_layout
 
 \begin_layout Standard
@@ -17496,7 +17277,7 @@ Regular expression used to filter observation input files used in the analysis.
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py, 
+ PointStat, 
 \series bold
 \shape italic
 
@@ -17558,7 +17339,7 @@ Please use OBS_POINT_STAT_INPUT_TEMPLATE instead.
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py, 
+ PointStat, 
 \series bold
 \shape italic
 
@@ -17628,7 +17409,7 @@ Acceptable values: true/false
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -17676,7 +17457,14 @@ OBS_IS_PROB
 Used when setting OBS_* variables to process forecast data for comparisons
  with mtd.
  Specify whether the observation data are probabilistic or not.
- See FCST_IS_PROB.
+ See FCST_IS_PROB 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \begin_inset Newline newline
 \end_inset
 
@@ -17758,7 +17546,7 @@ Please use OBS_PCP_COMBINE_INPUT_LEVEL instead.
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -17803,7 +17591,14 @@ OBS_MODE_CONV_RADIUS
 \begin_inset Newline newline
 \end_inset
 
-See FCST_MODE_CONV_RADIUS.
+See FCST_MODE_CONV_RADIUS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -17858,7 +17653,14 @@ OBS_MODE_CONV_THRESH
 \begin_inset Newline newline
 \end_inset
 
-See FCST_MODE_CONV_THRESH.
+See FCST_MODE_CONV_THRESH 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -17913,7 +17715,14 @@ OBS_MODE_MERGE_FLAG
 \begin_inset Newline newline
 \end_inset
 
-See FCST_MODE_MERGE_FLAG.
+See FCST_MODE_MERGE_FLAG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -17968,7 +17777,14 @@ OBS_MODE_MERGE_THRESH
 \begin_inset Newline newline
 \end_inset
 
-See FCST_MODE_MERGE_THRESH.
+See FCST_MODE_MERGE_THRESH 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18023,7 +17839,14 @@ OBS_MODE_INPUT_DATATYPE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_MODE_INPUT_DATATYPE.
+See FCST_MODE_INPUT_DATATYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18084,7 +17907,14 @@ OBS_MODE_INPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-See FCST_MODE_INPUT_DIR.
+See FCST_MODE_INPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18145,7 +17975,14 @@ OBS_MODE_INPUT_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_MODE_INPUT_TEMPLATE.
+See FCST_MODE_INPUT_TEMPLATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18200,7 +18037,14 @@ OBS_MTD_CONV_RADIUS
 \begin_inset Newline newline
 \end_inset
 
-See FCST_MTD_CONV_RADIUS.
+See FCST_MTD_CONV_RADIUS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18255,7 +18099,14 @@ OBS_MTD_CONV_THRESH
 \begin_inset Newline newline
 \end_inset
 
-See FCST_MTD_CONV_THRESH.
+See FCST_MTD_CONV_THRESH 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18310,7 +18161,14 @@ OBS_MTD_INPUT_DATATYPE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_MTD_INPUT_DATATYPE.
+See FCST_MTD_INPUT_DATATYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18365,7 +18223,14 @@ OBS_MTD_INPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-See FCST_MTD_INPUT_DIR.
+See FCST_MTD_INPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18426,7 +18291,14 @@ OBS_MTD_INPUT_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_MTD_INPUT_TEMPLATE.
+See FCST_MTD_INPUT_TEMPLATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18475,13 +18347,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_NAME
+[deprecated] OBS_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Provide a string to identify the observation dataset name.
+No longer used.
+ Provide a string to identify the observation dataset name.
 \end_layout
 
 \begin_layout Standard
@@ -18491,7 +18364,7 @@ Provide a string to identify the observation dataset name.
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ PointStat
 \series bold
 \shape italic
 
@@ -18553,7 +18426,7 @@ Specify the data format of the observation data.
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -18598,7 +18471,14 @@ OBS_PCP_COMBINE_[N]_FIELD_NAME
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_[N]_FIELD_NAME.
+See FCST_PCP_COMBINE_[N]_FIELD_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18653,7 +18533,14 @@ OBS_PCP_COMBINE_DATA_INTERVAL
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_DATA_INTERVAL.
+See FCST_PCP_COMBINE_DATA_INTERVAL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18708,7 +18595,14 @@ OBS_PCP_COMBINE_DERIVE_LOOKBACK
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_DERIVE_LOOKBACK.
+See FCST_PCP_COMBINE_DERIVE_LOOKBACK 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18769,7 +18663,14 @@ OBS_PCP_COMBINE_INPUT_DATATYPE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_INPUT_DATA_TYPE.
+See FCST_PCP_COMBINE_INPUT_DATA_TYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18824,7 +18725,14 @@ OBS_PCP_COMBINE_INPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_INPUT_DIR.
+See FCST_PCP_COMBINE_INPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18885,7 +18793,14 @@ OBS_PCP_COMBINE_INPUT_LEVEL
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_INPUT_LEVEL.
+See FCST_PCP_COMBINE_INPUT_LEVEL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18936,7 +18851,14 @@ OBS_PCP_COMBINE_INPUT_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_INPUT_TEMPLATE.
+See FCST_PCP_COMBINE_INPUT_TEMPLATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -18997,7 +18919,14 @@ OBS_PCP_COMBINE_IS_DAILY_FILE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_IS_DAILY_FILE.
+See FCST_PCP_COMBINE_IS_DAILY_FILE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \begin_inset Newline newline
 \end_inset
 
@@ -19066,7 +18995,14 @@ OBS_PCP_COMBINE_METHOD
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_METHOD.
+See FCST_PCP_COMBINE_METHOD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19122,7 +19058,14 @@ OBS_PCP_COMBINE_MIN_FORECAST
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_MIN_FORECAST.
+See FCST_PCP_COMBINE_MIN_FORECAST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19177,7 +19120,14 @@ OBS_PCP_COMBINE_MAX_FORECAST
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_MAX_FORECAST.
+See FCST_PCP_COMBINE_MAX_FORECAST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19232,7 +19182,14 @@ OBS_PCP_COMBINE_OUTPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_OUTPUT_DIR.
+See FCST_PCP_COMBINE_OUTPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19293,7 +19250,14 @@ OBS_PCP_COMBINE_OUTPUT_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_OUTPUT_TEMPLATE.
+See FCST_PCP_COMBINE_OUTPUT_TEMPLATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19354,7 +19318,14 @@ OBS_PCP_COMBINE_RUN
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_RUN.
+See FCST_PCP_COMBINE_RUN 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \begin_inset Newline newline
 \end_inset
 
@@ -19417,7 +19388,14 @@ OBS_PCP_COMBINE_STAT_LIST
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_STAT_LIST.
+See FCST_PCP_COMBINE_STAT_LIST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \begin_inset Newline newline
 \end_inset
 
@@ -19480,7 +19458,14 @@ OBS_PCP_COMBINE_TIMES_PER_FILE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_TIMES_PER_FILE.
+See FCST_PCP_COMBINE_TIMES_PER_FILE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19535,7 +19520,14 @@ OBS_POINT_STAT_INPUT_DATATYPE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_POINT_STAT_INPUT_DATATYPE.
+See FCST_POINT_STAT_INPUT_DATATYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19596,7 +19588,14 @@ OBS_POINT_STAT_INPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-See FCST_POINT_STAT_INPUT_DIR.
+See FCST_POINT_STAT_INPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19657,7 +19656,14 @@ OBS_POINT_STAT_INPUT_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_POINT_STAT_INPUT_TEMPLATE.
+See FCST_POINT_STAT_INPUT_TEMPLATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19712,7 +19718,14 @@ OBS_REGRID_DATA_PLANE_INPUT_DATATYPE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_REGRID_DATA_PLANE_INPUT_DATATYPE.
+See FCST_REGRID_DATA_PLANE_INPUT_DATATYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19767,7 +19780,14 @@ OBS_REGRID_DATA_PLANE_INPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-See FCST_REGRID_DATA_PLANE_INPUT_DIR.
+See FCST_REGRID_DATA_PLANE_INPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19822,7 +19842,14 @@ OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE.
+See FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19877,7 +19904,14 @@ OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE.
+See FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19932,7 +19966,14 @@ OBS_REGRID_DATA_PLANE_TEMPLATE
 \begin_inset Newline newline
 \end_inset
 
-See FCST_REGRID_DATA_PLANE_TEMPLATE.
+See FCST_REGRID_DATA_PLANE_TEMPLATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -19987,7 +20028,14 @@ OBS_REGRID_DATA_PLANE_OUTPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-See FCST_REGRID_DATA_PLANE_OUTPUT_DIR.
+See FCST_REGRID_DATA_PLANE_OUTPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -20060,7 +20108,7 @@ Specify the string for the observation variable used in the analysis.
 Used by:
 \series default
 \shape default
- grid_stat_wrapper.py
+ GridStat
 \series bold
 \shape italic
 
@@ -20115,7 +20163,7 @@ Specify the values of the OBS_VAR_LEVEL column in the MET .stat file to use.
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -20180,7 +20228,7 @@ Specify the values of the OBS_VAR_NAME column in the MET .stat file to use.
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -20314,7 +20362,7 @@ OBS_VAR[N]_LEVELS
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, met_util.py
+ MakePlots, met_util.py
 \series bold
 \shape italic
 
@@ -20408,7 +20456,7 @@ OBS_VAR[N]_NAME
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, met_util.py
+ MakePlots, met_util.py
 \series bold
 \shape italic
 
@@ -20504,7 +20552,7 @@ OBS_VAR[N]_OPTIONS
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, met_util.py
+ MakePlots, met_util.py
 \series bold
 \shape italic
 
@@ -20661,7 +20709,7 @@ Please use OBS_WINDOW_BEGIN.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -20869,17 +20917,12 @@ Provide a string to represent the type of observation data used in the analysis.
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
 \series bold
 \shape italic
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, ensemble_stat_wrapper.py, grid_stat_wrapper.py,
- mode_wrapper.py, stat_analysis_wrapper.py
+ compare_gridded_wrapper.py, EnsembleStat, GridStat, Mode, StatAnalysis
 \series bold
 \shape italic
 
@@ -20938,8 +20981,7 @@ Please use OBTYPE instead.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, ensemble_stat_wrapper.py, grid_stat_wrapper.py,
- mode_wrapper.py, stat_analysis_wrapper.py
+ compare_gridded_wrapper.py, EnsembleStat, GridStat, Mode, StatAnalysis
 \series bold
 \shape italic
 
@@ -21000,8 +21042,7 @@ Provide a path to the top level output directory for METplus.
 Used by:
 \series default
 \shape default
- config_launcher.py, pb2nc_wrapper.py, point_stat_wrapper.py, tc_pairs_wrapper.py,
- tc_stat_wrapper.py
+ config_launcher.py, PB2NC, PointStat, TcPairs, TcStat
 \series bold
 \shape italic
 
@@ -21072,7 +21113,7 @@ Acceptable values: yes/no
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -21141,7 +21182,7 @@ Acceptable values: yes/no
 Used by:
 \series default
 \shape default
- extract_tiles_wrapper.py, feature_util.py
+ ExtractTiles, feature_util.py
 \series bold
 \shape italic
 
@@ -21219,7 +21260,7 @@ Specify the top level METplus parameter file directory.
 Used by:
 \series default
 \shape default
- config_launcher.py, pb2nc_wrapper.py, point_stat_wrapper.py, tc_stat_wrapper.py
+ config_launcher.py, PB2NC, PointStat, TcStat
 \series bold
 \shape italic
 
@@ -22218,7 +22259,7 @@ SPlease use [FCST/OBS]_PCP_COMBINE_METHOD instead.
 Used by:
 \series default
 \shape default
- pcp_combine_wrapper.py
+ PcpCombine
 \series bold
 \shape italic
 
@@ -22282,7 +22323,7 @@ Specify the output directory where plots will be saved.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py
+ MakePlots
 \series bold
 \shape italic
 
@@ -22343,7 +22384,7 @@ Specify the directory where the plotting scripts are located.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py
+ MakePlots
 \series bold
 \shape italic
 
@@ -22404,7 +22445,7 @@ Specify plot configuration options for the TC Matched Pairs plotting tool.
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -22469,7 +22510,7 @@ acc, bias, rmse
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py
+ MakePlots
 \series bold
 \shape italic
 
@@ -22530,7 +22571,7 @@ Specify the treatment of the plotting dates/times.
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -22602,7 +22643,7 @@ ce), RANK (time series of ranks for the first model), SCATTER, SKILL_MN
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -22664,7 +22705,7 @@ Specify the absolute path to the configuration file to be used with the
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ PointStat
 \series bold
 \shape italic
 
@@ -22725,7 +22766,7 @@ Specify the grid to use with the MET point_stat tool.
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ PointStat
 \series bold
 \shape italic
 
@@ -22787,7 +22828,7 @@ Specify which PREPBUFR message types to process with the MET point_stat
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ PointStat
 \series bold
 \shape italic
 
@@ -22849,7 +22890,7 @@ Specify the directory where output files from the MET point_stat tool are
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ PointStat
 \series bold
 \shape italic
 
@@ -22910,7 +22951,7 @@ Specify a polygon to use with the MET point_stat tool.
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ PointStat
 \series bold
 \shape italic
 
@@ -22971,7 +23012,7 @@ Specify the ID of a specific station to use with the MET point_stat tool.
 Used by:
 \series default
 \shape default
- point_stat_wrapper.py
+ PointStat
 \series bold
 \shape italic
 
@@ -23023,7 +23064,7 @@ PREFIX
 \end_inset
 
 This corresponds to the optional -prefix flag of the plot_TCMPR.R script
- (which is wrapped by tcmpr_plotter_wrapper.py).
+ (which is wrapped by TCMPRPlotter).
  This is the output file name prefix.
 \end_layout
 
@@ -23034,7 +23075,7 @@ This corresponds to the optional -prefix flag of the plot_TCMPR.R script
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -23097,7 +23138,7 @@ Please use PB2NC_INPUT_DIR instead.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -23158,7 +23199,7 @@ Regular expression to use when searching for PREPBUFR data.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -23219,7 +23260,7 @@ Regular expression to use when searching for PREPBUFR files.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -23281,7 +23322,7 @@ Please put the value previously used here in the PB2NC_INPUT_DIR path.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -23406,7 +23447,7 @@ A directory for generic use.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py, tc_stat_wrapper.py
+ PB2NC, PointStat, TcStat
 \series bold
 \shape italic
 
@@ -23495,7 +23536,7 @@ The filename template describing the observation/reference data.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -23557,7 +23598,7 @@ Specify the values of the VX_MASK column in the MET .stat file to use.
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -23615,7 +23656,7 @@ A list of the regions of interest.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -23677,7 +23718,7 @@ If supported, provide the output grid that is desired from the MET tool
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, point_stat_wrapper.py
+ MakePlots, PointStat
 \series bold
 \shape italic
 
@@ -23746,7 +23787,7 @@ Acceptable values: yes/no
 Used by:
 \series default
 \shape default
- feature_util.py, met_util.py, series_by_init_wrapper.py, series_by_lead_wrapper.py
+ feature_util.py, met_util.py, SeriesByInit, SeriesByLead
 \series bold
 \shape italic
 
@@ -23815,7 +23856,7 @@ rm
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py, series_by_lead_wrapper.py
+ PB2NC, PointStat, SeriesByLead
 \series bold
 \shape italic
 
@@ -23867,7 +23908,7 @@ RP_DIFF
 \end_inset
 
 This corresponds to the optional -rp_diff flag of the plot_TCMPR.R script
- (which is wrapped by tcmpr_plotter_wrapper.py).
+ (which is wrapped by TCMPRPlotter).
  This a comma-separated list of thresholds to specify meaningful differences
  for the relative performance plot.
 \end_layout
@@ -23879,7 +23920,7 @@ This corresponds to the optional -rp_diff flag of the plot_TCMPR.R script
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -23948,7 +23989,7 @@ SAVE
 \end_inset
 
 Corresponds to the optional -save flag in plot_TCMPR.R (which is wrapped
- by tcmpr_plotter_wrapper.py).
+ by TCMPRPlotter).
  This is a yes/no value to indicate whether to save the image (yes).
 \end_layout
 
@@ -23959,7 +24000,7 @@ Corresponds to the optional -save flag in plot_TCMPR.R (which is wrapped
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -24011,7 +24052,7 @@ SAVE_DATA
 \end_inset
 
 Corresponds to the optional -save_data flag in plot_TCMPR.R (which is wrapped
- by tcmpr_plotter_wrapper.py).
+ by TCMPRPlotter).
  Indicates whether to save the filtered track data to a file instead of
  deleting it.
 \end_layout
@@ -24023,7 +24064,7 @@ Corresponds to the optional -save_data flag in plot_TCMPR.R (which is wrapped
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -24075,7 +24116,7 @@ SCATTER_X
 \end_inset
 
 Corresponds to the optional -scatter_x flag in plot_TCMPR.R (which is wrapped
- by tcmpr_plotter_wrapper.py).
+ by TCMPRPlotter).
  This is a comma-separated list of x-axis variable columns to plot.
 \end_layout
 
@@ -24086,7 +24127,7 @@ Corresponds to the optional -scatter_x flag in plot_TCMPR.R (which is wrapped
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -24138,7 +24179,7 @@ SCATTER_Y
 \end_inset
 
 Corresponds to the optional -scatter_y flag in plot_TCMPR.R (which is wrapped
- by tcmpr_plotter_wrapper.py).
+ by TCMPRPlotter).
  This is a comma-separated list of y-axis variable columns to plot.
 \end_layout
 
@@ -24149,7 +24190,7 @@ Corresponds to the optional -scatter_y flag in plot_TCMPR.R (which is wrapped
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -24257,7 +24298,7 @@ SERIES
 \end_inset
 
 Corresponds to the optional -series flag in plot_TCMPR.R (which is wrapped
- by tcmpr_plotter_wrapper.py).
+ by TCMPRPlotter).
  This is the column whose unique values define the series on the plot, optionall
 y followed by a comma-separated list of values, including: ALL, OTHER, and
  colon-separated groups.
@@ -24270,7 +24311,7 @@ y followed by a comma-separated list of values, including: ALL, OTHER, and
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -24332,7 +24373,7 @@ Specify the absolute path for the configuration file to use with the MET
 Used by:
 \series default
 \shape default
- series_by_init_wrapper.py
+ SeriesByInit
 \series bold
 \shape italic
 
@@ -24394,7 +24435,7 @@ Specify the absolute path for the configuration file to use with the MET
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py
+ SeriesByLead
 \series bold
 \shape italic
 
@@ -24458,7 +24499,7 @@ Filtering options to be applied during series analysis.
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py, series_by_init_wrapper.py
+ SeriesByLead, SeriesByInit
 \series bold
 \shape italic
 
@@ -24510,7 +24551,7 @@ SERIES_CI
 \end_inset
 
 Corresponds to the optional -series_ci flag in plot_TCMPR.R (which is wrapped
- by tcmpr_plotter_wrapper.py).
+ by TCMPRPlotter).
  This is a list of true/false for confidence intervals.
  This list can be optionally followed by a comma-separated list of values,
  including ALL, OTHER, and colon-separated groups.
@@ -24523,7 +24564,7 @@ Corresponds to the optional -series_ci flag in plot_TCMPR.R (which is wrapped
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -24585,7 +24626,7 @@ Specify the directory where filtered files will be written from the MET
 Used by:
 \series default
 \shape default
- series_by_init_wrapper.py
+ SeriesByInit
 \series bold
 \shape italic
 
@@ -24647,7 +24688,7 @@ Specify the directory where files will be written from the MET series analysis
 Used by:
 \series default
 \shape default
- series_by_init_wrapper.py
+ SeriesByInit
 \series bold
 \shape italic
 
@@ -24709,7 +24750,7 @@ Specify the directory where filtered files will be written from the MET
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py
+ SeriesByLead
 \series bold
 \shape italic
 
@@ -24771,7 +24812,7 @@ Specify the directory where files will be written from the MET series analysis
 Used by:
 \series default
 \shape default
- series_by_lead_wrapper.py
+ SeriesByLead
 \series bold
 \shape italic
 
@@ -24823,7 +24864,7 @@ SKILL_REF
 \end_inset
 
 This corresponds to the optional -skill_ref flag in plot_TCMPR.R (which is
- wrapped by tcmpr_plotter_wrapper.py).
+ wrapped by TCMPRPlotter).
  This is the identifier for the skill score reference.
  
 \end_layout
@@ -24835,7 +24876,7 @@ This corresponds to the optional -skill_ref flag in plot_TCMPR.R (which is
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -24897,7 +24938,7 @@ Specify the start data for the analysis time period.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -25011,7 +25052,7 @@ Specify the start hour for the analysis time period.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -25073,7 +25114,7 @@ ysis tool.
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -25134,7 +25175,7 @@ Specify the template to use for the stat_analysis dump_row file.
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -25196,7 +25237,7 @@ Specify the input directory where the MET stat_analysis tool will find input
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -25257,7 +25298,7 @@ Specify the template to use for the stat_analysis out_stat file.
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -25315,7 +25356,7 @@ sis tool.
 Used by:
 \series default
 \shape default
- stat_analysis_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -25377,7 +25418,7 @@ Specify the directory where stat files exist that plots can be generated
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py
+ MakePlots
 \series bold
 \shape italic
 
@@ -25438,7 +25479,7 @@ Specify a list of statistics to be computed by the MET series_analysis tool.
 Used by:
 \series default
 \shape default
- series_by_init_wrapper.py, series_by_lead_wrapper.py
+ SeriesByInit, SeriesByLead
 \series bold
 \shape italic
 
@@ -25499,7 +25540,7 @@ The identifier of the storm(s) of interest.
 Used by:
 \series default
 \shape default
- cyclone_plotter_wrapper.py, met_util.py, tc_pairs_wrapper.py, tc_stat_wrapper.py
+ CyclonePlotter, met_util.py, TcPairs, TcStat
 \series bold
 \shape italic
 
@@ -25561,7 +25602,7 @@ The name(s) of the storm of interest.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py, tc_stat_wrapper.py
+ TcPairs, TcStat
 \series bold
 \shape italic
 
@@ -25622,7 +25663,7 @@ The subtitle of the plot.
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -25701,7 +25742,7 @@ Provide the input directory for the track data for the TC Matched Pairs
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -25763,7 +25804,7 @@ Provide the output directory where the TC Matched Pairs plotting tool will
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -25825,7 +25866,7 @@ Provide the absolute path to the configuration file for the MET tc_pairs
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -25886,7 +25927,7 @@ Specify the directory where the MET tc_pairs tool will write files.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -25955,7 +25996,7 @@ Acceptable values: yes/no
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -26016,7 +26057,7 @@ Specify the AMODEL for the MET tc_stat tool.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26077,7 +26118,7 @@ Specify the BASIN for the MET tc_stat tool.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26138,7 +26179,7 @@ Specify the BMODEL for the MET tc_stat tool.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26200,7 +26241,7 @@ Specify expression(s) that will be passed to the MET tc_stat tool via the
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26262,7 +26303,7 @@ Specify the string names of the columns for stratification with the MET
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26324,7 +26365,7 @@ Specify the values for the columns set via the TC_STAT_COLUMN_STR_NAME option
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26386,7 +26427,7 @@ Specify the string names of the columns for stratification by threshold
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26448,7 +26489,7 @@ LUMN_THRESH_NAME option for use with the MET tc_stat tool.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26509,7 +26550,7 @@ Specify the CYCLONE of interest for use with the MET tc_stat tool.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26570,7 +26611,7 @@ Specify the DESC option for use with the MET tc_stat tool.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26640,7 +26681,7 @@ Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26710,7 +26751,7 @@ Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26788,7 +26829,7 @@ Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26849,7 +26890,7 @@ The beginning hour (HH) of the initialization time of interest.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26927,7 +26968,7 @@ Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -26989,7 +27030,7 @@ This corresponds to the INIT_MASK keyword in the MET tc_stat config file.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27052,7 +27093,7 @@ This corresponds to the INIT_STR_NAME keyword in the MET tc_stat config
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27114,7 +27155,7 @@ This corresponds to the INIT_STR_VAL keyword in the MET tc_stat config file.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27175,7 +27216,7 @@ Specify the input directory where the MET tc_stat tool will look for files.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27236,7 +27277,7 @@ Specify expressions for the MET tc_stat tool to execute.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27306,7 +27347,7 @@ Acceptable values: True/False
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27376,7 +27417,7 @@ Acceptable formats: HH, HHmmss
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27445,7 +27486,7 @@ Acceptable formats: HH, HHmmss
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27514,7 +27555,7 @@ Acceptable formats: HH, HHmmss
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27575,7 +27616,7 @@ Specify the LEAD_REQ when using the MET tc_stat tool.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27645,7 +27686,7 @@ Acceptable values: True/False
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27706,7 +27747,7 @@ Specify the output directory where the MET tc_stat tool will write files.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27783,7 +27824,7 @@ If left blank (unset), tc_stat will run via the command line.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27844,7 +27885,7 @@ Set the STORM_ID(s) of interest with the MET tc_stat tool.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27905,7 +27946,7 @@ Set the STORM_NAME for use with the MET tc_stat tool.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -27983,7 +28024,7 @@ If left blank (unset), no stratification will be done.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -28053,7 +28094,7 @@ Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -28123,7 +28164,7 @@ Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -28193,7 +28234,7 @@ Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -28255,7 +28296,7 @@ This corresponds to the VALID_HOUR keyword in the MET tc_stat config file.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -28325,7 +28366,7 @@ Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -28387,7 +28428,7 @@ This corresponds to the VALID_MASK in the MET tc_stat config file.
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -28459,7 +28500,7 @@ Acceptable values: true/false
 Used by:
 \series default
 \shape default
- tc_stat_wrapper.py
+ TcStat
 \series bold
 \shape italic
 
@@ -28529,7 +28570,7 @@ Acceptable values: BY_VALID, BY_INIT
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -28587,7 +28628,7 @@ Acceptable formats: HHMMSS
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -28657,7 +28698,7 @@ Acceptable formats: HHMMSS
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -28727,7 +28768,7 @@ Acceptable values: True/False
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -28790,7 +28831,7 @@ Please use PB2NC_TIME_SUMMARY_TYPES instead.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -28853,7 +28894,7 @@ Please use PB2NC_TIME_SUMMARY_VAR_NAMES instead.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -28914,7 +28955,7 @@ Specify a title string for the TC Matched Pairs plotting tool.
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -28975,8 +29016,7 @@ Specify the path to a temporary directory where the user has write permissions.
 Used by:
 \series default
 \shape default
- extract_tiles_wrapper.py, pb2nc_wrapper.py, point_stat_wrapper.py, series_by_init_
-wrapper.py, series_by_lead_wrapper.py, tc_stat_wrapper.py
+ ExtractTiles, PB2NC, PointStat, SeriesByInit, SeriesByLead, TcStat
 \series bold
 \shape italic
 
@@ -29046,7 +29086,7 @@ Acceptable values: yes/no
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -29108,7 +29148,7 @@ Specify the directory where track data are located for use with the MET
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -29177,7 +29217,7 @@ Acceptable values: yes/no
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -29239,7 +29279,7 @@ Specify the sub-directory where modified track data files are stored for
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -29300,7 +29340,7 @@ Specify the track type to filter by when using the MET tc_pairs tool.
 Used by:
 \series default
 \shape default
- tc_pairs_wrapper.py
+ TcPairs
 \series bold
 \shape italic
 
@@ -29369,7 +29409,7 @@ tr
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py, point_stat_wrapper.py
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -29466,8 +29506,8 @@ Acceptable formats: YYYYMM[DD[_HH]]
 Used by:
 \series default
 \shape default
- command_builder.py, make_plots_wrapper.py, master_metplus.py, stat_analysis_wrappe
-r.py, tc_pairs_wrapper.py, tc_stat_wrapper.py
+ command_builder.py, MakePlots, master_metplus.py, StatAnalysis, TcPairs,
+ TcStat
 \series bold
 \shape italic
 
@@ -29536,8 +29576,8 @@ Acceptable formats: controlled via VALID_TIME_FMT
 Used by:
 \series default
 \shape default
- command_builder.py, make_plots_wrapper.py, master_metplus.py, stat_analysis_wrappe
-r.py, tc_pairs_wrapper.py, tc_stat_wrapper.py
+ command_builder.py, MakePlots, master_metplus.py, StatAnalysis, TcPairs,
+ TcStat
 \series bold
 \shape italic
 
@@ -29606,7 +29646,7 @@ Acceptable formats: HHMM
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -29675,7 +29715,7 @@ Acceptable formats: HHMM
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -29742,7 +29782,7 @@ Acceptable formats: seconds
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -29811,7 +29851,7 @@ Acceptable formats: LOOP or GROUP
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -29880,8 +29920,7 @@ Acceptable formats: seconds
 Used by:
 \series default
 \shape default
- command_builder.py, make_plots_wrapper.py, master_metplus.py, stat_analysis_wrappe
-r.py, tc_stat_wrapper.py
+ command_builder.py, MakePlots, master_metplus.py, StatAnalysis, TcStat
 \series bold
 \shape italic
 
@@ -30003,8 +30042,7 @@ Specify a comma separated list of variables to be used in the analysis.
 Used by:
 \series default
 \shape default
- feature_util.py, pb2nc_wrapper.py, series_by_init_wrapper.py, series_by_lead_wrapp
-er.py
+ feature_util.py, PB2NC, SeriesByInit, SeriesByLead
 \series bold
 \shape italic
 
@@ -30065,7 +30103,7 @@ Specify if Fourier decomposition is to be considered (True) or not (False).
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -30127,7 +30165,7 @@ tion.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -30251,7 +30289,7 @@ Specify a string identifying the verification case being performed.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -30312,7 +30350,7 @@ Specify a string describing the grid the verification was performed on.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py
+ MakePlots
 \series bold
 \shape italic
 
@@ -30369,7 +30407,7 @@ Specify a string describing the type of verification being performed.
 Used by:
 \series default
 \shape default
- make_plots_wrapper.py, stat_analysis_wrapper.py
+ MakePlots, StatAnalysis
 \series bold
 \shape italic
 
@@ -30430,7 +30468,7 @@ Specify the vertical location desired when using the MET pb2nc tool.
 Used by:
 \series default
 \shape default
- pb2nc_wrapper.py
+ PB2NC
 \series bold
 \shape italic
 
@@ -30516,7 +30554,7 @@ wgrib2
 Used by:
 \series default
 \shape default
- feature_util.py, pb2nc_wrapper.py, point_stat_wrapper.py
+ feature_util.py, PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -30594,7 +30632,7 @@ Specify the x-axis label when using the TC Matched Pairs plotting tool.
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -30655,7 +30693,7 @@ Specify the x-axis limit when using the TC Matched Pairs plotting tool.
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -30733,7 +30771,7 @@ Specify the y-axis label when using the TC Matched Pairs plotting tool.
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
@@ -30788,7 +30826,7 @@ Specify the y-axis limit when using the TC Matched Pairs plotting tool.
 Used by:
 \series default
 \shape default
- tcmpr_plotter_wrapper.py
+ TCMPRPlotter
 \series bold
 \shape italic
 
