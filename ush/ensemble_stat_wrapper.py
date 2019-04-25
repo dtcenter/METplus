@@ -62,7 +62,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['GRID_VX'] = self.config.getstr('config', 'ENSEMBLE_STAT_GRID_VX', 'FCST')
 
         c_dict['CONFIG_FILE'] = \
-            self.config.getstr('config', 'ENSEMBLE_STAT_CONFIG',
+            self.config.getstr('config', 'ENSEMBLE_STAT_CONFIG_FILE',
                           c_dict['CONFIG_DIR']+'/EnsembleStatConfig_SFC')
 
         # met_obs_error_table is not required, if it is not defined
