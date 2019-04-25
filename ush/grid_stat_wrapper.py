@@ -35,7 +35,7 @@ class GridStatWrapper(CompareGriddedWrapper):
 
     def create_c_dict(self):
         c_dict = super(GridStatWrapper, self).create_c_dict()
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'GRID_STAT_CONFIG', '')
+        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'GRID_STAT_CONFIG_FILE', '')
         c_dict['OBS_INPUT_DIR'] = \
           self.config.getdir('OBS_GRID_STAT_INPUT_DIR', self.config.getdir('OUTPUT_BASE'))
         c_dict['OBS_INPUT_TEMPLATE'] = \
