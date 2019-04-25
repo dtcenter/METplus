@@ -52,15 +52,31 @@ that reformat gridded data
         c_dict['INPUT_BASE'] = self.config.getdir('INPUT_BASE', None)
         c_dict['FCST_IS_PROB'] = self.config.getbool('config', 'FCST_IS_PROB', False)
         c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
-        c_dict['OBS_WINDOW_BEGIN'] = \
-          self.config.getint('config', 'OBS_WINDOW_BEGIN', 0)
-        c_dict['OBS_WINDOW_END'] = \
-          self.config.getint('config', 'OBS_WINDOW_END', 0)
 
         c_dict['FCST_WINDOW_BEGIN'] = \
           self.config.getint('config', 'FCST_WINDOW_BEGIN', 0)
         c_dict['FCST_WINDOW_END'] = \
           self.config.getint('config', 'FCST_WINDOW_END', 0)
+
+        c_dict['OBS_WINDOW_BEGIN'] = \
+          self.config.getint('config', 'OBS_WINDOW_BEGIN', 0)
+        c_dict['OBS_WINDOW_END'] = \
+          self.config.getint('config', 'OBS_WINDOW_END', 0)
+
+        # if file window is not set, use window values
+        c_dict['FCST_FILE_WINDOW_BEGIN'] = \
+          self.config.getint('config', 'FCST_FILE_WINDOW_BEGIN',
+                             c_dict['FCST_WINDOW_BEGIN'])
+        c_dict['FCST_FILE_WINDOW_END'] = \
+          self.config.getint('config', 'FCST_FILE_WINDOW_END',
+                             c_dict['FCST_WINDOW_END'])
+
+        c_dict['OBS_FILE_WINDOW_BEGIN'] = \
+          self.config.getint('config', 'OBS_FILE_WINDOW_BEGIN',
+                             c_dict['OBS_WINDOW_BEGIN'])
+        c_dict['OBS_FILE_WINDOW_END'] = \
+          self.config.getint('config', 'OBS_FILE_WINDOW_END',
+                             c_dict['OBS_WINDOW_END'])
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
         c_dict['NEIGHBORHOOD_WIDTH'] = ''
@@ -69,6 +85,50 @@ that reformat gridded data
         c_dict['VERIFICATION_MASK'] = ''
         util.add_common_items_to_dictionary(self.config, c_dict)
         return c_dict
+
+
+    def handle_window_once(self, c_dict, dtype, edge):
+        """! Check and set window dictionary variables like
+              OBS_WINDOW_BEG or FCST_FILE_WINDW_END
+              Args:
+                @param c_dict dictionary to set items in
+                @param dtype type of data 'FCST' or 'OBS'
+                @parm edge either 'BEGIN' or 'END'
+        """
+        app = self.app_name.upper()
+
+        # if value specific to given wrapper is set, override value
+        if self.config.has_option('config',
+                                  dtype+'_'+app+'_WINDOW_'+edge):
+            c_dict[dtype+'_WINDOW_'+edge] = \
+              self.config.getint('config',
+                                 dtype+'_'+app+'_WINDOW_'+edge)
+
+        # do the same for FILE_WINDOW, but
+        # if FILE_WINDOW is not set, set it to WINDOW value
+        if self.config.has_option('config',
+                                  dtype+'_'+app+'_FILE_WINDOW_'+edge):
+            c_dict[dtype+'_FILE_WINDOW_'+edge] = \
+              self.config.getint('config',
+                                 dtype+'_'+app+'_FILE_WINDOW_'+edge)
+        else:
+            c_dict[dtype+'_FILE_WINDOW_'+edge] = \
+              c_dict[dtype+'_WINDOW_'+edge]
+
+
+    def handle_window_variables(self, c_dict):
+        """! Handle all window config variables like
+              [FCST/OBS]_<app_name>_WINDOW_[BEGIN/END] and
+              [FCST/OBS]_<app_name>_FILE_WINDOW_[BEGIN/END]
+              Args:
+                @param c_dict dictionary to set items in
+        """
+        dtypes = [ 'FCST', 'OBS' ]
+        edges = [ 'BEGIN', 'END' ]
+
+        for dtype in dtypes:
+            for edge in edges:
+                self.handle_window_once(c_dict, dtype, edge)
 
 
     def run_at_time(self, input_dict):

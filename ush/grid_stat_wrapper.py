@@ -77,22 +77,9 @@ class GridStatWrapper(CompareGriddedWrapper):
                                'GRID_STAT_VERIFICATION_MASK_TEMPLATE')
         c_dict['VERIFICATION_MASK'] = ''
 
-        # if window begin/end is set specific to grid_stat, override
-        # OBS_WINDOW_BEGIN/END
-        if self.config.has_option('config', 'OBS_GRID_STAT_WINDOW_BEGIN'):
-            c_dict['OBS_WINDOW_BEGIN'] = \
-              self.config.getint('config', 'OBS_GRID_STAT_WINDOW_BEGIN')
-        if self.config.has_option('config', 'OBS_GRID_STAT_WINDOW_END'):
-            c_dict['OBS_WINDOW_END'] = \
-              self.config.getint('config', 'OBS_GRID_STAT_WINDOW_END')
 
-        # same for FCST_WINDOW_BEGIN/END
-        if self.config.has_option('config', 'FCST_GRID_STAT_WINDOW_BEGIN'):
-            c_dict['FCST_WINDOW_BEGIN'] = \
-              self.config.getint('config', 'FCST_GRID_STAT_WINDOW_BEGIN')
-        if self.config.has_option('config', 'FCST_GRID_STAT_WINDOW_END'):
-            c_dict['FCST_WINDOW_END'] = \
-              self.config.getint('config', 'FCST_GRID_STAT_WINDOW_END')
+        # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
+        self.handle_window_variables(c_dict)
 
         return c_dict
 

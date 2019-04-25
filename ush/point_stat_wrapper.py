@@ -103,22 +103,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['POINT_STAT_MESSAGE_TYPE'] = util.getlist(
             self.config.getstr('config', 'POINT_STAT_MESSAGE_TYPE', ''))
 
-        # if window begin/end is set specific to ensemble_stat, override
-        # OBS_WINDOW_BEGIN/END
-        if self.config.has_option('config', 'OBS_POINT_STAT_WINDOW_BEGIN'):
-            c_dict['OBS_WINDOW_BEGIN'] = \
-              self.config.getint('config', 'OBS_POINT_STAT_WINDOW_BEGIN')
-        if self.config.has_option('config', 'OBS_POINT_STAT_WINDOW_END'):
-            c_dict['OBS_WINDOW_END'] = \
-              self.config.getint('config', 'OBS_POINT_STAT_WINDOW_END')
-
-        # same for FCST_WINDOW_BEGIN/END
-        if self.config.has_option('config', 'FCST_POINT_STAT_WINDOW_BEGIN'):
-            c_dict['FCST_WINDOW_BEGIN'] = \
-              self.config.getint('config', 'FCST_POINT_STAT_WINDOW_BEGIN')
-        if self.config.has_option('config', 'FCST_POINT_STAT_WINDOW_END'):
-            c_dict['FCST_WINDOW_END'] = \
-              self.config.getint('config', 'FCST_POINT_STAT_WINDOW_END')
+        # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
+        self.handle_window_variables(c_dict)
 
         c_dict['NEIGHBORHOOD_WIDTH'] = self.config.getstr('config', 'POINT_STAT_NEIGHBORHOOD_WIDTH', '')
         c_dict['NEIGHBORHOOD_SHAPE'] = self.config.getstr('config', 'POINT_STAT_NEIGHBORHOOD_SHAPE', '')
