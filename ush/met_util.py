@@ -108,7 +108,19 @@ def check_for_deprecated_config(p, logger):
       'FCST_TIMES_PER_FILE' : { 'sec' : '', 'alt' : 'FCST_PCP_COMBINE_TIMES_PER_FILE'},
       'OBS_TIMES_PER_FILE' : { 'sec' : '', 'alt' : 'OBS_PCP_COMBINE_TIMES_PER_FILE'},
       'FCST_LEVEL' : { 'sec' : '', 'alt' : 'FCST_PCP_COMBINE_INPUT_LEVEL'},
-      'OBS_LEVEL' : { 'sec' : '', 'alt' : 'OBS_PCP_COMBINE_INPUT_LEVEL'}
+      'OBS_LEVEL' : { 'sec' : '', 'alt' : 'OBS_PCP_COMBINE_INPUT_LEVEL'},
+      'MODE_FCST_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'FCST_MODE_CONV_RADIUS'},
+      'MODE_FCST_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'FCST_MODE_CONV_THRESH'},
+      'MODE_FCST_MERGE_FLAG' : { 'sec' : 'config', 'alt' : 'FCST_MODE_MERGE_FLAG'},
+      'MODE_FCST_MERGE_THRESH' : { 'sec' : 'config', 'alt' : 'FCST_MODE_MERGE_THRESH'},
+      'MODE_OBS_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'OBS_MODE_CONV_RADIUS'},
+      'MODE_OBS_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'OBS_MODE_CONV_THRESH'},
+      'MODE_OBS_MERGE_FLAG' : { 'sec' : 'config', 'alt' : 'OBS_MODE_MERGE_FLAG'},
+      'MODE_OBS_MERGE_THRESH' : { 'sec' : 'config', 'alt' : 'OBS_MODE_MERGE_THRESH'},
+      'MTD_FCST_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'FCST_MTD_CONV_RADIUS'},
+      'MTD_FCST_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'FCST_MTD_CONV_THRESH'},
+      'MTD_OBS_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'OBS_MTD_CONV_RADIUS'},
+      'MTD_OBS_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'OBS_MTD_CONV_THRESH'}
       # TODO: need to use regex to check for items that have different numbers in them
       # i.e. FCST_1_FIELD_NAME or FCST_6_FIELD_NAME to FCST_PCP_COMBINE_1_FIELD_NAME, etc.
 # template       '' : { 'sec' : '', 'alt' : ''}
