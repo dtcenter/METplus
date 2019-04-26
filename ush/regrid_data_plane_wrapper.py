@@ -117,7 +117,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
           self.config.getstr('config', 'REGRID_DATA_PLANE_METHOD', '')
 
         self.c_dict['WIDTH'] = \
-          self.config.getint('config', 'REGRID_DATA_PLANE_WIDTH', '')
+          self.config.getint('config', 'REGRID_DATA_PLANE_WIDTH', 1)
 
 
     def run_at_time_once(self, time_info, var_info, dtype):
@@ -216,8 +216,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if self.c_dict['METHOD'] != '':
             self.add_arg("-method {}".format(self.c_dict['METHOD']))
 
-        if self.c_dict['WIDTH'] != '':
-            self.add_arg("-width {}".format(self.c_dict['WIDTH']))
+        self.add_arg("-width {}".format(self.c_dict['WIDTH']))
 
         self.add_arg("-name " + field_name)
         cmd = self.get_command()
