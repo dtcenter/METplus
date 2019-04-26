@@ -1234,8 +1234,8 @@ def getlist(s, logger=None):
     s = re.sub(r'\s*,\s*', ',', s)
 
     # support beg, end, step to generate a int list
-    # list(0, 10, 2) will create a list of 0, 2, 4, 6, 8, 10 (inclusive)
-    match = re.match('^list\(\s*(-*\d*),(-*\d*),(-*\d*)\s*\)$', s)
+    # begin_end_incr(0, 10, 2) will create a list of 0, 2, 4, 6, 8, 10 (inclusive)
+    match = re.match('^begin_end_incr\(\s*(-*\d*),(-*\d*),(-*\d*)\s*\)$', s)
     if match:
         start = int(match.group(1))
         end = int(match.group(2))
