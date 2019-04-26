@@ -113,6 +113,12 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         self.c_dict['VERIFICATION_GRID'] = \
             self.config.getstr('config', 'REGRID_DATA_PLANE_VERIF_GRID', '')
 
+        self.c_dict['METHOD'] = \
+          self.config.getstr('config', 'REGRID_DATA_PLANE_METHOD', '')
+
+        self.c_dict['WIDTH'] = \
+          self.config.getint('config', 'REGRID_DATA_PLANE_WIDTH', 1)
+
 
     def run_at_time_once(self, time_info, var_info, dtype):
         """! Runs the MET application for a given time and forecast lead combination
@@ -207,8 +213,11 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             field_name = "{:s}".format(compare_var)
             self.add_arg("-field 'name=\"{:s}\"; level=\"{:s}\";'".format(field_name, level))
 
-        self.add_arg("-method BUDGET")
-        self.add_arg("-width 2")
+        if self.c_dict['METHOD'] != '':
+            self.add_arg("-method {}".format(self.c_dict['METHOD']))
+
+        self.add_arg("-width {}".format(self.c_dict['WIDTH']))
+
         self.add_arg("-name " + field_name)
         cmd = self.get_command()
         if cmd is None:

@@ -259,8 +259,8 @@ class CommandBuilder:
         data_dir = self.c_dict[data_type+'_INPUT_DIR']
 
         # if looking for a file with an exact time match:
-        if self.c_dict[data_type+'_WINDOW_BEGIN'] == 0 and \
-            self.c_dict[data_type+'_WINDOW_END'] == 0:
+        if self.c_dict[data_type+'_FILE_WINDOW_BEGIN'] == 0 and \
+            self.c_dict[data_type+'_FILE_WINDOW_END'] == 0:
             # perform string substitution
             dSts = sts.StringSub(self.logger,
                                    template,
@@ -285,8 +285,8 @@ class CommandBuilder:
         closest_time = 9999999
 
         # get range of times that will be considered
-        valid_range_lower = self.c_dict['OBS_WINDOW_BEGIN']
-        valid_range_upper = self.c_dict['OBS_WINDOW_END']
+        valid_range_lower = self.c_dict[data_type+'_FILE_WINDOW_BEGIN']
+        valid_range_upper = self.c_dict[data_type+'_FILE_WINDOW_END']
         lower_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
                                                  "%Y%m%d%H%M").strftime("%s"))
         upper_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),

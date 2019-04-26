@@ -61,7 +61,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
         # The only required argument for plot_tcmpr.R, the name of
         # the tcst file to plot.
-        self.input_data = self.config.getstr('config', 'TCMPR_DATA')
+        self.input_data = self.config.getdir('TCMPR_DATA')
 
         # Optional arguments
         self.plot_config_file = self.config.getstr('config', 'CONFIG_FILE')

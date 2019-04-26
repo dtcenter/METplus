@@ -441,12 +441,12 @@ def test_get_lead_sequence_lead():
 
 @pytest.mark.parametrize(
     'key, value', [
-        ('list(3,12,3)',  [ 3, 6, 9, 12]),
-        ('list( 3,12 , 3)',  [ 3, 6, 9, 12]),
-        ('list(0,10,2)',  [ 0, 2, 4, 6, 8, 10]),
-        ('list(10,0,-2)',  [ 10, 8, 6, 4, 2, 0]),
-        ('list(2,2,20)',  [ 2 ]),
-        ('list(72,72,6)',  [ 72 ])
+        ('begin_end_incr(3,12,3)',  [ 3, 6, 9, 12]),
+        ('begin_end_incr( 3,12 , 3)',  [ 3, 6, 9, 12]),
+        ('begin_end_incr(0,10,2)',  [ 0, 2, 4, 6, 8, 10]),
+        ('begin_end_incr(10,0,-2)',  [ 10, 8, 6, 4, 2, 0]),
+        ('begin_end_incr(2,2,20)',  [ 2 ]),
+        ('begin_end_incr(72,72,6)',  [ 72 ])
     ]
 )
 def test_get_lead_sequence_lead_list(key, value):
