@@ -90,8 +90,8 @@ name "chap:METplus Python Wrappers"
 \begin_layout Standard
 This chapter provides a description of each supported Python wrapper in
  METplus.
- A METplus wrapper is a Python script that encapsulates the behavior of
- a corresponding MET tool.
+ A METplus wrapper is generally a Python script that encapsulates the behavior
+ of a corresponding MET tool.
  Each of these sections can be added to the PROCESS_LIST configuration list
  variable.
  The Configuration section of each wrapper section below lists the METplus
@@ -123,6 +123,12 @@ name "sec:cyclone_plotter_wrapper"
 Description
 \end_layout
 
+\begin_layout Standard
+This wrapper does not have a corresponding MET tool but instead wraps the
+ logic necessary to create plots of cyclone tracks.
+ Currently only the output from the MET tc-pairs tool can be plotted.
+\end_layout
+
 \begin_layout Subsection
 Configuration
 \end_layout
@@ -132,11 +138,106 @@ Configuration
 \end_layout
 
 \begin_layout Standard
-[filename_templates]
+CYCLONE_INPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_C"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+CYCLONE_OUTPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_C"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 [config]
+\end_layout
+
+\begin_layout Standard
+CYCLONE_INIT_DATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_C"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+CYCLONE_INIT_HOUR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_C"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+CYCLONE_MODEL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_C"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+CYCLONE_PLOT_TITLE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_C"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+CIRCLE_MARKDER_SIZE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_C"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+CROSS_MARKER_SIZE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_C"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+GENERATE_TRACK_ASCII 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_G"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -146,6 +247,8 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 CYCLONE_OUT_DIR
 \end_layout
 
@@ -422,10 +525,14 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 ENSEMBLE_STAT_OUT_DIR
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 ENSEMBLE_STAT_CONFIG
 \end_layout
 
@@ -467,48 +574,110 @@ The following should be set in the METplus configuration file to define
 \end_layout
 
 \begin_layout Standard
-LON_ADJ - set to a value in degrees, found under the [config] header/family.
- This defines the 2n portion of the 2n x 2m subregion tile.
+[dir]
 \end_layout
 
 \begin_layout Standard
-LAT_ADJ - set to a value in degrees, found under the [config] header/family.
- This defines the 2m portion of the 2n x 2m subregion tile.
+EXTRACT_TILES_OUTPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_E"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-NLAT - set to a whole number, found under the [config] header/family.
- This defines the number of latitude points to incorporate into the subregion
- (density).
+[config]
 \end_layout
 
 \begin_layout Standard
-NLON - set to a whole number, found under the [config] header/family.
- This defines the number of longitude points to incorporate into the subregion
- (density).
+LON_ADJ
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_L"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-DLON - set to the value that defines the resolution of the data (in decimal
- degrees).
- Found under the [config] header/family section of the METplus config file.
+LAT_ADJ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_L"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-DLAT - set to the value that defines the resolution of the data (in decimal
- degrees).
- Found under the [config] header/family section of the METplus config file.
+NLAT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_N"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-EXTRACT_TILES_FILTER_OPTS - Additional filtering by summary (via the MET
- tc_stat tool).
- Please refer to Chapter 20 in the MET Users Guide (TC-STAT Tools) for all
- the available options for filtering by summary method in tc-stat.
- If no additional filtering is required, simply leave the value to EXTRACT_TILES
-_FILTER_OPTS blank/empty in the METplus configuration file.
- This is located in the [config] header/family section of the METplus config
- file.
+NLON 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_N"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+DLON 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_D"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+DLAT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_D"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+EXTRACT_TILES_FILTER_OPTS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_E"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+EXTRACT_TILES_VAR_LIST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_E"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -518,6 +687,8 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 EXTRACT_OUT_DIR
 \end_layout
 
@@ -866,10 +1037,14 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 GRID_STAT_OUT_DIR
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 GRID_STAT_CONFIG
 \end_layout
 
@@ -901,249 +1076,393 @@ Configuration
 \end_layout
 
 \begin_layout Standard
-The following values must be defined in the METplus configuration file:
+The following values 
+\series bold
+must
+\series default
+ be defined in the METplus configuration file:
 \end_layout
 
 \begin_layout Standard
-PLOTTING_SCRIPTS_DIR - This variable is found under the [dir] header/family
- section of the METplus config file.
- This is the directory containing all the python plotting scripts that make_plot
-s_wrapper calls.
- It is recommended {METPLUS_BASE}/ush/plotting_scripts.
+[dir]
 \end_layout
 
 \begin_layout Standard
-STAT_FILES_INPUT_DIR - This variable is found under the [dir] header/family
- section of the METplus config file.
- This is the directory where the files from running previously running stat_anal
-ysis_wrapper are located.
- These are the files used as the data to create the plots.
- It is recommended to set this to {STAT_ANALYSIS_OUTPUT_DIR}.
-\end_layout
+PLOTTING_SCRIPTS_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
 
-\begin_layout Standard
-PLOTTING_OUTPUT_DIR - This variable is found under the [dir] header/family
- section of the METplus config file.
- This is the base directory where the output from running make_plots_wrapper
- will be put.
-\end_layout
+\end_inset
 
-\begin_layout Standard
-VERIF_CASE - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the specific use case being run.
- Valid options are grid2grid, grid2obs, and precip.
-\end_layout
-
-\begin_layout Standard
-VERIF_TYPE - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the type of verification being run for the specific use case.
- For VERIF_CASE = grid2grid, valid options are anom, pres, and sfc.
- For VERIF_CASE = grid2obs, valid options are conus_sfc and upper_air.
- For VERIF_CASE = precip, any accumulation amount is valid, ex.
- A24.
-\end_layout
-
-\begin_layout Standard
-PLOT_TIME - This variable is found under the [config] header/family section
- of the METplus config file.
- This specifies the way to treat the date information.
- Valid options are valid and init.
-\end_layout
-
-\begin_layout Standard
-VALID/INIT_BEG - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the starting date in YYYYMMDD form.
- It is named accordingly to the value set for PLOT_TIME.
-\end_layout
-
-\begin_layout Standard
-VALID/INIT_END - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the ending date in YYYYMMDD form.
- It is named accordingly to the value set for PLOT_TIME.
-\end_layout
-
-\begin_layout Standard
-VALID_HOUR_METHOD - This variable is found under the [config] header/family
- section of the METplus config file.
- This specifies the way to treat the valid hour information.
- Valid options are LOOP or GROUP.
- LOOP will consider the valid hours individually, and GROUP will consider
- them valid hours as a whole.
-\end_layout
-
-\begin_layout Standard
-VALID_HOUR_BEG - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the starting valid hour in HHMM form.
-\end_layout
-
-\begin_layout Standard
-VALID_HOUR_END - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the ending valid hourin HHMM form.
-\end_layout
-
-\begin_layout Standard
-VALID_HOUR_INCREMENT - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the increment used build the list of all valid hours to be used.
- This is an integer defined in seconds.
-\end_layout
-
-\begin_layout Standard
-INIT_HOUR_METHOD - This variable is found under the [config] header/family
- section of the METplus config file.
- This specifies the way to treat the initialization hour information.
- Valid options are LOOP or GROUP.
- LOOP will consider the initialization hours individually, and GROUP will
- consider them as a whole.
-\end_layout
-
-\begin_layout Standard
-INIT_HOUR_BEG - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the starting initialization hour in HHMM form.
-\end_layout
-
-\begin_layout Standard
-INIT_HOUR_END - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the ending initialization hour in HHMM form.
-\end_layout
-
-\begin_layout Standard
-INIT_HOUR_INCREMENT - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the increment used build the list of all initialization hours to
- be used.
- This is an integer defined in seconds.
-\end_layout
-
-\begin_layout Standard
-MODELn_NAME - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the name of the model.
- Particularly, this is the model name listed in the MET .stat files.
-\end_layout
-
-\begin_layout Standard
-MODELn_OBS_NAME - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the name of the observations that were used as truth to compare
- MODELn_NAME to.
- Particularly, this is the observation name listed in the MET .stat files.
-\end_layout
-
-\begin_layout Standard
-MODELn_NAME_ON_PLOT - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the name that will appear on the plots for MODELn_NAME and is used
- to define subsequent data paths pertaining to MODELn_NAME.
-\end_layout
-
-\begin_layout Standard
-FCST_VARn_NAME - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the variable name 
-\end_layout
-
-\begin_layout Standard
-FCST_VARn_LEVELS - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the list of variable levels that coorespond to FCST_VARn_NAME.
-\end_layout
-
-\begin_layout Standard
-REGION_LIST - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the list of regions for plotting verification.
  
 \end_layout
 
 \begin_layout Standard
-LEAD_LIST - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the list of forecast hour leads for plotting verification.
-\end_layout
+STAT_FILES_INPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
 
-\begin_layout Standard
-INTERP - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the type of interpolation the verification was done on.
- It cooresponds to the interpolation in the MET .stat files.
-\end_layout
+\end_inset
 
-\begin_layout Standard
-PLOT_STATS_LIST - This variable is found under the [config] header/family
- section of the METplus config file.
- This is a list of the statistics to calculate and create plots for.
- The list of valid options varies depending on line type that was used during
- the filtering of stat_analysis_wrapper.
- For SL1L2, VL1L2 valid options are bias, rms, msess, rsd, rmse_md, rmse_pv,
- pcor, fbar, and fbar_obar.
- For SAL1L2, VAL1L2, the valid options is acc.
- For VCNT, bias, fbar, fbar_obar, speed_err, dir_err, rmsve, vdiff_speed,
- vdiff_dir, rsd, fbar_speed, fbar_dir, fbar_obar_speed, and fbar_obar_dir.
-\end_layout
-
-\begin_layout Standard
-CI_METHOD - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the method used to create confidence intervals for.
- Valid options are EMC, or NONE.
-\end_layout
-
-\begin_layout Standard
-VERIF_GRID - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the name of the grid the verification was done on, ex.
- G002.
-\end_layout
-
-\begin_layout Standard
-EVENT_EQUALIZATION - This variable is found under the [config] header/family
- section of the METplus config file.
- If set to True, if any of the listed models are missing data for a particular
- time, data for all models will be masked out for this time.
- If set to False, there are no changes to the data.
-\end_layout
-
-\begin_layout Standard
-The following values are optional in the METplus configuration file:
-\end_layout
-
-\begin_layout Standard
-FCST_VARn_THRESH - This variable is found under the [config] header/family
- section of the METplus config file.
- This is a list of threshold for plotting verificating that cooresponds
- to FCS_VARn_NAME.
-\end_layout
-
-\begin_layout Standard
-FCST_VARn_OPTIONS - This variable is found under the [config] header/family
- section of the METplus config file.
- These are extra settings used to describe FCS_VARn_NAME.
-\end_layout
-
-\begin_layout Standard
-VARn_FOURIER_DECOMP - This variable is found under the [config] header/family
- section of the METplus config file.
- If this is set to True, plots will be made for the Fourier decomposition
- of FCS_VARn_NAME.
- This should have been previously run in grid_stat_wrapper.
- The default value to False.
-\end_layout
-
-\begin_layout Standard
-VARn_WAVE_NUM_LIST - This variable is found under the [config] header/family
- section of the METplus config file.
- This is a list of the Fourier decomposition wave numbers to create plots
- for.
  
+\end_layout
+
+\begin_layout Standard
+PLOTTING_OUTPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+[config]
+\end_layout
+
+\begin_layout Standard
+VERIF_CASE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VERIF_TYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+PLOT_TIME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID/INIT_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID/INIT_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_METHOD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_INCREMENT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_METHOD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_INCREMENT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+MODELn_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+MODELn_OBS_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+MODELn_NAME_ON_PLOT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_LEVELS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+REGION_LIST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_R"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+LEAD_LIST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_L"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INTERP 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+PLOT_STATS_LIST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+CI_METHOD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_C"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VERIF_GRID 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+EVENT_EQUALIZATION 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_E"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following values are 
+\series bold
+optional
+\series default
+ in the METplus configuration file:
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_THRESH 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_OPTIONS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VARn_FOURIER_DECOMP 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VARn_WAVE_NUM_LIST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1474,10 +1793,14 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 MODE_OUT_DIR
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 MODE_CONFIG
 \end_layout
 
@@ -1688,10 +2011,14 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 MTD_OUT_DIR
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 MTD_CONFIG
 \end_layout
 
@@ -1958,58 +2285,86 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 PREPBUFR_DATA_DIR
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 PREPBUFR_MODEL_DIR_NAME
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 PREPBUFR_DIR_REGEX
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 PREPBUFR_FILE_REGEX
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 NC_FILE_TMPL
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 PB2NC_VERTICAL_LEVEL
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 OBS_BUFR_VAR_LIST
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 TIME_SUMMARY_FLAG
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 TIME_SUMMARY_BEG
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 TIME_SUMMARY_END
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 TIME_SUMMARY_VAR_NAMES
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 TIME_SUMMARY_TYPE
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 OVERWRITE_NC_OUTPUT
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 VERTICAL_LOCATION
 \end_layout
 
@@ -2443,54 +2798,80 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 PCP_COMBINE_METHOD
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 FCST_MIN_FORECAST
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 FCST_MAX_FORECAST
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 OBS_MIN_FORECAST
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 OBS_MAX_FORECAST
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 FCST_DATA_INTERVAL
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 OBS_DATA_INTERVAL
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 FCST_IS_DAILY_FILE
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 OBS_IS_DAILY_FILE
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 FCST_TIMES_PER_FILE
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 OBS_TIMES_PER_FILE
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 FCST_LEVEL
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 OBS_LEVEL
 \end_layout
 
@@ -2782,62 +3163,92 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 FCST_INPUT_DIR
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 OBS_INPUT_DIR
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 START_HOUR
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 END_HOUR
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 BEG_TIME
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 FCST_HR_START
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 FCST_HR_END
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 FCST_HR_INTERVAL
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 OBS_INPUT_DIR_REGEX
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 FCST_INPUT_DIR_REGEX
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 FCST_INPUT_FILE_REGEX
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 OBS_INPUT_FILE_REGEX
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 OBS_INPUT_FILE_TMPL
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 FCST_INPUT_FILE_TPOINTMPL
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 REGRID_TO_GRID
 \end_layout
 
@@ -2993,6 +3404,8 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 VERIFICATION_GRID
 \end_layout
 
@@ -3023,80 +3436,202 @@ Configuration
 \end_layout
 
 \begin_layout Standard
-ADECK_TRACK_DATA_DIR - The full filepath to the Adeck data files.
- This variable is found under the [dir] header/family section in the METplus
- config file.
+[dir]
 \end_layout
 
 \begin_layout Standard
-BDECK_TRACK_DATA_DIR - The full filepath to the Bdeck (Best track) data
- files.
- This variable is found under the [dir] header/family section of the METplus
- config file.
+SERIES_BY_INIT_FILTERED_OUTPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-INIT_BEG - set this to the starting YYYYMMDD of the time window of interest
- (e.g.
- 20180601).
- This variable is found under the [config] header/family section of the
- METplus config file.
+SERIES_BY_INIT_OUTPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-INIT_END - set this to the ending YYYYMMDD of the time window of interest
- (e.g.
- 20180615).
- This variable is found under the [config] header/family section of the
- METplus config file.
+[regex_patterns]
 \end_layout
 
 \begin_layout Standard
-INIT_INCREMENT - set this to the step size/increment (in seconds) between
- your beginning and ending init times of interest (eg.
- 21600, which corresponds to 6 hours).
- Tjis variable is located under the [config] header/family section of the
- METplus config file.
+FCST_TILE_PREFIX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-INIT_HOUR_END - This is the ending hour to of the init hour time window
- (e.g.
- INIT_HOUR_END = 23 to end your ini time at 23Z).
- This variable is located under the [config] header/family section of the
- METplus config file.
+ANLY_TILE_PREFIX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_A"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-INIT_INCLUDE - This is a list of dates in YYYYMMDD_hh format data that might
- reside outside your specified time window of interest but want to include
- in your verification (e.g.
- INIT_INCLUDE = 20180616_12).
- This variable is located under the [config] header/family section of the
- METplus config file.
+FCST_TILE_REGEX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-INIT_EXCLUDE - This is a list of dates in YYYYMMDD_hh format of data that
- you wish to exclude from your verification.
- (e.g.
- If, for some reason, you wish to exclude the 20180611_12, 20180613_06 data
- and include the 20180616_12 data, you would specify it in the following
- manner: INIT_EXCLUDE = 20180611_12, 20180613_06).
- This variable is located under the [config] header/family section of the
- METplus config file.
+ANLY_TILE_REGEX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_A"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-SERIES_ANALYSIS_FILTER_OPTS - Apply tc_stat syntax for performing any additional
- filtering on your input data, which is done via tc_stat_wrapper/tc_stat
- tool (e.g.
- SERIES_ANALYSIS_FILTER_OPTS = -init_beg {INIT_BEG} -init_end {INIT_END}
- .
- This limits results that lie within the INIT_BEG and INIT_END times that
- were specified in your METplus configuration file, Refer to Chapter 20
- of the MET User's Guide for the syntax to use for performing filtering
- via the MET tc_stat tool).
+FCST_NC_TILE_REGEX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+ANLY_NC_TILE_REGEX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_A"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+FCST_ASCII_REGEX_LEAD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+ANLY_ASCII_REGEX_LEAD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_A"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+[config]
+\end_layout
+
+\begin_layout Standard
+INIT_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_INCREMENT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_INCLUDE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_EXCLUDE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+SERIES_ANALYSIS_FILTER_OPTS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3106,6 +3641,8 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 SERIES_INIT_FILTERED_OUT_DIR
 \end_layout
 
@@ -3166,149 +3703,135 @@ The input track and model data files are defined in any one of the user's
 \end_layout
 
 \begin_layout Standard
-INIT_BEG = set this to the starting YYYYMMDD of the time window of interest
- (e.g.
- 20180601).
- This variable is found under the [config] header/family section of the
- METplus config file.
+[dir]
 \end_layout
 
 \begin_layout Standard
-INIT_END = set this to the ending YYYYMMDD of the time window of interest
- (e.g.
- 20180615).
- This variable is found under the [config] header/family section of the
- METplus config file.
-\end_layout
+SERIES_BY_LEAD_FILTERED_OUTPUT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
 
-\begin_layout Standard
-INIT_INCREMENT = set this to the step size/increment (in seconds) between
- your beginning and ending init times of interest (eg.
- 21600, which corresponds to 6 hours)
-\end_layout
-
-\begin_layout Standard
-INIT_HOUR_END = 23
-\end_layout
-
-\begin_layout Standard
-FHR_BEG - The beginning forecast hour of interest.
- 
-\end_layout
-
-\begin_layout Standard
-FHR_END - The ending forecast hour of interest.
- 
-\end_layout
-
-\begin_layout Standard
-FHR_INC - The increment/time step in hours.
- 
-\end_layout
-
-\begin_layout Standard
-The following should be undefined if you are performing a series analysis
- for all available forecast hours.
- Otherwise, define these if you wish to perform a series analysis by lead
- time (to create your own forecast hour groupings and associated labels).
-\end_layout
-
-\begin_layout Standard
-FHR_GROUP_BEG - This is a list of forecast hours that define each 
-\begin_inset Quotes eld
 \end_inset
 
-block
-\begin_inset Quotes erd
-\end_inset
 
- or 
-\begin_inset Quotes eld
-\end_inset
-
-grouping
-\begin_inset Quotes erd
-\end_inset
-
- of forecast hours.
- The number of beginning forecast hours must match the number of ending
- forecast hours.
- This variable is found under the [config] header/family section of the
- METplus config file.
 \end_layout
 
 \begin_layout Standard
-FHR_GROUP_END - This is a list of forecast hours that define the end of
- each 
-\begin_inset Quotes eld
+SERIES_BY_LEAD_OUTPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
 \end_inset
 
-block
-\begin_inset Quotes erd
-\end_inset
 
- or 
-\begin_inset Quotes eld
-\end_inset
-
-grouping
-\begin_inset Quotes erd
-\end_inset
-
- of forecast hours.
- The number of ending forecast hours must match the number of beginning
- forecast hours.
- This variable is found under the [config] header/family section of the
- METplus config file.
 \end_layout
 
 \begin_layout Standard
-FHR_GROUP_LABELS - This is a list of the labels to be applied for each 
-\begin_inset Quotes eld
-\end_inset
-
-block
-\begin_inset Quotes erd
-\end_inset
-
- or 
-\begin_inset Quotes eld
-\end_inset
-
-grouping
-\begin_inset Quotes erd
-\end_inset
-
- of forecast hours.
- The number of labels must equal the number of forecast hour begin and end
- items.
- This variable is found under the [config] header/family section of the
- METplus config file.
+[config]
 \end_layout
 
 \begin_layout Standard
-INIT_INCLUDE - This is a list of any data you wish to include that might
- lie outside your specified time window (e.g.
- INIT_INCLUDE=20180616_12 would include any data corresponding to 20180616_12).
- This is found under the [config] header/family section of the METplus config
- file.
+INIT_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-INIT_EXCLUDE - A list of any data that you wish to exclude from your verificatio
-n.
- If, for some reason, you wish to exclude the 20180611_12, 20180613_06 data
- and include the 20180616_12 data, you would specify it in the following
- manner: INIT_EXCLUDE = 20180611_12, 20180613_06.
- This variable is located under the [config] header/family section of the
- METplus config file.
+INIT_TIME_FMT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-SERIES_ANALYSIS_FILTER_OPT - Perform additional filtering on your input
- data, via the tc_stat_wrapper/MET tc_stat tool.
- Refer to Chapter 20 of the MET User's Guide for the syntax to use for performin
-g filtering via the MET tc_stat tool.
+INIT_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_INCREMENT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+SERIES_BY_LEAD_GROUP_FCSTS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+LEAD_SEQ_
+\emph on
+n 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_L"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+LEAD_SEQ_
+\emph on
+n
+\emph default
+_LABEL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_L"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+SERIES_ANALYSIS_FILTER_OPT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VAR_LIST
+\end_layout
+
+\begin_layout Standard
+STAT_LIST
 \end_layout
 
 \begin_layout Standard
@@ -3318,6 +3841,8 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 SERIES_LEAD_FILTERED_OUT_DIR
 \end_layout
 
@@ -3358,451 +3883,739 @@ The following values must be defined in the METplus configuration file for
 \end_layout
 
 \begin_layout Standard
-STAT_ANALYSIS_LOOKIN_DIR - This variable is found under the [dir] header/family
- section of the METplus config file.
- This is the directory that the stat_analysis wrapper will use to build
- the argument to -lookin for the MET stat_analysis tool.
- It can contain wildcards, i.e.
- *.
+[dir]
 \end_layout
 
 \begin_layout Standard
-STAT_ANALYSIS_OUTPUT_DIR - This variable is found under the [dir] header/family
- section of the METplus config file.
- This is the base directory where the output from running stat_analysis_wrapper
- will be put.
-\end_layout
+STAT_ANALYSIS_LOOKIN_DIR
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
 
-\begin_layout Standard
-LOOP_BY - This variable is found under the [config] header/family section
- of the METplus config file.
- This defines the way to treat the looping of the date information.
-\end_layout
+\end_inset
 
-\begin_layout Standard
-VALID/INIT_TIME_FMT - This variable is found under the [config] header/family
- section of the METplus config file.
- This describes the formating of the BEG and END dates, ex.
- %Y%m%d.
-\end_layout
-
-\begin_layout Standard
-VALID/INIT_BEG - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the starting date in the format set in the TIME_FMT.
- It is named accordingly to the value set for LOOP_BY.
-\end_layout
-
-\begin_layout Standard
-VALID/INIT_END - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the starting date in the format set in the TIME_FMT.
- It is named accordingly to the value set for LOOP_BY.
-\end_layout
-
-\begin_layout Standard
-VALID_HOUR_METHOD - This variable is found under the [config] header/family
- section of the METplus config file.
- This specifies the way to treat the valid hour information.
- Valid options are LOOP or GROUP.
- LOOP will consider the valid hours individually, and GROUP will consider
- them valid hours as a whole.
-\end_layout
-
-\begin_layout Standard
-VALID_HOUR_BEG - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the starting in HHMM form.
-\end_layout
-
-\begin_layout Standard
-VALID_HOUR_END - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the ending valid hour in HHMM form.
-\end_layout
-
-\begin_layout Standard
-VALID_HOUR_INCREMENT - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the increment used build the list of all valid hours to be used.
- This is an integer defined in seconds.
-\end_layout
-
-\begin_layout Standard
-INIT_HOUR_METHOD - This variable is found under the [config] header/family
- section of the METplus config file.
- This specifies the way to treat the initialization hour information.
- Valid options are LOOP or GROUP.
- LOOP will consider the initialization hours individually, and GROUP will
- consider them as a whole.
-\end_layout
-
-\begin_layout Standard
-INIT_HOUR_BEG - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the starting initialization hour in HHMM form.
-\end_layout
-
-\begin_layout Standard
-INIT_HOUR_END - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the ending initialization hour in HHMM form.
-\end_layout
-
-\begin_layout Standard
-INIT_HOUR_INCREMENT - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the increment used build the list of all initialization hours to
- be used.
- This is an integer defined in seconds.
-\end_layout
-
-\begin_layout Standard
-STAT_ANALYSIS_CONFIG - This variable is found under the [config] header/family
- section of the METplus config file.
- It is recommended to set this to {PARM_BASE}/use_cases/plotting/met_config/STAT
-AnalysisConfig.
  
 \end_layout
 
 \begin_layout Standard
-MODEL - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the model name.
- Particularly, this is the model name listed in the MET .stat files.
+STAT_ANALYSIS_OUTPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-OBTYPE - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the observation type.
- Particularly, this is the observation time listed in the MET .stat files.
+LOOP_BY 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_L"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-JOB_NAME - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the MET stat_analysis job name that is to be run.
- Valid options are filter, summary, aggregate, aggregate_stat, go_index,
- and ramp.
- For more information on these job names and what they do, please see the
- MET Users Guide.
+VALID/INIT_TIME_FMT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-JOB_ARGS - This variable is found under the [config] header/family section
- of the METplus config file.
- The job agruments that are to be run with the cooresponding JOB_NAME.
- If using -dump_row, use -dump_row [dump_row_filename].
- If using -out_stat, -out_stat [out_stat_filename].
- For more information on these job agruments, please see the MET Users Guide.
+VALID/INIT_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID/INIT_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_METHOD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_INCREMENT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_METHOD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_INCREMENT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+STAT_ANALYSIS_CONFIG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+MODEL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+OBTYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+JOB_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_J"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+JOB_ARGS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_J"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following values are 
+\series bold
+optional
+\series default
+ in the METplus configuration file for running with LOOP_ORDER = times:
+\end_layout
+
+\begin_layout Standard
+DESC 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_D"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+FCST_LEAD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+FCST_VAR_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+FCST_VAR_LEVEL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+OBS_VAR_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+OBS_VAR_LEVEL
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+REGION 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_R"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INTERP 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INTERP_PTS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+FCST_THRESH 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+COV_THRESH 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_C"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+LINE_TYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_L"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+STAT_ANALYSIS_DUMP_ROW_TMPL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+STAT_ANALYSIS_OUT_STAT_TMPL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following values 
+\series bold
+must
+\series default
+ be defined in the METplus configuration file for running with LOOP_ORDER
+ = processes:
+\end_layout
+
+\begin_layout Standard
+STAT_ANALYSIS_OUTPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VERIF_CASE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VERIF_TYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+PLOT_TIME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID/INIT_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID/INIT_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_METHOD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+VALID_HOUR_INCREMENT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_METHOD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INIT_HOUR_INCREMENT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+STAT_ANALYSIS_CONFIG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+MODELn_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+MODELn_OBS_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+MODELn_NAME_ON_PLOT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+FCST_VARn_LEVELS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+REGION_LIST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_R"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+LEAD_LIST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_L"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+INTERP 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+LINE_TYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_L"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 The following values are optional in the METplus configuration file for
- running with LOOP_ORDER = times:
-\end_layout
-
-\begin_layout Standard
-DESC - This variable is found under the [config] header/family section of
- the METplus config file.
- A single value or list of values used in the stat_analysis data stratification.
-\end_layout
-
-\begin_layout Standard
-FCST_LEAD - This variable is found under the [config] header/family section
- of the METplus config file.
- A single value or list of values used in the stat_analysis data stratification.
-\end_layout
-
-\begin_layout Standard
-FCST_VAR_NAME - This variable is found under the [config] header/family
- section of the METplus config file.
- A single value or list of values used in the stat_analysis data stratification.
-\end_layout
-
-\begin_layout Standard
-FCST_VAR_LEVEL - This variable is found under the [config] header/family
- section of the METplus config file.
- A single value or list of values used in the stat_analysis data stratification.
-\end_layout
-
-\begin_layout Standard
-OBS_VAR_NAME - This variable is found under the [config] header/family section
- of the METplus config file.
- A single value or list of values used in the stat_analysis data stratification.
-\end_layout
-
-\begin_layout Standard
-OBS_VAR_LEVEL - This variable is found under the [config] header/family
- section of the METplus config file.
- A single value or list of values used in the stat_analysis data stratification.
-\end_layout
-
-\begin_layout Standard
-REGION - This variable is found under the [config] header/family section
- of the METplus config file.
- A single value or list of values used in the stat_analysis data stratification.
-\end_layout
-
-\begin_layout Standard
-INTERP - This variable is found under the [config] header/family section
- of the METplus config file.
- A single value or list of values used in the stat_analysis data stratification.
-\end_layout
-
-\begin_layout Standard
-INTERP_PTS - This variable is found under the [config] header/family section
- of the METplus config file.
- A single value or list of values used in the stat_analysis data stratification.
-\end_layout
-
-\begin_layout Standard
-FCST_THRESH - This variable is found under the [config] header/family section
- of the METplus config file.
- A single value or list of values used in the stat_analysis data stratification.
-\end_layout
-
-\begin_layout Standard
-COV_THRESH - This variable is found under the [config] header/family section
- of the METplus config file.
- A single value or list of values used in the stat_analysis data stratification.
-\end_layout
-
-\begin_layout Standard
-LINE_TYPE - This variable is found under the [config] header/family section
- of the METplus config file.
- A single value or list of values used in the stat_analysis data stratification.
-\end_layout
-
-\begin_layout Standard
-STAT_ANALYSIS_DUMP_ROW_TMPL - This variable is found under the [filename_templat
-es] header/family section of the METplus config file.
- A user customized template to use for the dump_row file.
- If left blank and a dump_row file is requested, a default version will
- be used.
-\end_layout
-
-\begin_layout Standard
-STAT_ANALYSIS_OUT_STAT_TMPL - This variable is found under the [filename_templat
-es] header/family section of the METplus config file.
- A user customized template to use for the out_stat file.
- If left blank and a out_stat file is requested, a default version will
- be used.
-\end_layout
-
-\begin_layout Standard
-The following values must be defined in the METplus configuration file for
  running with LOOP_ORDER = processes:
 \end_layout
 
 \begin_layout Standard
-STAT_ANALYSIS_OUTPUT_DIR - This variable is found under the [dir] header/family
- section of the METplus config file.
- This is the base directory where the output from running stat_analysis_wrapper
- will be put.
+FCST_VARn_THRESH 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-VERIF_CASE - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the specific use case being run.
- Valid options are grid2grid, grid2obs, and precip.
+FCST_VARn_THRESH 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-VERIF_TYPE - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the type of verification being run for the specific use case.
- For VERIF_CASE = grid2grid, valid options are anom, pres, and sfc.
- For VERIF_CASE = grid2obs, valid options are conus_sfc and upper_air.
- For VERIF_CASE = precip, any accumulation amount is valid, ex.
- A24.
+FCST_VARn_OPTIONS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-PLOT_TIME - This variable is found under the [config] header/family section
- of the METplus config file.
- This specifies the way to treat the date information.
- Valid options are valid and init.
+VARn_FOURIER_DECOMP 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-VALID/INIT_BEG - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the starting date in YYYYMMDD form.
- It is named accordingly to the value set for PLOT_TIME.
-\end_layout
+VARn_WAVE_NUM_LIST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
 
-\begin_layout Standard
-VALID/INIT_END - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the ending date in YYYYMMDD form.
- It is named accordingly to the value set for PLOT_TIME.
-\end_layout
+\end_inset
 
-\begin_layout Standard
-VALID_HOUR_METHOD - This variable is found under the [config] header/family
- section of the METplus config file.
- This specifies the way to treat the valid hour information.
- Valid options are LOOP or GROUP.
- LOOP will consider the valid hours individually, and GROUP will consider
- them valid hours as a whole.
-\end_layout
 
-\begin_layout Standard
-VALID_HOUR_BEG - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the starting valid hour in HHMM form.
-\end_layout
-
-\begin_layout Standard
-VALID_HOUR_END - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the ending valid hourin HHMM form.
-\end_layout
-
-\begin_layout Standard
-VALID_HOUR_INCREMENT - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the increment used build the list of all valid hours to be used.
- This is an integer defined in seconds.
-\end_layout
-
-\begin_layout Standard
-INIT_HOUR_METHOD - This variable is found under the [config] header/family
- section of the METplus config file.
- This specifies the way to treat the initialization hour information.
- Valid options are LOOP or GROUP.
- LOOP will consider the initialization hours individually, and GROUP will
- consider them as a whole.
-\end_layout
-
-\begin_layout Standard
-INIT_HOUR_BEG - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the starting initialization hour in HHMM form.
-\end_layout
-
-\begin_layout Standard
-INIT_HOUR_END - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the ending initialization hour in HHMM form.
-\end_layout
-
-\begin_layout Standard
-INIT_HOUR_INCREMENT - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the increment used build the list of all initialization hours to
- be used.
- This is an integer defined in seconds.
-\end_layout
-
-\begin_layout Standard
-STAT_ANALYSIS_CONFIG - This variable is found under the [config] header/family
- section of the METplus config file.
- It is recommended to set this to {PARM_BASE}/use_cases/plotting/met_config/STAT
-AnalysisConfig.
- 
-\end_layout
-
-\begin_layout Standard
-MODELn_NAME - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the name of the model.
- Particularly, this is the model name listed in the MET .stat files.
-\end_layout
-
-\begin_layout Standard
-MODELn_OBS_NAME - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the name of the observations that were used as truth to compare
- MODELn_NAME to.
- Particularly, this is the observation name listed in the MET .stat files.
-\end_layout
-
-\begin_layout Standard
-MODELn_NAME_ON_PLOT - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the name that will appear on the plots for MODELn_NAME and is used
- to define subsequent data paths pertaining to MODELn_NAME.
-\end_layout
-
-\begin_layout Standard
-FCST_VARn_NAME - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the variable name 
-\end_layout
-
-\begin_layout Standard
-FCST_VARn_LEVELS - This variable is found under the [config] header/family
- section of the METplus config file.
- This is the list of variable levels that coorespond to FCST_VARn_NAME.
-\end_layout
-
-\begin_layout Standard
-REGION_LIST - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the list of regions for plotting verification.
- 
-\end_layout
-
-\begin_layout Standard
-LEAD_LIST - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the list of forecast hour leads for plotting verification.
-\end_layout
-
-\begin_layout Standard
-INTERP - This variable is found under the [config] header/family section
- of the METplus config file.
- This is the type of interpolation the verification was done on.
- It cooresponds to the interpolation in the MET .stat files.
-\end_layout
-
-\begin_layout Standard
-LINE_TYPE - This variable is found under the [config] header/family section
- of the METplus config file.
- A single value or list of values used in the stat_analysis data stratification.
-\end_layout
-
-\begin_layout Standard
-The following values are optional in the METplus configuration file for
- running with LOOP_ORDER = processes:
-\end_layout
-
-\begin_layout Standard
-FCST_VARn_THRESH - This variable is found under the [config] header/family
- section of the METplus config file.
-\end_layout
-
-\begin_layout Standard
-FCST_VARn_THRESH - This variable is found under the [config] header/family
- section of the METplus config file.
- This is a list of thresholds that cooresponds to FCS_VARn_NAME.
-\end_layout
-
-\begin_layout Standard
-FCST_VARn_OPTIONS - This variable is found under the [config] header/family
- section of the METplus config file.
- These are extra settings used to describe FCS_VARn_NAME.
-\end_layout
-
-\begin_layout Standard
-VARn_FOURIER_DECOMP - This variable is found under the [config] header/family
- section of the METplus config file.
- If this is set to True, data stratification will be done for the Fourier
- decomposition of FCS_VARn_NAME.
- This should have been previously run in grid_stat_wrapper.
- The default value to False.
-\end_layout
-
-\begin_layout Standard
-VARn_WAVE_NUM_LIST - This variable is found under the [config] header/family
- section of the METplus config file.
- This is a list of the Fourier decomposition wave numbers to do data stratificat
-ion.
- 
 \end_layout
 
 \begin_layout Standard
@@ -3812,6 +4625,8 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 STAT_ANALYSIS_OUT_DIR
 \end_layout
 
@@ -3845,162 +4660,264 @@ Configuration
 \end_layout
 
 \begin_layout Standard
-TC_PAIRS_CONFIG_FILE - The full path to the MET tc_pairs config file.
- This variable is located under the [config] header/family section of the
- METplus config file.
+[dir]
 \end_layout
 
 \begin_layout Standard
-INIT_BEG - The start of the initialization time window of interest, in YYYYMMDD
- format.
- This variable is located under the [config] header/family section of the
- METplus config file.
+ADECK_TRACK_DATA_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_A"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-INIT_END - The end of the initialization time window of interest in YYYYMMDD
- format.
- This variable is located under the [config] header/family section of the
- METplus config file.
+BDECK_TRACK_DATA_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_B"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-INIT_INCREMENT - The time step/increment in seconds to be used to determine
- which data files will be used/considered in the verification.
- (e.g.
- INIT_INCREMENT = 21600 sets the time step size to 6 hours, so data that
- will be considered will be INIT_BEG, INIT_BEG + INIT_INCREMENT, until the
- INIT_END is reached).
- This variable is found under the [config] header/family section of the
- METplus config.
- 
+TRACK_DATA_SUBDIR_MOD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-INIT_HOUR_END - The cutoff for the last date to be considered in the time
- window (eg.
- if INIT_HOUR_END=18 and INIT_END=20190121, then the last date to be included
- in the time window is 20190121_18).
- This variable is located in the [config] header/family section of the METplus
- config file.
+TC_PAIRS_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-INIT_INCLUDE - The list of initialization times in YYYYMMDD_hh format to
- include in the verification (e.g.
- INIT_INCLUDE = 20170601_00, 20170601_12, 20170602_6).
- This variable is located in the [config] header/family of the METplus config
- file.
+[config]
 \end_layout
 
 \begin_layout Standard
-INIT_EXCLUDE - The list of initialization times in YYYYMMDD_hh format to
- be excluded from the verification (e.g.
- INIT_EXCLUDE = 20190121_06, 20181231_23).
- This variable is located in the [config] header/family section of the METplus
- config file.
+TC_PAIRS_CONFIG_FILE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-TOP_LEVEL_DIRS - This defines how to run the MET tc-pairs tool.
- If set to 'yes', then the MET tc-pairs tools will search the input file
- directory and all its subdirectories for input data (ADeck and BDeck files).
- If set to 'no', then the tc_pairs wrapper generates the matched ADeck and
- BDeck files (based on beginning and end times of the time window of interest)
- that the MET tc-pairs tools takes as input.
+INIT_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-MODEL - The list of models to include in the verification.
- If left empty/unassigned, then all models in the track files will be considered.
- This variable corresponds to the model dictionary value in the MET config
- file.
- This variable is located under the [config] header/family section of the
- METplus config file.
+INIT_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-STORM_ID - The list of storm ids to include in the verification.
- If left empty/unassigned (ie STORM_ID = ), then all storm ids in the track
- files will be included in the verification.
- This variable is located under the [config] header/family section of the
- METplus config file.
+INIT_INCREMENT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-BASIN - A list of basins of interest.
- If left empty/undefined, then all basins are included in the verification.
- This variable is found under the [config] header/family section of the
- METplus config file.
+INIT_HOUR_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-CYCLONE - A list of cyclones to consider in the verification.
- If this is left empty/unassigned, then all cyclones will be considered
- in the verification.
- This variable is found in the [config] header/family section of the METplus
- config file.
+INIT_INCLUDE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-STORM_NAME - A list of storm names to include in the verification.
- If this is left empty/unassigned, then all storm names are included in
- the verification.
- This variable is found in the [config] header/family section of the METplus
- config file.
+INIT_EXCLUDE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-DLAND_FILE - The full path of the file that has the gridded representation
- of the minimum distance from land.
- This variable is found under the [config] header/family section of the
- METplus config file.
+TOP_LEVEL_DIRS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-TRACK_TYPE - This is used to determine whether the Adeck and Bdeck data
- are in ATCF format or not.
- If left empty/unassigned, then the input data is in ATCF format and the
- wrapper does not attempt to perform any reformatting.
- If set to 'extra_tropical_cyclone' (this is the non-ATCF format of data
- like that provided in the sample data in the tutorial tar ball) then the
- wrapper will reformat it to an ATCF format (which the MET tc_pairs tools
- requires).
- This variable is found in the [config] header/family section of the METplus
- config file.
+MODEL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-ADECK_FILE_PREFIX - This is the prefix to the Adeck files if the input Adeck
- file is the same format as the data included in the sample data tutorial
- tar ball.
- Leave this empty/undefined when dealing with ATCF formatted data.
- This variable is found under the [config] header/family section of the
- METplus config file.
+STORM_ID 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-BDECK_FILE_PREFIX - This is the prefix that describes the Bdeck files when
- the input Bdeck file is the same format as the data included in the sample
- data tutorial tar ball.
- Leave this empty/undefined if your data is ATCF formatted.
- This variable is found in the [config] header/family section of the METplus
- config file.
+BASIN 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_B"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-MISSING_VAL_TO_REPLACE - This is applicable only if using the sample data
- in the tutorial tar ball, which is the extra tropical cyclone data (i.e.
- data that is in a non-ATCF format).
- This is the value used to replace the value of the data's original missing
- value.
- 
+CYCLONE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_C"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-MISSING_VAL - For non-ATCF, extra tropical cyclone data (such as the data
- supplied in the feature_relative tutorial tar ball), this is the value
- used to define missing values.
+STORM_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+DLAND_FILE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_D"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TRACK_TYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+ADECK_FILE_PREFIX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_A"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+BDECK_FILE_PREFIX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_B"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+MISSING_VAL_TO_REPLACE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+MISSING_VAL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -4020,10 +4937,471 @@ Description
 
 \begin_layout Standard
 Used to configure the MET tool tc_stat.
+ This wrapper can be run by listing it in the PROCESS_LIST, or can be called
+ from the ExtractTiles wrapper (via the MET tc-stat command line commands).
 \end_layout
 
 \begin_layout Subsection
 Configuration
+\end_layout
+
+\begin_layout Standard
+[dir]
+\end_layout
+
+\begin_layout Standard
+TC_STAT_INPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_OUTPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+[config]
+\end_layout
+
+\begin_layout Standard
+TC_STAT_RUN_VIA 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_CONFIG_FILE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_CMD_LINE_JOB 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_JOBS_LIST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_AMODEL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_BMODEL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_DESC 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_STORM_ID 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_BASIN 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_CYCLONE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_STORM_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_INIT_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_INIT_INCLUDE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_INIT_EXCLUDE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_INIT_HOUR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_VALID_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_VALID_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_VALID_INCLUDE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_VALID_EXCLUDE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_VALID_HOUR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_LEAD_REQ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_INIT_MASK 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_VALID_MASK 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_VALID_HOUR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_LEAD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_TRACK_WATCH_WARN 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_COLUMN_THRESH_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_COLUNN_THRESH_VAL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_COLUMN_STR_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_COLUMN_STR_VAL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_INIT_THRESH_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_INIT_THRESH_VAL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_INIT_STR_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_INIT_STR_VAL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_WATER_ONLY 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_LANDFALL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_LANDFALL_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_LANDFALL_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TC_STAT_MATCH_POINTS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -4055,106 +5433,288 @@ The following are configuration settings that correspond to the tcmpr_plotter
 
 \begin_layout Standard
 LOOP ORDER 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_L"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 CONFIG_FILE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_C"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 PREFIX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 TITLE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 SUBTITLE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 XLAB 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_X"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-YLAB
+YLAB 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Y"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 XLIM
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_X"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-YLIM
+YLIM 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Y"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-FILTER
+FILTER 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-FILTERED_TCST_DATA_FILE
+FILTERED_TCST_DATA_FILE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 DEP_VARS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_D"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-SCATTER_X
+SCATTER_X 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_D"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-SCATTER_Y
+SCATTER_Y 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_D"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-SKILL_REF
+SKILL_REF 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_D"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-SERIES
+SERIES 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_D"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-SERIES_CI
+SERIES_CI 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_D"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-LEGEND
+LEGEND 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_L"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-LEAD
+LEAD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_L"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-PLOT_TYPES
+PLOT_TYPES 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-RP_DIFF
+RP_DIFF 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_R"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-DEMO_YR
+DEMO_YR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_D"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-HFIP_BASELINE
+HFIP_BASELINE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_H"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-FOOTNOTE_FLAG
+FOOTNOTE_FLAG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-PLOT_CONFIG_OPTS
+PLOT_CONFIG_OPTS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-SAVE_DATA
+SAVE_DATA 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_D"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4163,23 +5723,58 @@ The following are TCMPR flags, if set to 'no', then don't set flag, if set
 \end_layout
 
 \begin_layout Standard
-NO_EE
+NO_EE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_N"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-NO_LOG
+NO_LOG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_N"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-SAVE
+SAVE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 TCMPR_DATA 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-TCMPR_PLOT_OUTPUT_DIR
+TCMPR_PLOT_OUTPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4189,6 +5784,8 @@ Deprecated:
 \end_layout
 
 \begin_layout Standard
+
+\color lightgray
 TCMPR_PLOT_OUT_DIR
 \end_layout
 

@@ -1515,6 +1515,7 @@ CI_METHOD
 \end_inset
 
 The method for creating confidence intervals.
+ Valid options are EMC, or NONE.
 \end_layout
 
 \begin_layout Standard
@@ -1870,6 +1871,9 @@ COV_THRESH
 \end_inset
 
 Specify the values of the COV_THRESH column in the MET .stat file to use.
+ This is optional in the METplus configuration file for running with LOOP_ORDER
+ = times.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -2648,7 +2652,10 @@ DESC
 \begin_inset Newline newline
 \end_inset
 
-Specify the values of the DESC column in the MET .stat file to use.
+A single value or list of values used in the stat_analysis data stratification.
+ Specifies the values of the DESC column in the MET .stat file to use.
+ This is optional in the METplus configuration file for running with LOOP_ORDER
+ = times
 \end_layout
 
 \begin_layout Standard
@@ -2769,7 +2776,7 @@ DLAT
 \begin_inset Newline newline
 \end_inset
 
-The latitude value, in degrees.
+The value that defines the resolution of the data (in decimal degrees).
 \end_layout
 
 \begin_layout Standard
@@ -2831,6 +2838,7 @@ DLON
 \end_inset
 
 The longitude value, in degrees.
+ Set to the value that defines the resolution of the data (in decimal degrees).
 \end_layout
 
 \begin_layout Standard
@@ -3975,6 +3983,9 @@ EVENT_EQUALIZATION
 \end_inset
 
 If event equalization is to be used (True) or not (False).
+ If set to True, if any of the listed models are missing data for a particular
+ time, data for all models will be masked out for this time.
+ If set to False, there are no changes to the data.
 \end_layout
 
 \begin_layout Standard
@@ -4025,13 +4036,14 @@ height "1pt"
 
 
 \series bold
-EXTRACT_OUT_DIR
+[deprecated] EXTRACT_OUT_DIR
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Set the output directory for the METplus extract_tiles utility.
+Please use EXTRACT_TILES_OUTPUT_DIR.
+ Set the output directory for the METplus extract_tiles utility.
 \end_layout
 
 \begin_layout Standard
@@ -4143,6 +4155,51 @@ height "1pt"
 
 
 \series bold
+EXTRACT_TILES_OUTPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Set the output directory for the METplus extract_tiles utility.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ ExtractTiles, SeriesByInit, SeriesByLead
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\shape default
 
 \begin_inset Newline newline
 \end_inset
@@ -4154,6 +4211,11 @@ EXTRACT_TILES_VAR_LIST
 \end_inset
 
 Control what variables the METplus extract_tiles utility runs on.
+ Additional filtering by summary (via the MET tc_stat tool).
+ Please refer to Chapter 20 in the MET Users Guide (TC-STAT Tools) for all
+ the available options for filtering by summary method in tc-stat.
+ If no additional filtering is required, simply leave the value to EXTRACT_TILES
+_FILTER_OPTS blank/empty in the METplus configuration file.
 \end_layout
 
 \begin_layout Standard
@@ -5512,6 +5574,8 @@ FCST_LEAD
 \end_inset
 
 Specify the values of the FCST_LEAD column in the MET .stat file to use.
+ This is optional in the METplus configuration file for running with LOOP_ORDER
+ = times
 \end_layout
 
 \begin_layout Standard
@@ -8057,6 +8121,8 @@ FCST_THRESH
 \end_inset
 
 Specify the values of the FCST_THRESH column in the MET .stat file to use.
+ This is optional in the METplus configuration file for running with LOOP_ORDER
+ = times.
 \end_layout
 
 \begin_layout Standard
@@ -8361,6 +8427,8 @@ FCST_VAR_NAME
 \end_inset
 
 Specify the values of the FCST_VAR_NAME column in the MET .stat file to use.
+ This is optional in the METplus configuration file for running with LOOP_ORDER
+ = times
 \end_layout
 
 \begin_layout Standard
@@ -10657,6 +10725,7 @@ INIT_END
 
 Specify the ending initialization time to be used in the analysis.
  Format can be controlled by INIT_TIME_FMT.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -10900,6 +10969,7 @@ INIT_HOUR_INCREMENT
 \end_inset
 
 Specify a time increment for valid times for use in the analysis.
+ This is an integer defined in seconds.
 \end_layout
 
 \begin_layout Standard
@@ -10957,6 +11027,9 @@ INIT_HOUR_METHOD
 \end_inset
 
 Specify the method for the treatment of valid hours.
+ Valid options are LOOP or GROUP.
+ LOOP will consider the initialization hours individually, and GROUP will
+ consider them as a whole.
 \end_layout
 
 \begin_layout Standard
@@ -11008,6 +11081,7 @@ INIT_INCLUDE
 \end_inset
 
 Specify which forecast initializations to include in the analysis.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -11182,6 +11256,8 @@ INTERP
 \end_inset
 
 Specify the interpolation used to create the MET .stat files.
+ This is optional in the METplus configuration file for running with LOOP_ORDER
+ = times.
 \end_layout
 
 \begin_layout Standard
@@ -11236,7 +11312,9 @@ INTERP_PTS
 \begin_inset Newline newline
 \end_inset
 
-Specify the number of interpolation used to create the MET .stat files.
+Corresponds to the interpolation in the MET .stat files.
+ This is optional in the METplus configuration file for running with LOOP_ORDER
+ = times.
 \end_layout
 
 \begin_layout Standard
@@ -11366,6 +11444,10 @@ JOB_ARGS
 \end_inset
 
 Specify stat_analysis job arguments to run.
+ The job agruments that are to be run with the cooresponding JOB_NAME.
+ If using -dump_row, use -dump_row [dump_row_filename].
+ If using -out_stat, -out_stat [out_stat_filename].
+ For more information on these job agruments, please see the MET Users Guide.
 \end_layout
 
 \begin_layout Standard
@@ -11427,6 +11509,10 @@ JOB_NAME
 \end_inset
 
 Specify stat_analysis job name to run.
+ Valid options are filter, summary, aggregate, aggregate_stat, go_index,
+ and ramp.
+ For more information on these job names and what they do, please see the
+ MET Users Guide.
 \end_layout
 
 \begin_layout Standard
@@ -11522,6 +11608,8 @@ LAT_ADJ
 \end_inset
 
 Specify a latitude adjustment, in degrees to be used in the analysis.
+ In the ExtractTiles wrapper, this corresponds to the 2m portion of the
+ 2n x 2m subregion tile.
 \end_layout
 
 \begin_layout Standard
@@ -11787,6 +11875,133 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+LEAD_SEQ
+\series default
+_
+\emph on
+n
+\emph default
+
+\begin_inset Newline newline
+\end_inset
+
+Required when SERIES_BY_LEAD_GROUP_FCSTS=True.
+ Not necessary otherwise.
+ Specify the sequence of forecast lead times to include in the analysis.
+ Comma separated list format, e.g.:
+\begin_inset Newline newline
+\end_inset
+
+0, 6, 12.
+ The 
+\emph on
+n
+\emph default
+ corresponds to the bin in which the user wishes to aggregate series by
+ lead results.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ SeriesByLead
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+LEAD_SEQ
+\series default
+_
+\emph on
+n
+\emph default
+_
+\series bold
+LABEL
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Required when SERIES_BY_LEAD_GROUP_FCSTS=True.
+ Specify the label of the corresponding bin of series by lead results.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ SeriesByLead
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
 LEGEND
 \series default
 
@@ -11855,6 +12070,8 @@ LINE_TYPE
 \end_inset
 
 Specify the MET STAT line types to be considered.
+ This is optional in the METplus configuration file for running with LOOP_ORDER
+ = times.
 \end_layout
 
 \begin_layout Standard
@@ -12408,6 +12625,8 @@ LON_ADJ
 \end_inset
 
 Specify a longitude adjustment, in degrees to be used in the analysis.
+ In the ExtractTiles wrapper, this corresponds to the 2n portion of the
+ 2n x 2m subregion tile.
 \end_layout
 
 \begin_layout Standard
@@ -13122,6 +13341,7 @@ MODEL
 \end_inset
 
 Specify the model name.
+ This is the model name listed in the MET .stat files.
 \end_layout
 
 \begin_layout Standard
@@ -13183,8 +13403,8 @@ MODEL1_NAME
 \end_inset
 
 Define the model name for the first model to be used in the analysis.
- There can be N number of models defined in configuration files, simply
- increment the 
+ This is the model name listed in the MET .stat files.There can be N number
+ of models defined in configuration files, simply increment the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -13372,6 +13592,7 @@ MODEL1_OBS_NAME
 
 Define the observation name that was used to compare the first model to
  be.
+ This is the observation name listed in the MET .stat files.
  There can be N number of observation names defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
@@ -15704,7 +15925,9 @@ NLAT
 \begin_inset Newline newline
 \end_inset
 
-The number of latitude points.
+The number of latitude points, set to a whole number.
+ This defines the number of latitude points to incorporate into the subregion
+ (density).
 \end_layout
 
 \begin_layout Standard
@@ -15765,7 +15988,10 @@ NLON
 \begin_inset Newline newline
 \end_inset
 
-The number of longitude points.
+The number of longitude points, set to a whole number.
+ This defines the number of longitude points to incorporate into the subregion
+ (density).
+ 
 \end_layout
 
 \begin_layout Standard
@@ -20219,6 +20445,8 @@ OBS_VAR_NAME
 \end_inset
 
 Specify the values of the OBS_VAR_NAME column in the MET .stat file to use.
+ This is optional in the METplus configuration file for running with LOOP_ORDER
+ = times
 \end_layout
 
 \begin_layout Standard
@@ -20908,7 +21136,9 @@ OBTYPE
 \end_inset
 
 Provide a string to represent the type of observation data used in the analysis.
- Used in setting output filename
+ This is the observation time listed in the MET .stat files and is used in
+ setting output filename.
+ 
 \begin_inset Newline newline
 \end_inset
 
@@ -22314,6 +22544,8 @@ PLOTTING_OUTPUT_DIR
 \end_inset
 
 Specify the output directory where plots will be saved.
+ This is the base directory where the output from running make_plots_wrapper
+ will be put.
 \end_layout
 
 \begin_layout Standard
@@ -22375,6 +22607,7 @@ PLOTTING_SCRIPTS_DIR
 \end_inset
 
 Specify the directory where the plotting scripts are located.
+ It is recommended to set this to {METPLUS_BASE}/ush/plotting_scripts.
 \end_layout
 
 \begin_layout Standard
@@ -22496,11 +22729,22 @@ PLOT_STATS_LIST
 \begin_inset Newline newline
 \end_inset
 
-Specify which statistics should be plotted in a comma separated list, e.g.:
+This is a list of the statistics to calculate and create plots for.
+ Specify the list in a comma-separated list, e.g.:
 \begin_inset Newline newline
 \end_inset
 
 acc, bias, rmse
+\end_layout
+
+\begin_layout Standard
+The list of valid options varies depending on line type that was used during
+ the filtering of stat_analysis_wrapper.
+ For SL1L2, VL1L2 valid options are bias, rms, msess, rsd, rmse_md, rmse_pv,
+ pcor, fbar, and fbar_obar.
+ For SAL1L2, VAL1L2, the valid options is acc.
+ For VCNT, bias, fbar, fbar_obar, speed_err, dir_err, rmsve, vdiff_speed,
+ vdiff_dir, rsd, fbar_speed, fbar_dir, fbar_obar_speed, and fbar_obar_dir.
 \end_layout
 
 \begin_layout Standard
@@ -22561,7 +22805,8 @@ PLOT_TIME
 \begin_inset Newline newline
 \end_inset
 
-Specify the treatment of the plotting dates/times.
+In StatAnalysis, this specifies the way to treat the date information, where
+ valid options are valid and init.
 \end_layout
 
 \begin_layout Standard
@@ -22571,7 +22816,7 @@ Specify the treatment of the plotting dates/times.
 Used by:
 \series default
 \shape default
- TCMPRPlotter
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -23588,7 +23833,8 @@ REGION
 \end_inset
 
 Specify the values of the VX_MASK column in the MET .stat file to use.
- 
+ This is optional in the METplus configuration file for running with LOOP_ORDER
+ = times
 \end_layout
 
 \begin_layout Standard
@@ -23646,7 +23892,7 @@ REGION_LIST
 \end_inset
 
 A list of the regions of interest.
- 
+ This is the list of regions for plotting verification.
 \end_layout
 
 \begin_layout Standard
@@ -24489,7 +24735,8 @@ SERIES_ANALYSIS_FILTER_OPTS
 Filtering options to be applied during series analysis.
  Filter options are performed by invoking the MET tc_stat tool within the
  METplus wrapper.
- 
+ Refer to Chapter 20 of the MET User's Guide for the syntax to use for performin
+g filtering via the MET tc_stat tool.
 \end_layout
 
 \begin_layout Standard
@@ -24500,6 +24747,117 @@ Used by:
 \series default
 \shape default
  SeriesByLead, SeriesByInit
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+SERIES_BY_LEAD_FILTERED_OUTPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specifies the directory where filtered files will be written from the MET
+ series_analysis tool when processing by lead time.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ SeriesByLead
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+SERIES_BY_LEAD_GROUP_FCSTS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Set to 
+\emph on
+True
+\emph default
+ to aggregate the series by lead results into bins of time.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ SeriesByLead
 \series bold
 \shape italic
 
@@ -24733,13 +25091,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-SERIES_LEAD_FILTERED_OUT_DIR
+[deprecated] SERIES_LEAD_FILTERED_OUT_DIR
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the directory where filtered files will be written from the MET
+Please use SERIES_BY_LEAD_FILTERED_OUTPUT_DIR.
+ Specify the directory where filtered files will be written from the MET
  series_analysis tool when processing by lead time.
 \end_layout
 
@@ -25105,6 +25464,9 @@ STAT_ANALYSIS_CONFIG
 
 Specify the absolute path for the configuration file used with the MET stat_anal
 ysis tool.
+ It is recommended to set this to {PARM_BASE}/use_cases/plotting/met_config/STAT
+AnalysisConfig.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -25166,6 +25528,11 @@ STAT_ANALYSIS_DUMP_ROW_TMPL
 \end_inset
 
 Specify the template to use for the stat_analysis dump_row file.
+ A user customized template to use for the dump_row file.
+ If left blank and a dump_row file is requested, a default version will
+ be used.
+ This is optional in the METplus configuration file for running with LOOP_ORDER
+ = times.
 \end_layout
 
 \begin_layout Standard
@@ -25228,6 +25595,10 @@ STAT_ANALYSIS_LOOKIN_DIR
 
 Specify the input directory where the MET stat_analysis tool will find input
  files.
+ This is the directory that the stat_analysis wrapper will use to build
+ the argument to -lookin for the MET stat_analysis tool.
+ It can contain wildcards, i.e.
+ *.
 \end_layout
 
 \begin_layout Standard
@@ -25289,6 +25660,12 @@ STAT_ANALYSIS_OUT_STAT_TMPL
 \end_inset
 
 Specify the template to use for the stat_analysis out_stat file.
+ A user customized template to use for the out_stat file.
+ If left blank and a out_stat file is requested, a default version will
+ be used.
+ This is optional in the METplus configuration file for running with LOOP_ORDER
+ = times.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -25340,13 +25717,11 @@ height "1pt"
 
 \series bold
 STAT_ANALYSIS_OUTPUT_DIR
-\series default
+\end_layout
 
-\begin_inset Newline newline
-\end_inset
-
-Specify the output directory where files will be written from the MET stat_analy
-sis tool.
+\begin_layout Standard
+This is the base directory where the output from running stat_analysis_wrapper
+ will be put.
 \end_layout
 
 \begin_layout Standard
@@ -25409,6 +25784,10 @@ STAT_FILES_INPUT_DIR
 
 Specify the directory where stat files exist that plots can be generated
  from.
+ This is the directory where the files from running previously running stat_anal
+ysis_wrapper are located.
+ These are the files used as the data to create the plots.
+ It is recommended to set this to {STAT_ANALYSIS_OUTPUT_DIR}.
 \end_layout
 
 \begin_layout Standard
@@ -26232,6 +26611,9 @@ TC_STAT_CMD_LINE_JOB
 
 Specify expression(s) that will be passed to the MET tc_stat tool via the
  command line.
+ Only specify if TC_STAT_RUN_VIA=CLI.
+ Please refer to the MET User's Guide chapter for tc-stat for the details
+ on performing job summaries and job filters.
 \end_layout
 
 \begin_layout Standard
@@ -29489,6 +29871,11 @@ VALID_BEG
 \end_inset
 
 Specify a begin time for valid times for use in the analysis.
+ This is the starting date in the format set in the TIME_FMT.
+ It is named accordingly to the value set for LOOP_BY.
+ However, in StatAnalysis, it is named accordingly to the value set for
+ PLOT_TIME.
+ 
 \begin_inset Newline newline
 \end_inset
 
@@ -29559,6 +29946,9 @@ VALID_END
 \end_inset
 
 Specify an end time for valid times for use in the analysis.
+ This is the ending date in the format set in the TIME_FMT.
+ It is named accordingly to the value set for LOOP_BY.
+ 
 \begin_inset Newline newline
 \end_inset
 
@@ -29834,6 +30224,10 @@ VALID_HOUR_METHOD
 \end_inset
 
 Specify the method for the treatment of valid hours.
+ Valid options are LOOP or GROUP.
+ LOOP will consider the valid hours individually, and GROUP will consider
+ them valid hours as a whole.
+ 
 \begin_inset Newline newline
 \end_inset
 
@@ -29981,7 +30375,7 @@ Specify a strftime formatting string for use with VALID_BEG and VALID_END.
 Used by:
 \series default
 \shape default
- command_builder.py, master_metplus.py
+ command_builder.py, master_metplus.py, StatAnalysis 
 \series bold
 \shape italic
 
@@ -30094,6 +30488,10 @@ VARn_FOURIER_DECOMP
 \end_inset
 
 Specify if Fourier decomposition is to be considered (True) or not (False).
+ If this is set to True, data stratification will be done for the Fourier
+ decomposition of FCS_VARn_NAME.
+ This should have been previously run in grid_stat_wrapper.
+ The default value is set to False.
 \end_layout
 
 \begin_layout Standard
@@ -30280,6 +30678,7 @@ VERIF_CASE
 \end_inset
 
 Specify a string identifying the verification case being performed.
+ Valid options are grid2grid, grid2obs, and precip.
 \end_layout
 
 \begin_layout Standard
@@ -30341,6 +30740,8 @@ VERIF_GRID
 \end_inset
 
 Specify a string describing the grid the verification was performed on.
+ This is the name of the grid upon which the verification was done on, ex.
+ G002.
 \end_layout
 
 \begin_layout Standard
@@ -30398,6 +30799,10 @@ VERIF_TYPE
 \end_inset
 
 Specify a string describing the type of verification being performed.
+ For VERIF_CASE = grid2grid, valid options are anom, pres, and sfc.
+ For VERIF_CASE = grid2obs, valid options are conus_sfc and upper_air.
+ For VERIF_CASE = precip, any accumulation amount is valid, ex.
+ A24.
 \end_layout
 
 \begin_layout Standard
