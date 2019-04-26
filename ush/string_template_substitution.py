@@ -33,6 +33,12 @@ FORMAT_STRING = "fmt"
 SHIFT_STRING = "shift"
 TRUNCATE_STRING = "truncate"
 
+# These three were added in response to the tropical cyclone use case
+DATE_STRING = "date"
+REGION_STRING = "region"
+CYCLONE_STRING = "cyclone"
+MISC_STRING = "misc"
+
 VALID_STRING = "valid"
 LEAD_STRING = "lead"
 INIT_STRING = "init"
