@@ -5756,7 +5756,7 @@ reference "sec:SC_S"
 \end_layout
 
 \begin_layout Standard
-TCMPR_DATA 
+TCMPR_DATA_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_T"
