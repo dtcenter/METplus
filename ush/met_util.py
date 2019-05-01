@@ -1721,6 +1721,10 @@ def get_filetype(filepath, logger=None):
     # B option is an unsigned char.
     #  struct.unpack('B',one_byte)[0]
 
+    # if filepath is set to None, return None to avoid crash
+    if filepath == None:
+        return None
+
     try:
         # read will return up to 8 bytes, if file is 0 bytes in length,
         # than first_eight_bytes will be the empty string ''.
