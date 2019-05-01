@@ -84,6 +84,11 @@ class ModeWrapper(CompareGriddedWrapper):
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict)
 
+        c_dict['VERIFICATION_MASK_TEMPLATE'] = \
+            self.config.getraw('filename_templates',
+                               'MODE_VERIFICATION_MASK_TEMPLATE')
+        c_dict['VERIFICATION_MASK'] = ''
+
         # check that values are valid
         if not util.validate_thresholds(util.getlist(c_dict['FCST_CONV_THRESH'])):
             self.logger.error('MODE_FCST_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
@@ -156,6 +161,15 @@ class ModeWrapper(CompareGriddedWrapper):
             obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
                                                 othresh, 'OBS')
 
+            print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
+                          "LEVEL", "OBTYPE", "CONFIG_DIR",
+                          "FCST_FIELD", "OBS_FIELD",
+                          "QUILT", "MET_VALID_HHMM",
+                          "FCST_CONV_RADIUS", "FCST_CONV_THRESH",
+                          "OBS_CONV_RADIUS", "OBS_CONV_THRESH",
+                          "FCST_MERGE_THRESH", "FCST_MERGE_FLAG",
+                          "OBS_MERGE_THRESH", "OBS_MERGE_FLAG"]
+
             self.add_env_var("MODEL", self.c_dict['MODEL'])
             self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
             self.add_env_var("FCST_VAR", v.fcst_name)
@@ -181,14 +195,11 @@ class ModeWrapper(CompareGriddedWrapper):
             self.add_env_var("FCST_MERGE_FLAG", self.c_dict["FCST_MERGE_FLAG"] )
             self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"] )
 
-            print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
-                          "LEVEL", "OBTYPE", "CONFIG_DIR",
-                          "FCST_FIELD", "OBS_FIELD",
-                          "QUILT", "MET_VALID_HHMM",
-                          "FCST_CONV_RADIUS", "FCST_CONV_THRESH",
-                          "OBS_CONV_RADIUS", "OBS_CONV_THRESH",
-                          "FCST_MERGE_THRESH", "FCST_MERGE_FLAG",
-                          "OBS_MERGE_THRESH", "OBS_MERGE_FLAG"]
+            # add additional env vars if they are specified
+            if self.c_dict['VERIFICATION_MASK'] != '':
+                self.add_env_var('VERIF_MASK',
+                                 self.c_dict['VERIFICATION_MASK'])
+                print_list.append('VERIF_MASK')
 
             self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
             self.print_user_env_items()
