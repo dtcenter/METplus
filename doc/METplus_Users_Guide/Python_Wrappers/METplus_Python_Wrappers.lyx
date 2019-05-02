@@ -475,6 +475,17 @@ reference "sec:SC_O"
 \end_layout
 
 \begin_layout Standard
+ENSEMBLE_STAT_ENS_THRESH 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_E"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 ENS_VAR[N]_NAME (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref

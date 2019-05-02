@@ -788,7 +788,7 @@ LEAD_SEQ = begin_end_incr(0, 12, 3)
 \begin_inset Newline newline
 \end_inset
 
-Is equivalent to setting:
+is equivalent to setting:
 \begin_inset Newline newline
 \end_inset
 
@@ -1422,10 +1422,6 @@ Set this to the name of a forecast variable that you want to evaluate.
 \end_inset
 
 
-\begin_inset Newline newline
-\end_inset
-
-
 \begin_inset Box Boxed
 position "t"
 hor_pos "c"
@@ -1600,6 +1596,10 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
+[config]
+\begin_inset Newline newline
+\end_inset
+
 FCST_VAR1_NAME = TMP
 \begin_inset Newline newline
 \end_inset
@@ -1621,7 +1621,15 @@ FCST_VAR2_LEVELS = P750, P250
 \begin_inset Newline newline
 \end_inset
 
-without setting OBS_VAR1_NAME is the equivalent of setting:
+
+\begin_inset Newline newline
+\end_inset
+
+without setting OBS_VAR1_NAME or OBS_VAR2_NAME is the equivalent of setting:
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -1645,6 +1653,10 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
+[config]
+\begin_inset Newline newline
+\end_inset
+
 FCST_VAR1_NAME = TMP
 \begin_inset Newline newline
 \end_inset
@@ -1730,6 +1742,10 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
+[config]
+\begin_inset Newline newline
+\end_inset
+
 FCST_VAR1_NAME = TMP
 \begin_inset Newline newline
 \end_inset
@@ -1823,7 +1839,7 @@ The field information will be formatted to match the field info dictionary
 \end_inset
 
 
-\begin_inset Box ovalbox
+\begin_inset Box Doublebox
 position "t"
 hor_pos "c"
 has_inner_box 1
@@ -1896,7 +1912,7 @@ for the first run and:
 \end_inset
 
 
-\begin_inset Box ovalbox
+\begin_inset Box Doublebox
 position "t"
 hor_pos "c"
 has_inner_box 1
@@ -1983,10 +1999,6 @@ for the second run.
  Set this to a comma-separated list of threshold values to use in the comparison.
  Each of these values must begin with a comparison operator (>,>=,==,!=,<,<=,gt,
 ge,eq,ne,lt, or le).
- It is recommended that you use the alphabetic versions (gt, ge, eq, ne,
- lt, le) because the > and < symbols can cause errors when inserted into
- MET commands as command line arguments, but most uses of thresholds via
- METplus are passed into the MET config files and will not cause any issues.
  For example, setting:
 \begin_inset Newline newline
 \end_inset
@@ -2015,6 +2027,10 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
+[config]
+\begin_inset Newline newline
+\end_inset
+
 FCST_VAR1_NAME = TMP
 \begin_inset Newline newline
 \end_inset
@@ -2032,14 +2048,22 @@ FCST_VAR1_THRESH = le0.5, gt0.4, gt0.5, gt0.8
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset Newline newline
+\end_inset
+
 will add the following information to the MET config file:
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
 
 \series bold
 
-\begin_inset Box ovalbox
+\begin_inset Box Doublebox
 position "t"
 hor_pos "c"
 has_inner_box 1
@@ -2138,6 +2162,10 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
+[config]
+\begin_inset Newline newline
+\end_inset
+
 FCST_VAR1_NAME = TMP
 \begin_inset Newline newline
 \end_inset
@@ -2155,7 +2183,15 @@ FCST_VAR1_OPTIONS = GRIB_lvl_typ = 105;
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset Newline newline
+\end_inset
+
 will add the following to the MET config file:
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -2216,6 +2252,10 @@ P500
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset Newline newline
+\end_inset
+
 You can specify multiple items as long as they are separated by and end
  with a semi-colon.
 \begin_inset Newline newline
@@ -2262,7 +2302,15 @@ FCST_VAR1_OPTIONS = GRIB_lvl_typ = 105; ens_phist_bin_size = 0.05;
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset Newline newline
+\end_inset
+
 will add the following to the MET config file:
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -2338,9 +2386,9 @@ ENS_VAR[N]_[NAME/LEVELS/THRESH/OPTIONS]:
 Used with EnsembleStat only.
  Users may want to define the ens dictionary item in the MET EnsembleStat
  config file differently than the fcst dictionary item.
- If this is the case, you can use this variable.
- If it is not set, the value set in the corresponding FCST_VAR[N]_NAME will
- be used in the ens dictionary.
+ If this is the case, you can use these variables.
+ If it is not set, the values set in the corresponding FCST_VAR[N]_[NAME/LEVELS/
+THRESH/OPTIONS] will be used in the ens dictionary.
 \end_layout
 
 \begin_layout Subsection
@@ -2371,9 +2419,9 @@ Using Templates to Find Observation Data:
 \begin_inset Newline newline
 \end_inset
 
-T
+
 \series default
-he following configuration variables describe input observation data:
+The following configuration variables describe input observation data:
 \begin_inset Newline newline
 \end_inset
 
@@ -2412,6 +2460,10 @@ OBS_GRID_STAT_INPUT_DIR = /my/path/to/grid_stat/input/obs
 OBS_GRID_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d}/prefix.{valid?fmt=%Y%m%d%H}.ext
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 The input directory is the top level directory containing all of the observation
@@ -2479,6 +2531,10 @@ METplus does not need be configured to loop by valid time to find files
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \series bold
 Using Templates to Find Forecast Data
 \series default
@@ -2538,6 +2594,10 @@ FCST_GRID_STAT_INPUT_TEMPLATE = prefix.{init?fmt=%Y%m%d%H}_f{lead?fmt=%3H}.ext
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset Newline newline
+\end_inset
+
 For a valid time of 20190201_0Z and a forecast lead of 3, METplus will look
  for the following forecast file with initialization time of 20190131_21Z:
 \begin_inset Newline newline
@@ -2556,6 +2616,10 @@ For a valid time of 20190201_0Z and a forecast lead of 3, METplus will look
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \series bold
 Using Templates to Find Data Assimilation Data
 \begin_inset Newline newline
@@ -2565,12 +2629,11 @@ Using Templates to Find Data Assimilation Data
 \series default
 Some data assimilation files contain offset and da_init (data assimilation
  initialization) values in the filename.
- These values are used to determine the value time of the data.
+ These values are used to determine the valid time of the data.
  Consider the following configuration:
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
-
+\begin_layout Standard
 \begin_inset Box Boxed
 position "t"
 hor_pos "c"
@@ -2620,6 +2683,10 @@ PB2NC_INPUT_TEMPLATE = prefix.{da_init?fmt=%Y%m%d}_{cycle?fmt=%H}_off{offset?fmt
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset Newline newline
+\end_inset
+
 The PB2NC_OFFSETS list tells METplus the order to prioritize files with
  offsets in the name.
  At valid time 20190201_12Z, METplus will check if the following file exists:
@@ -2659,6 +2726,10 @@ n time.
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \series bold
 Shifting Times in Filename Templates
 \begin_inset Newline newline
@@ -2673,6 +2744,10 @@ Users can use the 'shift' keyword to adjust the time referenced in the filename
  This means that for a 0Z run you want to use the file from the previous
  day and for the 1Z to 23Z runs you want to use the file that corresponds
  to the current day.
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -2709,11 +2784,19 @@ OBS_POINT_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d?shift=-3600}.ext
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset Newline newline
+\end_inset
+
 Running at valid time 20190201_12Z, shifting the valid time backwards by
  1 hour will result in 20190201_11Z, so it will substitute the current day
  into the template, giving you 20190201.ext.
  Running at valid time 20190201_0Z, the shift will result in a file time
  of 20190131_23Z, so 20190131.ext will be generated by the template.
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -2732,13 +2815,14 @@ Using Windows to Find Valid Files
 The [FCST/OBS]_FILE_WINDOW_[BEGIN/END] configuration variables can be used
  if the time information in the input data does not exactly line up with
  the run time but you still want to process the data.
- The default value is the file window begin and end variables is 0 (seconds).
+ The default value of the file window begin and end variables are both 0
+ (seconds).
  If both values are set to 0, METplus will require that a file matching
- a template with the exact time requested exists.
+ the template with the exact time requested exists.
  If either value is non-zero, METplus will examine all of the files under
  the input directory that match the template, pull out the time information
  from the files, and use the file with time closest to the run time.
- For example, consider the configuration:
+ For example, consider this configuration:
 \begin_inset Newline newline
 \end_inset
 
@@ -2746,6 +2830,26 @@ The [FCST/OBS]_FILE_WINDOW_[BEGIN/END] configuration variables can be used
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 [config]
 \begin_inset Newline newline
 \end_inset
@@ -2772,6 +2876,15 @@ OBS_GRID_STAT_INPUT_DIR = /my/grid_stat/input/obs
 
 OBS_GRID_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d}/pre.{valid?fmt=%Y%m%d}_{valid?f
 mt=%H}.ext
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -2808,31 +2921,44 @@ The run time is 20190201_0Z and the following files exist in the input directory
 \begin_inset Newline newline
 \end_inset
 
-The first file matches the template and the file time is within the window,
+* The first file matches the template and the file time is within the window,
  so the filename and time difference relative to the valid time (7200 seconds
  or 2 hours) is saved.
 \begin_inset Newline newline
 \end_inset
 
-The second file matches the template, the file time is within the window,
+* The second file matches the template, the file time is within the window,
  and the time difference is less than the closest file, so the filename
  and time difference from the valid time (3600 seconds or 1 hour) is saved.
 \begin_inset Newline newline
 \end_inset
 
-The third file does not match the template, so it is ignored.
+* The third file does not match the template, so it is ignored.
 \begin_inset Newline newline
 \end_inset
 
-The fourth file matches the template and is within the time range, but it
- is the same distance away from the valid time as the closest file.
+* The fourth file matches the template and is within the time range, but
+ it is the same distance away from the valid time as the closest file.
  GridStat only allows one file to be processed, so it is ignored (PB2NC
  is currently the only wrapper to allow multiples files to be processed).
 \begin_inset Newline newline
 \end_inset
 
-The first file matches the template but it is valid outside of the -2 to
- +2 hour window range, so it is ignored.
+* The fifth file matches the template but it is valid outside of the -2
+ to +2 hour window range, so it is ignored.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+METplus uses /my/grid_stat/input/obs/20190131/pre.20190131_23.ext as the input
+ to grid_stat
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -2851,6 +2977,10 @@ Wrapper Specific Windows
 A user may need to specify a different window on a wrapper-by-wrapper basis.
  If this is the case, you can override the file window values for each wrapper.
  Consider the following configuration:
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -2901,6 +3031,10 @@ OBS_GRID_STAT_FILE_WINDOW_END = 1800
 OBS_ENSEMBLE_STAT_FILE_WINDOW_END = 3600
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -5850,6 +5984,64 @@ Default:
 \series default
 \shape default
  
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+ENSEMBLE_STAT_ENS_THRESH
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+Threshold for the ratio of the number of valid ensemble fields to the total
+ number of expected ensemble members.
+ This value is passed into the ensemble_stat config file to make sure the
+ percentage of files that are valid meets the expectation.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 1.0
 \begin_inset Newline newline
 \end_inset
 
