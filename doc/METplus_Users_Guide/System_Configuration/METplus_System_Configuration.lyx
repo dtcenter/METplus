@@ -269,13 +269,887 @@ name "sec:SC_Timing_Control"
 \end_layout
 
 \begin_layout Standard
-Mention LOOP_BY (deprecated LOOP_BY_INIT), [INIT/VALID]_TIME_FMT, [INIT/VALID]_B
-EG, [INIT/VALID]_END, [INIT/VALID]_INCREMENT, LEAD_SEQ, INIT_SEQ, LEAD_SEQ_[MIN/
-MAX]
+This section describes the METplus configuration variables that are used
+ to control which times are processed.
+ It also covers functionality that is useful for processing data in realtime
+ by setting run times based on the clock time when METplus is started.
+\end_layout
+
+\begin_layout Subsubsection
+LOOP_BY 
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:SC_Timing_Control_LOOP_BY"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Describe 'now' functionality including shift and truncate
+METplus can be configured to loop over a set of valid times or a set of
+ initialization times.
+ This is controlled the METplus configuration variable called LOOP_BY.
+ If the value of this variable is set to INIT or RETRO, looping will be
+ relative to initialization time.
+ If the value is set to VALID or REALTIME, looping will be relative to valid
+ time.
+ Older versions of METplus used a True/False variable named LOOP_BY_INIT.
+ METplus still supports using this variable, although it is recommended
+ that users update their config files to use LOOP_BY instead.
+ LOOP_BY_INIT will eventually be removed.
+\end_layout
+
+\begin_layout Subsubsection
+Looping by Valid Time 
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:SC_Timing_Control_Looping-by-Valid"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When looping over valid time (LOOP_BY = VALID or LOOP_BY = REALTIME), the
+ following variables must be set:
+\end_layout
+
+\begin_layout Standard
+VALID_TIME_FMT: This is the format of the valid times the user can configure
+ in METplus.
+ The value of VALID_BEG and VALID_END must correspond to this format.
+ Example: VALID_TIME_FMT = %Y%m%d%H.
+ Using this format, the valid time range values specified must be defined
+ as YYYYMMDDHH, i.e.
+ 2019020112.
+ 
+\end_layout
+
+\begin_layout Standard
+VALID_BEG: This is the first valid time that will be processed.
+ The format of this variable is controlled by VALID_TIME_FMT.
+ For example, if VALID_TIME_FMT = %Y%m%d, then VALID_BEG must bet set to
+ a valid time matching YYYYMMDD, such as 20190201.
+\end_layout
+
+\begin_layout Standard
+VALID_END: This is the last valid time that can be processed.
+ The format of this variable is controlled by VALID_TIME_FMT.
+ For example, if VALID_TIME_FMT = %Y%m%d, then VALID_END must bet set to
+ a valid time matching YYYYMMDD, such as 20190202.
+ Note that the time specified for this variable will not necessary be processed.
+ It is used to determine the cutoff of run times that can be processed.
+ For example, if METplus is configured to start at 20190201 and end at 20190201
+ processing data in 48 hour increments, it will process valid time 20190201
+ then increment the run time to 20190203.
+ This is later than the VALID_END value, so execution will stop.
+ However, if the increment is set to 24 hours (see VALID_INCREMENT), then
+ METplus will process valid times 20190201 and 20190202 before ending execution.
+\end_layout
+
+\begin_layout Standard
+VALID_INCREMENT: This is the number of seconds to add to each run time to
+ determine the next run time to process.
+ This value must be greater than or equal to 60 because METplus currently
+ does not support processing second intervals.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following is a configuration that will process valid time 20190201 at
+ 0Z until 20190202 at 0Z at 6 hour (21600 second) increments:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+LOOP_BY = VALID
+\end_layout
+
+\begin_layout Plain Layout
+VALID_TIME_FMT = %Y%m%d%H
+\end_layout
+
+\begin_layout Plain Layout
+VALID_BEG = 2019020100
+\end_layout
+
+\begin_layout Plain Layout
+VALID_END = 2019020200
+\end_layout
+
+\begin_layout Plain Layout
+VALID_INCREMENT = 21600
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This will process data valid on 20190201 at 0Z, 6Z, 12Z, and 18Z, as well
+ as 20190202 at 0Z.
+ For each of these valid times, METplus can also loop over a set of forecast
+ leads that are all valid at the current run time.
+ See 'Looping Over Forecast Leads' 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-over-Forecast"
+
+\end_inset
+
+ for more information.
+\end_layout
+
+\begin_layout Subsubsection
+Looping by Initialization Time 
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:SC_Timing_Control_Looping-by-Initialization"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When looping over inialization time (LOOP_BY = INIT or LOOP_BY = RETRO),
+ the following variables must be set:
+\end_layout
+
+\begin_layout Standard
+INIT_TIME_FMT: This is the format of the initialization times the user can
+ configure in METplus.
+ The value of INIT_BEG and INIT_END must correspond to this format.
+ Example: INIT_TIME_FMT = %Y%m%d%H.
+ Using this format, the initialization time range values specified must
+ be defined as YYYYMMDDHH, i.e.
+ 2019020112.
+ 
+\end_layout
+
+\begin_layout Standard
+INIT_BEG: This is the first initialization time that will be processed.
+ The format of this variable is controlled by INIT_TIME_FMT.
+ For example, if INIT_TIME_FMT = %Y%m%d, then INIT_BEG must bet set to an
+ initialization time matching YYYYMMDD, such as 20190201.
+\end_layout
+
+\begin_layout Standard
+INIT_END: This is the last initialization time that can be processed.
+ The format of this variable is controlled by INIT_TIME_FMT.
+ For example, if INIT_TIME_FMT = %Y%m%d, then INIT_END must bet set to an
+ initialization time matching YYYYMMDD, such as 20190202.
+ Note that the time specified for this variable will not necessary be processed.
+ It is used to determine the cutoff of run times that can be processed.
+ For example, if METplus is configured to start at 20190201 and end at 20190201
+ processing data in 48 hour increments, it will process 20190201 then increment
+ the run time to 20190203.
+ This is later than the INIT_END value, so execution will stop.
+ However, if the increment is set to 24 hours (see INIT_INCREMENT), then
+ METplus will process initialization times 20190201 and 20190202 before
+ ending execution.
+\end_layout
+
+\begin_layout Standard
+INIT_INCREMENT: This is the number of seconds to add to each run time to
+ determine the next run time to process.
+ This value must be greater than or equal to 60 because METplus currently
+ does not support processing second intervals.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following is a configuration that will process initialization time 20190201
+ at 0Z until 20190202 at 0Z at 6 hour (21600 second) increments:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+LOOP_BY = INIT
+\end_layout
+
+\begin_layout Plain Layout
+INIT_TIME_FMT = %Y%m%d%H
+\end_layout
+
+\begin_layout Plain Layout
+INIT_BEG = 2019020100
+\end_layout
+
+\begin_layout Plain Layout
+INIT_END = 2019020200
+\end_layout
+
+\begin_layout Plain Layout
+INIT_INCREMENT = 21600
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This will process data initialized on 20190201 at 0Z, 6Z, 12Z, and 18Z,
+ as well as 20190202 at 0Z.
+ For each of these initialization times, METplus can also loop over a set
+ of forecast leads that are all initialized at the current run time.
+ See 'Looping Over Forecast Leads' 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-over-Forecast"
+
+\end_inset
+
+ for more information.
+\end_layout
+
+\begin_layout Subsubsection
+Looping over Forecast Leads 
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:SC_Timing_Control_Looping-over-Forecast"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Many of the METplus wrappers will also loop over a list of forecast leads
+ relative to the current valid/initialization time that is being processed.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+LEAD_SEQ
+\series default
+: This variable can be set to a comma-separated list of integers to define
+ the forecast leads (hours) that will be processed relative to the initializatio
+n/valid time.
+ Currently only hours are supported for these values.
+ Future versions of METplus will allow sub-hourly forecast leads.
+ For example: 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+LEAD_SEQ = 3, 6, 9
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+If LOOP_BY = VALID and the current run time is 20190201 at 0Z, then the
+ times that will be processed are:
+\end_layout
+
+\begin_layout Standard
+1) Initialized on 20190131 at 21Z / valid on 20190201 at 0Z
+\end_layout
+
+\begin_layout Standard
+2) Initialized on 20190131 at 18Z / valid on 20190201 at 0Z
+\end_layout
+
+\begin_layout Standard
+3) Initialized on 20190131 at 15Z / valid on 20190201 at 0Z
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If LOOP_BY = INIT and the current run time is 20190201 at 0Z, then the times
+ that will be processed are:
+\end_layout
+
+\begin_layout Standard
+1) Initialized on 20190201 at 0Z / valid on 20190201 at 3Z
+\end_layout
+
+\begin_layout Standard
+2) Initialized on 20190201 at 0Z / valid on 20190201 at 6Z
+\end_layout
+
+\begin_layout Standard
+3) Initialized on 20190201 at 0Z / valid on 20190201 at 9Z
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+Defining lists with begin_end_incr
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+You can also define LEAD_SEQ using begin_end_incr(b, e, i) where b = the
+ first value, e = the last value (inclusive), and i = the increment.
+ For example:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+LEAD_SEQ = begin_end_incr(0, 12, 3)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Is equivalent to setting:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+LEAD_SEQ = 0, 3, 6, 9, 12
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+INIT_SEQ:
+\series default
+ If METplus is configured to loop by valid time (LOOP_BY = VALID), you can
+ use INIT_SEQ instead of LEAD_SEQ.
+ This is a list of initialization hours that are available in the data.
+ This is useful if you know when the data is initialized and you need to
+ use a different list of forecast leads depending on the valid time being
+ evaluated.
+ For example:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+INIT_SEQ = 0, 6, 12, 18
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+At valid time 20190201_0Z, this initialization sequence will build a forecast
+ lead list of 0, 6, 12, 18, 24, 30, etc.
+\begin_inset Newline newline
+\end_inset
+
+At valid time 20190201_1Z, this initialization sequence will build a forecast
+ least list of 1, 7, 13, 19, 25, 31, etc.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+You can also restrict the forecast leads that will be used by setting LEAD_SEQ_M
+IN and LEAD_SEQ_MAX.
+ For example, if you want to only process forecast leads between 12 and
+ 24 you can set:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+LEAD_SEQ_MIN = 12
+\begin_inset Newline newline
+\end_inset
+
+LEAD_SEQ_MAX = 24
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Using the initialization sequence specified above, you will get the following
+ results:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+At valid time 20190201_0Z, this initialization sequence will build a forecast
+ lead list of 12, 18, 24
+\begin_inset Newline newline
+\end_inset
+
+At valid time 20190201_1Z, this initialization sequence will build a forecast
+ least list of 13, 19
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Setting minimum and maximum values will also affect the list of forecast
+ leads if you use LEAD_SEQ.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+LEAD_SEQ takes precedence over INIT_SEQ, so if you have both variables set
+ in your configuration, INIT_SEQ will be ignored in favor of LEAD_SEQ.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+Grouping Forecast Leads (LEAD_SEQ_[N])
+\end_layout
+
+\begin_layout Standard
+This is used by SeriesByLead wrapper only.
+ If SERIES_BY_LEAD_GROUP_FCSTS is set to True, then you can define groups
+ of forecast leads that will be evaluated together.
+ You can define any number of these groups by setting configuration variables
+ LEAD_SEQ_1, LEAD_SEQ_2, LEAD_SEQ_3, etc.
+ You can define the value with a comma-separated list of integers (hours)
+ or using the begin_end_incr notation (See 'Defining lists with begin_end_incr'
+ earlier in this section).
+ Each list must have a corresponding label to describe it using LEAD_SEQ_[N]_LAB
+EL, i.e.
+ LEAD_SEQ_1 must have the corresponding variable LEAD_SEQ_1_LABEL set.
+ For example:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+SERIES_BY_LEAD_GROUP_FCSTS = True
+\end_layout
+
+\begin_layout Plain Layout
+LEAD_SEQ_1 = 0, 6, 12, 18
+\end_layout
+
+\begin_layout Plain Layout
+LEAD_SEQ_1_LABEL = Day1
+\end_layout
+
+\begin_layout Plain Layout
+LEAD_SEQ_2 = begin_end_incr(24, 42, 6)
+\end_layout
+
+\begin_layout Plain Layout
+LEAD_SEQ_2_LABEL = Day2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Realtime Looping 
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:SC_Timing_Control_Realtime-Looping"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To make running in realtime easier, METplus supports defining the begin
+ and end times relative to the current clock time.
+ For example, if the current time is 20190426 8:17 and you start METplus
+ with:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+VALID_END = {now?fmt=%Y%m%d%H}
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Then the value of VALID_END will be substituted with 2019042608.
+ You can also use {today} to substitute the current YYYYMMDD, i.e.
+ 20190426.
+ You cannot change the formatting for the 'today' keyword.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+You can use the 'shift' keyword to shift the current time by any number
+ of seconds.
+ For example, starting METplus at the same clock time with:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+VALID_BEG = {now?fmt=%Y%m%d%H?shift=-86400}
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The value of VALID_BEG will be set to the current clock time shifted by
+ -86400 (24 hours backwards), or 2019042508.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+If VALID_INCREMENT is set to 21600 (seconds or 6 hours), then METplus will
+ process valid times:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+20190425_08
+\end_layout
+
+\begin_layout Standard
+20190425_14
+\end_layout
+
+\begin_layout Standard
+20190425_20
+\end_layout
+
+\begin_layout Standard
+20190426_02
+\end_layout
+
+\begin_layout Standard
+20190426_08
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+However, you may want to configure METplus to process at 0Z, 6Z, 12Z, and
+ 18Z of a given day instead of 2Z, 8Z, 14Z, and 20Z.
+ You don't want to have to adjust the shift amount differently if you are
+ running at 8Z or 9Z to get the times to line up.
+ Instead, use the 'truncate' keyword.
+ The value set here is the number of seconds that is used to determine the
+ interval of time to round down.
+ If you want to process every 6 hours, set 'truncate' to 21600 (seconds).
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+VALID_BEG = {now?fmt=%Y%m%d%H?shift=-86400?truncate=21600}
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This will round down the value to the nearest 6 hour interval of time.
+ Starting METplus on or after 6Z but before 12Z on 20190426 will result
+ in VALID_BEG = 2019042506 (clock time shifted backwards by 24 hours and
+ truncated to 6 hours).
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+For example, starting METplus on 20190426 at 8:16 with the following configurati
+on:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+LOOP_BY = VALID
+\end_layout
+
+\begin_layout Plain Layout
+VALID_TIME_FMT = %Y%m%d%H
+\end_layout
+
+\begin_layout Plain Layout
+VALID_BEG = {now?fmt=%Y%m%d%H?shift=-86400?truncate=21600}
+\end_layout
+
+\begin_layout Plain Layout
+VALID_END = {now?fmt=%Y%m%d%H}
+\end_layout
+
+\begin_layout Plain Layout
+VALID_INCREMENT = 21600
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+will process valid times starting on 20190425 at 6Z every 6 hours until
+ the current run time is later than 20190426 at 8Z, which will result in
+ processing:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+20190425 at 6Z
+\end_layout
+
+\begin_layout Standard
+20190425 at 12Z
+\end_layout
+
+\begin_layout Standard
+20190425 at 18Z
+\end_layout
+
+\begin_layout Standard
+20190426 at 0Z
+\end_layout
+
+\begin_layout Standard
+20190426 at 6Z
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -290,19 +1164,812 @@ name "sec:SC_Field_Info"
 \end_layout
 
 \begin_layout Standard
-Mention [FCST/OBS]_VAR[N]_[NAME/LEVEL/THRESH/OPTIONS] and how they translate
- to MET field info dictionary format
+This section describes how METplus configuration variables can be used to
+ define field information that is sent to the MET applications to read forecast
+ and observation fields.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+FCST_VAR[N]_NAME
+\series default
+: Set this to the name of a forecast variable that you want to evaluate.
+ N is any integer greater or equal to 1, i.e.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR1_NAME = TMP
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+FCST_VAR2_NAME = RH
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR[N]_LEVELS
+\series default
+: Set this to a comma-separated list of levels or a single value.
+ FCST_VAR1_LEVELS corresponds to FCST_VAR1_NAME, FCST_VAR2_LEVELS corresponds
+ to FCST_VAR2_NAME, etc.
+ For example:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+FCST_VAR1_NAME = TMP
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR1_LEVELS = P500, P750
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Mention if FCST_VAR[N]_NAME or LEVEL is missing but OBS_ equivalent is,
- it will use the same value for both.
- The same is not true for THRESH and OPTIONS
+will process TMP at P500 and TMP at P750.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+OBS_VAR[N]_NAME:
+\series default
+ Set this to the corresponding observation variable that you want to evaluate
+ with FCST_VAR[N]_NAME.
+ If this value is not set for a given [N] value, then it will be assumed
+ that the same name as the forecast name will be used.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_VAR[N]_LEVELS:
+\series default
+ Set this to a comma-separated list of levels or a single value.
+ If OBS_VAR[N]_LEVELS and OBS_VAR[N]_NAME are not set, it will be assumed
+ that the same name/level as the forecast data will be used.
+\begin_inset Newline newline
+\end_inset
+
+For example, setting
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+FCST_VAR1_NAME = TMP
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR1_LEVELS = P500
+\end_layout
+
+\end_inset
+
+without setting OBS_VAR1_NAME is the equivalent of setting:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+FCST_VAR1_NAME = TMP
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR1_LEVELS = P500
+\begin_inset Newline newline
+\end_inset
+
+OBS_VAR1_NAME = TMP
+\begin_inset Newline newline
+\end_inset
+
+OBS_VAR1_LEVELS = P500
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-ENS_* equivalents are also available for use in ensemble_stat if you want
- different ensemble info from fcst and obs
+This will compare TMP/P500 in the forecast data to TMP/P500 in the observation
+ data.
+ If you set:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+FCST_VAR1_NAME = TMP
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR1_LEVELS = P500, P750
+\begin_inset Newline newline
+\end_inset
+
+OBS_VAR1_NAME = TEMP
+\begin_inset Newline newline
+\end_inset
+
+OBS_VAR1_LEVELS = 
+\begin_inset Quotes eld
+\end_inset
+
+(0,*,*)
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+(1,*,*)
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This will compare forecast TMP/P500 to observation TEMP (0,*,*) and forecast
+ TMP/P750 to observation TEMP (1,*,*).
+ Note that NetCDF level values that contain (*,*) notation must be surrounded
+ by quotation marks so it will not be misinterpreted as a list of items.
+ The number of level items must be equal in each list for a given comparison.
+ If you define separate names for a forecast and observation, you will need
+ to define separate levels for both even if they are equivalent.
+ For example, setting FCST_VAR1_NAME, FCST_VAR1_LEVELS, and OBS_VAR1_NAME,
+ but not setting OBS_VAR1_LEVELS will result in an error.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The field information will be formatted to match the field info dictionary
+ in the MET config files and passed to the appropriate config file to evaluate
+ the data.
+ The previous configuration comparing TMP (P500 and P750) and TEMP will
+ generate the following in the MET config file:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box ovalbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+fcst = {
+\begin_inset Newline newline
+\end_inset
+
+field = [ { name="TMP"; level="P500"; } ];
+\begin_inset Newline newline
+\end_inset
+
+}
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+obs = {
+\begin_inset Newline newline
+\end_inset
+
+field = [ {name=
+\begin_inset Quotes erd
+\end_inset
+
+TEMP
+\begin_inset Quotes erd
+\end_inset
+
+; level=
+\begin_inset Quotes eld
+\end_inset
+
+(0,*,*)
+\begin_inset Quotes erd
+\end_inset
+
+; } ];
+\begin_inset Newline newline
+\end_inset
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+for the first run and:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box ovalbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+fcst = {
+\begin_inset Newline newline
+\end_inset
+
+field = [ { name="TMP"; level="P750"; } ];
+\begin_inset Newline newline
+\end_inset
+
+}
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+obs = {
+\begin_inset Newline newline
+\end_inset
+
+field = [ {name=
+\begin_inset Quotes erd
+\end_inset
+
+TEMP
+\begin_inset Quotes erd
+\end_inset
+
+; level=
+\begin_inset Quotes eld
+\end_inset
+
+(1,*,*)
+\begin_inset Quotes erd
+\end_inset
+
+; } ];
+\begin_inset Newline newline
+\end_inset
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+for the second run.
+ Note that some MET applications allow multiple fields to be specified for
+ a single run.
+ If the MET tool allows it and METplus is configured accordingly, these
+ two comparisons would be configured in a single run.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+[FCST/OBS]_VAR[N]_THRESH:
+\series default
+ Set this to a comma-separated list of threshold values to use in the comparison.
+ Each of these values must begin with a comparison operator (>,>=,==,!=,<,<=,gt,
+ge,eq,ne,lt, or le).
+ It is recommended that you use the alphabetic versions (gt, ge, eq, ne,
+ lt, le) because the > and < symbols can cause errors when inserted into
+ MET commands as command line arguments, but most uses of thresholds via
+ METplus are passed into the MET config files and will not cause any issues.
+ For example, setting:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+FCST_VAR1_NAME = TMP
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR1_LEVELS = P500
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR1_THRESH = le0.5, gt0.4, gt0.5, gt0.8
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+will add the following information to the MET config file:
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+
+\begin_inset Box ovalbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+fcst = {
+\begin_inset Newline newline
+\end_inset
+
+field = [ { name=
+\begin_inset Quotes erd
+\end_inset
+
+TMP
+\begin_inset Quotes erd
+\end_inset
+
+; level=
+\begin_inset Quotes eld
+\end_inset
+
+P500
+\begin_inset Quotes erd
+\end_inset
+
+; cat_thresh=[ le0.5, gt0.4, gt0.5, gt0.8 ]; } ];
+\begin_inset Newline newline
+\end_inset
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+Note that the value for FCST_VAR[N]_THRESH will not be copied to OBS_VAR[N]_THRE
+SH if it is not set.
+ These items are independent of each other.
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+[FCST/OBS]_VAR[N]_OPTIONS: 
+\series default
+Set this to add additional information to field dictionary in the MET config
+ file.
+ The item must end with a semi-colon.
+ For example:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+FCST_VAR1_NAME = TMP
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR1_LEVELS = P500
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR1_OPTIONS = GRIB_lvl_typ = 105;
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+will add the following to the MET config file:
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+
+\begin_inset Box ovalbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+fcst = {
+\begin_inset Newline newline
+\end_inset
+
+field = [ { name=
+\begin_inset Quotes erd
+\end_inset
+
+TMP
+\begin_inset Quotes erd
+\end_inset
+
+; level=
+\begin_inset Quotes eld
+\end_inset
+
+P500
+\begin_inset Quotes erd
+\end_inset
+
+; GRIB_lvl_typ = 105; } ];
+\begin_inset Newline newline
+\end_inset
+
+}
+\end_layout
+
+\end_inset
+
+
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+You can specify multiple items as long as they are separated by and end
+ with a semi-colon.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+FCST_VAR1_NAME = TMP
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR1_LEVELS = P500
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR1_OPTIONS = GRIB_lvl_typ = 105; ens_phist_bin_size = 0.05;
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+will add the following to the MET config file:
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+
+\begin_inset Box ovalbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+fcst = {
+\begin_inset Newline newline
+\end_inset
+
+field = [ { name=
+\begin_inset Quotes erd
+\end_inset
+
+TMP
+\begin_inset Quotes erd
+\end_inset
+
+; level=
+\begin_inset Quotes eld
+\end_inset
+
+P500
+\begin_inset Quotes erd
+\end_inset
+
+; GRIB_lvl_typ = 105; ens_phist_bin_size = 0.05; } ];
+\begin_inset Newline newline
+\end_inset
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that the value for FCST_VAR[N]_OPTIONS will not be copied to OBS_VAR[N]_OPT
+IONS if it is not set.
+ These items are independent of each other.
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ENS_VAR[N]_[NAME/LEVELS/THRESH/OPTIONS]: 
+\series default
+Used with EnsembleStat only.
+ Users may want to define the ens dictionary item in the MET EnsembleStat
+ config file differently than the fcst dictionary item.
+ If this is the case, you can use this variable.
+ If it is not set, the value set in the corresponding FCST_VAR[N]_NAME will
+ be used in the ens dictionary.
 \end_layout
 
 \begin_layout Subsection
@@ -317,16 +1984,568 @@ name "sec:SC_Directory_and_Filename_Template_Info"
 \end_layout
 
 \begin_layout Standard
-Mention how filename templates work in regard to time
+The METplus wrappers use directory and filename template configuration variables
+ to find the desired files for a given run.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+Using Templates to Find Observation Data:
+\begin_inset Newline newline
+\end_inset
+
+T
+\series default
+he following configuration variables describe input observation data:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+[dir]
+\begin_inset Newline newline
+\end_inset
+
+OBS_GRID_STAT_INPUT_DIR = /my/path/to/grid_stat/input/obs
+\begin_inset Newline newline
+\end_inset
+
+[filename_templates]
+\begin_inset Newline newline
+\end_inset
+
+OBS_GRID_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d}/prefix.{valid?fmt=%Y%m%d%H}.ext
 \end_layout
 
-\begin_layout Standard
-Mention how input directories are traversed if OBS_[APP_NAME]_WINDOW_[BEGIN/END]
- are non-zero
+\end_inset
+
+The input directory is the top level directory containing all of the observation
+ data.
+ The template contains items with keywords that will be substituted with
+ time values for each run.
+ After the values are substituted, METplus will check to see if the desired
+ file exists relative to the input directory.
+ At valid time 20190201_12Z, the full desired path of the observation input
+ data to grid_stat is:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+/my/path/to/grid_stat/input/obs/20190201/prefix.2019020112.ext
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Note that the template contains a dated subdirectory.
+ This cannot go in the directory variable because it changes based on the
+ run time.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+METplus does not need be configured to loop by valid time to find files
+ using a template containing valid time information.
+ For example, at initialization time 20190201_12Z and forecast lead 3, the
+ valid time is calculated to be 20190201_15Z and the full desired path of
+ the observation input data to grid_stat is:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+/my/path/to/grid_stat/input/obs/20190201/prefix.2019020115.ext
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+'init' and 'valid' are keywords to notate initalization and valid times
+ respectively.
+ 'lead', 'offset', 'da_init', and 'cycle' are also keywords that can be
+ used to find forecast data and data assimilation data.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+Using Templates to Find Forecast Data
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Most forecast files contain the initialization time and the forecast lead
+ in the filename.
+ The keywords 'init' and 'lead' can be used to describe the template of
+ these files:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+[dir]
+\begin_inset Newline newline
+\end_inset
+
+FCST_GRID_STAT_INPUT_DIR = /my/path/to/grid_stat/input/fcst
+\begin_inset Newline newline
+\end_inset
+
+[filename_templates]
+\begin_inset Newline newline
+\end_inset
+
+FCST_GRID_STAT_INPUT_TEMPLATE = prefix.{init?fmt=%Y%m%d%H}_f{lead?fmt=%3H}.ext
 \end_layout
 
-\begin_layout Standard
-Mention time shifting in filename templates
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+For a valid time of 20190201_0Z and a forecast lead of 3, METplus will look
+ for the following forecast file with initialization time of 20190131_21Z:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ /my/path/to/grid_stat/input/fcst/prefix.2019013121_f003.ext
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+Using Templates to Find Data Assimilation Data
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+Some data assimilation files contain offset and da_init (data assimilation
+ initialization) values in the filename.
+ These values are used to determine the value time of the data.
+ Consider the following configuration:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+[config]
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_OFFSETS = 6, 3
+\begin_inset Newline newline
+\end_inset
+
+[dir]
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_INPUT_DIR = /my/path/to/prepbufr
+\begin_inset Newline newline
+\end_inset
+
+[filename_templates]
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_INPUT_TEMPLATE = prefix.{da_init?fmt=%Y%m%d}_{cycle?fmt=%H}_off{offset?fmt=
+%2H}.ext
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The PB2NC_OFFSETS list tells METplus the order to prioritize files with
+ offsets in the name.
+ At valid time 20190201_12Z, METplus will check if the following file exists:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+/my/path/to/prepbufr/prefix.20190201_18_off06.ext
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The offset is added to the valid time to get the data assimilation initializatio
+n time.
+ Note that 'cycle' can be used interchangeably with 'da_init.' It is generally
+ used to specify the hour of the data that was generated.
+ If that file doesn't exists, it will check:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+/my/path/to/prepbufr/prefix.20190201_15_off03.ext
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+Shifting Times in Filename Templates
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+Users can use the 'shift' keyword to adjust the time referenced in the filename
+ template relative to the run time.
+ For example, the input files contain data from 1Z on the date specified
+ in the filename until 1Z the following day.
+ This means that for a 0Z run you want to use the file from the previous
+ day and for the 1Z to 23Z runs you want to use the file that corresponds
+ to the current day.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+[filename_templates]
+\begin_inset Newline newline
+\end_inset
+
+OBS_POINT_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d?shift=-3600}.ext
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Running at valid time 20190201_12Z, shifting the valid time backwards by
+ 1 hour will result in 20190201_11Z, so it will substitute the current day
+ into the template, giving you 20190201.ext.
+ Running at valid time 20190201_0Z, the shift will result in a file time
+ of 20190131_23Z, so 20190131.ext will be generated by the template.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+Using Windows to Find Valid Files
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+The [FCST/OBS]_FILE_WINDOW_[BEGIN/END] configuration variables can be used
+ if the time information in the input data does not exactly line up with
+ the run time but you still want to process the data.
+ The default value is the file window begin and end variables is 0 (seconds).
+ If both values are set to 0, METplus will require that a file matching
+ a template with the exact time requested exists.
+ If either value is non-zero, METplus will examine all of the files under
+ the input directory that match the template, pull out the time information
+ from the files, and use the file with time closest to the run time.
+ For example, consider the configuration:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+[config]
+\begin_inset Newline newline
+\end_inset
+
+OBS_FILE_WINDOW_BEGIN = -7200
+\begin_inset Newline newline
+\end_inset
+
+OBS_FILE_WINDOW_END = 7200
+\begin_inset Newline newline
+\end_inset
+
+[dir]
+\begin_inset Newline newline
+\end_inset
+
+OBS_GRID_STAT_INPUT_DIR = /my/grid_stat/input/obs
+\begin_inset Newline newline
+\end_inset
+
+[filename_templates]
+\begin_inset Newline newline
+\end_inset
+
+OBS_GRID_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d}/pre.{valid?fmt=%Y%m%d}_{valid?f
+mt=%H}.ext
+\begin_inset Newline newline
+\end_inset
+
+The run time is 20190201_0Z and the following files exist in the input directory
+:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+/my/grid_stat/input/obs/20190131/pre.20190131_22.ext
+\begin_inset Newline newline
+\end_inset
+
+/my/grid_stat/input/obs/20190131/pre.20190131_23.ext
+\begin_inset Newline newline
+\end_inset
+
+/my/grid_stat/input/obs/20190201/othertype.20190201_00.ext
+\begin_inset Newline newline
+\end_inset
+
+/my/grid_stat/input/obs/20190201/pre.20190201_01.ext
+\begin_inset Newline newline
+\end_inset
+
+/my/grid_stat/input/obs/20190201/pre.20190201_02.ext
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The first file matches the template and the file time is within the window,
+ so the filename and time difference relative to the valid time (7200 seconds
+ or 2 hours) is saved.
+\begin_inset Newline newline
+\end_inset
+
+The second file matches the template, the file time is within the window,
+ and the time difference is less than the closest file, so the filename
+ and time difference from the valid time (3600 seconds or 1 hour) is saved.
+\begin_inset Newline newline
+\end_inset
+
+The third file does not match the template, so it is ignored.
+\begin_inset Newline newline
+\end_inset
+
+The fourth file matches the template and is within the time range, but it
+ is the same distance away from the valid time as the closest file.
+ GridStat only allows one file to be processed, so it is ignored (PB2NC
+ is currently the only wrapper to allow multiples files to be processed).
+\begin_inset Newline newline
+\end_inset
+
+The first file matches the template but it is valid outside of the -2 to
+ +2 hour window range, so it is ignored.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+Wrapper Specific Windows
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+A user may need to specify a different window on a wrapper-by-wrapper basis.
+ If this is the case, you can override the file window values for each wrapper.
+ Consider the following configuration:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+[config]
+\begin_inset Newline newline
+\end_inset
+
+PROCESS_LIST = PcpCombine, GridStat, EnsembleStat
+\begin_inset Newline newline
+\end_inset
+
+OBS_FILE_WINDOW_BEGIN = 0
+\begin_inset Newline newline
+\end_inset
+
+OBS_FILE_WINDOW_END = 0
+\begin_inset Newline newline
+\end_inset
+
+OBS_GRID_STAT_FILE_WINDOW_BEGIN = -1800
+\begin_inset Newline newline
+\end_inset
+
+OBS_GRID_STAT_FILE_WINDOW_END = 1800
+\begin_inset Newline newline
+\end_inset
+
+OBS_ENSEMBLE_STAT_FILE_WINDOW_END = 3600
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Using this configuration, PcpCombine will use (0,0) and require exact file
+ times.
+ GridStat will use (-1800, 1800) for observation data.
+ EnsembleStat will use (0, 3600) for observation data.
+ OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN was not set, so it will use OBS_FILE_WINDOW
+_BEGIN.
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -3564,6 +5783,64 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+ENSEMBLE_STAT_OUTPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Sets the subdirectories below ENSEMBLE_STAT_OUTPUT_DIR using a template
+ to allow run time information.
+ If LOOP_BY = VALID, default value is valid time YYYYMMDDHHMM/ensemble_stat.
+ If LOOP_BY = INIT, default value is init time YYYYMMDDHHMM/ensemble_stat.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 ENS_VAR[N]_LEVELS
 \series default
 
@@ -4468,6 +6745,130 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+FCST_ENSEMBLE_STAT_FILE_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+See OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_BEGIN
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_ENSEMBLE_STAT_FILE_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See OBS_ENSEMBLE_STAT_FILE_WINDOW_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_END
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 FCST_ENSEMBLE_STAT_INPUT_DIR
 \series default
 
@@ -4567,6 +6968,142 @@ Default:
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_FILE_WINDOW_BEGIN
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See OBS_FILE_WINDOW_BEGIN
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_FILE_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See OBS_FILE_WINDOW_END
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -4682,6 +7219,130 @@ Default:
 \series default
 \shape default
  Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_GRID_STAT_FILE_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+See OBS_GRID_STAT_FILE_WINDOW_BEGIN 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GridStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_BEGIN
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_GRID_STAT_FILE_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See OBS_GRID_STAT_FILE_WINDOW_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GridStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_END
 \begin_inset Newline newline
 \end_inset
 
@@ -5863,6 +8524,130 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+FCST_MODE_FILE_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+See OBS_MODE_FILE_WINDOW_BEGIN 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_BEGIN
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_MODE_FILE_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See OBS_MODE_FILE_WINDOW_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_END
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 FCST_MODE_MERGE_FLAG
 \series default
 
@@ -6259,6 +9044,130 @@ Default:
 \series default
 \shape default
  
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_MTD_FILE_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+See OBS_MTD_FILE_WINDOW_BEGIN 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ MTD
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_BEGIN
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_MTD_FILE_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See OBS_MTD_FILE_WINDOW_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ MTD
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_END
 \begin_inset Newline newline
 \end_inset
 
@@ -7568,6 +10477,130 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+FCST_POINT_STAT_FILE_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+See OBS_POINT_STAT_FILE_WINDOW_BEGIN 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_BEGIN
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_POINT_STAT_FILE_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See OBS_POINT_STAT_FILE_WINDOW_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_END
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 FCST_POINT_STAT_INPUT_DATATYPE
 \series default
 
@@ -8859,6 +11892,142 @@ Used by:
 \series default
 \shape default
  MakePlots, met_util.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_WINDOW_BEGIN
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See OBS_WINDOW_BEGIN
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+See OBS_WINDOW_END
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -10466,6 +13635,65 @@ Family:
 \series default
 \shape default
  [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+GRID_STAT_OUTPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Sets the subdirectories below GRID_STAT_OUTPUT_DIR using a template to allow
+ run time information.
+ If LOOP_BY = VALID, default value is valid time YYYYMMDDHHMM/grid_stat.
+ If LOOP_BY = INIT, default value is init time YYYYMMDDHHMM/grid_stat.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GridStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
 \series bold
 \shape italic
 
@@ -13948,9 +17176,9 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MODE_CONFIG
+MODE_CONFIG_FILE
 \series default
-_FILE
+
 \begin_inset Newline newline
 \end_inset
 
@@ -14854,6 +18082,121 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+MODE_OUTPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Sets the subdirectories below MODE_OUTPUT_DIR using a template to allow
+ run time information.
+ If LOOP_BY = VALID, default value is valid time YYYYMMDDHHMM/mode.
+ If LOOP_BY = INIT, default value is init time YYYYMMDDHHMM/mode.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MODE_VERIFICATION_MASK_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Template used to specify the verification mask filename for the MET tool
+ mode.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 MODE_QUILT
 \series default
 
@@ -15529,7 +18872,62 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MTD_OUT_DIR
+[deprecated] MTD_OUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Please use MTD_OUTPUT_DIR.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ mtd_wrapper.py
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MTD_OUTPUT_DIR
 \series default
 
 \begin_inset Newline newline
@@ -15556,6 +18954,65 @@ Family:
 \series default
 \shape default
  [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+MTD_OUTPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Sets the subdirectories below MTD_OUTPUT_DIR using a template to allow run
+ time information.
+ If LOOP_BY = VALID, default value is valid time YYYYMMDDHHMM/mtd.
+ If LOOP_BY = INIT, default value is init time YYYYMMDDHHMM/mtd.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ MTD
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
 \series bold
 \shape italic
 
@@ -16777,27 +20234,26 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_ENSEMBLE_STAT_WINDOW_BEG
+OBS_ENSEMBLE_STAT_FILE_WINDOW_BEG
 \series default
 IN
 \begin_inset Newline newline
 \end_inset
 
-1) Used to control the lower bound of the window around the valid time to
- determine if a file should be used for processing.
-\begin_inset Newline newline
+Used to control the lower bound of the window around the valid time to determine
+ if a file should be used for processing by EnsembleStat.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
 \end_inset
 
-2) Passed to the MET config file to determine the range of data within a
- file that should be used for processing.
-\begin_inset Newline newline
-\end_inset
-
-Units are seconds.
- If OBS_ENSEMBLE_STAT_WINDOW_BEGIN is not set in the config file, the value
- of OBS_WINDOW_BEGIN will be used instead.
- If both window begin and window end values are set to 0, then METplus will
- require an input file with an exact time match to process.
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+ If OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN is not set in the config file, the
+ value of OBS_FILE_WINDOW_BEGIN will be used instead.
+ If both file window begin and window end values are set to 0, then METplus
+ will require an input file with an exact time match to process.
 \end_layout
 
 \begin_layout Standard
@@ -16827,7 +20283,7 @@ Family:
 Default:
 \series default
 \shape default
- 
+ OBS_FILE_WINDOW_BEGIN
 \begin_inset Newline newline
 \end_inset
 
@@ -16846,27 +20302,26 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_ENSEMBLE_STAT_WINDOW_END
+OBS_ENSEMBLE_STAT_FILE_WINDOW_END
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-1) Used to control the upper bound of the window around the valid time to
- determine if a file should be used for processing.
-\begin_inset Newline newline
+Used to control the upper bound of the window around the valid time to determine
+ if a file should be used for processing by EnsembleStat.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
 \end_inset
 
-2) Passed to the MET config file to determine the range of data within a
- file that should be used for processing.
-\begin_inset Newline newline
-\end_inset
-
-Units are seconds.
- If OBS_ENSEMBLE_STAT_WINDOW_END is not set in the config file, the value
- of OBS_WINDOW_END will be used instead.
- If both window begin and window end values are set to 0, then METplus will
- require an input file with an exact time match to process.
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+ If OBS_ENSEMBLE_STAT_FILE_WINDOW_END is not set in the config file, the
+ value of OBS_FILE_WINDOW_END will be used instead.
+ If both file window begin and window end values are set to 0, then METplus
+ will require an input file with an exact time match to process.
 \end_layout
 
 \begin_layout Standard
@@ -16896,7 +20351,302 @@ Family:
 Default:
 \series default
 \shape default
- 
+ OBS_FILE_WINDOW_END
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_FILE_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+Used to control the lower bound of the window around the valid time to determine
+ if a file should be used for processing.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+\begin_inset Newline newline
+\end_inset
+
+This value will be used for all wrappers that look for an observation file
+ unless it is overridden by a wrapper specific configuration variable.
+ For example, if OBS_GRID_STAT_FILE_WINDOW_BEGIN is set, the GridStat wrapper
+ will use that value.
+ If PB2NC_FILE_WINDOW_BEGIN is not set, then the PB2NC wrapper will use
+ OBS_FILE_WINDOW_BEGIN.
+\begin_inset Newline newline
+\end_inset
+
+A corresponding variable exists for forecast data called FCST_FILE_WINDOW_BEGIN.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_FILE_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Used to control the upper bound of the window around the valid time to determine
+ if a file should be used for processing.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+\begin_inset Newline newline
+\end_inset
+
+This value will be used for all wrappers that look for an observation file
+ unless it is overridden by a wrapper specific configuration variable.
+ For example, if OBS_GRID_STAT_WINDOW_END is set, the GridStat wrapper will
+ use that value.
+ If PB2NC_WINDOW_END is not set, then the PB2NC wrapper will use OBS_WINDOW_END.
+\begin_inset Newline newline
+\end_inset
+
+A corresponding variable exists for forecast data called FCST_FILE_WINDOW_END.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_GRID_STAT_FILE_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+Used to control the lower bound of the window around the valid time to determine
+ if a file should be used for processing by GridStat.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+ If OBS_GRID_STAT_FILE_WINDOW_BEGIN is not set in the config file, the value
+ of OBS_FILE_WINDOW_BEGIN will be used instead.
+ If both file window begin and window end values are set to 0, then METplus
+ will require an input file with an exact time match to process.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GridStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_BEGIN
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_GRID_STAT_FILE_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Used to control the upper bound of the window around the valid time to determine
+ if a file should be used for processing by GridStat.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+ If OBS_GRID_STAT_FILE_WINDOW_END is not set in the config file, the value
+ of OBS_FILE_WINDOW_END will be used instead.
+ If both file window begin and window end values are set to 0, then METplus
+ will require an input file with an exact time match to process.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ GridStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_END
 \begin_inset Newline newline
 \end_inset
 
@@ -17157,68 +20907,6 @@ Default:
 \series default
 \shape default
  ==0.1
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-\shape default
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-OBS_WINDOW_END
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Corresponds to the OBS_WINDOW_END in the MET config file for pb2nc.
- Please refer to Chapter 4 of the MET User's Guide.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- PB2NC, PointStat
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [config]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- Varies
 \series bold
 \shape italic
 
@@ -17935,6 +21623,142 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+OBS_MODE_FILE_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+Used to control the lower bound of the window around the valid time to determine
+ if a file should be used for processing by Mode.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+ If OBS_MODE_FILE_WINDOW_BEGIN is not set in the config file, the value
+ of OBS_FILE_WINDOW_BEGIN will be used instead.
+ If both file window begin and window end values are set to 0, then METplus
+ will require an input file with an exact time match to process.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_BEGIN
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_MODE_FILE_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Used to control the upper bound of the window around the valid time to determine
+ if a file should be used for processing by Mode.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+ If OBS_MODE_FILE_WINDOW_END is not set in the config file, the value of
+ OBS_FILE_WINDOW_END will be used instead.
+ If both file window begin and window end values are set to 0, then METplus
+ will require an input file with an exact time match to process.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ Mode
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_END
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 OBS_MODE_MERGE_FLAG
 \series default
 
@@ -18363,6 +22187,142 @@ Default:
 \series default
 \shape default
  
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_MTD_FILE_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+Used to control the lower bound of the window around the valid time to determine
+ if a file should be used for processing by MTD.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+ If OBS_MTD_FILE_WINDOW_BEGIN is not set in the config file, the value of
+ OBS_FILE_WINDOW_BEGIN will be used instead.
+ If both file window begin and window end values are set to 0, then METplus
+ will require an input file with an exact time match to process.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ MTD
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_BEGIN
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_MTD_FILE_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Used to control the upper bound of the window around the valid time to determine
+ if a file should be used for processing by MTD.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+ If OBS_MTD_FILE_WINDOW_END is not set in the config file, the value of
+ OBS_FILE_WINDOW_END will be used instead.
+ If both file window begin and window end values are set to 0, then METplus
+ will require an input file with an exact time match to process.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ MTD
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_END
 \begin_inset Newline newline
 \end_inset
 
@@ -19740,6 +23700,142 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+OBS_POINT_STAT_FILE_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+Used to control the lower bound of the window around the valid time to determine
+ if a file should be used for processing by PointStat.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+ If OBS_POINT_STAT_FILE_WINDOW_BEGIN is not set in the config file, the
+ value of OBS_FILE_WINDOW_BEGIN will be used instead.
+ If both file window begin and window end values are set to 0, then METplus
+ will require an input file with an exact time match to process.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_BEGIN
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_POINT_STAT_FILE_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Used to control the upper bound of the window around the valid time to determine
+ if a file should be used for processing by PointStat.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+ If OBS_POINT_STAT_FILE_WINDOW_END is not set in the config file, the value
+ of OBS_FILE_WINDOW_END will be used instead.
+ If both file window begin and window end values are set to 0, then METplus
+ will require an input file with an exact time match to process.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_END
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 OBS_POINT_STAT_INPUT_DATATYPE
 \series default
 
@@ -19923,6 +24019,139 @@ Default:
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_POINT_STAT_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+Passed to the point_stat MET config file to determine the range of data
+ within a file that should be used for processing.
+\begin_inset Newline newline
+\end_inset
+
+Units are seconds.
+ If the variable is not set, point_stat will use OBS_WINDOW_BEGIN.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+OBS_POINT_STAT_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Passed to the point_stat MET config file to determine the range of data
+ within a file that should be used for processing.
+ Units are seconds.
+ If the variable is not set, point_stat will use OBS_WINDOW_END.
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Used by:
+\series default
+\shape default
+ PB2NC, PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -20988,23 +25217,22 @@ IN
 \begin_inset Newline newline
 \end_inset
 
-1) Used to control the lower bound of the window around the valid time to
- determine if a file should be used for processing.
-\begin_inset Newline newline
-\end_inset
-
-2) Passed to the MET config file to determine the range of data within a
- file that should be used for processing.
+Passed to the MET config file to determine the range of data within a file
+ that should be used for processing.
 \begin_inset Newline newline
 \end_inset
 
 Units are seconds.
  This value will be used for all wrappers that look for an observation file
  unless it is overridden by a wrapper specific configuration variable.
- For example, if OBS_GRID_STAT_WINDOW_BEGIN is set, the GridStat wrapper
+ For example, if OBS_POINT_STAT_WINDOW_BEGIN is set, the PointStat wrapper
  will use that value.
  If PB2NC_WINDOW_BEGIN is not set, then the PB2NC wrapper will use OBS_WINDOW_BE
 GIN.
+\begin_inset Newline newline
+\end_inset
+
+A corresponding variable exists for forecast data called FCST_WINDOW_BEGIN.
 \end_layout
 
 \begin_layout Standard
@@ -21014,7 +25242,7 @@ GIN.
 Used by:
 \series default
 \shape default
- EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -21059,22 +25287,21 @@ OBS_WINDOW_END
 \begin_inset Newline newline
 \end_inset
 
-1) Used to control the upper bound of the window around the valid time to
- determine if a file should be used for processing.
-\begin_inset Newline newline
-\end_inset
-
-2) Passed to the MET config file to determine the range of data within a
- file that should be used for processing.
+Passed to the MET config file to determine the range of data within a file
+ that should be used for processing.
 \begin_inset Newline newline
 \end_inset
 
 Units are seconds.
  This value will be used for all wrappers that look for an observation file
  unless it is overridden by a wrapper specific configuration variable.
- For example, if OBS_GRID_STAT_WINDOW_END is set, the GridStat wrapper will
- use that value.
+ For example, if OBS_POINT_STAT_WINDOW_END is set, the PointStat wrapper
+ will use that value.
  If PB2NC_WINDOW_END is not set, then the PB2NC wrapper will use OBS_WINDOW_END.
+\begin_inset Newline newline
+\end_inset
+
+A corresponding variable exists for forecast data called FCST_WINDOW_END.
 \end_layout
 
 \begin_layout Standard
@@ -21084,7 +25311,7 @@ Units are seconds.
 Used by:
 \series default
 \shape default
- EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -21581,6 +25808,142 @@ Default:
 
 \series default
 \shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_FILE_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+Used to control the lower bound of the window around the valid time to determine
+ if a file should be used for processing by PB2NC.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+ If PB2NC_FILE_WINDOW_BEGIN is not set in the config file, the value of
+ OBS_FILE_WINDOW_BEGIN will be used instead.
+ If both file window begin and window end values are set to 0, then METplus
+ will require an input file with an exact time match to process.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_BEGIN
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_FILE_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Used to control the upper bound of the window around the valid time to determine
+ if a file should be used for processing by PB2NC.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+ subsection called 'Use Windows to Find Valid Files.' Units are seconds.
+ If PB2NC_FILE_WINDOW_END is not set in the config file, the value of OBS_FILE_W
+INDOW_END will be used instead.
+ If both file window begin and window end values are set to 0, then METplus
+ will require an input file with an exact time match to process.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ OBS_FILE_WINDOW_END
+\begin_inset Newline newline
+\end_inset
+
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -22473,6 +26836,139 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+PB2NC_WINDOW_BEG
+\series default
+IN
+\begin_inset Newline newline
+\end_inset
+
+Passed to the pb2nc MET config file to determine the range of data within
+ a file that should be used for processing.
+\begin_inset Newline newline
+\end_inset
+
+Units are seconds.
+ If the variable is not set, pb2nc will use OBS_WINDOW_BEGIN.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PB2NC_WINDOW_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Passed to the pb2nc MET config file to determine the range of data within
+ a file that should be used for processing.
+ Units are seconds.
+ If the variable is not set, pb2nc will use OBS_WINDOW_END.
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Used by:
+\series default
+\shape default
+ PB2NC
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 [deprecated] PCP_COMBINE_METHOD
 \series default
 
@@ -22515,6 +27011,68 @@ Default:
 ADD
 \series bold
 \emph default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+If True, do not run pcp_combine if output file already exists.
+ Set to False to overwrite files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PcpCombine
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ False
+\series bold
+\shape italic
 
 \begin_inset Newline newline
 \end_inset
@@ -23180,6 +27738,65 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
+POINT_STAT_OUTPUT_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Sets the subdirectories below POINT_STAT_OUTPUT_DIR using a template to
+ allow run time information.
+ If LOOP_BY = VALID, default value is valid time YYYYMMDDHHMM/point_stat.
+ If LOOP_BY = INIT, default value is init time YYYYMMDDHHMM/point_stat.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
 POINT_STAT_POLY
 \series default
 
@@ -23287,6 +27904,62 @@ Default:
 
 \series default
 \shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+POINT_STAT_VERIFICATION_MASK_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Template used to specify the verification mask filename for the MET tool
+ point_stat.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\begin_inset Newline newline
+\end_inset
+
 
 \begin_inset CommandInset line
 LatexCommand rule
@@ -23903,6 +28576,257 @@ Used by:
 \series default
 \shape default
  MakePlots, StatAnalysis
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+REGRID_DATA_PLANE_METHOD
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Sets the method used by regrid_data_plane.
+ See MET User's Guide for more information.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ RegridDataPlane
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+If True, do not run regrid_data_plane if output file already exists.
+ Set to False to overwrite files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ RegridDataPlane
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ False
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+REGRID_DATA_PLANE_WIDTH
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Sets the width used by regrid_data_plane.
+ See MET User's Guide for more information.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ RegridDataPlane
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\shape italic
+\emph on
+1
+\series bold
+\emph default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+REGRID_DATA_PLANE_VERIF_GRID
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the absolute path to a file containing information about the desired
+ output grid from the MET regrid_data_plane tool.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ regrid_data_plane_wrapper.py
 \series bold
 \shape italic
 
