@@ -39,6 +39,12 @@ INIT_STRING = "init"
 DA_INIT_STRING = "da_init"
 OFFSET_STRING = "offset"
 
+# These three were added in response to the tropical cyclone use case
+DATE_STRING = "date"
+REGION_STRING = "region"
+CYCLONE_STRING = "cyclone"
+MISC_STRING = "misc"
+
 GLOBAL_LOGGER = None
 
 length_dict = { '%Y': 4,
