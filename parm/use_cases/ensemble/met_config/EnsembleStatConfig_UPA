@@ -74,7 +74,7 @@ wind_upa_thresh = [ >4, >8, >12, >16, >20 ];
 // Ensemble product fields to be processed
 //
 ens = {
-   ens_thresh = 1.0;
+   ens_thresh = ${ENS_THRESH};
    vld_thresh = 1.0;
 
    field = [
