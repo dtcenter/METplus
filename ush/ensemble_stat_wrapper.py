@@ -15,6 +15,7 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import (print_function, division)
 
 import os
+import glob
 import met_util as util
 from compare_gridded_wrapper import CompareGriddedWrapper
 import string_template_substitution as sts
@@ -65,14 +66,17 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.config.getstr('config', 'ENSEMBLE_STAT_CONFIG_FILE',
                           c_dict['CONFIG_DIR']+'/EnsembleStatConfig_SFC')
 
+        c_dict['ENS_THRESH'] = \
+          self.config.getstr('config', 'ENSEMBLE_STAT_ENS_THRESH', '1.0')
+
         # met_obs_error_table is not required, if it is not defined
         # set it to the empty string '', that way the MET default is used.
         c_dict['MET_OBS_ERROR_TABLE'] = \
             self.config.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE','')
 
         # No Default being set this is REQUIRED TO BE DEFINED in conf file.
-        c_dict['N_ENSEMBLE_MEMBERS'] = \
-            self.config.getstr('config','ENSEMBLE_STAT_N_MEMBERS')
+        c_dict['N_MEMBERS'] = \
+            self.config.getint('config','ENSEMBLE_STAT_N_MEMBERS')
 
         c_dict['OBS_POINT_INPUT_DIR'] = \
           self.config.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
@@ -132,16 +136,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # get ensemble model files
         fcst_file_list = self.find_model_members(time_info)
         if not fcst_file_list:
-            self.logger.error("Missing Ensemble Member FILEs IN "
-                              + model_dir + " FOR " + time_info['init_fmt'] +\
-                              "f" + str(time_info['lead_hours']))
             return
 
         self.add_input_file(fcst_file_list)
-
-        # Add the number of ensemble members to the MET command
-#        self.input_file_num = self.c_dict['N_ENSEMBLE_MEMBERS']
-
 
         v = self.c_dict['var_list']
         # get point observation file if requested
@@ -215,65 +212,74 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 @return Returns a list of the paths to the ensemble model files
         """
         model_dir = self.c_dict['FCST_INPUT_DIR']
+        # used for filling in missing files to ensure ens_thresh check is accurate
+        fake_dir = '/ensemble/member/is/missing'
 
         # model_template is a list of 1 or more.
         ens_members_template = self.c_dict['FCST_INPUT_TEMPLATE']
-        time_offset = 0
-        found = False
-
         ens_members_path = []
-        # This is for all the members defined in the template.
+        # get all files that exist
         for ens_member_template in ens_members_template:
             model_ss = sts.StringSub(self.logger, ens_member_template,
                                      level=(int(level.split('-')[0]) * 3600),
                                      **time_info)
             member_file = model_ss.doStringSub()
-            member_path = os.path.join(model_dir, member_file)
-            member_path = util.preprocess_file(member_path,
-                                self.c_dict['FCST_INPUT_DATATYPE'],
-                                               self.config)
-            if member_path != None:
-                ens_members_path.append(member_path)
+            expected_path = os.path.join(model_dir, member_file)
 
-        # get filetype and save it in dictionary if it is not set
-        filetype = util.get_filetype(member_path)
-        if self.c_dict['FCST_INPUT_DATATYPE'] == '':
-            self.c_dict['FCST_INPUT_DATATYPE'] = filetype
-        elif self.c_dict['FCST_INPUT_DATATYPE'] != filetype:
-            self.logger.warning('FCST_INPUT_DATTYPE set to {} while get_filetype determined'\
-                                ' data type is {}'.format(self.c_dict['FCST_INPUT_DATATYPE'], filetype))
+            # if wildcard expression, get all files that match
+            if '?' in expected_path:
+                wildcard_files = sorted(glob.glob(expected_path))
+                self.logger.debug('Ensemble members file pattern: {}'
+                                  .format(expected_path))
+                self.logger.debug('{} members match file pattern'
+                                  .format(str(len(wildcard_files))))
 
+                # add files to list of ensemble members
+                for wf in wildcard_files:
+                    ens_members_path.append(wf)
+            else:
+                # otherwise check if file exists
+                member_path = util.preprocess_file(expected_path,
+                                    self.c_dict['FCST_INPUT_DATATYPE'],
+                                                   self.config)
 
-        if int(self.c_dict['N_ENSEMBLE_MEMBERS']) != \
-                len(ens_members_path):
-            self.logger.error("MISMATCH: Members matching File Pattern: %s "
-                              "vs. conf N_ENSEMBLE_MEMBERS: %s " %
-                              (len(ens_members_paths),
-                               self.c_dict['N_ENSEMBLE_MEMBERS']))
-            return
+                # if the file exists, add it to the list
+                if member_path != None:
+                    ens_members_path.append(member_path)
+                else:
+                    # add relative path to fake dir and add to list
+                    fake_path = os.path.join(fake_dir, member_file)
+                    ens_members_path.append(fake_path)
+                    self.logger.warning('Expected ensemble file {} not found'
+                                        .format(member_file))
 
-        # TODO: jtf Harden and review this requirement/assumption that the
-        # member_path after a String Template Substitution contains wildcards
-        # that can be globbed to return all the members for this lead time.
-        # It may contain wild cards, it may contain a produtil conf variable
-        # of the number of ensemble members as well as format and padding
-        # info. For now we are assuming member_path has wild cards that can
-        # be globbed.
+        # if more files found than expected, error and exit
+        if len(ens_members_path) > self.c_dict['N_MEMBERS']:
+            msg = 'Found more files than expected! ' +\
+                  'Found {} expected {}. '.format(len(ens_members_path),
+                                                 self.c_dict['N_MEMBERS']) +\
+                  'Adjust wildcard expression in [filename_templates] '+\
+                  'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE or adjust [config] '+\
+                  'ENSEMBLE_STAT_N_MEMBERS. Files found: {}'.format(ens_members_path)
+            self.logger.error(msg)
+            self.logger.error("Could not file files in {} for init {} f{} "
+                              .format(model_dir, time_info['init_fmt'],
+                                      str(time_info['lead_hours'])))
+            return False
+        # if fewer files found than expected, warn and add fake files
+        elif len(ens_members_path) < self.c_dict['N_MEMBERS']:
+            msg = 'Found fewer files than expected. '+\
+              'Found {} expected {}.'.format(len(ens_members_path),
+                                             self.c_dict['N_MEMBERS'])
+            self.logger.warning(msg)
+            # add fake files to list to get correct number of files for ens_thresh
+            diff = self.c_dict['N_MEMBERS'] - len(ens_members_path)
+            self.logger.warning('Adding {} fake files to '.format(str(diff))+\
+                                'ensure ens_thresh check is accurate')
+            for r in range(0, diff, 1):
+                ens_members_path.append(fake_dir)
 
-        # This is if FCST_INPUT_TEMPLATE has 1 item in its template list
-        #  and the template has filename wild cards to glob and match files.
-        # /somevalidpath/postprd_mem000?/wrfprs_conus_mem000?_00.grib2
-        if int(self.c_dict['N_ENSEMBLE_MEMBERS']) > 1 \
-                and len(ens_members_template) == 1:
-            # yes, we are re-assigning ens_member path, at this point
-            # before re-assignment,  member_path == ens_member_path[0]
-            ens_members_path = sorted(glob.glob(member_path))
-            self.logger.debug('Ensemble Members File pattern: %s'%
-                              member_path)
-            self.logger.debug('Number of Members matching File Pattern: ' +
-                              str(len(ens_members_path)))
-
-#        list_filename = current_task.getValidTime() + '_ensemble_.txt'
+        # write file that contains list of ensemble files
         list_filename = time_info['init_fmt'] + '_' + \
           str(time_info['lead_hours']) + '_ensemble.txt'
         return self.write_list_file(list_filename, ens_members_path)
@@ -298,7 +304,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                       "CONFIG_DIR", "FCST_LEAD",
                       "FCST_FIELD", "OBS_FIELD",
                       'ENS_FIELD', "INPUT_BASE",
-                      "OBS_WINDOW_BEGIN", "OBS_WINDOW_END"]
+                      "OBS_WINDOW_BEGIN", "OBS_WINDOW_END",
+                      "ENS_THRESH"]
 
         if self.c_dict["MET_OBS_ERROR_TABLE"]:
             self.add_env_var("MET_OBS_ERROR_TABLE",
@@ -319,6 +326,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_env_var("FCST_LEAD", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("OBS_WINDOW_BEGIN", str(self.c_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
+        self.add_env_var("ENS_THRESH", self.c_dict['ENS_THRESH'])
 
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
