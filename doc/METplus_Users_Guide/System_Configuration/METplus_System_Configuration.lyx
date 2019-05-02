@@ -289,7 +289,7 @@ name "subsec:SC_Timing_Control_LOOP_BY"
 \begin_layout Standard
 METplus can be configured to loop over a set of valid times or a set of
  initialization times.
- This is controlled the METplus configuration variable called LOOP_BY.
+ This is controlled by the METplus configuration variable called LOOP_BY.
  If the value of this variable is set to INIT or RETRO, looping will be
  relative to initialization time.
  If the value is set to VALID or REALTIME, looping will be relative to valid
@@ -317,8 +317,15 @@ When looping over valid time (LOOP_BY = VALID or LOOP_BY = REALTIME), the
 \end_layout
 
 \begin_layout Standard
-VALID_TIME_FMT: This is the format of the valid times the user can configure
- in METplus.
+
+\series bold
+VALID_TIME_FMT
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+This is the format of the valid times the user can configure in METplus.
  The value of VALID_BEG and VALID_END must correspond to this format.
  Example: VALID_TIME_FMT = %Y%m%d%H.
  Using this format, the valid time range values specified must be defined
@@ -328,20 +335,36 @@ VALID_TIME_FMT: This is the format of the valid times the user can configure
 \end_layout
 
 \begin_layout Standard
-VALID_BEG: This is the first valid time that will be processed.
+
+\series bold
+VALID_BEG
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+This is the first valid time that will be processed.
  The format of this variable is controlled by VALID_TIME_FMT.
- For example, if VALID_TIME_FMT = %Y%m%d, then VALID_BEG must bet set to
+ For example, if VALID_TIME_FMT = %Y%m%d, then VALID_BEG must be set to
  a valid time matching YYYYMMDD, such as 20190201.
 \end_layout
 
 \begin_layout Standard
-VALID_END: This is the last valid time that can be processed.
+
+\series bold
+VALID_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+This is the last valid time that can be processed.
  The format of this variable is controlled by VALID_TIME_FMT.
- For example, if VALID_TIME_FMT = %Y%m%d, then VALID_END must bet set to
+ For example, if VALID_TIME_FMT = %Y%m%d, then VALID_END must be set to
  a valid time matching YYYYMMDD, such as 20190202.
  Note that the time specified for this variable will not necessary be processed.
  It is used to determine the cutoff of run times that can be processed.
- For example, if METplus is configured to start at 20190201 and end at 20190201
+ For example, if METplus is configured to start at 20190201 and end at 20190202
  processing data in 48 hour increments, it will process valid time 20190201
  then increment the run time to 20190203.
  This is later than the VALID_END value, so execution will stop.
@@ -350,10 +373,18 @@ VALID_END: This is the last valid time that can be processed.
 \end_layout
 
 \begin_layout Standard
-VALID_INCREMENT: This is the number of seconds to add to each run time to
- determine the next run time to process.
+
+\series bold
+VALID_INCREMENT
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+This is the number of seconds to add to each run time to determine the next
+ run time to process.
  This value must be greater than or equal to 60 because METplus currently
- does not support processing second intervals.
+ does not support processing intervals less than one minute.
 \begin_inset Newline newline
 \end_inset
 
@@ -383,6 +414,10 @@ shadowsize "4pt"
 framecolor "black"
 backgroundcolor "none"
 status open
+
+\begin_layout Plain Layout
+[config]
+\end_layout
 
 \begin_layout Plain Layout
 LOOP_BY = VALID
@@ -441,8 +476,16 @@ When looping over inialization time (LOOP_BY = INIT or LOOP_BY = RETRO),
 \end_layout
 
 \begin_layout Standard
-INIT_TIME_FMT: This is the format of the initialization times the user can
- configure in METplus.
+
+\series bold
+INIT_TIME_FMT
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+This is the format of the initialization times the user can configure in
+ METplus.
  The value of INIT_BEG and INIT_END must correspond to this format.
  Example: INIT_TIME_FMT = %Y%m%d%H.
  Using this format, the initialization time range values specified must
@@ -452,20 +495,36 @@ INIT_TIME_FMT: This is the format of the initialization times the user can
 \end_layout
 
 \begin_layout Standard
-INIT_BEG: This is the first initialization time that will be processed.
+
+\series bold
+INIT_BEG
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+This is the first initialization time that will be processed.
  The format of this variable is controlled by INIT_TIME_FMT.
- For example, if INIT_TIME_FMT = %Y%m%d, then INIT_BEG must bet set to an
+ For example, if INIT_TIME_FMT = %Y%m%d, then INIT_BEG must be set to an
  initialization time matching YYYYMMDD, such as 20190201.
 \end_layout
 
 \begin_layout Standard
-INIT_END: This is the last initialization time that can be processed.
+
+\series bold
+INIT_END
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+This is the last initialization time that can be processed.
  The format of this variable is controlled by INIT_TIME_FMT.
- For example, if INIT_TIME_FMT = %Y%m%d, then INIT_END must bet set to an
+ For example, if INIT_TIME_FMT = %Y%m%d, then INIT_END must be set to an
  initialization time matching YYYYMMDD, such as 20190202.
  Note that the time specified for this variable will not necessary be processed.
  It is used to determine the cutoff of run times that can be processed.
- For example, if METplus is configured to start at 20190201 and end at 20190201
+ For example, if METplus is configured to start at 20190201 and end at 20190202
  processing data in 48 hour increments, it will process 20190201 then increment
  the run time to 20190203.
  This is later than the INIT_END value, so execution will stop.
@@ -475,10 +534,18 @@ INIT_END: This is the last initialization time that can be processed.
 \end_layout
 
 \begin_layout Standard
-INIT_INCREMENT: This is the number of seconds to add to each run time to
- determine the next run time to process.
+
+\series bold
+INIT_INCREMENT
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+This is the number of seconds to add to each run time to determine the next
+ run time to process.
  This value must be greater than or equal to 60 because METplus currently
- does not support processing second intervals.
+ does not support processing intervals less than one minute.
 \begin_inset Newline newline
 \end_inset
 
@@ -508,6 +575,10 @@ shadowsize "4pt"
 framecolor "black"
 backgroundcolor "none"
 status open
+
+\begin_layout Plain Layout
+[config]
+\end_layout
 
 \begin_layout Plain Layout
 LOOP_BY = INIT
@@ -574,7 +645,11 @@ Many of the METplus wrappers will also loop over a list of forecast leads
 \series bold
 LEAD_SEQ
 \series default
-: This variable can be set to a comma-separated list of integers to define
+
+\begin_inset Newline newline
+\end_inset
+
+This variable can be set to a comma-separated list of integers to define
  the forecast leads (hours) that will be processed relative to the initializatio
 n/valid time.
  Currently only hours are supported for these values.
@@ -607,6 +682,10 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
+[config]
+\end_layout
+
+\begin_layout Plain Layout
 LEAD_SEQ = 3, 6, 9
 \end_layout
 
@@ -616,8 +695,12 @@ LEAD_SEQ = 3, 6, 9
 \begin_inset Newline newline
 \end_inset
 
-If LOOP_BY = VALID and the current run time is 20190201 at 0Z, then the
- times that will be processed are:
+
+\begin_inset Newline newline
+\end_inset
+
+If LOOP_BY = VALID and the current run time is 20190201 at 0Z, then three
+ times will be processed:
 \end_layout
 
 \begin_layout Standard
@@ -637,8 +720,8 @@ If LOOP_BY = VALID and the current run time is 20190201 at 0Z, then the
 \end_layout
 
 \begin_layout Standard
-If LOOP_BY = INIT and the current run time is 20190201 at 0Z, then the times
- that will be processed are:
+If LOOP_BY = INIT and the current run time is 20190201 at 0Z, then three
+ times will be processed:
 \end_layout
 
 \begin_layout Standard
@@ -669,6 +752,10 @@ Defining lists with begin_end_incr
 You can also define LEAD_SEQ using begin_end_incr(b, e, i) where b = the
  first value, e = the last value (inclusive), and i = the increment.
  For example:
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -735,10 +822,18 @@ LEAD_SEQ = 0, 3, 6, 9, 12
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \series bold
-INIT_SEQ:
+INIT_SEQ
+\begin_inset Newline newline
+\end_inset
+
+
 \series default
- If METplus is configured to loop by valid time (LOOP_BY = VALID), you can
+If METplus is configured to loop by valid time (LOOP_BY = VALID), you can
  use INIT_SEQ instead of LEAD_SEQ.
  This is a list of initialization hours that are available in the data.
  This is useful if you know when the data is initialized and you need to
@@ -772,9 +867,21 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
+[config]
+\end_layout
+
+\begin_layout Plain Layout
+LOOP_BY = VALID
+\end_layout
+
+\begin_layout Plain Layout
 INIT_SEQ = 0, 6, 12, 18
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -806,11 +913,40 @@ IN and LEAD_SEQ_MAX.
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+[config]
+\end_layout
+
+\begin_layout Plain Layout
 LEAD_SEQ_MIN = 12
-\begin_inset Newline newline
+\end_layout
+
+\begin_layout Plain Layout
+LEAD_SEQ_MAX = 24
+\end_layout
+
 \end_inset
 
-LEAD_SEQ_MAX = 24
+
 \begin_inset Newline newline
 \end_inset
 
@@ -828,12 +964,12 @@ Using the initialization sequence specified above, you will get the following
 \end_inset
 
 At valid time 20190201_0Z, this initialization sequence will build a forecast
- lead list of 12, 18, 24
+ lead list of 12, 18, 24.
 \begin_inset Newline newline
 \end_inset
 
 At valid time 20190201_1Z, this initialization sequence will build a forecast
- least list of 13, 19
+ least list of 13, 19.
 \begin_inset Newline newline
 \end_inset
 
@@ -843,10 +979,6 @@ At valid time 20190201_1Z, this initialization sequence will build a forecast
 
 Setting minimum and maximum values will also affect the list of forecast
  leads if you use LEAD_SEQ.
-\begin_inset Newline newline
-\end_inset
-
-
 \begin_inset Newline newline
 \end_inset
 
@@ -904,6 +1036,10 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
+[config]
+\end_layout
+
+\begin_layout Plain Layout
 SERIES_BY_LEAD_GROUP_FCSTS = True
 \end_layout
 
@@ -942,131 +1078,8 @@ name "subsec:SC_Timing_Control_Realtime-Looping"
 \begin_layout Standard
 To make running in realtime easier, METplus supports defining the begin
  and end times relative to the current clock time.
- For example, if the current time is 20190426 8:17 and you start METplus
+ For example, if the current time is 20190426_08:17 and you start METplus
  with:
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-VALID_END = {now?fmt=%Y%m%d%H}
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-Then the value of VALID_END will be substituted with 2019042608.
- You can also use {today} to substitute the current YYYYMMDD, i.e.
- 20190426.
- You cannot change the formatting for the 'today' keyword.
- 
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-You can use the 'shift' keyword to shift the current time by any number
- of seconds.
- For example, starting METplus at the same clock time with:
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-VALID_BEG = {now?fmt=%Y%m%d%H?shift=-86400}
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-The value of VALID_BEG will be set to the current clock time shifted by
- -86400 (24 hours backwards), or 2019042508.
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-If VALID_INCREMENT is set to 21600 (seconds or 6 hours), then METplus will
- process valid times:
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-20190425_08
-\end_layout
-
-\begin_layout Standard
-20190425_14
-\end_layout
-
-\begin_layout Standard
-20190425_20
-\end_layout
-
-\begin_layout Standard
-20190426_02
-\end_layout
-
-\begin_layout Standard
-20190426_08
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-However, you may want to configure METplus to process at 0Z, 6Z, 12Z, and
- 18Z of a given day instead of 2Z, 8Z, 14Z, and 20Z.
- You don't want to have to adjust the shift amount differently if you are
- running at 8Z or 9Z to get the times to line up.
- Instead, use the 'truncate' keyword.
- The value set here is the number of seconds that is used to determine the
- interval of time to round down.
- If you want to process every 6 hours, set 'truncate' to 21600 (seconds).
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-VALID_BEG = {now?fmt=%Y%m%d%H?shift=-86400?truncate=21600}
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-This will round down the value to the nearest 6 hour interval of time.
- Starting METplus on or after 6Z but before 12Z on 20190426 will result
- in VALID_BEG = 2019042506 (clock time shifted backwards by 24 hours and
- truncated to 6 hours).
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-For example, starting METplus on 20190426 at 8:16 with the following configurati
-on:
 \begin_inset Newline newline
 \end_inset
 
@@ -1094,19 +1107,230 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
-LOOP_BY = VALID
+VALID_END = {now?fmt=%Y%m%d%H}
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+then the value of VALID_END will be set to 2019042608.
+ You can also use {today} to substitute the current YYYYMMDD, i.e.
+ 20190426.
+ You cannot change the formatting for the 'today' keyword.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+You can use the 'shift' keyword to shift the current time by any number
+ of seconds.
+ For example, if you start METplus at the same clock time with:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
 \begin_layout Plain Layout
-VALID_TIME_FMT = %Y%m%d%H
+VALID_BEG = {now?fmt=%Y%m%d%H?shift=-86400}
 \end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+then the value of VALID_BEG will be set to the current clock time shifted
+ by -86400 (24 hours backwards), or 2019042508.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+If VALID_INCREMENT is set to 21600 (seconds or 6 hours), then METplus will
+ process valid times:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+20190425_08
+\begin_inset Newline newline
+\end_inset
+
+20190425_14
+\begin_inset Newline newline
+\end_inset
+
+20190425_20
+\begin_inset Newline newline
+\end_inset
+
+20190426_02
+\begin_inset Newline newline
+\end_inset
+
+20190426_08
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+However, you may want to configure METplus to process at 0Z, 6Z, 12Z, and
+ 18Z of a given day instead of 2Z, 8Z, 14Z, and 20Z.
+ Having to adjust the shift amount differently if you are running at 8Z
+ or 9Z to get the times to line up would be tedious.
+ Instead, use the 'truncate' keyword.
+ The value set here is the number of seconds that is used to determine the
+ interval of time to round down.
+ If you want to process every 6 hours, set 'truncate' to 21600 (seconds).
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
 
 \begin_layout Plain Layout
 VALID_BEG = {now?fmt=%Y%m%d%H?shift=-86400?truncate=21600}
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This will round down the value to the nearest 6 hour interval of time.
+ Starting METplus on or after 6Z but before 12Z on 20190426 will result
+ in VALID_BEG = 2019042506 (clock time shifted backwards by 24 hours then
+ truncated to 6 hours).
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Starting METplus on 20190426 at 8:16 with the following configuration:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
 \begin_layout Plain Layout
-VALID_END = {now?fmt=%Y%m%d%H}
+[config]
+\end_layout
+
+\begin_layout Plain Layout
+LOOP_BY = VALID
+\end_layout
+
+\begin_layout Plain Layout
+VALID_TIME_FMT = 
+\series bold
+%Y%m%d%H
+\end_layout
+
+\begin_layout Plain Layout
+VALID_BEG = {now?fmt=
+\series bold
+%Y%m%d%H
+\series default
+?shift=-86400?truncate=21600}
+\end_layout
+
+\begin_layout Plain Layout
+VALID_END = {now?fmt=
+\series bold
+%Y%m%d%H
+\series default
+}
 \end_layout
 
 \begin_layout Plain Layout
@@ -1130,26 +1354,35 @@ will process valid times starting on 20190425 at 6Z every 6 hours until
 \end_inset
 
 20190425 at 6Z
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 20190425 at 12Z
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 20190425 at 18Z
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 20190426 at 0Z
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 20190426 at 6Z
 \begin_inset Newline newline
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+IMPORTANT NOTE: When using the 'now' keyword, the value of VALID_TIME_FMT
+ must be set to the same value as the 'fmt' used in the 'now' item in VALID_BEG
+ and VALID_END.
+ The relevant values are highlighted in bold in the above example.
 \end_layout
 
 \begin_layout Subsection
@@ -1178,40 +1411,17 @@ This section describes how METplus configuration variables can be used to
 \series bold
 FCST_VAR[N]_NAME
 \series default
-: Set this to the name of a forecast variable that you want to evaluate.
+
+\begin_inset Newline newline
+\end_inset
+
+Set this to the name of a forecast variable that you want to evaluate.
  N is any integer greater or equal to 1, i.e.
  
 \begin_inset Newline newline
 \end_inset
 
 
-\begin_inset Newline newline
-\end_inset
-
-FCST_VAR1_NAME = TMP
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series default
-FCST_VAR2_NAME = RH
-\begin_inset Newline newline
-\end_inset
-
-
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-FCST_VAR[N]_LEVELS
-\series default
-: Set this to a comma-separated list of levels or a single value.
- FCST_VAR1_LEVELS corresponds to FCST_VAR1_NAME, FCST_VAR2_LEVELS corresponds
- to FCST_VAR2_NAME, etc.
- For example:
 \begin_inset Newline newline
 \end_inset
 
@@ -1235,6 +1445,78 @@ backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
+[config]
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR1_NAME = TMP
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+FCST_VAR2_NAME = RH
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR[N]_LEVELS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Set this to a comma-separated list of levels or a single value.
+ FCST_VAR1_LEVELS corresponds to FCST_VAR1_NAME, FCST_VAR2_LEVELS corresponds
+ to FCST_VAR2_NAME, etc.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+For example:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+[config]
+\begin_inset Newline newline
+\end_inset
+
 FCST_VAR1_NAME = TMP
 \begin_inset Newline newline
 \end_inset
@@ -1258,9 +1540,13 @@ will process TMP at P500 and TMP at P750.
 
 
 \series bold
-OBS_VAR[N]_NAME:
+OBS_VAR[N]_NAME
 \series default
- Set this to the corresponding observation variable that you want to evaluate
+
+\begin_inset Newline newline
+\end_inset
+
+Set this to the corresponding observation variable that you want to evaluate
  with FCST_VAR[N]_NAME.
  If this value is not set for a given [N] value, then it will be assumed
  that the same name as the forecast name will be used.
@@ -1274,11 +1560,19 @@ OBS_VAR[N]_NAME:
 \begin_inset Newline newline
 \end_inset
 
-OBS_VAR[N]_LEVELS:
+OBS_VAR[N]_LEVELS
 \series default
- Set this to a comma-separated list of levels or a single value.
+
+\begin_inset Newline newline
+\end_inset
+
+Set this to a comma-separated list of levels or a single value.
  If OBS_VAR[N]_LEVELS and OBS_VAR[N]_NAME are not set, it will be assumed
  that the same name/level as the forecast data will be used.
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -1311,8 +1605,20 @@ FCST_VAR1_NAME = TMP
 \end_inset
 
 FCST_VAR1_LEVELS = P500
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR2_NAME = RH
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR2_LEVELS = P750, P250
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 without setting OBS_VAR1_NAME is the equivalent of setting:
@@ -1347,11 +1653,27 @@ FCST_VAR1_LEVELS = P500
 \begin_inset Newline newline
 \end_inset
 
+FCST_VAR2_NAME = RH
+\begin_inset Newline newline
+\end_inset
+
+FCST_VAR2_LEVELS = P750, P250
+\begin_inset Newline newline
+\end_inset
+
 OBS_VAR1_NAME = TMP
 \begin_inset Newline newline
 \end_inset
 
 OBS_VAR1_LEVELS = P500
+\begin_inset Newline newline
+\end_inset
+
+OBS_VAR2_NAME = RH
+\begin_inset Newline newline
+\end_inset
+
+OBS_VAR2_LEVELS = P750, P250
 \end_layout
 
 \end_inset
@@ -1360,9 +1682,27 @@ OBS_VAR1_LEVELS = P500
 \end_layout
 
 \begin_layout Standard
-This will compare TMP/P500 in the forecast data to TMP/P500 in the observation
- data.
- If you set:
+This will compare:
+\begin_inset Newline newline
+\end_inset
+
+TMP/P500 in the forecast data to TMP/P500 in the observation data
+\begin_inset Newline newline
+\end_inset
+
+RH/P750 in the forecast data to RH/P750 in the observation data
+\begin_inset Newline newline
+\end_inset
+
+RH/P250 in the forecast data to RH/P250 in the observation data
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+If you set:
 \begin_inset Newline newline
 \end_inset
 
@@ -1427,11 +1767,42 @@ OBS_VAR1_LEVELS =
 \begin_inset Newline newline
 \end_inset
 
-This will compare forecast TMP/P500 to observation TEMP (0,*,*) and forecast
- TMP/P750 to observation TEMP (1,*,*).
- Note that NetCDF level values that contain (*,*) notation must be surrounded
- by quotation marks so it will not be misinterpreted as a list of items.
- The number of level items must be equal in each list for a given comparison.
+
+\begin_inset Newline newline
+\end_inset
+
+This will compare:
+\begin_inset Newline newline
+\end_inset
+
+Forecast TMP/P500 to observation TEMP at (0,*,*)
+\begin_inset Newline newline
+\end_inset
+
+Forecast TMP/P750 to observation TEMP at (1,*,*)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+IMPORTANT NOTE: NetCDF level values that contain (*,*) notation must be
+ surrounded by quotation marks so it will not be misinterpreted as a list
+ of items.
+
+\series default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The number of level items must be equal in each list for a given comparison.
  If you define separate names for a forecast and observation, you will need
  to define separate levels for both even if they are equivalent.
  For example, setting FCST_VAR1_NAME, FCST_VAR1_LEVELS, and OBS_VAR1_NAME,
