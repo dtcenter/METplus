@@ -24,6 +24,7 @@ import sys
 import re
 import csv
 import produtil.setup
+import datetime
 from produtil.run import ExitStatusException
 # TODO - critical  must import grid_to_obs_util before CommandBuilder
 # MUST import grid_to_obs_util BEFORE command_builder, else it breaks stand-alone
