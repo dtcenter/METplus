@@ -204,15 +204,15 @@ output_flag = {
 // May be set separately in each "obs.field" entry
 //
 nc_pairs_flag = {
-   latlon     = TRUE;
-   raw        = TRUE;
-   diff       = TRUE;
-   climo      = TRUE;
+   latlon     = FALSE;
+   raw        = FALSE;
+   diff       = FALSE;
+   climo      = FALSE;
    weight     = FALSE;
    nbrhd      = FALSE;
    fourier    = FALSE;
    gradient   = FALSE;
-   apply_mask = TRUE;
+   apply_mask = FALSE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
