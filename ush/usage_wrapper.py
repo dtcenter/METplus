@@ -25,12 +25,12 @@ class UsageWrapper(CommandBuilder):
         super(UsageWrapper, self).__init__(p, logger)
         self.app_name = 'Usage'
         self.logger = logger
-        self.available_processes = ['TcPairs', 'ExtractTiles', 'SeriesByInit',
-                                    'SeriesByLead', 'PcpCombine',
-                                    'RegridDataPlane', 'GridStat',
-                                    'Mode', 'MTD', 'RegridDataPlane',
-                                    'CyclonePlotter', 'TCMPRPlotter',
-                                    'PB2NC', 'PointStat']
+        self.available_processes = [ 'CyclonePlotter', 'EnsembleStat',
+                                     'ExtractTiles', 'GempakToCF', 'GridStat',
+                                     'Mode', 'MTD', 'PB2NC', 'PcpCombine',
+                                     'PointStat', 'RegridDataPlane',
+                                     'SeriesByLead','SeriesByInit', 'TcPairs',
+                                     'TcStat','TCMPRPlotter' ]
 
     def run_all_times(self):
         print("USAGE:\n  This is a default process, please indicate more " +
