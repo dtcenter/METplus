@@ -77,10 +77,10 @@
 \begin_body
 
 \begin_layout Chapter
-Overview of METplus Wrappers
+Overview
 \begin_inset CommandInset label
 LatexCommand label
-name "chap:Overview-of-METplus-Wrappers"
+name "chap:Overview"
 
 \end_inset
 
@@ -120,7 +120,7 @@ The METplus Wrappers User's Guide is organized as follows.
  Chapter 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "chap:Overview-of-METplus-Wrappers"
+reference "chap:Overview"
 
 \end_inset
 
@@ -138,7 +138,7 @@ reference "chap:Software-Installation/Getting-St"
  Chapter 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "chap:METplus Wrappers System Configuration"
+reference "chap:System Configuration"
 
 \end_inset
 
@@ -273,9 +273,9 @@ name "sec:METplus-components"
 \begin_layout Standard
 
 \series medium
-The major components of the METplus Wrappers package are METplus Wrappers
- Python wrappers to the MET tools, MET configuration files and a hierarchy
- of METplus Wrappers configuration files.
+The major components of the METplus Wrappers package are METplus Python
+ wrappers to the MET tools, MET configuration files and a hierarchy of METplus
+ Wrappers configuration files.
  Some Python wrappers do not correspond to a particular MET tool, but wrap
  utilities to extend METplus functionality.
 \end_layout
@@ -350,7 +350,7 @@ name "sec:Code-support"
 \begin_layout Standard
 
 \series medium
-METplus Wrappers support is provided through a MET-help e-mail address:
+Support for METplus Wrappers is provided through a MET-help e-mail address:
  met_help@ucar.edu.
  We will endeavor to respond to requests for help in a timely fashion.
  In addition, information about METplus Wrappers and tools that can be used

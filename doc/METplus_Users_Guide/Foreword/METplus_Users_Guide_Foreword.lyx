@@ -249,7 +249,7 @@ MakePlots Wrapper
 
 \begin_deeper
 \begin_layout Itemize
-Reworked following the changes to the work done on stat_analysis_wrapper.py
+Reworked following the changes to the work done on StatAnalysis wrapper
 \end_layout
 
 \end_deeper
@@ -330,7 +330,7 @@ SeriesByLead Wrapper
 \begin_deeper
 \begin_layout Itemize
 Changed configuration names for forecast hour to more closely match other
- wrappers (See LEAD_SEQ_[N], LEAD_SEQ_[N]_LABEL, SERIES_BY_LEAD_GROUP_FCSTS,
+ wrappers (See LEAD_SEQ_<n>, LEAD_SEQ_<n>_LABEL, SERIES_BY_LEAD_GROUP_FCSTS,
  and LEAD_SEQ in section describing A-Z Config Glossary 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -607,10 +607,10 @@ The following notice shall be displayed on any scholarly works associated
 \begin_layout Plain Layout
 
 \shape italic
-"Model Evaluation Tools (MET) and METplus Wrappers were developed at the
- National Center for Atmospheric Research (NCAR) through grants from the
- National Science Foundation (NSF), the National Oceanic and Atmospheric
- Administration (NOAA), and the United States Air Force (USAF).
+"Model Evaluation Tools (MET) and METplus were developed at the National
+ Center for Atmospheric Research (NCAR) through grants from the National
+ Science Foundation (NSF), the National Oceanic and Atmospheric Administration
+ (NOAA), and the United States Air Force (USAF).
  NCAR is sponsored by the United States National Science Foundation." 
 \end_layout
 
@@ -685,10 +685,10 @@ s within the National Oceanic and Atmospheric Administration (NOAA): 1)
  for their support of this work.
  Thanks also go to the staff at the Developmental Testbed Center for their
  help, advice, and many types of support.
- We released METplus Wrappers Alpha in February 2017 and would not have
- made a decade of cutting-edge verification support without those who participat
-ed in DTC planning workshops and the NGGPS United Forecast System Strategic
- Implementation Plan Working Groups (NGGPS UFS SIP WGs).
+ We released METplus Alpha in February 2017 and would not have made a decade
+ of cutting-edge verification support without those who participated in
+ DTC planning workshops and the NGGPS United Forecast System Strategic Implement
+ation Plan Working Groups (NGGPS UFS SIP WGs).
 \end_layout
 
 \begin_layout Standard

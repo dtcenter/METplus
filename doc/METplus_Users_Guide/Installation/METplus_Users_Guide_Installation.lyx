@@ -139,8 +139,7 @@ name "sec:Programming-/-scripting-languages"
 
 \series medium
 METplus Wrappers is written in Python 2.7.
- METplus Wrappers is intended to be a tool for the modeling community to
- use and adapt.
+ It is intended to be a tool for the modeling community to use and adapt.
  As users make upgrades and improvements to the tools, they are encouraged
  to offer those upgrades to the broader community by offering feedback to
  the developers or coordinating for a GitHub pull.
@@ -538,7 +537,7 @@ Open your .cshrc file and do the following:
 \begin_layout Itemize
 To your PATH, add: 
 \shape italic
-/<full-path-to
+<full-path-to
 \shape default
 -
 \shape italic
@@ -550,7 +549,7 @@ METplus
 \begin_layout Itemize
 Optional: add JLOGFILE variable and set to 
 \shape italic
-/<full-path-to-save-jlog-files>/
+<full-path-to-save-jlog-files>
 \end_layout
 
 \begin_layout Itemize
@@ -614,7 +613,7 @@ Open your .bashrc file and do the following:
 \begin_layout Itemize
 To your PATH, add : 
 \shape italic
-/<full-path-to-METplus
+<full-path-to-METplus
 \shape default
 >/ush
 \end_layout
@@ -794,7 +793,7 @@ Running METplus Wrappers involves invoking the Python script master_metplus.py
  from any directory followed by a list of configuration files (file path
  relative to the 
 \shape italic
-/<path_to_METplus_install_dir
+<path_to_METplus_install_dir
 \shape default
 >/METplus/parm directory).
 \end_layout
@@ -877,7 +876,7 @@ MET_INSTALL_DIR = /usr/local/met-8.1
 \end_layout
 
 \begin_layout Plain Layout
-// Set these to any valid directory to override the </path/to/> placeholder
+// Set these to any valid directory to override the </path/to> placeholder
  set in the metplus_system.conf file
 \end_layout
 
@@ -1037,20 +1036,6 @@ USAGE: This is a default process, please indicate more specific processes
 \end_layout
 
 \begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 \begin_inset Box Boxed
 position "t"
 hor_pos "c"
@@ -1074,7 +1059,7 @@ Example: Using a use-case configuration
 \end_layout
 
 \begin_layout Plain Layout
->master_metplus.py -c use_cases/feature_relative/feature_relative.conf 
+>master_metplus.py -c use_cases/feature_relative/feature_relative.conf
 \end_layout
 
 \begin_layout Plain Layout

@@ -77,10 +77,10 @@
 \begin_body
 
 \begin_layout Chapter
-METplus Wrappers Python Wrappers
+Python Wrappers
 \begin_inset CommandInset label
 LatexCommand label
-name "chap:METplus Wrappers Python Wrappers"
+name "chap:Python Wrappers"
 
 \end_inset
 
@@ -208,7 +208,7 @@ reference "sec:SC_C"
 \begin_inset Newline newline
 \end_inset
 
-CIRCLE_MARKDER_SIZE 
+CIRCLE_MARKER_SIZE 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_C"
@@ -561,14 +561,14 @@ name "sec:extract_tiles_wrapper"
 \end_layout
 
 \begin_layout Standard
-The extract_tiles_wrapper.py script is used to regrid and extract subregions
- from paired tropical cyclone tracks that are created by the tc_pairs_wrapper.
+The ExtractTiles wrapper is used to regrid and extract subregions from paired
+ tropical cyclone tracks that are created by the tc_pairs_wrapper.
  Unlike the other wrappers, the extract_tiles_wrapper does not correspond
  to a specific MET tool.
  It invokes the tc_stat_wrapper, which in turn calls the MET tc_stat tool
  to determine the lat/lon positions of the paired track data.
  This information is then used to create tiles of subregions.
- The extract_tiles_wrapper creates a 2n degree x 2m degree grid/tile with
+ The ExtractTiles wrapper creates a 2n degree x 2m degree grid/tile with
  each storm located at the center.
  
 \end_layout
@@ -1071,11 +1071,10 @@ Description
 \end_layout
 
 \begin_layout Standard
-The make_plots_wrapper creates various statistical plots using python scripts
+The MakePlots wrapper creates various statistical plots using python scripts
  for the various METplus Wrappers use cases.
- This can only be run following stat_analysis_wrapper when LOOP_ORDER =
- processes.
- To run make_plots_wrapper, include MakePlots in PROCESS_LIST.
+ This can only be run following StatAnalysis wrapper when LOOP_ORDER = processes.
+ To run MakePlots wrapper, include MakePlots in PROCESS_LIST.
 \end_layout
 
 \begin_layout Subsection
@@ -1165,14 +1164,7 @@ reference "sec:SC_P"
 \begin_inset Newline newline
 \end_inset
 
-[VALID/INIT]_BEG 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:SC_V"
-
-\end_inset
-
- 
+VALID_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_V"
@@ -1183,14 +1175,29 @@ reference "sec:SC_V"
 \begin_inset Newline newline
 \end_inset
 
-[VALID/INIT]_END 
+VALID_END 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_V"
 
 \end_inset
 
- 
+
+\begin_inset Newline newline
+\end_inset
+
+INIT_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+INIT_END 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_I"
@@ -2041,7 +2048,7 @@ Description
 \end_layout
 
 \begin_layout Standard
-The pb2nc_wrapper is a Python script that encapsulates the behavior of the
+The PB2NC wrapper is a Python script that encapsulates the behavior of the
  MET pb2nc tool to convert prepBUFR files into netCDF.
 \end_layout
 
@@ -2361,7 +2368,7 @@ Description
 \end_layout
 
 \begin_layout Standard
-The pcp_combine_wrapper is a Python script that encapsulates the MET pcp_combine
+The PcpCombine wrapper is a Python script that encapsulates the MET pcp_combine
  tool.
  It provides the infrastructure to combine or extract from files to build
  desired accumulations.
@@ -2454,7 +2461,7 @@ reference "sec:SC_O"
 \end_inset
 
 
-\begin_inset Newline linebreak
+\begin_inset Newline newline
 \end_inset
 
 OBS_PCP_COMBINE_OUTPUT_TEMPLATE 
@@ -2844,7 +2851,7 @@ Description
 \end_layout
 
 \begin_layout Standard
-The point_stat_wrapper is a Python script that encapsulates the MET point_stat
+The PointStat wrapper is a Python script that encapsulates the MET point_stat
  tool.
  It provides the infrastructure to read in gridded model data and netCDF
  point observation data to perform grid-to-point (grid-to-obs) verification.
@@ -3170,7 +3177,7 @@ OBS_INPUT_FILE_TMPL
 \begin_inset Newline newline
 \end_inset
 
-FCST_INPUT_FILE_TPOINTMPL
+FCST_INPUT_FILE_TMPL
 \begin_inset Newline newline
 \end_inset
 
@@ -3350,9 +3357,9 @@ Description
 \end_layout
 
 \begin_layout Standard
-The series_by_init_wrapper provides the infrastructure needed to perform
- a series analysis on tropical cyclone data, based on initialization times.
- The series_by_init_wrapper creates numerous plots that represent the field,
+The SeriesByInit wrapper provides the infrastructure needed to perform a
+ series analysis on tropical cyclone data, based on initialization times.
+ The SeriesByInit_wrapper creates numerous plots that represent the field,
  level, and statistic for each initialization time.
 \end_layout
 
@@ -3587,12 +3594,12 @@ Description
 \end_layout
 
 \begin_layout Standard
-The series_by_lead_wrapper provides the infrastructure needed to perform
- a series analysis on tropical cyclone data, based on lead (forecast hour)
+The SeriesByLead wrapper provides the infrastructure needed to perform a
+ series analysis on tropical cyclone data, based on lead (forecast hour)
  times.
- The series_by_lead_wrapper creates numerous plots that represent the field,
+ The SeriesByLead wrapper creates numerous plots that represent the field,
  level, and statistic for each lead (forecast) time.
- The series_by_lead can be done in one of two ways: by all forecast hours
+ The SeriesByLead can be done in one of two ways: by all forecast hours
  or by forecast hour groupings.
  Performing a series analysis by valid time with forecast hour groupings
  can be useful when analyzing storm tracks based on time 
@@ -3785,15 +3792,15 @@ Description
 \end_layout
 
 \begin_layout Standard
-The stat_analysis_wrapper encapsulates the behavior of the MET stat_analysis
+The StatAnalysis wrapper encapsulates the behavior of the MET stat_analysis
  tool.
  It provides the infrastructure to summarize and filter the MET .stat files.
- stat_analysis_wrapper can be run in two different methods.
+ StatAnalysis wrapper can be run in two different methods.
  First is to look at the STAT lines for a single date, to use this method
  set LOOP_ORDER = times.
  Second is to look at the STAT lines over a span of dates, to use this method
  set LOOP_ORDER = processes.
- To run stat_analysis_wrapper, include StatAnalysis in PROCESS_LIST.
+ To run StatAnalysis wrapper, include StatAnalysis in PROCESS_LIST.
 \end_layout
 
 \begin_layout Subsection
@@ -4574,7 +4581,7 @@ Description
 \end_layout
 
 \begin_layout Standard
-The tc_pairs_wrapper encapsulates the behavior of the MET tc_pairs tool.
+The TcPairs wrapper encapsulates the behavior of the MET tc_pairs tool.
  The wrapper accepts Adeck and Bdeck (Best track) cyclone track data in
  extra tropical cyclone format (such as the data used by sample data provided
  in the METplus tutorial), or ATCF formatted track data.
@@ -5341,7 +5348,7 @@ Description
 \end_layout
 
 \begin_layout Standard
-The tcmpr_plotter_wrapper is a Python script that wraps the R script plot_tcmpr.R.
+The TCMPRPlotter wrapper is a Python script that wraps the R script plot_tcmpr.R.
  This script is usefule for plotting the calculated statistics for the output
  from the MET-TC tools.
  This script, and other R scripts are included in the MET installation.
@@ -5353,7 +5360,7 @@ Configuration
 \end_layout
 
 \begin_layout Standard
-The following are configuration settings that correspond to the tcmpr_plotter
+The following are configuration settings that correspond to the TCMPRPlotter
  wrapper.
  A description of what these values represent are found in 
 \begin_inset CommandInset ref
@@ -5721,25 +5728,6 @@ Deprecated:
 
 \color lightgray
 TCMPR_PLOT_OUT_DIR
-\end_layout
-
-\begin_layout Section
-WaveletStat 
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:wavelet_stat_wrapper"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Description
-\end_layout
-
-\begin_layout Standard
-NOTE: This wrapper has not been tested for use in METplus Wrappers.
 \end_layout
 
 \end_body
