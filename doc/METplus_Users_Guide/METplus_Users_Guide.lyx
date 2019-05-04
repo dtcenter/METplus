@@ -28,7 +28,18 @@
 \index_command default
 \paperfontsize default
 \spacing onehalf
-\use_hyperref false
+\use_hyperref true
+\pdf_title "METplus Wrappers User's Guide"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\pdf_quoted_options "urlcolor=blue"
 \papersize letterpaper
 \use_geometry true
 \use_package amsmath 1
@@ -78,7 +89,7 @@
 \begin_layout Title
 
 \series bold
-METplus Version 2.1
+METplus Wrappers Version 2.1
 \begin_inset Newline newline
 \end_inset
 

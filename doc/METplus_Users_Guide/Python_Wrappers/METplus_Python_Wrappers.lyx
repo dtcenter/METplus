@@ -77,10 +77,10 @@
 \begin_body
 
 \begin_layout Chapter
-METplus Python Wrappers
+Python Wrappers
 \begin_inset CommandInset label
 LatexCommand label
-name "chap:METplus Python Wrappers"
+name "chap:Python Wrappers"
 
 \end_inset
 
@@ -89,14 +89,14 @@ name "chap:METplus Python Wrappers"
 
 \begin_layout Standard
 This chapter provides a description of each supported Python wrapper in
- METplus.
- A METplus wrapper is generally a Python script that encapsulates the behavior
- of a corresponding MET tool.
+ METplus Wrappers.
+ A wrapper is generally a Python script that encapsulates the behavior of
+ a corresponding MET tool.
  Each of these sections can be added to the PROCESS_LIST configuration list
  variable.
  The Configuration section of each wrapper section below lists the METplus
- configuration variables that are specific to that wrapper organized by
- config file section.
+ Wrappers configuration variables that are specific to that wrapper organized
+ by config file section.
  You can find more information about each item in the A-Z Config Glossary
  (
 \begin_inset CommandInset ref
@@ -146,9 +146,9 @@ reference "sec:SC_C"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 CYCLONE_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -172,9 +172,9 @@ reference "sec:SC_C"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 CYCLONE_INIT_HOUR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -183,9 +183,9 @@ reference "sec:SC_C"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 CYCLONE_MODEL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -194,9 +194,9 @@ reference "sec:SC_C"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 CYCLONE_PLOT_TITLE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -205,10 +205,10 @@ reference "sec:SC_C"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-CIRCLE_MARKDER_SIZE 
+CIRCLE_MARKER_SIZE 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_C"
@@ -216,9 +216,9 @@ reference "sec:SC_C"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 CROSS_MARKER_SIZE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -227,9 +227,9 @@ reference "sec:SC_C"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 GENERATE_TRACK_ASCII 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -288,9 +288,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_ENSEMBLE_STAT_GRID_INPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -299,9 +299,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_ENSEMBLE_STAT_INPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -310,9 +310,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 ENSEMBLE_STAT_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -336,9 +336,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -347,9 +347,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_ENSEMBLE_STAT_INPUT_TEMPLATE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -373,9 +373,9 @@ reference "sec:SC_E"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_ENSEMBLE_STAT_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -384,9 +384,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -395,9 +395,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -406,9 +406,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 ENSEMBLE_STAT_GRID_VX 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -417,9 +417,9 @@ reference "sec:SC_E"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 ENSEMBLE_STAT_CONFIG_FILE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -428,9 +428,9 @@ reference "sec:SC_E"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 ENSEMBLE_STAT_MET_OBS_ERROR_TABLE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -439,9 +439,9 @@ reference "sec:SC_E"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 ENSEMBLE_STAT_N_MEMBERS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -450,9 +450,9 @@ reference "sec:SC_E"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_ENSEMBLE_STAT_WINDOW_BEGIN 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -461,9 +461,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_ENSEMBLE_STAT_WINDOW_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -472,9 +472,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 ENSEMBLE_STAT_ENS_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -483,10 +483,10 @@ reference "sec:SC_E"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-ENS_VAR[N]_NAME (optional) 
+ENS_VAR<n>_NAME (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_E"
@@ -494,10 +494,10 @@ reference "sec:SC_E"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-ENS_VAR[N]_LEVELS (optional) 
+ENS_VAR<n>_LEVELS (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_E"
@@ -505,10 +505,10 @@ reference "sec:SC_E"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-ENS_VAR[N]_THRESH (optional) 
+ENS_VAR<n>_THRESH (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_E"
@@ -516,10 +516,10 @@ reference "sec:SC_E"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-ENS_VAR[N]_OPTIONS (optional) 
+ENS_VAR<n>_OPTIONS (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_E"
@@ -539,11 +539,9 @@ Deprecated:
 
 \color lightgray
 ENSEMBLE_STAT_OUT_DIR
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 ENSEMBLE_STAT_CONFIG
 \end_layout
 
@@ -563,14 +561,14 @@ name "sec:extract_tiles_wrapper"
 \end_layout
 
 \begin_layout Standard
-The extract_tiles_wrapper.py script is used to regrid and extract subregions
- from paired tropical cyclone tracks that are created by the tc_pairs_wrapper.
- Unlike the other METplus wrappers, the extract_tiles_wrapper does not correspon
-d to a specific MET tool.
+The ExtractTiles wrapper is used to regrid and extract subregions from paired
+ tropical cyclone tracks that are created by the tc_pairs_wrapper.
+ Unlike the other wrappers, the extract_tiles_wrapper does not correspond
+ to a specific MET tool.
  It invokes the tc_stat_wrapper, which in turn calls the MET tc_stat tool
  to determine the lat/lon positions of the paired track data.
  This information is then used to create tiles of subregions.
- The extract_tiles_wrapper creates a 2n degree x 2m degree grid/tile with
+ The ExtractTiles wrapper creates a 2n degree x 2m degree grid/tile with
  each storm located at the center.
  
 \end_layout
@@ -612,9 +610,9 @@ reference "sec:SC_L"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 LAT_ADJ 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -623,9 +621,9 @@ reference "sec:SC_L"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 NLAT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -634,9 +632,9 @@ reference "sec:SC_N"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 NLON 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -645,9 +643,9 @@ reference "sec:SC_N"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 DLON 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -656,9 +654,9 @@ reference "sec:SC_D"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 DLAT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -667,9 +665,9 @@ reference "sec:SC_D"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 EXTRACT_TILES_FILTER_OPTS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -678,9 +676,9 @@ reference "sec:SC_E"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 EXTRACT_TILES_VAR_LIST 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -754,9 +752,9 @@ reference "sec:SC_G"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 GEMPAKTOCF_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -780,9 +778,9 @@ reference "sec:SC_G"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 GEMPAKTOCF_OUTPUT_TEMPLATE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -844,9 +842,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_GRID_STAT_INPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -855,9 +853,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 GRID_STAT_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -881,9 +879,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_GRID_STAT_INPUT_TEMPLATE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -892,9 +890,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 GRID_STAT_VERIFICATION_MASK_TEMPLATE (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -918,9 +916,9 @@ reference "sec:SC_G"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_GRID_STAT_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -929,9 +927,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_GRID_STAT_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -940,9 +938,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 GRID_STAT_ONCE_PER_FIELD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -951,9 +949,9 @@ reference "sec:SC_G"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_GRID_STAT_PROB_THRESH (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -962,9 +960,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_GRID_STAT_PROB_THRESH (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -973,9 +971,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 GRID_STAT_NEIGHBORHOOD_WIDTH (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -984,9 +982,9 @@ reference "sec:SC_G"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 GRID_STAT_NEIGHBORHOOD_SHAPE (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -995,9 +993,9 @@ reference "sec:SC_G"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_GRID_STAT_WINDOW_BEGIN (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1006,9 +1004,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_GRID_STAT_WINDOW_END (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1017,9 +1015,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_GRID_STAT_WINDOW_BEGIN (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1028,9 +1026,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_GRID_STAT_WINDOW_END (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1051,11 +1049,9 @@ Deprecated:
 
 \color lightgray
 GRID_STAT_OUT_DIR
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 GRID_STAT_CONFIG
 \end_layout
 
@@ -1075,11 +1071,10 @@ Description
 \end_layout
 
 \begin_layout Standard
-The make_plots_wrapper creates various statistical plots using python scripts
- for the various METplus use cases.
- This can only be run following stat_analysis_wrapper when LOOP_ORDER =
- processes.
- To run make_plots_wrapper, include MakePlots in PROCESS_LIST.
+The MakePlots wrapper creates various statistical plots using python scripts
+ for the various METplus Wrappers use cases.
+ This can only be run following StatAnalysis wrapper when LOOP_ORDER = processes.
+ To run MakePlots wrapper, include MakePlots in PROCESS_LIST.
 \end_layout
 
 \begin_layout Subsection
@@ -1091,7 +1086,7 @@ The following values
 \series bold
 must
 \series default
- be defined in the METplus configuration file:
+ be defined in the METplus Wrappers configuration file:
 \end_layout
 
 \begin_layout Standard
@@ -1107,9 +1102,9 @@ reference "sec:SC_P"
 \end_inset
 
  
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 STAT_FILES_INPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1118,9 +1113,9 @@ reference "sec:SC_S"
 \end_inset
 
  
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PLOTTING_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1144,9 +1139,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VERIF_TYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1155,9 +1150,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PLOT_TIME 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1166,17 +1161,10 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-VALID/INIT_BEG 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:SC_V"
-
+\begin_inset Newline newline
 \end_inset
 
- 
+VALID_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_V"
@@ -1184,17 +1172,21 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-VALID/INIT_END 
+VALID_END 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_V"
 
 \end_inset
 
- 
+
+\begin_inset Newline newline
+\end_inset
+
+INIT_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_I"
@@ -1202,9 +1194,20 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+INIT_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
 VALID_HOUR_METHOD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1213,9 +1216,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VALID_HOUR_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1224,9 +1227,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VALID_HOUR_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1235,9 +1238,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VALID_HOUR_INCREMENT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1246,9 +1249,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_METHOD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1257,9 +1260,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1268,9 +1271,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1279,9 +1282,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_INCREMENT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1290,10 +1293,10 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-MODELn_NAME 
+MODEL<n>_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_M"
@@ -1301,10 +1304,10 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-MODELn_OBS_NAME 
+MODEL<n>_OBS_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_M"
@@ -1312,10 +1315,10 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-MODELn_NAME_ON_PLOT 
+MODEL<n>_NAME_ON_PLOT 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_M"
@@ -1323,10 +1326,10 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-FCST_VARn_NAME 
+FCST_VAR<n>_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_F"
@@ -1334,10 +1337,10 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-FCST_VARn_LEVELS 
+FCST_VAR<n>_LEVELS 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_F"
@@ -1345,9 +1348,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 REGION_LIST 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1356,9 +1359,9 @@ reference "sec:SC_R"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 LEAD_LIST 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1367,9 +1370,9 @@ reference "sec:SC_L"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INTERP 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1378,9 +1381,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PLOT_STATS_LIST 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1389,9 +1392,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 CI_METHOD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1400,9 +1403,9 @@ reference "sec:SC_C"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VERIF_GRID 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1411,9 +1414,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 EVENT_EQUALIZATION 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1429,11 +1432,11 @@ The following values are
 \series bold
 optional
 \series default
- in the METplus configuration file:
+ in the METplus Wrappers configuration file:
 \end_layout
 
 \begin_layout Standard
-FCST_VARn_THRESH 
+FCST_VAR<n>_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_F"
@@ -1441,10 +1444,10 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-FCST_VARn_OPTIONS 
+FCST_VAR<n>_OPTIONS 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_F"
@@ -1452,10 +1455,10 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-VARn_FOURIER_DECOMP 
+VAR<n>_FOURIER_DECOMP 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_V"
@@ -1463,10 +1466,10 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-VARn_WAVE_NUM_LIST 
+VAR<n>_WAVE_NUM_LIST 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_V"
@@ -1512,9 +1515,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_MODE_INPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1523,9 +1526,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MODE_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1549,9 +1552,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_MODE_INPUT_TEMPLATE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1575,9 +1578,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_MODE_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1586,9 +1589,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_MODE_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1597,9 +1600,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MODE_QUILT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1608,9 +1611,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MODE_CONV_RADIUS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1619,9 +1622,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_MODE_CONV_RADIUS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1630,9 +1633,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_MODE_CONV_RADIUS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1641,9 +1644,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MODE_CONV_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1652,9 +1655,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_MODE_CONV_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1663,9 +1666,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_MODE_CONV_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1674,9 +1677,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MODE_MERGE_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1685,9 +1688,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_MODE_MERGE_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1696,9 +1699,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_MODE_MERGE_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1707,9 +1710,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MODE_MERGE_FLAG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1718,9 +1721,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_MODE_MERGE_FLAG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1729,9 +1732,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_MODE_MERGE_FLAG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1740,9 +1743,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MODE_MERGE_CONFIG_FILE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1751,9 +1754,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_MODE_WINDOW_BEGIN 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1762,9 +1765,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_MODE_WINDOW_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1773,9 +1776,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_MODE_WINDOW_BEGIN 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1784,9 +1787,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_MODE_WINDOW_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1807,11 +1810,9 @@ Deprecated:
 
 \color lightgray
 MODE_OUT_DIR
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 MODE_CONFIG
 \end_layout
 
@@ -1851,9 +1852,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_MTD_INPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1862,9 +1863,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MTD_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1888,9 +1889,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_MTD_INPUT_TEMPLATE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1914,9 +1915,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MTD_MIN_VOLUME 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1925,9 +1926,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MTD_SINGLE_RUN 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1936,9 +1937,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MTD_SINGLE_DATA_SRC 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1947,9 +1948,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_MTD_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1958,9 +1959,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_MTD_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1969,9 +1970,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_MTD_CONV_RADIUS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1980,9 +1981,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_MTD_CONV_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1991,9 +1992,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline linebreak
+\end_inset
 
-\begin_layout Standard
 OBS_MTD_CONV_RADIUS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2002,9 +2003,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_MTD_CONV_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2025,11 +2026,9 @@ Deprecated:
 
 \color lightgray
 MTD_OUT_DIR
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 MTD_CONFIG
 \end_layout
 
@@ -2049,7 +2048,7 @@ Description
 \end_layout
 
 \begin_layout Standard
-The pb2nc_wrapper is a Python script that encapsulates the behavior of the
+The PB2NC wrapper is a Python script that encapsulates the behavior of the
  MET pb2nc tool to convert prepBUFR files into netCDF.
 \end_layout
 
@@ -2070,9 +2069,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2096,9 +2095,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_OUTPUT_TEMPLATE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2122,9 +2121,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_OFFSETS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2133,9 +2132,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2144,9 +2143,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_CONFIG_FILE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2155,9 +2154,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_MESSAGE_TYPE (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2166,9 +2165,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_STATION_ID (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2177,9 +2176,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_GRID (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2188,9 +2187,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_POLY 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2199,9 +2198,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_OBS_BUFR_VAR_LIST (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2210,9 +2209,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_TIME_SUMMARY_FLAG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2221,9 +2220,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_TIME_SUMMARY_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2232,9 +2231,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_TIME_SUMMARY_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2243,9 +2242,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_TIME_SUMMARY_VAR_NAMES 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2254,9 +2253,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_TIME_SUMMARY_TYPES 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2265,9 +2264,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_WINDOW_BEGIN 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2276,9 +2275,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PB2NC_WINDOW_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2299,83 +2298,57 @@ Deprecated:
 
 \color lightgray
 PREPBUFR_DATA_DIR
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 PREPBUFR_MODEL_DIR_NAME
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 PREPBUFR_DIR_REGEX
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 PREPBUFR_FILE_REGEX
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 NC_FILE_TMPL
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 PB2NC_VERTICAL_LEVEL
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 OBS_BUFR_VAR_LIST
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 TIME_SUMMARY_FLAG
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 TIME_SUMMARY_BEG
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 TIME_SUMMARY_END
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 TIME_SUMMARY_VAR_NAMES
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 TIME_SUMMARY_TYPE
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 OVERWRITE_NC_OUTPUT
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 VERTICAL_LOCATION
 \end_layout
 
@@ -2395,7 +2368,7 @@ Description
 \end_layout
 
 \begin_layout Standard
-The pcp_combine_wrapper is a Python script that encapsulates the MET pcp_combine
+The PcpCombine wrapper is a Python script that encapsulates the MET pcp_combine
  tool.
  It provides the infrastructure to combine or extract from files to build
  desired accumulations.
@@ -2418,9 +2391,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_PCP_COMBINE_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2429,9 +2402,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_INPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2440,9 +2413,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2466,9 +2439,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_PCP_COMBINE_OUTPUT_TEMPLATE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2477,9 +2450,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_INPUT_TEMPLATE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2488,9 +2461,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_OUTPUT_TEMPLATE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2514,9 +2487,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_IS_PROB 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2525,10 +2498,10 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-FCST_PCP_COMBINE_[N]_FIELD_NAME 
+FCST_PCP_COMBINE_<n>_FIELD_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_F"
@@ -2536,10 +2509,10 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-OBS_PCP_COMBINE_[N]_FIELD_NAME 
+OBS_PCP_COMBINE_<n>_FIELD_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_O"
@@ -2547,9 +2520,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_PCP_COMBINE_DATA_INTERVAL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2558,9 +2531,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_DATA_INTERVAL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2569,9 +2542,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_PCP_COMBINE_TIMES_PER_FILE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2580,9 +2553,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_TIMES_PER_FILE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2591,9 +2564,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_PCP_COMBINE_IS_DAILY_FILE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2602,9 +2575,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_IS_DAILY_FILE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2613,9 +2586,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_PCP_COMBINE_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2624,9 +2597,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2635,9 +2608,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_PCP_COMBINE_INPUT_LEVEL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2646,9 +2619,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_INPUT_LEVEL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2657,9 +2630,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_PCP_COMBINE_RUN 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2668,9 +2641,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_RUN 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2679,9 +2652,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_PCP_COMBINE_METHOD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2690,9 +2663,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_METHOD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2701,9 +2674,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_PCP_COMBINE_MIN_FORECAST 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2712,9 +2685,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_MIN_FORECAST 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2723,9 +2696,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_PCP_COMBINE_MAX_FORECAST 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2734,9 +2707,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_MAX_FORECAST 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2745,9 +2718,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_PCP_COMBINE_STAT_LIST 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2756,9 +2729,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_STAT_LIST 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2767,9 +2740,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_PCP_COMBINE_DERIVE_LOOKBACK 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2778,9 +2751,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_PCP_COMBINE_DERIVE_LOOKBACK 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2789,9 +2762,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2812,77 +2785,53 @@ Deprecated:
 
 \color lightgray
 PCP_COMBINE_METHOD
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 FCST_MIN_FORECAST
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 FCST_MAX_FORECAST
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 OBS_MIN_FORECAST
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 OBS_MAX_FORECAST
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 FCST_DATA_INTERVAL
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 OBS_DATA_INTERVAL
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 FCST_IS_DAILY_FILE
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 OBS_IS_DAILY_FILE
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 FCST_TIMES_PER_FILE
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 OBS_TIMES_PER_FILE
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 FCST_LEVEL
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 OBS_LEVEL
 \end_layout
 
@@ -2902,7 +2851,7 @@ Description
 \end_layout
 
 \begin_layout Standard
-The point_stat_wrapper is a Python script that encapsulates the MET point_stat
+The PointStat wrapper is a Python script that encapsulates the MET point_stat
  tool.
  It provides the infrastructure to read in gridded model data and netCDF
  point observation data to perform grid-to-point (grid-to-obs) verification.
@@ -2926,9 +2875,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_POINT_STAT_INPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2937,9 +2886,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 POINT_STAT_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2963,9 +2912,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_POINT_STAT_INPUT_TEMPLATE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2974,9 +2923,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 POINT_STAT_VERIFICATION_MASK_TEMPLATE (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3000,9 +2949,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_POINT_STAT_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3011,9 +2960,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_POINT_STAT_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3022,9 +2971,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 POINT_STAT_CONFIG_FILE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3033,9 +2982,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MODEL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3044,9 +2993,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 POINT_STAT_REGRID_TO_GRID 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3055,9 +3004,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 POINT_STAT_GRID 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3066,9 +3015,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline linebreak
+\end_inset
 
-\begin_layout Standard
 POINT_STAT_POLY 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3077,9 +3026,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 POINT_STAT_STATION_ID 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3088,9 +3037,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 POINT_STAT_MESSAGE_TYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3099,9 +3048,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_POINT_STAT_WINDOW_BEGIN (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3110,9 +3059,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_POINT_STAT_WINDOW_END (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3121,9 +3070,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_POINT_STAT_WINDOW_BEGIN (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3132,9 +3081,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_POINT_STAT_WINDOW_END (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3143,9 +3092,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 POINT_STAT_NEIGHBORHOOD_WIDTH (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3154,9 +3103,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 POINT_STAT_NEIGHBORHOOD_SHAPE (optional) 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3177,89 +3126,61 @@ Deprecated:
 
 \color lightgray
 FCST_INPUT_DIR
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 OBS_INPUT_DIR
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 START_HOUR
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 END_HOUR
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 BEG_TIME
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 FCST_HR_START
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 FCST_HR_END
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 FCST_HR_INTERVAL
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 OBS_INPUT_DIR_REGEX
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 FCST_INPUT_DIR_REGEX
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 FCST_INPUT_FILE_REGEX
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 OBS_INPUT_FILE_REGEX
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-
-\color lightgray
 OBS_INPUT_FILE_TMPL
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+FCST_INPUT_FILE_TMPL
+\begin_inset Newline newline
+\end_inset
 
-\color lightgray
-FCST_INPUT_FILE_TPOINTMPL
-\end_layout
-
-\begin_layout Standard
-
-\color lightgray
 REGRID_TO_GRID
 \end_layout
 
@@ -3299,9 +3220,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_REGRID_DATA_PLANE_INPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3325,9 +3246,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3351,9 +3272,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_REGRID_DATA_PLANE_RUN 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3362,9 +3283,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3373,9 +3294,9 @@ reference "sec:SC_R"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 REGRID_DATA_PLANE_VERIF_GRID 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3384,9 +3305,9 @@ reference "sec:SC_R"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_REGRID_DATA_PLANE_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3395,9 +3316,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBS_REGRID_DATA_PLANE_INPUT_DATATYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3436,9 +3357,9 @@ Description
 \end_layout
 
 \begin_layout Standard
-The series_by_init_wrapper provides the infrastructure needed to perform
- a series analysis on tropical cyclone data, based on initialization times.
- The series_by_init_wrapper creates numerous plots that represent the field,
+The SeriesByInit wrapper provides the infrastructure needed to perform a
+ series analysis on tropical cyclone data, based on initialization times.
+ The SeriesByInit_wrapper creates numerous plots that represent the field,
  level, and statistic for each initialization time.
 \end_layout
 
@@ -3459,9 +3380,9 @@ reference "sec:SC_S"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 SERIES_BY_INIT_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3485,9 +3406,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 ANLY_TILE_PREFIX 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3496,9 +3417,9 @@ reference "sec:SC_A"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_TILE_REGEX 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3507,9 +3428,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 ANLY_TILE_REGEX 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3518,9 +3439,9 @@ reference "sec:SC_A"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_NC_TILE_REGEX 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3529,9 +3450,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 ANLY_NC_TILE_REGEX 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3540,9 +3461,9 @@ reference "sec:SC_A"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_ASCII_REGEX_LEAD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3551,9 +3472,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 ANLY_ASCII_REGEX_LEAD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3577,9 +3498,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3588,9 +3509,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_INCREMENT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3599,9 +3520,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3610,9 +3531,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_INCLUDE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3621,9 +3542,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_EXCLUDE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3632,9 +3553,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 SERIES_ANALYSIS_FILTER_OPTS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3673,12 +3594,12 @@ Description
 \end_layout
 
 \begin_layout Standard
-The series_by_lead_wrapper provides the infrastructure needed to perform
- a series analysis on tropical cyclone data, based on lead (forecast hour)
+The SeriesByLead wrapper provides the infrastructure needed to perform a
+ series analysis on tropical cyclone data, based on lead (forecast hour)
  times.
- The series_by_lead_wrapper creates numerous plots that represent the field,
+ The SeriesByLead wrapper creates numerous plots that represent the field,
  level, and statistic for each lead (forecast) time.
- The series_by_lead can be done in one of two ways: by all forecast hours
+ The SeriesByLead can be done in one of two ways: by all forecast hours
  or by forecast hour groupings.
  Performing a series analysis by valid time with forecast hour groupings
  can be useful when analyzing storm tracks based on time 
@@ -3699,7 +3620,7 @@ Configuration
 
 \begin_layout Standard
 The input track and model data files are defined in any one of the user's
- METplus configuration files.
+ METplus Wrappers configuration files.
  If creating a final configuration file that overrides all other config
  files, it is customary to define the MODEL_DATA_DIR, pointing to the directory
  where all model data resides.
@@ -3726,9 +3647,9 @@ reference "sec:SC_S"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 SERIES_BY_LEAD_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3752,9 +3673,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_TIME_FMT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3763,9 +3684,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3774,9 +3695,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_INCREMENT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3785,9 +3706,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 SERIES_BY_LEAD_GROUP_FCSTS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3796,12 +3717,12 @@ reference "sec:SC_S"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-LEAD_SEQ_
+LEAD_SEQ_<n>
 \emph on
-n 
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_L"
@@ -3809,14 +3730,12 @@ reference "sec:SC_L"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-LEAD_SEQ_
-\emph on
-n
+
 \emph default
-_LABEL 
+LEAD_SEQ_<n>_LABEL 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_L"
@@ -3824,9 +3743,9 @@ reference "sec:SC_L"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 SERIES_ANALYSIS_FILTER_OPT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3835,13 +3754,13 @@ reference "sec:SC_S"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VAR_LIST
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 STAT_LIST
 \end_layout
 
@@ -3873,15 +3792,15 @@ Description
 \end_layout
 
 \begin_layout Standard
-The stat_analysis_wrapper encapsulates the behavior of the MET stat_analysis
+The StatAnalysis wrapper encapsulates the behavior of the MET stat_analysis
  tool.
  It provides the infrastructure to summarize and filter the MET .stat files.
- stat_analysis_wrapper can be run in two different methods.
+ StatAnalysis wrapper can be run in two different methods.
  First is to look at the STAT lines for a single date, to use this method
  set LOOP_ORDER = times.
  Second is to look at the STAT lines over a span of dates, to use this method
  set LOOP_ORDER = processes.
- To run stat_analysis_wrapper, include StatAnalysis in PROCESS_LIST.
+ To run StatAnalysis wrapper, include StatAnalysis in PROCESS_LIST.
 \end_layout
 
 \begin_layout Subsection
@@ -3889,8 +3808,8 @@ Configuration
 \end_layout
 
 \begin_layout Standard
-The following values must be defined in the METplus configuration file for
- running with LOOP_ORDER = times:
+The following values must be defined in the METplus Wrappers configuration
+ file for running with LOOP_ORDER = times:
 \end_layout
 
 \begin_layout Standard
@@ -3906,9 +3825,9 @@ reference "sec:SC_S"
 \end_inset
 
  
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 STAT_ANALYSIS_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3920,6 +3839,10 @@ reference "sec:SC_S"
 \end_layout
 
 \begin_layout Standard
+[config]
+\end_layout
+
+\begin_layout Standard
 LOOP_BY 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3928,10 +3851,10 @@ reference "sec:SC_L"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-VALID/INIT_TIME_FMT 
+[VALID/INIT]_TIME_FMT 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_V"
@@ -3939,28 +3862,10 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-VALID/INIT_BEG 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:SC_V"
-
+\begin_inset Newline newline
 \end_inset
 
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:SC_I"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-VALID/INIT_END 
+[VALID/INIT]_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_V"
@@ -3975,9 +3880,27 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+[VALID/INIT]_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_I"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
 VALID_HOUR_METHOD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3986,9 +3909,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VALID_HOUR_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3997,9 +3920,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VALID_HOUR_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4008,9 +3931,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VALID_HOUR_INCREMENT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4019,9 +3942,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_METHOD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4030,9 +3953,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4041,9 +3964,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4052,9 +3975,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_INCREMENT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4063,9 +3986,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 STAT_ANALYSIS_CONFIG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4074,9 +3997,9 @@ reference "sec:SC_S"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MODEL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4085,9 +4008,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 OBTYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4096,9 +4019,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 JOB_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4107,9 +4030,9 @@ reference "sec:SC_J"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 JOB_ARGS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4125,7 +4048,8 @@ The following values are
 \series bold
 optional
 \series default
- in the METplus configuration file for running with LOOP_ORDER = times:
+ in the METplus Wrappers configuration file for running with LOOP_ORDER
+ = times:
 \end_layout
 
 \begin_layout Standard
@@ -4137,9 +4061,9 @@ reference "sec:SC_D"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_LEAD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4148,10 +4072,10 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-FCST_VAR_NAME 
+FCST_VAR<n>_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_F"
@@ -4159,10 +4083,10 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-FCST_VAR_LEVEL 
+FCST_VAR<n>_LEVEL 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_F"
@@ -4170,10 +4094,10 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-OBS_VAR_NAME 
+OBS_VAR<n>_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_O"
@@ -4181,10 +4105,10 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-OBS_VAR_LEVEL
+OBS_VAR<n>_LEVEL
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_O"
@@ -4192,9 +4116,9 @@ reference "sec:SC_O"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 REGION 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4203,9 +4127,9 @@ reference "sec:SC_R"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INTERP 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4214,9 +4138,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INTERP_PTS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4225,9 +4149,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FCST_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4236,9 +4160,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 COV_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4247,9 +4171,9 @@ reference "sec:SC_C"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 LINE_TYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4258,9 +4182,9 @@ reference "sec:SC_L"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 STAT_ANALYSIS_DUMP_ROW_TMPL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4269,9 +4193,9 @@ reference "sec:SC_S"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 STAT_ANALYSIS_OUT_STAT_TMPL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4287,8 +4211,8 @@ The following values
 \series bold
 must
 \series default
- be defined in the METplus configuration file for running with LOOP_ORDER
- = processes:
+ be defined in the METplus Wrappers configuration file for running with
+ LOOP_ORDER = processes:
 \end_layout
 
 \begin_layout Standard
@@ -4300,9 +4224,9 @@ reference "sec:SC_S"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VERIF_CASE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4311,9 +4235,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VERIF_TYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4322,9 +4246,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PLOT_TIME 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4333,10 +4257,10 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-VALID/INIT_BEG 
+[VALID/INIT]_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_V"
@@ -4351,10 +4275,10 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-VALID/INIT_END 
+[VALID/INIT]_END 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_V"
@@ -4369,9 +4293,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VALID_HOUR_METHOD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4380,9 +4304,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VALID_HOUR_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4391,9 +4315,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VALID_HOUR_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4402,9 +4326,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 VALID_HOUR_INCREMENT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4413,9 +4337,9 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_METHOD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4424,9 +4348,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4435,9 +4359,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4446,9 +4370,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_INCREMENT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4457,9 +4381,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 STAT_ANALYSIS_CONFIG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4468,10 +4392,10 @@ reference "sec:SC_S"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-MODELn_NAME 
+MODEL<n>_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_M"
@@ -4479,10 +4403,10 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-MODELn_OBS_NAME 
+MODEL<n>_OBS_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_M"
@@ -4490,10 +4414,10 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-MODELn_NAME_ON_PLOT 
+MODEL<n>_NAME_ON_PLOT 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_M"
@@ -4501,10 +4425,10 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-FCST_VARn_NAME 
+FCST_VAR<n>_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_F"
@@ -4512,10 +4436,10 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-FCST_VARn_LEVELS 
+FCST_VAR<n>_LEVELS 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_F"
@@ -4523,9 +4447,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 REGION_LIST 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4534,9 +4458,9 @@ reference "sec:SC_R"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 LEAD_LIST 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4545,9 +4469,9 @@ reference "sec:SC_L"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INTERP 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4556,9 +4480,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 LINE_TYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4570,12 +4494,12 @@ reference "sec:SC_L"
 \end_layout
 
 \begin_layout Standard
-The following values are optional in the METplus configuration file for
- running with LOOP_ORDER = processes:
+The following values are optional in the METplus Wrappers configuration
+ file for running with LOOP_ORDER = processes:
 \end_layout
 
 \begin_layout Standard
-FCST_VARn_THRESH 
+FCST_VAR<n>_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_F"
@@ -4583,10 +4507,10 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-FCST_VARn_THRESH 
+FCST_VAR<n>_THRESH 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_F"
@@ -4594,10 +4518,10 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-FCST_VARn_OPTIONS 
+FCST_VAR<n>_OPTIONS 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_F"
@@ -4605,10 +4529,10 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-VARn_FOURIER_DECOMP 
+VAR<n>_FOURIER_DECOMP 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_V"
@@ -4616,10 +4540,10 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
-VARn_WAVE_NUM_LIST 
+VAR<n>_WAVE_NUM_LIST 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_V"
@@ -4657,7 +4581,7 @@ Description
 \end_layout
 
 \begin_layout Standard
-The tc_pairs_wrapper encapsulates the behavior of the MET tc_pairs tool.
+The TcPairs wrapper encapsulates the behavior of the MET tc_pairs tool.
  The wrapper accepts Adeck and Bdeck (Best track) cyclone track data in
  extra tropical cyclone format (such as the data used by sample data provided
  in the METplus tutorial), or ATCF formatted track data.
@@ -4683,9 +4607,9 @@ reference "sec:SC_A"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 BDECK_TRACK_DATA_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4694,9 +4618,9 @@ reference "sec:SC_B"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TRACK_DATA_SUBDIR_MOD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4705,9 +4629,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_PAIRS_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4731,9 +4655,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4742,9 +4666,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4753,9 +4677,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_INCREMENT 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4764,9 +4688,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_HOUR_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4775,9 +4699,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_INCLUDE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4786,9 +4710,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 INIT_EXCLUDE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4797,9 +4721,9 @@ reference "sec:SC_I"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TOP_LEVEL_DIRS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4808,9 +4732,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MODEL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4819,9 +4743,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 STORM_ID 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4830,9 +4754,9 @@ reference "sec:SC_S"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 BASIN 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4841,9 +4765,9 @@ reference "sec:SC_B"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 CYCLONE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4852,9 +4776,9 @@ reference "sec:SC_C"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 STORM_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4863,9 +4787,9 @@ reference "sec:SC_S"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 DLAND_FILE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4874,9 +4798,9 @@ reference "sec:SC_D"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TRACK_TYPE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4885,9 +4809,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 ADECK_FILE_PREFIX 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4896,9 +4820,9 @@ reference "sec:SC_A"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 BDECK_FILE_PREFIX 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4907,9 +4831,9 @@ reference "sec:SC_B"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MISSING_VAL_TO_REPLACE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4918,9 +4842,9 @@ reference "sec:SC_M"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 MISSING_VAL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4969,9 +4893,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4995,9 +4919,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_CONFIG_FILE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5006,9 +4930,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_CMD_LINE_JOB 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5017,9 +4941,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_JOBS_LIST 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5028,9 +4952,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_AMODEL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5039,9 +4963,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_BMODEL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5050,9 +4974,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_DESC 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5061,9 +4985,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_STORM_ID 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5072,9 +4996,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_BASIN 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5083,9 +5007,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_CYCLONE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5094,9 +5018,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_STORM_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5105,9 +5029,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_INIT_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5116,9 +5040,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_INIT_INCLUDE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5127,9 +5051,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_INIT_EXCLUDE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5138,9 +5062,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_INIT_HOUR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5149,9 +5073,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_VALID_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5160,9 +5084,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_VALID_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5171,9 +5095,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_VALID_INCLUDE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5182,9 +5106,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_VALID_EXCLUDE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5193,9 +5117,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_VALID_HOUR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5204,9 +5128,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_LEAD_REQ 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5215,9 +5139,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_INIT_MASK 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5226,9 +5150,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_VALID_MASK 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5237,9 +5161,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_VALID_HOUR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5248,9 +5172,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_LEAD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5259,9 +5183,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_TRACK_WATCH_WARN 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5270,9 +5194,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_COLUMN_THRESH_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5281,9 +5205,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_COLUNN_THRESH_VAL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5292,9 +5216,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_COLUMN_STR_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5303,9 +5227,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_COLUMN_STR_VAL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5314,9 +5238,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_INIT_THRESH_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5325,9 +5249,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_INIT_THRESH_VAL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5336,9 +5260,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_INIT_STR_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5347,9 +5271,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_INIT_STR_VAL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5358,9 +5282,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_WATER_ONLY 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5369,9 +5293,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_LANDFALL 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5380,9 +5304,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_LANDFALL_BEG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5391,9 +5315,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_LANDFALL_END 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5402,9 +5326,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TC_STAT_MATCH_POINTS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5424,7 +5348,7 @@ Description
 \end_layout
 
 \begin_layout Standard
-The tcmpr_plotter_wrapper is a Python script that wraps the R script plot_tcmpr.R.
+The TCMPRPlotter wrapper is a Python script that wraps the R script plot_tcmpr.R.
  This script is usefule for plotting the calculated statistics for the output
  from the MET-TC tools.
  This script, and other R scripts are included in the MET installation.
@@ -5436,10 +5360,16 @@ Configuration
 \end_layout
 
 \begin_layout Standard
-The following are configuration settings that correspond to the tcmpr_plotter
+The following are configuration settings that correspond to the TCMPRPlotter
  wrapper.
- A description of what these values represent are found in the appendix
- in chapter 4, METplus System Configuration
+ A description of what these values represent are found in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_AZ_Config_Glossary"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -5451,9 +5381,9 @@ reference "sec:SC_L"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 CONFIG_FILE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5462,9 +5392,9 @@ reference "sec:SC_C"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PREFIX 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5473,9 +5403,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TITLE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5484,9 +5414,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 SUBTITLE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5495,9 +5425,9 @@ reference "sec:SC_S"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 XLAB 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5506,9 +5436,9 @@ reference "sec:SC_X"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 YLAB 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5517,9 +5447,9 @@ reference "sec:SC_Y"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 XLIM
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5528,9 +5458,9 @@ reference "sec:SC_X"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 YLIM 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5539,9 +5469,9 @@ reference "sec:SC_Y"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FILTER 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5550,9 +5480,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FILTERED_TCST_DATA_FILE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5561,9 +5491,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 DEP_VARS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5572,9 +5502,9 @@ reference "sec:SC_D"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 SCATTER_X 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5583,9 +5513,9 @@ reference "sec:SC_D"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 SCATTER_Y 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5594,9 +5524,9 @@ reference "sec:SC_D"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 SKILL_REF 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5605,9 +5535,9 @@ reference "sec:SC_D"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 SERIES 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5616,9 +5546,9 @@ reference "sec:SC_D"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 SERIES_CI 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5627,9 +5557,9 @@ reference "sec:SC_D"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 LEGEND 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5638,9 +5568,9 @@ reference "sec:SC_L"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 LEAD 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5649,9 +5579,9 @@ reference "sec:SC_L"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PLOT_TYPES 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5660,9 +5590,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 RP_DIFF 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5671,9 +5601,9 @@ reference "sec:SC_R"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 DEMO_YR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5682,9 +5612,9 @@ reference "sec:SC_D"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 HFIP_BASELINE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5693,9 +5623,9 @@ reference "sec:SC_H"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 FOOTNOTE_FLAG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5704,9 +5634,9 @@ reference "sec:SC_F"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 PLOT_CONFIG_OPTS 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5715,9 +5645,9 @@ reference "sec:SC_P"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 SAVE_DATA 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5742,9 +5672,9 @@ reference "sec:SC_N"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 NO_LOG 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5753,9 +5683,9 @@ reference "sec:SC_N"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 SAVE 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5764,9 +5694,9 @@ reference "sec:SC_S"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TCMPR_DATA_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5775,9 +5705,9 @@ reference "sec:SC_T"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 TCMPR_PLOT_OUTPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5798,25 +5728,6 @@ Deprecated:
 
 \color lightgray
 TCMPR_PLOT_OUT_DIR
-\end_layout
-
-\begin_layout Section
-WaveletStat 
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:wavelet_stat_wrapper"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Description
-\end_layout
-
-\begin_layout Standard
-NOTE: This wrapper has not been tested for use in METplus.
 \end_layout
 
 \end_body

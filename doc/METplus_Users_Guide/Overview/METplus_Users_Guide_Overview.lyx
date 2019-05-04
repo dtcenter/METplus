@@ -77,10 +77,10 @@
 \begin_body
 
 \begin_layout Chapter
-Overview of METplus
+Overview
 \begin_inset CommandInset label
 LatexCommand label
-name "chap:Overview-of-METplus"
+name "chap:Overview"
 
 \end_inset
 
@@ -102,28 +102,29 @@ name "sec:Purpose-and-organization"
 
 \series medium
 The goal of this User's Guide is to equip users with the information needed
- to use the Model Evaluation Tools (MET) and it's companion package METplus.
+ to use the Model Evaluation Tools (MET) and it's companion package METplus
+ Wrappers.
  MET is a set of verification tools developed and supported to community
  via the Developmental Testbed Center (DTC) for use by the numerical weather
  prediction community.
- METplus is a suite of Python wrappers and ancillary scripts to enhance
- the user's ability to quickly set-up and run MET.
- Over the next few years, METplus will become the authoritative repository
- for verification of the Unified Forecast System.
+ METplus Wrappers is a suite of Python wrappers and ancillary scripts to
+ enhance the user's ability to quickly set-up and run MET.
+ Over the next few years, METplus Wrappers will become the authoritative
+ repository for verification of the Unified Forecast System.
 \end_layout
 
 \begin_layout Standard
 
 \series medium
-The METplus User's Guide is organized as follows.
+The METplus Wrappers User's Guide is organized as follows.
  Chapter 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "chap:Overview-of-METplus"
+reference "chap:Overview"
 
 \end_inset
 
- provides an overview of METplus.
+ provides an overview of METplus Wrappers.
  Chapter 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -131,16 +132,18 @@ reference "chap:Software-Installation/Getting-St"
 
 \end_inset
 
- contains basic information about how to get started with METplus - including
- system requirements, required software , and how to download METplus.
+ contains basic information about how to get started with METplus Wrappers
+ - including system requirements, required software , and how to download
+ METplus Wrappers.
  Chapter 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "chap:METplus System Configuration"
+reference "chap:System Configuration"
 
 \end_inset
 
- 
+ provides indormation about configuring your environment and METplus Wrappers
+ installation.
 \end_layout
 
 \begin_layout Section
@@ -157,10 +160,10 @@ name "sec:The-Developmental-Testbed"
 \begin_layout Standard
 
 \series medium
-METplus has been developed, and will be maintained and enhanced, by the
- Developmental Testbed Center (DTC; 
+METplus Wrappers has been developed, and will be maintained and enhanced,
+ by the Developmental Testbed Center (DTC; 
 \begin_inset Flex URL
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -177,8 +180,8 @@ http://www.dtcenter.org/
  operational environment in which the research community can test model
  enhancements; the operational community benefits from DTC testing and evaluatio
 n of models before new models are implemented operationally.
- METplus serves both the research and operational communities in this way
- - offering capabilities for researchers to test their own enhancements
+ METplus Wrappers serves both the research and operational communities in
+ this way - offering capabilities for researchers to test their own enhancements
  to models and providing a capability for the DTC to evaluate the strengths
  and weaknesses of advances in NWP prior to operational implementation.
 \end_layout
@@ -186,17 +189,17 @@ n of models before new models are implemented operationally.
 \begin_layout Standard
 
 \series medium
-METplus will also be available to DTC visitors and to the WRF modeling community
- for testing and evaluation of new model capabilities, applications in new
- environments, and so on.
- The METplus release schedule is coincident with the MET release schedule
- and the METplus major release number is six less than the MET major release
- number (e.g.
- MET 8.0 is released with METplus 2.0).
+METplus Wrappers will also be available to DTC visitors and to the WRF modeling
+ community for testing and evaluation of new model capabilities, applications
+ in new environments, and so on.
+ The METplus Wrappers release schedule is coincident with the MET release
+ schedule and the METplus Wrappers major release number is six less than
+ the MET major release number (e.g.
+ MET 8.X is released with METplus Wrappers 2.X).
 \end_layout
 
 \begin_layout Section
-METplus goals and design philosophy
+METplus Wrappers goals and design philosophy
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:METplus-goals-and"
@@ -209,49 +212,55 @@ name "sec:METplus-goals-and"
 \begin_layout Standard
 
 \series medium
-METplus is a Python scripting infrastructure for the MET tools.
- The primary goal of METplus development is to provide MET users with a
- highly configurable and simple means to perform model verification using
- the MET tools.
- Prior to the availability of METplus, users who had more complex verifications
- that required the use of more than one MET tool were faced with setting
- up multiple MET config files and creating some automation scripts to perform
- the verification.
- METplus provides the user with the infrastructure to modularly create the
- necessary steps to perform such verifications.
+METplus Wrappers is a Python scripting infrastructure for the MET tools.
+ The primary goal of METplus Wrappers development is to provide MET users
+ with a highly configurable and simple means to perform model verification
+ using the MET tools.
+ Prior to the availability of METplus Wrappers, users who had more complex
+ verifications that required the use of more than one MET tool were faced
+ with setting up multiple MET config files and creating some automation
+ scripts to perform the verification.
+ METplus Wrappers provides the user with the infrastructure to modularly
+ create the necessary steps to perform such verifications.
  
 \end_layout
 
 \begin_layout Standard
 
 \series medium
-METplus has been designed to be modular and adaptable.
+METplus Wrappers has been designed to be modular and adaptable.
  This is accomplished through wrapping the MET tools with Python and the
  use of hierarchical configuration files to enable users to readily customize
  their verification environments.
  Wrappers can be run individually, or as a group of wrappers that represent
  a sequence of MET processes.
- New wrappers can readily be added to the METplus package due to this modular
- design.
- Currently, METplus can easily be applied by any user on their own computer
- platform that supports Python 2.7.
+ New wrappers can readily be added to the METplus Wrappers package due to
+ this modular design.
+ Currently, METplus Wrappers can easily be applied by any user on their
+ own computer platform that supports Python 2.7.
 \end_layout
 
 \begin_layout Standard
 
 \series medium
-The METplus code and documentation is maintained by the DTC in Boulder,
- Colorado.
- METplus is freely available to the modeling, verification, and operational
- communities, including universities, governments, the private sector, and
- operational modeling and prediction centers through a publicly accessible
- GitHub repository.
- Users simply need access to a web browser to download the source code and
- any other relevant documentation and data samples.
+The METplus Wrappers code and documentation is maintained by the DTC in
+ Boulder, Colorado.
+ METplus Wrappers is freely available to the modeling, verification, and
+ operational communities, including universities, governments, the private
+ sector, and operational modeling and prediction centers through a publicly
+ accessible GitHub repository.
+ Refer section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Getting-the-METplus-source-code"
+
+\end_inset
+
+ for simple examples of obtaining METplus Wrappers.
 \end_layout
 
 \begin_layout Section
-METplus components
+METplus Wrappers Components
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:METplus-components"
@@ -264,9 +273,9 @@ name "sec:METplus-components"
 \begin_layout Standard
 
 \series medium
-The major components of METplus package are METplus Python wrappers to the
- MET tools, MET configuration files and a hierarchy of METplus configuration
- files.
+The major components of the METplus Wrappers package are METplus Python
+ wrappers to the MET tools, MET configuration files and a hierarchy of METplus
+ Wrappers configuration files.
  Some Python wrappers do not correspond to a particular MET tool, but wrap
  utilities to extend METplus functionality.
 \end_layout
@@ -285,24 +294,25 @@ name "sec:Future-development-plans"
 \begin_layout Standard
 
 \series medium
-METplus is an evolving application.
+METplus Wrappers is an evolving application.
  New capabilities are planned in controlled, successive version releases
  that are synchronized with MET releases.
  Bug fixes and user-identified problems will be addressed as they are found
- and posted to the known issues section of the METplus Users web page (
+ and posted to the known issues section of the METplus Wrappers Users web
+ page (
 \begin_inset Flex URL
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
-www.dtcenter.org/met/users/support
+https://dtcenter.org/community-code/model-evaluation-tools-met
 \end_layout
 
 \end_inset
 
 ).
- Future METplus development plans are based on several contributing factors,
- including the needs of both the operational and research community.
+ Future METplus Wrappers development plans are based on several contributing
+ factors, including the needs of both the operational and research community.
  Issues that are in the development queue detailed in the 
 \begin_inset Quotes eld
 \end_inset
@@ -314,7 +324,7 @@ Issues
  section of the GitHub repository.
  Please send questions to 
 \begin_inset Flex URL
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -340,16 +350,17 @@ name "sec:Code-support"
 \begin_layout Standard
 
 \series medium
-METplus support is provided through a MET-help e-mail address: met_help@ucar.edu.
+Support for METplus Wrappers is provided through a MET-help e-mail address:
+ met_help@ucar.edu.
  We will endeavor to respond to requests for help in a timely fashion.
- In addition, information about METplus and tools that can be used with
- MET are provided on the MET Users web page (
+ In addition, information about METplus Wrappers and tools that can be used
+ with MET are provided on the MET Users web page (
 \begin_inset Flex URL
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
-http://www.dtcenter.org/met/users/
+https://dtcenter.org/community-code/model-evaluation-tools-met
 \end_layout
 
 \end_inset
@@ -360,8 +371,8 @@ http://www.dtcenter.org/met/users/
 \begin_layout Standard
 
 \series medium
-We welcome comments and suggestions for improvements to METplus, especially
- information regarding errors.
+We welcome comments and suggestions for improvements to METplus Wrappers,
+ especially information regarding errors.
  Comments may be submitted using the MET Feedback form available on the
  MET website.
  In addition, comments on this document would be greatly appreciated.
@@ -372,14 +383,15 @@ We welcome comments and suggestions for improvements to METplus, especially
 \begin_layout Standard
 
 \series medium
-METplus is a "living" set of wrappers and configuration files.
+METplus Wrappers is a "living" set of wrappers and configuration files.
  Our goal is to continually enhance it and add to its capabilities.
  Because our time, resources, and talents are limited, we welcome contributed
  code for future versions of METplus.
  These contributions may represent new use cases or new plotting functions.
- For more information on contributing code to METplus, please contact 
+ For more information on contributing code to METplus Wrappers, please contact
+ 
 \begin_inset Flex URL
-status open
+status collapsed
 
 \begin_layout Plain Layout
 

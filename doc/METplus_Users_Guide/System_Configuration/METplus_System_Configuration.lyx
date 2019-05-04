@@ -82,10 +82,10 @@
 \begin_body
 
 \begin_layout Chapter
-METplus System Configuration
+System Configuration
 \begin_inset CommandInset label
 LatexCommand label
-name "chap:METplus System Configuration"
+name "chap:System Configuration"
 
 \end_inset
 
@@ -93,7 +93,7 @@ name "chap:METplus System Configuration"
 \end_layout
 
 \begin_layout Standard
-This chapter is a guide on configuring METplus.
+This chapter is a guide on configuring METplus Wrappers.
 \end_layout
 
 \begin_layout Section
@@ -148,7 +148,7 @@ Review your log file to verify that all your processes ran cleanly.
 \end_layout
 
 \begin_layout Enumerate
-The order in which you list your METplus config files matter.
+The order in which you list your METplus Wrappers config files matter.
  The last config file on the command line will over-ride any key-values
  defined in an earlier config file.
 \end_layout
@@ -158,7 +158,7 @@ Check the master_metplus.conf file, as it contains all the key-values based
  on what you have specified.
  This will help you determine whether you forgot to replace any 
 \shape italic
-/path/to
+</path/to>
 \shape default
  with valid paths or to verify that you have defined things as you expected.
 \end_layout
@@ -177,7 +177,8 @@ name "sec:SC_Config_File_Structure"
 \begin_layout Standard
 \noindent
 \align left
-METplus employs a hierarchy of configuration files employed in METplus.
+METplus Wrappers employs a hierarchy of configuration files employed in
+ METplus Wrappers.
  At the lowest level are the 
 \begin_inset Quotes eld
 \end_inset
@@ -186,23 +187,24 @@ set-and-forget
 \begin_inset Quotes erd
 \end_inset
 
- type configuration files that reside in the 
+ type configuration files that reside in the
 \shape italic
-METplus_installation_dir
+ <METplus_installation_dir
 \shape default
-/parm/metplus_configl At the next level are the configuration files that
- pertain to a user's specific needs in the 
+>/parm/metplus_config.
+ At the next level are the configuration files that pertain to a user's
+ specific needs in the 
 \shape italic
-METplus_installation_dir
+<METplus_installation_dir
 \shape default
-/parm/use_cases/
+>/parm/use_cases/
 \shape italic
-specific_use_case
+<specific_use_case>
 \end_layout
 
 \begin_layout Itemize
-Four configuration files are required for METplus to be fully configured
- (i.e.
+Four configuration files are required for METplus Wrappers to be fully configure
+d (i.e.
  all keywords are defined by either whitespace or a valid value):
 \end_layout
 
@@ -230,17 +232,17 @@ metplus_runtime
 \begin_layout Standard
 By default, key-values that require the user's input are set to 
 \shape italic
-/path/to
+</path/to
 \shape default
-.
+>.
  Make sure to replace these with the appropriate directory for your project.
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
 Additional configuration files are optional and the key-values defined there
- will over-ride any values defined in the four mandatory METplus configuration
- files.
+ will over-ride any values defined in the four mandatory METplus Wrappers
+ configuration files.
  These additional configuration files enables users to use a common set
  of configuration files and to create customized environments for their
  verification tasks.
@@ -269,10 +271,10 @@ name "sec:SC_Timing_Control"
 \end_layout
 
 \begin_layout Standard
-This section describes the METplus configuration variables that are used
- to control which times are processed.
+This section describes the METplus Wrappers configuration variables that
+ are used to control which times are processed.
  It also covers functionality that is useful for processing data in realtime
- by setting run times based on the clock time when METplus is started.
+ by setting run times based on the clock time when METplus Wrappers is started.
 \end_layout
 
 \begin_layout Subsubsection
@@ -287,15 +289,17 @@ name "subsec:SC_Timing_Control_LOOP_BY"
 \end_layout
 
 \begin_layout Standard
-METplus can be configured to loop over a set of valid times or a set of
- initialization times.
- This is controlled by the METplus configuration variable called LOOP_BY.
+METplus Wrappers can be configured to loop over a set of valid times or
+ a set of initialization times.
+ This is controlled by the METplus Wrappers configuration variable called
+ LOOP_BY.
  If the value of this variable is set to INIT or RETRO, looping will be
  relative to initialization time.
  If the value is set to VALID or REALTIME, looping will be relative to valid
  time.
- Older versions of METplus used a True/False variable named LOOP_BY_INIT.
- METplus still supports using this variable, although it is recommended
+ Older versions of METplus Wrappers used a True/False variable named LOOP_BY_INI
+T.
+ METplus Wrappers still supports using this variable, although it is recommended
  that users update their config files to use LOOP_BY instead.
  LOOP_BY_INIT will eventually be removed.
 \end_layout
@@ -325,7 +329,8 @@ VALID_TIME_FMT
 \begin_inset Newline newline
 \end_inset
 
-This is the format of the valid times the user can configure in METplus.
+This is the format of the valid times the user can configure in METplus
+ Wrappers.
  The value of VALID_BEG and VALID_END must correspond to this format.
  Example: VALID_TIME_FMT = %Y%m%d%H.
  Using this format, the valid time range values specified must be defined
@@ -364,12 +369,13 @@ This is the last valid time that can be processed.
  a valid time matching YYYYMMDD, such as 20190202.
  Note that the time specified for this variable will not necessary be processed.
  It is used to determine the cutoff of run times that can be processed.
- For example, if METplus is configured to start at 20190201 and end at 20190202
- processing data in 48 hour increments, it will process valid time 20190201
- then increment the run time to 20190203.
+ For example, if METplus Wrappers is configured to start at 20190201 and
+ end at 20190202 processing data in 48 hour increments, it will process
+ valid time 20190201 then increment the run time to 20190203.
  This is later than the VALID_END value, so execution will stop.
  However, if the increment is set to 24 hours (see VALID_INCREMENT), then
- METplus will process valid times 20190201 and 20190202 before ending execution.
+ METplus Wrappers will process valid times 20190201 and 20190202 before
+ ending execution.
 \end_layout
 
 \begin_layout Standard
@@ -383,8 +389,8 @@ VALID_INCREMENT
 
 This is the number of seconds to add to each run time to determine the next
  run time to process.
- This value must be greater than or equal to 60 because METplus currently
- does not support processing intervals less than one minute.
+ This value must be greater than or equal to 60 because METplus Wrappers
+ currently does not support processing intervals less than one minute.
 \begin_inset Newline newline
 \end_inset
 
@@ -447,8 +453,8 @@ VALID_INCREMENT = 21600
 \begin_layout Standard
 This will process data valid on 20190201 at 0Z, 6Z, 12Z, and 18Z, as well
  as 20190202 at 0Z.
- For each of these valid times, METplus can also loop over a set of forecast
- leads that are all valid at the current run time.
+ For each of these valid times, METplus Wrappers can also loop over a set
+ of forecast leads that are all valid at the current run time.
  See 'Looping Over Forecast Leads' 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -485,7 +491,7 @@ INIT_TIME_FMT
 \end_inset
 
 This is the format of the initialization times the user can configure in
- METplus.
+ METplus Wrappers.
  The value of INIT_BEG and INIT_END must correspond to this format.
  Example: INIT_TIME_FMT = %Y%m%d%H.
  Using this format, the initialization time range values specified must
@@ -524,13 +530,13 @@ This is the last initialization time that can be processed.
  initialization time matching YYYYMMDD, such as 20190202.
  Note that the time specified for this variable will not necessary be processed.
  It is used to determine the cutoff of run times that can be processed.
- For example, if METplus is configured to start at 20190201 and end at 20190202
- processing data in 48 hour increments, it will process 20190201 then increment
- the run time to 20190203.
+ For example, if METplus Wrappers is configured to start at 20190201 and
+ end at 20190202 processing data in 48 hour increments, it will process
+ 20190201 then increment the run time to 20190203.
  This is later than the INIT_END value, so execution will stop.
  However, if the increment is set to 24 hours (see INIT_INCREMENT), then
- METplus will process initialization times 20190201 and 20190202 before
- ending execution.
+ METplus Wrappers will process initialization times 20190201 and 20190202
+ before ending execution.
 \end_layout
 
 \begin_layout Standard
@@ -544,8 +550,8 @@ INIT_INCREMENT
 
 This is the number of seconds to add to each run time to determine the next
  run time to process.
- This value must be greater than or equal to 60 because METplus currently
- does not support processing intervals less than one minute.
+ This value must be greater than or equal to 60 because METplus Wrappers
+ currently does not support processing intervals less than one minute.
 \begin_inset Newline newline
 \end_inset
 
@@ -608,8 +614,9 @@ INIT_INCREMENT = 21600
 \begin_layout Standard
 This will process data initialized on 20190201 at 0Z, 6Z, 12Z, and 18Z,
  as well as 20190202 at 0Z.
- For each of these initialization times, METplus can also loop over a set
- of forecast leads that are all initialized at the current run time.
+ For each of these initialization times, METplus Wrappers can also loop
+ over a set of forecast leads that are all initialized at the current run
+ time.
  See 'Looping Over Forecast Leads' 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -632,8 +639,8 @@ name "subsec:SC_Timing_Control_Looping-over-Forecast"
 \end_layout
 
 \begin_layout Standard
-Many of the METplus wrappers will also loop over a list of forecast leads
- relative to the current valid/initialization time that is being processed.
+Many of the wrappers METplus Wrappers will also loop over a list of forecast
+ leads relative to the current valid/initialization time that is being processed.
 \begin_inset Newline newline
 \end_inset
 
@@ -653,7 +660,7 @@ This variable can be set to a comma-separated list of integers to define
  the forecast leads (hours) that will be processed relative to the initializatio
 n/valid time.
  Currently only hours are supported for these values.
- Future versions of METplus will allow sub-hourly forecast leads.
+ Future versions of METplus Wrappers will allow sub-hourly forecast leads.
  For example: 
 \begin_inset Newline newline
 \end_inset
@@ -705,34 +712,38 @@ If LOOP_BY = VALID and the current run time is 20190201 at 0Z, then three
 
 \begin_layout Standard
 1) Initialized on 20190131 at 21Z / valid on 20190201 at 0Z
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 2) Initialized on 20190131 at 18Z / valid on 20190201 at 0Z
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 3) Initialized on 20190131 at 15Z / valid on 20190201 at 0Z
 \begin_inset Newline newline
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 If LOOP_BY = INIT and the current run time is 20190201 at 0Z, then three
  times will be processed:
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
+\begin_inset Newline newline
+\end_inset
+
 1) Initialized on 20190201 at 0Z / valid on 20190201 at 3Z
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 2) Initialized on 20190201 at 0Z / valid on 20190201 at 6Z
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 3) Initialized on 20190201 at 0Z / valid on 20190201 at 9Z
 \begin_inset Newline newline
 \end_inset
@@ -833,8 +844,8 @@ INIT_SEQ
 
 
 \series default
-If METplus is configured to loop by valid time (LOOP_BY = VALID), you can
- use INIT_SEQ instead of LEAD_SEQ.
+If METplus Wrappers is configured to loop by valid time (LOOP_BY = VALID),
+ you can use INIT_SEQ instead of LEAD_SEQ.
  This is a list of initialization hours that are available in the data.
  This is useful if you know when the data is initialized and you need to
  use a different list of forecast leads depending on the valid time being
@@ -993,7 +1004,7 @@ LEAD_SEQ takes precedence over INIT_SEQ, so if you have both variables set
 
 
 \series bold
-Grouping Forecast Leads (LEAD_SEQ_[N])
+Grouping Forecast Leads (LEAD_SEQ_<n>)
 \end_layout
 
 \begin_layout Standard
@@ -1005,7 +1016,7 @@ This is used by SeriesByLead wrapper only.
  You can define the value with a comma-separated list of integers (hours)
  or using the begin_end_incr notation (See 'Defining lists with begin_end_incr'
  earlier in this section).
- Each list must have a corresponding label to describe it using LEAD_SEQ_[N]_LAB
+ Each list must have a corresponding label to describe it using LEAD_SEQ_<n>_LAB
 EL, i.e.
  LEAD_SEQ_1 must have the corresponding variable LEAD_SEQ_1_LABEL set.
  For example:
@@ -1076,10 +1087,10 @@ name "subsec:SC_Timing_Control_Realtime-Looping"
 \end_layout
 
 \begin_layout Standard
-To make running in realtime easier, METplus supports defining the begin
- and end times relative to the current clock time.
+To make running in realtime easier, METplus Wrappers supports defining the
+ begin and end times relative to the current clock time.
  For example, if the current time is 20190426_08:17 and you start METplus
- with:
+ Wrappers with:
 \begin_inset Newline newline
 \end_inset
 
@@ -1134,7 +1145,7 @@ then the value of VALID_END will be set to 2019042608.
 
 You can use the 'shift' keyword to shift the current time by any number
  of seconds.
- For example, if you start METplus at the same clock time with:
+ For example, if you start METplus Wrappers at the same clock time with:
 \begin_inset Newline newline
 \end_inset
 
@@ -1184,8 +1195,8 @@ then the value of VALID_BEG will be set to the current clock time shifted
 \begin_inset Newline newline
 \end_inset
 
-If VALID_INCREMENT is set to 21600 (seconds or 6 hours), then METplus will
- process valid times:
+If VALID_INCREMENT is set to 21600 (seconds or 6 hours), then METplus Wrappers
+ will process valid times:
 \begin_inset Newline newline
 \end_inset
 
@@ -1217,8 +1228,8 @@ If VALID_INCREMENT is set to 21600 (seconds or 6 hours), then METplus will
 \begin_inset Newline newline
 \end_inset
 
-However, you may want to configure METplus to process at 0Z, 6Z, 12Z, and
- 18Z of a given day instead of 2Z, 8Z, 14Z, and 20Z.
+However, you may want to configure METplus Wrappers to process at 0Z, 6Z,
+ 12Z, and 18Z of a given day instead of 2Z, 8Z, 14Z, and 20Z.
  Having to adjust the shift amount differently if you are running at 8Z
  or 9Z to get the times to line up would be tedious.
  Instead, use the 'truncate' keyword.
@@ -1266,9 +1277,9 @@ VALID_BEG = {now?fmt=%Y%m%d%H?shift=-86400?truncate=21600}
 \end_inset
 
 This will round down the value to the nearest 6 hour interval of time.
- Starting METplus on or after 6Z but before 12Z on 20190426 will result
- in VALID_BEG = 2019042506 (clock time shifted backwards by 24 hours then
- truncated to 6 hours).
+ Starting METplus Wrappers on or after 6Z but before 12Z on 20190426 will
+ result in VALID_BEG = 2019042506 (clock time shifted backwards by 24 hours
+ then truncated to 6 hours).
 \begin_inset Newline newline
 \end_inset
 
@@ -1276,7 +1287,7 @@ This will round down the value to the nearest 6 hour interval of time.
 \begin_inset Newline newline
 \end_inset
 
-Starting METplus on 20190426 at 8:16 with the following configuration:
+Starting METplus Wrappers on 20190426 at 8:16 with the following configuration:
 \begin_inset Newline newline
 \end_inset
 
@@ -1397,9 +1408,9 @@ name "sec:SC_Field_Info"
 \end_layout
 
 \begin_layout Standard
-This section describes how METplus configuration variables can be used to
- define field information that is sent to the MET applications to read forecast
- and observation fields.
+This section describes how METplus Wrappers configuration variables can
+ be used to define field information that is sent to the MET applications
+ to read forecast and observation fields.
 \begin_inset Newline newline
 \end_inset
 
@@ -1409,14 +1420,14 @@ This section describes how METplus configuration variables can be used to
 
 
 \series bold
-FCST_VAR[N]_NAME
+FCST_VAR<n>_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
 Set this to the name of a forecast variable that you want to evaluate.
- N is any integer greater or equal to 1, i.e.
+ <n> is any integer greater or equal to 1, i.e.
  
 \begin_inset Newline newline
 \end_inset
@@ -1468,7 +1479,7 @@ FCST_VAR2_NAME = RH
 \begin_inset Newline newline
 \end_inset
 
-FCST_VAR[N]_LEVELS
+FCST_VAR<n>_LEVELS
 \series default
 
 \begin_inset Newline newline
@@ -1536,15 +1547,15 @@ will process TMP at P500 and TMP at P750.
 
 
 \series bold
-OBS_VAR[N]_NAME
+OBS_VAR<n>_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
 Set this to the corresponding observation variable that you want to evaluate
- with FCST_VAR[N]_NAME.
- If this value is not set for a given [N] value, then it will be assumed
+ with FCST_VAR<n>_NAME.
+ If this value is not set for a given <n> value, then it will be assumed
  that the same name as the forecast name will be used.
  
 \begin_inset Newline newline
@@ -1556,14 +1567,14 @@ Set this to the corresponding observation variable that you want to evaluate
 \begin_inset Newline newline
 \end_inset
 
-OBS_VAR[N]_LEVELS
+OBS_VAR<n>_LEVELS
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
 Set this to a comma-separated list of levels or a single value.
- If OBS_VAR[N]_LEVELS and OBS_VAR[N]_NAME are not set, it will be assumed
+ If OBS_VAR<n>_LEVELS and OBS_VAR<n>_NAME are not set, it will be assumed
  that the same name/level as the forecast data will be used.
 \begin_inset Newline newline
 \end_inset
@@ -1698,6 +1709,10 @@ This will compare:
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset Newline newline
+\end_inset
+
 TMP/P500 in the forecast data to TMP/P500 in the observation data
 \begin_inset Newline newline
 \end_inset
@@ -1788,6 +1803,10 @@ OBS_VAR1_LEVELS =
 \end_inset
 
 This will compare:
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -1983,8 +2002,8 @@ TEMP
 for the second run.
  Note that some MET applications allow multiple fields to be specified for
  a single run.
- If the MET tool allows it and METplus is configured accordingly, these
- two comparisons would be configured in a single run.
+ If the MET tool allows it and METplus Wrappers is configured accordingly,
+ these two comparisons would be configured in a single run.
 \begin_inset Newline newline
 \end_inset
 
@@ -1994,7 +2013,7 @@ for the second run.
 
 
 \series bold
-[FCST/OBS]_VAR[N]_THRESH:
+[FCST/OBS]_VAR<n>_THRESH:
 \series default
  Set this to a comma-separated list of threshold values to use in the comparison.
  Each of these values must begin with a comparison operator (>,>=,==,!=,<,<=,gt,
@@ -2117,7 +2136,7 @@ P500
 
 
 \series default
-Note that the value for FCST_VAR[N]_THRESH will not be copied to OBS_VAR[N]_THRE
+Note that the value for FCST_VAR<n>_THRESH will not be copied to OBS_VAR<n>_THRE
 SH if it is not set.
  These items are independent of each other.
 \series bold
@@ -2129,7 +2148,7 @@ SH if it is not set.
 \begin_inset Newline newline
 \end_inset
 
-[FCST/OBS]_VAR[N]_OPTIONS: 
+[FCST/OBS]_VAR<n>_OPTIONS: 
 \series default
 Set this to add additional information to field dictionary in the MET config
  file.
@@ -2369,7 +2388,7 @@ P500
 \end_layout
 
 \begin_layout Standard
-Note that the value for FCST_VAR[N]_OPTIONS will not be copied to OBS_VAR[N]_OPT
+Note that the value for FCST_VAR<n>_OPTIONS will not be copied to OBS_VAR<n>_OPT
 IONS if it is not set.
  These items are independent of each other.
 \series bold
@@ -2381,13 +2400,13 @@ IONS if it is not set.
 \begin_inset Newline newline
 \end_inset
 
-ENS_VAR[N]_[NAME/LEVELS/THRESH/OPTIONS]: 
+ENS_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS]: 
 \series default
 Used with EnsembleStat only.
  Users may want to define the ens dictionary item in the MET EnsembleStat
  config file differently than the fcst dictionary item.
  If this is the case, you can use these variables.
- If it is not set, the values set in the corresponding FCST_VAR[N]_[NAME/LEVELS/
+ If it is not set, the values set in the corresponding FCST_VAR<n>_[NAME/LEVELS/
 THRESH/OPTIONS] will be used in the ens dictionary.
 \end_layout
 
@@ -2403,7 +2422,7 @@ name "sec:SC_Directory_and_Filename_Template_Info"
 \end_layout
 
 \begin_layout Standard
-The METplus wrappers use directory and filename template configuration variables
+The METplus Wrappers use directory and filename template configuration variables
  to find the desired files for a given run.
  
 \begin_inset Newline newline
@@ -2470,8 +2489,8 @@ The input directory is the top level directory containing all of the observation
  data.
  The template contains items with keywords that will be substituted with
  time values for each run.
- After the values are substituted, METplus will check to see if the desired
- file exists relative to the input directory.
+ After the values are substituted, METplus Wrappers will check to see if
+ the desired file exists relative to the input directory.
  At valid time 20190201_12Z, the full desired path of the observation input
  data to grid_stat is:
 \begin_inset Newline newline
@@ -2499,8 +2518,8 @@ Note that the template contains a dated subdirectory.
 \begin_inset Newline newline
 \end_inset
 
-METplus does not need be configured to loop by valid time to find files
- using a template containing valid time information.
+METplus Wrappers does not need be configured to loop by valid time to find
+ files using a template containing valid time information.
  For example, at initialization time 20190201_12Z and forecast lead 3, the
  valid time is calculated to be 20190201_15Z and the full desired path of
  the observation input data to grid_stat is:
@@ -2598,8 +2617,9 @@ FCST_GRID_STAT_INPUT_TEMPLATE = prefix.{init?fmt=%Y%m%d%H}_f{lead?fmt=%3H}.ext
 \begin_inset Newline newline
 \end_inset
 
-For a valid time of 20190201_0Z and a forecast lead of 3, METplus will look
- for the following forecast file with initialization time of 20190131_21Z:
+For a valid time of 20190201_0Z and a forecast lead of 3, METplus Wrappers
+ will look for the following forecast file with initialization time of 20190131_
+21Z:
 \begin_inset Newline newline
 \end_inset
 
@@ -2687,9 +2707,10 @@ PB2NC_INPUT_TEMPLATE = prefix.{da_init?fmt=%Y%m%d}_{cycle?fmt=%H}_off{offset?fmt
 \begin_inset Newline newline
 \end_inset
 
-The PB2NC_OFFSETS list tells METplus the order to prioritize files with
- offsets in the name.
- At valid time 20190201_12Z, METplus will check if the following file exists:
+The PB2NC_OFFSETS list tells METplus Wrappers the order to prioritize files
+ with offsets in the name.
+ At valid time 20190201_12Z, METplus Wrappers will check if the following
+ file exists:
 \begin_inset Newline newline
 \end_inset
 
@@ -2817,11 +2838,11 @@ The [FCST/OBS]_FILE_WINDOW_[BEGIN/END] configuration variables can be used
  the run time but you still want to process the data.
  The default value of the file window begin and end variables are both 0
  (seconds).
- If both values are set to 0, METplus will require that a file matching
- the template with the exact time requested exists.
- If either value is non-zero, METplus will examine all of the files under
- the input directory that match the template, pull out the time information
- from the files, and use the file with time closest to the run time.
+ If both values are set to 0, METplus Wrappers will require that a file
+ matching the template with the exact time requested exists.
+ If either value is non-zero, METplus Wrappers will examine all of the files
+ under the input directory that match the template, pull out the time informatio
+n from the files, and use the file with time closest to the run time.
  For example, consider this configuration:
 \begin_inset Newline newline
 \end_inset
@@ -2953,8 +2974,8 @@ The run time is 20190201_0Z and the following files exist in the input directory
 \begin_inset Newline newline
 \end_inset
 
-METplus uses /my/grid_stat/input/obs/20190131/pre.20190131_23.ext as the input
- to grid_stat
+METplus Wrappers uses /my/grid_stat/input/obs/20190131/pre.20190131_23.ext
+ as the input to grid_stat
 \begin_inset Newline newline
 \end_inset
 
@@ -3109,13 +3130,14 @@ Set up the configuration file:
 
 \begin_deeper
 \begin_layout Itemize
-Your METplus install directory will hereafter be referred to as METplus_INSTALL
+Your METplus Wrappers install directory will hereafter be referred to as
+ METplus_INSTALL
 \end_layout
 
 \begin_layout Itemize
 Verify that all the 
 \shape italic
-path/to
+<path/to>
 \shape default
  values are replaced with valid paths in the METplus_INSTALL/parm/metplus_conf/m
 etplus_data.conf and METplus_INSTALL/parm/metplus_conf/metplus_system.conf
@@ -3140,14 +3162,14 @@ ity.conf file:
 \begin_layout Itemize
 You will replace any 
 \shape italic
-/path/to
+</path/to>
 \shape default
  with actual paths by setting the following:
 \end_layout
 
 \begin_layout Itemize
-PARM_BASE to the path to where you installed METplus, appended with with
- '
+PARM_BASE to the path to where you installed METplus Wrappers, appended
+ with '
 \shape italic
 parm
 \shape default
@@ -3177,8 +3199,8 @@ ity/examples/tcmpr_mean_median.conf
 
 \begin_layout Itemize
 Verify that PROCESS_LIST is set to TcPairs, TCMPRPlotter.
- This instructs METplus to run the TcPairs wrapper first (TC-Pairs) followed
- by the TCMPR plotter wrapper (plot_TCMPR.R).
+ This instructs METplus Wrappers to run the TcPairs wrapper first (TC-Pairs)
+ followed by the TCMPR plotter wrapper (plot_TCMPR.R).
 \end_layout
 
 \end_deeper
@@ -3706,7 +3728,7 @@ The prefix to the filename for the analysis file that is created as part
 Used by:
 \series default
 \shape default
- feature_util.py
+ ExtractTiles, SeriesByLead
 \series bold
 \shape italic
 
@@ -4413,7 +4435,7 @@ Directory containing config files relevant to MET tools.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, EnsembleStat, GridStat, Mode, StatAnalysis
+ EnsembleStat, GridStat, Mode, StatAnalysis
 \series bold
 \shape italic
 
@@ -5510,7 +5532,7 @@ The value that defines the resolution of the data (in decimal degrees).
 Used by:
 \series default
 \shape default
- met_util.py
+ ExtractTiles, SeriesByLead
 \series bold
 \shape italic
 
@@ -5572,7 +5594,7 @@ The longitude value, in degrees.
 Used by:
 \series default
 \shape default
- met_util.py
+ ExtractTiles, SeriesByLead
 \series bold
 \shape italic
 
@@ -5632,7 +5654,7 @@ True/False.
 Used by:
 \series default
 \shape default
- command_runner.py
+ All
 \series bold
 \shape italic
 
@@ -5718,7 +5740,7 @@ egrep
 Used by:
 \series default
 \shape default
- feature_util.py, PB2NC, PointStat
+ PB2NC, PointStat
 \series bold
 \shape italic
 
@@ -6404,14 +6426,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-ENS_VAR[N]_LEVELS
+ENS_VAR<n>_LEVELS
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Define the levels for the [N]th ensemble variable to be used in the analysis
- where [N] is an integer >= 1.
+Define the levels for the <n>th ensemble variable to be used in the analysis
+ where <n> is an integer >= 1.
  The value can be a single item or a comma separated list of items.
  You can define NetCDF levels, such as (0,*,*), but you will need to surround
  these values with quotation marks so that the commas in the item are not
@@ -6452,7 +6474,7 @@ ENS_VAR2_LEVELS =
 \begin_inset Newline newline
 \end_inset
 
-There can be [N] number of these variables defined in configuration files,
+There can be <n> number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
 \end_inset
@@ -6477,7 +6499,22 @@ ENS_VAR2_LEVELS
 \begin_inset Newline newline
 \end_inset
 
-ENS_VAR[N]_LEVELS
+ENS_VAR<n>_LEVELS
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Field_Info"
+
+\end_inset
+
+ for more information.
 \begin_inset Newline newline
 \end_inset
 
@@ -6536,15 +6573,15 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-ENS_VAR[N]_NAME
+ENS_VAR<n>_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Define the name for the [N]th ensemble variable to be used in the analysis
- where [N] is an integer >= 1.
- There can be [N] number of these variables defined in configuration files,
+Define the name for the <n>th ensemble variable to be used in the analysis
+ where <n> is an integer >= 1.
+ There can be <n> number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
 \end_inset
@@ -6569,7 +6606,22 @@ ENS_VAR2_NAME
 \begin_inset Newline newline
 \end_inset
 
-ENS_VAR[N]_NAME
+ENS_VAR<n>_NAME
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Field_Info"
+
+\end_inset
+
+ for more information.
 \begin_inset Newline newline
 \end_inset
 
@@ -6628,17 +6680,17 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-ENS_VAR[N]_OPTIONS
+ENS_VAR<n>_OPTIONS
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Define the options for the [N]th ensemble variable to be used in the analysis
- where [N] is an integer >= 1.
+Define the options for the <n>th ensemble variable to be used in the analysis
+ where <n> is an integer >= 1.
  These addition options will be applied to every name/level/threshold combinatio
-n for VAR[N].
- There can be [N] number of these variables defined in configuration files,
+n for VAR<n>.
+ There can be <n> number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
 \end_inset
@@ -6663,7 +6715,22 @@ ENS_VAR2_OPTIONS
 \begin_inset Newline newline
 \end_inset
 
-ENS_VAR[N]_OPTIONS
+ENS_VAR<n>_OPTIONS
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Field_Info"
+
+\end_inset
+
+ for more information.
 \begin_inset Newline newline
 \end_inset
 
@@ -6722,17 +6789,17 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-ENS_VAR[N]_THRESH
+ENS_VAR<n>_THRESH
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Define the threshold(s) for the [N]th ensemble variable to be used in the
- analysis where [N] is an integer >= 1.
+Define the threshold(s) for the <n>th ensemble variable to be used in the
+ analysis where <n> is an integer >= 1.
  The value can be a single item or a comma separated list of items that
  must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
- There can be [N] number of these variables defined in configuration files,
+ There can be <n> number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
 \end_inset
@@ -6757,7 +6824,22 @@ ENS_VAR2_THRESH
 \begin_inset Newline newline
 \end_inset
 
-ENS_VAR[N]_THRESH
+ENS_VAR<n>_THRESH
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Field_Info"
+
+\end_inset
+
+ for more information.
 \begin_inset Newline newline
 \end_inset
 
@@ -7065,7 +7147,7 @@ _FILTER_OPTS blank/empty in the METplus configuration file.
 Used by:
 \series default
 \shape default
- feature_util.py
+ ExtractTiles
 \series bold
 \shape italic
 
@@ -7146,7 +7228,7 @@ No longer used.
 Used by:
 \series default
 \shape default
- GridStat Mode, mtd_wrapper.py
+ GridStat Mode, MTD
 \series bold
 \shape italic
 
@@ -7185,13 +7267,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-[deprecated] FCST_[N]_FIELD_NAME
+[deprecated] FCST_<n>_FIELD_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Please use FCST_PCP_COMBINE_[N]_FIELD_NAME where N >=1 instead.
+Please use FCST_PCP_COMBINE_<n>_FIELD_NAME where N >=1 instead.
 \end_layout
 
 \begin_layout Standard
@@ -7699,7 +7781,7 @@ Input directory for GEMPAK formatted forecast files.
 Used by:
 \series default
 \shape default
- 
+ GempakToCF
 \series bold
 \shape italic
 
@@ -7761,7 +7843,7 @@ Template used to specify input filenames for GEMPAK formatted forecast files.
 Used by:
 \series default
 \shape default
- 
+ GempakToCF
 \series bold
 \shape italic
 
@@ -8374,7 +8456,7 @@ Specify the stride for forecast initializations.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, EnsembleStat, GridStat, Mode
+ EnsembleStat, GridStat, Mode
 \series bold
 \shape italic
 
@@ -8492,7 +8574,7 @@ Specify the input directory for the forecast files.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, GridStat, Mode, PointStat, PcpCombine
+ GridStat, Mode, PointStat, PcpCombine
 \series bold
 \shape italic
 
@@ -8932,7 +9014,7 @@ Please use LEAD_SEQ_MAX instead.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, EnsembleStat, GridStat, Mode
+ EnsembleStat, GridStat, Mode
 \series bold
 \shape italic
 
@@ -10051,16 +10133,16 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_PCP_COMBINE_[N]_FIELD_NAME
+FCST_PCP_COMBINE_<n>_FIELD_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-This variable is used to define a [N] hour accumulation NetCDF field in
+This variable is used to define a <n> hour accumulation NetCDF field in
  the forecast dataset used in the MET tool pcp_combine.
- [N] must be an integer >= 1.
- A corresponding variable exists for observation data called OBS_PCP_COMBINE_[N]
+ <n> must be an integer >= 1.
+ A corresponding variable exists for observation data called OBS_PCP_COMBINE_<n>
 _FIELD_NAME.
 \end_layout
 
@@ -11728,7 +11810,7 @@ Specify the values of the FCST_THRESH column in the MET .stat file to use.
 Used by:
 \series default
 \shape default
- stat_analysis_lead_wrapper.py
+ StatAnalysis
 \series bold
 \shape italic
 
@@ -11791,7 +11873,7 @@ Prefix for forecast tile files.
 Used by:
 \series default
 \shape default
- feature_util.py
+ ExtractTiles, SeriesByLead
 \series bold
 \shape italic
 
@@ -11904,8 +11986,8 @@ height "1pt"
 \end_inset
 
 Define the name of the forecast variable to be used in the analysis.
- See FCST_VAR[N]_NAME, FCST_VAR[N]_LEVELS, FCST_VAR[N]_THRESH, and FCST_VAR[N]_O
-PTIONS where [N] = integer >= 1.
+ See FCST_VAR<n>_NAME, FCST_VAR<n>_LEVELS, FCST_VAR<n>_THRESH, and FCST_VAR<n>_O
+PTIONS where <n> = integer >= 1.
 \end_layout
 
 \begin_layout Standard
@@ -11915,7 +11997,7 @@ PTIONS where [N] = integer >= 1.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, EnsembleStat, MakePlots, met_util.py
+ EnsembleStat, MakePlots
 \series bold
 \shape italic
 
@@ -12079,14 +12161,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_VAR[N]_LEVELS
+FCST_VAR<n>_LEVELS
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Define the levels for the [N]th forecast variable to be used in the analysis
- where [N] is an integer >= 1.
+Define the levels for the <n>th forecast variable to be used in the analysis
+ where <n> is an integer >= 1.
  The value can be a single item or a comma separated list of items.
  You can define NetCDF levels, such as (0,*,*), but you will need to surround
  these values with quotation marks so that the commas in the item are not
@@ -12127,9 +12209,9 @@ FCST_VAR2_LEVELS =
 \begin_inset Newline newline
 \end_inset
 
-If FCST_VAR[N]_LEVELS is not set but OBS_VAR[N]_LEVELS is, the same information
+If FCST_VAR<n>_LEVELS is not set but OBS_VAR<n>_LEVELS is, the same information
  will be used for both variables.
- There can be [N] number of these variables defined in configuration files,
+ There can be <n> number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
 \end_inset
@@ -12154,7 +12236,22 @@ FCST_VAR2_LEVELS
 \begin_inset Newline newline
 \end_inset
 
-FCST_VAR[N]_LEVELS
+FCST_VAR<n>_LEVELS
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Field_Info"
+
+\end_inset
+
+ for more information.
 \begin_inset Newline newline
 \end_inset
 
@@ -12168,7 +12265,7 @@ FCST_VAR[N]_LEVELS
 Used by:
 \series default
 \shape default
- MakePlots, met_util.py
+ GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
 \series bold
 \shape italic
 
@@ -12213,17 +12310,17 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_VAR[N]_NAME
+FCST_VAR<n>_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Define the name for the [N]th forecast variable to be used in the analysis
- where [N] is an integer >= 1.
- If FCST_VAR[N]_NAME is not set but OBS_VAR[N]_NAME is, the same information
+Define the name for the <n>th forecast variable to be used in the analysis
+ where <n> is an integer >= 1.
+ If FCST_VAR<n>_NAME is not set but OBS_VAR<n>_NAME is, the same information
  will be used for both variables.
- There can be [N] number of these variables defined in configuration files,
+ There can be <n> number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
 \end_inset
@@ -12248,7 +12345,22 @@ FCST_VAR2_NAME
 \begin_inset Newline newline
 \end_inset
 
-FCST_VAR[N]_NAME
+FCST_VAR<n>_NAME
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Field_Info"
+
+\end_inset
+
+ for more information.
 \begin_inset Newline newline
 \end_inset
 
@@ -12262,7 +12374,7 @@ FCST_VAR[N]_NAME
 Used by:
 \series default
 \shape default
- MakePlots, met_util.py
+ GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
 \series bold
 \shape italic
 
@@ -12307,19 +12419,19 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_VAR[N]_OPTIONS
+FCST_VAR<n>_OPTIONS
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Define the options for the [N]th forecast variable to be used in the analysis
- where [N] is an integer >= 1.
+Define the options for the <n>th forecast variable to be used in the analysis
+ where <n> is an integer >= 1.
  These addition options will be applied to every name/level/threshold combinatio
-n for VAR[N].
- If FCST_VAR[N]_OPTIONS is not set but OBS_VAR[N]_OPTIONS is, the same informati
+n for VAR<n>.
+ If FCST_VAR<n>_OPTIONS is not set but OBS_VAR<n>_OPTIONS is, the same informati
 on will be used for both variables.
- There can be [N] number of these variables defined in configuration files,
+ There can be <n> number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
 \end_inset
@@ -12344,7 +12456,22 @@ FCST_VAR2_OPTIONS
 \begin_inset Newline newline
 \end_inset
 
-FCST_VAR[N]_OPTIONS
+FCST_VAR<n>_OPTIONS
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Field_Info"
+
+\end_inset
+
+ for more information.
 \begin_inset Newline newline
 \end_inset
 
@@ -12358,7 +12485,7 @@ FCST_VAR[N]_OPTIONS
 Used by:
 \series default
 \shape default
- MakePlots, met_util.py
+ GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
 \series bold
 \shape italic
 
@@ -12403,19 +12530,19 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FCST_VAR[N]_THRESH
+FCST_VAR<n>_THRESH
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Define the threshold(s) for the [N]th forecast variable to be used in the
- analysis where [N] is an integer >= 1.
+Define the threshold(s) for the <n>th forecast variable to be used in the
+ analysis where <n> is an integer >= 1.
  The value can be a single item or a comma separated list of items that
  must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
- If FCST_VAR[N]_THRESH is not set but OBS_VAR[N]_THRESH is, the same information
+ If FCST_VAR<n>_THRESH is not set but OBS_VAR<n>_THRESH is, the same information
  will be used for both variables.
- There can be [N] number of these variables defined in configuration files,
+ There can be <n> number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
 \end_inset
@@ -12440,21 +12567,36 @@ FCST_VAR2_THRESH
 \begin_inset Newline newline
 \end_inset
 
-FCST_VAR[N]_THRESH
+FCST_VAR<n>_THRESH
 \begin_inset Newline newline
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Field_Info"
+
+\end_inset
+
+ for more information.
 \begin_inset Newline newline
 \end_inset
 
 
 \series bold
 \shape italic
+
+\begin_inset Newline newline
+\end_inset
+
 Used by:
 \series default
 \shape default
- MakePlots, met_util.py
+ GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
 \series bold
 \shape italic
 
@@ -13828,7 +13970,7 @@ Filename template used to identify the GFS analysis file.
 Used by:
 \series default
 \shape default
- feature_util.py
+ ExtractTiles, SeriesByLead
 \series bold
 \shape italic
 
@@ -13889,7 +14031,7 @@ Filename templated used to identify the GFS forecast files.
 Used by:
 \series default
 \shape default
- feature_util.py
+ ExtractTiles, SeriesByLead
 \series bold
 \shape italic
 
@@ -14453,17 +14595,35 @@ INIT_BEG
 
 Specify the beginning initialization time to be used in the analysis.
  Format can be controlled by INIT_TIME_FMT.
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-by-Initialization"
+
+\end_inset
+
+ for more information.
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
+
+\begin_inset Newline newline
+\end_inset
+
 Used by:
 \series default
 \shape default
- command_builder.py, ExtractTiles, MakePlots, master_metplus.py, StatAnalysis,
- TcPairs, TcStat
+ All
 \series bold
 \shape italic
 
@@ -14517,17 +14677,35 @@ INIT_END
 Specify the ending initialization time to be used in the analysis.
  Format can be controlled by INIT_TIME_FMT.
  
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-by-Initialization"
+
+\end_inset
+
+ for more information.
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
+
+\begin_inset Newline newline
+\end_inset
+
 Used by:
 \series default
 \shape default
- command_builder.py, ExtractTiles, MakePlots, master_metplus.py, StatAnalysis,
- TcPairs, TcStat
+ All
 \series bold
 \shape italic
 
@@ -14936,17 +15114,123 @@ INIT_INCREMENT
 Control the increment or stride to use when stepping between forecast initializa
 tions.
  Units are seconds.
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-by-Initialization"
+
+\end_inset
+
+ for more information.
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
+
+\begin_inset Newline newline
+\end_inset
+
 Used by:
 \series default
 \shape default
- command_builder.py, ExtractTiles, MakePlots, master_metplus.py, StatAnalysis,
- TcPairs, TcStat
+ All
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+INIT_SEQ
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify a list of initialization hours that are used to build a sequence
+ of forecast lead times to include in the analysis.
+ Used only when looping by valid time (LOOP_BY = VALID).
+ Comma separated list format, e.g.:
+\begin_inset Newline newline
+\end_inset
+
+0, 6, 12
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-over-Forecast"
+
+\end_inset
+
+ for more information.
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Used by:
+\series default
+\shape default
+ EnsembleStat, GridStat, Mode, MTD, PB2NC, PcpCombine, PointStat, RegridDataPlan
+e, SeriesByLead
 \series bold
 \shape italic
 
@@ -14998,16 +15282,35 @@ INIT_TIME_FMT
 \end_inset
 
 Specify a formatting string to use for INIT_BEG and INIT_END.
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-by-Initialization"
+
+\end_inset
+
+ for more information.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
 Used by:
 \series default
 \shape default
- command_builder.py, master_metplus.py
+ All
 \series bold
 \shape italic
 
@@ -15410,7 +15713,7 @@ Specify a latitude adjustment, in degrees to be used in the analysis.
 Used by:
 \series default
 \shape default
- met_util.py
+ ExtractTiles, SeriesByLead
 \series bold
 \shape italic
 
@@ -15467,13 +15770,8 @@ For CyclonePlotter, this refers to the column of interest in the input ASCII
 
 \begin_layout Standard
 In the TCMPRPlotter, this corresponds to the optional -lead argument in
- the plot_TCMPR.R script (which is wrapped by tcmpr_plotter.py).
+ the plot_TCMPR.R script (which is wrapped by TCMPRPlotter).
  This argument is set to a comma-separted list of lead times (h) to be plotted.
-\end_layout
-
-\begin_layout Standard
-In feature_util.py, this corresponds to the name of the column of interest
- in the input ASCII data file.
 \end_layout
 
 \begin_layout Standard
@@ -15488,7 +15786,7 @@ In TcStat, this corresponds to the name of the column of interest in the
 Used by:
 \series default
 \shape default
- CyclonePlotter, TCMPRPlotter, feature_util.py, TcStat
+ CyclonePlotter, TCMPRPlotter, TcStat
 \series bold
 \shape italic
 
@@ -15611,12 +15909,195 @@ Specify the sequence of forecast lead times to include in the analysis.
 \end_inset
 
 0, 6, 12
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-over-Forecast"
+
+\end_inset
+
+ for more information.
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Used by:
+\series default
+\shape default
+ EnsembleStat, GridStat, Mode, MTD, PB2NC, PcpCombine, PointStat, RegridDataPlan
+e, SeriesByLead
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+LEAD_SEQ_MIN
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Minimum forecast lead to be processed.
+ Used primarily with INIT_SEQ but also affects LEAD_SEQ.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-over-Forecast"
+
+\end_inset
+
+ for more information.
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Used by:
+\series default
+\shape default
+ EnsembleStat, GridStat, Mode, MTD, PB2NC, PcpCombine, PointStat, RegridDataPlan
+e, SeriesByLead
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+LEAD_SEQ_MAX
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Maximum forecast lead to be processed.
+ Used primarily with INIT_SEQ but also affects LEAD_SEQ.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-over-Forecast"
+
+\end_inset
+
+ for more information.
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
 Used by:
 \series default
 \shape default
@@ -15670,9 +16151,9 @@ LEAD_SEQ
 \series default
 _
 \emph on
-n
+<n
 \emph default
-
+>
 \begin_inset Newline newline
 \end_inset
 
@@ -15684,9 +16165,9 @@ Required when SERIES_BY_LEAD_GROUP_FCSTS=True.
 \end_inset
 
 0, 6, 12.
- The 
+ 
 \emph on
-n
+<n>
 \emph default
  corresponds to the bin in which the user wishes to aggregate series by
  lead results.
@@ -15738,9 +16219,9 @@ LEAD_SEQ
 \series default
 _
 \emph on
-n
+<n
 \emph default
-_
+>_
 \series bold
 LABEL
 \series default
@@ -15799,7 +16280,7 @@ LEGEND
 \begin_inset Newline newline
 \end_inset
 
-The text to be includede in the legend of your plot.
+The text to be included in the legend of your plot.
 \end_layout
 
 \begin_layout Standard
@@ -15929,7 +16410,7 @@ Specify the directory where log files from MET and METplus should be written.
 Used by:
 \series default
 \shape default
- command_builder.py, met_util.py
+ All
 \series bold
 \shape italic
 
@@ -16040,7 +16521,7 @@ CRITICAL
 Used by:
 \series default
 \shape default
- met_util.py
+ All
 \series bold
 \shape italic
 
@@ -16103,7 +16584,7 @@ Control the filename of the METplus log file.
 Used by:
 \series default
 \shape default
- master_metplus.py, met_util.py
+ All
 \series bold
 \shape italic
 
@@ -16165,7 +16646,7 @@ Control whether logging output from the MET tools is sent to the METplus
 Used by:
 \series default
 \shape default
- command_runner.py
+ All
 \series bold
 \shape italic
 
@@ -16234,7 +16715,7 @@ Control the verbosity of the logging from the MET tools.
 Used by:
 \series default
 \shape default
- command_builder.py
+ All
 \series bold
 \shape italic
 
@@ -16300,7 +16781,7 @@ Set the timestamp template for the METplus log file.
 Used by:
 \series default
 \shape default
- met_util.py
+ All
 \series bold
 \shape italic
 
@@ -16345,7 +16826,7 @@ LOG_TIMESTAMP_USE_DATATIME
 \begin_inset Newline newline
 \end_inset
 
-STrue/False.
+True/False.
  Determines which time to use for the log filenames.
  If True, use INIT_BEG if LOOP_BY_INIT is True or VALID_BEG if LOOP_BY_INIT
  is False.
@@ -16363,7 +16844,7 @@ STrue/False.
 Used by:
 \series default
 \shape default
- met_util.py
+ All
 \series bold
 \shape italic
 
@@ -16427,7 +16908,7 @@ Specify a longitude adjustment, in degrees to be used in the analysis.
 Used by:
 \series default
 \shape default
- met_util.py
+ ExtractTiles, SeriesByLead
 \series bold
 \shape italic
 
@@ -16480,17 +16961,35 @@ LOOP_BY
 
 Control whether the analysis is processed across valid or initialization
  times.
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_LOOP_BY"
+
+\end_inset
+
+ for more information.
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
+
+\begin_inset Newline newline
+\end_inset
+
 Used by:
 \series default
 \shape default
- command_builder.py, compare_gridded_wrapper.py, EnsembleStat, GridStat, MakePlots
-, master_metplus.py, Mode, StatAnalysis
+ All
 \series bold
 \shape italic
 
@@ -16578,7 +17077,7 @@ processes
 \end_inset
 
  runs each item in the PROCESS_LIST for all times specified, then repeat
- for the next item in the PROCESS_LIST
+ for the next item in the PROCESS_LIST.
 \end_layout
 
 \begin_layout Standard
@@ -16588,7 +17087,7 @@ processes
 Used by:
 \series default
 \shape default
- MakePlots, master_metplus.py, PB2NC, PointStat, StatAnalysis
+ All
 \series bold
 \shape italic
 
@@ -16732,7 +17231,7 @@ Provide the absolute path to the METplus final configuration file.
 Used by:
 \series default
 \shape default
- config_launcher.py
+ All
 \series bold
 \shape italic
 
@@ -16793,8 +17292,8 @@ The base directory where your MET installation resides.
 Used by:
 \series default
 \shape default
- CyclonePlotter, ExtractTiles, master_metplus.py, met_util.py, PB2NC, PointStat,
- SeriesByInit, SeriesByLead, TCMPRPlotter, TcPairs, usage_wrapper.py
+ CyclonePlotter, ExtractTiles, PB2NC, PointStat, SeriesByInit, SeriesByLead,
+ TCMPRPlotter, TcPairs
 \series bold
 \shape italic
 
@@ -16833,7 +17332,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MET_BIN
+[deprecated] MET_BIN
 \series default
 
 \begin_inset Newline newline
@@ -16945,7 +17444,9 @@ MET_INSTALL_DIR
 \end_inset
 
 The base directory of the MET install.
- To be defined when using MET version 6.1 and beyond
+ To be defined when using MET version 6.1 and beyond.
+ Used to get the full path of the MET executable when calling from METplus
+ Wrappers.
 \end_layout
 
 \begin_layout Standard
@@ -16955,10 +17456,7 @@ The base directory of the MET install.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, CyclonePlotter, EnsembleStat, ExtractTiles,
- feature_util.py, GridStat, Mode, PB2NC, PcpCombine, PointStat, regrid_data_plane
-_wrapper.py, SeriesByInit, SeriesByLead, StatAnalysis, TCMPRPlotter, TcPairs,
- TcStat, wavelet_stat_wrapper.py
+ All
 \series bold
 \shape italic
 
@@ -17142,7 +17640,7 @@ Specify the model name.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, EnsembleStat, StatAnalysis, TcPairs
+ EnsembleStat, GridStat, PointStat, PcpCombine, StatAnalysis, TcPairs
 \series bold
 \shape italic
 
@@ -17477,7 +17975,7 @@ MODEL1_STAT_DIR
 \begin_inset Newline newline
 \end_inset
 
-Define the stat file directrory for the first model to be used in the analysis.
+Define the stat file directory for the first model to be used in the analysis.
  There can be N number of model directories defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
@@ -17577,7 +18075,7 @@ Specify the directory where the model data are located.
 Used by:
 \series default
 \shape default
- feature_util.py
+ ExtractTiles, SeriesByLead
 \series bold
 \shape italic
 
@@ -18541,7 +19039,7 @@ height "1pt"
 \end_inset
 
 Please use MODE_OUTPUT_DIR instead.
- Ouptut directory to write mode files.
+ Output directory to write mode files.
 \end_layout
 
 \begin_layout Standard
@@ -18596,7 +19094,7 @@ MODE_OUTPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-Ouptut directory to write mode files.
+Output directory to write mode files.
 \end_layout
 
 \begin_layout Standard
@@ -19060,7 +19558,7 @@ Comma separated list of convolution radius values used by mode-TD for forecast
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -19284,7 +19782,7 @@ Comma separated list of convolution threshold values used by mode-TD for
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -19340,7 +19838,7 @@ n files.
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -19396,7 +19894,7 @@ Comma separated list of convolution threshold values used by mode-TD for
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -19451,7 +19949,7 @@ Please use MTD_OUTPUT_DIR.
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -19496,7 +19994,7 @@ MTD_OUTPUT_DIR
 \begin_inset Newline newline
 \end_inset
 
-Ouptut directory to write mode-TD files.
+Output directory to write mode-TD files.
 \end_layout
 
 \begin_layout Standard
@@ -19506,7 +20004,7 @@ Ouptut directory to write mode-TD files.
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -19622,7 +20120,7 @@ Only used ifMTD_SINGLE_RUN is True.
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -19678,7 +20176,7 @@ Run mode-TD with -single option.
 Used by:
 \series default
 \shape default
- mtd_wrapper.py
+ MTD
 \series bold
 \shape italic
 
@@ -19833,7 +20331,7 @@ ncdump
 Used by:
 \series default
 \shape default
- met_util.py, PB2NC, PointStat, SeriesByLead
+ PB2NC, PointStat, SeriesByLead
 \series bold
 \shape italic
 
@@ -19957,7 +20455,7 @@ The number of latitude points, set to a whole number.
 Used by:
 \series default
 \shape default
- met_util.py
+ ExtractTiles, SeriesByLead
 \series bold
 \shape italic
 
@@ -20021,7 +20519,7 @@ The number of longitude points, set to a whole number.
 Used by:
 \series default
 \shape default
- met_util.py
+ ExtractTiles, SeriesByLead
 \series bold
 \shape italic
 
@@ -20237,16 +20735,16 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-[deprecated] OBS_[N]_FIELD_NAME
+[deprecated] OBS_<n>_FIELD_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Please use OBS_PCP_COMBINE_[N]_FIELD_NAME instead.
- This variable is used to define a [N] hour accumulation NetCDF field in
+Please use OBS_PCP_COMBINE_<n>_FIELD_NAME instead.
+ This variable is used to define a <n> hour accumulation NetCDF field in
  the observation dataset used in the MET tool pcp_combine.
- [N] must be an integer >= 1.
+ <n> must be an integer >= 1.
 \end_layout
 
 \begin_layout Standard
@@ -23214,13 +23712,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_PCP_COMBINE_[N]_FIELD_NAME
+OBS_PCP_COMBINE_<n>_FIELD_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-See FCST_PCP_COMBINE_[N]_FIELD_NAME 
+See FCST_PCP_COMBINE_<n>_FIELD_NAME 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_F"
@@ -25115,8 +25613,8 @@ height "1pt"
 \end_inset
 
 Specify the string for the observation variable used in the analysis.
- See OBS_VARn_NAME, OBS_VARn_LEVELS, OBS_VARn_OPTIONS and OBS_VARn_THRESH
- where n = integer >= 1.
+ See OBS_VAR<n>_NAME, OBS_VAR<n>_LEVELS, OBS_VAR<n>_OPTIONS and OBS_VAR<n>_THRES
+H where n = integer >= 1.
 \end_layout
 
 \begin_layout Standard
@@ -25293,14 +25791,14 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_VAR[N]_LEVELS
+OBS_VAR<n>_LEVELS
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Define the levels for the [N]th observation variable to be used in the analysis
- where [N] is an integer >= 1.
+Define the levels for the <n>th observation variable to be used in the analysis
+ where <n> is an integer >= 1.
  The value can be a single item or a comma separated list of items.
  You can define NetCDF levels, such as (0,*,*), but you will need to surround
  these values with quotation marks so that the commas in the item are not
@@ -25341,9 +25839,9 @@ OBS_VAR2_LEVELS =
 \begin_inset Newline newline
 \end_inset
 
-If OBS_VAR[N]_LEVELS is not set but FCST_VAR[N]_LEVELS is, the same information
+If OBS_VAR<n>_LEVELS is not set but FCST_VAR<n>_LEVELS is, the same information
  will be used for both variables.
- There can be [N] number of these variables defined in configuration files,
+ There can be <n> number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
 \end_inset
@@ -25368,7 +25866,7 @@ OBS_VAR2_LEVELS
 \begin_inset Newline newline
 \end_inset
 
-OBS_VAR[N]_LEVELS
+OBS_VAR<n>_LEVELS
 \begin_inset Newline newline
 \end_inset
 
@@ -25382,7 +25880,7 @@ OBS_VAR[N]_LEVELS
 Used by:
 \series default
 \shape default
- MakePlots, met_util.py
+ GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
 \series bold
 \shape italic
 
@@ -25427,17 +25925,17 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_VAR[N]_NAME
+OBS_VAR<n>_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Define the name for the [N]th observation variable to be used in the analysis
- where [N] is an integer >= 1.
- If OBS_VAR[N]_NAME is not set but FCST_VAR[N]_NAME is, the same information
+Define the name for the <n>th observation variable to be used in the analysis
+ where <n> is an integer >= 1.
+ If OBS_VAR<n>_NAME is not set but FCST_VAR<n>_NAME is, the same information
  will be used for both variables.
- There can be [N] number of these variables defined in configuration files,
+ There can be <n> number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
 \end_inset
@@ -25462,7 +25960,7 @@ OBS_VAR2_NAME
 \begin_inset Newline newline
 \end_inset
 
-OBS_VAR[N]_NAME
+OBS_VAR<n>_NAME
 \begin_inset Newline newline
 \end_inset
 
@@ -25476,7 +25974,7 @@ OBS_VAR[N]_NAME
 Used by:
 \series default
 \shape default
- MakePlots, met_util.py
+ GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
 \series bold
 \shape italic
 
@@ -25521,19 +26019,19 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_VAR[N]_OPTIONS
+OBS_VAR<n>_OPTIONS
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Define the options for the [N]th observation variable to be used in the
- analysis where [N] is an integer >= 1.
+Define the options for the <n>th observation variable to be used in the
+ analysis where <n> is an integer >= 1.
  These addition options will be applied to every name/level/threshold combinatio
-n for VAR[N].
- If OBS_VAR[N]_OPTIONS is not set but FCST_VAR[N]_OPTIONS is, the same informati
+n for VAR<n>.
+ If OBS_VAR<n>_OPTIONS is not set but FCST_VAR<n>_OPTIONS is, the same informati
 on will be used for both variables.
- There can be [N] number of these variables defined in configuration files,
+ There can be <n> number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
 \end_inset
@@ -25558,7 +26056,7 @@ OBS_VAR2_OPTIONS
 \begin_inset Newline newline
 \end_inset
 
-OBS_VAR[N]_OPTIONS
+OBS_VAR<n>_OPTIONS
 \begin_inset Newline newline
 \end_inset
 
@@ -25572,7 +26070,7 @@ OBS_VAR[N]_OPTIONS
 Used by:
 \series default
 \shape default
- MakePlots, met_util.py
+ GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
 \series bold
 \shape italic
 
@@ -25617,19 +26115,19 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-OBS_VAR[N]_THRESH
+OBS_VAR<n>_THRESH
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Define the threshold(s) for the [N]th observation variable to be used in
- the analysis where [N] is an integer >= 1.
+Define the threshold(s) for the <n>th observation variable to be used in
+ the analysis where <n> is an integer >= 1.
  The value can be a single item or a comma separated list of items that
  must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
- If OBS_VAR[N]_THRESH is not set but FCST_VAR[N]_THRESH is, the same information
+ If OBS_VAR<n>_THRESH is not set but FCST_VAR<n>_THRESH is, the same information
  will be used for both variables.
- There can be [N] number of these variables defined in configuration files,
+ There can be <n> number of these variables defined in configuration files,
  simply increment the 
 \begin_inset Quotes eld
 \end_inset
@@ -25654,7 +26152,7 @@ OBS_VAR2_THRESH
 \begin_inset Newline newline
 \end_inset
 
-OBS_VAR[N]_THRESH
+OBS_VAR<n>_THRESH
 \begin_inset Newline newline
 \end_inset
 
@@ -25668,7 +26166,7 @@ OBS_VAR[N]_THRESH
 Used by:
 \series default
 \shape default
- met_util.py
+ GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
 \series bold
 \shape italic
 
@@ -25942,7 +26440,7 @@ Provide a string to represent the type of observation data used in the analysis.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, EnsembleStat, GridStat, Mode, StatAnalysis
+ EnsembleStat, GridStat, Mode, MTD, PointStat, StatAnalysis
 \series bold
 \shape italic
 
@@ -26001,7 +26499,7 @@ Please use OBTYPE instead.
 Used by:
 \series default
 \shape default
- compare_gridded_wrapper.py, EnsembleStat, GridStat, Mode, StatAnalysis
+ EnsembleStat, GridStat, Mode, StatAnalysis
 \series bold
 \shape italic
 
@@ -26062,7 +26560,7 @@ Provide a path to the top level output directory for METplus.
 Used by:
 \series default
 \shape default
- config_launcher.py, PB2NC, PointStat, TcPairs, TcStat
+ All
 \series bold
 \shape italic
 
@@ -26202,7 +26700,7 @@ Acceptable values: yes/no
 Used by:
 \series default
 \shape default
- ExtractTiles, feature_util.py
+ ExtractTiles
 \series bold
 \shape italic
 
@@ -26280,7 +26778,7 @@ Specify the top level METplus parameter file directory.
 Used by:
 \series default
 \shape default
- config_launcher.py, PB2NC, PointStat, TcStat
+ PB2NC, PointStat, TcStat
 \series bold
 \shape italic
 
@@ -28865,7 +29363,7 @@ Specify the list of processes for METplus to perform, in a comma separated
 Used by:
 \series default
 \shape default
- master_metplus.py
+ All
 \series bold
 \shape italic
 
@@ -29389,7 +29887,7 @@ Specify the absolute path to a file containing information about the desired
 Used by:
 \series default
 \shape default
- regrid_data_plane_wrapper.py
+ RegridDataPlane
 \series bold
 \shape italic
 
@@ -29520,7 +30018,7 @@ Acceptable values: yes/no
 Used by:
 \series default
 \shape default
- feature_util.py, met_util.py, SeriesByInit, SeriesByLead
+ SeriesByInit, SeriesByLead
 \series bold
 \shape italic
 
@@ -29985,7 +30483,7 @@ Used by:
  
 \shape italic
 \emph on
-master_metplus.py
+All
 \series bold
 \emph default
 
@@ -31406,7 +31904,7 @@ The identifier of the storm(s) of interest.
 Used by:
 \series default
 \shape default
- CyclonePlotter, met_util.py, TcPairs, TcStat
+ CyclonePlotter, TcPairs, TcStat
 \series bold
 \shape italic
 
@@ -35358,7 +35856,7 @@ VALID_BEG
 \end_inset
 
 Specify a begin time for valid times for use in the analysis.
- This is the starting date in the format set in the TIME_FMT.
+ This is the starting date in the format set in the VALID_TIME_FMT.
  It is named accordingly to the value set for LOOP_BY.
  However, in StatAnalysis, it is named accordingly to the value set for
  PLOT_TIME.
@@ -35370,18 +35868,28 @@ Specify a begin time for valid times for use in the analysis.
 \begin_inset Newline newline
 \end_inset
 
-Acceptable formats: YYYYMM[DD[_HH]]
-\end_layout
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-by-Valid"
 
-\begin_layout Standard
+\end_inset
+
+ for more information.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
 Used by:
 \series default
 \shape default
- command_builder.py, MakePlots, master_metplus.py, StatAnalysis, TcPairs,
- TcStat
+ All
 \series bold
 \shape italic
 
@@ -35433,7 +35941,7 @@ VALID_END
 \end_inset
 
 Specify an end time for valid times for use in the analysis.
- This is the ending date in the format set in the TIME_FMT.
+ This is the ending date in the format set in the VALID_TIME_FMT.
  It is named accordingly to the value set for LOOP_BY.
  
 \begin_inset Newline newline
@@ -35443,18 +35951,28 @@ Specify an end time for valid times for use in the analysis.
 \begin_inset Newline newline
 \end_inset
 
-Acceptable formats: controlled via VALID_TIME_FMT
-\end_layout
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-by-Valid"
 
-\begin_layout Standard
+\end_inset
+
+ for more information.
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
+
+\begin_inset Newline newline
+\end_inset
+
 Used by:
 \series default
 \shape default
- command_builder.py, MakePlots, master_metplus.py, StatAnalysis, TcPairs,
- TcStat
+ All
 \series bold
 \shape italic
 
@@ -35791,17 +36309,28 @@ Specify the time increment for valid times for use in the analysis.
 \begin_inset Newline newline
 \end_inset
 
-Acceptable formats: seconds
-\end_layout
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-by-Valid"
 
-\begin_layout Standard
+\end_inset
+
+ for more information.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
 Used by:
 \series default
 \shape default
- command_builder.py, MakePlots, master_metplus.py, StatAnalysis, TcStat
+ All
 \series bold
 \shape italic
 
@@ -35853,16 +36382,35 @@ VALID_TIME_FMT
 \end_inset
 
 Specify a strftime formatting string for use with VALID_BEG and VALID_END.
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
+\begin_inset Newline newline
+\end_inset
+
+See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:SC_Timing_Control_Looping-by-Valid"
+
+\end_inset
+
+ for more information.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 \shape italic
 Used by:
 \series default
 \shape default
- command_builder.py, master_metplus.py, StatAnalysis 
+ All
 \series bold
 \shape italic
 
@@ -35923,7 +36471,7 @@ Specify a comma separated list of variables to be used in the analysis.
 Used by:
 \series default
 \shape default
- feature_util.py, PB2NC, SeriesByInit, SeriesByLead
+ PB2NC, SeriesByInit, SeriesByLead
 \series bold
 \shape italic
 
@@ -35968,7 +36516,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-VARn_FOURIER_DECOMP
+VAR<n>_FOURIER_DECOMP
 \series default
 
 \begin_inset Newline newline
@@ -35976,7 +36524,7 @@ VARn_FOURIER_DECOMP
 
 Specify if Fourier decomposition is to be considered (True) or not (False).
  If this is set to True, data stratification will be done for the Fourier
- decomposition of FCS_VARn_NAME.
+ decomposition of FCS_VAR<n>_NAME.
  This should have been previously run in grid_stat_wrapper.
  The default value is set to False.
 \end_layout
@@ -36033,7 +36581,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-VARn_WAVE_NUM_LIST
+VAR<n>_WAVE_NUM_LIST
 \series default
 
 \begin_inset Newline newline
@@ -36113,7 +36661,7 @@ Please use REGRID_DATA_PLANE_VERIF_GRID.
 Used by:
 \series default
 \shape default
- regrid_data_plane_wrapper.py
+ RegridDataPlane
 \series bold
 \shape italic
 
@@ -36446,7 +36994,7 @@ wgrib2
 Used by:
 \series default
 \shape default
- feature_util.py, PB2NC, PointStat
+ PB2NC, PointStat
 \series bold
 \shape italic
 
