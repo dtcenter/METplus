@@ -73,6 +73,9 @@ that reformat gridded data
             self.config.getint('config', 'OBS_FILE_WINDOW_END',
                                c_dict['OBS_WINDOW_END'])
 
+        c_dict['FCST_PROB_THRESH'] = '==0.1'
+        c_dict['OBS_PROB_THRESH'] = '==0.1'
+
         c_dict['ALLOW_MULTIPLE_FILES'] = False
         c_dict['NEIGHBORHOOD_WIDTH'] = ''
         c_dict['NEIGHBORHOOD_SHAPE'] = ''
