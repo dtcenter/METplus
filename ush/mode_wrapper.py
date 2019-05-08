@@ -223,8 +223,7 @@ class ModeWrapper(CompareGriddedWrapper):
                 @param v_name var_info name
                 @param v_level var_info level
                 @param v_extra var_info extra arguments
-                @param path path to file
-                @param thresh probability threshold
+                @param v_thresh probability threshold
                 @param d_type type of data (FCST or OBS)
                 @return returns a string with field info
         """

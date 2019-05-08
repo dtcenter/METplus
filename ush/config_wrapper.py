@@ -44,9 +44,10 @@ class ConfigWrapper:
             config, dir, and os environment)
             returns raw string, preserving {valid?fmt=%Y} blocks
             Args:
-                @param p: Conf object
                 @param sec: Section in the conf file to look for variable
                 @param opt: Variable to interpret
+                @param default: Default value to use if config is not set
+                @param count: Counter used to stop recursion to prevent infinite
             Returns:
                 Raw string
         """

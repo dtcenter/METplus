@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-'''
+"""
 Program Name: CommandBuilder.py
 Contact(s): George McCabe
 Abstract:
@@ -9,18 +9,12 @@ Usage: Create a subclass
 Parameters: None
 Input Files: N/A
 Output Files: N/A
-'''
+"""
 
 from __future__ import (print_function, division)
 
 import os
-import sys
-import re
-import csv
-import time
-import subprocess
-from datetime import datetime, timedelta
-import calendar
+from datetime import datetime
 from command_runner import CommandRunner
 import met_util as util
 from config_wrapper import ConfigWrapper
@@ -34,21 +28,32 @@ Call as follows:
 Cannot be called directly. Must use child classes.
 @endcode
 '''
+
+
 class CommandBuilder:
     __metaclass__ = ABCMeta
 
     """!Common functionality to wrap all MET applications
     """
+
     def __init__(self, config, logger):
         self.logger = logger
         self.config = ConfigWrapper(config, logger)
         self.debug = False
+        self.verbose = 2
         self.app_name = None
         self.app_path = None
+        self.args = []
+        self.input_dir = ""
+        self.infiles = []
+        self.outdir = ""
+        self.outfile = ""
+        self.param = ""
         self.env = os.environ.copy()
         self.set_verbose(self.config.getstr('config', 'LOG_MET_VERBOSITY', '2'))
         self.cmdrunner = CommandRunner(self.config, logger=self.logger)
         self.set_user_environment()
+        self.c_dict = {}
         self.clear()
 
     def clear(self):
@@ -61,15 +66,14 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
 
-
     def set_user_environment(self):
         if 'user_env_vars' not in self.config.sections():
             self.config.add_section('user_env_vars')
 
         for env_var in self.config.keys('user_env_vars'):
-#            if env_var in self.env:
-#                self.logger.warning("{} is already set in the environment. Overwriting from conf file"
-#                                    .format(env_var))
+            #            if env_var in self.env:
+            #                self.logger.warning("{} is already set in the environment. Overwriting from conf file"
+            #                                    .format(env_var))
             self.add_env_var(env_var, self.config.getstr('user_env_vars', env_var))
 
         # set MET_TMP_DIR to conf TMP_DIR
@@ -86,7 +90,7 @@ class CommandBuilder:
         """
         self.args.append(arg)
 
-    def add_input_file(self, filename):
+    def add_input_file(self, filename, addon=None):
         """!Add input filename to MET application command line
         """
         self.infiles.append(filename)
@@ -121,7 +125,7 @@ class CommandBuilder:
     def set_param_file(self, param):
         self.param = param
 
-    def add_env_var(self, key,  name):
+    def add_env_var(self, key, name):
         """!Sets an environment variable so that the MET application
         can reference it in the parameter file or the application itself
         """
@@ -141,29 +145,27 @@ class CommandBuilder:
         """!Print all environment variables set for this application
         """
         for x in self.env:
-            self.logger.debug(x+'="'+self.env[x]+'"')
+            self.logger.debug(x + '="' + self.env[x] + '"')
 
-    def print_env_copy(self, vars):
+    def print_env_copy(self, var_list):
         """!Print list of environment variables that can be easily
         copied into terminal
         """
         out = ""
-        all_vars = vars + self.config.keys('user_env_vars')
+        all_vars = var_list + self.config.keys('user_env_vars')
         for v in all_vars:
-            next = 'export '+v+'="'+self.env[v].replace('"', '\\"')+'"'
-            out += next+'; '
+            line = 'export ' + v + '="' + self.env[v].replace('"', '\\"') + '"'
+            out += line + '; '
         self.logger.debug(out)
 
     def print_env_item(self, item):
         """!Print single environment variable in the log file
         """
-        self.logger.debug(item+"="+self.env[item])
-
+        self.logger.debug(item + "=" + self.env[item])
 
     def print_user_env_items(self):
         for k in self.config.keys('user_env_vars'):
             self.print_env_item(k)
-
 
     def handle_fcst_and_obs_field(self, gen_name, fcst_name, obs_name, default=None, sec='config'):
         has_gen = self.config.has_option(sec, gen_name)
@@ -177,7 +179,7 @@ class CommandBuilder:
             if has_gen:
                 self.logger.warning('Ignoring conf {} and using {} and {}'
                                     .format(gen_name, fcst_name, obs_name))
-            return (fcst_conf, obs_conf)
+            return fcst_conf, obs_conf
 
         # if one but not the other is set, error and exit
         if has_fcst and not has_obs:
@@ -191,17 +193,15 @@ class CommandBuilder:
         # if generic conf is set, use for both
         if has_gen:
             gen_conf = self.config.getstr(sec, gen_name)
-            return (gen_conf, gen_conf)
+            return gen_conf, gen_conf
 
         # if none of the options are set, use default value for both if specified
         if default == None:
-            self.logger.error('Must set both {} and {} in the config files.'
-                              .format(fcst_name, obs_name) + ' Or set ' +\
-                              '{} instead'.format(gen_name))
+            self.logger.error('{0} Or set {1}'.format('Must set both {} and {} in the config files.'
+                                                      .format(fcst_name, obs_name), '{} instead'.format(gen_name)))
             exit(1)
         self.logger.warning('Using default values for {}'.format(gen_name))
-        return (default, default)
-
+        return default, default
 
     def find_model(self, time_info, v):
         """! Finds the model file to compare
@@ -213,7 +213,6 @@ class CommandBuilder:
         """
         return self.find_data(time_info, v, "FCST")
 
-
     def find_obs(self, time_info, v):
         """! Finds the observation file to compare
               Args:
@@ -223,7 +222,6 @@ class CommandBuilder:
                 @return Returns the path to an observation file
         """
         return self.find_data(time_info, v, "OBS")
-
 
     def find_data(self, time_info, v, data_type):
         """! Finds the data file to compare
@@ -235,9 +233,7 @@ class CommandBuilder:
                 @return Returns the path to an observation file
         """
         # get time info
-        lead = time_info['lead_hours']
         valid_time = time_info['valid_fmt']
-        init_time = time_info['init_fmt']
 
         if v != None:
             # set level based on input data type
@@ -253,27 +249,27 @@ class CommandBuilder:
             if not level.isdigit():
                 level = '0'
         else:
-                level = '0'
+            level = '0'
 
-        template = self.c_dict[data_type+'_INPUT_TEMPLATE']
-        data_dir = self.c_dict[data_type+'_INPUT_DIR']
+        template = self.c_dict[data_type + '_INPUT_TEMPLATE']
+        data_dir = self.c_dict[data_type + '_INPUT_DIR']
 
         # if looking for a file with an exact time match:
-        if self.c_dict[data_type+'_FILE_WINDOW_BEGIN'] == 0 and \
-            self.c_dict[data_type+'_FILE_WINDOW_END'] == 0:
+        if self.c_dict[data_type + '_FILE_WINDOW_BEGIN'] == 0 and \
+                        self.c_dict[data_type + '_FILE_WINDOW_END'] == 0:
             # perform string substitution
-            dSts = sts.StringSub(self.logger,
-                                   template,
-                                   level=(int(level.split('-')[0]) * 3600),
-                                   **time_info)
-            filename = dSts.doStringSub()
+            dsts = sts.StringSub(self.logger,
+                                 template,
+                                 level=(int(level.split('-')[0]) * 3600),
+                                 **time_info)
+            filename = dsts.doStringSub()
 
             # build full path with data directory and filename
             path = os.path.join(data_dir, filename)
 
             # check if desired data file exists and if it needs to be preprocessed
             path = util.preprocess_file(path,
-                                        self.c_dict[data_type+'_INPUT_DATATYPE'],
+                                        self.c_dict[data_type + '_INPUT_DATATYPE'],
                                         self.config)
             return path
 
@@ -285,12 +281,12 @@ class CommandBuilder:
         closest_time = 9999999
 
         # get range of times that will be considered
-        valid_range_lower = self.c_dict[data_type+'_FILE_WINDOW_BEGIN']
-        valid_range_upper = self.c_dict[data_type+'_FILE_WINDOW_END']
+        valid_range_lower = self.c_dict[data_type + '_FILE_WINDOW_BEGIN']
+        valid_range_upper = self.c_dict[data_type + '_FILE_WINDOW_END']
         lower_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
-                                                 "%Y%m%d%H%M").strftime("%s"))
+                                            "%Y%m%d%H%M").strftime("%s"))
         upper_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
-                                                 "%Y%m%d%H%M").strftime("%s"))
+                                            "%Y%m%d%H%M").strftime("%s"))
 
         # step through all files under input directory in sorted order
         for dirpath, dirnames, all_files in os.walk(data_dir):
@@ -298,7 +294,7 @@ class CommandBuilder:
                 fullpath = os.path.join(dirpath, filename)
 
                 # remove input data directory to get relative path
-                f = fullpath.replace(data_dir+"/", "")
+                f = fullpath.replace(data_dir + "/", "")
                 # extract time information from relative path using template
                 se = util.get_time_from_file(self.logger, f, template)
                 if se is not None:
@@ -332,32 +328,30 @@ class CommandBuilder:
         # return single file path if 1 file was found
         if len(closest_files) == 1:
             return util.preprocess_file(closest_files[0],
-                                       self.c_dict[data_type+'_INPUT_DATATYPE'],
-                                       self.config)
+                                        self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                        self.config)
 
         # return list if multiple files are found
         out = []
         for f in closest_files:
             outfile = util.preprocess_file(f,
-                                       self.c_dict[data_type+'_INPUT_DATATYPE'],
-                                       self.config)
-            out.append(outfiles)
+                                           self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                           self.config)
+            out.append(outfile)
 
         return out
-
 
     def write_list_file(self, filename, file_list):
         list_dir = os.path.join(self.config.getdir('STAGING_DIR'), 'file_lists')
         list_path = os.path.join(list_dir, filename)
 
         if not os.path.exists(list_dir):
-            os.makedirs(list_dir, mode=0775)
+            os.makedirs(list_dir, mode=0o0775)
 
         with open(list_path, 'w') as file_handle:
             for f_path in file_list:
-                file_handle.write(f_path+'\n')
+                file_handle.write(f_path + '\n')
         return list_path
-
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -365,14 +359,14 @@ class CommandBuilder:
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.logger.error("No app path specified. "\
-                                "You must use a subclass")
+            self.logger.error('No app path specified. '
+                              'You must use a subclass')
             return None
 
         cmd = self.app_path + " "
 
         if self.verbose != -1:
-            cmd += "-v "+str(self.verbose) + " "
+            cmd += "-v " + str(self.verbose) + " "
 
         for a in self.args:
             cmd += a + " "
@@ -419,12 +413,10 @@ class CommandBuilder:
             return
         self.cmdrunner.run_cmd(cmd, app_name=self.app_name)
 
-
     def run_at_time(self, input_dict):
         self.logger.error('run_at_time not implemented for {} wrapper. '
                           'Cannot run with LOOP_ORDER = times'.format(self.app_name))
         exit(1)
-
 
     def run_all_times(self):
         """!Loop over time range specified in conf file and
