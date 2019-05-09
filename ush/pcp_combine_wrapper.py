@@ -14,21 +14,13 @@ Condition codes: 0 for success, 1 for failure
 
 from __future__ import (print_function, division)
 
-import produtil.setup
-import logging
 import os
-import sys
 import met_util as util
-import re
-import csv
-import subprocess
-import glob
 import datetime
 import string_template_substitution as sts
 
 from reformat_gridded_wrapper import ReformatGriddedWrapper
 import time_util
-from gempak_to_cf_wrapper import GempakToCFWrapper
 
 '''!@namespace PcpCombineWrapper
 @brief Wraps the MET tool pcp_combine to combine or divide
@@ -128,52 +120,40 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     def set_method(self, method):
         self.method = method
 
-
     def add_input_file(self, filename, addon):
         self.infiles.append(filename)
         self.inaddons.append(str(addon))
-
 
     def set_field(self, name, level):
         self.field_name = name
         self.field_level = level
 
-
     def set_name(self,name):
         self.name = name
-
 
     def set_logfile(self,logfile):
         self.logfile = logfile
 
-
     def set_compress(self, c):
         self.compress = c
-
 
     def set_pcp_dir(self, filepath):
         self.pcp_dir = filepath
 
-
     def set_pcp_regex(self, regexp):
         self.pcp_regex = regexp
-
 
     def set_init_time(self, init_time):
         self.init_time = init_time[0:8]+"_"+init_time[8:10]
 
-
     def set_valid_time(self, valid_time):
         self.valid_time = valid_time[0:8]+"_"+valid_time[8:10]
-
 
     def set_in_accum(self, in_accum):
         self.in_accum = in_accum
 
-
     def set_out_accum(self, out_accum):
         self.out_accum = out_accum
-
 
     def get_dir_and_template(self, data_type, in_or_out):
         dirr = self.c_dict[data_type+'_'+in_or_out+'_DIR']
@@ -188,7 +168,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             exit(1)
 
         return (dirr, template)
-
 
     def getLowestForecastFile(self, valid_time, dtype, template):
         """!Find the lowest forecast hour that corresponds to the
@@ -340,10 +319,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                          is_forecast=False):
         """!Find files to combine to build the desired accumulation
         Args:
-          @param valid_time valid time to search
+          @param time_info dictionary containing time information
           @param accum desired accumulation to build
           @param data_src type of data (FCST or OBS)
-          @param file_template filename template to search
           @param is_forecast handle differently if reading forecast files
           @rtype bool
           @return True if full set of files to build accumulation is found
@@ -457,8 +435,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 (self.logger).error("No output accumulation specified")
                 return None
 
-            cmd += "-sum "+self.init_time+" "+self.in_accum+" "+\
-              self.valid_time+" "+self.out_accum+" "
+            cmd += "-sum " + self.init_time + " " + str(self.in_accum) + " " +\
+                   self.valid_time + " " + str(self.out_accum) + " "
 
         else:
             if self.method == "ADD":
@@ -563,8 +541,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     def setup_subtract_method(self, time_info, var_info, rl):
         """!Setup pcp_combine to subtract two files to build desired accumulation
         Args:
-          @param ti time_info object containing timing information
-          @param v var_info object containing variable information
+          @param time_info object containing timing information
+          @param var_info object containing variable information
           @params rl data type (FCST or OBS)
           @rtype string
           @return path to output file"""
@@ -610,7 +588,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         if file2 is None:
             self.logger.error("Could not find file in {} for init time {} and lead {}"
-                              .format(in_dir, init_time, lead2))
+                              .format(in_dir, time_info2['init_fmt'], lead2))
             return None
 
         self.add_input_file(file1,lead)
@@ -631,8 +609,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         """!Setup pcp_combine to build desired accumulation based on
         init/valid times and accumulations
         Args:
-          @param ti time_info object containing timing information
-          @param v var_info object containing variable information
+          @param time_info object containing timing information
+          @param var_info object containing variable information
           @params rl data type (FCST or OBS)
           @rtype string
           @return path to output file"""
@@ -676,9 +654,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     def setup_add_method(self, time_info, var_info, data_src):
         """!Setup pcp_combine to add files to build desired accumulation
         Args:
-          @param ti time_info object containing timing information
-          @param v var_info object containing variable information
-          @params rl data type (FCST or OBS)
+          @param time_info dictionary containing timing information
+          @param var_info object containing variable information
+          @params data_src data type (FCST or OBS)
           @rtype string
           @return path to output file"""
         is_forecast = False
@@ -724,7 +702,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     def setup_derive_method(self, time_info, var_info, data_src):
         """!Setup pcp_combine to derive stats
         Args:
-          @param ti time_info object containing timing information
+          @param time_info dictionary containing timing information
           @param var_info object containing variable information
           @params data_src data type (FCST or OBS)
           @rtype string
@@ -757,11 +735,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         # set output
         self.set_output_dir(out_dir)
-        time_info['level'] = int(accum) * 3600
-        pcpSts = sts.StringSub(self.logger,
+        time_info['level'] = int(lookback) * 3600
+        psts = sts.StringSub(self.logger,
                                 out_template,
                                 **time_info)
-        pcp_out = pcpSts.doStringSub()
+        pcp_out = psts.doStringSub()
         self.set_output_filename(pcp_out)
         return self.get_command()
 

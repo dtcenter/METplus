@@ -8,12 +8,7 @@ Main script the processes all the tasks in the PROCESS_LIST
 import os
 import sys
 import logging
-import getopt
 from config_wrapper import ConfigWrapper
-import config_launcher
-import time
-from datetime import datetime, timedelta
-import calendar
 import shutil
 import produtil.setup
 import met_util as util
@@ -36,7 +31,7 @@ from command_builder import CommandBuilder
 from tcmpr_plotter_wrapper import TCMPRPlotterWrapper
 # Keep cyclone_plotter commented out in repository. It requires cartopy
 # If cartopy is not present then master_metplus will error and exit.
-#from cyclone_plotter_wrapper import CyclonePlotterWrapper
+# from cyclone_plotter_wrapper import CyclonePlotterWrapper
 from pb2nc_wrapper import PB2NCWrapper
 from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TcStatWrapper
@@ -118,9 +113,12 @@ def main():
             command_builder = \
                 getattr(sys.modules[__name__],
                         item + "Wrapper")(p, logger)
+            # if Usage specified in PROCESS_LIST, print usage and exit
+            if item == 'Usage':
+                command_builder.run_all_times()
+                exit(1)
         except AttributeError:
             raise NameError("Process %s doesn't exist" % item)
-            exit()
 
         processes.append(command_builder)
 

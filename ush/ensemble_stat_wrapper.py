@@ -121,7 +121,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return c_dict
 
 
-    def run_at_time_one_field(self, time_info):
+    def run_at_time_one_field(self, time_info, v):
         self.logger.error("run_at_time_one_field not implemented yet for {}"
                     .format(self.app_name))
         exit()
@@ -130,8 +130,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
     def run_at_time_all_fields(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination
               Args:
-                @param ti task_info object containing timing information
-                @param v var_info object list containing variable information
+                @param time_info dictionary containing timing information
         """
         # get ensemble model files
         fcst_file_list = self.find_model_members(time_info)
@@ -166,7 +165,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         ens_field = self.get_field_info(v, 'something.grb2', 'ENS')
 
         # run
-        self.process_fields(time_info, v, fcst_field, obs_field, ens_field)
+        self.process_fields(time_info, fcst_field, obs_field, ens_field)
 
 
     def get_field_info(self, var_list, model_path, data_type):
@@ -202,12 +201,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return ','.join(field_list)
 
 
-    def find_model_members(self, time_info, level='0'):
+    def find_model_members(self, time_info):
         """! Finds the model member files to compare
               Args:
-                @param lead forecast lead value
-                @param init_time initialization time
-                @param level
+                @param time_info dictionary containing timing information
                 @rtype string
                 @return Returns a list of the paths to the ensemble model files
         """
@@ -221,7 +218,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # get all files that exist
         for ens_member_template in ens_members_template:
             model_ss = sts.StringSub(self.logger, ens_member_template,
-                                     level=(int(level.split('-')[0]) * 3600),
                                      **time_info)
             member_file = model_ss.doStringSub()
             expected_path = os.path.join(model_dir, member_file)
@@ -285,11 +281,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return self.write_list_file(list_filename, ens_members_path)
 
 
-    def process_fields(self, time_info, v, fcst_field, obs_field, ens_field):
+    def process_fields(self, time_info, fcst_field, obs_field, ens_field):
         """! Set and print environment variables, then build/run MET command
               Args:
-                @param ti task_info object with time information
-                @param v var_info object with field information
+                @param time_info dictionary containing timing information
                 @param fcst_field field information formatted for MET config file
                 @param obs_field field information formatted for MET config file
         """

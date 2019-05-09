@@ -4,17 +4,10 @@ from __future__ import print_function, unicode_literals
 import sys
 import os
 import re
-import time
-import calendar
-from collections import namedtuple
-import config_metplus
 import met_util as util
 import time_util
 from command_builder import CommandBuilder
-import produtil.setup
-import datetime
 from string_template_substitution import StringSub
-from reformat_gridded_wrapper import ReformatGriddedWrapper
 
 """
 Program Name: PB2NC_Wrapper.py
@@ -288,15 +281,13 @@ class PB2NCWrapper(CommandBuilder):
             return
         self.build()
 
-
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.logger.error("No app path specified. "\
-                                "You must use a subclass")
+            self.logger.error('No app path specified. You must use a subclass')
             return None
 
         cmd = self.app_path + " "

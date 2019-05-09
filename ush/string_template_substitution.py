@@ -16,9 +16,6 @@ Condition codes: Varies
 
 import re
 import datetime
-import time
-import calendar
-import math
 import sys
 
 import time_util
@@ -47,25 +44,24 @@ MISC_STRING = "misc"
 
 GLOBAL_LOGGER = None
 
-length_dict = { '%Y': 4,
-                '%m' : 2,
-                '%d' : 2,
-                '%H' : 2,
-                '%M' : 2,
-                '%S' : 2,
-                '%j' : 3}
+length_dict = {'%Y': 4,
+               '%m': 2,
+               '%d': 2,
+               '%H': 2,
+               '%M': 2,
+               '%S': 2,
+               '%j': 3}
 
-def multiple_replace(dict, text):
+
+def multiple_replace(replace_dict, text):
     """ Replace in 'text' all occurrences of any key in the
     given dictionary by its corresponding value.  Returns the new string. """
 
     # Create a regular expression  from the dictionary keys
-    regex = re.compile("(%s)" % "|".join(map(re.escape, dict.keys())))
-    j = "".join(map(re.escape, dict.keys()))
-    # print "regex from dictionary keys: {}".format(j)
+    regex = re.compile("(%s)" % "|".join(map(re.escape, replace_dict.keys())))
 
     # For each match, look-up corresponding value in dictionary
-    return regex.sub(lambda mo: dict[mo.string[mo.start():mo.end()]], text)
+    return regex.sub(lambda mo: replace_dict[mo.string[mo.start():mo.end()]], text)
 
 
 class StringSub:
@@ -109,12 +105,11 @@ class StringSub:
         self.truncate_seconds = 0
 
         if self.kwargs is not None:
-            for key, value in kwargs.iteritems():
+            for key, value in kwargs.items():
                 # print("%s == %s" % (key, value))
                 setattr(self, key, value)
 
-
-    def getSecondsFromTemplate(self, split_item):
+    def get_seconds_from_template(self, split_item):
         shift_split_string = \
             split_item.split(FORMATTING_VALUE_DELIMITER)
 
@@ -329,12 +324,12 @@ class StringSub:
             # if shift is set, get that value before handling formatting
             for split_item in split_string:
                 if split_item.startswith(SHIFT_STRING):
-                    self.shift_seconds = self.getSecondsFromTemplate(split_item)
+                    self.shift_seconds = self.get_seconds_from_template(split_item)
 
             # if truncate is set, get that value before handling formatting
             for split_item in split_string:
                 if split_item.startswith(TRUNCATE_STRING):
-                    self.truncate_seconds = self.getSecondsFromTemplate(split_item)
+                    self.truncate_seconds = self.get_seconds_from_template(split_item)
 
             # format times appropriately and add to replacement_dict
             formatted = False
@@ -608,7 +603,6 @@ class StringExtract:
 #        print("TOTAL LEN IS {}\n".format(length))
         return length
 
-
     def set_output_dict_from_time_info(self, time_dict, output_dict, key):
         # get month and day from julian date if applicable
         if time_dict['Y'] != -1 and time_dict['j'] != -1:
@@ -619,18 +613,18 @@ class StringExtract:
 
         if time_dict['Y'] != -1 and time_dict['m'] != -1 and time_dict['d'] != -1:
             output_dict[key] = datetime.datetime(time_dict['Y'],
-                                          time_dict['m'],
-                                          time_dict['d'],
-                                          time_dict['H'],
-                                          time_dict['M'])
+                                                 time_dict['m'],
+                                                 time_dict['d'],
+                                                 time_dict['H'],
+                                                 time_dict['M'])
 
-
-    def parseTemplate(self):
+    def parse_template(self):
         template_len = len(self.template)
         i = 0
         str_i = 0
         match_dict = {}
         valid_shift = 0
+        fmt_len = 0
 
         while i < template_len:
             # if a tag is found, split contents and extract time
@@ -639,15 +633,12 @@ class StringExtract:
                 tag = self.template[i+1:end_i]
                 sections = tag.split('?')
                 identifier = sections[0]
-                format = ''
-                shift = 0
                 for section in sections[1:]:
                     items = section.split('=')
                     if items[0] == 'fmt':
-                        format = items[1]
+                        fmt = items[1]
 #                        print("Format for {} is {}".format(identifier, format))
-                        fmt_len = self.get_fmt_info(format, self.full_str[str_i:],
-                                               match_dict, identifier)
+                        fmt_len = self.get_fmt_info(fmt, self.full_str[str_i:], match_dict, identifier)
                         if fmt_len == -1:
                             return None
                         # extract string that corresponds to format
@@ -687,7 +678,7 @@ class StringExtract:
         init = {}
         da_init = {}
         lead = {}
-        offset = {}
+        offset = 0
 
         valid['Y'] = -1
         valid['m'] = -1
@@ -714,11 +705,7 @@ class StringExtract:
         lead['M'] = 0
         lead['S'] = 0
 
-        offset['H'] = 0
-#        offset['M'] = 0
-#        offset['S'] = 0
-
-        for key, value in match_dict.iteritems():
+        for key, value in match_dict.items():
             if key.startswith(VALID_STRING):
                 valid[key.split('+')[1]] = int(value)
 
@@ -728,33 +715,30 @@ class StringExtract:
         if valid_shift != 0:
             output_dict['valid'] -= datetime.timedelta(seconds=valid_shift)
 
-
-        for key, value in match_dict.iteritems():
+        for key, value in match_dict.items():
             if key.startswith(INIT_STRING):
                 init[key.split('+')[1]] = int(value)
 
         self.set_output_dict_from_time_info(init, output_dict, 'init')
 
-
-        for key, value in match_dict.iteritems():
+        for key, value in match_dict.items():
             if key.startswith(DA_INIT_STRING):
                 da_init[key.split('+')[1]] = int(value)
 
         self.set_output_dict_from_time_info(da_init, output_dict, 'da_init')
 
-
-        for key, value in match_dict.iteritems():
+        for key, value in match_dict.items():
             if key.startswith(LEAD_STRING):
                 lead[key.split('+')[1]] = int(value)
 
         lead_seconds = lead['H'] * 3600 + lead['M'] * 60 + lead['S']
         output_dict['lead'] = lead_seconds
 
-        for key, value in match_dict.iteritems():
+        for key, value in match_dict.items():
             if key.startswith(OFFSET_STRING):
-                offset[key.split('+')[1]] = int(value)
+                offset = int(value)
 
-        output_dict['offset'] = offset['H']
+        output_dict['offset'] = offset
 
         time_info = time_util.ti_calculate(output_dict)
 #        print(time_info)

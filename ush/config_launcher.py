@@ -154,7 +154,7 @@ def parse_launch_args(args, usage, filename, logger):
 
     # Now look for any option and conf file arguments:
     bad = False
-    for iarg in xrange(len(args)):
+    for iarg in range(len(args)):
         m = re.match('''(?x)
           (?P<section>[a-zA-Z][a-zA-Z0-9_]*)
            \.(?P<option>[^=]+)
@@ -197,7 +197,7 @@ def parse_launch_args(args, usage, filename, logger):
 def launch(file_list, moreopt, cycle=None, init_dirs=True,
            prelaunch=None):
     for filename in file_list:
-        if not isinstance(filename, basestring):
+        if not isinstance(filename, str):
             raise TypeError('First input to metplus.config.for_initial_job '
                             'must be a list of strings.')
 
@@ -431,7 +431,7 @@ class METplusLauncher(ProdConfig):
 # THIS IS NOT USED, meant for internal dev testing.
 def test_gen_conf(file_list, cycle=None):
     for filename in file_list:
-        if not isinstance(filename, basestring):
+        if not isinstance(filename, str):
             raise TypeError('First input to metplus.config.for_initial_job '
                             'must be a list of strings.')
     conf = ProdConfig()

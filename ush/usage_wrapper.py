@@ -1,14 +1,10 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-import os
-import sys
-import produtil.setup
 from command_builder import CommandBuilder
-import config_metplus
  
 
-## @namespace UsageWrapper
+# @namespace UsageWrapper
 # @brief Provides a default process for master_metplus.py.  Indicates what
 # processes are currently available.
 # Call as follows:
@@ -25,12 +21,12 @@ class UsageWrapper(CommandBuilder):
         super(UsageWrapper, self).__init__(p, logger)
         self.app_name = 'Usage'
         self.logger = logger
-        self.available_processes = [ 'CyclonePlotter', 'EnsembleStat',
-                                     'ExtractTiles', 'GempakToCF', 'GridStat',
-                                     'Mode', 'MTD', 'PB2NC', 'PcpCombine',
-                                     'PointStat', 'RegridDataPlane',
-                                     'SeriesByLead','SeriesByInit', 'TcPairs',
-                                     'TcStat','TCMPRPlotter' ]
+        self.available_processes = ['CyclonePlotter', 'EnsembleStat',
+                                    'ExtractTiles', 'GempakToCF', 'GridStat',
+                                    'Mode', 'MTD', 'PB2NC', 'PcpCombine',
+                                    'PointStat', 'RegridDataPlane',
+                                    'SeriesByLead', 'SeriesByInit', 'TcPairs',
+                                    'TcStat', 'TCMPRPlotter']
 
     def run_all_times(self):
         print("USAGE:\n  This is a default process, please indicate more " +
