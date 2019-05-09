@@ -154,7 +154,7 @@ def test_hh_lead():
     filepath = "1987020103_A03h"
     se = StringExtract(logger, template,
                            filepath)
-    out = se.parseTemplate()
+    out = se.parse_template()
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
@@ -165,7 +165,7 @@ def test_hhh_lead():
     filepath = "1987020103_A003h"
     se = StringExtract(logger, template,
                            filepath)
-    out = se.parseTemplate()
+    out = se.parse_template()
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
@@ -176,7 +176,7 @@ def test_2h_lead():
     filepath = "1987020103_A03h"
     se = StringExtract(logger, template,
                            filepath)
-    out = se.parseTemplate()
+    out = se.parse_template()
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
@@ -187,7 +187,7 @@ def test_3h_lead():
     filepath = "1987020103_A003h"
     se = StringExtract(logger, template,
                            filepath)
-    out = se.parseTemplate()
+    out = se.parse_template()
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
@@ -198,7 +198,7 @@ def test_h_lead_no_pad_1_digit():
     filepath = "1987020103_A3h"
     se = StringExtract(logger, template,
                            filepath)
-    out = se.parseTemplate()
+    out = se.parse_template()
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
@@ -209,7 +209,7 @@ def test_h_lead_no_pad_2_digit():
     filepath = "1987020103_A12h"
     se = StringExtract(logger, template,
                            filepath)
-    out = se.parseTemplate()
+    out = se.parse_template()
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702011500")
 
@@ -220,7 +220,7 @@ def test_h_lead_no_pad_3_digit():
     filepath = "1987020103_A102h"
     se = StringExtract(logger, template,
                            filepath)
-    out = se.parseTemplate()
+    out = se.parse_template()
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702050900")
 
@@ -609,7 +609,7 @@ def test_shift_time_extract():
     templ = "{valid?fmt=%Y%m%d%H?shift=-21600}"
     filename = "2017060400"
     se = StringExtract(logger, templ, filename)
-    dt = se.parseTemplate()['valid']
+    dt = se.parse_template()['valid']
     assert(dt.strftime('%Y%m%d%H') == valid_dt.strftime('%Y%m%d%H'))
 
 def test_ccpa_template():
