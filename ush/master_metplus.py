@@ -113,6 +113,10 @@ def main():
             command_builder = \
                 getattr(sys.modules[__name__],
                         item + "Wrapper")(p, logger)
+            # if Usage specified in PROCESS_LIST, print usage and exit
+            if item == 'Usage':
+                command_builder.run_all_times()
+                exit(1)
         except AttributeError:
             raise NameError("Process %s doesn't exist" % item)
 
