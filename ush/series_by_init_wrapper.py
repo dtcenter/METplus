@@ -139,7 +139,7 @@ class SeriesByInitWrapper(CommandBuilder):
             self.apply_series_filters(tile_dir, init_times,
                                       self.series_filtered_out_dir,
                                       self.filter_opts,
-                                      tmp_dir, self.config)
+                                      tmp_dir)
 
             # Clean up any empty files and directories that could arise as
             # a result of filtering
@@ -208,7 +208,7 @@ class SeriesByInitWrapper(CommandBuilder):
         self.logger.info("Finished series analysis by init time")
 
     def apply_series_filters(self, tile_dir, init_times, series_output_dir,
-                             filter_opts, temporary_dir, config):
+                             filter_opts, temporary_dir):
 
         """! Apply filter options, as specified in the
             param/config file.
@@ -223,7 +223,6 @@ class SeriesByInitWrapper(CommandBuilder):
                @param filter_opts:  The filter options to apply
                @param temporary_dir:  The temporary directory where intermediate
                                       files are saved.
-               @param config:  The config/param instance
             Returns:
                 None
         """
@@ -250,7 +249,7 @@ class SeriesByInitWrapper(CommandBuilder):
             filter_filename = os.path.join(series_output_dir,
                                            cur_init, filter_file)
 
-            tcs = TcStatWrapper(config, self.logger)
+            tcs = TcStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
                               filter_opts)
 
@@ -301,7 +300,7 @@ class SeriesByInitWrapper(CommandBuilder):
                     feature_util.retrieve_and_regrid(tmp_filename, cur_init,
                                                      cur_storm,
                                                      series_output_dir,
-                                                     self.logger,  config)
+                                                     self.config)
 
         # Check for any empty files and directories and remove them to avoid
         # any errors or performance degradation when performing
@@ -780,7 +779,7 @@ class SeriesByInitWrapper(CommandBuilder):
                         data_plane_command = self.cmdrunner.insert_metverbosity_opt\
                             (data_plane_command)
                         (ret, cmd) = self.cmdrunner.run_cmd\
-                            (data_plane_command,app_name=self.app_name)
+                            (data_plane_command, env=None, app_name=self.app_name)
 
                         # Now assemble the command to convert the
                         # postscript file to png
@@ -795,7 +794,7 @@ class SeriesByInitWrapper(CommandBuilder):
                         #convert_command = \
                         #    batchexe('sh')['-c', convert_command].err2out()
                         #run(convert_command)
-                        (ret, cmd) = self.cmdrunner.run_cmd(convert_command, ismetcmd=False)
+                        (ret, cmd) = self.cmdrunner.run_cmd(convert_command, env=None, ismetcmd=False)
 
     def get_storms_for_init(self, cur_init, out_dir_base):
         """! Retrieve all the filter files which have the .tcst

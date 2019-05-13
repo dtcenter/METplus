@@ -157,22 +157,6 @@ def main():
 
     exit()
 
-    # TODO - remove this, I don't think this is being used.
-    # If removing, also remove import produtil.run
-    # If using ... than the run(cmd) will need to be correctly called.
-    # for item in process_list:
-    #
-    #     cmd_shell = cmd.to_shell()
-    #     logger.info("INFO | [" + cur_filename + ":" +
-    #                 cur_function + "] | " + "Running: " + cmd_shell)
-    #     ret = run(cmd)
-    #     if ret != 0:
-    #         logger.error("ERROR | [" + cur_filename + ":" +
-    #                     cur_function + "] | " + "Problem executing: " +
-    #                     cmd_shell)
-    #         exit(0)
-
-
 if __name__ == "__main__":
     try:
         # If jobname is not defined, in log it is 'NO-NAME'

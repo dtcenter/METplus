@@ -167,10 +167,27 @@ def skip_time(time_info, config):
 
 
 def write_final_conf(conf, logger):
+    # write final conf file including default values that were set during run
     confloc = conf.getloc('METPLUS_CONF')
     logger.info('%s: write metplus.conf here' % (confloc,))
     with open(confloc, 'wt') as f:
         conf.write(f)
+
+    # remove current time env vars if they are set
+    if 'METPLUS_CURRENT_INIT_TIME' in os.environ.keys():
+        del os.environ['METPLUS_CURRENT_INIT_TIME']
+
+    if 'METPLUS_CURRENT_VALID_TIME' in os.environ.keys():
+        del os.environ['METPLUS_CURRENT_VALID_TIME']
+
+    if 'METPLUS_CURRENT_LEAD_TIME' in os.environ.keys():
+        del os.environ['METPLUS_CURRENT_LEAD_TIME']
+
+    # write out os environment to file for debugging
+    env_file = os.path.join(conf.getdir('LOG_DIR'), '.metplus_user_env')
+    with open(env_file, 'w') as f:
+        for k,v in os.environ.items():
+            f.write('{}={}\n'.format(k, v))
 
 
 def is_loop_by_init(config):

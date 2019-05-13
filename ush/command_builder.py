@@ -130,13 +130,6 @@ class CommandBuilder:
         can reference it in the parameter file or the application itself
         """
         self.env[key] = name
-        # Note: Modify os.environ directly since it is automatically
-        # copied to the produtil runner environment. If needed,
-        # we could also pass self.env to the command runner,
-        # My preference would be to only copy the env vars
-        # required, not the whole environment, since that is already
-        # being done.
-        os.environ[key] = name
 
     def get_env(self):
         return self.env
@@ -411,7 +404,7 @@ class CommandBuilder:
         cmd = self.get_command()
         if cmd is None:
             return
-        self.cmdrunner.run_cmd(cmd, app_name=self.app_name)
+        self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
 
     def run_at_time(self, input_dict):
         self.logger.error('run_at_time not implemented for {} wrapper. '

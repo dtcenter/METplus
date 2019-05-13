@@ -306,7 +306,7 @@ class TcStatWrapper(CommandBuilder):
         # Run tc_stat
         try:
             (ret, cmd) = \
-                self.cmdrunner.run_cmd(tc_cmd_str, app_name=self.app_name)
+                self.cmdrunner.run_cmd(tc_cmd_str, self.env, app_name=self.app_name)
             if not ret == 0:
                 raise ExitStatusException(
                     '%s: non-zero exit status' % (repr(cmd),), ret)
@@ -826,7 +826,7 @@ class TcStatWrapper(CommandBuilder):
             # tc_cmd = batchexe('sh')['-c', tc_cmd_str].err2out()
             # checkrun(tc_cmd)
             (ret, cmd) = \
-                self.cmdrunner.run_cmd(tc_cmd_str, app_name=self.app_name)
+                self.cmdrunner.run_cmd(tc_cmd_str, self.env, app_name=self.app_name)
             if not ret == 0:
                 raise ExitStatusException(
                     '%s: non-zero exit status' % (repr(cmd),), ret)

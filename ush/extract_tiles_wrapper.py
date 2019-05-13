@@ -156,7 +156,7 @@ class ExtractTilesWrapper(CommandBuilder):
             # are indicated in the config/param file).
             feature_util.retrieve_and_regrid(full_tmp_filename, cur_init,
                                              cur_storm, self.filtered_out_dir,
-                                             self.logger, self.config)
+                                             self.config)
 
         # end of for cur_storm
 

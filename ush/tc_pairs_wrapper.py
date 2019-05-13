@@ -1331,7 +1331,8 @@ class TcPairsWrapper(CommandBuilder):
         self.cmd = self.cmdrunner.insert_metverbosity_opt(self.cmd)
 
         try:
-            (ret, self.cmd) = self.cmdrunner.run_cmd(self.cmd, sleeptime=.00001,
+            (ret, self.cmd) = self.cmdrunner.run_cmd(self.cmd, self.env,
+                                                     sleeptime=.00001,
                                                      app_name=self.app_name)
 
             if not ret == 0:

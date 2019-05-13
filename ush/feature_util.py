@@ -16,8 +16,7 @@ from string_template_substitution import StringSub
 """
 
 
-def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
-                        logger, config):
+def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
     """! Retrieves the data from the MODEL_DATA_DIR (defined in metplus.conf)
          that corresponds to the storms defined in the tmp_filename:
         1) create the analysis tile and forecast file names from the
@@ -43,7 +42,6 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
                          requested.  If the MET tool regrid_data_plane is
                          requested, then netCDF data is produced.  If wgrib2
                          is requested, then grib2 data is produced.
-        @param logger:  The name of the logger used in logging.
         @param config:  config instance
         Returns:
            None
@@ -61,23 +59,23 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
     # It is being used to call the run_cmd method, which runs the cmd
     # and redirects logging based on the conf settings.
     # Instantiate a RegridDataPlaneWrapper
+    logger = config.logger
     rdp = RegridDataPlaneWrapper(config, logger)
-    cu = ConfigWrapper(config, logger)
 
     # For logging
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
     # Get variables, etc. from param/config file.
-    model_data_dir = cu.getdir('MODEL_DATA_DIR')
-    met_install_dir = cu.getdir('MET_INSTALL_DIR')
+    model_data_dir = config.getdir('MODEL_DATA_DIR')
+    met_install_dir = config.getdir('MET_INSTALL_DIR')
     regrid_data_plane_exe = os.path.join(met_install_dir,
                                          'bin/regrid_data_plane')
     # regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE_EXE')
-    wgrib2_exe = cu.getexe('WGRIB2')
-    egrep_exe = cu.getexe('EGREP_EXE')
-    regrid_with_met_tool = cu.getbool('config', 'REGRID_USING_MET_TOOL')
-    overwrite_flag = cu.getbool('config', 'OVERWRITE_TRACK')
+    wgrib2_exe = config.getexe('WGRIB2')
+    egrep_exe = config.getexe('EGREP_EXE')
+    regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
+    overwrite_flag = config.getbool('config', 'OVERWRITE_TRACK')
 
     # Extract the columns of interest: init time, lead time,
     # valid time lat and lon of both tropical cyclone tracks, etc.
@@ -148,12 +146,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
             # Create the filename for the regridded file, which is a
             # grib2 file.
             fcst_sts = \
-                StringSub(logger, cu.getraw('filename_templates',
+                StringSub(logger, config.getraw('filename_templates',
                                             'GFS_FCST_FILE_TMPL'),
                           init=init_dt, lead=lead_seconds)
 
             anly_sts = \
-                StringSub(logger, cu.getraw('filename_templates',
+                StringSub(logger, config.getraw('filename_templates',
                                             'GFS_ANLY_FILE_TMPL'),
                           valid=valid_dt, lead=lead_seconds)
 
@@ -205,12 +203,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
             fcst_hr_str = str(fcst_hr).zfill(3)
 
             fcst_regridded_filename = \
-                cu.getstr('regex_pattern', 'FCST_TILE_PREFIX') + \
+                config.getstr('regex_pattern', 'FCST_TILE_PREFIX') + \
                 fcst_hr_str + "_" + fcst_anly_base
             fcst_regridded_file = os.path.join(tile_dir,
                                                fcst_regridded_filename)
             anly_regridded_filename = \
-                cu.getstr('regex_pattern', 'ANLY_TILE_PREFIX') + \
+                config.getstr('regex_pattern', 'ANLY_TILE_PREFIX') + \
                 fcst_hr_str + "_" + fcst_anly_base
             anly_regridded_file = os.path.join(tile_dir,
                                                anly_regridded_filename)
@@ -224,8 +222,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
                 logger.debug(msg)
             else:
                 # Perform fcst regridding on the records of interest
-                var_level_string = retrieve_var_info(config,
-                                                          logger)
+                var_level_string = retrieve_var_info(config)
                 if regrid_with_met_tool:
                     # Perform regridding using MET Tool regrid_data_plane
                     fcst_cmd_list = [regrid_data_plane_exe, ' ',
@@ -242,12 +239,10 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
                     regrid_cmd_fcst = rdp.cmdrunner.insert_metverbosity_opt(
                         regrid_cmd_fcst)
                     (ret, regrid_cmd_fcst) = rdp.cmdrunner.run_cmd(
-                        regrid_cmd_fcst, app_name=rdp.app_name)
-                    logger.info("command:" + regrid_cmd_fcst.to_shell())
+                        regrid_cmd_fcst, env=None, app_name=rdp.app_name)
                 else:
                     # Perform regridding via wgrib2
-                    requested_records = retrieve_var_info(config,
-                                                               logger)
+                    requested_records = retrieve_var_info(config)
                     fcst_cmd_list = [wgrib2_exe, ' ', fcst_filename, ' | ',
                                      egrep_exe, ' ', requested_records, '|',
                                      wgrib2_exe, ' -i ', fcst_filename,
@@ -256,9 +251,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
                     wgrb_cmd_fcst = ''.join(fcst_cmd_list)
 
                     (ret, wgrb_cmd_fcst) = rdp.cmdrunner.run_cmd(
-                        wgrb_cmd_fcst, ismetcmd=False)
-                    msg = ("command:" + wgrb_cmd_fcst.to_shell())
-                    logger.debug(msg)
+                        wgrb_cmd_fcst, env=None, ismetcmd=False)
 
             # Create new gridded file for anly tile
             if util.file_exists(anly_regridded_file) and not overwrite_flag:
@@ -266,8 +259,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
                              " exists, skip regridding")
             else:
                 # Perform anly regridding on the records of interest
-                var_level_string = retrieve_var_info(config,
-                                                          logger)
+                var_level_string = retrieve_var_info(config)
                 if regrid_with_met_tool:
                     anly_cmd_list = [regrid_data_plane_exe, ' ',
                                      anly_filename, ' ',
@@ -283,14 +275,13 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
                     regrid_cmd_anly = rdp.cmdrunner.insert_metverbosity_opt(
                         regrid_cmd_anly)
                     (ret, regrid_cmd_anly) = rdp.cmdrunner.run_cmd(
-                        regrid_cmd_anly, app_name=rdp.app_name)
+                        regrid_cmd_anly, env=None, app_name=rdp.app_name)
                     msg = ("on anly file:" +
                            anly_regridded_file)
                     logger.debug(msg)
                 else:
                     # Regridding via wgrib2.
-                    requested_records = util.retrieve_var_info(config,
-                                                               logger)
+                    requested_records = util.retrieve_var_info(config)
                     anly_cmd_list = [wgrib2_exe, ' ', anly_filename, ' | ',
                                      egrep_exe, ' ', requested_records, '|',
                                      wgrib2_exe, ' -i ', anly_filename,
@@ -299,13 +290,10 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
                     wgrb_cmd_anly = ''.join(anly_cmd_list)
 
                     (ret, wgrb_cmd_anly) = rdp.cmdrunner.run_cmd(
-                        wgrb_cmd_anly, ismetcmd=False)
-                    msg = ("Regridding via wgrib2:" +
-                           wgrb_cmd_anly.to_shell())
-                    logger.debug(msg)
+                        wgrb_cmd_anly, env=None, ismetcmd=False)
 
 
-def retrieve_var_info(config, logger):
+def retrieve_var_info(config):
     """! Retrieve the variable name and level from the
         EXTRACT_TILES_VAR_FILTER and VAR_LIST.  If the
         EXTRACT_TILES_VAR_FILTER is empty, then retrieve
@@ -315,8 +303,6 @@ def retrieve_var_info(config, logger):
         files into netCDF.
         Args:
             @param config: The reference to the config/param instance.
-            @param logger:  The logger to which all logging is directed.
-                            Optional.
         Returns:
             field_level_string (string):  If REGRID_USING_MET_TOOL is True,
                                           A string with format -field
@@ -337,11 +323,10 @@ def retrieve_var_info(config, logger):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    cu = ConfigWrapper(config, logger)
-    var_list = util.getlist(cu.getstr('config', 'VAR_LIST'))
-    extra_var_list = util.getlist(cu.getstr('config',
+    var_list = util.getlist(config.getstr('config', 'VAR_LIST'))
+    extra_var_list = util.getlist(config.getstr('config',
                                             'EXTRACT_TILES_VAR_LIST'))
-    regrid_with_met_tool = cu.getbool('config', 'REGRID_USING_MET_TOOL')
+    regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
     full_list = []
 
     # Append the extra_var list to the var_list
