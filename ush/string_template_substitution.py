@@ -631,10 +631,21 @@ class StringExtract:
         str_i = 0
         match_dict = {}
         valid_shift = 0
+        between_template = ''
+        between_filename = ''
 
         while i < template_len:
             # if a tag is found, split contents and extract time
             if self.template[i] == TEMPLATE_IDENTIFIER_BEGIN:
+                # check that text between tags for template and filename
+                #  are the same, return None if they differ
+                #  reset both variables if they are the same
+                if between_template != between_filename:
+                    return None
+                else:
+                    between_template = ''
+                    between_filename = ''
+
                 end_i = self.template.find(TEMPLATE_IDENTIFIER_END, i)
                 tag = self.template[i+1:end_i]
                 sections = tag.split('?')
@@ -677,8 +688,19 @@ class StringExtract:
                 i = end_i + 1
                 str_i += fmt_len
             else:
+                # keep track of text in between tags to ensure that it matches
+                # the template, do not return a time if it does not match
+                between_template += self.template[i]
+                between_filename += self.full_str[str_i]
+
+                # increment indices for template and full_str
                 i += 1
                 str_i += 1
+
+        # check again if between text matches at the end of the loop to
+        # ensure that no text after the last template differs
+        if between_template != between_filename:
+            return None
 
         # combine common items and get datetime
         output_dict = {}
@@ -757,5 +779,4 @@ class StringExtract:
         output_dict['offset'] = offset['H']
 
         time_info = time_util.ti_calculate(output_dict)
-#        print(time_info)
         return time_info

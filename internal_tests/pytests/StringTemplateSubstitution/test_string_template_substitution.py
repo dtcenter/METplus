@@ -633,3 +633,28 @@ def test_ccpa_template():
         passed = False
 
     return passed
+
+def test_filename_matches_template():
+    logger = logging.getLogger("test")
+    template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
+    filepath = "1987020103_dog_A03h"
+    se = StringExtract(logger, template, filepath)
+    out = se.parseTemplate()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
+    assert(ftime == "198702010600")
+
+def test_filename_does_not_match_template():
+    logger = logging.getLogger("test")
+    template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
+    filepath = "1987020103_cat_A03h"
+    se = StringExtract(logger, template, filepath)
+    out = se.parseTemplate()
+    assert(out == None)
+
+def test_filename_does_not_match_template_end():
+    logger = logging.getLogger("test")
+    template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
+    filepath = "1987020103_dog_A03d"
+    se = StringExtract(logger, template, filepath)
+    out = se.parseTemplate()
+    assert(out == None)
