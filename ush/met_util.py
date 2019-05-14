@@ -18,9 +18,6 @@ import struct
 from csv import reader
 from os.path import dirname, realpath
 
-import subprocess
-from produtil.run import exe
-from produtil.run import runstr,alias
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
 from gempak_to_cf_wrapper import GempakToCFWrapper
@@ -128,7 +125,7 @@ def check_for_deprecated_config(p, logger):
 
     e_list = []
     w_list = []
-    for old, v in deprecated_dict.iteritems():
+    for old, v in deprecated_dict.items():
         if isinstance(v, dict):
             sec = v['sec']
             alt = v['alt']
@@ -380,7 +377,7 @@ def mkdir_p(path):
         # In this situation the OSError exception is raised.
 
         # default mode is octal 0777
-        os.makedirs(path, mode=0775)
+        os.makedirs(path, mode=0o0775)
     except OSError as exc:
         # Ignore the error that gets created if the path already exists
         if exc.errno == errno.EEXIST and os.path.isdir(path):
@@ -487,7 +484,7 @@ def set_logvars(config, logger=None):
     if config.has_option('config','LOG_METPLUS'):
         user_defined_log_file = True
         # strinterp will set metpluslog to '' if LOG_METPLUS =  is unset.
-        metpluslog = config.strinterp('config','{LOG_METPLUS}', \
+        metpluslog = config.strinterp('config', '{LOG_METPLUS}',
                                     LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp)
 
         # test if there is any path information, if there is, assUme it is as intended,
@@ -987,7 +984,7 @@ def gen_date_list(begin_date, end_date):
     begin_tv = calendar.timegm(begin_tm)
     end_tv = calendar.timegm(end_tm)
     date_list = []
-    for tv in xrange(begin_tv, end_tv + 86400, 86400):
+    for tv in range(begin_tv, end_tv + 86400, 86400):
         date_list.append(time.strftime("%Y%m%d", time.gmtime(tv)))
     return date_list
 
@@ -1023,8 +1020,8 @@ def gen_init_list(init_date_begin, init_date_end, init_hr_inc, init_hr_end):
     Generates a list of initialization date and times of the form yyyymmdd_hh
     or yyyymmdd_hhh
     Inputs:
-      @param init_begin_date -- yyyymmdd string such as "20070101"
-      @param init_end_date -- yyyymmdd string such as "20070102"
+      @param init_date_begin -- yyyymmdd string such as "20070101"
+      @param init_date_end -- yyyymmdd string such as "20070102"
       @param init_hr_inc -- increment in integer format such as 6
       @param init_hr_end -- hh or hhh string indicating the end hour for the
                            increment such as "18"
@@ -1370,7 +1367,7 @@ def validate_thresholds(thresh_list):
 
     if valid == False:
         print("ERROR: Threshold values must start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt, or le")
-        return False;
+        return False
     return True
 
 
@@ -1386,7 +1383,6 @@ def parse_var_list(config):
     var_list_obs = parse_var_list_helper(config, "OBS", True)
     var_list = var_list_fcst + var_list_obs
     return sorted(var_list, key=lambda x: x.index)
-    return var_list
 
 
 def parse_var_list_helper(config, dt, dont_duplicate):
@@ -1788,7 +1784,7 @@ def get_time_from_file(logger, filepath, template):
 
     se = StringExtract(logger, template, filepath)
 
-    out = se.parseTemplate()
+    out = se.parse_template()
     if se:
         return out
     else:
@@ -1796,7 +1792,7 @@ def get_time_from_file(logger, filepath, template):
         for ext in valid_extensions:
             if filepath.endswith(ext):
                 se = StringExtract(logger, template, filepath[:-len(ext)])
-                out = se.parseTemplate()
+                out = se.parse_template()
                 if se:
                     return out
         return None
@@ -1806,8 +1802,7 @@ def preprocess_file(filename, data_type, config):
     """ Decompress gzip, bzip, or zip files or convert Gempak files to NetCDF
         Args:
             @param filename: Path to file without zip extensions
-            @param p: Config object
-            @param logger: Optional argument to allow logging
+            @param config: Config object
         Returns:
             Path to staged unzipped file or original file if already unzipped
     """
@@ -1833,13 +1828,13 @@ def preprocess_file(filename, data_type, config):
             # Create staging area if it does not exist
             outdir = os.path.dirname(stagefile)
             if not os.path.exists(outdir):
-                os.makedirs(outdir, mode=0775)
+                os.makedirs(outdir, mode=0o0775)
             run_g2c = GempakToCFWrapper(config.p, config.logger)
             run_g2c.add_input_file(filename)
             run_g2c.set_output_path(stagefile)
             cmd = run_g2c.get_command()
             if cmd is None:
-                self.logger.error("GempakToCF could not generate command")
+                config.logger.error("GempakToCF could not generate command")
                 return None
             if config.logger:
                 config.logger.debug("Converting Gempak file into {}".format(stagefile))
@@ -1858,7 +1853,7 @@ def preprocess_file(filename, data_type, config):
     # Create staging area if it does not exist
     outdir = os.path.dirname(outpath)
     if not os.path.exists(outdir):
-        os.makedirs(outdir, mode=0775)
+        os.makedirs(outdir, mode=0o0775)
 
     if os.path.isfile(filename+".gz"):
         if config.logger:

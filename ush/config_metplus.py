@@ -91,6 +91,7 @@ def setup(filename=None,logger=None):
         logger.critical('Invalid arguments to %s.  Exiting.'%(filename))
         print(str(err))        
         usage(filename,logger)
+        exit(1)
 
     if opts == []:
         usage(filename, logger)

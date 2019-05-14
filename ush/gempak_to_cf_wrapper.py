@@ -15,12 +15,10 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import print_function
 
 import os
-import logging
 import met_util as util
 import string_template_substitution as sts
 import time_util
 from command_builder import CommandBuilder
-
 
 '''!@namespace GempakToCFWrapper
 @brief Wraps the GempakToCF tool to reformat Gempak format to NetCDF Format
@@ -29,16 +27,14 @@ from command_builder import CommandBuilder
 
 
 class GempakToCFWrapper(CommandBuilder):
-
     def __init__(self, config, logger):
         super(GempakToCFWrapper, self).__init__(config, logger)
         self.app_name = "GempakToCF"
         self.class_path = self.config.getstr('exe', 'GEMPAKTOCF_CLASSPATH')
         self.logger = logger
         if self.logger is None:
-            self.logger = util.get_logger(self.config,sublog='GempakToCF')
+            self.logger = util.get_logger(self.config, sublog='GempakToCF')
 
-                        
     def get_command(self):
         cmd = "java -classpath " + self.class_path + " GempakToCF "
 
@@ -62,12 +58,8 @@ class GempakToCFWrapper(CommandBuilder):
               loops over the list of forecast leads and runs the application for
               each.
               Args:
-                @param init_time initialization time to run. -1 if not set
-                @param valid_time valid time to run. -1 if not set
-        """        
-        app_name_caps = self.app_name.upper()
-        class_name = self.__class__.__name__[0: -7]
-
+                @param input_dict dictionary containing timing information
+        """
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             self.clear()
@@ -77,7 +69,6 @@ class GempakToCFWrapper(CommandBuilder):
             time_info = time_util.ti_calculate(input_dict)
             self.run_at_time_once(time_info)
 
-
     def run_at_time_once(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination
              Args:
@@ -86,24 +77,24 @@ class GempakToCFWrapper(CommandBuilder):
         valid_time = time_info['valid']
         input_dir = self.config.getdir('GEMPAKTOCF_INPUT_DIR')
         input_template = self.config.getraw('filename_templates',
-                                        'GEMPAKTOCF_INPUT_TEMPLATE')
+                                            'GEMPAKTOCF_INPUT_TEMPLATE')
         output_dir = self.config.getdir('GEMPAKTOCF_OUTPUT_DIR')
         output_template = self.config.getraw('filename_templates',
-                                        'GEMPAKTOCF_OUTPUT_TEMPLATE')
+                                             'GEMPAKTOCF_OUTPUT_TEMPLATE')
 
-        gempakSts = sts.StringSub(self.logger,
-                               input_template,
-                               valid=valid_time)
-        infile = os.path.join(input_dir, gempakSts.doStringSub())
+        gsts = sts.StringSub(self.logger,
+                             input_template,
+                             valid=valid_time)
+        infile = os.path.join(input_dir, gsts.doStringSub())
         self.add_input_file(infile)
 
-        gempakToCfSts = sts.StringSub(self.logger,
-                                  output_template,
-                                  valid=valid_time)
-        outfile = os.path.join(output_dir, gempakToCfSts.doStringSub())
+        gsts = sts.StringSub(self.logger,
+                             output_template,
+                             valid=valid_time)
+        outfile = os.path.join(output_dir, gsts.doStringSub())
 
         if os.path.exists(outfile) and \
-          self.config.getbool('config', 'GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS', False) is True:
+                        self.config.getbool('config', 'GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS', False) is True:
             self.logger.debug('Skip writing output file {} because it already '
                               'exists. Remove file or change '
                               'GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS to True to process'
@@ -121,4 +112,3 @@ class GempakToCFWrapper(CommandBuilder):
             return
 
         self.build()
-

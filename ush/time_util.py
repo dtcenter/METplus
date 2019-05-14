@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-'''
+"""
 Program Name: time_util.py
 Contact(s): George McCabe
 Abstract:
@@ -9,7 +9,7 @@ Usage: Create a subclass
 Parameters: None
 Input Files: N/A
 Output Files: N/A
-'''
+"""
 
 from __future__ import (print_function, division)
 
@@ -23,6 +23,8 @@ Cannot be called directly. These are helper functions
 to be used in other METplus wrappers
 @endcode
 '''
+
+
 def ti_calculate(input_dict):
     out_dict = {}
 
@@ -110,5 +112,3 @@ def ti_calculate(input_dict):
     out_dict['cycle'] = out_dict['da_init']
 
     return out_dict
-    
-        

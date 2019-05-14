@@ -2,24 +2,9 @@
 
 from __future__ import print_function
 import os
-import calendar
-import time
-import re
-import sys
-from collections import namedtuple
-from collections import OrderedDict
-import itertools
-import copy
-import pdb
-import datetime
-
-import config_metplus
 import met_util as util
 import time_util
-import grid_to_obs_util as g2o_util
-import produtil.setup
 from compare_gridded_wrapper import CompareGriddedWrapper
-from string_template_substitution import StringSub
 
 
 """
@@ -47,13 +32,10 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         self.c_dict = self.create_point_stat_dict()
 
-
     def create_point_stat_dict(self):
         """! Create a dictionary that holds all the values set in the
              METplus config file for the point-stat wrapper.
 
-             Args:
-                 None
              Returns:
                  c_dict   - A dictionary containing the key-value pairs set
                              in the METplus configuration file.
@@ -71,9 +53,9 @@ class PointStatWrapper(CompareGriddedWrapper):
                                'OBS_POINT_STAT_INPUT_TEMPLATE')
 
         c_dict['FCST_INPUT_DATATYPE'] = \
-          self.config.getstr('config', 'FCST_POINT_STAT_INPUT_DATATYPE', '')
+            self.config.getstr('config', 'FCST_POINT_STAT_INPUT_DATATYPE', '')
         c_dict['OBS_INPUT_DATATYPE'] = \
-          self.config.getstr('config', 'OBS_POINT_STAT_INPUT_DATATYPE', '')
+            self.config.getstr('config', 'OBS_POINT_STAT_INPUT_DATATYPE', '')
 
         c_dict['FCST_INPUT_DIR'] = self.config.getdir('FCST_POINT_STAT_INPUT_DIR')
         c_dict['OBS_INPUT_DIR'] = self.config.getdir('OBS_POINT_STAT_INPUT_DIR')
@@ -115,12 +97,8 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         return c_dict
 
-
     def run_at_time(self, input_dict):
         """! Stub, not yet implemented """
-
-        # get field variables to compare
-        var_list = util.parse_var_list(self.config)
 
         # loop of forecast leads and process each
         lead_seq = util.get_lead_sequence(self.config, input_dict)
@@ -134,10 +112,9 @@ class PointStatWrapper(CompareGriddedWrapper):
             os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
 
             # Run for given init/valid time and forecast lead combination
-            self.run_at_time_once(input_dict, var_list)
+            self.run_at_time_once(input_dict)
 
-
-    def run_at_time_once(self, input_dict, var_list):
+    def run_at_time_once(self, input_dict):
         if self.c_dict['FCST_INPUT_DIR'] == '':
             self.logger.error('Must set FCST_POINT_STAT_INPUT_DIR in config file')
             exit(1)
@@ -162,6 +139,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.clear()
 
         time_info = time_util.ti_calculate(input_dict)
+        var_list = self.c_dict['var_list']
 
         # get verification mask if available
         self.get_verification_mask(time_info)
@@ -172,7 +150,7 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.logger.error('Could not find file in {} matching template {}'
                               .format(self.c_dict['FCST_INPUT_DIR'],
                                       self.c_dict['FCST_INPUT_TEMPLATE']))
-            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] +\
+            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] +
                               " for init time " + time_info['init_fmt'] + " f" + str(time_info['lead_hours']))
             return False
 
@@ -215,7 +193,6 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         self.process_fields(time_info, fcst_field, obs_field)
 
-
     def set_environment_variables(self, fcst_field=None, obs_field=None, c=None):
         """! Set all the environment variables in the MET config
              file to the corresponding values in the METplus config file.
@@ -232,7 +209,7 @@ class PointStatWrapper(CompareGriddedWrapper):
                       "FCST_FIELD", "OBS_FIELD",
                       "OBS_WINDOW_BEGIN", "OBS_WINDOW_END",
                       "POINT_STAT_MESSAGE_TYPE", "POINT_STAT_GRID",
-                      "POINT_STAT_POLY","POINT_STAT_STATION_ID"]
+                      "POINT_STAT_POLY", "POINT_STAT_STATION_ID"]
 
         # Set the environment variables
         self.add_env_var(b'MODEL', str(self.c_dict['MODEL']))

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-'''
+"""
 Program Name: compare_gridded_wrapper.py
 Contact(s): George McCabe
 Abstract:
@@ -10,19 +10,12 @@ Parameters: None
 Input Files:
 Output Files:
 Condition codes: 0 for success, 1 for failure
-'''
+"""
 
 from __future__ import (print_function, division)
 
-import logging
 import os
-import sys
 import met_util as util
-import re
-import csv
-import subprocess
-import datetime
-import glob
 from command_builder import CommandBuilder
 import time_util
 import string_template_substitution as sts
@@ -35,13 +28,15 @@ Call as follows:
 Cannot be called directly. Must use child classes.
 @endcode
 '''
+
+
 class CompareGriddedWrapper(CommandBuilder):
     """!Common functionality to wrap similar MET applications
 that reformat gridded data
     """
+
     def __init__(self, config, logger):
         super(CompareGriddedWrapper, self).__init__(config, logger)
-
 
     def create_c_dict(self):
         c_dict = dict()
@@ -54,29 +49,32 @@ that reformat gridded data
         c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
 
         c_dict['FCST_WINDOW_BEGIN'] = \
-          self.config.getint('config', 'FCST_WINDOW_BEGIN', 0)
+            self.config.getint('config', 'FCST_WINDOW_BEGIN', 0)
         c_dict['FCST_WINDOW_END'] = \
-          self.config.getint('config', 'FCST_WINDOW_END', 0)
+            self.config.getint('config', 'FCST_WINDOW_END', 0)
 
         c_dict['OBS_WINDOW_BEGIN'] = \
-          self.config.getint('config', 'OBS_WINDOW_BEGIN', 0)
+            self.config.getint('config', 'OBS_WINDOW_BEGIN', 0)
         c_dict['OBS_WINDOW_END'] = \
-          self.config.getint('config', 'OBS_WINDOW_END', 0)
+            self.config.getint('config', 'OBS_WINDOW_END', 0)
 
         # if file window is not set, use window values
         c_dict['FCST_FILE_WINDOW_BEGIN'] = \
-          self.config.getint('config', 'FCST_FILE_WINDOW_BEGIN',
-                             c_dict['FCST_WINDOW_BEGIN'])
+            self.config.getint('config', 'FCST_FILE_WINDOW_BEGIN',
+                               c_dict['FCST_WINDOW_BEGIN'])
         c_dict['FCST_FILE_WINDOW_END'] = \
-          self.config.getint('config', 'FCST_FILE_WINDOW_END',
-                             c_dict['FCST_WINDOW_END'])
+            self.config.getint('config', 'FCST_FILE_WINDOW_END',
+                               c_dict['FCST_WINDOW_END'])
 
         c_dict['OBS_FILE_WINDOW_BEGIN'] = \
-          self.config.getint('config', 'OBS_FILE_WINDOW_BEGIN',
-                             c_dict['OBS_WINDOW_BEGIN'])
+            self.config.getint('config', 'OBS_FILE_WINDOW_BEGIN',
+                               c_dict['OBS_WINDOW_BEGIN'])
         c_dict['OBS_FILE_WINDOW_END'] = \
-          self.config.getint('config', 'OBS_FILE_WINDOW_END',
-                             c_dict['OBS_WINDOW_END'])
+            self.config.getint('config', 'OBS_FILE_WINDOW_END',
+                               c_dict['OBS_WINDOW_END'])
+
+        c_dict['FCST_PROB_THRESH'] = '==0.1'
+        c_dict['OBS_PROB_THRESH'] = '==0.1'
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
         c_dict['NEIGHBORHOOD_WIDTH'] = ''
@@ -86,35 +84,33 @@ that reformat gridded data
         util.add_common_items_to_dictionary(self.config, c_dict)
         return c_dict
 
-
     def handle_window_once(self, c_dict, dtype, edge):
         """! Check and set window dictionary variables like
               OBS_WINDOW_BEG or FCST_FILE_WINDW_END
               Args:
                 @param c_dict dictionary to set items in
                 @param dtype type of data 'FCST' or 'OBS'
-                @parm edge either 'BEGIN' or 'END'
+                @param edge either 'BEGIN' or 'END'
         """
         app = self.app_name.upper()
 
         # if value specific to given wrapper is set, override value
         if self.config.has_option('config',
-                                  dtype+'_'+app+'_WINDOW_'+edge):
-            c_dict[dtype+'_WINDOW_'+edge] = \
-              self.config.getint('config',
-                                 dtype+'_'+app+'_WINDOW_'+edge)
+                                  dtype + '_' + app + '_WINDOW_' + edge):
+            c_dict[dtype + '_WINDOW_' + edge] = \
+                self.config.getint('config',
+                                   dtype + '_' + app + '_WINDOW_' + edge)
 
         # do the same for FILE_WINDOW, but
         # if FILE_WINDOW is not set, set it to WINDOW value
         if self.config.has_option('config',
-                                  dtype+'_'+app+'_FILE_WINDOW_'+edge):
-            c_dict[dtype+'_FILE_WINDOW_'+edge] = \
-              self.config.getint('config',
-                                 dtype+'_'+app+'_FILE_WINDOW_'+edge)
+                                  dtype + '_' + app + '_FILE_WINDOW_' + edge):
+            c_dict[dtype + '_FILE_WINDOW_' + edge] = \
+                self.config.getint('config',
+                                   dtype + '_' + app + '_FILE_WINDOW_' + edge)
         else:
-            c_dict[dtype+'_FILE_WINDOW_'+edge] = \
-              c_dict[dtype+'_WINDOW_'+edge]
-
+            c_dict[dtype + '_FILE_WINDOW_' + edge] = \
+                c_dict[dtype + '_WINDOW_' + edge]
 
     def handle_window_variables(self, c_dict):
         """! Handle all window config variables like
@@ -123,20 +119,18 @@ that reformat gridded data
               Args:
                 @param c_dict dictionary to set items in
         """
-        dtypes = [ 'FCST', 'OBS' ]
-        edges = [ 'BEGIN', 'END' ]
+        dtypes = ['FCST', 'OBS']
+        edges = ['BEGIN', 'END']
 
         for dtype in dtypes:
             for edge in edges:
                 self.handle_window_once(c_dict, dtype, edge)
 
-
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
               over the list of forecast leads and runs the application for each.
               Args:
-                @param init_time initialization time to run. -1 if not set
-                @param valid_time valid time to run. -1 if not set
+                @param input_dict dictionary containing time information
         """
 
         # loop of forecast leads and process each
@@ -158,12 +152,10 @@ that reformat gridded data
             # Run for given init/valid time and forecast lead combination
             self.run_at_time_once(time_info)
 
-
     def run_at_time_once(self, time_info):
         """! Build MET command for a given init/valid time and forecast lead combination
               Args:
                 @param time_info dictionary containing timing information
-                @param var_list var_info object list containing variable information
         """
 
         # get verification mask if available
@@ -181,18 +173,17 @@ that reformat gridded data
             self.clear()
             self.run_at_time_all_fields(time_info)
 
-
     def run_at_time_one_field(self, time_info, v):
         """! Build MET command for a single field for a given
              init/valid time and forecast lead combination
               Args:
-                @param ti dictionary containing timing information
+                @param time_info dictionary containing timing information
                 @param v var_info object containing variable information
         """
         # get model to compare
         model_path = self.find_model(time_info, v)
         if model_path == None:
-            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] +\
+            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] + \
                               " for init time " + time_info['init_fmt'] + " f" + str(time_info['lead_hours']))
             return
         self.add_input_file(model_path)
@@ -200,7 +191,7 @@ that reformat gridded data
         # get observation to compare
         obs_path = self.find_obs(time_info, v)
         if obs_path == None:
-            self.logger.error("Could not find file in " + self.c_dict['OBS_INPUT_DIR'] +\
+            self.logger.error("Could not find file in " + self.c_dict['OBS_INPUT_DIR'] + \
                               " for valid time " + time_info['valid_fmt'])
             return
         self.add_input_file(obs_path)
@@ -213,7 +204,6 @@ that reformat gridded data
 
         self.process_fields(time_info, fcst_field, obs_field)
 
-
     def run_at_time_all_fields(self, time_info):
         """! Build MET command for all of the field/level combinations for a given init/valid time and
              forecast lead combination
@@ -223,7 +213,7 @@ that reformat gridded data
         # get model from first var to compare
         model_path = self.find_model(time_info, self.c_dict['var_list'][0])
         if model_path == None:
-            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] +\
+            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] + \
                               " for init time " + time_info['init_fmt'] + " f" + str(time_info['lead_hours']))
             return
         self.add_input_file(model_path)
@@ -231,7 +221,7 @@ that reformat gridded data
         # get observation to from first var compare
         obs_path = self.find_obs(time_info, self.c_dict['var_list'][0])
         if obs_path == None:
-            self.logger.error("Could not find file in " + self.c_dict['OBS_INPUT_DIR'] +\
+            self.logger.error("Could not find file in " + self.c_dict['OBS_INPUT_DIR'] + \
                               " for valid time " + time_info['valid_fmt'])
             return
         self.add_input_file(obs_path)
@@ -250,7 +240,6 @@ that reformat gridded data
 
         self.process_fields(time_info, fcst_field, obs_field)
 
-
     def get_one_field_info(self, v_level, v_thresh, v_name, v_extra, d_type):
         """! Format field information into format expected by MET config file
               Args:
@@ -258,7 +247,6 @@ that reformat gridded data
                 @param v_thresh threshold value to use in comparison
                 @param v_name name of field to process
                 @param v_extra additional field information to add if available
-                @param path full path of field to process (used to determine if NetCDF)
                 @param d_type type of data to find (FCST or OBS)
                 @rtype string
                 @return Returns formatted field information
@@ -279,27 +267,27 @@ that reformat gridded data
         # if either input is probabilistic, create separate item for each threshold
         if self.c_dict['FCST_IS_PROB'] or self.c_dict['OBS_IS_PROB']:
             # if input being processed if probabilistic, format accordingly
-            if self.c_dict[d_type+'_IS_PROB']:
+            if self.c_dict[d_type + '_IS_PROB']:
                 for thresh in threshs:
                     thresh_str = ""
                     comparison = util.get_comparison_from_threshold(thresh)
                     number = util.get_number_from_threshold(thresh)
-                    if comparison in ["gt", "ge", ">", ">=", "==", "eq" ]:
-                        thresh_str += "thresh_lo="+str(number)+"; "
-                    if comparison in ["lt", "le", "<", "<=", "==", "eq" ]:
-                        thresh_str += "thresh_hi="+str(number)+"; "
+                    if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
+                        thresh_str += "thresh_lo=" + str(number) + "; "
+                    if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
+                        thresh_str += "thresh_hi=" + str(number) + "; "
 
-                    prob_cat_thresh = self.c_dict[d_type+'_PROB_THRESH']
+                    prob_cat_thresh = self.c_dict[d_type + '_PROB_THRESH']
                     # TODO: replace with better check for data type to remove path
                     # untested, need NetCDF prob fcst data
-                    if self.c_dict[d_type+'_INPUT_DATATYPE'] == 'NETCDF':
+                    if self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF':
                         field = "{ name=\"" + v_name + "\"; level=\"" + \
-                          level+"\"; prob=TRUE; cat_thresh=["+prob_cat_thresh+"];}"
+                                level + "\"; prob=TRUE; cat_thresh=[" + prob_cat_thresh + "];}"
                     else:
-                        field = "{ name=\"PROB\"; level=\""+level_type + \
+                        field = "{ name=\"PROB\"; level=\"" + level_type + \
                                 level + "\"; prob={ name=\"" + \
                                 v_name + \
-                                "\"; "+thresh_str+"} cat_thresh=["+prob_cat_thresh+"];"
+                                "\"; " + thresh_str + "} cat_thresh=[" + prob_cat_thresh + "];"
                     field += v_extra + "}"
                     fields.append(field)
             else:
@@ -307,33 +295,32 @@ that reformat gridded data
                 for thresh in threshs:
                     # if pcp_combine was run, use name_level, (*,*) format
                     # if not, use user defined name/level combination
-                    if self.config.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
-                        field = "{ name=\""+v_name+"_"+level + \
-                                     "\"; level=\"(*,*)\"; cat_thresh=[ " + \
-                                     str(thresh)+" ]; }"
+                    if self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
+                        field = "{ name=\"" + v_name + "_" + level + \
+                                "\"; level=\"(*,*)\"; cat_thresh=[ " + \
+                                str(thresh) + " ]; }"
                     else:
-                        field = "{ name=\""+v_name + \
-                                     "\"; level=\""+v_level+"\"; cat_thresh=[ " + \
-                                     str(thresh)+" ]; }"
+                        field = "{ name=\"" + v_name + \
+                                "\"; level=\"" + v_level + "\"; cat_thresh=[ " + \
+                                str(thresh) + " ]; }"
                     fields.append(field)
         else:
             # if neither input is probabilistic, add all cat thresholds to same field info item
             # if pcp_combine was run, use name_level, (*,*) format
             # if not, use user defined name/level combination
-            if self.config.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
-                field = "{ name=\"" + v_name+"_" + level + \
-                             "\"; level=\"(*,*)\"; "
+            if self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
+                field = "{ name=\"" + v_name + "_" + level + \
+                        "\"; level=\"(*,*)\"; "
             else:
-                field = "{ name=\""+v_name + \
-                             "\"; level=\""+v_level+"\"; "
+                field = "{ name=\"" + v_name + \
+                        "\"; level=\"" + v_level + "\"; "
 
-            field += cat_thresh + " " + v_extra+" }"
+            field += cat_thresh + " " + v_extra + " }"
             fields.append(field)
 
         # combine all fields into a comma separated string and return
         field_list = ','.join(fields)
         return field_list
-
 
     def set_environment_variables(self, fcst_field, obs_field, time_info):
         # list of fields to print to log
@@ -384,14 +371,14 @@ that reformat gridded data
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_copy(print_list)
 
-
-
-    def process_fields(self, time_info, fcst_field, obs_field):
+    def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
         """! Set and print environment variables, then build/run MET command
               Args:
                 @param time_info dictionary with time information
                 @param fcst_field field information formatted for MET config file
                 @param obs_field field information formatted for MET config file
+                @param ens_field field information formatted for MET config file
+                only used for ensemble_stat
         """
         # set config file since command is reset after each run
         self.set_param_file(self.c_dict['CONFIG_FILE'])
@@ -411,7 +398,6 @@ that reformat gridded data
         # run the MET command
         self.build()
 
-
     def create_and_set_output_dir(self, time_info):
         """! Builds the full output dir path with valid or init time
               Creates output directory if it doesn't already exist
@@ -424,7 +410,7 @@ that reformat gridded data
         if self.config.has_option('filename_templates',
                                   out_template_name):
             template = self.config.getraw('filename_templates',
-                               out_template_name)
+                                          out_template_name)
         # if not use previous default: YYYYMMDDHHMM/app_name
         else:
             # set template based on loop by init or valid
@@ -449,26 +435,23 @@ that reformat gridded data
         # set output dir for wrapper
         self.set_output_dir(out_dir)
 
-
     def get_verification_mask(self, time_info):
         self.c_dict['VERIFICATION_MASK'] = ''
         if self.c_dict['VERIFICATION_MASK_TEMPLATE'] != '':
             template = self.c_dict['VERIFICATION_MASK_TEMPLATE']
             ss = sts.StringSub(self.logger,
-                                   template,
-                                   **time_info)
+                               template,
+                               **time_info)
             filename = ss.doStringSub()
             self.c_dict['VERIFICATION_MASK'] = filename
         return
-
 
     def set_output_dir(self, outdir):
         """! Sets the output dir and adds -output in front
               Args:
                 @param outdir directory to set
         """
-        self.outdir = "-outdir "+outdir
-
+        self.outdir = "-outdir " + outdir
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -476,8 +459,8 @@ that reformat gridded data
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.logger.error("No app path specified. "\
-                              "You must use a subclass")
+            self.logger.error('No app path specified. '
+                              'You must use a subclass')
             return None
 
         cmd = self.app_path + " "

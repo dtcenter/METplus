@@ -121,8 +121,7 @@ class MTDWrapper(ModeWrapper):
               over the list of forecast leads and runs the application for each.
               Overrides run_at_time in compare_gridded_wrapper.py
               Args:
-                @param init_time initialization time to run. -1 if not set
-                @param valid_time valid time to run. -1 if not set
+                @param input_dict dictionary containing timing information
         """        
         var_list = util.parse_var_list(self.config)
 #        max_lookback = self.c_dict['MAX_LOOKBACK']
