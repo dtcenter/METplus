@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+  <plot_spec>
+    <connection>
+      <host>mandan.rap.ucar.edu:3306</host>
+      <database>mv_clue_2016</database>
+      <user>mvuser</user>
+      <password>mvuser</password>
+    </connection>
+
+    <rscript>/usr/local/bin/Rscript</rscript>
+   <folders>
+      <r_tmpl>/d3/projects/METViewer/scorecard/app/R_tmpl</r_tmpl>
+      <r_work>/d3/projects/USWRP_CAM/metv/R_work</r_work>
+      <plots>/d3/projects/USWRP_CAM/metv/plots/</plots>
+      <data>/d3/projects/USWRP_CAM/metv/data/</data>
+      <scripts>/d3/projects/USWRP_CAM/metv/scripts/</scripts>
+    </folders>   
+    <plot>
+      <view_value>false</view_value>
+      <view_symbol>true</view_symbol>
+      <view_legend>true</view_legend>
+
+      <stat_flag>NCAR</stat_flag>
+      <!--stat_flag>EMC</stat_flag-->
+
+
+      <template>scorecard.R_tmpl</template>
+
+      <plot_fix>
+        <field name="model">
+          <val name="multip_ens_mean_hwt" />
+          <val name="singlp_ens_mean_hwt" />
+        </field>
+        <field name="fcst_valid_beg">
+          <val name="2016-05-04 00:00:00" />
+          <val name="2016-06-04 00:00:00" />
+        </field>
+        <field name="init_hour">
+          <val name="00" />
+        </field>
+      </plot_fix>
+
+      <rows>
+        <!--field name="stat">
+          <val name="ACC" label="Accuracy" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field-->
+
+        <field name="stat">
+          <val name="CSI" label="CSI" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field>
+
+        <!--field name="stat">
+          <val name="GSS" label="Gilbert Skill Score" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="BAGSS" label="Bias-Corrected GSS" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="EDI" label="Extreme Dependency Index" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field-->
+
+        <!--field name="stat">
+          <val name="EDS" label="Extreme Dependency Score" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            /field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field-->
+
+        <field name="stat">
+          <val name="FBIAS" label="Bias" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="FAR" label="False Alarm Ratio" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="PODY" label="PODY" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field>
+
+        <!--field name="stat">
+          <val name="PODN" label="PODN" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="POFD" label="POFD" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="HK" label="HK" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="HSS" label="HSS" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="LODDS" label="LODDS" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field-->
+
+        <!--field name="stat">
+          <val name="ODDS" label="ODDS" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field-->
+
+        <!--field name="stat">
+          <val name="ORSS" label="ORSS" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field-->
+
+        <!--field name="stat">
+          <val name="SEDI" label="SEDI" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field-->
+
+        <!--field name="stat">
+          <val name="SEDS" label="SEDS" />
+          <field name="fcst_var">
+            <val name="APCP_01" label="1 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precip" />
+            <field name="fcst_thresh">
+              <val name=">=0.254"/>
+              <val name=">=2.540"/>
+              <val name=">=6.350"/>
+              <val name=">=12.700"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="REFC" label="Reflectivity" />
+            <field name="fcst_thresh">
+              <val name=">=20"/>
+              <val name=">=30"/>
+              <val name=">=40"/>
+            </field>
+          </field>
+        </field-->
+      </rows>
+
+      <columns>
+        <field name="vx_mask">
+          <val name="CONUS" label="Continental US" />
+          <field name="fcst_lead">
+            <val name="60000" label="6 hr" />
+            <val name="120000" label="12 hr" />
+            <val name="180000" label="18 hr" />
+            <val name="240000" label="24 hr" />
+            <val name="300000" label="30 hr" />
+            <val name="360000" label="36 hr" />
+          </field>
+        </field>
+
+        <field name="vx_mask">
+          <val name="EAST" label="East" />
+          <field name="fcst_lead">
+            <val name="60000" label="6 hr" />
+            <val name="120000" label="12 hr" />
+            <val name="180000" label="18 hr" />
+            <val name="240000" label="24 hr" />
+            <val name="300000" label="30 hr" />
+            <val name="360000" label="36 hr" />
+          </field>
+        </field>
+        <field name="vx_mask">
+          <val name="WEST" label="West" />
+          <field name="fcst_lead">
+            <val name="60000" label="6 hr" />
+            <val name="120000" label="12 hr" />
+            <val name="180000" label="18 hr" />
+            <val name="240000" label="24 hr" />
+            <val name="300000" label="30 hr" />
+            <val name="360000" label="36 hr" />
+          </field>
+        </field>
+
+      </columns>
+
+      <agg_stat>true</agg_stat>
+      <boot_repl>1000</boot_repl>
+      <boot_random_seed>1</boot_random_seed>
+
+      <tmpl>
+        <data_file>scorecard_cam_cts_threshs_small.data</data_file>
+        <plot_file>scorecard_cam_cts_threshs_small.png</plot_file>
+        <title>METViewer CAM Categorical Scorecard</title>
+      </tmpl>
+
+    </plot>
+  </plot_spec>
