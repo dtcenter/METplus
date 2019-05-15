@@ -1,0 +1,63 @@
+<ranges>
+  <legend_range>
+    <symbol>&#9650;</symbol>
+    <color>#008000</color>
+    <background>#FFFFFF</background>
+    <lower_limit>0.99</lower_limit>
+    <upper_limit>1</upper_limit>
+    <include_lower_limit>TRUE</include_lower_limit>
+    <include_upper_limit>TRUE</include_upper_limit>
+    <format_string>%s is better than %s at the 99%% significance level</format_string>
+  </legend_range>
+
+  <legend_range>
+    <color>#000000</color>
+    <background>#90EE90</background>
+    <lower_limit>0.95</lower_limit>
+    <upper_limit>0.99</upper_limit>
+    <include_lower_limit>TRUE</include_lower_limit>
+    <include_upper_limit>FALSE</include_upper_limit>
+    <format_string>%s is better than %s at the 95%% significance level</format_string>
+  </legend_range>
+
+  <legend_range>
+    <color>#000000</color>
+    <background>#BDBBBD</background>
+    <lower_limit>-0.95</lower_limit>
+    <upper_limit>0.95</upper_limit>
+    <include_lower_limit>FALSE</include_lower_limit>
+    <include_upper_limit>FALSE</include_upper_limit>
+    <format_string>No statistically significant difference between %s and %s</format_string>
+  </legend_range>
+
+  <legend_range>
+    <color>#000000</color>
+    <background>#DDA0DD</background>
+    <lower_limit>-0.99</lower_limit>
+    <upper_limit>-0.95</upper_limit>
+    <include_lower_limit>FALSE</include_lower_limit>
+    <include_upper_limit>TRUE</include_upper_limit>
+    <format_string>%s is worse than %s at the 95%% significance level</format_string>
+  </legend_range>
+
+  <legend_range>
+    <symbol>&#9660;</symbol>
+    <color>#9932CC</color>
+    <background>#FFFFFF</background>
+    <lower_limit>-1</lower_limit>
+    <upper_limit>-0.99</upper_limit>
+    <include_lower_limit>TRUE</include_lower_limit>
+    <include_upper_limit>TRUE</include_upper_limit>
+    <format_string>%s is worse than %s at the 99%% significance level</format_string>
+  </legend_range>
+
+  <legend_range>
+    <color>#000000</color>
+    <background>#1E90FF</background>
+    <include_lower_limit>FALSE</include_lower_limit>
+    <include_upper_limit>FALSE</include_upper_limit>
+    <format_string>Not statistically relevant</format_string>
+  </legend_range>
+
+</ranges>
+

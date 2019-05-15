@@ -1,0 +1,39 @@
+<load_spec>
+	<connection>
+		<host>mysql_mv</host>
+		<database>mv_hwt_2018</database>
+		<user>root</user>
+		<password>mvuser</password>
+	</connection>
+
+        <folder_tmpl>/raid/efp/se2018/ftp/dtc/{var}/{model}/{met_tool}</folder_tmpl>
+
+	<met_version>V7.0</met_version>
+
+	<verbose>true</verbose>
+	<insert_size>1</insert_size>
+	<stat_header_db_check>true</stat_header_db_check>
+	<mode_header_db_check>true</mode_header_db_check>
+	<drop_indexes>false</drop_indexes>
+	<apply_indexes>true</apply_indexes>
+	<load_stat>true</load_stat>
+	<load_mode>true</load_mode>
+	<load_mpr>false</load_mpr>
+
+	<load_val>
+		<field name="var">
+			<val>REFC</val>
+		</field>
+		<field name="model">
+			<val>gfdl</val>
+			<val>hrrr</val>
+			<val>nssl</val>
+		</field>
+		<field name="met_tool">
+		        <val></val>
+			<val>grid_stat</val>
+		</field>
+	</load_val>
+
+	<load_xml>true</load_xml>
+</load_spec>

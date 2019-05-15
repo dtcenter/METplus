@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+  <plot_spec>
+    <connection>
+      <host>dakota.rap.ucar.edu:3306</host>
+      <database>mv_scorecard_vsdb</database>
+      <user>mvuser</user>
+      <password>mvuser</password>
+    </connection>
+
+    <rscript>/usr/local/bin/Rscript</rscript>
+   <folders>
+      <r_tmpl>/d3/projects/METViewer/scorecard/app/R_tmpl</r_tmpl>
+      <r_work>/d3/projects/USWRP_CAM/metv/R_work</r_work>
+      <plots>/d3/projects/USWRP_CAM/metv/plots/</plots>
+      <data>/d3/projects/USWRP_CAM/metv/data/</data>
+      <scripts>/d3/personal/jensen/scorecard/scripts/</scripts>
+    </folders>   
+    <plot>
+      <view_value>false</view_value>
+      <view_symbol>true</view_symbol>
+      <view_legend>false</view_legend>
+
+      <!--stat_flag>NCAR</stat_flag-->
+      <stat_flag>EMC</stat_flag>
+
+
+      <template>scorecard.R_tmpl</template>
+
+      <plot_fix>
+        <field name="model">
+          <val name="PR4RN_1405" />
+          <val name="GFS2016" />
+        </field>
+        <field name="fcst_valid_beg">
+          <val name="2014-05-20 00:00:00" />
+          <val name="2014-07-30 00:00:00" />
+        </field>
+        <field name="init_hour">
+          <val name="00" />
+          <val name="12" />
+        </field>
+      </plot_fix>
+
+      <rows>
+        <field name="stat">
+          <val name="ANOM_CORR" label="Anom Corr :-)" />
+          <field name="fcst_var">
+            <val name="HGT" label="Heights" />
+            <field name="fcst_lev">
+              <val name="P250" />
+             <val name="P500" />
+              <val name="P700" />
+              <val name="P1000" />
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="VL1L2_CORR" label="Anom Corr" />
+          <field name="fcst_var">
+            <val name="WIND" label="Vector Wind" />
+            <field name="fcst_lev">
+              <val name="P250" />
+              <val name="P500" />
+              <val name="P850" />
+            </field>
+          </field>
+        </field>
+
+
+        <field name="stat">
+          <val name="ANOM_CORR" label="Anom Corr" />
+          <field name="fcst_var">
+            <val name="T" label="Temp" />
+            <field name="fcst_lev">
+              <val name="P250" />
+              <val name="P500" />
+              <val name="P850" />
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="ANOM_CORR" label="Anom Corr" />
+          <field name="fcst_var">
+            <val name="PMSL" label="MSLP"/>
+            <field name="fcst_lev">
+              <val name="MSL" />
+            </field>
+          </field>
+        </field>
+
+
+        <field name="stat">
+          <val name="RMSE" />
+          <field name="fcst_var">
+            <val name="HGT" label="Heights" />
+            <field name="fcst_lev">
+              <val name="P10" />
+              <val name="P20" />
+              <val name="P50" />
+              <val name="P100" />
+              <val name="P200" />
+              <val name="P500" />
+              <val name="P700" />
+              <val name="P850" />
+              <val name="P1000" />
+            </field>
+          </field>
+        </field>
+
+         <field name="stat">
+          <val name="VL1L2_RMSE" label="RMSE" />
+          <field name="fcst_var">
+            <val name="WIND" label="Vector Wind" />
+            <field name="fcst_lev">
+              <val name="P10" />
+              <val name="P20" />
+              <val name="P50" />
+              <val name="P100" />
+              <val name="P200" />
+              <val name="P500" />
+              <val name="P700" />
+              <val name="P850" />
+              <val name="P1000" />
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="RMSE" />
+          <field name="fcst_var">
+            <val name="T" label="Temp" />
+            <field name="fcst_lev">
+              <val name="P10" />
+              <val name="P20" />
+              <val name="P50" />
+              <val name="P100" />
+              <val name="P200" />
+              <val name="P500" />
+              <val name="P700" />
+              <val name="P850" />
+              <val name="P1000" />
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="ME" label="Bias" />
+          <field name="fcst_var">
+            <val name="HGT" label="Heights" />
+            <field name="fcst_lev">
+              <val name="P10" />
+              <val name="P20" />
+              <val name="P50" />
+              <val name="P100" />
+              <val name="P200" />
+              <val name="P500" />
+              <val name="P700" />
+              <val name="P850" />
+              <val name="P1000" />
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="VL1L2_BIAS" label="Bias" />
+          <field name="fcst_var">
+            <val name="WIND" label="Wind Speed" />
+            <field name="fcst_lev">
+              <val name="P10" />
+              <val name="P20" />
+              <val name="P50" />
+              <val name="P100" />
+              <val name="P200" />
+              <val name="P500" />
+              <val name="P700" />
+              <val name="P850" />
+              <val name="P1000" />
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="ME" label="Bias" />
+          <field name="fcst_var">
+            <val name="T" label="Temp" />
+            <field name="fcst_lev">
+              <val name="P10" />
+              <val name="P20" />
+              <val name="P50" />
+              <val name="P100" />
+              <val name="P200" />
+              <val name="P500" />
+              <val name="P700" />
+              <val name="P850" />
+              <val name="P1000" />
+            </field>
+          </field>
+        </field>
+
+      </rows>
+
+      <columns>
+        <field name="vx_mask">
+          <val name="G2/PNA" label="N.American" />
+          <field name="fcst_lead">
+            <val name="24" label="Day 1" />
+            <val name="72" label="Day 3" />
+            <val name="120" label="Day 5" />
+            <val name="144" label="Day 6" />
+            <val name="192" label="Day 8" />
+            <val name="240" label="Day 10" />
+          </field>
+        </field>
+
+        <field name="vx_mask">
+          <val name="G2/NHX" label="N.Hemisphere" />
+          <field name="fcst_lead">
+            <val name="24" label="Day 1" />
+            <val name="72" label="Day 3" />
+            <val name="120" label="Day 5" />
+            <val name="144" label="Day 6" />
+            <val name="192" label="Day 8" />
+            <val name="240" label="Day 10" />
+          </field>
+        </field>
+        <field name="vx_mask">
+          <val name="G2/SHX" label="S.Hemisphere" />
+          <field name="fcst_lead">
+            <val name="24" label="Day 1" />
+            <val name="72" label="Day 3" />
+            <val name="120" label="Day 5" />
+            <val name="144" label="Day 6" />
+            <val name="192" label="Day 8" />
+            <val name="240" label="Day 10" />
+          </field>
+        </field>
+        <!--field name="vx_mask">
+          <val name="G2/TRO" label="Tropics" />
+          <field name="fcst_lead">
+            <val name="24" label="Day 1" />
+            <val name="72" label="Day 3" />
+            <val name="120" label="Day 5" />
+            <val name="144" label="Day 6" />
+            <val name="192" label="Day 8" />
+            <val name="240" label="Day 10" />
+          </field>
+        </field-->
+
+
+      </columns>
+
+      <agg_stat>false</agg_stat>
+      <boot_repl>1000</boot_repl>
+      <boot_random_seed>1</boot_random_seed>
+
+      <tmpl>
+        <data_file>scorecard_cam.data</data_file>
+        <plot_file>scorecard_cam.png</plot_file>
+        <title>METViewer CAM Scorecard</title>
+      </tmpl>
+
+    </plot>
+  </plot_spec>
