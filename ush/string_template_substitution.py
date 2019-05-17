@@ -173,6 +173,7 @@ class StringSub:
             out_str += self.format_one_time_item(item, minutes, 'M')
             out_str += self.format_one_time_item(item, seconds, 'S')
             out_str += self.format_one_time_item(item, obj, 's')
+            out_str += self.format_one_time_item(item, obj, 'd')
 
         return out_str
 
@@ -214,10 +215,10 @@ class StringSub:
                 obj += self.shift_seconds
                 return self.format_hms(fmt, obj)
             # if string, format if possible
-            elif isinstance(obj, str) and fmt == '%s':
+            elif isinstance(obj, str) and fmt == '%s' or obj == '*':
                 return '{}'.format(obj)
             else:
-                self.logger.error('Could not format item {} with format {}'.format(obj, fmt))
+                self.logger.error('Could not format item {} with format {} in {}'.format(obj, fmt, split_string))
                 exit(1)
 
 
