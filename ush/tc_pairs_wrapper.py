@@ -24,11 +24,13 @@ import sys
 import re
 import csv
 import datetime
+import glob
 import produtil.setup
 import datetime
 from produtil.run import ExitStatusException
 # TODO - critical  must import grid_to_obs_util before CommandBuilder
 # MUST import grid_to_obs_util BEFORE command_builder, else it breaks stand-alone
+import time_util
 import met_util as util
 import config_metplus
 from string_template_substitution import StringSub
@@ -43,7 +45,6 @@ tc_pairs_wrapper.py [-c /path/to/user.template.conf]
 @endcode
 '''
 
-
 class TcPairsWrapper(CommandBuilder):
     """!Wraps the MET tool, tc_pairs to parse and match ATCF_by_pairs adeck and
        bdeck files.  Pre-processes extra tropical cyclone data.
@@ -55,79 +56,496 @@ class TcPairsWrapper(CommandBuilder):
                                      'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
         self.cmd = ''
-        self.logger.info("Initialized TcPairsWrapper")
-        self.tcp_dict = self.create_tcp_dict()
+        self.adeck = None
+        self.bdeck = None
+        self.c_dict = self.create_c_dict()
 
-    def create_tcp_dict(self):
+    def create_c_dict(self):
         """! Create a dictionary containing all the values set in the config file.
              This will make it easier for unit testing.
 
              Args:
 
              Returns:
-                 tcp_dict - A dictionary of the values from the config file
+                 c_dict - A dictionary of the values from the config file
 
         """
         # pylint:disable=protected-access
-        # pylint:disable=protected-access
-        # sys._getframe is a legitimate way to access the current
-        # filename and method.
-        # Used for logging
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-        self.logger.debug(": creating the tc_pairs dictionary with" +
-                          " values from the config file")
-        tcp_dict = dict()
-        tcp_dict['MISSING_VAL_TO_REPLACE'] = self.config.getstr('config',
+        c_dict = dict()
+        c_dict['MISSING_VAL_TO_REPLACE'] = self.config.getstr('config',
                                                                 'MISSING_VAL_TO_REPLACE')
-        tcp_dict['MISSING_VAL'] = self.config.getstr('config', 'MISSING_VAL')
-        tcp_dict['TRACK_TYPE'] = self.config.getstr('config', 'TRACK_TYPE')
-        tcp_dict['TC_PAIRS_CONFIG_FILE'] = self.config.getstr('config',
+        c_dict['MISSING_VAL'] = self.config.getstr('config', 'MISSING_VAL')
+        c_dict['TRACK_TYPE'] = self.config.getstr('config', 'TRACK_TYPE')
+        c_dict['TC_PAIRS_CONFIG_FILE'] = self.config.getstr('config',
                                                               'TC_PAIRS_CONFIG_FILE')
 
-        tcp_dict['INIT_BEG'] = self.config.getraw('config', 'INIT_BEG')
-        tcp_dict['INIT_END'] = self.config.getraw('config', 'INIT_END')
-        tcp_dict['INIT_TIME_FMT'] = self.config.getstr('config', 'INIT_TIME_FMT')
-        tcp_dict['INIT_INCREMENT'] = self.config.getint('config', 'INIT_INCREMENT')
+        c_dict['INIT_BEG'] = self.config.getraw('config', 'INIT_BEG')
+        c_dict['INIT_END'] = self.config.getraw('config', 'INIT_END')
+        c_dict['INIT_TIME_FMT'] = self.config.getstr('config', 'INIT_TIME_FMT')
+        c_dict['INIT_INCREMENT'] = self.config.getint('config', 'INIT_INCREMENT')
 
-        tcp_dict['INIT_INCLUDE'] = util.getlist(
+        c_dict['INIT_INCLUDE'] = util.getlist(
             self.config.getstr('config', 'INIT_INCLUDE'))
-        tcp_dict['INIT_EXCLUDE'] = util.getlist(
+        c_dict['INIT_EXCLUDE'] = util.getlist(
             self.config.getstr('config', 'INIT_EXCLUDE'))
-        tcp_dict['VALID_BEG'] = self.config.getstr('config', 'VALID_BEG')
-        tcp_dict['VALID_END'] = self.config.getstr('config', 'VALID_END')
-        tcp_dict['ADECK_TRACK_DATA_DIR'] = \
+        c_dict['VALID_BEG'] = self.config.getstr('config', 'VALID_BEG')
+        c_dict['VALID_END'] = self.config.getstr('config', 'VALID_END')
+        c_dict['ADECK_TRACK_DATA_DIR'] = \
                 self.config.getdir('ADECK_TRACK_DATA_DIR')
-        tcp_dict['BDECK_TRACK_DATA_DIR'] = \
+        c_dict['BDECK_TRACK_DATA_DIR'] = \
                 self.config.getdir('BDECK_TRACK_DATA_DIR')
-        tcp_dict['TRACK_DATA_SUBDIR_MOD'] = self.config.getdir(
-            'TRACK_DATA_SUBDIR_MOD')
-        tcp_dict['ADECK_FILE_PREFIX'] = self.config.getstr('config',
+#        c_dict['TRACK_DATA_SUBDIR_MOD'] = self.config.getdir(
+#            'TRACK_DATA_SUBDIR_MOD')
+        c_dict['ADECK_FILE_PREFIX'] = self.config.getstr('config',
                                                            'ADECK_FILE_PREFIX')
-        tcp_dict['TC_PAIRS_DIR'] = self.config.getdir('TC_PAIRS_DIR')
-        tcp_dict['ADECK_FILE_PREFIX'] = self.config.getstr('config',
+        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_PAIRS_DIR')
+        c_dict['ADECK_FILE_PREFIX'] = self.config.getstr('config',
                                                            'ADECK_FILE_PREFIX')
-        tcp_dict['BDECK_FILE_PREFIX'] = self.config.getstr('config',
+        c_dict['BDECK_FILE_PREFIX'] = self.config.getstr('config',
                                                            'BDECK_FILE_PREFIX')
-        tcp_dict['TOP_LEVEL_DIRS'] = self.config.getstr('config',
+        c_dict['TOP_LEVEL_DIRS'] = self.config.getbool('config',
                                                         'TOP_LEVEL_DIRS')
-        tcp_dict['MET_INSTALL_DIR'] = self.config.getdir('MET_INSTALL_DIR')
-        tcp_dict['OUTPUT_BASE'] = self.config.getstr('dir', 'OUTPUT_BASE')
-        tcp_dict['CYCLONE'] = util.getlist(
-            self.config.getstr('config', 'CYCLONE'))
-        tcp_dict['MODEL'] = util.getlist(self.config.getstr('config', 'MODEL'))
-        tcp_dict['STORM_ID'] = util.getlist(
-            self.config.getstr('config', 'STORM_ID'))
-        tcp_dict['BASIN'] = util.getlist(self.config.getstr('config', 'BASIN'))
-        tcp_dict['STORM_NAME'] = util.getlist(
+        c_dict['MET_INSTALL_DIR'] = self.config.getdir('MET_INSTALL_DIR')
+        c_dict['OUTPUT_BASE'] = self.config.getstr('dir', 'OUTPUT_BASE')
+        c_dict['CYCLONE'] = util.getlistint(
+            self.config.getstr('config', 'CYCLONE', ''))
+        c_dict['MODEL'] = util.getlist(self.config.getstr('config', 'MODEL', ''))
+        c_dict['STORM_ID'] = util.getlist(
+            self.config.getstr('config', 'STORM_ID', ''))
+        c_dict['BASIN'] = util.getlist(self.config.getstr('config', 'BASIN', ''))
+        c_dict['STORM_NAME'] = util.getlist(
             self.config.getstr('config', 'STORM_NAME'))
-        tcp_dict['DLAND_FILE'] = self.config.getstr('config', 'DLAND_FILE')
-        if tcp_dict['TRACK_TYPE'].lower() != 'extra_tropical_cyclone':
-            tcp_dict['FORECAST_TMPL'] = self.config.getraw('filename_templates',
+        c_dict['DLAND_FILE'] = self.config.getstr('config', 'DLAND_FILE')
+        if c_dict['TRACK_TYPE'].lower() != 'extra_tropical_cyclone':
+            c_dict['FORECAST_TMPL'] = self.config.getraw('filename_templates',
                                                        'FORECAST_TMPL')
-            tcp_dict['REFERENCE_TMPL'] = self.config.getraw('filename_templates',
+            c_dict['REFERENCE_TMPL'] = self.config.getraw('filename_templates',
                                                         'REFERENCE_TMPL')
-        return tcp_dict
+
+
+        c_dict['ADECK_TEMPLATE'] = self.config.getraw('filename_templates',
+                                                       'TC_PAIRS_ADECK_TEMPLATE')
+        c_dict['BDECK_TEMPLATE'] = self.config.getraw('filename_templates',
+                                                       'TC_PAIRS_BDECK_TEMPLATE')
+        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+                                                       'TC_PAIRS_OUTPUT_TEMPLATE')
+        c_dict['REFORMAT_ADECK'] = self.config.getbool('config',
+                                                       'TC_PAIRS_REFORMAT_ADECK',
+                                                       False)
+        c_dict['REFORMAT_BDECK'] = self.config.getbool('config',
+                                                       'TC_PAIRS_REFORMAT_BDECK',
+                                                       False)
+        c_dict['REFORMAT_DIR'] = self.config.getdir('TC_PAIRS_REFORMAT_DIR',
+                         os.path.join(c_dict['OUTPUT_BASE'],'track_data_atcf'))
+
+        return c_dict
+
+    def run_all_times(self):
+        """! Build up the command to invoke the MET tool tc_pairs.
+        """
+        # Set up the environment variable to be used in the TCPairs Config
+        # file (TC_PAIRS_CONFIG_FILE)
+        self.set_env_vars()
+
+        # if running in TOP_LEVEL_DIRS mode, call tc_pairs once and exit
+        if self.c_dict['TOP_LEVEL_DIRS']:
+            self.adeck = [self.c_dict['ADECK_TRACK_DATA_DIR']]
+            self.bdeck = [self.c_dict['BDECK_TRACK_DATA_DIR']]
+            self.outdir = self.c_dict['OUTPUT_DIR']
+            self.outfile = 'tc_pairs'
+
+            cmd = self.get_command()
+            if cmd is None:
+                self.logger.error("Could not generate command")
+                return
+
+            self.build()
+            return True
+
+        # use init begin as run time (start of the storm)
+        input_dict = {'init' :
+                      datetime.datetime.strptime(self.c_dict['INIT_BEG'],
+                                                 self.c_dict['INIT_TIME_FMT'])
+                      }
+
+        self.run_at_time(input_dict)
+
+    def run_at_time(self, input_dict):
+        """! Create the arguments to run MET tc_pairs
+             Args:
+                 input_dict dictionary containing init or valid time
+             Returns:
+        """
+        # fill in time info dictionary
+        time_info = time_util.ti_calculate(input_dict)
+
+        # set output dir
+        self.outdir = self.c_dict['OUTPUT_DIR']
+
+        # get items to filter adeck files
+        # set each to default wildcard character unless specified in conf
+        basin_list = [ '*' ]
+        cyclone_list = [ '*' ]
+        date_list = [ '*' ]
+        model_list = [ '*' ]
+        storm_id_list = [ '*' ]
+        use_storm_id = False
+
+        if self.c_dict['STORM_ID']:
+            storm_id_list = self.c_dict['STORM_ID']
+            use_storm_id = True
+
+        # if storm id and any other filter is set, error and exit
+
+        if self.c_dict['BASIN']:
+            if use_storm_id:
+                self.logger.error('Cannot filter by both BASIN and STORM_ID')
+                exit(1)
+            basin_list = self.c_dict['BASIN']
+
+        if self.c_dict['CYCLONE']:
+            if use_storm_id:
+                self.logger.error('Cannot filter by both CYCLONE and STORM_ID')
+                exit(1)
+            cyclone_list = self.c_dict['CYCLONE']
+
+        if self.c_dict['MODEL']:
+            if use_storm_id:
+                self.logger.error('Cannot filter by both MODEL and STORM_ID')
+                exit(1)
+            model_list = self.c_dict['MODEL']
+
+        if use_storm_id:
+            for storm_id in storm_id_list:
+                # pull out info from storm_id and process
+                match = re.match('(\w{2})(\d*)(\d{4})', storm_id)
+                if not match:
+                    self.logger.error('Incorrect STORM_ID format: {}'
+                                      .format(storm_id))
+                    exit(1)
+
+                basin = match.group(1).lower()
+                cyclone = int(match.group(2))
+                year =  match.group(3)
+
+                init_year = time_info['init'].strftime('%Y')
+                if year != init_year:
+                    msg = 'Year specified in STORM_ID {}'.format(storm_id) +\
+                          ' ({})'.format(year) +\
+                          ' does not match init time year {}'.format(init_year)
+                    msg += '. Skipping...'
+                    self.logger.warning(msg)
+                    continue
+
+                self.process_data(basin, cyclone, time_info, model_list)
+        else:
+            for basin in [basin.lower() for basin in basin_list]:
+                for cyclone in cyclone_list:
+                    self.process_data(basin, cyclone, time_info, model_list)
+
+
+        return True
+
+    def set_env_vars(self):
+        """! Set up all the environment variables that are assigned
+             in the METplus config file which are to be used by the MET
+            TC-pairs config file.
+
+             Args:
+                 nothing - retrieves necessary MET+ config values via
+                           class attributes
+
+             Returns:
+                 nothing - sets the environment variables
+        """
+        # pylint:disable=protected-access
+        print_list = ['INIT_BEG', 'INIT_END', 'INIT_INCLUDE', 'INIT_EXCLUDE',
+                      'MODEL', 'STORM_ID', 'BASIN', 'CYCLONE', 'STORM_NAME',
+                      'VALID_BEG', 'VALID_END', 'DLAND_FILE']
+
+        # For all cases below, we need to do some pre-processing so that
+        #  Python will use " and not ' because currently MET doesn't
+        # support single-quotes.
+
+        # INIT_BEG, INIT_END
+        # pull out YYYYMMDD from INIT_BEG/END
+        tmp_init_beg = self.c_dict['INIT_BEG'][0:8]
+        tmp_init_end = self.c_dict['INIT_END'][0:8]
+
+        if not tmp_init_beg:
+            self.add_env_var(b'INIT_BEG', "")
+        else:
+            init_beg = str(tmp_init_beg).replace("\'", "\"")
+            init_beg_str = ''.join(init_beg.split())
+            self.add_env_var(b'INIT_BEG', str(init_beg_str))
+
+        if not tmp_init_end:
+            self.add_env_var(b'INIT_END', "")
+        else:
+            init_end = str(tmp_init_end).replace("\'", "\"")
+            init_end_str = ''.join(init_end.split())
+            self.add_env_var(b'INIT_END', str(init_end_str))
+
+        # INIT_INCLUDE and INIT_EXCLUDE
+        # Used to set init_inc in "TC_PAIRS_CONFIG_FILE"
+        tmp_init_inc = self.c_dict['INIT_INCLUDE']
+        if not tmp_init_inc:
+            self.add_env_var('INIT_INCLUDE', "[]")
+        else:
+            # Not empty, set the environment variable to the
+            # value specified in the MET+ config file after removing whitespace
+            # and replacing ' with ".
+            init_inc = str(tmp_init_inc).replace("\'", "\"")
+            init_inc_str = ''.join(init_inc.split())
+            self.add_env_var('INIT_INCLUDE', str(init_inc_str))
+
+        tmp_init_exc = self.c_dict['INIT_EXCLUDE']
+        if not tmp_init_exc:
+            # Empty, MET is expecting [] to indicate all models are
+            # to be included
+            self.add_env_var('INIT_EXCLUDE', "[]")
+        else:
+            # Replace ' with " and remove whitespace
+            init_exc = str(tmp_init_exc).replace("\'", "\"")
+            init_exc_str = ''.join(init_exc.split())
+            self.add_env_var('INIT_EXCLUDE', str(init_exc_str))
+
+        # MODEL
+        tmp_model = self.c_dict['MODEL']
+        if not tmp_model:
+            # Empty, MET is expecting [] to indicate all models are to be
+            # included
+            self.add_env_var('MODEL', "[]")
+        else:
+            # Replace ' with " and remove whitespace
+            model = str(tmp_model).replace("\'", "\"")
+            model_str = ''.join(model.split())
+            self.add_env_var(b'MODEL', str(model_str))
+
+        # STORM_ID
+        tmp_storm_id = self.c_dict['STORM_ID']
+        if not tmp_storm_id:
+            # Empty, use all storm_ids, indicate this to MET via '[]'
+            self.add_env_var('STORM_ID', "[]")
+        else:
+            # Replace ' with " and remove whitespace
+            storm_id = str(tmp_storm_id).replace("\'", "\"")
+            storm_id_str = ''.join(storm_id.split())
+            self.add_env_var(b'STORM_ID', str(storm_id_str))
+
+        # BASIN
+        tmp_basin = self.c_dict['BASIN']
+        if not tmp_basin:
+            # Empty, we want all basins.  Send MET '[]' to indicate that
+            # we want all the basins.
+            self.add_env_var('BASIN', "[]")
+        else:
+            # Replace any ' with " and remove whitespace.
+            basin = str(tmp_basin).replace("\'", "\"")
+            basin_str = ''.join(basin.split())
+            self.add_env_var(b'BASIN', str(basin_str))
+
+        # CYCLONE
+        tmp_cyclone = self.c_dict['CYCLONE']
+        if not tmp_cyclone:
+            # Empty, use all cyclones, send '[]' to MET.
+            self.add_env_var('CYCLONE', "[]")
+        else:
+            # Replace ' with " and get rid of any whitespace
+            cyclone = str(tmp_cyclone).replace("\'", "\"")
+            cyclone_str = ''.join(cyclone.split())
+            self.add_env_var(b'CYCLONE', str(cyclone_str))
+
+        # STORM_NAME
+        tmp_storm_name = self.c_dict['STORM_NAME']
+        if not tmp_storm_name:
+            # Empty, equivalent to 'STORM_NAME = "[]"; in MET config file,
+            # use all storm names.
+            self.add_env_var('STORM_NAME', "[]")
+        else:
+            storm_name = str(tmp_storm_name).replace("\'", "\"")
+            storm_name_str = ''.join(storm_name.split())
+            self.add_env_var(b'STORM_NAME', str(storm_name_str))
+
+        # Valid time window variables
+        tmp_valid_beg = self.c_dict['VALID_BEG']
+        tmp_valid_end = self.c_dict['VALID_END']
+
+        if not tmp_valid_beg:
+            self.add_env_var(b'VALID_BEG', "")
+        else:
+            valid_beg = str(tmp_valid_beg).replace("\'", "\"")
+            valid_beg_str = ''.join(valid_beg.split())
+            self.add_env_var(b'VALID_BEG', str(valid_beg_str))
+
+        if not tmp_valid_end:
+            self.add_env_var(b'VALID_END', "")
+        else:
+            valid_end = str(tmp_valid_end).replace("\'", "\"")
+            valid_end_str = ''.join(valid_end.split())
+            self.add_env_var(b'VALID_END', str(valid_end_str))
+
+        # DLAND_FILE
+        tmp_dland_file = self.c_dict['DLAND_FILE']
+        self.add_env_var(b'DLAND_FILE', str(tmp_dland_file))
+
+        # send environment variables to logger
+        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_user_env_items()
+        for l in print_list:
+            self.print_env_item(l)
+        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_env_copy(print_list)
+
+    def process_data(self, basin, cyclone, time_info, model_list):
+        # get adeck files
+        # TODO: add misc?
+        adeck_files = []
+        ss = StringSub(self.logger,
+                       self.c_dict['ADECK_TEMPLATE'],
+                       basin=basin,
+                       cyclone=cyclone,
+                       model=model_list[0],
+                       **time_info)
+        adeck_glob = os.path.join(self.c_dict['ADECK_TRACK_DATA_DIR'],
+                                  ss.doStringSub())
+        self.logger.debug('Looking for {}'.format(adeck_glob))
+        # get all files that match expression
+        adeck_files = sorted(glob.glob(adeck_glob))
+
+        # if no adeck_files found
+        if len(adeck_files) == 0:
+            return False
+
+        # get matching bdeck wildcard expression
+        ss = StringSub(self.logger,
+                       self.c_dict['BDECK_TEMPLATE'],
+                       basin=basin,
+                       cyclone=cyclone,
+                       **time_info)
+        bdeck_glob = os.path.join(self.c_dict['BDECK_TRACK_DATA_DIR'],
+                                  ss.doStringSub())
+
+        # find corresponding bdeck and other model adeck files
+        for adeck_file in adeck_files:
+            # if wildcard was used in adeck, pull out what was
+            # substituted for * to find corresponding bdeck file
+            matches = []
+            if '*' in adeck_glob:
+                pattern = adeck_glob.replace('*', '(.*)')
+                match = re.match(pattern, adeck_file)
+                if match:
+                    matches = match.groups()
+
+            bdeck_file = bdeck_glob
+            for m in matches:
+                bdeck_file = bdeck_file.replace('*', m, 1)
+
+            # continue if bdeck file is not found
+            if not os.path.isfile(bdeck_file):
+                continue
+
+            adeck_list = [adeck_file]
+            bdeck_list = [bdeck_file]
+
+            # add other adeck models if they exist
+            for model in model_list[1:]:
+                new_adeck = adeck_file.replace(model_list[0], model)
+                if os.path.isfile(new_adeck):
+                    adeck_list.append(new_adeck)
+
+            # reformat extra tropical cyclone files if necessary
+            if self.c_dict['REFORMAT_ADECK']:
+                adeck_list = self.reformat_files(adeck_list, 'A', time_info)
+
+            if self.c_dict['REFORMAT_BDECK']:
+                bdeck_list = self.reformat_files(bdeck_list, 'B', time_info)
+
+            self.adeck = adeck_list
+            self.bdeck = bdeck_list
+
+            # get output filename from template
+            # replacing * with info from adeck file
+            ss = StringSub(self.logger,
+                           self.c_dict['OUTPUT_TEMPLATE'],
+                           basin=basin,
+                           cyclone=cyclone,
+                           **time_info)
+            output_file = ss.doStringSub()
+
+            # replace * in output file name with info from adeck file
+            for m in matches:
+                output_file = output_file.replace('*', m, 1)
+            self.outfile = output_file
+
+            # build command and run tc_pairs
+            cmd = self.get_command()
+            if cmd is None:
+                self.logger.error("Could not generate command")
+                return
+
+            self.build()
+
+    def reformat_files(self, file_list, deck_type, time_info):
+        storm_month = time_info['init'].strftime('%m')
+        missing_values = \
+            (self.c_dict['MISSING_VAL_TO_REPLACE'],
+             self.c_dict['MISSING_VAL'])
+        deck_dir = self.c_dict[deck_type+'DECK_TRACK_DATA_DIR']
+        reformat_dir = self.c_dict['REFORMAT_DIR']
+
+        outfiles = []
+        for deck in file_list:
+            outfile = deck.replace(deck_dir,
+                                   reformat_dir)
+            self.logger.debug('Reformatting {} to {}'.format(deck, outfile))
+            self.read_modify_write_file(deck, storm_month,
+                                        missing_values, outfile)
+            outfiles.append(outfile)
+
+        return outfiles
+
+    def get_command(self):
+        """! Over-ride CommandBuilder's get_command because unlike other MET
+             tools, tc_pairs handles input files differently- namely,
+             through flags -adeck and -bdeck and doesn't require an
+             output file, as there is a default.
+             Build command to run from arguments
+        """
+        if self.app_path is None:
+            self.logger.error("No app path specified. You must use a subclass")
+            return None
+
+        if not self.adeck:
+            self.logger.error('ADECK file not set')
+            return None
+
+        if not self.bdeck:
+            self.logger.error('BDECK file not set')
+            return None
+
+        config_file = self.c_dict['TC_PAIRS_CONFIG_FILE']
+        if config_file is None:
+            self.logger.error('Config file not set')
+            return None
+
+        output_path = self.get_output_path()
+        if output_path is '':
+            self.logger.error('Output path not set')
+            return None
+
+        # create directory containing output file if it doesn't exist
+        if not os.path.exists(os.path.dirname(output_path)):
+            os.makedirs(os.path.dirname(output_path))
+
+        # TODO: Move adding app_path, verbose, and any other items that are
+        #  in every MET command call to a function to be called instead
+        cmd = '{} -v {}'.format(self.app_path, self.verbose)
+        cmd += ' -adeck {} -bdeck {}'.format(' '.join(self.adeck),
+                                             ' '.join(self.bdeck))
+        cmd += ' -config {} -out {}'.format(config_file, output_path)
+
+        return cmd
 
     def read_modify_write_file(self, in_csvfile, storm_month, missing_values,
                                out_csvfile):
@@ -140,13 +558,9 @@ class TcPairsWrapper(CommandBuilder):
                 @param out_csvfile the output csv file
                 @param logger the log where logging is directed
         """
-        # pylint:disable=protected-access
-        # pylint:disable=protected-access
-        # sys._getframe is a legitimate way to access the current
-        # filename and method.
-        # Used for logging
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
+        # create output directory if it does not exist
+        if not os.path.exists(os.path.dirname(out_csvfile)):
+            os.makedirs(os.path.dirname(out_csvfile))
 
         # Open the output csv file
         out_file = open(out_csvfile, "wb")
@@ -188,50 +602,6 @@ class TcPairsWrapper(CommandBuilder):
         csvfile.close()
         out_file.close()
 
-
-    def run_all_times(self):
-        """! Build up the command to invoke the MET tool tc_pairs.
-        """
-
-        # pylint:disable=protected-access
-        # sys._getframe is a legitimate way to access the current
-        # filename and method.
-        # Used for logging information
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-        self.logger.info("Started run_all_times in TcPairsWrapper")
-
-        # Set up the environment variable to be used in the TCPairs Config
-        # file (TC_PAIRS_CONFIG_FILE)
-        self.set_env_vars()
-
-        # Get the desired YYYYMMDD_HH init list
-        time_interval = self.tcp_dict['INIT_INCREMENT']
-        if time_interval < 60:
-            self.logger.error("INIT_INCREMENT parameter must be "
-              "greater than 60 seconds")
-            exit(1)
-
-        loop_time = datetime.datetime.strptime(self.tcp_dict['INIT_BEG'],
-                                               self.tcp_dict['INIT_TIME_FMT'])
-        end_time = datetime.datetime.strptime(self.tcp_dict['INIT_END'],
-                                               self.tcp_dict['INIT_TIME_FMT'])
-
-        init_list = []
-        while loop_time <= end_time:
-            init_list.append(loop_time.strftime("%Y%m%d_%H"))
-            loop_time += datetime.timedelta(seconds=time_interval)
-
-        # Differentiate between non-ATCF_by_pairs data and ATCF_by_pairs track data based on
-        # the TRACK_TYPE
-        track_type = self.tcp_dict['TRACK_TYPE']
-        if track_type == "extra_tropical_cyclone":
-            self.process_non_atcf(init_list)
-        else:
-            self.process_atcf(init_list)
-
-        self.logger.info("Completed run_all_times in TcPairsWrapper")
-
     def process_non_atcf(self, init_list):
         """! Original implementation of this wrapper- for
              extra-tropical-cyclone data in non-ATCF_by_pairs format
@@ -257,8 +627,8 @@ class TcPairsWrapper(CommandBuilder):
         self.logger.debug('building command for non-ATCF_by_pairs track data...')
 
         missing_values = \
-            (self.tcp_dict['MISSING_VAL_TO_REPLACE'],
-             self.tcp_dict['MISSING_VAL'])
+            (self.c_dict['MISSING_VAL_TO_REPLACE'],
+             self.c_dict['MISSING_VAL'])
 
         # get a list of YYYYMM values
         year_month_list = []
@@ -274,7 +644,7 @@ class TcPairsWrapper(CommandBuilder):
 
         # Since the atrack and btrack data are in the same directory, use the
         # directory specified in the ATRACK_DATA_DIR
-        atrack_dir = self.tcp_dict['ADECK_TRACK_DATA_DIR']
+        atrack_dir = self.c_dict['ADECK_TRACK_DATA_DIR']
         for year_month in os.listdir(atrack_dir):
             # if the full directory path isn't an empty directory,
             # check if the current year_month is the requested time.
@@ -296,10 +666,10 @@ class TcPairsWrapper(CommandBuilder):
             # Create an atcf output directory for writing the modified
             # files
             adeck_mod = os.path.join(
-                self.tcp_dict['TRACK_DATA_SUBDIR_MOD'],
+                self.c_dict['TRACK_DATA_SUBDIR_MOD'],
                 os.path.basename(cur_dir))
             bdeck_mod = os.path.join(
-                self.tcp_dict['TRACK_DATA_SUBDIR_MOD'],
+                self.c_dict['TRACK_DATA_SUBDIR_MOD'],
                 os.path.basename(cur_dir))
             produtil.fileop.makedirs(adeck_mod, logger=self.logger)
 
@@ -309,11 +679,11 @@ class TcPairsWrapper(CommandBuilder):
             for cur_track_file in track_files_for_date:
                 # Check to see if the files have the ADeck prefix
                 if cur_track_file.startswith(
-                        self.tcp_dict['ADECK_FILE_PREFIX']):
+                        self.c_dict['ADECK_FILE_PREFIX']):
                     # Create the output directory for the pairs, if
                     # it doesn't already exist
                     pairs_out_dir = \
-                        os.path.join(self.tcp_dict['TC_PAIRS_DIR'],
+                        os.path.join(self.c_dict['OUTPUT_DIR'],
                                      os.path.basename(cur_dir))
                     produtil.fileop.makedirs(pairs_out_dir, logger=self.logger)
 
@@ -323,14 +693,14 @@ class TcPairsWrapper(CommandBuilder):
                     adeck_in_file_path = os.path.join(cur_dir,
                                                       cur_track_file)
                     bdeck_in_file_path = re.sub(
-                        self.tcp_dict['ADECK_FILE_PREFIX'],
-                        self.tcp_dict['BDECK_FILE_PREFIX'],
+                        self.c_dict['ADECK_FILE_PREFIX'],
+                        self.c_dict['BDECK_FILE_PREFIX'],
                         adeck_in_file_path)
                     adeck_file_path = os.path.join(adeck_mod,
                                                    cur_track_file)
                     bdeck_file_path = os.path.join(bdeck_mod, re.sub(
-                        self.tcp_dict['ADECK_FILE_PREFIX'],
-                        self.tcp_dict['BDECK_FILE_PREFIX'],
+                        self.c_dict['ADECK_FILE_PREFIX'],
+                        self.c_dict['BDECK_FILE_PREFIX'],
                         cur_track_file))
 
                     # Get the YYYYMM e.g 201203 in amlq2012033118.gfso.0004
@@ -359,166 +729,136 @@ class TcPairsWrapper(CommandBuilder):
                                                             adeck_file_path,
                                                             bdeck_file_path,
                                                             cur_track_file)
-                    self.build()
 
         self.logger.info("Completed run_all_times in TcPairsWrapper")
 
-
-    def process_atcf(self, init_list):
+    def process_atcf_old(self, init_list):
         """! Create the arguments to run MET tc_pairs on ATCF_by_pairs formatted input data.
              Args:
                  init_list - A list of initialization times defining the time window.
              Returns:
-
         """
-        # pylint:disable=protected-access
-        # sys._getframe is a legitimate way to access the current
-        # filename and method.
-        # Used for logging information
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-        self.logger.debug('Processing ATCF_by_pairs track files...')
-
         # Get the filename templates
-        adeck_input_dir = self.tcp_dict['ADECK_TRACK_DATA_DIR']
-        bdeck_input_dir = self.tcp_dict['BDECK_TRACK_DATA_DIR']
-        fcst_filename_tmpl = self.tcp_dict['FORECAST_TMPL']
-        reference_filename_tmpl = self.tcp_dict['REFERENCE_TMPL']
-        top_level_dir = self.tcp_dict['TOP_LEVEL_DIRS'].lower()
-        # pylint:disable=simplifiable-if-statement
-        # using yes and no is less confusing to user
-        if top_level_dir == 'yes':
-            by_dir = True
-        else:
-            by_dir = False
+        adeck_input_dir = self.c_dict['ADECK_TRACK_DATA_DIR']
+        bdeck_input_dir = self.c_dict['BDECK_TRACK_DATA_DIR']
+        fcst_filename_tmpl = self.c_dict['FORECAST_TMPL']
+        reference_filename_tmpl = self.c_dict['REFERENCE_TMPL']
 
         # Commands common to both methods of invoking tc_pairs
-        pairs_out_dir = self.tcp_dict['TC_PAIRS_DIR']
+        pairs_out_dir = self.c_dict['OUTPUT_DIR']
         produtil.fileop.makedirs(pairs_out_dir, logger=self.logger)
 
-        # User specifies to run tc_pairs with top-level dirs for A-deck and B-deck input files
-        if by_dir:
-            # Invoke MET tc_pairs with top-level directories
-            tc_pairs_exe = os.path.join(self.tcp_dict['MET_INSTALL_DIR'],
-                                        'bin/tc_pairs')
-            outfile = os.path.join(self.tcp_dict['TC_PAIRS_DIR'], "tc_pairs")
-            cmd_list = [tc_pairs_exe,
-                        " -adeck ",
-                        adeck_input_dir, " -bdeck ",
-                        bdeck_input_dir, " -config ",
-                        self.tcp_dict['TC_PAIRS_CONFIG_FILE'],
-                        " -out ", outfile]
+        # Invoke tc_pairs with A-deck and B-deck filenames. Get a list of all the input files
+        # (A-deck and B-deck), and filter based on one or all of the following criteria: date,
+        # region, cyclone.
 
-            self.cmd = ''.join(cmd_list)
-            self.build()
-        else:
-            # Invoke tc_pairs with A-deck and B-deck filenames. Get a list of all the input files
-            # (A-deck and B-deck), and filter based on one or all of the following criteria: date,
-            # region, cyclone.
+        # Look for files in the A-Deck and B-Deck
+        # directories for files with times that are within the init time window. Employ
+        # StringTemplateSubstitution to create a regex for the filename to assist in
+        # identifying the date, region, and cyclone from the file name (if available)
+        # to perform filtering of input data prior to invoking tc_pairs, making it
+        # run more efficiently.
+        all_adeck_files = self.get_input_track_files(adeck_input_dir)
+        all_bdeck_files = self.get_input_track_files(bdeck_input_dir)
 
-            # Look for files in the A-Deck and B-Deck
-            # directories for files with times that are within the init time window. Employ
-            # StringTemplateSubstitution to create a regex for the filename to assist in
-            # identifying the date, region, and cyclone from the file name (if available)
-            # to perform filtering of input data prior to invoking tc_pairs, making it
-            # run more efficiently.
-            all_adeck_files = self.get_input_track_files(adeck_input_dir)
-            all_bdeck_files = self.get_input_track_files(bdeck_input_dir)
+        # Create the appropriate string template substitution object, based on what is
+        # defined in the filename_templates
+        (adeck_input_file_regex, adeck_sorted_keywords) = \
+            self.create_filename_regex(fcst_filename_tmpl)
+        (bdeck_input_file_regex, bdeck_sorted_keywords) = \
+            self.create_filename_regex(reference_filename_tmpl)
 
-            # Create the appropriate string template substitution object, based on what is
-            # defined in the filename_templates
-            (adeck_input_file_regex, adeck_sorted_keywords) = \
-                self.create_filename_regex(fcst_filename_tmpl)
-            (bdeck_input_file_regex, bdeck_sorted_keywords) = \
-                self.create_filename_regex(reference_filename_tmpl)
+        # If for some reason the actual files don't match with what is expected, use all
+        # ADeck and BDeck input files.
+        if len(adeck_input_file_regex) > 0 and len(
+                bdeck_input_file_regex) > 0:
+            filtered_adeck_files = self.filter_input(all_adeck_files,
+                                                     init_list,
+                                                     adeck_input_file_regex,
+                                                     adeck_sorted_keywords,
+                                                     fcst_filename_tmpl)
+            filtered_bdeck_files = self.filter_input(all_bdeck_files,
+                                                     init_list,
+                                                     bdeck_input_file_regex,
+                                                     bdeck_sorted_keywords,
+                                                     reference_filename_tmpl)
 
-            # If for some reason the actual files don't match with what is expected, use all
-            # ADeck and BDeck input files.
-            if len(adeck_input_file_regex) > 0 and len(
-                    bdeck_input_file_regex) > 0:
-                filtered_adeck_files = self.filter_input(all_adeck_files,
-                                                         init_list,
-                                                         adeck_input_file_regex,
-                                                         adeck_sorted_keywords,
-                                                         fcst_filename_tmpl)
-                filtered_bdeck_files = self.filter_input(all_bdeck_files,
-                                                         init_list,
-                                                         bdeck_input_file_regex,
-                                                         bdeck_sorted_keywords,
-                                                         reference_filename_tmpl)
+            # For debugging and informational purposes, create ASCII files containing the input files that
+            # will be used in the evaluation.
+            adeck_ascii = os.path.join(self.c_dict['OUTPUT_BASE'],
+                                       'adeck_filtered_files.txt')
 
-                # For debugging and informational purposes, create ASCII files containing the input files that
-                # will be used in the evaluation.
-                adeck_ascii = os.path.join(self.tcp_dict['OUTPUT_BASE'],
-                                           'adeck_filtered_files.txt')
+            # Remove file from previous run
+            try:
+                os.remove(adeck_ascii)
+            except OSError:
+                # File doesn't exist/already scrubbed
+                pass
 
-                # Remove file from previous run
-                try:
-                    os.remove(adeck_ascii)
-                except OSError:
-                    # File doesn't exist/already scrubbed
-                    pass
+            with open(adeck_ascii, "a+") as adeck_file:
+                adeck_file.write(
+                    b"A-deck input files (after filtering), to be used in evaluation:\n")
+                adeck_file.write(
+                    b"==============================================================\n")
+                for adeck in filtered_adeck_files:
+                    adeck_file.write(adeck + "\n")
+            bdeck_ascii = os.path.join(self.c_dict['OUTPUT_BASE'],
+                                       'bdeck_filtered_files.txt')
 
-                with open(adeck_ascii, "a+") as adeck_file:
-                    adeck_file.write(
-                        b"A-deck input files (after filtering), to be used in evaluation:\n")
-                    adeck_file.write(
-                        b"==============================================================\n")
-                    for adeck in filtered_adeck_files:
-                        adeck_file.write(adeck + "\n")
-                bdeck_ascii = os.path.join(self.tcp_dict['OUTPUT_BASE'],
-                                           'bdeck_filtered_files.txt')
+            # Remove file from previous run
+            try:
+                os.remove(bdeck_ascii)
+            except OSError:
+                # File doesn't exist/already scrubbed
+                pass
 
-                # Remove file from previous run
-                try:
-                    os.remove(bdeck_ascii)
-                except OSError:
-                    # File doesn't exist/already scrubbed
-                    pass
-
-                with open(bdeck_ascii, "a+") as bdeck_file:
-                    bdeck_file.write(
-                        b"B-deck input files (after filtering), to be used in evaluation:\n")
-                    bdeck_file.write(
-                        b"==============================================================\n")
-                    for bdeck in filtered_bdeck_files:
-                        bdeck_file.write(bdeck + "\n")
-
-            # Unlike the other MET tools, the tc_pairs usage for this use case is:
-            # tc_pairs\
-            #  -adeck <top-level dir or file> \
-            #  -bdeck <top-level dir or file> \
-            #  -config <file>
-            # [-out base] \
-            # [-log file] \
-            # [ -v level ]
-
-            # Combine each A-Deck file with each B-Deck file (not performant, but since we
-            # made all attempts to filter both A-Deck and B-Deck files based on date, region
-            # and cyclone, we have hopefully reduced the number of pairings).
-            config_file = self.tcp_dict['TC_PAIRS_CONFIG_FILE']
-            tc_pairs_exe = os.path.join(self.tcp_dict['MET_INSTALL_DIR'],
-                                        'bin/tc_pairs')
-            for adeck in filtered_adeck_files:
-                # Use the adeck base filename to create the output .tcst file
-                basename = os.path.basename(adeck)
-                m = re.match(r'(.*).dat', basename)
-                if m:
-                    filename_only = m.group(1)
-                else:
-                    self.logger.warning(
-                        ": A-deck filename doesn't +"
-                        " have .dat extension, using the A-deck filename as the base " +
-                        "output .tcst file")
-                    filename_only = adeck
-                outfile = os.path.join(pairs_out_dir, filename_only)
-
+            with open(bdeck_ascii, "a+") as bdeck_file:
+                bdeck_file.write(
+                    b"B-deck input files (after filtering), to be used in evaluation:\n")
+                bdeck_file.write(
+                    b"==============================================================\n")
                 for bdeck in filtered_bdeck_files:
-                    cmd_list = [tc_pairs_exe, " -adeck ", adeck, " -bdeck ",
-                                bdeck, " -config ",
-                                config_file, " -out ", outfile]
-                    self.cmd = ''.join(cmd_list)
-                    self.build()
+                    bdeck_file.write(bdeck + "\n")
+
+        # Unlike the other MET tools, the tc_pairs usage for this use case is:
+        # tc_pairs\
+        #  -adeck <top-level dir or file> \
+        #  -bdeck <top-level dir or file> \
+        #  -config <file>
+        # [-out base] \
+        # [-log file] \
+        # [ -v level ]
+
+        # Combine each A-Deck file with each B-Deck file (not performant, but since we
+        # made all attempts to filter both A-Deck and B-Deck files based on date, region
+        # and cyclone, we have hopefully reduced the number of pairings).
+        config_file = self.c_dict['TC_PAIRS_CONFIG_FILE']
+        for adeck in filtered_adeck_files:
+            # Use the adeck base filename to create the output .tcst file
+            basename = os.path.basename(adeck)
+            m = re.match(r'(.*).dat', basename)
+            if m:
+                filename_only = m.group(1)
+            else:
+                self.logger.warning(
+                    ": A-deck filename doesn't +"
+                    " have .dat extension, using the A-deck filename as the base " +
+                    "output .tcst file")
+                filename_only = adeck
+#            outfile = os.path.join(pairs_out_dir, filename_only)
+            self.outdir = pairs_out_dir
+            self.outfile = filename_only
+
+            for bdeck in filtered_bdeck_files:
+                self.adeck = [adeck]
+                self.bdeck = [bdeck]
+
+                cmd = self.get_command()
+                if cmd is None:
+                    self.logger.error("Could not generate command")
+                    return
+
+                self.build()
 
     def get_date_format_info(self, tmpl):
         """! From the filename_templates template for the input track file,
@@ -678,8 +1018,7 @@ class TcPairsWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
-        self.logger.debug(
-            "Filtering track file input")
+        self.logger.debug("Filtering track file input")
 
         # Eight possible combinations: date only, region only, cyclone only,
         # (date, region, cyclone), (date, region),
@@ -693,21 +1032,21 @@ class TcPairsWrapper(CommandBuilder):
         # config file. If absent, then the wrapper will not perform
         # any filtering by date.
         if 'date' in sorted_keywords and len(
-                self.tcp_dict['INIT_BEG']) > 0 and len(
-                self.tcp_dict['INIT_END']) > 0:
+                self.c_dict['INIT_BEG']) > 0 and len(
+                self.c_dict['INIT_END']) > 0:
             by_date = True
 
         # Check for the 'region' keyword in the filename template and for
         # values defined in the config file. If
         # absent, then the wrapper will not perform filtering by region.
-        if 'region' in sorted_keywords and len(self.tcp_dict['BASIN']) > 0:
+        if 'region' in sorted_keywords and len(self.c_dict['BASIN']) > 0:
             by_region = True
 
         # Check for the 'cyclone' keyword in the filename template and
         # for a cyclone annual number
         # defined in the config file.  If absent, then forgo
         # filtering by cyclone.
-        if 'cyclone' in sorted_keywords and len(self.tcp_dict['CYCLONE']) > 0:
+        if 'cyclone' in sorted_keywords and len(self.c_dict['CYCLONE']) > 0:
             by_cyclone = True
 
         # date, region, and cyclone
@@ -802,7 +1141,7 @@ class TcPairsWrapper(CommandBuilder):
         # Check if filtering by init time is defined in the
         # config file, if not, forgo filtering by date and return
         # input_data.
-        if not self.tcp_dict['INIT_BEG'] and not self.tcp_dict['INIT_END']:
+        if not self.c_dict['INIT_BEG'] and not self.c_dict['INIT_END']:
             self.logger.info(
                 "No init times specified in config file, " +
                 "skip filtering by date.")
@@ -919,7 +1258,7 @@ class TcPairsWrapper(CommandBuilder):
         self.logger.debug(
             "Filtering track file input by region...")
         # Get a list of the regions of interest
-        regions_from_conf = self.tcp_dict['BASIN']
+        regions_from_conf = self.c_dict['BASIN']
 
         # Check that the 'region' keyword is in the sorted_
         # keywords list, if not, then skip filtering by region and
@@ -988,7 +1327,7 @@ class TcPairsWrapper(CommandBuilder):
             "Filtering track file input by cyclone...")
 
         # Get a list of the cyclones of interest
-        cyclones = self.tcp_dict['CYCLONE']
+        cyclones = self.c_dict['CYCLONE']
 
         # Check if 'cyclone' keyword is in the sorted_keywords list,
         # if not, skip filtering by cyclone.
@@ -1052,154 +1391,6 @@ class TcPairsWrapper(CommandBuilder):
                 all_track_files.append(os.path.join(dirs, cur_file))
 
         return all_track_files
-
-    def set_env_vars(self):
-        """! Set up all the environment variables that are assigned
-             in the MET+ config file which are to be used by the MET
-            TC-pairs config file.
-
-             Args:
-                 nothing - retrieves necessary MET+ config values via
-                           class attributes
-
-             Returns:
-                 nothing - sets the environment variables
-        """
-        # pylint:disable=protected-access
-        # sys._getframe is a legitimate way to access the current
-        # filename and method.
-        # Used for logging information
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
-        self.logger.debug(': Setting environment variables that will be' +
-                          ' used by MET...')
-
-        # For all cases below, we need to do some pre-processing so that
-        #  Python will use " and not ' because currently MET doesn't
-        # support single-quotes.
-
-        # INIT_BEG, INIT_END
-        # pull out YYYYMMDD from INIT_BEG/END
-        tmp_init_beg = self.tcp_dict['INIT_BEG'][0:8]
-        tmp_init_end = self.tcp_dict['INIT_END'][0:8]
-
-        if not tmp_init_beg:
-            self.add_env_var(b'INIT_BEG', "")
-        else:
-            init_beg = str(tmp_init_beg).replace("\'", "\"")
-            init_beg_str = ''.join(init_beg.split())
-            self.add_env_var(b'INIT_BEG', str(init_beg_str))
-
-        if not tmp_init_end:
-            self.add_env_var(b'INIT_END', "")
-        else:
-            init_end = str(tmp_init_end).replace("\'", "\"")
-            init_end_str = ''.join(init_end.split())
-            self.add_env_var(b'INIT_END', str(init_end_str))
-
-        # INIT_INCLUDE and INIT_EXCLUDE
-        # Used to set init_inc in "TC_PAIRS_CONFIG_FILE"
-        tmp_init_inc = self.tcp_dict['INIT_INCLUDE']
-        if not tmp_init_inc:
-            self.add_env_var('INIT_INCLUDE', "[]")
-        else:
-            # Not empty, set the environment variable to the
-            # value specified in the MET+ config file after removing whitespace
-            # and replacing ' with ".
-            init_inc = str(tmp_init_inc).replace("\'", "\"")
-            init_inc_str = ''.join(init_inc.split())
-            self.add_env_var('INIT_INCLUDE', str(init_inc_str))
-
-        tmp_init_exc = self.tcp_dict['INIT_EXCLUDE']
-        if not tmp_init_exc:
-            # Empty, MET is expecting [] to indicate all models are
-            # to be included
-            self.add_env_var('INIT_EXCLUDE', "[]")
-        else:
-            # Replace ' with " and remove whitespace
-            init_exc = str(tmp_init_exc).replace("\'", "\"")
-            init_exc_str = ''.join(init_exc.split())
-            self.add_env_var('INIT_EXCLUDE', str(init_exc_str))
-
-        # MODEL
-        tmp_model = self.tcp_dict['MODEL']
-        if not tmp_model:
-            # Empty, MET is expecting [] to indicate all models are to be
-            # included
-            self.add_env_var('MODEL', "[]")
-        else:
-            # Replace ' with " and remove whitespace
-            model = str(tmp_model).replace("\'", "\"")
-            model_str = ''.join(model.split())
-            self.add_env_var(b'MODEL', str(model_str))
-
-        # STORM_ID
-        tmp_storm_id = self.tcp_dict['STORM_ID']
-        if not tmp_storm_id:
-            # Empty, use all storm_ids, indicate this to MET via '[]'
-            self.add_env_var('STORM_ID', "[]")
-        else:
-            # Replace ' with " and remove whitespace
-            storm_id = str(tmp_storm_id).replace("\'", "\"")
-            storm_id_str = ''.join(storm_id.split())
-            self.add_env_var(b'STORM_ID', str(storm_id_str))
-
-        # BASIN
-        tmp_basin = self.tcp_dict['BASIN']
-        if not tmp_basin:
-            # Empty, we want all basins.  Send MET '[]' to indicate that
-            # we want all the basins.
-            self.add_env_var('BASIN', "[]")
-        else:
-            # Replace any ' with " and remove whitespace.
-            basin = str(tmp_basin).replace("\'", "\"")
-            basin_str = ''.join(basin.split())
-            self.add_env_var(b'BASIN', str(basin_str))
-
-        # CYCLONE
-        tmp_cyclone = self.tcp_dict['CYCLONE']
-        if not tmp_cyclone:
-            # Empty, use all cyclones, send '[]' to MET.
-            self.add_env_var('CYCLONE', "[]")
-        else:
-            # Replace ' with " and get rid of any whitespace
-            cyclone = str(tmp_cyclone).replace("\'", "\"")
-            cyclone_str = ''.join(cyclone.split())
-            self.add_env_var(b'CYCLONE', str(cyclone_str))
-
-        # STORM_NAME
-        tmp_storm_name = self.tcp_dict['STORM_NAME']
-        if not tmp_storm_name:
-            # Empty, equivalent to 'STORM_NAME = "[]"; in MET config file,
-            # use all storm names.
-            self.add_env_var('STORM_NAME', "[]")
-        else:
-            storm_name = str(tmp_storm_name).replace("\'", "\"")
-            storm_name_str = ''.join(storm_name.split())
-            self.add_env_var(b'STORM_NAME', str(storm_name_str))
-
-        # Valid time window variables
-        tmp_valid_beg = self.tcp_dict['VALID_BEG']
-        tmp_valid_end = self.tcp_dict['VALID_END']
-
-        if not tmp_valid_beg:
-            self.add_env_var(b'VALID_BEG', "")
-        else:
-            valid_beg = str(tmp_valid_beg).replace("\'", "\"")
-            valid_beg_str = ''.join(valid_beg.split())
-            self.add_env_var(b'VALID_BEG', str(valid_beg_str))
-
-        if not tmp_valid_end:
-            self.add_env_var(b'VALID_END', "")
-        else:
-            valid_end = str(tmp_valid_end).replace("\'", "\"")
-            valid_end_str = ''.join(valid_end.split())
-            self.add_env_var(b'VALID_END', str(valid_end_str))
-
-        # DLAND_FILE
-        tmp_dland_file = self.tcp_dict['DLAND_FILE']
-        self.add_env_var(b'DLAND_FILE', str(tmp_dland_file))
 
     def setup_tropical_track_dirs(self, deck_input_file_path, deck_file_path,
                                   storm_month, missing_values):
@@ -1280,13 +1471,9 @@ class TcPairsWrapper(CommandBuilder):
                  a list of commands
 
         """
+        self.set_output_dir(pairs_output_dir)
+        self.set_output_filename(date_file)
 
-        # pylint:disable=protected-access
-        # sys._getframe is a legitimate way to access the current
-        # filename and method.
-        # Used for logging information
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
         pairs_out_file = os.path.join(pairs_output_dir, date_file)
         pairs_out_file_with_suffix = pairs_out_file + ".tcst"
         if os.path.exists(pairs_out_file_with_suffix):
@@ -1297,30 +1484,16 @@ class TcPairsWrapper(CommandBuilder):
                                   " data because TC_PAIRS_FORCE" +
                                   "_OVERWRITE is set to True")
 
-        tc_pairs_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                    'bin/tc_pairs')
-        cmd_list = [tc_pairs_exe, " -adeck ",
-                    adeck_file_path, " -bdeck ",
-                    bdeck_file_path, " -config ",
-                    self.config.getstr('config', 'TC_PAIRS_CONFIG_FILE'),
-                    " -out ", pairs_out_file]
-        cmd = ''.join(cmd_list)
-        return cmd
+        self.adeck = [adeck_file_path]
+        self.bdeck = [bdeck_file_path]
+        cmd = self.get_command()
+        if cmd is None:
+            self.logger.error("Could not generate command")
+            return
 
-    def get_command(self):
-        """! Over-ride CommandBuilder's get_command because unlike other MET
-             tools, tc_pairs handles input files differently- namely,
-             through flags -adeck and -bdeck and doesn't require an
-             output file, as there is a default.
-             Build command to run from arguments
-        """
-        if self.app_path is None:
-            self.logger.error("No app path specified. You must use a subclass")
-            return None
+        self.build()
 
-        return self.cmd
-
-    def build(self):
+    def build_old(self):
         """! Override CommandBuilder's build() since tc_pairs handles
              input and output differently from the other MET tools
         """
