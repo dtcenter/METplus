@@ -195,14 +195,22 @@ class StatAnalysisWrapper(CommandBuilder):
              'OBS_THRESH_LIST', 'COV_THRESH_LIST',
              'ALPHA_LIST', 'LINE_TYPE_LIST'
              ]
-        if (self.c_dict['LOOP_ORDER'] == 'times' 
+        if (self.c_dict['LOOP_ORDER'] == 'processes' 
                 and 'MakePlots' in self.c_dict['PROCESS_LIST']):
             lists_to_group_items = config_lists_to_group_items
             lists_to_loop_items = config_lists_to_loop_items
             for config_list in expected_config_lists:
                 if (not config_list in config_lists_to_group_items
                         and not config_list in config_lists_to_loop_items):
-                    lists_to_group_items.append(config_list)
+                    if config_list == 'LINE_TYPE_LIST':
+                        lists_to_group_items.append(config_list)
+                    elif config_dict[config_list] == []:
+                        self.logger.warning(
+                            config_list+" is empty, will be treated as group."
+                            )
+                        lists_to_group_items.append(config_list)
+                    else:
+                        lists_to_loop_items.append(config_list)
                 elif (config_list in config_lists_to_loop_items
                           and config_dict[config_list] == []):
                     self.logger.warning(
@@ -214,17 +222,9 @@ class StatAnalysisWrapper(CommandBuilder):
             lists_to_group_items = config_lists_to_group_items
             lists_to_loop_items = config_lists_to_loop_items
             for config_list in expected_config_lists:
-                if (not config_list in config_lists_to_group_items 
+                if (not config_list in config_lists_to_group_items
                         and not config_list in config_lists_to_loop_items):
-                    if config_list == 'LINE_TYPE_LIST':
-                        lists_to_group_items.append(config_list)
-                    elif config_dict[config_list] == []:
-                        self.logger.warning(
-                            config_list+" is empty, will be treated as group."
-                            )
-                        lists_to_group_items.append(config_list)
-                    else:
-                        lists_to_loop_items.append(config_list)
+                    lists_to_group_items.append(config_list)
                 elif (config_list in config_lists_to_loop_items
                           and config_dict[config_list] == []):
                     self.logger.warning(
@@ -649,17 +649,9 @@ class StatAnalysisWrapper(CommandBuilder):
         nobs_valid_hour = len(obs_valid_hour_list)
         nobs_init_hour = len(obs_init_hour_list)
         if nfcst_valid_hour > 1:
-            fcst_valid_hour_formatted_list = []
-            for fcst_valid_hour in fcst_valid_hour_list:
-                fcst_valid_hour_formatted_list \
-                    .append(fcst_valid_hour.replace('"',''))
-            fcst_valid_hour_formatted = (
-                self.list_to_str(fcst_valid_hour_formatted_list)
-                )
-            config_dict['FCST_VALID_HOUR'] = fcst_valid_hour_formatted
             if date_type == 'VALID':
-                fcst_valid_hour_beg = fcst_valid_hour_list[0]
-		fcst_valid_hour_end = fcst_valid_hour_list[-1]
+                fcst_valid_hour_beg = fcst_valid_hour_list[0].replace('"','')
+		fcst_valid_hour_end = fcst_valid_hour_list[-1].replace('"','')
                 config_dict['FCST_VALID_BEG'] = (
                     str(date_beg)+'_'+fcst_valid_hour_beg
                     )
@@ -687,20 +679,12 @@ class StatAnalysisWrapper(CommandBuilder):
             config_dict['FCST_VALID_END'] = ''
             config_dict['FCST_VALID_HOUR'] = ''
         if nfcst_init_hour > 1:
-            fcst_init_hour_formatted_list = []
-            for fcst_init_hour in fcst_init_hour_list:
-                fcst_init_hour_formatted_list \
-                    .append(fcst_init_hour.replace('"',''))
-            fcst_init_hour_formatted = (
-                self.list_to_str(fcst_init_hour_formatted_list)
-                )
-            config_dict['FCST_INIT_HOUR'] = fcst_init_hour_formatted
             if date_type == 'VALID':
                 config_dict['FCST_INIT_BEG'] = ''
                 config_dict['FCST_INIT_END'] = ''
             elif date_type == 'INIT':
-                fcst_init_hour_beg = fcst_init_hour_list[0]
-                fcst_init_hour_end = fcst_init_hour_list[-1]
+                fcst_init_hour_beg = fcst_init_hour_list[0].replace('"','')
+                fcst_init_hour_end = fcst_init_hour_list[-1].replace('"','')
                 config_dict['FCST_INIT_BEG'] = (
                     str(date_beg)+'_'+fcst_init_hour_beg
                     )
@@ -725,17 +709,9 @@ class StatAnalysisWrapper(CommandBuilder):
             config_dict['FCST_INIT_END'] = ''
             config_dict['FCST_INIT_HOUR'] = ''
         if nobs_valid_hour > 1:
-            obs_valid_hour_formatted_list = []
-            for obs_valid_hour in obs_valid_hour_list:
-                obs_valid_hour_formatted_list \
-                    .append(obs_valid_hour.replace('"',''))
-            obs_valid_hour_formatted = (
-                self.list_to_str(obs_valid_hour_formatted_list)
-                )
-            config_dict['OBS_VALID_HOUR'] = obs_valid_hour_formatted
             if date_type == 'VALID':
-                obs_valid_hour_beg = obs_valid_hour_list[0]
-                obs_valid_hour_end = obs_valid_hour_list[-1]
+                obs_valid_hour_beg = obs_valid_hour_list[0].replace('"','')
+                obs_valid_hour_end = obs_valid_hour_list[-1].replace('"','')
                 config_dict['OBS_VALID_BEG'] = (
                     str(date_beg)+'_'+obs_valid_hour_beg
                     )
@@ -743,13 +719,6 @@ class StatAnalysisWrapper(CommandBuilder):
                     str(date_end)+'_'+obs_valid_hour_end
                     )
             elif date_type == 'INIT':
-                obs_valid_hour_formatted_list = []
-                for obs_valid_hour in obs_valid_hour_list:
-                    obs_valid_hour_formatted_list \
-                        .append(obs_valid_hour.replace('"',''))
-                obs_valid_hour_formatted = (
-                    self.list_to_str(obs_valid_hour_formatted_list)
-                    )
                 config_dict['OBS_VALID_BEG'] = ''
                 config_dict['OBS_VALID_END'] = ''
         elif nobs_valid_hour == 1 and obs_valid_hour_list != ['']:
@@ -770,20 +739,12 @@ class StatAnalysisWrapper(CommandBuilder):
             config_dict['OBS_VALID_END'] = ''
             config_dict['OBS_VALID_HOUR'] = ''
         if nobs_init_hour > 1:
-            obs_init_hour_formatted_list = []
-            for obs_init_hour in obs_init_hour_list:
-                obs_init_hour_formatted_list \
-                    .append(obs_init_hour.replace('"',''))
-            obs_init_hour_formatted = (
-                self.list_to_str(obs_init_hour_formatted_list)
-                )
-            config_dict['OBS_INIT_HOUR'] = obs_init_hour_formatted
             if date_type == 'VALID':
                 config_dict['OBS_INIT_BEG'] = ''
                 config_dict['OBS_INIT_END'] = ''
             elif date_type == 'INIT':
-                obs_init_hour_beg = obs_init_hour_list[0]
-                obs_init_hour_end = obs_init_hour_list[-1]
+                obs_init_hour_beg = obs_init_hour_list[0].replace('"','')
+                obs_init_hour_end = obs_init_hour_list[-1].replace('"','')
                 config_dict['OBS_INIT_BEG'] = (
                     str(date_beg)+'_'+obs_init_hour_beg
                     )
