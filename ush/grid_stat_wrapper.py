@@ -27,8 +27,8 @@ class GridStatWrapper(CompareGriddedWrapper):
     '''
     def __init__(self, config, logger):
         super(GridStatWrapper, self).__init__(config, logger)
-        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
-        self.app_path = os.path.join(met_install_dir, 'bin/grid_stat')
+        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
+                                     'bin/grid_stat')
         self.app_name = os.path.basename(self.app_path)
         self.c_dict = self.create_c_dict()
 
