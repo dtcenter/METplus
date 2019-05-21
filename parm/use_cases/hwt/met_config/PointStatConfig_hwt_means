@@ -47,12 +47,12 @@ eclv_points   = 0.05;
 //
 // Forecast and observation fields to be verified
 //
-fcst =  {
-    field = [
-    ${FCST_FIELD}
-    ];
-    };
-obs = fcst;
+fcst = {
+ field = [ ${FCST_FIELD} ];
+}
+obs = {
+  field = [ ${OBS_FIELD} ];
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

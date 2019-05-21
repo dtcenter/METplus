@@ -23,7 +23,7 @@ desc = "NA";
 // Verification grid
 //
 regrid = {
-   to_grid    = ${REGRID_TO_GRID};
+   to_grid    = "/raid/hrrre/2019042812/hrrre01_2019042812f012.grib2";
    method     = NEAREST;
    width      = 1;
    vld_thresh = 0.5;
@@ -52,7 +52,11 @@ fcst =  {
     ${FCST_FIELD}
     ];
     };
-obs = fcst;
+obs = {
+    field = [
+    ${OBS_FIELD}
+    ];
+    };
 
 ////////////////////////////////////////////////////////////////////////////////
 

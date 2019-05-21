@@ -23,7 +23,7 @@ desc = "NA";
 // Verification grid
 //
 regrid = {
-   to_grid    = ${REGRID_TO_GRID};
+   to_grid    = "/raid/efp/se2019/ftp/nssl/fv3_sar/fv3sar_20190429.t00z.bgdawp012.tm00";
    method     = NEAREST;
    width      = 1;
    vld_thresh = 0.5;
