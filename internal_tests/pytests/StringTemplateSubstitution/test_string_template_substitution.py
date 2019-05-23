@@ -5,6 +5,7 @@ from __future__ import print_function
 import pytest
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
+from string_template_substitution import get_tags
 import logging
 import datetime
 
@@ -658,3 +659,9 @@ def test_filename_does_not_match_template_end():
     se = StringExtract(logger, template, filepath)
     out = se.parseTemplate()
     assert(out == None)
+
+def test_get_tags():
+    template = '*{basin?fmt=%s}_some_stuff_{cyclone?fmt=%02d}_{date?fmt=%Y%m}'
+    tags = get_tags(template)
+
+    assert( tags[0] == '*' and tags[1] == 'basin' and tags[2] == 'cyclone' and tags[3] == 'date')

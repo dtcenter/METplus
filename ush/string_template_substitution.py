@@ -67,6 +67,20 @@ def multiple_replace(dict, text):
     # For each match, look-up corresponding value in dictionary
     return regex.sub(lambda mo: dict[mo.string[mo.start():mo.end()]], text)
 
+def get_tags(template):
+    i = 0
+    template_len = len(template)
+    tags = []
+    while i < template_len:
+        if template[i] == '*':
+            tags.append('*')
+        elif template[i] == TEMPLATE_IDENTIFIER_BEGIN:
+            end_i = template.find(TEMPLATE_IDENTIFIER_END, i)
+            tag = template[i+1:end_i]
+            identifier = tag.split('?')[0]
+            tags.append(identifier)
+        i += 1
+    return tags
 
 class StringSub:
     """
@@ -215,7 +229,7 @@ class StringSub:
                 obj += self.shift_seconds
                 return self.format_hms(fmt, obj)
             # if string, format if possible
-            elif isinstance(obj, str) and fmt == '%s' or obj == '*':
+            elif isinstance(obj, str) and fmt == '%s' or obj == '*' or obj == '??':
                 return '{}'.format(obj)
             else:
                 self.logger.error('Could not format item {} with format {} in {}'.format(obj, fmt, split_string))
