@@ -117,7 +117,14 @@ def check_for_deprecated_config(p, logger):
       'MTD_FCST_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'FCST_MTD_CONV_RADIUS'},
       'MTD_FCST_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'FCST_MTD_CONV_THRESH'},
       'MTD_OBS_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'OBS_MTD_CONV_RADIUS'},
-      'MTD_OBS_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'OBS_MTD_CONV_THRESH'}
+       'MTD_OBS_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'OBS_MTD_CONV_THRESH'},
+       'RM_EXE' : { 'sec' : 'exe', 'alt' : 'RM'},
+       'CUT_EXE' : { 'sec' : 'exe', 'alt' : 'CUT'},
+       'TR_EXE' : { 'sec' : 'exe', 'alt' : 'TR'},
+       'NCAP2_EXE' : { 'sec' : 'exe', 'alt' : 'NCAP2'},
+       'CONVERT_EXE' : { 'sec' : 'exe', 'alt' : 'CONVERT'},
+       'NCDUMP_EXE' : { 'sec' : 'exe', 'alt' : 'NCDUMP'},
+       'EGREP_EXE' : { 'sec' : 'exe', 'alt' : 'EGREP'}
       # TODO: need to use regex to check for items that have different numbers in them
       # i.e. FCST_1_FIELD_NAME or FCST_6_FIELD_NAME to FCST_PCP_COMBINE_1_FIELD_NAME, etc.
 # template       '' : { 'sec' : '', 'alt' : ''}
@@ -1769,7 +1776,7 @@ def get_filetype(filepath, logger=None):
         return None
 
     # Previous Logic
-    # ncdump_exe = config.getexe('NCDUMP_EXE')
+    # ncdump_exe = config.getexe('NCDUMP')
     #try:
     #    result = subprocess.check_output([ncdump_exe, filepath])
 
@@ -1948,14 +1955,14 @@ def run_stand_alone(module_name, app_name):
 
 
 def add_common_items_to_dictionary(config, dictionary):
-    dictionary['WGRIB2'] = config.getexe('WGRIB2')
-    dictionary['CUT_EXE'] = config.getexe('CUT_EXE')
-    dictionary['TR_EXE'] = config.getexe('TR_EXE')
-    dictionary['RM_EXE'] = config.getexe('RM_EXE')
-    dictionary['NCAP2_EXE'] = config.getexe('NCAP2_EXE')
-    dictionary['CONVERT_EXE'] = config.getexe('CONVERT_EXE')
-    dictionary['NCDUMP_EXE'] = config.getexe('NCDUMP_EXE')
-    dictionary['EGREP_EXE'] = config.getexe('EGREP_EXE')
+    dictionary['WGRIB2_EXE'] = config.getexe('WGRIB2')
+    dictionary['CUT_EXE'] = config.getexe('CUT')
+    dictionary['TR_EXE'] = config.getexe('TR')
+    dictionary['RM_EXE'] = config.getexe('RM')
+    dictionary['NCAP2_EXE'] = config.getexe('NCAP2')
+    dictionary['CONVERT_EXE'] = config.getexe('CONVERT')
+    dictionary['NCDUMP_EXE'] = config.getexe('NCDUMP')
+    dictionary['EGREP_EXE'] = config.getexe('EGREP')
 
 
 def template_to_regex(template, time_info, logger):

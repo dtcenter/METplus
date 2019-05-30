@@ -81,7 +81,7 @@ that reformat gridded data
         c_dict['NEIGHBORHOOD_SHAPE'] = ''
         c_dict['VERIFICATION_MASK_TEMPLATE'] = ''
         c_dict['VERIFICATION_MASK'] = ''
-        util.add_common_items_to_dictionary(self.config, c_dict)
+
         return c_dict
 
     def handle_window_once(self, c_dict, dtype, edge):

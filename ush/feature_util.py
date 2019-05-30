@@ -73,9 +73,9 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir,
     met_install_dir = cu.getdir('MET_INSTALL_DIR')
     regrid_data_plane_exe = os.path.join(met_install_dir,
                                          'bin/regrid_data_plane')
-    # regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE_EXE')
+    # regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE')
     wgrib2_exe = cu.getexe('WGRIB2')
-    egrep_exe = cu.getexe('EGREP_EXE')
+    egrep_exe = cu.getexe('EGREP')
     regrid_with_met_tool = cu.getbool('config', 'REGRID_USING_MET_TOOL')
     overwrite_flag = cu.getbool('config', 'OVERWRITE_TRACK')
 

@@ -19,16 +19,16 @@ POINT_STAT_REGRID_TO_GRID =
 
 [exe]
 WGRIB2 =
-RM_EXE =
-CUT_EXE =
-TR_EXE =
-NCAP2_EXE =
-CONVERT_EXE =
-NCDUMP_EXE =
-EGREP_EXE =
+RM =
+CUT =
+TR =
+NCAP2 =
+CONVERT =
+NCDUMP =
+EGREP =
 
 *NOTE*:
-the WGRIB2, RM_EXE, CUT_EXE, TR_EXE, NCAP2_EXE, CONVERT_EXE, NCDUMP_EXE, and EGREP_EXE need to be define only if they
+the WGRIB2, RM, CUT, TR, NCAP2, CONVERT, NCDUMP, and EGREP need to be define only if they
 are not already defined in the parm/metplus_config/metplus_system.conf file
 
 [dir]
@@ -62,16 +62,16 @@ POINT_STAT_REGRID_TO_GRID =
 
 [exe]
 WGRIB2 =
-RM_EXE =
-CUT_EXE =
-TR_EXE =
-NCAP2_EXE =
-CONVERT_EXE =
-NCDUMP_EXE =
-EGREP_EXE =
+RM =
+CUT =
+TR =
+NCAP2 =
+CONVERT =
+NCDUMP =
+EGREP =
 
 *NOTE*:
-the WGRIB2, RM_EXE, CUT_EXE, TR_EXE, NCAP2_EXE, CONVERT_EXE, NCDUMP_EXE, and EGREP_EXE need to be define only if they
+the WGRIB2, RM, CUT, TR, NCAP2, CONVERT, NCDUMP, and EGREP need to be define only if they
 are not already defined in the parm/metplus_config/metplus_system.conf file
 
 [dir]
