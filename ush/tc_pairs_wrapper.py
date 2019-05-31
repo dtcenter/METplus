@@ -28,8 +28,6 @@ import glob
 import produtil.setup
 import datetime
 from produtil.run import ExitStatusException
-# TODO - critical  must import grid_to_obs_util before CommandBuilder
-# MUST import grid_to_obs_util BEFORE command_builder, else it breaks stand-alone
 import time_util
 import met_util as util
 import config_metplus
@@ -215,6 +213,7 @@ class TcPairsWrapper(CommandBuilder):
 
         # get items to filter adeck files
         # set each to default wildcard character unless specified in conf
+        # TODO: confirm I can assume basin will be 2 characters always
         basin_list = [ '??' ]
         cyclone_list = [ '*' ]
         model_list = [ '*' ]
@@ -245,7 +244,7 @@ class TcPairsWrapper(CommandBuilder):
         if use_storm_id:
             for storm_id in storm_id_list:
                 # pull out info from storm_id and process
-                match = re.match('(\w{2})(\d*)(\d{4})', storm_id)
+                match = re.match('(\w{2})(\d{2})(\d{4})', storm_id)
                 if not match:
                     self.logger.error('Incorrect STORM_ID format: {}'
                                       .format(storm_id))
@@ -435,11 +434,22 @@ class TcPairsWrapper(CommandBuilder):
 
     def process_data(self, basin, cyclone, time_info, model_list):
         # get bdeck file
-        # TODO: add misc?
         bdeck_files = []
+
+        # set regex expressions for basin and cyclone if wildcard is used
+        # cast cyclone value to integer if it is not a wildcard
         if cyclone != '*':
             cyclone = int(cyclone)
+            cyclone_regex = cyclone
+        else:
+            cyclone_regex = "([0-9]{2,4})"
 
+        if basin != '??':
+            basin_regex = basin
+        else:
+            basin_regex = "([a-zA-Z]{2})"
+
+        # get search expression for bdeck files to pass to glob
         ss = StringSub(self.logger,
                        self.c_dict['BDECK_TEMPLATE'],
                        basin=basin,
@@ -448,6 +458,7 @@ class TcPairsWrapper(CommandBuilder):
         bdeck_glob = os.path.join(self.c_dict['BDECK_DIR'],
                                   ss.doStringSub())
         self.logger.debug('Looking for BDECK: {}'.format(bdeck_glob))
+
         # get all files that match expression
         bdeck_files = sorted(glob.glob(bdeck_glob))
 
@@ -460,33 +471,49 @@ class TcPairsWrapper(CommandBuilder):
         for bdeck_file in bdeck_files:
             self.logger.debug('Found BDECK: {}'.format(bdeck_file))
 
+            # set current basin and cyclone from bdeck file
+            # if basin or cyclone are a wildcard, these will be
+            # replaced by the value pulled from the bdeck file
             current_basin = basin
             current_cyclone = cyclone
-            if cyclone != '*':
-                current_cyclone = int(cyclone)
 
             # if wildcard was used in bdeck, pull out what was
             # substituted for * to find corresponding bdeck file
             matches = []
-            if '*' in bdeck_glob:
-                pattern = bdeck_glob.replace('*', '(.*)')
-                pattern = pattern.replace('??', '(.{2})')
-                match = re.match(pattern, bdeck_file)
+            if '*' in bdeck_glob or '?' in bdeck_glob:
+                # get regex expression to pull out basin and cyclone
+                ss = StringSub(self.logger,
+                               self.c_dict['BDECK_TEMPLATE'],
+                               basin=basin_regex,
+                               cyclone=cyclone_regex,
+                               **time_info)
+                bdeck_regex = os.path.join(self.c_dict['BDECK_DIR'],
+                                           ss.doStringSub())
+
+                # capture wildcard values in template
+                bdeck_regex = bdeck_regex.replace('*', '(.*)')
+                bdeck_regex = bdeck_regex.replace('?', '(.)')
+
+                match = re.match(bdeck_regex, bdeck_file)
                 if match:
                     matches = match.groups()
-#                    self.logger.error("PATTERN:{}".format(pattern))
-#                    self.logger.error("MATCHES:{}".format(matches))
+#                    self.logger.debug("PATTERN:{}".format(bdeck_regex))
+#                    self.logger.debug("MATCHES:{}".format(matches))
                     tags = get_tags(self.c_dict['BDECK_TEMPLATE'])
                     match_count = 0
                     for tag in tags:
+                        # if wildcard is set for tag found, get value
+                        # if wildcard if found in template, increment index
                         if tag == 'basin' and basin == '??':
                             current_basin = matches[match_count]
                             match_count += 1
                         elif tag == 'cyclone' and cyclone == '*':
                             current_cyclone = int(matches[match_count])
                             match_count += 1
+                        elif tag == '*' or tag == '?':
+                            match_count += 1
 
-#            self.logger.error("BASIN: {} and CYCLONE: {}".format(current_basin,
+#            self.logger.debug("BASIN: {} and CYCLONE: {}".format(current_basin,
 #                                                                 current_cyclone))
 
             # create lists for deck files, put bdeck in list so it can be handled
@@ -498,12 +525,12 @@ class TcPairsWrapper(CommandBuilder):
 
             # get adeck files
             if self.c_dict['GET_ADECK']:
-                adeck_list = self.find_deck_files('A', matches, current_basin,
+                adeck_list = self.find_deck_files('A', current_basin,
                                                   current_cyclone, model_list,
                                                   time_info)
             # get edeck files
             if self.c_dict['GET_EDECK']:
-                edeck_list = self.find_deck_files('E', matches, current_basin,
+                edeck_list = self.find_deck_files('E', current_basin,
                                                   current_cyclone, model_list,
                                                   time_info)
 
@@ -528,17 +555,12 @@ class TcPairsWrapper(CommandBuilder):
             self.edeck = edeck_list
 
             # get output filename from template
-            # replacing * with info from adeck file
             ss = StringSub(self.logger,
                            self.c_dict['OUTPUT_TEMPLATE'],
                            basin=current_basin,
                            cyclone=current_cyclone,
                            **time_info)
             output_file = ss.doStringSub()
-
-            # replace * in output file name with info from adeck file
-            for m in matches:
-                output_file = output_file.replace('*', m, 1)
             self.outfile = output_file
 
             # build command and run tc_pairs
@@ -549,7 +571,7 @@ class TcPairsWrapper(CommandBuilder):
 
             self.build()
 
-    def find_deck_files(self, deck, matches, basin, cyclone, model_list,
+    def find_deck_files(self, deck, basin, cyclone, model_list,
                         time_info):
         deck_list = []
         # get matching adeck wildcard expression for first model
@@ -571,6 +593,7 @@ class TcPairsWrapper(CommandBuilder):
             if not deck_files:
                 continue
 
+            # there should only be 1 file that matches
             deck_file = deck_files[0]
 
             # if deck exists, add to list
