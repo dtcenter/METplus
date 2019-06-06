@@ -63,6 +63,23 @@ def multiple_replace(replace_dict, text):
     # For each match, look-up corresponding value in dictionary
     return regex.sub(lambda mo: replace_dict[mo.string[mo.start():mo.end()]], text)
 
+def get_tags(template):
+    i = 0
+    template_len = len(template)
+    tags = []
+    # loop through template looking for wildcard characters or tags: {init?fmt=%H}
+    while i < template_len:
+        if template[i] == TEMPLATE_IDENTIFIER_BEGIN:
+            end_i = template.find(TEMPLATE_IDENTIFIER_END, i)
+            tag = template[i+1:end_i]
+            identifier = tag.split('?')[0]
+            tags.append(identifier)
+            i = end_i
+        elif template[i] == '*' or template[i] == '?':
+            tags.append(template[i])
+
+        i += 1
+    return tags
 
 class StringSub:
     """
@@ -144,7 +161,7 @@ class StringSub:
             else:
                 padding = count
                 res = re.match("^"+c+"+(.*)", item)
-                if rest:
+                if res:
                     rest = res.group(1)
 
             # add formatted time
@@ -168,6 +185,7 @@ class StringSub:
             out_str += self.format_one_time_item(item, minutes, 'M')
             out_str += self.format_one_time_item(item, seconds, 'S')
             out_str += self.format_one_time_item(item, obj, 's')
+            out_str += self.format_one_time_item(item, obj, 'd')
 
         return out_str
 
@@ -209,10 +227,10 @@ class StringSub:
                 obj += self.shift_seconds
                 return self.format_hms(fmt, obj)
             # if string, format if possible
-            elif isinstance(obj, str) and fmt == '%s':
+            elif isinstance(obj, str) or isinstance(obj, unicode):
                 return '{}'.format(obj)
             else:
-                self.logger.error('Could not format item {} with format {}'.format(obj, fmt))
+                self.logger.error('Could not format item {} with format {} in {}'.format(obj, fmt, split_string))
                 exit(1)
 
 

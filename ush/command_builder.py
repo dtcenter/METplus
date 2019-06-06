@@ -50,7 +50,7 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
         self.env = os.environ.copy()
-        self.set_verbose(self.config.getstr('config', 'LOG_MET_VERBOSITY', '2'))
+        self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
         self.cmdrunner = CommandRunner(self.config, logger=self.logger)
         self.set_user_environment()
         self.c_dict = {}
@@ -81,9 +81,6 @@ class CommandBuilder:
 
     def set_debug(self, debug):
         self.debug = debug
-
-    def set_verbose(self, v):
-        self.verbose = v
 
     def add_arg(self, arg):
         """!Add generic argument to MET application command line

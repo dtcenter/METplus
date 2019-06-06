@@ -455,7 +455,7 @@ that reformat gridded data
                               'You must use a subclass')
             return None
 
-        cmd = self.app_path + " "
+        cmd = '{} -v {} '.format(self.app_path, self.verbose)
         for a in self.args:
             cmd += a + " "
 

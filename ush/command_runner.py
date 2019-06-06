@@ -133,6 +133,7 @@ class CommandRunner(object):
             #         ie. ncap2,  cmd = exe(the_exe)[the_args]
             # case 3. Runnng the command and logging the output to
             #         log_dest
+            the_exe = cmd[0]
             if run_inshell:
                 if log_theoutput:
                     log_dest = self.cmdlog_destination()
@@ -156,6 +157,7 @@ class CommandRunner(object):
         # run app unless DO_NOT_RUN_EXE is set to True
         if not self.config.getbool('config', 'DO_NOT_RUN_EXE', False):
             ret = run(cmd, **kwargs)
+            self.logger.debug('Finished running {}'.format(the_exe))
 
         return (ret, cmd)
 
