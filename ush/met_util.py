@@ -120,12 +120,33 @@ def check_for_deprecated_config(p, logger):
       'MTD_FCST_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'FCST_MTD_CONV_RADIUS'},
       'MTD_FCST_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'FCST_MTD_CONV_THRESH'},
       'MTD_OBS_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'OBS_MTD_CONV_RADIUS'},
-      'MTD_OBS_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'OBS_MTD_CONV_THRESH'}
+      'MTD_OBS_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'OBS_MTD_CONV_THRESH'},
+      'ADECK_TRACK_DATA_DIR' : { 'sec' : 'dir', 'alt' : 'TC_PAIRS_ADECK_INPUT_DIR'},
+      'BDECK_TRACK_DATA_DIR' : { 'sec' : 'dir', 'alt' : 'TC_PAIRS_BDECK_INPUT_DIR'},
+      'MISSING_VAL_TO_REPLACE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_MISSING_VAL_TO_REPLACE'},
+      'MISSING_VAL' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_MISSING_VAL'},
+      'TRACK_DATA_SUBDIR_MOD' : { 'sec' : 'dir', 'alt' : None},
+      'ADECK_FILE_PREFIX' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_ADECK_TEMPLATE'},
+      'BDECK_FILE_PREFIX' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_BDECK_TEMPLATE'},
+      'TOP_LEVEL_DIRS' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_READ_ALL_FILES'},
+      'TC_PAIRS_DIR' : { 'sec' : 'dir', 'alt' : 'TC_PAIRS_OUTPUT_DIR'},
+        'CYCLONE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_CYCLONE'},
+        'MODEL' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_MODEL'},
+        'STORM_ID' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_STORM_ID'},
+        'BASIN' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_BASIN'},
+        'STORM_NAME' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_STORM_NAME'},
+        'DLAND_FILE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_DLAND_FILE'},
+        'TRACK_TYPE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_REFORMAT_DECK'},
+        'FORECAST_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'TC_PAIRS_ADECK_TEMPLATE'},
+        'REFERENCE_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'TC_PAIRS_BDECK_TEMPLATE'},
+        'TRACK_DATA_MOD_FORCE_OVERWRITE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS'},
+        'TC_PAIRS_FORCE_OVERWRITE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS'}
       # TODO: need to use regex to check for items that have different numbers in them
       # i.e. FCST_1_FIELD_NAME or FCST_6_FIELD_NAME to FCST_PCP_COMBINE_1_FIELD_NAME, etc.
 # template       '' : { 'sec' : '', 'alt' : ''}
     }
 
+    # create list of errors and warnings to report for deprecated configs
     e_list = []
     w_list = []
     for old, v in deprecated_dict.iteritems():
