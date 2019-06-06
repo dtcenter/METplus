@@ -166,7 +166,7 @@ class StringSub:
             else:
                 padding = count
                 res = re.match("^"+c+"+(.*)", item)
-                if rest:
+                if res:
                     rest = res.group(1)
 
             # add formatted time
