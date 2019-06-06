@@ -20,6 +20,7 @@ from os.path import dirname, realpath
 
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
+from string_template_substitution import get_tags
 from gempak_to_cf_wrapper import GempakToCFWrapper
 # for run stand alone
 import produtil
@@ -135,7 +136,6 @@ def check_for_deprecated_config(p, logger):
       'TOP_LEVEL_DIRS' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_READ_ALL_FILES'},
       'TC_PAIRS_DIR' : { 'sec' : 'dir', 'alt' : 'TC_PAIRS_OUTPUT_DIR'},
         'CYCLONE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_CYCLONE'},
-        'MODEL' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_MODEL'},
         'STORM_ID' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_STORM_ID'},
         'BASIN' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_BASIN'},
         'STORM_NAME' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_STORM_NAME'},
@@ -172,6 +172,24 @@ def check_for_deprecated_config(p, logger):
                         e_list.append("[{}] {} should be removed".format(sec, old))
                     else:
                         e_list.append("[{}] {} should be replaced with {}".format(sec, old, alt))
+
+    # check all templates and error if any deprecated tags are used
+    # value of dict is replacement tag, set to None if no replacement exists
+    # deprecated tags: region (replace with basin)
+    deprecated_tags = { 'region' : 'basin' }
+    template_vars = p.keys('filename_templates')
+    for temp_var in template_vars:
+        template = p.getraw('filename_templates', temp_var)
+        tags = get_tags(template)
+
+        for depr_tag, replace_tag in deprecated_tags.items():
+            if depr_tag in tags:
+                e_msg = 'Deprecated tag {{{}}} found in {}.'.format(depr_tag,
+                                                                    temp_var)
+                if replace_tag is not None:
+                    e_msg += ' Replace with {{{}}}'.format(replace_tag)
+
+                e_list.append(e_msg)
 
     # if any warning exist, report them
     if w_list:
