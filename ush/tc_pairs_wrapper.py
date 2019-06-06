@@ -100,7 +100,7 @@ class TcPairsWrapper(CommandBuilder):
         c_dict['OUTPUT_BASE'] = self.config.getstr('dir', 'OUTPUT_BASE')
         c_dict['CYCLONE'] = util.getlist(
             self.config.getstr('config', 'TC_PAIRS_CYCLONE', ''))
-        c_dict['MODEL'] = util.getlist(self.config.getstr('config', 'TC_PAIRS_MODEL', ''))
+        c_dict['MODEL'] = util.getlist(self.config.getstr('config', 'MODEL', ''))
         c_dict['STORM_ID'] = util.getlist(
             self.config.getstr('config', 'TC_PAIRS_STORM_ID', ''))
         c_dict['BASIN'] = util.getlist(self.config.getstr('config', 'TC_PAIRS_BASIN', ''))
