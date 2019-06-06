@@ -72,11 +72,10 @@ class TcPairsWrapper(CommandBuilder):
         """
         c_dict = dict()
         c_dict['MISSING_VAL_TO_REPLACE'] = self.config.getstr('config',
-                                                                'MISSING_VAL_TO_REPLACE', '-99')
-        c_dict['MISSING_VAL'] = self.config.getstr('config', 'MISSING_VAL', '-9999')
-#        c_dict['TRACK_TYPE'] = self.config.getstr('config', 'TRACK_TYPE')
+                                                                'TC_PAIRS_MISSING_VAL_TO_REPLACE', '-99')
+        c_dict['MISSING_VAL'] = self.config.getstr('config', 'TC_PAIRS_MISSING_VAL', '-9999')
         c_dict['TC_PAIRS_CONFIG_FILE'] = self.config.getstr('config',
-                                                              'TC_PAIRS_CONFIG_FILE')
+                                                            'TC_PAIRS_CONFIG_FILE')
 
         c_dict['INIT_BEG'] = self.config.getraw('config', 'INIT_BEG')
         c_dict['INIT_END'] = self.config.getraw('config', 'INIT_END')
@@ -90,79 +89,60 @@ class TcPairsWrapper(CommandBuilder):
         c_dict['VALID_BEG'] = self.config.getstr('config', 'VALID_BEG')
         c_dict['VALID_END'] = self.config.getstr('config', 'VALID_END')
         c_dict['ADECK_DIR'] = \
-                self.config.getdir('ADECK_TRACK_DATA_DIR', '')
+                self.config.getdir('TC_PAIRS_ADECK_INPUT_DIR', '')
         c_dict['BDECK_DIR'] = \
-                self.config.getdir('BDECK_TRACK_DATA_DIR')
+                self.config.getdir('TC_PAIRS_BDECK_INPUT_DIR')
         c_dict['EDECK_DIR'] = \
-                self.config.getdir('EDECK_TRACK_DATA_DIR', '')
-#        c_dict['TRACK_DATA_SUBDIR_MOD'] = self.config.getdir(
-#            'TRACK_DATA_SUBDIR_MOD')
-#        c_dict['ADECK_FILE_PREFIX'] = self.config.getstr('config',
-#                                                           'ADECK_FILE_PREFIX')
-        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_PAIRS_DIR')
-#        c_dict['ADECK_FILE_PREFIX'] = self.config.getstr('config',
-#                                                           'ADECK_FILE_PREFIX')
-#        c_dict['BDECK_FILE_PREFIX'] = self.config.getstr('config',
-#                                                           'BDECK_FILE_PREFIX')
-        c_dict['TOP_LEVEL_DIRS'] = self.config.getbool('config',
-                                                        'TOP_LEVEL_DIRS')
+                self.config.getdir('TC_PAIRS_EDECK_INPUT_DIR', '')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_PAIRS_OUTPUT_DIR')
+        c_dict['READ_ALL_FILES'] = self.config.getbool('config',
+                                                        'TC_PAIRS_READ_ALL_FILES')
         c_dict['OUTPUT_BASE'] = self.config.getstr('dir', 'OUTPUT_BASE')
         c_dict['CYCLONE'] = util.getlist(
-            self.config.getstr('config', 'CYCLONE', ''))
-        c_dict['MODEL'] = util.getlist(self.config.getstr('config', 'MODEL', ''))
+            self.config.getstr('config', 'TC_PAIRS_CYCLONE', ''))
+        c_dict['MODEL'] = util.getlist(self.config.getstr('config', 'TC_PAIRS_MODEL', ''))
         c_dict['STORM_ID'] = util.getlist(
-            self.config.getstr('config', 'STORM_ID', ''))
-        c_dict['BASIN'] = util.getlist(self.config.getstr('config', 'BASIN', ''))
+            self.config.getstr('config', 'TC_PAIRS_STORM_ID', ''))
+        c_dict['BASIN'] = util.getlist(self.config.getstr('config', 'TC_PAIRS_BASIN', ''))
         c_dict['STORM_NAME'] = util.getlist(
-            self.config.getstr('config', 'STORM_NAME'))
-        c_dict['DLAND_FILE'] = self.config.getstr('config', 'DLAND_FILE')
+            self.config.getstr('config', 'TC_PAIRS_STORM_NAME'))
+        c_dict['DLAND_FILE'] = self.config.getstr('config', 'TC_PAIRS_DLAND_FILE')
 
         c_dict['ADECK_TEMPLATE'] = self.config.getraw('filename_templates',
                                                       'TC_PAIRS_ADECK_TEMPLATE',
                                                       '')
         c_dict['BDECK_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                       'TC_PAIRS_BDECK_TEMPLATE')
+                                                      'TC_PAIRS_BDECK_TEMPLATE')
         c_dict['EDECK_TEMPLATE'] = self.config.getraw('filename_templates',
                                                       'TC_PAIRS_EDECK_TEMPLATE',
                                                       '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                        'TC_PAIRS_OUTPUT_TEMPLATE')
-        c_dict['REFORMAT_ADECK'] = self.config.getbool('config',
-                                                       'TC_PAIRS_REFORMAT_ADECK',
+        c_dict['SKIP_REFACTOR'] = self.config.getbool('config',
+                                                      'TC_PAIRS_SKIP_IF_REFACTOR_EXISTS',
+                                                      False)
+        c_dict['SKIP_OUTPUT'] = self.config.getbool('config',
+                                                      'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS',
+                                                      False)
+        c_dict['REFORMAT_DECK'] = self.config.getbool('config',
+                                                       'TC_PAIRS_REFORMAT_DECK',
                                                        False)
-        c_dict['REFORMAT_BDECK'] = self.config.getbool('config',
-                                                       'TC_PAIRS_REFORMAT_BDECK',
-                                                       False)
-        c_dict['REFORMAT_EDECK'] = self.config.getbool('config',
-                                                       'TC_PAIRS_REFORMAT_EDECK',
-                                                       False)
-        c_dict['REFORMAT_ADECK_TYPE'] = \
-                self.config.getstr('config', 'TC_PAIRS_REFORMAT_ADECK_TYPE',
-                                   'SBU')
-        c_dict['REFORMAT_BDECK_TYPE'] = \
-                self.config.getstr('config', 'TC_PAIRS_REFORMAT_BDECK_TYPE',
-                                   'SBU')
-        c_dict['REFORMAT_EDECK_TYPE'] = \
-                self.config.getstr('config', 'TC_PAIRS_REFORMAT_EDECK_TYPE',
+        c_dict['REFORMAT_DECK_TYPE'] = \
+                self.config.getstr('config', 'TC_PAIRS_REFORMAT_TYPE',
                                    'SBU')
         c_dict['REFORMAT_DIR'] = self.config.getdir('TC_PAIRS_REFORMAT_DIR',
                          os.path.join(c_dict['OUTPUT_BASE'],'track_data_atcf'))
 
-        c_dict['GET_ADECK'] = True
-        if not c_dict['ADECK_TEMPLATE'] and not c_dict['ADECK_DIR']:
-            c_dict['GET_ADECK'] = False
-
-        c_dict['GET_EDECK'] = True
-        if not c_dict['EDECK_TEMPLATE'] and not c_dict['EDECK_DIR']:
-            c_dict['GET_EDECK'] = False
+        c_dict['GET_ADECK'] = True if c_dict['ADECK_TEMPLATE'] else False
+        c_dict['GET_EDECK'] = True if c_dict['EDECK_TEMPLATE'] else False
 
         return c_dict
 
     def run_all_times(self):
         """! Build up the command to invoke the MET tool tc_pairs.
         """
-        # if running in TOP_LEVEL_DIRS mode, call tc_pairs once and exit
-        if self.c_dict['TOP_LEVEL_DIRS']:
+        # if running in READ_ALL_FILES mode, call tc_pairs once and exit
+        if self.c_dict['READ_ALL_FILES']:
             # Set up the environment variable to be used in the tc_pairs Config
             self.set_env_vars(None)
             self.bdeck = [self.c_dict['BDECK_DIR']]
@@ -184,7 +164,15 @@ class TcPairsWrapper(CommandBuilder):
                 self.logger.error("Could not generate command")
                 return
 
-            self.build()
+            output_path = self.get_output_path()+'.tcst'
+            if os.path.isfile(output_path) and self.c_dict['SKIP_OUTPUT'] is True:
+                self.logger.debug('Skip running tc_pairs because '+\
+                                  'output file {} already exists'.format(output_path)+\
+                                  'Change TC_PAIRS_SKIP_IF_OUTPUT_EXISTS to False to '+\
+                                  'overwrite file')
+            else:
+                self.build()
+
             return True
 
         # use init begin as run time (start of the storm)
@@ -211,9 +199,8 @@ class TcPairsWrapper(CommandBuilder):
         # set output dir
         self.outdir = self.c_dict['OUTPUT_DIR']
 
-        # get items to filter adeck files
+        # get items to filter bdeck files
         # set each to default wildcard character unless specified in conf
-        # TODO: confirm I can assume basin will be 2 characters always
         basin_list = [ '??' ]
         cyclone_list = [ '*' ]
         model_list = [ '*' ]
@@ -378,8 +365,8 @@ class TcPairsWrapper(CommandBuilder):
             self.add_env_var('CYCLONE', "[]")
         else:
             # add storm month to each cyclone item if reformatting SBU
-            if self.c_dict['REFORMAT_ADECK'] and \
-               self.c_dict['REFORMAT_ADECK_TYPE'] == 'SBU':
+            if self.c_dict['REFORMAT_DECK'] and \
+               self.c_dict['REFORMAT_DECK_TYPE'] == 'SBU':
                 if time_info is None:
                     storm_month = self.c_dict['INIT_BEG'][4:6]
                 else:
@@ -439,7 +426,6 @@ class TcPairsWrapper(CommandBuilder):
         # set regex expressions for basin and cyclone if wildcard is used
         # cast cyclone value to integer if it is not a wildcard
         if cyclone != '*':
-            cyclone = int(cyclone)
             cyclone_regex = cyclone
         else:
             cyclone_regex = "([0-9]{2,4})"
@@ -497,8 +483,6 @@ class TcPairsWrapper(CommandBuilder):
                 match = re.match(bdeck_regex, bdeck_file)
                 if match:
                     matches = match.groups()
-#                    self.logger.debug("PATTERN:{}".format(bdeck_regex))
-#                    self.logger.debug("MATCHES:{}".format(matches))
                     tags = get_tags(self.c_dict['BDECK_TEMPLATE'])
                     match_count = 0
                     for tag in tags:
@@ -508,13 +492,10 @@ class TcPairsWrapper(CommandBuilder):
                             current_basin = matches[match_count]
                             match_count += 1
                         elif tag == 'cyclone' and cyclone == '*':
-                            current_cyclone = int(matches[match_count])
+                            current_cyclone = matches[match_count]
                             match_count += 1
                         elif tag == '*' or tag == '?':
                             match_count += 1
-
-#            self.logger.debug("BASIN: {} and CYCLONE: {}".format(current_basin,
-#                                                                 current_cyclone))
 
             # create lists for deck files, put bdeck in list so it can be handled
             # the same as a and e for reformatting even though it will always be
@@ -539,28 +520,26 @@ class TcPairsWrapper(CommandBuilder):
                                   'ADECK or EDECK files')
                 continue
 
-
             # reformat extra tropical cyclone files if necessary
-            if self.c_dict['REFORMAT_ADECK']:
+            if self.c_dict['REFORMAT_DECK']:
                 adeck_list = self.reformat_files(adeck_list, 'A', time_info)
-
-            if self.c_dict['REFORMAT_BDECK']:
                 bdeck_list = self.reformat_files(bdeck_list, 'B', time_info)
-
-            if self.c_dict['REFORMAT_EDECK']:
                 edeck_list = self.reformat_files(edeck_list, 'E', time_info)
 
             self.adeck = adeck_list
             self.bdeck = bdeck_list
             self.edeck = edeck_list
 
-            # get output filename from template
-            ss = StringSub(self.logger,
-                           self.c_dict['OUTPUT_TEMPLATE'],
-                           basin=current_basin,
-                           cyclone=current_cyclone,
-                           **time_info)
-            output_file = ss.doStringSub()
+            if self.c_dict['OUTPUT_TEMPLATE']:
+                # get output filename from template
+                ss = StringSub(self.logger,
+                               self.c_dict['OUTPUT_TEMPLATE'],
+                               basin=current_basin,
+                               cyclone=current_cyclone,
+                               **time_info)
+                output_file = ss.doStringSub()
+            else:
+                output_file = 'tc_pairs'
             self.outfile = output_file
 
             # build command and run tc_pairs
@@ -569,7 +548,14 @@ class TcPairsWrapper(CommandBuilder):
                 self.logger.error("Could not generate command")
                 return
 
-            self.build()
+            output_path = self.get_output_path()+'.tcst'
+            if os.path.isfile(output_path) and self.c_dict['SKIP_OUTPUT'] is True:
+                self.logger.debug('Skip running tc_pairs because '+\
+                                  'output file {} already exists'.format(output_path)+\
+                                  'Change TC_PAIRS_SKIP_IF_OUTPUT_EXISTS to False to '+\
+                                  'overwrite file')
+            else:
+                self.build()
 
     def find_deck_files(self, deck, basin, cyclone, model_list,
                         time_info):
@@ -615,9 +601,16 @@ class TcPairsWrapper(CommandBuilder):
         for deck in file_list:
             outfile = deck.replace(deck_dir,
                                    reformat_dir)
-            self.logger.debug('Reformatting {} to {}'.format(deck, outfile))
-            self.read_modify_write_file(deck, storm_month,
-                                        missing_values, outfile)
+            if os.path.isfile(outfile) and self.c_dict['SKIP_REFORMAT'] is True:
+                self.logger.debug('Skip processing {} because '.format(deck) +\
+                                  'reformatted file already exists. Change '+\
+                                  'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS to False to '+\
+                                  'overwrite file')
+            else:
+                self.logger.debug('Reformatting {} to {}'.format(deck, outfile))
+                self.read_modify_write_file(deck, storm_month,
+                                            missing_values, outfile)
+
             outfiles.append(outfile)
 
         return outfiles
@@ -695,7 +688,7 @@ class TcPairsWrapper(CommandBuilder):
         with open(in_csvfile) as csvfile:
 
             in_file_reader = csv.reader(csvfile)
-            # pylint:disable=unused-variable
+
             # enumerate returns a tuple but only the row is useful
             # for this application.  Ignoring 'index' is reasonable.
             for index, row in enumerate(in_file_reader):
