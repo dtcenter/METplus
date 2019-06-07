@@ -155,6 +155,49 @@ name "sec:New-for-METplus"
 \begin_layout Standard
 
 \series bold
+METplus Wrappers v2.1.1 Release Notes:
+\end_layout
+
+\begin_layout Standard
+General:
+\end_layout
+
+\begin_layout Itemize
+Fixed bug in filename templates where a file with the same number of characters
+ in between tags are considered a valid file even if the characters differ,
+ i.e.
+ template = {valid?fmt=%Y}_dog_{valid?fmt%m} would treat both 2017_dog_02
+ and 2017_cat_02 as valid files when it should only consider 2017_dog_02
+ to be a valid file.
+ This only applies when using file windows to determine which files are
+ vaild (See 
+\begin_inset Quotes eld
+\end_inset
+
+Using Windows to Find Valid Files
+\begin_inset Quotes erd
+\end_inset
+
+ in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Itemize
+Removed requirement for non-MET executables to exist on the system for wrappers
+ that don't need to use them.
+ For example, if a use case doesn't use wgrib2, setting the path to the
+ executable correctly is not required.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
 METplus Wrappers v2.1 Release Notes:
 \end_layout
 
