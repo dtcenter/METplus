@@ -13,7 +13,6 @@ from grid_stat_wrapper import GridStatWrapper
 import met_util as util
 import time_util
 from met_util import FieldObj
-from task_info import TaskInfo
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #

@@ -12,7 +12,6 @@ import config_metplus
 from pcp_combine_wrapper import PcpCombineWrapper
 import time_util
 import met_util as util
-from task_info import TaskInfo
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
