@@ -237,7 +237,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         # Set the environment variables
         self.add_env_var(b'MODEL', str(self.c_dict['MODEL']))
 
-        regrid_to_grid = str(self.c_dict['REGRID_TO_GRID'])
+        regrid_to_grid = self.c_dict['REGRID_TO_GRID']
         self.add_env_var(b'REGRID_TO_GRID', regrid_to_grid)
 #        os.environ['REGRID_TO_GRID'] = regrid_to_grid
 
