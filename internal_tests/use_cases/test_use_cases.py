@@ -215,7 +215,7 @@ def compare_output_files(files_a, files_b, a_dir, b_dir):
 
 def main():
     run_a = False
-    run_b = False
+    run_b = True
 
     metplus_home = "/d1/mccabe/METplus"
     use_case_dir = os.path.join(metplus_home,"parm/use_cases")
