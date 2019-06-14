@@ -101,21 +101,21 @@ class PB2NCWrapper(CommandBuilder):
             self.config.getstr('config', 'PB2NC_TIME_SUMMARY_TYPES'))
 
         c_dict['OBS_WINDOW_BEGIN'] = \
-          self.config.getint('config', 'PB2NC_WINDOW_BEGIN',
-                             self.config.getint('config',
+          self.config.getseconds('config', 'PB2NC_WINDOW_BEGIN',
+                             self.config.getseconds('config',
                                                 'OBS_WINDOW_BEGIN', 0))
         c_dict['OBS_WINDOW_END'] = \
-          self.config.getint('config', 'PB2NC_WINDOW_END',
-                             self.config.getint('config',
+          self.config.getseconds('config', 'PB2NC_WINDOW_END',
+                             self.config.getseconds('config',
                                                 'OBS_WINDOW_END', 0))
 
         c_dict['OBS_FILE_WINDOW_BEGIN'] = \
-          self.config.getint('config', 'PB2NC_FILE_WINDOW_BEGIN',
-                             self.config.getint('config',
+          self.config.getseconds('config', 'PB2NC_FILE_WINDOW_BEGIN',
+                             self.config.getseconds('config',
                                                 'OBS_FILE_WINDOW_BEGIN', 0))
         c_dict['OBS_FILE_WINDOW_END'] = \
-          self.config.getint('config', 'PB2NC_FILE_WINDOW_END',
-                             self.config.getint('config',
+          self.config.getseconds('config', 'PB2NC_FILE_WINDOW_END',
+                             self.config.getseconds('config',
                                                 'OBS_FILE_WINDOW_END', 0))
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True

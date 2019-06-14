@@ -5,7 +5,9 @@ pytest_rel_path="internal_tests/pytests"
 ush_dir=${script_dir%"$pytest_rel_path"}ush
 export PYTHONPATH=$ush_dir:$PYTHONPATH
 
-cd grid_stat
+cd config
+pytest -c ../minimum_pytest.eyewall.conf
+cd ../grid_stat
 pytest -c ../minimum_pytest.eyewall.conf
 cd ../logging
 pytest -c ../minimum_pytest.eyewall.conf

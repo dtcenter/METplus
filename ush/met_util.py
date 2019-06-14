@@ -265,12 +265,12 @@ def loop_over_times_and_call(config, processes):
         time_format = config.getstr('config', 'INIT_TIME_FMT')
         start_t = config.getraw('config', 'INIT_BEG')
         end_t = config.getraw('config', 'INIT_END')
-        time_interval = config.getint('config', 'INIT_INCREMENT')
+        time_interval = config.getseconds('config', 'INIT_INCREMENT')
     else:
         time_format = config.getstr('config', 'VALID_TIME_FMT')
         start_t = config.getraw('config', 'VALID_BEG')
         end_t = config.getraw('config', 'VALID_END')
-        time_interval = config.getint('config', 'VALID_INCREMENT')
+        time_interval = config.getseconds('config', 'VALID_INCREMENT')
 
     if time_interval < 60:
         config.logger.error("time_interval parameter must be "

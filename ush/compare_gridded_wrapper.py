@@ -49,28 +49,28 @@ that reformat gridded data
         c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
 
         c_dict['FCST_WINDOW_BEGIN'] = \
-            self.config.getint('config', 'FCST_WINDOW_BEGIN', 0)
+            self.config.getseconds('config', 'FCST_WINDOW_BEGIN', 0)
         c_dict['FCST_WINDOW_END'] = \
-            self.config.getint('config', 'FCST_WINDOW_END', 0)
+            self.config.getseconds('config', 'FCST_WINDOW_END', 0)
 
         c_dict['OBS_WINDOW_BEGIN'] = \
-            self.config.getint('config', 'OBS_WINDOW_BEGIN', 0)
+            self.config.getseconds('config', 'OBS_WINDOW_BEGIN', 0)
         c_dict['OBS_WINDOW_END'] = \
-            self.config.getint('config', 'OBS_WINDOW_END', 0)
+            self.config.getseconds('config', 'OBS_WINDOW_END', 0)
 
         # if file window is not set, use window values
         c_dict['FCST_FILE_WINDOW_BEGIN'] = \
-            self.config.getint('config', 'FCST_FILE_WINDOW_BEGIN',
+            self.config.getseconds('config', 'FCST_FILE_WINDOW_BEGIN',
                                c_dict['FCST_WINDOW_BEGIN'])
         c_dict['FCST_FILE_WINDOW_END'] = \
-            self.config.getint('config', 'FCST_FILE_WINDOW_END',
+            self.config.getseconds('config', 'FCST_FILE_WINDOW_END',
                                c_dict['FCST_WINDOW_END'])
 
         c_dict['OBS_FILE_WINDOW_BEGIN'] = \
-            self.config.getint('config', 'OBS_FILE_WINDOW_BEGIN',
+            self.config.getseconds('config', 'OBS_FILE_WINDOW_BEGIN',
                                c_dict['OBS_WINDOW_BEGIN'])
         c_dict['OBS_FILE_WINDOW_END'] = \
-            self.config.getint('config', 'OBS_FILE_WINDOW_END',
+            self.config.getseconds('config', 'OBS_FILE_WINDOW_END',
                                c_dict['OBS_WINDOW_END'])
 
         c_dict['FCST_PROB_THRESH'] = '==0.1'

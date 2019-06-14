@@ -3,6 +3,7 @@
 from __future__ import (print_function, division)
 
 import os
+import re
 
 class ConfigWrapper:
     def __init__(self, p, logger):
@@ -84,7 +85,7 @@ class ConfigWrapper:
             if self.logger:
                 self.logger.error(msg)
             else:
-                print(msg)
+                print('ERROR: {}'.format(msg))
             exit(1)
 
         # print debug message saying default value was used
@@ -93,7 +94,7 @@ class ConfigWrapper:
         if self.logger:
             self.logger.debug(msg)
         else:
-            print(msg)
+            print('DEBUG: {}'.format(msg))
 
         # set conf with default value so all defaults can be added to
         #  the final conf and warning only appears once per conf item
@@ -123,7 +124,7 @@ class ConfigWrapper:
             if self.logger:
                 self.logger.error(msg)
             else:
-                print(msg)
+                print('ERROR: {}'.format(msg))
             exit(1)
 
         exe_path = self.p.getexe(exe_name)
@@ -134,7 +135,7 @@ class ConfigWrapper:
             if self.logger:
                 self.logger.error(msg)
             else:
-                print(msg)
+                print('ERROR: {}'.format(msg))
             exit(1)
 
         # set config item to full path to exe and return full path
@@ -153,7 +154,7 @@ class ConfigWrapper:
             if self.logger:
                 self.logger.error(msg)
             else:
-                print(msg)
+                print('ERROR: {}'.format(msg))
             exit(1)
 
         return dir_path
@@ -187,5 +188,36 @@ class ConfigWrapper:
             return self.p.getfloat(sec, name)
         # config item was not found
 
+        self.check_default(sec, name, default_val)
+        return default_val
+
+    def getseconds(self, sec, name, default_val=None):
+        if self.p.has_option(sec, name):
+            # convert value to seconds
+            # Valid options match format 3600, 3600S, 60M, or 1H
+            value = self.p.getstr(sec, name)
+            regex_and_multiplier = { '(-*)(\d+)S' : 1,
+                                     '(-*)(\d+)M' : 60,
+                                     '(-*)(\d+)H' : 3600,
+                                     '(-*)(\d+)' : 1 }
+            for reg, mult in regex_and_multiplier.items():
+                match = re.match(reg, value)
+                if match:
+                    if match.group(1) == '-':
+                        mult = mult * -1
+                    return int(match.group(2)) * mult
+
+            # if value is not in an expected format, error and exit
+            msg = '[{}] {} does not match expected format. '.format(sec, name) +\
+              'Valid options match 3600, 3600S, 60M, or 1H'
+            if self.logger:
+                self.logger.error(msg)
+            else:
+                print('ERROR: {}'.format(msg))
+
+            exit(1)
+
+
+        # config item was not found
         self.check_default(sec, name, default_val)
         return default_val
