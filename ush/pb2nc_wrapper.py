@@ -290,10 +290,7 @@ class PB2NCWrapper(CommandBuilder):
             self.logger.error('No app path specified. You must use a subclass')
             return None
 
-        cmd = self.app_path + " "
-
-        if self.verbose != -1:
-            cmd += "-v "+str(self.verbose) + " "
+        cmd = '{} -v {} '.format(self.app_path, self.verbose)
 
         for a in self.args:
             cmd += a + " "

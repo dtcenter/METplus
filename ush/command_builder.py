@@ -150,8 +150,13 @@ class CommandBuilder:
         """
         out = ""
         all_vars = var_list + self.config.keys('user_env_vars')
+        shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
         for v in all_vars:
-            line = 'export ' + v + '="' + self.env[v].replace('"', '\\"') + '"'
+            if shell == 'csh':
+                line = 'setenv ' + v + ' "' + self.env[v].replace('"', '"\\""') + '"'
+            else:
+                line = 'export ' + v + '="' + self.env[v].replace('"', '\\"') + '"'
+
             out += line + '; '
         self.logger.debug(out)
 
@@ -360,10 +365,7 @@ class CommandBuilder:
                               'You must use a subclass')
             return None
 
-        cmd = self.app_path + " "
-
-        if self.verbose != -1:
-            cmd += "-v " + str(self.verbose) + " "
+        cmd = '{} -v {} '.format(self.app_path, self.verbose)
 
         for a in self.args:
             cmd += a + " "

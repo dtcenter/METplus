@@ -38,7 +38,7 @@ class ExampleWrapper(CommandBuilder):
         self.c_dict = self.create_c_dict()
                         
     def create_c_dict(self):
-        # TODO: change to super() for python 3
+        # change to super() for python 3
         # c_dict = super() 
         c_dict = super(CommandBuilder, self).create_c_dict()
         # get values from config object and set them to be accessed by wrapper

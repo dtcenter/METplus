@@ -414,7 +414,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             self.logger.error("No app path specified. You must use a subclass")
             return None
 
-        cmd = self.app_path + " "
+        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+
         for a in self.args:
             cmd += a + " "
 
@@ -463,7 +464,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             if self.field_level != "":
                 cmd += " level=\""+self.field_level+"\";"
             if self.field_extra != "":
-                # TODO: do we need to change ; to \;
                 cmd += ' ' + self.field_extra
             cmd += "'"
 
@@ -494,9 +494,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         if self.logfile != "":
             cmd += " -log "+self.logfile
-
-        if self.verbose != -1:
-            cmd += " -v "+str(self.verbose)
 
         if self.compress != -1:
             cmd += " -compress "+str(self.compress)

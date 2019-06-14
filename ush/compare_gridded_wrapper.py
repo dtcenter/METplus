@@ -278,8 +278,6 @@ that reformat gridded data
                         thresh_str += "thresh_hi=" + str(number) + "; "
 
                     prob_cat_thresh = self.c_dict[d_type + '_PROB_THRESH']
-                    # TODO: replace with better check for data type to remove path
-                    # untested, need NetCDF prob fcst data
                     if self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF':
                         field = "{ name=\"" + v_name + "\"; level=\"" + \
                                 level + "\"; prob=TRUE; cat_thresh=[" + prob_cat_thresh + "];}"

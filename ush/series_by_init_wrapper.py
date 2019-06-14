@@ -767,11 +767,6 @@ class SeriesByInitWrapper(CommandBuilder):
 
                         data_plane_command = ''.join(
                             data_plane_command_parts)
-                        #TODO after testing remove these commented out lines
-                        #data_plane_command = \
-                        #    batchexe('sh')[
-                        #        '-c', data_plane_command].err2out()
-                        #run(data_plane_command)
 
                         # Since this wrapper is not using the CommandBuilder
                         # to build the cmd, we need to add the met verbosity
@@ -791,10 +786,7 @@ class SeriesByInitWrapper(CommandBuilder):
                                          plot_data_plane_output_fname,
                                          ' ', png_fname]
                         convert_command = ''.join(convert_parts)
-                        #TODO after testing, remove these commented out lines
-                        #convert_command = \
-                        #    batchexe('sh')['-c', convert_command].err2out()
-                        #run(convert_command)
+
                         (ret, cmd) = self.cmdrunner.run_cmd(convert_command, ismetcmd=False)
 
     def get_storms_for_init(self, cur_init, out_dir_base):

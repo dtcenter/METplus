@@ -30,8 +30,6 @@ class MTDWrapper(ModeWrapper):
         self.obs_file = None
         self.c_dict = self.create_c_dict()
 
-
-    # TODO : Set defaults for all items that need them
     def create_c_dict(self):
         c_dict = super(ModeWrapper, self).create_c_dict()
 
@@ -142,8 +140,6 @@ class MTDWrapper(ModeWrapper):
                 time_info = time_util.ti_calculate(input_dict)
                 tasks.append(time_info)
 
-            # TODO: implement mode to keep fcst lead constant and increment init/valid time
-            # loop from valid time to valid time + offset by step, set lead and find files
             for current_task in tasks:
                 # call find_model/obs as needed
                 model_file = self.find_model(current_task, v)
@@ -335,7 +331,8 @@ class MTDWrapper(ModeWrapper):
                               You must use a subclass")
             return None
 
-        cmd = self.app_path + " "
+        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+
         for a in self.args:
             cmd += a + " "
 
@@ -360,10 +357,6 @@ class MTDWrapper(ModeWrapper):
 
         if self.outdir != "":
             cmd += self.outdir + ' '
-
-        # TODO: is logfile and verbose ever set?
-#        if self.logfile != "":
-#            cmd += " -log "+self.logfile
 
         if self.verbose != -1:
             cmd += "-v "+str(self.verbose) + " "

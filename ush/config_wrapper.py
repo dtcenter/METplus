@@ -4,20 +4,16 @@ from __future__ import (print_function, division)
 
 import os
 
-# TODO: Inherit from ProdConfig and call super method for produtil calls
 class ConfigWrapper:
     def __init__(self, p, logger):
         self.p = p
         self.logger = logger
 
-
     def has_option(self, sec, opt):
         return self.p.has_option(sec, opt)
 
-
     def has_section(self, sec):
         return self.p.has_option(sec)
-
 
     def set(self, sec, key, value):
         self.p.set(sec, key, value)
@@ -25,18 +21,14 @@ class ConfigWrapper:
     def keys(self, sec):
         return self.p.keys(sec)
 
-
     def sections(self):
         return self.p.sections()
-
 
     def add_section(self, name):
         return self.p.add_section(name)
 
-
     def log(self, sublog):
         return self.p.log(sublog)
-
 
     def getraw(self, sec, opt, default='', count=0):
         """ parse parameter and replace any existing parameters
@@ -84,7 +76,6 @@ class ConfigWrapper:
 
         return out_template
 
-
     # report error and exit if default is not set
     # helper function for get methods
     def check_default(self, sec, name, default):
@@ -124,7 +115,6 @@ class ConfigWrapper:
 
         return None
 
-
     # wrap produtil exe with checks to see if option is set and if exe actually exists
     def getexe(self, exe_name):
 
@@ -151,7 +141,6 @@ class ConfigWrapper:
         self.p.set('exe', exe_name, full_exe_path)
         return full_exe_path
 
-
     def getdir(self, dir_name, default_val=None):
         if not self.p.has_option('dir', dir_name):
             self.check_default('dir', dir_name, default_val)
@@ -169,7 +158,6 @@ class ConfigWrapper:
 
         return dir_path
 
-
     def getstr(self, sec, name, default_val=None):
         if self.p.has_option(sec, name):
             return self.p.getstr(sec, name)
@@ -177,7 +165,6 @@ class ConfigWrapper:
 
         self.check_default(sec, name, default_val)
         return default_val
-
 
     def getbool(self, sec, name, default_val=None):
         if self.p.has_option(sec, name):
@@ -187,7 +174,6 @@ class ConfigWrapper:
         self.check_default(sec, name, default_val)
         return default_val
 
-
     def getint(self, sec, name, default_val=None):
         if self.p.has_option(sec, name):
             return self.p.getint(sec, name)
@@ -195,7 +181,6 @@ class ConfigWrapper:
 
         self.check_default(sec, name, default_val)
         return default_val
-
 
     def getfloat(self, sec, name, default_val=None):
         if self.p.has_option(sec, name):

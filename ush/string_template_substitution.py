@@ -191,7 +191,6 @@ class StringSub:
 
 
     def handleFormatDelimiter(self, split_string, idx, match, replacement_dict):
-        # TODO: how to handle %M vs. %H%M, all minutes if just M?
         # Check for formatting/length request by splitting on
         # FORMATTING_VALUE_DELIMITER
         # split_string[1] holds the formatting/length

@@ -31,6 +31,8 @@ from config_wrapper import ConfigWrapper
 """!@namespace met_util
  @brief Provides  Utility functions for METplus.
 """
+# list of compression extensions that are handled by METplus
+valid_extensions = [ '.gz', '.bz2', '.zip' ]
 
 def check_for_deprecated_config(p, logger):
     deprecated_dict = {
@@ -118,14 +120,14 @@ def check_for_deprecated_config(p, logger):
       'MTD_FCST_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'FCST_MTD_CONV_RADIUS'},
       'MTD_FCST_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'FCST_MTD_CONV_THRESH'},
       'MTD_OBS_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'OBS_MTD_CONV_RADIUS'},
-       'MTD_OBS_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'OBS_MTD_CONV_THRESH'},
-       'RM_EXE' : { 'sec' : 'exe', 'alt' : 'RM'},
-       'CUT_EXE' : { 'sec' : 'exe', 'alt' : 'CUT'},
-       'TR_EXE' : { 'sec' : 'exe', 'alt' : 'TR'},
-       'NCAP2_EXE' : { 'sec' : 'exe', 'alt' : 'NCAP2'},
-       'CONVERT_EXE' : { 'sec' : 'exe', 'alt' : 'CONVERT'},
-       'NCDUMP_EXE' : { 'sec' : 'exe', 'alt' : 'NCDUMP'},
-       'EGREP_EXE' : { 'sec' : 'exe', 'alt' : 'EGREP'},
+      'MTD_OBS_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'OBS_MTD_CONV_THRESH'},
+      'RM_EXE' : { 'sec' : 'exe', 'alt' : 'RM'},
+      'CUT_EXE' : { 'sec' : 'exe', 'alt' : 'CUT'},
+      'TR_EXE' : { 'sec' : 'exe', 'alt' : 'TR'},
+      'NCAP2_EXE' : { 'sec' : 'exe', 'alt' : 'NCAP2'},
+      'CONVERT_EXE' : { 'sec' : 'exe', 'alt' : 'CONVERT'},
+      'NCDUMP_EXE' : { 'sec' : 'exe', 'alt' : 'NCDUMP'},
+      'EGREP_EXE' : { 'sec' : 'exe', 'alt' : 'EGREP'},
       'ADECK_TRACK_DATA_DIR' : { 'sec' : 'dir', 'alt' : 'TC_PAIRS_ADECK_INPUT_DIR'},
       'BDECK_TRACK_DATA_DIR' : { 'sec' : 'dir', 'alt' : 'TC_PAIRS_BDECK_INPUT_DIR'},
       'MISSING_VAL_TO_REPLACE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_MISSING_VAL_TO_REPLACE'},
@@ -135,20 +137,20 @@ def check_for_deprecated_config(p, logger):
       'BDECK_FILE_PREFIX' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_BDECK_TEMPLATE'},
       'TOP_LEVEL_DIRS' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_READ_ALL_FILES'},
       'TC_PAIRS_DIR' : { 'sec' : 'dir', 'alt' : 'TC_PAIRS_OUTPUT_DIR'},
-        'CYCLONE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_CYCLONE'},
-        'STORM_ID' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_STORM_ID'},
-        'BASIN' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_BASIN'},
-        'STORM_NAME' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_STORM_NAME'},
-        'DLAND_FILE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_DLAND_FILE'},
-        'TRACK_TYPE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_REFORMAT_DECK'},
-        'FORECAST_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'TC_PAIRS_ADECK_TEMPLATE'},
-        'REFERENCE_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'TC_PAIRS_BDECK_TEMPLATE'},
-        'TRACK_DATA_MOD_FORCE_OVERWRITE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS'},
-        'TC_PAIRS_FORCE_OVERWRITE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS'}
+       'CYCLONE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_CYCLONE'},
+       'STORM_ID' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_STORM_ID'},
+       'BASIN' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_BASIN'},
+       'STORM_NAME' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_STORM_NAME'},
+       'DLAND_FILE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_DLAND_FILE'},
+       'TRACK_TYPE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_REFORMAT_DECK'},
+       'FORECAST_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'TC_PAIRS_ADECK_TEMPLATE'},
+       'REFERENCE_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'TC_PAIRS_BDECK_TEMPLATE'},
+       'TRACK_DATA_MOD_FORCE_OVERWRITE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS'},
+       'TC_PAIRS_FORCE_OVERWRITE' : { 'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS'}
 
-      # TODO: need to use regex to check for items that have different numbers in them
+      # need to use regex to check for items that have different numbers in them
       # i.e. FCST_1_FIELD_NAME or FCST_6_FIELD_NAME to FCST_PCP_COMBINE_1_FIELD_NAME, etc.
-# template       '' : { 'sec' : '', 'alt' : ''}
+      # template       '' : { 'sec' : '', 'alt' : ''}
     }
 
     # create list of errors and warnings to report for deprecated configs
@@ -638,26 +640,6 @@ def get_logger(config, sublog=None):
     if not config.has_option('config','LOG_METPLUS'):
         set_logvars(config)
     metpluslog = config.getstr('config', 'LOG_METPLUS', '')
-
-
-    # TODO: Remove LOG_OUTPUT control variable.
-    # This was the yes/no control variable from the first cycle logging
-    # implementation to turn logging on or off. Instead LOG_METPLUS
-    # is being used as the on/off switch, this is not being used.
-    # I'm keeping it here until after the group review, in case it comes up
-    # that folks want to define such a variable in the conf file.
-    # If not used, Delete this comment and commented out code block below
-    # and you are done, nothing else needs to be changed elsewhere
-    # in the code base.
-    #if config.getbool('config','LOG_OUTPUT',default=False,badtypeok=True):
-    #    if not metpluslog:
-    #        logger.warning('LOG_OUTPUT in conf file is yes, Looks like you want to log your output ?')
-    #        logger.warning('However, LOG_METPLUS is not a valid file, I can not log your output.')
-    #    else:
-    #        logger.info('LOG_OUTPUT in your conf file is set to yes')
-    #else:
-    #    logger.info('LOG_OUTPUT in your conf file is set to no or not set.')
-    #if metpluslog and config.getbool('config', 'LOG_OUTPUT', default=False, badtypeok=True):
 
     if metpluslog:
         # It is possible that more path, other than just LOG_DIR, was added
@@ -1357,8 +1339,6 @@ class FieldObj(object):
                 'obs_name', 'obs_level', 'obs_extra', 'obs_thresh', \
                 'ens_name', 'ens_level', 'ens_extra', 'ens_thresh', 'index'
 
-
-# TODO: Check if other characters are only <>!=&|gelt.[0-9] (?)
 def starts_with_comparison(thresh_string):
     """ Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le
         Args:
@@ -1864,8 +1844,7 @@ def preprocess_file(filename, data_type, config):
         return None
 
     stage_dir = config.getdir('STAGING_DIR')
-    # TODO: move valid_extensions so it can be used by more than one function
-    valid_extensions = [ '.gz', '.bz2', '.zip' ]
+
     if os.path.isfile(filename):
         for ext in valid_extensions:
             if filename.endswith(ext):
