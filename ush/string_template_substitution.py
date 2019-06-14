@@ -63,6 +63,23 @@ def multiple_replace(replace_dict, text):
     # For each match, look-up corresponding value in dictionary
     return regex.sub(lambda mo: replace_dict[mo.string[mo.start():mo.end()]], text)
 
+def get_tags(template):
+    i = 0
+    template_len = len(template)
+    tags = []
+    # loop through template looking for wildcard characters or tags: {init?fmt=%H}
+    while i < template_len:
+        if template[i] == TEMPLATE_IDENTIFIER_BEGIN:
+            end_i = template.find(TEMPLATE_IDENTIFIER_END, i)
+            tag = template[i+1:end_i]
+            identifier = tag.split('?')[0]
+            tags.append(identifier)
+            i = end_i
+        elif template[i] == '*' or template[i] == '?':
+            tags.append(template[i])
+
+        i += 1
+    return tags
 
 class StringSub:
     """
@@ -144,7 +161,7 @@ class StringSub:
             else:
                 padding = count
                 res = re.match("^"+c+"+(.*)", item)
-                if rest:
+                if res:
                     rest = res.group(1)
 
             # add formatted time
@@ -168,12 +185,12 @@ class StringSub:
             out_str += self.format_one_time_item(item, minutes, 'M')
             out_str += self.format_one_time_item(item, seconds, 'S')
             out_str += self.format_one_time_item(item, obj, 's')
+            out_str += self.format_one_time_item(item, obj, 'd')
 
         return out_str
 
 
     def handleFormatDelimiter(self, split_string, idx, match, replacement_dict):
-        # TODO: how to handle %M vs. %H%M, all minutes if just M?
         # Check for formatting/length request by splitting on
         # FORMATTING_VALUE_DELIMITER
         # split_string[1] holds the formatting/length
@@ -209,10 +226,10 @@ class StringSub:
                 obj += self.shift_seconds
                 return self.format_hms(fmt, obj)
             # if string, format if possible
-            elif isinstance(obj, str) and fmt == '%s':
+            elif isinstance(obj, str) or isinstance(obj, unicode):
                 return '{}'.format(obj)
             else:
-                self.logger.error('Could not format item {} with format {}'.format(obj, fmt))
+                self.logger.error('Could not format item {} with format {} in {}'.format(obj, fmt, split_string))
                 exit(1)
 
 
@@ -625,10 +642,21 @@ class StringExtract:
         match_dict = {}
         valid_shift = 0
         fmt_len = 0
+        between_template = ''
+        between_filename = ''
 
         while i < template_len:
             # if a tag is found, split contents and extract time
             if self.template[i] == TEMPLATE_IDENTIFIER_BEGIN:
+                # check that text between tags for template and filename
+                #  are the same, return None if they differ
+                #  reset both variables if they are the same
+                if between_template != between_filename:
+                    return None
+                else:
+                    between_template = ''
+                    between_filename = ''
+
                 end_i = self.template.find(TEMPLATE_IDENTIFIER_END, i)
                 tag = self.template[i+1:end_i]
                 sections = tag.split('?')
@@ -668,8 +696,19 @@ class StringExtract:
                 i = end_i + 1
                 str_i += fmt_len
             else:
+                # keep track of text in between tags to ensure that it matches
+                # the template, do not return a time if it does not match
+                between_template += self.template[i]
+                between_filename += self.full_str[str_i]
+
+                # increment indices for template and full_str
                 i += 1
                 str_i += 1
+
+        # check again if between text matches at the end of the loop to
+        # ensure that no text after the last template differs
+        if between_template != between_filename:
+            return None
 
         # combine common items and get datetime
         output_dict = {}
@@ -741,5 +780,4 @@ class StringExtract:
         output_dict['offset'] = offset
 
         time_info = time_util.ti_calculate(output_dict)
-#        print(time_info)
         return time_info

@@ -38,7 +38,7 @@ def test_add_common_items_to_dictionary():
     conf = metplus_config()
     dictionary = dict()
     util.add_common_items_to_dictionary(conf, dictionary)
-    assert(dictionary['WGRIB2'] == conf.getexe('WGRIB2'))
+    assert(dictionary['WGRIB2_EXE'] == conf.getexe('WGRIB2'))
 
 
 def test_threshold_gt():
@@ -211,7 +211,7 @@ def test_preprocess_file_gz():
     assert(stagepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_bz2():
-    conf = metplus_config()
+    conf = ConfigWrapper(metplus_config(), None)
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile2.txt.bz2"
     stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile2.txt"
@@ -219,7 +219,7 @@ def test_preprocess_file_bz2():
     assert(stagepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_zip():
-    conf = metplus_config()
+    conf = ConfigWrapper(metplus_config(), None)
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile3.txt.zip"
     stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile3.txt"
@@ -227,14 +227,14 @@ def test_preprocess_file_zip():
     assert(stagepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_unzipped():
-    conf = metplus_config()
+    conf = ConfigWrapper(metplus_config(), None)
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile4.txt"
     outpath = util.preprocess_file(filepath, None, conf)
     assert(filepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_none():
-    conf = metplus_config()
+    conf = ConfigWrapper(metplus_config(), None)
     outpath = util.preprocess_file(None, None, conf)
     assert(outpath is None)
 

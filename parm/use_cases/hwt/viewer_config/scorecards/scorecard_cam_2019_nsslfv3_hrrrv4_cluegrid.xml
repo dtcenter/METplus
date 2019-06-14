@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+  <plot_spec>
+    <connection>
+      <host>mysql_mv</host>
+      <database>mv_hwt_2019</database>
+      <user>root</user>
+      <password>mvuser</password>
+    </connection>
+
+    <rscript>/usr/bin/Rscript</rscript>
+   <folders>
+      <r_tmpl>/METViewer/R_tmpl</r_tmpl>
+      <r_work>/METViewer/R_work</r_work>
+      <plots>/raid/efp/se2019/ftp/dtc/metviewer/plots/</plots>
+      <data>/raid/efp/se2019/ftp/dtc/metviewer/data/</data>
+      <scripts>/raid/efp/se2019/ftp/dtc/metviewer/scripts/</scripts>
+    </folders>   
+    <plot>
+      <view_value>false</view_value>
+      <view_symbol>true</view_symbol>
+      <view_legend>true</view_legend>
+      <printSQL>true</printSQL>
+
+      <stat_flag>NCAR</stat_flag>
+      <!--stat_flag>EMC</stat_flag-->
+
+      <threshold_file>/raid/efp/se2019/ftp/dtc/metviewer/xml/thresh_sigdiff.xml</threshold_file>
+
+      <template>scorecard.R_tmpl</template>
+
+      <plot_fix>
+        <field name="model">
+          <val name="NSSLfv3" />
+          <val name="HRRRv4_cluegrid" />
+        </field>
+        <field name="fcst_valid_beg">
+          <val name="2019-04-29 00:00:00" />
+          <val name="2019-05-31 00:00:00" />
+        </field>
+        <field name="init_hour">
+          <val name="00" />
+        </field>
+      </plot_fix>
+
+      <rows>
+        <field name="stat">
+          <val name="NBR_FSS" label="Fraction Skill Score" />
+          <field name="fcst_var">
+            <val name="REFC" label="Composite Reflectivity" />
+            <field name="interp_pnts">
+              <val name="49"/>
+                <field name="fcst_thresh">
+                  <val name=">=20"/>
+                  <val name=">=30"/>
+                  <val name=">=40"/>
+                </field>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precipitation" />
+            <field name="interp_pnts">
+              <val name="49"/>
+                <field name="fcst_thresh">
+                  <val name=">=0.25"/>
+                  <val name=">=0.5"/>
+                  <val name=">=1.0"/>
+                </field>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="CSI" label="CSI" />
+          <field name="fcst_var">
+            <val name="REFC" label="Composite Reflectivity" />
+            <field name="interp_pnts">
+              <val name="1"/>
+                <field name="fcst_thresh">
+                  <val name=">=20"/>
+                  <val name=">=30"/>
+                  <val name=">=40"/>
+                </field>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precipitation" />
+            <field name="interp_pnts">
+              <val name="1"/>
+                <field name="fcst_thresh">
+                  <val name=">=0.25"/>
+                  <val name=">=0.5"/>
+                  <val name=">=1.0"/>
+                </field>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="FBIAS" label="Bias" />
+          <field name="fcst_var">
+            <val name="REFC" label="Composite Reflectivity" />
+            <field name="interp_pnts">
+              <val name="1"/>
+                <field name="fcst_thresh">
+                  <val name=">=20"/>
+                  <val name=">=30"/>
+                  <val name=">=40"/>
+                </field>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="APCP_03" label="3 hr Accumulated Precipitation" />
+            <field name="interp_pnts">
+              <val name="1"/>
+                <field name="fcst_thresh">
+                  <val name=">=0.25"/>
+                  <val name=">=0.5"/>
+                  <val name=">=1.0"/>
+                </field>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="RMSE" label="RMSE" />
+          <field name="fcst_var">
+            <val name="TMP" label="Temperature" />
+            <field name="interp_pnts">
+              <val name="4" label = " " />
+                <field name="fcst_lev">
+                  <val name="Z2" label = "sfc"/>
+                </field>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="DPT" label="Dew Point" />
+            <field name="interp_pnts">
+              <val name="4" label = " "/>
+                <field name="fcst_lev">
+                  <val name="Z2" label = "sfc"/>
+                </field>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="WIND" label="Wind Speed" />
+            <field name="interp_pnts">
+              <val name="4" label = " "/>
+                <field name="fcst_lev">
+                  <val name="Z10" label = "sfc"/>
+              </field>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="ME" label="ME" />
+          <field name="fcst_var">
+            <val name="TMP" label="Temperature" />
+            <field name="interp_pnts">
+              <val name="4" label = " " />
+                <field name="fcst_lev">
+                  <val name="Z2" label = "sfc"/>
+                </field>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="DPT" label="Dew Point" />
+            <field name="interp_pnts">
+              <val name="4" label = " "/>
+                <field name="fcst_lev">
+                  <val name="Z2" label = "sfc"/>
+                </field>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="WIND" label="Wind Speed" />
+            <field name="interp_pnts">
+              <val name="4" label = " "/>
+                <field name="fcst_lev">
+                  <val name="Z10" label = "sfc"/>
+                </field>
+            </field>
+          </field>
+        </field>
+
+      </rows>
+
+      <columns>
+        <field name="vx_mask">
+          <val name="DD1" label="Daily Domain" />
+          <field name="fcst_lead">
+            <val name="120000" label="12 hr" />
+            <val name="180000" label="18 hr" />
+            <val name="210000" label="21 hr" />
+            <val name="240000" label="24 hr" />
+            <val name="270000" label="27 hr" />
+            <val name="300000" label="30 hr" />
+            <val name="330000" label="33 hr" />
+            <val name="360000" label="36 hr" />
+          </field>
+        </field>
+        <field name="vx_mask">
+          <val name="FULL" label="CONUS" />
+          <field name="fcst_lead">
+            <val name="120000" label="12 hr" />
+            <val name="180000" label="18 hr" />
+            <val name="210000" label="21 hr" />
+            <val name="240000" label="24 hr" />
+            <val name="270000" label="27 hr" />
+            <val name="300000" label="30 hr" />
+            <val name="330000" label="33 hr" />
+            <val name="360000" label="36 hr" />
+          </field>
+        </field>
+
+      </columns>
+
+      <agg_stat>true</agg_stat>
+      <boot_repl>1000</boot_repl>
+      <boot_random_seed>1</boot_random_seed>
+
+      <tmpl>
+        <data_file>scorecard_cam2019_nsslfv3_hrrrv4.data</data_file>
+        <plot_file>scorecard_cam2019_nsslfv3_hrrrv4.png</plot_file>
+        <title>METViewer NSSLfv3/HRRRv4 CAM Scorecard</title>
+      </tmpl>
+
+    </plot>
+  </plot_spec>

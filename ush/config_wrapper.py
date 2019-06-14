@@ -3,21 +3,18 @@
 from __future__ import (print_function, division)
 
 import os
+import re
 
-# TODO: Inherit from ProdConfig and call super method for produtil calls
 class ConfigWrapper:
     def __init__(self, p, logger):
         self.p = p
         self.logger = logger
 
-
     def has_option(self, sec, opt):
         return self.p.has_option(sec, opt)
 
-
     def has_section(self, sec):
         return self.p.has_option(sec)
-
 
     def set(self, sec, key, value):
         self.p.set(sec, key, value)
@@ -25,18 +22,14 @@ class ConfigWrapper:
     def keys(self, sec):
         return self.p.keys(sec)
 
-
     def sections(self):
         return self.p.sections()
-
 
     def add_section(self, name):
         return self.p.add_section(name)
 
-
     def log(self, sublog):
         return self.p.log(sublog)
-
 
     def getraw(self, sec, opt, default='', count=0):
         """ parse parameter and replace any existing parameters
@@ -84,7 +77,6 @@ class ConfigWrapper:
 
         return out_template
 
-
     # report error and exit if default is not set
     # helper function for get methods
     def check_default(self, sec, name, default):
@@ -93,7 +85,7 @@ class ConfigWrapper:
             if self.logger:
                 self.logger.error(msg)
             else:
-                print(msg)
+                print('ERROR: {}'.format(msg))
             exit(1)
 
         # print debug message saying default value was used
@@ -102,7 +94,7 @@ class ConfigWrapper:
         if self.logger:
             self.logger.debug(msg)
         else:
-            print(msg)
+            print('DEBUG: {}'.format(msg))
 
         # set conf with default value so all defaults can be added to
         #  the final conf and warning only appears once per conf item
@@ -124,7 +116,6 @@ class ConfigWrapper:
 
         return None
 
-
     # wrap produtil exe with checks to see if option is set and if exe actually exists
     def getexe(self, exe_name):
 
@@ -133,7 +124,7 @@ class ConfigWrapper:
             if self.logger:
                 self.logger.error(msg)
             else:
-                print(msg)
+                print('ERROR: {}'.format(msg))
             exit(1)
 
         exe_path = self.p.getexe(exe_name)
@@ -144,13 +135,12 @@ class ConfigWrapper:
             if self.logger:
                 self.logger.error(msg)
             else:
-                print(msg)
+                print('ERROR: {}'.format(msg))
             exit(1)
 
         # set config item to full path to exe and return full path
         self.p.set('exe', exe_name, full_exe_path)
         return full_exe_path
-
 
     def getdir(self, dir_name, default_val=None):
         if not self.p.has_option('dir', dir_name):
@@ -164,11 +154,10 @@ class ConfigWrapper:
             if self.logger:
                 self.logger.error(msg)
             else:
-                print(msg)
+                print('ERROR: {}'.format(msg))
             exit(1)
 
         return dir_path
-
 
     def getstr(self, sec, name, default_val=None):
         if self.p.has_option(sec, name):
@@ -178,7 +167,6 @@ class ConfigWrapper:
         self.check_default(sec, name, default_val)
         return default_val
 
-
     def getbool(self, sec, name, default_val=None):
         if self.p.has_option(sec, name):
             return self.p.getbool(sec, name)
@@ -186,7 +174,6 @@ class ConfigWrapper:
 
         self.check_default(sec, name, default_val)
         return default_val
-
 
     def getint(self, sec, name, default_val=None):
         if self.p.has_option(sec, name):
@@ -196,11 +183,41 @@ class ConfigWrapper:
         self.check_default(sec, name, default_val)
         return default_val
 
-
     def getfloat(self, sec, name, default_val=None):
         if self.p.has_option(sec, name):
             return self.p.getfloat(sec, name)
         # config item was not found
 
+        self.check_default(sec, name, default_val)
+        return default_val
+
+    def getseconds(self, sec, name, default_val=None):
+        if self.p.has_option(sec, name):
+            # convert value to seconds
+            # Valid options match format 3600, 3600S, 60M, or 1H
+            value = self.p.getstr(sec, name)
+            regex_and_multiplier = { '(-*)(\d+)S' : 1,
+                                     '(-*)(\d+)M' : 60,
+                                     '(-*)(\d+)H' : 3600,
+                                     '(-*)(\d+)' : 1 }
+            for reg, mult in regex_and_multiplier.items():
+                match = re.match(reg, value)
+                if match:
+                    if match.group(1) == '-':
+                        mult = mult * -1
+                    return int(match.group(2)) * mult
+
+            # if value is not in an expected format, error and exit
+            msg = '[{}] {} does not match expected format. '.format(sec, name) +\
+              'Valid options match 3600, 3600S, 60M, or 1H'
+            if self.logger:
+                self.logger.error(msg)
+            else:
+                print('ERROR: {}'.format(msg))
+
+            exit(1)
+
+
+        # config item was not found
         self.check_default(sec, name, default_val)
         return default_val

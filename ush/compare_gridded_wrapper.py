@@ -49,28 +49,28 @@ that reformat gridded data
         c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
 
         c_dict['FCST_WINDOW_BEGIN'] = \
-            self.config.getint('config', 'FCST_WINDOW_BEGIN', 0)
+            self.config.getseconds('config', 'FCST_WINDOW_BEGIN', 0)
         c_dict['FCST_WINDOW_END'] = \
-            self.config.getint('config', 'FCST_WINDOW_END', 0)
+            self.config.getseconds('config', 'FCST_WINDOW_END', 0)
 
         c_dict['OBS_WINDOW_BEGIN'] = \
-            self.config.getint('config', 'OBS_WINDOW_BEGIN', 0)
+            self.config.getseconds('config', 'OBS_WINDOW_BEGIN', 0)
         c_dict['OBS_WINDOW_END'] = \
-            self.config.getint('config', 'OBS_WINDOW_END', 0)
+            self.config.getseconds('config', 'OBS_WINDOW_END', 0)
 
         # if file window is not set, use window values
         c_dict['FCST_FILE_WINDOW_BEGIN'] = \
-            self.config.getint('config', 'FCST_FILE_WINDOW_BEGIN',
+            self.config.getseconds('config', 'FCST_FILE_WINDOW_BEGIN',
                                c_dict['FCST_WINDOW_BEGIN'])
         c_dict['FCST_FILE_WINDOW_END'] = \
-            self.config.getint('config', 'FCST_FILE_WINDOW_END',
+            self.config.getseconds('config', 'FCST_FILE_WINDOW_END',
                                c_dict['FCST_WINDOW_END'])
 
         c_dict['OBS_FILE_WINDOW_BEGIN'] = \
-            self.config.getint('config', 'OBS_FILE_WINDOW_BEGIN',
+            self.config.getseconds('config', 'OBS_FILE_WINDOW_BEGIN',
                                c_dict['OBS_WINDOW_BEGIN'])
         c_dict['OBS_FILE_WINDOW_END'] = \
-            self.config.getint('config', 'OBS_FILE_WINDOW_END',
+            self.config.getseconds('config', 'OBS_FILE_WINDOW_END',
                                c_dict['OBS_WINDOW_END'])
 
         c_dict['FCST_PROB_THRESH'] = '==0.1'
@@ -81,7 +81,7 @@ that reformat gridded data
         c_dict['NEIGHBORHOOD_SHAPE'] = ''
         c_dict['VERIFICATION_MASK_TEMPLATE'] = ''
         c_dict['VERIFICATION_MASK'] = ''
-        util.add_common_items_to_dictionary(self.config, c_dict)
+
         return c_dict
 
     def handle_window_once(self, c_dict, dtype, edge):
@@ -278,8 +278,6 @@ that reformat gridded data
                         thresh_str += "thresh_hi=" + str(number) + "; "
 
                     prob_cat_thresh = self.c_dict[d_type + '_PROB_THRESH']
-                    # TODO: replace with better check for data type to remove path
-                    # untested, need NetCDF prob fcst data
                     if self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF':
                         field = "{ name=\"" + v_name + "\"; level=\"" + \
                                 level + "\"; prob=TRUE; cat_thresh=[" + prob_cat_thresh + "];}"
@@ -404,30 +402,22 @@ that reformat gridded data
               Args:
                 @param time_info dictionary with time information
         """
-        base_dir = self.c_dict['OUTPUT_DIR']
-        out_template_name = '{}_OUTPUT_TEMPLATE'.format(self.app_name.upper())
+        out_dir = self.c_dict['OUTPUT_DIR']
+
         # use output template if it is set
+        # if output template is not set, do not add any extra directories to path
+        out_template_name = '{}_OUTPUT_TEMPLATE'.format(self.app_name.upper())
         if self.config.has_option('filename_templates',
                                   out_template_name):
             template = self.config.getraw('filename_templates',
-                                          out_template_name)
-        # if not use previous default: YYYYMMDDHHMM/app_name
-        else:
-            # set template based on loop by init or valid
-            use_init = util.is_loop_by_init(self.config)
-            if use_init:
-                temp = '{init?fmt=%Y%m%d%H%M}'
-            else:
-                temp = '{valid?fmt=%Y%m%d%H%M}'
-            template = '{}/{}'.format(temp, self.app_name)
+                               out_template_name)
+            # perform string substitution to get full path
+            ss = sts.StringSub(self.logger,
+                               template,
+                               **time_info)
+            extra_path = ss.doStringSub()
+            out_dir = os.path.join(out_dir, extra_path)
 
-        # perform string substitution to get full path
-        ss = sts.StringSub(self.logger,
-                           template,
-                           **time_info)
-        extra_path = ss.doStringSub()
-
-        out_dir = os.path.join(base_dir, extra_path)
         # create full output dir if it doesn't already exist
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
@@ -463,7 +453,7 @@ that reformat gridded data
                               'You must use a subclass')
             return None
 
-        cmd = self.app_path + " "
+        cmd = '{} -v {} '.format(self.app_path, self.verbose)
         for a in self.args:
             cmd += a + " "
 

@@ -14,14 +14,14 @@ TMP_DIR =
 MET_INSTALL_DIR = 
 
 [exe]
-WGRIB2 = 
-RM_EXE = 
-CUT_EXE =
-TR_EXE = 
-NCAP2_EXE = 
-CONVERT_EXE = 
-NCDUMP_EXE = 
-EGREP_EXE = 
+WGRIB2 =
+RM =
+CUT =
+TR =
+NCAP2 =
+CONVERT =
+NCDUMP =
+EGREP =
 
 
 where the settings under the [exe] header/family are the non-MET executables used in performing the series analysis.  Assign each setting to the appropriate path for your data.

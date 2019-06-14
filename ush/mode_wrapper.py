@@ -230,7 +230,6 @@ class ModeWrapper(CompareGriddedWrapper):
         level_type, level = util.split_level(v_level)
         field = ""
 
-#        if d_type == "FCST" and self.c_dict['FCST_IS_PROB']:
         if self.c_dict[d_type+'_IS_PROB']:
             thresh_str = ""
             comparison = util.get_comparison_from_threshold(v_thresh)
@@ -239,7 +238,7 @@ class ModeWrapper(CompareGriddedWrapper):
                 thresh_str += "thresh_lo="+str(number)+";"
             elif comparison in ["lt", "le", "<", "<=" ]:
                 thresh_str += "thresh_hi="+str(number)+";"
-            # TODO: add thresh??
+
             if self.c_dict[d_type+'_INPUT_DATATYPE'] == "NETCDF" or \
                self.c_dict[d_type+'_INPUT_DATATYPE'] == "GEMPAK":
                 field = "{ name=\"" + v_name + "\"; level=\"" + \

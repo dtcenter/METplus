@@ -4551,9 +4551,13 @@ reference "sec:SC_V"
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
+\begin_inset Newline newline
+\end_inset
+
 
 \series bold
 Deprecated:
@@ -4599,29 +4603,7 @@ Configuration
 \end_layout
 
 \begin_layout Standard
-ADECK_TRACK_DATA_DIR 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:SC_A"
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-BDECK_TRACK_DATA_DIR 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:SC_B"
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-TRACK_DATA_SUBDIR_MOD 
+TC_PAIRS_ADECK_INPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_T"
@@ -4632,11 +4614,100 @@ reference "sec:SC_T"
 \begin_inset Newline newline
 \end_inset
 
-TC_PAIRS_DIR 
+TC_PAIRS_BDECK_INPUT_DIR 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_T"
 
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_EDECK_INPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_OUTPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_REFORMAT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+[filename_templates]
+\end_layout
+
+\begin_layout Standard
+TC_PAIRS_ADECK_INPUT_TEMPLATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_BDECK_INPUT_TEMPLATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_EDECK_INPUT_TEMPLATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_OUTPUT_TEMPLATE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -4717,6 +4788,206 @@ INIT_EXCLUDE
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:SC_I"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_READ_ALL_FILES 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_MODEL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_STORM_ID 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_BASIN 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_CYCLONE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_STORM_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_DLAND_FILE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_MISSING_VAL_TO_REPLACE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_MISSING_VAL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_SKIP_IF_REFACTOR_EXISTS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_SKIP_IF_OUTPUT_EXISTS 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_REFORMAT_DECK 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_REFORMAT_TYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+Deprecated:
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\color gray
+ADECK_TRACK_DATA_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_A"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+BDECK_TRACK_DATA_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_B"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TRACK_DATA_SUBDIR_MOD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
 
 \end_inset
 
@@ -4850,6 +5121,10 @@ MISSING_VAL
 LatexCommand ref
 reference "sec:SC_M"
 
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 

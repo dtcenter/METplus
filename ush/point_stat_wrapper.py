@@ -41,8 +41,7 @@ class PointStatWrapper(CompareGriddedWrapper):
                              in the METplus configuration file.
         """
         c_dict = super(PointStatWrapper, self).create_c_dict()
-        # TODO: These are all required by CompareGridded, put into function?
-        # pass in all caps MET app name, i.e. POINT_STAT or PB2NC
+
         c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'POINT_STAT_OFFSETS', '0'))
         c_dict['FCST_INPUT_TEMPLATE'] = \

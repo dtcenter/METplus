@@ -71,11 +71,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
     met_install_dir = config.getdir('MET_INSTALL_DIR')
     regrid_data_plane_exe = os.path.join(met_install_dir,
                                          'bin/regrid_data_plane')
-    # regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE_EXE')
-    wgrib2_exe = config.getexe('WGRIB2')
-    egrep_exe = config.getexe('EGREP_EXE')
-    regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
-    overwrite_flag = config.getbool('config', 'OVERWRITE_TRACK')
+
+    # regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE')
+    wgrib2_exe = cu.getexe('WGRIB2')
+    egrep_exe = cu.getexe('EGREP')
+    regrid_with_met_tool = cu.getbool('config', 'REGRID_USING_MET_TOOL')
+    overwrite_flag = cu.getbool('config', 'OVERWRITE_TRACK')
 
     # Extract the columns of interest: init time, lead time,
     # valid time lat and lon of both tropical cyclone tracks, etc.

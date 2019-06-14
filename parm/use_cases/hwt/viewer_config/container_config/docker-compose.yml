@@ -1,0 +1,29 @@
+db:
+    image: mysql:5.7
+    container_name: mysql_mv
+    ports:
+        - "6603:3306"
+    volumes:
+        - ${MYSQL_DIR}
+
+    environment:
+        MYSQL_ROOT_PASSWORD: mvuser
+    tty: true 
+#
+metviewer:
+    image: metviewer2.5
+    container_name: metviewer_1
+    ports:
+    - "8080:8080"
+    volumes:
+      - ${METVIEWER_DATA}:${METVIEWER_DATA}:z
+      - ${METVIEWER_DATA_2019}:${METVIEWER_DATA_2019}:z
+      - ${METVIEWER_DIR}/metviewer_output/xml
+      - ${METVIEWER_DIR}/metviewer_output/plots
+      - ${METVIEWER_DIR}/metviewer_output/data
+      - ${METVIEWER_DIR}/metviewer_output/scripts
+    links:
+      - db:mysql_mv
+    tty: true
+
+#

@@ -5,6 +5,7 @@ from __future__ import print_function
 import pytest
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
+from string_template_substitution import get_tags
 import logging
 import datetime
 
@@ -633,3 +634,34 @@ def test_ccpa_template():
         passed = False
 
     return passed
+
+def test_filename_matches_template():
+    logger = logging.getLogger("test")
+    template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
+    filepath = "1987020103_dog_A03h"
+    se = StringExtract(logger, template, filepath)
+    out = se.parse_template()
+    ftime = out['valid'].strftime('%Y%m%d%H%M')
+    assert(ftime == "198702010600")
+
+def test_filename_does_not_match_template():
+    logger = logging.getLogger("test")
+    template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
+    filepath = "1987020103_cat_A03h"
+    se = StringExtract(logger, template, filepath)
+    out = se.parse_template()
+    assert(out == None)
+
+def test_filename_does_not_match_template_end():
+    logger = logging.getLogger("test")
+    template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
+    filepath = "1987020103_dog_A03d"
+    se = StringExtract(logger, template, filepath)
+    out = se.parse_template()
+    assert(out == None)
+
+def test_get_tags():
+    template = '*{basin?fmt=%s}_some_stuff_{cyclone?fmt=%02d}_{date?fmt=%Y%m}'
+    tags = get_tags(template)
+
+    assert( tags[0] == '*' and tags[1] == 'basin' and tags[2] == 'cyclone' and tags[3] == 'date')

@@ -50,7 +50,7 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
         self.env = os.environ.copy()
-        self.set_verbose(self.config.getstr('config', 'LOG_MET_VERBOSITY', '2'))
+        self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
         self.cmdrunner = CommandRunner(self.config, logger=self.logger)
         self.set_user_environment()
         self.c_dict = {}
@@ -81,9 +81,6 @@ class CommandBuilder:
 
     def set_debug(self, debug):
         self.debug = debug
-
-    def set_verbose(self, v):
-        self.verbose = v
 
     def add_arg(self, arg):
         """!Add generic argument to MET application command line
@@ -146,8 +143,13 @@ class CommandBuilder:
         """
         out = ""
         all_vars = var_list + self.config.keys('user_env_vars')
+        shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
         for v in all_vars:
-            line = 'export ' + v + '="' + self.env[v].replace('"', '\\"') + '"'
+            if shell == 'csh':
+                line = 'setenv ' + v + ' "' + self.env[v].replace('"', '"\\""') + '"'
+            else:
+                line = 'export ' + v + '="' + self.env[v].replace('"', '\\"') + '"'
+
             out += line + '; '
         self.logger.debug(out)
 
@@ -356,10 +358,7 @@ class CommandBuilder:
                               'You must use a subclass')
             return None
 
-        cmd = self.app_path + " "
-
-        if self.verbose != -1:
-            cmd += "-v " + str(self.verbose) + " "
+        cmd = '{} -v {} '.format(self.app_path, self.verbose)
 
         for a in self.args:
             cmd += a + " "

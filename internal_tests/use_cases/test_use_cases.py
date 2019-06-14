@@ -99,14 +99,14 @@ def compare_results(param_a, param_b):
             print("Checking output from "+process)
             if process == "GridStat":
                 # out_subdir = "uswrp/met_out/QPF/200508070000/grid_stat"
-                out_a = p.getdir("GRID_STAT_OUT_DIR")
+                out_a = p.getdir("GRID_STAT_OUTPUT_DIR")
                 out_b = p_b.getdir("GRID_STAT_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/grid_stat/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time))
                 files_b = glob.glob(glob_string.format(out_b, run_time))
             elif process == "Mode":
                 # out_subdir = "uswrp/met_out/QPF/200508070000/grid_stat"
-                out_a = p.getdir("MODE_OUT_DIR")
+                out_a = p.getdir("MODE_OUTPUT_DIR")
                 out_b = p_b.getdir("MODE_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/mode/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time))
@@ -142,7 +142,7 @@ def compare_results(param_a, param_b):
                 files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
             elif process == "TcPairs":
                 out_a = p.getdir("TC_PAIRS_DIR")
-                out_b = p_b.getdir("TC_PAIRS_DIR")
+                out_b = p_b.getdir("TC_PAIRS_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
                 files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
@@ -223,7 +223,7 @@ def main():
                     use_case_dir+"/qpf/examples/ruc-vs-s2grib.conf" ,
                     use_case_dir+"/qpf/examples/phpt-vs-s4grib.conf" ,
                     use_case_dir+"/qpf/examples/phpt-vs-mrms-qpe.conf" ,
-                    use_case_dir+"/qpf/examples/hrefmean-vs-qpe.conf" ,
+#                    use_case_dir+"/qpf/examples/hrefmean-vs-qpe-gempak.conf" ,
                     use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf" ,
                     use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" ,
 #                    use_case_dir+"/feature_relative/feature_relative.conf",
@@ -243,6 +243,7 @@ def main():
                   ]
 
     all_good = True
+    print("Starting test script")
     for param_file in param_files:
         param_a = param_file.replace(metplus_home,"/d1/mccabe/METplus.a")
         param_b = param_file.replace(metplus_home,"/d1/mccabe/METplus.b")
