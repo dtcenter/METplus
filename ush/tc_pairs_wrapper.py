@@ -648,8 +648,6 @@ class TcPairsWrapper(CommandBuilder):
         if not os.path.exists(os.path.dirname(output_path)):
             os.makedirs(os.path.dirname(output_path))
 
-        # TODO: Move adding app_path, verbose, and any other items that are
-        #  in every MET command call to a function to be called instead
         cmd = '{} -v {}'.format(self.app_path, self.verbose)
         cmd += ' -bdeck {}'.format(' '.join(self.bdeck))
 
