@@ -118,8 +118,8 @@ class TcPairsWrapper(CommandBuilder):
                                                       '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                        'TC_PAIRS_OUTPUT_TEMPLATE')
-        c_dict['SKIP_REFACTOR'] = self.config.getbool('config',
-                                                      'TC_PAIRS_SKIP_IF_REFACTOR_EXISTS',
+        c_dict['SKIP_REFORMAT'] = self.config.getbool('config',
+                                                      'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS',
                                                       False)
         c_dict['SKIP_OUTPUT'] = self.config.getbool('config',
                                                       'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS',

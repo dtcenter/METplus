@@ -50,7 +50,7 @@ class ExtractTilesWrapper(CommandBuilder):
         met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'), 'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
-        self.tc_pairs_dir = self.config.getdir('TC_PAIRS_DIR')
+        self.tc_pairs_dir = self.config.getdir('TC_PAIRS_OUTPUT_DIR')
         self.overwrite_flag = self.config.getbool('config',
                                               'OVERWRITE_TRACK')
         self.addl_filter_opts = \

@@ -140,8 +140,10 @@ class CommandRunner(object):
             #         ie. ncap2,  cmd = exe(the_exe)[the_args]
             # case 3. Runnng the command and logging the output to
             #         log_dest
-            the_exe = cmd[0]
             if run_inshell:
+                # set the_exe to log command has finished running
+                the_exe = shlex.split(cmd)[0]
+
                 if log_theoutput:
                     log_dest = self.cmdlog_destination()
                     cmd = exe('sh')['-c', cmd].env(**env).err2out() >> log_dest
