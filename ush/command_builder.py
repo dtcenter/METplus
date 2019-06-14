@@ -71,9 +71,11 @@ class CommandBuilder:
             self.config.add_section('user_env_vars')
 
         for env_var in self.config.keys('user_env_vars'):
-            #            if env_var in self.env:
-            #                self.logger.warning("{} is already set in the environment. Overwriting from conf file"
-            #                                    .format(env_var))
+            if env_var in self.env:
+                msg = '{} is already set in the environment. '.format(env_var) +\
+                      'Overwriting from conf file'
+                self.logger.warning(msg)
+
             self.add_env_var(env_var, self.config.getstr('user_env_vars', env_var))
 
         # set MET_TMP_DIR to conf TMP_DIR
