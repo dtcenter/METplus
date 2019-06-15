@@ -86,7 +86,7 @@ class GempakToCFWrapper(CommandBuilder):
                              input_template,
                              valid=valid_time)
         infile = os.path.join(input_dir, gsts.doStringSub())
-        self.add_input_file(infile)
+        self.infiles.append(infile)
 
         gsts = sts.StringSub(self.logger,
                              output_template,

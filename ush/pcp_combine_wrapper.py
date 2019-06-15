@@ -596,8 +596,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                level=(int(accum) * 3600),
                                **time_info)
         out_file = outSts.doStringSub()
-        self.set_output_filename(out_file)
-        self.set_output_dir(out_dir)
+        self.outfile = out_file
+        self.outdir = out_dir
 
         return self.get_command()
 
@@ -637,13 +637,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.set_out_accum(out_accum)
         self.set_pcp_dir(in_dir)
         self.set_pcp_regex(in_regex)
-        self.set_output_dir(out_dir)
+        self.outdir = out_dir
 
         pcpSts = sts.StringSub(self.logger,
                                 out_template,
                                 **time_info)
         pcp_out = pcpSts.doStringSub()
-        self.set_output_filename(pcp_out)
+        self.outfile = pcp_out
 
         return self.get_command()
 
@@ -679,20 +679,19 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
 
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
-        self.set_input_dir(in_dir)
+        self.input_dir = in_dir
 
         if not self.get_accumulation(time_info, int(accum), data_src, is_forecast):
             return None
-        infiles = self.get_input_files()
 
-        self.set_output_dir(out_dir)
+        self.outdir = out_dir
         time_info['level'] = int(accum) * 3600
         pcpSts = sts.StringSub(self.logger,
                                 out_template,
                                 **time_info)
         pcp_out = pcpSts.doStringSub()
-        self.set_output_filename(pcp_out)
-        self.add_arg("-name " + compare_var + "_" + str(accum).zfill(2))
+        self.outfile = pcp_out
+        self.args.append("-name " + compare_var + "_" + str(accum).zfill(2))
         return self.get_command()
 
 
@@ -728,16 +727,14 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if not self.get_accumulation(time_info, lookback, data_src, is_forecast):
             return None
 
-        infiles = self.get_input_files()
-
         # set output
-        self.set_output_dir(out_dir)
+        self.outdir =out_dir
         time_info['level'] = int(lookback) * 3600
         psts = sts.StringSub(self.logger,
                                 out_template,
                                 **time_info)
         pcp_out = psts.doStringSub()
-        self.set_output_filename(pcp_out)
+        self.outfile = pcp_out
         return self.get_command()
 
 

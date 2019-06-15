@@ -240,14 +240,14 @@ def write_final_conf(conf, logger):
 
 
 def is_loop_by_init(config):
-    if config.p.has_option('config', 'LOOP_BY'):
+    if config.conf.has_option('config', 'LOOP_BY'):
         loop_by = config.getstr('config', 'LOOP_BY').lower()
         if loop_by in ['init', 'retro']:
             return True
         elif loop_by in ['valid', 'realtime']:
             return False
 
-    if config.p.has_option('config', 'LOOP_BY_INIT'):
+    if config.conf.has_option('config', 'LOOP_BY_INIT'):
         return config.getbool('config', 'LOOP_BY_INIT')
 
     msg = 'MUST SET LOOP_BY to VALID, INIT, RETRO, or REALTIME'
@@ -298,11 +298,11 @@ def loop_over_times_and_call(config, processes):
         config.logger.info("* Running METplus")
         if use_init:
             config.logger.info("*  at init time: " + run_time)
-            config.p.set('config', 'CURRENT_INIT_TIME', run_time)
+            config.conf.set('config', 'CURRENT_INIT_TIME', run_time)
             os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
         else:
             config.logger.info("*  at valid time: " + run_time)
-            config.p.set('config', 'CURRENT_VALID_TIME', run_time)
+            config.conf.set('config', 'CURRENT_VALID_TIME', run_time)
             os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
         config.logger.info("****************************************")
         if not isinstance(processes, list):
@@ -323,7 +323,7 @@ def loop_over_times_and_call(config, processes):
 
 
 def get_lead_sequence(config, input_dict=None):
-    if config.p.has_option('config', 'LEAD_SEQ'):
+    if config.conf.has_option('config', 'LEAD_SEQ'):
         # return list of forecast leads
         leads = getlistint(config.getstr('config', 'LEAD_SEQ'))
 
@@ -339,7 +339,7 @@ def get_lead_sequence(config, input_dict=None):
         return out_leads
 
     # use INIT_SEQ to build lead list based on the valid time
-    if config.p.has_option('config', 'INIT_SEQ'):
+    if config.conf.has_option('config', 'INIT_SEQ'):
         # if input dictionary not passed in, cannot compute lead sequence
         #  from it, so exit
         if input_dict == None:
@@ -1448,7 +1448,7 @@ def parse_var_list_helper(config, dt, dont_duplicate):
     var_list = []
 
     # find all FCST_VARn_NAME keys in the conf files
-    all_conf = config.p.keys('config')
+    all_conf = config.keys('config')
     indices = []
     regex = re.compile(dt+"_VAR(\d+)_NAME")
     for conf in all_conf:
@@ -1459,7 +1459,7 @@ def parse_var_list_helper(config, dt, dont_duplicate):
     # loop over all possible variables and add them to list
     for n in indices:
         # don't duplicate if already entered into var list
-        if dont_duplicate and config.p.has_option('config', odt+'_VAR'+n+'_NAME'):
+        if dont_duplicate and config.has_option('config', odt+'_VAR'+n+'_NAME'):
             continue
 
         name = {}
@@ -1467,15 +1467,15 @@ def parse_var_list_helper(config, dt, dont_duplicate):
         thresh = {}
         extra = {}
         # get fcst var info if available
-        if config.p.has_option('config', dt+"_VAR"+n+"_NAME"):
+        if config.has_option('config', dt+"_VAR"+n+"_NAME"):
             name[dt] = config.getstr('config', dt+"_VAR"+n+"_NAME")
 
             extra[dt] = ""
-            if config.p.has_option('config', dt+"_VAR"+n+"_OPTIONS"):
+            if config.has_option('config', dt+"_VAR"+n+"_OPTIONS"):
                 extra[dt] = config.getraw('config', dt+"_VAR"+n+"_OPTIONS")
 
             thresh[dt] = []
-            if config.p.has_option('config', dt+"_VAR"+n+"_THRESH"):
+            if config.has_option('config', dt+"_VAR"+n+"_THRESH"):
                 thresh[dt] = getlist(config.getstr('config', dt+"_VAR"+n+"_THRESH"))
                 if validate_thresholds(thresh[dt]) == False:
                     msg = "  Update "+dt+"_VAR"+n+"_THRESH to match this format"
@@ -1486,17 +1486,17 @@ def parse_var_list_helper(config, dt, dont_duplicate):
                     exit(1)
 
             # if OBS_VARn_X does not exist, use FCST_VARn_X
-            if config.p.has_option('config', odt+"_VAR"+n+"_NAME"):
+            if config.has_option('config', odt+"_VAR"+n+"_NAME"):
                 name[odt] = config.getstr('config', odt+"_VAR"+n+"_NAME")
             else:
                 name[odt] = name[dt]
 
             extra[odt] = ""
-            if config.p.has_option('config', odt+"_VAR"+n+"_OPTIONS"):
+            if config.has_option('config', odt+"_VAR"+n+"_OPTIONS"):
                 extra[odt] = config.getraw('config', odt+"_VAR"+n+"_OPTIONS")
 
             levels[dt] = getlist(config.getstr('config', dt+"_VAR"+n+"_LEVELS"))
-            if config.p.has_option('config', odt+"_VAR"+n+"_LEVELS"):
+            if config.has_option('config', odt+"_VAR"+n+"_LEVELS"):
                 levels[odt] = getlist(config.getstr('config', odt+"_VAR"+n+"_LEVELS"))
             else:
                 levels[odt] = levels[dt]
@@ -1511,7 +1511,7 @@ def parse_var_list_helper(config, dt, dont_duplicate):
                 exit(1)
 
             # if OBS_VARn_THRESH does not exist, use FCST_VARn_THRESH
-            if config.p.has_option('config', odt+"_VAR"+n+"_THRESH"):
+            if config.has_option('config', odt+"_VAR"+n+"_THRESH"):
                 thresh[odt] = getlist(config.getstr('config', odt+"_VAR"+n+"_THRESH"))
                 if validate_thresholds(thresh[odt]) == False:
                     print("  Update "+odt+"_VAR"+n+"_THRESH to match this format")
@@ -1520,17 +1520,17 @@ def parse_var_list_helper(config, dt, dont_duplicate):
                 thresh[odt] = thresh[dt]
 
             # get ensemble var info if available
-            if config.p.has_option('config', "ENS_VAR"+n+"_NAME"):
+            if config.has_option('config', "ENS_VAR"+n+"_NAME"):
                 name['ENS'] = config.getstr('config', "ENS_VAR"+n+"_NAME")
 
                 levels['ENS'] = getlist(config.getstr('config', "ENS_VAR"+n+"_LEVELS"))
 
                 extra['ENS'] = ""
-                if config.p.has_option('config', "ENS_VAR"+n+"_OPTIONS"):
+                if config.has_option('config', "ENS_VAR"+n+"_OPTIONS"):
                     extra['ENS'] = config.getraw('config', "ENS_VAR"+n+"_OPTIONS")
 
                 thresh['ENS'] = []
-                if config.p.has_option('config', "ENS_VAR"+n+"_THRESH"):
+                if config.has_option('config', "ENS_VAR"+n+"_THRESH"):
                     thresh['ENS'] = getlist(config.getstr('config', "ENS_VAR"+n+"_THRESH"))
                     if validate_thresholds(thresh['ENS']) == False:
                         msg = "  Update ENS_VAR"+n+"_THRESH to match this format"
@@ -1872,8 +1872,8 @@ def preprocess_file(filename, data_type, config):
             outdir = os.path.dirname(stagefile)
             if not os.path.exists(outdir):
                 os.makedirs(outdir, mode=0o0775)
-            run_g2c = GempakToCFWrapper(config.p, config.logger)
-            run_g2c.add_input_file(filename)
+            run_g2c = GempakToCFWrapper(config.conf, config.logger)
+            run_g2c.infiles.append(filename)
             run_g2c.set_output_path(stagefile)
             cmd = run_g2c.get_command()
             if cmd is None:

@@ -172,12 +172,12 @@ class PointStatWrapper(CompareGriddedWrapper):
             return False
 
         # found both fcst and obs
-        self.add_input_file(model_path)
+        self.infiles.append(model_path)
         if type(obs_path) is list:
             for obs in obs_path:
-                self.add_input_file(obs)
+                self.infiles.append(obs)
         else:
-            self.add_input_file(obs_path)
+            self.infiles.append(obs_path)
 
         # get field information
         fcst_field_list = []

@@ -210,9 +210,9 @@ class PB2NCWrapper(CommandBuilder):
             if infile is not None:
                 if isinstance(infile, list):
                     for f in infile:
-                        self.add_input_file(f)
+                        self.infiles.append(f)
                 else:
-                    self.add_input_file(infile)
+                    self.infiles.append(infile)
                 self.logger.debug('Adding input file {}'.format(infile))
                 break
 
@@ -238,7 +238,7 @@ class PB2NCWrapper(CommandBuilder):
             return True
 
         # set config file since command is reset after each run
-        self.set_param_file(self.c_dict['CONFIG_FILE'])
+        self.param = self.c_dict['CONFIG_FILE']
 
         # list of fields to print to log
         print_list = ["PB2NC_MESSAGE_TYPE", "PB2NC_STATION_ID",

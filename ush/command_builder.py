@@ -15,12 +15,13 @@ from __future__ import (print_function, division)
 
 import os
 from datetime import datetime
+from abc import ABCMeta
 from command_runner import CommandRunner
 import met_util as util
 from config_wrapper import ConfigWrapper
 import string_template_substitution as sts
-from abc import ABCMeta
 
+# pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
 @brief Common functionality to wrap all MET applications
 Call as follows:
@@ -31,16 +32,14 @@ Cannot be called directly. Must use child classes.
 
 
 class CommandBuilder:
-    __metaclass__ = ABCMeta
-
     """!Common functionality to wrap all MET applications
     """
+    __metaclass__ = ABCMeta
 
     def __init__(self, config, logger):
         self.logger = logger
         self.config = ConfigWrapper(config, logger)
         self.debug = False
-        self.verbose = 2
         self.app_name = None
         self.app_path = None
         self.args = []
@@ -67,6 +66,8 @@ class CommandBuilder:
         self.param = ""
 
     def set_user_environment(self):
+        """!Set environment variables defined in [user_env_vars] section of config
+        """
         if 'user_env_vars' not in self.config.sections():
             self.config.add_section('user_env_vars')
 
@@ -81,29 +82,6 @@ class CommandBuilder:
         # set MET_TMP_DIR to conf TMP_DIR
         self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
 
-    def set_debug(self, debug):
-        self.debug = debug
-
-    def add_arg(self, arg):
-        """!Add generic argument to MET application command line
-        """
-        self.args.append(arg)
-
-    def add_input_file(self, filename, addon=None):
-        """!Add input filename to MET application command line
-        """
-        self.infiles.append(filename)
-
-    def get_input_files(self):
-        """!Returns list of input files passed to MET application
-        """
-        return self.infiles
-
-    def set_input_dir(self, d):
-        """!Set directory to look for input files
-        """
-        self.input_dir = d
-
     def set_output_path(self, outpath):
         """!Split path into directory and filename then save both
         """
@@ -115,29 +93,17 @@ class CommandBuilder:
         """
         return os.path.join(self.outdir, self.outfile)
 
-    def set_output_filename(self, outfile):
-        self.outfile = outfile
-
-    def set_output_dir(self, outdir):
-        self.outdir = outdir
-
-    def set_param_file(self, param):
-        self.param = param
-
     def add_env_var(self, key, name):
         """!Sets an environment variable so that the MET application
         can reference it in the parameter file or the application itself
         """
         self.env[key] = name
 
-    def get_env(self):
-        return self.env
-
     def print_env(self):
         """!Print all environment variables set for this application
         """
-        for x in self.env:
-            self.logger.debug(x + '="' + self.env[x] + '"')
+        for env_name in self.env:
+            self.logger.debug(env_name + '="' + self.env[env_name] + '"')
 
     def print_env_copy(self, var_list):
         """!Print list of environment variables that can be easily
@@ -146,11 +112,11 @@ class CommandBuilder:
         out = ""
         all_vars = var_list + self.config.keys('user_env_vars')
         shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
-        for v in all_vars:
+        for var in all_vars:
             if shell == 'csh':
-                line = 'setenv ' + v + ' "' + self.env[v].replace('"', '"\\""') + '"'
+                line = 'setenv ' + var + ' "' + self.env[var].replace('"', '"\\""') + '"'
             else:
-                line = 'export ' + v + '="' + self.env[v].replace('"', '\\"') + '"'
+                line = 'export ' + var + '="' + self.env[var].replace('"', '\\"') + '"'
 
             out += line + '; '
         self.logger.debug(out)
@@ -161,10 +127,17 @@ class CommandBuilder:
         self.logger.debug(item + "=" + self.env[item])
 
     def print_user_env_items(self):
+        """!Prints user environment variables in the log file
+        """
         for k in self.config.keys('user_env_vars'):
             self.print_env_item(k)
 
     def handle_fcst_and_obs_field(self, gen_name, fcst_name, obs_name, default=None, sec='config'):
+        """!Handles config variables that have fcst/obs versions or a generic
+            variable to handle both, i.e. FCST_NAME, OBS_NAME, and NAME.
+            If FCST_NAME and OBS_NAME both exist, they are used. If both are don't
+            exist, NAME is used.
+        """
         has_gen = self.config.has_option(sec, gen_name)
         has_fcst = self.config.has_option(sec, fcst_name)
         has_obs = self.config.has_option(sec, obs_name)
@@ -193,38 +166,41 @@ class CommandBuilder:
             return gen_conf, gen_conf
 
         # if none of the options are set, use default value for both if specified
-        if default == None:
-            self.logger.error('{0} Or set {1}'.format('Must set both {} and {} in the config files.'
-                                                      .format(fcst_name, obs_name), '{} instead'.format(gen_name)))
+        if default is None:
+            msg = 'Must set both {} and {} in the config files'.format(fcst_name,
+                                                                       obs_name)
+            msg += ' or set {} instead'.format(gen_name)
+            self.logger.error(msg)
+
             exit(1)
         self.logger.warning('Using default values for {}'.format(gen_name))
         return default, default
 
-    def find_model(self, time_info, v):
+    def find_model(self, time_info, var_info):
         """! Finds the model file to compare
               Args:
                 @param time_info dictionary containing timing information
-                @param v var_info object containing variable information
+                @param var_info object containing variable information
                 @rtype string
                 @return Returns the path to an model file
         """
-        return self.find_data(time_info, v, "FCST")
+        return self.find_data(time_info, var_info, "FCST")
 
-    def find_obs(self, time_info, v):
+    def find_obs(self, time_info, var_info):
         """! Finds the observation file to compare
               Args:
                 @param time_info dictionary containing timing information
-                @param v var_info object containing variable information
+                @param var_info object containing variable information
                 @rtype string
                 @return Returns the path to an observation file
         """
-        return self.find_data(time_info, v, "OBS")
+        return self.find_data(time_info, var_info, "OBS")
 
-    def find_data(self, time_info, v, data_type):
+    def find_data(self, time_info, var_info, data_type):
         """! Finds the data file to compare
               Args:
                 @param time_info dictionary containing timing information
-                @param v var_info object containing variable information
+                @param var_info object containing variable information
                 @param data_type type of data to find (FCST or OBS)
                 @rtype string
                 @return Returns the path to an observation file
@@ -232,15 +208,15 @@ class CommandBuilder:
         # get time info
         valid_time = time_info['valid_fmt']
 
-        if v != None:
+        if var_info != None:
             # set level based on input data type
             if data_type.startswith("OBS"):
-                v_level = v.obs_level
+                v_level = var_info.obs_level
             else:
-                v_level = v.fcst_level
+                v_level = var_info.fcst_level
 
             # separate character from beginning of numeric level value if applicable
-            level_type, level = util.split_level(v_level)
+            level = util.split_level(v_level)[1]
 
             # set level to 0 character if it is not a number
             if not level.isdigit():
@@ -291,12 +267,12 @@ class CommandBuilder:
                 fullpath = os.path.join(dirpath, filename)
 
                 # remove input data directory to get relative path
-                f = fullpath.replace(data_dir + "/", "")
+                rel_path = fullpath.replace(data_dir + "/", "")
                 # extract time information from relative path using template
-                se = util.get_time_from_file(self.logger, f, template)
-                if se is not None:
+                file_time_info = util.get_time_from_file(self.logger, rel_path, template)
+                if file_time_info is not None:
                     # get valid time and check if it is within the time range
-                    file_valid_time = se['valid'].strftime("%Y%m%d%H%M")
+                    file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M")
                     # skip if could not extract valid time
                     if file_valid_time == '':
                         continue
@@ -330,8 +306,8 @@ class CommandBuilder:
 
         # return list if multiple files are found
         out = []
-        for f in closest_files:
-            outfile = util.preprocess_file(f,
+        for close_file in closest_files:
+            outfile = util.preprocess_file(close_file,
                                            self.c_dict[data_type + '_INPUT_DATATYPE'],
                                            self.config)
             out.append(outfile)
@@ -339,6 +315,7 @@ class CommandBuilder:
         return out
 
     def write_list_file(self, filename, file_list):
+        """! Writes a file containing a list of filenames to the staging dir"""
         list_dir = os.path.join(self.config.getdir('STAGING_DIR'), 'file_lists')
         list_path = os.path.join(list_dir, filename)
 
@@ -362,15 +339,15 @@ class CommandBuilder:
 
         cmd = '{} -v {} '.format(self.app_path, self.verbose)
 
-        for a in self.args:
-            cmd += a + " "
+        for arg in self.args:
+            cmd += arg + " "
 
         if len(self.infiles) == 0:
             self.logger.error("No input filenames specified")
             return None
 
-        for f in self.infiles:
-            cmd += f + " "
+        for infile in self.infiles:
+            cmd += infile + " "
 
         if self.outfile == "":
             self.logger.error("No output filename specified")
@@ -407,7 +384,11 @@ class CommandBuilder:
             return
         self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
 
+    # argument needed to match call
+    # pylint:disable=unused-argument
     def run_at_time(self, input_dict):
+        """!Used to output error and exit if wrapper is attemped to be run with
+            LOOP_ORDER = times and the run_at_time method is not implemented"""
         self.logger.error('run_at_time not implemented for {} wrapper. '
                           'Cannot run with LOOP_ORDER = times'.format(self.app_name))
         exit(1)

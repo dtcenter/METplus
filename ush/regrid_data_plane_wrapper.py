@@ -173,7 +173,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                                     dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE', ''),
                                       self.config)
         if infile is not None:
-            self.add_input_file(infile)
+            self.infiles.append(infile)
         else:
             self.logger.error('Could not find input file in {} matching template {}'
                               .format(input_dir, input_template))
@@ -184,7 +184,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                               'Set REGRID_DATA_PLANE_VERIF_GRID')
             return False
 
-        self.add_input_file(verif_grid)
+        self.infiles.append(verif_grid)
         regridSts = sts.StringSub(self.logger,
                                   output_template,
                                   level=(int(f_level)*3600),
@@ -203,17 +203,17 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         if self.config.getstr('config', dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE', '') in ['', 'NETCDF'] :
             field_name = "{:s}_{:s}".format(compare_var, str(level).zfill(2))
-            self.add_arg("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(field_name))
+            self.args.append("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(field_name))
         else:
             field_name = "{:s}".format(compare_var)
-            self.add_arg("-field 'name=\"{:s}\"; level=\"{:s}\";'".format(field_name, level))
+            self.args.append("-field 'name=\"{:s}\"; level=\"{:s}\";'".format(field_name, level))
 
         if self.c_dict['METHOD'] != '':
-            self.add_arg("-method {}".format(self.c_dict['METHOD']))
+            self.args.append("-method {}".format(self.c_dict['METHOD']))
 
-        self.add_arg("-width {}".format(self.c_dict['WIDTH']))
+        self.args.append("-width {}".format(self.c_dict['WIDTH']))
 
-        self.add_arg("-name " + field_name)
+        self.args.append("-name " + field_name)
         cmd = self.get_command()
         if cmd is None:
             self.logger.error("Could not generate command")

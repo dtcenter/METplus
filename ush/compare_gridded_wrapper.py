@@ -5,7 +5,7 @@ Program Name: compare_gridded_wrapper.py
 Contact(s): George McCabe
 Abstract:
 History Log:  Initial version
-Usage: 
+Usage:
 Parameters: None
 Input Files:
 Output Files:
@@ -29,7 +29,6 @@ Cannot be called directly. Must use child classes.
 @endcode
 '''
 
-
 class CompareGriddedWrapper(CommandBuilder):
     """!Common functionality to wrap similar MET applications
 that reformat gridded data
@@ -39,6 +38,10 @@ that reformat gridded data
         super(CompareGriddedWrapper, self).__init__(config, logger)
 
     def create_c_dict(self):
+        """!Create dictionary from config items to be used in the wrapper
+            Allows developer to reference config items without having to know
+            the type and consolidates config get calls so it is easier to see
+            which config variables are used in the wrapper"""
         c_dict = dict()
         c_dict['var_list'] = util.parse_var_list(self.config)
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
@@ -61,17 +64,17 @@ that reformat gridded data
         # if file window is not set, use window values
         c_dict['FCST_FILE_WINDOW_BEGIN'] = \
             self.config.getseconds('config', 'FCST_FILE_WINDOW_BEGIN',
-                               c_dict['FCST_WINDOW_BEGIN'])
+                                   c_dict['FCST_WINDOW_BEGIN'])
         c_dict['FCST_FILE_WINDOW_END'] = \
             self.config.getseconds('config', 'FCST_FILE_WINDOW_END',
-                               c_dict['FCST_WINDOW_END'])
+                                   c_dict['FCST_WINDOW_END'])
 
         c_dict['OBS_FILE_WINDOW_BEGIN'] = \
             self.config.getseconds('config', 'OBS_FILE_WINDOW_BEGIN',
-                               c_dict['OBS_WINDOW_BEGIN'])
+                                   c_dict['OBS_WINDOW_BEGIN'])
         c_dict['OBS_FILE_WINDOW_END'] = \
             self.config.getseconds('config', 'OBS_FILE_WINDOW_END',
-                               c_dict['OBS_WINDOW_END'])
+                                   c_dict['OBS_WINDOW_END'])
 
         c_dict['FCST_PROB_THRESH'] = '==0.1'
         c_dict['OBS_PROB_THRESH'] = '==0.1'
@@ -173,66 +176,79 @@ that reformat gridded data
             self.clear()
             self.run_at_time_all_fields(time_info)
 
-    def run_at_time_one_field(self, time_info, v):
+    def run_at_time_one_field(self, time_info, var_info):
         """! Build MET command for a single field for a given
              init/valid time and forecast lead combination
               Args:
                 @param time_info dictionary containing timing information
-                @param v var_info object containing variable information
+                @param var_info object containing variable information
         """
         # get model to compare
-        model_path = self.find_model(time_info, v)
-        if model_path == None:
-            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] + \
-                              " for init time " + time_info['init_fmt'] + " f" + str(time_info['lead_hours']))
+        model_path = self.find_model(time_info, var_info)
+        if model_path is None:
+            self.logger.error("Could not find file in " +\
+                              self.c_dict['FCST_INPUT_DIR'] + \
+                              " for init time " + time_info['init_fmt'] +\
+                              " f" + str(time_info['lead_hours']))
             return
-        self.add_input_file(model_path)
+        self.infiles.append(model_path)
 
         # get observation to compare
-        obs_path = self.find_obs(time_info, v)
-        if obs_path == None:
-            self.logger.error("Could not find file in " + self.c_dict['OBS_INPUT_DIR'] + \
+        obs_path = self.find_obs(time_info, var_info)
+        if obs_path is None:
+            self.logger.error("Could not find file in " +\
+                              self.c_dict['OBS_INPUT_DIR'] + \
                               " for valid time " + time_info['valid_fmt'])
             return
-        self.add_input_file(obs_path)
+        self.infiles.append(obs_path)
 
         # get field info field a single field to pass to the MET config file
-        fcst_field = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name,
-                                             v.fcst_extra, 'FCST')
-        obs_field = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name,
-                                            v.obs_extra, 'OBS')
+        fcst_field = self.get_one_field_info(var_info.fcst_level,
+                                             var_info.fcst_thresh,
+                                             var_info.fcst_name,
+                                             var_info.fcst_extra, 'FCST')
+        obs_field = self.get_one_field_info(var_info.obs_level,
+                                            var_info.obs_thresh,
+                                            var_info.obs_name,
+                                            var_info.obs_extra, 'OBS')
 
         self.process_fields(time_info, fcst_field, obs_field)
 
     def run_at_time_all_fields(self, time_info):
-        """! Build MET command for all of the field/level combinations for a given init/valid time and
-             forecast lead combination
+        """! Build MET command for all of the field/level combinations for a given
+             init/valid time and forecast lead combination
               Args:
                 @param time_info dictionary containing timing information
         """
         # get model from first var to compare
         model_path = self.find_model(time_info, self.c_dict['var_list'][0])
-        if model_path == None:
-            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] + \
-                              " for init time " + time_info['init_fmt'] + " f" + str(time_info['lead_hours']))
+        if model_path is None:
+            self.logger.error("Could not find file in " +\
+                              self.c_dict['FCST_INPUT_DIR'] + \
+                              " for init time " + time_info['init_fmt'] +\
+                              " f" + str(time_info['lead_hours']))
             return
-        self.add_input_file(model_path)
+        self.infiles.append(model_path)
 
         # get observation to from first var compare
         obs_path = self.find_obs(time_info, self.c_dict['var_list'][0])
-        if obs_path == None:
+        if obs_path is None:
             self.logger.error("Could not find file in " + self.c_dict['OBS_INPUT_DIR'] + \
                               " for valid time " + time_info['valid_fmt'])
             return
-        self.add_input_file(obs_path)
+        self.infiles.append(obs_path)
 
         fcst_field_list = []
         obs_field_list = []
-        for v in self.c_dict['var_list']:
-            next_fcst = self.get_one_field_info(v.fcst_level, v.fcst_thresh,
-                                                v.fcst_name, v.fcst_extra, 'FCST')
-            next_obs = self.get_one_field_info(v.obs_level, v.obs_thresh,
-                                               v.obs_name, v.obs_extra, 'OBS')
+        for var_info in self.c_dict['var_list']:
+            next_fcst = self.get_one_field_info(var_info.fcst_level,
+                                                var_info.fcst_thresh,
+                                                var_info.fcst_name,
+                                                var_info.fcst_extra, 'FCST')
+            next_obs = self.get_one_field_info(var_info.obs_level,
+                                               var_info.obs_thresh,
+                                               var_info.obs_name,
+                                               var_info.obs_extra, 'OBS')
             fcst_field_list.append(next_fcst)
             obs_field_list.append(next_obs)
         fcst_field = ','.join(fcst_field_list)
@@ -321,6 +337,7 @@ that reformat gridded data
         return field_list
 
     def set_environment_variables(self, fcst_field, obs_field, time_info):
+        """!Set environment variables that are referenced by the MET config file"""
         # list of fields to print to log
         print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
                       "LEVEL", "OBTYPE", "CONFIG_DIR",
@@ -328,16 +345,16 @@ that reformat gridded data
                       "INPUT_BASE", "MET_VALID_HHMM",
                       "FCST_TIME"]
 
-        v = self.c_dict['var_list'][0]
+        var_info = self.c_dict['var_list'][0]
         if 'CURRENT_VAR_INFO' in self.c_dict.keys():
-            v = self.c_dict['CURRENT_VAR_INFO']
+            var_info = self.c_dict['CURRENT_VAR_INFO']
 
         # set environment variables needed for MET application
         self.add_env_var("MODEL", self.c_dict['MODEL'])
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-        self.add_env_var("FCST_VAR", v.fcst_name)
-        self.add_env_var("OBS_VAR", v.obs_name)
-        self.add_env_var("LEVEL", v.fcst_level)
+        self.add_env_var("FCST_VAR", var_info.fcst_name)
+        self.add_env_var("OBS_VAR", var_info.obs_name)
+        self.add_env_var("LEVEL", var_info.fcst_level)
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
         self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
@@ -364,8 +381,8 @@ that reformat gridded data
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_user_env_items()
-        for l in print_list:
-            self.print_env_item(l)
+        for item in print_list:
+            self.print_env_item(item)
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_copy(print_list)
 
@@ -379,7 +396,7 @@ that reformat gridded data
                 only used for ensemble_stat
         """
         # set config file since command is reset after each run
-        self.set_param_file(self.c_dict['CONFIG_FILE'])
+        self.param = self.c_dict['CONFIG_FILE']
 
         # set up output dir with time info
         self.create_and_set_output_dir(time_info)
@@ -410,12 +427,12 @@ that reformat gridded data
         if self.config.has_option('filename_templates',
                                   out_template_name):
             template = self.config.getraw('filename_templates',
-                               out_template_name)
+                                          out_template_name)
             # perform string substitution to get full path
-            ss = sts.StringSub(self.logger,
-                               template,
-                               **time_info)
-            extra_path = ss.doStringSub()
+            string_sub = sts.StringSub(self.logger,
+                                       template,
+                                       **time_info)
+            extra_path = string_sub.doStringSub()
             out_dir = os.path.join(out_dir, extra_path)
 
         # create full output dir if it doesn't already exist
@@ -423,25 +440,20 @@ that reformat gridded data
             os.makedirs(out_dir)
 
         # set output dir for wrapper
-        self.set_output_dir(out_dir)
+        self.outdir = out_dir
 
     def get_verification_mask(self, time_info):
+        """!If verification mask template is set in the config file,
+            use it to find the verification mask filename"""
         self.c_dict['VERIFICATION_MASK'] = ''
         if self.c_dict['VERIFICATION_MASK_TEMPLATE'] != '':
             template = self.c_dict['VERIFICATION_MASK_TEMPLATE']
-            ss = sts.StringSub(self.logger,
-                               template,
-                               **time_info)
-            filename = ss.doStringSub()
+            string_sub = sts.StringSub(self.logger,
+                                       template,
+                                       **time_info)
+            filename = string_sub.doStringSub()
             self.c_dict['VERIFICATION_MASK'] = filename
         return
-
-    def set_output_dir(self, outdir):
-        """! Sets the output dir and adds -output in front
-              Args:
-                @param outdir directory to set
-        """
-        self.outdir = "-outdir " + outdir
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -454,15 +466,15 @@ that reformat gridded data
             return None
 
         cmd = '{} -v {} '.format(self.app_path, self.verbose)
-        for a in self.args:
-            cmd += a + " "
+        for arg in self.args:
+            cmd += arg + " "
 
         if len(self.infiles) == 0:
             self.logger.error("No input filenames specified")
             return None
 
-        for f in self.infiles:
-            cmd += f + " "
+        for infile in self.infiles:
+            cmd += infile + " "
 
         if self.param != "":
             cmd += self.param + " "
@@ -471,5 +483,5 @@ that reformat gridded data
             self.logger.error("No output directory specified")
             return None
 
-        cmd += self.outdir
+        cmd += '-outdir {}'.format(self.outdir)
         return cmd

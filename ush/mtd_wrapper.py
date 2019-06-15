@@ -236,7 +236,7 @@ class MTDWrapper(ModeWrapper):
             obs_thresh_list = v.obs_thresh
 
         for fthresh, othresh in zip(fcst_thresh_list, obs_thresh_list):
-            self.set_param_file(self.c_dict['CONFIG_FILE'])
+            self.param = self.c_dict['CONFIG_FILE']
             self.create_and_set_output_dir(time_info)
 
             print_list = [ 'MIN_VOLUME', 'MODEL', 'FCST_VAR', 'OBTYPE',
@@ -356,7 +356,7 @@ class MTDWrapper(ModeWrapper):
         cmd += '-config ' + self.param + ' '
 
         if self.outdir != "":
-            cmd += self.outdir + ' '
+            cmd += '-outdir {}'.format(self.outdir)
 
         if self.verbose != -1:
             cmd += "-v "+str(self.verbose) + " "

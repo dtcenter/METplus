@@ -577,7 +577,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 elif stat_analysis_out_stat_info.template_type == "user_template":
                     stat_analysis_out_stat_info.filename = self.create_filename_from_user_template(stat_analysis_out_stat_info.filename_template, fcst_valid_init_dict, init_time)
                 job = self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
-                self.set_param_file(stat_analysis_config)
+                self.param = stat_analysis_config
                 #print stat_analysis run settings
                 self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
                 for name, value in fcst_valid_init_dict.items():
@@ -639,7 +639,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 elif stat_analysis_out_stat_info.template_type == "user_template":
                     stat_analysis_out_stat_info.filename = self.create_filename_from_user_template(stat_analysis_out_stat_info.filename_template, fcst_valid_init_dict, init_time)
                 job = self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
-                self.set_param_file(stat_analysis_config)
+                self.param = stat_analysis_config
                 #print stat_analysis run settings
                 self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
                 for name, value in fcst_valid_init_dict.items():
@@ -703,7 +703,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     elif stat_analysis_out_stat_info.template_type == "user_template":
                         stat_analysis_out_stat_info.filename = self.create_filename_from_user_template(stat_analysis_out_stat_info.filename_template, fcst_valid_init_dict, init_time)
                     job = self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
-                    self.set_param_file(stat_analysis_config)
+                    self.param = stat_analysis_config
                     #print stat_analysis run settings
                     self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
                     for name, value in fcst_valid_init_dict.items():
@@ -764,7 +764,7 @@ class StatAnalysisWrapper(CommandBuilder):
             elif stat_analysis_out_stat_info.template_type == "user_template":
                 stat_analysis_out_stat_info.filename = self.create_filename_from_user_template(stat_analysis_out_stat_info.filename_template, fcst_valid_init_dict, init_time)
             job = self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
-            self.set_param_file(stat_analysis_config)
+            self.param = stat_analysis_config
             #print stat_analysis run settings
             self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
             for name, value in fcst_valid_init_dict.items():
@@ -1002,7 +1002,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                     stat_analysis_dump_row_filename = model_plot_name+"_"+stat_analysis_dump_row_filename_lead+"_"+stat_analysis_dump_row_filename_fcstvar+"_"+stat_analysis_dump_row_filename_obsvar+"_"+stat_analysis_dump_row_filename_interp+"_"+stat_analysis_dump_row_filename_region+".stat"
                                     job = "-job filter -dump_row "+os.path.join(model_stat_analysis_output_dir, stat_analysis_dump_row_filename)
                                     self.add_env_var('JOB', job)
-                                    self.set_param_file(stat_analysis_config)
+                                    self.param = stat_analysis_config
                                     #print stat_analysis run settings
                                     self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
                                     for name, value in fcst_valid_init_dict.items():

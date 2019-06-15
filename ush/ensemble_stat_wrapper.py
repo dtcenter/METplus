@@ -137,7 +137,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         if not fcst_file_list:
             return
 
-        self.add_input_file(fcst_file_list)
+        self.infiles.append(fcst_file_list)
 
         v = self.c_dict['var_list']
         # get point observation file if requested
@@ -289,7 +289,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 @param obs_field field information formatted for MET config file
         """
         # set config file since command is reset after each run
-        self.set_param_file(self.c_dict['CONFIG_FILE'])
+        self.param = self.c_dict['CONFIG_FILE']
 
         # set up output dir with time info
         self.create_and_set_output_dir(time_info)
@@ -389,7 +389,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.logger.error(self.app_name+": No output directory specified")
             return None
 
-        cmd += self.outdir
+        cmd += '-outdir {}'.format(self.outdir)
         return cmd
 
 
