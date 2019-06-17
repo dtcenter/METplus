@@ -235,7 +235,7 @@ class CommandBuilder:
                                  template,
                                  level=(int(level.split('-')[0]) * 3600),
                                  **time_info)
-            filename = dsts.doStringSub()
+            filename = dsts.do_string_sub()
 
             # build full path with data directory and filename
             path = os.path.join(data_dir, filename)

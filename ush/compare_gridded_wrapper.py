@@ -432,7 +432,7 @@ that reformat gridded data
             string_sub = sts.StringSub(self.logger,
                                        template,
                                        **time_info)
-            extra_path = string_sub.doStringSub()
+            extra_path = string_sub.do_string_sub()
             out_dir = os.path.join(out_dir, extra_path)
 
         # create full output dir if it doesn't already exist
@@ -451,7 +451,7 @@ that reformat gridded data
             string_sub = sts.StringSub(self.logger,
                                        template,
                                        **time_info)
-            filename = string_sub.doStringSub()
+            filename = string_sub.do_string_sub()
             self.c_dict['VERIFICATION_MASK'] = filename
         return
 

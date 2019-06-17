@@ -276,7 +276,7 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
     sts = StringSub(logger, time_from_conf,
                     now=clock_time,
                     today=clock_time.strftime('%Y%m%d'))
-    time_str = sts.doStringSub()
+    time_str = sts.do_string_sub()
     return datetime.datetime.strptime(time_str, fmt)
 
 
@@ -1860,7 +1860,7 @@ def template_to_regex(template, time_info, logger):
     sts = StringSub(logger,
                     in_template,
                     **time_info)
-    return sts.doStringSub()
+    return sts.do_string_sub()
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")

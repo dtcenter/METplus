@@ -192,7 +192,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                  template,
                                  **time_info)
             search_file = os.path.join(self.input_dir,
-                                       fSts.doStringSub())
+                                       fSts.do_string_sub())
             search_file = util.preprocess_file(search_file,
                                 self.c_dict[dtype+'_INPUT_DATATYPE'],
                                                self.config)
@@ -224,7 +224,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                  file_template,
                                  valid=search_time)
             search_file = os.path.join(self.input_dir,
-                                       dSts.doStringSub())
+                                       dSts.do_string_sub())
             search_file = util.preprocess_file(search_file,
                                             self.c_dict[data_src+\
                                               '_INPUT_DATATYPE'],
@@ -292,7 +292,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                              valid=search_time,
                              level=(int(search_accum)*3600))
         search_file = os.path.join(self.input_dir,
-                                   fSts.doStringSub())
+                                   fSts.do_string_sub())
 
         return util.preprocess_file(search_file,
                                     self.c_dict[data_src+'_INPUT_DATATYPE'],
@@ -562,7 +562,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 in_template,
                                 level=(int(accum) * 3600),
                                 **time_info)
-        file1 = os.path.join(in_dir, pcpSts1.doStringSub())
+        file1 = os.path.join(in_dir, pcpSts1.do_string_sub())
         file1 = util.preprocess_file(file1, self.c_dict[rl+'_INPUT_DATATYPE'],
                                     self.config)
 
@@ -579,7 +579,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 in_template,
                                 level=(int(accum) * 3600),
                                 **time_info2)
-        file2 = os.path.join(in_dir, pcpSts2.doStringSub())
+        file2 = os.path.join(in_dir, pcpSts2.do_string_sub())
         file2 = util.preprocess_file(file2, self.c_dict[rl+'_INPUT_DATATYPE'],
                                      self.config)
 
@@ -595,7 +595,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                out_template,
                                level=(int(accum) * 3600),
                                **time_info)
-        out_file = outSts.doStringSub()
+        out_file = outSts.do_string_sub()
         self.outfile = out_file
         self.outdir = out_dir
 
@@ -642,7 +642,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         pcpSts = sts.StringSub(self.logger,
                                 out_template,
                                 **time_info)
-        pcp_out = pcpSts.doStringSub()
+        pcp_out = pcpSts.do_string_sub()
         self.outfile = pcp_out
 
         return self.get_command()
@@ -689,7 +689,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         pcpSts = sts.StringSub(self.logger,
                                 out_template,
                                 **time_info)
-        pcp_out = pcpSts.doStringSub()
+        pcp_out = pcpSts.do_string_sub()
         self.outfile = pcp_out
         self.args.append("-name " + compare_var + "_" + str(accum).zfill(2))
         return self.get_command()
@@ -733,7 +733,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         psts = sts.StringSub(self.logger,
                                 out_template,
                                 **time_info)
-        pcp_out = psts.doStringSub()
+        pcp_out = psts.do_string_sub()
         self.outfile = pcp_out
         return self.get_command()
 

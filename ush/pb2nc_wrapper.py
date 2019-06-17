@@ -224,7 +224,7 @@ class PB2NCWrapper(CommandBuilder):
         outSts = StringSub(self.logger,
                            output_template,
                            **time_info)
-        outfile = outSts.doStringSub()
+        outfile = outSts.do_string_sub()
         outfile = os.path.join(output_dir, outfile)
         self.set_output_path(outfile)
 

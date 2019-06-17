@@ -85,13 +85,13 @@ class GempakToCFWrapper(CommandBuilder):
         gsts = sts.StringSub(self.logger,
                              input_template,
                              valid=valid_time)
-        infile = os.path.join(input_dir, gsts.doStringSub())
+        infile = os.path.join(input_dir, gsts.do_string_sub())
         self.infiles.append(infile)
 
         gsts = sts.StringSub(self.logger,
                              output_template,
                              valid=valid_time)
-        outfile = os.path.join(output_dir, gsts.doStringSub())
+        outfile = os.path.join(output_dir, gsts.do_string_sub())
 
         if os.path.exists(outfile) and \
                         self.config.getbool('config', 'GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS', False) is True:

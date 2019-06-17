@@ -223,7 +223,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         for ens_member_template in self.c_dict['FCST_INPUT_TEMPLATE']:
             model_ss = sts.StringSub(self.logger, ens_member_template,
                                      **time_info)
-            member_file = model_ss.doStringSub()
+            member_file = model_ss.do_string_sub()
             expected_path = os.path.join(model_dir, member_file)
 
             # if wildcard expression, get all files that match
