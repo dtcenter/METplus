@@ -239,9 +239,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         lead = int((diff.days * 24) / (data_interval))
         lead += int((diff).seconds / (data_interval*3600)) - 1
-        # calling config.p version of getter so default value is not
+        # calling config.conf version of getter so default value is not
         # set in log and final conf because it is unnecessary
-        fname = self.config.p.getstr('config',
+        fname = self.config.conf.getstr('config',
                               data_src + '_PCP_COMBINE_' + str(
                                   accum) + '_FIELD_NAME', '')
         if fname == '':
@@ -275,9 +275,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if d_type == "GRIB":
             return search_accum
         # if NETCDF or GEMPAK
-        # calling config.p version of getter so default value is not
+        # calling config.conf version of getter so default value is not
         # set in log and final conf because it is unnecessary
-        field_name = self.config.p.getstr('config', data_src +
+        field_name = self.config.conf.getstr('config', data_src +
                                '_PCP_COMBINE_' + str(search_accum) +
                                '_FIELD_NAME', '')
         if field_name == '':
@@ -302,9 +302,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     def find_highest_accum_field(self, data_src, s_accum):
         field_name = ''
         while s_accum > 0:
-            # calling config.p version of getter so default value is not
+            # calling config.conf version of getter so default value is not
             # set in log and final conf because it is unnecessary
-            field_name = self.config.p.getstr('config',
+            field_name = self.config.conf.getstr('config',
                                    data_src + '_PCP_COMBINE_' + str(s_accum) +
                                    '_FIELD_NAME', '')
             if field_name != '':

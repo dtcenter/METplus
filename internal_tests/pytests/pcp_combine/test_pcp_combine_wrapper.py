@@ -96,9 +96,9 @@ def test_get_accumulation_1_to_6():
 
     file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
         
-    pcw.set_input_dir(input_dir)
+    pcw.input_dir = input_dir
     pcw.get_accumulation(time_info, accum, data_src, False)
-    in_files = pcw.get_input_files()
+    in_files = pcw.infiles
     if len(in_files) == 6 and \
       input_dir+"/20160904/file.2016090418.01h" in in_files and \
       input_dir+"/20160904/file.2016090417.01h" in in_files and \
@@ -122,9 +122,9 @@ def test_get_accumulation_6_to_6():
 
     pcw.c_dict['FCST_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
     
-    pcw.set_input_dir(input_dir)
+    pcw.input_dir = input_dir
     pcw.get_accumulation(time_info, accum, data_src, False)
-    in_files = pcw.get_input_files()    
+    in_files = pcw.infiles    
     if  len(in_files) == 1 and input_dir+"/20160904/file.2016090418.06h" in in_files:
         assert True
     else:
@@ -137,7 +137,7 @@ def test_get_lowest_forecast_file_dated_subdir():
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = datetime.datetime.strptime("201802012100", '%Y%m%d%H%M')
     template = pcw.config.getraw('filename_templates', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
-    pcw.set_input_dir(input_dir)
+    pcw.input_dir = input_dir
     out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/20180201/file.2018020118f003.nc")
 
@@ -150,7 +150,7 @@ def test_get_lowest_forecast_file_no_subdir():
 
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
 #    template = util.getraw(pcw.config, 'filename_templates', dtype+'_PCP_COMBINE_INPUT_TEMPLATE')
-    pcw.set_input_dir(input_dir)
+    pcw.input_dir = input_dir
     out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/file.2018020118f003.nc")
 
@@ -161,7 +161,7 @@ def test_get_lowest_forecast_file_yesterday():
     valid_time = datetime.datetime.strptime("201802010600", '%Y%m%d%H%M')
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
 #    template = util.getraw(pcw.config, 'filename_templates', 'FCST2_PCP_COMBINE_INPUT_TEMPLATE')
-    pcw.set_input_dir(input_dir)
+    pcw.input_dir = input_dir
     out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/file.2018013118f012.nc")    
 
@@ -190,7 +190,7 @@ def test_setup_add_method():
     output_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
     pcw.setup_add_method(time_info, var_info, rl)
     
-    in_files = pcw.get_input_files()
+    in_files = pcw.infiles
     out_file = pcw.get_output_path()
     if len(in_files) == 6 and \
       input_dir+"/20160904/file.2016090418.01h" in in_files and \
@@ -224,7 +224,7 @@ def test_setup_sum_method():
     output_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
     pcw.setup_sum_method(time_info, var_info, rl)
     
-    in_files = pcw.get_input_files()
+    in_files = pcw.infiles
     out_file = pcw.get_output_path()    
     assert(out_file == output_dir+"/20160904/outfile.2016090418_A06h")
 
@@ -243,7 +243,7 @@ def test_setup_subtract_method():
     var_info.fcst_level = "A06"
     var_info.obs_level = "A06"
     pcw.setup_subtract_method(time_info, var_info, rl)
-    in_files = pcw.get_input_files()
+    in_files = pcw.infiles
     out_file = pcw.get_output_path()    
     assert(len(in_files) == 2)
 
