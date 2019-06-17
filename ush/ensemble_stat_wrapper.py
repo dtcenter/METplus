@@ -175,28 +175,28 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
     def get_field_info(self, var_list, model_path, data_type):
         """!Get field info based on data type"""
         field_list = []
-        for var in var_list:
+        for var_info in var_list:
             if data_type == 'FCST':
-                level = var.fcst_level
-                thresh = var.fcst_thresh
-                name = var.fcst_name
-                extra = var.fcst_extra
+                level = var_info['fcst_level']
+                thresh = var_info['fcst_thresh']
+                name = var_info['fcst_name']
+                extra = var_info['fcst_extra']
             elif data_type == 'OBS':
-                level = var.obs_level
-                thresh = var.obs_thresh
-                name = var.obs_name
-                extra = var.obs_extra
+                level = var_info['obs_level']
+                thresh = var_info['obs_thresh']
+                name = var_info['obs_name']
+                extra = var_info['obs_extra']
             elif data_type == 'ENS':
-                if hasattr(var, 'ens_name'):
-                    level = var.ens_level
-                    thresh = var.ens_thresh
-                    name = var.ens_name
-                    extra = var.ens_extra
+                if 'ens_name' in var_info.keys():
+                    level = var_info['ens_level']
+                    thresh = var_info['ens_thresh']
+                    name = var_info['ens_name']
+                    extra = var_info['ens_extra']
                 else:
-                    level = var.fcst_level
-                    thresh = var.fcst_thresh
-                    name = var.fcst_name
-                    extra = var.fcst_extra
+                    level = var_info['fcst_level']
+                    thresh = var_info['fcst_thresh']
+                    name = var_info['fcst_name']
+                    extra = var_info['fcst_extra']
             else:
                 return ''
 

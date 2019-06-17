@@ -42,8 +42,8 @@ class GempakToCFWrapper(CommandBuilder):
             self.logger.error("Only 1 input file can be selected")
             return None
 
-        for f in self.infiles:
-            cmd += f + " "
+        for infile in self.infiles:
+            cmd += infile + " "
 
         if self.outfile == "":
             self.logger.error("No output file specified")

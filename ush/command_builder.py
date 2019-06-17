@@ -211,9 +211,9 @@ class CommandBuilder:
         if var_info is not None:
             # set level based on input data type
             if data_type.startswith("OBS"):
-                v_level = var_info.obs_level
+                v_level = var_info['obs_level']
             else:
-                v_level = var_info.fcst_level
+                v_level = var_info['fcst_level']
 
             # separate character from beginning of numeric level value if applicable
             level = util.split_level(v_level)[1]
@@ -262,6 +262,8 @@ class CommandBuilder:
                                             "%Y%m%d%H%M").strftime("%s"))
 
         # step through all files under input directory in sorted order
+        # pylint:disable=unused-variable
+        # os.walk returns a tuple. Not all returned values are needed.
         for dirpath, dirnames, all_files in os.walk(data_dir):
             for filename in sorted(all_files):
                 fullpath = os.path.join(dirpath, filename)

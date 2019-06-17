@@ -128,11 +128,11 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         lead = time_info['lead_hours']
 
         if dtype == "FCST":
-            compare_var = var_info.fcst_name
-            level = var_info.fcst_level
+            compare_var = var_info['fcst_name']
+            level = var_info['fcst_level']
         else:
-            compare_var = var_info.obs_name
-            level = var_info.obs_level
+            compare_var = var_info['obs_name']
+            level = var_info['obs_level']
 
         level_type, level = util.split_level(level)
 

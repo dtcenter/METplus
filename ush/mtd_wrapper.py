@@ -176,24 +176,24 @@ class MTDWrapper(ModeWrapper):
             self.process_fields_one_thresh(current_task, v, **arg_dict)
 
 
-    def run_single_mode(self, input_dict, v):
+    def run_single_mode(self, input_dict, var_info):
         single_list = []
 
         if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
             find_method = self.find_obs
-            s_name = v.obs_name
-            s_level = v.obs_level
+            s_name = var_info['obs_name']
+            s_level = var_info['obs_level']
         else:
             find_method = self.find_model
-            s_name = v.fcst_name
-            s_level = v.fcst_level
+            s_name = var_info['fcst_name']
+            s_level = var_info['fcst_level']
 
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             input_dict['lead_hours'] = lead
             current_task = time_util.ti_calculate(input_dict)
 
-            single_file = find_method(current_task, v)
+            single_file = find_method(current_task, var_info)
             if single_file is None:
                 self.logger.warning('Single file was not found for init {} and lead {}'.
                                     format(current_task['init_fmt'], current_task['lead_hours']))
@@ -217,23 +217,23 @@ class MTDWrapper(ModeWrapper):
             arg_dict['model_path'] = single_list_path
             arg_dict['obs_path'] = None
 
-        self.process_fields_one_thresh(current_task, v, **arg_dict)
+        self.process_fields_one_thresh(current_task, var_info, **arg_dict)
 
 
-    def process_fields_one_thresh(self, time_info, v, model_path, obs_path):
+    def process_fields_one_thresh(self, time_info, var_info, model_path, obs_path):
         """! For each threshold, set up environment variables and run mode
               Args:
                 @param time_info dictionary containing timing information
-                @param v var_info object containing variable information
+                @param var_info object containing variable information
                 @param model_path forecast file list path
                 @param obs_path observation file list path
         """
         # if no thresholds are specified, run once
         fcst_thresh_list = [0]
         obs_thresh_list = [0]
-        if len(v.fcst_thresh) != 0:
-            fcst_thresh_list = v.fcst_thresh
-            obs_thresh_list = v.obs_thresh
+        if len(var_info['fcst_thresh']) != 0:
+            fcst_thresh_list = var_info['fcst_thresh']
+            obs_thresh_list = var_info['obs_thresh']
 
         for fthresh, othresh in zip(fcst_thresh_list, obs_thresh_list):
             self.param = self.c_dict['CONFIG_FILE']
@@ -246,10 +246,10 @@ class MTDWrapper(ModeWrapper):
                            'OBS_CONV_RADIUS', 'OBS_CONV_THRESH' ]
             self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"] )
             self.add_env_var("MODEL", self.c_dict['MODEL'])
-            self.add_env_var("FCST_VAR", v.fcst_name)
+            self.add_env_var("FCST_VAR", var_info['fcst_name'])
             self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-            self.add_env_var("OBS_VAR", v.obs_name)
-            self.add_env_var("LEVEL", util.split_level(v.fcst_level)[1])
+            self.add_env_var("OBS_VAR", var_info['obs_name'])
+            self.add_env_var("LEVEL", util.split_level(var_info['fcst_level'])[1])
             self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
             self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
 
@@ -257,7 +257,7 @@ class MTDWrapper(ModeWrapper):
             if self.c_dict['SINGLE_RUN']:
                 if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
                     self.set_fcst_file(obs_path)
-                    obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
+                    obs_field = self.get_one_field_info(var_info['obs_name'], var_info['obs_level'], var_info['obs_extra'],
                                                         othresh, 'OBS')
                     self.add_env_var("FCST_FIELD", obs_field)
                     self.add_env_var("OBS_FIELD", obs_field)
@@ -267,7 +267,7 @@ class MTDWrapper(ModeWrapper):
                     self.add_env_var("FCST_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
                 else:
                     self.set_fcst_file(model_path)
-                    fcst_field = self.get_one_field_info(v.fcst_name, v.fcst_level, v.fcst_extra,
+                    fcst_field = self.get_one_field_info(var_info['fcst_name'], var_info['fcst_level'], var_info['fcst_extra'],
                                                          fthresh, 'FCST')
                     self.add_env_var("FCST_FIELD", fcst_field)
                     self.add_env_var("OBS_FIELD", fcst_field)
@@ -283,9 +283,9 @@ class MTDWrapper(ModeWrapper):
                 self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"] )
                 self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
 
-                fcst_field = self.get_one_field_info(v.fcst_name, v.fcst_level, v.fcst_extra,
+                fcst_field = self.get_one_field_info(var_info['fcst_name'], var_info['fcst_level'], var_info['fcst_extra'],
                                                      fthresh, 'FCST')
-                obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
+                obs_field = self.get_one_field_info(var_info['obs_name'], var_info['obs_level'], var_info['obs_extra'],
                                                     othresh, 'OBS')
 
                 self.add_env_var("FCST_FIELD", fcst_field)

@@ -150,9 +150,9 @@ class ModeWrapper(CompareGriddedWrapper):
         # if no thresholds are specified, run once
         fcst_thresh_list = [None]
         obs_thresh_list = [None]
-        if len(var_info.fcst_thresh) != 0:
-            fcst_thresh_list = var_info.fcst_thresh
-            obs_thresh_list = var_info.obs_thresh
+        if len(var_info['fcst_thresh']) != 0:
+            fcst_thresh_list = var_info['fcst_thresh']
+            obs_thresh_list = var_info['obs_thresh']
         elif self.c_dict['FCST_IS_PROB']:
             self.logger.error('Must specify field threshold value to '+\
                               'process probabilistic forecast')
@@ -165,13 +165,13 @@ class ModeWrapper(CompareGriddedWrapper):
             self.infiles.append(obs_path)
             self.add_merge_config_file()
 
-            fcst_field = self.get_one_field_info(var_info.fcst_name,
-                                                 var_info.fcst_level,
-                                                 var_info.fcst_extra,
+            fcst_field = self.get_one_field_info(var_info['fcst_name'],
+                                                 var_info['fcst_level'],
+                                                 var_info['fcst_extra'],
                                                  fthresh, 'FCST')
-            obs_field = self.get_one_field_info(var_info.obs_name,
-                                                var_info.obs_level,
-                                                var_info.obs_extra,
+            obs_field = self.get_one_field_info(var_info['obs_name'],
+                                                var_info['obs_level'],
+                                                var_info['obs_extra'],
                                                 othresh, 'OBS')
 
             print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
@@ -185,9 +185,9 @@ class ModeWrapper(CompareGriddedWrapper):
 
             self.add_env_var("MODEL", self.c_dict['MODEL'])
             self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-            self.add_env_var("FCST_VAR", var_info.fcst_name)
-            self.add_env_var("OBS_VAR", var_info.obs_name)
-            self.add_env_var("LEVEL", util.split_level(var_info.fcst_level)[1])
+            self.add_env_var("FCST_VAR", var_info['fcst_name'])
+            self.add_env_var("OBS_VAR", var_info['obs_name'])
+            self.add_env_var("LEVEL", util.split_level(var_info['fcst_level'])[1])
             self.add_env_var("FCST_FIELD", fcst_field)
             self.add_env_var("OBS_FIELD", obs_field)
             self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])

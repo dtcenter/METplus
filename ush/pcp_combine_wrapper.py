@@ -548,9 +548,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
 
         if rl == 'FCST':
-            accum = var_info.fcst_level
+            accum = var_info['fcst_level']
         else:
-            accum = var_info.obs_level
+            accum = var_info['obs_level']
 
         if accum[0].isalpha():
             accum = accum[1:]
@@ -616,7 +616,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         in_dir, in_template = self.get_dir_and_template(rl, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
 
-        out_accum = var_info.obs_level
+        out_accum = var_info['obs_level']
         if out_accum[0].isalpha():
             out_accum = out_accum[1:]
 
@@ -663,11 +663,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.set_method("ADD")
 
         if data_src == "FCST":
-            accum = var_info.fcst_level
-            compare_var = var_info.fcst_name
+            accum = var_info['fcst_level']
+            compare_var = var_info['fcst_name']
         else:
-            accum = var_info.obs_level
-            compare_var = var_info.obs_name
+            accum = var_info['obs_level']
+            compare_var = var_info['obs_name']
 
         if accum[0].isalpha():
             accum = accum[1:]
@@ -711,13 +711,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         # set field info
         if data_src == "FCST":
-            self.field_level = var_info.fcst_level
-            self.field_name = var_info.fcst_name
-            self.field_extra = var_info.fcst_extra
+            self.field_level = var_info['fcst_level']
+            self.field_name = var_info['fcst_name']
+            self.field_extra = var_info['fcst_extra']
         else:
-            self.field_level = var_info.obs_level
-            self.field_name = var_info.obs_name
-            self.field_extra = var_info.obs_extra
+            self.field_level = var_info['obs_level']
+            self.field_name = var_info['obs_name']
+            self.field_extra = var_info['obs_extra']
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')

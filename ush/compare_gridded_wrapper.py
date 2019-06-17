@@ -203,14 +203,14 @@ that reformat gridded data
         self.infiles.append(obs_path)
 
         # get field info field a single field to pass to the MET config file
-        fcst_field = self.get_one_field_info(var_info.fcst_level,
-                                             var_info.fcst_thresh,
-                                             var_info.fcst_name,
-                                             var_info.fcst_extra, 'FCST')
-        obs_field = self.get_one_field_info(var_info.obs_level,
-                                            var_info.obs_thresh,
-                                            var_info.obs_name,
-                                            var_info.obs_extra, 'OBS')
+        fcst_field = self.get_one_field_info(var_info['fcst_level'],
+                                             var_info['fcst_thresh'],
+                                             var_info['fcst_name'],
+                                             var_info['fcst_extra'], 'FCST')
+        obs_field = self.get_one_field_info(var_info['obs_level'],
+                                            var_info['obs_thresh'],
+                                            var_info['obs_name'],
+                                            var_info['obs_extra'], 'OBS')
 
         self.process_fields(time_info, fcst_field, obs_field)
 
@@ -241,14 +241,14 @@ that reformat gridded data
         fcst_field_list = []
         obs_field_list = []
         for var_info in self.c_dict['var_list']:
-            next_fcst = self.get_one_field_info(var_info.fcst_level,
-                                                var_info.fcst_thresh,
-                                                var_info.fcst_name,
-                                                var_info.fcst_extra, 'FCST')
-            next_obs = self.get_one_field_info(var_info.obs_level,
-                                               var_info.obs_thresh,
-                                               var_info.obs_name,
-                                               var_info.obs_extra, 'OBS')
+            next_fcst = self.get_one_field_info(var_info['fcst_level'],
+                                                var_info['fcst_thresh'],
+                                                var_info['fcst_name'],
+                                                var_info['fcst_extra'], 'FCST')
+            next_obs = self.get_one_field_info(var_info['obs_level'],
+                                               var_info['obs_thresh'],
+                                               var_info['obs_name'],
+                                               var_info['obs_extra'], 'OBS')
             fcst_field_list.append(next_fcst)
             obs_field_list.append(next_obs)
         fcst_field = ','.join(fcst_field_list)
@@ -352,9 +352,9 @@ that reformat gridded data
         # set environment variables needed for MET application
         self.add_env_var("MODEL", self.c_dict['MODEL'])
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-        self.add_env_var("FCST_VAR", var_info.fcst_name)
-        self.add_env_var("OBS_VAR", var_info.obs_name)
-        self.add_env_var("LEVEL", var_info.fcst_level)
+        self.add_env_var("FCST_VAR", var_info['fcst_name'])
+        self.add_env_var("OBS_VAR", var_info['obs_name'])
+        self.add_env_var("LEVEL", var_info['fcst_level'])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
         self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])

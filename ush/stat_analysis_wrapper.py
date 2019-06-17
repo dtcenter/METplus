@@ -891,15 +891,15 @@ class StatAnalysisWrapper(CommandBuilder):
                  exit(1)
             #loop through variable information
             for var_info in var_list:
-                fcst_var_name = var_info.fcst_name
-                fcst_var_level = var_info.fcst_level
-                fcst_var_thresh_list = var_info.fcst_thresh
-                fcst_var_extra = var_info.fcst_extra
-                obs_var_name = var_info.obs_name
-                obs_var_level = var_info.obs_level
-                obs_var_thresh_list = var_info.obs_thresh
-                obs_var_extra = var_info.obs_extra
-                var_info_index = var_info.index
+                fcst_var_name = var_info['fcst_name']
+                fcst_var_level = var_info['fcst_level']
+                fcst_var_thresh_list = var_info['fcst_thresh']
+                fcst_var_extra = var_info['fcst_extra']
+                obs_var_name = var_info['obs_name']
+                obs_var_level = var_info['obs_level']
+                obs_var_thresh_list = var_info['obs_thresh']
+                obs_var_extra = var_info['obs_extra']
+                var_info_index = var_info['index']
                 self.add_env_var('FCST_VAR_NAME', '"'+fcst_var_name+'"')
                 self.add_env_var('FCST_VAR_LEVEL', '"'+fcst_var_level+'"')
                 self.add_env_var('OBS_VAR_NAME', '"'+obs_var_name+'"')

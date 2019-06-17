@@ -182,9 +182,9 @@ class PointStatWrapper(CompareGriddedWrapper):
         # get field information
         fcst_field_list = []
         obs_field_list = []
-        for v in var_list:
-            next_fcst = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name, v.fcst_extra, 'FCST')
-            next_obs = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra, 'OBS')
+        for var_info in var_list:
+            next_fcst = self.get_one_field_info(var_info['fcst_level'], var_info['fcst_thresh'], var_info['fcst_name'], var_info['fcst_extra'], 'FCST')
+            next_obs = self.get_one_field_info(var_info['obs_level'], var_info['obs_thresh'], var_info['obs_name'], var_info['obs_extra'], 'OBS')
             fcst_field_list.append(next_fcst)
             obs_field_list.append(next_obs)
         fcst_field = ','.join(fcst_field_list)
