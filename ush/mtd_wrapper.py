@@ -126,9 +126,9 @@ class MTDWrapper(ModeWrapper):
 #        file_interval = self.c_dict['FILE_INTERVAL']
 
         lead_seq = util.get_lead_sequence(self.config, input_dict)
-        for v in var_list:
+        for var_info in var_list:
             if self.c_dict['SINGLE_RUN']:
-                self.run_single_mode(input_dict, v)
+                self.run_single_mode(input_dict, var_info)
                 continue
 
             model_list = []
@@ -142,8 +142,8 @@ class MTDWrapper(ModeWrapper):
 
             for current_task in tasks:
                 # call find_model/obs as needed
-                model_file = self.find_model(current_task, v)
-                obs_file = self.find_obs(current_task, v)
+                model_file = self.find_model(current_task, var_info)
+                obs_file = self.find_obs(current_task, var_info)
                 if model_file is None and obs_file is None:
                     self.logger.warning('Obs and fcst files were not found for init {} and lead {}'.
                                         format(current_task['init_fmt'], current_task['lead_hours']))
@@ -165,15 +165,15 @@ class MTDWrapper(ModeWrapper):
             # write ascii file with list of files to process
             input_dict['lead_hours'] = 0
             time_info = time_util.ti_calculate(input_dict)
-            model_outfile = time_info['valid_fmt'] + '_mtd_fcst_' + v.fcst_name + '.txt'
-            obs_outfile = time_info['valid_fmt'] + '_mtd_obs_' + v.obs_name + '.txt'
+            model_outfile = time_info['valid_fmt'] + '_mtd_fcst_' + var_info['fcst_name'] + '.txt'
+            obs_outfile = time_info['valid_fmt'] + '_mtd_obs_' + var_info['obs_name'] + '.txt'
             model_list_path = self.write_list_file(model_outfile, model_list)
             obs_list_path = self.write_list_file(obs_outfile, obs_list)
 
             arg_dict = {'obs_path' : obs_list_path,
                         'model_path' : model_list_path }
 
-            self.process_fields_one_thresh(current_task, v, **arg_dict)
+            self.process_fields_one_thresh(current_task, var_info, **arg_dict)
 
 
     def run_single_mode(self, input_dict, var_info):
@@ -357,9 +357,6 @@ class MTDWrapper(ModeWrapper):
 
         if self.outdir != "":
             cmd += '-outdir {}'.format(self.outdir)
-
-        if self.verbose != -1:
-            cmd += "-v "+str(self.verbose) + " "
 
         return cmd
 

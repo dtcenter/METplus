@@ -179,13 +179,13 @@ def test_setup_add_method():
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("2016090418", '%Y%m%d%H')
     time_info = time_util.ti_calculate(task_info)
-    var_info = util.FieldObj()
-    var_info.fcst_name = "APCP"
-    var_info.obs_name = "ACPCP"
-    var_info.fcst_extra = ""
-    var_info.obs_extra = ""
-    var_info.fcst_level = "A06"
-    var_info.obs_level = "A06"
+    var_info = {}
+    var_info['fcst_name'] = "APCP"
+    var_info['obs_name'] = "ACPCP"
+    var_info['fcst_extra'] = ""
+    var_info['obs_extra'] = ""
+    var_info['fcst_level'] = "A06"
+    var_info['obs_level'] = "A06"
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
     output_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
     pcw.setup_add_method(time_info, var_info, rl)
@@ -213,13 +213,13 @@ def test_setup_sum_method():
     task_info['valid'] = datetime.datetime.strptime("2016090418", '%Y%m%d%H')
     task_info['lead'] = 0
     time_info = time_util.ti_calculate(task_info)
-    var_info = util.FieldObj()
-    var_info.fcst_name = "APCP"
-    var_info.obs_name = "ACPCP"
-    var_info.fcst_extra = ""
-    var_info.obs_extra = ""
-    var_info.fcst_level = "A06"
-    var_info.obs_level = "A06"
+    var_info = {}
+    var_info['fcst_name'] = "APCP"
+    var_info['obs_name'] = "ACPCP"
+    var_info['fcst_extra'] = ""
+    var_info['obs_extra'] = ""
+    var_info['fcst_level'] = "A06"
+    var_info['obs_level'] = "A06"
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
     output_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
     pcw.setup_sum_method(time_info, var_info, rl)
@@ -235,13 +235,13 @@ def test_setup_subtract_method():
     task_info['valid'] = datetime.datetime.strptime("201609050000", '%Y%m%d%H%M')
     task_info['lead_hours'] = 9
     time_info = time_util.ti_calculate(task_info)
-    var_info = util.FieldObj()
-    var_info.fcst_name = "APCP"
-    var_info.obs_name = "ACPCP"
-    var_info.fcst_extra = ""
-    var_info.obs_extra = ""
-    var_info.fcst_level = "A06"
-    var_info.obs_level = "A06"
+    var_info = {}
+    var_info['fcst_name'] = "APCP"
+    var_info['obs_name'] = "ACPCP"
+    var_info['fcst_extra'] = ""
+    var_info['obs_extra'] = ""
+    var_info['fcst_level'] = "A06"
+    var_info['obs_level'] = "A06"
     pcw.setup_subtract_method(time_info, var_info, rl)
     in_files = pcw.infiles
     out_file = pcw.get_output_path()    
