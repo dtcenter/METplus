@@ -208,7 +208,7 @@ class CommandBuilder:
         # get time info
         valid_time = time_info['valid_fmt']
 
-        if var_info != None:
+        if var_info is not None:
             # set level based on input data type
             if data_type.startswith("OBS"):
                 v_level = var_info.obs_level
@@ -342,7 +342,7 @@ class CommandBuilder:
         for arg in self.args:
             cmd += arg + " "
 
-        if len(self.infiles) == 0:
+        if not self.infiles:
             self.logger.error("No input filenames specified")
             return None
 
