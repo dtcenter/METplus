@@ -5,7 +5,7 @@ Program Name: grid_stat_wrapper.py
 Contact(s): George McCabe
 Abstract:
 History Log:  Initial version
-Usage: 
+Usage:
 Parameters: None
 Input Files:
 Output Files:
@@ -18,10 +18,12 @@ import os
 import met_util as util
 from compare_gridded_wrapper import CompareGriddedWrapper
 
-'''!@namespace GridStatWrapper
+# pylint:disable=pointless-string-statement
+"""!@namespace GridStatWrapper
 @brief Wraps the MET tool grid_stat to compare gridded datasets
 @endcode
-'''
+"""
+
 class GridStatWrapper(CompareGriddedWrapper):
     '''!Wraps the MET tool grid_stat to compare gridded datasets
     '''
@@ -40,7 +42,7 @@ class GridStatWrapper(CompareGriddedWrapper):
           self.config.getdir('OBS_GRID_STAT_INPUT_DIR', self.config.getdir('OUTPUT_BASE'))
         c_dict['OBS_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
-                               'OBS_GRID_STAT_INPUT_TEMPLATE')
+                             'OBS_GRID_STAT_INPUT_TEMPLATE')
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_GRID_STAT_INPUT_DATATYPE', '')
 
@@ -48,7 +50,7 @@ class GridStatWrapper(CompareGriddedWrapper):
           self.config.getdir('FCST_GRID_STAT_INPUT_DIR', self.config.getdir('OUTPUT_BASE'))
         c_dict['FCST_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
-                               'FCST_GRID_STAT_INPUT_TEMPLATE')
+                             'FCST_GRID_STAT_INPUT_TEMPLATE')
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
 
@@ -60,18 +62,23 @@ class GridStatWrapper(CompareGriddedWrapper):
               self.config.getdir('CLIMO_GRID_STAT_INPUT_DIR', '')
             c_dict['CLIMO_INPUT_TEMPLATE'] = \
               self.config.getraw('filename_templates',
-                                   'CLIMO_GRID_STAT_INPUT_TEMPLATE')
+                                 'CLIMO_GRID_STAT_INPUT_TEMPLATE')
 
-        c_dict['OUTPUT_DIR'] =  self.config.getdir('GRID_STAT_OUTPUT_DIR', self.config.getdir('OUTPUT_BASE'))
+        c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_STAT_OUTPUT_DIR',
+                                                  self.config.getdir('OUTPUT_BASE'))
         c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
-                                                        'GRID_STAT_ONCE_PER_FIELD',
-                                                        False)
-        c_dict['FCST_PROB_THRESH'] = self.config.getstr('config', 'FCST_GRID_STAT_PROB_THRESH', '==0.1')
-        c_dict['OBS_PROB_THRESH'] = self.config.getstr('config', 'OBS_GRID_STAT_PROB_THRESH', '==0.1')
+                                                       'GRID_STAT_ONCE_PER_FIELD',
+                                                       False)
+        c_dict['FCST_PROB_THRESH'] = self.config.getstr('config',
+                                                        'FCST_GRID_STAT_PROB_THRESH', '==0.1')
+        c_dict['OBS_PROB_THRESH'] = self.config.getstr('config',
+                                                       'OBS_GRID_STAT_PROB_THRESH', '==0.1')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
-        c_dict['NEIGHBORHOOD_WIDTH'] = self.config.getstr('config', 'GRID_STAT_NEIGHBORHOOD_WIDTH', '')
-        c_dict['NEIGHBORHOOD_SHAPE'] = self.config.getstr('config', 'GRID_STAT_NEIGHBORHOOD_SHAPE', '')
+        c_dict['NEIGHBORHOOD_WIDTH'] = self.config.getstr('config',
+                                                          'GRID_STAT_NEIGHBORHOOD_WIDTH', '')
+        c_dict['NEIGHBORHOOD_SHAPE'] = self.config.getstr('config',
+                                                          'GRID_STAT_NEIGHBORHOOD_SHAPE', '')
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
                                'GRID_STAT_VERIFICATION_MASK_TEMPLATE')
@@ -85,4 +92,4 @@ class GridStatWrapper(CompareGriddedWrapper):
 
 
 if __name__ == "__main__":
-        util.run_stand_alone("grid_stat_wrapper", "GridStat")
+    util.run_stand_alone("grid_stat_wrapper", "GridStat")
