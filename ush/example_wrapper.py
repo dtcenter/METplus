@@ -36,11 +36,11 @@ class ExampleWrapper(CommandBuilder):
                                      'bin/app_name')
         self.app_name = os.path.basename(self.app_path)
         self.c_dict = self.create_c_dict()
-                        
+
     def create_c_dict(self):
         # change to super() for python 3
-        # c_dict = super() 
-        c_dict = super(CommandBuilder, self).create_c_dict()
+        # c_dict = super()
+        c_dict = super(ExampleWrapper, self).create_c_dict()
         # get values from config object and set them to be accessed by wrapper
         c_dict['EXAMPLE'] = self.config.getstr('config', 'LOOP_BY')
         return c_dict
