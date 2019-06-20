@@ -164,7 +164,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                    input_template,
                                    level=(int(f_level)*3600),
                                    **time_info)
-        infile = os.path.join(input_dir, string_sub.doStringSub())
+        infile = os.path.join(input_dir, string_sub.do_string_sub())
 
         infile = util.preprocess_file(infile,
                                       self.config.getstr('config',
@@ -188,7 +188,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                    output_template,
                                    level=(int(f_level)*3600),
                                    **time_info)
-        outfile = string_sub.doStringSub()
+        outfile = string_sub.do_string_sub()
         self.set_output_path(os.path.join(output_dir, outfile))
 
         outpath = self.get_output_path()
