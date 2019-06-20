@@ -27,7 +27,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
     '''!Wraps the MET tool regrid_data_plane to reformat gridded datasets
     '''
     def __init__(self, config, logger):
-        super(RegridDataPlaneWrapper, self).__init__(config, logger)x
+        super(RegridDataPlaneWrapper, self).__init__(config, logger)
         self.app_name = 'regrid_data_plane'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
