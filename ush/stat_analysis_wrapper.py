@@ -247,7 +247,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 tmpl_chunkSts = sts.StringSub(self.logger,
                                               tmpl_chunk,
                                               **tmpl_time_info)
-                filled_tmpl_chunk = tmpl_chunkSts.doStringSub()
+                filled_tmpl_chunk = tmpl_chunkSts.do_string_sub()
             else:
                 filled_tmpl_chunk = tmpl_chunk
             filled_tmpl = os.path.join(filled_tmpl, filled_tmpl_chunk)
@@ -983,7 +983,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                                 model_dir_chunkSts = sts.StringSub(self.logger,
                                                                                    model_dir_chunk,
                                                                                    **model_dir_time_info)
-                                                filled_model_dir_chunk = model_dir_chunkSts.doStringSub()
+                                                filled_model_dir_chunk = model_dir_chunkSts.do_string_sub()
                                             else:
                                                 filled_model_dir_chunk = model_dir_chunk
                                             filled_model_dir = os.path.join(filled_model_dir, filled_model_dir_chunk)
