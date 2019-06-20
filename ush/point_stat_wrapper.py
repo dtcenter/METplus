@@ -30,9 +30,9 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.app_path = os.path.join(met_install_dir, 'bin/point_stat')
         self.app_name = os.path.basename(self.app_path)
 
-        self.c_dict = self.create_point_stat_dict()
+        self.c_dict = self.create_c_dict()
 
-    def create_point_stat_dict(self):
+    def create_c_dict(self):
         """! Create a dictionary that holds all the values set in the
              METplus config file for the point-stat wrapper.
 
