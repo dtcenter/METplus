@@ -465,7 +465,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 cmd += " level=\""+self.field_level+"\";"
             if self.field_extra != "":
                 cmd += ' ' + self.field_extra
-            cmd += "'"
+            cmd += "' "
 
         if self.outfile == "":
             self.logger.error("No output filename specified")
@@ -481,7 +481,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if not os.path.exists(os.path.dirname(out_path)):
             os.makedirs(os.path.dirname(out_path))
 
-        cmd += " " + out_path
+        cmd += out_path
 
         if self.pcp_dir != "":
             cmd += " -pcpdir "+self.pcp_dir
