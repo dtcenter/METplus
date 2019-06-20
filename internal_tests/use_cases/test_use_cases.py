@@ -48,7 +48,7 @@ def run_test_use_case(param_a, param_b, run_a, run_b):
     p, p_b = get_params(param_a, param_b)
     # run A
     if run_a:
-        cmd = os.path.join(p.getdir("METPLUS_BASE"),"ush","master_metplus.py")
+        cmd = os.path.join("/d1/mccabe/METplus.a", "ush", "master_metplus.py")
         for parm in params_a:
             cmd += " -c "+parm
         print("CMD A:"+cmd)
@@ -57,7 +57,7 @@ def run_test_use_case(param_a, param_b, run_a, run_b):
 
     # run B
     if run_b:
-        cmd = os.path.join(p_b.getdir("METPLUS_BASE"),"ush","master_metplus.py")
+        cmd = os.path.join("/d1/mccabe/METplus.b", "ush", "master_metplus.py")
         for parm in params_b:
             cmd += " -c "+parm
         print("CMD B:"+cmd)
@@ -226,10 +226,6 @@ def main():
 #                    use_case_dir+"/qpf/examples/hrefmean-vs-qpe-gempak.conf" ,
                     use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf" ,
                     use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" ,
-#                    use_case_dir+"/feature_relative/feature_relative.conf",
-#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" ,
-#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" ,
-#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_by_fhr_grouping.conf" ,
                     use_case_dir+"/grid_to_grid/examples/anom.conf" ,
                     use_case_dir+"/grid_to_grid/examples/anom_height.conf",
                     use_case_dir+"/grid_to_grid/examples/sfc.conf" ,
@@ -237,9 +233,13 @@ def main():
                     use_case_dir+"/grid_to_grid/examples/precip_continuous.conf" ,
                     use_case_dir+"/mode/examples/hrefmean-vs-mrms-qpe.conf",
                     use_case_dir+"/mode/examples/phpt-vs-qpe.conf",
-                    use_case_dir+"/ensemble/examples/hrrr_ensemble_sfc.conf" #,
-#                   use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/conus_surface.conf",
-#                   use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/upper_air.conf"
+                    use_case_dir+"/ensemble/examples/hrrr_ensemble_sfc.conf" ,
+                   use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/conus_surface.conf",
+                   use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/upper_air.conf",
+                    use_case_dir+"/feature_relative/feature_relative.conf",
+                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" ,
+                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" ,
+                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_by_fhr_grouping.conf"
                   ]
 
     all_good = True
