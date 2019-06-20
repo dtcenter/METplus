@@ -31,9 +31,9 @@ class GempakToCFWrapper(CommandBuilder):
         super(GempakToCFWrapper, self).__init__(config, logger)
         self.app_name = "GempakToCF"
         self.class_path = self.config.getstr('exe', 'GEMPAKTOCF_CLASSPATH')
-        self.logger = logger
-        if self.logger is None:
-            self.logger = util.get_logger(self.config, sublog='GempakToCF')
+#        self.logger = logger
+#        if self.logger is None:
+#            self.logger = util.get_logger(self.config, sublog='GempakToCF')
 
     def get_command(self):
         cmd = "java -classpath " + self.class_path + " GempakToCF "

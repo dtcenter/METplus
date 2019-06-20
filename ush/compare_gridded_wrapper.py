@@ -42,7 +42,7 @@ that reformat gridded data
             Allows developer to reference config items without having to know
             the type and consolidates config get calls so it is easier to see
             which config variables are used in the wrapper"""
-        c_dict = dict()
+        c_dict = super(CompareGriddedWrapper, self).create_c_dict()
         c_dict['var_list'] = util.parse_var_list(self.config)
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
         c_dict['OBTYPE'] = self.config.getstr('config', 'OBTYPE', 'OBS')
@@ -87,7 +87,7 @@ that reformat gridded data
 
         return c_dict
 
-    def handle_window_once(self, c_dict, dtype, edge):
+    def handle_window_once(self, c_dict, dtype, edge, app_name):
         """! Check and set window dictionary variables like
               OBS_WINDOW_BEG or FCST_FILE_WINDW_END
               Args:
@@ -95,7 +95,7 @@ that reformat gridded data
                 @param dtype type of data 'FCST' or 'OBS'
                 @param edge either 'BEGIN' or 'END'
         """
-        app = self.app_name.upper()
+        app = app_name.upper()
 
         # if value specific to given wrapper is set, override value
         if self.config.has_option('config',
@@ -115,7 +115,7 @@ that reformat gridded data
             c_dict[dtype + '_FILE_WINDOW_' + edge] = \
                 c_dict[dtype + '_WINDOW_' + edge]
 
-    def handle_window_variables(self, c_dict):
+    def handle_window_variables(self, c_dict, app_name):
         """! Handle all window config variables like
               [FCST/OBS]_<app_name>_WINDOW_[BEGIN/END] and
               [FCST/OBS]_<app_name>_FILE_WINDOW_[BEGIN/END]
@@ -127,7 +127,7 @@ that reformat gridded data
 
         for dtype in dtypes:
             for edge in edges:
-                self.handle_window_once(c_dict, dtype, edge)
+                self.handle_window_once(c_dict, dtype, edge, app_name)
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops

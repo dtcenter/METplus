@@ -45,14 +45,12 @@ class TcPairsWrapper(CommandBuilder):
 
     def __init__(self, config, logger):
         super(TcPairsWrapper, self).__init__(config, logger)
-        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                     'bin/tc_pairs')
-        self.app_name = os.path.basename(self.app_path)
-        self.cmd = ''
+        self.app_name = 'tc_pairs'
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                     'bin', self.app_name)
         self.adeck = []
         self.bdeck = []
         self.edeck = []
-        self.c_dict = self.create_c_dict()
 
     def create_c_dict(self):
         """! Create a dictionary containing all the values set in the config file.
@@ -64,7 +62,7 @@ class TcPairsWrapper(CommandBuilder):
                  c_dict - A dictionary of the values from the config file
 
         """
-        c_dict = dict()
+        c_dict = super(TcPairsWrapper, self).create_c_dict()
         c_dict['MISSING_VAL_TO_REPLACE'] =\
             self.config.getstr('config', 'TC_PAIRS_MISSING_VAL_TO_REPLACE', '-99')
         c_dict['MISSING_VAL'] =\

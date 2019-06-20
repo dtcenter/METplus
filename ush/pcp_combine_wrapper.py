@@ -36,9 +36,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     precipitation accumulations"""
     def __init__(self, config, logger):
         super(PcpCombineWrapper, self).__init__(config, logger)
-        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                     'bin/pcp_combine')
-        self.app_name = os.path.basename(self.app_path)
+        self.app_name = 'pcp_combine'
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                     'bin', self.app_name)
         self.inaddons = []
         self.method = ""
         self.pcp_dir = ""
@@ -52,52 +52,52 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.name = ""
         self.logfile = ""
         self.compress = -1
-        self.create_c_dict()
-
 
     def create_c_dict(self):
-        self.c_dict = dict()
-        self.c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
+        c_dict = super(PcpCombineWrapper, self).create_c_dict()
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
 
         if self.config.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
-            self.set_fcst_or_obs_dict_items('FCST')
+            c_dict = self.set_fcst_or_obs_dict_items('FCST', c_dict)
 
         if self.config.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
-            self.set_fcst_or_obs_dict_items('OBS')
+            c_dict = self.set_fcst_or_obs_dict_items('OBS', c_dict)
+
+        return c_dict
 
 
-    def set_fcst_or_obs_dict_items(self, d_type):
-        self.c_dict[d_type+'_MIN_FORECAST'] = self.config.getint('config', d_type+'_PCP_COMBINE_MIN_FORECAST', 0)
-        self.c_dict[d_type+'_MAX_FORECAST'] = self.config.getint('config', d_type+'_PCP_COMBINE_MAX_FORECAST', 256)
-        self.c_dict[d_type+'_INPUT_DATATYPE'] = self.config.getstr('config',
+    def set_fcst_or_obs_dict_items(self, d_type, c_dict):
+        c_dict[d_type+'_MIN_FORECAST'] = self.config.getint('config', d_type+'_PCP_COMBINE_MIN_FORECAST', 0)
+        c_dict[d_type+'_MAX_FORECAST'] = self.config.getint('config', d_type+'_PCP_COMBINE_MAX_FORECAST', 256)
+        c_dict[d_type+'_INPUT_DATATYPE'] = self.config.getstr('config',
                                               d_type+'_PCP_COMBINE_INPUT_DATATYPE', '')
-        self.c_dict[d_type+'_DATA_INTERVAL'] = self.config.getint('config', d_type+'_PCP_COMBINE_DATA_INTERVAL', 1)
-        self.c_dict[d_type+'_TIMES_PER_FILE'] = self.config.getint('config', d_type+'_PCP_COMBINE_TIMES_PER_FILE', -1)
-        self.c_dict[d_type+'_IS_DAILY_FILE'] = self.config.getbool('config', d_type+'_PCP_COMBINE_IS_DAILY_FILE', False)
-        self.c_dict[d_type+'_LEVEL'] = self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_LEVEL', '-1')
-        self.c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
-        self.c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+        c_dict[d_type+'_DATA_INTERVAL'] = self.config.getint('config', d_type+'_PCP_COMBINE_DATA_INTERVAL', 1)
+        c_dict[d_type+'_TIMES_PER_FILE'] = self.config.getint('config', d_type+'_PCP_COMBINE_TIMES_PER_FILE', -1)
+        c_dict[d_type+'_IS_DAILY_FILE'] = self.config.getbool('config', d_type+'_PCP_COMBINE_IS_DAILY_FILE', False)
+        c_dict[d_type+'_LEVEL'] = self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_LEVEL', '-1')
+        c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
+        c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_INPUT_TEMPLATE')
-        self.c_dict[d_type+'_OUTPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_OUTPUT_DIR', '')
-        self.c_dict[d_type+'_OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+        c_dict[d_type+'_OUTPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_OUTPUT_DIR', '')
+        c_dict[d_type+'_OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_OUTPUT_TEMPLATE')
-        self.c_dict[d_type+'_STAT_LIST'] = \
+        c_dict[d_type+'_STAT_LIST'] = \
             util.getlist(self.config.getstr('config',
                                        d_type+'_PCP_COMBINE_STAT_LIST', ''))
 
-        self.c_dict[d_type+'_RUN_METHOD'] = \
+        c_dict[d_type+'_RUN_METHOD'] = \
             self.config.getstr('config', d_type+'_PCP_COMBINE_METHOD')
 
-        if self.c_dict[d_type+'_RUN_METHOD'] == 'DERIVE' and \
-           len(self.c_dict[d_type+'_STAT_LIST']) == 0:
+        if c_dict[d_type+'_RUN_METHOD'] == 'DERIVE' and \
+           len(c_dict[d_type+'_STAT_LIST']) == 0:
             self.logger.error('Statistic list is empty. ' + \
               'Must set ' + d_type + '_PCP_COMBINE_STAT_LIST if running ' +\
                               'derive mode')
             exit(1)
 
-        self.c_dict[d_type+'_DERIVE_LOOKBACK'] = \
+        c_dict[d_type+'_DERIVE_LOOKBACK'] = \
             self.config.getint('config', d_type+'_PCP_COMBINE_DERIVE_LOOKBACK', 0)
-
+        return c_dict
 
     def clear(self):
         super(PcpCombineWrapper, self).clear()

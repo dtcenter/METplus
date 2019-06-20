@@ -20,12 +20,11 @@ from compare_gridded_wrapper import CompareGriddedWrapper
 
 class ModeWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""
-    def __init__(self, p, logger):
-        super(ModeWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                     'bin/mode')
-        self.app_name = os.path.basename(self.app_path)
-        self.c_dict = self.create_c_dict()
+    def __init__(self, config, logger):
+        super(ModeWrapper, self).__init__(config, logger)
+        self.app_name = 'mode'
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                     'bin', self.app_name)
 
     def add_merge_config_file(self):
         """!If merge config file is defined, add it to the command"""
@@ -85,7 +84,7 @@ class ModeWrapper(CompareGriddedWrapper):
         c_dict['MERGE_CONFIG_FILE'] = self.config.getstr('config', 'MODE_MERGE_CONFIG_FILE', '')
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict)
+        self.handle_window_variables(c_dict, 'mode')
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',

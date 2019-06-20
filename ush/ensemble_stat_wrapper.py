@@ -30,12 +30,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
     """
     def __init__(self, config, logger):
         super(EnsembleStatWrapper, self).__init__(config, logger)
-        self.met_install_dir = self.config.getdir('MET_INSTALL_DIR')
-        self.app_path = os.path.join(self.met_install_dir, 'bin/ensemble_stat')
-        self.app_name = os.path.basename(self.app_path)
-
-        # create the ensemble stat dictionary.
-        self.c_dict = self.create_c_dict()
+        self.app_name = 'ensemble_stat'
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                     'bin', self.app_name)
 
     def create_c_dict(self):
         """!Create a dictionary containing the values set in the config file
@@ -106,7 +103,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR')
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict)
+        self.handle_window_variables(c_dict, 'ensemble_stat')
 
         # need to set these so that find_data will succeed
         c_dict['OBS_POINT_WINDOW_BEGIN'] = c_dict['OBS_WINDOW_BEGIN']

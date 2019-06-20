@@ -32,10 +32,9 @@ class ExampleWrapper(CommandBuilder):
 
     def __init__(self, config, logger):
         super(ExampleWrapper, self).__init__(config, logger)
+        self.app_name = 'example'
         self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                     'bin/app_name')
-        self.app_name = os.path.basename(self.app_path)
-        self.c_dict = self.create_c_dict()
+                                     'bin', self.app_name)
 
     def create_c_dict(self):
         # change to super() for python 3

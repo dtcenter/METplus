@@ -29,11 +29,9 @@ class GridStatWrapper(CompareGriddedWrapper):
     '''
     def __init__(self, config, logger):
         super(GridStatWrapper, self).__init__(config, logger)
-        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                     'bin/grid_stat')
-        self.app_name = os.path.basename(self.app_path)
-        self.c_dict = self.create_c_dict()
-
+        self.app_name = 'grid_stat'
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                     'bin', self.app_name)
 
     def create_c_dict(self):
         c_dict = super(GridStatWrapper, self).create_c_dict()
@@ -86,7 +84,7 @@ class GridStatWrapper(CompareGriddedWrapper):
 
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict)
+        self.handle_window_variables(c_dict, 'grid_stat')
 
         return c_dict
 

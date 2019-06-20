@@ -21,14 +21,14 @@ from mode_wrapper import ModeWrapper
 
 class MTDWrapper(ModeWrapper):
 
-    def __init__(self, p, logger):
-        super(MTDWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                     'bin/mtd')
-        self.app_name = os.path.basename(self.app_path)
+    def __init__(self, config, logger):
+        super(MTDWrapper, self).__init__(config, logger)
+        self.app_name = 'mtd'
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                     'bin', self.app_name)
         self.fcst_file = None
         self.obs_file = None
-        self.c_dict = self.create_c_dict()
+#        self.c_dict = self.create_c_dict()
 
     def create_c_dict(self):
         c_dict = super(ModeWrapper, self).create_c_dict()
@@ -109,7 +109,7 @@ class MTDWrapper(ModeWrapper):
                 exit(1)
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict)
+        self.handle_window_variables(c_dict, 'mtd')
 
         return c_dict
 

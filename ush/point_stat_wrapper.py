@@ -26,11 +26,9 @@ class PointStatWrapper(CompareGriddedWrapper):
 
     def __init__(self, config, logger):
         super(PointStatWrapper, self).__init__(config, logger)
-        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
-        self.app_path = os.path.join(met_install_dir, 'bin/point_stat')
-        self.app_name = os.path.basename(self.app_path)
-
-        self.c_dict = self.create_c_dict()
+        self.app_name = 'point_stat'
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                     'bin', self.app_name)
 
     def create_c_dict(self):
         """! Create a dictionary that holds all the values set in the
@@ -85,7 +83,7 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.config.getstr('config', 'POINT_STAT_MESSAGE_TYPE', ''))
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict)
+        self.handle_window_variables(c_dict, 'point_stat')
 
         c_dict['NEIGHBORHOOD_WIDTH'] = self.config.getstr('config',
                                                           'POINT_STAT_NEIGHBORHOOD_WIDTH', '')

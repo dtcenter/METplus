@@ -40,8 +40,6 @@ class CommandBuilder:
         self.logger = logger
         self.config = ConfigWrapper(config, logger)
         self.debug = False
-        self.app_name = None
-        self.app_path = None
         self.args = []
         self.input_dir = ""
         self.infiles = []
@@ -52,12 +50,15 @@ class CommandBuilder:
         self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
         self.cmdrunner = CommandRunner(self.config, logger=self.logger)
         self.set_user_environment()
-        self.c_dict = {}
+        self.c_dict = self.create_c_dict()
         self.clear()
+
+    def create_c_dict(self):
+        return dict()
 
     def clear(self):
         """!Unset class variables to prepare for next run time
-        """
+x        """
         self.args = []
         self.input_dir = ""
         self.infiles = []

@@ -29,12 +29,9 @@ class PB2NCWrapper(CommandBuilder):
 
     def __init__(self, config, logger):
         super(PB2NCWrapper, self).__init__(config, logger)
-        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
-        self.app_path = os.path.join(met_install_dir, 'bin/pb2nc')
-        self.app_name = os.path.basename(self.app_path)
-
-        self.c_dict = self.create_c_dict()
-
+        self.app_name = 'pb2nc'
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                     'bin', self.app_name)
 
     def create_c_dict(self):
         """! Create a data structure (dictionary) that contains all the
@@ -48,7 +45,7 @@ class PB2NCWrapper(CommandBuilder):
                            metplus_data, metplus_system, and metplus_runtime
                            config files.
         """
-        c_dict = dict()
+        c_dict = super(PB2NCWrapper, self).create_c_dict()
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', False)
         c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'PB2NC_OFFSETS', '0'))
 
