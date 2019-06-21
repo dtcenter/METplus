@@ -32,15 +32,14 @@ class ExampleWrapper(CommandBuilder):
 
     def __init__(self, config, logger):
         super(ExampleWrapper, self).__init__(config, logger)
+        self.app_name = 'example'
         self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                     'bin/app_name')
-        self.app_name = os.path.basename(self.app_path)
-        self.c_dict = self.create_c_dict()
-                        
+                                     'bin', self.app_name)
+
     def create_c_dict(self):
         # change to super() for python 3
-        # c_dict = super() 
-        c_dict = super(CommandBuilder, self).create_c_dict()
+        # c_dict = super()
+        c_dict = super(ExampleWrapper, self).create_c_dict()
         # get values from config object and set them to be accessed by wrapper
         c_dict['EXAMPLE'] = self.config.getstr('config', 'LOOP_BY')
         return c_dict

@@ -181,16 +181,16 @@ class MakePlotsWrapper(CommandBuilder):
             else:
                 self.logger.error("FCST_VAR"+n+"_NAME not defined")
                 exit(1)
-            fo = util.FieldObj()
-            fo.fcst_name = fcst_name
-            fo.obs_name = obs_name
-            fo.fcst_extra = fcst_extra
-            fo.obs_extra = obs_extra
-            fo.fcst_thresh = fcst_thresh
-            fo.obs_thresh = obs_thresh
-            fo.fcst_level = fcst_levels
-            fo.obs_level = obs_levels
-            fo.index = n
+            fo = {}
+            fo['fcst_name'] = fcst_name
+            fo['obs_name'] = obs_name
+            fo['fcst_extra'] = fcst_extra
+            fo['obs_extra'] = obs_extra
+            fo['fcst_thresh'] = fcst_thresh
+            fo['obs_thresh'] = obs_thresh
+            fo['fcst_level'] = fcst_levels
+            fo['obs_level'] = obs_levels
+            fo['index'] = n
             var_info.append(fo)
         return var_info
 
@@ -942,24 +942,24 @@ class MakePlotsWrapper(CommandBuilder):
             self.add_env_var('INIT_TIME_INFO', valid_init_time_pair.init)
             #loop through variable information
             for var_info in var_list:
-                self.add_env_var('FCST_VAR_NAME', var_info.fcst_name)
-                self.add_env_var('OBS_VAR_NAME', var_info.obs_name)
-                fcst_var_level_list = var_info.fcst_level
-                obs_var_level_list = var_info.obs_level
-                if len(var_info.fcst_extra) == 0:
+                self.add_env_var('FCST_VAR_NAME', var_info['fcst_name'])
+                self.add_env_var('OBS_VAR_NAME', var_info['obs_name'])
+                fcst_var_level_list = var_info['fcst_level']
+                obs_var_level_list = var_info['obs_level']
+                if len(var_info['fcst_extra']) == 0:
                     self.add_env_var('FCST_VAR_EXTRA', "None")
                 else:
-                    self.add_env_var('FCST_VAR_EXTRA', var_info.fcst_extra)
-                if len(var_info.obs_extra) == 0:
+                    self.add_env_var('FCST_VAR_EXTRA', var_info['fcst_extra'])
+                if len(var_info['obs_extra']) == 0:
                     self.add_env_var('OBS_VAR_EXTRA', "None")
                 else:
-                    self.add_env_var('OBS_VAR_EXTRA', var_info.obs_extra)
-                if len(var_info.fcst_thresh) == 0 or len(var_info.obs_thresh) == 0:
+                    self.add_env_var('OBS_VAR_EXTRA', var_info['obs_extra'])
+                if len(var_info['fcst_thresh']) == 0 or len(var_info['obs_thresh']) == 0:
                     fcst_var_thresh_list = [ "None" ]
                     obs_var_thresh_list = [ "None" ]
                 else:
-                    fcst_var_thresh_list = var_info.fcst_thresh
-                    obs_var_thresh_list = var_info.obs_thresh
+                    fcst_var_thresh_list = var_info['fcst_thresh']
+                    obs_var_thresh_list = var_info['obs_thresh']
                 #check for fourier decompositon for variable, add to interp list
                 interp_list = util.getlist(self.config.getstr('config', 'INTERP', ""))
                 var_fourier_decomp_info = fourier_decom_list[var_list.index(var_info)]

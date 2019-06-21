@@ -156,9 +156,9 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
                                             'GFS_ANLY_FILE_TMPL'),
                           valid=valid_dt, lead=lead_seconds)
 
-            fcst_file = fcst_sts.doStringSub()
+            fcst_file = fcst_sts.do_string_sub()
             fcst_filename = os.path.join(fcst_dir, fcst_file)
-            anly_file = anly_sts.doStringSub()
+            anly_file = anly_sts.do_string_sub()
             anly_filename = os.path.join(anly_dir, anly_file)
 
             # Check if the forecast input file exists. If it doesn't
