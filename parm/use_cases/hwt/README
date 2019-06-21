@@ -1,4 +1,19 @@
 This file contains information on the various files and how they were run for HWT
 
 Directories:
-expamples: contains the METplus configuration files for different runs of HWT variables and models
+additional_programs:
+examples: contains the METplus configuration files for different runs of HWT variables and models
+met_config: contains MET configuration files for the different MET executables
+viewer_config:
+
+Files in Directories
+additional_programs
+create_met_poly.py:
+run_met_surrogate_severe_perc.py:
+run_pcp_obs.py:
+
+examples
+
+
+met_config
+
