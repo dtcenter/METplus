@@ -36,9 +36,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     precipitation accumulations"""
     def __init__(self, config, logger):
         super(PcpCombineWrapper, self).__init__(config, logger)
-        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                     'bin/pcp_combine')
-        self.app_name = os.path.basename(self.app_path)
+        self.app_name = 'pcp_combine'
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                     'bin', self.app_name)
         self.inaddons = []
         self.method = ""
         self.pcp_dir = ""
@@ -52,52 +52,52 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.name = ""
         self.logfile = ""
         self.compress = -1
-        self.create_c_dict()
-
 
     def create_c_dict(self):
-        self.c_dict = dict()
-        self.c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
+        c_dict = super(PcpCombineWrapper, self).create_c_dict()
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
 
         if self.config.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
-            self.set_fcst_or_obs_dict_items('FCST')
+            c_dict = self.set_fcst_or_obs_dict_items('FCST', c_dict)
 
         if self.config.getbool('config', 'OBS_PCP_COMBINE_RUN', False):
-            self.set_fcst_or_obs_dict_items('OBS')
+            c_dict = self.set_fcst_or_obs_dict_items('OBS', c_dict)
+
+        return c_dict
 
 
-    def set_fcst_or_obs_dict_items(self, d_type):
-        self.c_dict[d_type+'_MIN_FORECAST'] = self.config.getint('config', d_type+'_PCP_COMBINE_MIN_FORECAST', 0)
-        self.c_dict[d_type+'_MAX_FORECAST'] = self.config.getint('config', d_type+'_PCP_COMBINE_MAX_FORECAST', 256)
-        self.c_dict[d_type+'_INPUT_DATATYPE'] = self.config.getstr('config',
+    def set_fcst_or_obs_dict_items(self, d_type, c_dict):
+        c_dict[d_type+'_MIN_FORECAST'] = self.config.getint('config', d_type+'_PCP_COMBINE_MIN_FORECAST', 0)
+        c_dict[d_type+'_MAX_FORECAST'] = self.config.getint('config', d_type+'_PCP_COMBINE_MAX_FORECAST', 256)
+        c_dict[d_type+'_INPUT_DATATYPE'] = self.config.getstr('config',
                                               d_type+'_PCP_COMBINE_INPUT_DATATYPE', '')
-        self.c_dict[d_type+'_DATA_INTERVAL'] = self.config.getint('config', d_type+'_PCP_COMBINE_DATA_INTERVAL', 1)
-        self.c_dict[d_type+'_TIMES_PER_FILE'] = self.config.getint('config', d_type+'_PCP_COMBINE_TIMES_PER_FILE', -1)
-        self.c_dict[d_type+'_IS_DAILY_FILE'] = self.config.getbool('config', d_type+'_PCP_COMBINE_IS_DAILY_FILE', False)
-        self.c_dict[d_type+'_LEVEL'] = self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_LEVEL', '-1')
-        self.c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
-        self.c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+        c_dict[d_type+'_DATA_INTERVAL'] = self.config.getint('config', d_type+'_PCP_COMBINE_DATA_INTERVAL', 1)
+        c_dict[d_type+'_TIMES_PER_FILE'] = self.config.getint('config', d_type+'_PCP_COMBINE_TIMES_PER_FILE', -1)
+        c_dict[d_type+'_IS_DAILY_FILE'] = self.config.getbool('config', d_type+'_PCP_COMBINE_IS_DAILY_FILE', False)
+        c_dict[d_type+'_LEVEL'] = self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_LEVEL', '-1')
+        c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
+        c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_INPUT_TEMPLATE')
-        self.c_dict[d_type+'_OUTPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_OUTPUT_DIR', '')
-        self.c_dict[d_type+'_OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+        c_dict[d_type+'_OUTPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_OUTPUT_DIR', '')
+        c_dict[d_type+'_OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_OUTPUT_TEMPLATE')
-        self.c_dict[d_type+'_STAT_LIST'] = \
+        c_dict[d_type+'_STAT_LIST'] = \
             util.getlist(self.config.getstr('config',
                                        d_type+'_PCP_COMBINE_STAT_LIST', ''))
 
-        self.c_dict[d_type+'_RUN_METHOD'] = \
+        c_dict[d_type+'_RUN_METHOD'] = \
             self.config.getstr('config', d_type+'_PCP_COMBINE_METHOD')
 
-        if self.c_dict[d_type+'_RUN_METHOD'] == 'DERIVE' and \
-           len(self.c_dict[d_type+'_STAT_LIST']) == 0:
+        if c_dict[d_type+'_RUN_METHOD'] == 'DERIVE' and \
+           len(c_dict[d_type+'_STAT_LIST']) == 0:
             self.logger.error('Statistic list is empty. ' + \
               'Must set ' + d_type + '_PCP_COMBINE_STAT_LIST if running ' +\
                               'derive mode')
             exit(1)
 
-        self.c_dict[d_type+'_DERIVE_LOOKBACK'] = \
+        c_dict[d_type+'_DERIVE_LOOKBACK'] = \
             self.config.getint('config', d_type+'_PCP_COMBINE_DERIVE_LOOKBACK', 0)
-
+        return c_dict
 
     def clear(self):
         super(PcpCombineWrapper, self).clear()
@@ -192,7 +192,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                  template,
                                  **time_info)
             search_file = os.path.join(self.input_dir,
-                                       fSts.doStringSub())
+                                       fSts.do_string_sub())
             search_file = util.preprocess_file(search_file,
                                 self.c_dict[dtype+'_INPUT_DATATYPE'],
                                                self.config)
@@ -224,7 +224,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                  file_template,
                                  valid=search_time)
             search_file = os.path.join(self.input_dir,
-                                       dSts.doStringSub())
+                                       dSts.do_string_sub())
             search_file = util.preprocess_file(search_file,
                                             self.c_dict[data_src+\
                                               '_INPUT_DATATYPE'],
@@ -239,9 +239,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         lead = int((diff.days * 24) / (data_interval))
         lead += int((diff).seconds / (data_interval*3600)) - 1
-        # calling config.p version of getter so default value is not
+        # calling config.conf version of getter so default value is not
         # set in log and final conf because it is unnecessary
-        fname = self.config.p.getstr('config',
+        fname = self.config.conf.getstr('config',
                               data_src + '_PCP_COMBINE_' + str(
                                   accum) + '_FIELD_NAME', '')
         if fname == '':
@@ -275,9 +275,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if d_type == "GRIB":
             return search_accum
         # if NETCDF or GEMPAK
-        # calling config.p version of getter so default value is not
+        # calling config.conf version of getter so default value is not
         # set in log and final conf because it is unnecessary
-        field_name = self.config.p.getstr('config', data_src +
+        field_name = self.config.conf.getstr('config', data_src +
                                '_PCP_COMBINE_' + str(search_accum) +
                                '_FIELD_NAME', '')
         if field_name == '':
@@ -292,7 +292,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                              valid=search_time,
                              level=(int(search_accum)*3600))
         search_file = os.path.join(self.input_dir,
-                                   fSts.doStringSub())
+                                   fSts.do_string_sub())
 
         return util.preprocess_file(search_file,
                                     self.c_dict[data_src+'_INPUT_DATATYPE'],
@@ -302,9 +302,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     def find_highest_accum_field(self, data_src, s_accum):
         field_name = ''
         while s_accum > 0:
-            # calling config.p version of getter so default value is not
+            # calling config.conf version of getter so default value is not
             # set in log and final conf because it is unnecessary
-            field_name = self.config.p.getstr('config',
+            field_name = self.config.conf.getstr('config',
                                    data_src + '_PCP_COMBINE_' + str(s_accum) +
                                    '_FIELD_NAME', '')
             if field_name != '':
@@ -465,7 +465,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 cmd += " level=\""+self.field_level+"\";"
             if self.field_extra != "":
                 cmd += ' ' + self.field_extra
-            cmd += "'"
+            cmd += "' "
 
         if self.outfile == "":
             self.logger.error("No output filename specified")
@@ -481,7 +481,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if not os.path.exists(os.path.dirname(out_path)):
             os.makedirs(os.path.dirname(out_path))
 
-        cmd += " " + out_path
+        cmd += out_path
 
         if self.pcp_dir != "":
             cmd += " -pcpdir "+self.pcp_dir
@@ -548,9 +548,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
 
         if rl == 'FCST':
-            accum = var_info.fcst_level
+            accum = var_info['fcst_level']
         else:
-            accum = var_info.obs_level
+            accum = var_info['obs_level']
 
         if accum[0].isalpha():
             accum = accum[1:]
@@ -562,7 +562,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 in_template,
                                 level=(int(accum) * 3600),
                                 **time_info)
-        file1 = os.path.join(in_dir, pcpSts1.doStringSub())
+        file1 = os.path.join(in_dir, pcpSts1.do_string_sub())
         file1 = util.preprocess_file(file1, self.c_dict[rl+'_INPUT_DATATYPE'],
                                     self.config)
 
@@ -579,7 +579,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 in_template,
                                 level=(int(accum) * 3600),
                                 **time_info2)
-        file2 = os.path.join(in_dir, pcpSts2.doStringSub())
+        file2 = os.path.join(in_dir, pcpSts2.do_string_sub())
         file2 = util.preprocess_file(file2, self.c_dict[rl+'_INPUT_DATATYPE'],
                                      self.config)
 
@@ -595,9 +595,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                out_template,
                                level=(int(accum) * 3600),
                                **time_info)
-        out_file = outSts.doStringSub()
-        self.set_output_filename(out_file)
-        self.set_output_dir(out_dir)
+        out_file = outSts.do_string_sub()
+        self.outfile = out_file
+        self.outdir = out_dir
 
         return self.get_command()
 
@@ -616,7 +616,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         in_dir, in_template = self.get_dir_and_template(rl, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
 
-        out_accum = var_info.obs_level
+        out_accum = var_info['obs_level']
         if out_accum[0].isalpha():
             out_accum = out_accum[1:]
 
@@ -637,13 +637,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.set_out_accum(out_accum)
         self.set_pcp_dir(in_dir)
         self.set_pcp_regex(in_regex)
-        self.set_output_dir(out_dir)
+        self.outdir = out_dir
 
         pcpSts = sts.StringSub(self.logger,
                                 out_template,
                                 **time_info)
-        pcp_out = pcpSts.doStringSub()
-        self.set_output_filename(pcp_out)
+        pcp_out = pcpSts.do_string_sub()
+        self.outfile = pcp_out
 
         return self.get_command()
 
@@ -663,11 +663,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.set_method("ADD")
 
         if data_src == "FCST":
-            accum = var_info.fcst_level
-            compare_var = var_info.fcst_name
+            accum = var_info['fcst_level']
+            compare_var = var_info['fcst_name']
         else:
-            accum = var_info.obs_level
-            compare_var = var_info.obs_name
+            accum = var_info['obs_level']
+            compare_var = var_info['obs_name']
 
         if accum[0].isalpha():
             accum = accum[1:]
@@ -679,20 +679,19 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
 
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
-        self.set_input_dir(in_dir)
+        self.input_dir = in_dir
 
         if not self.get_accumulation(time_info, int(accum), data_src, is_forecast):
             return None
-        infiles = self.get_input_files()
 
-        self.set_output_dir(out_dir)
+        self.outdir = out_dir
         time_info['level'] = int(accum) * 3600
         pcpSts = sts.StringSub(self.logger,
                                 out_template,
                                 **time_info)
-        pcp_out = pcpSts.doStringSub()
-        self.set_output_filename(pcp_out)
-        self.add_arg("-name " + compare_var + "_" + str(accum).zfill(2))
+        pcp_out = pcpSts.do_string_sub()
+        self.outfile = pcp_out
+        self.args.append("-name " + compare_var + "_" + str(accum).zfill(2))
         return self.get_command()
 
 
@@ -712,13 +711,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         # set field info
         if data_src == "FCST":
-            self.field_level = var_info.fcst_level
-            self.field_name = var_info.fcst_name
-            self.field_extra = var_info.fcst_extra
+            self.field_level = var_info['fcst_level']
+            self.field_name = var_info['fcst_name']
+            self.field_extra = var_info['fcst_extra']
         else:
-            self.field_level = var_info.obs_level
-            self.field_name = var_info.obs_name
-            self.field_extra = var_info.obs_extra
+            self.field_level = var_info['obs_level']
+            self.field_name = var_info['obs_name']
+            self.field_extra = var_info['obs_extra']
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
@@ -728,16 +727,14 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if not self.get_accumulation(time_info, lookback, data_src, is_forecast):
             return None
 
-        infiles = self.get_input_files()
-
         # set output
-        self.set_output_dir(out_dir)
+        self.outdir =out_dir
         time_info['level'] = int(lookback) * 3600
         psts = sts.StringSub(self.logger,
                                 out_template,
                                 **time_info)
-        pcp_out = psts.doStringSub()
-        self.set_output_filename(pcp_out)
+        pcp_out = psts.do_string_sub()
+        self.outfile = pcp_out
         return self.get_command()
 
 

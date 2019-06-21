@@ -536,7 +536,7 @@ class SeriesByInitWrapper(CommandBuilder):
                             self.config.getstr(
                                 'config',
                                 'SERIES_ANALYSIS_BY_INIT_CONFIG_FILE')
-                        self.set_param_file(param)
+                        self.param = param
                         self.create_obs_fcst_arg('obs',
                                                  self.anly_ascii_file_prefix,
                                                  cur_storm, cur_init)
@@ -580,9 +580,8 @@ class SeriesByInitWrapper(CommandBuilder):
         ascii_full_path = os.path.join(self.series_out_dir, cur_init,
                                        cur_storm, ascii_fname)
         self.add_input_file(ascii_full_path, param_arg)
-        self.get_input_files()
-        latest_idx = len(self.get_input_files()) - 1
-        self.logger.debug("first param: " + self.get_input_files()[latest_idx])
+        latest_idx = len(self.infiles) - 1
+        self.logger.debug("first param: " + self.infiles[latest_idx])
 
     def create_out_arg(self, cur_storm, cur_init, name, level):
         """! Create/build the -out portion of the series_analysis command and
@@ -634,8 +633,6 @@ class SeriesByInitWrapper(CommandBuilder):
 
         self.logger.debug('output arg/output dir for series_analysis: ' +
                           self.get_output_path())
-        self.set_output_dir(self.outdir)
-        self.set_output_filename(self.outfile)
 
     def clear(self):
         super(SeriesByInitWrapper, self).clear()
