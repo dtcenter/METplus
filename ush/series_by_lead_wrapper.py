@@ -49,6 +49,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.do_fhr_by_group = self.config.getbool('config',
                                                    'SERIES_BY_LEAD_GROUP_FCSTS')
         self.fhr_group_labels = []
+        self.var_list = util.getlist(self.config.getstr('config', 'VAR_LIST'))
         self.stat_list = util.getlist(self.config.getstr('config', 'STAT_LIST'))
         self.plot_data_plane_exe = os.path.join(
             self.config.getdir('MET_INSTALL_DIR'),
@@ -396,7 +397,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             self.logger.debug('obs param: ' + obs_param)
 
             # Create the -out portion of the series_analysis command.
-            for cur_var in self.c_dict['VAR_LIST']:
+            for cur_var in self.var_list:
                 # Get the name and level to create the -out param
                 # and set the NAME and LEVEL environment variables that
                 # are needed by the MET series analysis binary.
@@ -540,7 +541,7 @@ class SeriesByLeadWrapper(CommandBuilder):
 
             # Create the -out param and invoke the MET series
             # analysis binary
-            for cur_var in self.c_dict['VAR_LIST']:
+            for cur_var in self.var_list:
                 # Get the name and level to create the -out param
                 # and set the NAME and LEVEL environment variables that
                 # are needed by the MET series analysis binary.
@@ -1072,7 +1073,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                    str(len(nc_list)))
             self.logger.debug(msg)
 
-        for cur_var in self.c_dict['VAR_LIST']:
+        for cur_var in self.var_list:
             # Get the name and level to set the NAME and LEVEL
             # environment variables that
             # are needed by the MET series analysis binary.
@@ -1221,7 +1222,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.logger.debug(msg)
         util.mkdir_p(animate_dir)
 
-        for cur_var in self.c_dict['VAR_LIST']:
+        for cur_var in self.var_list:
             # Get the name and level to set the NAME and LEVEL
             # environment variables that
             # are needed by the MET series analysis binary.

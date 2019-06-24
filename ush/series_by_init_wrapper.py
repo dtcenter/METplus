@@ -41,7 +41,7 @@ class SeriesByInitWrapper(CommandBuilder):
         # from the param file(s)
         self.app_name = 'SeriesByInit'
         self.stat_list = util.getlist(self.config.getstr('config', 'STAT_LIST'))
-
+        self.var_list = util.getlist(self.config.getstr('config', 'VAR_LIST'))
         self.regrid_with_met_tool = self.config.getbool('config',
                                               'REGRID_USING_MET_TOOL')
         self.extract_tiles_dir = self.config.getdir('EXTRACT_TILES_OUTPUT_DIR')
