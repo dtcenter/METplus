@@ -54,6 +54,15 @@ def ti_calculate(input_dict):
     else:
         out_dict['offset'] = datetime.timedelta(seconds=0)
 
+    # if init and valid are set, check which was set first via loop_by
+    # remove the other to recalculate
+    if 'init' in input_dict.keys() and 'valid' in input_dict.keys():
+        if 'loop_by' in input_dict.keys():
+            if input_dict['loop_by'] == 'init':
+                del input_dict['valid']
+            elif input_dict['loop_by'] == 'valid':
+                del input_dict['init']
+
     if 'init' in input_dict.keys():
         out_dict['init'] = input_dict['init']
 
@@ -63,6 +72,9 @@ def ti_calculate(input_dict):
 
         # compute valid from init and lead
         out_dict['valid'] = out_dict['init'] + out_dict['lead']
+
+        # set loop_by to init or valid to be able to see what was set first
+        out_dict['loop_by'] = 'init'
         
     # if valid is provided, compute init and da_init
     elif 'valid' in input_dict:
@@ -70,6 +82,9 @@ def ti_calculate(input_dict):
 
         # compute init from valid and lead
         out_dict['init'] = out_dict['valid'] - out_dict['lead']
+
+        # set loop_by to init or valid to be able to see what was set first
+        out_dict['loop_by'] = 'valid'
 
     # if da_init is provided, compute init and valid
     elif 'da_init' in input_dict.keys():
