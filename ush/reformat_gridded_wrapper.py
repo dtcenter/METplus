@@ -54,7 +54,6 @@ that reformat gridded data
         """
         app_name_caps = self.app_name.upper()
         class_name = self.__class__.__name__[0: -7]
-        var_list = util.parse_var_list(self.config)
         lead_seq = util.get_lead_sequence(self.config, input_dict)
 
         run_list = []
@@ -78,5 +77,5 @@ that reformat gridded data
                 os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
                 self.logger.info("Processing forecast lead {}".format(lead))
                 time_info = time_util.ti_calculate(input_dict)
-                for var_info in var_list:
+                for var_info in self.c_dict['VAR_LIST']:
                     self.run_at_time_once(time_info, var_info, to_run)

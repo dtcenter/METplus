@@ -40,7 +40,6 @@ class SeriesByInitWrapper(CommandBuilder):
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
         self.app_name = 'SeriesByInit'
-        self.var_list = util.getlist(self.config.getstr('config', 'VAR_LIST'))
         self.stat_list = util.getlist(self.config.getstr('config', 'STAT_LIST'))
 
         self.regrid_with_met_tool = self.config.getbool('config',
@@ -530,7 +529,7 @@ class SeriesByInitWrapper(CommandBuilder):
                     # Build the -obs and -fcst portions of the series_analysis
                     # command. Then generate the -out portion, get the NAME and
                     # corresponding LEVEL for each variable.
-                    for cur_var in self.var_list:
+                    for cur_var in self.c_dict['VAR_LIST']:
                         name, level = util.get_name_level(cur_var, self.logger)
                         param = \
                             self.config.getstr(
@@ -683,7 +682,7 @@ class SeriesByInitWrapper(CommandBuilder):
         background_map = self.config.getbool('config', 'BACKGROUND_MAP')
         plot_data_plane_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                            'bin/plot_data_plane')
-        for cur_var in self.var_list:
+        for cur_var in self.c_dict['VAR_LIST']:
             name, level = util.get_name_level(cur_var, self.logger)
             for cur_init in sorted_filter_init:
                 storm_list = self.get_storms_for_init(cur_init, tile_dir)

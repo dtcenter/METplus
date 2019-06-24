@@ -43,7 +43,6 @@ that reformat gridded data
             the type and consolidates config get calls so it is easier to see
             which config variables are used in the wrapper"""
         c_dict = super(CompareGriddedWrapper, self).create_c_dict()
-        c_dict['var_list'] = util.parse_var_list(self.config)
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
         c_dict['OBTYPE'] = self.config.getstr('config', 'OBTYPE', 'OBS')
         c_dict['CONFIG_DIR'] = self.config.getdir('CONFIG_DIR', '')
@@ -167,7 +166,7 @@ that reformat gridded data
         if self.c_dict['ONCE_PER_FIELD']:
             # loop over all fields and levels (and probability thresholds) and
             # call the app once for each
-            for var_info in self.c_dict['var_list']:
+            for var_info in self.c_dict['VAR_LIST']:
                 self.clear()
                 self.c_dict['CURRENT_VAR_INFO'] = var_info
                 self.run_at_time_one_field(time_info, var_info)
@@ -221,7 +220,7 @@ that reformat gridded data
                 @param time_info dictionary containing timing information
         """
         # get model from first var to compare
-        model_path = self.find_model(time_info, self.c_dict['var_list'][0])
+        model_path = self.find_model(time_info, self.c_dict['VAR_LIST'][0])
         if model_path is None:
             self.logger.error("Could not find file in " +\
                               self.c_dict['FCST_INPUT_DIR'] + \
@@ -231,7 +230,7 @@ that reformat gridded data
         self.infiles.append(model_path)
 
         # get observation to from first var compare
-        obs_path = self.find_obs(time_info, self.c_dict['var_list'][0])
+        obs_path = self.find_obs(time_info, self.c_dict['VAR_LIST'][0])
         if obs_path is None:
             self.logger.error("Could not find file in " + self.c_dict['OBS_INPUT_DIR'] + \
                               " for valid time " + time_info['valid_fmt'])
@@ -240,7 +239,7 @@ that reformat gridded data
 
         fcst_field_list = []
         obs_field_list = []
-        for var_info in self.c_dict['var_list']:
+        for var_info in self.c_dict['VAR_LIST']:
             next_fcst = self.get_one_field_info(var_info['fcst_level'],
                                                 var_info['fcst_thresh'],
                                                 var_info['fcst_name'],
@@ -345,7 +344,7 @@ that reformat gridded data
                       "INPUT_BASE", "MET_VALID_HHMM",
                       "FCST_TIME"]
 
-        var_info = self.c_dict['var_list'][0]
+        var_info = self.c_dict['VAR_LIST'][0]
         if 'CURRENT_VAR_INFO' in self.c_dict.keys():
             var_info = self.c_dict['CURRENT_VAR_INFO']
 

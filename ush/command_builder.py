@@ -54,11 +54,13 @@ class CommandBuilder:
         self.clear()
 
     def create_c_dict(self):
-        return dict()
+        c_dict = dict()
+        c_dict['VAR_LIST'] = util.parse_var_list(self.config)
+        return c_dict
 
     def clear(self):
         """!Unset class variables to prepare for next run time
-x        """
+        """
         self.args = []
         self.input_dir = ""
         self.infiles = []

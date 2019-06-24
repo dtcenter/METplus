@@ -121,12 +121,11 @@ class MTDWrapper(ModeWrapper):
               Args:
                 @param input_dict dictionary containing timing information
         """        
-        var_list = util.parse_var_list(self.config)
 #        max_lookback = self.c_dict['MAX_LOOKBACK']
 #        file_interval = self.c_dict['FILE_INTERVAL']
 
         lead_seq = util.get_lead_sequence(self.config, input_dict)
-        for var_info in var_list:
+        for var_info in self.c_dict['VAR_LIST']:
             if self.c_dict['SINGLE_RUN']:
                 self.run_single_mode(input_dict, var_info)
                 continue

@@ -138,7 +138,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.infiles.append(fcst_file_list)
 
-        var_list = self.c_dict['var_list']
+        var_list = self.c_dict['VAR_LIST']
         # get point observation file if requested
         if self.c_dict['OBS_POINT_INPUT_DIR'] != '':
             point_obs_path = self.find_data(time_info, var_list[0], 'OBS_POINT')

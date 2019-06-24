@@ -138,7 +138,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.clear()
 
         time_info = time_util.ti_calculate(input_dict)
-        var_list = self.c_dict['var_list']
+        var_list = self.c_dict['VAR_LIST']
 
         # get verification mask if available
         self.get_verification_mask(time_info)
