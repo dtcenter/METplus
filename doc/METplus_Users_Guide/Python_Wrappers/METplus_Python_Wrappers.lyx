@@ -249,7 +249,14 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-CYCLONE_OUT_DIR
+CYCLONE_OUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_C"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -538,11 +545,25 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-ENSEMBLE_STAT_OUT_DIR
+ENSEMBLE_STAT_OUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_E"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-ENSEMBLE_STAT_CONFIG
+ENSEMBLE_STAT_CONFIG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_E"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -698,7 +719,14 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-EXTRACT_OUT_DIR
+EXTRACT_OUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_E"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1048,11 +1076,25 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-GRID_STAT_OUT_DIR
+GRID_STAT_OUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_G"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-GRID_STAT_CONFIG
+GRID_STAT_CONFIG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_G"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1809,11 +1851,25 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-MODE_OUT_DIR
+MODE_OUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-MODE_CONFIG
+MODE_CONFIG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -2025,11 +2081,25 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-MTD_OUT_DIR
+MTD_OUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-MTD_CONFIG
+MTD_CONFIG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_M"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -2297,59 +2367,157 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-PREPBUFR_DATA_DIR
+PREPBUFR_DATA_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-PREPBUFR_MODEL_DIR_NAME
+PREPBUFR_MODEL_DIR_NAME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-PREPBUFR_DIR_REGEX
+PREPBUFR_DIR_REGEX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-PREPBUFR_FILE_REGEX
+PREPBUFR_FILE_REGEX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-NC_FILE_TMPL
+NC_FILE_TMPL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_N"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-PB2NC_VERTICAL_LEVEL
+PB2NC_VERTICAL_LEVEL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-OBS_BUFR_VAR_LIST
+OBS_BUFR_VAR_LIST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-TIME_SUMMARY_FLAG
+TIME_SUMMARY_FLAG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-TIME_SUMMARY_BEG
+TIME_SUMMARY_BEG 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-TIME_SUMMARY_END
+TIME_SUMMARY_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-TIME_SUMMARY_VAR_NAMES
+TIME_SUMMARY_VAR_NAMES 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-TIME_SUMMARY_TYPE
+TIME_SUMMARY_TYPE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-OVERWRITE_NC_OUTPUT
+OVERWRITE_NC_OUTPUT 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-VERTICAL_LOCATION
+VERTICAL_LOCATION 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -2784,55 +2952,146 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-PCP_COMBINE_METHOD
+PCP_COMBINE_METHOD 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_P"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-FCST_MIN_FORECAST
+FCST_MIN_FORECAST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-FCST_MAX_FORECAST
+FCST_MAX_FORECAST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-OBS_MIN_FORECAST
+OBS_MIN_FORECAST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-OBS_MAX_FORECAST
+OBS_MAX_FORECAST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-FCST_DATA_INTERVAL
+FCST_DATA_INTERVAL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-OBS_DATA_INTERVAL
+OBS_DATA_INTERVAL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-FCST_IS_DAILY_FILE
+FCST_IS_DAILY_FILE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-OBS_IS_DAILY_FILE
+OBS_IS_DAILY_FILE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-FCST_TIMES_PER_FILE
+FCST_TIMES_PER_FILE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-OBS_TIMES_PER_FILE
+OBS_TIMES_PER_FILE 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-FCST_LEVEL
+FCST_LEVEL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-OBS_LEVEL
+OBS_LEVEL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -3015,7 +3274,7 @@ reference "sec:SC_P"
 \end_inset
 
 
-\begin_inset Newline linebreak
+\begin_inset Newline newline
 \end_inset
 
 POINT_STAT_POLY 
@@ -3125,63 +3384,168 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-FCST_INPUT_DIR
+FCST_INPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-OBS_INPUT_DIR
+OBS_INPUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-START_HOUR
+START_HOUR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-END_HOUR
+END_HOUR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_E"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-BEG_TIME
+BEG_TIME 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_B"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-FCST_HR_START
+FCST_HR_START 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-FCST_HR_END
+FCST_HR_END 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-FCST_HR_INTERVAL
+FCST_HR_INTERVAL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-OBS_INPUT_DIR_REGEX
+OBS_INPUT_DIR_REGEX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-FCST_INPUT_DIR_REGEX
+FCST_INPUT_DIR_REGEX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-FCST_INPUT_FILE_REGEX
+FCST_INPUT_FILE_REGEX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-OBS_INPUT_FILE_REGEX
+OBS_INPUT_FILE_REGEX 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-OBS_INPUT_FILE_TMPL
+OBS_INPUT_FILE_TMPL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_O"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-FCST_INPUT_FILE_TMPL
+FCST_INPUT_FILE_TMPL 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_F"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-REGRID_TO_GRID
+REGRID_TO_GRID 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_R"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -3338,7 +3702,14 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-VERIFICATION_GRID
+VERIFICATION_GRID 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -3575,7 +3946,14 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-SERIES_INIT_FILTERED_OUT_DIR
+SERIES_INIT_FILTERED_OUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -3757,11 +4135,25 @@ reference "sec:SC_S"
 \begin_inset Newline newline
 \end_inset
 
-VAR_LIST
+VAR_LIST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_V"
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-STAT_LIST
+STAT_LIST 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3773,7 +4165,14 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-SERIES_LEAD_FILTERED_OUT_DIR
+SERIES_LEAD_FILTERED_OUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -4566,7 +4965,14 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-STAT_ANALYSIS_OUT_DIR
+STAT_ANALYSIS_OUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_S"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -5635,19 +6041,6 @@ Configuration
 \end_layout
 
 \begin_layout Standard
-The following are configuration settings that correspond to the TCMPRPlotter
- wrapper.
- A description of what these values represent are found in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:SC_AZ_Config_Glossary"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
 LOOP ORDER 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -6002,7 +6395,14 @@ Deprecated:
 \begin_layout Standard
 
 \color lightgray
-TCMPR_PLOT_OUT_DIR
+TCMPR_PLOT_OUT_DIR 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_T"
+
+\end_inset
+
+
 \end_layout
 
 \end_body
