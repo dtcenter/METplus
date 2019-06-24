@@ -48,6 +48,7 @@ from pb2nc_wrapper import PB2NCWrapper
 from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TcStatWrapper
 from gempak_to_cf_wrapper import GempakToCFWrapper
+from example_wrapper import ExampleWrapper
 
 '''!@namespace master_metplus
 Main script the processes all the tasks in the PROCESS_LIST

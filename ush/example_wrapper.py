@@ -56,5 +56,18 @@ class ExampleWrapper(CommandBuilder):
         # fill in time info dictionary
         time_info = time_util.ti_calculate(input_dict)
 
+        loop_by = time_info['loop_by']
+        self.logger.info("Running ExampleWrapper at {} time {}".format(loop_by,
+                                                                       time_info[loop_by+'_fmt']))
+
+        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        for lead in lead_seq:
+            time_info['lead_hours'] = lead
+
+            time_info = time_util.ti_calculate(time_info)
+            self.logger.info("Processing forecast lead {} initialized at {} and valid at {}"
+                             .format(lead, time_info['init'].strftime('%Y-%m-%d %HZ'),
+                                     time_info['init'].strftime('%Y-%m-%d %HZ')))
+
         # process data
         return True
