@@ -399,7 +399,7 @@ This is the number of seconds to add to each run time to determine the next
 
 \begin_layout Standard
 The following is a configuration that will process valid time 20190201 at
- 0Z until 20190202 at 0Z at 6 hour (21600 second) increments:
+ 0Z until 20190202 at 0Z in 6 hour (21600 second) increments:
 \end_layout
 
 \begin_layout Standard
@@ -560,7 +560,7 @@ This is the number of seconds to add to each run time to determine the next
 
 \begin_layout Standard
 The following is a configuration that will process initialization time 20190201
- at 0Z until 20190202 at 0Z at 6 hour (21600 second) increments:
+ at 0Z until 20190202 at 0Z in 6 hour (21600 second) increments:
 \end_layout
 
 \begin_layout Standard
@@ -905,7 +905,7 @@ At valid time 20190201_0Z, this initialization sequence will build a forecast
 \end_inset
 
 At valid time 20190201_1Z, this initialization sequence will build a forecast
- least list of 1, 7, 13, 19, 25, 31, etc.
+ lead list of 1, 7, 13, 19, 25, 31, etc.
 \begin_inset Newline newline
 \end_inset
 
@@ -980,7 +980,7 @@ At valid time 20190201_0Z, this initialization sequence will build a forecast
 \end_inset
 
 At valid time 20190201_1Z, this initialization sequence will build a forecast
- least list of 13, 19.
+ lead list of 13, 19.
 \begin_inset Newline newline
 \end_inset
 
@@ -3090,7 +3090,15 @@ Track and Intensity Use case with sample data
 \end_layout
 
 \begin_layout Itemize
-Create a directory where you wish to store the sample data
+Create a directory where you wish to store the sample data.
+ Sample datasets are specific to each use case (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Get-the-source-code-via-your-Web-Browser"
+
+\end_inset
+
+) and are required in order to be able to run the use case.
 \end_layout
 
 \begin_layout Itemize
@@ -3103,8 +3111,11 @@ In your browser, navigate to https://github.com/NCAR/METplus/releases
 \end_layout
 
 \begin_layout Itemize
-locate the latest release and click on the sample_data.tar.gz link associated
- with that release
+locate the latest release and click on the 
+\shape italic
+sample_data-cyclone_track_feature.tgz
+\shape default
+ link associated with that release
 \end_layout
 
 \begin_layout Itemize
@@ -3115,7 +3126,7 @@ DIRECTORY
 \begin_layout Itemize
 cd to your $INPUT_DATA_DIRECTORY and uncompress the tarball: 
 \shape italic
-tar xvfz sample_data.tar.gz
+tar xvfz sample_data-cyclone_track_feature.tgz
 \end_layout
 
 \begin_layout Itemize
@@ -3287,6 +3298,150 @@ TK_ERR_median.png
 \end_inset
 
 
+\end_layout
+
+\begin_layout Section
+User Defined Config
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:SC_User_Defined_Config"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You can define your own custom config variables that will be set as environment
+ variables when METplus is run.
+ MET config files can read environment variables, so this is a good way
+ to customize information that is read by those files.
+ To create add a custom config variable, add a section to one of your METplus
+ config files called [user_env_vars].
+ Under this header, add as many variables as you'd like.
+ For example, if you added the following to your METplus config:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+[user_env_vars]
+\begin_inset Newline newline
+\end_inset
+
+VAR_NAME = some_text_for_feb_1_1987_run
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+and you added the following to a MET config file that is used:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+output_prefix = ${VAR_NAME}
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+then at run time, the MET application will be run with the configuration:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+output_prefix = some_text_for_feb_1_1987_run
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+You can also reference other variables in the METplus config file.
+ For example:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+[config]
+\begin_inset Newline newline
+\end_inset
+
+INIT_BEG = 1987020104
+\begin_inset Newline newline
+\end_inset
+
+...
+\begin_inset Newline newline
+\end_inset
+
+[user_env_vars]
+\begin_inset Newline newline
+\end_inset
+
+USE_CASE_TIME_ID = {INIT_BEG}
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the equivalent of calling
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+export USE_CASE_TIME_ID=1987020104
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+at the beginning of your METplus run.
+ You can access the variable in the MET config file with ${USE_CASE_TIME_ID}.
 \end_layout
 
 \begin_layout Section
@@ -39034,150 +39189,6 @@ name "sec:SC_Z"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Section
-User Defined Config
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:SC_User_Defined_Config"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-You can define your own custom config variables that will be set as environment
- variables when METplus is run.
- MET config files can read environment variables, so this is a good way
- to customize information that is read by those files.
- To create add a custom config variable, add a section to one of your METplus
- config files called [user_env_vars].
- Under this header, add as many variables as you'd like.
- For example, if you added the following to your METplus config:
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series bold
-[user_env_vars]
-\begin_inset Newline newline
-\end_inset
-
-VAR_NAME = some_text_for_feb_1_1987_run
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-and you added the following to a MET config file that is used:
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series bold
-output_prefix = ${VAR_NAME}
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-then at run time, the MET application will be run with the configuration:
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series bold
-output_prefix = some_text_for_feb_1_1987_run
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-You can also reference other variables in the METplus config file.
- For example:
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series bold
-[config]
-\begin_inset Newline newline
-\end_inset
-
-INIT_BEG = 1987020104
-\begin_inset Newline newline
-\end_inset
-
-...
-\begin_inset Newline newline
-\end_inset
-
-[user_env_vars]
-\begin_inset Newline newline
-\end_inset
-
-USE_CASE_TIME_ID = {INIT_BEG}
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-This is the equivalent of calling
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series bold
-export USE_CASE_TIME_ID=1987020104
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-at the beginning of your METplus run.
- You can access the variable in the MET config file with ${USE_CASE_TIME_ID}.
 \end_layout
 
 \end_body
