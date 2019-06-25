@@ -15,21 +15,12 @@ Condition codes: 0 for success, 1 for failure
 from __future__ import print_function
 
 import os
-import logging
 import met_util as util
-import string_template_substitution as sts
 import time_util
 from command_builder import CommandBuilder
 
-
-'''!@namespace ExampleWrapper
-@brief Template for creating a new wrapper
-@endcode
-'''
-
-
 class ExampleWrapper(CommandBuilder):
-
+    """!Wrapper can be used as a base to develop a new wrapper"""
     def __init__(self, config, logger):
         super(ExampleWrapper, self).__init__(config, logger)
         self.app_name = 'example'
