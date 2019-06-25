@@ -33,7 +33,8 @@ class ExampleWrapper(CommandBuilder):
         # c_dict = super()
         c_dict = super(ExampleWrapper, self).create_c_dict()
         # get values from config object and set them to be accessed by wrapper
-        c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates', 'EXAMPLE_INPUT_TEMPLATE')
+        c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+                                                      'EXAMPLE_INPUT_TEMPLATE')
         c_dict['INPUT_DIR'] = self.config.getdir('EXAMPLE_INPUT_DIR')
         return c_dict
 
