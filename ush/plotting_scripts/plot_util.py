@@ -148,13 +148,21 @@ def get_stat_file_base_columns(met_version):
                                           different line types
     """
     met_version = float(met_version)
-    if met_version >= 6.0:
+    if met_version < 8.1:
         stat_file_base_columns = [ 
             "VERSION", "MODEL", "DESC", "FCST_LEAD", "FCST_VALID_BEG",
             "FCST_VALID_END", "OBS_LEAD", "OBS_VALID_BEG", "OBS_VALID_END",
             "FCST_VAR", "FCST_LEV", "OBS_VAR", "OBS_LEV", "OBTYPE", "VX_MASK",
             "INTERP_MTHD", "INTERP_PNTS", "FCST_THRESH", "OBS_THRESH", 
             "COV_THRESH", "ALPHA", "LINE_TYPE"
+            ]
+    else:
+        stat_file_base_columns = [
+            "VERSION", "MODEL", "DESC", "FCST_LEAD", "FCST_VALID_BEG",
+            "FCST_VALID_END", "OBS_LEAD", "OBS_VALID_BEG", "OBS_VALID_END",
+            "FCST_VAR", "FCST_UNITS", "FCST_LEV", "OBS_VAR", "OBS_UNITS", 
+            "OBS_LEV", "OBTYPE", "VX_MASK", "INTERP_MTHD", "INTERP_PNTS", 
+            "FCST_THRESH", "OBS_THRESH", "COV_THRESH", "ALPHA", "LINE_TYPE"
             ]
     return stat_file_base_columns
 
@@ -418,7 +426,7 @@ def calculate_stat(logger, model_data, stat):
         if line_type == "SL1L2":
             stat_values = fbar - obar
         elif line_type == "VL1L2":
-            stat_values = np.sqrt(uvffbar - uvoobar)
+            stat_values = np.sqrt(uvffbar) - np.sqrt(uvoobar)
         elif line_type == "VCNT":
             stat_values = fbar - obar
         else:
