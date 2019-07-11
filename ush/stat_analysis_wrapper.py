@@ -189,6 +189,7 @@ class StatAnalysisWrapper(CommandBuilder):
              'FCST_VALID_HOUR_LIST', 'FCST_INIT_HOUR_LIST',
              'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST',
              'FCST_VAR_LIST', 'OBS_VAR_LIST',
+             'FCST_UNITS_LIST', 'OBS_UNITS_LIST',
              'FCST_LEVEL_LIST', 'OBS_LEVEL_LIST',
              'VX_MASK_LIST', 'INTERP_MTHD_LIST',
              'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
@@ -972,6 +973,39 @@ class StatAnalysisWrapper(CommandBuilder):
                     fourier_decom_list.append(fd)
         return fourier_decom_list
 
+    def parse_var_units(self):
+        """! Parse variable information for variable units
+             
+             Args:
+                
+             Returns:
+                 fcst_var_units_list - list of variable units
+                                       for the forecast variables
+                 obs_var_units_list  - list of variable units
+                                       for the observation variables
+        """
+        fcst_units_list = []
+        obs_units_list = []
+        all_conf = self.config.keys('config')
+        indices = []
+        regex = re.compile('FCST_VAR(\d+)_NAME')
+        for conf in all_conf:
+            result = regex.match(conf)
+            if result is not None:
+                indices.append(result.group(1))
+        for n in indices:
+            fcst_units = self.config.getstr('config', 'FCST_VAR'+n+'_UNITS',
+                                            '')
+            obs_units = self.config.getstr('config', 'FCST_VAR'+n+'_UNITS', 
+                                           '')
+            if len(obs_units) == 0 and len(fcst_units) != 0:
+                obs_units = fcst_units
+            if len(fcst_units) == 0 and len(obs_units) != 0:
+                fcst_units = obs_units
+            fcst_units_list.append(fcst_units)
+            obs_units_list.append(obs_units)
+        return fcst_units_list, obs_units_list    
+
     def run_stat_analysis_job(self, date_beg, date_end, date_type):
         """! This runs stat_analysis over a period of valid
              or initialization dates for a job defined by
@@ -997,6 +1031,12 @@ class StatAnalysisWrapper(CommandBuilder):
             )
         self.c_dict['OBS_VAR_LIST'] = util.getlist(
             self.config.getstr('config', 'OBS_VAR_LIST', '')
+            )
+        self.c_dict['FCST_UNITS_LIST'] = util.getlist(
+            self.config.getstr('config', 'FCST_UNITS_LIST', '')
+            )
+        self.c_dict['OBS_UNITS_LIST'] = util.getlist(
+            self.config.getstr('config', 'OBS_UNITS_LIST', '')
             )
         self.c_dict['FCST_LEVEL_LIST'] = util.getlist(
             self.config.getstr('config', 'FCST_LEVEL_LIST', '')
@@ -1344,6 +1384,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 fo.obs_thresh = var_info_thresh.obs_thresh
                 var_info_list.append(fo)
         fourier_decom_info_list = self.parse_var_fourier_decomp()
+        fcst_units_list, obs_units_list = self.parse_var_units()   
         for fcst_valid_hour in self.c_dict['FCST_VALID_HOUR_LIST']:
             index = self.c_dict['FCST_VALID_HOUR_LIST'].index(fcst_valid_hour)
             formatted_c_dict['FCST_VALID_HOUR_LIST'][index] = (
@@ -1383,15 +1424,19 @@ class StatAnalysisWrapper(CommandBuilder):
             var_fourier_decomp_info = fourier_decom_info_list[
                 int(var_info.index)
                 ]
+            var_fcst_units = fcst_units_list[int(var_info.index)]
+            var_obs_units = obs_units_list[int(var_info.index)]
             var_info_formatted_c_dict = copy.deepcopy(formatted_c_dict)
             var_info_formatted_c_dict['FCST_VAR_LIST'] = [ var_info.fcst_name ]
             var_info_formatted_c_dict['FCST_LEVEL_LIST'] = [ 
                 var_info.fcst_level 
                 ]
+            var_info_formatted_c_dict['FCST_UNITS_LIST'] = [ var_fcst_units ]
             var_info_formatted_c_dict['OBS_VAR_LIST'] = [ var_info.obs_name ]
             var_info_formatted_c_dict['OBS_LEVEL_LIST'] = [ 
                 var_info.obs_level 
                 ]
+            var_info_formatted_c_dict['OBS_UNITS_LIST'] = [ var_obs_units ]
             var_info_formatted_c_dict['FCST_THRESH_LIST'] = (
                 var_info.fcst_thresh
                 )
