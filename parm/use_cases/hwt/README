@@ -15,12 +15,22 @@ run_pcp_obs.py:
 examples
 bigbang.conf: contains the full path to ncap2, since it's in different places on buxton2 and bigbang2
 base_paths.conf:
+ens_mean_apcp24.conf:
+ens_mean_apcp3.conf:
+ens_stat.conf:
+ens_stat_apcp24.conf:
+ens_stat_apcp3.conf:
+grid_stat_pcp.conf:
+grid_stat_refc.conf:
 HREFv2.conf:
 HREFv2_ens.conf:
+HREFv2_ens_apcp24.conf:
+HREFv2_ens_apcp3.conf:
 HRRRe.conf:
 HRRRe_ens.conf:
 HRRRv3.conf:
 HRRRv4.conf:
+hrrre_regrid.conf:
 NSSLfv3.conf:
 pb2nc.conf:
 pcp_24.conf:
@@ -29,9 +39,10 @@ pcprg_24.conf:
 pcprg_3.conf:
 point_stat.conf:
 point_stat_ens.conf:
+time_ens_apcp24_00.conf:
+time_ens_apcp24_12.conf:
+time_ens_apcp3.conf:
 time_valid.conf:
-
-
 
 met_config
 
