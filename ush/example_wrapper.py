@@ -36,6 +36,7 @@ class ExampleWrapper(CommandBuilder):
         c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                       'EXAMPLE_INPUT_TEMPLATE')
         c_dict['INPUT_DIR'] = self.config.getdir('EXAMPLE_INPUT_DIR')
+
         return c_dict
 
     def run_at_time(self, input_dict):
