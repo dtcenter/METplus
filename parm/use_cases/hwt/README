@@ -1,7 +1,8 @@
-This file contains information on the various files and how they were run for HWT
+This file contains information on the various files and how they were used during HWT 2019
 
 Directories:
 additional_programs:
+cron_jobs:  contains the two crontab files that were run during HWT 2019 on buxton2 and bigbang2
 examples: contains the METplus configuration files for different runs of HWT variables and models
 met_config: contains MET configuration files for the different MET executables
 viewer_config:
