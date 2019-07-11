@@ -50,8 +50,6 @@ All symbols exported by "from metplus.launcher import *"
 __all__ = ['load', 'launch', 'parse_launch_args', 'load_baseconfs',
            'METplusLauncher']
 
-# baseinputconfs = ['metplus.conf','metplus.override.conf','usecase.conf']
-# baseinputconfs = ['metplus.conf']
 baseinputconfs = ['metplus_config/metplus_system.conf',
                   'metplus_config/metplus_data.conf',
                   'metplus_config/metplus_runtime.conf',
@@ -84,8 +82,8 @@ if os.environ.get('METPLUS_BASE', ''):
     METPLUS_BASE = os.environ['METPLUS_BASE']
 if os.environ.get('METPLUS_USH', ''):
     METPLUS_USH = os.environ['METPLUS_USH']
-if os.environ.get('PARM_BASE', ''):
-    PARM_BASE = os.environ['PARM_BASE']
+if os.environ.get('METPLUS_PARM_BASE', ''):
+    PARM_BASE = os.environ['METPLUS_PARM_BASE']
 
 # Based on METPLUS_BASE, Will set METPLUS_USH, or PARM_BASE if not
 # already set in the environment.
@@ -289,25 +287,32 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # set METPLUS_BASE conf to location of scripts used by METplus
     # warn if user has set METPLUS_BASE to something different
     # in their conf file
-    user_metplus_base = cu.getdir('METPLUS_BASE', '')
-    if user_metplus_base != '' and user_metplus_base != METPLUS_BASE:
+    user_metplus_base = cu.getdir('METPLUS_BASE', METPLUS_BASE)
+    if realpath(user_metplus_base) != realpath(METPLUS_BASE):
         logger.warning('METPLUS_BASE from the conf files has no effect.'+\
                        ' Overriding to '+METPLUS_BASE)
+
     conf.set('dir', 'METPLUS_BASE', METPLUS_BASE)
+
+    # do the same for PARM_BASE
+    user_parm_base = cu.getdir('PARM_BASE', PARM_BASE)
+    if realpath(user_parm_base) != realpath(PARM_BASE):
+        logger.error('PARM_BASE from the config ({}) '.format(user_parm_base) +\
+                     'differs from METplus parm base ({}). '.format(PARM_BASE))
+        logger.error('Please remove PARM_BASE from any config file. Set the ' +\
+                     'environment variable METPLUS_PARM_BASE to change where ' +\
+                     'the METplus wrappers look for config files.')
+        exit(1)
+
+    conf.set('dir', 'PARM_BASE', PARM_BASE)
 
     version_number = util.get_version_number()
     conf.set('config', 'METPLUS_VERSION', version_number)
 
-    # logger.info('Expand certain [dir] values to ensure availability ')
-    #            'before vitals parsing.
-    # frimel: Especially before vitals parsing. THIS IS ONLY NEEDED in
-    # order to define the vit dictionary and use of vit|{somevar} in the
-    # conf file.
-    for var in ('OUTPUT_BASE', 'METPLUS_BASE'):
+    # print config items that are set automatically
+    for var in ('METPLUS_BASE', 'PARM_BASE'):
         expand = cu.getdir(var)
-        logger.info('Replace [dir] %s with %s' % (var, expand))
-        conf.set('dir', var, expand)
-
+        logger.info('Setting [dir] %s to %s' % (var, expand))
 
     # Place holder for when workflow is developed in METplus.
     # if prelaunch is not None:
@@ -318,6 +323,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
         logger.info('METPLUS_CONF: %s written here.' % (confloc,))
         with open(confloc, 'wt') as f:
             conf.write(f)
+
     return conf
 
 
