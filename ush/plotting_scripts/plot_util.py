@@ -160,8 +160,8 @@ def get_stat_file_base_columns(met_version):
         stat_file_base_columns = [
             "VERSION", "MODEL", "DESC", "FCST_LEAD", "FCST_VALID_BEG",
             "FCST_VALID_END", "OBS_LEAD", "OBS_VALID_BEG", "OBS_VALID_END",
-            "FCST_VAR", "FCST_UNITS", "FCST_LEV", "OBS_VAR", "OBS_UNITS", 
-            "OBS_LEV", "OBTYPE", "VX_MASK", "INTERP_MTHD", "INTERP_PNTS", 
+            "FCST_VAR", "FCST_UNITS", "FCST_LEV", "OBS_VAR", "OBS_UNITS",
+            "OBS_LEV", "OBTYPE", "VX_MASK", "INTERP_MTHD", "INTERP_PNTS",
             "FCST_THRESH", "OBS_THRESH", "COV_THRESH", "ALPHA", "LINE_TYPE"
             ]
     return stat_file_base_columns
