@@ -67,6 +67,12 @@ class TcStatWrapper(CommandBuilder):
 
         c_dict = super(TcStatWrapper, self).create_c_dict()
 
+        # Useful for logging
+        # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
+        # [File : function]| Message
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
+
         # Check for the MET_INSTALL_DIR, if it is missing, then
         # we cannot invoke the MET tool.
         if not self.config.getdir('MET_INSTALL_DIR'):
