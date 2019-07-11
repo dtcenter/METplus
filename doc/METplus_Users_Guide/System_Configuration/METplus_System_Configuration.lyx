@@ -3179,17 +3179,6 @@ You will replace any
 \end_layout
 
 \begin_layout Itemize
-PARM_BASE to the path to where you installed METplus Wrappers, appended
- with '
-\shape italic
-parm
-\shape default
-': METplus_INSTALL/all_users/METplus/
-\shape italic
-parm
-\end_layout
-
-\begin_layout Itemize
 OUTPUT_BASE to where you wish to save the output:
 \end_layout
 
@@ -27170,7 +27159,16 @@ PARM_BASE
 \begin_inset Newline newline
 \end_inset
 
-Specify the top level METplus parameter file directory.
+This variable will automatically be set by METplus when it is started.
+ Specifies the top level METplus parameter file directory.
+ You can override this value by setting the environment variable METPLUS_PARM_BA
+SE to another directory containing a copy of the METPlus parameter file
+ directory.
+ If the environment variable is not set, the parm directory corresponding
+ to the calling script is used.
+ It is recommended that this variable is not set by the user.
+ If it is set and is not equivalent to the value determined by METplus,
+ execution will fail.
 \end_layout
 
 \begin_layout Standard
@@ -27180,7 +27178,7 @@ Specify the top level METplus parameter file directory.
 Used by:
 \series default
 \shape default
- PB2NC, PointStat, TcStat
+ All
 \series bold
 \shape italic
 
@@ -27200,7 +27198,7 @@ Family:
 Default:
 \series default
 \shape default
- Varies
+ {METPLUS_BASE}/parm
 \series bold
 \shape italic
 
