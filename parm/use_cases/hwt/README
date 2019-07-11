@@ -14,7 +14,7 @@ run_met_surrogate_severe_perc.py:
 run_pcp_obs.py:
 
 examples
-bigbang.conf: contains the full path to ncap2, since it's in different places on buxton2 and bigbang2
+bigbang.conf: contains the full path to ncap2, since the executable is in different places on buxton2 and bigbang2.  This .conf file is only needed when running METplus on bigbang2
 base_paths.conf:
 ens_mean_apcp24.conf:
 ens_mean_apcp3.conf:
