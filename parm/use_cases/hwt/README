@@ -22,6 +22,14 @@ HRRRe_ens.conf:
 HRRRv3.conf:
 HRRRv4.conf:
 NSSLfv3.conf:
+pb2nc.conf:
+pcp_24.conf:
+pcp_3.conf:
+pcprg_24.conf:
+pcprg_3.conf:
+point_stat.conf:
+point_stat_ens.conf:
+time_valid.conf:
 
 
 
