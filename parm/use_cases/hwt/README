@@ -13,6 +13,16 @@ run_met_surrogate_severe_perc.py:
 run_pcp_obs.py:
 
 examples
+bigbang.conf: contains the full path to ncap2, since it's in different places on buxton2 and bigbang2
+base_paths.conf:
+HREFv2.conf:
+HREFv2_ens.conf:
+HRRRe.conf:
+HRRRe_ens.conf:
+HRRRv3.conf:
+HRRRv4.conf:
+NSSLfv3.conf:
+
 
 
 met_config
