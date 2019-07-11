@@ -9,4 +9,4 @@ py.test -c <path/to>/extract_tiles_test.conf -c <path/to>/custom.conf
 !!!!!!!!!!!!!!!
 !!!IMPORTANT!!!
 !!!!!!!!!!!!!!!
-Before you run the test, make sure to set the PROJ_DIR to your location of the METplus source code
+Before you run the test, make sure to update the PROJ_DIR (in the custom.conf file) to your location of the METplus source code
