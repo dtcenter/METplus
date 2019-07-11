@@ -109,8 +109,9 @@ def create_input_dict(config):
 def test_output_exists(metplus_config):
     """
     Expect 186 netcdf files to be generated from the tc_pairs files
-    generated via the TcPairsWrapper, input directory is
-    the
+    generated via the TcPairsWrapper, input directory is set in
+    the TC_PAIRS_OUTPUT_DIR value in the extract_tiles_test.conf
+    file.
     """
 
     input_dict = create_input_dict(metplus_config)
@@ -134,3 +135,63 @@ def test_output_exists(metplus_config):
 
 
     assert(expected_num_nc_files == len(actual_nc_files))
+
+
+
+def test_correct_basin(metplus_config):
+    """
+       Verify that only the ML basin
+       paired results were returned by the
+       ExtractTilesWrapper, since we requested
+       this in the extract_tiles_test.conf file:
+       EXTRACT_TILES_FILTER_OPTS = -basin ML
+
+       Under the OUTPUT_BASE directory, there
+       should be subdirectories that have
+       names beginning with 'ML", which
+       indicates that the output is
+       for the ML basin.
+    """
+    expected_ml_subdirs = ['ML1200942014', 'ML1200972014', 'ML1200992014',
+                           'ML1201002014', 'ML1201032014', 'ML1201042014',
+                           'ML1201052014', 'ML1201062014', 'ML1201072014',
+                           'ML1201082014', 'ML1201092014', 'ML1201102014']
+
+    input_dict = create_input_dict(metplus_config)
+    etw = extract_tiles_wrapper()
+    etw.run_at_time(input_dict)
+    dir_section = metplus_config.items('dir')
+    for section, value in dir_section:
+        match = re.match(r'OUTPUT_BASE', section)
+        if match:
+            output_dir = os.path.join(value, 'extract_tiles')
+            # break out as soon as we find a match to the OUTPUT_BASE in the dir section.
+            break
+
+    # Saving the ML subdirs that were created for this
+    # test run...
+    created_ml_subdirs = []
+    if output_dir:
+        for root, dirs, files in os.walk(output_dir):
+            for cur_dir in dirs:
+                match = re.match(r'^ML.*', cur_dir)
+                if match:
+                    created_ml_subdirs.append(cur_dir)
+
+    # Verify that we have ML subdirs, indicating
+    # that ML basin results were found, if not,
+    # this is a Fail.
+    if len(created_ml_subdirs) == 0:
+        assert(False)
+
+    ml_subdir_counter = 0
+    for ml_subdir in created_ml_subdirs:
+        if ml_subdir in expected_ml_subdirs:
+            ml_subdir_counter = ml_subdir_counter + 1
+
+    # We should have the same number of ML subdirs that
+    # were created for this test as the expected number.
+    # print( "Number ML subdirs: ", ml_subdir_counter, " number expected: ", len(expected_ml_subdirs))
+    assert( ml_subdir_counter == len(expected_ml_subdirs))
+
+
