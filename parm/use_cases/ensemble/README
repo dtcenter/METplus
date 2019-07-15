@@ -5,20 +5,21 @@ This README describes general information related to the current
 implemenation of the ensemble use case.
 
 
-2018 nov 1
+2019 july 15
 ===============================================================================
 
 Overview:
 
 *)
-You can not run ensemble_stat one field variable at a time,  as you can
-with grid_stat. This fucntionality is not yet implemented in the 
-ensemble_stat use case.
- FCST_VAR<n>_ vars: Currently NOT support for ensemble stat.
- Set ens, fcst, obs field variables in the MET config file.
- Variables and levels as specified in the field dictionary of the MET
- configuration file. Specify as FCST_VARn_NAME, FCST_VARn_LEVELS,
- (optional) FCST_VARn_OPTION
+FCST_VAR<n>_ vars: Are now supported in METplus for ensemble stat.
+You can now run ensemble_stat one field variable at a time, as you can
+with grid_stat. To do so, you use the following settings in the
+ensemble_stat use case conf file.
+
+Set ens, fcst, obs field variables in the MET config file.
+Variables and levels as specified in the field dictionary of the MET
+configuration file. Specify as FCST_VARn_NAME, FCST_VARn_LEVELS,
+(optional) FCST_VARn_OPTION
 
 FCST_VAR1_NAME = TMP
 FCST_VAR1_LEVELS = Z2
@@ -28,9 +29,9 @@ FCST_VAR3_NAME = TCDC
 FCST_VAR3_LEVELS = L0
 FCST_VAR3_OPTIONS = GRIB_lvl_typ = 200
 
-This implies you must set these variables in the MET config file
-and all variables are processed at the same time. If you require
-one at a time, you must create/define and run seperate MET config files.
+Optionally, if you choose, you can set the field variables in the 
+MET config file, in which case, all variables are processed at the 
+same time. See the MET documentation for settings.
 
 *)
 Regarding specifying the filename template for ensemble filenames, 
@@ -54,7 +55,7 @@ FCST_ENSEMBLE_STAT_INPUT_TEMPLATE =
 -----------------
 
 NOTE THE FOLLOWING.
-It has ONLY been tested  with the following settings/versions.
+This use case has ONLY been tested with the following settings/versions.
  
 *)
 The observations error table was officailly added in MET version 8.0.
@@ -81,16 +82,10 @@ TIME_METHOD = BY_INIT    (pb2nc)
 LOOP_BY_INIT = true      (ensemble_stat) see below for details.
 
 *)
-Field Variables ens, fcst, obs Must be set in the MET config file.
-These currently are not supported in the METplus config file.
-
-*)
 PB2NC requires  /YYYYMMDD subdirectories for prepbufr input file 
 struture to run pb2nc. 
 
 *)
-jet: /lfs1/projects/dtc-hurr/MET/MET_releases/8.0/share/met/config/README
-
 Recommend read: MET configuration file README
 
 MET_INSTALL_DIR/share/met/config/README
@@ -107,10 +102,15 @@ tmp_dir = "/tmp";
 // but this may be overridden by setting the $MET_OBS_ERROR_TABLE environment
 // variable at runtime.
 
-==================================================
-GSD HRRRE SFC Test Case 
 
-1 init time 2018070912 with 37 hourly lead times ... with leads 00 ... 36
+*)
+Some examples to help show settings and behavior.
+==================================================
+GSD HRRRE SFC Test Case example.
+
+These are the settings you would use if you had the following:
+
+1. init time 2018070912 with 37 hourly lead times ... with leads 00 ... 36
 
 LOOP_BY_INIT = True
 INIT_BEG=2018070912
@@ -119,7 +119,7 @@ INIT_INCREMENT=3600 ( 1 hour, but will not be used since I have 1 init time ...)
 LEAD_SEQ=0,1, 2, 3, ... 35, 36     (In short ...)
 
 ======================================================
-The Explained behavior of LOOP_BY_INIT = True or False
+The following is an example to explain the behavior of LOOP_BY_INIT = True or False
 
 LOOP_BY_INIT = True
 Step through initialization times and loop through each forecast lead relative to that init time
