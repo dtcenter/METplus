@@ -384,7 +384,6 @@ def test_create_cyclone_regex():
                      '{2,3})([a-zA-Z0-9-_.]+).dat'
     assert actual_regex == expected_regex
 
-
 def test_crow_variable_hour():
     # Test that StringSub's do_string_sub() correctly creates the valid hour
     # without any zero-padding when given the following as input:
@@ -411,105 +410,12 @@ def test_crow_variable_hour():
     # print("crow_1 output: ", crow_1_output)
     # print("crow_2 output: ", crow_2_output)
     # print("crow_3 output: ", crow_3_output)
+
     assert(crow_1_output == crow_input_file_1 and
            crow_2_output == crow_input_file_2 and
            crow_3_output == crow_input_file_3)
 
 
-def test_create_grid2obs_regex_gfs():
-    pytest.skip('deprecated function')
-    # Test that the regex created from a template is what is expected
-    logger = logging.getLogger("test")
-    templ = '/path/to/gfs/pgbf{lead?fmt=%H}.gfs.{valid?fmt=%Y%m%d%HH}'
-
-    # variables to pass into StringSub
-    valid_str = datetime.datetime.strptime('2017081118', '%Y%m%d%H')
-    lead_str = 0
-
-    ss = StringSub(logger, templ, valid=valid_str, lead=lead_str)
-    actual_regex = ss.create_grid2obs_regex()
-    expected_regex = '/path/to/gfs/pgbf([0-9]{1,3}).gfs.([0-9]{10})$'
-    assert actual_regex == expected_regex
-
-
-def test_create_grid2obs_regex_nam():
-    pytest.skip('deprecated function')
-    # Test that the regex created from a template is what is expected
-    logger = logging.getLogger("test")
-    templ = \
-        '/path/to/nam.20170811/nam.t{cycle?' \
-        'fmt=%HH}z.prepbufr.tm{offset?fmt=%HH}'
-
-    # variables to set for StringSub
-    cycle_str = '18'
-    offset_str = '03'
-
-    ss = StringSub(logger, templ, cycle=cycle_str, offset=offset_str)
-    actual_regex = ss.create_grid2obs_regex()
-    expected_regex = \
-        '/path/to/nam.20170811/nam.t([0-9]{2,3})z.prepbufr.tm([0-9]{2,3})$'
-    assert actual_regex == expected_regex
-
-
-
-def test_create_grid2obs_regex_gdas():
-    pytest.skip('deprecated function')
-    # Test that the regex created from a template is what is expected
-    logger = logging.getLogger("test")
-    templ = \
-        '/path/to/gdas/prepbufr.gdas.{valid?fmt=%Y%m%d%HH}'
-    # '/path/to/nam.20170611/nam.t[cycle?fmt=%HH}z.prepbufr.tm{offset?fmt=%HH}'
-    # templ_hrrr ='/path/to/hrrr.t{cycle?fmt=%HH}z.wrfprsf{lead?fmt=%HH}.grib2'
-    # tmpl_gdas = 'prepbufr.gdas.{valid?fmt=%Y%m%d%HH}'
-
-    # variables to set for StringSub
-    valid_str = '2017063018'
-
-    ss = StringSub(logger, templ, valid=valid_str)
-    actual_regex = ss.create_grid2obs_regex()
-    expected_regex = '/path/to/gdas/prepbufr.gdas.([0-9]{10})$'
-    assert actual_regex == expected_regex
-
-
-def test_create_grid2obs_regex_hrrr():
-    pytest.skip('deprecated function')
-    # Test that the regex created from a template is what is expected
-    logger = logging.getLogger("test")
-    templ = \
-    '/path/to/hrrr/hrrr.t{cycle?fmt=%HH}z.wrfprsf{lead?fmt=%HH}.grib2'
-
-    # variables to set for StringSub
-    cycle_str = '15'
-    lead_str = '12'
-
-    ss = StringSub(logger, templ, cycle=cycle_str, lead=lead_str)
-    actual_regex = ss.create_grid2obs_regex()
-    expected_regex = \
-        '/path/to/hrrr/hrrr.t([0-9]{2,3})z.wrfprsf([0-9]{1,3}).grib2$'
-    assert actual_regex == expected_regex
-
-
-def test_create_grid2obs_regex_all():
-    pytest.skip('deprecated function')
-    # Test that the regex created from the template that has valid
-    # cycle, lead and offset is correct (expected).
-    logger = logging.getLogger("test")
-    templ = \
-        '/path/to/nam.{init?fmt=%Y%m%d}/rap.t{cycle?fmt=%HH}z.awphys{lead?fmt=%H}.' \
-        'tm{offset?fmt=%H}.grib2'
-
-    # variables to set for StringSub
-    init_str = "20180815"
-    cycle_str = '00'
-    lead_str = '60'
-    offset_str = '00'
-
-    ss = StringSub(logger, templ, init=init_str, cycle=cycle_str,
-                   lead=lead_str, offset=offset_str)
-    actual_regex = ss.create_grid2obs_regex()
-    expected_regex = '/path/to/nam.([0-9]{8})/rap.t([0-9]{2,3})z.' \
-                     'awphys([0-9]{1,3}).tm([0-9]{2,3}).grib2$'
-    assert actual_regex == expected_regex
 
 
 def test_multiple_valid_substitution_valid():

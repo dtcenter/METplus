@@ -141,28 +141,28 @@ def compare_results(param_a, param_b):
                 files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
                 files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
             elif process == "TcPairs":
-                out_a = p.getdir("TC_PAIRS_DIR")
+                out_a = p.getdir("TC_PAIRS_OUTPUT_DIR")
                 out_b = p_b.getdir("TC_PAIRS_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
                 files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
             elif process == "ExtractTiles":
                 # TODO FIX DIR
-                out_a = p.getdir("EXTRACT_OUT_DIR")
+                out_a = p.getdir("EXTRACT_TILES_OUTPUT_DIR")
                 out_b = p_b.getdir("EXTRACT_TILES_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/*/*"
                 date_dir = run_time[0:8]+"_"+run_time[8:10]
                 files_a = glob.glob(glob_string.format(out_a, date_dir))
                 files_b = glob.glob(glob_string.format(out_b, date_dir))
             elif process == "SeriesByInit": # TODO FIX DIR
-                out_a = p.getdir("SERIES_INIT_FILTERED_OUT_DIR")
+                out_a = p.getdir("SERIES_BY_INIT_FILTERED_OUTPUT_DIR")
                 out_b = p_b.getdir("SERIES_BY_INIT_FILTERED_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/*/*"
                 date_dir = run_time[0:8]+"_"+run_time[8:10]
                 files_a = glob.glob(glob_string.format(out_a, date_dir))
                 files_b = glob.glob(glob_string.format(out_b, date_dir))
             elif process == "SeriesByLead": # TODO FIX DIR
-                out_a = p.getdir("SERIES_LEAD_FILTERED_OUT_DIR")
+                out_a = p.getdir("SERIES_BY_LEAD_FILTERED_OUTPUT_DIR")
                 out_b = p_b.getdir("SERIES_BY_LEAD_FILTERED_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/*/*"
                 date_dir = run_time[0:8]+"_"+run_time[8:10]
@@ -215,7 +215,7 @@ def compare_output_files(files_a, files_b, a_dir, b_dir):
 
 def main():
     run_a = False
-    run_b = True
+    run_b = False
 
     metplus_home = "/d1/mccabe/METplus"
     use_case_dir = os.path.join(metplus_home,"parm/use_cases")
