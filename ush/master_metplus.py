@@ -96,6 +96,8 @@ def main():
     # we also set it in each process since they may be called stand alone.
     os.environ['MET_BASE'] = config.getdir('MET_BASE')
 
+    config.env = os.environ.copy()
+
     # Use config object to get the list of processes to call
     process_list = util.getlist(config.getstr('config', 'PROCESS_LIST'))
 
@@ -117,7 +119,7 @@ def main():
             logger = config.log(item)
             command_builder = \
                 getattr(sys.modules[__name__],
-                        item + "Wrapper")(conf, logger)
+                        item + "Wrapper")(config, logger)
             # if Usage specified in PROCESS_LIST, print usage and exit
             if item == 'Usage':
                 command_builder.run_all_times()

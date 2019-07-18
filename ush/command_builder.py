@@ -38,7 +38,8 @@ class CommandBuilder:
 
     def __init__(self, config, logger):
         self.logger = logger
-        self.config = ConfigWrapper(config, logger)
+#        self.config = ConfigWrapper(config, logger)
+        self.config = config
         self.debug = False
         self.args = []
         self.input_dir = ""
@@ -47,6 +48,8 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
         self.env = os.environ.copy()
+        if hasattr(config, 'env'):
+            self.env = config.env
         self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
         self.cmdrunner = CommandRunner(self.config, logger=self.logger)
         self.set_user_environment()
@@ -81,6 +84,11 @@ class CommandBuilder:
                 self.logger.warning(msg)
 
             self.add_env_var(env_var, self.config.getstr('user_env_vars', env_var))
+
+        # if env MET_TMP_DIR was not set, set it to config TMP_DIR
+        if not 'MET_TMP_DIR' in self.env:
+            self.env['MET_TMP_DIR'] = self.config.getdir('TMP_DIR')
+
 
     def set_output_path(self, outpath):
         """!Split path into directory and filename then save both

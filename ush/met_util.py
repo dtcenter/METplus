@@ -244,10 +244,6 @@ def handle_tmp_dir(config):
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
 
-    # if env MET_TMP_DIR was not set, set it to config TMP_DIR
-    if not met_tmp_dir:
-        os.environ['MET_TMP_DIR'] = tmp_dir
-
 def skip_time(time_info, config):
     """!Used to check current run time against list of times to skip."""
     # never skip until this is implemented correctly
@@ -1858,9 +1854,12 @@ def run_stand_alone(module_name, app_name):
 
         module = __import__(module_name)
         wrapper_class = getattr(module, app_name + "Wrapper")
-        wrapper = wrapper_class(p, logger)
+        wrapper = wrapper_class(config, logger)
 
         os.environ['MET_BASE'] = config.getdir('MET_BASE')
+
+        if not os.environ.get('MET_TMP_DIR', ''):
+            os.environ['MET_TMP_DIR'] = config.getdir('TMP_DIR')
 
         produtil.log.postmsg(app_name + ' Calling run_all_times.')
 
