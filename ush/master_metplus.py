@@ -89,10 +89,8 @@ def main():
         config.set('dir', 'STAGING_DIR',
                    os.path.join(config.getdir('OUTPUT_BASE'), "stage"))
 
-    # create temp dir if it doesn't exist already
-    tmp_dir = config.getdir('TMP_DIR', logger)
-    if not os.path.exists(tmp_dir):
-        os.makedirs(tmp_dir)
+    # handle dir to write temporary files
+    util.handle_tmp_dir(config)
 
     # This is available in each subprocess from os.system BUT
     # we also set it in each process since they may be called stand alone.

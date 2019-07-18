@@ -217,6 +217,36 @@ def check_for_deprecated_config(conf, logger):
             logger.error(error_msg)
         exit(1)
 
+def handle_tmp_dir(config):
+    """! if env var MET_TMP_DIR is set, override config TMP_DIR with value
+     if it differs from what is set
+     get config temp dir using config.conf to bypass check for /path/to
+     this is done so the user can set env MET_TMP_DIR instead of config TMP_DIR
+     and config TMP_DIR will be set automatically"""
+    met_tmp_dir = os.environ.get('MET_TMP_DIR', '')
+    conf_tmp_dir = config.conf.getdir('TMP_DIR', '')
+
+    # if env MET_TMP_DIR is set
+    if met_tmp_dir:
+        # override config TMP_DIR to env MET_TMP_DIR value
+        config.set('dir', 'TMP_DIR', met_tmp_dir)
+
+        # if config TMP_DIR differed from env MET_TMP_DIR, warn
+        if conf_tmp_dir != met_tmp_dir:
+            msg = 'TMP_DIR in config will be overridden by the ' +\
+                'environment variable MET_TMP_DIR ({})'.format(met_tmp_dir)
+            config.logger.warning(msg)
+
+    # create temp dir if it doesn't exist already
+    # this will fail if TMP_DIR is not set correctly and
+    # env MET_TMP_DIR was not set
+    tmp_dir = config.getdir('TMP_DIR')
+    if not os.path.exists(tmp_dir):
+        os.makedirs(tmp_dir)
+
+    # if env MET_TMP_DIR was not set, set it to config TMP_DIR
+    if not met_tmp_dir:
+        os.environ['MET_TMP_DIR'] = tmp_dir
 
 def skip_time(time_info, config):
     """!Used to check current run time against list of times to skip."""
