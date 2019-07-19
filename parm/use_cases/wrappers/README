@@ -1,0 +1,36 @@
+This README describes the configuration files in this directory and how to run the use cases.
+
+1) examples: The METplus config files for the use cases are found in the examples directory. You can pass one of the .conf files to the master METplus script using the -c option to run the use case.
+
+NOTE: You can optionally override required METplus configuration variables by passing in a user config file AFTER the use case configuration file. This step is not necessary if you have already configured METplus to run in your environment by modifying the files in the parm directory or configured a user parm area.
+
+Here is a list of METplus configuration items that need to be set properly to run the use cases (all in the [dir] section):
+
+  a) INPUT_BASE : the location of the METplus sample data
+  b) OUTPUT_BASE : a user writable location to store output data
+  c) MET_INSTALL_DIR : the location of the latest MET installation, i.e. /usr/local/met-8.1
+  d) TMP_DIR : a location where temporary data can be written, i.e. /tmp or {OUTPUT_BASE}/tmp
+
+Here is an example of the contents of a user configuration file:
+
+[dir]
+INPUT_BASE = /path/to/sample/data
+OUTPUT_BASE = /path/to/user/output
+MET_INSTALL_DIR = /path/to/met-8.1
+TMP_DIR = {OUTPUT_BASE}/tmp
+
+
+2) met_config: The MET config files that are read by the MET applications are found in the met_config directory. You shouldn't have to modify these files, as the METplus configuration files will control the values that are set.
+
+
+3) Running a use case: To run a use case, call the master METplus script, passing in METplus configuration files via the -c command line option.
+
+EXAMPLE:
+master_metplus.py -c use_cases/wrappers/examples/example.conf -c /path/to/user.system.conf
+
+NOTE: To call master_metplus.py without specifying a full path to the script, you will need to add the ush directory to your path. See the METplus User's Guide for more information.
+
+
+4) Use cases: The following is a list of wrapper-specific use cases that can be called. Please ensure that the INPUT_BASE variable is set to point to the METplus sample data location so that the use case input data can be found.
+
+master_metplus.py -c use_cases/wrappers/examples/example.conf

@@ -38,7 +38,8 @@ class CommandBuilder:
 
     def __init__(self, config, logger):
         self.logger = logger
-        self.config = ConfigWrapper(config, logger)
+#        self.config = ConfigWrapper(config, logger)
+        self.config = config
         self.debug = False
         self.args = []
         self.input_dir = ""
@@ -47,6 +48,8 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
         self.env = os.environ.copy()
+        if hasattr(config, 'env'):
+            self.env = config.env
         self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
         self.cmdrunner = CommandRunner(self.config, logger=self.logger)
         self.set_user_environment()
@@ -82,8 +85,10 @@ class CommandBuilder:
 
             self.add_env_var(env_var, self.config.getstr('user_env_vars', env_var))
 
-        # set MET_TMP_DIR to conf TMP_DIR
-        self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
+        # if env MET_TMP_DIR was not set, set it to config TMP_DIR
+        if not 'MET_TMP_DIR' in self.env:
+            self.env['MET_TMP_DIR'] = self.config.getdir('TMP_DIR')
+
 
     def set_output_path(self, outpath):
         """!Split path into directory and filename then save both
@@ -113,7 +118,7 @@ class CommandBuilder:
         copied into terminal
         """
         out = ""
-        all_vars = var_list + self.config.keys('user_env_vars')
+        all_vars = var_list + self.config.keys('user_env_vars') + ['MET_TMP_DIR']
         shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
         for var in all_vars:
             if shell == 'csh':
@@ -132,7 +137,7 @@ class CommandBuilder:
     def print_user_env_items(self):
         """!Prints user environment variables in the log file
         """
-        for k in self.config.keys('user_env_vars'):
+        for k in self.config.keys('user_env_vars') + ['MET_TMP_DIR']:
             self.print_env_item(k)
 
     def handle_fcst_and_obs_field(self, gen_name, fcst_name, obs_name, default=None, sec='config'):

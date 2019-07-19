@@ -10,6 +10,7 @@ import pytest
 import datetime
 import config_metplus
 from grid_stat_wrapper import GridStatWrapper
+from config_wrapper import ConfigWrapper
 import met_util as util
 import time_util
 
@@ -40,10 +41,8 @@ def grid_stat_wrapper():
          files.  Subsequent tests can customize the final METplus configuration
          to over-ride these /path/to values."""
 
-    conf = metplus_config()
-    logger = logging.getLogger("dummy")
-    return GridStatWrapper(conf, logger)
-
+    config = metplus_config()
+    return GridStatWrapper(config, config.logger)
 
 @pytest.fixture
 def metplus_config():
@@ -62,6 +61,8 @@ def metplus_config():
 
         # Read in the configuration object CONFIG
         config = config_metplus.setup()
+        logger = util.get_logger(config)
+        config = ConfigWrapper(config, logger)
         return config
 
     except Exception as e:
