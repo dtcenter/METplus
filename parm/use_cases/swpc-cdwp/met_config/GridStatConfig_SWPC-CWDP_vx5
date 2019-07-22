@@ -55,17 +55,19 @@ nc_pairs_var_str = "";
 rank_corr_flag   = FALSE;
 
 // Applies to WAM and GloTEC
-// NOTE: This was added because MET v8.0 couldn't recognize the updated data files with quality flags (the files were missing exppected file attributes for CF compliance). So we tell it that this is a CF-compliant NetCDF file (even though it's not).
+// NOTE: This was added because MET v8.0 couldn't recognize the updated data files with quality flags 
+// (the files were missing expected file attributes for CF compliance). So we tell it that this is a 
+// CF-compliant NetCDF file (even though it's not).
 file_type  = NETCDF_NCCF;
 
 //
 // Forecast and observation fields to be verified
 //
 fcst = {
-   field = [ { name = "TEC"; level = [ "${MODEL_LEVEL}" ]; } ];
+   field = [ ${FCST_FIELD} ];
 }
 obs = {
-   field = [ { name = "TEC"; level = [ "${OBS_LEVEL}" ]; } ];
+   field = [ ${OBS_FIELD} ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
