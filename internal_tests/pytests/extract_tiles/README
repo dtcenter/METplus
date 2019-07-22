@@ -4,7 +4,7 @@ Run the test as follows:
 
 2) run the following from the command line:
 
-py.test -c <path/to>/extract_tiles_test.conf -c <path/to>/custom.conf
+pytest -c <path/to>/extract_tiles_test.conf -c <path/to>/custom.conf
 
 !!!!!!!!!!!!!!!
 !!!IMPORTANT!!!

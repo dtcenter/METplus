@@ -37,6 +37,7 @@ class ConfigWrapper(object):
     def __init__(self, conf, logger):
         self.conf = conf
         self.logger = logger
+        self.env = os.environ.copy()
 
     def has_option(self, sec, opt):
         """!Calls produtil config has_option"""
@@ -62,7 +63,7 @@ class ConfigWrapper(object):
         """!Calls produtil config add_section"""
         return self.conf.add_section(name)
 
-    def log(self, sublog):
+    def log(self, sublog=None):
         """!Calls produtil config log"""
         return self.conf.log(sublog)
 

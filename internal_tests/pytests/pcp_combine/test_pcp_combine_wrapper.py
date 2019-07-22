@@ -10,6 +10,7 @@ import produtil
 import pytest
 import config_metplus
 from pcp_combine_wrapper import PcpCombineWrapper
+from config_wrapper import ConfigWrapper
 import time_util
 import met_util as util
 
@@ -67,7 +68,9 @@ def metplus_config():
         produtil.log.postmsg('pcp_combine_wrapper  is starting')
 
         # Read in the configuration object CONFIG
-        config = config_metplus.setup()
+        conf = config_metplus.setup()
+        logger = util.get_logger(conf)
+        config = ConfigWrapper(conf, logger)
         return config
 
     except Exception as e:
