@@ -31,9 +31,9 @@ class GempakToCFWrapper(CommandBuilder):
         super(GempakToCFWrapper, self).__init__(config, logger)
         self.app_name = "GempakToCF"
         self.class_path = self.config.getstr('exe', 'GEMPAKTOCF_CLASSPATH')
-        self.logger = logger
-        if self.logger is None:
-            self.logger = util.get_logger(self.config, sublog='GempakToCF')
+#        self.logger = logger
+#        if self.logger is None:
+#            self.logger = util.get_logger(self.config, sublog='GempakToCF')
 
     def get_command(self):
         cmd = "java -classpath " + self.class_path + " GempakToCF "
@@ -42,8 +42,8 @@ class GempakToCFWrapper(CommandBuilder):
             self.logger.error("Only 1 input file can be selected")
             return None
 
-        for f in self.infiles:
-            cmd += f + " "
+        for infile in self.infiles:
+            cmd += infile + " "
 
         if self.outfile == "":
             self.logger.error("No output file specified")
@@ -85,13 +85,13 @@ class GempakToCFWrapper(CommandBuilder):
         gsts = sts.StringSub(self.logger,
                              input_template,
                              valid=valid_time)
-        infile = os.path.join(input_dir, gsts.doStringSub())
-        self.add_input_file(infile)
+        infile = os.path.join(input_dir, gsts.do_string_sub())
+        self.infiles.append(infile)
 
         gsts = sts.StringSub(self.logger,
                              output_template,
                              valid=valid_time)
-        outfile = os.path.join(output_dir, gsts.doStringSub())
+        outfile = os.path.join(output_dir, gsts.do_string_sub())
 
         if os.path.exists(outfile) and \
                         self.config.getbool('config', 'GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS', False) is True:

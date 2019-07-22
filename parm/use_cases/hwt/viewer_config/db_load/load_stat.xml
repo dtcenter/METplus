@@ -1,0 +1,79 @@
+<load_spec>
+	<connection>
+		<host>mandan</host>
+		<database>mv_af_cld_mode_2</database>
+		<user>mvuser</user>
+		<password>mvuser</password>
+	</connection>
+
+        <folder_tmpl>/d3/personal/jensen/AF/met_out/{ymd}/{combo}</folder_tmpl>
+
+	<met_version>V6.0</met_version>
+
+	<verbose>true</verbose>
+	<insert_size>1</insert_size>
+	<stat_header_db_check>false</stat_header_db_check>
+	<mode_header_db_check>false</mode_header_db_check>
+	<drop_indexes>false</drop_indexes>
+	<apply_indexes>true</apply_indexes>
+	<load_stat>false</load_stat>
+	<load_mode>true</load_mode>
+	<load_mpr>false</load_mpr>
+	
+	
+	<load_val>
+		<field name="ymd">			
+		    <val>20130728</val>		
+		    <val>20130729</val>		
+		    <val>20130730</val>		
+		    <val>20130731</val>		
+		    <val>20130801</val>		
+		    <val>20130802</val>		
+		    <val>20130803</val>		
+		    <val>20151106</val>		
+		    <val>20151107</val>		
+		    <val>20151108</val>		
+		    <val>20151109</val>		
+		    <val>20151110</val>		
+		    <val>20151111</val>		
+		    <val>20151112</val>		
+		    <val>20160117</val>		
+		    <val>20160118</val>		
+		    <val>20160119</val>		
+		    <val>20160120</val>		
+		    <val>20160121</val>		
+		    <val>20160122</val>		
+		    <val>20160123</val>		
+		    <val>20160424</val>		
+		    <val>20160425</val>		
+		    <val>20160426</val>		
+		    <val>20160427</val>		
+		    <val>20160428</val>		
+		    <val>20160429</val>		
+		    <val>20160430</val>		
+		</field>
+	</load_val>
+	
+	<load_val>
+		<field name="combo">			
+		    <val>REANAL_WWMCA</val>		
+		    <val>WWMCA_REANAL</val>		
+		    <val>ADVCLD_WWMCA</val>		
+		    <val>ADVCLD_REANAL</val>		
+		    <val>GFSDCF_WWMCA</val>		
+		    <val>GFSDCF_REANAL</val>		
+		    <val>GFSRAW_WWMCA</val>		
+		    <val>GFSRAW_REANAL</val>		
+		    <val>UMDCF_WWMCA</val>		
+		    <val>UMDCF_REANAL</val>		
+		    <val>UMRAW_WWMCA</val>		
+		    <val>UMRAW_REANAL</val>		
+		    <val>WRFDCF_WWMCA</val>		
+		    <val>WRFDCF_REANAL</val>		
+		    <val>WRFRAW_WWMCA</val>		
+		    <val>WRFRAW_REANAL</val>		
+		</field>
+	</load_val>
+	
+	<load_xml>true</load_xml>
+</load_spec>

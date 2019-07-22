@@ -399,7 +399,7 @@ This is the number of seconds to add to each run time to determine the next
 
 \begin_layout Standard
 The following is a configuration that will process valid time 20190201 at
- 0Z until 20190202 at 0Z at 6 hour (21600 second) increments:
+ 0Z until 20190202 at 0Z in 6 hour (21600 second) increments:
 \end_layout
 
 \begin_layout Standard
@@ -560,7 +560,7 @@ This is the number of seconds to add to each run time to determine the next
 
 \begin_layout Standard
 The following is a configuration that will process initialization time 20190201
- at 0Z until 20190202 at 0Z at 6 hour (21600 second) increments:
+ at 0Z until 20190202 at 0Z in 6 hour (21600 second) increments:
 \end_layout
 
 \begin_layout Standard
@@ -905,7 +905,7 @@ At valid time 20190201_0Z, this initialization sequence will build a forecast
 \end_inset
 
 At valid time 20190201_1Z, this initialization sequence will build a forecast
- least list of 1, 7, 13, 19, 25, 31, etc.
+ lead list of 1, 7, 13, 19, 25, 31, etc.
 \begin_inset Newline newline
 \end_inset
 
@@ -980,7 +980,7 @@ At valid time 20190201_0Z, this initialization sequence will build a forecast
 \end_inset
 
 At valid time 20190201_1Z, this initialization sequence will build a forecast
- least list of 13, 19.
+ lead list of 13, 19.
 \begin_inset Newline newline
 \end_inset
 
@@ -2934,7 +2934,7 @@ The run time is 20190201_0Z and the following files exist in the input directory
 \begin_inset Newline newline
 \end_inset
 
-/my/grid_stat/input/obs/20190201/pre.20190201_02.ext
+/my/grid_stat/input/obs/20190201/pre.20190201_03.ext
 \begin_inset Newline newline
 \end_inset
 
@@ -3090,7 +3090,15 @@ Track and Intensity Use case with sample data
 \end_layout
 
 \begin_layout Itemize
-Create a directory where you wish to store the sample data
+Create a directory where you wish to store the sample data.
+ Sample datasets are specific to each use case (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Get-the-source-code-via-your-Web-Browser"
+
+\end_inset
+
+) and are required in order to be able to run the use case.
 \end_layout
 
 \begin_layout Itemize
@@ -3103,8 +3111,11 @@ In your browser, navigate to https://github.com/NCAR/METplus/releases
 \end_layout
 
 \begin_layout Itemize
-locate the latest release and click on the sample_data.tar.gz link associated
- with that release
+locate the latest release and click on the 
+\shape italic
+sample_data-cyclone_track_feature.tgz
+\shape default
+ link associated with that release
 \end_layout
 
 \begin_layout Itemize
@@ -3115,7 +3126,7 @@ DIRECTORY
 \begin_layout Itemize
 cd to your $INPUT_DATA_DIRECTORY and uncompress the tarball: 
 \shape italic
-tar xvfz sample_data.tar.gz
+tar xvfz sample_data-cyclone_track_feature.tgz
 \end_layout
 
 \begin_layout Itemize
@@ -3168,23 +3179,12 @@ You will replace any
 \end_layout
 
 \begin_layout Itemize
-PARM_BASE to the path to where you installed METplus Wrappers, appended
- with '
-\shape italic
-parm
-\shape default
-': METplus_INSTALL/all_users/METplus/
-\shape italic
-parm
-\end_layout
-
-\begin_layout Itemize
 OUTPUT_BASE to where you wish to save the output:
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-ADECK_TRACK_DATA_DIR to INPUT_DATA_DIRECTORY/sample_data/GFS/track_data
+TC_PAIRS_ADECK_INPUT_DIR to INPUT_DATA_DIRECTORY/sample_data/GFS/track_data
 \end_layout
 
 \end_deeper
@@ -3287,6 +3287,150 @@ TK_ERR_median.png
 \end_inset
 
 
+\end_layout
+
+\begin_layout Section
+User Defined Config
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:SC_User_Defined_Config"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You can define your own custom config variables that will be set as environment
+ variables when METplus is run.
+ MET config files can read environment variables, so this is a good way
+ to customize information that is read by those files.
+ To create add a custom config variable, add a section to one of your METplus
+ config files called [user_env_vars].
+ Under this header, add as many variables as you'd like.
+ For example, if you added the following to your METplus config:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+[user_env_vars]
+\begin_inset Newline newline
+\end_inset
+
+VAR_NAME = some_text_for_feb_1_1987_run
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+and you added the following to a MET config file that is used:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+output_prefix = ${VAR_NAME}
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+then at run time, the MET application will be run with the configuration:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+output_prefix = some_text_for_feb_1_1987_run
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+You can also reference other variables in the METplus config file.
+ For example:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+[config]
+\begin_inset Newline newline
+\end_inset
+
+INIT_BEG = 1987020104
+\begin_inset Newline newline
+\end_inset
+
+...
+\begin_inset Newline newline
+\end_inset
+
+[user_env_vars]
+\begin_inset Newline newline
+\end_inset
+
+USE_CASE_TIME_ID = {INIT_BEG}
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the equivalent of calling
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+export USE_CASE_TIME_ID=1987020104
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+at the beginning of your METplus run.
+ You can access the variable in the MET config file with ${USE_CASE_TIME_ID}.
 \end_layout
 
 \begin_layout Section
@@ -3403,22 +3547,13 @@ height "1pt"
 
 
 \series bold
-ADECK_FILE_PREFIX
+[deprecated] ADECK_FILE_PREFIX
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Prefix of the files in ATCF format containing tropical cyclone forecast
- data (
-\begin_inset Quotes eld
-\end_inset
-
-adeck
-\begin_inset Quotes erd
-\end_inset
-
- matched pairs).
+Please use TC_PAIRS_ADECK_TEMPLATE..
 \end_layout
 
 \begin_layout Standard
@@ -3473,22 +3608,13 @@ height "1pt"
 
 
 \series bold
-ADECK_TRACK_DATA_DIR
+[deprecated] ADECK_TRACK_DATA_DIR
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Directory that contains the ATCF formatted files containing tropical cyclone
- forecast data (
-\begin_inset Quotes eld
-\end_inset
-
-adeck
-\begin_inset Quotes erd
-\end_inset
-
- matched pairs).
+Please use TC_PAIRS_ADECK_INPUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -3543,13 +3669,13 @@ height "1pt"
 
 
 \series bold
-AMODEL
+[deprecated] AMODEL
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-The model name of the ADeck model data
+Please use TC_STAT_AMODEL.
 \end_layout
 
 \begin_layout Standard
@@ -3895,46 +4021,13 @@ height "1pt"
 
 
 \series bold
-BASIN
+[deprecated] BASIN
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Control what basins are desired for tropical cyclone analysis.
- 
-\end_layout
-
-\begin_layout Standard
-Per the MET users' guide, acceptable basin ID's are:
-\begin_inset Newline newline
-\end_inset
-
-WP = Western Northern Pacific
-\begin_inset Newline newline
-\end_inset
-
-IO = Northern Indian Ocean
-\begin_inset Newline newline
-\end_inset
-
-SH = Southern Hemisphere
-\begin_inset Newline newline
-\end_inset
-
-CP = Central Northern Pacific
-\begin_inset Newline newline
-\end_inset
-
-EP = Eastern Northern Pacific
-\begin_inset Newline newline
-\end_inset
-
-AL = Northern Atlantic
-\begin_inset Newline newline
-\end_inset
-
-SL = Southern Atlantic
+Please use TC_PAIRS_BASIN or TC_STAT_BASIN.
 \begin_inset Newline newline
 \end_inset
 
@@ -3948,7 +4041,7 @@ SL = Southern Atlantic
 Used by:
 \series default
 \shape default
- CyclonePlotter, TcPairs, TcStat
+ TcPairs, TcStat
 \series bold
 \shape italic
 
@@ -3993,12 +4086,11 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-BDECK_FILE_PREFIX
+[deprecated] BDECK_FILE_PREFIX
 \end_layout
 
 \begin_layout Standard
-Relevant for non-ATCF tropical cyclone data.
- The filename prefix for the BDeck data.
+Please use TC_PAIRS_BDECK_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -4053,13 +4145,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-BDECK_TRACK_DATA_DIR
+[deprecated] BDECK_TRACK_DATA_DIR
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-The input directory where the BDeck track data resides.
+Please use TC_PAIRS_BDECK_INPUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -4176,13 +4268,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-BMODEL
+[deprecated] BMODEL
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-The model name of the BDeck model data.
+Please use TC_STAT_BMODEL.
 \end_layout
 
 \begin_layout Standard
@@ -4541,7 +4633,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-CONVERT_EXE
+CONVERT
 \series default
 
 \begin_inset Newline newline
@@ -4556,6 +4648,67 @@ convert
 \end_inset
 
  executable.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC, PointStat, SeriesByInit, SeriesByLead
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [exe]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ /path/to
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+[deprecated] CONVERT_EXE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Please use CONVERT.
 \end_layout
 
 \begin_layout Standard
@@ -4731,7 +4884,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-CUT_EXE
+CUT
 \series default
 
 \begin_inset Newline newline
@@ -4800,16 +4953,74 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-CYCLONE
+[deprecated] CUT_EXE
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify which cyclone numbers to include in the tropical cyclone analysis.
- Per the MET users' guide, this can be any number 01-99 (HH format).
- Use a space or comma separated list, or leave unset if all cyclones are
- desired.
+Please use CUT.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC, PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [exe]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ /path/to
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+[deprecated] CYCLONE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Please use TC_PAIRS_CYCLONE or TC_STAT_CYCLONE..
 \end_layout
 
 \begin_layout Standard
@@ -5452,16 +5663,13 @@ height "1pt"
 
 
 \series bold
-DLAND_FILE
+[deprecated] DLAND_FILE
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-The file generated by the MET tool tc_dland, containing the gridded representati
-on of the minimum distance to land.
- Please refer to Chapter 18 of the MET User's Guide for more information
- about the tc_dland tool.
+Please use TC_PAIRS_DLAND_FILE.
 \end_layout
 
 \begin_layout Standard
@@ -5716,7 +5924,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-EGREP_EXE
+EGREP
 \series default
 
 \begin_inset Newline newline
@@ -5731,6 +5939,67 @@ egrep
 \end_inset
 
  executable.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC, PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [exe]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ /path/to
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+[deprecated] EGREP_EXE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Please use EGREP.
 \end_layout
 
 \begin_layout Standard
@@ -13391,13 +13660,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-FORECAST_TMPL
+[deprecated] FORECAST_TMPL
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Filename template used to filter forecast files.
+Please use TC_PAIRS_ADECK_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -17501,13 +17770,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MISSING_VAL
+[deprecated] MISSING_VAL
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the missing value code.
+Please use TC_PAIRS_MISSING_VAL.
 \end_layout
 
 \begin_layout Standard
@@ -17562,13 +17831,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-MISSING_VAL_TO_REPLACE
+[deprecated] MISSING_VAL_TO_REPLACE
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the missing value code to replace.
+Please use TC_PAIRS_MISSING_VAL_TO_REPLACE.
 \end_layout
 
 \begin_layout Standard
@@ -20238,7 +20507,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-NCAP2_EXE
+NCAP2
 \series default
 
 \begin_inset Newline newline
@@ -20307,7 +20576,68 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-NCDUMP_EXE
+[deprecated] NCAP2_EXE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Please use NCAP2.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC, PointStat, SeriesByLead
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [exe]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ /path/to
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+NCDUMP
 \series default
 
 \begin_inset Newline newline
@@ -20322,6 +20652,67 @@ ncdump
 \end_inset
 
  executable.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC, PointStat, SeriesByLead
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [exe]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ /path/to
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+[deprecated] NCDUMP_EXE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Please use NCDUMP.
 \end_layout
 
 \begin_layout Standard
@@ -26768,7 +27159,16 @@ PARM_BASE
 \begin_inset Newline newline
 \end_inset
 
-Specify the top level METplus parameter file directory.
+This variable will automatically be set by METplus when it is started.
+ Specifies the top level METplus parameter file directory.
+ You can override this value by setting the environment variable METPLUS_PARM_BA
+SE to another directory containing a copy of the METPlus parameter file
+ directory.
+ If the environment variable is not set, the parm directory corresponding
+ to the calling script is used.
+ It is recommended that this variable is not set by the user.
+ If it is set and is not equivalent to the value determined by METplus,
+ execution will fail.
 \end_layout
 
 \begin_layout Standard
@@ -26778,7 +27178,7 @@ Specify the top level METplus parameter file directory.
 Used by:
 \series default
 \shape default
- PB2NC, PointStat, TcStat
+ All
 \series bold
 \shape italic
 
@@ -26798,7 +27198,7 @@ Family:
 Default:
 \series default
 \shape default
- Varies
+ {METPLUS_BASE}/parm
 \series bold
 \shape italic
 
@@ -29499,13 +29899,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-REFERENCE_TMPL
+[deprecated] REFERENCE_TMPL
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-The filename template describing the observation/reference data.
+Please use TC_PAIRS_BDECK_TEMPLATE.
 \end_layout
 
 \begin_layout Standard
@@ -30063,7 +30463,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-RM_EXE
+RM
 \series default
 
 \begin_inset Newline newline
@@ -30078,6 +30478,67 @@ rm
 \end_inset
 
  executable.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC, PointStat, SeriesByLead
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [exe]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ /path/to
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+[deprecated] RM_EXE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Please use RM.
 \end_layout
 
 \begin_layout Standard
@@ -31888,13 +32349,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-STORM_ID
+[deprecated] STORM_ID
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-The identifier of the storm(s) of interest.
+Please use TC_PAIRS_STORM_ID or TC_STAT_STORM_ID.
 \end_layout
 
 \begin_layout Standard
@@ -31949,13 +32410,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-STORM_NAME
+[deprecated] STORM_NAME
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-The name(s) of the storm of interest.
+Please use TC_PAIRS_STORM_NAME.
  
 \end_layout
 
@@ -31966,7 +32427,7 @@ The name(s) of the storm of interest.
 Used by:
 \series default
 \shape default
- TcPairs, TcStat
+ TcPairs
 \series bold
 \shape italic
 
@@ -32208,6 +32669,348 @@ height "1pt"
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+TC_PAIRS_ADECK_INPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Directory that contains the ADECK files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family: 
+\series default
+\shape default
+[dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+TC_PAIRS_ADECK_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Template of the file names of ADECK data.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family: 
+\series default
+\shape default
+[filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+TC_PAIRS_BASIN
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Control what basins are desired for tropical cyclone analysis.
+ 
+\end_layout
+
+\begin_layout Standard
+Per the MET users' guide, acceptable basin ID's are:
+\begin_inset Newline newline
+\end_inset
+
+WP = Western Northern Pacific
+\begin_inset Newline newline
+\end_inset
+
+IO = Northern Indian Ocean
+\begin_inset Newline newline
+\end_inset
+
+SH = Southern Hemisphere
+\begin_inset Newline newline
+\end_inset
+
+CP = Central Northern Pacific
+\begin_inset Newline newline
+\end_inset
+
+EP = Eastern Northern Pacific
+\begin_inset Newline newline
+\end_inset
+
+AL = Northern Atlantic
+\begin_inset Newline newline
+\end_inset
+
+SL = Southern Atlantic
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family: 
+\series default
+\shape default
+[config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+TC_PAIRS_BDECK_INPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Directory that contains the BDECK files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family: 
+\series default
+\shape default
+[dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+TC_PAIRS_BDECK_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Template of the file names of BDECK data.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family: 
+\series default
+\shape default
+[filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
 \series bold
 
 \begin_inset Newline newline
@@ -32275,7 +33078,505 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-TC_PAIRS_DIR
+TC_PAIRS_CYCLONE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify which cyclone numbers to include in the tropical cyclone analysis.
+ Per the MET users' guide, this can be any number 01-99 (HH format).
+ Use a space or comma separated list, or leave unset if all cyclones are
+ desired.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+TC_PAIRS_DLAND_FILE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+The file generated by the MET tool tc_dland, containing the gridded representati
+on of the minimum distance to land.
+ Please refer to Chapter 18 of the MET User's Guide for more information
+ about the tc_dland tool.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default: 
+\series default
+\shape default
+Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+TC_PAIRS_EDECK_INPUT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Directory that contains the EDECK files.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family: 
+\series default
+\shape default
+[dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+TC_PAIRS_EDECK_TEMPLATE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Template of the file names of EDECK data.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family: 
+\series default
+\shape default
+[filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+[deprecated] TC_PAIRS_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Please use TC_PAIRS_OUTPUT_DIR.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+[deprecated] TC_PAIRS_FORCE_OVERWRITE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Please use TC_PAIRS_SKIP_IF_OUTPUT_EXISTS.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Acceptable values: yes/no
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ no
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_MISSING_VAL
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the missing value code.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_MISSING_VAL_TO_REPLACE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the missing value code to replace.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_OUTPUT_DIR
 \series default
 
 \begin_inset Newline newline
@@ -32331,18 +33632,84 @@ height "1pt"
 \end_inset
 
 
-\series bold
-
 \begin_inset Newline newline
 \end_inset
 
-TC_PAIRS_FORCE_OVERWRITE
+
+\series bold
+TC_PAIRS_OUTPUT_TEMPLATE
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify whether to overwrite the output from the MET tc_pairs tool or not.
+Template of the output file names created by tc_pairs.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family: 
+\series default
+\shape default
+[filename_templates]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_READ_ALL_FILES
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify whether to pass the value specified in TC_PAIRS_[A/B/E]DECK_INPUT_DIR
+ to the MET tc_pairs utility or have the wrapper search for valid files
+ in that directory based on the value of TC_PAIRS_[A/B/E]DECK_TEMPLATE and
+ pass them individually to tc_pairs.
+ Set to false or no to have the wrapper find valid files.
+ This can speed up execution time of tc_pairs.
 \begin_inset Newline newline
 \end_inset
 
@@ -32381,6 +33748,475 @@ Default:
 \series default
 \shape default
  no
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_REFORMAT_DECK
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Set to true or yes if using cyclone data that needs to be reformatted to
+ match the ATCF (Automated Tropical Cyclone Forecasting) format.
+ If set to true or yes, you will need to set TC_PAIRS_REFORMAT_TYPE to specify
+ which type of reformatting to perform.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_REFORMAT_DIR
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify the directory to write reformatted track data to be read by tc_pairs.
+ Used only if TC_PAIRS_REFORMAT_DECK is true or yes.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [dir]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ 
+\shape italic
+{OUTPUT_BASE}/track_data_atcf
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_REFORMAT_TYPE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify which type of reformatting to perform on cyclone data.
+ Currently only SBU extra tropical cyclone reformatting is available.
+ Only used if TC_PAIRS_REFORMAT_DECK is true or yes.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Acceptable values: SBU
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_SKIP_IF_REFORMAT_EXISTS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify whether to overwrite the reformatted cyclone data or not.
+ If set to true or yes and the reformatted file already exists for a given
+ run, the reformatting code will not be run.
+ Used only when TC_PAIRS_REFORMAT_DECK is set to true or yes.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Acceptable values: yes/no
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ no
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_SKIP_IF_OUTPUT_EXISTS
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Specify whether to overwrite the output from the MET tc_pairs tool or not.
+ If set to true or yes and the output file already exists for a given run,
+ tc_pairs will not be run.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Acceptable values: yes/no
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ no
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_STORM_ID
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+The identifier of the storm(s) of interest.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\shape default
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+TC_PAIRS_STORM_NAME
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+The name(s) of the storm of interest.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ TcPairs
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [config]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ Varies
 \series bold
 \shape italic
 
@@ -35428,22 +37264,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-TOP_LEVEL_DIRS
+[deprecated] TOP_LEVEL_DIRS
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify whether to use top-level directories when using the MET tc_pairs
- utility or not.
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-Acceptable values: yes/no
+Please use TC_PAIRS_READ_ALL_FILES.
 \end_layout
 
 \begin_layout Standard
@@ -35498,14 +37325,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-TRACK_DATA_DIR
+[deprecated] TRACK_DATA_DIR
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the directory where track data are located for use with the MET
- tc_pairs tool.
+Please use TC_PAIRS_[A/B/E]DECK_INPUT_DIR.
 \end_layout
 
 \begin_layout Standard
@@ -35560,21 +37386,17 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-TRACK_DATA_MOD_FORCE_OVERWRITE
+[deprecated] TRACK_DATA_MOD_FORCE_OVERWRITE
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify whether to force an overwrite of the track data or not.
+Please use TC_PAIRS_SKIP_IF_REFORMAT_EXISTS.
 \begin_inset Newline newline
 \end_inset
 
 
-\begin_inset Newline newline
-\end_inset
-
-Acceptable values: yes/no
 \end_layout
 
 \begin_layout Standard
@@ -35629,14 +37451,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-TRACK_DATA_SUBDIR_MOD
+[deprecated] TRACK_DATA_SUBDIR_MOD
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the sub-directory where modified track data files are stored for
- use with the MET tc_pairs tool.
+No longer used.
 \end_layout
 
 \begin_layout Standard
@@ -35691,13 +37512,13 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-TRACK_TYPE
+[deprecated] TRACK_TYPE
 \series default
 
 \begin_inset Newline newline
 \end_inset
 
-Specify the track type to filter by when using the MET tc_pairs tool.
+Please use TC_PAIRS_REFORMAT_DECK.
 \end_layout
 
 \begin_layout Standard
@@ -35752,7 +37573,7 @@ height "1pt"
 \begin_inset Newline newline
 \end_inset
 
-TR_EXE
+TR
 \series default
 
 \begin_inset Newline newline
@@ -35767,6 +37588,61 @@ tr
 \end_inset
 
  executable.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Used by:
+\series default
+\shape default
+ PB2NC, PointStat
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Family:
+\series default
+\shape default
+ [exe]
+\series bold
+\shape italic
+
+\begin_inset Newline newline
+\end_inset
+
+Default:
+\series default
+\shape default
+ /path/to
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+[deprecated] TR_EXE
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Please use TR.
 \end_layout
 
 \begin_layout Standard
@@ -37311,150 +39187,6 @@ name "sec:SC_Z"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Section
-User Defined Config
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:SC_User_Defined_Config"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-You can define your own custom config variables that will be set as environment
- variables when METplus is run.
- MET config files can read environment variables, so this is a good way
- to customize information that is read by those files.
- To create add a custom config variable, add a section to one of your METplus
- config files called [user_env_vars].
- Under this header, add as many variables as you'd like.
- For example, if you added the following to your METplus config:
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series bold
-[user_env_vars]
-\begin_inset Newline newline
-\end_inset
-
-VAR_NAME = some_text_for_feb_1_1987_run
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-and you added the following to a MET config file that is used:
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series bold
-output_prefix = ${VAR_NAME}
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-then at run time, the MET application will be run with the configuration:
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series bold
-output_prefix = some_text_for_feb_1_1987_run
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-You can also reference other variables in the METplus config file.
- For example:
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series bold
-[config]
-\begin_inset Newline newline
-\end_inset
-
-INIT_BEG = 1987020104
-\begin_inset Newline newline
-\end_inset
-
-...
-\begin_inset Newline newline
-\end_inset
-
-[user_env_vars]
-\begin_inset Newline newline
-\end_inset
-
-USE_CASE_TIME_ID = {INIT_BEG}
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-This is the equivalent of calling
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series bold
-export USE_CASE_TIME_ID=1987020104
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-at the beginning of your METplus run.
- You can access the variable in the MET config file with ${USE_CASE_TIME_ID}.
 \end_layout
 
 \end_body

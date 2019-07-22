@@ -48,7 +48,7 @@ def run_test_use_case(param_a, param_b, run_a, run_b):
     p, p_b = get_params(param_a, param_b)
     # run A
     if run_a:
-        cmd = os.path.join(p.getdir("METPLUS_BASE"),"ush","master_metplus.py")
+        cmd = os.path.join("/d1/mccabe/METplus.a", "ush", "master_metplus.py")
         for parm in params_a:
             cmd += " -c "+parm
         print("CMD A:"+cmd)
@@ -57,7 +57,7 @@ def run_test_use_case(param_a, param_b, run_a, run_b):
 
     # run B
     if run_b:
-        cmd = os.path.join(p_b.getdir("METPLUS_BASE"),"ush","master_metplus.py")
+        cmd = os.path.join("/d1/mccabe/METplus.b", "ush", "master_metplus.py")
         for parm in params_b:
             cmd += " -c "+parm
         print("CMD B:"+cmd)
@@ -99,14 +99,14 @@ def compare_results(param_a, param_b):
             print("Checking output from "+process)
             if process == "GridStat":
                 # out_subdir = "uswrp/met_out/QPF/200508070000/grid_stat"
-                out_a = p.getdir("GRID_STAT_OUT_DIR")
+                out_a = p.getdir("GRID_STAT_OUTPUT_DIR")
                 out_b = p_b.getdir("GRID_STAT_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/grid_stat/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time))
                 files_b = glob.glob(glob_string.format(out_b, run_time))
             elif process == "Mode":
                 # out_subdir = "uswrp/met_out/QPF/200508070000/grid_stat"
-                out_a = p.getdir("MODE_OUT_DIR")
+                out_a = p.getdir("MODE_OUTPUT_DIR")
                 out_b = p_b.getdir("MODE_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/mode/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time))
@@ -141,28 +141,28 @@ def compare_results(param_a, param_b):
                 files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
                 files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
             elif process == "TcPairs":
-                out_a = p.getdir("TC_PAIRS_DIR")
-                out_b = p_b.getdir("TC_PAIRS_DIR")
+                out_a = p.getdir("TC_PAIRS_OUTPUT_DIR")
+                out_b = p_b.getdir("TC_PAIRS_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/*"
                 files_a = glob.glob(glob_string.format(out_a, run_time[0:8]))
                 files_b = glob.glob(glob_string.format(out_b, run_time[0:8]))
             elif process == "ExtractTiles":
                 # TODO FIX DIR
-                out_a = p.getdir("EXTRACT_OUT_DIR")
+                out_a = p.getdir("EXTRACT_TILES_OUTPUT_DIR")
                 out_b = p_b.getdir("EXTRACT_TILES_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/*/*"
                 date_dir = run_time[0:8]+"_"+run_time[8:10]
                 files_a = glob.glob(glob_string.format(out_a, date_dir))
                 files_b = glob.glob(glob_string.format(out_b, date_dir))
             elif process == "SeriesByInit": # TODO FIX DIR
-                out_a = p.getdir("SERIES_INIT_FILTERED_OUT_DIR")
+                out_a = p.getdir("SERIES_BY_INIT_FILTERED_OUTPUT_DIR")
                 out_b = p_b.getdir("SERIES_BY_INIT_FILTERED_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/*/*"
                 date_dir = run_time[0:8]+"_"+run_time[8:10]
                 files_a = glob.glob(glob_string.format(out_a, date_dir))
                 files_b = glob.glob(glob_string.format(out_b, date_dir))
             elif process == "SeriesByLead": # TODO FIX DIR
-                out_a = p.getdir("SERIES_LEAD_FILTERED_OUT_DIR")
+                out_a = p.getdir("SERIES_BY_LEAD_FILTERED_OUTPUT_DIR")
                 out_b = p_b.getdir("SERIES_BY_LEAD_FILTERED_OUTPUT_DIR")
                 glob_string = "{:s}/{:s}/*/*"
                 date_dir = run_time[0:8]+"_"+run_time[8:10]
@@ -215,7 +215,7 @@ def compare_output_files(files_a, files_b, a_dir, b_dir):
 
 def main():
     run_a = False
-    run_b = True
+    run_b = False
 
     metplus_home = "/d1/mccabe/METplus"
     use_case_dir = os.path.join(metplus_home,"parm/use_cases")
@@ -223,13 +223,9 @@ def main():
                     use_case_dir+"/qpf/examples/ruc-vs-s2grib.conf" ,
                     use_case_dir+"/qpf/examples/phpt-vs-s4grib.conf" ,
                     use_case_dir+"/qpf/examples/phpt-vs-mrms-qpe.conf" ,
-                    use_case_dir+"/qpf/examples/hrefmean-vs-qpe.conf" ,
                     use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf" ,
                     use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" ,
-#                    use_case_dir+"/feature_relative/feature_relative.conf",
-#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" ,
-#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" ,
-#                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_by_fhr_grouping.conf" ,
+                    use_case_dir+"/qpf/examples/hrefmean-vs-qpe-gempak.conf" ,
                     use_case_dir+"/grid_to_grid/examples/anom.conf" ,
                     use_case_dir+"/grid_to_grid/examples/anom_height.conf",
                     use_case_dir+"/grid_to_grid/examples/sfc.conf" ,
@@ -237,12 +233,24 @@ def main():
                     use_case_dir+"/grid_to_grid/examples/precip_continuous.conf" ,
                     use_case_dir+"/mode/examples/hrefmean-vs-mrms-qpe.conf",
                     use_case_dir+"/mode/examples/phpt-vs-qpe.conf",
-                    use_case_dir+"/ensemble/examples/hrrr_ensemble_sfc.conf" #,
-#                   use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/conus_surface.conf",
-#                   use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/upper_air.conf"
+                    use_case_dir+"/ensemble/examples/hrrr_ensemble_sfc.conf" ,
+                    use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/conus_surface.conf",
+                    use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/upper_air.conf",
+                    use_case_dir+"/feature_relative/feature_relative.conf",
+                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" ,
+                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" ,
+                    use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_by_fhr_grouping.conf",
+                    use_case_dir+"/ensemble/examples/hrrr_ensemble_sfc_wildcard.conf",
+                    use_case_dir+"/track_and_intensity/examples/atcf_by_dir.conf",
+                    use_case_dir+"/track_and_intensity/examples/atcf_by_file.conf",
+                    use_case_dir+"/track_and_intensity/examples/hwrf.conf",
+                    use_case_dir+"/track_and_intensity/examples/hwrf_orig_files.conf",
+                    use_case_dir+"/track_and_intensity/examples/sbu.conf",
+                    use_case_dir+"/track_and_intensity/examples/track_and_intensity_ATCF.conf"
                   ]
 
     all_good = True
+    print("Starting test script")
     for param_file in param_files:
         param_a = param_file.replace(metplus_home,"/d1/mccabe/METplus.a")
         param_b = param_file.replace(metplus_home,"/d1/mccabe/METplus.b")

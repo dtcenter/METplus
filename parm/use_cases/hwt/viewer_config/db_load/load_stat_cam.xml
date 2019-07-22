@@ -1,0 +1,44 @@
+<load_spec>
+	<connection>
+		<host>mandan</host>
+		<database>mv_pskinner_newse</database>
+		<user>mvuser</user>
+		<password>mvuser</password>
+	</connection>
+
+        <folder_tmpl>/d3/projects/USWRP_CAM/pskinner_data/{combo}/{ymd}</folder_tmpl>
+
+	<met_version>V6.0</met_version>
+
+	<verbose>true</verbose>
+	<insert_size>1</insert_size>
+	<stat_header_db_check>false</stat_header_db_check>
+	<mode_header_db_check>false</mode_header_db_check>
+	<drop_indexes>false</drop_indexes>
+	<apply_indexes>true</apply_indexes>
+	<load_stat>true</load_stat>
+	<load_mode>false</load_mode>
+	<load_mpr>false</load_mpr>
+	
+	
+	<load_val>
+		<field name="combo">			
+		    <val>met_output_refc_norad</val>
+		    <val>met_output_refc_rad</val>
+                    <val>met_output_uh_norad</val>
+                    <val>met_output_uh_rad</val>	
+		</field>
+	</load_val>
+	
+	<load_val>
+		<field name="ymd">			
+		    <val>2016050200</val>
+                    <val>2016050300</val>
+                    <val>2016050400</val>
+                    <val>2016050500</val>
+                    <val>2016050600</val>		
+		</field>
+	</load_val>
+	
+	<load_xml>true</load_xml>
+</load_spec>

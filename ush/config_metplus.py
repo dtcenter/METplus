@@ -1,17 +1,18 @@
 #!/usr/bin/env python
+
+"""
+Program Name: config_metplus.py
+Contact(s): George McCabe, Julie Prestopnik, Jim Frimel, Minna Win
+Abstract:
+History Log:  Initial version
+Usage: Used to read the configuration files to setup the METplus wrappers
+Parameters: None
+Input Files: N/A
+Output Files: N/A
+"""
+
 from __future__ import print_function
 
-# This would become the exmetplus_launcher
-
-##@namespace config_metplus
-# The initial METplus configure script for parsing the command line
-# options, arguments and setting up the METPLUS_CONF file.  
-#
-# This module setup() function should be called at the start of each task to 
-# setup a configuration object used by all the processing tasks.
-# Each task that calls this MUST have run produtil.setup
-
-# This module can be called directly as a  command on the command line as well.
 import os
 import sys
 import logging
@@ -20,22 +21,27 @@ import produtil.setup
 import getopt
 import config_launcher
 
+# pylint:disable=pointless-string-statement
+'''!@namespace config_metplus
+The initial METplus configure script for parsing the command line
+options, arguments and setting up the METPLUS_CONF file.
+This module setup() function should be called at the start of each task to
+setup a configuration object used by all the processing tasks.
+Each task that calls this MUST have run produtil.setup
+'''
+
 ##@var __all__
 # All symbols exported by "from config_metplus import *"
 __all__ = ['usage', 'setup']
 
 ##@var logger
-# The logging.Logger for log messages
-logger = None
-
-
-def usage(filename=None,logger=None):
+def usage(filename=None, logger=None):
     """! How to call this function.
     @param filename the filename of the calling module.
     @param logger a logging.logger for log messages"""
 
     if filename:
-        filename=os.path.basename(filename)
+        filename = os.path.basename(filename)
 
     # Note: runtime option is not being used. remove it ?
     # -r|--runtime <arg0>     Specify initialization time to process
@@ -51,7 +57,7 @@ section.option=value -- override conf options on the command line
 '''%(filename))
     sys.exit(2)
 
-def setup(filename=None,logger=None):
+def setup(filename=None, logger=None):
     """!The METplus setup function.
     @param filename the filename of the calling module.
     @param logger a logging.logger for log messages
@@ -89,8 +95,8 @@ def setup(filename=None,logger=None):
         opts, args = getopt.gnu_getopt(sys.argv[1:], short_opts, long_opts)
     except getopt.GetoptError as err:
         logger.critical('Invalid arguments to %s.  Exiting.'%(filename))
-        print(str(err))        
-        usage(filename,logger)
+        print(str(err))
+        usage(filename, logger)
         exit(1)
 
     if opts == []:
@@ -157,4 +163,3 @@ if __name__ == "__main__":
         produtil.log.jlogger.critical(
             'config_metplusfailed: %s' % (str(e),), exc_info=True)
         sys.exit(2)
-

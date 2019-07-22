@@ -26,13 +26,11 @@ class PointStatWrapper(CompareGriddedWrapper):
 
     def __init__(self, config, logger):
         super(PointStatWrapper, self).__init__(config, logger)
-        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
-        self.app_path = os.path.join(met_install_dir, 'bin/point_stat')
-        self.app_name = os.path.basename(self.app_path)
+        self.app_name = 'point_stat'
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                     'bin', self.app_name)
 
-        self.c_dict = self.create_point_stat_dict()
-
-    def create_point_stat_dict(self):
+    def create_c_dict(self):
         """! Create a dictionary that holds all the values set in the
              METplus config file for the point-stat wrapper.
 
@@ -41,8 +39,7 @@ class PointStatWrapper(CompareGriddedWrapper):
                              in the METplus configuration file.
         """
         c_dict = super(PointStatWrapper, self).create_c_dict()
-        # TODO: These are all required by CompareGridded, put into function?
-        # pass in all caps MET app name, i.e. POINT_STAT or PB2NC
+
         c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'POINT_STAT_OFFSETS', '0'))
         c_dict['FCST_INPUT_TEMPLATE'] = \
@@ -86,10 +83,12 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.config.getstr('config', 'POINT_STAT_MESSAGE_TYPE', ''))
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict)
+        self.handle_window_variables(c_dict, 'point_stat')
 
-        c_dict['NEIGHBORHOOD_WIDTH'] = self.config.getstr('config', 'POINT_STAT_NEIGHBORHOOD_WIDTH', '')
-        c_dict['NEIGHBORHOOD_SHAPE'] = self.config.getstr('config', 'POINT_STAT_NEIGHBORHOOD_SHAPE', '')
+        c_dict['NEIGHBORHOOD_WIDTH'] = self.config.getstr('config',
+                                                          'POINT_STAT_NEIGHBORHOOD_WIDTH', '')
+        c_dict['NEIGHBORHOOD_SHAPE'] = self.config.getstr('config',
+                                                          'POINT_STAT_NEIGHBORHOOD_SHAPE', '')
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
                                'POINT_STAT_VERIFICATION_MASK_TEMPLATE')
@@ -139,19 +138,20 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.clear()
 
         time_info = time_util.ti_calculate(input_dict)
-        var_list = self.c_dict['var_list']
+        var_list = self.c_dict['VAR_LIST']
 
         # get verification mask if available
         self.get_verification_mask(time_info)
 
         # get model to compare
         model_path = self.find_model(time_info, var_list[0])
-        if model_path == None:
+        if model_path is None:
             self.logger.error('Could not find file in {} matching template {}'
                               .format(self.c_dict['FCST_INPUT_DIR'],
                                       self.c_dict['FCST_INPUT_TEMPLATE']))
-            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] +
-                              " for init time " + time_info['init_fmt'] + " f" + str(time_info['lead_hours']))
+            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] +\
+                              " for init time " + time_info['init_fmt'] +\
+                              " f" + str(time_info['lead_hours']))
             return False
 
         # get observation to compare
@@ -173,19 +173,25 @@ class PointStatWrapper(CompareGriddedWrapper):
             return False
 
         # found both fcst and obs
-        self.add_input_file(model_path)
+        self.infiles.append(model_path)
         if type(obs_path) is list:
             for obs in obs_path:
-                self.add_input_file(obs)
+                self.infiles.append(obs)
         else:
-            self.add_input_file(obs_path)
+            self.infiles.append(obs_path)
 
         # get field information
         fcst_field_list = []
         obs_field_list = []
-        for v in var_list:
-            next_fcst = self.get_one_field_info(v.fcst_level, v.fcst_thresh, v.fcst_name, v.fcst_extra, 'FCST')
-            next_obs = self.get_one_field_info(v.obs_level, v.obs_thresh, v.obs_name, v.obs_extra, 'OBS')
+        for var_info in var_list:
+            next_fcst = self.get_one_field_info(var_info['fcst_level'],
+                                                var_info['fcst_thresh'],
+                                                var_info['fcst_name'],
+                                                var_info['fcst_extra'], 'FCST')
+            next_obs = self.get_one_field_info(var_info['obs_level'],
+                                               var_info['obs_thresh'],
+                                               var_info['obs_name'],
+                                               var_info['obs_extra'], 'OBS')
             fcst_field_list.append(next_fcst)
             obs_field_list.append(next_obs)
         fcst_field = ','.join(fcst_field_list)
@@ -214,7 +220,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         # Set the environment variables
         self.add_env_var(b'MODEL', str(self.c_dict['MODEL']))
 
-        regrid_to_grid = str(self.c_dict['REGRID_TO_GRID'])
+        regrid_to_grid = self.c_dict['REGRID_TO_GRID']
         self.add_env_var(b'REGRID_TO_GRID', regrid_to_grid)
 #        os.environ['REGRID_TO_GRID'] = regrid_to_grid
 
@@ -267,7 +273,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_env_var(b'OBS_WINDOW_BEGIN',
                          str(self.c_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var(b'OBS_WINDOW_END', str(self.c_dict['OBS_WINDOW_END']))
-        
+
         # add additional env vars if they are specified
         if self.c_dict['VERIFICATION_MASK'] != '':
             self.add_env_var('VERIF_MASK',
@@ -294,4 +300,4 @@ class PointStatWrapper(CompareGriddedWrapper):
 
 
 if __name__ == "__main__":
-        util.run_stand_alone("point_stat_wrapper", "PointStat")
+    util.run_stand_alone("point_stat_wrapper", "PointStat")

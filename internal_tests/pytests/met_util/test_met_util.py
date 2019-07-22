@@ -38,7 +38,7 @@ def test_add_common_items_to_dictionary():
     conf = metplus_config()
     dictionary = dict()
     util.add_common_items_to_dictionary(conf, dictionary)
-    assert(dictionary['WGRIB2'] == conf.getexe('WGRIB2'))
+    assert(dictionary['WGRIB2_EXE'] == conf.getexe('WGRIB2'))
 
 
 def test_threshold_gt():
@@ -211,7 +211,7 @@ def test_preprocess_file_gz():
     assert(stagepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_bz2():
-    conf = metplus_config()
+    conf = ConfigWrapper(metplus_config(), None)
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile2.txt.bz2"
     stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile2.txt"
@@ -219,7 +219,7 @@ def test_preprocess_file_bz2():
     assert(stagepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_zip():
-    conf = metplus_config()
+    conf = ConfigWrapper(metplus_config(), None)
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile3.txt.zip"
     stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile3.txt"
@@ -227,14 +227,14 @@ def test_preprocess_file_zip():
     assert(stagepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_unzipped():
-    conf = metplus_config()
+    conf = ConfigWrapper(metplus_config(), None)
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile4.txt"
     outpath = util.preprocess_file(filepath, None, conf)
     assert(filepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_none():
-    conf = metplus_config()
+    conf = ConfigWrapper(metplus_config(), None)
     outpath = util.preprocess_file(None, None, conf)
     assert(outpath is None)
 
@@ -267,22 +267,22 @@ def test_parse_var_list_fcst_only():
     conf.set('config', 'FCST_VAR2_NAME', "NAME2")
     conf.set('config', 'FCST_VAR2_LEVELS', "LEVELS21, LEVELS22")
     var_list = util.parse_var_list(cu)
-    assert(var_list[0].fcst_name == "NAME1" and \
-           var_list[0].obs_name == "NAME1" and \
-           var_list[1].fcst_name == "NAME1" and \
-           var_list[1].obs_name == "NAME1" and \
-           var_list[2].fcst_name == "NAME2" and \
-           var_list[2].obs_name == "NAME2" and \
-           var_list[3].fcst_name == "NAME2" and \
-           var_list[3].obs_name == "NAME2" and \
-           var_list[0].fcst_level == "LEVELS11" and \
-           var_list[0].obs_level == "LEVELS11" and \
-           var_list[1].fcst_level == "LEVELS12" and \
-           var_list[1].obs_level == "LEVELS12" and \
-           var_list[2].fcst_level == "LEVELS21" and \
-           var_list[2].obs_level == "LEVELS21" and \
-           var_list[3].fcst_level == "LEVELS22" and \
-           var_list[3].obs_level == "LEVELS22")
+    assert(var_list[0]['fcst_name'] == "NAME1" and \
+           var_list[0]['obs_name'] == "NAME1" and \
+           var_list[1]['fcst_name'] == "NAME1" and \
+           var_list[1]['obs_name'] == "NAME1" and \
+           var_list[2]['fcst_name'] == "NAME2" and \
+           var_list[2]['obs_name'] == "NAME2" and \
+           var_list[3]['fcst_name'] == "NAME2" and \
+           var_list[3]['obs_name'] == "NAME2" and \
+           var_list[0]['fcst_level'] == "LEVELS11" and \
+           var_list[0]['obs_level'] == "LEVELS11" and \
+           var_list[1]['fcst_level'] == "LEVELS12" and \
+           var_list[1]['obs_level'] == "LEVELS12" and \
+           var_list[2]['fcst_level'] == "LEVELS21" and \
+           var_list[2]['obs_level'] == "LEVELS21" and \
+           var_list[3]['fcst_level'] == "LEVELS22" and \
+           var_list[3]['obs_level'] == "LEVELS22")
 
 # field info only defined in the OBS_* variables
 def test_parse_var_list_obs():
@@ -293,22 +293,22 @@ def test_parse_var_list_obs():
     conf.set('config', 'OBS_VAR2_NAME', "NAME2")
     conf.set('config', 'OBS_VAR2_LEVELS', "LEVELS21, LEVELS22")
     var_list = util.parse_var_list(cu)
-    assert(var_list[0].fcst_name == "NAME1" and \
-           var_list[0].obs_name == "NAME1" and \
-           var_list[1].fcst_name == "NAME1" and \
-           var_list[1].obs_name == "NAME1" and \
-           var_list[2].fcst_name == "NAME2" and \
-           var_list[2].obs_name == "NAME2" and \
-           var_list[3].fcst_name == "NAME2" and \
-           var_list[3].obs_name == "NAME2" and \
-           var_list[0].fcst_level == "LEVELS11" and \
-           var_list[0].obs_level == "LEVELS11" and \
-           var_list[1].fcst_level == "LEVELS12" and \
-           var_list[1].obs_level == "LEVELS12" and \
-           var_list[2].fcst_level == "LEVELS21" and \
-           var_list[2].obs_level == "LEVELS21" and \
-           var_list[3].fcst_level == "LEVELS22" and \
-           var_list[3].obs_level == "LEVELS22")
+    assert(var_list[0]['fcst_name'] == "NAME1" and \
+           var_list[0]['obs_name'] == "NAME1" and \
+           var_list[1]['fcst_name'] == "NAME1" and \
+           var_list[1]['obs_name'] == "NAME1" and \
+           var_list[2]['fcst_name'] == "NAME2" and \
+           var_list[2]['obs_name'] == "NAME2" and \
+           var_list[3]['fcst_name'] == "NAME2" and \
+           var_list[3]['obs_name'] == "NAME2" and \
+           var_list[0]['fcst_level'] == "LEVELS11" and \
+           var_list[0]['obs_level'] == "LEVELS11" and \
+           var_list[1]['fcst_level'] == "LEVELS12" and \
+           var_list[1]['obs_level'] == "LEVELS12" and \
+           var_list[2]['fcst_level'] == "LEVELS21" and \
+           var_list[2]['obs_level'] == "LEVELS21" and \
+           var_list[3]['fcst_level'] == "LEVELS22" and \
+           var_list[3]['obs_level'] == "LEVELS22")
 
 # field info defined in both FCST_* and OBS_* variables
 def test_parse_var_list_fcst_and_obs():
@@ -323,22 +323,22 @@ def test_parse_var_list_fcst_and_obs():
     conf.set('config', 'OBS_VAR2_NAME', "ONAME2")
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
     var_list = util.parse_var_list(cu)
-    assert(var_list[0].fcst_name == "FNAME1" and \
-           var_list[0].obs_name == "ONAME1" and \
-           var_list[1].fcst_name == "FNAME1" and \
-           var_list[1].obs_name == "ONAME1" and \
-           var_list[2].fcst_name == "FNAME2" and \
-           var_list[2].obs_name == "ONAME2" and \
-           var_list[3].fcst_name == "FNAME2" and \
-           var_list[3].obs_name == "ONAME2" and \
-           var_list[0].fcst_level == "FLEVELS11" and \
-           var_list[0].obs_level == "OLEVELS11" and \
-           var_list[1].fcst_level == "FLEVELS12" and \
-           var_list[1].obs_level == "OLEVELS12" and \
-           var_list[2].fcst_level == "FLEVELS21" and \
-           var_list[2].obs_level == "OLEVELS21" and \
-           var_list[3].fcst_level == "FLEVELS22" and \
-           var_list[3].obs_level == "OLEVELS22")
+    assert(var_list[0]['fcst_name'] == "FNAME1" and \
+           var_list[0]['obs_name'] == "ONAME1" and \
+           var_list[1]['fcst_name'] == "FNAME1" and \
+           var_list[1]['obs_name'] == "ONAME1" and \
+           var_list[2]['fcst_name'] == "FNAME2" and \
+           var_list[2]['obs_name'] == "ONAME2" and \
+           var_list[3]['fcst_name'] == "FNAME2" and \
+           var_list[3]['obs_name'] == "ONAME2" and \
+           var_list[0]['fcst_level'] == "FLEVELS11" and \
+           var_list[0]['obs_level'] == "OLEVELS11" and \
+           var_list[1]['fcst_level'] == "FLEVELS12" and \
+           var_list[1]['obs_level'] == "OLEVELS12" and \
+           var_list[2]['fcst_level'] == "FLEVELS21" and \
+           var_list[2]['obs_level'] == "OLEVELS21" and \
+           var_list[3]['fcst_level'] == "FLEVELS22" and \
+           var_list[3]['obs_level'] == "OLEVELS22")
 
 # VAR1 defined by FCST, VAR2 defined by OBS
 def test_parse_var_list_fcst_and_obs_alternate():
@@ -349,22 +349,22 @@ def test_parse_var_list_fcst_and_obs_alternate():
     conf.set('config', 'OBS_VAR2_NAME', "ONAME2")
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
     var_list = util.parse_var_list(cu)
-    assert(var_list[0].fcst_name == "FNAME1" and \
-           var_list[0].obs_name == "FNAME1" and \
-           var_list[1].fcst_name == "FNAME1" and \
-           var_list[1].obs_name == "FNAME1" and \
-           var_list[2].fcst_name == "ONAME2" and \
-           var_list[2].obs_name == "ONAME2" and \
-           var_list[3].fcst_name == "ONAME2" and \
-           var_list[3].obs_name == "ONAME2" and \
-           var_list[0].fcst_level == "FLEVELS11" and \
-           var_list[0].obs_level == "FLEVELS11" and \
-           var_list[1].fcst_level == "FLEVELS12" and \
-           var_list[1].obs_level == "FLEVELS12" and \
-           var_list[2].fcst_level == "OLEVELS21" and \
-           var_list[2].obs_level == "OLEVELS21" and \
-           var_list[3].fcst_level == "OLEVELS22" and \
-           var_list[3].obs_level == "OLEVELS22")
+    assert(var_list[0]['fcst_name'] == "FNAME1" and \
+           var_list[0]['obs_name'] == "FNAME1" and \
+           var_list[1]['fcst_name'] == "FNAME1" and \
+           var_list[1]['obs_name'] == "FNAME1" and \
+           var_list[2]['fcst_name'] == "ONAME2" and \
+           var_list[2]['obs_name'] == "ONAME2" and \
+           var_list[3]['fcst_name'] == "ONAME2" and \
+           var_list[3]['obs_name'] == "ONAME2" and \
+           var_list[0]['fcst_level'] == "FLEVELS11" and \
+           var_list[0]['obs_level'] == "FLEVELS11" and \
+           var_list[1]['fcst_level'] == "FLEVELS12" and \
+           var_list[1]['obs_level'] == "FLEVELS12" and \
+           var_list[2]['fcst_level'] == "OLEVELS21" and \
+           var_list[2]['obs_level'] == "OLEVELS21" and \
+           var_list[3]['fcst_level'] == "OLEVELS22" and \
+           var_list[3]['obs_level'] == "OLEVELS22")
 
 # VAR1 defined by OBS, VAR2 by FCST, VAR3 by both FCST AND OBS
 def test_parse_var_list_fcst_and_obs_and_both():
@@ -380,30 +380,30 @@ def test_parse_var_list_fcst_and_obs_and_both():
     conf.set('config', 'OBS_VAR3_LEVELS', "OLEVELS31, OLEVELS32")
 
     var_list = util.parse_var_list(cu)
-    assert(var_list[0].fcst_name == "ONAME1" and \
-           var_list[0].obs_name == "ONAME1" and \
-           var_list[1].fcst_name == "ONAME1" and \
-           var_list[1].obs_name == "ONAME1" and \
-           var_list[2].fcst_name == "FNAME2" and \
-           var_list[2].obs_name == "FNAME2" and \
-           var_list[3].fcst_name == "FNAME2" and \
-           var_list[3].obs_name == "FNAME2" and \
-           var_list[4].fcst_name == "FNAME3" and \
-           var_list[4].obs_name == "ONAME3" and \
-           var_list[5].fcst_name == "FNAME3" and \
-           var_list[5].obs_name == "ONAME3" and \
-           var_list[0].fcst_level == "OLEVELS11" and \
-           var_list[0].obs_level == "OLEVELS11" and \
-           var_list[1].fcst_level == "OLEVELS12" and \
-           var_list[1].obs_level == "OLEVELS12" and \
-           var_list[2].fcst_level == "FLEVELS21" and \
-           var_list[2].obs_level == "FLEVELS21" and \
-           var_list[3].fcst_level == "FLEVELS22" and \
-           var_list[3].obs_level == "FLEVELS22" and \
-           var_list[4].fcst_level == "FLEVELS31" and \
-           var_list[4].obs_level == "OLEVELS31" and \
-           var_list[5].fcst_level == "FLEVELS32" and \
-           var_list[5].obs_level == "OLEVELS32" )
+    assert(var_list[0]['fcst_name'] == "ONAME1" and \
+           var_list[0]['obs_name'] == "ONAME1" and \
+           var_list[1]['fcst_name'] == "ONAME1" and \
+           var_list[1]['obs_name'] == "ONAME1" and \
+           var_list[2]['fcst_name'] == "FNAME2" and \
+           var_list[2]['obs_name'] == "FNAME2" and \
+           var_list[3]['fcst_name'] == "FNAME2" and \
+           var_list[3]['obs_name'] == "FNAME2" and \
+           var_list[4]['fcst_name'] == "FNAME3" and \
+           var_list[4]['obs_name'] == "ONAME3" and \
+           var_list[5]['fcst_name'] == "FNAME3" and \
+           var_list[5]['obs_name'] == "ONAME3" and \
+           var_list[0]['fcst_level'] == "OLEVELS11" and \
+           var_list[0]['obs_level'] == "OLEVELS11" and \
+           var_list[1]['fcst_level'] == "OLEVELS12" and \
+           var_list[1]['obs_level'] == "OLEVELS12" and \
+           var_list[2]['fcst_level'] == "FLEVELS21" and \
+           var_list[2]['obs_level'] == "FLEVELS21" and \
+           var_list[3]['fcst_level'] == "FLEVELS22" and \
+           var_list[3]['obs_level'] == "FLEVELS22" and \
+           var_list[4]['fcst_level'] == "FLEVELS31" and \
+           var_list[4]['obs_level'] == "OLEVELS31" and \
+           var_list[5]['fcst_level'] == "FLEVELS32" and \
+           var_list[5]['obs_level'] == "OLEVELS32" )
 
 # option defined in obs only
 def test_parse_var_list_fcst_only():
@@ -414,20 +414,20 @@ def test_parse_var_list_fcst_only():
     conf.set('config', 'FCST_VAR1_THRESH', ">1, >2")
     conf.set('config', 'OBS_VAR1_OPTIONS', "OOPTIONS11")
     var_list = util.parse_var_list(cu)
-    assert(var_list[0].fcst_name == "NAME1" and \
-           var_list[0].obs_name == "NAME1" and \
-           var_list[1].fcst_name == "NAME1" and \
-           var_list[1].obs_name == "NAME1" and \
-           var_list[0].fcst_level == "LEVELS11" and \
-           var_list[0].obs_level == "LEVELS11" and \
-           var_list[1].fcst_level == "LEVELS12" and \
-           var_list[1].obs_level == "LEVELS12" and \
-           var_list[0].fcst_thresh ==  var_list[0].obs_thresh and \
-           var_list[1].fcst_thresh ==  var_list[1].obs_thresh and \
-           var_list[0].fcst_extra == "" and \
-           var_list[0].obs_extra == "OOPTIONS11" and \
-           var_list[1].fcst_extra == "" and \
-           var_list[1].obs_extra == "OOPTIONS11"
+    assert(var_list[0]['fcst_name'] == "NAME1" and \
+           var_list[0]['obs_name'] == "NAME1" and \
+           var_list[1]['fcst_name'] == "NAME1" and \
+           var_list[1]['obs_name'] == "NAME1" and \
+           var_list[0]['fcst_level'] == "LEVELS11" and \
+           var_list[0]['obs_level'] == "LEVELS11" and \
+           var_list[1]['fcst_level'] == "LEVELS12" and \
+           var_list[1]['obs_level'] == "LEVELS12" and \
+           var_list[0]['fcst_thresh'] ==  var_list[0]['obs_thresh'] and \
+           var_list[1]['fcst_thresh'] ==  var_list[1]['obs_thresh'] and \
+           var_list[0]['fcst_extra'] == "" and \
+           var_list[0]['obs_extra'] == "OOPTIONS11" and \
+           var_list[1]['fcst_extra'] == "" and \
+           var_list[1]['obs_extra'] == "OOPTIONS11"
            )
 
 def test_get_lead_sequence_lead():

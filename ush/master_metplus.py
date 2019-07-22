@@ -1,19 +1,31 @@
 #!/usr/bin/env python
-from __future__ import print_function
 
-'''!@namespace master_metplus
-Main script the processes all the tasks in the PROCESS_LIST
-'''
+"""
+Program Name: master_metplus.py
+Contact(s): George McCabe, Julie Prestopnik, Jim Frimel, Minna Win
+Abstract: Runs METplus Wrappers scripts
+History Log:  Initial version
+Usage:
+Parameters: None
+Input Files:
+Output Files:
+Condition codes:
+"""
+
+from __future__ import print_function
 
 import os
 import sys
 import logging
-from config_wrapper import ConfigWrapper
 import shutil
 import produtil.setup
 import met_util as util
 import config_metplus
+from config_wrapper import ConfigWrapper
 
+# wrappers are referenced dynamically based on PROCESS_LIST values
+# import of each wrapper is required
+# pylint:disable=unused-import
 from ensemble_stat_wrapper import EnsembleStatWrapper
 from pcp_combine_wrapper import PcpCombineWrapper
 from grid_stat_wrapper import GridStatWrapper
@@ -36,30 +48,24 @@ from pb2nc_wrapper import PB2NCWrapper
 from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TcStatWrapper
 from gempak_to_cf_wrapper import GempakToCFWrapper
+from example_wrapper import ExampleWrapper
 
-'''!@var logger
-The logging.Logger for log messages
+'''!@namespace master_metplus
+Main script the processes all the tasks in the PROCESS_LIST
 '''
-logger = None
-
 
 def main():
     """!Main program.
 
     Master METplus script that invokes the necessary Python scripts
     to perform various activities, such as series analysis."""
-    # Used for logging and usage statment
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
     # Setup Task logger, Until Conf object is created, Task logger is
     # only logging to tty, not a file.
     logger = logging.getLogger('master_metplus')
-    logger.info('Starting METplus v{}'
-                .format(util.get_version_number()))
+    logger.info('Starting METplus v%s', util.get_version_number())
 
     # Parse arguments, options and return a config instance.
-    p = config_metplus.setup(filename=cur_filename)
+    conf = config_metplus.setup(filename='master_metplus.py')
 
     # NOW we have a conf object p, we can now get the logger
     # and set the handler to write to the LOG_METPLUS
@@ -68,19 +74,20 @@ def main():
     # the setup wrapper and encapsulated in the config object.
     # than you would get it this way logger=p.log(). The config
     # object has-a logger we want.
-    logger = util.get_logger(p)
+    logger = util.get_logger(conf)
 
-    logger.info('Running METplus v{} called with command: {}'
-                .format(util.get_version_number(), ' '.join(sys.argv)))
+    logger.info('Running METplus v%s called with command: %s',
+                util.get_version_number(), ' '.join(sys.argv))
 
     # check for deprecated config items and warn user to remove/replace them
-    util.check_for_deprecated_config(p, logger)
+    util.check_for_deprecated_config(conf, logger)
 
-    config = ConfigWrapper(p, logger)
+    config = ConfigWrapper(conf, logger)
 
     # set staging dir to OUTPUT_BASE/stage if not set
     if not config.has_option('dir', 'STAGING_DIR'):
-        config.set('dir', 'STAGING_DIR', os.path.join(config.getdir('OUTPUT_BASE'),"stage"))
+        config.set('dir', 'STAGING_DIR',
+                   os.path.join(config.getdir('OUTPUT_BASE'), "stage"))
 
     # create temp dir if it doesn't exist already
     tmp_dir = config.getdir('TMP_DIR', logger)
@@ -112,7 +119,7 @@ def main():
             logger = config.log(item)
             command_builder = \
                 getattr(sys.modules[__name__],
-                        item + "Wrapper")(p, logger)
+                        item + "Wrapper")(conf, logger)
             # if Usage specified in PROCESS_LIST, print usage and exit
             if item == 'Usage':
                 command_builder.run_all_times()
@@ -145,33 +152,18 @@ def main():
         exit()
 
     # scrub staging directory if requested
-    if config.getbool('config', 'SCRUB_STAGING_DIR', False) and os.path.exists(config.getdir('STAGING_DIR')):
+    if config.getbool('config', 'SCRUB_STAGING_DIR', False) and\
+       os.path.exists(config.getdir('STAGING_DIR')):
         staging_dir = config.getdir('STAGING_DIR')
-        logger.info("Scrubbing staging dir: {}".format(staging_dir))
+        logger.info("Scrubbing staging dir: %s", staging_dir)
         shutil.rmtree(staging_dir)
 
     # rewrite final conf so it contains all of the default values used
-    util.write_final_conf(p, logger)
+    util.write_final_conf(conf, logger)
 
     logger.info('METplus has successfully finished running.')
 
     exit()
-
-    # TODO - remove this, I don't think this is being used.
-    # If removing, also remove import produtil.run
-    # If using ... than the run(cmd) will need to be correctly called.
-    # for item in process_list:
-    #
-    #     cmd_shell = cmd.to_shell()
-    #     logger.info("INFO | [" + cur_filename + ":" +
-    #                 cur_function + "] | " + "Running: " + cmd_shell)
-    #     ret = run(cmd)
-    #     if ret != 0:
-    #         logger.error("ERROR | [" + cur_filename + ":" +
-    #                     cur_function + "] | " + "Problem executing: " +
-    #                     cmd_shell)
-    #         exit(0)
-
 
 if __name__ == "__main__":
     try:
@@ -183,7 +175,7 @@ if __name__ == "__main__":
             produtil.setup.setup(send_dbn=False, jobname='run-METplus')
 
         main()
-    except Exception as e:
+    except Exception as exc:
         produtil.log.jlogger.critical(
-            'master_metplus  failed: %s' % (str(e),), exc_info=True)
+            'master_metplus  failed: %s' % (str(exc),), exc_info=True)
         sys.exit(2)

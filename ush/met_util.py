@@ -20,6 +20,7 @@ from os.path import dirname, realpath
 
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
+from string_template_substitution import get_tags
 from gempak_to_cf_wrapper import GempakToCFWrapper
 # for run stand alone
 import produtil
@@ -30,110 +31,151 @@ from config_wrapper import ConfigWrapper
 """!@namespace met_util
  @brief Provides  Utility functions for METplus.
 """
+# list of compression extensions that are handled by METplus
+VALID_EXTENSIONS = ['.gz', '.bz2', '.zip']
 
-def check_for_deprecated_config(p, logger):
+def check_for_deprecated_config(conf, logger):
     deprecated_dict = {
-      'LOOP_BY_INIT' : { 'sec' : 'config', 'alt' : 'LOOP_BY', 'req' : False},
-      'LOOP_METHOD' : { 'sec' : 'config', 'alt' : 'LOOP_ORDER', 'req' : False},
-      'PREPBUFR_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
-      'PREPBUFR_FILE_REGEX' : { 'sec' : 'regex_pattern', 'alt' : None},
-      'OBS_INPUT_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_DIR'},
-      'FCST_INPUT_DIR_REGEX' : { 'sec' : 'regex_pattern', 'alt' : 'FCST_POINT_STAT_INPUT_DIR'},
-      'FCST_INPUT_FILE_REGEX' : { 'sec' : 'regex_pattern', 'alt' : 'FCST_POINT_STAT_INPUT_TEMPLATE'},
-      'OBS_INPUT_FILE_REGEX' : { 'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_TEMPLATE'},
-      'PREPBUFR_DATA_DIR' : { 'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR'},
-      'PREPBUFR_MODEL_DIR_NAME' : { 'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR'},
-      'OBS_INPUT_FILE_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'OBS_POINT_STAT_INPUT_TEMPLATE'},
-      'FCST_INPUT_FILE_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'FCST_POINT_STAT_INPUT_TEMPLATE'},
-      'NC_FILE_TMPL' : { 'sec' : 'filename_templates', 'alt' : 'PB2NC_OUTPUT_TEMPLATE'},
-      'FCST_INPUT_DIR' : { 'sec' : 'dir', 'alt' : 'FCST_POINT_STAT_INPUT_DIR'},
-      'OBS_INPUT_DIR' : { 'sec' : 'dir', 'alt' : 'OBS_POINT_STAT_INPUT_DIR'},
-      'REGRID_TO_GRID' : { 'sec' : 'config', 'alt' : 'POINT_STAT_REGRID_TO_GRID'},
-      'FCST_HR_START' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
-      'FCST_HR_END' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
-      'FCST_HR_INTERVAL' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
-      'START_DATE' : { 'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
-      'END_DATE' : { 'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
-      'INTERVAL_TIME' : { 'sec' : 'config', 'alt' : 'INIT_INCREMENT or VALID_INCREMENT'},
-      'BEG_TIME' : { 'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
-      'END_TIME' : { 'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
-      'START_HOUR' : { 'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
-      'END_HOUR' : { 'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
-      'OBS_BUFR_VAR_LIST' : { 'sec' : 'config', 'alt' : 'PB2NC_OBS_BUFR_VAR_LIST'},
-      'TIME_SUMMARY_FLAG' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_FLAG'},
-      'TIME_SUMMARY_BEG' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_BEG'},
-      'TIME_SUMMARY_END' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_END'},
-      'TIME_SUMMARY_VAR_NAMES' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_VAR_NAMES'},
-      'TIME_SUMMARY_TYPE' : { 'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_TYPE'},
-      'OVERWRITE_NC_OUTPUT' : { 'sec' : 'config', 'alt' : 'PB2NC_SKIP_IF_OUTPUT_EXISTS'},
-      'VERTICAL_LOCATION' : { 'sec' : 'config', 'alt' : 'PB2NC_VERTICAL_LOCATION'},
-      'VERIFICATION_GRID' : { 'sec' : 'config', 'alt' : 'REGRID_DATA_PLANE_VERIF_GRID'},
-      'WINDOW_RANGE_BEG' : { 'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN'},
-      'WINDOW_RANGE_END' : { 'sec' : 'config', 'alt' : 'OBS_WINDOW_END'},
-      'OBS_EXACT_VALID_TIME' : { 'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN and OBS_WINDOW_END'},
-      'FCST_EXACT_VALID_TIME' : { 'sec' : 'config', 'alt' : 'FCST_WINDOW_BEGIN and FCST_WINDOW_END'},
-      'PCP_COMBINE_METHOD' : { 'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_METHOD and/or OBS_PCP_COMBINE_METHOD'},
-      'FHR_BEG' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
-      'FHR_END' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
-      'FHR_INC' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ'},
-      'FHR_GROUP_BEG' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]'},
-      'FHR_GROUP_END' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]'},
-      'FHR_GROUP_LABELS' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]_LABEL'},
-#      'INIT_HOUR_END' : { 'sec' : 'config', 'alt' : 'INIT_BEG, INIT_END, and INIT_TIME_FMT (add hour)'},
-      'CYCLONE_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'CYCLONE_OUTPUT_DIR'},
-      'ENSEMBLE_STAT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'ENSEMBLE_STAT_OUTPUT_DIR'},
-      'EXTRACT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'EXTRACT_TILES_OUTPUT_DIR'},
-      'GRID_STAT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'GRID_STAT_OUTPUT_DIR'},
-      'MODE_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'MODE_OUTPUT_DIR'},
-      'MTD_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'MTD_OUTPUT_DIR'},
-      'SERIES_INIT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'SERIES_BY_INIT_OUTPUT_DIR'},
-      'SERIES_LEAD_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'SERIES_BY_LEAD_OUTPUT_DIR'},
-      'SERIES_INIT_FILTERED_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'SERIES_BY_INIT_FILTERED_OUTPUT_DIR'},
-      'SERIES_LEAD_FILTERED_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'SERIES_BY_LEAD_FILTERED_OUTPUT_DIR'},
-      'STAT_ANALYSIS_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'STAT_ANALYSIS_OUTPUT_DIR'},
-      'TCMPR_PLOT_OUT_DIR' : { 'sec' : 'dir', 'alt' : 'TCMPR_PLOT_OUTPUT_DIR'},
-      'FCST_MIN_FORECAST' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ_MIN'},
-      'FCST_MAX_FORECAST' : { 'sec' : 'config', 'alt' : 'LEAD_SEQ_MAX'},
-      'OBS_MIN_FORECAST' : { 'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MIN_LEAD'},
-      'OBS_MAX_FORECAST' : { 'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MAX_LEAD'},
-      'FCST_INIT_INTERVAL' : { 'sec' : 'config', 'alt' : None},
-      'OBS_INIT_INTERVAL' : { 'sec' : 'config', 'alt' : None},
-      'FCST_DATA_INTERVAL' : { 'sec' : '', 'alt' : 'FCST_PCP_COMBINE_DATA_INTERVAL'},
-      'OBS_DATA_INTERVAL' : { 'sec' : '', 'alt' : 'OBS_PCP_COMBINE_DATA_INTERVAL'},
-      'FCST_IS_DAILY_FILE' : { 'sec' : '', 'alt' : 'FCST_PCP_COMBINE_IS_DAILY_FILE'},
-      'OBS_IS_DAILY_FILE' : { 'sec' : '', 'alt' : 'OBS_PCP_COMBINE_IS_DAILY_FILE'},
-      'FCST_TIMES_PER_FILE' : { 'sec' : '', 'alt' : 'FCST_PCP_COMBINE_TIMES_PER_FILE'},
-      'OBS_TIMES_PER_FILE' : { 'sec' : '', 'alt' : 'OBS_PCP_COMBINE_TIMES_PER_FILE'},
-      'FCST_LEVEL' : { 'sec' : '', 'alt' : 'FCST_PCP_COMBINE_INPUT_LEVEL'},
-      'OBS_LEVEL' : { 'sec' : '', 'alt' : 'OBS_PCP_COMBINE_INPUT_LEVEL'},
-      'MODE_FCST_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'FCST_MODE_CONV_RADIUS'},
-      'MODE_FCST_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'FCST_MODE_CONV_THRESH'},
-      'MODE_FCST_MERGE_FLAG' : { 'sec' : 'config', 'alt' : 'FCST_MODE_MERGE_FLAG'},
-      'MODE_FCST_MERGE_THRESH' : { 'sec' : 'config', 'alt' : 'FCST_MODE_MERGE_THRESH'},
-      'MODE_OBS_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'OBS_MODE_CONV_RADIUS'},
-      'MODE_OBS_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'OBS_MODE_CONV_THRESH'},
-      'MODE_OBS_MERGE_FLAG' : { 'sec' : 'config', 'alt' : 'OBS_MODE_MERGE_FLAG'},
-      'MODE_OBS_MERGE_THRESH' : { 'sec' : 'config', 'alt' : 'OBS_MODE_MERGE_THRESH'},
-      'MTD_FCST_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'FCST_MTD_CONV_RADIUS'},
-      'MTD_FCST_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'FCST_MTD_CONV_THRESH'},
-      'MTD_OBS_CONV_RADIUS' : { 'sec' : 'config', 'alt' : 'OBS_MTD_CONV_RADIUS'},
-      'MTD_OBS_CONV_THRESH' : { 'sec' : 'config', 'alt' : 'OBS_MTD_CONV_THRESH'}
-      # TODO: need to use regex to check for items that have different numbers in them
-      # i.e. FCST_1_FIELD_NAME or FCST_6_FIELD_NAME to FCST_PCP_COMBINE_1_FIELD_NAME, etc.
-# template       '' : { 'sec' : '', 'alt' : ''}
+        'LOOP_BY_INIT' : {'sec' : 'config', 'alt' : 'LOOP_BY', 'req' : False},
+        'LOOP_METHOD' : {'sec' : 'config', 'alt' : 'LOOP_ORDER', 'req' : False},
+        'PREPBUFR_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : None},
+        'PREPBUFR_FILE_REGEX' : {'sec' : 'regex_pattern', 'alt' : None},
+        'OBS_INPUT_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_DIR'},
+        'FCST_INPUT_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'FCST_POINT_STAT_INPUT_DIR'},
+        'FCST_INPUT_FILE_REGEX' :
+        {'sec' : 'regex_pattern', 'alt' : 'FCST_POINT_STAT_INPUT_TEMPLATE'},
+        'OBS_INPUT_FILE_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_TEMPLATE'},
+        'PREPBUFR_DATA_DIR' : {'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR'},
+        'PREPBUFR_MODEL_DIR_NAME' : {'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR'},
+        'OBS_INPUT_FILE_TMPL' :
+        {'sec' : 'filename_templates', 'alt' : 'OBS_POINT_STAT_INPUT_TEMPLATE'},
+        'FCST_INPUT_FILE_TMPL' :
+        {'sec' : 'filename_templates', 'alt' : 'FCST_POINT_STAT_INPUT_TEMPLATE'},
+        'NC_FILE_TMPL' : {'sec' : 'filename_templates', 'alt' : 'PB2NC_OUTPUT_TEMPLATE'},
+        'FCST_INPUT_DIR' : {'sec' : 'dir', 'alt' : 'FCST_POINT_STAT_INPUT_DIR'},
+        'OBS_INPUT_DIR' : {'sec' : 'dir', 'alt' : 'OBS_POINT_STAT_INPUT_DIR'},
+        'REGRID_TO_GRID' : {'sec' : 'config', 'alt' : 'POINT_STAT_REGRID_TO_GRID'},
+        'FCST_HR_START' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+        'FCST_HR_END' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+        'FCST_HR_INTERVAL' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+        'START_DATE' : {'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
+        'END_DATE' : {'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
+        'INTERVAL_TIME' : {'sec' : 'config', 'alt' : 'INIT_INCREMENT or VALID_INCREMENT'},
+        'BEG_TIME' : {'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
+        'END_TIME' : {'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
+        'START_HOUR' : {'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
+        'END_HOUR' : {'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
+        'OBS_BUFR_VAR_LIST' : {'sec' : 'config', 'alt' : 'PB2NC_OBS_BUFR_VAR_LIST'},
+        'TIME_SUMMARY_FLAG' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_FLAG'},
+        'TIME_SUMMARY_BEG' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_BEG'},
+        'TIME_SUMMARY_END' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_END'},
+        'TIME_SUMMARY_VAR_NAMES' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_VAR_NAMES'},
+        'TIME_SUMMARY_TYPE' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_TYPE'},
+        'OVERWRITE_NC_OUTPUT' : {'sec' : 'config', 'alt' : 'PB2NC_SKIP_IF_OUTPUT_EXISTS'},
+        'VERTICAL_LOCATION' : {'sec' : 'config', 'alt' : 'PB2NC_VERTICAL_LOCATION'},
+        'VERIFICATION_GRID' : {'sec' : 'config', 'alt' : 'REGRID_DATA_PLANE_VERIF_GRID'},
+        'WINDOW_RANGE_BEG' : {'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN'},
+        'WINDOW_RANGE_END' : {'sec' : 'config', 'alt' : 'OBS_WINDOW_END'},
+        'OBS_EXACT_VALID_TIME' :
+        {'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN and OBS_WINDOW_END'},
+        'FCST_EXACT_VALID_TIME' :
+        {'sec' : 'config', 'alt' : 'FCST_WINDOW_BEGIN and FCST_WINDOW_END'},
+        'PCP_COMBINE_METHOD' :
+        {'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_METHOD and/or OBS_PCP_COMBINE_METHOD'},
+        'FHR_BEG' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+        'FHR_END' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+        'FHR_INC' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'},
+        'FHR_GROUP_BEG' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]'},
+        'FHR_GROUP_END' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]'},
+        'FHR_GROUP_LABELS' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]_LABEL'},
+        'CYCLONE_OUT_DIR' : {'sec' : 'dir', 'alt' : 'CYCLONE_OUTPUT_DIR'},
+        'ENSEMBLE_STAT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'ENSEMBLE_STAT_OUTPUT_DIR'},
+        'EXTRACT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'EXTRACT_TILES_OUTPUT_DIR'},
+        'GRID_STAT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'GRID_STAT_OUTPUT_DIR'},
+        'MODE_OUT_DIR' : {'sec' : 'dir', 'alt' : 'MODE_OUTPUT_DIR'},
+        'MTD_OUT_DIR' : {'sec' : 'dir', 'alt' : 'MTD_OUTPUT_DIR'},
+        'SERIES_INIT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'SERIES_BY_INIT_OUTPUT_DIR'},
+        'SERIES_LEAD_OUT_DIR' : {'sec' : 'dir', 'alt' : 'SERIES_BY_LEAD_OUTPUT_DIR'},
+        'SERIES_INIT_FILTERED_OUT_DIR' :
+        {'sec' : 'dir', 'alt' : 'SERIES_BY_INIT_FILTERED_OUTPUT_DIR'},
+        'SERIES_LEAD_FILTERED_OUT_DIR' :
+        {'sec' : 'dir', 'alt' : 'SERIES_BY_LEAD_FILTERED_OUTPUT_DIR'},
+        'STAT_ANALYSIS_OUT_DIR' :
+        {'sec' : 'dir', 'alt' : 'STAT_ANALYSIS_OUTPUT_DIR'},
+        'TCMPR_PLOT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'TCMPR_PLOT_OUTPUT_DIR'},
+        'FCST_MIN_FORECAST' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_MIN'},
+        'FCST_MAX_FORECAST' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_MAX'},
+        'OBS_MIN_FORECAST' : {'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MIN_LEAD'},
+        'OBS_MAX_FORECAST' : {'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MAX_LEAD'},
+        'FCST_INIT_INTERVAL' : {'sec' : 'config', 'alt' : None},
+        'OBS_INIT_INTERVAL' : {'sec' : 'config', 'alt' : None},
+        'FCST_DATA_INTERVAL' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_DATA_INTERVAL'},
+        'OBS_DATA_INTERVAL' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_DATA_INTERVAL'},
+        'FCST_IS_DAILY_FILE' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_IS_DAILY_FILE'},
+        'OBS_IS_DAILY_FILE' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_IS_DAILY_FILE'},
+        'FCST_TIMES_PER_FILE' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_TIMES_PER_FILE'},
+        'OBS_TIMES_PER_FILE' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_TIMES_PER_FILE'},
+        'FCST_LEVEL' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_INPUT_LEVEL'},
+        'OBS_LEVEL' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_INPUT_LEVEL'},
+        'MODE_FCST_CONV_RADIUS' : {'sec' : 'config', 'alt' : 'FCST_MODE_CONV_RADIUS'},
+        'MODE_FCST_CONV_THRESH' : {'sec' : 'config', 'alt' : 'FCST_MODE_CONV_THRESH'},
+        'MODE_FCST_MERGE_FLAG' : {'sec' : 'config', 'alt' : 'FCST_MODE_MERGE_FLAG'},
+        'MODE_FCST_MERGE_THRESH' : {'sec' : 'config', 'alt' : 'FCST_MODE_MERGE_THRESH'},
+        'MODE_OBS_CONV_RADIUS' : {'sec' : 'config', 'alt' : 'OBS_MODE_CONV_RADIUS'},
+        'MODE_OBS_CONV_THRESH' : {'sec' : 'config', 'alt' : 'OBS_MODE_CONV_THRESH'},
+        'MODE_OBS_MERGE_FLAG' : {'sec' : 'config', 'alt' : 'OBS_MODE_MERGE_FLAG'},
+        'MODE_OBS_MERGE_THRESH' : {'sec' : 'config', 'alt' : 'OBS_MODE_MERGE_THRESH'},
+        'MTD_FCST_CONV_RADIUS' : {'sec' : 'config', 'alt' : 'FCST_MTD_CONV_RADIUS'},
+        'MTD_FCST_CONV_THRESH' : {'sec' : 'config', 'alt' : 'FCST_MTD_CONV_THRESH'},
+        'MTD_OBS_CONV_RADIUS' : {'sec' : 'config', 'alt' : 'OBS_MTD_CONV_RADIUS'},
+        'MTD_OBS_CONV_THRESH' : {'sec' : 'config', 'alt' : 'OBS_MTD_CONV_THRESH'},
+        'RM_EXE' : {'sec' : 'exe', 'alt' : 'RM'},
+        'CUT_EXE' : {'sec' : 'exe', 'alt' : 'CUT'},
+        'TR_EXE' : {'sec' : 'exe', 'alt' : 'TR'},
+        'NCAP2_EXE' : {'sec' : 'exe', 'alt' : 'NCAP2'},
+        'CONVERT_EXE' : {'sec' : 'exe', 'alt' : 'CONVERT'},
+        'NCDUMP_EXE' : {'sec' : 'exe', 'alt' : 'NCDUMP'},
+        'EGREP_EXE' : {'sec' : 'exe', 'alt' : 'EGREP'},
+        'ADECK_TRACK_DATA_DIR' : {'sec' : 'dir', 'alt' : 'TC_PAIRS_ADECK_INPUT_DIR'},
+        'BDECK_TRACK_DATA_DIR' : {'sec' : 'dir', 'alt' : 'TC_PAIRS_BDECK_INPUT_DIR'},
+        'MISSING_VAL_TO_REPLACE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_MISSING_VAL_TO_REPLACE'},
+        'MISSING_VAL' : {'sec' : 'config', 'alt' : 'TC_PAIRS_MISSING_VAL'},
+        'TRACK_DATA_SUBDIR_MOD' : {'sec' : 'dir', 'alt' : None},
+        'ADECK_FILE_PREFIX' : {'sec' : 'config', 'alt' : 'TC_PAIRS_ADECK_TEMPLATE'},
+        'BDECK_FILE_PREFIX' : {'sec' : 'config', 'alt' : 'TC_PAIRS_BDECK_TEMPLATE'},
+        'TOP_LEVEL_DIRS' : {'sec' : 'config', 'alt' : 'TC_PAIRS_READ_ALL_FILES'},
+        'TC_PAIRS_DIR' : {'sec' : 'dir', 'alt' : 'TC_PAIRS_OUTPUT_DIR'},
+        'CYCLONE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_CYCLONE'},
+        'STORM_ID' : {'sec' : 'config', 'alt' : 'TC_PAIRS_STORM_ID'},
+        'BASIN' : {'sec' : 'config', 'alt' : 'TC_PAIRS_BASIN'},
+        'STORM_NAME' : {'sec' : 'config', 'alt' : 'TC_PAIRS_STORM_NAME'},
+        'DLAND_FILE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_DLAND_FILE'},
+        'TRACK_TYPE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_REFORMAT_DECK'},
+        'FORECAST_TMPL' : {'sec' : 'filename_templates', 'alt' : 'TC_PAIRS_ADECK_TEMPLATE'},
+        'REFERENCE_TMPL' : {'sec' : 'filename_templates', 'alt' : 'TC_PAIRS_BDECK_TEMPLATE'},
+        'TRACK_DATA_MOD_FORCE_OVERWRITE' :
+        {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS'},
+        'TC_PAIRS_FORCE_OVERWRITE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS'}
     }
 
+    # template       '' : {'sec' : '', 'alt' : ''}
+    # need to use regex to check for items that have different numbers in them
+    # i.e. FCST_1_FIELD_NAME or FCST_6_FIELD_NAME to FCST_PCP_COMBINE_1_FIELD_NAME, etc.
+
+
+    # create list of errors and warnings to report for deprecated configs
     e_list = []
     w_list = []
-    for old, v in deprecated_dict.items():
-        if isinstance(v, dict):
-            sec = v['sec']
-            alt = v['alt']
+    for old, depr_info in deprecated_dict.items():
+        if isinstance(depr_info, dict):
+            sec = depr_info['sec']
+            alt = depr_info['alt']
             # if deprecated config item is found
-            if p.has_option(sec, old):
+            if conf.has_option(sec, old):
                 # if it is not required to remove, add to warning list
-                if 'req' in v.keys() and v['req'] is False:
-                    msg = "[{}] {} is deprecated and will be removed in a future version of METplus".format(sec, old)
+                if 'req' in depr_info.keys() and depr_info['req'] is False:
+                    msg = '[{}] {} is deprecated and will be '.format(sec, old) +\
+                      'removed in a future version of METplus'
                     if alt != None:
                         msg += ". Please replace with {}".format(alt)
                     w_list.append(msg)
@@ -144,20 +186,40 @@ def check_for_deprecated_config(p, logger):
                     else:
                         e_list.append("[{}] {} should be replaced with {}".format(sec, old, alt))
 
+    # check all templates and error if any deprecated tags are used
+    # value of dict is replacement tag, set to None if no replacement exists
+    # deprecated tags: region (replace with basin)
+    deprecated_tags = {'region' : 'basin'}
+    template_vars = conf.keys('filename_templates')
+    for temp_var in template_vars:
+        template = conf.getraw('filename_templates', temp_var)
+        tags = get_tags(template)
+
+        for depr_tag, replace_tag in deprecated_tags.items():
+            if depr_tag in tags:
+                e_msg = 'Deprecated tag {{{}}} found in {}.'.format(depr_tag,
+                                                                    temp_var)
+                if replace_tag is not None:
+                    e_msg += ' Replace with {{{}}}'.format(replace_tag)
+
+                e_list.append(e_msg)
+
     # if any warning exist, report them
     if w_list:
-        for w in w_list:
-            logger.warning(w)
+        for warning_msg in w_list:
+            logger.warning(warning_msg)
 
     # if any errors exist, report them and exit
     if e_list:
-        logger.error("DEPRECATED CONFIG ITEMS WERE FOUND. PLEASE REMOVE/REPLACE THEM FROM CONFIG FILES")
-        for e in e_list:
-            logger.error(e)
+        logger.error('DEPRECATED CONFIG ITEMS WERE FOUND. ' +\
+                     'PLEASE REMOVE/REPLACE THEM FROM CONFIG FILES')
+        for error_msg in e_list:
+            logger.error(error_msg)
         exit(1)
 
 
 def skip_time(time_info, config):
+    """!Used to check current run time against list of times to skip."""
     # never skip until this is implemented correctly
     return False
 
@@ -165,23 +227,39 @@ def skip_time(time_info, config):
 
     # check skip times against current time_info object and skip if it matches
 
-
 def write_final_conf(conf, logger):
+    """!write final conf file including default values that were set during run"""
     confloc = conf.getloc('METPLUS_CONF')
     logger.info('%s: write metplus.conf here' % (confloc,))
-    with open(confloc, 'wt') as f:
-        conf.write(f)
+    with open(confloc, 'wt') as conf_file:
+        conf.write(conf_file)
 
+    # remove current time env vars if they are set
+    if 'METPLUS_CURRENT_INIT_TIME' in os.environ.keys():
+        del os.environ['METPLUS_CURRENT_INIT_TIME']
+
+    if 'METPLUS_CURRENT_VALID_TIME' in os.environ.keys():
+        del os.environ['METPLUS_CURRENT_VALID_TIME']
+
+    if 'METPLUS_CURRENT_LEAD_TIME' in os.environ.keys():
+        del os.environ['METPLUS_CURRENT_LEAD_TIME']
+
+    # write out os environment to file for debugging
+    env_file = os.path.join(conf.getdir('LOG_DIR'), '.metplus_user_env')
+    with open(env_file, 'w') as env_file:
+        for key, value in os.environ.items():
+            env_file.write('{}={}\n'.format(key, value))
 
 def is_loop_by_init(config):
-    if config.p.has_option('config', 'LOOP_BY'):
+    """!Check config variables to determine if looping by valid or init time"""
+    if config.conf.has_option('config', 'LOOP_BY'):
         loop_by = config.getstr('config', 'LOOP_BY').lower()
         if loop_by in ['init', 'retro']:
             return True
         elif loop_by in ['valid', 'realtime']:
             return False
 
-    if config.p.has_option('config', 'LOOP_BY_INIT'):
+    if config.conf.has_option('config', 'LOOP_BY_INIT'):
         return config.getbool('config', 'LOOP_BY_INIT')
 
     msg = 'MUST SET LOOP_BY to VALID, INIT, RETRO, or REALTIME'
@@ -193,32 +271,34 @@ def is_loop_by_init(config):
     exit(1)
 
 
-def get_time_obj(t, fmt, clock_time, logger=None):
-    sts = StringSub(logger, t,
+def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
+    """!Substitute today or now into [INIT/VALID]_[BEG/END] if used"""
+    sts = StringSub(logger, time_from_conf,
                     now=clock_time,
                     today=clock_time.strftime('%Y%m%d'))
-    time_str = sts.doStringSub()
+    time_str = sts.do_string_sub()
     return datetime.datetime.strptime(time_str, fmt)
 
 
 def loop_over_times_and_call(config, processes):
+    """!Loop over all run times and call wrappers listed in config"""
     clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
-                                       '%Y%m%d%H%M%S')
+                                                '%Y%m%d%H%M%S')
     use_init = is_loop_by_init(config)
     if use_init:
         time_format = config.getstr('config', 'INIT_TIME_FMT')
         start_t = config.getraw('config', 'INIT_BEG')
         end_t = config.getraw('config', 'INIT_END')
-        time_interval = config.getint('config', 'INIT_INCREMENT')
+        time_interval = config.getseconds('config', 'INIT_INCREMENT')
     else:
         time_format = config.getstr('config', 'VALID_TIME_FMT')
         start_t = config.getraw('config', 'VALID_BEG')
         end_t = config.getraw('config', 'VALID_END')
-        time_interval = config.getint('config', 'VALID_INCREMENT')
+        time_interval = config.getseconds('config', 'VALID_INCREMENT')
 
     if time_interval < 60:
         config.logger.error("time_interval parameter must be "
-              "greater than 60 seconds")
+                            "greater than 60 seconds")
         exit(1)
 
     loop_time = get_time_obj(start_t, time_format,
@@ -232,11 +312,11 @@ def loop_over_times_and_call(config, processes):
         config.logger.info("* Running METplus")
         if use_init:
             config.logger.info("*  at init time: " + run_time)
-            config.p.set('config', 'CURRENT_INIT_TIME', run_time)
+            config.conf.set('config', 'CURRENT_INIT_TIME', run_time)
             os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
         else:
             config.logger.info("*  at valid time: " + run_time)
-            config.p.set('config', 'CURRENT_VALID_TIME', run_time)
+            config.conf.set('config', 'CURRENT_VALID_TIME', run_time)
             os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
         config.logger.info("****************************************")
         if not isinstance(processes, list):
@@ -257,7 +337,9 @@ def loop_over_times_and_call(config, processes):
 
 
 def get_lead_sequence(config, input_dict=None):
-    if config.p.has_option('config', 'LEAD_SEQ'):
+    """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
+        Restrict list by LEAD_SEQ_[MIN/MAX] if set."""
+    if config.conf.has_option('config', 'LEAD_SEQ'):
         # return list of forecast leads
         leads = getlistint(config.getstr('config', 'LEAD_SEQ'))
 
@@ -273,10 +355,10 @@ def get_lead_sequence(config, input_dict=None):
         return out_leads
 
     # use INIT_SEQ to build lead list based on the valid time
-    if config.p.has_option('config', 'INIT_SEQ'):
+    if config.conf.has_option('config', 'INIT_SEQ'):
         # if input dictionary not passed in, cannot compute lead sequence
         #  from it, so exit
-        if input_dict == None:
+        if input_dict is None:
             log_msg = 'LEAD_SEQ must be specified to run'
             if config.logger:
                 config.logger.error(log_msg)
@@ -318,7 +400,7 @@ def get_lead_sequence(config, input_dict=None):
 def get_version_number():
     # read version file and return value
     version_file_path = os.path.join(dirname(dirname(realpath(__file__))),
-                                     'doc','version')
+                                     'doc', 'version')
     with open(version_file_path, 'r') as version_file:
         return version_file.read()
 
@@ -435,7 +517,7 @@ def set_logvars(config, logger=None):
 
     # LOG_TIMESTAMP_TEMPLATE is not required in the conf file,
     # so lets first test for that.
-    log_timestamp_template = config.getstr('config','LOG_TIMESTAMP_TEMPLATE','')
+    log_timestamp_template = config.getstr('config', 'LOG_TIMESTAMP_TEMPLATE', '')
     if log_timestamp_template:
         # Note: strftime appears to handle if log_timestamp_template
         # is a string ie. 'blah' and not a valid set of % directives %Y%m%d,
@@ -456,21 +538,21 @@ def set_logvars(config, logger=None):
                            'a valid strftime directive: %s' % repr(log_timestamp_template))
             logger.info('Using the following default: %Y%m%d%H')
             log_timestamp_template = '%Y%m%d%H'
-        t = datetime.datetime.now()
+        date_t = datetime.datetime.now()
         if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
             if is_loop_by_init(config):
-                t = datetime.datetime.strptime(config.getstr('config',
-                                                             'INIT_BEG'),
-                                               config.getstr('config',
-                                                             'INIT_TIME_FMT'))
+                date_t = datetime.datetime.strptime(config.getstr('config',
+                                                                  'INIT_BEG'),
+                                                    config.getstr('config',
+                                                                  'INIT_TIME_FMT'))
             else:
-                t = datetime.datetime.strptime(config.getstr('config',
-                                                             'VALID_BEG'),
-                                               config.getstr('config',
-                                                             'VALID_TIME_FMT'))
-        log_filenametimestamp = t.strftime(log_timestamp_template)
+                date_t = datetime.datetime.strptime(config.getstr('config',
+                                                                  'VALID_BEG'),
+                                                    config.getstr('config',
+                                                                  'VALID_TIME_FMT'))
+        log_filenametimestamp = date_t.strftime(log_timestamp_template)
     else:
-        log_filenametimestamp=''
+        log_filenametimestamp = ''
 
     log_dir = config.getdir('LOG_DIR')
 
@@ -481,11 +563,11 @@ def set_logvars(config, logger=None):
     # if LOG_METPLUS =  unset in the conf file, means NO logging.
     # Also, assUmes the user has included the intended path in LOG_METPLUS.
     user_defined_log_file = None
-    if config.has_option('config','LOG_METPLUS'):
+    if config.has_option('config', 'LOG_METPLUS'):
         user_defined_log_file = True
         # strinterp will set metpluslog to '' if LOG_METPLUS =  is unset.
         metpluslog = config.strinterp('config', '{LOG_METPLUS}',
-                                    LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp)
+                                      LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp)
 
         # test if there is any path information, if there is, assUme it is as intended,
         # if there is not, than add log_dir.
@@ -518,7 +600,7 @@ def set_logvars(config, logger=None):
 
     # Adding LOG_TIMESTAMP to the final configuration file.
     logger.info('Adding: config.LOG_TIMESTAMP=%s' % repr(log_filenametimestamp))
-    config.set('config','LOG_TIMESTAMP',log_filenametimestamp)
+    config.set('config', 'LOG_TIMESTAMP', log_filenametimestamp)
 
     # Setting LOG_METPLUS in the configuration object
     # At this point LOG_METPLUS will have a value or '' the empty string.
@@ -581,38 +663,18 @@ def get_logger(config, sublog=None):
     # Make sure the LOG_METPLUS is defined. In this function,
     # LOG_METPLUS should already be defined in the config object,
     # even if it is empty, LOG_METPLUS =.
-    if not config.has_option('config','LOG_METPLUS'):
+    if not config.has_option('config', 'LOG_METPLUS'):
         set_logvars(config)
     metpluslog = config.getstr('config', 'LOG_METPLUS', '')
-
-
-    # TODO: Remove LOG_OUTPUT control variable.
-    # This was the yes/no control variable from the first cycle logging
-    # implementation to turn logging on or off. Instead LOG_METPLUS
-    # is being used as the on/off switch, this is not being used.
-    # I'm keeping it here until after the group review, in case it comes up
-    # that folks want to define such a variable in the conf file.
-    # If not used, Delete this comment and commented out code block below
-    # and you are done, nothing else needs to be changed elsewhere
-    # in the code base.
-    #if config.getbool('config','LOG_OUTPUT',default=False,badtypeok=True):
-    #    if not metpluslog:
-    #        logger.warning('LOG_OUTPUT in conf file is yes, Looks like you want to log your output ?')
-    #        logger.warning('However, LOG_METPLUS is not a valid file, I can not log your output.')
-    #    else:
-    #        logger.info('LOG_OUTPUT in your conf file is set to yes')
-    #else:
-    #    logger.info('LOG_OUTPUT in your conf file is set to no or not set.')
-    #if metpluslog and config.getbool('config', 'LOG_OUTPUT', default=False, badtypeok=True):
 
     if metpluslog:
         # It is possible that more path, other than just LOG_DIR, was added
         # to the metpluslog, by either a user defining more path in
         # LOG_METPLUS or LOG_FILENAME_TEMPLATE definitions in their conf file.
         # So lets check and make more directory if needed.
-        dirname = os.path.dirname(metpluslog)
-        if not os.path.exists(dirname):
-            mkdir_p(dirname)
+        dir_name = os.path.dirname(metpluslog)
+        if not os.path.exists(dir_name):
+            mkdir_p(dir_name)
 
         # set up the filehandler and the formatter, etc.
         # This matches the oformat log.py formatter of produtil
@@ -663,11 +725,7 @@ def is_dir_empty(directory):
            True:  If the directory is empty
            False:  If the directory exists and isn't empty
     """
-    if not os.listdir(directory):
-        return True
-    else:
-        return False
-
+    return not os.listdir(directory)
 
 def grep(pattern, infile):
     """! Python version of grep, searches the file line-by-line
@@ -743,14 +801,6 @@ def get_storm_ids(filter_filename, logger):
         Returns:
             sorted_storms (List):  a list of unique, sorted storm ids
     """
-    # pylint:disable=protected-access
-    # Need to call sys.__getframe() to get the filename and method/func
-    # for logging information.
-
-    # For logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
     # Initialize a set because we want unique storm ids.
     storm_id_list = set()
     empty_list = []
@@ -786,14 +836,6 @@ def get_files(filedir, filename_regex, logger):
        Returns:
           file_paths (string): a list of filenames (with full filepath)
     """
-    # pylint:disable=protected-access
-    # Need to call sys.__getframe() to get the filename and method/func
-    # for logging information.
-
-    # For logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
     file_paths = []
 
     # pylint:disable=unused-variable
@@ -825,13 +867,6 @@ def get_name_level(var_combo, logger):
              name,level: A tuple of name and level derived from the
                          name/level combination.
     """
-
-    # pylint:disable=protected-access
-    # Need to call sys.__getframe() to get the filename and method/func
-    # for logging information.
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
     match = re.match(r'(.*)/(.*)', var_combo)
     name = match.group(1)
     level = match.group(2)
@@ -890,14 +925,6 @@ def extract_year_month(init_time, logger):
         Returns:
             year_month (string):  The YYYYMM portion of the initialization time
     """
-    # pylint:disable=protected-access
-    # Need to call sys.__getframe() to get the filename and method/func
-    # for logging information.
-
-    # Useful for logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
     # Match on anything that starts with 1 or 2 (for the century)
     #  followed by 5 digits for the remainder of the YYYMM
     year_month = re.match(r'^((1|2)[0-9]{5})', init_time)
@@ -928,21 +955,18 @@ def create_grid_specification_string(lat, lon, logger, config):
     # Need to access sys._getframe to capture current file and function for
     # logging information
 
-    cu = ConfigWrapper(config, logger)
+    conf = ConfigWrapper(config, logger)
 
-    # Useful for logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-    regrid_by_met = cu.getbool('config', 'REGRID_USING_MET_TOOL')
+    regrid_by_met = conf.getbool('config', 'REGRID_USING_MET_TOOL')
 
     # Initialize the tile grid string
     # and get the other values from the parameter file
-    nlat = cu.getstr('config', 'NLAT')
-    nlon = cu.getstr('config', 'NLON')
-    dlat = cu.getstr('config', 'DLAT')
-    dlon = cu.getstr('config', 'DLON')
-    lon_subtr = cu.getfloat('config', 'LON_ADJ')
-    lat_subtr = cu.getfloat('config', 'LAT_ADJ')
+    nlat = conf.getstr('config', 'NLAT')
+    nlon = conf.getstr('config', 'NLON')
+    dlat = conf.getstr('config', 'DLAT')
+    dlon = conf.getstr('config', 'DLON')
+    lon_subtr = conf.getfloat('config', 'LON_ADJ')
+    lat_subtr = conf.getfloat('config', 'LAT_ADJ')
 
     # Format for regrid_data_plane:
     # latlon Nx Ny lat_ll lon_ll delta_lat delta_lonadj_lon =
@@ -984,8 +1008,8 @@ def gen_date_list(begin_date, end_date):
     begin_tv = calendar.timegm(begin_tm)
     end_tv = calendar.timegm(end_tm)
     date_list = []
-    for tv in range(begin_tv, end_tv + 86400, 86400):
-        date_list.append(time.strftime("%Y%m%d", time.gmtime(tv)))
+    for loop_tv in range(begin_tv, end_tv + 86400, 86400):
+        date_list.append(time.strftime("%Y%m%d", time.gmtime(loop_tv)))
     return date_list
 
 
@@ -1062,13 +1086,6 @@ def prune_empty(output_dir, logger):
                            directed.
     """
 
-    # pylint:disable=protected-access
-    # Need to call sys.__getframe() to get the filename and method/func
-    # for logging information.
-    # For logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
     # Check for empty files.
     for root, dirs, files in os.walk(output_dir):
         # Create a full file path by joining the path
@@ -1077,7 +1094,7 @@ def prune_empty(output_dir, logger):
             a_file = os.path.join(root, a_file)
             if os.stat(a_file).st_size == 0:
                 logger.debug("Empty file: " + a_file +
-                       "...removing")
+                             "...removing")
                 os.remove(a_file)
 
     # Now check for any empty directories, some
@@ -1088,7 +1105,7 @@ def prune_empty(output_dir, logger):
             full_dir = os.path.join(root, direc)
             if not os.listdir(full_dir):
                 logger.debug("Empty directory: " + full_dir +
-                       "...removing")
+                             "...removing")
                 os.rmdir(full_dir)
 
 
@@ -1202,15 +1219,14 @@ def get_dirs(base_dir):
 
     # pylint:disable=unused-variable
     # os.walk returns a tuple, not all returned values are needed.
-
-    for dirname, dirs, filenames in os.walk(base_dir):
+    for dir_name, dirs, filenames in os.walk(base_dir):
         for direc in dirs:
-            dir_list.append(os.path.join(dirname, direc))
+            dir_list.append(os.path.join(dir_name, direc))
 
     return dir_list
 
 
-def getlist(s, logger=None):
+def getlist(list_str, logger=None):
     """! Returns a list of string elements from a comma
          separated string of values.
          This function MUST also return an empty list [] if s is '' empty.
@@ -1222,17 +1238,17 @@ def getlist(s, logger=None):
          Note: getstr on an empty variable (EMPTY_VAR = ) in
          a conf file returns '' an empty string.
 
-        @param s the string being converted to a list.
+        @param list_str the string being converted to a list.
     """
     # FIRST remove surrounding comma, and spaces, form the string.
-    s = s.strip().strip(',').strip()
+    list_str = list_str.strip().strip(',').strip()
 
     # remove space around commas
-    s = re.sub(r'\s*,\s*', ',', s)
+    list_str = re.sub(r'\s*,\s*', ',', list_str)
 
     # support beg, end, step to generate a int list
     # begin_end_incr(0, 10, 2) will create a list of 0, 2, 4, 6, 8, 10 (inclusive)
-    match = re.match('^begin_end_incr\(\s*(-*\d*),(-*\d*),(-*\d*)\s*\)$', s)
+    match = re.match(r'^begin_end_incr\(\s*(-*\d*),(-*\d*),(-*\d*)\s*\)$', list_str)
     if match:
         start = int(match.group(1))
         end = int(match.group(2))
@@ -1243,70 +1259,59 @@ def getlist(s, logger=None):
             return range(start, end-1, step)
 
     # use csv reader to divide comma list while preserving strings with comma
-    s = reader([s])
+    list_str = reader([list_str])
     # convert the csv reader to a list and get first item (which is the whole list)
-    s = list(s)[0]
-    return s
+    list_str = list(list_str)[0]
+    return list_str
 
+def getlistfloat(list_str):
+    """!Get list and convert all values to float"""
+    list_str = getlist(list_str)
+    list_str = [float(i) for i in list_str]
+    return list_str
 
-def getlistfloat(s):
-    s = getlist(s)
-    s = [float(i) for i in s]
-    return s
-
-
-def getlistint(s):
-    s = getlist(s)
-    s = [int(i) for i in s]
-    return s
-
+def getlistint(list_str):
+    """!Get list and convert all values to int"""
+    list_str = getlist(list_str)
+    list_str = [int(i) for i in list_str]
+    return list_str
 
 # minutes
-def shift_time(time, shift):
+def shift_time(time_str, shift):
     """ Adjust time by shift hours. Format is %Y%m%d%H%M
         Args:
-            @param time: Start time in %Y%m%d%H%M
+            @param time_str: Start time in %Y%m%d%H%M
             @param shift: Amount to adjust time in hours
         Returns:
             New time in format %Y%m%d%H%M
     """
-    return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
+    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M") +
             datetime.timedelta(hours=shift)).strftime("%Y%m%d%H%M")
 
-
-def shift_time_minutes(time, shift):
+def shift_time_minutes(time_str, shift):
     """ Adjust time by shift minutes. Format is %Y%m%d%H%M
         Args:
-            @param time: Start time in %Y%m%d%H%M
+            @param time_str: Start time in %Y%m%d%H%M
             @param shift: Amount to adjust time in minutes
         Returns:
             New time in format %Y%m%d%H%M
     """
-    return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
+    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M") +
             datetime.timedelta(minutes=shift)).strftime("%Y%m%d%H%M")
 
-
-def shift_time_seconds(time, shift):
+def shift_time_seconds(time_str, shift):
     """ Adjust time by shift seconds. Format is %Y%m%d%H%M
         Args:
-            @param time: Start time in %Y%m%d%H%M
+            @param time_str: Start time in %Y%m%d%H%M
             @param shift: Amount to adjust time in seconds
         Returns:
             New time in format %Y%m%d%H%M
     """
-    return (datetime.datetime.strptime(time, "%Y%m%d%H%M") +
+    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M") +
             datetime.timedelta(seconds=shift)).strftime("%Y%m%d%H%M")
 
-
-class FieldObj(object):
-    __slots__ = 'fcst_name', 'fcst_level', 'fcst_extra', 'fcst_thresh', \
-                'obs_name', 'obs_level', 'obs_extra', 'obs_thresh', \
-                'ens_name', 'ens_level', 'ens_extra', 'ens_thresh', 'index'
-
-
-# TODO: Check if other characters are only <>!=&|gelt.[0-9] (?)
 def starts_with_comparison(thresh_string):
-    """ Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le
+    """!Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le
         Args:
             @param thresh_string: String to examine, i.e. <=3.4
         Returns:
@@ -1315,7 +1320,7 @@ def starts_with_comparison(thresh_string):
             regex match object with comparison operator in group 1 and
             number in group 2 if valid
     """
-    valid_comparisons = { ">", ">=", "==", "!=", "<", "<=", "gt", "ge", "eq", "ne", "lt", "le" }
+    valid_comparisons = {">", ">=", "==", "!=", "<", "<=", "gt", "ge", "eq", "ne", "lt", "le"}
     for comp in valid_comparisons:
         match = re.match(r'^('+comp+')([+-]?\d*\.?\d+)', thresh_string)
         if match:
@@ -1334,7 +1339,7 @@ def get_number_from_threshold(thresh_string):
     """
     match = starts_with_comparison(thresh_string)
     if match:
-      return float(match.group(2))
+        return float(match.group(2))
     return None
 
 def get_comparison_from_threshold(thresh_string):
@@ -1348,7 +1353,7 @@ def get_comparison_from_threshold(thresh_string):
     """
     match = starts_with_comparison(thresh_string)
     if match:
-      return match.group(1)
+        return match.group(1)
     return None
 
 
@@ -1365,57 +1370,55 @@ def validate_thresholds(thresh_list):
         if match is None:
             valid = False
 
-    if valid == False:
+    if valid is False:
         print("ERROR: Threshold values must start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt, or le")
         return False
     return True
 
-
 def parse_var_list(config):
-    """ read conf items and populate list of FieldObj containing
+    """ read conf items and populate list of dictionaries containing
     information about each variable to be compared
         Args:
             @param config: ConfigWrapper object
         Returns:
-            list of FieldObj with variable information
+            list of dictionaries with variable information
     """
     var_list_fcst = parse_var_list_helper(config, "FCST", False)
     var_list_obs = parse_var_list_helper(config, "OBS", True)
     var_list = var_list_fcst + var_list_obs
-    return sorted(var_list, key=lambda x: x.index)
+    return sorted(var_list, key=lambda x: x['index'])
 
-
-def parse_var_list_helper(config, dt, dont_duplicate):
+def parse_var_list_helper(config, data_type, dont_duplicate):
     """ helper function for parse_var_list
         Args:
             @param config: ConfigWrapper object
-            @param dt: data_type (FCST or OBS)
+            @param data_type: data_type (FCST or OBS)
             @param dont_duplicate: if true check other data
               type and don't process if it exists
         Returns:
-            list of FieldObj with variable information
+            list of dictionaries with variable information
     """
     # get other data type
-    odt = "OBS"
-    if dt == "OBS":
-        odt = "FCST"
+    other_data_type = "OBS"
+    if data_type == "OBS":
+        other_data_type = "FCST"
 
-    # var_list is a list containing an list of FieldObj
+    # var_list is a list containing an list of dictionaries
     var_list = []
 
     # find all FCST_VARn_NAME keys in the conf files
-    all_conf = config.p.keys('config')
+    all_conf = config.keys('config')
     indices = []
-    regex = re.compile(dt+"_VAR(\d+)_NAME")
+    regex = re.compile(data_type+"_VAR(\d+)_NAME")
     for conf in all_conf:
         result = regex.match(conf)
         if result is not None:
-          indices.append(result.group(1))
+            indices.append(result.group(1))
 
     # loop over all possible variables and add them to list
     for n in indices:
         # don't duplicate if already entered into var list
-        if dont_duplicate and config.p.has_option('config', odt+'_VAR'+n+'_NAME'):
+        if dont_duplicate and config.has_option('config', other_data_type+'_VAR'+n+'_NAME'):
             continue
 
         name = {}
@@ -1423,18 +1426,18 @@ def parse_var_list_helper(config, dt, dont_duplicate):
         thresh = {}
         extra = {}
         # get fcst var info if available
-        if config.p.has_option('config', dt+"_VAR"+n+"_NAME"):
-            name[dt] = config.getstr('config', dt+"_VAR"+n+"_NAME")
+        if config.has_option('config', data_type+"_VAR"+n+"_NAME"):
+            name[data_type] = config.getstr('config', data_type+"_VAR"+n+"_NAME")
 
-            extra[dt] = ""
-            if config.p.has_option('config', dt+"_VAR"+n+"_OPTIONS"):
-                extra[dt] = config.getraw('config', dt+"_VAR"+n+"_OPTIONS")
+            extra[data_type] = ""
+            if config.has_option('config', data_type+"_VAR"+n+"_OPTIONS"):
+                extra[data_type] = config.getraw('config', data_type+"_VAR"+n+"_OPTIONS")
 
-            thresh[dt] = []
-            if config.p.has_option('config', dt+"_VAR"+n+"_THRESH"):
-                thresh[dt] = getlist(config.getstr('config', dt+"_VAR"+n+"_THRESH"))
-                if validate_thresholds(thresh[dt]) == False:
-                    msg = "  Update "+dt+"_VAR"+n+"_THRESH to match this format"
+            thresh[data_type] = []
+            if config.has_option('config', data_type+"_VAR"+n+"_THRESH"):
+                thresh[data_type] = getlist(config.getstr('config', data_type+"_VAR"+n+"_THRESH"))
+                if validate_thresholds(thresh[data_type]) == False:
+                    msg = "  Update "+data_type+"_VAR"+n+"_THRESH to match this format"
                     if config.logger:
                         config.logger.error(msg)
                     else:
@@ -1442,23 +1445,23 @@ def parse_var_list_helper(config, dt, dont_duplicate):
                     exit(1)
 
             # if OBS_VARn_X does not exist, use FCST_VARn_X
-            if config.p.has_option('config', odt+"_VAR"+n+"_NAME"):
-                name[odt] = config.getstr('config', odt+"_VAR"+n+"_NAME")
+            if config.has_option('config', other_data_type+"_VAR"+n+"_NAME"):
+                name[other_data_type] = config.getstr('config', other_data_type+"_VAR"+n+"_NAME")
             else:
-                name[odt] = name[dt]
+                name[other_data_type] = name[data_type]
 
-            extra[odt] = ""
-            if config.p.has_option('config', odt+"_VAR"+n+"_OPTIONS"):
-                extra[odt] = config.getraw('config', odt+"_VAR"+n+"_OPTIONS")
+            extra[other_data_type] = ""
+            if config.has_option('config', other_data_type+"_VAR"+n+"_OPTIONS"):
+                extra[other_data_type] = config.getraw('config', other_data_type+"_VAR"+n+"_OPTIONS")
 
-            levels[dt] = getlist(config.getstr('config', dt+"_VAR"+n+"_LEVELS"))
-            if config.p.has_option('config', odt+"_VAR"+n+"_LEVELS"):
-                levels[odt] = getlist(config.getstr('config', odt+"_VAR"+n+"_LEVELS"))
+            levels[data_type] = getlist(config.getstr('config', data_type+"_VAR"+n+"_LEVELS"))
+            if config.has_option('config', other_data_type+"_VAR"+n+"_LEVELS"):
+                levels[other_data_type] = getlist(config.getstr('config', other_data_type+"_VAR"+n+"_LEVELS"))
             else:
-                levels[odt] = levels[dt]
+                levels[other_data_type] = levels[data_type]
 
-            if len(levels[dt]) != len(levels[odt]):
-                msg = dt+"_VAR"+n+"_LEVELS and "+odt+"_VAR"+n+\
+            if len(levels[data_type]) != len(levels[other_data_type]):
+                msg = data_type+"_VAR"+n+"_LEVELS and "+other_data_type+"_VAR"+n+\
                           "_LEVELS do not have the same number of elements"
                 if config.logger:
                     config.logger.error(msg)
@@ -1467,26 +1470,26 @@ def parse_var_list_helper(config, dt, dont_duplicate):
                 exit(1)
 
             # if OBS_VARn_THRESH does not exist, use FCST_VARn_THRESH
-            if config.p.has_option('config', odt+"_VAR"+n+"_THRESH"):
-                thresh[odt] = getlist(config.getstr('config', odt+"_VAR"+n+"_THRESH"))
-                if validate_thresholds(thresh[odt]) == False:
-                    print("  Update "+odt+"_VAR"+n+"_THRESH to match this format")
+            if config.has_option('config', other_data_type+"_VAR"+n+"_THRESH"):
+                thresh[other_data_type] = getlist(config.getstr('config', other_data_type+"_VAR"+n+"_THRESH"))
+                if validate_thresholds(thresh[other_data_type]) == False:
+                    print("  Update "+other_data_type+"_VAR"+n+"_THRESH to match this format")
                     exit(1)
             else:
-                thresh[odt] = thresh[dt]
+                thresh[other_data_type] = thresh[data_type]
 
             # get ensemble var info if available
-            if config.p.has_option('config', "ENS_VAR"+n+"_NAME"):
+            if config.has_option('config', "ENS_VAR"+n+"_NAME"):
                 name['ENS'] = config.getstr('config', "ENS_VAR"+n+"_NAME")
 
                 levels['ENS'] = getlist(config.getstr('config', "ENS_VAR"+n+"_LEVELS"))
 
                 extra['ENS'] = ""
-                if config.p.has_option('config', "ENS_VAR"+n+"_OPTIONS"):
+                if config.has_option('config', "ENS_VAR"+n+"_OPTIONS"):
                     extra['ENS'] = config.getraw('config', "ENS_VAR"+n+"_OPTIONS")
 
                 thresh['ENS'] = []
-                if config.p.has_option('config', "ENS_VAR"+n+"_THRESH"):
+                if config.has_option('config', "ENS_VAR"+n+"_THRESH"):
                     thresh['ENS'] = getlist(config.getstr('config', "ENS_VAR"+n+"_THRESH"))
                     if validate_thresholds(thresh['ENS']) == False:
                         msg = "  Update ENS_VAR"+n+"_THRESH to match this format"
@@ -1496,8 +1499,8 @@ def parse_var_list_helper(config, dt, dont_duplicate):
                             print(msg)
                         exit(1)
 
-                if len(thresh[dt]) != len(thresh[odt]):
-                    msg = dt+"_VAR"+n+"_THRESH and "+odt+"_VAR"+n+\
+                if len(thresh[data_type]) != len(thresh[other_data_type]):
+                    msg = data_type+"_VAR"+n+"_THRESH and "+other_data_type+"_VAR"+n+\
                           "_THRESH do not have the same number of elements"
                     if config.logger:
                         config.logger.error(msg)
@@ -1506,46 +1509,46 @@ def parse_var_list_helper(config, dt, dont_duplicate):
                     exit(1)
 
             count = 0
-            for f,o in zip(levels[dt], levels[odt]):
-                fo = FieldObj()
-                fo.fcst_name = name[dt]
-                fo.obs_name = name[odt]
-                fo.fcst_extra = extra[dt]
-                fo.obs_extra = extra[odt]
-                fo.fcst_thresh = thresh[dt]
-                fo.obs_thresh = thresh[odt]
-                fo.fcst_level = f
-                fo.obs_level = o
+            for f, o in zip(levels[data_type], levels[other_data_type]):
+                fo = {}
+                fo['fcst_name'] = name[data_type]
+                fo['obs_name'] = name[other_data_type]
+                fo['fcst_extra'] = extra[data_type]
+                fo['obs_extra'] = extra[other_data_type]
+                fo['fcst_thresh'] = thresh[data_type]
+                fo['obs_thresh'] = thresh[other_data_type]
+                fo['fcst_level'] = f
+                fo['obs_level'] = o
                 if 'ENS' in name:
-                    fo.ens_name = name['ENS']
-                    fo.ens_level = levels['ENS'][count]
+                    fo['ens_name'] = name['ENS']
+                    fo['ens_level'] = levels['ENS'][count]
                     if 'ENS' in extra:
-                        fo.ens_extra = extra['ENS']
+                        fo['ens_extra'] = extra['ENS']
                     if 'ENS' in thresh:
-                        fo.ens_thresh = thresh['ENS']
+                        fo['ens_thresh'] = thresh['ENS']
 
-                fo.index = n
+                fo['index'] = n
                 var_list.append(fo)
                 count += 1
 
     '''
     count = 0
     for v in var_list:
-        print(" fcst_name:"+v.fcst_name)
-        print(" fcst_level:"+v.fcst_level)
-        print(" fcst_thresh:"+str(v.fcst_thresh))
-        print(" fcst_extra:"+v.fcst_extra)
-        print(" obs_name:"+v.obs_name)
-        print(" obs_level:"+v.obs_level)
-        print(" obs_thresh:"+str(v.obs_thresh))
-        print(" obs_extra:"+v.obs_extra)
-        if hasattr(v, 'ens_name'):
-            print(" ens_name:"+v.ens_name)
-            print(" ens_level:"+v.ens_level)
-        if hasattr(v, 'ens_thresh'):
-            print(" ens_thresh:"+str(v.ens_thresh))
-        if hasattr(v, 'ens_extra'):
-            print(" ens_extra:"+v.ens_extra)
+        print(" fcst_name:"+v['fcst_name'])
+        print(" fcst_level:"+v['fcst_level'])
+        print(" fcst_thresh:"+str(v['fcst_thresh']))
+        print(" fcst_extra:"+v['fcst_extra'])
+        print(" obs_name:"+v['obs_name'])
+        print(" obs_level:"+v['obs_level'])
+        print(" obs_thresh:"+str(v['obs_thresh']))
+        print(" obs_extra:"+v['obs_extra'])
+        if 'ens_name' in v.keys():
+            print(" ens_name:"+v['ens_name'])
+            print(" ens_level:"+v['ens_level'])
+        if 'ens_thresh' in v.keys():
+            print(" ens_thresh:"+str(v['ens_thresh']))
+        if 'ens_extra' in v.keys():
+            print(" ens_extra:"+v['ens_extra'])
         print("")
         count += 1
     '''
@@ -1554,108 +1557,10 @@ def parse_var_list_helper(config, dt, dont_duplicate):
 
 def split_level(level):
     level_type = ""
-    if(level[0].isalpha()):
+    if level[0].isalpha():
         level_type = level[0]
         level = level[1:].zfill(2)
     return level_type, level
-
-
-def reformat_fields_for_met(all_vars_list, logger):
-        """! Reformat the fcst or obs field values defined in the
-             METplus config file to the MET field dictionary.
-             Args:
-                 all_vars_list - The list of all variables/fields retrieved
-                                 from the METplus configuration file
-                 logger        - The log to which any logging is directed.
-             Returns:
-                 met_fields - a named tuple containing the fcst field and
-                              obs field key-value pairs needed by MET.
-        """
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-
-        # Used for logging.
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
-        # Named tuple (so we don't have to remember the order of the fields)
-        # containing the string corresponding to the fcst or obs field
-        # key-values for the MET config file.
-        MetFields = namedtuple("MetFields", "fcst_field, obs_field")
-
-        # Two types of fields in the MET fields dictionary, fcst and obs. Use
-        # this to create the key-value pairs.
-        field_list = ['fcst', 'obs']
-        fcst_field = ''
-        obs_field = ''
-        for var in all_vars_list:
-            # Create the key-value pairs in the fcst field and obs field
-            # dictionaries as defined in the MET configuration file:
-            # fcst = {
-            #    field = [
-            #       {
-            #         name = "TMP";
-            #         level = ["P500", "P400", "P300"];
-            #         cat_thresh = [ > 80.0];
-            #         GRIB_lvl_typ = 202;
-            #       },
-            #       {
-            #         name = "HGT";
-            #         level = ["P500"];
-            #         cat_thresh = [ > 0.0];
-            #         GRIB_lvl_typ = 202;
-            #       },
-            #    ]
-            # }
-            # obs = fcst;
-            #
-            # The reformatting involves creating the field key-value pairs in
-            # the fcst and obs dictionaries.
-
-            # Iterate over the field types fcst and obs
-            for field in field_list:
-                if field == 'fcst':
-                    name = var.fcst_name
-                    level = var.fcst_level.zfill(2)
-                    extra = var.fcst_extra
-                elif field == 'obs':
-                    name = var.obs_name
-                    level = var.obs_level
-                    extra = var.obs_extra
-
-                name_level_extra_list = ['{ name = "', name,
-                                         '"; level = [ "', level, '" ]; ']
-                if extra:
-                    # End the text for this field.  If this is the last field,
-                    # end the dictionary appropriately.
-                    if var == all_vars_list[-1]:
-                        # This is the last field, terminate it appropriately.
-                        extra_str = extra + '; }'
-                    else:
-                        # More field(s) to go
-                        extra_str = extra + '; },'
-                    name_level_extra_list.append(extra_str)
-                else:
-                    # End the text for this field.  If this is the last field,
-                    # end the dictionary appropriately.
-                    if var == all_vars_list[-1]:
-                        # This is the last field, terminate it appropriately.
-                        name_level_extra_list.append('}')
-                    else:
-                        # More field(s) to go
-                        name_level_extra_list.append('}, ')
-
-                # Create the long string that will comprise the dictionary in
-                # the MET point_stat config file.
-                if field == 'fcst':
-                    fcst_field += ''.join(name_level_extra_list)
-                elif field == 'obs':
-                    obs_field += ''.join(name_level_extra_list)
-
-        met_fields = MetFields(fcst_field, obs_field)
-
-        return met_fields
 
 def get_filetype(filepath, logger=None):
     """!This function determines if the filepath is a NETCDF or GRIB file
@@ -1736,9 +1641,9 @@ def get_filetype(filepath, logger=None):
         # name_grid 'CDF '
         name_cdf, name_hdf, name_grib = [None] * 3
         if len(first_eight_bytes) == 8:
-            name_cdf =  struct.unpack('3s',first_eight_bytes[:3])[0]
-            name_hdf =  struct.unpack('3s',first_eight_bytes[1:4])[0]
-            name_grib = struct.unpack('4s',first_eight_bytes[:4])[0]
+            name_cdf = struct.unpack('3s', first_eight_bytes[:3])[0]
+            name_hdf = struct.unpack('3s', first_eight_bytes[1:4])[0]
+            name_grib = struct.unpack('4s', first_eight_bytes[:4])[0]
 
         # Why not just use a else, instead of elif else if we are going to
         # return GRIB ? It allows for expansion, ie. Maybe we pass in a
@@ -1762,7 +1667,7 @@ def get_filetype(filepath, logger=None):
         return None
 
     # Previous Logic
-    # ncdump_exe = config.getexe('NCDUMP_EXE')
+    # ncdump_exe = config.getexe('NCDUMP')
     #try:
     #    result = subprocess.check_output([ncdump_exe, filepath])
 
@@ -1778,7 +1683,6 @@ def get_filetype(filepath, logger=None):
 
 
 def get_time_from_file(logger, filepath, template):
-    valid_extensions = [ '.gz', '.bz2', '.zip' ]
     if os.path.isdir(filepath):
         return None
 
@@ -1789,7 +1693,7 @@ def get_time_from_file(logger, filepath, template):
         return out
     else:
         # check to see if zip extension ends file path, try again without extension
-        for ext in valid_extensions:
+        for ext in VALID_EXTENSIONS:
             if filepath.endswith(ext):
                 se = StringExtract(logger, template, filepath[:-len(ext)])
                 out = se.parse_template()
@@ -1810,10 +1714,9 @@ def preprocess_file(filename, data_type, config):
         return None
 
     stage_dir = config.getdir('STAGING_DIR')
-    # TODO: move valid_extensions so it can be used by more than one function
-    valid_extensions = [ '.gz', '.bz2', '.zip' ]
+
     if os.path.isfile(filename):
-        for ext in valid_extensions:
+        for ext in VALID_EXTENSIONS:
             if filename.endswith(ext):
                 return preprocess_file(filename[:-len(ext)], data_type, config)
         # if extension is grd (Gempak), then look in staging dir for nc file
@@ -1829,8 +1732,8 @@ def preprocess_file(filename, data_type, config):
             outdir = os.path.dirname(stagefile)
             if not os.path.exists(outdir):
                 os.makedirs(outdir, mode=0o0775)
-            run_g2c = GempakToCFWrapper(config.p, config.logger)
-            run_g2c.add_input_file(filename)
+            run_g2c = GempakToCFWrapper(config.conf, config.logger)
+            run_g2c.infiles.append(filename)
             run_g2c.set_output_path(stagefile)
             cmd = run_g2c.get_command()
             if cmd is None:
@@ -1941,14 +1844,14 @@ def run_stand_alone(module_name, app_name):
 
 
 def add_common_items_to_dictionary(config, dictionary):
-    dictionary['WGRIB2'] = config.getexe('WGRIB2')
-    dictionary['CUT_EXE'] = config.getexe('CUT_EXE')
-    dictionary['TR_EXE'] = config.getexe('TR_EXE')
-    dictionary['RM_EXE'] = config.getexe('RM_EXE')
-    dictionary['NCAP2_EXE'] = config.getexe('NCAP2_EXE')
-    dictionary['CONVERT_EXE'] = config.getexe('CONVERT_EXE')
-    dictionary['NCDUMP_EXE'] = config.getexe('NCDUMP_EXE')
-    dictionary['EGREP_EXE'] = config.getexe('EGREP_EXE')
+    dictionary['WGRIB2_EXE'] = config.getexe('WGRIB2')
+    dictionary['CUT_EXE'] = config.getexe('CUT')
+    dictionary['TR_EXE'] = config.getexe('TR')
+    dictionary['RM_EXE'] = config.getexe('RM')
+    dictionary['NCAP2_EXE'] = config.getexe('NCAP2')
+    dictionary['CONVERT_EXE'] = config.getexe('CONVERT')
+    dictionary['NCDUMP_EXE'] = config.getexe('NCDUMP')
+    dictionary['EGREP_EXE'] = config.getexe('EGREP')
 
 
 def template_to_regex(template, time_info, logger):
@@ -1957,7 +1860,7 @@ def template_to_regex(template, time_info, logger):
     sts = StringSub(logger,
                     in_template,
                     **time_info)
-    return sts.doStringSub()
+    return sts.do_string_sub()
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")

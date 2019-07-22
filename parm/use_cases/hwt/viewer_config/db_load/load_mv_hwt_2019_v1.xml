@@ -1,0 +1,87 @@
+<load_spec>
+	<connection>
+		<host>mysql_mv</host>
+		<database>mv_hwt_2019</database>
+		<user>root</user>
+		<password>mvuser</password>
+	</connection>
+
+        <folder_tmpl>/raid/efp/se2019/ftp/dtc/{var}/{model}/{met_tool}/{date_stamp}</folder_tmpl>
+
+	<verbose>true</verbose>
+	<insert_size>1</insert_size>
+	<stat_header_db_check>true</stat_header_db_check>
+	<mode_header_db_check>true</mode_header_db_check>
+	<drop_indexes>false</drop_indexes>
+	<apply_indexes>true</apply_indexes>
+        <force_dup_file>true</force_dup_file>
+	<load_indexes>true</load_indexes>
+	<load_stat>true</load_stat>
+	<load_mode>true</load_mode>
+	<load_mpr>false</load_mpr>
+
+	<load_val>
+		<field name="var">
+			<val>HRRRv3</val>
+			<val>HRRRv4</val>
+		</field>
+		<field name="model">
+			<val>REFC</val>
+			<val>ENVIR</val>
+			<val>APCP03</val>
+		</field>
+		<field name="met_tool">
+		        <val></val>
+			<val>grid_stat</val>
+			<val>point_stat</val>
+		</field>
+		<field name="date_stamp">
+		        <val></val>
+			<val>20190417</val>
+			<val>20190418</val>
+			<val>20190419</val>
+			<val>20190422</val>
+			<val>20190423</val>
+			<val>20190424</val>
+			<val>20190425</val>
+			<val>20190426</val>
+			<val>20190427</val>
+			<val>20190428</val>
+			<val>20190429</val>
+			<val>20190430</val>
+			<val>20190501</val>
+			<val>20190502</val>
+			<val>20190503</val>
+			<val>20190504</val>
+			<val>20190505</val>
+			<val>20190506</val>
+			<val>20190507</val>
+			<val>20190508</val>
+			<val>20190509</val>
+			<val>20190510</val>
+			<val>20190511</val>
+			<val>20190512</val>
+			<val>20190513</val>
+			<val>20190514</val>
+			<val>20190515</val>
+			<val>20190516</val>
+			<val>20190517</val>
+			<val>20190518</val>
+			<val>20190519</val>
+			<val>20190520</val>
+			<val>20190521</val>
+			<val>20190522</val>
+			<val>20190523</val>
+			<val>20190524</val>
+			<val>20190525</val>
+			<val>20190526</val>
+			<val>20190527</val>
+			<val>20190528</val>
+			<val>20190529</val>
+			<val>20190530</val>
+			<val>20190531</val>
+		</field>
+	</load_val>
+
+	<load_xml>true</load_xml>
+</load_spec>

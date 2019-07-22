@@ -51,8 +51,7 @@ class CommandRunner(object):
         self.config = ConfigWrapper(config, self.logger)
         self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
 
-
-    def run_cmd(self, cmd, ismetcmd = True, app_name=None, run_inshell=False,
+    def run_cmd(self, cmd, env=None, ismetcmd = True, app_name=None, run_inshell=False,
                 log_theoutput=False, **kwargs):
         """!The command cmd is a string which is converted to a produtil
         exe Runner object and than run. Output of the command may also
@@ -64,6 +63,8 @@ class CommandRunner(object):
 
         Args:
             @param cmd: A string, Command used in the produtil exe Runner object.
+            @param env: Default None, environment for run to pass in, uses
+            os.environ if not set.
             @param ismetcmd: Default True, Will direct output to METplus log,
             Metlog , or TTY. Set to False and use the other keywords as needed.
             @param app_name: Used only when ismetcmd=True, The name of the exectable
@@ -81,6 +82,12 @@ class CommandRunner(object):
 
         if cmd is None:
             return cmd
+
+        # if env not set, use os.environ
+        if env is None:
+            env = os.environ
+
+        self.logger.info("RUNNING: %s" % cmd)
 
         if ismetcmd:
 
@@ -116,10 +123,10 @@ class CommandRunner(object):
             if log_dest:
                 self.logger.info("app_name is: %s, output sent to: %s" % (app_name, log_dest))
                 #cmd = exe('sh')['-c', cmd].err2out() >> log_dest
-                cmd = exe(the_exe)[the_args].err2out() >> log_dest
+                cmd = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
             else:
                 #cmd = exe('sh')['-c', cmd].err2out()
-                cmd = exe(the_exe)[the_args].err2out()
+                cmd = exe(the_exe)[the_args].env(**env).err2out()
 
         else:
             # This block is for all the Non-MET commands
@@ -134,28 +141,29 @@ class CommandRunner(object):
             # case 3. Runnng the command and logging the output to
             #         log_dest
             if run_inshell:
+                # set the_exe to log command has finished running
+                the_exe = shlex.split(cmd)[0]
+
                 if log_theoutput:
                     log_dest = self.cmdlog_destination()
-                    cmd = exe('sh')['-c', cmd].err2out() >> log_dest
+                    cmd = exe('sh')['-c', cmd].env(**env).err2out() >> log_dest
                 else:
-                    cmd = exe('sh')['-c', cmd]
+                    cmd = exe('sh')['-c', cmd].env(**env)
 
             else:
                 the_exe = shlex.split(cmd)[0]
                 the_args = shlex.split(cmd)[1:]
                 if log_theoutput:
                     log_dest = self.cmdlog_destination()
-                    cmd = exe(the_exe)[the_args].err2out() >> log_dest
+                    cmd = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
                 else:
-                    cmd = exe(the_exe)[the_args]
-
-
-        self.logger.info("RUNNING: %s" % cmd.to_shell())
+                    cmd = exe(the_exe)[the_args].env(**env)
 
         ret = 0
         # run app unless DO_NOT_RUN_EXE is set to True
         if not self.config.getbool('config', 'DO_NOT_RUN_EXE', False):
             ret = run(cmd, **kwargs)
+            self.logger.debug('Finished running {}'.format(the_exe))
 
         return (ret, cmd)
 

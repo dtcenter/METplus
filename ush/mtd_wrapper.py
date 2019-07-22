@@ -21,17 +21,15 @@ from mode_wrapper import ModeWrapper
 
 class MTDWrapper(ModeWrapper):
 
-    def __init__(self, p, logger):
-        super(MTDWrapper, self).__init__(p, logger)
-        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                     'bin/mtd')
-        self.app_name = os.path.basename(self.app_path)
+    def __init__(self, config, logger):
+        super(MTDWrapper, self).__init__(config, logger)
+        self.app_name = 'mtd'
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                     'bin', self.app_name)
         self.fcst_file = None
         self.obs_file = None
-        self.c_dict = self.create_c_dict()
+#        self.c_dict = self.create_c_dict()
 
-
-    # TODO : Set defaults for all items that need them
     def create_c_dict(self):
         c_dict = super(ModeWrapper, self).create_c_dict()
 
@@ -111,7 +109,7 @@ class MTDWrapper(ModeWrapper):
                 exit(1)
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict)
+        self.handle_window_variables(c_dict, 'mtd')
 
         return c_dict
 
@@ -123,14 +121,13 @@ class MTDWrapper(ModeWrapper):
               Args:
                 @param input_dict dictionary containing timing information
         """        
-        var_list = util.parse_var_list(self.config)
 #        max_lookback = self.c_dict['MAX_LOOKBACK']
 #        file_interval = self.c_dict['FILE_INTERVAL']
 
         lead_seq = util.get_lead_sequence(self.config, input_dict)
-        for v in var_list:
+        for var_info in self.c_dict['VAR_LIST']:
             if self.c_dict['SINGLE_RUN']:
-                self.run_single_mode(input_dict, v)
+                self.run_single_mode(input_dict, var_info)
                 continue
 
             model_list = []
@@ -142,12 +139,10 @@ class MTDWrapper(ModeWrapper):
                 time_info = time_util.ti_calculate(input_dict)
                 tasks.append(time_info)
 
-            # TODO: implement mode to keep fcst lead constant and increment init/valid time
-            # loop from valid time to valid time + offset by step, set lead and find files
             for current_task in tasks:
                 # call find_model/obs as needed
-                model_file = self.find_model(current_task, v)
-                obs_file = self.find_obs(current_task, v)
+                model_file = self.find_model(current_task, var_info)
+                obs_file = self.find_obs(current_task, var_info)
                 if model_file is None and obs_file is None:
                     self.logger.warning('Obs and fcst files were not found for init {} and lead {}'.
                                         format(current_task['init_fmt'], current_task['lead_hours']))
@@ -169,35 +164,35 @@ class MTDWrapper(ModeWrapper):
             # write ascii file with list of files to process
             input_dict['lead_hours'] = 0
             time_info = time_util.ti_calculate(input_dict)
-            model_outfile = time_info['valid_fmt'] + '_mtd_fcst_' + v.fcst_name + '.txt'
-            obs_outfile = time_info['valid_fmt'] + '_mtd_obs_' + v.obs_name + '.txt'
+            model_outfile = time_info['valid_fmt'] + '_mtd_fcst_' + var_info['fcst_name'] + '.txt'
+            obs_outfile = time_info['valid_fmt'] + '_mtd_obs_' + var_info['obs_name'] + '.txt'
             model_list_path = self.write_list_file(model_outfile, model_list)
             obs_list_path = self.write_list_file(obs_outfile, obs_list)
 
             arg_dict = {'obs_path' : obs_list_path,
                         'model_path' : model_list_path }
 
-            self.process_fields_one_thresh(current_task, v, **arg_dict)
+            self.process_fields_one_thresh(current_task, var_info, **arg_dict)
 
 
-    def run_single_mode(self, input_dict, v):
+    def run_single_mode(self, input_dict, var_info):
         single_list = []
 
         if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
             find_method = self.find_obs
-            s_name = v.obs_name
-            s_level = v.obs_level
+            s_name = var_info['obs_name']
+            s_level = var_info['obs_level']
         else:
             find_method = self.find_model
-            s_name = v.fcst_name
-            s_level = v.fcst_level
+            s_name = var_info['fcst_name']
+            s_level = var_info['fcst_level']
 
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             input_dict['lead_hours'] = lead
             current_task = time_util.ti_calculate(input_dict)
 
-            single_file = find_method(current_task, v)
+            single_file = find_method(current_task, var_info)
             if single_file is None:
                 self.logger.warning('Single file was not found for init {} and lead {}'.
                                     format(current_task['init_fmt'], current_task['lead_hours']))
@@ -221,26 +216,26 @@ class MTDWrapper(ModeWrapper):
             arg_dict['model_path'] = single_list_path
             arg_dict['obs_path'] = None
 
-        self.process_fields_one_thresh(current_task, v, **arg_dict)
+        self.process_fields_one_thresh(current_task, var_info, **arg_dict)
 
 
-    def process_fields_one_thresh(self, time_info, v, model_path, obs_path):
+    def process_fields_one_thresh(self, time_info, var_info, model_path, obs_path):
         """! For each threshold, set up environment variables and run mode
               Args:
                 @param time_info dictionary containing timing information
-                @param v var_info object containing variable information
+                @param var_info object containing variable information
                 @param model_path forecast file list path
                 @param obs_path observation file list path
         """
         # if no thresholds are specified, run once
         fcst_thresh_list = [0]
         obs_thresh_list = [0]
-        if len(v.fcst_thresh) != 0:
-            fcst_thresh_list = v.fcst_thresh
-            obs_thresh_list = v.obs_thresh
+        if len(var_info['fcst_thresh']) != 0:
+            fcst_thresh_list = var_info['fcst_thresh']
+            obs_thresh_list = var_info['obs_thresh']
 
         for fthresh, othresh in zip(fcst_thresh_list, obs_thresh_list):
-            self.set_param_file(self.c_dict['CONFIG_FILE'])
+            self.param = self.c_dict['CONFIG_FILE']
             self.create_and_set_output_dir(time_info)
 
             print_list = [ 'MIN_VOLUME', 'MODEL', 'FCST_VAR', 'OBTYPE',
@@ -250,10 +245,10 @@ class MTDWrapper(ModeWrapper):
                            'OBS_CONV_RADIUS', 'OBS_CONV_THRESH' ]
             self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"] )
             self.add_env_var("MODEL", self.c_dict['MODEL'])
-            self.add_env_var("FCST_VAR", v.fcst_name)
+            self.add_env_var("FCST_VAR", var_info['fcst_name'])
             self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-            self.add_env_var("OBS_VAR", v.obs_name)
-            self.add_env_var("LEVEL", util.split_level(v.fcst_level)[1])
+            self.add_env_var("OBS_VAR", var_info['obs_name'])
+            self.add_env_var("LEVEL", util.split_level(var_info['fcst_level'])[1])
             self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
             self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
 
@@ -261,7 +256,7 @@ class MTDWrapper(ModeWrapper):
             if self.c_dict['SINGLE_RUN']:
                 if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
                     self.set_fcst_file(obs_path)
-                    obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
+                    obs_field = self.get_one_field_info(var_info['obs_name'], var_info['obs_level'], var_info['obs_extra'],
                                                         othresh, 'OBS')
                     self.add_env_var("FCST_FIELD", obs_field)
                     self.add_env_var("OBS_FIELD", obs_field)
@@ -271,7 +266,7 @@ class MTDWrapper(ModeWrapper):
                     self.add_env_var("FCST_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
                 else:
                     self.set_fcst_file(model_path)
-                    fcst_field = self.get_one_field_info(v.fcst_name, v.fcst_level, v.fcst_extra,
+                    fcst_field = self.get_one_field_info(var_info['fcst_name'], var_info['fcst_level'], var_info['fcst_extra'],
                                                          fthresh, 'FCST')
                     self.add_env_var("FCST_FIELD", fcst_field)
                     self.add_env_var("OBS_FIELD", fcst_field)
@@ -287,9 +282,9 @@ class MTDWrapper(ModeWrapper):
                 self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"] )
                 self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
 
-                fcst_field = self.get_one_field_info(v.fcst_name, v.fcst_level, v.fcst_extra,
+                fcst_field = self.get_one_field_info(var_info['fcst_name'], var_info['fcst_level'], var_info['fcst_extra'],
                                                      fthresh, 'FCST')
-                obs_field = self.get_one_field_info(v.obs_name, v.obs_level, v.obs_extra,
+                obs_field = self.get_one_field_info(var_info['obs_name'], var_info['obs_level'], var_info['obs_extra'],
                                                     othresh, 'OBS')
 
                 self.add_env_var("FCST_FIELD", fcst_field)
@@ -335,7 +330,8 @@ class MTDWrapper(ModeWrapper):
                               You must use a subclass")
             return None
 
-        cmd = self.app_path + " "
+        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+
         for a in self.args:
             cmd += a + " "
 
@@ -359,14 +355,7 @@ class MTDWrapper(ModeWrapper):
         cmd += '-config ' + self.param + ' '
 
         if self.outdir != "":
-            cmd += self.outdir + ' '
-
-        # TODO: is logfile and verbose ever set?
-#        if self.logfile != "":
-#            cmd += " -log "+self.logfile
-
-        if self.verbose != -1:
-            cmd += "-v "+str(self.verbose) + " "
+            cmd += '-outdir {}'.format(self.outdir)
 
         return cmd
 

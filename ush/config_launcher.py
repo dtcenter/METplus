@@ -1,3 +1,14 @@
+"""
+Program Name: config_launcher.py
+Contact(s): Jim Frimel
+Abstract:
+History Log:  Initial version
+Usage:
+Parameters: None
+Input Files: N/A
+Output Files: N/A
+"""
+
 from __future__ import print_function
 import os
 import re
@@ -39,8 +50,6 @@ All symbols exported by "from metplus.launcher import *"
 __all__ = ['load', 'launch', 'parse_launch_args', 'load_baseconfs',
            'METplusLauncher']
 
-# baseinputconfs = ['metplus.conf','metplus.override.conf','usecase.conf']
-# baseinputconfs = ['metplus.conf']
 baseinputconfs = ['metplus_config/metplus_system.conf',
                   'metplus_config/metplus_data.conf',
                   'metplus_config/metplus_runtime.conf',
@@ -73,8 +82,8 @@ if os.environ.get('METPLUS_BASE', ''):
     METPLUS_BASE = os.environ['METPLUS_BASE']
 if os.environ.get('METPLUS_USH', ''):
     METPLUS_USH = os.environ['METPLUS_USH']
-if os.environ.get('PARM_BASE', ''):
-    PARM_BASE = os.environ['PARM_BASE']
+if os.environ.get('METPLUS_PARM_BASE', ''):
+    PARM_BASE = os.environ['METPLUS_PARM_BASE']
 
 # Based on METPLUS_BASE, Will set METPLUS_USH, or PARM_BASE if not
 # already set in the environment.
@@ -155,7 +164,7 @@ def parse_launch_args(args, usage, filename, logger):
     # Now look for any option and conf file arguments:
     bad = False
     for iarg in range(len(args)):
-        m = re.match('''(?x)
+        m = re.match(r'''(?x)
           (?P<section>[a-zA-Z][a-zA-Z0-9_]*)
            \.(?P<option>[^=]+)
            =(?P<value>.*)$''', args[iarg])
@@ -238,7 +247,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # Received feedback: Users want to overwrite the final conf file if it exists.
     # Not overwriting is annoying everyone, since when one makes a conf file edit
     # you have to remember to remove the final conf file.
-    # Originally based on a hwrf workflow. since launcher task only runs once, 
+    # Originally based on a hwrf workflow. since launcher task only runs once,
     # and all following tasks use the generated conf file.
     #finalconfexists = util.file_exists(confloc)
 
@@ -278,25 +287,32 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # set METPLUS_BASE conf to location of scripts used by METplus
     # warn if user has set METPLUS_BASE to something different
     # in their conf file
-    user_metplus_base = cu.getdir('METPLUS_BASE', '')
-    if user_metplus_base != '' and user_metplus_base != METPLUS_BASE:
+    user_metplus_base = cu.getdir('METPLUS_BASE', METPLUS_BASE)
+    if realpath(user_metplus_base) != realpath(METPLUS_BASE):
         logger.warning('METPLUS_BASE from the conf files has no effect.'+\
                        ' Overriding to '+METPLUS_BASE)
-    conf.set('dir','METPLUS_BASE', METPLUS_BASE)
+
+    conf.set('dir', 'METPLUS_BASE', METPLUS_BASE)
+
+    # do the same for PARM_BASE
+    user_parm_base = cu.getdir('PARM_BASE', PARM_BASE)
+    if realpath(user_parm_base) != realpath(PARM_BASE):
+        logger.error('PARM_BASE from the config ({}) '.format(user_parm_base) +\
+                     'differs from METplus parm base ({}). '.format(PARM_BASE))
+        logger.error('Please remove PARM_BASE from any config file. Set the ' +\
+                     'environment variable METPLUS_PARM_BASE to change where ' +\
+                     'the METplus wrappers look for config files.')
+        exit(1)
+
+    conf.set('dir', 'PARM_BASE', PARM_BASE)
 
     version_number = util.get_version_number()
     conf.set('config', 'METPLUS_VERSION', version_number)
 
-    # logger.info('Expand certain [dir] values to ensure availability ')
-    #            'before vitals parsing.
-    # frimel: Especially before vitals parsing. THIS IS ONLY NEEDED in
-    # order to define the vit dictionary and use of vit|{somevar} in the
-    # conf file.
-    for var in ('OUTPUT_BASE', 'METPLUS_BASE'):
+    # print config items that are set automatically
+    for var in ('METPLUS_BASE', 'PARM_BASE'):
         expand = cu.getdir(var)
-        logger.info('Replace [dir] %s with %s' % (var, expand))
-        conf.set('dir', var, expand)
-
+        logger.info('Setting [dir] %s to %s' % (var, expand))
 
     # Place holder for when workflow is developed in METplus.
     # if prelaunch is not None:
@@ -307,6 +323,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
         logger.info('METPLUS_CONF: %s written here.' % (confloc,))
         with open(confloc, 'wt') as f:
             conf.write(f)
+
     return conf
 
 
@@ -398,14 +415,14 @@ class METplusLauncher(ProdConfig):
         @param conf The configuration file."""
         super(METplusLauncher, self).__init__(conf)
         self._cycle = None
-        self._logger=logging.getLogger('metplus')
+        self._logger = logging.getLogger('metplus')
         logger = self._logger
 
     ##@var _cycle
     # The cycle for this METplus run.
 
     # Overrides method in ProdConfig
-    def log(self,sublog=None):
+    def log(self, sublog=None):
         """!returns a logging.Logger object
 
         Returns a logging.Logger object.  If the sublog argument is
@@ -426,56 +443,3 @@ class METplusLauncher(ProdConfig):
         and configuration to make sure everything looks okay.  May
         throw a wide variety of exceptions if sanity checks fail."""
         logger = self.log('sanity.checker')
-
-
-# THIS IS NOT USED, meant for internal dev testing.
-def test_gen_conf(file_list, cycle=None):
-    for filename in file_list:
-        if not isinstance(filename, str):
-            raise TypeError('First input to metplus.config.for_initial_job '
-                            'must be a list of strings.')
-    conf = ProdConfig()
-    logger = conf.log()
-    cu = ConfigWrapper(conf, logger)
-
-    for filename in file_list:
-        logger.info("%s: parse this file" % (filename,))
-        conf.read(filename)
-
-    produtil.fileop.makedirs(cu.getdir('OUTPUT_BASE'), logger=logger)
-
-    for var in ('OUTPUT_BASE', 'METPLUS_BASE'):
-        expand = conf.getstr('dir', var)
-        logger.info('Replace [dir] %s with %s' % (var, expand))
-        conf.set('dir', var, expand)
-
-    # writes metplus.conf used by all tasks.
-    util.write_final_conf(conf, logger)
-
-    return conf
-
-
-# THIS IS NOT USED, meant for internal dev testing.
-def test_metplus_launch_args(args, logger, usage, PARM_BASE=None):
-    if len(args) < 2 or (PARM_BASE is None and len(args) < 3):
-        usage(logger=logger)
-        sys.exit(2)
-    stid = args[0].upper()
-    logger.info('Running Storm ID is ' + repr(stid))
-    logger.info('VX test infoX')
-    logger.debug('VX test debugX')
-    logger.error('VX test errorX')
-
-    case_root = 'HISTORY'
-    parm = '/path/to/METplus/parm'
-    infiles = ['/path/to/METplus/parm/metplus_input.conf',
-               '/path/to/METplus/parm/metplus.conf',
-               '/path/to/METplus/parm/metplus_basic.conf',
-               '/path/to/METplus/parm/system.conf',
-               '../../frimel.conf.lfs2']
-
-    stid = '18L'
-    moreopt = {'config': {'METPLUS_BASE': '/path/to/METplus',
-                          'EXPT': 'metplus_trunk'}}
-
-    return (case_root, parm, infiles, stid, moreopt)

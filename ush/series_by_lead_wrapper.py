@@ -54,10 +54,10 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.plot_data_plane_exe = os.path.join(
             self.config.getdir('MET_INSTALL_DIR'),
             'bin/plot_data_plane')
-        self.convert_exe = self.config.getexe('CONVERT_EXE')
-        self.ncap2_exe = self.config.getexe('NCAP2_EXE')
-        self.ncdump_exe = self.config.getexe('NCDUMP_EXE')
-        self.rm_exe = self.config.getexe("RM_EXE")
+        self.convert_exe = self.config.getexe('CONVERT')
+        self.ncap2_exe = self.config.getexe('NCAP2')
+        self.ncdump_exe = self.config.getexe('NCDUMP')
+        self.rm_exe = self.config.getexe("RM")
         met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.series_analysis_exe = os.path.join(met_install_dir,
                                                 'bin/series_analysis')
@@ -96,13 +96,13 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.logger.info("Initialized SeriesByLeadWrapper")
 
 
-    def get_lead_sequences(self, config):
+    def get_lead_sequences(self):
         # output will be a dictionary where the key will be the
         #  label specified and the value will be the list of forecast leads
         lead_seq_dict = {}
         # used in plotting
         self.fhr_group_labels = []
-        all_conf = config.keys('config')
+        all_conf = self.config.keys('config')
         indices = []
         regex = re.compile("LEAD_SEQ_(\d+)")
         for conf in all_conf:
@@ -112,19 +112,19 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         # loop over all possible variables and add them to list
         for n in indices:
-            if config.has_option('config', "LEAD_SEQ_"+n+"_LABEL"):
-                label = config.getstr('config', "LEAD_SEQ_"+n+"_LABEL")
+            if self.config.has_option('config', "LEAD_SEQ_"+n+"_LABEL"):
+                label = self.config.getstr('config', "LEAD_SEQ_"+n+"_LABEL")
             else:
                 log_msg = 'Need to set LEAD_SEQ_{}_LABEL to describe ' +\
                           'LEAD_SEQ_{}'.format(n, n)
-                if config.logger:
-                    config.logger.error(log_msg)
+                if self.config.logger:
+                    self.config.logger.error(log_msg)
                 else:
                     print(log_msg)
                 exit(1)
 
             # get forecast list for n
-            lead_seq = util.getlistint(config.getstr('config', 'LEAD_SEQ_'+n))
+            lead_seq = util.getlistint(self.config.getstr('config', 'LEAD_SEQ_'+n))
 
             # add to output dictionary
             lead_seq_dict[label] = lead_seq
@@ -237,8 +237,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             self.apply_series_filters(tile_dir, init_times,
                                       self.series_lead_filtered_out_dir,
                                       self.series_filter_opts,
-                                      self.tmp_dir,
-                                      self.config)
+                                      self.tmp_dir)
 
             # Remove any empty files and directories to avoid
             # errors or performance degradation when performing
@@ -289,7 +288,7 @@ class SeriesByLeadWrapper(CommandBuilder):
               Returns:       None
 
         """
-        lead_seq_dict = self.get_lead_sequences(self.config)
+        lead_seq_dict = self.get_lead_sequences()
 
         self.logger.debug(' Performing series analysis on forecast hour'
                           ' groupings.')
@@ -437,11 +436,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                    (series_analysis_cmd, app_name=self.app_name)
-
-                msg = ("series analysis command: " +
-                        series_analysis_cmd.to_shell())
-                self.logger.debug(msg)
+                    (series_analysis_cmd, env=None, app_name=self.app_name)
 
                 # Clean up any empty files and directories that still
                 # persist.
@@ -580,14 +575,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 series_analysis_cmd = self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                    (series_analysis_cmd, app_name=self.app_name)
-
-                msg = ("series analysis command: " +
-                       series_analysis_cmd.to_shell())
-                self.logger.debug(msg)
-                # series_analysis_cmd = \
-                #    batchexe('sh')['-c', series_analysis_cmd].err2out()
-                # run(series_analysis_cmd)
+                    (series_analysis_cmd, env=None , app_name=self.app_name)
 
                 # Make sure there aren't any emtpy
                 # files or directories that still persist.
@@ -653,7 +641,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  nc_var_file, ' ', nseries_nc_path]
         nco_nseries_cmd = ''.join(nco_nseries_cmd_parts)
         (ret, nco_nseries_cmd) = self.cmdrunner.run_cmd \
-            (nco_nseries_cmd, ismetcmd=False)
+            (nco_nseries_cmd, env=None, ismetcmd=False)
         # nco_nseries_cmd = batchexe('sh')['-c', nco_nseries_cmd].err2out()
         # run(nco_nseries_cmd)
 
@@ -664,7 +652,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                 '> ', nseries_txt_path]
         ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
         (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
-            (ncdump_max_cmd, ismetcmd=False, run_inshell=True)
+            (ncdump_max_cmd, env=None, ismetcmd=False, run_inshell=True)
         # ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
         # run(ncdump_max_cmd)
 
@@ -763,7 +751,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             nco_min_cmd = ''.join(nco_min_cmd_parts)
             self.logger.debug('nco_min_cmd: ' + nco_min_cmd)
             (ret, nco_min_cmd) = self.cmdrunner.run_cmd \
-                (nco_min_cmd, ismetcmd=False)
+                (nco_min_cmd, env=None, ismetcmd=False)
             # nco_min_cmd = batchexe('sh')['-c', nco_min_cmd].err2out()
             # run(nco_min_cmd)
 
@@ -785,7 +773,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  '" ', cur_nc, ' ', max_nc_path]
             nco_max_cmd = ''.join(nco_max_cmd_parts)
             self.logger.debug('nco_max_cmd: ' + nco_max_cmd)
-            (ret, nco_max_cmd) = self.cmdrunner.run_cmd(nco_max_cmd,
+            (ret, nco_max_cmd) = self.cmdrunner.run_cmd(nco_max_cmd, env=None,
                                                         ismetcmd=False)
             # nco_max_cmd = batchexe('sh')['-c', nco_max_cmd].err2out()
             # run(nco_max_cmd)
@@ -797,7 +785,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                     '/min.nc > ', min_txt_path]
             ncdump_min_cmd = ''.join(ncdump_min_cmd_parts)
             (ret, ncdump_min_cmd) = self.cmdrunner.run_cmd \
-                (ncdump_min_cmd, ismetcmd=False, run_inshell=True)
+                (ncdump_min_cmd, env=None, ismetcmd=False, run_inshell=True)
             # ncdump_min_cmd = batchexe('sh')['-c', ncdump_min_cmd].err2out()
             # run(ncdump_min_cmd)
 
@@ -805,7 +793,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                     '/max.nc > ', max_txt_path]
             ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
             (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
-                (ncdump_max_cmd, ismetcmd=False, run_inshell=True)
+                (ncdump_max_cmd, env=None, ismetcmd=False, run_inshell=True)
             # ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
             # run(ncdump_max_cmd)
 
@@ -1197,20 +1185,14 @@ class SeriesByLeadWrapper(CommandBuilder):
                         self.cmdrunner.insert_metverbosity_opt\
                         (plot_data_plane_cmd)
                     (ret, plot_data_plane_cmd) = self.cmdrunner.run_cmd\
-                        (plot_data_plane_cmd, app_name=self.app_name)
-                    # plot_data_plane_cmd = \
-                    #    batchexe('sh')['-c', plot_data_plane_cmd].err2out()
-                    msg = ("plot_data_plane cmd: " +
-                           plot_data_plane_cmd.to_shell())
-                    self.logger.debug(msg)
-                    # run(plot_data_plane_cmd)
+                        (plot_data_plane_cmd, env=None, app_name=self.app_name)
 
                     # Create the convert command.
                     convert_parts = [self.convert_exe, ' -rotate 90 ',
                                      ' -background white -flatten ',
                                      ps_file, ' ', png_file]
                     convert_cmd = ''.join(convert_parts)
-                    (ret, convert_cmd) = self.cmdrunner.run_cmd(convert_cmd,
+                    (ret, convert_cmd) = self.cmdrunner.run_cmd(convert_cmd, env=None,
                                                                 ismetcmd=False)
                     # convert_cmd = batchexe('sh')['-c', convert_cmd].err2out()
                     # run(convert_cmd)
@@ -1287,13 +1269,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                     # convert: no images defined
 
                     (ret, animate_cmd) = self.cmdrunner.run_cmd\
-                        (animate_cmd, ismetcmd=False,
+                        (animate_cmd, env=None, ismetcmd=False,
                          run_inshell=True, log_theoutput=True)
-
-                    # animate_cmd = exe('sh')['-c', animate_cmd].err2out()
-                    msg = ("animate command: " + animate_cmd.to_shell())
-                    self.logger.debug(msg)
-                    # run(animate_cmd)
                 else:
                     # For series analysis by forecast hour groups, create a
                     # list of the series analysis output for all the forecast
@@ -1318,19 +1295,12 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  cur_stat, '.gif']
 
                     animate_cmd = ''.join(gif_parts)
-                    self.logger.debug("animate cmd: {}".format(animate_cmd))
-
                     (ret, animate_cmd) = self.cmdrunner.run_cmd \
-                        (animate_cmd, ismetcmd=False,
+                        (animate_cmd, env=None, ismetcmd=False,
                          run_inshell=True, log_theoutput=True)
 
-                    # animate_cmd = batchexe('sh')['-c', animate_cmd].err2out()
-                    msg = ("animate command: " + animate_cmd.to_shell())
-                    self.logger.debug(msg)
-                    # run(animate_cmd)
-
     def apply_series_filters(self, tile_dir, init_times, series_output_dir,
-                             filter_opts, temporary_dir, config):
+                             filter_opts, temporary_dir):
 
         """! Apply filter options, as specified in the
             param/config file.
@@ -1345,7 +1315,6 @@ class SeriesByLeadWrapper(CommandBuilder):
                @param filter_opts:  The filter options to apply
                @param temporary_dir:  The temporary directory where intermediate
                                       files are saved.
-               @param config:  The config/param instance
             Returns:
                 None
         """
@@ -1373,7 +1342,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             filter_filename = os.path.join(series_output_dir,
                                            cur_init, filter_file)
 
-            tcs = TcStatWrapper(config, self.logger)
+            tcs = TcStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
                               filter_opts)
 
@@ -1424,7 +1393,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     feature_util.retrieve_and_regrid(tmp_filename, cur_init,
                                                      cur_storm,
                                                      series_output_dir,
-                                                     self.logger,  config)
+                                                     self.config)
 
         # Check for any empty files and directories and remove them to avoid
         # any errors or performance degradation when performing

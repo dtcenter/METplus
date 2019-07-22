@@ -5,7 +5,7 @@ Program Name: reformat_gridded_wrapper.py
 Contact(s): George McCabe
 Abstract: Parent class of all apps designed to reformat gridded data
 History Log:  Initial version
-Usage: 
+Usage:
 Parameters: None
 Input Files: nc files
 Output Files: nc files
@@ -27,13 +27,21 @@ Call as follows:
 Cannot be called directly. Must use child classes.
 @endcode
 '''
+
 class ReformatGriddedWrapper(CommandBuilder):
     """!Common functionality to wrap similar MET applications
 that reformat gridded data
-    """    
+    """
     def __init__(self, config, logger):
         super(ReformatGriddedWrapper, self).__init__(config, logger)
- 
+
+    # this class should not be called directly
+    # pylint:disable=unused-argument
+    def run_at_time_once(self, time_info, var_info, to_run):
+        """!To be implemented by child class"""
+        self.logger.error('ReformatGridded wrapper cannot be called directly.'+\
+                          ' Please use child wrapper')
+        exit(1)
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. Processing forecast
@@ -43,10 +51,9 @@ that reformat gridded data
               Args:
                 @param init_time initialization time to run. -1 if not set
                 @param valid_time valid time to run. -1 if not set
-        """        
+        """
         app_name_caps = self.app_name.upper()
         class_name = self.__class__.__name__[0: -7]
-        var_list = util.parse_var_list(self.config)
         lead_seq = util.get_lead_sequence(self.config, input_dict)
 
         run_list = []
@@ -62,14 +69,13 @@ that reformat gridded data
                               "remove "+class_name+" from the process_list")
             exit()
 
-        for rl in run_list:
-            self.logger.info("Processing {} data".format(rl))
+        for to_run in run_list:
+            self.logger.info("Processing {} data".format(to_run))
             for lead in lead_seq:
                 input_dict['lead_hours'] = lead
                 self.config.set('config', 'CURRENT_LEAD_TIME', lead)
                 os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
                 self.logger.info("Processing forecast lead {}".format(lead))
                 time_info = time_util.ti_calculate(input_dict)
-                for var_info in var_list:
-                    self.run_at_time_once(time_info, var_info, rl)
-
+                for var_info in self.c_dict['VAR_LIST']:
+                    self.run_at_time_once(time_info, var_info, to_run)

@@ -29,12 +29,9 @@ class PB2NCWrapper(CommandBuilder):
 
     def __init__(self, config, logger):
         super(PB2NCWrapper, self).__init__(config, logger)
-        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
-        self.app_path = os.path.join(met_install_dir, 'bin/pb2nc')
-        self.app_name = os.path.basename(self.app_path)
-
-        self.c_dict = self.create_c_dict()
-
+        self.app_name = 'pb2nc'
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                     'bin', self.app_name)
 
     def create_c_dict(self):
         """! Create a data structure (dictionary) that contains all the
@@ -48,7 +45,7 @@ class PB2NCWrapper(CommandBuilder):
                            metplus_data, metplus_system, and metplus_runtime
                            config files.
         """
-        c_dict = dict()
+        c_dict = super(PB2NCWrapper, self).create_c_dict()
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', False)
         c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'PB2NC_OFFSETS', '0'))
 
@@ -101,21 +98,21 @@ class PB2NCWrapper(CommandBuilder):
             self.config.getstr('config', 'PB2NC_TIME_SUMMARY_TYPES'))
 
         c_dict['OBS_WINDOW_BEGIN'] = \
-          self.config.getint('config', 'PB2NC_WINDOW_BEGIN',
-                             self.config.getint('config',
+          self.config.getseconds('config', 'PB2NC_WINDOW_BEGIN',
+                             self.config.getseconds('config',
                                                 'OBS_WINDOW_BEGIN', 0))
         c_dict['OBS_WINDOW_END'] = \
-          self.config.getint('config', 'PB2NC_WINDOW_END',
-                             self.config.getint('config',
+          self.config.getseconds('config', 'PB2NC_WINDOW_END',
+                             self.config.getseconds('config',
                                                 'OBS_WINDOW_END', 0))
 
         c_dict['OBS_FILE_WINDOW_BEGIN'] = \
-          self.config.getint('config', 'PB2NC_FILE_WINDOW_BEGIN',
-                             self.config.getint('config',
+          self.config.getseconds('config', 'PB2NC_FILE_WINDOW_BEGIN',
+                             self.config.getseconds('config',
                                                 'OBS_FILE_WINDOW_BEGIN', 0))
         c_dict['OBS_FILE_WINDOW_END'] = \
-          self.config.getint('config', 'PB2NC_FILE_WINDOW_END',
-                             self.config.getint('config',
+          self.config.getseconds('config', 'PB2NC_FILE_WINDOW_END',
+                             self.config.getseconds('config',
                                                 'OBS_FILE_WINDOW_END', 0))
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
@@ -210,9 +207,9 @@ class PB2NCWrapper(CommandBuilder):
             if infile is not None:
                 if isinstance(infile, list):
                     for f in infile:
-                        self.add_input_file(f)
+                        self.infiles.append(f)
                 else:
-                    self.add_input_file(infile)
+                    self.infiles.append(infile)
                 self.logger.debug('Adding input file {}'.format(infile))
                 break
 
@@ -224,7 +221,7 @@ class PB2NCWrapper(CommandBuilder):
         outSts = StringSub(self.logger,
                            output_template,
                            **time_info)
-        outfile = outSts.doStringSub()
+        outfile = outSts.do_string_sub()
         outfile = os.path.join(output_dir, outfile)
         self.set_output_path(outfile)
 
@@ -238,7 +235,7 @@ class PB2NCWrapper(CommandBuilder):
             return True
 
         # set config file since command is reset after each run
-        self.set_param_file(self.c_dict['CONFIG_FILE'])
+        self.param = self.c_dict['CONFIG_FILE']
 
         # list of fields to print to log
         print_list = ["PB2NC_MESSAGE_TYPE", "PB2NC_STATION_ID",
@@ -290,10 +287,7 @@ class PB2NCWrapper(CommandBuilder):
             self.logger.error('No app path specified. You must use a subclass')
             return None
 
-        cmd = self.app_path + " "
-
-        if self.verbose != -1:
-            cmd += "-v "+str(self.verbose) + " "
+        cmd = '{} -v {} '.format(self.app_path, self.verbose)
 
         for a in self.args:
             cmd += a + " "

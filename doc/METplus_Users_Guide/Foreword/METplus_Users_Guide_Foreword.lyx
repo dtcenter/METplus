@@ -142,7 +142,7 @@ This User's Guide was prepared by the developers of the METplus Wrappers,
 \end_layout
 
 \begin_layout Section*
-New for METplus Wrappers v2.1
+New for METplus Wrappers v2.2
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:New-for-METplus"
@@ -150,6 +150,83 @@ name "sec:New-for-METplus"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+METplus Wrappers v2.2 Release Notes:
+\end_layout
+
+\begin_layout Standard
+Configuration:
+\end_layout
+
+\begin_layout Itemize
+Configuration variables that previously had to be specified in seconds (such
+ as OBS_WINDOW_END) can now be specified in minutes or hours by adding M
+ or H respectively to the number, i.e.
+ 3600 = 60M = 1H
+\end_layout
+
+\begin_layout Itemize
+Non-MET executables (such as rm) no longer need to be specified with a full
+ path in the configuration files.
+ Default values are now the name of the executable.
+ If the executable is found in the user environment path, the scripts will
+ automatically find it.
+\end_layout
+
+\begin_layout Standard
+Wrapper Specific:
+\end_layout
+
+\begin_layout Itemize
+TcPairs wrapper has been updated to be more flexible and handle more use
+ cases.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+METplus Wrappers v2.1.1 Release Notes:
+\end_layout
+
+\begin_layout Standard
+General:
+\end_layout
+
+\begin_layout Itemize
+Fixed bug in filename templates where a file with the same number of characters
+ in between tags are considered a valid file even if the characters differ,
+ i.e.
+ template = {valid?fmt=%Y}_dog_{valid?fmt%m} would treat both 2017_dog_02
+ and 2017_cat_02 as valid files when it should only consider 2017_dog_02
+ to be a valid file.
+ This only applies when using file windows to determine which files are
+ vaild (See 
+\begin_inset Quotes eld
+\end_inset
+
+Using Windows to Find Valid Files
+\begin_inset Quotes erd
+\end_inset
+
+ in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:SC_Directory_and_Filename_Template_Info"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Itemize
+Removed requirement for non-MET executables to exist on the system for wrappers
+ that don't need to use them.
+ For example, if a use case doesn't use wgrib2, setting the path to the
+ executable correctly is not required.
 \end_layout
 
 \begin_layout Standard

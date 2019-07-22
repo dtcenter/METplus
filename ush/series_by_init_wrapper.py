@@ -40,9 +40,8 @@ class SeriesByInitWrapper(CommandBuilder):
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
         self.app_name = 'SeriesByInit'
-        self.var_list = util.getlist(self.config.getstr('config', 'VAR_LIST'))
         self.stat_list = util.getlist(self.config.getstr('config', 'STAT_LIST'))
-
+        self.var_list = util.getlist(self.config.getstr('config', 'VAR_LIST'))
         self.regrid_with_met_tool = self.config.getbool('config',
                                               'REGRID_USING_MET_TOOL')
         self.extract_tiles_dir = self.config.getdir('EXTRACT_TILES_OUTPUT_DIR')
@@ -139,7 +138,7 @@ class SeriesByInitWrapper(CommandBuilder):
             self.apply_series_filters(tile_dir, init_times,
                                       self.series_filtered_out_dir,
                                       self.filter_opts,
-                                      tmp_dir, self.config)
+                                      tmp_dir)
 
             # Clean up any empty files and directories that could arise as
             # a result of filtering
@@ -208,7 +207,7 @@ class SeriesByInitWrapper(CommandBuilder):
         self.logger.info("Finished series analysis by init time")
 
     def apply_series_filters(self, tile_dir, init_times, series_output_dir,
-                             filter_opts, temporary_dir, config):
+                             filter_opts, temporary_dir):
 
         """! Apply filter options, as specified in the
             param/config file.
@@ -223,7 +222,6 @@ class SeriesByInitWrapper(CommandBuilder):
                @param filter_opts:  The filter options to apply
                @param temporary_dir:  The temporary directory where intermediate
                                       files are saved.
-               @param config:  The config/param instance
             Returns:
                 None
         """
@@ -250,7 +248,7 @@ class SeriesByInitWrapper(CommandBuilder):
             filter_filename = os.path.join(series_output_dir,
                                            cur_init, filter_file)
 
-            tcs = TcStatWrapper(config, self.logger)
+            tcs = TcStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
                               filter_opts)
 
@@ -301,7 +299,7 @@ class SeriesByInitWrapper(CommandBuilder):
                     feature_util.retrieve_and_regrid(tmp_filename, cur_init,
                                                      cur_storm,
                                                      series_output_dir,
-                                                     self.logger,  config)
+                                                     self.config)
 
         # Check for any empty files and directories and remove them to avoid
         # any errors or performance degradation when performing
@@ -537,7 +535,7 @@ class SeriesByInitWrapper(CommandBuilder):
                             self.config.getstr(
                                 'config',
                                 'SERIES_ANALYSIS_BY_INIT_CONFIG_FILE')
-                        self.set_param_file(param)
+                        self.param = param
                         self.create_obs_fcst_arg('obs',
                                                  self.anly_ascii_file_prefix,
                                                  cur_storm, cur_init)
@@ -581,9 +579,8 @@ class SeriesByInitWrapper(CommandBuilder):
         ascii_full_path = os.path.join(self.series_out_dir, cur_init,
                                        cur_storm, ascii_fname)
         self.add_input_file(ascii_full_path, param_arg)
-        self.get_input_files()
-        latest_idx = len(self.get_input_files()) - 1
-        self.logger.debug("first param: " + self.get_input_files()[latest_idx])
+        latest_idx = len(self.infiles) - 1
+        self.logger.debug("first param: " + self.infiles[latest_idx])
 
     def create_out_arg(self, cur_storm, cur_init, name, level):
         """! Create/build the -out portion of the series_analysis command and
@@ -635,8 +632,6 @@ class SeriesByInitWrapper(CommandBuilder):
 
         self.logger.debug('output arg/output dir for series_analysis: ' +
                           self.get_output_path())
-        self.set_output_dir(self.outdir)
-        self.set_output_filename(self.outfile)
 
     def clear(self):
         super(SeriesByInitWrapper, self).clear()
@@ -683,7 +678,7 @@ class SeriesByInitWrapper(CommandBuilder):
                @param tile_dir:  The directory where input data resides.
            Returns:
         """
-        convert_exe = self.config.getexe('CONVERT_EXE')
+        convert_exe = self.config.getexe('CONVERT')
         background_map = self.config.getbool('config', 'BACKGROUND_MAP')
         plot_data_plane_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                            'bin/plot_data_plane')
@@ -767,11 +762,6 @@ class SeriesByInitWrapper(CommandBuilder):
 
                         data_plane_command = ''.join(
                             data_plane_command_parts)
-                        #TODO after testing remove these commented out lines
-                        #data_plane_command = \
-                        #    batchexe('sh')[
-                        #        '-c', data_plane_command].err2out()
-                        #run(data_plane_command)
 
                         # Since this wrapper is not using the CommandBuilder
                         # to build the cmd, we need to add the met verbosity
@@ -780,7 +770,7 @@ class SeriesByInitWrapper(CommandBuilder):
                         data_plane_command = self.cmdrunner.insert_metverbosity_opt\
                             (data_plane_command)
                         (ret, cmd) = self.cmdrunner.run_cmd\
-                            (data_plane_command,app_name=self.app_name)
+                            (data_plane_command, env=None, app_name=self.app_name)
 
                         # Now assemble the command to convert the
                         # postscript file to png
@@ -791,10 +781,7 @@ class SeriesByInitWrapper(CommandBuilder):
                                          plot_data_plane_output_fname,
                                          ' ', png_fname]
                         convert_command = ''.join(convert_parts)
-                        #TODO after testing, remove these commented out lines
-                        #convert_command = \
-                        #    batchexe('sh')['-c', convert_command].err2out()
-                        #run(convert_command)
+
                         (ret, cmd) = self.cmdrunner.run_cmd(convert_command, ismetcmd=False)
 
     def get_storms_for_init(self, cur_init, out_dir_base):

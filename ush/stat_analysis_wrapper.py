@@ -1280,8 +1280,10 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         # Do checks for bad configuration file options.
         bad_config_variable_list = [
-            'FCST_VAR_LIST', 'FCST_LEVEL_LIST', 'FCST_THRESH_LIST',
-            'OBS_VAR_LIST', 'OBS_LEVEL_LIST', 'OBS_THRESH_LIST'
+            'FCST_VAR_LIST', 'FCST_LEVEL_LIST', 
+            'FCST_THRESH_LIST', 'FCST_UNITS_LIST',
+            'OBS_VAR_LIST', 'OBS_LEVEL_LIST', 
+            'OBS_THRESH_LIST', 'OBS_UNITS_LIST'
             ]
         for bad_config_variable in bad_config_variable_list:
             if self.config.has_option('config',

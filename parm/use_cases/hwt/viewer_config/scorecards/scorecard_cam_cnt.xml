@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+  <plot_spec>
+    <connection>
+      <host>mandan.rap.ucar.edu:3306</host>
+      <database>mv_clue_2016</database>
+      <user>mvuser</user>
+      <password>mvuser</password>
+    </connection>
+
+    <rscript>/usr/local/bin/Rscript</rscript>
+   <folders>
+      <r_tmpl>/d3/projects/METViewer/scorecard/app/R_tmpl</r_tmpl>
+      <r_work>/d3/projects/USWRP_CAM/metv/R_work</r_work>
+      <plots>/d3/projects/USWRP_CAM/metv/plots/</plots>
+      <data>/d3/projects/USWRP_CAM/metv/data/</data>
+      <scripts>/d3/projects/USWRP_CAM/metv/scripts/</scripts>
+    </folders>   
+    <plot>
+      <view_value>false</view_value>
+      <view_symbol>true</view_symbol>
+      <view_legend>true</view_legend>
+
+      <stat_flag>NCAR</stat_flag>
+      <!--stat_flag>EMC</stat_flag-->
+
+
+      <template>scorecard.R_tmpl</template>
+
+      <plot_fix>
+        <field name="model">
+          <val name="multip_ens_mean_hwt" />
+          <val name="singlp_ens_mean_hwt" />
+        </field>
+        <field name="fcst_valid_beg">
+          <val name="2016-05-04 00:00:00" />
+          <val name="2016-06-04 00:00:00" />
+        </field>
+        <field name="init_hour">
+          <val name="00" />
+        </field>
+      </plot_fix>
+
+      <rows>
+        <field name="stat">
+          <val name="MSE" label="Mean Squared Error"/>
+          <field name="fcst_var">
+            <val name="TMP" label="Temp" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="DPT" label="Dew Point" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="WIND" label="Wind" />
+            <field name="fcst_lev">
+              <val name="Z10" label="10 m"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="BCMSE" label="Bias-Corrected MSE"/>
+          <field name="fcst_var">
+            <val name="TMP" label="Temp" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="DPT" label="Dew Point" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="WIND" label="Wind" />
+            <field name="fcst_lev">
+              <val name="Z10" label="10 m"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="MAE" label="Mean Absolute Error"/>
+          <field name="fcst_var">
+            <val name="TMP" label="Temp" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="DPT" label="Dew Point" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="WIND" label="Wind" />
+            <field name="fcst_lev">
+              <val name="Z10" label="10 m"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="ME" label="Mean Error"/>
+          <field name="fcst_var">
+            <val name="TMP" label="Temp" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="DPT" label="Dew Point" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="WIND" label="Wind" />
+            <field name="fcst_lev">
+              <val name="Z10" label="10 m"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="ME2" label="Mean Error Squared"/>
+          <field name="fcst_var">
+            <val name="TMP" label="Temp" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="DPT" label="Dew Point" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="WIND" label="Wind" />
+            <field name="fcst_lev">
+              <val name="Z10" label="10 m"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="MSESS" label="MSESS"/>
+          <field name="fcst_var">
+            <val name="TMP" label="Temp" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="DPT" label="Dew Point" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="WIND" label="Wind" />
+            <field name="fcst_lev">
+              <val name="Z10" label="10 m"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="PR_CORR" label="Correlation"/>
+          <field name="fcst_var">
+            <val name="TMP" label="Temp" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="DPT" label="Dew Point" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="WIND" label="Wind" />
+            <field name="fcst_lev">
+              <val name="Z10" label="10 m"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="RMSE" label="Root Mean Squared Error" />
+          <field name="fcst_var">
+            <val name="TMP" label="Temp" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="DPT" label="Dew Point" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="WIND" label="Wind" />
+            <field name="fcst_lev">
+              <val name="Z10" label="10 m"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="BCRMSE" label="Bias-Corrected RMSE"/>
+          <field name="fcst_var">
+            <val name="TMP" label="Temp" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="DPT" label="Dew Point" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="WIND" label="Wind" />
+            <field name="fcst_lev">
+              <val name="Z10" label="10 m"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="ME" label="Bias" />
+          <field name="fcst_var">
+            <val name="TMP" label="Temp" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m" />
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="DPT" label="Dew Point" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="WIND" label="Wind" />
+            <field name="fcst_lev">
+              <val name="Z10" label="10 m"/>
+            </field>
+          </field>
+        </field>
+
+        <field name="stat">
+          <val name="MBIAS" label="Multiplicative Bias" />
+          <field name="fcst_var">
+            <val name="TMP" label="Temp" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m" />
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="DPT" label="Dew Point" />
+            <field name="fcst_lev">
+              <val name="Z2" label="2 m"/>
+            </field>
+          </field>
+          <field name="fcst_var">
+            <val name="WIND" label="Wind" />
+            <field name="fcst_lev">
+              <val name="Z10" label="10 m"/>
+            </field>
+          </field>
+        </field>
+
+      </rows>
+
+      <columns>
+        <field name="vx_mask">
+          <val name="CONUS" label="Continental US" />
+          <field name="fcst_lead">
+            <val name="60000" label="6 hr" />
+            <val name="120000" label="12 hr" />
+            <val name="180000" label="18 hr" />
+            <val name="240000" label="24 hr" />
+            <val name="300000" label="30 hr" />
+            <val name="360000" label="36 hr" />
+          </field>
+        </field>
+
+        <field name="vx_mask">
+          <val name="EAST" label="East" />
+          <field name="fcst_lead">
+            <val name="60000" label="6 hr" />
+            <val name="120000" label="12 hr" />
+            <val name="180000" label="18 hr" />
+            <val name="240000" label="24 hr" />
+            <val name="300000" label="30 hr" />
+            <val name="360000" label="36 hr" />
+          </field>
+        </field>
+        <field name="vx_mask">
+          <val name="WEST" label="West" />
+          <field name="fcst_lead">
+            <val name="60000" label="6 hr" />
+            <val name="120000" label="12 hr" />
+            <val name="180000" label="18 hr" />
+            <val name="240000" label="24 hr" />
+            <val name="300000" label="30 hr" />
+            <val name="360000" label="36 hr" />
+          </field>
+        </field>
+
+      </columns>
+
+      <agg_stat>true</agg_stat>
+      <boot_repl>1000</boot_repl>
+      <boot_random_seed>1</boot_random_seed>
+
+      <tmpl>
+        <data_file>scorecard_cam_cnt.data</data_file>
+        <plot_file>scorecard_cam_cnt.png</plot_file>
+        <title>METViewer CAM Continuous Statistics Scorecard</title>
+      </tmpl>
+
+    </plot>
+  </plot_spec>

@@ -1,6 +1,13 @@
 #!/bin/bash
 
-cd grid_stat
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+pytest_rel_path="internal_tests/pytests"
+ush_dir=${script_dir%"$pytest_rel_path"}ush
+export PYTHONPATH=$ush_dir:$PYTHONPATH
+
+cd config
+pytest -c ../minimum_pytest.eyewall.conf
+cd ../grid_stat
 pytest -c ../minimum_pytest.eyewall.conf
 cd ../logging
 pytest -c ../minimum_pytest.eyewall.conf

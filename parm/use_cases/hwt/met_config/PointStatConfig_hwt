@@ -9,7 +9,7 @@
 //
 // Output model name to be written
 //
-model = "${MODEL_NAME}";
+model = "${MODEL}";
 
 //
 // Output description to be written
@@ -24,8 +24,8 @@ desc = "NA";
 //
 regrid = {
    to_grid    = ${REGRID_TO_GRID};
-   method     = BILIN;
-   width      = 2;
+   method     = NEAREST;
+   width      = 1;
    vld_thresh = 0.5;
    shape      = SQUARE;
 }
@@ -47,9 +47,11 @@ eclv_points   = 0.05;
 //
 // Forecast and observation fields to be verified
 //
-fcst = {
-  field = [ ${FCST_FIELD} ];
-}
+fcst =  {
+    field = [
+    ${FCST_FIELD}
+    ];
+    };
 obs = fcst;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -167,13 +169,13 @@ hira = {
 // Statistical output types
 //
 output_flag = {
-   fho    = STAT;
+   fho    = NONE;
    ctc    = STAT;
    cts    = STAT;
    mctc   = NONE;
    mcts   = NONE;
    cnt    = STAT;
-   sl1l2  = NONE;
+   sl1l2  = STAT;
    sal1l2 = NONE;
    vl1l2  = NONE;
    val1l2 = NONE;

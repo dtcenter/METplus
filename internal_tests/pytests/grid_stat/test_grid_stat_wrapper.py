@@ -12,8 +12,6 @@ import config_metplus
 from grid_stat_wrapper import GridStatWrapper
 import met_util as util
 import time_util
-from met_util import FieldObj
-from task_info import TaskInfo
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
@@ -80,8 +78,8 @@ def metplus_config():
 # ------------------------
 def test_find_obs_no_dated():
     pcw = grid_stat_wrapper()
-    v = FieldObj()
-    v.obs_level = "6"
+    v = {}
+    v['obs_level'] = "6"
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802010000",'%Y%m%d%H%M')
     task_info['lead'] = 0
@@ -97,8 +95,8 @@ def test_find_obs_no_dated():
 
 def test_find_obs_dated():
     pcw = grid_stat_wrapper()
-    v = FieldObj()
-    v.obs_level = "6"
+    v = {}
+    v['obs_level'] = "6"
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802010000", '%Y%m%d%H%M')
     task_info['lead'] = 0
@@ -113,8 +111,8 @@ def test_find_obs_dated():
 
 def test_find_obs_dated_previous_day():
     pcw = grid_stat_wrapper()
-    v = FieldObj()
-    v.obs_level = "6"
+    v = {}
+    v['obs_level'] = "6"
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802010000", '%Y%m%d%H%M')
     task_info['lead'] = 0
@@ -129,8 +127,8 @@ def test_find_obs_dated_previous_day():
 
 def test_find_obs_dated_next_day():
     pcw = grid_stat_wrapper()
-    v = FieldObj()
-    v.obs_level = "6"
+    v = {}
+    v['obs_level'] = "6"
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802012345", '%Y%m%d%H%M')
     task_info['lead'] = 0
