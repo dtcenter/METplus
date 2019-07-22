@@ -570,7 +570,7 @@ class StatAnalysisWrapper(CommandBuilder):
         ss = sts.StringSub(self.logger,
                            filename_template,
                            **stringsub_dict)
-        output_filename = ss.doStringSub()
+        output_filename = ss.do_string_sub()
         return output_filename
 
     def get_lookin_dir(self, dir_path, date_beg, date_end, date_type,
@@ -607,7 +607,7 @@ class StatAnalysisWrapper(CommandBuilder):
             ss = sts.StringSub(self.logger,
                                dir_path,
                                **stringsub_dict)
-            dir_path_filled = ss.doStringSub()
+            dir_path_filled = ss.do_string_sub()
         else:
             dir_path_filled = dir_path
         if '*' in dir_path_filled:
@@ -1026,6 +1026,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                                      'STAT_ANALYSIS_JOB_NAME')
         self.c_dict['JOB_ARGS'] = self.config.getstr('config', 
                                                      'STAT_ANALYSIS_JOB_ARGS')
+        self.c_dict['VAR_LIST'] = util.parse_var_list(self.config)
         self.c_dict['FCST_VAR_LIST'] = util.getlist(
             self.config.getstr('config', 'FCST_VAR_LIST', '')
             )
@@ -1144,7 +1145,7 @@ class StatAnalysisWrapper(CommandBuilder):
              )
         # Loop over run settings.
         for runtime_settings_dict in runtime_settings_dict_list:
-            self.set_param_file(self.c_dict['CONFIG_FILE'])
+            self.parm = self.c_dict['CONFIG_FILE']
             # Set up stat_analysis -lookin argument, model and obs information
             # and stat_analysis job.
             job = '-job '+self.c_dict['JOB_NAME']+' '+self.c_dict['JOB_ARGS']
@@ -1345,19 +1346,19 @@ class StatAnalysisWrapper(CommandBuilder):
             else:
                 self.logger.error("No model information was found.")
                 exit(1)
-        var_info_thresh_list = util.parse_var_list(self.config)
+        var_info_thresh_list = self.c_dict['VAR_LIST']
         var_info_list = []
         for var_info_thresh in var_info_thresh_list:
-            if len(var_info_thresh.fcst_thresh) > 0:
-                for fcst_thresh in var_info_thresh.fcst_thresh:
+            if len(var_info_thresh['fcst_thresh']) > 0:
+                for fcst_thresh in var_info_thresh['fcst_thresh']:
                     fo = util.FieldObj()
-                    fo.fcst_name = var_info_thresh.fcst_name
-                    fo.obs_name = var_info_thresh.obs_name
-                    fo.fcst_extra = var_info_thresh.fcst_extra
-                    fo.obs_extra = var_info_thresh.obs_extra
-                    fo.fcst_level = var_info_thresh.fcst_level
-                    fo.obs_level = var_info_thresh.obs_level
-                    fo.index = var_info_thresh.index
+                    fo.fcst_name = var_info_thresh['fcst_name']
+                    fo.obs_name = var_info_thresh['obs_name']
+                    fo.fcst_extra = var_info_thresh['fcst_extra']
+                    fo.obs_extra = var_info_thresh['obs_extra']
+                    fo.fcst_level = var_info_thresh['fcst_level']
+                    fo.obs_level = var_info_thresh['obs_level']
+                    fo.index = var_info_thresh['index']
                     fcst_thresh_symbol, fcst_thresh_letters = (
                         self.thresh_format(fcst_thresh)
                         )
@@ -1373,15 +1374,15 @@ class StatAnalysisWrapper(CommandBuilder):
                     var_info_list.append(fo)
             else:
                 fo = util.FieldObj()
-                fo.fcst_name = var_info_thresh.fcst_name
-                fo.obs_name = var_info_thresh.obs_name
-                fo.fcst_extra = var_info_thresh.fcst_extra
-                fo.obs_extra = var_info_thresh.obs_extra
-                fo.fcst_level = var_info_thresh.fcst_level
-                fo.obs_level = var_info_thresh.obs_level
-                fo.index = var_info_thresh.index
-                fo.fcst_thresh = var_info_thresh.fcst_thresh
-                fo.obs_thresh = var_info_thresh.obs_thresh
+                fo.fcst_name = var_info_thresh['fcst_name']
+                fo.obs_name = var_info_thresh['obs_name']
+                fo.fcst_extra = var_info_thresh['fcst_extra']
+                fo.obs_extra = var_info_thresh['obs_extra']
+                fo.fcst_level = var_info_thresh['fcst_level']
+                fo.obs_level = var_info_thresh['obs_level']
+                fo.index = var_info_thresh['index']
+                fo.fcst_thresh = var_info_thresh['fcst_thresh']
+                fo.obs_thresh = var_info_thresh['obs_thresh']
                 var_info_list.append(fo)
         fourier_decom_info_list = self.parse_var_fourier_decomp()
         fcst_units_list, obs_units_list = self.parse_var_units()   
@@ -1512,7 +1513,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 )
             # Loop over run settings.
             for runtime_settings_dict in runtime_settings_dict_list:
-                self.set_param_file(self.c_dict['CONFIG_FILE'])
+                self.parm = self.c_dict['CONFIG_FILE']
                 # Set up stat_analysis -lookin argument, model and obs
                 # information and stat_analysis job.
                 job = '-job filter -dump_row '
