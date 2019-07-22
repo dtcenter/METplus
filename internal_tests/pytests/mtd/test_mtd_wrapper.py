@@ -10,7 +10,8 @@ import produtil
 import pytest
 import config_metplus
 from mtd_wrapper import MTDWrapper
-#import met_util as util
+from config_wrapper import ConfigWrapper
+import met_util as util
 #from met_util import FieldObj
 #from task_info import TaskInfo
 
@@ -41,17 +42,17 @@ def mtd_wrapper(lead_seq=None):
          files.  Subsequent tests can customize the final METplus configuration
          to over-ride these /path/to values."""
 
-    conf = metplus_config()
-    conf.set('config', 'DO_NOT_RUN_EXE', True)
-    conf.set('config', 'FCST_VAR1_NAME', 'APCP')
-    conf.set('config', 'FCST_VAR1_LEVELS', 'A06')
-    conf.set('config', 'LOOP_BY', 'VALID')
-    conf.set('config', 'MTD_CONV_THRESH', '>=10')
-    conf.set('config', 'MTD_CONV_RADIUS', '15')
+    config = metplus_config()
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'FCST_VAR1_NAME', 'APCP')
+    config.set('config', 'FCST_VAR1_LEVELS', 'A06')
+    config.set('config', 'LOOP_BY', 'VALID')
+    config.set('config', 'MTD_CONV_THRESH', '>=10')
+    config.set('config', 'MTD_CONV_RADIUS', '15')
     if lead_seq:
-        conf.set('config', 'LEAD_SEQ', lead_seq)
-    logger = logging.getLogger("dummy")
-    return MTDWrapper(conf, logger)
+        config.set('config', 'LEAD_SEQ', lead_seq)
+
+    return MTDWrapper(config, config.logger)
 
 
 @pytest.fixture
@@ -71,6 +72,8 @@ def metplus_config():
 
         # Read in the configuration object CONFIG
         config = config_metplus.setup()
+        logger = util.get_logger(config)
+        config = ConfigWrapper(config, logger)
         return config
 
     except Exception as e:

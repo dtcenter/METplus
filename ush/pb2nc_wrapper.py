@@ -83,8 +83,6 @@ class PB2NCWrapper(CommandBuilder):
 
         c_dict['BUFR_VAR_LIST'] = util.getlist(
             self.config.getstr('config', 'PB2NC_OBS_BUFR_VAR_LIST', '[]'))
-        tmp_message_type = str(c_dict['BUFR_VAR_LIST']).replace("\'", "\"")
-        c_dict['BUFR_VAR_LIST'] = ''.join(tmp_message_type.split())
 
         c_dict['TIME_SUMMARY_FLAG'] = self.config.getbool('config',
                                                       'PB2NC_TIME_SUMMARY_FLAG')
@@ -252,7 +250,11 @@ class PB2NCWrapper(CommandBuilder):
         self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
         self.add_env_var("PB2NC_GRID", self.c_dict['GRID'])
         self.add_env_var("PB2NC_POLY", self.c_dict['POLY'])
-        self.add_env_var("OBS_BUFR_VAR_LIST", self.c_dict['BUFR_VAR_LIST'])
+
+        tmp_message_type = str(self.c_dict['BUFR_VAR_LIST']).replace("\'", "\"")
+        bufr_var_list = ''.join(tmp_message_type.split())
+        self.add_env_var("OBS_BUFR_VAR_LIST", bufr_var_list)
+
         self.add_env_var('TIME_SUMMARY_FLAG',
                          str(self.c_dict['TIME_SUMMARY_FLAG']))
         self.add_env_var('TIME_SUMMARY_BEG',

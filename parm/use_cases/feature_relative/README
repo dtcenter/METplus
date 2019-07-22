@@ -8,10 +8,19 @@ This directory contains the feature_relative.conf file, which contains all the n
 where my_custom.conf is the user's configuration file with the specified directories for input and output:
 [dir]
 INPUT_BASE = 
+PROJ_DIR = 
 OUTPUT_BASE = 
 PARM_BASE = 
 TMP_DIR = 
-MET_INSTALL_DIR = 
+MET_INSTALL_DIR +
+
+Where:
+INPUT_BASE is the base directory where all input data is located
+PROJ_DIR  is the base directory where all output files will be located
+OUTPUT_BASE is typically a subdirectory of the PROJ_DIR but doesn't necessarily need to be
+PARM_BASE is the base directory where parameter files are located
+TMP_DIR is the directory where all temporary files will be saved
+MET_INSTALL_DIR is the location where your version of MET is installed (e.g. /usr/local/met-8.1)
 
 [exe]
 WGRIB2 =

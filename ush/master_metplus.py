@@ -89,14 +89,14 @@ def main():
         config.set('dir', 'STAGING_DIR',
                    os.path.join(config.getdir('OUTPUT_BASE'), "stage"))
 
-    # create temp dir if it doesn't exist already
-    tmp_dir = config.getdir('TMP_DIR', logger)
-    if not os.path.exists(tmp_dir):
-        os.makedirs(tmp_dir)
+    # handle dir to write temporary files
+    util.handle_tmp_dir(config)
 
     # This is available in each subprocess from os.system BUT
     # we also set it in each process since they may be called stand alone.
     os.environ['MET_BASE'] = config.getdir('MET_BASE')
+
+    config.env = os.environ.copy()
 
     # Use config object to get the list of processes to call
     process_list = util.getlist(config.getstr('config', 'PROCESS_LIST'))
@@ -119,7 +119,7 @@ def main():
             logger = config.log(item)
             command_builder = \
                 getattr(sys.modules[__name__],
-                        item + "Wrapper")(conf, logger)
+                        item + "Wrapper")(config, logger)
             # if Usage specified in PROCESS_LIST, print usage and exit
             if item == 'Usage':
                 command_builder.run_all_times()

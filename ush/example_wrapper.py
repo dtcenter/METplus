@@ -84,3 +84,6 @@ class ExampleWrapper(CommandBuilder):
             self.logger.info('Looking in input directory for file: {}'.format(filename))
 
         return True
+
+if __name__ == "__main__":
+        util.run_stand_alone("example_wrapper", "Example")

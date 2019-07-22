@@ -26,22 +26,17 @@ TMP_DIR = {OUTPUT_BASE}/tmp
 3) Running a use case: To run a use case, call the master METplus script, passing in METplus configuration files via the -c command line option.
 
 EXAMPLE:
-master_metplus.py -c use_cases/qpf/examples/ruc-vs-s2grib.conf -c /path/to/user.system.conf
+master_metplus.py -c use_cases/hmt/examples/phpt-mtd.conf -c /path/to/user.system.conf
 
 NOTE: To call master_metplus.py without specifying a full path to the script, you will need to add the ush directory to your path. See the METplus User's Guide for more information.
 
 
-4) Use cases: The following is a list of QPF use cases that can be called. Please ensure that the INPUT_BASE variable is set to point to the METplus sample data location so that the use case input data can be found.
+4) Use cases: The following is a list of HMT use cases that can be called. Please ensure that the INPUT_BASE variable is set to point to the METplus sample data location so that the use case input data can be found.
 
-master_metplus.py -c use_cases/qpf/examples/ruc-vs-s2grib.conf
-master_metplus.py -c use_cases/qpf/examples/phpt-vs-s4grib.conf
-master_metplus.py -c use_cases/qpf/examples/hrefmean-vs-mrms-qpe.conf
-
-The following use cases require GEMPAK data support. You will not be able to run these use cases if you do not have GempakToCF installed and configured for METplus.
-
-master_metplus.py -c use_cases/qpf/examples/nationalblend-vs-mrms-qpe.conf
-master_metplus.py -c use_cases/qpf/examples/phpt-vs-mrms-qpe.conf
-master_metplus.py -c use_cases/qpf/examples/hrefmean-vs-mrms-qpe-gempak.conf
-master_metplus.py -c use_cases/qpf/examples/hrefmean-vs-qpe-gempak.conf
-master_metplus.py -c use_cases/qpf/examples/hrefmean-vs-s4gempak.conf
-master_metplus.py -c use_cases/qpf/examples/gempak2cf_test.conf
+master_metplus.py -c use_cases/hmt/examples/href-mtd.conf
+master_metplus.py -c use_cases/hmt/examples/href-vs-href.conf
+master_metplus.py -c use_cases/hmt/examples/hrrre-vs-hrrre.conf
+master_metplus.py -c use_cases/hmt/examples/hrrre-vs-hrrre-prob.conf
+master_metplus.py -c use_cases/hmt/examples/hrrr_exp-mtd.conf
+master_metplus.py -c use_cases/hmt/examples/hrrr_exp-vs-hrrr_exp.conf
+master_metplus.py -c use_cases/hmt/examples/phpt-mtd.conf

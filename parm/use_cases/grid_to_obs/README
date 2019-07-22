@@ -32,11 +32,11 @@ the WGRIB2, RM, CUT, TR, NCAP2, CONVERT, NCDUMP, and EGREP need to be define onl
 are not already defined in the parm/metplus_config/metplus_system.conf file
 
 [dir]
-INPUT_BASE = /d1/METplus_Data
-OUTPUT_BASE = /d1/minnawin/feature_162_g2o_conus
+INPUT_BASE = <path/to/your/input/data>
+OUTPUT_BASE = <path/to/your/output/dir>
 TMP_DIR = {OUTPUT_BASE}/tmp
 LOG_DIR = {OUTPUT_BASE}/logs
-PARM_BASE = /home/minnawin/feature_162_cleanup_grid_to_obs/METplus/parm
+PARM_BASE = <path/to>/METplus/parm
 MET_INSTALL_DIR = /usr/local/met-8.0
 
 
@@ -76,9 +76,9 @@ are not already defined in the parm/metplus_config/metplus_system.conf file
 
 [dir]
 INPUT_BASE = /d1/METplus_Data
-OUTPUT_BASE = /d1/minnawin/feature_162_g2o_conus
+OUTPUT_BASE = <path/to/output/dir>
 TMP_DIR = {OUTPUT_BASE}/tmp
 LOG_DIR = {OUTPUT_BASE}/logs
-PARM_BASE = /home/minnawin/feature_162_cleanup_grid_to_obs/METplus/parm
+PARM_BASE = <path/to>/METplus/parm
 MET_INSTALL_DIR = /usr/local/met-8.0
 
