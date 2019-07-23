@@ -1145,7 +1145,7 @@ class StatAnalysisWrapper(CommandBuilder):
              )
         # Loop over run settings.
         for runtime_settings_dict in runtime_settings_dict_list:
-            self.parm = self.c_dict['CONFIG_FILE']
+            self.param = self.c_dict['CONFIG_FILE']
             # Set up stat_analysis -lookin argument, model and obs information
             # and stat_analysis job.
             job = '-job '+self.c_dict['JOB_NAME']+' '+self.c_dict['JOB_ARGS']
@@ -1515,7 +1515,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 )
             # Loop over run settings.
             for runtime_settings_dict in runtime_settings_dict_list:
-                self.parm = self.c_dict['CONFIG_FILE']
+                self.param = self.c_dict['CONFIG_FILE']
                 # Set up stat_analysis -lookin argument, model and obs
                 # information and stat_analysis job.
                 job = '-job filter -dump_row '
