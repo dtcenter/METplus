@@ -996,7 +996,7 @@ class StatAnalysisWrapper(CommandBuilder):
         for n in indices:
             fcst_units = self.config.getstr('config', 'FCST_VAR'+n+'_UNITS',
                                             '')
-            obs_units = self.config.getstr('config', 'FCST_VAR'+n+'_UNITS', 
+            obs_units = self.config.getstr('config', 'OBS_VAR'+n+'_UNITS', 
                                            '')
             if len(obs_units) == 0 and len(fcst_units) != 0:
                 obs_units = fcst_units
