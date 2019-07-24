@@ -278,19 +278,20 @@ def write_final_conf(conf, logger):
 
 def is_loop_by_init(config):
     """!Check config variables to determine if looping by valid or init time"""
-    if config.conf.has_option('config', 'LOOP_BY'):
+    if config.has_option('config', 'LOOP_BY'):
         loop_by = config.getstr('config', 'LOOP_BY').lower()
         if loop_by in ['init', 'retro']:
             return True
         elif loop_by in ['valid', 'realtime']:
             return False
 
-    if config.conf.has_option('config', 'LOOP_BY_INIT'):
+    if config.has_option('config', 'LOOP_BY_INIT'):
         return config.getbool('config', 'LOOP_BY_INIT')
 
     msg = 'MUST SET LOOP_BY to VALID, INIT, RETRO, or REALTIME'
-    if config.logger != None:
-        config.logger.error(msg)
+    logger = config.log()
+    if logger != None:
+        logger.error(msg)
     else:
         print(msg)
 
