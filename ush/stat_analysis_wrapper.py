@@ -89,6 +89,7 @@ class StatAnalysisWrapper(CommandBuilder):
         c_dict['LOOP_LIST_ITEMS'] = util.getlist(
             self.config.getstr('config', 'LOOP_LIST_ITEMS')
             )
+        c_dict['VAR_LIST'] = util.parse_var_list(self.config)
         c_dict['MODEL_LIST'] = util.getlist(
             self.config.getstr('config', 'MODEL_LIST', '')
             )
@@ -522,19 +523,50 @@ class StatAnalysisWrapper(CommandBuilder):
         if filename_type == 'default':
             if ('MakePlots' in self.c_dict['PROCESS_LIST'] 
                         and output_type == 'dump_row'):
-                filename_template = ( 
-                    filename_template+'{'+date_type.lower()+'_beg?fmt=%Y%m%d}'
+                filename_template_prefix = ( 
+                    filename_template+date_type.lower()
+                    +'{'+date_type.lower()+'_beg?fmt=%Y%m%d}'
                     +'to{'+date_type.lower()+'_end?fmt=%Y%m%d}_'
-                    +'valid{valid_hour_beg?fmt=%H%M%S}to'
-                    +'{valid_hour_end?fmt=%H%M%S}Z_'
-                    +'init{init_hour_beg?fmt=%H%M%S}to'
-                    +'{init_hour_end?fmt=%H%M%S}Z_lead{lead?fmt=%HH%MM%SS}'
+                    +'valid{valid_hour_beg?fmt=%H%M}to'
+                    +'{valid_hour_end?fmt=%H%M}Z_'
+                    +'init{init_hour_beg?fmt=%H%M}to'
+                    +'{init_hour_end?fmt=%H%M}Z_lead{lead?fmt=%HH%MM}'
                     +'_fcst{fcst_var?fmt=%s}{fcst_level?fmt=%s}'
                     +'{fcst_thresh?fmt=%s}{interp_mthd?fmt=%s}_'
                     +'obs{obs_var?fmt=%s}{obs_level?fmt=%s}'
                     +'{obs_thresh?fmt=%s}{interp_mthd?fmt=%s}_'
-                    +'vxmask{vx_mask?fmt=%s}.stat'
+                    +'vxmask{vx_mask?fmt=%s}'
                     )
+                filename_template_suffix = '.stat'
+                if 'DESC_LIST' in lists_to_loop:
+                    filename_template_prefix = (
+                        filename_template_prefix
+                        +'_desc{desc?fmt=%s}'
+                    )
+                if 'OBS_LEAD_LIST' in lists_to_loop:
+                    filename_template_prefix = (
+                        filename_template_prefix
+                        +'_obs_lead{obs_lead?fmt=%s}'
+                    )
+                if 'INTERP_PNTS_LIST' in lists_to_loop:
+                    filename_template_prefix = (
+                        filename_template_prefix
+                        +'_interp_pnts{interp_pnts?fmt=%s}'
+                    )
+                if 'COV_THRESH_LIST' in lists_to_loop:
+                    filename_template_prefix = (
+                        filename_template_prefix
+                        +'_cov_thresh{cov_thresh?fmt=%s}'
+                    )
+                if 'ALPHA_LIST' in lists_to_loop:
+                    filename_template_prefix = (
+                        filename_template_prefix
+                        +'_alpha{alpha?fmt=%s}'
+                    )
+                filename_template = (
+                    filename_template_prefix
+                    +filename_template_suffix
+                )
             else:
                 if date_beg == date_end:
                     filename_template = (
@@ -771,54 +803,49 @@ class StatAnalysisWrapper(CommandBuilder):
             config_dict['OBS_INIT_HOUR'] = ''
         return config_dict
 
-    def thresh_format(self, thresh):
-        """! Format threshold using symbols and
-             letters.
- 
-             Args:
-                 thresh         - string of the threshold
-                
-             Returns:
-                 thresh_symbol  - string of threshold 
-                                  formatted using symbols
-                 thresh_letters - string of the threshold 
-                                  formatted using letters
-        """
-        if 'ge' or '>=' in thresh:
-            thresh_value = thresh.replace('ge', '').replace('>=', '')
-            thresh_symbol = '>='+thresh_value
-            thresh_letters = 'ge'+thresh_value
-        elif 'gt' or '>' in thresh:
-            thresh_value = thresh.replace('gt', '').replace('>', '')
-            thresh_symbol = '>'+thresh_value
-            thresh_letters = 'gt'+thresh_value
-        elif 'le' or '<=' in thresh:
-            thresh_value = thresh.replace('le', '').replace('<=', '')
-            thresh_symbol = '<='+thresh_value
-            thresh_letters = 'le'+thresh_value
-        elif 'lt' or '<' in thresh:
-            thresh_value = thresh.replace('lt', '').replace('<', '')
-            thresh_symbol = '<'+thresh_value
-            thresh_letters = 'lt'+thresh_value
-        elif 'eq' or '==' in thresh:
-            thresh_value = thresh.replace('eq', '').replace('==', '')
-            thresh_symbol = '=='+thresh_value
-            thresh_letters = 'eq'+thresh_value
-        elif 'ne' or '!=' in thresh:
-            thresh_value = thresh.replace('ne', '').replace('!=', '')
-            thresh_symbol = '!='+thresh_value
-            thresh_letters = 'ne'+thresh_value
-        else:
-             self.logger.error(
-                 "Threshold operator in "+thresh+" is not valid."
-                  )
-             exit(1)
-        return thresh_symbol, thresh_letters
-
-    class ModelObj(object):
-        __slots__ = 'name', 'reference_name', 'dir', 'obtype', \
-                    'dump_row_filename_template', 'dump_row_filename_type', \
-                    'out_stat_filename_template', 'out_stat_filename_type'
+    #def thresh_format(self, thresh):
+    #    """! Format threshold using symbols and
+    #         letters.
+    # 
+    #         Args:
+    #             thresh         - string of the threshold
+    #            
+    #         Returns:
+    #             thresh_symbol  - string of threshold 
+    #                              formatted using symbols
+    #             thresh_letters - string of the threshold 
+    #                              formatted using letters
+    #    """
+    #    if 'ge' or '>=' in thresh:
+    #        thresh_value = thresh.replace('ge', '').replace('>=', '')
+    #        thresh_symbol = '>='+thresh_value
+    #        thresh_letters = 'ge'+thresh_value
+    #    elif 'gt' or '>' in thresh:
+    #        thresh_value = thresh.replace('gt', '').replace('>', '')
+    #        thresh_symbol = '>'+thresh_value
+    #        thresh_letters = 'gt'+thresh_value
+    #    elif 'le' or '<=' in thresh:
+    #        thresh_value = thresh.replace('le', '').replace('<=', '')
+    #        thresh_symbol = '<='+thresh_value
+    #        thresh_letters = 'le'+thresh_value
+    #    elif 'lt' or '<' in thresh:
+    #        thresh_value = thresh.replace('lt', '').replace('<', '')
+    #        thresh_symbol = '<'+thresh_value
+    #        thresh_letters = 'lt'+thresh_value
+    #    elif 'eq' or '==' in thresh:
+    #        thresh_value = thresh.replace('eq', '').replace('==', '')
+    #        thresh_symbol = '=='+thresh_value
+    #        thresh_letters = 'eq'+thresh_value
+    #    elif 'ne' or '!=' in thresh:
+    #        thresh_value = thresh.replace('ne', '').replace('!=', '')
+    #        thresh_symbol = '!='+thresh_value
+    #        thresh_letters = 'ne'+thresh_value
+    #    else:
+    #         self.logger.error(
+    #             "Threshold operator in "+thresh+" is not valid."
+    #              )
+    #         exit(1)
+    #    return thresh_symbol, thresh_letters
 
     def parse_model_info(self):
         """! Parse for model information.
@@ -826,7 +853,7 @@ class StatAnalysisWrapper(CommandBuilder):
              Args:
                 
              Returns:
-                 model_list - list of objects containing
+                 model_list - list of dictionaries containing
                               model information
         """
         model_info_list = []
@@ -918,93 +945,17 @@ class StatAnalysisWrapper(CommandBuilder):
             else:
                 self.logger.error("MODEL"+m+" was not set.")
                 exit(1)
-            mod = self.ModelObj()
-            mod.name = model_name
-            mod.reference_name = model_reference_name
-            mod.dir = model_dir
-            mod.obtype = model_obtype
-            mod.dump_row_filename_template = model_dump_row_filename_template
-            mod.dump_row_filename_type = model_dump_row_filename_type
-            mod.out_stat_filename_template = model_out_stat_filename_template
-            mod.out_stat_filename_type = model_out_stat_filename_type
+            mod = {}
+            mod['name'] = model_name
+            mod['reference_name'] = model_reference_name
+            mod['dir'] = model_dir
+            mod['obtype'] = model_obtype
+            mod['dump_row_filename_template'] = model_dump_row_filename_template
+            mod['dump_row_filename_type'] = model_dump_row_filename_type
+            mod['out_stat_filename_template'] = model_out_stat_filename_template
+            mod['out_stat_filename_type'] = model_out_stat_filename_type
             model_info_list.append(mod)
         return model_info_list, model_indices
-
-    class FourierDecompObj(object):
-        __slots__ = 'run_fourier', 'wave_num_pairings'
-
-    def parse_var_fourier_decomp(self):
-        """! Parse variable information for Fourier decomposition.
-             
-             Args:
-                
-             Returns:
-                 fourier_decom_list - list of objects containing
-                                      Fourier decomposition information
-                                      for the variables
-        """
-        fourier_decom_list = []
-        all_conf = self.config.keys('config')
-        indices = []
-        regex = re.compile('FCST_VAR(\d+)_NAME')
-        for conf in all_conf:
-            result = regex.match(conf)
-            if result is not None:
-                indices.append(result.group(1))
-        for n in indices:
-            if self.config.has_option('config', 'FCST_VAR'+n+'_NAME'):
-                levels = util.getlist(
-                    self.config.getstr('config', 'FCST_VAR'+n+'_LEVELS')
-                    )
-                run_fourier = (
-                    self.config.getbool('config', 'VAR'+n+'_FOURIER_DECOMP', 
-                                        False)
-                    )
-                fourier_wave_num_pairs = util.getlist(
-                    self.config.getstr('config', 'VAR'+n+'_WAVE_NUM_LIST', 
-                                       '')
-                    )
-                if run_fourier == False:
-                    fourier_wave_num_pairs = ''
-                for level in levels:
-                    fd = self.FourierDecompObj()
-                    fd.run_fourier = run_fourier
-                    fd.wave_num_pairings = fourier_wave_num_pairs
-                    fourier_decom_list.append(fd)
-        return fourier_decom_list
-
-    def parse_var_units(self):
-        """! Parse variable information for variable units
-             
-             Args:
-                
-             Returns:
-                 fcst_var_units_list - list of variable units
-                                       for the forecast variables
-                 obs_var_units_list  - list of variable units
-                                       for the observation variables
-        """
-        fcst_units_list = []
-        obs_units_list = []
-        all_conf = self.config.keys('config')
-        indices = []
-        regex = re.compile('FCST_VAR(\d+)_NAME')
-        for conf in all_conf:
-            result = regex.match(conf)
-            if result is not None:
-                indices.append(result.group(1))
-        for n in indices:
-            fcst_units = self.config.getstr('config', 'FCST_VAR'+n+'_UNITS',
-                                            '')
-            obs_units = self.config.getstr('config', 'OBS_VAR'+n+'_UNITS', 
-                                           '')
-            if len(obs_units) == 0 and len(fcst_units) != 0:
-                obs_units = fcst_units
-            if len(fcst_units) == 0 and len(obs_units) != 0:
-                fcst_units = obs_units
-            fcst_units_list.append(fcst_units)
-            obs_units_list.append(obs_units)
-        return fcst_units_list, obs_units_list    
 
     def run_stat_analysis_job(self, date_beg, date_end, date_type):
         """! This runs stat_analysis over a period of valid
@@ -1063,7 +1014,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     )
                 model_name_list = []
                 for model_info in model_info_list:
-                    model_name_list.append(model_info.name)
+                    model_name_list.append(model_info['name'])
                 formatted_c_dict['MODEL_LIST'] = model_name_list
             else:
                 self.logger.error("No model information was found.")
@@ -1157,32 +1108,32 @@ class StatAnalysisWrapper(CommandBuilder):
                     if self.config.getstr('config', 'MODEL'+m) == model_check:
                         break
                 model_info = model_info_list[int(m)-1]
-                runtime_settings_dict['MODEL'] = '"'+model_info.name+'"'
-                runtime_settings_dict['OBTYPE'] = '"'+model_info.obtype+'"'
-                lookin_dir = self.get_lookin_dir(model_info.dir, date_beg,
+                runtime_settings_dict['MODEL'] = '"'+model_info['name']+'"'
+                runtime_settings_dict['OBTYPE'] = '"'+model_info['obtype']+'"'
+                lookin_dir = self.get_lookin_dir(model_info['dir'], date_beg,
                                                  date_end, date_type, 
                                                  lists_to_loop_items, 
                                                  lists_to_group_items,
                                                  runtime_settings_dict)
                 if '-dump_row' in self.c_dict['JOB_ARGS']:
                     dump_row_filename_template = (
-                        model_info.dump_row_filename_template
+                        model_info['dump_row_filename_template']
                         )
-                    dump_row_filename_type = model_info.dump_row_filename_type
+                    dump_row_filename_type = model_info['dump_row_filename_type']
                 if '-out_stat' in self.c_dict['JOB_ARGS']:
                     out_stat_filename_template = (
-                        model_info.out_stat_filename_template
+                        model_info['out_stat_filename_template']
                         )
-                    out_stat_filename_type = model_info.out_stat_filename_type
+                    out_stat_filename_type = model_info['out_stat_filename_type']
             else:
                 lookin_dir = ''
                 model_list = []
                 obtype_list = []
                 for m in model_indices:
                     model_info = model_info_list[int(m)-1]
-                    model_list.append(model_info.name)
-                    obtype_list.append(model_info.obtype)
-                    lookin_dir_m = self.get_lookin_dir(model_info.dir, 
+                    model_list.append(model_info['name'])
+                    obtype_list.append(model_info['obtype'])
+                    lookin_dir_m = self.get_lookin_dir(model_info['dir'], 
                                                        date_beg, date_end,
                                                        date_type, 
                                                        lists_to_loop_items, 
@@ -1343,51 +1294,138 @@ class StatAnalysisWrapper(CommandBuilder):
                     )
                 model_name_list = []
                 for model_info in model_info_list:
-                    model_name_list.append(model_info.name)
+                    model_name_list.append(model_info['name'])
                 formatted_c_dict['MODEL_LIST'] = model_name_list
             else:
                 self.logger.error("No model information was found.")
                 exit(1)
-        var_info_thresh_list = self.c_dict['VAR_LIST']
+        # Add additional variable information to
+        # c_dict['VAR_LIST'] and make individual dictionaries
+        # for each threshold
+        var_info_c_dict_list = self.c_dict['VAR_LIST']
         var_info_list = []
-        for var_info_thresh in var_info_thresh_list:
-            if len(var_info_thresh['fcst_thresh']) > 0:
-                for fcst_thresh in var_info_thresh['fcst_thresh']:
-                    fo = util.FieldObj()
-                    fo.fcst_name = var_info_thresh['fcst_name']
-                    fo.obs_name = var_info_thresh['obs_name']
-                    fo.fcst_extra = var_info_thresh['fcst_extra']
-                    fo.obs_extra = var_info_thresh['obs_extra']
-                    fo.fcst_level = var_info_thresh['fcst_level']
-                    fo.obs_level = var_info_thresh['obs_level']
-                    fo.index = var_info_thresh['index']
-                    fcst_thresh_symbol, fcst_thresh_letters = (
-                        self.thresh_format(fcst_thresh)
-                        )
-                    fo.fcst_thresh = [fcst_thresh_letters]
-                    obs_thresh = (
-                        var_info_thresh.obs_thresh[var_info_thresh \
-                            .fcst_thresh.index(fcst_thresh)]
+        for var_info_c_dict in var_info_c_dict_list:
+            n = var_info_c_dict['index']
+            fcst_units = self.config.getstr('config', 
+                                            'FCST_VAR'+n+'_UNITS',
+                                            '')
+            obs_units = self.config.getstr('config', 
+                                           'OBS_VAR'+n+'_UNITS',
+                                           '')
+            if len(obs_units) == 0 and len(fcst_units) != 0:
+                obs_units = fcst_units
+            if len(fcst_units) == 0 and len(obs_units) != 0:
+                fcst_units = obs_units
+            run_fourier = (
+                self.config.getbool('config', 
+                                    'VAR'+n+'_FOURIER_DECOMP',
+                                    False)
+            )
+            fourier_wave_num_pairs = util.getlist(
+                self.config.getstr('config', 
+                                   'VAR'+n+'_WAVE_NUM_LIST',
+                                   '')
+            )
+            if len(var_info_c_dict['fcst_thresh']) > 0:
+                for fcst_thresh in var_info_c_dict['fcst_thresh']:
+                    thresh_index = (
+                        var_info_c_dict['fcst_thresh'].index(fcst_thresh)
                     )
-                    obs_thresh_symbol, obs_thresh_letters = (
-                        self.thresh_format(obs_thresh)
-                        )
-                    fo.obs_thresh = [obs_thresh_letters]
-                    var_info_list.append(fo)
+                    obs_thresh = (
+                        var_info_c_dict['obs_thresh'][thresh_index]
+                    )
+                    if run_fourier == False:
+                        var_info = {}
+                        var_info['index'] = var_info_c_dict['index']
+                        var_info['fcst_name'] = [ var_info_c_dict['fcst_name'] ]
+                        var_info['obs_name'] = [ var_info_c_dict['obs_name'] ]
+                        var_info['fcst_level'] = [ var_info_c_dict['fcst_level'] ]
+                        var_info['obs_level'] = [ var_info_c_dict['obs_level'] ]
+                        var_info['fcst_extra'] = [ var_info_c_dict['fcst_extra'] ]
+                        var_info['obs_extra'] = [ var_info_c_dict['obs_extra'] ]
+                        var_info['fcst_thresh'] = [ fcst_thresh ]
+                        var_info['obs_thresh'] = [ obs_thresh ]
+                        if len(fcst_units) == 0:
+                            var_info['fcst_units'] = []
+                        else:
+                            var_info['fcst_units'] = [ fcst_units ]
+                        if len(obs_units) == 0:
+                            var_info['obs_units'] = []
+                        else:
+                            var_info['obs_units'] = [ obs_units ]
+                        var_info['run_fourier'] = run_fourier
+                        var_info['fourier_wave_num'] = []
+                        var_info_list.append(var_info)
+                    else:
+                        for pair in fourier_wave_num_pairs:
+                            var_info = {}
+                            var_info['index'] = var_info_c_dict['index']
+                            var_info['fcst_name'] = [ var_info_c_dict['fcst_name'] ]
+                            var_info['obs_name'] = [ var_info_c_dict['obs_name'] ]
+                            var_info['fcst_level'] = [ var_info_c_dict['fcst_level'] ]
+                            var_info['obs_level'] = [ var_info_c_dict['obs_level'] ]
+                            var_info['fcst_extra'] = [ var_info_c_dict['fcst_extra'] ]
+                            var_info['obs_extra'] = [ var_info_c_dict['obs_extra'] ]
+                            var_info['fcst_thresh'] = [ fcst_thresh ]
+                            var_info['obs_thresh'] = [ obs_thresh ]
+                            if len(fcst_units) == 0:
+                                var_info['fcst_units'] = []
+                            else:
+                                var_info['fcst_units'] = [ fcst_units ]
+                            if len(obs_units) == 0:
+                                var_info['obs_units'] = []
+                            else:
+                                var_info['obs_units'] = [ obs_units ]
+                            var_info['run_fourier'] = run_fourier
+                            var_info['fourier_wave_num'] = [ 'WV1_'+pair ]
+                            var_info_list.append(var_info)
             else:
-                fo = util.FieldObj()
-                fo.fcst_name = var_info_thresh['fcst_name']
-                fo.obs_name = var_info_thresh['obs_name']
-                fo.fcst_extra = var_info_thresh['fcst_extra']
-                fo.obs_extra = var_info_thresh['obs_extra']
-                fo.fcst_level = var_info_thresh['fcst_level']
-                fo.obs_level = var_info_thresh['obs_level']
-                fo.index = var_info_thresh['index']
-                fo.fcst_thresh = var_info_thresh['fcst_thresh']
-                fo.obs_thresh = var_info_thresh['obs_thresh']
-                var_info_list.append(fo)
-        fourier_decom_info_list = self.parse_var_fourier_decomp()
-        fcst_units_list, obs_units_list = self.parse_var_units()   
+                if run_fourier == False:
+                    var_info = {}
+                    var_info['index'] = var_info_c_dict['index'] 
+                    var_info['fcst_name'] = [ var_info_c_dict['fcst_name'] ]
+                    var_info['obs_name'] = [ var_info_c_dict['obs_name'] ]
+                    var_info['fcst_level'] = [ var_info_c_dict['fcst_level'] ]
+                    var_info['obs_level'] = [ var_info_c_dict['obs_level'] ]
+                    var_info['fcst_extra'] = [ var_info_c_dict['fcst_extra'] ]
+                    var_info['obs_extra'] = [ var_info_c_dict['obs_extra'] ]
+                    var_info['fcst_thresh'] = [] 
+                    var_info['obs_thresh'] = []
+                    if len(fcst_units) == 0:
+                        var_info['fcst_units'] = []
+                    else:
+                        var_info['fcst_units'] = [ fcst_units ]
+                    if len(obs_units) == 0:
+                        var_info['obs_units'] = []
+                    else:
+                        var_info['obs_units'] = [ obs_units ]
+                    var_info['run_fourier'] = run_fourier
+                    var_info['fourier_wave_num'] = []
+                    var_info_list.append(var_info)
+                else:
+                    for pair in fourier_wave_num_pairs:
+                        self.logger.info(pair)
+                        var_info = {}
+                        var_info['index'] = var_info_c_dict['index']
+                        var_info['fcst_name'] = [ var_info_c_dict['fcst_name'] ]
+                        var_info['obs_name'] = [ var_info_c_dict['obs_name'] ]
+                        var_info['fcst_level'] = [ var_info_c_dict['fcst_level'] ]
+                        var_info['obs_level'] = [ var_info_c_dict['obs_level'] ]
+                        var_info['fcst_extra'] = [ var_info_c_dict['fcst_extra'] ]
+                        var_info['obs_extra'] = [ var_info_c_dict['obs_extra'] ]
+                        var_info['fcst_thresh'] = []
+                        var_info['obs_thresh'] = []
+                        if len(fcst_units) == 0:
+                            var_info['fcst_units'] = []
+                        else:
+                            var_info['fcst_units'] = [ fcst_units ]
+                        if len(obs_units) == 0:
+                            var_info['obs_units'] = []
+                        else:
+                            var_info['obs_units'] = [ obs_units ]
+                        var_info['run_fourier'] = run_fourier
+                        var_info['fourier_wave_num'] = [ 'WV1_'+pair ]
+                        var_info_list.append(var_info)
         for fcst_valid_hour in self.c_dict['FCST_VALID_HOUR_LIST']:
             index = self.c_dict['FCST_VALID_HOUR_LIST'].index(fcst_valid_hour)
             formatted_c_dict['FCST_VALID_HOUR_LIST'][index] = (
@@ -1424,32 +1462,18 @@ class StatAnalysisWrapper(CommandBuilder):
         # Loop through variables and add information
         # to a special variable dictionary
         for var_info in var_info_list:
-            var_fourier_decomp_info = fourier_decom_info_list[
-                int(var_info.index)
-                ]
-            var_fcst_units = fcst_units_list[int(var_info.index)]
-            var_obs_units = obs_units_list[int(var_info.index)]
             var_info_formatted_c_dict = copy.deepcopy(formatted_c_dict)
-            var_info_formatted_c_dict['FCST_VAR_LIST'] = [ var_info.fcst_name ]
-            var_info_formatted_c_dict['FCST_LEVEL_LIST'] = [ 
-                var_info.fcst_level 
-                ]
-            var_info_formatted_c_dict['FCST_UNITS_LIST'] = [ var_fcst_units ]
-            var_info_formatted_c_dict['OBS_VAR_LIST'] = [ var_info.obs_name ]
-            var_info_formatted_c_dict['OBS_LEVEL_LIST'] = [ 
-                var_info.obs_level 
-                ]
-            var_info_formatted_c_dict['OBS_UNITS_LIST'] = [ var_obs_units ]
-            var_info_formatted_c_dict['FCST_THRESH_LIST'] = (
-                var_info.fcst_thresh
-                )
-            var_info_formatted_c_dict['OBS_THRESH_LIST'] = (
-                var_info.obs_thresh
-                )
-            if var_fourier_decomp_info.run_fourier:                 
-                for pair in var_fourier_decomp_info.wave_num_pairings:
-                    var_info_formatted_c_dict['INTERP_MTHD_LIST'] \
-                    .append('WV1_'+pair)
+            var_info_formatted_c_dict['FCST_VAR_LIST'] = var_info['fcst_name']
+            var_info_formatted_c_dict['FCST_LEVEL_LIST'] = var_info['fcst_level'] 
+            var_info_formatted_c_dict['FCST_UNITS_LIST'] = var_info['fcst_units']
+            var_info_formatted_c_dict['OBS_VAR_LIST'] = var_info['obs_name']
+            var_info_formatted_c_dict['OBS_LEVEL_LIST'] = var_info['obs_level']
+            var_info_formatted_c_dict['OBS_UNITS_LIST'] = var_info['obs_units']
+            var_info_formatted_c_dict['FCST_THRESH_LIST'] = var_info['fcst_thresh']
+            var_info_formatted_c_dict['OBS_THRESH_LIST'] = var_info['obs_thresh']
+            if var_info['run_fourier'] == True:                 
+                var_info_formatted_c_dict['INTERP_MTHD_LIST'] \
+                .append(var_info['fourier_wave_num'])
             # Parse whether all expected METplus config _LIST variables
             # to be treated as a loop or group.
             config_lists_to_group_items = (
@@ -1526,9 +1550,9 @@ class StatAnalysisWrapper(CommandBuilder):
                             == model_check):
                         break
                 model_info = model_info_list[int(m)-1]
-                runtime_settings_dict['MODEL'] = '"'+model_info.name+'"'
-                runtime_settings_dict['OBTYPE'] = '"'+model_info.obtype+'"'
-                lookin_dir = self.get_lookin_dir(model_info.dir, 
+                runtime_settings_dict['MODEL'] = '"'+model_info['name']+'"'
+                runtime_settings_dict['OBTYPE'] = '"'+model_info['obtype']+'"'
+                lookin_dir = self.get_lookin_dir(model_info['dir'], 
                                                  self.c_dict[date_type+'_BEG'],
                                                  self.c_dict[date_type+'_END'],
                                                  date_type, 
@@ -1538,9 +1562,9 @@ class StatAnalysisWrapper(CommandBuilder):
                 runtime_settings_dict['-lookin'] = lookin_dir
                 self.set_lookin_dir(runtime_settings_dict['-lookin'])
                 dump_row_filename_template = (
-                    model_info.dump_row_filename_template
+                    model_info['dump_row_filename_template']
                     )
-                dump_row_filename_type = model_info.dump_row_filename_type
+                dump_row_filename_type = model_info['dump_row_filename_type']
                 dump_row_filename = (
                     self.get_output_filename('dump_row', 
                                              dump_row_filename_template, 
