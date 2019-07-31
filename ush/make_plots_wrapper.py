@@ -282,15 +282,23 @@ class MakePlotsWrapper(CommandBuilder):
         self.add_env_var("LEAD_LIST", ', '.join(lead_list))
         self.add_env_var('FCST_VAR_LEVEL_LIST', ' '.join(fcst_var_level_list))
         self.add_env_var('OBS_VAR_LEVEL_LIST', ' '.join(obs_var_level_list))
+        os.environ["LEAD_LIST"] = ', '.join(lead_list)
+        os.environ['FCST_VAR_LEVEL_LIST'] = ' '.join(fcst_var_level_list)
+        os.environ['OBS_VAR_LEVEL_LIST'] = ' '.join(obs_var_level_list)
         #time series plot
         for lead in lead_list:
             self.add_env_var('LEAD', lead)
+            os.environ['LEAD'] = lead
             for vl in range(len(fcst_var_level_list)):
                 self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
                 self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
+                os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
+                os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
                 for vt in range(len(fcst_var_thresh_list)):
                     self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                     self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                    os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                    os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
                     self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_time_series.py")+" with...")
                     self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -317,9 +325,13 @@ class MakePlotsWrapper(CommandBuilder):
         for vl in range(len(fcst_var_level_list)):
             self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
             self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
+            os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
+            os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
             for vt in range(len(fcst_var_thresh_list)):
                 self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                 self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                 self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_mean.py"))
                 self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_mean.py")+" with...")
                 self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -345,9 +357,12 @@ class MakePlotsWrapper(CommandBuilder):
         #date by variable levels
         for lead in lead_list:
             self.add_env_var('LEAD', lead)
+            os.environ['LEAD'] = lead
             for vt in range(len(fcst_var_thresh_list)):
                 self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                 self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                 self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_date_by_level.py"))
                 self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_date_by_level.py")+" with...")
                 self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -375,6 +390,8 @@ class MakePlotsWrapper(CommandBuilder):
         for vt in range(len(fcst_var_thresh_list)):
             self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
             self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+            os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+            os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
             self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_by_level.py"))
             self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_by_level.py")+" with...")
             self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -421,15 +438,21 @@ class MakePlotsWrapper(CommandBuilder):
              Returns:
         """
         self.add_env_var("LEAD_LIST", ', '.join(lead_list))
+        os.environ['LEAD_LIST'] = ', '.join(lead_list)
         #time series plot
         for lead in lead_list:
             self.add_env_var('LEAD', lead)
+            os.environ['LEAD'] = lead
             for vl in range(len(fcst_var_level_list)):
                 self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
                 self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
+                os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
+                os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
                 for vt in range(len(fcst_var_thresh_list)):
                     self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                     self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                    os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                    os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
                     self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_time_series.py")+" with...")
                     self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -456,9 +479,13 @@ class MakePlotsWrapper(CommandBuilder):
         for vl in range(len(fcst_var_level_list)):
             self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
             self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
+            os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
+            os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
             for vt in range(len(fcst_var_thresh_list)):
                 self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                 self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                 self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_mean.py"))
                 self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_mean.py")+" with...")
                 self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -483,6 +510,8 @@ class MakePlotsWrapper(CommandBuilder):
                 self.clear()
                 self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                 self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                 self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_by_date.py"))
                 self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_by_date.py")+" with...")
                 self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -528,15 +557,21 @@ class MakePlotsWrapper(CommandBuilder):
              Returns:
         """
         self.add_env_var("LEAD_LIST", ', '.join(lead_list))
+        os.environ["LEAD_LIST"] = ', '.join(lead_list)
         #time series plot
         for lead in lead_list:
             self.add_env_var('LEAD', lead)
+            os.environ['LEAD'] = lead
             for vl in range(len(fcst_var_level_list)):
                 self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
                 self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
+                os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
+                os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
                 for vt in range(len(fcst_var_thresh_list)):
                     self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                     self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                    os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                    os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
                     self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_time_series.py")+" with...")
                     self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -564,9 +599,13 @@ class MakePlotsWrapper(CommandBuilder):
         for vl in range(len(fcst_var_level_list)):
             self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
             self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
+            os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
+            os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
             for vt in range(len(fcst_var_thresh_list)):
                 self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                 self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                 self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_mean.py"))
                 self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_mean.py")+" with...")
                 self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -615,15 +654,23 @@ class MakePlotsWrapper(CommandBuilder):
         self.add_env_var("LEAD_LIST", ', '.join(lead_list))
         self.add_env_var('FCST_VAR_LEVEL_LIST', ' '.join(fcst_var_level_list))
         self.add_env_var('OBS_VAR_LEVEL_LIST', ' '.join(obs_var_level_list))
+        os.environ["LEAD_LIST"] = ', '.join(lead_list)
+        os.environ['FCST_VAR_LEVEL_LIST'] = ' '.join(fcst_var_level_list)
+        os.environ['OBS_VAR_LEVEL_LIST'] = ' '.join(obs_var_level_list)
         #time series plot
         for lead in lead_list:
             self.add_env_var('LEAD', lead)
+            os.environ['LEAD'] = lead
             for vl in range(len(fcst_var_level_list)):
                 self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
                 self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
+                os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
+                os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
                 for vt in range(len(fcst_var_thresh_list)):
                     self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                     self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                    os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                    os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
                     self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_time_series.py")+" with...")
                     self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -649,9 +696,12 @@ class MakePlotsWrapper(CommandBuilder):
         #stat by level plot
         for lead in lead_list:
             self.add_env_var('LEAD', lead)
+            os.environ['LEAD'] = lead
             for vt in range(len(fcst_var_thresh_list)):
                 self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                 self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                 self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_stat_by_level.py"))
                 self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_stat_by_level.py")+" with...")
                 self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -679,9 +729,13 @@ class MakePlotsWrapper(CommandBuilder):
         for vl in range(len(fcst_var_level_list)):
             self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
             self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
+            os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
+            os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
             for vt in range(len(fcst_var_thresh_list)):
                 self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                 self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                 self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_mean.py"))
                 self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_mean.py")+" with...")
                 self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -708,6 +762,8 @@ class MakePlotsWrapper(CommandBuilder):
         for vt in range(len(fcst_var_thresh_list)):
             self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
             self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+            os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+            os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
             self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_by_level.py"))
             self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_by_level.py")+" with...")
             self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -754,15 +810,21 @@ class MakePlotsWrapper(CommandBuilder):
              Returns:
         """
         self.add_env_var("LEAD_LIST", ', '.join(lead_list))
+        os.environ["LEAD_LIST"] = ', '.join(lead_list)
         #time series plot
         for lead in lead_list:
             self.add_env_var('LEAD', lead)
+            os.environ['LEAD'] = lead
             for vl in range(len(fcst_var_level_list)):
                 self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
                 self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
+                os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
+                os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
                 for vt in range(len(fcst_var_thresh_list)):
                     self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                     self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                    os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                    os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
                     self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_time_series.py")+" with...")
                     self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -790,9 +852,13 @@ class MakePlotsWrapper(CommandBuilder):
         for vl in range(len(fcst_var_level_list)):
             self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
             self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
+            os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
+            os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
             for vt in range(len(fcst_var_thresh_list)):
                 self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                 self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                 self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_mean.py"))
                 self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_mean.py")+" with...")
                 self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -821,12 +887,17 @@ class MakePlotsWrapper(CommandBuilder):
                             lead_list, plotting_scripts_dir):
         for lead in lead_list:
             self.add_env_var('LEAD', lead)
+            os.environ['LEAD'] = lead
             for vl in range(len(fcst_var_level_list)):
                 self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
                 self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
+                os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl] 
+                os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
                 for vt in range(len(fcst_var_thresh_list)):
                     self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
                     self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
+                    os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
+                    os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
                     self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
                     self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_time_series.py")+" with...")
                     self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
@@ -894,13 +965,18 @@ class MakePlotsWrapper(CommandBuilder):
         logging_level = self.config.getstr('config', 'LOG_LEVEL')
         met_base = self.config.getstr('dir', 'MET_BASE')
         #set envir vars based on config
-        self.add_env_var('PLOT_TIME', plot_time)
+        self.add_env_var("PLOT_TIME", plot_time)
+        os.environ["PLOT_TIME"] = plot_time
         if plot_time == 'valid':
             self.add_env_var('START_DATE_YYYYmmdd', valid_beg_YYYYmmdd)
             self.add_env_var('END_DATE_YYYYmmdd', valid_end_YYYYmmdd)
+            os.environ['START_DATE_YYYYmmdd'] = valid_beg_YYYYmmdd
+            os.environ['END_DATE_YYYYmmdd'] = valid_end_YYYYmmdd
         elif plot_time == 'init':
             self.add_env_var('START_DATE_YYYYmmdd', init_beg_YYYYmmdd)
             self.add_env_var('END_DATE_YYYYmmdd', init_end_YYYYmmdd)
+            os.environ['START_DATE_YYYYmmdd'] = init_beg_YYYYmmdd
+            os.environ['END_DATE_YYYYmmdd'] = init_end_YYYYmmdd
         else:
             self.logger.error("Invalid entry for PLOT_TIME, use 'valid' or 'init'")
             exit(1)
@@ -914,6 +990,16 @@ class MakePlotsWrapper(CommandBuilder):
         self.add_env_var('EVENT_EQUALIZATION', event_equalization)
         self.add_env_var('LOGGING_FILENAME', logging_filename)
         self.add_env_var('LOGGING_LEVEL', logging_level)
+        os.environ['STAT_FILES_INPUT_DIR'] = stat_files_input_dir
+        os.environ['PLOTTING_OUT_DIR'] = plotting_out_dir
+        os.environ['PLOT_STATS_LIST'] = plot_stats_list
+        os.environ['MODEL_NAME_LIST'] =  model_name_str_list
+        os.environ['MODEL_PLOT_NAME_LIST'] = model_plot_name_str_list
+        os.environ['CI_METHOD'] = ci_method
+        os.environ['VERIF_GRID'] = verif_grid
+        os.environ['EVENT_EQUALIZATION'] = event_equalization
+        os.environ['LOGGING_FILENAME'] = logging_filename
+        os.environ['LOGGING_LEVEL'] = logging_level
         plotting_out_dir_full = os.path.join(plotting_out_dir, verif_case, verif_type)
         if os.path.exists(plotting_out_dir_full):
             self.logger.info(plotting_out_dir_full+" exists, removing")
@@ -921,10 +1007,16 @@ class MakePlotsWrapper(CommandBuilder):
         util.mkdir_p(os.path.join(plotting_out_dir_full, "imgs"))
         util.mkdir_p(os.path.join(plotting_out_dir_full, "data"))
         self.add_env_var('PLOTTING_OUT_DIR_FULL', plotting_out_dir_full)
-        with open(met_base+'/version.txt') as met_version_txt:  
-            met_version_line = met_version_txt.readline()
-            met_version = float(met_version_line.strip('\n').partition('/met-')[2].partition('_')[0])
+        os.environ['PLOTTING_OUT_DIR_FULL'] = plotting_out_dir_full
+        p = subprocess.Popen(["stat_analysis", "--version"], stdout=subprocess.PIPE)
+        out, err = p.communicate()
+        for line in out.split('\n'):
+            if 'MET Version:' in line:
+                met_verison_line = line
+        met_version_str = met_verison_line.partition('MET Version:')[2].split('V')[1]
+        met_version = float(met_version_str.rpartition('.')[0])
         self.add_env_var('MET_VERSION', str(met_version))
+        os.environ['MET_VERSION'] = str(met_version)
         if met_version < 6.0:
              self.logger.exit("Please run with MET version >= 6.0")
              exit(1)
@@ -940,20 +1032,28 @@ class MakePlotsWrapper(CommandBuilder):
         for valid_init_time_pair in valid_init_time_pairs:
             self.add_env_var('VALID_TIME_INFO', valid_init_time_pair.valid)
             self.add_env_var('INIT_TIME_INFO', valid_init_time_pair.init)
+            os.environ['VALID_TIME_INFO'] = valid_init_time_pair.valid
+            os.environ['INIT_TIME_INFO'] = valid_init_time_pair.init
             #loop through variable information
             for var_info in var_list:
                 self.add_env_var('FCST_VAR_NAME', var_info['fcst_name'])
                 self.add_env_var('OBS_VAR_NAME', var_info['obs_name'])
+                os.environ['FCST_VAR_NAME'] = var_info['fcst_name']
+                os.environ['OBS_VAR_NAME'] = var_info['obs_name']
                 fcst_var_level_list = var_info['fcst_level']
                 obs_var_level_list = var_info['obs_level']
                 if len(var_info['fcst_extra']) == 0:
                     self.add_env_var('FCST_VAR_EXTRA', "None")
+                    os.environ['FCST_VAR_EXTRA'] = 'None'
                 else:
                     self.add_env_var('FCST_VAR_EXTRA', var_info['fcst_extra'])
+                    os.environ['FCST_VAR_EXTRA'] = var_info['fcst_extra']
                 if len(var_info['obs_extra']) == 0:
                     self.add_env_var('OBS_VAR_EXTRA', "None")
+                    os.environ['OBS_VAR_EXTRA'] = 'None'
                 else:
                     self.add_env_var('OBS_VAR_EXTRA', var_info['obs_extra'])
+                    os.environ['OBS_VAR_EXTRA'] = var_info['obs_extra']
                 if len(var_info['fcst_thresh']) == 0 or len(var_info['obs_thresh']) == 0:
                     fcst_var_thresh_list = [ "None" ]
                     obs_var_thresh_list = [ "None" ]
@@ -969,9 +1069,11 @@ class MakePlotsWrapper(CommandBuilder):
                 #loop through interpolation information
                 for interp in interp_list:
                     self.add_env_var('INTERP', interp)
+                    os.environ['INTERP'] = interp
                     #loop through region information
                     for region in region_list:
                         self.add_env_var('REGION', region)
+                        os.environ['REGION'] = region
                         #call specific plot definitions to make plots
                         if verif_case == "grid2grid" and verif_type in "pres":
                             self.create_plots_grid2grid_pres(fcst_var_level_list, obs_var_level_list,
