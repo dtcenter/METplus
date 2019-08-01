@@ -352,30 +352,30 @@ class StatAnalysisWrapper(CommandBuilder):
                  list_type = list_name.replace('_LEAD', '').lower()
                  if date_type == 'VALID':
                      stringsub_dict[list_type+'_init_beg'] = (
-                         stringsub_dict[list_type+'_valid_beg']
+                         stringsub_dict['valid_beg']
                          - lead_timedelta
                          )
                      stringsub_dict[list_type+'_init_end'] = (
-                         stringsub_dict[list_type+'_valid_end']
+                         stringsub_dict['valid_end']
                          - lead_timedelta
                          )
                      if date_beg == date_end:
                          stringsub_dict[list_type+'_init'] = (
-                             stringsub_dict[list_type+'_valid']
+                             stringsub_dict['valid']
                              - lead_timedelta
                          )
                  elif date_type == 'INIT':
                      stringsub_dict[list_type+'_valid_beg'] = (
-                         stringsub_dict[list_type+'_init_beg'] 
+                         stringsub_dict['init_beg']
                          + lead_timedelta
                          )
                      stringsub_dict[list_type+'_valid_end'] = (
-                         stringsub_dict[list_type+'_init_end']
+                         stringsub_dict['init_end']
                          + lead_timedelta
                          )
                      if date_beg == date_end:
                          stringsub_dict[list_type+'_valid'] = (
-                             stringsub_dict[list_type+'_init']
+                             stringsub_dict['init']
                              + lead_timedelta
                              )
                  check_lead_list = [ 'FCST_LEAD_LIST', 'OBS_LEAD_HOUR_LIST' ]
@@ -434,6 +434,26 @@ class StatAnalysisWrapper(CommandBuilder):
                         datetime.datetime.strptime(list_name_values_list[-1], 
                                                    '%H%M%S')
                         )
+                    list_type = list_name \
+                         .replace('_'+date_type+'_HOUR', '') \
+                         .lower()
+                    stringsub_dict[list_type+'_'+date_type.lower()+'_beg'] = (
+                         datetime.datetime.strptime(date_beg
+                                                    +list_name_values_list[0], 
+                                                    '%Y%m%d%H%M%S')
+                         )
+                    stringsub_dict[list_type+'_'+date_type.lower()+'_end'] = (
+                         datetime.datetime.strptime(date_end
+                                                    +list_name_values_list[-1], 
+                                                    '%Y%m%d%H%M%S')
+                         )
+                    if date_type in list_name:
+                        stringsub_dict[date_type.lower()+'_beg'] = (
+                            stringsub_dict[list_type+'_'+date_type.lower()+'_beg']
+                        )
+                        stringsub_dict[date_type.lower()+'_end'] = (
+                            stringsub_dict[list_type+'_'+date_type.lower()+'_end'] 
+                        )
                 else:
                     stringsub_dict[list_name.lower()+'_beg'] = (
                         list_name_values_list[0]
@@ -461,9 +481,18 @@ class StatAnalysisWrapper(CommandBuilder):
                     hour_time_name = hour_type_low+'_hour_'+time_type
                     if (stringsub_dict[fcst_hour_time_name] 
                             == stringsub_dict[obs_hour_time_name]):
-                        stringsub_dict[hour_time_name] = (
-                           stringsub_dict[fcst_hour_time_name]
-                           )
+                        if stringsub_dict[fcst_hour_time_name] == '':
+                            if time_type == 'beg':
+                                time_str = '000000'
+                            elif time_type == 'end':
+                                time_str = '230000'
+                            stringsub_dict[hour_time_name] = (
+                                datetime.datetime.strptime(time_str, '%H%M%S')
+                            )
+                        else:
+                            stringsub_dict[hour_time_name] = (
+                                stringsub_dict[fcst_hour_time_name]
+                            )
                     elif (stringsub_dict[fcst_hour_time_name] != ''
                               and stringsub_dict[obs_hour_time_name] == ''):
                          stringsub_dict[hour_time_name] = (
@@ -474,15 +503,6 @@ class StatAnalysisWrapper(CommandBuilder):
                          stringsub_dict[hour_time_name] = (
                            stringsub_dict[obs_hour_time_name]
                            )
-                    elif (stringsub_dict[fcst_hour_time_name] == ''
-                              and stringsub_dict[obs_hour_time_name] == ''):
-                         if time_type == 'beg':
-                             time_str = '000000'
-                         elif time_type == 'end':
-                             time_str = '230000'
-                         stringsub_dict[hour_time_name] = (
-                             datetime.datetime.strptime(time_str, '%H%M%S')
-                             )
         return stringsub_dict
 
     def get_output_filename(self, output_type, filename_template,
