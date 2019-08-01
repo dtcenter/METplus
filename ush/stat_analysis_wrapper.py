@@ -16,15 +16,11 @@ from __future__ import (print_function, division)
 
 import logging
 import os
-import sys
 import copy
 import met_util as util
 import re
-import csv
 import subprocess
 import datetime
-import time
-import calendar
 import itertools
 import string_template_substitution as sts
 from command_builder import CommandBuilder
