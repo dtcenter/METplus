@@ -346,9 +346,13 @@ class StatAnalysisWrapper(CommandBuilder):
                      minutes=int(list_name_value[2:4]),
                      seconds=int(list_name_value[4:])
                      )
-                 stringsub_dict[list_name.lower()] = int(
+                 stringsub_dict[list_name.lower()] = list_name_value
+                 stringsub_dict[list_name.lower()+'_hour'] = list_name_value[0:2]
+                 stringsub_dict[list_name.lower()+'_min'] = list_name_value[2:4]
+                 stringsub_dict[list_name.lower()+'_sec'] = list_name_value[4:]
+                 stringsub_dict[list_name.lower()+'_totalsec'] = str(int(
                      lead_timedelta.total_seconds()
-                     )
+                     ))
                  list_type = list_name.replace('_LEAD', '').lower()
                  if date_type == 'VALID':
                      stringsub_dict[list_type+'_init_beg'] = (
@@ -381,6 +385,10 @@ class StatAnalysisWrapper(CommandBuilder):
                  check_lead_list = [ 'FCST_LEAD_LIST', 'OBS_LEAD_HOUR_LIST' ]
                  if not all(l in lists_to_loop for l in check_lead_list):
                      stringsub_dict['lead'] = stringsub_dict[list_name.lower()]
+                     stringsub_dict['lead_hour'] = stringsub_dict[list_name.lower()+'_hour']
+                     stringsub_dict['lead_min'] = stringsub_dict[list_name.lower()+'_min']
+                     stringsub_dict['lead_sec'] = stringsub_dict[list_name.lower()+'_sec']
+                     stringsub_dict['lead_totalsec'] = stringsub_dict[list_name.lower()+'_totalsec']
                      if date_type == 'VALID':
                          stringsub_dict['init_beg'] = (
                              stringsub_dict[list_type+'_init_beg']
