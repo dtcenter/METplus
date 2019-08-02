@@ -627,6 +627,8 @@ class StatAnalysisWrapper(CommandBuilder):
                            filename_template,
                            **stringsub_dict)
         output_filename = ss.do_string_sub()
+        if filename_type == 'default':
+            output_filename = output_filename+'_'+output_type+'.stat' 
         return output_filename
 
     def get_lookin_dir(self, dir_path, date_beg, date_end, date_type,
