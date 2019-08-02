@@ -829,50 +829,6 @@ class StatAnalysisWrapper(CommandBuilder):
             config_dict['OBS_INIT_HOUR'] = ''
         return config_dict
 
-    #def thresh_format(self, thresh):
-    #    """! Format threshold using symbols and
-    #         letters.
-    # 
-    #         Args:
-    #             thresh         - string of the threshold
-    #            
-    #         Returns:
-    #             thresh_symbol  - string of threshold 
-    #                              formatted using symbols
-    #             thresh_letters - string of the threshold 
-    #                              formatted using letters
-    #    """
-    #    if 'ge' or '>=' in thresh:
-    #        thresh_value = thresh.replace('ge', '').replace('>=', '')
-    #        thresh_symbol = '>='+thresh_value
-    #        thresh_letters = 'ge'+thresh_value
-    #    elif 'gt' or '>' in thresh:
-    #        thresh_value = thresh.replace('gt', '').replace('>', '')
-    #        thresh_symbol = '>'+thresh_value
-    #        thresh_letters = 'gt'+thresh_value
-    #    elif 'le' or '<=' in thresh:
-    #        thresh_value = thresh.replace('le', '').replace('<=', '')
-    #        thresh_symbol = '<='+thresh_value
-    #        thresh_letters = 'le'+thresh_value
-    #    elif 'lt' or '<' in thresh:
-    #        thresh_value = thresh.replace('lt', '').replace('<', '')
-    #        thresh_symbol = '<'+thresh_value
-    #        thresh_letters = 'lt'+thresh_value
-    #    elif 'eq' or '==' in thresh:
-    #        thresh_value = thresh.replace('eq', '').replace('==', '')
-    #        thresh_symbol = '=='+thresh_value
-    #        thresh_letters = 'eq'+thresh_value
-    #    elif 'ne' or '!=' in thresh:
-    #        thresh_value = thresh.replace('ne', '').replace('!=', '')
-    #        thresh_symbol = '!='+thresh_value
-    #        thresh_letters = 'ne'+thresh_value
-    #    else:
-    #         self.logger.error(
-    #             "Threshold operator in "+thresh+" is not valid."
-    #              )
-    #         exit(1)
-    #    return thresh_symbol, thresh_letters
-
     def parse_model_info(self):
         """! Parse for model information.
              
