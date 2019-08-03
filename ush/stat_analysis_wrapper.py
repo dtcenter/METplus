@@ -264,175 +264,215 @@ class StatAnalysisWrapper(CommandBuilder):
                                   information to pass to the 
                                   string_template_substitution
         """
-        stringsub_dict = {}
-        stringsub_dict[date_type.lower()+'_beg'] = datetime.datetime.strptime(
-            date_beg, '%Y%m%d'
-            )
-        stringsub_dict[date_type.lower()+'_end'] = datetime.datetime.strptime(
-            date_end, '%Y%m%d'
-            )
-        if date_beg == date_end:
-             stringsub_dict[date_type.lower()] = datetime.datetime.strptime(
-                 date_beg, '%Y%m%d'
-                 )
+        stringsub_dict_keys = []
         for loop_list in lists_to_loop:
-             list_name = loop_list.replace('_LIST', '')
-             list_name_value = config_dict[list_name] \
-                 .replace('"', '') \
-                 .replace(' ', '')
-             if 'HOUR' in list_name:
+            list_name = loop_list.replace('_LIST', '')
+            stringsub_dict_keys.append(list_name.lower())
+        for group_list in lists_to_group:
+            list_name = group_list.replace('_LIST', '')
+            stringsub_dict_keys.append(list_name.lower())
+        special_keys = [
+            'fcst_valid_hour_beg', 'fcst_valid_hour_end',
+            'fcst_init_hour_beg', 'fcst_init_hour_end',
+            'obs_valid_hour_beg', 'obs_valid_hour_end',
+            'obs_init_hour_beg', 'obs_init_hour_end',
+            'valid_hour', 'valid_hour_beg', 'valid_hour_end',
+            'init_hour', 'init_hour_beg', 'init_hour_end',
+            'fcst_valid', 'fcst_valid_beg', 'fcst_valid_end',
+            'fcst_init', 'fcst_init_beg', 'fcst_init_end',
+            'obs_valid', 'obs_valid_beg', 'obs_valid_end',
+            'obs_init', 'obs_init_beg', 'obs_init_end',
+            'valid', 'valid_beg', 'valid_end',
+            'init', 'init_beg', 'init_end',
+            'fcst_lead_hour', 'fcst_lead_min',
+            'fcst_lead_sec', 'fcst_lead_totalsec',
+            'obs_lead_hour', 'obs_lead_min',
+            'obs_lead_sec', 'obs_lead_totalsec',
+            'lead', 'lead_hour', 'lead_min', 'lead_sec', 'lead_totalsec'
+        ]
+        for special_key in special_keys:
+            stringsub_dict_keys.append(special_key)
+        stringsub_dict = dict.fromkeys(stringsub_dict_keys, '')
+        nkeys_start = len(stringsub_dict_keys)
+        # Set full date information
+        fcst_hour_list = config_dict['FCST_'+date_type+'_HOUR'] \
+                         .replace('"', '').split(', ')
+        obs_hour_list = config_dict['OBS_'+date_type+'_HOUR'] \
+                         .replace('"', '').split(', ')
+        if fcst_hour_list != ['']:
+            stringsub_dict['fcst_'+date_type.lower()+'_beg'] = \
+                datetime.datetime.strptime(
+                    date_beg+fcst_hour_list[0], '%Y%m%d%H%M%S'
+                )
+            stringsub_dict['fcst_'+date_type.lower()+'_end'] = \
+                datetime.datetime.strptime(
+                    date_end+fcst_hour_list[-1], '%Y%m%d%H%M%S'
+                )
+            if (stringsub_dict['fcst_'+date_type.lower()+'_beg']
+                    == stringsub_dict['fcst_'+date_type.lower()+'_end']):
+                stringsub_dict['fcst_'+date_type.lower()] = \
+                    stringsub_dict['fcst_'+date_type.lower()+'_beg']
+        else:
+            stringsub_dict['fcst_'+date_type.lower()+'_beg'] = \
+                datetime.datetime.strptime(
+                    date_beg+'000000', '%Y%m%d%H%M%S'
+                )
+            stringsub_dict['fcst_'+date_type.lower()+'_end'] = \
+                datetime.datetime.strptime(
+                    date_beg+'235959', '%Y%m%d%H%M%S'
+                )
+        if obs_hour_list != ['']:
+            stringsub_dict['obs_'+date_type.lower()+'_beg'] = \
+                datetime.datetime.strptime(
+                    date_beg+obs_hour_list[0], '%Y%m%d%H%M%S'
+                )
+            stringsub_dict['obs_'+date_type.lower()+'_end'] = \
+                datetime.datetime.strptime(
+                    date_end+obs_hour_list[-1], '%Y%m%d%H%M%S'
+                )
+            if (stringsub_dict['obs_'+date_type.lower()+'_beg']
+                    == stringsub_dict['obs_'+date_type.lower()+'_end']):
+                stringsub_dict['obs_'+date_type.lower()] = \
+                    stringsub_dict['obs_'+date_type.lower()+'_beg']
+        else:
+            stringsub_dict['obs_'+date_type.lower()+'_beg'] = \
+                datetime.datetime.strptime(
+                    date_beg+'000000', '%Y%m%d%H%M%S'
+                )
+            stringsub_dict['obs_'+date_type.lower()+'_end'] = \
+                datetime.datetime.strptime(
+                    date_beg+'235959', '%Y%m%d%H%M%S'
+                )
+        if fcst_hour_list == obs_hour_list:
+            stringsub_dict[date_type.lower()+'_beg'] = \
+                 stringsub_dict['fcst_'+date_type.lower()+'_beg']
+            stringsub_dict[date_type.lower()+'_end'] = \
+                 stringsub_dict['fcst_'+date_type.lower()+'_end']
+            if (stringsub_dict[date_type.lower()+'_beg']
+                    == stringsub_dict[date_type.lower()+'_end']):
+                 stringsub_dict[date_type.lower()] = \
+                     stringsub_dict['fcst_'+date_type.lower()+'_beg']
+        if (fcst_hour_list != [''] and
+                obs_hour_list == ['']):
+            stringsub_dict[date_type.lower()+'_beg'] = \
+                stringsub_dict['fcst_'+date_type.lower()+'_beg']
+            stringsub_dict[date_type.lower()+'_end'] = \
+                stringsub_dict['fcst_'+date_type.lower()+'_end']
+            if (stringsub_dict[date_type.lower()+'_beg']
+                    == stringsub_dict[date_type.lower()+'_end']):
+                stringsub_dict[date_type.lower()] = \
+                    stringsub_dict['fcst_'+date_type.lower()+'_beg']
+        if (fcst_hour_list == [''] and
+                obs_hour_list != ['']):
+            stringsub_dict[date_type.lower()+'_beg'] = \
+                stringsub_dict['obs_'+date_type.lower()+'_beg']
+            stringsub_dict[date_type.lower()+'_end'] = \
+                stringsub_dict['obs_'+date_type.lower()+'_end']
+            if (stringsub_dict[date_type.lower()+'_beg']
+                    == stringsub_dict[date_type.lower()+'_end']):
+                stringsub_dict[date_type.lower()] = \
+                    stringsub_dict['obs_'+date_type.lower()+'_beg']
+        # Set loop information
+        for loop_list in lists_to_loop:
+            list_name = loop_list.replace('_LIST', '')
+            list_name_value = config_dict[list_name] \
+                .replace('"', '') \
+                .replace(' ', '')
+            if list_name == 'MODEL':
+                stringsub_dict[list_name.lower()] = list_name_value
+                stringsub_dict['obtype'] = config_dict['OBTYPE'] \
+                    .replace('"', '') \
+                    .replace(' ', '')
+            elif 'HOUR' in list_name:
                  stringsub_dict[list_name.lower()] = (
                      datetime.datetime.strptime(list_name_value, '%H%M%S')
-                     )
+                 )
                  stringsub_dict[list_name.lower()+'_beg'] = stringsub_dict[
                      list_name.lower()
                      ]
                  stringsub_dict[list_name.lower()+'_end'] = stringsub_dict[
                      list_name.lower()
                      ]
-                 if date_type in list_name:
+                 check_list1 = config_dict[list_name]
+                 if 'FCST' in list_name:
+                     check_list2 = config_dict[list_name.replace('FCST', 'OBS')]
+                 elif 'OBS' in list_name:
+                     check_list2 = config_dict[list_name.replace('OBS', 'FCST')]
+                 if check_list1 == check_list2 or \
+                         len(check_list2) == 0:
                      list_type = list_name \
-                         .replace('_'+date_type+'_HOUR', '') \
+                         .replace('_HOUR', '') \
                          .lower()
-                     stringsub_dict[list_type+'_'+date_type.lower()+'_beg'] = (
-                         datetime.datetime.strptime(date_beg
-                                                    +list_name_value, 
-                                                    '%Y%m%d%H%M%S')
-                         )
-                     stringsub_dict[list_type+'_'+date_type.lower()+'_end'] = (
-                         datetime.datetime.strptime(date_end
-                                                    +list_name_value, 
-                                                    '%Y%m%d%H%M%S')
-                         )
-                     if date_beg == date_end:
-                         stringsub_dict[list_type+'_'+date_type.lower()] = (
-                             datetime.datetime.strptime(date_beg
-                                                        +list_name_value, 
-                                                        '%Y%m%d%H%M%S')
-                             )
-                     check_hour_list = [ 
-                         'FCST_'+date_type+'_HOUR_LIST', 
-                         'OBS_'+date_type+'_HOUR_LIST' 
-                         ]
-                     if not all(l in lists_to_loop for l in check_hour_list):
-                         stringsub_dict[date_type.lower()+'_hour'] = (
-                             stringsub_dict[list_type+'_'
-                                            +date_type.lower()+'_hour']
-                             )
-                         stringsub_dict[date_type.lower()+'_hour_beg'] = (
-                             stringsub_dict[list_type+'_'
-                                            +date_type.lower()+'_hour']
-                             )
-                         stringsub_dict[date_type.lower()+'_hour_end'] = (
-                             stringsub_dict[list_type+'_'
-                                            +date_type.lower()+'_hour']
-                             )
-                         stringsub_dict[date_type.lower()+'_beg'] = (
-                             stringsub_dict[list_type+'_'
-                                            +date_type.lower()+'_beg']
-                             )
-                         stringsub_dict[date_type.lower()+'_end'] = (
-                             stringsub_dict[list_type+'_'
-                                            +date_type.lower()+'_end']
-                             )
-                         if date_beg == date_end:
-                             stringsub_dict[date_type.lower()] = (
-                                 stringsub_dict[list_type+'_'
-                                                +date_type.lower()]
-                                 )
-             elif 'LEAD' in list_name:
-                 lead_timedelta = datetime.timedelta(
-                     hours=int(list_name_value[0:2]),
-                     minutes=int(list_name_value[2:4]),
-                     seconds=int(list_name_value[4:])
-                     )
-                 stringsub_dict[list_name.lower()] = list_name_value
-                 stringsub_dict[list_name.lower()+'_hour'] = list_name_value[0:2]
-                 stringsub_dict[list_name.lower()+'_min'] = list_name_value[2:4]
-                 stringsub_dict[list_name.lower()+'_sec'] = list_name_value[4:]
-                 stringsub_dict[list_name.lower()+'_totalsec'] = str(int(
-                     lead_timedelta.total_seconds()
-                     ))
-                 list_type = list_name.replace('_LEAD', '').lower()
-                 if date_type == 'VALID':
-                     stringsub_dict[list_type+'_init_beg'] = (
-                         stringsub_dict['valid_beg']
-                         - lead_timedelta
-                         )
-                     stringsub_dict[list_type+'_init_end'] = (
-                         stringsub_dict['valid_end']
-                         - lead_timedelta
-                         )
-                     if date_beg == date_end:
-                         stringsub_dict[list_type+'_init'] = (
-                             stringsub_dict['valid']
-                             - lead_timedelta
-                         )
-                 elif date_type == 'INIT':
-                     stringsub_dict[list_type+'_valid_beg'] = (
-                         stringsub_dict['init_beg']
-                         + lead_timedelta
-                         )
-                     stringsub_dict[list_type+'_valid_end'] = (
-                         stringsub_dict['init_end']
-                         + lead_timedelta
-                         )
-                     if date_beg == date_end:
-                         stringsub_dict[list_type+'_valid'] = (
-                             stringsub_dict['init']
-                             + lead_timedelta
-                             )
-                 check_lead_list = [ 'FCST_LEAD_LIST', 'OBS_LEAD_HOUR_LIST' ]
-                 if not all(l in lists_to_loop for l in check_lead_list):
-                     stringsub_dict['lead'] = stringsub_dict[list_name.lower()]
-                     stringsub_dict['lead_hour'] = stringsub_dict[list_name.lower()+'_hour']
-                     stringsub_dict['lead_min'] = stringsub_dict[list_name.lower()+'_min']
-                     stringsub_dict['lead_sec'] = stringsub_dict[list_name.lower()+'_sec']
-                     stringsub_dict['lead_totalsec'] = stringsub_dict[list_name.lower()+'_totalsec']
-                     if date_type == 'VALID':
-                         stringsub_dict['init_beg'] = (
-                             stringsub_dict[list_type+'_init_beg']
-                             )
-                         stringsub_dict['init_end'] = (
-                             stringsub_dict[list_type+'_init_end']
-                             )
-                         if date_beg == date_end:
-                             stringsub_dict['init'] = (
-                                 stringsub_dict[list_type+'_init']
-                             )
-                     elif date_type == 'INIT':
-                         stringsub_dict['valid_beg'] = (
-                            stringsub_dict[list_type+'_valid_beg']
-                            )
-                         stringsub_dict['valid_end'] = (
-                            stringsub_dict[list_type+'_valid_end']
-                            )
-                         if date_beg == date_end:
-                             stringsub_dict['valid'] = (
-                                 stringsub_dict[list_type+'_valid']
-                                 )
-             elif list_name == 'MODEL':
-                 stringsub_dict[list_name.lower()] = list_name_value
-                 stringsub_dict['obtype'] = config_dict['OBTYPE'] \
-                     .replace('"', '') \
-                     .replace(' ', '')
-             else:
-                 stringsub_dict[list_name.lower()] = list_name_value
+                     if 'VALID' in list_name:
+                        stringsub_dict['valid_hour_beg'] = (
+                            stringsub_dict[list_type+'_hour_beg']
+                        )
+                        stringsub_dict['valid_hour_end'] = (
+                           stringsub_dict[list_type+'_hour_end']
+                        )
+                        if (stringsub_dict['valid_hour_beg']
+                                == stringsub_dict['valid_hour_end']):
+                            stringsub_dict['valid_hour'] = \
+                                stringsub_dict['valid_hour_end']
+                     elif 'INIT' in list_name:
+                        stringsub_dict['init_hour_beg'] = (
+                            stringsub_dict[list_type+'_hour_beg']
+                        )
+                        stringsub_dict['init_hour_end'] = (
+                            stringsub_dict[list_type+'_hour_end']
+                        )
+                        if (stringsub_dict['init_hour_beg']
+                                == stringsub_dict['init_hour_end']):
+                           stringsub_dict['init_hour'] = \
+                                stringsub_dict['init_hour_end']
+            elif 'LEAD' in list_name:
+                lead_timedelta = datetime.timedelta(
+                    hours=int(list_name_value[0:2]),
+                    minutes=int(list_name_value[2:4]),
+                    seconds=int(list_name_value[4:])
+                )
+                stringsub_dict[list_name.lower()] = list_name_value
+                stringsub_dict[list_name.lower()+'_hour'] = list_name_value[0:2]
+                stringsub_dict[list_name.lower()+'_min'] = list_name_value[2:4]
+                stringsub_dict[list_name.lower()+'_sec'] = list_name_value[4:]
+                stringsub_dict[list_name.lower()+'_totalsec'] = str(int(
+                    lead_timedelta.total_seconds()
+                ))
+                list_type = list_name.replace('_LEAD', '').lower()
+                check_list1 = config_dict[list_name]
+                if 'FCST' in list_name:
+                    check_list2 = config_dict[list_name.replace('FCST', 'OBS')]
+                elif 'OBS' in list_name:
+                    check_list2 = config_dict[list_name.replace('OBS', 'FCST')]
+                if check_list1 == check_list2 or \
+                         len(check_list2) == 0:
+                    stringsub_dict['lead'] = stringsub_dict[list_name.lower()]
+                    stringsub_dict['lead_hour'] = (
+                        stringsub_dict[list_name.lower()+'_hour']
+                    )
+                    stringsub_dict['lead_min'] = (
+                        stringsub_dict[list_name.lower()+'_min']
+                    )
+                    stringsub_dict['lead_sec'] = (
+                        stringsub_dict[list_name.lower()+'_sec']
+                    )
+                    stringsub_dict['lead_totalsec'] = (
+                        stringsub_dict[list_name.lower()+'_totalsec']
+                    )
+            else:
+                stringsub_dict[list_name.lower()] = list_name_value
+        # Set group information
         for group_list in lists_to_group:
             list_name = group_list.replace('_LIST', '')
             list_name_value = config_dict[list_name] \
                 .replace('"', '') \
                 .replace(' ', '') \
-                .replace(',', '')
-            check_valid_init_hour_list = [
-                'FCST_VALID_HOUR_LIST', 'FCST_INIT_HOUR_LIST',
-                'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
-                ]
-            if group_list in check_valid_init_hour_list:
+                .replace(',', '_')
+            if 'HOUR' in list_name:
+                list_name_values_list = (
+                    config_dict[list_name].replace('"', '').split(', ')
+                )
                 stringsub_dict[list_name.lower()] = list_name_value
-                list_name_values_list = config_dict[list_name] \
-                    .replace('"', '') \
-                    .split(', ')
                 if list_name_values_list != ['']:
                     stringsub_dict[list_name.lower()+'_beg'] = (
                         datetime.datetime.strptime(list_name_values_list[0], 
@@ -442,75 +482,51 @@ class StatAnalysisWrapper(CommandBuilder):
                         datetime.datetime.strptime(list_name_values_list[-1], 
                                                    '%H%M%S')
                         )
-                    list_type = list_name \
-                         .replace('_'+date_type+'_HOUR', '') \
-                         .lower()
-                    stringsub_dict[list_type+'_'+date_type.lower()+'_beg'] = (
-                         datetime.datetime.strptime(date_beg
-                                                    +list_name_values_list[0], 
-                                                    '%Y%m%d%H%M%S')
-                         )
-                    stringsub_dict[list_type+'_'+date_type.lower()+'_end'] = (
-                         datetime.datetime.strptime(date_end
-                                                    +list_name_values_list[-1], 
-                                                    '%Y%m%d%H%M%S')
-                         )
-                    if date_type in list_name:
-                        stringsub_dict[date_type.lower()+'_beg'] = (
-                            stringsub_dict[list_type+'_'+date_type.lower()+'_beg']
-                        )
-                        stringsub_dict[date_type.lower()+'_end'] = (
-                            stringsub_dict[list_type+'_'+date_type.lower()+'_end'] 
-                        )
-                else:
-                    stringsub_dict[list_name.lower()+'_beg'] = (
-                        list_name_values_list[0]
-                        )
-                    stringsub_dict[list_name.lower()+'_end'] = (
-                        list_name_values_list[-1]
-                        )
+                    if (stringsub_dict[list_name.lower()+'_beg']
+                            == stringsub_dict[list_name.lower()+'_end']):
+                       stringsub_dict[list_name.lower()] = (
+                           stringsub_dict[list_name.lower()+'_end']
+                       )
+                    check_list1 = config_dict[list_name]
+                    if 'FCST' in list_name:
+                        check_list2 = config_dict[list_name.replace('FCST', 'OBS')]
+                    elif 'OBS' in list_name:
+                        check_list2 = config_dict[list_name.replace('OBS', 'FCST')]
+                    if check_list1 == check_list2 or \
+                             len(check_list2) == 0:
+                        list_type = list_name \
+                            .replace('_HOUR', '') \
+                            .lower()
+                        if 'VALID' in list_name:
+                            stringsub_dict['valid_hour_beg'] = (
+                                stringsub_dict[list_type+'_hour_beg']
+                            )
+                            stringsub_dict['valid_hour_end'] = (
+                               stringsub_dict[list_type+'_hour_end']
+                            )
+                            if (stringsub_dict['valid_hour_beg']
+                                    == stringsub_dict['valid_hour_end']):
+                                stringsub_dict['valid_hour'] = \
+                                    stringsub_dict['valid_hour_end']
+                        elif 'INIT' in list_name:
+                            stringsub_dict['init_hour_beg'] = (
+                                stringsub_dict[list_type+'_hour_beg']
+                            )
+                            stringsub_dict['init_hour_end'] = (
+                               stringsub_dict[list_type+'_hour_end']
+                            )
+                            if (stringsub_dict['init_hour_beg']
+                                    == stringsub_dict['init_hour_end']):
+                                stringsub_dict['init_hour'] = \
+                                    stringsub_dict['init_hour_end']
             else:
                 stringsub_dict[list_name.lower()] = list_name_value
-        hour_type_list = [ 'VALID', 'INIT' ]
-        time_type_list = [ 'beg', 'end' ]
-        for hour_type in hour_type_list:
-            check_hour_type_list = [ 
-                'FCST_'+hour_type+'_HOUR_LIST', 'OBS_'+hour_type+'_HOUR_LIST' 
-                ]
-            if all(l in lists_to_group for l in check_hour_type_list):
-                hour_type_low = hour_type.lower()
-                for time_type in time_type_list:
-                    fcst_hour_time_name = (
-                        'fcst_'+hour_type_low+'_hour_'+time_type
-                    )
-                    obs_hour_time_name = (
-                        'obs_'+hour_type_low+'_hour_'+time_type
-                    )
-                    hour_time_name = hour_type_low+'_hour_'+time_type
-                    if (stringsub_dict[fcst_hour_time_name] 
-                            == stringsub_dict[obs_hour_time_name]):
-                        if stringsub_dict[fcst_hour_time_name] == '':
-                            if time_type == 'beg':
-                                time_str = '000000'
-                            elif time_type == 'end':
-                                time_str = '230000'
-                            stringsub_dict[hour_time_name] = (
-                                datetime.datetime.strptime(time_str, '%H%M%S')
-                            )
-                        else:
-                            stringsub_dict[hour_time_name] = (
-                                stringsub_dict[fcst_hour_time_name]
-                            )
-                    elif (stringsub_dict[fcst_hour_time_name] != ''
-                              and stringsub_dict[obs_hour_time_name] == ''):
-                         stringsub_dict[hour_time_name] = (
-                           stringsub_dict[fcst_hour_time_name]
-                           )
-                    elif (stringsub_dict[fcst_hour_time_name] == ''
-                              and stringsub_dict[obs_hour_time_name] != ''):
-                         stringsub_dict[hour_time_name] = (
-                           stringsub_dict[obs_hour_time_name]
-                           )
+        nkeys_end = len(stringsub_dict_keys)
+        # Some lines for debugging if needed in future
+        #self.logger.info(nkeys_start)
+        #self.logger.info(nkeys_end)
+        #for item, amount in stringsub_dict.iteritems():
+        #    self.logger.info("{} ({})".format(item, amount))
         return stringsub_dict
 
     def get_output_filename(self, output_type, filename_template,
@@ -1578,13 +1594,13 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.add_env_var(name, value)
                     self.logger.debug(name+": "+value)
                 cmd = self.get_command()
-                if cmd is None:
-                    self.logger.error(
-                        "stat_analysis could not generate command"
-                        )
-                    return
-                self.build()
-                self.clear()
+                #if cmd is None:
+                #    self.logger.error(
+                #        "stat_analysis could not generate command"
+                #        )
+                #    return
+                #self.build()
+                #self.clear()
 
     def run_all_times(self):
         self.c_dict['DATE_TYPE'] = self.config.getstr('config', 'DATE_TYPE')
