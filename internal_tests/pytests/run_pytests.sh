@@ -19,3 +19,5 @@ cd ../pcp_combine
 pytest -c ../minimum_pytest.eyewall.conf -c ./test1.conf
 cd ../StringTemplateSubstitution
 pytest -c ../minimum_pytest.eyewall.conf
+cd ../stat_analysis
+pytest -c ../minimum_pytest.eyewall.conf -c ./test_stat_analysis.conf
