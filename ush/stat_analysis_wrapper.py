@@ -78,7 +78,9 @@ class StatAnalysisWrapper(CommandBuilder):
         c_dict['PROCESS_LIST'] = self.config.getstr('config', 'PROCESS_LIST')
         c_dict['CONFIG_FILE'] = self.config.getstr('config', 
                                                    'STAT_ANALYSIS_CONFIG_FILE')
-        c_dict['OUTPUT_BASE_DIR'] = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR')
+        c_dict['OUTPUT_BASE_DIR'] = (
+            self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR')
+        )
         c_dict['GROUP_LIST_ITEMS'] = util.getlist(
             self.config.getstr('config', 'GROUP_LIST_ITEMS')
             )
@@ -395,9 +397,11 @@ class StatAnalysisWrapper(CommandBuilder):
                      ]
                  check_list1 = config_dict[list_name]
                  if 'FCST' in list_name:
-                     check_list2 = config_dict[list_name.replace('FCST', 'OBS')]
+                     check_list2 = config_dict[list_name.replace('FCST',
+                                                                 'OBS')]
                  elif 'OBS' in list_name:
-                     check_list2 = config_dict[list_name.replace('OBS', 'FCST')]
+                     check_list2 = config_dict[list_name.replace('OBS',
+                                                                 'FCST')]
                  if check_list1 == check_list2 or \
                          len(check_list2) == 0:
                      list_type = list_name \
@@ -432,7 +436,9 @@ class StatAnalysisWrapper(CommandBuilder):
                     seconds=int(list_name_value[4:])
                 )
                 stringsub_dict[list_name.lower()] = list_name_value
-                stringsub_dict[list_name.lower()+'_hour'] = list_name_value[0:2]
+                stringsub_dict[list_name.lower()+'_hour'] = (
+                    list_name_value[0:2]
+                )
                 stringsub_dict[list_name.lower()+'_min'] = list_name_value[2:4]
                 stringsub_dict[list_name.lower()+'_sec'] = list_name_value[4:]
                 stringsub_dict[list_name.lower()+'_totalsec'] = str(int(
@@ -489,9 +495,11 @@ class StatAnalysisWrapper(CommandBuilder):
                        )
                     check_list1 = config_dict[list_name]
                     if 'FCST' in list_name:
-                        check_list2 = config_dict[list_name.replace('FCST', 'OBS')]
+                        check_list2 = config_dict[list_name.replace('FCST',
+                                                                    'OBS')]
                     elif 'OBS' in list_name:
-                        check_list2 = config_dict[list_name.replace('OBS', 'FCST')]
+                        check_list2 = config_dict[list_name.replace('OBS',
+                                                                    'FCST')]
                     if check_list1 == check_list2 or \
                              len(check_list2) == 0:
                         list_type = list_name \
@@ -948,9 +956,13 @@ class StatAnalysisWrapper(CommandBuilder):
             mod['reference_name'] = model_reference_name
             mod['dir'] = model_dir
             mod['obtype'] = model_obtype
-            mod['dump_row_filename_template'] = model_dump_row_filename_template
+            mod['dump_row_filename_template'] = (
+                model_dump_row_filename_template
+            )
             mod['dump_row_filename_type'] = model_dump_row_filename_type
-            mod['out_stat_filename_template'] = model_out_stat_filename_template
+            mod['out_stat_filename_template'] = ( 
+                model_out_stat_filename_template
+            )
             mod['out_stat_filename_type'] = model_out_stat_filename_type
             model_info_list.append(mod)
         return model_info_list, model_indices
@@ -1116,13 +1128,17 @@ class StatAnalysisWrapper(CommandBuilder):
                 if '-dump_row' in self.c_dict['JOB_ARGS']:
                     dump_row_filename_template = (
                         model_info['dump_row_filename_template']
-                        )
-                    dump_row_filename_type = model_info['dump_row_filename_type']
+                    )
+                    dump_row_filename_type = (
+                        model_info['dump_row_filename_type']
+                    )
                 if '-out_stat' in self.c_dict['JOB_ARGS']:
                     out_stat_filename_template = (
                         model_info['out_stat_filename_template']
-                        )
-                    out_stat_filename_type = model_info['out_stat_filename_type']
+                    )
+                    out_stat_filename_type = (
+                        model_info['out_stat_filename_type']
+                    )
             else:
                 lookin_dir = ''
                 model_list = []
@@ -1335,12 +1351,24 @@ class StatAnalysisWrapper(CommandBuilder):
                     if run_fourier == False:
                         var_info = {}
                         var_info['index'] = var_info_c_dict['index']
-                        var_info['fcst_name'] = [ var_info_c_dict['fcst_name'] ]
-                        var_info['obs_name'] = [ var_info_c_dict['obs_name'] ]
-                        var_info['fcst_level'] = [ var_info_c_dict['fcst_level'] ]
-                        var_info['obs_level'] = [ var_info_c_dict['obs_level'] ]
-                        var_info['fcst_extra'] = [ var_info_c_dict['fcst_extra'] ]
-                        var_info['obs_extra'] = [ var_info_c_dict['obs_extra'] ]
+                        var_info['fcst_name'] = [ 
+                            var_info_c_dict['fcst_name'] 
+                        ]
+                        var_info['obs_name'] = [ 
+                            var_info_c_dict['obs_name'] 
+                        ]
+                        var_info['fcst_level'] = [ 
+                            var_info_c_dict['fcst_level']
+                        ]
+                        var_info['obs_level'] = [ 
+                            var_info_c_dict['obs_level'] 
+                        ]
+                        var_info['fcst_extra'] = [ 
+                            var_info_c_dict['fcst_extra'] 
+                        ]
+                        var_info['obs_extra'] = [ 
+                            var_info_c_dict['obs_extra']
+                        ]
                         var_info['fcst_thresh'] = [ fcst_thresh ]
                         var_info['obs_thresh'] = [ obs_thresh ]
                         if len(fcst_units) == 0:
@@ -1358,12 +1386,24 @@ class StatAnalysisWrapper(CommandBuilder):
                         for pair in fourier_wave_num_pairs:
                             var_info = {}
                             var_info['index'] = var_info_c_dict['index']
-                            var_info['fcst_name'] = [ var_info_c_dict['fcst_name'] ]
-                            var_info['obs_name'] = [ var_info_c_dict['obs_name'] ]
-                            var_info['fcst_level'] = [ var_info_c_dict['fcst_level'] ]
-                            var_info['obs_level'] = [ var_info_c_dict['obs_level'] ]
-                            var_info['fcst_extra'] = [ var_info_c_dict['fcst_extra'] ]
-                            var_info['obs_extra'] = [ var_info_c_dict['obs_extra'] ]
+                            var_info['fcst_name'] = [ 
+                                var_info_c_dict['fcst_name'] 
+                            ]
+                            var_info['obs_name'] = [ 
+                                var_info_c_dict['obs_name']
+                            ]
+                            var_info['fcst_level'] = [ 
+                                var_info_c_dict['fcst_level'] 
+                            ]
+                            var_info['obs_level'] = [ 
+                                var_info_c_dict['obs_level'] 
+                            ]
+                            var_info['fcst_extra'] = [ 
+                                var_info_c_dict['fcst_extra']
+                            ]
+                            var_info['obs_extra'] = [ 
+                                var_info_c_dict['obs_extra']
+                            ]
                             var_info['fcst_thresh'] = [ fcst_thresh ]
                             var_info['obs_thresh'] = [ obs_thresh ]
                             if len(fcst_units) == 0:
@@ -1405,12 +1445,24 @@ class StatAnalysisWrapper(CommandBuilder):
                         self.logger.info(pair)
                         var_info = {}
                         var_info['index'] = var_info_c_dict['index']
-                        var_info['fcst_name'] = [ var_info_c_dict['fcst_name'] ]
-                        var_info['obs_name'] = [ var_info_c_dict['obs_name'] ]
-                        var_info['fcst_level'] = [ var_info_c_dict['fcst_level'] ]
-                        var_info['obs_level'] = [ var_info_c_dict['obs_level'] ]
-                        var_info['fcst_extra'] = [ var_info_c_dict['fcst_extra'] ]
-                        var_info['obs_extra'] = [ var_info_c_dict['obs_extra'] ]
+                        var_info['fcst_name'] = [ 
+                            var_info_c_dict['fcst_name']
+                        ]
+                        var_info['obs_name'] = [ 
+                            var_info_c_dict['obs_name'] 
+                        ]
+                        var_info['fcst_level'] = [ 
+                            var_info_c_dict['fcst_level'] 
+                        ]
+                        var_info['obs_level'] = [ 
+                            var_info_c_dict['obs_level'] 
+                        ]
+                        var_info['fcst_extra'] = [ 
+                            var_info_c_dict['fcst_extra'] 
+                        ]
+                        var_info['obs_extra'] = [ 
+                            var_info_c_dict['obs_extra'] 
+                        ]
                         var_info['fcst_thresh'] = []
                         var_info['obs_thresh'] = []
                         if len(fcst_units) == 0:
@@ -1462,13 +1514,25 @@ class StatAnalysisWrapper(CommandBuilder):
         for var_info in var_info_list:
             var_info_formatted_c_dict = copy.deepcopy(formatted_c_dict)
             var_info_formatted_c_dict['FCST_VAR_LIST'] = var_info['fcst_name']
-            var_info_formatted_c_dict['FCST_LEVEL_LIST'] = var_info['fcst_level'] 
-            var_info_formatted_c_dict['FCST_UNITS_LIST'] = var_info['fcst_units']
+            var_info_formatted_c_dict['FCST_LEVEL_LIST'] = (
+                var_info['fcst_level'] 
+            )
+            var_info_formatted_c_dict['FCST_UNITS_LIST'] = (
+                var_info['fcst_units']
+            )
             var_info_formatted_c_dict['OBS_VAR_LIST'] = var_info['obs_name']
-            var_info_formatted_c_dict['OBS_LEVEL_LIST'] = var_info['obs_level']
-            var_info_formatted_c_dict['OBS_UNITS_LIST'] = var_info['obs_units']
-            var_info_formatted_c_dict['FCST_THRESH_LIST'] = var_info['fcst_thresh']
-            var_info_formatted_c_dict['OBS_THRESH_LIST'] = var_info['obs_thresh']
+            var_info_formatted_c_dict['OBS_LEVEL_LIST'] = (
+                var_info['obs_level']
+            )
+            var_info_formatted_c_dict['OBS_UNITS_LIST'] = (
+                var_info['obs_units']
+            )
+            var_info_formatted_c_dict['FCST_THRESH_LIST'] = (
+                var_info['fcst_thresh']
+            )
+            var_info_formatted_c_dict['OBS_THRESH_LIST'] = (
+                var_info['obs_thresh']
+            )
             if var_info['run_fourier'] == True:                 
                 var_info_formatted_c_dict['INTERP_MTHD_LIST'] \
                 .append(var_info['fourier_wave_num'])
@@ -1594,13 +1658,13 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.add_env_var(name, value)
                     self.logger.debug(name+": "+value)
                 cmd = self.get_command()
-                #if cmd is None:
-                #    self.logger.error(
-                #        "stat_analysis could not generate command"
-                #        )
-                #    return
-                #self.build()
-                #self.clear()
+                if cmd is None:
+                    self.logger.error(
+                        "stat_analysis could not generate command"
+                        )
+                    return
+                self.build()
+                self.clear()
 
     def run_all_times(self):
         self.c_dict['DATE_TYPE'] = self.config.getstr('config', 'DATE_TYPE')
