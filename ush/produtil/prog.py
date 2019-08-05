@@ -546,19 +546,20 @@ class Runner(object):
         """!Alias for __repr__()"""
         return self.__repr__()
     def __repr__(self):
-        """!Attempts to produce valid Python code to represent this
-        Runnable.  Generally, that can be done, unless an input string
-        is too long, or a stream is connected to a Python object.  In
-        those cases, human-readable representations are given, which
-        are not exactly Python code."""
+        """!Attempts to produce valid Python code to represent this Runnable.
+        Generally, that can be done, unless an input string is too
+        long, no executable name is present, or a stream is connected
+        to a Python object.  In those cases, human-readable
+        representations are given, which are not exactly Python
+        code.        """
         if self._prev is not None:
             s='%s | '%(repr(self._prev),)
         else:
             s=''
         if len(self._args)==0:
-            s+='exe(<empty>)'
+            s+='batchexe(<empty>)'
         else:
-            s+='exe(%s)'%(repr(self._args[0]))
+            s+='batchexe(%s)'%(repr(self._args[0]))
         if len(self._args)>1:
             s+='['+','.join([repr(x) for x in self._args[1:]])+']'
         if self._stdin is not None:

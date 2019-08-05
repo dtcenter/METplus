@@ -7,10 +7,10 @@ import sys, re, StringIO, collections, os, datetime, logging
 __all__=[ 'module_logger', 'BASELINE', 'EXECUTION', 'elipses', 'splitkey',
           'dqstring2bracestring', 'is_valid_workflow_name', 'unknown_file',
           'peekable','bashify_string', 'ListableSet', 'PTParserError',
-          'PTKeyError' ]
+          'PTKeyError', 'PTPlatformError' ]
 
 class PTParserError(Exception): pass
-
+class PTPlatformError(PTParserError): pass
 class PTKeyError(PTParserError,KeyError): pass
 
 # def yell(arg):

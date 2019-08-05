@@ -563,7 +563,7 @@ def find_exe(name,dirlist=None,raise_missing=True):
     """!Searches the $PATH or a specified iterable of directory names
     to find an executable file with the given name.  
 
-    Returns the exectuable's location.  If the executable cannot be
+    Returns the executable's location.  If the executable cannot be
     found, and raise_missing=True, raises CannotFindExe, otherwise
     returns None.  Raises FindExeInvalidExeName if "name" is not the
     same as its os.path.basename.

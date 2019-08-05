@@ -419,7 +419,6 @@ class Transaction(object):
 
     ##@var ds
     # The Datastore containing the database for which this is a transaction.
-    # @memberof produtil::datastore::Transaction
 
 ########################################################################
 

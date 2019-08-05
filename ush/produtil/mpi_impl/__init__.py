@@ -148,6 +148,11 @@ __all__=[]
 #              outside the job that will run them.
 detectors=dict()
 
+##@var synonyms
+# Allows multiple names for the same MPI implementation.  For example,
+# "moab_cray" is an alias for "lsf_cray_intel"
+synonyms=dict()
+
 ##@var detection_list
 # Order in which MPI implementations should be detected.  
 #
@@ -177,6 +182,8 @@ def add_implementation(clazz):
     name=clazz.name()
     detectors[name]=clazz.detect
     detection_order.append(name)
+    for synonym in clazz.synonyms():
+        synonyms[synonym]=name
 
 ##@var NO_NAME
 # Special value for the get_mpi() mpi_name to indicate the mpi_name
@@ -222,6 +229,21 @@ def register_implementations(logger=None):
     # functionality.
 
     try:
+        # If we have srun, and we're in a pack group...
+        import produtil.mpi_impl.srun_pack_groups
+        add_implementation(produtil.mpi_impl.srun_pack_groups.Implementation)
+    except ImportError as e: 
+        logger.info('srun: cannot import: %s'%(str(e),))
+
+    try:
+        # This must be after the pack group case.
+        # If we have srun and SLURM resources...
+        import produtil.mpi_impl.srun
+        add_implementation(produtil.mpi_impl.srun.Implementation)
+    except ImportError as e: 
+        logger.info('srun: cannot import: %s'%(str(e),))
+
+    try:
         import produtil.mpi_impl.inside_aprun
         add_implementation(produtil.mpi_impl.inside_aprun.Implementation)
     except ImportError as e: 
@@ -234,28 +256,22 @@ def register_implementations(logger=None):
         logger.info('lsf_cray_intel: cannot import: %s'%(str(e),))
 
     try:
-        import produtil.mpi_impl.mpirun_lsf
-        add_implementation(produtil.mpi_impl.mpirun_lsf.Implementation)
-    except ImportError as e: 
-        logger.info('mpirun_lsf: cannot import: %s'%(str(e),))
-
-    try:
         import produtil.mpi_impl.impi
         add_implementation(produtil.mpi_impl.impi.Implementation)
     except ImportError as e: 
         logger.info('impi: cannot import: %s'%(str(e),))
 
     try:
+        import produtil.mpi_impl.mpirun_lsf
+        add_implementation(produtil.mpi_impl.mpirun_lsf.Implementation)
+    except ImportError as e: 
+        logger.info('mpirun_lsf: cannot import: %s'%(str(e),))
+
+    try:
         import produtil.mpi_impl.mpiexec_mpt
         add_implementation(produtil.mpi_impl.mpiexec_mpt.Implementation)
     except ImportError as e: 
         logger.info('mpiexec_mpt: cannot import: %s'%(str(e),))
-
-    try:
-        import produtil.mpi_impl.srun
-        add_implementation(produtil.mpi_impl.srun.Implementation)
-    except ImportError as e: 
-        logger.info('srun: cannot import: %s'%(str(e),))
 
     try:
         import produtil.mpi_impl.mpiexec
@@ -303,6 +319,8 @@ def get_mpi(mpi_name=NO_NAME,force=False,logger=None,**kwargs):
     # Handle the case of a specified implementation.  We try to use
     # that implementation,
     if mpi_name is not NO_NAME:
+        if mpi_name in synonyms:
+            mpi_name=synonyms[mpi_name]
         if mpi_name not in detectors:
             raise NotImplementedError('The selected MPI implementation "%s" '
                                       'is unknown.'%(mpi_name,))
