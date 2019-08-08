@@ -8,9 +8,10 @@
 # mode, call stack, and other information which the BaseObject
 # subclasses use for evaluation to literals.
 
-import sys, re, StringIO, collections, os, datetime, logging, math
+import sys, re, collections, os, datetime, logging, math
 import produtil.run, produtil.log, produtil.setup
 
+from io import StringIO
 # This module really does use everything public from utilities and
 # tokenize, hence the "import *"
 from produtil.testing.utilities import *
@@ -548,7 +549,7 @@ class Scope(BaseObject):
         @returns None"""
         super(Scope,self)._apply_rescope(scopemap,prepend)
         for d in [ self.__parameters, self.__vars, self.__const]:
-            for k,v in d.iteritems():
+            for k,v in d.items():
                 v._apply_rescope(scopemap,prepend)
 
     def rescope(self,scopemap=None,prepend=None):
@@ -569,11 +570,11 @@ class Scope(BaseObject):
         @returns self"""
         scope=self.new_empty()
         scope._apply_rescope(scopemap,prepend)
-        for k,v in self.__parameters.iteritems():
+        for k,v in self.__parameters.items():
             scope.__parameters[k]=v.rescope(scopemap,prepend)
-        for k,v in self.__vars.iteritems():
+        for k,v in self.__vars.items():
             scope.__vars[k]=v.rescope(scopemap,prepend)
-        for k,v in self.__const.iteritems():
+        for k,v in self.__const.items():
             scope.__const[k]=v.rescope(scopemap,prepend)
         return scope
 
@@ -654,7 +655,7 @@ class Scope(BaseObject):
             if not k in self.__parameters:
                 raise PTKeyError('%s: not a valid argument to this function.'%(
                         str(k),))
-        for k,v in self.__parameters.iteritems():
+        for k,v in self.__parameters.items():
             if scope.haslocal(k):
                 s.__vars[k]=scope.getlocal(k).rescope({self:s,scope:s})
             elif v is not null_value:
@@ -662,10 +663,10 @@ class Scope(BaseObject):
             else:
                 raise PTParserError('%s: no argument sent for this parameter'%(
                         k,))
-        for k,v in self.__vars.iteritems():
+        for k,v in self.__vars.items():
             if k not in s.__vars:
                 s.__vars[k]=v.rescope({self:s,scope:s})
-        for k,v in self.__const.iteritems():
+        for k,v in self.__const.items():
             if k not in s.__const:
                 s.__const[k]=v.rescope({self:s,scope:s})
         #print('APPLY RESULT IS %s %s\n'%(
@@ -780,11 +781,11 @@ class Scope(BaseObject):
     def iterlocal(self):
         """!Iterates over all local variables in this order:
         parameters, constants, variables"""
-        for k,v in self.__parameters.iteritems():
+        for k,v in self.__parameters.items():
             yield k,v
-        for k,v in self.__const.iteritems():
+        for k,v in self.__const.items():
             yield k,v
-        for k,v in self.__vars.iteritems():
+        for k,v in self.__vars.items():
             yield k,v
 
     def resolve(self,key,scopes=None):
@@ -803,7 +804,7 @@ class Scope(BaseObject):
         scope.
         @returns a BaseObject for the requested variable
         @raise KeyError if no such variable is defined"""
-        assert(isinstance(key,basestring))
+        assert(isinstance(key,str))
         names=splitkey(key)
         con=fileless_context()
         if scopes is None:
@@ -852,7 +853,7 @@ class Scope(BaseObject):
         to a constant."""
         names=splitkey(key)
         lval=self
-        for i in xrange(len(names)-1):
+        for i in range(len(names)-1):
             lval=lval.getlocal(names[i])
         if skip_constants and lval.get_type(names[-1])=='constant':
             #module_logger.info('Do not redefine %s.'%(key,))
@@ -870,7 +871,7 @@ class Scope(BaseObject):
         @returns value"""
         names=splitkey(key)
         lval=self
-        for i in xrange(len(names)-1):
+        for i in range(len(names)-1):
             lval=lval.subscope(names[i])
         assert(names[-1]!='TEST_NAME')
         if lval.haslocal(value):
@@ -889,7 +890,7 @@ class Scope(BaseObject):
         @param scopes sent to resolve(); these scopes will be searched instead
         of defscopes when a variable is not found in this scope.
         @returns the resulting python string"""
-        stream=StringIO.StringIO()
+        stream=StringIO()
         # if string.find('TEST_NAME')>-1:
         #     print 'Expand "%s"'%(elipses(string,max_length=80),)
         # yell('Expand %s in %s\n'%(repr(string),repr(self)))
@@ -936,7 +937,7 @@ def make_params(defscopes,**kwargs):
     @param kwargs (key,value) pairs mapping parameter name to the BaseObject value
     @returns a new Scope representing the given function definition"""
     s=Scope(defscopes)
-    for k,v in kwargs.iteritems():
+    for k,v in kwargs.items():
         s.setlocal(k,v)
     return s.as_parameters()
 
@@ -954,7 +955,7 @@ def make_scope(defscopes,**kwargs):
                             'of Scope objects.  One of them is a %s %s'%(
                                 type(scope).__name__,repr(scope)))
     s=Scope(defscopes)
-    for k,v in kwargs.iteritems():
+    for k,v in kwargs.items():
         s.setlocal(k,v)
     return s
 
@@ -1176,7 +1177,7 @@ class AtParse(Builtin):
         """!Generates a block of bash code that will parse the file.
         @param con the Context in which this object is being evaluated
         @returns the resulting block of bash code"""
-        out=StringIO.StringIO()
+        out=StringIO()
         src=self.resolve('src').bash_context(con)
         tgt=self.resolve('tgt').bash_context(con)
         out.write("echo input to atparse from %s:\ncat %s\n"%(src,src))
@@ -1485,7 +1486,7 @@ class Criteria(TypelessObject):
         comparisons or baseline comparisons
         @param con the Context in which this object is being evaluated
         @returns the new bash code block."""
-        out=StringIO.StringIO()
+        out=StringIO()
         if con.run_mode==BASELINE:
             out.write('\n########################################################################\necho BASELINE GENERATION:\n\n')
         else:
@@ -1602,7 +1603,7 @@ class Filters(TypelessObject):
         """!Generates a bash code block that executes all filters in sequence
         @param con the Context in which this object is being evaluated
         @returns the resulting bash code as a string."""
-        out=StringIO.StringIO()
+        out=StringIO()
         out.write('\n########################################################################\necho INPUT FILTERS:\n\n')
         for tgt in self.__tgtlist:
             # out.write('echo Filter for target %s:\n'%(
@@ -1880,7 +1881,7 @@ class SpawnProcess(TypelessObject):
         MPI,nodesize,affinity,max_threads,nodes,max_ppn_tpn,max_ppn,packed=\
             self._make_nodes_ppn(con)
 
-        out=StringIO.StringIO()
+        out=StringIO()
         out.write('# Embedded process execution:\n')
         need_ranks=len(self.__ranks)>1
         have_ranks=False
@@ -2087,7 +2088,7 @@ class EmbedBash(Scope):
         #template=template.string_context(con)
         #expanded=self.expand_string(template,con)
 
-        stream=StringIO.StringIO()
+        stream=StringIO()
         env=dict()
         unset_me=list()
         
@@ -2374,7 +2375,7 @@ class Test(Scope):
         report=self.resolve("COM").bash_context(con)
         report=os.path.join(report,'report.txt')
 
-        out=StringIO.StringIO()
+        out=StringIO()
         out.write("report_start %s Test %s starting at $( date ) '('%s')'\n"%(
                 report,name,descr))
         for step in steps:
@@ -2749,8 +2750,8 @@ class Environ(Scope):
 
         Iterates over the environment, yielding tuples containing the
         environment variable name and its value.  Iteration is in the
-        order returned by os.environ.iteritems()"""
-        for k,v in os.environ.iteritems():
+        order returned by os.environ.items()"""
+        for k,v in os.environ.items():
             yield k,String([self],v,False)
     def resolve(self,key,scopes=None):
         """!Gets the environment variable, returning it as a python string.

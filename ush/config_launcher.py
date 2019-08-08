@@ -226,10 +226,10 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # ie. config.NEWVAR="a new var" dir.SOMEDIR=/override/dir/path
     # If spaces, seems like you need double quotes on command line.
     if moreopt:
-        for section, options in moreopt.iteritems():
+        for section, options in moreopt.items():
             if not conf.has_section(section):
                 conf.add_section(section)
-            for option, value in options.iteritems():
+            for option, value in options.items():
                 logger.info('Override: %s.%s=%s'
                             % (section, option, repr(value)))
                 conf.set(section, option, value)

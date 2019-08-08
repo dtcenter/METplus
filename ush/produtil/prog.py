@@ -38,7 +38,9 @@ directly, except for type checking (ie.: to see if your argument is a
 Runner before passing it to produtil.run.checkrun).."""
 
 import produtil.sigsafety
-import StringIO,select,io,re,time,fcntl,os,logging,signal
+import select,io,re,time,fcntl,os,logging,signal
+
+from io import StringIO
 
 import produtil.mpi_impl
 from produtil.pipeline import launch, manage, PIPE, ERR2OUT
@@ -426,7 +428,7 @@ class Runner(object):
             if not isinstance(args,list):
                 raise TypeError('The args argument must be a list, not a %s %s.'%(
                         type(args).__name__,repr(args)))
-            if not isinstance(args[0],basestring):
+            if not isinstance(args[0],str):
                 raise TypeError('The first element of args must be a string, not a %s %s.'%(
                         type(args[0]).__name__,repr(args)))
             self._args=args
@@ -513,7 +515,7 @@ class Runner(object):
         Conversions:
         * float --- converted via %g
         * int --- converted via %d
-        * basestring --- no conversion; used directly
+        * str --- no conversion; used directly
         * all others --- str(arg)
         @param arg the argument to convert
         @returns a string version of arg"""
@@ -521,7 +523,7 @@ class Runner(object):
             return '%g'%(arg,)
         elif isinstance(arg,int):
             return '%d'%(arg,)
-        elif isinstance(arg,basestring):
+        elif isinstance(arg,str):
             return arg
         else:
             return str(arg)
@@ -536,7 +538,7 @@ class Runner(object):
         _stringify_args.
         @param args one or more arguments to add
         @returns self"""
-        if isinstance(args,basestring) or isinstance(args,float) \
+        if isinstance(args,str) or isinstance(args,float) \
                 or isinstance(args,int):
             self._args.append(self._stringify_arg(args))
         else:
@@ -575,7 +577,7 @@ class Runner(object):
             s+='.clearenv()'
         if self._env is not None:
             s+='.env('+(', '.join(['%s=%s'%(k,v) 
-                                   for k,v in self._env.iteritems()]))+')'
+                                   for k,v in self._env.items()]))+')'
         if self._prerun is not None:
             s+=''.join(['.prerun(%s)'%(repr(x),) for x in self._prerun])
         if self._cd is not None:
@@ -864,7 +866,7 @@ class Runner(object):
         elif(string):
             self._stdin=StringInput(str(stdin))
         else:
-            if isinstance(stdin,basestring):
+            if isinstance(stdin,str):
                 self._stdin=FileOpener(str(stdin),'rb')
             else:
                 self._stdin=StreamReuser(stdin)
@@ -883,7 +885,7 @@ class Runner(object):
         if self._stdout is not None:
             raise MultipleStdout('More than one stdout detected in call '
                                  'to Runner.out')
-        if isinstance(stdout,basestring):
+        if isinstance(stdout,str):
             if append:
                 self._stdout=FileOpener(str(stdout),'ab')
             else:
@@ -914,7 +916,7 @@ class Runner(object):
         if self._stderr is not None:
             raise MultipleStderr(
                 'More than one stderr detected in call to Runner.err')
-        if isinstance(stderr,basestring):
+        if isinstance(stderr,str):
             if append:
                 self._stderr=FileOpener(str(stderr),'ab',True)
             else:

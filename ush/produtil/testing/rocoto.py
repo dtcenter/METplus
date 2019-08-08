@@ -2,9 +2,10 @@
 a Rocoto workflow inside a valid Environmental Equivalence version 2
 (EE2) compliant vertical structure."""
 
-import sys, re, StringIO, collections, os, datetime, logging
+import sys, re, collections, os, datetime, logging
 import produtil.run, produtil.log, produtil.setup
 
+from io import StringIO
 from produtil.testing.utilities import *
 from produtil.testing.script import bash_functions
 from produtil.testing.parsetree import Test, Build, BaseObject, SpawnProcess
@@ -360,7 +361,7 @@ fi
                  }
 
         if not self.__install:
-            self.__install=StringIO.StringIO()
+            self.__install=StringIO()
             self.__install.write(r'''#! /usr/bin/env bash
 
 # DO NOT EDIT THIS SCRIPT; IT IS AUTOMATICALLY GENERATED
@@ -372,7 +373,7 @@ set -xue
             kwargs['install_if']='if'
 
         if not self.__uninstall:
-            self.__uninstall=StringIO.StringIO()
+            self.__uninstall=StringIO()
             self.__uninstall.write(r'''#! /usr/bin/env bash
 
 # DO NOT EDIT THIS SCRIPT; IT IS AUTOMATICALLY GENERATED
@@ -451,7 +452,7 @@ rm -f {target}
     def iter_files(self):
         """!Iterates over files to be generated, yielding tuples
         containing the path and contents."""
-        for path,contents in self.__files.iteritems():
+        for path,contents in self.__files.items():
             yield path,contents
     def iter_tests(self):
         """!Iterates over all RocotoTasks for tests to run, yielding a

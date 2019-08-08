@@ -55,7 +55,7 @@ def retry_io(max_tries,sleep_time,operation,opargs=[],logger=None,
         sleep_time=0.1
     sleepme=sleep_time
 
-    for ntry in xrange(max_tries):
+    for ntry in range(max_tries):
         try:
             if logger is not None:
                 logger.debug('%s(%s)'%(repr(operation),repr(opargs)))
@@ -71,7 +71,7 @@ def retry_io(max_tries,sleep_time,operation,opargs=[],logger=None,
                         sleepmax=min(sleep_time,0.05) * \
                             min(max(1.0,backoff**ntry),50.0)
                         sleepme=random.uniform(sleepmax/2.0,sleepmax)
-                if isinstance(fail,basestring):
+                if isinstance(fail,str):
                     if logger is not None and ntry>=first_warn:
                         logger.info("%s (try %d/%d; sleep %.3f and retry): %s"%\
                                            (fail,ntry+1,max_tries,sleepme,repr(e)))
@@ -87,7 +87,7 @@ def retry_io(max_tries,sleep_time,operation,opargs=[],logger=None,
                 if logger is not None:
                     logger.debug('Failed and gave up: %s'%(str(e),),
                                  exc_info=True)
-                if isinstance(giveup,basestring) and not giveup_quiet:
+                if isinstance(giveup,str) and not giveup_quiet:
                     if logger is not None:
                         logger.warning("%s (giving up after %d tries): %s"%\
                                           (giveup,ntry+1,repr(e)),exc_info=True)
@@ -96,7 +96,7 @@ def retry_io(max_tries,sleep_time,operation,opargs=[],logger=None,
                     arglist.extend([e,ntry+1,max_tries,sleep_time,False])
                     if logger is not None:
                         logger.debug('arglist to fail (2): '+repr(arglist))
-                    if isinstance(fail,basestring):
+                    if isinstance(fail,str):
                         if giveup_quiet and logger is not None:
                             logger.warning(fail)
                     else:

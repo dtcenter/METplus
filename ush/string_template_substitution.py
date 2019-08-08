@@ -134,8 +134,10 @@ def format_hms(fmt, obj):
     """
     out_str = ''
     # split time into hours, mins, and secs
-    hours = obj / 3600
-    minutes = (obj % 3600) / 60
+    # Specifying integer division // for Python 3
+    # since that was the intent in Python 2.
+    hours = obj // 3600
+    minutes = (obj % 3600) // 60
     seconds = (obj % 3600) % 60
 
     # parse format

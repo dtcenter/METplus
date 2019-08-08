@@ -338,7 +338,7 @@ def get_mpi(mpi_name=NO_NAME,force=False,logger=None,**kwargs):
         try:
             result=detect(
                 force=force,logger=logger,**kwargs)
-        except (StandardError,
+        except (Exception,
                 produtil.fileop.FileOpError,
                 produtil.prog.ExitStatusException) as ee:
             # Ignore exceptions related to an inability to detect the

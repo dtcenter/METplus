@@ -9,7 +9,7 @@ import produtil
 import os
 import config_metplus
 
-@pytest.fixture
+#@pytest.fixture
 def metplus_config():
     """! Create a METplus configuration object that can be
     manipulated/modified to
@@ -431,13 +431,14 @@ def test_parse_var_list_fcst_only():
            )
 
 def test_get_lead_sequence_lead():
-    input_dict = { 'valid' : datetime.datetime(2019, 02, 01, 13) }
+    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 13) }
     conf = metplus_config()
     cu = ConfigWrapper(conf, None)
     conf.set('config', 'LEAD_SEQ', "3,6,9,12")
     test_seq = util.get_lead_sequence(cu, input_dict)
     lead_seq = [ 3, 6, 9, 12 ]
     assert(test_seq == lead_seq)
+    
 
 @pytest.mark.parametrize(
     'key, value', [
@@ -450,7 +451,7 @@ def test_get_lead_sequence_lead():
     ]
 )
 def test_get_lead_sequence_lead_list(key, value):
-    input_dict = { 'valid' : datetime.datetime(2019, 02, 01, 13) }
+    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 13) }
     conf = metplus_config()
     cu = ConfigWrapper(conf, None)
     conf.set('config', 'LEAD_SEQ', key)
@@ -487,7 +488,7 @@ def test_get_lead_sequence_lead_list(key, value):
     ]
 )
 def test_get_lead_sequence_init(key, value):
-    input_dict = { 'valid' : datetime.datetime(2019, 02, 01, key) }
+    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, key) }
     conf = metplus_config()
     cu = ConfigWrapper(conf, None)
     conf.set('config', 'INIT_SEQ', "0, 12")
@@ -497,7 +498,7 @@ def test_get_lead_sequence_init(key, value):
     assert(test_seq == lead_seq)
 
 def test_get_lead_sequence_init_min_10():
-    input_dict = { 'valid' : datetime.datetime(2019, 02, 01, 12) }
+    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 12) }
     conf = metplus_config()
     cu = ConfigWrapper(conf, None)
     conf.set('config', 'INIT_SEQ', "0, 12")

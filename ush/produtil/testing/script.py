@@ -2,7 +2,7 @@
 a flat bash script that will run the entire test suite, one test at a
 time."""
 
-import StringIO
+from io import StringIO
  
 __all__=['bash_functions','BashRunner']
 
@@ -269,7 +269,7 @@ class MPICHRunner(produtil.testing.parsetree.Context):
 
         @param spawnProcess a description of the process to execute
         @returns a string containing the mpirun command"""
-        out=StringIO.StringIO()
+        out=StringIO()
         out.write('mpirun')
         for rank in spawnProcess.iterrank():
             out.write(' -np %d %s'%(

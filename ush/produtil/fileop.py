@@ -204,7 +204,7 @@ def gribver(filename):
     file, or if the answer is indeterminate, returns None.  Only the
     first GRIB record is tested.
     @param filename the path to the file to test"""
-    if not isinstance(filename,basestring):
+    if not isinstance(filename,str):
         raise TypeError('The first argument to gribver should be '
                         'a filename.  You provided a %s %s.'%
                         (type(filename).__name__,repr(filename)))
@@ -231,7 +231,7 @@ def makedirs(filename,numtries=10,logger=None):
     @param filename the directory path
     @param numtries the number of times to retry
     @param logger a logging.Logger for log messages"""
-    for n in xrange(numtries):
+    for n in range(numtries):
         try:
             if not os.path.isdir(filename):
                 if logger is not None:
@@ -342,7 +342,7 @@ def isnonempty(filename):
 
 ########################################################################    
 def deliver_file(infile,outfile,keep=True,verify=False,blocksize=1048576,
-                 tempprefix=None,permmask=002,removefailed=True,
+                 tempprefix=None,permmask=0o002,removefailed=True,
                  logger=None,preserve_perms=True,preserve_times=True,
                  preserve_group=None,copy_acl=None,moveok=True, 
                  force=True, copier=None):
@@ -806,8 +806,8 @@ def fortlink(forts,force=False,basedir=None,logger=None):
     if logger is not None:
         logger.debug('in fortlink, forts=%s force=%s basedir=%s logger=%s'%(
                 repr(forts),repr(force),repr(basedir),repr(logger)))
-    for (i,filename) in forts.iteritems():
-        assert(isinstance(filename,basestring))
+    for (i,filename) in forts.items():
+        assert(isinstance(filename,str))
         link='fort.%d'%(int(i),)
         if basedir is not None: link=os.path.join(basedir,where)
         make_symlink(filename,link,force=force,logger=logger)
@@ -838,7 +838,7 @@ def fortcopy(forts,basedir=None,logger=None,only_log_errors=False,**kwargs):
     @param logger A logging.Logger for log messages.    
     @param only_log_errors Only log failed operations instead of logging everything.
     @param kwargs All other keyword arguments are passed to deliver_file()"""
-    for (i,filename) in forts.iteritems():
+    for (i,filename) in forts.items():
         newfile='fort.%d'%(int(i),)
         if basedir is not None: newfile=os.path.join(basedir,where)
         try:
@@ -1028,7 +1028,7 @@ class FileWaiter:
         list of files to wait for.  If the same filename is received a
         second time, it is ignored.
         @param flist a filename (string) or list of filenames"""
-        if isinstance(flist,basestring):
+        if isinstance(flist,str):
             if flist in self._fset:
                 return # already have this file
             self._flist.append(flist)

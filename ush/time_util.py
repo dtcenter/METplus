@@ -117,10 +117,12 @@ def ti_calculate(input_dict):
     out_dict['offset'] = int(out_dict['offset'].total_seconds())
 
     # add common uses for relative times
-    out_dict['lead_hours'] = int(total_seconds / 3600)
-    out_dict['lead_minutes'] = int(total_seconds / 60)
+    # Specifying integer division // Python 3,
+    # assuming that was the intent in Python 2.
+    out_dict['lead_hours'] = int(total_seconds // 3600)
+    out_dict['lead_minutes'] = int(total_seconds // 60)
     out_dict['lead_seconds'] = total_seconds
-    out_dict['offset_hours'] = int(out_dict['offset'] / 3600)
+    out_dict['offset_hours'] = int(out_dict['offset'] // 3600)
 
     # set synonyms for items
     out_dict['date'] = out_dict['da_init']
