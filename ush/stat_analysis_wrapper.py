@@ -826,7 +826,7 @@ class StatAnalysisWrapper(CommandBuilder):
         stat_analysis_out_dir = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR')
         stat_analysis_config = self.config.getstr('config', 'STAT_ANALYSIS_CONFIG')
         model_list = self.parse_model_list()
-        var_list = self.c_dict['VAR_LIST']
+        var_list = util.parse_var_list(self.config)
         fourier_decom_list = self.parse_var_fourier_decomp()
         region_list = util.getlist(self.config.getstr('config', 'REGION_LIST'))
         lead_list = util.getlist(self.config.getstr('config', 'LEAD_LIST'))

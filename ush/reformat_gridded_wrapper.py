@@ -77,5 +77,6 @@ that reformat gridded data
                 os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
                 self.logger.info("Processing forecast lead {}".format(lead))
                 time_info = time_util.ti_calculate(input_dict)
-                for var_info in self.c_dict['VAR_LIST']:
+                var_list = util.parse_var_list(self.config, time_info)
+                for var_info in var_list:
                     self.run_at_time_once(time_info, var_info, to_run)

@@ -123,12 +123,12 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         if dtype == "FCST":
             compare_var = var_info['fcst_name']
-            level = var_info['fcst_level']
+            v_level = var_info['fcst_level']
         else:
             compare_var = var_info['obs_name']
-            level = var_info['obs_level']
+            v_level = var_info['obs_level']
 
-        level = util.split_level(level)[1]
+        level = util.split_level(v_level)[1]
 
         if self.c_dict[dtype+'_INPUT_DIR'] == '':
             self.logger.error('Must set {}_REGRID_DATA_PLANE_INPUT_DIR'.format(dtype) +\
@@ -207,7 +207,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             self.args.append("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(field_name))
         else:
             field_name = "{:s}".format(compare_var)
-            self.args.append("-field 'name=\"{:s}\"; level=\"{:s}\";'".format(field_name, level))
+            self.args.append("-field 'name=\"{:s}\"; level=\"{:s}\";'".format(field_name, v_level))
 
         if self.c_dict['METHOD'] != '':
             self.args.append("-method {}".format(self.c_dict['METHOD']))

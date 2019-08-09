@@ -163,6 +163,8 @@ that reformat gridded data
         # get verification mask if available
         self.get_verification_mask(time_info)
 
+        self.c_dict['VAR_LIST'] = util.parse_var_list(self.config, time_info)
+
         if self.c_dict['ONCE_PER_FIELD']:
             # loop over all fields and levels (and probability thresholds) and
             # call the app once for each
@@ -294,8 +296,10 @@ that reformat gridded data
 
                     prob_cat_thresh = self.c_dict[d_type + '_PROB_THRESH']
                     if self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF':
-                        field = "{ name=\"" + v_name + "\"; level=\"" + \
-                                level + "\"; prob=TRUE; cat_thresh=[" + prob_cat_thresh + "];}"
+                        field = "{ name=\"" + v_name + "\";"
+                        if level:
+                            field += " level=\"" +  level + "\";"
+                        field += " prob=TRUE; cat_thresh=[" + prob_cat_thresh + "];}"
                     else:
                         field = "{ name=\"PROB\"; level=\"" + level_type + \
                                 level + "\"; prob={ name=\"" + \
@@ -325,8 +329,9 @@ that reformat gridded data
                 field = "{ name=\"" + v_name + "_" + level + \
                         "\"; level=\"(*,*)\"; "
             else:
-                field = "{ name=\"" + v_name + \
-                        "\"; level=\"" + v_level + "\"; "
+                field = "{ name=\"" + v_name + "\";"
+                if level:
+                    field += " level=\"" +  v_level + "\";"
 
             field += cat_thresh + " " + v_extra + " }"
             fields.append(field)
@@ -472,8 +477,11 @@ that reformat gridded data
             self.logger.error("No input filenames specified")
             return None
 
-        for infile in self.infiles:
-            cmd += infile + " "
+        # add forecast file
+        cmd += self.infiles[0] + ' '
+
+        # add observation file
+        cmd += self.infiles[1] + ' '
 
         if self.param != "":
             cmd += self.param + " "

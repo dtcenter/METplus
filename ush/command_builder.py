@@ -38,7 +38,6 @@ class CommandBuilder:
 
     def __init__(self, config, logger):
         self.logger = logger
-#        self.config = ConfigWrapper(config, logger)
         self.config = config
         self.debug = False
         self.args = []
@@ -58,7 +57,6 @@ class CommandBuilder:
 
     def create_c_dict(self):
         c_dict = dict()
-        c_dict['VAR_LIST'] = util.parse_var_list(self.config)
         return c_dict
 
     def clear(self):
@@ -234,6 +232,9 @@ class CommandBuilder:
 
         template = self.c_dict[data_type + '_INPUT_TEMPLATE']
         data_dir = self.c_dict[data_type + '_INPUT_DIR']
+
+        if template == 'PYTHON_NUMPY' or template == 'PYTHON_XARRAY' or template == 'PYTHON_PANDAS':
+            return template
 
         # if looking for a file with an exact time match:
         if self.c_dict[data_type + '_FILE_WINDOW_BEGIN'] == 0 and \

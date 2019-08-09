@@ -1402,24 +1402,33 @@ def validate_thresholds(thresh_list):
         return False
     return True
 
-def parse_var_list(config):
+def parse_var_list(config, time_info=None):
     """ read conf items and populate list of dictionaries containing
     information about each variable to be compared
         Args:
             @param config: ConfigWrapper object
+            @param time_info: time object for string sub, optional
         Returns:
             list of dictionaries with variable information
     """
-    var_list_fcst = parse_var_list_helper(config, "FCST", False)
-    var_list_obs = parse_var_list_helper(config, "OBS", True)
+    # if time_info is not passed in, set 'now' to CLOCK_TIME
+    # NOTE: any attempt to use string template substitution with an item other than
+    #  'now' will fail if time_info is not passed into parse_var_list
+    if time_info is None:
+        time_info = { 'now' : datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
+                                                         '%Y%m%d%H%M%S') }
+
+    var_list_fcst = parse_var_list_helper(config, "FCST", time_info, False)
+    var_list_obs = parse_var_list_helper(config, "OBS", time_info, True)
     var_list = var_list_fcst + var_list_obs
     return sorted(var_list, key=lambda x: x['index'])
 
-def parse_var_list_helper(config, data_type, dont_duplicate):
+def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
     """ helper function for parse_var_list
         Args:
             @param config: ConfigWrapper object
             @param data_type: data_type (FCST or OBS)
+            @param time_info: time object for string sub
             @param dont_duplicate: if true check other data
               type and don't process if it exists
         Returns:
@@ -1454,7 +1463,9 @@ def parse_var_list_helper(config, data_type, dont_duplicate):
         extra = {}
         # get fcst var info if available
         if config.has_option('config', data_type+"_VAR"+n+"_NAME"):
-            name[data_type] = config.getstr('config', data_type+"_VAR"+n+"_NAME")
+            name[data_type] = config.getraw('config', data_type+"_VAR"+n+"_NAME")
+            name[data_type] = StringSub(config.logger, name[data_type],
+                                        **time_info).do_string_sub()
 
             extra[data_type] = ""
             if config.has_option('config', data_type+"_VAR"+n+"_OPTIONS"):
@@ -1473,7 +1484,9 @@ def parse_var_list_helper(config, data_type, dont_duplicate):
 
             # if OBS_VARn_X does not exist, use FCST_VARn_X
             if config.has_option('config', other_data_type+"_VAR"+n+"_NAME"):
-                name[other_data_type] = config.getstr('config', other_data_type+"_VAR"+n+"_NAME")
+                name[other_data_type] = config.getraw('config', other_data_type+"_VAR"+n+"_NAME")
+                name[other_data_type] = StringSub(config.logger, name[other_data_type],
+                                                  **time_info).do_string_sub()
             else:
                 name[other_data_type] = name[data_type]
 
@@ -1481,11 +1494,26 @@ def parse_var_list_helper(config, data_type, dont_duplicate):
             if config.has_option('config', other_data_type+"_VAR"+n+"_OPTIONS"):
                 extra[other_data_type] = config.getraw('config', other_data_type+"_VAR"+n+"_OPTIONS")
 
-            levels[data_type] = getlist(config.getstr('config', data_type+"_VAR"+n+"_LEVELS"))
+            levels_tmp = getlist(config.getraw('config', data_type+"_VAR"+n+"_LEVELS", ''))
+            levels[data_type] = []
+            for level in levels_tmp:
+                subbed_level = StringSub(config.logger, level, **time_info).do_string_sub()
+                levels[data_type].append(subbed_level)
+
+            if not levels[data_type]:
+                levels[data_type].append('')
+
             if config.has_option('config', other_data_type+"_VAR"+n+"_LEVELS"):
-                levels[other_data_type] = getlist(config.getstr('config', other_data_type+"_VAR"+n+"_LEVELS"))
+                levels_tmp = getlist(config.getraw('config', other_data_type+"_VAR"+n+"_LEVELS", ''))
+                levels[other_data_type] = []
+                for level in levels_tmp:
+                    subbed_level = StringSub(config.logger, level, **time_info).do_string_sub()
+                    levels[other_data_type].append(subbed_level)
             else:
                 levels[other_data_type] = levels[data_type]
+
+            if not levels[other_data_type]:
+                levels[other_data_type].append('')
 
             if len(levels[data_type]) != len(levels[other_data_type]):
                 msg = data_type+"_VAR"+n+"_LEVELS and "+other_data_type+"_VAR"+n+\
@@ -1584,6 +1612,8 @@ def parse_var_list_helper(config, data_type, dont_duplicate):
 
 def split_level(level):
     level_type = ""
+    if not level:
+        return '', ''
     if level[0].isalpha():
         level_type = level[0]
         level = level[1:].zfill(2)
