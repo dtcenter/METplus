@@ -10,11 +10,12 @@
 # For example, LSF+IBMPE and LoadLeveler+IBMPE work this way if one
 # wants to run different programs on different ranks.
 
-import tempfile,stat,os, logging, StringIO, re
+import tempfile,stat,os, logging, re
 
 import produtil.prog
 import produtil.pipeline
 from produtil.prog import shbackslash
+from io import StringIO
 
 module_logger=logging.getLogger('produtil.mpi_impl')
 
@@ -54,8 +55,16 @@ def guess_total_tasks_impl(logger,silent):
                     len(cpus),cpu_cores,ppn))
     return np*ppn
 
-class MPIConfigError(Exception): 
+class MPIError(Exception):
+    """!Base class of all exceptions related to launching MPI programs."""
+class MPIMissingEnvironment(MPIError):
+    """!Raised when the environment variables related to the MPI implementation are missing."""
+class MPIEnvironmentInvalid(MPIError):
+    """!Raised when the environment variables related to the MPI implementation are contain invalid data."""
+class MPIConfigError(MPIError): 
     """!Base class of MPI configuration exceptions."""
+class MPITooManyRanks(MPIError):
+    """!Raised when the program requests more ranks than are available."""
 class WrongMPI(MPIConfigError): 
     """!Unused: raised when the wrong MPI implementation is accessed.  """
 class MPISerialMissing(MPIConfigError):
@@ -73,7 +82,7 @@ class MPIDisabled(MPIConfigError):
     """!Thrown to MPI is not supported."""
 class OpenMPDisabled(MPIConfigError):
     """!Raised when OpenMP is not supported by the present implementation."""
-
+    
 class ImplementationBase(object):
     """!Abstract base class for all MPI implementations.  Default
     implementations for all functions represent a situation where no
@@ -83,6 +92,13 @@ class ImplementationBase(object):
             logger=logging.getLogger('produtil.mpi_impl')
         self.logger=logger
         self._mpiserial_path=None
+
+    @staticmethod
+    def synonyms():
+        """!Iterates over alternative names for this MPI implementation, such
+        as the names of other MPI implementations this class can handle."""
+        return
+        yield 'xyz' # trick to ensure this is an iterator
 
     def getmpiserial_path(self):
         if not self._mpiserial_path:
@@ -171,7 +187,8 @@ class CMDFGen(object):
     produtil.mpi_impl.mpirun_lsf for an example of how to use this."""
     def __init__(self,base,lines,cmd_envar='SCR_CMDFILE',
                  model_envar=None,filename_arg=False,
-                 silent=False, **kwargs):
+                 silent=False,filename_option=None,
+                 next_prerun=None,**kwargs):
         """!CMDFGen constructor
         
         @param base type of command file being generated.  See below.
@@ -180,6 +197,7 @@ class CMDFGen(object):
         @param model_envar environment variable to set to "MPMD" 
         @param kwargs Sets the command file name.  See below.
         @param filename_arg If True, the name of the command file is appended to the program argument list.
+        @param filename_option A string or None.  If filename_arg is true, this string is appended before the filename_arg
 
         The command file is generated from
         tempfile.NamedTemporaryFile, passing several arguments from
@@ -195,7 +213,7 @@ class CMDFGen(object):
         assert(base is not None)
         assert(isinstance(lines,list))
         assert(len(lines)>0)
-        assert(isinstance(lines[0],basestring))
+        assert(isinstance(lines[0],str))
         assert(len(lines[0])>0)
         self.filename=kwargs.get(str(base),None)
         self.tmpprefix=kwargs.get('%s_suffix'%(base,),'%s.'%(base,))
@@ -204,7 +222,9 @@ class CMDFGen(object):
         self.cmd_envar=cmd_envar
         self.model_envar=model_envar
         self.filename_arg=filename_arg
+        self.filename_option=filename_option
         self.silent=bool(silent)
+        self.next_prerun=next_prerun
         out='\n'.join(lines)
         if len(out)>0:
             out+='\n'
@@ -263,11 +283,13 @@ class CMDFGen(object):
             kw={self.cmd_envar: self.filename}
             self._add_more_vars(kw,logger)
             if logger is not None:
-                for k,v in kw.iteritems():
+                for k,v in kw.items():
                     self.info('Set %s=%s'%(k,repr(v)),logger)
             if self.filename_arg:
+                if filename_option:
+                    runner=runner[self.filename_option]
                 runner=runner[self.filename]
-            return runner.env(**kw)
+            result=runner.env(**kw)
         else:
             with tempfile.NamedTemporaryFile(mode='wt',suffix=self.tmpsuffix,
                     prefix=self.tmpprefix,dir=self.tmpdir,delete=False) as t:
@@ -279,12 +301,16 @@ class CMDFGen(object):
                 kw={self.cmd_envar: t.name}
                 self._add_more_vars(kw,logger)
                 if logger is not None:
-                    for k,v in kw.iteritems():
+                    for k,v in kw.items():
                         self.info('Set %s=%s'%(k,repr(v)),logger)
                 runner.env(**kw)
                 if self.filename_arg:
-                    runner=runner[t.name]
-            return runner
+                    if isinstance(self.filename_option,str):
+                        runner=runner[str(self.filename_option)]
+                    runner=runner[os.path.realpath(t.name)]
+            result=runner
+        if self.next_prerun is not None:
+            return self.next_prerun(result)
 
     def to_shell(self,runner,logger=None):
         """!Adds the environment variables to @c runner and generates
@@ -294,7 +320,7 @@ class CMDFGen(object):
         @param logger a logging.Logger for log messages
         @returns a tuple containing shell code and the modified runner"""
         if logger is None: logger=module_logger
-        sio=StringIO.StringIO()
+        sio=StringIO()
         filename=self.filename
         if filename is None:
             filename='tempfile'
@@ -327,7 +353,7 @@ class CMDFGen(object):
         kw={self.cmd_envar: filename}
         self._add_more_vars(kw,logger)
         if logger is not None:
-            for k,v in kw.iteritems():
+            for k,v in kw.items():
                 self.info('Set %s=%s'%(k,repr(v)),logger)
         if self.filename_arg:
             runner=runner[filename]

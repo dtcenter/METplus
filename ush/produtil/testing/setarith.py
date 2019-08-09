@@ -61,7 +61,7 @@ def arithparse(spec,sets,elements):
     @param elements All known elements.  This is a superset of all
     other sets, and may contain additional elements.
 """
-    assert(isinstance(spec,basestring))
+    assert(isinstance(spec,str))
     tokiter=peekable(_arithtoken(spec))
     result=_arithparse_top(tokiter,sets,elements)
     return result
@@ -79,7 +79,7 @@ def _arithtoken(spec):
     """!Tokenizes a set arithmetic expression.
     @protected
     @see arithparse()"""
-    assert(isinstance(spec,basestring))
+    assert(isinstance(spec,str))
     for m in re.finditer(r'''(?xs)
         (
             (?P<oper>[A-Za-z]+) \(
@@ -259,7 +259,7 @@ def _arithparse_expr(tokiter,sets,elements):
                             str(k) for k in each_not_all(sets)])))
         result=ListableSet(sets[data])
     elif typ=='*':
-        result=ListableSet([val for key,val in elements.iteritems()])
+        result=ListableSet([val for key,val in elements.items()])
     elif typ=='{':
         result=_arithparse_set(tokiter,elements)
     else:

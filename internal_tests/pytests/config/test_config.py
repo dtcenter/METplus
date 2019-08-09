@@ -9,7 +9,8 @@ import produtil
 import os
 import config_metplus
 
-@pytest.fixture
+
+#@pytest.fixture
 def metplus_config():
     """! Create a METplus configuration object that can be
     manipulated/modified to

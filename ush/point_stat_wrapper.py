@@ -218,10 +218,10 @@ class PointStatWrapper(CompareGriddedWrapper):
                       "POINT_STAT_POLY", "POINT_STAT_STATION_ID"]
 
         # Set the environment variables
-        self.add_env_var(b'MODEL', str(self.c_dict['MODEL']))
+        self.add_env_var('MODEL', str(self.c_dict['MODEL']))
 
         regrid_to_grid = self.c_dict['REGRID_TO_GRID']
-        self.add_env_var(b'REGRID_TO_GRID', regrid_to_grid)
+        self.add_env_var('REGRID_TO_GRID', regrid_to_grid)
 #        os.environ['REGRID_TO_GRID'] = regrid_to_grid
 
         # MET accepts a list of values for POINT_STAT_POLY, POINT_STAT_GRID,
@@ -231,25 +231,25 @@ class PointStatWrapper(CompareGriddedWrapper):
         # expected behavior.
         poly_str = str(self.c_dict['POINT_STAT_POLY'])
         if not poly_str:
-            self.add_env_var(b'POINT_STAT_POLY', "[]")
+            self.add_env_var('POINT_STAT_POLY', "[]")
         else:
             poly = poly_str.replace("\'", "\"")
-            self.add_env_var(b'POINT_STAT_POLY', poly)
+            self.add_env_var('POINT_STAT_POLY', poly)
 
         grid_str = str(self.c_dict['POINT_STAT_GRID'])
         if not grid_str:
-            self.add_env_var(b'POINT_STAT_GRID', "[]")
+            self.add_env_var('POINT_STAT_GRID', "[]")
         else:
             # grid = grid_str.replace("\'", "\"")
             grid = '"' + grid_str + '"'
-            self.add_env_var(b'POINT_STAT_GRID', grid)
+            self.add_env_var('POINT_STAT_GRID', grid)
 
         sid_str = str(self.c_dict['POINT_STAT_STATION_ID'])
         if not sid_str:
-            self.add_env_var(b'POINT_STAT_STATION_ID', "[]")
+            self.add_env_var('POINT_STAT_STATION_ID', "[]")
         else:
             sid = sid_str.replace("\'", "\"")
-            self.add_env_var(b'POINT_STAT_STATION_ID', sid)
+            self.add_env_var('POINT_STAT_STATION_ID', sid)
 
         tmp_message_type = str(self.c_dict['POINT_STAT_MESSAGE_TYPE'])
         # Check for "empty" POINT_STAT_MESSAGE_TYPE in METplus config file and
@@ -263,16 +263,16 @@ class PointStatWrapper(CompareGriddedWrapper):
             tmp_message_type = str(tmp_message_type).replace("\'", "\"")
             # Remove all whitespace
             tmp_message_type = ''.join(tmp_message_type.split())
-            self.add_env_var(b'POINT_STAT_MESSAGE_TYPE', tmp_message_type)
+            self.add_env_var('POINT_STAT_MESSAGE_TYPE', tmp_message_type)
 
-        self.add_env_var(b'FCST_FIELD', fcst_field)
-        self.add_env_var(b'OBS_FIELD', obs_field)
+        self.add_env_var('FCST_FIELD', fcst_field)
+        self.add_env_var('OBS_FIELD', obs_field)
 
         # Set the environment variables corresponding to the obs_window
         # dictionary.
-        self.add_env_var(b'OBS_WINDOW_BEGIN',
+        self.add_env_var('OBS_WINDOW_BEGIN',
                          str(self.c_dict['OBS_WINDOW_BEGIN']))
-        self.add_env_var(b'OBS_WINDOW_END', str(self.c_dict['OBS_WINDOW_END']))
+        self.add_env_var('OBS_WINDOW_END', str(self.c_dict['OBS_WINDOW_END']))
 
         # add additional env vars if they are specified
         if self.c_dict['VERIFICATION_MASK'] != '':

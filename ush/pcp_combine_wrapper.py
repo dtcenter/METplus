@@ -237,8 +237,10 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         diff = time_info['valid'] - search_time
 
-        lead = int((diff.days * 24) / (data_interval))
-        lead += int((diff).seconds / (data_interval*3600)) - 1
+        # Specifying integer division // Python 3,
+        # assuming that was the intent in Python 2.
+        lead = int((diff.days * 24) // (data_interval))
+        lead += int((diff).seconds // (data_interval*3600)) - 1
         # calling config.conf version of getter so default value is not
         # set in log and final conf because it is unnecessary
         fname = self.config.conf.getstr('config',

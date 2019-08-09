@@ -72,7 +72,7 @@ class partial_ordering(object):
               #   in the partial ordering
     p(5,10)   # = -1 since cmp(5,10)=-1
     @endcode"""
-    def __init__(self,ordering,unordered=None,backupcmp=cmp):
+    def __init__(self,ordering,unordered=None,backupcmp=None):
         """!partial_ordering constructor.
 
         Creates a partial ordering.  The subset that is ordered is
@@ -89,6 +89,19 @@ class partial_ordering(object):
         @param ordering the ordering of known objects
         @param unordered Optional: where to put other objects
         @param backupcmp Tiebreaker comparison function."""
+
+
+        # https://python-future.org/compatible_idioms.html#cmp
+        # https://portingguide.readthedocs.io/en/latest/comparisons.html
+        # Replacement for built-in function cmp that was removed in Python 3
+        # Compare the two objects x and y and return an integer according to
+        # the outcome. The return value is negative if x < y, zero if x == y
+        # and strictly positive if x > y.
+        cmp = lambda x, y: (x > y) - (x < y)
+        if backupcmp is None:
+            assert cmp('a', 'b') < 0 and cmp('b', 'a') > 0 and cmp('c', 'c') == 0
+            backupcmp = cmp
+
         self.order=dict()
         self.backupcmp=backupcmp
         if unordered is None:
@@ -122,6 +135,7 @@ class partial_ordering(object):
         @returns -1 if b>a, 1 if b<a, 0 if b and a belong in the same index."""
         ia = self.order[a] if a in self.order else self.unordered
         ib = self.order[b] if b in self.order else self.unordered
+
         c=cmp(ia,ib)
         if c==0:
             c=self.backupcmp(a,b)
@@ -193,7 +207,7 @@ def randint_zeromean(count,imax,randomizer=None):
         raise OverflowError(
             'In randint_zeromean, imax=%d cannot be negated and fit '
             'within a Python int.'%imax)
-    rand=[ randint(-imax,imax) for x in xrange(count) ]
+    rand=[ randint(-imax,imax) for x in range(count) ]
     cen=sum(rand)
     while cen!=0:
         if cen>0:
@@ -332,7 +346,7 @@ def to_fraction(a,b=None,negok=False):
     elif isinstance(a,datetime.timedelta):
         result=fractions.Fraction(a.microseconds,1000000)+\
             a.seconds+24*3600*a.days
-    elif isinstance(a,basestring): # Catch the 1+3/7 syntax:
+    elif isinstance(a,str): # Catch the 1+3/7 syntax:
         m=re.match('\s*(?P<ipart>[+-]?\d+)\s*(?P<num>[+-]\d+)\s*/\s*(?P<den>\d+)',a)
         if(m):
             (i,n,d)=m.groups(['ipart','num','den'])
@@ -364,7 +378,7 @@ def to_datetime_rel(d,rel):
         return d
     elif isinstance(d,datetime.timedelta):
         return rel+d
-    elif isinstance(d,basestring):
+    elif isinstance(d,str):
         if(re.match('\A(?:\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d|\d{10}|\d{12})\Z',d)):
             if   len(d)==10:
                 return datetime.datetime.strptime(d,'%Y%m%d%H')
@@ -387,7 +401,7 @@ def to_datetime(d):
     if isinstance(d,int): d=str(d)
     if isinstance(d,datetime.datetime):
         return d
-    elif isinstance(d,basestring):
+    elif isinstance(d,str):
         if len(d)==10:
             return datetime.datetime.strptime(d,'%Y%m%d%H')
         elif len(d)==12:
@@ -416,7 +430,7 @@ def to_timedelta(a,b=None,negok=True):
     @param negok if True, negative timespans are allowed
     @returns a datetime.timedelta"""
     if isinstance(a,datetime.timedelta): return a
-    if isinstance(a,basestring) and b is None:
+    if isinstance(a,str) and b is None:
         # 03:14 = three hours
         try:
             m=re.search('''(?ix) \A \s* (?P<negative>-)? 0* (?P<hours>\d+)
@@ -563,7 +577,7 @@ class TimeContainer(object):
             self._data=[None]*N
         else:
             self._assigned=[True]*N
-            self._data=[init() for x in xrange(N)]
+            self._data=[init() for x in range(N)]
     def at_index(self,index):
         """!Returns the data at the given index, or raises KeyError if
         no data exists.
@@ -639,30 +653,30 @@ class TimeContainer(object):
             self._assigned[index]=True
     def __iter__(self):
         """!Iterates over all data."""
-        for i in xrange(len(self._times)):
+        for i in range(len(self._times)):
             if self._assigned[i]:
                 yield self._data[i]
     def itervalues(self):
         """!Iterates over data for all known times that have data."""
-        for i in xrange(len(self._times)):
+        for i in range(len(self._times)):
             if self._assigned[i]:
                 yield self._data[i]
     def iterkeys(self):
         """!Iterates over all times that have data."""
-        for i in xrange(len(self._times)):
+        for i in range(len(self._times)):
             if self._assigned[i]:
                 yield self._times[i]
-    def iteritems(self):
+    def items(self):
         """!Iterates over all known times that have data, returning a
         tuple containing the time and the data at that time."""
-        for i in xrange(len(self._times)):
+        for i in range(len(self._times)):
             if self._assigned[i]:
                 yield self._times[i],self._data[i]
     def __reversed__(self):
         """!Iterates over all known times that have data, in reverse
         order."""
         n=len(self._times)
-        for i in xrange(n):
+        for i in range(n):
             j=n-i-1
             if self._assigned[j]:
                 yield self._data[j]
@@ -683,7 +697,7 @@ class TimeContainer(object):
         try:
             (iwhen,index)=self.index_of(when)
             return self._assigned[index]
-        except hwrf.exceptions.NotInTimespan,KeyError:
+        except hwrf.exceptions.NotInTimespan as KeyError:
             return False
     def __len__(self):
         """!Returns the number of times that have data."""
@@ -694,7 +708,7 @@ class TimeContainer(object):
             yield t
     def datatimes(self):
         """!Iterates over all times in this TimeContainer that map to data."""
-        for i in xrange(len(self._times)):
+        for i in range(len(self._times)):
             if self._assigned[i]:
                 yield self._times[i]
     def __str__(self):
@@ -706,13 +720,13 @@ class TimeContainer(object):
                 return "%s:%s"%(st,repr(self._data[i]))
             else:
                 return "%s:(unassigned)"%(st,)
-        contents=", ".join([ idxstr(i) for i in xrange(len(self._times)) ])
+        contents=", ".join([ idxstr(i) for i in range(len(self._times)) ])
         return "%s(%s)"% ( self.__class__.__name__, contents )
     def datatimes_reversed(self):
         """!Iterates in reverse order over all times in this
         TimeContainer that map to data."""
         N=len(self._times)
-        for i in xrange(N):
+        for i in range(N):
             j=N-i-1
             if self._assigned[j]:
                 yield self._times[j]
@@ -742,7 +756,7 @@ class TimeArray(TimeContainer):
         dt=to_fraction(timestep)
         self._timestep=dt
         n=int(to_fraction(self._end-self._start)/self._timestep)+1
-        TimeContainer.__init__(self,[ self._start+to_timedelta(i*dt) for i in xrange(n) ],init=init)
+        TimeContainer.__init__(self,[ self._start+to_timedelta(i*dt) for i in range(n) ],init=init)
         # Public accessors.  Presently these are just data values, not properties:
         self.start=self._start
         self.end=self._end
@@ -771,7 +785,7 @@ class TimeArray(TimeContainer):
         return (self._times[index],index)
     # def __iter__(self):
     #     """Iterates over all known times."""
-    #     for i in xrange(len(self._times)):
+    #     for i in range(len(self._times)):
     #         yield self._times[i]
 
 ########################################################################

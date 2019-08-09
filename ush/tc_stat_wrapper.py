@@ -408,14 +408,14 @@ class TcStatWrapper(CommandBuilder):
             self.add_env_var('STORM_NAME', "[]")
 
         if self.c_dict['INIT_BEG']:
-            self.add_env_var(b'INIT_BEG', self.c_dict['INIT_BEG'])
+            self.add_env_var('INIT_BEG', self.c_dict['INIT_BEG'])
         else:
-            self.add_env_var(b'INIT_BEG', "")
+            self.add_env_var('INIT_BEG', "")
 
         if self.c_dict['INIT_END']:
             self.add_env_var('INIT_END', self.c_dict['INIT_END'])
         else:
-            self.add_env_var(b'INIT_END', "")
+            self.add_env_var('INIT_END', "")
 
         tmp_init_include = self.c_dict['INIT_INCLUDE']
         if tmp_init_include:
@@ -453,9 +453,9 @@ class TcStatWrapper(CommandBuilder):
             # whitespace
             tmp_valid_begin_str = str(tmp_valid_begin).replace("\'", "\"")
             tmp_valid_begin = ''.join(tmp_valid_begin_str.strip())
-            self.add_env_var(b'VALID_BEG', tmp_valid_begin)
+            self.add_env_var('VALID_BEG', tmp_valid_begin)
         else:
-            self.add_env_var(b'VALID_BEG', '')
+            self.add_env_var('VALID_BEG', '')
 
         tmp_valid_end = self.c_dict['VALID_END']
         if tmp_valid_end:
@@ -463,9 +463,9 @@ class TcStatWrapper(CommandBuilder):
             # whitespace
             tmp_valid_end_str = str(tmp_valid_end).replace("\'", "\"")
             tmp_valid_end = ''.join(tmp_valid_end_str.strip())
-            self.add_env_var(b'VALID_END', tmp_valid_end)
+            self.add_env_var('VALID_END', tmp_valid_end)
         else:
-            self.add_env_var(b'VALID_END', "")
+            self.add_env_var('VALID_END', "")
 
         tmp_valid_include = self.c_dict['VALID_INCLUDE']
         if tmp_valid_include:
@@ -671,7 +671,7 @@ class TcStatWrapper(CommandBuilder):
         self.add_env_var('MATCH_POINTS', flag)
 
         if self.c_dict['CONFIG_FILE']:
-            self.add_env_var(b'CONFIG_FILE',
+            self.add_env_var('CONFIG_FILE',
                              self.c_dict['CONFIG_FILE'])
         else:
             self.logger.error(

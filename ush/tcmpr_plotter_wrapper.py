@@ -246,7 +246,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # Generate the list, where the -args are separated by their
             # values.
             full_cmd_list = ['Rscript' + self.tcmpr_script]
-            for key, value in cmds_dict.iteritems():
+            for key, value in cmds_dict.items():
                 full_cmd_list.append(key)
                 full_cmd_list.append(value)
 
@@ -291,7 +291,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             full_cmd_list = list()
             full_cmd_list.append("Rscript")
             full_cmd_list.append(self.tcmpr_script)
-            for key, value in cmds_dict.iteritems():
+            for key, value in cmds_dict.items():
                 full_cmd_list.append(key)
                 if key == '-lookin':
                     # treat the list of dirs in -lookin differently,

@@ -156,7 +156,7 @@ class Tokenizer(object):
             if m is None: 
                 raise ValueError('SHOULD NOT GET HERE: no match on "%s"'%(line,))
             # else:
-            #     for dkey,dval in m.groupdict().iteritems():
+            #     for dkey,dval in m.groupdict().items():
             #         if dval is not None:
             #             yell("%10s = %s\n"%(dkey,repr(dval)))
             if m.group('comment'):

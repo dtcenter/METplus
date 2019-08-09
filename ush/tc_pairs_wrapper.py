@@ -279,18 +279,18 @@ class TcPairsWrapper(CommandBuilder):
         tmp_init_end = self.c_dict['INIT_END'][0:8]
 
         if not tmp_init_beg:
-            self.add_env_var(b'INIT_BEG', "")
+            self.add_env_var('INIT_BEG', "")
         else:
             init_beg = str(tmp_init_beg).replace("\'", "\"")
             init_beg_str = ''.join(init_beg.split())
-            self.add_env_var(b'INIT_BEG', str(init_beg_str))
+            self.add_env_var('INIT_BEG', str(init_beg_str))
 
         if not tmp_init_end:
-            self.add_env_var(b'INIT_END', "")
+            self.add_env_var('INIT_END', "")
         else:
             init_end = str(tmp_init_end).replace("\'", "\"")
             init_end_str = ''.join(init_end.split())
-            self.add_env_var(b'INIT_END', str(init_end_str))
+            self.add_env_var('INIT_END', str(init_end_str))
 
         # INIT_INCLUDE and INIT_EXCLUDE
         # Used to set init_inc in "TC_PAIRS_CONFIG_FILE"
@@ -326,7 +326,7 @@ class TcPairsWrapper(CommandBuilder):
             # Replace ' with " and remove whitespace
             model = str(tmp_model).replace("\'", "\"")
             model_str = ''.join(model.split())
-            self.add_env_var(b'MODEL', str(model_str))
+            self.add_env_var('MODEL', str(model_str))
 
         # STORM_ID
         tmp_storm_id = self.c_dict['STORM_ID']
@@ -337,7 +337,7 @@ class TcPairsWrapper(CommandBuilder):
             # Replace ' with " and remove whitespace
             storm_id = str(tmp_storm_id).replace("\'", "\"")
             storm_id_str = ''.join(storm_id.split())
-            self.add_env_var(b'STORM_ID', str(storm_id_str))
+            self.add_env_var('STORM_ID', str(storm_id_str))
 
         # BASIN
         tmp_basin = self.c_dict['BASIN']
@@ -349,7 +349,7 @@ class TcPairsWrapper(CommandBuilder):
             # Replace any ' with " and remove whitespace.
             basin = str(tmp_basin).replace("\'", "\"")
             basin_str = ''.join(basin.split())
-            self.add_env_var(b'BASIN', str(basin_str))
+            self.add_env_var('BASIN', str(basin_str))
 
         # CYCLONE
         tmp_cyclone = self.c_dict['CYCLONE']
@@ -369,7 +369,7 @@ class TcPairsWrapper(CommandBuilder):
             # Replace ' with " and get rid of any whitespace
             cyclone = str(tmp_cyclone).replace("\'", "\"")
             cyclone_str = ''.join(cyclone.split())
-            self.add_env_var(b'CYCLONE', str(cyclone_str))
+            self.add_env_var('CYCLONE', str(cyclone_str))
 
         # STORM_NAME
         tmp_storm_name = self.c_dict['STORM_NAME']
@@ -380,29 +380,29 @@ class TcPairsWrapper(CommandBuilder):
         else:
             storm_name = str(tmp_storm_name).replace("\'", "\"")
             storm_name_str = ''.join(storm_name.split())
-            self.add_env_var(b'STORM_NAME', str(storm_name_str))
+            self.add_env_var('STORM_NAME', str(storm_name_str))
 
         # Valid time window variables
         tmp_valid_beg = self.c_dict['VALID_BEG']
         tmp_valid_end = self.c_dict['VALID_END']
 
         if not tmp_valid_beg:
-            self.add_env_var(b'VALID_BEG', "")
+            self.add_env_var('VALID_BEG', "")
         else:
             valid_beg = str(tmp_valid_beg).replace("\'", "\"")
             valid_beg_str = ''.join(valid_beg.split())
-            self.add_env_var(b'VALID_BEG', str(valid_beg_str))
+            self.add_env_var('VALID_BEG', str(valid_beg_str))
 
         if not tmp_valid_end:
-            self.add_env_var(b'VALID_END', "")
+            self.add_env_var('VALID_END', "")
         else:
             valid_end = str(tmp_valid_end).replace("\'", "\"")
             valid_end_str = ''.join(valid_end.split())
-            self.add_env_var(b'VALID_END', str(valid_end_str))
+            self.add_env_var('VALID_END', str(valid_end_str))
 
         # DLAND_FILE
         tmp_dland_file = self.c_dict['DLAND_FILE']
-        self.add_env_var(b'DLAND_FILE', str(tmp_dland_file))
+        self.add_env_var('DLAND_FILE', str(tmp_dland_file))
 
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
@@ -691,13 +691,13 @@ class TcPairsWrapper(CommandBuilder):
             os.makedirs(os.path.dirname(out_csvfile))
 
         # Open the output csv file
-        out_file = open(out_csvfile, "wb")
+        out_file = open(out_csvfile, "w", newline='')
 
         # Tell the write to use the line separator
         # "\n" instead of the DOS "\r\n"
         writer = csv.writer(out_file, lineterminator="\n")
 
-        with open(in_csvfile) as csvfile:
+        with open(in_csvfile, newline='') as csvfile:
 
             in_file_reader = csv.reader(csvfile)
 
