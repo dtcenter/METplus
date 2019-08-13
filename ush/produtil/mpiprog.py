@@ -46,9 +46,10 @@ __all__=[]
 
 import sys
 
-import StringIO
 import logging
 import produtil.prog
+
+from io import StringIO
 from produtil.prog import ProgSyntaxError, shbackslash
 
 class MPIProgSyntaxError(ProgSyntaxError): 
@@ -528,7 +529,7 @@ class MPIRanksSPMD(MPIRanksBase):
         """!Returns "X*N" where X is the MPI program and N is the
         number of ranks."""
         return '%s*%d'%(repr(self._mpirank),int(self._count))
-        # sio=StringIO.StringIO()
+        # sio=StringIO()
         # sio.write(repr(self._mpirank))
         # if self.haslocalopts():
         #     sio.write('.setlocalopts(%s)'%(repr(self.localopts),))
@@ -563,7 +564,7 @@ class MPIRanksSPMD(MPIRanksBase):
     def ranks(self):
         """!Iterates over MPI ranks within self."""
         if self._count>0:
-            for i in xrange(self._count):
+            for i in range(self._count):
                 yield self._mpirank
     def nranks(self):
         """!Returns the number of ranks this program requests."""
@@ -848,7 +849,7 @@ class MPIRank(MPIRanksBase):
                     'Tried to convert a Runner to an MPIRank directly, when '
                     'the Runner had more than an executable and arguments.  '
                     'Use mpiserial instead.')
-        elif isinstance(arg,basestring):
+        elif isinstance(arg,str):
             self._args=[arg]
         elif isinstance(arg,list) or isinstance(arg,tuple):
             self._args=[x for x in arg]
@@ -884,7 +885,7 @@ class MPIRank(MPIRanksBase):
     def __getitem__(self,args):
         """!Adds arguments to this MPI rank's program."""
         c=self.copy()
-        if isinstance(args,basestring):
+        if isinstance(args,str):
             c._args.append(args)
         else:
             c._args.extend(args)
@@ -892,7 +893,7 @@ class MPIRank(MPIRanksBase):
     def __repr__(self):
         """!Returns a Pythonic representation of this object for
         debugging."""
-        sio=StringIO.StringIO()
+        sio=StringIO()
         sio.write('mpi(%s)'%(repr(self._args[0])))
         if len(self._args)>1:
             sio.write('['+','.join([repr(x) for x in self._args[1:]])+']')
@@ -914,19 +915,19 @@ class MPIRank(MPIRanksBase):
         @returns None if there are no errors, or raises a descriptive
           exception."""
         for x in self.args():
-            if not isinstance(x,basestring):
+            if not isinstance(x,str):
                 raise InputsNotStrings(
                     'Executable and arguments must be strings.')
         if more is not None and len(more)>0:
             for x in more:
-                if not isinstance(x,basestring):
+                if not isinstance(x,str):
                     raise InputsNotStrings(
                         'Executable and arguments must be strings.')
     def args(self):
         """!Iterates over the executable arguments."""
         if self._env:
             yield '/bin/env'
-            for k,v in self._env.iteritems():
+            for k,v in self._env.items():
                 yield '%s=%s'%(k,shbackslash(v))
         for arg in self._args: yield arg
     def copy(self):

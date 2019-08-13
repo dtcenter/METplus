@@ -1,16 +1,18 @@
 """!Common utilities used by other parts of the produtil.testing package."""
         
-import sys, re, StringIO, collections, os, datetime, logging
+import sys, re, collections, os, datetime, logging
+
+from io import StringIO
 
 ##@var __all__
 # List of variables exported by "from produtil.testing.utilities import *"
 __all__=[ 'module_logger', 'BASELINE', 'EXECUTION', 'elipses', 'splitkey',
           'dqstring2bracestring', 'is_valid_workflow_name', 'unknown_file',
           'peekable','bashify_string', 'ListableSet', 'PTParserError',
-          'PTKeyError' ]
+          'PTKeyError', 'PTPlatformError' ]
 
 class PTParserError(Exception): pass
-
+class PTPlatformError(PTParserError): pass
 class PTKeyError(PTParserError,KeyError): pass
 
 # def yell(arg):
@@ -49,10 +51,10 @@ def bashify_string(string):
            #  --> prints '123'"''"'$$'
         @endcode
 
-        @param string Any subclass of basestring
+        @param string Any subclass of str
 
         @returns valid bash code to represent the string"""
-        output=StringIO.StringIO()
+        output=StringIO()
         for m in re.finditer('''(?xs)
             (
                 (?P<quotes>'+)
@@ -80,7 +82,7 @@ def elipses(long_string,max_length=40,elipses='...'):
     with elipses.  Hence, the number of characters of long_string that
     will be used is max_length-len(elipses)
 
-    @param long_string a basestring or subclass thereof
+    @param long_string a str or subclass thereof
     @param max_length maximum length string to return
     @param elipses the elipses string to append to the end"""
     strlen=len(long_string)
@@ -106,7 +108,7 @@ def dqstring2bracestring(dq):
     string.
     @param dq The bash-style double quote string, minus the 
       surrounding double quotes."""
-    output=StringIO.StringIO()
+    output=StringIO()
     for m in re.finditer(r'''(?xs)
         (
             \\ (?P<backslashed>.)

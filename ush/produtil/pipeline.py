@@ -16,9 +16,11 @@ class NoMoreProcesses(KeyboardInterrupt):
     """!Raised when the produtil.sigsafety package catches a fatal
     signal.  Indicates to callers that the thread should exit."""
 
-import os, signal, select, logging, sys, StringIO, time, errno, \
+import os, signal, select, logging, sys, time, errno, \
     fcntl, threading, weakref, collections
 import stat,errno,fcntl
+
+from io import StringIO
 
 class Constant(object):
     """!A class used to implement named constants."""
@@ -154,7 +156,7 @@ def launch(cmd, env=None, stdin=None, stdout=None, stderr=None,
     @param env the subprocess's environment, or None to use mine
     @param debug if True, send debug messages"""
 
-    if cd is not None and not isinstance(cd,basestring):
+    if cd is not None and not isinstance(cd,str):
         raise TypeError(
             "In produtil.pipeline.launch, cd must be a string or None")
     if cd=='':
@@ -224,7 +226,7 @@ def launch(cmd, env=None, stdin=None, stdout=None, stderr=None,
                     repr((pid, stdinP,stdoutP,stderrP))))
         return (pid, stdinP,stdoutP,stderrP)
 
-    if isinstance(cd,basestring):
+    if isinstance(cd,str):
         os.chdir(cd)
     
     # We are in the child process
@@ -379,7 +381,7 @@ def manage(proclist,inf=None,outf=None,errf=None,instr=None,logger=None,
         if logger is not None:
             logger.debug("Will read outstr from %d."%outf)
         work.append([1,outf])
-        outio=StringIO.StringIO()
+        outio=StringIO()
         unblock(outf,logger=logger)
         haveio=True
 
@@ -387,7 +389,7 @@ def manage(proclist,inf=None,outf=None,errf=None,instr=None,logger=None,
         if logger is not None:
             logger.debug("Will read errstr from %d."%errf)
         work.append([1,errf])
-        errio=StringIO.StringIO()
+        errio=StringIO()
         unblock(errf,logger=logger)
         haveio=True
 

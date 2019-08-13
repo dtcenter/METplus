@@ -19,7 +19,7 @@ class TestGen(object):
     """!"""
     def __init__(self, run_mode, OutputType, outloc, inloc, dry_run, 
                  unique_id, logger=None, verbose=True, PWD=None,
-                 setarith=None):
+                 setarith=None, platform_name=None):
         """!Constructor for TestGen
 
         @param run_mode Run mode: baseline or execution.  Must be
@@ -67,6 +67,7 @@ class TestGen(object):
         self.inloc=inloc
         self.dry_run=dry_run
         self.unique_id=unique_id
+        self.platform_name=platform_name
         self.verbose=bool(verbose)
         self.PWD=PWD
         self.scope=None
@@ -144,6 +145,7 @@ class TestGen(object):
         self.scope=produtil.testing.parsetree.Scope()
         self.override(self.scope)
         self.parser=Parser(self.run_mode,logger,self.verbose)
+        self.parser.requested_platform_name=self.platform_name
         morevars=self.make_vars()
         with open(self.inloc,'rt') as fileobj:
             self.parse_result=self.parser.parse(

@@ -35,7 +35,7 @@ import met_util as util
 
 
 # -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
-@pytest.fixture
+#@pytest.fixture
 def mtd_wrapper(lead_seq=None):
     """! Returns a default MTDWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -55,7 +55,7 @@ def mtd_wrapper(lead_seq=None):
     return MTDWrapper(config, config.logger)
 
 
-@pytest.fixture
+#@pytest.fixture
 def metplus_config():
     """! Create a METplus configuration object that can be
     manipulated/modified to

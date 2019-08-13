@@ -11,18 +11,22 @@ ways of automatically accessing configuration options."""
 # decides what symbols are imported by "from produtil.config import *"
 __all__=['from_file','from-string','confwalker','ProdConfig','fordriver','ENVIRONMENT','ProdTask']
 
-import ConfigParser,collections,re,string,os,logging,threading
-import os.path,sys,StringIO
+import collections,re,string,os,logging,threading
+import os.path,sys
 import datetime
 import produtil.fileop, produtil.datastore
 import produtil.numerics, produtil.log
+
+import configparser
+from configparser import ConfigParser
+from io import StringIO
 
 from produtil.datastore import Datastore,Task
 from produtil.fileop import *
 
 from produtil.numerics import to_datetime
 from string import Formatter
-from ConfigParser import SafeConfigParser,NoOptionError,NoSectionError
+from configparser import NoOptionError,NoSectionError
 
 UNSPECIFIED=object()
 
@@ -88,7 +92,7 @@ class ConfFormatter(Formatter):
     def slow_format(self,format_string,*args,**kwargs):
         return self.vformat(format_string,args,kwargs)
     def slow_vformat(self,format_string,args,kwargs):
-        out=StringIO.StringIO()
+        out=StringIO()
         for literal_text, field_name, format_spec, conversion in \
                 self.parse(format_string):
             if literal_text:
@@ -110,7 +114,7 @@ class ConfFormatter(Formatter):
         ret=out.getvalue()
         out.close()
         assert(ret is not None)
-        assert(isinstance(ret,basestring))
+        assert(isinstance(ret,str))
         return ret
 
     def get_value(self,key,args,kwargs):
@@ -123,8 +127,8 @@ class ConfFormatter(Formatter):
         @param args the indexed arguments to str.format()
         @param kwargs the keyword arguments to str.format()"""
         kwargs['__depth']+=1
-        if kwargs['__depth']>=ConfigParser.MAX_INTERPOLATION_DEPTH:
-            raise ConfigParser.InterpolationDepthError(kwargs['__key'],
+        if kwargs['__depth']>=configparser.MAX_INTERPOLATION_DEPTH:
+            raise configparser.InterpolationDepthError(kwargs['__key'],
                 kwargs['__section'],key)
         try:
             if isinstance(key,int):
@@ -164,7 +168,7 @@ class ConfFormatter(Formatter):
                     if v is NOTFOUND:
                         raise KeyError(key)
 
-            if isinstance(v,basestring):
+            if isinstance(v,str):
                 if v.find('{')>=0 or v.find('%')>=0:
                     vnew=self.vformat(v,args,kwargs)
                     assert(vnew is not None)
@@ -178,8 +182,8 @@ def qparse(format_string):
     to turn {'...'} and {"..."} blocks into literal strings (the ... part).
     Apply this by doing f=Formatter() ; f.parse=qparse.  """
     if not format_string: return []
-    if not isinstance(format_string, basestring):
-        raise TypeError('iterparse expects a basestring, not a %s %s'%(
+    if not isinstance(format_string, str):
+        raise TypeError('iterparse expects a str, not a %s %s'%(
                 type(format_string).__name__,repr(format_string)))
     result=list()
     literal_text=''
@@ -350,8 +354,8 @@ class ConfTimeFormatter(ConfFormatter):
         @param kwargs the keyword arguments to str.format()"""
         v=NOTFOUND
         kwargs['__depth']+=1
-        if kwargs['__depth']>=ConfigParser.MAX_INTERPOLATION_DEPTH:
-            raise ConfigParser.InterpolationDepthError(
+        if kwargs['__depth']>=configparser.MAX_INTERPOLATION_DEPTH:
+            raise configparser.InterpolationDepthError(
                 kwargs['__key'],kwargs['__section'],v)
         try:
             if isinstance(key,int):
@@ -412,7 +416,7 @@ class ConfTimeFormatter(ConfFormatter):
                         raise KeyError('Cannot find key %s in section %s'
                                        %(repr(key),repr(section)))
         
-            if isinstance(v,basestring) and ( v.find('{')!=-1 or 
+            if isinstance(v,str) and ( v.find('{')!=-1 or 
                                               v.find('%')!=-1 ):
                 try:
                     vnew=self.vformat(v,args,kwargs)
@@ -477,7 +481,7 @@ def from_file(filename,quoted_literals=False):
     Creates a new ProdConfig object and instructs it to read the specified file.
     @param filename the path to the file that is to be read
     @return  a new ProdConfig object"""
-    if not isinstance(filename,basestring):
+    if not isinstance(filename,str):
         raise TypeError('First input to produtil.config.from_file must be a string.')
     conf=ProdConfig(quoted_literals=bool(quoted_literals))
     conf.read(filename)
@@ -490,7 +494,7 @@ def from_string(confstr,quoted_literals=False):
     as if it was a config file
     @param confstr the config data
     @return a new ProdConfig object"""
-    if not isinstance(confstr,basestring):
+    if not isinstance(confstr,str):
         raise TypeError('First input to produtil.config.from_string must be a string.')
     conf=ProdConfig(quoted_literals=bool(quoted_literals))
     conf.readstr(confstr)
@@ -510,15 +514,30 @@ class ProdConfig(object):
     should use the produtil.config.from_string or produtil.config.from_file to
     read configuration information from an in-memory string or a file."""
 
-    def __init__(self,conf=None,quoted_literals=False):
+    def __init__(self,conf=None,quoted_literals=False,strict=False, inline_comment_prefixes=(';',)):
         """!ProdConfig constructor
 
         Creates a new ProdConfig object.
-        @param conf the underlying ConfigParser.SafeConfigParser object
-          that stores the actual config data
+        @param conf the underlying configparser.ConfigParser object
+        that stores the actual config data. This was a SafeConfigParser
+        in Python 2 but in Python 3 the SafeConfigParser is now ConfigParser.
         @param quoted_literals if True, then {'...'} and {"..."} will 
           be interpreted as quoting the contained ... text.  Otherwise,
-          those blocks will be considered errors."""
+          those blocks will be considered errors.
+        @param strict set default to False so it will not raise 
+          DuplicateOptionError or DuplicateSectionError, This param was
+          added when ported to Python 3.6, to maintain the previous 
+          python 2 behavior.
+        @param inline_comment_prefixes, defaults set to ;. This param was
+          added when ported to Python 3.6, to maintain the previous
+          python 2 behavior.
+           
+        Note: In Python 2, conf was ConfigParser.SafeConfigParser. In 
+        Python 3.2, the old ConfigParser class was removed in favor of 
+        SafeConfigParser which has in turn been renamed to ConfigParser. 
+        Support for inline comments is now turned off by default and 
+        section or option duplicates are not allowed in a single 
+        configuration source."""
         self._logger=logging.getLogger('prodconfig')
         logger=self._logger
         self._lock=threading.RLock()
@@ -526,7 +545,10 @@ class ProdConfig(object):
         self._time_formatter=ConfTimeFormatter(bool(quoted_literals))
         self._datastore=None
         self._tasknames=set()
-        self._conf=SafeConfigParser() if (conf is None) else conf
+        # Added strict=False and inline_comment_prefixes for Python 3, 
+        # so everything works as it did before in Python 2.
+        #self._conf=ConfigParser(strict=False, inline_comment_prefixes=(';',)) if (conf is None) else conf
+        self._conf=ConfigParser(strict=strict, inline_comment_prefixes=inline_comment_prefixes) if (conf is None) else conf
         self._conf.optionxform=str
 
         self._conf.add_section('config')
@@ -590,7 +612,7 @@ class ProdConfig(object):
         Given a string with conf data in it, parses the data.
         @param source the data to parse
         @return self"""
-        fp=StringIO.StringIO(str(source))
+        fp=StringIO(str(source))
         self._conf.readfp(fp)
         fp.close()
         return self
@@ -643,7 +665,7 @@ class ProdConfig(object):
         infiles=list()
         moreopt=collections.defaultdict(dict)
         for arg in args:
-            if not isinstance(arg,basestring):
+            if not isinstance(arg,str):
                 raise TypeError(
                     'In produtil.ProdConfig.from_args(), the args argument must '
                     'be an iterable of strings.  It contained an invalid %s %s '
@@ -721,7 +743,7 @@ class ProdConfig(object):
         it again to read more config data into an existing ProdConfig.
         @param string the string to parse
         @return self"""
-        sio=StringIO.StringIO(string)
+        sio=StringIO(string)
         self._conf.readfp(sio)
         return self
 
@@ -734,7 +756,7 @@ class ProdConfig(object):
         @param section the section being modified
         @param kwargs additional keyword arguments are the option names
             and values"""
-        for k,v in kwargs.iteritems():
+        for k,v in kwargs.items():
             value=str(v)
             self._conf.set(section,k,value)
 
@@ -1050,8 +1072,8 @@ class ProdConfig(object):
         @param sec the section name
         @param string the string to expand
         @param kwargs more variables for string substitution"""
-        assert(isinstance(sec,basestring))
-        assert(isinstance(string,basestring))
+        assert(isinstance(sec,str))
+        assert(isinstance(string,str))
         with self:
             return self._formatter.format(string,__section=sec,
                 __key='__string__',__depth=0,__conf=self._conf,
@@ -1352,15 +1374,15 @@ class ProdTask(produtil.datastore.Task):
         conf.register_task(taskname)
         self.__taskvars=dict()
         if taskvars is not UNSPECIFIED:
-            for k,v in taskvars.iteritems():
+            for k,v in taskvars.items():
                 self.tvset(k,v)
         self._conf=conf
         self._section=str(section)
-        if taskname is not None and not isinstance(taskname,basestring):
-            raise TypeError('The taskname must be None or a basestring '
+        if taskname is not None and not isinstance(taskname,str):
+            raise TypeError('The taskname must be None or a str '
                             'subclass')
-        if not isinstance(section,basestring):
-            raise TypeError('The section be a basestring subclass')
+        if not isinstance(section,str):
+            raise TypeError('The section be a str subclass')
         if workdir is None:
             workdir=self.confstr('workdir','')
             if workdir is None or workdir=='':

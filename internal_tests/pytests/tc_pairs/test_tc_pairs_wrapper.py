@@ -26,7 +26,7 @@ def pytest_addoption(parser):
     parser.addoption("-c", action="store", help=" -c <test config file>")
 
 
-@pytest.fixture
+#@pytest.fixture
 def cmdopt(request):
     return request.config.getoption("-c")
 
@@ -34,7 +34,7 @@ def cmdopt(request):
 #
 # ------------Pytest fixtures that can be used for all tests ---------------
 #
-@pytest.fixture
+#@pytest.fixture
 def tc_pairs_wrapper():
     """! Returns a default TCPairsWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -47,7 +47,7 @@ def tc_pairs_wrapper():
     return TcPairsWrapper(conf, conf.logger)
 
 
-@pytest.fixture
+#@pytest.fixture
 def metplus_config():
     try:
         if 'JLOGFILE' in os.environ:
@@ -126,11 +126,11 @@ def test_one_less_column():
                                mod_first_file)
     # Get the number of columns from the first row of the original and
     # modified files, respectively.
-    with open(orig_tc_file) as f:
+    with open(orig_tc_file, newline='') as f:
         reader = csv.reader(f, delimiter=' ', skipinitialspace=True)
         first_row = next(reader)
         orig_num_cols = len(first_row)
-    with open(mod_tc_file) as f:
+    with open(mod_tc_file, newline='') as f:
         reader = csv.reader(f, delimiter=' ', skipinitialspace=True)
         first_row = next(reader)
         mod_num_cols = len(first_row)
@@ -174,11 +174,11 @@ def test_col2_format_ok():
 
         # Get the number of columns from the first row of the original and
         # modified files, respectively.
-        with open(orig_tc_file) as f:
+        with open(orig_tc_file, newline='') as f:
             reader = csv.reader(f, delimiter=' ', skipinitialspace=True)
             first_row = next(reader)
             orig_storm_id = first_row[1]
-        with open(mod_tc_file) as f:
+        with open(mod_tc_file, newline='') as f:
             reader = csv.reader(f, delimiter=' ', skipinitialspace=True)
             first_row = next(reader)
             mod_storm_id = first_row[1]

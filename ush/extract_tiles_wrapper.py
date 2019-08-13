@@ -59,7 +59,9 @@ class ExtractTilesWrapper(CommandBuilder):
         self.tc_stat_exe = os.path.join(met_install_dir, 'bin/tc_stat')
         self.init_beg = self.config.getstr('config', 'INIT_BEG')[0:8]
         self.init_end = self.config.getstr('config', 'INIT_END')[0:8]
-        self.init_hour_inc = int(self.config.getint('config', 'INIT_INCREMENT') / 3600)
+        # Change to integer division // Python 3,
+        # assuming that was the intent in Python 2.
+        self.init_hour_inc = int(self.config.getint('config', 'INIT_INCREMENT') // 3600)
 
 
     def run_at_time(self, input_dict):

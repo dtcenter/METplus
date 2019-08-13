@@ -58,7 +58,7 @@ class DBNAlert(object):
         alert."""
         if not isinstance(args,list) and not isinstance(args,tuple):
             raise TypeError('In DBNAlert(), the first argument must be a list or tuple of arguments to send to dbn_alert')
-        if alert_exe is not None and not isinstance(alert_exe,basestring) \
+        if alert_exe is not None and not isinstance(alert_exe,str) \
                 and not isinstance(alert_exe,Runner):
             raise TypeError('In DBNAlert(), the alert_exe argument must be a string executable name, or a produtil.prog.Runner object')
 
@@ -86,7 +86,7 @@ class DBNAlert(object):
         kwargs['job']=str(job)
         alert_args=[ s.format(**kwargs) for s in self.alert_args ]
         if send_dbn_alerts:
-            if isinstance(self.alert_exe,basestring):
+            if isinstance(self.alert_exe,str):
                 cmd=batchexe(self.alert_exe)[alert_args]
             else:
                 cmd=self.alert_exe[alert_args]
@@ -106,7 +106,7 @@ def init_logging(logger=None):
     global log
     if logger is None:
         logger=logging.getLogger('dbn_alert')
-    elif isinstance(logger,basestring):
+    elif isinstance(logger,str):
         logger=logging.getLogger(logger)
     log=logger
 
