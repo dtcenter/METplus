@@ -560,7 +560,7 @@ def set_logvars(config, logger=None):
         # The basic pattern is (%+[a-z])+ , %+ allows for 1 or more
         # % characters, ie. %%Y, %% is a valid directive.
         # (?i) case insensitive, \A begin string \Z end of string
-        if not re.match('(?i)\A(?:(%+[a-z])+)\Z', log_timestamp_template):
+        if not re.match(r'(?i)\A(?:(%+[a-z])+)\Z', log_timestamp_template):
             logger.warning('Your LOG_TIMESTAMP_TEMPLATE is not '
                            'a valid strftime directive: %s' % repr(log_timestamp_template))
             logger.info('Using the following default: %Y%m%d%H')
@@ -1349,7 +1349,7 @@ def starts_with_comparison(thresh_string):
     """
     valid_comparisons = {">", ">=", "==", "!=", "<", "<=", "gt", "ge", "eq", "ne", "lt", "le"}
     for comp in valid_comparisons:
-        match = re.match(r'^('+comp+')([+-]?\d*\.?\d+)', thresh_string)
+        match = re.match(r'^('+comp+r')([+-]?\d*\.?\d+)', thresh_string)
         if match:
             return match
     return None
@@ -1445,7 +1445,7 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
     # find all FCST_VARn_NAME keys in the conf files
     all_conf = config.keys('config')
     indices = []
-    regex = re.compile(data_type+"_VAR(\d+)_NAME")
+    regex = re.compile(data_type+r"_VAR(\d+)_NAME")
     for conf in all_conf:
         result = regex.match(conf)
         if result is not None:
@@ -1616,7 +1616,7 @@ def split_level(level):
         return '', ''
     if level[0].isalpha():
         level_type = level[0]
-        level = level[1:].zfill(2)
+        level = level[1:]
     return level_type, level
 
 def get_filetype(filepath, logger=None):
@@ -1770,9 +1770,19 @@ def preprocess_file(filename, data_type, config):
     if filename is None or filename == "":
         return None
 
+    # if using python embedding for input, return the keyword
+    if os.path.basename(filename) in ['PYTHON_NUMPY', 'PYTHON_XARRAY', 'PYTHON_PANDAS']:
+            return os.path.basename(filename)
+
     stage_dir = config.getdir('STAGING_DIR')
 
     if os.path.isfile(filename):
+        # if filename provided ends with a valid compression extension,
+        # remove the extension and call function again so the
+        # file will be uncompressed properly. This is done so that
+        # the function will handle files passed to it with an
+        # extension the same way as files passed
+        # without an extension but the compressed equivalent exists
         for ext in VALID_EXTENSIONS:
             if filename.endswith(ext):
                 return preprocess_file(filename[:-len(ext)], data_type, config)
@@ -1803,8 +1813,10 @@ def preprocess_file(filename, data_type, config):
 
         return filename
 
+    # nc file requested and the Gempak equivalent exists
     if os.path.isfile(filename[:-2]+'grd'):
         return preprocess_file(filename[:-2]+'grd', data_type, config)
+
     # if file exists in the staging area, return that path
     outpath = stage_dir + filename
     if os.path.isfile(outpath):
@@ -1815,9 +1827,10 @@ def preprocess_file(filename, data_type, config):
     if not os.path.exists(outdir):
         os.makedirs(outdir, mode=0o0775)
 
+    # uncompress gz, bz2, or zip file
     if os.path.isfile(filename+".gz"):
         if config.logger:
-            config.logger.info("Decompressing gz file to {}".format(outpath))
+            config.logger.debug("Uncompressing gz file to {}".format(outpath))
         with gzip.open(filename+".gz", 'rb') as infile:
             with open(outpath, 'wb') as outfile:
                 outfile.write(infile.read())
@@ -1826,7 +1839,7 @@ def preprocess_file(filename, data_type, config):
                 return outpath
     elif os.path.isfile(filename+".bz2"):
         if config.logger:
-            config.logger.info("Decompressing bz2 file to {}".format(outpath))
+            config.logger.debug("Uncompressing bz2 file to {}".format(outpath))
         with open(filename+".bz2", 'rb') as infile:
             with open(outpath, 'wb') as outfile:
                 outfile.write(bz2.decompress(infile.read()))
@@ -1835,7 +1848,7 @@ def preprocess_file(filename, data_type, config):
                 return outpath
     elif os.path.isfile(filename+".zip"):
         if config.logger:
-            config.logger.info("Decompressing zip file to {}".format(outpath))
+            config.logger.debug("Uncompressing zip file to {}".format(outpath))
         with zipfile.ZipFile(filename+".zip") as z:
             with open(outpath, 'wb') as f:
                 f.write(z.read(os.path.basename(filename)))
