@@ -18,7 +18,6 @@ from datetime import datetime
 from abc import ABCMeta
 from command_runner import CommandRunner
 import met_util as util
-from config_wrapper import ConfigWrapper
 import string_template_substitution as sts
 
 # pylint:disable=pointless-string-statement
@@ -84,7 +83,7 @@ class CommandBuilder:
             self.add_env_var(env_var, self.config.getstr('user_env_vars', env_var))
 
         # if env MET_TMP_DIR was not set, set it to config TMP_DIR
-        if not 'MET_TMP_DIR' in self.env:
+        if 'MET_TMP_DIR' not in self.env:
             self.env['MET_TMP_DIR'] = self.config.getdir('TMP_DIR')
 
 
@@ -233,9 +232,6 @@ class CommandBuilder:
         template = self.c_dict[data_type + '_INPUT_TEMPLATE']
         data_dir = self.c_dict[data_type + '_INPUT_DIR']
 
-        if template == 'PYTHON_NUMPY' or template == 'PYTHON_XARRAY' or template == 'PYTHON_PANDAS':
-            return template
-
         # if looking for a file with an exact time match:
         if self.c_dict[data_type + '_FILE_WINDOW_BEGIN'] == 0 and \
                         self.c_dict[data_type + '_FILE_WINDOW_END'] == 0:
@@ -271,9 +267,7 @@ class CommandBuilder:
                                             "%Y%m%d%H%M").strftime("%s"))
 
         # step through all files under input directory in sorted order
-        # pylint:disable=unused-variable
-        # os.walk returns a tuple. Not all returned values are needed.
-        for dirpath, dirnames, all_files in os.walk(data_dir):
+        for dirpath, _, all_files in os.walk(data_dir):
             for filename in sorted(all_files):
                 fullpath = os.path.join(dirpath, filename)
 
