@@ -46,11 +46,15 @@ def get_params(param_a, param_b):
 def run_test_use_case(param_a, param_b, run_a, run_b):
     params_a, params_b = get_param_list(param_a, param_b)
     p, p_b = get_params(param_a, param_b)
+    a_dir = os.path.join(p.getdir('OUTPUT_BASE'), os.path.basename(params_a[-2]))
+    b_dir = os.path.join(p_b.getdir('OUTPUT_BASE'), os.path.basename(params_b[-2]))
+
     # run A
     if run_a:
         cmd = os.path.join("/d1/mccabe/METplus.a", "ush", "master_metplus.py")
         for parm in params_a:
             cmd += " -c "+parm
+        cmd += ' -c dir.OUTPUT_BASE='+a_dir
         print("CMD A:"+cmd)
         process = subprocess.Popen(cmd, shell=True)
         process.wait()
@@ -60,6 +64,7 @@ def run_test_use_case(param_a, param_b, run_a, run_b):
         cmd = os.path.join("/d1/mccabe/METplus.b", "ush", "master_metplus.py")
         for parm in params_b:
             cmd += " -c "+parm
+        cmd += ' -c dir.OUTPUT_BASE='+b_dir
         print("CMD B:"+cmd)
         process = subprocess.Popen(cmd, shell=True)
         process.wait()
