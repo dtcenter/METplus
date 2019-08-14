@@ -75,8 +75,8 @@ that reformat gridded data
             self.config.getseconds('config', 'OBS_FILE_WINDOW_END',
                                    c_dict['OBS_WINDOW_END'])
 
-        c_dict['FCST_PROB_THRESH'] = '==0.1'
-        c_dict['OBS_PROB_THRESH'] = '==0.1'
+        c_dict['FCST_PROB_THRESH'] = None
+        c_dict['OBS_PROB_THRESH'] = None
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
         c_dict['NEIGHBORHOOD_WIDTH'] = ''
@@ -204,16 +204,25 @@ that reformat gridded data
         self.infiles.append(obs_path)
 
         # get field info field a single field to pass to the MET config file
-        fcst_field = self.get_one_field_info(var_info['fcst_level'],
-                                             var_info['fcst_thresh'],
-                                             var_info['fcst_name'],
-                                             var_info['fcst_extra'], 'FCST')
-        obs_field = self.get_one_field_info(var_info['obs_level'],
-                                            var_info['obs_thresh'],
-                                            var_info['obs_name'],
-                                            var_info['obs_extra'], 'OBS')
+        fcst_field_list = self.get_field_info(v_level=var_info['fcst_level'],
+                                                  v_thresh=var_info['fcst_thresh'],
+                                                  v_name=var_info['fcst_name'],
+                                                  v_extra=var_info['fcst_extra'],
+                                                  d_type='FCST')
 
-        self.process_fields(time_info, fcst_field, obs_field)
+        obs_field_list = self.get_field_info(v_level=var_info['obs_level'],
+                                                 v_thresh=var_info['obs_thresh'],
+                                                 v_name=var_info['obs_name'],
+                                                 v_extra=var_info['obs_extra'],
+                                                 d_type='OBS')
+
+        if fcst_field_list is None or obs_field_list is None:
+            return
+
+        fcst_fields = ','.join(fcst_field_list)
+        obs_fields = ','.join(obs_field_list)
+
+        self.process_fields(time_info, fcst_fields, obs_fields)
 
     def run_at_time_all_fields(self, time_info):
         """! Build MET command for all of the field/level combinations for a given
@@ -242,22 +251,29 @@ that reformat gridded data
         fcst_field_list = []
         obs_field_list = []
         for var_info in self.c_dict['VAR_LIST']:
-            next_fcst = self.get_one_field_info(var_info['fcst_level'],
-                                                var_info['fcst_thresh'],
-                                                var_info['fcst_name'],
-                                                var_info['fcst_extra'], 'FCST')
-            next_obs = self.get_one_field_info(var_info['obs_level'],
-                                               var_info['obs_thresh'],
-                                               var_info['obs_name'],
-                                               var_info['obs_extra'], 'OBS')
-            fcst_field_list.append(next_fcst)
-            obs_field_list.append(next_obs)
+            next_fcst = self.get_field_info(v_level=var_info['fcst_level'],
+                                                v_thresh=var_info['fcst_thresh'],
+                                                v_name=var_info['fcst_name'],
+                                                v_extra=var_info['fcst_extra'],
+                                                d_type='FCST')
+            next_obs = self.get_field_info(v_level=var_info['obs_level'],
+                                               v_thresh=var_info['obs_thresh'],
+                                               v_name=var_info['obs_name'],
+                                               v_extra=var_info['obs_extra'],
+                                               d_type='OBS')
+
+            if next_fcst is None or next_obs is None:
+                return
+
+            fcst_field_list.extend(next_fcst)
+            obs_field_list.extend(next_obs)
+
         fcst_field = ','.join(fcst_field_list)
         obs_field = ','.join(obs_field_list)
 
         self.process_fields(time_info, fcst_field, obs_field)
 
-    def get_one_field_info(self, v_level, v_thresh, v_name, v_extra, d_type):
+    def get_field_info(self, v_name, v_level, v_thresh, v_extra, d_type):
         """! Format field information into format expected by MET config file
               Args:
                 @param v_level level of data to extract
@@ -269,43 +285,91 @@ that reformat gridded data
                 @return Returns formatted field information
         """
         # separate character from beginning of numeric level value if applicable
-        level_type, level = util.split_level(v_level)
+        _, level = util.split_level(v_level)
 
         # list to hold field information
         fields = []
 
         # get cat thresholds if available
         cat_thresh = ""
-        threshs = []
+        threshs = [None]
         if len(v_thresh) != 0:
             threshs = v_thresh
             cat_thresh = "cat_thresh=[ " + ','.join(threshs) + " ];"
 
-        # if either input is probabilistic, create separate item for each threshold
-        if self.c_dict['FCST_IS_PROB'] or self.c_dict['OBS_IS_PROB']:
-            # if input being processed if probabilistic, format accordingly
-            if self.c_dict[d_type + '_IS_PROB']:
-                for thresh in threshs:
-                    thresh_str = ""
-                    comparison = util.get_comparison_from_threshold(thresh)
-                    number = util.get_number_from_threshold(thresh)
-                    if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
-                        thresh_str += "thresh_lo=" + str(number) + "; "
-                    if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
-                        thresh_str += "thresh_hi=" + str(number) + "; "
+        # if neither input is probabilistic, add all cat thresholds to same field info item
+        if not self.c_dict['FCST_IS_PROB'] and not self.c_dict['OBS_IS_PROB']:
 
-                    prob_cat_thresh = self.c_dict[d_type + '_PROB_THRESH']
-                    if self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF':
+            # if pcp_combine was run, use name_level, (*,*) format
+            # if not, use user defined name/level combination
+            if self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
+                field = "{ name=\"" + v_name + "_" + level + \
+                        "\"; level=\"(*,*)\";"
+            else:
+                field = "{ name=\"" + v_name + "\";"
+
+                # add level if it is set
+                if v_level:
+                    field += " level=\"" +  v_level + "\";"
+
+            # add threshold if it is set
+            if cat_thresh:
+                field += ' ' + cat_thresh
+
+            # add extra info if it is set
+            if v_extra:
+                field += ' ' + v_extra
+
+            field += ' }'
+            fields.append(field)
+
+        # if either input is probabilistic, create separate item for each threshold
+        else:
+
+            # if input currently being processed if probabilistic, format accordingly
+            if self.c_dict[d_type + '_IS_PROB']:
+                # if probabilistic data for either fcst or obs, thresholds are required
+                # to be specified or no field items will be created. Create a field dict
+                # item for each threshold value
+                for thresh in threshs:
+                    # if utilizing python embedding for prob input, just set the
+                    # field name to the call to the script
+                    if v_name.split(' ')[0].endswith('.py'):
+#                        field = f'{{ name=\"{v_name}\";'
+                        field = "{ name=\"" + v_name + "\"; prob=TRUE;"
+                    elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF':
                         field = "{ name=\"" + v_name + "\";"
-                        if level:
-                            field += " level=\"" +  level + "\";"
-                        field += " prob=TRUE; cat_thresh=[" + prob_cat_thresh + "];}"
+                        if v_level:
+                            field += " level=\"" +  v_level + "\";"
+                        field += " prob=TRUE;"
                     else:
-                        field = "{ name=\"PROB\"; level=\"" + level_type + \
-                                level + "\"; prob={ name=\"" + \
-                                v_name + \
-                                "\"; " + thresh_str + "} cat_thresh=[" + prob_cat_thresh + "];"
-                    field += v_extra + "}"
+                        # a threshold value is required for GRIB prob DICT data
+                        if thresh is None:
+                            self.logger.error('No threshold was specified for probabilistic '
+                                              'forecast GRIB data')
+                            return None
+
+                        thresh_str = ""
+                        comparison = util.get_comparison_from_threshold(thresh)
+                        number = util.get_number_from_threshold(thresh)
+                        if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
+                            thresh_str += "thresh_lo=" + str(number) + "; "
+                        if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
+                            thresh_str += "thresh_hi=" + str(number) + "; "
+
+                        field = "{ name=\"PROB\"; level=\"" + v_level + \
+                                "\"; prob={ name=\"" + v_name + \
+                                "\"; " + thresh_str + "}"
+
+                    # add probabilistic cat thresh if different from default ==0.1
+                    prob_cat_thresh = self.c_dict[d_type + '_PROB_THRESH']
+                    if prob_cat_thresh is not None:
+                        field += " cat_thresh=[" + prob_cat_thresh + "];"
+
+                    if v_extra:
+                        field += ' ' + v_extra
+
+                    field += ' }'
                     fields.append(field)
             else:
                 # if input being processed is not probabilistic but the other input is
@@ -314,31 +378,23 @@ that reformat gridded data
                     # if not, use user defined name/level combination
                     if self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
                         field = "{ name=\"" + v_name + "_" + level + \
-                                "\"; level=\"(*,*)\"; cat_thresh=[ " + \
-                                str(thresh) + " ]; }"
+                                "\"; level=\"(*,*)\";"
                     else:
-                        field = "{ name=\"" + v_name + \
-                                "\"; level=\"" + v_level + "\"; cat_thresh=[ " + \
-                                str(thresh) + " ]; }"
+                        field = "{ name=\"" + v_name + "\";"
+                        if v_level:
+                            field += " level=\"" + v_level + "\";"
+
+                    if thresh is not None:
+                        field += " cat_thresh=[ " + str(thresh) + " ];"
+
+                    if v_extra:
+                        field += ' ' + v_extra
+
+                    field += ' }'
                     fields.append(field)
-        else:
-            # if neither input is probabilistic, add all cat thresholds to same field info item
-            # if pcp_combine was run, use name_level, (*,*) format
-            # if not, use user defined name/level combination
-            if self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
-                field = "{ name=\"" + v_name + "_" + level + \
-                        "\"; level=\"(*,*)\"; "
-            else:
-                field = "{ name=\"" + v_name + "\";"
-                if level:
-                    field += " level=\"" +  v_level + "\";"
 
-            field += cat_thresh + " " + v_extra + " }"
-            fields.append(field)
-
-        # combine all fields into a comma separated string and return
-        field_list = ','.join(fields)
-        return field_list
+        # return list of field dictionary items
+        return fields
 
     def set_environment_variables(self, fcst_field, obs_field, time_info):
         """!Set environment variables that are referenced by the MET config file"""

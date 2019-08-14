@@ -94,6 +94,11 @@ class PointStatWrapper(CompareGriddedWrapper):
                                'POINT_STAT_VERIFICATION_MASK_TEMPLATE')
         c_dict['VERIFICATION_MASK'] = ''
 
+        c_dict['FCST_PROB_THRESH'] = self.config.getstr('config',
+                                                        'FCST_POINT_STAT_PROB_THRESH', '==0.1')
+        c_dict['OBS_PROB_THRESH'] = self.config.getstr('config',
+                                                       'OBS_POINT_STAT_PROB_THRESH', '==0.1')
+
         return c_dict
 
     def run_at_time(self, input_dict):
@@ -184,16 +189,24 @@ class PointStatWrapper(CompareGriddedWrapper):
         fcst_field_list = []
         obs_field_list = []
         for var_info in var_list:
-            next_fcst = self.get_one_field_info(var_info['fcst_level'],
-                                                var_info['fcst_thresh'],
-                                                var_info['fcst_name'],
-                                                var_info['fcst_extra'], 'FCST')
-            next_obs = self.get_one_field_info(var_info['obs_level'],
-                                               var_info['obs_thresh'],
-                                               var_info['obs_name'],
-                                               var_info['obs_extra'], 'OBS')
-            fcst_field_list.append(next_fcst)
-            obs_field_list.append(next_obs)
+            next_fcst = self.get_field_info(v_level=var_info['fcst_level'],
+                                                v_thresh=var_info['fcst_thresh'],
+                                                v_name=var_info['fcst_name'],
+                                                v_extra=var_info['fcst_extra'],
+                                                d_type='FCST')
+
+            next_obs = self.get_field_info(v_level=var_info['obs_level'],
+                                               v_thresh=var_info['obs_thresh'],
+                                               v_name=var_info['obs_name'],
+                                               v_extra=var_info['obs_extra'],
+                                               d_type='OBS')
+
+            if next_fcst is None or next_obs is None:
+                return False
+
+            fcst_field_list.extend(next_fcst)
+            obs_field_list.extend(next_obs)
+
         fcst_field = ','.join(fcst_field_list)
         obs_field = ','.join(obs_field_list)
 

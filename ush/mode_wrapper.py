@@ -109,7 +109,6 @@ class ModeWrapper(CompareGriddedWrapper):
 
         return c_dict
 
-
     def run_at_time_one_field(self, time_info, var_info):
         """! Runs mode instances for a given time and forecast lead combination
               Overrides run_at_time_one_field function in compare_gridded_wrapper.py
@@ -147,31 +146,42 @@ class ModeWrapper(CompareGriddedWrapper):
                 @param obs_path observation file
         """
         # if no thresholds are specified, run once
-        fcst_thresh_list = [None]
-        obs_thresh_list = [None]
-        if len(var_info['fcst_thresh']) != 0:
+        fcst_thresh_list = []
+        obs_thresh_list = []
+
+        # if probabilistic forecast and no thresholds specified, error and skip
+        if self.c_dict['FCST_IS_PROB']:
+#            if len(var_info['fcst_thresh']) == 0:
+#                self.logger.error('Must specify field threshold value to '+\
+#                                  'process probabilistic forecast')
+#                return
+
+            # set thresholds for fcst and obs if prob
             fcst_thresh_list = var_info['fcst_thresh']
             obs_thresh_list = var_info['obs_thresh']
-        elif self.c_dict['FCST_IS_PROB']:
-            self.logger.error('Must specify field threshold value to '+\
-                              'process probabilistic forecast')
+
+        fcst_field_list = self.get_field_info(v_name=var_info['fcst_name'],
+                                                  v_level=var_info['fcst_level'],
+                                                  v_extra=var_info['fcst_extra'],
+                                                  v_thresh=fcst_thresh_list,
+                                                  d_type='FCST')
+
+        obs_field_list = self.get_field_info(v_name=var_info['obs_name'],
+                                                 v_level=var_info['obs_level'],
+                                                 v_extra=var_info['obs_extra'],
+                                                 v_thresh=obs_thresh_list,
+                                                 d_type='OBS')
+
+        if fcst_field_list is None or obs_field_list is None:
             return
 
-        for fthresh, othresh in zip(fcst_thresh_list, obs_thresh_list):
+        # loop through fields and call Mode
+        for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
             self.param = self.c_dict['CONFIG_FILE']
             self.create_and_set_output_dir(time_info)
             self.infiles.append(model_path)
             self.infiles.append(obs_path)
             self.add_merge_config_file()
-
-            fcst_field = self.get_one_field_info(var_info['fcst_name'],
-                                                 var_info['fcst_level'],
-                                                 var_info['fcst_extra'],
-                                                 fthresh, 'FCST')
-            obs_field = self.get_one_field_info(var_info['obs_name'],
-                                                var_info['obs_level'],
-                                                var_info['obs_extra'],
-                                                othresh, 'OBS')
 
             print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
                           "LEVEL", "OBTYPE", "CONFIG_DIR",
@@ -225,9 +235,10 @@ class ModeWrapper(CompareGriddedWrapper):
             self.clear()
 
 
-    def get_one_field_info(self, v_name, v_level, v_extra, v_thresh, d_type):
+    def get_field_info_old(self, v_name, v_level, v_extra, v_thresh, d_type):
         """! Builds the FCST_FIELD or OBS_FIELD items that are sent to the mode config file
-              Overrides get_one_field_info in compare_gridded_wrappers.py
+              Overrides get_field_info in compare_gridded_wrappers.py - one threshold
+              value is passed in an processed at a time - if not prob, do not apply threshold
               Args:
                 @param v_name var_info name
                 @param v_level var_info level
@@ -251,21 +262,24 @@ class ModeWrapper(CompareGriddedWrapper):
             if self.c_dict[d_type+'_INPUT_DATATYPE'] == "NETCDF" or \
                self.c_dict[d_type+'_INPUT_DATATYPE'] == "GEMPAK":
                 field = "{ name=\"" + v_name + "\"; level=\"" + \
-                        level+"\"; prob=TRUE; "
+                        level+"\"; prob=TRUE;"
             else:
                 field = "{ name=\"PROB\"; level=\""+level_type + \
                           level.zfill(2) + "\"; prob={ name=\"" + \
-                          v_name + "\"; " + thresh_str + "} "
+                          v_name + "\"; " + thresh_str + "}"
         else:
             if self.config.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
                 field = "{ name=\""+v_name+"_"+level + \
-                             "\"; level=\"(*,*)\"; "
+                             "\"; level=\"(*,*)\";"
             else:
-                field = "{ name=\""+v_name + "\"; "
+                field = "{ name=\""+v_name + "\";"
                 if v_level:
                     field += " level=\"" +  v_level + "\";"
 
-        field += v_extra+" }"
+        if v_extra:
+            field += ' ' + v_extra
+
+        field += ' }'
         return field
 
 

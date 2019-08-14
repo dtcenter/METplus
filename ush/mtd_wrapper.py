@@ -229,13 +229,39 @@ class MTDWrapper(ModeWrapper):
                 @param obs_path observation file list path
         """
         # if no thresholds are specified, run once
-        fcst_thresh_list = [0]
-        obs_thresh_list = [0]
-        if len(var_info['fcst_thresh']) != 0:
+        fcst_thresh_list = []
+        obs_thresh_list = []
+        fcst_field_list = []
+        obs_field_list = []
+
+        # if probabilistic forecast and no thresholds specified, error and skip
+        if self.c_dict['FCST_IS_PROB']:
+            # set thresholds for fcst and obs if prob
             fcst_thresh_list = var_info['fcst_thresh']
             obs_thresh_list = var_info['obs_thresh']
 
-        for fthresh, othresh in zip(fcst_thresh_list, obs_thresh_list):
+        # loop over thresholds and build field list with one thresh per item
+        for fcst_thresh, obs_thresh in zip(fcst_thresh_list, obs_thresh_list):
+            fcst_field = self.get_field_info(v_name=var_info['fcst_name'],
+                                                 v_level=var_info['fcst_level'],
+                                                 v_extra=var_info['fcst_extra'],
+                                                 v_thresh=[fcst_thresh],
+                                                 d_type='FCST')
+
+            obs_field = self.get_field_info(v_name=var_info['obs_name'],
+                                                v_level=var_info['obs_level'],
+                                                v_extra=var_info['obs_extra'],
+                                                v_thresh=[obs_thresh],
+                                                d_type='OBS')
+
+            if fcst_field is None or obs_field is None:
+                return
+
+            fcst_field_list.extend(fcst_field)
+            obs_field_list.extend(obs_field)
+
+        # loop through fields and call MTD
+        for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
             self.param = self.c_dict['CONFIG_FILE']
             self.create_and_set_output_dir(time_info)
 
@@ -257,8 +283,7 @@ class MTDWrapper(ModeWrapper):
             if self.c_dict['SINGLE_RUN']:
                 if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
                     self.set_fcst_file(obs_path)
-                    obs_field = self.get_one_field_info(var_info['obs_name'], var_info['obs_level'], var_info['obs_extra'],
-                                                        othresh, 'OBS')
+
                     self.add_env_var("FCST_FIELD", obs_field)
                     self.add_env_var("OBS_FIELD", obs_field)
                     self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"] )
@@ -267,8 +292,7 @@ class MTDWrapper(ModeWrapper):
                     self.add_env_var("FCST_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
                 else:
                     self.set_fcst_file(model_path)
-                    fcst_field = self.get_one_field_info(var_info['fcst_name'], var_info['fcst_level'], var_info['fcst_extra'],
-                                                         fthresh, 'FCST')
+
                     self.add_env_var("FCST_FIELD", fcst_field)
                     self.add_env_var("OBS_FIELD", fcst_field)
                     self.add_env_var("FCST_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"] )
@@ -282,12 +306,6 @@ class MTDWrapper(ModeWrapper):
                 self.add_env_var("FCST_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"] )
                 self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"] )
                 self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
-
-                fcst_field = self.get_one_field_info(var_info['fcst_name'], var_info['fcst_level'], var_info['fcst_extra'],
-                                                     fthresh, 'FCST')
-                obs_field = self.get_one_field_info(var_info['obs_name'], var_info['obs_level'], var_info['obs_extra'],
-                                                    othresh, 'OBS')
-
                 self.add_env_var("FCST_FIELD", fcst_field)
                 self.add_env_var("OBS_FIELD", obs_field)
 

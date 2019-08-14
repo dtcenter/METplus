@@ -82,7 +82,6 @@ class GridStatWrapper(CompareGriddedWrapper):
                                'GRID_STAT_VERIFICATION_MASK_TEMPLATE')
         c_dict['VERIFICATION_MASK'] = ''
 
-
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'grid_stat')
 

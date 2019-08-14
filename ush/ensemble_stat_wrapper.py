@@ -161,15 +161,15 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
 
         # set field info
-        fcst_field = self.get_field_info(var_list, "something.grb2", 'FCST')
-        obs_field = self.get_field_info(var_list, "something.grb2", 'OBS')
-        ens_field = self.get_field_info(var_list, 'something.grb2', 'ENS')
+        fcst_field = self.get_all_field_info(var_list, "something.grb2", 'FCST')
+        obs_field = self.get_all_field_info(var_list, "something.grb2", 'OBS')
+        ens_field = self.get_all_field_info(var_list, 'something.grb2', 'ENS')
 
         # run
         self.process_fields(time_info, fcst_field, obs_field, ens_field)
 
 
-    def get_field_info(self, var_list, model_path, data_type):
+    def get_all_field_info(self, var_list, model_path, data_type):
         """!Get field info based on data type"""
         field_list = []
         for var_info in var_list:
@@ -197,8 +197,15 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             else:
                 return ''
 
-            next_field = self.get_one_field_info(level, thresh, name, extra, data_type)
-            field_list.append(next_field)
+            next_field = self.get_field_info(v_level=level,
+                                                 v_thresh=thresh,
+                                                 v_name=name,
+                                                 v_extra=extra,
+                                                 d_type=data_type)
+            if next_field is None:
+                return ''
+
+            field_list.extend(next_field)
 
         return ','.join(field_list)
 
@@ -279,7 +286,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         list_filename = time_info['init_fmt'] + '_' + \
           str(time_info['lead_hours']) + '_ensemble.txt'
         return self.write_list_file(list_filename, ens_members_path)
-
 
     def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
         """! Set and print environment variables, then build/run MET command
