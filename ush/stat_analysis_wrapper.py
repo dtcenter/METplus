@@ -83,53 +83,53 @@ class StatAnalysisWrapper(CommandBuilder):
         )
         c_dict['GROUP_LIST_ITEMS'] = util.getlist(
             self.config.getstr('config', 'GROUP_LIST_ITEMS')
-            )
+        )
         c_dict['LOOP_LIST_ITEMS'] = util.getlist(
             self.config.getstr('config', 'LOOP_LIST_ITEMS')
-            )
+        )
         c_dict['VAR_LIST'] = util.parse_var_list(self.config)
         c_dict['MODEL_LIST'] = util.getlist(
             self.config.getstr('config', 'MODEL_LIST', '')
-            )
+        )
         c_dict['DESC_LIST'] = util.getlist(
             self.config.getstr('config', 'DESC_LIST', '')
-            )
+        )
         c_dict['FCST_LEAD_LIST'] = util.getlist(
             self.config.getstr('config', 'FCST_LEAD_LIST', '')
-            )
+        )
         c_dict['OBS_LEAD_LIST'] = util.getlist(
             self.config.getstr('config', 'OBS_LEAD_LIST', '')
-            )
+        )
         c_dict['FCST_VALID_HOUR_LIST'] = util.getlist(
             self.config.getstr('config', 'FCST_VALID_HOUR_LIST', '')
-            )
+        )
         c_dict['FCST_INIT_HOUR_LIST'] = util.getlist(
             self.config.getstr('config', 'FCST_INIT_HOUR_LIST', '')
-            )
+        )
         c_dict['OBS_VALID_HOUR_LIST'] = util.getlist(
             self.config.getstr('config', 'OBS_VALID_HOUR_LIST', '')
-            )
+        )
         c_dict['OBS_INIT_HOUR_LIST'] = util.getlist(
             self.config.getstr('config', 'OBS_INIT_HOUR_LIST', '')
-            )
+        )
         c_dict['VX_MASK_LIST'] = util.getlist(
             self.config.getstr('config', 'VX_MASK_LIST', '')
-            )
+        )
         c_dict['INTERP_MTHD_LIST'] = util.getlist(
             self.config.getstr('config', 'INTERP_MTHD_LIST', '')
-            )
+        )
         c_dict['INTERP_PNTS_LIST'] = util.getlist(
             self.config.getstr('config', 'INTERP_PNTS_LIST', '')
-            )
+        )
         c_dict['COV_THRESH_LIST'] = util.getlist(
             self.config.getstr('config', 'COV_THRESH_LIST', '')
-            )
+        )
         c_dict['ALPHA_LIST'] = util.getlist(
             self.config.getstr('config', 'ALPHA_LIST', '')
-            )
+        )
         c_dict['LINE_TYPE_LIST'] = util.getlist(
             self.config.getstr('config', 'LINE_TYPE_LIST', '')
-            )
+        )
         return c_dict
 
     def list_to_str(self, list_of_values):
@@ -194,7 +194,7 @@ class StatAnalysisWrapper(CommandBuilder):
              'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
              'OBS_THRESH_LIST', 'COV_THRESH_LIST',
              'ALPHA_LIST', 'LINE_TYPE_LIST'
-             ]
+        ]
         if (self.c_dict['LOOP_ORDER'] == 'processes' 
                 and 'MakePlots' in self.c_dict['PROCESS_LIST']):
             lists_to_group_items = config_lists_to_group_items
@@ -205,17 +205,15 @@ class StatAnalysisWrapper(CommandBuilder):
                     if config_list == 'LINE_TYPE_LIST':
                         lists_to_group_items.append(config_list)
                     elif config_dict[config_list] == []:
-                        self.logger.warning(
-                            config_list+" is empty, will be treated as group."
-                            )
+                        self.logger.warning(config_list+" is empty, "
+                                            +"will be treated as group.")
                         lists_to_group_items.append(config_list)
                     else:
                         lists_to_loop_items.append(config_list)
                 elif (config_list in config_lists_to_loop_items
                           and config_dict[config_list] == []):
-                    self.logger.warning(
-                        config_list+" is empty, will be treated as group."
-                        )
+                    self.logger.warning(config_list+" is empty, "
+                                        +"will be treated as group.")
                     lists_to_group_items.append(config_list)
                     lists_to_loop_items.remove(config_list)
         else:
@@ -227,19 +225,14 @@ class StatAnalysisWrapper(CommandBuilder):
                     lists_to_group_items.append(config_list)
                 elif (config_list in config_lists_to_loop_items
                           and config_dict[config_list] == []):
-                    self.logger.warning(
-                        config_list+" is empty, will be treated as group."
-                        )
+                    self.logger.warning(config_list+" is empty, "
+                                        +"will be treated as group.")
                     lists_to_group_items.append(config_list)
                     lists_to_loop_items.remove(config_list)
-        self.logger.debug(
-            "Items in these lists will be grouped together: " \
-            +', '.join(lists_to_group_items)
-            )
-        self.logger.debug(
-            "Items in these lists will be looped over: " \
-            +', '.join(lists_to_loop_items)
-            )
+        self.logger.debug("Items in these lists will be grouped together: "
+                          +', '.join(lists_to_group_items))
+        self.logger.debug("Items in these lists will be looped over: "
+                          +', '.join(lists_to_loop_items))
         return lists_to_group_items, lists_to_loop_items
   
     def build_stringsub_dict(self, date_beg, date_end, date_type,
@@ -297,104 +290,125 @@ class StatAnalysisWrapper(CommandBuilder):
         stringsub_dict = dict.fromkeys(stringsub_dict_keys, '')
         nkeys_start = len(stringsub_dict_keys)
         # Set full date information
-        fcst_hour_list = config_dict['FCST_'+date_type+'_HOUR'] \
-                         .replace('"', '').split(', ')
-        obs_hour_list = config_dict['OBS_'+date_type+'_HOUR'] \
-                         .replace('"', '').split(', ')
+        fcst_hour_list = (
+            config_dict['FCST_'+date_type+'_HOUR'].replace('"', '').split(', ')
+        )
+        obs_hour_list = (
+            config_dict['OBS_'+date_type+'_HOUR'].replace('"', '').split(', ')
+        )
         if fcst_hour_list != ['']:
-            stringsub_dict['fcst_'+date_type.lower()+'_beg'] = \
+            stringsub_dict['fcst_'+date_type.lower()+'_beg'] = (
                 datetime.datetime.strptime(
                     date_beg+fcst_hour_list[0], '%Y%m%d%H%M%S'
                 )
-            stringsub_dict['fcst_'+date_type.lower()+'_end'] = \
+            )
+            stringsub_dict['fcst_'+date_type.lower()+'_end'] = (
                 datetime.datetime.strptime(
                     date_end+fcst_hour_list[-1], '%Y%m%d%H%M%S'
                 )
+            )
             if (stringsub_dict['fcst_'+date_type.lower()+'_beg']
                     == stringsub_dict['fcst_'+date_type.lower()+'_end']):
-                stringsub_dict['fcst_'+date_type.lower()] = \
+                stringsub_dict['fcst_'+date_type.lower()] = (
                     stringsub_dict['fcst_'+date_type.lower()+'_beg']
+                )
         else:
-            stringsub_dict['fcst_'+date_type.lower()+'_beg'] = \
+            stringsub_dict['fcst_'+date_type.lower()+'_beg'] = (
                 datetime.datetime.strptime(
                     date_beg+'000000', '%Y%m%d%H%M%S'
                 )
-            stringsub_dict['fcst_'+date_type.lower()+'_end'] = \
+            )
+            stringsub_dict['fcst_'+date_type.lower()+'_end'] = (
                 datetime.datetime.strptime(
                     date_beg+'235959', '%Y%m%d%H%M%S'
                 )
+            )
         if obs_hour_list != ['']:
-            stringsub_dict['obs_'+date_type.lower()+'_beg'] = \
+            stringsub_dict['obs_'+date_type.lower()+'_beg'] = (
                 datetime.datetime.strptime(
                     date_beg+obs_hour_list[0], '%Y%m%d%H%M%S'
                 )
-            stringsub_dict['obs_'+date_type.lower()+'_end'] = \
+            )
+            stringsub_dict['obs_'+date_type.lower()+'_end'] = (
                 datetime.datetime.strptime(
                     date_end+obs_hour_list[-1], '%Y%m%d%H%M%S'
                 )
+            )
             if (stringsub_dict['obs_'+date_type.lower()+'_beg']
                     == stringsub_dict['obs_'+date_type.lower()+'_end']):
-                stringsub_dict['obs_'+date_type.lower()] = \
+                stringsub_dict['obs_'+date_type.lower()] = (
                     stringsub_dict['obs_'+date_type.lower()+'_beg']
+                )
         else:
-            stringsub_dict['obs_'+date_type.lower()+'_beg'] = \
+            stringsub_dict['obs_'+date_type.lower()+'_beg'] = (
                 datetime.datetime.strptime(
                     date_beg+'000000', '%Y%m%d%H%M%S'
                 )
-            stringsub_dict['obs_'+date_type.lower()+'_end'] = \
+            )
+            stringsub_dict['obs_'+date_type.lower()+'_end'] = (
                 datetime.datetime.strptime(
                     date_beg+'235959', '%Y%m%d%H%M%S'
                 )
+            )
         if fcst_hour_list == obs_hour_list:
-            stringsub_dict[date_type.lower()+'_beg'] = \
+            stringsub_dict[date_type.lower()+'_beg'] = (
                  stringsub_dict['fcst_'+date_type.lower()+'_beg']
-            stringsub_dict[date_type.lower()+'_end'] = \
+            )
+            stringsub_dict[date_type.lower()+'_end'] = (
                  stringsub_dict['fcst_'+date_type.lower()+'_end']
+            )
             if (stringsub_dict[date_type.lower()+'_beg']
                     == stringsub_dict[date_type.lower()+'_end']):
-                 stringsub_dict[date_type.lower()] = \
+                 stringsub_dict[date_type.lower()] = (
                      stringsub_dict['fcst_'+date_type.lower()+'_beg']
-        if (fcst_hour_list != [''] and
-                obs_hour_list == ['']):
-            stringsub_dict[date_type.lower()+'_beg'] = \
+                 )
+        if (fcst_hour_list != ['']
+                and obs_hour_list == ['']):
+            stringsub_dict[date_type.lower()+'_beg'] = (
                 stringsub_dict['fcst_'+date_type.lower()+'_beg']
-            stringsub_dict[date_type.lower()+'_end'] = \
+            )
+            stringsub_dict[date_type.lower()+'_end'] = (
                 stringsub_dict['fcst_'+date_type.lower()+'_end']
+            )
             if (stringsub_dict[date_type.lower()+'_beg']
                     == stringsub_dict[date_type.lower()+'_end']):
-                stringsub_dict[date_type.lower()] = \
+                stringsub_dict[date_type.lower()] = (
                     stringsub_dict['fcst_'+date_type.lower()+'_beg']
-        if (fcst_hour_list == [''] and
-                obs_hour_list != ['']):
-            stringsub_dict[date_type.lower()+'_beg'] = \
+                )
+        if (fcst_hour_list == ['']
+                and obs_hour_list != ['']):
+            stringsub_dict[date_type.lower()+'_beg'] = (
                 stringsub_dict['obs_'+date_type.lower()+'_beg']
-            stringsub_dict[date_type.lower()+'_end'] = \
+            )
+            stringsub_dict[date_type.lower()+'_end'] = (
                 stringsub_dict['obs_'+date_type.lower()+'_end']
+            )
             if (stringsub_dict[date_type.lower()+'_beg']
                     == stringsub_dict[date_type.lower()+'_end']):
-                stringsub_dict[date_type.lower()] = \
+                stringsub_dict[date_type.lower()] = (
                     stringsub_dict['obs_'+date_type.lower()+'_beg']
+                )
         # Set loop information
         for loop_list in lists_to_loop:
             list_name = loop_list.replace('_LIST', '')
-            list_name_value = config_dict[list_name] \
-                .replace('"', '') \
-                .replace(' ', '')
+            list_name_value = (
+                config_dict[list_name].replace('"', '').replace(' ', '')
+            )
             if list_name == 'MODEL':
                 stringsub_dict[list_name.lower()] = list_name_value
-                stringsub_dict['obtype'] = config_dict['OBTYPE'] \
-                    .replace('"', '') \
-                    .replace(' ', '')
+                stringsub_dict['obtype'] = (
+                    config_dict['OBTYPE'].replace('"', '').replace(' ', '')
+                )
             elif 'HOUR' in list_name:
                  stringsub_dict[list_name.lower()] = (
                      datetime.datetime.strptime(list_name_value, '%H%M%S')
                  )
                  stringsub_dict[list_name.lower()+'_beg'] = stringsub_dict[
                      list_name.lower()
-                     ]
+                 ]
                  stringsub_dict[list_name.lower()+'_end'] = stringsub_dict[
                      list_name.lower()
-                     ]
+                 ]
                  check_list1 = config_dict[list_name]
                  if 'FCST' in list_name:
                      check_list2 = config_dict[list_name.replace('FCST',
@@ -402,11 +416,9 @@ class StatAnalysisWrapper(CommandBuilder):
                  elif 'OBS' in list_name:
                      check_list2 = config_dict[list_name.replace('OBS',
                                                                  'FCST')]
-                 if check_list1 == check_list2 or \
-                         len(check_list2) == 0:
-                     list_type = list_name \
-                         .replace('_HOUR', '') \
-                         .lower()
+                 if (check_list1 == check_list2
+                         or len(check_list2) == 0):
+                     list_type = list_name.replace('_HOUR', '').lower()
                      if 'VALID' in list_name:
                         stringsub_dict['valid_hour_beg'] = (
                             stringsub_dict[list_type+'_hour_beg']
@@ -416,8 +428,9 @@ class StatAnalysisWrapper(CommandBuilder):
                         )
                         if (stringsub_dict['valid_hour_beg']
                                 == stringsub_dict['valid_hour_end']):
-                            stringsub_dict['valid_hour'] = \
+                            stringsub_dict['valid_hour'] = (
                                 stringsub_dict['valid_hour_end']
+                            )
                      elif 'INIT' in list_name:
                         stringsub_dict['init_hour_beg'] = (
                             stringsub_dict[list_type+'_hour_beg']
@@ -427,8 +440,9 @@ class StatAnalysisWrapper(CommandBuilder):
                         )
                         if (stringsub_dict['init_hour_beg']
                                 == stringsub_dict['init_hour_end']):
-                           stringsub_dict['init_hour'] = \
+                           stringsub_dict['init_hour'] = (
                                 stringsub_dict['init_hour_end']
+                           )
             elif 'LEAD' in list_name:
                 lead_timedelta = datetime.timedelta(
                     hours=int(list_name_value[0:2]),
@@ -450,8 +464,8 @@ class StatAnalysisWrapper(CommandBuilder):
                     check_list2 = config_dict[list_name.replace('FCST', 'OBS')]
                 elif 'OBS' in list_name:
                     check_list2 = config_dict[list_name.replace('OBS', 'FCST')]
-                if check_list1 == check_list2 or \
-                         len(check_list2) == 0:
+                if (check_list1 == check_list2
+                         or len(check_list2) == 0):
                     stringsub_dict['lead'] = stringsub_dict[list_name.lower()]
                     stringsub_dict['lead_hour'] = (
                         stringsub_dict[list_name.lower()+'_hour']
@@ -470,10 +484,10 @@ class StatAnalysisWrapper(CommandBuilder):
         # Set group information
         for group_list in lists_to_group:
             list_name = group_list.replace('_LIST', '')
-            list_name_value = config_dict[list_name] \
-                .replace('"', '') \
-                .replace(' ', '') \
+            list_name_value = (
+                config_dict[list_name].replace('"', '').replace(' ', '') \
                 .replace(',', '_')
+            )
             if 'HOUR' in list_name:
                 list_name_values_list = (
                     config_dict[list_name].replace('"', '').split(', ')
@@ -483,11 +497,11 @@ class StatAnalysisWrapper(CommandBuilder):
                     stringsub_dict[list_name.lower()+'_beg'] = (
                         datetime.datetime.strptime(list_name_values_list[0], 
                                                    '%H%M%S')
-                        )
+                    )
                     stringsub_dict[list_name.lower()+'_end'] = (
                         datetime.datetime.strptime(list_name_values_list[-1], 
                                                    '%H%M%S')
-                        )
+                    )
                     if (stringsub_dict[list_name.lower()+'_beg']
                             == stringsub_dict[list_name.lower()+'_end']):
                        stringsub_dict[list_name.lower()] = (
@@ -500,11 +514,9 @@ class StatAnalysisWrapper(CommandBuilder):
                     elif 'OBS' in list_name:
                         check_list2 = config_dict[list_name.replace('OBS',
                                                                     'FCST')]
-                    if check_list1 == check_list2 or \
-                             len(check_list2) == 0:
-                        list_type = list_name \
-                            .replace('_HOUR', '') \
-                            .lower()
+                    if (check_list1 == check_list2
+                             or len(check_list2) == 0):
+                        list_type = list_name.replace('_HOUR', '').lower()
                         if 'VALID' in list_name:
                             stringsub_dict['valid_hour_beg'] = (
                                 stringsub_dict[list_type+'_hour_beg']
@@ -514,8 +526,9 @@ class StatAnalysisWrapper(CommandBuilder):
                             )
                             if (stringsub_dict['valid_hour_beg']
                                     == stringsub_dict['valid_hour_end']):
-                                stringsub_dict['valid_hour'] = \
+                                stringsub_dict['valid_hour'] = (
                                     stringsub_dict['valid_hour_end']
+                                )
                         elif 'INIT' in list_name:
                             stringsub_dict['init_hour_beg'] = (
                                 stringsub_dict[list_type+'_hour_beg']
@@ -525,8 +538,9 @@ class StatAnalysisWrapper(CommandBuilder):
                             )
                             if (stringsub_dict['init_hour_beg']
                                     == stringsub_dict['init_hour_end']):
-                                stringsub_dict['init_hour'] = \
+                                stringsub_dict['init_hour'] = (
                                     stringsub_dict['init_hour_end']
+                                )
             else:
                 stringsub_dict[list_name.lower()] = list_name_value
         nkeys_end = len(stringsub_dict_keys)
@@ -584,8 +598,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     +'obs{obs_var?fmt=%s}{obs_level?fmt=%s}'
                     +'{obs_thresh?fmt=%s}{interp_mthd?fmt=%s}_'
                     +'vxmask{vx_mask?fmt=%s}'
-                    )
-                #filename_template_suffix = '.stat'
+                )
                 if 'DESC_LIST' in lists_to_loop:
                     filename_template_prefix = (
                         filename_template_prefix
@@ -611,20 +624,17 @@ class StatAnalysisWrapper(CommandBuilder):
                         filename_template_prefix
                         +'_alpha{alpha?fmt=%s}'
                     )
-                filename_template = (
-                    filename_template_prefix
-                    #+filename_template_suffix
-                )
+                filename_template = filename_template_prefix
             else:
                 if date_beg == date_end:
                     filename_template = (
                         filename_template+date_type.lower()+date_beg
-                        )
+                    )
                 else:
                     filename_template = (
                         filename_template+date_type.lower()+
                         date_beg+'to'+date_end
-                        )
+                    )
                 for loop_list in lists_to_loop:
                     if loop_list != 'MODEL_LIST':
                         list_name = loop_list.replace('_LIST', '')
@@ -633,17 +643,15 @@ class StatAnalysisWrapper(CommandBuilder):
                                 filename_template+'_'
                                 +list_name.replace('_', '').lower()
                                 +config_dict[list_name]+'Z'
-                                )
+                            )
                         else:
                             filename_template = (
                                 filename_template+'_'
                                 +list_name.replace('_', '').lower()
                                 +config_dict[list_name].replace('"', '')
-                                )
-        self.logger.debug(
-            "Building "+output_type+" filename from "+filename_type \
-            +" template: "+filename_template
-            )
+                            )
+        self.logger.debug("Building "+output_type+" filename from "
+                          +filename_type+" template: "+filename_template)
         stringsub_dict = self.build_stringsub_dict(date_beg, date_end, 
                                                    date_type, lists_to_loop, 
                                                    lists_to_group, config_dict)
@@ -651,8 +659,8 @@ class StatAnalysisWrapper(CommandBuilder):
                            filename_template,
                            **stringsub_dict)
         output_filename = ss.do_string_sub()
-        if (filename_type == 'default'): 
-            output_filename = output_filename+'_'+output_type+'.stat' 
+        if filename_type == 'default': 
+            output_filename = output_filename+'_'+output_type+'.stat'
         return output_filename
 
     def get_lookin_dir(self, dir_path, date_beg, date_end, date_type,
@@ -695,7 +703,10 @@ class StatAnalysisWrapper(CommandBuilder):
         if '*' in dir_path_filled:
             dir_path_filled_all = str(
                 subprocess.check_output('ls -d '+dir_path_filled, shell=True)
-            )[1:].replace("'","").replace('\\n', ' ')
+            )
+            dir_path_filled_all = (
+                dir_path_filled_all[1:].replace("'","").replace('\\n', ' ')
+            )
             dir_path_filled_all = dir_path_filled_all[:-1]
         else:
             dir_path_filled_all = dir_path_filled
@@ -737,10 +748,10 @@ class StatAnalysisWrapper(CommandBuilder):
                 fcst_valid_hour_end = fcst_valid_hour_list[-1].replace('"','')
                 config_dict['FCST_VALID_BEG'] = (
                     str(date_beg)+'_'+fcst_valid_hour_beg
-                    )
+                )
                 config_dict['FCST_VALID_END'] = (
                     str(date_end)+'_'+fcst_valid_hour_end
-                    )
+                )
             elif date_type == 'INIT':
                 config_dict['FCST_VALID_BEG'] = ''
                 config_dict['FCST_VALID_END'] = ''
@@ -750,10 +761,10 @@ class StatAnalysisWrapper(CommandBuilder):
             if date_type == 'VALID':
                 config_dict['FCST_VALID_BEG'] = (
                     str(date_beg)+'_'+fcst_valid_hour_now
-                    )
+                )
                 config_dict['FCST_VALID_END'] = (
                     str(date_end)+'_'+fcst_valid_hour_now
-                    )
+                )
             elif date_type == 'INIT':
                 config_dict['FCST_VALID_BEG'] = ''
                 config_dict['FCST_VALID_END'] = ''
@@ -770,10 +781,10 @@ class StatAnalysisWrapper(CommandBuilder):
                 fcst_init_hour_end = fcst_init_hour_list[-1].replace('"','')
                 config_dict['FCST_INIT_BEG'] = (
                     str(date_beg)+'_'+fcst_init_hour_beg
-                    )
+                )
                 config_dict['FCST_INIT_END'] = (
                     str(date_end)+'_'+fcst_init_hour_end
-                    )
+                )
         elif nfcst_init_hour == 1 and fcst_init_hour_list != ['']:
             fcst_init_hour_now = fcst_init_hour_list[0]
             config_dict['FCST_INIT_HOUR'] = '"'+fcst_init_hour_now+'"'
@@ -783,10 +794,10 @@ class StatAnalysisWrapper(CommandBuilder):
             elif date_type == 'INIT':
                 config_dict['FCST_INIT_BEG'] = (
                     str(date_beg)+'_'+fcst_init_hour_now
-                    )
+                )
                 config_dict['FCST_INIT_END'] = (
                     str(date_end)+'_'+fcst_init_hour_now
-                    )
+                )
         else:
             config_dict['FCST_INIT_BEG'] = ''
             config_dict['FCST_INIT_END'] = ''
@@ -797,10 +808,10 @@ class StatAnalysisWrapper(CommandBuilder):
                 obs_valid_hour_end = obs_valid_hour_list[-1].replace('"','')
                 config_dict['OBS_VALID_BEG'] = (
                     str(date_beg)+'_'+obs_valid_hour_beg
-                    )
+                )
                 config_dict['OBS_VALID_END'] = (
                     str(date_end)+'_'+obs_valid_hour_end
-                    )
+                )
             elif date_type == 'INIT':
                 config_dict['OBS_VALID_BEG'] = ''
                 config_dict['OBS_VALID_END'] = ''
@@ -810,10 +821,10 @@ class StatAnalysisWrapper(CommandBuilder):
             if date_type == 'VALID':
                 config_dict['OBS_VALID_BEG'] = (
                      str(date_beg)+'_'+obs_valid_hour_now
-                     )
+                )
                 config_dict['OBS_VALID_END'] = (
                      str(date_end)+'_'+obs_valid_hour_now
-                     )
+                )
             elif date_type == 'INIT':
                 config_dict['OBS_VALID_BEG'] = ''
                 config_dict['OBS_VALID_END'] = ''
@@ -830,10 +841,10 @@ class StatAnalysisWrapper(CommandBuilder):
                 obs_init_hour_end = obs_init_hour_list[-1].replace('"','')
                 config_dict['OBS_INIT_BEG'] = (
                     str(date_beg)+'_'+obs_init_hour_beg
-                    )
+                )
                 config_dict['OBS_INIT_END'] = (
                     str(date_end)+'_'+obs_init_hour_end
-                    )
+                )
         elif nobs_init_hour == 1 and obs_init_hour_list != ['']:
             obs_init_hour_now = obs_init_hour_list[0]
             config_dict['OBS_INIT_HOUR'] = '"'+obs_init_hour_now+'"'
@@ -843,10 +854,10 @@ class StatAnalysisWrapper(CommandBuilder):
             elif date_type == 'INIT':
                 config_dict['OBS_INIT_BEG'] = (
                     str(date_beg)+'_'+obs_init_hour_now
-                    )
+                )
                 config_dict['OBS_INIT_END'] = (
                     str(date_end)+'_'+obs_init_hour_now
-                    )
+                )
         else:
             config_dict['OBS_INIT_BEG'] = ''
             config_dict['OBS_INIT_END'] = ''
@@ -876,7 +887,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 model_reference_name = (
                     self.config.getstr('config', 'MODEL'+m+'_REFERENCE_NAME',
                                        model_name)
-                    )
+                )
                 if self.config.has_option('config',
                                           'MODEL'+m
                                           +'_STAT_ANALYSIS_LOOKIN_DIR'):
@@ -884,16 +895,15 @@ class StatAnalysisWrapper(CommandBuilder):
                         self.config.getraw('config',
                                            'MODEL'+m
                                            +'_STAT_ANALYSIS_LOOKIN_DIR')
-                        )
+                    )
                 else:
-                    self.logger.error(
-                        "MODEL"+m+"_STAT_ANALYSIS_LOOKIN_DIR was not set."
-                        )
+                    self.logger.error("MODEL"+m+"_STAT_ANALYSIS_LOOKIN_DIR "
+                                      +"was not set.")
                     exit(1)
                 if self.config.has_option('config', 'MODEL'+m+'_OBTYPE'):
                     model_obtype = (
                         self.config.getstr('config', 'MODEL'+m+'_OBTYPE')
-                        )
+                    )
                 else:
                     self.logger.error("MODEL"+m+"_OBTYPE was not set.")
                     exit(1)
@@ -905,11 +915,11 @@ class StatAnalysisWrapper(CommandBuilder):
                             self.config.getraw('filename_templates', 
                                                'MODEL'+m+'_STAT_ANALYSIS_'
                                                +output_type+'_TEMPLATE')
-                            )
+                        )
                         if model_filename_template == '':
                             model_filename_template = (
                                 '{model?fmt=%s}_{obtype?fmt=%s}_'
-                                )
+                            )
                             model_filename_type = 'default'
                         else:
                             model_filename_type = 'user'
@@ -921,23 +931,23 @@ class StatAnalysisWrapper(CommandBuilder):
                                 self.config.getraw('filename_templates',
                                                    'STAT_ANALYSIS_'
                                                    +output_type+'_TEMPLATE')
-                                )
+                            )
                             if model_filename_template == '':
                                 model_filename_template = (
                                     '{model?fmt=%s}_{obtype?fmt=%s}_'
-                                    )
+                                )
                                 model_filename_type = 'default'
                             else:
                                 model_filename_type = 'user'
                         else:
                             model_filename_template = (
                                 '{model?fmt=%s}_{obtype?fmt=%s}_'
-                                )
+                            )
                             model_filename_type = 'default'
                     if output_type == 'DUMP_ROW':
                          model_dump_row_filename_template = (
                              model_filename_template
-                             )
+                         )
                          model_dump_row_filename_type = model_filename_type
                     elif output_type == 'OUT_STAT':
                         if 'MakePlots' in self.c_dict['PROCESS_LIST']:
@@ -946,7 +956,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         else:
                             model_out_stat_filename_template = (
                                 model_filename_template
-                                )
+                            )
                             model_out_stat_filename_type = model_filename_type
             else:
                 self.logger.error("MODEL"+m+" was not set.")
@@ -990,38 +1000,36 @@ class StatAnalysisWrapper(CommandBuilder):
         self.c_dict['VAR_LIST'] = util.parse_var_list(self.config)
         self.c_dict['FCST_VAR_LIST'] = util.getlist(
             self.config.getstr('config', 'FCST_VAR_LIST', '')
-            )
+        )
         self.c_dict['OBS_VAR_LIST'] = util.getlist(
             self.config.getstr('config', 'OBS_VAR_LIST', '')
-            )
+        )
         self.c_dict['FCST_UNITS_LIST'] = util.getlist(
             self.config.getstr('config', 'FCST_UNITS_LIST', '')
-            )
+        )
         self.c_dict['OBS_UNITS_LIST'] = util.getlist(
             self.config.getstr('config', 'OBS_UNITS_LIST', '')
-            )
+        )
         self.c_dict['FCST_LEVEL_LIST'] = util.getlist(
             self.config.getstr('config', 'FCST_LEVEL_LIST', '')
-            )
+        )
         self.c_dict['OBS_LEVEL_LIST'] = util.getlist(
             self.config.getstr('config', 'OBS_LEVEL_LIST', '')
-            )
+        )
         self.c_dict['FCST_THRESH_LIST'] = util.getlist(
             self.config.getstr('config', 'FCST_THRESH_LIST', '')
-            )
+        )
         self.c_dict['OBS_THRESH_LIST'] =  util.getlist(
             self.config.getstr('config', 'OBS_THRESH_LIST', '')
-            ) 
+        ) 
         # Do some preprocessing, formatting, and gathering
         # of config information.
         formatted_c_dict = copy.deepcopy(self.c_dict)
         model_info_list, model_indices = self.parse_model_info()
         if self.c_dict['MODEL_LIST'] == []:
             if model_indices > 0:
-                self.logger.warning(
-                    "MODEL_LIST was left blank, creating with MODELn " \
-                    "information."
-                    )
+                self.logger.warning("MODEL_LIST was left blank, "
+                                    +"creating with MODELn information.")
                 model_name_list = []
                 for model_info in model_info_list:
                     model_name_list.append(model_info['name'])
@@ -1033,32 +1041,32 @@ class StatAnalysisWrapper(CommandBuilder):
             index = self.c_dict['FCST_VALID_HOUR_LIST'].index(fcst_valid_hour)
             formatted_c_dict['FCST_VALID_HOUR_LIST'][index] = (
                 fcst_valid_hour.ljust(6,'0')
-                )
+            )
         for fcst_init_hour in self.c_dict['FCST_INIT_HOUR_LIST']:
             index = self.c_dict['FCST_INIT_HOUR_LIST'].index(fcst_init_hour)
             formatted_c_dict['FCST_INIT_HOUR_LIST'][index] = (
                 fcst_init_hour.ljust(6,'0')
-                )
+            )
         for obs_valid_hour in self.c_dict['OBS_VALID_HOUR_LIST']:
             index = self.c_dict['OBS_VALID_HOUR_LIST'].index(obs_valid_hour)
             formatted_c_dict['OBS_VALID_HOUR_LIST'][index] = (
                 obs_valid_hour.ljust(6,'0')
-                )
+            )
         for obs_init_hour in self.c_dict['OBS_INIT_HOUR_LIST']:
             index = self.c_dict['OBS_INIT_HOUR_LIST'].index(obs_init_hour)
             formatted_c_dict['OBS_INIT_HOUR_LIST'][index] = (
                 obs_init_hour.ljust(6,'0')
-                )
+            )
         for fcst_lead in self.c_dict['FCST_LEAD_LIST']:
             index = self.c_dict['FCST_LEAD_LIST'].index(fcst_lead)
             formatted_c_dict['FCST_LEAD_LIST'][index] = (
                 fcst_lead.ljust(6,'0')
-                )
+            )
         for obs_lead in self.c_dict['OBS_LEAD_LIST']:
             index = self.c_dict['OBS_LEAD_LIST'].index(obs_lead)
             formatted_c_dict['OBS_LEAD_LIST'][index] = (
                 obs_lead.ljust(6,'0')
-                )
+            )
         # Parse whether all expected METplus config _LIST variables
         # to be treated as a loop or group.
         config_lists_to_group_items = formatted_c_dict['GROUP_LIST_ITEMS']
@@ -1067,7 +1075,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.set_lists_loop_or_group(config_lists_to_group_items, 
                                          config_lists_to_loop_items,
                                          formatted_c_dict)
-            )
+        )
         runtime_setup_dict = {}
         # Fill setup dictionary for MET config variable name
         # and its value as a string for group lists.
@@ -1075,17 +1083,17 @@ class StatAnalysisWrapper(CommandBuilder):
             runtime_setup_dict_name = list_to_group_items.replace('_LIST', '')
             runtime_setup_dict_value = (
                 [self.list_to_str(formatted_c_dict[list_to_group_items])]
-                )
+            )
             runtime_setup_dict[runtime_setup_dict_name] = (
                 runtime_setup_dict_value
-                )
+            )
         # Fill setup dictionary for MET config variable name
         # and its value as a list for loop lists. Some items
         # in lists need to be formatted now, others done later.
         format_later_list = [
             'MODEL_LIST', 'FCST_VALID_HOUR_LIST', 'OBS_VALID_HOUR_LIST',
             'FCST_INIT_HOUR_LIST','OBS_INIT_HOUR_LIST'
-             ]
+        ]
         for list_to_loop_items in lists_to_loop_items:
             if list_to_loop_items not in format_later_list:
                 for item in formatted_c_dict[list_to_loop_items]:
@@ -1095,7 +1103,7 @@ class StatAnalysisWrapper(CommandBuilder):
             runtime_setup_dict_value = formatted_c_dict[list_to_loop_items]
             runtime_setup_dict[runtime_setup_dict_name] = (
                 runtime_setup_dict_value
-                )
+            )
         # Create run time dictionary with all the combinations
         # of settings to be run. 
         runtime_setup_dict_names = sorted(runtime_setup_dict)
@@ -1103,7 +1111,7 @@ class StatAnalysisWrapper(CommandBuilder):
             [dict(zip(runtime_setup_dict_names, prod)) for prod in
              itertools.product(*(runtime_setup_dict[name] for name in
              runtime_setup_dict_names))]
-             )
+        )
         # Loop over run settings.
         for runtime_settings_dict in runtime_settings_dict_list:
             self.param = self.c_dict['CONFIG_FILE']
@@ -1113,8 +1121,9 @@ class StatAnalysisWrapper(CommandBuilder):
             nmodels = len(runtime_settings_dict['MODEL'].split(', '))
             if nmodels == 1:
                 for m in model_indices:
-                    model_check = runtime_settings_dict['MODEL'] \
-                        .replace('"', '')
+                    model_check = (
+                        runtime_settings_dict['MODEL'].replace('"', '')
+                    )
                     if self.config.getstr('config', 'MODEL'+m) == model_check:
                         break
                 model_info = model_info_list[int(m)-1]
@@ -1161,7 +1170,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         self.config.getraw('filename_templates',
                                            'STAT_ANALYSIS_DUMP_ROW_TEMPLATE',
                                            '')
-                        )
+                    )
                     if dump_row_filename_template == '':
                         dump_row_filename_type = 'default'
                     else:
@@ -1171,7 +1180,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         self.config.getraw('filename_templates',
                                            'STAT_ANALYSIS_OUT_STAT_TEMPLATE',
                                            '')
-                        )
+                    )
                     if out_stat_filename_template == '':
                         out_stat_filename_type = 'default'
                     else:
@@ -1187,10 +1196,9 @@ class StatAnalysisWrapper(CommandBuilder):
                                              date_type, lists_to_loop_items, 
                                              lists_to_group_items,
                                              runtime_settings_dict)
-                    )
-                dump_row_file = (
-                    self.c_dict['OUTPUT_BASE_DIR']+'/'+dump_row_filename
-                    )
+                )
+                dump_row_file = os.path.join(self.c_dict['OUTPUT_BASE_DIR'],
+                                             dump_row_filename)
                 job = job.replace('[dump_row_file]', dump_row_file)
                 job = job.replace('[dump_row_filename]', dump_row_file)
                 dump_row_output_dir = dump_row_file.rpartition('/')[0]
@@ -1205,10 +1213,9 @@ class StatAnalysisWrapper(CommandBuilder):
                                              date_type,lists_to_loop_items, 
                                              lists_to_group_items,
                                              runtime_settings_dict)
-                    )
-                out_stat_file = (
-                    self.c_dict['OUTPUT_BASE_DIR']+'/'+out_stat_filename
-                    )
+                )
+                out_stat_file = os.path.join(self.c_dict['OUTPUT_BASE_DIR'],
+                                             out_stat_filename)
                 job = job.replace('[out_stat_file]', out_stat_file)
                 job = job.replace('[out_stat_filename]', out_stat_file)
                 out_stat_output_dir = out_stat_file.rpartition('/')[0]
@@ -1220,7 +1227,7 @@ class StatAnalysisWrapper(CommandBuilder):
             runtime_settings_dict = (
                 self.format_valid_init(date_beg, date_end, date_type, 
                                        runtime_settings_dict)
-                )
+            )
             # Set environment variables and run stat_analysis.
             self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
             for name, value in runtime_settings_dict.items():
@@ -1249,39 +1256,39 @@ class StatAnalysisWrapper(CommandBuilder):
             'FCST_THRESH_LIST', 'FCST_UNITS_LIST',
             'OBS_VAR_LIST', 'OBS_LEVEL_LIST', 
             'OBS_THRESH_LIST', 'OBS_UNITS_LIST'
-            ]
+        ]
         for bad_config_variable in bad_config_variable_list:
             if self.config.has_option('config',
                                       bad_config_variable):
-                self.logger.error(
-                    "Bad config option for running StatAnalysis followed by " \
-                    "MakePlots. Please remove "+bad_config_variable+" and " \
-                    "set using FCST/OBS_VARn"
-                    )
+                self.logger.error("Bad config option for running StatAnalysis "
+                                  "followed by MakePlots. Please remove "
+                                  +bad_config_variable+" and set using FCST/OBS_VARn")
                 exit(1)
         loop_group_accepted_options = [ 
             'FCST_VALID_HOUR_LIST', 'FCST_INIT_HOUR_LIST', 
             'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
-            ]
+        ]
         for config_list in self.c_dict['GROUP_LIST_ITEMS']:
             if config_list not in loop_group_accepted_options:
-                self.logger.error(
-                    "Bad config option for running StatAnalysis followed by " \
-                    "MakePlots. Only accepted values in GROUP_LIST_ITEMS " \
-                    "are FCST_VALID_HOUR_LIST, FCST_INIT_HOUR_LIST, " \
-                    "OBS_VALID_HOUR_LIST, OBS_INIT_HOUR_LIST. Found " \
-                    +config_list
-                    )
+                self.logger.error("Bad config option for running StatAnalysis "
+                                  +"followed by MakePlots. Only accepted "
+                                  +"values in GROUP_LIST_ITEMS are "
+                                  +"FCST_VALID_HOUR_LIST, "
+                                  +"FCST_INIT_HOUR_LIST, "
+                                  +"OBS_VALID_HOUR_LIST, "
+                                  +"OBS_INIT_HOUR_LIST. "
+                                  +"Found "+config_list)
                 exit(1) 
         for config_list in self.c_dict['LOOP_LIST_ITEMS']:
             if config_list not in loop_group_accepted_options:
-                self.logger.error(
-                    "Bad config option for running StatAnalysis followed by " \
-                    "MakePlots. Only accepted values in LOOP_LIST_ITEMS " \
-                    "are FCST_VALID_HOUR_LIST, FCST_INIT_HOUR_LIST, " \
-                    "OBS_VALID_HOUR_LIST, OBS_INIT_HOUR_LIST. Found " \
-                    +config_list
-                    )
+                self.logger.error("Bad config option for running StatAnalysis "
+                                  +"followed by MakePlots. Only accepted "
+                                  +"values in LOOP_LIST_ITEMS are "
+                                  +"FCST_VALID_HOUR_LIST, "
+                                  +"FCST_INIT_HOUR_LIST, "
+                                  +"OBS_VALID_HOUR_LIST, "
+                                  +"OBS_INIT_HOUR_LIST. "
+                                  +"Found "+config_list)
                 exit(1)
         # Do checks for required configuration file options that are
         # defined by user.
@@ -1290,10 +1297,9 @@ class StatAnalysisWrapper(CommandBuilder):
             ]
         for required_config_variable in required_config_variable_list:
             if len(self.c_dict[required_config_variable]) == 0:
-                self.logger.error(
-                    required_config_variable+" has no items. This list must "
-                    +"have items to run StatAnalysis followed by MakePlots."
-                )
+                self.logger.error(required_config_variable+" has no items. "
+                                  +"This list must have items to run "
+                                  +"StatAnalysis followed by MakePlots.")
                 exit(1)
         # Do some preprocessing, formatting, and gathering
         # of config information.
@@ -1302,10 +1308,8 @@ class StatAnalysisWrapper(CommandBuilder):
         model_info_list, model_indices = self.parse_model_info()
         if self.c_dict['MODEL_LIST'] == []:
             if model_indices > 0:
-                self.logger.warning(
-                    "MODEL_LIST was left blank, creating with MODELn " \
-                    "information."
-                    )
+                self.logger.warning("MODEL_LIST was left blank, "
+                                    +"creating with MODELn information.")
                 model_name_list = []
                 for model_info in model_info_list:
                     model_name_list.append(model_info['name'])
@@ -1369,16 +1373,16 @@ class StatAnalysisWrapper(CommandBuilder):
                         var_info['obs_extra'] = [ 
                             var_info_c_dict['obs_extra']
                         ]
-                        var_info['fcst_thresh'] = [ fcst_thresh ]
-                        var_info['obs_thresh'] = [ obs_thresh ]
+                        var_info['fcst_thresh'] = [fcst_thresh]
+                        var_info['obs_thresh'] = [obs_thresh]
                         if len(fcst_units) == 0:
                             var_info['fcst_units'] = []
                         else:
-                            var_info['fcst_units'] = [ fcst_units ]
+                            var_info['fcst_units'] = [fcst_units]
                         if len(obs_units) == 0:
                             var_info['obs_units'] = []
                         else:
-                            var_info['obs_units'] = [ obs_units ]
+                            var_info['obs_units'] = [obs_units]
                         var_info['run_fourier'] = run_fourier
                         var_info['fourier_wave_num'] = []
                         var_info_list.append(var_info)
@@ -1404,45 +1408,44 @@ class StatAnalysisWrapper(CommandBuilder):
                             var_info['obs_extra'] = [ 
                                 var_info_c_dict['obs_extra']
                             ]
-                            var_info['fcst_thresh'] = [ fcst_thresh ]
-                            var_info['obs_thresh'] = [ obs_thresh ]
+                            var_info['fcst_thresh'] = [fcst_thresh]
+                            var_info['obs_thresh'] = [obs_thresh]
                             if len(fcst_units) == 0:
                                 var_info['fcst_units'] = []
                             else:
-                                var_info['fcst_units'] = [ fcst_units ]
+                                var_info['fcst_units'] = [fcst_units]
                             if len(obs_units) == 0:
                                 var_info['obs_units'] = []
                             else:
-                                var_info['obs_units'] = [ obs_units ]
+                                var_info['obs_units'] = [obs_units]
                             var_info['run_fourier'] = run_fourier
-                            var_info['fourier_wave_num'] = [ 'WV1_'+pair ]
+                            var_info['fourier_wave_num'] = ['WV1_'+pair]
                             var_info_list.append(var_info)
             else:
                 if run_fourier == False:
                     var_info = {}
                     var_info['index'] = var_info_c_dict['index'] 
-                    var_info['fcst_name'] = [ var_info_c_dict['fcst_name'] ]
-                    var_info['obs_name'] = [ var_info_c_dict['obs_name'] ]
-                    var_info['fcst_level'] = [ var_info_c_dict['fcst_level'] ]
-                    var_info['obs_level'] = [ var_info_c_dict['obs_level'] ]
-                    var_info['fcst_extra'] = [ var_info_c_dict['fcst_extra'] ]
-                    var_info['obs_extra'] = [ var_info_c_dict['obs_extra'] ]
+                    var_info['fcst_name'] = [var_info_c_dict['fcst_name']]
+                    var_info['obs_name'] = [var_info_c_dict['obs_name']]
+                    var_info['fcst_level'] = [var_info_c_dict['fcst_level']]
+                    var_info['obs_level'] = [var_info_c_dict['obs_level']]
+                    var_info['fcst_extra'] = [var_info_c_dict['fcst_extra']]
+                    var_info['obs_extra'] = [var_info_c_dict['obs_extra']]
                     var_info['fcst_thresh'] = [] 
                     var_info['obs_thresh'] = []
                     if len(fcst_units) == 0:
                         var_info['fcst_units'] = []
                     else:
-                        var_info['fcst_units'] = [ fcst_units ]
+                        var_info['fcst_units'] = [fcst_units]
                     if len(obs_units) == 0:
                         var_info['obs_units'] = []
                     else:
-                        var_info['obs_units'] = [ obs_units ]
+                        var_info['obs_units'] = [obs_units]
                     var_info['run_fourier'] = run_fourier
                     var_info['fourier_wave_num'] = []
                     var_info_list.append(var_info)
                 else:
                     for pair in fourier_wave_num_pairs:
-                        self.logger.info(pair)
                         var_info = {}
                         var_info['index'] = var_info_c_dict['index']
                         var_info['fcst_name'] = [ 
@@ -1468,44 +1471,44 @@ class StatAnalysisWrapper(CommandBuilder):
                         if len(fcst_units) == 0:
                             var_info['fcst_units'] = []
                         else:
-                            var_info['fcst_units'] = [ fcst_units ]
+                            var_info['fcst_units'] = [fcst_units]
                         if len(obs_units) == 0:
                             var_info['obs_units'] = []
                         else:
-                            var_info['obs_units'] = [ obs_units ]
+                            var_info['obs_units'] = [obs_units]
                         var_info['run_fourier'] = run_fourier
-                        var_info['fourier_wave_num'] = [ 'WV1_'+pair ]
+                        var_info['fourier_wave_num'] = ['WV1_'+pair]
                         var_info_list.append(var_info)
         for fcst_valid_hour in self.c_dict['FCST_VALID_HOUR_LIST']:
             index = self.c_dict['FCST_VALID_HOUR_LIST'].index(fcst_valid_hour)
             formatted_c_dict['FCST_VALID_HOUR_LIST'][index] = (
                 fcst_valid_hour.ljust(6,'0')
-                )
+            )
         for fcst_init_hour in self.c_dict['FCST_INIT_HOUR_LIST']:
             index = self.c_dict['FCST_INIT_HOUR_LIST'].index(fcst_init_hour)
             formatted_c_dict['FCST_INIT_HOUR_LIST'][index] = (
                 fcst_init_hour.ljust(6,'0')
-                )
+            )
         for obs_valid_hour in self.c_dict['OBS_VALID_HOUR_LIST']:
             index = self.c_dict['OBS_VALID_HOUR_LIST'].index(obs_valid_hour)
             formatted_c_dict['OBS_VALID_HOUR_LIST'][index] = (
                 obs_valid_hour.ljust(6,'0')
-                )
+            )
         for obs_init_hour in self.c_dict['OBS_INIT_HOUR_LIST']:
             index = self.c_dict['OBS_INIT_HOUR_LIST'].index(obs_init_hour)
             formatted_c_dict['OBS_INIT_HOUR_LIST'][index] = (
                 obs_init_hour.ljust(6,'0')
-                )
+            )
         for fcst_lead in self.c_dict['FCST_LEAD_LIST']:
             index = self.c_dict['FCST_LEAD_LIST'].index(fcst_lead)
             formatted_c_dict['FCST_LEAD_LIST'][index] = (
                 fcst_lead.ljust(6,'0')
-                )
+            )
         for obs_lead in self.c_dict['OBS_LEAD_LIST']:
             index = self.c_dict['OBS_LEAD_LIST'].index(obs_lead)
             formatted_c_dict['OBS_LEAD_LIST'][index] = (
                 obs_lead.ljust(6,'0')
-                )
+            )
         output_base_dir = self.c_dict['OUTPUT_BASE_DIR']
         if not os.path.exists(output_base_dir):
             util.mkdir_p(output_base_dir)
@@ -1540,37 +1543,37 @@ class StatAnalysisWrapper(CommandBuilder):
             # to be treated as a loop or group.
             config_lists_to_group_items = (
                 var_info_formatted_c_dict['GROUP_LIST_ITEMS']
-                )
+            )
             config_lists_to_loop_items = (
                 var_info_formatted_c_dict['LOOP_LIST_ITEMS']
-                )
+            )
             lists_to_group_items, lists_to_loop_items = (
                 self.set_lists_loop_or_group(config_lists_to_group_items,
                                              config_lists_to_loop_items,
                                              var_info_formatted_c_dict)
-                )
+            )
             runtime_setup_dict = {}
             # Fill setup dictionary for MET config variable name
             # and its value as a string for group lists.
             for list_to_group_items in lists_to_group_items:
                 runtime_setup_dict_name = (
                     list_to_group_items.replace('_LIST', '')
-                    )
+                )
                 runtime_setup_dict_value = [
                     self.list_to_str(
                         var_info_formatted_c_dict[list_to_group_items]
-                        )
-                    ]
+                    )
+                ]
                 runtime_setup_dict[runtime_setup_dict_name] = (
                     runtime_setup_dict_value
-                    )
+                )
             # Fill setup dictionary for MET config variable name
             # and its value as a list for loop lists. Some items
             # in lists need to be formatted now, others done later.
             format_later_list = [
                 'MODEL_LIST', 'FCST_VALID_HOUR_LIST', 'OBS_VALID_HOUR_LIST',
                 'FCST_INIT_HOUR_LIST','OBS_INIT_HOUR_LIST'
-                 ]
+            ]
             for list_to_loop_items in lists_to_loop_items:
                 runtime_setup_dict_name = list_to_loop_items.replace('_LIST', 
                                                                      '')
@@ -1580,17 +1583,17 @@ class StatAnalysisWrapper(CommandBuilder):
                         index = (
                             var_info_formatted_c_dict[list_to_loop_items] \
                             .index(item)
-                            )
+                        )
                         var_info_formatted_c_dict[list_to_loop_items][index] \
                             = '"'+item+'"'
                 runtime_setup_dict_name = list_to_loop_items.replace('_LIST', 
                                                                      '')
                 runtime_setup_dict_value = (
                     var_info_formatted_c_dict[list_to_loop_items]
-                    )
+                )
                 runtime_setup_dict[runtime_setup_dict_name] = (
                     runtime_setup_dict_value
-                    )
+                )
             # Create run time dictionary with all the combinations
             # of settings to be run.
             runtime_setup_dict_names = sorted(runtime_setup_dict)
@@ -1598,7 +1601,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 [dict(zip(runtime_setup_dict_names, prod)) for prod in
                 itertools.product(*(runtime_setup_dict[name] for name in
                 runtime_setup_dict_names))]
-                )
+            )
             # Loop over run settings.
             for runtime_settings_dict in runtime_settings_dict_list:
                 self.param = self.c_dict['CONFIG_FILE']
@@ -1606,8 +1609,9 @@ class StatAnalysisWrapper(CommandBuilder):
                 # information and stat_analysis job.
                 job = '-job filter -dump_row '
                 for m in model_indices:
-                    model_check = runtime_settings_dict['MODEL'] \
-                        .replace('"', '')
+                    model_check = (
+                        runtime_settings_dict['MODEL'].replace('"', '')
+                    )
                     if (self.config.getstr('config', 'MODEL'+m) 
                             == model_check):
                         break
@@ -1625,7 +1629,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.set_lookin_dir(runtime_settings_dict['-lookin'])
                 dump_row_filename_template = (
                     model_info['dump_row_filename_template']
-                    )
+                )
                 dump_row_filename_type = model_info['dump_row_filename_type']
                 dump_row_filename = (
                     self.get_output_filename('dump_row', 
@@ -1636,10 +1640,9 @@ class StatAnalysisWrapper(CommandBuilder):
                                              date_type, lists_to_loop_items, 
                                              lists_to_group_items,
                                              runtime_settings_dict)
-                    )
-                dump_row_file = (
-                    self.c_dict['OUTPUT_BASE_DIR']+'/'+dump_row_filename
-                    )
+                )
+                dump_row_file = os.path.join(self.c_dict['OUTPUT_BASE_DIR'],
+                                             dump_row_filename)
                 dump_row_output_dir = dump_row_file.rpartition('/')[0]
                 if not os.path.exists(dump_row_output_dir):
                    util.mkdir_p(dump_row_output_dir)
@@ -1651,7 +1654,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                            self.c_dict[date_type+'_END'], 
                                            date_type, 
                                            runtime_settings_dict)
-                    )
+                )
                 # Set environment variables and run stat_analysis.
                 self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
                 for name, value in runtime_settings_dict.items():
@@ -1659,9 +1662,8 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.logger.debug(name+": "+value)
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error(
-                        "stat_analysis could not generate command"
-                        )
+                    self.logger.error("stat_analysis could not generate "+
+                                      "command")
                     return
                 self.build()
                 self.clear()
@@ -1675,7 +1677,7 @@ class StatAnalysisWrapper(CommandBuilder):
         self.c_dict['INIT_BEG'] = self.config.getstr('config', 'INIT_BEG', '')
         self.c_dict['INIT_END'] = self.config.getstr('config', 'INIT_END', '')
         date_type = self.c_dict['DATE_TYPE']
-        if date_type not in [ 'VALID', 'INIT' ]:
+        if date_type not in ['VALID', 'INIT']:
             self.logger.error("DATE_TYPE must be VALID or INIT")
             exit(1)
         if 'MakePlots' in self.c_dict['PROCESS_LIST']:
@@ -1687,7 +1689,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def run_at_time(self, input_dict):
         loop_by = self.config.getstr('config', 'LOOP_BY')
-        if loop_by in [ 'VALID', 'INIT' ]:
+        if loop_by in ['VALID', 'INIT']:
             date = input_dict[loop_by.lower()].strftime('%Y%m%d')
             self.run_stat_analysis_job(date, date, loop_by)
         else:
