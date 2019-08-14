@@ -585,7 +585,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     +'{obs_thresh?fmt=%s}{interp_mthd?fmt=%s}_'
                     +'vxmask{vx_mask?fmt=%s}'
                     )
-                filename_template_suffix = '.stat'
+                #filename_template_suffix = '.stat'
                 if 'DESC_LIST' in lists_to_loop:
                     filename_template_prefix = (
                         filename_template_prefix
@@ -613,7 +613,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     )
                 filename_template = (
                     filename_template_prefix
-                    +filename_template_suffix
+                    #+filename_template_suffix
                 )
             else:
                 if date_beg == date_end:
@@ -651,7 +651,7 @@ class StatAnalysisWrapper(CommandBuilder):
                            filename_template,
                            **stringsub_dict)
         output_filename = ss.do_string_sub()
-        if filename_type == 'default':
+        if (filename_type == 'default'): 
             output_filename = output_filename+'_'+output_type+'.stat' 
         return output_filename
 
@@ -693,10 +693,10 @@ class StatAnalysisWrapper(CommandBuilder):
         else:
             dir_path_filled = dir_path
         if '*' in dir_path_filled:
-            dir_path_filled_all = (
-                subprocess.check_output('ls -d '+dir_path_filled, 
-                                        shell=True).rstrip('\n')
-                )
+            dir_path_filled_all = str(
+                subprocess.check_output('ls -d '+dir_path_filled, shell=True)
+            )[1:].replace("'","").replace('\\n', ' ')
+            dir_path_filled_all = dir_path_filled_all[:-1]
         else:
             dir_path_filled_all = dir_path_filled
         lookin_dir = dir_path_filled_all
@@ -734,7 +734,7 @@ class StatAnalysisWrapper(CommandBuilder):
         if nfcst_valid_hour > 1:
             if date_type == 'VALID':
                 fcst_valid_hour_beg = fcst_valid_hour_list[0].replace('"','')
-		fcst_valid_hour_end = fcst_valid_hour_list[-1].replace('"','')
+                fcst_valid_hour_end = fcst_valid_hour_list[-1].replace('"','')
                 config_dict['FCST_VALID_BEG'] = (
                     str(date_beg)+'_'+fcst_valid_hour_beg
                     )
