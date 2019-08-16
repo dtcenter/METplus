@@ -34,19 +34,21 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
     def create_c_dict(self):
         c_dict = super(RegridDataPlaneWrapper, self).create_c_dict()
+
+        app = 'REGRID_DATA_PLANE'
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = \
-          self.config.getbool('config', 'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS',
+          self.config.getbool('config', f'{app}_SKIP_IF_OUTPUT_EXISTS',
                               False)
         if self.config.has_option('filename_templates',
-                                  'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE'):
+                                  f'FCST_{app}_INPUT_TEMPLATE'):
             c_dict['FCST_INPUT_TEMPLATE'] = \
                 self.config.getraw('filename_templates',
-                                   'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE')
+                                   f'FCST_{app}_INPUT_TEMPLATE')
         elif self.config.has_option('filename_templates',
-                                    'FCST_REGRID_DATA_PLANE_TEMPLATE'):
+                                    f'FCST_{app}_TEMPLATE'):
             c_dict['FCST_INPUT_TEMPLATE'] = \
                 self.config.getraw('filename_templates',
-                                   'FCST_REGRID_DATA_PLANE_TEMPLATE')
+                                   f'FCST_{app}_TEMPLATE')
         else:
             c_dict['FCST_INPUT_TEMPLATE'] = None
 
@@ -89,6 +91,19 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         else:
             c_dict['OBS_OUTPUT_TEMPLATE'] = None
 
+        if self.config.has_option('config',
+                                  'FCST_REGRID_DATA_PLANE_FIELD_NAME'):
+            c_dict['FCST_OUTPUT_FIELD_NAME'] = \
+                self.config.getstr('config',
+                                   'FCST_REGRID_DATA_PLANE_OUTPUT_FIELD_NAME')
+        elif self.config.has_option('config',
+                                    'FCST_REGRID_DATA_PLANE_FIELD_NAME'):
+            c_dict['FCST_OUTPUT_TEMPLATE'] = \
+                self.config.getraw('filename_templates',
+                                   'FCST_REGRID_DATA_PLANE_TEMPLATE')
+        else:
+            c_dict['FCST_OUTPUT_TEMPLATE'] = None
+
         if self.config.getbool('config', 'FCST_REGRID_DATA_PLANE_RUN', False):
             c_dict['FCST_INPUT_DIR'] = \
                 self.config.getdir('FCST_REGRID_DATA_PLANE_INPUT_DIR', '')
@@ -113,6 +128,32 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         return c_dict
 
+    def get_explicit_field_names(self, index, d_type):
+        """! Get output field name from [FCST/OBS]_<APP_NAME>_*
+             Use input/output field name if it exists, then use generic
+             field name, then return empty string if neither are set
+             Args:
+               @param index integer n corresponding to [FCST/OBS]_VAR<n>_*
+               @param d_type type of data being processed (FCST or OBS)
+               @return tuple containing input and output field names to use
+        """
+        app = self.app_name.upper()
+        input_field_name = \
+            self.config.conf.getstr('config',
+                               f'{d_type}_{app}_VAR{index}_INPUT_FIELD_NAME',
+                               self.config.conf.getstr('config',
+                                                  f'{d_type}_{app}_VAR{index}_FIELD_NAME',
+                                                  ''))
+
+        output_field_name = \
+            self.config.conf.getstr('config',
+                               f'{d_type}_{app}_VAR{index}_OUTPUT_FIELD_NAME',
+                               self.config.conf.getstr('config',
+                                                  f'{d_type}_{app}_VAR{index}_FIELD_NAME',
+                                                  ''))
+
+        return input_field_name, output_field_name
+
     def run_at_time_once(self, time_info, var_info, dtype):
         """! Runs the MET application for a given time and forecast lead combination
               Args:
@@ -122,26 +163,16 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         self.clear()
 
         if dtype == "FCST":
-            compare_var = var_info['fcst_name']
+            field_name = var_info['fcst_name']
             v_level = var_info['fcst_level']
         else:
-            compare_var = var_info['obs_name']
+            field_name = var_info['obs_name']
             v_level = var_info['obs_level']
 
-        level = util.split_level(v_level)[1]
-
-        if self.c_dict[dtype+'_INPUT_DIR'] == '':
-            self.logger.error('Must set {}_REGRID_DATA_PLANE_INPUT_DIR'.format(dtype) +\
-                              ' in config file')
-            exit(1)
+        _, level = util.split_level(v_level)
 
         if self.c_dict[dtype+'_INPUT_TEMPLATE'] == '':
             self.logger.error('Must set {}_REGRID_DATA_PLANE_INPUT_TEMPLATE'.format(dtype) +\
-                              ' in config file')
-            exit(1)
-
-        if self.c_dict[dtype+'_OUTPUT_DIR'] == '':
-            self.logger.error('Must set {}_REGRID_DATA_PLANE_OUTPUT_DIR'.format(dtype) +\
                               ' in config file')
             exit(1)
 
@@ -177,13 +208,15 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             self.logger.error('Could not find input file in {} matching template {}'
                               .format(input_dir, input_template))
             return False
+
         verif_grid = self.c_dict['VERIFICATION_GRID']
         if verif_grid == '':
             self.logger.error('No verification grid specified! ' + \
                               'Set REGRID_DATA_PLANE_VERIF_GRID')
             return False
 
-        self.infiles.append(verif_grid)
+        # put quotes around verification grid in case it is a grid description
+        self.infiles.append(f'"{verif_grid}"')
         string_sub = sts.StringSub(self.logger,
                                    output_template,
                                    level=(int(f_level)*3600),
@@ -200,21 +233,41 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                               .format(outpath))
             return True
 
-        if self.config.getstr('config',
-                              dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE',
-                              '') in ['', 'NETCDF']:
-            field_name = "{:s}_{:s}".format(compare_var, str(level).zfill(2))
-            self.args.append("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(field_name))
+        # if using python script to supply input data, just set field name
+        # if PcpCombine has been run on this data, set field name = name_level
+        # and level=(*,*), otherwise set name=name and level=level
+        if util.is_python_script(field_name):
+            self.args.append("-field 'name=\"{:s}\";'".format(field_name))
+        elif self.config.getbool('config', dtype + '_PCP_COMBINE_RUN', False):
+            name = "{:s}_{:s}".format(field_name, str(level))
+            self.args.append("-field 'name=\"{:s}\"; level=\"(*,*)\";'".format(name))
         else:
-            field_name = "{:s}".format(compare_var)
-            self.args.append("-field 'name=\"{:s}\"; level=\"{:s}\";'".format(field_name, v_level))
+            name = "{:s}".format(field_name)
+            self.args.append("-field 'name=\"{:s}\"; level=\"{:s}\";'".format(name, v_level))
 
+        # set regrid method is explicitly set
         if self.c_dict['METHOD'] != '':
             self.args.append("-method {}".format(self.c_dict['METHOD']))
 
+        # set width argument
         self.args.append("-width {}".format(self.c_dict['WIDTH']))
 
-        self.args.append("-name " + field_name)
+        # set output name
+        # if [FCST/OBS]_REGRID_DATA_PLANE_OUTPUT_FIELD_NAME is not explicitly set,
+        # use the input field name. If input comes from a python script, report error
+        index = var_info['index']
+        _, output_name = self.get_explicit_field_names(index, dtype)
+        if not output_name:
+            if util.is_python_script(field_name):
+                self.logger.error('Must explicitly set '
+                                  f'{dtype}_REGRID_DATA_PLANE_VAR{index}_'
+                                  'OUTPUT_FIELD_NAME '
+                                  'if input field comes from a python script.')
+                return
+
+            output_name = name
+
+        self.args.append("-name " + output_name)
         cmd = self.get_command()
         if cmd is None:
             self.logger.error("Could not generate command")
