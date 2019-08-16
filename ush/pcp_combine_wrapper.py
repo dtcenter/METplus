@@ -197,7 +197,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 self.c_dict[dtype+'_INPUT_DATATYPE'],
                                                self.config)
 
-            if search_file != None:
+            if search_file is not None:
                 return search_file
             forecast_lead += 1
         return None
@@ -232,7 +232,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             if search_file is not None:
                 break
 
-        if search_file == None:
+        if search_file is None:
             return False
 
         diff = time_info['valid'] - search_time
@@ -251,8 +251,14 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                               .format(data_src+'_PCP_COMBINE_'+str(accum)+'_FIELD_NAME'))
             return False
 
-        addon = "'name=\"" + fname + "\"; level=\"(" + \
-                str(lead) + ",*,*)\";'"
+        addon = "'name=\"" + fname + "\";"
+
+        # if name is a python script, don't set level
+        if not util.is_python_script(fname):
+            addon += " level=\"(" + str(lead) + ",*,*)\";"
+
+        addon += "'"
+
         self.add_input_file(search_file, addon)
         return True
 
@@ -262,10 +268,10 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # to handle deprecated config variable, allow *_NATIVE_DATA_TYPE
         # but print warning that this will be deprecated and use other
         if d_type == '':
-            d_type = self.config.getstr('config', data_src+'_NATIVE_DATA_TYPE', '')
+            d_type = self.config.conf.getstr('config', data_src+'_NATIVE_DATA_TYPE', '')
             if d_type == '':
                 self.logger.error('Must set '+data_src+\
-                                  '_PCP_COMBINE_INPUT_DATATYPE (GRIB or NETCDF)')
+                                  '_PCP_COMBINE_INPUT_DATATYPE')
                 exit(1)
             self.logger.warning(data_src+'_NATIVE_DATA_TYPE is deprecated. Please use '+\
                                 data_src+'_PCP_COMBINE_INPUT_DATATYPE instead')
@@ -276,7 +282,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         d_type = self.get_data_type(data_src)
         if d_type == "GRIB":
             return search_accum
-        # if NETCDF or GEMPAK
+        # if NETCDF, GEMPAK, or PYTHON
         # calling config.conf version of getter so default value is not
         # set in log and final conf because it is unnecessary
         field_name = self.config.conf.getstr('config', data_src +
@@ -285,8 +291,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if field_name == '':
             return ''
 
-        return "'name=\"" + field_name + "\"; level=\"(0,*,*)\";'"
-
+        addon = "'name=\"" + field_name + "\";
+        if not util.is_python_script(field_name):
+            addon += " level=\"(0,*,*)\";"
+        addon += "'"
+        return addon
 
     def find_input_file(self, in_template, search_time, search_accum, data_src):
         fSts = sts.StringSub(self.logger,
@@ -299,7 +308,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return util.preprocess_file(search_file,
                                     self.c_dict[data_src+'_INPUT_DATATYPE'],
                                     self.config)
-
 
     def find_highest_accum_field(self, data_src, s_accum):
         field_name = ''
@@ -315,7 +323,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             s_accum -= 1
 
         return field_name, s_accum
-
 
     def get_accumulation(self, time_info, accum, data_src,
                          is_forecast=False):
@@ -361,7 +368,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 if self.get_data_type(data_src) == "GRIB":
                     addon = search_accum
                 else:
-                    addon = "'name=\"" + field_name + "\"; level=\"(0,*,*)\";'"
+                    addon = "'name=\"" + field_name + "\";"
+                    if not util.is_python_script(field_name):
+                        addon += " level=\"(0,*,*)\";"
+                    addon += "'"
+
                 self.add_input_file(search_file, addon)
                 search_time = search_time - datetime.timedelta(hours=s_accum)
                 search_accum -= s_accum
@@ -615,6 +626,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @return path to output file"""
         self.clear()
         in_accum = self.c_dict[rl+'_LEVEL']
+        if in_accum == -1:
+            in_accum = 0
         in_dir, in_template = self.get_dir_and_template(rl, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
 
@@ -693,7 +706,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 **time_info)
         pcp_out = pcpSts.do_string_sub()
         self.outfile = pcp_out
-        self.args.append("-name " + compare_var + "_" + str(accum).zfill(2))
+        self.args.append("-name " + compare_var + "_" + str(accum))
         return self.get_command()
 
 
