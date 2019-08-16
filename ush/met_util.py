@@ -1937,7 +1937,8 @@ def template_to_regex(template, time_info, logger):
     return sts.do_string_sub()
 
 def is_python_script(name):
-    if name.split(' ')[0].endswith('.py'):
+    all_items = name.split(' ')
+    if any(item.endswith('.py') for item in all_items):
         return True
     # python returns None when no explicit return statement is hit
 
