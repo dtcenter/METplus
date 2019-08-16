@@ -119,16 +119,8 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.run_at_time_once(input_dict)
 
     def run_at_time_once(self, input_dict):
-        if self.c_dict['FCST_INPUT_DIR'] == '':
-            self.logger.error('Must set FCST_POINT_STAT_INPUT_DIR in config file')
-            exit(1)
-
         if self.c_dict['FCST_INPUT_TEMPLATE'] == '':
             self.logger.error('Must set FCST_POINT_STAT_INPUT_TEMPLATE in config file')
-            exit(1)
-
-        if self.c_dict['OBS_INPUT_DIR'] == '':
-            self.logger.error('Must set OBS_POINT_STAT_INPUT_DIR in config file')
             exit(1)
 
         if self.c_dict['OBS_INPUT_TEMPLATE'] == '':
