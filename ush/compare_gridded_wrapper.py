@@ -334,8 +334,7 @@ that reformat gridded data
                 for thresh in threshs:
                     # if utilizing python embedding for prob input, just set the
                     # field name to the call to the script
-                    if v_name.split(' ')[0].endswith('.py'):
-#                        field = f'{{ name=\"{v_name}\";'
+                    if util.is_python_script(v_name):
                         field = "{ name=\"" + v_name + "\"; prob=TRUE;"
                     elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF':
                         field = "{ name=\"" + v_name + "\";"
