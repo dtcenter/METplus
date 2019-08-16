@@ -1589,6 +1589,7 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
     '''
     count = 0
     for v in var_list:
+        print(f"VAR{v['index']}:")
         print(" fcst_name:"+v['fcst_name'])
         print(" fcst_level:"+v['fcst_level'])
         print(" fcst_thresh:"+str(v['fcst_thresh']))
@@ -1934,6 +1935,11 @@ def template_to_regex(template, time_info, logger):
                     in_template,
                     **time_info)
     return sts.do_string_sub()
+
+def is_python_script(name):
+    if name.split(' ')[0].endswith('.py'):
+        return True
+    # python returns None when no explicit return statement is hit
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
