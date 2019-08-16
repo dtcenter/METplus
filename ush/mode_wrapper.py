@@ -234,54 +234,5 @@ class ModeWrapper(CompareGriddedWrapper):
             self.build()
             self.clear()
 
-
-    def get_field_info_old(self, v_name, v_level, v_extra, v_thresh, d_type):
-        """! Builds the FCST_FIELD or OBS_FIELD items that are sent to the mode config file
-              Overrides get_field_info in compare_gridded_wrappers.py - one threshold
-              value is passed in an processed at a time - if not prob, do not apply threshold
-              Args:
-                @param v_name var_info name
-                @param v_level var_info level
-                @param v_extra var_info extra arguments
-                @param v_thresh probability threshold
-                @param d_type type of data (FCST or OBS)
-                @return returns a string with field info
-        """
-        level_type, level = util.split_level(v_level)
-        field = ""
-
-        if self.c_dict[d_type+'_IS_PROB']:
-            thresh_str = ""
-            comparison = util.get_comparison_from_threshold(v_thresh)
-            number = util.get_number_from_threshold(v_thresh)
-            if comparison in ["gt", "ge", ">", ">="]:
-                thresh_str += "thresh_lo="+str(number)+";"
-            elif comparison in ["lt", "le", "<", "<="]:
-                thresh_str += "thresh_hi="+str(number)+";"
-
-            if self.c_dict[d_type+'_INPUT_DATATYPE'] == "NETCDF" or \
-               self.c_dict[d_type+'_INPUT_DATATYPE'] == "GEMPAK":
-                field = "{ name=\"" + v_name + "\"; level=\"" + \
-                        level+"\"; prob=TRUE;"
-            else:
-                field = "{ name=\"PROB\"; level=\""+level_type + \
-                          level.zfill(2) + "\"; prob={ name=\"" + \
-                          v_name + "\"; " + thresh_str + "}"
-        else:
-            if self.config.getbool('config', d_type+'_PCP_COMBINE_RUN', False):
-                field = "{ name=\""+v_name+"_"+level + \
-                             "\"; level=\"(*,*)\";"
-            else:
-                field = "{ name=\""+v_name + "\";"
-                if v_level:
-                    field += " level=\"" +  v_level + "\";"
-
-        if v_extra:
-            field += ' ' + v_extra
-
-        field += ' }'
-        return field
-
-
 if __name__ == "__main__":
     util.run_stand_alone("mode_wrapper", "Mode")
