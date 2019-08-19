@@ -389,7 +389,7 @@ class StringSub(object):
 
             # split_string[0] holds the key (e.g. "init", "valid", etc)
             if split_string[0] not in self.kwargs.keys():
-                # Log and continue
+                # Log and exit
                 self.logger.error("The key " + split_string[0] +
                                   " was not passed to StringSub " +
                                   " for template: " + self.tmpl)
