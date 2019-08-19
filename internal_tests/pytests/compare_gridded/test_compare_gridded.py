@@ -75,9 +75,9 @@ def metplus_config():
 # ------------------------ TESTS GO HERE --------------------------
 
 # ------------------------
-#  test_get_one_field_info_no_prob
+#  test_get_field_info_no_prob
 # ------------------------
-# key is a list of inputs to get_one_field_info: name, level, thresh_list, extras, and data type (FCST/OBS)
+# key is a list of inputs to get_field_info: name, level, thresh_list, extras, and data type (FCST/OBS)
 # value is a list of field info lists that are generated from the keys
 @pytest.mark.parametrize(
     'key, value', [
@@ -124,7 +124,7 @@ def metplus_config():
     ]
 )
 
-def test_get_one_field_info_no_prob(key, value):
+def test_get_field_info_no_prob(key, value):
     w = compare_gridded_wrapper()
     w.c_dict['FCST_IS_PROB'] = False
     w.c_dict['OBS_IS_PROB'] = False
@@ -136,14 +136,14 @@ def test_get_one_field_info_no_prob(key, value):
                   'd_type' : key[4],
                   }
     
-    fields = w.get_one_field_info(**field_dict)
+    fields = w.get_field_info(**field_dict)
     assert(fields == value)
 
 # ------------------------
-#  test_get_one_field_info_fcst_prob_grib
+#  test_get_field_info_fcst_prob_grib
 #   - forecast is grib probabalistic but observation is not
 # ------------------------
-# key is a list of inputs to get_one_field_info: name, level, thresh_list, extras, and data type (FCST/OBS)
+# key is a list of inputs to get_field_info: name, level, thresh_list, extras, and data type (FCST/OBS)
 # value is a list of field info lists that are generated from the keys
 @pytest.mark.parametrize(
     'key, value', [
@@ -171,7 +171,7 @@ def test_get_one_field_info_no_prob(key, value):
          ]
 )
 
-def test_get_one_field_info_fcst_prob_grib(key, value):
+def test_get_field_info_fcst_prob_grib(key, value):
     w = compare_gridded_wrapper()
     w.c_dict['FCST_IS_PROB'] = True
     w.c_dict['OBS_IS_PROB'] = False
@@ -185,14 +185,14 @@ def test_get_one_field_info_fcst_prob_grib(key, value):
                   'd_type' : key[4],
                   }
     
-    fields = w.get_one_field_info(**field_dict)
+    fields = w.get_field_info(**field_dict)
     assert(fields == value)
 
     # ------------------------
-#  test_get_one_field_info_fcst_prob
+#  test_get_field_info_fcst_prob
 #   - forecast is probabalistic but observation is not
 # ------------------------
-# key is a list of inputs to get_one_field_info: name, level, thresh_list, extras, and data type (FCST/OBS)
+# key is a list of inputs to get_field_info: name, level, thresh_list, extras, and data type (FCST/OBS)
 # value is a list of field info lists that are generated from the keys
 @pytest.mark.parametrize(
     'key, value', [
@@ -206,7 +206,7 @@ def test_get_one_field_info_fcst_prob_grib(key, value):
          ['{ name=\"NAME\"; level=\"L0\"; cat_thresh=[ gt3 ]; }']),
          ]
 )
-def test_get_one_field_info_fcst_prob_netcdf(key, value):
+def test_get_field_info_fcst_prob_netcdf(key, value):
     w = compare_gridded_wrapper()
     w.c_dict['FCST_IS_PROB'] = True
     w.c_dict['OBS_IS_PROB'] = False
@@ -219,6 +219,6 @@ def test_get_one_field_info_fcst_prob_netcdf(key, value):
                   'd_type' : key[4],
                   }
     
-    fields = w.get_one_field_info(**field_dict)
+    fields = w.get_field_info(**field_dict)
     assert(fields == value)
 
