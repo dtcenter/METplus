@@ -295,7 +295,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if field_name == '':
             return ''
 
-        addon = "'name=\"" + field_name + "\";";
+        addon = "'name=\"" + field_name + "\";"
         if not util.is_python_script(field_name):
             addon += " level=\"(0,*,*)\";"
         addon += "'"
