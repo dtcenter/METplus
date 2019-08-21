@@ -507,3 +507,27 @@ def test_get_lead_sequence_init_min_10():
     test_seq = util.get_lead_sequence(cu, input_dict)
     lead_seq = [ 12, 24 ]
     assert(test_seq == lead_seq)
+
+@pytest.mark.parametrize(
+    'key, value', [
+        ('1m', datetime.datetime(2019, 3, 1, 0) ),
+        ('-1m', datetime.datetime(2019, 1, 1, 0) ),
+        ('1Y', datetime.datetime(2020, 2, 1, 0) ),
+        ('-1Y', datetime.datetime(2018, 2, 1, 0) ),
+        ('1d', datetime.datetime(2019, 2, 2, 0) ),
+        ('-1d', datetime.datetime(2019, 1, 31, 0) ),
+        ('1H', datetime.datetime(2019, 2, 1, 1) ),
+        ('-1H', datetime.datetime(2019, 1, 31, 23) ),
+        ('1M', datetime.datetime(2019, 2, 1, 0, 1) ),
+        ('-1M', datetime.datetime(2019, 1, 31, 23, 59) ),
+        ('1S', datetime.datetime(2019, 2, 1, 0, 0, 1) ),
+        ('-1S', datetime.datetime(2019, 1, 31, 23, 59, 59) ),
+        ('1', datetime.datetime(2019, 2, 1, 0, 0, 1) ),
+        ('-1', datetime.datetime(2019, 1, 31, 23, 59, 59) ),
+        ('393d', datetime.datetime(2020, 2, 29, 0) ), # leap year
+    ]
+)
+def test_getoffset(key, value):
+    # start time is 2019-02-01_0Z
+    start_time = datetime.datetime(2019, 2, 1, 0)
+    assert(start_time + util.getoffset(key) == value)
