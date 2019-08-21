@@ -569,6 +569,11 @@ class StringExtract(object):
             else:
                 # keep track of text in between tags to ensure that it matches
                 # the template, do not return a time if it does not match
+
+                # if next index exceeds length of the file string, return
+                if str_i >= len(self.full_str):
+                    return None
+
                 between_template += self.template[i]
                 between_filename += self.full_str[str_i]
 
