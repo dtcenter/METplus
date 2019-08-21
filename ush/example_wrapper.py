@@ -34,8 +34,16 @@ class ExampleWrapper(CommandBuilder):
         c_dict = super(ExampleWrapper, self).create_c_dict()
         # get values from config object and set them to be accessed by wrapper
         c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                      'EXAMPLE_INPUT_TEMPLATE')
-        c_dict['INPUT_DIR'] = self.config.getdir('EXAMPLE_INPUT_DIR')
+                                                      'EXAMPLE_INPUT_TEMPLATE', '')
+        c_dict['INPUT_DIR'] = self.config.getdir('EXAMPLE_INPUT_DIR', '')
+
+        if c_dict['INPUT_TEMPLATE'] == '':
+            self.logger.info('[filename_templates] EXAMPLE_INPUT_TEMPLATE was not set. '
+                             'You should set this variable to see how the runtime is '
+                             'substituted. For example: {valid?fmt=%Y%m%d%H}.ext')
+
+        if c_dict['INPUT_DIR'] == '':
+            self.logger.debug('EXAMPLE_INPUT_DIR was not set')
 
         return c_dict
 
