@@ -243,9 +243,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         lead += int((diff).seconds // (data_interval*3600)) - 1
         # calling config.conf version of getter so default value is not
         # set in log and final conf because it is unnecessary
-        fname = self.config.conf.getstr('config',
+        search_time_info = { 'valid' : search_time }
+        fname = self.config.getraw('config',
                               data_src + '_PCP_COMBINE_' + str(
                                   accum) + '_FIELD_NAME', '')
+        fname = sts.StringSub(self.logger, fname, **search_time_info).do_string_sub()
         if fname == '':
             self.logger.error('NetCDF field name was not set in config: {}'
                               .format(data_src+'_PCP_COMBINE_'+str(accum)+'_FIELD_NAME'))
@@ -313,14 +315,16 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                     self.c_dict[data_src+'_INPUT_DATATYPE'],
                                     self.config)
 
-    def find_highest_accum_field(self, data_src, s_accum):
+    def find_highest_accum_field(self, data_src, s_accum, search_time):
         field_name = ''
+        search_time_info = { 'valid' : search_time }
         while s_accum > 0:
             # calling config.conf version of getter so default value is not
             # set in log and final conf because it is unnecessary
-            field_name = self.config.conf.getstr('config',
+            field_name = self.config.getraw('config',
                                    data_src + '_PCP_COMBINE_' + str(s_accum) +
                                    '_FIELD_NAME', '')
+            field_name = sts.StringSub(self.logger, field_name, **search_time_info).do_string_sub()
             if field_name != '':
                 break
 
@@ -364,7 +368,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 if search_file == None:
                     break
                 # find accum field in file
-                field_name, s_accum = self.find_highest_accum_field(data_src, search_accum)
+                field_name, s_accum = self.find_highest_accum_field(data_src, search_accum, search_time)
 
                 if field_name == '':
                     break
@@ -565,8 +569,10 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         if rl == 'FCST':
             accum = var_info['fcst_level']
+            field_name = var_info['fcst_name']
         else:
             accum = var_info['obs_level']
+            field_name = var_info['obs_name']
 
         if accum[0].isalpha():
             accum = accum[1:]
@@ -603,6 +609,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             self.logger.error("Could not find file in {} for init time {} and lead {}"
                               .format(in_dir, time_info2['init_fmt'], lead2))
             return None
+
+        if self.c_dict[rl+'_INPUT_DATATYPE'] != 'GRIB':
+            field_name_1 = sts.StringSub(self.logger, field_name, **time_info).do_string_sub()
+            lead = "'name=\"" + field_name_1 + "\";'"
+            field_name_2 = sts.StringSub(self.logger, field_name, **time_info2).do_string_sub()
+            lead2 = "'name=\"" + field_name_2 + "\";'"
+            # TODO: need to add level if NetCDF input - how to specify levels for each?
 
         self.add_input_file(file1,lead)
         self.add_input_file(file2,lead2)
