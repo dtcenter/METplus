@@ -561,16 +561,25 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
 
         if rl == 'FCST':
-            accum = var_info['fcst_level']
+            level = var_info['fcst_level']
         else:
-            accum = var_info['obs_level']
+            level = var_info['obs_level']
 
-        if accum[0].isalpha():
-            accum = accum[1:]
+        level_type, accum = util.split_level(level)
+
         lead = time_info['lead_hours']
         lead2 = lead - int(accum)
 
-        self.set_method("SUBTRACT")
+        # set output file information
+        outSts = sts.StringSub(self.logger,
+                               out_template,
+                               level=(int(accum) * 3600),
+                               **time_info)
+        out_file = outSts.do_string_sub()
+        self.outfile = out_file
+        self.outdir = out_dir
+
+        # get first file
         pcpSts1 = sts.StringSub(self.logger,
                                 in_template,
                                 level=(int(accum) * 3600),
@@ -583,6 +592,16 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             self.logger.error("Could not find file in {} for init time {} and lead {}"
                               .format(in_dir, time_info['init_fmt'], lead))
             return None
+
+        # if level type is A (accum) and second lead is 0, then
+        # run PcpCombine in -add mode with just the first file
+        if lead2 == 0 and level_type == 'A':
+            self.set_method("ADD")
+            self.add_input_file(file1, lead)
+            return self.get_command()
+
+        # else continue building -subtract command
+        self.set_method("SUBTRACT")
 
         # set time info for second lead
         input_dict2 = { 'init' : time_info['init'],
@@ -604,14 +623,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.add_input_file(file1,lead)
         self.add_input_file(file2,lead2)
 
-        outSts = sts.StringSub(self.logger,
-                               out_template,
-                               level=(int(accum) * 3600),
-                               **time_info)
-        out_file = outSts.do_string_sub()
-        self.outfile = out_file
-        self.outdir = out_dir
-
         return self.get_command()
 
 
@@ -626,8 +637,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @return path to output file"""
         self.clear()
         in_accum = self.c_dict[rl+'_LEVEL']
+
+        # if level is not set, default to 0 for sum mode
         if in_accum == -1:
             in_accum = 0
+
         in_dir, in_template = self.get_dir_and_template(rl, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
 
