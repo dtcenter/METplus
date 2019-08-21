@@ -1938,9 +1938,19 @@ def template_to_regex(template, time_info, logger):
     return sts.do_string_sub()
 
 def is_python_script(name):
-    if name.split(' ')[0].endswith('.py'):
+    all_items = name.split(' ')
+    if any(item.endswith('.py') for item in all_items):
         return True
     # python returns None when no explicit return statement is hit
+
+def check_user_environment(config):
+    """!Check if any environment variables set in [user_env_vars] are already set in
+    the user's environment. Warn them that it will be overwritten from the conf if it is"""
+    for env_var in config.keys('user_env_vars'):
+        if env_var in os.environ:
+            msg = '{} is already set in the environment. '.format(env_var) +\
+                  'Overwriting from conf file'
+            config.logger.warning(msg)
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")

@@ -428,6 +428,9 @@ that reformat gridded data
                              self.c_dict['VERIFICATION_MASK'])
             print_list.append('VERIF_MASK')
 
+        # set user environment variables
+        self.set_user_environment(time_info)
+
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_user_env_items()

@@ -155,6 +155,49 @@ class PB2NCWrapper(CommandBuilder):
 
         return reformatted_id
 
+    def set_environment_variables(self, time_info):
+        # list of fields to print to log
+        print_list = ["PB2NC_MESSAGE_TYPE", "PB2NC_STATION_ID",
+                      "OBS_WINDOW_BEGIN", "OBS_WINDOW_END",
+                      "PB2NC_GRID", "PB2NC_POLY", "OBS_BUFR_VAR_LIST",
+                      "TIME_SUMMARY_FLAG", "TIME_SUMMARY_BEG",
+                      "TIME_SUMMARY_END", "TIME_SUMMARY_VAR_NAMES",
+                      "TIME_SUMMARY_TYPES" ]
+
+        # set environment variables needed for MET application
+        self.add_env_var("PB2NC_MESSAGE_TYPE", self.c_dict['MESSAGE_TYPE'])
+        self.add_env_var("PB2NC_STATION_ID", self.c_dict['STATION_ID'])
+        self.add_env_var("OBS_WINDOW_BEGIN", str(self.c_dict['OBS_WINDOW_BEGIN']))
+        self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
+        self.add_env_var("PB2NC_GRID", self.c_dict['GRID'])
+        self.add_env_var("PB2NC_POLY", self.c_dict['POLY'])
+
+        tmp_message_type = str(self.c_dict['BUFR_VAR_LIST']).replace("\'", "\"")
+        bufr_var_list = ''.join(tmp_message_type.split())
+        self.add_env_var("OBS_BUFR_VAR_LIST", bufr_var_list)
+
+        self.add_env_var('TIME_SUMMARY_FLAG',
+                         str(self.c_dict['TIME_SUMMARY_FLAG']))
+        self.add_env_var('TIME_SUMMARY_BEG',
+                         self.c_dict['TIME_SUMMARY_BEG'])
+        self.add_env_var('TIME_SUMMARY_END',
+                         self.c_dict['TIME_SUMMARY_END'])
+        self.add_env_var('TIME_SUMMARY_VAR_NAMES',
+                         str(self.c_dict['TIME_SUMMARY_VAR_NAMES']))
+        self.add_env_var('TIME_SUMMARY_TYPES',
+                         str(self.c_dict['TIME_SUMMARY_TYPES']))
+
+        # set user environment variables
+        self.set_user_environment(time_info)
+
+        # send environment variables to logger
+        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_user_env_items()
+        for l in print_list:
+            self.print_env_item(l)
+        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_env_copy(print_list)
+
     def run_at_time(self, input_dict):
         """! Stub, not yet implemented """
         # loop of forecast leads and process each
@@ -236,44 +279,8 @@ class PB2NCWrapper(CommandBuilder):
         # set config file since command is reset after each run
         self.param = self.c_dict['CONFIG_FILE']
 
-        # list of fields to print to log
-        print_list = ["PB2NC_MESSAGE_TYPE", "PB2NC_STATION_ID",
-                      "OBS_WINDOW_BEGIN", "OBS_WINDOW_END",
-                      "PB2NC_GRID", "PB2NC_POLY", "OBS_BUFR_VAR_LIST",
-                      "TIME_SUMMARY_FLAG", "TIME_SUMMARY_BEG",
-                      "TIME_SUMMARY_END", "TIME_SUMMARY_VAR_NAMES",
-                      "TIME_SUMMARY_TYPES" ]
-
-        # set environment variables needed for MET application
-        self.add_env_var("PB2NC_MESSAGE_TYPE", self.c_dict['MESSAGE_TYPE'])
-        self.add_env_var("PB2NC_STATION_ID", self.c_dict['STATION_ID'])
-        self.add_env_var("OBS_WINDOW_BEGIN", str(self.c_dict['OBS_WINDOW_BEGIN']))
-        self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
-        self.add_env_var("PB2NC_GRID", self.c_dict['GRID'])
-        self.add_env_var("PB2NC_POLY", self.c_dict['POLY'])
-
-        tmp_message_type = str(self.c_dict['BUFR_VAR_LIST']).replace("\'", "\"")
-        bufr_var_list = ''.join(tmp_message_type.split())
-        self.add_env_var("OBS_BUFR_VAR_LIST", bufr_var_list)
-
-        self.add_env_var('TIME_SUMMARY_FLAG',
-                         str(self.c_dict['TIME_SUMMARY_FLAG']))
-        self.add_env_var('TIME_SUMMARY_BEG',
-                         self.c_dict['TIME_SUMMARY_BEG'])
-        self.add_env_var('TIME_SUMMARY_END',
-                         self.c_dict['TIME_SUMMARY_END'])
-        self.add_env_var('TIME_SUMMARY_VAR_NAMES',
-                         str(self.c_dict['TIME_SUMMARY_VAR_NAMES']))
-        self.add_env_var('TIME_SUMMARY_TYPES',
-                         str(self.c_dict['TIME_SUMMARY_TYPES']))
-
-        # send environment variables to logger
-        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_user_env_items()
-        for l in print_list:
-            self.print_env_item(l)
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(print_list)
+        # set environment variables to be passed to MET config file
+        self.set_environment_variables(time_info)
 
         cmd = self.get_command()
         if cmd is None:

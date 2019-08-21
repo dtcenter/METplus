@@ -307,6 +307,9 @@ class MTDWrapper(ModeWrapper):
                 self.add_env_var("FCST_FIELD", fcst_field)
                 self.add_env_var("OBS_FIELD", obs_field)
 
+            # set user environment variables
+            self.set_user_environment(time_info)
+
             self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
             self.print_user_env_items()
             for l in print_list:

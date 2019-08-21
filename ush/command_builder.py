@@ -50,8 +50,12 @@ class CommandBuilder:
             self.env = config.env
         self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
         self.cmdrunner = CommandRunner(self.config, logger=self.logger)
-        self.set_user_environment()
         self.c_dict = self.create_c_dict()
+
+        # if env MET_TMP_DIR was not set, set it to config TMP_DIR
+        if 'MET_TMP_DIR' not in self.env:
+            self.env['MET_TMP_DIR'] = self.config.getdir('TMP_DIR')
+
         self.clear()
 
     def create_c_dict(self):
@@ -68,24 +72,23 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
 
-    def set_user_environment(self):
+    def set_user_environment(self, time_info=None):
         """!Set environment variables defined in [user_env_vars] section of config
         """
+        if time_info is None:
+            time_info = { 'now' : datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
+                                                                       '%Y%m%d%H%M%S') }
+
         if 'user_env_vars' not in self.config.sections():
             self.config.add_section('user_env_vars')
 
         for env_var in self.config.keys('user_env_vars'):
-            if env_var in self.env:
-                msg = '{} is already set in the environment. '.format(env_var) +\
-                      'Overwriting from conf file'
-                self.logger.warning(msg)
-
-            self.add_env_var(env_var, self.config.getstr('user_env_vars', env_var))
-
-        # if env MET_TMP_DIR was not set, set it to config TMP_DIR
-        if 'MET_TMP_DIR' not in self.env:
-            self.env['MET_TMP_DIR'] = self.config.getdir('TMP_DIR')
-
+            # perform string substitution on each variable
+            raw_env_var_value = self.config.getraw('user_env_vars', env_var)
+            env_var_value = sts.StringSub(self.logger,
+                                          raw_env_var_value,
+                                          **time_info).do_string_sub()
+            self.add_env_var(env_var, env_var_value)
 
     def set_output_path(self, outpath):
         """!Split path into directory and filename then save both
@@ -408,6 +411,7 @@ class CommandBuilder:
         cmd = self.get_command()
         if cmd is None:
             return
+
         self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
 
     # argument needed to match call

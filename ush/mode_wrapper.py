@@ -109,6 +109,54 @@ class ModeWrapper(CompareGriddedWrapper):
 
         return c_dict
 
+    def set_environment_variables(self, fcst_field, obs_field, var_info, time_info):
+        print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
+                      "LEVEL", "OBTYPE", "CONFIG_DIR",
+                      "FCST_FIELD", "OBS_FIELD",
+                      "QUILT", "MET_VALID_HHMM",
+                      "FCST_CONV_RADIUS", "FCST_CONV_THRESH",
+                      "OBS_CONV_RADIUS", "OBS_CONV_THRESH",
+                      "FCST_MERGE_THRESH", "FCST_MERGE_FLAG",
+                      "OBS_MERGE_THRESH", "OBS_MERGE_FLAG"]
+
+        self.add_env_var("MODEL", self.c_dict['MODEL'])
+        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
+        self.add_env_var("FCST_VAR", var_info['fcst_name'])
+        self.add_env_var("OBS_VAR", var_info['obs_name'])
+        self.add_env_var("LEVEL", util.split_level(var_info['fcst_level'])[1])
+        self.add_env_var("FCST_FIELD", fcst_field)
+        self.add_env_var("OBS_FIELD", obs_field)
+        self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
+        self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
+
+        quilt = 'TRUE' if self.c_dict['QUILT'] else 'FALSE'
+
+        self.add_env_var("QUILT", quilt)
+        self.add_env_var("FCST_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"])
+        self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"])
+        self.add_env_var("FCST_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"])
+        self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"])
+        self.add_env_var("FCST_MERGE_THRESH", self.c_dict["FCST_MERGE_THRESH"])
+        self.add_env_var("OBS_MERGE_THRESH", self.c_dict["OBS_MERGE_THRESH"])
+        self.add_env_var("FCST_MERGE_FLAG", self.c_dict["FCST_MERGE_FLAG"])
+        self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"])
+
+        # add additional env vars if they are specified
+        if self.c_dict['VERIFICATION_MASK'] != '':
+            self.add_env_var('VERIF_MASK',
+                             self.c_dict['VERIFICATION_MASK'])
+            print_list.append('VERIF_MASK')
+
+        # set user environment variables
+        self.set_user_environment(time_info)
+
+        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_user_env_items()
+        for item in print_list:
+            self.print_env_item(item)
+        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_env_copy(print_list)
+
     def run_at_time_one_field(self, time_info, var_info):
         """! Runs mode instances for a given time and forecast lead combination
               Overrides run_at_time_one_field function in compare_gridded_wrapper.py
@@ -176,50 +224,7 @@ class ModeWrapper(CompareGriddedWrapper):
             self.infiles.append(obs_path)
             self.add_merge_config_file()
 
-            print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
-                          "LEVEL", "OBTYPE", "CONFIG_DIR",
-                          "FCST_FIELD", "OBS_FIELD",
-                          "QUILT", "MET_VALID_HHMM",
-                          "FCST_CONV_RADIUS", "FCST_CONV_THRESH",
-                          "OBS_CONV_RADIUS", "OBS_CONV_THRESH",
-                          "FCST_MERGE_THRESH", "FCST_MERGE_FLAG",
-                          "OBS_MERGE_THRESH", "OBS_MERGE_FLAG"]
-
-            self.add_env_var("MODEL", self.c_dict['MODEL'])
-            self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-            self.add_env_var("FCST_VAR", var_info['fcst_name'])
-            self.add_env_var("OBS_VAR", var_info['obs_name'])
-            self.add_env_var("LEVEL", util.split_level(var_info['fcst_level'])[1])
-            self.add_env_var("FCST_FIELD", fcst_field)
-            self.add_env_var("OBS_FIELD", obs_field)
-            self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
-            self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
-
-            quilt = 'TRUE' if self.c_dict['QUILT'] else 'FALSE'
-
-            self.add_env_var("QUILT", quilt)
-            self.add_env_var("FCST_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"])
-            self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"])
-            self.add_env_var("FCST_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"])
-            self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"])
-            self.add_env_var("FCST_MERGE_THRESH", self.c_dict["FCST_MERGE_THRESH"])
-            self.add_env_var("OBS_MERGE_THRESH", self.c_dict["OBS_MERGE_THRESH"])
-            self.add_env_var("FCST_MERGE_FLAG", self.c_dict["FCST_MERGE_FLAG"])
-            self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"])
-
-            # add additional env vars if they are specified
-            if self.c_dict['VERIFICATION_MASK'] != '':
-                self.add_env_var('VERIF_MASK',
-                                 self.c_dict['VERIFICATION_MASK'])
-                print_list.append('VERIF_MASK')
-
-            self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-            self.print_user_env_items()
-            for item in print_list:
-                self.print_env_item(item)
-            self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-            self.print_env_copy(print_list)
-
+            self.set_environment_variables(fcst_field,obs_field, var_info, time_info)
             cmd = self.get_command()
             if cmd is None:
                 self.logger.error("Could not generate command")

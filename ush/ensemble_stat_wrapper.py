@@ -283,19 +283,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
           str(time_info['lead_hours']) + '_ensemble.txt'
         return self.write_list_file(list_filename, ens_members_path)
 
-    def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
-        """! Set and print environment variables, then build/run MET command
-              Args:
-                @param time_info dictionary containing timing information
-                @param fcst_field field information formatted for MET config file
-                @param obs_field field information formatted for MET config file
-        """
-        # set config file since command is reset after each run
-        self.param = self.c_dict['CONFIG_FILE']
-
-        # set up output dir with time info
-        self.create_and_set_output_dir(time_info)
-
+    def set_environment_variables(self, fcst_field, obs_field, ens_field, time_info):
         # list of fields to print to log
         print_list = ["MODEL", "GRID_VX", "OBTYPE",
                       "CONFIG_DIR", "FCST_LEAD",
@@ -325,6 +313,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
         self.add_env_var("ENS_THRESH", self.c_dict['ENS_THRESH'])
 
+        # set user environment variables
+        self.set_user_environment(time_info)
+
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_user_env_items()
@@ -332,6 +323,22 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.print_env_item(item)
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_copy(print_list)
+
+    def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
+        """! Set and print environment variables, then build/run MET command
+              Args:
+                @param time_info dictionary containing timing information
+                @param fcst_field field information formatted for MET config file
+                @param obs_field field information formatted for MET config file
+        """
+        # set config file since command is reset after each run
+        self.param = self.c_dict['CONFIG_FILE']
+
+        # set up output dir with time info
+        self.create_and_set_output_dir(time_info)
+
+        # set environment variables that are passed to the MET config
+        self.set_environment_variables(fcst_field, obs_field, ens_field, time_info)
 
         # check if METplus can generate the command successfully
         cmd = self.get_command()
