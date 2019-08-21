@@ -625,6 +625,10 @@ class StatAnalysisWrapper(CommandBuilder):
                  output_filename   - string of the filled file name
                                      template
         """
+        stringsub_dict = self.build_stringsub_dict(date_beg, date_end,
+                                                   date_type, lists_to_loop,
+                                                   lists_to_group, config_dict)
+
         if filename_type == 'default':
             if ('MakePlots' in self.c_dict['PROCESS_LIST'] 
                         and output_type == 'dump_row'):
@@ -632,10 +636,35 @@ class StatAnalysisWrapper(CommandBuilder):
                     filename_template+date_type.lower()
                     +'{'+date_type.lower()+'_beg?fmt=%Y%m%d}'
                     +'to{'+date_type.lower()+'_end?fmt=%Y%m%d}_'
-                    +'valid{valid_hour_beg?fmt=%H%M}to'
-                    +'{valid_hour_end?fmt=%H%M}Z_'
-                    +'init{init_hour_beg?fmt=%H%M}to'
-                    +'{init_hour_end?fmt=%H%M}Z_lead{lead?fmt=%HH%MM}'
+                )
+                if (stringsub_dict['valid_hour_beg'] != ''
+                        and stringsub_dict['valid_hour_end'] != ''):
+                    filename_template_prefix+=(
+                        'valid{valid_hour_beg?fmt=%H%M}to'
+                        +'{valid_hour_end?fmt=%H%M}Z_'
+                    )
+                else:
+                    filename_template_prefix+=(
+                        'fcst_valid{fcst_valid_hour_beg?fmt=%H%M}to'
+                        +'{fcst_valid_hour_end?fmt=%H%M}Z_'
+                        'obs_valid{obs_valid_hour_beg?fmt=%H%M}to'
+                        +'{obs_valid_hour_end?fmt=%H%M}Z_'
+                    )
+                if (stringsub_dict['init_hour_beg'] != ''
+                        and stringsub_dict['init_hour_end'] != ''):
+                    filename_template_prefix+=(
+                        'init{init_hour_beg?fmt=%H%M}to'
+                        +'{init_hour_end?fmt=%H%M}Z'
+                    )
+                else:
+                    filename_template_prefix+=(
+                        'fcst_init{fcst_init_hour_beg?fmt=%H%M}to'
+                        +'{fcst_init_hour_end?fmt=%H%M}Z_'
+                        'obs_init{obs_init_hour_beg?fmt=%H%M}to'
+                        +'{obs_init_hour_end?fmt=%H%M}Z'
+                    )
+                filename_template_prefix+=(
+                    '_fcst_lead{fcst_lead?fmt=%s}'
                     +'_fcst{fcst_var?fmt=%s}{fcst_level?fmt=%s}'
                     +'{fcst_thresh?fmt=%s}{interp_mthd?fmt=%s}_'
                     +'obs{obs_var?fmt=%s}{obs_level?fmt=%s}'
@@ -695,9 +724,6 @@ class StatAnalysisWrapper(CommandBuilder):
                             )
         self.logger.debug("Building "+output_type+" filename from "
                           +filename_type+" template: "+filename_template)
-        stringsub_dict = self.build_stringsub_dict(date_beg, date_end, 
-                                                   date_type, lists_to_loop, 
-                                                   lists_to_group, config_dict)
         ss = sts.StringSub(self.logger,
                            filename_template,
                            **stringsub_dict)
@@ -1579,9 +1605,10 @@ class StatAnalysisWrapper(CommandBuilder):
             var_info_formatted_c_dict['OBS_THRESH_LIST'] = (
                 var_info['obs_thresh']
             )
-            if var_info['run_fourier'] == True:                 
-                var_info_formatted_c_dict['INTERP_MTHD_LIST'] \
-                .append(var_info['fourier_wave_num'])
+            if var_info['run_fourier'] == True:
+                for fvn in var_info['fourier_wave_num']:
+                    var_info_formatted_c_dict['INTERP_MTHD_LIST'] \
+                    .append(fvn)
             # Parse whether all expected METplus config _LIST variables
             # to be treated as a loop or group.
             config_lists_to_group_items = (

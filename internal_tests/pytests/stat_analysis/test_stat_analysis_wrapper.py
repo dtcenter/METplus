@@ -402,10 +402,14 @@ def test_build_stringsub_dict():
            datetime.datetime(2019, 1, 1, 0, 0 ,0))
     assert(test_stringsub_dict['obs_init_end'] == 
            datetime.datetime(2019, 1, 1, 23, 59 ,59))
-    assert(test_stringsub_dict['fcst_init_hour_beg'] == '') 
-    assert(test_stringsub_dict['fcst_init_hour_end'] == '')
-    assert(test_stringsub_dict['obs_init_hour_beg'] == '')                               
-    assert(test_stringsub_dict['obs_init_hour_end'] == '')
+    assert(test_stringsub_dict['fcst_init_hour_beg'] == 
+           datetime.datetime(1900, 1, 1, 0, 0, 0)) 
+    assert(test_stringsub_dict['fcst_init_hour_end'] == 
+           datetime.datetime(1900, 1, 1, 23, 59 ,59))
+    assert(test_stringsub_dict['obs_init_hour_beg'] == 
+           datetime.datetime(1900, 1, 1, 0, 0, 0))                               
+    assert(test_stringsub_dict['obs_init_hour_end'] == 
+           datetime.datetime(1900, 1, 1, 23, 59 ,59))
 
 def test_get_output_filename():
     # Independently test the building of
