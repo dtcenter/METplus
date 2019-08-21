@@ -568,8 +568,10 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
 
         if rl == 'FCST':
+            field_name = var_info['fcst_name']
             level = var_info['fcst_level']
         else:
+            field_name = var_info['obs_name']
             level = var_info['obs_level']
 
         level_type, accum = util.split_level(level)
