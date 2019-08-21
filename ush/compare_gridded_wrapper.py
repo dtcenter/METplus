@@ -538,8 +538,11 @@ that reformat gridded data
         # add observation file
         cmd += self.infiles[1] + ' '
 
-        if self.param != "":
-            cmd += self.param + " "
+        if self.param == '':
+            self.logger.error('Must specify config file to run MET tool')
+            return None
+
+        cmd += self.param + ' '
 
         if self.outdir == "":
             self.logger.error("No output directory specified")
