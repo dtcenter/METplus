@@ -541,14 +541,57 @@ class StatAnalysisWrapper(CommandBuilder):
                                 stringsub_dict['init_hour'] = (
                                     stringsub_dict['init_hour_end']
                                 )
+                else:
+                    stringsub_dict[list_name.lower()+'_beg'] = (
+                        datetime.datetime.strptime('000000',
+                                                   '%H%M%S')
+                    )
+                    stringsub_dict[list_name.lower()+'_end'] = (
+                        datetime.datetime.strptime('235959',
+                                                   '%H%M%S')
+                    )
+                    check_list1 = config_dict[list_name]
+                    if 'FCST' in list_name:
+                        check_list2 = config_dict[list_name.replace('FCST',
+                                                                    'OBS')]
+                    elif 'OBS' in list_name:
+                        check_list2 = config_dict[list_name.replace('OBS',
+                                                                    'FCST')]
+                    if (check_list1 == check_list2
+                             or len(check_list2) == 0):
+                        list_type = list_name.replace('_HOUR', '').lower()
+                        if 'VALID' in list_name:
+                            stringsub_dict['valid_hour_beg'] = (
+                                stringsub_dict[list_type+'_hour_beg']
+                            )
+                            stringsub_dict['valid_hour_end'] = (
+                               stringsub_dict[list_type+'_hour_end']
+                            )
+                            if (stringsub_dict['valid_hour_beg']
+                                    == stringsub_dict['valid_hour_end']):
+                                stringsub_dict['valid_hour'] = (
+                                    stringsub_dict['valid_hour_end']
+                                )
+                        elif 'INIT' in list_name:
+                            stringsub_dict['init_hour_beg'] = (
+                                stringsub_dict[list_type+'_hour_beg']
+                            )
+                            stringsub_dict['init_hour_end'] = (
+                               stringsub_dict[list_type+'_hour_end']
+                            )
+                            if (stringsub_dict['init_hour_beg']
+                                    == stringsub_dict['init_hour_end']):
+                                stringsub_dict['init_hour'] = (
+                                    stringsub_dict['init_hour_end']
+                                )
             else:
                 stringsub_dict[list_name.lower()] = list_name_value
         nkeys_end = len(stringsub_dict_keys)
         # Some lines for debugging if needed in future
         #self.logger.info(nkeys_start)
         #self.logger.info(nkeys_end)
-        #for item, amount in stringsub_dict.iteritems():
-        #    self.logger.info("{} ({})".format(item, amount))
+        #for key, value in stringsub_dict.items():
+        #    self.logger.info("{} ({})".format(key, value))
         return stringsub_dict
 
     def get_output_filename(self, output_type, filename_template,
