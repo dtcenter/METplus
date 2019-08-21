@@ -200,20 +200,21 @@ class PB2NCWrapper(CommandBuilder):
         for offset in self.c_dict['OFFSETS']:
             input_dict['offset'] = offset
             time_info = time_util.ti_calculate(input_dict)
-            infile = self.find_obs(time_info, None)
+            infile = self.find_obs(time_info, None, False)
 
             if infile is not None:
                 if isinstance(infile, list):
-                    for f in infile:
-                        self.infiles.append(f)
+                    self.infiles.extend(f)
                 else:
                     self.infiles.append(infile)
                 self.logger.debug('Adding input file {}'.format(infile))
                 break
 
         if infile is None:
-            self.logger.error('Could not find input file in {} matching template {}'
-                              .format(input_dir, input_template))
+            self.logger.error('Could not find input file in {} matching template {} using offsets {}'
+                              .format(input_dir,
+                                      input_template,
+                                      self.c_dict['OFFSETS']))
             return False
 
         outSts = StringSub(self.logger,

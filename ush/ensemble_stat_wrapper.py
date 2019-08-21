@@ -140,23 +140,19 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         var_list = util.parse_var_list(self.config, time_info)
         # get point observation file if requested
-        if self.c_dict['OBS_POINT_INPUT_DIR'] != '':
+        if self.c_dict['OBS_POINT_INPUT_TEMPLATE'] != '':
             point_obs_path = self.find_data(time_info, var_list[0], 'OBS_POINT')
             if point_obs_path is None:
-                self.logger.error("Could not find point obs file in " +\
-                                  self.c_dict['OBS_POINT_INPUT_DIR'] +\
-                                  " for valid time " + time_info['valid_fmt'])
                 return
+
             self.point_obs_files.append(point_obs_path)
 
         # get grid observation file if requested
-        if self.c_dict['OBS_GRID_INPUT_DIR'] != '':
+        if self.c_dict['OBS_GRID_INPUT_TEMPLATE'] != '':
             grid_obs_path = self.find_data(time_info, var_list[0], 'OBS_GRID')
             if grid_obs_path is None:
-                self.logger.error("Could not find grid obs file in " +\
-                                  self.c_dict['OBS_GRID_INPUT_DIR'] +\
-                                  " for valid time " + time_info['valid_fmt'])
                 return
+
             self.grid_obs_files.append(grid_obs_path)
 
 

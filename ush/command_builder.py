@@ -181,32 +181,38 @@ class CommandBuilder:
         self.logger.warning('Using default values for {}'.format(gen_name))
         return default, default
 
-    def find_model(self, time_info, var_info):
+    def find_model(self, time_info, var_info, mandatory=True):
         """! Finds the model file to compare
               Args:
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
+                @param mandatory if True, report error if not found, warning if not
+                  default is True
                 @rtype string
                 @return Returns the path to an model file
         """
-        return self.find_data(time_info, var_info, "FCST")
+        return self.find_data(time_info, var_info, "FCST", mandatory)
 
-    def find_obs(self, time_info, var_info):
+    def find_obs(self, time_info, var_info, mandatory=True):
         """! Finds the observation file to compare
               Args:
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
+                @param mandatory if True, report error if not found, warning if not
+                  default is True
                 @rtype string
                 @return Returns the path to an observation file
         """
-        return self.find_data(time_info, var_info, "OBS")
+        return self.find_data(time_info, var_info, "OBS", mandatory)
 
-    def find_data(self, time_info, var_info, data_type):
+    def find_data(self, time_info, var_info, data_type, mandatory=True):
         """! Finds the data file to compare
               Args:
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
                 @param data_type type of data to find (FCST or OBS)
+                @param mandatory if True, report error if not found, warning if not
+                  default is True
                 @rtype string
                 @return Returns the path to an observation file
         """
@@ -243,13 +249,22 @@ class CommandBuilder:
             filename = dsts.do_string_sub()
 
             # build full path with data directory and filename
-            path = os.path.join(data_dir, filename)
+            full_path = os.path.join(data_dir, filename)
 
             # check if desired data file exists and if it needs to be preprocessed
-            path = util.preprocess_file(path,
+            processed_path = util.preprocess_file(full_path,
                                         self.c_dict[data_type + '_INPUT_DATATYPE'],
                                         self.config)
-            return path
+
+            # report error if file path could not be found
+            if processed_path is None:
+                msg = f"Could not find {data_type} file {full_path} using template {template}"
+                if mandatory:
+                    self.logger.error(msg)
+                else:
+                    self.logger.warning(msg)
+
+            return processed_path
 
         # if looking for a file within a time window:
         # convert valid_time to unix time
@@ -300,6 +315,12 @@ class CommandBuilder:
                         closest_files.append(fullpath)
 
         if not closest_files:
+            msg = f"Could not find {data_type} files under {data_dir} within range " +\
+            f"[{valid_range_lower},{valid_range_upper}] using template {template}"
+            if mandatory:
+                self.logger.error(msg)
+            else:
+                self.logger.warning(msg)
             return None
 
         # check if file(s) needs to be preprocessed before returning the path

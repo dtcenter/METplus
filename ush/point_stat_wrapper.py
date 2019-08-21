@@ -143,12 +143,6 @@ class PointStatWrapper(CompareGriddedWrapper):
         # get model to compare
         model_path = self.find_model(time_info, var_list[0])
         if model_path is None:
-            self.logger.error('Could not find file in {} matching template {}'
-                              .format(self.c_dict['FCST_INPUT_DIR'],
-                                      self.c_dict['FCST_INPUT_TEMPLATE']))
-            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] +\
-                              " for init time " + time_info['init_fmt'] +\
-                              " f" + str(time_info['lead_hours']))
             return False
 
         # get observation to compare
@@ -157,16 +151,16 @@ class PointStatWrapper(CompareGriddedWrapper):
         for offset in self.c_dict['OFFSETS']:
             input_dict['offset'] = offset
             time_info = time_util.ti_calculate(input_dict)
-            obs_path = self.find_obs(time_info, var_list[0])
+            obs_path = self.find_obs(time_info, var_list[0], False)
 
             if obs_path is not None:
                 break
 
         if obs_path is None:
-            self.logger.error('Could not find observation file in {} '
-                              'matching template {}'
-                              .format(self.c_dict['OBS_INPUT_DIR'],
-                                      self.c_dict['OBS_INPUT_TEMPLATE']))
+            in_dir = self.c_dict['OBS_INPUT_DIR']
+            in_template = self.c_dict['OBS_INPUT_TEMPLATE']
+            self.logger.error(f"Could not find observation file in {in_dir} using template {in_template} "
+                              f"using offsets {self.c_dict['OFFSETS']}")
             return False
 
         # found both fcst and obs

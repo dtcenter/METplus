@@ -184,23 +184,18 @@ that reformat gridded data
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
         """
-        # get model to compare
+        # get model to compare, return None if not found
         model_path = self.find_model(time_info, var_info)
         if model_path is None:
-            self.logger.error("Could not find file in " +\
-                              self.c_dict['FCST_INPUT_DIR'] + \
-                              " for init time " + time_info['init_fmt'] +\
-                              " f" + str(time_info['lead_hours']))
             return
+
         self.infiles.append(model_path)
 
-        # get observation to compare
+        # get observation to compare, return None if not found
         obs_path = self.find_obs(time_info, var_info)
         if obs_path is None:
-            self.logger.error("Could not find file in " +\
-                              self.c_dict['OBS_INPUT_DIR'] + \
-                              " for valid time " + time_info['valid_fmt'])
             return
+
         self.infiles.append(obs_path)
 
         # get field info field a single field to pass to the MET config file
@@ -233,19 +228,15 @@ that reformat gridded data
         # get model from first var to compare
         model_path = self.find_model(time_info, self.c_dict['VAR_LIST'][0])
         if model_path is None:
-            self.logger.error("Could not find file in " +\
-                              self.c_dict['FCST_INPUT_DIR'] + \
-                              " for init time " + time_info['init_fmt'] +\
-                              " f" + str(time_info['lead_hours']))
             return
+
         self.infiles.append(model_path)
 
         # get observation to from first var compare
         obs_path = self.find_obs(time_info, self.c_dict['VAR_LIST'][0])
         if obs_path is None:
-            self.logger.error("Could not find file in " + self.c_dict['OBS_INPUT_DIR'] + \
-                              " for valid time " + time_info['valid_fmt'])
             return
+
         self.infiles.append(obs_path)
 
         fcst_field_list = []

@@ -142,24 +142,23 @@ class MTDWrapper(ModeWrapper):
 
             for current_task in tasks:
                 # call find_model/obs as needed
-                model_file = self.find_model(current_task, var_info)
-                obs_file = self.find_obs(current_task, var_info)
+                model_file = self.find_model(current_task, var_info, False)
+                obs_file = self.find_obs(current_task, var_info, False)
                 if model_file is None and obs_file is None:
-                    self.logger.warning('Obs and fcst files were not found for init {} and lead {}'.
-                                        format(current_task['init_fmt'], current_task['lead_hours']))
                     continue
+
                 if model_file is None:
-                    self.logger.warning('Forecast file was not found for init {} and lead {}'.
-                                        format(current_task['init_fmt'], current_task['lead_hours']))
                     continue
+
                 if obs_file is None:
-                    self.logger.warning('Observation file was not found for init {} and lead {}'.
-                                        format(current_task['init_fmt'], current_task['lead_hours']))
                     continue
+
                 model_list.append(model_file)
                 obs_list.append(obs_file)
 
-            if len(model_list) == 0:
+            # only check model list because obs list should have same size
+            if not model_list:
+                self.logger.error('Could not find any files to process')
                 return
 
             # write ascii file with list of files to process
@@ -195,9 +194,8 @@ class MTDWrapper(ModeWrapper):
 
             single_file = find_method(current_task, var_info)
             if single_file is None:
-                self.logger.warning('Single file was not found for init {} and lead {}'.
-                                    format(current_task['init_fmt'], current_task['lead_hours']))
                 continue
+
             single_list.append(single_file)
 
         if len(single_list) == 0:

@@ -584,13 +584,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 in_template,
                                 level=(int(accum) * 3600),
                                 **time_info)
-        file1 = os.path.join(in_dir, pcpSts1.do_string_sub())
-        file1 = util.preprocess_file(file1, self.c_dict[rl+'_INPUT_DATATYPE'],
-                                    self.config)
+        file1_expected = os.path.join(in_dir, pcpSts1.do_string_sub())
+        file1 = util.preprocess_file(file1_expected,
+                                     self.c_dict[rl+'_INPUT_DATATYPE'],
+                                     self.config)
 
         if file1 is None:
-            self.logger.error("Could not find file in {} for init time {} and lead {}"
-                              .format(in_dir, time_info['init_fmt'], lead))
+            self.logger.error(f'Could not find {rl} file {file1_expected} using template {in_template}')
             return None
 
         # if level type is A (accum) and second lead is 0, then
@@ -611,13 +611,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 in_template,
                                 level=(int(accum) * 3600),
                                 **time_info2)
-        file2 = os.path.join(in_dir, pcpSts2.do_string_sub())
-        file2 = util.preprocess_file(file2, self.c_dict[rl+'_INPUT_DATATYPE'],
+        file2_expected = os.path.join(in_dir, pcpSts2.do_string_sub())
+        file2 = util.preprocess_file(file2_expected,
+                                     self.c_dict[rl+'_INPUT_DATATYPE'],
                                      self.config)
 
         if file2 is None:
-            self.logger.error("Could not find file in {} for init time {} and lead {}"
-                              .format(in_dir, time_info2['init_fmt'], lead2))
+            self.logger.error(f'Could not find {rl} file {file2_expected} using template {in_template}')
             return None
 
         self.add_input_file(file1,lead)
@@ -692,14 +692,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.set_method("ADD")
 
         if data_src == "FCST":
-            accum = var_info['fcst_level']
+            level = var_info['fcst_level']
             compare_var = var_info['fcst_name']
         else:
-            accum = var_info['obs_level']
+            level = var_info['obs_level']
             compare_var = var_info['obs_name']
 
-        if accum[0].isalpha():
-            accum = accum[1:]
+        _, accum = util.split_level(level)
 
         init_time = time_info['init_fmt']
         valid_time = time_info['valid_fmt']
@@ -711,6 +710,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.input_dir = in_dir
 
         if not self.get_accumulation(time_info, int(accum), data_src, is_forecast):
+            self.logger.error(f'Could not find files to build accumulation in {in_dir} using template {in_template}')
             return None
 
         self.outdir = out_dir
@@ -722,7 +722,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.outfile = pcp_out
         self.args.append("-name " + compare_var + "_" + str(accum))
         return self.get_command()
-
 
     def setup_derive_method(self, time_info, var_info, data_src):
         """!Setup pcp_combine to derive stats
@@ -754,6 +753,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # get files
         lookback = self.c_dict[data_src+'_DERIVE_LOOKBACK']
         if not self.get_accumulation(time_info, lookback, data_src, is_forecast):
+            self.logger.error(f'Could not find files in {in_dir} using template {in_template}')
             return None
 
         # set output

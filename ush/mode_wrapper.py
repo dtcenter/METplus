@@ -119,18 +119,11 @@ class ModeWrapper(CompareGriddedWrapper):
         # get model to compare
         model_path = self.find_model(time_info, var_info)
         if model_path is None:
-            self.logger.error("Could not find file in " +\
-                              self.c_dict['FCST_INPUT_DIR'] +\
-                              " for init time " + time_info['init_fmt'] +\
-                              " f" + str(time_info['lead_hours']))
             return
 
         # get observation to compare
         obs_path = self.find_obs(time_info, var_info)
         if obs_path is None:
-            self.logger.error("Could not find file in " +\
-                              self.c_dict['OBS_INPUT_DIR'] +\
-                              " for valid time "+time_info['valid_fmt'])
             return
 
         # loop over all variables and levels (and probability thresholds) and call the app for each
