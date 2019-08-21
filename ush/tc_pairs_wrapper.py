@@ -450,7 +450,9 @@ class TcPairsWrapper(CommandBuilder):
 
         # if no bdeck_files found
         if len(bdeck_files) == 0:
-            self.logger.warning('No BDECK files found')
+            template = self.c_dict['BDECK_TEMPLATE']
+            self.logger.error(f'No BDECK files found searching for basin {basin} and '
+                              f'cyclone {cyclone} using template {template}')
             return False
 
         # find corresponding adeck or edeck files
@@ -516,7 +518,7 @@ class TcPairsWrapper(CommandBuilder):
                                                   time_info)
 
             if not adeck_list and not edeck_list:
-                self.logger.debug('Could not find any corresponding '
+                self.logger.error('Could not find any corresponding '
                                   'ADECK or EDECK files')
                 continue
 
@@ -567,9 +569,10 @@ class TcPairsWrapper(CommandBuilder):
                 @param time_info object containing timing information to process
         """
         deck_list = []
+        template = self.c_dict[deck+'DECK_TEMPLATE']
         # get matching adeck wildcard expression for first model
         string_sub = StringSub(self.logger,
-                               self.c_dict[deck+'DECK_TEMPLATE'],
+                               template,
                                basin=basin,
                                cyclone=cyclone,
                                model=model_list[0],
@@ -580,8 +583,7 @@ class TcPairsWrapper(CommandBuilder):
         # add adeck files if they exist
         for model in model_list:
             deck_glob = deck_expr.replace(model_list[0], model)
-            self.logger.debug('Looking for {}DECK file: {}'.format(deck,
-                                                                   deck_glob))
+            self.logger.debug(f'Looking for {deck}DECK file: {deck_glob} using template {template}')
             deck_files = glob.glob(deck_glob)
             if not deck_files:
                 continue
