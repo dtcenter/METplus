@@ -17,6 +17,7 @@ from collections import namedtuple
 import struct
 from csv import reader
 from os.path import dirname, realpath
+from dateutil.relativedelta import relativedelta
 
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
@@ -308,6 +309,37 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
     return datetime.datetime.strptime(time_str, fmt)
 
 
+def getoffset(value):
+    """!Converts time values ending in Y, m, d, H, M, or S to relativedelta object"""
+    # convert value to seconds
+    # Valid options match format 3600, 3600S, 60M, or 1H
+    mult = 1
+    reg = r'(-*)(\d+)([a-zA-Z]*)'
+    match = re.match(reg, value)
+    if match:
+        if match.group(1) == '-':
+            mult = -1
+        time_value = int(match.group(2)) * mult
+        unit_value = match.group(3)
+
+        # create relativedelta (dateutil) object for unit
+        if unit_value == '':
+            return relativedelta(seconds=time_value)
+        if unit_value == 'H':
+            return relativedelta(hours=time_value)
+        if unit_value == 'M':
+            return relativedelta(minutes=time_value)
+        if unit_value == 'S':
+            return relativedelta(seconds=time_value)
+        if unit_value == 'd':
+            return relativedelta(days=time_value)
+        if unit_value == 'm':
+            return relativedelta(months=time_value)
+        if unit_value == 'Y':
+            return relativedelta(years=time_value)
+
+        # unsupported time unit specified, return None
+
 def loop_over_times_and_call(config, processes):
     """!Loop over all run times and call wrappers listed in config"""
     clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
@@ -317,22 +349,22 @@ def loop_over_times_and_call(config, processes):
         time_format = config.getstr('config', 'INIT_TIME_FMT')
         start_t = config.getraw('config', 'INIT_BEG')
         end_t = config.getraw('config', 'INIT_END')
-        time_interval = config.getseconds('config', 'INIT_INCREMENT')
+        time_interval = getoffset(config.getstr('config', 'INIT_INCREMENT'))
     else:
         time_format = config.getstr('config', 'VALID_TIME_FMT')
         start_t = config.getraw('config', 'VALID_BEG')
         end_t = config.getraw('config', 'VALID_END')
-        time_interval = config.getseconds('config', 'VALID_INCREMENT')
-
-    if time_interval < 60:
-        config.logger.error("time_interval parameter must be "
-                            "greater than 60 seconds")
-        exit(1)
+        time_interval = getoffset(config.getstr('config', 'VALID_INCREMENT'))
 
     loop_time = get_time_obj(start_t, time_format,
                              clock_time_obj, config.logger)
     end_time = get_time_obj(end_t, time_format,
                             clock_time_obj, config.logger)
+
+    if loop_time + time_interval < loop_time + datetime.timedelta(seconds=60):
+        config.logger.error("time_interval parameter must be "
+                            "greater than or equal to 60 seconds")
+        exit(1)
 
     while loop_time <= end_time:
         run_time = loop_time.strftime("%Y%m%d%H%M")
@@ -361,7 +393,7 @@ def loop_over_times_and_call(config, processes):
             process.clear()
             process.run_at_time(input_dict)
 
-        loop_time += datetime.timedelta(seconds=time_interval)
+        loop_time += time_interval
 
 
 def get_lead_sequence(config, input_dict=None):
