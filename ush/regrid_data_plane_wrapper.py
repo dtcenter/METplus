@@ -169,6 +169,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             field_name = var_info['obs_name']
             v_level = var_info['obs_level']
 
+        # run through StringSub in case the field name contains a template
+        field_name = sts.StringSub(self.logger, field_name, **time_info).do_string_sub()
+
         _, level = util.split_level(v_level)
 
         if self.c_dict[dtype+'_INPUT_TEMPLATE'] == '':

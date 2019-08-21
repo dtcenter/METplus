@@ -84,6 +84,8 @@ def main():
 
     config = ConfigWrapper(conf, logger)
 
+    util.check_user_environment(config)
+
     # set staging dir to OUTPUT_BASE/stage if not set
     if not config.has_option('dir', 'STAGING_DIR'):
         config.set('dir', 'STAGING_DIR',

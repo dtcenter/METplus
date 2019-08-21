@@ -295,6 +295,9 @@ class PointStatWrapper(CompareGriddedWrapper):
                              self.c_dict['NEIGHBORHOOD_SHAPE'])
             print_list.append('NEIGHBORHOOD_SHAPE')
 
+        # set user environment variables
+        self.set_user_environment(time_info)
+
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_user_env_items()

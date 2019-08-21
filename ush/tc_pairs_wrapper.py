@@ -138,7 +138,7 @@ class TcPairsWrapper(CommandBuilder):
         # if running in READ_ALL_FILES mode, call tc_pairs once and exit
         if self.c_dict['READ_ALL_FILES']:
             # Set up the environment variable to be used in the tc_pairs Config
-            self.set_env_vars(None)
+            self.set_environment_variables(None)
             self.bdeck = [self.c_dict['BDECK_DIR']]
 
             adeck_dir = self.c_dict['ADECK_DIR']
@@ -188,7 +188,7 @@ class TcPairsWrapper(CommandBuilder):
 
         # Set up the environment variable to be used in the TCPairs Config
         # file (TC_PAIRS_CONFIG_FILE)
-        self.set_env_vars(time_info)
+        self.set_environment_variables(time_info)
 
         # set output dir
         self.outdir = self.c_dict['OUTPUT_DIR']
@@ -253,7 +253,7 @@ class TcPairsWrapper(CommandBuilder):
 
         return True
 
-    def set_env_vars(self, time_info):
+    def set_environment_variables(self, time_info):
         """! Set up all the environment variables that are assigned
              in the METplus config file which are to be used by the MET
             TC-pairs config file.
@@ -403,6 +403,9 @@ class TcPairsWrapper(CommandBuilder):
         # DLAND_FILE
         tmp_dland_file = self.c_dict['DLAND_FILE']
         self.add_env_var('DLAND_FILE', str(tmp_dland_file))
+
+        # set user environment variables
+        self.set_user_environment(time_info)
 
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
