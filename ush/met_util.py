@@ -309,7 +309,7 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
     return datetime.datetime.strptime(time_str, fmt)
 
 
-def getoffset(value):
+def get_relativedelta(value, default_unit='S'):
     """!Converts time values ending in Y, m, d, H, M, or S to relativedelta object"""
     # convert value to seconds
     # Valid options match format 3600, 3600S, 60M, or 1H
@@ -323,18 +323,28 @@ def getoffset(value):
         unit_value = match.group(3)
 
         # create relativedelta (dateutil) object for unit
+        # if no units specified, use seconds unless default_unit is specified
         if unit_value == '':
-            return relativedelta(seconds=time_value)
+            if default_unit == 'S':
+                return relativedelta(seconds=time_value)
+            else:
+                unit_value = default_unit
+
         if unit_value == 'H':
             return relativedelta(hours=time_value)
+
         if unit_value == 'M':
             return relativedelta(minutes=time_value)
+
         if unit_value == 'S':
             return relativedelta(seconds=time_value)
+
         if unit_value == 'd':
             return relativedelta(days=time_value)
+
         if unit_value == 'm':
             return relativedelta(months=time_value)
+
         if unit_value == 'Y':
             return relativedelta(years=time_value)
 
@@ -349,12 +359,12 @@ def loop_over_times_and_call(config, processes):
         time_format = config.getstr('config', 'INIT_TIME_FMT')
         start_t = config.getraw('config', 'INIT_BEG')
         end_t = config.getraw('config', 'INIT_END')
-        time_interval = getoffset(config.getstr('config', 'INIT_INCREMENT'))
+        time_interval = get_relativedelta(config.getstr('config', 'INIT_INCREMENT'))
     else:
         time_format = config.getstr('config', 'VALID_TIME_FMT')
         start_t = config.getraw('config', 'VALID_BEG')
         end_t = config.getraw('config', 'VALID_END')
-        time_interval = getoffset(config.getstr('config', 'VALID_INCREMENT'))
+        time_interval = get_relativedelta(config.getstr('config', 'VALID_INCREMENT'))
 
     loop_time = get_time_obj(start_t, time_format,
                              clock_time_obj, config.logger)
@@ -398,18 +408,36 @@ def loop_over_times_and_call(config, processes):
 
 def get_lead_sequence(config, input_dict=None):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
-        Restrict list by LEAD_SEQ_[MIN/MAX] if set."""
+        Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects"""
     if config.conf.has_option('config', 'LEAD_SEQ'):
         # return list of forecast leads
-        leads = getlistint(config.getstr('config', 'LEAD_SEQ'))
+        lead_strings = getlist(config.getstr('config', 'LEAD_SEQ'))
+        leads = []
+        for lead in lead_strings:
+            relative_delta = get_relativedelta(lead, 'H')
+            if relative_delta is not None:
+                leads.append(relative_delta)
+            else:
+                config.logger.error(f'Invalid item {lead} in LEAD_SEQ. Exiting.')
+                exit(1)
 
         # remove any items that are outside of the range specified
         #  by LEAD_SEQ_MIN and LEAD_SEQ_MAX
+        # convert min and max to relativedelta objects, then use current time
+        # to compare them to each forecast lead
+        # this is an approximation because relative time offsets depend on
+        # each runtime
         out_leads = []
-        lead_min = config.getint('config', 'LEAD_SEQ_MIN', min(leads))
-        lead_max = config.getint('config', 'LEAD_SEQ_MAX', max(leads))
+        lead_min_str = config.conf.getstr('config', 'LEAD_SEQ_MIN', '0')
+        lead_max_str = config.conf.getstr('config', 'LEAD_SEQ_MAX', '4000Y')
+        lead_min_relative = get_relativedelta(lead_min_str, 'H')
+        lead_max_relative = get_relativedelta(lead_max_str, 'H')
+        now_time = datetime.datetime.now()
+        lead_min_approx = now_time + lead_min_relative
+        lead_max_approx = now_time + lead_max_relative
         for lead in leads:
-            if lead >= lead_min and lead <= lead_max:
+            lead_approx = now_time + lead
+            if lead_approx >= lead_min_approx and lead_approx <= lead_max_approx:
                 out_leads.append(lead)
 
         return out_leads
@@ -1978,6 +2006,9 @@ def is_python_script(name):
 def check_user_environment(config):
     """!Check if any environment variables set in [user_env_vars] are already set in
     the user's environment. Warn them that it will be overwritten from the conf if it is"""
+    if not config.has_section('user_env_vars'):
+        return
+
     for env_var in config.keys('user_env_vars'):
         if env_var in os.environ:
             msg = '{} is already set in the environment. '.format(env_var) +\
