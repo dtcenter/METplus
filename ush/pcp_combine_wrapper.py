@@ -293,7 +293,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                '_PCP_COMBINE_' + str(search_accum) +
                                '_FIELD_NAME', '')
         field_name = sts.StringSub(self.logger, field_name, **search_time_info).do_string_sub()
-        self.logger.error(f"FIELD:{field_name}")
+
         if field_name == '':
             return ''
 
