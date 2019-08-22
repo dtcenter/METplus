@@ -45,7 +45,7 @@ class ConfigWrapper(object):
 
     def has_section(self, sec):
         """!Calls produtil config has_section"""
-        return self.conf.has_option(sec)
+        return self.conf.has_section(sec)
 
     def set(self, sec, key, value):
         """!Calls produtil config set"""
