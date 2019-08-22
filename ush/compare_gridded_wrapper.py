@@ -138,14 +138,14 @@ that reformat gridded data
         # loop of forecast leads and process each
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
-            input_dict['lead_hours'] = lead
-
-            self.logger.info("Processing forecast lead {}".format(lead))
+            input_dict['lead'] = lead
 
             # set current lead time config and environment variables
             self.config.set('config', 'CURRENT_LEAD_TIME', lead)
             os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
             time_info = time_util.ti_calculate(input_dict)
+
+            self.logger.info("Processing forecast lead {}".format(time_info['lead_string']))
 
             if util.skip_time(time_info, self.config):
                 self.logger.debug('Skipping run time')
