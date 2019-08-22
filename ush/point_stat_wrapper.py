@@ -149,7 +149,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         obs_path = None
         # loop over offset list and find first file that matches
         for offset in self.c_dict['OFFSETS']:
-            input_dict['offset'] = offset
+            input_dict['offset_hours'] = offset
             time_info = time_util.ti_calculate(input_dict)
             obs_path = self.find_obs(time_info, var_list[0], False)
 

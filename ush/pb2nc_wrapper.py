@@ -241,7 +241,7 @@ class PB2NCWrapper(CommandBuilder):
         infile = None
         # loop over offset list and find first file that matches
         for offset in self.c_dict['OFFSETS']:
-            input_dict['offset'] = offset
+            input_dict['offset_hours'] = offset
             time_info = time_util.ti_calculate(input_dict)
             infile = self.find_obs(time_info, None, False)
 
