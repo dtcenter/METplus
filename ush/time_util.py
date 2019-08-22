@@ -14,7 +14,7 @@ Output Files: N/A
 from __future__ import (print_function, division)
 
 import datetime
-
+from dateutil.relativedelta import relativedelta
 
 '''!@namespace TimeInfo
 @brief Utility to handle timing in METplus wrappers
@@ -24,6 +24,35 @@ to be used in other METplus wrappers
 @endcode
 '''
 
+def ti_set_lead_string(the_dict):
+    """!Check relativedelta object contents and create string representation
+        of the highest unit available (year, then, month, day, hour, minute, second).
+        This assumes that only one unit has been set in the object"""
+    lead = the_dict['lead']
+
+    # return None if input is not relativedelta object
+    if not isinstance(lead, relativedelta):
+        return
+
+    if lead.years != 0:
+        return f'{lead.years} years'
+
+    if lead.months != 0:
+        return f'{lead.months} months'
+
+    if lead.days != 0:
+        return f'{lead.days} days'
+
+    if lead.hours != 0:
+        return f'{lead.hours} hours'
+
+    if lead.minutes != 0:
+        return f'{lead.minutes} minutes'
+
+    if lead.seconds != 0:
+        return f'{lead.seconds} seconds'
+
+    return '0 hour'
 
 def ti_calculate(input_dict):
     out_dict = {}
@@ -36,23 +65,37 @@ def ti_calculate(input_dict):
     # read in input dictionary items and compute missing items
     # valid inputs: valid, init, lead, offset
 
+    # look for forecast lead information in input
     # set forecast lead to 0 if not specified
-    if 'lead_hours' in input_dict.keys():
-        out_dict['lead'] = datetime.timedelta(hours=input_dict['lead_hours'])
-    elif 'lead_minutes' in input_dict.keys():
-        out_dict['lead'] = datetime.timedelta(minutes=input_dict['lead_minutes'])
+    if 'lead' in input_dict.keys():
+        # if lead is relativedelta, pass it through
+        # if lead is not, treat it as seconds
+        if isinstance(input_dict['lead'], relativedelta):
+            out_dict['lead'] = input_dict['lead']
+        else:
+            out_dict['lead'] = relativedelta(seconds=input_dict['lead'])
+
     elif 'lead_seconds' in input_dict.keys():
-        out_dict['lead'] = datetime.timedelta(seconds=input_dict['lead_seconds'])
-    elif 'lead' in input_dict.keys():
-        out_dict['lead'] = datetime.timedelta(seconds=input_dict['lead'])
+        out_dict['lead'] = relativedelta(seconds=input_dict['lead_seconds'])
+
+    elif 'lead_minutes' in input_dict.keys():
+        out_dict['lead'] = relativedelta(minutes=input_dict['lead_minutes'])
+
+    elif 'lead_hours' in input_dict.keys():
+        out_dict['lead'] = relativedelta(hours=input_dict['lead_hours'])
+
     else:
-        out_dict['lead'] = datetime.timedelta(seconds=0)
+        out_dict['lead'] = relativedelta(seconds=0)
+
 
     # set offset to 0 if not specified
-    if 'offset' in input_dict.keys():
+    if 'offset_hours' in input_dict.keys():
         out_dict['offset'] = datetime.timedelta(hours=input_dict['offset'])
+    elif 'offset' in input_dict.keys():
+        out_dict['offset'] = datetime.timedelta(seconds=input_dict['offset'])
     else:
         out_dict['offset'] = datetime.timedelta(seconds=0)
+
 
     # if init and valid are set, check which was set first via loop_by
     # remove the other to recalculate
@@ -105,15 +148,24 @@ def ti_calculate(input_dict):
 
     # calculate da_init from valid and offset
     out_dict['da_init'] = out_dict['valid'] + out_dict['offset']
-        
+
     # add common formatted items
     out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M')
     out_dict['da_init_fmt'] = out_dict['da_init'].strftime('%Y%m%d%H%M')
     out_dict['valid_fmt'] = out_dict['valid'].strftime('%Y%m%d%H%M')
 
-    # change timedelta to integer
-    total_seconds = int(out_dict['lead'].total_seconds())
-    out_dict['lead'] = total_seconds
+    # get difference between valid and init to get total seconds since relativedelta
+    # does not have a fixed number of seconds
+    total_seconds = int( (out_dict['valid'] - out_dict['init']).total_seconds() )
+
+    # get string representation of forecast lead
+    out_dict['lead_string'] = ti_set_lead_string(out_dict)
+
+    # change relativedelta to integer seconds unless months or years are used
+    # if they are, keep lead as a relativedelta object to be handled differently
+    if out_dict['lead'].months == 0 and out_dict['lead'].years == 0:
+        out_dict['lead'] = total_seconds
+
     out_dict['offset'] = int(out_dict['offset'].total_seconds())
 
     # add common uses for relative times
