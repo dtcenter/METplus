@@ -16,6 +16,7 @@ Condition codes: Varies
 
 import re
 import datetime
+from dateutil.relativedelta import relativedelta
 
 import time_util
 
@@ -280,6 +281,10 @@ class StringSub(object):
                 obj = self.round_time_down(obj)
 
                 return obj.strftime(fmt)
+            # if input is relativedelta
+            elif isinstance(obj, relativedelta):
+                self.logger.error('Year and month intervals not yet supported in string substitution')
+                exit(1)
             # if input is integer, format with H, M, and S
             elif isinstance(obj, int):
                 obj += self.shift_seconds
@@ -653,7 +658,7 @@ class StringExtract(object):
             if key.startswith(OFFSET_STRING):
                 offset = int(value)
 
-        output_dict['offset'] = offset
+        output_dict['offset_hours'] = offset
 
         time_info = time_util.ti_calculate(output_dict)
         return time_info
