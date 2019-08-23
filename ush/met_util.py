@@ -1342,9 +1342,11 @@ def getlist(list_str, logger=None):
         end = int(match.group(2))
         step = int(match.group(3))
         if start <= end:
-            return range(start, end+1, step)
+            int_list = range(start, end+1, step)
         else:
-            return range(start, end-1, step)
+            int_list = range(start, end-1, step)
+
+        return list(map(lambda int_list: str(int_list), int_list))
 
     # use csv reader to divide comma list while preserving strings with comma
     list_str = reader([list_str])
@@ -1647,28 +1649,27 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
                 var_list.append(fo)
                 count += 1
 
+    # extra debugging information used for developer debugging only
     '''
-    count = 0
     for v in var_list:
-        print(f"VAR{v['index']}:")
-        print(" fcst_name:"+v['fcst_name'])
-        print(" fcst_level:"+v['fcst_level'])
-        print(" fcst_thresh:"+str(v['fcst_thresh']))
-        print(" fcst_extra:"+v['fcst_extra'])
-        print(" obs_name:"+v['obs_name'])
-        print(" obs_level:"+v['obs_level'])
-        print(" obs_thresh:"+str(v['obs_thresh']))
-        print(" obs_extra:"+v['obs_extra'])
+        config.logger.debug(f"VAR{v['index']}:")
+        config.logger.debug(" fcst_name:"+v['fcst_name'])
+        config.logger.debug(" fcst_level:"+v['fcst_level'])
+        config.logger.debug(" fcst_thresh:"+str(v['fcst_thresh']))
+        config.logger.debug(" fcst_extra:"+v['fcst_extra'])
+        config.logger.debug(" obs_name:"+v['obs_name'])
+        config.logger.debug(" obs_level:"+v['obs_level'])
+        config.logger.debug(" obs_thresh:"+str(v['obs_thresh']))
+        config.logger.debug(" obs_extra:"+v['obs_extra'])
         if 'ens_name' in v.keys():
-            print(" ens_name:"+v['ens_name'])
-            print(" ens_level:"+v['ens_level'])
+            config.logger.debug(" ens_name:"+v['ens_name'])
+            config.logger.debug(" ens_level:"+v['ens_level'])
         if 'ens_thresh' in v.keys():
-            print(" ens_thresh:"+str(v['ens_thresh']))
+            config.logger.debug(" ens_thresh:"+str(v['ens_thresh']))
         if 'ens_extra' in v.keys():
-            print(" ens_extra:"+v['ens_extra'])
-        print("")
-        count += 1
+            config.logger.debug(" ens_extra:"+v['ens_extra'])
     '''
+
     return var_list
 
 

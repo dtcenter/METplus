@@ -24,35 +24,75 @@ to be used in other METplus wrappers
 @endcode
 '''
 
-def ti_set_lead_string(the_dict):
+def ti_get_seconds(lead):
+    """!Check relativedelta object contents and compute the total number of seconds
+        in the time. Return None if years or months are set, because the exact number
+        of seconds cannot be calculated without a relative time"""
+    # return None if input is not relativedelta object
+    if not isinstance(lead, relativedelta) or lead.months != 0 or lead.years != 0:
+        return None
+
+    total_seconds = 0
+
+    if lead.days != 0:
+        total_seconds += lead.days * 86400
+
+    if lead.hours != 0:
+        total_seconds += lead.hours * 3600
+
+    if lead.minutes != 0:
+        total_seconds += lead.minutes * 60
+
+    if lead.seconds != 0:
+        total_seconds += lead.seconds
+
+    return total_seconds
+
+def ti_get_lead_string(lead):
     """!Check relativedelta object contents and create string representation
         of the highest unit available (year, then, month, day, hour, minute, second).
         This assumes that only one unit has been set in the object"""
-    lead = the_dict['lead']
-
     # return None if input is not relativedelta object
     if not isinstance(lead, relativedelta):
         return
 
+    output = ''
     if lead.years != 0:
-        return f'{lead.years} years'
+        output += f' {lead.years} year'
+        if abs(lead.years) != 1:
+            output += 's'
 
     if lead.months != 0:
-        return f'{lead.months} months'
+        output += f' {lead.months} month'
+        if abs(lead.months) != 1:
+            output += 's'
 
     if lead.days != 0:
-        return f'{lead.days} days'
+        output += f' {lead.days} day'
+        if abs(lead.days) != 1:
+            output += 's'
 
     if lead.hours != 0:
-        return f'{lead.hours} hours'
+        output += f' {lead.hours} hour'
+        if abs(lead.hours) != 1:
+            output += 's'
 
     if lead.minutes != 0:
-        return f'{lead.minutes} minutes'
+        output += f' {lead.minutes} minute'
+        if abs(lead.minutes) != 1:
+            output += 's'
 
     if lead.seconds != 0:
-        return f'{lead.seconds} seconds'
+        output += f' {lead.seconds} second'
+        if abs(lead.seconds) != 1:
+            output += 's'
 
-    return '0 hour'
+    # remove leading space and return string
+    if output != '':
+        return output[1:]
+
+    # return 0 hour if no time units are set
+    return '0 hours'
 
 def ti_calculate(input_dict):
     out_dict = {}
@@ -90,7 +130,7 @@ def ti_calculate(input_dict):
 
     # set offset to 0 if not specified
     if 'offset_hours' in input_dict.keys():
-        out_dict['offset'] = datetime.timedelta(hours=input_dict['offset'])
+        out_dict['offset'] = datetime.timedelta(hours=input_dict['offset_hours'])
     elif 'offset' in input_dict.keys():
         out_dict['offset'] = datetime.timedelta(seconds=input_dict['offset'])
     else:
@@ -159,7 +199,7 @@ def ti_calculate(input_dict):
     total_seconds = int( (out_dict['valid'] - out_dict['init']).total_seconds() )
 
     # get string representation of forecast lead
-    out_dict['lead_string'] = ti_set_lead_string(out_dict)
+    out_dict['lead_string'] = ti_get_lead_string(out_dict['lead'])
 
     # change relativedelta to integer seconds unless months or years are used
     # if they are, keep lead as a relativedelta object to be handled differently

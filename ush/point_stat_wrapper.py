@@ -107,9 +107,10 @@ class PointStatWrapper(CompareGriddedWrapper):
         # loop of forecast leads and process each
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
-            input_dict['lead_hours'] = lead
+            input_dict['lead'] = lead
 
-            self.logger.info("Processing forecast lead {}".format(lead))
+            lead_string = time_util.ti_calculate(input_dict)['lead_string']
+            self.logger.info("Processing forecast lead {}".format(lead_string))
 
             # set current lead time config and environment variables
             self.config.set('config', 'CURRENT_LEAD_TIME', lead)
@@ -198,7 +199,7 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         self.process_fields(time_info, fcst_field, obs_field)
 
-    def set_environment_variables(self, fcst_field=None, obs_field=None, c=None):
+    def set_environment_variables(self, fcst_field=None, obs_field=None, time_info=None):
         """! Set all the environment variables in the MET config
              file to the corresponding values in the METplus config file.
 
@@ -221,7 +222,6 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         regrid_to_grid = self.c_dict['REGRID_TO_GRID']
         self.add_env_var('REGRID_TO_GRID', regrid_to_grid)
-#        os.environ['REGRID_TO_GRID'] = regrid_to_grid
 
         # MET accepts a list of values for POINT_STAT_POLY, POINT_STAT_GRID,
         # POINT_STAT_STATION_ID, and POINT_STAT_MESSAGE_TYPE. If these

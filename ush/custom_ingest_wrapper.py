@@ -85,14 +85,14 @@ class CustomIngestWrapper(CommandBuilder):
         for lead in lead_seq:
 
             # set forecast lead time in hours
-            time_info['lead_hours'] = lead
+            time_info['lead'] = lead
 
             # recalculate time info items
             time_info = time_util.ti_calculate(time_info)
 
             # log init, valid, and forecast lead times for current loop iteration
             self.logger.info('Processing forecast lead {} initialized at {} and valid at {}'
-                             .format(lead, time_info['init'].strftime('%Y-%m-%d %HZ'),
+                             .format(time_info['lead_string'], time_info['init'].strftime('%Y-%m-%d %HZ'),
                                      time_info['valid'].strftime('%Y-%m-%d %HZ')))
 
             # perform string substitution to find filename based on template and current run time

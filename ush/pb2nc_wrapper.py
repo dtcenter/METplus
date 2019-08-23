@@ -203,9 +203,10 @@ class PB2NCWrapper(CommandBuilder):
         # loop of forecast leads and process each
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
-            input_dict['lead_hours'] = lead
+            input_dict['lead'] = lead
 
-            self.logger.info("Processing forecast lead {}".format(lead))
+            lead_string = time_util.ti_calculate(input_dict)['lead_string']
+            self.logger.info("Processing forecast lead {}".format(lead_string))
 
             # set current lead time config and environment variables
             self.config.set('config', 'CURRENT_LEAD_TIME', lead)

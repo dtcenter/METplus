@@ -13,6 +13,7 @@ import produtil.setup
 # from produtil.run import batchexe
 # from produtil.run import run
 import met_util as util
+import time_util
 import feature_util
 from command_builder import CommandBuilder
 import config_metplus
@@ -454,10 +455,12 @@ class SeriesByLeadWrapper(CommandBuilder):
 
              Returns:          None
         """
+        # NOTE: SeriesByLead currently only supports hour leads
+        # get_lead_sequence was modified to handle other lead units
         lead_seq = util.get_lead_sequence(self.config, None)
 
         for fhr in lead_seq:
-            cur_fhr = str(fhr).zfill(3)
+            cur_fhr = str(time_util.ti_get_seconds(fhr) // 3600).zfill(3)
             msg = ('Evaluating forecast hour ' + cur_fhr)
             self.logger.debug(msg)
 

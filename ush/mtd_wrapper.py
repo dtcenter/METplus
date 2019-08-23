@@ -136,7 +136,7 @@ class MTDWrapper(ModeWrapper):
             # find files for each forecast lead time
             tasks = []
             for lead in lead_seq:
-                input_dict['lead_hours'] = lead
+                input_dict['lead'] = lead
                 time_info = time_util.ti_calculate(input_dict)
                 tasks.append(time_info)
 
@@ -162,7 +162,7 @@ class MTDWrapper(ModeWrapper):
                 return
 
             # write ascii file with list of files to process
-            input_dict['lead_hours'] = 0
+            input_dict['lead'] = 0
             time_info = time_util.ti_calculate(input_dict)
             model_outfile = time_info['valid_fmt'] + '_mtd_fcst_' + var_info['fcst_name'] + '.txt'
             obs_outfile = time_info['valid_fmt'] + '_mtd_obs_' + var_info['obs_name'] + '.txt'
@@ -189,7 +189,7 @@ class MTDWrapper(ModeWrapper):
 
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
-            input_dict['lead_hours'] = lead
+            input_dict['lead'] = lead
             current_task = time_util.ti_calculate(input_dict)
 
             single_file = find_method(current_task, var_info)
@@ -202,7 +202,7 @@ class MTDWrapper(ModeWrapper):
             return
 
         # write ascii file with list of files to process
-        input_dict['lead_hours'] = 0
+        input_dict['lead'] = 0
         time_info = time_util.ti_calculate(input_dict)
         single_outfile = time_info['valid_fmt'] + '_mtd_single_' + s_name + '.txt'
         single_list_path = self.write_list_file(single_outfile, single_list)
