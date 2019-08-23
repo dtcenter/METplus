@@ -67,8 +67,6 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.series_lead_out_dir = self.config.getdir('SERIES_BY_LEAD_OUTPUT_DIR')
         self.tmp_dir = self.config.getdir('TMP_DIR')
         self.background_map = self.config.getbool('config', 'BACKGROUND_MAP')
-        self.regrid_with_met_tool = \
-            self.config.getbool('config', 'REGRID_USING_MET_TOOL')
         self.series_filter_opts = \
             self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
         self.series_filter_opts.strip()
@@ -78,20 +76,12 @@ class SeriesByLeadWrapper(CommandBuilder):
             self.config.getstr('regex_pattern', 'ANLY_ASCII_REGEX_LEAD')
         self.series_anly_configuration_file = \
             self.config.getstr('config', 'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE')
-        self.regrid_with_met_tool = self.config.getbool('config',
-                                              'REGRID_USING_MET_TOOL')
-        if self.regrid_with_met_tool:
-            # Re-gridding via MET Tool regrid_data_plane.
-            self.fcst_tile_regex = \
-                self.config.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
-            self.anly_tile_regex = \
-                self.config.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
-        else:
-            # Re-gridding via wgrib2 tool.
-            self.fcst_tile_regex = self.config.getstr('regex_pattern',
-                                                 'FCST_TILE_REGEX')
-            self.anly_tile_regex = self.config.getstr('regex_pattern',
-                                                 'ANLY_TILE_REGEX')
+
+        # Re-gridding via MET Tool regrid_data_plane.
+        self.fcst_tile_regex = \
+            self.config.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
+        self.anly_tile_regex = \
+            self.config.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
 
         self.logger.info("Initialized SeriesByLeadWrapper")
 
@@ -409,10 +399,8 @@ class SeriesByLeadWrapper(CommandBuilder):
 
                 # Set the NAME environment to <name>_<level> format if
                 # regridding method is to be done with the MET tool
-                # regrid_data_plane (which is  indicated in the
-                # config/param file).
-                if self.regrid_with_met_tool:
-                    os.environ['NAME'] = name + '_' + level
+                # regrid_data_plane.
+                os.environ['NAME'] = name + '_' + level
                 out_param_parts = ['-out ', out_dir, '/series_F',
                                     cur_beg_str, '_to_F', cur_end_str,
                                     '_', name, '_', level, '.nc']
@@ -551,12 +539,11 @@ class SeriesByLeadWrapper(CommandBuilder):
                 os.environ['NAME'] = name
                 os.environ['LEVEL'] = level
 
-                # Set NAME to name_level if regridding with regrid data plane
-                if self.regrid_with_met_tool:
-                    os.environ['NAME'] = name + '_' + level
-                    out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr,
-                                       '_', name, '_', level, '.nc']
-                    out_param = ''.join(out_param_parts)
+                # Set NAME to name_level
+                os.environ['NAME'] = name + '_' + level
+                out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr,
+                                   '_', name, '_', level, '.nc']
+                out_param = ''.join(out_param_parts)
 
                 # Create the full series analysis command.
                 config_param_parts = ['-config ',
@@ -1081,11 +1068,8 @@ class SeriesByLeadWrapper(CommandBuilder):
             name = match.group(1)
             level = match.group(2)
 
-            os.environ['NAME'] = name
             os.environ['LEVEL'] = level
-
-            if self.regrid_with_met_tool:
-                os.environ['NAME'] = name + '_' + level
+            os.environ['NAME'] = name + '_' + level
 
             # Retrieve only those netCDF files that correspond to
             # the current variable.
@@ -1230,11 +1214,8 @@ class SeriesByLeadWrapper(CommandBuilder):
             name = match.group(1)
             level = match.group(2)
 
-            os.environ['NAME'] = name
             os.environ['LEVEL'] = level
-
-            if self.regrid_with_met_tool:
-                os.environ['NAME'] = name + '_' + level
+            os.environ['NAME'] = name + '_' + level
 
             self.logger.info("Creating animated gifs")
             for cur_stat in self.stat_list:
