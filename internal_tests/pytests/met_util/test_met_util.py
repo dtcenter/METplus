@@ -5,6 +5,7 @@ import pytest
 import datetime
 from config_wrapper import ConfigWrapper
 import met_util as util
+import time_util
 import produtil
 import os
 import config_metplus
@@ -436,8 +437,11 @@ def test_get_lead_sequence_lead():
     cu = ConfigWrapper(conf, None)
     conf.set('config', 'LEAD_SEQ', "3,6,9,12")
     test_seq = util.get_lead_sequence(cu, input_dict)
+    hour_seq = []
+    for test in test_seq:
+        hour_seq.append(time_util.ti_get_seconds(test) // 3600)
     lead_seq = [ 3, 6, 9, 12 ]
-    assert(test_seq == lead_seq)
+    assert(hour_seq == lead_seq)
     
 
 @pytest.mark.parametrize(
@@ -456,8 +460,12 @@ def test_get_lead_sequence_lead_list(key, value):
     cu = ConfigWrapper(conf, None)
     conf.set('config', 'LEAD_SEQ', key)
     test_seq = util.get_lead_sequence(cu, input_dict)
+    hour_seq = []
+
+    for test in test_seq:
+        hour_seq.append(time_util.ti_get_seconds(test) // 3600)
     lead_seq = value
-    assert(test_seq == lead_seq)
+    assert(hour_seq == lead_seq)
 
 @pytest.mark.parametrize(
     'key, value', [
@@ -527,7 +535,7 @@ def test_get_lead_sequence_init_min_10():
         ('393d', datetime.datetime(2020, 2, 29, 0) ), # leap year
     ]
 )
-def test_getoffset(key, value):
+def test_get_relativedelta(key, value):
     # start time is 2019-02-01_0Z
     start_time = datetime.datetime(2019, 2, 1, 0)
-    assert(start_time + util.getoffset(key) == value)
+    assert(start_time + util.get_relativedelta(key) == value)
