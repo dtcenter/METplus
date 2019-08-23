@@ -5,19 +5,21 @@ pytest_rel_path="internal_tests/pytests"
 ush_dir=${script_dir%"$pytest_rel_path"}ush
 export PYTHONPATH=$ush_dir:$PYTHONPATH
 
-cd config
+cd $script_dir/config
 pytest -c ../minimum_pytest.eyewall.conf
-cd ../grid_stat
+cd $script_dir/grid_stat
 pytest -c ../minimum_pytest.eyewall.conf
-cd ../logging
+cd $script_dir/logging
 pytest -c ../minimum_pytest.eyewall.conf
-cd ../met_util
+cd $script_dir/met_util
 pytest -c ../minimum_pytest.eyewall.conf
-cd ../mtd
+cd $script_dir/mtd
 pytest -c ../minimum_pytest.eyewall.conf
-cd ../pcp_combine
+cd $script_dir/pcp_combine
 pytest -c ../minimum_pytest.eyewall.conf -c ./test1.conf
-cd ../StringTemplateSubstitution
+cd $script_dir/StringTemplateSubstitution
 pytest -c ../minimum_pytest.eyewall.conf
-cd ../compare_gridded
+cd $script_dir/compare_gridded
+pytest -c ../minimum_pytest.eyewall.conf
+cd $script_dir/time_util
 pytest -c ../minimum_pytest.eyewall.conf
