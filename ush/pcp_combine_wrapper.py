@@ -52,6 +52,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.name = ""
         self.logfile = ""
         self.compress = -1
+        self.custom_command = ''
 
     def create_c_dict(self):
         c_dict = super(PcpCombineWrapper, self).create_c_dict()
@@ -115,10 +116,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.name = ""
         self.logfile = ""
         self.compress = -1
-
-
-    def set_method(self, method):
-        self.method = method
+        self.custom_command = ''
 
     def add_input_file(self, filename, addon):
         self.infiles.append(filename)
@@ -427,7 +425,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             return False
 
         return True
-
         
     def get_command(self):
         if self.app_path is None:
@@ -439,7 +436,10 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         for a in self.args:
             cmd += a + " "
 
-        if self.method == "SUM":
+        if self.method == "CUSTOM":
+            cmd += self.custom_command
+            return cmd
+        elif self.method == "SUM":
             if self.init_time == -1:
                 (self.logger).error("No init time specified")
                 return None
@@ -522,15 +522,17 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
     def run_at_time_once(self, time_info, var_info, rl):
         cmd = None
-        run_method = self.c_dict[rl+'_RUN_METHOD'].upper()
-        if run_method == "ADD":
+        self.method = self.c_dict[rl+'_RUN_METHOD'].upper()
+        if self.method == "ADD":
             cmd = self.setup_add_method(time_info, var_info, rl)
-        elif run_method == "SUM":
+        elif self.method == "SUM":
             cmd = self.setup_sum_method(time_info, var_info, rl)
-        elif run_method == "SUBTRACT":
+        elif self.method == "SUBTRACT":
             cmd = self.setup_subtract_method(time_info, var_info, rl)
-        elif run_method == "DERIVE":
+        elif self.method == "DERIVE":
             cmd = self.setup_derive_method(time_info, var_info, rl)
+        elif self.method == "CUSTOM":
+            cmd = self.setup_custom_method(time_info, rl)
         else:
             self.logger.error('Invalid ' + rl + '_PCP_COMBINE_METHOD specified.'+\
                               ' Options are ADD, SUM, and SUBTRACT.')
@@ -539,12 +541,12 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if cmd is None:
             init_time = time_info['init_fmt']
             lead = time_info['lead_hours']
-            self.logger.error("pcp_combine could not generate command for init {} and forecast lead {}".format(init_time, lead))
+            self.logger.error("pcp_combine could not generate command")
             return
 
         # if output file exists and we want to skip it, warn and continue
         outfile = self.get_output_path()
-        if os.path.exists(outfile) and \
+        if not self.method == "CUSTOM" and os.path.exists(outfile) and \
           self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
             self.logger.debug('Skip writing output file {} because it already '
                               'exists. Remove file or change '
@@ -605,12 +607,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # if level type is A (accum) and second lead is 0, then
         # run PcpCombine in -add mode with just the first file
         if lead2 == 0 and level_type == 'A':
-            self.set_method("ADD")
+            self.method = 'ADD'
             self.add_input_file(file1, lead)
             return self.get_command()
 
         # else continue building -subtract command
-        self.set_method("SUBTRACT")
 
         # set time info for second lead
         input_dict2 = { 'init' : time_info['init'],
@@ -675,7 +676,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         in_dir = os.path.join(in_dir, *in_regex_split[0:-1])
         in_regex = in_regex_split[-1]
 
-        self.set_method("SUM")
         self.set_init_time(init_time)
         self.set_valid_time(valid_time)
         self.set_in_accum(in_accum)
@@ -705,7 +705,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if data_src == "FCST":
             is_forecast = True
         self.clear()
-        self.set_method("ADD")
 
         if data_src == "FCST":
             level = var_info['fcst_level']
@@ -751,7 +750,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if data_src == "FCST":
             is_forecast = True
         self.clear()
-        self.set_method("DERIVE")
 
         # set field info
         if data_src == "FCST":
@@ -782,6 +780,17 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.outfile = pcp_out
         return self.get_command()
 
+    def setup_custom_method(self, time_info, data_src):
+        """!Setup pcp_combine to derive stats
+        Args:
+          @param time_info dictionary containing timing information
+          @param var_info object containing variable information
+          @params data_src data type (FCST or OBS)
+          @rtype string
+          @return path to output file"""
+        command_template = self.config.getraw('config', data_src + '_PCP_COMBINE_COMMAND')
+        self.custom_command = sts.StringSub(self.logger, command_template, **time_info).do_string_sub()
+        return '{} -v {} {}'.format(self.app_path, self.verbose, self.custom_command)
 
 if __name__ == "__main__":
         util.run_stand_alone("pcp_combine_wrapper", "PcpCombine")
