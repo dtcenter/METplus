@@ -162,6 +162,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         """
         self.clear()
 
+        if var_info is None:
+            self.logger.error('No fields were specified using [FCST/OBS]_VAR<n>_NAME.')
+            return
+
         if dtype == "FCST":
             field_name = var_info['fcst_name']
             v_level = var_info['fcst_level']

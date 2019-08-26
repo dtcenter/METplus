@@ -523,20 +523,26 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     def run_at_time_once(self, time_info, var_info, rl):
         cmd = None
         self.method = self.c_dict[rl+'_RUN_METHOD'].upper()
-        if self.method == "ADD":
-            cmd = self.setup_add_method(time_info, var_info, rl)
-        elif self.method == "SUM":
-            cmd = self.setup_sum_method(time_info, var_info, rl)
-        elif self.method == "SUBTRACT":
-            cmd = self.setup_subtract_method(time_info, var_info, rl)
-        elif self.method == "DERIVE":
-            cmd = self.setup_derive_method(time_info, var_info, rl)
-        elif self.method == "CUSTOM":
+        if self.method == "CUSTOM":
             cmd = self.setup_custom_method(time_info, rl)
         else:
-            self.logger.error('Invalid ' + rl + '_PCP_COMBINE_METHOD specified.'+\
-                              ' Options are ADD, SUM, and SUBTRACT.')
-            exit(1)
+            if var_info is None:
+                self.logger.error('Cannot run PcpCombine without specifying fields to process '
+                                  'unless running in CUSTOM mode.')
+                return
+
+            if self.method == "ADD":
+                cmd = self.setup_add_method(time_info, var_info, rl)
+            elif self.method == "SUM":
+                cmd = self.setup_sum_method(time_info, var_info, rl)
+            elif self.method == "SUBTRACT":
+                cmd = self.setup_subtract_method(time_info, var_info, rl)
+            elif self.method == "DERIVE":
+                cmd = self.setup_derive_method(time_info, var_info, rl)
+            else:
+                self.logger.error('Invalid ' + rl + '_PCP_COMBINE_METHOD specified.'+\
+                                  ' Options are ADD, SUM, and SUBTRACT.')
+                exit(1)
 
         if cmd is None:
             init_time = time_info['init_fmt']
