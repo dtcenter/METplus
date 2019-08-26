@@ -100,6 +100,8 @@ class ConfigWrapper(object):
                     var = self.getraw('config', var_name, default, count)
                 elif self.conf.has_option('dir', var_name):
                     var = self.getraw('dir', var_name, default, count)
+                elif self.conf.has_option('filename_templates', var_name):
+                    var = self.getraw('filename_templates', var_name, default, count)
                 elif var_name[0:3] == "ENV":
                     var = os.environ.get(var_name[4:-1])
 
