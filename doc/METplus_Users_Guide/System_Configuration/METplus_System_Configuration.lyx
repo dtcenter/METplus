@@ -38646,69 +38646,6 @@ height "1pt"
 \end_inset
 
 
-\series bold
-
-\begin_inset Newline newline
-\end_inset
-
-WGRIB2
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-Specify the path to the 
-\begin_inset Quotes eld
-\end_inset
-
-wgrib2
-\begin_inset Quotes erd
-\end_inset
-
- executable.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Used by:
-\series default
-\shape default
- PB2NC, PointStat
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Family:
-\series default
-\shape default
- [exe]
-\series bold
-\shape italic
-
-\begin_inset Newline newline
-\end_inset
-
-Default:
-\series default
-\shape default
- /path/to
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset CommandInset line
-LatexCommand rule
-offset "0.5ex"
-width "100col%"
-height "1pt"
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsection
