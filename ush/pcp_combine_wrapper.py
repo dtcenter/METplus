@@ -181,6 +181,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         min_forecast = self.c_dict[dtype+'_MIN_FORECAST']
         max_forecast = self.c_dict[dtype+'_MAX_FORECAST']
         forecast_lead = min_forecast
+        self.logger.debug(f"Looking for file with lowest forecast lead valid at {valid_time}"
+                          f" between {min_forecast} and {max_forecast}")
+
         while forecast_lead <= max_forecast:
             input_dict = {}
             input_dict['valid'] = valid_time
@@ -314,6 +317,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                     self.config)
 
     def find_highest_accum_field(self, data_src, s_accum, search_time):
+        if self.get_data_type(data_src) == "GRIB":
+            return '', s_accum
+
         field_name = ''
         search_time_info = { 'valid' : search_time }
         while s_accum > 0:
@@ -343,10 +349,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         """
         in_template = self.c_dict[data_src+'_INPUT_TEMPLATE']
         valid_time = time_info['valid_fmt']
-        if self.input_dir == "":
-            self.logger.error(self.app_name +
-                              ": Must set data dir to run get_accumulation")
-            exit(1)
 
         if self.c_dict[data_src + '_IS_DAILY_FILE'] is True:
             return self.get_daily_file(time_info, accum, data_src, in_template)
@@ -359,29 +361,41 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             search_accum = accum
         else:
             search_accum = level
+
+        self.logger.debug(f"Trying to build a {total_accum} accumulation starting with {search_accum}")
         # loop backwards in time until you have a full set of accum
         while last_time <= search_time:
             if is_forecast:
+                if total_accum == 0:
+                    break
+
                 search_file = self.getLowestForecastFile(search_time, data_src, in_template)
                 if search_file == None:
                     break
+
                 # find accum field in file
                 field_name, s_accum = self.find_highest_accum_field(data_src, search_accum, search_time)
-
-                if field_name == '':
-                    break
 
                 if self.get_data_type(data_src) == "GRIB":
                     addon = search_accum
                 else:
+                    if field_name == '':
+                        break
+
                     addon = "'name=\"" + field_name + "\";"
                     if not util.is_python_script(field_name):
                         addon += " level=\"(0,*,*)\";"
                     addon += "'"
 
                 self.add_input_file(search_file, addon)
+                self.logger.debug(f"Adding input file: {search_file}")
                 search_time = search_time - datetime.timedelta(hours=s_accum)
-                search_accum -= s_accum
+
+                # keep same search accumulation if specified, otherwise decrease it by
+                # the accumulation that was found
+                if level == -1:
+                    search_accum -= s_accum
+
                 total_accum -= s_accum
             else:  # not looking for forecast files
                 # look for biggest accum that fits search
@@ -399,11 +413,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
                         # add file to input list and step back in time to find more data
                         self.add_input_file(search_file, addon)
+                        self.logger.debug(f"Adding input file: {search_file}")
                         search_time = search_time - datetime.timedelta(hours=search_accum)
                         total_accum -= search_accum
                         break
                     # if file/field not found, look for a smaller accumulation
                     search_accum -= 1
+
             # if we don't need any more accumulation, break out of loop and run
             if total_accum == 0:
                 break
@@ -521,6 +537,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return cmd
 
     def run_at_time_once(self, time_info, var_info, rl):
+        self.clear()
         cmd = None
         self.method = self.c_dict[rl+'_RUN_METHOD'].upper()
         if self.method == "CUSTOM":
@@ -571,7 +588,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @params rl data type (FCST or OBS)
           @rtype string
           @return path to output file"""
-        self.clear()
         in_dir, in_template = self.get_dir_and_template(rl, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
 
@@ -658,7 +674,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @params rl data type (FCST or OBS)
           @rtype string
           @return path to output file"""
-        self.clear()
         in_accum = self.c_dict[rl+'_LEVEL']
 
         # if level is not set, default to 0 for sum mode
@@ -710,7 +725,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         is_forecast = False
         if data_src == "FCST":
             is_forecast = True
-        self.clear()
 
         if data_src == "FCST":
             level = var_info['fcst_level']
@@ -755,7 +769,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         is_forecast = False
         if data_src == "FCST":
             is_forecast = True
-        self.clear()
 
         # set field info
         if data_src == "FCST":
