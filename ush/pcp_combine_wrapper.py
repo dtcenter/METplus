@@ -539,6 +539,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
     def run_at_time_once(self, time_info, var_info, rl):
         self.clear()
         cmd = None
+        self.clear()
         self.method = self.c_dict[rl+'_RUN_METHOD'].upper()
         if self.method == "CUSTOM":
             cmd = self.setup_custom_method(time_info, rl)
