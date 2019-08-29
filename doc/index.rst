@@ -10,6 +10,10 @@ Welcome to METplus's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   installation
+   wrappers
+   examples
+   contributors
 
 
 Indices and tables
