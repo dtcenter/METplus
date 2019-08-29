@@ -200,16 +200,16 @@ that reformat gridded data
 
         # get field info field a single field to pass to the MET config file
         fcst_field_list = self.get_field_info(v_level=var_info['fcst_level'],
-                                                  v_thresh=var_info['fcst_thresh'],
-                                                  v_name=var_info['fcst_name'],
-                                                  v_extra=var_info['fcst_extra'],
-                                                  d_type='FCST')
+                                              v_thresh=var_info['fcst_thresh'],
+                                              v_name=var_info['fcst_name'],
+                                              v_extra=var_info['fcst_extra'],
+                                              d_type='FCST')
 
         obs_field_list = self.get_field_info(v_level=var_info['obs_level'],
-                                                 v_thresh=var_info['obs_thresh'],
-                                                 v_name=var_info['obs_name'],
-                                                 v_extra=var_info['obs_extra'],
-                                                 d_type='OBS')
+                                             v_thresh=var_info['obs_thresh'],
+                                             v_name=var_info['obs_name'],
+                                             v_extra=var_info['obs_extra'],
+                                             d_type='OBS')
 
         if fcst_field_list is None or obs_field_list is None:
             return
@@ -243,15 +243,15 @@ that reformat gridded data
         obs_field_list = []
         for var_info in self.c_dict['VAR_LIST']:
             next_fcst = self.get_field_info(v_level=var_info['fcst_level'],
-                                                v_thresh=var_info['fcst_thresh'],
-                                                v_name=var_info['fcst_name'],
-                                                v_extra=var_info['fcst_extra'],
-                                                d_type='FCST')
+                                            v_thresh=var_info['fcst_thresh'],
+                                            v_name=var_info['fcst_name'],
+                                            v_extra=var_info['fcst_extra'],
+                                            d_type='FCST')
             next_obs = self.get_field_info(v_level=var_info['obs_level'],
-                                               v_thresh=var_info['obs_thresh'],
-                                               v_name=var_info['obs_name'],
-                                               v_extra=var_info['obs_extra'],
-                                               d_type='OBS')
+                                           v_thresh=var_info['obs_thresh'],
+                                           v_name=var_info['obs_name'],
+                                           v_extra=var_info['obs_extra'],
+                                           d_type='OBS')
 
             if next_fcst is None or next_obs is None:
                 return
