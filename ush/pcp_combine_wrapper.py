@@ -522,6 +522,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
     def run_at_time_once(self, time_info, var_info, rl):
         cmd = None
+        self.clear()
         self.method = self.c_dict[rl+'_RUN_METHOD'].upper()
         if self.method == "CUSTOM":
             cmd = self.setup_custom_method(time_info, rl)
@@ -571,7 +572,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @params rl data type (FCST or OBS)
           @rtype string
           @return path to output file"""
-        self.clear()
+
         in_dir, in_template = self.get_dir_and_template(rl, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
 
@@ -658,7 +659,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @params rl data type (FCST or OBS)
           @rtype string
           @return path to output file"""
-        self.clear()
+
         in_accum = self.c_dict[rl+'_LEVEL']
 
         # if level is not set, default to 0 for sum mode
@@ -710,7 +711,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         is_forecast = False
         if data_src == "FCST":
             is_forecast = True
-        self.clear()
+
 
         if data_src == "FCST":
             level = var_info['fcst_level']
@@ -755,7 +756,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         is_forecast = False
         if data_src == "FCST":
             is_forecast = True
-        self.clear()
+
 
         # set field info
         if data_src == "FCST":
