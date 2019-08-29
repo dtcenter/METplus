@@ -300,6 +300,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
 
     def find_highest_accum_field(self, data_src, s_accum):
+        if self.get_data_type(data_src) == "GRIB":
+            return '', s_accum
+
         field_name = ''
         while s_accum > 0:
             # calling config.conf version of getter so default value is not
@@ -347,22 +350,29 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # loop backwards in time until you have a full set of accum
         while last_time <= search_time:
             if is_forecast:
+                if total_accum == 0:
+                    break
+
                 search_file = self.getLowestForecastFile(search_time, data_src, in_template)
                 if search_file == None:
                     break
                 # find accum field in file
                 field_name, s_accum = self.find_highest_accum_field(data_src, search_accum)
 
-                if field_name == '':
-                    break
-
                 if self.get_data_type(data_src) == "GRIB":
                     addon = search_accum
                 else:
+                    if field_name == '':
+                        break
+
                     addon = "'name=\"" + field_name + "\"; level=\"(0,*,*)\";'"
                 self.add_input_file(search_file, addon)
                 search_time = search_time - datetime.timedelta(hours=s_accum)
-                search_accum -= s_accum
+                # keep same search accumulation if specified, otherwise decrease it by
+                # the accumulation that was found
+                if level == -1:
+                    search_accum -= s_accum
+
                 total_accum -= s_accum
             else:  # not looking for forecast files
                 # look for biggest accum that fits search
