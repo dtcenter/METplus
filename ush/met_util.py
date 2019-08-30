@@ -1533,7 +1533,8 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
             extra[data_type] = ""
             if config.has_option('config', data_type+"_VAR"+n+"_OPTIONS"):
                 extra[data_type] = config.getraw('config', data_type+"_VAR"+n+"_OPTIONS")
-
+                extra[data_type] = StringSub(config.logger, extra[data_type],
+                                             **time_info).do_string_sub()
             thresh[data_type] = []
             if config.has_option('config', data_type+"_VAR"+n+"_THRESH"):
                 thresh[data_type] = getlist(config.getstr('config', data_type+"_VAR"+n+"_THRESH"))
@@ -1556,7 +1557,8 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
             extra[other_data_type] = ""
             if config.has_option('config', other_data_type+"_VAR"+n+"_OPTIONS"):
                 extra[other_data_type] = config.getraw('config', other_data_type+"_VAR"+n+"_OPTIONS")
-
+                extra[other_data_type] = StringSub(config.logger, extra[other_data_type],
+                                                   **time_info).do_string_sub()
             levels_tmp = getlist(config.getraw('config', data_type+"_VAR"+n+"_LEVELS", ''))
             levels[data_type] = []
             for level in levels_tmp:
