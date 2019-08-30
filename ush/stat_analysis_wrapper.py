@@ -445,16 +445,20 @@ class StatAnalysisWrapper(CommandBuilder):
                            )
             elif 'LEAD' in list_name:
                 lead_timedelta = datetime.timedelta(
-                    hours=int(list_name_value[0:2]),
-                    minutes=int(list_name_value[2:4]),
-                    seconds=int(list_name_value[4:])
+                    hours=int(list_name_value[:-4]),
+                    minutes=int(list_name_value[-4:-2]),
+                    seconds=int(list_name_value[-2:])
                 )
                 stringsub_dict[list_name.lower()] = list_name_value
                 stringsub_dict[list_name.lower()+'_hour'] = (
-                    list_name_value[0:2]
+                    list_name_value[:-4]
                 )
-                stringsub_dict[list_name.lower()+'_min'] = list_name_value[2:4]
-                stringsub_dict[list_name.lower()+'_sec'] = list_name_value[4:]
+                stringsub_dict[list_name.lower()+'_min'] = (
+                    list_name_value[-4:-2]
+                )
+                stringsub_dict[list_name.lower()+'_sec'] = (
+                    list_name_value[-2:]
+                )
                 stringsub_dict[list_name.lower()+'_totalsec'] = str(int(
                     lead_timedelta.total_seconds()
                 ))
@@ -1128,14 +1132,18 @@ class StatAnalysisWrapper(CommandBuilder):
             )
         for fcst_lead in self.c_dict['FCST_LEAD_LIST']:
             index = self.c_dict['FCST_LEAD_LIST'].index(fcst_lead)
-            formatted_c_dict['FCST_LEAD_LIST'][index] = (
-                fcst_lead.ljust(6,'0')
-            )
+            if len(fcst_lead)%2 == 0:
+                formatted_fcst_lead = fcst_lead.ljust(6,'0')
+            else:
+                formatted_fcst_lead = fcst_lead.ljust(7,'0')
+            formatted_c_dict['FCST_LEAD_LIST'][index] = formatted_fcst_lead
         for obs_lead in self.c_dict['OBS_LEAD_LIST']:
             index = self.c_dict['OBS_LEAD_LIST'].index(obs_lead)
-            formatted_c_dict['OBS_LEAD_LIST'][index] = (
-                obs_lead.ljust(6,'0')
-            )
+            if len(obs_lead)%2 == 0:
+                formatted_obs_lead = obs_lead.ljust(6,'0')
+            else:
+                formatted_obs_lead = obs_lead.ljust(7,'0')
+            formatted_c_dict['OBS_LEAD_LIST'][index] = formatted_obs_lead
         # Parse whether all expected METplus config _LIST variables
         # to be treated as a loop or group.
         config_lists_to_group_items = formatted_c_dict['GROUP_LIST_ITEMS']
@@ -1570,14 +1578,18 @@ class StatAnalysisWrapper(CommandBuilder):
             )
         for fcst_lead in self.c_dict['FCST_LEAD_LIST']:
             index = self.c_dict['FCST_LEAD_LIST'].index(fcst_lead)
-            formatted_c_dict['FCST_LEAD_LIST'][index] = (
-                fcst_lead.ljust(6,'0')
-            )
+            if len(fcst_lead)%2 == 0:
+                formatted_fcst_lead = fcst_lead.ljust(6,'0')
+            else:
+                formatted_fcst_lead = fcst_lead.ljust(7,'0')
+            formatted_c_dict['FCST_LEAD_LIST'][index] = formatted_fcst_lead
         for obs_lead in self.c_dict['OBS_LEAD_LIST']:
             index = self.c_dict['OBS_LEAD_LIST'].index(obs_lead)
-            formatted_c_dict['OBS_LEAD_LIST'][index] = (
-                obs_lead.ljust(6,'0')
-            )
+            if len(obs_lead)%2 == 0:
+                formatted_obs_lead = obs_lead.ljust(6,'0')
+            else:
+                formatted_obs_lead = obs_lead.ljust(7,'0')
+            formatted_c_dict['OBS_LEAD_LIST'][index] = formatted_obs_lead
         output_base_dir = self.c_dict['OUTPUT_BASE_DIR']
         if not os.path.exists(output_base_dir):
             util.mkdir_p(output_base_dir)

@@ -350,6 +350,37 @@ def test_build_stringsub_dict():
     assert(test_stringsub_dict['lead_sec'] == '00')
     assert(test_stringsub_dict['lead'] == '240000')
     # Test 3
+    config_dict['FCST_LEAD'] = '1200000'
+    date_beg = '20190101'
+    date_end = '20190101'
+    date_type = 'VALID'
+    lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST',
+                       'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
+                       'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
+                       'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
+                       'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST',
+                       'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
+                       'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
+                       'LINE_TYPE_LIST' ]
+    lists_to_loop = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST' ]
+    test_stringsub_dict = st.build_stringsub_dict(date_beg, date_end,
+                                                  date_type, lists_to_loop,
+                                                  lists_to_group, config_dict)
+    assert(test_stringsub_dict['valid'] ==
+           datetime.datetime(2019, 1, 1, 0, 0, 0))
+    assert(test_stringsub_dict['fcst_valid'] ==
+           datetime.datetime(2019, 1, 1, 0, 0, 0))
+    assert(test_stringsub_dict['fcst_lead_totalsec'] == '432000')
+    assert(test_stringsub_dict['fcst_lead_hour'] == '120')
+    assert(test_stringsub_dict['fcst_lead_min'] == '00')
+    assert(test_stringsub_dict['fcst_lead_sec'] == '00')
+    assert(test_stringsub_dict['fcst_lead'] == '1200000')
+    assert(test_stringsub_dict['lead_totalsec'] == '432000')
+    assert(test_stringsub_dict['lead_hour'] == '120')
+    assert(test_stringsub_dict['lead_min'] == '00')
+    assert(test_stringsub_dict['lead_sec'] == '00')
+    assert(test_stringsub_dict['lead'] == '1200000')
+    # Test 4
     date_beg = '20190101'
     date_end = '20190105'
     date_type = 'INIT'
@@ -372,7 +403,7 @@ def test_build_stringsub_dict():
            datetime.datetime(2019, 1, 1, 0, 0, 0))
     assert(test_stringsub_dict['init_end'] == 
            datetime.datetime(2019, 1, 5, 18, 0, 0))
-    # Test 4
+    # Test 5
     config_dict['FCST_INIT_HOUR'] = ''
     config_dict['FCST_LEAD'] = ''
     date_beg = '20190101'
@@ -410,7 +441,7 @@ def test_build_stringsub_dict():
            datetime.datetime(1900, 1, 1, 0, 0, 0))                               
     assert(test_stringsub_dict['obs_init_hour_end'] == 
            datetime.datetime(1900, 1, 1, 23, 59 ,59))
-
+ 
 def test_get_output_filename():
     # Independently test the building of
     # the output file name 
