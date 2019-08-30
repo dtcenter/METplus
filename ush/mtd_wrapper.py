@@ -241,16 +241,16 @@ class MTDWrapper(ModeWrapper):
         # loop over thresholds and build field list with one thresh per item
         for fcst_thresh, obs_thresh in zip(fcst_thresh_list, obs_thresh_list):
             fcst_field = self.get_field_info(v_name=var_info['fcst_name'],
-                                                 v_level=var_info['fcst_level'],
-                                                 v_extra=var_info['fcst_extra'],
-                                                 v_thresh=[fcst_thresh],
-                                                 d_type='FCST')
+                                             v_level=var_info['fcst_level'],
+                                             v_extra=var_info['fcst_extra'],
+                                             v_thresh=[fcst_thresh],
+                                             d_type='FCST')
 
             obs_field = self.get_field_info(v_name=var_info['obs_name'],
-                                                v_level=var_info['obs_level'],
-                                                v_extra=var_info['obs_extra'],
-                                                v_thresh=[obs_thresh],
-                                                d_type='OBS')
+                                            v_level=var_info['obs_level'],
+                                            v_extra=var_info['obs_extra'],
+                                            v_thresh=[obs_thresh],
+                                            d_type='OBS')
 
             if fcst_field is None or obs_field is None:
                 return

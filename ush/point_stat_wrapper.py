@@ -177,16 +177,16 @@ class PointStatWrapper(CompareGriddedWrapper):
         obs_field_list = []
         for var_info in var_list:
             next_fcst = self.get_field_info(v_level=var_info['fcst_level'],
-                                                v_thresh=var_info['fcst_thresh'],
-                                                v_name=var_info['fcst_name'],
-                                                v_extra=var_info['fcst_extra'],
-                                                d_type='FCST')
+                                            v_thresh=var_info['fcst_thresh'],
+                                            v_name=var_info['fcst_name'],
+                                            v_extra=var_info['fcst_extra'],
+                                            d_type='FCST')
 
             next_obs = self.get_field_info(v_level=var_info['obs_level'],
-                                               v_thresh=var_info['obs_thresh'],
-                                               v_name=var_info['obs_name'],
-                                               v_extra=var_info['obs_extra'],
-                                               d_type='OBS')
+                                           v_thresh=var_info['obs_thresh'],
+                                           v_name=var_info['obs_name'],
+                                           v_extra=var_info['obs_extra'],
+                                           d_type='OBS')
 
             if next_fcst is None or next_obs is None:
                 return False

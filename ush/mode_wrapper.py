@@ -202,16 +202,16 @@ class ModeWrapper(CompareGriddedWrapper):
             obs_thresh_list = var_info['obs_thresh']
 
         fcst_field_list = self.get_field_info(v_name=var_info['fcst_name'],
-                                                  v_level=var_info['fcst_level'],
-                                                  v_extra=var_info['fcst_extra'],
-                                                  v_thresh=fcst_thresh_list,
-                                                  d_type='FCST')
+                                              v_level=var_info['fcst_level'],
+                                              v_extra=var_info['fcst_extra'],
+                                              v_thresh=fcst_thresh_list,
+                                              d_type='FCST')
 
         obs_field_list = self.get_field_info(v_name=var_info['obs_name'],
-                                                 v_level=var_info['obs_level'],
-                                                 v_extra=var_info['obs_extra'],
-                                                 v_thresh=obs_thresh_list,
-                                                 d_type='OBS')
+                                             v_level=var_info['obs_level'],
+                                             v_extra=var_info['obs_extra'],
+                                             v_thresh=obs_thresh_list,
+                                             d_type='OBS')
 
         if fcst_field_list is None or obs_field_list is None:
             return

@@ -194,10 +194,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 return ''
 
             next_field = self.get_field_info(v_level=level,
-                                                 v_thresh=thresh,
-                                                 v_name=name,
-                                                 v_extra=extra,
-                                                 d_type=data_type)
+                                             v_thresh=thresh,
+                                             v_name=name,
+                                             v_extra=extra,
+                                             d_type=data_type)
             if next_field is None:
                 return ''
 
