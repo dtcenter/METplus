@@ -225,15 +225,10 @@ def get_stat_file_line_type_columns(logger, met_version, line_type):
                 'UVFFBAR', 'UVOOBAR', 'F_SPEED_BAR', 'O_SPEED_BAR'
             ]
     elif line_type == 'VAL1L2':
-        if met_version == 6.0 or met_version == 6.1:
+        if met_version >= 6.0:
             stat_file_line_type_columns = [
                 'TOTAL', 'UFABAR', 'VFABAR', 'UOABAR', 'VOABAR', 'UVFOABAR',
                 'UVFFABAR', 'UVOOABAR'
-            ]
-        elif met_version >= 7.0:
-            stat_file_line_type_columns = [
-                'TOTAL', 'UFABAR', 'VFABAR', 'UOABAR', 'VOABAR', 'UVFOABAR',
-                'UVFFABAR', 'UVOOABAR', 'F_SPEED_BAR', 'O_SPEED_BAR'
             ]
     elif line_type == 'VCNT':
         if met_version >= 7.0:
