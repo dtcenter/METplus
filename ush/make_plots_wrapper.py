@@ -421,7 +421,10 @@ class MakePlotsWrapper(CommandBuilder):
         met_version_str = (
             met_verison_line.partition('MET Version:')[2].split('V')[1]
         )
-        met_version = float(met_version_str.rpartition('.')[0])
+        if len(met_version_str) == 3:
+            met_version = float(met_version_str)
+        else:
+            met_version = float(met_version_str.rpartition('.')[0])
         # Add additional variable information to
         # c_dict['VAR_LIST'] and make individual dictionaries
         # for each threshold
