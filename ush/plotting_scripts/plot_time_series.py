@@ -21,8 +21,8 @@ import warnings
 import logging
 import datetime
 import re
-#import matplotlib
-#matplotlib.use('agg')
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as md
 
@@ -569,7 +569,7 @@ for plot_info in plot_info_list:
                                  marker='o', markersize=7,
                                  label='obs '+str(
                                      round(model_stat_values_array[1,:].mean()
-                                           ,2)
+                                           ,3)
                                  )+' '+str(obs_count))
                 
             count = (
@@ -581,7 +581,7 @@ for plot_info in plot_info_list:
                          ls='-', linewidth=2.0,
                          marker='o', markersize=7,
                          label=model_plot_name+' '+str(
-                             round(model_stat_values_array[0,:].mean(),2)
+                             round(model_stat_values_array[0,:].mean(),3)
                          )+' '+str(count))
         ax.legend(bbox_to_anchor=(1.025, 1.0, 0.375, 0.0), loc='upper right',
                   ncol=1, fontsize='13', mode="expand", borderaxespad=0.)
