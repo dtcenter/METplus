@@ -361,7 +361,7 @@ for plot_info in plot_info_list:
             names=['model_plot_name', 'dates']
         )
         model_stat_filename = (
-            model_name+'_'+model_obtype+'_'
+            model_plot_name+'_'+model_obtype+'_'
             +base_name
             +'_dump_row.stat'
         )
@@ -475,7 +475,7 @@ for plot_info in plot_info_list:
             # model's .stat file name to create similar naming
             lead_mean_filename = (
                 stat+'_'
-                +model_name+'_'+model_obtype+'_'
+                +model_plot_name+'_'+model_obtype+'_'
                 +base_name
                 +'_lead_mean.txt'
             ).replace('_fcst_lead'+fcst_lead, '')
@@ -496,7 +496,7 @@ for plot_info in plot_info_list:
             if ci_method != 'NONE':
                 CI_filename = (
                     stat+'_'
-                    +model_name+'_'+model_obtype+'_'
+                    +model_plot_name+'_'+model_obtype+'_'
                     +base_name
                     +'_CI_'+ci_method+'.txt'
                 ).replace('_fcst_lead'+fcst_lead, '')

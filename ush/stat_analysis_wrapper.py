@@ -1013,9 +1013,14 @@ class StatAnalysisWrapper(CommandBuilder):
                             else:
                                 model_filename_type = 'user'
                         else:
-                            model_filename_template = (
-                                '{model?fmt=%s}_{obtype?fmt=%s}_'
-                            )
+                            if 'MakePlots' in self.c_dict['PROCESS_LIST']:
+                                model_filename_template = (
+                                    model_reference_name+'_{obtype?fmt=%s}_'
+                                )
+                            else:
+                                model_filename_template = (
+                                    '{model?fmt=%s}_{obtype?fmt=%s}_'
+                                )
                             model_filename_type = 'default'
                     if output_type == 'DUMP_ROW':
                          model_dump_row_filename_template = (
