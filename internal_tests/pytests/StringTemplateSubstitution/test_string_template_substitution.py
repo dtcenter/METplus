@@ -6,6 +6,7 @@ import pytest
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
 from string_template_substitution import get_tags
+from string_template_substitution import format_one_time_item
 import logging
 import datetime
 
@@ -571,3 +572,34 @@ def test_get_tags():
     tags = get_tags(template)
 
     assert( tags[0] == '*' and tags[1] == 'basin' and tags[2] == 'cyclone' and tags[3] == 'date')
+
+@pytest.mark.parametrize(
+    'format, key, value, type', [
+        ('%H', '1', '1', 'H'),
+        ('%H', '01', '01', 'H'),
+        ('%2H', '02', '02', 'H'),
+        ('%3H', '003', '003', 'H'),
+        ('%S', '1', '1', 'S'),
+        ('%S', '01', '01', 'S'),
+        ('%2S', '02', '02', 'S'),
+        ('%3S', '003', '003', 'S'),
+        ('%M', '1', '1', 'M'),
+        ('%M', '01', '01', 'M'),
+        ('%2M', '02', '02', 'M'),
+        ('%3M', '003', '003', 'M')
+    ]
+)
+
+def test_getoffset(format, key ,value, type):
+
+    templ = "{offset?fmt=format}"
+    logger = logging.getLogger("dummy")
+    ss = StringSub(logger, templ, offset=key)
+    out_str = ''
+
+    #format should be something like %H %2H %3H %2M etc
+    #type is 'H', 'M', 'S', 'd', 's'
+    out_str += format_one_time_item(format, key, type)
+
+    assert(out_str == value)
+
