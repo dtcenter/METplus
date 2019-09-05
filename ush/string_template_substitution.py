@@ -100,7 +100,7 @@ def get_seconds_from_template(split_item):
 def format_one_time_item(item, time_str, unit):
     """!Determine precision of time offset value and format
         Args:
-         @param item format to substitute, i.e. %3M or %H
+         @param item format to substitute, i.e. 3M or H
          @param time_str time value that precision will be applied, i.e. 60
          @param unit currently being processed, i.e. M or H or S
         Returns: Padded value or empty string if unit is not found in item
@@ -109,6 +109,7 @@ def format_one_time_item(item, time_str, unit):
     if count > 0:
         rest = ''
         # get precision from number (%3H)
+        print(f"item: {item}, unit: {unit}")
         res = re.match(r"^\.*(\d+)"+unit+"(.*)", item)
         if res:
             padding = int(res.group(1))
@@ -118,6 +119,8 @@ def format_one_time_item(item, time_str, unit):
             res = re.match("^"+unit+"+(.*)", item)
             if res:
                 rest = res.group(1)
+                if unit != 's':
+                    padding = max(2, count)
 
         # add formatted time
         return str(time_str).zfill(padding)+rest

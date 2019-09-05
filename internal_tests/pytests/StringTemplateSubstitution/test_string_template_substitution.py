@@ -229,7 +229,7 @@ def test_h_lead_no_pad_3_digit():
 
 def test_h_lead_no_pad_1_digit_sub():
     logger = logging.getLogger("test")
-    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
     lead_time = int("3") * 3600
     fSts = StringSub(logger,
@@ -242,7 +242,7 @@ def test_h_lead_no_pad_1_digit_sub():
 
 def test_h_lead_no_pad_2_digit_sub():
     logger = logging.getLogger("test")
-    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
     lead_time = int("12") * 3600
     fSts = StringSub(logger,
@@ -255,7 +255,7 @@ def test_h_lead_no_pad_2_digit_sub():
 
 def test_h_lead_no_pad_3_digit_sub():
     logger = logging.getLogger("test")
-    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
     lead_time = int("102") * 3600
     fSts = StringSub(logger,
@@ -401,7 +401,7 @@ def test_crow_variable_hour():
     lead_3 = int('219') * 3600
     valid_2 = datetime.datetime.strptime('2017062000', '%Y%m%d%H')
     valid_1 = valid_3 = datetime.datetime.strptime('2017060418', '%Y%m%d%H')
-    templ = 'pgbf{lead?fmt=%H}.gfs.{valid?fmt=%Y%m%d%H}'
+    templ = 'pgbf{lead?fmt=%1H}.gfs.{valid?fmt=%Y%m%d%H}'
     ss_1 = StringSub(logger, templ, valid=valid_1, lead=lead_1)
     ss_2 = StringSub(logger, templ, valid=valid_2, lead=lead_2)
     ss_3 = StringSub(logger, templ, valid=valid_3, lead=lead_3)
@@ -574,29 +574,52 @@ def test_get_tags():
     assert( tags[0] == '*' and tags[1] == 'basin' and tags[2] == 'cyclone' and tags[3] == 'date')
 
 @pytest.mark.parametrize(
-    'format, key, value, type', [
-        ('%H', '1', '1', 'H'),
-        ('%H', '01', '01', 'H'),
-        ('%2H', '02', '02', 'H'),
-        ('%3H', '003', '003', 'H'),
-        ('%S', '1', '1', 'S'),
-        ('%S', '01', '01', 'S'),
-        ('%2S', '02', '02', 'S'),
-        ('%3S', '003', '003', 'S'),
-        ('%M', '1', '1', 'M'),
-        ('%M', '01', '01', 'M'),
-        ('%2M', '02', '02', 'M'),
-        ('%3M', '003', '003', 'M')
+    'format, key, value, ttype', [
+        ('H', 1, '01', 'H'),
+        ('1H', 1, '1', 'H'),
+        ('2H', 1, '01', 'H'),
+        ('3H', 1, '001', 'H'),
+        ('S', 1, '01', 'S'),
+        ('1S', 1, '1', 'S'),
+        ('2S', 1, '01', 'S'),
+        ('3S', 1, '001', 'S'),
+        ('M', 1, '01', 'M'),
+        ('1M', 1, '1', 'M'),
+        ('2M', 1, '01', 'M'),
+        ('3M', 1, '001', 'M'),
+        ('s', 1, '1', 's'),
+        ('1s', 1, '1', 's'),
+        ('2s', 1, '01', 's'),
+        ('3s', 1, '001', 's'),
+        ('d', 1, '01', 'd'),
+        ('1d', 1, '1', 'd'),
+        ('2d', 1, '01', 'd'),
+        ('3d', 1, '001', 'd'),
+        ('.1H', 1, '1', 'H'),
+        ('.2H', 1, '01', 'H'),
+        ('.3H', 1, '001', 'H'),
+        ('.1S', 1, '1', 'S'),
+        ('.2S', 1, '01', 'S'),
+        ('.3S', 1, '001', 'S'),
+        ('.1M', 1, '1', 'M'),
+        ('.2M', 1, '01', 'M'),
+        ('.3M', 1, '001', 'M'),
+        ('.1s', 1, '1', 's'),
+        ('.2s', 1, '01', 's'),
+        ('.3s', 1, '001', 's'),
+        ('.1d', 1, '1', 'd'),
+        ('.2d', 1, '01', 'd'),
+        ('.3d', 1, '001', 'd'),
     ]
 )
 
-def test_getoffset(format, key ,value, type):
+def test_format_one_time_item(format, key ,value, ttype):
 
     out_str = ''
 
-    #format should be something like %H %2H %3H %2M etc
+    #format should be something like H 2H 3H 2M etc
     #type is 'H', 'M', 'S', 'd', 's'
-    out_str += format_one_time_item(format, key, type)
+    out_str += format_one_time_item(format, key, ttype)
 
     assert(out_str == value)
 
