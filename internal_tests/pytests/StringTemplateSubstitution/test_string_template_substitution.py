@@ -592,9 +592,6 @@ def test_get_tags():
 
 def test_getoffset(format, key ,value, type):
 
-    templ = "{offset?fmt=format}"
-    logger = logging.getLogger("dummy")
-    ss = StringSub(logger, templ, offset=key)
     out_str = ''
 
     #format should be something like %H %2H %3H %2M etc
