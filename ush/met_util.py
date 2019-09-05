@@ -1045,8 +1045,6 @@ def create_grid_specification_string(lat, lon, logger, config):
 
     conf = ConfigWrapper(config, logger)
 
-    regrid_by_met = conf.getbool('config', 'REGRID_USING_MET_TOOL')
-
     # Initialize the tile grid string
     # and get the other values from the parameter file
     nlat = conf.getstr('config', 'NLAT')
@@ -1069,13 +1067,8 @@ def create_grid_specification_string(lat, lon, logger, config):
     logger.debug(msg)
 
     # Create the specification string based on the requested tool.
-    if regrid_by_met:
-        grid_list = ['"', 'latlon ', nlat, ' ', nlon, ' ', lat0, ' ',
-                     lon0, ' ', dlat, ' ', dlon, '"']
-    else:
-        # regrid via wgrib2
-        grid_list = ['latlon ', lon0, ':', nlon, ':', dlon, ' ',
-                     lat0, ':', nlat, ':', dlat]
+    grid_list = ['"', 'latlon ', nlat, ' ', nlon, ' ', lat0, ' ',
+                 lon0, ' ', dlat, ' ', dlon, '"']
 
     tile_grid_str = ''.join(grid_list)
     return tile_grid_str

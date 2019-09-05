@@ -38,10 +38,8 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
         @param cur_init:       The current init time
         @param cur_storm:      The current storm
         @param out_dir:  The directory where regridded netCDF or grib2 output
-                         is saved depending on which regridding methodology is
-                         requested.  If the MET tool regrid_data_plane is
-                         requested, then netCDF data is produced.  If wgrib2
-                         is requested, then grib2 data is produced.
+                         is saved.
+                         netCDF data is produced by the MET regridding tool, regrid_data_plane.
         @param config:  config instance
         Returns:
            None
@@ -72,10 +70,6 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
     regrid_data_plane_exe = os.path.join(met_install_dir,
                                          'bin/regrid_data_plane')
 
-    # regrid_data_plane_exe = config.getexe('REGRID_DATA_PLANE')
-    wgrib2_exe = config.getexe('WGRIB2')
-    egrep_exe = config.getexe('EGREP')
-    regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
     overwrite_flag = config.getbool('config', 'OVERWRITE_TRACK')
 
     # Extract the columns of interest: init time, lead time,
@@ -196,9 +190,9 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
                 util.create_grid_specification_string(blat, blon,
                                                       logger,
                                                       config)
-            if regrid_with_met_tool:
-                nc_fcst_anly_base = re.sub("grb2", "nc", fcst_anly_base)
-                fcst_anly_base = nc_fcst_anly_base
+
+            nc_fcst_anly_base = re.sub("grb2", "nc", fcst_anly_base)
+            fcst_anly_base = nc_fcst_anly_base
 
             tile_dir = os.path.join(out_dir, cur_init, cur_storm)
             fcst_hr_str = str(fcst_hr).zfill(3)
@@ -224,35 +218,22 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             else:
                 # Perform fcst regridding on the records of interest
                 var_level_string = retrieve_var_info(config)
-                if regrid_with_met_tool:
-                    # Perform regridding using MET Tool regrid_data_plane
-                    fcst_cmd_list = [regrid_data_plane_exe, ' ',
-                                     fcst_filename, ' ',
-                                     fcst_grid_spec, ' ',
-                                     fcst_regridded_file, ' ',
-                                     var_level_string,
-                                     ' -method NEAREST ']
-                    regrid_cmd_fcst = ''.join(fcst_cmd_list)
+                # Perform regridding using MET Tool regrid_data_plane
+                fcst_cmd_list = [regrid_data_plane_exe, ' ',
+                                 fcst_filename, ' ',
+                                 fcst_grid_spec, ' ',
+                                 fcst_regridded_file, ' ',
+                                 var_level_string,
+                                 ' -method NEAREST ']
+                regrid_cmd_fcst = ''.join(fcst_cmd_list)
 
-                    # Since not using the CommandBuilder to build the cmd,
-                    # add the met verbosity level to the
-                    # MET cmd created before we run the command.
-                    regrid_cmd_fcst = rdp.cmdrunner.insert_metverbosity_opt(
-                        regrid_cmd_fcst)
-                    (ret, regrid_cmd_fcst) = rdp.cmdrunner.run_cmd(
-                        regrid_cmd_fcst, env=None, app_name=rdp.app_name)
-                else:
-                    # Perform regridding via wgrib2
-                    requested_records = retrieve_var_info(config)
-                    fcst_cmd_list = [wgrib2_exe, ' ', fcst_filename, ' | ',
-                                     egrep_exe, ' ', requested_records, '|',
-                                     wgrib2_exe, ' -i ', fcst_filename,
-                                     ' -new_grid ', fcst_grid_spec, ' ',
-                                     fcst_regridded_file]
-                    wgrb_cmd_fcst = ''.join(fcst_cmd_list)
-
-                    (ret, wgrb_cmd_fcst) = rdp.cmdrunner.run_cmd(
-                        wgrb_cmd_fcst, env=None, ismetcmd=False)
+                # Since not using the CommandBuilder to build the cmd,
+                # add the met verbosity level to the
+                # MET cmd created before we run the command.
+                regrid_cmd_fcst = rdp.cmdrunner.insert_metverbosity_opt(
+                    regrid_cmd_fcst)
+                (ret, regrid_cmd_fcst) = rdp.cmdrunner.run_cmd(
+                    regrid_cmd_fcst, env=None, app_name=rdp.app_name)
 
             # Create new gridded file for anly tile
             if util.file_exists(anly_regridded_file) and not overwrite_flag:
@@ -261,37 +242,25 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             else:
                 # Perform anly regridding on the records of interest
                 var_level_string = retrieve_var_info(config)
-                if regrid_with_met_tool:
-                    anly_cmd_list = [regrid_data_plane_exe, ' ',
-                                     anly_filename, ' ',
-                                     anly_grid_spec, ' ',
-                                     anly_regridded_file, ' ',
-                                     var_level_string, ' ',
-                                     ' -method NEAREST ']
-                    regrid_cmd_anly = ''.join(anly_cmd_list)
+                anly_cmd_list = [regrid_data_plane_exe, ' ',
+                                 anly_filename, ' ',
+                                 anly_grid_spec, ' ',
+                                 anly_regridded_file, ' ',
+                                 var_level_string, ' ',
+                                 ' -method NEAREST ']
+                regrid_cmd_anly = ''.join(anly_cmd_list)
 
-                    # Since not using the CommandBuilder to build the cmd,
-                    # add the met verbosity level to the MET cmd
-                    # created before we run the command.
-                    regrid_cmd_anly = rdp.cmdrunner.insert_metverbosity_opt(
-                        regrid_cmd_anly)
-                    (ret, regrid_cmd_anly) = rdp.cmdrunner.run_cmd(
-                        regrid_cmd_anly, env=None, app_name=rdp.app_name)
-                    msg = ("on anly file:" +
-                           anly_regridded_file)
-                    logger.debug(msg)
-                else:
-                    # Regridding via wgrib2.
-                    requested_records = util.retrieve_var_info(config)
-                    anly_cmd_list = [wgrib2_exe, ' ', anly_filename, ' | ',
-                                     egrep_exe, ' ', requested_records, '|',
-                                     wgrib2_exe, ' -i ', anly_filename,
-                                     ' -new_grid ', anly_grid_spec, ' ',
-                                     anly_regridded_file]
-                    wgrb_cmd_anly = ''.join(anly_cmd_list)
+                # Since not using the CommandBuilder to build the cmd,
+                # add the met verbosity level to the MET cmd
+                # created before we run the command.
+                regrid_cmd_anly = rdp.cmdrunner.insert_metverbosity_opt(
+                    regrid_cmd_anly)
+                (ret, regrid_cmd_anly) = rdp.cmdrunner.run_cmd(
+                    regrid_cmd_anly, env=None, app_name=rdp.app_name)
+                msg = ("on anly file:" +
+                       anly_regridded_file)
+                logger.debug(msg)
 
-                    (ret, wgrb_cmd_anly) = rdp.cmdrunner.run_cmd(
-                        wgrb_cmd_anly, env=None, ismetcmd=False)
 
 
 def retrieve_var_info(config):
@@ -305,7 +274,7 @@ def retrieve_var_info(config):
         Args:
             @param config: The reference to the config/param instance.
         Returns:
-            field_level_string (string):  If REGRID_USING_MET_TOOL is True,
+            field_level_string (string):
                                           A string with format -field
                                           'name="HGT"; level="P500";'
                                           for each variable defined in
@@ -327,7 +296,6 @@ def retrieve_var_info(config):
     var_list = util.getlist(config.getstr('config', 'VAR_LIST'))
     extra_var_list = util.getlist(config.getstr('config',
                                             'EXTRACT_TILES_VAR_LIST'))
-    regrid_with_met_tool = config.getbool('config', 'REGRID_USING_MET_TOOL')
     full_list = []
 
     # Append the extra_var list to the var_list
@@ -336,49 +304,23 @@ def retrieve_var_info(config):
     full_var_list = var_list + extra_var_list
     unique_var_list = list(set(full_var_list))
 
-    if regrid_with_met_tool:
-        name_str = 'name="'
-        level_str = 'level="'
+    name_str = 'name="'
+    level_str = 'level="'
 
-        for cur_var in unique_var_list:
-            match = re.match(r'(.*)/(.*)', cur_var)
-            name = match.group(1)
-            level = match.group(2)
-            level_val = "_" + level
+    for cur_var in unique_var_list:
+        match = re.match(r'(.*)/(.*)', cur_var)
+        name = match.group(1)
+        level = match.group(2)
+        level_val = "_" + level
 
-            # Create the field info string that can be used
-            # by the MET Tool regrid_data_plane to perform
-            # regridding.
-            cur_list = [' -field ', "'", name_str, name, '"; ',
-                        level_str, level_val, '";', "'", '\\ ']
-            cur_str = ''.join(cur_list)
-            full_list.append(cur_str)
-        field_level_string = ''.join(full_list)
-    else:
-        full_list = ['":']
-        for cur_var in unique_var_list:
-            match = re.match(r'(.*)/(.*)', cur_var)
-            name = match.group(1)
-            level = match.group(2)
-            level_match = re.match(r'([a-zA-Z])([0-9]{1,3})', level)
-            level_val = level_match.group(2)
-
-            # Create the field info string that can be used by
-            # wgrib2 to perform regridding.
-            if int(level_val) > 0:
-                level_str = str(level_val) + ' '
-            else:
-                # For Z0, Z2, etc. just gather all available.
-                level_str = ""
-
-            cur_list = [name, ':', level_str, '|']
-            tmp_str = ''.join(cur_list)
-            full_list.append(tmp_str)
-
-        # Remove the last '|' and add the terminal double quote.
-        field_level_string = ''.join(full_list)
-        field_level_string = field_level_string[:-1]
-        field_level_string += '"'
+        # Create the field info string that can be used
+        # by the MET Tool regrid_data_plane to perform
+        # regridding.
+        cur_list = [' -field ', "'", name_str, name, '"; ',
+                    level_str, level_val, '";', "'", '\\ ']
+        cur_str = ''.join(cur_list)
+        full_list.append(cur_str)
+    field_level_string = ''.join(full_list)
 
     return field_level_string
 
