@@ -138,7 +138,7 @@ class PB2NCWrapper(CommandBuilder):
             return grid_id
 
         # look for G<n> where n is a digit 0-999
-        match = re.match(r'G([0-9]{1,3})', grid_id)
+        match = re.match(r'G([0-9]{1,3})$', grid_id)
 
         # pad with zeros if found
         if match:
