@@ -240,7 +240,7 @@ class PB2NCWrapper(CommandBuilder):
                           'exists. Remove file or change '
                           'PB2NC_SKIP_IF_OUTPUT_EXISTS to False to process'
                           .format(outpath))
-        
+
     def run_at_time(self, input_dict):
         """! Loop over each forecast lead and build pb2nc command """
         if self.c_dict['GRID'] is None:
@@ -325,16 +325,16 @@ class PB2NCWrapper(CommandBuilder):
         if not os.path.exists(os.path.dirname(out_path)):
             os.makedirs(os.path.dirname(out_path))
 
-        cmd += " " + out_path
+        cmd += out_path + ' '
 
         if self.c_dict['CONFIG_FILE'] != "":
-            cmd += ' ' + self.c_dict['CONFIG_FILE']
+            cmd += self.c_dict['CONFIG_FILE'] + ' '
 
         if len(self.infiles) > 1:
             for f in self.infiles[1:]:
-                cmd += ' -pbfile' + f
+                cmd += '-pbfile ' + f + ' '
 
-        return cmd
+        return cmd.strip()
 
 if __name__ == "__main__":
         util.run_stand_alone("pb2nc_wrapper", "PB2NC")
