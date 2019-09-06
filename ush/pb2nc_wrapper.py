@@ -243,7 +243,7 @@ class PB2NCWrapper(CommandBuilder):
         
     def run_at_time(self, input_dict):
         """! Loop over each forecast lead and build pb2nc command """
-        if c_dict['GRID'] is None:
+        if self.c_dict['GRID'] is None:
             self.logger.error('PB2NC_GRID value was formatted incorrectly')
             return
 
