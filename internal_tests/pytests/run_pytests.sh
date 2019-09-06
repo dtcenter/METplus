@@ -23,3 +23,5 @@ cd $script_dir/compare_gridded
 pytest -c ../minimum_pytest.eyewall.conf
 cd $script_dir/time_util
 pytest -c ../minimum_pytest.eyewall.conf
+cd $script_dir/pb2nc
+pytest -c ../minimum_pytest.eyewall.conf -c ./conf1
