@@ -50,16 +50,26 @@ class PB2NCWrapper(CommandBuilder):
         c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'PB2NC_OFFSETS', '0'))
 
         # Directories
-        c_dict['OBS_INPUT_DIR'] = self.config.getdir('PB2NC_INPUT_DIR')
-        c_dict['OUTPUT_DIR'] = self.config.getdir('PB2NC_OUTPUT_DIR')
+        # these are optional because users can specify full file path in template instead
+        c_dict['OBS_INPUT_DIR'] = self.config.getdir('PB2NC_INPUT_DIR', '')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('PB2NC_OUTPUT_DIR', '')
 
+        # filename templates, exit if not set
         c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates', 'PB2NC_INPUT_TEMPLATE')
+        if c_dict['OBS_INPUT_TEMPLATE'] == '':
+            self.logger.error('Must set PB2NC_INPUT_TEMPLATE in config file')
+            exit(1)
+
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates', 'PB2NC_OUTPUT_TEMPLATE')
+        if c_dict['OUTPUT_TEMPLATE'] == '':
+            self.logger.error('Must set PB2NC_OUTPUT_TEMPLATE in config file')
+            exit(1)
+
         c_dict['OBS_INPUT_DATATYPE'] = self.config.getstr('config', 'PB2NC_INPUT_DATATYPE', '')
 
         # Configuration
         c_dict['CONFIG_FILE'] = self.config.getstr('config',
-                                                     'PB2NC_CONFIG_FILE')
+                                                   'PB2NC_CONFIG_FILE')
         c_dict['MESSAGE_TYPE'] = util.getlist(
             self.config.getstr('config', 'PB2NC_MESSAGE_TYPE', '[]'))
 
@@ -72,12 +82,7 @@ class PB2NCWrapper(CommandBuilder):
         c_dict['STATION_ID'] = ''.join(tmp_message_type.split())
 
         grid_id = self.config.getstr('config', 'PB2NC_GRID')
-        if grid_id.startswith('G'):
-            # Reformat grid ids that begin with 'G' ( G10, G1, etc.) to format
-            # Gnnn
-            c_dict['GRID'] = self.reformat_grid_id(grid_id)
-        else:
-            c_dict['GRID'] = grid_id
+        c_dict['GRID'] = self.reformat_grid_id(grid_id)
 
         c_dict['POLY'] = self.config.getstr('config', 'PB2NC_POLY')
 
@@ -120,42 +125,35 @@ class PB2NCWrapper(CommandBuilder):
 
     def reformat_grid_id(self, grid_id):
         """!Reformat the grid id (MASK_GRID value in the configuration
-            file.)
-
+            file) if it starts with G. Looks for G<n> where n is a 
+            digit 0-999 and zero pads the value. i.e. G7 becomes G007,
+            G13 becomes G013, etc.
             Args:
-                @param grid_id      - the grid_id of the grid to use in
-                                      regridding
-
+                @param grid_id identifier of grid
             Returns:
-                reformatted_id - the grid id reformatted based on
-                the numerical
-                                value portion of the grid id defined
-                                in the
-                                configuration file (MASK_GRID)
+                @return reformatted grid id if valid, None if not
         """
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and
-        # method/func
-        # for logging information.
+        # If grid ID does not start with G, return it
+        if not grid_id.startswith('G'):
+            return grid_id
 
-        # Used for logging.
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
-        # Do reformatting
+        # look for G<n> where n is a digit 0-999
         match = re.match(r'G([0-9]{1,3})', grid_id)
+
+        # pad with zeros if found
         if match:
             number = match.group(1)
-            reformatted_id = 'G' + number.zfill(3)
-        else:
-            # Unexpected format
-            self.logger.error('Grid id in unexpected format of Gn or ' +
-                'Gnn, please check again. Exiting...')
-            sys.exit(1)
+            return 'G' + number.zfill(3)
 
-        return reformatted_id
+        # Unexpected format
+        self.logger.error('Grid id in unexpected format of Gn or ' +
+                          'Gnn, please check again. Exiting...')
 
     def set_environment_variables(self, time_info):
+        """!Set environment variables that will be read by the MET config file.
+            Reformat as needed. Print list of variables that were set and their values.
+            Args:
+              @param time_info dictionary containing timing info from current run"""
         # list of fields to print to log
         print_list = ["PB2NC_MESSAGE_TYPE", "PB2NC_STATION_ID",
                       "OBS_WINDOW_BEGIN", "OBS_WINDOW_END",
@@ -198,8 +196,57 @@ class PB2NCWrapper(CommandBuilder):
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_copy(print_list)
 
+    def find_input_files(self, input_dict):
+        """!Find prepbufr data to convert. If file(s) are found, return timing information
+            dictionary containing offset information of input file. Return None otherwise"""
+        infile = None
+
+        # loop over offset list and find first file that matches
+        for offset in self.c_dict['OFFSETS']:
+            input_dict['offset_hours'] = offset
+            time_info = time_util.ti_calculate(input_dict)
+            infile = self.find_obs(time_info, None, False)
+
+            if infile is not None:
+                if isinstance(infile, list):
+                    self.infiles.extend(f)
+                else:
+                    self.infiles.append(infile)
+                self.logger.debug('Adding input file {}'.format(infile))
+                break
+
+        # if file is found, return timing info dict so output template can use offset value
+        if infile is not None:
+            return time_info
+
+        self.logger.error('Could not find input file in {} matching template {} using offsets {}'
+                          .format(self.c_dict['OBS_INPUT_DIR'],
+                                  self.c_dict['OBS_INPUT_TEMPLATE'],
+                                  self.c_dict['OFFSETS']))
+
+    def find_and_check_output_file(self, time_info):
+        """!Look for expected output file. If it exists and configured to skip if it does, then return False"""
+        outfile = StringSub(self.logger,
+                            self.c_dict['OUTPUT_TEMPLATE'],
+                            **time_info).do_string_sub()
+        outpath = os.path.join(self.c_dict['OUTPUT_DIR'], outfile)
+        self.set_output_path(outpath)
+
+        if not os.path.exists(outpath) or not self.c_dict['SKIP_IF_OUTPUT_EXISTS']:
+            return True
+
+        # if the output file exists and we are supposed to skip, don't run pb2nc
+        self.logger.debug('Skip writing output file {} because it already '
+                          'exists. Remove file or change '
+                          'PB2NC_SKIP_IF_OUTPUT_EXISTS to False to process'
+                          .format(outpath))
+        
     def run_at_time(self, input_dict):
-        """! Stub, not yet implemented """
+        """! Loop over each forecast lead and build pb2nc command """
+        if c_dict['GRID'] is None:
+            self.logger.error('PB2NC_GRID value was formatted incorrectly')
+            return
+
         # loop of forecast leads and process each
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
@@ -217,72 +264,25 @@ class PB2NCWrapper(CommandBuilder):
 
 
     def run_at_time_once(self, input_dict):
+        """!Find files needed to run pb2nc and run if found"""
+        # clear out information set from previous run
         self.clear()
-        if self.c_dict['OBS_INPUT_DIR'] == '':
-            self.logger.error('Must set PB2NC_INPUT_DIR in config file')
-            exit(1)
 
-        if self.c_dict['OBS_INPUT_TEMPLATE'] == '':
-            self.logger.error('Must set PB2NC_INPUT_TEMPLATE in config file')
-            exit(1)
+        # look for input files to process
+        time_info = self.find_input_files(input_dict)
 
-        if self.c_dict['OUTPUT_DIR'] == '':
-            self.logger.error('Must set PB2NC_OUTPUT_DIR in config file')
-            exit(1)
+        # if no files were found, don't run pb2nc
+        if time_info is None:
+            return
 
-        if self.c_dict['OUTPUT_TEMPLATE'] == '':
-            self.logger.error('Must set PB2NC_OUTPUT_TEMPLATE in config file')
-            exit(1)
-
-        input_dir = self.c_dict['OBS_INPUT_DIR']
-        input_template = self.c_dict['OBS_INPUT_TEMPLATE']
-        output_dir = self.c_dict['OUTPUT_DIR']
-        output_template = self.c_dict['OUTPUT_TEMPLATE']
-
-        infile = None
-        # loop over offset list and find first file that matches
-        for offset in self.c_dict['OFFSETS']:
-            input_dict['offset_hours'] = offset
-            time_info = time_util.ti_calculate(input_dict)
-            infile = self.find_obs(time_info, None, False)
-
-            if infile is not None:
-                if isinstance(infile, list):
-                    self.infiles.extend(f)
-                else:
-                    self.infiles.append(infile)
-                self.logger.debug('Adding input file {}'.format(infile))
-                break
-
-        if infile is None:
-            self.logger.error('Could not find input file in {} matching template {} using offsets {}'
-                              .format(input_dir,
-                                      input_template,
-                                      self.c_dict['OFFSETS']))
-            return False
-
-        outSts = StringSub(self.logger,
-                           output_template,
-                           **time_info)
-        outfile = outSts.do_string_sub()
-        outfile = os.path.join(output_dir, outfile)
-        self.set_output_path(outfile)
-
-        # if we don't overwrite and the output file exists, warn and continue
-        if os.path.exists(outfile) and \
-          self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
-            self.logger.debug('Skip writing output file {} because it already '
-                              'exists. Remove file or change '
-                              'PB2NC_SKIP_IF_OUTPUT_EXISTS to False to process'
-                              .format(outfile))
-            return True
-
-        # set config file since command is reset after each run
-        self.param = self.c_dict['CONFIG_FILE']
+        # look for output file path and skip running pb2nc if necessary
+        if not self.find_and_check_output_file(time_info):
+            return
 
         # set environment variables to be passed to MET config file
         self.set_environment_variables(time_info)
 
+        # build command and run if successful
         cmd = self.get_command()
         if cmd is None:
             self.logger.error("Could not generate command")
@@ -327,17 +327,14 @@ class PB2NCWrapper(CommandBuilder):
 
         cmd += " " + out_path
 
-        if self.param != "":
-            cmd += ' ' + self.param
+        if self.c_dict['CONFIG_FILE'] != "":
+            cmd += ' ' + self.c_dict['CONFIG_FILE']
 
         if len(self.infiles) > 1:
             for f in self.infiles[1:]:
                 cmd += ' -pbfile' + f
 
         return cmd
-
-
-
 
 if __name__ == "__main__":
         util.run_stand_alone("pb2nc_wrapper", "PB2NC")
