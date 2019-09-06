@@ -17,8 +17,9 @@ from __future__ import print_function
 import os
 import sys
 
-if sys.version_info[0] < 3:
-    print("Must be using Python 3")
+py_version = sys.version.split(' ')[0]
+if py_version < '3.6.3':
+    print("Must be using Python 3.6.3 or higher. You are using {}".format(py_version))
     exit(1)
 
 import logging
