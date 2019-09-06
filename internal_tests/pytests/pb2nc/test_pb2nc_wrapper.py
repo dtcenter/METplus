@@ -80,6 +80,10 @@ def metplus_config():
             ('G1', 'G001'),
             ('G100', 'G100'),
             ('G10', 'G010'),
+            ('123', '123'),
+            ('G1234', None),
+            ('GG', None),
+            ('G', None),
         ]
 )
 def test_reformat_grid_id(key, value):
