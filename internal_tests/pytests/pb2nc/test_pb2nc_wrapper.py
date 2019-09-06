@@ -11,7 +11,7 @@ import config_metplus
 from pb2nc_wrapper import PB2NCWrapper
 from config_wrapper import ConfigWrapper
 import met_util as util
-
+import datetime
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
@@ -92,16 +92,84 @@ def test_reformat_grid_id(key, value):
     reformatted = pb.reformat_grid_id(key)
     assert value == reformatted
 
-
-# test files can be found with find_input_files with varying offset lists
-
-
+# ---------------------
+# test_find_and_check_output_file_skip
 # test that find_and_check_output_file returns correctly based on
 # if file exists and if 'skip if exists' is turned on
-
-# test that environment variables are formatted and set correctly
-
-# test that command is generated correctly
-def test_get_command():
+# ---------------------
+@pytest.mark.parametrize(
+    # key = grid_id, value = expected reformatted grid id
+        'exists, skip, run', [
+            (True, True, False),
+            (True, False, True),
+            (False, True, True),
+            (False, False, True),
+        ]
+)
+def test_find_and_check_output_file_skip(exists, skip, run):
     pb = pb2nc_wrapper()
-    assert True
+    exist_file = 'wackyfilenametocreate'
+    non_exist_file = 'wackyfilethatdoesntexist'
+
+    # create fake file to test
+    create_fullpath = os.path.join(pb.config.getdir('OUTPUT_BASE'), exist_file)
+    open(create_fullpath, 'a').close()
+
+    # set time_info, output template/dir, skip if output exists flag
+    time_info = { 'valid' : datetime.datetime(2019, 2, 1, 0) }
+    pb.c_dict['OUTPUT_DIR'] = pb.config.getdir('OUTPUT_BASE')
+
+    pb.c_dict['SKIP_IF_OUTPUT_EXISTS'] = skip
+
+    if exists:
+        pb.c_dict['OUTPUT_TEMPLATE'] = exist_file
+    else:
+        pb.c_dict['OUTPUT_TEMPLATE'] = non_exist_file
+
+    result = pb.find_and_check_output_file(time_info)
+
+    # cast result to bool because None isn't equal to False
+    assert bool(result) == run
+
+# ---------------------
+# test_get_command
+# test that command is generated correctly
+# ---------------------
+@pytest.mark.parametrize(
+    # list of input files
+        'infiles', [
+            [],
+            ['file1'],
+            ['file1', 'file2'],
+            ['file1', 'file2', 'file3'],
+        ]
+)
+def test_get_command(infiles):
+    pb = pb2nc_wrapper()
+    pb.outfile = 'outfilename.txt'
+    pb.outdir = pb.config.getdir('OUTPUT_BASE')
+    outpath = os.path.join(pb.outdir, pb.outfile)
+    pb.infiles = infiles
+    pb.c_dict['CONFIG_FILE'] = ''
+
+    cmd = pb.get_command()
+    if not infiles:
+        expected_cmd = None
+    else:
+        expected_cmd = pb.app_path + ' -v 2 ' + infiles[0] + ' ' + outpath
+        if len(infiles) > 1:
+            for infile in infiles[1:]:
+                expected_cmd += ' -pbfile ' + infile
+
+    assert cmd == expected_cmd
+
+
+# ---------------------
+# test_find_input_files
+# test files can be found with find_input_files with varying offset lists
+# ---------------------
+
+# ---------------------
+# test_set_environment_variables
+# test that environment variables are formatted and set correctly
+# ---------------------
