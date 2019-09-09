@@ -312,6 +312,19 @@ class MakePlotsWrapper(CommandBuilder):
                 return
             self.build()
             self.clear()
+            self.set_plotting_script(
+                os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                'plot_lead_mean.py')
+            )
+            cmd = self.get_command()
+            if cmd is None:
+                self.logger.error(
+                    "make_plot could not generate command"
+                )
+                return
+            self.build()
+            self.clear()
+
 
     def create_plots(self, verif_case, verif_type):
         """! Set up variables and general looping for creating
@@ -397,6 +410,9 @@ class MakePlotsWrapper(CommandBuilder):
         for model_info in model_info_list:
             model_obtype_list.append(model_info['obtype'])
             model_reference_name_list.append(model_info['reference_name'])
+        if len(formatted_c_dict['MODEL_LIST']) > 8:
+            self.logger.error("Number of models for plotting limited to 8.")
+            exit(1)
         # Set up output base
         output_base_dir = self.c_dict['OUTPUT_BASE_DIR']
         output_base_data_dir = os.path.join(output_base_dir, 'data')
