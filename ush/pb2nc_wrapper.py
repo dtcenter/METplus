@@ -224,6 +224,7 @@ class PB2NCWrapper(CommandBuilder):
                                   self.c_dict['OBS_INPUT_TEMPLATE'],
                                   self.c_dict['OFFSETS']))
 
+    '''
     def find_and_check_output_file(self, time_info):
         """!Look for expected output file. If it exists and configured to skip if it does, then return False"""
         outfile = StringSub(self.logger,
@@ -236,11 +237,11 @@ class PB2NCWrapper(CommandBuilder):
             return True
 
         # if the output file exists and we are supposed to skip, don't run pb2nc
-        self.logger.debug('Skip writing output file {} because it already '
+        self.logger.debug(f'Skip writing output file {outpath} because it already '
                           'exists. Remove file or change '
-                          'PB2NC_SKIP_IF_OUTPUT_EXISTS to False to process'
-                          .format(outpath))
-
+                          f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
+                          'to process')
+    '''
     def run_at_time(self, input_dict):
         """! Loop over each forecast lead and build pb2nc command """
         if self.c_dict['GRID'] is None:

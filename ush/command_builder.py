@@ -60,6 +60,9 @@ class CommandBuilder:
 
     def create_c_dict(self):
         c_dict = dict()
+        # set skip if output exists to False for all wrappers
+        # wrappers that support this functionality can override this value
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = False
         return c_dict
 
     def clear(self):
@@ -355,6 +358,23 @@ class CommandBuilder:
             for f_path in file_list:
                 file_handle.write(f_path + '\n')
         return list_path
+
+    def find_and_check_output_file(self, time_info):
+        """!Look for expected output file. If it exists and configured to skip if it does, then return False"""
+        outfile = sts.StringSub(self.logger,
+                            self.c_dict['OUTPUT_TEMPLATE'],
+                            **time_info).do_string_sub()
+        outpath = os.path.join(self.c_dict['OUTPUT_DIR'], outfile)
+        self.set_output_path(outpath)
+
+        if not os.path.exists(outpath) or not self.c_dict['SKIP_IF_OUTPUT_EXISTS']:
+            return True
+
+        # if the output file exists and we are supposed to skip, don't run pb2nc
+        self.logger.debug(f'Skip writing output file {outpath} because it already '
+                          'exists. Remove file or change '
+                          f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
+                          'to process')
 
     def get_command(self):
         """! Builds the command to run the MET application
