@@ -375,8 +375,6 @@ for plot_info in plot_info_list:
                 model_now_data = pd.DataFrame(np.nan,
                                               index=model_data_now_index,
                                               columns=[ 'TOTAL' ])
-                fcst_var_units_list.append('')
-                obs_var_units_list.append('')
             else:
                 logger.debug("Model "+str(model_num)+" "+model_name
                              +" with plot name "+model_plot_name
@@ -439,8 +437,6 @@ for plot_info in plot_info_list:
             model_now_data = pd.DataFrame(np.nan,
                                           index=model_data_now_index,
                                           columns=[ 'TOTAL' ])
-            fcst_var_units_list.append('')
-            obs_var_units_list.append('')
         if model_num > 1:
             model_data = pd.concat([model_data, model_now_data])
         else:
@@ -464,6 +460,7 @@ for plot_info in plot_info_list:
                 stat_values_array[l,:,:] = (
                     np.ma.mask_cols(stat_values_array[l,:,:])
                 )
+        np.ma.set_fill_value(stat_values_array, np.nan)
         for model_info in model_info_list:
             model_num = model_info_list.index(model_info) + 1
             model_idx = model_info_list.index(model_info)
@@ -477,8 +474,8 @@ for plot_info in plot_info_list:
                 stat+'_'
                 +model_plot_name+'_'+model_obtype+'_'
                 +base_name
-                +'_lead_mean.txt'
-            ).replace('_fcst_lead'+fcst_lead, '')
+                +'.txt'
+            ).replace('fcst_lead'+fcst_lead, 'fcst_lead_means')
             lead_mean_file = os.path.join(output_base_dir, 'data',
                                           lead_mean_filename)
             logger.debug("Writing model "+str(model_num)+" "+model_name
@@ -486,6 +483,8 @@ for plot_info in plot_info_list:
                          +fcst_lead+" mean to file: "+lead_mean_file)
             with open(lead_mean_file, 'a') as file2write:
                 file2write.write(fcst_lead)
+                file2write.write(' '+fcst_var_units_plot_title)
+                file2write.write(' '+obs_var_units_plot_title)
                 for l in range(len(model_stat_values_array[:,0])):
                     file2write.write(
                         ' '+str(model_stat_values_array[l,:].mean())
@@ -499,7 +498,7 @@ for plot_info in plot_info_list:
                     +model_plot_name+'_'+model_obtype+'_'
                     +base_name
                     +'_CI_'+ci_method+'.txt'
-                ).replace('_fcst_lead'+fcst_lead, '')
+                ).replace('fcst_lead'+fcst_lead, 'fcst_lead_means')
                 CI_file = os.path.join(output_base_dir, 'data',
                                        CI_filename)
                 if stat == 'fbar_obar':
@@ -557,7 +556,7 @@ for plot_info in plot_info_list:
                 ax.xaxis.set_minor_locator(md.DayLocator())
                 ax.tick_params(axis='y', pad=15)
                 ax.set_ylabel(stat_plot_name, labelpad=30)
-                if stat == "fbar_obar":
+                if stat == 'fbar_obar':
                     obs_count = (
                         len(model_stat_values_array[1,:]) 
                         - np.ma.count_masked(model_stat_values_array[1,:])
@@ -568,7 +567,8 @@ for plot_info in plot_info_list:
                                  ls='-', linewidth=2.0,
                                  marker='o', markersize=7,
                                  label='obs '+str(
-                                     round(model_stat_values_array[1,:].mean()
+                                     round(model_stat_values_array[1,:] \
+                                           .filled().mean()
                                            ,3)
                                  )+' '+str(obs_count))
                 
@@ -581,7 +581,8 @@ for plot_info in plot_info_list:
                          ls='-', linewidth=2.0,
                          marker='o', markersize=7,
                          label=model_plot_name+' '+str(
-                             round(model_stat_values_array[0,:].mean(),3)
+                             round(model_stat_values_array[0,:] \
+                             .filled().mean(),3)
                          )+' '+str(count))
         ax.legend(bbox_to_anchor=(1.025, 1.0, 0.375, 0.0), loc='upper right',
                   ncol=1, fontsize='13', mode="expand", borderaxespad=0.)
