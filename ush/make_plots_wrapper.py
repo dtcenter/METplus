@@ -324,7 +324,18 @@ class MakePlotsWrapper(CommandBuilder):
                 return
             self.build()
             self.clear()
-
+            self.set_plotting_script(
+                os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                'plot_date_by_level.py')
+            )
+            cmd = self.get_command()
+            if cmd is None:
+                self.logger.error(
+                    "make_plot could not generate command"
+                )
+                return
+            self.build()
+            self.clear()
 
     def create_plots(self, verif_case, verif_type):
         """! Set up variables and general looping for creating
