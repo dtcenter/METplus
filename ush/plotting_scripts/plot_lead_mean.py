@@ -1,12 +1,11 @@
 '''
-Name: plot_time_series.py
+Name: plot_lead_mean.py
 Contact(s): Mallory Row
-Abstract: Reads filtered files from stat_analysis_wrapper
-          run_all_times to make time series plots
+Abstract: Reads mean and CI files from plot_time_series.py to make dieoff plots
 History Log: Third version
 Usage: Called by make_plots_wrapper.py 
 Parameters: None
-Input Files: MET .stat files
+Input Files: Text files
 Output Files: .png images
 Condition codes: 0 for success, 1 for failure
 '''
