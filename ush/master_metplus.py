@@ -16,6 +16,12 @@ from __future__ import print_function
 
 import os
 import sys
+
+py_version = sys.version.split(' ')[0]
+if py_version < '3.6.3':
+    print("Must be using Python 3.6.3 or higher. You are using {}".format(py_version))
+    exit(1)
+
 import logging
 import shutil
 import produtil.setup
@@ -56,7 +62,6 @@ Main script the processes all the tasks in the PROCESS_LIST
 
 def main():
     """!Main program.
-
     Master METplus script that invokes the necessary Python scripts
     to perform various activities, such as series analysis."""
     # Setup Task logger, Until Conf object is created, Task logger is
