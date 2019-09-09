@@ -11,7 +11,9 @@ import config_metplus
 from pb2nc_wrapper import PB2NCWrapper
 from config_wrapper import ConfigWrapper
 import met_util as util
+import time_util
 import datetime
+from string_template_substitution import StringSub
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
@@ -163,13 +165,54 @@ def test_get_command(infiles):
 
     assert cmd == expected_cmd
 
-
 # ---------------------
 # test_find_input_files
 # test files can be found with find_input_files with varying offset lists
 # ---------------------
+@pytest.mark.parametrize(
+    # offset = list of offsets to search
+    # offset_to_find = expected offset file to find, None if no files should be found
+        'offsets, offset_to_find', [
+            ([6, 5, 4, 3], 5),
+            ([6, 4, 3], 3),
+            ([2, 3, 4, 5, 6], 3),
+            ([2, 4, 6], None),
+        ]
+)
+def test_find_input_files(offsets, offset_to_find):
+    pb = pb2nc_wrapper()
+    # for valid 20190201_12, offsets 3 and 5, create files to find
+    # in the fake input directory based on input template
+    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 12) }
+    fake_input_dir = os.path.join(pb.config.getdir('OUTPUT_BASE'), 'pbin')
 
-# ---------------------
-# test_set_environment_variables
-# test that environment variables are formatted and set correctly
-# ---------------------
+    if not os.path.exists(fake_input_dir):
+        os.makedirs(fake_input_dir)
+
+    pb.c_dict['OBS_INPUT_DIR'] = fake_input_dir
+
+    for offset in [3, 5]:
+        input_dict['offset'] = int(offset * 3600)
+        time_info = time_util.ti_calculate(input_dict)
+
+        create_file = StringSub(pb.logger,
+                                pb.c_dict['OBS_INPUT_TEMPLATE'],
+                                **time_info).do_string_sub()
+        create_fullpath = os.path.join(fake_input_dir, create_file)
+        open(create_fullpath, 'a').close()
+
+
+    # unset offset in time dictionary so it will be computed
+    del input_dict['offset']
+
+    # set offset list
+    pb.c_dict['OFFSETS'] = offsets
+
+    # look for input files based on offset list
+    result = pb.find_input_files(input_dict)
+
+    # check if correct offset file was found, if None expected, check against None
+    if offset_to_find is None:
+        assert result is None
+    else:
+        assert result['offset_hours'] == offset_to_find

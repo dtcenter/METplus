@@ -67,6 +67,6 @@ PB2NC_TIME_SUMMARY_TYPES = min, max, range, mean, stdev, median, p80  ;; a list 
 PB2NC_INPUT_DIR = {INPUT_BASE}/grid_to_obs/prepbufr/nam
 
 [filename_templates]
-PB2NC_INPUT_TEMPLATE = nam.{da_init?fmt=%Y%m%d}/nam.t{da_init?fmt=%2H}z.prepbufr.tm{offset?fmt=%2H}
+PB2NC_INPUT_TEMPLATE = t{da_init?fmt=%2H}z.prepbufr.tm{offset?fmt=%2H}
 
 PB2NC_OUTPUT_TEMPLATE = {valid?fmt=%Y%m%d}/nam.{valid?fmt=%Y%m%d%H}.nc
