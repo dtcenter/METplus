@@ -300,6 +300,7 @@ class MakePlotsWrapper(CommandBuilder):
             for name, value in runtime_settings_dict.items():
                 self.add_env_var(name, value)
                 self.logger.debug(name+": "+value)
+            # plot_time_series.py
             self.set_plotting_script(
                 os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'], 
                 'plot_time_series.py')
@@ -310,6 +311,7 @@ class MakePlotsWrapper(CommandBuilder):
                     "make_plot could not generate command"
                 )
                 return
+            # plot_lead_mean.py
             self.build()
             self.clear()
             self.set_plotting_script(
@@ -322,11 +324,25 @@ class MakePlotsWrapper(CommandBuilder):
                     "make_plot could not generate command"
                 )
                 return
+            # plot_date_by_level.py
             self.build()
             self.clear()
             self.set_plotting_script(
                 os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
                 'plot_date_by_level.py')
+            )
+            cmd = self.get_command()
+            if cmd is None:
+                self.logger.error(
+                    "make_plot could not generate command"
+                )
+                return
+            self.build()
+            self.clear()
+            # plot_lead_by_level.py
+            self.set_plotting_script(
+                os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                'plot_lead_by_level.py')
             )
             cmd = self.get_command()
             if cmd is None:
