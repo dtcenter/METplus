@@ -829,7 +829,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 config_dict['FCST_VALID_BEG'] = ''
                 config_dict['FCST_VALID_END'] = ''
         elif nfcst_valid_hour == 1 and fcst_valid_hour_list != ['']:
-            fcst_valid_hour_now = fcst_valid_hour_list[0]
+            fcst_valid_hour_now = fcst_valid_hour_list[0].replace('"','')
             config_dict['FCST_VALID_HOUR'] = '"'+fcst_valid_hour_now+'"'
             if date_type == 'VALID':
                 config_dict['FCST_VALID_BEG'] = (
@@ -859,7 +859,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     str(date_end)+'_'+fcst_init_hour_end
                 )
         elif nfcst_init_hour == 1 and fcst_init_hour_list != ['']:
-            fcst_init_hour_now = fcst_init_hour_list[0]
+            fcst_init_hour_now = fcst_init_hour_list[0].replace('"','')
             config_dict['FCST_INIT_HOUR'] = '"'+fcst_init_hour_now+'"'
             if date_type == 'VALID':
                 config_dict['FCST_INIT_BEG'] = ''
@@ -889,7 +889,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 config_dict['OBS_VALID_BEG'] = ''
                 config_dict['OBS_VALID_END'] = ''
         elif nobs_valid_hour == 1 and obs_valid_hour_list != ['']:
-            obs_valid_hour_now = obs_valid_hour_list[0]
+            obs_valid_hour_now = obs_valid_hour_list[0].replace('"','')
             config_dict['OBS_VALID_HOUR'] = '"'+obs_valid_hour_now+'"'
             if date_type == 'VALID':
                 config_dict['OBS_VALID_BEG'] = (
@@ -919,7 +919,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     str(date_end)+'_'+obs_init_hour_end
                 )
         elif nobs_init_hour == 1 and obs_init_hour_list != ['']:
-            obs_init_hour_now = obs_init_hour_list[0]
+            obs_init_hour_now = obs_init_hour_list[0].replace('"','')
             config_dict['OBS_INIT_HOUR'] = '"'+obs_init_hour_now+'"'
             if date_type == 'VALID':
                 config_dict['OBS_INIT_BEG'] = ''
