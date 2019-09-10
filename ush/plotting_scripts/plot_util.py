@@ -390,21 +390,24 @@ def calculate_stat(logger, model_data, stat):
         logger.warning("Empty model_data dataframe")
         stat_values = model_data.loc[:]['TOTAL']
     else:
-        if all(elem in model_data_columns for elem in ['FBAR', 'OBAR', 'MAE']):
+        if all(elem in model_data_columns for elem in
+               ['FBAR', 'OBAR', 'MAE']):
             line_type = 'SL1L2'
             fbar = model_data.loc[:]['FBAR']
             obar = model_data.loc[:]['OBAR']
             fobar = model_data.loc[:]['FOBAR']
             ffbar = model_data.loc[:]['FFBAR']
             oobar = model_data.loc[:]['OOBAR']
-        elif all(elem in model_data_columns for elem in ['FABAR', 'OABAR', 'MAE']):
+        elif all(elem in model_data_columns for elem in
+                 ['FABAR', 'OABAR', 'MAE']):
             line_type = 'SAL1L2'
             fabar = model_data.loc[:]['FABAR']
             oabar = model_data.loc[:]['OABAR']
             foabar = model_data.loc[:]['FOABAR']
             ffabar = model_data.loc[:]['FFABAR']
             ooabar = model_data.loc[:]['OOABAR']
-        elif all(elem in model_data_columns for elem in ['UFBAR', 'VFBAR']):
+        elif all(elem in model_data_columns for elem in
+                 ['UFBAR', 'VFBAR']):
             line_type = 'VL1L2'
             ufbar = model_data.loc[:]['UFBAR']
             vfbar = model_data.loc[:]['VFBAR']
@@ -413,7 +416,8 @@ def calculate_stat(logger, model_data, stat):
             uvfobar = model_data.loc[:]['UVFOBAR']
             uvffbar = model_data.loc[:]['UVFFBAR']
             uvoobar = model_data.loc[:]['UVOOBAR']
-        elif all(elem in model_data_columns for elem in ['UFABAR', 'VFABAR']):
+        elif all(elem in model_data_columns for elem in
+                 ['UFABAR', 'VFABAR']):
             line_type = 'VAL1L2'
             ufabar = model_data.loc[:]['UFABAR']
             vfabar = model_data.loc[:]['VFABAR']
@@ -422,7 +426,8 @@ def calculate_stat(logger, model_data, stat):
             uvfoabar = model_data.loc[:]['UVFOABAR']
             uvffabar = model_data.loc[:]['UVFFABAR']
             uvooabar = model_data.loc[:]['UVOOABAR']
-        elif all(elem in model_data_columns for elem in ['VDIFF_SPEED', 'VDIFF_DIR']):
+        elif all(elem in model_data_columns for elem in
+                 ['VDIFF_SPEED', 'VDIFF_DIR']):
             line_type = 'VCNT'
             fbar = model_data.loc[:]['FBAR']
             obar = model_data.loc[:]['OBAR']
