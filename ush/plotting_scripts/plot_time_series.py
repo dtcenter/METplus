@@ -103,6 +103,7 @@ output_imgs_dir = os.path.join(output_base_dir, 'imgs')
 model_info_list = list(
     zip(model_list, model_reference_name_list, model_obtype_list)
 )
+nmodels = len(model_info_list)
 # Plot info
 plot_info_list = list(
     itertools.product(*[fcst_lead_list, 
@@ -570,8 +571,8 @@ for plot_info in plot_info_list:
                                      round(model_stat_values_array[1,:] \
                                            .filled().mean()
                                            ,3)
-                                 )+' '+str(obs_count))
-                
+                                 )+' '+str(obs_count),
+                                 zorder=4)
             count = (
                 len(model_stat_values_array[0,:])
                 - np.ma.count_masked(model_stat_values_array[0,:])
@@ -583,7 +584,8 @@ for plot_info in plot_info_list:
                          label=model_plot_name+' '+str(
                              round(model_stat_values_array[0,:] \
                              .filled().mean(),3)
-                         )+' '+str(count))
+                         )+' '+str(count),
+                         zorder=(nmodels-model_idx)+4)
         ax.legend(bbox_to_anchor=(1.025, 1.0, 0.375, 0.0), loc='upper right',
                   ncol=1, fontsize='13', mode="expand", borderaxespad=0.)
         ax.set_title(stat_plot_name+'\n'

@@ -41,7 +41,7 @@ obs_valid_hour_list = os.environ['OBS_VALID_HOUR'].split(', ')
 obs_valid_hour = os.environ['OBS_VALID_HOUR']
 obs_init_hour_list = os.environ['OBS_INIT_HOUR'].split(', ')
 obs_init_hour = os.environ['OBS_INIT_HOUR']
-fcst_lead_list = [os.environ['FCST_LEAD']]
+fcst_lead_list = [os.environ['FCST_LEAD'].split(', ')]
 fcst_var_name = os.environ['FCST_VAR']
 fcst_var_units = os.environ['FCST_UNITS']
 fcst_var_level_list = os.environ['FCST_LEVEL'].split(', ')
@@ -102,6 +102,7 @@ output_imgs_dir = os.path.join(output_base_dir, 'imgs')
 model_info_list = list(
     zip(model_list, model_reference_name_list, model_obtype_list)
 )
+nmodels = len(model_info_list)
 # Plot info
 plot_info_list = list(
     itertools.product(*[fcst_lead_list, 
@@ -203,10 +204,10 @@ if alpha != '':
 
 # Start looping to make plots
 for plot_info in plot_info_list:
-    fcst_lead_list = plot_info[0].split(', ')
-    fcst_lead_timedeltas = np.full_like(fcst_lead_list, np.nan, dtype=float)
-    for fcst_lead in fcst_lead_list:
-        fcst_lead_idx = fcst_lead_list.index(fcst_lead)
+    fcst_leads = plot_info[0]
+    fcst_lead_timedeltas = np.full_like(fcst_leads, np.nan, dtype=float)
+    for fcst_lead in fcst_leads:
+        fcst_lead_idx = fcst_leads.index(fcst_lead)
         fcst_lead_timedelta = datetime.timedelta(
             hours=int(fcst_lead[:-4]),
             minutes=int(fcst_lead[-4:-2]),
@@ -318,9 +319,9 @@ for plot_info in plot_info_list:
         CI_bar_min_widths = np.append(
             np.diff(fcst_lead_timedeltas),
             fcst_lead_timedeltas[-1]-fcst_lead_timedeltas[-2]
-        )/len(model_info_list)
+        )/nmodels
         CI_bar_intvl_widths = (
-            (CI_bar_max_widths-CI_bar_min_widths)/len(model_info_list)
+            (CI_bar_max_widths-CI_bar_min_widths)/nmodels
         )
         # Reading in model lead mean files produced from plot_time_series.py
         logger.info("Reading in model data")
@@ -331,7 +332,7 @@ for plot_info in plot_info_list:
             model_plot_name = model_info[1]
             model_obtype = model_info[2]
             model_mean_data = np.empty(
-                [len(mean_cols_to_array), len(fcst_lead_list)]
+                [len(mean_cols_to_array), len(fcst_leads)]
             )
             model_mean_data.fill(np.nan)
             lead_mean_filename = (
@@ -365,8 +366,8 @@ for plot_info in plot_info_list:
                     obs_var_units_plot_title = (
                         model_mean_file_data.loc[0]['OBS_UNITS']
                     )
-                    for fcst_lead in fcst_lead_list:
-                        fcst_lead_idx = fcst_lead_list.index(fcst_lead)
+                    for fcst_lead in fcst_leads:
+                        fcst_lead_idx = fcst_leads.index(fcst_lead)
                         if fcst_lead in model_mean_file_data_leads:
                             model_mean_file_data_lead_idx = (
                                 model_mean_file_data_leads.index(fcst_lead)
@@ -393,7 +394,7 @@ for plot_info in plot_info_list:
                 +'_CI_'+ci_method+'.txt'
             )
             CI_file = os.path.join(output_base_dir, 'data', CI_filename)
-            model_CI_data = np.empty(len(fcst_lead_list))
+            model_CI_data = np.empty(len(fcst_leads))
             model_CI_data.fill(np.nan)
             if ci_method != 'NONE':
                 if stat == 'fbar_obar':
@@ -420,9 +421,9 @@ for plot_info in plot_info_list:
                             model_CI_file_data_vals = (
                                 model_CI_file_data.loc[:]['CI_VALS'].tolist()
                             )
-                            for fcst_lead in fcst_lead_list:
+                            for fcst_lead in fcst_leads:
                                 fcst_lead_idx = (
-                                    fcst_lead_list.index(fcst_lead)
+                                    fcst_leads.index(fcst_lead)
                                 )
                                 if fcst_lead in model_CI_file_data_leads:
                                     model_CI_file_data_lead_idx = (
@@ -469,9 +470,9 @@ for plot_info in plot_info_list:
                                     model_CI_file_data.loc[:]['CI_VALS'] \
                                     .tolist()
                                 )
-                                for fcst_lead in fcst_lead_list:
+                                for fcst_lead in fcst_leads:
                                     fcst_lead_idx = (
-                                        fcst_lead_list.index(fcst_lead)
+                                        fcst_leads.index(fcst_lead)
                                     )
                                     if fcst_lead in model_CI_file_data_leads:
                                         model_CI_file_data_lead_idx = (
@@ -523,37 +524,44 @@ for plot_info in plot_info_list:
                              color='#888888',
                              ls='-', linewidth=2.0,
                              marker='o', markersize=7,
-                             label='obs')
+                             label='obs',
+                             zorder=4)
                     ax2.plot(fcst_lead_timedeltas,
                              np.zeros_like(fcst_lead_timedeltas),
                              color='#888888',
-                             ls='-', linewidth=2.0)
+                             ls='-', linewidth=2.0,
+                             zorder=4)
                     ax2.plot(fcst_lead_timedeltas,
                              model_mean_data[0,:] - diff_from_mean_data,
                              color=colors[model_idx],
                              ls='-', linewidth=2.0,
-                             marker='o', markersize=7)
+                             marker='o', markersize=7,
+                             zorder=(nmodels-model_idx)+4)
                 else:
                     ax2.plot(fcst_lead_timedeltas,
                              np.zeros_like(fcst_lead_timedeltas),
                              color='black',
-                             ls='-', linewidth=2.0,label='zero')
+                             ls='-', linewidth=2.0,
+                             zorder=4)
                 ax1.plot(fcst_lead_timedeltas, model_mean_data[0,:],
                          color=colors[model_idx],
                          ls='-', linewidth=2.0,
                          marker='o', markersize=7,
-                         label=model_plot_name)
+                         label=model_plot_name,
+                         zorder=(nmodels-model_idx)+4)
             else:
                 ax1.plot(fcst_lead_timedeltas, model_mean_data[0,:],
                          color=colors[model_idx],
                          ls='-', linewidth=2.0,
                          marker='o', markersize=7,
-                         label=model_plot_name)
+                         label=model_plot_name,
+                         zorder=(nmodels-model_idx)+4)
                 ax2.plot(fcst_lead_timedeltas, 
                          model_mean_data[0,:] - diff_from_mean_data,
                          color=colors[model_idx],
                          ls='-', linewidth=2.0,
-                         marker='o', markersize=7)
+                         marker='o', markersize=7,
+                         zorder=(nmodels-model_idx)+4)
             ax2.bar(fcst_lead_timedeltas, 2*np.absolute(model_CI_data),
                     bottom=-1*np.absolute(model_CI_data),
                     width=CI_bar_max_widths-(CI_bar_intvl_widths*model_idx),
@@ -566,11 +574,11 @@ for plot_info in plot_info_list:
                      fontsize=14, fontweight='bold')
         if stat == 'fbar_obar':
             ax1.legend(bbox_to_anchor=(0.0, 1.01, 1.0, .102), loc=3,
-                       ncol=len(model_info_list)+6, fontsize='13',
+                       ncol=nmodels+1, fontsize='13',
                        mode='expand', borderaxespad=0.)
         else:
             ax1.legend(bbox_to_anchor=(0.0, 1.01, 1.0, .102), loc=3,
-                       ncol=len(model_info_list), fontsize='13',
+                       ncol=nmodels, fontsize='13',
                        mode='expand', borderaxespad=0.)
         savefig_imagename = stat+'_'+base_name+'.png'
         savefig_image = os.path.join(output_base_dir, 'images',

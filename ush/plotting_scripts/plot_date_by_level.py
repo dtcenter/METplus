@@ -103,6 +103,7 @@ output_imgs_dir = os.path.join(output_base_dir, 'imgs')
 model_info_list = list(
     zip(model_list, model_reference_name_list, model_obtype_list)
 )
+nmodels = len(model_info_list)
 # Plot info
 plot_info_list = list(
     itertools.product(*[fcst_lead_list, 
@@ -491,9 +492,9 @@ for plot_info in plot_info_list:
                     )
         np.ma.set_fill_value(stat_values_array, np.nan)
         if stat == 'fbar_obar':
-            nsubplots = len(model_info_list) + 1
+            nsubplots = nmodels + 1
         else:
-            nsubplots = len(model_info_list)
+            nsubplots = nmodels
         if nsubplots == 1:
             fig = plt.figure(figsize=(10,12))
             gs = gridspec.GridSpec(1,1)
@@ -535,9 +536,7 @@ for plot_info in plot_info_list:
             ax.set_yticklabels(fcst_var_levels_int)
             ax.set_ylim([fcst_var_levels_int[0],fcst_var_levels_int[-1]])
             ax.set_title('obs', loc='left')
-            clevels_obs = plot_util.get_clevels(obs_stat_values_array)
             CF1 = ax.contourf(xmesh, ymesh, obs_stat_values_array,
-                              levels=clevels_obs,
                               cmap=cmap,
                               locator=matplotlib.ticker.MaxNLocator(
                                   symmetric=True
