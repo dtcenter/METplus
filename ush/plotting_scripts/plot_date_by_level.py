@@ -463,7 +463,9 @@ for plot_info in plot_info_list:
                     columns=[ 'TOTAL' ])
                 )
             if vl > 0:
-                model_now_data = pd.concat([model_now_data, model_level_now_data])
+                model_now_data = pd.concat(
+                    [model_now_data, model_level_now_data]
+                )
             else:
                 model_now_data = model_level_now_data
         if model_num > 1:
