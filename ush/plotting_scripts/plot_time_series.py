@@ -587,7 +587,7 @@ for plot_info in plot_info_list:
                          )+' '+str(count),
                          zorder=(nmodels-model_idx)+4)
         ax.legend(bbox_to_anchor=(1.025, 1.0, 0.375, 0.0), loc='upper right',
-                  ncol=1, fontsize='13', mode="expand", borderaxespad=0.)
+                  ncol=1, fontsize='13', mode='expand', borderaxespad=0.)
         ax.set_title(stat_plot_name+'\n'
                      +fcst_var_plot_title+' '+fcst_var_units_plot_title
                      +', '+obs_var_plot_title+' '+obs_var_units_plot_title+'\n'
