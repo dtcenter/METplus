@@ -24,7 +24,7 @@ to be used in other METplus wrappers
 @endcode
 '''
 
-def ti_get_seconds(lead):
+def ti_get_seconds_from_relativedelta(lead):
     """!Check relativedelta object contents and compute the total number of seconds
         in the time. Return None if years or months are set, because the exact number
         of seconds cannot be calculated without a relative time"""
