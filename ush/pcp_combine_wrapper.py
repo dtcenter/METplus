@@ -203,7 +203,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             forecast_lead += 1
         return None
 
-
     def get_daily_file(self, time_info, accum, data_src, file_template):
         """!Pull accumulation out of file that contains a full day of data
         Args:
@@ -351,7 +350,16 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             return self.get_daily_file(time_info, accum, data_src, in_template)
 
         search_time = time_info['valid']
-        last_time = time_info['valid'] - datetime.timedelta(hours=(int(accum) - 1))
+        # last time to search is the goal accumulation subtracted from
+        # the valid time, then add back the smallest accumulation that is available
+        # in the input. This is done because data contains an accumulation from
+        # the file/field time backwards in time
+        # If building 6 hour accumulation from 1 hour accumulation files,
+        # last time to process is valid - 6 + 1
+#        last_time = time_info['valid'] - datetime.timedelta(hours=(int(accum) - 1))
+        accum_relative = util.get_relativedelta(accum, 'H')
+        # using 1 hour for now
+        last_time = time_info['valid'] - accum_relative + datetime.timedelta(hours=1)
         total_accum = accum
         level = int(self.c_dict[data_src+'_LEVEL'])
         if level == -1:
@@ -370,7 +378,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 if search_file == None:
                     break
 
-                # find accum field in file
+                # find accum field in file that is less than search accumulation
                 field_name, s_accum = self.find_highest_accum_field(data_src, search_accum, search_time)
 
                 if self.get_data_type(data_src) == "GRIB":
@@ -731,10 +739,16 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             level = var_info['obs_level']
             compare_var = var_info['obs_name']
 
-        _, accum = util.split_level(level)
+        _, accum_string = util.split_level(level)
 
-        init_time = time_info['init_fmt']
+        # get number of seconds relative to valid time
         valid_time = time_info['valid_fmt']
+        accum_relative = util.get_relativedelta(accum_string, 'H')
+        if accum_relative is None:
+            self.logger.error(f'Invalid accumulation specified: {accum_string}')
+            return
+
+        accum_seconds = valid_time - (valid_time - accum_relative)
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
@@ -742,18 +756,18 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.input_dir = in_dir
 
-        if not self.get_accumulation(time_info, int(accum), data_src, is_forecast):
+        if not self.get_accumulation(time_info, accum_string, data_src, is_forecast):
             self.logger.error(f'Could not find files to build accumulation in {in_dir} using template {in_template}')
             return None
 
         self.outdir = out_dir
-        time_info['level'] = int(accum) * 3600
+        time_info['level'] = int(accum_seconds)
         pcpSts = sts.StringSub(self.logger,
                                 out_template,
                                 **time_info)
         pcp_out = pcpSts.do_string_sub()
         self.outfile = pcp_out
-        self.args.append("-name " + compare_var + "_" + str(accum))
+        self.args.append("-name " + compare_var + "_" + accum_string)
         return self.get_command()
 
     def setup_derive_method(self, time_info, var_info, data_src):
@@ -783,13 +797,21 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         # get files
         lookback = self.c_dict[data_src+'_DERIVE_LOOKBACK']
-        if not self.get_accumulation(time_info, lookback, data_src, is_forecast):
+        lookback_seconds = util.get_seconds_from_string(lookback, 'H')
+        if lookback_seconds is None:
+            self.logger.error(f'Invalid format for derived lookback: {lookback}')
+            return
+
+        if not self.get_accumulation(time_info,
+                                     lookback,
+                                     data_src,
+                                     is_forecast):
             self.logger.error(f'Could not find files in {in_dir} using template {in_template}')
             return None
 
         # set output
         self.outdir =out_dir
-        time_info['level'] = int(lookback) * 3600
+        time_info['level'] = lookback_seconds
         psts = sts.StringSub(self.logger,
                                 out_template,
                                 **time_info)
