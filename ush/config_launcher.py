@@ -16,6 +16,7 @@ import sys
 import logging
 import collections
 import datetime
+import shutil
 import produtil.fileop
 import produtil.run
 import produtil.log
@@ -26,7 +27,6 @@ from os.path import dirname, realpath
 # from random import Random
 from produtil.config import ProdConfig
 import met_util as util
-from config_wrapper import ConfigWrapper
 
 """!Creates the initial METplus directory structure,
 loads information into each job.
@@ -38,7 +38,7 @@ The launch() function does more than just create the conf file though.
 It creates several initial files and  directories and runs a sanity check
 on the whole setup.
 
-The METplusLauncher class is used in place of a produtil.config.ProdConfig
+The METplusConfig class is used in place of a produtil.config.ProdConfig
 throughout the METplus system.  It can be used as a drop-in replacement
 for a produtil.config.ProdConfig, but has additional features needed to
 support sanity checks, and initial creation of the METplus system.
@@ -48,7 +48,7 @@ support sanity checks, and initial creation of the METplus system.
 All symbols exported by "from metplus.launcher import *"
 '''
 __all__ = ['load', 'launch', 'parse_launch_args', 'load_baseconfs',
-           'METplusLauncher']
+           'METplusConfig']
 
 baseinputconfs = ['metplus_config/metplus_system.conf',
                   'metplus_config/metplus_data.conf',
@@ -210,9 +210,8 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
             raise TypeError('First input to metplus.config.for_initial_job '
                             'must be a list of strings.')
 
-    conf = METplusLauncher()
+    conf = METplusConfig()
     logger = conf.log()
-    cu = ConfigWrapper(conf, logger)
 
     # set config variable for current time
     conf.set('config', 'CLOCK_TIME', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
@@ -260,7 +259,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
         logger.warning('INSTEAD, Using Existing final conf:  %s' % (confloc))
         del logger
         del conf
-        conf = METplusLauncher()
+        conf = METplusConfig()
         logger = conf.log()
         conf.read(confloc)
         # Set moreopt to None, in case it is not None, We do not want to process
@@ -277,7 +276,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     #    return conf
 
     # Initialize the output directories
-    produtil.fileop.makedirs(cu.getdir('OUTPUT_BASE', logger), logger=logger)
+    produtil.fileop.makedirs(conf.getdir('OUTPUT_BASE', logger), logger=logger)
     # A user my set the confloc METPLUS_CONF location in a subdir of OUTPUT_BASE
     # or even in another parent directory altogether, so make thedirectory
     # so the metplus_final.conf file can be written.
@@ -287,7 +286,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # set METPLUS_BASE conf to location of scripts used by METplus
     # warn if user has set METPLUS_BASE to something different
     # in their conf file
-    user_metplus_base = cu.getdir('METPLUS_BASE', METPLUS_BASE)
+    user_metplus_base = conf.getdir('METPLUS_BASE', METPLUS_BASE)
     if realpath(user_metplus_base) != realpath(METPLUS_BASE):
         logger.warning('METPLUS_BASE from the conf files has no effect.'+\
                        ' Overriding to '+METPLUS_BASE)
@@ -295,7 +294,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     conf.set('dir', 'METPLUS_BASE', METPLUS_BASE)
 
     # do the same for PARM_BASE
-    user_parm_base = cu.getdir('PARM_BASE', PARM_BASE)
+    user_parm_base = conf.getdir('PARM_BASE', PARM_BASE)
     if realpath(user_parm_base) != realpath(PARM_BASE):
         logger.error('PARM_BASE from the config ({}) '.format(user_parm_base) +\
                      'differs from METplus parm base ({}). '.format(PARM_BASE))
@@ -311,7 +310,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
 
     # print config items that are set automatically
     for var in ('METPLUS_BASE', 'PARM_BASE'):
-        expand = cu.getdir(var)
+        expand = conf.getdir(var)
         logger.info('Setting [dir] %s to %s' % (var, expand))
 
     # Place holder for when workflow is developed in METplus.
@@ -328,7 +327,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
 
 
 def load(filename):
-    """!Loads the METplusLauncher created by the launch() function.
+    """!Loads the METplusConfig created by the launch() function.
 
     Creates an METplusConfig object for a METplus workflow that was
     previously initialized by metplus.config_launcher.launch.
@@ -337,7 +336,7 @@ def load(filename):
 
     @param filename The metplus*.conf file created by launch()"""
 
-    conf = METplusLauncher()
+    conf = METplusConfig()
     conf.read(filename)
     return conf
 
@@ -402,8 +401,7 @@ def _set_conf_file_path(conf_file):
 
     return conf_file
 
-# Really should have called this class METPlusConfig
-class METplusLauncher(ProdConfig):
+class METplusConfig(ProdConfig):
     """!A replacement for the produtil.config.ProdConfig used throughout
     the METplus system.  You should never need to instantiate one of
     these --- the launch() and load() functions do that for you.  This
@@ -411,11 +409,19 @@ class METplusLauncher(ProdConfig):
     functionality described in launch() and load()"""
 
     def __init__(self, conf=None):
-        """!Creates a new METplusLauncher
+        """!Creates a new METplusConfig
         @param conf The configuration file."""
-        super(METplusLauncher, self).__init__(conf)
+        super(METplusConfig, self).__init__(conf)
         self._cycle = None
         self._logger = logging.getLogger('metplus')
+        # config.logger is called in wrappers, so set this name
+        # so the code doesn't break
+        self.logger = self._logger
+
+        # get the OS environment and store it
+        self.env = os.environ.copy()
+
+        # TODO: does this do anything?
         logger = self._logger
 
     ##@var _cycle
@@ -443,3 +449,196 @@ class METplusLauncher(ProdConfig):
         and configuration to make sure everything looks okay.  May
         throw a wide variety of exceptions if sanity checks fail."""
         logger = self.log('sanity.checker')
+
+    # override get methods to perform additional error checking
+    def getraw(self, sec, opt, default='', count=0):
+        """ parse parameter and replace any existing parameters
+            referenced with the value (looking in same section, then
+            config, dir, and os environment)
+            returns raw string, preserving {valid?fmt=%Y} blocks
+            Args:
+                @param sec: Section in the conf file to look for variable
+                @param opt: Variable to interpret
+                @param default: Default value to use if config is not set
+                @param count: Counter used to stop recursion to prevent infinite
+            Returns:
+                Raw string
+        """
+        count = count + 1
+        if count >= 10:
+            return ''
+
+        in_template = super(METplusConfig, self).getraw(sec, opt, default)
+        out_template = ""
+        in_brackets = False
+        for index, character in enumerate(in_template):
+            if character == "{":
+                in_brackets = True
+                start_idx = index
+            elif character == "}":
+                var_name = in_template[start_idx+1:index]
+                var = None
+                if self.has_option(sec, var_name):
+                    var = self.getraw(sec, var_name, default, count)
+                elif self.has_option('config', var_name):
+                    var = self.getraw('config', var_name, default, count)
+                elif self.has_option('dir', var_name):
+                    var = self.getraw('dir', var_name, default, count)
+                elif self.has_option('filename_templates', var_name):
+                    var = self.getraw('filename_templates', var_name, default, count)
+                elif var_name[0:3] == "ENV":
+                    var = os.environ.get(var_name[4:-1])
+
+                if var is None:
+                    out_template += in_template[start_idx:index+1]
+                else:
+                    out_template += var
+                in_brackets = False
+            elif not in_brackets:
+                out_template += character
+
+        return out_template
+
+    def check_default(self, sec, name, default):
+        """!helper function for get methods, report error and exit if
+            default is not set """
+        if default is None:
+            msg = 'Requested conf [{}] {} was not set in config file'.format(sec, name)
+            if self.logger:
+                self.logger.error(msg)
+            else:
+                print('ERROR: {}'.format(msg))
+            exit(1)
+
+        # print debug message saying default value was used
+        msg = "Setting [{}] {} to default value: {}.".format(sec,
+                                                             name,
+                                                             default)
+        if self.logger:
+            self.logger.debug(msg)
+        else:
+            print('DEBUG: {}'.format(msg))
+
+        # set conf with default value so all defaults can be added to
+        #  the final conf and warning only appears once per conf item
+        #  using a default value
+        self.set(sec, name, default)
+
+    def getexe(self, exe_name, default=None, morevars=None):
+        """!Wraps produtil exe with checks to see if option is set and if
+            exe actually exists"""
+        if not self.has_option('exe', exe_name):
+            msg = 'Requested [exe] {} was not set in config file'.format(exe_name)
+            if self.logger:
+                self.logger.error(msg)
+            else:
+                print('ERROR: {}'.format(msg))
+            exit(1)
+
+        exe_path = super(METplusConfig, self).getexe(exe_name)
+
+        full_exe_path = shutil.which(exe_path)
+        if full_exe_path is None:
+            msg = 'Executable {} does not exist at {}'.format(exe_name, exe_path)
+            if self.logger:
+                self.logger.error(msg)
+            else:
+                print('ERROR: {}'.format(msg))
+            exit(1)
+
+        # set config item to full path to exe and return full path
+        self.set('exe', exe_name, full_exe_path)
+        return full_exe_path
+
+    def getdir(self, dir_name, default=None, morevars=None,taskvars=None):
+        """!Wraps produtil getdir and reports an error if it is set to /path/to"""
+        if not self.has_option('dir', dir_name):
+            self.check_default('dir', dir_name, default)
+            dir_path = default
+        else:
+            dir_path = super(METplusConfig, self).getdir(dir_name)
+
+        if '/path/to' in dir_path:
+            msg = 'Directory {} is set to or contains /path/to.'.format(dir_name)+\
+                  ' Please set this to a valid location'
+            if self.logger:
+                self.logger.error(msg)
+            else:
+                print('ERROR: {}'.format(msg))
+            exit(1)
+
+        return dir_path
+
+    def getdir_nocheck(self, dir_name, default=None):
+        super(METplusConfig, self).getdir(dir_name, default=default)
+
+    def getstr(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
+        """!Wraps produtil getstr to gracefully report if variable is not set
+            and no default value is specified"""
+        if self.has_option(sec, name):
+            return super(METplusConfig, self).getstr(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+
+        # config item was not found
+        self.check_default(sec, name, default)
+        return default
+
+    def getbool(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
+        """!Wraps produtil getbool to gracefully report if variable is not set
+            and no default value is specified"""
+        if self.has_option(sec, name):
+            return super(METplusConfig, self).getbool(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+
+        # config item was not found
+        self.check_default(sec, name, default)
+        return default
+
+    def getint(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
+        """!Wraps produtil getint to gracefully report if variable is not set
+            and no default value is specified"""
+        if self.has_option(sec, name):
+            return super(METplusConfig, self).getint(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+
+        # config item was not found
+        self.check_default(sec, name, default)
+        return default
+
+    def getfloat(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
+        """!Wraps produtil getfloat to gracefully report if variable is not set
+            and no default value is specified"""
+        if self.has_option(sec, name):
+            return super(METplusConfig, self).getfloat(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+
+        # config item was not found
+        self.check_default(sec, name, default)
+        return default
+
+    def getseconds(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
+        """!Converts time values ending in H, M, or S to seconds"""
+        if self.has_option(sec, name):
+            # convert value to seconds
+            # Valid options match format 3600, 3600S, 60M, or 1H
+            value = super(METplusConfig, self).getstr(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            regex_and_multiplier = {r'(-*)(\d+)S' : 1,
+                                    r'(-*)(\d+)M' : 60,
+                                    r'(-*)(\d+)H' : 3600,
+                                    r'(-*)(\d+)' : 1}
+            for reg, mult in regex_and_multiplier.items():
+                match = re.match(reg, value)
+                if match:
+                    if match.group(1) == '-':
+                        mult = mult * -1
+                    return int(match.group(2)) * mult
+
+            # if value is not in an expected format, error and exit
+            msg = '[{}] {} does not match expected format. '.format(sec, name) +\
+              'Valid options match 3600, 3600S, 60M, or 1H'
+            if self.logger:
+                self.logger.error(msg)
+            else:
+                print('ERROR: {}'.format(msg))
+
+            exit(1)
+
+        # config item was not found
+        self.check_default(sec, name, default)
+        return default

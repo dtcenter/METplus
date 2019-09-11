@@ -3,12 +3,11 @@ from __future__ import print_function
 import sys
 import pytest
 import datetime
-from config_wrapper import ConfigWrapper
+from config_launcher import METplusConfig
 import met_util as util
 import produtil
 import os
 import config_metplus
-
 
 #@pytest.fixture
 def metplus_config():
@@ -51,7 +50,7 @@ def metplus_config():
     ]
 )
 def test_getseconds(key, value):
-    conf = ConfigWrapper(metplus_config(), None)
+    conf = metplus_config()
     conf.set('config', 'TEST_SECONDS', key)
     seconds = conf.getseconds('config', 'TEST_SECONDS')
     assert(seconds == value)

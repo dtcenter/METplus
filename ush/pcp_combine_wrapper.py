@@ -242,8 +242,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # assuming that was the intent in Python 2.
         lead = int((diff.days * 24) // (data_interval))
         lead += int((diff).seconds // (data_interval*3600)) - 1
-        # calling config.conf version of getter so default value is not
-        # set in log and final conf because it is unnecessary
         search_time_info = { 'valid' : search_time }
         fname = self.config.getraw('config',
                               data_src + '_PCP_COMBINE_' + str(
@@ -271,7 +269,10 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # to handle deprecated config variable, allow *_NATIVE_DATA_TYPE
         # but print warning that this will be deprecated and use other
         if d_type == '':
-            d_type = self.config.conf.getstr('config', data_src+'_NATIVE_DATA_TYPE', '')
+            d_type = self.config.getstr('config',
+                                        data_src+'_NATIVE_DATA_TYPE',
+                                        '')
+
             if d_type == '':
                 self.logger.error('Must set '+data_src+\
                                   '_PCP_COMBINE_INPUT_DATATYPE')
@@ -288,8 +289,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # if NETCDF, GEMPAK, or PYTHON
         # create time_info object from search time
         search_time_info = { 'valid' : search_time }
-        # calling config.conf version of getter so default value is not
-        # set in log and final conf because it is unnecessary
         field_name = self.config.getraw('config', data_src +
                                '_PCP_COMBINE_' + str(search_accum) +
                                '_FIELD_NAME', '')
@@ -323,8 +322,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         field_name = ''
         search_time_info = { 'valid' : search_time }
         while s_accum > 0:
-            # calling config.conf version of getter so default value is not
-            # set in log and final conf because it is unnecessary
             field_name = self.config.getraw('config',
                                    data_src + '_PCP_COMBINE_' + str(s_accum) +
                                    '_FIELD_NAME', '')
