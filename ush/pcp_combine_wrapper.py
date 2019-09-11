@@ -321,6 +321,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
 
     def find_highest_accum_field(self, data_src, s_accum):
+        if self.get_data_type(data_src) == "GRIB":
+            return '', s_accum
+
         field_name = ''
         while s_accum > 0:
             # calling config.p version of getter so default value is not
@@ -369,22 +372,27 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # loop backwards in time until you have a full set of accum
         while last_time <= search_time:
             if is_forecast:
+                if total_accum == 0:
+                    break
                 search_file = self.getLowestForecastFile(search_time, data_src, in_template)
                 if search_file == None:
                     break
                 # find accum field in file
                 field_name, s_accum = self.find_highest_accum_field(data_src, search_accum)
 
-                if field_name == '':
-                    break
-
                 if self.get_data_type(data_src) == "GRIB":
                     addon = search_accum
                 else:
+                    if field_name == '':
+                        break
                     addon = "'name=\"" + field_name + "\"; level=\"(0,*,*)\";'"
                 self.add_input_file(search_file, addon)
                 search_time = search_time - datetime.timedelta(hours=s_accum)
-                search_accum -= s_accum
+                # keep same search accumulation if specified, otherwise decrease it by
+                # the accumulation that was found
+                if level == -1:
+                    search_accum -= s_accum
+
                 total_accum -= s_accum
             else:  # not looking for forecast files
                 # look for biggest accum that fits search
@@ -582,6 +590,14 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         lead = time_info['lead_hours']
         lead2 = lead - int(accum)
 
+        outSts = sts.StringSub(self.logger,
+                               out_template,
+                               level=(int(accum) * 3600),
+                               **time_info)
+        out_file = outSts.do_string_sub()
+        self.outfile = out_file
+        self.outdir = out_dir
+
         self.set_method("SUBTRACT")
         pcpSts1 = sts.StringSub(self.logger,
                                 in_template,
@@ -595,6 +611,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             self.logger.error("Could not find file in {} for init time {} and lead {}"
                               .format(in_dir, time_info['init_fmt'], lead))
             return None
+
+        # if level type is A (accum) and second lead is 0, then
+        # run PcpCombine in -add mode with just the first file
+        if lead2 == 0 and level_type == 'A':
+            self.set_method("ADD")
+            self.add_input_file(file1, lead)
+            return self.get_command()
 
         # set time info for second lead
         input_dict2 = { 'init' : time_info['init'],
@@ -616,14 +639,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.add_input_file(file1,lead)
         self.add_input_file(file2,lead2)
 
-        outSts = sts.StringSub(self.logger,
-                               out_template,
-                               level=(int(accum) * 3600),
-                               **time_info)
-        out_file = outSts.doStringSub()
-        self.set_output_filename(out_file)
-        self.set_output_dir(out_dir)
-
         return self.get_command()
 
 
@@ -638,6 +653,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @return path to output file"""
         self.clear()
         in_accum = self.c_dict[rl+'_LEVEL']
+        if in_accum == -1:
+            in_accum = 0
         in_dir, in_template = self.get_dir_and_template(rl, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
 
