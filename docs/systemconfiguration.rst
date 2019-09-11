@@ -1,3 +1,5 @@
+.. _sysconf:
+
 System Configuration
 ====================
 
@@ -9,11 +11,13 @@ Config Best Practices
 Below is a list of Best Practices:
 
 1. Set your log level to an appropriate level:
+
   a. Debug is the most verbose and is useful for developers and when you are troubleshooting problems
   b. Info is less verbose than Debug and is the recommended level to initially set your log level to
   c. Warning - only logs warnings, error, or critical events
   d. Error - only logs errors or critical events
   e. Critical - least verbose
+
 2. Direct your logging either to stdout or to a log file
 3. Review your log file to verify that all your processes ran cleanly
 4. The order in which you list your METplus Wrappers config files matters. The last config file on the command line will over-ride any key-values defined in an earlier config file
@@ -53,17 +57,17 @@ Looping by Valid Time
 
 When looping over valid time (LOOP_BY = VALID or LOOP_BY = REALTIME), the following variables must be set:
 
-| **VALID_TIME_FMT**
-| This is the format of the valid times the user can configure in the METplus Wrappers. The valie of VALID_BEG and VALID_END must correspond to this format. Example: VALID_TIME_FMT=%Y%m%d%H. Using this format, the valid time range values specified must be defined as YYYYMMDDHH, i.e. 2019020112.
+**VALID_TIME_FMT**:
+This is the format of the valid times the user can configure in the METplus Wrappers. The valie of VALID_BEG and VALID_END must correspond to this format. Example: VALID_TIME_FMT=%Y%m%d%H. Using this format, the valid time range values specified must be defined as YYYYMMDDHH, i.e. 2019020112.
 
-| **VALID_BEG**
-| This is the first valid time that will be processed. The format of this variable is controlled by VALID_TIME_FMT. For example, if VALID_TIME_FMT=%Y%m%d, then VALID_BEG must be set to a valid time matching YYYYMMDD, such as 20190201.
+**VALID_BEG**:
+This is the first valid time that will be processed. The format of this variable is controlled by VALID_TIME_FMT. For example, if VALID_TIME_FMT=%Y%m%d, then VALID_BEG must be set to a valid time matching YYYYMMDD, such as 20190201.
 
-| **VALID_END**
-| This is the last valid time that can be processed. The format of this variable is controlled by VALID_TIME_FMT. For example, if VALID_TIME_FMT=%Y%m%d, then VALID_END must be set to a valid time matching YYYYMMDD, such as 20190202. Note that the time specified for this variable will not necessarily be processed. It is used to determine the cutoff of run times that can be processed. For example, if METplus Wrappers is configured to start at 20190201 and end at 20190202 processing data in 48 hour increments, it will process valid time 20190201 then increment the run time to 20190203. This is later than the VALID_END value, so execution will stop. However, if the increment is set to 24 hours (see VALID_INCREMENT), then METplus Wrappers will process valid times 20190201 and 20190202 before ending execution.
+**VALID_END**:
+This is the last valid time that can be processed. The format of this variable is controlled by VALID_TIME_FMT. For example, if VALID_TIME_FMT=%Y%m%d, then VALID_END must be set to a valid time matching YYYYMMDD, such as 20190202. Note that the time specified for this variable will not necessarily be processed. It is used to determine the cutoff of run times that can be processed. For example, if METplus Wrappers is configured to start at 20190201 and end at 20190202 processing data in 48 hour increments, it will process valid time 20190201 then increment the run time to 20190203. This is later than the VALID_END value, so execution will stop. However, if the increment is set to 24 hours (see VALID_INCREMENT), then METplus Wrappers will process valid times 20190201 and 20190202 before ending execution.
 
-| **VALID_INCREMENT**
-| This is the number of seconds to add to each run time to determine the next run time to process. This value must be greater than or equal to 60 because METplus Wrappers currently does not support processing intervals of less than one minute.
+**VALID_INCREMENT**:
+This is the number of seconds to add to each run time to determine the next run time to process. This value must be greater than or equal to 60 because METplus Wrappers currently does not support processing intervals of less than one minute.
 
 The following is a configuration that will process valid time 20190201 at 00Z until 20190202 at 00Z in 6 hour (21600 seconds) increments::
 
@@ -81,17 +85,17 @@ Looping by Initialization Time
 
 When looping over initialization time (LOOP_BY = INIT or LOOP_BY = RETRO), the following variables must be set:
 
-| **INIT_TIME_FMT**
-| This is the format of the initialization times the user can configure in METplus Wrappers. The value of INIT_BEG and INIT_END must correspond to this format. Example: INIT_TIME_FMT = %Y%m%d%H. Using this format, the initialization time range values specified must be defined as YYYYMMDDHH, i.e. 2019020112.
+**INIT_TIME_FMT**:
+This is the format of the initialization times the user can configure in METplus Wrappers. The value of INIT_BEG and INIT_END must correspond to this format. Example: INIT_TIME_FMT = %Y%m%d%H. Using this format, the initialization time range values specified must be defined as YYYYMMDDHH, i.e. 2019020112.
 
-| **INIT_BEG**
-| This is the first initialization time that will be processed. The format of this variable is controlled by INIT_TIME_FMT. For example, if INIT_TIME_FMT = %Y%m%d, then INIT_BEG must be set to an initialization time matching YYYYMMDD, such as 20190201.
+**INIT_BEG**:
+This is the first initialization time that will be processed. The format of this variable is controlled by INIT_TIME_FMT. For example, if INIT_TIME_FMT = %Y%m%d, then INIT_BEG must be set to an initialization time matching YYYYMMDD, such as 20190201.
 
-| **INIT_END**
-| This is the last initialization time that can be processed. The format of this variable is controlled by INIT_TIME_FMT. For example, if INIT_TIME_FMT = %Y%m%d, then INIT_END must be set to an initialization time matching YYYYMMDD, such as 20190202. Note that the time specified for this variable will not necissarily be processed. It is used to determine the cutoff of run times that can be processed. For example, if METplus Wrappers is configured to start at 20190201 and end at 20190202 processing data in 48 hour increments, it will process 20190201 then increment the run time to 20190203. This is later than the INIT_END valid, so execution will stop. However, if the increment is set to 24 hours (see INIT_INCREMENT), then METplus Wrappers will process initialization times 20190201 and 20190202 before ending executaion.
+**INIT_END**:
+This is the last initialization time that can be processed. The format of this variable is controlled by INIT_TIME_FMT. For example, if INIT_TIME_FMT = %Y%m%d, then INIT_END must be set to an initialization time matching YYYYMMDD, such as 20190202. Note that the time specified for this variable will not necissarily be processed. It is used to determine the cutoff of run times that can be processed. For example, if METplus Wrappers is configured to start at 20190201 and end at 20190202 processing data in 48 hour increments, it will process 20190201 then increment the run time to 20190203. This is later than the INIT_END valid, so execution will stop. However, if the increment is set to 24 hours (see INIT_INCREMENT), then METplus Wrappers will process initialization times 20190201 and 20190202 before ending executaion.
 
-| **INIT_INCREMENT**
-| This is the number of seconds to add to each run time to determine the next run time to process. This value must be greater than or equal to 60 because METplus Wrappers currently does not support processing intervals of less than one minute.
+**INIT_INCREMENT**:
+This is the number of seconds to add to each run time to determine the next run time to process. This value must be greater than or equal to 60 because METplus Wrappers currently does not support processing intervals of less than one minute.
 
 The following is a configuration that will process initialization time 20190201 at 00Z until 20190202 at 00Z in 6 hour (21600 second) increments::
 
@@ -109,8 +113,8 @@ Looping over Forecast Leads
 
 Many of the wrappers METplus Wrappers will also loop over a list of forecast leads relative to the current valid/initialization time that is being processed.
 
-| **LEAD_SEQ**
-| This variable can be set to a comma-separated list of integers to define the forecast leads (hours) that will be processed relative to the initialization/valid time. Currently only hours are supported for these values. Future versions of METplus Wrappers will allow sub-hourly forecast leads. For example::
+**LEAD_SEQ**:
+This variable can be set to a comma-separated list of integers to define the forecast leads (hours) that will be processed relative to the initialization/valid time. Currently only hours are supported for these values. Future versions of METplus Wrappers will allow sub-hourly forecast leads. For example::
 
   [config]
   LEAD_SEQ = 3,6,9
@@ -146,8 +150,8 @@ Grouping forecast leads is possible as well using a special version of the LEAD_
   LEAD_SEQ_2 = begin_end_incr(24,42,6)
   LEAD_SEQ_2_LABEL = Day2
 
-| **INIT_SEQ**
-| If METplus Wrappers is configured to loop by valid time (LOOP_BY = VALID), you can use INIT_SEQ instead of LEAD_SEQ. This is a list of initialization hours that are available in the data. This is useful if you know when the data is initialized and you need to use a different list of forecast leads depending on the valid time being evaluated. For example::
+**INIT_SEQ**:
+If METplus Wrappers is configured to loop by valid time (LOOP_BY = VALID), you can use INIT_SEQ instead of LEAD_SEQ. This is a list of initialization hours that are available in the data. This is useful if you know when the data is initialized and you need to use a different list of forecast leads depending on the valid time being evaluated. For example::
 
   [config]
   LOOP_BY = VALID
@@ -214,22 +218,24 @@ will process valid times starting on 20190425 at 06Z every 6 hours until the cur
 | 20190426_00
 | 20190426_06
 
-**IMPORTANT NOTE: When using the 'now' keyword, the value of VALID_TIME_FMT must be set to the same value as the 'fmt' used in the 'now' item in VALID_BEG and VALID_END. In the above example, this would be the %Y%m%d%H portion within values of the VALID_TIME_FMT, VALID_BEG, and VALID_END variables.**
+.. note::
+
+   When using the 'now' keyword, the value of VALID_TIME_FMT must be set to the same value as the 'fmt' used in the 'now' item in VALID_BEG and VALID_END. In the above example, this would be the %Y%m%d%H portion within values of the VALID_TIME_FMT, VALID_BEG, and VALID_END variables.
 
 Field Info
 ~~~~~~~~~~
 
 This section describes how METplus Wrappers configuration variables can be used to define field information that is sent to the MET applications to read forecast and observation fields.
 
-| **FCST_VAR<n>_NAME**
-| Set this to the name of a forecast variable that you want to evaluate. <n> is any integer greater than or equal to 1, i.e.::
+**FCST_VAR<n>_NAME**:
+Set this to the name of a forecast variable that you want to evaluate. <n> is any integer greater than or equal to 1, i.e.::
 
   [config]
   FCST_VAR1_NAME = TMP
   FCST_VAR2_NAME = RH
 
-| **FCST_VAR<n>_LEVELS**
-| Set this to a comma-separated list of levels or a single value. FCST_VAR1_LEVELS corresponds to FCST_VAR1_NAME, FCST_VAR2_LEVELS corresponds to FCST_VAR2_NAME, etc. For example::
+**FCST_VAR<n>_LEVELS**:
+Set this to a comma-separated list of levels or a single value. FCST_VAR1_LEVELS corresponds to FCST_VAR1_NAME, FCST_VAR2_LEVELS corresponds to FCST_VAR2_NAME, etc. For example::
 
   [config]
   FCST_VAR1_NAME = TMP
@@ -237,11 +243,11 @@ This section describes how METplus Wrappers configuration variables can be used 
 
 will process TMP at P500 and TMP at P750.
 
-| **OBS_VAR<n>_NAME**
-| Set this to the corresponding observation variable that you want to evaluate with FCST_VAR<n>_NAME. If this value is not set for a given <n> value, then it will be assumed that the same name as the forecast name will be used.
+**OBS_VAR<n>_NAME**:
+Set this to the corresponding observation variable that you want to evaluate with FCST_VAR<n>_NAME. If this value is not set for a given <n> value, then it will be assumed that the same name as the forecast name will be used.
 
-| **OBS_VAR<n>_LEVELS**
-| Set this to a comma-separated list of levels or a single value. If OBS_VAR<n>_LEVELS and OBS_VAR<n>_NAME are not set, it will be assumed that the same name/level combination as the forecast data will be used. For example, setting::
+**OBS_VAR<n>_LEVELS**:
+Set this to a comma-separated list of levels or a single value. If OBS_VAR<n>_LEVELS and OBS_VAR<n>_NAME are not set, it will be assumed that the same name/level combination as the forecast data will be used. For example, setting::
 
   [config]
   FCST_VAR1_NAME = TMP
@@ -277,10 +283,11 @@ If you set::
 
 METplus Wrappers will compare:
 
-| TMP/P500 in the forecast data to TEMP at (0,*,*) in the observation data
-| TMP/P750 in the forecast data to TEMP at (1,*,*) in the observation data
+| TMP/P500 in the forecast data to TEMP at (0,\*,\*) in the observation data
+| TMP/P750 in the forecast data to TEMP at (1,\*,\*) in the observation data
 
-**IMPORTANT NOTE: NetCDF level values that contain (*,*) notation must be surrounded by quotation marks so it will not be misinterpreted as a list of items.**
+.. note::
+   NetCDF level values that contain (\*,\*) notation must be surrounded by quotation marks so it will not be misinterpreted as a list of items.
 
 The number of level items must be equal in each list for a given comparison. If you define separate names for a forecast and observation, you will need to define separate levels for both even if they are equivalent. For example, setting FCST_VAR1_NAME, FCST_VAR1_LEVELS, and OBS_VAR1_NAME, but not setting OBS_VAR1_LEVELS will result in an error.
 
@@ -296,8 +303,8 @@ and then comparing TMP (P500 and P750) in the forecast data and TEMP ((1,*,*)) i
 
 Note that some MET applications allow multiple fields to be specified for a single run. If the MET tool allows it and METplus Wrappers is configured accordingly, these two comparisons would be configured in a single run.
 
-| **[FCST/OBS]_VAR<n>_THRESH**
-| Set this to a comma-separated list of threshold values to use in the comparison. Each of these values must begin with a comparison operator (>, >=, =, ==, !=, <, <=, gt, ge, eq, ne, lt, or le). For example, setting::
+**[FCST/OBS]_VAR<n>_THRESH**:
+Set this to a comma-separated list of threshold values to use in the comparison. Each of these values must begin with a comparison operator (>, >=, =, ==, !=, <, <=, gt, ge, eq, ne, lt, or le). For example, setting::
 
   [config]
   FCST_VAR1_NAME = TMP
@@ -310,8 +317,8 @@ will add the folloing information to the MET config file::
 
 Note that the value for FCST_VAR<n>_THRESH will not be copied to OBS_VAR<n>_THRESH if it is not set. These items are independent of each other.
 
-| **[FCST/OBS_VAR<n>_OPTIONS**
-| Set this to add additional information to the field dictionary in the MET config file. The item must end with a semi-colon. For example::
+**[FCST/OBS_VAR<n>_OPTIONS**:
+Set this to add additional information to the field dictionary in the MET config file. The item must end with a semi-colon. For example::
 
   [config]
   FCST_VAR1_NAME = TMP
@@ -324,16 +331,16 @@ will add the following to the MET config file::
 
 Note that the value for FCST_VAR<n>_OPTIONS will not be copied to OBS_VAR<n>_OPTIONS if it is not set. These items are independent of each other.
 
-| **[ENS_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS]**
-| **Used with EnsembleStat Wrapper only.** Users may want to define the ens dictionary item in the MET EnsembleStat config file differently than the fcst dictionary item. If this is the case, you can use these variables. If it is not set, the values in the corresponding FCST_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS] will be used in the ens dictionary.
+**[ENS_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS]**:
+**Used with EnsembleStat Wrapper only.** Users may want to define the ens dictionary item in the MET EnsembleStat config file differently than the fcst dictionary item. If this is the case, you can use these variables. If it is not set, the values in the corresponding FCST_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS] will be used in the ens dictionary.
 
 Directory and Filename Template Info
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The METplus Wrappers use directory and filename template configuration variables to find the desired files for a given run.
 
-| **Using Templates to find Observation Data:**
-| The following configuration variables describe input observation data::
+**Using Templates to find Observation Data:**
+The following configuration variables describe input observation data::
 
   [dir]
   OBS_GRID_STAT_INPUT_DIR = /my/path/to/grid_stat/input/obs
@@ -351,8 +358,8 @@ Note that the template contains a dated subdirectory. This cannot go in the OBS_
 
 The 'init' and 'valid' are keywords used to denote initialization and valid times respectively. Other keywords that are supported include 'lead', 'offset', 'da_init', and 'cycle' which can all be used to find forecast data and data assimilation data depending on the task.
 
-| **Using Templates to find Forecast Data:**
-| Most forecast files contain the initialization time and the forecast lead in the filename. The keywords 'init' and 'lead' can be used to describe the template of these files::
+**Using Templates to find Forecast Data:**
+Most forecast files contain the initialization time and the forecast lead in the filename. The keywords 'init' and 'lead' can be used to describe the template of these files::
 
   [dir]
   FCST_GRID_STAT_INPUT_DIR = /my/path/to/grid_stat/input/fcst
@@ -363,8 +370,8 @@ The 'init' and 'valid' are keywords used to denote initialization and valid time
 | For a valid time of 20190201_00Z and a forecast lead of 3, METplus Wrappers will look for the following forecast file:
 |   /my/path/to/grid_stat/input/fcst/prefix.2019013121_f003.ext
 
-| **Using Templates to find Data Assimilation Data:**
-| Some data assimilation files contain offset and da_init (data assimilation initialization) values in the filename. These values are used to determine the valid time of the data. Consider the following configuration::
+**Using Templates to find Data Assimilation Data:**
+Some data assimilation files contain offset and da_init (data assimilation initialization) values in the filename. These values are used to determine the valid time of the data. Consider the following configuration::
 
   [config]
   PB2NC_OFFSETS = 6, 3
@@ -381,16 +388,16 @@ The 'init' and 'valid' are keywords used to denote initialization and valid time
 | The offset is added to the valid time to get the data assimilation initialization time. Note that 'cycle' can be used interchangeably with 'da_init'. It is generally used to specify the hour of the data that was generated. If that file doesn't exist, it will check if the following file exists:   
 |   /my/path/to/prepbufr/prefix.20190201_15_off03.ext
 
-| **Shifting Times in Filename Templates**
-| Users can use the 'shift' keyword to adjust the time referenced in the filename template relative to the run time. For example, if the input files used contained data from 01Z on the date specified in the filename to 01Z on the following day. In this example, for a run at 00Z you want to use the file from the previous day and for the 01Z to 23Z runs you want to use the file that corresponds to the current day. Here is an example::
+**Shifting Times in Filename Templates:**
+Users can use the 'shift' keyword to adjust the time referenced in the filename template relative to the run time. For example, if the input files used contained data from 01Z on the date specified in the filename to 01Z on the following day. In this example, for a run at 00Z you want to use the file from the previous day and for the 01Z to 23Z runs you want to use the file that corresponds to the current day. Here is an example::
 
   [filename_templates]
   OBS_POINT_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d?shift=-3600}.ext
 
 Running the above configuration at a valid time of 20190201_12Z will shift the valid time backwards by 1 hour (3600 seconds) resulting in 20190201_11Z and will substitute the current day into the template, giving a filename of 20190201.ext. Running at valid time 20190201_00Z, the shift will result in a file time of 20190131_23Z, so the filename will be 20190131.ext that is generated by the template.
 
-| **Using Windows to find Valid Files**
-| The [FCST/OBS]_FILE_WINDOW_[BEGIN/END] configuration variables can be used if the time information in the input data does not exactly line up with the run time but you still want to process the data. The default value of the file window begin and end variables are both 0 seconds. If both values are set to 0, METplus Wrappers will require that a file matching the template with the exact time requested exists. If either value is non-zero, METplus Wrappers will examine all of the files under the input directory that match the template, pull out the time information from the files, and use the file with the time closest to the run_time. For example, consider the following configuration::
+**Using Windows to find Valid Files:**
+The [FCST/OBS]_FILE_WINDOW_[BEGIN/END] configuration variables can be used if the time information in the input data does not exactly line up with the run time but you still want to process the data. The default value of the file window begin and end variables are both 0 seconds. If both values are set to 0, METplus Wrappers will require that a file matching the template with the exact time requested exists. If either value is non-zero, METplus Wrappers will examine all of the files under the input directory that match the template, pull out the time information from the files, and use the file with the time closest to the run_time. For example, consider the following configuration::
 
   [config]
   OBS_FILE_WINDOW_BEGIN = -7200
@@ -410,6 +417,7 @@ Running the above configuration at a valid time of 20190201_12Z will shift the v
 |   /my/grid_stat/input/obs/20190201/pre.20190201_02.ext
 
 The following behavior can be expected for each file:
+
   1. The first file matches the template and the file time is within the window, so the filename and time difference relative to the valid time (7200 seconds, or 2 hours) is saved.
   2. The second file matches the template, the file time is within the window, and the time difference is less than the closest file so the filename and time difference relative to the valid time (3600 seconds, or 1 hour) is saved.
   3. The third file does not match the template and is ignored.
@@ -418,8 +426,8 @@ The following behavior can be expected for each file:
 
 Therefore, METplus Wrappers will use /my/grid_stat/input/obs/20190131/pre.20190131_23.ext as the input to grid_stat in this example.
 
-| **Wrapper Specific Windows**
-| A user may need to specify a different window on a wrapper-by-wrapper basis. If this is the case, you can override the file window values for each wrapper. Consider the following configuration::
+**Wrapper Specific Windows:**
+A user may need to specify a different window on a wrapper-by-wrapper basis. If this is the case, you can override the file window values for each wrapper. Consider the following configuration::
 
   [config]
   PROCESS_LIST = PcpCombine, GridStat, EnsembleStat
@@ -438,33 +446,45 @@ Config Quick Start Example
 
   1. Create a directory where you wish to store the sample data. Sample datasets are specific to each use case (see [sec:2.5.1]) and are required in order to be able to run the use case.
   2. Retrieve the sample data from the GitHub repository:
+    
     a. In your browser, navigate to https://www.github.com/NCAR/METplus/releases
     b. Locate the latest release and click on the *sample_data-cyclone_track_feature.tgz* link associated with that release
     c. Save it to the directory you created above, hereafter referred to as INPUT_DATA_DIRECTORY
     d. cd to your $INPUT_DATA_DIRECTORY and uncompress the tarballe: *tar xvfz sample_data-cyclone_track_feature.tgz*
     e. when you perform a listing of the sample_data directory, the INPUT_DATA_DIRECTORY/sample_data/GFS contains the data you will need for this use case
+  
   3. Set up the configuration file:
+    
     a. Your METplus Wrappers install directory will hereafter be referred to as METplus_INSTALL
     b. Verify that all the *</path/to>* values are replaced with valid paths in the METplus_INSTALL/parm/metplus_conf/metplus_data.conf and METplus_INSTALL/parm/metplus_conf/metplus_system.conf files
     c. Two configuration files are used in this use case, track_and_intensity.conf file and tcmp_mean_median.conf to take cyclone track data, and using TcPairs which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone tracks to generate matched pairs and error statistics). The TCM-PRPlotter is then used (wraps the MET tool plot_tcmpr.R) to generate a mean and median plots for these matched pairs
     d. In your editor, open the METplus_INSTALL/METplus/parm/use_cases/track_and_intensity.conf file and perform the following:
+      
       1. Replace any *</path/to>* with actual paths by setting the following:
+        
         a. OUTPUT_BASE to where you wish to save the output:
         b. TCPAIRS_ADECK_INPUT_DIR to INPUT_DATA_DIRECTORY/sample_data/GFS/track_data
+      
       2. Save your changes and exit your editor
+    
     e. In your editor, open the METplus_INSTALL/METplus/parm/use_cases/track_and_intensity/examples/tcmpr_mean_median.conf
+      
       1. Verify that PROCESS_LIST is set to TcPairs, TCMPRPlotter. This instructs METplus Wrappers to run the TcPairs wrapper first (TC-Pairs) followed by the TCMPR plotter wrapper (plot_TCMPR.R).
+  
   4. Run the use case:
+    
     a. Make sure you have set the following environment in your .cshrc (C Shell) or .bashrc (Bash):
+      
       1. csh: setenv RSCRIPTS_BASE $MET_BASE/scripts/Rscripts
       2. bash: export RSCRIPTS_BASE $MET_BASE/scripts/Rscripts
       3. Refer to section [sec:2.7] for the full instructions on setting up the rest of your environment
       4. On your command line, run::
+         
+           master_metplus.py -c use_cases/track_and_intensity/track_and_intensity.conf -c use_cases/track_and_intensity/examples/tcmpr_mean_median.conf
         
-        master_metplus.py -c use_cases/track_and_intensity/track_and_intensity.conf -c use_cases/track_and_intensity/examples/tcmpr_mean_median.conf
-
       5. When complete, you will have a log file in the output directory you specified, and under the tc_pairs directory you will see .tcst files under the 201412 subdirectory. These are the matched pairs created by the MET tool Tc-pairs and can be viewed in any text editor.
       6. Plots are generated under the tcmpr_plots subdirectory in .png format. You should have the following plots which can be viewed by any graphics viewers such as 'display' on Linux/Unix hosts:
+        
         a. AMAX_WIND-BMAX_WIND_mean.png
         b. AMAX_WIND-BMAX_WIND_median.png
         c. AMSLP-BMSLP_mean.png

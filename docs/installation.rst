@@ -1,3 +1,5 @@
+.. _install:
+
 Software Installation/Getting Started
 =====================================
 
@@ -42,6 +44,8 @@ The following software is required to run METplus Wrappers:
 
 -  GitHub account (if you plan on contributing code to METplus Wrappers)
 
+.. _getcode:
+
 Getting the METplus Wrappers source code
 ----------------------------------------
 
@@ -50,7 +54,7 @@ GitHub repository. You can retrieve the source code through your web
 browser or the command line.
 
 Get the source code via your Web Browser
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you are a new METplus Wrappers user and would like to experiment with
 the use cases, you will want to follow these instructions to retrieve
@@ -66,7 +70,7 @@ accompanies the use cases:
 
 .. image:: _static/metplus_repo.png
 
--  Click on the ?releases? link, highlighted by a red circle in the
+-  Click on the 'releases' link, highlighted by a red circle in the
    diagram below:
 
 .. image:: _static/metplus_repo_release.png
@@ -76,7 +80,7 @@ accompanies the use cases:
 
 .. image:: _static/metplus_repo_releases_page.png
 
--  Click on the ?Source code? link (either the *zip* or *tar.gz*) and
+-  Click on the 'Source code' link (either the *zip* or *tar.gz*) and
    when prompted, save it to the directory you created.
 
 -  Uncompress the source code (on Linux/Unix\ *: gunzip* for zip file or
@@ -102,7 +106,7 @@ accompanies the use cases:
    -  QPF: *sample_data-qpf.tgz*
 
 Get the source code via Command line
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  On your local host (or wherever you wish to install the METplus code)
    create a directory where you want the code to reside
@@ -124,21 +128,15 @@ METplus Wrappers directory structure
 Once you have cloned the METplus Wrappers from the GitHub repository at
 https://github.com/NCAR/METplus to a location on your host, change
 directories to the METplus Wrappers directory. You should have the
-following directory structure:
+following directory structure::
 
-METplus 
-
-doc
-
-internal_tests
-
-parm
-
-sorc
-
-ush
-
-README.md
+  METplus/
+    doc/
+    internal_tests/
+    parm/
+    sorc/
+    ush/
+    README.md
 
 The top-level METplus Wrappers directory consists of a README.md file
 and several subdirectories.
@@ -177,7 +175,7 @@ Add the following information to your .cshrc (C shell) or .bashrc (Bash
 shell):
 
 .cshrc:
-'''''''
+~~~~~~~
 
 -  Open your .cshrc file and do the following:
 
@@ -188,10 +186,18 @@ shell):
 
 -  Close your .cshrc file and run ``source ~/.cshrc``
 
--  
+-  For example:
+
+.. code-block:: tcsh
+
+    # Add METplus to $PATH
+    set path = (other_path_entries ~/METplus/ush)
+
+    # Optional JLOGFILE
+    setenv JLOGFILE ~/jlog_out
 
 .bashrc:
-''''''''
+~~~~~~~~
 
 -  Open your .bashrc file and do the following:
 
@@ -202,19 +208,15 @@ shell):
 
 -  Close your .bashrc file and run ``source ~/.bashrc``
 
--  
+-  For example:
 
-   .. raw:: latex
+.. code-block:: bash
 
-      \fbox{\begin{minipage}[t]{1\columnwidth - 2\fboxsep - 2\fboxrule}%
-      \textit{e.g.}
+    # Add METplus to $PATH
+    export PATH=~/METplus/ush:$PATH
 
-      export PATH=\textasciitilde{}/METplus/ush:\$PATH
-
-      \#optional
-
-      export JLOGFILE=\textasciitilde{}/%
-      \end{minipage}}
+    # Optional JLOGFILE
+    export JLOGFILE=~/
 
 Set up METplus Wrappers Configuration files
 -------------------------------------------
@@ -246,7 +248,7 @@ METplus Wrappers run and do not need to be invoked on the command line.
 
    -  runtime-related settings:
 
-      -  location of METplus master_metplus.conf file (the ?master? conf
+      -  location of METplus master_metplus.conf file (the 'master' conf
          file that is a collection of all the final METplus
          configuration files)
 
@@ -278,114 +280,77 @@ master_metplus.py from any directory followed by a list of configuration
 files (file path relative to the
 *<path_to_METplus_install_dir*>/METplus/parm directory).
 
-.. raw:: latex
+**Example 1: Using a "default" configuration:**
+Copy and paste the following into an empty text file and name it 'my_user_config.conf':
 
-   \fbox{\begin{minipage}[t]{1\columnwidth - 2\fboxsep - 2\fboxrule}%
-   Example: Using a \textquotedblleft default\textquotedblright configuration
+.. code-block:: none
 
-   Copy and paste the following into an empty text file:
+  // This is a comment, comments are defined with a // at the beginning of the line
+  
+  // Setting the PROCESS_LIST to **Usage** indicates that we want usage information
+  [config]
+  PROCESS_LIST = Usage
 
-   \fbox{\begin{minipage}[t]{1\columnwidth - 2\fboxsep - 2\fboxrule}%
-   //This is a comment, comments are defined with a // at the beginning
-   of the line.
+  // Set the MET_INSTALL_DIR to the location of the MET install
+  [dir]
+  MET_INSTALL_DIR = /usr/local/met-8.1
 
-   // Setting the PROCESS\_LIST to Usage indicates that we want usage
-   information 
+  // Set these to any valid directory to override the </path/to> placeholder set in the metplus_system.conf file
+  [dir]
+  TMP_DIR = /tmp
+  INPUT_BASE = /tmp
+  OUTPUT_BASE = /tmp
 
-   {[}config{]} \\
-   PROCESS\_LIST = Usage
+Run METplus via: ``master_metplus.py -c ./<my_user_config.conf>`` or ``master_metplus.py -c /<username>/<my_user_config.conf>`` if you saved your default config in a directory other than where you are running master_metplus.py.
 
-   // Set the MET\_INSTALL\_DIR to the location of the MET install
+When the above command is run, a usage message appears indicating that other config files are required to perform useful tasks, as well as a list of currently supported wrappers:
 
-   {[}dir{]} \\
-   MET\_INSTALL\_DIR = /usr/local/met-8.1
+.. code-block:: none
 
-   // Set these to any valid directory to override the \textless{}/path/to\textgreater{}
-   placeholder set in the metplus\_system.conf file
+  USAGE: This is a default process, please indicate more specific processes in the PROCESS_LIST variable in one or more of the following configuration files:
+  
+  -parm/metplus_config/metplus_runtime.conf
+  -parm/metplus_use_cases/<usecase_name>/<usecase_name.conf>
+  -parm/metplus_use_cases/<usecase_name>/examples/<example_name>.conf
 
-   {[}dir{]}\\
-   TMP\_DIR = /tmp \\
-   INPUT\_BASE = /tmp \\
-   OUTPUT\_BASE = /tmp %
-   \end{minipage}}
+  Currently available processes are:
+  - CyclonePlotter
+  - EnsembleStat
+  - ExtractTiles
+  - GempakToCF
+  - GridStat
+  - Mode
+  - MTD
+  - PB2NC
+  - PcpCombine
+  - PointStat
+  - RegridDataPlane
+  - SeriesByLead
+  - SeriesByInit
+  - TcPairs
+  - TcStat
+  - TCMPRPlotter
 
-   \textgreater{}master\_metplus.py -c ./\textless{}my\_user\_config.conf\textgreater{}
+**Example 2: Using a use-case configuration:**
 
-   or
+The command: 
 
-   \textgreater{}master\_metplus.py -c /\textless{}username\textgreater{}/\textless{}my\_user\_config.conf\textgreater{}
+.. code-block:: none
 
-   if you saved your default config in a directory other than where you
-   are running master\_metplus.py
+  master_metplus.py -c use_cases/feature_relative/feature_relative.conf
 
-   A usage message appears, indicating that other config files are required
-   to perform useful tasks and a list of currently supported wrappers:
+will run METplus using the defaults set in the three config files found in parm/metplus_config. Any variables defined in these three config files can be over-ridden in the parm/use_cases/feature_relative/feature_relative.conf file. METplus will run using the values specified in the feature_relative.conf file.
 
-   \fbox{\begin{minipage}[t]{1\columnwidth - 2\fboxsep - 2\fboxrule}%
-   USAGE: This is a default process, please indicate more specific processes
-   in the PROCESS\_LIST variable in one or more of the following configuration
-   files: 
+**Example 3: Using examp,e configuration to perform a specific evaluation (e.g. Model 1 vs. Obs 1, Model 1 vs. Obs 2, Model 2 vs. Obs 1, etc...):**
 
-   -parm/metplus\_config/metplus\_runtime.conf 
+The command: 
 
-   -parm/metplus\_use\_cases/\textless{}usecase\_name\textgreater{}/\textless{}usecase\_name\textgreater{}.conf 
+.. code-block:: none
+  
+  master_metplus.py -c use_cases/feature_relative/feature_relative.conf \
+  -c use_cases/feature_relative/examples/series_by_lead_all_fhrs.conf
 
-   -parm/metplus\_use\_cases/\textless{}usecase\_name\textgreater{}/examples/\textless{}example\_name\textgreater{}.conf
-   Currently available processes are: 
-
-   - CyclonePlotter\\
-   - EnsembleStat\\
-   - ExtractTiles\\
-   - GempakToCF\\
-   - GridStat\\
-   - Mode\\
-   - MTD\\
-   - PB2NC\\
-   - PcpCombine\\
-   - PointStat\\
-   - RegridDataPlane\\
-   - SeriesByLead\\
-   - SeriesByInit\\
-   - TcPairs\\
-   - TcStat\\
-   - TCMPRPlotter%
-   \end{minipage}}%
-   \end{minipage}}
-
-.. raw:: latex
-
-   \fbox{\begin{minipage}[t]{1\columnwidth - 2\fboxsep - 2\fboxrule}%
-   Example: Using a use-case configuration
-
-   \textgreater{}master\_metplus.py -c use\_cases/feature\_relative/feature\_relative.conf
-
-   Runs METplus using the defaults set in the three config files found
-   in parm/metplus\_config. Any variables defined in these three config
-   files can be over-ridden in the parm/use\_cases/feature\_relative/feature\_relative.conf
-   file. METplus will run using the values specified in the feature\_relative.conf
-   file.%
-   \end{minipage}}
-
-.. raw:: latex
-
-   \fbox{\begin{minipage}[t]{1\columnwidth - 2\fboxsep - 2\fboxrule}%
-   Example: Using example configuration to perform specific evaluation
-   (e.g. Model 1 vs. Obs1, Model 1 vs Obs 2, Model 2 vs. Obs 1, etc.)
-
-   \textgreater{}master\_metplus.py -c use\_cases/feature\_relative/feature\_relative.conf
-   \textbackslash{}
-
-   -c use\_cases/feature\_relative/example/series\_by\_lead\_all\_fhrs.conf
-
-   This runs METplus Wrappers using the defaults set in the three config
-   files found in parm/metplus\_config, where variables can be over-ridden
-   by parm/use\_cases/feature\_relative/feature\_relative.conf or in
-   parm/use\_cases/feature\_relative/example/series\_by\_lead\_all\_fhrs.conf.
-   The order in which conf files are called is important. Variables that
-   are defined in intermediate conf files will be over-ridden by the
-   same variables set in the conf file following it, or the last conf
-   file.%
-   \end{minipage}}
+will run METplus using the defaults set in the three config files in parm/metplus_config, where variables can be over-ridden by parm/use_cases/feature_relative/feature_relative.conf or in parm/use_cases/feature_relative/examples/series_by_lead_all_fhrs.conf. The order in which conf files are called is important. Variables that are defined in intermediate conf files will be over-ridden by the same variables set in the conf file following it, or the last conf file.
 
 .. [1]
    R version 3.2.5 is required when the TCMPRPlotter wraps the

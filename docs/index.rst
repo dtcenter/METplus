@@ -3,12 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to METplus's documentation!
-===================================
-
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :hidden:
 
    overview
    installation
@@ -17,16 +14,17 @@ Welcome to METplus's documentation!
    examples
    contributors
    references
+   glossary
 
 Foreword: A note to METplus Wrappers users
 ==========================================
 
-This User?s Guide is provided as an aid to users of the Model Evaluation
-Tools (MET) and it?s companion package METplus Wrappers. MET is a set of
+This User's Guide is provided as an aid to users of the Model Evaluation
+Tools (MET) and it's companion package METplus Wrappers. MET is a set of
 verification tools developed and supported to community via the
 Developmental Testbed Center (DTC) for use by the numerical weather
 prediction community. METplus Wrappers is intended to be a suite of
-Python wrappers and ancillary scripts to enhance the user?s ability to
+Python wrappers and ancillary scripts to enhance the user's ability to
 quickly set-up and run MET. Over the next few years, METplus Wrappers
 will become the authoritative repository for verification of the Unified
 Forecast System.
@@ -43,7 +41,7 @@ inform us of your desired contribution. We will then determine the
 maturity of any new verification method and coordinate the inclusion of
 the new module in a future version.
 
-This User?s Guide was prepared by the developers of the METplus
+This User's Guide was prepared by the developers of the METplus
 Wrappers, including Dan Adriaansen, Minna Win-Gildenmeister, Julie
 Prestopnik, Jim Frimel, Mallory Row, John Halley Gotway, George McCabe,
 Paul Prestopnik, Christana Kalb, Hank Fisher, Jonathan Vigh, Lisa
@@ -67,17 +65,17 @@ USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS AND CONDITIONS:
   non-exclusive, royalty-free license to use, create derivative works,
   publish, distribute, disseminate, transfer, modify, revise and copy
   the Model Evaluation Tools (MET) software, in both object and source
-  code (the ?Software?).
+  code (the 'Software').
 | You shall not sell, license or transfer for a fee the Software, or any
   work that in any manner contains the Software.
 
 2.
    **Disclaimer of Warranty on Software.** Use of the Software is at
-   your sole risk. The Software is provided ??AS IS?? and without warranty
+   your sole risk. The Software is provided "AS IS" and without warranty
    of any kind and UCAR EXPRESSLY DISCLAIMS ALL WARRANTIES AND/OR
    CONDITIONS OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, BUT NOT
    LIMITED TO, ANY WARRANTIES OR CONDITIONS OF TITLE, NON-INFRINGEMENT
-   OF A THIRD PARTY?S INTELLECTUAL PROPERTY, MERCHANTABILITY OR
+   OF A THIRD PARTY'S INTELLECTUAL PROPERTY, MERCHANTABILITY OR
    SATISFACTORY QUALITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
    PARTIES EXPRESSLY DISCLAIM THAT THE UNIFORM COMPUTER INFORMATION
    TRANSACTIONS ACT (UCITA) APPLIES TO OR GOVERNS THIS AGREEMENT. No
@@ -145,31 +143,31 @@ USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS AND CONDITIONS:
 UCAR. You must include, with each copy of the Software and associated
 documentation, a copy of this Agreement and the following notice:
 
-?The source of this material is the Research Applications Laboratory at the National Center for Atmospheric Research, a program of the University Corporation for Atmospheric Research (UCAR) pursuant to a Cooperative Agreement with the National Science Foundation; 2007-2017 University Corporation for Atmospheric Research. All Rights Reserved.??
+"The source of this material is the Research Applications Laboratory at the National Center for Atmospheric Research, a program of the University Corporation for Atmospheric Research (UCAR) pursuant to a Cooperative Agreement with the National Science Foundation; 2007-2017 University Corporation for Atmospheric Research. All Rights Reserved."
                                                                                                                                                                                                                                                                                                                                                         
 
-+-----------------------------------------------------------------------+
-| **The following notice shall be displayed on any scholarly works      |
-| associated with, related to or derived from the Software:**           |
-|                                                                       |
-| *??Model Evaluation Tools (MET) and METplus were developed at the      |
-| National Center for Atmospheric Research (NCAR) through grants from   |
-| the National Science Foundation (NSF), the National Oceanic and       |
-| Atmospheric Administration (NOAA), and the United States Air Force    |
-| (USAF). NCAR is sponsored by the United States National Science       |
-| Foundation.??*                                                         |
-+=======================================================================+
-+-----------------------------------------------------------------------+
++------------------------------------------------------------------------+
+| **The following notice shall be displayed on any scholarly works       |
+| associated with, related to or derived from the Software:**            |
+|                                                                        |
+| *"Model Evaluation Tools (MET) and METplus were developed at the       |
+| National Center for Atmospheric Research (NCAR) through grants from    |
+| the National Science Foundation (NSF), the National Oceanic and        |
+| Atmospheric Administration (NOAA), and the United States Air Force     |
+| (USAF). NCAR is sponsored by the United States National Science        |
+| Foundation."*                                                          |
++========================================================================+
++------------------------------------------------------------------------+
 
 **By using or downloading the Software, you agree to be bound by the
 terms and conditions of this Agreement.**
 
-The citation for this User?s Guide should be:
+The citation for this User's Guide should be:
 
 | Adriaansen, D., M. Win-Gildenmeister, J. Frimel, J. Prestopnik, J.
   Halley Gotway,
 | T. Jensen, J. Vigh, C. Kalb, G. McCabe, and H. Fisher, 2018:
-| The METplus Wrappers Version 2.1 User?s Guide. Developmental Testbed
+| The METplus Wrappers Version 2.1 User's Guide. Developmental Testbed
   Center.
 | Available at: https://github.com/NCAR/METplus/releases. 85 pp.
 

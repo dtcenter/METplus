@@ -1,28 +1,24 @@
 Overview
 ========
 
-Purpose and organization of the User?s Guide
+Purpose and organization of the User's Guide
 --------------------------------------------      
 
-The goal of this User?s Guide is to equip users with the information
-needed to use the Model Evaluation Tools (MET) and it?s companion
+The goal of this User's Guide is to equip users with the information
+needed to use the Model Evaluation Tools (MET) and it's companion
 package METplus Wrappers. MET is a set of verification tools developed
 and supported to community via the Developmental Testbed Center (DTC)
 for use by the numerical weather prediction community. METplus Wrappers
 is a suite of Python wrappers and ancillary scripts to enhance the
-user?s ability to quickly set-up and run MET. Over the next few years,
+user's ability to quickly set-up and run MET. Over the next few years,
 METplus Wrappers will become the authoritative repository for
 verification of the Unified Forecast System.
 
-The METplus Wrappers User?s Guide is organized as follows. Chapter
-`[chap:Overview] <#chap:Overview>`__ provides an overview of METplus
-Wrappers. Chapter
-`[chap:Software-Installation/Getting-St] <#chap:Software-Installation/Getting-St>`__
-contains basic information about how to get started with METplus
-Wrappers - including system requirements, required software , and how to
-download METplus Wrappers. Chapter
-`[chap:System Configuration] <#chap:System Configuration>`__ provides
-indormation about configuring your environment and METplus Wrappers
+The METplus Wrappers User's Guide is organized as follows. An overview of METplus
+Wrappers can be found below. :ref:`install` contains basic information about how to get started with METplus
+Wrappers - including system requirements, required software, and how to
+download METplus Wrappers. :ref:`sysconf` provides
+information about configuring your environment and METplus Wrappers
 installation.
 
 The Developmental Testbed Center (DTC)
@@ -76,9 +72,8 @@ The METplus Wrappers code and documentation is maintained by the DTC in
 Boulder, Colorado. METplus Wrappers is freely available to the modeling,
 verification, and operational communities, including universities,
 governments, the private sector, and operational modeling and prediction
-centers through a publicly accessible GitHub repository. Refer section
-`[sec:Getting-the-METplus-source-code] <#sec:Getting-the-METplus-source-code>`__
-for simple examples of obtaining METplus Wrappers.
+centers through a publicly accessible GitHub repository. Refer to 
+:ref:`getcode` for simple examples of obtaining METplus Wrappers.
 
 METplus Wrappers Components
 ---------------------------
@@ -101,7 +96,7 @@ the METplus Wrappers Users web page
 METplus Wrappers development plans are based on several contributing
 factors, including the needs of both the operational and research
 community. Issues that are in the development queue detailed in the
-?Issues? section of the GitHub repository. Please send questions to
+"Issues" section of the GitHub repository. Please send questions to
 `met_help@ucar.edu <met_help@ucar.edu>`__.
 
 Code support
@@ -121,7 +116,7 @@ addition, comments on this document would be greatly appreciated. While
 we cannot promise to incorporate all suggested changes, we will
 certainly take all suggestions into consideration.
 
-METplus Wrappers is a ??living?? set of wrappers and configuration files.
+METplus Wrappers is a "living" set of wrappers and configuration files.
 Our goal is to continually enhance it and add to its capabilities.
 Because our time, resources, and talents are limited, we welcome
 contributed code for future versions of METplus. These contributions may

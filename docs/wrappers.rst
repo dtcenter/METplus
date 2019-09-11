@@ -15,18 +15,18 @@ CyclonePlotter
 --------------
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 This wrapper does not have a corresponding MET tool but instead wraps
 the logic necessary to create plots of cyclone tracks. Currently only
 the output from the MET tc-pairs tool can be plotted.
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 [dir]
 
-| CYCLONE_INPUT_DIR `[sec:SC_C] <#sec:SC_C>`__
+| :term:`CYCLONE_INPUT_DIR`
 | CYCLONE_OUTPUT_DIR `[sec:SC_C] <#sec:SC_C>`__
 
 [config]
@@ -49,14 +49,14 @@ EnsembleStat
 .. _description-1:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 Used to configure the MET tool ensemble_stat.
 
 .. _configuration-1:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 [dir]
 
@@ -100,7 +100,7 @@ ExtractTiles
 .. _description-2:
 
 3.5.1 Description
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 The ExtractTiles wrapper is used to regrid and extract subregions from
 paired tropical cyclone tracks that are created by the tc_pairs_wrapper.
@@ -144,14 +144,14 @@ GempakToCF
 .. _description-3:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 Used to configure the utility GempakToCF.
 
 .. _configuration-3:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 [exe]
 
@@ -177,14 +177,14 @@ GridStat
 .. _description-4:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 Used to configure the MET tool grid_stat.
 
 .. _configuration-4:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 [dir]
 
@@ -225,7 +225,7 @@ MakePlots
 .. _description-5:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 The MakePlots wrapper creates various statistical plots using python
 scripts for the various METplus Wrappers use cases. This can only be run
@@ -235,7 +235,7 @@ MakePlots wrapper, include MakePlots in PROCESS_LIST.
 .. _configuration-5:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 The following values **must** be defined in the METplus Wrappers
 configuration file:
@@ -290,14 +290,14 @@ Mode
 .. _description-6:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 Used to configure the MET tool mode.
 
 .. _configuration-6:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 [dir]
 
@@ -345,14 +345,14 @@ MTD
 .. _description-7:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 Used to configure the MET tool mtd (mode time domain).
 
 .. _configuration-7:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 [dir]
 
@@ -389,7 +389,7 @@ PB2NC
 .. _description-8:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 The PB2NC wrapper is a Python script that encapsulates the behavior of
 the MET pb2nc tool to convert prepBUFR files into netCDF.
@@ -397,7 +397,7 @@ the MET pb2nc tool to convert prepBUFR files into netCDF.
 .. _configuration-8:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 [dir]
 
@@ -451,7 +451,7 @@ PcpCombine
 .. _description-9:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 The PcpCombine wrapper is a Python script that encapsulates the MET
 pcp_combine tool. It provides the infrastructure to combine or extract
@@ -460,7 +460,7 @@ from files to build desired accumulations.
 .. _configuration-9:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 [dir]
 
@@ -528,7 +528,7 @@ PointStat
 .. _description-10:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 The PointStat wrapper is a Python script that encapsulates the MET
 point_stat tool. It provides the infrastructure to read in gridded model
@@ -538,7 +538,7 @@ data and netCDF point observation data to perform grid-to-point
 .. _configuration-10:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 [dir]
 
@@ -596,14 +596,14 @@ RegridDataPlane
 .. _description-11:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 Used to configure the MET tool regrid_data_plane.
 
 .. _configuration-11:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 [dir]
 
@@ -634,7 +634,7 @@ SeriesByInit
 .. _description-12:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 The SeriesByInit wrapper provides the infrastructure needed to perform a
 series analysis on tropical cyclone data, based on initialization times.
@@ -644,7 +644,7 @@ field, level, and statistic for each initialization time.
 .. _configuration-12:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 [dir]
 
@@ -682,7 +682,7 @@ SeriesByLead
 .. _description-13:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 The SeriesByLead wrapper provides the infrastructure needed to perform a
 series analysis on tropical cyclone data, based on lead (forecast hour)
@@ -691,15 +691,15 @@ the field, level, and statistic for each lead (forecast) time. The
 SeriesByLead can be done in one of two ways: by all forecast hours or by
 forecast hour groupings. Performing a series analysis by valid time with
 forecast hour groupings can be useful when analyzing storm tracks based
-on time ?bins? such as by days (eg. day 1, day 2, day 3, etc.).
+on time 'bins' such as by days (eg. day 1, day 2, day 3, etc.).
 
 .. _configuration-13:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 The input track and model data files are defined in any one of the
-user?s METplus Wrappers configuration files. If creating a final
+user's METplus Wrappers configuration files. If creating a final
 configuration file that overrides all other config files, it is
 customary to define the MODEL_DATA_DIR, pointing to the directory where
 all model data resides. The full file path to the INIT_INCLUDE and
@@ -739,7 +739,7 @@ StatAnalysis
 .. _description-14:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 The StatAnalysis wrapper encapsulates the behavior of the MET
 stat_analysis tool. It provides the infrastructure to summarize and
@@ -753,7 +753,7 @@ PROCESS_LIST.
 .. _configuration-14:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 The following values must be defined in the METplus Wrappers
 configuration file for running with LOOP_ORDER = times:
@@ -851,7 +851,7 @@ TcPairs
 .. _description-15:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 The TcPairs wrapper encapsulates the behavior of the MET tc_pairs tool.
 The wrapper accepts Adeck and Bdeck (Best track) cyclone track data in
@@ -863,7 +863,7 @@ reformatted into an ATCF format that is recognized by MET.
 .. _configuration-15:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 [dir]
 
@@ -924,7 +924,7 @@ TcStat
 .. _description-16:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 Used to configure the MET tool tc_stat. This wrapper can be run by
 listing it in the PROCESS_LIST, or can be called from the ExtractTiles
@@ -933,7 +933,7 @@ wrapper (via the MET tc-stat command line commands).
 .. _configuration-16:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 [dir]
 
@@ -988,18 +988,18 @@ TCMPRPlotter
 .. _description-17:
 
 Description
-~~~~~~~~~~
+~~~~~~~~~~~
 
 The TCMPRPlotter wrapper is a Python script that wraps the R script
 plot_tcmpr.R. This script is usefule for plotting the calculated
 statistics for the output from the MET-TC tools. This script, and other
 R scripts are included in the MET installation. Please refer to section
-21.2.3 of the MET User?s Guide for usage information.
+21.2.3 of the MET User's Guide for usage information.
 
 .. _configuration-17:
 
 Configuration
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 | LOOP ORDER `[sec:SC_L] <#sec:SC_L>`__
 | CONFIG_FILE `[sec:SC_C] <#sec:SC_C>`__
@@ -1028,8 +1028,8 @@ Configuration
 | PLOT_CONFIG_OPTS `[sec:SC_P] <#sec:SC_P>`__
 | SAVE_DATA `[sec:SC_D] <#sec:SC_D>`__
 
-The following are TCMPR flags, if set to ?no?, then don?t set flag, if
-set to ?yes?, then set the flag
+The following are TCMPR flags, if set to 'no', then don't set flag, if
+set to 'yes', then set the flag
 
 | NO_EE `[sec:SC_N] <#sec:SC_N>`__
 | NO_LOG `[sec:SC_N] <#sec:SC_N>`__
