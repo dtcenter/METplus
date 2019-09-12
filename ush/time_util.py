@@ -24,12 +24,19 @@ to be used in other METplus wrappers
 @endcode
 '''
 
-def ti_get_seconds_from_relativedelta(lead):
+def ti_get_seconds_from_relativedelta(lead, valid_time=None):
     """!Check relativedelta object contents and compute the total number of seconds
         in the time. Return None if years or months are set, because the exact number
         of seconds cannot be calculated without a relative time"""
     # return None if input is not relativedelta object
-    if not isinstance(lead, relativedelta) or lead.months != 0 or lead.years != 0:
+    if not isinstance(lead, relativedelta):
+        return None
+
+    # if valid time is specified, use it to determine seconds
+    if valid_time is not None:
+        return int((valid_time - (valid_time - lead)).total_seconds())
+
+    if lead.months != 0 or lead.years != 0:
         return None
 
     total_seconds = 0
@@ -48,43 +55,47 @@ def ti_get_seconds_from_relativedelta(lead):
 
     return total_seconds
 
-def ti_get_lead_string(lead):
+def ti_get_lead_string(lead, plural=True):
     """!Check relativedelta object contents and create string representation
         of the highest unit available (year, then, month, day, hour, minute, second).
         This assumes that only one unit has been set in the object"""
+    # if integer, assume seconds
+    if isinstance(lead, int):
+        return ti_get_lead_string(relativedelta(seconds=lead), plural=plural)
+
     # return None if input is not relativedelta object
     if not isinstance(lead, relativedelta):
-        return
+        return None
 
     output = ''
     if lead.years != 0:
         output += f' {lead.years} year'
-        if abs(lead.years) != 1:
+        if abs(lead.years) != 1 and plural:
             output += 's'
 
     if lead.months != 0:
         output += f' {lead.months} month'
-        if abs(lead.months) != 1:
+        if abs(lead.months) != 1 and plural:
             output += 's'
 
     if lead.days != 0:
         output += f' {lead.days} day'
-        if abs(lead.days) != 1:
+        if abs(lead.days) != 1 and plural:
             output += 's'
 
     if lead.hours != 0:
         output += f' {lead.hours} hour'
-        if abs(lead.hours) != 1:
+        if abs(lead.hours) != 1 and plural:
             output += 's'
 
     if lead.minutes != 0:
         output += f' {lead.minutes} minute'
-        if abs(lead.minutes) != 1:
+        if abs(lead.minutes) != 1 and plural:
             output += 's'
 
     if lead.seconds != 0:
         output += f' {lead.seconds} second'
-        if abs(lead.seconds) != 1:
+        if abs(lead.seconds) != 1 and plural:
             output += 's'
 
     # remove leading space and return string
@@ -92,7 +103,11 @@ def ti_get_lead_string(lead):
         return output[1:]
 
     # return 0 hour if no time units are set
-    return '0 hours'
+    output = '0 hour'
+    if plural:
+        output += 's'
+
+    return output
 
 def ti_calculate(input_dict):
     out_dict = {}
@@ -158,7 +173,7 @@ def ti_calculate(input_dict):
 
         # set loop_by to init or valid to be able to see what was set first
         out_dict['loop_by'] = 'init'
-        
+
     # if valid is provided, compute init and da_init
     elif 'valid' in input_dict:
         out_dict['valid'] = input_dict['valid']
@@ -196,7 +211,7 @@ def ti_calculate(input_dict):
 
     # get difference between valid and init to get total seconds since relativedelta
     # does not have a fixed number of seconds
-    total_seconds = int( (out_dict['valid'] - out_dict['init']).total_seconds() )
+    total_seconds = int((out_dict['valid'] - out_dict['init']).total_seconds())
 
     # get string representation of forecast lead
     out_dict['lead_string'] = ti_get_lead_string(out_dict['lead'])

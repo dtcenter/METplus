@@ -23,6 +23,8 @@ from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
 from string_template_substitution import get_tags
 from gempak_to_cf_wrapper import GempakToCFWrapper
+import time_util
+
 # for run stand alone
 import produtil
 import config_metplus
@@ -352,14 +354,30 @@ def get_relativedelta(value, default_unit='S'):
 
         # unsupported time unit specified, return None
 
-def get_seconds_from_string(value, default_unit='S'):
+def get_seconds_from_string(value, default_unit='S', valid_time=None):
     """!Convert string of time (optionally ending with time letter, i.e. HMSyMD to seconds
         Args:
           @param value string to convert, i.e. 3M, 4H, 17
           @param default_unit units to apply if not specified at end of string
           @returns time in seconds if successfully parsed, None if not"""
     rd_obj = get_relativedelta(value, default_unit)
-    return time_util.ti_get_seconds_from_relativedelta(rd_obj)
+    return time_util.ti_get_seconds_from_relativedelta(rd_obj, valid_time)
+
+def time_string_to_met_time(time_string, default_unit='S'):
+    """!Convert time string (3H, 4M, 7, etc.) to format expected by the MET
+        tools ([H]HH[MM[SS]])"""
+    total_seconds = get_seconds_from_string(time_string, default_unit)
+    seconds_time_string = str(total_seconds % 60).zfill(2)
+    minutes_time_string = str(total_seconds // 60 % 60).zfill(2)
+    hour_time_string = str(total_seconds // 3600).zfill(2)
+
+    # if hour is 6 or more digits, we need to add minutes and seconds
+    # also if minutes and/or seconds they are defined
+    # add minutes if seconds are defined as well
+    if len(hour_time_string) > 5 or minutes_time_string != '00' or seconds_time_string != '00':
+        return hour_time_string + minutes_time_string + seconds_time_string
+    else:
+        return hour_time_string
 
 def loop_over_times_and_call(config, processes):
     """!Loop over all run times and call wrappers listed in config"""
@@ -488,10 +506,11 @@ def get_lead_sequence(config, input_dict=None):
 
             while current_lead <= max_forecast:
                 if current_lead >= min_forecast:
-                    lead_seq.append(current_lead * 3600)
+                    lead_seq.append(relativedelta(hours=current_lead))
                 current_lead += 24
 
-        return sorted(lead_seq)
+        return sorted(lead_seq, key=lambda rd: time_util.ti_get_seconds_from_relativedelta(rd,
+                                                                   input_dict['valid']))
     else:
         return [0]
 

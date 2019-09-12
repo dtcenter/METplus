@@ -76,6 +76,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         c_dict[d_type+'_TIMES_PER_FILE'] = self.config.getint('config', d_type+'_PCP_COMBINE_TIMES_PER_FILE', -1)
         c_dict[d_type+'_IS_DAILY_FILE'] = self.config.getbool('config', d_type+'_PCP_COMBINE_IS_DAILY_FILE', False)
         c_dict[d_type+'_LEVEL'] = self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_LEVEL', '-1')
+        c_dict[d_type+'_LEVELS'] = util.getlist(self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_LEVELS', ''))
+        c_dict[d_type+'_LEVEL_NAMES'] = util.getlist(self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_LEVEL_NAMES', ''))
         c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
         c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_INPUT_TEMPLATE')
@@ -281,7 +283,16 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return d_type
 
 
-    def get_addon(self, data_src, search_accum, search_time):
+    def get_addon(self, field_name, search_accum):
+        if field_name is not None:
+            addon = "'name=\"" + field_name + "\";"
+            if not util.is_python_script(field_name):
+               addon += " level=\"(0,*,*)\";"
+            addon += "'"
+        else:
+            addon = util.time_string_to_met_time(str(search_accum), default_unit='S')
+
+        return addon
         d_type = self.get_data_type(data_src)
         if d_type == "GRIB":
             return search_accum
@@ -306,7 +317,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         fSts = sts.StringSub(self.logger,
                              in_template,
                              valid=search_time,
-                             level=(int(search_accum)*3600))
+#                             level=(int(search_accum)*3600))
+                             level=(int(search_accum)))
         search_file = os.path.join(self.input_dir,
                                    fSts.do_string_sub())
 
@@ -344,7 +356,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @return True if full set of files to build accumulation is found
         """
         in_template = self.c_dict[data_src+'_INPUT_TEMPLATE']
-        valid_time = time_info['valid_fmt']
+#        valid_time = time_info['valid_fmt']
 
         if self.c_dict[data_src + '_IS_DAILY_FILE'] is True:
             return self.get_daily_file(time_info, accum, data_src, in_template)
@@ -360,14 +372,21 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         accum_relative = util.get_relativedelta(accum, 'H')
         # using 1 hour for now
         last_time = time_info['valid'] - accum_relative + datetime.timedelta(hours=1)
-        total_accum = accum
+
+        # TODO: handle accum_string here
+#        total_accum = accum
+        total_accum = time_util.ti_get_seconds_from_relativedelta(accum_relative,
+                                                                  time_info['valid'])
+        '''
         level = int(self.c_dict[data_src+'_LEVEL'])
         if level == -1:
             search_accum = accum
         else:
             search_accum = level
-
-        self.logger.debug(f"Trying to build a {total_accum} accumulation starting with {search_accum}")
+        '''
+        search_accum_list = ' or '.join([time_util.ti_get_lead_string(lev['amount'],plural=False) for lev in self.c_dict['LEVEL_DICT_LIST']])
+#        self.logger.debug(f"Trying to build a {total_accum} accumulation starting with {search_accum}")
+        self.logger.debug(f"Trying to build a {time_util.ti_get_lead_string(total_accum, plural=False)} accumulation using {search_accum_list}")
         # loop backwards in time until you have a full set of accum
         while last_time <= search_time:
             if is_forecast:
@@ -375,70 +394,76 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                     break
 
                 search_file = self.getLowestForecastFile(search_time, data_src, in_template)
-                if search_file == None:
+                if search_file is None:
                     break
 
                 # find accum field in file that is less than search accumulation
-                field_name, s_accum = self.find_highest_accum_field(data_src, search_accum, search_time)
+#                field_name, s_accum = self.find_highest_accum_field(data_src, search_accum_list, search_time)
+                field_name = self.c_dict['LEVEL_DICT_LIST'][0]['name']
+                s_accum = util.time_string_to_met_time(self.c_dict['LEVEL_DICT_LIST'][0]['amount'])
 
-                if self.get_data_type(data_src) == "GRIB":
-                    addon = search_accum
-                else:
-                    if field_name == '':
-                        break
+#                if self.get_data_type(data_src) == "GRIB":
+#                    addon = search_accum
+#                else:
+#                    if field_name == '':
+#                        break
 
-                    addon = "'name=\"" + field_name + "\";"
-                    if not util.is_python_script(field_name):
-                        addon += " level=\"(0,*,*)\";"
-                    addon += "'"
+                addon = self.get_addon(field_name, s_accum)
 
                 self.add_input_file(search_file, addon)
                 self.logger.debug(f"Adding input file: {search_file}")
-                search_time = search_time - datetime.timedelta(hours=s_accum)
+                search_time = search_time - datetime.timedelta(seconds=s_accum)
 
                 # keep same search accumulation if specified, otherwise decrease it by
                 # the accumulation that was found
-                if level == -1:
-                    search_accum -= s_accum
+#                if level == -1:
+#                    search_accum -= s_accum
 
                 total_accum -= s_accum
             else:  # not looking for forecast files
                 # look for biggest accum that fits search
-                while search_accum > 0:
+#                while search_accum > 0:
+                found = False
+                for level_dict in self.c_dict['LEVEL_DICT_LIST']:
                     search_file = self.find_input_file(in_template, search_time,
-                                                       search_accum, data_src)
+                                                       level_dict['amount'], data_src)
+#                                                       search_accum, data_src)
 
                     # if found a file, add it to input list with info
                     if search_file is not None:
-                        addon = self.get_addon(data_src, search_accum, search_time)
-                        if addon == '':
+#                        addon = self.get_addon(data_src, search_accum, search_time)
+                        addon = self.get_addon(level_dict['name'], level_dict['amount'])
+#                        if addon == '':
                             # could not find NetCDF field to process
-                            search_accum -= 1
-                            continue
+#                            search_accum -= 1
+#                            continue
 
                         # add file to input list and step back in time to find more data
                         self.add_input_file(search_file, addon)
                         self.logger.debug(f"Adding input file: {search_file}")
-                        search_time = search_time - datetime.timedelta(hours=search_accum)
-                        total_accum -= search_accum
+#                        search_time = search_time - datetime.timedelta(hours=search_accum)
+                        search_time = search_time - datetime.timedelta(seconds=level_dict['amount'])
+#                        total_accum -= search_accum
+                        total_accum -= level_dict['amount']
+                        found = True
                         break
                     # if file/field not found, look for a smaller accumulation
-                    search_accum -= 1
+#                    search_accum -= 1
 
             # if we don't need any more accumulation, break out of loop and run
             if total_accum == 0:
                 break
 
             # if we still need to find more accum but we couldn't find it, fail
-            if search_accum == 0:
+            if not found:
                 return False
 
             # if [FCST/OBS]_LEVEL is used, use that value
             # else use accumulation amount left to find
-            if level == -1:
-                search_accum = total_accum
-            else:
-                search_accum = level
+#            if level == -1:
+#                search_accum = total_accum
+#            else:
+#                search_accum = level
 
         # fail if no files were found or if we didn't find
         #  the entire accumulation needed
@@ -742,13 +767,16 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         _, accum_string = util.split_level(level)
 
         # get number of seconds relative to valid time
-        valid_time = time_info['valid_fmt']
-        accum_relative = util.get_relativedelta(accum_string, 'H')
-        if accum_relative is None:
+        accum_seconds = util.get_seconds_from_string(accum_string,
+                                                     default_unit='H',
+                                                     valid_time=time_info['valid'])
+        if accum_seconds is None:
             self.logger.error(f'Invalid accumulation specified: {accum_string}')
             return
 
-        accum_seconds = valid_time - (valid_time - accum_relative)
+        # create list of tuples for input levels and optional field names
+        if not self.build_input_level_list(data_src, time_info):
+            return
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
@@ -763,8 +791,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.outdir = out_dir
         time_info['level'] = int(accum_seconds)
         pcpSts = sts.StringSub(self.logger,
-                                out_template,
-                                **time_info)
+                               out_template,
+                               **time_info)
         pcp_out = pcpSts.do_string_sub()
         self.outfile = pcp_out
         self.args.append("-name " + compare_var + "_" + accum_string)
@@ -797,7 +825,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         # get files
         lookback = self.c_dict[data_src+'_DERIVE_LOOKBACK']
-        lookback_seconds = util.get_seconds_from_string(lookback, 'H')
+        lookback_seconds = util.get_seconds_from_string(lookback,
+                                                        default_unit='H',
+                                                        valid_time=time_info['valid'])
         if lookback_seconds is None:
             self.logger.error(f'Invalid format for derived lookback: {lookback}')
             return
@@ -830,6 +860,35 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         command_template = self.config.getraw('config', data_src + '_PCP_COMBINE_COMMAND')
         self.custom_command = sts.StringSub(self.logger, command_template, **time_info).do_string_sub()
         return '{} -v {} {}'.format(self.app_path, self.verbose, self.custom_command)
+
+    def build_input_level_list(self, data_src, time_info):
+        level_list = self.c_dict[data_src + '_LEVELS']
+        name_list = self.c_dict[data_src + '_LEVEL_NAMES']
+
+        if not level_list:
+            self.logger.error(f'{data_src}_PCP_COMBINE_INPUT_LEVELS must be specified.')
+            return False
+
+        # name list should either be empty or the same length as level list
+        if name_list:
+            if len(level_list) != len(name_list):
+                msg = f'{data_src}_PCP_COMBINE_INPUT_LEVEL_NAMES list should be ' +\
+                      'either empty or the same length as ' +\
+                      f'{data_src}_PCP_COMBINE_INPUT_LEVELS list.'
+                self.logger.error(msg)
+                return False
+        else:
+            # if no name list, create list of None values
+            name_list = [None] * len(level_list)
+
+
+        level_dict_list = []
+        for level, name in zip(level_list, name_list):
+            amount = util.get_seconds_from_string(level, 'H', time_info['valid'])
+            level_dict_list.append({'amount' : amount, 'name' : name})
+
+        self.c_dict['LEVEL_DICT_LIST'] = level_dict_list
+        return True
 
 if __name__ == "__main__":
         util.run_stand_alone("pcp_combine_wrapper", "PcpCombine")

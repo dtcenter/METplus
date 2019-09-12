@@ -7,6 +7,7 @@ import met_util as util
 import time_util
 import produtil
 import os
+from dateutil.relativedelta import relativedelta
 import config_metplus
 
 #@pytest.fixture
@@ -35,6 +36,7 @@ def metplus_config():
 
 
 def test_add_common_items_to_dictionary():
+    pytest.skip('Function not currently used')
     conf = metplus_config()
     dictionary = dict()
     util.add_common_items_to_dictionary(conf, dictionary)
@@ -431,7 +433,7 @@ def test_get_lead_sequence_lead():
     test_seq = util.get_lead_sequence(conf, input_dict)
     hour_seq = []
     for test in test_seq:
-        hour_seq.append(time_util.ti_get_seconds(test) // 3600)
+        hour_seq.append(time_util.ti_get_seconds_from_relativedelta(test) // 3600)
     lead_seq = [ 3, 6, 9, 12 ]
     assert(hour_seq == lead_seq)
     
@@ -454,7 +456,7 @@ def test_get_lead_sequence_lead_list(key, value):
     hour_seq = []
 
     for test in test_seq:
-        hour_seq.append(time_util.ti_get_seconds(test) // 3600)
+        hour_seq.append(time_util.ti_get_seconds_from_relativedelta(test) // 3600)
     lead_seq = value
     assert(hour_seq == lead_seq)
 
@@ -493,7 +495,7 @@ def test_get_lead_sequence_init(key, value):
     conf.set('config', 'LEAD_SEQ_MAX', 36)
     test_seq = util.get_lead_sequence(conf, input_dict)
     lead_seq = value
-    assert(test_seq == lead_seq)
+    assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
 
 def test_get_lead_sequence_init_min_10():
     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 12) }
@@ -503,7 +505,7 @@ def test_get_lead_sequence_init_min_10():
     conf.set('config', 'LEAD_SEQ_MIN', 10)
     test_seq = util.get_lead_sequence(conf, input_dict)
     lead_seq = [ 12, 24 ]
-    assert(test_seq == lead_seq)
+    assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
 
 @pytest.mark.parametrize(
     'key, value', [
@@ -528,3 +530,22 @@ def test_get_relativedelta(key, value):
     # start time is 2019-02-01_0Z
     start_time = datetime.datetime(2019, 2, 1, 0)
     assert(start_time + util.get_relativedelta(key) == value)
+
+@pytest.mark.parametrize(
+    'time_string, default_unit, met_time', [
+        ('3H', None, '03'),
+        ('3M', None, '000300'),
+        ('3S', None, '000003'),
+        ('3', 'H', '03'),
+        ('3', 'M', '000300'),
+        ('3', 'S', '000003'),
+        ('12345H', None, '12345'),
+        ('123456H', None, '1234560000'),
+        ('123456', 'H', '1234560000'),
+        ('90M', None, '013000'),
+        ('90S', None, '000130'),
+        ('3723S', None, '010203'),
+        ]
+)
+def test_time_string_to_met_time(time_string, default_unit, met_time):
+  assert(util.time_string_to_met_time(time_string, default_unit) == met_time)
