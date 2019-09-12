@@ -10,7 +10,6 @@ import produtil
 import pytest
 import config_metplus
 from mtd_wrapper import MTDWrapper
-from config_wrapper import ConfigWrapper
 import met_util as util
 #from met_util import FieldObj
 #from task_info import TaskInfo
@@ -73,7 +72,6 @@ def metplus_config():
         # Read in the configuration object CONFIG
         config = config_metplus.setup()
         logger = util.get_logger(config)
-        config = ConfigWrapper(config, logger)
         return config
 
     except Exception as e:

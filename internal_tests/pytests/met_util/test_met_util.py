@@ -35,6 +35,7 @@ def metplus_config():
 
 
 def test_add_common_items_to_dictionary():
+    pytest.skip('Function is not used')
     conf = metplus_config()
     dictionary = dict()
     util.add_common_items_to_dictionary(conf, dictionary)
