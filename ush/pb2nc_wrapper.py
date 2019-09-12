@@ -328,8 +328,11 @@ class PB2NCWrapper(CommandBuilder):
 
         cmd += out_path + ' '
 
-        if self.c_dict['CONFIG_FILE'] != "":
-            cmd += self.c_dict['CONFIG_FILE'] + ' '
+        if self.c_dict['CONFIG_FILE'] == '':
+            self.logger.error('PB2NC_CONFIG_FILE is required')
+            return None
+
+        cmd += self.c_dict['CONFIG_FILE'] + ' '
 
         if len(self.infiles) > 1:
             for f in self.infiles[1:]:
