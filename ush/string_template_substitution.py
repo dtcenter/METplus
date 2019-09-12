@@ -109,7 +109,6 @@ def format_one_time_item(item, time_str, unit):
     if count > 0:
         rest = ''
         # get precision from number (%3H)
-        print(f"item: {item}, unit: {unit}")
         res = re.match(r"^\.*(\d+)"+unit+"(.*)", item)
         if res:
             padding = int(res.group(1))
