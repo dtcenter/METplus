@@ -309,9 +309,12 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
 
 
 def get_relativedelta(value, default_unit='S'):
-    """!Converts time values ending in Y, m, d, H, M, or S to relativedelta object"""
-    # convert value to seconds
-    # Valid options match format 3600, 3600S, 60M, or 1H
+    """!Converts time values ending in Y, m, d, H, M, or S to relativedelta object
+        Args:
+          @param value time value optionally ending in Y,m,d,H,M,S
+            Valid options match format 3600, 3600S, 60M, or 1H
+          @param default_unit unit to assume if no letter is found at end of value
+          @return relativedelta object containing offset time"""
     mult = 1
     reg = r'(-*)(\d+)([a-zA-Z]*)'
     match = re.match(reg, value)
