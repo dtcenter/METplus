@@ -404,7 +404,7 @@ for plot_info in plot_info_list:
                     fig = plt.figure(figsize=(15,12))
                     gs = gridspec.GridSpec(2,2)
                     gs.update(wspace=0.3, hspace=0.35)
-                elif nsubplts > 4 and nsubplots <= 6:
+                elif nsubplots > 4 and nsubplots <= 6:
                     fig = plt.figure(figsize=(19,12))
                     gs = gridspec.GridSpec(2,3)
                     gs.update(wspace=0.3, hspace=0.35)
