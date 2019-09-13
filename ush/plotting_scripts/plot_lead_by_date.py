@@ -25,6 +25,7 @@ import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as md
+import matplotlib.gridspec as gridspec
 
 # Read environment variables set in make_plots_wrapper.py
 verif_case = os.environ['VERIF_CASE']
@@ -290,7 +291,7 @@ for plot_info in plot_info_list:
             +'to'+valid_init_dict['obs_init_hour_end']+'Z'
         )
     base_name+=(
-        '_fcst_lead_FCSTLEADHOLDER'
+        '_fcst_leadFCSTLEADHOLDER'
         +'_fcst'+fcst_var_name+fcst_var_level+fcst_var_thresh+interp_mthd
         +'_obs'+obs_var_name+obs_var_level+obs_var_thresh+interp_mthd
         +'_vxmask'+vx_mask
@@ -321,6 +322,7 @@ for plot_info in plot_info_list:
                                           fcst_valid_hour, fcst_init_hour,
                                           obs_valid_hour, obs_init_hour,
                                           fcst_lead)
+            )
             total_dates = len(plot_time_dates)
             if len(plot_time_dates) == 0:
                 logger.error("Date array constructed information from "
@@ -330,14 +332,14 @@ for plot_info in plot_info_list:
                              +"VALID/INIT_BEG/END and "
                              +"OBS/FCST_INIT/VALID_HOUR_LIST")
                 exit(1)
-             elif len(plot_time_dates) <= 3:
-                 date_tick_intvl = 1
-             elif len(plot_time_dates) > 3 and len(plot_time_dates) <= 10:
-                 date_tick_intvl = 2
-             elif len(plot_time_dates) > 10 and len(plot_time_dates) < 31:
-                 date_tick_intvl = 5
-             else:
-                 date_tick_intvl = 10
+            elif len(plot_time_dates) <= 3:
+                date_tick_intvl = 1
+            elif len(plot_time_dates) > 3 and len(plot_time_dates) <= 10:
+                date_tick_intvl = 2
+            elif len(plot_time_dates) > 10 and len(plot_time_dates) < 31:
+                date_tick_intvl = 5
+            else:
+                date_tick_intvl = 10
             model_lead_now_data_index = pd.MultiIndex.from_product(
                 [[model_plot_name], [fcst_lead], expected_stat_file_dates],
                 names=['model_plot_name', 'leads', 'dates']
@@ -356,7 +358,7 @@ for plot_info in plot_info_list:
                                    +" with plot name "+model_plot_name
                                    +" file: "+model_stat_file+" empty")
                     model_lead_now_data = pd.DataFrame(
-                        np.nan, index=model_lead_data_now_index,
+                        np.nan, index=model_lead_now_index,
                         columns=[ 'TOTAL' ]
                     )
                 else:
@@ -395,13 +397,20 @@ for plot_info in plot_info_list:
                         pd.DataFrame(np.nan, index=model_lead_now_data_index,
                                      columns=stat_file_line_type_columns)
                         )
+                    fcst_var_units_list.append(
+                        model_lead_now_stat_file_data.loc[0]['FCST_UNITS']
+                    )
+                    obs_var_units_list.append(
+                        model_lead_now_stat_file_data.loc[0]['OBS_UNITS']
+                    )
                     for expected_date in expected_stat_file_dates:
-                        if expected_date in model_now_stat_file_datafcstvaliddates:
+                        if expected_date in \
+                                model_lead_now_stat_file_data_fcstvaliddates:
                             matching_date_idx = (
                                 model_lead_now_stat_file_data_fcstvaliddates \
                                 .tolist().index(expected_date)
                             )
-                            model_now_stat_file_data_indexed = (
+                            model_lead_now_stat_file_data_indexed = (
                                 model_lead_now_stat_file_data \
                                 .loc[matching_date_idx][:]
                             )
@@ -412,14 +421,14 @@ for plot_info in plot_info_list:
                                      expected_date)
                                 ][col] = (
                                    model_lead_now_stat_file_data_indexed \
-                                  .loc[:][column]
+                                  .loc[:][col]
                                 )
             else:
                 logger.warning("Model "+str(model_num)+" "+model_name
                                +" with plot name "+model_plot_name
                                +" file: "+model_stat_file+" does not exist")
                 model_lead_now_data = pd.DataFrame(
-                        np.nan, index=model_lead_data_now_index,
+                        np.nan, index=model_lead_now_index,
                         columns=[ 'TOTAL' ]
                 )
             if fl > 0:
@@ -433,8 +442,14 @@ for plot_info in plot_info_list:
         else:
             model_data = model_now_data
     # Build lead by date grid for plotting
-    ymesh, xmesh = np.meshgrid(fcst_lead_timedeltas, plot_time_dates)
+    ymesh, xmesh = np.meshgrid(plot_time_dates, fcst_lead_timedeltas)
     # Calculate statistics and plots
+    fcst_var_units_plot_title = (
+        '['+', '.join(list(set(fcst_var_units_list)))+']'
+    )
+    obs_var_units_plot_title = (
+        '['+', '.join(list(set(obs_var_units_list)))+']'
+    )
     logger.info("Calculating and plotting statistics")
     for stat in stats_list:
         logger.debug("Working on "+stat)
