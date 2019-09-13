@@ -505,24 +505,24 @@ for plot_info in plot_info_list:
             gs = gridspec.GridSpec(2,1)
             gs.update(hspace=0.35)
         elif nsubplots > 2 and nsubplots <= 4:
-           fig = plt.figure(figsize=(15,12))
+           fig = plt.figure(figsize=(20,12))
            gs = gridspec.GridSpec(2,2)
-           gs.update(wspace=0.3, hspace=0.35)
+           gs.update(wspace=0.4, hspace=0.35)
         elif nsubplots > 4 and nsubplots <= 6:
-            fig = plt.figure(figsize=(19,12))
+            fig = plt.figure(figsize=(30,12))
             gs = gridspec.GridSpec(2,3)
-            gs.update(wspace=0.3, hspace=0.35)
+            gs.update(wspace=0.4, hspace=0.35)
         elif nsubplots > 6 and nsubplots <= 9:
-            fig = plt.figure(figsize=(19,12))
+            fig = plt.figure(figsize=(30,18))
             gs = gridspec.GridSpec(3,3)
-            gs.update(wspace=0.35, hspace=0.35)
+            gs.update(wspace=0.4, hspace=0.35)
         if stat == 'fbar_obar':
             logger.debug("Plotting observations")
             obs_stat_values_array = stat_values_array[1,0,:,:]
             ax = plt.subplot(gs[0])
             ax.grid(True)
             ax.tick_params(axis='x', pad=15)
-            ax.set_xlabel(date_type.title()+' Date', labelpad=30)
+            ax.set_xlabel(date_type.title()+' Date', labelpad=20)
             ax.set_xlim([plot_time_dates[0],plot_time_dates[-1]])
             ax.xaxis.set_major_locator(
                 md.DayLocator(interval=date_tick_intvl)
@@ -530,7 +530,7 @@ for plot_info in plot_info_list:
             ax.xaxis.set_major_formatter(md.DateFormatter('%d%b%Y'))
             ax.xaxis.set_minor_locator(md.DayLocator())
             ax.tick_params(axis='y', pad=15)
-            ax.set_ylabel('Pressure Level (hPa)', labelpad=30)
+            ax.set_ylabel('Pressure Level (hPa)', labelpad=20)
             ax.set_yscale('log')
             ax.invert_yaxis()
             ax.minorticks_off()
@@ -564,7 +564,7 @@ for plot_info in plot_info_list:
                 ax = plt.subplot(gs[model_idx])
             ax.grid(True)
             ax.tick_params(axis='x', pad=15)
-            ax.set_xlabel(date_type.title()+' Date', labelpad=30)
+            ax.set_xlabel(date_type.title()+' Date', labelpad=20)
             ax.set_xlim([plot_time_dates[0],plot_time_dates[-1]])
             ax.xaxis.set_major_locator(
                 md.DayLocator(interval=date_tick_intvl)
@@ -572,7 +572,7 @@ for plot_info in plot_info_list:
             ax.xaxis.set_major_formatter(md.DateFormatter('%d%b%Y'))
             ax.xaxis.set_minor_locator(md.DayLocator())
             ax.tick_params(axis='y', pad=15)
-            ax.set_ylabel('Pressure Level (hPa)', labelpad=30)
+            ax.set_ylabel('Pressure Level (hPa)', labelpad=20)
             ax.set_yscale('log')
             ax.invert_yaxis()
             ax.minorticks_off()
