@@ -317,6 +317,9 @@ def get_relativedelta(value, default_unit='S'):
             Valid options match format 3600, 3600S, 60M, or 1H
           @param default_unit unit to assume if no letter is found at end of value
           @return relativedelta object containing offset time"""
+    if isinstance(value, int):
+        return get_relativedelta(str(value), default_unit)
+
     mult = 1
     reg = r'(-*)(\d+)([a-zA-Z]*)'
     match = re.match(reg, value)
@@ -434,7 +437,6 @@ def loop_over_times_and_call(config, processes):
 
         loop_time += time_interval
 
-
 def get_lead_sequence(config, input_dict=None):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
         Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects"""
@@ -509,8 +511,7 @@ def get_lead_sequence(config, input_dict=None):
                     lead_seq.append(relativedelta(hours=current_lead))
                 current_lead += 24
 
-        return sorted(lead_seq, key=lambda rd: time_util.ti_get_seconds_from_relativedelta(rd,
-                                                                   input_dict['valid']))
+        return sorted(lead_seq, key=lambda rd: time_util.ti_get_seconds_from_relativedelta(rd, input_dict['valid']))
     else:
         return [0]
 
