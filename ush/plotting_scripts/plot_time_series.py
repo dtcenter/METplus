@@ -569,8 +569,7 @@ for plot_info in plot_info_list:
                                  marker='o', markersize=7,
                                  label='obs '+str(
                                      round(model_stat_values_array[1,:] \
-                                           .filled().mean()
-                                           ,3)
+                                           .mean(),3)
                                  )+' '+str(obs_count),
                                  zorder=4)
             count = (
@@ -583,7 +582,7 @@ for plot_info in plot_info_list:
                          marker='o', markersize=7,
                          label=model_plot_name+' '+str(
                              round(model_stat_values_array[0,:] \
-                             .filled().mean(),3)
+                             .mean(),3)
                          )+' '+str(count),
                          zorder=(nmodels-model_idx)+4)
         ax.legend(bbox_to_anchor=(1.025, 1.0, 0.375, 0.0), loc='upper right',
