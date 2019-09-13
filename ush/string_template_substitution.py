@@ -3,7 +3,7 @@
 """
 
 Program Name: string_template_substitution.py
-Contact(s): Julie Prestopnik, NCAR RAL DTC, jpresto@ucar.edu
+Contact(s): Julie Prestopnik, NCAR RAL DTC, jpresto@ucar.edu, George McCabe
 Abstract: Supporting functions for parsing and creating filename templates
 History Log:  Initial version for METPlus
 Usage: Usually imported in other Python code for individual function calls
@@ -19,6 +19,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 import time_util
+import met_util as util
 
 TEMPLATE_IDENTIFIER_BEGIN = "{"
 TEMPLATE_IDENTIFIER_END = "}"
@@ -95,7 +96,7 @@ def get_seconds_from_template(split_item):
         return
 
     seconds = shift_split_string[1]
-    return int(seconds)
+    return int(util.get_seconds_from_string(seconds, default_unit='S'))
 
 def format_one_time_item(item, time_str, unit):
     """!Determine precision of time offset value and format
