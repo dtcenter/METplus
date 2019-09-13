@@ -356,39 +356,33 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @return True if full set of files to build accumulation is found
         """
         in_template = self.c_dict[data_src+'_INPUT_TEMPLATE']
-#        valid_time = time_info['valid_fmt']
 
         if self.c_dict[data_src + '_IS_DAILY_FILE'] is True:
             return self.get_daily_file(time_info, accum, data_src, in_template)
 
         search_time = time_info['valid']
-        # last time to search is the goal accumulation subtracted from
-        # the valid time, then add back the smallest accumulation that is available
+        # last time to search is the output accumulation subtracted from the
+        # valid time, then add back the smallest accumulation that is available
         # in the input. This is done because data contains an accumulation from
         # the file/field time backwards in time
         # If building 6 hour accumulation from 1 hour accumulation files,
         # last time to process is valid - 6 + 1
-#        last_time = time_info['valid'] - datetime.timedelta(hours=(int(accum) - 1))
         accum_relative = util.get_relativedelta(accum, 'H')
         # using 1 hour for now
-        last_time = time_info['valid'] - accum_relative + datetime.timedelta(hours=1)
+        smallest_input_accum = min([lev['amount'] for lev in self.c_dict['LEVEL_DICT_LIST']])
+        last_time = time_info['valid'] -\
+            accum_relative +\
+            datetime.timedelta(seconds=smallest_input_accum)
 
-        # TODO: handle accum_string here
-#        total_accum = accum
         total_accum = time_util.ti_get_seconds_from_relativedelta(accum_relative,
                                                                   time_info['valid'])
-        '''
-        level = int(self.c_dict[data_src+'_LEVEL'])
-        if level == -1:
-            search_accum = accum
-        else:
-            search_accum = level
-        '''
+
+        # log the input and output accumulation information
         search_accum_list = ' or '.join([time_util.ti_get_lead_string(lev['amount'],plural=False) for lev in self.c_dict['LEVEL_DICT_LIST']])
-#        self.logger.debug(f"Trying to build a {total_accum} accumulation starting with {search_accum}")
-        self.logger.debug(f"Trying to build a {time_util.ti_get_lead_string(total_accum, plural=False)} accumulation using {search_accum_list}")
+        self.logger.debug(f"Trying to build a {time_util.ti_get_lead_string(total_accum, plural=False)} accumulation using {search_accum_list} input data")
         # loop backwards in time until you have a full set of accum
         while last_time <= search_time:
+            found = False
             if is_forecast:
                 if total_accum == 0:
                     break
@@ -398,57 +392,35 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                     break
 
                 # find accum field in file that is less than search accumulation
-#                field_name, s_accum = self.find_highest_accum_field(data_src, search_accum_list, search_time)
                 field_name = self.c_dict['LEVEL_DICT_LIST'][0]['name']
                 s_accum = util.time_string_to_met_time(self.c_dict['LEVEL_DICT_LIST'][0]['amount'])
 
-#                if self.get_data_type(data_src) == "GRIB":
-#                    addon = search_accum
-#                else:
-#                    if field_name == '':
-#                        break
-
+                found = True
                 addon = self.get_addon(field_name, s_accum)
-
                 self.add_input_file(search_file, addon)
                 self.logger.debug(f"Adding input file: {search_file}")
-                search_time = search_time - datetime.timedelta(seconds=s_accum)
-
-                # keep same search accumulation if specified, otherwise decrease it by
-                # the accumulation that was found
-#                if level == -1:
-#                    search_accum -= s_accum
-
-                total_accum -= s_accum
+                s_accum_seconds = util.get_seconds_from_string(s_accum, 'H')
+                search_time = search_time - datetime.timedelta(seconds=s_accum_seconds)
+                total_accum -= s_accum_seconds
             else:  # not looking for forecast files
                 # look for biggest accum that fits search
-#                while search_accum > 0:
-                found = False
                 for level_dict in self.c_dict['LEVEL_DICT_LIST']:
+                    if level_dict['amount'] > total_accum:
+                        continue
+
                     search_file = self.find_input_file(in_template, search_time,
                                                        level_dict['amount'], data_src)
-#                                                       search_accum, data_src)
 
                     # if found a file, add it to input list with info
                     if search_file is not None:
-#                        addon = self.get_addon(data_src, search_accum, search_time)
                         addon = self.get_addon(level_dict['name'], level_dict['amount'])
-#                        if addon == '':
-                            # could not find NetCDF field to process
-#                            search_accum -= 1
-#                            continue
-
                         # add file to input list and step back in time to find more data
                         self.add_input_file(search_file, addon)
                         self.logger.debug(f"Adding input file: {search_file}")
-#                        search_time = search_time - datetime.timedelta(hours=search_accum)
                         search_time = search_time - datetime.timedelta(seconds=level_dict['amount'])
-#                        total_accum -= search_accum
                         total_accum -= level_dict['amount']
                         found = True
                         break
-                    # if file/field not found, look for a smaller accumulation
-#                    search_accum -= 1
 
             # if we don't need any more accumulation, break out of loop and run
             if total_accum == 0:
@@ -457,13 +429,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             # if we still need to find more accum but we couldn't find it, fail
             if not found:
                 return False
-
-            # if [FCST/OBS]_LEVEL is used, use that value
-            # else use accumulation amount left to find
-#            if level == -1:
-#                search_accum = total_accum
-#            else:
-#                search_accum = level
 
         # fail if no files were found or if we didn't find
         #  the entire accumulation needed
