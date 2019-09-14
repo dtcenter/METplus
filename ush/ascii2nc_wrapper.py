@@ -23,7 +23,6 @@ from command_builder import CommandBuilder
 @endcode
 '''
 
-
 class Ascii2NcWrapper(CommandBuilder):
     def __init__(self, config, logger):
         super(Ascii2NcWrapper, self).__init__(config, logger)
@@ -39,8 +38,51 @@ class Ascii2NcWrapper(CommandBuilder):
         c_dict['OBS_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
                              'ASCII2NC_INPUT_TEMPLATE')
+        c_dict['TIME_SUMMARY_FLAG'] = str(self.config.getbool('config',
+                                                      'ASCII2NC_TIME_SUMMARY_FLAG'))
+        c_dict['TIME_SUMMARY_BEG'] = self.config.getstr('config',
+                                                    'ASCII2NC_TIME_SUMMARY_BEG')
+        c_dict['TIME_SUMMARY_END'] = self.config.getstr('config',
+                                                    'ASCII2NC_TIME_SUMMARY_END')
+        c_dict['TIME_SUMMARY_VAR_NAMES'] = str(util.getlist(
+            self.config.getstr('config', 'ASCII2NC_TIME_SUMMARY_VAR_NAMES')))
+        c_dict['TIME_SUMMARY_TYPES'] = str(util.getlist(
+            self.config.getstr('config', 'ASCII2NC_TIME_SUMMARY_TYPES')))
 
         return c_dict
+
+    def set_environment_variables(self, time_info):
+        """!Set environment variables that will be read by the MET config file.
+            Reformat as needed. Print list of variables that were set and their values.
+            Args:
+              @param time_info dictionary containing timing info from current run"""
+        # list of fields to print to log
+        print_list = ["TIME_SUMMARY_FLAG", "TIME_SUMMARY_BEG",
+                      "TIME_SUMMARY_END", "TIME_SUMMARY_VAR_NAMES",
+                      "TIME_SUMMARY_TYPES" ]
+
+        # set environment variables needed for MET application
+        self.add_env_var('TIME_SUMMARY_FLAG',
+                         self.c_dict['TIME_SUMMARY_FLAG'])
+        self.add_env_var('TIME_SUMMARY_BEG',
+                         self.c_dict['TIME_SUMMARY_BEG'])
+        self.add_env_var('TIME_SUMMARY_END',
+                         self.c_dict['TIME_SUMMARY_END'])
+        self.add_env_var('TIME_SUMMARY_VAR_NAMES',
+                         self.c_dict['TIME_SUMMARY_VAR_NAMES'])
+        self.add_env_var('TIME_SUMMARY_TYPES',
+                         self.c_dict['TIME_SUMMARY_TYPES'])
+
+        # set user environment variables
+        self.set_user_environment(time_info)
+
+        # send environment variables to logger
+        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_user_env_items()
+        for l in print_list:
+            self.print_env_item(l)
+        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_env_copy(print_list)
 
     def get_command(self):
         cmd = self.app_path
