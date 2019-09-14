@@ -95,10 +95,10 @@ class PB2NCWrapper(CommandBuilder):
                                                     'PB2NC_TIME_SUMMARY_BEG')
         c_dict['TIME_SUMMARY_END'] = self.config.getstr('config',
                                                     'PB2NC_TIME_SUMMARY_END')
-        c_dict['TIME_SUMMARY_VAR_NAMES'] = util.getlist(
-            self.config.getstr('config', 'PB2NC_TIME_SUMMARY_VAR_NAMES'))
-        c_dict['TIME_SUMMARY_TYPES'] = util.getlist(
-            self.config.getstr('config', 'PB2NC_TIME_SUMMARY_TYPES'))
+        c_dict['TIME_SUMMARY_VAR_NAMES'] = str(util.getlist(
+            self.config.getstr('config', 'PB2NC_TIME_SUMMARY_VAR_NAMES')))
+        c_dict['TIME_SUMMARY_TYPES'] = str(util.getlist(
+            self.config.getstr('config', 'PB2NC_TIME_SUMMARY_TYPES')))
 
         c_dict['OBS_WINDOW_BEGIN'] = \
           self.config.getseconds('config', 'PB2NC_WINDOW_BEGIN',
@@ -181,9 +181,9 @@ class PB2NCWrapper(CommandBuilder):
         self.add_env_var('TIME_SUMMARY_END',
                          self.c_dict['TIME_SUMMARY_END'])
         self.add_env_var('TIME_SUMMARY_VAR_NAMES',
-                         str(self.c_dict['TIME_SUMMARY_VAR_NAMES']))
+                         self.c_dict['TIME_SUMMARY_VAR_NAMES'])
         self.add_env_var('TIME_SUMMARY_TYPES',
-                         str(self.c_dict['TIME_SUMMARY_TYPES']))
+                         self.c_dict['TIME_SUMMARY_TYPES'])
 
         # set user environment variables
         self.set_user_environment(time_info)
