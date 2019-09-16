@@ -9,7 +9,6 @@ import produtil
 import pytest
 import config_metplus
 from pb2nc_wrapper import PB2NCWrapper
-from config_wrapper import ConfigWrapper
 import met_util as util
 import time_util
 import datetime
@@ -62,7 +61,6 @@ def metplus_config():
         # Read in the configuration object CONFIG
         config = config_metplus.setup()
         logger = util.get_logger(config)
-        config = ConfigWrapper(config, logger)
         return config
 
     except Exception as e:
