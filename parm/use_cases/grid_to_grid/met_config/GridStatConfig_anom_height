@@ -69,7 +69,7 @@ obs = {
 //
 climo_mean = fcst;
 climo_mean = {
-   file_name = [ "${INPUT_BASE}/grid_to_grid/nwprod/fix/cmean_1d.1959${MET_VALID_HHMM}" ];
+   file_name = [ "${CLIMO_FILE}" ];
 
    regrid = {
       method     = BILIN;
