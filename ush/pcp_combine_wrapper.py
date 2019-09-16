@@ -244,22 +244,29 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         lead = int((diff.days * 24) // (data_interval))
         lead += int((diff).seconds // (data_interval*3600)) - 1
         search_time_info = { 'valid' : search_time }
-        fname = self.config.getraw('config',
-                              data_src + '_PCP_COMBINE_' + str(
-                                  accum) + '_FIELD_NAME', '')
-        fname = sts.StringSub(self.logger, fname, **search_time_info).do_string_sub()
-        if fname == '':
-            self.logger.error('NetCDF field name was not set in config: {}'
-                              .format(data_src+'_PCP_COMBINE_'+str(accum)+'_FIELD_NAME'))
+
+        # get name of input level item that matches the accumulation to extract from daily file
+        accum_seconds = util.get_seconds_from_string(accum, 'H')
+        level_dict_list = self.c_dict['LEVEL_DICT_LIST']
+        fname = next((item['name'] for item in level_dict_list if item['amount'] == accum_seconds), '-1')
+        # if accumulation was not found in levels dictionary list, error and return
+        if fname == '-1':
+            self.logger.error(f'Accumulation {accum} was not specified in the {data_src}'
+                              '_PCP_COMBINE_INPUT_LEVELS list')
             return False
 
-        addon = "'name=\"" + fname + "\";"
+        # if name was not set in the input levels list, use accumulation time in MET time format
+        if fname is None:
+            addon = util.time_string_to_met_time(accum, default_unit='S')
+        else:
+            fname = sts.StringSub(self.logger, fname, **search_time_info).do_string_sub()
+            addon = "'name=\"" + fname + "\";"
 
-        # if name is a python script, don't set level
-        if not util.is_python_script(fname):
-            addon += " level=\"(" + str(lead) + ",*,*)\";"
+            # if name is a python script, don't set level
+            if not util.is_python_script(fname):
+                addon += " level=\"(" + str(lead) + ",*,*)\";"
 
-        addon += "'"
+            addon += "'"
 
         self.add_input_file(search_file, addon)
         return True
