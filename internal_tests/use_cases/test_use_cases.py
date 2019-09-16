@@ -9,7 +9,6 @@ import config_launcher
 import time
 import calendar
 import met_util as util
-from config_wrapper import ConfigWrapper
 
 # TODO: move test results to separate file for readability
 
@@ -33,13 +32,13 @@ def get_params(param_a, param_b):
     (parm, infiles, moreopt) = config_launcher.parse_launch_args(params_a,
                                                                  None, None,
                                                                  logger)
-    p = ConfigWrapper(config_launcher.launch(infiles, moreopt), None)
+    p = config_launcher.launch(infiles, moreopt)
 
     # read B confs     
     (parm, infiles, moreopt) = config_launcher.parse_launch_args(params_b,
                                                                  None, None,
                                                                  logger)
-    p_b = ConfigWrapper(config_launcher.launch(infiles, moreopt), None)
+    p_b = config_launcher.launch(infiles, moreopt)
     return p, p_b
 
 
