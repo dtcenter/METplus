@@ -377,12 +377,18 @@ for plot_info in plot_info_list:
                     model_mean_file_data_leads = (
                         model_mean_file_data.loc[:]['LEADS'].tolist()
                     )
-                    fcst_var_units_plot_title = (
-                        model_mean_file_data.loc[0]['FCST_UNITS']
-                    )
-                    obs_var_units_plot_title = (
-                        model_mean_file_data.loc[0]['OBS_UNITS']
-                    )
+                    if model_mean_file_data.loc[0]['FCST_UNITS'] == '[NA]':
+                        fcst_var_units_plot_title = ''
+                    else:
+                        fcst_var_units_plot_title = (
+                            model_mean_file_data.loc[0]['FCST_UNITS']
+                        )
+                    if model_mean_file_data.loc[0]['OBS_UNITS'] == '[NA]':
+                        obs_var_units_plot_title = ''
+                    else:
+                        obs_var_units_plot_title = (
+                            model_mean_file_data.loc[0]['OBS_UNITS']
+                        )
                     if fcst_lead in model_mean_file_data_leads:
                         model_mean_file_data_lead_idx = (
                             model_mean_file_data_leads.index(fcst_lead)

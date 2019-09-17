@@ -20,6 +20,7 @@ import itertools
 import warnings
 import logging
 import datetime
+import math
 import re
 import matplotlib
 matplotlib.use('agg')
@@ -409,12 +410,21 @@ for plot_info in plot_info_list:
                     pd.DataFrame(np.nan, index=model_data_now_index,
                                  columns=stat_file_line_type_columns)
                 )
-                fcst_var_units_list.append(
-                    model_now_stat_file_data.loc[0]['FCST_UNITS']
+                model_now_stat_file_data.fillna(
+                    {'FCST_UNITS':'NA', 'OBS_UNITS':'NA', 'VX_MASK':'NA'},
+                    inplace=True
                 )
-                obs_var_units_list.append(
-                    model_now_stat_file_data.loc[0]['OBS_UNITS']
-                )
+                if float(met_version) >= 8.1:
+                    model_now_fcst_units = (
+                        model_now_stat_file_data.loc[0]['FCST_UNITS']
+                    )
+                    model_now_obs_units = (      
+                        model_now_stat_file_data.loc[0]['OBS_UNITS']
+                    )
+                    if model_now_fcst_units != 'NA':
+                        fcst_var_units_list.append(model_now_fcst_units)
+                    if model_now_obs_units != 'NA':
+                        obs_var_units_list.append(model_now_obs_units)
                 for expected_date in expected_stat_file_dates:
                     if expected_date in \
                             model_now_stat_file_data_fcst_valid_dates:
@@ -442,12 +452,18 @@ for plot_info in plot_info_list:
             model_data = pd.concat([model_data, model_now_data])
         else:
             model_data = model_now_data
-    fcst_var_units_plot_title = (
-        '['+', '.join(list(set(fcst_var_units_list)))+']'
-    )
-    obs_var_units_plot_title = (
-        '['+', '.join(list(set(obs_var_units_list)))+']'
-    )
+    if fcst_var_units_list != []:
+        fcst_var_units_plot_title = (
+            '['+', '.join(list(set(fcst_var_units_list)))+']'
+        )
+    else:
+        fcst_var_units_plot_title = ''
+    if obs_var_units_list != []:
+        obs_var_units_plot_title = (
+            '['+', '.join(list(set(obs_var_units_list)))+']'
+        )
+    else:
+        obs_var_units_plot_title = ''
     # Calculate statistics and plots
     logger.info("Calculating and plotting statistics")
     for stat in stats_list:
@@ -484,8 +500,14 @@ for plot_info in plot_info_list:
                          +fcst_lead+" mean to file: "+lead_mean_file)
             with open(lead_mean_file, 'a') as file2write:
                 file2write.write(fcst_lead)
-                file2write.write(' '+fcst_var_units_plot_title)
-                file2write.write(' '+obs_var_units_plot_title)
+                if fcst_var_units_plot_title != '':
+                    file2write.write(' '+fcst_var_units_plot_title)
+                else:
+                    file2write.write(' [NA]')
+                if obs_var_units_plot_title != '':
+                    file2write.write(' '+obs_var_units_plot_title)
+                else:
+                    file2write.write(' [NA]')
                 for l in range(len(model_stat_values_array[:,0])):
                     file2write.write(
                         ' '+str(model_stat_values_array[l,:].mean())
@@ -558,17 +580,25 @@ for plot_info in plot_info_list:
                 ax.tick_params(axis='y', pad=15)
                 ax.set_ylabel(stat_plot_name, labelpad=30)
                 if stat == 'fbar_obar':
+                    obs_stat_values_array = model_stat_values_array[1,:]
                     obs_count = (
-                        len(model_stat_values_array[1,:]) 
-                        - np.ma.count_masked(model_stat_values_array[1,:])
+                        len(obs_stat_values_array) 
+                        - np.ma.count_masked(obs_stat_values_array)
                     )
-                    ax.plot_date(plot_time_dates,
-                                 model_stat_values_array[1,:],
+                    plot_time_dates_m = np.ma.masked_where(
+                        np.ma.getmask(obs_stat_values_array), plot_time_dates
+                    )
+                    plot_time_dates_mc = np.ma.compressed(plot_time_dates_m)
+                    obs_stat_values_mc = np.ma.compressed(
+                        obs_stat_values_array
+                    )
+                    ax.plot_date(plot_time_dates_mc,
+                                 obs_stat_values_mc,
                                  color='#888888',
                                  ls='-', linewidth=2.0,
                                  marker='o', markersize=7,
                                  label='obs '+str(
-                                     round(model_stat_values_array[1,:] \
+                                     round(obs_stat_values_array \
                                            .mean(),3)
                                  )+' '+str(obs_count),
                                  zorder=4)
@@ -576,7 +606,14 @@ for plot_info in plot_info_list:
                 len(model_stat_values_array[0,:])
                 - np.ma.count_masked(model_stat_values_array[0,:])
             )
-            ax.plot_date(plot_time_dates, model_stat_values_array[0,:], 
+            plot_time_dates_m = np.ma.masked_where(
+                np.ma.getmask(model_stat_values_array[0,:]), plot_time_dates
+            )
+            plot_time_dates_mc = np.ma.compressed(plot_time_dates_m)
+            model_stat_values_mc = np.ma.compressed(
+                model_stat_values_array[0,:]
+            )
+            ax.plot_date(plot_time_dates_mc, model_stat_values_mc, 
                          color=colors[model_idx], 
                          ls='-', linewidth=2.0,
                          marker='o', markersize=7,

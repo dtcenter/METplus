@@ -427,12 +427,23 @@ for plot_info in plot_info_list:
                         pd.DataFrame(np.nan, index=model_level_now_data_index,
                                      columns=stat_file_line_type_columns)
                     )
-                    fcst_var_units_list.append(
-                        model_level_now_stat_file_data.loc[0]['FCST_UNITS']
+                    model_level_now_stat_file_data.fillna(
+                        {'FCST_UNITS':'NA', 'OBS_UNITS':'NA', 'VX_MASK':'NA'},
+                        inplace=True
                     )
-                    obs_var_units_list.append(
-                        model_level_now_stat_file_data.loc[0]['OBS_UNITS']
-                    )
+                    if float(met_version) >= 8.1:
+                        model_now_fcst_units = (
+                            model_level_now_stat_file_data \
+                            .loc[0]['FCST_UNITS']
+                        )
+                        model_now_obs_units = (
+                            model_level_now_stat_file_data \
+                            .loc[0]['OBS_UNITS']
+                        )
+                        if model_now_fcst_units != 'NA':
+                            fcst_var_units_list.append(model_now_fcst_units)
+                        if model_now_obs_units != 'NA':
+                            obs_var_units_list.append(model_now_obs_units)
                     for expected_date in expected_stat_file_dates:
                         if expected_date in \
                                 model_level_now_stat_file_data_fcstvaliddates:
@@ -472,12 +483,18 @@ for plot_info in plot_info_list:
             model_data = pd.concat([model_data, model_now_data])
         else:
             model_data = model_now_data
-    fcst_var_units_plot_title = (
-        '['+', '.join(list(set(fcst_var_units_list)))+']'
-    )
-    obs_var_units_plot_title = (
-        '['+', '.join(list(set(obs_var_units_list)))+']'
-    )
+    if fcst_var_units_list != []:
+        fcst_var_units_plot_title = (
+            '['+', '.join(list(set(fcst_var_units_list)))+']'
+        )
+    else:
+        fcst_var_units_plot_title = ''
+    if obs_var_units_list != []:
+        obs_var_units_plot_title = (
+            '['+', '.join(list(set(obs_var_units_list)))+']'
+        )
+    else:
+        obs_var_units_plot_title = ''
     # Calculate statistics and plots
     logger.info("Calculating and plotting statistics")
     for stat in stats_list:
