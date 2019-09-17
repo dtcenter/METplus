@@ -77,7 +77,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         c_dict[d_type+'_IS_DAILY_FILE'] = self.config.getbool('config', d_type+'_PCP_COMBINE_IS_DAILY_FILE', False)
         c_dict[d_type+'_LEVEL'] = self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_LEVEL', '-1')
         c_dict[d_type+'_LEVELS'] = util.getlist(self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_LEVELS', ''))
-        c_dict[d_type+'_LEVEL_NAMES'] = util.getlist(self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_LEVEL_NAMES', ''))
+        c_dict[d_type+'_LEVEL_NAMES'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_LEVEL_NAMES', ''))
+
         c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
         c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_INPUT_TEMPLATE')
@@ -290,8 +291,10 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return d_type
 
 
-    def get_addon(self, field_name, search_accum):
+    def get_addon(self, field_name, search_accum, search_time):
         if field_name is not None:
+            # perform string substitution on name in case it uses filename templates
+            field_name = sts.StringSub(self.logger, field_name, valid=search_time).do_string_sub()
             addon = "'name=\"" + field_name + "\";"
             if not util.is_python_script(field_name):
                addon += " level=\"(0,*,*)\";"
@@ -300,31 +303,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             addon = util.time_string_to_met_time(str(search_accum), default_unit='S')
 
         return addon
-        d_type = self.get_data_type(data_src)
-        if d_type == "GRIB":
-            return search_accum
-        # if NETCDF, GEMPAK, or PYTHON
-        # create time_info object from search time
-        search_time_info = { 'valid' : search_time }
-        field_name = self.config.getraw('config', data_src +
-                               '_PCP_COMBINE_' + str(search_accum) +
-                               '_FIELD_NAME', '')
-        field_name = sts.StringSub(self.logger, field_name, **search_time_info).do_string_sub()
-
-        if field_name == '':
-            return ''
-
-        addon = "'name=\"" + field_name + "\";"
-        if not util.is_python_script(field_name):
-            addon += " level=\"(0,*,*)\";"
-        addon += "'"
-        return addon
 
     def find_input_file(self, in_template, search_time, search_accum, data_src):
         fSts = sts.StringSub(self.logger,
                              in_template,
                              valid=search_time,
-#                             level=(int(search_accum)*3600))
                              level=(int(search_accum)))
         search_file = os.path.join(self.input_dir,
                                    fSts.do_string_sub())
@@ -332,24 +315,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return util.preprocess_file(search_file,
                                     self.c_dict[data_src+'_INPUT_DATATYPE'],
                                     self.config)
-
-    def find_highest_accum_field(self, data_src, s_accum, search_time):
-        if self.get_data_type(data_src) == "GRIB":
-            return '', s_accum
-
-        field_name = ''
-        search_time_info = { 'valid' : search_time }
-        while s_accum > 0:
-            field_name = self.config.getraw('config',
-                                   data_src + '_PCP_COMBINE_' + str(s_accum) +
-                                   '_FIELD_NAME', '')
-            field_name = sts.StringSub(self.logger, field_name, **search_time_info).do_string_sub()
-            if field_name != '':
-                break
-
-            s_accum -= 1
-
-        return field_name, s_accum
 
     def get_accumulation(self, time_info, accum, data_src,
                          is_forecast=False):
@@ -403,7 +368,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 s_accum = util.time_string_to_met_time(self.c_dict['LEVEL_DICT_LIST'][0]['amount'])
 
                 found = True
-                addon = self.get_addon(field_name, s_accum)
+                addon = self.get_addon(field_name, s_accum, search_time)
                 self.add_input_file(search_file, addon)
                 self.logger.debug(f"Adding input file: {search_file}")
                 s_accum_seconds = util.get_seconds_from_string(s_accum, 'H')
@@ -420,7 +385,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
                     # if found a file, add it to input list with info
                     if search_file is not None:
-                        addon = self.get_addon(level_dict['name'], level_dict['amount'])
+                        addon = self.get_addon(level_dict['name'], level_dict['amount'], search_time)
                         # add file to input list and step back in time to find more data
                         self.add_input_file(search_file, addon)
                         self.logger.debug(f"Adding input file: {search_file}")
@@ -856,6 +821,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         level_dict_list = []
         for level, name in zip(level_list, name_list):
+            # convert accum amount to seconds from time string
             amount = util.get_seconds_from_string(level, 'H', time_info['valid'])
             level_dict_list.append({'amount' : amount, 'name' : name})
 
