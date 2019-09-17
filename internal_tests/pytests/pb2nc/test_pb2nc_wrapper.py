@@ -150,13 +150,12 @@ def test_get_command(infiles):
     pb.outdir = pb.config.getdir('OUTPUT_BASE')
     outpath = os.path.join(pb.outdir, pb.outfile)
     pb.infiles = infiles
-    pb.c_dict['CONFIG_FILE'] = ''
-
+    config_file = pb.c_dict['CONFIG_FILE']
     cmd = pb.get_command()
     if not infiles:
         expected_cmd = None
     else:
-        expected_cmd = pb.app_path + ' -v 2 ' + infiles[0] + ' ' + outpath
+        expected_cmd = pb.app_path + ' -v 2 ' + infiles[0] + ' ' + outpath + ' ' + config_file
         if len(infiles) > 1:
             for infile in infiles[1:]:
                 expected_cmd += ' -pbfile ' + infile
