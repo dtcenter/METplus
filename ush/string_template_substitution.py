@@ -19,7 +19,6 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 import time_util
-import met_util as util
 
 TEMPLATE_IDENTIFIER_BEGIN = "{"
 TEMPLATE_IDENTIFIER_END = "}"
@@ -96,7 +95,7 @@ def get_seconds_from_template(split_item):
         return
 
     seconds = shift_split_string[1]
-    return int(util.get_seconds_from_string(seconds, default_unit='S'))
+    return int(time_util.get_seconds_from_string(seconds, default_unit='S'))
 
 def format_one_time_item(item, time_str, unit):
     """!Determine precision of time offset value and format

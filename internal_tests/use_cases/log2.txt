@@ -1,0 +1,289 @@
+09/17 00:48:01.935 master_metplus (master_metplus.py:69) INFO: Starting METplus v2.2-dev
+
+09/17 00:48:01.935 metplus (config_metplus.py:79) INFO: Starting METplus configuration setup.
+09/17 00:48:01.936 metplus (config_launcher.py:174) INFO: Set [dir] OUTPUT_BASE = '/d1/mccabe/test-b/ruc-vs-s2grib.conf'
+09/17 00:48:01.937 metplus (config_launcher.py:222) INFO: /d1/mccabe/METplus.develop/parm/metplus_config/metplus_system.conf: Parsed this file
+09/17 00:48:01.937 metplus (config_launcher.py:222) INFO: /d1/mccabe/METplus.develop/parm/metplus_config/metplus_data.conf: Parsed this file
+09/17 00:48:01.938 metplus (config_launcher.py:222) INFO: /d1/mccabe/METplus.develop/parm/metplus_config/metplus_runtime.conf: Parsed this file
+09/17 00:48:01.938 metplus (config_launcher.py:222) INFO: /d1/mccabe/METplus.develop/parm/metplus_config/metplus_logging.conf: Parsed this file
+09/17 00:48:01.939 metplus (config_launcher.py:222) INFO: /d1/mccabe/METplus.b/parm/use_cases/qpf/examples/ruc-vs-s2grib.conf: Parsed this file
+09/17 00:48:01.940 metplus (config_launcher.py:222) INFO: /d1/mccabe/METplus/internal_tests/use_cases/system.b.conf: Parsed this file
+09/17 00:48:01.940 metplus (config_launcher.py:233) INFO: Override: dir.OUTPUT_BASE='/d1/mccabe/test-b/ruc-vs-s2grib.conf'
+09/17 00:48:01.941 metplus (met_util.py:648) INFO: Adding: config.LOG_TIMESTAMP='20190917'
+09/17 00:48:01.941 metplus (met_util.py:654) INFO: Replace [config] LOG_METPLUS with '/d1/mccabe/test-b/ruc-vs-s2grib.conf/logs/master_metplus.log.20190917'
+09/17 00:48:01.942 metplus (fileop.py:238) INFO: /d1/mccabe/test-b/ruc-vs-s2grib.conf: make directory and parents
+09/17 00:48:01.942 metplus (config_launcher.py:314) INFO: Setting [dir] METPLUS_BASE to /d1/mccabe/METplus.develop
+09/17 00:48:01.943 metplus (config_launcher.py:314) INFO: Setting [dir] PARM_BASE to /d1/mccabe/METplus.develop/parm
+09/17 00:48:01.943 metplus (config_launcher.py:322) INFO: METPLUS_CONF: /d1/mccabe/test-b/ruc-vs-s2grib.conf/metplus_final.conf written here.
+09/17 00:48:01.943 metplus (config_metplus.py:143) INFO: Completed METplus configuration setup.
+09/17 00:48:01.943 metplus (master_metplus.py:84) INFO: Running METplus v2.2-dev
+ called with command: /d1/mccabe/METplus.b/ush/master_metplus.py -c /d1/mccabe/METplus.b/parm/use_cases/qpf/examples/ruc-vs-s2grib.conf -c /d1/mccabe/METplus/internal_tests/use_cases/system.b.conf -c dir.OUTPUT_BASE=/d1/mccabe/test-b/ruc-vs-s2grib.conf
+09/17 00:48:01.945 metplus (config_launcher.py:518) DEBUG: Setting [config] PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS to default value: False.
+09/17 00:48:01.945 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_PCP_COMBINE_RUN to default value: False.
+09/17 00:48:01.945 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_MIN_FORECAST to default value: 0.
+09/17 00:48:01.946 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_MAX_FORECAST to default value: 256.
+09/17 00:48:01.946 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_INPUT_DATATYPE to default value: .
+09/17 00:48:01.946 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_DATA_INTERVAL to default value: 1.
+09/17 00:48:01.946 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_TIMES_PER_FILE to default value: -1.
+09/17 00:48:01.946 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_INPUT_LEVEL to default value: -1.
+09/17 00:48:01.946 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_STAT_LIST to default value: .
+09/17 00:48:01.947 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_DERIVE_LOOKBACK to default value: 0.
+09/17 00:48:01.947 metplus (config_launcher.py:518) DEBUG: Setting [config] REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS to default value: False.
+09/17 00:48:01.947 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_REGRID_DATA_PLANE_RUN to default value: False.
+09/17 00:48:01.948 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_IS_PROB to default value: False.
+09/17 00:48:01.948 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_WINDOW_BEGIN to default value: 0.
+09/17 00:48:01.948 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_WINDOW_END to default value: 0.
+09/17 00:48:01.948 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_WINDOW_BEGIN to default value: 0.
+09/17 00:48:01.948 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_WINDOW_END to default value: 0.
+09/17 00:48:01.948 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_FILE_WINDOW_BEGIN to default value: 0.
+09/17 00:48:01.948 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_FILE_WINDOW_END to default value: 0.
+09/17 00:48:01.949 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_FILE_WINDOW_BEGIN to default value: 0.
+09/17 00:48:01.949 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_FILE_WINDOW_END to default value: 0.
+09/17 00:48:01.949 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_GRID_STAT_INPUT_DATATYPE to default value: .
+09/17 00:48:01.949 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_GRID_STAT_INPUT_DATATYPE to default value: .
+09/17 00:48:01.949 metplus (config_launcher.py:518) DEBUG: Setting [config] GRID_STAT_ONCE_PER_FIELD to default value: False.
+09/17 00:48:01.949 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_GRID_STAT_PROB_THRESH to default value: ==0.1.
+09/17 00:48:01.950 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_GRID_STAT_PROB_THRESH to default value: ==0.1.
+09/17 00:48:01.950 metplus (config_launcher.py:518) DEBUG: Setting [config] GRID_STAT_NEIGHBORHOOD_WIDTH to default value: .
+09/17 00:48:01.950 metplus (config_launcher.py:518) DEBUG: Setting [config] GRID_STAT_NEIGHBORHOOD_SHAPE to default value: .
+09/17 00:48:01.954 metplus (met_util.py:340) INFO: ****************************************
+09/17 00:48:01.955 metplus (met_util.py:341) INFO: * Running METplus
+09/17 00:48:01.955 metplus (met_util.py:343) INFO: *  at init time: 200508070000
+09/17 00:48:01.955 metplus (met_util.py:350) INFO: ****************************************
+09/17 00:48:01.955 metplus (config_launcher.py:518) DEBUG: Setting [config] LEAD_SEQ_MIN to default value: 0.
+09/17 00:48:01.955 metplus (config_launcher.py:518) DEBUG: Setting [config] LEAD_SEQ_MAX to default value: 4000Y.
+09/17 00:48:01.955 metplus.PcpCombine (reformat_gridded_wrapper.py:73) INFO: Processing OBS data
+09/17 00:48:01.956 metplus.PcpCombine (reformat_gridded_wrapper.py:81) INFO: Processing forecast lead 3 hours
+09/17 00:48:01.959 metplus.PcpCombine (pcp_combine_wrapper.py:354) DEBUG: Trying to build a 3 hour accumulation using 1 hour input data
+09/17 00:48:01.960 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080703.Grb_G212
+09/17 00:48:01.960 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080702.Grb_G212
+09/17 00:48:01.960 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080701.Grb_G212
+09/17 00:48:01.961 metplus.PcpCombine (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/pcp_combine -v 2 -name APCP_03 -add /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080703.Grb_G212 01 /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080702.Grb_G212 01 /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080701.Grb_G212 01 /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/bucket/20050807/ST2ml2005080703_A03h
+09/17 00:48:01.963 metplus.PcpCombine (command_runner.py:123) INFO: app_name is: pcp_combine, output sent to: /d1/mccabe/test-b/ruc-vs-s2grib.conf/logs/pcp_combine.log_20190917
+09/17 00:48:01.964 mpi_impl (__init__.py:236) INFO: srun: cannot import: No module named 'produtil.mpi_impl.srun_pack_groups'
+09/17 00:48:01.965 mpi_impl (__init__.py:250) INFO: inside_aprun: cannot import: bad magic number in 'produtil.mpi_impl.inside_aprun': b'\x03\xf3\r\n'
+09/17 00:48:01.965 mpi_impl (__init__.py:256) INFO: lsf_cray_intel: cannot import: bad magic number in 'produtil.mpi_impl.lsf_cray_intel': b'\x03\xf3\r\n'
+09/17 00:48:01.965 mpi_impl (__init__.py:262) INFO: impi: cannot import: bad magic number in 'produtil.mpi_impl.impi': b'\x03\xf3\r\n'
+09/17 00:48:01.965 mpi_impl (__init__.py:268) INFO: mpirun_lsf: cannot import: bad magic number in 'produtil.mpi_impl.mpirun_lsf': b'\x03\xf3\r\n'
+09/17 00:48:01.965 mpi_impl (__init__.py:274) INFO: mpiexec_mpt: cannot import: bad magic number in 'produtil.mpi_impl.mpiexec_mpt': b'\x03\xf3\r\n'
+09/17 00:48:01.966 mpi_impl (__init__.py:280) INFO: mpiexec: cannot import: bad magic number in 'produtil.mpi_impl.mpiexec': b'\x03\xf3\r\n'
+09/17 00:48:01.967 mpi_impl (__init__.py:349) INFO: srun: not detected: srun: cannot find executable
+09/17 00:48:01.967 metplus (config_launcher.py:518) DEBUG: Setting [config] DO_NOT_RUN_EXE to default value: False.
+09/17 00:48:02.373 metplus.PcpCombine (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/pcp_combine
+09/17 00:48:02.374 metplus.PcpCombine (reformat_gridded_wrapper.py:81) INFO: Processing forecast lead 6 hours
+09/17 00:48:02.377 metplus.PcpCombine (pcp_combine_wrapper.py:354) DEBUG: Trying to build a 3 hour accumulation using 1 hour input data
+09/17 00:48:02.378 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080706.Grb_G212
+09/17 00:48:02.379 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080705.Grb_G212
+09/17 00:48:02.380 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080704.Grb_G212
+09/17 00:48:02.380 metplus.PcpCombine (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/pcp_combine -v 2 -name APCP_03 -add /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080706.Grb_G212 01 /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080705.Grb_G212 01 /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080704.Grb_G212 01 /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/bucket/20050807/ST2ml2005080706_A03h
+09/17 00:48:02.384 metplus.PcpCombine (command_runner.py:123) INFO: app_name is: pcp_combine, output sent to: /d1/mccabe/test-b/ruc-vs-s2grib.conf/logs/pcp_combine.log_20190917
+09/17 00:48:02.787 metplus.PcpCombine (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/pcp_combine
+09/17 00:48:02.788 metplus.PcpCombine (reformat_gridded_wrapper.py:81) INFO: Processing forecast lead 9 hours
+09/17 00:48:02.790 metplus.PcpCombine (pcp_combine_wrapper.py:354) DEBUG: Trying to build a 3 hour accumulation using 1 hour input data
+09/17 00:48:02.791 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080709.Grb_G212
+09/17 00:48:02.792 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080708.Grb_G212
+09/17 00:48:02.792 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080707.Grb_G212
+09/17 00:48:02.793 metplus.PcpCombine (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/pcp_combine -v 2 -name APCP_03 -add /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080709.Grb_G212 01 /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080708.Grb_G212 01 /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080707.Grb_G212 01 /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/bucket/20050807/ST2ml2005080709_A03h
+09/17 00:48:02.796 metplus.PcpCombine (command_runner.py:123) INFO: app_name is: pcp_combine, output sent to: /d1/mccabe/test-b/ruc-vs-s2grib.conf/logs/pcp_combine.log_20190917
+09/17 00:48:03.200 metplus.PcpCombine (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/pcp_combine
+09/17 00:48:03.201 metplus.PcpCombine (reformat_gridded_wrapper.py:81) INFO: Processing forecast lead 12 hours
+09/17 00:48:03.203 metplus.PcpCombine (pcp_combine_wrapper.py:354) DEBUG: Trying to build a 3 hour accumulation using 1 hour input data
+09/17 00:48:03.204 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080712.Grb_G212
+09/17 00:48:03.204 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080711.Grb_G212
+09/17 00:48:03.205 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080710.Grb_G212
+09/17 00:48:03.206 metplus.PcpCombine (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/pcp_combine -v 2 -name APCP_03 -add /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080712.Grb_G212 01 /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080711.Grb_G212 01 /d1/METplus_Data/qpf/sample_obs/ST2ml/20050807/ST2ml2005080710.Grb_G212 01 /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/bucket/20050807/ST2ml2005080712_A03h
+09/17 00:48:03.209 metplus.PcpCombine (command_runner.py:123) INFO: app_name is: pcp_combine, output sent to: /d1/mccabe/test-b/ruc-vs-s2grib.conf/logs/pcp_combine.log_20190917
+09/17 00:48:03.613 metplus.PcpCombine (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/pcp_combine
+09/17 00:48:03.614 metplus.RegridDataPlane (reformat_gridded_wrapper.py:73) INFO: Processing OBS data
+09/17 00:48:03.615 metplus.RegridDataPlane (reformat_gridded_wrapper.py:81) INFO: Processing forecast lead 3 hours
+09/17 00:48:03.617 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_REGRID_DATA_PLANE_INPUT_DATATYPE to default value: .
+09/17 00:48:03.618 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_REGRID_DATA_PLANE_VAR1_INPUT_FIELD_NAME to default value: .
+09/17 00:48:03.618 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_REGRID_DATA_PLANE_VAR1_FIELD_NAME to default value: .
+09/17 00:48:03.618 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_REGRID_DATA_PLANE_VAR1_OUTPUT_FIELD_NAME to default value: .
+09/17 00:48:03.619 metplus.RegridDataPlane (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/regrid_data_plane -v 2 -field 'name="APCP_03"; level="(*,*)";' -method BUDGET -width 2 -name APCP_03 /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/bucket/20050807/ST2ml2005080703_A03h "/d1/METplus_Data/qpf/sample_fcst/2005080700/wrfprs_ruc13_12.tm00_G212"  /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/regrid/20050807/ST2ml2005080703_A03h
+09/17 00:48:03.622 metplus.RegridDataPlane (command_runner.py:123) INFO: app_name is: regrid_data_plane, output sent to: /d1/mccabe/test-b/ruc-vs-s2grib.conf/logs/regrid_data_plane.log_20190917
+09/17 00:48:04.426 metplus.RegridDataPlane (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/regrid_data_plane
+09/17 00:48:04.428 metplus.RegridDataPlane (reformat_gridded_wrapper.py:81) INFO: Processing forecast lead 6 hours
+09/17 00:48:04.431 metplus.RegridDataPlane (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/regrid_data_plane -v 2 -field 'name="APCP_03"; level="(*,*)";' -method BUDGET -width 2 -name APCP_03 /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/bucket/20050807/ST2ml2005080706_A03h "/d1/METplus_Data/qpf/sample_fcst/2005080700/wrfprs_ruc13_12.tm00_G212"  /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/regrid/20050807/ST2ml2005080706_A03h
+09/17 00:48:04.434 metplus.RegridDataPlane (command_runner.py:123) INFO: app_name is: regrid_data_plane, output sent to: /d1/mccabe/test-b/ruc-vs-s2grib.conf/logs/regrid_data_plane.log_20190917
+09/17 00:48:05.238 metplus.RegridDataPlane (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/regrid_data_plane
+09/17 00:48:05.239 metplus.RegridDataPlane (reformat_gridded_wrapper.py:81) INFO: Processing forecast lead 9 hours
+09/17 00:48:05.242 metplus.RegridDataPlane (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/regrid_data_plane -v 2 -field 'name="APCP_03"; level="(*,*)";' -method BUDGET -width 2 -name APCP_03 /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/bucket/20050807/ST2ml2005080709_A03h "/d1/METplus_Data/qpf/sample_fcst/2005080700/wrfprs_ruc13_12.tm00_G212"  /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/regrid/20050807/ST2ml2005080709_A03h
+09/17 00:48:05.245 metplus.RegridDataPlane (command_runner.py:123) INFO: app_name is: regrid_data_plane, output sent to: /d1/mccabe/test-b/ruc-vs-s2grib.conf/logs/regrid_data_plane.log_20190917
+09/17 00:48:06.049 metplus.RegridDataPlane (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/regrid_data_plane
+09/17 00:48:06.051 metplus.RegridDataPlane (reformat_gridded_wrapper.py:81) INFO: Processing forecast lead 12 hours
+09/17 00:48:06.054 metplus.RegridDataPlane (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/regrid_data_plane -v 2 -field 'name="APCP_03"; level="(*,*)";' -method BUDGET -width 2 -name APCP_03 /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/bucket/20050807/ST2ml2005080712_A03h "/d1/METplus_Data/qpf/sample_fcst/2005080700/wrfprs_ruc13_12.tm00_G212"  /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/regrid/20050807/ST2ml2005080712_A03h
+09/17 00:48:06.057 metplus.RegridDataPlane (command_runner.py:123) INFO: app_name is: regrid_data_plane, output sent to: /d1/mccabe/test-b/ruc-vs-s2grib.conf/logs/regrid_data_plane.log_20190917
+09/17 00:48:06.861 metplus.RegridDataPlane (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/regrid_data_plane
+09/17 00:48:06.863 metplus.GridStat (compare_gridded_wrapper.py:148) INFO: Processing forecast lead 3 hours
+09/17 00:48:06.868 metplus.GridStat (compare_gridded_wrapper.py:435) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+09/17 00:48:06.868 metplus.GridStat (command_builder.py:138) DEBUG: MET_TMP_DIR=/tmp
+09/17 00:48:06.868 metplus.GridStat (command_builder.py:138) DEBUG: MODEL=QPF
+09/17 00:48:06.869 metplus.GridStat (command_builder.py:138) DEBUG: FCST_VAR=APCP
+09/17 00:48:06.869 metplus.GridStat (command_builder.py:138) DEBUG: OBS_VAR=APCP
+09/17 00:48:06.869 metplus.GridStat (command_builder.py:138) DEBUG: LEVEL=A03
+09/17 00:48:06.869 metplus.GridStat (command_builder.py:138) DEBUG: OBTYPE=QPE
+09/17 00:48:06.869 metplus.GridStat (command_builder.py:138) DEBUG: CONFIG_DIR=/d1/mccabe/METplus.develop/parm/use_cases/qpf/met_config
+09/17 00:48:06.869 metplus.GridStat (command_builder.py:138) DEBUG: FCST_FIELD={ name="APCP"; level="A03"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }
+09/17 00:48:06.870 metplus.GridStat (command_builder.py:138) DEBUG: OBS_FIELD={ name="APCP_03"; level="(*,*)"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }
+09/17 00:48:06.870 metplus.GridStat (command_builder.py:138) DEBUG: INPUT_BASE=/d1/METplus_Data
+09/17 00:48:06.870 metplus.GridStat (command_builder.py:138) DEBUG: MET_VALID_HHMM=0807
+09/17 00:48:06.870 metplus.GridStat (command_builder.py:138) DEBUG: FCST_TIME=003
+09/17 00:48:06.870 metplus.GridStat (compare_gridded_wrapper.py:439) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+09/17 00:48:06.870 metplus (config_launcher.py:518) DEBUG: Setting [config] USER_SHELL to default value: bash.
+09/17 00:48:06.871 metplus.GridStat (command_builder.py:133) DEBUG: export MODEL="QPF"; export FCST_VAR="APCP"; export OBS_VAR="APCP"; export LEVEL="A03"; export OBTYPE="QPE"; export CONFIG_DIR="/d1/mccabe/METplus.develop/parm/use_cases/qpf/met_config"; export FCST_FIELD="{ name=\"APCP\"; level=\"A03\"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }"; export OBS_FIELD="{ name=\"APCP_03\"; level=\"(*,*)\"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }"; export INPUT_BASE="/d1/METplus_Data"; export MET_VALID_HHMM="0807"; export FCST_TIME="003"; export MET_TMP_DIR="/tmp"; 
+09/17 00:48:06.871 metplus.GridStat (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/grid_stat -v 2 /d1/METplus_Data/qpf/sample_fcst/2005080700/wrfprs_ruc13_03.tm00_G212 /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/regrid/20050807/ST2ml2005080703_A03h /d1/mccabe/METplus.develop/parm/use_cases/qpf/met_config/GridStatConfig_MEAN -outdir /d1/mccabe/test-b/ruc-vs-s2grib.conf/uswrp/met_out/QPF/200508070000/grid_stat
+09/17 00:48:06.874 metplus.GridStat (command_runner.py:123) INFO: app_name is: grid_stat, output sent to: /d1/mccabe/test-b/ruc-vs-s2grib.conf/logs/grid_stat.log_20190917
+09/17 00:48:07.478 metplus.GridStat (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/grid_stat
+09/17 00:48:07.479 metplus.GridStat (compare_gridded_wrapper.py:148) INFO: Processing forecast lead 6 hours
+09/17 00:48:07.482 metplus.GridStat (compare_gridded_wrapper.py:435) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+09/17 00:48:07.482 metplus.GridStat (command_builder.py:138) DEBUG: MET_TMP_DIR=/tmp
+09/17 00:48:07.483 metplus.GridStat (command_builder.py:138) DEBUG: MODEL=QPF
+09/17 00:48:07.483 metplus.GridStat (command_builder.py:138) DEBUG: FCST_VAR=APCP
+09/17 00:48:07.483 metplus.GridStat (command_builder.py:138) DEBUG: OBS_VAR=APCP
+09/17 00:48:07.483 metplus.GridStat (command_builder.py:138) DEBUG: LEVEL=A03
+09/17 00:48:07.483 metplus.GridStat (command_builder.py:138) DEBUG: OBTYPE=QPE
+09/17 00:48:07.484 metplus.GridStat (command_builder.py:138) DEBUG: CONFIG_DIR=/d1/mccabe/METplus.develop/parm/use_cases/qpf/met_config
+09/17 00:48:07.484 metplus.GridStat (command_builder.py:138) DEBUG: FCST_FIELD={ name="APCP"; level="A03"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }
+09/17 00:48:07.484 metplus.GridStat (command_builder.py:138) DEBUG: OBS_FIELD={ name="APCP_03"; level="(*,*)"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }
+09/17 00:48:07.484 metplus.GridStat (command_builder.py:138) DEBUG: INPUT_BASE=/d1/METplus_Data
+09/17 00:48:07.484 metplus.GridStat (command_builder.py:138) DEBUG: MET_VALID_HHMM=0807
+09/17 00:48:07.485 metplus.GridStat (command_builder.py:138) DEBUG: FCST_TIME=006
+09/17 00:48:07.485 metplus.GridStat (compare_gridded_wrapper.py:439) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+09/17 00:48:07.485 metplus.GridStat (command_builder.py:133) DEBUG: export MODEL="QPF"; export FCST_VAR="APCP"; export OBS_VAR="APCP"; export LEVEL="A03"; export OBTYPE="QPE"; export CONFIG_DIR="/d1/mccabe/METplus.develop/parm/use_cases/qpf/met_config"; export FCST_FIELD="{ name=\"APCP\"; level=\"A03\"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }"; export OBS_FIELD="{ name=\"APCP_03\"; level=\"(*,*)\"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }"; export INPUT_BASE="/d1/METplus_Data"; export MET_VALID_HHMM="0807"; export FCST_TIME="006"; export MET_TMP_DIR="/tmp"; 
+09/17 00:48:07.485 metplus.GridStat (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/grid_stat -v 2 /d1/METplus_Data/qpf/sample_fcst/2005080700/wrfprs_ruc13_06.tm00_G212 /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/regrid/20050807/ST2ml2005080706_A03h /d1/mccabe/METplus.develop/parm/use_cases/qpf/met_config/GridStatConfig_MEAN -outdir /d1/mccabe/test-b/ruc-vs-s2grib.conf/uswrp/met_out/QPF/200508070000/grid_stat
+09/17 00:48:07.488 metplus.GridStat (command_runner.py:123) INFO: app_name is: grid_stat, output sent to: /d1/mccabe/test-b/ruc-vs-s2grib.conf/logs/grid_stat.log_20190917
+09/17 00:48:08.092 metplus.GridStat (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/grid_stat
+09/17 00:48:08.093 metplus.GridStat (compare_gridded_wrapper.py:148) INFO: Processing forecast lead 9 hours
+09/17 00:48:08.097 metplus.GridStat (compare_gridded_wrapper.py:435) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+09/17 00:48:08.097 metplus.GridStat (command_builder.py:138) DEBUG: MET_TMP_DIR=/tmp
+09/17 00:48:08.097 metplus.GridStat (command_builder.py:138) DEBUG: MODEL=QPF
+09/17 00:48:08.097 metplus.GridStat (command_builder.py:138) DEBUG: FCST_VAR=APCP
+09/17 00:48:08.097 metplus.GridStat (command_builder.py:138) DEBUG: OBS_VAR=APCP
+09/17 00:48:08.098 metplus.GridStat (command_builder.py:138) DEBUG: LEVEL=A03
+09/17 00:48:08.098 metplus.GridStat (command_builder.py:138) DEBUG: OBTYPE=QPE
+09/17 00:48:08.098 metplus.GridStat (command_builder.py:138) DEBUG: CONFIG_DIR=/d1/mccabe/METplus.develop/parm/use_cases/qpf/met_config
+09/17 00:48:08.098 metplus.GridStat (command_builder.py:138) DEBUG: FCST_FIELD={ name="APCP"; level="A03"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }
+09/17 00:48:08.099 metplus.GridStat (command_builder.py:138) DEBUG: OBS_FIELD={ name="APCP_03"; level="(*,*)"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }
+09/17 00:48:08.099 metplus.GridStat (command_builder.py:138) DEBUG: INPUT_BASE=/d1/METplus_Data
+09/17 00:48:08.099 metplus.GridStat (command_builder.py:138) DEBUG: MET_VALID_HHMM=0807
+09/17 00:48:08.099 metplus.GridStat (command_builder.py:138) DEBUG: FCST_TIME=009
+09/17 00:48:08.099 metplus.GridStat (compare_gridded_wrapper.py:439) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+09/17 00:48:08.100 metplus.GridStat (command_builder.py:133) DEBUG: export MODEL="QPF"; export FCST_VAR="APCP"; export OBS_VAR="APCP"; export LEVEL="A03"; export OBTYPE="QPE"; export CONFIG_DIR="/d1/mccabe/METplus.develop/parm/use_cases/qpf/met_config"; export FCST_FIELD="{ name=\"APCP\"; level=\"A03\"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }"; export OBS_FIELD="{ name=\"APCP_03\"; level=\"(*,*)\"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }"; export INPUT_BASE="/d1/METplus_Data"; export MET_VALID_HHMM="0807"; export FCST_TIME="009"; export MET_TMP_DIR="/tmp"; 
+09/17 00:48:08.100 metplus.GridStat (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/grid_stat -v 2 /d1/METplus_Data/qpf/sample_fcst/2005080700/wrfprs_ruc13_09.tm00_G212 /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/regrid/20050807/ST2ml2005080709_A03h /d1/mccabe/METplus.develop/parm/use_cases/qpf/met_config/GridStatConfig_MEAN -outdir /d1/mccabe/test-b/ruc-vs-s2grib.conf/uswrp/met_out/QPF/200508070000/grid_stat
+09/17 00:48:08.103 metplus.GridStat (command_runner.py:123) INFO: app_name is: grid_stat, output sent to: /d1/mccabe/test-b/ruc-vs-s2grib.conf/logs/grid_stat.log_20190917
+09/17 00:48:08.707 metplus.GridStat (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/grid_stat
+09/17 00:48:08.708 metplus.GridStat (compare_gridded_wrapper.py:148) INFO: Processing forecast lead 12 hours
+09/17 00:48:08.711 metplus.GridStat (compare_gridded_wrapper.py:435) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+09/17 00:48:08.712 metplus.GridStat (command_builder.py:138) DEBUG: MET_TMP_DIR=/tmp
+09/17 00:48:08.712 metplus.GridStat (command_builder.py:138) DEBUG: MODEL=QPF
+09/17 00:48:08.712 metplus.GridStat (command_builder.py:138) DEBUG: FCST_VAR=APCP
+09/17 00:48:08.712 metplus.GridStat (command_builder.py:138) DEBUG: OBS_VAR=APCP
+09/17 00:48:08.712 metplus.GridStat (command_builder.py:138) DEBUG: LEVEL=A03
+09/17 00:48:08.713 metplus.GridStat (command_builder.py:138) DEBUG: OBTYPE=QPE
+09/17 00:48:08.713 metplus.GridStat (command_builder.py:138) DEBUG: CONFIG_DIR=/d1/mccabe/METplus.develop/parm/use_cases/qpf/met_config
+09/17 00:48:08.713 metplus.GridStat (command_builder.py:138) DEBUG: FCST_FIELD={ name="APCP"; level="A03"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }
+09/17 00:48:08.713 metplus.GridStat (command_builder.py:138) DEBUG: OBS_FIELD={ name="APCP_03"; level="(*,*)"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }
+09/17 00:48:08.713 metplus.GridStat (command_builder.py:138) DEBUG: INPUT_BASE=/d1/METplus_Data
+09/17 00:48:08.714 metplus.GridStat (command_builder.py:138) DEBUG: MET_VALID_HHMM=0807
+09/17 00:48:08.714 metplus.GridStat (command_builder.py:138) DEBUG: FCST_TIME=012
+09/17 00:48:08.714 metplus.GridStat (compare_gridded_wrapper.py:439) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+09/17 00:48:08.714 metplus.GridStat (command_builder.py:133) DEBUG: export MODEL="QPF"; export FCST_VAR="APCP"; export OBS_VAR="APCP"; export LEVEL="A03"; export OBTYPE="QPE"; export CONFIG_DIR="/d1/mccabe/METplus.develop/parm/use_cases/qpf/met_config"; export FCST_FIELD="{ name=\"APCP\"; level=\"A03\"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }"; export OBS_FIELD="{ name=\"APCP_03\"; level=\"(*,*)\"; cat_thresh=[ gt12.7,gt25.4,gt50.8,gt76.2 ]; }"; export INPUT_BASE="/d1/METplus_Data"; export MET_VALID_HHMM="0807"; export FCST_TIME="012"; export MET_TMP_DIR="/tmp"; 
+09/17 00:48:08.715 metplus.GridStat (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/grid_stat -v 2 /d1/METplus_Data/qpf/sample_fcst/2005080700/wrfprs_ruc13_12.tm00_G212 /d1/mccabe/test-b/ruc-vs-s2grib.conf/qpe_grib/regrid/20050807/ST2ml2005080712_A03h /d1/mccabe/METplus.develop/parm/use_cases/qpf/met_config/GridStatConfig_MEAN -outdir /d1/mccabe/test-b/ruc-vs-s2grib.conf/uswrp/met_out/QPF/200508070000/grid_stat
+09/17 00:48:08.718 metplus.GridStat (command_runner.py:123) INFO: app_name is: grid_stat, output sent to: /d1/mccabe/test-b/ruc-vs-s2grib.conf/logs/grid_stat.log_20190917
+09/17 00:48:09.321 metplus.GridStat (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/grid_stat
+09/17 00:48:09.322 metplus (config_launcher.py:518) DEBUG: Setting [config] SCRUB_STAGING_DIR to default value: False.
+09/17 00:48:09.323 metplus.GridStat (met_util.py:262) INFO: /d1/mccabe/test-b/ruc-vs-s2grib.conf/metplus_final.conf: write metplus.conf here
+09/17 00:48:09.324 metplus.GridStat (master_metplus.py:164) INFO: METplus has successfully finished running.
+09/17 00:48:09.522 master_metplus (master_metplus.py:69) INFO: Starting METplus v2.2-dev
+
+09/17 00:48:09.522 metplus (config_metplus.py:79) INFO: Starting METplus configuration setup.
+09/17 00:48:09.523 metplus (config_launcher.py:174) INFO: Set [dir] OUTPUT_BASE = '/d1/mccabe/test-b/phpt-vs-s4grib.conf'
+09/17 00:48:09.524 metplus (config_launcher.py:222) INFO: /d1/mccabe/METplus.develop/parm/metplus_config/metplus_system.conf: Parsed this file
+09/17 00:48:09.525 metplus (config_launcher.py:222) INFO: /d1/mccabe/METplus.develop/parm/metplus_config/metplus_data.conf: Parsed this file
+09/17 00:48:09.525 metplus (config_launcher.py:222) INFO: /d1/mccabe/METplus.develop/parm/metplus_config/metplus_runtime.conf: Parsed this file
+09/17 00:48:09.526 metplus (config_launcher.py:222) INFO: /d1/mccabe/METplus.develop/parm/metplus_config/metplus_logging.conf: Parsed this file
+09/17 00:48:09.527 metplus (config_launcher.py:222) INFO: /d1/mccabe/METplus.b/parm/use_cases/qpf/examples/phpt-vs-s4grib.conf: Parsed this file
+09/17 00:48:09.527 metplus (config_launcher.py:222) INFO: /d1/mccabe/METplus/internal_tests/use_cases/system.b.conf: Parsed this file
+09/17 00:48:09.527 metplus (config_launcher.py:233) INFO: Override: dir.OUTPUT_BASE='/d1/mccabe/test-b/phpt-vs-s4grib.conf'
+09/17 00:48:09.529 metplus (met_util.py:648) INFO: Adding: config.LOG_TIMESTAMP='20190917'
+09/17 00:48:09.529 metplus (met_util.py:654) INFO: Replace [config] LOG_METPLUS with '/d1/mccabe/test-b/phpt-vs-s4grib.conf/logs/master_metplus.log.20190917'
+09/17 00:48:09.529 metplus (fileop.py:238) INFO: /d1/mccabe/test-b/phpt-vs-s4grib.conf: make directory and parents
+09/17 00:48:09.530 metplus (config_launcher.py:314) INFO: Setting [dir] METPLUS_BASE to /d1/mccabe/METplus.develop
+09/17 00:48:09.530 metplus (config_launcher.py:314) INFO: Setting [dir] PARM_BASE to /d1/mccabe/METplus.develop/parm
+09/17 00:48:09.530 metplus (config_launcher.py:322) INFO: METPLUS_CONF: /d1/mccabe/test-b/phpt-vs-s4grib.conf/metplus_final.conf written here.
+09/17 00:48:09.530 metplus (config_metplus.py:143) INFO: Completed METplus configuration setup.
+09/17 00:48:09.531 metplus (master_metplus.py:84) INFO: Running METplus v2.2-dev
+ called with command: /d1/mccabe/METplus.b/ush/master_metplus.py -c /d1/mccabe/METplus.b/parm/use_cases/qpf/examples/phpt-vs-s4grib.conf -c /d1/mccabe/METplus/internal_tests/use_cases/system.b.conf -c dir.OUTPUT_BASE=/d1/mccabe/test-b/phpt-vs-s4grib.conf
+09/17 00:48:09.533 metplus (config_launcher.py:518) DEBUG: Setting [config] PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS to default value: False.
+09/17 00:48:09.533 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_PCP_COMBINE_RUN to default value: False.
+09/17 00:48:09.533 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_MIN_FORECAST to default value: 0.
+09/17 00:48:09.533 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_MAX_FORECAST to default value: 256.
+09/17 00:48:09.533 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_DATA_INTERVAL to default value: 1.
+09/17 00:48:09.533 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_TIMES_PER_FILE to default value: -1.
+09/17 00:48:09.534 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_INPUT_LEVEL to default value: -1.
+09/17 00:48:09.534 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_STAT_LIST to default value: .
+09/17 00:48:09.534 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_PCP_COMBINE_DERIVE_LOOKBACK to default value: 0.
+09/17 00:48:09.535 metplus (config_launcher.py:518) DEBUG: Setting [config] REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS to default value: False.
+09/17 00:48:09.535 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_REGRID_DATA_PLANE_RUN to default value: False.
+09/17 00:48:09.535 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_IS_PROB to default value: False.
+09/17 00:48:09.536 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_WINDOW_BEGIN to default value: 0.
+09/17 00:48:09.536 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_WINDOW_END to default value: 0.
+09/17 00:48:09.536 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_WINDOW_BEGIN to default value: 0.
+09/17 00:48:09.536 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_WINDOW_END to default value: 0.
+09/17 00:48:09.536 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_FILE_WINDOW_BEGIN to default value: 0.
+09/17 00:48:09.536 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_FILE_WINDOW_END to default value: 0.
+09/17 00:48:09.536 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_FILE_WINDOW_BEGIN to default value: 0.
+09/17 00:48:09.536 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_FILE_WINDOW_END to default value: 0.
+09/17 00:48:09.537 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_GRID_STAT_INPUT_DATATYPE to default value: .
+09/17 00:48:09.537 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_GRID_STAT_INPUT_DATATYPE to default value: .
+09/17 00:48:09.537 metplus (config_launcher.py:518) DEBUG: Setting [config] GRID_STAT_ONCE_PER_FIELD to default value: False.
+09/17 00:48:09.537 metplus (config_launcher.py:518) DEBUG: Setting [config] FCST_GRID_STAT_PROB_THRESH to default value: ==0.1.
+09/17 00:48:09.537 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_GRID_STAT_PROB_THRESH to default value: ==0.1.
+09/17 00:48:09.537 metplus (config_launcher.py:518) DEBUG: Setting [config] GRID_STAT_NEIGHBORHOOD_WIDTH to default value: .
+09/17 00:48:09.538 metplus (config_launcher.py:518) DEBUG: Setting [config] GRID_STAT_NEIGHBORHOOD_SHAPE to default value: .
+09/17 00:48:09.542 metplus (met_util.py:340) INFO: ****************************************
+09/17 00:48:09.542 metplus (met_util.py:341) INFO: * Running METplus
+09/17 00:48:09.543 metplus (met_util.py:343) INFO: *  at init time: 201609041200
+09/17 00:48:09.543 metplus (met_util.py:350) INFO: ****************************************
+09/17 00:48:09.543 metplus (config_launcher.py:518) DEBUG: Setting [config] LEAD_SEQ_MIN to default value: 0.
+09/17 00:48:09.543 metplus (config_launcher.py:518) DEBUG: Setting [config] LEAD_SEQ_MAX to default value: 4000Y.
+09/17 00:48:09.543 metplus.PcpCombine (reformat_gridded_wrapper.py:73) INFO: Processing OBS data
+09/17 00:48:09.544 metplus.PcpCombine (reformat_gridded_wrapper.py:81) INFO: Processing forecast lead 6 hours
+09/17 00:48:09.547 metplus.PcpCombine (pcp_combine_wrapper.py:354) DEBUG: Trying to build a 6 hour accumulation using 6 hour or 1 hour input data
+09/17 00:48:09.548 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090418.06h
+09/17 00:48:09.548 metplus.PcpCombine (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/pcp_combine -v 2 -name APCP_06 -add /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090418.06h 06 /d1/mccabe/test-b/phpt-vs-s4grib.conf/uswrp/StageIV_grib/bucket/20160904/ST4.2016090418_A06h
+09/17 00:48:09.549 metplus.PcpCombine (command_runner.py:123) INFO: app_name is: pcp_combine, output sent to: /d1/mccabe/test-b/phpt-vs-s4grib.conf/logs/pcp_combine.log_20190917
+09/17 00:48:09.551 mpi_impl (__init__.py:236) INFO: srun: cannot import: No module named 'produtil.mpi_impl.srun_pack_groups'
+09/17 00:48:09.551 mpi_impl (__init__.py:250) INFO: inside_aprun: cannot import: bad magic number in 'produtil.mpi_impl.inside_aprun': b'\x03\xf3\r\n'
+09/17 00:48:09.551 mpi_impl (__init__.py:256) INFO: lsf_cray_intel: cannot import: bad magic number in 'produtil.mpi_impl.lsf_cray_intel': b'\x03\xf3\r\n'
+09/17 00:48:09.552 mpi_impl (__init__.py:262) INFO: impi: cannot import: bad magic number in 'produtil.mpi_impl.impi': b'\x03\xf3\r\n'
+09/17 00:48:09.552 mpi_impl (__init__.py:268) INFO: mpirun_lsf: cannot import: bad magic number in 'produtil.mpi_impl.mpirun_lsf': b'\x03\xf3\r\n'
+09/17 00:48:09.552 mpi_impl (__init__.py:274) INFO: mpiexec_mpt: cannot import: bad magic number in 'produtil.mpi_impl.mpiexec_mpt': b'\x03\xf3\r\n'
+09/17 00:48:09.552 mpi_impl (__init__.py:280) INFO: mpiexec: cannot import: bad magic number in 'produtil.mpi_impl.mpiexec': b'\x03\xf3\r\n'
+09/17 00:48:09.552 mpi_impl (__init__.py:349) INFO: srun: not detected: srun: cannot find executable
+09/17 00:48:09.553 metplus (config_launcher.py:518) DEBUG: Setting [config] DO_NOT_RUN_EXE to default value: False.
+09/17 00:48:10.556 metplus.PcpCombine (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/pcp_combine
+09/17 00:48:10.558 metplus.PcpCombine (reformat_gridded_wrapper.py:81) INFO: Processing forecast lead 7 hours
+09/17 00:48:10.560 metplus.PcpCombine (pcp_combine_wrapper.py:354) DEBUG: Trying to build a 6 hour accumulation using 6 hour or 1 hour input data
+09/17 00:48:10.563 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090419.01h
+09/17 00:48:10.564 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090418.01h
+09/17 00:48:10.564 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090417.01h
+09/17 00:48:10.565 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090416.01h
+09/17 00:48:10.566 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090415.01h
+09/17 00:48:10.566 metplus.PcpCombine (pcp_combine_wrapper.py:391) DEBUG: Adding input file: /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090414.01h
+09/17 00:48:10.567 metplus.PcpCombine (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/pcp_combine -v 2 -name APCP_06 -add /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090419.01h 01 /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090418.01h 01 /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090417.01h 01 /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090416.01h 01 /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090415.01h 01 /d1/METplus_Data/qpf/uswrp/StageIV/20160904/ST4.2016090414.01h 01 /d1/mccabe/test-b/phpt-vs-s4grib.conf/uswrp/StageIV_grib/bucket/20160904/ST4.2016090419_A06h
+09/17 00:48:10.572 metplus.PcpCombine (command_runner.py:123) INFO: app_name is: pcp_combine, output sent to: /d1/mccabe/test-b/phpt-vs-s4grib.conf/logs/pcp_combine.log_20190917
+09/17 00:48:12.377 metplus.PcpCombine (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/pcp_combine
+09/17 00:48:12.379 metplus.RegridDataPlane (reformat_gridded_wrapper.py:73) INFO: Processing OBS data
+09/17 00:48:12.379 metplus.RegridDataPlane (reformat_gridded_wrapper.py:81) INFO: Processing forecast lead 6 hours
+09/17 00:48:12.381 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_REGRID_DATA_PLANE_INPUT_DATATYPE to default value: .
+09/17 00:48:12.382 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_REGRID_DATA_PLANE_VAR1_INPUT_FIELD_NAME to default value: .
+09/17 00:48:12.382 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_REGRID_DATA_PLANE_VAR1_FIELD_NAME to default value: .
+09/17 00:48:12.382 metplus (config_launcher.py:518) DEBUG: Setting [config] OBS_REGRID_DATA_PLANE_VAR1_OUTPUT_FIELD_NAME to default value: .
+09/17 00:48:12.383 metplus.RegridDataPlane (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/regrid_data_plane -v 2 -field 'name="APCP_06"; level="(*,*)";' -method BUDGET -width 2 -name APCP_06 /d1/mccabe/test-b/phpt-vs-s4grib.conf/uswrp/StageIV_grib/bucket/20160904/ST4.2016090418_A06h "/d1/METplus_Data/qpf/mask/CONUS_HRRRTLE.nc"  /d1/mccabe/test-b/phpt-vs-s4grib.conf/uswrp/StageIV_grib/regrid/20160904/ST4.2016090418_A06h
+09/17 00:48:12.386 metplus.RegridDataPlane (command_runner.py:123) INFO: app_name is: regrid_data_plane, output sent to: /d1/mccabe/test-b/phpt-vs-s4grib.conf/logs/regrid_data_plane.log_20190917
+09/17 00:48:32.818 metplus.RegridDataPlane (command_runner.py:165) DEBUG: Finished running /usr/local/met-8.1.1/bin/regrid_data_plane
+09/17 00:48:32.819 metplus.RegridDataPlane (reformat_gridded_wrapper.py:81) INFO: Processing forecast lead 7 hours
+09/17 00:48:32.822 metplus.RegridDataPlane (command_runner.py:89) INFO: RUNNING: /usr/local/met-8.1.1/bin/regrid_data_plane -v 2 -field 'name="APCP_06"; level="(*,*)";' -method BUDGET -width 2 -name APCP_06 /d1/mccabe/test-b/phpt-vs-s4grib.conf/uswrp/StageIV_grib/bucket/20160904/ST4.2016090419_A06h "/d1/METplus_Data/qpf/mask/CONUS_HRRRTLE.nc"  /d1/mccabe/test-b/phpt-vs-s4grib.conf/uswrp/StageIV_grib/regrid/20160904/ST4.2016090419_A06h
+09/17 00:48:32.825 metplus.RegridDataPlane (command_runner.py:123) INFO: app_name is: regrid_data_plane, output sent to: /d1/mccabe/test-b/phpt-vs-s4grib.conf/logs/regrid_data_plane.log_20190917

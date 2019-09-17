@@ -309,79 +309,6 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
     time_str = sts.do_string_sub()
     return datetime.datetime.strptime(time_str, fmt)
 
-
-def get_relativedelta(value, default_unit='S'):
-    """!Converts time values ending in Y, m, d, H, M, or S to relativedelta object
-        Args:
-          @param value time value optionally ending in Y,m,d,H,M,S
-            Valid options match format 3600, 3600S, 60M, or 1H
-          @param default_unit unit to assume if no letter is found at end of value
-          @return relativedelta object containing offset time"""
-    if isinstance(value, int):
-        return get_relativedelta(str(value), default_unit)
-
-    mult = 1
-    reg = r'(-*)(\d+)([a-zA-Z]*)'
-    match = re.match(reg, value)
-    if match:
-        if match.group(1) == '-':
-            mult = -1
-        time_value = int(match.group(2)) * mult
-        unit_value = match.group(3)
-
-        # create relativedelta (dateutil) object for unit
-        # if no units specified, use seconds unless default_unit is specified
-        if unit_value == '':
-            if default_unit == 'S':
-                return relativedelta(seconds=time_value)
-            else:
-                unit_value = default_unit
-
-        if unit_value == 'H':
-            return relativedelta(hours=time_value)
-
-        if unit_value == 'M':
-            return relativedelta(minutes=time_value)
-
-        if unit_value == 'S':
-            return relativedelta(seconds=time_value)
-
-        if unit_value == 'd':
-            return relativedelta(days=time_value)
-
-        if unit_value == 'm':
-            return relativedelta(months=time_value)
-
-        if unit_value == 'Y':
-            return relativedelta(years=time_value)
-
-        # unsupported time unit specified, return None
-
-def get_seconds_from_string(value, default_unit='S', valid_time=None):
-    """!Convert string of time (optionally ending with time letter, i.e. HMSyMD to seconds
-        Args:
-          @param value string to convert, i.e. 3M, 4H, 17
-          @param default_unit units to apply if not specified at end of string
-          @returns time in seconds if successfully parsed, None if not"""
-    rd_obj = get_relativedelta(value, default_unit)
-    return time_util.ti_get_seconds_from_relativedelta(rd_obj, valid_time)
-
-def time_string_to_met_time(time_string, default_unit='S'):
-    """!Convert time string (3H, 4M, 7, etc.) to format expected by the MET
-        tools ([H]HH[MM[SS]])"""
-    total_seconds = get_seconds_from_string(time_string, default_unit)
-    seconds_time_string = str(total_seconds % 60).zfill(2)
-    minutes_time_string = str(total_seconds // 60 % 60).zfill(2)
-    hour_time_string = str(total_seconds // 3600).zfill(2)
-
-    # if hour is 6 or more digits, we need to add minutes and seconds
-    # also if minutes and/or seconds they are defined
-    # add minutes if seconds are defined as well
-    if len(hour_time_string) > 5 or minutes_time_string != '00' or seconds_time_string != '00':
-        return hour_time_string + minutes_time_string + seconds_time_string
-    else:
-        return hour_time_string
-
 def loop_over_times_and_call(config, processes):
     """!Loop over all run times and call wrappers listed in config"""
     clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
@@ -391,12 +318,12 @@ def loop_over_times_and_call(config, processes):
         time_format = config.getstr('config', 'INIT_TIME_FMT')
         start_t = config.getraw('config', 'INIT_BEG')
         end_t = config.getraw('config', 'INIT_END')
-        time_interval = get_relativedelta(config.getstr('config', 'INIT_INCREMENT'))
+        time_interval = time_util.get_relativedelta(config.getstr('config', 'INIT_INCREMENT'))
     else:
         time_format = config.getstr('config', 'VALID_TIME_FMT')
         start_t = config.getraw('config', 'VALID_BEG')
         end_t = config.getraw('config', 'VALID_END')
-        time_interval = get_relativedelta(config.getstr('config', 'VALID_INCREMENT'))
+        time_interval = time_util.get_relativedelta(config.getstr('config', 'VALID_INCREMENT'))
 
     loop_time = get_time_obj(start_t, time_format,
                              clock_time_obj, config.logger)
@@ -445,7 +372,7 @@ def get_lead_sequence(config, input_dict=None):
         lead_strings = getlist(config.getstr('config', 'LEAD_SEQ'))
         leads = []
         for lead in lead_strings:
-            relative_delta = get_relativedelta(lead, 'H')
+            relative_delta = time_util.get_relativedelta(lead, 'H')
             if relative_delta is not None:
                 leads.append(relative_delta)
             else:
@@ -461,8 +388,8 @@ def get_lead_sequence(config, input_dict=None):
         out_leads = []
         lead_min_str = config.getstr('config', 'LEAD_SEQ_MIN', '0')
         lead_max_str = config.getstr('config', 'LEAD_SEQ_MAX', '4000Y')
-        lead_min_relative = get_relativedelta(lead_min_str, 'H')
-        lead_max_relative = get_relativedelta(lead_max_str, 'H')
+        lead_min_relative = time_util.get_relativedelta(lead_min_str, 'H')
+        lead_max_relative = time_util.get_relativedelta(lead_max_str, 'H')
         now_time = datetime.datetime.now()
         lead_min_approx = now_time + lead_min_relative
         lead_max_approx = now_time + lead_max_relative

@@ -247,7 +247,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         search_time_info = { 'valid' : search_time }
 
         # get name of input level item that matches the accumulation to extract from daily file
-        accum_seconds = util.get_seconds_from_string(accum, 'H')
+        accum_seconds = time_util.get_seconds_from_string(accum, 'H')
         level_dict_list = self.c_dict['LEVEL_DICT_LIST']
         fname = next((item['name'] for item in level_dict_list if item['amount'] == accum_seconds), '-1')
         # if accumulation was not found in levels dictionary list, error and return
@@ -258,7 +258,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         # if name was not set in the input levels list, use accumulation time in MET time format
         if fname is None:
-            addon = util.time_string_to_met_time(accum, default_unit='S')
+            addon = time_util.time_string_to_met_time(accum, default_unit='S')
         else:
             fname = sts.StringSub(self.logger, fname, **search_time_info).do_string_sub()
             addon = "'name=\"" + fname + "\";"
@@ -300,7 +300,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                addon += " level=\"(0,*,*)\";"
             addon += "'"
         else:
-            addon = util.time_string_to_met_time(str(search_accum), default_unit='S')
+            addon = time_util.time_string_to_met_time(str(search_accum), default_unit='S')
 
         return addon
 
@@ -339,7 +339,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # the file/field time backwards in time
         # If building 6 hour accumulation from 1 hour accumulation files,
         # last time to process is valid - 6 + 1
-        accum_relative = util.get_relativedelta(accum, 'H')
+        accum_relative = time_util.get_relativedelta(accum, 'H')
         # using 1 hour for now
         smallest_input_accum = min([lev['amount'] for lev in self.c_dict['LEVEL_DICT_LIST']])
         last_time = time_info['valid'] -\
@@ -365,13 +365,13 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
                 # find accum field in file that is less than search accumulation
                 field_name = self.c_dict['LEVEL_DICT_LIST'][0]['name']
-                s_accum = util.time_string_to_met_time(self.c_dict['LEVEL_DICT_LIST'][0]['amount'])
+                s_accum = time_util.time_string_to_met_time(self.c_dict['LEVEL_DICT_LIST'][0]['amount'])
 
                 found = True
                 addon = self.get_addon(field_name, s_accum, search_time)
                 self.add_input_file(search_file, addon)
                 self.logger.debug(f"Adding input file: {search_file}")
-                s_accum_seconds = util.get_seconds_from_string(s_accum, 'H')
+                s_accum_seconds = time_util.get_seconds_from_string(s_accum, 'H')
                 search_time = search_time - datetime.timedelta(seconds=s_accum_seconds)
                 total_accum -= s_accum_seconds
             else:  # not looking for forecast files
@@ -704,9 +704,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         _, accum_string = util.split_level(level)
 
         # get number of seconds relative to valid time
-        accum_seconds = util.get_seconds_from_string(accum_string,
-                                                     default_unit='H',
-                                                     valid_time=time_info['valid'])
+        accum_seconds = time_util.get_seconds_from_string(accum_string,
+                                                          default_unit='H',
+                                                          valid_time=time_info['valid'])
         if accum_seconds is None:
             self.logger.error(f'Invalid accumulation specified: {accum_string}')
             return
@@ -762,9 +762,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         # get files
         lookback = self.c_dict[data_src+'_DERIVE_LOOKBACK']
-        lookback_seconds = util.get_seconds_from_string(lookback,
-                                                        default_unit='H',
-                                                        valid_time=time_info['valid'])
+        lookback_seconds = time_util.get_seconds_from_string(lookback,
+                                                             default_unit='H',
+                                                             valid_time=time_info['valid'])
         if lookback_seconds is None:
             self.logger.error(f'Invalid format for derived lookback: {lookback}')
             return
@@ -822,7 +822,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         level_dict_list = []
         for level, name in zip(level_list, name_list):
             # convert accum amount to seconds from time string
-            amount = util.get_seconds_from_string(level, 'H', time_info['valid'])
+            amount = time_util.get_seconds_from_string(level, 'H', time_info['valid'])
             level_dict_list.append({'amount' : amount, 'name' : name})
 
         self.c_dict['LEVEL_DICT_LIST'] = level_dict_list
