@@ -116,17 +116,32 @@ def get_date_arrays(date_type, date_beg, date_end,
         if len(time_list) != 0:
             time_beg = min(time_list)
             time_end = max(time_list)
-            if time_beg == time_end:
+            if time_beg == time_end or len(time_list) == 1:
                 delta_t = datetime.timedelta(seconds=86400)
             else:
-                delta_t = datetime.timedelta(
-                    seconds = (
-                        datetime.datetime.strptime(time_end,
-                                                   '%H%M%S')
-                        -datetime.datetime.strptime(time_beg,
-                                                   '%H%M%S')
-                    ).total_seconds()
-                )
+                delta_t_list = []
+                for t in range(len(time_list)):
+                    if time_list[t] == time_end:
+                        delta_t_list.append(
+                            (
+                                datetime.datetime.strptime('235959','%H%M%S')
+                                - (datetime.datetime.strptime(time_list[t],
+                                                              '%H%M%S'))
+                            )
+                            + datetime.timedelta(seconds = 1)
+                        )
+                    else:
+                        delta_t_list.append(
+                            datetime.datetime.strptime(time_list[t+1],
+                                                       '%H%M%S')
+                            - datetime.datetime.strptime(time_list[t],
+                                                         '%H%M%S')
+                        )
+                delta_t_array = np.array(delta_t_list)
+                if np.all(delta_t_array == delta_t_array[0]):
+                    delta_t = delta_t_array[0]
+                else:
+                    delta_t = np.min(delta_t_array)
             beg = datetime.datetime.strptime(
                 date_beg+time_beg, '%Y%m%d%H%M%S'
             )
