@@ -17,16 +17,10 @@ import logging
 import collections
 import datetime
 import shutil
-import produtil.fileop
-import produtil.run
-import produtil.log
-# from produtil.fileop import isnonempty
-# from produtil.run import batchexe, run, checkrun
-# from produtil.log import jlogger
 from os.path import dirname, realpath
-# from random import Random
+
 from produtil.config import ProdConfig
-import met_util as util
+import produtil.fileop
 
 """!Creates the initial METplus directory structure,
 loads information into each job.
@@ -47,13 +41,8 @@ support sanity checks, and initial creation of the METplus system.
 '''!@var __all__
 All symbols exported by "from metplus.launcher import *"
 '''
-__all__ = ['load', 'launch', 'parse_launch_args', 'load_baseconfs',
+__all__ = ['load', 'launch', 'parse_launch_args',
            'METplusConfig']
-
-baseinputconfs = ['metplus_config/metplus_system.conf',
-                  'metplus_config/metplus_data.conf',
-                  'metplus_config/metplus_runtime.conf',
-                  'metplus_config/metplus_logging.conf']
 
 # Note: This is just a developer reference comment, in case we continue
 # extending the metplus capabilities, by following hwrf patterns.
@@ -78,35 +67,19 @@ The parameter directory
 '''
 PARM_BASE = None
 
-if os.environ.get('METPLUS_BASE', ''):
-    METPLUS_BASE = os.environ['METPLUS_BASE']
-if os.environ.get('METPLUS_USH', ''):
-    METPLUS_USH = os.environ['METPLUS_USH']
 if os.environ.get('METPLUS_PARM_BASE', ''):
     PARM_BASE = os.environ['METPLUS_PARM_BASE']
 
 # Based on METPLUS_BASE, Will set METPLUS_USH, or PARM_BASE if not
 # already set in the environment.
-if METPLUS_BASE is None:
-    METPLUS_BASE = dirname(dirname(realpath(__file__)))
-    USHguess = os.path.join(METPLUS_BASE, 'ush')
-    PARMguess = os.path.join(METPLUS_BASE, 'parm')
-    if os.path.isdir(USHguess) and os.path.isdir(PARMguess):
-        if METPLUS_USH is None:
-            METPLUS_USH = USHguess
-        if PARM_BASE is None:
-            PARM_BASE = PARMguess
-else:
-    if os.path.isdir(METPLUS_BASE):
-        if METPLUS_USH is None:
-            METPLUS_USH = os.path.join(METPLUS_BASE, 'ush')
-        if PARM_BASE is None:
-            PARM_BASE = os.path.join(METPLUS_BASE, 'parm')
-    else:
-        print("$METPLUS_BASE is not a directory: {} \n"
-              "Please set $METPLUS_BASE "
-              "in the environment.".format(METPLUS_BASE), file=sys.stderr)
-        sys.exit(2)
+METPLUS_BASE = dirname(dirname(realpath(__file__)))
+USHguess = os.path.join(METPLUS_BASE, 'ush')
+PARMguess = os.path.join(METPLUS_BASE, 'parm')
+if os.path.isdir(USHguess) and os.path.isdir(PARMguess):
+    if METPLUS_USH is None:
+        METPLUS_USH = USHguess
+    if PARM_BASE is None:
+        PARM_BASE = PARMguess
 
 # For METplus, this is assumed to already be set.
 if METPLUS_USH not in sys.path:
@@ -120,7 +93,7 @@ if METPLUS_USH not in sys.path:
 # along with, -c some.conf and any other conf files...
 # These are than used by def launch to create a single metplus final conf file
 # that would be used by all tasks.
-def parse_launch_args(args, usage, filename, logger):
+def parse_launch_args(args, usage, filename, logger, baseinputconfs):
     """!Parsed arguments to scripts that launch the METplus system.
 
     This is the argument parser for the config_metplus.py
@@ -236,37 +209,11 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # All conf files and command line options have been parsed.
     # So lets set and add specific log variables to the conf object
     # based on the conf log template values.
-    util.set_logvars(conf)
-
+    _set_logvars(conf)
 
     # Determine if final METPLUS_CONF file already exists on disk.
     # If it does, use it instead.
     confloc = conf.getloc('METPLUS_CONF')
-
-    # Received feedback: Users want to overwrite the final conf file if it exists.
-    # Not overwriting is annoying everyone, since when one makes a conf file edit
-    # you have to remember to remove the final conf file.
-    # Originally based on a hwrf workflow. since launcher task only runs once,
-    # and all following tasks use the generated conf file.
-    #finalconfexists = util.file_exists(confloc)
-
-    # Force setting to False, so conf always gets overwritten
-    finalconfexists = False
-
-    if finalconfexists:
-        logger.warning(
-            'IGNORING all parsed conf file(s) AND any command line options or arguments, if given.')
-        logger.warning('INSTEAD, Using Existing final conf:  %s' % (confloc))
-        del logger
-        del conf
-        conf = METplusConfig()
-        logger = conf.log()
-        conf.read(confloc)
-        # Set moreopt to None, in case it is not None, We do not want to process
-        # more options since using existing final conf file.
-        moreopt = None
-
-
 
     # Place holder for when workflow is developed in METplus.
     # rocoto does not initialize the dirs, it returns here.
@@ -305,9 +252,6 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
 
     conf.set('dir', 'PARM_BASE', PARM_BASE)
 
-    version_number = util.get_version_number()
-    conf.set('config', 'METPLUS_VERSION', version_number)
-
     # print config items that are set automatically
     for var in ('METPLUS_BASE', 'PARM_BASE'):
         expand = conf.getdir(var)
@@ -318,13 +262,11 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     #    prelaunch(conf,logger,cycle)
 
     # writes the METPLUS_CONF used by all tasks.
-    if not finalconfexists:
-        logger.info('METPLUS_CONF: %s written here.' % (confloc,))
-        with open(confloc, 'wt') as f:
-            conf.write(f)
+    logger.info('METPLUS_CONF: %s written here.' % (confloc,))
+    with open(confloc, 'wt') as f:
+        conf.write(f)
 
     return conf
-
 
 def load(filename):
     """!Loads the METplusConfig created by the launch() function.
@@ -339,38 +281,6 @@ def load(filename):
     conf = METplusConfig()
     conf.read(filename)
     return conf
-
-
-# A METplus Demonstration work-around ...
-# Assumes and reads in only baseconfs and -c add_conf_file
-# This allows calling from both master_metplus.py and via
-# the command line from an individual module, such as series_by_lead.py
-def load_baseconfs(add_conf_file=None):
-    """ Loads the following conf files """
-
-    parm = os.path.realpath(PARM_BASE)
-
-    # baseconfs=[ os.path.join(parm, 'metplus.conf'),
-    #          os.path.join(parm, 'metplus.override.conf')
-    #         ]
-
-    conf = ProdConfig()
-    logger = conf.log()
-
-    for filename in baseinputconfs:
-        conf_file = os.path.join(parm, filename)
-        logger.info("%s: Parse this file" % (conf_file,))
-        conf.read(conf_file)
-
-    # Read the added conf file last, after the base input confs.
-    # Since these settings will override.
-    if add_conf_file:
-        conf_file = set_conf_file_path(add_conf_file)
-        logger.info("%s: Parse this file" % (conf_file,))
-        conf.read(conf_file)
-
-    return conf
-
 
 def set_conf_file_path(conf_file):
     return _set_conf_file_path(conf_file)
@@ -400,6 +310,116 @@ def _set_conf_file_path(conf_file):
         return new_conf_file
 
     return conf_file
+
+def _set_logvars(config, logger=None):
+    """!Sets and adds the LOG_METPLUS and LOG_TIMESTAMP
+       to the config object. If LOG_METPLUS was already defined by the
+       user in their conf file. It expands and rewrites it in the conf
+       object and the final file.
+       conf file.
+       Args:
+           @param config:   the config instance
+           @param logger: the logger, optional
+    """
+
+    if logger is None:
+        logger = config.log()
+
+    # LOG_TIMESTAMP_TEMPLATE is not required in the conf file,
+    # so lets first test for that.
+    log_timestamp_template = config.getstr('config', 'LOG_TIMESTAMP_TEMPLATE', '')
+    if log_timestamp_template:
+        # Note: strftime appears to handle if log_timestamp_template
+        # is a string ie. 'blah' and not a valid set of % directives %Y%m%d,
+        # it does return the string 'blah', instead of crashing.
+        # However, I'm still going to test for a valid % directive and
+        # set a default. It probably is ok to remove the if not block pattern
+        # test, and not set a default, especially if causing some unintended
+        # consequences or the pattern is not capturing a valid directive.
+        # The reality is, the user is expected to have entered a correct
+        # directive in the conf file.
+        # This pattern is meant to test for a repeating set of
+        # case insensitive %(AnyAlphabeticCharacter), ie. %Y%m ...
+        # The basic pattern is (%+[a-z])+ , %+ allows for 1 or more
+        # % characters, ie. %%Y, %% is a valid directive.
+        # (?i) case insensitive, \A begin string \Z end of string
+        if not re.match(r'(?i)\A(?:(%+[a-z])+)\Z', log_timestamp_template):
+            logger.warning('Your LOG_TIMESTAMP_TEMPLATE is not '
+                           'a valid strftime directive: %s' % repr(log_timestamp_template))
+            logger.info('Using the following default: %Y%m%d%H')
+            log_timestamp_template = '%Y%m%d%H'
+        date_t = datetime.datetime.now()
+        if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
+            if is_loop_by_init(config):
+                date_t = datetime.datetime.strptime(config.getstr('config',
+                                                                  'INIT_BEG'),
+                                                    config.getstr('config',
+                                                                  'INIT_TIME_FMT'))
+            else:
+                date_t = datetime.datetime.strptime(config.getstr('config',
+                                                                  'VALID_BEG'),
+                                                    config.getstr('config',
+                                                                  'VALID_TIME_FMT'))
+        log_filenametimestamp = date_t.strftime(log_timestamp_template)
+    else:
+        log_filenametimestamp = ''
+
+    log_dir = config.getdir('LOG_DIR')
+
+    # NOTE: LOG_METPLUS or metpluslog is meant to include the absolute path
+    #       and the metpluslog_filename,
+    # so metpluslog = /path/to/metpluslog_filename
+
+    # if LOG_METPLUS =  unset in the conf file, means NO logging.
+    # Also, assUmes the user has included the intended path in LOG_METPLUS.
+    user_defined_log_file = None
+    if config.has_option('config', 'LOG_METPLUS'):
+        user_defined_log_file = True
+        # strinterp will set metpluslog to '' if LOG_METPLUS =  is unset.
+        metpluslog = config.strinterp('config', '{LOG_METPLUS}',
+                                      LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp)
+
+        # test if there is any path information, if there is, assUme it is as intended,
+        # if there is not, than add log_dir.
+        if metpluslog:
+            if os.path.basename(metpluslog) == metpluslog:
+                metpluslog = os.path.join(log_dir, metpluslog)
+    else:
+        # No LOG_METPLUS in conf file, so let the code try to set it,
+        # if the user defined the variable LOG_FILENAME_TEMPLATE.
+        # LOG_FILENAME_TEMPLATE is an 'unpublished' variable - no one knows
+        # about it unless you are reading this. Why does this exist ?
+        # It was from my first cycle implementation. I did not want to pull
+        # it out, in case the group wanted a stand alone metplus log filename
+        # template variable.
+
+        # If metpluslog_filename includes a path, python joins it intelligently.
+        # Set the metplus log filename.
+        # strinterp will set metpluslog_filename to '' if LOG_FILENAME_TEMPLATE =
+        if config.has_option('config', 'LOG_FILENAME_TEMPLATE'):
+            metpluslog_filename = config.strinterp('config', '{LOG_FILENAME_TEMPLATE}',
+                                                   LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp)
+        else:
+            metpluslog_filename = ''
+        if metpluslog_filename:
+            metpluslog = os.path.join(log_dir, metpluslog_filename)
+        else:
+            metpluslog = ''
+
+
+
+    # Adding LOG_TIMESTAMP to the final configuration file.
+    logger.info('Adding: config.LOG_TIMESTAMP=%s' % repr(log_filenametimestamp))
+    config.set('config', 'LOG_TIMESTAMP', log_filenametimestamp)
+
+    # Setting LOG_METPLUS in the configuration object
+    # At this point LOG_METPLUS will have a value or '' the empty string.
+    if user_defined_log_file:
+        logger.info('Replace [config] LOG_METPLUS with %s' % repr(metpluslog))
+    else:
+        logger.info('Adding: config.LOG_METPLUS=%s' % repr(metpluslog))
+    # expand LOG_METPLUS to ensure it is available
+    config.set('config', 'LOG_METPLUS', metpluslog)
 
 class METplusConfig(ProdConfig):
     """!A replacement for the produtil.config.ProdConfig used throughout

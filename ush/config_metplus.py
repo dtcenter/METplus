@@ -57,7 +57,7 @@ section.option=value -- override conf options on the command line
 '''%(filename))
     sys.exit(2)
 
-def setup(filename=None, logger=None):
+def setup(baseinputconfs, filename=None, logger=None):
     """!The METplus setup function.
     @param filename the filename of the calling module.
     @param logger a logging.logger for log messages
@@ -131,7 +131,11 @@ def setup(filename=None, logger=None):
     if not args:
         args = None
     (parm, infiles, moreopt) = \
-        config_launcher.parse_launch_args(args, usage, filename, logger)
+        config_launcher.parse_launch_args(args,
+                                          usage,
+                                          filename,
+                                          logger,
+                                          baseinputconfs)
 
     # Currently metplus is not handling cycle.
     # Therefore can not use conf.timestrinterp and

@@ -36,6 +36,11 @@ import config_metplus
 # list of compression extensions that are handled by METplus
 VALID_EXTENSIONS = ['.gz', '.bz2', '.zip']
 
+baseinputconfs = ['metplus_config/metplus_system.conf',
+                  'metplus_config/metplus_data.conf',
+                  'metplus_config/metplus_runtime.conf',
+                  'metplus_config/metplus_logging.conf']
+
 def check_for_deprecated_config(conf, logger):
     deprecated_dict = {
         'LOOP_BY_INIT' : {'sec' : 'config', 'alt' : 'LOOP_BY', 'req' : False},
@@ -734,6 +739,7 @@ def get_logger(config, sublog=None):
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
+    # set add the logger to the config
     config.logger = logger
     return logger
 
@@ -1908,7 +1914,8 @@ def run_stand_alone(module_name, app_name):
         logger.info('logger Top of ' + app_name + ".")
 
         # Parse arguments, options and return a config instance.
-        config = config_metplus.setup(filename=cur_filename)
+        config = config_metplus.setup(baseinputconfs,
+                                      filename=cur_filename)
         logger = get_logger(config)
 
         version_number = get_version_number().strip()

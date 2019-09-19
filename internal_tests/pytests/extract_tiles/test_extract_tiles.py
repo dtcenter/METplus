@@ -16,7 +16,7 @@ import pytest
 from extract_tiles_wrapper import ExtractTilesWrapper
 import produtil
 import config_metplus
-import met_util
+import met_util as util
 from string_template_substitution import StringSub
 
 
@@ -71,7 +71,7 @@ def metplus_config():
         produtil.log.postmsg('extract_tiles_wrapper  is starting')
 
         # Read in the configuration object CONFIG
-        config = config_metplus.setup()
+        config = config_metplus.setup(util.baseinputconfs)
         return config
 
     except Exception as e:

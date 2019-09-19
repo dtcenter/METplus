@@ -67,7 +67,7 @@ def metplus_config():
         produtil.log.postmsg('pcp_combine_wrapper  is starting')
 
         # Read in the configuration object CONFIG
-        conf = config_metplus.setup()
+        conf = config_metplus.setup(util.baseinputconfs)
         logger = util.get_logger(conf)
         return conf
 

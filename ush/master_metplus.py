@@ -69,7 +69,8 @@ def main():
     logger.info('Starting METplus v%s', util.get_version_number())
 
     # Parse arguments, options and return a config instance.
-    config = config_metplus.setup(filename='master_metplus.py')
+    config = config_metplus.setup(util.baseinputconfs,
+                                  filename='master_metplus.py')
 
     # NOW we have a conf object p, we can now get the logger
     # and set the handler to write to the LOG_METPLUS
@@ -80,8 +81,10 @@ def main():
     # object has-a logger we want.
     logger = util.get_logger(config)
 
+    version_number = util.get_version_number()
+    config.set('config', 'METPLUS_VERSION', version_number)
     logger.info('Running METplus v%s called with command: %s',
-                util.get_version_number(), ' '.join(sys.argv))
+                version_number, ' '.join(sys.argv))
 
     # check for deprecated config items and warn user to remove/replace them
     util.check_for_deprecated_config(config, logger)
