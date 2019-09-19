@@ -592,15 +592,24 @@ for plot_info in plot_info_list:
                     obs_stat_values_mc = np.ma.compressed(
                         obs_stat_values_array
                     )
+                    if np.ma.is_masked(obs_stat_values_array.mean()):
+                        obs_legend_label = (
+                            'obs '
+                            +str(obs_stat_values_array.mean())+' '
+                            +str(obs_count)
+                        )
+                    else:
+                        obs_legend_label = (
+                            'obs '
+                            +str(round(obs_stat_values_array.mean(),3))+' '
+                            +str(obs_count)
+                        )
                     ax.plot_date(plot_time_dates_mc,
                                  obs_stat_values_mc,
                                  color='#888888',
                                  ls='-', linewidth=2.0,
                                  marker='o', markersize=7,
-                                 label='obs '+str(
-                                     round(obs_stat_values_array \
-                                           .mean(),3)
-                                 )+' '+str(obs_count),
+                                 label=obs_legend_label,
                                  zorder=4)
             count = (
                 len(model_stat_values_array[0,:])
@@ -613,14 +622,23 @@ for plot_info in plot_info_list:
             model_stat_values_mc = np.ma.compressed(
                 model_stat_values_array[0,:]
             )
+            if np.ma.is_masked(model_stat_values_array[0,:].mean()):
+                model_legend_label = (
+                    model_plot_name+' '
+                    +str(model_stat_values_array[0,:].mean())+' '
+                    +str(count)
+                )
+            else:
+                model_legend_label = (
+                    model_plot_name+' '
+                    +str(round(model_stat_values_array[0,:].mean(),3))+' '
+                    +str(count)
+                )
             ax.plot_date(plot_time_dates_mc, model_stat_values_mc, 
                          color=colors[model_idx], 
                          ls='-', linewidth=2.0,
                          marker='o', markersize=7,
-                         label=model_plot_name+' '+str(
-                             round(model_stat_values_array[0,:] \
-                             .mean(),3)
-                         )+' '+str(count),
+                         label=model_legend_label,
                          zorder=(nmodels-model_idx)+4)
         ax.legend(bbox_to_anchor=(1.025, 1.0, 0.375, 0.0), loc='upper right',
                   ncol=1, fontsize='13', mode='expand', borderaxespad=0.)
