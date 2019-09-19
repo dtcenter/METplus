@@ -375,7 +375,7 @@ for plot_info in plot_info_list:
                     for fcst_lead in fcst_leads:
                         fcst_lead_idx = fcst_leads.index(fcst_lead)
                         if fcst_lead in model_mean_file_data_leads:
-                            model_mean_file_data_lead_idx = (
+                            model_fcst_lead_idx = (
                                 model_mean_file_data_leads.index(fcst_lead)
                             )
                         for col in mean_cols_to_array:
@@ -383,11 +383,11 @@ for plot_info in plot_info_list:
                             model_mean_file_data_col = (
                                 model_mean_file_data.loc[:][col].tolist()
                             )
-                            if (model_mean_file_data_col[fcst_lead_idx] 
+                            if (model_mean_file_data_col[model_fcst_lead_idx]
                                     != '--'):
                                 model_mean_data[col_idx, fcst_lead_idx] = (
                                     float(model_mean_file_data_col \
-                                          [fcst_lead_idx])
+                                          [model_fcst_lead_idx])
                                 )                    
             else:
                 logger.warning("Model "+str(model_num)+" "+model_name
