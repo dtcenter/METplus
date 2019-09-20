@@ -210,7 +210,7 @@ for plot_info in plot_info_list:
     fcst_lead = plot_info[0]
     fcst_var_levels = plot_info[1]
     obs_var_levels = obs_var_level_list[
-        fcst_var_levels.index(fcst_var_levels)
+        fcst_var_level_list.index(fcst_var_levels)
     ]
     fcst_var_thresh = plot_info[2]
     obs_var_thresh = obs_var_thresh_list[
@@ -280,7 +280,7 @@ for plot_info in plot_info_list:
             +str(int(min_diff)).zfill(2)
         )
     logger.info("Working on forecast lead "+fcst_lead
-                +" and forecast variable "+fcst_var_name+
+                +" and forecast variable "+fcst_var_name
                 +" "+fcst_var_thresh)
     # Set up base name for file naming convention for MET .stat files,
     # and output data and images
@@ -336,6 +336,10 @@ for plot_info in plot_info_list:
         else:
             mean_file_cols = ['LEADS', 'FCST_UNITS', 'OBS_UNITS', 'VALS']
         mean_cols_to_array = mean_file_cols[3:]
+        # Build forecst levels for plotting
+        fcst_var_levels_int = np.empty(len(fcst_var_levels), dtype=int)
+        for vl in range(len(fcst_var_levels)):
+            fcst_var_levels_int[vl] = fcst_var_levels[vl][1:]
         # Reading in model lead mean files produced from plot_time_series.py
         logger.info("Reading in model data")
         for model_info in model_info_list:
@@ -355,7 +359,8 @@ for plot_info in plot_info_list:
                     stat+'_'
                     +model_plot_name+'_'+model_obtype+'_'
                     +base_name.replace('FCSTLEVELHOLDER', fcst_var_level) \
-                    .replace('OBSLEVELHOLDER', obs_var_level)
+                    .replace('OBSLEVELHOLDER', obs_var_level) \
+                    .replace(fcst_lead, '_means')
                     +'.txt'
                 )
                 lead_mean_file = os.path.join(output_base_dir, 'data',
@@ -390,7 +395,7 @@ for plot_info in plot_info_list:
                             model_mean_file_data.loc[0]['OBS_UNITS']
                         )
                     if fcst_lead in model_mean_file_data_leads:
-                        model_mean_file_data_lead_idx = (
+                        model_fcst_lead_idx = (
                             model_mean_file_data_leads.index(fcst_lead)
                         )
                         for col in mean_cols_to_array:
@@ -398,11 +403,11 @@ for plot_info in plot_info_list:
                             model_mean_file_data_col = (
                                 model_mean_file_data.loc[:][col].tolist()
                             )
-                            if (model_mean_file_data_col[fcst_lead_idx]
+                            if (model_mean_file_data_col[model_fcst_lead_idx]
                                     != '--'):
                                 model_mean_data[col_idx, vl] = (
                                     float(model_mean_file_data_col \
-                                          [fcst_lead_idx])
+                                          [model_fcst_lead_idx])
                                 )
                 else:
                     logger.warning("Model "+str(model_num)+" "+model_name
@@ -418,30 +423,24 @@ for plot_info in plot_info_list:
                 ax.set_yscale('log')
                 ax.invert_yaxis()
                 ax.minorticks_off()
-                ax.set_yticks(fcst_var_levels)
-                ax.set_yticklabels(fcst_var_levels)
-                ax.set_ylim([fcst_var_levels[0],fcst_var_levels[-1]])
+                ax.set_yticks(fcst_var_levels_int)
+                ax.set_yticklabels(fcst_var_levels_int)
+                ax.set_ylim([fcst_var_levels_int[0],fcst_var_levels_int[-1]])
                 if stat == 'fbar_obar':
-                    ax.plot_date(model_mean_data[1,:], fcst_var_levels
-                                 color='#888888',
-                                 ls='-', linewidth=2.0,
-                                 marker='o', markersize=7,
-                                 label='obs ',
-                                 zorder=4)
-            ax.plot(model_mean_data[0,:], fcst_var_levels,
+                    ax.plot(model_mean_data[1,:], fcst_var_levels_int,
+                            color='#888888',
+                            ls='-', linewidth=2.0,
+                            marker='o', markersize=7,
+                            label='obs ',
+                            zorder=4)
+            ax.plot(model_mean_data[0,:], fcst_var_levels_int,
                     color=colors[model_idx],
-                    ls='-', linewidth=1.0,
+                    ls='-', linewidth=2.0,
                     marker='o', markersize=7,
-                    label=model_plot_name
+                    label=model_plot_name,
                     zorder=(nmodels-model_idx)+4)
-        if stat == 'fbar_obar':
-            ax.legend(bbox_to_anchor=(0.025, 1.01, 0.95, .102), loc=3,
-                      ncol=nmodels+1, fontsize='13', mode='expand', 
-                      borderaxespad=0.)  
-        else:
-            ax.legend(bbox_to_anchor=(0.025, 1.01, 0.95, .102), loc=3,
-                      ncol=nmodels, fontsize='13', mode='expand',
-                      borderaxespad=0.)
+        ax.legend(bbox_to_anchor=(1.025, 1.0, 0.3, 0.0), loc='upper right',
+                  ncol=1, fontsize='13', mode='expand', borderaxespad=0.)
         ax.set_title(stat_plot_name+'\n'
                      +fcst_var_plot_title+' '+fcst_var_units_plot_title
                      +', '+obs_var_plot_title+' '+obs_var_units_plot_title+'\n'
