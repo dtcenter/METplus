@@ -283,9 +283,85 @@ class MakePlotsWrapper(CommandBuilder):
 
     def create_plots_grid2grid_pres(self, runtime_settings_dict_list):
         """! Create plots for the grid-to-grid verification for
-             variables on pressure levels. Runs plotting scripts: 
-             plot_time_series.py, plot_lead_mean.py, 
-             plot_date_by_level.py, plot_lead_by_level.py
+             variables on pressure levels using partial sums. 
+             Runs plotting scripts: 
+                 plot_time_series.py,
+                 plot_lead_mean.py, 
+                 plot_date_by_level.py,
+                 plot_lead_by_level.py
+             
+             Args:
+                 runtime_settings_dict_list - list of dictionaries
+                                              containing the relevant
+                                              information for running
+                                              plotting scripts
+ 
+             Returns:          
+        """
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_mean.py',
+                          'plot_date_by_level.py', 'plot_lead_by_level.py']
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
+                )
+                cmd = self.get_command()
+                if cmd is None:
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
+                    return
+                self.build()
+                self.clear()
+
+    def create_plots_grid2grid_anom(self, runtime_settings_dict_list):
+        """! Create plots for the grid-to-grid verification for
+             variables on pressure levels using anomalous partial sums.
+             Runs plotting scripts: 
+                 plot_time_series.py,
+                 plot_lead_mean.py, 
+                 plot_lead_by_date.py
+             
+             Args:
+                 runtime_settings_dict_list - list of dictionaries
+                                              containing the relevant
+                                              information for running
+                                              plotting scripts
+ 
+             Returns:          
+        """
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_mean.py',
+                          'plot_lead_by_date.py']
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
+                )
+                cmd = self.get_command()
+                if cmd is None:
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
+                    return
+                self.build()
+                self.clear()
+
+    def create_plots_grid2grid_sfc(self, runtime_settings_dict_list):
+        """! Create plots for the grid-to-grid verification for
+             variables on a single level using partial sums.
+             Runs plotting scripts: 
+                 plot_time_series.py,
+                 plot_lead_mean.py 
              
              Args:
                  runtime_settings_dict_list - list of dictionaries
@@ -296,62 +372,97 @@ class MakePlotsWrapper(CommandBuilder):
              Returns:          
         """
         # Loop over run settings.
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_mean.py']
         for runtime_settings_dict in runtime_settings_dict_list:
             for name, value in runtime_settings_dict.items():
                 self.add_env_var(name, value)
                 self.logger.debug(name+": "+value)
-            # plot_time_series.py
-            self.set_plotting_script(
-                os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'], 
-                'plot_time_series.py')
-            )
-            cmd = self.get_command()
-            if cmd is None:
-                self.logger.error(
-                    "make_plot could not generate command"
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
                 )
-                return
-            # plot_lead_mean.py
-            self.build()
-            self.clear()
-            self.set_plotting_script(
-                os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
-                'plot_lead_mean.py')
-            )
-            cmd = self.get_command()
-            if cmd is None:
-                self.logger.error(
-                    "make_plot could not generate command"
+                cmd = self.get_command()
+                if cmd is None:
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
+                    return
+                self.build()
+                self.clear()
+
+    def create_plots_grid2obs_upper_air(self, runtime_settings_dict_list):
+        """! Create plots for the grid-to-obs verification for
+             variables on a pressure levels using partial sums.
+             Runs plotting scripts: 
+                 plot_time_series.py,
+                 plot_lead_mean.py,
+                 plot_stat_by_level.py,
+                 plot_lead_by_level.py
+             
+             Args:
+                 runtime_settings_dict_list - list of dictionaries
+                                              containing the relevant
+                                              information for running
+                                              plotting scripts
+ 
+             Returns:          
+        """
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_mean.py',
+                          'plot_stat_by_level.py', 'plot_lead_by_level.py']
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
                 )
-                return
-            # plot_date_by_level.py
-            self.build()
-            self.clear()
-            self.set_plotting_script(
-                os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
-                'plot_date_by_level.py')
-            )
-            cmd = self.get_command()
-            if cmd is None:
-                self.logger.error(
-                    "make_plot could not generate command"
+                cmd = self.get_command()
+                if cmd is None:
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
+                    return
+                self.build()
+                self.clear()
+
+    def create_plots_grid2obs_conus_sfc(self, runtime_settings_dict_list):
+        """! Create plots for the grid-to-obs verification for
+             variables on a single level using partial sums.
+             Runs plotting scripts: 
+                 plot_time_series.py,
+                 plot_lead_mean.py
+             
+             Args:
+                 runtime_settings_dict_list - list of dictionaries
+                                              containing the relevant
+                                              information for running
+                                              plotting scripts
+ 
+             Returns:          
+        """
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_mean.py']
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
                 )
-                return
-            self.build()
-            self.clear()
-            # plot_lead_by_level.py
-            self.set_plotting_script(
-                os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
-                'plot_lead_by_level.py')
-            )
-            cmd = self.get_command()
-            if cmd is None:
-                self.logger.error(
-                    "make_plot could not generate command"
-                )
-                return
-            self.build()
-            self.clear()
+                cmd = self.get_command()
+                if cmd is None:
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
+                    return
+                self.build()
+                self.clear()
 
     def create_plots(self, verif_case, verif_type):
         """! Set up variables and general looping for creating
