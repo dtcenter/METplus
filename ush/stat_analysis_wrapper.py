@@ -234,7 +234,51 @@ class StatAnalysisWrapper(CommandBuilder):
         self.logger.debug("Items in these lists will be looped over: "
                           +', '.join(lists_to_loop_items))
         return lists_to_group_items, lists_to_loop_items
-  
+
+    def format_thresh(self, thresh):
+        """! Format thresholds for file naming 
+           
+             Args:
+                 thresh         - string of the treshold(s)
+           
+             Return:
+                 thresh_symbol  - string of the threshold(s)
+                                  with symbols
+                 thresh_letters - string of the threshold(s) 
+                                  with letters 
+        """
+        thresh_list = thresh.split(' ')
+        thresh_symbol = ''
+        thresh_letter = ''
+        for thresh in thresh_list:
+            if thresh == '':
+                continue
+            thresh_value = thresh
+            for opt in ['>=', '>', '==','!=','<=', '<',
+                        'ge', 'gt', 'eq', 'ne', 'le', 'lt']:
+                if opt in thresh_value:
+                    thresh_opt = opt
+                    thresh_value = thresh_value.replace(opt, '')
+            if thresh_opt in ['>', 'gt']:
+                thresh_symbol+='>'+thresh_value
+                thresh_letter+='gt'+threshvalue
+            elif thresh_opt in ['>=', 'ge']:
+                thresh_symbol+='>='+thresh_value
+                thresh_letter+='ge'+thresh_value
+            elif thresh_opt in ['<', 'lt']:
+                thresh_symbol+='<'+thresh_value
+                thresh_letter+='lt'+thresh_value
+            elif thresh_opt in ['<=', 'le']:
+                thresh_symbol+='<='+thresh_value
+                thresh_letter+='le'+thresh_value
+            elif thresh_opt in ['==', 'eq']:
+                thresh_symbol+='=='+threshvalue
+                thresh_letter+='eq'+thresh_value
+            elif thresh_opt in ['!=', 'ne']:
+                thresh_symbol+='!='+thresh_value
+                thresh_letter+='ne'+thresh_value
+        return thresh_symbol, thresh_letter
+
     def build_stringsub_dict(self, date_beg, date_end, date_type,
                              lists_to_loop, lists_to_group, config_dict):
         """! Build a dictionary with list names, dates, and commonly
@@ -394,7 +438,12 @@ class StatAnalysisWrapper(CommandBuilder):
             list_name_value = (
                 config_dict[list_name].replace('"', '').replace(' ', '')
             )
-            if list_name == 'MODEL':
+            if 'THRESH' in list_name:
+                thresh_symbol, thresh_letter = self.format_thresh(
+                    list_name_value
+                )
+                stringsub_dict[list_name.lower()] = thresh_letter
+            elif list_name == 'MODEL':
                 stringsub_dict[list_name.lower()] = list_name_value
                 stringsub_dict['obtype'] = (
                     config_dict['OBTYPE'].replace('"', '').replace(' ', '')
@@ -492,7 +541,14 @@ class StatAnalysisWrapper(CommandBuilder):
                 config_dict[list_name].replace('"', '').replace(' ', '') \
                 .replace(',', '_')
             )
-            if 'HOUR' in list_name:
+            if 'THRESH' in list_name:
+                thresh_symbol, thresh_letter = self.format_thresh(
+                    config_dict[list_name]
+                )
+                stringsub_dict[list_name.lower()] = (
+                    thresh_letter.replace(',', '_')
+                )
+            elif 'HOUR' in list_name:
                 list_name_values_list = (
                     config_dict[list_name].replace('"', '').split(', ')
                 )
@@ -1163,9 +1219,14 @@ class StatAnalysisWrapper(CommandBuilder):
         # and its value as a string for group lists.
         for list_to_group_items in lists_to_group_items:
             runtime_setup_dict_name = list_to_group_items.replace('_LIST', '')
-            runtime_setup_dict_value = (
-                [self.list_to_str(formatted_c_dict[list_to_group_items])]
-            )
+            if 'THRESH' in list_to_group_items:
+                runtime_setup_dict_value = (
+                    [', '.join(formatted_c_dict[list_to_group_items])]
+                )
+            else:
+                runtime_setup_dict_value = (
+                    [self.list_to_str(formatted_c_dict[list_to_group_items])]
+                )
             runtime_setup_dict[runtime_setup_dict_name] = (
                 runtime_setup_dict_value
             )
@@ -1180,7 +1241,14 @@ class StatAnalysisWrapper(CommandBuilder):
             if list_to_loop_items not in format_later_list:
                 for item in formatted_c_dict[list_to_loop_items]:
                     index = formatted_c_dict[list_to_loop_items].index(item)
-                    formatted_c_dict[list_to_loop_items][index] = '"'+item+'"'
+                    if 'THRESH' in list_to_loop_items:
+                        formatted_c_dict[list_to_loop_items][index] = (
+                            item
+                        )
+                    else:
+                        formatted_c_dict[list_to_loop_items][index] = (
+                            '"'+item+'"'
+                        )
             runtime_setup_dict_name = list_to_loop_items.replace('_LIST', '')
             runtime_setup_dict_value = formatted_c_dict[list_to_loop_items]
             runtime_setup_dict[runtime_setup_dict_name] = (
@@ -1646,11 +1714,18 @@ class StatAnalysisWrapper(CommandBuilder):
                 runtime_setup_dict_name = (
                     list_to_group_items.replace('_LIST', '')
                 )
-                runtime_setup_dict_value = [
-                    self.list_to_str(
-                        var_info_formatted_c_dict[list_to_group_items]
-                    )
-                ]
+                if 'THRESH' in list_to_group_items:
+                    runtime_setup_dict_value = [
+                        ' '.join(
+                            var_info_formatted_c_dict[list_to_group_items]
+                        )
+                    ]
+                else:
+                    runtime_setup_dict_value = [
+                        self.list_to_str(
+                            var_info_formatted_c_dict[list_to_group_items]
+                        )
+                    ]
                 runtime_setup_dict[runtime_setup_dict_name] = (
                     runtime_setup_dict_value
                 )
@@ -1671,8 +1746,14 @@ class StatAnalysisWrapper(CommandBuilder):
                             var_info_formatted_c_dict[list_to_loop_items] \
                             .index(item)
                         )
-                        var_info_formatted_c_dict[list_to_loop_items][index] \
-                            = '"'+item+'"'
+                        if 'THRESH' in list_to_loop_items:
+                            var_info_formatted_c_dict[list_to_loop_items] \
+                                    [index] \
+                                = item
+                        else:
+                            var_info_formatted_c_dict[list_to_loop_items] \
+                                    [index] \
+                                = '"'+item+'"'
                 runtime_setup_dict_name = list_to_loop_items.replace('_LIST', 
                                                                      '')
                 runtime_setup_dict_value = (
