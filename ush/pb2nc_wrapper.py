@@ -46,6 +46,10 @@ class PB2NCWrapper(CommandBuilder):
                            config files.
         """
         c_dict = super(PB2NCWrapper, self).create_c_dict()
+
+        c_dict['VERBOSITY'] = self.config.getint('config', 'LOG_PB2NC_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
+
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', False)
         c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'PB2NC_OFFSETS', '0'))
 
@@ -209,7 +213,7 @@ class PB2NCWrapper(CommandBuilder):
 
             if infile is not None:
                 if isinstance(infile, list):
-                    self.infiles.extend(f)
+                    self.infiles.extend(infile)
                 else:
                     self.infiles.append(infile)
                 self.logger.debug('Adding input file {}'.format(infile))
@@ -299,7 +303,7 @@ class PB2NCWrapper(CommandBuilder):
             self.logger.error('No app path specified. You must use a subclass')
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for a in self.args:
             cmd += a + " "
