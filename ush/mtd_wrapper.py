@@ -31,6 +31,8 @@ class MTDWrapper(ModeWrapper):
 
     def create_c_dict(self):
         c_dict = super(ModeWrapper, self).create_c_dict()
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MTD_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
 
         # set to prevent find_obs from getting multiple files within
         #  a time window. Does not refer to time series of files
@@ -350,7 +352,7 @@ class MTDWrapper(ModeWrapper):
                               You must use a subclass")
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for a in self.args:
             cmd += a + " "

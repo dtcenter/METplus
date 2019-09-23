@@ -48,9 +48,9 @@ class CommandBuilder:
         self.env = os.environ.copy()
         if hasattr(config, 'env'):
             self.env = config.env
-        self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
-        self.cmdrunner = CommandRunner(self.config, logger=self.logger)
         self.c_dict = self.create_c_dict()
+        self.cmdrunner = CommandRunner(self.config, logger=self.logger,
+                                       verbose=self.c_dict['VERBOSITY'])
 
         # if env MET_TMP_DIR was not set, set it to config TMP_DIR
         if 'MET_TMP_DIR' not in self.env:
@@ -62,6 +62,7 @@ class CommandBuilder:
         c_dict = dict()
         # set skip if output exists to False for all wrappers
         # wrappers that support this functionality can override this value
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = False
         return c_dict
 
@@ -386,7 +387,7 @@ class CommandBuilder:
                               'You must use a subclass')
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for arg in self.args:
             cmd += arg + " "

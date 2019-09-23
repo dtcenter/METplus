@@ -34,6 +34,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
     def create_c_dict(self):
         c_dict = super(RegridDataPlaneWrapper, self).create_c_dict()
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_REGRID_DATA_PLANE_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
 
         app = 'REGRID_DATA_PLANE'
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = \

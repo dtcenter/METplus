@@ -33,6 +33,8 @@ class Ascii2NcWrapper(CommandBuilder):
 
     def create_c_dict(self):
         c_dict = super(Ascii2NcWrapper, self).create_c_dict()
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_ASCII2NC_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
         c_dict['CONFIG_FILE'] = self.config.getstr('config', 'ASCII2NC_CONFIG_FILE', '')
         c_dict['ASCII_FORMAT'] = self.config.getstr('config', 'ASCII2NC_INPUT_FORMAT', '')
         c_dict['OBS_INPUT_DIR'] = self.config.getdir('ASCII2NC_INPUT_DIR', '')
@@ -70,7 +72,7 @@ class Ascii2NcWrapper(CommandBuilder):
             cmd += ' -config ' + self.c_dict['CONFIG_FILE']
 
         # add verbosity
-        cmd += f'-v {self.verbose}'
+        cmd += f"-v {self.c_dict['VERBOSITY']}"
         return cmd
 
     def run_at_time(self, input_dict):

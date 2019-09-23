@@ -518,7 +518,7 @@ that reformat gridded data
                               'You must use a subclass')
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
         for arg in self.args:
             cmd += arg + " "
 

@@ -33,7 +33,8 @@ class ModeWrapper(CompareGriddedWrapper):
 
     def create_c_dict(self):
         c_dict = super(ModeWrapper, self).create_c_dict()
-
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MODE_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
         c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG')
         c_dict['OBS_INPUT_DIR'] = \
           self.config.getdir('OBS_MODE_INPUT_DIR')

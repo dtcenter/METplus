@@ -56,6 +56,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
     def create_c_dict(self):
         c_dict = super(PcpCombineWrapper, self).create_c_dict()
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_PCP_COMBINE_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
 
         if self.config.getbool('config', 'FCST_PCP_COMBINE_RUN', False):
@@ -414,7 +416,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             self.logger.error("No app path specified. You must use a subclass")
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for a in self.args:
             cmd += a + " "
@@ -796,7 +798,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @return path to output file"""
         command_template = self.config.getraw('config', data_src + '_PCP_COMBINE_COMMAND')
         self.custom_command = sts.StringSub(self.logger, command_template, **time_info).do_string_sub()
-        return '{} -v {} {}'.format(self.app_path, self.verbose, self.custom_command)
+        return '{} -v {} {}'.format(self.app_path, self.c_dict['VERBOSITY'], self.custom_command)
 
     def build_input_level_list(self, data_src, time_info):
         level_list = self.c_dict[data_src + '_LEVELS']
