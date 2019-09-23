@@ -297,11 +297,10 @@ def is_loop_by_init(config):
         return config.getbool('config', 'LOOP_BY_INIT')
 
     msg = 'MUST SET LOOP_BY to VALID, INIT, RETRO, or REALTIME'
-    logger = config.log()
-    if logger != None:
-        logger.error(msg)
-    else:
+    if config.logger is None:
         print(msg)
+    else:
+        config.logger.error(msg)
 
     exit(1)
 
@@ -728,12 +727,10 @@ def get_logger(config, sublog=None):
             mkdir_p(dir_name)
 
         # set up the filehandler and the formatter, etc.
-        # This matches the oformat log.py formatter of produtil
+        # The default matches the oformat log.py formatter of produtil
         # So terminal output will now match log files.
-        formatter = logging.Formatter(
-            "%(asctime)s.%(msecs)03d %(name)s (%(filename)s:%(lineno)d) "
-            "%(levelname)s: %(message)s",
-            "%m/%d %H:%M:%S")
+        formatter = logging.Formatter(config.getraw('config', 'LOG_LINE_FORMAT'),
+                                      config.getraw('config', 'LOG_LINE_DATE_FORMAT'))
         #logging.Formatter.converter = time.gmtime
         file_handler = logging.FileHandler(metpluslog, mode='a')
         file_handler.setFormatter(formatter)
