@@ -31,13 +31,15 @@ def get_params(param_a, param_b):
     # read A confs
     (parm, infiles, moreopt) = config_launcher.parse_launch_args(params_a,
                                                                  None, None,
-                                                                 logger)
+                                                                 logger,
+                                                                 util.baseinputconfs)
     p = config_launcher.launch(infiles, moreopt)
 
     # read B confs     
     (parm, infiles, moreopt) = config_launcher.parse_launch_args(params_b,
                                                                  None, None,
-                                                                 logger)
+                                                                 logger,
+                                                                 util.baseinputconfs)
     p_b = config_launcher.launch(infiles, moreopt)
     return p, p_b
 
