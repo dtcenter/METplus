@@ -50,31 +50,6 @@ that reformat gridded data
         c_dict['FCST_IS_PROB'] = self.config.getbool('config', 'FCST_IS_PROB', False)
         c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
 
-        c_dict['FCST_WINDOW_BEGIN'] = \
-            self.config.getseconds('config', 'FCST_WINDOW_BEGIN', 0)
-        c_dict['FCST_WINDOW_END'] = \
-            self.config.getseconds('config', 'FCST_WINDOW_END', 0)
-
-        c_dict['OBS_WINDOW_BEGIN'] = \
-            self.config.getseconds('config', 'OBS_WINDOW_BEGIN', 0)
-        c_dict['OBS_WINDOW_END'] = \
-            self.config.getseconds('config', 'OBS_WINDOW_END', 0)
-
-        # if file window is not set, use window values
-        c_dict['FCST_FILE_WINDOW_BEGIN'] = \
-            self.config.getseconds('config', 'FCST_FILE_WINDOW_BEGIN',
-                                   c_dict['FCST_WINDOW_BEGIN'])
-        c_dict['FCST_FILE_WINDOW_END'] = \
-            self.config.getseconds('config', 'FCST_FILE_WINDOW_END',
-                                   c_dict['FCST_WINDOW_END'])
-
-        c_dict['OBS_FILE_WINDOW_BEGIN'] = \
-            self.config.getseconds('config', 'OBS_FILE_WINDOW_BEGIN',
-                                   c_dict['OBS_WINDOW_BEGIN'])
-        c_dict['OBS_FILE_WINDOW_END'] = \
-            self.config.getseconds('config', 'OBS_FILE_WINDOW_END',
-                                   c_dict['OBS_WINDOW_END'])
-
         c_dict['FCST_PROB_THRESH'] = None
         c_dict['OBS_PROB_THRESH'] = None
 
@@ -100,19 +75,32 @@ that reformat gridded data
         if self.config.has_option('config',
                                   dtype + '_' + app + '_WINDOW_' + edge):
             c_dict[dtype + '_WINDOW_' + edge] = \
-                self.config.getint('config',
+                self.config.getseconds('config',
                                    dtype + '_' + app + '_WINDOW_' + edge)
+        # if generic value is set, use that
+        elif self.config.has_option('config',
+                                    dtype + '_WINDOW_' + edge):
+            c_dict[dtype + '_WINDOW_' + edge] = \
+                self.config.getseconds('config',
+                                       dtype + '_WINDOW_' + edge)
+        # otherwise set to default of 0
+        else:
+            c_dict[dtype + '_WINDOW_' + edge] = 0
 
-        # do the same for FILE_WINDOW, but
-        # if FILE_WINDOW is not set, set it to WINDOW value
+        # do the same for FILE_WINDOW
         if self.config.has_option('config',
                                   dtype + '_' + app + '_FILE_WINDOW_' + edge):
             c_dict[dtype + '_FILE_WINDOW_' + edge] = \
-                self.config.getint('config',
+                self.config.getseconds('config',
                                    dtype + '_' + app + '_FILE_WINDOW_' + edge)
-        else:
+        elif self.config.has_option('config',
+                                    dtype + '_FILE_WINDOW_' + edge):
             c_dict[dtype + '_FILE_WINDOW_' + edge] = \
-                c_dict[dtype + '_WINDOW_' + edge]
+                self.config.getseconds('config',
+                                       dtype + '_FILE_WINDOW_' + edge)
+        # otherwise set to *_WINDOW_* value
+        else:
+            c_dict[dtype + '_FILE_WINDOW_' + edge] = c_dict[dtype + '_WINDOW_' + edge]
 
     def handle_window_variables(self, c_dict, app_name):
         """! Handle all window config variables like
