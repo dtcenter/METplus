@@ -23,10 +23,11 @@ from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
 from string_template_substitution import get_tags
 from gempak_to_cf_wrapper import GempakToCFWrapper
+import time_util
+
 # for run stand alone
 import produtil
 import config_metplus
-from config_wrapper import ConfigWrapper
 
 
 """!@namespace met_util
@@ -34,6 +35,11 @@ from config_wrapper import ConfigWrapper
 """
 # list of compression extensions that are handled by METplus
 VALID_EXTENSIONS = ['.gz', '.bz2', '.zip']
+
+baseinputconfs = ['metplus_config/metplus_system.conf',
+                  'metplus_config/metplus_data.conf',
+                  'metplus_config/metplus_runtime.conf',
+                  'metplus_config/metplus_logging.conf']
 
 def check_for_deprecated_config(conf, logger):
     deprecated_dict = {
@@ -222,11 +228,11 @@ def check_for_deprecated_config(conf, logger):
 def handle_tmp_dir(config):
     """! if env var MET_TMP_DIR is set, override config TMP_DIR with value
      if it differs from what is set
-     get config temp dir using config.conf to bypass check for /path/to
+     get config temp dir using getdir_nocheck to bypass check for /path/to
      this is done so the user can set env MET_TMP_DIR instead of config TMP_DIR
      and config TMP_DIR will be set automatically"""
     met_tmp_dir = os.environ.get('MET_TMP_DIR', '')
-    conf_tmp_dir = config.conf.getdir('TMP_DIR', '')
+    conf_tmp_dir = config.getdir_nocheck('TMP_DIR', '')
 
     # if env MET_TMP_DIR is set
     if met_tmp_dir:
@@ -291,11 +297,10 @@ def is_loop_by_init(config):
         return config.getbool('config', 'LOOP_BY_INIT')
 
     msg = 'MUST SET LOOP_BY to VALID, INIT, RETRO, or REALTIME'
-    logger = config.log()
-    if logger != None:
-        logger.error(msg)
-    else:
+    if config.logger is None:
         print(msg)
+    else:
+        config.logger.error(msg)
 
     exit(1)
 
@@ -308,51 +313,6 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
     time_str = sts.do_string_sub()
     return datetime.datetime.strptime(time_str, fmt)
 
-
-def get_relativedelta(value, default_unit='S'):
-    """!Converts time values ending in Y, m, d, H, M, or S to relativedelta object
-        Args:
-          @param value time value optionally ending in Y,m,d,H,M,S
-            Valid options match format 3600, 3600S, 60M, or 1H
-          @param default_unit unit to assume if no letter is found at end of value
-          @return relativedelta object containing offset time"""
-    mult = 1
-    reg = r'(-*)(\d+)([a-zA-Z]*)'
-    match = re.match(reg, value)
-    if match:
-        if match.group(1) == '-':
-            mult = -1
-        time_value = int(match.group(2)) * mult
-        unit_value = match.group(3)
-
-        # create relativedelta (dateutil) object for unit
-        # if no units specified, use seconds unless default_unit is specified
-        if unit_value == '':
-            if default_unit == 'S':
-                return relativedelta(seconds=time_value)
-            else:
-                unit_value = default_unit
-
-        if unit_value == 'H':
-            return relativedelta(hours=time_value)
-
-        if unit_value == 'M':
-            return relativedelta(minutes=time_value)
-
-        if unit_value == 'S':
-            return relativedelta(seconds=time_value)
-
-        if unit_value == 'd':
-            return relativedelta(days=time_value)
-
-        if unit_value == 'm':
-            return relativedelta(months=time_value)
-
-        if unit_value == 'Y':
-            return relativedelta(years=time_value)
-
-        # unsupported time unit specified, return None
-
 def loop_over_times_and_call(config, processes):
     """!Loop over all run times and call wrappers listed in config"""
     clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
@@ -362,12 +322,12 @@ def loop_over_times_and_call(config, processes):
         time_format = config.getstr('config', 'INIT_TIME_FMT')
         start_t = config.getraw('config', 'INIT_BEG')
         end_t = config.getraw('config', 'INIT_END')
-        time_interval = get_relativedelta(config.getstr('config', 'INIT_INCREMENT'))
+        time_interval = time_util.get_relativedelta(config.getstr('config', 'INIT_INCREMENT'))
     else:
         time_format = config.getstr('config', 'VALID_TIME_FMT')
         start_t = config.getraw('config', 'VALID_BEG')
         end_t = config.getraw('config', 'VALID_END')
-        time_interval = get_relativedelta(config.getstr('config', 'VALID_INCREMENT'))
+        time_interval = time_util.get_relativedelta(config.getstr('config', 'VALID_INCREMENT'))
 
     loop_time = get_time_obj(start_t, time_format,
                              clock_time_obj, config.logger)
@@ -385,11 +345,11 @@ def loop_over_times_and_call(config, processes):
         config.logger.info("* Running METplus")
         if use_init:
             config.logger.info("*  at init time: " + run_time)
-            config.conf.set('config', 'CURRENT_INIT_TIME', run_time)
+            config.set('config', 'CURRENT_INIT_TIME', run_time)
             os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
         else:
             config.logger.info("*  at valid time: " + run_time)
-            config.conf.set('config', 'CURRENT_VALID_TIME', run_time)
+            config.set('config', 'CURRENT_VALID_TIME', run_time)
             os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
         config.logger.info("****************************************")
         if not isinstance(processes, list):
@@ -408,16 +368,15 @@ def loop_over_times_and_call(config, processes):
 
         loop_time += time_interval
 
-
 def get_lead_sequence(config, input_dict=None):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
         Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects"""
-    if config.conf.has_option('config', 'LEAD_SEQ'):
+    if config.has_option('config', 'LEAD_SEQ'):
         # return list of forecast leads
         lead_strings = getlist(config.getstr('config', 'LEAD_SEQ'))
         leads = []
         for lead in lead_strings:
-            relative_delta = get_relativedelta(lead, 'H')
+            relative_delta = time_util.get_relativedelta(lead, 'H')
             if relative_delta is not None:
                 leads.append(relative_delta)
             else:
@@ -431,10 +390,10 @@ def get_lead_sequence(config, input_dict=None):
         # this is an approximation because relative time offsets depend on
         # each runtime
         out_leads = []
-        lead_min_str = config.conf.getstr('config', 'LEAD_SEQ_MIN', '0')
-        lead_max_str = config.conf.getstr('config', 'LEAD_SEQ_MAX', '4000Y')
-        lead_min_relative = get_relativedelta(lead_min_str, 'H')
-        lead_max_relative = get_relativedelta(lead_max_str, 'H')
+        lead_min_str = config.getstr('config', 'LEAD_SEQ_MIN', '0')
+        lead_max_str = config.getstr('config', 'LEAD_SEQ_MAX', '4000Y')
+        lead_min_relative = time_util.get_relativedelta(lead_min_str, 'H')
+        lead_max_relative = time_util.get_relativedelta(lead_max_str, 'H')
         now_time = datetime.datetime.now()
         lead_min_approx = now_time + lead_min_relative
         lead_max_approx = now_time + lead_max_relative
@@ -446,7 +405,7 @@ def get_lead_sequence(config, input_dict=None):
         return out_leads
 
     # use INIT_SEQ to build lead list based on the valid time
-    if config.conf.has_option('config', 'INIT_SEQ'):
+    if config.has_option('config', 'INIT_SEQ'):
         # if input dictionary not passed in, cannot compute lead sequence
         #  from it, so exit
         if input_dict is None:
@@ -480,10 +439,10 @@ def get_lead_sequence(config, input_dict=None):
 
             while current_lead <= max_forecast:
                 if current_lead >= min_forecast:
-                    lead_seq.append(current_lead)
+                    lead_seq.append(relativedelta(hours=current_lead))
                 current_lead += 24
 
-        return sorted(lead_seq)
+        return sorted(lead_seq, key=lambda rd: time_util.ti_get_seconds_from_relativedelta(rd, input_dict['valid']))
     else:
         return [0]
 
@@ -768,17 +727,17 @@ def get_logger(config, sublog=None):
             mkdir_p(dir_name)
 
         # set up the filehandler and the formatter, etc.
-        # This matches the oformat log.py formatter of produtil
+        # The default matches the oformat log.py formatter of produtil
         # So terminal output will now match log files.
-        formatter = logging.Formatter(
-            "%(asctime)s.%(msecs)03d %(name)s (%(filename)s:%(lineno)d) "
-            "%(levelname)s: %(message)s",
-            "%m/%d %H:%M:%S")
+        formatter = logging.Formatter(config.getraw('config', 'LOG_LINE_FORMAT'),
+                                      config.getraw('config', 'LOG_LINE_DATE_FORMAT'))
         #logging.Formatter.converter = time.gmtime
         file_handler = logging.FileHandler(metpluslog, mode='a')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
+    # set add the logger to the config
+    config.logger = logger
     return logger
 
 def file_exists(filename):
@@ -1046,16 +1005,14 @@ def create_grid_specification_string(lat, lon, logger, config):
     # Need to access sys._getframe to capture current file and function for
     # logging information
 
-    conf = ConfigWrapper(config, logger)
-
     # Initialize the tile grid string
     # and get the other values from the parameter file
-    nlat = conf.getstr('config', 'NLAT')
-    nlon = conf.getstr('config', 'NLON')
-    dlat = conf.getstr('config', 'DLAT')
-    dlon = conf.getstr('config', 'DLON')
-    lon_subtr = conf.getfloat('config', 'LON_ADJ')
-    lat_subtr = conf.getfloat('config', 'LAT_ADJ')
+    nlat = config.getstr('config', 'NLAT')
+    nlon = config.getstr('config', 'NLON')
+    dlat = config.getstr('config', 'DLAT')
+    dlon = config.getstr('config', 'DLON')
+    lon_subtr = config.getfloat('config', 'LON_ADJ')
+    lat_subtr = config.getfloat('config', 'LAT_ADJ')
 
     # Format for regrid_data_plane:
     # latlon Nx Ny lat_ll lon_ll delta_lat delta_lonadj_lon =
@@ -1465,7 +1422,7 @@ def parse_var_list(config, time_info=None):
     """ read conf items and populate list of dictionaries containing
     information about each variable to be compared
         Args:
-            @param config: ConfigWrapper object
+            @param config: METplusConfig object
             @param time_info: time object for string sub, optional
         Returns:
             list of dictionaries with variable information
@@ -1485,7 +1442,7 @@ def parse_var_list(config, time_info=None):
 def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
     """ helper function for parse_var_list
         Args:
-            @param config: ConfigWrapper object
+            @param config: METplusConfig object
             @param data_type: data_type (FCST or OBS)
             @param time_info: time object for string sub
             @param dont_duplicate: if true check other data
@@ -1522,14 +1479,14 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
         extra = {}
         # get fcst var info if available
         if config.has_option('config', data_type+"_VAR"+n+"_NAME"):
-            name[data_type] = config.getraw('config', data_type+"_VAR"+n+"_NAME")
-            name[data_type] = StringSub(config.logger, name[data_type],
+            name_tmp = config.getraw('config', data_type+"_VAR"+n+"_NAME")
+            name[data_type] = StringSub(config.logger, name_tmp,
                                         **time_info).do_string_sub()
 
             extra[data_type] = ""
             if config.has_option('config', data_type+"_VAR"+n+"_OPTIONS"):
-                extra[data_type] = config.getraw('config', data_type+"_VAR"+n+"_OPTIONS")
-                extra[data_type] = StringSub(config.logger, extra[data_type],
+                extra_tmp = config.getraw('config', data_type+"_VAR"+n+"_OPTIONS")
+                extra[data_type] = StringSub(config.logger, extra_tmp,
                                              **time_info).do_string_sub()
             thresh[data_type] = []
             if config.has_option('config', data_type+"_VAR"+n+"_THRESH"):
@@ -1544,18 +1501,20 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
 
             # if OBS_VARn_X does not exist, use FCST_VARn_X
             if config.has_option('config', other_data_type+"_VAR"+n+"_NAME"):
-                name[other_data_type] = config.getraw('config', other_data_type+"_VAR"+n+"_NAME")
-                name[other_data_type] = StringSub(config.logger, name[other_data_type],
+                name_tmp = config.getraw('config', other_data_type+"_VAR"+n+"_NAME")
+                name[other_data_type] = StringSub(config.logger, name_tmp,
                                                   **time_info).do_string_sub()
             else:
                 name[other_data_type] = name[data_type]
 
             extra[other_data_type] = ""
             if config.has_option('config', other_data_type+"_VAR"+n+"_OPTIONS"):
-                extra[other_data_type] = config.getraw('config', other_data_type+"_VAR"+n+"_OPTIONS")
-                extra[other_data_type] = StringSub(config.logger, extra[other_data_type],
+                extra_tmp = config.getraw('config',
+                                          other_data_type+"_VAR"+n+"_OPTIONS")
+                extra[other_data_type] = StringSub(config.logger, extra_tmp,
                                                    **time_info).do_string_sub()
-            levels_tmp = getlist(config.getraw('config', data_type+"_VAR"+n+"_LEVELS", ''))
+            levels_tmp = getlist(config.getraw('config',
+                                               data_type+"_VAR"+n+"_LEVELS", ''))
             levels[data_type] = []
             for level in levels_tmp:
                 subbed_level = StringSub(config.logger, level, **time_info).do_string_sub()
@@ -1860,7 +1819,7 @@ def preprocess_file(filename, data_type, config):
             outdir = os.path.dirname(stagefile)
             if not os.path.exists(outdir):
                 os.makedirs(outdir, mode=0o0775)
-            run_g2c = GempakToCFWrapper(config.conf, config.logger)
+            run_g2c = GempakToCFWrapper(config, config.logger)
             run_g2c.infiles.append(filename)
             run_g2c.set_output_path(stagefile)
             cmd = run_g2c.get_command()
@@ -1952,16 +1911,16 @@ def run_stand_alone(module_name, app_name):
         logger.info('logger Top of ' + app_name + ".")
 
         # Parse arguments, options and return a config instance.
-        p = config_metplus.setup(filename=cur_filename)
+        config = config_metplus.setup(baseinputconfs,
+                                      filename=cur_filename)
+        logger = get_logger(config)
 
-        logger = get_logger(p)
-        config = ConfigWrapper(p, logger)
+        version_number = get_version_number().strip()
+        logger.info(f"Running {app_name} stand-alone via METplus v{version_number} called with command: {' '.join(sys.argv)}")
 
         module = __import__(module_name)
         wrapper_class = getattr(module, app_name + "Wrapper")
         wrapper = wrapper_class(config, logger)
-
-        os.environ['MET_BASE'] = config.getdir('MET_BASE')
 
         if not os.environ.get('MET_TMP_DIR', ''):
             os.environ['MET_TMP_DIR'] = config.getdir('TMP_DIR')
@@ -1969,6 +1928,8 @@ def run_stand_alone(module_name, app_name):
         produtil.log.postmsg(app_name + ' Calling run_all_times.')
 
         wrapper.run_all_times()
+
+        logger.info(f'{app_name} stand-alone has successfully finished running.')
 
         produtil.log.postmsg(app_name + ' completed')
     except Exception as e:

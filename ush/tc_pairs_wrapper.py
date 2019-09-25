@@ -63,6 +63,8 @@ class TcPairsWrapper(CommandBuilder):
 
         """
         c_dict = super(TcPairsWrapper, self).create_c_dict()
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_TC_PAIRS_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
         c_dict['MISSING_VAL_TO_REPLACE'] =\
             self.config.getstr('config', 'TC_PAIRS_MISSING_VAL_TO_REPLACE', '-99')
         c_dict['MISSING_VAL'] =\
@@ -667,7 +669,7 @@ class TcPairsWrapper(CommandBuilder):
         if not os.path.exists(os.path.dirname(output_path)):
             os.makedirs(os.path.dirname(output_path))
 
-        cmd = '{} -v {}'.format(self.app_path, self.verbose)
+        cmd = '{} -v {}'.format(self.app_path, self.c_dict['VERBOSITY'])
         cmd += ' -bdeck {}'.format(' '.join(self.bdeck))
 
         if self.adeck:

@@ -10,7 +10,6 @@ import pytest
 import datetime
 import config_metplus
 from grid_stat_wrapper import GridStatWrapper
-from config_wrapper import ConfigWrapper
 import met_util as util
 import time_util
 
@@ -60,9 +59,8 @@ def metplus_config():
         produtil.log.postmsg('grid_stat_wrapper  is starting')
 
         # Read in the configuration object CONFIG
-        config = config_metplus.setup()
+        config = config_metplus.setup(util.baseinputconfs)
         logger = util.get_logger(config)
-        config = ConfigWrapper(config, logger)
         return config
 
     except Exception as e:

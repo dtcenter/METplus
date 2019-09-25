@@ -46,6 +46,10 @@ class PB2NCWrapper(CommandBuilder):
                            config files.
         """
         c_dict = super(PB2NCWrapper, self).create_c_dict()
+
+        c_dict['VERBOSITY'] = self.config.getint('config', 'LOG_PB2NC_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
+
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', False)
         c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'PB2NC_OFFSETS', '0'))
 
@@ -209,7 +213,7 @@ class PB2NCWrapper(CommandBuilder):
 
             if infile is not None:
                 if isinstance(infile, list):
-                    self.infiles.extend(f)
+                    self.infiles.extend(infile)
                 else:
                     self.infiles.append(infile)
                 self.logger.debug('Adding input file {}'.format(infile))
@@ -224,6 +228,7 @@ class PB2NCWrapper(CommandBuilder):
                                   self.c_dict['OBS_INPUT_TEMPLATE'],
                                   self.c_dict['OFFSETS']))
 
+    '''
     def find_and_check_output_file(self, time_info):
         """!Look for expected output file. If it exists and configured to skip if it does, then return False"""
         outfile = StringSub(self.logger,
@@ -236,11 +241,11 @@ class PB2NCWrapper(CommandBuilder):
             return True
 
         # if the output file exists and we are supposed to skip, don't run pb2nc
-        self.logger.debug('Skip writing output file {} because it already '
+        self.logger.debug(f'Skip writing output file {outpath} because it already '
                           'exists. Remove file or change '
-                          'PB2NC_SKIP_IF_OUTPUT_EXISTS to False to process'
-                          .format(outpath))
-
+                          f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
+                          'to process')
+    '''
     def run_at_time(self, input_dict):
         """! Loop over each forecast lead and build pb2nc command """
         if self.c_dict['GRID'] is None:
@@ -298,7 +303,7 @@ class PB2NCWrapper(CommandBuilder):
             self.logger.error('No app path specified. You must use a subclass')
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for a in self.args:
             cmd += a + " "
@@ -327,8 +332,11 @@ class PB2NCWrapper(CommandBuilder):
 
         cmd += out_path + ' '
 
-        if self.c_dict['CONFIG_FILE'] != "":
-            cmd += self.c_dict['CONFIG_FILE'] + ' '
+        if self.c_dict['CONFIG_FILE'] == '':
+            self.logger.error('PB2NC_CONFIG_FILE is required')
+            return None
+
+        cmd += self.c_dict['CONFIG_FILE'] + ' '
 
         if len(self.infiles) > 1:
             for f in self.infiles[1:]:

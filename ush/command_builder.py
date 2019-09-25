@@ -48,9 +48,9 @@ class CommandBuilder:
         self.env = os.environ.copy()
         if hasattr(config, 'env'):
             self.env = config.env
-        self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
-        self.cmdrunner = CommandRunner(self.config, logger=self.logger)
         self.c_dict = self.create_c_dict()
+        self.cmdrunner = CommandRunner(self.config, logger=self.logger,
+                                       verbose=self.c_dict['VERBOSITY'])
 
         # if env MET_TMP_DIR was not set, set it to config TMP_DIR
         if 'MET_TMP_DIR' not in self.env:
@@ -60,6 +60,10 @@ class CommandBuilder:
 
     def create_c_dict(self):
         c_dict = dict()
+        # set skip if output exists to False for all wrappers
+        # wrappers that support this functionality can override this value
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = False
         return c_dict
 
     def clear(self):
@@ -356,6 +360,23 @@ class CommandBuilder:
                 file_handle.write(f_path + '\n')
         return list_path
 
+    def find_and_check_output_file(self, time_info):
+        """!Look for expected output file. If it exists and configured to skip if it does, then return False"""
+        outfile = sts.StringSub(self.logger,
+                            self.c_dict['OUTPUT_TEMPLATE'],
+                            **time_info).do_string_sub()
+        outpath = os.path.join(self.c_dict['OUTPUT_DIR'], outfile)
+        self.set_output_path(outpath)
+
+        if not os.path.exists(outpath) or not self.c_dict['SKIP_IF_OUTPUT_EXISTS']:
+            return True
+
+        # if the output file exists and we are supposed to skip, don't run pb2nc
+        self.logger.debug(f'Skip writing output file {outpath} because it already '
+                          'exists. Remove file or change '
+                          f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
+                          'to process')
+
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string
@@ -366,7 +387,7 @@ class CommandBuilder:
                               'You must use a subclass')
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for arg in self.args:
             cmd += arg + " "

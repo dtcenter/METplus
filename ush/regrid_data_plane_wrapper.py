@@ -34,6 +34,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
     def create_c_dict(self):
         c_dict = super(RegridDataPlaneWrapper, self).create_c_dict()
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_REGRID_DATA_PLANE_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
 
         app = 'REGRID_DATA_PLANE'
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = \
@@ -138,19 +140,28 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                @return tuple containing input and output field names to use
         """
         app = self.app_name.upper()
+
         input_field_name = \
-            self.config.conf.getstr('config',
+            self.config.getstr('config',
                                f'{d_type}_{app}_VAR{index}_INPUT_FIELD_NAME',
-                               self.config.conf.getstr('config',
-                                                  f'{d_type}_{app}_VAR{index}_FIELD_NAME',
-                                                  ''))
+                               '')
+
+        if input_field_name == '':
+            input_field_name = \
+                self.config.getstr('config',
+                                   f'{d_type}_{app}_VAR{index}_FIELD_NAME',
+                                   '')
 
         output_field_name = \
-            self.config.conf.getstr('config',
+            self.config.getstr('config',
                                f'{d_type}_{app}_VAR{index}_OUTPUT_FIELD_NAME',
-                               self.config.conf.getstr('config',
-                                                  f'{d_type}_{app}_VAR{index}_FIELD_NAME',
-                                                  ''))
+                               '')
+
+        if output_field_name == '':
+            output_field_name = \
+                self.config.getstr('config',
+                                   f'{d_type}_{app}_VAR{index}_FIELD_NAME',
+                                   '')
 
         return input_field_name, output_field_name
 

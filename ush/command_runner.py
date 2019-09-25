@@ -37,19 +37,18 @@ Output Files: N/A
 #
 import os
 from produtil.run import exe, run
-from config_wrapper import ConfigWrapper
 import shlex
 
 class CommandRunner(object):
     """! Class for Creating and Running External Programs
     """
-    def __init__(self, config, logger=None):
+    def __init__(self, config, logger=None, verbose=2):
         """!Class for Creating and Running External Programs.
             It was intended to handle the MET executables but
             can be used by other executables."""
         self.logger = logger
-        self.config = ConfigWrapper(config, self.logger)
-        self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
+        self.config = config
+        self.verbose = verbose
 
     def run_cmd(self, cmd, env=None, ismetcmd = True, app_name=None, run_inshell=False,
                 log_theoutput=False, **kwargs):

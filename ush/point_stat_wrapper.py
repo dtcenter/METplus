@@ -39,7 +39,8 @@ class PointStatWrapper(CompareGriddedWrapper):
                              in the METplus configuration file.
         """
         c_dict = super(PointStatWrapper, self).create_c_dict()
-
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_POINT_STAT_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'POINT_STAT_OFFSETS', '0'))
         c_dict['FCST_INPUT_TEMPLATE'] = \

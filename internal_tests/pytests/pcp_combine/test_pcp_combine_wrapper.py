@@ -10,7 +10,6 @@ import produtil
 import pytest
 import config_metplus
 from pcp_combine_wrapper import PcpCombineWrapper
-from config_wrapper import ConfigWrapper
 import time_util
 import met_util as util
 
@@ -68,10 +67,9 @@ def metplus_config():
         produtil.log.postmsg('pcp_combine_wrapper  is starting')
 
         # Read in the configuration object CONFIG
-        conf = config_metplus.setup()
+        conf = config_metplus.setup(util.baseinputconfs)
         logger = util.get_logger(conf)
-        config = ConfigWrapper(conf, logger)
-        return config
+        return conf
 
     except Exception as e:
         produtil.log.jlogger.critical(
@@ -100,6 +98,9 @@ def test_get_accumulation_1_to_6():
     file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
         
     pcw.input_dir = input_dir
+    if not pcw.build_input_level_list(data_src, time_info):
+        assert False
+
     pcw.get_accumulation(time_info, accum, data_src, False)
     in_files = pcw.infiles
     if len(in_files) == 6 and \
@@ -126,6 +127,9 @@ def test_get_accumulation_6_to_6():
     pcw.c_dict['FCST_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
     
     pcw.input_dir = input_dir
+    if not pcw.build_input_level_list(data_src, time_info):
+        assert False
+
     pcw.get_accumulation(time_info, accum, data_src, False)
     in_files = pcw.infiles    
     if  len(in_files) == 1 and input_dir+"/20160904/file.2016090418.06h" in in_files:

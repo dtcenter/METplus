@@ -448,7 +448,12 @@ class SeriesByLeadWrapper(CommandBuilder):
         lead_seq = util.get_lead_sequence(self.config, None)
 
         for fhr in lead_seq:
-            cur_fhr = str(time_util.ti_get_seconds(fhr) // 3600).zfill(3)
+            fcst_seconds = time_util.ti_get_seconds_from_relativedelta(fhr)
+            if fcst_seconds is None:
+                self.logger.error(f'Invalid forecast units used: {fhr}')
+                exit(1)
+
+            cur_fhr = str(fcst_seconds // 3600).zfill(3)
             msg = ('Evaluating forecast hour ' + cur_fhr)
             self.logger.debug(msg)
 
