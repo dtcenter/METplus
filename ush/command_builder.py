@@ -406,8 +406,13 @@ class CommandBuilder:
         out_path = os.path.join(self.outdir, self.outfile)
 
         # create outdir (including subdir in outfile) if it doesn't exist
-        if not os.path.exists(os.path.dirname(out_path)):
-            os.makedirs(os.path.dirname(out_path))
+        parent_dir = os.path.dirname(out_path)
+        if parent_dir == '':
+            self.logger.error('Must specify path to output file')
+            return None
+
+        if not os.path.exists(parent_dir):
+            os.makedirs(parent_dir)
 
         cmd += " " + out_path
 

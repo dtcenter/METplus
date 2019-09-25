@@ -19,6 +19,7 @@ import re
 import met_util as util
 import time_util
 from command_builder import CommandBuilder
+from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from string_template_substitution import StringSub
 
 VALID_PYTHON_EMBED_TYPES = ['NUMPY', 'XARRAY', 'PANDAS']
@@ -33,7 +34,7 @@ class CustomIngestWrapper(CommandBuilder):
                                      'bin', self.app_name)
 
     def create_c_dict(self):
-        c_dict = super()
+        c_dict = super().create_c_dict()
         # get values from config object and set them to be accessed by wrapper
 
         c_dict['INGESTERS'] = []
@@ -48,7 +49,7 @@ class CustomIngestWrapper(CommandBuilder):
                 indices.append(result.group(1))
 
         for index in indices:
-            ingest_script = self.config.getstr('config', f'CUSTOM_INGEST_{index}_SCRIPT')
+            ingest_script = self.config.getraw('config', f'CUSTOM_INGEST_{index}_SCRIPT')
             input_type = self.config.getstr('config', f'CUSTOM_INGEST_{index}_TYPE')
             output_dir = self.config.getdir(f'CUSTOM_INGEST_{index}_OUTPUT_DIR', '')
             output_template = self.config.getraw('filename_templates',
@@ -78,10 +79,10 @@ class CustomIngestWrapper(CommandBuilder):
         for lead in lead_seq:
 
             # set forecast lead time in hours
-            time_info['lead'] = lead
+            input_dict['lead'] = lead
 
             # recalculate time info items
-            time_info = time_util.ti_calculate(time_info)
+            time_info = time_util.ti_calculate(input_dict)
 
             if self.run_at_time_lead(time_info) is None:
                 return False
@@ -106,29 +107,27 @@ class CustomIngestWrapper(CommandBuilder):
                 return
 
             # get grid information to project output data
-            output_grid = sts.StringSub(self.logger,
-                                        ingester['output_grid'],
-                                        **time_info).do_string_sub()
+            output_grid = StringSub(self.logger,
+                                    ingester['output_grid'],
+                                    **time_info).do_string_sub()
             if output_grid == '':
                 self.logger.error(f'Must set CUSTOM_INGEST_{index}_OUTPUT_GRID')
                 return
 
             # get call to python script
-            ingest_script = sts.StringSub(self.logger,
-                                          ingester['script'],
-                                          **time_info).do_string_sub()
+            script = StringSub(self.logger,
+                               ingester['script'],
+                               **time_info).do_string_sub()
 
             # get output file path
-            output_dir = self.c_dict[dtype+'_OUTPUT_DIR']
-            output_template = self.c_dict[dtype+'_OUTPUT_TEMPLATE']
-            output_file = sts.StringSub(self.logger,
-                                        output_template,
-                                        **time_info).do_string_sub()
-            output_path = os.path.join(output_dir, output_file)
+            output_file = StringSub(self.logger,
+                                    ingester['output_template'],
+                                    **time_info).do_string_sub()
+            output_path = os.path.join(ingester['output_dir'], output_file)
 
             rdp.clear()
             rdp.infiles.append(f'PYTHON_{input_type}')
-            rdp.infiles.append(f'\'name="{script}\";\'')
+            rdp.infiles.append(f'-field \'name="{script}\";\'')
             rdp.infiles.append(output_grid)
             rdp.outfile = output_path
             cmd = rdp.get_command()
