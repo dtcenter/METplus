@@ -261,7 +261,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     thresh_value = thresh_value.replace(opt, '')
             if thresh_opt in ['>', 'gt']:
                 thresh_symbol+='>'+thresh_value
-                thresh_letter+='gt'+threshvalue
+                thresh_letter+='gt'+thresh_value
             elif thresh_opt in ['>=', 'ge']:
                 thresh_symbol+='>='+thresh_value
                 thresh_letter+='ge'+thresh_value
@@ -272,7 +272,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 thresh_symbol+='<='+thresh_value
                 thresh_letter+='le'+thresh_value
             elif thresh_opt in ['==', 'eq']:
-                thresh_symbol+='=='+threshvalue
+                thresh_symbol+='=='+thresh_value
                 thresh_letter+='eq'+thresh_value
             elif thresh_opt in ['!=', 'ne']:
                 thresh_symbol+='!='+thresh_value
