@@ -403,10 +403,6 @@ class CommandBuilder:
             self.logger.error("No output filename specified")
             return None
 
-        if self.outdir == "":
-            self.logger.error("No output directory specified")
-            return None
-
         out_path = os.path.join(self.outdir, self.outfile)
 
         # create outdir (including subdir in outfile) if it doesn't exist
