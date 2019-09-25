@@ -115,7 +115,7 @@ class Ascii2NcWrapper(CommandBuilder):
             cmd += ' -config ' + self.c_dict['CONFIG_FILE']
 
         # add verbosity
-        cmd += f"-v {self.c_dict['VERBOSITY']}"
+        cmd += f" -v {self.c_dict['VERBOSITY']}"
         return cmd
 
     def run_at_time(self, input_dict):
