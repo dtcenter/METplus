@@ -216,6 +216,12 @@ for plot_info in plot_info_list:
     obs_var_thresh = obs_var_thresh_list[
         fcst_var_thresh_list.index(fcst_var_thresh)
     ]
+    fcst_var_thresh_symbol, fcst_var_thresh_letter = plot_util.format_thresh(
+        fcst_var_thresh
+    )
+    obs_var_thresh_symbol, obs_var_thresh_letter = plot_util.format_thresh(
+        obs_var_thresh
+    )
     # Build plot title for variable info
     fcst_var_plot_title = 'Fcst: '+fcst_var_name
     obs_var_plot_title = 'Obs: '+obs_var_name
@@ -313,8 +319,10 @@ for plot_info in plot_info_list:
         )
     base_name+=(
         '_fcst_lead'+fcst_lead
-        +'_fcst'+fcst_var_name+'FCSTLEVELHOLDER'+fcst_var_thresh+interp_mthd
-        +'_obs'+obs_var_name+'OBSLEVELHOLDER'+obs_var_thresh+interp_mthd
+        +'_fcst'+fcst_var_name+'FCSTLEVELHOLDER'
+        +fcst_var_thresh_letter.replace(',', '_')+interp_mthd
+        +'_obs'+obs_var_name+'OBSLEVELHOLDER'
+        +obs_var_thresh_letter.replace(',', '_')+interp_mthd
         +'_vxmask'+vx_mask
     )
     if desc != '':
@@ -324,7 +332,10 @@ for plot_info in plot_info_list:
     if interp_pnts != '':
         base_name+='_interp_pnts'+interp_pnts
     if cov_thresh != '':
-        base_name+='_cov_thresh'+cov_thresh
+        cov_thresh_symbol, cov_thresh_letter = plot_util.format_thresh(
+            cov_thresh
+        )
+        base_name+='_cov_thresh'+cov_thresh_letter.replace(',', '_')
     if alpha != '':
         base_name+='_alpha'+alpha
     # Set up expected date in MET .stat file and date plot information

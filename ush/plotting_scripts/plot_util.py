@@ -170,6 +170,50 @@ def get_date_arrays(date_type, date_beg, date_end,
         expected_stat_file_dates.append(date.strftime('%Y%m%d_%H%M%S'))
     return plot_time_dates, expected_stat_file_dates
 
+def format_thresh(thresh):
+    """! Format thresholds for file naming 
+          
+         Args:
+             thresh         - string of the treshold(s)
+          
+         Return:
+             thresh_symbol  - string of the threshold(s)
+                              with symbols
+             thresh_letters - string of the threshold(s) 
+                              with letters 
+    """
+    thresh_list = thresh.split(' ')
+    thresh_symbol = ''
+    thresh_letter = ''
+    for thresh in thresh_list:
+        if thresh == '':
+            continue
+        thresh_value = thresh
+        for opt in ['>=', '>', '==','!=','<=', '<',
+                    'ge', 'gt', 'eq', 'ne', 'le', 'lt']:
+            if opt in thresh_value:
+                thresh_opt = opt
+                thresh_value = thresh_value.replace(opt, '')
+        if thresh_opt in ['>', 'gt']:
+            thresh_symbol+='>'+thresh_value
+            thresh_letter+='gt'+thresh_value
+        elif thresh_opt in ['>=', 'ge']:
+            thresh_symbol+='>='+thresh_value
+            thresh_letter+='ge'+thresh_value
+        elif thresh_opt in ['<', 'lt']:
+            thresh_symbol+='<'+thresh_value
+            thresh_letter+='lt'+thresh_value
+        elif thresh_opt in ['<=', 'le']:
+            thresh_symbol+='<='+thresh_value
+            thresh_letter+='le'+thresh_value
+        elif thresh_opt in ['==', 'eq']:
+            thresh_symbol+='=='+thresh_value
+            thresh_letter+='eq'+thresh_value
+        elif thresh_opt in ['!=', 'ne']:
+            thresh_symbol+='!='+thresh_value
+            thresh_letter+='ne'+thresh_value
+    return thresh_symbol, thresh_letter
+
 def get_stat_file_base_columns(met_version):
     """! Get the standard MET .stat file columns based on
          version number
