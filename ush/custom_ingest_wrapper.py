@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Program Name: example_wrapper.py
+Program Name: custom_ingester_wrapper.py
 Contact(s): George McCabe
 Abstract: 
 History Log:  Initial version
@@ -12,13 +12,16 @@ Output Files: None
 Condition codes: 0 for success, 1 for failure
 """
 
-from __future__ import print_function
 
 import os
+import re
+
 import met_util as util
 import time_util
 from command_builder import CommandBuilder
 from string_template_substitution import StringSub
+
+VALID_PYTHON_EMBED_TYPES = ['NUMPY', 'XARRAY', 'PANDAS']
 
 class CustomIngestWrapper(CommandBuilder):
     """!Wrapper to utilize Python Embedding in the MET tools to read in
@@ -30,34 +33,38 @@ class CustomIngestWrapper(CommandBuilder):
                                      'bin', self.app_name)
 
     def create_c_dict(self):
-        # change to super() for python 3
-        # c_dict = super()
-        c_dict = super(CustomIngestWrapper, self).create_c_dict()
+        c_dict = super()
         # get values from config object and set them to be accessed by wrapper
 
         c_dict['INGESTERS'] = []
+
         # find all CUSTOM_INGEST_<n>_TEMPLATE keys in the conf files
-        all_conf = config.keys('config')
+        all_conf = self.config.keys('config')
         indices = []
-        regex = re.compile("CUSTOM_INGEST_(\d+)_SCRIPT")
+        regex = re.compile(r"CUSTOM_INGEST_(\d+)_SCRIPT")
         for conf in all_conf:
             result = regex.match(conf)
             if result is not None:
                 indices.append(result.group(1))
 
-        for index in indicies:
-            ingest_script = self.config.getstr('config', 'CUSTOM_INGEST_{}_SCRIPT'.format(index))
-            input_template = self.config.getraw('filename_templates',
-                                                'CUSTOM_INGEST_{}_INPUT_TEMPLATE'.format(index))
-            input_dir = self.config.getdir('CUSTOM_INGEST_{}_INPUT_DIR'.format(index), '')
+        for index in indices:
+            ingest_script = self.config.getstr('config', f'CUSTOM_INGEST_{index}_SCRIPT')
+            input_type = self.config.getstr('config', f'CUSTOM_INGEST_{index}_TYPE')
+            output_dir = self.config.getdir(f'CUSTOM_INGEST_{index}_OUTPUT_DIR', '')
             output_template = self.config.getraw('filename_templates',
-                                                 'CUSTOM_INGEST_{}_OUTPUT_TEMPLATE'.format(index))
-            output_dir = self.config.getdir('CUSTOM_INGEST_{}_OUTPUT_DIR'.format(index), '')
-            ingester_dict = { 'input_dir' : input_dir, 'input_template' : input_template,
-                              'output_dir' : output_dir, 'output_template' : output_template,
-                              'ingest_script' : ingest_script }
+                                                 f'CUSTOM_INGEST_{index}_OUTPUT_TEMPLATE')
+            output_grid = self.config.getraw('config', f'CUSTOM_INGEST_{index}_OUTPUT_GRID', '')
+            ingester_dict = {'output_dir': output_dir,
+                             'output_template': output_template,
+                             'script': ingest_script,
+                             'input_type': input_type,
+                             'output_grid': output_grid,
+                             'index': index,
+                            }
+
             c_dict['INGESTERS'].append(ingester_dict)
 
+        c_dict['regrid_data_plane'] = RegridDataPlaneWrapper(self.config, self.logger)
         return c_dict
 
     def run_at_time(self, input_dict):
@@ -66,20 +73,6 @@ class CustomIngestWrapper(CommandBuilder):
                 @param input_dict dictionary containing time information of current run
                         generally contains 'now' (current) time and 'init' or 'valid' time
         """
-        # fill in time info dictionary
-        time_info = time_util.ti_calculate(input_dict)
-
-        # check if looping by valid or init and log time for run
-        loop_by = time_info['loop_by']
-        self.logger.info('Running ExampleWrapper at {} time {}'.format(loop_by,
-                                                                       time_info[loop_by+'_fmt']))
-
-        # read input directory and template from config dictionary
-        input_dir = self.c_dict['INPUT_DIR']
-        input_template = self.c_dict['INPUT_TEMPLATE']
-        self.logger.info('Input directory is {}'.format(input_dir))
-        self.logger.info('Input template is {}'.format(input_template))
-
         # get forecast leads to loop over
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
@@ -90,21 +83,60 @@ class CustomIngestWrapper(CommandBuilder):
             # recalculate time info items
             time_info = time_util.ti_calculate(time_info)
 
-            # log init, valid, and forecast lead times for current loop iteration
-            self.logger.info('Processing forecast lead {} initialized at {} and valid at {}'
-                             .format(time_info['lead_string'], time_info['init'].strftime('%Y-%m-%d %HZ'),
-                                     time_info['valid'].strftime('%Y-%m-%d %HZ')))
-
-            # perform string substitution to find filename based on template and current run time
-            # pass in logger, then template, then any items to use to fill in template
-            # pass time info with ** in front to expand each dictionary item to a variable
-            #  i.e. time_info['init'] becomes init=init_value
-            filename = StringSub(self.logger,
-                                 input_template,
-                                 **time_info).do_string_sub()
-            self.logger.info('Looking in input directory for file: {}'.format(filename))
+            if self.run_at_time_lead(time_info) is None:
+                return False
 
         return True
 
+    def run_at_time_lead(self, time_info):
+        rdp = self.c_dict['regrid_data_plane']
+
+        # run each ingester specified
+        for ingester in self.c_dict['INGESTERS']:
+            index = ingester['index']
+            input_type = ingester['input_type']
+            if input_type not in VALID_PYTHON_EMBED_TYPES:
+                self.logger.error(f'CUSTOM_INGEST_{index}_TYPE ({input_type}) not valid. '
+                                  f'Valid types are {VALID_PYTHON_EMBED_TYPES}')
+                return
+
+            # If input type is PANDAS, call ascii2nc? instead of RegridDataPlane
+            if input_type == 'PANDAS':
+                self.logger.error('Running CustomIngester on pandas data not yet implemented')
+                return
+
+            # get grid information to project output data
+            output_grid = sts.StringSub(self.logger,
+                                        ingester['output_grid'],
+                                        **time_info).do_string_sub()
+            if output_grid == '':
+                self.logger.error(f'Must set CUSTOM_INGEST_{index}_OUTPUT_GRID')
+                return
+
+            # get call to python script
+            ingest_script = sts.StringSub(self.logger,
+                                          ingester['script'],
+                                          **time_info).do_string_sub()
+
+            # get output file path
+            output_dir = self.c_dict[dtype+'_OUTPUT_DIR']
+            output_template = self.c_dict[dtype+'_OUTPUT_TEMPLATE']
+            output_file = sts.StringSub(self.logger,
+                                        output_template,
+                                        **time_info).do_string_sub()
+            output_path = os.path.join(output_dir, output_file)
+
+            rdp.clear()
+            rdp.infiles.append(f'PYTHON_{input_type}')
+            rdp.infiles.append(f'\'name="{script}\";\'')
+            rdp.infiles.append(output_grid)
+            rdp.outfile = output_path
+            cmd = rdp.get_command()
+            if cmd is None:
+                self.logger.error("Could not generate command")
+                return
+            self.logger.info(f'Running Custom Ingester {index}')
+            rdp.build()
+
 if __name__ == "__main__":
-        util.run_stand_alone("example_wrapper", "Example")
+        util.run_stand_alone("custom_ingest_wrapper", "CustomIngest")
