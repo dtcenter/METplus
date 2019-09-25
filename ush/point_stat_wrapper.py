@@ -60,6 +60,13 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['OUTPUT_DIR'] = \
             self.config.getdir('POINT_STAT_OUTPUT_DIR')
 
+        c_dict['CLIMO_INPUT_DIR'] = self.config.getdir('CLIMO_POINT_STAT_INPUT_DIR',
+                                                       '')
+        c_dict['CLIMO_INPUT_TEMPLATE'] = \
+            self.config.getraw('filename_templates',
+                               'CLIMO_POINT_STAT_INPUT_TEMPLATE',
+                               '')
+
         # Configuration
         c_dict['CONFIG_FILE'] = \
             self.config.getstr('config', 'POINT_STAT_CONFIG_FILE')

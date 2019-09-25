@@ -58,6 +58,9 @@ that reformat gridded data
         c_dict['NEIGHBORHOOD_SHAPE'] = ''
         c_dict['VERIFICATION_MASK_TEMPLATE'] = ''
         c_dict['VERIFICATION_MASK'] = ''
+        c_dict['CLIMO_INPUT_DIR'] = ''
+        c_dict['CLIMO_INPUT_TEMPLATE'] = ''
+        c_dict['CLIMO_FILE'] = None
 
         return c_dict
 
@@ -116,6 +119,18 @@ that reformat gridded data
             for edge in edges:
                 self.handle_window_once(c_dict, dtype, edge, app_name)
 
+    def handle_climo(self, time_info):
+        if self.c_dict['CLIMO_INPUT_TEMPLATE'] != '':
+            template = self.c_dict['CLIMO_INPUT_TEMPLATE']
+            climo_file = sts.StringSub(self.logger,
+                                       template,
+                                       **time_info).do_string_sub()
+            climo_path = os.path.join(self.c_dict['CLIMO_INPUT_DIR'], climo_file)
+            self.logger.debug(f"Looking for climatology file {climo_path}")
+            self.c_dict['CLIMO_FILE'] = util.preprocess_file(climo_path,
+                                                             '',
+                                                             self.config)
+
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
               over the list of forecast leads and runs the application for each.
@@ -152,6 +167,8 @@ that reformat gridded data
         self.get_verification_mask(time_info)
 
         self.c_dict['VAR_LIST'] = util.parse_var_list(self.config, time_info)
+
+        self.handle_climo(time_info)
 
         if self.c_dict['ONCE_PER_FIELD']:
             # loop over all fields and levels (and probability thresholds) and
@@ -381,7 +398,7 @@ that reformat gridded data
                       "LEVEL", "OBTYPE", "CONFIG_DIR",
                       "FCST_FIELD", "OBS_FIELD",
                       "INPUT_BASE", "MET_VALID_HHMM",
-                      "FCST_TIME"]
+                      "CLIMO_FILE", "FCST_TIME"]
 
         var_info = self.c_dict['VAR_LIST'][0]
         if 'CURRENT_VAR_INFO' in self.c_dict.keys():
@@ -396,6 +413,14 @@ that reformat gridded data
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
         self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
+        if self.c_dict['CLIMO_FILE']:
+             self.add_env_var("CLIMO_FILE", self.c_dict['CLIMO_FILE'])
+        else:
+            self.add_env_var("CLIMO_FILE", '')
+        # MET_VALID_HHMM should no longer be used and should be replaced with
+        # CLIMO_FILE in the GridStat config file. Leaving the variable in
+        # the environment so that people using older config files will still
+        # be able to run. The value is actually month/day, not HHMM
         self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
         self.add_env_var("FCST_TIME", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("INPUT_BASE", self.c_dict["INPUT_BASE"])

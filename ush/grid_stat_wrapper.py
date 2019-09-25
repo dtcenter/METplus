@@ -54,15 +54,12 @@ class GridStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
 
-
-        c_dict['CLIMO_INPUT_DIR'] = ''
-        c_dict['CLIMO_INPUT_TEMPLATE'] = ''
-        if self.config.has_option('dir', 'CLIMO_GRID_STAT_INPUT_DIR'):
-            c_dict['CLIMO_INPUT_DIR'] = \
-              self.config.getdir('CLIMO_GRID_STAT_INPUT_DIR', '')
-            c_dict['CLIMO_INPUT_TEMPLATE'] = \
-              self.config.getraw('filename_templates',
-                                 'CLIMO_GRID_STAT_INPUT_TEMPLATE')
+        c_dict['CLIMO_INPUT_DIR'] = self.config.getdir('CLIMO_GRID_STAT_INPUT_DIR',
+                                                       '')
+        c_dict['CLIMO_INPUT_TEMPLATE'] = \
+            self.config.getraw('filename_templates',
+                               'CLIMO_GRID_STAT_INPUT_TEMPLATE',
+                               '')
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_STAT_OUTPUT_DIR',
                                                   self.config.getdir('OUTPUT_BASE'))
