@@ -252,7 +252,7 @@ def main():
                     use_case_dir+"/track_and_intensity/examples/hwrf.conf",
                     use_case_dir+"/track_and_intensity/examples/hwrf_orig_files.conf",
                     use_case_dir+"/track_and_intensity/examples/sbu.conf",
-                    use_case_dir+"/track_and_intensity/examples/track_and_intensity_ATCF.conf"
+                    use_case_dir+"/track_and_intensity/examples/track_and_intensity_ATCF.conf",
                   ]
 
     all_good = True
