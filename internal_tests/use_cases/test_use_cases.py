@@ -13,7 +13,7 @@ import met_util as util
 # TODO: move test results to separate file for readability
 
 def get_param_list(param_a, param_b):
-    metplus_home = "/d1/mccabe/METplus"
+    metplus_home = dirname(dirname(dirname(realpath(__file__))))
     a_conf = metplus_home+"/internal_tests/use_cases/system.a.conf"
     b_conf = metplus_home+"/internal_tests/use_cases/system.b.conf"
     params_a = param_a.split(",")
@@ -52,7 +52,8 @@ def run_test_use_case(param_a, param_b, run_a, run_b):
 
     # run A
     if run_a:
-        cmd = os.path.join("/d1/mccabe/METplus.a", "ush", "master_metplus.py")
+        metplus_base_a = os.environ['METPLUS_TEST_A_METPLUS_BASE']
+        cmd = os.path.join(metplus_base_a, "ush", "master_metplus.py")
         for parm in params_a:
             cmd += " -c "+parm
         cmd += ' -c dir.OUTPUT_BASE='+a_dir
@@ -62,7 +63,8 @@ def run_test_use_case(param_a, param_b, run_a, run_b):
 
     # run B
     if run_b:
-        cmd = os.path.join("/d1/mccabe/METplus.b", "ush", "master_metplus.py")
+        metplus_base_b = os.environ['METPLUS_TEST_B_METPLUS_BASE']
+        cmd = os.path.join(metplus_base_b, "ush", "master_metplus.py")
         for parm in params_b:
             cmd += " -c "+parm
         cmd += ' -c dir.OUTPUT_BASE='+b_dir
@@ -223,7 +225,7 @@ def main():
     run_a = False
     run_b = True
 
-    metplus_home = "/d1/mccabe/METplus"
+    metplus_home = dirname(dirname(dirname(realpath(__file__))))
     use_case_dir = os.path.join(metplus_home,"parm/use_cases")
     param_files = [
                     use_case_dir+"/qpf/examples/ruc-vs-s2grib.conf" ,
@@ -256,15 +258,17 @@ def main():
                   ]
 
     all_good = True
+    metplus_base_a = os.environ['METPLUS_TEST_A_METPLUS_BASE']
+    metplus_base_b = os.environ['METPLUS_TEST_B_METPLUS_BASE']
     print("Starting test script")
     for param_file in param_files:
-        param_a = param_file.replace(metplus_home,"/d1/mccabe/METplus.a")
-        param_b = param_file.replace(metplus_home,"/d1/mccabe/METplus.b")
+        param_a = param_file.replace(metplus_home, metplus_base_a)
+        param_b = param_file.replace(metplus_home, metplus_base_b)
         run_test_use_case(param_a, param_b, run_a, run_b)
 
     for param_file in param_files:
-        param_a = param_file.replace(metplus_home,"/d1/mccabe/METplus.a")
-        param_b = param_file.replace(metplus_home,"/d1/mccabe/METplus.b")
+        param_a = param_file.replace(metplus_home, metplus_base_a)
+        param_b = param_file.replace(metplus_home, metplus_base_b)
         if not compare_results(param_a, param_b):
             all_good = False
 
