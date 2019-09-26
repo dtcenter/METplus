@@ -36,6 +36,7 @@ class CommandBuilder:
     __metaclass__ = ABCMeta
 
     def __init__(self, config, logger):
+        self.errors = 0
         self.logger = logger
         self.config = config
         self.debug = False
@@ -434,7 +435,9 @@ class CommandBuilder:
         if cmd is None:
             return
 
-        self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
+        ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
+        if ret != 0:
+            self.errors += 1
 
     # argument needed to match call
     # pylint:disable=unused-argument
