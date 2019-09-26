@@ -165,7 +165,16 @@ def main():
     # rewrite final conf so it contains all of the default values used
     util.write_final_conf(config, logger)
 
-    logger.info('METplus has successfully finished running.')
+    total_errors = 0
+    for process in processes:
+        if process.errors != 0:
+            logger.error(f"{process.__class__.__name__.strip('Wrapper')} had {process.errors} errors.")
+            total_errors += process.errors
+
+    if total_errors == 0:
+        logger.info('METplus has successfully finished running.')
+    else:
+        logger.error(f'METplus has finished running but had {total_errors} errors.')
 
     exit()
 
