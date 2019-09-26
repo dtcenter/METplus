@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+from os.path import dirname, realpath
 import glob
 import subprocess
 import filecmp
@@ -261,6 +262,7 @@ def main():
     metplus_base_a = os.environ['METPLUS_TEST_A_METPLUS_BASE']
     metplus_base_b = os.environ['METPLUS_TEST_B_METPLUS_BASE']
     print("Starting test script")
+
     for param_file in param_files:
         param_a = param_file.replace(metplus_home, metplus_base_a)
         param_b = param_file.replace(metplus_home, metplus_base_b)

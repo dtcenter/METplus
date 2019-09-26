@@ -1,4 +1,3 @@
-export METPLUS_TEST_TMP_DIR={OUTPUT_BASE}/tmp
 export METPLUS_TEST_INPUT_BASE=/d1/METplus_Data
 export METPLUS_TEST_GEMPAKTOCF_BIN=/d1/mccabe/bin/GempakToCF
 
