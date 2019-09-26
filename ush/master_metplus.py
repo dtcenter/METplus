@@ -168,7 +168,8 @@ def main():
     total_errors = 0
     for process in processes:
         if process.errors != 0:
-            logger.error(f"{process.__class__.__name__.strip('Wrapper')} had {process.errors} errors.")
+            process_name = process.__class__.__name__.replace('Wrapper', '')
+            logger.error(f'{process_name} had {process.errors} errors.')
             total_errors += process.errors
 
     if total_errors == 0:
