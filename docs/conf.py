@@ -31,7 +31,7 @@ release = '3.0'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc','sphinx_gallery.gen_gallery']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -57,3 +57,9 @@ html_static_path = ['_static']
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 html_logo = os.path.join('_static','METplus_logo.png')
+
+# -- Sphinx Gallery control -----------------------------------------------------------
+sphinx_gallery_conf = {
+      'examples_dirs': ['../examples'],
+      'gallery_dirs': ['examples']
+}
