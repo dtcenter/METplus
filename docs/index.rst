@@ -33,10 +33,17 @@ METplus is expected to become the overarching, or umbrella, repository and hence
 The umbrella repository will be brought together by using a software package called manage_externals developed by the Community Earth System Modeling (CESM) team, hosted at NCAR and NOAA Earth System’s Research Laboratory.  The GitHub repository is:  (https://github.com/ESMCI/manage_externals).  The manage_externals package was developed because CESM is comprised of a number of different components that are developed and managed independently. Each component also may have additional “external” dependencies that need to be maintained independently.
 
 
-Goverance
----------
-METplus will remain hosted on NCAR Github until further notice.  It has a Contributor's Guide and a set of lightweight coding standards that will be enforced by the core developers. 
+Acronyms
+--------
 
+* **NOAA** - National Oceanic and Atmospheric Administration
+* **EMC** - Environmental Modeling Center
+* **VSDB** - Verification Statistics Data Base
+* **MODE** - Method for Object-Based Diagnostic Evaluation
+* **ESRL** - Earth Systems Research Laboratory
+* **HIWPP** - High Impact Weather Predication Project
+* **NGGPS** - Next Generation Global Predicatio System
+* **GSD** - Global Systems Division
 
 
 .. automodule:: time_util
