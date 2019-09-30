@@ -38,6 +38,7 @@ Output Files: N/A
 import os
 from produtil.run import exe, run
 import shlex
+from datetime import datetime
 
 class CommandRunner(object):
     """! Class for Creating and Running External Programs
@@ -161,8 +162,16 @@ class CommandRunner(object):
         ret = 0
         # run app unless DO_NOT_RUN_EXE is set to True
         if not self.config.getbool('config', 'DO_NOT_RUN_EXE', False):
+            # get current time to calculate total time to run command
+            start_cmd_time = datetime.now()
+
+            # run command
             ret = run(cmd, **kwargs)
-            self.logger.debug('Finished running {}'.format(the_exe))
+
+            # calculate time to run
+            end_cmd_time = datetime.now()
+            total_cmd_time = end_cmd_time - start_cmd_time
+            self.logger.debug(f'Finished running {the_exe} in {total_cmd_time}')
 
         return (ret, cmd)
 

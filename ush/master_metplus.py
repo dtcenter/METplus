@@ -24,6 +24,7 @@ if py_version < '3.6.3':
 
 import logging
 import shutil
+from datetime import datetime
 import produtil.setup
 import met_util as util
 import config_metplus
@@ -165,6 +166,13 @@ def main():
     # rewrite final conf so it contains all of the default values used
     util.write_final_conf(config, logger)
 
+    # compute time it took to run
+    start_clock_time = datetime.strptime(config.getstr('config', 'CLOCK_TIME'), '%Y%m%d%H%M%S')
+    end_clock_time = datetime.now()
+    total_run_time = end_clock_time - start_clock_time
+    logger.debug("METplus took {} to run.".format(total_run_time))
+
+    # compute total number of errors that occurred and output results
     total_errors = 0
     for process in processes:
         if process.errors != 0:
