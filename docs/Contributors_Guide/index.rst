@@ -8,7 +8,6 @@ We will be adding our Contributor's Guide here soon.
 .. toctree::
    :titlesonly:
 
-   introduction
    coding_standards
    basic_components
    create_wrapper
