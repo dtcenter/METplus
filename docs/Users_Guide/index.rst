@@ -194,7 +194,7 @@ Foundation (NSF).
    installation
    wrappers
    systemconfiguration
-   examples
+   usecases
    references
    glossary
 

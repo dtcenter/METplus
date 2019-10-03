@@ -68,17 +68,17 @@ accompanies the use cases:
    https://github.com/NCAR/METplus. You will see something like the
    following:
 
-.. image:: _static/metplus_repo.png
+.. image:: ../_static/metplus_repo.png
 
 -  Click on the 'releases' link, highlighted by a red circle in the
    diagram below:
 
-.. image:: _static/metplus_repo_release.png
+.. image:: ../_static/metplus_repo_release.png
 
 -  You will be redirected to another screen. The latest available
    release appears at the top of the screen:
 
-.. image:: _static/metplus_repo_releases_page.png
+.. image:: ../_static/metplus_repo_releases_page.png
 
 -  Click on the 'Source code' link (either the *zip* or *tar.gz*) and
    when prompted, save it to the directory you created.

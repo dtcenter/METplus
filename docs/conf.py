@@ -31,7 +31,9 @@ release = '3.0'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc','sphinx_gallery.gen_gallery']
+#extensions = ['sphinx.ext.autodoc','sphinx_gallery.gen_gallery','sphinx.ext.intersphinx']
+extensions = ['sphinx.ext.autodoc','sphinx.ext.intersphinx','sphinx_gallery.gen_gallery']
+#extensions = ['sphinx.ext.autodoc','sphinx_gallery.gen_gallery']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -39,7 +41,7 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'METplus_*.rst']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'Users_Guide/METplus_*.rst']
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -60,6 +62,12 @@ html_logo = os.path.join('_static','METplus_logo.png')
 
 # -- Sphinx Gallery control -----------------------------------------------------------
 sphinx_gallery_conf = {
-      'examples_dirs': ['../examples'],
-      'gallery_dirs': ['examples']
+      'examples_dirs': ['../parm/use_cases/NOAA_EMC','../parm/use_cases/NCAR','../parm/use_cases/NOAA_WPC','../parm/use_cases/UNIV_IL','../parm/use_cases/GridStat'],
+      'gallery_dirs': ['Users_Guide/NOAA_EMC', 'Users_Guide/NCAR','Users_Guide/NOAA_WPC','Users_Guide/UNIV_IL','Users_Guide/GridStat'],
+      'default_thumb_file'     : '_static/METplus_logo.png',
+      'download_all_examples' : False,
 }
+
+# -- Intersphinx control ---------------------------------------------------------------
+intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None),
+                       'xarray':("https://xarray.pydata.org/en/stable/", None)}

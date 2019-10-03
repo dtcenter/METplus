@@ -46,9 +46,6 @@ Acronyms
 * **GSD** - Global Systems Division
 
 
-.. automodule:: time_util
-.. automodule:: command_builder
-
 .. toctree::
    :hidden:
    :caption: METplus Wrappers Guides
