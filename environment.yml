@@ -4,17 +4,19 @@ channels:
   - defaults
 dependencies:
   - _libgcc_mutex=0.1=main
+  - alabaster=0.7.12=py36_0
   - asn1crypto=0.24.0=py36_1003
   - astroid=2.2.5=py36_0
   - atk=2.32.0=haf93ef1_0
   - atomicwrites=1.3.0=py_0
   - attrs=19.1.0=py_0
+  - babel=2.7.0=py_0
   - bokeh=1.3.4=py36_0
   - bzip2=1.0.8=h516909a_0
-  - ca-certificates=2019.6.16=hecc5488_0
+  - ca-certificates=2019.9.11=hecc5488_0
   - cairo=1.16.0=h18b612c_1001
   - cartopy=0.17.0=py36hd759880_1006
-  - certifi=2019.6.16=py36_1
+  - certifi=2019.9.11=py36_0
   - cffi=1.12.3=py36h8022711_0
   - cftime=1.0.3.4=py36hd352d35_1001
   - chardet=3.0.4=py36_1003
@@ -31,6 +33,7 @@ dependencies:
   - dbus=1.13.6=he372182_0
   - decorator=4.4.0=py_0
   - distributed=2.2.0=py_1
+  - docutils=0.15.2=py36_0
   - eccodes=2.12.3=h4fa793d_1
   - expat=2.2.5=he1b5a44_1003
   - fontconfig=2.13.1=he4413a7_1000
@@ -51,6 +54,7 @@ dependencies:
   - heapdict=1.0.0=py36_1000
   - icu=58.2=hf484d3e_1000
   - idna=2.8=py36_1000
+  - imagesize=1.1.0=py36_0
   - importlib_metadata=0.18=py36_0
   - ipython_genutils=0.2.0=py_1
   - isort=4.3.21=py36_0
@@ -118,6 +122,7 @@ dependencies:
   - pycosat=0.6.3=py36h14c3975_1001
   - pycparser=2.19=py36_1
   - pyepsg=0.4.0=py_0
+  - pygments=2.4.2=py_0
   - pygrib=2.0.4=py36hf3f1b0b_0
   - pykdtree=1.3.1=py36h3010b51_1002
   - pylint=2.3.1=py36_0
@@ -147,7 +152,17 @@ dependencies:
   - shapely=1.6.4=py36hec07ddf_1006
   - sip=4.18.1=py36hf484d3e_1000
   - six=1.12.0=py36_1000
+  - snowballstemmer=1.9.1=py_0
   - sortedcontainers=2.1.0=py_0
+  - sphinx=2.2.0=py_0
+  - sphinx-gallery=0.4.0=py36_0
+  - sphinx_rtd_theme=0.4.3=py_0
+  - sphinxcontrib-applehelp=1.0.1=py_0
+  - sphinxcontrib-devhelp=1.0.1=py_0
+  - sphinxcontrib-htmlhelp=1.0.2=py_0
+  - sphinxcontrib-jsmath=1.0.1=py_0
+  - sphinxcontrib-qthelp=1.0.2=py_0
+  - sphinxcontrib-serializinghtml=1.1.3=py_0
   - sqlite=3.26.0=h7b6447c_0
   - tblib=1.4.0=py_0
   - tk=8.6.9=hed695b0_1002
@@ -179,5 +194,5 @@ dependencies:
   - zipp=0.5.2=py_0
   - zlib=1.2.11=h516909a_1005
   - zstd=1.4.0=h3b9ef0a_0
-prefix: /home/minnawin/miniconda3/envs/py3.6.3
+prefix: /home/minnawin/.conda/envs/py3.6.3
 
