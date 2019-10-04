@@ -6,7 +6,6 @@ Are we missing this?
 """
 
 import numpy as np
-import xarray as xr
 
 ###############################################################################
 # The file being rendered on this page is actually a ".py" file.
@@ -38,17 +37,9 @@ for i in my_list:
 ###############################################################################
 # You can even reference other module/package documentation using intersphinx right within the use case ".py" file:
 #
-# But I can't seem to get this to work...
-#
-# I think in order to get this to work METplus has to be "importable"...which it is not currently.
-#
-# Possible answer `here <https://sphinx-gallery.github.io/configuration.html#link-to-documentation>`_
 
-# Do we need a space here?
+# Linking to numpy sin documentation:
 y = np.sin(x)
-
-# How about here?
-data = xr.open_dataset("test.nc")
 
 ###############################################################################
 # 

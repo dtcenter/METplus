@@ -96,3 +96,15 @@ ENV/
 
 # temp files surrounded by #
 *#*#
+
+# sphinx-gallery stuff
+docs/Users_Guide/NCAR
+docs/Users_Guide/NOAA_EMC
+docs/Users_Guide/NOAA_WPC
+docs/Users_Guide/GridStat
+docs/Users_Guide/UNIV_IL
+docs/Users_Guide/TEMPLATE
+docs/gen_modules
+
+# sphinx stuff
+docs/_build

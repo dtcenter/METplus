@@ -58,6 +58,7 @@ Looping by Valid Time
 When looping over valid time (LOOP_BY = VALID or LOOP_BY = REALTIME), the following variables must be set:
 
 .. **VALID_TIME_FMT**:
+
 :term:`VALID_TIME_FMT`:
 This is the format of the valid times the user can configure in the METplus Wrappers. The valie of VALID_BEG and VALID_END must correspond to this format. Example: VALID_TIME_FMT=%Y%m%d%H. Using this format, the valid time range values specified must be defined as YYYYMMDDHH, i.e. 2019020112.
 

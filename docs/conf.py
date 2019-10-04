@@ -13,6 +13,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../ush'))
+sys.path.append(os.path.abspath("./_ext"))
 print(sys.path)
 
 
@@ -50,6 +51,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'Users_Guide/METplus_*.r
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
+html_css_files = ['theme_override.css']
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -62,12 +64,14 @@ html_logo = os.path.join('_static','METplus_logo.png')
 
 # -- Sphinx Gallery control -----------------------------------------------------------
 sphinx_gallery_conf = {
-      'examples_dirs': ['../parm/use_cases/NOAA_EMC','../parm/use_cases/NCAR','../parm/use_cases/NOAA_WPC','../parm/use_cases/UNIV_IL','../parm/use_cases/GridStat'],
-      'gallery_dirs': ['Users_Guide/NOAA_EMC', 'Users_Guide/NCAR','Users_Guide/NOAA_WPC','Users_Guide/UNIV_IL','Users_Guide/GridStat'],
+      'examples_dirs': ['../parm/use_cases/NOAA_EMC','../parm/use_cases/NCAR','../parm/use_cases/NOAA_WPC','../parm/use_cases/UNIV_IL','../parm/use_cases/GridStat','../parm/use_cases/TEMPLATE'],
+      'gallery_dirs': ['Users_Guide/NOAA_EMC', 'Users_Guide/NCAR','Users_Guide/NOAA_WPC','Users_Guide/UNIV_IL','Users_Guide/GridStat','Users_Guide/TEMPLATE'],
       'default_thumb_file'     : '_static/METplus_logo.png',
       'download_all_examples' : False,
+      'log_level' : {'debug','info','warning','backreference_missing','error'},
+      'filename_pattern' : '.py',
+      'backreferences_dir': 'gen_modules/backreferences'
 }
 
 # -- Intersphinx control ---------------------------------------------------------------
-intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None),
-                       'xarray':("https://xarray.pydata.org/en/stable/", None)}
+intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}

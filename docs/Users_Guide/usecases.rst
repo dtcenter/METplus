@@ -9,5 +9,6 @@ METplus Use Cases
    NOAA_WPC/index
    GridStat/index
    UNIV_IL/index
+   TEMPLATE/index
 
 Trying out some rst that references :class:`numpy.ndarray`.
