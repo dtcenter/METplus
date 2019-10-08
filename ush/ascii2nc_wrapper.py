@@ -14,7 +14,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import met_util as util
-import string_template_substitution as sts
 import time_util
 from command_builder import CommandBuilder
 
@@ -22,6 +21,7 @@ from command_builder import CommandBuilder
 @brief Wraps the Ascii2Nc tool to reformat ascii format to NetCDF
 @endcode
 '''
+
 
 class Ascii2NcWrapper(CommandBuilder):
     def __init__(self, config, logger):
@@ -37,20 +37,32 @@ class Ascii2NcWrapper(CommandBuilder):
         c_dict['CONFIG_FILE'] = self.config.getstr('config', 'ASCII2NC_CONFIG_FILE', '')
         c_dict['ASCII_FORMAT'] = self.config.getstr('config', 'ASCII2NC_INPUT_FORMAT', '')
         c_dict['OBS_INPUT_DIR'] = self.config.getdir('ASCII2NC_INPUT_DIR', '')
-        c_dict['OBS_INPUT_TEMPLATE'] = \
-          self.config.getraw('filename_templates',
-                             'ASCII2NC_INPUT_TEMPLATE')
+        c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+                                                          'ASCII2NC_INPUT_TEMPLATE')
 
         c_dict['TIME_SUMMARY_FLAG'] = str(self.config.getbool('config',
-                                                      'ASCII2NC_TIME_SUMMARY_FLAG'))
+                                          'ASCII2NC_TIME_SUMMARY_FLAG'))
+        c_dict['TIME_SUMMARY_RAW_DATA'] = str(self.config.getbool('config',
+                                              'ASCII2NC_TIME_SUMMARY_RAW_DATA'))
         c_dict['TIME_SUMMARY_BEG'] = self.config.getstr('config',
-                                                    'ASCII2NC_TIME_SUMMARY_BEG')
+                                                        'ASCII2NC_TIME_SUMMARY_BEG')
         c_dict['TIME_SUMMARY_END'] = self.config.getstr('config',
-                                                    'ASCII2NC_TIME_SUMMARY_END')
+                                                        'ASCII2NC_TIME_SUMMARY_END')
+        c_dict['TIME_SUMMARY_STEP'] = self.config.getint('config',
+                                                         'ASCII2NC_TIME_SUMMARY_STEP')
+        c_dict['TIME_SUMMARY_WIDTH'] = self.config.getint('config',
+                                                          'ASCII2NC_TIME_SUMMARY_WIDTH')
+        c_dict['TIME_SUMMARY_GRIB_CODES'] = str(util.getlist(
+            self.config.getstr('config', 'ASCII2NC_TIME_SUMMARY_GRIB_CODES')))
+
         c_dict['TIME_SUMMARY_VAR_NAMES'] = str(util.getlist(
             self.config.getstr('config', 'ASCII2NC_TIME_SUMMARY_VAR_NAMES')))
         c_dict['TIME_SUMMARY_TYPES'] = str(util.getlist(
             self.config.getstr('config', 'ASCII2NC_TIME_SUMMARY_TYPES')))
+        c_dict['TIME_SUMMARY_VALID_FREQ'] = self.config.getint('config',
+                                                               'ASCII2NC_TIME_SUMMARY_VALID_FREQ')
+        c_dict['TIME_SUMMARY_VALID_THRESH'] = self.config.getfloat('config',
+                                                                   'ASCII2NC_TIME_SUMMARY_VALID_THRESH')
 
         return c_dict
 
@@ -60,21 +72,37 @@ class Ascii2NcWrapper(CommandBuilder):
             Args:
               @param time_info dictionary containing timing info from current run"""
         # list of fields to print to log
-        print_list = ["TIME_SUMMARY_FLAG", "TIME_SUMMARY_BEG",
-                      "TIME_SUMMARY_END", "TIME_SUMMARY_VAR_NAMES",
-                      "TIME_SUMMARY_TYPES" ]
+        print_list = ["TIME_SUMMARY_FLAG", "TIME_SUMMARY_RAW_DATA",
+                      "TIME_SUMMARY_BEG", "TIME_SUMMARY_END",
+                      "TIME_SUMMARY_STEP", "TIME_SUMMARY_WIDTH",
+                      "TIME_SUMMARY_GRIB_CODES", "TIME_SUMMARY_VAR_NAMES",
+                      "TIME_SUMMARY_TYPES", "TIME_SUMMARY_VALID_FREQ",
+                      "TIME_SUMMARY_VALID_THRESH",
+                      ]
 
         # set environment variables needed for MET application
         self.add_env_var('TIME_SUMMARY_FLAG',
                          self.c_dict['TIME_SUMMARY_FLAG'])
+        self.add_env_var('TIME_SUMMARY_RAW_DATA',
+                         self.c_dict['TIME_SUMMARY_RAW_DATA'])
         self.add_env_var('TIME_SUMMARY_BEG',
                          self.c_dict['TIME_SUMMARY_BEG'])
         self.add_env_var('TIME_SUMMARY_END',
                          self.c_dict['TIME_SUMMARY_END'])
+        self.add_env_var('TIME_SUMMARY_STEP',
+                         self.c_dict['TIME_SUMMARY_STEP'])
+        self.add_env_var('TIME_SUMMARY_WIDTH',
+                         self.c_dict['TIME_SUMMARY_WIDTH'])
+        self.add_env_var('TIME_SUMMARY_GRIB_CODES',
+                         self.c_dict['TIME_SUMMARY_GRIB_CODES'])
         self.add_env_var('TIME_SUMMARY_VAR_NAMES',
                          self.c_dict['TIME_SUMMARY_VAR_NAMES'])
         self.add_env_var('TIME_SUMMARY_TYPES',
                          self.c_dict['TIME_SUMMARY_TYPES'])
+        self.add_env_var('TIME_SUMMARY_VALID_FREQ',
+                         self.c_dict['TIME_SUMMARY_VALID_FREQ'])
+        self.add_env_var('TIME_SUMMARY_',
+                         self.c_dict['TIME_SUMMARY_VALID_THRESH'])
 
         # set user environment variables
         self.set_user_environment(time_info)
