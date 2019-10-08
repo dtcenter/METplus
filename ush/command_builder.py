@@ -81,8 +81,8 @@ class CommandBuilder:
         """!Set environment variables defined in [user_env_vars] section of config
         """
         if time_info is None:
-            time_info = { 'now' : datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
-                                                                       '%Y%m%d%H%M%S') }
+            time_info = {'now': datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
+                                                  '%Y%m%d%H%M%S')}
 
         if 'user_env_vars' not in self.config.sections():
             self.config.add_section('user_env_vars')
@@ -248,7 +248,7 @@ class CommandBuilder:
 
         # if looking for a file with an exact time match:
         if self.c_dict[data_type + '_FILE_WINDOW_BEGIN'] == 0 and \
-                        self.c_dict[data_type + '_FILE_WINDOW_END'] == 0:
+                self.c_dict[data_type + '_FILE_WINDOW_END'] == 0:
             # perform string substitution
             dsts = sts.StringSub(self.logger,
                                  template,
@@ -261,8 +261,8 @@ class CommandBuilder:
 
             # check if desired data file exists and if it needs to be preprocessed
             processed_path = util.preprocess_file(full_path,
-                                        self.c_dict[data_type + '_INPUT_DATATYPE'],
-                                        self.config)
+                                                  self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                                  self.config)
 
             # report error if file path could not be found
             if processed_path is None:
@@ -295,7 +295,7 @@ class CommandBuilder:
                 fullpath = os.path.join(dirpath, filename)
 
                 # remove input data directory to get relative path
-                rel_path = fullpath.replace(data_dir + "/", "")
+                rel_path = fullpath.replace(f'{data_dir}/', "")
                 # extract time information from relative path using template
                 file_time_info = util.get_time_from_file(self.logger, rel_path, template)
                 if file_time_info is not None:
@@ -324,7 +324,7 @@ class CommandBuilder:
 
         if not closest_files:
             msg = f"Could not find {data_type} files under {data_dir} within range " +\
-            f"[{valid_range_lower},{valid_range_upper}] using template {template}"
+                  f"[{valid_range_lower},{valid_range_upper}] using template {template}"
             if mandatory:
                 self.logger.error(msg)
             else:
@@ -364,8 +364,8 @@ class CommandBuilder:
     def find_and_check_output_file(self, time_info):
         """!Look for expected output file. If it exists and configured to skip if it does, then return False"""
         outfile = sts.StringSub(self.logger,
-                            self.c_dict['OUTPUT_TEMPLATE'],
-                            **time_info).do_string_sub()
+                                self.c_dict['OUTPUT_TEMPLATE'],
+                                **time_info).do_string_sub()
         outpath = os.path.join(self.c_dict['OUTPUT_DIR'], outfile)
         self.set_output_path(outpath)
 
