@@ -590,7 +590,7 @@ class METplusConfig(ProdConfig):
         return dir_path
 
     def getdir_nocheck(self, dir_name, default=None):
-        super(METplusConfig, self).getdir(dir_name, default=default)
+        return super().getdir(dir_name, default=default)
 
     def getstr(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Wraps produtil getstr to gracefully report if variable is not set
