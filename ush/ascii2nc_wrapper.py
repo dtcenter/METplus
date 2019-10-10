@@ -34,36 +34,67 @@ class Ascii2NcWrapper(CommandBuilder):
         c_dict = super(Ascii2NcWrapper, self).create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_ASCII2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
+        c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['CONFIG_FILE'] = self.config.getstr('config', 'ASCII2NC_CONFIG_FILE', '')
         c_dict['ASCII_FORMAT'] = self.config.getstr('config', 'ASCII2NC_INPUT_FORMAT', '')
+        c_dict['MASK_GRID'] = self.config.getstr('config', 'ASCII2NC_MASK_GRID', '')
+        c_dict['MASK_POLY'] = self.config.getstr('config', 'ASCII2NC_MASK_POLY', '')
+        c_dict['MASK_SID'] = self.config.getstr('config', 'ASCII2NC_MASK_SID', '')
         c_dict['OBS_INPUT_DIR'] = self.config.getdir('ASCII2NC_INPUT_DIR', '')
         c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                           'ASCII2NC_INPUT_TEMPLATE')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('ASCII2NC_OUTPUT_DIR', '')
+        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+                                                       'ASCII2NC_OUTPUT_TEMPLATE')
+        c_dict['TIME_SUMMARY_FLAG'] = 'TRUE' if self.config.getbool('config',
+                                                    'ASCII2NC_TIME_SUMMARY_FLAG', False) else 'FALSE'
 
-        c_dict['TIME_SUMMARY_FLAG'] = str(self.config.getbool('config',
-                                          'ASCII2NC_TIME_SUMMARY_FLAG'))
-        c_dict['TIME_SUMMARY_RAW_DATA'] = str(self.config.getbool('config',
-                                              'ASCII2NC_TIME_SUMMARY_RAW_DATA'))
+        c_dict['TIME_SUMMARY_RAW_DATA'] = 'TRUE' if self.config.getbool('config',
+                                                        'ASCII2NC_TIME_SUMMARY_RAW_DATA', False) else 'FALSE'
         c_dict['TIME_SUMMARY_BEG'] = self.config.getstr('config',
                                                         'ASCII2NC_TIME_SUMMARY_BEG')
+        # add quotes if not already added
+        if c_dict['TIME_SUMMARY_BEG'][0] != '"' and c_dict['TIME_SUMMARY_BEG'][-1] != '"':
+            c_dict['TIME_SUMMARY_BEG'] = f"\"{c_dict['TIME_SUMMARY_BEG']}\""
         c_dict['TIME_SUMMARY_END'] = self.config.getstr('config',
                                                         'ASCII2NC_TIME_SUMMARY_END')
-        c_dict['TIME_SUMMARY_STEP'] = self.config.getint('config',
+        if c_dict['TIME_SUMMARY_END'][0] != '"' and c_dict['TIME_SUMMARY_END'][-1] != '"':
+            c_dict['TIME_SUMMARY_END'] = f"\"{c_dict['TIME_SUMMARY_END']}\""
+
+        c_dict['TIME_SUMMARY_STEP'] = self.config.getstr('config',
                                                          'ASCII2NC_TIME_SUMMARY_STEP')
-        c_dict['TIME_SUMMARY_WIDTH'] = self.config.getint('config',
+        c_dict['TIME_SUMMARY_WIDTH'] = self.config.getstr('config',
                                                           'ASCII2NC_TIME_SUMMARY_WIDTH')
-        c_dict['TIME_SUMMARY_GRIB_CODES'] = str(util.getlist(
+        c_dict['TIME_SUMMARY_GRIB_CODES'] = ','.join(util.getlist(
             self.config.getstr('config', 'ASCII2NC_TIME_SUMMARY_GRIB_CODES')))
 
-        c_dict['TIME_SUMMARY_VAR_NAMES'] = str(util.getlist(
-            self.config.getstr('config', 'ASCII2NC_TIME_SUMMARY_VAR_NAMES')))
-        c_dict['TIME_SUMMARY_TYPES'] = str(util.getlist(
-            self.config.getstr('config', 'ASCII2NC_TIME_SUMMARY_TYPES')))
-        c_dict['TIME_SUMMARY_VALID_FREQ'] = self.config.getint('config',
+        c_dict['TIME_SUMMARY_VAR_NAMES'] = '"' + '","'.join(util.getlist(
+            self.config.getstr('config', 'ASCII2NC_TIME_SUMMARY_VAR_NAMES'))) + '"'
+        c_dict['TIME_SUMMARY_TYPES'] = '"' + '","'.join(util.getlist(
+            self.config.getstr('config', 'ASCII2NC_TIME_SUMMARY_TYPES'))) + '"'
+        c_dict['TIME_SUMMARY_VALID_FREQ'] = self.config.getstr('config',
                                                                'ASCII2NC_TIME_SUMMARY_VALID_FREQ')
-        c_dict['TIME_SUMMARY_VALID_THRESH'] = self.config.getfloat('config',
-                                                                   'ASCII2NC_TIME_SUMMARY_VALID_THRESH')
+        c_dict['TIME_SUMMARY_VALID_THRESH'] = self.config.getstr('config',
+                                                                 'ASCII2NC_TIME_SUMMARY_VALID_THRESH')
 
+        # handle window variables [ASCII2NC_][FILE_]_WINDOW_[BEGIN/END]
+        c_dict['OBS_WINDOW_BEGIN'] = \
+          self.config.getseconds('config', 'ASCII2NC_WINDOW_BEGIN',
+                                 self.config.getseconds('config',
+                                                        'OBS_WINDOW_BEGIN', 0))
+        c_dict['OBS_WINDOW_END'] = \
+          self.config.getseconds('config', 'ASCII_WINDOW_END',
+                                 self.config.getseconds('config',
+                                                        'OBS_WINDOW_END', 0))
+
+        c_dict['OBS_FILE_WINDOW_BEGIN'] = \
+          self.config.getseconds('config', 'ASCII2NC_FILE_WINDOW_BEGIN',
+                                 self.config.getseconds('config',
+                                                        'OBS_FILE_WINDOW_BEGIN', 0))
+        c_dict['OBS_FILE_WINDOW_END'] = \
+          self.config.getseconds('config', 'ASCII2NC_FILE_WINDOW_END',
+                                 self.config.getseconds('config',
+                                                        'OBS_FILE_WINDOW_END', 0))
         return c_dict
 
     def set_environment_variables(self, time_info):
@@ -101,7 +132,7 @@ class Ascii2NcWrapper(CommandBuilder):
                          self.c_dict['TIME_SUMMARY_TYPES'])
         self.add_env_var('TIME_SUMMARY_VALID_FREQ',
                          self.c_dict['TIME_SUMMARY_VALID_FREQ'])
-        self.add_env_var('TIME_SUMMARY_',
+        self.add_env_var('TIME_SUMMARY_VALID_THRESH',
                          self.c_dict['TIME_SUMMARY_VALID_THRESH'])
 
         # set user environment variables
@@ -132,15 +163,20 @@ class Ascii2NcWrapper(CommandBuilder):
             cmd += f' {infile}'
 
         # add output path
-        cmd += f' {self.get_output_path()}'
+        out_path = self.get_output_path()
+        cmd += f' {out_path}'
 
-        # add input data format if set
-        if self.c_dict['ASCII_FORMAT'] != '':
-            cmd += ' -format ' + self.c_dict['ASCII_FORMAT']
+        parent_dir = os.path.dirname(out_path)
+        if parent_dir == '':
+            self.logger.error('Must specify path to output file')
+            return None
 
-        # add config file if set
-        if self.c_dict['CONFIG_FILE'] != '':
-            cmd += ' -config ' + self.c_dict['CONFIG_FILE']
+        # create full output dir if it doesn't already exist
+        if not os.path.exists(parent_dir):
+            os.makedirs(parent_dir)
+
+        # add arguments
+        cmd += ''.join(self.args)
 
         # add verbosity
         cmd += f" -v {self.c_dict['VERBOSITY']}"
@@ -175,8 +211,9 @@ class Ascii2NcWrapper(CommandBuilder):
             return
 
         # get other configurations for command
-
+        self.set_command_line_arguments()
         # set environment variables if using config file
+        self.set_environment_variables(time_info)
 
         # build command and run
         cmd = self.get_command()
@@ -191,5 +228,29 @@ class Ascii2NcWrapper(CommandBuilder):
         if obs_path is None:
             return
 
-        self.infiles.append(obs_path)
+        if isinstance(obs_path, list):
+            self.infiles.extend(obs_path)
+        else:
+            self.infiles.append(obs_path)
         return self.infiles
+
+    def set_command_line_arguments(self):
+        # add input data format if set
+        if self.c_dict['ASCII_FORMAT']:
+            self.args.append(f" -format {self.c_dict['ASCII_FORMAT']}")
+
+        # add config file if set
+        if self.c_dict['CONFIG_FILE']:
+            self.args.append(f" -config {self.c_dict['CONFIG_FILE']}")
+
+        # add mask grid if set
+        if self.c_dict['MASK_GRID']:
+            self.args.append(f" -mask_grid {self.c_dict['MASK_GRID']}")
+
+        # add mask poly if set
+        if self.c_dict['MASK_POLY']:
+            self.args.append(f" -mask_poly {self.c_dict['MASK_POLY']}")
+
+        # add mask SID if set
+        if self.c_dict['MASK_SID']:
+            self.args.append(f" -mask_sid {self.c_dict['MASK_SID']}")
