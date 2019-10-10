@@ -34,10 +34,11 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
     def create_c_dict(self):
         c_dict = super(RegridDataPlaneWrapper, self).create_c_dict()
-        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_REGRID_DATA_PLANE_VERBOSITY',
-                                                 c_dict['VERBOSITY'])
 
         app = 'REGRID_DATA_PLANE'
+        c_dict['VERBOSITY'] = self.config.getstr('config', f'LOG_{app}_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
+
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = \
           self.config.getbool('config', f'{app}_SKIP_IF_OUTPUT_EXISTS',
                               False)
@@ -93,19 +94,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         else:
             c_dict['OBS_OUTPUT_TEMPLATE'] = None
 
-        if self.config.has_option('config',
-                                  'FCST_REGRID_DATA_PLANE_FIELD_NAME'):
-            c_dict['FCST_OUTPUT_FIELD_NAME'] = \
-                self.config.getstr('config',
-                                   'FCST_REGRID_DATA_PLANE_OUTPUT_FIELD_NAME')
-        elif self.config.has_option('config',
-                                    'FCST_REGRID_DATA_PLANE_FIELD_NAME'):
-            c_dict['FCST_OUTPUT_TEMPLATE'] = \
-                self.config.getraw('filename_templates',
-                                   'FCST_REGRID_DATA_PLANE_TEMPLATE')
-        else:
-            c_dict['FCST_OUTPUT_TEMPLATE'] = None
-
         if self.config.getbool('config', 'FCST_REGRID_DATA_PLANE_RUN', False):
             c_dict['FCST_INPUT_DIR'] = \
                 self.config.getdir('FCST_REGRID_DATA_PLANE_INPUT_DIR', '')
@@ -140,28 +128,25 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                @return tuple containing input and output field names to use
         """
         app = self.app_name.upper()
-
         input_field_name = \
-            self.config.getstr('config',
-                               f'{d_type}_{app}_VAR{index}_INPUT_FIELD_NAME',
-                               '')
-
-        if input_field_name == '':
+            self.config.getstr_nocheck('config',
+                                       f'{d_type}_{app}_VAR{index}_INPUT_FIELD_NAME',
+                                       '')
+        if not input_field_name:
             input_field_name = \
-                self.config.getstr('config',
-                                   f'{d_type}_{app}_VAR{index}_FIELD_NAME',
-                                   '')
+                self.config.getstr_nocheck('config',
+                                           f'{d_type}_{app}_VAR{index}_FIELD_NAME',
+                                           '')
 
         output_field_name = \
-            self.config.getstr('config',
-                               f'{d_type}_{app}_VAR{index}_OUTPUT_FIELD_NAME',
-                               '')
-
-        if output_field_name == '':
+            self.config.getstr_nocheck('config',
+                                       f'{d_type}_{app}_VAR{index}_OUTPUT_FIELD_NAME',
+                                       '')
+        if not output_field_name:
             output_field_name = \
-                self.config.getstr('config',
-                                   f'{d_type}_{app}_VAR{index}_FIELD_NAME',
-                                   '')
+                self.config.getstr_nocheck('config',
+                                           f'{d_type}_{app}_VAR{index}_FIELD_NAME',
+                                           '')
 
         return input_field_name, output_field_name
 
