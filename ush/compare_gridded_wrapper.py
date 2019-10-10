@@ -46,7 +46,10 @@ that reformat gridded data
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
         c_dict['OBTYPE'] = self.config.getstr('config', 'OBTYPE', 'OBS')
         c_dict['CONFIG_DIR'] = self.config.getdir('CONFIG_DIR', '')
-        c_dict['INPUT_BASE'] = self.config.getdir('INPUT_BASE', None)
+        # INPUT_BASE is not required unless it is referenced in a config file
+        # it is used in the use case config files. Don't error if it is not set
+        # to a value that contains /path/to
+        c_dict['INPUT_BASE'] = self.config.getdir_nocheck('INPUT_BASE', '')
         c_dict['FCST_IS_PROB'] = self.config.getbool('config', 'FCST_IS_PROB', False)
         c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
 

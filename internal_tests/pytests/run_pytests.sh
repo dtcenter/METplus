@@ -1,5 +1,13 @@
 #!/bin/bash
 
+host=$HOSTNAME
+
+if [ $host != "eyewall" ] && [ $host != "dakota" ]; then
+    echo Cannot only run run_pytests.sh on eyewall or dakota. Create minimum_pytest.$host.conf to run on this host
+    exit
+fi
+
+
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 pytest_rel_path="internal_tests/pytests"
 ush_dir=${script_dir%"$pytest_rel_path"}ush
