@@ -274,25 +274,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.add_input_file(search_file, addon)
         return True
 
-
-    def get_data_type(self, data_src):
-        d_type = self.c_dict[data_src + '_INPUT_DATATYPE']
-        # to handle deprecated config variable, allow *_NATIVE_DATA_TYPE
-        # but print warning that this will be deprecated and use other
-        if d_type == '':
-            d_type = self.config.getstr('config',
-                                        data_src+'_NATIVE_DATA_TYPE',
-                                        '')
-
-            if d_type == '':
-                self.logger.error('Must set '+data_src+\
-                                  '_PCP_COMBINE_INPUT_DATATYPE')
-                exit(1)
-            self.logger.warning(data_src+'_NATIVE_DATA_TYPE is deprecated. Please use '+\
-                                data_src+'_PCP_COMBINE_INPUT_DATATYPE instead')
-        return d_type
-
-
     def get_addon(self, field_name, search_accum, search_time):
         if field_name is not None:
             # perform string substitution on name in case it uses filename templates
