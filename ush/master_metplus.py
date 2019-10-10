@@ -56,6 +56,7 @@ from tc_stat_wrapper import TcStatWrapper
 from gempak_to_cf_wrapper import GempakToCFWrapper
 from example_wrapper import ExampleWrapper
 from custom_ingest_wrapper import CustomIngestWrapper
+from ascii2nc_wrapper import Ascii2NcWrapper
 
 '''!@namespace master_metplus
 Main script the processes all the tasks in the PROCESS_LIST
@@ -177,13 +178,19 @@ def main():
     for process in processes:
         if process.errors != 0:
             process_name = process.__class__.__name__.replace('Wrapper', '')
-            logger.error('{} had {} errors.'.format(process_name, process.errors))
+            error_msg = '{} had {} error.'.format(process_name, process.errors)
+            if process.errors > 1:
+                error_msg += 's'
+            logger.error(error_msg)
             total_errors += process.errors
 
     if total_errors == 0:
         logger.info('METplus has successfully finished running.')
     else:
-        logger.error('METplus has finished running but had {} errors.'.format(total_errors))
+        error_msg = 'METplus has finished running but had {} error.'.format(total_errors)
+        if total_errors > 1:
+            error_msg += 's'
+        logger.error(error_msg)
 
     exit()
 
