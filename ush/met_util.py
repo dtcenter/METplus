@@ -1607,7 +1607,6 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
                 count += 1
 
     # extra debugging information used for developer debugging only
-    '''
     for v in var_list:
         config.logger.debug(f"VAR{v['index']}:")
         config.logger.debug(" fcst_name:"+v['fcst_name'])
@@ -1625,7 +1624,6 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
             config.logger.debug(" ens_thresh:"+str(v['ens_thresh']))
         if 'ens_extra' in v.keys():
             config.logger.debug(" ens_extra:"+v['ens_extra'])
-    '''
 
     return var_list
 
