@@ -66,3 +66,313 @@ METplus Configuration Glossary
    TESTING2
      Value
      
+   FCST_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME
+     Specify the forecast output field name that is created by RegridDataPlane. The name corresponds to FCST_VAR<n>_NAME. This is used when using Python Embedding as input to the MET tool, because the FCST_VAR<n>_NAME defines the python script to call.
+    
+     | *Used by:* RegridDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+
+   OBS_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME
+     Specify the observation output field name that is created by RegridDataPlane. The name corresponds to OBS_VAR<n>_NAME. This is used when using Python Embedding as input to the MET tool, because the OBS_VAR<n>_NAME defines the python script to call.
+    
+     | *Used by:* RegridDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   LOG_ASCII2NC_VERBOSITY
+     Overrides the log verbosity for Ascii2Nc only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+     
+   LOG_ENSEMBLE_STAT_VERBOSITY
+     Overrides the log verbosity for EnsembleStat only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
+
+     | *Used by:* EnsembleStat
+     | *Family:* [config]
+     | *Default:* None
+     
+   LOG_GRID_STAT_VERBOSITY
+     Overrides the log verbosity for GridStat only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
+
+     | *Used by:* GridStat
+     | *Family:* [config]
+     | *Default:* None
+     
+   LOG_MODE_VERBOSITY
+     Overrides the log verbosity for Mode only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
+
+     | *Used by:* Mode
+     | *Family:* [config]
+     | *Default:* None
+     
+   LOG_MTD_VERBOSITY
+     Overrides the log verbosity for MTD only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
+
+     | *Used by:* MTD
+     | *Family:* [config]
+     | *Default:* None
+     
+   LOG_PB2NC_VERBOSITY
+     Overrides the log verbosity for PB2NC only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
+
+     | *Used by:* PB2NC
+     | *Family:* [config]
+     | *Default:* None
+     
+   LOG_PCP_COMBINE_VERBOSITY
+     Overrides the log verbosity for PcpCombine only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
+
+     | *Used by:* PcpCombine
+     | *Family:* [config]
+     | *Default:* None
+     
+   LOG_POINT_STAT_VERBOSITY
+     Overrides the log verbosity for PointStat only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
+
+     | *Used by:* PointStat
+     | *Family:* [config]
+     | *Default:* None
+     
+   LOG_REGRID_DATA_PLANE_VERBOSITY
+     Overrides the log verbosity for RegridDataPlane only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
+
+     | *Used by:* RegridDataPlane
+     | *Family:* [config]
+     | *Default:* None
+     
+   LOG_TC_PAIRS_VERBOSITY
+     Overrides the log verbosity for TcPairs only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
+
+     | *Used by:* TcPairs
+     | *Family:* [config]
+     | *Default:* None
+     
+   LOG_TC_STAT_VERBOSITY
+     Overrides the log verbosity for TcStat only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
+
+     | *Used by:* TcStat
+     | *Family:* [config]
+     | *Default:* None
+
+   LOG_LINE_FORMAT
+     Defines the formatting of each METplus log output line. For more information on acceptable values, see the Python documentation for LogRecord: https://docs.python.org/3/library/logging.html#logging.LogRecord
+
+     | *Used by:* All
+     | *Family:* [config]
+     | *Default:* %(asctime)s.%(msecs)03d %(name)s (%(filename)s:%(lineno)d) %(levelname)s: %(message)s
+
+   LOG_LINE_DATE_FORMAT
+     Defines the formatting of the date in the METplus log output. See LOG_LINE_FORMAT.
+
+     | *Used by:* All
+     | *Family:* [config]
+     | *Default:* %m/%d %H:%M:%S
+
+
+   FCST_PCP_COMBINE_COMMAND
+     Used only when FCST_PCP_COMBINE_METHOD = CUSTOM. Custom command to run PcpCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for observation data called OBS_PCP_COMBINE_COMMAND.
+
+     | *Used by:* PcpCombine
+     | *Family:* [config]
+     | *Default:* None
+     
+   OBS_PCP_COMBINE_COMMAND
+     Used only when OBS_PCP_COMBINE_METHOD = CUSTOM. Custom command to run PcpCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for forecast data called FCST_PCP_COMBINE_COMMAND.
+
+     | *Used by:* PcpCombine
+     | *Family:* [config]
+     | *Default:* None
+     
+   CUSTOM_INGEST_<n>_SCRIPT
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the python script with arguments to run through RegridDataPlane to generate a file that can be read by the MET tools. This variable supports filename template syntax, so you can specify filenames with time information, i.e. {valid?fmt=%Y%m%d}. See also CUSTOM_INGEST<n>_TYPE, CUSTOM_INGEST<n>_OUTPUT_GRID, CUSTOM_INGEST<n>_OUTPUT_TEMPLATE, and CUSTOM_INGEST<n>_OUTPUT_DIR.
+
+     | *Used by:* CustomIngest
+     | *Family:* [config]
+     | *Default:* None
+
+   CUSTOM_INGEST_<n>_TYPE
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the type of output generated by the Python script. Valid options are NUMPY, XARRAY, and PANDAS. See also CUSTOM_INGEST<n>_SCRIPT, CUSTOM_INGEST<n>_OUTPUT_GRID, CUSTOM_INGEST<n>_OUTPUT_TEMPLATE, and CUSTOM_INGEST<n>_OUTPUT_DIR.
+
+     | *Used by:* CustomIngest
+     | *Family:* [config]
+     | *Default:* None
+
+   CUSTOM_INGEST_<n>_OUTPUT_GRID
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the grid information that RegridDataPlane will use to generate a file that can be read by the MET tools. This can be a file path or a grid definition. See the MET User's Guide section regarding Regrid-Data-Plane for more information. See also CUSTOM_INGEST<n>_TYPE, CUSTOM_INGEST<n>_SCRIPT, CUSTOM_INGEST<n>_OUTPUT_TEMPLATE, and CUSTOM_INGEST<n>_OUTPUT_DIR.
+
+     | *Used by:* CustomIngest
+     | *Family:* [config]
+     | *Default:* None
+
+   CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the output filename using filename template syntax. The value will be substituted with time information and appended to CUSTOM_INGEST_<n>_OUTPUT_DIR if it is set. See also CUSTOM_INGEST<n>_TYPE, CUSTOM_INGEST<n>_SCRIPT, and CUSTOM_INGEST<n>_OUTPUT_GRID.
+
+     | *Used by:* CustomIngest
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   CUSTOM_INGEST_<n>_OUTPUT_DIR
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the output diirectory to write data. See also CUSTOM_INGEST<n>_TYPE, CUSTOM_INGEST<n>_SCRIPT, and CUSTOM_INGEST<n>_OUTPUT_GRID, and CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE.
+
+     | *Used by:* CustomIngest
+     | *Family:* [dir]
+     | *Default:* None
+
+   ASCII2NC_CONFIG_FILE
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_INPUT_FORMAT
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_MASK_GRID
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_MASK_POLY
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_MASK_SID
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_INPUT_DIR
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [dir]
+     | *Default:* None
+
+   ASCII2NC_INPUT_TEMPLATE
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   ASCII2NC_OUTPUT_DIR
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [dir]
+     | *Default:* None
+
+   ASCII2NC_OUTPUT_TEMPLATE
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   ASCII2NC_TIME_SUMMARY_FLAG
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_TIME_SUMMARY_RAW_DATA
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_TIME_SUMMARY_BEG
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_TIME_SUMMARY_END
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_TIME_SUMMARY_STEP
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_TIME_SUMMARY_WIDTH
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_TIME_SUMMARY_GRIB_CODES
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_TIME_SUMMARY_VAR_NAMES
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_TIME_SUMMARY_TYPES
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_TIME_SUMMARY_VALID_FREQ
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_TIME_SUMMARY_VALID_THRESH
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_FILE_WINDOW_BEGIN
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
+   ASCII2NC_FILE_WINDOW_END
+     Description here.
+
+     | *Used by:* Ascii2Nc
+     | *Family:* [config]
+     | *Default:* None
+
