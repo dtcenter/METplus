@@ -638,10 +638,11 @@ class METplusConfig(ProdConfig):
             # convert value to seconds
             # Valid options match format 3600, 3600S, 60M, or 1H
             value = super(METplusConfig, self).getstr(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
-            regex_and_multiplier = {r'(-*)(\d+)S' : 1,
-                                    r'(-*)(\d+)M' : 60,
-                                    r'(-*)(\d+)H' : 3600,
-                                    r'(-*)(\d+)' : 1}
+            regex_and_multiplier = {r'(-*)(\d+)S': 1,
+                                    r'(-*)(\d+)M': 60,
+                                    r'(-*)(\d+)H': 3600,
+                                    r'(-*)(\d+)D': 86400,
+                                    r'(-*)(\d+)': 1}
             for reg, mult in regex_and_multiplier.items():
                 match = re.match(reg, value)
                 if match:
