@@ -197,7 +197,7 @@ def test_3h_lead():
 
 def test_h_lead_no_pad_1_digit():
     logger = logging.getLogger("test")
-    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
     filepath = "1987020103_A3h"
     se = StringExtract(logger, template,
                            filepath)
