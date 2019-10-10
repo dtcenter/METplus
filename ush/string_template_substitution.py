@@ -50,7 +50,10 @@ LENGTH_DICT = {'%Y': 4,
                '%H': 2,
                '%M': 2,
                '%S': 2,
-               '%j': 3}
+               '%j': 3,
+               '%y': 2,
+               '%b': 3,
+               }
 
 
 def multiple_replace(replace_dict, text):
@@ -173,6 +176,14 @@ def format_hms(fmt, obj):
 def set_output_dict_from_time_info(time_dict, output_dict, key):
     """!Create datetime object from time data,
         get month and day from julian date if applicable"""
+    # if 2 digit year is set, get full year
+    if time_dict['Y'] == -1 and time_dict['y'] != -1:
+        time_dict['Y'] = int(datetime.datetime.strptime(str(time_dict['y']), '%y').strftime('%Y'))
+
+    # if month as 3 letter string is set, get month number
+    if time_dict['m'] == -1 and time_dict['b'] != -1:
+        time_dict['m'] = int(datetime.datetime.strptime(str(time_dict['b']), '%b').strftime('%m'))
+
     if time_dict['Y'] != -1 and time_dict['j'] != -1:
         date_t = datetime.datetime.strptime(str(time_dict['Y'])+'_'+str(time_dict['j']),
                                             '%Y_%j')
@@ -619,25 +630,31 @@ class StringExtract(object):
         offset = 0
 
         valid['Y'] = -1
+        valid['y'] = -1
         valid['m'] = -1
         valid['d'] = -1
         valid['j'] = -1
         valid['H'] = 0
         valid['M'] = 0
+        valid['b'] = -1
 
         init['Y'] = -1
+        init['y'] = -1
         init['m'] = -1
         init['d'] = -1
         init['j'] = -1
         init['H'] = 0
         init['M'] = 0
+        init['b'] = -1
 
         da_init['Y'] = -1
+        da_init['y'] = -1
         da_init['m'] = -1
         da_init['d'] = -1
         da_init['j'] = -1
         da_init['H'] = 0
         da_init['M'] = 0
+        da_init['b'] = -1
 
         lead['H'] = 0
         lead['M'] = 0
