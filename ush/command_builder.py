@@ -65,6 +65,9 @@ class CommandBuilder:
         # wrappers that support this functionality can override this value
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = False
+        c_dict['FCST_INPUT_DATATYPE'] = ''
+        c_dict['OBS_INPUT_DATATYPE'] = ''
+        c_dict['ALLOW_MULTIPLE_FILES'] = False
         return c_dict
 
     def clear(self):
@@ -94,6 +97,60 @@ class CommandBuilder:
                                           raw_env_var_value,
                                           **time_info).do_string_sub()
             self.add_env_var(env_var, env_var_value)
+
+    def handle_window_once(self, c_dict, dtype, edge, app_name):
+        """! Check and set window dictionary variables like
+              OBS_WINDOW_BEG or FCST_FILE_WINDW_END
+              Args:
+                @param c_dict dictionary to set items in
+                @param dtype type of data 'FCST' or 'OBS'
+                @param edge either 'BEGIN' or 'END'
+        """
+        app = app_name.upper()
+
+        # if value specific to given wrapper is set, override value
+        if self.config.has_option('config',
+                                  dtype + '_' + app + '_WINDOW_' + edge):
+            c_dict[dtype + '_WINDOW_' + edge] = \
+                self.config.getseconds('config',
+                                   dtype + '_' + app + '_WINDOW_' + edge)
+        # if generic value is set, use that
+        elif self.config.has_option('config',
+                                    dtype + '_WINDOW_' + edge):
+            c_dict[dtype + '_WINDOW_' + edge] = \
+                self.config.getseconds('config',
+                                       dtype + '_WINDOW_' + edge)
+        # otherwise set to default of 0
+        else:
+            c_dict[dtype + '_WINDOW_' + edge] = 0
+
+        # do the same for FILE_WINDOW
+        if self.config.has_option('config',
+                                  dtype + '_' + app + '_FILE_WINDOW_' + edge):
+            c_dict[dtype + '_FILE_WINDOW_' + edge] = \
+                self.config.getseconds('config',
+                                   dtype + '_' + app + '_FILE_WINDOW_' + edge)
+        elif self.config.has_option('config',
+                                    dtype + '_FILE_WINDOW_' + edge):
+            c_dict[dtype + '_FILE_WINDOW_' + edge] = \
+                self.config.getseconds('config',
+                                       dtype + '_FILE_WINDOW_' + edge)
+        # otherwise set to *_WINDOW_* value
+        else:
+            c_dict[dtype + '_FILE_WINDOW_' + edge] = c_dict[dtype + '_WINDOW_' + edge]
+
+    def handle_window_variables(self, c_dict, app_name, dtypes=['FCST', 'OBS']):
+        """! Handle all window config variables like
+              [FCST/OBS]_<app_name>_WINDOW_[BEGIN/END] and
+              [FCST/OBS]_<app_name>_FILE_WINDOW_[BEGIN/END]
+              Args:
+                @param c_dict dictionary to set items in
+        """
+        edges = ['BEGIN', 'END']
+
+        for dtype in dtypes:
+            for edge in edges:
+                self.handle_window_once(c_dict, dtype, edge, app_name)
 
     def set_output_path(self, outpath):
         """!Split path into directory and filename then save both
