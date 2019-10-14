@@ -333,7 +333,7 @@ class CommandBuilder:
 
         # if looking for a file within a time window:
         # convert valid_time to unix time
-        valid_seconds = int(datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
+        valid_seconds = int(datetime.strptime(valid_time, "%Y%m%d%H%M%S").strftime("%s"))
         # get time of each file, compare to valid time, save best within range
         closest_files = []
         closest_time = 9999999
@@ -342,9 +342,9 @@ class CommandBuilder:
         valid_range_lower = self.c_dict[data_type + '_FILE_WINDOW_BEGIN']
         valid_range_upper = self.c_dict[data_type + '_FILE_WINDOW_END']
         lower_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
-                                            "%Y%m%d%H%M").strftime("%s"))
+                                            "%Y%m%d%H%M%S").strftime("%s"))
         upper_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
-                                            "%Y%m%d%H%M").strftime("%s"))
+                                            "%Y%m%d%H%M%S").strftime("%s"))
 
         # step through all files under input directory in sorted order
         for dirpath, _, all_files in os.walk(data_dir):
@@ -357,11 +357,11 @@ class CommandBuilder:
                 file_time_info = util.get_time_from_file(self.logger, rel_path, template)
                 if file_time_info is not None:
                     # get valid time and check if it is within the time range
-                    file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M")
+                    file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
                     # skip if could not extract valid time
                     if file_valid_time == '':
                         continue
-                    file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M")
+                    file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
                     file_valid_seconds = int(file_valid_dt.strftime("%s"))
                     # skip if outside time range
                     if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:

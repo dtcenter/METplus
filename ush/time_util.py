@@ -278,9 +278,9 @@ def ti_calculate(input_dict):
     out_dict['da_init'] = out_dict['valid'] + out_dict['offset']
 
     # add common formatted items
-    out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M')
-    out_dict['da_init_fmt'] = out_dict['da_init'].strftime('%Y%m%d%H%M')
-    out_dict['valid_fmt'] = out_dict['valid'].strftime('%Y%m%d%H%M')
+    out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M%S')
+    out_dict['da_init_fmt'] = out_dict['da_init'].strftime('%Y%m%d%H%M%S')
+    out_dict['valid_fmt'] = out_dict['valid'].strftime('%Y%m%d%H%M%S')
 
     # get difference between valid and init to get total seconds since relativedelta
     # does not have a fixed number of seconds

@@ -122,8 +122,8 @@ def check_for_deprecated_config(conf, logger):
         'OBS_IS_DAILY_FILE' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_IS_DAILY_FILE'},
         'FCST_TIMES_PER_FILE' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_TIMES_PER_FILE'},
         'OBS_TIMES_PER_FILE' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_TIMES_PER_FILE'},
-        'FCST_LEVEL' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_INPUT_LEVEL'},
-        'OBS_LEVEL' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_INPUT_LEVEL'},
+        'FCST_LEVEL' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS'},
+        'OBS_LEVEL' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS'},
         'MODE_FCST_CONV_RADIUS' : {'sec' : 'config', 'alt' : 'FCST_MODE_CONV_RADIUS'},
         'MODE_FCST_CONV_THRESH' : {'sec' : 'config', 'alt' : 'FCST_MODE_CONV_THRESH'},
         'MODE_FCST_MERGE_FLAG' : {'sec' : 'config', 'alt' : 'FCST_MODE_MERGE_FLAG'},
@@ -164,6 +164,8 @@ def check_for_deprecated_config(conf, logger):
         {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS'},
         'TC_PAIRS_FORCE_OVERWRITE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS'},
         'GRID_STAT_CONFIG' : {'sec' : 'config', 'alt' : 'GRID_STAT_CONFIG_FILE'},
+        'FCST_PCP_COMBINE_INPUT_LEVEL' : {'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS'},
+        'OBS_PCP_COMBINE_INPUT_LEVEL' : {'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS'},
     }
 
     # template       '' : {'sec' : '', 'alt' : ''}
@@ -1321,37 +1323,37 @@ def getlistint(list_str):
 
 # minutes
 def shift_time(time_str, shift):
-    """ Adjust time by shift hours. Format is %Y%m%d%H%M
+    """ Adjust time by shift hours. Format is %Y%m%d%H%M%S
         Args:
-            @param time_str: Start time in %Y%m%d%H%M
+            @param time_str: Start time in %Y%m%d%H%M%S
             @param shift: Amount to adjust time in hours
         Returns:
-            New time in format %Y%m%d%H%M
+            New time in format %Y%m%d%H%M%S
     """
-    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M") +
-            datetime.timedelta(hours=shift)).strftime("%Y%m%d%H%M")
+    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M%S") +
+            datetime.timedelta(hours=shift)).strftime("%Y%m%d%H%M%S")
 
 def shift_time_minutes(time_str, shift):
-    """ Adjust time by shift minutes. Format is %Y%m%d%H%M
+    """ Adjust time by shift minutes. Format is %Y%m%d%H%M%S
         Args:
-            @param time_str: Start time in %Y%m%d%H%M
+            @param time_str: Start time in %Y%m%d%H%M%S
             @param shift: Amount to adjust time in minutes
         Returns:
-            New time in format %Y%m%d%H%M
+            New time in format %Y%m%d%H%M%S
     """
-    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M") +
-            datetime.timedelta(minutes=shift)).strftime("%Y%m%d%H%M")
+    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M%S") +
+            datetime.timedelta(minutes=shift)).strftime("%Y%m%d%H%M%S")
 
 def shift_time_seconds(time_str, shift):
-    """ Adjust time by shift seconds. Format is %Y%m%d%H%M
+    """ Adjust time by shift seconds. Format is %Y%m%d%H%M%S
         Args:
-            @param time_str: Start time in %Y%m%d%H%M
+            @param time_str: Start time in %Y%m%d%H%M%S
             @param shift: Amount to adjust time in seconds
         Returns:
-            New time in format %Y%m%d%H%M
+            New time in format %Y%m%d%H%M%S
     """
-    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M") +
-            datetime.timedelta(seconds=shift)).strftime("%Y%m%d%H%M")
+    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M%S") +
+            datetime.timedelta(seconds=shift)).strftime("%Y%m%d%H%M%S")
 
 def starts_with_comparison(thresh_string):
     """!Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le
@@ -1607,6 +1609,7 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
                 count += 1
 
     # extra debugging information used for developer debugging only
+    '''
     for v in var_list:
         config.logger.debug(f"VAR{v['index']}:")
         config.logger.debug(" fcst_name:"+v['fcst_name'])
@@ -1624,7 +1627,7 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
             config.logger.debug(" ens_thresh:"+str(v['ens_thresh']))
         if 'ens_extra' in v.keys():
             config.logger.debug(" ens_extra:"+v['ens_extra'])
-
+    '''
     return var_list
 
 

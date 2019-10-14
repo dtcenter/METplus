@@ -93,8 +93,8 @@ def test_mtd_by_init_all_found():
     input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
     mw.run_at_time(input_dict)
-    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
-    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
+    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510030000_mtd_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510030000_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -121,8 +121,8 @@ def test_mtd_by_valid_all_found():
     input_dict = {'valid' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
     mw.run_at_time(input_dict)
-    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
-    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
+    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510030000_mtd_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510030000_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -149,8 +149,8 @@ def test_mtd_by_init_miss_fcst():
     input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
     
     mw.run_at_time(input_dict)
-    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_fcst_APCP.txt')
-    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '201705100300_mtd_obs_APCP.txt')
+    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510030000_mtd_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510030000_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
