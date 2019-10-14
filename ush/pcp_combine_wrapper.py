@@ -49,6 +49,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.out_accum = -1
         self.field_name = ""
         self.field_level = ""
+        self.output_name = ""
         self.name = ""
         self.logfile = ""
         self.compress = -1
@@ -77,13 +78,14 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         c_dict[d_type+'_DATA_INTERVAL'] = self.config.getint('config', d_type+'_PCP_COMBINE_DATA_INTERVAL', 1)
         c_dict[d_type+'_TIMES_PER_FILE'] = self.config.getint('config', d_type+'_PCP_COMBINE_TIMES_PER_FILE', -1)
         c_dict[d_type+'_IS_DAILY_FILE'] = self.config.getbool('config', d_type+'_PCP_COMBINE_IS_DAILY_FILE', False)
-        c_dict[d_type+'_LEVEL'] = self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_LEVEL', '-1')
-        c_dict[d_type+'_LEVELS'] = util.getlist(self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_LEVELS', ''))
-        c_dict[d_type+'_LEVEL_NAMES'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_LEVEL_NAMES', ''))
-
+        c_dict[d_type+'_ACCUMS'] = util.getlist(self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_ACCUMS', '0'))
+        c_dict[d_type+'_NAMES'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_NAMES', ''))
+        c_dict[d_type+'_LEVELS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_LEVELS', ''))
+        c_dict[d_type+'_OUTPUT_ACCUM'] = self.config.getstr('config', d_type+'_PCP_COMBINE_OUTPUT_ACCUM', '')
+        c_dict[d_type+'_OUTPUT_NAME'] = self.config.getstr('config', d_type+'_PCP_COMBINE_OUTPUT_NAME', '')
         c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
         c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                     d_type+'_PCP_COMBINE_INPUT_TEMPLATE')
+                                                              d_type+'_PCP_COMBINE_INPUT_TEMPLATE', '')
         c_dict[d_type+'_OUTPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_OUTPUT_DIR', '')
         c_dict[d_type+'_OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_OUTPUT_TEMPLATE')
@@ -118,6 +120,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.field_name = ""
         self.field_level = ""
         self.field_extra = ""
+        self.output_name = ""
         self.name = ""
         self.logfile = ""
         self.compress = -1
@@ -127,37 +130,6 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.infiles.append(filename)
         self.inaddons.append(str(addon))
 
-    def set_field(self, name, level):
-        self.field_name = name
-        self.field_level = level
-
-    def set_name(self,name):
-        self.name = name
-
-    def set_logfile(self,logfile):
-        self.logfile = logfile
-
-    def set_compress(self, c):
-        self.compress = c
-
-    def set_pcp_dir(self, filepath):
-        self.pcp_dir = filepath
-
-    def set_pcp_regex(self, regexp):
-        self.pcp_regex = regexp
-
-    def set_init_time(self, init_time):
-        self.init_time = init_time[0:8]+"_"+init_time[8:10]
-
-    def set_valid_time(self, valid_time):
-        self.valid_time = valid_time[0:8]+"_"+valid_time[8:10]
-
-    def set_in_accum(self, in_accum):
-        self.in_accum = in_accum
-
-    def set_out_accum(self, out_accum):
-        self.out_accum = out_accum
-
     def get_dir_and_template(self, data_type, in_or_out):
         dirr = self.c_dict[data_type+'_'+in_or_out+'_DIR']
         template = self.c_dict[data_type+'_'+in_or_out+'_TEMPLATE']
@@ -166,7 +138,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             self.logger.error(data_type+'_PCP_COMBINE_'+in_or_out+'_DIR must be set.')
             exit(1)
 
-        if template is '':
+        if template is '' and self.method != 'SUM':
             self.logger.error(data_type+'_PCP_COMBINE_'+in_or_out+'_TEMPLATE must be set.')
             exit(1)
 
@@ -250,12 +222,12 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         # get name of input level item that matches the accumulation to extract from daily file
         accum_seconds = time_util.get_seconds_from_string(accum, 'H')
-        level_dict_list = self.c_dict['LEVEL_DICT_LIST']
-        fname = next((item['name'] for item in level_dict_list if item['amount'] == accum_seconds), '-1')
+        accum_dict_list = self.c_dict['ACCUM_DICT_LIST']
+        fname = next((item['name'] for item in accum_dict_list if item['amount'] == accum_seconds), '-1')
         # if accumulation was not found in levels dictionary list, error and return
         if fname == '-1':
             self.logger.error(f'Accumulation {accum} was not specified in the {data_src}'
-                              '_PCP_COMBINE_INPUT_LEVELS list')
+                              '_PCP_COMBINE_INPUT_ACCUMS list')
             return False
 
         # if name was not set in the input levels list, use accumulation time in MET time format
@@ -324,7 +296,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # last time to process is valid - 6 + 1
         accum_relative = time_util.get_relativedelta(accum, 'H')
         # using 1 hour for now
-        smallest_input_accum = min([lev['amount'] for lev in self.c_dict['LEVEL_DICT_LIST']])
+        smallest_input_accum = min([lev['amount'] for lev in self.c_dict['ACCUM_DICT_LIST']])
         last_time = time_info['valid'] -\
             accum_relative +\
             datetime.timedelta(seconds=smallest_input_accum)
@@ -333,7 +305,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                                                   time_info['valid'])
 
         # log the input and output accumulation information
-        search_accum_list = ' or '.join([time_util.ti_get_lead_string(lev['amount'],plural=False) for lev in self.c_dict['LEVEL_DICT_LIST']])
+        search_accum_list = ' or '.join([time_util.ti_get_lead_string(lev['amount'],plural=False) for lev in self.c_dict['ACCUM_DICT_LIST']])
         self.logger.debug(f"Trying to build a {time_util.ti_get_lead_string(total_accum, plural=False)} accumulation using {search_accum_list} input data")
         # loop backwards in time until you have a full set of accum
         while last_time <= search_time:
@@ -347,8 +319,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                     break
 
                 # find accum field in file that is less than search accumulation
-                field_name = self.c_dict['LEVEL_DICT_LIST'][0]['name']
-                s_accum = time_util.time_string_to_met_time(self.c_dict['LEVEL_DICT_LIST'][0]['amount'])
+                field_name = self.c_dict['ACCUM_DICT_LIST'][0]['name']
+                s_accum = time_util.time_string_to_met_time(self.c_dict['ACCUM_DICT_LIST'][0]['amount'])
 
                 found = True
                 addon = self.get_addon(field_name, s_accum, search_time)
@@ -359,7 +331,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                 total_accum -= s_accum_seconds
             else:  # not looking for forecast files
                 # look for biggest accum that fits search
-                for level_dict in self.c_dict['LEVEL_DICT_LIST']:
+                for level_dict in self.c_dict['ACCUM_DICT_LIST']:
                     if level_dict['amount'] > total_accum:
                         continue
 
@@ -452,6 +424,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             if self.field_extra != "":
                 cmd += ' ' + self.field_extra
             cmd += "' "
+
+        if self.output_name != '':
+            cmd += f' -name "{self.output_name}" '
 
         if self.outfile == "":
             self.logger.error("No output filename specified")
@@ -624,35 +599,53 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @params rl data type (FCST or OBS)
           @rtype string
           @return path to output file"""
-        in_accum = self.c_dict[rl+'_LEVEL']
+        in_accum = self.c_dict[rl+'_ACCUMS'][0]
 
         # if level is not set, default to 0 for sum mode
         if in_accum == -1:
             in_accum = 0
 
+        in_accum = time_util.time_string_to_met_time(in_accum, 'H')
+
         in_dir, in_template = self.get_dir_and_template(rl, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
 
-        out_accum = var_info['obs_level']
-        if out_accum[0].isalpha():
-            out_accum = out_accum[1:]
+        # if OUTPUT_ACCUM is set, use that instead of obs_level
+        # and use obs_level as field level
+        if self.c_dict[rl+'_OUTPUT_ACCUM']:
+            out_accum = self.c_dict[rl+'_OUTPUT_ACCUM']
+            self.field_name = self.c_dict[rl+'_NAMES'][0]
+            self.field_level = self.c_dict[rl+'_LEVELS'][0]
+        else:
+            out_accum = var_info[rl.lower()+'_level']
+            if out_accum[0].isalpha():
+                out_accum = out_accum[1:]
 
-        init_time = time_info['init_fmt']
-        valid_time = time_info['valid_fmt']
+        if self.c_dict[rl+'_OUTPUT_NAME']:
+            self.output_name = self.c_dict[rl+'_OUTPUT_NAME']
 
-        time_info['level'] = int(out_accum) * 3600
+        init_time = time_info['init'].strftime('%Y%m%d_%H%M%S')
+        valid_time = time_info['valid'].strftime('%Y%m%d_%H%M%S')
+
+        time_info['level'] = time_util.get_seconds_from_string(out_accum,
+                                                               'H',
+                                                               time_info['valid'])
+
+        out_accum = time_util.time_string_to_met_time(out_accum,
+                                                      'H')
+
         in_regex = util.template_to_regex(in_template, time_info,
                                           self.logger)
         in_regex_split = in_regex.split('/')
         in_dir = os.path.join(in_dir, *in_regex_split[0:-1])
         in_regex = in_regex_split[-1]
 
-        self.set_init_time(init_time)
-        self.set_valid_time(valid_time)
-        self.set_in_accum(in_accum)
-        self.set_out_accum(out_accum)
-        self.set_pcp_dir(in_dir)
-        self.set_pcp_regex(in_regex)
+        self.init_time = init_time
+        self.valid_time = valid_time
+        self.in_accum = in_accum
+        self.out_accum = out_accum
+        self.pcp_dir = in_dir
+        self.pcp_regex = in_regex
         self.outdir = out_dir
 
         pcpSts = sts.StringSub(self.logger,
@@ -694,7 +687,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             return
 
         # create list of tuples for input levels and optional field names
-        if not self.build_input_level_list(data_src, time_info):
+        if not self.build_input_accum_list(data_src, time_info):
             return
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
@@ -780,34 +773,47 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.custom_command = sts.StringSub(self.logger, command_template, **time_info).do_string_sub()
         return '{} -v {} {}'.format(self.app_path, self.c_dict['VERBOSITY'], self.custom_command)
 
-    def build_input_level_list(self, data_src, time_info):
+    def build_input_accum_list(self, data_src, time_info):
+        accum_list = self.c_dict[data_src + '_ACCUMS']
         level_list = self.c_dict[data_src + '_LEVELS']
-        name_list = self.c_dict[data_src + '_LEVEL_NAMES']
+        name_list = self.c_dict[data_src + '_NAMES']
 
-        if not level_list:
-            self.logger.error(f'{data_src}_PCP_COMBINE_INPUT_LEVELS must be specified.')
+        if not accum_list:
+            self.logger.error(f'{data_src}_PCP_COMBINE_INPUT_ACCUMS must be specified.')
             return False
 
-        # name list should either be empty or the same length as level list
+        # name list should either be empty or the same length as accum list
         if name_list:
-            if len(level_list) != len(name_list):
-                msg = f'{data_src}_PCP_COMBINE_INPUT_LEVEL_NAMES list should be ' +\
+            if len(accum_list) != len(name_list):
+                msg = f'{data_src}_PCP_COMBINE_INPUT_ACCUM_NAMES list should be ' +\
                       'either empty or the same length as ' +\
-                      f'{data_src}_PCP_COMBINE_INPUT_LEVELS list.'
+                      f'{data_src}_PCP_COMBINE_INPUT_ACCUMS list.'
                 self.logger.error(msg)
                 return False
         else:
             # if no name list, create list of None values
-            name_list = [None] * len(level_list)
+            name_list = [None] * len(accum_list)
+
+        # do the same for level list
+        if level_list:
+            if len(accum_list) != len(level_list):
+                msg = f'{data_src}_PCP_COMBINE_INPUT_LEVELS list should be ' +\
+                      'either empty or the same length as ' +\
+                      f'{data_src}_PCP_COMBINE_INPUT_ACCUMS list.'
+                self.logger.error(msg)
+                return False
+        else:
+            # if no level list, create list of None values
+            level_list = [None] * len(accum_list)
 
 
-        level_dict_list = []
-        for level, name in zip(level_list, name_list):
+        accum_dict_list = []
+        for accum, level, name in zip(accum_list, level_list, name_list):
             # convert accum amount to seconds from time string
-            amount = time_util.get_seconds_from_string(level, 'H', time_info['valid'])
-            level_dict_list.append({'amount' : amount, 'name' : name})
+            amount = time_util.get_seconds_from_string(accum, 'H', time_info['valid'])
+            accum_dict_list.append({'amount' : amount, 'name' : name, 'level': level})
 
-        self.c_dict['LEVEL_DICT_LIST'] = level_dict_list
+        self.c_dict['ACCUM_DICT_LIST'] = accum_dict_list
         return True
 
 if __name__ == "__main__":
