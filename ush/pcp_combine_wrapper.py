@@ -47,7 +47,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.valid_time = -1
         self.in_accum = -1
         self.out_accum = -1
-        self.field_name = ""
+        self.field_name = None
         self.field_level = ""
         self.output_name = ""
         self.name = ""
@@ -71,18 +71,19 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
 
     def set_fcst_or_obs_dict_items(self, d_type, c_dict):
-        c_dict[d_type+'_MIN_FORECAST'] = self.config.getint('config', d_type+'_PCP_COMBINE_MIN_FORECAST', 0)
-        c_dict[d_type+'_MAX_FORECAST'] = self.config.getint('config', d_type+'_PCP_COMBINE_MAX_FORECAST', 256)
+        c_dict[d_type+'_MIN_FORECAST'] = self.config.getstr('config', d_type+'_PCP_COMBINE_MIN_FORECAST', '0')
+        c_dict[d_type+'_MAX_FORECAST'] = self.config.getstr('config', d_type+'_PCP_COMBINE_MAX_FORECAST', '256H')
         c_dict[d_type+'_INPUT_DATATYPE'] = self.config.getstr('config',
                                               d_type+'_PCP_COMBINE_INPUT_DATATYPE', '')
         c_dict[d_type+'_DATA_INTERVAL'] = self.config.getint('config', d_type+'_PCP_COMBINE_DATA_INTERVAL', 1)
         c_dict[d_type+'_TIMES_PER_FILE'] = self.config.getint('config', d_type+'_PCP_COMBINE_TIMES_PER_FILE', -1)
         c_dict[d_type+'_IS_DAILY_FILE'] = self.config.getbool('config', d_type+'_PCP_COMBINE_IS_DAILY_FILE', False)
-        c_dict[d_type+'_ACCUMS'] = util.getlist(self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_ACCUMS', '0'))
+        c_dict[d_type+'_ACCUMS'] = util.getlist(self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_ACCUMS', ''))
         c_dict[d_type+'_NAMES'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_NAMES', ''))
         c_dict[d_type+'_LEVELS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_LEVELS', ''))
         c_dict[d_type+'_OUTPUT_ACCUM'] = self.config.getstr('config', d_type+'_PCP_COMBINE_OUTPUT_ACCUM', '')
         c_dict[d_type+'_OUTPUT_NAME'] = self.config.getstr('config', d_type+'_PCP_COMBINE_OUTPUT_NAME', '')
+        c_dict[d_type+'_OUTPUT_EXTRA'] = self.config.getstr('config', d_type+'_PCP_COMBINE_OUTPUT_EXTRA', '')
         c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
         c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                               d_type+'_PCP_COMBINE_INPUT_TEMPLATE', '')
@@ -117,7 +118,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.valid_time = -1
         self.in_accum = -1
         self.out_accum = -1
-        self.field_name = ""
+        self.field_name = None
         self.field_level = ""
         self.field_extra = ""
         self.output_name = ""
@@ -155,16 +156,26 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         out_file = None
 
         # search for file with lowest forecast, then loop up into you find a valid one
-        min_forecast = self.c_dict[dtype+'_MIN_FORECAST']
-        max_forecast = self.c_dict[dtype+'_MAX_FORECAST']
-        forecast_lead = min_forecast
-        self.logger.debug(f"Looking for file with lowest forecast lead valid at {valid_time}"
-                          f" between {min_forecast} and {max_forecast}")
+        min_forecast = time_util.get_seconds_from_string(self.c_dict[dtype+'_MIN_FORECAST'], 'H')
+        max_forecast = time_util.get_seconds_from_string(self.c_dict[dtype+'_MAX_FORECAST'], 'H')
+        smallest_input_accum = min([lev['amount'] for lev in self.c_dict['ACCUM_DICT_LIST']])
 
+        # if smallest input accumulation is greater than an hour, search hourly
+        if smallest_input_accum > 3600:
+            smallest_input_accum = 3600
+
+        min_forecast_string = time_util.ti_get_lead_string(min_forecast)
+        max_forecast_string = time_util.ti_get_lead_string(max_forecast)
+        smallest_input_accum_string = time_util.ti_get_lead_string(smallest_input_accum, plural=False)
+        self.logger.debug(f"Looking for file with lowest forecast lead valid at {valid_time}"
+                          f" between {min_forecast_string} and {max_forecast_string} using "
+                          f"{smallest_input_accum_string} intervals")
+
+        forecast_lead = min_forecast
         while forecast_lead <= max_forecast:
             input_dict = {}
             input_dict['valid'] = valid_time
-            input_dict['lead_hours'] = forecast_lead
+            input_dict['lead_seconds'] = forecast_lead
             time_info = time_util.ti_calculate(input_dict)
             fSts = sts.StringSub(self.logger,
                                  template,
@@ -177,7 +188,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
             if search_file is not None:
                 return search_file
-            forecast_lead += 1
+            forecast_lead += smallest_input_accum
         return None
 
     def get_daily_file(self, time_info, accum, data_src, file_template):
@@ -246,20 +257,26 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.add_input_file(search_file, addon)
         return True
 
-    def get_addon(self, field_name, search_accum, search_time):
+    def get_addon(self, field_name, search_accum, search_time, field_level):
         if field_name is not None:
             # perform string substitution on name in case it uses filename templates
             field_name = sts.StringSub(self.logger, field_name, valid=search_time).do_string_sub()
             addon = "'name=\"" + field_name + "\";"
             if not util.is_python_script(field_name):
-               addon += " level=\"(0,*,*)\";"
+                if field_level is not None:
+                    addon += f" level=\"{field_level}\";"
+#                else:
+#                   addon += " level=\"(0,*,*)\";"
             addon += "'"
         else:
-            addon = time_util.time_string_to_met_time(str(search_accum), default_unit='S')
+            addon = search_accum
 
         return addon
 
     def find_input_file(self, in_template, search_time, search_accum, data_src):
+        if '{lead?' in in_template:
+            return self.getLowestForecastFile(search_time, data_src, in_template)
+
         fSts = sts.StringSub(self.logger,
                              in_template,
                              valid=search_time,
@@ -271,14 +288,12 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                     self.c_dict[data_src+'_INPUT_DATATYPE'],
                                     self.config)
 
-    def get_accumulation(self, time_info, accum, data_src,
-                         is_forecast=False):
+    def get_accumulation(self, time_info, accum, data_src):
         """!Find files to combine to build the desired accumulation
         Args:
           @param time_info dictionary containing time information
           @param accum desired accumulation to build
           @param data_src type of data (FCST or OBS)
-          @param is_forecast handle differently if reading forecast files
           @rtype bool
           @return True if full set of files to build accumulation is found
         """
@@ -307,47 +322,34 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # log the input and output accumulation information
         search_accum_list = ' or '.join([time_util.ti_get_lead_string(lev['amount'],plural=False) for lev in self.c_dict['ACCUM_DICT_LIST']])
         self.logger.debug(f"Trying to build a {time_util.ti_get_lead_string(total_accum, plural=False)} accumulation using {search_accum_list} input data")
+
         # loop backwards in time until you have a full set of accum
         while last_time <= search_time:
             found = False
-            if is_forecast:
-                if total_accum == 0:
+
+            if total_accum == 0:
+                break
+
+            # look for biggest accum that fits search
+            for accum_dict in self.c_dict['ACCUM_DICT_LIST']:
+                if accum_dict['amount'] > total_accum:
+                    continue
+
+                search_file = self.find_input_file(in_template, search_time,
+                                                   accum_dict['amount'], data_src)
+
+                # if found a file, add it to input list with info
+                if search_file is not None:
+                    accum_met_time = time_util.time_string_to_met_time(accum_dict['amount'])
+                    addon = self.get_addon(accum_dict['name'], accum_met_time, search_time,
+                                           accum_dict['level'])
+                    # add file to input list and step back in time to find more data
+                    self.add_input_file(search_file, addon)
+                    self.logger.debug(f"Adding input file: {search_file}")
+                    search_time = search_time - datetime.timedelta(seconds=accum_dict['amount'])
+                    total_accum -= accum_dict['amount']
+                    found = True
                     break
-
-                search_file = self.getLowestForecastFile(search_time, data_src, in_template)
-                if search_file is None:
-                    break
-
-                # find accum field in file that is less than search accumulation
-                field_name = self.c_dict['ACCUM_DICT_LIST'][0]['name']
-                s_accum = time_util.time_string_to_met_time(self.c_dict['ACCUM_DICT_LIST'][0]['amount'])
-
-                found = True
-                addon = self.get_addon(field_name, s_accum, search_time)
-                self.add_input_file(search_file, addon)
-                self.logger.debug(f"Adding input file: {search_file}")
-                s_accum_seconds = time_util.get_seconds_from_string(s_accum, 'H')
-                search_time = search_time - datetime.timedelta(seconds=s_accum_seconds)
-                total_accum -= s_accum_seconds
-            else:  # not looking for forecast files
-                # look for biggest accum that fits search
-                for level_dict in self.c_dict['ACCUM_DICT_LIST']:
-                    if level_dict['amount'] > total_accum:
-                        continue
-
-                    search_file = self.find_input_file(in_template, search_time,
-                                                       level_dict['amount'], data_src)
-
-                    # if found a file, add it to input list with info
-                    if search_file is not None:
-                        addon = self.get_addon(level_dict['name'], level_dict['amount'], search_time)
-                        # add file to input list and step back in time to find more data
-                        self.add_input_file(search_file, addon)
-                        self.logger.debug(f"Adding input file: {search_file}")
-                        search_time = search_time - datetime.timedelta(seconds=level_dict['amount'])
-                        total_accum -= level_dict['amount']
-                        found = True
-                        break
 
             # if we don't need any more accumulation, break out of loop and run
             if total_accum == 0:
@@ -417,7 +419,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
 
         # set -field options if set
-        if self.field_name != "":
+        if self.field_name is not None:
             cmd += " -field 'name=\""+self.field_name+"\";"
             if self.field_level != "":
                 cmd += " level=\""+self.field_level+"\";"
@@ -461,29 +463,30 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         return cmd
 
-    def run_at_time_once(self, time_info, var_info, rl):
+    def run_at_time_once(self, time_info, var_info, data_src):
         self.clear()
         cmd = None
         self.clear()
-        self.method = self.c_dict[rl+'_RUN_METHOD'].upper()
+        self.method = self.c_dict[data_src+'_RUN_METHOD'].upper()
         if self.method == "CUSTOM":
-            cmd = self.setup_custom_method(time_info, rl)
+            cmd = self.setup_custom_method(time_info, data_src)
         else:
-            if var_info is None:
+            if var_info is None and self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
                 self.logger.error('Cannot run PcpCombine without specifying fields to process '
-                                  'unless running in CUSTOM mode.')
+                                  'unless running in CUSTOM mode. You must set '
+                                  f'{data_src}_VAR<n>_[NAME/LEVELS] or {data_src}_OUTPUT_[NAME/LEVEL]')
                 return
 
             if self.method == "ADD":
-                cmd = self.setup_add_method(time_info, var_info, rl)
+                cmd = self.setup_add_method(time_info, var_info, data_src)
             elif self.method == "SUM":
-                cmd = self.setup_sum_method(time_info, var_info, rl)
+                cmd = self.setup_sum_method(time_info, var_info, data_src)
             elif self.method == "SUBTRACT":
-                cmd = self.setup_subtract_method(time_info, var_info, rl)
+                cmd = self.setup_subtract_method(time_info, var_info, data_src)
             elif self.method == "DERIVE":
-                cmd = self.setup_derive_method(time_info, var_info, rl)
+                cmd = self.setup_derive_method(time_info, var_info, data_src)
             else:
-                self.logger.error('Invalid ' + rl + '_PCP_COMBINE_METHOD specified.'+\
+                self.logger.error('Invalid ' + data_src + '_PCP_COMBINE_METHOD specified.'+\
                                   ' Options are ADD, SUM, and SUBTRACT.')
                 exit(1)
 
@@ -505,25 +508,30 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         self.build()
 
-    def setup_subtract_method(self, time_info, var_info, rl):
+    def setup_subtract_method(self, time_info, var_info, data_src):
         """!Setup pcp_combine to subtract two files to build desired accumulation
         Args:
           @param time_info object containing timing information
           @param var_info object containing variable information
-          @params rl data type (FCST or OBS)
+          @params data_src data type (FCST or OBS)
           @rtype string
           @return path to output file"""
-        in_dir, in_template = self.get_dir_and_template(rl, 'INPUT')
-        out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
+        in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
+        out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
 
-        if rl == 'FCST':
-            field_name = var_info['fcst_name']
-            level = var_info['fcst_level']
+        # if [FCST/OBS]_OUTPUT_[NAME/ACCUM] are set, use them instead of
+        # [FCST/OBS]_VAR<n>_[NAME/LEVELS]
+        if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
+            field_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
         else:
-            field_name = var_info['obs_name']
-            level = var_info['obs_level']
+            field_name = var_info[f"{data_src.lower()}_name"]
 
-        level_type, accum = util.split_level(level)
+        if self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
+            accum = self.c_dict[f"{data_src}_OUTPUT_ACCUM"]
+            level_type = 'A'
+        else:
+            level = var_info[f'{data_src.lower()}_level']
+            level_type, accum = util.split_level(level)
 
         lead = time_info['lead_hours']
         lead2 = lead - int(accum)
@@ -544,11 +552,11 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 **time_info)
         file1_expected = os.path.join(in_dir, pcpSts1.do_string_sub())
         file1 = util.preprocess_file(file1_expected,
-                                     self.c_dict[rl+'_INPUT_DATATYPE'],
+                                     self.c_dict[data_src+'_INPUT_DATATYPE'],
                                      self.config)
 
         if file1 is None:
-            self.logger.error(f'Could not find {rl} file {file1_expected} using template {in_template}')
+            self.logger.error(f'Could not find {data_src} file {file1_expected} using template {in_template}')
             return None
 
         # if level type is A (accum) and second lead is 0, then
@@ -570,14 +578,14 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                 **time_info2)
         file2_expected = os.path.join(in_dir, pcpSts2.do_string_sub())
         file2 = util.preprocess_file(file2_expected,
-                                     self.c_dict[rl+'_INPUT_DATATYPE'],
+                                     self.c_dict[data_src+'_INPUT_DATATYPE'],
                                      self.config)
 
         if file2 is None:
-            self.logger.error(f'Could not find {rl} file {file2_expected} using template {in_template}')
+            self.logger.error(f'Could not find {data_src} file {file2_expected} using template {in_template}')
             return None
 
-        if self.c_dict[rl+'_INPUT_DATATYPE'] != 'GRIB':
+        if self.c_dict[data_src+'_INPUT_DATATYPE'] != 'GRIB':
             field_name_1 = sts.StringSub(self.logger, field_name, **time_info).do_string_sub()
             lead = "'name=\"" + field_name_1 + "\";'"
             field_name_2 = sts.StringSub(self.logger, field_name, **time_info2).do_string_sub()
@@ -590,39 +598,42 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return self.get_command()
 
 
-    def setup_sum_method(self, time_info, var_info, rl):
+    def setup_sum_method(self, time_info, var_info, data_src):
         """!Setup pcp_combine to build desired accumulation based on
         init/valid times and accumulations
         Args:
           @param time_info object containing timing information
           @param var_info object containing variable information
-          @params rl data type (FCST or OBS)
+          @params data_src data type (FCST or OBS)
           @rtype string
           @return path to output file"""
-        in_accum = self.c_dict[rl+'_ACCUMS'][0]
-
-        # if level is not set, default to 0 for sum mode
-        if in_accum == -1:
+        if self.c_dict[f"{data_src}_ACCUMS"]:
+            in_accum = self.c_dict[data_src+'_ACCUMS'][0]
+        else:
             in_accum = 0
 
         in_accum = time_util.time_string_to_met_time(in_accum, 'H')
 
-        in_dir, in_template = self.get_dir_and_template(rl, 'INPUT')
-        out_dir, out_template = self.get_dir_and_template(rl, 'OUTPUT')
+        in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
+        out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
 
         # if OUTPUT_ACCUM is set, use that instead of obs_level
         # and use obs_level as field level
-        if self.c_dict[rl+'_OUTPUT_ACCUM']:
-            out_accum = self.c_dict[rl+'_OUTPUT_ACCUM']
-            self.field_name = self.c_dict[rl+'_NAMES'][0]
-            self.field_level = self.c_dict[rl+'_LEVELS'][0]
+        if self.c_dict[data_src+'_OUTPUT_ACCUM']:
+            out_accum = self.c_dict[data_src+'_OUTPUT_ACCUM']
         else:
-            out_accum = var_info[rl.lower()+'_level']
+            out_accum = var_info[data_src.lower()+'_level']
             if out_accum[0].isalpha():
                 out_accum = out_accum[1:]
 
-        if self.c_dict[rl+'_OUTPUT_NAME']:
-            self.output_name = self.c_dict[rl+'_OUTPUT_NAME']
+        if self.c_dict[data_src+'_OUTPUT_NAME']:
+            self.output_name = self.c_dict[data_src+'_OUTPUT_NAME']
+
+        # set field name and level if set in config
+        if self.c_dict[f'{data_src}_NAMES']:
+            self.field_name = self.c_dict[f'{data_src}_NAMES'][0]
+        if self.c_dict[f'{data_src}_LEVELS']:
+            self.field_level = self.c_dict[f'{data_src}_LEVELS'][0]
 
         init_time = time_info['init'].strftime('%Y%m%d_%H%M%S')
         valid_time = time_info['valid'].strftime('%Y%m%d_%H%M%S')
@@ -665,18 +676,19 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @params data_src data type (FCST or OBS)
           @rtype string
           @return path to output file"""
-        is_forecast = False
-        if data_src == "FCST":
-            is_forecast = True
 
-        if data_src == "FCST":
-            level = var_info['fcst_level']
-            compare_var = var_info['fcst_name']
+        # if [FCST/OBS]_OUTPUT_[NAME/ACCUM] are set, use them instead of
+        # [FCST/OBS]_VAR<n>_[NAME/LEVELS]
+        if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
+            field_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
         else:
-            level = var_info['obs_level']
-            compare_var = var_info['obs_name']
+            field_name = var_info[f"{data_src.lower()}_name"]
 
-        _, accum_string = util.split_level(level)
+        if self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
+            accum_string = self.c_dict[f"{data_src}_OUTPUT_ACCUM"]
+        else:
+            level = var_info[f'{data_src.lower()}_level']
+            _, accum_string = util.split_level(level)
 
         # get number of seconds relative to valid time
         accum_seconds = time_util.get_seconds_from_string(accum_string,
@@ -696,7 +708,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.input_dir = in_dir
 
-        if not self.get_accumulation(time_info, accum_string, data_src, is_forecast):
+        if not self.get_accumulation(time_info, accum_string, data_src):
             self.logger.error(f'Could not find files to build accumulation in {in_dir} using template {in_template}')
             return None
 
@@ -707,7 +719,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                **time_info)
         pcp_out = pcpSts.do_string_sub()
         self.outfile = pcp_out
-        self.args.append("-name " + compare_var + "_" + accum_string)
+        self.args.append("-name " + field_name + "_" + accum_string)
         return self.get_command()
 
     def setup_derive_method(self, time_info, var_info, data_src):
@@ -718,19 +730,22 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
           @params data_src data type (FCST or OBS)
           @rtype string
           @return path to output file"""
-        is_forecast = False
-        if data_src == "FCST":
-            is_forecast = True
-
-        # set field info
-        if data_src == "FCST":
-            self.field_level = var_info['fcst_level']
-            self.field_name = var_info['fcst_name']
-            self.field_extra = var_info['fcst_extra']
+        # if [FCST/OBS]_OUTPUT_[NAME/ACCUM] are set, use them instead of
+        # [FCST/OBS]_VAR<n>_[NAME/LEVELS]
+        if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
+            self.field_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
         else:
-            self.field_level = var_info['obs_level']
-            self.field_name = var_info['obs_name']
-            self.field_extra = var_info['obs_extra']
+            self.field_name = var_info[f"{data_src.lower()}_name"]
+
+        if self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
+            self.field_level = self.c_dict[f"{data_src}_OUTPUT_ACCUM"]
+        else:
+            self.field_level = var_info[f'{data_src.lower()}_level']
+
+        if self.c_dict[f"{data_src}_OUTPUT_EXTRA"]:
+            self.field_extra = self.c_dict[f"{data_src}_OUTPUT_EXTRA"]
+        else:
+            self.field_extra = var_info[f'{data_src.lower()}_extra']
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
@@ -746,8 +761,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         if not self.get_accumulation(time_info,
                                      lookback,
-                                     data_src,
-                                     is_forecast):
+                                     data_src):
             self.logger.error(f'Could not find files in {in_dir} using template {in_template}')
             return None
 
