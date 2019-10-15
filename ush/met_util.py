@@ -1420,6 +1420,16 @@ def validate_thresholds(thresh_list):
         return False
     return True
 
+def find_regex_in_config_section(regex_expression, config, sec):
+    all_conf = config.keys(sec)
+    indices = []
+    regex = re.compile(regex_expression)
+    for conf in all_conf:
+        result = regex.match(conf)
+        if result is not None:
+            indices.append(result.group(1))
+    return indices
+
 def parse_var_list(config, time_info=None):
     """ read conf items and populate list of dictionaries containing
     information about each variable to be compared
@@ -1461,13 +1471,9 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
     var_list = []
 
     # find all FCST_VARn_NAME keys in the conf files
-    all_conf = config.keys('config')
-    indices = []
-    regex = re.compile(data_type+r"_VAR(\d+)_NAME")
-    for conf in all_conf:
-        result = regex.match(conf)
-        if result is not None:
-            indices.append(result.group(1))
+    indices = find_regex_in_config_section(data_type+r"_VAR(\d+)_NAME",
+                                           config,
+                                           'config')
 
     # loop over all possible variables and add them to list
     for n in indices:
@@ -1635,10 +1641,19 @@ def split_level(level):
     level_type = ""
     if not level:
         return '', ''
-    if level[0].isalpha():
-        level_type = level[0]
-        level = level[1:]
-    return level_type, level
+    match = re.match(r'^(\w)(\d+)$', level)
+    if match:
+        level_type = match.group(1)
+        level = match.group(2)
+        return level_type, level
+
+    return '', ''
+
+def remove_quotes(input_string):
+    if input_string[0] == '"' and input_string[-1] == '"':
+        return input_string[1:-1]
+
+    return input_string
 
 def get_filetype(filepath, logger=None):
     """!This function determines if the filepath is a NETCDF or GRIB file
