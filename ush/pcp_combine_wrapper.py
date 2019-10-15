@@ -182,6 +182,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                  **time_info)
             search_file = os.path.join(self.input_dir,
                                        fSts.do_string_sub())
+
             search_file = util.preprocess_file(search_file,
                                 self.c_dict[dtype+'_INPUT_DATATYPE'],
                                                self.config)
@@ -274,7 +275,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return addon
 
     def find_input_file(self, in_template, search_time, search_accum, data_src):
-        if '{lead?' in in_template:
+        if '{lead?' in in_template or ('{init?' in in_template and '{valid?' in in_template) :
             return self.getLowestForecastFile(search_time, data_src, in_template)
 
         fSts = sts.StringSub(self.logger,
