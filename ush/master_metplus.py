@@ -105,7 +105,7 @@ def main():
     config.env = os.environ.copy()
 
     # Use config object to get the list of processes to call
-    process_list = util.getlist(config.getstr('config', 'PROCESS_LIST'))
+    process_list = util.get_process_list(config.getstr('config', 'PROCESS_LIST'), logger)
 
     # Keep this comment.
     # When running commands in the process_list, reprocess the

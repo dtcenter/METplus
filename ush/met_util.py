@@ -1321,6 +1321,49 @@ def getlistint(list_str):
     list_str = [int(i) for i in list_str]
     return list_str
 
+def get_process_list(process_list_string, logger):
+    """!Read process list, remove dashes/underscores and change to lower case. Then
+        map the name to the correct wrapper name"""
+    lower_to_wrapper_name = {'ascii2nc': 'ASCII2NC',
+                             'customingest': 'CustomIngest',
+                             'cycloneplotter': 'CyclonePlotter',
+                             'ensemblestat': 'EnsembleStat',
+                             'example': 'Example',
+                             'extracttiles': 'ExtractTiles',
+                             'gempaktocf': 'GempakToCF',
+                             'gridstat': 'GridStat',
+                             'makeplots': 'MakePlots',
+                             'mode': 'MODE',
+                             'mtd': 'MTD',
+                             'modetimedomain': 'MTD',
+                             'pb2nc': 'PB2NC',
+                             'pcpcombine': 'PCPCombine',
+                             'pointstat': 'PointStat',
+                             'regriddataplane': 'RegridDataPlane',
+                             'seriesbyinit': 'SeriesByInit',
+                             'seriesbylead': 'SeriesByLead',
+                             'statanalysis': 'StatAnalysis',
+                             'tcpairs': 'TCPairs',
+                             'tcstat': 'TCStat',
+                             'tcmprplotter': 'TCMPRPlotter',
+                             'usage': 'Usage',
+                            }
+
+    # get list of processes
+    process_list = getlist(process_list_string)
+
+    out_process_list = []
+    # for each item remove dashes, underscores, and cast to lower-case
+    for process in process_list:
+        lower_process = process.replace('-', '').replace('_', '').lower()
+        if lower_process in lower_to_wrapper_name.keys():
+            out_process_list.append(lower_to_wrapper_name[lower_process])
+        else:
+            logger.warning(f"PROCESS_LIST item {process} may be invalid.")
+            out_process_list.append(process)
+
+    return out_process_list
+
 # minutes
 def shift_time(time_str, shift):
     """ Adjust time by shift hours. Format is %Y%m%d%H%M%S
