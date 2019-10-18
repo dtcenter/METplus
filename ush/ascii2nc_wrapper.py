@@ -17,21 +17,21 @@ import met_util as util
 import time_util
 from command_builder import CommandBuilder
 
-'''!@namespace Ascii2NcWrapper
-@brief Wraps the Ascii2Nc tool to reformat ascii format to NetCDF
+'''!@namespace ASCII2NCWrapper
+@brief Wraps the ASCII2NC tool to reformat ascii format to NetCDF
 @endcode
 '''
 
 
-class Ascii2NcWrapper(CommandBuilder):
+class ASCII2NCWrapper(CommandBuilder):
     def __init__(self, config, logger):
-        super(Ascii2NcWrapper, self).__init__(config, logger)
+        super(ASCII2NCWrapper, self).__init__(config, logger)
         self.app_name = "ascii2nc"
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
 
     def create_c_dict(self):
-        c_dict = super(Ascii2NcWrapper, self).create_c_dict()
+        c_dict = super(ASCII2NCWrapper, self).create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_ASCII2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True

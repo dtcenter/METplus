@@ -18,10 +18,10 @@ import os
 import met_util as util
 from compare_gridded_wrapper import CompareGriddedWrapper
 
-class ModeWrapper(CompareGriddedWrapper):
+class MODEWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""
     def __init__(self, config, logger):
-        super(ModeWrapper, self).__init__(config, logger)
+        super(MODEWrapper, self).__init__(config, logger)
         self.app_name = 'mode'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
@@ -217,7 +217,7 @@ class ModeWrapper(CompareGriddedWrapper):
         if fcst_field_list is None or obs_field_list is None:
             return
 
-        # loop through fields and call Mode
+        # loop through fields and call MODE
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
             self.param = self.c_dict['CONFIG_FILE']
             self.create_and_set_output_dir(time_info)
@@ -234,4 +234,4 @@ class ModeWrapper(CompareGriddedWrapper):
             self.clear()
 
 if __name__ == "__main__":
-    util.run_stand_alone("mode_wrapper", "Mode")
+    util.run_stand_alone("mode_wrapper", "MODE")
