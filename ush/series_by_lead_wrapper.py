@@ -17,7 +17,7 @@ import time_util
 import feature_util
 from command_builder import CommandBuilder
 import config_metplus
-from tc_stat_wrapper import TcStatWrapper
+from tc_stat_wrapper import TCStatWrapper
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 
 
@@ -1331,7 +1331,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             filter_filename = os.path.join(series_output_dir,
                                            cur_init, filter_file)
 
-            tcs = TcStatWrapper(self.config, self.logger)
+            tcs = TCStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
                               filter_opts)
 

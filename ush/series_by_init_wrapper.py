@@ -10,7 +10,7 @@ import sys
 import config_metplus
 import met_util as util
 import produtil.setup
-from tc_stat_wrapper import TcStatWrapper
+from tc_stat_wrapper import TCStatWrapper
 import feature_util
 from command_builder import CommandBuilder
 
@@ -240,7 +240,7 @@ class SeriesByInitWrapper(CommandBuilder):
             filter_filename = os.path.join(series_output_dir,
                                            cur_init, filter_file)
 
-            tcs = TcStatWrapper(self.config, self.logger)
+            tcs = TCStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
                               filter_opts)
 
