@@ -673,7 +673,7 @@ class ProdConfig(object):
             if verbose: logger.info(arg)
             m=re.match('''(?x)
               (?P<section>[a-zA-Z][a-zA-Z0-9_]*)
-               \.(?P<option>[^=]+)
+               \\.(?P<option>[^=]+)
                =(?P<value>.*)$''',arg)
             if m:
                 if allow_options:
@@ -1334,8 +1334,8 @@ class ProdConfig(object):
             if default is not None:
                 return bool(default)
             raise
-        if re.match('(?i)\A(?:T|\.true\.|true|yes|on|1)\Z',s):   return True
-        if re.match('(?i)\A(?:F|\.false\.|false|no|off|0)\Z',s): return False
+        if re.match('(?i)\\A(?:T|\\.true\\.|true|yes|on|1)\\Z',s):   return True
+        if re.match('(?i)\\A(?:F|\\.false\\.|false|no|off|0)\\Z',s): return False
         try:
             return int(s)==0
         except ValueError as e: pass

@@ -44,7 +44,7 @@ def guess_total_tasks_impl(logger,silent):
             for line in cpuinfo:
                 if line.find('physical id')>=0:
                     cpus.add(line.strip())
-                m=re.search('cpu cores\s+:\s+(\d+)',line)
+                m=re.search('cpu cores\\s+:\\s+(\\d+)',line)
                 if m:
                     cpu_cores=int(m.group(1),10)
         if not cpus or not cpu_cores:
