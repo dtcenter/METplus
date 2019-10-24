@@ -1,6 +1,7 @@
 import numpy as np
 import datetime as datetime
 import time
+import pandas as pd
 
 """!@namespace plot_util
  @brief Provides utility functions for METplus plotting use case.
@@ -309,6 +310,11 @@ def get_stat_file_line_type_columns(logger, met_version, line_type):
         else:
             logger.error("VCNT is not a valid LINE_TYPE in METV"+met_version)
             exit(1)
+    elif line_type == 'CTC':
+        if met_version >= 6.0:
+            stat_file_line_type_columns = [
+                'TOTAL', 'FY_OY', 'FY_ON', 'FN_OY', 'FN_ON'
+            ]
     return stat_file_line_type_columns
 
 def get_clevels(data):
@@ -335,27 +341,81 @@ def get_clevels(data):
     clevels = np.linspace(cmin, cmax, 11, endpoint=True)
     return clevels
 
-def calculate_ci(logger, ci_method, modelB_values, modelA_values, total_days):
+def calculate_average(logger, average_method, stat, model_dataframe,
+                      model_stat_values):
+    """! Calculate average of dataset
+        
+             Args:
+                 logger               - logging file
+                 average_method       - string of the method to 
+                                        use to calculate the
+                                        average
+                 stat                 - string of the statistic the
+                                        average is being taken for
+                 model_dataframe      - dataframe of model .stat
+                                        columns
+                 model_stat_values    - array of statistic values
+ 
+             Returns:
+                 average_array        - array of average value(s)
+    """
+    average_array = np.empty_like(model_stat_values[:,0])
+    if average_method == 'MEAN':
+        for l in range(len(model_stat_values[:,0])):
+            average_array[l] = np.ma.mean(model_stat_values[l,:])
+    elif average_method == 'MEDIAN':
+        for l in range(len(model_stat_values[:,0])):
+            logger.info(np.ma.median(model_stat_values[l,:]))
+            average_array[l] = np.ma.median(model_stat_values[l,:])
+    elif average_method == 'AGGREGATION':
+         ndays = model_dataframe.shape[0]
+         model_dataframe_aggsum = (
+             model_dataframe.groupby('model_plot_name').agg(['sum'])
+         )
+         model_dataframe_aggsum.columns = (
+             model_dataframe_aggsum.columns.droplevel(1)
+         )
+         avg_values, avg_array, stat_plot_name = (
+             calculate_stat(logger, model_dataframe_aggsum/ndays, stat)
+         )
+         for l in range(len(avg_array[:,0])):
+             average_array[l] = avg_array[l]
+    else:
+        logger.error("Invalid entry for MEAN_METHOD, "
+                     +"use MEAN, MEDIAN, or AGGREGATION")
+        exit(1)
+    return average_array
+
+def calculate_ci(logger, ci_method, modelB_values, modelA_values, total_days,
+                 stat, average_method, randx):
     """! Calculate confidence intervals between two sets of data
  
              Args:
-                 ci_method     - string of the method to use to 
-                                 calculate the confidence intervals
-                 modelB_values - array of values
-                 modelA_values - array of values
-                 total_days    - float of total number of days 
-                                 being considered, sample size
+                 logger         - logging file
+                 ci_method      - string of the method to use to 
+                                  calculate the confidence intervals
+                 modelB_values  - array of values
+                 modelA_values  - array of values
+                 total_days     - float of total number of days 
+                                  being considered, sample size
+                 stat           - string of the statistic the
+                                  confidence intervals are being
+                                  calculated for
+                 average_method - string of the method to 
+                                  use to calculate the
+                                  average
+                 randx          - 2D array of random numbers [0,1)
 
              Returns:
-                 intvl         - float of the confidence interval
+                 intvl          - float of the confidence interval
     """
-    modelB_modelA_diff = modelB_values - modelA_values
-    ndays = total_days - np.ma.count_masked(modelB_modelA_diff)
-    modelB_modelA_diff_mean = modelB_modelA_diff.mean()
-    modelB_modelA_std = np.sqrt(
-        ((modelB_modelA_diff - modelB_modelA_diff_mean)**2).mean()
-    )
     if ci_method == 'EMC':
+        modelB_modelA_diff = modelB_values - modelA_values
+        ndays = total_days - np.ma.count_masked(modelB_modelA_diff)
+        modelB_modelA_diff_mean = modelB_modelA_diff.mean()
+        modelB_modelA_std = np.sqrt(
+            ((modelB_modelA_diff - modelB_modelA_diff_mean)**2).mean()
+        )
         if ndays >= 80:
             intvl = 1.960*modelB_modelA_std/np.sqrt(ndays-1)
         elif ndays >= 40 and ndays < 80:
@@ -364,8 +424,58 @@ def calculate_ci(logger, ci_method, modelB_values, modelA_values, total_days):
             intvl = 2.042*modelB_modelA_std/np.sqrt(ndays-1)
         elif ndays < 20:
             intvl = 2.228*modelB_modelA_std/np.sqrt(ndays-1)
+    elif ci_method == 'EMC_MONTE_CARLO':
+        ntest, ntests = 1, 10000
+        scores_rand1 = np.empty(ntests)
+        scores_rand2 = np.empty(ntests)
+        scores_diff = np.empty(ntests)
+        while ntest <= ntests:
+            rand1_data = pd.DataFrame(
+                np.nan, index=modelB_values.index,
+                columns=modelB_values.columns
+            )
+            replace_level= rand1_data.index.get_level_values(0)[0]
+            rand1_data.rename(index={replace_level: 'rand1'}, inplace=True)
+            rand2_data = pd.DataFrame(
+                np.nan, index=modelB_values.index,
+                columns=modelB_values.columns
+            )
+            replace_level= rand2_data.index.get_level_values(0)[0]
+            rand2_data.rename(index={replace_level: 'rand2'}, inplace=True)
+            nday, ndays = 1, total_days
+            while nday <= ndays:
+                if randx[ntest-1,nday-1] - 0.5 >= 0:
+                    rand1_data.iloc[nday-1,:] = modelA_values.iloc[nday-1,:]
+                    rand2_data.iloc[nday-1,:] = modelB_values.iloc[nday-1,:]
+                else:
+                    rand1_data.iloc[nday-1,:] = modelB_values.iloc[nday-1,:]
+                    rand2_data.iloc[nday-1,:] = modelA_values.iloc[nday-1,:]
+                nday+=1
+            rand1_stat_values, rand1_stat_values_array, stat_plot_name = (
+                calculate_stat(logger, rand1_data, stat)
+            )
+            rand2_stat_values, rand2_stat_values_array, stat_plot_name = (
+                calculate_stat(logger, rand2_data, stat)
+            )
+            rand1_average_array = calculate_average(logger, average_method,
+                                                    stat, rand1_data,
+                                                    rand1_stat_values_array[:,0,:])
+            scores_rand1[ntest-1] = rand1_average_array[0]
+            rand2_average_array = calculate_average(logger, average_method,
+                                                    stat, rand2_data,
+                                                    rand2_stat_values_array[:,0,:])
+            scores_rand2[ntest-1] = rand2_average_array[0]
+            scores_diff[ntest-1] = (
+                rand2_average_array[0] - rand1_average_array[0]
+            )
+            ntest+=1
+        scores_diff_mean = np.sum(scores_diff)/ntests
+        scores_diff_var = np.sum((scores_diff-scores_diff_mean)**2) 
+        scores_diff_std = np.sqrt(scores_diff_var/(ntests-1))
+        intvl = 1.96*scores_diff_std
     else:
-        logger.error("Invalid entry for CI_METHOD, use EMC")
+        logger.error("Invalid entry for MAKE_CI_METHOD, "
+                     +"use EMC, EMC_MONTE_CARLO")
         exit(1)
     return intvl
 
@@ -400,28 +510,70 @@ def get_stat_plot_name(logger, stat):
         stat_plot_name = 'Forecast Averages'
     elif stat == 'fbar_obar':
         stat_plot_name = 'Forecast and Observation Averages'
-    elif stat_ == 'speed_err':
+    elif stat == 'speed_err':
         stat_plot_name = (
             'Difference in Average FCST and OBS Wind Vector Speeds'
         )
-    elif stat_ == 'dir_err':
+    elif stat == 'dir_err':
         stat_plot_name = (
             'Difference in Average FCST and OBS Wind Vector Direction'
         )
-    elif stat_ == 'rmsve':
+    elif stat == 'rmsve':
         stat_plot_name = 'Root Mean Square Difference Vector Error'
-    elif stat_ == 'vdiff_speed':
+    elif stat == 'vdiff_speed':
         stat_plot_name = 'Difference Vector Speed'
-    elif stat_ == 'vdiff_dir':
+    elif stat == 'vdiff_dir':
         stat_plot_name = 'Difference Vector Direction'
-    elif stat_ == 'fbar_obar_speed':
+    elif stat == 'fbar_obar_speed':
         stat_plot_name = 'Average Wind Vector Speed'
-    elif stat_ == 'fbar_obar_dir':
+    elif stat == 'fbar_obar_dir':
         stat_plot_name = 'Average Wind Vector Direction'
-    elif stat_ == 'fbar_speed':
+    elif stat == 'fbar_speed':
         stat_plot_name = 'Average Forecast Wind Vector Speed'
-    elif stat_ == 'fbar_dir':
+    elif stat == 'fbar_dir':
         stat_plot_name = 'Average Forecast Wind Vector Direction'
+    elif stat == 'orate':
+        stat_plot_name = 'Observation Rate'
+    elif stat == 'baser':
+        stat_plot_name = 'Base Rate'
+    elif stat == 'frate':
+        stat_plot_name = 'Forecast Rate'
+    elif stat == 'orate_frate':
+        stat_plot_name = 'Observation and Forecast Rates'
+    elif stat == 'baser_frate':
+        stat_plot_name = 'Base and Forecast Rates'
+    elif stat == 'accuracy':
+        stat_plot_name = 'Accuracy'
+    elif stat == 'fbias':
+        stat_plot_name = 'Frequency Bias'
+    elif stat == 'pod':
+        stat_plot_name = 'Probability of Detection'
+    elif stat == 'hrate':
+        stat_plot_name = 'Hit Rate'
+    elif stat == 'pofd':
+        stat_plot_name = 'Probability of False Detection'
+    elif stat == 'farate':
+        stat_plot_name = 'False Alarm Rate'
+    elif stat == 'podn':
+        stat_plot_name = 'Probability of Detection of the Non-Event'
+    elif stat == 'faratio':
+        stat_plot_name = 'False Alarm Ratio'
+    elif stat == 'csi':
+        stat_plot_name = 'Critical Success Index'
+    elif stat == 'ts':
+        stat_plot_name = 'Threat Score'
+    elif stat == 'gss':
+        stat_plot_name = 'Gilbert Skill Score'
+    elif stat == 'ets':
+        stat_plot_name = 'Equitable Threat Score'
+    elif stat == 'hk':
+        stat_plot_name = 'Hanssen-Kuipers Discriminant'
+    elif stat == 'tss':
+        stat_plot_name = 'True Skill Score'
+    elif stat == 'pss':
+        stat_plot_name = 'Peirce Skill Score'
+    elif stat == 'hss':
+        stat_plot_name = 'Heidke Skill Score'
     else:
         logger.error(stat+" is not a valid option")
         exit(1)
@@ -504,6 +656,14 @@ def calculate_stat(logger, model_data, stat):
             vdiff_dir =  model_data.loc[:]['VDIFF_DIR']
             speed_err = model_data.loc[:]['SPEED_ERR']
             dir_err = model_data.loc[:]['DIR_ERR']
+        elif all(elem in model_data_columns for elem in
+                 ['FY_OY', 'FN_ON']):
+            line_type = 'CTC'
+            total = model_data.loc[:]['TOTAL']
+            fy_oy = model_data.loc[:]['FY_OY']
+            fy_on = model_data.loc[:]['FY_ON']
+            fn_oy = model_data.loc[:]['FN_OY']
+            fn_on = model_data.loc[:]['FN_ON']            
         else:
             logger.error("Could not recognize line type from columns")
             exit(1)
@@ -515,6 +675,8 @@ def calculate_stat(logger, model_data, stat):
             stat_values = np.sqrt(uvffbar) - np.sqrt(uvoobar)
         elif line_type == 'VCNT':
             stat_values = fbar - obar
+        elif line_type == 'CTC':
+            stat_values = (fy_oy + fy_on)/(fy_oy + fn_oy)
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
@@ -699,12 +861,148 @@ def calculate_stat(logger, model_data, stat):
         else:
             logger.error(stat+" cannot be computed from line type "+line_type)
             exit(1)
+    elif stat == 'orate' or stat == 'baser':
+        if stat == 'orate':
+            stat_plot_name = 'Observation Rate'
+        elif stat == 'baser':
+            stat_plot_name = 'Base Rate'
+        if line_type == 'CTC':
+            stat_values = (fy_oy + fn_oy)/total
+        else:
+            logger.error(stat+" cannot be computed from line type "+line_type)
+            exit(1)
+    elif stat == 'frate':
+        stat_plot_name = 'Forecast Rate'
+        if line_type == 'CTC':
+            stat_values = (fy_oy + fy_on)/total
+        else:
+            logger.error(stat+" cannot be computed from line type "+line_type)
+            exit(1)
+    elif stat == 'orate_frate' or stat == 'baser_frate':
+        if stat == 'orate_frate':
+            stat_plot_name = 'Observation and Forecast Rates'
+        elif stat == 'baser_frate':
+            stat_plot_name = 'Base and Forecast Rates'
+        if line_type == 'CTC':
+            stat_values_fbar = (fy_oy + fy_on)/total
+            stat_values_obar = (fy_oy + fn_oy)/total
+            stat_values = pd.concat([stat_values_fbar, stat_values_obar],
+                                    axis=1)
+        else:
+            logger.error(stat+" cannot be computed from line type "+line_type)
+            exit(1)
+    elif stat == 'accuracy':
+        stat_plot_name = 'Accuracy'
+        if line_type == 'CTC':
+            stat_values = (fy_oy + fn_on)/total
+        else:
+            logger.error(stat+" cannot be computed from line type "+line_type)
+            exit(1)
+    elif stat == 'fbias':
+        stat_plot_name = 'Frequency Bias'
+        if line_type == 'CTC':
+            stat_values = (fy_oy + fy_on)/(fy_oy + fn_oy)
+        else:
+            logger.error(stat+" cannot be computed from line type "+line_type)
+            exit(1)
+    elif stat == 'pod' or stat == 'hrate':
+        if stat == 'pod':
+            stat_plot_name = 'Probability of Detection'
+        elif stat == 'hrate':
+            stat_plot_name = 'Hit Rate'
+        if line_type == 'CTC':
+            stat_values = fy_oy/(fy_oy + fn_oy)
+        else:
+            logger.error(stat+" cannot be computed from line type "+line_type)
+            exit(1)
+    elif stat == 'pofd' or stat == 'farate':
+        if stat == 'pofd':
+            stat_plot_name = 'Probability of False Detection'
+        elif stat == 'farate':
+            stat_plot_name = 'False Alarm Rate'
+        if line_type == 'CTC':
+            stat_values = fy_on/(fy_on + fn_on)
+        else:
+            logger.error(stat+" cannot be computed from line type "+line_type)
+            exit(1)
+    elif stat == 'podn':
+        stat_plot_name = 'Probability of Detection of the Non-Event'
+        if line_type == 'CTC':
+            stat_values = fn_on/(fy_on + fn_on)
+        else:
+            logger.error(stat+" cannot be computed from line type "+line_type)
+            exit(1)
+    elif stat == 'faratio':
+        stat_plot_name = 'False Alarm Ratio'
+        if line_type == 'CTC':
+            stat_values = fy_on/(fy_on + fy_oy)
+        else:
+            logger.error(stat+" cannot be computed from line type "+line_type)
+            exit(1)
+    elif stat == 'csi' or stat == 'ts':
+        if stat == 'csi':
+            stat_plot_name = 'Critical Success Index'
+        elif stat == 'ts':
+            stat_plot_name = 'Threat Score'
+        if line_type == 'CTC':
+            stat_values = fy_oy/(fy_oy + fy_on + fn_oy)
+        else:
+            logger.error(stat+" cannot be computed from line type "+line_type)
+            exit(1)
+    elif stat == 'gss' or stat == 'ets':
+        if stat == 'gss':
+            stat_plot_name = 'Gilbert Skill Score'
+        elif stat == 'ets':
+            stat_plot_name = 'Equitable Threat Score'
+        if line_type == 'CTC':
+            C = ((fy_oy + fy_on)*(fy_oy + fn_oy))/total
+            stat_values = (fy_oy - C)/(fy_oy + fy_on+ fn_oy - C)
+        else:
+            logger.error(stat+" cannot be computed from line type "+line_type)
+            exit(1)
+    elif stat == 'hk' or stat == 'tss' or stat == 'pss':
+        if stat == 'hk':
+            stat_plot_name = 'Hanssen-Kuipers Discriminant'
+        elif stat == 'tss':
+            stat_plot_name = 'True Skill Score'
+        elif stat == 'pss':
+            stat_plot_name = 'Peirce Skill Score'
+        if line_type == 'CTC':
+            stat_values = (
+                ((fy_oy*fn_on)-(fy_on*fn_oy))/((fy_oy+fn_oy)*(fy_on+fn_on))
+            )
+        else:
+            logger.error(stat+" cannot be computed from line type "+line_type)
+            exit(1)
+    elif stat == 'hss':
+        stat_plot_name = 'Heidke Skill Score'
+        if line_type == 'CTC':
+            Ca = (fy_oy+fy_on)*(fy_oy+fn_oy)
+            Cb = (fn_oy+fn_on)*(fy_on+fn_on)
+            C = (Ca + Cb)/total
+            stat_values = (fy_oy + fn_on - C)/(total - C)
+        else:
+            logger.error(stat+" cannot be computed from line type "+line_type)
+            exit(1)
     else:
         logger.error(stat+" is not a valid option")
         exit(1)
-    nindex = stat_values.index.nlevels 
-    if stat == 'fbar_obar':
-        if nindex == 2:
+    nindex = stat_values.index.nlevels
+    if stat == 'fbar_obar' or stat == 'orate_frate' or stat == 'baser_frate':
+        if nindex == 1:
+            index0 = len(stat_values_fbar.index.get_level_values(0).unique())
+            stat_values_array_fbar = (
+                np.ma.masked_invalid(
+                    stat_values_fbar.values.reshape(index0)
+                )
+            )
+            index0 = len(stat_values_obar.index.get_level_values(0).unique())
+            stat_values_array_obar = (
+                np.ma.masked_invalid(
+                    stat_values_obar.values.reshape(index0)
+                )
+            )
+        elif nindex == 2:
             index0 = len(stat_values_fbar.index.get_level_values(0).unique())
             index1 = len(stat_values_fbar.index.get_level_values(1).unique())
             stat_values_array_fbar = (
@@ -739,7 +1037,14 @@ def calculate_stat(logger, model_data, stat):
         stat_values_array = np.ma.array([stat_values_array_fbar, 
                                          stat_values_array_obar])
     else:
-        if nindex == 2:
+        if nindex == 1:
+            index0 = len(stat_values.index.get_level_values(0).unique())
+            stat_values_array = (
+                np.ma.masked_invalid(
+                    stat_values.values.reshape(1,index0)
+                )
+            )
+        elif nindex == 2:
             index0 = len(stat_values.index.get_level_values(0).unique())
             index1 = len(stat_values.index.get_level_values(1).unique())
             stat_values_array = (

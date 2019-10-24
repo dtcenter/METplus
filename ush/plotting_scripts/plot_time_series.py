@@ -63,6 +63,7 @@ stats_list = os.environ['STATS'].split(', ')
 model_list = os.environ['MODEL'].split(', ')
 model_obtype_list = os.environ['MODEL_OBTYPE'].split(', ')
 model_reference_name_list = os.environ['MODEL_REFERENCE_NAME'].split(', ')
+average_method = os.environ['AVERAGE_METHOD']
 ci_method = os.environ['CI_METHOD']
 verif_grid = os.environ['VERIF_GRID']
 event_equalization = os.environ['EVENT_EQUALIZATION']
@@ -205,6 +206,20 @@ if alpha != '':
 # MET .stat file formatting
 stat_file_base_columns = plot_util.get_stat_file_base_columns(met_version)
 nbase_columns = len(stat_file_base_columns)
+# Significance testing info
+# need to set up random number array [nmodels, ntests, ndays]
+# for EMC Monte Carlo testing. Each model has its own 
+# "series" of random numbers used at all forecast hours
+# and thresholds.
+mc_dates, mc_expected_stat_file_dates = plot_util.get_date_arrays(
+    date_type, date_beg, date_end,
+    fcst_valid_hour, fcst_init_hour,
+    obs_valid_hour, obs_init_hour,
+    '000000'
+)
+ndays = len(mc_expected_stat_file_dates)
+ntests = 10000
+randx = np.random.rand(nmodels,ntests,ndays)
 
 # Start looping to make plots
 for plot_info in plot_info_list:
@@ -286,9 +301,9 @@ for plot_info in plot_info_list:
             check_time_plot_title+': '+str(int(hr_diff)).zfill(2)
             +str(int(min_diff)).zfill(2)
         )
-    logger.info("Working on forecast lead "+fcst_lead
-                +" and forecast variable "+fcst_var_name+" "+fcst_var_level
-                +" "+fcst_var_thresh)
+    logger.info("Working on forecast lead "+fcst_lead+" "
+                +"and forecast variable "+fcst_var_name+" "+fcst_var_level+" "
+                +fcst_var_thresh)
     # Set up base name for file naming convention for MET .stat files,
     # and output data and images
     base_name = date_type.lower()+date_beg+'to'+date_end
@@ -382,16 +397,16 @@ for plot_info in plot_info_list:
         if os.path.exists(model_stat_file):
             nrow = sum(1 for line in open(model_stat_file))
             if nrow == 0:
-                logger.warning("Model "+str(model_num)+" "+model_name
-                               +" with plot name "+model_plot_name
-                               +" file: "+model_stat_file+" empty")
+                logger.warning("Model "+str(model_num)+" "+model_name+" "
+                               +"with plot name "+model_plot_name+" "
+                               +"file: "+model_stat_file+" empty")
                 model_now_data = pd.DataFrame(np.nan,
                                               index=model_data_now_index,
                                               columns=[ 'TOTAL' ])
             else:
-                logger.debug("Model "+str(model_num)+" "+model_name
-                             +" with plot name "+model_plot_name
-                             +" file: "+model_stat_file+" exists")
+                logger.debug("Model "+str(model_num)+" "+model_name+" "
+                             +"with plot name "+model_plot_name+" "
+                             +"file: "+model_stat_file+" exists")
                 model_now_stat_file_data = pd.read_csv(
                     model_stat_file, sep=" ", skiprows=1,
                     skipinitialspace=True, header=None
@@ -453,9 +468,9 @@ for plot_info in plot_info_list:
                                 model_now_stat_file_data_indexed.loc[:][col]
                             )
         else:
-            logger.warning("Model "+str(model_num)+" "+model_name
-                           +" with plot name "+model_plot_name
-                           +" file: "+model_stat_file+" does not exist")
+            logger.warning("Model "+str(model_num)+" "+model_name+" "
+                           +"with plot name "+model_plot_name+" "
+                           +"file: "+model_stat_file+" does not exist")
             model_now_data = pd.DataFrame(np.nan,
                                           index=model_data_now_index,
                                           columns=[ 'TOTAL' ])
@@ -496,20 +511,24 @@ for plot_info in plot_info_list:
             model_plot_name = model_info[1]
             model_obtype = model_info[2]
             model_stat_values_array = stat_values_array[:,model_idx,:]
-            # Write model forecast lead mean to file, using
+            # Write model forecast lead average to file, using
             # model's .stat file name to create similar naming
-            lead_mean_filename = (
+            lead_avg_filename = (
                 stat+'_'
                 +model_plot_name+'_'+model_obtype+'_'
                 +base_name
                 +'.txt'
-            ).replace('fcst_lead'+fcst_lead, 'fcst_lead_means')
-            lead_mean_file = os.path.join(output_base_dir, 'data',
-                                          lead_mean_filename)
-            logger.debug("Writing model "+str(model_num)+" "+model_name
-                         +" with name on plot "+model_plot_name+" lead "
-                         +fcst_lead+" mean to file: "+lead_mean_file)
-            with open(lead_mean_file, 'a') as file2write:
+            ).replace('fcst_lead'+fcst_lead, 'fcst_lead_avgs')
+            lead_avg_file = os.path.join(output_base_dir, 'data',
+                                          lead_avg_filename)
+            logger.debug("Writing model "+str(model_num)+" "+model_name+" "
+                         +"with name on plot "+model_plot_name+" lead "
+                         +fcst_lead+" average to file: "+lead_avg_file)
+            model_stat_average_array = plot_util.calculate_average(
+                logger, average_method, stat, model_data.loc[[model_plot_name]],
+                model_stat_values_array
+            )
+            with open(lead_avg_file, 'a') as file2write:
                 file2write.write(fcst_lead)
                 if fcst_var_units_plot_title != '':
                     file2write.write(' '+fcst_var_units_plot_title)
@@ -519,35 +538,41 @@ for plot_info in plot_info_list:
                     file2write.write(' '+obs_var_units_plot_title)
                 else:
                     file2write.write(' [NA]')
-                for l in range(len(model_stat_values_array[:,0])):
+                for l in range(len(model_stat_average_array)):
                     file2write.write(
-                        ' '+str(model_stat_values_array[l,:].mean())
+                        ' '+str(model_stat_average_array[l])
                     )
                 file2write.write('\n') 
             # Write confidence intervals to file, if requested,
-            # using similar naming to model forecast lead mean
+            # using similar naming to model forecast lead average
             if ci_method != 'NONE':
                 CI_filename = (
                     stat+'_'
                     +model_plot_name+'_'+model_obtype+'_'
                     +base_name
                     +'_CI_'+ci_method+'.txt'
-                ).replace('fcst_lead'+fcst_lead, 'fcst_lead_means')
+                ).replace('fcst_lead'+fcst_lead, 'fcst_lead_avgs')
                 CI_file = os.path.join(output_base_dir, 'data',
                                        CI_filename)
-                if stat == 'fbar_obar':
+                if (stat == 'fbar_obar' or stat == 'orate_frate'
+                        or stat == 'baser_frate'):
                     logger.debug("Writing "+ci_method+" confidence intervals "
                                  +"for difference between model "
                                  +str(model_num)+" "+model_name+" with name "
                                  +"on plot "+model_plot_name+" and the "
                                  +"observations at lead "+fcst_lead+" to "
                                  +"file: "+CI_file)
-                    stat_CI = (
-                        plot_util.calculate_ci(logger, ci_method,
-                                               model_stat_values_array[0,:],
-                                               model_stat_values_array[1,:],
-                                               total_dates)
-                    )
+                    if ci_method == 'EMC_MONTE_CARLO':
+                        logger.warning("Monte Carlo resampling not "
+                                       +"done for fbar_obar, orate_frate, "
+                                       +"or baser_frate.")
+                        stat_CI = '--'
+                    else:
+                        stat_CI = plot_util.calculate_ci(
+                            logger, ci_method, model_stat_values_array[0,:],
+                            model_stat_values_array[1,:],total_dates,
+                            stat, average_method, randx[model_idx,:,:]
+                        )
                     with open(CI_file, 'a') as file2write:
                         file2write.write(fcst_lead+' '+str(stat_CI)+'\n')
                 else:
@@ -566,13 +591,19 @@ for plot_info in plot_info_list:
                                      +model1_name+" with name on plot "
                                      +model1_plot_name+" at lead "
                                      +fcst_lead+" to file: "+CI_file)
-                        stat_CI = (
-                            plot_util.calculate_ci(logger, ci_method,
-                                                   model1_stat_values_array,
-                                                   model_stat_values_array \
-                                                   [0,:],
-                                                   total_dates)
-                        )
+                        if ci_method == 'EMC_MONTE_CARLO':
+                            stat_CI = plot_util.calculate_ci(
+                                logger, ci_method,
+                                model_data.loc[[model_plot_name]],
+                                model_data.loc[[model1_plot_name]], total_dates,
+                                stat, average_method, randx[model_idx,:,:]
+                            )    
+                        else:
+                            stat_CI = plot_util.calculate_ci(
+                                logger, ci_method, model_stat_values_array,
+                                model1_stat_values_array, total_dates,
+                                stat, average_method, randx[model_idx,:,:]
+                            )
                         with open(CI_file, 'a') as file2write:
                             file2write.write(fcst_lead+' '+str(stat_CI)+'\n')
             logger.debug("Plotting model "+str(model_num)+" "+model_name+" "
@@ -590,7 +621,8 @@ for plot_info in plot_info_list:
                 ax.xaxis.set_minor_locator(md.DayLocator())
                 ax.tick_params(axis='y', pad=15)
                 ax.set_ylabel(stat_plot_name, labelpad=30)
-                if stat == 'fbar_obar':
+                if (stat == 'fbar_obar' or stat == 'orate_frate'
+                        or stat == 'baser_frate'):
                     obs_stat_values_array = model_stat_values_array[1,:]
                     obs_count = (
                         len(obs_stat_values_array) 
@@ -603,16 +635,16 @@ for plot_info in plot_info_list:
                     obs_stat_values_mc = np.ma.compressed(
                         obs_stat_values_array
                     )
-                    if np.ma.is_masked(obs_stat_values_array.mean()):
+                    if np.ma.is_masked(model_stat_average_array[1]):
                         obs_legend_label = (
                             'obs '
-                            +str(obs_stat_values_array.mean())+' '
+                            +str(model_stat_average_array[1])+' '
                             +str(obs_count)
                         )
                     else:
                         obs_legend_label = (
                             'obs '
-                            +str(round(obs_stat_values_array.mean(),3))+' '
+                            +str(round(model_stat_average_array[1],3))+' '
                             +str(obs_count)
                         )
                     ax.plot_date(plot_time_dates_mc,
@@ -633,16 +665,16 @@ for plot_info in plot_info_list:
             model_stat_values_mc = np.ma.compressed(
                 model_stat_values_array[0,:]
             )
-            if np.ma.is_masked(model_stat_values_array[0,:].mean()):
+            if np.ma.is_masked(model_stat_average_array[0]):
                 model_legend_label = (
                     model_plot_name+' '
-                    +str(model_stat_values_array[0,:].mean())+' '
+                    +str(model_stat_average_array[0])+' '
                     +str(count)
                 )
             else:
                 model_legend_label = (
                     model_plot_name+' '
-                    +str(round(model_stat_values_array[0,:].mean(),3))+' '
+                    +str(round(model_stat_average_array[0],3))+' '
                     +str(count)
                 )
             ax.plot_date(plot_time_dates_mc, model_stat_values_mc, 

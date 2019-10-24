@@ -1,12 +1,11 @@
 '''
-Name: plot_date_by_level.py
+Name: plot_threshold_by_lead.py
 Contact(s): Mallory Row
-Abstract: Reads filtered files from stat_analysis_wrapper
-          run_all_times to make date-pressure plots
-History Log: Third version
+Abstract: Reads average from plot_time_series.py to make treshold-lead plots
+History Log: First version
 Usage: Called by make_plots_wrapper.py 
 Parameters: None
-Input Files: MET .stat files
+Input Files: Text files
 Output Files: .png images
 Condition codes: 0 for success, 1 for failure
 '''
@@ -43,15 +42,15 @@ obs_valid_hour_list = os.environ['OBS_VALID_HOUR'].split(', ')
 obs_valid_hour = os.environ['OBS_VALID_HOUR']
 obs_init_hour_list = os.environ['OBS_INIT_HOUR'].split(', ')
 obs_init_hour = os.environ['OBS_INIT_HOUR']
-fcst_lead_list = os.environ['FCST_LEAD'].split(', ')
+fcst_lead_list = [os.environ['FCST_LEAD'].split(', ')]
 fcst_var_name = os.environ['FCST_VAR']
 fcst_var_units = os.environ['FCST_UNITS']
-fcst_var_level_list = [os.environ['FCST_LEVEL'].split(', ')]
-fcst_var_thresh_list = os.environ['FCST_THRESH'].split(', ')
+fcst_var_level_list = os.environ['FCST_LEVEL'].split(', ')
+fcst_var_thresh_list = [os.environ['FCST_THRESH'].split(', ')]
 obs_var_name = os.environ['OBS_VAR']
 obs_var_units = os.environ['OBS_UNITS']
-obs_var_level_list = [os.environ['OBS_LEVEL'].split(', ')]
-obs_var_thresh_list = os.environ['OBS_THRESH'].split(', ')
+obs_var_level_list = os.environ['OBS_LEVEL'].split(', ')
+obs_var_thresh_list = [os.environ['OBS_THRESH'].split(', ')]
 interp_mthd = os.environ['INTERP_MTHD']
 interp_pnts = os.environ['INTERP_PNTS']
 vx_mask = os.environ['VX_MASK']
@@ -187,6 +186,7 @@ for vi in ['valid_hour', 'init_hour']:
                 ', Obs '+time_label+': '+obs_beg_hr[0:4]+'-'
                 +obs_end_hr[0:4]+'Z'
             )
+date_time_plot_title = date_plot_title+time_plot_title
 # Common plotting information and build title for plot
 if 'WV1' not in interp_mthd or interp_mthd != '':
     extra_plot_title = verif_grid+'-'+vx_mask
@@ -202,37 +202,72 @@ if cov_thresh != '':
     extra_plot_title+=', Cov. Thresh:'+cov_thresh
 if alpha != '':
     extra_plot_title+=', Alpha: '+alpha
-# MET .stat file formatting
-stat_file_base_columns = plot_util.get_stat_file_base_columns(met_version)
-nbase_columns = len(stat_file_base_columns)
 
 # Start looping to make plots
 for plot_info in plot_info_list:
-    fcst_lead = plot_info[0]
-    fcst_var_levels = plot_info[1]
-    obs_var_levels = obs_var_level_list[
-        fcst_var_level_list.index(fcst_var_levels)
+    fcst_leads = plot_info[0]
+    fcst_lead_timedeltas = np.full_like(fcst_leads, np.nan, dtype=float)
+    for fcst_lead in fcst_leads:
+        fcst_lead_idx = fcst_leads.index(fcst_lead)
+        fcst_lead_timedelta = datetime.timedelta(
+            hours=int(fcst_lead[:-4]),
+            minutes=int(fcst_lead[-4:-2]),
+            seconds=int(fcst_lead[-2:])
+        ).total_seconds()
+        fcst_lead_timedeltas[fcst_lead_idx] = float(fcst_lead_timedelta)
+    fcst_lead_timedeltas_str = []
+    for tdelta in fcst_lead_timedeltas:
+        h = int(tdelta/3600)
+        m = int((tdelta-(h*3600))/60)
+        s = int(tdelta-(h*3600)-(m*60))
+        if h < 100:
+            tdelta_str = f"{h:02d}"
+        else:
+            tdelta_str = f"{h:03d}"
+        if m != 0:
+            tdelta_str+=f":{m:02d}"
+        if s != 0:
+            tdelta_str+=f":{s:02d}"
+        fcst_lead_timedeltas_str.append(tdelta_str)
+    fcst_var_level = plot_info[1]
+    obs_var_level = obs_var_level_list[
+        fcst_var_level_list.index(fcst_var_level)
     ]
-    fcst_var_thresh = plot_info[2]
-    obs_var_thresh = obs_var_thresh_list[
-        fcst_var_thresh_list.index(fcst_var_thresh)
+    fcst_var_threshs = plot_info[2]
+    obs_var_threshs = obs_var_thresh_list[
+        fcst_var_thresh_list.index(fcst_var_threshs)
     ]
-    fcst_var_thresh_symbol, fcst_var_thresh_letter = plot_util.format_thresh(
-        fcst_var_thresh
+    fcst_var_threshs_format = np.full_like(
+        fcst_var_threshs, np.nan, dtype=object
     )
-    obs_var_thresh_symbol, obs_var_thresh_letter = plot_util.format_thresh(
-        obs_var_thresh
+    fcst_var_threshs_float = np.full_like(
+        fcst_var_threshs, np.nan, dtype=float
     )
+    for fcst_var_thresh in fcst_var_threshs:
+        fcst_var_thresh_idx = fcst_var_threshs.index(fcst_var_thresh)
+        fcst_var_thresh_symbol, fcst_var_thresh_letter = (
+            plot_util.format_thresh(fcst_var_thresh)
+        )
+        fcst_var_threshs_format[fcst_var_thresh_idx] = fcst_var_thresh_letter
+        fcst_var_threshs_float[fcst_var_thresh_idx] = (
+            fcst_var_thresh_letter[2:]
+        )
+    xmesh, ymesh = np.meshgrid(fcst_var_threshs_float, fcst_lead_timedeltas)
+    obs_var_threshs_format = np.full_like(
+        obs_var_threshs, np.nan, dtype=object
+    )
+    for obs_var_thresh in obs_var_threshs:
+        obs_var_thresh_idx = obs_var_threshs.index(obs_var_thresh)
+        obs_var_thresh_symbol, obs_var_thresh_letter = (
+            plot_util.format_thresh(obs_var_thresh)
+        )
+        obs_var_threshs_format[obs_var_thresh_idx] = obs_var_thresh_letter
     # Build plot title for variable info
-    fcst_var_plot_title = 'Fcst: '+fcst_var_name
-    obs_var_plot_title = 'Obs: '+obs_var_name
+    fcst_var_plot_title = 'Fcst: '+fcst_var_name+' '+fcst_var_level
+    obs_var_plot_title = 'Obs: '+obs_var_name+' '+obs_var_level
     if 'WV1' in interp_mthd:
         fcst_var_plot_title+=' '+interp_mthd
         obs_var_plot_title+=' '+interp_mthd 
-    if fcst_var_thresh != '':
-        fcst_var_plot_title+=' '+fcst_var_thresh
-    if obs_var_thresh != '':
-        obs_var_plot_title+=' '+obs_var_thresh
     if fcst_var_units == '':
         fcst_var_units_list = []
     else:
@@ -241,55 +276,7 @@ for plot_info in plot_info_list:
         obs_var_units_list = []
     else:
         obs_var_units_list = obs_var_units.split(', ')
-    # Build plot title for forecast lead
-    fcst_lead_plot_title = 'Fcst Lead: '+fcst_lead[:-4]+'hr'
-    if fcst_lead[-4:-2] != '00':
-        fcst_lead_plot_title+=fcst_lead[-4:-2]+'min'
-    if fcst_lead[-2:] != '00':
-        fcst_lead_plot_title+=fcst_lead[-2:]+'sec'
-    # Clean up time information for plot title
-    # if valid/init is a single hour, then init/valid
-    # is also a single hour
-    date_time_plot_title = date_plot_title+time_plot_title
-    date_type_beg_hour = valid_init_dict[date_type.lower()+'_hour_beg']
-    date_type_end_hour = valid_init_dict[date_type.lower()+'_hour_end']
-    if (date_type_beg_hour != '' and date_type_end_hour != ''
-            and date_type_beg_hour == date_type_end_hour):
-        fcst_lead_timedelta = datetime.timedelta(
-            hours=int(fcst_lead[:-4]),
-            minutes=int(fcst_lead[-4:-2]),
-            seconds=int(fcst_lead[-2:])
-        )
-        date_type_timedelta = datetime.timedelta(
-            hours=int(date_type_beg_hour[0:2]),
-            minutes=int(date_type_beg_hour[2:4]),
-            seconds=int(date_type_beg_hour[4:])
-        )
-        if date_type == 'VALID':
-             check_time_plot_title = 'Init'
-             time_diff = (
-                 date_type_timedelta - fcst_lead_timedelta
-             ).total_seconds()
-        elif date_type == 'INIT':
-             check_time_plot_title = 'Valid'
-             time_diff = (
-                 date_type_timedelta - fcst_lead_timedelta
-             ).total_seconds()
-        day_diff = time_diff//86400
-        hr_diff = (time_diff - (day_diff*86400))//3600
-        min_diff = (time_diff%3600) // 60
-        sec_diff = (time_diff%3600)%60
-        time_title_replace = re.search(check_time_plot_title+': (.*)Z',
-                                       date_time_plot_title)
-        date_time_plot_title = date_time_plot_title.replace(
-            check_time_plot_title+': '+time_title_replace.group(1),
-            check_time_plot_title+': '+str(int(hr_diff)).zfill(2)
-            +str(int(min_diff)).zfill(2)
-        )
-    logger.info("Working on forecast lead "+fcst_lead+" "
-                +"and forecast variable "+fcst_var_name+" "
-                +fcst_var_thresh)
-    # Set up base name for file naming convention for MET .stat files,
+    # Set up base name for file naming convention for lead averages files,
     # and output data and images
     base_name = date_type.lower()+date_beg+'to'+date_end
     if (valid_init_dict['valid_hour_beg'] != ''
@@ -319,11 +306,11 @@ for plot_info in plot_info_list:
             +'to'+valid_init_dict['obs_init_hour_end']+'Z'
         )
     base_name+=(
-        '_fcst_lead'+fcst_lead
-        +'_fcst'+fcst_var_name+'FCSTLEVELHOLDER'
-        +fcst_var_thresh_letter.replace(',', '_')+interp_mthd
-        +'_obs'+obs_var_name+'OBSLEVELHOLDER'
-        +obs_var_thresh_letter.replace(',', '_')+interp_mthd
+        '_fcst_lead_avgs'
+        +'_fcst'+fcst_var_name+fcst_var_level
+        +'FCSTTHRESHHOLDER'+interp_mthd
+        +'_obs'+obs_var_name+obs_var_level
+        +'OBSTHRESHHOLDER'+interp_mthd
         +'_vxmask'+vx_mask
     )
     if desc != '':
@@ -339,278 +326,175 @@ for plot_info in plot_info_list:
         base_name+='_cov_thresh'+cov_thresh_letter.replace(',', '_')
     if alpha != '':
         base_name+='_alpha'+alpha
-    # Set up expected date in MET .stat file and date plot information
-    plot_time_dates, expected_stat_file_dates = plot_util.get_date_arrays(
-        date_type, date_beg, date_end,
-        fcst_valid_hour, fcst_init_hour,
-        obs_valid_hour, obs_init_hour,
-        fcst_lead
-    )
-    total_dates = len(plot_time_dates)
-    if len(plot_time_dates) == 0:
-        logger.error("Date array constructed information from METplus "
-                     +"conf file has length of 0. Not enough information "
-                     +"was provided to build date information. Please check "
-                     +"provided VALID/INIT_BEG/END and "
-                     +"OBS/FCST_INIT/VALID_HOUR_LIST")
-        exit(1)
-    elif len(plot_time_dates) <= 3:
-        date_tick_intvl = 1
-    elif len(plot_time_dates) > 3 and len(plot_time_dates) <= 10:
-        date_tick_intvl = 2
-    elif len(plot_time_dates) > 10 and len(plot_time_dates) < 31:
-        date_tick_intvl = 5 
-    else:
-        date_tick_intvl = 10
-    # Build date by forecst level grid for plotting
-    fcst_var_levels_int = np.empty(len(fcst_var_levels), dtype=int)
-    for vl in range(len(fcst_var_levels)):
-        fcst_var_levels_int[vl] = fcst_var_levels[vl][1:]
-    xmesh, ymesh = np.meshgrid(plot_time_dates, fcst_var_levels_int)
-    # Reading in model .stat files from stat_analysis
-    logger.info("Reading in model data")
-    for model_info in model_info_list:
-        model_num = model_info_list.index(model_info) + 1
-        model_name = model_info[0]
-        model_plot_name = model_info[1]
-        model_obtype = model_info[2]
-        for vl in range(len(fcst_var_levels)):
-            fcst_var_level = fcst_var_levels[vl]
-            obs_var_level = obs_var_levels[vl]
-            model_level_now_data_index = pd.MultiIndex.from_product(
-                [
-                    [model_plot_name], [fcst_var_level],
-                    expected_stat_file_dates
-                ],
-                names=['model_plot_name', 'levels', 'dates']
-            )
-            model_stat_filename = (
-                model_plot_name+'_'+model_obtype+'_'
-                +base_name.replace('FCSTLEVELHOLDER', fcst_var_level) \
-                .replace('OBSLEVELHOLDER', obs_var_level)
-                +'_dump_row.stat'
-            )
-            model_stat_file = os.path.join(input_base_dir,
-                                           model_stat_filename)
-            if os.path.exists(model_stat_file):
-                nrow = sum(1 for line in open(model_stat_file))
-                if nrow == 0:
-                    logger.warning("Model "+str(model_num)+" "+model_name+" "
-                                   +"with plot name "+model_plot_name+" "
-                                   +"file: "+model_stat_file+" empty")
-                    model_level_now_data = (
-                        pd.DataFrame(np.nan,
-                                     index=model_level_now_data_index,
-                                     columns=[ 'TOTAL' ])
-                    )
-                else:
-                    logger.debug("Model "+str(model_num)+" "+model_name+" "
-                                 +"with plot name "+model_plot_name+" "
-                                 +"file: "+model_stat_file+" exists")
-                    model_level_now_stat_file_data = pd.read_csv(
-                            model_stat_file, sep=" ", skiprows=1,
-                            skipinitialspace=True, header=None
-                    )
-                    model_level_now_stat_file_data.rename(
-                        columns=dict(zip(
-                            model_level_now_stat_file_data \
-                            .columns[:nbase_columns],
-                            stat_file_base_columns
-                        )), inplace=True
-                    )
-                    line_type = model_level_now_stat_file_data['LINE_TYPE'][0]
-                    stat_file_line_type_columns = (
-                        plot_util.get_stat_file_line_type_columns(logger,
-                                                                  met_version,
-                                                                  line_type)
-                    )
-                    model_level_now_stat_file_data.rename(
-                        columns=dict(zip(
-                            model_level_now_stat_file_data \
-                            .columns[nbase_columns:],
-                            stat_file_line_type_columns
-                        )), inplace=True
-                    )
-                    model_level_now_stat_file_data_fcstvaliddates = (
-                        model_level_now_stat_file_data.loc[:] \
-                        ['FCST_VALID_BEG'].values
-                    )
-                    model_level_now_data = (
-                        pd.DataFrame(np.nan, index=model_level_now_data_index,
-                                     columns=stat_file_line_type_columns)
-                    )
-                    model_level_now_stat_file_data.fillna(
-                        {'FCST_UNITS':'NA', 'OBS_UNITS':'NA', 'VX_MASK':'NA'},
-                        inplace=True
-                    )
-                    if float(met_version) >= 8.1:
-                        model_now_fcst_units = (
-                            model_level_now_stat_file_data \
-                            .loc[0]['FCST_UNITS']
-                        )
-                        model_now_obs_units = (
-                            model_level_now_stat_file_data \
-                            .loc[0]['OBS_UNITS']
-                        )
-                        if model_now_fcst_units != 'NA':
-                            fcst_var_units_list.append(model_now_fcst_units)
-                        if model_now_obs_units != 'NA':
-                            obs_var_units_list.append(model_now_obs_units)
-                    for expected_date in expected_stat_file_dates:
-                        if expected_date in \
-                                model_level_now_stat_file_data_fcstvaliddates:
-                            matching_date_idx = (
-                                model_level_now_stat_file_data_fcstvaliddates \
-                                .tolist().index(expected_date)
-                            )
-                            model_level_now_stat_file_data_indexed = (
-                                model_level_now_stat_file_data \
-                                .loc[matching_date_idx][:]
-                            )
-                            for col in stat_file_line_type_columns:
-                                model_level_now_data.loc[
-                                    (model_plot_name,
-                                     fcst_var_level,
-                                     expected_date)
-                                ][col] = (
-                                    model_level_now_stat_file_data_indexed \
-                                    .loc[:][col]
-                                )
-            else:
-                logger.warning("Model "+str(model_num)+" "+model_name+" "
-                               +"with plot name "+model_plot_name+" "
-                               +"file: "+model_stat_file+" does not exist")
-                model_level_now_data = (
-                    pd.DataFrame(np.nan,
-                    index=model_level_now_data_index,
-                    columns=[ 'TOTAL' ])
-                )
-            if vl > 0:
-                model_now_data = pd.concat(
-                    [model_now_data, model_level_now_data]
-                )
-            else:
-                model_now_data = model_level_now_data
-        if model_num > 1:
-            model_data = pd.concat([model_data, model_now_data])
-        else:
-            model_data = model_now_data
-    if fcst_var_units_list != []:
-        fcst_var_units_plot_title = (
-            '['+', '.join(list(set(fcst_var_units_list)))+']'
-        )
-    else:
-        fcst_var_units_plot_title = ''
-    if obs_var_units_list != []:
-        obs_var_units_plot_title = (
-            '['+', '.join(list(set(obs_var_units_list)))+']'
-        )
-    else:
-        obs_var_units_plot_title = ''
-    # Calculate statistics and plots
-    logger.info("Calculating and plotting statistics")
     for stat in stats_list:
         logger.debug("Working on "+stat)
-        stat_values, stat_values_array, stat_plot_name = (
-            plot_util.calculate_stat(logger, model_data, stat)
-        )
-        if event_equalization == "True":
-            logger.debug("Doing event equalization")
-            for l in range(len(stat_values_array[:,0,0])):
-                for vl in range(len(fcst_var_level_list)):
-                    stat_values_array[l,:,vl,:] = (
-                        np.ma.mask_cols(stat_values_array[l,:,vl,:])
-                    )
-        np.ma.set_fill_value(stat_values_array, np.nan)
+        stat_plot_name = plot_util.get_stat_plot_name(logger, stat)
         if (stat == 'fbar_obar' or stat == 'orate_frate'
                 or stat == 'baser_frate'):
-            nsubplots = nmodels + 1
+            avg_file_cols = ['LEADS', 'FCST_UNITS', 'OBS_UNITS',
+                              'VALS', 'OBS_VALS']
         else:
-            nsubplots = nmodels
-        if nsubplots == 1:
-            fig = plt.figure(figsize=(10,12))
-            gs = gridspec.GridSpec(1,1)
-        elif nsubplots == 2:
-            fig = plt.figure(figsize=(10,12))
-            gs = gridspec.GridSpec(2,1)
-            gs.update(hspace=0.35)
-        elif nsubplots > 2 and nsubplots <= 4:
-           fig = plt.figure(figsize=(20,12))
-           gs = gridspec.GridSpec(2,2)
-           gs.update(wspace=0.4, hspace=0.35)
-        elif nsubplots > 4 and nsubplots <= 6:
-            fig = plt.figure(figsize=(30,12))
-            gs = gridspec.GridSpec(2,3)
-            gs.update(wspace=0.4, hspace=0.35)
-        elif nsubplots > 6 and nsubplots <= 9:
-            fig = plt.figure(figsize=(30,18))
-            gs = gridspec.GridSpec(3,3)
-            gs.update(wspace=0.4, hspace=0.35)
-        if (stat == 'fbar_obar' or stat == 'orate_frate'
-                or stat == 'baser_frate'):
-            logger.debug("Plotting observations")
-            obs_stat_values_array = stat_values_array[1,0,:,:]
-            ax = plt.subplot(gs[0])
-            ax.grid(True)
-            ax.tick_params(axis='x', pad=15)
-            ax.set_xlabel(date_type.title()+' Date', labelpad=20)
-            ax.set_xlim([plot_time_dates[0],plot_time_dates[-1]])
-            ax.xaxis.set_major_locator(
-                md.DayLocator(interval=date_tick_intvl)
-            )
-            ax.xaxis.set_major_formatter(md.DateFormatter('%d%b%Y'))
-            ax.xaxis.set_minor_locator(md.DayLocator())
-            ax.tick_params(axis='y', pad=15)
-            ax.set_ylabel('Pressure Level (hPa)', labelpad=20)
-            ax.set_yscale('log')
-            ax.invert_yaxis()
-            ax.minorticks_off()
-            ax.set_yticks(fcst_var_levels_int)
-            ax.set_yticklabels(fcst_var_levels_int)
-            ax.set_ylim([fcst_var_levels_int[0],fcst_var_levels_int[-1]])
-            ax.set_title('obs', loc='left')
-            CF1 = ax.contourf(xmesh, ymesh, obs_stat_values_array,
-                              cmap=cmap,
-                              locator=matplotlib.ticker.MaxNLocator(
-                                  symmetric=True
-                              ), extend='both')
-            C1 = ax.contour(xmesh, ymesh, obs_stat_values_array,
-                            levels=CF1.levels,
-                            colors='k',
-                            linewidths=1.0)
-            ax.clabel(C1, CF1.levels,
-                      fmt='%1.2f',
-                      inline=True,
-                      fontsize=12.5)
+            avg_file_cols = ['LEADS', 'FCST_UNITS', 'OBS_UNITS', 'VALS']
+        avg_cols_to_array = avg_file_cols[3:]
+        # Reading in model lead average files produced from plot_time_series.py
+        logger.info("Reading in model data")
         for model_info in model_info_list:
             model_num = model_info_list.index(model_info) + 1
             model_idx = model_info_list.index(model_info)
             model_name = model_info[0]
             model_plot_name = model_info[1]
             model_obtype = model_info[2]
-            model_stat_values_array = stat_values_array[0,model_idx,:,:]
+            model_avg_data = np.empty(
+                [len(avg_cols_to_array), len(fcst_leads),
+                 len(fcst_var_threshs_format)]
+            )
+            model_avg_data.fill(np.nan)
+            for vt in range(len(fcst_var_threshs_format)):
+                fcst_var_thresh_format = fcst_var_threshs_format[vt]
+                obs_var_thresh_format = obs_var_threshs_format[vt]
+                lead_avg_filename = (
+                    stat+'_'
+                    +model_plot_name+'_'+model_obtype+'_'
+                    +base_name.replace('FCSTTHRESHHOLDER', 
+                                       str(fcst_var_thresh_format)) \
+                    .replace('OBSTHRESHHOLDER', 
+                             str(obs_var_thresh_format)) \
+                    +'.txt'
+                )
+                logger.info("Working on forecast lead averages "
+                            +"for forecast variable "+fcst_var_name+" "
+                            +fcst_var_level+" "+fcst_var_thresh_format)
+                lead_avg_file = os.path.join(output_base_dir, 'data',
+                                             lead_avg_filename)
+                if os.path.exists(lead_avg_file):
+                    nrow = sum(1 for line in open(lead_avg_file))
+                    if nrow == 0:
+                        logger.warning("Model "+str(model_num)+" "
+                                       +model_name+" with plot name "
+                                       +model_plot_name+" file: "
+                                       +lead_avg_file+" empty")
+                    else:
+                        logger.debug("Model "+str(model_num)+" "
+                                     +model_name+" with plot name "
+                                     +model_plot_name+" file: "
+                                     +lead_avg_file+" exists")
+                        model_avg_file_data = pd.read_csv(
+                            lead_avg_file, sep=' ', header=None,
+                            names=avg_file_cols, dtype=str
+                        )
+                        model_avg_file_data_leads = (
+                            model_avg_file_data.loc[:]['LEADS'].tolist()
+                        )
+                        if model_avg_file_data.loc[0]['FCST_UNITS'] == '[NA]':
+                            fcst_var_units_plot_title = ''
+                        else:
+                            fcst_var_units_plot_title = (
+                                 model_avg_file_data.loc[0]['FCST_UNITS']
+                            )
+                        if model_avg_file_data.loc[0]['OBS_UNITS'] == '[NA]':
+                            obs_var_units_plot_title = ''
+                        else:
+                            obs_var_units_plot_title = (
+                                 model_avg_file_data.loc[0]['OBS_UNITS']
+                            )
+                        for fcst_lead in fcst_leads:
+                            fcst_lead_idx = fcst_leads.index(fcst_lead)
+                            if fcst_lead in model_avg_file_data_leads:
+                                model_fcst_lead_idx = (
+                                    model_avg_file_data_leads.index(
+                                        fcst_lead
+                                    )
+                                )
+                            for col in avg_cols_to_array:
+                                col_idx = avg_cols_to_array.index(col)
+                                model_avg_file_data_col = (
+                                    model_avg_file_data.loc[:][col].tolist()
+                                )
+                                if (model_avg_file_data_col[model_fcst_lead_idx]
+                                        != '--'):
+                                    model_avg_data[col_idx, 
+                                                   fcst_lead_idx, vt] = (
+                                        float(model_avg_file_data_col \
+                                              [model_fcst_lead_idx])
+                                    )
+                else:
+                    logger.warning("Model "+str(model_num)+" "+model_name+" "
+                                   +"with plot name "+model_plot_name+" "
+                                   +"file: "+lead_avg_file+" does not exist")
+            if model_num == 1:
+                if (stat == 'fbar_obar' or stat == 'orate_frate'
+                        or stat == 'baser_frate'):
+                    nsubplots = nmodels + 1
+                else:
+                    nsubplots = nmodels
+                if nsubplots == 1:
+                    fig = plt.figure(figsize=(10,12))
+                    gs = gridspec.GridSpec(1,1)
+                elif nsubplots == 2:
+                    fig = plt.figure(figsize=(10,12))
+                    gs = gridspec.GridSpec(2,1)
+                    gs.update(hspace=0.35)
+                elif nsubplots > 2 and nsubplots <= 4:
+                    fig = plt.figure(figsize=(20,12))
+                    gs = gridspec.GridSpec(2,2)
+                    gs.update(wspace=0.4, hspace=0.35)
+                elif nsubplots > 4 and nsubplots <= 6:
+                    fig = plt.figure(figsize=(30,12))
+                    gs = gridspec.GridSpec(2,3)
+                    gs.update(wspace=0.4, hspace=0.35)
+                elif nsubplots > 6 and nsubplots <= 9:
+                    fig = plt.figure(figsize=(30,18))
+                    gs = gridspec.GridSpec(3,3)
+                    gs.update(wspace=0.4, hspace=0.35)
+                if (stat == 'fbar_obar' or stat == 'orate_frate'
+                        or stat == 'baser_frate'):
+                    logger.debug("Plotting observations")
+                    obs_avg_data = model_avg_data[1,:,:]
+                    ax = plt.subplot(gs[0])
+                    ax.grid(True)
+                    ax.tick_params(axis='x', pad=15)
+                    ax.set_xlabel('Forecast Threshold', labelpad=20)
+                    ax.set_xticks(fcst_var_threshs_float)
+                    ax.set_xticklabels(fcst_var_threshs_format)
+                    ax.set_xlim([fcst_var_threshs_float[0],
+                                 fcst_var_threshs_float[-1]])
+                    ax.tick_params(axis='y', pad=15)
+                    ax.set_ylabel('Forecast Lead', labelpad=20)
+                    ax.set_yticks(fcst_lead_timedeltas)
+                    ax.set_yticklabels(fcst_lead_timedeltas_str)
+                    ax.set_ylim([fcst_lead_timedeltas[0],
+                                 fcst_lead_timedeltas[-1]])
+                    ax.set_title('obs', loc='left')
+                    CF1 = ax.contourf(xmesh, ymesh, obs_avg_data,
+                                      cmap=cmap,
+                                      locator=matplotlib.ticker.MaxNLocator(
+                                           symmetric=True
+                                      ), extend='both')
+                    C1 = ax.contour(xmesh, ymesh, obs_avg_data,
+                                    levels=CF1.levels,
+                                    colors='k',
+                                    linewidths=1.0)
+                    ax.clabel(C1, CF1.levels,
+                              fmt='%1.2f',
+                              inline=True,
+                              fontsize=12.5)
             if (stat == 'fbar_obar' or stat == 'orate_frate'
                     or stat == 'baser_frate'):
                 ax = plt.subplot(gs[model_num])
             else:
                 ax = plt.subplot(gs[model_idx])
-            ax.grid(True)
             ax.tick_params(axis='x', pad=15)
-            ax.set_xlabel(date_type.title()+' Date', labelpad=20)
-            ax.set_xlim([plot_time_dates[0],plot_time_dates[-1]])
-            ax.xaxis.set_major_locator(
-                md.DayLocator(interval=date_tick_intvl)
-            )
-            ax.xaxis.set_major_formatter(md.DateFormatter('%d%b%Y'))
-            ax.xaxis.set_minor_locator(md.DayLocator())
+            ax.set_xlabel('Forecast Threshold', labelpad=20)
+            ax.set_xticks(fcst_var_threshs_float)
+            ax.set_xticklabels(fcst_var_threshs_format)
+            ax.set_xlim([fcst_var_threshs_float[0],
+                         fcst_var_threshs_float[-1]])
             ax.tick_params(axis='y', pad=15)
-            ax.set_ylabel('Pressure Level (hPa)', labelpad=20)
-            ax.set_yscale('log')
-            ax.invert_yaxis()
-            ax.minorticks_off()
-            ax.set_yticks(fcst_var_levels_int)
-            ax.set_yticklabels(fcst_var_levels_int)
-            ax.set_ylim([fcst_var_levels_int[0],fcst_var_levels_int[-1]])
+            ax.set_ylabel('Forecast Lead', labelpad=20)
+            ax.set_yticks(fcst_lead_timedeltas)
+            ax.set_yticklabels(fcst_lead_timedeltas_str)
+            ax.set_ylim([fcst_lead_timedeltas[0],
+                         fcst_lead_timedeltas[-1]])
             if (stat == 'fbar_obar' or stat == 'orate_frate'
                     or stat == 'baser_frate'):
                 logger.debug("Plotting model "+str(model_num)+" "
@@ -619,8 +503,8 @@ for plot_info in plot_info_list:
                              +"- obs")
                 ax.set_title(model_plot_name+' - obs', loc='left')
                 model_obs_diff = (
-                    model_stat_values_array
-                    - stat_values_array[1,model_idx,:,:]
+                    model_avg_data[0,:,:]
+                    - model_avg_data[1,:,:]
                  )
                 if model_num == 1:
                     clevels_diff = plot_util.get_clevels(model_obs_diff)
@@ -655,21 +539,21 @@ for plot_info in plot_info_list:
                               inline=True,
                               fontsize=12.5)
             elif stat == 'bias' or stat == 'fbias':
-                logger.debug("Plotting model "+str(model_num)+" "
-                             +model_name+" with name on plot "
+                logger.debug("Plotting model "+str(model_num)
+                             +" "+model_name+" with name on plot "
                              +model_plot_name)
                 ax.set_title(model_plot_name, loc='left')
                 if model_num == 1:
                     clevels_bias = plot_util.get_clevels(
-                        model_stat_values_array
+                        model_avg_data[0,:,:]
                      )
-                    CF1 = ax.contourf(xmesh, ymesh, model_stat_values_array,
+                    CF1 = ax.contourf(xmesh, ymesh, model_avg_data[0,:,:],
                                       levels=clevels_bias,
                                       cmap=cmap_bias,
                                       locator=matplotlib.ticker.MaxNLocator(
                                           symmetric=True
                                       ), extend='both')
-                    C1 = ax.contour(xmesh, ymesh, model_stat_values_array,
+                    C1 = ax.contour(xmesh, ymesh, model_avg_data[0,:,:],
                                     levels=CF1.levels,
                                     colors='k',
                                     linewidths=1.0)
@@ -678,11 +562,11 @@ for plot_info in plot_info_list:
                               inline=True,
                               fontsize=12.5)
                 else:
-                    CF = ax.contourf(xmesh, ymesh, model_stat_values_array,
+                    CF = ax.contourf(xmesh, ymesh, model_avg_data[0,:,:],
                                      levels=CF1.levels,
                                      cmap=cmap_bias,
                                      extend='both')
-                    C = ax.contour(xmesh, ymesh, model_stat_values_array,
+                    C = ax.contour(xmesh, ymesh, model_avg_data[0,:,:],
                                    levels=CF1.levels,
                                    colors='k',
                                    linewidths=1.0)
@@ -697,12 +581,12 @@ for plot_info in plot_info_list:
                                  +model_plot_name)
                     model1_name = model_name
                     model1_plot_name = model_plot_name
-                    model1_stat_values_array = model_stat_values_array
+                    model1_avg_data = model_avg_data[0,:,:]
                     ax.set_title(model_plot_name, loc='left')
-                    CF1 = ax.contourf(xmesh, ymesh, model_stat_values_array,
+                    CF1 = ax.contourf(xmesh, ymesh, model_avg_data[0,:,:],
                                       cmap=cmap,
                                       extend='both')
-                    C1 = ax.contour(xmesh, ymesh, model_stat_values_array,
+                    C1 = ax.contour(xmesh, ymesh, model_avg_data[0,:,:],
                                     levels=CF1.levels,
                                     colors='k',
                                     linewidths=1.0)
@@ -718,7 +602,7 @@ for plot_info in plot_info_list:
                     ax.set_title(model_plot_name+' - '+model1_plot_name,
                                  loc='left')
                     model_model1_diff = (
-                        model_stat_values_array - model1_stat_values_array
+                        model_avg_data[0,:,:] - model1_avg_data
                     )
                     if model_num == 2:
                         clevels_diff = plot_util.get_clevels(model_model1_diff)
@@ -766,18 +650,18 @@ for plot_info in plot_info_list:
             if nsubplots == 1:
                 cbar = fig.colorbar(CF1, cax=cax, orientation='horizontal',
                                     ticks=CF1.levels)
-            else: 
+            else:
                 cbar = fig.colorbar(CF2, cax=cax, orientation='horizontal',
                                     ticks=CF2.levels)
         fig.suptitle(stat_plot_name+'\n'
                      +fcst_var_plot_title+' '+fcst_var_units_plot_title
                      +', '+obs_var_plot_title+' '+obs_var_units_plot_title+'\n'
                      +extra_plot_title+'\n'
-                     +date_time_plot_title+', '+fcst_lead_plot_title+'\n',
+                     +date_time_plot_title,
                      fontsize=14, fontweight='bold')
         savefig_imagename = (
-            stat+'_'+base_name.replace('FCSTLEVELHOLDER', 'all') \
-            .replace('OBSLEVELHOLDER', 'all')+'.png'
+            stat+'_'+base_name.replace('FCSTTHRESHHOLDER', 'all') \
+            .replace('OBSTHRESHHOLDER','all')+'.png'
         )
         savefig_image = os.path.join(output_base_dir, 'images',
                                      savefig_imagename)

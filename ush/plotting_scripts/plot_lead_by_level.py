@@ -1,7 +1,7 @@
 '''
 Name: plot_lead_by_level.py
 Contact(s): Mallory Row
-Abstract: Reads mean files from plot_time_series.py to make lead-pressue plots
+Abstract: Reads average files from plot_time_series.py to make lead-pressue plots
 History Log: Third version
 Usage: Called by make_plots_wrapper.py 
 Parameters: None
@@ -62,6 +62,7 @@ stats_list = os.environ['STATS'].split(', ')
 model_list = os.environ['MODEL'].split(', ')
 model_obtype_list = os.environ['MODEL_OBTYPE'].split(', ')
 model_reference_name_list = os.environ['MODEL_REFERENCE_NAME'].split(', ')
+average_method = os.environ['AVERAGE_METHOD']
 ci_method = os.environ['CI_METHOD']
 verif_grid = os.environ['VERIF_GRID']
 event_equalization = os.environ['EVENT_EQUALIZATION']
@@ -260,10 +261,10 @@ for plot_info in plot_info_list:
         obs_var_units_list = []
     else:
         obs_var_units_list = obs_var_units.split(', ')
-    logger.info("Working on forecast lead means"
+    logger.info("Working on forecast lead averages"
                 +" for forecast variable "+fcst_var_name
                 +" "+fcst_var_thresh)
-    # Set up base name for file naming convention for lead mean files,
+    # Set up base name for file naming convention for lead average files,
     # and output data and images
     base_name = date_type.lower()+date_beg+'to'+date_end
     if (valid_init_dict['valid_hour_beg'] != ''
@@ -293,7 +294,7 @@ for plot_info in plot_info_list:
             +'to'+valid_init_dict['obs_init_hour_end']+'Z'
         )
     base_name+=(
-        '_fcst_lead_means'
+        '_fcst_lead_avgs'
         +'_fcst'+fcst_var_name+'FCSTLEVELHOLDER'
         +fcst_var_thresh_letter.replace(',', '_')+interp_mthd
         +'_obs'+obs_var_name+'OBSLEVELHOLDER'
@@ -321,13 +322,15 @@ for plot_info in plot_info_list:
     for stat in stats_list:
         logger.debug("Working on "+stat)
         stat_plot_name = plot_util.get_stat_plot_name(logger, stat)
-        if stat == 'fbar_obar':
-            mean_file_cols = ['LEADS', 'FCST_UNITS', 'OBS_UNITS',
+        if (stat == 'fbar_obar' or stat == 'orate_frate'
+                or stat == 'baser_frate'):
+            avg_file_cols = ['LEADS', 'FCST_UNITS', 'OBS_UNITS',
                               'VALS', 'OBS_VALS']
         else:
-            mean_file_cols = ['LEADS', 'FCST_UNITS', 'OBS_UNITS', 'VALS']
-        mean_cols_to_array = mean_file_cols[3:]
-        # Reading in model lead mean files produced from plot_time_series.py
+            avg_file_cols = ['LEADS', 'FCST_UNITS', 'OBS_UNITS', 'VALS']
+        avg_cols_to_array = avg_file_cols[3:]
+        # Reading in model lead average files produced from
+        # plot_time_series.py
         logger.info("Reading in model data")
         for model_info in model_info_list:
             model_num = model_info_list.index(model_info) + 1
@@ -335,78 +338,82 @@ for plot_info in plot_info_list:
             model_name = model_info[0]
             model_plot_name = model_info[1]
             model_obtype = model_info[2]
-            model_mean_data = np.empty(
-                [len(mean_cols_to_array), len(fcst_var_levels),
+            model_avg_data = np.empty(
+                [len(avg_cols_to_array), len(fcst_var_levels),
                  len(fcst_leads)]
             )
-            model_mean_data.fill(np.nan)
+            model_avg_data.fill(np.nan)
             for vl in range(len(fcst_var_levels)):
                 fcst_var_level = fcst_var_levels[vl]
                 obs_var_level = obs_var_levels[vl]
-                lead_mean_filename = (
+                lead_avg_filename = (
                     stat+'_'
                     +model_plot_name+'_'+model_obtype+'_'
                     +base_name.replace('FCSTLEVELHOLDER', fcst_var_level) \
                     .replace('OBSLEVELHOLDER', obs_var_level)
                     +'.txt'
                 )
-                lead_mean_file = os.path.join(output_base_dir, 'data',
-                                              lead_mean_filename)
-                if os.path.exists(lead_mean_file):
-                    nrow = sum(1 for line in open(lead_mean_file))
+                lead_avg_file = os.path.join(output_base_dir, 'data',
+                                             lead_avg_filename)
+                if os.path.exists(lead_avg_file):
+                    nrow = sum(1 for line in open(lead_avg_file))
                     if nrow == 0:
-                        logger.warning("Model "+str(model_num)+" "+model_name
-                                      +" with plot name "+model_plot_name
-                                      +" file: "+lead_mean_file+" empty")
+                        logger.warning("Model "+str(model_num)+" "
+                                       +model_name+" with plot name "
+                                       +model_plot_name+" file: "
+                                       +lead_avg_file+" empty")
                     else:
-                        logger.debug("Model "+str(model_num)+" "+model_name
-                                     +" with plot name "+model_plot_name
-                                     +" file: "+lead_mean_file+" exists")
-                        model_mean_file_data = pd.read_csv(
-                            lead_mean_file, sep=' ', header=None,
-                            names=mean_file_cols, dtype=str
+                        logger.debug("Model "+str(model_num)+" "
+                                     +model_name+" with plot name "
+                                     +model_plot_name+" file: "
+                                     +lead_avg_file+" exists")
+                        model_avg_file_data = pd.read_csv(
+                            lead_avg_file, sep=' ', header=None,
+                            names=avg_file_cols, dtype=str
                         )
-                        model_mean_file_data_leads = (
-                            model_mean_file_data.loc[:]['LEADS'].tolist()
+                        model_avg_file_data_leads = (
+                            model_avg_file_data.loc[:]['LEADS'].tolist()
                         )
-                        if model_mean_file_data.loc[0]['FCST_UNITS'] == '[NA]':
+                        if model_avg_file_data.loc[0]['FCST_UNITS'] == '[NA]':
                             fcst_var_units_plot_title = ''
                         else:
                             fcst_var_units_plot_title = (
-                                model_mean_file_data.loc[0]['FCST_UNITS']
+                                model_avg_file_data.loc[0]['FCST_UNITS']
                             )
-                        if model_mean_file_data.loc[0]['OBS_UNITS'] == '[NA]':
+                        if model_avg_file_data.loc[0]['OBS_UNITS'] == '[NA]':
                             obs_var_units_plot_title = ''
                         else:
                             obs_var_units_plot_title = (
-                                model_mean_file_data.loc[0]['OBS_UNITS']
+                                model_avg_file_data.loc[0]['OBS_UNITS']
                             )
                         for fcst_lead in fcst_leads:
                             fcst_lead_idx = fcst_leads.index(fcst_lead)
-                            if fcst_lead in model_mean_file_data_leads:
+                            if fcst_lead in model_avg_file_data_leads:
                                 model_fcst_lead_idx = (
-                                    model_mean_file_data_leads.index(
+                                    model_avg_file_data_leads.index(
                                         fcst_lead
                                     )
                                 )
-                            for col in mean_cols_to_array:
-                                col_idx = mean_cols_to_array.index(col)
-                                model_mean_file_data_col = (
-                                    model_mean_file_data.loc[:][col].tolist()
+                            for col in avg_cols_to_array:
+                                col_idx = avg_cols_to_array.index(col)
+                                model_avg_file_data_col = (
+                                    model_avg_file_data.loc[:][col].tolist()
                                 )
-                                if (model_mean_file_data_col[model_fcst_lead_idx] 
+                                if (model_avg_file_data_col[model_fcst_lead_idx] 
                                         != '--'):
-                                    model_mean_data[col_idx, vl,
+                                    model_avg_data[col_idx, vl,
                                                     fcst_lead_idx] = (
-                                        float(model_mean_file_data_col \
+                                        float(model_avg_file_data_col \
                                               [model_fcst_lead_idx])
                                     )                    
                 else:
-                    logger.warning("Model "+str(model_num)+" "+model_name
-                                   +" with plot name "+model_plot_name
-                                   +" file: "+lead_mean_file+" does not exist")
+                    logger.warning("Model "+str(model_num)+" "
+                                   +model_name+" with plot name "
+                                   +model_plot_name+" file: "
+                                   +lead_avg_file+" does not exist")
             if model_num == 1:
-                if stat == 'fbar_obar':
+                if (stat == 'fbar_obar' or stat == 'orate_frate'
+                        or stat == 'baser_frate'):
                     nsubplots = nmodels + 1
                 else:
                     nsubplots = nmodels
@@ -429,9 +436,10 @@ for plot_info in plot_info_list:
                     fig = plt.figure(figsize=(30,18))
                     gs = gridspec.GridSpec(3,3)
                     gs.update(wspace=0.4, hspace=0.35)
-                if stat == 'fbar_obar':
+                if (stat == 'fbar_obar' or stat == 'orate_frate'
+                        or stat == 'baser_frate'):
                     logger.debug("Plotting observations")
-                    obs_mean_data = model_mean_data[1,:,:]
+                    obs_avg_data = model_avg_data[1,:,:]
                     ax = plt.subplot(gs[0])
                     ax.grid(True)
                     ax.tick_params(axis='x', pad=15)
@@ -450,12 +458,12 @@ for plot_info in plot_info_list:
                     ax.set_ylim([fcst_var_levels_int[0],
                                  fcst_var_levels_int[-1]])
                     ax.set_title('obs', loc='left')
-                    CF1 = ax.contourf(xmesh, ymesh, obs_mean_data,
+                    CF1 = ax.contourf(xmesh, ymesh, obs_avg_data,
                                       cmap=cmap,
                                       locator=matplotlib.ticker.MaxNLocator(
                                            symmetric=True
                                       ), extend='both')
-                    C1 = ax.contour(xmesh, ymesh, obs_mean_data,
+                    C1 = ax.contour(xmesh, ymesh, obs_avg_data,
                                     levels=CF1.levels,
                                     colors='k',
                                     linewidths=1.0)
@@ -463,7 +471,8 @@ for plot_info in plot_info_list:
                               fmt='%1.2f',
                               inline=True,
                               fontsize=12.5)
-            if stat == 'fbar_obar':
+            if (stat == 'fbar_obar' or stat == 'orate_frate'
+                    or stat == 'baser_frate'):
                 ax = plt.subplot(gs[model_num])
             else:
                 ax = plt.subplot(gs[model_idx])
@@ -482,15 +491,16 @@ for plot_info in plot_info_list:
             ax.set_yticklabels(fcst_var_levels_int)
             ax.set_ylim([fcst_var_levels_int[0],
                          fcst_var_levels_int[-1]])
-            if stat == 'fbar_obar':
-                logger.debug("Plotting model "+str(model_num)
-                             +" "+model_name+" - obs"
-                             +" with name on plot "+model_plot_name
-                             +" - obs")
+            if (stat == 'fbar_obar' or stat == 'orate_frate'
+                    or stat == 'baser_frate'):
+                logger.debug("Plotting model "+str(model_num)+" "
+                             +model_name+" - obs "
+                             +"with name on plot "+model_plot_name+" "
+                             +"- obs")
                 ax.set_title(model_plot_name+' - obs', loc='left')
                 model_obs_diff = (
-                    model_mean_data[0,:,:]
-                    - model_mean_data[1,:,:]
+                    model_avg_data[0,:,:]
+                    - model_avg_data[1,:,:]
                  )
                 if model_num == 1:
                     clevels_diff = plot_util.get_clevels(model_obs_diff)
@@ -524,21 +534,22 @@ for plot_info in plot_info_list:
                               fmt='%1.2f',
                               inline=True,
                               fontsize=12.5)
-            elif stat == 'bias':
-                logger.debug("Plotting model "+str(model_num)+" "+model_name
-                             +" with name on plot "+model_plot_name)
+            elif stat == 'bias' or stat == 'fbias':
+                logger.debug("Plotting model "+str(model_num)
+                             +" "+model_name+" with name on plot "
+                             +model_plot_name)
                 ax.set_title(model_plot_name, loc='left')
                 if model_num == 1:
                     clevels_bias = plot_util.get_clevels(
-                        model_mean_data[0,:,:]
+                        model_avg_data[0,:,:]
                      )
-                    CF1 = ax.contourf(xmesh, ymesh, model_mean_data[0,:,:],
+                    CF1 = ax.contourf(xmesh, ymesh, model_avg_data[0,:,:],
                                       levels=clevels_bias,
                                       cmap=cmap_bias,
                                       locator=matplotlib.ticker.MaxNLocator(
                                           symmetric=True
                                       ), extend='both')
-                    C1 = ax.contour(xmesh, ymesh, model_mean_data[0,:,:],
+                    C1 = ax.contour(xmesh, ymesh, model_avg_data[0,:,:],
                                     levels=CF1.levels,
                                     colors='k',
                                     linewidths=1.0)
@@ -547,11 +558,11 @@ for plot_info in plot_info_list:
                               inline=True,
                               fontsize=12.5)
                 else:
-                    CF = ax.contourf(xmesh, ymesh, model_mean_data[0,:,:],
+                    CF = ax.contourf(xmesh, ymesh, model_avg_data[0,:,:],
                                      levels=CF1.levels,
                                      cmap=cmap_bias,
                                      extend='both')
-                    C = ax.contour(xmesh, ymesh, model_mean_data[0,:,:],
+                    C = ax.contour(xmesh, ymesh, model_avg_data[0,:,:],
                                    levels=CF1.levels,
                                    colors='k',
                                    linewidths=1.0)
@@ -561,17 +572,17 @@ for plot_info in plot_info_list:
                               fontsize=12.5)
             else:
                 if model_num == 1:
-                    logger.debug("Plotting model "+str(model_num)
-                                 +" "+model_name+" with name on plot"
-                                 +" "+model_plot_name)
+                    logger.debug("Plotting model "+str(model_num)+" "
+                                 +model_name+" with name on plot "
+                                 +model_plot_name)
                     model1_name = model_name
                     model1_plot_name = model_plot_name
-                    model1_mean_data = model_mean_data[0,:,:]
+                    model1_avg_data = model_avg_data[0,:,:]
                     ax.set_title(model_plot_name, loc='left')
-                    CF1 = ax.contourf(xmesh, ymesh, model_mean_data[0,:,:],
+                    CF1 = ax.contourf(xmesh, ymesh, model_avg_data[0,:,:],
                                       cmap=cmap,
                                       extend='both')
-                    C1 = ax.contour(xmesh, ymesh, model_mean_data[0,:,:],
+                    C1 = ax.contour(xmesh, ymesh, model_avg_data[0,:,:],
                                     levels=CF1.levels,
                                     colors='k',
                                     linewidths=1.0)
@@ -580,14 +591,14 @@ for plot_info in plot_info_list:
                               inline=True,
                               fontsize=12.5)
                 else:
-                    logger.debug("Plotting model "+str(model_num)
-                                 +" "+model_name+" - model 1 "+model1_name
-                                 +" with name on plot "+model_plot_name
-                                 +" - "+model1_plot_name)
+                    logger.debug("Plotting model "+str(model_num)+" "
+                                 +model_name+" - model 1 "+model1_name+" "
+                                 +"with name on plot "+model_plot_name+" "
+                                 +"- "+model1_plot_name)
                     ax.set_title(model_plot_name+' - '+model1_plot_name,
                                  loc='left')
                     model_model1_diff = (
-                        model_mean_data[0,:,:] - model1_mean_data
+                        model_avg_data[0,:,:] - model1_avg_data
                     )
                     if model_num == 2:
                         clevels_diff = plot_util.get_clevels(model_model1_diff)
@@ -624,10 +635,11 @@ for plot_info in plot_info_list:
                                   inline=True,
                                   fontsize=12.5)
         cax = fig.add_axes([0.1, -0.05, 0.8, 0.05])
-        if stat == 'fbar_obar':
+        if (stat == 'fbar_obar' or stat == 'orate_frate'
+                or stat == 'baser_frate'):
             cbar = fig.colorbar(CF2, cax=cax, orientation='horizontal',
                                 ticks=CF2.levels)
-        elif stat == 'bias':
+        elif stat == 'bias' or stat == 'fbias':
             cbar = fig.colorbar(CF1, cax=cax, orientation='horizontal',
                                 ticks=CF1.levels)
         else:
@@ -647,7 +659,6 @@ for plot_info in plot_info_list:
             stat+'_'+base_name.replace('FCSTLEVELHOLDER', 'all') \
             .replace('OBSLEVELHOLDER', 'all')+'.png'
         )
-
         savefig_image = os.path.join(output_base_dir, 'images',
                                      savefig_imagename)
         logger.info("Saving image as "+savefig_image)

@@ -1,5 +1,5 @@
 '''
-Name: plot_lead_bydate.py
+Name: plot_lead_by_date.py
 Contact(s): Mallory Row
 Abstract: Reads filtered files from stat_analysis_wrapper run_all_times
           to make lead-date plots
@@ -63,6 +63,7 @@ stats_list = os.environ['STATS'].split(', ')
 model_list = os.environ['MODEL'].split(', ')
 model_obtype_list = os.environ['MODEL_OBTYPE'].split(', ')
 model_reference_name_list = os.environ['MODEL_REFERENCE_NAME'].split(', ')
+average_method = os.environ['AVERAGE_METHOD']
 ci_method = os.environ['CI_METHOD']
 verif_grid = os.environ['VERIF_GRID']
 event_equalization = os.environ['EVENT_EQUALIZATION']
@@ -264,10 +265,10 @@ for plot_info in plot_info_list:
         obs_var_units_list = []
     else:
         obs_var_units_list = obs_var_units.split(', ')
-    logger.info("Working on forecast lead means"
-                +" for forecast variable "+fcst_var_name
-                +" "+fcst_var_thresh)
-    # Set up base name for file naming convention for lead mean files,
+    logger.info("Working on forecast lead averages "
+                +"for forecast variable "+fcst_var_name+" "
+                +fcst_var_thresh)
+    # Set up base name for file naming convention for lead average files,
     # and output data and images
     base_name = date_type.lower()+date_beg+'to'+date_end
     if (valid_init_dict['valid_hour_beg'] != ''
@@ -365,17 +366,17 @@ for plot_info in plot_info_list:
             if os.path.exists(model_stat_file):
                 nrow = sum(1 for line in open(model_stat_file))
                 if nrow == 0:
-                    logger.warning("Model "+str(model_num)+" "+model_name
-                                   +" with plot name "+model_plot_name
-                                   +" file: "+model_stat_file+" empty")
+                    logger.warning("Model "+str(model_num)+" "+model_name+" "
+                                   +"with plot name "+model_plot_name+" "
+                                   +"file: "+model_stat_file+" empty")
                     model_lead_now_data = pd.DataFrame(
                         np.nan, index=model_lead_now_index,
                         columns=[ 'TOTAL' ]
                     )
                 else:
-                    logger.debug("Model "+str(model_num)+" "+model_name
-                                +" with plot name "+model_plot_name
-                                +" file: "+model_stat_file+" exists")
+                    logger.debug("Model "+str(model_num)+" "+model_name+" "
+                                 +"with plot name "+model_plot_name+" "
+                                 +"file: "+model_stat_file+" exists")
                     model_lead_now_stat_file_data = pd.read_csv(
                         model_stat_file, sep=" ", skiprows=1,
                         skipinitialspace=True, header=None
@@ -446,9 +447,9 @@ for plot_info in plot_info_list:
                                   .loc[:][col]
                                 )
             else:
-                logger.warning("Model "+str(model_num)+" "+model_name
-                               +" with plot name "+model_plot_name
-                               +" file: "+model_stat_file+" does not exist")
+                logger.warning("Model "+str(model_num)+" "+model_name+" "
+                               +"with plot name "+model_plot_name+" "
+                               +"file: "+model_stat_file+" does not exist")
                 model_lead_now_data = pd.DataFrame(
                         np.nan, index=model_lead_now_index,
                         columns=[ 'TOTAL' ]
@@ -491,7 +492,8 @@ for plot_info in plot_info_list:
                     stat_values_array[l,:,fl,:] = (
                         np.ma.mask_cols(stat_values_array[l,:,fl,:])
                     )
-        if stat == 'fbar_obar':
+        if (stat == 'fbar_obar' or stat == 'orate_frate'
+                or stat == 'baser_frate'):
             nsubplots = nmodels + 1
         else:
             nsubplots = nmodels
@@ -514,7 +516,8 @@ for plot_info in plot_info_list:
             fig = plt.figure(figsize=(30,18))
             gs = gridspec.GridSpec(3,3)
             gs.update(wspace=0.4, hspace=0.35) 
-        if stat == 'fbar_obar':
+        if (stat == 'fbar_obar' or stat == 'orate_frate'
+                or stat == 'baser_frate'):
             logger.debug("Plotting observations")
             obs_stat_values_array = stat_values_array[1,0,:,:]
             ax = plt.subplot(gs[0])
@@ -554,7 +557,8 @@ for plot_info in plot_info_list:
             model_plot_name = model_info[1]
             model_obtype = model_info[2]
             model_stat_values_array = stat_values_array[0,model_idx,:,:]
-            if stat == 'fbar_obar':
+            if (stat == 'fbar_obar' or stat == 'orate_frate'
+                    or stat == 'baser_frate'):
                 ax = plt.subplot(gs[model_num])
             else:
                 ax = plt.subplot(gs[model_idx])
@@ -573,10 +577,11 @@ for plot_info in plot_info_list:
             )
             ax.yaxis.set_major_formatter(md.DateFormatter('%d%b%Y'))
             ax.yaxis.set_minor_locator(md.DayLocator())
-            if stat == 'fbar_obar':
-                logger.debug("Plotting model "+str(model_num)
-                             +" "+model_name+" - obs"
-                             +" with name on plot "+model_plot_name
+            if (stat == 'fbar_obar' or stat == 'orate_frate'
+                    or stat == 'baser_frate'):
+                logger.debug("Plotting model "+str(model_num)+" "
+                             +model_name+" - obs "
+                             +"with name on plot "+model_plot_name
                              +" - obs")
                 ax.set_title(model_plot_name+' - obs', loc='left')
                 model_obs_diff = (
@@ -615,9 +620,10 @@ for plot_info in plot_info_list:
                               fmt='%1.2f',
                               inline=True,
                               fontsize=12.5)
-            elif stat == 'bias':
-                logger.debug("Plotting model "+str(model_num)+" "+model_name
-                             +" with name on plot "+model_plot_name)
+            elif stat == 'bias' or stat == 'fbias':
+                logger.debug("Plotting model "+str(model_num)+" "
+                             +model_name+" with name on plot "
+                             +model_plot_name)
                 ax.set_title(model_plot_name, loc='left')
                 if model_num == 1:
                     clevels_bias = plot_util.get_clevels(
@@ -652,9 +658,9 @@ for plot_info in plot_info_list:
                               fontsize=12.5)
             else:
                 if model_num == 1:
-                    logger.debug("Plotting model "+str(model_num)
-                                 +" "+model_name+" with name on plot"
-                                 +" "+model_plot_name)
+                    logger.debug("Plotting model "+str(model_num)+" "
+                                 +model_name+" with name on plot "
+                                 +model_plot_name)
                     model1_name = model_name
                     model1_plot_name = model_plot_name
                     model1_stat_values_array = model_stat_values_array
@@ -671,10 +677,10 @@ for plot_info in plot_info_list:
                               inline=True,
                               fontsize=12.5)
                 else:
-                    logger.debug("Plotting model "+str(model_num)
-                                 +" "+model_name+" - model 1 "+model1_name
-                                 +" with name on plot "+model_plot_name
-                                 +" - "+model1_plot_name)
+                    logger.debug("Plotting model "+str(model_num)+" "
+                                 +model_name+" - model 1 "+model1_name+" "
+                                 +"with name on plot "+model_plot_name+" "
+                                 +"- "+model1_plot_name)
                     ax.set_title(model_plot_name+' - '+model1_plot_name,
                                  loc='left')
                     model_model1_diff = (
@@ -715,10 +721,11 @@ for plot_info in plot_info_list:
                                   inline=True,
                                   fontsize=12.5)
         cax = fig.add_axes([0.1, -0.05, 0.8, 0.05])
-        if stat == 'fbar_obar':
+        if (stat == 'fbar_obar' or stat == 'orate_frate'
+                or stat == 'baser_frate'):
             cbar = fig.colorbar(CF2, cax=cax, orientation='horizontal',
                                 ticks=CF2.levels)
-        elif stat == 'bias':
+        elif stat == 'bias' or stat == 'fbias':
             cbar = fig.colorbar(CF1, cax=cax, orientation='horizontal',
                                 ticks=CF1.levels)
         else:

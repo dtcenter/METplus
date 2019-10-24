@@ -129,8 +129,12 @@ class MakePlotsWrapper(CommandBuilder):
         c_dict['STATS_LIST'] = util.getlist(
             self.config.getstr('config', 'MAKE_PLOTS_STATS_LIST', '')
         )
+        c_dict['AVERAGE_METHOD'] = self.config.getstr(
+            'config','MAKE_PLOTS_AVERAGE_METHOD', 'MEAN'
+        )
         c_dict['CI_METHOD'] = self.config.getstr('config',
-                                                 'MAKE_PLOTS_CI_METHOD')
+                                                 'MAKE_PLOTS_CI_METHOD',
+                                                 'NONE')
         c_dict['VERIF_GRID'] = self.config.getstr('config',
                                                   'MAKE_PLOTS_VERIF_GRID')
         c_dict['EVENT_EQUALIZATION'] = (
@@ -286,7 +290,7 @@ class MakePlotsWrapper(CommandBuilder):
              variables on pressure levels using partial sums. 
              Runs plotting scripts: 
                  plot_time_series.py,
-                 plot_lead_mean.py, 
+                 plot_lead_average.py, 
                  plot_date_by_level.py,
                  plot_lead_by_level.py
              
@@ -298,7 +302,7 @@ class MakePlotsWrapper(CommandBuilder):
  
              Returns:          
         """
-        scripts_to_run = ['plot_time_series.py', 'plot_lead_mean.py',
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py',
                           'plot_date_by_level.py', 'plot_lead_by_level.py']
         # Loop over run settings.
         for runtime_settings_dict in runtime_settings_dict_list:
@@ -324,7 +328,7 @@ class MakePlotsWrapper(CommandBuilder):
              variables on pressure levels using anomalous partial sums.
              Runs plotting scripts: 
                  plot_time_series.py,
-                 plot_lead_mean.py, 
+                 plot_lead_average.py, 
                  plot_lead_by_date.py
              
              Args:
@@ -335,7 +339,7 @@ class MakePlotsWrapper(CommandBuilder):
  
              Returns:          
         """
-        scripts_to_run = ['plot_time_series.py', 'plot_lead_mean.py',
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py',
                           'plot_lead_by_date.py']
         # Loop over run settings.
         for runtime_settings_dict in runtime_settings_dict_list:
@@ -361,7 +365,7 @@ class MakePlotsWrapper(CommandBuilder):
              variables on a single level using partial sums.
              Runs plotting scripts: 
                  plot_time_series.py,
-                 plot_lead_mean.py 
+                 plot_lead_average.py 
              
              Args:
                  runtime_settings_dict_list - list of dictionaries
@@ -372,7 +376,7 @@ class MakePlotsWrapper(CommandBuilder):
              Returns:          
         """
         # Loop over run settings.
-        scripts_to_run = ['plot_time_series.py', 'plot_lead_mean.py']
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py']
         for runtime_settings_dict in runtime_settings_dict_list:
             for name, value in runtime_settings_dict.items():
                 self.add_env_var(name, value)
@@ -396,7 +400,7 @@ class MakePlotsWrapper(CommandBuilder):
              variables on a pressure levels using partial sums.
              Runs plotting scripts: 
                  plot_time_series.py,
-                 plot_lead_mean.py,
+                 plot_lead_average.py,
                  plot_stat_by_level.py,
                  plot_lead_by_level.py
              
@@ -408,7 +412,7 @@ class MakePlotsWrapper(CommandBuilder):
  
              Returns:          
         """
-        scripts_to_run = ['plot_time_series.py', 'plot_lead_mean.py',
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py',
                           'plot_stat_by_level.py', 'plot_lead_by_level.py']
         # Loop over run settings.
         for runtime_settings_dict in runtime_settings_dict_list:
@@ -434,7 +438,7 @@ class MakePlotsWrapper(CommandBuilder):
              variables on a single level using partial sums.
              Runs plotting scripts: 
                  plot_time_series.py,
-                 plot_lead_mean.py
+                 plot_lead_average.py
              
              Args:
                  runtime_settings_dict_list - list of dictionaries
@@ -444,7 +448,46 @@ class MakePlotsWrapper(CommandBuilder):
  
              Returns:          
         """
-        scripts_to_run = ['plot_time_series.py', 'plot_lead_mean.py']
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py']
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
+                )
+                cmd = self.get_command()
+                if cmd is None:
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
+                    return
+                self.build()
+                self.clear()
+
+    def create_plots_precip(self, runtime_settings_dict_list):
+        """! Create plots for the precipitation verification
+             using contingency table counts.
+             Runs plotting scripts: 
+                 plot_time_series.py,
+                 plot_lead_average.py,
+                 plot_threshold_average.py,
+                 plot_threshold_by_lead.py
+             
+             Args:
+                 runtime_settings_dict_list - list of dictionaries
+                                              containing the relevant
+                                              information for running
+                                              plotting scripts
+ 
+             Returns:          
+        """
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py',
+                          'plot_threshold_average.py', 
+                          'plot_threshold_by_lead.py']
         # Loop over run settings.
         for runtime_settings_dict in runtime_settings_dict_list:
             for name, value in runtime_settings_dict.items():
@@ -842,8 +885,8 @@ class MakePlotsWrapper(CommandBuilder):
             add_from_c_dict_list = [
                 'VERIF_CASE', 'VERIF_TYPE', 'INPUT_BASE_DIR', 'OUTPUT_BASE_DIR',
                 'SCRIPTS_BASE_DIR', 'DATE_TYPE', 'VALID_BEG', 'VALID_END',
-                'INIT_BEG', 'INIT_END', 'CI_METHOD', 'VERIF_GRID',
-                'EVENT_EQUALIZATION', 'LOG_METPLUS', 'LOG_LEVEL'
+                'INIT_BEG', 'INIT_END', 'AVERAGE_METHOD', 'CI_METHOD',
+                'VERIF_GRID','EVENT_EQUALIZATION', 'LOG_METPLUS', 'LOG_LEVEL'
             ]
             for key in add_from_c_dict_list:
                 runtime_setup_dict[key] = [self.c_dict[key]]
