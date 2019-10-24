@@ -1863,3 +1863,6 @@ class StatAnalysisWrapper(CommandBuilder):
         else:
             self.logger.error("LOOP_BY must be VALID or INIT")
             exit(1)
+
+if __name__ == "__main__":
+    util.run_stand_alone("stat_analysis_wrapper", "StatAnalysis")

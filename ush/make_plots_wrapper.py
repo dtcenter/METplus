@@ -997,3 +997,6 @@ class MakePlotsWrapper(CommandBuilder):
                               self.c_dict['VERIF_TYPE'])
         else:
             exit(1)
+
+if __name__ == "__main__":
+    util.run_stand_alone("make_plots_wrapper", "MakePlots")
