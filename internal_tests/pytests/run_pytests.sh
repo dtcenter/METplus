@@ -31,3 +31,7 @@ cd $script_dir/time_util
 pytest -c ../minimum_pytest.$host.conf
 cd $script_dir/pb2nc
 pytest -c ../minimum_pytest.$host.conf -c ./conf1
+cd $script_dir/extract_tiles
+python ./run_precondition.py >/dev/null 2>&1
+pytest -c ../minimum_pytest.$host.conf -c  ./extract_tiles_test.conf -c ./custom.conf
+python ./run_cleanup.py
