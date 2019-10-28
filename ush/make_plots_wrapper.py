@@ -122,10 +122,13 @@ class MakePlotsWrapper(CommandBuilder):
         c_dict['LINE_TYPE_LIST'] = util.getlist(
             self.config.getstr('config', 'LINE_TYPE_LIST', '')
         )
+        c_dict['USER_SCRIPT_LIST'] = util.getlist(
+            self.config.getstr('config', 'MAKE_PLOTS_USER_SCRIPT_LIST', '')
+        )
         c_dict['VERIF_CASE'] = self.config.getstr('config',
-                                                  'MAKE_PLOTS_VERIF_CASE')
+                                                  'MAKE_PLOTS_VERIF_CASE', '')
         c_dict['VERIF_TYPE'] = self.config.getstr('config',
-                                                  'MAKE_PLOTS_VERIF_TYPE')
+                                                  'MAKE_PLOTS_VERIF_TYPE', '')
         c_dict['STATS_LIST'] = util.getlist(
             self.config.getstr('config', 'MAKE_PLOTS_STATS_LIST', '')
         )
@@ -507,6 +510,38 @@ class MakePlotsWrapper(CommandBuilder):
                 self.build()
                 self.clear()
 
+    def create_plots_user(self, runtime_settings_dict_list, scripts_to_run):
+        """! Create plots from user specified list
+             
+             Args:
+                 runtime_settings_dict_list - list of dictionaries
+                                              containing the relevant
+                                              information for running
+                                              plotting scripts
+                 scripts_to_run             - list of script names to
+                                              run
+ 
+             Returns:          
+        """
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
+                )
+                cmd = self.get_command()
+                if cmd is None:
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
+                    return
+                self.build()
+                self.clear()
+
     def create_plots(self, verif_case, verif_type):
         """! Set up variables and general looping for creating
               verification plots
@@ -519,8 +554,6 @@ class MakePlotsWrapper(CommandBuilder):
                
              Returns:
         """
-        self.logger.info("Running plots for VERIF_CASE = "+verif_case+", "
-                         +"VERIF_TYPE = "+verif_type)
         # Do checks for bad configuration file options.
         bad_config_variable_list = [
             'FCST_VAR_LIST', 'FCST_LEVEL_LIST',
@@ -967,31 +1000,52 @@ class MakePlotsWrapper(CommandBuilder):
                 )
             elif (self.c_dict['VERIF_CASE'] == 'precip'):
                 self.create_plots_precip(runtime_settings_dict_list)
+            else:
+                self.create_plots_user(runtime_settings_dict_list,
+                                       self.c_dict['USER_SCRIPT_LIST'])
                 
     def run_all_times(self):
-        accepted_verif_case_list = ['grid2grid', 'grid2obs', 'precip']
-        if self.c_dict['VERIF_CASE'] not in accepted_verif_case_list:
-            run_make_plots = False
-            self.logger.error(self.c_dict['VERIF_CASE']+" is not an "
-                              +"accepted MAKE_PLOTS_VERIF_CASE option. "
-                              +"Options are "
-                              +', '.join(accepted_verif_case_list))
+        if self.c_dict['USER_SCRIPT_LIST'] != []:
+            self.logger.info("Running plots for user specified list of "
+                             +"scripts.")
+            run_make_plots = True
         else:
-            if self.c_dict['VERIF_CASE'] == 'grid2grid':
-                accepted_verif_type_list = ['pres', 'anom', 'sfc']
-            elif self.c_dict['VERIF_CASE'] == 'grid2obs':
-                accepted_verif_type_list = ['upper_air', 'conus_sfc']
-            elif self.c_dict['VERIF_CASE'] == 'precip':
-                accepted_verif_type_list = [self.c_dict['VERIF_TYPE']]
-            if self.c_dict['VERIF_TYPE'] in accepted_verif_type_list:
-                run_make_plots = True
+            if (self.c_dict['VERIF_CASE'] != ''
+                    and self.c_dict['VERIF_TYPE'] != ''):
+                self.logger.info("Running plots for VERIF_CASE = "
+                                 +self.c_dict['VERIF_CASE']+", "
+                                 +"VERIF_TYPE = "
+                                 +self.c_dict['VERIF_TYPE'])
+                accepted_verif_case_list = ['grid2grid', 'grid2obs', 'precip']
+                if self.c_dict['VERIF_CASE'] not in accepted_verif_case_list:
+                    run_make_plots = False
+                    self.logger.error(self.c_dict['VERIF_CASE']+" is not an"
+                                      +"an accepted MAKE_PLOTS_VERIF_CASE "
+                                      +"option. Options are "
+                                      +', '.join(accepted_verif_case_list))
+                else:
+                    if self.c_dict['VERIF_CASE'] == 'grid2grid':
+                        accepted_verif_type_list = ['pres', 'anom', 'sfc']
+                    elif self.c_dict['VERIF_CASE'] == 'grid2obs':
+                        accepted_verif_type_list = ['upper_air', 'conus_sfc']
+                    elif self.c_dict['VERIF_CASE'] == 'precip':
+                        accepted_verif_type_list = [self.c_dict['VERIF_TYPE']]
+                    if self.c_dict['VERIF_TYPE'] in accepted_verif_type_list:
+                        run_make_plots = True
+                    else:
+                        run_make_plots = False
+                        self.logger.error(self.c_dict['VERIF_TYPE']+" is not "
+                                          +"an accepted MAKE_PLOTS_VERIF_TYPE "
+                                          +"option for MAKE_PLOTS_VERIF_CASE "
+                                          +"= "+self.c_dict['VERIF_CASE']+". "
+                                          "Options are "
+                                          +', '.join(accepted_verif_type_list))
             else:
                 run_make_plots = False
-                self.logger.error(self.c_dict['VERIF_TYPE']+" is not an "
-                                  +"accepted MAKE_PLOTS_VERIF_TYPE option "
-                                  +"for MAKE_PLOTS_VERIF_CASE = "
-                                  +self.c_dict['VERIF_CASE']+". Options are "
-                                 +', '.join(accepted_verif_type_list))
+                self.logger.error("Please defined either "
+                                  +"MAKE_PLOTS_VERIF_CASE and "
+                                  +"MAKE_PLOTS_VERIF_TYPE, or "
+                                  +"MAKE_PLOTS_USER_SCRIPT_LIST")
         if run_make_plots:
             self.create_plots(self.c_dict['VERIF_CASE'],
                               self.c_dict['VERIF_TYPE'])
