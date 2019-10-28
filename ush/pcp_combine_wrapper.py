@@ -22,7 +22,7 @@ import string_template_substitution as sts
 from reformat_gridded_wrapper import ReformatGriddedWrapper
 import time_util
 
-'''!@namespace PcpCombineWrapper
+'''!@namespace PCPCombineWrapper
 @brief Wraps the MET tool pcp_combine to combine or divide
 precipitation accumulations
 Call as follows:
@@ -31,11 +31,11 @@ Cannot be called directly. Must use child classes.
 @endcode
 @todo add main function to be able to run alone via command line
 '''
-class PcpCombineWrapper(ReformatGriddedWrapper):
+class PCPCombineWrapper(ReformatGriddedWrapper):
     """!Wraps the MET tool pcp_combine to combine or divide
     precipitation accumulations"""
     def __init__(self, config, logger):
-        super(PcpCombineWrapper, self).__init__(config, logger)
+        super(PCPCombineWrapper, self).__init__(config, logger)
         self.app_name = 'pcp_combine'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
@@ -56,7 +56,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.custom_command = ''
 
     def create_c_dict(self):
-        c_dict = super(PcpCombineWrapper, self).create_c_dict()
+        c_dict = super(PCPCombineWrapper, self).create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_PCP_COMBINE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
@@ -109,7 +109,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return c_dict
 
     def clear(self):
-        super(PcpCombineWrapper, self).clear()
+        super(PCPCombineWrapper, self).clear()
         self.inaddons = []
         self.method = ""
         self.pcp_dir = ""
@@ -473,7 +473,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             cmd = self.setup_custom_method(time_info, data_src)
         else:
             if var_info is None and self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
-                self.logger.error('Cannot run PcpCombine without specifying fields to process '
+                self.logger.error('Cannot run PCPCombine without specifying fields to process '
                                   'unless running in CUSTOM mode. You must set '
                                   f'{data_src}_VAR<n>_[NAME/LEVELS] or {data_src}_OUTPUT_[NAME/LEVEL]')
                 return
@@ -561,7 +561,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             return None
 
         # if level type is A (accum) and second lead is 0, then
-        # run PcpCombine in -add mode with just the first file
+        # run PCPCombine in -add mode with just the first file
         if lead2 == 0 and level_type == 'A':
             self.method = 'ADD'
             self.add_input_file(file1, lead)
@@ -832,4 +832,4 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         return True
 
 if __name__ == "__main__":
-        util.run_stand_alone("pcp_combine_wrapper", "PcpCombine")
+    util.run_stand_alone("pcp_combine_wrapper", "PCPCombine")

@@ -17,9 +17,9 @@ from __future__ import (print_function, division)
 import os
 import met_util as util
 import time_util
-from mode_wrapper import ModeWrapper
+from mode_wrapper import MODEWrapper
 
-class MTDWrapper(ModeWrapper):
+class MTDWrapper(MODEWrapper):
 
     def __init__(self, config, logger):
         super(MTDWrapper, self).__init__(config, logger)
@@ -30,7 +30,7 @@ class MTDWrapper(ModeWrapper):
         self.obs_file = None
 
     def create_c_dict(self):
-        c_dict = super(ModeWrapper, self).create_c_dict()
+        c_dict = super(MODEWrapper, self).create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MTD_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 

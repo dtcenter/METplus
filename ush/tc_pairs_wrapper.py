@@ -29,7 +29,7 @@ from string_template_substitution import StringSub
 from string_template_substitution import get_tags
 from command_builder import CommandBuilder
 
-'''!@namespace TcPairsWrapper
+'''!@namespace TCPairsWrapper
 @brief Wraps the MET tool tc_pairs to parse ADeck and BDeck ATCF_by_pairs files,
 filter the data, and match them up.
 Call as follows:
@@ -38,13 +38,13 @@ tc_pairs_wrapper.py [-c /path/to/user.template.conf]
 @endcode
 '''
 
-class TcPairsWrapper(CommandBuilder):
+class TCPairsWrapper(CommandBuilder):
     """!Wraps the MET tool, tc_pairs to parse and match ATCF_by_pairs adeck and
        bdeck files.  Pre-processes extra tropical cyclone data.
     """
 
     def __init__(self, config, logger):
-        super(TcPairsWrapper, self).__init__(config, logger)
+        super(TCPairsWrapper, self).__init__(config, logger)
         self.app_name = 'tc_pairs'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
@@ -62,7 +62,7 @@ class TcPairsWrapper(CommandBuilder):
                  c_dict - A dictionary of the values from the config file
 
         """
-        c_dict = super(TcPairsWrapper, self).create_c_dict()
+        c_dict = super(TCPairsWrapper, self).create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_TC_PAIRS_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['MISSING_VAL_TO_REPLACE'] =\
@@ -739,4 +739,4 @@ class TcPairsWrapper(CommandBuilder):
         out_file.close()
 
 if __name__ == "__main__":
-    util.run_stand_alone("tc_pairs_wrapper", "TcPairs")
+    util.run_stand_alone("tc_pairs_wrapper", "TCPairs")
