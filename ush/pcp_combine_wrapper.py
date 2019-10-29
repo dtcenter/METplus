@@ -33,7 +33,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     """!Wraps the MET tool pcp_combine to combine or divide
     precipitation accumulations"""
     def __init__(self, config, logger):
-        super(PCPCombineWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'pcp_combine'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
@@ -54,7 +54,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.custom_command = ''
 
     def create_c_dict(self):
-        c_dict = super(PCPCombineWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_PCP_COMBINE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
@@ -112,7 +112,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         return c_dict
 
     def clear(self):
-        super(PCPCombineWrapper, self).clear()
+        super().clear()
         self.inaddons = []
         self.method = ""
         self.pcp_dir = ""

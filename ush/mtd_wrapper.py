@@ -20,7 +20,7 @@ from mode_wrapper import MODEWrapper
 class MTDWrapper(MODEWrapper):
 
     def __init__(self, config, logger):
-        super(MTDWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'mtd'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
@@ -28,7 +28,7 @@ class MTDWrapper(MODEWrapper):
         self.obs_file = None
 
     def create_c_dict(self):
-        c_dict = super(MODEWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MTD_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 

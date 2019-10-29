@@ -430,7 +430,7 @@ class METplusConfig(ProdConfig):
     def __init__(self, conf=None):
         """!Creates a new METplusConfig
         @param conf The configuration file."""
-        super(METplusConfig, self).__init__(conf)
+        super().__init__(conf)
         self._cycle = None
         self._logger = logging.getLogger('metplus')
         # config.logger is called in wrappers, so set this name
@@ -487,7 +487,7 @@ class METplusConfig(ProdConfig):
         if count >= 10:
             return ''
 
-        in_template = super(METplusConfig, self).getraw(sec, opt, default)
+        in_template = super().getraw(sec, opt, default)
         out_template = ""
         in_brackets = False
         for index, character in enumerate(in_template):
@@ -554,7 +554,7 @@ class METplusConfig(ProdConfig):
                 print('ERROR: {}'.format(msg))
             exit(1)
 
-        exe_path = super(METplusConfig, self).getexe(exe_name)
+        exe_path = super().getexe(exe_name)
 
         full_exe_path = shutil.which(exe_path)
         if full_exe_path is None:
@@ -575,7 +575,7 @@ class METplusConfig(ProdConfig):
             self.check_default('dir', dir_name, default)
             dir_path = default
         else:
-            dir_path = super(METplusConfig, self).getdir(dir_name)
+            dir_path = super().getdir(dir_name)
 
         if '/path/to' in dir_path:
             msg = 'Directory {} is set to or contains /path/to.'.format(dir_name)+\
@@ -599,7 +599,7 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil getstr to gracefully report if variable is not set
             and no default value is specified"""
         if self.has_option(sec, name):
-            return super(METplusConfig, self).getstr(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getstr(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
 
         # config item was not found
         self.check_default(sec, name, default)
@@ -609,7 +609,7 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil getbool to gracefully report if variable is not set
             and no default value is specified"""
         if self.has_option(sec, name):
-            return super(METplusConfig, self).getbool(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getbool(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
 
         # config item was not found
         self.check_default(sec, name, default)
@@ -619,7 +619,7 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil getint to gracefully report if variable is not set
             and no default value is specified"""
         if self.has_option(sec, name):
-            return super(METplusConfig, self).getint(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getint(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
 
         # config item was not found
         self.check_default(sec, name, default)
@@ -629,7 +629,7 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil getfloat to gracefully report if variable is not set
             and no default value is specified"""
         if self.has_option(sec, name):
-            return super(METplusConfig, self).getfloat(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getfloat(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
 
         # config item was not found
         self.check_default(sec, name, default)
@@ -640,7 +640,7 @@ class METplusConfig(ProdConfig):
         if self.has_option(sec, name):
             # convert value to seconds
             # Valid options match format 3600, 3600S, 60M, or 1H
-            value = super(METplusConfig, self).getstr(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            value = super().getstr(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
             regex_and_multiplier = {r'(-*)(\d+)S': 1,
                                     r'(-*)(\d+)M': 60,
                                     r'(-*)(\d+)H': 3600,

@@ -41,7 +41,7 @@ class SeriesByLeadWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
-        super(SeriesByLeadWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'SeriesByLead'
         # Retrieve any necessary values from the parm file(s)
         self.do_fhr_by_group = self.config.getbool('config',

@@ -42,7 +42,7 @@ class ExtractTilesWrapper(CommandBuilder):
     # having methods operating on them.
 
     def __init__(self, config, logger):
-        super(ExtractTilesWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'), 'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)

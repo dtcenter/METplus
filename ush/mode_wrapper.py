@@ -19,7 +19,7 @@ from compare_gridded_wrapper import CompareGriddedWrapper
 class MODEWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""
     def __init__(self, config, logger):
-        super(MODEWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'mode'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)

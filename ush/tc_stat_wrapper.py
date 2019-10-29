@@ -44,7 +44,7 @@ class TCStatWrapper(CommandBuilder):
         run_method = config.getstr('config', 'TC_STAT_RUN_VIA')
         self.by_config = bool(run_method == 'CONFIG')
 
-        super(TCStatWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'tc_stat'
         self.tc_exe = self.c_dict['APP_PATH']
         self.logger.info("Initialized TCStatWrapper")
@@ -63,7 +63,7 @@ class TCStatWrapper(CommandBuilder):
         """
         self.logger.info('Creating tc-stat dictionary...')
 
-        c_dict = super(TCStatWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
 
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_TC_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])

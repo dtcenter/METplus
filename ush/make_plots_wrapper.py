@@ -25,7 +25,7 @@ from command_builder import CommandBuilder
 
 class MakePlotsWrapper(CommandBuilder):
     def __init__(self, config, logger):
-        super(MakePlotsWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_path = 'python'
         self.app_name = 'make_plots'
 

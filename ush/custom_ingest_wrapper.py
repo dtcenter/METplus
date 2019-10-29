@@ -28,7 +28,7 @@ class CustomIngestWrapper(CommandBuilder):
     """!Wrapper to utilize Python Embedding in the MET tools to read in
     data using a python script"""
     def __init__(self, config, logger):
-        super(CustomIngestWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'regrid_data_plane'
         self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)

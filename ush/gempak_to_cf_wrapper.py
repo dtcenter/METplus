@@ -26,7 +26,7 @@ from command_builder import CommandBuilder
 
 class GempakToCFWrapper(CommandBuilder):
     def __init__(self, config, logger):
-        super(GempakToCFWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = "GempakToCF"
         self.class_path = self.config.getstr('exe', 'GEMPAKTOCF_CLASSPATH')
 

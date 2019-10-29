@@ -50,7 +50,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # pylint:disable=too-many-instance-attributes
         # All these instance attributes are needed to support the
         # plot_tcmpr.R functionality.
-        super(TCMPRPlotterWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'plot_tcmpr.R'
 
         self._init_tcmpr_script()

@@ -32,7 +32,7 @@ class SeriesByInitWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
-        super(SeriesByInitWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
         self.app_name = 'SeriesByInit'
@@ -612,7 +612,7 @@ class SeriesByInitWrapper(CommandBuilder):
                           self.get_output_path())
 
     def clear(self):
-        super(SeriesByInitWrapper, self).clear()
+        super().clear()
         self.inaddons = []
 
     def add_input_file(self, filename, type_id):

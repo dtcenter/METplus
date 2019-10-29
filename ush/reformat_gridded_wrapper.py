@@ -31,7 +31,7 @@ class ReformatGriddedWrapper(CommandBuilder):
 that reformat gridded data
     """
     def __init__(self, config, logger):
-        super(ReformatGriddedWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
 
     # this class should not be called directly
     # pylint:disable=unused-argument

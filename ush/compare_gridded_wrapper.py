@@ -33,14 +33,14 @@ that reformat gridded data
     """
 
     def __init__(self, config, logger):
-        super(CompareGriddedWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
 
     def create_c_dict(self):
         """!Create dictionary from config items to be used in the wrapper
             Allows developer to reference config items without having to know
             the type and consolidates config get calls so it is easier to see
             which config variables are used in the wrapper"""
-        c_dict = super(CompareGriddedWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
         c_dict['OBTYPE'] = self.config.getstr('config', 'OBTYPE', 'OBS')
         c_dict['CONFIG_DIR'] = self.config.getdir('CONFIG_DIR', '')
