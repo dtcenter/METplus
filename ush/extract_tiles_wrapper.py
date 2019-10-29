@@ -13,12 +13,8 @@ Condition codes: 0 for success, 1 for failure
 
 """
 
-from __future__ import (print_function, division)
-
 import os
 import sys
-import datetime
-import produtil.setup
 import met_util as util
 import feature_util
 from tc_stat_wrapper import TCStatWrapper

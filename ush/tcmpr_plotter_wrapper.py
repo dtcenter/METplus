@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
 import sys
 import os
 import re
@@ -11,8 +9,6 @@ from produtil.run import exe
 from produtil.run import checkrun
 import met_util as util
 from command_builder import CommandBuilder
-import config_metplus
-
 
 ##@namespace TCMPRPlotterWrapper
 # A Python class than encapsulates the plot_tcmpr.R plotting script.

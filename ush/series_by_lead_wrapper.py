@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import print_function
 
 import re
 import os
@@ -10,8 +9,6 @@ import glob
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 
 import produtil.setup
-# from produtil.run import batchexe
-# from produtil.run import run
 import met_util as util
 import time_util
 import feature_util

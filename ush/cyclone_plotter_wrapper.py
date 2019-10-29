@@ -6,7 +6,6 @@ A Python class that generates plots of extra tropical cyclone forecast data,
  verification plots http://www.emc.ncep.noaa.gov/mmb/gplou/emchurr/glblgen/
 """
 
-from __future__ import print_function
 import os
 import time
 import datetime
@@ -16,7 +15,6 @@ import collections
 # pylint:disable=import-error
 # numpy, matplotlib and mpl_toolkits are not part of the standard Python
 # library
-import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import cartopy.crs as ccrs

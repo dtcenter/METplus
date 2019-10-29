@@ -12,8 +12,6 @@ Output Files: pcp_combine files
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
-
 import os
 import met_util as util
 import datetime
@@ -200,7 +198,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     def get_daily_file(self, time_info, accum, data_src, file_template):
         """!Pull accumulation out of file that contains a full day of data
         Args:
-          @param valid_time valid time to search
+          @param time_info dictionary containing timing information
           @param accum accumulation to extract from file
           @param data_src type of data (FCST or OBS)
           @param file_template filename template to search

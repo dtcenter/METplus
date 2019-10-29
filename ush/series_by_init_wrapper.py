@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
 import errno
 import os
 import re
 import sys
 
-import config_metplus
 import met_util as util
-import produtil.setup
 from tc_stat_wrapper import TCStatWrapper
 import feature_util
 from command_builder import CommandBuilder

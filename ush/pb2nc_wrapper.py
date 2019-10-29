@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 
-from __future__ import print_function, unicode_literals
-import sys
 import os
 import re
 import met_util as util
 import time_util
 from command_builder import CommandBuilder
-from string_template_substitution import StringSub
 
 """
 Program Name: PB2NC_Wrapper.py

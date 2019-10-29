@@ -12,8 +12,6 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
-
 import os
 import glob
 import met_util as util

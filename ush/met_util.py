@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import print_function
 
 import logging
 import os
@@ -13,7 +12,6 @@ import re
 import gzip
 import bz2
 import zipfile
-from collections import namedtuple
 import struct
 from csv import reader
 from os.path import dirname, realpath

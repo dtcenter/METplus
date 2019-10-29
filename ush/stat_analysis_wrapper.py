@@ -12,8 +12,6 @@ Output Files: MET .stat files
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
-
 import logging
 import os
 import sys
