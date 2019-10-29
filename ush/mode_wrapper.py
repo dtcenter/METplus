@@ -33,16 +33,16 @@ class MODEWrapper(CompareGriddedWrapper):
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MODE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG')
+        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG_FILE', '')
         c_dict['OBS_INPUT_DIR'] = \
-          self.config.getdir('OBS_MODE_INPUT_DIR')
+          self.config.getdir('OBS_MODE_INPUT_DIR', '')
         c_dict['OBS_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
                              'OBS_MODE_INPUT_TEMPLATE')
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_MODE_INPUT_DATATYPE', '')
         c_dict['FCST_INPUT_DIR'] = \
-          self.config.getdir('FCST_MODE_INPUT_DIR')
+          self.config.getdir('FCST_MODE_INPUT_DIR', '')
         c_dict['FCST_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
                              'FCST_MODE_INPUT_TEMPLATE')
@@ -218,6 +218,10 @@ class MODEWrapper(CompareGriddedWrapper):
         # loop through fields and call MODE
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
             self.param = self.c_dict['CONFIG_FILE']
+            if self.param == '':
+                self.logger.error('Must set MODE_CONFIG_FILE to run MODE')
+                return
+
             self.create_and_set_output_dir(time_info)
             self.infiles.append(model_path)
             self.infiles.append(obs_path)

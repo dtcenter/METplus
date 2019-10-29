@@ -344,6 +344,10 @@ class CommandBuilder:
         upper_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
                                             "%Y%m%d%H%M%S").strftime("%s"))
 
+        if data_dir == '':
+            self.logger.error('Must set INPUT_DIR if looking for files within a time window')
+            return None
+
         # step through all files under input directory in sorted order
         for dirpath, _, all_files in os.walk(data_dir):
             for filename in sorted(all_files):

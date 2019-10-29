@@ -16,6 +16,7 @@ import os
 import met_util as util
 import time_util
 from mode_wrapper import MODEWrapper
+from compare_gridded_wrapper import CompareGriddedWrapper
 
 class MTDWrapper(MODEWrapper):
 
@@ -28,7 +29,7 @@ class MTDWrapper(MODEWrapper):
         self.obs_file = None
 
     def create_c_dict(self):
-        c_dict = super().create_c_dict()
+        c_dict = CompareGriddedWrapper.create_c_dict(self)
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MTD_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
@@ -47,7 +48,7 @@ class MTDWrapper(MODEWrapper):
         if not c_dict['SINGLE_RUN'] or c_dict['SINGLE_DATA_SRC'] == 'FCST':
             c_dict['FCST_IS_PROB'] = self.config.getbool('config', 'FCST_IS_PROB', False)
             c_dict['FCST_INPUT_DIR'] = \
-              self.config.getdir('FCST_MTD_INPUT_DIR', c_dict['INPUT_BASE'])
+              self.config.getdir('FCST_MTD_INPUT_DIR', '')
             c_dict['FCST_INPUT_TEMPLATE'] = \
               self.config.getraw('filename_templates',
                                  'FCST_MTD_INPUT_TEMPLATE')
@@ -79,7 +80,7 @@ class MTDWrapper(MODEWrapper):
         if not c_dict['SINGLE_RUN'] or c_dict['SINGLE_DATA_SRC'] == 'OBS':
             c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
             c_dict['OBS_INPUT_DIR'] = \
-            self.config.getdir('OBS_MTD_INPUT_DIR', c_dict['INPUT_BASE'])
+            self.config.getdir('OBS_MTD_INPUT_DIR', '')
             c_dict['OBS_INPUT_TEMPLATE'] = \
               self.config.getraw('filename_templates',
                                    'OBS_MTD_INPUT_TEMPLATE')

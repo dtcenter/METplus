@@ -162,6 +162,7 @@ def check_for_deprecated_config(conf, logger):
         {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS'},
         'TC_PAIRS_FORCE_OVERWRITE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS'},
         'GRID_STAT_CONFIG' : {'sec' : 'config', 'alt' : 'GRID_STAT_CONFIG_FILE'},
+        'MODE_CONFIG' : {'sec' : 'config', 'alt' : 'MODE_CONFIG_FILE'},
         'FCST_PCP_COMBINE_INPUT_LEVEL' : {'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS'},
         'OBS_PCP_COMBINE_INPUT_LEVEL' : {'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS'},
     }

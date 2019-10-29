@@ -9,7 +9,7 @@ import pytest
 import produtil
 import config_metplus
 from command_builder import CommandBuilder
-from tc_pairs_wrapper import TcPairsWrapper
+from tc_pairs_wrapper import TCPairsWrapper
 from config_wrapper import ConfigWrapper
 import met_util as util
 
@@ -41,10 +41,10 @@ def tc_pairs_wrapper():
          files.  Subsequent tests can customize the final METplus configuration
          to over-ride these /path/to values."""
 
-    # Default, empty TcPairsWrapper with some configuration values set
+    # Default, empty TCPairsWrapper with some configuration values set
     # to /path/to:
     conf = metplus_config()
-    return TcPairsWrapper(conf, conf.logger)
+    return TCPairsWrapper(conf, conf.logger)
 
 
 #@pytest.fixture
