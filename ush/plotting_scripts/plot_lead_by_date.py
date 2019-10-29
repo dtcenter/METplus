@@ -546,7 +546,7 @@ for plot_info in plot_info_list:
                             levels=CF1.levels,
                             colors='k',
                             linewidths=1.0)
-            ax.clabel(C1, CF1.levels,
+            ax.clabel(C1, C1.levels,
                       fmt='%1.2f',
                       inline=True,
                       fontsize=12.5)
@@ -600,7 +600,7 @@ for plot_info in plot_info_list:
                     C2 = ax.contour(xmesh, ymesh, model_obs_diff,
                                     levels=CF2.levels, colors='k',
                                     linewidths=1.0)
-                    ax.clabel(C2, CF2.levels,
+                    ax.clabel(C2, C2.levels,
                               fmt='%1.2f',
                               inline=True,
                               fontsize=12.5)
@@ -639,7 +639,7 @@ for plot_info in plot_info_list:
                                     levels=CF1.levels,
                                     colors='k',
                                     linewidths=1.0)
-                    ax.clabel(C1, CF1.levels,
+                    ax.clabel(C1, C1.levels,
                               fmt='%1.2f',
                               inline=True,
                               fontsize=12.5)
@@ -652,7 +652,7 @@ for plot_info in plot_info_list:
                                    levels=CF1.levels,
                                    colors='k',
                                    linewidths=1.0)
-                    ax.clabel(C, CF.levels,
+                    ax.clabel(C, C.levels,
                               fmt='%1.2f',
                               inline=True,
                               fontsize=12.5)
@@ -672,7 +672,7 @@ for plot_info in plot_info_list:
                                     levels=CF1.levels,
                                     colors='k',
                                     linewidths=1.0)
-                    ax.clabel(C1, CF1.levels,
+                    ax.clabel(C1, C1.levels,
                               fmt='%1.2f',
                               inline=True,
                               fontsize=12.5)
@@ -699,7 +699,7 @@ for plot_info in plot_info_list:
                         C2 = ax.contour(xmesh, ymesh, model_model1_diff,
                                         levels=CF2.levels, colors='k',
                                         linewidths=1.0)
-                        ax.clabel(C2, CF2.levels,
+                        ax.clabel(C2, C2.levels,
                                   fmt='%1.2f',
                                   inline=True,
                                   fontsize=12.5)
