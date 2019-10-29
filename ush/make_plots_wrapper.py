@@ -32,8 +32,6 @@ class MakePlotsWrapper(CommandBuilder):
         self.app_path = 'python'
         self.app_name = 'make_plots'
         
-        self.c_dict = self.create_c_dict()
-
     def set_plotting_script(self, plotting_script_path):
         self.plotting_script = plotting_script_path
 
@@ -62,7 +60,11 @@ class MakePlotsWrapper(CommandBuilder):
                  c_dict  - a dictionary containing the settings in the
                            configuration files unique to the wrapper
         """
-        c_dict = dict()
+        c_dict = super(MakePlotsWrapper, self).create_c_dict()
+        c_dict['VERBOSITY'] = (
+            self.config.getstr('config','LOG_MAKE_PLOTS_VERBOSITY',
+                               c_dict['VERBOSITY'])
+        )
         c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
         c_dict['PROCESS_LIST'] = self.config.getstr('config', 'PROCESS_LIST')
         c_dict['INPUT_BASE_DIR'] = self.config.getdir('MAKE_PLOTS_INPUT_DIR')

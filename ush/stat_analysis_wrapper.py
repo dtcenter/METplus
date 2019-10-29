@@ -37,8 +37,6 @@ class StatAnalysisWrapper(CommandBuilder):
                                      'bin/stat_analysis')
         self.app_name = os.path.basename(self.app_path)
         
-        self.c_dict = self.create_c_dict()     
-
     def set_lookin_dir(self, lookindir):
         self.lookindir = "-lookin "+lookindir+" "
    
@@ -73,7 +71,11 @@ class StatAnalysisWrapper(CommandBuilder):
                  c_dict  - a dictionary containing the settings in the
                            configuration files unique to the wrapper
         """
-        c_dict = dict()
+        c_dict = super(StatAnalysisWrapper, self).create_c_dict()
+        c_dict['VERBOSITY'] = (
+            self.config.getstr('config','LOG_STAT_ANALYSIS_VERBOSITY',
+                               c_dict['VERBOSITY'])
+        )
         c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
         c_dict['PROCESS_LIST'] = self.config.getstr('config', 'PROCESS_LIST')
         c_dict['CONFIG_FILE'] = self.config.getstr('config', 
