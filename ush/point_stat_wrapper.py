@@ -39,7 +39,8 @@ class PointStatWrapper(CompareGriddedWrapper):
                              in the METplus configuration file.
         """
         c_dict = super(PointStatWrapper, self).create_c_dict()
-
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_POINT_STAT_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'POINT_STAT_OFFSETS', '0'))
         c_dict['FCST_INPUT_TEMPLATE'] = \
@@ -58,6 +59,13 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_INPUT_DIR'] = self.config.getdir('OBS_POINT_STAT_INPUT_DIR')
         c_dict['OUTPUT_DIR'] = \
             self.config.getdir('POINT_STAT_OUTPUT_DIR')
+
+        c_dict['CLIMO_INPUT_DIR'] = self.config.getdir('CLIMO_POINT_STAT_INPUT_DIR',
+                                                       '')
+        c_dict['CLIMO_INPUT_TEMPLATE'] = \
+            self.config.getraw('filename_templates',
+                               'CLIMO_POINT_STAT_INPUT_TEMPLATE',
+                               '')
 
         # Configuration
         c_dict['CONFIG_FILE'] = \
@@ -94,6 +102,11 @@ class PointStatWrapper(CompareGriddedWrapper):
                                'POINT_STAT_VERIFICATION_MASK_TEMPLATE')
         c_dict['VERIFICATION_MASK'] = ''
 
+        c_dict['FCST_PROB_THRESH'] = self.config.getstr('config',
+                                                        'FCST_POINT_STAT_PROB_THRESH', '==0.1')
+        c_dict['OBS_PROB_THRESH'] = self.config.getstr('config',
+                                                       'OBS_POINT_STAT_PROB_THRESH', '==0.1')
+
         return c_dict
 
     def run_at_time(self, input_dict):
@@ -102,9 +115,10 @@ class PointStatWrapper(CompareGriddedWrapper):
         # loop of forecast leads and process each
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
-            input_dict['lead_hours'] = lead
+            input_dict['lead'] = lead
 
-            self.logger.info("Processing forecast lead {}".format(lead))
+            lead_string = time_util.ti_calculate(input_dict)['lead_string']
+            self.logger.info("Processing forecast lead {}".format(lead_string))
 
             # set current lead time config and environment variables
             self.config.set('config', 'CURRENT_LEAD_TIME', lead)
@@ -114,16 +128,8 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.run_at_time_once(input_dict)
 
     def run_at_time_once(self, input_dict):
-        if self.c_dict['FCST_INPUT_DIR'] == '':
-            self.logger.error('Must set FCST_POINT_STAT_INPUT_DIR in config file')
-            exit(1)
-
         if self.c_dict['FCST_INPUT_TEMPLATE'] == '':
             self.logger.error('Must set FCST_POINT_STAT_INPUT_TEMPLATE in config file')
-            exit(1)
-
-        if self.c_dict['OBS_INPUT_DIR'] == '':
-            self.logger.error('Must set OBS_POINT_STAT_INPUT_DIR in config file')
             exit(1)
 
         if self.c_dict['OBS_INPUT_TEMPLATE'] == '':
@@ -138,7 +144,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.clear()
 
         time_info = time_util.ti_calculate(input_dict)
-        var_list = self.c_dict['VAR_LIST']
+        var_list = util.parse_var_list(self.config, time_info)
 
         # get verification mask if available
         self.get_verification_mask(time_info)
@@ -146,30 +152,24 @@ class PointStatWrapper(CompareGriddedWrapper):
         # get model to compare
         model_path = self.find_model(time_info, var_list[0])
         if model_path is None:
-            self.logger.error('Could not find file in {} matching template {}'
-                              .format(self.c_dict['FCST_INPUT_DIR'],
-                                      self.c_dict['FCST_INPUT_TEMPLATE']))
-            self.logger.error("Could not find file in " + self.c_dict['FCST_INPUT_DIR'] +\
-                              " for init time " + time_info['init_fmt'] +\
-                              " f" + str(time_info['lead_hours']))
             return False
 
         # get observation to compare
         obs_path = None
         # loop over offset list and find first file that matches
         for offset in self.c_dict['OFFSETS']:
-            input_dict['offset'] = offset
+            input_dict['offset_hours'] = offset
             time_info = time_util.ti_calculate(input_dict)
-            obs_path = self.find_obs(time_info, var_list[0])
+            obs_path = self.find_obs(time_info, var_list[0], False)
 
             if obs_path is not None:
                 break
 
         if obs_path is None:
-            self.logger.error('Could not find observation file in {} '
-                              'matching template {}'
-                              .format(self.c_dict['OBS_INPUT_DIR'],
-                                      self.c_dict['OBS_INPUT_TEMPLATE']))
+            in_dir = self.c_dict['OBS_INPUT_DIR']
+            in_template = self.c_dict['OBS_INPUT_TEMPLATE']
+            self.logger.error(f"Could not find observation file in {in_dir} using template {in_template} "
+                              f"using offsets {self.c_dict['OFFSETS']}")
             return False
 
         # found both fcst and obs
@@ -184,22 +184,30 @@ class PointStatWrapper(CompareGriddedWrapper):
         fcst_field_list = []
         obs_field_list = []
         for var_info in var_list:
-            next_fcst = self.get_one_field_info(var_info['fcst_level'],
-                                                var_info['fcst_thresh'],
-                                                var_info['fcst_name'],
-                                                var_info['fcst_extra'], 'FCST')
-            next_obs = self.get_one_field_info(var_info['obs_level'],
-                                               var_info['obs_thresh'],
-                                               var_info['obs_name'],
-                                               var_info['obs_extra'], 'OBS')
-            fcst_field_list.append(next_fcst)
-            obs_field_list.append(next_obs)
+            next_fcst = self.get_field_info(v_level=var_info['fcst_level'],
+                                            v_thresh=var_info['fcst_thresh'],
+                                            v_name=var_info['fcst_name'],
+                                            v_extra=var_info['fcst_extra'],
+                                            d_type='FCST')
+
+            next_obs = self.get_field_info(v_level=var_info['obs_level'],
+                                           v_thresh=var_info['obs_thresh'],
+                                           v_name=var_info['obs_name'],
+                                           v_extra=var_info['obs_extra'],
+                                           d_type='OBS')
+
+            if next_fcst is None or next_obs is None:
+                return False
+
+            fcst_field_list.extend(next_fcst)
+            obs_field_list.extend(next_obs)
+
         fcst_field = ','.join(fcst_field_list)
         obs_field = ','.join(obs_field_list)
 
         self.process_fields(time_info, fcst_field, obs_field)
 
-    def set_environment_variables(self, fcst_field=None, obs_field=None, c=None):
+    def set_environment_variables(self, fcst_field=None, obs_field=None, time_info=None):
         """! Set all the environment variables in the MET config
              file to the corresponding values in the METplus config file.
 
@@ -222,7 +230,6 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         regrid_to_grid = self.c_dict['REGRID_TO_GRID']
         self.add_env_var('REGRID_TO_GRID', regrid_to_grid)
-#        os.environ['REGRID_TO_GRID'] = regrid_to_grid
 
         # MET accepts a list of values for POINT_STAT_POLY, POINT_STAT_GRID,
         # POINT_STAT_STATION_ID, and POINT_STAT_MESSAGE_TYPE. If these
@@ -289,6 +296,9 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.add_env_var('NEIGHBORHOOD_SHAPE',
                              self.c_dict['NEIGHBORHOOD_SHAPE'])
             print_list.append('NEIGHBORHOOD_SHAPE')
+
+        # set user environment variables
+        self.set_user_environment(time_info)
 
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")

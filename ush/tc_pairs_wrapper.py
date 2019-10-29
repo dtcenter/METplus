@@ -63,6 +63,8 @@ class TcPairsWrapper(CommandBuilder):
 
         """
         c_dict = super(TcPairsWrapper, self).create_c_dict()
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_TC_PAIRS_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
         c_dict['MISSING_VAL_TO_REPLACE'] =\
             self.config.getstr('config', 'TC_PAIRS_MISSING_VAL_TO_REPLACE', '-99')
         c_dict['MISSING_VAL'] =\
@@ -138,7 +140,7 @@ class TcPairsWrapper(CommandBuilder):
         # if running in READ_ALL_FILES mode, call tc_pairs once and exit
         if self.c_dict['READ_ALL_FILES']:
             # Set up the environment variable to be used in the tc_pairs Config
-            self.set_env_vars(None)
+            self.set_environment_variables(None)
             self.bdeck = [self.c_dict['BDECK_DIR']]
 
             adeck_dir = self.c_dict['ADECK_DIR']
@@ -188,7 +190,7 @@ class TcPairsWrapper(CommandBuilder):
 
         # Set up the environment variable to be used in the TCPairs Config
         # file (TC_PAIRS_CONFIG_FILE)
-        self.set_env_vars(time_info)
+        self.set_environment_variables(time_info)
 
         # set output dir
         self.outdir = self.c_dict['OUTPUT_DIR']
@@ -253,7 +255,7 @@ class TcPairsWrapper(CommandBuilder):
 
         return True
 
-    def set_env_vars(self, time_info):
+    def set_environment_variables(self, time_info):
         """! Set up all the environment variables that are assigned
              in the METplus config file which are to be used by the MET
             TC-pairs config file.
@@ -404,6 +406,9 @@ class TcPairsWrapper(CommandBuilder):
         tmp_dland_file = self.c_dict['DLAND_FILE']
         self.add_env_var('DLAND_FILE', str(tmp_dland_file))
 
+        # set user environment variables
+        self.set_user_environment(time_info)
+
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_user_env_items()
@@ -450,7 +455,9 @@ class TcPairsWrapper(CommandBuilder):
 
         # if no bdeck_files found
         if len(bdeck_files) == 0:
-            self.logger.warning('No BDECK files found')
+            template = self.c_dict['BDECK_TEMPLATE']
+            self.logger.error(f'No BDECK files found searching for basin {basin} and '
+                              f'cyclone {cyclone} using template {template}')
             return False
 
         # find corresponding adeck or edeck files
@@ -516,7 +523,7 @@ class TcPairsWrapper(CommandBuilder):
                                                   time_info)
 
             if not adeck_list and not edeck_list:
-                self.logger.debug('Could not find any corresponding '
+                self.logger.error('Could not find any corresponding '
                                   'ADECK or EDECK files')
                 continue
 
@@ -567,9 +574,10 @@ class TcPairsWrapper(CommandBuilder):
                 @param time_info object containing timing information to process
         """
         deck_list = []
+        template = self.c_dict[deck+'DECK_TEMPLATE']
         # get matching adeck wildcard expression for first model
         string_sub = StringSub(self.logger,
-                               self.c_dict[deck+'DECK_TEMPLATE'],
+                               template,
                                basin=basin,
                                cyclone=cyclone,
                                model=model_list[0],
@@ -580,8 +588,7 @@ class TcPairsWrapper(CommandBuilder):
         # add adeck files if they exist
         for model in model_list:
             deck_glob = deck_expr.replace(model_list[0], model)
-            self.logger.debug('Looking for {}DECK file: {}'.format(deck,
-                                                                   deck_glob))
+            self.logger.debug(f'Looking for {deck}DECK file: {deck_glob} using template {template}')
             deck_files = glob.glob(deck_glob)
             if not deck_files:
                 continue
@@ -662,7 +669,7 @@ class TcPairsWrapper(CommandBuilder):
         if not os.path.exists(os.path.dirname(output_path)):
             os.makedirs(os.path.dirname(output_path))
 
-        cmd = '{} -v {}'.format(self.app_path, self.verbose)
+        cmd = '{} -v {}'.format(self.app_path, self.c_dict['VERBOSITY'])
         cmd += ' -bdeck {}'.format(' '.join(self.bdeck))
 
         if self.adeck:

@@ -64,7 +64,7 @@ def metplus_config():
         produtil.log.postmsg('make_plots_wrapper  is starting')
 
         # Read in the configuration object CONFIG
-        config = config_metplus.setup()
+        config = config_metplus.setup(util.baseinputconfs)
         return config
 
     except Exception as e:

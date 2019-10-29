@@ -67,6 +67,8 @@ class TcStatWrapper(CommandBuilder):
 
         c_dict = super(TcStatWrapper, self).create_c_dict()
 
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_TC_STAT_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
         # Useful for logging
         # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
         # [File : function]| Message

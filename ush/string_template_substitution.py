@@ -3,7 +3,7 @@
 """
 
 Program Name: string_template_substitution.py
-Contact(s): Julie Prestopnik, NCAR RAL DTC, jpresto@ucar.edu
+Contact(s): Julie Prestopnik, NCAR RAL DTC, jpresto@ucar.edu, George McCabe
 Abstract: Supporting functions for parsing and creating filename templates
 History Log:  Initial version for METPlus
 Usage: Usually imported in other Python code for individual function calls
@@ -16,6 +16,7 @@ Condition codes: Varies
 
 import re
 import datetime
+from dateutil.relativedelta import relativedelta
 
 import time_util
 
@@ -49,7 +50,10 @@ LENGTH_DICT = {'%Y': 4,
                '%H': 2,
                '%M': 2,
                '%S': 2,
-               '%j': 3}
+               '%j': 3,
+               '%y': 2,
+               '%b': 3,
+               }
 
 
 def multiple_replace(replace_dict, text):
@@ -94,12 +98,12 @@ def get_seconds_from_template(split_item):
         return
 
     seconds = shift_split_string[1]
-    return int(seconds)
+    return int(time_util.get_seconds_from_string(seconds, default_unit='S'))
 
 def format_one_time_item(item, time_str, unit):
     """!Determine precision of time offset value and format
         Args:
-         @param item format to substitute, i.e. %3M or %H
+         @param item format to substitute, i.e. 3M or H
          @param time_str time value that precision will be applied, i.e. 60
          @param unit currently being processed, i.e. M or H or S
         Returns: Padded value or empty string if unit is not found in item
@@ -117,6 +121,8 @@ def format_one_time_item(item, time_str, unit):
             res = re.match("^"+unit+"+(.*)", item)
             if res:
                 rest = res.group(1)
+                if unit != 's':
+                    padding = max(2, count)
 
         # add formatted time
         return str(time_str).zfill(padding)+rest
@@ -133,27 +139,51 @@ def format_hms(fmt, obj):
         Returns: Formatted time value
     """
     out_str = ''
-    # split time into hours, mins, and secs
-    # Specifying integer division // for Python 3
-    # since that was the intent in Python 2.
+    fmt_split = fmt.split('%')[1:]
+    # split time into days, hours, mins, and secs
+    # time should be relative to the next highest unit if higher units are specified
+    # i.e. 90 minutes %M => 90, but %H%M => 0130
+    days = obj // 86400
     hours = obj // 3600
-    minutes = (obj % 3600) // 60
-    seconds = (obj % 3600) % 60
+    minutes = obj  // 60
+    seconds = obj
+
+    # if days are specified, change hours, minutes, and seconds to relative
+    if True in ['d' in x for x in fmt_split]:
+        hours = (obj % 86400) // 3600
+        minutes = (obj % 3600) // 60
+        seconds = (obj % 3600) % 60
+
+    # if hours are specified, change minutes and seconds to relative
+    if True in ['H' in x for x in fmt_split]:
+        minutes = (obj % 3600) // 60
+        seconds = (obj % 3600) % 60
+
+    # if minutes are specified, change seconds to relative
+    if True in ['M' in x for x in fmt_split]:
+        seconds = (obj % 3600) % 60
 
     # parse format
-    fmt_split = fmt.split('%')
     for item in fmt_split:
         out_str += format_one_time_item(item, hours, 'H')
         out_str += format_one_time_item(item, minutes, 'M')
         out_str += format_one_time_item(item, seconds, 'S')
         out_str += format_one_time_item(item, obj, 's')
-        out_str += format_one_time_item(item, obj, 'd')
+        out_str += format_one_time_item(item, days, 'd')
 
     return out_str
 
 def set_output_dict_from_time_info(time_dict, output_dict, key):
     """!Create datetime object from time data,
         get month and day from julian date if applicable"""
+    # if 2 digit year is set, get full year
+    if time_dict['Y'] == -1 and time_dict['y'] != -1:
+        time_dict['Y'] = int(datetime.datetime.strptime(str(time_dict['y']), '%y').strftime('%Y'))
+
+    # if month as 3 letter string is set, get month number
+    if time_dict['m'] == -1 and time_dict['b'] != -1:
+        time_dict['m'] = int(datetime.datetime.strptime(str(time_dict['b']), '%b').strftime('%m'))
+
     if time_dict['Y'] != -1 and time_dict['j'] != -1:
         date_t = datetime.datetime.strptime(str(time_dict['Y'])+'_'+str(time_dict['j']),
                                             '%Y_%j')
@@ -280,6 +310,10 @@ class StringSub(object):
                 obj = self.round_time_down(obj)
 
                 return obj.strftime(fmt)
+            # if input is relativedelta
+            elif isinstance(obj, relativedelta):
+                self.logger.error('Year and month intervals not yet supported in string substitution')
+                exit(1)
             # if input is integer, format with H, M, and S
             elif isinstance(obj, int):
                 obj += self.shift_seconds
@@ -389,7 +423,7 @@ class StringSub(object):
 
             # split_string[0] holds the key (e.g. "init", "valid", etc)
             if split_string[0] not in self.kwargs.keys():
-                # Log and continue
+                # Log and exit
                 self.logger.error("The key " + split_string[0] +
                                   " was not passed to StringSub " +
                                   " for template: " + self.tmpl)
@@ -569,6 +603,11 @@ class StringExtract(object):
             else:
                 # keep track of text in between tags to ensure that it matches
                 # the template, do not return a time if it does not match
+
+                # if next index exceeds length of the file string, return
+                if str_i >= len(self.full_str):
+                    return None
+
                 between_template += self.template[i]
                 between_filename += self.full_str[str_i]
 
@@ -591,25 +630,31 @@ class StringExtract(object):
         offset = 0
 
         valid['Y'] = -1
+        valid['y'] = -1
         valid['m'] = -1
         valid['d'] = -1
         valid['j'] = -1
         valid['H'] = 0
         valid['M'] = 0
+        valid['b'] = -1
 
         init['Y'] = -1
+        init['y'] = -1
         init['m'] = -1
         init['d'] = -1
         init['j'] = -1
         init['H'] = 0
         init['M'] = 0
+        init['b'] = -1
 
         da_init['Y'] = -1
+        da_init['y'] = -1
         da_init['m'] = -1
         da_init['d'] = -1
         da_init['j'] = -1
         da_init['H'] = 0
         da_init['M'] = 0
+        da_init['b'] = -1
 
         lead['H'] = 0
         lead['M'] = 0
@@ -648,7 +693,7 @@ class StringExtract(object):
             if key.startswith(OFFSET_STRING):
                 offset = int(value)
 
-        output_dict['offset'] = offset
+        output_dict['offset_hours'] = offset
 
         time_info = time_util.ti_calculate(output_dict)
         return time_info

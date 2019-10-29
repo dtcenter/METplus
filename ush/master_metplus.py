@@ -16,12 +16,18 @@ from __future__ import print_function
 
 import os
 import sys
+
+py_version = sys.version.split(' ')[0]
+if py_version < '3.6.3':
+    print("Must be using Python 3.6.3 or higher. You are using {}".format(py_version))
+    exit(1)
+
 import logging
 import shutil
+from datetime import datetime
 import produtil.setup
 import met_util as util
 import config_metplus
-from config_wrapper import ConfigWrapper
 
 # wrappers are referenced dynamically based on PROCESS_LIST values
 # import of each wrapper is required
@@ -49,6 +55,8 @@ from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TcStatWrapper
 from gempak_to_cf_wrapper import GempakToCFWrapper
 from example_wrapper import ExampleWrapper
+from custom_ingest_wrapper import CustomIngestWrapper
+from ascii2nc_wrapper import Ascii2NcWrapper
 
 '''!@namespace master_metplus
 Main script the processes all the tasks in the PROCESS_LIST
@@ -56,7 +64,6 @@ Main script the processes all the tasks in the PROCESS_LIST
 
 def main():
     """!Main program.
-
     Master METplus script that invokes the necessary Python scripts
     to perform various activities, such as series analysis."""
     # Setup Task logger, Until Conf object is created, Task logger is
@@ -65,7 +72,8 @@ def main():
     logger.info('Starting METplus v%s', util.get_version_number())
 
     # Parse arguments, options and return a config instance.
-    conf = config_metplus.setup(filename='master_metplus.py')
+    config = config_metplus.setup(util.baseinputconfs,
+                                  filename='master_metplus.py')
 
     # NOW we have a conf object p, we can now get the logger
     # and set the handler to write to the LOG_METPLUS
@@ -74,15 +82,17 @@ def main():
     # the setup wrapper and encapsulated in the config object.
     # than you would get it this way logger=p.log(). The config
     # object has-a logger we want.
-    logger = util.get_logger(conf)
+    logger = util.get_logger(config)
 
+    version_number = util.get_version_number()
+    config.set('config', 'METPLUS_VERSION', version_number)
     logger.info('Running METplus v%s called with command: %s',
-                util.get_version_number(), ' '.join(sys.argv))
+                version_number, ' '.join(sys.argv))
 
     # check for deprecated config items and warn user to remove/replace them
-    util.check_for_deprecated_config(conf, logger)
+    util.check_for_deprecated_config(config, logger)
 
-    config = ConfigWrapper(conf, logger)
+    util.check_user_environment(config)
 
     # set staging dir to OUTPUT_BASE/stage if not set
     if not config.has_option('dir', 'STAGING_DIR'):
@@ -91,10 +101,6 @@ def main():
 
     # handle dir to write temporary files
     util.handle_tmp_dir(config)
-
-    # This is available in each subprocess from os.system BUT
-    # we also set it in each process since they may be called stand alone.
-    os.environ['MET_BASE'] = config.getdir('MET_BASE')
 
     config.env = os.environ.copy()
 
@@ -159,9 +165,32 @@ def main():
         shutil.rmtree(staging_dir)
 
     # rewrite final conf so it contains all of the default values used
-    util.write_final_conf(conf, logger)
+    util.write_final_conf(config, logger)
 
-    logger.info('METplus has successfully finished running.')
+    # compute time it took to run
+    start_clock_time = datetime.strptime(config.getstr('config', 'CLOCK_TIME'), '%Y%m%d%H%M%S')
+    end_clock_time = datetime.now()
+    total_run_time = end_clock_time - start_clock_time
+    logger.debug("METplus took {} to run.".format(total_run_time))
+
+    # compute total number of errors that occurred and output results
+    total_errors = 0
+    for process in processes:
+        if process.errors != 0:
+            process_name = process.__class__.__name__.replace('Wrapper', '')
+            error_msg = '{} had {} error.'.format(process_name, process.errors)
+            if process.errors > 1:
+                error_msg += 's'
+            logger.error(error_msg)
+            total_errors += process.errors
+
+    if total_errors == 0:
+        logger.info('METplus has successfully finished running.')
+    else:
+        error_msg = 'METplus has finished running but had {} error.'.format(total_errors)
+        if total_errors > 1:
+            error_msg += 's'
+        logger.error(error_msg)
 
     exit()
 

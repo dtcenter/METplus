@@ -58,9 +58,8 @@ def metplus_config():
         produtil.log.postmsg('tc_pairs_wrapper  is starting')
 
         # Read in the configuration object CONFIG
-        config = config_metplus.setup()
+        config = config_metplus.setup(util.baseinputconfs)
         logger = util.get_logger(config)
-        config = ConfigWrapper(config, logger)
         return config
 
     except Exception as e:

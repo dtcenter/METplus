@@ -35,6 +35,8 @@ class GridStatWrapper(CompareGriddedWrapper):
 
     def create_c_dict(self):
         c_dict = super(GridStatWrapper, self).create_c_dict()
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_GRID_STAT_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
         c_dict['CONFIG_FILE'] = self.config.getstr('config', 'GRID_STAT_CONFIG_FILE', '')
         c_dict['OBS_INPUT_DIR'] = \
           self.config.getdir('OBS_GRID_STAT_INPUT_DIR', self.config.getdir('OUTPUT_BASE'))
@@ -52,15 +54,12 @@ class GridStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
 
-
-        c_dict['CLIMO_INPUT_DIR'] = ''
-        c_dict['CLIMO_INPUT_TEMPLATE'] = ''
-        if self.config.has_option('dir', 'CLIMO_GRID_STAT_INPUT_DIR'):
-            c_dict['CLIMO_INPUT_DIR'] = \
-              self.config.getdir('CLIMO_GRID_STAT_INPUT_DIR', '')
-            c_dict['CLIMO_INPUT_TEMPLATE'] = \
-              self.config.getraw('filename_templates',
-                                 'CLIMO_GRID_STAT_INPUT_TEMPLATE')
+        c_dict['CLIMO_INPUT_DIR'] = self.config.getdir('CLIMO_GRID_STAT_INPUT_DIR',
+                                                       '')
+        c_dict['CLIMO_INPUT_TEMPLATE'] = \
+            self.config.getraw('filename_templates',
+                               'CLIMO_GRID_STAT_INPUT_TEMPLATE',
+                               '')
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_STAT_OUTPUT_DIR',
                                                   self.config.getdir('OUTPUT_BASE'))
@@ -81,7 +80,6 @@ class GridStatWrapper(CompareGriddedWrapper):
             self.config.getraw('filename_templates',
                                'GRID_STAT_VERIFICATION_MASK_TEMPLATE')
         c_dict['VERIFICATION_MASK'] = ''
-
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'grid_stat')

@@ -28,10 +28,11 @@ class MTDWrapper(ModeWrapper):
                                      'bin', self.app_name)
         self.fcst_file = None
         self.obs_file = None
-#        self.c_dict = self.create_c_dict()
 
     def create_c_dict(self):
         c_dict = super(ModeWrapper, self).create_c_dict()
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MTD_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
 
         # set to prevent find_obs from getting multiple files within
         #  a time window. Does not refer to time series of files
@@ -125,7 +126,9 @@ class MTDWrapper(ModeWrapper):
 #        file_interval = self.c_dict['FILE_INTERVAL']
 
         lead_seq = util.get_lead_sequence(self.config, input_dict)
-        for var_info in self.c_dict['VAR_LIST']:
+        var_list = util.parse_var_list(self.config, input_dict)
+
+        for var_info in var_list:
             if self.c_dict['SINGLE_RUN']:
                 self.run_single_mode(input_dict, var_info)
                 continue
@@ -135,34 +138,33 @@ class MTDWrapper(ModeWrapper):
             # find files for each forecast lead time
             tasks = []
             for lead in lead_seq:
-                input_dict['lead_hours'] = lead
+                input_dict['lead'] = lead
                 time_info = time_util.ti_calculate(input_dict)
                 tasks.append(time_info)
 
             for current_task in tasks:
                 # call find_model/obs as needed
-                model_file = self.find_model(current_task, var_info)
-                obs_file = self.find_obs(current_task, var_info)
+                model_file = self.find_model(current_task, var_info, False)
+                obs_file = self.find_obs(current_task, var_info, False)
                 if model_file is None and obs_file is None:
-                    self.logger.warning('Obs and fcst files were not found for init {} and lead {}'.
-                                        format(current_task['init_fmt'], current_task['lead_hours']))
                     continue
+
                 if model_file is None:
-                    self.logger.warning('Forecast file was not found for init {} and lead {}'.
-                                        format(current_task['init_fmt'], current_task['lead_hours']))
                     continue
+
                 if obs_file is None:
-                    self.logger.warning('Observation file was not found for init {} and lead {}'.
-                                        format(current_task['init_fmt'], current_task['lead_hours']))
                     continue
+
                 model_list.append(model_file)
                 obs_list.append(obs_file)
 
-            if len(model_list) == 0:
+            # only check model list because obs list should have same size
+            if not model_list:
+                self.logger.error('Could not find any files to process')
                 return
 
             # write ascii file with list of files to process
-            input_dict['lead_hours'] = 0
+            input_dict['lead'] = 0
             time_info = time_util.ti_calculate(input_dict)
             model_outfile = time_info['valid_fmt'] + '_mtd_fcst_' + var_info['fcst_name'] + '.txt'
             obs_outfile = time_info['valid_fmt'] + '_mtd_obs_' + var_info['obs_name'] + '.txt'
@@ -189,21 +191,20 @@ class MTDWrapper(ModeWrapper):
 
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
-            input_dict['lead_hours'] = lead
+            input_dict['lead'] = lead
             current_task = time_util.ti_calculate(input_dict)
 
             single_file = find_method(current_task, var_info)
             if single_file is None:
-                self.logger.warning('Single file was not found for init {} and lead {}'.
-                                    format(current_task['init_fmt'], current_task['lead_hours']))
                 continue
+
             single_list.append(single_file)
 
         if len(single_list) == 0:
             return
 
         # write ascii file with list of files to process
-        input_dict['lead_hours'] = 0
+        input_dict['lead'] = 0
         time_info = time_util.ti_calculate(input_dict)
         single_outfile = time_info['valid_fmt'] + '_mtd_single_' + s_name + '.txt'
         single_list_path = self.write_list_file(single_outfile, single_list)
@@ -228,13 +229,39 @@ class MTDWrapper(ModeWrapper):
                 @param obs_path observation file list path
         """
         # if no thresholds are specified, run once
-        fcst_thresh_list = [0]
-        obs_thresh_list = [0]
-        if len(var_info['fcst_thresh']) != 0:
+        fcst_thresh_list = []
+        obs_thresh_list = []
+        fcst_field_list = []
+        obs_field_list = []
+
+        # if probabilistic forecast and no thresholds specified, error and skip
+        if self.c_dict['FCST_IS_PROB']:
+            # set thresholds for fcst and obs if prob
             fcst_thresh_list = var_info['fcst_thresh']
             obs_thresh_list = var_info['obs_thresh']
 
-        for fthresh, othresh in zip(fcst_thresh_list, obs_thresh_list):
+        # loop over thresholds and build field list with one thresh per item
+        for fcst_thresh, obs_thresh in zip(fcst_thresh_list, obs_thresh_list):
+            fcst_field = self.get_field_info(v_name=var_info['fcst_name'],
+                                             v_level=var_info['fcst_level'],
+                                             v_extra=var_info['fcst_extra'],
+                                             v_thresh=[fcst_thresh],
+                                             d_type='FCST')
+
+            obs_field = self.get_field_info(v_name=var_info['obs_name'],
+                                            v_level=var_info['obs_level'],
+                                            v_extra=var_info['obs_extra'],
+                                            v_thresh=[obs_thresh],
+                                            d_type='OBS')
+
+            if fcst_field is None or obs_field is None:
+                return
+
+            fcst_field_list.extend(fcst_field)
+            obs_field_list.extend(obs_field)
+
+        # loop through fields and call MTD
+        for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
             self.param = self.c_dict['CONFIG_FILE']
             self.create_and_set_output_dir(time_info)
 
@@ -256,8 +283,7 @@ class MTDWrapper(ModeWrapper):
             if self.c_dict['SINGLE_RUN']:
                 if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
                     self.set_fcst_file(obs_path)
-                    obs_field = self.get_one_field_info(var_info['obs_name'], var_info['obs_level'], var_info['obs_extra'],
-                                                        othresh, 'OBS')
+
                     self.add_env_var("FCST_FIELD", obs_field)
                     self.add_env_var("OBS_FIELD", obs_field)
                     self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"] )
@@ -266,8 +292,7 @@ class MTDWrapper(ModeWrapper):
                     self.add_env_var("FCST_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
                 else:
                     self.set_fcst_file(model_path)
-                    fcst_field = self.get_one_field_info(var_info['fcst_name'], var_info['fcst_level'], var_info['fcst_extra'],
-                                                         fthresh, 'FCST')
+
                     self.add_env_var("FCST_FIELD", fcst_field)
                     self.add_env_var("OBS_FIELD", fcst_field)
                     self.add_env_var("FCST_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"] )
@@ -281,14 +306,11 @@ class MTDWrapper(ModeWrapper):
                 self.add_env_var("FCST_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"] )
                 self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"] )
                 self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
-
-                fcst_field = self.get_one_field_info(var_info['fcst_name'], var_info['fcst_level'], var_info['fcst_extra'],
-                                                     fthresh, 'FCST')
-                obs_field = self.get_one_field_info(var_info['obs_name'], var_info['obs_level'], var_info['obs_extra'],
-                                                    othresh, 'OBS')
-
                 self.add_env_var("FCST_FIELD", fcst_field)
                 self.add_env_var("OBS_FIELD", obs_field)
+
+            # set user environment variables
+            self.set_user_environment(time_info)
 
             self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
             self.print_user_env_items()
@@ -330,7 +352,7 @@ class MTDWrapper(ModeWrapper):
                               You must use a subclass")
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for a in self.args:
             cmd += a + " "

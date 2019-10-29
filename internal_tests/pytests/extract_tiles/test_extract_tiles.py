@@ -4,19 +4,25 @@
 
 
 """
-from __future__ import (print_function, division)
 
 # !/usr/bin/env python
 import sys
 import os
+my_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, my_path + '/../../../ush')
+
+# Alternatively try this if the above my_path lines do not work
+# sys.path.append("/../../../ush/ExtractTilesWrapper")
+# sys.path.append("/../../../ush/TcPairsWrapper")
 import datetime
 import logging
 import re
 import pytest
 from extract_tiles_wrapper import ExtractTilesWrapper
+from tc_pairs_wrapper import TcPairsWrapper
 import produtil
 import config_metplus
-import met_util
+import met_util as util
 from string_template_substitution import StringSub
 
 
@@ -35,27 +41,40 @@ def pytest_addoption(parser):
 
 
 # @pytest.fixture
-def cmdopt(request):
-    return request.config.getoption("-c")
+# def cmdopt(request):
+#     return request.config.getoption("-c")
 
 
-# -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
-@pytest.fixture
+# -----------------FIXTURES THAT CAN BE USED BY ALL TESTS--------------
+def tc_pairs_wrapper():
+    """! Return a default TcPairsWrapper with /path/to entries
+         in the metplus_system.conf and metplus_runtime.conf
+         config files.  This is necessary for creating the
+         input to the extract tiles wrapper.
+
+    """
+    conf = metplus_config()
+    logger = logging.getLogger("dummy1")
+    conf.set('config', 'LOOP_ORDER', 'processes')
+    tcpw = TcPairsWrapper(conf, logger)
+    tcpw.run_all_times()
+
 def extract_tiles_wrapper():
-    """! Returns a default PB2NCWrapper with /path/to entries in the
+    """! Returns a default ExtractTilesWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
          to over-ride these /path/to values."""
 
-    # PB2NCWrapper with configuration values determined by what is set in
-    # the pb2nc_test.conf file.
+    # ExtractTilesWrapper with configuration values determined by what is set in
+    # the extract_tiles_wrapper.conf file.
     conf = metplus_config()
-    logger = logging.getLogger("dummy")
+    logger = logging.getLogger("dummy2")
 
     conf.set('config', 'LOOP_ORDER', 'processes')
-    return ExtractTilesWrapper(conf, logger)
+    etw =  ExtractTilesWrapper(conf, logger)
+    return etw
 
-@pytest.fixture
+
 def metplus_config():
     """! Create a METplus configuration object that can be
     manipulated/modified to
@@ -71,7 +90,7 @@ def metplus_config():
         produtil.log.postmsg('extract_tiles_wrapper  is starting')
 
         # Read in the configuration object CONFIG
-        config = config_metplus.setup()
+        config = config_metplus.setup(util.baseinputconfs)
         return config
 
     except Exception as e:
@@ -80,7 +99,7 @@ def metplus_config():
         sys.exit(2)
 
 
-def create_input_dict(config):
+def create_input_dict(etw):
     """Create the input time dictionary that is needed by run_at_time()
        for the extract tiles wrapper.  Logic was extracted from the
        met_util.py loop_over_times_and_call() function.
@@ -89,6 +108,7 @@ def create_input_dict(config):
            input_dict: The dictionary with the init and now datetimes
     """
     input_dict = {}
+    config = etw.config
     init_beg = config.getstr('config', 'INIT_BEG')
     clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
                                                 '%Y%m%d%H%M%S')
@@ -106,20 +126,21 @@ def create_input_dict(config):
 
 # ------------------------ TESTS GO HERE --------------------------
 
-def test_output_exists(metplus_config):
+def test_output_exists():
     """
-    Expect 186 netcdf files to be generated from the tc_pairs files
-    generated via the TcPairsWrapper, input directory is set in
+    Expect 1 .tcst file to be generated from running extract_tiles.
+    The input directory (input data for extract tiles) is set in
     the TC_PAIRS_OUTPUT_DIR value in the extract_tiles_test.conf
-    file.
+    file. Also expect 12 subdirectories that have .nc file
     """
 
-    input_dict = create_input_dict(metplus_config)
     etw = extract_tiles_wrapper()
+    input_dict = create_input_dict(etw)
     etw.run_at_time(input_dict)
-    dir_section = metplus_config.items('dir')
-    expected_num_nc_files = 186
-    actual_nc_files = []
+    config = etw.config
+    dir_section = config.items('dir')
+    actual_num_tcst_files = []
+    expected_filesize_on_eyewall = int(77578)
 
     for section, value in dir_section:
         match = re.match(r'OUTPUT_BASE', section)
@@ -130,15 +151,20 @@ def test_output_exists(metplus_config):
 
     for root, dirs, files in os.walk(output_dir):
         for cur_file in files:
-            if cur_file.endswith('.nc'):
-               actual_nc_files.append(cur_file)
+            if cur_file.endswith('.tcst'):
+                actual_num_tcst_files.append(cur_file)
+                matched_tcst_file = os.path.join(root, cur_file)
+                tcst_file_info = os.stat(matched_tcst_file)
+                # The tcst file that is generated on eyewall has the correct information and is of file
+                # size 77578 bytes or 76K.  If this tcst file is the same size, this is a good indication
+                # that the test case produced the correct results.
+                # print("##############\n tcst file size:", tcst_file_info.st_size)
+                assert(tcst_file_info.st_size == expected_filesize_on_eyewall)
+    # We expect only one .tcst file from extract_tiles, any more indicates that something
+    # is amiss.
+    assert(len(actual_num_tcst_files) == 1)
 
-
-    assert(expected_num_nc_files == len(actual_nc_files))
-
-
-
-def test_correct_basin(metplus_config):
+def test_correct_basin():
     """
        Verify that only the ML basin
        paired results were returned by the
@@ -157,10 +183,14 @@ def test_correct_basin(metplus_config):
                            'ML1201052014', 'ML1201062014', 'ML1201072014',
                            'ML1201082014', 'ML1201092014', 'ML1201102014']
 
-    input_dict = create_input_dict(metplus_config)
+    expected_num_ml_subdirs = len(expected_ml_subdirs)
+    expected_num_nc_files = int(186)
     etw = extract_tiles_wrapper()
+    input_dict = create_input_dict(etw)
     etw.run_at_time(input_dict)
-    dir_section = metplus_config.items('dir')
+    config = etw.config
+    dir_section = config.items('dir')
+
     for section, value in dir_section:
         match = re.match(r'OUTPUT_BASE', section)
         if match:
@@ -171,18 +201,27 @@ def test_correct_basin(metplus_config):
     # Saving the ML subdirs that were created for this
     # test run...
     created_ml_subdirs = []
+    total_nc_files = []
     if output_dir:
         for root, dirs, files in os.walk(output_dir):
             for cur_dir in dirs:
                 match = re.match(r'^ML.*', cur_dir)
                 if match:
                     created_ml_subdirs.append(cur_dir)
+            for curfile in files:
+                filematch = re.match(r'.*.nc', curfile)
+                if filematch:
+                    total_nc_files.append(curfile)
 
     # Verify that we have ML subdirs, indicating
     # that ML basin results were found, if not,
     # this is a Fail.
-    if len(created_ml_subdirs) == 0:
+    if len(created_ml_subdirs) != expected_num_ml_subdirs:
         assert(False)
+
+    # Assert we have the correct total number of nc files created
+    if len(total_nc_files) != expected_num_nc_files:
+        assert False
 
     ml_subdir_counter = 0
     for ml_subdir in created_ml_subdirs:
@@ -191,7 +230,10 @@ def test_correct_basin(metplus_config):
 
     # We should have the same number of ML subdirs that
     # were created for this test as the expected number.
+    # In addition, we should have the same number of nc files as expected.
     # print( "Number ML subdirs: ", ml_subdir_counter, " number expected: ", len(expected_ml_subdirs))
+    # print("#########\n Total number of nc files: ", len(total_nc_files))
     assert( ml_subdir_counter == len(expected_ml_subdirs))
+    assert (expected_num_nc_files == len(total_nc_files))
 
 

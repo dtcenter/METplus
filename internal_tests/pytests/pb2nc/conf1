@@ -1,0 +1,72 @@
+[config]
+## Configuration-related settings such as the process list, begin and end times, etc.
+PROCESS_LIST = PB2NC
+
+## LOOP_ORDER
+## Options are: processes, times
+## Looping by time- runs all items in the PROCESS_LIST for each
+## initialization time and repeats until all times have been evaluated.
+## Looping by processes- run each item in the PROCESS_LIST for all
+## specified initialization times then repeat for the next item in the
+## PROCESS_LIST.
+#LOOP_ORDER = processes
+
+# Logging levels: DEBUG, INFO, WARN, ERROR (most verbose is DEBUG)
+#LOG_LEVEL = DEBUG
+
+## MET Configuration files for pb2nc
+PB2NC_CONFIG_FILE = /some/fake/PB2NCConfig
+
+PB2NC_SKIP_IF_OUTPUT_EXISTS = True
+
+#LOOP_BY = VALID
+#VALID_TIME_FMT = %Y%m%d
+#VALID_BEG = 20170601
+#VALID_END = 20170603
+#VALID_INCREMENT = 86400
+
+#LEAD_SEQ = 0
+
+
+# For both pb2nc and point_stat, the obs_window dictionary:
+#OBS_WINDOW_BEGIN = -2700
+#OBS_WINDOW_END = 2700
+
+# Either conus_sfc or upper_air
+PB2NC_VERTICAL_LOCATION = conus_sfc
+
+#
+# PB2NC
+#
+# These are appended with PB2NC to differentiate the GRID, POLY, and MESSAGE_TYPE for point_stat.
+PB2NC_GRID =
+PB2NC_POLY =
+PB2NC_STATION_ID =
+PB2NC_MESSAGE_TYPE =
+
+# Leave empty to process all
+PB2NC_OBS_BUFR_VAR_LIST = PMO, TOB, TDO, UOB, VOB, PWO, TOCC, D_RH
+
+#***********
+# ***NOTE***
+#***********
+# SET TIME_SUMMARY_FLAG to False. There is a bug in met-6.1.
+## For defining the time periods for summarization
+# False for no time summary, True otherwise
+PB2NC_TIME_SUMMARY_FLAG = False
+PB2NC_TIME_SUMMARY_BEG = 000000  ;; start time of time summary in HHMMSS format
+PB2NC_TIME_SUMMARY_END = 235959  ;; end time of time summary in HHMMSS format
+PB2NC_TIME_SUMMARY_VAR_NAMES = PMO,TOB,TDO,UOB,VOB,PWO,TOCC
+PB2NC_TIME_SUMMARY_TYPES = min, max, range, mean, stdev, median, p80  ;; a list of the statistics to summarize
+
+# Model/fcst and obs name, e.g. GFS, NAM, GDAS, etc.
+#MODEL_NAME = gfs
+#OBS_NAME = nam
+
+[dir]
+PB2NC_INPUT_DIR = {INPUT_BASE}/grid_to_obs/prepbufr/nam
+
+[filename_templates]
+PB2NC_INPUT_TEMPLATE = t{da_init?fmt=%2H}z.prepbufr.tm{offset?fmt=%2H}
+
+PB2NC_OUTPUT_TEMPLATE = {valid?fmt=%Y%m%d}/nam.{valid?fmt=%Y%m%d%H}.nc
