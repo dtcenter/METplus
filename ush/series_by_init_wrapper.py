@@ -421,14 +421,12 @@ class SeriesByInitWrapper(CommandBuilder):
                                         is the list of files created from
                                         running extract_tiles.
         """
-
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
         # for logging information.
         # For logging
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-
         filter_init_times = util.get_updated_init_times(tile_dir, self.logger)
         sorted_filter_init = sorted(filter_init_times)
 
@@ -640,11 +638,15 @@ class SeriesByInitWrapper(CommandBuilder):
             cmd += "-config " + self.param + " "
 
         if self.get_output_path() == "":
-            self.logger.error("No output directory specified")
-            self.logger.error("No output filename specified")
-            return None
+            self.logger.info("No output directory specified")
+            self.logger.info("No output filename specified")
+            # The series init does not have one output directory
+            # or one output filename created, so there is nothing
+            # to add to the output path
+            
         else:
             cmd += "-out " + os.path.join(self.get_output_path())
+        print("!!!! cmd: ", cmd)
         return cmd
 
     def generate_plots(self, sorted_filter_init, tile_dir):
