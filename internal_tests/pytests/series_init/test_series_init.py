@@ -1,4 +1,3 @@
-import pytest
 import os
 import sys
 import logging
@@ -15,8 +14,8 @@ def series_init_wrapper():
     conf = metplus_config()
     logger = logging.getLogger("dummy1")
     conf.set('config', 'LOOP_ORDER', 'processes')
-    sbi = SeriesByInitWrapper(conf, logger)
-    sbi.run_all_times()
+    return SeriesByInitWrapper(conf, logger)
+
 
 def metplus_config():
     """! Create a METplus configuration object that can be
@@ -30,7 +29,7 @@ def metplus_config():
                                  jlogfile=os.environ['JLOGFILE'])
         else:
             produtil.setup.setup(send_dbn=False, jobname='ExtractTilesWrapper ')
-        produtil.log.postmsg('extract_tiles_wrapper  is starting')
+        produtil.log.postmsg('series_by_init_wrapper  is starting')
 
         # Read in the configuration object CONFIG
         config = config_metplus.setup(util.baseinputconfs)
@@ -38,11 +37,61 @@ def metplus_config():
 
     except Exception as e:
         produtil.log.jlogger.critical(
-            'extract tiles wrapper failed: %s' % (str(e),), exc_info=True)
+            'series by init wrapper failed: %s' % (str(e),), exc_info=True)
         sys.exit(2)
 
 
-def test_dummy():
-    assert True
+def test_wrapper_ok():
+    """ Verify that the expected output directory for the 
+        series init wrapper is what we expected, based on the
+        setting in the custom.conf config file.
+    """ 
+    siw = series_init_wrapper()
+    expected_output_dir = "/d1/METplus_test_input/series_analysis_init"
+    assert siw.series_out_dir == expected_output_dir
+
+def test_storm_files_list_OK():
+    """ Verify that for the input data (extract tiles output),
+        we are generating a list of storm files that match
+        the init time and storm basin specified in the config
+        file. 
+    """
+    siw = series_init_wrapper()
+    tile_dir = '/d1/METplus_test_input/extract_tiles'
+    storm_list = siw.get_ascii_storm_files_list(tile_dir)
+    assert len(storm_list) > 0
+
+def test_build_and_run_series_request_OK():
+    """ Verify that the command that is 
+        created matches what we expect for the 
+        input """
+    siw = series_init_wrapper()
+    tile_dir = '/d1/METplus_test_input/extract_tiles'
+    sorted_filter_init = siw.get_ascii_storm_files_list(tile_dir)
+    assert len(sorted_filter_init) != 0
+    siw.build_and_run_series_request(sorted_filter_init, tile_dir)
+    assert len(siw.get_command()) > 0
+
+def test_get_fcst_file_info_OK():
+    """ Verify that the tuple created by get_fcst_file_info is
+        not an empty tuple, and that the number, beginning
+        fcst file and end fcst file are what we expected.
+    """
+    # number of forecast files we expect for specified storm;
+    # this information is found in the series_init_filtered directory.
+    expected_num = 9
+    expected_beg = 'F000'
+    expected_end = 'F048'
+    siw = series_init_wrapper()
+    filtered_out_dir = siw.series_filtered_out_dir
+    cur_init = '20141214_00'
+    cur_storm = 'ML1200942014'
+
+    num,beg,end = siw.get_fcst_file_info(filtered_out_dir, cur_init, cur_storm)
+    siw.get_fcst_file_info(filtered_out_dir, cur_init, cur_storm)
+    assert num == expected_num
+    assert beg == expected_beg
+    assert end == expected_end
+
 
 
