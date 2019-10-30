@@ -12,8 +12,6 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
-
 import os
 import met_util as util
 from compare_gridded_wrapper import CompareGriddedWrapper
@@ -28,13 +26,13 @@ class GridStatWrapper(CompareGriddedWrapper):
     '''!Wraps the MET tool grid_stat to compare gridded datasets
     '''
     def __init__(self, config, logger):
-        super(GridStatWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'grid_stat'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
 
     def create_c_dict(self):
-        c_dict = super(GridStatWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_GRID_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['CONFIG_FILE'] = self.config.getstr('config', 'GRID_STAT_CONFIG_FILE', '')

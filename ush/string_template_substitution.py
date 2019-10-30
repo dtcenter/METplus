@@ -452,8 +452,11 @@ class StringSub(object):
                 # Add back the template identifiers to the matched
                 # string to replace and add the key, value pair to the
                 # dictionary
-                replacement_dict[string_to_replace] = \
-                    self.kwargs.get(split_string[0], None)
+                value = self.kwargs.get(split_string[0], None)
+                if isinstance(value, int):
+                    value = f"{value}S"
+                replacement_dict[string_to_replace] = value
+
 
             # reset shift seconds so it doesn't apply to next match
             self.shift_seconds = 0

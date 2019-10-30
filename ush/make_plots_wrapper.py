@@ -12,8 +12,6 @@ Output Files: .png images
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
-
 import logging
 import os
 import sys
@@ -25,10 +23,9 @@ import time
 import calendar
 from command_builder import CommandBuilder
 
-
 class MakePlotsWrapper(CommandBuilder):
     def __init__(self, config, logger):
-        super(MakePlotsWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_path = 'python'
         self.app_name = 'make_plots'
 

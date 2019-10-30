@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
 import errno
 import os
 import re
 import sys
 
-import config_metplus
 import met_util as util
-import produtil.setup
-from tc_stat_wrapper import TcStatWrapper
+from tc_stat_wrapper import TCStatWrapper
 import feature_util
 from command_builder import CommandBuilder
 
@@ -36,7 +32,7 @@ class SeriesByInitWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
-        super(SeriesByInitWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
         self.app_name = 'SeriesByInit'
@@ -240,7 +236,7 @@ class SeriesByInitWrapper(CommandBuilder):
             filter_filename = os.path.join(series_output_dir,
                                            cur_init, filter_file)
 
-            tcs = TcStatWrapper(self.config, self.logger)
+            tcs = TCStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
                               filter_opts)
 
@@ -614,7 +610,7 @@ class SeriesByInitWrapper(CommandBuilder):
                           self.get_output_path())
 
     def clear(self):
-        super(SeriesByInitWrapper, self).clear()
+        super().clear()
         self.inaddons = []
 
     def add_input_file(self, filename, type_id):

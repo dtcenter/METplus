@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 
-from __future__ import print_function, unicode_literals
-import sys
 import os
 import re
 import met_util as util
 import time_util
 from command_builder import CommandBuilder
-from string_template_substitution import StringSub
 
 """
 Program Name: PB2NC_Wrapper.py
@@ -28,7 +25,7 @@ class PB2NCWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
-        super(PB2NCWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'pb2nc'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
@@ -45,7 +42,7 @@ class PB2NCWrapper(CommandBuilder):
                            metplus_data, metplus_system, and metplus_runtime
                            config files.
         """
-        c_dict = super(PB2NCWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
 
         c_dict['VERBOSITY'] = self.config.getint('config', 'LOG_PB2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])

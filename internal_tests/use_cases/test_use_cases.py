@@ -125,7 +125,7 @@ def main():
 
 
     print("Run the following to compare results:")
-    print("diff -r {} {} | grep -v Binary | grep -v SSH_CLIENT | grep -v CONDA | grep -v OLDPWD | grep -v KRB5 | grep -v CLOCK_TIME | grep -v XDG | grep -v GSL | grep -v METPLUS".format(output_base_a, output_base_b))
+    print(f"diff -r {output_base_a} {output_base_b} | grep -v Binary | grep -v SSH | grep -v CONDA | grep -v OLDPWD | grep -v tmp | grep -v CLOCK_TIME | grep -v XDG | grep -v GSL | grep -v METPLUS | grep -v \"METplus took\" | grep -v \"Finished\" | grep -v \"\-\-\-\" | egrep -v \"^[[:digit:]]*c[[:digit:]]*$\" | grep -v diff")
     print("NOTE: pipe results to 'grep Only' to see which files were only in one output directory")
     
 if __name__ == "__main__":
