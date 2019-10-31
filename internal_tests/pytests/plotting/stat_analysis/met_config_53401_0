@@ -1,0 +1,170 @@
+
+
+
+
+
+
+
+exit_on_warning = FALSE;
+
+
+
+
+nc_compression = 0;
+
+
+output_precision = 5;
+
+
+
+tmp_dir = "/tmp";
+
+
+
+
+
+
+
+K_to_C(t) = t - 273.15;
+C_to_K(t) = t + 273.15;
+C_to_F(t) = 1.8 * t + 32.0;
+F_to_C(t) = (5.0 / 9.0) * ( t - 32.0 );
+K_to_F(t) = C_to_F(K_to_C(t));
+F_to_K(t) = C_to_K(F_to_C(t));
+
+MM_to_IN(x) = x / 25.4;
+IN_to_MM(x) = x * 25.4;
+
+PA_to_HPA(p) = p / 100.0;
+HPA_to_PA(p) = p * 100.0;
+PA_to_MB(p)  = PA_to_HPA(p);
+MB_to_PA(p)  = HPA_to_PA(p);
+
+
+
+
+
+
+
+
+
+
+
+GRIB1          = 1;
+GRIB2          = 2;
+NETCDF_MET     = 3;
+NETCDF_PINT    = 4;
+NETCDF_NCCF    = 5;
+PYTHON_NUMPY   = 6;
+PYTHON_XARRAY  = 7;
+
+
+NONE           = 1;
+UNION          = 2;
+INTERSECTION   = 3;
+SYMDIFF        = 4;
+
+
+NONE           = 1;
+NEAREST        = 2;
+MEDIAN         = 3;
+UW_MEAN        = 4;
+DW_MEAN        = 5;
+LS_FIT         = 6;
+BILIN          = 7;
+NBRHD          = 8;
+NEAREST        = 9;
+BUDGET         = 10;
+FORCE          = 11;
+BEST           = 12;
+UPPER_LEFT     = 13;
+UPPER_RIGHT    = 14;
+LOWER_RIGHT    = 15;
+LOWER_LEFT     = 16;
+PERC           = 17;
+MIN            = 18;
+MAX            = 19;
+AW_MEAN        = 20;
+GAUSSIAN       = 21;
+GEOG_MATCH     = 22;
+
+
+NONE           = 1;
+BOTH           = 2;
+FCST           = 3;
+OBS            = 4;
+
+
+SQUARE         = 1;
+CIRCLE         = 2;
+
+
+NONE           = 1;
+BOTH           = 2;
+ADECK          = 3;
+BDECK          = 4;
+
+
+NONE           = 1;
+FILL           = 2;
+REPLACE        = 3;
+
+
+NONE           = 1;
+BOTH           = 2;
+STAT           = 3;
+
+
+PCTILE         = 1;
+BCA            = 2;
+
+
+NONE           = 1;
+COS_LAT        = 2;
+AREA           = 3;
+
+
+NONE           = 1;
+UNIQUE         = 2;
+
+
+NONE           = 1;
+AUTO           = 2;
+TILE           = 3;
+PAD            = 4;
+
+
+NONE           = 1;
+HAAR           = 2;
+HAAR_CNTR      = 3;
+DAUB           = 4;
+DAUB_CNTR      = 5;
+BSPLINE        = 6;
+BSPLINE_CNTR   = 7;
+
+
+NONE           = 1;
+BOTH           = 2;
+THRESH         = 3;
+ENGINE         = 4;
+
+
+NONE           = 1;
+MERGE_BOTH     = 2;
+MERGE_FCST     = 3;
+NO_MERGE       = 4;
+
+
+NONE           = 1;
+NORMAL         = 2;
+LOGNORMAL      = 3;
+EXPONENTIAL    = 4;
+CHISQUARED     = 5;
+GAMMA          = 6;
+UNIFORM        = 7;
+BETA           = 8;
+
+
+TOP            = TRUE;
+BOTTOM         = FALSE;
+

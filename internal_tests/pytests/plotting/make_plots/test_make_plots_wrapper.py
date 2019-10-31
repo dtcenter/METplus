@@ -160,15 +160,13 @@ def test_create_c_dict():
                                     'obs_level': 'P850', 'index': '1'}])
     assert(c_dict['MODEL_LIST'] == [ 'MODEL_TEST1', 'MODEL_TEST2'])
     assert(c_dict['DESC_LIST'] == [])
-    assert(c_dict['FCST_LEAD_LIST'] == [ '24', '48', '72', '96', '120', 
-                                         '144', '168', '192', '216', '240' ])
+    assert(c_dict['FCST_LEAD_LIST'] == [ '24', '48' ]) 
     assert(c_dict['OBS_LEAD_LIST'] == [])
     assert(c_dict['FCST_VALID_HOUR_LIST'] == [ '00', '06', '12', '18' ])
-    assert(c_dict['FCST_INIT_HOUR_LIST'] == [ '00' ])
+    assert(c_dict['FCST_INIT_HOUR_LIST'] == [ '00', '06', '12', '18' ])
     assert(c_dict['OBS_VALID_HOUR_LIST'] == [])
     assert(c_dict['OBS_INIT_HOUR_LIST'] == [])
-    assert(c_dict['VX_MASK_LIST'] == [ 'G002', 'NHX', 'SHX',
-                                       'TRO', 'PNA'])
+    assert(c_dict['VX_MASK_LIST'] == [ 'NHX' ])
     assert(c_dict['INTERP_MTHD_LIST'] == [])
     assert(c_dict['INTERP_PNTS_LIST'] == [])
     assert(c_dict['COV_THRESH_LIST'] == [])
@@ -240,14 +238,13 @@ def test_set_lists_as_loop_or_group():
     config_dict['OBS_THRESH_LIST'] = []
     config_dict['MODEL_LIST'] = [ 'MODEL_TEST1', 'MODEL_TEST2' ]
     config_dict['DESC_LIST'] = []
-    config_dict['FCST_LEAD_LIST'] = [ '24', '48', '72', '96', '120',
-                                     '144', '168', '192', '216', '240' ]
+    config_dict['FCST_LEAD_LIST'] = [ '24', '48' ]
     config_dict['OBS_LEAD_LIST'] = []
     config_dict['FCST_VALID_HOUR_LIST'] = [ '00', '06', '12', '18' ]
-    config_dict['FCST_INIT_HOUR_LIST'] = [ '00' ]
+    config_dict['FCST_INIT_HOUR_LIST'] = [ '00', '06', '12', '18' ]
     config_dict['OBS_VALID_HOUR_LIST'] = []
     config_dict['OBS_INIT_HOUR_LIST'] = []
-    config_dict['VX_MASK_LIST'] = [ 'G002', 'NHX', 'SHX', 'TRO', 'PNA' ]
+    config_dict['VX_MASK_LIST'] = [ 'NHX' ]
     config_dict['INTERP_MTHD_LIST'] = []
     config_dict['INTERP_PNTS_LIST'] = []
     config_dict['COV_THRESH_LIST'] = []
