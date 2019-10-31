@@ -8,7 +8,6 @@ import logging
 import pytest
 import datetime
 from stat_analysis_wrapper import StatAnalysisWrapper
-from config_wrapper import ConfigWrapper
 import met_util as util
 import produtil.setup
 
@@ -18,7 +17,7 @@ import produtil.setup
 # NOTE:  This test requires pytest, which is NOT part of the standard Python
 # library.
 # These tests require one configuration file in addition to the three
-# required METplus configuration files:  stat_analysis_test.conf.  This contains
+# required METplus configuration files:  test_stat_analysis.conf.  This contains
 # the information necessary for running all the tests.  Each test can be
 # customized to replace various settings if needed.
 #
@@ -65,9 +64,8 @@ def metplus_config():
         produtil.log.postmsg('stat_analysis_wrapper  is starting')
 
         # Read in the configuration object CONFIG
-        config = config_metplus.setup()
+        config = config_metplus.setup(util.baseinputconfs)
         logger = util.get_logger(config)
-        config = ConfigWrapper(config, logger)
         return config
 
     except Exception as e:
@@ -123,9 +121,10 @@ def test_get_command():
     st = stat_analysis_wrapper()
     # Test 1
     expected_command = (
-        '/contrib/met/8.1/bin/stat_analysis'
-        +' -lookin /path/to/lookin_dir'
-        +' -config /path/to/STATAnalysisConfig'
+        st.config.getdir('MET_INSTALL_DIR')
+        +'/bin/stat_analysis '
+        +'-lookin /path/to/lookin_dir '
+        +'-config /path/to/STATAnalysisConfig'
         +' '
     )
     st.set_lookin_dir('/path/to/lookin_dir')
@@ -144,8 +143,8 @@ def test_create_c_dict():
     assert(c_dict['PROCESS_LIST'] == 'StatAnalysis')
     assert(c_dict['CONFIG_FILE'] == (METPLUS_BASE+'/parm/use_cases/grid_to_grid/'
                                      +'met_config/STATAnalysisConfig'))
-    assert(c_dict['OUTPUT_BASE_DIR'] == ('/home/'+os.environ['USER']
-                                         +'/metplus_pytests/stat_analysis'))
+    assert(c_dict['OUTPUT_BASE_DIR'] == (st.config.getdir('OUTPUT_BASE')
+                                         +'/stat_analysis'))
     assert(c_dict['GROUP_LIST_ITEMS'] == [ 'FCST_INIT_HOUR_LIST' ])
     assert(c_dict['LOOP_LIST_ITEMS'] == [ 'FCST_VALID_HOUR_LIST',
                                           'MODEL_LIST'])
@@ -208,7 +207,14 @@ def test_set_lists_as_loop_or_group():
     config_dict['OUTPUT_BASE_DIR'] = 'OUTPUT_BASE/stat_analysis'
     config_dict['GROUP_LIST_ITEMS'] = [ 'FCST_INIT_HOUR_LIST' ]
     config_dict['LOOP_LIST_ITEMS'] = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST']
-    config_dict['VAR_LIST'] = []
+    config_dict['FCST_VAR_LIST'] = []
+    config_dict['OBS_VAR_LIST'] = []
+    config_dict['FCST_LEVEL_LIST'] = []
+    config_dict['OBS_LEVEL_LIST'] = []
+    config_dict['FCST_UNITS_LIST'] = []
+    config_dict['OBS_UNITS_LIST'] = []
+    config_dict['FCST_THRESH_LIST'] = []
+    config_dict['OBS_THRESH_LIST'] = []
     config_dict['MODEL_LIST'] = [ 'MODEL_TEST' ]
     config_dict['DESC_LIST'] = []
     config_dict['FCST_LEAD_LIST'] = []
@@ -223,7 +229,6 @@ def test_set_lists_as_loop_or_group():
     config_dict['COV_THRESH_LIST'] = []
     config_dict['ALPHA_LIST'] = []
     config_dict['LINE_TYPE_LIST'] = []
-    st = stat_analysis_wrapper()
     test_lists_to_group_items, test_lists_to_loop_items = (
         st.set_lists_loop_or_group([ 'FCST_INIT_HOUR_LIST' ], 
                                    [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST' ],
@@ -793,8 +798,7 @@ def test_run_stat_analysis_job():
     # Test running of stat_analysis
     st = stat_analysis_wrapper()
     # Test 1
-    expected_filename = ('/home/'+os.environ['USER']
-                         +'/metplus_pytests/stat_analysis'
+    expected_filename = (st.config.getdir('OUTPUT_BASE')+'/stat_analysis'
                          +'/00Z/MODEL_TEST/MODEL_TEST_20190101.stat')
     comparison_filename = (METPLUS_BASE+'/internal_tests/data/stat_data/'
                            +'test_20190101.stat') 
