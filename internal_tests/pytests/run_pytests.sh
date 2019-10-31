@@ -34,4 +34,6 @@ pytest -c ../minimum_pytest.$host.conf -c ./conf1
 cd $script_dir/extract_tiles
 python ./run_precondition.py >/dev/null 2>&1
 pytest -c ../minimum_pytest.$host.conf -c  ./extract_tiles_test.conf -c ./custom.conf
+cd $script_dir/series_init
 python ./run_cleanup.py
+pytest -c ../minimum_pytest.$host.conf -c ./series_init_test.conf -c ./custom.conf
