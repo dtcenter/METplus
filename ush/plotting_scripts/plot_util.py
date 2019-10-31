@@ -156,19 +156,39 @@ def get_date_arrays(date_type, date_beg, date_end,
         else:
             dates = []
         date_info[type+'_dates'] = dates
-    # Use fcst_valid_dates for dates
+    # Build opposite dates
+    if date_type == 'VALID':
+        oppo_date_type = 'INIT'
+    elif date_type == 'INIT':
+        oppo_date_type = 'VALID'
+    lead_timedelta = datetime.timedelta(
+        seconds=(int(int(lead[:-4])) * 3600 + lead_min_seconds
+                 + lead_seconds)
+    )
+    if oppo_date_type == 'INIT':
+        lead_timedelta = -1 * lead_timedelta
+    for type in ['fcst', 'obs']:
+        date_info[type+'_'+oppo_date_type.lower()+'_dates'] = (
+            date_info[type+'_'+date_type.lower()+'_dates'] + lead_timedelta
+        )
+    # Use fcst_*_dates for dates
     # this makes the assumption that 
-    # fcst_valid_dates and obs_valid_dates
+    # fcst_*_dates and obs_*_dates
     # are the same, and they should be for
     # most cases
     dates = date_info['fcst_'+date_type.lower()+'_dates']
+    fv_dates = date_info['fcst_valid_dates']
     plot_time_dates = []
     expected_stat_file_dates = []
     for date in dates:
         dt = date.time()
         seconds = (dt.hour * 60 + dt.minute) * 60 + dt.second
         plot_time_dates.append(date.toordinal() + seconds/86400.)
-        expected_stat_file_dates.append(date.strftime('%Y%m%d_%H%M%S'))
+    # MET .stat files saves valid dates in file
+    fv_dates = date_info['fcst_valid_dates']
+    expected_stat_file_dates = []
+    for fv_date in fv_dates:
+        expected_stat_file_dates.append(fv_date.strftime('%Y%m%d_%H%M%S'))
     return plot_time_dates, expected_stat_file_dates
 
 def format_thresh(thresh):
