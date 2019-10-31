@@ -12,8 +12,6 @@ Output Files: .png images
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
-
 import logging
 import os
 import copy
@@ -28,7 +26,7 @@ class MakePlotsWrapper(CommandBuilder):
     """! Wrapper to used to filter make plots from MET data
     """
     def __init__(self, config, logger):
-        super(MakePlotsWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_path = 'python'
         self.app_name = 'make_plots'
         

@@ -1,20 +1,18 @@
 #!/usr/bin/env python
 
 """!
-Program Name: TcStatWrapper.py
+Program Name: TCStatWrapper.py
 Contact(s):  Minna Win, Jim Frimel, George McCabe, Julie Prestopnik
 Abstract: Stratify tropical cyclone data by any combination of time, column,
           statistics
 History log: Initial version
-Usage: TcStatWrapper.py
+Usage: TCStatWrapper.py
 Parameters: None
 Input Files: tc_pairs data
 Output Files: subset of tc_pairs data
 Condition codes: 0 for success, 1 for failure
 
 """
-
-from __future__ import (print_function, division, unicode_literals)
 
 import os
 import sys
@@ -25,7 +23,7 @@ from command_builder import CommandBuilder
 import config_metplus
 
 
-## @namespace TcStatWrapper
+## @namespace TCStatWrapper
 #  @brief Wrapper to the MET tool tc_stat, which is used for filtering tropical
 #  cyclone pair data.
 
@@ -35,7 +33,7 @@ import config_metplus
 # attribute data.
 
 
-class TcStatWrapper(CommandBuilder):
+class TCStatWrapper(CommandBuilder):
     """! Wrapper for the MET tool, tc_stat, which is used to filter tropical
          cyclone pair data.
     """
@@ -46,10 +44,10 @@ class TcStatWrapper(CommandBuilder):
         run_method = config.getstr('config', 'TC_STAT_RUN_VIA')
         self.by_config = bool(run_method == 'CONFIG')
 
-        super(TcStatWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'tc_stat'
         self.tc_exe = self.c_dict['APP_PATH']
-        self.logger.info("Initialized TcStatWrapper")
+        self.logger.info("Initialized TCStatWrapper")
 
     def create_c_dict(self):
         """!  Read in and store all the values from the config file.  This
@@ -65,7 +63,7 @@ class TcStatWrapper(CommandBuilder):
         """
         self.logger.info('Creating tc-stat dictionary...')
 
-        c_dict = super(TcStatWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
 
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_TC_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
@@ -833,4 +831,4 @@ class TcStatWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    util.run_stand_alone("tc_stat_wrapper", "TcStat")
+    util.run_stand_alone("tc_stat_wrapper", "TCStat")

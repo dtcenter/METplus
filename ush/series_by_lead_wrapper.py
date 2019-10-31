@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import print_function
 
 import re
 import os
@@ -10,14 +9,12 @@ import glob
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 
 import produtil.setup
-# from produtil.run import batchexe
-# from produtil.run import run
 import met_util as util
 import time_util
 import feature_util
 from command_builder import CommandBuilder
 import config_metplus
-from tc_stat_wrapper import TcStatWrapper
+from tc_stat_wrapper import TCStatWrapper
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 
 
@@ -44,7 +41,7 @@ class SeriesByLeadWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
-        super(SeriesByLeadWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'SeriesByLead'
         # Retrieve any necessary values from the parm file(s)
         self.do_fhr_by_group = self.config.getbool('config',
@@ -1331,7 +1328,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             filter_filename = os.path.join(series_output_dir,
                                            cur_init, filter_file)
 
-            tcs = TcStatWrapper(self.config, self.logger)
+            tcs = TCStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
                               filter_opts)
 

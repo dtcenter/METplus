@@ -12,8 +12,6 @@ Output Files: pcp_combine files
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
-
 import os
 import met_util as util
 import datetime
@@ -22,7 +20,7 @@ import string_template_substitution as sts
 from reformat_gridded_wrapper import ReformatGriddedWrapper
 import time_util
 
-'''!@namespace PcpCombineWrapper
+'''!@namespace PCPCombineWrapper
 @brief Wraps the MET tool pcp_combine to combine or divide
 precipitation accumulations
 Call as follows:
@@ -31,11 +29,11 @@ Cannot be called directly. Must use child classes.
 @endcode
 @todo add main function to be able to run alone via command line
 '''
-class PcpCombineWrapper(ReformatGriddedWrapper):
+class PCPCombineWrapper(ReformatGriddedWrapper):
     """!Wraps the MET tool pcp_combine to combine or divide
     precipitation accumulations"""
     def __init__(self, config, logger):
-        super(PcpCombineWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'pcp_combine'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
@@ -56,7 +54,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         self.custom_command = ''
 
     def create_c_dict(self):
-        c_dict = super(PcpCombineWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_PCP_COMBINE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
@@ -78,7 +76,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         c_dict[d_type+'_DATA_INTERVAL'] = self.config.getint('config', d_type+'_PCP_COMBINE_DATA_INTERVAL', 1)
         c_dict[d_type+'_TIMES_PER_FILE'] = self.config.getint('config', d_type+'_PCP_COMBINE_TIMES_PER_FILE', -1)
         c_dict[d_type+'_IS_DAILY_FILE'] = self.config.getbool('config', d_type+'_PCP_COMBINE_IS_DAILY_FILE', False)
-        c_dict[d_type+'_ACCUMS'] = util.getlist(self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_ACCUMS', ''))
+        c_dict[d_type+'_ACCUMS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_ACCUMS', ''))
         c_dict[d_type+'_NAMES'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_NAMES', ''))
         c_dict[d_type+'_LEVELS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_LEVELS', ''))
         c_dict[d_type+'_OUTPUT_ACCUM'] = self.config.getstr('config', d_type+'_PCP_COMBINE_OUTPUT_ACCUM', '')
@@ -106,10 +104,15 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         c_dict[d_type+'_DERIVE_LOOKBACK'] = \
             self.config.getint('config', d_type+'_PCP_COMBINE_DERIVE_LOOKBACK', 0)
+
+        c_dict[d_type+'_BUCKET_INTERVAL'] = self.config.getseconds('config',
+                                                                   d_type+'_PCP_COMBINE_BUCKET_INTERVAL',
+                                                                   0)
+
         return c_dict
 
     def clear(self):
-        super(PcpCombineWrapper, self).clear()
+        super().clear()
         self.inaddons = []
         self.method = ""
         self.pcp_dir = ""
@@ -188,14 +191,14 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                                self.config)
 
             if search_file is not None:
-                return search_file
+                return search_file, forecast_lead
             forecast_lead += smallest_input_accum
         return None
 
     def get_daily_file(self, time_info, accum, data_src, file_template):
         """!Pull accumulation out of file that contains a full day of data
         Args:
-          @param valid_time valid time to search
+          @param time_info dictionary containing timing information
           @param accum accumulation to extract from file
           @param data_src type of data (FCST or OBS)
           @param file_template filename template to search
@@ -266,8 +269,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             if not util.is_python_script(field_name):
                 if field_level is not None:
                     addon += f" level=\"{field_level}\";"
-#                else:
-#                   addon += " level=\"(0,*,*)\";"
+
             addon += "'"
         else:
             addon = search_accum
@@ -287,7 +289,31 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
         return util.preprocess_file(search_file,
                                     self.c_dict[data_src+'_INPUT_DATATYPE'],
-                                    self.config)
+                                    self.config), 0
+
+    def get_template_accum(self, accum_dict, search_time, lead, data_src):
+        # apply string substitution to accum amount
+        search_time_dict = {'valid': search_time, 'lead_seconds': lead}
+        search_time_info = time_util.ti_calculate(search_time_dict)
+
+        amount = sts.StringSub(self.logger,
+                               accum_dict['template'],
+                               **search_time_info).do_string_sub()
+        amount = time_util.get_seconds_from_string(amount, default_unit='S', valid_time=search_time)
+
+        # if bucket interval is provided, adjust the accumulation amount
+        # if adjustment sets amount to 0, set it to the bucket interval
+        bucket_interval = self.c_dict[f"{data_src}_BUCKET_INTERVAL"]
+        if bucket_interval != 0:
+            self.logger.debug(f"Applying bucket interval {time_util.ti_get_lead_string(bucket_interval)}"
+                              f" to {time_util.ti_get_lead_string(amount)}")
+            amount = amount % bucket_interval
+            if amount == 0:
+                amount = bucket_interval
+
+            self.logger.debug(f"New accumulation amount is {time_util.ti_get_lead_string(amount)}")
+
+        return amount
 
     def get_accumulation(self, time_info, accum, data_src):
         """!Find files to combine to build the desired accumulation
@@ -313,6 +339,9 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         accum_relative = time_util.get_relativedelta(accum, 'H')
         # using 1 hour for now
         smallest_input_accum = min([lev['amount'] for lev in self.c_dict['ACCUM_DICT_LIST']])
+        if smallest_input_accum == 9999999:
+            smallest_input_accum = 3600
+
         last_time = time_info['valid'] -\
             accum_relative +\
             datetime.timedelta(seconds=smallest_input_accum)
@@ -321,8 +350,15 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
                                                                   time_info['valid'])
 
         # log the input and output accumulation information
-        search_accum_list = ' or '.join([time_util.ti_get_lead_string(lev['amount'],plural=False) for lev in self.c_dict['ACCUM_DICT_LIST']])
-        self.logger.debug(f"Trying to build a {time_util.ti_get_lead_string(total_accum, plural=False)} accumulation using {search_accum_list} input data")
+        search_accum_list = []
+        for lev in self.c_dict['ACCUM_DICT_LIST']:
+            if lev['template'] is not None:
+                search_accum_list.append(lev['template'])
+            else:
+                search_accum_list.append(time_util.ti_get_lead_string(lev['amount'], plural=False))
+
+        search_accum_string = ' or '.join(search_accum_list)
+        self.logger.debug(f"Trying to build a {time_util.ti_get_lead_string(total_accum, plural=False)} accumulation using {search_accum_string} input data")
 
         # loop backwards in time until you have a full set of accum
         while last_time <= search_time:
@@ -333,22 +369,34 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
 
             # look for biggest accum that fits search
             for accum_dict in self.c_dict['ACCUM_DICT_LIST']:
-                if accum_dict['amount'] > total_accum:
+                if accum_dict['amount'] > total_accum and accum_dict['template'] is None:
                     continue
 
-                search_file = self.find_input_file(in_template, search_time,
-                                                   accum_dict['amount'], data_src)
+                search_file, lead = self.find_input_file(in_template, search_time,
+                                                         accum_dict['amount'], data_src)
 
                 # if found a file, add it to input list with info
                 if search_file is not None:
-                    accum_met_time = time_util.time_string_to_met_time(accum_dict['amount'])
+                    # if template is used in accum, find value and apply bucket interval is set
+                    if accum_dict['template'] is not None:
+                        accum_amount = self.get_template_accum(accum_dict,
+                                                               search_time,
+                                                               lead,
+                                                               data_src)
+                        if accum_amount > total_accum:
+                            self.logger.debug("Accumulation amount is bigger than remaining accumulation.")
+                            continue
+                    else:
+                        accum_amount = accum_dict['amount']
+
+                    accum_met_time = time_util.time_string_to_met_time(accum_amount)
                     addon = self.get_addon(accum_dict['name'], accum_met_time, search_time,
                                            accum_dict['level'])
                     # add file to input list and step back in time to find more data
                     self.add_input_file(search_file, addon)
-                    self.logger.debug(f"Adding input file: {search_file}")
-                    search_time = search_time - datetime.timedelta(seconds=accum_dict['amount'])
-                    total_accum -= accum_dict['amount']
+                    self.logger.debug(f"Adding input file: {search_file} with {addon}")
+                    search_time = search_time - datetime.timedelta(seconds=accum_amount)
+                    total_accum -= accum_amount
                     found = True
                     break
 
@@ -472,8 +520,8 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
         if self.method == "CUSTOM":
             cmd = self.setup_custom_method(time_info, data_src)
         else:
-            if var_info is None and self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
-                self.logger.error('Cannot run PcpCombine without specifying fields to process '
+            if var_info is None and not self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
+                self.logger.error('Cannot run PCPCombine without specifying fields to process '
                                   'unless running in CUSTOM mode. You must set '
                                   f'{data_src}_VAR<n>_[NAME/LEVELS] or {data_src}_OUTPUT_[NAME/LEVEL]')
                 return
@@ -561,7 +609,7 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             return None
 
         # if level type is A (accum) and second lead is 0, then
-        # run PcpCombine in -add mode with just the first file
+        # run PCPCombine in -add mode with just the first file
         if lead2 == 0 and level_type == 'A':
             self.method = 'ADD'
             self.add_input_file(file1, lead)
@@ -821,15 +869,22 @@ class PcpCombineWrapper(ReformatGriddedWrapper):
             # if no level list, create list of None values
             level_list = [None] * len(accum_list)
 
-
         accum_dict_list = []
         for accum, level, name in zip(accum_list, level_list, name_list):
+
+            template = None
+            # if accum is forecast lead, set amount to 999999 and save template
+            if 'lead' in accum:
+                template = accum
+                accum = '9999999S'
+
             # convert accum amount to seconds from time string
             amount = time_util.get_seconds_from_string(accum, 'H', time_info['valid'])
-            accum_dict_list.append({'amount' : amount, 'name' : name, 'level': level})
+
+            accum_dict_list.append({'amount' : amount, 'name' : name, 'level': level, 'template': template})
 
         self.c_dict['ACCUM_DICT_LIST'] = accum_dict_list
         return True
 
 if __name__ == "__main__":
-        util.run_stand_alone("pcp_combine_wrapper", "PcpCombine")
+    util.run_stand_alone("pcp_combine_wrapper", "PCPCombine")

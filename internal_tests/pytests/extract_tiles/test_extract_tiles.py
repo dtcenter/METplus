@@ -1,5 +1,5 @@
 """ Tests for the ExtractTiles wrapper, extract_tiles_wrapper.py using tc_pairs output
-    generated from running the TcPairs wrapper, tc_pairs_wrapper.py and using the
+    generated from running the TCPairs wrapper, tc_pairs_wrapper.py and using the
     sample data on 'eyewall': /d1/METplus_Data/cyclone_track_feature/reduced_model_data
 
 
@@ -13,13 +13,13 @@ sys.path.insert(0, my_path + '/../../../ush')
 
 # Alternatively try this if the above my_path lines do not work
 # sys.path.append("/../../../ush/ExtractTilesWrapper")
-# sys.path.append("/../../../ush/TcPairsWrapper")
+# sys.path.append("/../../../ush/TCPairsWrapper")
 import datetime
 import logging
 import re
 import pytest
 from extract_tiles_wrapper import ExtractTilesWrapper
-from tc_pairs_wrapper import TcPairsWrapper
+from tc_pairs_wrapper import TCPairsWrapper
 import produtil
 import config_metplus
 import met_util as util
@@ -47,7 +47,7 @@ def pytest_addoption(parser):
 
 # -----------------FIXTURES THAT CAN BE USED BY ALL TESTS--------------
 def tc_pairs_wrapper():
-    """! Return a default TcPairsWrapper with /path/to entries
+    """! Return a default TCPairsWrapper with /path/to entries
          in the metplus_system.conf and metplus_runtime.conf
          config files.  This is necessary for creating the
          input to the extract tiles wrapper.
@@ -56,7 +56,7 @@ def tc_pairs_wrapper():
     conf = metplus_config()
     logger = logging.getLogger("dummy1")
     conf.set('config', 'LOOP_ORDER', 'processes')
-    tcpw = TcPairsWrapper(conf, logger)
+    tcpw = TCPairsWrapper(conf, logger)
     tcpw.run_all_times()
 
 def extract_tiles_wrapper():

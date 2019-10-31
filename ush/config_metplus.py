@@ -11,8 +11,6 @@ Input Files: N/A
 Output Files: N/A
 """
 
-from __future__ import print_function
-
 import os
 import sys
 import logging

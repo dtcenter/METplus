@@ -12,16 +12,14 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
-
 import os
 import met_util as util
 from compare_gridded_wrapper import CompareGriddedWrapper
 
-class ModeWrapper(CompareGriddedWrapper):
+class MODEWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""
     def __init__(self, config, logger):
-        super(ModeWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'mode'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
@@ -35,16 +33,16 @@ class ModeWrapper(CompareGriddedWrapper):
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MODE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG')
+        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG_FILE', '')
         c_dict['OBS_INPUT_DIR'] = \
-          self.config.getdir('OBS_MODE_INPUT_DIR')
+          self.config.getdir('OBS_MODE_INPUT_DIR', '')
         c_dict['OBS_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
                              'OBS_MODE_INPUT_TEMPLATE')
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_MODE_INPUT_DATATYPE', '')
         c_dict['FCST_INPUT_DIR'] = \
-          self.config.getdir('FCST_MODE_INPUT_DIR')
+          self.config.getdir('FCST_MODE_INPUT_DIR', '')
         c_dict['FCST_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
                              'FCST_MODE_INPUT_TEMPLATE')
@@ -217,9 +215,13 @@ class ModeWrapper(CompareGriddedWrapper):
         if fcst_field_list is None or obs_field_list is None:
             return
 
-        # loop through fields and call Mode
+        # loop through fields and call MODE
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
             self.param = self.c_dict['CONFIG_FILE']
+            if self.param == '':
+                self.logger.error('Must set MODE_CONFIG_FILE to run MODE')
+                return
+
             self.create_and_set_output_dir(time_info)
             self.infiles.append(model_path)
             self.infiles.append(obs_path)
@@ -234,4 +236,4 @@ class ModeWrapper(CompareGriddedWrapper):
             self.clear()
 
 if __name__ == "__main__":
-    util.run_stand_alone("mode_wrapper", "Mode")
+    util.run_stand_alone("mode_wrapper", "MODE")
