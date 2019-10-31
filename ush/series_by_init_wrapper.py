@@ -640,9 +640,8 @@ class SeriesByInitWrapper(CommandBuilder):
             cmd += "-config " + self.param + " "
 
         if self.get_output_path() == "":
-            self.logger.error("No output directory specified")
-            self.logger.error("No output filename specified")
-            return None
+            self.logger.info("No output directory specified, because series analysis has multiple directories")
+            self.logger.info("No output filename specified, because series analysis has multiple files")
         else:
             cmd += "-out " + os.path.join(self.get_output_path())
         return cmd
