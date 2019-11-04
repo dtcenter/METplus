@@ -14,7 +14,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import met_util as util
-from compare_gridded_wrapper import CompareGriddedWrapper
+from metplus_wrappers.compare_gridded_wrapper import CompareGriddedWrapper
 
 # pylint:disable=pointless-string-statement
 """!@namespace GridStatWrapper

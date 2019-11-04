@@ -14,11 +14,14 @@ Condition codes:
 
 import os
 import sys
+import importlib
 
 py_version = sys.version.split(' ')[0]
 if py_version < '3.6.3':
     print("Must be using Python 3.6.3 or higher. You are using {}".format(py_version))
     exit(1)
+
+import metplus_wrappers
 
 import logging
 import shutil
@@ -30,6 +33,7 @@ import config_metplus
 # wrappers are referenced dynamically based on PROCESS_LIST values
 # import of each wrapper is required
 # pylint:disable=unused-import
+'''
 from ensemble_stat_wrapper import EnsembleStatWrapper
 from pcp_combine_wrapper import PCPCombineWrapper
 from grid_stat_wrapper import GridStatWrapper
@@ -55,6 +59,9 @@ from gempak_to_cf_wrapper import GempakToCFWrapper
 from example_wrapper import ExampleWrapper
 from custom_ingest_wrapper import CustomIngestWrapper
 from ascii2nc_wrapper import ASCII2NCWrapper
+'''
+
+#import metplus_wrappers as mw
 
 '''!@namespace master_metplus
 Main script the processes all the tasks in the PROCESS_LIST
@@ -121,9 +128,14 @@ def main():
     for item in process_list:
         try:
             logger = config.log(item)
+            package_name = 'metplus_wrappers.' + util.camel_to_underscore(item) + '_wrapper'
+#            command_builder = importlib.import_module('.'+item + 'Wrapper',
+#                                                      package_name)
             command_builder = \
-                getattr(sys.modules[__name__],
+                getattr(sys.modules[package_name],
                         item + "Wrapper")(config, logger)
+#                getattr(sys.modules[__name__],
+#                        item + "Wrapper")(config, logger)
             # if Usage specified in PROCESS_LIST, print usage and exit
             if item == 'Usage':
                 command_builder.run_all_times()

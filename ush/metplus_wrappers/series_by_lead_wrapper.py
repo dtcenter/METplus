@@ -6,16 +6,14 @@ import sys
 import errno
 import glob
 
-from regrid_data_plane_wrapper import RegridDataPlaneWrapper
-
 import produtil.setup
 import met_util as util
 import time_util
 import feature_util
 from command_builder import CommandBuilder
 import config_metplus
-from tc_stat_wrapper import TCStatWrapper
-from regrid_data_plane_wrapper import RegridDataPlaneWrapper
+from metplus_wrappers.tc_stat_wrapper import TCStatWrapper
+from metplus_wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
 
 
 ## @namespace SeriesByLeadWrapper

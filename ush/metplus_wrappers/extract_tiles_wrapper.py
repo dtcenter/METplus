@@ -17,7 +17,7 @@ import os
 import sys
 import met_util as util
 import feature_util
-from tc_stat_wrapper import TCStatWrapper
+from metplus_wrappers.tc_stat_wrapper import TCStatWrapper
 from command_builder import CommandBuilder
 import time_util
 

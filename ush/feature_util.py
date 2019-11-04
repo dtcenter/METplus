@@ -4,7 +4,8 @@ import sys
 import re
 import datetime
 import met_util as util
-from regrid_data_plane_wrapper import RegridDataPlaneWrapper
+from metplus_wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
+#from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from string_template_substitution import StringSub
 
 """!@namespace feature_util

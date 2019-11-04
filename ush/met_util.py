@@ -20,7 +20,8 @@ from dateutil.relativedelta import relativedelta
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
 from string_template_substitution import get_tags
-from gempak_to_cf_wrapper import GempakToCFWrapper
+#from gempak_to_cf_wrapper import GempakToCFWrapper
+import metplus_wrappers
 import time_util
 
 # for run stand alone
@@ -1320,6 +1321,10 @@ def getlistint(list_str):
     list_str = [int(i) for i in list_str]
     return list_str
 
+def camel_to_underscore(camel):
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', camel)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
 def get_process_list(process_list_string, logger):
     """!Read process list, remove dashes/underscores and change to lower case. Then
         map the name to the correct wrapper name"""
@@ -1877,7 +1882,7 @@ def preprocess_file(filename, data_type, config):
             outdir = os.path.dirname(stagefile)
             if not os.path.exists(outdir):
                 os.makedirs(outdir, mode=0o0775)
-            run_g2c = GempakToCFWrapper(config, config.logger)
+            run_g2c = metplus_wrappers.GempakToCFWrapper(config, config.logger)
             run_g2c.infiles.append(filename)
             run_g2c.set_output_path(stagefile)
             cmd = run_g2c.get_command()

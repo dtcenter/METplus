@@ -15,7 +15,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 import met_util as util
 import string_template_substitution as sts
-from reformat_gridded_wrapper import ReformatGriddedWrapper
+from metplus_wrappers.reformat_gridded_wrapper import ReformatGriddedWrapper
 
 '''!@namespace RegridDataPlaneWrapper
 @brief Wraps the MET tool regrid_data_plane to reformat gridded datasets

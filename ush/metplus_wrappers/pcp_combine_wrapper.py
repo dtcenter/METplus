@@ -17,7 +17,7 @@ import met_util as util
 import datetime
 import string_template_substitution as sts
 
-from reformat_gridded_wrapper import ReformatGriddedWrapper
+from metplus_wrappers.reformat_gridded_wrapper import ReformatGriddedWrapper
 import time_util
 
 '''!@namespace PCPCombineWrapper

@@ -15,7 +15,8 @@ Condition codes: 0 for success, 1 for failure
 import os
 import glob
 import met_util as util
-from compare_gridded_wrapper import CompareGriddedWrapper
+from metplus_wrappers.compare_gridded_wrapper import CompareGriddedWrapper
+#from compare_gridded_wrapper import CompareGriddedWrapper
 import string_template_substitution as sts
 
 """!@namespace EnsembleStatWrapper

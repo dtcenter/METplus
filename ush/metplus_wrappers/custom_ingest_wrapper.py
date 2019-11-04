@@ -19,7 +19,9 @@ import re
 import met_util as util
 import time_util
 from command_builder import CommandBuilder
-from regrid_data_plane_wrapper import RegridDataPlaneWrapper
+#from metplus_wrappers import RegridDataPlaneWrapper
+import metplus_wrappers as mw
+#from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from string_template_substitution import StringSub
 
 VALID_PYTHON_EMBED_TYPES = ['NUMPY', 'XARRAY', 'PANDAS']

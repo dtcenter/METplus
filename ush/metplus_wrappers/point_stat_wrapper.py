@@ -3,7 +3,7 @@
 import os
 import met_util as util
 import time_util
-from compare_gridded_wrapper import CompareGriddedWrapper
+from metplus_wrappers.compare_gridded_wrapper import CompareGriddedWrapper
 
 
 """

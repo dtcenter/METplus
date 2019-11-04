@@ -6,7 +6,7 @@ import re
 import sys
 
 import met_util as util
-from tc_stat_wrapper import TCStatWrapper
+from metplus_wrappers.tc_stat_wrapper import TCStatWrapper
 import feature_util
 from command_builder import CommandBuilder
 
