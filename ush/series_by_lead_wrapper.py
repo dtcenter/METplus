@@ -45,10 +45,10 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.app_name = 'SeriesByLead'
         # Retrieve any necessary values from the parm file(s)
         self.do_fhr_by_group = self.config.getbool('config',
-                                                   'SERIES_BY_LEAD_GROUP_FCSTS')
+                                                   'SERIES_ANALYSIS_GROUP_FCSTS')
         self.fhr_group_labels = []
-        self.var_list = util.getlist(self.config.getstr('config', 'VAR_LIST'))
-        self.stat_list = util.getlist(self.config.getstr('config', 'STAT_LIST'))
+        self.var_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_VAR_LIST'))
+        self.stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST'))
         self.plot_data_plane_exe = os.path.join(
             self.config.getdir('MET_INSTALL_DIR'),
             'bin/plot_data_plane')
@@ -59,27 +59,27 @@ class SeriesByLeadWrapper(CommandBuilder):
         met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.series_analysis_exe = os.path.join(met_install_dir,
                                                 'bin/series_analysis')
-        self.extract_tiles_dir = self.config.getdir('EXTRACT_TILES_OUTPUT_DIR')
+        self.input_dir = self.config.getdir('SERIES_ANALYSIS_INPUT_DIR')
         self.series_lead_filtered_out_dir = \
-            self.config.getdir('SERIES_BY_LEAD_FILTERED_OUTPUT_DIR')
-        self.series_lead_out_dir = self.config.getdir('SERIES_BY_LEAD_OUTPUT_DIR')
+            self.config.getdir('SERIES_ANALYSIS_FILTERED_OUTPUT_DIR')
+        self.series_lead_out_dir = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR')
         self.tmp_dir = self.config.getdir('TMP_DIR')
-        self.background_map = self.config.getbool('config', 'BACKGROUND_MAP')
+        self.background_map = self.config.getbool('config', 'SERIES_ANALYSIS_BACKGROUND_MAP')
         self.series_filter_opts = \
             self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
         self.series_filter_opts.strip()
         self.fcst_ascii_regex = \
-            self.config.getstr('regex_pattern', 'FCST_ASCII_REGEX_LEAD')
+            self.config.getstr('regex_pattern', 'FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD')
         self.anly_ascii_regex = \
-            self.config.getstr('regex_pattern', 'ANLY_ASCII_REGEX_LEAD')
+            self.config.getstr('regex_pattern', 'OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD')
         self.series_anly_configuration_file = \
-            self.config.getstr('config', 'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE')
+            self.config.getstr('config', 'SERIES_ANALYSIS_CONFIG_FILE')
 
         # Re-gridding via MET Tool regrid_data_plane.
         self.fcst_tile_regex = \
-            self.config.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
+            self.config.getstr('regex_pattern', 'FCST_SERIES_ANALYSIS_NC_TILE_REGEX')
         self.anly_tile_regex = \
-            self.config.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
+            self.config.getstr('regex_pattern', 'OBS_SERIES_ANALYSIS_NC_TILE_REGEX')
 
         self.logger.info("Initialized SeriesByLeadWrapper")
 
@@ -171,7 +171,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         # Initialize the tile_dir to the extract tiles output directory.
         # And retrieve a list of init times based on the data available in
         # the extract tiles directory.
-        tile_dir = self.extract_tiles_dir
+        tile_dir = self.input_dir
         init_times = util.get_updated_init_times(tile_dir, self.logger)
 
         # Check for the existence of the storm track tiles and raise
@@ -258,13 +258,13 @@ class SeriesByLeadWrapper(CommandBuilder):
                        " filter criteria. Continue using all available data "
                        "in extract tiles directory.")
                 self.logger.debug(msg)
-                filter_tile_dir = self.extract_tiles_dir
+                filter_tile_dir = self.input_dir
 
         else:
             # No additional filtering was requested.  The extract tiles
             # directory is the
             # source of input tile data.
-            filter_tile_dir = self.extract_tiles_dir
+            filter_tile_dir = self.input_dir
 
         return filter_tile_dir
 
