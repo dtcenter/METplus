@@ -4,35 +4,37 @@
 Program Name: stat_analysis_wrapper.py
 Contact(s): Mallory Row
 Abstract: Runs stat_analysis
-History Log:  Third version
+History Log: Fourth version
 Usage: stat_analysis_wrapper.py
 Parameters: None
-Input Files: MET .stat files
-Output Files: MET .stat files
+Input Files: MET STAT files
+Output Files: MET STAT files
 Condition codes: 0 for success, 1 for failure
 '''
 
 import logging
 import os
-import sys
+import copy
 import met_util as util
 import re
-import csv
 import subprocess
 import datetime
-import time
-import calendar
+import itertools
 import string_template_substitution as sts
 from command_builder import CommandBuilder
 
 
 class StatAnalysisWrapper(CommandBuilder):
+    """! Wrapper to the MET tool stat_analysis which is used to filter 
+         and summarize data from MET's point_stat, grid_stat, 
+         ensemble_stat, and wavelet_stat
+    """
     def __init__(self, config, logger):
         super().__init__(config, logger)
         self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                      'bin/stat_analysis')
         self.app_name = os.path.basename(self.app_path)
-
+        
     def set_lookin_dir(self, lookindir):
         self.lookindir = "-lookin "+lookindir+" "
    
@@ -55,1011 +57,1812 @@ class StatAnalysisWrapper(CommandBuilder):
         if self.param != "":
             cmd += "-config " + self.param + " "
         return cmd
-
-
-    def create_job_filename(self, job_name,
-                            job_args, stat_analysis_out_dir_base,
-                            stat_analysis_dump_row_info,
-                            stat_analysis_out_stat_info):
-        """! Create the stat_analysis job command and set environment variable
-             for the MET stat_analysis config file
-                 
-             Args:
-                job_name - string containing the user requested stat_analysis job
-                           to run
-                job_args - string containig the user requested job related
-                           arguements
-                stat_analysis_out_dir_base - directory where the output from
-                                             stat_analysis will be placed
-                stat_analysis_dump_row_info - dictionary containing
-                                              information to build a file
-                                              name for a stat_analysis 
-                                              dump_row file
-                stat_analysis_out_stat_info - dictionary containing
-                                              information to build a file
-                                              name for a stat_analysis 
-                                              out_stat file
-
-             Returns:
-                job - string containing the user requested job information for 
-                      stat_analysis, the enivronment variable JOB is set to 
-                      this and is used the MET stat_analysis config file
-                       
-        """
-        job = "-job "+job_name+" "+job_args
-        #check for dump_row
-        if stat_analysis_dump_row_info.template_type != "NA":
-            if "/" in stat_analysis_dump_row_info.filename:
-                stat_analysis_dump_row_rpartition = stat_analysis_dump_row_info.filename.rpartition("/")
-                stat_analysis_out_dir = os.path.join(stat_analysis_out_dir_base, stat_analysis_dump_row_rpartition[0])
-                stat_analysis_dump_row_filename = stat_analysis_dump_row_rpartition[2]
-            else:
-                stat_analysis_out_dir = stat_analysis_out_dir_base
-                stat_analysis_dump_row_filename = stat_analysis_dump_row_info.filename
-            util.mkdir_p(stat_analysis_out_dir)
-            job = job.replace("[dump_row_filename]", stat_analysis_out_dir+"/"+stat_analysis_dump_row_filename)
-        #check for out_stat
-        if stat_analysis_out_stat_info.template_type != "NA":
-            if "/" in stat_analysis_out_stat_info.filename:
-                stat_analysis_out_stat_rpartition = stat_analysis_out_stat_info.filename.rpartition("/")
-                stat_analysis_out_dir = os.path.join(stat_analysis_out_dir_base, stat_analysis_out_stat_rpartition[0])
-                stat_analysis_out_stat_filename = stat_analysis_out_stat_rpartition[2]
-            else:
-                stat_analysis_out_dir = stat_analysis_out_dir_base
-                stat_analysis_out_stat_filename = stat_analysis_out_stat_info.filename
-            util.mkdir_p(stat_analysis_out_dir)
-            job = job.replace("[out_stat_filename]", stat_analysis_out_dir+"/"+stat_analysis_out_stat_filename)
-        self.add_env_var("JOB", job)
-        return job
-       
-    def create_hour_group_list(self, loop_hour_beg, loop_hour_end,
-                               loop_hour_interval):
-        """! Creates a list of hours formatted in %H%M%S
-                 
-             Args:
-                loop_hour_beg - Unix timestamp value of the start hour
-                loop_hour_end - Unix timestamp value of the end hour 
-                loop_hours_interval - integer of increments to include
-                                      list
-
-             Returns:
-                hour_group_list - list of hours formatted in %H%M%S
-        """
-        loop_hour_now = loop_hour_beg
-        hour_group_list = ""
-        while loop_hour_now <= loop_hour_end:
-            if loop_hour_now == loop_hour_end:
-                hour_group_list = hour_group_list+'"'+str(time.strftime("%H%M%S", time.gmtime(loop_hour_now))+'"')
-            else:
-                hour_group_list = hour_group_list+'"'+str(time.strftime("%H%M%S", time.gmtime(loop_hour_now))+'", ')
-            loop_hour_now += loop_hour_interval
-        return hour_group_list
-
-    def create_variable_list(self, conf_var):
-        """! Creates a string from a list to be used in the MET stat_analysis
-             config file
-                 
-             Args:
-                conf_var - list of values 
-
-             Returns:
-                conf_var_list - string that can be set as an 
-                                environment variable to be read in 
-                                the MET stat_analysis config_file
-        """
-        conf_var_list=""
-        if len(conf_var) > 0:
-            for lt in range(len(conf_var)):
-                if lt == len(conf_var)-1:
-                    conf_var_list = conf_var_list+'"'+str(conf_var[lt]+'"')
-                else:
-                    conf_var_list = conf_var_list+'"'+str(conf_var[lt]+'", ')
-        return conf_var_list
-
-    class StatAnalysisOutputInfo(object):
-        __slots__ = 'template_type', 'filename_template', 'filename'
+     
+    def create_c_dict(self):
+        """! Create a data structure (dictionary) that contains all the
+             values set in the configuration files that are common for 
+             stat_analysis_wrapper.py.
         
-    def create_filename_from_user_template(self, filename_template, 
-                                           valid_init_time_info, init_time):
-        """! Creates a file name for stat_analysis output based on user 
-             requested template
+             Args:
+ 
+             Returns:
+                 c_dict  - a dictionary containing the settings in the
+                           configuration files unique to the wrapper
+        """
+        c_dict = super(StatAnalysisWrapper, self).create_c_dict()
+        c_dict['VERBOSITY'] = (
+            self.config.getstr('config','LOG_STAT_ANALYSIS_VERBOSITY',
+                               c_dict['VERBOSITY'])
+        )
+        c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
+        c_dict['PROCESS_LIST'] = self.config.getstr('config', 'PROCESS_LIST')
+        c_dict['CONFIG_FILE'] = self.config.getstr('config', 
+                                                   'STAT_ANALYSIS_CONFIG_FILE')
+        c_dict['OUTPUT_BASE_DIR'] = (
+            self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR')
+        )
+        c_dict['GROUP_LIST_ITEMS'] = util.getlist(
+            self.config.getstr('config', 'GROUP_LIST_ITEMS')
+        )
+        c_dict['LOOP_LIST_ITEMS'] = util.getlist(
+            self.config.getstr('config', 'LOOP_LIST_ITEMS')
+        )
+        c_dict['VAR_LIST'] = util.parse_var_list(self.config)
+        c_dict['MODEL_LIST'] = util.getlist(
+            self.config.getstr('config', 'MODEL_LIST', '')
+        )
+        c_dict['DESC_LIST'] = util.getlist(
+            self.config.getstr('config', 'DESC_LIST', '')
+        )
+        c_dict['FCST_LEAD_LIST'] = util.getlist(
+            self.config.getstr('config', 'FCST_LEAD_LIST', '')
+        )
+        c_dict['OBS_LEAD_LIST'] = util.getlist(
+            self.config.getstr('config', 'OBS_LEAD_LIST', '')
+        )
+        c_dict['FCST_VALID_HOUR_LIST'] = util.getlist(
+            self.config.getstr('config', 'FCST_VALID_HOUR_LIST', '')
+        )
+        c_dict['FCST_INIT_HOUR_LIST'] = util.getlist(
+            self.config.getstr('config', 'FCST_INIT_HOUR_LIST', '')
+        )
+        c_dict['OBS_VALID_HOUR_LIST'] = util.getlist(
+            self.config.getstr('config', 'OBS_VALID_HOUR_LIST', '')
+        )
+        c_dict['OBS_INIT_HOUR_LIST'] = util.getlist(
+            self.config.getstr('config', 'OBS_INIT_HOUR_LIST', '')
+        )
+        c_dict['VX_MASK_LIST'] = util.getlist(
+            self.config.getstr('config', 'VX_MASK_LIST', '')
+        )
+        c_dict['INTERP_MTHD_LIST'] = util.getlist(
+            self.config.getstr('config', 'INTERP_MTHD_LIST', '')
+        )
+        c_dict['INTERP_PNTS_LIST'] = util.getlist(
+            self.config.getstr('config', 'INTERP_PNTS_LIST', '')
+        )
+        c_dict['COV_THRESH_LIST'] = util.getlist(
+            self.config.getstr('config', 'COV_THRESH_LIST', '')
+        )
+        c_dict['ALPHA_LIST'] = util.getlist(
+            self.config.getstr('config', 'ALPHA_LIST', '')
+        )
+        c_dict['LINE_TYPE_LIST'] = util.getlist(
+            self.config.getstr('config', 'LINE_TYPE_LIST', '')
+        )
+        return c_dict
+
+    def list_to_str(self, list_of_values):
+        """! Turn a list of values into a single string so it can be 
+             set to an environment variable and read by the MET 
+             stat_analysis config file.
                  
              Args:
-                filename_template - string with the string substitution
-                                    information to be filled
-                valid_init_time_info - dictionary containing the
-                                       valid and initialization hour
-                                       information
-                init_time - integer for containing the initialization
-                            date information (is -1 if looping over
-                            valid times)
-
+                 list_of_values - list of values
+  
              Returns:
-                filled_tmpl - string filled with the valid and 
-                              initialization time information for
-                              a filename
+                 list_as_str    - string created from list_of_values
+                                  with the values separated by commas 
         """
-        time_info_valid_beg = valid_init_time_info["FCST_VALID_BEG"].replace("_", "")
-        time_info_valid_end = valid_init_time_info["FCST_VALID_END"].replace("_", "")
-        time_info_valid_hour = valid_init_time_info["FCST_VALID_HOUR"].replace('"','').split(",")
-        time_info_init_beg = valid_init_time_info["FCST_INIT_BEG"].replace("_", "")
-        time_info_init_end = valid_init_time_info["FCST_INIT_END"].replace("_", "")
-        time_info_init_hour = valid_init_time_info["FCST_INIT_HOUR"].replace('"','').split(",")
-        #for init_time = -1 (looping over init date): time_info_init_beg, time_info_init_end, time_info_valid_hour are always used together
-        #for init_time != -1 (looping over valid date): time_info_valid_beg, time_info_valid_end, time_info_init_hour are always used together
-        #dummy date: 1900010100
-        if init_time == -1:
-            #build valid_time_filename
-            valid_time_filename = time_info_valid_beg
-            if time_info_valid_beg != time_info_valid_end:
-                match = re.search(r'.*\{valid\?fmt=(.*?[%H])\}', filename_template)
-                if match:
-                    self.logger.error("Please include valid hour group times in template defined in METplus conf file using VALID_HOUR_BEG and VALID_HOUR_END")
-                    exit(1)
-            #build init_time_filename
-            if len(time_info_init_hour) == 1:
-                init_time_filename = "19000101"+time_info_init_hour[0]
-                #check that init format makes sense in template
-                match = re.search(r'.*\{init\?fmt=(.*?)\}', filename_template)
-                if match:
-                    if match.group(1) != '%H':
-                        self.logger.error("Only accepted format {init?fmt=%H}")
-                        exit(1)
-            else:
-                init_time_filename = "19000101000000"
-                match = re.search(r'.*\{init\?fmt=(.*?)\}', filename_template)
-                if match:
-                    self.logger.error("Please include init hour group times in template defined in METplus conf file using INIT_HOUR_BEG and INIT_HOUR_END")
-                    exit(1)
-        else:
-            init_time_filename =  time_info_init_beg
-            #build init_time_filename
-            if time_info_init_beg != time_info_init_end:
-                match = re.search(r'.*\{init\?fmt=(.*?[%H])\}', filename_template)
-                if match:
-                    self.logger.error("Please include init hour group times in template defined in METplus conf file using INIT_HOUR_BEG and INIT_HOUR_END")
-                    exit(1)
-            #build valid_time_filename
-            if len(time_info_valid_hour) == 1:
-                valid_time_filename = "19000101"+time_info_valid_hour[0]
-                #check that valid format makes sense in template
-                match = re.search(r'.*\{valid\?fmt=(.*?)\}', filename_template)
-                if match:
-                    if match.group(1) != '%H':
-                        self.logger.error("Only accepted format {valid?fmt=%H}")
-                        exit(1)
-            else:
-                valid_time_filename = "19000101000000"
-                match = re.search(r'.*\{valid\?fmt=(.*?)\}', filename_template)
-                if match:
-                    self.logger.error("Please include valid hour group times in template defined in METplus conf file using VALID_HOUR_BEG and VALID_HOUR_END")
-                    exit(1)
-        #split into chunks to deal with directories
-        tmpl_time_info = {"valid": datetime.datetime.strptime(valid_time_filename, "%Y%m%d%H%M%S"),
-                          "init": datetime.datetime.strptime(init_time_filename, "%Y%m%d%H%M%S")
-                         }
-        tmpl_split = filename_template.split("/")
-        filled_tmpl = ""
-        for tmpl_chunk in tmpl_split:
-            if "?fmt=%" in tmpl_chunk:
-                tmpl_chunkSts = sts.StringSub(self.logger,
-                                              tmpl_chunk,
-                                              **tmpl_time_info)
-                filled_tmpl_chunk = tmpl_chunkSts.do_string_sub()
-            else:
-                filled_tmpl_chunk = tmpl_chunk
-            filled_tmpl = os.path.join(filled_tmpl, filled_tmpl_chunk)
-        return filled_tmpl
+        list_as_str=''
+        if len(list_of_values) > 0:
+            for lt in range(len(list_of_values)):
+                if lt == len(list_of_values)-1:
+                    list_as_str = list_as_str+'"'+str(list_of_values[lt]+'"')
+                else:
+                    list_as_str = list_as_str+'"'+str(list_of_values[lt]+'", ')
+        return list_as_str
     
-    class ValidInitTimesPairs(object):
-        __slots__ = 'valid', 'init'
-
-    def pair_valid_init_times(self, valid_hour_list, valid_method,
-                              init_hour_list, init_method):
-        """! Pairs the valid and initialization hour information
-                 
+    def set_lists_loop_or_group(self, config_lists_to_group_items,
+                                config_lists_to_loop_items, config_dict):
+        """! Determine whether the lists from the METplus config file
+             should treat the items in that list as a group or items 
+             to be looped over based on user settings, the values
+             in the list, and process being run.
+             
              Args:
-                valid_hour_list - foramatted valid hours from
-                                  create_hour_group_list
-                valid_method - string of how to treat valid hour
-                               information, either GROUP or LOOP
-                init_hour_list - foramatted initialization hours from
-                                 create_hour_group_list
-                init_method - string of how to treat initialization hour
-                              information, either GROUP or LOOP
+                 config_lists_to_group_items - list of the METplus 
+                                               config list names
+                                               to group the list's 
+                                               items set by user
+                 config_lists_to_loop_items  - list of the METplus 
+                                               config list names
+                                               to loop over the 
+                                               list's items set by 
+                                               user
+                 config_dict                 - dictionary containing
+                                               the configuration 
+                                               information
+             
+             Returns: 
+                 lists_to_group_items        - list of all the list names 
+                                               whose items are being 
+                                               grouped together
+                 lists_to_loop_items         - list of all the list names 
+                                               whose items are being
+                                               looped over 
+        """
+        expected_config_lists = [
+             'MODEL_LIST', 'DESC_LIST',
+             'FCST_LEAD_LIST', 'OBS_LEAD_LIST',
+             'FCST_VALID_HOUR_LIST', 'FCST_INIT_HOUR_LIST',
+             'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST',
+             'FCST_VAR_LIST', 'OBS_VAR_LIST',
+             'FCST_UNITS_LIST', 'OBS_UNITS_LIST',
+             'FCST_LEVEL_LIST', 'OBS_LEVEL_LIST',
+             'VX_MASK_LIST', 'INTERP_MTHD_LIST',
+             'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
+             'OBS_THRESH_LIST', 'COV_THRESH_LIST',
+             'ALPHA_LIST', 'LINE_TYPE_LIST'
+        ]
+        if (self.c_dict['LOOP_ORDER'] == 'processes' 
+                and 'MakePlots' in self.c_dict['PROCESS_LIST']):
+            lists_to_group_items = config_lists_to_group_items
+            lists_to_loop_items = config_lists_to_loop_items
+            for config_list in expected_config_lists:
+                if (not config_list in config_lists_to_group_items
+                        and not config_list in config_lists_to_loop_items):
+                    if config_list == 'LINE_TYPE_LIST':
+                        lists_to_group_items.append(config_list)
+                    elif config_dict[config_list] == []:
+                        self.logger.warning(config_list+" is empty, "
+                                            +"will be treated as group.")
+                        lists_to_group_items.append(config_list)
+                    else:
+                        lists_to_loop_items.append(config_list)
+                elif (config_list in config_lists_to_loop_items
+                          and config_dict[config_list] == []):
+                    self.logger.warning(config_list+" is empty, "
+                                        +"will be treated as group.")
+                    lists_to_group_items.append(config_list)
+                    lists_to_loop_items.remove(config_list)
+        else:
+            lists_to_group_items = config_lists_to_group_items
+            lists_to_loop_items = config_lists_to_loop_items
+            for config_list in expected_config_lists:
+                if (not config_list in config_lists_to_group_items
+                        and not config_list in config_lists_to_loop_items):
+                    lists_to_group_items.append(config_list)
+                elif (config_list in config_lists_to_loop_items
+                          and config_dict[config_list] == []):
+                    self.logger.warning(config_list+" is empty, "
+                                        +"will be treated as group.")
+                    lists_to_group_items.append(config_list)
+                    lists_to_loop_items.remove(config_list)
+        self.logger.debug("Items in these lists will be grouped together: "
+                          +', '.join(lists_to_group_items))
+        self.logger.debug("Items in these lists will be looped over: "
+                          +', '.join(lists_to_loop_items))
+        return lists_to_group_items, lists_to_loop_items
+
+    def format_thresh(self, thresh):
+        """! Format thresholds for file naming 
+           
+             Args:
+                 thresh         - string of the treshold(s)
+           
+             Return:
+                 thresh_symbol  - string of the threshold(s)
+                                  with symbols
+                 thresh_letters - string of the threshold(s) 
+                                  with letters 
+        """
+        thresh_list = thresh.split(' ')
+        thresh_symbol = ''
+        thresh_letter = ''
+        for thresh in thresh_list:
+            if thresh == '':
+                continue
+            thresh_value = thresh
+            for opt in ['>=', '>', '==','!=','<=', '<',
+                        'ge', 'gt', 'eq', 'ne', 'le', 'lt']:
+                if opt in thresh_value:
+                    thresh_opt = opt
+                    thresh_value = thresh_value.replace(opt, '')
+            if thresh_opt in ['>', 'gt']:
+                thresh_symbol+='>'+thresh_value
+                thresh_letter+='gt'+thresh_value
+            elif thresh_opt in ['>=', 'ge']:
+                thresh_symbol+='>='+thresh_value
+                thresh_letter+='ge'+thresh_value
+            elif thresh_opt in ['<', 'lt']:
+                thresh_symbol+='<'+thresh_value
+                thresh_letter+='lt'+thresh_value
+            elif thresh_opt in ['<=', 'le']:
+                thresh_symbol+='<='+thresh_value
+                thresh_letter+='le'+thresh_value
+            elif thresh_opt in ['==', 'eq']:
+                thresh_symbol+='=='+thresh_value
+                thresh_letter+='eq'+thresh_value
+            elif thresh_opt in ['!=', 'ne']:
+                thresh_symbol+='!='+thresh_value
+                thresh_letter+='ne'+thresh_value
+        return thresh_symbol, thresh_letter
+
+    def build_stringsub_dict(self, date_beg, date_end, date_type,
+                             lists_to_loop, lists_to_group, config_dict):
+        """! Build a dictionary with list names, dates, and commonly
+             used identifiers to pass to string_template_substitution.
+            
+             Args:
+                 date_beg       - string of the beginning date in
+                                  YYYYMMDD form
+                 date_end       - string of the end date in YYYYMMDD
+                                  form
+                 date_type      - string of the date type, either
+                                  VALID or INIT
+                 lists_to_loop  - list of all the list names whose items
+                                  are being grouped together
+                 lists_to group - list of all the list names whose items
+                                  are being looped over
+                 config_dict    - dictionary containing the configuration 
+                                  information
+            
+             Returns:
+                 stringsub_dict - dictionary containing the formatted
+                                  information to pass to the 
+                                  string_template_substitution
+        """
+        stringsub_dict_keys = []
+        for loop_list in lists_to_loop:
+            list_name = loop_list.replace('_LIST', '')
+            stringsub_dict_keys.append(list_name.lower())
+        for group_list in lists_to_group:
+            list_name = group_list.replace('_LIST', '')
+            stringsub_dict_keys.append(list_name.lower())
+        special_keys = [
+            'fcst_valid_hour_beg', 'fcst_valid_hour_end',
+            'fcst_init_hour_beg', 'fcst_init_hour_end',
+            'obs_valid_hour_beg', 'obs_valid_hour_end',
+            'obs_init_hour_beg', 'obs_init_hour_end',
+            'valid_hour', 'valid_hour_beg', 'valid_hour_end',
+            'init_hour', 'init_hour_beg', 'init_hour_end',
+            'fcst_valid', 'fcst_valid_beg', 'fcst_valid_end',
+            'fcst_init', 'fcst_init_beg', 'fcst_init_end',
+            'obs_valid', 'obs_valid_beg', 'obs_valid_end',
+            'obs_init', 'obs_init_beg', 'obs_init_end',
+            'valid', 'valid_beg', 'valid_end',
+            'init', 'init_beg', 'init_end',
+            'fcst_lead_hour', 'fcst_lead_min',
+            'fcst_lead_sec', 'fcst_lead_totalsec',
+            'obs_lead_hour', 'obs_lead_min',
+            'obs_lead_sec', 'obs_lead_totalsec',
+            'lead', 'lead_hour', 'lead_min', 'lead_sec', 'lead_totalsec'
+        ]
+        for special_key in special_keys:
+            stringsub_dict_keys.append(special_key)
+        stringsub_dict = dict.fromkeys(stringsub_dict_keys, '')
+        nkeys_start = len(stringsub_dict_keys)
+        # Set full date information
+        fcst_hour_list = (
+            config_dict['FCST_'+date_type+'_HOUR'].replace('"', '').split(', ')
+        )
+        obs_hour_list = (
+            config_dict['OBS_'+date_type+'_HOUR'].replace('"', '').split(', ')
+        )
+        if fcst_hour_list != ['']:
+            stringsub_dict['fcst_'+date_type.lower()+'_beg'] = (
+                datetime.datetime.strptime(
+                    date_beg+fcst_hour_list[0], '%Y%m%d%H%M%S'
+                )
+            )
+            stringsub_dict['fcst_'+date_type.lower()+'_end'] = (
+                datetime.datetime.strptime(
+                    date_end+fcst_hour_list[-1], '%Y%m%d%H%M%S'
+                )
+            )
+            if (stringsub_dict['fcst_'+date_type.lower()+'_beg']
+                    == stringsub_dict['fcst_'+date_type.lower()+'_end']):
+                stringsub_dict['fcst_'+date_type.lower()] = (
+                    stringsub_dict['fcst_'+date_type.lower()+'_beg']
+                )
+        else:
+            stringsub_dict['fcst_'+date_type.lower()+'_beg'] = (
+                datetime.datetime.strptime(
+                    date_beg+'000000', '%Y%m%d%H%M%S'
+                )
+            )
+            stringsub_dict['fcst_'+date_type.lower()+'_end'] = (
+                datetime.datetime.strptime(
+                    date_beg+'235959', '%Y%m%d%H%M%S'
+                )
+            )
+        if obs_hour_list != ['']:
+            stringsub_dict['obs_'+date_type.lower()+'_beg'] = (
+                datetime.datetime.strptime(
+                    date_beg+obs_hour_list[0], '%Y%m%d%H%M%S'
+                )
+            )
+            stringsub_dict['obs_'+date_type.lower()+'_end'] = (
+                datetime.datetime.strptime(
+                    date_end+obs_hour_list[-1], '%Y%m%d%H%M%S'
+                )
+            )
+            if (stringsub_dict['obs_'+date_type.lower()+'_beg']
+                    == stringsub_dict['obs_'+date_type.lower()+'_end']):
+                stringsub_dict['obs_'+date_type.lower()] = (
+                    stringsub_dict['obs_'+date_type.lower()+'_beg']
+                )
+        else:
+            stringsub_dict['obs_'+date_type.lower()+'_beg'] = (
+                datetime.datetime.strptime(
+                    date_beg+'000000', '%Y%m%d%H%M%S'
+                )
+            )
+            stringsub_dict['obs_'+date_type.lower()+'_end'] = (
+                datetime.datetime.strptime(
+                    date_beg+'235959', '%Y%m%d%H%M%S'
+                )
+            )
+        if fcst_hour_list == obs_hour_list:
+            stringsub_dict[date_type.lower()+'_beg'] = (
+                 stringsub_dict['fcst_'+date_type.lower()+'_beg']
+            )
+            stringsub_dict[date_type.lower()+'_end'] = (
+                 stringsub_dict['fcst_'+date_type.lower()+'_end']
+            )
+            if (stringsub_dict[date_type.lower()+'_beg']
+                    == stringsub_dict[date_type.lower()+'_end']):
+                 stringsub_dict[date_type.lower()] = (
+                     stringsub_dict['fcst_'+date_type.lower()+'_beg']
+                 )
+        if (fcst_hour_list != ['']
+                and obs_hour_list == ['']):
+            stringsub_dict[date_type.lower()+'_beg'] = (
+                stringsub_dict['fcst_'+date_type.lower()+'_beg']
+            )
+            stringsub_dict[date_type.lower()+'_end'] = (
+                stringsub_dict['fcst_'+date_type.lower()+'_end']
+            )
+            if (stringsub_dict[date_type.lower()+'_beg']
+                    == stringsub_dict[date_type.lower()+'_end']):
+                stringsub_dict[date_type.lower()] = (
+                    stringsub_dict['fcst_'+date_type.lower()+'_beg']
+                )
+        if (fcst_hour_list == ['']
+                and obs_hour_list != ['']):
+            stringsub_dict[date_type.lower()+'_beg'] = (
+                stringsub_dict['obs_'+date_type.lower()+'_beg']
+            )
+            stringsub_dict[date_type.lower()+'_end'] = (
+                stringsub_dict['obs_'+date_type.lower()+'_end']
+            )
+            if (stringsub_dict[date_type.lower()+'_beg']
+                    == stringsub_dict[date_type.lower()+'_end']):
+                stringsub_dict[date_type.lower()] = (
+                    stringsub_dict['obs_'+date_type.lower()+'_beg']
+                )
+        # Set loop information
+        for loop_list in lists_to_loop:
+            list_name = loop_list.replace('_LIST', '')
+            list_name_value = (
+                config_dict[list_name].replace('"', '').replace(' ', '')
+            )
+            if 'THRESH' in list_name:
+                thresh_symbol, thresh_letter = self.format_thresh(
+                    list_name_value
+                )
+                stringsub_dict[list_name.lower()] = thresh_letter
+            elif list_name == 'MODEL':
+                stringsub_dict[list_name.lower()] = list_name_value
+                stringsub_dict['obtype'] = (
+                    config_dict['OBTYPE'].replace('"', '').replace(' ', '')
+                )
+            elif 'HOUR' in list_name:
+                 stringsub_dict[list_name.lower()] = (
+                     datetime.datetime.strptime(list_name_value, '%H%M%S')
+                 )
+                 stringsub_dict[list_name.lower()+'_beg'] = stringsub_dict[
+                     list_name.lower()
+                 ]
+                 stringsub_dict[list_name.lower()+'_end'] = stringsub_dict[
+                     list_name.lower()
+                 ]
+                 check_list1 = config_dict[list_name]
+                 if 'FCST' in list_name:
+                     check_list2 = config_dict[list_name.replace('FCST',
+                                                                 'OBS')]
+                 elif 'OBS' in list_name:
+                     check_list2 = config_dict[list_name.replace('OBS',
+                                                                 'FCST')]
+                 if (check_list1 == check_list2
+                         or len(check_list2) == 0):
+                     list_type = list_name.replace('_HOUR', '').lower()
+                     if 'VALID' in list_name:
+                        stringsub_dict['valid_hour_beg'] = (
+                            stringsub_dict[list_type+'_hour_beg']
+                        )
+                        stringsub_dict['valid_hour_end'] = (
+                           stringsub_dict[list_type+'_hour_end']
+                        )
+                        if (stringsub_dict['valid_hour_beg']
+                                == stringsub_dict['valid_hour_end']):
+                            stringsub_dict['valid_hour'] = (
+                                stringsub_dict['valid_hour_end']
+                            )
+                     elif 'INIT' in list_name:
+                        stringsub_dict['init_hour_beg'] = (
+                            stringsub_dict[list_type+'_hour_beg']
+                        )
+                        stringsub_dict['init_hour_end'] = (
+                            stringsub_dict[list_type+'_hour_end']
+                        )
+                        if (stringsub_dict['init_hour_beg']
+                                == stringsub_dict['init_hour_end']):
+                           stringsub_dict['init_hour'] = (
+                                stringsub_dict['init_hour_end']
+                           )
+            elif 'LEAD' in list_name:
+                lead_timedelta = datetime.timedelta(
+                    hours=int(list_name_value[:-4]),
+                    minutes=int(list_name_value[-4:-2]),
+                    seconds=int(list_name_value[-2:])
+                )
+                stringsub_dict[list_name.lower()] = list_name_value
+                stringsub_dict[list_name.lower()+'_hour'] = (
+                    list_name_value[:-4]
+                )
+                stringsub_dict[list_name.lower()+'_min'] = (
+                    list_name_value[-4:-2]
+                )
+                stringsub_dict[list_name.lower()+'_sec'] = (
+                    list_name_value[-2:]
+                )
+                stringsub_dict[list_name.lower()+'_totalsec'] = str(int(
+                    lead_timedelta.total_seconds()
+                ))
+                list_type = list_name.replace('_LEAD', '').lower()
+                check_list1 = config_dict[list_name]
+                if 'FCST' in list_name:
+                    check_list2 = config_dict[list_name.replace('FCST', 'OBS')]
+                elif 'OBS' in list_name:
+                    check_list2 = config_dict[list_name.replace('OBS', 'FCST')]
+                if (check_list1 == check_list2
+                         or len(check_list2) == 0):
+                    stringsub_dict['lead'] = stringsub_dict[list_name.lower()]
+                    stringsub_dict['lead_hour'] = (
+                        stringsub_dict[list_name.lower()+'_hour']
+                    )
+                    stringsub_dict['lead_min'] = (
+                        stringsub_dict[list_name.lower()+'_min']
+                    )
+                    stringsub_dict['lead_sec'] = (
+                        stringsub_dict[list_name.lower()+'_sec']
+                    )
+                    stringsub_dict['lead_totalsec'] = (
+                        stringsub_dict[list_name.lower()+'_totalsec']
+                    )
+            else:
+                stringsub_dict[list_name.lower()] = list_name_value
+        # Set group information
+        for group_list in lists_to_group:
+            list_name = group_list.replace('_LIST', '')
+            list_name_value = (
+                config_dict[list_name].replace('"', '').replace(' ', '') \
+                .replace(',', '_')
+            )
+            if 'THRESH' in list_name:
+                thresh_symbol, thresh_letter = self.format_thresh(
+                    config_dict[list_name]
+                )
+                stringsub_dict[list_name.lower()] = (
+                    thresh_letter.replace(',', '_')
+                )
+            elif 'HOUR' in list_name:
+                list_name_values_list = (
+                    config_dict[list_name].replace('"', '').split(', ')
+                )
+                stringsub_dict[list_name.lower()] = list_name_value
+                if list_name_values_list != ['']:
+                    stringsub_dict[list_name.lower()+'_beg'] = (
+                        datetime.datetime.strptime(list_name_values_list[0], 
+                                                   '%H%M%S')
+                    )
+                    stringsub_dict[list_name.lower()+'_end'] = (
+                        datetime.datetime.strptime(list_name_values_list[-1], 
+                                                   '%H%M%S')
+                    )
+                    if (stringsub_dict[list_name.lower()+'_beg']
+                            == stringsub_dict[list_name.lower()+'_end']):
+                       stringsub_dict[list_name.lower()] = (
+                           stringsub_dict[list_name.lower()+'_end']
+                       )
+                    check_list1 = config_dict[list_name]
+                    if 'FCST' in list_name:
+                        check_list2 = config_dict[list_name.replace('FCST',
+                                                                    'OBS')]
+                    elif 'OBS' in list_name:
+                        check_list2 = config_dict[list_name.replace('OBS',
+                                                                    'FCST')]
+                    if (check_list1 == check_list2
+                             or len(check_list2) == 0):
+                        list_type = list_name.replace('_HOUR', '').lower()
+                        if 'VALID' in list_name:
+                            stringsub_dict['valid_hour_beg'] = (
+                                stringsub_dict[list_type+'_hour_beg']
+                            )
+                            stringsub_dict['valid_hour_end'] = (
+                               stringsub_dict[list_type+'_hour_end']
+                            )
+                            if (stringsub_dict['valid_hour_beg']
+                                    == stringsub_dict['valid_hour_end']):
+                                stringsub_dict['valid_hour'] = (
+                                    stringsub_dict['valid_hour_end']
+                                )
+                        elif 'INIT' in list_name:
+                            stringsub_dict['init_hour_beg'] = (
+                                stringsub_dict[list_type+'_hour_beg']
+                            )
+                            stringsub_dict['init_hour_end'] = (
+                               stringsub_dict[list_type+'_hour_end']
+                            )
+                            if (stringsub_dict['init_hour_beg']
+                                    == stringsub_dict['init_hour_end']):
+                                stringsub_dict['init_hour'] = (
+                                    stringsub_dict['init_hour_end']
+                                )
+                else:
+                    stringsub_dict[list_name.lower()+'_beg'] = (
+                        datetime.datetime.strptime('000000',
+                                                   '%H%M%S')
+                    )
+                    stringsub_dict[list_name.lower()+'_end'] = (
+                        datetime.datetime.strptime('235959',
+                                                   '%H%M%S')
+                    )
+                    check_list1 = config_dict[list_name]
+                    if 'FCST' in list_name:
+                        check_list2 = config_dict[list_name.replace('FCST',
+                                                                    'OBS')]
+                    elif 'OBS' in list_name:
+                        check_list2 = config_dict[list_name.replace('OBS',
+                                                                    'FCST')]
+                    if (check_list1 == check_list2
+                             or len(check_list2) == 0):
+                        list_type = list_name.replace('_HOUR', '').lower()
+                        if 'VALID' in list_name:
+                            stringsub_dict['valid_hour_beg'] = (
+                                stringsub_dict[list_type+'_hour_beg']
+                            )
+                            stringsub_dict['valid_hour_end'] = (
+                               stringsub_dict[list_type+'_hour_end']
+                            )
+                            if (stringsub_dict['valid_hour_beg']
+                                    == stringsub_dict['valid_hour_end']):
+                                stringsub_dict['valid_hour'] = (
+                                    stringsub_dict['valid_hour_end']
+                                )
+                        elif 'INIT' in list_name:
+                            stringsub_dict['init_hour_beg'] = (
+                                stringsub_dict[list_type+'_hour_beg']
+                            )
+                            stringsub_dict['init_hour_end'] = (
+                               stringsub_dict[list_type+'_hour_end']
+                            )
+                            if (stringsub_dict['init_hour_beg']
+                                    == stringsub_dict['init_hour_end']):
+                                stringsub_dict['init_hour'] = (
+                                    stringsub_dict['init_hour_end']
+                                )
+            else:
+                stringsub_dict[list_name.lower()] = list_name_value
+        nkeys_end = len(stringsub_dict_keys)
+        # Some lines for debugging if needed in future
+        #self.logger.info(nkeys_start)
+        #self.logger.info(nkeys_end)
+        #for key, value in stringsub_dict.items():
+        #    self.logger.info("{} ({})".format(key, value))
+        return stringsub_dict
+
+    def get_output_filename(self, output_type, filename_template,
+                            filename_type, date_beg, date_end, date_type,
+                            lists_to_loop, lists_to_group, config_dict):
+        """! Create a file name for stat_analysis output.
+             
+             Args:
+                 output_type       - string for the type of
+                                     stat_analysis output, either 
+                                     dump_row or out_stat
+                 filename_template - string of the template to be used 
+                                     to create the file name
+                 filename_type     - string of the source of the
+                                     template being used, either 
+                                     default or user
+                 date_beg          - string of the beginning date in
+                                     YYYYMMDD form
+                 date_end          - string of the end date in YYYYMMDD
+                                     form
+                 date_type         - string of the date type, either
+                                     VALID or INIT
+                 lists_to_loop     - list of all the list names whose
+                                     items are being grouped together
+                 lists_to group    - list of all the list names whose
+                                     items are being looped over
+                 config_dict       - dictionary containing the
+                                     configuration information
 
              Returns:
-                valid_init_time_pairs - list of objects with the 
-                                        valid and initialization hour
-                                        information
+                 output_filename   - string of the filled file name
+                                     template
         """
-        valid_init_time_pairs = []
-        if valid_method == "GROUP" and init_method == "LOOP":
-            for init_hour in init_hour_list.split(", "):
-                pair = self.ValidInitTimesPairs()
-                pair.valid = valid_hour_list
-                pair.init = init_hour
-                valid_init_time_pairs.append(pair)
-        elif valid_method == "LOOP" and init_method == "GROUP":
-            for valid_hour in valid_hour_list.split(", "):
-                pair = self.ValidInitTimesPairs()
-                pair.valid = valid_hour
-                pair.init = init_hour_list
-                valid_init_time_pairs.append(pair)
-        elif valid_method == "LOOP" and init_method == "LOOP":
-            for init_hour in init_hour_list.split(", "):
-                for valid_hour in valid_hour_list.split(", "):
-                    pair = self.ValidInitTimesPairs()
-                    pair.valid = valid_hour
-                    pair.init = init_hour
-                    valid_init_time_pairs.append(pair)
-        elif valid_method == "GROUP" and init_method == "GROUP":
-            pair = self.ValidInitTimesPairs()
-            pair.valid = valid_hour_list
-            pair.init = init_hour_list
-            valid_init_time_pairs.append(pair)
-        return valid_init_time_pairs
+        stringsub_dict = self.build_stringsub_dict(date_beg, date_end,
+                                                   date_type, lists_to_loop,
+                                                   lists_to_group, config_dict)
 
+        if filename_type == 'default':
+            if ('MakePlots' in self.c_dict['PROCESS_LIST'] 
+                        and output_type == 'dump_row'):
+                filename_template_prefix = ( 
+                    filename_template+date_type.lower()
+                    +'{'+date_type.lower()+'_beg?fmt=%Y%m%d}'
+                    +'to{'+date_type.lower()+'_end?fmt=%Y%m%d}_'
+                )
+                if (stringsub_dict['valid_hour_beg'] != ''
+                        and stringsub_dict['valid_hour_end'] != ''):
+                    filename_template_prefix+=(
+                        'valid{valid_hour_beg?fmt=%H%M}to'
+                        +'{valid_hour_end?fmt=%H%M}Z_'
+                    )
+                else:
+                    filename_template_prefix+=(
+                        'fcst_valid{fcst_valid_hour_beg?fmt=%H%M}to'
+                        +'{fcst_valid_hour_end?fmt=%H%M}Z_'
+                        'obs_valid{obs_valid_hour_beg?fmt=%H%M}to'
+                        +'{obs_valid_hour_end?fmt=%H%M}Z_'
+                    )
+                if (stringsub_dict['init_hour_beg'] != ''
+                        and stringsub_dict['init_hour_end'] != ''):
+                    filename_template_prefix+=(
+                        'init{init_hour_beg?fmt=%H%M}to'
+                        +'{init_hour_end?fmt=%H%M}Z'
+                    )
+                else:
+                    filename_template_prefix+=(
+                        'fcst_init{fcst_init_hour_beg?fmt=%H%M}to'
+                        +'{fcst_init_hour_end?fmt=%H%M}Z_'
+                        'obs_init{obs_init_hour_beg?fmt=%H%M}to'
+                        +'{obs_init_hour_end?fmt=%H%M}Z'
+                    )
+                filename_template_prefix+=(
+                    '_fcst_lead{fcst_lead?fmt=%s}'
+                    +'_fcst{fcst_var?fmt=%s}{fcst_level?fmt=%s}'
+                    +'{fcst_thresh?fmt=%s}{interp_mthd?fmt=%s}_'
+                    +'obs{obs_var?fmt=%s}{obs_level?fmt=%s}'
+                    +'{obs_thresh?fmt=%s}{interp_mthd?fmt=%s}_'
+                    +'vxmask{vx_mask?fmt=%s}'
+                )
+                if 'DESC_LIST' in lists_to_loop:
+                    filename_template_prefix = (
+                        filename_template_prefix
+                        +'_desc{desc?fmt=%s}'
+                    )
+                if 'OBS_LEAD_LIST' in lists_to_loop:
+                    filename_template_prefix = (
+                        filename_template_prefix
+                        +'_obs_lead{obs_lead?fmt=%s}'
+                    )
+                if 'INTERP_PNTS_LIST' in lists_to_loop:
+                    filename_template_prefix = (
+                        filename_template_prefix
+                        +'_interp_pnts{interp_pnts?fmt=%s}'
+                    )
+                if 'COV_THRESH_LIST' in lists_to_loop:
+                    filename_template_prefix = (
+                        filename_template_prefix
+                        +'_cov_thresh{cov_thresh?fmt=%s}'
+                    )
+                if 'ALPHA_LIST' in lists_to_loop:
+                    filename_template_prefix = (
+                        filename_template_prefix
+                        +'_alpha{alpha?fmt=%s}'
+                    )
+                filename_template = filename_template_prefix
+            else:
+                if date_beg == date_end:
+                    filename_template = (
+                        filename_template+date_type.lower()+date_beg
+                    )
+                else:
+                    filename_template = (
+                        filename_template+date_type.lower()+
+                        date_beg+'to'+date_end
+                    )
+                for loop_list in lists_to_loop:
+                    if loop_list != 'MODEL_LIST':
+                        list_name = loop_list.replace('_LIST', '')
+                        if 'HOUR' in list_name:
+                            filename_template = (
+                                filename_template+'_'
+                                +list_name.replace('_', '').lower()
+                                +config_dict[list_name]+'Z'
+                            )
+                        else:
+                            filename_template = (
+                                filename_template+'_'
+                                +list_name.replace('_', '').lower()
+                                +config_dict[list_name].replace('"', '')
+                            )
+        self.logger.debug("Building "+output_type+" filename from "
+                          +filename_type+" template: "+filename_template)
+        ss = sts.StringSub(self.logger,
+                           filename_template,
+                           **stringsub_dict)
+        output_filename = ss.do_string_sub()
+        if filename_type == 'default': 
+            output_filename = output_filename+'_'+output_type+'.stat'
+        return output_filename
 
-    class FieldObj(object):
-        __slots__ = 'name', 'plot_name', 'dir', 'obs'
+    def get_lookin_dir(self, dir_path, date_beg, date_end, date_type,
+                       lists_to_loop, lists_to_group, config_dict):
+        """!Fill in necessary information to get the path to
+            the lookin directory to pass to stat_analysis.
+             
+             Args:
+                 dir_path          - string of the user provided
+                                     directory path
+                 date_beg          - string of the beginning date in
+                                     YYYYMMDD form
+                 date_end          - string of the end date in YYYYMMDD
+                                     form
+                 date_type         - string of the date type, either
+                                     VALID or INIT
+                 lists_to_loop     - list of all the list names whose
+                                     items are being grouped together
+                 lists_to group    - list of all the list names whose
+                                     items are being looped over
+                 config_dict       - dictionary containing the
+                                     configuration information
 
-    def parse_model_list(self):
-        """! Parse metplus_final.conf for model information
+             Returns:
+                 lookin_dir        - string of the filled directory
+                                     from dir_path
+        """
+        if '?fmt=' in dir_path:
+            stringsub_dict = self.build_stringsub_dict(date_beg, date_end, 
+                                                       date_type, 
+                                                       lists_to_loop, 
+                                                       lists_to_group, 
+                                                       config_dict)
+            ss = sts.StringSub(self.logger,
+                               dir_path,
+                               **stringsub_dict)
+            dir_path_filled = ss.do_string_sub()
+        else:
+            dir_path_filled = dir_path
+        if '*' in dir_path_filled:
+            dir_path_filled_all = str(
+                subprocess.check_output('ls -d '+dir_path_filled, shell=True)
+            )
+            dir_path_filled_all = (
+                dir_path_filled_all[1:].replace("'","").replace('\\n', ' ')
+            )
+            dir_path_filled_all = dir_path_filled_all[:-1]
+        else:
+            dir_path_filled_all = dir_path_filled
+        lookin_dir = dir_path_filled_all
+        return lookin_dir
+
+    def format_valid_init(self, date_beg, date_end, date_type,
+                          config_dict):
+        """! Format the valid and initialization dates and
+             hours for the MET stat_analysis config file.
+
+             Args:
+                 date_beg    - string of the beginning date in
+                               YYYYMMDD form
+                 date_end    - string of the end date in YYYYMMDD
+                               form
+                 date_type   - string of the date type, either
+                               VALID or INIT
+                 config_dict - dictionary containing the
+                               configuration information
+
+             Returns:
+                 config_dict - dictionary containing the
+                               edited configuration information
+                               for valid and initialization dates
+                               and hours 
+        """
+        fcst_valid_hour_list = config_dict['FCST_VALID_HOUR'].split(', ')
+        fcst_init_hour_list = config_dict['FCST_INIT_HOUR'].split(', ')
+        obs_valid_hour_list = config_dict['OBS_VALID_HOUR'].split(', ')
+        obs_init_hour_list = config_dict['OBS_INIT_HOUR'].split(', ')
+        nfcst_valid_hour = len(fcst_valid_hour_list)
+        nfcst_init_hour = len(fcst_init_hour_list)
+        nobs_valid_hour = len(obs_valid_hour_list)
+        nobs_init_hour = len(obs_init_hour_list)
+        if nfcst_valid_hour > 1:
+            if date_type == 'VALID':
+                fcst_valid_hour_beg = fcst_valid_hour_list[0].replace('"','')
+                fcst_valid_hour_end = fcst_valid_hour_list[-1].replace('"','')
+                config_dict['FCST_VALID_BEG'] = (
+                    str(date_beg)+'_'+fcst_valid_hour_beg
+                )
+                config_dict['FCST_VALID_END'] = (
+                    str(date_end)+'_'+fcst_valid_hour_end
+                )
+            elif date_type == 'INIT':
+                config_dict['FCST_VALID_BEG'] = ''
+                config_dict['FCST_VALID_END'] = ''
+        elif nfcst_valid_hour == 1 and fcst_valid_hour_list != ['']:
+            fcst_valid_hour_now = fcst_valid_hour_list[0].replace('"','')
+            config_dict['FCST_VALID_HOUR'] = '"'+fcst_valid_hour_now+'"'
+            if date_type == 'VALID':
+                config_dict['FCST_VALID_BEG'] = (
+                    str(date_beg)+'_'+fcst_valid_hour_now
+                )
+                config_dict['FCST_VALID_END'] = (
+                    str(date_end)+'_'+fcst_valid_hour_now
+                )
+            elif date_type == 'INIT':
+                config_dict['FCST_VALID_BEG'] = ''
+                config_dict['FCST_VALID_END'] = ''
+        else:
+            config_dict['FCST_VALID_BEG'] = ''
+            config_dict['FCST_VALID_END'] = ''
+            config_dict['FCST_VALID_HOUR'] = ''
+        if nfcst_init_hour > 1:
+            if date_type == 'VALID':
+                config_dict['FCST_INIT_BEG'] = ''
+                config_dict['FCST_INIT_END'] = ''
+            elif date_type == 'INIT':
+                fcst_init_hour_beg = fcst_init_hour_list[0].replace('"','')
+                fcst_init_hour_end = fcst_init_hour_list[-1].replace('"','')
+                config_dict['FCST_INIT_BEG'] = (
+                    str(date_beg)+'_'+fcst_init_hour_beg
+                )
+                config_dict['FCST_INIT_END'] = (
+                    str(date_end)+'_'+fcst_init_hour_end
+                )
+        elif nfcst_init_hour == 1 and fcst_init_hour_list != ['']:
+            fcst_init_hour_now = fcst_init_hour_list[0].replace('"','')
+            config_dict['FCST_INIT_HOUR'] = '"'+fcst_init_hour_now+'"'
+            if date_type == 'VALID':
+                config_dict['FCST_INIT_BEG'] = ''
+                config_dict['FCST_INIT_END'] = ''
+            elif date_type == 'INIT':
+                config_dict['FCST_INIT_BEG'] = (
+                    str(date_beg)+'_'+fcst_init_hour_now
+                )
+                config_dict['FCST_INIT_END'] = (
+                    str(date_end)+'_'+fcst_init_hour_now
+                )
+        else:
+            config_dict['FCST_INIT_BEG'] = ''
+            config_dict['FCST_INIT_END'] = ''
+            config_dict['FCST_INIT_HOUR'] = ''
+        if nobs_valid_hour > 1:
+            if date_type == 'VALID':
+                obs_valid_hour_beg = obs_valid_hour_list[0].replace('"','')
+                obs_valid_hour_end = obs_valid_hour_list[-1].replace('"','')
+                config_dict['OBS_VALID_BEG'] = (
+                    str(date_beg)+'_'+obs_valid_hour_beg
+                )
+                config_dict['OBS_VALID_END'] = (
+                    str(date_end)+'_'+obs_valid_hour_end
+                )
+            elif date_type == 'INIT':
+                config_dict['OBS_VALID_BEG'] = ''
+                config_dict['OBS_VALID_END'] = ''
+        elif nobs_valid_hour == 1 and obs_valid_hour_list != ['']:
+            obs_valid_hour_now = obs_valid_hour_list[0].replace('"','')
+            config_dict['OBS_VALID_HOUR'] = '"'+obs_valid_hour_now+'"'
+            if date_type == 'VALID':
+                config_dict['OBS_VALID_BEG'] = (
+                     str(date_beg)+'_'+obs_valid_hour_now
+                )
+                config_dict['OBS_VALID_END'] = (
+                     str(date_end)+'_'+obs_valid_hour_now
+                )
+            elif date_type == 'INIT':
+                config_dict['OBS_VALID_BEG'] = ''
+                config_dict['OBS_VALID_END'] = ''
+        else:
+            config_dict['OBS_VALID_BEG'] = ''
+            config_dict['OBS_VALID_END'] = ''
+            config_dict['OBS_VALID_HOUR'] = ''
+        if nobs_init_hour > 1:
+            if date_type == 'VALID':
+                config_dict['OBS_INIT_BEG'] = ''
+                config_dict['OBS_INIT_END'] = ''
+            elif date_type == 'INIT':
+                obs_init_hour_beg = obs_init_hour_list[0].replace('"','')
+                obs_init_hour_end = obs_init_hour_list[-1].replace('"','')
+                config_dict['OBS_INIT_BEG'] = (
+                    str(date_beg)+'_'+obs_init_hour_beg
+                )
+                config_dict['OBS_INIT_END'] = (
+                    str(date_end)+'_'+obs_init_hour_end
+                )
+        elif nobs_init_hour == 1 and obs_init_hour_list != ['']:
+            obs_init_hour_now = obs_init_hour_list[0].replace('"','')
+            config_dict['OBS_INIT_HOUR'] = '"'+obs_init_hour_now+'"'
+            if date_type == 'VALID':
+                config_dict['OBS_INIT_BEG'] = ''
+                config_dict['OBS_INIT_END'] = ''
+            elif date_type == 'INIT':
+                config_dict['OBS_INIT_BEG'] = (
+                    str(date_beg)+'_'+obs_init_hour_now
+                )
+                config_dict['OBS_INIT_END'] = (
+                    str(date_end)+'_'+obs_init_hour_now
+                )
+        else:
+            config_dict['OBS_INIT_BEG'] = ''
+            config_dict['OBS_INIT_END'] = ''
+            config_dict['OBS_INIT_HOUR'] = ''
+        return config_dict
+
+    def parse_model_info(self):
+        """! Parse for model information.
              
              Args:
                 
              Returns:
-                 model_list - list of objects containing
+                 model_list - list of dictionaries containing
                               model information
         """
-        model_list = []
+        model_info_list = []
         all_conf = self.config.keys('config')
         model_indices = []
-        regex = re.compile("MODEL(\d+)_NAME$")
+        regex = re.compile('MODEL(\d+)$')
         for conf in all_conf:
             result = regex.match(conf)
             if result is not None:
                 model_indices.append(result.group(1))
         for m in model_indices:
-            if self.config.has_option('config', "MODEL"+m+"_NAME"):
-                model_name = self.config.getstr('config', "MODEL"+m+"_NAME")
-                if self.config.has_option('config', "MODEL"+m+"_NAME_ON_PLOT"):
-                    model_plot_name = self.config.getstr('config', "MODEL"+m+"_NAME_ON_PLOT")
+            if self.config.has_option('config', 'MODEL'+m):
+                model_name = self.config.getstr('config', 'MODEL'+m)
+                model_reference_name = (
+                    self.config.getstr('config', 'MODEL'+m+'_REFERENCE_NAME',
+                                       model_name)
+                )
+                if self.config.has_option('config',
+                                          'MODEL'+m
+                                          +'_STAT_ANALYSIS_LOOKIN_DIR'):
+                    model_dir = (
+                        self.config.getraw('config',
+                                           'MODEL'+m
+                                           +'_STAT_ANALYSIS_LOOKIN_DIR')
+                    )
                 else:
-                    model_plot_name = model_name
-                if self.config.has_option('config', "MODEL"+m+"_STAT_DIR"):
-                    model_dir = self.config.getraw('config', "MODEL"+m+"_STAT_DIR")
-                else:
-                    self.logger.error("MODEL"+m+"_STAT_DIR not defined in METplus conf file")
+                    self.logger.error("MODEL"+m+"_STAT_ANALYSIS_LOOKIN_DIR "
+                                      +"was not set.")
                     exit(1)
-                if self.config.has_option('config', "MODEL"+m+"_OBS_NAME"):
-                    model_obs_name = self.config.getstr('config', "MODEL"+m+"_OBS_NAME") 
+                if self.config.has_option('config', 'MODEL'+m+'_OBTYPE'):
+                    model_obtype = (
+                        self.config.getstr('config', 'MODEL'+m+'_OBTYPE')
+                    )
                 else:
-                    self.logger.error("MODEL"+m+"_OBS_NAME not defined in METplus conf file")
+                    self.logger.error("MODEL"+m+"_OBTYPE was not set.")
                     exit(1)
-            else:
-                self.logger.error("MODEL"+m+"_NAME not defined in METplus conf file")
-                exit(1)
-
-            mod = self.FieldObj()
-            mod.name = model_name
-            mod.plot_name = model_plot_name
-            mod.dir = model_dir
-            mod.obs = model_obs_name
-            model_list.append(mod)
-        return model_list
-    
-    class FourierDecompInfo(object):
-        __slots__ = 'run_fourier', 'wave_num_pairings'
-
-    def parse_var_fourier_decomp(self):
-        """! Parse metplus_final.conf for variable information
-             on the Fourier decomposition
-             
-             Args:
-                
-             Returns:
-                 fourier_decom_list - list of objects containing
-                                      Fourier decomposition information
-                                      for the variables
-        """
-        fourier_decom_list = []
-        all_conf = self.config.keys('config')
-        indices = []
-        regex = re.compile("FCST_VAR(\d+)_NAME")
-        for conf in all_conf:
-            result = regex.match(conf)
-            if result is not None:
-                indices.append(result.group(1))
-        for n in indices:
-            if self.config.has_option('config', "FCST_VAR"+n+"_NAME"):
-                levels = util.getlist(self.config.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-                run_fourier = self.config.getbool('config', "VAR"+n+"_FOURIER_DECOMP", False)
-                fourier_wave_num_pairs = util.getlist(self.config.getstr('config', "VAR"+n+"_WAVE_NUM_LIST", ""))
-                if run_fourier == False:
-                    fourier_wave_num_pairs = ""
-                for level in levels:
-                    fd_info = self.FourierDecompInfo()
-                    fd_info.run_fourier = run_fourier
-                    fd_info.wave_num_pairings = fourier_wave_num_pairs
-                    fourier_decom_list.append(fd_info)
-        return fourier_decom_list
-   
-    def thresh_format(self, thresh):
-        """! Format the variable threshhold information using symbols and
-             letters
- 
-             Args:
-                 thresh - string containing the threshold information
-                
-             Returns:
-                 thresh_symbol - string containing the threshold 
-                                 formatted using symbols
-                 thresh_letters - string containing the threshold 
-                                  formatted using letters
-        """
-        if "ge" or ">=" in thresh:
-            thresh_value = thresh.replace("ge", "").replace(">=", "")
-            thresh_symbol = ">="+thresh_value
-            thresh_letters = "ge"+thresh_value
-        elif "gt" or ">" in thresh:
-            thresh_value = thresh.replace("gt", "").replace(">", "")
-            thresh_symbol = ">"+thresh_value
-            thresh_letters = "gt"+thresh_value
-        elif "le" or "<=" in thresh:
-            thresh_value = thresh.replace("le", "").replace("<=", "")
-            thresh_symbol = "<="+thresh_value
-            thresh_letters = "le"+thresh_value
-        elif "lt" or "<" in thresh:
-            thresh_value = thresh.replace("lt", "").replace("<", "")
-            thresh_symbol = "<"+thresh_value
-            thresh_letters = "lt"+thresh_value
-        elif "eq" or "==" in thresh:
-            thresh_value = thresh.replace("eq", "").replace("==", "")
-            thresh_symbol = "=="+thresh_value
-            thresh_letters = "eq"+thresh_value
-        elif "ne" or "!=" in thresh:
-            thresh_value = thresh.replace("ne", "").replace("!=", "")
-            thresh_symbol = "!="+thresh_value
-            thresh_letters = "ne"+thresh_value
-        else:
-             self.logger.error("Threshold operator not valid "+thresh)
-             exit(1)
-        return thresh_symbol, thresh_letters
- 
-    def gather_by_date(self, init_time, valid_time):
-        """! Runs with run_at_time. Runs stat_analysis filtering file
-             stat information for a single date
- 
-             Args:
-                 init_time - string containing the initialization time
-                             as %Y%m%d%H%M%S, set to -1 if looping
-                             over valid time
-                 valid_time - string containing the valid time as 
-                              %Y%m%d%H%M%S, set to -1 if looping
-                              over initialization time
-                
-             Returns:
-        """
-        #read config
-        model_name = self.config.getstr('config', 'MODEL')
-        obs_name = self.config.getstr('config', 'OBTYPE')
-        valid_hour_method = self.config.getstr('config', 'VALID_HOUR_METHOD')
-        valid_hour_beg = self.config.getstr('config', 'VALID_HOUR_BEG')
-        valid_hour_end = self.config.getstr('config', 'VALID_HOUR_END')
-        valid_hour_increment = self.config.getstr('config', 'VALID_HOUR_INCREMENT')
-        init_hour_method = self.config.getstr('config', 'INIT_HOUR_METHOD')
-        init_hour_beg = self.config.getstr('config', 'INIT_HOUR_BEG')
-        init_hour_end = self.config.getstr('config', 'INIT_HOUR_END')
-        init_hour_increment = self.config.getstr('config', 'INIT_HOUR_INCREMENT')
-        stat_analysis_lookin_dir = self.config.getdir('STAT_ANALYSIS_LOOKIN_DIR')
-        stat_analysis_out_dir = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR')
-        stat_analysis_config = self.config.getstr('config', 'STAT_ANALYSIS_CONFIG')
-        job_name = self.config.getstr('config', 'JOB_NAME')
-        job_args = self.config.getstr('config', 'JOB_ARGS')
-        desc = util.getlist(self.config.getstr('config', 'DESC', ""))
-        fcst_lead = util.getlist(self.config.getstr('config', 'FCST_LEAD', ""))
-        fcst_var_name = util.getlist(self.config.getstr('config', 'FCST_VAR_NAME', ""))
-        fcst_var_level = util.getlist(self.config.getstr('config', 'FCST_VAR_LEVEL', ""))
-        obs_var_name = util.getlist(self.config.getstr('config', 'OBS_VAR_NAME', ""))
-        obs_var_level = util.getlist(self.config.getstr('config', 'OBS_VAR_LEVEL', ""))
-        region = util.getlist(self.config.getstr('config', 'REGION', ""))
-        interp = util.getlist(self.config.getstr('config', 'INTERP', ""))
-        interp_pts = util.getlist(self.config.getstr('config', 'INTERP_PTS', ""))
-        fcst_thresh_from_config = util.getlist(self.config.getstr('config', 'FCST_THRESH', ""))
-        fcst_thresh = []
-        for ft in fcst_thresh_from_config:
-            fcst_thresh_symbol, fcst_thresh_letters = self.thresh_format(ft)
-            fcst_thresh.append(fcst_thresh_symbol)
-        fcst_thresh = ', '.join(fcst_thresh)
-        cov_thresh = util.getlist(self.config.getstr('config', 'COV_THRESH', ""))
-        line_type = util.getlist(self.config.getstr('config', 'LINE_TYPE', ""))
-        #set envir vars based on config
-        self.add_env_var('MODEL', '"'+model_name+'"')
-        self.add_env_var('OBS_NAME', '"'+obs_name+'"')
-        self.add_env_var('DESC', self.create_variable_list(desc))
-        self.add_env_var('FCST_LEAD', self.create_variable_list(fcst_lead))
-        self.add_env_var('FCST_VAR_NAME', self.create_variable_list(fcst_var_name))
-        self.add_env_var('FCST_VAR_LEVEL', self.create_variable_list(fcst_var_level))
-        self.add_env_var('OBS_VAR_NAME', self.create_variable_list(obs_var_name))
-        self.add_env_var('OBS_VAR_LEVEL', self.create_variable_list(obs_var_level))
-        self.add_env_var('REGION', self.create_variable_list(region))
-        self.add_env_var('INTERP', self.create_variable_list(interp))
-        self.add_env_var('INTERP_PTS', self.create_variable_list(interp_pts))
-        self.add_env_var('FCST_THRESH', fcst_thresh)
-        self.add_env_var('COV_THRESH', self.create_variable_list(cov_thresh))
-        self.add_env_var('LINE_TYPE', self.create_variable_list(line_type))
-        #set up lookin agrument
-        if "*" in stat_analysis_lookin_dir: 
-            for_stat_analysis_lookin = subprocess.check_output("ls -d "+stat_analysis_lookin_dir, shell=True).rstrip('\n')
-        else:
-            for_stat_analysis_lookin = stat_analysis_lookin_dir
-        self.set_lookin_dir(for_stat_analysis_lookin)
-        #set up stat_analysis output options based conf file info
-        stat_analysis_dump_row_info = self.StatAnalysisOutputInfo()
-        if "-dump_row" in job_args:
-            stat_analysis_dump_row_tmpl = self.config.getraw('filename_templates','STAT_ANALYSIS_DUMP_ROW_TMPL')
-            if len(stat_analysis_dump_row_tmpl) == 0:
-                self.logger.debug("-dump_row requested but no STAT_ANALYSIS_DUMP_ROW_TMPL in conf file under filename_templates....using code default")
-                stat_analysis_dump_row_info.template_type = "default_template"
-                if init_time == -1:
-                    stat_analysis_dump_row_info.filename_template = model_name+"_"+obs_name+"_valid"+valid_time[0:8]
-                else:
-                    stat_analysis_dump_row_info.filename_template = model_name+"_"+obs_name+"_init"+init_time[0:8]
-            else:
-                self.logger.debug("Using user customed STAT_ANALYSIS_DUMP_ROW_TMPL defined in conf file under filename_templates")
-                stat_analysis_dump_row_info.template_type = "user_template"
-                stat_analysis_dump_row_info.filename_template = stat_analysis_dump_row_tmpl
-                stat_analysis_dump_row_info.filename = ""
-        else:
-            stat_analysis_dump_row_info.template_type = "NA"
-            stat_analysis_dump_row_info.filename_template = "NA"
-            stat_analysis_dump_row_info.filename = "NA"
-        stat_analysis_out_stat_info = self.StatAnalysisOutputInfo()
-        if "-out_stat" in job_args:
-            stat_analysis_out_stat_tmpl = self.config.getraw('filename_templates','STAT_ANALYSIS_OUT_STAT_TMPL')
-            if len(stat_analysis_out_stat_tmpl) == 0:
-                self.logger.debug("-out_stat requested but no STAT_ANALYSIS_OUT_STAT_TMPL in conf file under filename_templates....using code default")
-                stat_analysis_out_stat_info.template_type = "default_template"
-                stat_analysis_out_stat_info.filename_template = ""
-                if init_time == -1:
-                    stat_analysis_out_stat_info.filename_template = model_name+"_"+obs_name+"_valid"+valid_time[0:8]
-                else:
-                    stat_analysis_out_stat_info.filename_template = model_name+"_"+obs_name+"_init"+init_time[0:8]
-            else:
-                self.logger.debug("Using user customed STAT_ANALYSIS_OUT_STAT_TMPL defined in conf file under filename_templates")
-                stat_analysis_out_stat_info.template_type = "user_template"
-                stat_analysis_out_stat_info.filename_template = stat_analysis_out_stat_tmpl
-                stat_analysis_out_stat_info.filename = ""
-        else:
-            stat_analysis_out_stat_info.template_type = "NA"
-            stat_analysis_out_stat_info.filename_template = "NA"
-            stat_analysis_out_stat_info.filename = "NA"
-        #set up valid and initialization information for MET config file and run stat_analysis
-        valid_beg = calendar.timegm(time.strptime(valid_hour_beg, "%H%M"))
-        valid_end = calendar.timegm(time.strptime(valid_hour_end, "%H%M"))
-        valid_interval = int(valid_hour_increment)
-        init_beg = calendar.timegm(time.strptime(init_hour_beg, "%H%M"))
-        init_end = calendar.timegm(time.strptime(init_hour_end, "%H%M"))
-        init_interval = int(init_hour_increment)
-        if valid_hour_method == "GROUP" and init_hour_method == "LOOP":
-            init_now = init_beg
-            while init_now <= init_end:
-                init_now_str = str(time.strftime("%H%M%S", time.gmtime(init_now)))
-                if init_time == -1:
-                    fcst_valid_init_dict = {
-                        "FCST_VALID_BEG": str(valid_time[0:8])+'_'+valid_hour_beg+"00",
-                        "FCST_VALID_END": str(valid_time[0:8])+'_'+valid_hour_end+"00",
-                        "FCST_VALID_HOUR": "",
-                        "FCST_INIT_BEG": "",
-                        "FCST_INIT_END": "",
-                        "FCST_INIT_HOUR": '"'+init_now_str+'"'
-                    }
-                else:
-                    valid_hour_group_list = self.create_hour_group_list(valid_beg, valid_end, valid_interval)
-                    fcst_valid_init_dict = {
-                        "FCST_VALID_BEG": "",
-                        "FCST_VALID_END": "",
-                        "FCST_VALID_HOUR": valid_hour_group_list,
-                        "FCST_INIT_BEG": str(init_time[0:8])+'_'+init_now_str,
-                        "FCST_INIT_END": str(init_time[0:8])+'_'+init_now_str,
-                        "FCST_INIT_HOUR": ""
-                    }
-                if stat_analysis_dump_row_info.template_type == "default_template":
-                    stat_analysis_dump_row_info.filename = stat_analysis_dump_row_info.filename_template+"_valid"+valid_hour_beg+"to"+valid_hour_end+"Z"+"_init"+init_now_str[0:5]+"Z_dumprow.stat"
-                elif stat_analysis_dump_row_info.template_type == "user_template":
-                    stat_analysis_dump_row_info.filename = self.create_filename_from_user_template(stat_analysis_dump_row_info.filename_template, fcst_valid_init_dict, init_time)
-                if stat_analysis_out_stat_info.template_type == "default_template":
-                    stat_analysis_out_stat_info.filename = stat_analysis_out_stat_info.filename_template+"_valid"+valid_hour_beg+"to"+valid_hour_end+"Z"+"_init"+init_now_str[0:5]+"Z_outstat.stat"
-                elif stat_analysis_out_stat_info.template_type == "user_template":
-                    stat_analysis_out_stat_info.filename = self.create_filename_from_user_template(stat_analysis_out_stat_info.filename_template, fcst_valid_init_dict, init_time)
-                job = self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
-                self.param = stat_analysis_config
-                #print stat_analysis run settings
-                self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
-                for name, value in fcst_valid_init_dict.items():
-                    self.add_env_var(name, value)
-                    self.logger.debug(name+": "+value)
-                self.logger.debug('MODEL: '+'"'+model_name+'"')
-                self.logger.debug('OBTYPE: '+'"'+obs_name+'"')
-                self.logger.debug('DESC: '+self.create_variable_list(desc))
-                self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
-                self.logger.debug('FCST_VAR_NAME: '+self.create_variable_list(fcst_var_name))
-                self.logger.debug('FCST_VAR_LEVEL: '+self.create_variable_list(fcst_var_level))
-                self.logger.debug('OBS_VAR_NAME: '+self.create_variable_list(obs_var_name))
-                self.logger.debug('OBS_VAR_LEVEL: '+self.create_variable_list(obs_var_level))
-                self.logger.debug('REGION: '+self.create_variable_list(region))
-                self.logger.debug('INTERP: '+self.create_variable_list(interp))
-                self.logger.debug('INTERP_PTS: '+self.create_variable_list(interp_pts))
-                self.logger.debug('FCST_THRESH: '+fcst_thresh)
-                self.logger.debug('COV_THRESH: '+self.create_variable_list(cov_thresh))
-                self.logger.debug('LINE_TYPE: '+self.create_variable_list(line_type))
-                self.logger.debug("JOB: "+job)
-                self.logger.debug("lookin directory: "+for_stat_analysis_lookin)
-                #build command
-                cmd = self.get_command()
-                if cmd is None:
-                    self.logger.error("stat_analysis could not generate command")
-                    return
-                self.build()
-                self.clear()
-                init_now += init_interval
-        elif valid_hour_method == "LOOP" and init_hour_method == "GROUP":
-            valid_now = valid_beg
-            while valid_now <= valid_end:
-                valid_now_str = str(time.strftime("%H%M%S", time.gmtime(valid_now)))
-                if init_time == -1:
-                    init_hour_group_list = self.create_hour_group_list(init_beg, init_end, init_interval)
-                    fcst_valid_init_dict = {
-                        "FCST_VALID_BEG": str(valid_time[0:8])+'_'+valid_now_str,
-                        "FCST_VALID_END": str(valid_time[0:8])+'_'+valid_now_str,
-                        "FCST_VALID_HOUR": "",
-                        "FCST_INIT_BEG": "",
-                        "FCST_INIT_END": "",
-                        "FCST_INIT_HOUR": init_hour_group_list
-                    }
-                else:
-                    fcst_valid_init_dict = {
-                        "FCST_VALID_BEG": "",
-                        "FCST_VALID_END": "",
-                        "FCST_VALID_HOUR": '"'+valid_now_str+'"',
-                        "FCST_INIT_BEG": str(init_time[0:8])+'_'+init_hour_beg+"00",
-                        "FCST_INIT_END": str(init_time[0:8])+'_'+init_hour_end+"00",
-                        "FCST_INIT_HOUR": ""
-                    }
-                if stat_analysis_dump_row_info.template_type == "default_template":
-                    stat_analysis_dump_row_info.filename = stat_analysis_dump_row_info.filename_template+"_valid"+valid_now_str[0:5]+"Z"+"_init"+init_hour_beg+"to"+init_hour_end+"Z_dumprow.stat"
-                elif stat_analysis_dump_row_info.template_type == "user_template":
-                    stat_analysis_dump_row_info.filename = self.create_filename_from_user_template(stat_analysis_dump_row_info.filename_template, fcst_valid_init_dict, init_time)
-                if stat_analysis_out_stat_info.template_type == "default_template":
-                    stat_analysis_out_stat_info.filename = stat_analysis_out_stat_info.filename_template+"_valid"+valid_now_str[0:5]+"Z"+"_init"+init_hour_beg+"to"+init_hour_end+"Z_outstat.stat"
-                elif stat_analysis_out_stat_info.template_type == "user_template":
-                    stat_analysis_out_stat_info.filename = self.create_filename_from_user_template(stat_analysis_out_stat_info.filename_template, fcst_valid_init_dict, init_time)
-                job = self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
-                self.param = stat_analysis_config
-                #print stat_analysis run settings
-                self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
-                for name, value in fcst_valid_init_dict.items():
-                    self.add_env_var(name, value)
-                    self.logger.debug(name+": "+value)
-                self.logger.debug('MODEL: '+'"'+model_name+'"')
-                self.logger.debug('OBTYPE: '+'"'+obs_name+'"')
-                self.logger.debug('DESC: '+self.create_variable_list(desc))
-                self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
-                self.logger.debug('FCST_VAR_NAME: '+self.create_variable_list(fcst_var_name))
-                self.logger.debug('FCST_VAR_LEVEL: '+self.create_variable_list(fcst_var_level))
-                self.logger.debug('OBS_VAR_NAME: '+self.create_variable_list(obs_var_name))
-                self.logger.debug('OBS_VAR_LEVEL: '+self.create_variable_list(obs_var_level))
-                self.logger.debug('REGION: '+self.create_variable_list(region))
-                self.logger.debug('INTERP: '+self.create_variable_list(interp))
-                self.logger.debug('INTERP_PTS: '+self.create_variable_list(interp_pts))
-                self.logger.debug('FCST_THRESH: '+fcst_thresh)
-                self.logger.debug('COV_THRESH: '+self.create_variable_list(cov_thresh))
-                self.logger.debug('LINE_TYPE: '+self.create_variable_list(line_type))
-                self.logger.debug("JOB: "+job)
-                self.logger.debug("lookin directory: "+for_stat_analysis_lookin)
-                #build command
-                cmd = self.get_command()
-                if cmd is None:
-                    self.logger.error("stat_analysis could not generate command")
-                    return
-                self.build()
-                self.clear()
-                valid_now += valid_interval
-        elif valid_hour_method == "LOOP" and init_hour_method == "LOOP":
-            init_now = init_beg
-            while init_now <= init_end:
-                init_now_str = str(time.strftime("%H%M%S", time.gmtime(init_now)))
-                valid_now = valid_beg
-                while valid_now <= valid_end:
-                    valid_now_str = str(time.strftime("%H%M%S", time.gmtime(valid_now)))
-                    if init_time == -1:
-                        fcst_valid_init_dict = {
-                            "FCST_VALID_BEG": str(valid_time[0:8])+'_'+valid_now_str,
-                            "FCST_VALID_END": str(valid_time[0:8])+'_'+valid_now_str,
-                            "FCST_VALID_HOUR": "",
-                            "FCST_INIT_BEG": "",
-                            "FCST_INIT_END": "",
-                            "FCST_INIT_HOUR": '"'+init_now_str+'"'
-                        }
+                for output_type in [ 'DUMP_ROW', 'OUT_STAT' ]:
+                    if (self.config.has_option('filename_templates', 'MODEL'+m
+                                               +'_STAT_ANALYSIS_'+output_type
+                                               +'_TEMPLATE')):
+                        model_filename_template = (
+                            self.config.getraw('filename_templates', 
+                                               'MODEL'+m+'_STAT_ANALYSIS_'
+                                               +output_type+'_TEMPLATE')
+                        )
+                        if model_filename_template == '':
+                            model_filename_template = (
+                                '{model?fmt=%s}_{obtype?fmt=%s}_'
+                            )
+                            model_filename_type = 'default'
+                        else:
+                            model_filename_type = 'user'
                     else:
-                        fcst_valid_init_dict = {
-                            "FCST_VALID_BEG": "",
-                            "FCST_VALID_END": "",
-                            "FCST_VALID_HOUR": '"'+valid_now_str+'"',
-                            "FCST_INIT_BEG": str(init_time[0:8])+'_'+init_now_str,
-                            "FCST_INIT_END": str(init_time[0:8])+'_'+init_now_str,
-                            "FCST_INIT_HOUR": ""
-                        }
-                    if stat_analysis_dump_row_info.template_type == "default_template":
-                        stat_analysis_dump_row_info.filename = stat_analysis_dump_row_info.filename_template+"_valid"+valid_now_str[0:5]+"Z"+"_init"+init_now_str[0:5]+"Z_dumprow.stat"
-                    elif stat_analysis_dump_row_info.template_type == "user_template":
-                        stat_analysis_dump_row_info.filename = self.create_filename_from_user_template(stat_analysis_dump_row_info.filename_template, fcst_valid_init_dict, init_time)
-                    if stat_analysis_out_stat_info.template_type == "default_template":
-                        stat_analysis_out_stat_info.filename = stat_analysis_out_stat_info.filename_template+"_valid"+valid_now_str[0:5]+"Z"+"_init"+init_now_str[0:5]+"Z_outstat.stat"
-                    elif stat_analysis_out_stat_info.template_type == "user_template":
-                        stat_analysis_out_stat_info.filename = self.create_filename_from_user_template(stat_analysis_out_stat_info.filename_template, fcst_valid_init_dict, init_time)
-                    job = self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
-                    self.param = stat_analysis_config
-                    #print stat_analysis run settings
-                    self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
-                    for name, value in fcst_valid_init_dict.items():
-                        self.add_env_var(name, value)
-                        self.logger.debug(name+": "+value)
-                    self.logger.debug('MODEL: '+'"'+model_name+'"')
-                    self.logger.debug('OBTYPE: '+'"'+obs_name+'"')
-                    self.logger.debug('DESC: '+self.create_variable_list(desc))
-                    self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
-                    self.logger.debug('FCST_VAR_NAME: '+self.create_variable_list(fcst_var_name))
-                    self.logger.debug('FCST_VAR_LEVEL: '+self.create_variable_list(fcst_var_level))
-                    self.logger.debug('OBS_VAR_NAME: '+self.create_variable_list(obs_var_name))
-                    self.logger.debug('OBS_VAR_LEVEL: '+self.create_variable_list(obs_var_level))
-                    self.logger.debug('REGION: '+self.create_variable_list(region))
-                    self.logger.debug('INTERP: '+self.create_variable_list(interp))
-                    self.logger.debug('INTERP_PTS: '+self.create_variable_list(interp_pts))
-                    self.logger.debug('FCST_THRESH: '+fcst_thresh)
-                    self.logger.debug('COV_THRESH: '+self.create_variable_list(cov_thresh))
-                    self.logger.debug('LINE_TYPE: '+self.create_variable_list(line_type))
-                    self.logger.debug("JOB: "+job)
-                    self.logger.debug("lookin directory: "+for_stat_analysis_lookin)
-                    #build command
-                    cmd = self.get_command()
-                    if cmd is None:
-                        self.logger.error("stat_analysis could not generate command")
-                        return
-                    self.build()
-                    self.clear()
-                    valid_now += valid_interval
-                init_now += init_interval
-        elif valid_hour_method == "GROUP" and init_hour_method == "GROUP":
-            if init_time == -1:
-                init_hour_group_list = self.create_hour_group_list(init_beg, init_end, init_interval)
-                fcst_valid_init_dict = {
-                    "FCST_VALID_BEG": str(valid_time[0:8])+'_'+valid_hour_beg+"00",
-                    "FCST_VALID_END": str(valid_time[0:8])+'_'+valid_hour_end+"00",
-                    "FCST_VALID_HOUR": "",
-                    "FCST_INIT_BEG": "",
-                    "FCST_INIT_END": "",
-                    "FCST_INIT_HOUR": init_hour_group_list
-                }
+                        if (self.config.has_option('filename_templates',
+                                                   'STAT_ANALYSIS_'
+                                                   +output_type+'_TEMPLATE')):
+                            model_filename_template = (
+                                self.config.getraw('filename_templates',
+                                                   'STAT_ANALYSIS_'
+                                                   +output_type+'_TEMPLATE')
+                            )
+                            if model_filename_template == '':
+                                model_filename_template = (
+                                    '{model?fmt=%s}_{obtype?fmt=%s}_'
+                                )
+                                model_filename_type = 'default'
+                            else:
+                                model_filename_type = 'user'
+                        else:
+                            if 'MakePlots' in self.c_dict['PROCESS_LIST']:
+                                model_filename_template = (
+                                    model_reference_name+'_{obtype?fmt=%s}_'
+                                )
+                            else:
+                                model_filename_template = (
+                                    '{model?fmt=%s}_{obtype?fmt=%s}_'
+                                )
+                            model_filename_type = 'default'
+                    if output_type == 'DUMP_ROW':
+                         model_dump_row_filename_template = (
+                             model_filename_template
+                         )
+                         model_dump_row_filename_type = model_filename_type
+                    elif output_type == 'OUT_STAT':
+                        if 'MakePlots' in self.c_dict['PROCESS_LIST']:
+                            model_out_stat_filename_template = 'NA'
+                            model_out_stat_filename_type = 'NA'
+                        else:
+                            model_out_stat_filename_template = (
+                                model_filename_template
+                            )
+                            model_out_stat_filename_type = model_filename_type
             else:
-                valid_hour_group_list = self.create_hour_group_list(valid_beg, valid_end, valid_interval)
-                fcst_valid_init_dict = {
-                    "FCST_VALID_BEG": "",
-                    "FCST_VALID_END": "",
-                    "FCST_VALID_HOUR": valid_hour_group_list,
-                    "FCST_INIT_BEG": str(init_time[0:8])+'_'+init_hour_beg+"00",
-                    "FCST_INIT_END": str(init_time[0:8])+'_'+init_hour_end+"00",
-                    "FCST_INIT_HOUR": ""
-                }
-            if stat_analysis_dump_row_info.template_type == "default_template":
-                stat_analysis_dump_row_info.filename = stat_analysis_dump_row_info.filename_template+"_valid"+valid_hour_beg+"to"+valid_hour_end+"Z"+"_init"+init_hour_beg+"to"+init_hour_end+"Z_dumprow.stat"
-            elif stat_analysis_dump_row_info.template_type == "user_template":
-                stat_analysis_dump_row_info.filename = self.create_filename_from_user_template(stat_analysis_dump_row_info.filename_template, fcst_valid_init_dict, init_time)
-            if stat_analysis_out_stat_info.template_type == "default_template":
-                stat_analysis_out_stat_info.filename = stat_analysis_out_stat_info.filename_template+"_valid"+valid_hour_beg+"to"+valid_hour_end+"Z"+"_init"+init_hour_beg+"to"+init_hour_end+"Z_outstat.stat"
-            elif stat_analysis_out_stat_info.template_type == "user_template":
-                stat_analysis_out_stat_info.filename = self.create_filename_from_user_template(stat_analysis_out_stat_info.filename_template, fcst_valid_init_dict, init_time)
-            job = self.create_job_filename(job_name, job_args, stat_analysis_out_dir, stat_analysis_dump_row_info, stat_analysis_out_stat_info)
-            self.param = stat_analysis_config
-            #print stat_analysis run settings
+                self.logger.error("MODEL"+m+" was not set.")
+                exit(1)
+            mod = {}
+            mod['name'] = model_name
+            mod['reference_name'] = model_reference_name
+            mod['dir'] = model_dir
+            mod['obtype'] = model_obtype
+            mod['dump_row_filename_template'] = (
+                model_dump_row_filename_template
+            )
+            mod['dump_row_filename_type'] = model_dump_row_filename_type
+            mod['out_stat_filename_template'] = ( 
+                model_out_stat_filename_template
+            )
+            mod['out_stat_filename_type'] = model_out_stat_filename_type
+            model_info_list.append(mod)
+        return model_info_list, model_indices
+
+    def run_stat_analysis_job(self, date_beg, date_end, date_type):
+        """! This runs stat_analysis over a period of valid
+             or initialization dates for a job defined by
+             the user.
+              
+             Args:
+                 date_beg    - string of the beginning date in
+                               YYYYMMDD form
+                 date_end    - string of the end date in YYYYMMDD
+                               form
+                 date_type   - string of the date type, either
+                               VALID or INIT
+            
+             Returns:
+
+        """
+        self.c_dict['JOB_NAME'] = self.config.getstr('config', 
+                                                     'STAT_ANALYSIS_JOB_NAME')
+        self.c_dict['JOB_ARGS'] = self.config.getstr('config', 
+                                                     'STAT_ANALYSIS_JOB_ARGS')
+        self.c_dict['VAR_LIST'] = util.parse_var_list(self.config)
+        self.c_dict['FCST_VAR_LIST'] = util.getlist(
+            self.config.getstr('config', 'FCST_VAR_LIST', '')
+        )
+        self.c_dict['OBS_VAR_LIST'] = util.getlist(
+            self.config.getstr('config', 'OBS_VAR_LIST', '')
+        )
+        self.c_dict['FCST_UNITS_LIST'] = util.getlist(
+            self.config.getstr('config', 'FCST_UNITS_LIST', '')
+        )
+        self.c_dict['OBS_UNITS_LIST'] = util.getlist(
+            self.config.getstr('config', 'OBS_UNITS_LIST', '')
+        )
+        self.c_dict['FCST_LEVEL_LIST'] = util.getlist(
+            self.config.getstr('config', 'FCST_LEVEL_LIST', '')
+        )
+        self.c_dict['OBS_LEVEL_LIST'] = util.getlist(
+            self.config.getstr('config', 'OBS_LEVEL_LIST', '')
+        )
+        self.c_dict['FCST_THRESH_LIST'] = util.getlist(
+            self.config.getstr('config', 'FCST_THRESH_LIST', '')
+        )
+        self.c_dict['OBS_THRESH_LIST'] =  util.getlist(
+            self.config.getstr('config', 'OBS_THRESH_LIST', '')
+        ) 
+        # Do some preprocessing, formatting, and gathering
+        # of config information.
+        formatted_c_dict = copy.deepcopy(self.c_dict)
+        model_info_list, model_indices = self.parse_model_info()
+        if self.c_dict['MODEL_LIST'] == []:
+            if model_indices > 0:
+                self.logger.warning("MODEL_LIST was left blank, "
+                                    +"creating with MODELn information.")
+                model_name_list = []
+                for model_info in model_info_list:
+                    model_name_list.append(model_info['name'])
+                formatted_c_dict['MODEL_LIST'] = model_name_list
+            else:
+                self.logger.error("No model information was found.")
+                exit(1)
+        for fcst_valid_hour in self.c_dict['FCST_VALID_HOUR_LIST']:
+            index = self.c_dict['FCST_VALID_HOUR_LIST'].index(fcst_valid_hour)
+            formatted_c_dict['FCST_VALID_HOUR_LIST'][index] = (
+                fcst_valid_hour.ljust(6,'0')
+            )
+        for fcst_init_hour in self.c_dict['FCST_INIT_HOUR_LIST']:
+            index = self.c_dict['FCST_INIT_HOUR_LIST'].index(fcst_init_hour)
+            formatted_c_dict['FCST_INIT_HOUR_LIST'][index] = (
+                fcst_init_hour.ljust(6,'0')
+            )
+        for obs_valid_hour in self.c_dict['OBS_VALID_HOUR_LIST']:
+            index = self.c_dict['OBS_VALID_HOUR_LIST'].index(obs_valid_hour)
+            formatted_c_dict['OBS_VALID_HOUR_LIST'][index] = (
+                obs_valid_hour.ljust(6,'0')
+            )
+        for obs_init_hour in self.c_dict['OBS_INIT_HOUR_LIST']:
+            index = self.c_dict['OBS_INIT_HOUR_LIST'].index(obs_init_hour)
+            formatted_c_dict['OBS_INIT_HOUR_LIST'][index] = (
+                obs_init_hour.ljust(6,'0')
+            )
+        for fcst_lead in self.c_dict['FCST_LEAD_LIST']:
+            index = self.c_dict['FCST_LEAD_LIST'].index(fcst_lead)
+            if len(fcst_lead)%2 == 0:
+                formatted_fcst_lead = fcst_lead.ljust(6,'0')
+            else:
+                formatted_fcst_lead = fcst_lead.ljust(7,'0')
+            formatted_c_dict['FCST_LEAD_LIST'][index] = formatted_fcst_lead
+        for obs_lead in self.c_dict['OBS_LEAD_LIST']:
+            index = self.c_dict['OBS_LEAD_LIST'].index(obs_lead)
+            if len(obs_lead)%2 == 0:
+                formatted_obs_lead = obs_lead.ljust(6,'0')
+            else:
+                formatted_obs_lead = obs_lead.ljust(7,'0')
+            formatted_c_dict['OBS_LEAD_LIST'][index] = formatted_obs_lead
+        # Parse whether all expected METplus config _LIST variables
+        # to be treated as a loop or group.
+        config_lists_to_group_items = formatted_c_dict['GROUP_LIST_ITEMS']
+        config_lists_to_loop_items = formatted_c_dict['LOOP_LIST_ITEMS']
+        lists_to_group_items, lists_to_loop_items = (
+            self.set_lists_loop_or_group(config_lists_to_group_items, 
+                                         config_lists_to_loop_items,
+                                         formatted_c_dict)
+        )
+        runtime_setup_dict = {}
+        # Fill setup dictionary for MET config variable name
+        # and its value as a string for group lists.
+        for list_to_group_items in lists_to_group_items:
+            runtime_setup_dict_name = list_to_group_items.replace('_LIST', '')
+            if 'THRESH' in list_to_group_items:
+                runtime_setup_dict_value = (
+                    [', '.join(formatted_c_dict[list_to_group_items])]
+                )
+            else:
+                runtime_setup_dict_value = (
+                    [self.list_to_str(formatted_c_dict[list_to_group_items])]
+                )
+            runtime_setup_dict[runtime_setup_dict_name] = (
+                runtime_setup_dict_value
+            )
+        # Fill setup dictionary for MET config variable name
+        # and its value as a list for loop lists. Some items
+        # in lists need to be formatted now, others done later.
+        format_later_list = [
+            'MODEL_LIST', 'FCST_VALID_HOUR_LIST', 'OBS_VALID_HOUR_LIST',
+            'FCST_INIT_HOUR_LIST','OBS_INIT_HOUR_LIST'
+        ]
+        for list_to_loop_items in lists_to_loop_items:
+            if list_to_loop_items not in format_later_list:
+                for item in formatted_c_dict[list_to_loop_items]:
+                    index = formatted_c_dict[list_to_loop_items].index(item)
+                    if 'THRESH' in list_to_loop_items:
+                        formatted_c_dict[list_to_loop_items][index] = (
+                            item
+                        )
+                    else:
+                        formatted_c_dict[list_to_loop_items][index] = (
+                            '"'+item+'"'
+                        )
+            runtime_setup_dict_name = list_to_loop_items.replace('_LIST', '')
+            runtime_setup_dict_value = formatted_c_dict[list_to_loop_items]
+            runtime_setup_dict[runtime_setup_dict_name] = (
+                runtime_setup_dict_value
+            )
+        # Create run time dictionary with all the combinations
+        # of settings to be run. 
+        runtime_setup_dict_names = sorted(runtime_setup_dict)
+        runtime_settings_dict_list = (
+            [dict(zip(runtime_setup_dict_names, prod)) for prod in
+             itertools.product(*(runtime_setup_dict[name] for name in
+             runtime_setup_dict_names))]
+        )
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            self.param = self.c_dict['CONFIG_FILE']
+            # Set up stat_analysis -lookin argument, model and obs information
+            # and stat_analysis job.
+            job = '-job '+self.c_dict['JOB_NAME']+' '+self.c_dict['JOB_ARGS']
+            nmodels = len(runtime_settings_dict['MODEL'].split(', '))
+            if nmodels == 1:
+                for m in model_indices:
+                    model_check = (
+                        runtime_settings_dict['MODEL'].replace('"', '')
+                    )
+                    if self.config.getstr('config', 'MODEL'+m) == model_check:
+                        break
+                model_info = model_info_list[int(m)-1]
+                runtime_settings_dict['MODEL'] = '"'+model_info['name']+'"'
+                runtime_settings_dict['OBTYPE'] = '"'+model_info['obtype']+'"'
+                lookin_dir = self.get_lookin_dir(model_info['dir'], date_beg,
+                                                 date_end, date_type, 
+                                                 lists_to_loop_items, 
+                                                 lists_to_group_items,
+                                                 runtime_settings_dict)
+                if '-dump_row' in self.c_dict['JOB_ARGS']:
+                    dump_row_filename_template = (
+                        model_info['dump_row_filename_template']
+                    )
+                    dump_row_filename_type = (
+                        model_info['dump_row_filename_type']
+                    )
+                if '-out_stat' in self.c_dict['JOB_ARGS']:
+                    out_stat_filename_template = (
+                        model_info['out_stat_filename_template']
+                    )
+                    out_stat_filename_type = (
+                        model_info['out_stat_filename_type']
+                    )
+            else:
+                lookin_dir = ''
+                model_list = []
+                obtype_list = []
+                for m in model_indices:
+                    model_info = model_info_list[int(m)-1]
+                    model_list.append(model_info['name'])
+                    obtype_list.append(model_info['obtype'])
+                    lookin_dir_m = self.get_lookin_dir(model_info['dir'], 
+                                                       date_beg, date_end,
+                                                       date_type, 
+                                                       lists_to_loop_items, 
+                                                       lists_to_group_items,
+                                                       runtime_settings_dict)
+                    lookin_dir = lookin_dir+' '+lookin_dir_m
+                runtime_settings_dict['MODEL'] = self.list_to_str(model_list)
+                runtime_settings_dict['OBTYPE'] = self.list_to_str(obtype_list)
+                if '-dump_row' in self.c_dict['JOB_ARGS']:
+                    dump_row_filename_template = (
+                        self.config.getraw('filename_templates',
+                                           'STAT_ANALYSIS_DUMP_ROW_TEMPLATE',
+                                           '')
+                    )
+                    if dump_row_filename_template == '':
+                        dump_row_filename_type = 'default'
+                    else:
+                        dump_row_filename_type = 'user'
+                if '-out_stat' in self.c_dict['JOB_ARGS']:
+                    out_stat_filename_template = (
+                        self.config.getraw('filename_templates',
+                                           'STAT_ANALYSIS_OUT_STAT_TEMPLATE',
+                                           '')
+                    )
+                    if out_stat_filename_template == '':
+                        out_stat_filename_type = 'default'
+                    else:
+                        out_stat_filename_type = 'user'
+            runtime_settings_dict['-lookin'] = lookin_dir
+            self.set_lookin_dir(runtime_settings_dict['-lookin'])
+            if '-dump_row' in self.c_dict['JOB_ARGS']:
+                dump_row_filename = (
+                    self.get_output_filename('dump_row', 
+                                             dump_row_filename_template,
+                                             dump_row_filename_type,
+                                             date_beg, date_end,
+                                             date_type, lists_to_loop_items, 
+                                             lists_to_group_items,
+                                             runtime_settings_dict)
+                )
+                dump_row_file = os.path.join(self.c_dict['OUTPUT_BASE_DIR'],
+                                             dump_row_filename)
+                job = job.replace('[dump_row_file]', dump_row_file)
+                job = job.replace('[dump_row_filename]', dump_row_file)
+                dump_row_output_dir = dump_row_file.rpartition('/')[0]
+                if not os.path.exists(dump_row_output_dir):
+                   util.mkdir_p(dump_row_output_dir)
+            if '-out_stat' in self.c_dict['JOB_ARGS']:
+                out_stat_filename = (
+                    self.get_output_filename('out_stat', 
+                                             out_stat_filename_template,
+                                             out_stat_filename_type,
+                                             date_beg, date_end,
+                                             date_type,lists_to_loop_items, 
+                                             lists_to_group_items,
+                                             runtime_settings_dict)
+                )
+                out_stat_file = os.path.join(self.c_dict['OUTPUT_BASE_DIR'],
+                                             out_stat_filename)
+                job = job.replace('[out_stat_file]', out_stat_file)
+                job = job.replace('[out_stat_filename]', out_stat_file)
+                out_stat_output_dir = out_stat_file.rpartition('/')[0]
+                if not os.path.exists(out_stat_output_dir):
+                   util.mkdir_p(out_stat_output_dir)
+            runtime_settings_dict['JOB'] = job 
+            # Set up forecast and observation valid
+            # and initialization time information.
+            runtime_settings_dict = (
+                self.format_valid_init(date_beg, date_end, date_type, 
+                                       runtime_settings_dict)
+            )
+            # Set environment variables and run stat_analysis.
             self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
-            for name, value in fcst_valid_init_dict.items():
+            for name, value in runtime_settings_dict.items():
                 self.add_env_var(name, value)
                 self.logger.debug(name+": "+value)
-            self.logger.debug('MODEL: '+'"'+model_name+'"')
-            self.logger.debug('OBTYPE: '+'"'+obs_name+'"')
-            self.logger.debug('DESC: '+self.create_variable_list(desc))
-            self.logger.debug('FCST_LEAD: '+self.create_variable_list(fcst_lead))
-            self.logger.debug('FCST_VAR_NAME: '+self.create_variable_list(fcst_var_name))
-            self.logger.debug('FCST_VAR_LEVEL: '+self.create_variable_list(fcst_var_level))
-            self.logger.debug('OBS_VAR_NAME: '+self.create_variable_list(obs_var_name))
-            self.logger.debug('OBS_VAR_LEVEL: '+self.create_variable_list(obs_var_level))
-            self.logger.debug('REGION: '+self.create_variable_list(region))
-            self.logger.debug('INTERP: '+self.create_variable_list(interp))
-            self.logger.debug('INTERP_PTS: '+self.create_variable_list(interp_pts))
-            self.logger.debug('FCST_THRESH: '+fcst_thresh)
-            self.logger.debug('COV_THRESH: '+self.create_variable_list(cov_thresh))
-            self.logger.debug('LINE_TYPE: '+self.create_variable_list(line_type))
-            self.logger.debug("JOB: "+job)
-            self.logger.debug("lookin directory: "+for_stat_analysis_lookin)
-            #build command
             cmd = self.get_command()
             if cmd is None:
                 self.logger.error("stat_analysis could not generate command")
                 return
             self.build()
             self.clear()
-        else:
-            self.logger.error("Invalid conf entry for VALID_HOUR_METHOD or INIT_HOUR_METHOD, use 'GROUP' or 'LOOP'")
-            exit(1)
 
-
-    def gather_by_info(self):
-        """! Runs with run_all_times. Runs stat_analysis filtering file
-             stat information for a span of dates looking for specific
-             criteria
- 
+    def filter_for_plotting(self):
+        """! Special case for running stat_analysis over a period of 
+             valid or initialization dates for a filter job, so 
+             MakePlots can be run correctly following StatAnalysis.
+             This method loops over MODEL_LIST, . 
              Args:
- 
+
              Returns:
+
         """
-        #read config
-        verif_case = self.config.getstr('config', 'VERIF_CASE')
-        verif_type = self.config.getstr('config', 'VERIF_TYPE')
-        plot_time = self.config.getstr('config', 'PLOT_TIME')
-        valid_beg_YYYYmmdd = self.config.getstr('config', 'VALID_BEG', "")
-        valid_end_YYYYmmdd = self.config.getstr('config', 'VALID_END', "")
-        valid_hour_method = self.config.getstr('config', 'VALID_HOUR_METHOD')
-        valid_hour_beg = self.config.getstr('config', 'VALID_HOUR_BEG')
-        valid_hour_end = self.config.getstr('config', 'VALID_HOUR_END')
-        valid_hour_increment = self.config.getstr('config', 'VALID_HOUR_INCREMENT')
-        init_beg_YYYYmmdd = self.config.getstr('config', 'INIT_BEG', "")
-        init_end_YYYYmmdd = self.config.getstr('config', 'INIT_END', "")
-        init_hour_method = self.config.getstr('config', 'INIT_HOUR_METHOD')
-        init_hour_beg = self.config.getstr('config', 'INIT_HOUR_BEG')
-        init_hour_end = self.config.getstr('config', 'INIT_HOUR_END')
-        init_hour_increment = self.config.getstr('config', 'INIT_HOUR_INCREMENT')
-        stat_analysis_out_dir = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR')
-        stat_analysis_config = self.config.getstr('config', 'STAT_ANALYSIS_CONFIG')
-        model_list = self.parse_model_list()
-        var_list = util.parse_var_list(self.config)
-        fourier_decom_list = self.parse_var_fourier_decomp()
-        region_list = util.getlist(self.config.getstr('config', 'REGION_LIST'))
-        lead_list = util.getlist(self.config.getstr('config', 'LEAD_LIST'))
-        line_type = util.getlist(self.config.getstr('config', 'LINE_TYPE', ""))
-        #set envir vars based on config
-        util.mkdir_p(stat_analysis_out_dir)
-        self.add_env_var('LINE_TYPE', self.create_variable_list(line_type))
-        #build valid and init hour information
-        valid_beg_HHMMSS = calendar.timegm(time.strptime(valid_hour_beg, "%H%M"))
-        valid_end_HHMMSS = calendar.timegm(time.strptime(valid_hour_end, "%H%M"))
-        init_beg_HHMMSS = calendar.timegm(time.strptime(init_hour_beg, "%H%M"))
-        init_end_HHMMSS = calendar.timegm(time.strptime(init_hour_end, "%H%M"))
-        valid_hour_list = self.create_hour_group_list(valid_beg_HHMMSS, valid_end_HHMMSS, int(valid_hour_increment))
-        init_hour_list = self.create_hour_group_list(init_beg_HHMMSS, init_end_HHMMSS, int(init_hour_increment))
-        valid_init_time_pairs = self.pair_valid_init_times(valid_hour_list, valid_hour_method, init_hour_list, init_hour_method)
-        #loop through time information
-        for valid_init_time_pair in valid_init_time_pairs:
-            valid_time_info = valid_init_time_pair.valid
-            init_time_info = valid_init_time_pair.init
-            if plot_time == 'valid':
-                 fcst_valid_init_dict = {
-                        "FCST_INIT_BEG": "",
-                        "FCST_INIT_END": "",
-                        "FCST_INIT_HOUR": init_time_info,
-                        "FCST_VALID_HOUR": valid_time_info
-                        }
-                 stat_analysis_out_dir_date = "valid"+valid_beg_YYYYmmdd+"to"+valid_end_YYYYmmdd
-                 if len(init_time_info.split(", ")) == 1:
-                     stat_analysis_out_dir_init_time = "init"+init_time_info.replace('"', "")+"to"+init_time_info.replace('"', "")+"Z"
-                 else:
-                     stat_analysis_out_dir_init_time = "init"+init_time_info.replace('"', "").split(", ")[0]+"to"+init_time_info.replace('"', "").split(", ")[-1]+"Z"
-                 if len(valid_time_info.split(", ")) == 1:
-                     fcst_valid_init_dict['FCST_VALID_BEG'] = valid_beg_YYYYmmdd+"_"+valid_time_info.replace('"', "")
-                     fcst_valid_init_dict['FCST_VALID_END'] = valid_end_YYYYmmdd+"_"+valid_time_info.replace('"', "")
-                     stat_analysis_out_dir_valid_time = "valid"+valid_time_info.replace('"', "")+"to"+valid_time_info.replace('"', "")+"Z"
-                 else:
-                     fcst_valid_init_dict['FCST_VALID_BEG'] = valid_beg_YYYYmmdd+"_"+valid_time_info.replace('"', "").split(", ")[0]
-                     fcst_valid_init_dict['FCST_VALID_END'] = valid_end_YYYYmmdd+"_"+valid_time_info.replace('"', "").split(", ")[-1]
-                     stat_analysis_out_dir_valid_time = "valid"+valid_time_info.replace('"', "").split(", ")[0]+"to"+valid_time_info.replace('"', "").split(", ")[-1]+"Z"
-            elif plot_time == 'init':
-                 fcst_valid_init_dict = {
-                        "FCST_VALID_BEG": "",
-                        "FCST_VALID_END": "",
-                        "FCST_VALID_HOUR": valid_time_info,
-                        "FCST_INIT_HOUR": init_time_info
-                        }
-                 stat_analysis_out_dir_date = "init"+init_beg_YYYYmmdd+"to"+init_end_YYYYmmdd
-                 if len(valid_time_info.split(", ")) == 1:
-                     stat_analysis_out_dir_valid_time = "valid"+valid_time_info.replace('"', "")+"to"+valid_time_info.replace('"', "")+"Z"
-                 else:
-                     stat_analysis_out_dir_valid_time = "valid"+valid_time_info.replace('"', "").split(", ")[0]+"to"+valid_time_info.replace('"', "").split(", ")[-1]+"Z"
-                 if len(init_time_info.split(", ")) == 1:
-                     fcst_valid_init_dict['FCST_INIT_BEG'] = init_beg_YYYYmmdd+"_"+init_time_info.replace('"', "")
-                     fcst_valid_init_dict['FCST_INIT_END'] = init_end_YYYYmmdd+"_"+init_time_info.replace('"', "")
-                     stat_analysis_out_dir_init_time = "init"+init_time_info.replace('"', "")+"to"+init_time_info.replace('"', "")+"Z"
-                 else:
-                     fcst_valid_init_dict['FCST_INIT_BEG'] = init_beg_YYYYmmdd+"_"+init_time_info.replace('"', "").split(", ")[0]
-                     fcst_valid_init_dict['FCST_INIT_END'] = init_end_YYYYmmdd+"_"+init_time_info.replace('"', "").split(", ")[-1]
-                     stat_analysis_out_dir_init_time = "init"+init_time_info.replace('"', "").split(", ")[0]+"to"+init_time_info.replace('"', "").split(", ")[-1]+"Z"
+        # Do checks for bad configuration file options.
+        bad_config_variable_list = [
+            'FCST_VAR_LIST', 'FCST_LEVEL_LIST', 
+            'FCST_THRESH_LIST', 'FCST_UNITS_LIST',
+            'OBS_VAR_LIST', 'OBS_LEVEL_LIST', 
+            'OBS_THRESH_LIST', 'OBS_UNITS_LIST'
+        ]
+        for bad_config_variable in bad_config_variable_list:
+            if self.config.has_option('config',
+                                      bad_config_variable):
+                self.logger.error("Bad config option for running StatAnalysis "
+                                  "followed by MakePlots. Please remove "
+                                  +bad_config_variable+" and set using FCST/OBS_VARn")
+                exit(1)
+        loop_group_accepted_options = [ 
+            'FCST_VALID_HOUR_LIST', 'FCST_INIT_HOUR_LIST', 
+            'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
+        ]
+        for config_list in self.c_dict['GROUP_LIST_ITEMS']:
+            if config_list not in loop_group_accepted_options:
+                self.logger.error("Bad config option for running StatAnalysis "
+                                  +"followed by MakePlots. Only accepted "
+                                  +"values in GROUP_LIST_ITEMS are "
+                                  +"FCST_VALID_HOUR_LIST, "
+                                  +"FCST_INIT_HOUR_LIST, "
+                                  +"OBS_VALID_HOUR_LIST, "
+                                  +"OBS_INIT_HOUR_LIST. "
+                                  +"Found "+config_list)
+                exit(1) 
+        for config_list in self.c_dict['LOOP_LIST_ITEMS']:
+            if config_list not in loop_group_accepted_options:
+                self.logger.error("Bad config option for running StatAnalysis "
+                                  +"followed by MakePlots. Only accepted "
+                                  +"values in LOOP_LIST_ITEMS are "
+                                  +"FCST_VALID_HOUR_LIST, "
+                                  +"FCST_INIT_HOUR_LIST, "
+                                  +"OBS_VALID_HOUR_LIST, "
+                                  +"OBS_INIT_HOUR_LIST. "
+                                  +"Found "+config_list)
+                exit(1)
+        # Do checks for required configuration file options that are
+        # defined by user.
+        required_config_variable_list = [ 
+            'VX_MASK_LIST', 'FCST_LEAD_LIST', 'LINE_TYPE_LIST' 
+            ]
+        for required_config_variable in required_config_variable_list:
+            if len(self.c_dict[required_config_variable]) == 0:
+                self.logger.error(required_config_variable+" has no items. "
+                                  +"This list must have items to run "
+                                  +"StatAnalysis followed by MakePlots.")
+                exit(1)
+        # Do some preprocessing, formatting, and gathering
+        # of config information.
+        date_type = self.c_dict['DATE_TYPE']
+        formatted_c_dict = copy.deepcopy(self.c_dict)
+        model_info_list, model_indices = self.parse_model_info()
+        if self.c_dict['MODEL_LIST'] == []:
+            if model_indices > 0:
+                self.logger.warning("MODEL_LIST was left blank, "
+                                    +"creating with MODELn information.")
+                model_name_list = []
+                for model_info in model_info_list:
+                    model_name_list.append(model_info['name'])
+                formatted_c_dict['MODEL_LIST'] = model_name_list
             else:
-                 self.logger.error("Invalid entry for PLOT_TIME, use 'valid' or 'init'")
-                 exit(1)
-            #loop through variable information
-            for var_info in var_list:
-                fcst_var_name = var_info['fcst_name']
-                fcst_var_level = var_info['fcst_level']
-                fcst_var_thresh_list = var_info['fcst_thresh']
-                fcst_var_extra = var_info['fcst_extra']
-                obs_var_name = var_info['obs_name']
-                obs_var_level = var_info['obs_level']
-                obs_var_thresh_list = var_info['obs_thresh']
-                obs_var_extra = var_info['obs_extra']
-                var_info_index = var_info['index']
-                self.add_env_var('FCST_VAR_NAME', '"'+fcst_var_name+'"')
-                self.add_env_var('FCST_VAR_LEVEL', '"'+fcst_var_level+'"')
-                self.add_env_var('OBS_VAR_NAME', '"'+obs_var_name+'"')
-                self.add_env_var('OBS_VAR_LEVEL', '"'+obs_var_level+'"')
-                #loop through thresholds, need to include if list is empty as these settings are optional
-                if fcst_var_thresh_list == [] or obs_var_thresh_list == []:
-                    fcst_var_thresh_list = ['']
-                    obs_var_thresh_list = ['']
-                for fcst_thresh in fcst_var_thresh_list:
-                    stat_analysis_dump_row_filename_fcstvar = "fcst"+fcst_var_name+fcst_var_level+fcst_var_extra.replace(" ", "").replace("=","").replace(";","").replace('"','').replace("'","").replace(",","-").replace("_","")
-                    stat_analysis_dump_row_filename_obsvar = "obs"+obs_var_name+obs_var_level+obs_var_extra.replace(" ", "").replace("=","").replace(";","").replace('"','').replace("'","").replace(",","-").replace("_","")
-                    if len(fcst_thresh) != 0:
-                        obs_thresh = obs_var_thresh_list[fcst_var_thresh_list.index(fcst_thresh)]
-                        fcst_thresh_symbol, fcst_thresh_letters = self.thresh_format(fcst_thresh)
-                        obs_thresh_symbol, obs_thresh_letters = self.thresh_format(obs_thresh)
-                        self.add_env_var('FCST_THRESH', fcst_thresh_symbol)
-                        self.add_env_var('OBS_THRESH', obs_thresh_symbol)
-                        stat_analysis_dump_row_filename_fcstvar = stat_analysis_dump_row_filename_fcstvar+fcst_thresh_letters
-                        stat_analysis_dump_row_filename_obsvar = stat_analysis_dump_row_filename_obsvar+obs_thresh_letters
+                self.logger.error("No model information was found.")
+                exit(1)
+        # Add additional variable information to
+        # c_dict['VAR_LIST'] and make individual dictionaries
+        # for each threshold
+        var_info_c_dict_list = self.c_dict['VAR_LIST']
+        var_info_list = []
+        for var_info_c_dict in var_info_c_dict_list:
+            n = var_info_c_dict['index']
+            fcst_units = self.config.getstr('config', 
+                                            'FCST_VAR'+n+'_UNITS',
+                                            '')
+            obs_units = self.config.getstr('config', 
+                                           'OBS_VAR'+n+'_UNITS',
+                                           '')
+            if len(obs_units) == 0 and len(fcst_units) != 0:
+                obs_units = fcst_units
+            if len(fcst_units) == 0 and len(obs_units) != 0:
+                fcst_units = obs_units
+            run_fourier = (
+                self.config.getbool('config', 
+                                    'VAR'+n+'_FOURIER_DECOMP',
+                                    False)
+            )
+            fourier_wave_num_pairs = util.getlist(
+                self.config.getstr('config', 
+                                   'VAR'+n+'_WAVE_NUM_LIST',
+                                   '')
+            )
+            if len(var_info_c_dict['fcst_thresh']) > 0:
+                for fcst_thresh in var_info_c_dict['fcst_thresh']:
+                    thresh_index = (
+                        var_info_c_dict['fcst_thresh'].index(fcst_thresh)
+                    )
+                    obs_thresh = (
+                        var_info_c_dict['obs_thresh'][thresh_index]
+                    )
+                    if run_fourier == False:
+                        var_info = {}
+                        var_info['index'] = var_info_c_dict['index']
+                        var_info['fcst_name'] = [ 
+                            var_info_c_dict['fcst_name'] 
+                        ]
+                        var_info['obs_name'] = [ 
+                            var_info_c_dict['obs_name'] 
+                        ]
+                        var_info['fcst_level'] = [ 
+                            var_info_c_dict['fcst_level']
+                        ]
+                        var_info['obs_level'] = [ 
+                            var_info_c_dict['obs_level'] 
+                        ]
+                        var_info['fcst_extra'] = [ 
+                            var_info_c_dict['fcst_extra'] 
+                        ]
+                        var_info['obs_extra'] = [ 
+                            var_info_c_dict['obs_extra']
+                        ]
+                        var_info['fcst_thresh'] = [fcst_thresh]
+                        var_info['obs_thresh'] = [obs_thresh]
+                        if len(fcst_units) == 0:
+                            var_info['fcst_units'] = []
+                        else:
+                            var_info['fcst_units'] = [fcst_units]
+                        if len(obs_units) == 0:
+                            var_info['obs_units'] = []
+                        else:
+                            var_info['obs_units'] = [obs_units]
+                        var_info['run_fourier'] = run_fourier
+                        var_info['fourier_wave_num'] = []
+                        var_info_list.append(var_info)
                     else:
-                        self.add_env_var('FCST_THRESH', "")
-                        self.add_env_var('OBS_THRESH', "")
-                    #check for fourier decompositon for variable, add to interp list
-                    interp_list = util.getlist(self.config.getstr('config', 'INTERP', ""))
-                    var_fourier_decomp_info = fourier_decom_list[var_list.index(var_info)]
-                    if var_fourier_decomp_info.run_fourier:
-                        for pair in var_fourier_decomp_info.wave_num_pairings:
-                            interp_list.append("WV1_"+pair)
-                    #loop through interpolation
-                    for interp in interp_list:
-                        self.add_env_var('INTERP', '"'+interp+'"')
-                        stat_analysis_dump_row_filename_interp = "interp"+interp
-                        #loop through region information 
-                        for region in region_list:
-                            self.add_env_var('REGION', '"'+region+'"')
-                            stat_analysis_dump_row_filename_region = "region"+region
-                            #loop through lead information
-                            for lead in lead_list:
-                                self.add_env_var('FCST_LEAD', '"'+lead+'"')
-                                stat_analysis_dump_row_filename_lead = "f"+lead
-                                #loop through model information
-                                for model_info in model_list:
-                                    model_name = model_info.name
-                                    self.add_env_var('MODEL', '"'+model_name+'"')
-                                    obs_name = model_info.obs
-                                    self.add_env_var('OBS_NAME', '"'+obs_name+'"')
-                                    model_dir = model_info.dir
-                                    model_dir_split = model_dir.split("/")
-                                    model_plot_name = model_info.plot_name
-                                    if model_dir[0] == "/":
-                                        filled_model_dir = "/"
-                                    else:
-                                        filled_model_dir = ""
-                                    #check to see if string subsitution requested, check formmatting, and fill
-                                    if "{valid?fmt=" or "{init?fmt=" in model_dir:
-                                        if valid_hour_method == "LOOP" and "{valid?fmt=" in model_dir and "{valid?fmt=%H}" in model_dir:
-                                            valid_string_sub_date = "19000101"+valid_time_info.replace('"', "")
-                                        elif  valid_hour_method == "LOOP" and "{valid?fmt=" in model_dir and "{valid?fmt=%H}" not in model_dir:
-                                            self.logger.error("Invalid use of {valid?fmt= in directory for model "+model_name+"... use {valid?fmt=%H}")
-                                            exit(1)
-                                        elif valid_hour_method == "GROUP" and "{valid?fmt=" in model_dir:
-                                            self.logger.error("Only use {valid?fmt= if VALID_HOUR_METHOD = LOOP")
-                                            exit(1)
-                                        else:
-                                            valid_string_sub_date = "19000101000000"
-                                        if init_hour_method == "LOOP" and "{init?fmt=" in model_dir and "{init?fmt=%H}" in model_dir:
-                                            init_string_sub_date = "19000101"+init_time_info.replace('"', "")
-                                        elif  init_hour_method == "LOOP" and "{init?fmt=" in model_dir and "{init?fmt=%H}" not in model_dir:
-                                            self.logger.error("Init use of {init?fmt= in directory for model "+model_name+"... use {init?fmt=%H}")
-                                            exit(1)
-                                        elif init_hour_method == "GROUP" and "{init?fmt=" in model_dir:
-                                            self.logger.error("Only use {init?fmt= if INIT_HOUR_METHOD = LOOP")
-                                            exit(1)
-                                        else:
-                                            init_string_sub_date = "19000101000000"
-                                        model_dir_time_info =  {"valid": datetime.datetime.strptime(valid_string_sub_date, "%Y%m%d%H%M%S"),
-                                                                "init": datetime.datetime.strptime(init_string_sub_date, "%Y%m%d%H%M%S")
-                                                               } 
-                                        for model_dir_chunk in model_dir_split:
-                                            if "?fmt=%" in model_dir_chunk:
-                                                model_dir_chunkSts = sts.StringSub(self.logger,
-                                                                                   model_dir_chunk,
-                                                                                   **model_dir_time_info)
-                                                filled_model_dir_chunk = model_dir_chunkSts.do_string_sub()
-                                            else:
-                                                filled_model_dir_chunk = model_dir_chunk
-                                            filled_model_dir = os.path.join(filled_model_dir, filled_model_dir_chunk)
-                                    else:
-                                        filled_model_dir = model_dir
-                                    #check and fill wildcard* directory paths
-                                    if "*" in model_dir:
-                                        for_stat_analysis_lookin = subprocess.check_output("ls -d "+filled_model_dir, shell=True).rstrip('\n')
-                                    else:
-                                        for_stat_analysis_lookin = filled_model_dir
-                                    #set up lookin agrument
-                                    self.set_lookin_dir(for_stat_analysis_lookin)
-                                    #set up output directory, job, and dump_row filename
-                                    model_stat_analysis_output_dir = os.path.join(stat_analysis_out_dir, verif_case, verif_type, model_plot_name, stat_analysis_out_dir_date+"_"+stat_analysis_out_dir_valid_time+"_"+stat_analysis_out_dir_init_time)
-                                    util.mkdir_p(model_stat_analysis_output_dir)
-                                    stat_analysis_dump_row_filename = model_plot_name+"_"+stat_analysis_dump_row_filename_lead+"_"+stat_analysis_dump_row_filename_fcstvar+"_"+stat_analysis_dump_row_filename_obsvar+"_"+stat_analysis_dump_row_filename_interp+"_"+stat_analysis_dump_row_filename_region+".stat"
-                                    job = "-job filter -dump_row "+os.path.join(model_stat_analysis_output_dir, stat_analysis_dump_row_filename)
-                                    self.add_env_var('JOB', job)
-                                    self.param = stat_analysis_config
-                                    #print stat_analysis run settings
-                                    self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
-                                    for name, value in fcst_valid_init_dict.items():
-                                        self.add_env_var(name, value)
-                                        self.logger.debug(name+": "+value)
-                                    if len(fcst_var_extra) != 0 and len(obs_var_extra) != 0:
-                                        self.logger.debug("FCST_VAR_NAME: "+fcst_var_name)
-                                        self.logger.debug("FCST_VAR_LEVEL: "+fcst_var_level)
-                                        self.logger.debug("FCST_VAR_OPTIONS: "+fcst_var_extra)
-                                        self.logger.debug("OBS_VAR_NAME: "+obs_var_name)
-                                        self.logger.debug("OBS_VAR_LEVEL: "+obs_var_level)
-                                        self.logger.debug("OBS_VAR_OPTIONS: "+obs_var_extra)
-                                    elif len(fcst_var_extra) != 0 and len(obs_var_extra) == 0:
-                                        self.logger.debug("FCST_VAR_NAME: "+fcst_var_name)
-                                        self.logger.debug("FCST_VAR_LEVEL: "+fcst_var_level)
-                                        self.logger.debug("FCST_VAR_OPTIONS: "+fcst_var_extra)
-                                        self.logger.debug("OBS_VAR_NAME: "+obs_var_name)
-                                        self.logger.debug("OBS_VAR_LEVEL: "+obs_var_level)
-                                    elif len(fcst_var_extra) == 0 and len(obs_var_extra) != 0:
-                                        self.logger.debug("FCST_VAR_NAME: "+fcst_var_name)
-                                        self.logger.debug("FCST_VAR_LEVEL: "+fcst_var_level)
-                                        self.logger.debug("OBS_VAR_NAME: "+obs_var_name)
-                                        self.logger.debug("OBS_VAR_LEVEL: "+obs_var_level)
-                                        self.logger.debug("OBS_VAR_OPTIONS: "+obs_var_extra)
-                                    elif len(fcst_var_extra) == 0 and len(obs_var_extra) == 0:
-                                        self.logger.debug("FCST_VAR_NAME: "+fcst_var_name)
-                                        self.logger.debug("FCST_VAR_LEVEL: "+fcst_var_level)
-                                        self.logger.debug("OBS_VAR_NAME: "+obs_var_name)
-                                        self.logger.debug("OBS_VAR_LEVEL: "+obs_var_level)
-                                    if len(fcst_thresh) != 0:
-                                        self.logger.debug("FCST_THRESH: "+fcst_thresh_symbol)
-                                        self.logger.debug("OBS_THRESH: "+obs_thresh_symbol)
-                                    self.logger.debug("INTERP: "+interp) 
-                                    self.logger.debug("REGION: "+region)
-                                    self.logger.debug("FCST_LEAD: "+lead)
-                                    self.logger.debug("MODEL: "+model_name)
-                                    self.logger.debug("OBTYPE: "+obs_name)
-                                    self.logger.debug("LINE_TYPE: "+self.create_variable_list(line_type))
-                                    self.logger.debug("JOB: "+job)
-                                    self.logger.debug("lookin directory: "+for_stat_analysis_lookin)
-                                    #build command
-                                    cmd = self.get_command()
-                                    if cmd is None:
-                                        self.logger.error("stat_analysis could not generate command")
-                                        return
-                                    self.build()
-                                    self.clear()
+                        for pair in fourier_wave_num_pairs:
+                            var_info = {}
+                            var_info['index'] = var_info_c_dict['index']
+                            var_info['fcst_name'] = [ 
+                                var_info_c_dict['fcst_name'] 
+                            ]
+                            var_info['obs_name'] = [ 
+                                var_info_c_dict['obs_name']
+                            ]
+                            var_info['fcst_level'] = [ 
+                                var_info_c_dict['fcst_level'] 
+                            ]
+                            var_info['obs_level'] = [ 
+                                var_info_c_dict['obs_level'] 
+                            ]
+                            var_info['fcst_extra'] = [ 
+                                var_info_c_dict['fcst_extra']
+                            ]
+                            var_info['obs_extra'] = [ 
+                                var_info_c_dict['obs_extra']
+                            ]
+                            var_info['fcst_thresh'] = [fcst_thresh]
+                            var_info['obs_thresh'] = [obs_thresh]
+                            if len(fcst_units) == 0:
+                                var_info['fcst_units'] = []
+                            else:
+                                var_info['fcst_units'] = [fcst_units]
+                            if len(obs_units) == 0:
+                                var_info['obs_units'] = []
+                            else:
+                                var_info['obs_units'] = [obs_units]
+                            var_info['run_fourier'] = run_fourier
+                            var_info['fourier_wave_num'] = ['WV1_'+pair]
+                            var_info_list.append(var_info)
+            else:
+                if run_fourier == False:
+                    var_info = {}
+                    var_info['index'] = var_info_c_dict['index'] 
+                    var_info['fcst_name'] = [var_info_c_dict['fcst_name']]
+                    var_info['obs_name'] = [var_info_c_dict['obs_name']]
+                    var_info['fcst_level'] = [var_info_c_dict['fcst_level']]
+                    var_info['obs_level'] = [var_info_c_dict['obs_level']]
+                    var_info['fcst_extra'] = [var_info_c_dict['fcst_extra']]
+                    var_info['obs_extra'] = [var_info_c_dict['obs_extra']]
+                    var_info['fcst_thresh'] = [] 
+                    var_info['obs_thresh'] = []
+                    if len(fcst_units) == 0:
+                        var_info['fcst_units'] = []
+                    else:
+                        var_info['fcst_units'] = [fcst_units]
+                    if len(obs_units) == 0:
+                        var_info['obs_units'] = []
+                    else:
+                        var_info['obs_units'] = [obs_units]
+                    var_info['run_fourier'] = run_fourier
+                    var_info['fourier_wave_num'] = []
+                    var_info_list.append(var_info)
+                else:
+                    for pair in fourier_wave_num_pairs:
+                        var_info = {}
+                        var_info['index'] = var_info_c_dict['index']
+                        var_info['fcst_name'] = [ 
+                            var_info_c_dict['fcst_name']
+                        ]
+                        var_info['obs_name'] = [ 
+                            var_info_c_dict['obs_name'] 
+                        ]
+                        var_info['fcst_level'] = [ 
+                            var_info_c_dict['fcst_level'] 
+                        ]
+                        var_info['obs_level'] = [ 
+                            var_info_c_dict['obs_level'] 
+                        ]
+                        var_info['fcst_extra'] = [ 
+                            var_info_c_dict['fcst_extra'] 
+                        ]
+                        var_info['obs_extra'] = [ 
+                            var_info_c_dict['obs_extra'] 
+                        ]
+                        var_info['fcst_thresh'] = []
+                        var_info['obs_thresh'] = []
+                        if len(fcst_units) == 0:
+                            var_info['fcst_units'] = []
+                        else:
+                            var_info['fcst_units'] = [fcst_units]
+                        if len(obs_units) == 0:
+                            var_info['obs_units'] = []
+                        else:
+                            var_info['obs_units'] = [obs_units]
+                        var_info['run_fourier'] = run_fourier
+                        var_info['fourier_wave_num'] = ['WV1_'+pair]
+                        var_info_list.append(var_info)
+        for fcst_valid_hour in self.c_dict['FCST_VALID_HOUR_LIST']:
+            index = self.c_dict['FCST_VALID_HOUR_LIST'].index(fcst_valid_hour)
+            formatted_c_dict['FCST_VALID_HOUR_LIST'][index] = (
+                fcst_valid_hour.ljust(6,'0')
+            )
+        for fcst_init_hour in self.c_dict['FCST_INIT_HOUR_LIST']:
+            index = self.c_dict['FCST_INIT_HOUR_LIST'].index(fcst_init_hour)
+            formatted_c_dict['FCST_INIT_HOUR_LIST'][index] = (
+                fcst_init_hour.ljust(6,'0')
+            )
+        for obs_valid_hour in self.c_dict['OBS_VALID_HOUR_LIST']:
+            index = self.c_dict['OBS_VALID_HOUR_LIST'].index(obs_valid_hour)
+            formatted_c_dict['OBS_VALID_HOUR_LIST'][index] = (
+                obs_valid_hour.ljust(6,'0')
+            )
+        for obs_init_hour in self.c_dict['OBS_INIT_HOUR_LIST']:
+            index = self.c_dict['OBS_INIT_HOUR_LIST'].index(obs_init_hour)
+            formatted_c_dict['OBS_INIT_HOUR_LIST'][index] = (
+                obs_init_hour.ljust(6,'0')
+            )
+        for fcst_lead in self.c_dict['FCST_LEAD_LIST']:
+            index = self.c_dict['FCST_LEAD_LIST'].index(fcst_lead)
+            if len(fcst_lead)%2 == 0:
+                formatted_fcst_lead = fcst_lead.ljust(6,'0')
+            else:
+                formatted_fcst_lead = fcst_lead.ljust(7,'0')
+            formatted_c_dict['FCST_LEAD_LIST'][index] = formatted_fcst_lead
+        for obs_lead in self.c_dict['OBS_LEAD_LIST']:
+            index = self.c_dict['OBS_LEAD_LIST'].index(obs_lead)
+            if len(obs_lead)%2 == 0:
+                formatted_obs_lead = obs_lead.ljust(6,'0')
+            else:
+                formatted_obs_lead = obs_lead.ljust(7,'0')
+            formatted_c_dict['OBS_LEAD_LIST'][index] = formatted_obs_lead
+        output_base_dir = self.c_dict['OUTPUT_BASE_DIR']
+        if not os.path.exists(output_base_dir):
+            util.mkdir_p(output_base_dir)
+        # Loop through variables and add information
+        # to a special variable dictionary
+        for var_info in var_info_list:
+            var_info_formatted_c_dict = copy.deepcopy(formatted_c_dict)
+            var_info_formatted_c_dict['FCST_VAR_LIST'] = var_info['fcst_name']
+            var_info_formatted_c_dict['FCST_LEVEL_LIST'] = (
+                var_info['fcst_level'] 
+            )
+            var_info_formatted_c_dict['FCST_UNITS_LIST'] = (
+                var_info['fcst_units']
+            )
+            var_info_formatted_c_dict['OBS_VAR_LIST'] = var_info['obs_name']
+            var_info_formatted_c_dict['OBS_LEVEL_LIST'] = (
+                var_info['obs_level']
+            )
+            var_info_formatted_c_dict['OBS_UNITS_LIST'] = (
+                var_info['obs_units']
+            )
+            var_info_formatted_c_dict['FCST_THRESH_LIST'] = (
+                var_info['fcst_thresh']
+            )
+            var_info_formatted_c_dict['OBS_THRESH_LIST'] = (
+                var_info['obs_thresh']
+            )
+            if var_info['run_fourier'] == True:
+                for fvn in var_info['fourier_wave_num']:
+                    var_info_formatted_c_dict['INTERP_MTHD_LIST'] \
+                    .append(fvn)
+            # Parse whether all expected METplus config _LIST variables
+            # to be treated as a loop or group.
+            config_lists_to_group_items = (
+                var_info_formatted_c_dict['GROUP_LIST_ITEMS']
+            )
+            config_lists_to_loop_items = (
+                var_info_formatted_c_dict['LOOP_LIST_ITEMS']
+            )
+            lists_to_group_items, lists_to_loop_items = (
+                self.set_lists_loop_or_group(config_lists_to_group_items,
+                                             config_lists_to_loop_items,
+                                             var_info_formatted_c_dict)
+            )
+            runtime_setup_dict = {}
+            # Fill setup dictionary for MET config variable name
+            # and its value as a string for group lists.
+            for list_to_group_items in lists_to_group_items:
+                runtime_setup_dict_name = (
+                    list_to_group_items.replace('_LIST', '')
+                )
+                if 'THRESH' in list_to_group_items:
+                    runtime_setup_dict_value = [
+                        ' '.join(
+                            var_info_formatted_c_dict[list_to_group_items]
+                        )
+                    ]
+                else:
+                    runtime_setup_dict_value = [
+                        self.list_to_str(
+                            var_info_formatted_c_dict[list_to_group_items]
+                        )
+                    ]
+                runtime_setup_dict[runtime_setup_dict_name] = (
+                    runtime_setup_dict_value
+                )
+            # Fill setup dictionary for MET config variable name
+            # and its value as a list for loop lists. Some items
+            # in lists need to be formatted now, others done later.
+            format_later_list = [
+                'MODEL_LIST', 'FCST_VALID_HOUR_LIST', 'OBS_VALID_HOUR_LIST',
+                'FCST_INIT_HOUR_LIST','OBS_INIT_HOUR_LIST'
+            ]
+            for list_to_loop_items in lists_to_loop_items:
+                runtime_setup_dict_name = list_to_loop_items.replace('_LIST', 
+                                                                     '')
+                if list_to_loop_items not in format_later_list:
+                    for item in \
+                             var_info_formatted_c_dict[list_to_loop_items]:
+                        index = (
+                            var_info_formatted_c_dict[list_to_loop_items] \
+                            .index(item)
+                        )
+                        if 'THRESH' in list_to_loop_items:
+                            var_info_formatted_c_dict[list_to_loop_items] \
+                                    [index] \
+                                = item
+                        else:
+                            var_info_formatted_c_dict[list_to_loop_items] \
+                                    [index] \
+                                = '"'+item+'"'
+                runtime_setup_dict_name = list_to_loop_items.replace('_LIST', 
+                                                                     '')
+                runtime_setup_dict_value = (
+                    var_info_formatted_c_dict[list_to_loop_items]
+                )
+                runtime_setup_dict[runtime_setup_dict_name] = (
+                    runtime_setup_dict_value
+                )
+            # Create run time dictionary with all the combinations
+            # of settings to be run.
+            runtime_setup_dict_names = sorted(runtime_setup_dict)
+            runtime_settings_dict_list = (
+                [dict(zip(runtime_setup_dict_names, prod)) for prod in
+                itertools.product(*(runtime_setup_dict[name] for name in
+                runtime_setup_dict_names))]
+            )
+            # Loop over run settings.
+            for runtime_settings_dict in runtime_settings_dict_list:
+                self.param = self.c_dict['CONFIG_FILE']
+                # Set up stat_analysis -lookin argument, model and obs
+                # information and stat_analysis job.
+                job = '-job filter -dump_row '
+                for m in model_indices:
+                    model_check = (
+                        runtime_settings_dict['MODEL'].replace('"', '')
+                    )
+                    if (self.config.getstr('config', 'MODEL'+m) 
+                            == model_check):
+                        break
+                model_info = model_info_list[int(m)-1]
+                runtime_settings_dict['MODEL'] = '"'+model_info['name']+'"'
+                runtime_settings_dict['OBTYPE'] = '"'+model_info['obtype']+'"'
+                lookin_dir = self.get_lookin_dir(model_info['dir'], 
+                                                 self.c_dict[date_type+'_BEG'],
+                                                 self.c_dict[date_type+'_END'],
+                                                 date_type, 
+                                                 lists_to_loop_items,
+                                                 lists_to_group_items,
+                                                 runtime_settings_dict)
+                runtime_settings_dict['-lookin'] = lookin_dir
+                self.set_lookin_dir(runtime_settings_dict['-lookin'])
+                dump_row_filename_template = (
+                    model_info['dump_row_filename_template']
+                )
+                dump_row_filename_type = model_info['dump_row_filename_type']
+                dump_row_filename = (
+                    self.get_output_filename('dump_row', 
+                                             dump_row_filename_template, 
+                                             dump_row_filename_type,
+                                             self.c_dict[date_type+'_BEG'],
+                                             self.c_dict[date_type+'_END'],
+                                             date_type, lists_to_loop_items, 
+                                             lists_to_group_items,
+                                             runtime_settings_dict)
+                )
+                dump_row_file = os.path.join(self.c_dict['OUTPUT_BASE_DIR'],
+                                             dump_row_filename)
+                dump_row_output_dir = dump_row_file.rpartition('/')[0]
+                if not os.path.exists(dump_row_output_dir):
+                   util.mkdir_p(dump_row_output_dir)
+                runtime_settings_dict['JOB'] = job+dump_row_file
+                # Set up forecast and observation valid and 
+                # initialization time information.
+                runtime_settings_dict = (
+                    self.format_valid_init(self.c_dict[date_type+'_BEG'], 
+                                           self.c_dict[date_type+'_END'], 
+                                           date_type, 
+                                           runtime_settings_dict)
+                )
+                # Set environment variables and run stat_analysis.
+                self.logger.debug("STAT_ANALYSIS RUN SETTINGS....")
+                for name, value in runtime_settings_dict.items():
+                    self.add_env_var(name, value)
+                    self.logger.debug(name+": "+value)
+                cmd = self.get_command()
+                if cmd is None:
+                    self.logger.error("stat_analysis could not generate "+
+                                      "command")
+                    return
+                self.build()
+                self.clear()
 
     def run_all_times(self):
-        self.gather_by_info()
+        self.c_dict['DATE_TYPE'] = self.config.getstr('config', 'DATE_TYPE')
+        self.c_dict['VALID_BEG'] = self.config.getstr('config', 'VALID_BEG',
+                                                                '')
+        self.c_dict['VALID_END'] = self.config.getstr('config', 'VALID_END',
+                                                      '')
+        self.c_dict['INIT_BEG'] = self.config.getstr('config', 'INIT_BEG', '')
+        self.c_dict['INIT_END'] = self.config.getstr('config', 'INIT_END', '')
+        date_type = self.c_dict['DATE_TYPE']
+        if date_type not in ['VALID', 'INIT']:
+            self.logger.error("DATE_TYPE must be VALID or INIT")
+            exit(1)
+        if 'MakePlots' in self.c_dict['PROCESS_LIST']:
+            self.filter_for_plotting()
+        else:
+            date_beg = self.c_dict[date_type+'_BEG']
+            date_end = self.c_dict[date_type+'_END']
+            self.run_stat_analysis_job(date_beg, date_end, date_type)
 
     def run_at_time(self, input_dict):
-        if "valid" in input_dict.keys():
-            init_time = -1
-            valid_time = input_dict["valid"].strftime("%Y%m%d%H%M%S")
-        elif "init" in input_dict.keys():
-            init_time = input_dict["valid"].strftime("%Y%m%d%H%M%S")
-            valid_time = -1
+        loop_by = self.config.getstr('config', 'LOOP_BY')
+        if loop_by in ['VALID', 'INIT']:
+            date = input_dict[loop_by.lower()].strftime('%Y%m%d')
+            self.run_stat_analysis_job(date, date, loop_by)
         else:
             self.logger.error("LOOP_BY must be VALID or INIT")
             exit(1)
-        self.gather_by_date(init_time, valid_time)
+
+if __name__ == "__main__":
+    util.run_stand_alone("stat_analysis_wrapper", "StatAnalysis")

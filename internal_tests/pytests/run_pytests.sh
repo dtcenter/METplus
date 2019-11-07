@@ -15,6 +15,8 @@ cd $script_dir/config
 pytest -c ../minimum_pytest.$host.conf
 cd $script_dir/grid_stat
 pytest -c ../minimum_pytest.$host.conf
+cd $script_dir/stat_analysis
+pytest -c ../minimum_pytest.$host.conf -c ./test_stat_analysis.conf
 cd $script_dir/logging
 pytest -c ../minimum_pytest.$host.conf
 cd $script_dir/met_util
@@ -23,6 +25,14 @@ cd $script_dir/mtd
 pytest -c ../minimum_pytest.$host.conf
 cd $script_dir/pcp_combine
 pytest -c ../minimum_pytest.$host.conf -c ./test1.conf
+cd $script_dir/stat_analysis
+pytest -c ../minimum_pytest.$host.conf -c ./test_stat_analysis.conf
+cd $script_dir/plotting/stat_analysis
+pytest -c ../../minimum_pytest.$host.conf -c ./test_stat_analysis.conf
+cd $script_dir/plotting/make_plots
+pytest -c ../../minimum_pytest.$host.conf -c ./test_make_plots.conf
+cd $script_dir/plotting/plot_util
+pytest -c ../../minimum_pytest.$host.conf
 cd $script_dir/StringTemplateSubstitution
 pytest -c ../minimum_pytest.$host.conf
 cd $script_dir/compare_gridded
