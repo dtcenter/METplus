@@ -64,8 +64,8 @@ html_logo = os.path.join('_static','METplus_logo.png')
 
 # -- Sphinx Gallery control -----------------------------------------------------------
 sphinx_gallery_conf = {
-      'examples_dirs': ['../parm/use_cases/NOAA_EMC','../parm/use_cases/NCAR','../parm/use_cases/NOAA_WPC','../parm/use_cases/UNIV_IL','../parm/use_cases/GridStat','../parm/use_cases/TEMPLATE'],
-      'gallery_dirs': ['Users_Guide/NOAA_EMC', 'Users_Guide/NCAR','Users_Guide/NOAA_WPC','Users_Guide/UNIV_IL','Users_Guide/GridStat','Users_Guide/TEMPLATE'],
+      'examples_dirs': ['../parm/use_cases/template'],
+      'gallery_dirs': ['Users_Guide/template'],
       'default_thumb_file'     : '_static/METplus_logo.png',
       'download_all_examples' : False,
       'log_level' : {'debug','info','warning','backreference_missing','error'},
