@@ -22,7 +22,7 @@ from string_template_substitution import StringExtract
 from string_template_substitution import get_tags
 #from gempak_to_cf_wrapper import GempakToCFWrapper
 import metplus_wrappers
-import time_util
+import util.time_util
 
 # for run stand alone
 import produtil

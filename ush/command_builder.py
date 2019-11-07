@@ -15,7 +15,7 @@ import os
 from datetime import datetime
 from abc import ABCMeta
 from command_runner import CommandRunner
-import met_util as util
+import util.met_util as util
 import string_template_substitution as sts
 
 # pylint:disable=pointless-string-statement

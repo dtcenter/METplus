@@ -13,9 +13,9 @@ Condition codes: 0 for success, 1 for failure
 """
 
 import os
-import met_util as util
+import util.met_util as util
 from command_builder import CommandBuilder
-import time_util
+import util.time_util
 import string_template_substitution as sts
 
 '''!@namespace CompareGriddedWrapper

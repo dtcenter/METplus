@@ -27,7 +27,7 @@ import logging
 import shutil
 from datetime import datetime
 import produtil.setup
-import met_util as util
+import util.met_util as util
 import config_metplus
 
 # wrappers are referenced dynamically based on PROCESS_LIST values

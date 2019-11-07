@@ -16,8 +16,8 @@ Condition codes: 0 for success, 1 for failure
 import os
 import re
 
-import met_util as util
-import time_util
+import util.met_util as util
+import util.time_util
 from command_builder import CommandBuilder
 #from metplus_wrappers import RegridDataPlaneWrapper
 import metplus_wrappers as mw
