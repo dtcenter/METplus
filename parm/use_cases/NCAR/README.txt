@@ -1,1 +1,0 @@
-ncar_desc.rst

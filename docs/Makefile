@@ -12,6 +12,10 @@ BUILDDIR      = _build
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
+# Sphinx doesn't know to clean out the debris from sphinx-gallery
+clean:
+	rm -rf $(BUILDDIR)/* $(SOURCEDIR)/Users_Guide/template $(SOURCEDIR)/Users_Guide/met_tool_wrapper $(SOURCEDIR)/Users_Guide/model_applications
+
 .PHONY: help Makefile
 
 # Catch-all target: route all unknown targets to Sphinx using the new

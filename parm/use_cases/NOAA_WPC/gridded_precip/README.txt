@@ -1,1 +1,0 @@
-noaa-wpc-gridded-precip.rst

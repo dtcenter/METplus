@@ -1,2 +1,0 @@
-Tropical Cyclone Examples
--------------------------

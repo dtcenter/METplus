@@ -1,2 +1,0 @@
-Gridded Precip Examples
------------------------

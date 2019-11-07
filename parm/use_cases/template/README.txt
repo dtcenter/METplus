@@ -1,1 +1,1 @@
-template_desc.rst
+template.rst
