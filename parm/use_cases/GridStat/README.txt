@@ -1,1 +1,0 @@
-grid-stat_desc.rst

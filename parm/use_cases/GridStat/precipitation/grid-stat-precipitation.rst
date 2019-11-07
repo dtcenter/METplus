@@ -1,2 +1,0 @@
-Precipitation examples
-----------------------
