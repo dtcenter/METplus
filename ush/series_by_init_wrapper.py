@@ -35,7 +35,6 @@ class SeriesByInitWrapper(CommandBuilder):
         super().__init__(config, logger)
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
-        self.app_name = 'SeriesByInit'
         self.stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST'))
         self.var_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_VAR_LIST'))
         self.extract_tiles_dir = self.config.getdir('SERIES_ANALYSIS_INPUT_DIR')

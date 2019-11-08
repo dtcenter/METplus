@@ -13,7 +13,7 @@ from string_template_substitution import StringSub
 
 
 def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
-    """! Retrieves the data from the MODEL_DATA_DIR (defined in metplus.conf)
+    """! Retrieves the data from the EXTRACT_TILES_GRID_INPUT_DIR (defined in metplus.conf)
          that corresponds to the storms defined in the tmp_filename:
         1) create the analysis tile and forecast file names from the
            tmp_filename file.
@@ -61,12 +61,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
     cur_function = sys._getframe().f_code.co_name
 
     # Get variables, etc. from param/config file.
-    model_data_dir = config.getdir('MODEL_DATA_DIR')
+    model_data_dir = config.getdir('EXTRACT_TILES_GRID_INPUT_DIR')
     met_install_dir = config.getdir('MET_INSTALL_DIR')
     regrid_data_plane_exe = os.path.join(met_install_dir,
                                          'bin/regrid_data_plane')
 
-    overwrite_flag = config.getbool('config', 'OVERWRITE_TRACK')
+    overwrite_flag = config.getbool('config', 'EXTRACT_TILES_OVERWRITE_TRACK')
 
     # Extract the columns of interest: init time, lead time,
     # valid time lat and lon of both tropical cyclone tracks, etc.
