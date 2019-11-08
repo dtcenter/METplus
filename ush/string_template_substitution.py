@@ -3,7 +3,7 @@
 """
 
 Program Name: string_template_substitution.py
-Contact(s): Julie Prestopnik, NCAR RAL DTC, jpresto@ucar.edu
+Contact(s): Julie Prestopnik, NCAR RAL DTC, jpresto@ucar.edu, George McCabe
 Abstract: Supporting functions for parsing and creating filename templates
 History Log:  Initial version for METPlus
 Usage: Usually imported in other Python code for individual function calls
@@ -50,7 +50,10 @@ LENGTH_DICT = {'%Y': 4,
                '%H': 2,
                '%M': 2,
                '%S': 2,
-               '%j': 3}
+               '%j': 3,
+               '%y': 2,
+               '%b': 3,
+               }
 
 
 def multiple_replace(replace_dict, text):
@@ -95,7 +98,7 @@ def get_seconds_from_template(split_item):
         return
 
     seconds = shift_split_string[1]
-    return int(seconds)
+    return int(time_util.get_seconds_from_string(seconds, default_unit='S'))
 
 def format_one_time_item(item, time_str, unit):
     """!Determine precision of time offset value and format
@@ -109,7 +112,6 @@ def format_one_time_item(item, time_str, unit):
     if count > 0:
         rest = ''
         # get precision from number (%3H)
-        print(f"item: {item}, unit: {unit}")
         res = re.match(r"^\.*(\d+)"+unit+"(.*)", item)
         if res:
             padding = int(res.group(1))
@@ -137,27 +139,51 @@ def format_hms(fmt, obj):
         Returns: Formatted time value
     """
     out_str = ''
-    # split time into hours, mins, and secs
-    # Specifying integer division // for Python 3
-    # since that was the intent in Python 2.
+    fmt_split = fmt.split('%')[1:]
+    # split time into days, hours, mins, and secs
+    # time should be relative to the next highest unit if higher units are specified
+    # i.e. 90 minutes %M => 90, but %H%M => 0130
+    days = obj // 86400
     hours = obj // 3600
-    minutes = (obj % 3600) // 60
-    seconds = (obj % 3600) % 60
+    minutes = obj  // 60
+    seconds = obj
+
+    # if days are specified, change hours, minutes, and seconds to relative
+    if True in ['d' in x for x in fmt_split]:
+        hours = (obj % 86400) // 3600
+        minutes = (obj % 3600) // 60
+        seconds = (obj % 3600) % 60
+
+    # if hours are specified, change minutes and seconds to relative
+    if True in ['H' in x for x in fmt_split]:
+        minutes = (obj % 3600) // 60
+        seconds = (obj % 3600) % 60
+
+    # if minutes are specified, change seconds to relative
+    if True in ['M' in x for x in fmt_split]:
+        seconds = (obj % 3600) % 60
 
     # parse format
-    fmt_split = fmt.split('%')
     for item in fmt_split:
         out_str += format_one_time_item(item, hours, 'H')
         out_str += format_one_time_item(item, minutes, 'M')
         out_str += format_one_time_item(item, seconds, 'S')
         out_str += format_one_time_item(item, obj, 's')
-        out_str += format_one_time_item(item, obj, 'd')
+        out_str += format_one_time_item(item, days, 'd')
 
     return out_str
 
 def set_output_dict_from_time_info(time_dict, output_dict, key):
     """!Create datetime object from time data,
         get month and day from julian date if applicable"""
+    # if 2 digit year is set, get full year
+    if time_dict['Y'] == -1 and time_dict['y'] != -1:
+        time_dict['Y'] = int(datetime.datetime.strptime(str(time_dict['y']), '%y').strftime('%Y'))
+
+    # if month as 3 letter string is set, get month number
+    if time_dict['m'] == -1 and time_dict['b'] != -1:
+        time_dict['m'] = int(datetime.datetime.strptime(str(time_dict['b']), '%b').strftime('%m'))
+
     if time_dict['Y'] != -1 and time_dict['j'] != -1:
         date_t = datetime.datetime.strptime(str(time_dict['Y'])+'_'+str(time_dict['j']),
                                             '%Y_%j')
@@ -426,8 +452,11 @@ class StringSub(object):
                 # Add back the template identifiers to the matched
                 # string to replace and add the key, value pair to the
                 # dictionary
-                replacement_dict[string_to_replace] = \
-                    self.kwargs.get(split_string[0], None)
+                value = self.kwargs.get(split_string[0], None)
+                if isinstance(value, int):
+                    value = f"{value}S"
+                replacement_dict[string_to_replace] = value
+
 
             # reset shift seconds so it doesn't apply to next match
             self.shift_seconds = 0
@@ -604,25 +633,31 @@ class StringExtract(object):
         offset = 0
 
         valid['Y'] = -1
+        valid['y'] = -1
         valid['m'] = -1
         valid['d'] = -1
         valid['j'] = -1
         valid['H'] = 0
         valid['M'] = 0
+        valid['b'] = -1
 
         init['Y'] = -1
+        init['y'] = -1
         init['m'] = -1
         init['d'] = -1
         init['j'] = -1
         init['H'] = 0
         init['M'] = 0
+        init['b'] = -1
 
         da_init['Y'] = -1
+        da_init['y'] = -1
         da_init['m'] = -1
         da_init['d'] = -1
         da_init['j'] = -1
         da_init['H'] = 0
         da_init['M'] = 0
+        da_init['b'] = -1
 
         lead['H'] = 0
         lead['M'] = 0

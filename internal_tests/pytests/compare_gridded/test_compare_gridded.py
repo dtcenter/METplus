@@ -9,9 +9,7 @@ import produtil
 import pytest
 import datetime
 import config_metplus
-#from grid_stat_wrapper import GridStatWrapper
 from compare_gridded_wrapper import CompareGriddedWrapper
-from config_wrapper import ConfigWrapper
 import met_util as util
 import time_util
 
@@ -61,9 +59,8 @@ def metplus_config():
         produtil.log.postmsg('grid_stat_wrapper  is starting')
 
         # Read in the configuration object CONFIG
-        config = config_metplus.setup()
+        config = config_metplus.setup(util.baseinputconfs)
         logger = util.get_logger(config)
-        config = ConfigWrapper(config, logger)
         return config
 
     except Exception as e:
@@ -222,3 +219,34 @@ def test_get_field_info_fcst_prob_netcdf(key, value):
     fields = w.get_field_info(**field_dict)
     assert(fields == value)
 
+@pytest.mark.parametrize(
+    'win, app_win, file_win, app_file_win, win_value, file_win_value', [
+        ([1, 2, 3, 4, 2, 4 ]),
+        ([1, 2, 3, None, 2, 3]),
+        ([1, 2, None, None, 2, 2]),
+        ([1, None, None, None, 1, 1]),
+        ([None, None, None, None, 0, 0]),
+        ([1, None, 3, 4, 1, 4 ]),
+        ([1, None, 3, 4, 1, 4 ]),
+         ]
+)
+def test_handle_window_once(win, app_win, file_win, app_file_win, win_value, file_win_value):
+    cgw = compare_gridded_wrapper()
+    config = cgw.config
+
+    if win is not None:
+        config.set('config', 'FCST_WINDOW_BEGIN', win)
+
+    if app_win is not None:
+        config.set('config', 'FCST_APP_NAME_WINDOW_BEGIN', app_win)
+
+    if file_win is not None:
+        config.set('config', 'FCST_FILE_WINDOW_BEGIN', file_win)
+
+    if app_file_win is not None:
+        config.set('config', 'FCST_APP_NAME_FILE_WINDOW_BEGIN', app_file_win)
+
+    c_dict = {}
+    cgw.handle_window_once(c_dict, 'FCST', 'BEGIN', 'APP_NAME')
+    assert(c_dict['FCST_WINDOW_BEGIN'] == win_value and \
+           c_dict['FCST_FILE_WINDOW_BEGIN'] == file_win_value)

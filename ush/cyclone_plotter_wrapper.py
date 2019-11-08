@@ -6,7 +6,6 @@ A Python class that generates plots of extra tropical cyclone forecast data,
  verification plots http://www.emc.ncep.noaa.gov/mmb/gplou/emchurr/glblgen/
 """
 
-from __future__ import print_function
 import os
 import time
 import datetime
@@ -16,7 +15,6 @@ import collections
 # pylint:disable=import-error
 # numpy, matplotlib and mpl_toolkits are not part of the standard Python
 # library
-import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import cartopy.crs as ccrs
@@ -35,7 +33,7 @@ class CyclonePlotterWrapper(CommandBuilder):
 
     def __init__(self, config, logger):
         # pylint:disable=redefined-outer-name
-        super(CyclonePlotterWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                      'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)

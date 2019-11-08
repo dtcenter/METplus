@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
 import errno
 import os
 import re
 import sys
 
-import config_metplus
 import met_util as util
-import produtil.setup
-from tc_stat_wrapper import TcStatWrapper
+from tc_stat_wrapper import TCStatWrapper
 import feature_util
 from command_builder import CommandBuilder
 
@@ -36,7 +32,7 @@ class SeriesByInitWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
-        super(SeriesByInitWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
         self.app_name = 'SeriesByInit'
@@ -240,7 +236,7 @@ class SeriesByInitWrapper(CommandBuilder):
             filter_filename = os.path.join(series_output_dir,
                                            cur_init, filter_file)
 
-            tcs = TcStatWrapper(self.config, self.logger)
+            tcs = TCStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
                               filter_opts)
 
@@ -421,14 +417,12 @@ class SeriesByInitWrapper(CommandBuilder):
                                         is the list of files created from
                                         running extract_tiles.
         """
-
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
         # for logging information.
         # For logging
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
-
         filter_init_times = util.get_updated_init_times(tile_dir, self.logger)
         sorted_filter_init = sorted(filter_init_times)
 
@@ -616,7 +610,7 @@ class SeriesByInitWrapper(CommandBuilder):
                           self.get_output_path())
 
     def clear(self):
-        super(SeriesByInitWrapper, self).clear()
+        super().clear()
         self.inaddons = []
 
     def add_input_file(self, filename, type_id):
@@ -640,11 +634,11 @@ class SeriesByInitWrapper(CommandBuilder):
             cmd += "-config " + self.param + " "
 
         if self.get_output_path() == "":
-            self.logger.error("No output directory specified")
-            self.logger.error("No output filename specified")
-            return None
+            self.logger.info("No output directory specified, because series analysis has multiple directories")
+            self.logger.info("No output filename specified, because series analysis has multiple files")
         else:
             cmd += "-out " + os.path.join(self.get_output_path())
+        print("!!!! cmd: ", cmd)
         return cmd
 
     def generate_plots(self, sorted_filter_init, tile_dir):

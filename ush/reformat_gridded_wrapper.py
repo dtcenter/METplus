@@ -12,8 +12,6 @@ Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
-
 import os
 import met_util as util
 import time_util
@@ -33,7 +31,7 @@ class ReformatGriddedWrapper(CommandBuilder):
 that reformat gridded data
     """
     def __init__(self, config, logger):
-        super(ReformatGriddedWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
 
     # this class should not be called directly
     # pylint:disable=unused-argument

@@ -12,8 +12,6 @@ Output Files: None
 Condition codes: 0 for success, 1 for failure
 """
 
-from __future__ import print_function
-
 import os
 import met_util as util
 import time_util
@@ -23,15 +21,13 @@ from string_template_substitution import StringSub
 class ExampleWrapper(CommandBuilder):
     """!Wrapper can be used as a base to develop a new wrapper"""
     def __init__(self, config, logger):
-        super(ExampleWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'example'
         self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
 
     def create_c_dict(self):
-        # change to super() for python 3
-        # c_dict = super()
-        c_dict = super(ExampleWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
         # get values from config object and set them to be accessed by wrapper
         c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                       'EXAMPLE_INPUT_TEMPLATE', '')

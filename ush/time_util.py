@@ -11,10 +11,9 @@ Input Files: N/A
 Output Files: N/A
 """
 
-from __future__ import (print_function, division)
-
 import datetime
 from dateutil.relativedelta import relativedelta
+import re
 
 '''!@namespace TimeInfo
 @brief Utility to handle timing in METplus wrappers
@@ -24,12 +23,91 @@ to be used in other METplus wrappers
 @endcode
 '''
 
-def ti_get_seconds(lead):
+def get_relativedelta(value, default_unit='S'):
+    """!Converts time values ending in Y, m, d, H, M, or S to relativedelta object
+        Args:
+          @param value time value optionally ending in Y,m,d,H,M,S
+            Valid options match format 3600, 3600S, 60M, or 1H
+          @param default_unit unit to assume if no letter is found at end of value
+          @return relativedelta object containing offset time"""
+    if isinstance(value, int):
+        return get_relativedelta(str(value), default_unit)
+
+    mult = 1
+    reg = r'(-*)(\d+)([a-zA-Z]*)'
+    match = re.match(reg, value)
+    if match:
+        if match.group(1) == '-':
+            mult = -1
+        time_value = int(match.group(2)) * mult
+        unit_value = match.group(3)
+
+        # create relativedelta (dateutil) object for unit
+        # if no units specified, use seconds unless default_unit is specified
+        if unit_value == '':
+            if default_unit == 'S':
+                return relativedelta(seconds=time_value)
+            else:
+                unit_value = default_unit
+
+        if unit_value == 'H':
+            return relativedelta(hours=time_value)
+
+        if unit_value == 'M':
+            return relativedelta(minutes=time_value)
+
+        if unit_value == 'S':
+            return relativedelta(seconds=time_value)
+
+        if unit_value == 'd':
+            return relativedelta(days=time_value)
+
+        if unit_value == 'm':
+            return relativedelta(months=time_value)
+
+        if unit_value == 'Y':
+            return relativedelta(years=time_value)
+
+        # unsupported time unit specified, return None
+
+def get_seconds_from_string(value, default_unit='S', valid_time=None):
+    """!Convert string of time (optionally ending with time letter, i.e. HMSyMD to seconds
+        Args:
+          @param value string to convert, i.e. 3M, 4H, 17
+          @param default_unit units to apply if not specified at end of string
+          @returns time in seconds if successfully parsed, None if not"""
+    rd_obj = get_relativedelta(value, default_unit)
+    return ti_get_seconds_from_relativedelta(rd_obj, valid_time)
+
+def time_string_to_met_time(time_string, default_unit='S'):
+    """!Convert time string (3H, 4M, 7, etc.) to format expected by the MET
+        tools ([H]HH[MM[SS]])"""
+    total_seconds = get_seconds_from_string(time_string, default_unit)
+    seconds_time_string = str(total_seconds % 60).zfill(2)
+    minutes_time_string = str(total_seconds // 60 % 60).zfill(2)
+    hour_time_string = str(total_seconds // 3600).zfill(2)
+
+    # if hour is 6 or more digits, we need to add minutes and seconds
+    # also if minutes and/or seconds they are defined
+    # add minutes if seconds are defined as well
+    if len(hour_time_string) > 5 or minutes_time_string != '00' or seconds_time_string != '00':
+        return hour_time_string + minutes_time_string + seconds_time_string
+    else:
+        return hour_time_string
+
+def ti_get_seconds_from_relativedelta(lead, valid_time=None):
     """!Check relativedelta object contents and compute the total number of seconds
         in the time. Return None if years or months are set, because the exact number
         of seconds cannot be calculated without a relative time"""
     # return None if input is not relativedelta object
-    if not isinstance(lead, relativedelta) or lead.months != 0 or lead.years != 0:
+    if not isinstance(lead, relativedelta):
+        return None
+
+    # if valid time is specified, use it to determine seconds
+    if valid_time is not None:
+        return int((valid_time - (valid_time - lead)).total_seconds())
+
+    if lead.months != 0 or lead.years != 0:
         return None
 
     total_seconds = 0
@@ -48,43 +126,47 @@ def ti_get_seconds(lead):
 
     return total_seconds
 
-def ti_get_lead_string(lead):
+def ti_get_lead_string(lead, plural=True):
     """!Check relativedelta object contents and create string representation
         of the highest unit available (year, then, month, day, hour, minute, second).
         This assumes that only one unit has been set in the object"""
+    # if integer, assume seconds
+    if isinstance(lead, int):
+        return ti_get_lead_string(relativedelta(seconds=lead), plural=plural)
+
     # return None if input is not relativedelta object
     if not isinstance(lead, relativedelta):
-        return
+        return None
 
     output = ''
     if lead.years != 0:
         output += f' {lead.years} year'
-        if abs(lead.years) != 1:
+        if abs(lead.years) != 1 and plural:
             output += 's'
 
     if lead.months != 0:
         output += f' {lead.months} month'
-        if abs(lead.months) != 1:
+        if abs(lead.months) != 1 and plural:
             output += 's'
 
     if lead.days != 0:
         output += f' {lead.days} day'
-        if abs(lead.days) != 1:
+        if abs(lead.days) != 1 and plural:
             output += 's'
 
     if lead.hours != 0:
         output += f' {lead.hours} hour'
-        if abs(lead.hours) != 1:
+        if abs(lead.hours) != 1 and plural:
             output += 's'
 
     if lead.minutes != 0:
         output += f' {lead.minutes} minute'
-        if abs(lead.minutes) != 1:
+        if abs(lead.minutes) != 1 and plural:
             output += 's'
 
     if lead.seconds != 0:
         output += f' {lead.seconds} second'
-        if abs(lead.seconds) != 1:
+        if abs(lead.seconds) != 1 and plural:
             output += 's'
 
     # remove leading space and return string
@@ -92,7 +174,11 @@ def ti_get_lead_string(lead):
         return output[1:]
 
     # return 0 hour if no time units are set
-    return '0 hours'
+    output = '0 hour'
+    if plural:
+        output += 's'
+
+    return output
 
 def ti_calculate(input_dict):
     out_dict = {}
@@ -158,7 +244,7 @@ def ti_calculate(input_dict):
 
         # set loop_by to init or valid to be able to see what was set first
         out_dict['loop_by'] = 'init'
-        
+
     # if valid is provided, compute init and da_init
     elif 'valid' in input_dict:
         out_dict['valid'] = input_dict['valid']
@@ -190,13 +276,13 @@ def ti_calculate(input_dict):
     out_dict['da_init'] = out_dict['valid'] + out_dict['offset']
 
     # add common formatted items
-    out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M')
-    out_dict['da_init_fmt'] = out_dict['da_init'].strftime('%Y%m%d%H%M')
-    out_dict['valid_fmt'] = out_dict['valid'].strftime('%Y%m%d%H%M')
+    out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M%S')
+    out_dict['da_init_fmt'] = out_dict['da_init'].strftime('%Y%m%d%H%M%S')
+    out_dict['valid_fmt'] = out_dict['valid'].strftime('%Y%m%d%H%M%S')
 
     # get difference between valid and init to get total seconds since relativedelta
     # does not have a fixed number of seconds
-    total_seconds = int( (out_dict['valid'] - out_dict['init']).total_seconds() )
+    total_seconds = int((out_dict['valid'] - out_dict['init']).total_seconds())
 
     # get string representation of forecast lead
     out_dict['lead_string'] = ti_get_lead_string(out_dict['lead'])

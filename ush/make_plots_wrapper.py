@@ -4,7 +4,7 @@
 Program Name: make_plots_wrapper.py
 Contact(s): Mallory Row
 Abstract: Reads filtered files from stat_analysis_wrapper run_all_times to make plots
-History Log:  Third version
+History Log:  Fourth version
 Usage: make_plots_wrapper.py 
 Parameters: None
 Input Files: MET .stat files
@@ -12,26 +12,24 @@ Output Files: .png images
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
-
 import logging
 import os
-import sys
+import copy
 import met_util as util
 import re
-import csv
 import subprocess
-import time
-import calendar
+import datetime
+import itertools
 from command_builder import CommandBuilder
 
-
 class MakePlotsWrapper(CommandBuilder):
+    """! Wrapper to used to filter make plots from MET data
+    """
     def __init__(self, config, logger):
-        super(MakePlotsWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_path = 'python'
         self.app_name = 'make_plots'
-
+        
     def set_plotting_script(self, plotting_script_path):
         self.plotting_script = plotting_script_path
 
@@ -49,882 +47,504 @@ class MakePlotsWrapper(CommandBuilder):
 
         return cmd
 
-
-    def create_hour_group_list(self, loop_hour_beg, loop_hour_end,
-                               loop_hour_interval):
-        """! Creates a list of hours formatted in %H%M%S
-                 
+    def create_c_dict(self):
+        """! Create a data structure (dictionary) that contains all the
+             values set in the configuration files that are common for 
+             make_plots_wrapper.py.
+        
              Args:
-                loop_hour_beg - Unix timestamp value of the start hour
-                loop_hour_end - Unix timestamp value of the end hour 
-                loop_hours_interval - integer of increments to include
-                                      list
-
-             Returns:
-                hour_group_list - list of hours formatted in %H%M%S
-        """
-        loop_hour_now = loop_hour_beg
-        hour_group_list = ""
-        while loop_hour_now <= loop_hour_end:
-            if loop_hour_now == loop_hour_end:
-                hour_group_list = hour_group_list+'"'+str(time.strftime("%H%M%S", time.gmtime(loop_hour_now))+'"')
-            else:
-                hour_group_list = hour_group_list+'"'+str(time.strftime("%H%M%S", time.gmtime(loop_hour_now))+'", ')
-            loop_hour_now += loop_hour_interval
-        return hour_group_list
  
-    class ValidInitTimesPairs(object):
-        __slots__ = 'valid', 'init'
+             Returns:
+                 c_dict  - a dictionary containing the settings in the
+                           configuration files unique to the wrapper
+        """
+        c_dict = super(MakePlotsWrapper, self).create_c_dict()
+        c_dict['VERBOSITY'] = (
+            self.config.getstr('config','LOG_MAKE_PLOTS_VERBOSITY',
+                               c_dict['VERBOSITY'])
+        )
+        c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
+        c_dict['PROCESS_LIST'] = self.config.getstr('config', 'PROCESS_LIST')
+        c_dict['INPUT_BASE_DIR'] = self.config.getdir('MAKE_PLOTS_INPUT_DIR')
+        c_dict['OUTPUT_BASE_DIR'] = self.config.getdir('MAKE_PLOTS_OUTPUT_DIR')
+        c_dict['SCRIPTS_BASE_DIR'] = self.config.getdir('MAKE_PLOTS_SCRIPTS_DIR')
+        c_dict['DATE_TYPE'] = self.config.getstr('config', 'DATE_TYPE')
+        c_dict['VALID_BEG'] = self.config.getstr('config', 'VALID_BEG', '')
+        c_dict['VALID_END'] = self.config.getstr('config', 'VALID_END', '')
+        c_dict['INIT_BEG'] = self.config.getstr('config', 'INIT_BEG', '')
+        c_dict['INIT_END'] = self.config.getstr('config', 'INIT_END', '')
+        c_dict['GROUP_LIST_ITEMS'] = util.getlist(
+            self.config.getstr('config', 'GROUP_LIST_ITEMS')
+        )
+        c_dict['LOOP_LIST_ITEMS'] = util.getlist(
+            self.config.getstr('config', 'LOOP_LIST_ITEMS')
+        )
+        c_dict['VAR_LIST'] = util.parse_var_list(self.config)
+        c_dict['MODEL_LIST'] = util.getlist(
+            self.config.getstr('config', 'MODEL_LIST', '')
+        )
+        c_dict['DESC_LIST'] = util.getlist(
+            self.config.getstr('config', 'DESC_LIST', '')
+        )
+        c_dict['FCST_LEAD_LIST'] = util.getlist(
+            self.config.getstr('config', 'FCST_LEAD_LIST', '')
+        )
+        c_dict['OBS_LEAD_LIST'] = util.getlist(
+            self.config.getstr('config', 'OBS_LEAD_LIST', '')
+        )
+        c_dict['FCST_VALID_HOUR_LIST'] = util.getlist(
+            self.config.getstr('config', 'FCST_VALID_HOUR_LIST', '')
+        )
+        c_dict['FCST_INIT_HOUR_LIST'] = util.getlist(
+            self.config.getstr('config', 'FCST_INIT_HOUR_LIST', '')
+        )
+        c_dict['OBS_VALID_HOUR_LIST'] = util.getlist(
+            self.config.getstr('config', 'OBS_VALID_HOUR_LIST', '')
+        )
+        c_dict['OBS_INIT_HOUR_LIST'] = util.getlist(
+            self.config.getstr('config', 'OBS_INIT_HOUR_LIST', '')
+        )
+        c_dict['VX_MASK_LIST'] = util.getlist(
+            self.config.getstr('config', 'VX_MASK_LIST', '')
+        )
+        c_dict['INTERP_MTHD_LIST'] = util.getlist(
+            self.config.getstr('config', 'INTERP_MTHD_LIST', '')
+        )
+        c_dict['INTERP_PNTS_LIST'] = util.getlist(
+            self.config.getstr('config', 'INTERP_PNTS_LIST', '')
+        )
+        c_dict['COV_THRESH_LIST'] = util.getlist(
+            self.config.getstr('config', 'COV_THRESH_LIST', '')
+        )
+        c_dict['ALPHA_LIST'] = util.getlist(
+            self.config.getstr('config', 'ALPHA_LIST', '')
+        )
+        c_dict['LINE_TYPE_LIST'] = util.getlist(
+            self.config.getstr('config', 'LINE_TYPE_LIST', '')
+        )
+        c_dict['USER_SCRIPT_LIST'] = util.getlist(
+            self.config.getstr('config', 'MAKE_PLOTS_USER_SCRIPT_LIST', '')
+        )
+        c_dict['VERIF_CASE'] = self.config.getstr('config',
+                                                  'MAKE_PLOTS_VERIF_CASE', '')
+        c_dict['VERIF_TYPE'] = self.config.getstr('config',
+                                                  'MAKE_PLOTS_VERIF_TYPE', '')
+        c_dict['STATS_LIST'] = util.getlist(
+            self.config.getstr('config', 'MAKE_PLOTS_STATS_LIST', '')
+        )
+        c_dict['AVERAGE_METHOD'] = self.config.getstr(
+            'config','MAKE_PLOTS_AVERAGE_METHOD', 'MEAN'
+        )
+        c_dict['CI_METHOD'] = self.config.getstr('config',
+                                                 'MAKE_PLOTS_CI_METHOD',
+                                                 'NONE')
+        c_dict['VERIF_GRID'] = self.config.getstr('config',
+                                                  'MAKE_PLOTS_VERIF_GRID')
+        c_dict['EVENT_EQUALIZATION'] = (
+            self.config.getstr('config', 'MAKE_PLOTS_EVENT_EQUALIZATION')
+        )
+        c_dict['LOG_METPLUS'] = self.config.getstr('config', 'LOG_METPLUS')
+        c_dict['LOG_LEVEL'] = self.config.getstr('config', 'LOG_LEVEL')
+        c_dict['MET_BASE'] = self.config.getstr('dir', 'MET_BASE')
 
-    def pair_valid_init_times(self, valid_hour_list, valid_method,
-                              init_hour_list, init_method):
-        """! Pairs the valid and initialization hour information
+        return c_dict
+
+    def list_to_str(self, list_of_values):
+        """! Turn a list of values into a single string so it can be 
+             set to an environment variable and read by the MET 
+             stat_analysis config file.
                  
              Args:
-                valid_hour_list - foramatted valid hours from
-                                  create_hour_group_list
-                valid_method - string of how to treat valid hour
-                               information, either GROUP or LOOP
-                init_hour_list - foramatted initialization hours from
-                                 create_hour_group_list
-                init_method - string of how to treat initialization hour
-                              information, either GROUP or LOOP
-
+                 list_of_values - list of values
+  
              Returns:
-                valid_init_time_pairs - list of objects with the 
-                                        valid and initialization hour
-                                        information
+                 list_as_str    - string created from list_of_values
+                                  with the values separated by commas 
         """
-        valid_init_time_pairs = []
-        if valid_method == "GROUP" and init_method == "LOOP":
-            for init_hour in init_hour_list.split(", "):
-                pair = self.ValidInitTimesPairs()
-                pair.valid = valid_hour_list
-                pair.init = init_hour
-                valid_init_time_pairs.append(pair)
-        elif valid_method == "LOOP" and init_method == "GROUP":
-            for valid_hour in valid_hour_list.split(", "):
-                pair = self.ValidInitTimesPairs()
-                pair.valid = valid_hour
-                pair.init = init_hour_list
-                valid_init_time_pairs.append(pair)
-        elif valid_method == "LOOP" and init_method == "LOOP":
-            for init_hour in init_hour_list.split(", "):
-                for valid_hour in valid_hour_list.split(", "):
-                    pair = self.ValidInitTimesPairs()
-                    pair.valid = valid_hour
-                    pair.init = init_hour
-                    valid_init_time_pairs.append(pair)
-        elif valid_method == "GROUP" and init_method == "GROUP":
-            pair = self.ValidInitTimesPairs()
-            pair.valid = valid_hour_list
-            pair.init = init_hour_list
-            valid_init_time_pairs.append(pair)
-        return valid_init_time_pairs
+        list_as_str=''
+        if len(list_of_values) > 0:
+            for lt in range(len(list_of_values)):
+                if lt == len(list_of_values)-1:
+                    list_as_str = list_as_str+str(list_of_values[lt])
+                else:
+                    list_as_str = list_as_str+str(list_of_values[lt]+', ')
+        return list_as_str
 
-    def parse_vars_with_level_thresh_list(self):
-        """! Parse metplus_final.conf for variable information,
-             collecting the variable level information as a list
+    def set_lists_loop_or_group(self, config_lists_to_group_items,
+                                config_lists_to_loop_items, config_dict):
+        """! Determine whether the lists from the METplus config file
+             should treat the items in that list as a group or items 
+             to be looped over based on user settings, the values
+             in the list, and process being run.
+             
+             Args:
+                 config_lists_to_group_items - list of the METplus 
+                                               config list names
+                                               to group the list's 
+                                               items set by user
+                 config_lists_to_loop_items  - list of the METplus 
+                                               config list names
+                                               to loop over the 
+                                               list's items set by 
+                                               user
+                 config_dict                 - dictionary containing
+                                               the configuration 
+                                               information
+             
+             Returns: 
+                 lists_to_group_items        - list of all the list names 
+                                               whose items are being 
+                                               grouped together
+                 lists_to_loop_items         - list of all the list names 
+                                               whose items are being
+                                               looped over 
+        """
+        expected_config_lists = [
+             'MODEL_LIST', 'DESC_LIST',
+             'FCST_LEAD_LIST', 'OBS_LEAD_LIST',
+             'FCST_VALID_HOUR_LIST', 'FCST_INIT_HOUR_LIST',
+             'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST',
+             'FCST_VAR_LIST', 'OBS_VAR_LIST',
+             'FCST_UNITS_LIST', 'OBS_UNITS_LIST',
+             'FCST_LEVEL_LIST', 'OBS_LEVEL_LIST',
+             'VX_MASK_LIST', 'INTERP_MTHD_LIST',
+             'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
+             'OBS_THRESH_LIST', 'COV_THRESH_LIST',
+             'ALPHA_LIST', 'LINE_TYPE_LIST',
+             'STATS_LIST'
+        ]
+        lists_to_group_items = config_lists_to_group_items
+        lists_to_loop_items = config_lists_to_loop_items
+        for config_list in expected_config_lists:
+            if (not config_list in config_lists_to_group_items
+                    and not config_list in config_lists_to_loop_items):
+                if config_list == 'LINE_TYPE_LIST' or config_list == 'STATS_LIST':
+                    lists_to_group_items.append(config_list)
+                elif config_dict[config_list] == []:
+                    self.logger.warning(config_list+" is empty, "
+                                        +"will be treated as group.")
+                    lists_to_group_items.append(config_list)
+                else:
+                    lists_to_loop_items.append(config_list)
+            elif (config_list in config_lists_to_loop_items
+                      and config_dict[config_list] == []):
+                self.logger.warning(config_list+" is empty, "
+                                    +"will be treated as group.")
+                lists_to_group_items.append(config_list)
+                lists_to_loop_items.remove(config_list)
+            if (config_list == 'MODEL_LIST' 
+                    or config_list == 'FCST_LEAD_LIST'
+                    or config_list == 'FCST_LEVEL_LIST'
+                    or config_list == 'OBS_LEVEL_LIST'
+                    or config_list == 'FCST_THRESH_LIST'
+                    or config_list == 'OBS_THRESH_LIST'
+                    or config_list == 'FCST_UNITS_LIST'
+                    or config_list == 'OBS_UNITS_LIST'):
+                if config_list not in lists_to_group_items:
+                    lists_to_group_items.append(config_list)
+                if config_list in lists_to_loop_items:
+                    lists_to_loop_items.remove(config_list)
+        self.logger.debug("Items in these lists will be grouped together: "
+                          +', '.join(lists_to_group_items))
+        self.logger.debug("Items in these lists will be looped over: "
+                          +', '.join(lists_to_loop_items))
+        return lists_to_group_items, lists_to_loop_items
+
+    def parse_model_info(self):
+        """! Parse for model information.
              
              Args:
                 
              Returns:
-                 var_info - list of objects containing variable
-                            information
-        """
-        var_info = []
-        all_conf = self.config.keys('config')
-        fcst_indices = []
-        regex = re.compile("FCST_VAR(\d+)_NAME")
-        for conf in all_conf:
-           result = regex.match(conf)
-           if result is not None:
-              fcst_indices.append(result.group(1))
-        for n in fcst_indices:
-            if self.config.has_option('config', "FCST_VAR"+n+"_NAME"):
-                fcst_name = self.config.getstr('config', "FCST_VAR"+n+"_NAME")
-                if self.config.has_option('config', "FCST_VAR"+n+"_LEVELS"):
-                    fcst_levels = util.getlist(self.config.getstr('config', "FCST_VAR"+n+"_LEVELS"))
-                else:
-                    self.logger.error("FCST_VAR"+n+"_LEVELS not defined")
-                    exit(1)
-                if self.config.has_option('config', "FCST_VAR"+n+"_OPTIONS"):
-                    fcst_extra = self.config.getraw('config', "FCST_VAR"+n+"_OPTIONS")
-                else:
-                    fcst_extra = ""
-                if self.config.has_option('config', "FCST_VAR"+n+"_THRESH"):
-                    fcst_thresh = util.getlist(self.config.getstr('config', "FCST_VAR"+n+"_THRESH"))
-                else:
-                    fcst_thresh = ""
-                if self.config.has_option('config', "OBS_VAR"+n+"_NAME"):
-                    obs_name = self.config.getstr('config', "OBS_VAR"+n+"_NAME")
-                else:
-                    obs_name = fcst_name
-                if self.config.has_option('config', "OBS_VAR"+n+"_LEVELS"):
-                    obs_levels = util.getlist(self.config.getstr('config', "OBS_VAR"+n+"_LEVELS"))
-                    if len(fcst_levels) != len(obs_levels):
-                        self.logger.error("FCST_VAR"+n+"_LEVELS and OBS_VAR"+n+"_LEVELS do not have the same number of elements")
-                        exit(1)
-                else:
-                    obs_levels = fcst_levels
-                if self.config.has_option('config', "OBS_VAR"+n+"_OPTIONS"):
-                    obs_extra = self.config.getraw('config', "OBS_VAR"+n+"_OPTIONS")
-                else:
-                    obs_extra = ""
-                if self.config.has_option('config', "OBS_VAR"+n+"_THRESH"):
-                    obs_thresh = util.getlist(self.config.getstr('config', "OBS_VAR"+n+"_THRESH"))
-                    if len(fcst_thresh) != len(obs_thresh):
-                        self.logger.error("FCST_VAR"+n+"_THRESH and OBS_VAR"+n+"_THRESH do not have the same number of elements")
-                        exit(1)
-                else:
-                    obs_thresh = fcst_thresh
-            else:
-                self.logger.error("FCST_VAR"+n+"_NAME not defined")
-                exit(1)
-            fo = {}
-            fo['fcst_name'] = fcst_name
-            fo['obs_name'] = obs_name
-            fo['fcst_extra'] = fcst_extra
-            fo['obs_extra'] = obs_extra
-            fo['fcst_thresh'] = fcst_thresh
-            fo['obs_thresh'] = obs_thresh
-            fo['fcst_level'] = fcst_levels
-            fo['obs_level'] = obs_levels
-            fo['index'] = n
-            var_info.append(fo)
-        return var_info
-
-
-    class FourierDecompInfo(object):
-        __slots__ = 'run_fourier', 'wave_num_pairings'
-
-    def parse_var_fourier_decomp(self):
-        """! Parse metplus_final.conf for variable information
-             on the Fourier decomposition
-             
-             Args:
-                
-             Returns:
-                 fourier_decom_list - list of objects containing
-                                      Fourier decomposition information
-                                      for the variables
-        """
-        fourier_decom_list = []
-        all_conf = self.config.keys('config')
-        indices = []
-        regex = re.compile("FCST_VAR(\d+)_NAME")
-        for conf in all_conf:
-            result = regex.match(conf)
-            if result is not None:
-                indices.append(result.group(1))
-        for n in indices:
-            if self.config.has_option('config', "FCST_VAR"+n+"_NAME"):
-                run_fourier = self.config.getbool('config', "VAR"+n+"_FOURIER_DECOMP", False)
-                fourier_wave_num_pairs = util.getlist(self.config.getstr('config', "VAR"+n+"_WAVE_NUM_LIST", ""))
-                if run_fourier == False:
-                    fourier_wave_num_pairs = ""
-                fd_info = self.FourierDecompInfo()
-                fd_info.run_fourier = run_fourier
-                fd_info.wave_num_pairings = fourier_wave_num_pairs
-                fourier_decom_list.append(fd_info)
-        return fourier_decom_list
-    
-    def parse_model_list(self):
-        """! Parse metplus_final.conf for model information
-             
-             Args:
-                
-             Returns:
-                 model_list - list of objects containing
+                 model_list - list of dictionaries containing
                               model information
         """
-        model_name_list = []
-        model_plot_name_list = []
+        model_info_list = []
         all_conf = self.config.keys('config')
         model_indices = []
-        regex = re.compile("MODEL(\d+)_NAME$")
+        regex = re.compile('MODEL(\d+)$')
         for conf in all_conf:
             result = regex.match(conf)
             if result is not None:
                 model_indices.append(result.group(1))
         for m in model_indices:
-            if self.config.has_option('config', "MODEL"+m+"_NAME"):
-                model_name = self.config.getstr('config', "MODEL"+m+"_NAME")
-                if self.config.has_option('config', "MODEL"+m+"_NAME_ON_PLOT"):
-                    model_plot_name = self.config.getstr('config', "MODEL"+m+"_NAME_ON_PLOT")
+            if self.config.has_option('config', 'MODEL'+m):
+                model_name = self.config.getstr('config', 'MODEL'+m)
+                model_reference_name = (
+                    self.config.getstr('config', 'MODEL'+m+'_REFERENCE_NAME',
+                                       model_name)
+                )
+                if self.config.has_option('config', 'MODEL'+m+'_OBTYPE'):
+                    model_obtype = (
+                        self.config.getstr('config', 'MODEL'+m+'_OBTYPE')
+                    )
                 else:
-                    model_plot_name = model_name
-                model_name_list.append(model_name)
-                model_plot_name_list.append(model_plot_name)
-        return ' '.join(model_name_list), ' '.join(model_plot_name_list)
- 
-    def create_plots_grid2grid_pres(self, fcst_var_level_list, obs_var_level_list,
-                                    fcst_var_thresh_list, obs_var_thresh_list,
-                                    lead_list, plotting_scripts_dir):
-        """! Create plots for the grid-to-grid verification for variables
-             on pressure levels. Runs plotting scripts: plot_time_series.py,
-             plot_lead_mean.py, plot_date_by_level.py, plot_lead_by_level.py
+                    self.logger.error("MODEL"+m+"_OBTYPE was not set.")
+                    exit(1)
+            mod = {}
+            mod['name'] = model_name
+            mod['reference_name'] = model_reference_name
+            mod['obtype'] = model_obtype
+            model_info_list.append(mod)
+        return model_info_list, model_indices
+
+    def create_plots_grid2grid_pres(self, runtime_settings_dict_list):
+        """! Create plots for the grid-to-grid verification for
+             variables on pressure levels using partial sums. 
+             Runs plotting scripts: 
+                 plot_time_series.py,
+                 plot_lead_average.py, 
+                 plot_date_by_level.py,
+                 plot_lead_by_level.py
              
              Args:
-                 fcst_var_level_list - list of forecst variable level
-                                       information
-                 obs_var_level_list -  list of observation variable level
-                                       information
-                 fcst_var_thresh_list - list of forecast variable threshold
-                                        information
-                 obs_var_thresh_list - list of observation variable threshold
-                                        information
-                 lead_list - list of forecast hour leads
-                 plotting_scripts_dir - directory to put images and data
-                
-             Returns:
+                 runtime_settings_dict_list - list of dictionaries
+                                              containing the relevant
+                                              information for running
+                                              plotting scripts
+ 
+             Returns:          
         """
-        self.add_env_var("LEAD_LIST", ', '.join(lead_list))
-        self.add_env_var('FCST_VAR_LEVEL_LIST', ' '.join(fcst_var_level_list))
-        self.add_env_var('OBS_VAR_LEVEL_LIST', ' '.join(obs_var_level_list))
-        os.environ["LEAD_LIST"] = ', '.join(lead_list)
-        os.environ['FCST_VAR_LEVEL_LIST'] = ' '.join(fcst_var_level_list)
-        os.environ['OBS_VAR_LEVEL_LIST'] = ' '.join(obs_var_level_list)
-        #time series plot
-        for lead in lead_list:
-            self.add_env_var('LEAD', lead)
-            os.environ['LEAD'] = lead
-            for vl in range(len(fcst_var_level_list)):
-                self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
-                self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
-                os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
-                os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
-                for vt in range(len(fcst_var_thresh_list)):
-                    self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                    self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                    os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                    os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
-                    self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_time_series.py")+" with...")
-                    self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                    self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                    self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                    self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_level_list[vl]+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                    self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_level_list[vl]+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                    self.logger.debug("INTERP: "+os.environ['INTERP'])
-                    self.logger.debug("REGION: "+os.environ["REGION"])
-                    self.logger.debug("LEAD: "+lead)
-                    self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-                    self.logger.debug("CI_METHOD: "+os.environ['CI_METHOD'])
-                    self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                    self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                    self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                    self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
-                    cmd = self.get_command()
-                    if cmd is None:
-                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
-                        return
-                    self.build()
-                    self.clear()
-        #lead mean plot
-        for vl in range(len(fcst_var_level_list)):
-            self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
-            self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
-            os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
-            os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
-            for vt in range(len(fcst_var_thresh_list)):
-                self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_mean.py"))
-                self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_mean.py")+" with...")
-                self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_level_list[vl]+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_level_list[vl]+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                self.logger.debug("INTERP: "+os.environ['INTERP'])
-                self.logger.debug("REGION: "+os.environ["REGION"])
-                self.logger.debug("LEAD_LIST: "+os.environ["LEAD_LIST"])
-                self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-                self.logger.debug("CI_METHOD: "+os.environ['CI_METHOD'])
-                self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py',
+                          'plot_date_by_level.py', 'plot_lead_by_level.py']
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
+                )
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
                     return
                 self.build()
                 self.clear()
-        #date by variable levels
-        for lead in lead_list:
-            self.add_env_var('LEAD', lead)
-            os.environ['LEAD'] = lead
-            for vt in range(len(fcst_var_thresh_list)):
-                self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_date_by_level.py"))
-                self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_date_by_level.py")+" with...")
-                self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                self.logger.debug("FCST VAR LEVELS: "+os.environ['FCST_VAR_LEVEL_LIST'])
-                self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                self.logger.debug("OBS VAR LEVELS: "+os.environ['OBS_VAR_LEVEL_LIST'])
-                self.logger.debug("INTERP: "+os.environ['INTERP'])
-                self.logger.debug("REGION: "+os.environ["REGION"])
-                self.logger.debug("LEAD: "+os.environ["LEAD"])
-                self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-                self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
-                cmd = self.get_command()
-                if cmd is None:
-                    self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
-                    return
-                self.build()
-                self.clear()
-        #lead by variable levels
-        for vt in range(len(fcst_var_thresh_list)):
-            self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-            self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-            os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-            os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-            self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_by_level.py"))
-            self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_by_level.py")+" with...")
-            self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-            self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-            self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-            self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-            self.logger.debug("FCST VAR LEVELS: "+os.environ['FCST_VAR_LEVEL_LIST'])
-            self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-            self.logger.debug("OBS VAR LEVELS: "+os.environ['OBS_VAR_LEVEL_LIST'])
-            self.logger.debug("INTERP: "+os.environ['INTERP'])
-            self.logger.debug("REGION: "+os.environ["REGION"])
-            self.logger.debug("LEAD_LIST: "+os.environ["LEAD_LIST"])
-            self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-            self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-            self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-            self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-            self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
-            cmd = self.get_command()
-            if cmd is None:
-                self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
-                return
-            self.build()
-            self.clear()
 
-    def create_plots_grid2grid_anom(self, fcst_var_level_list, obs_var_level_list,
-                                    fcst_var_thresh_list, obs_var_thresh_list,
-                                    lead_list, plotting_scripts_dir):
-        """! Create plots for the grid-to-grid verification for variables
-             on pressure levels with anomaly data. Runs plotting scripts: 
-             plot_time_series.py, plot_lead_mean.py, plot_lead_by_date.py
+    def create_plots_grid2grid_anom(self, runtime_settings_dict_list):
+        """! Create plots for the grid-to-grid verification for
+             variables on pressure levels using anomalous partial sums.
+             Runs plotting scripts: 
+                 plot_time_series.py,
+                 plot_lead_average.py, 
+                 plot_lead_by_date.py
              
              Args:
-                 fcst_var_level_list - list of forecst variable level
-                                       information
-                 obs_var_level_list -  list of observation variable level
-                                       information
-                 fcst_var_thresh_list - list of forecast variable threshold
-                                        information
-                 obs_var_thresh_list - list of observation variable threshold
-                                        information
-                 lead_list - list of forecast hour leads
-                 plotting_scripts_dir - directory to put images and data
-                
-             Returns:
-        """
-        self.add_env_var("LEAD_LIST", ', '.join(lead_list))
-        os.environ['LEAD_LIST'] = ', '.join(lead_list)
-        #time series plot
-        for lead in lead_list:
-            self.add_env_var('LEAD', lead)
-            os.environ['LEAD'] = lead
-            for vl in range(len(fcst_var_level_list)):
-                self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
-                self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
-                os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
-                os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
-                for vt in range(len(fcst_var_thresh_list)):
-                    self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                    self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                    os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                    os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
-                    self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_time_series.py")+" with...")
-                    self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                    self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                    self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                    self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_level_list[vl]+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                    self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_level_list[vl]+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                    self.logger.debug("INTERP: "+os.environ['INTERP'])
-                    self.logger.debug("REGION: "+os.environ["REGION"])
-                    self.logger.debug("LEAD: "+lead)
-                    self.logger.debug("CI_METHOD: "+os.environ['CI_METHOD'])
-                    self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                    self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                    self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                    self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
-                    cmd = self.get_command()
-                    if cmd is None:
-                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
-                        return
-                    self.build()
-                    self.clear()
-
-        #lead mean plot and lead by date plot
-        for vl in range(len(fcst_var_level_list)):
-            self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
-            self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
-            os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
-            os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
-            for vt in range(len(fcst_var_thresh_list)):
-                self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_mean.py"))
-                self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_mean.py")+" with...")
-                self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_level_list[vl]+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_level_list[vl]+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                self.logger.debug("INTERP: "+os.environ['INTERP'])
-                self.logger.debug("REGION: "+os.environ["REGION"])
-                self.logger.debug("LEAD_LIST: "+os.environ["LEAD_LIST"])
-                self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-                self.logger.debug("CI_METHOD: "+os.environ['CI_METHOD'])
-                self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
-                cmd = self.get_command()
-                if cmd is None:
-                    self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
-                    return
-                self.build()
-                self.clear()
-                self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_by_date.py"))
-                self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_by_date.py")+" with...")
-                self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_level_list[vl]+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_level_list[vl]+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                self.logger.debug("INTERP: "+os.environ['INTERP'])
-                self.logger.debug("REGION: "+os.environ["REGION"])
-                self.logger.debug("LEAD_LIST: "+os.environ["LEAD_LIST"])
-                self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-                self.logger.debug("CI_METHOD: "+os.environ['CI_METHOD'])
-                self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
-                cmd = self.get_command()
-                if cmd is None:
-                    self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
-                    return
-                self.build()
-                self.clear()
+                 runtime_settings_dict_list - list of dictionaries
+                                              containing the relevant
+                                              information for running
+                                              plotting scripts
  
-    def create_plots_grid2grid_sfc(self, fcst_var_level_list, obs_var_level_list,
-                                   fcst_var_thresh_list, obs_var_thresh_list,
-                                   lead_list, plotting_scripts_dir):
-        """! Create plots for the grid-to-grid verification for variables
-             on single level. Runs plotting scripts: plot_time_series.py,
-             plot_lead_mean.py
+             Returns:          
+        """
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py',
+                          'plot_lead_by_date.py']
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
+                )
+                cmd = self.get_command()
+                if cmd is None:
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
+                    return
+                self.build()
+                self.clear()
+
+    def create_plots_grid2grid_sfc(self, runtime_settings_dict_list):
+        """! Create plots for the grid-to-grid verification for
+             variables on a single level using partial sums.
+             Runs plotting scripts: 
+                 plot_time_series.py,
+                 plot_lead_average.py 
              
              Args:
-                 fcst_var_level_list - list of forecst variable level
-                                       information
-                 obs_var_level_list -  list of observation variable level
-                                       information
-                 fcst_var_thresh_list - list of forecast variable threshold
-                                        information
-                 obs_var_thresh_list - list of observation variable threshold
-                                        information
-                 lead_list - list of forecast hour leads
-                 plotting_scripts_dir - directory to put images and data
-                
-             Returns:
+                 runtime_settings_dict_list - list of dictionaries
+                                              containing the relevant
+                                              information for running
+                                              plotting scripts
+ 
+             Returns:          
         """
-        self.add_env_var("LEAD_LIST", ', '.join(lead_list))
-        os.environ["LEAD_LIST"] = ', '.join(lead_list)
-        #time series plot
-        for lead in lead_list:
-            self.add_env_var('LEAD', lead)
-            os.environ['LEAD'] = lead
-            for vl in range(len(fcst_var_level_list)):
-                self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
-                self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
-                os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
-                os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
-                for vt in range(len(fcst_var_thresh_list)):
-                    self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                    self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                    os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                    os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
-                    self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_time_series.py")+" with...")
-                    self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                    self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                    self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                    self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_level_list[vl]+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                    self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_level_list[vl]+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                    self.logger.debug("INTERP: "+os.environ['INTERP'])
-                    self.logger.debug("REGION: "+os.environ["REGION"])
-                    self.logger.debug("LEAD: "+lead)
-                    self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-                    self.logger.debug("CI_METHOD: "+os.environ['CI_METHOD'])
-                    self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                    self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                    self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                    self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
-
-                    cmd = self.get_command()
-                    if cmd is None:
-                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
-                        return
-                    self.build()
-                    self.clear()
-        #lead mean plot
-        for vl in range(len(fcst_var_level_list)):
-            self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
-            self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
-            os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
-            os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
-            for vt in range(len(fcst_var_thresh_list)):
-                self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_mean.py"))
-                self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_mean.py")+" with...")
-                self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_level_list[vl]+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_level_list[vl]+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                self.logger.debug("INTERP: "+os.environ['INTERP'])
-                self.logger.debug("REGION: "+os.environ["REGION"])
-                self.logger.debug("LEAD_LIST: "+os.environ["LEAD_LIST"])
-                self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-                self.logger.debug("CI_METHOD: "+os.environ['CI_METHOD'])
-                self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
+        # Loop over run settings.
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py']
+        for runtime_settings_dict in runtime_settings_dict_list:
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
+                )
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
                     return
                 self.build()
                 self.clear()
 
-
-    def create_plots_grid2obs_upper_air(self, fcst_var_level_list, obs_var_level_list,
-                                        fcst_var_thresh_list, obs_var_thresh_list,
-                                        lead_list, plotting_scripts_dir):
-        """! Create plots for the grid-to-observations verification for variables
-             on pressure levels. Runs plotting scripts: plot_time_series.py,
-             plot_lead_mean.py, plot_stat_by_level.py, plot_lead_by_level.py
+    def create_plots_grid2obs_upper_air(self, runtime_settings_dict_list):
+        """! Create plots for the grid-to-obs verification for
+             variables on a pressure levels using partial sums.
+             Runs plotting scripts: 
+                 plot_time_series.py,
+                 plot_lead_average.py,
+                 plot_stat_by_level.py,
+                 plot_lead_by_level.py
              
              Args:
-                 fcst_var_level_list - list of forecst variable level
-                                       information 
-                 obs_var_level_list -  list of observation variable level
-                                       information
-                 fcst_var_thresh_list - list of forecast variable threshold
-                                        information
-                 obs_var_thresh_list - list of observation variable threshold
-                                        information
-                 lead_list - list of forecast hour leads
-                 plotting_scripts_dir - directory to put images and data
-                
-             Returns:
-        """
-        self.add_env_var("LEAD_LIST", ', '.join(lead_list))
-        self.add_env_var('FCST_VAR_LEVEL_LIST', ' '.join(fcst_var_level_list))
-        self.add_env_var('OBS_VAR_LEVEL_LIST', ' '.join(obs_var_level_list))
-        os.environ["LEAD_LIST"] = ', '.join(lead_list)
-        os.environ['FCST_VAR_LEVEL_LIST'] = ' '.join(fcst_var_level_list)
-        os.environ['OBS_VAR_LEVEL_LIST'] = ' '.join(obs_var_level_list)
-        #time series plot
-        for lead in lead_list:
-            self.add_env_var('LEAD', lead)
-            os.environ['LEAD'] = lead
-            for vl in range(len(fcst_var_level_list)):
-                self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
-                self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
-                os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
-                os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
-                for vt in range(len(fcst_var_thresh_list)):
-                    self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                    self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                    os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                    os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
-                    self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_time_series.py")+" with...")
-                    self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                    self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                    self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                    self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_level_list[vl]+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                    self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_level_list[vl]+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                    self.logger.debug("INTERP: "+os.environ['INTERP'])
-                    self.logger.debug("REGION: "+os.environ["REGION"])
-                    self.logger.debug("LEAD: "+lead)
-                    self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-                    self.logger.debug("CI_METHOD: "+os.environ['CI_METHOD'])
-                    self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                    self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                    self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                    self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
-                    cmd = self.get_command()
-                    if cmd is None:
-                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
-                        return
-                    self.build()
-                    self.clear()
-        #stat by level plot
-        for lead in lead_list:
-            self.add_env_var('LEAD', lead)
-            os.environ['LEAD'] = lead
-            for vt in range(len(fcst_var_thresh_list)):
-                self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_stat_by_level.py"))
-                self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_stat_by_level.py")+" with...")
-                self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                self.logger.debug("FCST VAR LEVELS: "+os.environ['FCST_VAR_LEVEL_LIST'])
-                self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                self.logger.debug("OBS VAR LEVELS: "+os.environ['OBS_VAR_LEVEL_LIST'])
-                self.logger.debug("INTERP: "+os.environ['INTERP'])
-                self.logger.debug("REGION: "+os.environ["REGION"])
-                self.logger.debug("LEAD: "+os.environ["LEAD"])
-                self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-                self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
-                cmd = self.get_command()
-                if cmd is None:
-                    self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
-                    return
-                self.build()
-                self.clear()
-        #lead mean plot
-        for vl in range(len(fcst_var_level_list)):
-            self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
-            self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
-            os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
-            os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
-            for vt in range(len(fcst_var_thresh_list)):
-                self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_mean.py"))
-                self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_mean.py")+" with...")
-                self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_level_list[vl]+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_level_list[vl]+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                self.logger.debug("INTERP: "+os.environ['INTERP'])
-                self.logger.debug("REGION: "+os.environ["REGION"])
-                self.logger.debug("LEAD_LIST: "+os.environ["LEAD_LIST"])
-                self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-                self.logger.debug("CI_METHOD: "+os.environ['CI_METHOD'])
-                self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
-                cmd = self.get_command()
-                if cmd is None:
-                    self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
-                    return
-                self.build()
-                self.clear()
-        #lead by variable levels
-        for vt in range(len(fcst_var_thresh_list)):
-            self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-            self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-            os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-            os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-            self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_by_level.py"))
-            self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_by_level.py")+" with...")
-            self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-            self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-            self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-            self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-            self.logger.debug("FCST VAR LEVELS: "+os.environ['FCST_VAR_LEVEL_LIST'])
-            self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-            self.logger.debug("OBS VAR LEVELS: "+os.environ['OBS_VAR_LEVEL_LIST'])
-            self.logger.debug("INTERP: "+os.environ['INTERP'])
-            self.logger.debug("REGION: "+os.environ["REGION"])
-            self.logger.debug("LEAD_LIST: "+os.environ["LEAD_LIST"])
-            self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-            self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-            self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-            self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-            self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
-            cmd = self.get_command()
-            if cmd is None:
-                self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
-                return
-            self.build()
-            self.clear()
+                 runtime_settings_dict_list - list of dictionaries
+                                              containing the relevant
+                                              information for running
+                                              plotting scripts
  
-    def create_plots_grid2obs_conus_sfc(self, fcst_var_level_list, obs_var_level_list,
-                                        fcst_var_thresh_list, obs_var_thresh_list,
-                                        lead_list, plotting_scripts_dir):
-        """! Create plots for the grid-to-observation verification for variables
-             on single level. Runs plotting scripts: plot_time_series.py,
-             plot_lead_mean.py
+             Returns:          
+        """
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py',
+                          'plot_stat_by_level.py', 'plot_lead_by_level.py']
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
+                )
+                cmd = self.get_command()
+                if cmd is None:
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
+                    return
+                self.build()
+                self.clear()
+
+    def create_plots_grid2obs_conus_sfc(self, runtime_settings_dict_list):
+        """! Create plots for the grid-to-obs verification for
+             variables on a single level using partial sums.
+             Runs plotting scripts: 
+                 plot_time_series.py,
+                 plot_lead_average.py
              
              Args:
-                 fcst_var_level_list - list of forecst variable level
-                                       information 
-                 obs_var_level_list -  list of observation variable level
-                                       information
-                 fcst_var_thresh_list - list of forecast variable threshold
-                                        information
-                 obs_var_thresh_list - list of observation variable threshold
-                                        information
-                 lead_list - list of forecast hour leads
-                 plotting_scripts_dir - directory to put images and data
-                
-             Returns:
+                 runtime_settings_dict_list - list of dictionaries
+                                              containing the relevant
+                                              information for running
+                                              plotting scripts
+ 
+             Returns:          
         """
-        self.add_env_var("LEAD_LIST", ', '.join(lead_list))
-        os.environ["LEAD_LIST"] = ', '.join(lead_list)
-        #time series plot
-        for lead in lead_list:
-            self.add_env_var('LEAD', lead)
-            os.environ['LEAD'] = lead
-            for vl in range(len(fcst_var_level_list)):
-                self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
-                self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
-                os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
-                os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
-                for vt in range(len(fcst_var_thresh_list)):
-                    self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                    self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                    os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                    os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
-                    self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_time_series.py")+" with...")
-                    self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                    self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                    self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                    self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_level_list[vl]+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                    self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_level_list[vl]+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                    self.logger.debug("INTERP: "+os.environ['INTERP'])
-                    self.logger.debug("REGION: "+os.environ["REGION"])
-                    self.logger.debug("LEAD: "+lead)
-                    self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-                    self.logger.debug("CI_METHOD: "+os.environ['CI_METHOD'])
-                    self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                    self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                    self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                    self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
-                    cmd = self.get_command()
-                    if cmd is None:
-                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
-                        return
-                    self.build()
-                    self.clear()
-
-        #lead mean plot
-        for vl in range(len(fcst_var_level_list)):
-            self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
-            self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
-            os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl]
-            os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
-            for vt in range(len(fcst_var_thresh_list)):
-                self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_lead_mean.py"))
-                self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_lead_mean.py")+" with...")
-                self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_level_list[vl]+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_level_list[vl]+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                self.logger.debug("INTERP: "+os.environ['INTERP'])
-                self.logger.debug("REGION: "+os.environ["REGION"])
-                self.logger.debug("LEAD_LIST: "+os.environ["LEAD_LIST"])
-                self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-                self.logger.debug("CI_METHOD: "+os.environ['CI_METHOD'])
-                self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py']
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
+                )
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
                     return
                 self.build()
                 self.clear()
+
+    def create_plots_precip(self, runtime_settings_dict_list):
+        """! Create plots for the precipitation verification
+             using contingency table counts.
+             Runs plotting scripts: 
+                 plot_time_series.py,
+                 plot_lead_average.py,
+                 plot_threshold_average.py,
+                 plot_threshold_by_lead.py
+             
+             Args:
+                 runtime_settings_dict_list - list of dictionaries
+                                              containing the relevant
+                                              information for running
+                                              plotting scripts
  
-    def create_plots_precip(self, fcst_var_level_list, obs_var_level_list,
-                            fcst_var_thresh_list, obs_var_thresh_list,
-                            lead_list, plotting_scripts_dir):
-        for lead in lead_list:
-            self.add_env_var('LEAD', lead)
-            os.environ['LEAD'] = lead
-            for vl in range(len(fcst_var_level_list)):
-                self.add_env_var('FCST_VAR_LEVEL', fcst_var_level_list[vl])
-                self.add_env_var('OBS_VAR_LEVEL',obs_var_level_list[vl])
-                os.environ['FCST_VAR_LEVEL'] = fcst_var_level_list[vl] 
-                os.environ['OBS_VAR_LEVEL'] = obs_var_level_list[vl]
-                for vt in range(len(fcst_var_thresh_list)):
-                    self.add_env_var('FCST_VAR_THRESH', fcst_var_thresh_list[vt])
-                    self.add_env_var('OBS_VAR_THRESH', obs_var_thresh_list[vt])
-                    os.environ['FCST_VAR_THRESH'] = fcst_var_thresh_list[vt]
-                    os.environ['OBS_VAR_THRESH'] = obs_var_thresh_list[vt]
-                    self.set_plotting_script(os.path.join(plotting_scripts_dir, "plot_time_series.py"))
-                    self.logger.debug("Running "+os.path.join(plotting_scripts_dir, "plot_time_series.py")+" with...")
-                    self.logger.debug("DATES: "+os.environ['PLOT_TIME']+" "+os.environ['START_DATE_YYYYmmdd']+" "+os.environ['END_DATE_YYYYmmdd'])
-                    self.logger.debug("VALID TIME INFO: "+os.environ['VALID_TIME_INFO'])
-                    self.logger.debug("INIT TIME INFO: "+os.environ['INIT_TIME_INFO'])
-                    self.logger.debug("FCST VAR: "+os.environ['FCST_VAR_NAME']+" "+fcst_var_level_list[vl]+" "+fcst_var_thresh_list[vt]+" "+os.environ['FCST_VAR_EXTRA'])
-                    self.logger.debug("OBS VAR: "+os.environ['OBS_VAR_NAME']+" "+obs_var_level_list[vl]+" "+obs_var_thresh_list[vt]+" "+os.environ['OBS_VAR_EXTRA'])
-                    self.logger.debug("INTERP: "+os.environ['INTERP'])
-                    self.logger.debug("REGION: "+os.environ["REGION"])
-                    self.logger.debug("LEAD: "+lead)
-                    self.logger.debug("EVENT_EQUALIZATION: "+os.environ['EVENT_EQUALIZATION'])
-                    self.logger.debug("CI_METHOD: "+os.environ['CI_METHOD'])
-                    self.logger.debug("VERIF_GRID: "+os.environ['VERIF_GRID'])
-                    self.logger.debug("MODEL_NAME_LIST: "+os.environ['MODEL_NAME_LIST'])
-                    self.logger.debug("MODEL_PLOT_NAME_LIST: "+os.environ['MODEL_PLOT_NAME_LIST'])
-                    self.logger.debug("PLOT_STATS_LIST: "+os.environ['PLOT_STATS_LIST'])
-                    cmd = self.get_command()
-                    if cmd is None:
-                        self.logger.error("ERROR: make_plots could not generate command for "+self.plotting_script)
-                        return
-                    self.build()
-                    self.clear()
-                    exit()
+             Returns:          
+        """
+        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py',
+                          'plot_threshold_average.py', 
+                          'plot_threshold_by_lead.py']
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
+                )
+                cmd = self.get_command()
+                if cmd is None:
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
+                    return
+                self.build()
+                self.clear()
+
+    def create_plots_user(self, runtime_settings_dict_list, scripts_to_run):
+        """! Create plots from user specified list
+             
+             Args:
+                 runtime_settings_dict_list - list of dictionaries
+                                              containing the relevant
+                                              information for running
+                                              plotting scripts
+                 scripts_to_run             - list of script names to
+                                              run
  
+             Returns:          
+        """
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+                self.logger.debug(name+": "+value)
+            for script in scripts_to_run:
+                self.set_plotting_script(
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
+                )
+                cmd = self.get_command()
+                if cmd is None:
+                    self.logger.error(
+                        "make_plot could not generate command"
+                    )
+                    return
+                self.build()
+                self.clear()
+
     def create_plots(self, verif_case, verif_type):
-        """! Read in metplus_final.conf variables and call function
-             for the specific verification plots to run
+        """! Set up variables and general looping for creating
+              verification plots
             
              Args:
                  verif_case - string of the verification case to make
@@ -934,195 +554,503 @@ class MakePlotsWrapper(CommandBuilder):
                
              Returns:
         """
-        self.logger.info("Running plots for VERIF_CASE = "+verif_case+", VERIF_TYPE = "+verif_type)
-        #read config
-        plot_time = self.config.getstr('config', 'PLOT_TIME')
-        valid_beg_YYYYmmdd = self.config.getstr('config', 'VALID_BEG', "")
-        valid_end_YYYYmmdd = self.config.getstr('config', 'VALID_END', "")
-        valid_hour_method = self.config.getstr('config', 'VALID_HOUR_METHOD')
-        valid_hour_beg = self.config.getstr('config', 'VALID_HOUR_BEG')
-        valid_hour_end = self.config.getstr('config', 'VALID_HOUR_END')
-        valid_hour_increment = self.config.getstr('config', 'VALID_HOUR_INCREMENT')
-        init_beg_YYYYmmdd = self.config.getstr('config', 'INIT_BEG', "")
-        init_end_YYYYmmdd = self.config.getstr('config', 'INIT_END', "")
-        init_hour_method = self.config.getstr('config', 'INIT_HOUR_METHOD')
-        init_hour_beg = self.config.getstr('config', 'INIT_HOUR_BEG')
-        init_hour_end = self.config.getstr('config', 'INIT_HOUR_END')
-        init_hour_increment = self.config.getstr('config', 'INIT_HOUR_INCREMENT')
-        stat_files_input_dir = self.config.getdir('STAT_FILES_INPUT_DIR')
-        plotting_out_dir = self.config.getdir('PLOTTING_OUTPUT_DIR')
-        plotting_scripts_dir = self.config.getdir('PLOTTING_SCRIPTS_DIR')
-        plot_stats_list = self.config.getstr('config', 'PLOT_STATS_LIST')
-        ci_method = self.config.getstr('config', 'CI_METHOD')
-        verif_grid = self.config.getstr('config', 'VERIF_GRID')
-        event_equalization = self.config.getstr('config', 'EVENT_EQUALIZATION', "True")
-        var_list = self.parse_vars_with_level_thresh_list()
-        fourier_decom_list = self.parse_var_fourier_decomp()
-        region_list = util.getlist(self.config.getstr('config', 'REGION_LIST'))
-        lead_list = util.getlist(self.config.getstr('config', 'LEAD_LIST'))
-        model_name_str_list, model_plot_name_str_list = self.parse_model_list()
-        logging_filename = self.config.getstr('config', 'LOG_METPLUS')
-        logging_level = self.config.getstr('config', 'LOG_LEVEL')
-        met_base = self.config.getstr('dir', 'MET_BASE')
-        #set envir vars based on config
-        self.add_env_var("PLOT_TIME", plot_time)
-        os.environ["PLOT_TIME"] = plot_time
-        if plot_time == 'valid':
-            self.add_env_var('START_DATE_YYYYmmdd', valid_beg_YYYYmmdd)
-            self.add_env_var('END_DATE_YYYYmmdd', valid_end_YYYYmmdd)
-            os.environ['START_DATE_YYYYmmdd'] = valid_beg_YYYYmmdd
-            os.environ['END_DATE_YYYYmmdd'] = valid_end_YYYYmmdd
-        elif plot_time == 'init':
-            self.add_env_var('START_DATE_YYYYmmdd', init_beg_YYYYmmdd)
-            self.add_env_var('END_DATE_YYYYmmdd', init_end_YYYYmmdd)
-            os.environ['START_DATE_YYYYmmdd'] = init_beg_YYYYmmdd
-            os.environ['END_DATE_YYYYmmdd'] = init_end_YYYYmmdd
-        else:
-            self.logger.error("Invalid entry for PLOT_TIME, use 'valid' or 'init'")
+        # Do checks for bad configuration file options.
+        bad_config_variable_list = [
+            'FCST_VAR_LIST', 'FCST_LEVEL_LIST',
+            'FCST_THRESH_LIST', 'FCST_UNITS_LIST',
+            'OBS_VAR_LIST', 'OBS_LEVEL_LIST',
+            'OBS_THRESH_LIST', 'OBS_UNITS_LIST'
+        ]
+        for bad_config_variable in bad_config_variable_list:
+            if self.config.has_option('config',
+                                      bad_config_variable):
+                self.logger.error("Bad config option for running MakePlots. "
+                                  "Please remove "+bad_config_variable+" "
+                                  +"and set using FCST/OBS_VARn")
+                exit(1)
+        loop_group_accepted_options = [
+            'FCST_VALID_HOUR_LIST', 'FCST_INIT_HOUR_LIST',
+            'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
+        ]
+        for config_list in self.c_dict['GROUP_LIST_ITEMS']:
+            if config_list not in loop_group_accepted_options:
+                self.logger.error("Bad config option for running MakePlots. "
+                                  +"Only accepted values in GROUP_LIST_ITEMS "
+                                  +"are FCST_VALID_HOUR_LIST, "
+                                  +"FCST_INIT_HOUR_LIST, "
+                                  +"OBS_VALID_HOUR_LIST, "
+                                  +"OBS_INIT_HOUR_LIST. "
+                                  +"Found "+config_list)
+                exit(1)
+        for config_list in self.c_dict['LOOP_LIST_ITEMS']:
+            if config_list not in loop_group_accepted_options:
+                self.logger.error("Bad config option for running MakePlots. "
+                                  +"Only accepted values in LOOP_LIST_ITEMS "
+                                  +"are FCST_VALID_HOUR_LIST, "
+                                  +"FCST_INIT_HOUR_LIST, "
+                                  +"OBS_VALID_HOUR_LIST, "
+                                  +"OBS_INIT_HOUR_LIST. "
+                                  +"Found "+config_list)
+                exit(1)
+        # Do checks for required configuration file options that are
+        # defined by user.
+        required_config_variable_list = [
+            'VX_MASK_LIST', 'FCST_LEAD_LIST', 'LINE_TYPE_LIST'
+            ]
+        for required_config_variable in required_config_variable_list:
+            if len(self.c_dict[required_config_variable]) == 0:
+                self.logger.error(required_config_variable+" has no items. "
+                                  +"This list must have items to run "
+                                  +"MakePlots.")
+                exit(1)
+        # Do some preprocessing, formatting, and gathering
+        # of config information.
+        date_type = self.c_dict['DATE_TYPE']
+        formatted_c_dict = copy.deepcopy(self.c_dict)
+        model_info_list, model_indices = self.parse_model_info()
+        if self.c_dict['MODEL_LIST'] == []:
+            if model_indices > 0:
+                self.logger.warning("MODEL_LIST was left blank, "
+                                    +"creating with MODELn information.")
+                model_name_list = []
+                for model_info in model_info_list:
+                    model_name_list.append(model_info['name'])
+                formatted_c_dict['MODEL_LIST'] = model_name_list
+            else:
+                self.logger.error("No model information was found.")
+                exit(1)
+        model_obtype_list = []
+        model_reference_name_list = []
+        for model_info in model_info_list:
+            model_obtype_list.append(model_info['obtype'])
+            model_reference_name_list.append(model_info['reference_name'])
+        if len(formatted_c_dict['MODEL_LIST']) > 8:
+            self.logger.error("Number of models for plotting limited to 8.")
             exit(1)
-        self.add_env_var('STAT_FILES_INPUT_DIR', stat_files_input_dir)
-        self.add_env_var('PLOTTING_OUT_DIR', plotting_out_dir)
-        self.add_env_var('PLOT_STATS_LIST', plot_stats_list)
-        self.add_env_var('MODEL_NAME_LIST', model_name_str_list)
-        self.add_env_var('MODEL_PLOT_NAME_LIST', model_plot_name_str_list)
-        self.add_env_var('CI_METHOD', ci_method)
-        self.add_env_var('VERIF_GRID', verif_grid)
-        self.add_env_var('EVENT_EQUALIZATION', event_equalization)
-        self.add_env_var('LOGGING_FILENAME', logging_filename)
-        self.add_env_var('LOGGING_LEVEL', logging_level)
-        os.environ['STAT_FILES_INPUT_DIR'] = stat_files_input_dir
-        os.environ['PLOTTING_OUT_DIR'] = plotting_out_dir
-        os.environ['PLOT_STATS_LIST'] = plot_stats_list
-        os.environ['MODEL_NAME_LIST'] =  model_name_str_list
-        os.environ['MODEL_PLOT_NAME_LIST'] = model_plot_name_str_list
-        os.environ['CI_METHOD'] = ci_method
-        os.environ['VERIF_GRID'] = verif_grid
-        os.environ['EVENT_EQUALIZATION'] = event_equalization
-        os.environ['LOGGING_FILENAME'] = logging_filename
-        os.environ['LOGGING_LEVEL'] = logging_level
-        plotting_out_dir_full = os.path.join(plotting_out_dir, verif_case, verif_type)
-        if os.path.exists(plotting_out_dir_full):
-            self.logger.info(plotting_out_dir_full+" exists, removing")
-            util.rmtree(plotting_out_dir_full)
-        util.mkdir_p(os.path.join(plotting_out_dir_full, "imgs"))
-        util.mkdir_p(os.path.join(plotting_out_dir_full, "data"))
-        self.add_env_var('PLOTTING_OUT_DIR_FULL', plotting_out_dir_full)
-        os.environ['PLOTTING_OUT_DIR_FULL'] = plotting_out_dir_full
-        p = subprocess.Popen(["stat_analysis", "--version"], stdout=subprocess.PIPE)
+        # Set up output base
+        output_base_dir = self.c_dict['OUTPUT_BASE_DIR']
+        output_base_data_dir = os.path.join(output_base_dir, 'data')
+        output_base_images_dir = os.path.join(output_base_dir, 'images')
+        if not os.path.exists(output_base_dir):
+            util.mkdir_p(output_base_dir)
+            util.mkdir_p(output_base_data_dir)
+            util.mkdir_p(output_base_images_dir)
+        else:
+            if os.path.exists(output_base_data_dir):
+                if len(output_base_data_dir) > 0:
+                    for rmfile in os.listdir(output_base_data_dir):
+                        os.remove(os.path.join(output_base_data_dir,rmfile))
+        # Get MET version used to run stat_analysis
+        p = subprocess.Popen(["stat_analysis", "--version"],
+                             stdout=subprocess.PIPE)
         out, err = p.communicate()
+        out = out.decode(encoding='utf-8', errors='strict')
         for line in out.split('\n'):
             if 'MET Version:' in line:
                 met_verison_line = line
-        met_version_str = met_verison_line.partition('MET Version:')[2].split('V')[1]
-        met_version = float(met_version_str.rpartition('.')[0])
-        self.add_env_var('MET_VERSION', str(met_version))
-        os.environ['MET_VERSION'] = str(met_version)
-        if met_version < 6.0:
-             self.logger.exit("Please run with MET version >= 6.0")
-             exit(1)
-        #build valid and init hour information
-        valid_beg_HHMMSS = calendar.timegm(time.strptime(valid_hour_beg, "%H%M"))
-        valid_end_HHMMSS = calendar.timegm(time.strptime(valid_hour_end, "%H%M"))
-        init_beg_HHMMSS = calendar.timegm(time.strptime(init_hour_beg, "%H%M"))
-        init_end_HHMMSS = calendar.timegm(time.strptime(init_hour_end, "%H%M"))
-        valid_hour_list = self.create_hour_group_list(valid_beg_HHMMSS, valid_end_HHMMSS, int(valid_hour_increment))
-        init_hour_list = self.create_hour_group_list(init_beg_HHMMSS, init_end_HHMMSS, int(init_hour_increment))
-        valid_init_time_pairs = self.pair_valid_init_times(valid_hour_list, valid_hour_method, init_hour_list, init_hour_method)
-        #loop through time information
-        for valid_init_time_pair in valid_init_time_pairs:
-            self.add_env_var('VALID_TIME_INFO', valid_init_time_pair.valid)
-            self.add_env_var('INIT_TIME_INFO', valid_init_time_pair.init)
-            os.environ['VALID_TIME_INFO'] = valid_init_time_pair.valid
-            os.environ['INIT_TIME_INFO'] = valid_init_time_pair.init
-            #loop through variable information
-            for var_info in var_list:
-                self.add_env_var('FCST_VAR_NAME', var_info['fcst_name'])
-                self.add_env_var('OBS_VAR_NAME', var_info['obs_name'])
-                os.environ['FCST_VAR_NAME'] = var_info['fcst_name']
-                os.environ['OBS_VAR_NAME'] = var_info['obs_name']
-                fcst_var_level_list = var_info['fcst_level']
-                obs_var_level_list = var_info['obs_level']
-                if len(var_info['fcst_extra']) == 0:
-                    self.add_env_var('FCST_VAR_EXTRA', "None")
-                    os.environ['FCST_VAR_EXTRA'] = 'None'
-                else:
-                    self.add_env_var('FCST_VAR_EXTRA', var_info['fcst_extra'])
-                    os.environ['FCST_VAR_EXTRA'] = var_info['fcst_extra']
-                if len(var_info['obs_extra']) == 0:
-                    self.add_env_var('OBS_VAR_EXTRA', "None")
-                    os.environ['OBS_VAR_EXTRA'] = 'None'
-                else:
-                    self.add_env_var('OBS_VAR_EXTRA', var_info['obs_extra'])
-                    os.environ['OBS_VAR_EXTRA'] = var_info['obs_extra']
-                if len(var_info['fcst_thresh']) == 0 or len(var_info['obs_thresh']) == 0:
-                    fcst_var_thresh_list = [ "None" ]
-                    obs_var_thresh_list = [ "None" ]
-                else:
-                    fcst_var_thresh_list = var_info['fcst_thresh']
-                    obs_var_thresh_list = var_info['obs_thresh']
-                #check for fourier decompositon for variable, add to interp list
-                interp_list = util.getlist(self.config.getstr('config', 'INTERP', ""))
-                var_fourier_decomp_info = fourier_decom_list[var_list.index(var_info)]
-                if var_fourier_decomp_info.run_fourier:
-                    for pair in var_fourier_decomp_info.wave_num_pairings:
-                        interp_list.append("WV1_"+pair)
-                #loop through interpolation information
-                for interp in interp_list:
-                    self.add_env_var('INTERP', interp)
-                    os.environ['INTERP'] = interp
-                    #loop through region information
-                    for region in region_list:
-                        self.add_env_var('REGION', region)
-                        os.environ['REGION'] = region
-                        #call specific plot definitions to make plots
-                        if verif_case == "grid2grid" and verif_type in "pres":
-                            self.create_plots_grid2grid_pres(fcst_var_level_list, obs_var_level_list,
-                                                             fcst_var_thresh_list, obs_var_thresh_list,
-                                                             lead_list, plotting_scripts_dir)
-                        elif verif_case == "grid2grid" and verif_type in "anom":
-                            self.create_plots_grid2grid_anom(fcst_var_level_list, obs_var_level_list,
-                                                             fcst_var_thresh_list, obs_var_thresh_list,
-                                                             lead_list, plotting_scripts_dir)
-                        elif verif_case == "grid2grid" and verif_type in "sfc":
-                            self.create_plots_grid2grid_sfc(fcst_var_level_list, obs_var_level_list,
-                                                            fcst_var_thresh_list, obs_var_thresh_list,
-                                                            lead_list, plotting_scripts_dir)
-                        elif verif_case == "grid2obs" and verif_type in "upper_air":
-                            self.create_plots_grid2obs_upper_air(fcst_var_level_list, obs_var_level_list,
-                                                                 fcst_var_thresh_list, obs_var_thresh_list,
-                                                                 lead_list, plotting_scripts_dir)
-                        elif verif_case == "grid2obs" and verif_type in "conus_sfc":
-                            self.create_plots_grid2obs_conus_sfc(fcst_var_level_list, obs_var_level_list,
-                                                                 fcst_var_thresh_list, obs_var_thresh_list,
-                                                                 lead_list, plotting_scripts_dir)
-                        elif verif_case == "precip":
-                            self.create_plots_precip(fcst_var_level_list, obs_var_level_list,
-                                                     fcst_var_thresh_list, obs_var_thresh_list,
-                                                     lead_list, plotting_scripts_dir)
-
-    def run_all_times(self):
-        verif_case = self.config.getstr('config', 'VERIF_CASE')
-        verif_type = self.config.getstr('config', 'VERIF_TYPE')
-        self.add_env_var('VERIF_CASE', verif_case)
-        self.add_env_var('VERIF_TYPE', verif_type)
-        if verif_case == "grid2grid":
-            if verif_type in ("pres", "anom", "sfc"): 
-                run_make_plots = True
+        met_version_str = (
+            met_verison_line.partition('MET Version:')[2].split('V')[1]
+        )
+        if len(met_version_str) == 3:
+            met_version = float(met_version_str)
+        else:
+            met_version = float(met_version_str.rpartition('.')[0])
+        # Add additional variable information to
+        # c_dict['VAR_LIST'] and make individual dictionaries
+        # for each threshold
+        var_info_c_dict_list = self.c_dict['VAR_LIST']
+        var_info_list = []
+        for var_info_c_dict in var_info_c_dict_list:
+            n = var_info_c_dict['index']
+            fcst_units = self.config.getstr('config',
+                                            'FCST_VAR'+n+'_UNITS',
+                                            '')
+            obs_units = self.config.getstr('config',
+                                           'OBS_VAR'+n+'_UNITS',
+                                           '')
+            if len(obs_units) == 0 and len(fcst_units) != 0:
+                obs_units = fcst_units
+            if len(fcst_units) == 0 and len(obs_units) != 0:
+                fcst_units = obs_units
+            run_fourier = (
+                self.config.getbool('config',
+                                    'VAR'+n+'_FOURIER_DECOMP',
+                                    False)
+            )
+            fourier_wave_num_pairs = util.getlist(
+                self.config.getstr('config',
+                                   'VAR'+n+'_WAVE_NUM_LIST',
+                                   '')
+            )
+            if len(var_info_c_dict['fcst_thresh']) > 0:
+                for fcst_thresh in var_info_c_dict['fcst_thresh']:
+                    thresh_index = (
+                        var_info_c_dict['fcst_thresh'].index(fcst_thresh)
+                    )
+                    obs_thresh = (
+                        var_info_c_dict['obs_thresh'][thresh_index]
+                    )
+                    if run_fourier == False:
+                        var_info = {}
+                        var_info['index'] = var_info_c_dict['index']
+                        var_info['fcst_name'] = [
+                            var_info_c_dict['fcst_name']
+                        ]
+                        var_info['obs_name'] = [
+                            var_info_c_dict['obs_name']
+                        ]
+                        var_info['fcst_level'] = [
+                            var_info_c_dict['fcst_level']
+                        ]
+                        var_info['obs_level'] = [
+                            var_info_c_dict['obs_level']
+                        ]
+                        var_info['fcst_extra'] = [
+                            var_info_c_dict['fcst_extra']
+                        ]
+                        var_info['obs_extra'] = [
+                            var_info_c_dict['obs_extra']
+                        ]
+                        var_info['fcst_thresh'] = [fcst_thresh]
+                        var_info['obs_thresh'] = [obs_thresh]
+                        if len(fcst_units) == 0:
+                            var_info['fcst_units'] = []
+                        else:
+                            var_info['fcst_units'] = [fcst_units]
+                        if len(obs_units) == 0:
+                            var_info['obs_units'] = []
+                        else:
+                            var_info['obs_units'] = [obs_units]
+                        var_info['run_fourier'] = run_fourier
+                        var_info['fourier_wave_num'] = []
+                        var_info_list.append(var_info)
+                    else:
+                        for pair in fourier_wave_num_pairs:
+                            var_info = {}
+                            var_info['index'] = var_info_c_dict['index']
+                            var_info['fcst_name'] = [
+                                var_info_c_dict['fcst_name']
+                            ]
+                            var_info['obs_name'] = [
+                                var_info_c_dict['obs_name']
+                            ]
+                            var_info['fcst_level'] = [
+                                var_info_c_dict['fcst_level']
+                            ]
+                            var_info['obs_level'] = [
+                                var_info_c_dict['obs_level']
+                            ]
+                            var_info['fcst_extra'] = [
+                                var_info_c_dict['fcst_extra']
+                            ]
+                            var_info['obs_extra'] = [
+                                var_info_c_dict['obs_extra']
+                            ]
+                            var_info['fcst_thresh'] = [fcst_thresh]
+                            var_info['obs_thresh'] = [obs_thresh]
+                            if len(fcst_units) == 0:
+                                var_info['fcst_units'] = []
+                            else:
+                                var_info['fcst_units'] = [fcst_units]
+                            if len(obs_units) == 0:
+                                var_info['obs_units'] = []
+                            else:
+                                var_info['obs_units'] = [obs_units]
+                            var_info['run_fourier'] = run_fourier
+                            var_info['fourier_wave_num'] = ['WV1_'+pair]
+                            var_info_list.append(var_info)
             else:
-               run_make_plots = False
-               self.logger.error(verif_type+" is not an accepted VERIF_TYPE option for VERIF_CASE = grid2grid")
-        elif verif_case == "grid2obs":
-            if verif_type in ("upper_air", "conus_sfc"):
-                run_make_plots = True
+                if run_fourier == False:
+                    var_info = {}
+                    var_info['index'] = var_info_c_dict['index']
+                    var_info['fcst_name'] = [var_info_c_dict['fcst_name']]
+                    var_info['obs_name'] = [var_info_c_dict['obs_name']]
+                    var_info['fcst_level'] = [var_info_c_dict['fcst_level']]
+                    var_info['obs_level'] = [var_info_c_dict['obs_level']]
+                    var_info['fcst_extra'] = [var_info_c_dict['fcst_extra']]
+                    var_info['obs_extra'] = [var_info_c_dict['obs_extra']]
+                    var_info['fcst_thresh'] = []
+                    var_info['obs_thresh'] = []
+                    if len(fcst_units) == 0:
+                        var_info['fcst_units'] = []
+                    else:
+                        var_info['fcst_units'] = [fcst_units]
+                    if len(obs_units) == 0:
+                        var_info['obs_units'] = []
+                    else:
+                        var_info['obs_units'] = [obs_units]
+                    var_info['run_fourier'] = run_fourier
+                    var_info['fourier_wave_num'] = []
+                    var_info_list.append(var_info)
+                else:
+                    for pair in fourier_wave_num_pairs:
+                        var_info = {}
+                        var_info['index'] = var_info_c_dict['index']
+                        var_info['fcst_name'] = [
+                            var_info_c_dict['fcst_name']
+                        ]
+                        var_info['obs_name'] = [
+                            var_info_c_dict['obs_name']
+                        ]
+                        var_info['fcst_level'] = [
+                            var_info_c_dict['fcst_level']
+                        ]
+                        var_info['obs_level'] = [
+                            var_info_c_dict['obs_level']
+                        ]
+                        var_info['fcst_extra'] = [
+                            var_info_c_dict['fcst_extra']
+                        ]
+                        var_info['obs_extra'] = [
+                            var_info_c_dict['obs_extra']
+                        ]
+                        var_info['fcst_thresh'] = []
+                        var_info['obs_thresh'] = []
+                        if len(fcst_units) == 0:
+                            var_info['fcst_units'] = []
+                        else:
+                            var_info['fcst_units'] = [fcst_units]
+                        if len(obs_units) == 0:
+                            var_info['obs_units'] = []
+                        else:
+                            var_info['obs_units'] = [obs_units]
+                        var_info['run_fourier'] = run_fourier
+                        var_info['fourier_wave_num'] = ['WV1_'+pair]
+                        var_info_list.append(var_info)
+        var_info_list_sorted = (
+            sorted(var_info_list, key = lambda i: (i['index'], 
+                                                   i['fourier_wave_num']))
+        )
+        var_group_info_list = []
+        keys_to_append = [ 'fcst_level', 'obs_level', 
+                           'fcst_thresh', 'obs_thresh' ]
+        for group, group_info_list in \
+                itertools.groupby(var_info_list_sorted, 
+                                  key=lambda x:(x['index'], 
+                                                x['fourier_wave_num'])):
+             var_group_info = {}
+             for group_info in group_info_list:
+                 if len(var_group_info) == 0:
+                     for key, value in group_info.items():
+                         var_group_info[key] = group_info[key]
+                 else:
+                      for key in keys_to_append:
+                          if (group_info[key] != var_group_info[key]
+                              and group_info[key][0] not in var_group_info[key]):
+                                  var_group_info[key].append(group_info[key][0])
+             var_group_info_list.append(var_group_info)
+        for fcst_valid_hour in self.c_dict['FCST_VALID_HOUR_LIST']:
+            index = self.c_dict['FCST_VALID_HOUR_LIST'].index(fcst_valid_hour)
+            formatted_c_dict['FCST_VALID_HOUR_LIST'][index] = (
+                fcst_valid_hour.ljust(6,'0')
+            )
+        for fcst_init_hour in self.c_dict['FCST_INIT_HOUR_LIST']:
+            index = self.c_dict['FCST_INIT_HOUR_LIST'].index(fcst_init_hour)
+            formatted_c_dict['FCST_INIT_HOUR_LIST'][index] = (
+                fcst_init_hour.ljust(6,'0')
+            )
+        for obs_valid_hour in self.c_dict['OBS_VALID_HOUR_LIST']:
+            index = self.c_dict['OBS_VALID_HOUR_LIST'].index(obs_valid_hour)
+            formatted_c_dict['OBS_VALID_HOUR_LIST'][index] = (
+                obs_valid_hour.ljust(6,'0')
+            )
+        for obs_init_hour in self.c_dict['OBS_INIT_HOUR_LIST']:
+            index = self.c_dict['OBS_INIT_HOUR_LIST'].index(obs_init_hour)
+            formatted_c_dict['OBS_INIT_HOUR_LIST'][index] = (
+                obs_init_hour.ljust(6,'0')
+            )
+        for fcst_lead in self.c_dict['FCST_LEAD_LIST']:
+            index = self.c_dict['FCST_LEAD_LIST'].index(fcst_lead)
+            if len(fcst_lead)%2 == 0:
+                formatted_fcst_lead = fcst_lead.ljust(6,'0')
+            else:
+                formatted_fcst_lead = fcst_lead.ljust(7,'0')
+            formatted_c_dict['FCST_LEAD_LIST'][index] = formatted_fcst_lead
+        for obs_lead in self.c_dict['OBS_LEAD_LIST']:
+            index = self.c_dict['OBS_LEAD_LIST'].index(obs_lead)
+            if len(obs_lead)%2 == 0:
+                formatted_obs_lead = obs_lead.ljust(6,'0')
+            else:
+                formatted_obs_lead = obs_lead.ljust(7,'0')
+            formatted_c_dict['OBS_LEAD_LIST'][index] = formatted_obs_lead
+        # Loop through variables and add information
+        # to a special variable dictionary
+        for var_info in var_group_info_list:
+            var_info_formatted_c_dict = copy.deepcopy(formatted_c_dict)
+            var_info_formatted_c_dict['FCST_VAR_LIST'] = var_info['fcst_name']
+            var_info_formatted_c_dict['FCST_LEVEL_LIST'] = (
+                var_info['fcst_level']
+            )
+            var_info_formatted_c_dict['FCST_UNITS_LIST'] = (
+                var_info['fcst_units']
+            )
+            var_info_formatted_c_dict['OBS_VAR_LIST'] = var_info['obs_name']
+            var_info_formatted_c_dict['OBS_LEVEL_LIST'] = (
+                var_info['obs_level']
+            )
+            var_info_formatted_c_dict['OBS_UNITS_LIST'] = (
+                var_info['obs_units']
+            )
+            var_info_formatted_c_dict['FCST_THRESH_LIST'] = (
+                var_info['fcst_thresh']
+            )
+            var_info_formatted_c_dict['OBS_THRESH_LIST'] = (
+                var_info['obs_thresh']
+            )
+            if var_info['run_fourier'] == True:
+                for fvn in var_info['fourier_wave_num']:
+                    var_info_formatted_c_dict['INTERP_MTHD_LIST'] \
+                    .append(fvn)
+            # Parse whether all expected METplus config _LIST variables
+            # to be treated as a loop or group.
+            config_lists_to_group_items = (
+                var_info_formatted_c_dict['GROUP_LIST_ITEMS']
+            )
+            config_lists_to_loop_items = (
+                var_info_formatted_c_dict['LOOP_LIST_ITEMS']
+            )
+            lists_to_group_items, lists_to_loop_items = (
+                self.set_lists_loop_or_group(config_lists_to_group_items,
+                                             config_lists_to_loop_items,
+                                             var_info_formatted_c_dict)
+            )
+            runtime_setup_dict = {}
+            add_from_c_dict_list = [
+                'VERIF_CASE', 'VERIF_TYPE', 'INPUT_BASE_DIR', 'OUTPUT_BASE_DIR',
+                'SCRIPTS_BASE_DIR', 'DATE_TYPE', 'VALID_BEG', 'VALID_END',
+                'INIT_BEG', 'INIT_END', 'AVERAGE_METHOD', 'CI_METHOD',
+                'VERIF_GRID','EVENT_EQUALIZATION', 'LOG_METPLUS', 'LOG_LEVEL'
+            ]
+            for key in add_from_c_dict_list:
+                runtime_setup_dict[key] = [self.c_dict[key]]
+            runtime_setup_dict['MET_VERSION'] = [str(met_version)]
+            runtime_setup_dict['MODEL_OBTYPE'] = [
+                self.list_to_str(model_obtype_list)
+            ]
+            runtime_setup_dict['MODEL_REFERENCE_NAME'] = [
+                self.list_to_str(model_reference_name_list)
+            ]
+            # Fill setup dictionary for MET config variable name
+            # and its value as a string for group lists.
+            for list_to_group_items in lists_to_group_items:
+                runtime_setup_dict_name = (
+                    list_to_group_items.replace('_LIST', '')
+                )
+                runtime_setup_dict_value = [
+                    self.list_to_str(
+                        var_info_formatted_c_dict[list_to_group_items]
+                    )
+                ]
+                runtime_setup_dict[runtime_setup_dict_name] = (
+                    runtime_setup_dict_value
+                )
+            # Fill setup dictionary for MET config variable name
+            # and its value as a list for loop lists. Some items
+            # in lists need to be formatted now, others done later.
+            ##format_later_list = [
+            ##    'MODEL_LIST', 'FCST_VALID_HOUR_LIST', 'OBS_VALID_HOUR_LIST',
+            ##    'FCST_INIT_HOUR_LIST','OBS_INIT_HOUR_LIST'
+            ##]
+            for list_to_loop_items in lists_to_loop_items:
+                runtime_setup_dict_name = list_to_loop_items.replace('_LIST', 
+                                                                     '')
+                #if list_to_loop_items not in format_later_list:
+                for item in \
+                        var_info_formatted_c_dict[list_to_loop_items]:
+                    index = (
+                        var_info_formatted_c_dict[list_to_loop_items] \
+                        .index(item)
+                    )
+                    var_info_formatted_c_dict[list_to_loop_items][index] \
+                        = item
+                runtime_setup_dict_name = list_to_loop_items.replace('_LIST', 
+                                                                     '')
+                runtime_setup_dict_value = (
+                    var_info_formatted_c_dict[list_to_loop_items]
+                )
+                runtime_setup_dict[runtime_setup_dict_name] = (
+                    runtime_setup_dict_value
+                )
+            # Create run time dictionary with all the combinations
+            # of settings to be run.
+            runtime_setup_dict_names = sorted(runtime_setup_dict)
+            runtime_settings_dict_list = (
+                [dict(zip(runtime_setup_dict_names, prod)) for prod in
+                itertools.product(*(runtime_setup_dict[name] for name in
+                runtime_setup_dict_names))]
+            )
+            if (self.c_dict['VERIF_CASE'] == 'grid2grid' 
+                    and self.c_dict['VERIF_TYPE'] in 'pres'):
+                self.create_plots_grid2grid_pres(runtime_settings_dict_list)
+            elif (self.c_dict['VERIF_CASE'] == 'grid2grid' 
+                    and self.c_dict['VERIF_TYPE'] in 'anom'):
+                self.create_plots_grid2grid_anom(runtime_settings_dict_list)
+            elif (self.c_dict['VERIF_CASE'] == 'grid2grid'
+                    and self.c_dict['VERIF_TYPE'] in 'sfc'):
+                self.create_plots_grid2grid_sfc(runtime_settings_dict_list)
+            elif (self.c_dict['VERIF_CASE'] == 'grid2obs'
+                    and self.c_dict['VERIF_TYPE'] in 'upper_air'):
+                self.create_plots_grid2obs_upper_air(
+                    runtime_settings_dict_list
+                )
+            elif (self.c_dict['VERIF_CASE'] == 'grid2obs'
+                    and self.c_dict['VERIF_TYPE'] in 'conus_sfc'):
+                self.create_plots_grid2obs_conus_sfc(
+                    runtime_settings_dict_list
+                )
+            elif (self.c_dict['VERIF_CASE'] == 'precip'):
+                self.create_plots_precip(runtime_settings_dict_list)
+            else:
+                self.create_plots_user(runtime_settings_dict_list,
+                                       self.c_dict['USER_SCRIPT_LIST'])
+                
+    def run_all_times(self):
+        if self.c_dict['USER_SCRIPT_LIST'] != []:
+            self.logger.info("Running plots for user specified list of "
+                             +"scripts.")
+            run_make_plots = True
+        else:
+            if (self.c_dict['VERIF_CASE'] != ''
+                    and self.c_dict['VERIF_TYPE'] != ''):
+                self.logger.info("Running plots for VERIF_CASE = "
+                                 +self.c_dict['VERIF_CASE']+", "
+                                 +"VERIF_TYPE = "
+                                 +self.c_dict['VERIF_TYPE'])
+                accepted_verif_case_list = ['grid2grid', 'grid2obs', 'precip']
+                if self.c_dict['VERIF_CASE'] not in accepted_verif_case_list:
+                    run_make_plots = False
+                    self.logger.error(self.c_dict['VERIF_CASE']+" is not an"
+                                      +"an accepted MAKE_PLOTS_VERIF_CASE "
+                                      +"option. Options are "
+                                      +', '.join(accepted_verif_case_list))
+                else:
+                    if self.c_dict['VERIF_CASE'] == 'grid2grid':
+                        accepted_verif_type_list = ['pres', 'anom', 'sfc']
+                    elif self.c_dict['VERIF_CASE'] == 'grid2obs':
+                        accepted_verif_type_list = ['upper_air', 'conus_sfc']
+                    elif self.c_dict['VERIF_CASE'] == 'precip':
+                        accepted_verif_type_list = [self.c_dict['VERIF_TYPE']]
+                    if self.c_dict['VERIF_TYPE'] in accepted_verif_type_list:
+                        run_make_plots = True
+                    else:
+                        run_make_plots = False
+                        self.logger.error(self.c_dict['VERIF_TYPE']+" is not "
+                                          +"an accepted MAKE_PLOTS_VERIF_TYPE "
+                                          +"option for MAKE_PLOTS_VERIF_CASE "
+                                          +"= "+self.c_dict['VERIF_CASE']+". "
+                                          "Options are "
+                                          +', '.join(accepted_verif_type_list))
             else:
                 run_make_plots = False
-                self.logger.error(verif_type+" is not an accepted VERIF_TYPE option for VERIF_CASE = grid2obs")
-        elif verif_case == "precip":
-            run_make_plots = False
-            self.logger.error("Plotting is not set up for VERIF_CASE = precip at this time") 
-        else:
-            self.logger.error(verif_case+" is not an accepted VERIF_CASE option")
+                self.logger.error("Please defined either "
+                                  +"MAKE_PLOTS_VERIF_CASE and "
+                                  +"MAKE_PLOTS_VERIF_TYPE, or "
+                                  +"MAKE_PLOTS_USER_SCRIPT_LIST")
         if run_make_plots:
-            self.create_plots(verif_case, verif_type)
+            self.create_plots(self.c_dict['VERIF_CASE'],
+                              self.c_dict['VERIF_TYPE'])
         else:
-           exit(1)
+            exit(1)
+
+if __name__ == "__main__":
+    util.run_stand_alone("make_plots_wrapper", "MakePlots")

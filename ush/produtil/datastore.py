@@ -84,11 +84,11 @@ class UnknownLocation(DatumException):
 
 ##@var _has_dcolon
 # Regular expression to detect a database ID with a double colon in it.
-_has_dcolon=re.compile('\A.*::.*\Z')
+_has_dcolon=re.compile('\\A.*::.*\\Z')
 
 ##@var _has_dstar
 # Regular expression to detect a database ID with a double asterisk in it.
-_has_dstar=re.compile('\A.*\*\*.*\Z')
+_has_dstar=re.compile('\\A.*\\*\\*.*\\Z')
 
 ##@var TASK_CATEGORY
 # Special product category used for Tasks.

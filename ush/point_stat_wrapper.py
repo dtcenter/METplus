@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
 import os
 import met_util as util
 import time_util
@@ -25,7 +24,7 @@ class PointStatWrapper(CompareGriddedWrapper):
     """! Wrapper to the MET tool, Point-Stat."""
 
     def __init__(self, config, logger):
-        super(PointStatWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'point_stat'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
@@ -38,8 +37,9 @@ class PointStatWrapper(CompareGriddedWrapper):
                  c_dict   - A dictionary containing the key-value pairs set
                              in the METplus configuration file.
         """
-        c_dict = super(PointStatWrapper, self).create_c_dict()
-
+        c_dict = super().create_c_dict()
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_POINT_STAT_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'POINT_STAT_OFFSETS', '0'))
         c_dict['FCST_INPUT_TEMPLATE'] = \
@@ -58,6 +58,13 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_INPUT_DIR'] = self.config.getdir('OBS_POINT_STAT_INPUT_DIR')
         c_dict['OUTPUT_DIR'] = \
             self.config.getdir('POINT_STAT_OUTPUT_DIR')
+
+        c_dict['CLIMO_INPUT_DIR'] = self.config.getdir('CLIMO_POINT_STAT_INPUT_DIR',
+                                                       '')
+        c_dict['CLIMO_INPUT_TEMPLATE'] = \
+            self.config.getraw('filename_templates',
+                               'CLIMO_POINT_STAT_INPUT_TEMPLATE',
+                               '')
 
         # Configuration
         c_dict['CONFIG_FILE'] = \

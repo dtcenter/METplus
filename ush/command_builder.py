@@ -11,8 +11,6 @@ Input Files: N/A
 Output Files: N/A
 """
 
-from __future__ import (print_function, division)
-
 import os
 from datetime import datetime
 from abc import ABCMeta
@@ -36,6 +34,7 @@ class CommandBuilder:
     __metaclass__ = ABCMeta
 
     def __init__(self, config, logger):
+        self.errors = 0
         self.logger = logger
         self.config = config
         self.debug = False
@@ -48,9 +47,9 @@ class CommandBuilder:
         self.env = os.environ.copy()
         if hasattr(config, 'env'):
             self.env = config.env
-        self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
-        self.cmdrunner = CommandRunner(self.config, logger=self.logger)
         self.c_dict = self.create_c_dict()
+        self.cmdrunner = CommandRunner(self.config, logger=self.logger,
+                                       verbose=self.c_dict['VERBOSITY'])
 
         # if env MET_TMP_DIR was not set, set it to config TMP_DIR
         if 'MET_TMP_DIR' not in self.env:
@@ -60,6 +59,13 @@ class CommandBuilder:
 
     def create_c_dict(self):
         c_dict = dict()
+        # set skip if output exists to False for all wrappers
+        # wrappers that support this functionality can override this value
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = False
+        c_dict['FCST_INPUT_DATATYPE'] = ''
+        c_dict['OBS_INPUT_DATATYPE'] = ''
+        c_dict['ALLOW_MULTIPLE_FILES'] = False
         return c_dict
 
     def clear(self):
@@ -76,8 +82,8 @@ class CommandBuilder:
         """!Set environment variables defined in [user_env_vars] section of config
         """
         if time_info is None:
-            time_info = { 'now' : datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
-                                                                       '%Y%m%d%H%M%S') }
+            time_info = {'now': datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
+                                                  '%Y%m%d%H%M%S')}
 
         if 'user_env_vars' not in self.config.sections():
             self.config.add_section('user_env_vars')
@@ -89,6 +95,60 @@ class CommandBuilder:
                                           raw_env_var_value,
                                           **time_info).do_string_sub()
             self.add_env_var(env_var, env_var_value)
+
+    def handle_window_once(self, c_dict, dtype, edge, app_name):
+        """! Check and set window dictionary variables like
+              OBS_WINDOW_BEG or FCST_FILE_WINDW_END
+              Args:
+                @param c_dict dictionary to set items in
+                @param dtype type of data 'FCST' or 'OBS'
+                @param edge either 'BEGIN' or 'END'
+        """
+        app = app_name.upper()
+
+        # if value specific to given wrapper is set, override value
+        if self.config.has_option('config',
+                                  dtype + '_' + app + '_WINDOW_' + edge):
+            c_dict[dtype + '_WINDOW_' + edge] = \
+                self.config.getseconds('config',
+                                   dtype + '_' + app + '_WINDOW_' + edge)
+        # if generic value is set, use that
+        elif self.config.has_option('config',
+                                    dtype + '_WINDOW_' + edge):
+            c_dict[dtype + '_WINDOW_' + edge] = \
+                self.config.getseconds('config',
+                                       dtype + '_WINDOW_' + edge)
+        # otherwise set to default of 0
+        else:
+            c_dict[dtype + '_WINDOW_' + edge] = 0
+
+        # do the same for FILE_WINDOW
+        if self.config.has_option('config',
+                                  dtype + '_' + app + '_FILE_WINDOW_' + edge):
+            c_dict[dtype + '_FILE_WINDOW_' + edge] = \
+                self.config.getseconds('config',
+                                   dtype + '_' + app + '_FILE_WINDOW_' + edge)
+        elif self.config.has_option('config',
+                                    dtype + '_FILE_WINDOW_' + edge):
+            c_dict[dtype + '_FILE_WINDOW_' + edge] = \
+                self.config.getseconds('config',
+                                       dtype + '_FILE_WINDOW_' + edge)
+        # otherwise set to *_WINDOW_* value
+        else:
+            c_dict[dtype + '_FILE_WINDOW_' + edge] = c_dict[dtype + '_WINDOW_' + edge]
+
+    def handle_window_variables(self, c_dict, app_name, dtypes=['FCST', 'OBS']):
+        """! Handle all window config variables like
+              [FCST/OBS]_<app_name>_WINDOW_[BEGIN/END] and
+              [FCST/OBS]_<app_name>_FILE_WINDOW_[BEGIN/END]
+              Args:
+                @param c_dict dictionary to set items in
+        """
+        edges = ['BEGIN', 'END']
+
+        for dtype in dtypes:
+            for edge in edges:
+                self.handle_window_once(c_dict, dtype, edge, app_name)
 
     def set_output_path(self, outpath):
         """!Split path into directory and filename then save both
@@ -243,7 +303,7 @@ class CommandBuilder:
 
         # if looking for a file with an exact time match:
         if self.c_dict[data_type + '_FILE_WINDOW_BEGIN'] == 0 and \
-                        self.c_dict[data_type + '_FILE_WINDOW_END'] == 0:
+                self.c_dict[data_type + '_FILE_WINDOW_END'] == 0:
             # perform string substitution
             dsts = sts.StringSub(self.logger,
                                  template,
@@ -256,8 +316,8 @@ class CommandBuilder:
 
             # check if desired data file exists and if it needs to be preprocessed
             processed_path = util.preprocess_file(full_path,
-                                        self.c_dict[data_type + '_INPUT_DATATYPE'],
-                                        self.config)
+                                                  self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                                  self.config)
 
             # report error if file path could not be found
             if processed_path is None:
@@ -271,7 +331,7 @@ class CommandBuilder:
 
         # if looking for a file within a time window:
         # convert valid_time to unix time
-        valid_seconds = int(datetime.strptime(valid_time, "%Y%m%d%H%M").strftime("%s"))
+        valid_seconds = int(datetime.strptime(valid_time, "%Y%m%d%H%M%S").strftime("%s"))
         # get time of each file, compare to valid time, save best within range
         closest_files = []
         closest_time = 9999999
@@ -280,9 +340,13 @@ class CommandBuilder:
         valid_range_lower = self.c_dict[data_type + '_FILE_WINDOW_BEGIN']
         valid_range_upper = self.c_dict[data_type + '_FILE_WINDOW_END']
         lower_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
-                                            "%Y%m%d%H%M").strftime("%s"))
+                                            "%Y%m%d%H%M%S").strftime("%s"))
         upper_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
-                                            "%Y%m%d%H%M").strftime("%s"))
+                                            "%Y%m%d%H%M%S").strftime("%s"))
+
+        if data_dir == '':
+            self.logger.error('Must set INPUT_DIR if looking for files within a time window')
+            return None
 
         # step through all files under input directory in sorted order
         for dirpath, _, all_files in os.walk(data_dir):
@@ -290,16 +354,16 @@ class CommandBuilder:
                 fullpath = os.path.join(dirpath, filename)
 
                 # remove input data directory to get relative path
-                rel_path = fullpath.replace(data_dir + "/", "")
+                rel_path = fullpath.replace(f'{data_dir}/', "")
                 # extract time information from relative path using template
                 file_time_info = util.get_time_from_file(self.logger, rel_path, template)
                 if file_time_info is not None:
                     # get valid time and check if it is within the time range
-                    file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M")
+                    file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
                     # skip if could not extract valid time
                     if file_valid_time == '':
                         continue
-                    file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M")
+                    file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
                     file_valid_seconds = int(file_valid_dt.strftime("%s"))
                     # skip if outside time range
                     if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
@@ -319,7 +383,7 @@ class CommandBuilder:
 
         if not closest_files:
             msg = f"Could not find {data_type} files under {data_dir} within range " +\
-            f"[{valid_range_lower},{valid_range_upper}] using template {template}"
+                  f"[{valid_range_lower},{valid_range_upper}] using template {template}"
             if mandatory:
                 self.logger.error(msg)
             else:
@@ -356,6 +420,23 @@ class CommandBuilder:
                 file_handle.write(f_path + '\n')
         return list_path
 
+    def find_and_check_output_file(self, time_info):
+        """!Look for expected output file. If it exists and configured to skip if it does, then return False"""
+        outfile = sts.StringSub(self.logger,
+                                self.c_dict['OUTPUT_TEMPLATE'],
+                                **time_info).do_string_sub()
+        outpath = os.path.join(self.c_dict['OUTPUT_DIR'], outfile)
+        self.set_output_path(outpath)
+
+        if not os.path.exists(outpath) or not self.c_dict['SKIP_IF_OUTPUT_EXISTS']:
+            return True
+
+        # if the output file exists and we are supposed to skip, don't run pb2nc
+        self.logger.debug(f'Skip writing output file {outpath} because it already '
+                          'exists. Remove file or change '
+                          f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
+                          'to process')
+
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string
@@ -366,7 +447,7 @@ class CommandBuilder:
                               'You must use a subclass')
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for arg in self.args:
             cmd += arg + " "
@@ -382,15 +463,16 @@ class CommandBuilder:
             self.logger.error("No output filename specified")
             return None
 
-        if self.outdir == "":
-            self.logger.error("No output directory specified")
-            return None
-
         out_path = os.path.join(self.outdir, self.outfile)
 
         # create outdir (including subdir in outfile) if it doesn't exist
-        if not os.path.exists(os.path.dirname(out_path)):
-            os.makedirs(os.path.dirname(out_path))
+        parent_dir = os.path.dirname(out_path)
+        if parent_dir == '':
+            self.logger.error('Must specify path to output file')
+            return None
+
+        if not os.path.exists(parent_dir):
+            os.makedirs(parent_dir)
 
         cmd += " " + out_path
 
@@ -398,6 +480,13 @@ class CommandBuilder:
             cmd += ' ' + self.param
 
         return cmd
+
+    def build_and_run_command(self):
+        cmd = self.get_command()
+        if cmd is None:
+            self.logger.error("Could not generate command")
+            return
+        self.build()
 
     # Placed running of command in its own class, command_runner run_cmd().
     # This will allow the ability to still call build() as is currenly done
@@ -412,7 +501,9 @@ class CommandBuilder:
         if cmd is None:
             return
 
-        self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
+        ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
+        if ret != 0:
+            self.errors += 1
 
     # argument needed to match call
     # pylint:disable=unused-argument

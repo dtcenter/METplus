@@ -12,8 +12,6 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 """
 
-from __future__ import (print_function, division)
-
 import os
 import met_util as util
 from command_builder import CommandBuilder
@@ -35,45 +33,23 @@ that reformat gridded data
     """
 
     def __init__(self, config, logger):
-        super(CompareGriddedWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
 
     def create_c_dict(self):
         """!Create dictionary from config items to be used in the wrapper
             Allows developer to reference config items without having to know
             the type and consolidates config get calls so it is easier to see
             which config variables are used in the wrapper"""
-        c_dict = super(CompareGriddedWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
         c_dict['OBTYPE'] = self.config.getstr('config', 'OBTYPE', 'OBS')
         c_dict['CONFIG_DIR'] = self.config.getdir('CONFIG_DIR', '')
-        c_dict['INPUT_BASE'] = self.config.getdir('INPUT_BASE', None)
+        # INPUT_BASE is not required unless it is referenced in a config file
+        # it is used in the use case config files. Don't error if it is not set
+        # to a value that contains /path/to
+        c_dict['INPUT_BASE'] = self.config.getdir_nocheck('INPUT_BASE', '')
         c_dict['FCST_IS_PROB'] = self.config.getbool('config', 'FCST_IS_PROB', False)
         c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
-
-        c_dict['FCST_WINDOW_BEGIN'] = \
-            self.config.getseconds('config', 'FCST_WINDOW_BEGIN', 0)
-        c_dict['FCST_WINDOW_END'] = \
-            self.config.getseconds('config', 'FCST_WINDOW_END', 0)
-
-        c_dict['OBS_WINDOW_BEGIN'] = \
-            self.config.getseconds('config', 'OBS_WINDOW_BEGIN', 0)
-        c_dict['OBS_WINDOW_END'] = \
-            self.config.getseconds('config', 'OBS_WINDOW_END', 0)
-
-        # if file window is not set, use window values
-        c_dict['FCST_FILE_WINDOW_BEGIN'] = \
-            self.config.getseconds('config', 'FCST_FILE_WINDOW_BEGIN',
-                                   c_dict['FCST_WINDOW_BEGIN'])
-        c_dict['FCST_FILE_WINDOW_END'] = \
-            self.config.getseconds('config', 'FCST_FILE_WINDOW_END',
-                                   c_dict['FCST_WINDOW_END'])
-
-        c_dict['OBS_FILE_WINDOW_BEGIN'] = \
-            self.config.getseconds('config', 'OBS_FILE_WINDOW_BEGIN',
-                                   c_dict['OBS_WINDOW_BEGIN'])
-        c_dict['OBS_FILE_WINDOW_END'] = \
-            self.config.getseconds('config', 'OBS_FILE_WINDOW_END',
-                                   c_dict['OBS_WINDOW_END'])
 
         c_dict['FCST_PROB_THRESH'] = None
         c_dict['OBS_PROB_THRESH'] = None
@@ -83,50 +59,23 @@ that reformat gridded data
         c_dict['NEIGHBORHOOD_SHAPE'] = ''
         c_dict['VERIFICATION_MASK_TEMPLATE'] = ''
         c_dict['VERIFICATION_MASK'] = ''
+        c_dict['CLIMO_INPUT_DIR'] = ''
+        c_dict['CLIMO_INPUT_TEMPLATE'] = ''
+        c_dict['CLIMO_FILE'] = None
 
         return c_dict
 
-    def handle_window_once(self, c_dict, dtype, edge, app_name):
-        """! Check and set window dictionary variables like
-              OBS_WINDOW_BEG or FCST_FILE_WINDW_END
-              Args:
-                @param c_dict dictionary to set items in
-                @param dtype type of data 'FCST' or 'OBS'
-                @param edge either 'BEGIN' or 'END'
-        """
-        app = app_name.upper()
-
-        # if value specific to given wrapper is set, override value
-        if self.config.has_option('config',
-                                  dtype + '_' + app + '_WINDOW_' + edge):
-            c_dict[dtype + '_WINDOW_' + edge] = \
-                self.config.getint('config',
-                                   dtype + '_' + app + '_WINDOW_' + edge)
-
-        # do the same for FILE_WINDOW, but
-        # if FILE_WINDOW is not set, set it to WINDOW value
-        if self.config.has_option('config',
-                                  dtype + '_' + app + '_FILE_WINDOW_' + edge):
-            c_dict[dtype + '_FILE_WINDOW_' + edge] = \
-                self.config.getint('config',
-                                   dtype + '_' + app + '_FILE_WINDOW_' + edge)
-        else:
-            c_dict[dtype + '_FILE_WINDOW_' + edge] = \
-                c_dict[dtype + '_WINDOW_' + edge]
-
-    def handle_window_variables(self, c_dict, app_name):
-        """! Handle all window config variables like
-              [FCST/OBS]_<app_name>_WINDOW_[BEGIN/END] and
-              [FCST/OBS]_<app_name>_FILE_WINDOW_[BEGIN/END]
-              Args:
-                @param c_dict dictionary to set items in
-        """
-        dtypes = ['FCST', 'OBS']
-        edges = ['BEGIN', 'END']
-
-        for dtype in dtypes:
-            for edge in edges:
-                self.handle_window_once(c_dict, dtype, edge, app_name)
+    def handle_climo(self, time_info):
+        if self.c_dict['CLIMO_INPUT_TEMPLATE'] != '':
+            template = self.c_dict['CLIMO_INPUT_TEMPLATE']
+            climo_file = sts.StringSub(self.logger,
+                                       template,
+                                       **time_info).do_string_sub()
+            climo_path = os.path.join(self.c_dict['CLIMO_INPUT_DIR'], climo_file)
+            self.logger.debug(f"Looking for climatology file {climo_path}")
+            self.c_dict['CLIMO_FILE'] = util.preprocess_file(climo_path,
+                                                             '',
+                                                             self.config)
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
@@ -164,6 +113,8 @@ that reformat gridded data
         self.get_verification_mask(time_info)
 
         self.c_dict['VAR_LIST'] = util.parse_var_list(self.config, time_info)
+
+        self.handle_climo(time_info)
 
         if self.c_dict['ONCE_PER_FIELD']:
             # loop over all fields and levels (and probability thresholds) and
@@ -393,7 +344,7 @@ that reformat gridded data
                       "LEVEL", "OBTYPE", "CONFIG_DIR",
                       "FCST_FIELD", "OBS_FIELD",
                       "INPUT_BASE", "MET_VALID_HHMM",
-                      "FCST_TIME"]
+                      "CLIMO_FILE", "FCST_TIME"]
 
         var_info = self.c_dict['VAR_LIST'][0]
         if 'CURRENT_VAR_INFO' in self.c_dict.keys():
@@ -408,6 +359,14 @@ that reformat gridded data
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
         self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
+        if self.c_dict['CLIMO_FILE']:
+             self.add_env_var("CLIMO_FILE", self.c_dict['CLIMO_FILE'])
+        else:
+            self.add_env_var("CLIMO_FILE", '')
+        # MET_VALID_HHMM should no longer be used and should be replaced with
+        # CLIMO_FILE in the GridStat config file. Leaving the variable in
+        # the environment so that people using older config files will still
+        # be able to run. The value is actually month/day, not HHMM
         self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
         self.add_env_var("FCST_TIME", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("INPUT_BASE", self.c_dict["INPUT_BASE"])
@@ -518,7 +477,7 @@ that reformat gridded data
                               'You must use a subclass')
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
         for arg in self.args:
             cmd += arg + " "
 

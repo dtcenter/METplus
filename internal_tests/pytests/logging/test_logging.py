@@ -27,7 +27,7 @@ def cmdopt(request):
 
 #@pytest.fixture
 def get_test_config():
-    config_instance = config_metplus.setup()
+    config_instance = config_metplus.setup(util.baseinputconfs)
     return config_instance
 
 

@@ -12,8 +12,6 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
-
 import os
 import glob
 import met_util as util
@@ -29,7 +27,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
     """!Wraps the MET tool ensemble_stat to compare ensemble datasets
     """
     def __init__(self, config, logger):
-        super(EnsembleStatWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'ensemble_stat'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
@@ -43,7 +41,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                @returns A dictionary of the ensemble stat values
                         from the config file.
         """
-        c_dict = super(EnsembleStatWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
+
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_ENSEMBLE_STAT_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
 
         c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
                                                        'ENSEMBLE_STAT_ONCE_PER_FIELD',
@@ -373,7 +374,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                               You must use a subclass")
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for args in self.args:
             cmd += args + " "

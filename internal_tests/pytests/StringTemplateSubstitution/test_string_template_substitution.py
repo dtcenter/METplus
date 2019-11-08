@@ -7,6 +7,7 @@ from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
 from string_template_substitution import get_tags
 from string_template_substitution import format_one_time_item
+from string_template_substitution import format_hms
 import logging
 import datetime
 
@@ -196,7 +197,7 @@ def test_3h_lead():
 
 def test_h_lead_no_pad_1_digit():
     logger = logging.getLogger("test")
-    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
     filepath = "1987020103_A3h"
     se = StringExtract(logger, template,
                            filepath)
@@ -573,6 +574,10 @@ def test_get_tags():
 
     assert( tags[0] == '*' and tags[1] == 'basin' and tags[2] == 'cyclone' and tags[3] == 'date')
 
+# format should be something like H 2H 3H 2M etc
+# key is the time value integer to convert, like 1 or 60
+# value is the formatted output string, like 01
+# ttype is the unit to check, i.e. 'H', 'M', 'S', 'd', 's'
 @pytest.mark.parametrize(
     'format, key, value, ttype', [
         ('H', 1, '01', 'H'),
@@ -614,12 +619,33 @@ def test_get_tags():
 )
 
 def test_format_one_time_item(format, key ,value, ttype):
+    assert(format_one_time_item(format, key, ttype) == value)
 
-    out_str = ''
-
-    #format should be something like H 2H 3H 2M etc
-    #type is 'H', 'M', 'S', 'd', 's'
-    out_str += format_one_time_item(format, key, ttype)
-
-    assert(out_str == value)
-
+# format is the time format to use, like, %M or %H%M
+# seconds is the integer number of seconds of the offset to use, i.e. 3601
+# value is the formatted output string, like 010001
+@pytest.mark.parametrize(
+    'format, seconds, value', [
+        ('%H', 1, '00'),
+        ('%M', 1, '00'),
+        ('%S', 1, '01'),
+        ('%H', 3600, '01'),
+        ('%M', 5400, '90'),
+        ('%H%M', 5400, '0130'),
+        ('%3H%M', 5400, '00130'),
+        ('%H%3M', 5400, '01030'),
+        ('%S', 5400, '5400'),
+        ('%H%M%S', 5400, '013000'),
+        ('%d%H', 90000, '0101'),
+        ('%S', 86401, '86401'),
+        ('%d%S', 86401, '0101'),
+        ('%S', 86401, '86401'),
+        ('%M%S', 86401, '144001'),
+        ('%H%M%S', 90001, '250001'),
+        ('%d%H%M%S', 90001, '01010001'),
+        ('%d', 86401, '01'),
+    ]
+)
+def test_format_hms(format, seconds, value):
+    # format should be something like %M or %H%M
+    assert(format_hms(format, seconds == value))
