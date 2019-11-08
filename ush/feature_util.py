@@ -23,7 +23,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
            files via a latlon string with the following format:
                 latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
                 NOTE:  these values are defined in the extract_tiles_parm
-                parameter/config file as NLAT, NLON.
+                parameter/config file as EXTRACT_TILES_NLAT, EXTRACT_TILES_NLON.
         ***NOTE:  This is used by both extract_tiles_wrapper.py and
                series_by_lead_wrapper.py
         Args:
@@ -138,12 +138,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             # grib2 file.
             fcst_sts = \
                 StringSub(logger, config.getraw('filename_templates',
-                                            'GFS_FCST_FILE_TMPL'),
+                                            'FCST_EXTRACT_TILES_INPUT_TEMPLATE'),
                           init=init_dt, lead=lead_seconds)
 
             anly_sts = \
                 StringSub(logger, config.getraw('filename_templates',
-                                            'GFS_ANLY_FILE_TMPL'),
+                                            'OBS_EXTRACT_TILES_INPUT_TEMPLATE'),
                           valid=valid_dt, lead=lead_seconds)
 
             fcst_file = fcst_sts.do_string_sub()
@@ -194,12 +194,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             fcst_hr_str = str(fcst_hr).zfill(3)
 
             fcst_regridded_filename = \
-                config.getstr('regex_pattern', 'FCST_TILE_PREFIX') + \
+                config.getstr('regex_pattern', 'FCST_EXTRACT_TILES_PREFIX') + \
                 fcst_hr_str + "_" + fcst_anly_base
             fcst_regridded_file = os.path.join(tile_dir,
                                                fcst_regridded_filename)
             anly_regridded_filename = \
-                config.getstr('regex_pattern', 'ANLY_TILE_PREFIX') + \
+                config.getstr('regex_pattern', 'OBS_EXTRACT_TILES_PREFIX') + \
                 fcst_hr_str + "_" + fcst_anly_base
             anly_regridded_file = os.path.join(tile_dir,
                                                anly_regridded_filename)
