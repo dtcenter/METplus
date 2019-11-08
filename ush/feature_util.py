@@ -289,7 +289,7 @@ def retrieve_var_info(config):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    var_list = util.getlist(config.getstr('config', 'VAR_LIST'))
+    var_list = util.getlist(config.getstr('config', 'SERIES_ANALYSIS_VAR_LIST'))
     extra_var_list = util.getlist(config.getstr('config',
                                             'EXTRACT_TILES_VAR_LIST'))
     full_list = []
