@@ -48,17 +48,11 @@ class ExtractTilesWrapper(CommandBuilder):
         self.app_name = os.path.basename(self.app_path)
         self.tc_pairs_dir = self.config.getdir('TC_PAIRS_OUTPUT_DIR')
         self.overwrite_flag = self.config.getbool('config',
-                                              'OVERWRITE_TRACK')
+                                              'EXTRACT_TILES_OVERWRITE_TRACK')
         self.addl_filter_opts = \
             self.config.getstr('config', 'EXTRACT_TILES_FILTER_OPTS')
         self.filtered_out_dir = self.config.getdir('EXTRACT_TILES_OUTPUT_DIR')
         self.tc_stat_exe = os.path.join(met_install_dir, 'bin/tc_stat')
-        self.init_beg = self.config.getstr('config', 'INIT_BEG')[0:8]
-        self.init_end = self.config.getstr('config', 'INIT_END')[0:8]
-        # Change to integer division // Python 3,
-        # assuming that was the intent in Python 2.
-        self.init_hour_inc = int(self.config.getint('config', 'INIT_INCREMENT') // 3600)
-
 
     def run_at_time(self, input_dict):
         """!Get TC-paris data then regrid tiles centered on the storm.
