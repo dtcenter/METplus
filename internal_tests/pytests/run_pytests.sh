@@ -15,8 +15,6 @@ cd $script_dir/config
 pytest -c ../minimum_pytest.$host.conf
 cd $script_dir/grid_stat
 pytest -c ../minimum_pytest.$host.conf
-cd $script_dir/stat_analysis
-pytest -c ../minimum_pytest.$host.conf -c ./test_stat_analysis.conf
 cd $script_dir/logging
 pytest -c ../minimum_pytest.$host.conf
 cd $script_dir/met_util
