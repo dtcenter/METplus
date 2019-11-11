@@ -11,33 +11,54 @@ METplus Configuration Glossary
      | *Family:*
      | *Default:*
 
-   ANLY_ASCII_REGEX_LEAD
-     The regular expression describing the analysis (obs) file name (in ASCII format) of the intermediate file generated when running a series_by_lead process.
+   [DEPRECATED] ANLY_ASCII_REGEX_LEAD
+     Please use OBS_SERIES_ANALYSIS_LEAD_REGEX instead. The regular expression describing the analysis (obs) file name (in ASCII format) of the intermediate file generated when running a series_by_lead process.
     
      | *Used by:* SeriesByLead
      | *Family:* [regex_pattern]
      | *Default:*
 
-   ANLY_NC_TILE_REGEX
+   [DEPRECATED] ANLY_NC_TILE_REGEX
+     Please use OBS_SERIES_ANALYSIS_NC_TILE_REGEX instead. The regular expression used to search the input files that are in netCDF format and used in the series_by_analysis process.
+
+     | *Used by:* SeriesByLead, SeriesByInit
+     | *Family:* [regex_pattern]
+     | *Default:*
+
+   OBS_SERIES_ANALYSIS_LEAD_REGEX
+     The regular expression describing the analysis (obs) file name (in ASCII format) of the intermediate file generated when running a series_by_lead process.
+
+     | *Used by:* SeriesByLead
+     | *Family:* [regex_pattern]
+     | *Default:*
+
+   OBS_SERIES_ANALYSIS_NC_TILE_REGEX
      The regular expression used to search the input files that are in netCDF format and used in the series_by_analysis process.
-    
+
      | *Used by:* SeriesByLead, SeriesByInit
      | *Family:* [regex_pattern]
      | *Default:*
    
-   ANLY_TILE_PREFIX
-     The prefix to the filename for the analysis file that is created as part of a series_analysis process.
+   [DEPRECATED] ANLY_TILE_PREFIX
+     Please use OBS_EXTRACT_TILES_PREFIX instead. The prefix to the filename for the analysis file that is created as part of a series_analysis process.
     
      | *Used by:* ExtractTiles, SeriesByLead
      | *Family:* [regex_pattern]
      | *Default:*
    
-   ANLY_TILE_REGEX
-     The regular expression for the analysis input file. The file is in GRIBv2 format.
+   [DEPRECATED] ANLY_TILE_REGEX
+     No longer used. The regular expression for the analysis input file. The file is in GRIBv2 format.
     
      | *Used by:* SeriesByLead, SeriesByInit
      | *Family:* [regex_pattern]
      | *Default:*
+
+   OBS_EXTRACT_TILES_PREFIX
+     Prefix for observation tile files. Used to create filename of intermediate files that are created while performing a series analysis.
+
+     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Family:* [regex_pattern]
+     | *Default:*  Varies
 
    TESTING_SORTING_THIS_IS_FIRST_BUT_SHOULD_BE_LAST
      Testing
@@ -171,7 +192,6 @@ METplus Configuration Glossary
      | *Used by:* All
      | *Family:* [config]
      | *Default:* %m/%d %H:%M:%S
-
 
    FCST_PCP_COMBINE_COMMAND
      Used only when FCST_PCP_COMBINE_METHOD = CUSTOM. Custom command to run PcpCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for observation data called OBS_PCP_COMBINE_COMMAND.
@@ -425,36 +445,15 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* 
 
-   ANLY_ASCII_REGEX_LEAD
-     The regular expression describing the analysis (obs) file name (in ASCII format) of the intermediate file generated when running a series by lead case.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [regex_pattern]
-     | *Default:* 
-
-   ANLY_NC_TILE_REGEX
-     The regular expression used to search the input files that are in netCDF format and used in the series by analysis task.
-
-     | *Used by:*  SeriesByLead, SeriesByInit
-     | *Family:*  [regex_pattern]
-     | *Default:* 
-
-   ANLY_TILE_PREFIX
-     The prefix to the filename for the analysis file that is created as part of a series analysis.
-
-     | *Used by:*  ExtractTiles, SeriesByLead
-     | *Family:*  [regex_pattern]
-     | *Default:* 
-
-   ANLY_TILE_REGEX
-     The regular expression for the analysis input file the file is in GRIB2.
-
-     | *Used by:*  SeriesByLead, SeriesByInit
-     | *Family:*  [regex_pattern]
-     | *Default:* 
-
-   BACKGROUND_MAP
+   SERIES_ANALYSIS_BACKGROUND_MAP
      Control whether or not a background map shows up for series analysis plots. Set to 'yes' if background map desired.
+
+     | *Used by:*  SeriesByLead, SeriesByInit
+     | *Family:*  [config]
+     | *Default:*  no
+
+   [DEPRECATED] BACKGROUND_MAP
+     Please use SERIES_ANALYSIS_BACKGROUND_MAP instead.
 
      | *Used by:*  SeriesByLead, SeriesByInit
      | *Family:*  [config]
@@ -510,7 +509,7 @@ METplus Configuration Glossary
      | *Default:*  41
 
    CLOCK_TIME
-     Automatically set by METplus with the time that METplus was started. Setting this variable has no effect as it will be overwritten. Can be used for reference in metplus_final.conf or used with other config variables.
+     Automatically set by METplus with the time that the run was started. Setting this variable has no effect as it will be overwritten. Can be used for reference in metplus_final.conf or used with other config variables.
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -649,15 +648,29 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:* Varies
 
-   DLAT
+   EXTRACT_TILES_DLAT
      The value that defines the resolution of the data (in decimal degrees).
 
      | *Used by:*  ExtractTiles, SeriesByLead
      | *Family:*  [config]
      | *Default:*  0.5
 
-   DLON
+   EXTRACT_TILES_DLON
      The longitude value, in degrees. Set to the value that defines the resolution of the data (in decimal degrees).
+
+     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Family:*  [config]
+     | *Default:*  0.5
+
+   [DEPRECATED] DLAT
+     Please use EXTRACT_TILES_DLAT instead. The value that defines the resolution of the data (in decimal degrees).
+
+     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Family:*  [config]
+     | *Default:*  0.5
+
+   [DEPRECATED] DLON
+     Please use EXTRACT_TILES_DLON instead. The longitude value, in degrees. Set to the value that defines the resolution of the data (in decimal degrees).
 
      | *Used by:*  ExtractTiles, SeriesByLead
      | *Family:*  [config]
@@ -752,7 +765,7 @@ METplus Configuration Glossary
      ENS_VAR1_LEVELS = A06, P500
      ENS_VAR2_LEVELS ="(0,*,*)", "(1,*,*)"
 
-     There can be <n> number of these variables defined in configuration files, simply increment the_VAR1_ string to match the total number of variables being used, e.g.:
+     There can be <n> number of these variables defined in configuration files, simply increment the VAR1_ string to match the total number of variables being used, e.g.:
 
      ENS_VAR1_LEVELS
      ENS_VAR2_LEVELS
@@ -766,7 +779,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    ENS_VAR<n>_NAME
-     Define the name for the <n>th ensemble variable to be used in the analysis where <n> is an integer >= 1. There can be <n> number of these variables defined in configuration files, simply increment the_VAR1_ string to match the total number of variables being used, e.g.:
+     Define the name for the <n>th ensemble variable to be used in the analysis where <n> is an integer >= 1. There can be <n> number of these variables defined in configuration files, simply increment the VAR1_ string to match the total number of variables being used, e.g.:
 
      ENS_VAR1_NAME
      ENS_VAR2_NAME
@@ -856,7 +869,14 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   FCST_ASCII_REGEX_LEAD
+   [DEPRECATED] FCST_ASCII_REGEX_LEAD
+     Please use FCST_SERIES_ANALYSIS_LEAD_REGEX instead. Regular expression used to find the forecast file (ASCII format) generated as an intermediate step in the series by lead use case.
+
+     | *Used by:*  SeriesByLead
+     | *Family:*  [regex_pattern]
+     | *Default:*  Varies
+
+   FCST_SERIES_ANALYSIS_LEAD_REGEX
      Regular expression used to find the forecast file (ASCII format) generated as an intermediate step in the series by lead use case.
 
      | *Used by:*  SeriesByLead
@@ -1136,7 +1156,6 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* OBS_FILE_WINDOW_BEGIN
 
-
    FCST_MTD_FILE_WINDOW_END
      See OBS_MTD_FILE_WINDOW_ENDreference "sec:SC_O".
 
@@ -1172,7 +1191,14 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   FCST_NC_TILE_REGEX
+   [DEPRECATED] FCST_NC_TILE_REGEX
+     Please use FCST_SERIES_ANALYSIS_NC_TILE_REGEX instead. Define the regular expression for input forecast files that are in netCDF.
+
+     | *Used by:*  SeriesByLead, SeriesByInit
+     | *Family:*  [regex_pattern]
+     | *Default:*  Varies
+
+  FCST_SERIES_ANALYSIS_NC_TILE_REGEX
      Define the regular expression for input forecast files that are in netCDF.
 
      | *Used by:*  SeriesByLead, SeriesByInit
@@ -1375,18 +1401,25 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:* 
 
-   FCST_TILE_PREFIX
-     Prefix for forecast tile files. Used to create filename of intermediate files that are created while performing a series analysis.
+   [DEPRECATED] FCST_TILE_PREFIX
+     Please use FCST_EXTRACT_TILES_PREFIX instead. Prefix for forecast tile files. Used to create filename of intermediate files that are created while performing a series analysis.
 
      | *Used by:*  ExtractTiles, SeriesByLead
      | *Family:* [regex_pattern]
      | *Default:*  Varies
 
-   FCST_TILE_REGEX
-     Regular expression for forecast input files that are in GRIB2.
+   [DEPRECATED] FCST_TILE_REGEX
+     No longer used. Regular expression for forecast input files that are in GRIB2.
 
      | *Used by:*  SeriesByInit, SeriesByLead
      | *Family:*  [regex_pattern]
+     | *Default:*  Varies
+
+   FCST_EXTRACT_TILES_PREFIX
+     Prefix for forecast tile files. Used to create filename of intermediate files that are created while performing a series analysis.
+
+     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Family:* [regex_pattern]
      | *Default:*  Varies
 
    [DEPRECATED] FCST_VAR
@@ -1611,19 +1644,34 @@ METplus Configuration Glossary
      | *Family:* 
      | *Default:* 
 
-   GFS_ANLY_FILE_TMPL
-     Filename template used to identify the GFS analysis file.
+   FCST_EXTRACT_TILES_INPUT_TEMPLATE
+     Filename template used to identify forecast input file to ExtractTiles.
 
      | *Used by:*  ExtractTiles, SeriesByLead
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
-   GFS_FCST_FILE_TMPL
-     Filename templated used to identify the GFS forecast files.
+   OBS_EXTRACT_TILES_INPUT_TEMPLATE
+     Filename template used to identify observation input file to ExtractTiles.
 
      | *Used by:*  ExtractTiles, SeriesByLead
      | *Family:*  [filename_templates]
      | *Default:*  Varies
+
+   [DEPRECATED] GFS_ANLY_FILE_TMPL
+     Please use OBS_EXTRACT_TILES_INPUT_TEMPLATE instead. Filename template used to identify the GFS analysis file.
+
+     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Family:*  [filename_templates]
+     | *Default:*  Varies
+
+   [DEPRECATED] GFS_FCST_FILE_TMPL
+     Please use FCST_EXTRACT_TILES_INPUT_TEMPLATE instead.Filename templated used to identify the GFS forecast files.
+
+     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Family:*  [filename_templates]
+     | *Default:*  Varies
+
 
    [DEPRECATED] GRID_STAT_CONFIG
      Please use GRID_STAT_CONFIG_FILE instead. Specify the absolute path to the configuration file used by the MET grid_stat tool.
@@ -1793,8 +1841,15 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:* 
 
-   LAT_ADJ
+   EXTRACT_TILES_LAT_ADJ
      Specify a latitude adjustment, in degrees to be used in the analysis. In the ExtractTiles wrapper, this corresponds to the 2m portion of the 2n x 2m subregion tile.
+
+     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   [DEPRECATED] LAT_ADJ
+     Please use EXTRACT_TILES_LAT_ADJ instead. Specify a latitude adjustment, in degrees to be used in the analysis. In the ExtractTiles wrapper, this corresponds to the 2m portion of the 2n x 2m subregion tile.
 
      | *Used by:*  ExtractTiles, SeriesByLead
      | *Family:*  [config]
@@ -1914,14 +1969,21 @@ METplus Configuration Glossary
      | *Default:*  %Y%m%d
 
    LOG_TIMESTAMP_USE_DATATIME
-     True/False. Determines which time to use for the log filenames. If True, use INIT_BEG if LOOP_BY_INIT is True or VALID_BEG if LOOP_BY_INIT is False. If False, use current time.
+     True/False. Determines which time to use for the log filenames. If True, use INIT_BEG if LOOP_BY is INIT or VALID_BEG if LOOP_BY is VALID. If False, use current time.
 
      | *Used by:*  All
      | *Family:*  [config]
      | *Default:* False
 
-   LON_ADJ
+   EXTRACT_TILES_LON_ADJ
      Specify a longitude adjustment, in degrees to be used in the analysis. In the ExtractTiles wrapper, this corresponds to the 2n portion of the 2n x 2m subregion tile.
+
+     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   [DEPRECATED] LON_ADJ
+     Please use EXTRACT_TILES_LON_ADJ instead. Specify a longitude adjustment, in degrees to be used in the analysis. In the ExtractTiles wrapper, this corresponds to the 2n portion of the 2n x 2m subregion tile.
 
      | *Used by:*  ExtractTiles, SeriesByLead
      | *Family:*  [config]
@@ -1934,8 +1996,15 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  true
 
+   [DEPRECATED] LOOP_BY_INIT
+     Please use LOOP_BY instead.
+
+     | *Used by:*  All
+     | *Family:*  [config]
+     | *Default:*  true
+
    LOOP_ORDER
-     Control the looping order for METplus. Valid options aretimes orprocesses.times runs all items in the PROCESS_LIST for a single run time, then repeat until all times have been evaluated.processes runs each item in the PROCESS_LIST for all times specified, then repeat for the next item in the PROCESS_LIST.
+     Control the looping order for METplus. Valid options are "times" or "processes". "times" runs all items in the PROCESS_LIST for a single run time, then repeat until all times have been evaluated. "processes" runs each item in the PROCESS_LIST for all times specified, then repeat for the next item in the PROCESS_LIST.
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -2052,8 +2121,15 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:* Varies
 
-   MODEL_DATA_DIR
-     Specify the directory where the model data are located.
+   EXTRACT_TILES_GRID_INPUT_DIR
+     Directory containing gridded input data to be used in ExtractTiles. Currently contains both forecast and observation data.
+
+     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
+   [DEPRECATED] MODEL_DATA_DIR
+     Please use EXTRACT_TILES_GRID_INPUT_DIR instead.
 
      | *Used by:*  ExtractTiles, SeriesByLead
      | *Family:*  [dir]
@@ -2318,22 +2394,43 @@ METplus Configuration Glossary
      | *Family:*  [exe]
      | *Default:*  /path/to
 
-   NC_FILE_TMPL
-     File template used to match netCDF files used for analysis.
+   [DEPRECATED] NC_FILE_TMPL
+     Please use PB2NC_OUTPUT_TEMPLATE instead.
 
      | *Used by:*  PB2NC
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
-   NLAT
+   PB2NC_OUTPUT_TEMPLATE
+     File template used to create netCDF files generated by PB2NC.
+
+     | *Used by:*  PB2NC
+     | *Family:*  [filename_templates]
+     | *Default:*  Varies
+
+   EXTRACT_TILES_NLAT
      The number of latitude points, set to a whole number. This defines the number of latitude points to incorporate into the subregion (density).
 
      | *Used by:*  ExtractTiles, SeriesByLead
      | *Family:*  [config]
      | *Default:*  Varies
 
-   NLON
+   EXTRACT_TILES_NLON
      The number of longitude points, set to a whole number. This defines the number of longitude points to incorporate into the subregion (density).
+
+     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   [DEPRECATED] NLAT
+     Please use EXTRACT_TILES_NLAT instead. The number of latitude points, set to a whole number. This defines the number of latitude points to incorporate into the subregion (density).
+
+     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   [DEPRECATED] NLON
+     Please use EXTRACT_TILES_NLON instead. The number of longitude points, set to a whole number. This defines the number of longitude points to incorporate into the subregion (density).
 
      | *Used by:*  ExtractTiles, SeriesByLead
      | *Family:*  [config]
@@ -3017,8 +3114,15 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  yes
 
-   OVERWRITE_TRACK
+   EXTRACT_TILES_OVERWRITE_TRACK
      Specify whether to overwrite the track data or not.Acceptable values: yes/no
+
+     | *Used by:*  ExtractTiles
+     | *Family:*  [config]
+     | *Default:*  no
+
+   [DEPRECATED] OVERWRITE_TRACK
+     Please use EXTRACT_TILES_OVERWRITE_TRACK instead.
 
      | *Used by:*  ExtractTiles
      | *Family:*  [config]
@@ -3434,15 +3538,22 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   SERIES_ANALYSIS_BY_INIT_CONFIG_FILE
+   SERIES_ANALYSIS_CONFIG_FILE
      Specify the absolute path for the configuration file to use with the MET series_analysis tool by initialization time.
+
+     | *Used by:*  SeriesByInit, SeriesByLead
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   [DEPRECATED] SERIES_ANALYSIS_BY_INIT_CONFIG_FILE
+     Please use SERIES_ANALYSIS_CONFIG_FILE instead.
 
      | *Used by:*  SeriesByInit
      | *Family:*  [config]
      | *Default:*  Varies
 
-   SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE
-     Specify the absolute path for the configuration file to use with the MET series_analysis tool by lead time.
+   [DEPRECATED] SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE
+     Please use SERIES_ANALYSIS_CONFIG_FILE instead.
 
      | *Used by:*  SeriesByLead
      | *Family:*  [config]
@@ -3455,15 +3566,29 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   SERIES_BY_LEAD_FILTERED_OUTPUT_DIR
-     Specifies the directory where filtered files will be written from the MET series_analysis tool when processing by lead time.
+   SERIES_ANALYSIS_FILTERED_OUTPUT_DIR
+     Specifies the directory where filtered files will be written from the MET SeriesAnalysis tool.
 
      | *Used by:*  SeriesByLead
      | *Family:*  [config]
      | *Default:*  Varies
 
-   SERIES_BY_LEAD_GROUP_FCSTS
-     Set toTrue to aggregate the series by lead results into bins of time.
+   [DEPRECATED] SERIES_BY_LEAD_FILTERED_OUTPUT_DIR
+     Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR instead.
+
+     | *Used by:*  SeriesByLead
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   SERIES_ANALYSIS_GROUP_FCSTS
+     Set to True to aggregate the series by lead results into bins of time.
+
+     | *Used by:*  SeriesByLead
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   [DEPRECATED] SERIES_BY_LEAD_GROUP_FCSTS
+     Please use SERIES_ANALYSIS_GROUP_FCSTS instead.
 
      | *Used by:*  SeriesByLead
      | *Family:*  [config]
@@ -3476,29 +3601,36 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   SERIES_INIT_FILTERED_OUT_DIR
-     Specify the directory where filtered files will be written from the MET series_analysis tool when processing by initialization time.
+   [DEPRECATED] SERIES_INIT_FILTERED_OUT_DIR
+     Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR instead.
 
      | *Used by:*  SeriesByInit
      | *Family:*  [dir]
      | *Default:*  Varies
 
-   SERIES_INIT_OUT_DIR
+   SERIES_ANALYSIS_OUTPUT_DIR
      Specify the directory where files will be written from the MET series analysis tool when processing by initialization time.
 
      | *Used by:*  SeriesByInit
      | *Family:*  [dir]
      | *Default:*  Varies
 
+   [DEPRECATED] SERIES_INIT_OUT_DIR
+     Please use SERIES_ANALYSIS_OUTPUT_DIR instead.
+
+     | *Used by:*  SeriesByInit
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
    [DEPRECATED] SERIES_LEAD_FILTERED_OUT_DIR
-     Please use SERIES_BY_LEAD_FILTERED_OUTPUT_DIR. Specify the directory where filtered files will be written from the MET series_analysis tool when processing by lead time.
+     Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR. Specify the directory where filtered files will be written from the MET series_analysis tool when processing by lead time.
 
      | *Used by:*  SeriesByLead
      | *Family:*  [dir]
      | *Default:*  Varies
 
-   SERIES_LEAD_OUT_DIR
-     Specify the directory where files will be written from the MET series analysis tool when processing by lead time.
+   [DEPRECATED] SERIES_LEAD_OUT_DIR
+     Please use SERIES_ANALYSIS_OUTPUT_DIR instead.
 
      | *Used by:*  SeriesByLead
      | *Family:*  [dir]
@@ -3511,8 +3643,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   START_DATE
-     Specify the start data for the analysis time period. Format is YYYYYMMDDHH.
+   [DEPRECATED] START_DATE
+     Please use INIT_BEG or VALID_BEG instead.
 
      | *Used by:*  PB2NC, PointStat
      | *Family:*  [config]
@@ -3525,8 +3657,8 @@ METplus Configuration Glossary
      | *Family:*  [dir]
      | *Default:*  OUTPUT_BASE/stage
 
-   START_HOUR
-     Specify the start hour for the analysis time period. Format is HH.
+   [DEPRECATED] START_HOUR
+     Please use INIT_BEG or VALID_BEG instead.
 
      | *Used by:*  PB2NC, PointStat
      | *Family:*  [config]
@@ -3574,8 +3706,15 @@ METplus Configuration Glossary
      | *Family:*  [dir]
      | *Default:*  Varies
 
-   STAT_LIST
+   SERIES_ANALYSIS_STAT_LIST
      Specify a list of statistics to be computed by the MET series_analysis tool.
+
+     | *Used by:*  SeriesByInit, SeriesByLead
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   [DEPRECATED] STAT_LIST
+     Please use SERIES_ANALYSIS_STAT_LIST instead.
 
      | *Used by:*  SeriesByInit, SeriesByLead
      | *Family:*  [config]
@@ -3974,18 +4113,11 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_RUN_VIA
-     Specify the method for running the MET tc_stat tool.Acceptable values: CONFIGIf left blank (unset), tc_stat will run via the command line.
+     Specify the method for running the MET tc_stat tool.Acceptable values: CONFIG. If left blank (unset), tc_stat will run via the command line.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
-     | *Default:* 
-
-   CONFIG
-     
-
-     | *Used by:* 
-     | *Family:* 
-     | *Default:* 
+     | *Default:* CONFIG
 
    TC_STAT_STORM_ID
      Set the STORM_ID(s) of interest with the MET tc_stat tool.
@@ -4057,8 +4189,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   TIME_METHOD
-     Specify which time method to use with the MET pb2nc and point_stat tools.Acceptable values: BY_VALID, BY_INIT
+   [DEPRECATED] TIME_METHOD
+     Please use LOOP_BY instead.
 
      | *Used by:*  PB2NC, PointStat
      | *Family:* 
@@ -4142,7 +4274,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TR
-     Specify the path to the Linuxtr executable.
+     Specify the path to the Linux "tr" executable.
 
      | *Used by:*  PB2NC, PointStat
      | *Family:*  [exe]
@@ -4211,8 +4343,15 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   VAR_LIST
+   SERIES_ANALYSIS_VAR_LIST
      Specify a comma separated list of variables to be used in the analysis.
+
+     | *Used by:*  PB2NC, SeriesByInit, SeriesByLead
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   [DEPRECATED] VAR_LIST
+     Please use SERIES_ANALYSIS_VAR_LIST.
 
      | *Used by:*  PB2NC, SeriesByInit, SeriesByLead
      | *Family:*  [config]
@@ -4396,3 +4535,4 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
+
