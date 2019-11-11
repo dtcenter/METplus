@@ -676,6 +676,13 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  0.5
 
+   EXTRACT_TILES_PAIRS_INPUT_DIR
+     Directory containing matched pairs input to be read by ExtractTiles.
+
+     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Family:*  [dir]
+     | *Default:*
+
    DO_NOT_RUN_EXE
      True/False. If True, applications will not run and will only output command that would have been called.
 
@@ -3605,6 +3612,13 @@ METplus Configuration Glossary
      Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR instead.
 
      | *Used by:*  SeriesByInit
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
+   SERIES_ANALYSIS_INPUT_DIR
+     Specify the directory to read input to SeriesAnalysis. It is recommended to set this to {EXTRACT_TILES_OUTPUT_DIR}.
+
+     | *Used by:*  SeriesByLead, SeriesByInit
      | *Family:*  [dir]
      | *Default:*  Varies
 

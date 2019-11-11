@@ -165,6 +165,8 @@ def check_for_deprecated_config(conf, logger):
         'MODE_CONFIG' : {'sec' : 'config', 'alt' : 'MODE_CONFIG_FILE'},
         'FCST_PCP_COMBINE_INPUT_LEVEL' : {'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS'},
         'OBS_PCP_COMBINE_INPUT_LEVEL' : {'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS'},
+        'LOOP_BY_INIT' : {'sec' : 'config', 'alt' : 'LOOP_BY'},
+        'TIME_METHOD' : {'sec' : 'config', 'alt' : 'LOOP_BY'},
     }
 
     # template       '' : {'sec' : '', 'alt' : ''}
