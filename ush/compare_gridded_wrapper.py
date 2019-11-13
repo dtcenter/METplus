@@ -291,12 +291,12 @@ that reformat gridded data
                             return None
 
                         thresh_str = ""
-                        comparison = util.get_comparison_from_threshold(thresh)
-                        number = util.get_number_from_threshold(thresh)
-                        if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
-                            thresh_str += "thresh_lo=" + str(number) + "; "
-                        if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
-                            thresh_str += "thresh_hi=" + str(number) + "; "
+                        thresh_tuple_list = util.get_threshold_via_regex(thresh)
+                        for comparison, number in thresh_tuple_list:
+                            if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
+                                thresh_str += "thresh_lo=" + str(number) + "; "
+                            if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
+                                thresh_str += "thresh_hi=" + str(number) + "; "
 
                         field = "{ name=\"PROB\"; level=\"" + v_level + \
                                 "\"; prob={ name=\"" + v_name + \
