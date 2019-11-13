@@ -1427,8 +1427,9 @@ def shift_time_seconds(time_str, shift):
     return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M%S") +
             datetime.timedelta(seconds=shift)).strftime("%Y%m%d%H%M%S")
 
-def starts_with_comparison(thresh_string):
-    """!Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le
+def get_threshold_via_regex(thresh_string):
+    """!Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le and then a number
+        Optionally can have multiple comparison/number pairs separated with && or ||.
         Args:
             @param thresh_string: String to examine, i.e. <=3.4
         Returns:
@@ -1438,44 +1439,33 @@ def starts_with_comparison(thresh_string):
             number in group 2 if valid
     """
     valid_comparisons = {">", ">=", "==", "!=", "<", "<=", "gt", "ge", "eq", "ne", "lt", "le"}
-    for comp in valid_comparisons:
-        match = re.match(r'^('+comp+r')([+-]?\d*\.?\d+)', thresh_string)
-        if match:
-            return match
-    return None
+    comparison_number_list = []
+    # split thresh string by || or &&
+    thresh_split = re.split(r'\|\||&&', thresh_string)
+    # check each threshold for validity
+    for thresh in thresh_split:
+        found_match = False
+        for comp in valid_comparisons:
+            # if valid, add to list of tuples
+            match = re.match(r'^('+comp+r')([+-]?\d*\.?\d*)$', thresh)
+            if match:
+                comparison_number_list.append((match.group(1), float(match.group(2))))
+                found_match = True
+                break
 
+        # if no match was found for the item, return None
+        if not found_match:
+            return None
 
-def get_number_from_threshold(thresh_string):
-    """ Removes comparison operator from threshold string.
-        Note: This only gets the first number in a complex comparison
-        Args:
-            @param thresh_string String to examine, i.e. <=3.4
-        Returns:
-            Number without comparison operator if valid string
-            None if invalid
-    """
-    match = starts_with_comparison(thresh_string)
-    if match:
-        return float(match.group(2))
-    return None
+    if not comparison_number_list:
+        return None
 
-def get_comparison_from_threshold(thresh_string):
-    """ Removes number from threshold string
-        Note: This only gets the first comparison in a complex comparison
-        Args:
-            @param thresh_string String to examine, i.e. <=3.4
-        Returns:
-            Comparison operator without number if valid string
-            None if invalid
-    """
-    match = starts_with_comparison(thresh_string)
-    if match:
-        return match.group(1)
-    return None
-
+    return comparison_number_list
 
 def validate_thresholds(thresh_list):
     """ Checks list of thresholds to ensure all of them have the correct format
+        Should be a comparison operator with number pair combined with || or &&
+        i.e. gt4 or >3&&<5 or gt3||lt1
         Args:
             @param thresh_list list of strings to check
         Returns:
@@ -1483,12 +1473,13 @@ def validate_thresholds(thresh_list):
     """
     valid = True
     for thresh in thresh_list:
-        match = starts_with_comparison(thresh)
+        match = get_threshold_via_regex(thresh)
         if match is None:
             valid = False
 
     if valid is False:
-        print("ERROR: Threshold values must start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt, or le")
+        print("ERROR: Threshold values must use >,>=,==,!=,<,<=,gt,ge,eq,ne,lt, or le with a number, "
+              "optionally combined with && or ||")
         return False
     return True
 
