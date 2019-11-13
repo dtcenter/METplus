@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
 import sys
 import os
 import re
@@ -11,8 +9,6 @@ from produtil.run import exe
 from produtil.run import checkrun
 import met_util as util
 from command_builder import CommandBuilder
-import config_metplus
-
 
 ##@namespace TCMPRPlotterWrapper
 # A Python class than encapsulates the plot_tcmpr.R plotting script.
@@ -54,7 +50,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # pylint:disable=too-many-instance-attributes
         # All these instance attributes are needed to support the
         # plot_tcmpr.R functionality.
-        super(TCMPRPlotterWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'plot_tcmpr.R'
 
         self._init_tcmpr_script()
@@ -246,7 +242,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             # Generate the list, where the -args are separated by their
             # values.
             full_cmd_list = ['Rscript' + self.tcmpr_script]
-            for key, value in cmds_dict.iteritems():
+            for key, value in cmds_dict.items():
                 full_cmd_list.append(key)
                 full_cmd_list.append(value)
 
@@ -291,7 +287,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             full_cmd_list = list()
             full_cmd_list.append("Rscript")
             full_cmd_list.append(self.tcmpr_script)
-            for key, value in cmds_dict.iteritems():
+            for key, value in cmds_dict.items():
                 full_cmd_list.append(key)
                 if key == '-lookin':
                     # treat the list of dirs in -lookin differently,

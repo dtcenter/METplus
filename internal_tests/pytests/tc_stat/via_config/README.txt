@@ -14,7 +14,7 @@ Pre-condition
 tc-pairs must be run for SBU extra tropical cyclone data located on the host 'eyewall' after all /path/to's have been replaced*:
 
    TRACK_DATA_DIR = /d1/SBU/GFS/track_data
-   MODEL_DATA_DIR = /d1/SBU/GFS/model_data
+   EXTRACT_TILES_GRID_INPUT_DIR = /d1/SBU/GFS/model_data
 
    ADECK_TRACK_DATA_DIR = /d1/METplus_TC/adeck
    BDECK_TRACK_DATA_DIR = /d1/METplus_TC/bdeck

@@ -206,14 +206,14 @@ class JLogHandler(MasterLogHandler):
         @note See the Python logging module documentation for details."""
         message=self.stringify_record(record)
         if message is None: return
-        if isinstance(self._logger,basestring):
+        if isinstance(self._logger,str):
             # Open the file, write and close it, to mimic the postmsg script:
             dirn=os.path.dirname(self._logger)
             if not os.path.isdir(dirn):
                 # NOTE: Cannot use produtil.fileop.makedirs here due
                 # to order of module loads (fileop needs log, so log
                 # cannot need fileop):
-                for x in xrange(10):
+                for x in range(10):
                     try:
                         os.makedirs(dirn)
                     except EnvironmentError as e:
@@ -231,7 +231,7 @@ class JLogHandler(MasterLogHandler):
     def set_jlogfile(self, filename):
         """!Set the location of the jlogfile
         @param filename The path to the jlogfile."""
-        if not isinstance(filename,basestring):
+        if not isinstance(filename,str):
             raise TypeError(
                 'In JLogHandler.set_jlogfile, the filename must be a '
                 'string.  You passed a %s %s.'
@@ -269,15 +269,15 @@ def mpi_redirect(threadname,stderrfile,stdoutfile,
         raise TypeError(
             "In mpiRedirect, the openmode must be an int, not a "
             +type(openmode).__name__)
-    if not isinstance(stdoutfile,basestring):
+    if not isinstance(stdoutfile,str):
         raise TypeError(
             "In mpiRedirect, the stdoutfile must be a string, not a "
             +type(stdoutfile).__name__)
-    if stderrfile is not None and not isinstance(stderrfile,basestring):
+    if stderrfile is not None and not isinstance(stderrfile,str):
         raise TypeError(
             "In mpiRedirect, the stderrfile must be a string or None, not a "
             +type(stderrfile).__name__)
-    if not isinstance(threadname,basestring):
+    if not isinstance(threadname,str):
         raise TypeError(
             "In mpiRedirect, the threadname must be a string, not a "
             +type(threadname))

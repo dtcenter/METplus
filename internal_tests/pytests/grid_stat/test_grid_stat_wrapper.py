@@ -33,19 +33,17 @@ import time_util
 
 
 # -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
-@pytest.fixture
+#@pytest.fixture
 def grid_stat_wrapper():
     """! Returns a default GridStatWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
          to over-ride these /path/to values."""
 
-    conf = metplus_config()
-    logger = logging.getLogger("dummy")
-    return GridStatWrapper(conf, logger)
+    config = metplus_config()
+    return GridStatWrapper(config, config.logger)
 
-
-@pytest.fixture
+#@pytest.fixture
 def metplus_config():
     """! Create a METplus configuration object that can be
     manipulated/modified to
@@ -61,7 +59,8 @@ def metplus_config():
         produtil.log.postmsg('grid_stat_wrapper  is starting')
 
         # Read in the configuration object CONFIG
-        config = config_metplus.setup()
+        config = config_metplus.setup(util.baseinputconfs)
+        logger = util.get_logger(config)
         return config
 
     except Exception as e:
@@ -174,13 +173,13 @@ def test_window_variables_(conf_dict, out_dict):
     conf = metplus_config()
     logger = logging.getLogger("dummy")
 
-    for key, value in conf_dict.iteritems():
+    for key, value in conf_dict.items():
         conf.set('config', key, value)
     
     gsw = GridStatWrapper(conf, logger)
 
     good = True
-    for key, value in out_dict.iteritems():
+    for key, value in out_dict.items():
         if gsw.c_dict[key] != value:
             good = False
 

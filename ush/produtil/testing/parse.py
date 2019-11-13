@@ -8,9 +8,10 @@
 # converted to a workflow by produtil.testing.rocoto or
 # produtil.testing.script.
 
-import sys, re, StringIO, collections, os, datetime, logging, math
+import sys, re, collections, os, datetime, logging, math
 import produtil.run, produtil.log, produtil.setup
 
+from io import StringIO
 # This module really does use everything public from utilities,
 # parsetree and tokenize, hence the "import *"
 from produtil.testing.utilities import *
@@ -35,6 +36,18 @@ class RunConPair(object):
         @param context   The produtil.testing.parsetree.Context for self.context"""
         self.runnable=runnable
         self.context=context
+        self.__requested_platform=None
+
+    def set_requested_platform_name(self,platform):
+        self.__requested_platform_name=str(platform)
+    def get_requested_platform_name(self):
+        return self.__requested_platform_name
+    def del_requested_platform_name(self):
+        self.__requested_platform=None
+    requested_platform_name=property(get_requested_platform_name,
+                                     set_requested_platform_name,
+                                     del_requested_platform_name)
+
     @property
     def as_tuple(self):
         """!A tuple self.runnable,self.context"""
@@ -157,7 +170,7 @@ class Parser(object):
         """"!Iterates over all runset names in self, including the
         special "**all**" set, which contains all runnables that had a
         "run" command, plus dependencies."""
-        for setname,runset in self.__runsets.iteritems():
+        for setname,runset in self.__runsets.items():
             yield setname,runset
     def con(self,token=None,scopes=None):
         """!Returns a context for the given token and scope.  
@@ -263,7 +276,7 @@ class Parser(object):
         if unique_id is None:
             unique_id=os.getpid()
         if morevars is not None:
-            for k,v in morevars.iteritems():
+            for k,v in morevars.items():
                 scope.setlocal(str(k),String([scope],str(v),False))
         if not isinstance(unique_id,int):
             raise TypeError(
@@ -968,11 +981,11 @@ class Parser(object):
                             if setname is False or setname is True:
                                 keep_by_comparison=keep_by_comparison or setname
                             elif setname not in runsets:
-                                assert(isinstance(setname,basestring))
+                                assert(isinstance(setname,str))
                                 runsets.append(setname)
                     keep = keep_by_set
                     if keep_by_comparison is not None:
-                        keep = keep or keep_by_comparison
+                        keep = keep and keep_by_comparison
                     if keep:
                         if not runsets:
                             runsets.append('**all**')
@@ -1159,23 +1172,34 @@ class Parser(object):
                     return self.action_resolve(token,scopes)
         self.error('rvalue',token)
     def action_autodetect(self,con,tokiter,scopes,taskname,task):
-        matches=task.detect(con)
         """!Executes an autodetect block
 
         Executes the "detect" function within each element of an
         autodetect block, choosing the block whose detect function
         returns True.  It is an error for more or less than one
         platform to return True."""
+        matches=task.detect(con)
+        if self.requested_platform_name:
+            for match in matches:
+                name=match.resolve('PLATFORM_NAME').string_context(
+                    produtil.testing.parsetree.fileless_context(
+                        verbose=self.verbose))
+                if name == self.requested_platform_name:
+                    return match
+            raise PTParserError(
+                'The platform "%s" is not detected on this machine.'%(
+                    self.requested_platform_name,))
         if len(matches)==0:
             raise PTParserError(
                 'You are using an unknown platform.  Check your platforms.input file "autodetect" block.  Add support for this platform, or correct your platform detection logic.')
         elif len(matches)>1:
-            raise PTParserError(
+            raise PTPlatformError(
                 'This machine can submit to multiple platforms: '+(
                     ' '.join([
-                            s.resolve('PLATFORM_NAME') \
-                                .string_context(fileless_context(
-                                                    verbose=self.verbose)) \
+                      s.resolve('PLATFORM_NAME') \
+                       .string_context(
+                         produtil.testing.parsetree.fileless_context(
+                           verbose=self.verbose)) \
                             for s in matches
                 ])))
         return matches[0]
@@ -1336,7 +1360,7 @@ class Parser(object):
           variable's value is allowed.
         @return None"""
         assert(isinstance(scope,Scope))
-        assert(isinstance(varname,basestring))
+        assert(isinstance(varname,str))
         assert(isinstance(value,BaseObject))
         if '%' in varname:
             raise ValueError('Cannot assign to %s; subscope definitions must be of syntax "var1 = { var2= { ...."'%(

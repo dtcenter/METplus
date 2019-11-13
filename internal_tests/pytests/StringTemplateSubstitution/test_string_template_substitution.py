@@ -6,6 +6,8 @@ import pytest
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract
 from string_template_substitution import get_tags
+from string_template_substitution import format_one_time_item
+from string_template_substitution import format_hms
 import logging
 import datetime
 
@@ -195,7 +197,7 @@ def test_3h_lead():
 
 def test_h_lead_no_pad_1_digit():
     logger = logging.getLogger("test")
-    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
     filepath = "1987020103_A3h"
     se = StringExtract(logger, template,
                            filepath)
@@ -228,7 +230,7 @@ def test_h_lead_no_pad_3_digit():
 
 def test_h_lead_no_pad_1_digit_sub():
     logger = logging.getLogger("test")
-    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
     lead_time = int("3") * 3600
     fSts = StringSub(logger,
@@ -241,7 +243,7 @@ def test_h_lead_no_pad_1_digit_sub():
 
 def test_h_lead_no_pad_2_digit_sub():
     logger = logging.getLogger("test")
-    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
     lead_time = int("12") * 3600
     fSts = StringSub(logger,
@@ -254,7 +256,7 @@ def test_h_lead_no_pad_2_digit_sub():
 
 def test_h_lead_no_pad_3_digit_sub():
     logger = logging.getLogger("test")
-    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
+    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
     lead_time = int("102") * 3600
     fSts = StringSub(logger,
@@ -384,7 +386,6 @@ def test_create_cyclone_regex():
                      '{2,3})([a-zA-Z0-9-_.]+).dat'
     assert actual_regex == expected_regex
 
-
 def test_crow_variable_hour():
     # Test that StringSub's do_string_sub() correctly creates the valid hour
     # without any zero-padding when given the following as input:
@@ -401,7 +402,7 @@ def test_crow_variable_hour():
     lead_3 = int('219') * 3600
     valid_2 = datetime.datetime.strptime('2017062000', '%Y%m%d%H')
     valid_1 = valid_3 = datetime.datetime.strptime('2017060418', '%Y%m%d%H')
-    templ = 'pgbf{lead?fmt=%H}.gfs.{valid?fmt=%Y%m%d%H}'
+    templ = 'pgbf{lead?fmt=%1H}.gfs.{valid?fmt=%Y%m%d%H}'
     ss_1 = StringSub(logger, templ, valid=valid_1, lead=lead_1)
     ss_2 = StringSub(logger, templ, valid=valid_2, lead=lead_2)
     ss_3 = StringSub(logger, templ, valid=valid_3, lead=lead_3)
@@ -411,105 +412,12 @@ def test_crow_variable_hour():
     # print("crow_1 output: ", crow_1_output)
     # print("crow_2 output: ", crow_2_output)
     # print("crow_3 output: ", crow_3_output)
+
     assert(crow_1_output == crow_input_file_1 and
            crow_2_output == crow_input_file_2 and
            crow_3_output == crow_input_file_3)
 
 
-def test_create_grid2obs_regex_gfs():
-    pytest.skip('deprecated function')
-    # Test that the regex created from a template is what is expected
-    logger = logging.getLogger("test")
-    templ = '/path/to/gfs/pgbf{lead?fmt=%H}.gfs.{valid?fmt=%Y%m%d%HH}'
-
-    # variables to pass into StringSub
-    valid_str = datetime.datetime.strptime('2017081118', '%Y%m%d%H')
-    lead_str = 0
-
-    ss = StringSub(logger, templ, valid=valid_str, lead=lead_str)
-    actual_regex = ss.create_grid2obs_regex()
-    expected_regex = '/path/to/gfs/pgbf([0-9]{1,3}).gfs.([0-9]{10})$'
-    assert actual_regex == expected_regex
-
-
-def test_create_grid2obs_regex_nam():
-    pytest.skip('deprecated function')
-    # Test that the regex created from a template is what is expected
-    logger = logging.getLogger("test")
-    templ = \
-        '/path/to/nam.20170811/nam.t{cycle?' \
-        'fmt=%HH}z.prepbufr.tm{offset?fmt=%HH}'
-
-    # variables to set for StringSub
-    cycle_str = '18'
-    offset_str = '03'
-
-    ss = StringSub(logger, templ, cycle=cycle_str, offset=offset_str)
-    actual_regex = ss.create_grid2obs_regex()
-    expected_regex = \
-        '/path/to/nam.20170811/nam.t([0-9]{2,3})z.prepbufr.tm([0-9]{2,3})$'
-    assert actual_regex == expected_regex
-
-
-
-def test_create_grid2obs_regex_gdas():
-    pytest.skip('deprecated function')
-    # Test that the regex created from a template is what is expected
-    logger = logging.getLogger("test")
-    templ = \
-        '/path/to/gdas/prepbufr.gdas.{valid?fmt=%Y%m%d%HH}'
-    # '/path/to/nam.20170611/nam.t[cycle?fmt=%HH}z.prepbufr.tm{offset?fmt=%HH}'
-    # templ_hrrr ='/path/to/hrrr.t{cycle?fmt=%HH}z.wrfprsf{lead?fmt=%HH}.grib2'
-    # tmpl_gdas = 'prepbufr.gdas.{valid?fmt=%Y%m%d%HH}'
-
-    # variables to set for StringSub
-    valid_str = '2017063018'
-
-    ss = StringSub(logger, templ, valid=valid_str)
-    actual_regex = ss.create_grid2obs_regex()
-    expected_regex = '/path/to/gdas/prepbufr.gdas.([0-9]{10})$'
-    assert actual_regex == expected_regex
-
-
-def test_create_grid2obs_regex_hrrr():
-    pytest.skip('deprecated function')
-    # Test that the regex created from a template is what is expected
-    logger = logging.getLogger("test")
-    templ = \
-    '/path/to/hrrr/hrrr.t{cycle?fmt=%HH}z.wrfprsf{lead?fmt=%HH}.grib2'
-
-    # variables to set for StringSub
-    cycle_str = '15'
-    lead_str = '12'
-
-    ss = StringSub(logger, templ, cycle=cycle_str, lead=lead_str)
-    actual_regex = ss.create_grid2obs_regex()
-    expected_regex = \
-        '/path/to/hrrr/hrrr.t([0-9]{2,3})z.wrfprsf([0-9]{1,3}).grib2$'
-    assert actual_regex == expected_regex
-
-
-def test_create_grid2obs_regex_all():
-    pytest.skip('deprecated function')
-    # Test that the regex created from the template that has valid
-    # cycle, lead and offset is correct (expected).
-    logger = logging.getLogger("test")
-    templ = \
-        '/path/to/nam.{init?fmt=%Y%m%d}/rap.t{cycle?fmt=%HH}z.awphys{lead?fmt=%H}.' \
-        'tm{offset?fmt=%H}.grib2'
-
-    # variables to set for StringSub
-    init_str = "20180815"
-    cycle_str = '00'
-    lead_str = '60'
-    offset_str = '00'
-
-    ss = StringSub(logger, templ, init=init_str, cycle=cycle_str,
-                   lead=lead_str, offset=offset_str)
-    actual_regex = ss.create_grid2obs_regex()
-    expected_regex = '/path/to/nam.([0-9]{8})/rap.t([0-9]{2,3})z.' \
-                     'awphys([0-9]{1,3}).tm([0-9]{2,3}).grib2$'
-    assert actual_regex == expected_regex
 
 
 def test_multiple_valid_substitution_valid():
@@ -665,3 +573,79 @@ def test_get_tags():
     tags = get_tags(template)
 
     assert( tags[0] == '*' and tags[1] == 'basin' and tags[2] == 'cyclone' and tags[3] == 'date')
+
+# format should be something like H 2H 3H 2M etc
+# key is the time value integer to convert, like 1 or 60
+# value is the formatted output string, like 01
+# ttype is the unit to check, i.e. 'H', 'M', 'S', 'd', 's'
+@pytest.mark.parametrize(
+    'format, key, value, ttype', [
+        ('H', 1, '01', 'H'),
+        ('1H', 1, '1', 'H'),
+        ('2H', 1, '01', 'H'),
+        ('3H', 1, '001', 'H'),
+        ('S', 1, '01', 'S'),
+        ('1S', 1, '1', 'S'),
+        ('2S', 1, '01', 'S'),
+        ('3S', 1, '001', 'S'),
+        ('M', 1, '01', 'M'),
+        ('1M', 1, '1', 'M'),
+        ('2M', 1, '01', 'M'),
+        ('3M', 1, '001', 'M'),
+        ('s', 1, '1', 's'),
+        ('1s', 1, '1', 's'),
+        ('2s', 1, '01', 's'),
+        ('3s', 1, '001', 's'),
+        ('d', 1, '01', 'd'),
+        ('1d', 1, '1', 'd'),
+        ('2d', 1, '01', 'd'),
+        ('3d', 1, '001', 'd'),
+        ('.1H', 1, '1', 'H'),
+        ('.2H', 1, '01', 'H'),
+        ('.3H', 1, '001', 'H'),
+        ('.1S', 1, '1', 'S'),
+        ('.2S', 1, '01', 'S'),
+        ('.3S', 1, '001', 'S'),
+        ('.1M', 1, '1', 'M'),
+        ('.2M', 1, '01', 'M'),
+        ('.3M', 1, '001', 'M'),
+        ('.1s', 1, '1', 's'),
+        ('.2s', 1, '01', 's'),
+        ('.3s', 1, '001', 's'),
+        ('.1d', 1, '1', 'd'),
+        ('.2d', 1, '01', 'd'),
+        ('.3d', 1, '001', 'd'),
+    ]
+)
+
+def test_format_one_time_item(format, key ,value, ttype):
+    assert(format_one_time_item(format, key, ttype) == value)
+
+# format is the time format to use, like, %M or %H%M
+# seconds is the integer number of seconds of the offset to use, i.e. 3601
+# value is the formatted output string, like 010001
+@pytest.mark.parametrize(
+    'format, seconds, value', [
+        ('%H', 1, '00'),
+        ('%M', 1, '00'),
+        ('%S', 1, '01'),
+        ('%H', 3600, '01'),
+        ('%M', 5400, '90'),
+        ('%H%M', 5400, '0130'),
+        ('%3H%M', 5400, '00130'),
+        ('%H%3M', 5400, '01030'),
+        ('%S', 5400, '5400'),
+        ('%H%M%S', 5400, '013000'),
+        ('%d%H', 90000, '0101'),
+        ('%S', 86401, '86401'),
+        ('%d%S', 86401, '0101'),
+        ('%S', 86401, '86401'),
+        ('%M%S', 86401, '144001'),
+        ('%H%M%S', 90001, '250001'),
+        ('%d%H%M%S', 90001, '01010001'),
+        ('%d', 86401, '01'),
+    ]
+)
+def test_format_hms(format, seconds, value):
+    # format should be something like %M or %H%M
+    assert(format_hms(format, seconds == value))

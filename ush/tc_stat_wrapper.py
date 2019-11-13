@@ -1,20 +1,18 @@
 #!/usr/bin/env python
 
 """!
-Program Name: TcStatWrapper.py
+Program Name: TCStatWrapper.py
 Contact(s):  Minna Win, Jim Frimel, George McCabe, Julie Prestopnik
 Abstract: Stratify tropical cyclone data by any combination of time, column,
           statistics
 History log: Initial version
-Usage: TcStatWrapper.py
+Usage: TCStatWrapper.py
 Parameters: None
 Input Files: tc_pairs data
 Output Files: subset of tc_pairs data
 Condition codes: 0 for success, 1 for failure
 
 """
-
-from __future__ import (print_function, division, unicode_literals)
 
 import os
 import sys
@@ -25,7 +23,7 @@ from command_builder import CommandBuilder
 import config_metplus
 
 
-## @namespace TcStatWrapper
+## @namespace TCStatWrapper
 #  @brief Wrapper to the MET tool tc_stat, which is used for filtering tropical
 #  cyclone pair data.
 
@@ -35,7 +33,7 @@ import config_metplus
 # attribute data.
 
 
-class TcStatWrapper(CommandBuilder):
+class TCStatWrapper(CommandBuilder):
     """! Wrapper for the MET tool, tc_stat, which is used to filter tropical
          cyclone pair data.
     """
@@ -46,10 +44,10 @@ class TcStatWrapper(CommandBuilder):
         run_method = config.getstr('config', 'TC_STAT_RUN_VIA')
         self.by_config = bool(run_method == 'CONFIG')
 
-        super(TcStatWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'tc_stat'
         self.tc_exe = self.c_dict['APP_PATH']
-        self.logger.info("Initialized TcStatWrapper")
+        self.logger.info("Initialized TCStatWrapper")
 
     def create_c_dict(self):
         """!  Read in and store all the values from the config file.  This
@@ -65,7 +63,15 @@ class TcStatWrapper(CommandBuilder):
         """
         self.logger.info('Creating tc-stat dictionary...')
 
-        c_dict = super(TcStatWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
+
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_TC_STAT_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
+        # Useful for logging
+        # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
+        # [File : function]| Message
+        cur_filename = sys._getframe().f_code.co_filename
+        cur_function = sys._getframe().f_code.co_name
 
         # Check for the MET_INSTALL_DIR, if it is missing, then
         # we cannot invoke the MET tool.
@@ -402,14 +408,14 @@ class TcStatWrapper(CommandBuilder):
             self.add_env_var('STORM_NAME', "[]")
 
         if self.c_dict['INIT_BEG']:
-            self.add_env_var(b'INIT_BEG', self.c_dict['INIT_BEG'])
+            self.add_env_var('INIT_BEG', self.c_dict['INIT_BEG'])
         else:
-            self.add_env_var(b'INIT_BEG', "")
+            self.add_env_var('INIT_BEG', "")
 
         if self.c_dict['INIT_END']:
             self.add_env_var('INIT_END', self.c_dict['INIT_END'])
         else:
-            self.add_env_var(b'INIT_END', "")
+            self.add_env_var('INIT_END', "")
 
         tmp_init_include = self.c_dict['INIT_INCLUDE']
         if tmp_init_include:
@@ -447,9 +453,9 @@ class TcStatWrapper(CommandBuilder):
             # whitespace
             tmp_valid_begin_str = str(tmp_valid_begin).replace("\'", "\"")
             tmp_valid_begin = ''.join(tmp_valid_begin_str.strip())
-            self.add_env_var(b'VALID_BEG', tmp_valid_begin)
+            self.add_env_var('VALID_BEG', tmp_valid_begin)
         else:
-            self.add_env_var(b'VALID_BEG', '')
+            self.add_env_var('VALID_BEG', '')
 
         tmp_valid_end = self.c_dict['VALID_END']
         if tmp_valid_end:
@@ -457,9 +463,9 @@ class TcStatWrapper(CommandBuilder):
             # whitespace
             tmp_valid_end_str = str(tmp_valid_end).replace("\'", "\"")
             tmp_valid_end = ''.join(tmp_valid_end_str.strip())
-            self.add_env_var(b'VALID_END', tmp_valid_end)
+            self.add_env_var('VALID_END', tmp_valid_end)
         else:
-            self.add_env_var(b'VALID_END', "")
+            self.add_env_var('VALID_END', "")
 
         tmp_valid_include = self.c_dict['VALID_INCLUDE']
         if tmp_valid_include:
@@ -665,7 +671,7 @@ class TcStatWrapper(CommandBuilder):
         self.add_env_var('MATCH_POINTS', flag)
 
         if self.c_dict['CONFIG_FILE']:
-            self.add_env_var(b'CONFIG_FILE',
+            self.add_env_var('CONFIG_FILE',
                              self.c_dict['CONFIG_FILE'])
         else:
             self.logger.error(
@@ -825,4 +831,4 @@ class TcStatWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    util.run_stand_alone("tc_stat_wrapper", "TcStat")
+    util.run_stand_alone("tc_stat_wrapper", "TCStat")

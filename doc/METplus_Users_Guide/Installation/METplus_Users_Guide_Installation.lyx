@@ -214,115 +214,6 @@ GitHub account (if you plan on contributing code to METplus Wrappers)
 \end_layout
 
 \begin_layout Section
-METplus Wrappers directory structure 
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:METplus-directory-structure"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-Once you have cloned the METplus Wrappers from the GitHub repository at
- https://github.com/NCAR/METplus to a location on your host, change directories
- to the METplus Wrappers directory.
- You should have the following directory structure:
-\end_layout
-
-\begin_layout LyX-Code
-
-\series medium
-METplus
-\series default
-
-\begin_inset Separator latexpar
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout LyX-Code
-
-\series medium
-doc
-\end_layout
-
-\begin_layout LyX-Code
-internal_tests
-\end_layout
-
-\begin_layout LyX-Code
-parm
-\end_layout
-
-\begin_layout LyX-Code
-sorc
-\end_layout
-
-\begin_layout LyX-Code
-ush
-\end_layout
-
-\begin_layout LyX-Code
-README.md
-\end_layout
-
-\end_deeper
-\begin_layout Standard
-
-\series medium
-The top-level METplus Wrappers directory consists of a README.md file and
- several subdirectories.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The doc/ directory contains documentation for users (PDF) and Doxygen files
- that are used to create the developer documentaton.
- The Doxygen documentation can be created and viewed via web browser if
- the developer has Doxygen installed on the host.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The internal_tests/ directory contains unit test scripts that are only relevant
- to METplus Wrappers developers and contributors.
-\end_layout
-
-\begin_layout Standard
-The parm/ directory contains all the configuration files for MET and METplus
- Wrappers.
-\end_layout
-
-\begin_layout Standard
-The sorc/ directory contains Doxygen executables to generate documentation
- for developers.
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The src/ directory contains the source code for each of the wrappers in
- METplus Wrappers.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-The ush/ directory contains the Python wrappers to the MET tools.
- 
-\end_layout
-
-\begin_layout Section
 Getting the METplus Wrappers source code
 \begin_inset CommandInset label
 LatexCommand label
@@ -438,17 +329,54 @@ tar xvfz
 \end_layout
 
 \begin_layout Itemize
-Create a directory for the sample data directory
+Create a directory for the sample data directory for the use case you are
+ interested in running
 \end_layout
 
 \begin_layout Itemize
-Click on the 
-\shape italic
-sample_data.tar.gz 
-\shape default
-link and when prompted, save the file to the directory you created above
+Click on the sample data link for the use case you will run and when prompted,
+ save the file to the directory you created above.
+ Sample data are available for the following use cases:
 \end_layout
 
+\begin_deeper
+\begin_layout Itemize
+Cyclone Track and Feature: 
+\shape italic
+sample_data-cyclone_track_feature.tgz
+\end_layout
+
+\begin_layout Itemize
+Ensemble: 
+\shape italic
+sample_data-ensemble.tgz
+\end_layout
+
+\begin_layout Itemize
+Grid-to-Grid: 
+\shape italic
+sample_data-grid_to_grid.tgz
+\end_layout
+
+\begin_layout Itemize
+Grid-to-Obs: 
+\shape italic
+sample_data-grid_to_obs.tgz
+\end_layout
+
+\begin_layout Itemize
+Mode: 
+\shape italic
+sample_data-mode.tgz
+\end_layout
+
+\begin_layout Itemize
+QPF: 
+\shape italic
+sample_data-qpf.tgz
+\end_layout
+
+\end_deeper
 \begin_layout Subsection
 Get the source code via Command line 
 \begin_inset CommandInset label
@@ -499,6 +427,114 @@ to
 git pull
 \shape default
  at the command line
+\end_layout
+
+\begin_layout Section
+METplus Wrappers directory structure 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:METplus-directory-structure"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+Once you have cloned the METplus Wrappers from the GitHub repository at
+ https://github.com/NCAR/METplus to a location on your host, change directories
+ to the METplus Wrappers directory.
+ You should have the following directory structure:
+\end_layout
+
+\begin_layout LyX-Code
+
+\series medium
+METplus
+\series default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+
+\series medium
+doc
+\end_layout
+
+\begin_layout LyX-Code
+internal_tests
+\end_layout
+
+\begin_layout LyX-Code
+parm
+\end_layout
+
+\begin_layout LyX-Code
+sorc
+\end_layout
+
+\begin_layout LyX-Code
+ush
+\end_layout
+
+\begin_layout LyX-Code
+README.md
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+
+\series medium
+The top-level METplus Wrappers directory consists of a README.md file and
+ several subdirectories.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The doc/ directory contains documentation for users (PDF) and Doxygen files
+ that are used to create the developer documentaton.
+ The Doxygen documentation can be created and viewed via web browser if
+ the developer has Doxygen installed on the host.
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The internal_tests/ directory contains unit test scripts that are only relevant
+ to METplus Wrappers developers and contributors.
+\end_layout
+
+\begin_layout Standard
+The parm/ directory contains all the configuration files for MET and METplus
+ Wrappers.
+\end_layout
+
+\begin_layout Standard
+The sorc/ directory contains Doxygen executables to generate documentation
+ for developers.
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The src/ directory contains the source code for each of the wrappers in
+ METplus Wrappers.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series medium
+The ush/ directory contains the Python wrappers to the MET tools.
 \end_layout
 
 \begin_layout Section
@@ -772,7 +808,7 @@ location of METplus parm directory
 \end_deeper
 \end_deeper
 \begin_layout Standard
-They must be fully defined by replacing all variables with 
+They must be fully defined by replacing all variables preset to 
 \shape italic
 </path/to> 
 \shape default
@@ -822,8 +858,7 @@ Example: Using a “default”configuration
 \end_layout
 
 \begin_layout Plain Layout
-create your own config file and under the [config] header/family section,
- add the following:
+Copy and paste the following into an empty text file:
 \end_layout
 
 \begin_layout Plain Layout

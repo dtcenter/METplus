@@ -2,7 +2,7 @@
 a flat bash script that will run the entire test suite, one test at a
 time."""
 
-import StringIO
+from io import StringIO
  
 __all__=['bash_functions','BashRunner']
 
@@ -176,7 +176,7 @@ function atparse {
 class ProdutilRunner(produtil.testing.parsetree.Context):
     """!Uses produtil.run to generate an mpirun command from a
     produtil.testing.parsetree.SpawnProcess object"""
-    def __init__(self,scopes,token,run_mode,logger,MPI):
+    def __init__(self,scopes,token,run_mode,logger,MPI,nodesize):
         """!Constructor
 
         @param scopes a list of nested scopes to search when resolving
@@ -195,10 +195,13 @@ class ProdutilRunner(produtil.testing.parsetree.Context):
         if MPI=='lsf':      MPI='mpirun_lsf'
         if MPI=='lsfcray':  MPI='lsf_cray_intel'   # alias for Rocoto lsfcray
         if MPI=='mpich':    MPI='impi'
+        if MPI=='lsf_impi': MPI='impi'
         if MPI=='mvapich2': MPI='mpiexec'
+        if MPI=='moab':     MPI='moab_cray'        # alias for Rocoto moab
 
-        self.mpiimpl=produtil.run.make_mpi(MPI,total_tasks=-1,force=True,silent=True)
-    def mpirunner(self,spawnProcess):
+        self.mpiimpl=produtil.run.make_mpi(
+            MPI,total_tasks=nodesize,nodesize=nodesize,force=True,silent=True)
+    def mpirunner(self,spawnProcess,distribution):
         """!Generates the mpi launching command for the given
         produtil.testing.parsetree.SpawnProcess object
 
@@ -241,7 +244,7 @@ class ProdutilRunner(produtil.testing.parsetree.Context):
                 cmd=cmd+cmdpart
 
         if is_mpi:
-            cmd=produtil.run.mpirun(cmd,mpiimpl=mpiimpl,label_io=True)
+            cmd=produtil.run.mpirun(cmd,mpiimpl=mpiimpl,label_io=True,scheduler_distribution=distribution)
         return cmd.to_shell()
 
 class MPICHRunner(produtil.testing.parsetree.Context):
@@ -260,13 +263,13 @@ class MPICHRunner(produtil.testing.parsetree.Context):
         @param logger a logging.Logger for logging messages"""
         super(MPICHRunner,self).__init__(
             scopes,token,run_mode,logger)
-    def mpirunner(self,spawnProcess):
+    def mpirunner(self,spawnProcess,distribution):
         """!Generates the mpirun command for the given
         produtil.testing.parsetree.SpawnProcess object
 
         @param spawnProcess a description of the process to execute
         @returns a string containing the mpirun command"""
-        out=StringIO.StringIO()
+        out=StringIO()
         out.write('mpirun')
         for rank in spawnProcess.iterrank():
             out.write(' -np %d %s'%(
@@ -293,7 +296,7 @@ class LSFRunner(produtil.testing.parsetree.Context):
         @param logger a logging.Logger for logging messages"""
         super(LSFRunner,self).__init__(
             scopes,token,run_mode,logger)
-    def mpirunner(self,spawnProcess):
+    def mpirunner(self,spawnProcess,distribution):
         """!Generates the mpirun.lsf command for the given
         produtil.testing.parsetree.SpawnProcess object
 
@@ -309,7 +312,7 @@ class LSFRunner(produtil.testing.parsetree.Context):
         return 'mpirun.lsf '+prog
 
 def runner_context_for(con):
-    """!Returns a context with an mpirunner(spawnProcess) function,
+    """!Returns a context with an mpirunner(spawnProcess,distribution) function,
     such as the LSFRunner or MPICHRunner classes.
 
     @param con the context to use when resolving "plat%MPI" to get the
@@ -318,7 +321,8 @@ def runner_context_for(con):
     @returns A Context whose mpirunner() function can create MPI
     program launcher commands. """
     MPI=con.scopes[-1].resolve('plat%MPI').string_context(con)
-    return ProdutilRunner(con.scopes,con.token,con.run_mode,con.logger,MPI)
+    nodesize=con.scopes[-1].resolve('plat%cores_per_node').numeric_context(con)
+    return ProdutilRunner(con.scopes,con.token,con.run_mode,con.logger,MPI,nodesize)
 
 class BashRunner(object):
     """!Generates self-contained bash scripts that can run an entire test suite."""

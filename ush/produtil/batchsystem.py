@@ -76,7 +76,7 @@ def getenvs(names,fallback=None):
     for name in names:
         if name not in os.environ:           continue
         val=os.environ[name]
-        if not isinstance(val,basestring):   continue
+        if not isinstance(val,str):   continue
         if len(val)<1:                       continue
         return val
     return fallback

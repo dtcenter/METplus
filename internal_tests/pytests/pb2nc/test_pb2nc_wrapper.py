@@ -10,7 +10,9 @@ import pytest
 import config_metplus
 from pb2nc_wrapper import PB2NCWrapper
 import met_util as util
-
+import time_util
+import datetime
+from string_template_substitution import StringSub
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
@@ -26,13 +28,11 @@ def pytest_addoption(parser):
     parser.addoption("-c", action="store", help=" -c <test config file>")
 
 
-# @pytest.fixture
 def cmdopt(request):
     return request.config.getoption("-c")
 
 
 # -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
-@pytest.fixture
 def pb2nc_wrapper():
     """! Returns a default PB2NCWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -41,11 +41,9 @@ def pb2nc_wrapper():
 
     # PB2NCWrapper with configuration values determined by what is set in
     # the pb2nc_test.conf file.
-    conf = metplus_config()
-    return PB2NCWrapper(conf, None)
+    config = metplus_config()
+    return PB2NCWrapper(config, config.logger)
 
-
-@pytest.fixture
 def metplus_config():
     """! Create a METplus configuration object that can be
     manipulated/modified to
@@ -61,7 +59,8 @@ def metplus_config():
         produtil.log.postmsg('pb2nc_wrapper  is starting')
 
         # Read in the configuration object CONFIG
-        config = config_metplus.setup()
+        config = config_metplus.setup(util.baseinputconfs)
+        logger = util.get_logger(config)
         return config
 
     except Exception as e:
@@ -72,159 +71,6 @@ def metplus_config():
 
 # ------------------------ TESTS GO HERE --------------------------
 
-
-#------------------------
-#test_config
-#------------------------
-@pytest.mark.parametrize(
-    'key, value', [
-        ('APP_PATH', '/usr/local/met-8.0/bin/pb2nc'),
-        ('APP_NAME', 'pb2nc'),
-        ('START_DATE', '20170601'),
-        ('END_DATE', '20170630'),
-        ('PREPBUFR_DATA_DIR', '/d1/METplus_Mallory/data/prepbufr'),
-        ('PREPBUFR_MODEL_DIR_NAME', 'nam')
-    ]
-)
-def test_config(key, value):
-    pb = pb2nc_wrapper()
-    pb.pb_dict['START_DATE'] = '20170601'
-    pb.pb_dict['END_DATE'] = '20170630'
-    pb.pb_dict['PREPBUFR_MODEL_DIR_NAME'] = 'nam'
-
-    # Retrieve the value of the class attribute that corresponds to the key
-    # in the parametrization pb_key = pb.__getattribute__(key)
-    pb_key = pb.pb_dict[key]
-    assert (pb_key == value)
-
-
-@pytest.mark.parametrize(
-   'key, value', [
-       ('NC_FILE_TMPL', 'nam.t{init?fmt=%HH}z.prepbufr.tm{lead?fmt=%HH}'),
-       ('NC_FILE_TMPL', 'prepbufr.gdas.{valid?fmt=%Y%m%d%HH}')
-   ]
-)
-def test_set_attribute_after_wrapper_creation(key, value):
-    # Test that we can change the attribute defined in the config file
-    pb = pb2nc_wrapper()
-    pb.pb_dict['NC_FILE_TMPL'] = value
-    p_attr = pb.pb_dict[key]
-    assert (p_attr == value)
-
-
-# Get all seven values set in the OBS_BUFR_VAR_LIST in the test config file
-# and verify that we get what is expected.
-@pytest.mark.parametrize(
-    'element', [
-        pb2nc_wrapper().pb_dict['OBS_BUFR_VAR_LIST'][0],
-        pb2nc_wrapper().pb_dict['OBS_BUFR_VAR_LIST'][1]
-    ]
-)
-def test_get_obs_bufr_var_list(element):
-    # See if we can retrieve the OBS_BUFR_VAR_LIST and check that this is
-    # what we expect currently we have the following in the pb2nc_test.conf:
-    # OBS_BUFR_VAR_LIST = QOB, TOB
-    # verify that we have found each of these in the OBS_BUFR_VAR_LIST list.
-    var_list_conus_sfc = ['PMO', 'TOB']
-    var_list_upper_air = ['QOB', 'TOB']
-    # Determine if this is upper air or conus surface from the VERTICAL_LOCATION setting
-    print('element ', element)
-    pb = pb2nc_wrapper()
-    vert_loc = pb.pb_dict['VERTICAL_LOCATION']
-
-    if vert_loc == 'upper_air':
-        assert (element in var_list_upper_air)
-    if vert_loc == 'conus_sfc':
-        assert (element in var_list_conus_sfc)
-
-
-# -----------------------------
-# test_output_dir_name_creation
-# # -----------------------------
-def test_output_dir_name_creation_for_nam():
-    # Verify that the output directory name is being assembled correctly
-    wrapper = pb2nc_wrapper()
-    wrapper.pb_dict['PB2NC_OUTPUT_DIR'] = \
-        '/d1/minnawin/pb2nc_crow_test/nam/conus_sfc'
-    wrapper.pb_dict['PREPBUFR_DIR_REGEX'] = '.*nam.(2[0-9]{7})'
-    wrapper.pb_dict['PREPBUFR_FILE_REGEX'] = \
-        '.*nam.t([0-9]{2})z.prepbufr.tm([0-9]{2})'
-    wrapper.pb_dict['NC_FILE_TMPL'] = 'prepbufr.nam.{init?fmt=%Y%m%d}.t{cycle?fmt=%HH}z.tm{offset?fmt=%HH}.nc'
-    date = '20170617'
-    cycle = '12'
-    offset = '00'
-    # full file path for test data is:
-    full_filepath = '/d1/METplus_Mallory/data/prepbufr/nam/nam.20170617/nam' \
-                    '.t12z.prepbufr.tm00'
-    expected_outdir = wrapper.pb_dict['OUTPUT_BASE']
-    expected_model = wrapper.pb_dict['PREPBUFR_MODEL_DIR_NAME']
-    expected_loc = wrapper.pb_dict['VERTICAL_LOCATION']
-    expected_filename = str(
-        wrapper.pb_dict['PB2NC_OUTPUT_DIR']) + '/' + 'prepbufr.nam.' + date + '.t12z' + '.tm' + offset + '.nc'
-    expected_outfile = os.path.join(expected_outdir,
-                                    expected_model, expected_loc,
-                                    expected_filename)
-    pbFileInfo = namedtuple('pbFileInfo', 'full_filepath, date, cycle, offset')
-    relevant_pb_file = pbFileInfo(full_filepath, date, cycle, offset)
-    out_filename = wrapper.generate_output_nc_filename(relevant_pb_file)
-    assert (out_filename == expected_outfile)
-
-
-def test_output_dir_name_creation_for_gdas():
-    # Verify that the output directory name is being assembled correctly
-    wrapper = pb2nc_wrapper()
-    date = '2017060918'
-    input_filename = "prepbufr.gdas.2017060918"
-    cycle = None
-    offset = None
-    # full file path for test data is:
-    full_filepath = '/d1/METplus_Mallory/data/prepbufr/gdas/prepbufr.gdas' \
-                    '.2017060918'
-    expected_outdir = wrapper.pb_dict['OUTPUT_BASE']
-    expected_model = wrapper.pb_dict['PREPBUFR_MODEL_DIR_NAME']
-    expected_loc = wrapper.pb_dict['VERTICAL_LOCATION']
-    expected_filename = 'prepbufr.gdas.' + date + '.nc'
-    expected_outfile = os.path.join(expected_outdir,
-                                    expected_model, expected_loc,
-                                    expected_filename)
-    pbFileInfo = namedtuple('pbFileInfo', 'full_filepath, date, cycle, offset')
-    relevant_pb_file = pbFileInfo(full_filepath, date, cycle, offset)
-    out_filename = wrapper.generate_output_nc_filename(relevant_pb_file)
-    assert (out_filename == expected_outfile)
-
-
-def test_output_dir_name_creation_for_gdas_vsdb():
-    # Verify that the output directory name is being assembled correctly for
-    # VSDB files of the format:
-    # /tmp/gpfs/hps/nco/ops/com/gfs/prod/gdas.20180706/gdas.t00z.prepbufr
-    wrapper = pb2nc_wrapper()
-    date = '20180706'
-    cycle = '00'
-    offset = None
-    wrapper.pb_dict[
-        'PB2NC_OUTPUT_DIR'] = \
-        '/tmp/gpfs/hps/nco/ops/com/gfs/prod/gdas.20180706'
-    wrapper.pb_dict['PREPBUFR_DIR_REGEX'] = \
-        '.gpfs/hps/nco/ops/com/gfs/prod/gdas.(2[0-9]{7})'
-    wrapper.pb_dict['PREPBUFR_FILE_REGEX'] = \
-        'gdas.t([0-9]{2})z.prepbufr'
-    wrapper.pb_dict['NC_FILE_TMPL'] = 'gdas.t{cycle?fmt=%HH}z.nc'
-    full_filepath = \
-        '/gpfs/hps/nco/ops/com/gfs/prod/gdas.20180706/gdas.t00z.prepbufr'
-    expected_outdir = '/tmp/gpfs/hps/nco/ops/com/gfs/prod'
-    expected_model = 'gdas.' + date
-    expected_filename = 'gdas.t00z.nc'
-    expected_outfile = os.path.join(expected_outdir,
-                                    expected_model,
-                                    expected_filename)
-
-    pbFileInfo = namedtuple('pbFileInfo', 'full_filepath, date, cycle, offset')
-    relevant_pb_file = pbFileInfo(full_filepath, date, cycle, offset)
-    out_filename = wrapper.generate_output_nc_filename(relevant_pb_file)
-    # print('expected filename: ', expected_outfile)
-    # print('out filename: ', out_filename)
-    assert (out_filename == expected_outfile)
-
 # ---------------------
 # test_reformat_grid_id
 # ---------------------
@@ -233,7 +79,11 @@ def test_output_dir_name_creation_for_gdas_vsdb():
         'key, value', [
             ('G1', 'G001'),
             ('G100', 'G100'),
-            ('G10', 'G010')
+            ('G10', 'G010'),
+            ('123', '123'),
+            ('G1234', None),
+            ('GG', None),
+            ('G', None),
         ]
 )
 def test_reformat_grid_id(key, value):
@@ -242,311 +92,124 @@ def test_reformat_grid_id(key, value):
     reformatted = pb.reformat_grid_id(key)
     assert value == reformatted
 
-# -------------------
-# test_full_filepath
-# -------------------
+# ---------------------
+# test_find_and_check_output_file_skip
+# test that find_and_check_output_file returns correctly based on
+# if file exists and if 'skip if exists' is turned on
+# ---------------------
 @pytest.mark.parametrize(
-    # key = subdir, value = fname
-    'key, value', [
-        ('nam.20170601', 'nam.t00z.prepbufr.tm03'),
-        ('', 'prepbufr.gdas.2018010106')
-    ]
-)
-def test_full_filepath(key, value):
-    pb = pb2nc_wrapper()
-    subdir = key
-    fname = value
-    expected = os.path.join(pb.pb_dict['PREPBUFR_DATA_DIR'], subdir, fname)
-    full_fpath = pb.create_full_filepath(fname, subdir)
-    assert full_fpath == expected
-
-
-# --------------------------
-# test_pb_info_with_subdir
-# -------------------------
-def test_pb_info_with_subdir():
-    # Verify that the prepbufr file information is correctly
-    # curated into a list of named tuples. Testing on data that
-    # is separated into ymd dated subdirs. Perform test on only
-    # one subdirectory's worth of data.
-
-    # Make sure we are dealing with the GDAS data
-    pb = pb2nc_wrapper()
-    pb.pb_dict['PREPBUFR_FILE_REGEX'] =\
-        'nam.t([0-9]{2})z.prepbufr.tm([0-9]{2})'
-    pb.pb_dict['NC_FILE_TMPL'] =\
-        'prepbufr.{valid?fmt=%Y%m%d%H}.t{cycle?fmt=%HH}z.nc'
-    expected_file_subdir =\
-        '/d1/METplus_Mallory/data/prepbufr/nam/nam.20170615'
-    expected_files = ['nam.t00z.prepbufr.tm00', 'nam.t00z.prepbufr.tm03',
-                      'nam.t06z.prepbufr.tm00', 'nam.t06z.prepbufr.tm03',
-                      'nam.t12z.prepbufr.tm00', 'nam.t12z.prepbufr.tm03',
-                      'nam.t18z.prepbufr.tm00',  'nam.t18z.prepbufr.tm03']
-    # expected_ymd = '20170615'
-    num_expected_files = 8
-    expected_full_filepaths = []
-    for expected_file in expected_files:
-        expected_full_filepaths.append(os.path.join(expected_file_subdir,
-                                                   expected_file))
-
-    # Get the ymd of the first subdirectory
-    subdir = '/d1/METplus_Mallory/data/prepbufr/nam/nam.20170615'
-    ymd_match = re.match(r'.*(2[0-9]{7}).*', subdir)
-    ymd = ymd_match.group(1)
-    file_regex = 'nam.t([0-9]{2})z.prepbufr.tm([0-9]{2})'
-    logger = logging.getLogger("temp_log")
-    pb_files = util.get_files(subdir, file_regex, logger)
-    time_method = 'valid'
-    all_pb_info = []
-    for pb_file in pb_files:
-        pb_info = pb.retrieve_pb_time_info(pb_file, time_method, ymd)
-        all_pb_info.append(pb_info)
-
-    if len(all_pb_info) != num_expected_files:
-        # Fail there should be one entry for each file
-        assert True is False
-
-    for expected_full_filepath in expected_full_filepaths:
-        if expected_full_filepath not in pb_files:
-            assert True is False
-
-
-# ------------------------
-# test_pb_info_no_subdir
-# -----------------------
-def test_pb_info_no_subdir():
-    # Verify that the prepbufr file information is correctly
-    # curated into a list of named tuples. Testing on data that
-    # is separated into ymd dated subdirs. Test against the 20170601
-    # data file: prepbufr.gdas.2017060100
-    pb = pb2nc_wrapper()
-    # Make sure we are dealing with the GDAS data
-    pb.pb_dict['PREPBUFR_FILE_REGEX'] = 'prepbufr.gdas.(2[0-9]{9})'
-    pb.pb_dict['NC_FILE_TMPL'] = 'prepbufr.gdas.{valid?fmt=%Y%m%d%H}.nc]'
-    num_expected_files = 117
-    data_dir = '/d1/METplus_Mallory/data/prepbufr/gdas'
-    file_regex = 'prepbufr.gdas.2[0-9]{9}'
-    logger = logging.getLogger("test_log")
-    pb_files = util.get_files(data_dir, file_regex, logger)
-    time_method = 'valid'
-
-    test_file = os.path.join(data_dir, 'prepbufr.gdas.2017060100')
-    pb_info_list = []
-    for pb_file in pb_files:
-        pb_info = pb.retrieve_pb_time_info(pb_file, time_method)
-        pb_info_list.append(pb_info)
-
-    actual_full_filepaths = []
-    if len(pb_info_list) != num_expected_files:
-        # Fail, number of files is not what was expected
-        assert True is False
-
-    for pb_info in pb_info_list:
-        actual_full_filepaths.append(pb_info.full_filepath)
-
-    if test_file not in actual_full_filepaths:
-        # Fail, expected file not found
-        assert True is False
-
-
-def test_valid_times_nam():
-    # Verify that NAM files that are being used are within the correct valid
-    # time window. NAM files are separated into dated subdir (YMD) with
-    # cycle and offset times incorporated into their filenames.  The YMD,
-    # cycle, and offset information is used to determine the init time or
-    # valid time.
-    pb = pb2nc_wrapper()
-    pb.pb_dict['TIME_METHOD'] = 'BY_INIT'
-    pb.pb_dict['PREPBUFR_DATA_DIR'] = '/d1/METplus_Mallory/data/prepbufr'
-    pb.pb_dict['PREPBUFR_MODEL_DIR_NAME'] = 'nam'
-    pb.pb_dict['PREPBUFR_DIR_REGEX'] = '.*nam.(2[0-9]{7})'
-    pb.pb_dict['PREPBUFR_FILE_REGEX'] = \
-        '.*nam.t([0-9]{2})z.prepbufr.tm([0-9]{2})'
-    pb.pb_dict[
-        'NC_FILE_TMPL'] = 'prepbufr.{valid?fmt=%Y%m%d%H}.t{' \
-                          'cycle?fmt=%HH}z.nc.tm{offset?fmt=%HH}.nc'
-    pb.pb_dict['PREPBUFR_DATA_DIR'] = '/d1/METplus_Mallory/data/prepbufr'
-    pb.pb_dict['START_DATE'] = '2017060100'
-    pb.pb_dict['END_DATE'] = '2017060112'
-    pb.pb_dict['INTERVAL_TIME'] = '03'
-    relevant_pb_files = pb.get_pb_files_by_time()
-    print(relevant_pb_files)
-    expected_pb_files = [
-        '/d1/METplus_Mallory/data/prepbufr/nam/nam.20170601/nam.t00z'
-        '.prepbufr.tm00',
-        '/d1/METplus_Mallory/data/prepbufr/nam/nam.20170601/nam.t00z'
-        '.prepbufr.tm03',
-        '/d1/METplus_Mallory/data/prepbufr/nam/nam.20170601/nam.t06z'
-        '.prepbufr.tm00',
-        '/d1/METplus_Mallory/data/prepbufr/nam/nam.20170601/nam.t06z'
-        '.prepbufr.tm03',
-        '/d1/METplus_Mallory/data/prepbufr/nam/nam.20170601/nam.t12z'
-        '.prepbufr.tm03',
-        '/d1/METplus_Mallory/data/prepbufr/nam/nam.20170601/nam.t12z'
-        '.prepbufr.tm00']
-
-    # First, check if the number of relevant files equals the number
-    # of expected files
-    if len(relevant_pb_files) == len(expected_pb_files):
-        # Next, check that the files returned are what we expected for
-        # this particular set of data
-        for relevant_pb_file in relevant_pb_files:
-            if relevant_pb_file in expected_pb_files:
-                expected_pb_files.remove(relevant_pb_file)
-        if len(expected_pb_files) != 0:
-            # Fail, there are some files that were returned that were
-            # unexpected
-            assert True is False
-    else:
-        # Fail, number of relevant files are not what we were expecting
-        assert True is False
-
-
-def test_valid_times_gdas():
-    # Verify that GDAS files that are being used are within the correct valid
-    # time window. GDAS files have their valid times (YMDH) incorporated into
-    # their filenames.
-    pb = pb2nc_wrapper()
-    pb.pb_dict['TIME_METHOD'] = 'BY_VALID'
-    pb.pb_dict['PREPBUFR_DATA_DIR'] = '/d1/METplus_Mallory/data/prepbufr'
-    pb.pb_dict['PREPBUFR_MODEL_DIR_NAME'] = 'gdas'
-    pb.pb_dict['PREPBUFR_DIR_REGEX'] = ''
-    pb.pb_dict['PREPBUFR_FILE_REGEX'] = 'prepbufr.gdas.(2[0-9]{9})'
-    pb.pb_dict[
-        'NC_FILE_TMPL'] = 'prepbufr.gdas.{valid?fmt=%Y%m%d%H}.nc'
-    pb.pb_dict['START_DATE'] = '2017060100'
-    pb.pb_dict['END_DATE'] = '2017060118'
-    pb.pb_dict['INTERVAL_TIME'] = '06'
-    relevant_pb_files = pb.get_pb_files_by_time()
-    expected_pb_files = [
-        '/d1/METplus_Mallory/data/prepbufr/gdas/prepbufr.gdas.2017060100',
-        '/d1/METplus_Mallory/data/prepbufr/gdas/prepbufr.gdas.2017060106',
-        '/d1/METplus_Mallory/data/prepbufr/gdas/prepbufr.gdas.2017060112',
-        '/d1/METplus_Mallory/data/prepbufr/gdas/prepbufr.gdas.2017060118'
+    # key = grid_id, value = expected reformatted grid id
+        'exists, skip, run', [
+            (True, True, False),
+            (True, False, True),
+            (False, True, True),
+            (False, False, True),
         ]
-
-    # First, check if the number of relevant files equals the number
-    # of expected files
-    if len(relevant_pb_files) == len(expected_pb_files):
-        # Next, check that the files returned are what we expected for
-        # this particular set of data
-        for relevant_pb_file in relevant_pb_files:
-            if relevant_pb_file in expected_pb_files:
-                expected_pb_files.remove(relevant_pb_file)
-        if len(expected_pb_files) != 0:
-            # Fail, there are some files that were returned that were
-            # unexpected
-            assert True is False
-    else:
-        # Fail, number of relevant files are not what we were expecting
-        assert True is False
-    assert True is True
-
-
-def test_by_valid_for_nam_single_expected():
-    # Verify that NAM files that are being used are within the
-    # correct valid
-    # time window. NAM files are separated into dated subdir (YMD) with
-    # cycle and offset times incorporated into their filenames.  The YMD,
-    # cycle, and offset information is used to determine the init time or
-    # valid time.
+)
+def test_find_and_check_output_file_skip(exists, skip, run):
     pb = pb2nc_wrapper()
-    pb.pb_dict['TIME_METHOD'] = 'BY_VALID'
-    pb.pb_dict['PREPBUFR_DATA_DIR'] = '/d1/METplus_Mallory/data/prepbufr'
-    pb.pb_dict['PREPBUFR_MODEL_DIR_NAME'] = 'nam'
-    pb.pb_dict['PREPBUFR_DIR_REGEX'] = '.*nam.(2[0-9]{7})'
-    pb.pb_dict['PREPBUFR_FILE_REGEX'] = \
-        '.*nam.t([0-9]{2})z.prepbufr.tm([0-9]{2})'
-    pb.pb_dict[
-        'NC_FILE_TMPL'] = 'prepbufr.{valid?fmt=%Y%m%d%H}.t{' \
-                          'cycle?fmt=%HH}z.nc.tm{offset?fmt=%HH}.nc'
-    pb.pb_dict['START_DATE'] = '2017053100'
-    pb.pb_dict['END_DATE'] = '2017053123'
-    pb.pb_dict['INTERVAL_TIME'] = 1
-    relevant_pb_files = pb.get_pb_files_by_time()
-    expected_file =\
-        ['/d1/METplus_Mallory/data/prepbufr/nam/nam.20170601/nam.t00z.prepbufr.tm03']
-    if len(relevant_pb_files) == len(expected_file):
-        for relevant_pb_file in relevant_pb_files:
-            if relevant_pb_file in expected_file:
-                expected_file.remove(relevant_pb_file)
-        if len(expected_file) != 0:
-            # Didn't have exact match of actual and expected files
-            assert True is False
+    exist_file = 'wackyfilenametocreate'
+    non_exist_file = 'wackyfilethatdoesntexist'
+
+    # create fake file to test
+    create_fullpath = os.path.join(pb.config.getdir('OUTPUT_BASE'), exist_file)
+    open(create_fullpath, 'a').close()
+
+    # set time_info, output template/dir, skip if output exists flag
+    time_info = { 'valid' : datetime.datetime(2019, 2, 1, 0) }
+    pb.c_dict['OUTPUT_DIR'] = pb.config.getdir('OUTPUT_BASE')
+
+    pb.c_dict['SKIP_IF_OUTPUT_EXISTS'] = skip
+
+    if exists:
+        pb.c_dict['OUTPUT_TEMPLATE'] = exist_file
     else:
-        # Fail, didn't return the expected number of results
-        assert True is False
-    assert True
+        pb.c_dict['OUTPUT_TEMPLATE'] = non_exist_file
 
+    result = pb.find_and_check_output_file(time_info)
 
-def test_by_valid_for_nam_multiple_expected():
-    # Verify that NAM files that are being used are within the
-    # correct valid time window. NAM files are separated into dated
-    # subdir (# YMD) with cycle and offset times incorporated into their
-    # filenames.  The YMD, cycle, and offset information is used to
-    # determine the init time or valid time.
+    # cast result to bool because None isn't equal to False
+    assert bool(result) == run
+
+# ---------------------
+# test_get_command
+# test that command is generated correctly
+# ---------------------
+@pytest.mark.parametrize(
+    # list of input files
+        'infiles', [
+            [],
+            ['file1'],
+            ['file1', 'file2'],
+            ['file1', 'file2', 'file3'],
+        ]
+)
+def test_get_command(infiles):
     pb = pb2nc_wrapper()
-    pb.pb_dict['TIME_METHOD'] = 'BY_VALID'
-    pb.pb_dict['PREPBUFR_DATA_DIR'] = '/d1/METplus_Mallory/data/prepbufr'
-    pb.pb_dict['PREPBUFR_MODEL_DIR_NAME'] = 'nam'
-    pb.pb_dict['PREPBUFR_DIR_REGEX'] = '.*nam.(2[0-9]{7})'
-    pb.pb_dict['PREPBUFR_FILE_REGEX'] = \
-        '.*nam.t([0-9]{2})z.prepbufr.tm([0-9]{2})'
-    pb.pb_dict[
-        'NC_FILE_TMPL'] = 'prepbufr.{valid?fmt=%Y%m%d%H}.t{' \
-                          'cycle?fmt=%HH}z.nc.tm{offset?fmt=%HH}.nc'
-    pb.pb_dict['START_DATE'] = '2017060100'
-    pb.pb_dict['END_DATE'] = '2017060106'
-    pb.pb_dict['INTERVAL_TIME'] = '06'
-    relevant_pb_files = pb.get_pb_files_by_time()
-    expected_file = ['/d1/METplus_Mallory/data/prepbufr/nam/nam.20170601/nam'
-                     '.t00z.prepbufr.tm00',
-                     '/d1/METplus_Mallory/data/prepbufr/nam/nam.20170601/nam'
-                     '.t06z.prepbufr.tm00']
-    if len(relevant_pb_files) == len(expected_file):
-        for relevant_pb_file in relevant_pb_files:
-            if relevant_pb_file in expected_file:
-                expected_file.remove(relevant_pb_file)
-        if len(expected_file) != 0:
-            # Didn't have exact match of actual and expected files
-            assert True is False
+    pb.outfile = 'outfilename.txt'
+    pb.outdir = pb.config.getdir('OUTPUT_BASE')
+    outpath = os.path.join(pb.outdir, pb.outfile)
+    pb.infiles = infiles
+    config_file = pb.c_dict['CONFIG_FILE']
+    cmd = pb.get_command()
+    if not infiles:
+        expected_cmd = None
     else:
-        # Fail, didn't return the expected number of results
-        assert True is False
-    assert True
+        expected_cmd = pb.app_path + ' -v 2 ' + infiles[0] + ' ' + outpath + ' ' + config_file
+        if len(infiles) > 1:
+            for infile in infiles[1:]:
+                expected_cmd += ' -pbfile ' + infile
 
+    assert cmd == expected_cmd
 
-def test_by_valid_for_gdas_multiple_expected():
-    # Test that the correct GDAS prepbufr files are selected when
-    # given valid begin and end times. GDAS files have the valid time
-    # incorporated in the filename.
-
+# ---------------------
+# test_find_input_files
+# test files can be found with find_input_files with varying offset lists
+# ---------------------
+@pytest.mark.parametrize(
+    # offset = list of offsets to search
+    # offset_to_find = expected offset file to find, None if no files should be found
+        'offsets, offset_to_find', [
+            ([6, 5, 4, 3], 5),
+            ([6, 4, 3], 3),
+            ([2, 3, 4, 5, 6], 3),
+            ([2, 4, 6], None),
+        ]
+)
+def test_find_input_files(offsets, offset_to_find):
     pb = pb2nc_wrapper()
-    pb.pb_dict['TIME_METHOD'] = 'BY_VALID'
-    pb.pb_dict['PREPBUFR_DATA_DIR'] = '/d1/METplus_Mallory/data/prepbufr'
-    pb.pb_dict['PREPBUFR_MODEL_DIR_NAME'] = 'gdas'
-    pb.pb_dict['PREPBUFR_DIR_REGEX'] = ''
-    pb.pb_dict['PREPBUFR_FILE_REGEX'] = \
-        '.*prepbufr.gdas.(2[0-9]{9})'
-    pb.pb_dict[
-        'NC_FILE_TMPL'] = 'prepbufr.gdas.{valid?fmt=%Y%m%d%H}.nc'
-    pb.pb_dict['START_DATE'] = '2017061200'
-    pb.pb_dict['END_DATE'] = '2017061309'
-    pb.pb_dict['INTERVAL_TIME'] = 24
-    relevant_pb_files = pb.get_pb_files_by_time()
-    expected_file = [
-        '/d1/METplus_Mallory/data/prepbufr/gdas/prepbufr.gdas.2017061200',
-        '/d1/METplus_Mallory/data/prepbufr/gdas/prepbufr.gdas.2017061300']
+    # for valid 20190201_12, offsets 3 and 5, create files to find
+    # in the fake input directory based on input template
+    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 12) }
+    fake_input_dir = os.path.join(pb.config.getdir('OUTPUT_BASE'), 'pbin')
 
-    if len(relevant_pb_files) == len(expected_file):
-        for relevant_pb_file in relevant_pb_files:
-            if relevant_pb_file in expected_file:
-                expected_file.remove(relevant_pb_file)
-        if len(expected_file) != 0:
-            # Didn't have exact match of actual and expected files
-            assert True is False
+    if not os.path.exists(fake_input_dir):
+        os.makedirs(fake_input_dir)
+
+    pb.c_dict['OBS_INPUT_DIR'] = fake_input_dir
+
+    for offset in [3, 5]:
+        input_dict['offset'] = int(offset * 3600)
+        time_info = time_util.ti_calculate(input_dict)
+
+        create_file = StringSub(pb.logger,
+                                pb.c_dict['OBS_INPUT_TEMPLATE'],
+                                **time_info).do_string_sub()
+        create_fullpath = os.path.join(fake_input_dir, create_file)
+        open(create_fullpath, 'a').close()
+
+
+    # unset offset in time dictionary so it will be computed
+    del input_dict['offset']
+
+    # set offset list
+    pb.c_dict['OFFSETS'] = offsets
+
+    # look for input files based on offset list
+    result = pb.find_input_files(input_dict)
+
+    # check if correct offset file was found, if None expected, check against None
+    if offset_to_find is None:
+        assert result is None
     else:
-        # Fail, didn't return the expected number of results
-        assert True is False
-    assert True
-
+        assert result['offset_hours'] == offset_to_find

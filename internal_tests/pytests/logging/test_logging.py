@@ -25,13 +25,13 @@ def pytest_addoption(parser):
 def cmdopt(request):
     return request.config.getoption("-c")
 
-@pytest.fixture
+#@pytest.fixture
 def get_test_config():
-    config_instance = config_metplus.setup()
+    config_instance = config_metplus.setup(util.baseinputconfs)
     return config_instance
 
 
-@pytest.fixture
+#@pytest.fixture
 def get_test_logger():
     # Create a logger object based on the logging_test.conf
     config_instance = get_test_config()
