@@ -58,7 +58,7 @@ class MakePlotsWrapper(CommandBuilder):
                  c_dict  - a dictionary containing the settings in the
                            configuration files unique to the wrapper
         """
-        c_dict = super(MakePlotsWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = (
             self.config.getstr('config','LOG_MAKE_PLOTS_VERBOSITY',
                                c_dict['VERBOSITY'])

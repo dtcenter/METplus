@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import sys
 sys.path.insert(0, '/contrib/anaconda/anaconda2/4.4.0/lib/python2.7/site-packages')
 sys.path.insert(0, '/contrib/anaconda/anaconda2/4.4.0/lib/site-python')

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import print_function
+
 import os
 import sys
 import re
@@ -11,8 +11,6 @@ import pytest
 import config_metplus
 from mtd_wrapper import MTDWrapper
 import met_util as util
-#from met_util import FieldObj
-#from task_info import TaskInfo
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #

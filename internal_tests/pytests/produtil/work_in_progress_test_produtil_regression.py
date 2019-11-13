@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-from __future__ import print_function
+
 import os
 import subprocess
-#import produtil.setup
 import produtil
 import sys
 import logging

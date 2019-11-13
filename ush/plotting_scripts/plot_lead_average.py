@@ -10,7 +10,6 @@ Output Files: .png images
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
 import os
 import numpy as np
 import plot_util as plot_util
