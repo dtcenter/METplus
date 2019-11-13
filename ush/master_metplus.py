@@ -176,18 +176,20 @@ def main():
     for process in processes:
         if process.errors != 0:
             process_name = process.__class__.__name__.replace('Wrapper', '')
-            error_msg = '{} had {} error.'.format(process_name, process.errors)
+            error_msg = '{} had {} error'.format(process_name, process.errors)
             if process.errors > 1:
                 error_msg += 's'
+            error_msg += '.'
             logger.error(error_msg)
             total_errors += process.errors
 
     if total_errors == 0:
         logger.info('METplus has successfully finished running.')
     else:
-        error_msg = 'METplus has finished running but had {} error.'.format(total_errors)
+        error_msg = "METplus has finished running but had {} error".format(total_errors)
         if total_errors > 1:
             error_msg += 's'
+        error_msg += '.'
         logger.error(error_msg)
 
     exit()
