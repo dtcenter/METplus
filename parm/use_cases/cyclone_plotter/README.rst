@@ -6,7 +6,7 @@ To run the use case, run the following command in the specified order:
 
     cd to the <metplus-source-directory>/METplus, and run the following:
 
-    **python master_metplus.py -c parm/use_cases/cyclone_plotter/cyclone_plotter.conf -c parm/use_cases/cyclone_plotter/custom.conf**
+    **python ush/master_metplus.py -c parm/use_cases/cyclone_plotter/cyclone_plotter.conf -c parm/use_cases/cyclone_plotter/custom.conf**
 
     where *custom.conf* is the user's configuration file with the specified directories:
 
