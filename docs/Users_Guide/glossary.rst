@@ -6,14 +6,14 @@ METplus Configuration Glossary
 
    AAAAAA_THIS_IS_A_TEMPLATE
      Text goes here
-    
+
      | *Used by:*
      | *Family:*
      | *Default:*
 
    [DEPRECATED] ANLY_ASCII_REGEX_LEAD
      Please use OBS_SERIES_ANALYSIS_LEAD_REGEX instead. The regular expression describing the analysis (obs) file name (in ASCII format) of the intermediate file generated when running a series_by_lead process.
-    
+
      | *Used by:* SeriesByLead
      | *Family:* [regex_pattern]
      | *Default:*
@@ -772,56 +772,56 @@ METplus Configuration Glossary
      ENS_VAR1_LEVELS = A06, P500
      ENS_VAR2_LEVELS ="(0,*,*)", "(1,*,*)"
 
-     There can be <n> number of these variables defined in configuration files, simply increment the VAR1_ string to match the total number of variables being used, e.g.:
+     There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      ENS_VAR1_LEVELS
      ENS_VAR2_LEVELS
      ...
      ENS_VAR<n>_LEVELS
 
-     See reference *REF*(SC_Field_Info) for more information.
+     See reference *REF* (SC_Field_Info) for more information.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    ENS_VAR<n>_NAME
-     Define the name for the <n>th ensemble variable to be used in the analysis where <n> is an integer >= 1. There can be <n> number of these variables defined in configuration files, simply increment the VAR1_ string to match the total number of variables being used, e.g.:
+     Define the name for the <n>th ensemble variable to be used in the analysis where <n> is an integer >= 1. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      ENS_VAR1_NAME
      ENS_VAR2_NAME
      ...
      ENS_VAR<n>_NAME
      
-     See reference *REF*(SC_Field_Info) for more information.
+     See reference *REF* (SC_Field_Info) for more information.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    ENS_VAR<n>_OPTIONS
-     Define the options for the <n>th ensemble variable to be used in the analysis where <n> is an integer >= 1. These addition options will be applied to every name/level/threshold combination for VAR<n>. There can be <n> number of these variables defined in configuration files, simply increment the_VAR1_ string to match the total number of variables being used, e.g.:
+     Define the options for the <n>th ensemble variable to be used in the analysis where <n> is an integer >= 1. These addition options will be applied to every name/level/threshold combination for VAR<n>. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      ENS_VAR1_OPTIONS
      ENS_VAR2_OPTIONS
      ...
      ENS_VAR<n>_OPTION
  
-     See reference *REF*(sec:SC_Field_Info) for more information.
+     See reference *REF* (sec:SC_Field_Info) for more information.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    ENS_VAR<n>_THRESH
-     Define the threshold(s) for the <n>th ensemble variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items that must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le). There can be <n> number of these variables defined in configuration files, simply increment the_VAR1_ string to match the total number of variables being used, e.g.:
+     Define the threshold(s) for the <n>th ensemble variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items that must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le). There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      ENS_VAR1_THRESH
      ENS_VAR2_THRESH
      ...
      ENS_VAR<n>_THRESH
      
-     See reference *REF*"sec:SC_Field_Info" for more information.
+     See reference *REF* "sec:SC_Field_Info" for more information.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
@@ -1205,7 +1205,7 @@ METplus Configuration Glossary
      | *Family:*  [regex_pattern]
      | *Default:*  Varies
 
-  FCST_SERIES_ANALYSIS_NC_TILE_REGEX
+   FCST_SERIES_ANALYSIS_NC_TILE_REGEX
      Define the regular expression for input forecast files that are in netCDF.
 
      | *Used by:*  SeriesByLead, SeriesByInit
@@ -1456,7 +1456,7 @@ METplus Configuration Glossary
      FCST_VAR1_LEVELS = A06, P500
      FCST_VAR2_LEVELS ="(0,*,*),(1,*,*)"
 
-     There can be <n> number of these variables defined in configuration files, simply increment the_VAR1_ string to match the total number of variables being used, e.g.:
+     There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      FCST_VAR1_LEVELS
      FCST_VAR2_LEVELS
@@ -1470,7 +1470,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    FCST_VAR<n>_NAME
-     Define the name for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. If FCST_VAR<n>_NAME is not set but OBS_VAR<n>_NAME is, the same information will be used for both variables. There can be s<n> number of these variables defined in configuration files, simply increment the_VAR1_ string to match the total number of variables being used, e.g.:
+     Define the name for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. If FCST_VAR<n>_NAME is not set but OBS_VAR<n>_NAME is, the same information will be used for both variables. There can be s<n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      FCST_VAR1_NAME
      FCST_VAR2_NAME
@@ -1486,7 +1486,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    FCST_VAR<n>_OPTIONS
-     Define the options for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. These addition options will be applied to every name/level/threshold combination for VAR<n>. There can be <n> number of these variables defined in configuration files, simply increment the_VAR1_ string to match the total number of variables being used, e.g.:
+     Define the options for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. These addition options will be applied to every name/level/threshold combination for VAR<n>. There can be <n> number of these variables defined in configuration files, simply increment the VAR1  string to match the total number of variables being used, e.g.:
 
      FCST_VAR1_OPTIONS
      FCST_VAR2_OPTIONS
@@ -1500,7 +1500,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    FCST_VAR<n>_THRESH
-     Define the threshold(s) for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items that must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le). If FCST_VAR<n>_THRESH is not set but OBS_VAR<n>_THRESH is, the same information will be used for both variables. There can be <n> number of these variables defined in configuration files, simply increment the_VAR1_ string to match the total number of variables being used, e.g.:
+     Define the threshold(s) for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items that must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le). If FCST_VAR<n>_THRESH is not set but OBS_VAR<n>_THRESH is, the same information will be used for both variables. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
      FCST_VAR1_THRESH
      FCST_VAR2_THRESH
      ...
@@ -2081,7 +2081,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    MODEL<n>_NAME
-     Define the model name for the first model to be used in the analysis. This is the model name listed in the MET .stat files.There can be <n> number of models defined in configuration files, simply increment the "MODEL1_" string to match the total number of models being used, e.g.:
+     Define the model name for the first model to be used in the analysis. This is the model name listed in the MET .stat files.There can be <n> number of models defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
 
      MODEL1_NAME
      MODEL2_NAME
@@ -2093,7 +2093,7 @@ METplus Configuration Glossary
      | *Default:* Varies
 
    MODEL<n>_NAME_ON_PLOT
-     Define the name the first model will be listed as on the plots. There can be <n> number of models defined in configuration files, simply increment the "MODEL1_" string to match the total number of models being used, e.g.:
+     Define the name the first model will be listed as on the plots. There can be <n> number of models defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
 
      MODEL1_NAME_ON_PLOT
      MODEL2_NAME_ON_PLOT
@@ -2105,7 +2105,7 @@ METplus Configuration Glossary
      | *Default:* Varies
 
    MODEL<n>_OBS_NAME
-     Define the observation name that was used to compare the first model to be. This is the observation name listed in the MET .stat files. There can be <n> number of observation names defined in configuration files, simply increment the "MODEL1_" string to match the total number of models being used, e.g.:
+     Define the observation name that was used to compare the first model to be. This is the observation name listed in the MET .stat files. There can be <n> number of observation names defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
 
      MODEL1_OBS_NAME
      MODEL2_OBS_NAME
@@ -2117,7 +2117,7 @@ METplus Configuration Glossary
      | *Default:* Varies
 
    MODEL<n>_STAT_DIR
-     Define the stat file directory for the first model to be used in the analysis. There can be <n> number of model directories defined in configuration files, simply increment the "MODEL1_" string to match the total number of models being used, e.g.:
+     Define the stat file directory for the first model to be used in the analysis. There can be <n> number of model directories defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
 
      MODEL1_DIR
      MODEL2_DIR
@@ -3023,7 +3023,7 @@ METplus Configuration Glossary
      OBS_VAR1_LEVELS = A06, P500
      OBS_VAR2_LEVELS = "(0,*,*)", "(1,*,*)"
 
-     There can be <n> number of these variables defined in configuration files, simply increment the_VAR1_ string to match the total number of variables being used, e.g.:
+     There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      OBS_VAR1_LEVELS
      OBS_VAR2_LEVELS
@@ -3035,7 +3035,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    OBS_VAR<n>_NAME
-     Define the name for the <n>th observation variable to be used in the analysis where <n> is an integer >= 1. If OBS_VAR<n>_NAME is not set but FCST_VAR<n>_NAME is, the same information will be used for both variables. There can be <n> number of these variables defined in configuration files, simply increment the_VAR1_ string to match the total number of variables being used, e.g.:
+     Define the name for the <n>th observation variable to be used in the analysis where <n> is an integer >= 1. If OBS_VAR<n>_NAME is not set but FCST_VAR<n>_NAME is, the same information will be used for both variables. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      OBS_VAR1_NAME
      OBS_VAR2_NAME
@@ -3049,7 +3049,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    OBS_VAR<n>_OPTIONS
-     Define the options for the <n>th observation variable to be used in the analysis where <n> is an integer >= 1. These addition options will be applied to every name/level/threshold combination for VAR<n>. If OBS_VAR<n>_OPTIONS is not set but FCST_VAR<n>_OPTIONS is, the same information will be used for both variables. There can be <n> number of these variables defined in configuration files, simply increment the_VAR1_ string to match the total number of variables being used, e.g.:
+     Define the options for the <n>th observation variable to be used in the analysis where <n> is an integer >= 1. These addition options will be applied to every name/level/threshold combination for VAR<n>. If OBS_VAR<n>_OPTIONS is not set but FCST_VAR<n>_OPTIONS is, the same information will be used for both variables. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      OBS_VAR1_OPTIONS
      OBS_VAR2_OPTIONS
@@ -3061,7 +3061,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    OBS_VAR<n>_THRESH
-     Define the threshold(s) for the <n>th observation variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items that must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le). If OBS_VAR<n>_THRESH is not set but FCST_VAR<n>_THRESH is, the same information will be used for both variables. There can be <n> number of these variables defined in configuration files, simply increment the_VAR1_ string to match the total number of variables being used, e.g.:
+     Define the threshold(s) for the <n>th observation variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items that must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le). If OBS_VAR<n>_THRESH is not set but FCST_VAR<n>_THRESH is, the same information will be used for both variables. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      OBS_VAR1_THRESH
      OBS_VAR2_THRESH
@@ -3693,7 +3693,7 @@ METplus Configuration Glossary
      | *Default:* 
 
    STAT_ANALYSIS_LOOKIN_DIR
-     Specify the input directory where the MET stat_analysis tool will find input files. This is the directory that the stat_analysis wrapper will use to build the argument to -lookin for the MET stat_analysis tool. It can contain wildcards, i.e. *.
+     Specify the input directory where the MET stat_analysis tool will find input files. This is the directory that the stat_analysis wrapper will use to build the argument to -lookin for the MET stat_analysis tool. It can contain wildcards, i.e. \*.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [dir]
@@ -4544,7 +4544,8 @@ METplus Configuration Glossary
 
      Examples:
 
-     APCP
+   APCP
+     Some text here
 
      | *Used by:*  PCPCombine
      | *Family:*  [config]
