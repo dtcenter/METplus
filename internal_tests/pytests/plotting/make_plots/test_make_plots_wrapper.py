@@ -40,7 +40,7 @@ def cmdopt(request):
 #
 # ------------Pytest fixtures that can be used for all tests ---------------
 #
-@pytest.fixture
+#@pytest.fixture
 def make_plots_wrapper():
     """! Returns a default MakePlotsWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -53,7 +53,7 @@ def make_plots_wrapper():
     return MakePlotsWrapper(config, config.logger)
 
 
-@pytest.fixture
+#@pytest.fixture
 def metplus_config():
     try:
         if 'JLOGFILE' in os.environ:
