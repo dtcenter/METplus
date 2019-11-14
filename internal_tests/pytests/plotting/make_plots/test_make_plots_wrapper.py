@@ -186,8 +186,7 @@ def test_create_c_dict():
                                     +mp.config.getstr('config',
                                                       'LOG_TIMESTAMP'))
     assert(c_dict['LOG_LEVEL'] == 'DEBUG')
-    assert(c_dict['MET_BASE'] == mp.config.getdir('MET_INSTALL_DIR')
-                                 +'/share/met')
+
 def test_list_to_str():
     # Independently test that a list of strings
     # are being converted to a one
