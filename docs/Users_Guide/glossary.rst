@@ -1723,7 +1723,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    GRID_STAT_VERIFICATION_MASK_TEMPLATE
-     Template used to specify the verification mask filename for the MET tool grid_stat.
+     Template used to specify the verification mask filename for the MET tool grid_stat. Now supports a list of filenames.
 
      | *Used by:*  GridStat
      | *Family:*  [filename_templates]
@@ -2276,7 +2276,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    MODE_VERIFICATION_MASK_TEMPLATE
-     Template used to specify the verification mask filename for the MET tool mode.
+     Template used to specify the verification mask filename for the MET tool mode. Now supports a list of filenames.
 
      | *Used by:*  Mode
      | *Family:*  [filename_templates]
@@ -3371,7 +3371,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    POINT_STAT_VERIFICATION_MASK_TEMPLATE
-     Template used to specify the verification mask filename for the MET tool point_stat.
+     Template used to specify the verification mask filename for the MET tool point_stat. Now supports a list of filenames.
 
      | *Used by:*  PointStat
      | *Family:*  [filename_templates]
