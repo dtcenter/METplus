@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line, and also
 # from the environment for the first two.
-SPHINXOPTS    ?=
+SPHINXOPTS    ?= -n
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
@@ -11,6 +11,10 @@ BUILDDIR      = _build
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+# Sphinx doesn't know to clean out the debris from sphinx-gallery
+clean:
+	rm -rf $(BUILDDIR)/* $(SOURCEDIR)/Users_Guide/template $(SOURCEDIR)/Users_Guide/met_tool_wrapper $(SOURCEDIR)/Users_Guide/model_applications
 
 .PHONY: help Makefile
 

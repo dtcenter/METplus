@@ -14,7 +14,7 @@ from metplus.util.config.string_template_substitution import StringSub
 
 
 def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
-    """! Retrieves the data from the MODEL_DATA_DIR (defined in metplus.conf)
+    """! Retrieves the data from the EXTRACT_TILES_GRID_INPUT_DIR (defined in metplus.conf)
          that corresponds to the storms defined in the tmp_filename:
         1) create the analysis tile and forecast file names from the
            tmp_filename file.
@@ -24,7 +24,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
            files via a latlon string with the following format:
                 latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
                 NOTE:  these values are defined in the extract_tiles_parm
-                parameter/config file as NLAT, NLON.
+                parameter/config file as EXTRACT_TILES_NLAT, EXTRACT_TILES_NLON.
         ***NOTE:  This is used by both extract_tiles_wrapper.py and
                series_by_lead_wrapper.py
         Args:
@@ -62,12 +62,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
     cur_function = sys._getframe().f_code.co_name
 
     # Get variables, etc. from param/config file.
-    model_data_dir = config.getdir('MODEL_DATA_DIR')
+    model_data_dir = config.getdir('EXTRACT_TILES_GRID_INPUT_DIR')
     met_install_dir = config.getdir('MET_INSTALL_DIR')
     regrid_data_plane_exe = os.path.join(met_install_dir,
                                          'bin/regrid_data_plane')
 
-    overwrite_flag = config.getbool('config', 'OVERWRITE_TRACK')
+    overwrite_flag = config.getbool('config', 'EXTRACT_TILES_OVERWRITE_TRACK')
 
     # Extract the columns of interest: init time, lead time,
     # valid time lat and lon of both tropical cyclone tracks, etc.
@@ -139,12 +139,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             # grib2 file.
             fcst_sts = \
                 StringSub(logger, config.getraw('filename_templates',
-                                            'GFS_FCST_FILE_TMPL'),
+                                            'FCST_EXTRACT_TILES_INPUT_TEMPLATE'),
                           init=init_dt, lead=lead_seconds)
 
             anly_sts = \
                 StringSub(logger, config.getraw('filename_templates',
-                                            'GFS_ANLY_FILE_TMPL'),
+                                            'OBS_EXTRACT_TILES_INPUT_TEMPLATE'),
                           valid=valid_dt, lead=lead_seconds)
 
             fcst_file = fcst_sts.do_string_sub()
@@ -195,12 +195,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             fcst_hr_str = str(fcst_hr).zfill(3)
 
             fcst_regridded_filename = \
-                config.getstr('regex_pattern', 'FCST_TILE_PREFIX') + \
+                config.getstr('regex_pattern', 'FCST_EXTRACT_TILES_PREFIX') + \
                 fcst_hr_str + "_" + fcst_anly_base
             fcst_regridded_file = os.path.join(tile_dir,
                                                fcst_regridded_filename)
             anly_regridded_filename = \
-                config.getstr('regex_pattern', 'ANLY_TILE_PREFIX') + \
+                config.getstr('regex_pattern', 'OBS_EXTRACT_TILES_PREFIX') + \
                 fcst_hr_str + "_" + fcst_anly_base
             anly_regridded_file = os.path.join(tile_dir,
                                                anly_regridded_filename)
@@ -290,7 +290,7 @@ def retrieve_var_info(config):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    var_list = util.getlist(config.getstr('config', 'VAR_LIST'))
+    var_list = util.getlist(config.getstr('config', 'SERIES_ANALYSIS_VAR_LIST'))
     extra_var_list = util.getlist(config.getstr('config',
                                             'EXTRACT_TILES_VAR_LIST'))
     full_list = []

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
 import pytest
 from string_template_substitution import StringSub
 from string_template_substitution import StringExtract

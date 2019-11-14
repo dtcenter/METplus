@@ -69,7 +69,7 @@ class StatAnalysisWrapper(CommandBuilder):
                  c_dict  - a dictionary containing the settings in the
                            configuration files unique to the wrapper
         """
-        c_dict = super(StatAnalysisWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = (
             self.config.getstr('config','LOG_STAT_ANALYSIS_VERBOSITY',
                                c_dict['VERBOSITY'])

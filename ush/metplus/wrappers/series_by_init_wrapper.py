@@ -35,13 +35,12 @@ class SeriesByInitWrapper(CommandBuilder):
         super().__init__(config, logger)
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
-        self.app_name = 'SeriesByInit'
-        self.stat_list = util.getlist(self.config.getstr('config', 'STAT_LIST'))
-        self.var_list = util.getlist(self.config.getstr('config', 'VAR_LIST'))
-        self.extract_tiles_dir = self.config.getdir('EXTRACT_TILES_OUTPUT_DIR')
-        self.series_out_dir = self.config.getdir('SERIES_BY_INIT_OUTPUT_DIR')
+        self.stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST'))
+        self.var_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_VAR_LIST'))
+        self.extract_tiles_dir = self.config.getdir('SERIES_ANALYSIS_INPUT_DIR')
+        self.series_out_dir = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR')
         self.series_filtered_out_dir = \
-            self.config.getdir('SERIES_BY_INIT_FILTERED_OUTPUT_DIR')
+            self.config.getdir('SERIES_ANALYSIS_FILTERED_OUTPUT_DIR')
         self.filter_opts = \
             self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
         self.fcst_ascii_file_prefix = 'FCST_ASCII_FILES_'
@@ -100,9 +99,9 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # Regridding via MET Tool regrid_data_plane.
         fcst_tile_regex = self.config.getstr('regex_pattern',
-                                             'FCST_NC_TILE_REGEX')
+                                             'FCST_SERIES_ANALYSIS_NC_TILE_REGEX')
         anly_tile_regex = self.config.getstr('regex_pattern',
-                                             'ANLY_NC_TILE_REGEX')
+                                             'OBS_SERIES_ANALYSIS_NC_TILE_REGEX')
 
         # Initialize the tile_dir to point to the extract_tiles_dir.
         # And retrieve a list of init times based on the data available in
@@ -512,7 +511,7 @@ class SeriesByInitWrapper(CommandBuilder):
                         param = \
                             self.config.getstr(
                                 'config',
-                                'SERIES_ANALYSIS_BY_INIT_CONFIG_FILE')
+                                'SERIES_ANALYSIS_CONFIG_FILE')
                         self.param = param
                         self.create_obs_fcst_arg('obs',
                                                  self.anly_ascii_file_prefix,
@@ -655,7 +654,7 @@ class SeriesByInitWrapper(CommandBuilder):
            Returns:
         """
         convert_exe = self.config.getexe('CONVERT')
-        background_map = self.config.getbool('config', 'BACKGROUND_MAP')
+        background_map = self.config.getbool('config', 'SERIES_ANALYSIS_BACKGROUND_MAP')
         plot_data_plane_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                            'bin/plot_data_plane')
         for cur_var in self.var_list:

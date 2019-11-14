@@ -49,9 +49,7 @@ from mtd_wrapper import MTDWrapper
 from usage_wrapper import UsageWrapper
 from command_builder import CommandBuilder
 from tcmpr_plotter_wrapper import TCMPRPlotterWrapper
-# Keep cyclone_plotter commented out in repository. It requires cartopy
-# If cartopy is not present then master_metplus will error and exit.
-# from cyclone_plotter_wrapper import CyclonePlotterWrapper
+from cyclone_plotter_wrapper import CyclonePlotterWrapper
 from pb2nc_wrapper import PB2NCWrapper
 from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TCStatWrapper
@@ -188,18 +186,20 @@ def main():
     for process in processes:
         if process.errors != 0:
             process_name = process.__class__.__name__.replace('Wrapper', '')
-            error_msg = '{} had {} error.'.format(process_name, process.errors)
+            error_msg = '{} had {} error'.format(process_name, process.errors)
             if process.errors > 1:
                 error_msg += 's'
+            error_msg += '.'
             logger.error(error_msg)
             total_errors += process.errors
 
     if total_errors == 0:
         logger.info('METplus has successfully finished running.')
     else:
-        error_msg = 'METplus has finished running but had {} error.'.format(total_errors)
+        error_msg = "METplus has finished running but had {} error".format(total_errors)
         if total_errors > 1:
             error_msg += 's'
+        error_msg += '.'
         logger.error(error_msg)
 
     exit()

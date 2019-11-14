@@ -163,9 +163,39 @@ def check_for_deprecated_config(conf, logger):
         {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS'},
         'TC_PAIRS_FORCE_OVERWRITE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS'},
         'GRID_STAT_CONFIG' : {'sec' : 'config', 'alt' : 'GRID_STAT_CONFIG_FILE'},
-        'MODE_CONFIG' : {'sec' : 'config', 'alt' : 'MODE_CONFIG_FILE'},
-        'FCST_PCP_COMBINE_INPUT_LEVEL' : {'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS'},
-        'OBS_PCP_COMBINE_INPUT_LEVEL' : {'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS'},
+        'MODE_CONFIG' : {'sec' : 'config', 'alt': 'MODE_CONFIG_FILE'},
+        'FCST_PCP_COMBINE_INPUT_LEVEL': {'sec': 'config', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS'},
+        'OBS_PCP_COMBINE_INPUT_LEVEL': {'sec': 'config', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS'},
+        'TIME_METHOD': {'sec': 'config', 'alt': 'LOOP_BY'},
+        'MODEL_DATA_DIR': {'sec': 'dir', 'alt': 'EXTRACT_TILES_GRID_INPUT_DIR'},
+        'STAT_LIST': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_STAT_LIST'},
+        'VAR_LIST': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_VAR_LIST'},
+        'NLAT': {'sec': 'config', 'alt': 'EXTRACT_TILES_NLAT'},
+        'NLON': {'sec': 'config', 'alt': 'EXTRACT_TILES_NLON'},
+        'DLAT': {'sec': 'config', 'alt': 'EXTRACT_TILES_DLAT'},
+        'DLON': {'sec': 'config', 'alt': 'EXTRACT_TILES_DLON'},
+        'LON_ADJ': {'sec': 'config', 'alt': 'EXTRACT_TILES_LON_ADJ'},
+        'LAT_ADJ': {'sec': 'config', 'alt': 'EXTRACT_TILES_LAT_ADJ'},
+        'OVERWRITE_TRACK': {'sec': 'config', 'alt': 'EXTRACT_TILES_OVERWRITE_TRACK'},
+        'BACKGROUND_MAP': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_BACKGROUND_MAP'},
+        'GFS_FCST_FILE_TMPL': {'sec': 'filename_templates', 'alt': 'FCST_EXTRACT_TILES_INPUT_TEMPLATE'},
+        'GFS_ANLY_FILE_TMPL': {'sec': 'filename_templates', 'alt': 'OBS_EXTRACT_TILES_INPUT_TEMPLATE'},
+        'FCST_TILE_PREFIX': {'sec': 'regex_patterns', 'alt': 'FCST_EXTRACT_TILES_PREFIX'},
+        'OBS_TILE_PREFIX': {'sec': 'regex_patterns', 'alt': 'OBS_EXTRACT_TILES_PREFIX'},
+        'FCST_TILE_REGEX': {'sec': 'regex_patterns', 'alt': 'FCST_SERIES_ANALYSIS_TILE_REGEX'},
+        'OBS_TILE_REGEX': {'sec': 'regex_patterns', 'alt': 'OBS_SERIES_ANALYSIS_TILE_REGEX'},
+        'FCST_NC_TILE_REGEX': {'sec': 'regex_patterns', 'alt': 'FCST_SERIES_ANALYSIS_NC_TILE_REGEX'},
+        'ANLY_NC_TILE_REGEX': {'sec': 'regex_patterns', 'alt': 'OBS_SERIES_ANALYSIS_NC_TILE_REGEX'},
+        'FCST_ASCII_REGEX_LEAD': {'sec': 'regex_patterns', 'alt': 'FCST_SERIES_ANALYSIS_LEAD_REGEX'},
+        'ANLY_ASCII_REGEX_LEAD': {'sec': 'regex_patterns', 'alt': 'OBS_SERIES_ANALYSIS_LEAD_REGEX'},
+        'SERIES_BY_LEAD_FILTERED_OUTPUT_DIR': {'sec': 'dir', 'alt': 'SERIES_ANALYSIS_FILTERED_OUTPUT_DIR'},
+        'SERIES_BY_INIT_FILTERED_OUTPUT_DIR': {'sec': 'dir', 'alt': 'SERIES_ANALYSIS_FILTERED_OUTPUT_DIR'},
+        'SERIES_BY_LEAD_OUTPUT_DIR': {'sec': 'dir', 'alt': 'SERIES_ANALYSIS_OUTPUT_DIR'},
+        'SERIES_BY_INIT_OUTPUT_DIR': {'sec': 'dir', 'alt': 'SERIES_ANALYSIS_OUTPUT_DIR'},
+        'SERIES_BY_LEAD_GROUP_FCSTS': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_GROUP_FCSTS'},
+        'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_CONFIG_FILE'},
+        'SERIES_ANALYSIS_BY_INIT_CONFIG_FILE': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_CONFIG_FILE'},
+
     }
 
     # template       '' : {'sec' : '', 'alt' : ''}
@@ -1009,12 +1039,12 @@ def create_grid_specification_string(lat, lon, logger, config):
 
     # Initialize the tile grid string
     # and get the other values from the parameter file
-    nlat = config.getstr('config', 'NLAT')
-    nlon = config.getstr('config', 'NLON')
-    dlat = config.getstr('config', 'DLAT')
-    dlon = config.getstr('config', 'DLON')
-    lon_subtr = config.getfloat('config', 'LON_ADJ')
-    lat_subtr = config.getfloat('config', 'LAT_ADJ')
+    nlat = config.getstr('config', 'EXTRACT_TILES_NLAT')
+    nlon = config.getstr('config', 'EXTRACT_TILES_NLON')
+    dlat = config.getstr('config', 'EXTRACT_TILES_DLAT')
+    dlon = config.getstr('config', 'EXTRACT_TILES_DLON')
+    lon_subtr = config.getfloat('config', 'EXTRACT_TILES_LON_ADJ')
+    lat_subtr = config.getfloat('config', 'EXTRACT_TILES_LAT_ADJ')
 
     # Format for regrid_data_plane:
     # latlon Nx Ny lat_ll lon_ll delta_lat delta_lonadj_lon =
@@ -1402,8 +1432,9 @@ def shift_time_seconds(time_str, shift):
     return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M%S") +
             datetime.timedelta(seconds=shift)).strftime("%Y%m%d%H%M%S")
 
-def starts_with_comparison(thresh_string):
-    """!Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le
+def get_threshold_via_regex(thresh_string):
+    """!Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le and then a number
+        Optionally can have multiple comparison/number pairs separated with && or ||.
         Args:
             @param thresh_string: String to examine, i.e. <=3.4
         Returns:
@@ -1413,44 +1444,33 @@ def starts_with_comparison(thresh_string):
             number in group 2 if valid
     """
     valid_comparisons = {">", ">=", "==", "!=", "<", "<=", "gt", "ge", "eq", "ne", "lt", "le"}
-    for comp in valid_comparisons:
-        match = re.match(r'^('+comp+r')([+-]?\d*\.?\d+)', thresh_string)
-        if match:
-            return match
-    return None
+    comparison_number_list = []
+    # split thresh string by || or &&
+    thresh_split = re.split(r'\|\||&&', thresh_string)
+    # check each threshold for validity
+    for thresh in thresh_split:
+        found_match = False
+        for comp in valid_comparisons:
+            # if valid, add to list of tuples
+            match = re.match(r'^('+comp+r')([+-]?\d*\.?\d*)$', thresh)
+            if match:
+                comparison_number_list.append((match.group(1), float(match.group(2))))
+                found_match = True
+                break
 
+        # if no match was found for the item, return None
+        if not found_match:
+            return None
 
-def get_number_from_threshold(thresh_string):
-    """ Removes comparison operator from threshold string.
-        Note: This only gets the first number in a complex comparison
-        Args:
-            @param thresh_string String to examine, i.e. <=3.4
-        Returns:
-            Number without comparison operator if valid string
-            None if invalid
-    """
-    match = starts_with_comparison(thresh_string)
-    if match:
-        return float(match.group(2))
-    return None
+    if not comparison_number_list:
+        return None
 
-def get_comparison_from_threshold(thresh_string):
-    """ Removes number from threshold string
-        Note: This only gets the first comparison in a complex comparison
-        Args:
-            @param thresh_string String to examine, i.e. <=3.4
-        Returns:
-            Comparison operator without number if valid string
-            None if invalid
-    """
-    match = starts_with_comparison(thresh_string)
-    if match:
-        return match.group(1)
-    return None
-
+    return comparison_number_list
 
 def validate_thresholds(thresh_list):
     """ Checks list of thresholds to ensure all of them have the correct format
+        Should be a comparison operator with number pair combined with || or &&
+        i.e. gt4 or >3&&<5 or gt3||lt1
         Args:
             @param thresh_list list of strings to check
         Returns:
@@ -1458,12 +1478,13 @@ def validate_thresholds(thresh_list):
     """
     valid = True
     for thresh in thresh_list:
-        match = starts_with_comparison(thresh)
+        match = get_threshold_via_regex(thresh)
         if match is None:
             valid = False
 
     if valid is False:
-        print("ERROR: Threshold values must start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt, or le")
+        print("ERROR: Threshold values must use >,>=,==,!=,<,<=,gt,ge,eq,ne,lt, or le with a number, "
+              "optionally combined with && or ||")
         return False
     return True
 

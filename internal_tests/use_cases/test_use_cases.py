@@ -34,7 +34,6 @@ param_files = [
                 use_case_dir+"/grid_to_grid/examples/precip_continuous.conf" ,
                 use_case_dir+"/mode/examples/hrefmean-vs-mrms-qpe-mode.conf",
                 use_case_dir+"/mode/examples/phpt-vs-qpe-mtd.conf",
-                use_case_dir+"/ensemble/examples/hrrr_ensemble_sfc.conf" ,
                 use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/conus_surface.conf",
                 use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/upper_air.conf",
                 use_case_dir+"/feature_relative/feature_relative.conf",

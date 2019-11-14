@@ -291,12 +291,12 @@ that reformat gridded data
                             return None
 
                         thresh_str = ""
-                        comparison = util.get_comparison_from_threshold(thresh)
-                        number = util.get_number_from_threshold(thresh)
-                        if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
-                            thresh_str += "thresh_lo=" + str(number) + "; "
-                        if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
-                            thresh_str += "thresh_hi=" + str(number) + "; "
+                        thresh_tuple_list = util.get_threshold_via_regex(thresh)
+                        for comparison, number in thresh_tuple_list:
+                            if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
+                                thresh_str += "thresh_lo=" + str(number) + "; "
+                            if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
+                                thresh_str += "thresh_hi=" + str(number) + "; "
 
                         field = "{ name=\"PROB\"; level=\"" + v_level + \
                                 "\"; prob={ name=\"" + v_name + \
@@ -463,9 +463,15 @@ that reformat gridded data
             string_sub = sts.StringSub(self.logger,
                                        template,
                                        **time_info)
-            filename = string_sub.do_string_sub()
-            self.c_dict['VERIFICATION_MASK'] = filename
-        return
+            filenames = string_sub.do_string_sub().split(',')
+            mask_list = []
+            for filename in filenames:
+                filename = filename.strip()
+                if filename[0] != '"' and filename[-1] != '"':
+                    filename = f'"{filename}"'
+                mask_list.append(filename)
+
+            self.c_dict['VERIFICATION_MASK'] = ','.join(mask_list)
 
     def get_command(self):
         """! Builds the command to run the MET application
