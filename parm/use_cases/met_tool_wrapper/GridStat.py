@@ -1,6 +1,6 @@
 """
-This is a grid_stat example
-===========================
+GridStat
+========
 
 """
 
@@ -8,4 +8,4 @@ This is a grid_stat example
 #
 # Some info for this use case here.
 #
-# .. image:: ../../../../docs/_static/METplus_logo.png
+# .. image:: ../../../docs/_static/METplus_logo.png
