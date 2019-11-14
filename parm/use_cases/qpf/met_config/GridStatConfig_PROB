@@ -98,9 +98,7 @@ climo_cdf_bins = 1;
 //
 mask = {
    grid = [];
-   poly = [ "${INPUT_BASE}/qpf/mask/CONUS_HRRRTLE.nc",
-            "${INPUT_BASE}/qpf/mask/EAST_HRRRTLE.nc",
-            "${INPUT_BASE}/qpf/mask/WEST_HRRRTLE.nc" ];
+   poly = [ ${VERIF_MASK} ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

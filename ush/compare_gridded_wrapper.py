@@ -463,9 +463,15 @@ that reformat gridded data
             string_sub = sts.StringSub(self.logger,
                                        template,
                                        **time_info)
-            filename = string_sub.do_string_sub()
-            self.c_dict['VERIFICATION_MASK'] = filename
-        return
+            filenames = string_sub.do_string_sub().split(',')
+            mask_list = []
+            for filename in filenames:
+                filename = filename.strip()
+                if filename[0] != '"' and filename[-1] != '"':
+                    filename = f'"{filename}"'
+                mask_list.append(filename)
+
+            self.c_dict['VERIFICATION_MASK'] = ','.join(mask_list)
 
     def get_command(self):
         """! Builds the command to run the MET application
