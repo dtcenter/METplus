@@ -21,14 +21,14 @@ if py_version < '3.6.3':
     print("Must be using Python 3.6.3 or higher. You are using {}".format(py_version))
     exit(1)
 
-import metplus_wrappers
+import metplus.wrappers
 
 import logging
 import shutil
 from datetime import datetime
 import produtil.setup
-import util.met_util as util
-import config_metplus
+import metplus.util.met_util as util
+import metplus.util.config.config_metplus as config_metplus
 
 # wrappers are referenced dynamically based on PROCESS_LIST values
 # import of each wrapper is required
@@ -74,7 +74,7 @@ def main():
     # Setup Task logger, Until Conf object is created, Task logger is
     # only logging to tty, not a file.
     logger = logging.getLogger('master_metplus')
-    logger.info('Starting METplus v%s', util.get_version_number())
+    logger.info('Starting METplus v%s', util.get_version_number(__file__))
 
     # Parse arguments, options and return a config instance.
     config = config_metplus.setup(util.baseinputconfs,
@@ -89,7 +89,7 @@ def main():
     # object has-a logger we want.
     logger = util.get_logger(config)
 
-    version_number = util.get_version_number()
+    version_number = util.get_version_number(__file__)
     config.set('config', 'METPLUS_VERSION', version_number)
     logger.info('Running METplus v%s called with command: %s',
                 version_number, ' '.join(sys.argv))
@@ -128,7 +128,7 @@ def main():
     for item in process_list:
         try:
             logger = config.log(item)
-            package_name = 'metplus_wrappers.' + util.camel_to_underscore(item) + '_wrapper'
+            package_name = 'metplus.wrappers.' + util.camel_to_underscore(item) + '_wrapper'
 #            command_builder = importlib.import_module('.'+item + 'Wrapper',
 #                                                      package_name)
             command_builder = \
