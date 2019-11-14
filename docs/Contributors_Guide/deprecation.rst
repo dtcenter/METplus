@@ -62,7 +62,9 @@ immediately. If you do this, you should check for LOOP_ORDER and then
 check for LOOP_METHOD if it is not set.
 
 In master_metplus.py:
+
 ::
+
     loop_order = config.getstr('config', 'LOOP_ORDER', '')
     if loop_order == '':
         loop_order = config.getstr('config', 'LOOP_METHOD')
