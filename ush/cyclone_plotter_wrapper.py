@@ -554,8 +554,6 @@ if __name__ == "__main__":
         produtil.log.postmsg('CyclonePlotter is starting')
         # pylint:disable=invalid-name
         p = config_metplus.setup()
-        if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = self.config.getdir('MET_BASE')
 
         # Request data extraction and plot generation.
         # pylint:disable=invalid-name

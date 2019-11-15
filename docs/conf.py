@@ -44,6 +44,9 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'Users_Guide/METplus_*.rst']
 
+# Suppress certain warning messages
+suppress_warnings = ['ref.citation']
+
 
 # -- Options for HTML output -------------------------------------------------
 
