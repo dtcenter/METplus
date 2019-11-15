@@ -133,77 +133,28 @@ class TCMPRPlotterWrapper(CommandBuilder):
                              'file. Using: %s' % os.environ['MET_INSTALL_DIR'])
         else:
 
-            # If MET_BUILD_BASE is defined in conf file, assume we are
-            # running with met-6.0 and earlier. Which means MET_INSTALL_DIR
-            # is NOT required, so we don't want to throw an error, if it is
+            #MET_INSTALL_DIR is required, so we want to throw an error if it is
             # not defined.
-            if self.config.has_option('dir', 'MET_BUILD_BASE'):
-                if self.config.has_option('dir', 'MET_INSTALL_DIR'):
-                    os.environ['MET_INSTALL_DIR'] = \
-                        self.config.getdir('MET_INSTALL_DIR')
+            if self.config.has_option('dir', 'MET_INSTALL_DIR'):
+                os.environ['MET_INSTALL_DIR'] = \
+                    self.config.getdir('MET_INSTALL_DIR')
             else:
-                os.environ['MET_INSTALL_DIR'] = self.config.getdir('MET_INSTALL_DIR')
+                self.logger.error('NO tcmpr_plot.R script could be found, '
+                                  'Check your MET_INSTALL_DIR path in your METplus conf file.')
+                sys.exit(1)
 
-        # MET_BASE has always been defined in METplus, so it 'should'
-        # exist, so we will throw an error, if it is not defined,
-        # even though it is not required if running METplus against
-        # met-6.0 and earlier.
-        if 'MET_BASE' in os.environ:
-            self.logger.info('Using MET_BASE setting from user '
-                             'environment instead of metplus configuration '
-                             'file. Using: %s' % os.environ['MET_BASE'])
-            met_base_tcmpr_script = \
-                os.path.join(os.environ['MET_BASE'], 'Rscripts/plot_tcmpr.R')
-        else:
-            os.environ['MET_BASE'] = self.config.getdir('MET_BASE')
-            met_base_tcmpr_script = \
-                os.path.join(self.config.getdir('MET_BASE'), 'Rscripts/plot_tcmpr.R')
 
-        # RSCRIPTS_BASE introduced and used ONLY in met-6.0 release.
-        # Will go away when we no longer support met-6.0 and earlier.
-        # RSCRIPTS_BASE /path/to/scripts/Rscripts
-        if 'RSCRIPTS_BASE' in os.environ:
-            self.logger.info('Using RSCRIPTS_BASE setting from user '
-                             'environment instead of metplus configuration '
-                             'file. Using: %s' % os.environ['RSCRIPTS_BASE'])
-        else:
-            # If MET_BUILD_BASE is defined in conf file, assume we are
-            # running with met-6.0 and earlier. Which means RSCRIPTS_BASE
-            # is required, so throw an error, if it is not defined.
-            if self.config.has_option('dir', 'MET_BUILD_BASE'):
-                os.environ['RSCRIPTS_BASE'] = self.config.getdir('RSCRIPTS_BASE')
+        met_tcmpr_script =\
+        os.path.join(self.config.getdir('MET_INSTALL_DIR'), 'share/met/Rscripts/plot_tcmpr.R')
 
-        # MET_BUILD_BASE has always been defined in METplus.
-        # Will go away when we no longer support met-6.0 and earlier.
-        if 'MET_BUILD_BASE' in os.environ:
-            self.logger.info('Using MET_BUILD_BASE setting from user '
-                             'environment instead of metplus configuration '
-                             'file. Using: %s' % os.environ['MET_BUILD_BASE'])
-            met_build_base_tcmpr_script = \
-                os.path.join(os.environ['MET_BUILD_BASE'],
-                             'scripts/Rscripts/plot_tcmpr.R')
-        else:
-            if self.config.has_option('dir', 'MET_BUILD_BASE'):
-                os.environ['MET_BUILD_BASE'] = self.config.getdir('MET_BUILD_BASE')
-                met_build_base_tcmpr_script = os.path.join(
-                    self.config.getdir('MET_BUILD_BASE'),
-                    'scripts/Rscripts/plot_tcmpr.R')
-            else:
-                # Set to empty string since we test it later.
-                met_build_base_tcmpr_script = ''
 
-        if util.file_exists(met_base_tcmpr_script):
-            self.tcmpr_script = met_base_tcmpr_script
-            self.logger.info('Using MET_BASE plot_tcmpr script: %s '
-                             % met_base_tcmpr_script)
-        elif util.file_exists(met_build_base_tcmpr_script):
-            self.tcmpr_script = met_build_base_tcmpr_script
-            self.logger.info('Using MET_BUILD_BASE plot_tcmpr script: %s '
-                             % met_build_base_tcmpr_script)
+        if util.file_exists(met_tcmpr_script):
+            self.tcmpr_script = met_tcmpr_script
+            self.logger.info("Using MET tool's plot_tcmpr R script: %s "
+                             % met_tcmpr_script)
         else:
             self.logger.error('NO tcmpr_plot.R script could be found, '
-                              'Check your MET_BASE or MET_BUILD_BASE ',
-                              'paths in conf file.')
+                              'Check your MET_INSTALL_DIR path in your METplus conf file.')
             sys.exit(1)
 
     def run_all_times(self):
