@@ -108,8 +108,8 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # config files.
         if 'MET_INSTALL_DIR' in os.environ:
             self.logger.info('Using MET_INSTALL_DIR setting from user '
-                             'environment instead of metplus configuration '
-                             'file. Using: %s' % os.environ['MET_INSTALL_DIR'])
+                             'metplus configuration setting. '
+                             'Using: %s' % self.config.getdir['MET_INSTALL_DIR'])
         else:
             # MET_INSTALL_DIR is required, so we want to throw an error if it is
             # not defined.
