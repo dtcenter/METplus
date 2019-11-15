@@ -569,8 +569,6 @@ Configuration
 | FCST_POINT_STAT_WINDOW_END (optional) `[sec:SC_F] <#sec:SC_F>`__
 | OBS_POINT_STAT_WINDOW_BEGIN (optional) `[sec:SC_O] <#sec:SC_O>`__
 | OBS_POINT_STAT_WINDOW_END (optional) `[sec:SC_O] <#sec:SC_O>`__
-| POINT_STAT_NEIGHBORHOOD_WIDTH (optional) `[sec:SC_P] <#sec:SC_P>`__
-| POINT_STAT_NEIGHBORHOOD_SHAPE (optional) `[sec:SC_P] <#sec:SC_P>`__
 
 **Deprecated:**
 

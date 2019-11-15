@@ -92,10 +92,6 @@ class PointStatWrapper(CompareGriddedWrapper):
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'point_stat')
 
-        c_dict['NEIGHBORHOOD_WIDTH'] = self.config.getstr('config',
-                                                          'POINT_STAT_NEIGHBORHOOD_WIDTH', '')
-        c_dict['NEIGHBORHOOD_SHAPE'] = self.config.getstr('config',
-                                                          'POINT_STAT_NEIGHBORHOOD_SHAPE', '')
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
                                'POINT_STAT_VERIFICATION_MASK_TEMPLATE')
@@ -285,16 +281,6 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.add_env_var('VERIF_MASK',
                              self.c_dict['VERIFICATION_MASK'])
             print_list.append('VERIF_MASK')
-
-        if self.c_dict['NEIGHBORHOOD_WIDTH'] != '':
-            self.add_env_var('NEIGHBORHOOD_WIDTH',
-                             self.c_dict['NEIGHBORHOOD_WIDTH'])
-            print_list.append('NEIGHBORHOOD_WIDTH')
-
-        if self.c_dict['NEIGHBORHOOD_SHAPE'] != '':
-            self.add_env_var('NEIGHBORHOOD_SHAPE',
-                             self.c_dict['NEIGHBORHOOD_SHAPE'])
-            print_list.append('NEIGHBORHOOD_SHAPE')
 
         # set user environment variables
         self.set_user_environment(time_info)

@@ -343,7 +343,7 @@ that reformat gridded data
         print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
                       "LEVEL", "OBTYPE", "CONFIG_DIR",
                       "FCST_FIELD", "OBS_FIELD",
-                      "INPUT_BASE", "MET_VALID_HHMM",
+                      "INPUT_BASE",
                       "CLIMO_FILE", "FCST_TIME"]
 
         var_info = self.c_dict['VAR_LIST'][0]
@@ -363,29 +363,21 @@ that reformat gridded data
              self.add_env_var("CLIMO_FILE", self.c_dict['CLIMO_FILE'])
         else:
             self.add_env_var("CLIMO_FILE", '')
-        # MET_VALID_HHMM should no longer be used and should be replaced with
-        # CLIMO_FILE in the GridStat config file. Leaving the variable in
-        # the environment so that people using older config files will still
-        # be able to run. The value is actually month/day, not HHMM
-        self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
         self.add_env_var("FCST_TIME", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("INPUT_BASE", self.c_dict["INPUT_BASE"])
 
         # add additional env vars if they are specified
-        if self.c_dict['NEIGHBORHOOD_WIDTH'] != '':
-            self.add_env_var('NEIGHBORHOOD_WIDTH',
-                             self.c_dict['NEIGHBORHOOD_WIDTH'])
-            print_list.append('NEIGHBORHOOD_WIDTH')
+        self.add_env_var('NEIGHBORHOOD_WIDTH',
+                         self.c_dict['NEIGHBORHOOD_WIDTH'])
+        print_list.append('NEIGHBORHOOD_WIDTH')
 
-        if self.c_dict['NEIGHBORHOOD_SHAPE'] != '':
-            self.add_env_var('NEIGHBORHOOD_SHAPE',
-                             self.c_dict['NEIGHBORHOOD_SHAPE'])
-            print_list.append('NEIGHBORHOOD_SHAPE')
+        self.add_env_var('NEIGHBORHOOD_SHAPE',
+                         self.c_dict['NEIGHBORHOOD_SHAPE'])
+        print_list.append('NEIGHBORHOOD_SHAPE')
 
-        if self.c_dict['VERIFICATION_MASK'] != '':
-            self.add_env_var('VERIF_MASK',
-                             self.c_dict['VERIFICATION_MASK'])
-            print_list.append('VERIF_MASK')
+        self.add_env_var('VERIF_MASK',
+                         self.c_dict['VERIFICATION_MASK'])
+        print_list.append('VERIF_MASK')
 
         # set user environment variables
         self.set_user_environment(time_info)

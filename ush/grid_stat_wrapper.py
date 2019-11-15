@@ -71,9 +71,9 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
         c_dict['NEIGHBORHOOD_WIDTH'] = self.config.getstr('config',
-                                                          'GRID_STAT_NEIGHBORHOOD_WIDTH', '')
+                                                          'GRID_STAT_NEIGHBORHOOD_WIDTH', '1')
         c_dict['NEIGHBORHOOD_SHAPE'] = self.config.getstr('config',
-                                                          'GRID_STAT_NEIGHBORHOOD_SHAPE', '')
+                                                          'GRID_STAT_NEIGHBORHOOD_SHAPE', 'SQUARE')
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
                                'GRID_STAT_VERIFICATION_MASK_TEMPLATE')
