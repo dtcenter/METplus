@@ -145,8 +145,6 @@ class MakePlotsWrapper(CommandBuilder):
         )
         c_dict['LOG_METPLUS'] = self.config.getstr('config', 'LOG_METPLUS')
         c_dict['LOG_LEVEL'] = self.config.getstr('config', 'LOG_LEVEL')
-        c_dict['MET_BASE'] = self.config.getstr('dir', 'MET_BASE')
-
         return c_dict
 
     def list_to_str(self, list_of_values):
@@ -262,7 +260,7 @@ class MakePlotsWrapper(CommandBuilder):
         model_info_list = []
         all_conf = self.config.keys('config')
         model_indices = []
-        regex = re.compile('MODEL(\d+)$')
+        regex = re.compile(r'MODEL(\d+)$')
         for conf in all_conf:
             result = regex.match(conf)
             if result is not None:

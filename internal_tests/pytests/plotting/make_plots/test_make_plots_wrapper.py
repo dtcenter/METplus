@@ -40,7 +40,7 @@ def cmdopt(request):
 #
 # ------------Pytest fixtures that can be used for all tests ---------------
 #
-@pytest.fixture
+#@pytest.fixture
 def make_plots_wrapper():
     """! Returns a default MakePlotsWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -53,7 +53,7 @@ def make_plots_wrapper():
     return MakePlotsWrapper(config, config.logger)
 
 
-@pytest.fixture
+#@pytest.fixture
 def metplus_config():
     try:
         if 'JLOGFILE' in os.environ:
@@ -136,7 +136,9 @@ def test_create_c_dict():
     c_dict = mp.create_c_dict()
     assert(c_dict['LOOP_ORDER'] == 'processes')
     assert(c_dict['PROCESS_LIST'] == 'StatAnalysis, MakePlots')
-    assert(c_dict['INPUT_BASE_DIR'] == mp.config.getdir('INPUT_BASE')
+    # NOTE: MakePlots relies on output from StatAnalysis
+    #       so its input resides in the output of StatAnalysis
+    assert(c_dict['INPUT_BASE_DIR'] == mp.config.getdir('OUTPUT_BASE')
                                        +'/plotting/stat_analysis')
     assert(c_dict['OUTPUT_BASE_DIR'] == mp.config.getdir('OUTPUT_BASE')
                                        +'/plotting/make_plots') 
@@ -186,8 +188,7 @@ def test_create_c_dict():
                                     +mp.config.getstr('config',
                                                       'LOG_TIMESTAMP'))
     assert(c_dict['LOG_LEVEL'] == 'DEBUG')
-    assert(c_dict['MET_BASE'] == mp.config.getdir('MET_INSTALL_DIR')
-                                 +'/share/met')
+
 def test_list_to_str():
     # Independently test that a list of strings
     # are being converted to a one

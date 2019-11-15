@@ -11,7 +11,8 @@ import met_util as util
 import produtil.setup
 import numpy as np
 import pandas as pd
-@pytest.fixture
+
+#@pytest.fixture
 def metplus_config():
     try:
         if 'JLOGFILE' in os.environ:
