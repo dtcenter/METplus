@@ -46,7 +46,7 @@ gridded observation data.
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GridStat.conf
 #
 # .. highlight:: none
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/GridStat.conf
+# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/GridStat.conf
 
 ##############################################################################
 # Running METplus
