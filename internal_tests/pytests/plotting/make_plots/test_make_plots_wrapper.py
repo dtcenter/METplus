@@ -136,7 +136,9 @@ def test_create_c_dict():
     c_dict = mp.create_c_dict()
     assert(c_dict['LOOP_ORDER'] == 'processes')
     assert(c_dict['PROCESS_LIST'] == 'StatAnalysis, MakePlots')
-    assert(c_dict['INPUT_BASE_DIR'] == mp.config.getdir('INPUT_BASE')
+    # NOTE: MakePlots relies on output from StatAnalysis
+    #       so its input resides in the output of StatAnalysis
+    assert(c_dict['INPUT_BASE_DIR'] == mp.config.getdir('OUPUT_BASE')
                                        +'/plotting/stat_analysis')
     assert(c_dict['OUTPUT_BASE_DIR'] == mp.config.getdir('OUTPUT_BASE')
                                        +'/plotting/make_plots') 
