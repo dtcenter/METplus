@@ -11,14 +11,14 @@ gridded observation data.
 # --------------------
 #
 # Compare 3 hour forecast precipitation accumulations to observations
-#  of 3 hour precipitation accumulation. Generate statistics of the results.
+# of 3 hour precipitation accumulation. Generate statistics of the results.
 
 ##############################################################################
 # Datasets
 # --------
 #
-# Forecast: WRF 3 hour precipitation accumulation
-# Observation: MU 3 hour precipitation accumulation
+# | Forecast: WRF 3 hour precipitation accumulation
+# | Observation: MU 3 hour precipitation accumulation
 
 ##############################################################################
 # METplus Components
@@ -35,7 +35,8 @@ gridded observation data.
 # GridStat is the only tool called in this example. It processes the following
 # run times:
 #
-# Init: 2005-08-07_0Z Forecast lead: 12
+# | Init: 2005-08-07_0Z 
+# | Forecast lead: 12
 
 ##############################################################################
 # METplus Configuration
@@ -54,14 +55,13 @@ gridded observation data.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in GridStat.conf then a user-specific system configuration file
+# 1) Passing in GridStat.conf then a user-specific system configuration file::
 #
-#   master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat.conf
-#     -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat.conf
+# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat.conf::
 #
-#   master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat.conf
 #
 # The former method is recommended.
 
