@@ -100,40 +100,18 @@ class TCMPRPlotterWrapper(CommandBuilder):
         variable."""
         # User environment variable settings take precedence over
         # configuration files.
-        # The purpose of this method is to support MET 6.0 and later,
-        # and to not throw a superfluous error, due to a missing  env variable
-        # that is version specific.
-        # For example,
-        # MET_INSTALL_DIR is required starting with met-6.1, so we don't
-        # want to throw an error if it is not defined and we are running
-        # with an earlier version of met.
-        #
-        # Ultimately, the plot_tcmpr.R script will throw an error
-        # indicating any missing required environment variables.
-        # So if all else fails, we defer to plot_tcmpr.R,
-        # We are being nice and trying to catch/prevent it here.
-
-        # The logic in this method is not perfect. So it is entirely
-        # possible for a scenario to exist that may cause this to
-        # break. It would be much easier if there was a way to check
-        # for the version of met. Hopefully it covers 99% of the cases.
-
-        # Environment variables and met versions required by the plot_tcmpr.R
-        # met-6.1 and later: MET_INSTALL_DIR, MET_BASE
-        # met-6.0: MET_BUILD_BASE, RSCRIPTS_BASE
-
-        # At some point in the future MET_BUILD_BASE and RSCRIPTS_BASE
-        # should go-away from all METplus references. When we no longer
-        # need to support MET 6.0, this method  can be simplified.
-
-        # MET_INSTALL_DIR introduced in METplus conf file, for met-6.1 and later
+        # The original purpose of this method was to support MET 6.0 and later,
+        # and to not throw a superfluous error, due to a missing env variable
+        # that is version specific.  Now that the supported MET version has moved
+        # beyond met-6.1, we have removed checking for environment variables and
+        # are now requiring that MET_INSTALL_DIR be defined in one of the METplus
+        # config files.
         if 'MET_INSTALL_DIR' in os.environ:
             self.logger.info('Using MET_INSTALL_DIR setting from user '
                              'environment instead of metplus configuration '
                              'file. Using: %s' % os.environ['MET_INSTALL_DIR'])
         else:
-
-            #MET_INSTALL_DIR is required, so we want to throw an error if it is
+            # MET_INSTALL_DIR is required, so we want to throw an error if it is
             # not defined.
             if self.config.has_option('dir', 'MET_INSTALL_DIR'):
                 os.environ['MET_INSTALL_DIR'] = \
