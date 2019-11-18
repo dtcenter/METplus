@@ -22,6 +22,8 @@ gridded observation data.
 #
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v2.2/sample_data-met_test-8.1.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+#
+# | **Data Source:** Unknown
 
 ##############################################################################
 # METplus Components
@@ -51,6 +53,31 @@ gridded observation data.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/GridStat.conf
+
+##############################################################################
+# MET Configuration
+# ---------------------
+#
+# METplus sets environment variables based on the values in the METplus configuration file.
+# These variables are referenced in the MET configuration file.
+#
+# .. highlight:: bash
+# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/GridStat.met
+#
+# Note the following variables are referenced in the MET configuration file.
+#
+# * **${MODEL}** - Name of forecast input. Corresponds to MODEL in the METplus configuration file.
+# * **${OBTYPE}** - Name of observation input. Corresponds to OBTYPE in the METplus configuration file.
+# * **${FCST_FIELD}** - Formatted forecast field information. Generated from FCST_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+# * **${OBS_FIELD}** - Formatted observation field information. Generated from OBS_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+# * **${CLIMO_FILE}** - Optional path to climatology file. Corresponds to CLIMO_GRID_STAT_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
+# * **${FCST_VAR}** - Field name of forecast data to process. Used in output_prefix to include input information in the output filenames. Corresponds to FCST_VAR<n>_NAME in the METplus configuration file.
+# * **${OBS_VAR}** - Field name of observation data to process. Used in output_prefix to include input information in the output filenames. Corresponds to OBS_VAR<n>_NAME in the METplus configuration file.
+# * **${LEVEL}** - Vertical level of the forecast input data. Used in output_prefix to include input information in the output filenames. Corresponds to FCST_VAR<n>_LEVELS in the METplus configuration file.
+# * **${VERIF_MASK}** - Optional verification mask file or list of files. Corresponds to GRID_STAT_VERIFICATION_MASK_TEMPLATE in the METplus configuration file.
+# * **${NEIGHBORHOOD_SHAPE}** - Shape of the neighborhood method applied. Corresponds to GRID_STAT_NEIGHBORHOOD_SHAPE in the METplus configuration file. Default value is 1 if not set.
+# * **${NEIGHBORHOOD_WIDTH}** - Width of the neighborhood method applied. Corresponds to GRID_STAT_NEIGHBORHOOD_WIDTH in the METplus configuration file. Default value is SQUARE if not set.
+#
 
 ##############################################################################
 # Running METplus
