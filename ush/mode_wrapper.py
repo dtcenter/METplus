@@ -112,7 +112,7 @@ class MODEWrapper(CompareGriddedWrapper):
         print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
                       "LEVEL", "OBTYPE", "CONFIG_DIR",
                       "FCST_FIELD", "OBS_FIELD",
-                      "QUILT",
+                      "QUILT", "VERIF_MASK",
                       "FCST_CONV_RADIUS", "FCST_CONV_THRESH",
                       "OBS_CONV_RADIUS", "OBS_CONV_THRESH",
                       "FCST_MERGE_THRESH", "FCST_MERGE_FLAG",
@@ -138,12 +138,7 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_MERGE_THRESH", self.c_dict["OBS_MERGE_THRESH"])
         self.add_env_var("FCST_MERGE_FLAG", self.c_dict["FCST_MERGE_FLAG"])
         self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"])
-
-        # add additional env vars if they are specified
-        if self.c_dict['VERIFICATION_MASK'] != '':
-            self.add_env_var('VERIF_MASK',
-                             self.c_dict['VERIFICATION_MASK'])
-            print_list.append('VERIF_MASK')
+        self.add_env_var('VERIF_MASK', self.c_dict['VERIFICATION_MASK'])
 
         # set user environment variables
         self.set_user_environment(time_info)

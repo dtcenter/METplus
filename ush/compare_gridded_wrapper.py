@@ -449,7 +449,7 @@ that reformat gridded data
     def get_verification_mask(self, time_info):
         """!If verification mask template is set in the config file,
             use it to find the verification mask filename"""
-        self.c_dict['VERIFICATION_MASK'] = ''
+        self.c_dict['VERIFICATION_MASK'] = '\"\"'
         if self.c_dict['VERIFICATION_MASK_TEMPLATE'] != '':
             template = self.c_dict['VERIFICATION_MASK_TEMPLATE']
             string_sub = sts.StringSub(self.logger,
