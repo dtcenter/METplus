@@ -63,7 +63,21 @@ gridded observation data.
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat.conf
 #
-# The former method is recommended.
+# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
+#
+# * INPUT_BASE - Path to directory where sample data tarballs found on the METplus release page are unpacked. This is not required to run METplus, but it is required to run the examples in parm/use_cases
+# * OUTPUT_BASE - Path where METplus output will be written. This must be in a location where you have write permissions
+# * MET_INSTALL_DIR - Path to location where MET is installed locally
+#
+# Example User Configuration File::
+#
+#   [dir]
+#   INPUT_BASE = /path/to/sample/input/data
+#   OUTPUT_BASE = /path/to/output/dir
+#   MET_INSTALL_DIR = /path/to/met-X.Y 
+#
+# NOTE: All of these items must be found under the [dir] section.
+#
 
 ##############################################################################
 # Expected Output
