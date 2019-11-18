@@ -37,13 +37,13 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                      'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
-        self.input_data = self.config.getdir('CYCLONE_INPUT_DIR')
-        self.output_dir = self.config.getdir('CYCLONE_OUTPUT_DIR')
-        self.init_date = self.config.getstr('config', 'CYCLONE_INIT_DATE')
-        self.init_hr = self.config.getstr('config', 'CYCLONE_INIT_HR')
-        self.model = self.config.getstr('config', 'CYCLONE_MODEL')
-        self.title = self.config.getstr('config', 'CYCLONE_PLOT_TITLE')
-        self.gen_ascii = self.config.getbool('config', 'GENERATE_TRACK_ASCII')
+        self.input_data = self.config.getdir('CYCLONE_PLOTTER_INPUT_DIR')
+        self.output_dir = self.config.getdir('CYCLONE_PLOTTER_OUTPUT_DIR')
+        self.init_date = self.config.getstr('config', 'CYCLONE_PLOTTER_INIT_DATE')
+        self.init_hr = self.config.getstr('config', 'CYCLONE_PLOTTER_INIT_HR')
+        self.model = self.config.getstr('config', 'CYCLONE_PLOTTER_MODEL')
+        self.title = self.config.getstr('config', 'CYCLONE_PLOTTER_PLOT_TITLE')
+        self.gen_ascii = self.config.getbool('config', 'CYCLONE_PLOTTER_GENERATE_TRACK_ASCII')
         # Create a set to keep track of unique storm_ids for each track file.
         self.unique_storm_id = set()
         # Data structure to separate data based on storm id.
@@ -52,8 +52,8 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.columns_of_interest = ['AMODEL', 'STORM_ID', 'BASIN', 'INIT',
                                     'LEAD', 'VALID', 'ALAT', 'ALON', 'BLAT',
                                     'BLON', 'AMSLP', 'BMSLP']
-        self.circle_marker = self.config.getint('config', 'CIRCLE_MARKER_SIZE')
-        self.cross_marker = self.config.getint('config', 'CROSS_MARKER_SIZE')
+        self.circle_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE')
+        self.cross_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CROSS_MARKER_SIZE')
 
     def run_all_times(self):
         """! Calls the defs needed to create the cyclone plots
@@ -543,25 +543,5 @@ class CyclonePlotterWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False,
-                                 jobname='CyclonePlotter',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False,
-                                 jobname='CyclonePlotter')
-        produtil.log.postmsg('CyclonePlotter is starting')
-        # pylint:disable=invalid-name
-        p = config_metplus.setup()
+    util.run_stand_alone("cyclone_plotter_wrapper", "CyclonePlotter")
 
-        # Request data extraction and plot generation.
-        # pylint:disable=invalid-name
-        cyclone = CyclonePlotterWrapper(p, None)
-        cyclone.run_all_times()
-        produtil.log.postmsg('CyclonePlotter completed')
-
-    except Exception as e:
-        produtil.log.jlogger.critical('CyclonePlotter failed: %s'
-                                      % (str(e),), exc_info=True)
-        sys.exit(2)
