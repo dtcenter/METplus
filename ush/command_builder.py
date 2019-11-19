@@ -268,69 +268,37 @@ class CommandBuilder:
         """
         return self.find_data(time_info, var_info, "OBS", mandatory)
 
-    def find_data(self, time_info, var_info, data_type, mandatory=True):
-        """! Finds the data file to compare
-              Args:
-                @param time_info dictionary containing timing information
-                @param var_info object containing variable information
-                @param data_type type of data to find (FCST or OBS)
-                @param mandatory if True, report error if not found, warning if not
-                  default is True
-                @rtype string
-                @return Returns the path to an observation file
-        """
-        # get time info
-        valid_time = time_info['valid_fmt']
+    def find_exact_file(self, template, data_dir, level, data_type, time_info, mandatory=True):
+        # perform string substitution
+        dsts = sts.StringSub(self.logger,
+                             template,
+                             level=(int(level.split('-')[0]) * 3600),
+                             **time_info)
+        filename = dsts.do_string_sub()
 
-        if var_info is not None:
-            # set level based on input data type
-            if data_type.startswith("OBS"):
-                v_level = var_info['obs_level']
+        # build full path with data directory and filename
+        full_path = os.path.join(data_dir, filename)
+
+        self.logger.debug(f"Looking for {data_type} file {full_path}")
+
+        # check if desired data file exists and if it needs to be preprocessed
+        processed_path = util.preprocess_file(full_path,
+                                              self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                              self.config)
+
+        # report error if file path could not be found
+        if processed_path is None:
+            msg = f"Could not find {data_type} file {full_path} using template {template}"
+            if mandatory:
+                self.logger.error(msg)
             else:
-                v_level = var_info['fcst_level']
+                self.logger.warning(msg)
 
-            # separate character from beginning of numeric level value if applicable
-            level = util.split_level(v_level)[1]
+        return processed_path
 
-            # set level to 0 character if it is not a number
-            if not level.isdigit():
-                level = '0'
-        else:
-            level = '0'
-
-        template = self.c_dict[data_type + '_INPUT_TEMPLATE']
-        data_dir = self.c_dict[data_type + '_INPUT_DIR']
-
-        # if looking for a file with an exact time match:
-        if self.c_dict[data_type + '_FILE_WINDOW_BEGIN'] == 0 and \
-                self.c_dict[data_type + '_FILE_WINDOW_END'] == 0:
-            # perform string substitution
-            dsts = sts.StringSub(self.logger,
-                                 template,
-                                 level=(int(level.split('-')[0]) * 3600),
-                                 **time_info)
-            filename = dsts.do_string_sub()
-
-            # build full path with data directory and filename
-            full_path = os.path.join(data_dir, filename)
-
-            # check if desired data file exists and if it needs to be preprocessed
-            processed_path = util.preprocess_file(full_path,
-                                                  self.c_dict[data_type + '_INPUT_DATATYPE'],
-                                                  self.config)
-
-            # report error if file path could not be found
-            if processed_path is None:
-                msg = f"Could not find {data_type} file {full_path} using template {template}"
-                if mandatory:
-                    self.logger.error(msg)
-                else:
-                    self.logger.warning(msg)
-
-            return processed_path
-
-        # if looking for a file within a time window:
+    def find_file_in_window(self, template, data_dir, level, data_type, time_info, mandatory=True):
         # convert valid_time to unix time
+        valid_time = time_info['valid_fmt']
         valid_seconds = int(datetime.strptime(valid_time, "%Y%m%d%H%M%S").strftime("%s"))
         # get time of each file, compare to valid time, save best within range
         closest_files = []
@@ -343,6 +311,10 @@ class CommandBuilder:
                                             "%Y%m%d%H%M%S").strftime("%s"))
         upper_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
                                             "%Y%m%d%H%M%S").strftime("%s"))
+
+        msg = f"Looking for {data_type} files under {data_dir} within range " +\
+              f"[{valid_range_lower},{valid_range_upper}] using template {template}"
+        self.logger.debug(msg)
 
         if data_dir == '':
             self.logger.error('Must set INPUT_DIR if looking for files within a time window')
@@ -406,6 +378,50 @@ class CommandBuilder:
             out.append(outfile)
 
         return out
+
+    def find_data(self, time_info, var_info, data_type, mandatory=True):
+        """! Finds the data file to compare
+              Args:
+                @param time_info dictionary containing timing information
+                @param var_info object containing variable information
+                @param data_type type of data to find (FCST or OBS)
+                @param mandatory if True, report error if not found, warning if not
+                  default is True
+                @rtype string
+                @return Returns the path to an observation file
+        """
+        if var_info is not None:
+            # set level based on input data type
+            if data_type.startswith("OBS"):
+                v_level = var_info['obs_level']
+            else:
+                v_level = var_info['fcst_level']
+
+            # separate character from beginning of numeric level value if applicable
+            level = util.split_level(v_level)[1]
+
+            # set level to 0 character if it is not a number
+            if not level.isdigit():
+                level = '0'
+        else:
+            level = '0'
+
+        # arguments for find helper functions
+        arg_dict = {'template': self.c_dict[data_type + '_INPUT_TEMPLATE'],
+                    'data_dir': self.c_dict[data_type + '_INPUT_DIR'],
+                    'level': level,
+                    'data_type': data_type,
+                    'mandatory': mandatory,
+                    'time_info': time_info}
+
+        # if looking for a file with an exact time match:
+        if self.c_dict[data_type + '_FILE_WINDOW_BEGIN'] == 0 and \
+                self.c_dict[data_type + '_FILE_WINDOW_END'] == 0:
+
+            return self.find_exact_file(**arg_dict)
+
+        # if looking for a file within a time window:
+        return self.find_file_in_window(**arg_dict)
 
     def write_list_file(self, filename, file_list):
         """! Writes a file containing a list of filenames to the staging dir"""
