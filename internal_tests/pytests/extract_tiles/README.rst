@@ -8,7 +8,6 @@ pytest -c <path/to>/extract_tiles_test.conf -c <path/to>/custom.conf
 
 IMPORTANT
 
-Before you run the test, make sure to update the PROJ_DIR (in the custom.conf file) 
+Before you run the test, make sure to update the PROJ_DIR and the METPLUS_BASE (in the custom.conf file) 
 
-to establish the location of the
-output directory.
+to establish the location of the output directory.
