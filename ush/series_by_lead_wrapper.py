@@ -105,10 +105,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             else:
                 log_msg = 'Need to set LEAD_SEQ_{}_LABEL to describe ' +\
                           'LEAD_SEQ_{}'.format(n, n)
-                if self.config.logger:
-                    self.config.logger.error(log_msg)
-                else:
-                    print(log_msg)
+                self.log_error(log_msg)
                 exit(1)
 
             # get forecast list for n
