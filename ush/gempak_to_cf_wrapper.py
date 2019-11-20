@@ -12,8 +12,6 @@ Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 """
 
-from __future__ import print_function
-
 import os
 import met_util as util
 import string_template_substitution as sts
@@ -28,12 +26,9 @@ from command_builder import CommandBuilder
 
 class GempakToCFWrapper(CommandBuilder):
     def __init__(self, config, logger):
-        super(GempakToCFWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = "GempakToCF"
         self.class_path = self.config.getstr('exe', 'GEMPAKTOCF_CLASSPATH')
-#        self.logger = logger
-#        if self.logger is None:
-#            self.logger = util.get_logger(self.config, sublog='GempakToCF')
 
     def get_command(self):
         cmd = "java -classpath " + self.class_path + " GempakToCF "
@@ -63,7 +58,7 @@ class GempakToCFWrapper(CommandBuilder):
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             self.clear()
-            input_dict['lead_hours'] = lead
+            input_dict['lead'] = lead
             self.config.set('config', 'CURRENT_LEAD_TIME', lead)
             os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
             time_info = time_util.ti_calculate(input_dict)

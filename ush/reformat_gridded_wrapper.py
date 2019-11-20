@@ -12,8 +12,6 @@ Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
-
 import os
 import met_util as util
 import time_util
@@ -33,7 +31,7 @@ class ReformatGriddedWrapper(CommandBuilder):
 that reformat gridded data
     """
     def __init__(self, config, logger):
-        super(ReformatGriddedWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
 
     # this class should not be called directly
     # pylint:disable=unused-argument
@@ -72,10 +70,18 @@ that reformat gridded data
         for to_run in run_list:
             self.logger.info("Processing {} data".format(to_run))
             for lead in lead_seq:
-                input_dict['lead_hours'] = lead
+                input_dict['lead'] = lead
                 self.config.set('config', 'CURRENT_LEAD_TIME', lead)
                 os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
-                self.logger.info("Processing forecast lead {}".format(lead))
+
                 time_info = time_util.ti_calculate(input_dict)
-                for var_info in self.c_dict['VAR_LIST']:
+
+                self.logger.info("Processing forecast lead {}".format(time_info['lead_string']))
+
+                var_list = util.parse_var_list(self.config, time_info)
+                if not var_list:
+                    self.run_at_time_once(time_info, None, to_run)
+                    return
+
+                for var_info in var_list:
                     self.run_at_time_once(time_info, var_info, to_run)

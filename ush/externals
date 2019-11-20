@@ -1,15 +1,54 @@
 # This file is just used to document the Historical versions of the produtil directory.
 # If a newer version is checked out than update the revision number.
- 
-# Current version:
+
+==========================================
+# Current Version
+# NCEPLIBS-pyprodutil repository in VLab
+# produtil run under Python 3
+branch: metplus-python3
+commit d05a4cadb8b8c72 2019 Aug 8
+
+clone commands:
+git clone ssh://user.name@vlab.ncep.noaa.gov:29418/NCEPLIBS-pyprodutil
+git clone https://user.name@vlab.ncep.noaa.gov/code-review/a/NCEPLIBS-pyprodutil
+
+Web Browser:
+https://vlab.ncep.noaa.gov/redmine/projects/nceplibs-001/repository/nceplibs-pyprodutil
+
+NOTES:
+git log --graph --oneline --all
+This branch was created from the metplus-python2 branch
+below, at commit 3a6b7f2
+
+==========================================
+# NCEPLIBS-pyprodutil repository in VLab
+# produtil run under Python 2
+branch: metplus-python2
+commit: 3a6b7f26b7be 2019 Aug 5
+git clone ssh://user.name@vlab.ncep.noaa.gov:29418/NCEPLIBS-pyprodutil
+git clone https://user.name@vlab.ncep.noaa.gov/code-review/a/NCEPLIBS-pyprodutil 
+
+NOTES:
+git log --graph --oneline --all
+metplus-python2 was cut from master branch, commit: ed353c68d2,
+at the time, the only difference with master were 2 additional commits, 
+1. produtil was subsetted (i.e files not used by METplus were removed) and 
+2. One line change, Updated a doxygen comment (in datastore.py memberof) 
+   that was causing an issue when generating xml output. 
+
+
+============================================
+# Version used up through METplus v2.2:
+# This branch is no longer available in VLab
 branch: regtests-run
 commit: 9858fc849a8eba 2018 Jan 10 in the vlab git repository
-https://james.t.frimel@vlab.ncep.noaa.gov/code-review/a/EMC_produtil
+https://user.name@vlab.ncep.noaa.gov/code-review/a/EMC_produtil
 NOTE:
 EMC_produtil/ush/produtil moved to METplus/produtil
 EMC_produtil/usy/*.py test files moved to METplus/internal_tests/produtil
 
 
+============================================
 # When there was an svn diretory
 Initial import in to METplus github project, this was the version we used
 in METplus up til March 2018

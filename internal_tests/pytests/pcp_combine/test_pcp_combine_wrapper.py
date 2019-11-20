@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import print_function
+
 import os
 import sys
 import re
@@ -9,8 +9,7 @@ from collections import namedtuple
 import produtil
 import pytest
 import config_metplus
-from pcp_combine_wrapper import PcpCombineWrapper
-from config_wrapper import ConfigWrapper
+from pcp_combine_wrapper import PCPCombineWrapper
 import time_util
 import met_util as util
 
@@ -34,9 +33,9 @@ import met_util as util
 
 
 # -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
-@pytest.fixture
+#@pytest.fixture
 def pcp_combine_wrapper(d_type):
-    """! Returns a default PcpCombineWrapper with /path/to entries in the
+    """! Returns a default PCPCombineWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
          to over-ride these /path/to values."""
@@ -48,11 +47,11 @@ def pcp_combine_wrapper(d_type):
         conf.set('config', 'FCST_PCP_COMBINE_RUN', True)
     elif d_type == "OBS":
         conf.set('config', 'OBS_PCP_COMBINE_RUN', True)
-    logger = logging.getLogger("dummy")
-    return PcpCombineWrapper(conf, logger)
+#    logger = logging.getLogger("dummy")
+    return PCPCombineWrapper(conf, conf.logger)
 
 
-@pytest.fixture
+#@pytest.fixture
 def metplus_config():
     """! Create a METplus configuration object that can be
     manipulated/modified to
@@ -61,17 +60,16 @@ def metplus_config():
     """
     try:
         if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='PcpCombineWrapper ',
+            produtil.setup.setup(send_dbn=False, jobname='PCPCombineWrapper ',
                                  jlogfile=os.environ['JLOGFILE'])
         else:
-            produtil.setup.setup(send_dbn=False, jobname='PcpCombineWrapper ')
+            produtil.setup.setup(send_dbn=False, jobname='PCPCombineWrapper ')
         produtil.log.postmsg('pcp_combine_wrapper  is starting')
 
         # Read in the configuration object CONFIG
-        conf = config_metplus.setup()
+        conf = config_metplus.setup(util.baseinputconfs)
         logger = util.get_logger(conf)
-        config = ConfigWrapper(conf, logger)
-        return config
+        return conf
 
     except Exception as e:
         produtil.log.jlogger.critical(
@@ -100,7 +98,10 @@ def test_get_accumulation_1_to_6():
     file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
         
     pcw.input_dir = input_dir
-    pcw.get_accumulation(time_info, accum, data_src, False)
+    if not pcw.build_input_accum_list(data_src, time_info):
+        assert False
+
+    pcw.get_accumulation(time_info, accum, data_src)
     in_files = pcw.infiles
     if len(in_files) == 6 and \
       input_dir+"/20160904/file.2016090418.01h" in in_files and \
@@ -126,7 +127,10 @@ def test_get_accumulation_6_to_6():
     pcw.c_dict['FCST_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
     
     pcw.input_dir = input_dir
-    pcw.get_accumulation(time_info, accum, data_src, False)
+    if not pcw.build_input_accum_list(data_src, time_info):
+        assert False
+
+    pcw.get_accumulation(time_info, accum, data_src)
     in_files = pcw.infiles    
     if  len(in_files) == 1 and input_dir+"/20160904/file.2016090418.06h" in in_files:
         assert True
@@ -141,8 +145,9 @@ def test_get_lowest_forecast_file_dated_subdir():
     valid_time = datetime.datetime.strptime("201802012100", '%Y%m%d%H%M')
     template = pcw.config.getraw('filename_templates', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.input_dir = input_dir
-    out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
-    assert(out_file == input_dir+"/20180201/file.2018020118f003.nc")
+    pcw.build_input_accum_list(dtype, {'valid': valid_time})
+    out_file, fcst = pcw.getLowestForecastFile(valid_time, dtype, template)
+    assert(out_file == input_dir+"/20180201/file.2018020118f003.nc" and fcst == 10800)
 
 
 def test_get_lowest_forecast_file_no_subdir():
@@ -154,8 +159,9 @@ def test_get_lowest_forecast_file_no_subdir():
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
 #    template = util.getraw(pcw.config, 'filename_templates', dtype+'_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.input_dir = input_dir
-    out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
-    assert(out_file == input_dir+"/file.2018020118f003.nc")
+    pcw.build_input_accum_list(dtype, {'valid': valid_time})
+    out_file, fcst = pcw.getLowestForecastFile(valid_time, dtype, template)
+    assert(out_file == input_dir+"/file.2018020118f003.nc" and fcst == 10800)
 
 def test_get_lowest_forecast_file_yesterday():
     dtype = "FCST"
@@ -165,8 +171,9 @@ def test_get_lowest_forecast_file_yesterday():
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
 #    template = util.getraw(pcw.config, 'filename_templates', 'FCST2_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.input_dir = input_dir
-    out_file = pcw.getLowestForecastFile(valid_time, dtype, template)
-    assert(out_file == input_dir+"/file.2018013118f012.nc")    
+    pcw.build_input_accum_list(dtype, {'valid': valid_time})
+    out_file, fcst = pcw.getLowestForecastFile(valid_time, dtype, template)
+    assert(out_file == input_dir+"/file.2018013118f012.nc" and fcst == 43200)
 
 def test_get_daily_file():
     data_src = "OBS"

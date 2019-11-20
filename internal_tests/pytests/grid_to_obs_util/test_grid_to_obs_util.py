@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import print_function
+
 import sys
 import re
 import grid_to_obs_util as g2o_util
@@ -24,7 +24,7 @@ def metplus_config():
         produtil.log.postmsg('met_util test is starting')
 
         # Read in the configuration object CONFIG
-        config = config_metplus.setup()
+        config = config_metplus.setup(util.baseinputconfs)
         return config
 
     except Exception as e:

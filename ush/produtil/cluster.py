@@ -83,7 +83,7 @@ def where():
     The result is stored in the module scope "here" variable."""
     global here
     if here is None:
-        if os.path.exists('/pan2'):
+        if os.path.exists('/lfs3'):
             here=NOAAJet()
         elif os.path.exists('/glade'):
             here=UCARYellowstone()
@@ -103,8 +103,12 @@ def where():
                 here=NOAAZeus()
         elif os.path.exists('/ptmpd2'):
             here=NOAAWCOSS()
+        elif os.path.exists('/usrx') and 'dell' in os.readlink('/usrx'):
+            here=NOAAWCOSS(phase=3)
         elif os.path.exists('/gpfs/hps/nco'):
             here=WCOSSCray()
+        elif os.path.exists('/lustre/f2'):
+            here=NOAAGAEA()
         else:
             here=Cluster(False,False,False,'noname','noname')
     return here
@@ -177,10 +181,10 @@ class NOAAJet(Cluster):
 
 class NOAAGAEA(Cluster):
     """!Represents the NOAA GAEA cluster.  Allows ACLs to be used for
-    restricted data, and specifies that group quotas are in use."""
+    restricted data, and specifies that group quotas are not in use."""
     def __init__(self):
         """!constructor for NOAAGAEA"""
-        super(NOAAGAEA,self).__init__(True,True,False,'gaea',
+        super(NOAAGAEA,self).__init__(False,True,False,'gaea',
                                       'gaea.rdhpcs.noaa.gov')
 
 class NOAAZeus(Cluster):
@@ -228,7 +232,7 @@ class NOAAWCOSS(Cluster):
     of the self.production property is cached for up to
     prod_cache_time seconds.  That time can be specified in the
     constructor, and defaults to 30 seconds."""
-    def __init__(self,prod_cache_time=30,name=None):
+    def __init__(self,prod_cache_time=30,name=None,phase=None):
         """!Creates a NOAAWCOSS object, and optionally specifies the
         time for which the result of self.production should be cached.
         Default: 30 seconds.
@@ -237,10 +241,13 @@ class NOAAWCOSS(Cluster):
             host1=socket.gethostname()[0:1]
             if host1=='t':          name='tide'
             elif host1=='g':        name='gyre'
-            else:                   name='eddy'
+            elif host1=='v':        name='venus'
+            elif host1=='m':        name='mars'
+            else:                   name='eddy'  # should update for Dell test machine
+
         super(NOAAWCOSS,self).__init__(False,False,DO_NOT_SET,name,
                                        name+'.ncep.noaa.gov')
-        self._phase=None
+        self._phase=phase
         self._production=None
         self._lastprod=0
         self._prod_cache_time=int(prod_cache_time)
@@ -281,7 +288,7 @@ class NOAAWCOSS(Cluster):
             phase=1
             with open('/proc/cpuinfo','rt') as cpuinfo:
                 for line in cpuinfo:
-                    if re.match('(?i)^processor\s*:\s*32',line):
+                    if re.match('(?i)^processor\\s*:\\s*32',line):
                         phase=2
                         break
             self._phase=phase
@@ -308,11 +315,12 @@ class NOAAWCOSS(Cluster):
         if self._production is None or \
                 now-self._lastprod>self._prod_cache_time:
             prod=False
-            with open('/etc/prod','rt') as f:
-                for line in f:
-                    if re.match('[a-z]+',line):
-                        prod = line.strip()==self.name
-                        break
+            if os.path.exists('/etc/prod'):
+                with open('/etc/prod','rt') as f:
+                    for line in f:
+                        if re.match('[a-z]+',line):
+                            prod = line.strip()==self.name
+                            break
             self._production=prod
             self._lastprod=int(time.time())
             return prod

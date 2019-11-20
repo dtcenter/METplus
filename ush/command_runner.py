@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import (print_function, division)
 
 """
 File Name: command_runner.py
@@ -37,19 +36,19 @@ Output Files: N/A
 #
 import os
 from produtil.run import exe, run
-from config_wrapper import ConfigWrapper
 import shlex
+from datetime import datetime
 
 class CommandRunner(object):
     """! Class for Creating and Running External Programs
     """
-    def __init__(self, config, logger=None):
+    def __init__(self, config, logger=None, verbose=2):
         """!Class for Creating and Running External Programs.
             It was intended to handle the MET executables but
             can be used by other executables."""
         self.logger = logger
-        self.config = ConfigWrapper(config, self.logger)
-        self.verbose = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
+        self.config = config
+        self.verbose = verbose
 
     def run_cmd(self, cmd, env=None, ismetcmd = True, app_name=None, run_inshell=False,
                 log_theoutput=False, **kwargs):
@@ -162,8 +161,16 @@ class CommandRunner(object):
         ret = 0
         # run app unless DO_NOT_RUN_EXE is set to True
         if not self.config.getbool('config', 'DO_NOT_RUN_EXE', False):
+            # get current time to calculate total time to run command
+            start_cmd_time = datetime.now()
+
+            # run command
             ret = run(cmd, **kwargs)
-            self.logger.debug('Finished running {}'.format(the_exe))
+
+            # calculate time to run
+            end_cmd_time = datetime.now()
+            total_cmd_time = end_cmd_time - start_cmd_time
+            self.logger.debug(f'Finished running {the_exe} in {total_cmd_time}')
 
         return (ret, cmd)
 

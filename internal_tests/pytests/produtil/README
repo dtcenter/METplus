@@ -1,0 +1,23 @@
+The test_produtil.py provides some simple tests for the produtil module.
+
+To run the test:
+
+1) cd to the directory METplus/internal_tests/pytest/produtil
+
+2) open the test_produtil.py file and replace the '/path/to' with the full path to the directory where your produtil_test.conf file
+resides (this will be in METplus/internal_tests/pytest/produtil).
+
+NOTE: This is necessary, as we are NOT using master_metplus.py to begin the process of reading in the config
+file, test_produtil.conf
+
+
+2) Then, from the command line, enter the following command:
+
+    pytest -c ./produtil_test.conf
+
+There are currently 9 tests and they should pass.
+
+
+
+
+

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import print_function
+
 import os
 import subprocess
 import produtil.setup
@@ -40,10 +40,12 @@ def cmdopt(request):
 
 
 # ------------------------
+def dummy():
+    assert(True)
 
 def get_config_obj():
     """! Create the configuration object that is used by all tests"""
-    file_list = ["/Users/cyclopath/dev_MET+/METplus/internal_tests/pytests/produtil"]
+    file_list = ["/path/to/METplus/internal_tests/pytests/produtil"]
     config_obj = config_metplus.setup(file_list[0])
 
     return config_obj
@@ -68,15 +70,6 @@ def test_getint_ok():
     int_value = conf_obj.getint('config', 'INT_VALUE')
     assert int_value == expected_int_value
 
-
-def test_getraw_ok():
-    """! Test that the raw value in the produtil_test.conf file has been
-            retrieved correctly.
-    """
-    conf_obj = get_config_obj()
-    expected_raw = 'GRIB_lvl_type = 100'
-    raw_value = conf_obj.getraw('config', 'RAW_VALUE')
-    assert raw_value == expected_raw
 
 
 def test_getdir_ok():

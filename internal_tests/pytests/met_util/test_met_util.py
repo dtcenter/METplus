@@ -1,15 +1,16 @@
 #!/usr/bin/env python
-from __future__ import print_function
+
 import sys
 import pytest
 import datetime
-from config_wrapper import ConfigWrapper
 import met_util as util
+import time_util
 import produtil
 import os
+from dateutil.relativedelta import relativedelta
 import config_metplus
 
-@pytest.fixture
+#@pytest.fixture
 def metplus_config():
     """! Create a METplus configuration object that can be
     manipulated/modified to
@@ -25,7 +26,7 @@ def metplus_config():
         produtil.log.postmsg('met_util test is starting')
 
         # Read in the configuration object CONFIG
-        config = config_metplus.setup()
+        config = config_metplus.setup(util.baseinputconfs)
         return config
 
     except Exception as e:
@@ -35,175 +36,77 @@ def metplus_config():
 
 
 def test_add_common_items_to_dictionary():
+    pytest.skip('Function not currently used')
     conf = metplus_config()
     dictionary = dict()
     util.add_common_items_to_dictionary(conf, dictionary)
     assert(dictionary['WGRIB2_EXE'] == conf.getexe('WGRIB2'))
 
 
-def test_threshold_gt():
-    thresh_list = {"gt2.3", "gt5.5"}
-    assert(util.validate_thresholds(thresh_list))
+@pytest.mark.parametrize(
+    'key, value', [
+        ({"gt2.3", "gt5.5"}, True),
+        ({"ge2.3", "ge5.5"}, True),
+        ({"eq2.3"}, True),
+        ({"ne2.3"}, True),
+        ({"lt2.3", "lt1.1"}, True),
+        ({"le2.3", "le1.1"}, True),
+        ({">2.3", ">5.5"}, True),
+        ({">=2.3", ">=5.5"}, True),
+        ({"==2.3"}, True),
+        ({"!=.3"}, True),
+        ({"<2.3", "<1."}, True),
+        ({"<=2.3", "<=1.1"}, True),
+        ({"gta"}, False),
+        ({">=a"}, False),
+        ({"2.3"}, False),
+        ({"<=2.3", "2.4", "gt2.7"}, False),
+        ({"<=2.3||>=4.2", "gt2.3&&lt4.2"}, True),
+        ({"gt2.3&&lt4.2a"}, False),
+        ({"gt2sd.3&&lt4.2"}, False),
+        ({"gt2.3&a&lt4.2"}, False),
+        ({'gt4&&lt5&&ne4.5'}, True),
+    ]
+)
 
-def test_threshold_ge():
-    thresh_list = {"ge2.3", "ge5.5"}
-    assert(util.validate_thresholds(thresh_list))
+def test_threshold(key, value):
+    assert(util.validate_thresholds(key) == value)
 
-def test_threshold_eq():
-    thresh_list = {"eq2.3"}
-    assert(util.validate_thresholds(thresh_list))
+# parses a threshold and returns a list of tuples of
+# comparison and number, i.e.:
+# 'gt4' => [('gt', 4)]
+# gt4&&lt5 => [('gt', 4), ('lt', 5)]
 
-def test_threshold_ne():
-    thresh_list = {"ne2.3"}
-    assert(util.validate_thresholds(thresh_list))
+@pytest.mark.parametrize(
+    'key, value', [
+        ('gt4', [('gt', 4)]),
+        ('gt4&&lt5', [('gt', 4), ('lt', 5)]),
+        ('gt4&&lt5&&ne4.5', [('gt', 4), ('lt', 5), ('ne', 4.5)]),
+        (">4.545", [('>', 4.545)]),
+        (">=4.0", [('>=', 4.0)]),
+        ("<4.5", [('<', 4.5)]),
+        ("<=4.5", [('<=', 4.5)]),
+        ("!=4.5", [('!=', 4.5)]),
+        ("==4.5", [('==', 4.5)]),
+        ("gt4.5", [('gt', 4.5)]),
+        ("ge4.5", [('ge', 4.5)]),
+        ("lt4.5", [('lt', 4.5)]),
+        ("le4.5", [('le', 4.5)]),
+        ("ne10.5", [('ne', 10.5)]),
+        ("eq4.5", [('eq', 4.5)]),
+        ("eq-4.5", [('eq', -4.5)]),
+        ("eq+4.5", [('eq', 4.5)]),
+        ("eq.5", [('eq', 0.5)]),
+        ("eq5.", [('eq', 5)]),
+        ("eq5.||ne0.0", [('eq', 5), ('ne', 0.0)]),
 
-def test_threshold_lt():
-    thresh_list = {"lt2.3", "lt1.1"}
-    assert(util.validate_thresholds(thresh_list))
-
-def test_threshold_le():
-    thresh_list = {"le2.3", "le1.1"}
-    assert(util.validate_thresholds(thresh_list))
-
-def test_threshold_gt_symbol():
-    thresh_list = {">2.3", ">5.5"}
-    assert(util.validate_thresholds(thresh_list))
-
-def test_threshold_ge_symbol():
-    thresh_list = {">=2.3", ">=5.5"}
-    assert(util.validate_thresholds(thresh_list))
-
-def test_threshold_eq_symbol():
-    thresh_list = {"==2.3"}
-    assert(util.validate_thresholds(thresh_list))
-
-def test_threshold_ne_symbol():
-    thresh_list = {"!=.3"}
-    assert(util.validate_thresholds(thresh_list))
-
-def test_threshold_lt_symbol():
-    thresh_list = {"<2.3", "<1."}
-    assert(util.validate_thresholds(thresh_list))
-
-def test_threshold_le_symbol():
-    thresh_list = {"<=2.3", "<=1.1"}
-    assert(util.validate_thresholds(thresh_list))
-
-def test_threshold_gt_no_number():
-    thresh_list = {"gta"}
-    assert(util.validate_thresholds(thresh_list) == False)
-
-def test_threshold_ge_symbol_no_number():
-    thresh_list = {">=a"}
-    assert(util.validate_thresholds(thresh_list) == False)
-
-def test_threshold_just_number():
-    thresh_list = {"2.3"}
-    assert(util.validate_thresholds(thresh_list) == False)
-
-def test_threshold_only_one_fails():
-    thresh_list = {"<=2.3", "2.4", "gt2.7"}
-    assert(util.validate_thresholds(thresh_list) == False)
-
-def test_threshold_complex_comparison():
-    thresh_list = {"<=2.3||>=4.2", "gt2.3&&lt4.2"}
-    assert(util.validate_thresholds(thresh_list))
-
-def test_get_number_from_threshold_gt_int():
-    assert(util.get_number_from_threshold("gt4") == 4)
-
-def test_get_number_from_threshold_gt_symbol():
-    assert(util.get_number_from_threshold(">4.545") == 4.545)
-
-def test_get_number_from_threshold_ge_symbol():
-    assert(util.get_number_from_threshold(">=4.0") == 4.0)
-
-def test_get_number_from_threshold_lt_symbol():
-    assert(util.get_number_from_threshold("<4.5") == 4.5)
-
-def test_get_number_from_threshold_le_symbol():
-    assert(util.get_number_from_threshold("<=4.5") == 4.5)
-
-def test_get_number_from_threshold_ne_symbol():
-    assert(util.get_number_from_threshold("!=4.5") == 4.5)
-
-def test_get_number_from_threshold_eq_symbol():
-    assert(util.get_number_from_threshold("==4.5") == 4.5)
-
-def test_get_number_from_threshold_gt():
-    assert(util.get_number_from_threshold("gt4.5") == 4.5)
-
-def test_get_number_from_threshold_ge():
-    assert(util.get_number_from_threshold("ge4.5") == 4.5)
-
-def test_get_number_from_threshold_lt():
-    assert(util.get_number_from_threshold("lt4.5") == 4.5)
-
-def test_get_number_from_threshold_le():
-    assert(util.get_number_from_threshold("le4.5") == 4.5)
-
-def test_get_number_from_threshold_ne():
-    assert(util.get_number_from_threshold("ne10.5") == 10.5)
-
-def test_get_number_from_threshold_eq():
-    assert(util.get_number_from_threshold("eq4.5") == 4.5)
-
-def test_get_number_from_threshold_eq_negative():
-    assert(util.get_number_from_threshold("eq-4.5") == -4.5)
-
-def test_get_number_from_threshold_eq_positive():
-    assert(util.get_number_from_threshold("eq+4.5") == 4.5)
-
-def test_get_number_from_threshold_eq_starts_with_decimal():
-    assert(util.get_number_from_threshold("eq.5") == 0.5)
-
-def test_get_number_from_threshold_eq_ends_with_decimal():
-    assert(util.get_number_from_threshold("eq5.") == 5)
-
-def test_get_comparison_from_threshold_gt_symbol():
-    assert(util.get_comparison_from_threshold(">4.545") == ">")
-
-def test_get_comparison_from_threshold_ge_symbol():
-    assert(util.get_comparison_from_threshold(">=4.0") == ">=")
-
-def test_get_comparison_from_threshold_lt_symbol():
-    assert(util.get_comparison_from_threshold("<4.5") == "<")
-
-def test_get_comparison_from_threshold_le_symbol():
-    assert(util.get_comparison_from_threshold("<=4.5") == "<=")
-
-def test_get_comparison_from_threshold_ne_symbol():
-    assert(util.get_comparison_from_threshold("!=4.5") == "!=")
-
-def test_get_comparison_from_threshold_eq_symbol():
-    assert(util.get_comparison_from_threshold("==4.5") == "==")
-
-def test_get_comparison_from_threshold_gt():
-    assert(util.get_comparison_from_threshold("gt4.5") == "gt")
-
-def test_get_comparison_from_threshold_ge():
-    assert(util.get_comparison_from_threshold("ge4.5") == "ge")
-
-def test_get_comparison_from_threshold_lt():
-    assert(util.get_comparison_from_threshold("lt4.5") == "lt")
-
-def test_get_comparison_from_threshold_le():
-    assert(util.get_comparison_from_threshold("le4.5") == "le")
-
-def test_get_comparison_from_threshold_ne():
-    assert(util.get_comparison_from_threshold("ne10.5") == "ne")
-
-def test_get_comparison_from_threshold_eq():
-    assert(util.get_comparison_from_threshold("eq4.5") == "eq")
-
-def test_get_comparison_from_threshold_complex():
-    assert(util.get_comparison_from_threshold("<=2.3||>=4.2") == "<=")
-
-def test_get_number_from_threshold_complex():
-    assert(util.get_number_from_threshold("<=2.3||>=4.2") == 2.3)
+    ]
+)
+def test_get_threshold_via_regex(key, value):
+    assert(util.get_threshold_via_regex(key) == value)
 
 def test_preprocess_file_gz():
-    conf = ConfigWrapper(metplus_config(), None)
+    conf = metplus_config()
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile.txt.gz"
     stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile.txt"
@@ -211,7 +114,7 @@ def test_preprocess_file_gz():
     assert(stagepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_bz2():
-    conf = ConfigWrapper(metplus_config(), None)
+    conf = metplus_config()
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile2.txt.bz2"
     stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile2.txt"
@@ -219,7 +122,7 @@ def test_preprocess_file_bz2():
     assert(stagepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_zip():
-    conf = ConfigWrapper(metplus_config(), None)
+    conf = metplus_config()
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile3.txt.zip"
     stagepath = stage_dir + conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile3.txt"
@@ -227,14 +130,14 @@ def test_preprocess_file_zip():
     assert(stagepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_unzipped():
-    conf = ConfigWrapper(metplus_config(), None)
+    conf = metplus_config()
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile4.txt"
     outpath = util.preprocess_file(filepath, None, conf)
     assert(filepath == outpath and os.path.exists(outpath))
 
 def test_preprocess_file_none():
-    conf = ConfigWrapper(metplus_config(), None)
+    conf = metplus_config()
     outpath = util.preprocess_file(None, None, conf)
     assert(outpath is None)
 
@@ -261,12 +164,11 @@ def test_getlist_has_commas():
 # field info only defined in the FCST_* variables
 def test_parse_var_list_fcst_only():
     conf = metplus_config()
-    cu = ConfigWrapper(conf, None)
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "LEVELS11, LEVELS12")
     conf.set('config', 'FCST_VAR2_NAME', "NAME2")
     conf.set('config', 'FCST_VAR2_LEVELS', "LEVELS21, LEVELS22")
-    var_list = util.parse_var_list(cu)
+    var_list = util.parse_var_list(conf)
     assert(var_list[0]['fcst_name'] == "NAME1" and \
            var_list[0]['obs_name'] == "NAME1" and \
            var_list[1]['fcst_name'] == "NAME1" and \
@@ -287,12 +189,11 @@ def test_parse_var_list_fcst_only():
 # field info only defined in the OBS_* variables
 def test_parse_var_list_obs():
     conf = metplus_config()
-    cu = ConfigWrapper(conf, None)
     conf.set('config', 'OBS_VAR1_NAME', "NAME1")
     conf.set('config', 'OBS_VAR1_LEVELS', "LEVELS11, LEVELS12")
     conf.set('config', 'OBS_VAR2_NAME', "NAME2")
     conf.set('config', 'OBS_VAR2_LEVELS', "LEVELS21, LEVELS22")
-    var_list = util.parse_var_list(cu)
+    var_list = util.parse_var_list(conf)
     assert(var_list[0]['fcst_name'] == "NAME1" and \
            var_list[0]['obs_name'] == "NAME1" and \
            var_list[1]['fcst_name'] == "NAME1" and \
@@ -313,7 +214,6 @@ def test_parse_var_list_obs():
 # field info defined in both FCST_* and OBS_* variables
 def test_parse_var_list_fcst_and_obs():
     conf = metplus_config()
-    cu = ConfigWrapper(conf, None)
     conf.set('config', 'FCST_VAR1_NAME', "FNAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "FLEVELS11, FLEVELS12")
     conf.set('config', 'FCST_VAR2_NAME', "FNAME2")
@@ -322,7 +222,7 @@ def test_parse_var_list_fcst_and_obs():
     conf.set('config', 'OBS_VAR1_LEVELS', "OLEVELS11, OLEVELS12")
     conf.set('config', 'OBS_VAR2_NAME', "ONAME2")
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
-    var_list = util.parse_var_list(cu)
+    var_list = util.parse_var_list(conf)
     assert(var_list[0]['fcst_name'] == "FNAME1" and \
            var_list[0]['obs_name'] == "ONAME1" and \
            var_list[1]['fcst_name'] == "FNAME1" and \
@@ -343,12 +243,11 @@ def test_parse_var_list_fcst_and_obs():
 # VAR1 defined by FCST, VAR2 defined by OBS
 def test_parse_var_list_fcst_and_obs_alternate():
     conf = metplus_config()
-    cu = ConfigWrapper(conf, None)
     conf.set('config', 'FCST_VAR1_NAME', "FNAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "FLEVELS11, FLEVELS12")
     conf.set('config', 'OBS_VAR2_NAME', "ONAME2")
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
-    var_list = util.parse_var_list(cu)
+    var_list = util.parse_var_list(conf)
     assert(var_list[0]['fcst_name'] == "FNAME1" and \
            var_list[0]['obs_name'] == "FNAME1" and \
            var_list[1]['fcst_name'] == "FNAME1" and \
@@ -369,7 +268,6 @@ def test_parse_var_list_fcst_and_obs_alternate():
 # VAR1 defined by OBS, VAR2 by FCST, VAR3 by both FCST AND OBS
 def test_parse_var_list_fcst_and_obs_and_both():
     conf = metplus_config()
-    cu = ConfigWrapper(conf, None)
     conf.set('config', 'OBS_VAR1_NAME', "ONAME1")
     conf.set('config', 'OBS_VAR1_LEVELS', "OLEVELS11, OLEVELS12")
     conf.set('config', 'FCST_VAR2_NAME', "FNAME2")
@@ -379,7 +277,7 @@ def test_parse_var_list_fcst_and_obs_and_both():
     conf.set('config', 'OBS_VAR3_NAME', "ONAME3")
     conf.set('config', 'OBS_VAR3_LEVELS', "OLEVELS31, OLEVELS32")
 
-    var_list = util.parse_var_list(cu)
+    var_list = util.parse_var_list(conf)
     assert(var_list[0]['fcst_name'] == "ONAME1" and \
            var_list[0]['obs_name'] == "ONAME1" and \
            var_list[1]['fcst_name'] == "ONAME1" and \
@@ -408,12 +306,11 @@ def test_parse_var_list_fcst_and_obs_and_both():
 # option defined in obs only
 def test_parse_var_list_fcst_only():
     conf = metplus_config()
-    cu = ConfigWrapper(conf, None)
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "LEVELS11, LEVELS12")
     conf.set('config', 'FCST_VAR1_THRESH', ">1, >2")
     conf.set('config', 'OBS_VAR1_OPTIONS', "OOPTIONS11")
-    var_list = util.parse_var_list(cu)
+    var_list = util.parse_var_list(conf)
     assert(var_list[0]['fcst_name'] == "NAME1" and \
            var_list[0]['obs_name'] == "NAME1" and \
            var_list[1]['fcst_name'] == "NAME1" and \
@@ -431,13 +328,16 @@ def test_parse_var_list_fcst_only():
            )
 
 def test_get_lead_sequence_lead():
-    input_dict = { 'valid' : datetime.datetime(2019, 02, 01, 13) }
+    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 13) }
     conf = metplus_config()
-    cu = ConfigWrapper(conf, None)
     conf.set('config', 'LEAD_SEQ', "3,6,9,12")
-    test_seq = util.get_lead_sequence(cu, input_dict)
+    test_seq = util.get_lead_sequence(conf, input_dict)
+    hour_seq = []
+    for test in test_seq:
+        hour_seq.append(time_util.ti_get_seconds_from_relativedelta(test) // 3600)
     lead_seq = [ 3, 6, 9, 12 ]
-    assert(test_seq == lead_seq)
+    assert(hour_seq == lead_seq)
+    
 
 @pytest.mark.parametrize(
     'key, value', [
@@ -450,13 +350,16 @@ def test_get_lead_sequence_lead():
     ]
 )
 def test_get_lead_sequence_lead_list(key, value):
-    input_dict = { 'valid' : datetime.datetime(2019, 02, 01, 13) }
+    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 13) }
     conf = metplus_config()
-    cu = ConfigWrapper(conf, None)
     conf.set('config', 'LEAD_SEQ', key)
-    test_seq = util.get_lead_sequence(cu, input_dict)
+    test_seq = util.get_lead_sequence(conf, input_dict)
+    hour_seq = []
+
+    for test in test_seq:
+        hour_seq.append(time_util.ti_get_seconds_from_relativedelta(test) // 3600)
     lead_seq = value
-    assert(test_seq == lead_seq)
+    assert(hour_seq == lead_seq)
 
 @pytest.mark.parametrize(
     'key, value', [
@@ -487,22 +390,20 @@ def test_get_lead_sequence_lead_list(key, value):
     ]
 )
 def test_get_lead_sequence_init(key, value):
-    input_dict = { 'valid' : datetime.datetime(2019, 02, 01, key) }
+    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, key) }
     conf = metplus_config()
-    cu = ConfigWrapper(conf, None)
     conf.set('config', 'INIT_SEQ', "0, 12")
     conf.set('config', 'LEAD_SEQ_MAX', 36)
-    test_seq = util.get_lead_sequence(cu, input_dict)
+    test_seq = util.get_lead_sequence(conf, input_dict)
     lead_seq = value
-    assert(test_seq == lead_seq)
+    assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
 
 def test_get_lead_sequence_init_min_10():
-    input_dict = { 'valid' : datetime.datetime(2019, 02, 01, 12) }
+    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 12) }
     conf = metplus_config()
-    cu = ConfigWrapper(conf, None)
     conf.set('config', 'INIT_SEQ', "0, 12")
     conf.set('config', 'LEAD_SEQ_MAX', 24)
     conf.set('config', 'LEAD_SEQ_MIN', 10)
-    test_seq = util.get_lead_sequence(cu, input_dict)
+    test_seq = util.get_lead_sequence(conf, input_dict)
     lead_seq = [ 12, 24 ]
-    assert(test_seq == lead_seq)
+    assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])

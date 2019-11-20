@@ -1,8 +1,6 @@
 #!/usr/bin/env python
-from __future__ import print_function
 
 from command_builder import CommandBuilder
- 
 
 # @namespace UsageWrapper
 # @brief Provides a default process for master_metplus.py.  Indicates what
@@ -18,7 +16,7 @@ class UsageWrapper(CommandBuilder):
          and no lower level config files are included.
     """
     def __init__(self, p, logger):
-        super(UsageWrapper, self).__init__(p, logger)
+        super().__init__(p, logger)
         self.app_name = 'Usage'
         self.logger = logger
         self.available_processes = ['CyclonePlotter', 'EnsembleStat',

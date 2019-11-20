@@ -13,15 +13,11 @@ Condition codes: 0 for success, 1 for failure
 
 """
 
-from __future__ import (print_function, division)
-
 import os
 import sys
-import datetime
-import produtil.setup
 import met_util as util
 import feature_util
-from tc_stat_wrapper import TcStatWrapper
+from tc_stat_wrapper import TCStatWrapper
 from command_builder import CommandBuilder
 import time_util
 
@@ -46,21 +42,17 @@ class ExtractTilesWrapper(CommandBuilder):
     # having methods operating on them.
 
     def __init__(self, config, logger):
-        super(ExtractTilesWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'), 'bin/tc_pairs')
         self.app_name = os.path.basename(self.app_path)
-        self.tc_pairs_dir = self.config.getdir('TC_PAIRS_OUTPUT_DIR')
+        self.tc_pairs_dir = self.config.getdir('EXTRACT_TILES_PAIRS_INPUT_DIR')
         self.overwrite_flag = self.config.getbool('config',
-                                              'OVERWRITE_TRACK')
+                                              'EXTRACT_TILES_OVERWRITE_TRACK')
         self.addl_filter_opts = \
             self.config.getstr('config', 'EXTRACT_TILES_FILTER_OPTS')
         self.filtered_out_dir = self.config.getdir('EXTRACT_TILES_OUTPUT_DIR')
         self.tc_stat_exe = os.path.join(met_install_dir, 'bin/tc_stat')
-        self.init_beg = self.config.getstr('config', 'INIT_BEG')[0:8]
-        self.init_end = self.config.getstr('config', 'INIT_END')[0:8]
-        self.init_hour_inc = int(self.config.getint('config', 'INIT_INCREMENT') / 3600)
-
 
     def run_at_time(self, input_dict):
         """!Get TC-paris data then regrid tiles centered on the storm.
@@ -104,12 +96,12 @@ class ExtractTilesWrapper(CommandBuilder):
         else:
             # Create the storm track by applying the
             # filter options defined in the config/param file.
-            # Use TcStatWrapper to build up the tc_stat command and invoke
+            # Use TCStatWrapper to build up the tc_stat command and invoke
             # the MET tool tc_stat to perform the filtering.
             tiles_list = util.get_files(self.tc_pairs_dir, ".*tcst", self.logger)
             tiles_list_str = ' '.join(tiles_list)
 
-            tcs = TcStatWrapper(self.config, self.logger)
+            tcs = TCStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(self.filtered_out_dir, cur_init,
                               tiles_list_str, self.addl_filter_opts)
 

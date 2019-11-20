@@ -12,8 +12,6 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 '''
 
-from __future__ import (print_function, division)
-
 import os
 import glob
 import met_util as util
@@ -29,7 +27,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
     """!Wraps the MET tool ensemble_stat to compare ensemble datasets
     """
     def __init__(self, config, logger):
-        super(EnsembleStatWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'ensemble_stat'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
@@ -43,7 +41,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                @returns A dictionary of the ensemble stat values
                         from the config file.
         """
-        c_dict = super(EnsembleStatWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
+
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_ENSEMBLE_STAT_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
 
         c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
                                                        'ENSEMBLE_STAT_ONCE_PER_FIELD',
@@ -138,38 +139,34 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.infiles.append(fcst_file_list)
 
-        var_list = self.c_dict['VAR_LIST']
+        var_list = util.parse_var_list(self.config, time_info)
         # get point observation file if requested
-        if self.c_dict['OBS_POINT_INPUT_DIR'] != '':
+        if self.c_dict['OBS_POINT_INPUT_TEMPLATE'] != '':
             point_obs_path = self.find_data(time_info, var_list[0], 'OBS_POINT')
             if point_obs_path is None:
-                self.logger.error("Could not find point obs file in " +\
-                                  self.c_dict['OBS_POINT_INPUT_DIR'] +\
-                                  " for valid time " + time_info['valid_fmt'])
                 return
+
             self.point_obs_files.append(point_obs_path)
 
         # get grid observation file if requested
-        if self.c_dict['OBS_GRID_INPUT_DIR'] != '':
+        if self.c_dict['OBS_GRID_INPUT_TEMPLATE'] != '':
             grid_obs_path = self.find_data(time_info, var_list[0], 'OBS_GRID')
             if grid_obs_path is None:
-                self.logger.error("Could not find grid obs file in " +\
-                                  self.c_dict['OBS_GRID_INPUT_DIR'] +\
-                                  " for valid time " + time_info['valid_fmt'])
                 return
+
             self.grid_obs_files.append(grid_obs_path)
 
 
         # set field info
-        fcst_field = self.get_field_info(var_list, "something.grb2", 'FCST')
-        obs_field = self.get_field_info(var_list, "something.grb2", 'OBS')
-        ens_field = self.get_field_info(var_list, 'something.grb2', 'ENS')
+        fcst_field = self.get_all_field_info(var_list, "something.grb2", 'FCST')
+        obs_field = self.get_all_field_info(var_list, "something.grb2", 'OBS')
+        ens_field = self.get_all_field_info(var_list, 'something.grb2', 'ENS')
 
         # run
         self.process_fields(time_info, fcst_field, obs_field, ens_field)
 
 
-    def get_field_info(self, var_list, model_path, data_type):
+    def get_all_field_info(self, var_list, model_path, data_type):
         """!Get field info based on data type"""
         field_list = []
         for var_info in var_list:
@@ -197,8 +194,15 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             else:
                 return ''
 
-            next_field = self.get_one_field_info(level, thresh, name, extra, data_type)
-            field_list.append(next_field)
+            next_field = self.get_field_info(v_level=level,
+                                             v_thresh=thresh,
+                                             v_name=name,
+                                             v_extra=extra,
+                                             d_type=data_type)
+            if next_field is None:
+                return ''
+
+            field_list.extend(next_field)
 
         return ','.join(field_list)
 
@@ -280,20 +284,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
           str(time_info['lead_hours']) + '_ensemble.txt'
         return self.write_list_file(list_filename, ens_members_path)
 
-
-    def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
-        """! Set and print environment variables, then build/run MET command
-              Args:
-                @param time_info dictionary containing timing information
-                @param fcst_field field information formatted for MET config file
-                @param obs_field field information formatted for MET config file
-        """
-        # set config file since command is reset after each run
-        self.param = self.c_dict['CONFIG_FILE']
-
-        # set up output dir with time info
-        self.create_and_set_output_dir(time_info)
-
+    def set_environment_variables(self, fcst_field, obs_field, ens_field, time_info):
         # list of fields to print to log
         print_list = ["MODEL", "GRID_VX", "OBTYPE",
                       "CONFIG_DIR", "FCST_LEAD",
@@ -323,6 +314,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
         self.add_env_var("ENS_THRESH", self.c_dict['ENS_THRESH'])
 
+        # set user environment variables
+        self.set_user_environment(time_info)
+
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_user_env_items()
@@ -330,6 +324,22 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.print_env_item(item)
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
         self.print_env_copy(print_list)
+
+    def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
+        """! Set and print environment variables, then build/run MET command
+              Args:
+                @param time_info dictionary containing timing information
+                @param fcst_field field information formatted for MET config file
+                @param obs_field field information formatted for MET config file
+        """
+        # set config file since command is reset after each run
+        self.param = self.c_dict['CONFIG_FILE']
+
+        # set up output dir with time info
+        self.create_and_set_output_dir(time_info)
+
+        # set environment variables that are passed to the MET config
+        self.set_environment_variables(fcst_field, obs_field, ens_field, time_info)
 
         # check if METplus can generate the command successfully
         cmd = self.get_command()
@@ -364,7 +374,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                               You must use a subclass")
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.verbose)
+        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for args in self.args:
             cmd += args + " "

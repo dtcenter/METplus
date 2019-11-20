@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import print_function
 
 import re
 import os
@@ -10,13 +9,12 @@ import glob
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 
 import produtil.setup
-# from produtil.run import batchexe
-# from produtil.run import run
 import met_util as util
+import time_util
 import feature_util
 from command_builder import CommandBuilder
 import config_metplus
-from tc_stat_wrapper import TcStatWrapper
+from tc_stat_wrapper import TCStatWrapper
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
 
 
@@ -43,14 +41,14 @@ class SeriesByLeadWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
-        super(SeriesByLeadWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'SeriesByLead'
         # Retrieve any necessary values from the parm file(s)
         self.do_fhr_by_group = self.config.getbool('config',
-                                                   'SERIES_BY_LEAD_GROUP_FCSTS')
+                                                   'SERIES_ANALYSIS_GROUP_FCSTS')
         self.fhr_group_labels = []
-        self.var_list = util.getlist(self.config.getstr('config', 'VAR_LIST'))
-        self.stat_list = util.getlist(self.config.getstr('config', 'STAT_LIST'))
+        self.var_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_VAR_LIST'))
+        self.stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST'))
         self.plot_data_plane_exe = os.path.join(
             self.config.getdir('MET_INSTALL_DIR'),
             'bin/plot_data_plane')
@@ -61,37 +59,27 @@ class SeriesByLeadWrapper(CommandBuilder):
         met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.series_analysis_exe = os.path.join(met_install_dir,
                                                 'bin/series_analysis')
-        self.extract_tiles_dir = self.config.getdir('EXTRACT_TILES_OUTPUT_DIR')
+        self.input_dir = self.config.getdir('SERIES_ANALYSIS_INPUT_DIR')
         self.series_lead_filtered_out_dir = \
-            self.config.getdir('SERIES_BY_LEAD_FILTERED_OUTPUT_DIR')
-        self.series_lead_out_dir = self.config.getdir('SERIES_BY_LEAD_OUTPUT_DIR')
+            self.config.getdir('SERIES_ANALYSIS_FILTERED_OUTPUT_DIR')
+        self.series_lead_out_dir = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR')
         self.tmp_dir = self.config.getdir('TMP_DIR')
-        self.background_map = self.config.getbool('config', 'BACKGROUND_MAP')
-        self.regrid_with_met_tool = \
-            self.config.getbool('config', 'REGRID_USING_MET_TOOL')
+        self.background_map = self.config.getbool('config', 'SERIES_ANALYSIS_BACKGROUND_MAP')
         self.series_filter_opts = \
             self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
         self.series_filter_opts.strip()
         self.fcst_ascii_regex = \
-            self.config.getstr('regex_pattern', 'FCST_ASCII_REGEX_LEAD')
+            self.config.getstr('regex_pattern', 'FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD')
         self.anly_ascii_regex = \
-            self.config.getstr('regex_pattern', 'ANLY_ASCII_REGEX_LEAD')
+            self.config.getstr('regex_pattern', 'OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD')
         self.series_anly_configuration_file = \
-            self.config.getstr('config', 'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE')
-        self.regrid_with_met_tool = self.config.getbool('config',
-                                              'REGRID_USING_MET_TOOL')
-        if self.regrid_with_met_tool:
-            # Re-gridding via MET Tool regrid_data_plane.
-            self.fcst_tile_regex = \
-                self.config.getstr('regex_pattern', 'FCST_NC_TILE_REGEX')
-            self.anly_tile_regex = \
-                self.config.getstr('regex_pattern', 'ANLY_NC_TILE_REGEX')
-        else:
-            # Re-gridding via wgrib2 tool.
-            self.fcst_tile_regex = self.config.getstr('regex_pattern',
-                                                 'FCST_TILE_REGEX')
-            self.anly_tile_regex = self.config.getstr('regex_pattern',
-                                                 'ANLY_TILE_REGEX')
+            self.config.getstr('config', 'SERIES_ANALYSIS_CONFIG_FILE')
+
+        # Re-gridding via MET Tool regrid_data_plane.
+        self.fcst_tile_regex = \
+            self.config.getstr('regex_pattern', 'FCST_SERIES_ANALYSIS_NC_TILE_REGEX')
+        self.anly_tile_regex = \
+            self.config.getstr('regex_pattern', 'OBS_SERIES_ANALYSIS_NC_TILE_REGEX')
 
         self.logger.info("Initialized SeriesByLeadWrapper")
 
@@ -183,7 +171,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         # Initialize the tile_dir to the extract tiles output directory.
         # And retrieve a list of init times based on the data available in
         # the extract tiles directory.
-        tile_dir = self.extract_tiles_dir
+        tile_dir = self.input_dir
         init_times = util.get_updated_init_times(tile_dir, self.logger)
 
         # Check for the existence of the storm track tiles and raise
@@ -270,13 +258,13 @@ class SeriesByLeadWrapper(CommandBuilder):
                        " filter criteria. Continue using all available data "
                        "in extract tiles directory.")
                 self.logger.debug(msg)
-                filter_tile_dir = self.extract_tiles_dir
+                filter_tile_dir = self.input_dir
 
         else:
             # No additional filtering was requested.  The extract tiles
             # directory is the
             # source of input tile data.
-            filter_tile_dir = self.extract_tiles_dir
+            filter_tile_dir = self.input_dir
 
         return filter_tile_dir
 
@@ -409,10 +397,8 @@ class SeriesByLeadWrapper(CommandBuilder):
 
                 # Set the NAME environment to <name>_<level> format if
                 # regridding method is to be done with the MET tool
-                # regrid_data_plane (which is  indicated in the
-                # config/param file).
-                if self.regrid_with_met_tool:
-                    os.environ['NAME'] = name + '_' + level
+                # regrid_data_plane.
+                os.environ['NAME'] = name + '_' + level
                 out_param_parts = ['-out ', out_dir, '/series_F',
                                     cur_beg_str, '_to_F', cur_end_str,
                                     '_', name, '_', level, '.nc']
@@ -454,10 +440,17 @@ class SeriesByLeadWrapper(CommandBuilder):
 
              Returns:          None
         """
+        # NOTE: SeriesByLead currently only supports hour leads
+        # get_lead_sequence was modified to handle other lead units
         lead_seq = util.get_lead_sequence(self.config, None)
 
         for fhr in lead_seq:
-            cur_fhr = str(fhr).zfill(3)
+            fcst_seconds = time_util.ti_get_seconds_from_relativedelta(fhr)
+            if fcst_seconds is None:
+                self.logger.error(f'Invalid forecast units used: {fhr}')
+                exit(1)
+
+            cur_fhr = str(fcst_seconds // 3600).zfill(3)
             msg = ('Evaluating forecast hour ' + cur_fhr)
             self.logger.debug(msg)
 
@@ -551,12 +544,11 @@ class SeriesByLeadWrapper(CommandBuilder):
                 os.environ['NAME'] = name
                 os.environ['LEVEL'] = level
 
-                # Set NAME to name_level if regridding with regrid data plane
-                if self.regrid_with_met_tool:
-                    os.environ['NAME'] = name + '_' + level
-                    out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr,
-                                       '_', name, '_', level, '.nc']
-                    out_param = ''.join(out_param_parts)
+                # Set NAME to name_level
+                os.environ['NAME'] = name + '_' + level
+                out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr,
+                                   '_', name, '_', level, '.nc']
+                out_param = ''.join(out_param_parts)
 
                 # Create the full series analysis command.
                 config_param_parts = ['-config ',
@@ -1081,11 +1073,8 @@ class SeriesByLeadWrapper(CommandBuilder):
             name = match.group(1)
             level = match.group(2)
 
-            os.environ['NAME'] = name
             os.environ['LEVEL'] = level
-
-            if self.regrid_with_met_tool:
-                os.environ['NAME'] = name + '_' + level
+            os.environ['NAME'] = name + '_' + level
 
             # Retrieve only those netCDF files that correspond to
             # the current variable.
@@ -1230,11 +1219,8 @@ class SeriesByLeadWrapper(CommandBuilder):
             name = match.group(1)
             level = match.group(2)
 
-            os.environ['NAME'] = name
             os.environ['LEVEL'] = level
-
-            if self.regrid_with_met_tool:
-                os.environ['NAME'] = name + '_' + level
+            os.environ['NAME'] = name + '_' + level
 
             self.logger.info("Creating animated gifs")
             for cur_stat in self.stat_list:
@@ -1342,7 +1328,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             filter_filename = os.path.join(series_output_dir,
                                            cur_init, filter_file)
 
-            tcs = TcStatWrapper(self.config, self.logger)
+            tcs = TCStatWrapper(self.config, self.logger)
             tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
                               filter_opts)
 

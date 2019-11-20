@@ -12,8 +12,6 @@ Output Files: None
 Condition codes: 0 for success, 1 for failure
 """
 
-from __future__ import print_function
-
 import os
 import met_util as util
 import time_util
@@ -23,19 +21,25 @@ from string_template_substitution import StringSub
 class ExampleWrapper(CommandBuilder):
     """!Wrapper can be used as a base to develop a new wrapper"""
     def __init__(self, config, logger):
-        super(ExampleWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'example'
         self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
 
     def create_c_dict(self):
-        # change to super() for python 3
-        # c_dict = super()
-        c_dict = super(ExampleWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
         # get values from config object and set them to be accessed by wrapper
         c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                      'EXAMPLE_INPUT_TEMPLATE')
-        c_dict['INPUT_DIR'] = self.config.getdir('EXAMPLE_INPUT_DIR')
+                                                      'EXAMPLE_INPUT_TEMPLATE', '')
+        c_dict['INPUT_DIR'] = self.config.getdir('EXAMPLE_INPUT_DIR', '')
+
+        if c_dict['INPUT_TEMPLATE'] == '':
+            self.logger.info('[filename_templates] EXAMPLE_INPUT_TEMPLATE was not set. '
+                             'You should set this variable to see how the runtime is '
+                             'substituted. For example: {valid?fmt=%Y%m%d%H}.ext')
+
+        if c_dict['INPUT_DIR'] == '':
+            self.logger.debug('EXAMPLE_INPUT_DIR was not set')
 
         return c_dict
 
@@ -64,14 +68,14 @@ class ExampleWrapper(CommandBuilder):
         for lead in lead_seq:
 
             # set forecast lead time in hours
-            time_info['lead_hours'] = lead
+            time_info['lead'] = lead
 
             # recalculate time info items
             time_info = time_util.ti_calculate(time_info)
 
             # log init, valid, and forecast lead times for current loop iteration
             self.logger.info('Processing forecast lead {} initialized at {} and valid at {}'
-                             .format(lead, time_info['init'].strftime('%Y-%m-%d %HZ'),
+                             .format(time_info['lead_string'], time_info['init'].strftime('%Y-%m-%d %HZ'),
                                      time_info['valid'].strftime('%Y-%m-%d %HZ')))
 
             # perform string substitution to find filename based on template and current run time

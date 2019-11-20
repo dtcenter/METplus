@@ -96,3 +96,12 @@ ENV/
 
 # temp files surrounded by #
 *#*#
+
+# sphinx-gallery stuff
+docs/gen_modules
+docs/Users_Guide/template
+docs/Users_Guide/met_tool_wrapper
+docs/Users_Guide/model_applications
+
+# sphinx stuff
+docs/_build

@@ -16,8 +16,6 @@ Condition codes: 0 for success, 1 for failure
 
 """
 
-from __future__ import print_function, division, unicode_literals
-
 import os
 import re
 import csv
@@ -29,7 +27,7 @@ from string_template_substitution import StringSub
 from string_template_substitution import get_tags
 from command_builder import CommandBuilder
 
-'''!@namespace TcPairsWrapper
+'''!@namespace TCPairsWrapper
 @brief Wraps the MET tool tc_pairs to parse ADeck and BDeck ATCF_by_pairs files,
 filter the data, and match them up.
 Call as follows:
@@ -38,13 +36,13 @@ tc_pairs_wrapper.py [-c /path/to/user.template.conf]
 @endcode
 '''
 
-class TcPairsWrapper(CommandBuilder):
+class TCPairsWrapper(CommandBuilder):
     """!Wraps the MET tool, tc_pairs to parse and match ATCF_by_pairs adeck and
        bdeck files.  Pre-processes extra tropical cyclone data.
     """
 
     def __init__(self, config, logger):
-        super(TcPairsWrapper, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.app_name = 'tc_pairs'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
@@ -62,7 +60,9 @@ class TcPairsWrapper(CommandBuilder):
                  c_dict - A dictionary of the values from the config file
 
         """
-        c_dict = super(TcPairsWrapper, self).create_c_dict()
+        c_dict = super().create_c_dict()
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_TC_PAIRS_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
         c_dict['MISSING_VAL_TO_REPLACE'] =\
             self.config.getstr('config', 'TC_PAIRS_MISSING_VAL_TO_REPLACE', '-99')
         c_dict['MISSING_VAL'] =\
@@ -138,7 +138,7 @@ class TcPairsWrapper(CommandBuilder):
         # if running in READ_ALL_FILES mode, call tc_pairs once and exit
         if self.c_dict['READ_ALL_FILES']:
             # Set up the environment variable to be used in the tc_pairs Config
-            self.set_env_vars(None)
+            self.set_environment_variables(None)
             self.bdeck = [self.c_dict['BDECK_DIR']]
 
             adeck_dir = self.c_dict['ADECK_DIR']
@@ -188,7 +188,7 @@ class TcPairsWrapper(CommandBuilder):
 
         # Set up the environment variable to be used in the TCPairs Config
         # file (TC_PAIRS_CONFIG_FILE)
-        self.set_env_vars(time_info)
+        self.set_environment_variables(time_info)
 
         # set output dir
         self.outdir = self.c_dict['OUTPUT_DIR']
@@ -253,7 +253,7 @@ class TcPairsWrapper(CommandBuilder):
 
         return True
 
-    def set_env_vars(self, time_info):
+    def set_environment_variables(self, time_info):
         """! Set up all the environment variables that are assigned
              in the METplus config file which are to be used by the MET
             TC-pairs config file.
@@ -279,18 +279,18 @@ class TcPairsWrapper(CommandBuilder):
         tmp_init_end = self.c_dict['INIT_END'][0:8]
 
         if not tmp_init_beg:
-            self.add_env_var(b'INIT_BEG', "")
+            self.add_env_var('INIT_BEG', "")
         else:
             init_beg = str(tmp_init_beg).replace("\'", "\"")
             init_beg_str = ''.join(init_beg.split())
-            self.add_env_var(b'INIT_BEG', str(init_beg_str))
+            self.add_env_var('INIT_BEG', str(init_beg_str))
 
         if not tmp_init_end:
-            self.add_env_var(b'INIT_END', "")
+            self.add_env_var('INIT_END', "")
         else:
             init_end = str(tmp_init_end).replace("\'", "\"")
             init_end_str = ''.join(init_end.split())
-            self.add_env_var(b'INIT_END', str(init_end_str))
+            self.add_env_var('INIT_END', str(init_end_str))
 
         # INIT_INCLUDE and INIT_EXCLUDE
         # Used to set init_inc in "TC_PAIRS_CONFIG_FILE"
@@ -326,7 +326,7 @@ class TcPairsWrapper(CommandBuilder):
             # Replace ' with " and remove whitespace
             model = str(tmp_model).replace("\'", "\"")
             model_str = ''.join(model.split())
-            self.add_env_var(b'MODEL', str(model_str))
+            self.add_env_var('MODEL', str(model_str))
 
         # STORM_ID
         tmp_storm_id = self.c_dict['STORM_ID']
@@ -337,7 +337,7 @@ class TcPairsWrapper(CommandBuilder):
             # Replace ' with " and remove whitespace
             storm_id = str(tmp_storm_id).replace("\'", "\"")
             storm_id_str = ''.join(storm_id.split())
-            self.add_env_var(b'STORM_ID', str(storm_id_str))
+            self.add_env_var('STORM_ID', str(storm_id_str))
 
         # BASIN
         tmp_basin = self.c_dict['BASIN']
@@ -349,7 +349,7 @@ class TcPairsWrapper(CommandBuilder):
             # Replace any ' with " and remove whitespace.
             basin = str(tmp_basin).replace("\'", "\"")
             basin_str = ''.join(basin.split())
-            self.add_env_var(b'BASIN', str(basin_str))
+            self.add_env_var('BASIN', str(basin_str))
 
         # CYCLONE
         tmp_cyclone = self.c_dict['CYCLONE']
@@ -369,7 +369,7 @@ class TcPairsWrapper(CommandBuilder):
             # Replace ' with " and get rid of any whitespace
             cyclone = str(tmp_cyclone).replace("\'", "\"")
             cyclone_str = ''.join(cyclone.split())
-            self.add_env_var(b'CYCLONE', str(cyclone_str))
+            self.add_env_var('CYCLONE', str(cyclone_str))
 
         # STORM_NAME
         tmp_storm_name = self.c_dict['STORM_NAME']
@@ -380,29 +380,32 @@ class TcPairsWrapper(CommandBuilder):
         else:
             storm_name = str(tmp_storm_name).replace("\'", "\"")
             storm_name_str = ''.join(storm_name.split())
-            self.add_env_var(b'STORM_NAME', str(storm_name_str))
+            self.add_env_var('STORM_NAME', str(storm_name_str))
 
         # Valid time window variables
         tmp_valid_beg = self.c_dict['VALID_BEG']
         tmp_valid_end = self.c_dict['VALID_END']
 
         if not tmp_valid_beg:
-            self.add_env_var(b'VALID_BEG', "")
+            self.add_env_var('VALID_BEG', "")
         else:
             valid_beg = str(tmp_valid_beg).replace("\'", "\"")
             valid_beg_str = ''.join(valid_beg.split())
-            self.add_env_var(b'VALID_BEG', str(valid_beg_str))
+            self.add_env_var('VALID_BEG', str(valid_beg_str))
 
         if not tmp_valid_end:
-            self.add_env_var(b'VALID_END', "")
+            self.add_env_var('VALID_END', "")
         else:
             valid_end = str(tmp_valid_end).replace("\'", "\"")
             valid_end_str = ''.join(valid_end.split())
-            self.add_env_var(b'VALID_END', str(valid_end_str))
+            self.add_env_var('VALID_END', str(valid_end_str))
 
         # DLAND_FILE
         tmp_dland_file = self.c_dict['DLAND_FILE']
-        self.add_env_var(b'DLAND_FILE', str(tmp_dland_file))
+        self.add_env_var('DLAND_FILE', str(tmp_dland_file))
+
+        # set user environment variables
+        self.set_user_environment(time_info)
 
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
@@ -450,7 +453,9 @@ class TcPairsWrapper(CommandBuilder):
 
         # if no bdeck_files found
         if len(bdeck_files) == 0:
-            self.logger.warning('No BDECK files found')
+            template = self.c_dict['BDECK_TEMPLATE']
+            self.logger.error(f'No BDECK files found searching for basin {basin} and '
+                              f'cyclone {cyclone} using template {template}')
             return False
 
         # find corresponding adeck or edeck files
@@ -516,7 +521,7 @@ class TcPairsWrapper(CommandBuilder):
                                                   time_info)
 
             if not adeck_list and not edeck_list:
-                self.logger.debug('Could not find any corresponding '
+                self.logger.error('Could not find any corresponding '
                                   'ADECK or EDECK files')
                 continue
 
@@ -567,9 +572,10 @@ class TcPairsWrapper(CommandBuilder):
                 @param time_info object containing timing information to process
         """
         deck_list = []
+        template = self.c_dict[deck+'DECK_TEMPLATE']
         # get matching adeck wildcard expression for first model
         string_sub = StringSub(self.logger,
-                               self.c_dict[deck+'DECK_TEMPLATE'],
+                               template,
                                basin=basin,
                                cyclone=cyclone,
                                model=model_list[0],
@@ -580,8 +586,7 @@ class TcPairsWrapper(CommandBuilder):
         # add adeck files if they exist
         for model in model_list:
             deck_glob = deck_expr.replace(model_list[0], model)
-            self.logger.debug('Looking for {}DECK file: {}'.format(deck,
-                                                                   deck_glob))
+            self.logger.debug(f'Looking for {deck}DECK file: {deck_glob} using template {template}')
             deck_files = glob.glob(deck_glob)
             if not deck_files:
                 continue
@@ -662,7 +667,7 @@ class TcPairsWrapper(CommandBuilder):
         if not os.path.exists(os.path.dirname(output_path)):
             os.makedirs(os.path.dirname(output_path))
 
-        cmd = '{} -v {}'.format(self.app_path, self.verbose)
+        cmd = '{} -v {}'.format(self.app_path, self.c_dict['VERBOSITY'])
         cmd += ' -bdeck {}'.format(' '.join(self.bdeck))
 
         if self.adeck:
@@ -691,13 +696,13 @@ class TcPairsWrapper(CommandBuilder):
             os.makedirs(os.path.dirname(out_csvfile))
 
         # Open the output csv file
-        out_file = open(out_csvfile, "wb")
+        out_file = open(out_csvfile, "w", newline='')
 
         # Tell the write to use the line separator
         # "\n" instead of the DOS "\r\n"
         writer = csv.writer(out_file, lineterminator="\n")
 
-        with open(in_csvfile) as csvfile:
+        with open(in_csvfile, newline='') as csvfile:
 
             in_file_reader = csv.reader(csvfile)
 
@@ -732,4 +737,4 @@ class TcPairsWrapper(CommandBuilder):
         out_file.close()
 
 if __name__ == "__main__":
-    util.run_stand_alone("tc_pairs_wrapper", "TcPairs")
+    util.run_stand_alone("tc_pairs_wrapper", "TCPairs")

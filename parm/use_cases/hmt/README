@@ -33,10 +33,14 @@ NOTE: To call master_metplus.py without specifying a full path to the script, yo
 
 4) Use cases: The following is a list of HMT use cases that can be called. Please ensure that the INPUT_BASE variable is set to point to the METplus sample data location so that the use case input data can be found.
 
+master_metplus.py -c use_cases/hmt/examples/phpt-mtd.conf
+
+The following use cases require GEMPAK data support. You will not be able to run these use cases if you do not have GempakToCF installed and configured for METplus.
+
 master_metplus.py -c use_cases/hmt/examples/href-mtd.conf
 master_metplus.py -c use_cases/hmt/examples/href-vs-href.conf
 master_metplus.py -c use_cases/hmt/examples/hrrre-vs-hrrre.conf
 master_metplus.py -c use_cases/hmt/examples/hrrre-vs-hrrre-prob.conf
 master_metplus.py -c use_cases/hmt/examples/hrrr_exp-mtd.conf
 master_metplus.py -c use_cases/hmt/examples/hrrr_exp-vs-hrrr_exp.conf
-master_metplus.py -c use_cases/hmt/examples/phpt-mtd.conf
+

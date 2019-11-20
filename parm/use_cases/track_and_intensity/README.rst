@@ -1,0 +1,69 @@
+To run the track and intensity example (the default/easiest example), run the following configuration files in the following order:
+
+    *-c <path/to/METplus>/parm/use_cases/track_and_intensity/track_and_intensity.conf*
+
+    *-c <path/to>/my_custom.conf*
+
+This will run the TcPairs wrapper on ADeck and BDeck files from which a default plot of track errors will be generated (.png file).  The TCMPRPlotter wrapper invokes the MET tcmpr_plotter.R script to generate these plots. 
+
+  The my_custom.conf is your custom config file where you define
+  the following under the [dir] header/family:
+
+  PROJ_DIR =
+
+  INPUT_BASE =
+
+  OUTPUT_BASE =
+
+  MET_INSTALL_DIR =
+
+  TMP_DIR = 
+  
+  Description of settings:
+
+  PROJ_DIR  - the base directory of where output and intermediate files will be saved.
+
+  INPUT_BASE - the directory where the ADECK and BDECK input data resides.
+
+  OUTPUT_BASE - the location of the final output files.
+
+  MET_INSTALL_DIR - the directory where the version of MET you are using is located (i.e. /usr/local/met-X-Y-Z).
+
+  TMP_DIR - the directory where temporary files are to be stored.
+
+
+To generate the mean and median plots made from the MET tcmpr_plotter.R script, run the following configuration files in the following order:
+
+    *-c <path/to/METplus>/parm/use_cases/track_and_intensity.conf*
+
+    *-c <path/to/METplus>/parm/use_cases/examples/tcmpr_mean_median.conf*
+
+    *-c <path/to>/my_custom.conf*
+
+where the my_custom.conf custom config file has the following values defined (under the [dir] header/family):
+
+    PROJ_DIR =
+
+    INPUT_BASE =
+
+    OUTPUT_BASE =
+
+    MET_INSTALL_DIR =
+
+    TMP_DIR = 
+
+Six .png files are created in the {OUTPUT_BASE}/tcmpr_plots directory:
+
+AMAX_WIND-BMAX_WIND_mean.png
+
+AMAX_WIND-BMAX_WIND_median.png
+
+AMSLP-BMSLP_mean.png
+
+AMSLP-BMSLP_median.png
+
+TK_ERR_mean.png
+
+TK_ERR_median.png
+
+which were generated based on the settings defined in the tcmpr_mean_median.conf file.
