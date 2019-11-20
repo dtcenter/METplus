@@ -285,7 +285,7 @@ that reformat gridded data
                     else:
                         # a threshold value is required for GRIB prob DICT data
                         if thresh is None:
-                            self.logger.error('No threshold was specified for probabilistic '
+                            self.log_error('No threshold was specified for probabilistic '
                                               'forecast GRIB data')
                             return None
 
@@ -409,7 +409,7 @@ that reformat gridded data
         # check if METplus can generate the command successfully
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("Could not generate command")
+            self.log_error("Could not generate command")
             return
 
         # run the MET command
@@ -469,7 +469,7 @@ that reformat gridded data
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.logger.error('No app path specified. '
+            self.log_error('No app path specified. '
                               'You must use a subclass')
             return None
 
@@ -478,7 +478,7 @@ that reformat gridded data
             cmd += arg + " "
 
         if len(self.infiles) == 0:
-            self.logger.error("No input filenames specified")
+            self.log_error("No input filenames specified")
             return None
 
         # add forecast file
@@ -488,13 +488,13 @@ that reformat gridded data
         cmd += self.infiles[1] + ' '
 
         if self.param == '':
-            self.logger.error('Must specify config file to run MET tool')
+            self.log_error('Must specify config file to run MET tool')
             return None
 
         cmd += self.param + ' '
 
         if self.outdir == "":
-            self.logger.error("No output directory specified")
+            self.log_error("No output directory specified")
             return None
 
         cmd += '-outdir {}'.format(self.outdir)

@@ -151,11 +151,11 @@ class ASCII2NCWrapper(CommandBuilder):
 
         # don't run if no input or output files were found
         if not self.infiles:
-            self.logger.error("No input files were found")
+            self.log_error("No input files were found")
             return
 
         if self.outfile == "":
-            self.logger.error("No output file specified")
+            self.log_error("No output file specified")
             return
 
         # add input files
@@ -168,7 +168,7 @@ class ASCII2NCWrapper(CommandBuilder):
 
         parent_dir = os.path.dirname(out_path)
         if parent_dir == '':
-            self.logger.error('Must specify path to output file')
+            self.log_error('Must specify path to output file')
             return None
 
         # create full output dir if it doesn't already exist
@@ -218,7 +218,7 @@ class ASCII2NCWrapper(CommandBuilder):
         # build command and run
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("Could not generate command")
+            self.log_error("Could not generate command")
             return
 
         self.build()

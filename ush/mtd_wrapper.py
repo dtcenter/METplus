@@ -60,7 +60,7 @@ class MTDWrapper(MODEWrapper):
             elif self.config.has_option('config', 'MTD_CONV_RADIUS'):
                 c_dict['FCST_CONV_RADIUS'] = self.config.getstr('config', 'MTD_CONV_RADIUS')
             else:
-                self.logger.error('[config] FCST_MTD_CONV_RADIUS not set in config')
+                self.log_error('[config] FCST_MTD_CONV_RADIUS not set in config')
                 exit(1)
 
             if self.config.has_option('config', 'FCST_MTD_CONV_THRESH'):
@@ -68,12 +68,12 @@ class MTDWrapper(MODEWrapper):
             elif self.config.has_option('config', 'MTD_CONV_THRESH'):
                 c_dict['FCST_CONV_THRESH'] = self.config.getstr('config', 'MTD_CONV_THRESH')
             else:
-                self.logger.error('[config] FCST_MTD_CONV_THRESH not set in config')
+                self.log_error('[config] FCST_MTD_CONV_THRESH not set in config')
                 exit(1)
 
             # check that values are valid
             if not util.validate_thresholds(util.getlist(c_dict['FCST_CONV_THRESH'])):
-                self.logger.error('FCST_MTD_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
+                self.log_error('FCST_MTD_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
                 exit(1)
 
         # only read OBS conf if processing observation data
@@ -92,7 +92,7 @@ class MTDWrapper(MODEWrapper):
             elif self.config.has_option('config', 'MTD_CONV_RADIUS'):
                 c_dict['OBS_CONV_RADIUS'] = self.config.getstr('config', 'MTD_CONV_RADIUS')
             else:
-                self.logger.error('[config] OBS_MTD_CONV_RADIUS not set in config')
+                self.log_error('[config] OBS_MTD_CONV_RADIUS not set in config')
                 exit(1)
 
             if self.config.has_option('config', 'OBS_MTD_CONV_THRESH'):
@@ -100,12 +100,12 @@ class MTDWrapper(MODEWrapper):
             elif self.config.has_option('config', 'MTD_CONV_THRESH'):
                 c_dict['OBS_CONV_THRESH'] = self.config.getstr('config', 'MTD_CONV_THRESH')
             else:
-                self.logger.error('[config] OBS_MTD_CONV_THRESH not set in config')
+                self.log_error('[config] OBS_MTD_CONV_THRESH not set in config')
                 exit(1)
 
             # check that values are valid
             if not util.validate_thresholds(util.getlist(c_dict['OBS_CONV_THRESH'])):
-                self.logger.error('OBS_MTD_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
+                self.log_error('OBS_MTD_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
                 exit(1)
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
@@ -159,7 +159,7 @@ class MTDWrapper(MODEWrapper):
 
             # only check model list because obs list should have same size
             if not model_list:
-                self.logger.error('Could not find any files to process')
+                self.log_error('Could not find any files to process')
                 return
 
             # write ascii file with list of files to process
@@ -319,7 +319,7 @@ class MTDWrapper(MODEWrapper):
 
             cmd = self.get_command()
             if cmd is None:
-                self.logger.error(self.app_name + " could not generate command")
+                self.log_error(self.app_name + " could not generate command")
                 return
             self.build()
             self.clear()
@@ -345,7 +345,7 @@ class MTDWrapper(MODEWrapper):
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.logger.error(self.app_name + ": No app path specified. \
+            self.log_error(self.app_name + ": No app path specified. \
                               You must use a subclass")
             return None
 
@@ -356,16 +356,16 @@ class MTDWrapper(MODEWrapper):
 
         if self.c_dict['SINGLE_RUN']:
             if self.fcst_file == None:
-                self.logger.error("No file path specified")
+                self.log_error("No file path specified")
                 return None
             cmd += '-single ' + self.fcst_file + ' '
         else:
             if self.fcst_file == None:
-                self.logger.error("No forecast file path specified")
+                self.log_error("No forecast file path specified")
                 return None
 
             if self.obs_file == None:
-                self.logger.error("No observation file path specified")
+                self.log_error("No observation file path specified")
                 return None
 
             cmd += '-fcst ' + self.fcst_file + ' '

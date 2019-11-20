@@ -121,8 +121,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
     # var_info not used but needed to match signature of parent class call
     # pylint:disable=unused-argument
     def run_at_time_one_field(self, time_info, var_info):
-        self.logger.error("run_at_time_one_field not implemented yet for {}"
-                          .format(self.app_name))
+        self.log_error("run_at_time_one_field not implemented yet for {}"
+                       .format(self.app_name))
         exit()
 
 
@@ -160,6 +160,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         fcst_field = self.get_all_field_info(var_list, "something.grb2", 'FCST')
         obs_field = self.get_all_field_info(var_list, "something.grb2", 'OBS')
         ens_field = self.get_all_field_info(var_list, 'something.grb2', 'ENS')
+
+        if fcst_field is None or obs_field is None or ens_field is None:
+            return
 
         # run
         self.process_fields(time_info, fcst_field, obs_field, ens_field)
@@ -260,8 +263,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                   'Adjust wildcard expression in [filename_templates] '+\
                   'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE or adjust [config] '+\
                   'ENSEMBLE_STAT_N_MEMBERS. Files found: {}'.format(ens_members_path)
-            self.logger.error(msg)
-            self.logger.error("Could not file files in {} for init {} f{} "
+            self.log_error(msg)
+            self.log_error("Could not file files in {} for init {} f{} "
                               .format(model_dir, time_info['init_fmt'],
                                       str(time_info['lead_hours'])))
             return False
@@ -334,7 +337,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.param = self.c_dict['CONFIG_FILE']
 
         if not self.param:
-            self.logger.error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
+            self.log_error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
             return
 
         # set up output dir with time info
@@ -346,7 +349,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # check if METplus can generate the command successfully
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("Could not generate command")
+            self.log_error("Could not generate command")
             return
 
         # run the MET command
@@ -372,7 +375,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.logger.error(self.app_name + ": No app path specified. \
+            self.log_error(self.app_name + ": No app path specified. \
                               You must use a subclass")
             return None
 
@@ -382,7 +385,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             cmd += args + " "
 
         if len(self.infiles) == 0:
-            self.logger.error(self.app_name+": No input filenames specified")
+            self.log_error(self.app_name+": No input filenames specified")
             return None
 
         for infile in self.infiles:
@@ -398,7 +401,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             cmd += "-grid_obs " + obs_file + " "
 
         if self.outdir == "":
-            self.logger.error(self.app_name+": No output directory specified")
+            self.log_error(self.app_name+": No output directory specified")
             return None
 
         cmd += '-outdir {}'.format(self.outdir)

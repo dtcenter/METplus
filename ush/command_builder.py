@@ -34,6 +34,7 @@ class CommandBuilder:
     __metaclass__ = ABCMeta
 
     def __init__(self, config, logger):
+        self.isOK = True
         self.errors = 0
         self.logger = logger
         self.config = config
@@ -77,6 +78,10 @@ class CommandBuilder:
         self.outdir = ""
         self.outfile = ""
         self.param = ""
+
+    def log_error(self, error_string):
+        self.logger.error(error_string)
+        self.errors += 1
 
     def set_user_environment(self, time_info=None):
         """!Set environment variables defined in [user_env_vars] section of config
@@ -221,12 +226,12 @@ class CommandBuilder:
 
         # if one but not the other is set, error and exit
         if has_fcst and not has_obs:
-            self.logger.error('Cannot use {} without {}'.format(fcst_name, obs_name))
-            exit(1)
+            self.log_error('Cannot use {} without {}'.format(fcst_name, obs_name))
+            return None, None
 
         if has_obs and not has_fcst:
-            self.logger.error('Cannot use {} without {}'.format(obs_name, fcst_name))
-            exit(1)
+            self.log_error('Cannot use {} without {}'.format(obs_name, fcst_name))
+            return None, None
 
         # if generic conf is set, use for both
         if has_gen:
@@ -238,9 +243,10 @@ class CommandBuilder:
             msg = 'Must set both {} and {} in the config files'.format(fcst_name,
                                                                        obs_name)
             msg += ' or set {} instead'.format(gen_name)
-            self.logger.error(msg)
+            self.log_error(msg)
 
-            exit(1)
+            return None, None
+
         self.logger.warning('Using default values for {}'.format(gen_name))
         return default, default
 
@@ -290,7 +296,7 @@ class CommandBuilder:
         if processed_path is None:
             msg = f"Could not find {data_type} file {full_path} using template {template}"
             if mandatory:
-                self.logger.error(msg)
+                self.log_error(msg)
             else:
                 self.logger.warning(msg)
 
@@ -317,7 +323,7 @@ class CommandBuilder:
         self.logger.debug(msg)
 
         if data_dir == '':
-            self.logger.error('Must set INPUT_DIR if looking for files within a time window')
+            self.log_error('Must set INPUT_DIR if looking for files within a time window')
             return None
 
         # step through all files under input directory in sorted order
@@ -357,7 +363,7 @@ class CommandBuilder:
             msg = f"Could not find {data_type} files under {data_dir} within range " +\
                   f"[{valid_range_lower},{valid_range_upper}] using template {template}"
             if mandatory:
-                self.logger.error(msg)
+                self.log_error(msg)
             else:
                 self.logger.warning(msg)
             return None
@@ -459,7 +465,7 @@ class CommandBuilder:
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.logger.error('No app path specified. '
+            self.log_error('No app path specified. '
                               'You must use a subclass')
             return None
 
@@ -469,14 +475,14 @@ class CommandBuilder:
             cmd += arg + " "
 
         if not self.infiles:
-            self.logger.error("No input filenames specified")
+            self.log_error("No input filenames specified")
             return None
 
         for infile in self.infiles:
             cmd += infile + " "
 
         if self.outfile == "":
-            self.logger.error("No output filename specified")
+            self.log_error("No output filename specified")
             return None
 
         out_path = os.path.join(self.outdir, self.outfile)
@@ -484,7 +490,7 @@ class CommandBuilder:
         # create outdir (including subdir in outfile) if it doesn't exist
         parent_dir = os.path.dirname(out_path)
         if parent_dir == '':
-            self.logger.error('Must specify path to output file')
+            self.log_error('Must specify path to output file')
             return None
 
         if not os.path.exists(parent_dir):
@@ -500,7 +506,7 @@ class CommandBuilder:
     def build_and_run_command(self):
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("Could not generate command")
+            self.log_error("Could not generate command")
             return
         self.build()
 
@@ -526,7 +532,7 @@ class CommandBuilder:
     def run_at_time(self, input_dict):
         """!Used to output error and exit if wrapper is attemped to be run with
             LOOP_ORDER = times and the run_at_time method is not implemented"""
-        self.logger.error('run_at_time not implemented for {} wrapper. '
+        self.log_error('run_at_time not implemented for {} wrapper. '
                           'Cannot run with LOOP_ORDER = times'.format(self.app_name))
         exit(1)
 

@@ -83,7 +83,7 @@ class ExtractTilesWrapper(CommandBuilder):
         tc_pairs_nc_output_regex = ".*.tcst"
         output_files_list = util.get_files(self.tc_pairs_dir, tc_pairs_nc_output_regex, self.logger)
         if len(output_files_list) == 0:
-            self.logger.error("No tc pairs data found at {}"\
+            self.log_error("No tc pairs data found at {}"\
                               .format(self.tc_pairs_dir))
             sys.exit(1)
 

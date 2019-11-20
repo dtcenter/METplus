@@ -58,12 +58,12 @@ class PB2NCWrapper(CommandBuilder):
         # filename templates, exit if not set
         c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates', 'PB2NC_INPUT_TEMPLATE')
         if c_dict['OBS_INPUT_TEMPLATE'] == '':
-            self.logger.error('Must set PB2NC_INPUT_TEMPLATE in config file')
+            self.log_error('Must set PB2NC_INPUT_TEMPLATE in config file')
             exit(1)
 
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates', 'PB2NC_OUTPUT_TEMPLATE')
         if c_dict['OUTPUT_TEMPLATE'] == '':
-            self.logger.error('Must set PB2NC_OUTPUT_TEMPLATE in config file')
+            self.log_error('Must set PB2NC_OUTPUT_TEMPLATE in config file')
             exit(1)
 
         c_dict['OBS_INPUT_DATATYPE'] = self.config.getstr('config', 'PB2NC_INPUT_DATATYPE', '')
@@ -147,8 +147,9 @@ class PB2NCWrapper(CommandBuilder):
             return 'G' + number.zfill(3)
 
         # Unexpected format
-        self.logger.error('Grid id in unexpected format of Gn or ' +
+        self.log_error('Grid id in unexpected format of Gn or ' +
                           'Gnn, please check again. Exiting...')
+        return None
 
     def set_environment_variables(self, time_info):
         """!Set environment variables that will be read by the MET config file.
@@ -220,7 +221,7 @@ class PB2NCWrapper(CommandBuilder):
         if infile is not None:
             return time_info
 
-        self.logger.error('Could not find input file in {} matching template {} using offsets {}'
+        self.log_error('Could not find input file in {} matching template {} using offsets {}'
                           .format(self.c_dict['OBS_INPUT_DIR'],
                                   self.c_dict['OBS_INPUT_TEMPLATE'],
                                   self.c_dict['OFFSETS']))
@@ -246,7 +247,7 @@ class PB2NCWrapper(CommandBuilder):
     def run_at_time(self, input_dict):
         """! Loop over each forecast lead and build pb2nc command """
         if self.c_dict['GRID'] is None:
-            self.logger.error('PB2NC_GRID value was formatted incorrectly')
+            self.log_error('PB2NC_GRID value was formatted incorrectly')
             return
 
         # loop of forecast leads and process each
@@ -287,7 +288,7 @@ class PB2NCWrapper(CommandBuilder):
         # build command and run if successful
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("Could not generate command")
+            self.log_error("Could not generate command")
             return
         self.build()
 
@@ -297,7 +298,7 @@ class PB2NCWrapper(CommandBuilder):
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.logger.error('No app path specified. You must use a subclass')
+            self.log_error('No app path specified. You must use a subclass')
             return None
 
         cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
@@ -306,7 +307,7 @@ class PB2NCWrapper(CommandBuilder):
             cmd += a + " "
 
         if len(self.infiles) == 0:
-            self.logger.error("No input filenames specified")
+            self.log_error("No input filenames specified")
             return None
 
         # if multiple input files, add first now, then add rest with
@@ -314,11 +315,11 @@ class PB2NCWrapper(CommandBuilder):
         cmd += self.infiles[0] + " "
 
         if self.outfile == "":
-            self.logger.error("No output filename specified")
+            self.log_error("No output filename specified")
             return None
 
         if self.outdir == "":
-            self.logger.error("No output directory specified")
+            self.log_error("No output directory specified")
             return None
 
         out_path = os.path.join(self.outdir, self.outfile)
@@ -330,7 +331,7 @@ class PB2NCWrapper(CommandBuilder):
         cmd += out_path + ' '
 
         if self.c_dict['CONFIG_FILE'] == '':
-            self.logger.error('PB2NC_CONFIG_FILE is required')
+            self.log_error('PB2NC_CONFIG_FILE is required')
             return None
 
         cmd += self.c_dict['CONFIG_FILE'] + ' '

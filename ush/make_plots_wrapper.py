@@ -35,13 +35,13 @@ class MakePlotsWrapper(CommandBuilder):
 
     def get_command(self):
         if self.app_path is None:
-            self.logger.error(self.app_name + ": No app path specified. \
+            self.log_error(self.app_name + ": No app path specified. \
                               You must use a subclass")
             return None
         cmd = self.app_path + " "
         
         if self.plotting_script == "":
-            self.logger.error(self.app_name+": No plotting script specified")
+            self.log_error(self.app_name+": No plotting script specified")
             return None
         cmd += self.plotting_script
 
@@ -277,7 +277,7 @@ class MakePlotsWrapper(CommandBuilder):
                         self.config.getstr('config', 'MODEL'+m+'_OBTYPE')
                     )
                 else:
-                    self.logger.error("MODEL"+m+"_OBTYPE was not set.")
+                    self.log_error("MODEL"+m+"_OBTYPE was not set.")
                     exit(1)
             mod = {}
             mod['name'] = model_name
@@ -317,7 +317,7 @@ class MakePlotsWrapper(CommandBuilder):
                 )
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error(
+                    self.log_error(
                         "make_plot could not generate command"
                     )
                     return
@@ -354,7 +354,7 @@ class MakePlotsWrapper(CommandBuilder):
                 )
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error(
+                    self.log_error(
                         "make_plot could not generate command"
                     )
                     return
@@ -389,7 +389,7 @@ class MakePlotsWrapper(CommandBuilder):
                 )
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error(
+                    self.log_error(
                         "make_plot could not generate command"
                     )
                     return
@@ -427,7 +427,7 @@ class MakePlotsWrapper(CommandBuilder):
                 )
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error(
+                    self.log_error(
                         "make_plot could not generate command"
                     )
                     return
@@ -462,7 +462,7 @@ class MakePlotsWrapper(CommandBuilder):
                 )
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error(
+                    self.log_error(
                         "make_plot could not generate command"
                     )
                     return
@@ -501,7 +501,7 @@ class MakePlotsWrapper(CommandBuilder):
                 )
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error(
+                    self.log_error(
                         "make_plot could not generate command"
                     )
                     return
@@ -533,7 +533,7 @@ class MakePlotsWrapper(CommandBuilder):
                 )
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error(
+                    self.log_error(
                         "make_plot could not generate command"
                     )
                     return
@@ -562,7 +562,7 @@ class MakePlotsWrapper(CommandBuilder):
         for bad_config_variable in bad_config_variable_list:
             if self.config.has_option('config',
                                       bad_config_variable):
-                self.logger.error("Bad config option for running MakePlots. "
+                self.log_error("Bad config option for running MakePlots. "
                                   "Please remove "+bad_config_variable+" "
                                   +"and set using FCST/OBS_VARn")
                 exit(1)
@@ -572,7 +572,7 @@ class MakePlotsWrapper(CommandBuilder):
         ]
         for config_list in self.c_dict['GROUP_LIST_ITEMS']:
             if config_list not in loop_group_accepted_options:
-                self.logger.error("Bad config option for running MakePlots. "
+                self.log_error("Bad config option for running MakePlots. "
                                   +"Only accepted values in GROUP_LIST_ITEMS "
                                   +"are FCST_VALID_HOUR_LIST, "
                                   +"FCST_INIT_HOUR_LIST, "
@@ -582,7 +582,7 @@ class MakePlotsWrapper(CommandBuilder):
                 exit(1)
         for config_list in self.c_dict['LOOP_LIST_ITEMS']:
             if config_list not in loop_group_accepted_options:
-                self.logger.error("Bad config option for running MakePlots. "
+                self.log_error("Bad config option for running MakePlots. "
                                   +"Only accepted values in LOOP_LIST_ITEMS "
                                   +"are FCST_VALID_HOUR_LIST, "
                                   +"FCST_INIT_HOUR_LIST, "
@@ -597,7 +597,7 @@ class MakePlotsWrapper(CommandBuilder):
             ]
         for required_config_variable in required_config_variable_list:
             if len(self.c_dict[required_config_variable]) == 0:
-                self.logger.error(required_config_variable+" has no items. "
+                self.log_error(required_config_variable+" has no items. "
                                   +"This list must have items to run "
                                   +"MakePlots.")
                 exit(1)
@@ -615,7 +615,7 @@ class MakePlotsWrapper(CommandBuilder):
                     model_name_list.append(model_info['name'])
                 formatted_c_dict['MODEL_LIST'] = model_name_list
             else:
-                self.logger.error("No model information was found.")
+                self.log_error("No model information was found.")
                 exit(1)
         model_obtype_list = []
         model_reference_name_list = []
@@ -623,7 +623,7 @@ class MakePlotsWrapper(CommandBuilder):
             model_obtype_list.append(model_info['obtype'])
             model_reference_name_list.append(model_info['reference_name'])
         if len(formatted_c_dict['MODEL_LIST']) > 8:
-            self.logger.error("Number of models for plotting limited to 8.")
+            self.log_error("Number of models for plotting limited to 8.")
             exit(1)
         # Set up output base
         output_base_dir = self.c_dict['OUTPUT_BASE_DIR']
@@ -1017,7 +1017,7 @@ class MakePlotsWrapper(CommandBuilder):
                 accepted_verif_case_list = ['grid2grid', 'grid2obs', 'precip']
                 if self.c_dict['VERIF_CASE'] not in accepted_verif_case_list:
                     run_make_plots = False
-                    self.logger.error(self.c_dict['VERIF_CASE']+" is not an"
+                    self.log_error(self.c_dict['VERIF_CASE']+" is not an"
                                       +"an accepted MAKE_PLOTS_VERIF_CASE "
                                       +"option. Options are "
                                       +', '.join(accepted_verif_case_list))
@@ -1032,7 +1032,7 @@ class MakePlotsWrapper(CommandBuilder):
                         run_make_plots = True
                     else:
                         run_make_plots = False
-                        self.logger.error(self.c_dict['VERIF_TYPE']+" is not "
+                        self.log_error(self.c_dict['VERIF_TYPE']+" is not "
                                           +"an accepted MAKE_PLOTS_VERIF_TYPE "
                                           +"option for MAKE_PLOTS_VERIF_CASE "
                                           +"= "+self.c_dict['VERIF_CASE']+". "
@@ -1040,7 +1040,7 @@ class MakePlotsWrapper(CommandBuilder):
                                           +', '.join(accepted_verif_type_list))
             else:
                 run_make_plots = False
-                self.logger.error("Please defined either "
+                self.log_error("Please defined either "
                                   +"MAKE_PLOTS_VERIF_CASE and "
                                   +"MAKE_PLOTS_VERIF_TYPE, or "
                                   +"MAKE_PLOTS_USER_SCRIPT_LIST")
