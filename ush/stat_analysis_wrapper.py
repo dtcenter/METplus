@@ -1005,7 +1005,7 @@ class StatAnalysisWrapper(CommandBuilder):
         model_info_list = []
         all_conf = self.config.keys('config')
         model_indices = []
-        regex = re.compile('MODEL(\d+)$')
+        regex = re.compile(r'MODEL(\d+)$')
         for conf in all_conf:
             result = regex.match(conf)
             if result is not None:
