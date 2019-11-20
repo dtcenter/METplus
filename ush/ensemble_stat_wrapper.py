@@ -62,8 +62,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['GRID_VX'] = self.config.getstr('config', 'ENSEMBLE_STAT_GRID_VX', 'FCST')
 
         c_dict['CONFIG_FILE'] = \
-            self.config.getstr('config', 'ENSEMBLE_STAT_CONFIG_FILE',
-                               c_dict['CONFIG_DIR']+'/EnsembleStatConfig_SFC')
+            self.config.getstr('config', 'ENSEMBLE_STAT_CONFIG_FILE', '')
 
         c_dict['ENS_THRESH'] = \
           self.config.getstr('config', 'ENSEMBLE_STAT_ENS_THRESH', '1.0')
@@ -287,7 +286,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
     def set_environment_variables(self, fcst_field, obs_field, ens_field, time_info):
         # list of fields to print to log
         print_list = ["MODEL", "GRID_VX", "OBTYPE",
-                      "CONFIG_DIR", "FCST_LEAD",
+                      "FCST_LEAD",
                       "FCST_FIELD", "OBS_FIELD",
                       'ENS_FIELD', "INPUT_BASE",
                       "OBS_WINDOW_BEGIN", "OBS_WINDOW_END",
@@ -307,7 +306,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_env_var("MODEL", self.c_dict['MODEL'])
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("GRID_VX", self.c_dict['GRID_VX'])
-        self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
         self.add_env_var("INPUT_BASE", self.c_dict['INPUT_BASE'])
         self.add_env_var("FCST_LEAD", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("OBS_WINDOW_BEGIN", str(self.c_dict['OBS_WINDOW_BEGIN']))
@@ -334,6 +332,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         """
         # set config file since command is reset after each run
         self.param = self.c_dict['CONFIG_FILE']
+
+        if not self.param:
+            self.logger.error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
+            return
 
         # set up output dir with time info
         self.create_and_set_output_dir(time_info)

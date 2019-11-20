@@ -110,7 +110,7 @@ class MODEWrapper(CompareGriddedWrapper):
 
     def set_environment_variables(self, fcst_field, obs_field, var_info, time_info):
         print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
-                      "LEVEL", "OBTYPE", "CONFIG_DIR",
+                      "LEVEL", "OBTYPE",
                       "FCST_FIELD", "OBS_FIELD",
                       "QUILT", "VERIF_MASK",
                       "FCST_CONV_RADIUS", "FCST_CONV_THRESH",
@@ -125,7 +125,6 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_env_var("LEVEL", util.split_level(var_info['fcst_level'])[1])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
-        self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
 
         quilt = 'TRUE' if self.c_dict['QUILT'] else 'FALSE'
 

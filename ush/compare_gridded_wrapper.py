@@ -43,7 +43,6 @@ that reformat gridded data
         c_dict = super().create_c_dict()
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
         c_dict['OBTYPE'] = self.config.getstr('config', 'OBTYPE', 'OBS')
-        c_dict['CONFIG_DIR'] = self.config.getdir('CONFIG_DIR', '')
         # INPUT_BASE is not required unless it is referenced in a config file
         # it is used in the use case config files. Don't error if it is not set
         # to a value that contains /path/to
@@ -341,7 +340,7 @@ that reformat gridded data
         """!Set environment variables that are referenced by the MET config file"""
         # list of fields to print to log
         print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
-                      "LEVEL", "OBTYPE", "CONFIG_DIR",
+                      "LEVEL", "OBTYPE",
                       "FCST_FIELD", "OBS_FIELD",
                       "INPUT_BASE",
                       "CLIMO_FILE", "FCST_TIME"]
@@ -358,7 +357,6 @@ that reformat gridded data
         self.add_env_var("LEVEL", var_info['fcst_level'])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
-        self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
         if self.c_dict['CLIMO_FILE']:
              self.add_env_var("CLIMO_FILE", self.c_dict['CLIMO_FILE'])
         else:

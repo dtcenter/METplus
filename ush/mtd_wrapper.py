@@ -265,7 +265,7 @@ class MTDWrapper(MODEWrapper):
             self.create_and_set_output_dir(time_info)
 
             print_list = [ 'MIN_VOLUME', 'MODEL', 'FCST_VAR', 'OBTYPE',
-                           'OBS_VAR', 'LEVEL', 'CONFIG_DIR',
+                           'OBS_VAR', 'LEVEL',
                            'FCST_FIELD', 'OBS_FIELD',
                            'FCST_CONV_RADIUS', 'FCST_CONV_THRESH',
                            'OBS_CONV_RADIUS', 'OBS_CONV_THRESH' ]
@@ -275,7 +275,6 @@ class MTDWrapper(MODEWrapper):
             self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
             self.add_env_var("OBS_VAR", var_info['obs_name'])
             self.add_env_var("LEVEL", util.split_level(var_info['fcst_level'])[1])
-            self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
 
             # single mode - set fcst file, field, etc.
             if self.c_dict['SINGLE_RUN']:
