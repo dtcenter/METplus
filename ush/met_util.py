@@ -41,8 +41,8 @@ baseinputconfs = ['metplus_config/metplus_system.conf',
 
 def check_for_deprecated_config(conf, logger):
     deprecated_dict = {
-        'LOOP_BY_INIT' : {'sec' : 'config', 'alt' : 'LOOP_BY', 'req' : False},
-        'LOOP_METHOD' : {'sec' : 'config', 'alt' : 'LOOP_ORDER', 'req' : False},
+        'LOOP_BY_INIT' : {'sec' : 'config', 'alt' : 'LOOP_BY'},
+        'LOOP_METHOD' : {'sec' : 'config', 'alt' : 'LOOP_ORDER'},
         'PREPBUFR_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : None},
         'PREPBUFR_FILE_REGEX' : {'sec' : 'regex_pattern', 'alt' : None},
         'OBS_INPUT_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_DIR'},
