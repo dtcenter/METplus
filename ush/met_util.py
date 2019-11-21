@@ -1262,18 +1262,14 @@ def get_updated_init_times(input_dir, config=None):
                                       the forecast.tcst files found in the
                                       input_dir.
     """
-
-    # For logging
-    # cur_filename = sys._getframe().f_code.co_filename
-    # cur_function = sys._getframe().f_code.co_name
-
     updated_init_times_list = []
     init_times_list = []
     filter_list = get_files(input_dir, ".*.tcst", config)
     if filter_list:
         for filter_file in filter_list:
             match = re.match(r'.*/filter_([0-9]{8}_[0-9]{2,3})', filter_file)
-            init_times_list.append(match.group(1))
+            if match:
+                init_times_list.append(match.group(1))
         updated_init_times_list = sorted(init_times_list)
 
     return updated_init_times_list
