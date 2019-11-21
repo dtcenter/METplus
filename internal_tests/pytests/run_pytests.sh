@@ -11,6 +11,15 @@ if [ ! -e $script_dir"/minimum_pytest."$host".conf" ]; then
     exit
 fi
 
+ls $script_dir/*/__pycache__ &> /dev/null
+ret=$?
+if [ $ret == 0 ]; then
+    echo Remove all __pycache__ directories before running.
+    echo rm -r $script_dir/*/__pycache__
+    exit
+fi
+
+
 cd $script_dir/config
 pytest -c ../minimum_pytest.$host.conf
 cd $script_dir/grid_stat
