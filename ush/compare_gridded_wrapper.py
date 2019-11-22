@@ -34,6 +34,10 @@ that reformat gridded data
 
     def __init__(self, config, logger):
         super().__init__(config, logger)
+        # check to make sure all necessary probabilistic settings are set correctly
+        # this relies on the subclass to finish creating the c_dict, so it has to
+        # be checked after that happens
+        self.check_probabilistic_settings()
 
     def create_c_dict(self):
         """!Create dictionary from config items to be used in the wrapper
@@ -47,8 +51,18 @@ that reformat gridded data
         # it is used in the use case config files. Don't error if it is not set
         # to a value that contains /path/to
         c_dict['INPUT_BASE'] = self.config.getdir_nocheck('INPUT_BASE', '')
+
         c_dict['FCST_IS_PROB'] = self.config.getbool('config', 'FCST_IS_PROB', False)
+        # if forecast is PROB, get variable to check if prob is in GRIB PDS
+        # it can be unset if the INPUT_DATATYPE is NetCDF, so check that after
+        # the entire c_dict is created
+        if c_dict['FCST_IS_PROB']:
+            c_dict['FCST_PROB_IN_GRIB_PDS'] = self.config.getbool('config', 'FCST_PROB_IN_GRIB_PDS', '')
+
         c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
+        # see comment for FCST_IS_PROB
+        if c_dict['OBS_IS_PROB']:
+            c_dict['OBS_PROB_IN_GRIB_PDS'] = self.config.getbool('config', 'OBS_PROB_IN_GRIB_PDS', '')
 
         c_dict['FCST_PROB_THRESH'] = None
         c_dict['OBS_PROB_THRESH'] = None
@@ -63,6 +77,23 @@ that reformat gridded data
         c_dict['CLIMO_FILE'] = None
 
         return c_dict
+
+    def check_probabilistic_settings(self):
+        """!If dataset is probabilistic, check if *_PROB_IN_GRIB_PDS or INPUT_DATATYPE
+            are set. If not enough information is set, report an error and set isOK to False"""
+        for dtype in ['FCST', 'OBS']:
+            if self.c_dict[f'{dtype}_IS_PROB']:
+                # if the data type is NetCDF, then we know how to
+                # format the probabilistic fields
+                if self.c_dict[f'{dtype}_INPUT_DATATYPE'] == 'NETCDF':
+                    continue
+
+                # if the data is grib, the user must specify if the data is in
+                # the GRIB PDS or not
+                if self.c_dict[f'{dtype}_PROB_IN_GRIB_PDS'] == '':
+                    self.log_error(f"If {dtype}_IS_PROB is True, you must set {dtype}_PROB_IN"
+                                   "_GRIB_PDS unless the forecast datatype is set to NetCDF")
+                    isOK = False
 
     def handle_climo(self, time_info):
         if self.c_dict['CLIMO_INPUT_TEMPLATE'] != '':
@@ -277,7 +308,8 @@ that reformat gridded data
                     # field name to the call to the script
                     if util.is_python_script(v_name):
                         field = "{ name=\"" + v_name + "\"; prob=TRUE;"
-                    elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF':
+                    elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF' or \
+                      not self.c_dict[d_type + '_PROB_IN_GRIB_PDS']:
                         field = "{ name=\"" + v_name + "\";"
                         if v_level:
                             field += " level=\"" +  v_level + "\";"
