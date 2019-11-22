@@ -129,4 +129,4 @@ gridded observation data.
 # Keywords
 # --------
 #
-# .. note:: GridStatUseCase
+# .. note:: `GridStatUseCase <https://ncar.github.io/METplus/search.html?q=GridStatUseCase&check_keywords=yes&area=default>`_
