@@ -37,7 +37,7 @@ that reformat gridded data
     # pylint:disable=unused-argument
     def run_at_time_once(self, time_info, var_info, to_run):
         """!To be implemented by child class"""
-        self.logger.error('ReformatGridded wrapper cannot be called directly.'+\
+        self.log_error('ReformatGridded wrapper cannot be called directly.'+\
                           ' Please use child wrapper')
         exit(1)
 
@@ -61,7 +61,7 @@ that reformat gridded data
             run_list.append("OBS")
 
         if len(run_list) == 0:
-            self.logger.error(class_name+" specified in process_list, but "+\
+            self.log_error(class_name+" specified in process_list, but "+\
                               "FCST_"+app_name_caps+"_RUN and OBS_"+app_name_caps+"_RUN "+\
                               " are both False. Set one or both to true or "+\
                               "remove "+class_name+" from the process_list")

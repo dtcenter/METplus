@@ -6,8 +6,3 @@ Run the test as follows:
 
 pytest -c <path/to>/extract_tiles_test.conf -c <path/to>/custom.conf
 
-!!!!!!!!!!!!!!!
-!!!IMPORTANT!!!
-!!!!!!!!!!!!!!!
-Before you run the test, make sure to update the PROJ_DIR (in the custom.conf file) to establish the location of the
-output directory.

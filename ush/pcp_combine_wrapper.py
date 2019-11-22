@@ -97,7 +97,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         if c_dict[d_type+'_RUN_METHOD'] == 'DERIVE' and \
            len(c_dict[d_type+'_STAT_LIST']) == 0:
-            self.logger.error('Statistic list is empty. ' + \
+            self.log_error('Statistic list is empty. ' + \
               'Must set ' + d_type + '_PCP_COMBINE_STAT_LIST if running ' +\
                               'derive mode')
             exit(1)
@@ -139,11 +139,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         template = self.c_dict[data_type+'_'+in_or_out+'_TEMPLATE']
 
         if dirr is '':
-            self.logger.error(data_type+'_PCP_COMBINE_'+in_or_out+'_DIR must be set.')
+            self.log_error(data_type+'_PCP_COMBINE_'+in_or_out+'_DIR must be set.')
             exit(1)
 
         if template is '' and self.method != 'SUM':
-            self.logger.error(data_type+'_PCP_COMBINE_'+in_or_out+'_TEMPLATE must be set.')
+            self.log_error(data_type+'_PCP_COMBINE_'+in_or_out+'_TEMPLATE must be set.')
             exit(1)
 
         return (dirr, template)
@@ -241,7 +241,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         fname = next((item['name'] for item in accum_dict_list if item['amount'] == accum_seconds), '-1')
         # if accumulation was not found in levels dictionary list, error and return
         if fname == '-1':
-            self.logger.error(f'Accumulation {accum} was not specified in the {data_src}'
+            self.log_error(f'Accumulation {accum} was not specified in the {data_src}'
                               '_PCP_COMBINE_INPUT_ACCUMS list')
             return False
 
@@ -417,7 +417,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         
     def get_command(self):
         if self.app_path is None:
-            self.logger.error("No app path specified. You must use a subclass")
+            self.log_error("No app path specified. You must use a subclass")
             return None
 
         cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
@@ -480,11 +480,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             cmd += f' -name "{self.output_name}" '
 
         if self.outfile == "":
-            self.logger.error("No output filename specified")
+            self.log_error("No output filename specified")
             return None
 
         if self.outdir == "":
-            self.logger.error("No output directory specified")
+            self.log_error("No output directory specified")
             return None
 
         out_path = self.get_output_path()
@@ -521,7 +521,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             cmd = self.setup_custom_method(time_info, data_src)
         else:
             if var_info is None and not self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
-                self.logger.error('Cannot run PCPCombine without specifying fields to process '
+                self.log_error('Cannot run PCPCombine without specifying fields to process '
                                   'unless running in CUSTOM mode. You must set '
                                   f'{data_src}_VAR<n>_[NAME/LEVELS] or {data_src}_OUTPUT_[NAME/LEVEL]')
                 return
@@ -535,14 +535,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             elif self.method == "DERIVE":
                 cmd = self.setup_derive_method(time_info, var_info, data_src)
             else:
-                self.logger.error('Invalid ' + data_src + '_PCP_COMBINE_METHOD specified.'+\
+                self.log_error('Invalid ' + data_src + '_PCP_COMBINE_METHOD specified.'+\
                                   ' Options are ADD, SUM, and SUBTRACT.')
                 exit(1)
 
         if cmd is None:
             init_time = time_info['init_fmt']
             lead = time_info['lead_hours']
-            self.logger.error("pcp_combine could not generate command")
+            self.log_error("pcp_combine could not generate command")
             return
 
         # if output file exists and we want to skip it, warn and continue
@@ -605,7 +605,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                      self.config)
 
         if file1 is None:
-            self.logger.error(f'Could not find {data_src} file {file1_expected} using template {in_template}')
+            self.log_error(f'Could not find {data_src} file {file1_expected} using template {in_template}')
             return None
 
         # if level type is A (accum) and second lead is 0, then
@@ -631,7 +631,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                      self.config)
 
         if file2 is None:
-            self.logger.error(f'Could not find {data_src} file {file2_expected} using template {in_template}')
+            self.log_error(f'Could not find {data_src} file {file2_expected} using template {in_template}')
             return None
 
         if self.c_dict[data_src+'_INPUT_DATATYPE'] != 'GRIB':
@@ -744,7 +744,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                           default_unit='H',
                                                           valid_time=time_info['valid'])
         if accum_seconds is None:
-            self.logger.error(f'Invalid accumulation specified: {accum_string}')
+            self.log_error(f'Invalid accumulation specified: {accum_string}')
             return
 
         # create list of tuples for input levels and optional field names
@@ -758,7 +758,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.input_dir = in_dir
 
         if not self.get_accumulation(time_info, accum_string, data_src):
-            self.logger.error(f'Could not find files to build accumulation in {in_dir} using template {in_template}')
+            self.log_error(f'Could not find files to build accumulation in {in_dir} using template {in_template}')
             return None
 
         self.outdir = out_dir
@@ -805,13 +805,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                              default_unit='H',
                                                              valid_time=time_info['valid'])
         if lookback_seconds is None:
-            self.logger.error(f'Invalid format for derived lookback: {lookback}')
+            self.log_error(f'Invalid format for derived lookback: {lookback}')
             return
 
         if not self.get_accumulation(time_info,
                                      lookback,
                                      data_src):
-            self.logger.error(f'Could not find files in {in_dir} using template {in_template}')
+            self.log_error(f'Could not find files in {in_dir} using template {in_template}')
             return None
 
         # set output
@@ -842,7 +842,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         name_list = self.c_dict[data_src + '_NAMES']
 
         if not accum_list:
-            self.logger.error(f'{data_src}_PCP_COMBINE_INPUT_ACCUMS must be specified.')
+            self.log_error(f'{data_src}_PCP_COMBINE_INPUT_ACCUMS must be specified.')
             return False
 
         # name list should either be empty or the same length as accum list
@@ -851,7 +851,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 msg = f'{data_src}_PCP_COMBINE_INPUT_ACCUM_NAMES list should be ' +\
                       'either empty or the same length as ' +\
                       f'{data_src}_PCP_COMBINE_INPUT_ACCUMS list.'
-                self.logger.error(msg)
+                self.log_error(msg)
                 return False
         else:
             # if no name list, create list of None values
@@ -863,7 +863,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 msg = f'{data_src}_PCP_COMBINE_INPUT_LEVELS list should be ' +\
                       'either empty or the same length as ' +\
                       f'{data_src}_PCP_COMBINE_INPUT_ACCUMS list.'
-                self.logger.error(msg)
+                self.log_error(msg)
                 return False
         else:
             # if no level list, create list of None values

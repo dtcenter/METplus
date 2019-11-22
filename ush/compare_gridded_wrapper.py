@@ -34,6 +34,10 @@ that reformat gridded data
 
     def __init__(self, config, logger):
         super().__init__(config, logger)
+        # check to make sure all necessary probabilistic settings are set correctly
+        # this relies on the subclass to finish creating the c_dict, so it has to
+        # be checked after that happens
+        self.check_probabilistic_settings()
 
     def create_c_dict(self):
         """!Create dictionary from config items to be used in the wrapper
@@ -43,13 +47,22 @@ that reformat gridded data
         c_dict = super().create_c_dict()
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
         c_dict['OBTYPE'] = self.config.getstr('config', 'OBTYPE', 'OBS')
-        c_dict['CONFIG_DIR'] = self.config.getdir('CONFIG_DIR', '')
         # INPUT_BASE is not required unless it is referenced in a config file
         # it is used in the use case config files. Don't error if it is not set
         # to a value that contains /path/to
         c_dict['INPUT_BASE'] = self.config.getdir_nocheck('INPUT_BASE', '')
+
         c_dict['FCST_IS_PROB'] = self.config.getbool('config', 'FCST_IS_PROB', False)
+        # if forecast is PROB, get variable to check if prob is in GRIB PDS
+        # it can be unset if the INPUT_DATATYPE is NetCDF, so check that after
+        # the entire c_dict is created
+        if c_dict['FCST_IS_PROB']:
+            c_dict['FCST_PROB_IN_GRIB_PDS'] = self.config.getbool('config', 'FCST_PROB_IN_GRIB_PDS', '')
+
         c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
+        # see comment for FCST_IS_PROB
+        if c_dict['OBS_IS_PROB']:
+            c_dict['OBS_PROB_IN_GRIB_PDS'] = self.config.getbool('config', 'OBS_PROB_IN_GRIB_PDS', '')
 
         c_dict['FCST_PROB_THRESH'] = None
         c_dict['OBS_PROB_THRESH'] = None
@@ -64,6 +77,23 @@ that reformat gridded data
         c_dict['CLIMO_FILE'] = None
 
         return c_dict
+
+    def check_probabilistic_settings(self):
+        """!If dataset is probabilistic, check if *_PROB_IN_GRIB_PDS or INPUT_DATATYPE
+            are set. If not enough information is set, report an error and set isOK to False"""
+        for dtype in ['FCST', 'OBS']:
+            if self.c_dict[f'{dtype}_IS_PROB']:
+                # if the data type is NetCDF, then we know how to
+                # format the probabilistic fields
+                if self.c_dict[f'{dtype}_INPUT_DATATYPE'] == 'NETCDF':
+                    continue
+
+                # if the data is grib, the user must specify if the data is in
+                # the GRIB PDS or not
+                if self.c_dict[f'{dtype}_PROB_IN_GRIB_PDS'] == '':
+                    self.log_error(f"If {dtype}_IS_PROB is True, you must set {dtype}_PROB_IN"
+                                   "_GRIB_PDS unless the forecast datatype is set to NetCDF")
+                    isOK = False
 
     def handle_climo(self, time_info):
         if self.c_dict['CLIMO_INPUT_TEMPLATE'] != '':
@@ -278,7 +308,8 @@ that reformat gridded data
                     # field name to the call to the script
                     if util.is_python_script(v_name):
                         field = "{ name=\"" + v_name + "\"; prob=TRUE;"
-                    elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF':
+                    elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF' or \
+                      not self.c_dict[d_type + '_PROB_IN_GRIB_PDS']:
                         field = "{ name=\"" + v_name + "\";"
                         if v_level:
                             field += " level=\"" +  v_level + "\";"
@@ -286,7 +317,7 @@ that reformat gridded data
                     else:
                         # a threshold value is required for GRIB prob DICT data
                         if thresh is None:
-                            self.logger.error('No threshold was specified for probabilistic '
+                            self.log_error('No threshold was specified for probabilistic '
                                               'forecast GRIB data')
                             return None
 
@@ -341,7 +372,7 @@ that reformat gridded data
         """!Set environment variables that are referenced by the MET config file"""
         # list of fields to print to log
         print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
-                      "LEVEL", "OBTYPE", "CONFIG_DIR",
+                      "LEVEL", "OBTYPE",
                       "FCST_FIELD", "OBS_FIELD",
                       "INPUT_BASE",
                       "CLIMO_FILE", "FCST_TIME"]
@@ -358,7 +389,6 @@ that reformat gridded data
         self.add_env_var("LEVEL", var_info['fcst_level'])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
-        self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
         if self.c_dict['CLIMO_FILE']:
              self.add_env_var("CLIMO_FILE", self.c_dict['CLIMO_FILE'])
         else:
@@ -411,7 +441,7 @@ that reformat gridded data
         # check if METplus can generate the command successfully
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("Could not generate command")
+            self.log_error("Could not generate command")
             return
 
         # run the MET command
@@ -471,7 +501,7 @@ that reformat gridded data
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.logger.error('No app path specified. '
+            self.log_error('No app path specified. '
                               'You must use a subclass')
             return None
 
@@ -480,7 +510,7 @@ that reformat gridded data
             cmd += arg + " "
 
         if len(self.infiles) == 0:
-            self.logger.error("No input filenames specified")
+            self.log_error("No input filenames specified")
             return None
 
         # add forecast file
@@ -490,13 +520,13 @@ that reformat gridded data
         cmd += self.infiles[1] + ' '
 
         if self.param == '':
-            self.logger.error('Must specify config file to run MET tool')
+            self.log_error('Must specify config file to run MET tool')
             return None
 
         cmd += self.param + ' '
 
         if self.outdir == "":
-            self.logger.error("No output directory specified")
+            self.log_error("No output directory specified")
             return None
 
         cmd += '-outdir {}'.format(self.outdir)

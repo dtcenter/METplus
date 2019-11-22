@@ -105,10 +105,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             else:
                 log_msg = 'Need to set LEAD_SEQ_{}_LABEL to describe ' +\
                           'LEAD_SEQ_{}'.format(n, n)
-                if self.config.logger:
-                    self.config.logger.error(log_msg)
-                else:
-                    print(log_msg)
+                self.log_error(log_msg)
                 exit(1)
 
             # get forecast list for n
@@ -182,7 +179,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         except OSError:
             msg = ("Missing 30x30 tile files." +
                    "  Extract tiles needs to be run")
-            self.logger.error(msg)
+            self.log_error(msg)
 
         # Apply optional filtering via tc_stat, as indicated in the
         # parameter/config file.
@@ -351,7 +348,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             except IOError as io_error:
                 msg = ("Could not create requested" +
                         " ASCII file: " + ascii_fcst_file + " | ")
-                self.logger.error(msg + io_error)
+                self.log_error(msg + io_error)
 
             # For ANLY
             try:
@@ -369,7 +366,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             except IOError as io_error:
                 msg = ("Could not create requested" +
                         " ASCII file: " + ascii_anly_file + " | ")
-                self.logger.error(msg + io_error)
+                self.log_error(msg + io_error)
 
             # Remove any empty directories that were created when no
             # files were written.
@@ -447,7 +444,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         for fhr in lead_seq:
             fcst_seconds = time_util.ti_get_seconds_from_relativedelta(fhr)
             if fcst_seconds is None:
-                self.logger.error(f'Invalid forecast units used: {fhr}')
+                self.log_error(f'Invalid forecast units used: {fhr}')
                 exit(1)
 
             cur_fhr = str(fcst_seconds // 3600).zfill(3)
@@ -488,7 +485,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             except IOError as io_error:
                 msg = ("Could not create requested" +
                        " ASCII file: " + ascii_fcst_file + " | ")
-                self.logger.error(msg + io_error)
+                self.log_error(msg + io_error)
 
             # Gather all the anly gridded tile files
             # so they can be saved in ASCII files.
@@ -516,7 +513,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                         file_handle.write(anly_tiles)
 
             except IOError:
-                self.logger.error("Could not create requested " +
+                self.log_error("Could not create requested " +
                                   "ASCII file: " + ascii_anly_file)
 
             # Remove any empty directories that result from
@@ -617,7 +614,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         else:
             msg = ("Cannot determine base directory path for " +
                    "netCDF files... exiting")
-            self.logger.error(msg)
+            self.log_error(msg)
             sys.exit(1)
 
         # TODO: critical. harden Do we ant to add -O overwrite option to
@@ -672,7 +669,7 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         except IOError:
             msg = ("cannot open the max text file")
-            self.logger.error(msg)
+            self.log_error(msg)
 
     def get_netcdf_min_max(self, do_fhr_by_range, nc_var_files, cur_stat):
         """! Determine the min and max for all lead times for each
@@ -723,7 +720,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             else:
                 msg = ("Cannot determine base directory path " +
                        "for netCDF files. Exiting...")
-                self.logger.error(msg)
+                self.log_error(msg)
                 sys.exit(1)
 
             # Create file paths for temporary files for min value...
@@ -801,7 +798,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                 vmin = cur_min
             except IOError:
                 msg = ("cannot open the min text file")
-                self.logger.error(msg)
+                self.log_error(msg)
 
             # Search for 'max' in the max.txt file.
             try:
@@ -815,7 +812,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                 vmax = cur_max
             except IOError:
                 msg = ("cannot open the max text file")
-                self.logger.error(msg)
+                self.log_error(msg)
 
             # Clean up min.nc, min.txt, max.nc and max.txt temporary files.
             util.cleanup_temporary_files(min_temporary_files)
@@ -934,7 +931,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             match = re.match(type_regex, cur_tile)
             if not match:
                 msg = ("No matching storm id found, exiting...")
-                self.logger.error(msg)
+                self.log_error(msg)
                 return ''
 
             fhr_tiles += cur_tile
@@ -1057,7 +1054,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         # Check that we have netCDF files, if not, something went
         # wrong.
         if not nc_list:
-            self.logger.error("could not find any netCDF files to convert"
+            self.log_error("could not find any netCDF files to convert"
                               " to PS and PNG.  Exiting...")
             sys.exit(1)
         else:

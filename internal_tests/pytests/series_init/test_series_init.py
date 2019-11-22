@@ -48,7 +48,7 @@ def test_wrapper_ok():
         setting in the custom.conf config file.
     """
     siw = series_init_wrapper()
-    expected_output_dir = "/d1/METplus_test_input/series_analysis_init"
+    expected_output_dir = "/d1/METplus_test_input/series_init/series_analysis_init"
     assert siw.series_out_dir == expected_output_dir
 
 def test_storm_files_list_OK():
@@ -58,7 +58,7 @@ def test_storm_files_list_OK():
         file.
     """
     siw = series_init_wrapper()
-    tile_dir = '/d1/METplus_test_input/extract_tiles'
+    tile_dir = '/d1/METplus_test_input/series_init/extract_tiles'
     storm_list = siw.get_ascii_storm_files_list(tile_dir)
     assert len(storm_list) > 0
 
@@ -70,7 +70,7 @@ def test_build_and_run_series_request_OK():
 
     """
     siw = series_init_wrapper()
-    tile_dir = '/d1/METplus_test_input/extract_tiles'
+    tile_dir = '/d1/METplus_test_input/series_init/extract_tiles'
     sorted_filter_init = siw.get_ascii_storm_files_list(tile_dir)
     assert len(sorted_filter_init) > 0
     # siw.build_and_run_series_request(sorted_filter_init, tile_dir)
@@ -104,7 +104,7 @@ def test_storms_for_init_OK():
     """
     init = '20141214_00'
     expected_num_storms = 12
-    tile_dir = '/d1/METplus_test_input/extract_tiles'
+    tile_dir = '/d1/METplus_test_input/series_init/extract_tiles'
     siw = series_init_wrapper()
     storm_list = siw.get_storms_for_init(init, tile_dir)
     assert len(storm_list) == expected_num_storms

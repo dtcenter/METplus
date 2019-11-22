@@ -34,14 +34,14 @@ class GempakToCFWrapper(CommandBuilder):
         cmd = "java -classpath " + self.class_path + " GempakToCF "
 
         if len(self.infiles) != 1:
-            self.logger.error("Only 1 input file can be selected")
+            self.log_error("Only 1 input file can be selected")
             return None
 
         for infile in self.infiles:
             cmd += infile + " "
 
         if self.outfile == "":
-            self.logger.error("No output file specified")
+            self.log_error("No output file specified")
             return None
 
         cmd += self.get_output_path()
@@ -103,7 +103,7 @@ class GempakToCFWrapper(CommandBuilder):
 
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("Could not generate command")
+            self.log_error("Could not generate command")
             return
 
         self.build()

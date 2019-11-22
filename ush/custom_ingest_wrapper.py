@@ -97,13 +97,13 @@ class CustomIngestWrapper(CommandBuilder):
             index = ingester['index']
             input_type = ingester['input_type']
             if input_type not in VALID_PYTHON_EMBED_TYPES:
-                self.logger.error(f'CUSTOM_INGEST_{index}_TYPE ({input_type}) not valid. '
+                self.log_error(f'CUSTOM_INGEST_{index}_TYPE ({input_type}) not valid. '
                                   f'Valid types are {VALID_PYTHON_EMBED_TYPES}')
                 return
 
             # If input type is PANDAS, call ascii2nc? instead of RegridDataPlane
             if input_type == 'PANDAS':
-                self.logger.error('Running CustomIngester on pandas data not yet implemented')
+                self.log_error('Running CustomIngester on pandas data not yet implemented')
                 return
 
             # get grid information to project output data
@@ -111,7 +111,7 @@ class CustomIngestWrapper(CommandBuilder):
                                     ingester['output_grid'],
                                     **time_info).do_string_sub()
             if output_grid == '':
-                self.logger.error(f'Must set CUSTOM_INGEST_{index}_OUTPUT_GRID')
+                self.log_error(f'Must set CUSTOM_INGEST_{index}_OUTPUT_GRID')
                 return
 
             # get call to python script
@@ -132,7 +132,7 @@ class CustomIngestWrapper(CommandBuilder):
             rdp.outfile = output_path
             cmd = rdp.get_command()
             if cmd is None:
-                self.logger.error("Could not generate command")
+                self.log_error("Could not generate command")
                 return
             self.logger.info(f'Running Custom Ingester {index}')
             rdp.build()

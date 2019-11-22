@@ -132,12 +132,12 @@ def test_get_field_info_no_prob(key, value):
                   'v_extra' : key[3],
                   'd_type' : key[4],
                   }
-    
+
     fields = w.get_field_info(**field_dict)
     assert(fields == value)
 
 # ------------------------
-#  test_get_field_info_fcst_prob_grib
+#  test_get_field_info_fcst_prob_grib_pds
 #   - forecast is grib probabalistic but observation is not
 # ------------------------
 # key is a list of inputs to get_field_info: name, level, thresh_list, extras, and data type (FCST/OBS)
@@ -154,8 +154,8 @@ def test_get_field_info_no_prob(key, value):
          ['{ name=\"NAME\"; level=\"L0\"; cat_thresh=[ gt3 ]; }',
           '{ name=\"NAME\"; level=\"L0\"; cat_thresh=[ <=5 ]; }']),
 
-#        (['NAME', 'L0', ['gt3&&lt5'], '', 'FCST'],
-#         ['{ name=\"PROB\"; level=\"L0\"; prob={ name=\"NAME\"; thresh_lo=3.0; thresh_hi=5.0 } }']),
+        (['NAME', 'L0', ['gt3&&lt5'], '', 'FCST'],
+         ['{ name=\"PROB\"; level=\"L0\"; prob={ name=\"NAME\"; thresh_lo=3.0; thresh_hi=5.0; } cat_thresh=[==0.1]; }']),
 
         # fcst grib name py script
         (['/some/script/name.py args /path/of/infile.txt', '', [], '', 'FCST'],
@@ -167,12 +167,61 @@ def test_get_field_info_no_prob(key, value):
 
          ]
 )
-
-def test_get_field_info_fcst_prob_grib(key, value):
+def test_get_field_info_fcst_prob_grib_pds(key, value):
     w = compare_gridded_wrapper()
     w.c_dict['FCST_IS_PROB'] = True
     w.c_dict['OBS_IS_PROB'] = False
     w.c_dict['FCST_INPUT_DATATYPE'] = 'GRIB'
+    w.c_dict['FCST_PROB_IN_GRIB_PDS'] = True
+    w.c_dict['FCST_PROB_THRESH'] = '==0.1'
+
+    field_dict = {'v_name' : key[0],
+                  'v_level' : key[1],
+                  'v_thresh' : key[2],
+                  'v_extra' : key[3],
+                  'd_type' : key[4],
+                  }
+
+    fields = w.get_field_info(**field_dict)
+    assert(fields == value)
+
+# ------------------------
+#  test_get_field_info_fcst_prob_grib_non_pds
+#   - forecast is grib probabalistic but observation is not
+# ------------------------
+# key is a list of inputs to get_field_info: name, level, thresh_list, extras, and data type (FCST/OBS)
+# value is a list of field info lists that are generated from the keys
+@pytest.mark.parametrize(
+    'key, value', [
+        # forecast grib name level thresh
+        (['NAME', 'L0', ['gt3', '<=5'], '', 'FCST'],
+         ['{ name=\"NAME\"; level=\"L0\"; prob=TRUE; cat_thresh=[==0.1]; }',
+          '{ name=\"NAME\"; level=\"L0\"; prob=TRUE; cat_thresh=[==0.1]; }']),
+
+        # obs grib name level thresh
+        (['NAME', 'L0', ['gt3', '<=5'], '', 'OBS'],
+         ['{ name=\"NAME\"; level=\"L0\"; cat_thresh=[ gt3 ]; }',
+          '{ name=\"NAME\"; level=\"L0\"; cat_thresh=[ <=5 ]; }']),
+
+        (['NAME', 'L0', ['gt3&&lt5'], '', 'FCST'],
+         ['{ name=\"NAME\"; level=\"L0\"; prob=TRUE; cat_thresh=[==0.1]; }']),
+
+        # fcst grib name py script
+        (['/some/script/name.py args /path/of/infile.txt', '', [], '', 'FCST'],
+         ['{ name=\"/some/script/name.py args /path/of/infile.txt\"; prob=TRUE; cat_thresh=[==0.1]; }']),
+
+        # obs name py script
+        (['/some/script/name.py args /path/of/infile.txt', '', [], '', 'OBS'],
+         ['{ name=\"/some/script/name.py args /path/of/infile.txt\"; }']),
+
+         ]
+)
+def test_get_field_info_fcst_prob_grib_non_pds(key, value):
+    w = compare_gridded_wrapper()
+    w.c_dict['FCST_IS_PROB'] = True
+    w.c_dict['OBS_IS_PROB'] = False
+    w.c_dict['FCST_INPUT_DATATYPE'] = 'GRIB'
+    w.c_dict['FCST_PROB_IN_GRIB_PDS'] = False
     w.c_dict['FCST_PROB_THRESH'] = '==0.1'
 
     field_dict = {'v_name' : key[0],

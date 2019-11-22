@@ -131,9 +131,18 @@ def main():
 
         processes.append(command_builder)
 
+    # check if all processes initialized correctly
+    allOK = True
+    for process in processes:
+        if not process.isOK:
+            allOK = False
+            logger.error("{} was not initialized properly".format(process.__class__))
+
+    # exit if any wrappers did not initialized properly
+    if not allOK:
+        exit()
+
     loop_order = config.getstr('config', 'LOOP_ORDER', '')
-    if loop_order == '':
-        loop_order = config.getstr('config', 'LOOP_METHOD')
 
     if loop_order == "processes":
         for process in processes:
@@ -149,7 +158,7 @@ def main():
         util.loop_over_times_and_call(config, processes)
 
     else:
-        logger.error("Invalid LOOP_METHOD defined. " + \
+        logger.error("Invalid LOOP_ORDER defined. " + \
               "Options are processes, times")
         exit()
 

@@ -1058,6 +1058,13 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  False
 
+   FCST_PROB_IN_GRIB_PDS
+     Specify whether the probabilistic forecast data is stored in the GRIB Product Definition Section or not.Acceptable values: true/false. Only used when FCST_IS_PROB is True. This does not need to be set if the FCST_<APP_NAME>_INPUT_DATATYPE is set to NetCDF.
+
+     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PointStat
+     | *Family:*  [config]
+     | *Default:*
+
    FCST_LEAD
      Specify the values of the FCST_LEAD column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times
 
@@ -2659,6 +2666,13 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PointStat
      | *Family:*  [config]
      | *Default:*  False
+
+   OBS_PROB_IN_GRIB_PDS
+     Specify whether the probabilistic observation data is stored in the GRIB Product Definition Section or not.Acceptable values: true/false. Only used when OBS_IS_PROB is True. This does not need to be set if the OBS_<APP_NAME>_INPUT_DATATYPE is set to NetCDF.
+
+     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PointStat
+     | *Family:*  [config]
+     | *Default:*
 
    [DEPRECATED] OBS_LEVEL
      Please use OBS_PCP_COMBINE_INPUT_LEVEL instead. Specify what accumulation level should be used from the observation data for the analysis. See FCST_LEVEL for more information

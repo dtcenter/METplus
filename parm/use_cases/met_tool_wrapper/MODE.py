@@ -65,12 +65,25 @@ gridded observation data.
 # .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/MODE.met
 #
 # Note the following variables are referenced in the MET configuration file.
-# * MODEL - name of forecast input, corresponds to MODEL in the METplus configuration file.
-# * OBTYPE - name of observation input, corresponds to OBTYPE in the METplus configuration file.
-# * QUILT - True/False to perform quilting, corresponds to MODE_QUILT in the METplus configuration file.
-# * FCST_FIELD - Formatted forecast field information, generated from FCST_VAR<n>_[NAME/LEVEL] in the METplus configuration file.
-# * OBS_FIELD - Formatted observation field information, generated from OBS_VAR<n>_[NAME/LEVEL] in the METplus configuration file.
-# * 
+# * QUILT - True/False to perform quilting. Corresponds to MODE_QUILT in the METplus configuration file.
+# * FCST_CONV_RADIUS - Convolution radius used for forecast data. Corresponds to FCST_MODE_CONV_RADIUS in the METplus configuration files.
+# * FCST_CONV_THRESH - List of convolution thresholds used for forecast data. Corresponds to FCST_MODE_CONV_THRESH in the METplus configuration files.
+# * FCST_MERGE_THRESH - List of merge thresholds used for forecast data. Corresponds to FCST_MODE_MERGE_THRESH in the METplus configuration files.
+# * FCST_MERGE_FLAG - True/False merge flag used for forecast data. Corresponds to FCST_MODE_MERGE_FLAG in the METplus configuration files.
+# * OBS_CONV_RADIUS - Convolution radius used for observation data. Corresponds to OBS_MODE_CONV_RADIUS in the METplus configuration files.
+# * OBS_CONV_THRESH - List of convolution thresholds used for observation data. Corresponds to OBS_MODE_CONV_THRESH in the METplus configuration files.
+# * OBS_MERGE_THRESH - List of merge thresholds used for observation data. Corresponds to OBS_MODE_MERGE_THRESH in the METplus configuration files.
+# * OBS_MERGE_FLAG - True/False merge flag used for forecast data. Corresponds to OBS_MODE_MERGE_FLAG in the METplus configuration files.
+# * The following will be moved to a section that contains variables common to multiple tools (provide link)
+# * MODEL
+# * OBTYPE
+# * FCST_VAR
+# * OBS_VAR
+# * LEVEL
+# * FCST_FIELD
+# * OBS_FIELD
+# * VERIF_MASK
+#
 #
 
 ##############################################################################

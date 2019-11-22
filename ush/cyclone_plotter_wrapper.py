@@ -247,7 +247,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                     self.storm_id_dict[cur_unique] = cur_storm_list
 
         else:
-            self.logger.error("{} should be a directory".format(self.input_data))
+            self.log_error("{} should be a directory".format(self.input_data))
             sys.exit(1)
 
     def get_columns_and_indices(self, header):
@@ -381,7 +381,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             # pylint:disable=len-as-condition
             # if len(track_info_list) == 0:
             if not track_info_list:
-                self.logger.error("Empty track list, no data extracted " +
+                self.log_error("Empty track list, no data extracted " +
                                   "from track files, exiting.")
                 sys.exit(1)
 

@@ -116,7 +116,7 @@ class SeriesByInitWrapper(CommandBuilder):
         except OSError:
             msg = ("Missing n x m tile files.  " +
                    "Extract tiles needs to be run")
-            self.logger.error(msg)
+            self.log_error(msg)
 
         # If applicable, apply any filtering via tc_stat, as indicated in the
         # parameter/config file.
@@ -188,7 +188,7 @@ class SeriesByInitWrapper(CommandBuilder):
         if self.is_netcdf_created():
             self.generate_plots(sorted_filter_init, tile_dir)
         else:
-            self.logger.error("No NetCDF files were created by"
+            self.log_error("No NetCDF files were created by"
                               " series_analysis, exiting...")
             sys.exit(errno.ENODATA)
         self.logger.info("Finished series analysis by init time")
@@ -371,7 +371,7 @@ class SeriesByInitWrapper(CommandBuilder):
             msg = ("exiting, no files found for " +
                    "init time of interest" +
                    " and directory:" + dir_to_search)
-            self.logger.error(msg)
+            self.log_error(msg)
             sys.exit(1)
 
         first = sorted_files[0]
@@ -386,14 +386,14 @@ class SeriesByInitWrapper(CommandBuilder):
             beg = match_beg.group(1)
         else:
             msg = ("Unexpected file format encountered, exiting...")
-            self.logger.error(msg)
+            self.log_error(msg)
             sys.exit(1)
 
         if match_end:
             end = match_end.group(1)
         else:
             msg = ("Unexpected file format encountered, exiting...")
-            self.logger.error(msg)
+            self.log_error(msg)
             sys.exit(1)
 
         # Get the number of forecast tile files
@@ -618,7 +618,7 @@ class SeriesByInitWrapper(CommandBuilder):
 
     def get_command(self):
         if self.app_path is None:
-            self.logger.error("No app path specified. You must use a subclass")
+            self.log_error("No app path specified. You must use a subclass")
             return None
 
         cmd = self.app_path + " "
@@ -857,7 +857,7 @@ class SeriesByInitWrapper(CommandBuilder):
         except IOError:
             msg = ("Could not create requested ASCII file:  " +
                    fcst_anly_ascii)
-            self.logger.error(msg)
+            self.log_error(msg)
 
         if os.stat(fcst_anly_ascii).st_size == 0:
             # Just in case there are any empty fcst ASCII or anly ASCII files

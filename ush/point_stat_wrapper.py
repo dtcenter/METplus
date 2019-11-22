@@ -124,15 +124,15 @@ class PointStatWrapper(CompareGriddedWrapper):
 
     def run_at_time_once(self, input_dict):
         if self.c_dict['FCST_INPUT_TEMPLATE'] == '':
-            self.logger.error('Must set FCST_POINT_STAT_INPUT_TEMPLATE in config file')
+            self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE in config file')
             exit(1)
 
         if self.c_dict['OBS_INPUT_TEMPLATE'] == '':
-            self.logger.error('Must set OBS_POINT_STAT_INPUT_TEMPLATE in config file')
+            self.log_error('Must set OBS_POINT_STAT_INPUT_TEMPLATE in config file')
             exit(1)
 
         if self.c_dict['OUTPUT_DIR'] == '':
-            self.logger.error('Must set POINT_STAT_OUTPUT_DIR in config file')
+            self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
             exit(1)
 
         # clear any settings leftover from previous run
@@ -163,7 +163,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         if obs_path is None:
             in_dir = self.c_dict['OBS_INPUT_DIR']
             in_template = self.c_dict['OBS_INPUT_TEMPLATE']
-            self.logger.error(f"Could not find observation file in {in_dir} using template {in_template} "
+            self.log_error(f"Could not find observation file in {in_dir} using template {in_template} "
                               f"using offsets {self.c_dict['OFFSETS']}")
             return False
 

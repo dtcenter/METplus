@@ -155,7 +155,7 @@ class TCPairsWrapper(CommandBuilder):
 
             cmd = self.get_command()
             if cmd is None:
-                self.logger.error("Could not generate command")
+                self.log_error("Could not generate command")
                 return
 
             output_path = self.get_output_path()+'.tcst'
@@ -209,13 +209,13 @@ class TCPairsWrapper(CommandBuilder):
 
         if self.c_dict['BASIN']:
             if use_storm_id:
-                self.logger.error('Cannot filter by both BASIN and STORM_ID')
+                self.log_error('Cannot filter by both BASIN and STORM_ID')
                 exit(1)
             basin_list = self.c_dict['BASIN']
 
         if self.c_dict['CYCLONE']:
             if use_storm_id:
-                self.logger.error('Cannot filter by both CYCLONE and STORM_ID')
+                self.log_error('Cannot filter by both CYCLONE and STORM_ID')
                 exit(1)
             cyclone_list = self.c_dict['CYCLONE']
 
@@ -227,7 +227,7 @@ class TCPairsWrapper(CommandBuilder):
                 # pull out info from storm_id and process
                 match = re.match(r'(\w{2})(\d{2})(\d{4})', storm_id)
                 if not match:
-                    self.logger.error('Incorrect STORM_ID format: {}'
+                    self.log_error('Incorrect STORM_ID format: {}'
                                       .format(storm_id))
                     exit(1)
 
@@ -454,7 +454,7 @@ class TCPairsWrapper(CommandBuilder):
         # if no bdeck_files found
         if len(bdeck_files) == 0:
             template = self.c_dict['BDECK_TEMPLATE']
-            self.logger.error(f'No BDECK files found searching for basin {basin} and '
+            self.log_error(f'No BDECK files found searching for basin {basin} and '
                               f'cyclone {cyclone} using template {template}')
             return False
 
@@ -521,7 +521,7 @@ class TCPairsWrapper(CommandBuilder):
                                                   time_info)
 
             if not adeck_list and not edeck_list:
-                self.logger.error('Could not find any corresponding '
+                self.log_error('Could not find any corresponding '
                                   'ADECK or EDECK files')
                 continue
 
@@ -550,7 +550,7 @@ class TCPairsWrapper(CommandBuilder):
             # build command and run tc_pairs
             cmd = self.get_command()
             if cmd is None:
-                self.logger.error("Could not generate command")
+                self.log_error("Could not generate command")
                 return
 
             output_path = self.get_output_path()+'.tcst'
@@ -642,25 +642,25 @@ class TCPairsWrapper(CommandBuilder):
              Build command to run from arguments
         """
         if self.app_path is None:
-            self.logger.error("No app path specified. You must use a subclass")
+            self.log_error("No app path specified. You must use a subclass")
             return None
 
         if not self.adeck and not self.edeck:
-            self.logger.error('Neither ADECK nor EDECK files set')
+            self.log_error('Neither ADECK nor EDECK files set')
             return None
 
         if not self.bdeck:
-            self.logger.error('BDECK file not set')
+            self.log_error('BDECK file not set')
             return None
 
         config_file = self.c_dict['TC_PAIRS_CONFIG_FILE']
         if config_file is None:
-            self.logger.error('Config file not set')
+            self.log_error('Config file not set')
             return None
 
         output_path = self.get_output_path()
         if output_path is '':
-            self.logger.error('Output path not set')
+            self.log_error('Output path not set')
             return None
 
         # create directory containing output file if it doesn't exist

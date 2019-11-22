@@ -163,17 +163,17 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         # exit if input or output template is not set
         if self.c_dict[dtype+'_INPUT_TEMPLATE'] == '':
-            self.logger.error('Must set {}_REGRID_DATA_PLANE_INPUT_TEMPLATE'.format(dtype) +\
+            self.log_error('Must set {}_REGRID_DATA_PLANE_INPUT_TEMPLATE'.format(dtype) +\
                               ' in config file')
             exit(1)
 
         if self.c_dict[dtype+'_OUTPUT_TEMPLATE'] == '':
-            self.logger.error('Must set {}_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'.format(dtype) +\
+            self.log_error('Must set {}_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'.format(dtype) +\
                               ' in config file')
             exit(1)
 
         if self.c_dict['VERIFICATION_GRID'] == '':
-            self.logger.error('No verification grid specified! ' + \
+            self.log_error('No verification grid specified! ' + \
                               'Set REGRID_DATA_PLANE_VERIF_GRID')
             exit(1)
 
@@ -186,7 +186,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         # if no field info or input field configs are set, error and return
         if var_info is None and not rdp_input_indices:
-            self.logger.error('No fields were specified using [FCST/OBS]_VAR<n>_NAME.')
+            self.log_error('No fields were specified using [FCST/OBS]_VAR<n>_NAME.')
             return
 
         # if var info is set, build command using that item's info
@@ -208,7 +208,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 input_level = var_info[f'{dtype.lower()}_level']
 
             if not output_name and util.is_python_script(input_name):
-                    self.logger.error('Must explicitly set '
+                    self.log_error('Must explicitly set '
                                       f'{dtype}_REGRID_DATA_PLANE_VAR{index}_'
                                       'OUTPUT_FIELD_NAME '
                                       'if input field comes from a python script.')
@@ -293,7 +293,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if infile is not None:
             self.infiles.append(infile)
         else:
-            self.logger.error('Could not find input file in {} matching template {}'
+            self.log_error('Could not find input file in {} matching template {}'
                               .format(input_dir, input_template))
             return False
 
