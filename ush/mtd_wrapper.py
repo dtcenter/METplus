@@ -228,26 +228,25 @@ class MTDWrapper(MODEWrapper):
                 @param model_path forecast file list path
                 @param obs_path observation file list path
         """
+        # set thresholds for fcst and obs if prob
+        fcst_thresh_list = var_info['fcst_thresh']
+        obs_thresh_list = var_info['obs_thresh']
         fcst_field_list = []
         obs_field_list = []
 
         # if probabilistic forecast and no thresholds specified, error and skip
-        if self.c_dict['FCST_IS_PROB'] and not var_info['fcst_thresh']:
+        if self.c_dict['FCST_IS_PROB'] and not fcst_thresh_list:
             self.logger.error("Must specify thresholds for probabilistic forecast data")
             return
 
-        if self.c_dict['OBS_IS_PROB'] and not var_info['obs_thresh']:
+        if self.c_dict['OBS_IS_PROB'] and not obs_thresh_list:
             self.logger.error("Must specify thresholds for probabilistic obs data")
             return
 
-        # set thresholds for fcst and obs if prob
-        fcst_thresh_list = var_info['fcst_thresh']
-        obs_thresh_list = var_info['obs_thresh']
-
         # if no thresholds are specified, run once
         if not fcst_thresh_list and not obs_thresh_list:
-            fcst_thresh_list = [None]
-            obs_thresh_list = [None]
+            fcst_thresh_list = [""]
+            obs_thresh_list = [""]
 
         # loop over thresholds and build field list with one thresh per item
         for fcst_thresh, obs_thresh in zip(fcst_thresh_list, obs_thresh_list):
