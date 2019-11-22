@@ -138,9 +138,9 @@ class CommandBuilder:
             c_dict[dtype + '_FILE_WINDOW_' + edge] = \
                 self.config.getseconds('config',
                                        dtype + '_FILE_WINDOW_' + edge)
-        # otherwise set to *_WINDOW_* value
+        # otherwise set to 0
         else:
-            c_dict[dtype + '_FILE_WINDOW_' + edge] = c_dict[dtype + '_WINDOW_' + edge]
+            c_dict[dtype + '_FILE_WINDOW_' + edge] = 0
 
     def handle_window_variables(self, c_dict, app_name, dtypes=['FCST', 'OBS']):
         """! Handle all window config variables like
