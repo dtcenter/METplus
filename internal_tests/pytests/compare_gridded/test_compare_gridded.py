@@ -272,8 +272,8 @@ def test_get_field_info_fcst_prob_netcdf(key, value):
     'win, app_win, file_win, app_file_win, win_value, file_win_value', [
         ([1, 2, 3, 4, 2, 4 ]),
         ([1, 2, 3, None, 2, 3]),
-        ([1, 2, None, None, 2, 2]),
-        ([1, None, None, None, 1, 1]),
+        ([1, 2, None, None, 2, 0]),
+        ([1, None, None, None, 1, 0]),
         ([None, None, None, None, 0, 0]),
         ([1, None, 3, 4, 1, 4 ]),
         ([1, None, 3, 4, 1, 4 ]),

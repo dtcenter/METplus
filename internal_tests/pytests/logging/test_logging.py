@@ -42,8 +42,8 @@ def get_test_logger():
 def test_log_level():
     # Verify that the log level is set to what we indicated in the config file.
     fixture_logger = get_test_logger()
-    # Expecting log level = DEBUG as set in the test config file.
-    level = logging.getLevelName('DEBUG')
+    # Expecting log level = INFO as set in the test config file.
+    level = logging.getLevelName('INFO')
     assert fixture_logger.isEnabledFor(level)
 
 
