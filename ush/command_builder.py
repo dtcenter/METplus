@@ -437,6 +437,7 @@ class CommandBuilder:
         if not os.path.exists(list_dir):
             os.makedirs(list_dir, mode=0o0775)
 
+        self.logger.debug(f"Writing list of filenames to {list_path}")
         with open(list_path, 'w') as file_handle:
             for f_path in file_list:
                 file_handle.write(f_path + '\n')
