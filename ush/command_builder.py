@@ -460,6 +460,19 @@ class CommandBuilder:
                           f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
                           'to process')
 
+    def format_list_string(self, list_string):
+        """!Add quotation marks around each comma separated item in the string"""
+        strings = []
+        for string in list_string.split(','):
+            string = string.strip().replace('\'', '\"')
+            if not string:
+                continue
+            if string[0] != '"' and string[-1] != '"':
+                string = f'"{string}"'
+            strings.append(string)
+
+        return ','.join(strings)
+
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string
