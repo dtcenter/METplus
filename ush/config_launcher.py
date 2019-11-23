@@ -21,6 +21,8 @@ from os.path import dirname, realpath
 from produtil.config import ProdConfig
 import produtil.fileop
 
+import met_util as util
+
 """!Creates the initial METplus directory structure,
 loads information into each job.
 
@@ -349,7 +351,7 @@ def _set_logvars(config, logger=None):
             log_timestamp_template = '%Y%m%d%H'
         date_t = datetime.datetime.now()
         if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
-            if is_loop_by_init(config):
+            if util.is_loop_by_init(config):
                 date_t = datetime.datetime.strptime(config.getstr('config',
                                                                   'INIT_BEG'),
                                                     config.getstr('config',
