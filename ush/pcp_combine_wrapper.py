@@ -583,13 +583,21 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             level = var_info[f'{data_src.lower()}_level']
             level_type, accum = util.split_level(level)
 
-        lead = time_info['lead_hours']
-        lead2 = lead - int(accum)
+        accum = time_util.get_seconds_from_string(accum,
+                                                  default_unit='H',
+                                                  valid_time=time_info['valid'])
+        if accum is None:
+            self.log_error("Could not get accumulation from {data_src}_VAR<n>_LEVEL or "
+                           f"{data_src}_PCP_COMBINE_OUTPUT_ACCUM")
+            return None
+
+        lead = time_info['lead_seconds']
+        lead2 = lead - accum
 
         # set output file information
         outSts = sts.StringSub(self.logger,
                                out_template,
-                               level=(int(accum) * 3600),
+                               level=accum,
                                **time_info)
         out_file = outSts.do_string_sub()
         self.outfile = out_file
@@ -598,7 +606,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # get first file
         pcpSts1 = sts.StringSub(self.logger,
                                 in_template,
-                                level=(int(accum) * 3600),
+                                level=accum,
                                 **time_info)
         file1_expected = os.path.join(in_dir, pcpSts1.do_string_sub())
         file1 = util.preprocess_file(file1_expected,
@@ -620,11 +628,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # set time info for second lead
         input_dict2 = { 'init' : time_info['init'],
-                       'lead_hours' : lead2 }
+                       'lead' : lead2 }
         time_info2 = time_util.ti_calculate(input_dict2)
         pcpSts2 = sts.StringSub(self.logger,
                                 in_template,
-                                level=(int(accum) * 3600),
+                                level=accum,
                                 **time_info2)
         file2_expected = os.path.join(in_dir, pcpSts2.do_string_sub())
         file2 = util.preprocess_file(file2_expected,
@@ -640,10 +648,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             lead = "'name=\"" + field_name_1 + "\";'"
             field_name_2 = sts.StringSub(self.logger, field_name, **time_info2).do_string_sub()
             lead2 = "'name=\"" + field_name_2 + "\";'"
-            # TODO: need to add level if NetCDF input - how to specify levels for each?
+            # TODO: need to add level if NetCDF input - how to specify levels for each
 
-        self.add_input_file(file1,lead)
-        self.add_input_file(file2,lead2)
+        self.add_input_file(file1,
+                            time_util.seconds_to_met_time(lead))
+        self.add_input_file(file2,
+                            time_util.seconds_to_met_time(lead2))
 
         return self.get_command()
 
