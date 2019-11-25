@@ -193,7 +193,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             if search_file is not None:
                 return search_file, forecast_lead
             forecast_lead += smallest_input_accum
-        return None
+
+        return None, 0
 
     def get_daily_file(self, time_info, accum, data_src, file_template):
         """!Pull accumulation out of file that contains a full day of data
