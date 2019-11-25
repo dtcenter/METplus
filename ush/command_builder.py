@@ -14,6 +14,8 @@ Output Files: N/A
 import os
 from datetime import datetime
 from abc import ABCMeta
+from inspect import getframeinfo, stack
+
 from command_runner import CommandRunner
 import met_util as util
 import string_template_substitution as sts
@@ -80,7 +82,8 @@ class CommandBuilder:
         self.param = ""
 
     def log_error(self, error_string):
-        self.logger.error(error_string)
+        caller = getframeinfo(stack()[1][0])
+        self.logger.error(f"({os.path.basename(caller.filename)}:{caller.lineno}) {error_string}")
         self.errors += 1
 
     def set_user_environment(self, time_info=None):

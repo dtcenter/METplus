@@ -146,6 +146,30 @@ def setup(baseinputconfs, filename=None, logger=None):
 
     return conf
 
+class METplusLogFormatter(logging.Formatter):
+    def __init__(self, config):
+        self.default_fmt = config.getraw('config', 'LOG_LINE_FORMAT')
+        self.info_fmt = config.getraw('config', 'LOG_INFO_LINE_FORMAT', self.default_fmt)
+        self.debug_fmt = config.getraw('config', 'LOG_DEBUG_LINE_FORMAT', self.default_fmt)
+        self.error_fmt = config.getraw('config', 'LOG_ERROR_LINE_FORMAT', self.default_fmt)
+        super().__init__(fmt=self.default_fmt,
+                         datefmt=config.getraw('config', 'LOG_LINE_DATE_FORMAT'),
+                         style='%')
+
+    def format(self, record):
+        if record.levelno == logging.ERROR:
+            self._style._fmt = self.error_fmt
+        elif record.levelno == logging.DEBUG:
+            self._style._fmt = self.debug_fmt
+        elif record.levelno == logging.INFO:
+            self._style._fmt = self.info_fmt
+
+        output = logging.Formatter.format(self, record)
+
+        # restore default format
+        self._style._fmt = self.default_fmt
+
+        return output
 
 # You can run this module from the command line, that is  __main__
 # However, this module is intended to be imported and run via setup function.
