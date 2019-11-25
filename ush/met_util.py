@@ -24,7 +24,8 @@ from gempak_to_cf_wrapper import GempakToCFWrapper
 import time_util
 
 # for run stand alone
-import produtil
+import produtil.setup
+import produtil.log
 import config_metplus
 
 
@@ -770,9 +771,7 @@ def get_logger(config, sublog=None):
         # set up the filehandler and the formatter, etc.
         # The default matches the oformat log.py formatter of produtil
         # So terminal output will now match log files.
-        formatter = logging.Formatter(config.getraw('config', 'LOG_LINE_FORMAT'),
-                                      config.getraw('config', 'LOG_LINE_DATE_FORMAT'))
-        #logging.Formatter.converter = time.gmtime
+        formatter = config_metplus.METplusLogFormatter(config)
         file_handler = logging.FileHandler(metpluslog, mode='a')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
@@ -2014,7 +2013,14 @@ def run_stand_alone(module_name, app_name):
 
         wrapper.run_all_times()
 
-        logger.info(f'{app_name} stand-alone has successfully finished running.')
+        if wrapper.errors == 0:
+            logger.info(f'{app_name} stand-alone has successfully finished running.')
+        else:
+            error_msg = f"{app_name} stand-alone has finished running but had {wrapper.errors} error"
+            if wrapper.errors > 1:
+                error_msg += 's.'
+            error_msg += '.'
+            logger.error(error_msg)
 
         produtil.log.postmsg(app_name + ' completed')
     except Exception as e:
