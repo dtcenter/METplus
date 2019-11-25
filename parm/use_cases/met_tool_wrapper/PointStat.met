@@ -23,9 +23,9 @@ desc = "NA";
 // Verification grid
 //
 regrid = {
-   to_grid    = "/raid/hrrre/2019042812/hrrre01_2019042812f012.grib2";
-   method     = NEAREST;
-   width      = 1;
+   to_grid    = ${REGRID_TO_GRID};
+   method     = BILIN;
+   width      = 2;
    vld_thresh = 0.5;
    shape      = SQUARE;
 }
@@ -43,19 +43,17 @@ cnt_logic     = UNION;
 wind_thresh   = [ NA ];
 wind_logic    = UNION;
 eclv_points   = 0.05;
+rank_corr_flag = FALSE;
 
 //
 // Forecast and observation fields to be verified
 //
-fcst =  {
-    field = [
-    ${FCST_FIELD}
-    ];
+fcst = {
+    field = [ ${FCST_FIELD} ];
     };
+
 obs = {
-    field = [
-    ${OBS_FIELD}
-    ];
+    field = [ ${OBS_FIELD} ];
     };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -70,6 +68,18 @@ obs_quality    = [ "1", "2", "3" ];
 duplicate_flag = NONE;
 obs_summary    = NONE;
 obs_perc_value = 50;
+
+//
+// Mapping of message type group name to comma-separated list of values.
+//
+message_type_group_map = [
+   { key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";               },
+   { key = "ANYAIR";  val = "AIRCAR,AIRCFT";                      },
+   { key = "ANYSFC";  val = "ADPSFC,SFCSHP,ADPUPA,PROFLR,MSONET"; },
+   { key = "ONLYSF";  val = "ADPSFC,SFCSHP";                      },
+   { key = "LANDSF";  val = "ADPSFC,MSONET";                      },
+   { key = "WATERSF"; val = "SFCSHP";                             }
+];
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -89,6 +99,7 @@ climo_mean = {
    }
 
    time_interp_method = NEAREST;
+   match_month        = TRUE;
    match_day          = TRUE;
    time_step          = 21600;
 }
@@ -117,9 +128,10 @@ obs_window = {
 // Verification masking regions
 //
 mask = {
-   grid = [ "FULL" ];
-   poly = [ "${VERIF_MASK}" ];
-   sid     = [];
+   grid = [${POINT_STAT_GRID}];
+   poly = [${POINT_STAT_POLY}];
+   sid     = [${POINT_STAT_STATION_ID}];
+   llpnt = [];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -174,28 +186,29 @@ hira = {
 //
 output_flag = {
    fho    = NONE;
-   ctc    = STAT;
-   cts    = STAT;
+   ctc    = NONE;
+   cts    = NONE;
    mctc   = NONE;
    mcts   = NONE;
-   cnt    = STAT;
+   cnt    = NONE;
    sl1l2  = STAT;
    sal1l2 = NONE;
-   vl1l2  = NONE;
+   vl1l2  = STAT;
    val1l2 = NONE;
    vcnt   = NONE;
    pct    = NONE;
    pstd   = NONE;
    pjc    = NONE;
    prc    = NONE;
+   ecnt   = NONE; // Only for HiRA.
    eclv   = NONE;
    mpr    = NONE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-rank_corr_flag = FALSE;
 tmp_dir        = "/tmp";
 output_prefix  = "";
+//version        = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////

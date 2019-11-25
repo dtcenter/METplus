@@ -360,6 +360,16 @@ def loop_over_times_and_call(config, processes):
         end_t = config.getraw('config', 'VALID_END')
         time_interval = time_util.get_relativedelta(config.getstr('config', 'VALID_INCREMENT'))
 
+    # verify that *_TIME_FMT matches *_BEG and *_END
+    time_format_len = len(datetime.datetime.now().strftime(time_format))
+    if len(start_t) != time_format_len:
+        config.logger.error(f"[INIT/VALID]_TIME_FMT {time_format} does not match [INIT/VALID]_BEG {start_t}.")
+        exit(1)
+
+    if len(end_t) != time_format_len:
+        config.logger.error(f"[INIT/VALID]_TIME_FMT ({time_format}) does not match [INIT/VALID]_END ({end_t}).")
+        exit(1)
+
     loop_time = get_time_obj(start_t, time_format,
                              clock_time_obj, config.logger)
     end_time = get_time_obj(end_t, time_format,

@@ -81,13 +81,9 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         c_dict['REGRID_TO_GRID'] = regrid
         c_dict['POINT_STAT_GRID'] = self.config.getstr('config', 'POINT_STAT_GRID')
-
-        c_dict['POINT_STAT_POLY'] = util.getlist(
-            self.config.getstr('config', 'POINT_STAT_POLY', ''))
-        c_dict['POINT_STAT_STATION_ID'] = util.getlist(
-            self.config.getstr('config', 'POINT_STAT_STATION_ID', ''))
-        c_dict['POINT_STAT_MESSAGE_TYPE'] = util.getlist(
-            self.config.getstr('config', 'POINT_STAT_MESSAGE_TYPE', ''))
+        c_dict['POINT_STAT_POLY'] = self.config.getstr('config', 'POINT_STAT_POLY', '')
+        c_dict['POINT_STAT_STATION_ID'] = self.config.getstr('config', 'POINT_STAT_STATION_ID', '')
+        c_dict['POINT_STAT_MESSAGE_TYPE'] = self.config.getstr('config', 'POINT_STAT_MESSAGE_TYPE', '')
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'point_stat')
@@ -231,41 +227,17 @@ class PointStatWrapper(CompareGriddedWrapper):
         # values are not set in the METplus config file, assign them to "[]" so
         # MET recognizes that these are empty lists, resulting in the
         # expected behavior.
-        poly_str = str(self.c_dict['POINT_STAT_POLY'])
-        if not poly_str:
-            self.add_env_var('POINT_STAT_POLY', "[]")
-        else:
-            poly = poly_str.replace("\'", "\"")
-            self.add_env_var('POINT_STAT_POLY', poly)
+        self.add_env_var('POINT_STAT_POLY',
+                         self.format_list_string(self.c_dict['POINT_STAT_POLY']))
 
-        grid_str = str(self.c_dict['POINT_STAT_GRID'])
-        if not grid_str:
-            self.add_env_var('POINT_STAT_GRID', "[]")
-        else:
-            # grid = grid_str.replace("\'", "\"")
-            grid = '"' + grid_str + '"'
-            self.add_env_var('POINT_STAT_GRID', grid)
+        self.add_env_var('POINT_STAT_GRID',
+                         self.format_list_string(self.c_dict['POINT_STAT_GRID']))
 
-        sid_str = str(self.c_dict['POINT_STAT_STATION_ID'])
-        if not sid_str:
-            self.add_env_var('POINT_STAT_STATION_ID', "[]")
-        else:
-            sid = sid_str.replace("\'", "\"")
-            self.add_env_var('POINT_STAT_STATION_ID', sid)
+        self.add_env_var('POINT_STAT_STATION_ID',
+                         self.format_list_string(self.c_dict['POINT_STAT_STATION_ID']))
 
-        tmp_message_type = str(self.c_dict['POINT_STAT_MESSAGE_TYPE'])
-        # Check for "empty" POINT_STAT_MESSAGE_TYPE in METplus config file and
-        # set the POINT_STAT_MESSAGE_TYPE environment variable appropriately.
-        if not tmp_message_type:
-            self.add_env_var('POINT_STAT_MESSAGE_TYPE', "[]")
-        else:
-            # Not empty, set the POINT_STAT_MESSAGE_TYPE environment
-            #  variable to the
-            # message types specified in the METplus config file.
-            tmp_message_type = str(tmp_message_type).replace("\'", "\"")
-            # Remove all whitespace
-            tmp_message_type = ''.join(tmp_message_type.split())
-            self.add_env_var('POINT_STAT_MESSAGE_TYPE', tmp_message_type)
+        self.add_env_var('POINT_STAT_MESSAGE_TYPE',
+                         self.format_list_string(self.c_dict['POINT_STAT_MESSAGE_TYPE']))
 
         self.add_env_var('FCST_FIELD', fcst_field)
         self.add_env_var('OBS_FIELD', obs_field)
