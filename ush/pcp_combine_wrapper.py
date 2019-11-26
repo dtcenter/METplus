@@ -649,11 +649,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             field_name_2 = sts.StringSub(self.logger, field_name, **time_info2).do_string_sub()
             lead2 = "'name=\"" + field_name_2 + "\";'"
             # TODO: need to add level if NetCDF input - how to specify levels for each
+        else:
+            lead = time_util.seconds_to_met_time(lead)
+            lead2 = time_util.seconds_to_met_time(lead2)
 
         self.add_input_file(file1,
-                            time_util.seconds_to_met_time(lead))
+                            lead)
         self.add_input_file(file2,
-                            time_util.seconds_to_met_time(lead2))
+                            lead2)
 
         return self.get_command()
 
