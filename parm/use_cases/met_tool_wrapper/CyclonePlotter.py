@@ -17,13 +17,8 @@ Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 # Datasets
 # --------
 #
-# | **Forecast:** WRF 3 hour precipitation accumulation
-# | **Observation:** MU 3 hour precipitation accumulation
-#
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v2.2/sample_data-met_test-8.1.tgz
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
-#
-# | **Data Source:** Unknown
+#  No datasets are required for running this use case.  Only output from
+#  running the MET Tool tc-pairs or the METplus tc pairs wrapper is required.
 
 ##############################################################################
 # METplus Components
@@ -47,34 +42,16 @@ Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GridStat.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/CyclonePlotter.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/GridStat.conf
+# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/CyclonePlotter.conf
 
 ##############################################################################
 # MET Configuration
 # ---------------------
 #
-# METplus sets environment variables based on the values in the METplus configuration file.
-# These variables are referenced in the MET configuration file.
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/GridStat.met
-#
-# Note the following variables are referenced in the MET configuration file.
-#
-# * **${MODEL}** - Name of forecast input. Corresponds to MODEL in the METplus configuration file.
-# * **${OBTYPE}** - Name of observation input. Corresponds to OBTYPE in the METplus configuration file.
-# * **${FCST_FIELD}** - Formatted forecast field information. Generated from FCST_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${OBS_FIELD}** - Formatted observation field information. Generated from OBS_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${CLIMO_FILE}** - Optional path to climatology file. Corresponds to CLIMO_GRID_STAT_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
-# * **${FCST_VAR}** - Field name of forecast data to process. Used in output_prefix to include input information in the output filenames. Corresponds to FCST_VAR<n>_NAME in the METplus configuration file.
-# * **${OBS_VAR}** - Field name of observation data to process. Used in output_prefix to include input information in the output filenames. Corresponds to OBS_VAR<n>_NAME in the METplus configuration file.
-# * **${LEVEL}** - Vertical level of the forecast input data. Used in output_prefix to include input information in the output filenames. Corresponds to FCST_VAR<n>_LEVELS in the METplus configuration file.
-# * **${VERIF_MASK}** - Optional verification mask file or list of files. Corresponds to GRID_STAT_VERIFICATION_MASK_TEMPLATE in the METplus configuration file.
-# * **${NEIGHBORHOOD_SHAPE}** - Shape of the neighborhood method applied. Corresponds to GRID_STAT_NEIGHBORHOOD_SHAPE in the METplus configuration file. Default value is 1 if not set.
-# * **${NEIGHBORHOOD_WIDTH}** - Width of the neighborhood method applied. Corresponds to GRID_STAT_NEIGHBORHOOD_WIDTH in the METplus configuration file. Default value is SQUARE if not set.
+# No MET configuration is needed to run the cyclone plotter wrapper.
 #
 
 ##############################################################################
@@ -114,21 +91,19 @@ Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 # Expected Output
 # ---------------
 #
-# A successful run will output the following both to the screen and to the logfile::
+# A successful run will output a window containing a plot of the
+# cyclone tracks and create a cyclone.png file
 #
-#   INFO: METplus has successfully finished running.
-#
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in grid_stat/2005080700 (relative to **OUTPUT_BASE**)
+# Refer to the value set for **OUTPUT_BASE** to find where the output plot (.png) was saved.
+# Output for this use case will be found in cyclone/ (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * grid_stat_QPF_APCP_vs_QPE_APCP_03_120000L_20050807_120000V_eclv.txt
-# * grid_stat_QPF_APCP_vs_QPE_APCP_03_120000L_20050807_120000V_grad.txt
-# * grid_stat_QPF_APCP_vs_QPE_APCP_03_120000L_20050807_120000V.stat
+# *20150301.txt
+# *20150301.png
 
 ##############################################################################
 # Keywords
 # --------
 #
-# .. note:: GridStatUseCase
+# .. note:: CyclonePlotterUseCase
 
