@@ -144,6 +144,11 @@ that reformat gridded data
 
         self.c_dict['VAR_LIST'] = util.parse_var_list(self.config, time_info)
 
+        if not self.c_dict['VAR_LIST']:
+            self.log_error('No input fields were specified. You must set '
+                           f'[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
+            return None
+
         self.handle_climo(time_info)
 
         if self.c_dict['ONCE_PER_FIELD']:

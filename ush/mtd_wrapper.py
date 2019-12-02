@@ -126,6 +126,12 @@ class MTDWrapper(MODEWrapper):
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         var_list = util.parse_var_list(self.config, input_dict)
 
+        # report error and exit if field info is not set
+        if not var_list:
+            self.log_error('No input fields were specified to MTD. You must set '
+                           f'[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
+            return None
+
         for var_info in var_list:
             if self.c_dict['SINGLE_RUN']:
                 self.run_single_mode(input_dict, var_info)

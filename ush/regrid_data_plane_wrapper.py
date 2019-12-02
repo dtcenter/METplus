@@ -186,7 +186,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         # if no field info or input field configs are set, error and return
         if var_info is None and not rdp_input_indices:
-            self.log_error('No fields were specified using [FCST/OBS]_VAR<n>_NAME.')
+            self.log_error('No input fields were specified to RegridDataPlane. You must set either '
+                           f'{dtype}_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME or '
+                           f'{dtype}_VAR<n>_NAME.')
             return
 
         # if var info is set, build command using that item's info

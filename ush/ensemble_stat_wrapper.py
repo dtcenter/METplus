@@ -139,6 +139,13 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.infiles.append(fcst_file_list)
 
         var_list = util.parse_var_list(self.config, time_info)
+
+        # report error and exit if field info is not set
+        if not var_list:
+            self.log_error('No input fields were specified. You must set '
+                           '[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
+            return None
+
         # get point observation file if requested
         if self.c_dict['OBS_POINT_INPUT_TEMPLATE'] != '':
             point_obs_path = self.find_data(time_info, var_list[0], 'OBS_POINT')

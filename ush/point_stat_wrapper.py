@@ -137,6 +137,11 @@ class PointStatWrapper(CompareGriddedWrapper):
         time_info = time_util.ti_calculate(input_dict)
         var_list = util.parse_var_list(self.config, time_info)
 
+        if not var_list:
+            self.log_error("Field information not set in configuration files. Must set "
+                           "[FCST/OBS]_VAR<n>_[NAME/LEVELS].")
+            return None
+
         # get verification mask if available
         self.get_verification_mask(time_info)
 
