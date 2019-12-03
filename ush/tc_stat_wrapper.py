@@ -574,10 +574,10 @@ class TCStatWrapper(CommandBuilder):
         if tmp_column_str_name:
             # Replace any single quotes with double quotes and remove any
             # whitespace
-            tmp_column_thresh_val_str = str(tmp_column_thresh_val).replace("\'",
-                                                                           "\"")
-            tmp_column_thresh_val = ''.join(tmp_column_thresh_val_str.strip())
-            self.add_env_var('COLUMN_STR_NAME', tmp_column_thresh_val)
+            tmp_column_str_name = str(tmp_column_str_name).replace("\'",
+                                                                   "\"")
+            tmp_column_str_name = ''.join(tmp_column_str_name.strip())
+            self.add_env_var('COLUMN_STR_NAME', tmp_column_str_name)
         else:
             self.add_env_var('COLUMN_STR_NAME', "[]")
 
