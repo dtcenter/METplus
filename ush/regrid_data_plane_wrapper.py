@@ -180,9 +180,15 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         # check if any RDP VAR<n>_INPUT_FIELD_* configs are set
         # get a list of the indices that are set
-        input_regex = f'{dtype}_{self.app_name.upper()}_'+r'VAR(\d)_INPUT_NAME'
+        input_regex = f'{dtype}_{self.app_name.upper()}_'+r'VAR(\d)_INPUT_FIELD_NAME'
         rdp_input_indices = \
           util.find_regex_in_config_section(input_regex, self.config, 'config')
+
+        # check RDP VAR<n>_FIELD_NAME if INPUT_FIELD is not set
+        if not rdp_input_indices:
+            input_regex = f'{dtype}_{self.app_name.upper()}_'+r'VAR(\d)_FIELD_NAME'
+            rdp_input_indices = \
+              util.find_regex_in_config_section(input_regex, self.config, 'config')
 
         # if no field info or input field configs are set, error and return
         if var_info is None and not rdp_input_indices:
@@ -283,10 +289,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                    input_template,
                                    level=(int(f_level)*3600),
                                    **time_info).do_string_sub()
-        infile = os.path.join(input_dir,  input_file)
+        full_path = os.path.join(input_dir, input_file)
 
         infile = \
-          util.preprocess_file(infile,
+          util.preprocess_file(full_path,
                                self.config.getstr('config',
                                                   dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE',
                                                   ''),
@@ -295,8 +301,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if infile is not None:
             self.infiles.append(infile)
         else:
-            self.log_error('Could not find input file in {} matching template {}'
-                              .format(input_dir, input_template))
+            self.log_error(f"Could not find {dtype} file {full_path} using template {input_template}")
             return False
 
         verif_grid = self.c_dict['VERIFICATION_GRID']
