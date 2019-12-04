@@ -93,7 +93,7 @@ that reformat gridded data
                 if self.c_dict[f'{dtype}_PROB_IN_GRIB_PDS'] == '':
                     self.log_error(f"If {dtype}_IS_PROB is True, you must set {dtype}_PROB_IN"
                                    "_GRIB_PDS unless the forecast datatype is set to NetCDF")
-                    isOK = False
+                    self.isOK = False
 
     def handle_climo(self, time_info):
         if self.c_dict['CLIMO_INPUT_TEMPLATE'] != '':
