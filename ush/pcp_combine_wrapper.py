@@ -79,9 +79,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict[d_type+'_ACCUMS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_ACCUMS', ''))
         c_dict[d_type+'_NAMES'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_NAMES', ''))
         c_dict[d_type+'_LEVELS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_LEVELS', ''))
+        c_dict[d_type+'_OPTIONS'] = self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_OPTIONS', '')
         c_dict[d_type+'_OUTPUT_ACCUM'] = self.config.getstr('config', d_type+'_PCP_COMBINE_OUTPUT_ACCUM', '')
         c_dict[d_type+'_OUTPUT_NAME'] = self.config.getstr('config', d_type+'_PCP_COMBINE_OUTPUT_NAME', '')
-        c_dict[d_type+'_OUTPUT_EXTRA'] = self.config.getstr('config', d_type+'_PCP_COMBINE_OUTPUT_EXTRA', '')
         c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
         c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                               d_type+'_PCP_COMBINE_INPUT_TEMPLATE', '')
@@ -96,14 +96,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.config.getstr('config', d_type+'_PCP_COMBINE_METHOD')
 
         if c_dict[d_type+'_RUN_METHOD'] == 'DERIVE' and \
-           len(c_dict[d_type+'_STAT_LIST']) == 0:
+           not c_dict[d_type+'_STAT_LIST']:
             self.log_error('Statistic list is empty. ' + \
               'Must set ' + d_type + '_PCP_COMBINE_STAT_LIST if running ' +\
                               'derive mode')
-            exit(1)
+            self.isOK = False
 
         c_dict[d_type+'_DERIVE_LOOKBACK'] = \
-            self.config.getint('config', d_type+'_PCP_COMBINE_DERIVE_LOOKBACK', 0)
+          self.config.getstr('config', d_type+'_PCP_COMBINE_DERIVE_LOOKBACK', '0')
 
         c_dict[d_type+'_BUCKET_INTERVAL'] = self.config.getseconds('config',
                                                                    d_type+'_PCP_COMBINE_BUCKET_INTERVAL',
@@ -185,6 +185,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                  **time_info)
             search_file = os.path.join(self.input_dir,
                                        fSts.do_string_sub())
+
+            self.logger.debug(f"Looking for {search_file}")
 
             search_file = util.preprocess_file(search_file,
                                 self.c_dict[dtype+'_INPUT_DATATYPE'],
@@ -456,7 +458,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 cmd += "-subtract "
             elif self.method == 'DERIVE':
                 cmd += '-derive '
-                cmd += ','.join(self.c_dict['STAT_LIST'])
+                cmd += ','.join(self.c_dict['STAT_LIST']) + ' '
 
             if len(self.infiles) == 0:
                 (self.logger).error("No input filenames specified")
@@ -798,25 +800,24 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
           @params data_src data type (FCST or OBS)
           @rtype string
           @return path to output file"""
-        # if [FCST/OBS]_OUTPUT_[NAME/ACCUM] are set, use them instead of
-        # [FCST/OBS]_VAR<n>_[NAME/LEVELS]
-        if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
-            self.field_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
-        else:
-            self.field_name = var_info[f"{data_src.lower()}_name"]
+        if self.c_dict[f"{data_src}_NAMES"]:
+            self.field_name = self.c_dict[f"{data_src}_NAMES"][0]
 
-        if self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
-            self.field_level = self.c_dict[f"{data_src}_OUTPUT_ACCUM"]
-        else:
-            self.field_level = var_info[f'{data_src.lower()}_level']
+        if self.c_dict[f"{data_src}_LEVELS"]:
+            self.field_level = self.c_dict[f"{data_src}_LEVELS"][0]
 
-        if self.c_dict[f"{data_src}_OUTPUT_EXTRA"]:
-            self.field_extra = self.c_dict[f"{data_src}_OUTPUT_EXTRA"]
-        else:
-            self.field_extra = var_info[f'{data_src.lower()}_extra']
+        if self.c_dict[f"{data_src}_OPTIONS"]:
+            self.field_extra = self.c_dict[f"{data_src}_OPTIONS"]
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
+
+        # check _PCP_COMBINE_INPUT_DIR to get accumulation files
+        self.input_dir = in_dir
+
+        # create list of tuples for input levels and optional field names
+        if not self.build_input_accum_list(data_src, time_info):
+            return
 
         # get files
         lookback = self.c_dict[data_src+'_DERIVE_LOOKBACK']
@@ -834,13 +835,16 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             return None
 
         # set output
-        self.outdir =out_dir
+        self.outdir = out_dir
         time_info['level'] = lookback_seconds
         psts = sts.StringSub(self.logger,
-                                out_template,
-                                **time_info)
+                             out_template,
+                             **time_info)
         pcp_out = psts.do_string_sub()
         self.outfile = pcp_out
+
+        # set STAT_LIST for data type (FCST/OBS)
+        self.c_dict['STAT_LIST'] = self.c_dict[f"{data_src}_STAT_LIST"]
         return self.get_command()
 
     def setup_custom_method(self, time_info, data_src):
@@ -853,6 +857,32 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
           @return path to output file"""
         command_template = self.config.getraw('config', data_src + '_PCP_COMBINE_COMMAND')
         self.custom_command = sts.StringSub(self.logger, command_template, **time_info).do_string_sub()
+
+        # get output accumulation in case output template uses level
+        accum_string = '0'
+        if self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
+            accum_string = self.c_dict[f"{data_src}_OUTPUT_ACCUM"]
+            _, accum_string = util.split_level(accum_string)
+
+        accum_seconds = time_util.get_seconds_from_string(accum_string, 'H')
+        if accum_seconds is not None:
+            time_info['level'] = int(accum_seconds)
+
+        # add output path to custom command
+        self.outdir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
+
+        self.outfile = sts.StringSub(self.logger,
+                                     out_template,
+                                     **time_info).do_string_sub()
+
+        out_path = self.get_output_path()
+
+        # create outdir (including subdir in outfile) if it doesn't exist
+        if not os.path.exists(os.path.dirname(out_path)):
+            os.makedirs(os.path.dirname(out_path))
+
+        self.custom_command += ' ' + out_path
+
         return '{} -v {} {}'.format(self.app_path, self.c_dict['VERBOSITY'], self.custom_command)
 
     def build_input_accum_list(self, data_src, time_info):
