@@ -118,7 +118,7 @@ def _arithtoken(spec):
 def each_not_all(sets):
     """!Iterates over the given ListableSet, yielding everything
     except the special set "*" """
-    for s in sets.iterkeys():
+    for s in sets.keys():
         if s[0]!='*':
             yield s
 
@@ -149,11 +149,11 @@ def _arithparse_set(tokiter,elements):
             raise ArithKeyError(
                 'Unknown test %s. Please select one of: { %s }'%(
                     repr(data), ', '.join([
-                            str(k) for k in elements.iterkeys()])))
-        tokiter.next() # discard element name
+                            str(k) for k in elements.keys()])))
+        next(tokiter) # discard element name
         typ,data=tokiter.peek()
         if typ==',':
-            typ,data=tokiter.next() # discard comma and then
+            typ,data=next(tokiter) # discard comma and then
             typ,data=tokiter.peek() # peek next token
     if not typ:
         raise ArithException(
@@ -163,7 +163,7 @@ def _arithparse_set(tokiter,elements):
         raise ArithException(
             'Unexpected %s when parsing an set {} definition '%(repr(data),))
     else:
-        tokiter.next()
+        next(tokiter)
     return result
 
 def _arithparse_list(tokiter,sets,elements):
@@ -189,7 +189,7 @@ def _arithparse_list(tokiter,sets,elements):
         yielded=True
         typ,data=tokiter.peek()
         if typ==',':
-            typ,data=tokiter.next() # discard comma and then
+            typ,data=next(tokiter) # discard comma and then
             typ,data=tokiter.peek() # peek next token
     if not typ:
         raise ArithException(
@@ -200,7 +200,7 @@ def _arithparse_list(tokiter,sets,elements):
             'Unexpected %s when parsing an argument '
             'list to an operator.'%(repr(data),))
     else:
-        typ,data=tokiter.next() # discard )
+        typ,data=next(tokiter) # discard )
 
 def _arithparse_expr(tokiter,sets,elements):
     """!Evaluates one set arithmetic expression.
@@ -220,7 +220,7 @@ def _arithparse_expr(tokiter,sets,elements):
     @returns the resulting ListableSet"""
 
     result='invalid value that should be replaced by below code'
-    typ,data=tokiter.next()
+    typ,data=next(tokiter)
     if typ=='oper':
         if data=='union':
             # Union of no sets is the empty set:

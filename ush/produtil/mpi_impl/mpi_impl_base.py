@@ -10,12 +10,11 @@
 # For example, LSF+IBMPE and LoadLeveler+IBMPE work this way if one
 # wants to run different programs on different ranks.
 
-import tempfile,stat,os, logging, re
+import tempfile,stat,os, logging, io, re
 
 import produtil.prog
 import produtil.pipeline
 from produtil.prog import shbackslash
-from io import StringIO
 
 module_logger=logging.getLogger('produtil.mpi_impl')
 
@@ -44,7 +43,7 @@ def guess_total_tasks_impl(logger,silent):
             for line in cpuinfo:
                 if line.find('physical id')>=0:
                     cpus.add(line.strip())
-                m=re.search('cpu cores\\s+:\\s+(\\d+)',line)
+                m=re.search(r'cpu cores\s+:\s+(\d+)',line)
                 if m:
                     cpu_cores=int(m.group(1),10)
         if not cpus or not cpu_cores:
@@ -320,7 +319,7 @@ class CMDFGen(object):
         @param logger a logging.Logger for log messages
         @returns a tuple containing shell code and the modified runner"""
         if logger is None: logger=module_logger
-        sio=StringIO()
+        sio=io.StringIO()
         filename=self.filename
         if filename is None:
             filename='tempfile'

@@ -348,7 +348,10 @@ def make_pipeline(arg,capture,mpiimpl=None,**kwargs):
     if logger is not None:
         logger.info('Starting: %s'%(repr(arg),))
         if capture: logger.info('  - and will capture output.')
-    pl=pipeline.Pipeline(runner,capture=capture,logger=logger)
+    b=kwargs.get('binary',False)
+    b=bool(b)
+    pl=pipeline.Pipeline(runner,capture=capture,logger=logger,
+                         binary=b)
     if logger is not None:
         logger.debug('Pipeline is %s'%(repr(pl),))
     return pl

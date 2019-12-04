@@ -16,11 +16,9 @@ class NoMoreProcesses(KeyboardInterrupt):
     """!Raised when the produtil.sigsafety package catches a fatal
     signal.  Indicates to callers that the thread should exit."""
 
-import os, signal, select, logging, sys, time, errno, \
+import os, signal, select, logging, sys, io, time, errno, \
     fcntl, threading, weakref, collections
 import stat,errno,fcntl
-
-from io import StringIO
 
 class Constant(object):
     """!A class used to implement named constants."""
@@ -329,7 +327,7 @@ def kill_all():
 ########################################################################
 
 def manage(proclist,inf=None,outf=None,errf=None,instr=None,logger=None,
-           childset=None,sleeptime=None):
+           childset=None,sleeptime=None,binary=False):
     """!Watches a list of processes, handles their I/O, returns when
     all processes have exited and all I/O is complete.  
 
@@ -381,7 +379,10 @@ def manage(proclist,inf=None,outf=None,errf=None,instr=None,logger=None,
         if logger is not None:
             logger.debug("Will read outstr from %d."%outf)
         work.append([1,outf])
-        outio=StringIO()
+        if binary:
+            outio=io.BytesIO()
+        else:
+            outio=io.StringIO()
         unblock(outf,logger=logger)
         haveio=True
 
@@ -389,7 +390,10 @@ def manage(proclist,inf=None,outf=None,errf=None,instr=None,logger=None,
         if logger is not None:
             logger.debug("Will read errstr from %d."%errf)
         work.append([1,errf])
-        errio=StringIO()
+        if binary:
+            errio=io.BytesIO()
+        else:
+            errio=io.StringIO()
         unblock(errf,logger=logger)
         haveio=True
 
@@ -415,10 +419,13 @@ def manage(proclist,inf=None,outf=None,errf=None,instr=None,logger=None,
             assert(job==0 or job==1 or job==2)
             if job==0:
                 if logger is not None:
-                    logger.debug("Attempt a write of %d bytes to %d"
+                    logger.debug("Attempt a write of %d characters to %d"
                                  %(len(instr)-nin,tgt))
                 try:
-                    n=os.write(tgt,instr[nin:])
+                    if isinstance(instr,bytes):
+                        n=os.write(tgt,instr[nin:])
+                    else:
+                        n=os.write(tgt,bytes(instr[nin:],encoding='UTF8'))
                 except EnvironmentError as e:
                     if e.errno==errno.EAGAIN or e.errno==errno.EWOULDBLOCK:
                         n=None
@@ -430,7 +437,7 @@ def manage(proclist,inf=None,outf=None,errf=None,instr=None,logger=None,
                     nin+=n
                 if nin>=len(instr):
                     if logger is not None:
-                        logger.debug("Done writing all %d bytes; close %d."
+                        logger.debug("Done writing all %d characters; close %d."
                                      %(nin,tgt))
                     pclose(tgt)
                     work.pop(i)
@@ -464,10 +471,13 @@ def manage(proclist,inf=None,outf=None,errf=None,instr=None,logger=None,
                     continue # do not increment i
                 if s is not None:
                     if logger is not None:
-                        logger.debug("Read %d bytes from output %d"
+                        logger.debug("Read %d characters from output %d"
                                      %(len(s),tgt))
                     # read something
-                    outio.write(s)
+                    if binary:
+                        outio.write(s)
+                    else:
+                        outio.write(str(s,encoding='UTF8'))
                 if forceclose:
                     if logger is not None:
                         logger.debug("Force close of %d due to timeout."
@@ -548,11 +558,12 @@ def manage(proclist,inf=None,outf=None,errf=None,instr=None,logger=None,
 ########################################################################
 
 def simple_run(cmd, env=None, stdin=None, stdout=None, stderr=None, 
-               debug=False, cd=None, logger=None):
+               debug=False, cd=None, logger=None, binary=False):
     (pid, stdinP, stdoutP, stderrP) = launch(
         cmd,env,stdin,stdout,stderr,debug,cd)
     (outstder, errstr, done) = \
-      manage([pid], inf=stdinP, outf=stdoutP, errf=stderrP, logger=logger)
+      manage([pid], inf=stdinP, outf=stdoutP, errf=stderrP, logger=logger, 
+             binary=binary )
     result=done[pid][1]
     if os.WIFEXITED(result):
         return os.WEXITSTATUS(result)
@@ -567,26 +578,29 @@ class Pipeline(object):
     """!This class is a wrapper around launch and manage.  It converts
     Runner objects to calls to "launch", and runs "manage" on the
     resulting processes."""
-    def __init__(self,runner,capture=False,logger=None,debug=False):
+    def __init__(self,runner,capture=False,logger=None,debug=False,
+                 binary=False):
         """!Pipeline constructor
         @param runner the produtil.prog.Runner to convert
         @param capture if True, capture the stdout of the runner
         @param logger a logging.Logger for messages
-        @param debug if True, send debug messages"""
+        @param debug if True, send debug messages
+        @param binary use binary streams for input and output"""
         self.__children=set()
         self.__quads=list()
         self.__capture=capture
         self.__logger=logger
         self.__debug=debug
         self.__instring=None
-        self.__outstring=None
-        self.__errstring=None
+        self.__out=None
+        self.__err=None
         self.__stdin=None
         self.__stdout=None
         self.__stderr=None
         self.__managed=None
         self.__last_pid=None
         self.__lock=threading.Lock()
+        self.__binary=bool(binary)
         runner._gen(self,logger=logger)
     def __repr__(self):
         """!Return a debug string representation of this Pipeline."""
@@ -597,7 +611,7 @@ class Pipeline(object):
                   instring=None,stdin=None,stdout=None,stderr=None,
                   sendout=None,senderr=None,sendin=None,env=None,
                   closein=None,closeout=None,closeerr=None,
-                  cd=None):
+                  cd=None,binary=False):
         """!Adds another produtil.prog.Runner's contents to this Pipeline.
         @param command the command to run
         @param endpipe is this the end of a pipeline?
@@ -632,6 +646,7 @@ class Pipeline(object):
         self.__stderr=e
         self.__quads.append( (p,i,o,e) )
         self.__last_pid=p
+        self.__binary=bool(binary)
     def send_signal(self,sig):
         """!Sends a signal to all children.
         @param sig the signal"""
@@ -664,10 +679,10 @@ class Pipeline(object):
                 [q[0] for q in self.__quads],
                 self.__stdin, self.__stdout, self.__stderr, 
                 self.__instring, self.__logger, self.__children,
-                sleeptime)
+                sleeptime, self.__binary)
             self.__managed=m
-            self.__outstring=o
-            self.__errstring=e
+            self.__out=o
+            self.__err=e
 
     def poll(self):
         """!Returns the exit status of the last element of the
@@ -685,15 +700,18 @@ class Pipeline(object):
 
     def to_string(self):
         """!Calls self.communicate(), and returns the stdout from the
-        pipeline (self.outstring).  The return value will be Null if
+        pipeline (self.outbytes).  The return value will be Null if
         the pipeline was redirected to a file or if the constructor's
         capture option was not True."""
         self.communicate()
-        return self.outstring
+        o=self.out
+        if not isinstance(o,str):
+            o=str(o)
+        return o
 
     @property
-    def outstring(self): 
+    def out(self): 
         """!The stdout from the pipeline.  Will be Null if the pipeline
         was redirected to a file, or if the constructor's capture
         option was not True."""
-        return self.__outstring
+        return self.__out
