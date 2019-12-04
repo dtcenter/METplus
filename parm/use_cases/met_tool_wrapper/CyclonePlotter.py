@@ -33,7 +33,7 @@ Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 # CyclonePlotter is the only tool called in this example. It processes the following
 # run times:
 #
-# | **Init:** 2015-03-01_0Z
+# | **Init:** 2015-03-01_12Z
 
 
 ##############################################################################
