@@ -7,6 +7,24 @@
 # NCEPLIBS-pyprodutil repository in GitHub
 # produtil run under Python 3
 branch: metplus-python3
+commit 0335fbabed4f 2019 Dec 4
+
+clone command:
+git clone https://github.com/NOAA-EMC/NCEPLIBS-pyprodutil
+git checkout metplus-python3
+
+Web Browser:
+https://github.com/NOAA-EMC/NCEPLIBS-pyprodutil
+
+NOTES:
+git log --graph --oneline --all
+This branch was created from the metplus-python2 branch
+at commit 3a6b7f2
+
+==========================================
+# NCEPLIBS-pyprodutil repository in GitHub
+# produtil run under Python 3
+branch: metplus-python3
 commit c4081f818299d80 2019 Dec 3
 
 clone command:

@@ -233,7 +233,10 @@ def register_implementations(logger=None):
         import produtil.mpi_impl.srun_pack_groups
         add_implementation(produtil.mpi_impl.srun_pack_groups.Implementation)
     except ImportError as e: 
-        logger.info('srun: cannot import: %s'%(str(e),))
+        # Some projects prefer to suppress this log message.
+        # Temp comment out until this can be addressed properly.
+        #logger.info('srun: cannot import: %s'%(str(e),))
+        pass
 
     try:
         # This must be after the pack group case.
@@ -241,43 +244,62 @@ def register_implementations(logger=None):
         import produtil.mpi_impl.srun
         add_implementation(produtil.mpi_impl.srun.Implementation)
     except ImportError as e: 
-        logger.info('srun: cannot import: %s'%(str(e),))
+        # Some projects prefer to suppress this log message.
+        # Temp comment out until this can be addressed properly.
+        #logger.info('srun: cannot import: %s'%(str(e),))
+        pass
 
     try:
         import produtil.mpi_impl.inside_aprun
         add_implementation(produtil.mpi_impl.inside_aprun.Implementation)
     except ImportError as e: 
-        logger.info('inside_aprun: cannot import: %s'%(str(e),))
+        # Some projects prefer to suppress this log message.
+        # Temp comment out until this can be addressed properly.
+        #logger.info('inside_aprun: cannot import: %s'%(str(e),))
+        pass
 
     try:
         import produtil.mpi_impl.lsf_cray_intel
         add_implementation(produtil.mpi_impl.lsf_cray_intel.Implementation)
     except ImportError as e: 
-        logger.info('lsf_cray_intel: cannot import: %s'%(str(e),))
+        # Some projects prefer to suppress this log message.
+        # Temp comment out until this can be addressed properly.
+        #logger.info('lsf_cray_intel: cannot import: %s'%(str(e),))
+        pass
 
     try:
         import produtil.mpi_impl.impi
         add_implementation(produtil.mpi_impl.impi.Implementation)
     except ImportError as e: 
-        logger.info('impi: cannot import: %s'%(str(e),))
+        # Some projects prefer to suppress this log message.
+        # Temp comment out until this can be addressed properly.
+        #logger.info('impi: cannot import: %s'%(str(e),))
+        pass
 
     try:
         import produtil.mpi_impl.mpirun_lsf
         add_implementation(produtil.mpi_impl.mpirun_lsf.Implementation)
     except ImportError as e: 
-        logger.info('mpirun_lsf: cannot import: %s'%(str(e),))
+        #logger.info('mpirun_lsf: cannot import: %s'%(str(e),))
+        pass
 
     try:
         import produtil.mpi_impl.mpiexec_mpt
         add_implementation(produtil.mpi_impl.mpiexec_mpt.Implementation)
     except ImportError as e: 
-        logger.info('mpiexec_mpt: cannot import: %s'%(str(e),))
+        # Some projects prefer to suppress this log message.
+        # Temp comment out until this can be addressed properly.
+        #logger.info('mpiexec_mpt: cannot import: %s'%(str(e),))
+        pass
 
     try:
         import produtil.mpi_impl.mpiexec
         add_implementation(produtil.mpi_impl.mpiexec.Implementation)
     except ImportError as e: 
-        logger.info('mpiexec: cannot import: %s'%(str(e),))
+        # Some projects prefer to suppress this log message.
+        # Temp comment out until this can be addressed properly.
+        #logger.info('mpiexec: cannot import: %s'%(str(e),))
+        pass
 
 def get_mpi(mpi_name=NO_NAME,force=False,logger=None,**kwargs):
     """!Selects a specified MPI implementation, or automatically
@@ -345,8 +367,11 @@ def get_mpi(mpi_name=NO_NAME,force=False,logger=None,**kwargs):
             # MPI implementation.  We assume the issue has already
             # been logged, and we move on to the next implementation's
             # detection function.
-            logger.info('%s: not detected: %s'%(
-                    name,str(ee)))
+
+            # Some projects prefer to suppress this log message.
+            # Temp comment out until this can be addressed properly.
+            #logger.info('%s: not detected: %s'%(
+            #        name,str(ee)))
             pass
         if result:
             # Detection succeeded.
