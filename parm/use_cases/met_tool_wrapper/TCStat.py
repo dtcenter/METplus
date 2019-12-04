@@ -63,7 +63,7 @@ from a TCPairs run.
 #
 # Note the following variables are referenced in the MET configuration file.
 #
-# * **${AMAX_WIND-BMAX_WIND}
+# ASPEED 
 #
 
 ##############################################################################
@@ -90,7 +90,7 @@ from a TCPairs run.
 #
 #   [dir]
 #   OUTPUT_BASE = /path/to/output/dir
-#   OUTPUT_BASE/tc_pairs = path/to/tc_pairs/output 
+#   INPUT_BASE/tc_pairs = path/to/tc_pairs/
 #   MET_INSTALL_DIR = /path/to/met-X.Y 
 #
 # **NOTE:** All of these items must be found under the [dir] section.
@@ -108,7 +108,7 @@ from a TCPairs run.
 # Output for this use case will be found in tc_paris/201503 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * mlq2015030100.gfso.????.tcst 
+# OUTPUT_BASE/tc_stat/tc_stat_summary.tcst
 
 ##############################################################################
 # Keywords
