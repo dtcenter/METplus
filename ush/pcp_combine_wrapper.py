@@ -594,6 +594,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         lead = time_info['lead_seconds']
         lead2 = lead - accum
 
+        self.logger.debug(f"Attempting to build {time_util.ti_get_lead_string(accum, False)} "
+                          f"accumulation by subtracting {time_util.ti_get_lead_string(lead2, False)} "
+                          f"from {time_util.ti_get_lead_string(lead, False)}.")
+
         # set output file information
         outSts = sts.StringSub(self.logger,
                                out_template,
@@ -620,6 +624,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # if level type is A (accum) and second lead is 0, then
         # run PCPCombine in -add mode with just the first file
         if lead2 == 0 and level_type == 'A':
+            self.logger.debug("Subtracted accumulation is 0, so running ADD mode on one file")
             self.method = 'ADD'
             self.add_input_file(file1, lead)
             return self.get_command()
