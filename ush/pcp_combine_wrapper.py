@@ -32,6 +32,10 @@ Cannot be called directly. Must use child classes.
 class PCPCombineWrapper(ReformatGriddedWrapper):
     """!Wraps the MET tool pcp_combine to combine or divide
     precipitation accumulations"""
+
+    # valid values for [FCST/OBS]_PCP_COMBINE_METHOD
+    valid_run_methods = ['ADD', 'SUM', 'SUBTRACT', 'DERIVE', 'CUSTOM']
+
     def __init__(self, config, logger):
         super().__init__(config, logger)
         self.app_name = 'pcp_combine'
@@ -92,15 +96,22 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             util.getlist(self.config.getstr('config',
                                        d_type+'_PCP_COMBINE_STAT_LIST', ''))
 
-        c_dict[d_type+'_RUN_METHOD'] = \
-            self.config.getstr('config', d_type+'_PCP_COMBINE_METHOD')
+        run_method = \
+            self.config.getstr('config', d_type+'_PCP_COMBINE_METHOD', '').upper()
 
-        if c_dict[d_type+'_RUN_METHOD'] == 'DERIVE' and \
-           not c_dict[d_type+'_STAT_LIST']:
+        if run_method not in self.valid_run_methods:
+            self.log_error(f"Invalid value for {d_type}_PCP_COMBINE_METHOD: "
+                           f"{run_method}. Valid options are "
+                           f"{','.join(self.valid_run_methods)}.")
+            self.isOK = False
+
+        if run_method == 'DERIVE' and not c_dict[d_type+'_STAT_LIST']:
             self.log_error('Statistic list is empty. ' + \
               'Must set ' + d_type + '_PCP_COMBINE_STAT_LIST if running ' +\
                               'derive mode')
             self.isOK = False
+
+        c_dict[d_type+'_RUN_METHOD'] = run_method
 
         c_dict[d_type+'_DERIVE_LOOKBACK'] = \
           self.config.getstr('config', d_type+'_PCP_COMBINE_DERIVE_LOOKBACK', '0')
@@ -520,27 +531,26 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         cmd = None
         self.clear()
         self.method = self.c_dict[data_src+'_RUN_METHOD'].upper()
+
+        # if method is not CUSTOM or DERIVE, check that field information is set
         if self.method == "CUSTOM":
             cmd = self.setup_custom_method(time_info, data_src)
-        else:
-            if var_info is None and not self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
-                self.log_error('Cannot run PCPCombine without specifying fields to process '
-                                  'unless running in CUSTOM mode. You must set '
-                                  f'{data_src}_VAR<n>_[NAME/LEVELS] or {data_src}_OUTPUT_[NAME/LEVEL]')
-                return
+        elif self.method == "DERIVE":
+            cmd = self.setup_derive_method(time_info, var_info, data_src)
+        elif var_info is None and not self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
+            self.log_error('Cannot run PCPCombine without specifying fields to process '
+                           'unless running in CUSTOM mode. You must set '
+                           f'{data_src}_VAR<n>_[NAME/LEVELS] or {data_src}_OUTPUT_[NAME/LEVEL]')
+            return
 
-            if self.method == "ADD":
-                cmd = self.setup_add_method(time_info, var_info, data_src)
-            elif self.method == "SUM":
-                cmd = self.setup_sum_method(time_info, var_info, data_src)
-            elif self.method == "SUBTRACT":
-                cmd = self.setup_subtract_method(time_info, var_info, data_src)
-            elif self.method == "DERIVE":
-                cmd = self.setup_derive_method(time_info, var_info, data_src)
-            else:
-                self.log_error('Invalid ' + data_src + '_PCP_COMBINE_METHOD specified.'+\
-                                  ' Options are ADD, SUM, and SUBTRACT.')
-                exit(1)
+        if self.method == "ADD":
+            cmd = self.setup_add_method(time_info, var_info, data_src)
+        elif self.method == "SUM":
+            cmd = self.setup_sum_method(time_info, var_info, data_src)
+        elif self.method == "SUBTRACT":
+            cmd = self.setup_subtract_method(time_info, var_info, data_src)
+
+        # invalid method should never happen because value is checked on init
 
         if cmd is None:
             init_time = time_info['init_fmt']
