@@ -1567,12 +1567,9 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
             thresh[data_type] = []
             if config.has_option('config', data_type+"_VAR"+n+"_THRESH"):
                 thresh[data_type] = getlist(config.getstr('config', data_type+"_VAR"+n+"_THRESH"))
-                if validate_thresholds(thresh[data_type]) == False:
+                if not validate_thresholds(thresh[data_type]):
                     msg = "  Update "+data_type+"_VAR"+n+"_THRESH to match this format"
-                    if config.logger:
-                        config.logger.error(msg)
-                    else:
-                        print(msg)
+                    config.logger.error(msg)
                     exit(1)
 
             # if OBS_VARn_X does not exist, use FCST_VARn_X
@@ -1589,6 +1586,7 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
                                           other_data_type+"_VAR"+n+"_OPTIONS")
                 extra[other_data_type] = StringSub(config.logger, extra_tmp,
                                                    **time_info).do_string_sub()
+
             levels_tmp = getlist(config.getraw('config',
                                                data_type+"_VAR"+n+"_LEVELS", ''))
             levels[data_type] = []
@@ -1644,20 +1642,8 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
                     thresh['ENS'] = getlist(config.getstr('config', "ENS_VAR"+n+"_THRESH"))
                     if validate_thresholds(thresh['ENS']) == False:
                         msg = "  Update ENS_VAR"+n+"_THRESH to match this format"
-                        if config.logger:
-                            config.logger.error(msg)
-                        else:
-                            print(msg)
-                        exit(1)
-
-                if len(thresh[data_type]) != len(thresh[other_data_type]):
-                    msg = data_type+"_VAR"+n+"_THRESH and "+other_data_type+"_VAR"+n+\
-                          "_THRESH do not have the same number of elements"
-                    if config.logger:
                         config.logger.error(msg)
-                    else:
-                        print(msg)
-                    exit(1)
+                        exit(1)
 
             count = 0
             for f, o in zip(levels[data_type], levels[other_data_type]):
