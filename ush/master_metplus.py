@@ -136,10 +136,12 @@ def main():
     for process in processes:
         if not process.isOK:
             allOK = False
-            logger.error("{} was not initialized properly".format(process.__class__))
+            class_name = process.__class__.__name__.replace('Wrapper', '')
+            logger.error("{} was not initialized properly".format(class_name))
 
     # exit if any wrappers did not initialized properly
     if not allOK:
+        logger.info("Refer to ERROR messages above to resolve issues.")
         exit()
 
     loop_order = config.getstr('config', 'LOOP_ORDER', '')
