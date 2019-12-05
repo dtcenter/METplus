@@ -538,11 +538,14 @@ class CommandBuilder:
         """!Build and run command"""
         cmd = self.get_command()
         if cmd is None:
-            return
+            return False
 
         ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
         if ret != 0:
             self.errors += 1
+            return False
+
+        return True
 
     # argument needed to match call
     # pylint:disable=unused-argument

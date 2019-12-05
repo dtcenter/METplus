@@ -98,8 +98,7 @@ def test_get_accumulation_1_to_6():
     file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
         
     pcw.input_dir = input_dir
-    if not pcw.build_input_accum_list(data_src, time_info):
-        assert False
+    pcw.build_input_accum_list(data_src, time_info)
 
     pcw.get_accumulation(time_info, accum, data_src)
     in_files = pcw.infiles
@@ -127,8 +126,7 @@ def test_get_accumulation_6_to_6():
     pcw.c_dict['FCST_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
     
     pcw.input_dir = input_dir
-    if not pcw.build_input_accum_list(data_src, time_info):
-        assert False
+    pcw.build_input_accum_list(data_src, time_info)
 
     pcw.get_accumulation(time_info, accum, data_src)
     in_files = pcw.infiles    
