@@ -72,8 +72,9 @@ class ExtractTilesWrapper(CommandBuilder):
 
         # get the process id to be used to identify the output
         # amongst different users and runs.
-        cur_pid = str(os.getpid())
-        tmp_dir = os.path.join(self.config.getdir('TMP_DIR'), cur_pid)
+        # cur_pid = str(os.getpid())
+        #tmp_dir = os.path.join(self.config.getdir('TMP_DIR'), cur_pid)
+        tmp_dir = self.config.getdir('TMP_DIR')
         self.logger.info("Begin extract tiles")
 
         cur_init = init_time[0:8]+"_"+init_time[8:10]
@@ -140,6 +141,13 @@ class ExtractTilesWrapper(CommandBuilder):
             full_tmp_filename = os.path.join(tmp_dir, tmp_filename)
 
             storm_match_list = util.grep(cur_storm, filter_name)
+
+            # If this tmp file already exists in the tmp directory, remove
+            # it first otherwise we end up repeatedly appending the
+            # same information to this tmp file, which can have dire consequences.
+            if os.path.exists(full_tmp_filename):
+               os.remove(full_tmp_filename)
+
             with open(full_tmp_filename, "a+") as tmp_file:
                 # copy over header information
                 tmp_file.write(header)
@@ -156,8 +164,9 @@ class ExtractTilesWrapper(CommandBuilder):
         # end of for cur_storm
 
         # Remove any empty files and directories in the extract_tiles output
-        # directory
+        # directory and clean up any tmp files
         util.prune_empty(self.filtered_out_dir, self.logger)
+
 
         # Clean up the tmp directory if it exists
         if os.path.isdir(tmp_dir):
