@@ -70,10 +70,9 @@ class ExtractTilesWrapper(CommandBuilder):
         time_info = time_util.ti_calculate(input_dict)
         init_time = time_info['init_fmt']
 
-        # get the process id to be used to identify the output
-        # amongst different users and runs.
-        cur_pid = str(os.getpid())
-        tmp_dir = os.path.join(self.config.getdir('TMP_DIR'), cur_pid)
+        # Set the tmp dir where intermediate files (that
+        # are used for filtering) will be saved.
+        tmp_dir = self.config.getdir('TMP_DIR')
         self.logger.info("Begin extract tiles")
 
         cur_init = init_time[0:8]+"_"+init_time[8:10]
@@ -139,6 +138,12 @@ class ExtractTilesWrapper(CommandBuilder):
             tmp_filename = "filter_" + cur_init + "_" + cur_storm
             full_tmp_filename = os.path.join(tmp_dir, tmp_filename)
 
+            # If this full_tmp_filename already exists for this storm
+            # (from a previous run), then remove it.  Otherwise the file
+            # will continue to be appended with the same information.
+            # This in turn will lead to errors when this file is being read/parsed.
+            if os.path.exists(full_tmp_filename):
+                os.remove(full_tmp_filename)
             storm_match_list = util.grep(cur_storm, filter_name)
             with open(full_tmp_filename, "a+") as tmp_file:
                 # copy over header information
