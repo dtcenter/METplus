@@ -732,7 +732,14 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:* FCST
 
-   ENSEMBLE_STAT_MET_OBS_ERROR_TABLE     
+   ENSEMBLE_STAT_MET_OBS_ERR_TABLE
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*
+
+   [DEPRECATED] ENSEMBLE_STAT_MET_OBS_ERROR_TABLE
+      Please use ENSEMBLE_STAT_MET_OBS_ERR_TABLE instead.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]

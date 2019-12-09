@@ -64,17 +64,25 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['CONFIG_FILE'] = \
             self.config.getstr('config', 'ENSEMBLE_STAT_CONFIG_FILE', '')
 
+        if not c_dict['CONFIG_FILE']:
+            self.log_error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
+            self.isOK = False
+
         c_dict['ENS_THRESH'] = \
           self.config.getstr('config', 'ENSEMBLE_STAT_ENS_THRESH', '1.0')
 
         # met_obs_error_table is not required, if it is not defined
         # set it to the empty string '', that way the MET default is used.
         c_dict['MET_OBS_ERROR_TABLE'] = \
-            self.config.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE', '')
+            self.config.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE', '')
 
         # No Default being set this is REQUIRED TO BE DEFINED in conf file.
         c_dict['N_MEMBERS'] = \
-            self.config.getint('config', 'ENSEMBLE_STAT_N_MEMBERS')
+            self.config.getint('config', 'ENSEMBLE_STAT_N_MEMBERS', -1)
+
+        if c_dict['N_MEMBERS'] < 0:
+            self.log_error("Must set ENSEMBLE_STAT_N_MEMBERS to a integer > 0")
+            self.isOK = False
 
         c_dict['OBS_POINT_INPUT_DIR'] = \
           self.config.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
@@ -99,8 +107,14 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_TEMPLATE'] = \
           util.getlist(self.config.getraw('filename_templates',
                                           'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE'))
+        if not c_dict['FCST_INPUT_TEMPLATE']:
+            self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE")
+            self.isOK = False
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
+        if not c_dict['OUTPUT_DIR']:
+            self.log_error("Must set ENSEMBLE_STAT_OUTPUT_DIR in configuration file")
+            self.isOK = False
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'ensemble_stat')
@@ -138,17 +152,21 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.infiles.append(fcst_file_list)
 
+        # parse var list for ENS fields
+        ensemble_var_list = util.parse_var_list_helper(self.config, 'ENS', time_info, dont_duplicate=True)
+
+        # parse optional var list for FCST and/or OBS fields
         var_list = util.parse_var_list(self.config, time_info)
 
-        # report error and exit if field info is not set
+        # if empty var list for FCST/OBS, use None as first var, else use first var in list
         if not var_list:
-            self.log_error('No input fields were specified. You must set '
-                           '[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
-            return None
+            first_var_info = None
+        else:
+            first_var_info = var_list[0]
 
         # get point observation file if requested
         if self.c_dict['OBS_POINT_INPUT_TEMPLATE'] != '':
-            point_obs_path = self.find_data(time_info, var_list[0], 'OBS_POINT')
+            point_obs_path = self.find_data(time_info, first_var_info, 'OBS_POINT')
             if point_obs_path is None:
                 return
 
@@ -156,19 +174,19 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # get grid observation file if requested
         if self.c_dict['OBS_GRID_INPUT_TEMPLATE'] != '':
-            grid_obs_path = self.find_data(time_info, var_list[0], 'OBS_GRID')
+            grid_obs_path = self.find_data(time_info, first_var_info, 'OBS_GRID')
             if grid_obs_path is None:
                 return
 
             self.grid_obs_files.append(grid_obs_path)
 
-
         # set field info
         fcst_field = self.get_all_field_info(var_list, "something.grb2", 'FCST')
         obs_field = self.get_all_field_info(var_list, "something.grb2", 'OBS')
-        ens_field = self.get_all_field_info(var_list, 'something.grb2', 'ENS')
+        ens_field = self.get_all_field_info(ensemble_var_list, 'something.grb2', 'ENS')
 
-        if fcst_field is None or obs_field is None or ens_field is None:
+        if not fcst_field and not obs_field and not ens_field:
+            self.log_error("Could not build field info for fcst, obs, or ens")
             return
 
         # run
@@ -190,16 +208,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 name = var_info['obs_name']
                 extra = var_info['obs_extra']
             elif data_type == 'ENS':
-                if 'ens_name' in var_info.keys():
-                    level = var_info['ens_level']
-                    thresh = var_info['ens_thresh']
-                    name = var_info['ens_name']
-                    extra = var_info['ens_extra']
-                else:
-                    level = var_info['fcst_level']
-                    thresh = var_info['fcst_thresh']
-                    name = var_info['fcst_name']
-                    extra = var_info['fcst_extra']
+                level = var_info['ens_level']
+                thresh = var_info['ens_thresh']
+                name = var_info['ens_name']
+                extra = var_info['ens_extra']
             else:
                 return ''
 
@@ -271,7 +283,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                   'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE or adjust [config] '+\
                   'ENSEMBLE_STAT_N_MEMBERS. Files found: {}'.format(ens_members_path)
             self.log_error(msg)
-            self.log_error("Could not file files in {} for init {} f{} "
+            self.logger.error("Could not file files in {} for init {} f{} "
                               .format(model_dir, time_info['init_fmt'],
                                       str(time_info['lead_hours'])))
             return False
@@ -342,10 +354,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         """
         # set config file since command is reset after each run
         self.param = self.c_dict['CONFIG_FILE']
-
-        if not self.param:
-            self.log_error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
-            return
 
         # set up output dir with time info
         self.create_and_set_output_dir(time_info)

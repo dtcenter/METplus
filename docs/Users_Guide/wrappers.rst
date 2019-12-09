@@ -79,7 +79,7 @@ Configuration
 | OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE `[sec:SC_O] <#sec:SC_O>`__
 | ENSEMBLE_STAT_GRID_VX `[sec:SC_E] <#sec:SC_E>`__
 | ENSEMBLE_STAT_CONFIG_FILE `[sec:SC_E] <#sec:SC_E>`__
-| ENSEMBLE_STAT_MET_OBS_ERROR_TABLE `[sec:SC_E] <#sec:SC_E>`__
+| ENSEMBLE_STAT_MET_OBS_ERR_TABLE `[sec:SC_E] <#sec:SC_E>`__
 | ENSEMBLE_STAT_N_MEMBERS `[sec:SC_E] <#sec:SC_E>`__
 | OBS_ENSEMBLE_STAT_WINDOW_BEGIN `[sec:SC_O] <#sec:SC_O>`__
 | OBS_ENSEMBLE_STAT_WINDOW_END `[sec:SC_O] <#sec:SC_O>`__
@@ -93,6 +93,7 @@ Configuration
 
 | ENSEMBLE_STAT_OUT_DIR\ `[sec:SC_E] <#sec:SC_E>`__
 | ENSEMBLE_STAT_CONFIG\ `[sec:SC_E] <#sec:SC_E>`__
+| ENSEMBLE_STAT_MET_OBS_ERROR_TABLE `[sec:SC_E] <#sec:SC_E>`__
 
 ExtractTiles
 ------------

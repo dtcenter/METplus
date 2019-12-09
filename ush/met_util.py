@@ -195,7 +195,7 @@ def check_for_deprecated_config(conf, logger):
         'SERIES_BY_LEAD_GROUP_FCSTS': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_GROUP_FCSTS'},
         'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_CONFIG_FILE'},
         'SERIES_ANALYSIS_BY_INIT_CONFIG_FILE': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_CONFIG_FILE'},
-
+        'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE': {'sec': 'config', 'alt': 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE'},
     }
 
     # template       '' : {'sec' : '', 'alt' : ''}
@@ -1534,6 +1534,8 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
     other_data_type = "OBS"
     if data_type == "OBS":
         other_data_type = "FCST"
+    elif data_type == 'ENS':
+        other_data_type = ''
 
     # var_list is a list containing an list of dictionaries
     var_list = []
@@ -1627,42 +1629,20 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
             else:
                 thresh[other_data_type] = thresh[data_type]
 
-            # get ensemble var info if available
-            if config.has_option('config', "ENS_VAR"+n+"_NAME"):
-                name['ENS'] = config.getstr('config', "ENS_VAR"+n+"_NAME")
-
-                levels['ENS'] = getlist(config.getstr('config', "ENS_VAR"+n+"_LEVELS"))
-
-                extra['ENS'] = ""
-                if config.has_option('config', "ENS_VAR"+n+"_OPTIONS"):
-                    extra['ENS'] = config.getraw('config', "ENS_VAR"+n+"_OPTIONS")
-
-                thresh['ENS'] = []
-                if config.has_option('config', "ENS_VAR"+n+"_THRESH"):
-                    thresh['ENS'] = getlist(config.getstr('config', "ENS_VAR"+n+"_THRESH"))
-                    if validate_thresholds(thresh['ENS']) == False:
-                        msg = "  Update ENS_VAR"+n+"_THRESH to match this format"
-                        config.logger.error(msg)
-                        exit(1)
-
+            dt_lower = data_type.lower()
+            odt_lower = other_data_type.lower()
             count = 0
             for f, o in zip(levels[data_type], levels[other_data_type]):
                 fo = {}
-                fo['fcst_name'] = name[data_type]
-                fo['obs_name'] = name[other_data_type]
-                fo['fcst_extra'] = extra[data_type]
-                fo['obs_extra'] = extra[other_data_type]
-                fo['fcst_thresh'] = thresh[data_type]
-                fo['obs_thresh'] = thresh[other_data_type]
-                fo['fcst_level'] = f
-                fo['obs_level'] = o
-                if 'ENS' in name:
-                    fo['ens_name'] = name['ENS']
-                    fo['ens_level'] = levels['ENS'][count]
-                    if 'ENS' in extra:
-                        fo['ens_extra'] = extra['ENS']
-                    if 'ENS' in thresh:
-                        fo['ens_thresh'] = thresh['ENS']
+                fo[f'{dt_lower}_name'] = name[data_type]
+                fo[f'{dt_lower}_level'] = f
+                fo[f'{dt_lower}_extra'] = extra[data_type]
+                fo[f'{dt_lower}_thresh'] = thresh[data_type]
+                if data_type != 'ENS':
+                    fo[f'{odt_lower}_name'] = name[other_data_type]
+                    fo[f'{odt_lower}_level'] = o
+                    fo[f'{odt_lower}_thresh'] = thresh[other_data_type]
+                    fo[f'{odt_lower}_extra'] = extra[other_data_type]
 
                 fo['index'] = n
                 var_list.append(fo)
@@ -1672,14 +1652,20 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
     '''
     for v in var_list:
         config.logger.debug(f"VAR{v['index']}:")
-        config.logger.debug(" fcst_name:"+v['fcst_name'])
-        config.logger.debug(" fcst_level:"+v['fcst_level'])
-        config.logger.debug(" fcst_thresh:"+str(v['fcst_thresh']))
-        config.logger.debug(" fcst_extra:"+v['fcst_extra'])
-        config.logger.debug(" obs_name:"+v['obs_name'])
-        config.logger.debug(" obs_level:"+v['obs_level'])
-        config.logger.debug(" obs_thresh:"+str(v['obs_thresh']))
-        config.logger.debug(" obs_extra:"+v['obs_extra'])
+        if 'fcst_name' in v.keys():
+            config.logger.debug(" fcst_name:"+v['fcst_name'])
+            config.logger.debug(" fcst_level:"+v['fcst_level'])
+        if 'fcst_thresh' in v.keys():
+            config.logger.debug(" fcst_thresh:"+str(v['fcst_thresh']))
+        if 'fcst_extra' in v.keys():
+            config.logger.debug(" fcst_extra:"+v['fcst_extra'])
+        if 'obs_name' in v.keys():
+            config.logger.debug(" obs_name:"+v['obs_name'])
+            config.logger.debug(" obs_level:"+v['obs_level'])
+        if 'obs_thresh' in v.keys():
+            config.logger.debug(" obs_thresh:"+str(v['obs_thresh']))
+        if 'obs_extra' in v.keys():
+            config.logger.debug(" obs_extra:"+v['obs_extra'])
         if 'ens_name' in v.keys():
             config.logger.debug(" ens_name:"+v['ens_name'])
             config.logger.debug(" ens_level:"+v['ens_level'])
@@ -1688,6 +1674,7 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
         if 'ens_extra' in v.keys():
             config.logger.debug(" ens_extra:"+v['ens_extra'])
     '''
+
     return var_list
 
 
