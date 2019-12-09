@@ -279,7 +279,7 @@ that reformat gridded data
 
             # if pcp_combine was run, use name_level, (*,*) format
             # if not, use user defined name/level combination
-            if self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
+            if d_type != 'ENS' and self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
                 field = "{ name=\"" + v_name + "_" + level + \
                         "\"; level=\"(*,*)\";"
             else:
