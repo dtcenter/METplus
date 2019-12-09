@@ -542,7 +542,7 @@ class CommandBuilder:
 
         ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
         if ret != 0:
-            self.errors += 1
+            self.log_error(f"Command returned a non-zero return code: {cmd}")
             return False
 
         return True
