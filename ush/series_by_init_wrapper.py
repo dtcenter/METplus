@@ -120,7 +120,8 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # If applicable, apply any filtering via tc_stat, as indicated in the
         # parameter/config file.
-        tmp_dir = os.path.join(self.config.getdir('TMP_DIR'), str(os.getpid()))
+        # tmp_dir = os.path.join(self.config.getdir('TMP_DIR'), str(os.getpid()))
+        tmp_dir = self.config.getdir('TMP_DIR')
         if series_filter_opts:
             self.apply_series_filters(tile_dir, init_times,
                                       self.series_filtered_out_dir,
@@ -191,6 +192,9 @@ class SeriesByInitWrapper(CommandBuilder):
             self.log_error("No NetCDF files were created by"
                               " series_analysis, exiting...")
             sys.exit(errno.ENODATA)
+
+        # clean up the tmp dir now that we are finished
+        util.rmtree(tmp_dir)
         self.logger.info("Finished series analysis by init time")
 
     def apply_series_filters(self, tile_dir, init_times, series_output_dir,
@@ -224,9 +228,15 @@ class SeriesByInitWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         # Create temporary directory where intermediate files are saved.
-        cur_pid = str(os.getpid())
-        tmp_dir = os.path.join(temporary_dir, cur_pid)
-        self.logger.debug("creating tmp dir: " + tmp_dir)
+        # a unique subdirectory is created in the event of another
+        # run of the series by init wrapper.  This is cleaned up
+        # before exiting this method, and does not impact the
+        # wrapper's ability to be re-run on existing
+        # extract tiles output.
+        #cur_pid = str(os.getpid())
+        #tmp_dir = os.path.join(temporary_dir, cur_pid)
+        tmp_dir = temporary_dir
+        self.logger.debug("creating tmp dir for filtered files: " + tmp_dir)
 
         for cur_init in init_times:
             # Call the tc_stat wrapper to build up the command and invoke
@@ -292,9 +302,6 @@ class SeriesByInitWrapper(CommandBuilder):
         # any errors or performance degradation when performing
         # series analysis.
         util.prune_empty(series_output_dir, self.logger)
-
-        # Clean up the tmp dir
-        util.rmtree(tmp_dir)
 
     def is_netcdf_created(self):
         """! Check for the presence of NetCDF files in the series_analysis_init
@@ -637,7 +644,7 @@ class SeriesByInitWrapper(CommandBuilder):
             self.logger.info("No output filename specified, because series analysis has multiple files")
         else:
             cmd += "-out " + os.path.join(self.get_output_path())
-        print("!!!! cmd: ", cmd)
+
         return cmd
 
     def generate_plots(self, sorted_filter_init, tile_dir):
@@ -867,6 +874,21 @@ class SeriesByInitWrapper(CommandBuilder):
             # steps.
             util.prune_empty(fcst_anly_ascii_dir, self.logger)
 
+
+    def cleanup(self, tmp_dir):
+        '''Remove any empty files and directories in the extract_tiles output
+           directory and the tmp directory.
+
+          Args:
+             @param tmp_dir:  The full path to the tmp directory
+        '''
+        util.prune_empty(self.series_filtered_out_dir, self.logger)
+
+        # Clean up the tmp directory if it exists
+        if os.path.isdir(tmp_dir):
+            util.rmtree(tmp_dir)
+
+        return 0
 
 if __name__ == "__main__":
         util.run_stand_alone("series_by_init_wrapper", "SeriesByInit")
