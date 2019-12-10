@@ -120,7 +120,6 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # If applicable, apply any filtering via tc_stat, as indicated in the
         # parameter/config file.
-        # tmp_dir = os.path.join(self.config.getdir('TMP_DIR'), str(os.getpid()))
         tmp_dir = self.config.getdir('TMP_DIR')
         if series_filter_opts:
             self.apply_series_filters(tile_dir, init_times,
@@ -228,13 +227,6 @@ class SeriesByInitWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         # Create temporary directory where intermediate files are saved.
-        # a unique subdirectory is created in the event of another
-        # run of the series by init wrapper.  This is cleaned up
-        # before exiting this method, and does not impact the
-        # wrapper's ability to be re-run on existing
-        # extract tiles output.
-        #cur_pid = str(os.getpid())
-        #tmp_dir = os.path.join(temporary_dir, cur_pid)
         tmp_dir = temporary_dir
         self.logger.debug("creating tmp dir for filtered files: " + tmp_dir)
 
