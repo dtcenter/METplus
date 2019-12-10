@@ -192,8 +192,11 @@ class SeriesByInitWrapper(CommandBuilder):
                               " series_analysis, exiting...")
             sys.exit(errno.ENODATA)
 
-        # clean up the tmp dir now that we are finished
+        # clean up the tmp dir now that we are finished and create a new empty
+        # tmp dir
         util.rmtree(tmp_dir)
+        util.mkdir_p(tmp_dir)
+
         self.logger.info("Finished series analysis by init time")
 
     def apply_series_filters(self, tile_dir, init_times, series_output_dir,

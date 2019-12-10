@@ -234,6 +234,7 @@ class ExtractTilesWrapper(CommandBuilder):
         # Clean up the tmp directory if it exists
         if os.path.isdir(tmp_dir):
             util.rmtree(tmp_dir)
+            util.mkdir_p(tmp_dir)
 
         return 0
 
