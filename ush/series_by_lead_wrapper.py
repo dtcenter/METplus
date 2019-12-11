@@ -1233,23 +1233,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  level, '_', cur_stat, '.gif']
                     animate_cmd = ''.join(gif_parts)
                     self.logger.debug("animate cmd: {}".format(animate_cmd))
-                    # TODO:
-                    # Fix animate_cmd so it does not require run_inshell
-                    #  to work.
-                    # It is working as is, ideally we do not require
-                    # run_inshell
-                    # The issue has to do with multiple files in the directory
-                    # when using the wild card. If only one file exists
-                    # then the command will run ok without run_inshell.
-                    # You can repeat the issue
-                    # by removing run_inshell keyword in the call below and
-                    # running examples/series_by_lead_all_fhrs.conf use case.
-                    # no animated gifs are created.
-                    # convert: unable to open image
-                    # .... No such file or directory
-                    #  @ error/blob.c/OpenBlob/2712.
-                    # convert: unable to open file
-                    # convert: no images defined
+
 
                     (ret, animate_cmd) = self.cmdrunner.run_cmd\
                         (animate_cmd, env=None, ismetcmd=False,
@@ -1313,9 +1297,8 @@ class SeriesByLeadWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         # Create temporary directory where intermediate files are saved.
-        cur_pid = str(os.getpid())
-        tmp_dir = os.path.join(temporary_dir, cur_pid)
-        self.logger.debug("creating tmp dir: " + tmp_dir)
+        tmp_dir = temporary_dir
+        self.logger.debug("creating tmp dir for filter files: " + tmp_dir)
         util.mkdir_p(tmp_dir)
 
         for cur_init in init_times:
@@ -1383,8 +1366,10 @@ class SeriesByLeadWrapper(CommandBuilder):
         # series analysis.
         util.prune_empty(series_output_dir, self.logger)
 
-        # Clean up the tmp dir
+        # Clean up the tmp dir and create an empty one
+        # in anticipation of another run.
         util.rmtree(tmp_dir)
+        util.mkdir_p(tmp_dir)
 
 if __name__ == "__main__":
         util.run_stand_alone("series_by_lead_wrapper", "SeriesByLead")
