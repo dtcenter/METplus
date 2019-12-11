@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
 """
-Program Name: ExtractTiles.py
-Contact(s): Julie Prestopnik, Minna Win
+Program Name: extract_tiles_wrapper.py
+Contact(s): Julie Prestopnik, Minna Win, George McCabe, Jim Frimel
 Abstract: Extracts tiles to be used by series_analysis
-History Log:  Initial version
-Usage: ExtractTiles.py
 Parameters: None
 Input Files: tc_pairs data
 Output Files: tiled grib2 files
