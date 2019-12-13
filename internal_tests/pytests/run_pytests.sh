@@ -49,6 +49,7 @@ if [ $exit_script == 0 ]; then
 fi
 
 all_good=0
+failure_output=""
 
 function run_pytest_and_check() {
   echo -e "\ncd $script_dir/$1"
@@ -59,7 +60,7 @@ function run_pytest_and_check() {
   ret=$?
   if [ $ret != 0 ]; then
       all_good=1
-      echo ERROR: pytest failed.
+      failure_output=${failure_output}"\nERROR: pytest $1 failed."
   fi
 }
 
@@ -89,6 +90,6 @@ run_pytest_and_check series_init -c ./series_init_test.conf -c ./custom.conf
 if [ $all_good == 0 ]; then
     echo SUCCESS: All tests passed
 else
-    echo ERROR: Some tests failed
+    echo -e $failure_output
     exit 1
 fi
