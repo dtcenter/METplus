@@ -33,17 +33,18 @@ def check_packages():
     # and store this information in a dictionary, where the key is the package/module
     # and the value is the version.
     requirements_file = "./requirements.txt"
+    required_packages = []
     required_dict = {}
     with open(requirements_file, 'r') as file:
         for line in file:
-            print(line.strip())
-            match = re.match(r'{.*}=={.*}', line)
-            if match:
-                package = match.group(1)
-                version = match.group(2)
-                print( "package {}, version:{}".format(package, version))
-            else:
-                print("no match")
+            #print(line.strip())
+            split_str = line.split('==')
+            print(split_str)
+            required_dict['package'] = split_str[0]
+            required_dict['version'] = split_str[1].split()
+            required_packages.append(required_dict)
+
+        print(required_packages)
 
 
 
