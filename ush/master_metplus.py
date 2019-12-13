@@ -85,8 +85,10 @@ def main():
     logger.info('Running METplus v%s called with command: %s',
                 version_number, ' '.join(sys.argv))
 
-    # check for deprecated config items and warn user to remove/replace them
-    util.check_for_deprecated_config(config, logger)
+    # validate configuration variables
+    if not util.validate_configuration_variables(config):
+        logger.error("Correct configuration variables and rerun. Exiting.")
+        exit(1)
 
     util.check_user_environment(config)
 

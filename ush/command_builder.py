@@ -51,6 +51,7 @@ class CommandBuilder:
         if hasattr(config, 'env'):
             self.env = config.env
         self.c_dict = self.create_c_dict()
+
         self.cmdrunner = CommandRunner(self.config, logger=self.logger,
                                        verbose=self.c_dict['VERBOSITY'])
 

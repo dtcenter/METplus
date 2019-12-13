@@ -40,7 +40,7 @@ baseinputconfs = ['metplus_config/metplus_system.conf',
                   'metplus_config/metplus_runtime.conf',
                   'metplus_config/metplus_logging.conf']
 
-def check_for_deprecated_config(conf, logger):
+def check_for_deprecated_config(conf):
     deprecated_dict = {
         'LOOP_BY_INIT' : {'sec' : 'config', 'alt' : 'LOOP_BY'},
         'LOOP_METHOD' : {'sec' : 'config', 'alt' : 'LOOP_ORDER'},
@@ -202,6 +202,7 @@ def check_for_deprecated_config(conf, logger):
     # need to use regex to check for items that have different numbers in them
     # i.e. FCST_1_FIELD_NAME or FCST_6_FIELD_NAME to FCST_PCP_COMBINE_1_FIELD_NAME, etc.
 
+    logger = conf.logger
 
     # create list of errors and warnings to report for deprecated configs
     e_list = []
@@ -255,7 +256,9 @@ def check_for_deprecated_config(conf, logger):
                      'PLEASE REMOVE/REPLACE THEM FROM CONFIG FILES')
         for error_msg in e_list:
             logger.error(error_msg)
-        exit(1)
+        return False
+
+    return True
 
 def handle_tmp_dir(config):
     """! if env var MET_TMP_DIR is set, override config TMP_DIR with value
@@ -1488,25 +1491,150 @@ def validate_thresholds(thresh_list):
         return False
     return True
 
-def find_regex_in_config_section(regex_expression, config, sec):
+def validate_configuration_variables(config):
+
+    # check for deprecated config items and warn user to remove/replace them
+    deprecated_isOK = check_for_deprecated_config(config)
+    # validate configuration variables
+    field_isOK = validate_field_info_configs(config)
+
+    return deprecated_isOK and field_isOK
+
+def find_indices_in_config_section(regex_expression, config, sec):
+    # regex expression must have 2 () items and the 2nd item must be the index
     all_conf = config.keys(sec)
-    indices = []
+    indices = {}
     regex = re.compile(regex_expression)
     for conf in all_conf:
         result = regex.match(conf)
         if result is not None:
-            indices.append(result.group(1))
+            identifier = result.group(1)
+            index = result.group(2)
+            if index not in indices:
+                indices[index] = [identifier]
+            else:
+                indices[index].append(identifier)
+
     return indices
 
-def parse_var_list(config, time_info=None):
+def is_var_item_valid(item_list, config):
+    """!Given a list of data types (FCST, OBS, ENS, or BOTH) check if the combination is valid.
+        If BOTH is found, FCST and OBS should not be found.
+        If FCST or OBS is found, ther other must also be found."""
+
+    if 'BOTH' in item_list and ('FCST' in item_list or 'OBS' in item_list):
+        return False, "Cannot set FCST_VAR<n> or OBS_VAR<n> variables if BOTH_VAR<n> is set."
+    elif 'FCST' in item_list and 'OBS' not in item_list:
+        return False, "OBS_VAR<n> variables must be set if FCST_VAR<n> variables are set." +\
+                      " Alternatively, you can change FCST_VAR<n> variables to BOTH_VAR<n>"
+    elif 'OBS' in item_list and 'FCST' not in item_list:
+        return False, "FCST_VAR<n> variables must be set if OBS_VAR<n> variables are set." +\
+                      " Alternatively, you can change OBS_VAR<n> variables to BOTH_VAR<n>"
+
+    return True, ''
+
+def validate_field_info_configs(config):
+    """!Verify that config variables with _VAR<n>_ in them are valid. Returns True if all are valid.
+       Returns False if any items are invalid"""
+
+    variable_extensions = ['NAME', 'LEVELS', 'THRESH', 'OPTIONS']
+    all_good = True
+
+    for ext in variable_extensions:
+        # find all _VAR<n>_<ext> keys in the conf files
+        data_types_and_indices = find_indices_in_config_section(r"(\w+)_VAR(\d+)_"+ext,
+                                                                config,
+                                                                'config')
+
+        # if BOTH_VAR<n>_ is used, set FCST and OBS to the same value
+        # if FCST or OBS is used, the other must be present as well
+        # if BOTH and either FCST or OBS are set, report an error
+        # get other data type
+        for index, data_type_list in data_types_and_indices.items():
+            is_valid, error_msg = is_var_item_valid(data_type_list, config)
+            if not is_valid:
+                bad_var_list = [s + f"_VAR{index}_{ext}" for s in data_type_list]
+                config.logger.error(f"There is a problem with {', '.join(bad_var_list)}")
+                config.logger.error(error_msg)
+                all_good = False
+
+            # make sure FCST and OBS have the same number of levels if coming from separate variables
+            elif ext == 'LEVELS' and all(item in ['FCST', 'OBS'] for item in data_type_list):
+                fcst_levels = getlist(config.getraw('config', f"FCST_VAR{index}_LEVELS", ''))
+
+                # add empty string if no levels are found because python embedding items do not need
+                # to include a level, but the other item may have a level and the numbers need to match
+                if not fcst_levels:
+                    fcst_levels.append('')
+
+                obs_levels = getlist(config.getraw('config', f"OBS_VAR{index}_LEVELS", ''))
+                if not obs_levels:
+                    obs_levels.append('')
+
+                if len(fcst_levels) != len(obs_levels):
+                    config.logger.error(f"FCST_VAR{index}_LEVELS and OBS_VAR{inx}_LEVELS do not have "
+                                        "the same number of elements")
+                    all_good = False
+
+    return all_good
+
+def get_var_items(config, data_type, index, time_info):
+    """!Get configuration variables for given data type and index
+        Args:
+            @param config: METplusConfig object
+            @param data_type: type of data to find, i.e. FCST, OBS, BOTH, or ENS
+            @param index: index of variable, i.e. _VAR<index>_NAME"""
+
+    # get field variable name
+    if config.has_option('config', f"{data_type}_VAR{index}_NAME"):
+        name = StringSub(config.logger,
+                         config.getraw('config', f"{data_type}_VAR{index}_NAME"),
+                         **time_info).do_string_sub()
+    else:
+        return '', '', '', ''
+
+    # get levels if available
+    levels = []
+    for level in getlist(config.getraw('config', f"{data_type}_VAR{index}_LEVELS", '')):
+        subbed_level = StringSub(config.logger, level, **time_info).do_string_sub()
+        levels.append(subbed_level)
+
+    # if no levels are found, add an empty string
+    if not levels:
+        levels.append('')
+
+    # get thresholds if available
+    thresh = []
+    if config.has_option('config', f"{data_type}_VAR{index}_THRESH"):
+        thresh = getlist(config.getstr('config', f"{data_type}_VAR{index}_THRESH"))
+        if not validate_thresholds(thresh):
+            config.logger.error(f"  Update {data_type}_VAR{index}_THRESH to match this format")
+            return None
+
+    # get extra options if available
+    extra = ""
+    if config.has_option('config', f"{data_type}_VAR{index}_OPTIONS"):
+        extra = StringSub(config.logger,
+                          config.getraw('config', f"{data_type}_VAR{index}OPTIONS"),
+                          **time_info).do_string_sub()
+
+    return name, levels, thresh, extra
+
+
+def parse_var_list(config, time_info=None, data_type=None):
     """ read conf items and populate list of dictionaries containing
     information about each variable to be compared
         Args:
             @param config: METplusConfig object
             @param time_info: time object for string sub, optional
+            @param data_type: data type to find, i.e. ENS. If not set, get FCST/OBS/BOTH
         Returns:
             list of dictionaries with variable information
     """
+
+    # validate configs again in case wrapper is not running from master_metplus
+    validate_field_info_configs(config)
+
     # if time_info is not passed in, set 'now' to CLOCK_TIME
     # NOTE: any attempt to use string template substitution with an item other than
     #  'now' will fail if time_info is not passed into parse_var_list
@@ -1514,142 +1642,83 @@ def parse_var_list(config, time_info=None):
         time_info = { 'now' : datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
                                                          '%Y%m%d%H%M%S') }
 
-    var_list_fcst = parse_var_list_helper(config, "FCST", time_info, False)
-    var_list_obs = parse_var_list_helper(config, "OBS", time_info, True)
-    var_list = var_list_fcst + var_list_obs
-    return sorted(var_list, key=lambda x: x['index'])
-
-def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
-    """ helper function for parse_var_list
-        Args:
-            @param config: METplusConfig object
-            @param data_type: data_type (FCST or OBS)
-            @param time_info: time object for string sub
-            @param dont_duplicate: if true check other data
-              type and don't process if it exists
-        Returns:
-            list of dictionaries with variable information
-    """
-    # get other data type
-    other_data_type = "OBS"
-    if data_type == "OBS":
-        other_data_type = "FCST"
-    elif data_type == 'ENS':
-        other_data_type = ''
-
     # var_list is a list containing an list of dictionaries
     var_list = []
 
-    # find all FCST_VARn_NAME keys in the conf files
-    indices = find_regex_in_config_section(data_type+r"_VAR(\d+)_NAME",
-                                           config,
-                                           'config')
+    # if specific data type is requested, only get those items
+    if data_type:
+        regex_string = f"({data_type})"+r"_VAR(\d+)_NAME"
+    else:
+        regex_string = r"(\w+)_VAR(\d+)_NAME"
+
+    # find all <data_type>_VAR<n>_NAME keys in the conf files
+    data_types_and_indices = find_indices_in_config_section(r"(\w+)_VAR(\d+)_NAME",
+                                                            config,
+                                                            'config')
 
     # loop over all possible variables and add them to list
-    for n in indices:
-        # don't duplicate if already entered into var list
-        if dont_duplicate and config.has_option('config', other_data_type+'_VAR'+n+'_NAME'):
-            continue
+    for index, data_type_list in data_types_and_indices.items():
 
-        name = {}
-        levels = {}
-        thresh = {}
-        extra = {}
-        # get fcst var info if available
-        if config.has_option('config', data_type+"_VAR"+n+"_NAME"):
-            name_tmp = config.getraw('config', data_type+"_VAR"+n+"_NAME")
-            name[data_type] = StringSub(config.logger, name_tmp,
-                                        **time_info).do_string_sub()
+        # if specific data type is requested, only get that type
+        if data_type:
+            data_type_lower = data_type.lower()
+            name, levels, thresh, extra = get_var_items(config, data_type, index, time_info)
 
-            extra[data_type] = ""
-            if config.has_option('config', data_type+"_VAR"+n+"_OPTIONS"):
-                extra_tmp = config.getraw('config', data_type+"_VAR"+n+"_OPTIONS")
-                extra[data_type] = StringSub(config.logger, extra_tmp,
-                                             **time_info).do_string_sub()
-            thresh[data_type] = []
-            if config.has_option('config', data_type+"_VAR"+n+"_THRESH"):
-                thresh[data_type] = getlist(config.getstr('config', data_type+"_VAR"+n+"_THRESH"))
-                if not validate_thresholds(thresh[data_type]):
-                    msg = "  Update "+data_type+"_VAR"+n+"_THRESH to match this format"
-                    config.logger.error(msg)
-                    exit(1)
+            # if not found requesting FCST or OBS, look for BOTH
+            if not name and (data_type == 'FCST' or data_type == 'OBS'):
+                name, levels, thresh, extra = get_var_items(config, 'BOTH', index, time_info)
 
-            # if OBS_VARn_X does not exist, use FCST_VARn_X
-            if config.has_option('config', other_data_type+"_VAR"+n+"_NAME"):
-                name_tmp = config.getraw('config', other_data_type+"_VAR"+n+"_NAME")
-                name[other_data_type] = StringSub(config.logger, name_tmp,
-                                                  **time_info).do_string_sub()
-            else:
-                name[other_data_type] = name[data_type]
+            for level in levels:
+                var_dict = {f"{data_type_lower}_name": name,
+                            f"{data_type_lower}_level": level,
+                            f"{data_type_lower}_thresh": thresh,
+                            f"{data_type_lower}_extra": extra,
+                            'index': index,
+                            }
+                var_list.append(var_dict)
 
-            extra[other_data_type] = ""
-            if config.has_option('config', other_data_type+"_VAR"+n+"_OPTIONS"):
-                extra_tmp = config.getraw('config',
-                                          other_data_type+"_VAR"+n+"_OPTIONS")
-                extra[other_data_type] = StringSub(config.logger, extra_tmp,
-                                                   **time_info).do_string_sub()
+        # if BOTH is used, set FCST and OBS items to the same value
+        elif 'BOTH' in data_type_list:
+            name, levels, thresh, extra = get_var_items(config, 'BOTH', index, time_info)
 
-            levels_tmp = getlist(config.getraw('config',
-                                               data_type+"_VAR"+n+"_LEVELS", ''))
-            levels[data_type] = []
-            for level in levels_tmp:
-                subbed_level = StringSub(config.logger, level, **time_info).do_string_sub()
-                levels[data_type].append(subbed_level)
+            for level in levels:
+                var_dict = {"fcst_name": name,
+                            "fcst_level": level,
+                            "fcst_thresh": thresh,
+                            "fcst_extra": extra,
+                            "obs_name": name,
+                            "obs_level": level,
+                            "obs_thresh": thresh,
+                            "obs_extra": extra,
+                            'index': index,
+                            }
+                var_list.append(var_dict)
 
-            if not levels[data_type]:
-                levels[data_type].append('')
+        # if FCST and OBS are used, get and set both of them
+        else:
+            f_name, f_levels, f_thresh, f_extra = get_var_items(config, 'FCST', index, time_info)
+            o_name, o_levels, o_thresh, o_extra = get_var_items(config, 'OBS', index, time_info)
 
-            if config.has_option('config', other_data_type+"_VAR"+n+"_LEVELS"):
-                levels_tmp = getlist(config.getraw('config', other_data_type+"_VAR"+n+"_LEVELS", ''))
-                levels[other_data_type] = []
-                for level in levels_tmp:
-                    subbed_level = StringSub(config.logger, level, **time_info).do_string_sub()
-                    levels[other_data_type].append(subbed_level)
-            else:
-                levels[other_data_type] = levels[data_type]
+            # if number of levels are not equal, return an empty list
+            if len(f_levels) != len(o_levels):
+                return []
 
-            if not levels[other_data_type]:
-                levels[other_data_type].append('')
+            for f_level, o_level in zip(f_levels, o_levels):
+                var_dict = {"fcst_name": f_name,
+                            "fcst_level": f_level,
+                            "fcst_thresh": f_thresh,
+                            "fcst_extra": f_extra,
+                            "obs_name": o_name,
+                            "obs_level": o_level,
+                            "obs_thresh": o_thresh,
+                            "obs_extra": o_extra,
+                            'index': index,
+                            }
+                var_list.append(var_dict)
 
-            if len(levels[data_type]) != len(levels[other_data_type]):
-                msg = data_type+"_VAR"+n+"_LEVELS and "+other_data_type+"_VAR"+n+\
-                          "_LEVELS do not have the same number of elements"
-                if config.logger:
-                    config.logger.error(msg)
-                else:
-                    print(msg)
-                exit(1)
-
-            # if OBS_VARn_THRESH does not exist, use FCST_VARn_THRESH
-            if config.has_option('config', other_data_type+"_VAR"+n+"_THRESH"):
-                thresh[other_data_type] = getlist(config.getstr('config', other_data_type+"_VAR"+n+"_THRESH"))
-                if validate_thresholds(thresh[other_data_type]) == False:
-                    print("  Update "+other_data_type+"_VAR"+n+"_THRESH to match this format")
-                    exit(1)
-            else:
-                thresh[other_data_type] = thresh[data_type]
-
-            dt_lower = data_type.lower()
-            odt_lower = other_data_type.lower()
-            count = 0
-            for f, o in zip(levels[data_type], levels[other_data_type]):
-                fo = {}
-                fo[f'{dt_lower}_name'] = name[data_type]
-                fo[f'{dt_lower}_level'] = f
-                fo[f'{dt_lower}_extra'] = extra[data_type]
-                fo[f'{dt_lower}_thresh'] = thresh[data_type]
-                if data_type != 'ENS':
-                    fo[f'{odt_lower}_name'] = name[other_data_type]
-                    fo[f'{odt_lower}_level'] = o
-                    fo[f'{odt_lower}_thresh'] = thresh[other_data_type]
-                    fo[f'{odt_lower}_extra'] = extra[other_data_type]
-
-                fo['index'] = n
-                var_list.append(fo)
-                count += 1
 
     # extra debugging information used for developer debugging only
-    '''
+
     for v in var_list:
         config.logger.debug(f"VAR{v['index']}:")
         if 'fcst_name' in v.keys():
@@ -1673,10 +1742,9 @@ def parse_var_list_helper(config, data_type, time_info, dont_duplicate):
             config.logger.debug(" ens_thresh:"+str(v['ens_thresh']))
         if 'ens_extra' in v.keys():
             config.logger.debug(" ens_extra:"+v['ens_extra'])
-    '''
 
-    return var_list
 
+    return sorted(var_list, key=lambda x: x['index'])
 
 def split_level(level):
     level_type = ""
