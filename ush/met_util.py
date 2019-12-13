@@ -946,8 +946,6 @@ def get_files(filedir, filename_regex, logger):
                 continue
     return file_paths
 
-
-
 def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
     """! Checks for the presence of forecast and analysis
         tiles that were created by extract_tiles
