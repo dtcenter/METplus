@@ -47,7 +47,6 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.do_fhr_by_group = self.config.getbool('config',
                                                    'SERIES_ANALYSIS_GROUP_FCSTS')
         self.fhr_group_labels = []
-        self.var_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_VAR_LIST'))
         self.stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST'))
         self.plot_data_plane_exe = os.path.join(
             self.config.getdir('MET_INSTALL_DIR'),
@@ -382,13 +381,9 @@ class SeriesByLeadWrapper(CommandBuilder):
             self.logger.debug('obs param: ' + obs_param)
 
             # Create the -out portion of the series_analysis command.
-            for cur_var in self.var_list:
-                # Get the name and level to create the -out param
-                # and set the NAME and LEVEL environment variables that
-                # are needed by the MET series analysis binary.
-                match = re.match(r'(.*)/(.*)', cur_var)
-                name = match.group(1)
-                level = match.group(2)
+            full_vars_list = feature_util.retrieve_var_name_levels(self.config)
+            for cur_var in full_vars_list:
+                name, level = cur_var
                 os.environ['NAME'] = name
                 os.environ['LEVEL'] = level
 
@@ -531,13 +526,12 @@ class SeriesByLeadWrapper(CommandBuilder):
 
             # Create the -out param and invoke the MET series
             # analysis binary
-            for cur_var in self.var_list:
-                # Get the name and level to create the -out param
-                # and set the NAME and LEVEL environment variables that
-                # are needed by the MET series analysis binary.
-                match = re.match(r'(.*)/(.*)', cur_var)
-                name = match.group(1)
-                level = match.group(2)
+            # Get the name and level to create the -out param
+            # and set the NAME and LEVEL environment variables that
+            # are needed by the MET series analysis binary.
+            full_vars_list = feature_util.retrieve_var_name_levels(self.config)
+            for cur_var in full_vars_list:
+                name, level = cur_var
                 os.environ['NAME'] = name
                 os.environ['LEVEL'] = level
 
@@ -591,10 +585,6 @@ class SeriesByLeadWrapper(CommandBuilder):
         # pylint:disable=protected-access
         # Need to call sys.__getframe() to get the filename and method/func
         # for logging information.
-
-        # TODO: Fix ncdump commands so they do not need to be run_inshell
-        # The issue is that > redirect symbol in the command.
-        # This can be fixed by removing that and using .out()
 
         # Useful for logging
         cur_filename = sys._getframe().f_code.co_filename
@@ -1062,14 +1052,12 @@ class SeriesByLeadWrapper(CommandBuilder):
                    str(len(nc_list)))
             self.logger.debug(msg)
 
-        for cur_var in self.var_list:
-            # Get the name and level to set the NAME and LEVEL
-            # environment variables that
-            # are needed by the MET series analysis binary.
-            match = re.match(r'(.*)/(.*)', cur_var)
-            name = match.group(1)
-            level = match.group(2)
-
+        # Get the name and level to set the NAME and LEVEL
+        # environment variables that
+        # are needed by the MET series analysis binary.
+        full_vars_list = feature_util.retrieve_var_name_levels(self.config)
+        for cur_var in full_vars_list:
+            name, level = cur_var
             os.environ['LEVEL'] = level
             os.environ['NAME'] = name + '_' + level
 
@@ -1090,7 +1078,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 vmin, vmax = self.get_netcdf_min_max(do_fhr_by_range,
                                                      nc_var_list,
                                                      cur_stat)
-                msg = ("Plotting range for " + cur_var + " " +
+                msg = ("Plotting range for " + name + " " + level + " " +
                        cur_stat + ":  " + str(vmin) + " to " + str(vmax))
                 self.logger.debug(msg)
 
@@ -1157,7 +1145,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                                              "'", ' -title ', '"GFS ',
                                              str(fhr),
                                              ' Forecasts (N = ', str(nseries),
-                                             '), ', cur_stat, ' for ', cur_var,
+                                             '), ', cur_stat, ' for ', name,
+                                             ' ', level,
                                              '"', ' -plot_range ', str(vmin),
                                              ' ', str(vmax)]
 
@@ -1208,14 +1197,12 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.logger.debug(msg)
         util.mkdir_p(animate_dir)
 
-        for cur_var in self.var_list:
-            # Get the name and level to set the NAME and LEVEL
-            # environment variables that
-            # are needed by the MET series analysis binary.
-            match = re.match(r'(.*)/(.*)', cur_var)
-            name = match.group(1)
-            level = match.group(2)
-
+        # Get the name and level to set the NAME and LEVEL
+        # environment variables that
+        # are needed by the MET series analysis binary.
+        full_vars_list = feature_util.retrieve_var_name_levels(self.config)
+        for cur_var in full_vars_list:
+            name, level = cur_var
             os.environ['LEVEL'] = level
             os.environ['NAME'] = name + '_' + level
 
