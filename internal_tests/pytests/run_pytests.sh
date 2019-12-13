@@ -33,112 +33,58 @@ if [ $ret == 0 ]; then
     exit_script=0
 fi
 
+echo -e $remove_commands
+
+echo -e "\nWould you like to run these remove commands now? (y/n)"
+read confirm_remove
+
+if [ "${confirm_remove:0:1}" == 'y' ]; then
+    rm -rf $METPLUS_TEST_OUTPUT_BASE
+    rm -r $script_dir/*/__pycache__
+    exit_script=1
+fi
+
 if [ $exit_script == 0 ]; then
-    echo -e $remove_commands
     exit
 fi
 
 all_good=0
 
-cd $script_dir/config
-pytest -c ../minimum_pytest.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
+function run_pytest_and_check() {
+  echo -e "\ncd $script_dir/$1"
+  cd $script_dir/$1
+  cmd="pytest -c $script_dir/minimum_pytest.conf ${@:2}"
+  echo $cmd
+  $cmd
+  ret=$?
+  if [ $ret != 0 ]; then
+      all_good=1
+      echo ERROR: pytest failed.
+  fi
+}
 
-cd $script_dir/grid_stat
-pytest -c ../minimum_pytest.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
 
-cd $script_dir/logging
-pytest -c ../minimum_pytest.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
-
-cd $script_dir/met_util
-pytest -c ../minimum_pytest.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
-
-cd $script_dir/mtd
-pytest -c ../minimum_pytest.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
-
-cd $script_dir/pcp_combine
-pytest -c ../minimum_pytest.conf -c ./test1.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
-
-cd $script_dir/stat_analysis
-pytest -c ../minimum_pytest.conf -c ./test_stat_analysis.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
-
-cd $script_dir/plotting/stat_analysis
-pytest -c ../../minimum_pytest.conf -c ./test_stat_analysis.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
-
-cd $script_dir/plotting/make_plots
-pytest -c ../../minimum_pytest.conf -c ./test_make_plots.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
-
-cd $script_dir/plotting/plot_util
-pytest -c ../../minimum_pytest.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
-
-cd $script_dir/StringTemplateSubstitution
-pytest -c ../minimum_pytest.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
-
-cd $script_dir/compare_gridded
-pytest -c ../minimum_pytest.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
-
-cd $script_dir/time_util
-pytest -c ../minimum_pytest.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
-
-cd $script_dir/pb2nc
-pytest -c ../minimum_pytest.conf -c ./conf1
-if [ $? != 0 ]; then
-    all_good=1
-fi
+run_pytest_and_check config
+run_pytest_and_check grid_stat
+run_pytest_and_check logging
+run_pytest_and_check met_util
+run_pytest_and_check mtd
+run_pytest_and_check pcp_combine -c ./test1.conf
+run_pytest_and_check stat_analysis -c ./test_stat_analysis.conf
+run_pytest_and_check plotting/stat_analysis -c ./test_stat_analysis.conf
+run_pytest_and_check plotting/make_plots -c ./test_make_plots.conf
+run_pytest_and_check plotting/plot_util
+run_pytest_and_check StringTemplateSubstitution
+run_pytest_and_check compare_gridded
+run_pytest_and_check time_util
+run_pytest_and_check pb2nc -c ./conf1
 
 cd $script_dir/extract_tiles
 python ./run_precondition.py >/dev/null 2>&1
-pytest -c ../minimum_pytest.conf -c  ./extract_tiles_test.conf -c ./custom.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
-
-
-cd $script_dir/series_init
+run_pytest_and_check extract_tiles -c  ./extract_tiles_test.conf -c ./custom.conf
 python ./run_cleanup.py
-pytest -c ../minimum_pytest.conf -c ./series_init_test.conf -c ./custom.conf
-if [ $? != 0 ]; then
-    all_good=1
-fi
 
+run_pytest_and_check series_init -c ./series_init_test.conf -c ./custom.conf
 
 if [ $all_good == 0 ]; then
     echo SUCCESS: All tests passed
