@@ -36,7 +36,6 @@ class SeriesByInitWrapper(CommandBuilder):
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
         self.stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST'))
-        self.var_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_VAR_LIST'))
         self.extract_tiles_dir = self.config.getdir('SERIES_ANALYSIS_INPUT_DIR')
         self.series_out_dir = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR')
         self.series_filtered_out_dir = \
@@ -495,6 +494,7 @@ class SeriesByInitWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
+
         # Now assemble the -fcst, -obs, and -out arguments and invoke the
         # MET Tool: series_analysis.
         for cur_init in sorted_filter_init:
@@ -508,8 +508,9 @@ class SeriesByInitWrapper(CommandBuilder):
                     # Build the -obs and -fcst portions of the series_analysis
                     # command. Then generate the -out portion, get the NAME and
                     # corresponding LEVEL for each variable.
-                    for cur_var in self.var_list:
-                        name, level = util.get_name_level(cur_var, self.logger)
+                    full_vars_list = feature_util.retrieve_var_name_levels(self.config)
+                    for cur_var in full_vars_list:
+                        name, level = cur_var
                         param = \
                             self.config.getstr(
                                 'config',
@@ -659,8 +660,10 @@ class SeriesByInitWrapper(CommandBuilder):
         background_map = self.config.getbool('config', 'SERIES_ANALYSIS_BACKGROUND_MAP')
         plot_data_plane_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                            'bin/plot_data_plane')
-        for cur_var in self.var_list:
-            name, level = util.get_name_level(cur_var, self.logger)
+
+        full_vars_list = feature_util.retrieve_var_name_levels(self.config)
+        for cur_var in full_vars_list:
+            name, level = cur_var
             for cur_init in sorted_filter_init:
                 storm_list = self.get_storms_for_init(cur_init, tile_dir)
                 for cur_storm in storm_list:
@@ -727,7 +730,7 @@ class SeriesByInitWrapper(CommandBuilder):
                                        str(num), ' Forecasts (',
                                        str(beg), ' to ', str(end),
                                        '),', cur_stat, ' for ',
-                                       cur_var, '"']
+                                       name, ', ',  level, '"']
                         title = ''.join(title_parts)
 
                         # Now assemble the entire plot data plane command
