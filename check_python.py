@@ -22,5 +22,24 @@ def check_python_version():
             # OK
             print('You are using the correct version of Python: ', your_version)
 
+def check_packages():
+    """Check if the packages installed on the computer on which you
+        are executing this script is what is needed.
+    """
+
+    # Retrieve the requirements.txt file from the METplus top-level directory
+    # and store this information in a dictionary, where the key is the package/module
+    # and the value is the version.
+
+    # Now run 'pip freeze' on this computer and do the same.
+
+
+    # For each package/module in the requirements.txt file, keep track
+    # of any missing packages/modules and also keep track of mismatched
+    # versions.
+    
+
 if __name__ == "__main__":
+    v = '3.6'
+    print('Checking your python version is at least {}...'.format(v))
     main()
