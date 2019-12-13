@@ -1,9 +1,11 @@
 import argparse
 import subprocess
 import sys
+import re
 
 def main():
     check_python_version()
+    check_packages()
     return 0
 
 def check_python_version():
@@ -30,6 +32,23 @@ def check_packages():
     # Retrieve the requirements.txt file from the METplus top-level directory
     # and store this information in a dictionary, where the key is the package/module
     # and the value is the version.
+    requirements_file = "./requirements.txt"
+    required_dict = {}
+    with open(requirements_file, 'r') as file:
+        for line in file:
+            print(line.strip())
+            match = re.match(r'{.*}=={.*}', line)
+            if match:
+                package = match.group(1)
+                version = match.group(2)
+                print( "package {}, version:{}".format(package, version))
+            else:
+                print("no match")
+
+
+
+
+
 
     # Now run 'pip freeze' on this computer and do the same.
 
@@ -37,7 +56,7 @@ def check_packages():
     # For each package/module in the requirements.txt file, keep track
     # of any missing packages/modules and also keep track of mismatched
     # versions.
-    
+
 
 if __name__ == "__main__":
     v = '3.6'
