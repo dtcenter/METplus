@@ -65,6 +65,8 @@ def check_packages():
     # print(f'actual_packages: {actual_packages}')
     missing_packages_list = find_missing_packages(required_packages, actual_packages)
     print_missing_packages(missing_packages_list, required_packages)
+    mismatched_versions_list = find_mismatched_packages(required_packages, actual_packages)
+    print_mismatched_versions(mismatched_versions_list)
 
 def get_required_packages():
     ''''Retrieve the requirements.txt file from the METplus top-level directory
@@ -147,7 +149,7 @@ def print_missing_packages(missing_packages_list, required_packages):
 
     # Create a list of the missing packages and their versions to print to
     # stdout
-    print('MISSING PACKAGES that you will need...\n')
+    print('\n\nMISSING PACKAGES that you will need to install..\n')
     print('Package            Version')
     print('======            =====')
     with open('./missing_packages.txt', 'w+') as outfile:
@@ -155,7 +157,75 @@ def print_missing_packages(missing_packages_list, required_packages):
         outfile.write("Package                    Version\n")
         for missing in missing_packages_list:
             outfile.write(f'{missing}                   {required_packages[missing]}\n')
-            print(f'{missing}                    {required_packages[missing]}')
+            print(f'{missing}          {required_packages[missing]}')
+        print("\n")
+
+def find_mismatched_packages(required_packages, actual_packages):
+    ''' Find which user's packages are mismatched from the
+        required packages.
+
+        Args:
+            required_packages: A dictionary of required packages:versions
+            actual_packages: A dictionary of packages:versions that are
+                                        installed on the user's computer
+
+        Returns:
+            A list of a tuple containing the package name,
+            the incorrect version, and  the required version that is installed
+            on the user's computer.
+
+    '''
+    missing_packages_list = []
+    # Get a list of all the keys in the required_packages and for the
+    # actual_packages and check for the absence of packages based
+    # on the keys.
+    required_keys = []
+    for required in required_packages:
+        required_keys.append(required)
+
+    actual_keys = []
+    for actual in actual_packages:
+        actual_keys.append(actual)
+
+    # Now search for mismatched versions in the user's environment
+    mismatched_list = []
+    for required in required_keys:
+        if required  in actual_keys:
+            # print(f'required packages: {required},'
+            #       f'required version: {required_packages[required]}, '
+            #       f'actual version: {actual_packages[required]}')
+            if required_packages[required] != actual_packages[required]:
+                mismatch_tuple = (required, actual_packages[required], required_packages[required])
+                mismatched_list.append(mismatch_tuple)
+    # print(f'mismatched: {mismatched_list}')
+    return mismatched_list
+
+def print_mismatched_versions(mismatched_versions_list):
+        '''
+        Prints to stdout and to a file, the packages with mismatched version
+        the required version.
+
+        :param mismatched_version_list:  The list of tuples containing the
+        package, the user's version, and the required version
+        :return:
+        None, prints to stdout and wriite to a file a list of the packages, the
+        currently installed version, and the required version.
+        '''
+        print("Mismatched package versions\n")
+        print("======================\n")
+        print("Required Package   Installed Version    Required Version\n")
+        with open('./mismatched.txt', 'w+') as outfile:
+            outfile.write("Mismatched package versions found...\n")
+            outfile.write("Required Package         Installed Version          Required Version\n")
+
+            for mismatch in mismatched_versions_list:
+                outstr = mismatch[0] + "                  " + mismatch[1]\
+                         + "                    " + mismatch[2]
+                outfile.write(outstr)
+                print(f' {mismatch[0]}          {mismatch[1]}          {mismatch[2]}')
+
+
+
 
 if __name__ == "__main__":
 
