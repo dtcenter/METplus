@@ -78,7 +78,7 @@ that reformat gridded data
 
                 self.logger.info("Processing forecast lead {}".format(time_info['lead_string']))
 
-                var_list = util.parse_var_list(self.config, time_info)
+                var_list = util.parse_var_list(self.config, time_info, data_type=to_run)
                 if not var_list:
                     self.run_at_time_once(time_info, None, to_run)
                     continue
