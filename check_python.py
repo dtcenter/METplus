@@ -60,28 +60,27 @@ def check_packages():
         are executing this script is what is needed.
     """
     required_packages = get_required_packages()
-    print(f'required: {required_packages}')
+    # print(f'required: {required_packages}')
     actual_packages = get_actual_packages()
-    print(f'actual_packages: {actual_packages}')
+    # print(f'actual_packages: {actual_packages}')
     missing_packages_list = find_missing_packages(required_packages, actual_packages)
+    print_missing_packages(missing_packages_list, required_packages)
 
 def get_required_packages():
     ''''Retrieve the requirements.txt file from the METplus top-level directory
        and store this information in a dictionary, where the key is the package/module
-       and the value is the version.
+       and the value is the version. Create a dictionary
+        containing the names of the packages (key) and their
+        corresponding version numbers (value).
    '''
     requirements_file = "./requirements.txt"
-    required_packages = []
-
+    required_dict = {}
     # Get the packages that are required
     with open(requirements_file, 'r') as file:
         for line in file:
             split_str = line.split('==')
-            required_dict = {}
-            required_dict['package'] = split_str[0]
-            required_dict['version'] = split_str[1].rstrip()
-            required_packages.append(required_dict)
-    return(required_packages)
+            required_dict[split_str[0]] = split_str[1].rstrip()
+    return(required_dict)
 
 def get_actual_packages():
     """Now run 'pip freeze' on this computer to get the
@@ -94,14 +93,12 @@ def get_actual_packages():
     # of any missing packages/modules and also keep track of mismatched
     # versions.
     actual_packages = []
+    actual_dict = {}
     with open("actual.txt", "r") as file:
         for line in file:
             split_str = line.split('==')
-            actual_dict = {}
-            actual_dict['package'] = split_str[0]
-            actual_dict['version'] = split_str[1].rstrip()
-            actual_packages.append(actual_dict)
-        return actual_packages
+            actual_dict[split_str[0]] = split_str[1].rstrip()
+        return actual_dict
 
 def find_missing_packages(required_packages, actual_packages):
     '''Find any packages that are missing from the user's host and print
@@ -109,11 +106,12 @@ def find_missing_packages(required_packages, actual_packages):
        version.
 
        Args:
-           required_packages:  The list of required packages
-           actual_packages:  The list of packages on the user's host
+           required_packages:  A dictionary of required packages
+           actual_packages:  A dictionary of packages on the user's host
 
        Returns:
-            A list containing the missing packages (and versions)
+            A list containing the  missing packages with their corresponding
+            versions
 
     '''
 
@@ -123,16 +121,41 @@ def find_missing_packages(required_packages, actual_packages):
     # on the keys.
     required_keys = []
     for required in required_packages:
-        required_keys.append(required['package'])
+        required_keys.append(required)
+
     actual_keys = []
     for actual in actual_packages:
-        actual_keys.append(actual['package'])
+        actual_keys.append(actual)
 
     # Now search for missing packages in the user's environment
     for required in required_keys:
         if required not in actual_keys:
             missing_packages_list.append(required)
-    print(f'missing packages: {missing_packages_list}')
+    return missing_packages_list
+
+def print_missing_packages(missing_packages_list, required_packages):
+    '''
+
+    :param missing_packages_list:  A list of the missing packages
+    :param required_packages:  A dictionary of package:version that are
+                                                required to run METplus
+    :return:
+        Nothing, prints to stdout and creates a text output file containing
+        a list of the missing Python packages/modules and their corresponding
+        version numbers.
+    '''
+
+    # Create a list of the missing packages and their versions to print to
+    # stdout
+    print('MISSING PACKAGES that you will need...\n')
+    print('Package            Version')
+    print('======            =====')
+    with open('./missing_packages.txt', 'w+') as outfile:
+        outfile.write("Missing packages that you need to install:\n")
+        outfile.write("Package                    Version\n")
+        for missing in missing_packages_list:
+            outfile.write(f'{missing}                   {required_packages[missing]}\n')
+            print(f'{missing}                    {required_packages[missing]}')
 
 if __name__ == "__main__":
 
