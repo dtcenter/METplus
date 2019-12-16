@@ -1,14 +1,37 @@
 #!/usr/bin/env python
 
+'''
+Utility to determine whether the user's computer is running the currently
+supported version of Python for running METplus.  In addition, if the
+user does not have permission to perform conda installs or
+pip installs on their system, we provide a list of missing packages
+and a list of packages which have different versions than what is
+recommended (to stdout and missing_packages.txt and mismatch.txt) file.
+
+How to run:
+
+1) cd to the directory where you installed the METplus source code
+2) run the following at the command line:  python check_python.py
+3) provide your sys admin with the missing_packages.txt and mismatched.txt file
+   if you don't have permissions to install the recommended packages via the
+   requirements.txt (via pip) or environments.yml (via conda)
+'''
+
 import subprocess
 import sys
 import re
+
 
 # Global
 SUPPORTED_VERSION = '3.6'
 #SUPPORTED_VERSION = '3.7'
 
 def main():
+    '''
+        Invokes the necessary function to begin the
+        checking...
+        @return:
+    '''
     if is_python_version_compatible():
         check_packages()
     else:
@@ -24,7 +47,7 @@ def get_supported_major_minor():
        :return:  A tuple of major, minor values
     '''
 
-    match = re.match(r'([0-9]{1,3}).([0-9]{1,3})' , SUPPORTED_VERSION)
+    match = re.match(r'([0-9]{1,3}).([0-9]{1,3})', SUPPORTED_VERSION)
     if match:
         supported_major = match.group(1)
         supported_minor = match.group(2)
@@ -51,8 +74,8 @@ def is_python_version_compatible():
         if minor != supported_minor:
             # Print warning that minimum supported
             # version of Python is 3.6
-          print(f'Only Python {SUPPORTED_VERSION} is supported, you have version {your_version}')
-          return False
+            print(f'Only Python {SUPPORTED_VERSION} is supported, you have version {your_version}')
+            return False
         else:
             # OK
             print(f'You are using the correct version of Python: {your_version}')
@@ -83,19 +106,18 @@ def get_required_packages():
         for line in file:
             split_str = line.split('==')
             required_dict[split_str[0]] = split_str[1].rstrip()
-    return(required_dict)
+    return required_dict
 
 def get_actual_packages():
     """Now run 'pip freeze' on this computer to get the
              actual, currently installed packages/modules.
     """
     with open("actual.txt", "w+") as output:
-        subprocess.call(['pip', 'freeze'],  stdout=output)
+        subprocess.call(['pip', 'freeze'], stdout=output)
 
     # For each package/module in the requirements.txt file, keep track
     # of any missing packages/modules and also keep track of mismatched
     # versions.
-    actual_packages = []
     actual_dict = {}
     with open("actual.txt", "r") as file:
         for line in file:
@@ -181,7 +203,6 @@ def find_mismatched_packages(required_packages, actual_packages):
             on the user's computer.
 
     '''
-    missing_packages_list = []
     # Get a list of all the keys in the required_packages and for the
     # actual_packages and check for the absence of packages based
     # on the keys.
@@ -203,7 +224,7 @@ def find_mismatched_packages(required_packages, actual_packages):
     return mismatched_list
 
 def print_mismatched_versions(mismatched_versions_list):
-        '''
+    '''
         Prints to stdout and to a file, the packages with mismatched version
         the required version.
 
@@ -213,23 +234,21 @@ def print_mismatched_versions(mismatched_versions_list):
         None, prints to stdout and wriite to a file a list of the packages, the
         currently installed version, and the required version.
         '''
-        print("============================\n")
-        print("Mismatched package versions\n")
-        print("============================\n")
-        print(f"Required Package             Installed Version    Required Version\n")
-        print(f"-------------------------------------------------------------------\n")
-        with open('./mismatched.txt', 'w+') as outfile:
-            outfile.write("=====================================\n")
-            outfile.write("Mismatched package versions found...\n")
-            outfile.write("=====================================\n")
-            outfile.write(f"Required Package             Installed Version    Required Version\n")
-            outfile.write(f"---------------------------------------------------------------------\n")
+    print("============================\n")
+    print("Mismatched package versions\n")
+    print("============================\n")
+    print(f"Required Package             Installed Version    Required Version\n")
+    print(f"-------------------------------------------------------------------\n")
+    with open('./mismatched.txt', 'w+') as outfile:
+        outfile.write("=====================================\n")
+        outfile.write("Mismatched package versions found...\n")
+        outfile.write("=====================================\n")
+        outfile.write(f"Required Package             Installed Version    Required Version\n")
+        outfile.write(f"---------------------------------------------------------------------\n")
 
-            for mismatch in mismatched_versions_list:
-                outfile.write(f'{mismatch[0]:20}           {mismatch[1]:10}         {mismatch[2]:10}\n')
-                print(f' {mismatch[0]:20}        {mismatch[1]:10}          {mismatch[2]:10}')
-
-
+        for mismatch in mismatched_versions_list:
+            outfile.write(f'{mismatch[0]:20}           {mismatch[1]:10}         {mismatch[2]:10}\n')
+            print(f' {mismatch[0]:20}        {mismatch[1]:10}          {mismatch[2]:10}')
 
 
 if __name__ == "__main__":
