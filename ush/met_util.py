@@ -42,17 +42,17 @@ baseinputconfs = ['metplus_config/metplus_system.conf',
 
 def check_for_deprecated_config(conf):
     deprecated_dict = {
-        'LOOP_BY_INIT' : {'sec' : 'config', 'alt' : 'LOOP_BY'},
+        'LOOP_BY_INIT' : {'sec' : 'config', 'alt' : 'LOOP_BY', 'copy': False},
         'LOOP_METHOD' : {'sec' : 'config', 'alt' : 'LOOP_ORDER'},
         'PREPBUFR_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : None},
         'PREPBUFR_FILE_REGEX' : {'sec' : 'regex_pattern', 'alt' : None},
-        'OBS_INPUT_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_DIR'},
-        'FCST_INPUT_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'FCST_POINT_STAT_INPUT_DIR'},
+        'OBS_INPUT_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_DIR', 'copy': False},
+        'FCST_INPUT_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'FCST_POINT_STAT_INPUT_DIR', 'copy': False},
         'FCST_INPUT_FILE_REGEX' :
-        {'sec' : 'regex_pattern', 'alt' : 'FCST_POINT_STAT_INPUT_TEMPLATE'},
-        'OBS_INPUT_FILE_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_TEMPLATE'},
+        {'sec' : 'regex_pattern', 'alt' : 'FCST_POINT_STAT_INPUT_TEMPLATE', 'copy': False},
+        'OBS_INPUT_FILE_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_TEMPLATE', 'copy': False},
         'PREPBUFR_DATA_DIR' : {'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR'},
-        'PREPBUFR_MODEL_DIR_NAME' : {'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR'},
+        'PREPBUFR_MODEL_DIR_NAME' : {'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR', 'copy': False},
         'OBS_INPUT_FILE_TMPL' :
         {'sec' : 'filename_templates', 'alt' : 'OBS_POINT_STAT_INPUT_TEMPLATE'},
         'FCST_INPUT_FILE_TMPL' :
@@ -61,51 +61,51 @@ def check_for_deprecated_config(conf):
         'FCST_INPUT_DIR' : {'sec' : 'dir', 'alt' : 'FCST_POINT_STAT_INPUT_DIR'},
         'OBS_INPUT_DIR' : {'sec' : 'dir', 'alt' : 'OBS_POINT_STAT_INPUT_DIR'},
         'REGRID_TO_GRID' : {'sec' : 'config', 'alt' : 'POINT_STAT_REGRID_TO_GRID'},
-        'FCST_HR_START' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'},
-        'FCST_HR_END' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'},
-        'FCST_HR_INTERVAL' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'},
-        'START_DATE' : {'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
-        'END_DATE' : {'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
-        'INTERVAL_TIME' : {'sec' : 'config', 'alt' : 'INIT_INCREMENT or VALID_INCREMENT'},
-        'BEG_TIME' : {'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
-        'END_TIME' : {'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
-        'START_HOUR' : {'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG'},
-        'END_HOUR' : {'sec' : 'config', 'alt' : 'INIT_END or VALID_END'},
+        'FCST_HR_START' : {'sec' : 'config', 'alt' : 'LEAD_SEQ', 'copy': False},
+        'FCST_HR_END' : {'sec' : 'config', 'alt' : 'LEAD_SEQ', 'copy': False},
+        'FCST_HR_INTERVAL' : {'sec' : 'config', 'alt' : 'LEAD_SEQ', 'copy': False},
+        'START_DATE' : {'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG', 'copy': False},
+        'END_DATE' : {'sec' : 'config', 'alt' : 'INIT_END or VALID_END', 'copy': False},
+        'INTERVAL_TIME' : {'sec' : 'config', 'alt' : 'INIT_INCREMENT or VALID_INCREMENT', 'copy': False},
+        'BEG_TIME' : {'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG', 'copy': False},
+        'END_TIME' : {'sec' : 'config', 'alt' : 'INIT_END or VALID_END', 'copy': False},
+        'START_HOUR' : {'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG', 'copy': False},
+        'END_HOUR' : {'sec' : 'config', 'alt' : 'INIT_END or VALID_END', 'copy': False},
         'OBS_BUFR_VAR_LIST' : {'sec' : 'config', 'alt' : 'PB2NC_OBS_BUFR_VAR_LIST'},
         'TIME_SUMMARY_FLAG' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_FLAG'},
         'TIME_SUMMARY_BEG' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_BEG'},
         'TIME_SUMMARY_END' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_END'},
         'TIME_SUMMARY_VAR_NAMES' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_VAR_NAMES'},
         'TIME_SUMMARY_TYPE' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_TYPE'},
-        'OVERWRITE_NC_OUTPUT' : {'sec' : 'config', 'alt' : 'PB2NC_SKIP_IF_OUTPUT_EXISTS'},
+        'OVERWRITE_NC_OUTPUT' : {'sec' : 'config', 'alt' : 'PB2NC_SKIP_IF_OUTPUT_EXISTS', 'copy': False},
         'VERTICAL_LOCATION' : {'sec' : 'config', 'alt' : 'PB2NC_VERTICAL_LOCATION'},
         'VERIFICATION_GRID' : {'sec' : 'config', 'alt' : 'REGRID_DATA_PLANE_VERIF_GRID'},
         'WINDOW_RANGE_BEG' : {'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN'},
         'WINDOW_RANGE_END' : {'sec' : 'config', 'alt' : 'OBS_WINDOW_END'},
         'OBS_EXACT_VALID_TIME' :
-        {'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN and OBS_WINDOW_END'},
+        {'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN and OBS_WINDOW_END', 'copy': False},
         'FCST_EXACT_VALID_TIME' :
-        {'sec' : 'config', 'alt' : 'FCST_WINDOW_BEGIN and FCST_WINDOW_END'},
+        {'sec' : 'config', 'alt' : 'FCST_WINDOW_BEGIN and FCST_WINDOW_END', 'copy': False},
         'PCP_COMBINE_METHOD' :
-        {'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_METHOD and/or OBS_PCP_COMBINE_METHOD'},
-        'FHR_BEG' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'},
-        'FHR_END' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'},
-        'FHR_INC' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'},
-        'FHR_GROUP_BEG' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]'},
-        'FHR_GROUP_END' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]'},
-        'FHR_GROUP_LABELS' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]_LABEL'},
+        {'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_METHOD and/or OBS_PCP_COMBINE_METHOD', 'copy': False},
+        'FHR_BEG' : {'sec' : 'config', 'alt' : 'LEAD_SEQ', 'copy': False},
+        'FHR_END' : {'sec' : 'config', 'alt' : 'LEAD_SEQ', 'copy': False},
+        'FHR_INC' : {'sec' : 'config', 'alt' : 'LEAD_SEQ', 'copy': False},
+        'FHR_GROUP_BEG' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]', 'copy': False},
+        'FHR_GROUP_END' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]', 'copy': False},
+        'FHR_GROUP_LABELS' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]_LABEL', 'copy': False},
         'CYCLONE_OUT_DIR' : {'sec' : 'dir', 'alt' : 'CYCLONE_OUTPUT_DIR'},
         'ENSEMBLE_STAT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'ENSEMBLE_STAT_OUTPUT_DIR'},
         'EXTRACT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'EXTRACT_TILES_OUTPUT_DIR'},
         'GRID_STAT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'GRID_STAT_OUTPUT_DIR'},
         'MODE_OUT_DIR' : {'sec' : 'dir', 'alt' : 'MODE_OUTPUT_DIR'},
         'MTD_OUT_DIR' : {'sec' : 'dir', 'alt' : 'MTD_OUTPUT_DIR'},
-        'SERIES_INIT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'SERIES_BY_INIT_OUTPUT_DIR'},
-        'SERIES_LEAD_OUT_DIR' : {'sec' : 'dir', 'alt' : 'SERIES_BY_LEAD_OUTPUT_DIR'},
+        'SERIES_INIT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'SERIES_ANALYSIS_OUTPUT_DIR'},
+        'SERIES_LEAD_OUT_DIR' : {'sec' : 'dir', 'alt' : 'SERIES_ANALYSIS_OUTPUT_DIR'},
         'SERIES_INIT_FILTERED_OUT_DIR' :
-        {'sec' : 'dir', 'alt' : 'SERIES_BY_INIT_FILTERED_OUTPUT_DIR'},
+        {'sec' : 'dir', 'alt' : 'SERIES_ANALYSIS_FILTERED_OUTPUT_DIR'},
         'SERIES_LEAD_FILTERED_OUT_DIR' :
-        {'sec' : 'dir', 'alt' : 'SERIES_BY_LEAD_FILTERED_OUTPUT_DIR'},
+        {'sec' : 'dir', 'alt' : 'SERIES_ANALYSIS_FILTERED_OUTPUT_DIR'},
         'STAT_ANALYSIS_OUT_DIR' :
         {'sec' : 'dir', 'alt' : 'STAT_ANALYSIS_OUTPUT_DIR'},
         'TCMPR_PLOT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'TCMPR_PLOT_OUTPUT_DIR'},
@@ -121,8 +121,8 @@ def check_for_deprecated_config(conf):
         'OBS_IS_DAILY_FILE' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_IS_DAILY_FILE'},
         'FCST_TIMES_PER_FILE' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_TIMES_PER_FILE'},
         'OBS_TIMES_PER_FILE' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_TIMES_PER_FILE'},
-        'FCST_LEVEL' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS'},
-        'OBS_LEVEL' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS'},
+        'FCST_LEVEL' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS', 'copy': False},
+        'OBS_LEVEL' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS', 'copy': False},
         'MODE_FCST_CONV_RADIUS' : {'sec' : 'config', 'alt' : 'FCST_MODE_CONV_RADIUS'},
         'MODE_FCST_CONV_THRESH' : {'sec' : 'config', 'alt' : 'FCST_MODE_CONV_THRESH'},
         'MODE_FCST_MERGE_FLAG' : {'sec' : 'config', 'alt' : 'FCST_MODE_MERGE_FLAG'},
@@ -147,8 +147,8 @@ def check_for_deprecated_config(conf):
         'MISSING_VAL_TO_REPLACE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_MISSING_VAL_TO_REPLACE'},
         'MISSING_VAL' : {'sec' : 'config', 'alt' : 'TC_PAIRS_MISSING_VAL'},
         'TRACK_DATA_SUBDIR_MOD' : {'sec' : 'dir', 'alt' : None},
-        'ADECK_FILE_PREFIX' : {'sec' : 'config', 'alt' : 'TC_PAIRS_ADECK_TEMPLATE'},
-        'BDECK_FILE_PREFIX' : {'sec' : 'config', 'alt' : 'TC_PAIRS_BDECK_TEMPLATE'},
+        'ADECK_FILE_PREFIX' : {'sec' : 'config', 'alt' : 'TC_PAIRS_ADECK_TEMPLATE', 'copy': False},
+        'BDECK_FILE_PREFIX' : {'sec' : 'config', 'alt' : 'TC_PAIRS_BDECK_TEMPLATE', 'copy': False},
         'TOP_LEVEL_DIRS' : {'sec' : 'config', 'alt' : 'TC_PAIRS_READ_ALL_FILES'},
         'TC_PAIRS_DIR' : {'sec' : 'dir', 'alt' : 'TC_PAIRS_OUTPUT_DIR'},
         'CYCLONE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_CYCLONE'},
@@ -160,13 +160,13 @@ def check_for_deprecated_config(conf):
         'FORECAST_TMPL' : {'sec' : 'filename_templates', 'alt' : 'TC_PAIRS_ADECK_TEMPLATE'},
         'REFERENCE_TMPL' : {'sec' : 'filename_templates', 'alt' : 'TC_PAIRS_BDECK_TEMPLATE'},
         'TRACK_DATA_MOD_FORCE_OVERWRITE' :
-        {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS'},
-        'TC_PAIRS_FORCE_OVERWRITE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS'},
+        {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS', 'copy': False},
+        'TC_PAIRS_FORCE_OVERWRITE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS', 'copy': False},
         'GRID_STAT_CONFIG' : {'sec' : 'config', 'alt' : 'GRID_STAT_CONFIG_FILE'},
         'MODE_CONFIG' : {'sec' : 'config', 'alt': 'MODE_CONFIG_FILE'},
-        'FCST_PCP_COMBINE_INPUT_LEVEL': {'sec': 'config', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS'},
-        'OBS_PCP_COMBINE_INPUT_LEVEL': {'sec': 'config', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS'},
-        'TIME_METHOD': {'sec': 'config', 'alt': 'LOOP_BY'},
+        'FCST_PCP_COMBINE_INPUT_LEVEL': {'sec': 'config', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS', 'copy': False},
+        'OBS_PCP_COMBINE_INPUT_LEVEL': {'sec': 'config', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS', 'copy': False},
+        'TIME_METHOD': {'sec': 'config', 'alt': 'LOOP_BY', 'copy': False},
         'MODEL_DATA_DIR': {'sec': 'dir', 'alt': 'EXTRACT_TILES_GRID_INPUT_DIR'},
         'STAT_LIST': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_STAT_LIST'},
         'VAR_LIST': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_VAR_LIST'},
@@ -207,6 +207,8 @@ def check_for_deprecated_config(conf):
     # create list of errors and warnings to report for deprecated configs
     e_list = []
     w_list = []
+    all_sed_cmds = []
+    config_files = conf.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
     for old, depr_info in deprecated_dict.items():
         if isinstance(depr_info, dict):
             sec = depr_info['sec']
@@ -226,6 +228,10 @@ def check_for_deprecated_config(conf):
                         e_list.append("[{}] {} should be removed".format(sec, old))
                     else:
                         e_list.append("[{}] {} should be replaced with {}".format(sec, old, alt))
+
+                        if 'copy' not in depr_info.keys() or depr_info['copy']:
+                            for config_file in config_files:
+                                all_sed_cmds.append(f"sed -i 's|^{old}|{alt}|g' {config_file}")
 
     # check all templates and error if any deprecated tags are used
     # value of dict is replacement tag, set to None if no replacement exists
@@ -256,9 +262,9 @@ def check_for_deprecated_config(conf):
                      'PLEASE REMOVE/REPLACE THEM FROM CONFIG FILES')
         for error_msg in e_list:
             logger.error(error_msg)
-        return False
+        return False, all_sed_cmds
 
-    return True
+    return True, []
 
 def handle_tmp_dir(config):
     """! if env var MET_TMP_DIR is set, override config TMP_DIR with value
@@ -1493,10 +1499,31 @@ def validate_thresholds(thresh_list):
 
 def validate_configuration_variables(config):
 
+    all_sed_cmds = []
     # check for deprecated config items and warn user to remove/replace them
-    deprecated_isOK = check_for_deprecated_config(config)
+    deprecated_isOK, sed_cmds = check_for_deprecated_config(config)
+    all_sed_cmds.extend(sed_cmds)
+
     # validate configuration variables
-    field_isOK = validate_field_info_configs(config)
+    field_isOK, sed_cmds = validate_field_info_configs(config)
+    all_sed_cmds.extend(sed_cmds)
+
+    #write_sed_commands(all_sed_cmds)
+    sed_file = os.path.join(config.getdir('OUTPUT_BASE'), 'sed_commands.txt')
+
+    # remove if sed file exists
+    if os.path.exists(sed_file):
+        os.remove(sed_file)
+
+    # if any sed commands were generated, write them to the sed file
+    if all_sed_cmds:
+        with open(sed_file, 'w+') as f:
+            for sed_cmd in all_sed_cmds:
+                f.write(f"{sed_cmd}\n")
+
+        config.logger.error(f"Find/Replace commands have been generated in {sed_file}")
+
+    check_user_environment(config)
 
     return deprecated_isOK and field_isOK
 
@@ -1535,17 +1562,34 @@ def is_var_item_valid(item_list, index, ext, config):
         If FCST or OBS is found, ther other must also be found."""
 
     full_ext = f"_VAR{index}_{ext}"
+    msg = []
+    sed_cmds = []
     if 'BOTH' in item_list and ('FCST' in item_list or 'OBS' in item_list):
-        return False, f"Cannot set FCST{full_ext} or OBS{full_ext} if " +\
-                      f"BOTH{full_ext} is set."
-    elif ext not in ['THRESH', 'OPTIONS'] and 'FCST' in item_list and 'OBS' not in item_list:
-        return False, f"If FCST{full_ext} is set, you must either set OBS{full_ext} or " +\
-                      f"change FCST{full_ext} to BOTH{full_ext}"
-    elif ext not in ['THRESH', 'OPTIONS'] and 'OBS' in item_list and 'FCST' not in item_list:
-        return False, f"If OBS{full_ext} is set, you must either set FCST{full_ext} or ." +\
-                      f"change OBS{full_ext} to BOTH{full_ext}"
 
-    return True, ''
+        msg.append(f"Cannot set FCST{full_ext} or OBS{full_ext} if BOTH{full_ext} is set.")
+
+    elif ext not in ['THRESH', 'OPTIONS'] and 'FCST' in item_list and 'OBS' not in item_list:
+
+        msg.append(f"If FCST{full_ext} is set, you must either set OBS{full_ext} or "
+                   f"change FCST{full_ext} to BOTH{full_ext}")
+
+        config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+        for config_file in config_files:
+            sed_cmds.append(f"sed -i 's|FCST{full_ext}|BOTH{full_ext}|g' {config_file}")
+
+    elif ext not in ['THRESH', 'OPTIONS'] and 'OBS' in item_list and 'FCST' not in item_list:
+
+        msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or ."
+                      f"change OBS{full_ext} to BOTH{full_ext}")
+
+        config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+        for config_file in config_files:
+            sed_cmds.append(f"sed -i 's|OBS{full_ext}|BOTH{full_ext}|g' {config_file}")
+
+    else:
+        return True, msg, sed_cmds
+
+    return False, msg, sed_cmds
 
 def validate_field_info_configs(config):
     """!Verify that config variables with _VAR<n>_ in them are valid. Returns True if all are valid.
@@ -1556,6 +1600,9 @@ def validate_field_info_configs(config):
 
     if not comparisons_in_process_list(config):
         return True
+
+    # keep track of all sed commands to replace config variable names
+    all_sed_cmds = []
 
     for ext in variable_extensions:
         # find all _VAR<n>_<ext> keys in the conf files
@@ -1569,9 +1616,11 @@ def validate_field_info_configs(config):
         # get other data type
         for index, data_type_list in data_types_and_indices.items():
 
-            is_valid, error_msg = is_var_item_valid(data_type_list, index, ext, config)
+            is_valid, err_msgs, sed_cmds = is_var_item_valid(data_type_list, index, ext, config)
             if not is_valid:
-                config.logger.error(error_msg)
+                for err_msg in err_msgs:
+                    config.logger.error(err_msg)
+                all_sed_cmds.extend(sed_cmds)
                 all_good = False
 
             # make sure FCST and OBS have the same number of levels if coming from separate variables
@@ -1592,7 +1641,7 @@ def validate_field_info_configs(config):
                                         "the same number of elements")
                     all_good = False
 
-    return all_good
+    return all_good, all_sed_cmds
 
 def get_var_items(config, data_type, index, time_info):
     """!Get configuration variables for given data type and index
@@ -1677,7 +1726,7 @@ def parse_var_list(config, time_info=None, data_type=None):
     # validate configs again in case wrapper is not running from master_metplus
     # this does not need to be done if parsing a specific data type, i.e. ENS or FCST
     if data_type is None:
-        if not validate_field_info_configs(config):
+        if not validate_field_info_configs(config)[0]:
             return []
     elif data_type == 'BOTH':
         config.logger.error("Cannot request BOTH explicitly in parse_var_list")
@@ -2070,6 +2119,11 @@ def run_stand_alone(module_name, app_name):
         version_number = get_version_number().strip()
         logger.info(f"Running {app_name} stand-alone via METplus v{version_number} called with command: {' '.join(sys.argv)}")
 
+        # validate configuration variables
+        if not validate_configuration_variables(config):
+            logger.error("Correct configuration variables and rerun. Exiting.")
+            exit(1)
+
         module = __import__(module_name)
         wrapper_class = getattr(module, app_name + "Wrapper")
         wrapper = wrapper_class(config, logger)
@@ -2095,7 +2149,6 @@ def run_stand_alone(module_name, app_name):
         produtil.log.jlogger.critical(
             app_name + '  failed: %s' % (str(e),), exc_info=True)
         sys.exit(2)
-
 
 def add_common_items_to_dictionary(config, dictionary):
     dictionary['WGRIB2_EXE'] = config.getexe('WGRIB2')

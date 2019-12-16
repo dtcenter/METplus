@@ -142,6 +142,9 @@ def setup(baseinputconfs, filename=None, logger=None):
     conf = config_launcher.launch(infiles, moreopt, cycle=cycle)
     #conf.sanity_check()
 
+    # save list of user configuration files in a variable
+    conf.set('config', 'METPLUS_CONFIG_FILES', ','.join(opts_conf_list))
+
     logger.info('Completed METplus configuration setup.')
 
     return conf
