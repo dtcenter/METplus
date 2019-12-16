@@ -1683,7 +1683,7 @@ def get_var_items(config, data_type, index, time_info):
     # get extra options if available
     extra = ""
     if data_type in ['FCST', 'OBS'] and config.has_option('config', f"BOTH_VAR{index}_OPTIONS"):
-        search_extra= f"BOTH_VAR{index}_OPTIONS"
+        search_extra = f"BOTH_VAR{index}_OPTIONS"
     elif config.has_option('config', f"{data_type}_VAR{index}_OPTIONS"):
         search_extra = f"{data_type}_VAR{index}_OPTIONS"
     else:
@@ -1693,6 +1693,11 @@ def get_var_items(config, data_type, index, time_info):
         extra = StringSub(config.logger,
                           config.getraw('config', search_extra),
                           **time_info).do_string_sub()
+
+        # split up each item by semicolon, then add a semicolon to the end of each item
+        # to avoid errors where the user forgot to add a semicolon at the end
+        extra_list = extra.split(';')
+        extra = f"{'; '.join(extra_list)};"
 
     return name, levels, thresh, extra
 
