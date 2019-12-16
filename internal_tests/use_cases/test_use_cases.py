@@ -21,7 +21,21 @@ run_b = True
 
 # list of use cases to run
 param_files = [
-                use_case_dir+"/qpf/examples/ruc-vs-s2grib.conf" ,
+                use_case_dir+"/met_tool_wrapper/ASCII2NC.conf",
+                use_case_dir+"/met_tool_wrapper/GridStat.conf",
+                use_case_dir+"/met_tool_wrapper/MODE.conf",
+                use_case_dir+"/met_tool_wrapper/MTD.conf",
+                use_case_dir+"/met_tool_wrapper/PB2NC.conf",
+                use_case_dir+"/met_tool_wrapper/PointStat.conf",
+                use_case_dir+"/met_tool_wrapper/TCStat.conf",
+                use_case_dir+"/met_tool_wrapper/Example.conf",
+                use_case_dir+"/met_tool_wrapper/RegridDataPlane.conf",
+                use_case_dir+"/met_tool_wrapper/PCPCombine_A.conf",
+                use_case_dir+"/met_tool_wrapper/PCPCombine_B.conf",
+                use_case_dir+"/met_tool_wrapper/PCPCombine_C.conf",
+                use_case_dir+"/met_tool_wrapper/PCPCombine_D.conf",
+                use_case_dir+"/met_tool_wrapper/PCPCombine_E.conf",
+                use_case_dir + "/qpf/examples/ruc-vs-s2grib.conf",
                 use_case_dir+"/qpf/examples/phpt-vs-s4grib.conf" ,
                 use_case_dir+"/qpf/examples/phpt-vs-mrms-qpe.conf" ,
                 use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf" ,
