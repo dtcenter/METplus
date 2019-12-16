@@ -135,7 +135,8 @@ class SeriesByInitWrapper(CommandBuilder):
             # First, make sure that the series_lead_filtered_out
             # directory isn't empty.  If so, then no files fall within the
             # filter criteria.
-            if os.listdir(self.series_filtered_out_dir):
+            if os.path.exists(self.series_filtered_out_dir) and \
+                    os.listdir(self.series_filtered_out_dir):
                 # The series filter directory has data, use this directory as
                 # input for series analysis.
                 tile_dir = self.series_filtered_out_dir
