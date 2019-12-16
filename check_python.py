@@ -42,6 +42,8 @@ def is_python_version_compatible():
     minor = str(sys.version_info.minor)
     your_version = major + '.' + minor
     supported_major, supported_minor = get_supported_major_minor()
+    print('Checking your python version is  {}...'.format(SUPPORTED_VERSION))
+
     if major != supported_major:
         print('Only Python {SUPPORTED_VERSION} is supported, you have version ', your_version)
         return False
@@ -231,7 +233,4 @@ def print_mismatched_versions(mismatched_versions_list):
 
 
 if __name__ == "__main__":
-
-    print('Checking your python version is  {}...'.format(SUPPORTED_VERSION))
-    maj, min = get_supported_major_minor()
     main()
