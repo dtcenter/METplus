@@ -956,24 +956,6 @@ def get_files(filedir, filename_regex, logger):
                 continue
     return file_paths
 
-
-def get_name_level(var_combo, logger):
-    """!   Retrieve the variable name and level from a list of
-          variable/level combinations.
-          Args:
-             @param var_combo:  A combination of the variable and the level
-                                 separated by '/'
-          Returns:
-             name,level: A tuple of name and level derived from the
-                         name/level combination.
-    """
-    match = re.match(r'(.*)/(.*)', var_combo)
-    name = match.group(1)
-    level = match.group(2)
-
-    return name, level
-
-
 def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
     """! Checks for the presence of forecast and analysis
         tiles that were created by extract_tiles
