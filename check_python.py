@@ -1,11 +1,12 @@
-import argparse
+#!/usr/bin/env python
+
 import subprocess
 import sys
 import re
 
 # Global
-# SUPPORTED_VERSION = '3.6'
-SUPPORTED_VERSION = '3.7'
+SUPPORTED_VERSION = '3.6'
+#SUPPORTED_VERSION = '3.7'
 
 def main():
     if is_python_version_compatible():
@@ -60,9 +61,7 @@ def check_packages():
         are executing this script is what is needed.
     """
     required_packages = get_required_packages()
-    # print(f'required: {required_packages}')
     actual_packages = get_actual_packages()
-    # print(f'actual_packages: {actual_packages}')
     missing_packages_list = find_missing_packages(required_packages, actual_packages)
     print_missing_packages(missing_packages_list, required_packages)
     mismatched_versions_list = find_mismatched_packages(required_packages, actual_packages)
@@ -149,15 +148,20 @@ def print_missing_packages(missing_packages_list, required_packages):
 
     # Create a list of the missing packages and their versions to print to
     # stdout
-    print('\n\nMISSING PACKAGES that you will need to install..\n')
-    print('Package            Version')
-    print('======            =====')
+    print('\n=================================================\n')
+    print('MISSING PACKAGES that need to be installed...\n')
+    print('=================================================\n')
+    print('Package                      Version\n')
+    print('-------------------------------------\n')
     with open('./missing_packages.txt', 'w+') as outfile:
+        outfile.write("==========================================\n")
         outfile.write("Missing packages that you need to install:\n")
-        outfile.write("Package                    Version\n")
+        outfile.write("==========================================\n")
+        outfile.write("Package               Version\n")
+        outfile.write("------------------------------\n")
         for missing in missing_packages_list:
-            outfile.write(f'{missing}                   {required_packages[missing]}\n')
-            print(f'{missing}          {required_packages[missing]}')
+            outfile.write(f'{missing:20}  {required_packages[missing]:10}\n')
+            print(f'{missing:20}          {required_packages[missing]:10}')
         print("\n")
 
 def find_mismatched_packages(required_packages, actual_packages):
@@ -190,14 +194,10 @@ def find_mismatched_packages(required_packages, actual_packages):
     # Now search for mismatched versions in the user's environment
     mismatched_list = []
     for required in required_keys:
-        if required  in actual_keys:
-            # print(f'required packages: {required},'
-            #       f'required version: {required_packages[required]}, '
-            #       f'actual version: {actual_packages[required]}')
+        if required in actual_keys:
             if required_packages[required] != actual_packages[required]:
                 mismatch_tuple = (required, actual_packages[required], required_packages[required])
                 mismatched_list.append(mismatch_tuple)
-    # print(f'mismatched: {mismatched_list}')
     return mismatched_list
 
 def print_mismatched_versions(mismatched_versions_list):
@@ -211,18 +211,21 @@ def print_mismatched_versions(mismatched_versions_list):
         None, prints to stdout and wriite to a file a list of the packages, the
         currently installed version, and the required version.
         '''
+        print("============================\n")
         print("Mismatched package versions\n")
-        print("======================\n")
-        print("Required Package   Installed Version    Required Version\n")
+        print("============================\n")
+        print(f"Required Package             Installed Version    Required Version\n")
+        print(f"-------------------------------------------------------------------\n")
         with open('./mismatched.txt', 'w+') as outfile:
+            outfile.write("=====================================\n")
             outfile.write("Mismatched package versions found...\n")
-            outfile.write("Required Package         Installed Version          Required Version\n")
+            outfile.write("=====================================\n")
+            outfile.write(f"Required Package             Installed Version    Required Version\n")
+            outfile.write(f"---------------------------------------------------------------------\n")
 
             for mismatch in mismatched_versions_list:
-                outstr = mismatch[0] + "                  " + mismatch[1]\
-                         + "                    " + mismatch[2]
-                outfile.write(outstr)
-                print(f' {mismatch[0]}          {mismatch[1]}          {mismatch[2]}')
+                outfile.write(f'{mismatch[0]:20}           {mismatch[1]:10}         {mismatch[2]:10}\n')
+                print(f' {mismatch[0]:20}        {mismatch[1]:10}          {mismatch[2]:10}')
 
 
 
@@ -231,5 +234,4 @@ if __name__ == "__main__":
 
     print('Checking your python version is  {}...'.format(SUPPORTED_VERSION))
     maj, min = get_supported_major_minor()
-    print(f'major version {maj}, minor version {min}')
     main()
