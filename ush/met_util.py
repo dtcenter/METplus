@@ -232,6 +232,7 @@ def check_for_deprecated_config(conf):
                         if 'copy' not in depr_info.keys() or depr_info['copy']:
                             for config_file in config_files:
                                 all_sed_cmds.append(f"sed -i 's|^{old}|{alt}|g' {config_file}")
+                                all_sed_cmds.append(f"sed -i 's|^{{{old}}}|{{{alt}}}|g' {config_file}")
 
     # check all templates and error if any deprecated tags are used
     # value of dict is replacement tag, set to None if no replacement exists
@@ -1568,23 +1569,25 @@ def is_var_item_valid(item_list, index, ext, config):
 
         msg.append(f"Cannot set FCST{full_ext} or OBS{full_ext} if BOTH{full_ext} is set.")
 
-    elif ext not in ['THRESH', 'OPTIONS'] and 'FCST' in item_list and 'OBS' not in item_list:
+    elif ext not in ['OPTIONS'] and 'FCST' in item_list and 'OBS' not in item_list:
 
         msg.append(f"If FCST{full_ext} is set, you must either set OBS{full_ext} or "
                    f"change FCST{full_ext} to BOTH{full_ext}")
 
         config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
         for config_file in config_files:
-            sed_cmds.append(f"sed -i 's|FCST{full_ext}|BOTH{full_ext}|g' {config_file}")
+            sed_cmds.append(f"sed -i 's|^FCST{full_ext}|BOTH{full_ext}|g' {config_file}")
+            sed_cmds.append(f"sed -i 's|{{FCST{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
 
-    elif ext not in ['THRESH', 'OPTIONS'] and 'OBS' in item_list and 'FCST' not in item_list:
+    elif ext not in ['OPTIONS'] and 'OBS' in item_list and 'FCST' not in item_list:
 
         msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or ."
                       f"change OBS{full_ext} to BOTH{full_ext}")
 
         config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
         for config_file in config_files:
-            sed_cmds.append(f"sed -i 's|OBS{full_ext}|BOTH{full_ext}|g' {config_file}")
+            sed_cmds.append(f"sed -i 's|^OBS{full_ext}|BOTH{full_ext}|g' {config_file}")
+            sed_cmds.append(f"sed -i 's|{{OBS{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
 
     else:
         return True, msg, sed_cmds
