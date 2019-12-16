@@ -124,6 +124,12 @@ class PB2NCWrapper(CommandBuilder):
                              self.config.getseconds('config',
                                                 'OBS_FILE_WINDOW_END', 0))
 
+        c_dict['VALID_WINDOW_BEGIN'] = \
+          self.config.getraw('config', 'PB2NC_VALID_BEGIN', '')
+
+        c_dict['VALID_WINDOW_END'] = \
+          self.config.getraw('config', 'PB2NC_VALID_END', '')
+
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
         return c_dict
