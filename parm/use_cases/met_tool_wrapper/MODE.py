@@ -62,7 +62,7 @@ gridded observation data.
 # These variables are referenced in the MET configuration file.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/MODE.met
+# .. literalinclude:: ../../../parm/met_config/MODEConfig_wrapped
 #
 # Note the following variables are referenced in the MET configuration file.
 # * QUILT - True/False to perform quilting. Corresponds to MODE_QUILT in the METplus configuration file.
