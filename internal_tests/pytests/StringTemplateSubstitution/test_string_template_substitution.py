@@ -647,3 +647,11 @@ def test_format_one_time_item(format, key ,value, ttype):
 def test_format_hms(format, seconds, value):
     # format should be something like %M or %H%M
     assert(format_hms(format, seconds == value))
+
+def test_underscore_in_time_fmt():
+    valid_string = datetime.datetime.strptime("20170604010203", '%Y%m%d%H%M%S')
+    logger = logging.getLogger("testing")
+    templ = "{valid?fmt=%Y%m%d_%H%M%S}"
+    expected_filename = "20170604_010203"
+    filename = StringSub(logger, templ, valid=valid_string).do_string_sub()
+    assert(filename == expected_filename)
