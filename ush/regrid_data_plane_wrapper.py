@@ -182,13 +182,13 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         # get a list of the indices that are set
         input_regex = f'({dtype})_{self.app_name.upper()}_'+r'VAR(\d+)_INPUT_FIELD_NAME'
         rdp_input_indices = \
-          util.find_regex_in_config_section(input_regex, self.config, 'config')[0]
+          util.find_indices_in_config_section(input_regex, self.config, 'config').keys()
 
         # check RDP VAR<n>_FIELD_NAME if INPUT_FIELD is not set
         if not rdp_input_indices:
             input_regex = f'({dtype})_{self.app_name.upper()}_'+r'VAR(\d+)_FIELD_NAME'
             rdp_input_indices = \
-              util.find_regex_in_config_section(input_regex, self.config, 'config')[0]
+              util.find_indices_in_config_section(input_regex, self.config, 'config').keys()
 
         # if no field info or input field configs are set, error and return
         if var_info is None and not rdp_input_indices:
