@@ -471,4 +471,4 @@ def test_get_lead_sequence_init_min_10():
 
 def test_is_var_item_valid(item_list, is_valid):
     conf = metplus_config()
-    assert(util.is_var_item_valid(item_list, conf)[0] == is_valid)
+    assert(util.is_var_item_valid(item_list, '1', 'NAME', conf)[0] == is_valid)
