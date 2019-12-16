@@ -232,7 +232,7 @@ def check_for_deprecated_config(conf):
                         if 'copy' not in depr_info.keys() or depr_info['copy']:
                             for config_file in config_files:
                                 all_sed_cmds.append(f"sed -i 's|^{old}|{alt}|g' {config_file}")
-                                all_sed_cmds.append(f"sed -i 's|^{{{old}}}|{{{alt}}}|g' {config_file}")
+                                all_sed_cmds.append(f"sed -i 's|{{{old}}}|{{{alt}}}|g' {config_file}")
 
     # check all templates and error if any deprecated tags are used
     # value of dict is replacement tag, set to None if no replacement exists
