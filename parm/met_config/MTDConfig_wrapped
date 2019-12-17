@@ -32,7 +32,7 @@ obtype = "${OBTYPE}";
    //
 
 regrid = {
-   to_grid    = OBS;
+   to_grid    = ${REGRID_TO_GRID};
    method     = NEAREST;
    width      = 1;
    vld_thresh = 0.5;
