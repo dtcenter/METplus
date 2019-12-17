@@ -82,6 +82,11 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         self.logger.info("Initialized SeriesByLeadWrapper")
 
+    def create_c_dict(self):
+        c_dict = super().create_c_dict()
+        c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
+        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'SERIES_ANALYSIS_REGRID_TO_GRID', '')
+        return c_dict
 
     def get_lead_sequences(self):
         # output will be a dictionary where the key will be the
@@ -406,6 +411,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                                                 ' ', out_param]
                 series_analysis_cmd = ''.join(series_analysis_cmd_parts)
 
+                self.add_common_envs()
+
                 # Since this wrapper is not using the CommandBuilder
                 # to build the cmd, we need to add the met verbosity
                 # level to the MET cmd created before we run
@@ -415,6 +422,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
                     (series_analysis_cmd, env=None, app_name=self.app_name)
+#                    (series_analysis_cmd, env=self.env, app_name=self.app_name)
 
                 # Clean up any empty files and directories that still
                 # persist.
@@ -551,6 +559,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                                              out_param]
                 series_analysis_cmd = ''.join(series_analysis_cmd_parts)
 
+                self.add_common_envs()
+
                 # Since this wrapper is not using the CommandBuilder
                 # to build the cmd, we need to add the met verbosity
                 # level to the MET cmd created before we run
@@ -558,7 +568,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                 series_analysis_cmd = self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                    (series_analysis_cmd, env=None , app_name=self.app_name)
+                    (series_analysis_cmd, env=None, app_name=self.app_name)
+#                    (series_analysis_cmd, env=self.env , app_name=self.app_name)
 
                 # Make sure there aren't any emtpy
                 # files or directories that still persist.
@@ -615,7 +626,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         # series_cnt_TOTAL pair.
         nseries_nc_path = os.path.join(base_nc_dir, 'nseries.nc')
 
-        nco_nseries_cmd_parts = [self.ncap2_exe, ' -v -s ', '"',
+        nco_nseries_cmd_parts = [self.ncap2_exe, ' -O -v -s ', '"',
                                  'max=max(series_cnt_TOTAL)', '" ',
                                  nc_var_file, ' ', nseries_nc_path]
         nco_nseries_cmd = ''.join(nco_nseries_cmd_parts)
@@ -724,7 +735,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             util.cleanup_temporary_files(min_temporary_files)
 
             # Use NCO ncap2 to get the min for the current stat-var pairing.
-            nco_min_cmd_parts = [self.ncap2_exe, ' -v -s ', '"',
+            nco_min_cmd_parts = [self.ncap2_exe, ' -O -v -s ', '"',
                                  'min=min(series_cnt_', cur_stat, ')',
                                  '" ', cur_nc, ' ', min_nc_path]
             nco_min_cmd = ''.join(nco_min_cmd_parts)
@@ -747,7 +758,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             # Using NCO ncap2 to perform arithmetic processing to retrieve
             #  the max from each
             # netCDF file's stat-var pairing.
-            nco_max_cmd_parts = [self.ncap2_exe, ' -v -s ', '"',
+            nco_max_cmd_parts = [self.ncap2_exe, ' -O -v -s ', '"',
                                  'max=max(series_cnt_', cur_stat, ')',
                                  '" ', cur_nc, ' ', max_nc_path]
             nco_max_cmd = ''.join(nco_max_cmd_parts)
