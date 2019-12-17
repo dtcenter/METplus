@@ -3184,6 +3184,20 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:* OBS_FILE_WINDOW_END
 
+   PB2NC_VALID_BEGIN
+     Used to set the command line argument -valid_beg that controls the lower bound of valid times of data to use. Filename template notation can be used, i.e. {valid?fmt=%Y%m%d_%H%M%S}
+
+     | *Used by:*  PB2NC
+     | *Family:*  [config]
+     | *Default:* ''
+
+   PB2NC_VALID_END
+     Used to set the command line argument -valid_end that controls the upper bound of valid times of data to use. Filename template notation can be used, i.e. {valid?fmt=%Y%m%d_%H%M%S?shift=1d} (valid time shifted forward one day)
+
+     | *Used by:*  PB2NC
+     | *Family:*  [config]
+     | *Default:* ''
+
    PB2NC_GRID
      Specify a grid to use with the MET pb2nc tool.
 

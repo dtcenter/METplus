@@ -132,10 +132,10 @@ class PB2NCWrapper(CommandBuilder):
                              self.config.getseconds('config',
                                                 'OBS_FILE_WINDOW_END', 0))
 
-        c_dict['VALID_WINDOW_BEGIN_TEMPLATE'] = \
+        c_dict['VALID_BEGIN_TEMPLATE'] = \
           self.config.getraw('config', 'PB2NC_VALID_BEGIN', '')
 
-        c_dict['VALID_WINDOW_END_TEMPLATE'] = \
+        c_dict['VALID_END_TEMPLATE'] = \
           self.config.getraw('config', 'PB2NC_VALID_END', '')
 
         c_dict['VALID_WINDOW_BEGIN'] = ''
@@ -268,8 +268,8 @@ class PB2NCWrapper(CommandBuilder):
     '''
 
     def set_valid_window_variables(self, time_info):
-        begin_template = self.c_dict['VALID_WINDOW_BEGIN_TEMPLATE']
-        end_template = self.c_dict['VALID_WINDOW_END_TEMPLATE']
+        begin_template = self.c_dict['VALID_BEGIN_TEMPLATE']
+        end_template = self.c_dict['VALID_END_TEMPLATE']
 
         if begin_template:
             self.c_dict['VALID_WINDOW_BEGIN'] = \

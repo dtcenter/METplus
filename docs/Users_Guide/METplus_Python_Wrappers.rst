@@ -428,6 +428,8 @@ Configuration
 | PB2NC_TIME_SUMMARY_TYPES `[sec:SC_P] <#sec:SC_P>`__
 | PB2NC_WINDOW_BEGIN `[sec:SC_P] <#sec:SC_P>`__
 | PB2NC_WINDOW_END `[sec:SC_P] <#sec:SC_P>`__
+| PB2NC_VALID_BEGIN `[sec:SC_P] <#sec:SC_P>`__
+| PB2NC_VALID_END `[sec:SC_P] <#sec:SC_P>`__
 
 **Deprecated:**
 
