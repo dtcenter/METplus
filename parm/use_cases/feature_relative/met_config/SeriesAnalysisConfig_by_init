@@ -28,6 +28,7 @@ obtype = "ANALYS";
 //
 regrid = {
    to_grid    = FCST;
+//   to_grid    = ${REGRID_TO_GRID};
    method     = FORCE;
    width      = 1;
    vld_thresh = 0.5;
