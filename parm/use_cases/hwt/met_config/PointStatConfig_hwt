@@ -60,7 +60,7 @@ obs = fcst;
 // Point observation filtering options
 // May be set separately in each "obs.field" entry
 //
-message_type = [${POINT_STAT_MESSAGE_TYPE}];
+message_type = ${POINT_STAT_MESSAGE_TYPE};
 sid_exc        = [];
 obs_quality    = [ "1", "2", "3" ];
 duplicate_flag = NONE;
@@ -113,9 +113,9 @@ obs_window = {
 // Verification masking regions
 //
 mask = {
-   grid = [${POINT_STAT_GRID}];
-   poly = [ "${VERIF_MASK}" ];
-   sid  = [${POINT_STAT_STATION_ID}];
+   grid = ${POINT_STAT_GRID};
+   poly = ["${VERIF_MASK}"];
+   sid  = ${POINT_STAT_STATION_ID};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

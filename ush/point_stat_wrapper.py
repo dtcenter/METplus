@@ -233,16 +233,16 @@ class PointStatWrapper(CompareGriddedWrapper):
         # MET recognizes that these are empty lists, resulting in the
         # expected behavior.
         self.add_env_var('POINT_STAT_POLY',
-                         self.format_list_string(self.c_dict['POINT_STAT_POLY']))
+                         f"[{self.format_list_string(self.c_dict['POINT_STAT_POLY'])}]")
 
         self.add_env_var('POINT_STAT_GRID',
-                         self.format_list_string(self.c_dict['POINT_STAT_GRID']))
+                         f"[{self.format_list_string(self.c_dict['POINT_STAT_GRID'])}]")
 
         self.add_env_var('POINT_STAT_STATION_ID',
-                         self.format_list_string(self.c_dict['POINT_STAT_STATION_ID']))
+                         f"[{self.format_list_string(self.c_dict['POINT_STAT_STATION_ID'])}]")
 
         self.add_env_var('POINT_STAT_MESSAGE_TYPE',
-                         self.format_list_string(self.c_dict['POINT_STAT_MESSAGE_TYPE']))
+                         f"[{self.format_list_string(self.c_dict['POINT_STAT_MESSAGE_TYPE'])}]")
 
         self.add_env_var('FCST_FIELD', fcst_field)
         self.add_env_var('OBS_FIELD', obs_field)
