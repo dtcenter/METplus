@@ -725,12 +725,47 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  1.0
 
-   ENSEMBLE_STAT_GRID_VX
-     Used to set the regrid dictionary item 'to_grid' in the MET ensemble_stat config file. See the MET User's Guide for more information.
+   [DEPRECATED] ENSEMBLE_STAT_GRID_VX
+     Please use GRID_STAT_REGRID_TO_GRID
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:* FCST
+
+   ENSEMBLE_STAT_REGRID_TO_GRID
+     Used to set the regrid dictionary item 'to_grid' in the MET EnsembleStat config file. See the MET User's Guide for more information.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:* NONE
+
+   GRID_STAT_REGRID_TO_GRID
+     Used to set the regrid dictionary item 'to_grid' in the MET GridStat config file. See the MET User's Guide for more information.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:* NONE
+
+   MODE_REGRID_TO_GRID
+     Used to set the regrid dictionary item 'to_grid' in the MET MODE config file. See the MET User's Guide for more information.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:* NONE
+
+   MTD_REGRID_TO_GRID
+     Used to set the regrid dictionary item 'to_grid' in the MET MTD config file. See the MET User's Guide for more information.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:* NONE
+
+   SERIES_ANALYSIS_REGRID_TO_GRID
+     Used to set the regrid dictionary item 'to_grid' in the MET SeriesAnalysis config file. See the MET User's Guide for more information. *Currently not implemented, but will be usable in a future version of METplus*
+
+     | *Used by:*  SeriesByLead, SeriesByInit
+     | *Family:*  [config]
+     | *Default:* NONE
 
    ENSEMBLE_STAT_MET_OBS_ERR_TABLE
 
