@@ -1696,8 +1696,11 @@ def get_var_items(config, data_type, index, time_info):
 
         # split up each item by semicolon, then add a semicolon to the end of each item
         # to avoid errors where the user forgot to add a semicolon at the end
-        extra_list = extra.split(';')
+        # use list(filter(None to remove empty strings from list
+        extra_list = list(filter(None, extra.split(';')))
+        config.logger.error(f"Extra list: {extra_list}")
         extra = f"{'; '.join(extra_list)};"
+        config.logger.error(f"EXTRA: {extra}")
 
     return name, levels, thresh, extra
 
