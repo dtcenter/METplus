@@ -62,7 +62,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.series_lead_filtered_out_dir = \
             self.config.getdir('SERIES_ANALYSIS_FILTERED_OUTPUT_DIR')
         self.series_lead_out_dir = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR')
-        self.tmp_dir = self.config.getdir('TMP_DIR')
+        self.tmp_dir = self.config.getdir('STAGING_DIR')
         self.background_map = self.config.getbool('config', 'SERIES_ANALYSIS_BACKGROUND_MAP')
         self.series_filter_opts = \
             self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
@@ -1355,8 +1355,10 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         # Clean up the tmp dir and create an empty one
         # in anticipation of another run.
-        util.rmtree(tmp_dir)
-        util.mkdir_p(tmp_dir)
+        # util.rmtree(tmp_dir)
+        # util.mkdir_p(tmp_dir)
+        filter_regex = 'filter_.*'
+        util.remove_staged_files(tmp_dir, filter_regex, self.logger)
 
 if __name__ == "__main__":
         util.run_stand_alone("series_by_lead_wrapper", "SeriesByLead")
