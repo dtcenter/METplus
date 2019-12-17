@@ -119,12 +119,12 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # If applicable, apply any filtering via tc_stat, as indicated in the
         # parameter/config file.
-        tmp_dir = self.config.getdir('TMP_DIR')
+        staging_dir = self.config.getdir('STAGING_DIR')
         if series_filter_opts:
             self.apply_series_filters(tile_dir, init_times,
                                       self.series_filtered_out_dir,
                                       self.filter_opts,
-                                      tmp_dir)
+                                      staging_dir)
 
             # Clean up any empty files and directories that could arise as
             # a result of filtering
@@ -194,13 +194,13 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # clean up the tmp dir now that we are finished and create a new empty
         # tmp dir
-        util.rmtree(tmp_dir)
-        util.mkdir_p(tmp_dir)
+        filtered_file_regex = "filter_.*"
+        util.remove_staged_files(staging_dir, filtered_file_regex, self.logger )
 
         self.logger.info("Finished series analysis by init time")
 
     def apply_series_filters(self, tile_dir, init_times, series_output_dir,
-                             filter_opts, temporary_dir):
+                             filter_opts, staging_dir):
 
         """! Apply filter options, as specified in the
             param/config file.
@@ -213,7 +213,7 @@ class SeriesByInitWrapper(CommandBuilder):
                @param series_output_dir:  The directory where the filter results
                                           will be stored.
                @param filter_opts:  The filter options to apply
-               @param temporary_dir:  The temporary directory where intermediate
+               @param staging_dir:  The staging directory where intermediate
                                       files are saved.
             Returns:
                 None
@@ -230,8 +230,7 @@ class SeriesByInitWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         # Create temporary directory where intermediate files are saved.
-        tmp_dir = temporary_dir
-        self.logger.debug("creating tmp dir for filtered files: " + tmp_dir)
+        self.logger.debug("creating tmp dir for filtered files: " + staging_dir)
 
         for cur_init in init_times:
             # Call the tc_stat wrapper to build up the command and invoke
@@ -275,9 +274,9 @@ class SeriesByInitWrapper(CommandBuilder):
                     storm_output_dir = os.path.join(series_output_dir,
                                                     cur_init, cur_storm)
                     util.mkdir_p(storm_output_dir)
-                    util.mkdir_p(tmp_dir)
+                    util.mkdir_p(staging_dir)
                     tmp_file = "filter_" + cur_init + "_" + cur_storm
-                    tmp_filename = os.path.join(tmp_dir, tmp_file)
+                    tmp_filename = os.path.join(staging_dir, tmp_file)
                     storm_match_list = util.grep(cur_storm, filter_filename)
                     with open(tmp_filename, "a+") as tmp_file:
                         tmp_file.write(header)
@@ -872,22 +871,6 @@ class SeriesByInitWrapper(CommandBuilder):
             #  so they don't cause any problems with further processing
             # steps.
             util.prune_empty(fcst_anly_ascii_dir, self.logger)
-
-
-    def cleanup(self, tmp_dir):
-        '''Remove any empty files and directories in the extract_tiles output
-           directory and the tmp directory.
-
-          Args:
-             @param tmp_dir:  The full path to the tmp directory
-        '''
-        util.prune_empty(self.series_filtered_out_dir, self.logger)
-
-        # Clean up the tmp directory if it exists
-        if os.path.isdir(tmp_dir):
-            util.rmtree(tmp_dir)
-
-        return 0
 
 if __name__ == "__main__":
         util.run_stand_alone("series_by_init_wrapper", "SeriesByInit")
