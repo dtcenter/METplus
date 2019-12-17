@@ -61,6 +61,12 @@ class SeriesByInitWrapper(CommandBuilder):
 
         self.logger.info("Initialized SeriesByInitWrapper")
 
+    def create_c_dict(self):
+        c_dict = super().create_c_dict()
+        c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
+        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'SERIES_ANALYSIS_REGRID_TO_GRID', '')
+        return c_dict
+
     def run_all_times(self):
         """! Invoke the series analysis script based on
             the init time in the format YYYYMMDD_hh
@@ -525,6 +531,7 @@ class SeriesByInitWrapper(CommandBuilder):
                                                  cur_storm,
                                                  cur_init)
                         self.create_out_arg(cur_storm, cur_init, name, level)
+                        self.add_common_envs()
                         self.build()
                         self.clear()
 

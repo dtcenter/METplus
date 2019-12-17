@@ -28,7 +28,7 @@ obtype = "ANALYS";
 // Verification grid
 //
 regrid = {
-   to_grid    = ${GRID_VX};
+   to_grid    = ${REGRID_TO_GRID};
    method     = BILIN;
    width      = 2;
    vld_thresh = 0.5;

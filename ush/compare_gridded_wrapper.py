@@ -375,27 +375,20 @@ that reformat gridded data
 
     def set_environment_variables(self, fcst_field, obs_field, time_info):
         """!Set environment variables that are referenced by the MET config file"""
-        # list of fields to print to log
-        print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
-                      "LEVEL", "OBTYPE",
-                      "FCST_FIELD", "OBS_FIELD",
-                      "INPUT_BASE",
-                      "CLIMO_FILE", "FCST_TIME"]
-
         var_info = self.c_dict['VAR_LIST'][0]
         if 'CURRENT_VAR_INFO' in self.c_dict.keys():
             var_info = self.c_dict['CURRENT_VAR_INFO']
 
         # set environment variables needed for MET application
-        self.add_env_var("MODEL", self.c_dict['MODEL'])
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("FCST_VAR", var_info['fcst_name'])
         self.add_env_var("OBS_VAR", var_info['obs_name'])
         self.add_env_var("LEVEL", var_info['fcst_level'])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
+        # climo file is set to None if not found, so need to checkx
         if self.c_dict['CLIMO_FILE']:
-             self.add_env_var("CLIMO_FILE", self.c_dict['CLIMO_FILE'])
+            self.add_env_var("CLIMO_FILE", self.c_dict['CLIMO_FILE'])
         else:
             self.add_env_var("CLIMO_FILE", '')
         self.add_env_var("FCST_TIME", str(time_info['lead_hours']).zfill(3))
@@ -404,26 +397,17 @@ that reformat gridded data
         # add additional env vars if they are specified
         self.add_env_var('NEIGHBORHOOD_WIDTH',
                          self.c_dict['NEIGHBORHOOD_WIDTH'])
-        print_list.append('NEIGHBORHOOD_WIDTH')
 
         self.add_env_var('NEIGHBORHOOD_SHAPE',
                          self.c_dict['NEIGHBORHOOD_SHAPE'])
-        print_list.append('NEIGHBORHOOD_SHAPE')
 
         self.add_env_var('VERIF_MASK',
                          self.c_dict['VERIFICATION_MASK'])
-        print_list.append('VERIF_MASK')
 
-        # set user environment variables
-        self.set_user_environment(time_info)
+        self.add_common_envs(time_info)
 
         # send environment variables to logger
-        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_user_env_items()
-        for item in print_list:
-            self.print_env_item(item)
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(print_list)
+        self.print_all_envs()
 
     def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
         """! Set and print environment variables, then build/run MET command

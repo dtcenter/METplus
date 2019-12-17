@@ -1581,10 +1581,10 @@ def validate_field_info_configs(config):
        Returns False if any items are invalid"""
 
     variable_extensions = ['NAME', 'LEVELS', 'THRESH', 'OPTIONS']
-    all_good = True
+    all_good = True, []
 
     if not comparisons_in_process_list(config):
-        return True
+        return True, []
 
     # keep track of all sed commands to replace config variable names
     all_sed_cmds = []

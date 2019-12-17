@@ -29,7 +29,7 @@ obtype = "ANALYS";
 // May be set separately in each "field" entry
 //
 regrid = {
-   to_grid    = NONE;
+   to_grid    = ${REGRID_TO_GRID};
    method     = NEAREST;
    width      = 1;
    vld_thresh = 0.5;

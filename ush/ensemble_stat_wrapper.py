@@ -59,8 +59,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_GRID_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE', '')
 
-        c_dict['GRID_VX'] = self.config.getstr('config', 'ENSEMBLE_STAT_GRID_VX', 'FCST')
-
         c_dict['CONFIG_FILE'] = \
             self.config.getstr('config', 'ENSEMBLE_STAT_CONFIG_FILE', '')
 
@@ -129,6 +127,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_POINT_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
         c_dict['OBS_GRID_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
         c_dict['OBS_GRID_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
+
+        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'ENSEMBLE_STAT_REGRID_TO_GRID', '')
 
         return c_dict
 
@@ -306,18 +306,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return self.write_list_file(list_filename, ens_members_path)
 
     def set_environment_variables(self, fcst_field, obs_field, ens_field, time_info):
-        # list of fields to print to log
-        print_list = ["MODEL", "GRID_VX", "OBTYPE",
-                      "FCST_LEAD",
-                      "FCST_FIELD", "OBS_FIELD",
-                      'ENS_FIELD', "INPUT_BASE",
-                      "OBS_WINDOW_BEGIN", "OBS_WINDOW_END",
-                      "ENS_THRESH"]
-
-        if self.c_dict["MET_OBS_ERROR_TABLE"]:
-            self.add_env_var("MET_OBS_ERROR_TABLE",
-                             self.c_dict["MET_OBS_ERROR_TABLE"])
-            print_list.append("MET_OBS_ERROR_TABLE")
+        self.add_env_var("MET_OBS_ERROR_TABLE",
+                         self.c_dict["MET_OBS_ERROR_TABLE"])
 
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
@@ -325,25 +315,18 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.add_env_var("ENS_FIELD", ens_field)
         else:
             self.add_env_var("ENS_FIELD", fcst_field)
-        self.add_env_var("MODEL", self.c_dict['MODEL'])
+
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-        self.add_env_var("GRID_VX", self.c_dict['GRID_VX'])
         self.add_env_var("INPUT_BASE", self.c_dict['INPUT_BASE'])
         self.add_env_var("FCST_LEAD", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("OBS_WINDOW_BEGIN", str(self.c_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
         self.add_env_var("ENS_THRESH", self.c_dict['ENS_THRESH'])
 
-        # set user environment variables
-        self.set_user_environment(time_info)
+        self.add_common_envs(time_info)
 
         # send environment variables to logger
-        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_user_env_items()
-        for item in print_list:
-            self.print_env_item(item)
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(print_list)
+        self.print_all_envs()
 
     def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
         """! Set and print environment variables, then build/run MET command
@@ -374,12 +357,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
     def clear(self):
         """!Unset class variables to prepare for next run time
         """
-        self.args = []
-        self.input_dir = ""
-        self.infiles = []
-        self.outdir = ""
-        self.outfile = ""
-        self.param = ""
+        super().clear()
         self.point_obs_files = []
         self.grid_obs_files = []
 

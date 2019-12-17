@@ -330,6 +330,7 @@ def retrieve_var_name_levels(config):
     full_list = []
 
     var_list_of_dicts = util.parse_var_list(config)
+    print(f"VAR LIST: {var_list_of_dicts}")
     for cur_dict in var_list_of_dicts:
         level = cur_dict['fcst_level']
         name = cur_dict['fcst_name']

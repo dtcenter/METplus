@@ -111,6 +111,8 @@ class MTDWrapper(MODEWrapper):
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'mtd')
 
+        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'MTD_REGRID_TO_GRID', '')
+
         return c_dict
 
 
@@ -279,13 +281,7 @@ class MTDWrapper(MODEWrapper):
             self.param = self.c_dict['CONFIG_FILE']
             self.create_and_set_output_dir(time_info)
 
-            print_list = [ 'MIN_VOLUME', 'MODEL', 'FCST_VAR', 'OBTYPE',
-                           'OBS_VAR', 'LEVEL',
-                           'FCST_FIELD', 'OBS_FIELD',
-                           'FCST_CONV_RADIUS', 'FCST_CONV_THRESH',
-                           'OBS_CONV_RADIUS', 'OBS_CONV_THRESH' ]
             self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"] )
-            self.add_env_var("MODEL", self.c_dict['MODEL'])
             self.add_env_var("FCST_VAR", var_info['fcst_name'])
             self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
             self.add_env_var("OBS_VAR", var_info['obs_name'])
@@ -321,16 +317,10 @@ class MTDWrapper(MODEWrapper):
                 self.add_env_var("FCST_FIELD", fcst_field)
                 self.add_env_var("OBS_FIELD", obs_field)
 
-            # set user environment variables
-            self.set_user_environment(time_info)
 
-            self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-            self.print_user_env_items()
-            for l in print_list:
-                self.print_env_item(l)
+            self.add_common_envs(time_info)
 
-            self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-            self.print_env_copy(print_list)
+            self.print_all_envs()
 
             cmd = self.get_command()
             if cmd is None:
@@ -349,7 +339,7 @@ class MTDWrapper(MODEWrapper):
 
 
     def clear(self):
-        super(MTDWrapper, self).clear()
+        super().clear()
         self.fcst_file = None
         self.obs_file = None
 

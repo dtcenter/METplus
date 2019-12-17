@@ -116,6 +116,8 @@ class MODEWrapper(CompareGriddedWrapper):
                                'MODE_VERIFICATION_MASK_TEMPLATE')
         c_dict['VERIFICATION_MASK'] = ''
 
+        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'MODE_REGRID_TO_GRID', '')
+
         # check that values are valid
         error_message = 'items must start with a comparison operator '+\
                         '(>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)'
@@ -135,16 +137,6 @@ class MODEWrapper(CompareGriddedWrapper):
         return c_dict
 
     def set_environment_variables(self, fcst_field, obs_field, var_info, time_info):
-        print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
-                      "LEVEL", "OBTYPE",
-                      "FCST_FIELD", "OBS_FIELD",
-                      "QUILT", "VERIF_MASK",
-                      "FCST_CONV_RADIUS", "FCST_CONV_THRESH",
-                      "OBS_CONV_RADIUS", "OBS_CONV_THRESH",
-                      "FCST_MERGE_THRESH", "FCST_MERGE_FLAG",
-                      "OBS_MERGE_THRESH", "OBS_MERGE_FLAG"]
-
-        self.add_env_var("MODEL", self.c_dict['MODEL'])
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("FCST_VAR", var_info['fcst_name'])
         self.add_env_var("OBS_VAR", var_info['obs_name'])
@@ -165,15 +157,9 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"])
         self.add_env_var('VERIF_MASK', self.c_dict['VERIFICATION_MASK'])
 
-        # set user environment variables
-        self.set_user_environment(time_info)
+        self.add_common_envs(time_info)
 
-        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_user_env_items()
-        for item in print_list:
-            self.print_env_item(item)
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(print_list)
+        self.print_all_envs()
 
     def run_at_time_one_field(self, time_info, var_info):
         """! Runs mode instances for a given time and forecast lead combination

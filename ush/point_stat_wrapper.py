@@ -74,12 +74,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['POINT_STAT_CONFIG_FILE'] = \
             self.config.getstr('config', 'POINT_STAT_CONFIG_FILE')
 
-        regrid = self.config.getstr('config', 'POINT_STAT_REGRID_TO_GRID')
-        # if not surrounded by quotes and not NONE, add quotes
-        if regrid[0] != '"' and regrid != 'NONE':
-            regrid = '"' + regrid + '"'
+        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'POINT_STAT_REGRID_TO_GRID', '')
 
-        c_dict['REGRID_TO_GRID'] = regrid
         c_dict['POINT_STAT_GRID'] = self.config.getstr('config', 'POINT_STAT_GRID')
         c_dict['POINT_STAT_POLY'] = self.config.getstr('config', 'POINT_STAT_POLY', '')
         c_dict['POINT_STAT_STATION_ID'] = self.config.getstr('config', 'POINT_STAT_STATION_ID', '')
@@ -97,6 +93,18 @@ class PointStatWrapper(CompareGriddedWrapper):
                                                         'FCST_POINT_STAT_PROB_THRESH', '==0.1')
         c_dict['OBS_PROB_THRESH'] = self.config.getstr('config',
                                                        'OBS_POINT_STAT_PROB_THRESH', '==0.1')
+
+        if c_dict['FCST_INPUT_TEMPLATE'] == '':
+            self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE in config file')
+            self.isOK = False
+
+        if c_dict['OBS_INPUT_TEMPLATE'] == '':
+            self.log_error('Must set OBS_POINT_STAT_INPUT_TEMPLATE in config file')
+            self.isOK = False
+
+        if c_dict['OUTPUT_DIR'] == '':
+            self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
+            self.isOK = False
 
         return c_dict
 
@@ -119,19 +127,7 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.run_at_time_once(input_dict)
 
     def run_at_time_once(self, input_dict):
-        if self.c_dict['FCST_INPUT_TEMPLATE'] == '':
-            self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE in config file')
-            exit(1)
-
-        if self.c_dict['OBS_INPUT_TEMPLATE'] == '':
-            self.log_error('Must set OBS_POINT_STAT_INPUT_TEMPLATE in config file')
-            exit(1)
-
-        if self.c_dict['OUTPUT_DIR'] == '':
-            self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
-            exit(1)
-
-        # clear any settings leftover from previous run
+         # clear any settings leftover from previous run
         self.clear()
 
         time_info = time_util.ti_calculate(input_dict)
@@ -213,20 +209,6 @@ class PointStatWrapper(CompareGriddedWrapper):
                              to add each environment variable to run the
 
         """
-        # pylint:disable=protected-access
-        # list of fields to print to log
-        print_list = ["MODEL", "REGRID_TO_GRID",
-                      "FCST_FIELD", "OBS_FIELD",
-                      "OBS_WINDOW_BEGIN", "OBS_WINDOW_END",
-                      "POINT_STAT_MESSAGE_TYPE", "POINT_STAT_GRID",
-                      "POINT_STAT_POLY", "POINT_STAT_STATION_ID"]
-
-        # Set the environment variables
-        self.add_env_var('MODEL', str(self.c_dict['MODEL']))
-
-        regrid_to_grid = self.c_dict['REGRID_TO_GRID']
-        self.add_env_var('REGRID_TO_GRID', regrid_to_grid)
-
         # MET accepts a list of values for POINT_STAT_POLY, POINT_STAT_GRID,
         # POINT_STAT_STATION_ID, and POINT_STAT_MESSAGE_TYPE. If these
         # values are not set in the METplus config file, assign them to "[]" so
@@ -254,22 +236,12 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_env_var('OBS_WINDOW_END', str(self.c_dict['OBS_WINDOW_END']))
 
         # add additional env vars if they are specified
-        if self.c_dict['VERIFICATION_MASK'] != '':
-            self.add_env_var('VERIF_MASK',
-                             self.c_dict['VERIFICATION_MASK'])
-            print_list.append('VERIF_MASK')
+        self.add_env_var('VERIF_MASK',
+                         self.c_dict['VERIFICATION_MASK'])
 
-        # set user environment variables
-        self.set_user_environment(time_info)
+        self.add_common_envs(time_info)
 
-        # send environment variables to logger
-        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_user_env_items()
-        for l in print_list:
-            self.print_env_item(l)
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(print_list)
-
+        self.print_all_envs()
 
 if __name__ == "__main__":
     util.run_stand_alone("point_stat_wrapper", "PointStat")

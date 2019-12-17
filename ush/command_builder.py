@@ -40,6 +40,7 @@ class CommandBuilder:
         self.errors = 0
         self.logger = logger
         self.config = config
+        self.env_list = []
         self.debug = False
         self.args = []
         self.input_dir = ""
@@ -57,7 +58,7 @@ class CommandBuilder:
 
         # if env MET_TMP_DIR was not set, set it to config TMP_DIR
         if 'MET_TMP_DIR' not in self.env:
-            self.env['MET_TMP_DIR'] = self.config.getdir('TMP_DIR')
+            self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
 
         self.clear()
 
@@ -81,6 +82,10 @@ class CommandBuilder:
         self.outdir = ""
         self.outfile = ""
         self.param = ""
+        self.env_list.clear()
+
+        # add MET_TMP_DIR back to env_list
+        self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
 
     def log_error(self, error_string):
         caller = getframeinfo(stack()[1][0])
@@ -104,6 +109,32 @@ class CommandBuilder:
                                           raw_env_var_value,
                                           **time_info).do_string_sub()
             self.add_env_var(env_var, env_var_value)
+
+    def add_common_envs(self, time_info=None):
+        # Set the environment variables
+        self.add_env_var('MODEL', str(self.c_dict['MODEL']))
+
+        to_grid = self.c_dict['REGRID_TO_GRID'].strip('"')
+        if not to_grid:
+            to_grid = 'NONE'
+
+        # if not surrounded by quotes and not NONE, FCST or OBS, add quotes
+        if to_grid not in ['NONE', 'FCST', 'OBS']:
+            to_grid = f'"{to_grid}"'
+
+        self.add_env_var('REGRID_TO_GRID', to_grid)
+
+        # set user environment variables
+        self.set_user_environment(time_info)
+
+    def print_all_envs(self):
+        # send environment variables to logger
+        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+        for env_item in self.env_list:
+            self.print_env_item(env_item)
+
+        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_env_copy(self.env_list)
 
     def handle_window_once(self, c_dict, dtype, edge, app_name):
         """! Check and set window dictionary variables like
@@ -175,6 +206,7 @@ class CommandBuilder:
         can reference it in the parameter file or the application itself
         """
         self.env[key] = name
+        self.env_list.append(key)
 
     def print_env(self):
         """!Print all environment variables set for this application
