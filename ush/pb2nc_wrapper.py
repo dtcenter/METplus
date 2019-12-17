@@ -4,6 +4,7 @@ import os
 import re
 import met_util as util
 import time_util
+from string_template_substitution import StringSub
 from command_builder import CommandBuilder
 
 """
@@ -71,6 +72,10 @@ class PB2NCWrapper(CommandBuilder):
         # Configuration
         c_dict['CONFIG_FILE'] = self.config.getstr('config',
                                                    'PB2NC_CONFIG_FILE')
+        if c_dict['CONFIG_FILE'] == '':
+            self.log_error('PB2NC_CONFIG_FILE is required')
+            self.isOK = False
+
         c_dict['MESSAGE_TYPE'] = util.getlist(
             self.config.getstr('config', 'PB2NC_MESSAGE_TYPE', '[]'))
 
@@ -84,6 +89,9 @@ class PB2NCWrapper(CommandBuilder):
 
         grid_id = self.config.getstr('config', 'PB2NC_GRID')
         c_dict['GRID'] = self.reformat_grid_id(grid_id)
+        if c_dict['GRID'] is None:
+            self.log_error('PB2NC_GRID value was formatted incorrectly')
+            self.isOK = False
 
         c_dict['POLY'] = self.config.getstr('config', 'PB2NC_POLY')
 
@@ -124,11 +132,14 @@ class PB2NCWrapper(CommandBuilder):
                              self.config.getseconds('config',
                                                 'OBS_FILE_WINDOW_END', 0))
 
-        c_dict['VALID_WINDOW_BEGIN'] = \
+        c_dict['VALID_WINDOW_BEGIN_TEMPLATE'] = \
           self.config.getraw('config', 'PB2NC_VALID_BEGIN', '')
 
-        c_dict['VALID_WINDOW_END'] = \
+        c_dict['VALID_WINDOW_END_TEMPLATE'] = \
           self.config.getraw('config', 'PB2NC_VALID_END', '')
+
+        c_dict['VALID_WINDOW_BEGIN'] = ''
+        c_dict['VALID_WINDOW_END'] = ''
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
@@ -255,13 +266,27 @@ class PB2NCWrapper(CommandBuilder):
                           f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
                           'to process')
     '''
+
+    def set_valid_window_variables(self, time_info):
+        begin_template = self.c_dict['VALID_WINDOW_BEGIN_TEMPLATE']
+        end_template = self.c_dict['VALID_WINDOW_END_TEMPLATE']
+
+        if begin_template:
+            self.c_dict['VALID_WINDOW_BEGIN'] = \
+                StringSub(self.logger,
+                          begin_template,
+                          **time_info).do_string_sub()
+
+        if end_template:
+            self.c_dict['VALID_WINDOW_END'] = \
+                StringSub(self.logger,
+                          end_template,
+                          **time_info).do_string_sub()
+
+
     def run_at_time(self, input_dict):
         """! Loop over each forecast lead and build pb2nc command """
-        if self.c_dict['GRID'] is None:
-            self.log_error('PB2NC_GRID value was formatted incorrectly')
-            return
-
-        # loop of forecast leads and process each
+         # loop of forecast leads and process each
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             input_dict['lead'] = lead
@@ -295,6 +320,8 @@ class PB2NCWrapper(CommandBuilder):
 
         # set environment variables to be passed to MET config file
         self.set_environment_variables(time_info)
+
+        self.set_valid_window_variables(time_info)
 
         # build command and run if successful
         cmd = self.get_command()
@@ -341,15 +368,17 @@ class PB2NCWrapper(CommandBuilder):
 
         cmd += out_path + ' '
 
-        if self.c_dict['CONFIG_FILE'] == '':
-            self.log_error('PB2NC_CONFIG_FILE is required')
-            return None
-
         cmd += self.c_dict['CONFIG_FILE'] + ' '
 
         if len(self.infiles) > 1:
             for f in self.infiles[1:]:
                 cmd += '-pbfile ' + f + ' '
+
+        if self.c_dict['VALID_WINDOW_BEGIN']:
+            cmd += f"-valid_beg {self.c_dict['VALID_WINDOW_BEGIN']} "
+
+        if self.c_dict['VALID_WINDOW_END']:
+            cmd += f"-valid_end {self.c_dict['VALID_WINDOW_END']} "
 
         return cmd.strip()
 
