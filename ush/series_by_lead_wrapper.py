@@ -62,7 +62,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.series_lead_filtered_out_dir = \
             self.config.getdir('SERIES_ANALYSIS_FILTERED_OUTPUT_DIR')
         self.series_lead_out_dir = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR')
-        self.tmp_dir = self.config.getdir('TMP_DIR')
+        self.staging_dir = self.config.getdir('STAGING_DIR')
         self.background_map = self.config.getbool('config', 'SERIES_ANALYSIS_BACKGROUND_MAP')
         self.series_filter_opts = \
             self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
@@ -226,7 +226,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             self.apply_series_filters(tile_dir, init_times,
                                       self.series_lead_filtered_out_dir,
                                       self.series_filter_opts,
-                                      self.tmp_dir)
+                                      self.staging_dir)
 
             # Remove any empty files and directories to avoid
             # errors or performance degradation when performing
@@ -1291,7 +1291,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                          run_inshell=True, log_theoutput=True)
 
     def apply_series_filters(self, tile_dir, init_times, series_output_dir,
-                             filter_opts, temporary_dir):
+                             filter_opts, staging_dir):
 
         """! Apply filter options, as specified in the
             param/config file.
@@ -1304,7 +1304,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                @param series_output_dir:  The directory where the filter results
                                           will be stored.
                @param filter_opts:  The filter options to apply
-               @param temporary_dir:  The temporary directory where intermediate
+               @param staging_dir:  The temporary directory where intermediate
                                       files are saved.
             Returns:
                 None
@@ -1321,9 +1321,8 @@ class SeriesByLeadWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         # Create temporary directory where intermediate files are saved.
-        tmp_dir = temporary_dir
-        self.logger.debug("creating tmp dir for filter files: " + tmp_dir)
-        util.mkdir_p(tmp_dir)
+        self.logger.debug("creating tmp dir for filter files: " + staging_dir)
+        util.mkdir_p(staging_dir)
 
         for cur_init in init_times:
             # Call the tc_stat wrapper to build up the command and invoke
@@ -1369,7 +1368,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     util.mkdir_p(storm_output_dir)
 
                     tmp_file = "filter_" + cur_init + "_" + cur_storm
-                    tmp_filename = os.path.join(tmp_dir, tmp_file)
+                    tmp_filename = os.path.join(staging_dir, tmp_file)
                     storm_match_list = util.grep(cur_storm, filter_filename)
                     with open(tmp_filename, "a+") as tmp_file:
                         tmp_file.write(header)
@@ -1392,8 +1391,8 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         # Clean up the tmp dir and create an empty one
         # in anticipation of another run.
-        util.rmtree(tmp_dir)
-        util.mkdir_p(tmp_dir)
+        filter_regex = 'filter_.*'
+        util.remove_staged_files(staging_dir, filter_regex, self.logger)
 
 if __name__ == "__main__":
         util.run_stand_alone("series_by_lead_wrapper", "SeriesByLead")

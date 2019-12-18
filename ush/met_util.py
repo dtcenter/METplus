@@ -13,6 +13,9 @@ import gzip
 import bz2
 import zipfile
 import struct
+import getpass
+from os import stat
+from pwd import getpwuid
 from csv import reader
 from os.path import dirname, realpath
 from dateutil.relativedelta import relativedelta
@@ -1242,11 +1245,12 @@ def create_filter_tmp_files(filtered_files_list, filter_output_dir, logger=None)
             anly_list.append(anly_match.group(1))
 
     # Write to the appropriate tmp file
-    with open(tmp_fcst_filename, "a+") as fcst_tmpfile:
+    # with open(tmp_fcst_filename, "a+") as fcst_tmpfile:
+    with open(tmp_fcst_filename, "w+") as fcst_tmpfile:
         for fcst in fcst_list:
             fcst_tmpfile.write(fcst + "\n")
 
-    with open(tmp_anly_filename, "a+") as anly_tmpfile:
+    with open(tmp_anly_filename, "w+") as anly_tmpfile:
         for anly in anly_list:
             anly_tmpfile.write(anly + "\n")
 
@@ -2177,6 +2181,42 @@ def check_user_environment(config):
             msg = '{} is already set in the environment. '.format(env_var) +\
                   'Overwriting from conf file'
             config.logger.warning(msg)
+
+
+def remove_staged_files(staged_dir, filename_regex, logger):
+    ''' Removes the staged files generated for series analysis filtering. This
+        is important in the feature relative use case, when the series analysis
+        wrappers can be run multiple times, each time the filter results are
+        appended to any existing temp files, which is not desirable.
+       Args:
+        @param staged_dir:  The location of the directory where the
+                            intermediate filter files are being saved.
+        @param filename_regex: The regular expression that identifies the
+                               filenaming format of the files to be removed.
+        @param logger:  The logger instance
+
+
+       Returns:
+           0 on successful completion
+    '''
+
+    # Determine the current user's username so we only remove that individual's
+    # staged files (important if the staged dir is a shared space).
+    username = getpass.getuser()
+
+    # Get a list of the files located in the tmp directory
+    files_in_staged_dir = get_files(staged_dir, filename_regex, logger)
+
+    for staged_file in files_in_staged_dir:
+        cur_user = getpwuid(stat(staged_file).st_uid).pw_name
+        if cur_user == username:
+            # Remove this file, it is owned by the user
+            full_filename = os.path.join(staged_dir, staged_file)
+            os.remove(full_filename)
+
+    # if we get here, all went well...
+    return 0
+
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
