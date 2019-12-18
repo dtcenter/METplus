@@ -1495,6 +1495,15 @@ def validate_configuration_variables(config):
     field_isOK, sed_cmds = validate_field_info_configs(config)
     all_sed_cmds.extend(sed_cmds)
 
+    # check that OUTPUT_BASE is not set to the exact same value as INPUT_BASE
+    inoutbase_isOK = True
+    input_real_path = os.path.realpath(config.getdir('INPUT_BASE'))
+    output_real_path = os.path.realpath(config.getdir('OUTPUT_BASE'))
+    if input_real_path == output_real_path:
+      config.logger.error(f"INPUT_BASE AND OUTPUT_BASE are set to the exact same path: {input_real_path}")
+      config.logger.error("Please change one of these paths to avoid risk of losing input data")
+      inoutbase_isOK = False
+
     #write_sed_commands(all_sed_cmds)
     sed_file = os.path.join(config.getdir('OUTPUT_BASE'), 'sed_commands.txt')
 
@@ -1512,7 +1521,7 @@ def validate_configuration_variables(config):
 
     check_user_environment(config)
 
-    return deprecated_isOK and field_isOK
+    return deprecated_isOK and field_isOK and inoutbase_isOK
 
 def comparisons_in_process_list(config):
     """!Check if process list only contains reformatter wrappers. If so, don't validate field info
