@@ -86,11 +86,20 @@ def main():
                 version_number, ' '.join(sys.argv))
 
     # validate configuration variables
-    if not util.validate_configuration_variables(config):
+    config_isOK, all_sed_cmds = util.validate_configuration_variables(config)
+    if not config_isOK:
+        # if any sed commands were generated, write them to the sed file
+        if all_sed_cmds:
+            sed_file = os.path.join(config.getdir('OUTPUT_BASE'), 'sed_commands.txt')
+            # remove if sed file exists
+            if os.path.exists(sed_file):
+                os.remove(sed_file)
+
+            util.write_list_to_file(sed_file, all_sed_cmds)
+            config.logger.error(f"Find/Replace commands have been generated in {sed_file}")
+
         logger.error("Correct configuration variables and rerun. Exiting.")
         exit(1)
-
-    util.check_user_environment(config)
 
     # set staging dir to OUTPUT_BASE/stage if not set
     if not config.has_option('dir', 'STAGING_DIR'):

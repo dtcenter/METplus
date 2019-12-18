@@ -167,8 +167,8 @@ def check_for_deprecated_config(conf):
         'TC_PAIRS_FORCE_OVERWRITE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS', 'copy': False},
         'GRID_STAT_CONFIG' : {'sec' : 'config', 'alt' : 'GRID_STAT_CONFIG_FILE'},
         'MODE_CONFIG' : {'sec' : 'config', 'alt': 'MODE_CONFIG_FILE'},
-        'FCST_PCP_COMBINE_INPUT_LEVEL': {'sec': 'config', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS', 'copy': False},
-        'OBS_PCP_COMBINE_INPUT_LEVEL': {'sec': 'config', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS', 'copy': False},
+        'FCST_PCP_COMBINE_INPUT_LEVEL': {'sec': 'config', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS'},
+        'OBS_PCP_COMBINE_INPUT_LEVEL': {'sec': 'config', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS'},
         'TIME_METHOD': {'sec': 'config', 'alt': 'LOOP_BY', 'copy': False},
         'MODEL_DATA_DIR': {'sec': 'dir', 'alt': 'EXTRACT_TILES_GRID_INPUT_DIR'},
         'STAT_LIST': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_STAT_LIST'},
@@ -1484,6 +1484,11 @@ def validate_thresholds(thresh_list):
         return False
     return True
 
+def write_list_to_file(filename, output_list):
+    with open(filename, 'w+') as f:
+        for line in output_list:
+            f.write(f"{line}\n")
+
 def validate_configuration_variables(config):
 
     all_sed_cmds = []
@@ -1504,24 +1509,9 @@ def validate_configuration_variables(config):
       config.logger.error("Please change one of these paths to avoid risk of losing input data")
       inoutbase_isOK = False
 
-    #write_sed_commands(all_sed_cmds)
-    sed_file = os.path.join(config.getdir('OUTPUT_BASE'), 'sed_commands.txt')
-
-    # remove if sed file exists
-    if os.path.exists(sed_file):
-        os.remove(sed_file)
-
-    # if any sed commands were generated, write them to the sed file
-    if all_sed_cmds:
-        with open(sed_file, 'w+') as f:
-            for sed_cmd in all_sed_cmds:
-                f.write(f"{sed_cmd}\n")
-
-        config.logger.error(f"Find/Replace commands have been generated in {sed_file}")
-
     check_user_environment(config)
 
-    return deprecated_isOK and field_isOK and inoutbase_isOK
+    return deprecated_isOK and field_isOK and inoutbase_isOK, all_sed_cmds
 
 def comparisons_in_process_list(config):
     """!Check if process list only contains reformatter wrappers. If so, don't validate field info
@@ -2124,7 +2114,18 @@ def run_stand_alone(module_name, app_name):
         logger.info(f"Running {app_name} stand-alone via METplus v{version_number} called with command: {' '.join(sys.argv)}")
 
         # validate configuration variables
-        if not validate_configuration_variables(config):
+        config_isOK, all_sed_cmds = util.validate_configuration_variables(config)
+        if not config_isOK:
+            # if any sed commands were generated, write them to the sed file
+            if all_sed_cmds:
+                sed_file = os.path.join(config.getdir('OUTPUT_BASE'), 'sed_commands.txt')
+                # remove if sed file exists
+                if os.path.exists(sed_file):
+                    os.remove(sed_file)
+
+                write_list_to_file(sed_file, all_sed_cmds)
+                config.logger.error(f"Find/Replace commands have been generated in {sed_file}")
+
             logger.error("Correct configuration variables and rerun. Exiting.")
             exit(1)
 
