@@ -761,7 +761,7 @@ METplus Configuration Glossary
      | *Default:* NONE
 
    SERIES_ANALYSIS_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET SeriesAnalysis config file. See the MET User's Guide for more information. *Currently not implemented, but will be usable in a future version of METplus*
+     Used to set the regrid dictionary item 'to_grid' in the MET SeriesAnalysis config file. See the MET User's Guide for more information.
 
      | *Used by:*  SeriesByLead, SeriesByInit
      | *Family:*  [config]
