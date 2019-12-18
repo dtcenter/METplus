@@ -1755,6 +1755,9 @@ def parse_var_list(config, time_info=None, data_type=None):
             data_type_lower = data_type.lower()
             name, levels, thresh, extra = get_var_items(config, data_type, index, time_info)
 
+            if not name:
+                continue
+
             for level in levels:
                 var_dict = {f"{data_type_lower}_name": name,
                             f"{data_type_lower}_level": level,
@@ -1771,6 +1774,12 @@ def parse_var_list(config, time_info=None, data_type=None):
 
             # if number of levels are not equal, return an empty list
             if len(f_levels) != len(o_levels):
+                return []
+
+            if not o_name and not f_name:
+                continue
+
+            if not o_name or not f_name:
                 return []
 
             for f_level, o_level in zip(f_levels, o_levels):
