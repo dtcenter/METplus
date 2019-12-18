@@ -306,7 +306,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return self.write_list_file(list_filename, ens_members_path)
 
     def set_environment_variables(self, fcst_field, obs_field, ens_field, time_info):
-        self.add_env_var("MET_OBS_ERR_TABLE",
+        self.add_env_var("MET_OBS_ERROR_TABLE",
                          self.c_dict["MET_OBS_ERR_TABLE"])
 
         self.add_env_var("FCST_FIELD", fcst_field)
