@@ -27,8 +27,7 @@ obtype = "ANALYS";
 // Verification grid
 //
 regrid = {
-   to_grid    = "latlon 60 60 23 -115 0.5 0.5";
-//   to_grid    = ${REGRID_TO_GRID};
+   to_grid    = ${REGRID_TO_GRID};
    method     = FORCE;
    width      = 1;
    vld_thresh = 0.5;

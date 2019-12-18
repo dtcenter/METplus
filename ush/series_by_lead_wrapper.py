@@ -413,6 +413,19 @@ class SeriesByLeadWrapper(CommandBuilder):
 
                 self.add_common_envs()
 
+                # this can be removed once this wrapper is refactored to use
+                # self.env environment
+                to_grid = self.c_dict['REGRID_TO_GRID'].strip('"')
+                if not to_grid:
+                    to_grid = 'NONE'
+
+                # if not surrounded by quotes and not NONE, FCST or OBS
+                # add quotes
+                if to_grid not in ['NONE', 'FCST', 'OBS']:
+                    to_grid = f'"{to_grid}"'
+
+                os.environ['REGRID_TO_GRID'] = to_grid
+
                 # Since this wrapper is not using the CommandBuilder
                 # to build the cmd, we need to add the met verbosity
                 # level to the MET cmd created before we run
@@ -560,6 +573,19 @@ class SeriesByLeadWrapper(CommandBuilder):
                 series_analysis_cmd = ''.join(series_analysis_cmd_parts)
 
                 self.add_common_envs()
+
+                # this can be removed once this wrapper is refactored to use
+                # self.env environment
+                to_grid = self.c_dict['REGRID_TO_GRID'].strip('"')
+                if not to_grid:
+                    to_grid = 'NONE'
+
+                # if not surrounded by quotes and not NONE, FCST or OBS
+                # add quotes
+                if to_grid not in ['NONE', 'FCST', 'OBS']:
+                    to_grid = f'"{to_grid}"'
+
+                os.environ['REGRID_TO_GRID'] = to_grid
 
                 # Since this wrapper is not using the CommandBuilder
                 # to build the cmd, we need to add the met verbosity
