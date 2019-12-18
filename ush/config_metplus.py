@@ -154,7 +154,7 @@ class METplusLogFormatter(logging.Formatter):
         self.default_fmt = config.getraw('config', 'LOG_LINE_FORMAT')
         self.info_fmt = config.getraw('config', 'LOG_INFO_LINE_FORMAT', self.default_fmt)
         self.debug_fmt = config.getraw('config', 'LOG_DEBUG_LINE_FORMAT', self.default_fmt)
-        self.error_fmt = config.getraw('config', 'LOG_ERROR_LINE_FORMAT', self.default_fmt)
+        self.error_fmt = config.getraw('config', 'LOG_ERR_LINE_FORMAT', self.default_fmt)
         super().__init__(fmt=self.default_fmt,
                          datefmt=config.getraw('config', 'LOG_LINE_DATE_FORMAT'),
                          style='%')
