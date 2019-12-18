@@ -71,7 +71,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # met_obs_error_table is not required, if it is not defined
         # set it to the empty string '', that way the MET default is used.
-        c_dict['MET_OBS_ERROR_TABLE'] = \
+        c_dict['MET_OBS_ERR_TABLE'] = \
             self.config.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE', '')
 
         # No Default being set this is REQUIRED TO BE DEFINED in conf file.
@@ -306,8 +306,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return self.write_list_file(list_filename, ens_members_path)
 
     def set_environment_variables(self, fcst_field, obs_field, ens_field, time_info):
-        self.add_env_var("MET_OBS_ERROR_TABLE",
-                         self.c_dict["MET_OBS_ERROR_TABLE"])
+        self.add_env_var("MET_OBS_ERR_TABLE",
+                         self.c_dict["MET_OBS_ERR_TABLE"])
 
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
