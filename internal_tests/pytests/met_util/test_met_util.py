@@ -169,7 +169,7 @@ def test_parse_var_list_fcst_only(data_type, list_created):
     conf.set('config', 'FCST_VAR2_LEVELS', "LEVELS21, LEVELS22")
 
     # this should not occur because OBS variables are missing
-    if util.validate_configuration_variables(conf):
+    if util.validate_configuration_variables(conf)[0]:
         assert(False)
 
     var_list = util.parse_var_list(conf, time_info=None, data_type=data_type)
@@ -204,7 +204,7 @@ def test_parse_var_list_obs(data_type, list_created):
     conf.set('config', 'OBS_VAR2_LEVELS', "LEVELS21, LEVELS22")
 
     # this should not occur because FCST variables are missing
-    if util.validate_configuration_variables(conf):
+    if util.validate_configuration_variables(conf)[0]:
         assert(False)
 
     var_list = util.parse_var_list(conf, time_info=None, data_type=data_type)
@@ -240,7 +240,7 @@ def test_parse_var_list_both(data_type, list_created):
     conf.set('config', 'BOTH_VAR2_LEVELS', "LEVELS21, LEVELS22")
 
     # this should not occur because BOTH variables are used
-    if not util.validate_configuration_variables(conf):
+    if not util.validate_configuration_variables(conf)[0]:
         assert(False)
 
     var_list = util.parse_var_list(conf, time_info=None, data_type=data_type)
@@ -269,7 +269,7 @@ def test_parse_var_list_fcst_and_obs():
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
 
     # this should not occur because FCST and OBS variables are found
-    if not util.validate_configuration_variables(conf):
+    if not util.validate_configuration_variables(conf)[0]:
         assert(False)
 
     var_list = util.parse_var_list(conf)
@@ -300,7 +300,7 @@ def test_parse_var_list_fcst_and_obs_alternate():
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
 
     # configuration is invalid and parse var list should not give any results
-    assert(not util.validate_configuration_variables(conf) and not util.parse_var_list(conf))
+    assert(not util.validate_configuration_variables(conf)[0] and not util.parse_var_list(conf))
 
 # VAR1 defined by OBS, VAR2 by FCST, VAR3 by both FCST AND OBS
 @pytest.mark.parametrize(
@@ -322,7 +322,7 @@ def test_parse_var_list_fcst_and_obs_and_both(data_type, list_len, name_levels):
     conf.set('config', 'OBS_VAR3_LEVELS', "OLEVELS31, OLEVELS32")
 
     # configuration is invalid and parse var list should not give any results
-    if util.validate_configuration_variables(conf):
+    if util.validate_configuration_variables(conf)[0]:
         assert(False)
 
     var_list = util.parse_var_list(conf, time_info=None, data_type=data_type)
@@ -366,7 +366,7 @@ def test_parse_var_list_fcst_only_options(data_type, list_len):
     conf.set('config', 'OBS_VAR1_OPTIONS', "OOPTIONS11")
 
     # this should not occur because OBS variables are missing
-    if util.validate_configuration_variables(conf):
+    if util.validate_configuration_variables(conf)[0]:
         assert(False)
 
     var_list = util.parse_var_list(conf, time_info=None, data_type=data_type)
