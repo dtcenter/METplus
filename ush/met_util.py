@@ -201,6 +201,8 @@ def check_for_deprecated_config(conf):
         'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE': {'sec': 'config', 'alt': 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE'},
         'VAR_LIST': {'sec': 'config', 'alt': 'BOTH_VARn_NAME BOTH_VARn_LEVELS'},
         'SERIES_ANALYSIS_VAR_LIST': {'sec': 'config', 'alt': 'BOTH_VARn_NAME BOTH_VARn_LEVELS'},
+        'EXTRACT_TILES_VAR_LIST': {'sec': 'config', 'alt': ''},
+
     }
 
     # template       '' : {'sec' : '', 'alt' : ''}
