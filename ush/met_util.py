@@ -199,6 +199,7 @@ def check_for_deprecated_config(conf):
         'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_CONFIG_FILE'},
         'SERIES_ANALYSIS_BY_INIT_CONFIG_FILE': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_CONFIG_FILE'},
         'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE': {'sec': 'config', 'alt': 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE'},
+        'VAR_LIST': {'sec': 'config', 'alt': 'BOTH_VARn_NAME BOTH_VARn_LEVELS'},
     }
 
     # template       '' : {'sec' : '', 'alt' : ''}
