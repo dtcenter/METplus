@@ -207,6 +207,11 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
                             % (section, option, repr(value)))
                 conf.set(section, option, value)
 
+    # get OUTPUT_BASE to make sure it is set correctly so the first error
+    # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
+    # only set incorrectly because OUTPUT_BASE is set incorrectly
+    conf.getdir('OUTPUT_BASE')
+
     # All conf files and command line options have been parsed.
     # So lets set and add specific log variables to the conf object
     # based on the conf log template values.
