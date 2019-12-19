@@ -1,0 +1,232 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Ensemble-Stat configuration file.
+//
+// For additional information, see the MET_BASE/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Output model name to be written
+//
+//model = "WRF";
+model = "${MODEL}";
+
+//
+// Output description to be written
+// May be set separately in each "obs.field" entry
+//
+desc = "NA";
+
+//
+// Output observation type to be written
+//
+obtype = "MC_PCP";
+obtype = "${OBTYPE}";
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification grid
+//
+regrid = {
+   to_grid    = ${REGRID_TO_GRID};
+   method     = NEAREST;
+   width      = 1;
+   vld_thresh = 0.5;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// May be set separately in each "field" entry
+//
+censor_thresh = [];
+censor_val    = [];
+cat_thresh    = [];
+
+//
+// Ensemble product fields to be processed
+//
+ens = {
+   ens_thresh = ${ENS_THRESH};
+   vld_thresh = 1.0;
+
+   field = [ ${ENS_FIELD}  ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Forecast and observation fields to be verified
+//
+
+fcst = {
+   message_type = [ "ADPSFC" ];
+
+   field = [ ${FCST_FIELD}  ];
+}
+
+obs = {
+   message_type = [ "ADPSFC" ];
+ 
+   field = [ ${OBS_FIELD}   ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation filtering options
+// May be set separately in each "obs.field" entry
+//
+sid_exc        = [];
+obs_thresh     = [ NA ];
+obs_quality    = [];
+duplicate_flag = NONE;
+obs_summary    = NONE;
+obs_perc_value = 50;
+skip_const     = FALSE;
+
+//
+// Observation error options
+// Set dist_type to NONE to use the observation error table instead
+// May be set separately in each "obs.field" entry
+//
+obs_error = {
+   flag             = FALSE;
+   dist_type        = NONE;
+   dist_parm        = [];
+   inst_bias_scale  = 1.0;
+   inst_bias_offset = 0.0;
+}
+
+//
+// Ensemble bin sizes
+// May be set separately in each "obs.field" entry
+//
+ens_ssvar_bin_size = 1.0;
+ens_phist_bin_size = 0.05;
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Climatology mean data
+//
+climo_mean = {
+
+   file_name = [];
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+   }
+
+   time_interp_method = DW_MEAN;
+   match_month        = TRUE;
+   match_day          = FALSE;
+   time_step          = 21600;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation time window
+//
+obs_window = {
+   beg = ${OBS_WINDOW_BEGIN};
+   end = ${OBS_WINDOW_END};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification masking regions
+//
+mask = {
+   grid  = [ "FULL" ];
+   poly  = [ "MET_BASE/poly/HMT_masks/huc4_1605_poly.nc",
+             "MET_BASE/poly/HMT_masks/huc4_1803_poly.nc",
+             "MET_BASE/poly/HMT_masks/huc4_1804_poly.nc",
+             "MET_BASE/poly/HMT_masks/huc4_1805_poly.nc",
+             "MET_BASE/poly/HMT_masks/huc4_1806_poly.nc" ];
+   sid   = [];
+   llpnt = [];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Confidence interval settings
+//
+ci_alpha  = [ 0.05 ];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Interpolation methods
+//
+interp = {
+   field      = BOTH;
+   vld_thresh = 1.0;
+
+   type = [
+      {
+         method = NEAREST;
+         width  = 1;
+      }
+   ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Statistical output types
+//
+output_flag = {
+   ecnt  = BOTH;
+   rhist = BOTH;
+   phist = BOTH;
+   orank = BOTH;
+   ssvar = BOTH;
+   relp  = BOTH;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Ensemble product output types
+//
+ensemble_flag = {
+   mean      = TRUE;
+   stdev     = TRUE;
+   minus     = TRUE;
+   plus      = TRUE;
+   min       = TRUE;
+   max       = TRUE;
+   range     = TRUE;
+   vld_count = TRUE;
+   frequency = TRUE;
+   rank      = TRUE;
+   weight    = FALSE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Random number generator
+//
+rng = {
+   type = "mt19937";
+   seed = "1";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+grid_weight_flag = NONE;
+output_prefix    = "";
+//output_prefix    = "${MODEL}_F${FCST_LEAD}_ADPSFC";
+//version          = "V8.1";
+
+////////////////////////////////////////////////////////////////////////////////
