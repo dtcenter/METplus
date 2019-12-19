@@ -15,8 +15,8 @@ import met_util as util
 metplus_home = dirname(dirname(dirname(realpath(__file__))))
 use_case_dir = os.path.join(metplus_home,"parm/use_cases")
 
-# list of use cases to run
-param_files = [
+# all use cases that work with this script
+all_use_cases = [
                 use_case_dir+"/met_tool_wrapper/ASCII2NC.conf",
                 use_case_dir+"/met_tool_wrapper/GridStat.conf",
                 use_case_dir+"/met_tool_wrapper/MODE.conf",
@@ -58,6 +58,15 @@ param_files = [
                 use_case_dir+"/track_and_intensity/examples/sbu.conf",
                 use_case_dir+"/track_and_intensity/examples/track_and_intensity_ATCF.conf",
               ]
+
+# list of use cases to run
+# to run a subset of use cases, uncomment the 2nd variable and copy
+# use cases from all_use_cases. this makes it easier to clean up after
+# running so that git doesn't complain about differences
+use_cases_to_run = all_use_cases
+#use_cases_to_run = [
+#                use_case_dir+"/met_tool_wrapper/ASCII2NC.conf",
+#    ]
 
 def get_param_list(param):
     conf = metplus_home+"/internal_tests/use_cases/system.conf"
@@ -128,7 +137,7 @@ def main():
         print("Moving " + output_base + " to " + output_base_prev)
         os.rename(output_base, output_base_prev)
 
-    for param_file in param_files:
+    for param_file in use_cases_to_run:
         param = param_file.replace(metplus_home, test_metplus_base)
         run_test_use_case(param, test_metplus_base)
 
