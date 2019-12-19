@@ -44,6 +44,30 @@ baseinputconfs = ['metplus_config/metplus_system.conf',
                   'metplus_config/metplus_logging.conf']
 
 def check_for_deprecated_config(conf):
+    """!Checks user configuration files and reports errors or warnings if any deprecated variable
+        is found. If an alternate variable name can be suggested, add it to the 'alt' section
+        If the alternate cannot be literally substituted for the old name, set copy to False
+       Args:
+          @conf : METplusConfig object to evaluate
+       Returns:
+          A tuple containing a boolean if the configuration is suitable to run or not and
+          if it is not correct, the 2nd item is a list of sed commands that can be run to help
+          fix the incorrect configuration variables
+          """
+
+    # key is the name of the depreacted variable that is no longer allowed in any config files
+    # value is a dictionary containing information about what to do with the deprecated config
+    # 'sec' is the section of the config file where the replacement resides, i.e. config, dir,
+    #     filename_templates
+    # 'alt' is the alternative name for the deprecated config. this can be a single variable name or
+    #     text to describe multiple variables or how to handle it. Set to None to tell the user to
+    #     just remove the variable
+    # 'copy' is an optional item (defaults to True). set this to False if one cannot simply replace
+    #     the deprecated config variable name with the value in 'alt'
+    # 'req' is an optional item (defaults to True). this to False to report a warning for the
+    #     deprecated config and allow execution to continue. this is generally no longer used
+    #     because we are requiring users to update the config files. if used, the developer must
+    #     modify the code to handle both variables accordingly
     deprecated_dict = {
         'LOOP_BY_INIT' : {'sec' : 'config', 'alt' : 'LOOP_BY', 'copy': False},
         'LOOP_METHOD' : {'sec' : 'config', 'alt' : 'LOOP_ORDER'},
@@ -199,15 +223,13 @@ def check_for_deprecated_config(conf):
         'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_CONFIG_FILE'},
         'SERIES_ANALYSIS_BY_INIT_CONFIG_FILE': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_CONFIG_FILE'},
         'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE': {'sec': 'config', 'alt': 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE'},
-        'VAR_LIST': {'sec': 'config', 'alt': 'BOTH_VARn_NAME BOTH_VARn_LEVELS'},
-        'SERIES_ANALYSIS_VAR_LIST': {'sec': 'config', 'alt': 'BOTH_VARn_NAME BOTH_VARn_LEVELS'},
+        'VAR_LIST': {'sec': 'config', 'alt': 'BOTH_VAR<n>_NAME BOTH_VAR<n>_LEVELS', 'copy': False},
+        'SERIES_ANALYSIS_VAR_LIST': {'sec': 'config', 'alt': 'BOTH_VAR<n>_NAME BOTH_VAR<n>_LEVELS', 'copy': False},
         'EXTRACT_TILES_VAR_LIST': {'sec': 'config', 'alt': ''},
 
     }
 
-    # template       '' : {'sec' : '', 'alt' : ''}
-    # need to use regex to check for items that have different numbers in them
-    # i.e. FCST_1_FIELD_NAME or FCST_6_FIELD_NAME to FCST_PCP_COMBINE_1_FIELD_NAME, etc.
+    # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
 
     logger = conf.logger
 
@@ -226,12 +248,12 @@ def check_for_deprecated_config(conf):
                 if 'req' in depr_info.keys() and depr_info['req'] is False:
                     msg = '[{}] {} is deprecated and will be '.format(sec, old) +\
                       'removed in a future version of METplus'
-                    if alt != None:
+                    if alt:
                         msg += ". Please replace with {}".format(alt)
                     w_list.append(msg)
                 # if it is required to remove, add to error list
                 else:
-                    if alt is None:
+                    if not alt:
                         e_list.append("[{}] {} should be removed".format(sec, old))
                     else:
                         e_list.append("[{}] {} should be replaced with {}".format(sec, old, alt))
