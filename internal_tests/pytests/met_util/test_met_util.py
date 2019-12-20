@@ -7,6 +7,8 @@ import met_util as util
 import time_util
 import produtil
 import os
+import subprocess
+import shutil
 from dateutil.relativedelta import relativedelta
 import config_metplus
 
@@ -383,7 +385,7 @@ def test_get_lead_sequence_lead():
         hour_seq.append(time_util.ti_get_seconds_from_relativedelta(test) // 3600)
     lead_seq = [ 3, 6, 9, 12 ]
     assert(hour_seq == lead_seq)
-    
+
 
 @pytest.mark.parametrize(
     'key, value', [
@@ -407,53 +409,53 @@ def test_get_lead_sequence_lead_list(key, value):
     lead_seq = value
     assert(hour_seq == lead_seq)
 
-@pytest.mark.parametrize(
-    'key, value', [
-        (0,  [ 0, 12, 24, 36]),
-        (1,  [ 1, 13, 25 ]),
-        (2,  [ 2, 14, 26 ]),
-        (3,  [ 3, 15, 27 ]),
-        (4,  [ 4, 16, 28 ]),
-        (5,  [ 5, 17, 29 ]),
-        (6,  [ 6, 18, 30 ]),
-        (7,  [ 7, 19, 31 ]),
-        (8,  [ 8, 20, 32 ]),
-        (9,  [ 9, 21, 33 ]),
-        (10, [ 10, 22, 34 ]),
-        (11, [ 11, 23, 35 ]),
-        (12, [ 0, 12, 24, 36 ]),
-        (13, [ 1, 13, 25 ]),
-        (14, [ 2, 14, 26 ]),
-        (15, [ 3, 15, 27 ]),
-        (16, [ 4, 16, 28 ]),
-        (17, [ 5, 17, 29 ]),
-        (18, [ 6, 18, 30 ]),
-        (19, [ 7, 19, 31 ]),
-        (20, [ 8, 20, 32 ]),
-        (21, [ 9, 21, 33 ]),
-        (22, [ 10, 22, 34 ]),
-        (23, [ 11, 23, 35 ])
-    ]
-)
-def test_get_lead_sequence_init(key, value):
-    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, key) }
-    conf = metplus_config()
-    conf.set('config', 'INIT_SEQ', "0, 12")
-    conf.set('config', 'LEAD_SEQ_MAX', 36)
-    test_seq = util.get_lead_sequence(conf, input_dict)
-    lead_seq = value
-    assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
-
-def test_get_lead_sequence_init_min_10():
-    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 12) }
-    conf = metplus_config()
-    conf.set('config', 'INIT_SEQ', "0, 12")
-    conf.set('config', 'LEAD_SEQ_MAX', 24)
-    conf.set('config', 'LEAD_SEQ_MIN', 10)
-    test_seq = util.get_lead_sequence(conf, input_dict)
-    lead_seq = [ 12, 24 ]
-    assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
-
+# @pytest.mark.parametrize(
+#     'key, value', [
+#         (0,  [ 0, 12, 24, 36]),
+#         (1,  [ 1, 13, 25 ]),
+#         (2,  [ 2, 14, 26 ]),
+#         (3,  [ 3, 15, 27 ]),
+#         (4,  [ 4, 16, 28 ]),
+#         (5,  [ 5, 17, 29 ]),
+#         (6,  [ 6, 18, 30 ]),
+#         (7,  [ 7, 19, 31 ]),
+#         (8,  [ 8, 20, 32 ]),
+#         (9,  [ 9, 21, 33 ]),
+#         (10, [ 10, 22, 34 ]),
+#         (11, [ 11, 23, 35 ]),
+#         (12, [ 0, 12, 24, 36 ]),
+#         (13, [ 1, 13, 25 ]),
+#         (14, [ 2, 14, 26 ]),
+#         (15, [ 3, 15, 27 ]),
+#         (16, [ 4, 16, 28 ]),
+#         (17, [ 5, 17, 29 ]),
+#         (18, [ 6, 18, 30 ]),
+#         (19, [ 7, 19, 31 ]),
+#         (20, [ 8, 20, 32 ]),
+#         (21, [ 9, 21, 33 ]),
+#         (22, [ 10, 22, 34 ]),
+#         (23, [ 11, 23, 35 ])
+#     ]
+# )
+# def test_get_lead_sequence_init(key, value):
+#     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, key) }
+#     conf = metplus_config()
+#     conf.set('config', 'INIT_SEQ', "0, 12")
+#     conf.set('config', 'LEAD_SEQ_MAX', 36)
+#     test_seq = util.get_lead_sequence(conf, input_dict)
+#     lead_seq = value
+#     assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
+#
+# def test_get_lead_sequence_init_min_10():
+#     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 12) }
+#     conf = metplus_config()
+#     conf.set('config', 'INIT_SEQ', "0, 12")
+#     conf.set('config', 'LEAD_SEQ_MAX', 24)
+#     conf.set('config', 'LEAD_SEQ_MIN', 10)
+#     test_seq = util.get_lead_sequence(conf, input_dict)
+#     lead_seq = [ 12, 24 ]
+#     assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
+#
 @pytest.mark.parametrize(
     'item_list, is_valid', [
         (['FCST'], False),
@@ -472,3 +474,36 @@ def test_get_lead_sequence_init_min_10():
 def test_is_var_item_valid(item_list, is_valid):
     conf = metplus_config()
     assert(util.is_var_item_valid(item_list, '1', 'NAME', conf)[0] == is_valid)
+
+def test_remove_staged_files():
+    ''' Verify that the remove_staged_files correctly removes
+        the files with a filename pattern specified by the
+        filename_regex that are owned by the current are
+        removed, leaving all other files intact.
+
+    '''
+
+    # Create filter files (which are to be deleted later on) and some
+    # other files with a different filename pattern
+    staged_dir = '/tmp/test_cleanup'
+    util.mkdir_p(staged_dir)
+    filename_regex = 'filter_.*'
+    files_to_create = ['foo.txt', 'bar.txt', 'baz.csv', 'filter_20191214_00', 'filter-do-not-delete-me.txt', 'filter_20121212.tcst']
+    expected_deleted = ['filter_20191214_00','filter_20121212.tcst' ]
+
+    for cur_file in files_to_create:
+        full_file = os.path.join(staged_dir, cur_file)
+        subprocess.run(['touch', full_file])
+
+    util.remove_staged_files(staged_dir, filename_regex, None)
+
+    # Now check the /tmp/test_cleanup dir and verify that we no longer have the two filter_xyz files
+    # we deleted
+    actual_remaining_files = util.get_files(staged_dir, ".*", None)
+    for cur_deleted in expected_deleted:
+        assert (cur_deleted not in actual_remaining_files)
+
+
+    # Now clean up your /tmp/test_cleanup directory so we don't leave
+    # unused files and directories remaining...
+    shutil.rmtree(staged_dir)
