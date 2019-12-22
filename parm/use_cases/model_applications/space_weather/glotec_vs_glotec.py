@@ -1,29 +1,59 @@
 """
-GridStat
-========
+Glotec vs. Glotec
+=================
 
-This use case will run the MET GridStat tool to compare gridded forecast data to
-gridded observation data.
+This use case runs the MET GridStat tool to compare gridded forecast data 
+from two runs of the GloTEC model. 
 
 """
+##############################################################################
+# Overview
+# --------
+# 
+# This use case illustrates the use of grid_stat tool for the space weather domain.
+# It compares Total Electron Content for a GloTEC model run initialized with COSMIC-1
+# radio occultation (RO) data to a GloTEC model run without such data. 
+#
+# In this use case, the forecast is considered to be the run without COSMIC-1 RO data.
+# The observations are considered to be the run with COSMIC-1 RO data.
+#
+# This use case runs grid_stat for the first two forecast times of a 
+# space weather event known as the St. Patricks Day Storm (Mar 17, 2015). 
+#
+# Novel aspects of this use case:
+#    - This is the first example use case to run grid_stat on a space weather model (GloTEC)
+#    - Example of how to run with NetCDF input data which do not strictly conform to the 
+#          Climate Forecasts (CF) conventions
+#    - Example of using masks covering latitudinal bands of interest to the space weather community:
+#          equatorial region, mid-latitude region, and polar region
+#    - Example of masking using the values of a quality flag which vary at each time step and grid point
+
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Compare 3 hour forecast precipitation accumulations to observations
-# of 3 hour precipitation accumulation. Generate statistics of the results.
+# Compare gridded forecast data from a run of the GloTEC model that includes 
+# assimilation of COSMIC-1 radio occultation (RO) observations to gridded forecast 
+# data from a GloTEC model run that does not include COSMIC-1 RO data. 
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** WRF 3 hour precipitation accumulation
-# | **Observation:** MU 3 hour precipitation accumulation
+# | **Forecast:** GloTEC Total Electron Content (TEC) model run without assimilation of any COSMIC-1 RO data
+# | **Observation:** GloTEC TEC model run that assimilates COSMIC-1 RO data
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v2.2/sample_data-met_test-8.1.tgz
+# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-met_test-8.1.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
-# | **Data Source:** Unknown
+# | **Data Source:** NOAA Space Weather Prediction Center (SWPC)
+# / Data contact: Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
+
+##############################################################################
+# METplus Use Case Contact
+# ------------------------
+# / **Author:** Jonathan L. Vigh (National Center for Atmospheric Research / Research Applications Laboratory / Joint Numerical Testbed)
+# / **Last modified:** 21 December 2019
 
 ##############################################################################
 # METplus Components
@@ -40,8 +70,8 @@ gridded observation data.
 # GridStat is the only tool called in this example. It processes the following
 # run times:
 #
-# | **Init:** 2005-08-07_0Z
-# | **Forecast lead:** 12
+# | **Init:** 2015-03-17: 0005Z and 0015Z
+# | **Forecast lead:** 00
 
 ##############################################################################
 # METplus Configuration
@@ -49,10 +79,10 @@ gridded observation data.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GridStat.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications_space_weather/glotec_vs_glotec/glotec_vs_glotec.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/GridStat.conf
+# .. literalinclude:: ../../../parm/use_cases/model_applications/space_weather/glotec_vs_glotec/glotec_vs_glotec.conf
 
 ##############################################################################
 # MET Configuration
@@ -62,10 +92,10 @@ gridded observation data.
 # These variables are referenced in the MET configuration file.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/GridStat.met
+# .. literalinclude:: ../../../parm/use_cases/model_applications/space_weather/glotec_vs_glotec/GridStat.glotec_vs_glotec
 #
 # Note the following variables are referenced in the MET configuration file.
-#
+# 
 # * **${MODEL}** - Name of forecast input. Corresponds to MODEL in the METplus configuration file.
 # * **${OBTYPE}** - Name of observation input. Corresponds to OBTYPE in the METplus configuration file.
 # * **${FCST_FIELD}** - Formatted forecast field information. Generated from FCST_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
@@ -129,4 +159,4 @@ gridded observation data.
 # Keywords
 # --------
 #
-# .. note:: GridStatUseCase
+# .. note:: GridStatUseCase SpaceWeather GloTEC LOOP_BY_VALID

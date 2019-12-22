@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Grid-Stat configuration file for the SWPC CWDP project.
+// Grid-Stat configuration file for the glotec_vs_glotec METplus use case
 //
-//    //    vx7: a run that uses compares GloTEC w/o COSMIC-1 RO data (e.g., the 'model') to a GloTEC run with COSMIC-1 RO data (e.g., the 'obs') - uses QF == for stratification.
+// // This use case is based on the SWPC CWDP case (id: vx7) which compares GloTEC w/o COSMIC-1 RO data (e.g., the 'model') to a GloTEC run with COSMIC-1 RO data (e.g., the 'obs') - uses QF == for stratification.
 //
 // For additional information, see the MET_BASE/config/README file.
 //
