@@ -2,20 +2,8 @@
 RUC vs. Stage II GRIB Use Case
 ========
 
-Enter a description of your use case here. This will appear at the very top of the 
-use case page. It can be fairly long, and can include hyperlinks to websites, references,
-or other relevant details to help the user. Any valid RST is acceptable here. 
-
-The use case template will follow the general pattern of:
-
-  * Scientific objective
-  * Datasets
-  * METplus Components
-  * METplus Workflow
-  * METplus Configuration
-  * Running METplus
-  * Expected Output
-  * Keywords
+This use case builds a 3 hour gridded precipitation accumulation using 1 hour accumulation fields,
+then compares the resulting data set to gridded 3 hour accumulation forecast data
 
 """
 ##############################################################################
@@ -32,10 +20,10 @@ The use case template will follow the general pattern of:
 # Describe the datasets here. Relevant information about the datasets that would
 # be beneficial include:
 # 
-#  * Forecast dataset name/levels/dates/formats
-#  * Observation dataset name/levels/dates/formats
+#  * Forecast dataset: RUC GRIB 3 hour precipitation accumulation
+#  * Observation dataset: Stage II GRIB 1 hour precipitation accumulation
 #  * Sources of data (links, contacts, etc...)
-#  * Example graphics of datasets if appropriate
+#
 
 ##############################################################################
 # METplus Components
