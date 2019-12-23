@@ -1539,13 +1539,19 @@ def validate_configuration_variables(config):
 
     return deprecated_isOK and field_isOK and inoutbase_isOK, all_sed_cmds
 
-def comparisons_in_process_list(config):
-    """!Check if process list only contains reformatter wrappers. If so, don't validate field info
-        config variables because having a corresponding FCST/OBS equivalent variable is not necessary."""
-    reformatters = ['PCPCombine', 'RegridDataPlane']
+def skip_field_info_validation(config):
+    """!Check config to see if having corresponding FCST/OBS variables is necessary. If process list only
+        contains reformatter wrappers, don't validate field info. Also, if MTD is in the process list and
+        it is configured to only process either FCST or OBS, validation is unnecessary."""
 
+    reformatters = ['PCPCombine', 'RegridDataPlane']
     process_list = get_process_list(config.getstr('config', 'PROCESS_LIST'), config.logger)
 
+    # if running MTD in single mode, you don't need matching FCST/OBS
+    if 'MTD' in process_list and config.getbool('config', 'MTD_SINGLE_RUN'):
+        return True
+
+    # if only running PCPCombine and/or RegridDataPlane, you don't need matching FCST/OBS
     if [item for item in process_list if item not in reformatters]:
         return True
 
@@ -1612,7 +1618,7 @@ def validate_field_info_configs(config):
     variable_extensions = ['NAME', 'LEVELS', 'THRESH', 'OPTIONS']
     all_good = True, []
 
-    if not comparisons_in_process_list(config):
+    if skip_field_info_validation(config):
         return True, []
 
     # keep track of all sed commands to replace config variable names
