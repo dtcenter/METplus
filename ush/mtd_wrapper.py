@@ -126,6 +126,16 @@ class MTDWrapper(MODEWrapper):
 #        max_lookback = self.c_dict['MAX_LOOKBACK']
 #        file_interval = self.c_dict['FILE_INTERVAL']
         lead_seq = util.get_lead_sequence(self.config, input_dict)
+
+        # if only processing a single data set (FCST or OBS) then only read that var list and process
+        if self.c_dict['SINGLE_RUN']:
+            var_list = util.parse_var_list(self.config, input_dict, self.c_dict['SINGLE_DATA_SRC'])
+            for var_info in var_list:
+                self.run_single_mode(input_dict, var_info)
+
+            return
+
+        # if comparing FCST and OBS data, get var list from FCST/OBS or BOTH variables
         var_list = util.parse_var_list(self.config, input_dict)
 
         # report error and exit if field info is not set
@@ -135,9 +145,6 @@ class MTDWrapper(MODEWrapper):
             return None
 
         for var_info in var_list:
-            if self.c_dict['SINGLE_RUN']:
-                self.run_single_mode(input_dict, var_info)
-                continue
 
             model_list = []
             obs_list = []
@@ -236,45 +243,67 @@ class MTDWrapper(MODEWrapper):
                 @param model_path forecast file list path
                 @param obs_path observation file list path
         """
-        # set thresholds for fcst and obs if prob
-        fcst_thresh_list = var_info['fcst_thresh']
-        obs_thresh_list = var_info['obs_thresh']
         fcst_field_list = []
         obs_field_list = []
 
-        # if probabilistic forecast and no thresholds specified, error and skip
-        if self.c_dict['FCST_IS_PROB'] and not fcst_thresh_list:
-            self.logger.error("Must specify thresholds for probabilistic forecast data")
-            return
+        if not self.c_dict['SINGLE_RUN'] or self.c_dict['SINGLE_DATA_SRC'] == 'FCST':
+            fcst_thresh_list = var_info['fcst_thresh']
 
-        if self.c_dict['OBS_IS_PROB'] and not obs_thresh_list:
-            self.logger.error("Must specify thresholds for probabilistic obs data")
-            return
-
-        # if no thresholds are specified, run once
-        if not fcst_thresh_list and not obs_thresh_list:
-            fcst_thresh_list = [""]
-            obs_thresh_list = [""]
-
-        # loop over thresholds and build field list with one thresh per item
-        for fcst_thresh, obs_thresh in zip(fcst_thresh_list, obs_thresh_list):
-            fcst_field = self.get_field_info(v_name=var_info['fcst_name'],
-                                             v_level=var_info['fcst_level'],
-                                             v_extra=var_info['fcst_extra'],
-                                             v_thresh=[fcst_thresh],
-                                             d_type='FCST')
-
-            obs_field = self.get_field_info(v_name=var_info['obs_name'],
-                                            v_level=var_info['obs_level'],
-                                            v_extra=var_info['obs_extra'],
-                                            v_thresh=[obs_thresh],
-                                            d_type='OBS')
-
-            if fcst_field is None or obs_field is None:
+            # if probabilistic forecast and no thresholds specified, error and skip
+            if self.c_dict['FCST_IS_PROB'] and not fcst_thresh_list:
+                self.logger.error("Must specify thresholds for probabilistic forecast data")
                 return
 
-            fcst_field_list.extend(fcst_field)
-            obs_field_list.extend(obs_field)
+            # if no thresholds are specified, run once
+            if not fcst_thresh_list:
+                fcst_thresh_list = [""]
+
+           # loop over thresholds and build field list with one thresh per item
+            for fcst_thresh in fcst_thresh_list:
+                fcst_field = self.get_field_info(v_name=var_info['fcst_name'],
+                                                 v_level=var_info['fcst_level'],
+                                                 v_extra=var_info['fcst_extra'],
+                                                 v_thresh=[fcst_thresh],
+                                                 d_type='FCST')
+
+                if fcst_field is None:
+                    return
+
+                fcst_field_list.extend(fcst_field)
+
+
+        if not self.c_dict['SINGLE_RUN'] or self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
+            obs_thresh_list = var_info['obs_thresh']
+
+            if self.c_dict['OBS_IS_PROB'] and not obs_thresh_list:
+                self.logger.error("Must specify thresholds for probabilistic obs data")
+                return
+
+            # if no thresholds are specified, run once
+            if not fcst_thresh_list:
+                fcst_thresh_list = [""]
+
+            # loop over thresholds and build field list with one thresh per item
+            for obs_thresh in obs_thresh_list:
+                obs_field = self.get_field_info(v_name=var_info['obs_name'],
+                                                v_level=var_info['obs_level'],
+                                                v_extra=var_info['obs_extra'],
+                                                v_thresh=[obs_thresh],
+                                                d_type='OBS')
+
+                if obs_field is None:
+                    return
+
+                obs_field_list.extend(obs_field)
+
+            # if FCST is not set, set it to the OBS field list so the lists are the same length
+            if not fcst_field_list:
+                fcst_field_list = obs_field_list
+
+        else:
+            # if OBS is not set, set it to the FCST field list so the lists are the same length
+            obs_field_list = fcst_field_list
+
 
         # loop through fields and call MTD
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
@@ -282,10 +311,29 @@ class MTDWrapper(MODEWrapper):
             self.create_and_set_output_dir(time_info)
 
             self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"] )
-            self.add_env_var("FCST_VAR", var_info['fcst_name'])
             self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-            self.add_env_var("OBS_VAR", var_info['obs_name'])
-            self.add_env_var("LEVEL", util.split_level(var_info['fcst_level'])[1])
+
+            if 'fcst_name' in var_info:
+                fcst_name = var_info['fcst_name']
+            else:
+                fcst_name = ''
+            self.add_env_var("FCST_VAR", fcst_name)
+
+
+
+            if 'obs_name' in var_info:
+                obs_name = var_info['obs_name']
+            else:
+                obs_name = ''
+            self.add_env_var("OBS_VAR", obs_name)
+
+            if 'fcst_level' in var_info:
+                level = util.split_level(var_info['fcst_level'])[1]
+            elif 'obs_level' in var_info:
+                level = util.split_level(var_info['obs_level'])[1]
+            else:
+                level = ''
+            self.add_env_var("LEVEL", level)
 
             # single mode - set fcst file, field, etc.
             if self.c_dict['SINGLE_RUN']:
