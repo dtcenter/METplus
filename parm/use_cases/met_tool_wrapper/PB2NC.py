@@ -62,10 +62,10 @@ This use case will run the MET PB2NC tool to convert prepBUFR point observation 
 #
 # * **${PB2NC_MESSAGE_TYPE}** - Corresponds to PB2NC_MESSAGE_TYPE in the METplus configuration file.
 # * **${PB2NC_STATION_ID}** - Corresponds to PB2NC_STATION_ID in the METplus configuration file.
-# * **${OBS_WINDOW_BEGIN}** - Corresponds to OBS_WINDOW_BEGIN or PB2NC_WINDOW_BEGIN in the METplus configuration file.
-# * **${OBS_WINDOW_END}** - Corresponds to OBS_WINDOW_END or PB2NC_WINDOW_END in the METplus configuration file.
 # * **${PB2NC_GRID}** - Corresponds to PB2NC_GRID in the METplus configuration file.
 # * **${PB2NC_POLY}** - Corresponds to PB2NC_POLY in the METplus configuration file.
+# * **${OBS_WINDOW_BEGIN}** - Corresponds to OBS_WINDOW_BEGIN or PB2NC_WINDOW_BEGIN in the METplus configuration file.
+# * **${OBS_WINDOW_END}** - Corresponds to OBS_WINDOW_END or PB2NC_WINDOW_END in the METplus configuration file.
 # * **${OBS_BUFR_VAR_LIST}** - Corresponds to PB2NC_OBS_BUFR_VAR_LIST in the METplus configuration file.
 # * **${TIME_SUMMARY_FLAG}** - True/False option to compute time summary statistics. Corresponds to PB2NC_TIME_SUMMARY_FLAG in the METplus configuration file.
 # * **${TIME_SUMMARY_BEG}** - Corresponds to PB2NC_TIME_SUMMARY_BEG in the METplus configuration file.
