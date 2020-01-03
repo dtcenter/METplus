@@ -1511,6 +1511,8 @@ METplus Configuration Glossary
      FCST_VAR2_LEVELS
      ...
      FCST_VAR<n>_LEVELS
+
+     If FCST_VAR<n>_LEVELS is set, then OBS_VAR<n>_LEVELS must be set as well. If the same value applies to both forecast and observation data, use BOTH_VAR<n>_LEVELS.
      
      See reference "sec:SC_Field_Info" for more information.
 
@@ -1519,7 +1521,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    FCST_VAR<n>_NAME
-     Define the name for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. If FCST_VAR<n>_NAME is not set but OBS_VAR<n>_NAME is, the same information will be used for both variables. There can be s<n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
+     Define the name for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. If FCST_VAR<n>_NAME is set, then OBS_VAR<n>_NAME must be set. If the same value applies to both forecast and observation data, use BOTH_VAR<n>_NAME. There can be s<n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      FCST_VAR1_NAME
      FCST_VAR2_NAME
@@ -1541,7 +1543,7 @@ METplus Configuration Glossary
      FCST_VAR2_OPTIONS
      ...
      FCST_VAR<n>_OPTIONS
-     
+
      See reference "sec:SC_Field_Info" for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
@@ -1555,7 +1557,37 @@ METplus Configuration Glossary
      ...
      FCST_VAR<n>_THRESH
      
+     If FCST_VAR<n>_THRESH is set, then OBS_VAR<n>_THRESH must be set as well. If the same value applies to both forecast and observation data, use BOTH_VAR<n>_THRESH.
+
      See reference "sec:SC_Field_Info" for more information.
+
+     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   BOTH_VAR<n>_LEVELS
+     Define the levels for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See FCST_VAR<n>_LEVELS, OBS_VAR<n>_LEVELS, or reference "sec:SC_Field_Info" for more information.
+
+     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   BOTH_VAR<n>_NAME
+     Define the name for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See FCST_VAR<n>_NAME, OBS_VAR<n>_NAME, or reference "sec:SC_Field_Info" for more information.
+
+     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   BOTH_VAR<n>_OPTIONS
+     Define the extra options for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See FCST_VAR<n>_OPTIONS, OBS_VAR<n>_OPTIONS, or reference "sec:SC_Field_Info" for more information.
+
+     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   BOTH_VAR<n>_THRESH
+     Define the threshold list for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See FCST_VAR<n>_THRESH, OBS_VAR<n>_THRESH, or reference "sec:SC_Field_Info" for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]
@@ -3084,14 +3116,18 @@ METplus Configuration Glossary
      OBS_VAR1_LEVELS
      OBS_VAR2_LEVELS
      ...
-     OBS_VAR<n>_LEVELS    
+     OBS_VAR<n>_LEVELS
+
+     If OBS_VAR<n>_LEVELS is set, then FCST_VAR<n>_LEVELS must be set as well. If the same value applies to both forecast and observation data, use BOTH_VAR<n>_LEVELS.
+
+     See reference "sec:SC_Field_Info" for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_VAR<n>_NAME
-     Define the name for the <n>th observation variable to be used in the analysis where <n> is an integer >= 1. If OBS_VAR<n>_NAME is not set but FCST_VAR<n>_NAME is, the same information will be used for both variables. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
+     Define the name for the <n>th observation variable to be used in the analysis where <n> is an integer >= 1. If OBS_VAR<n>_NAME is set, then FCST_VAR<n>_NAME must be set. If the same value applies to both forecast and observation data, use BOTH_VAR<n>_NAME. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      OBS_VAR1_NAME
      OBS_VAR2_NAME
@@ -3123,6 +3159,10 @@ METplus Configuration Glossary
      OBS_VAR2_THRESH
      ...
      OBS_VAR<n>_THRESH     
+
+     If OBS_VAR<n>_THRESH is set, then FCST_VAR<n>_THRESH must be set as well. If the same value applies to both forecast and observation data, use BOTH_VAR<n>_THRESH.
+
+     See reference "sec:SC_Field_Info" for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]

@@ -236,6 +236,8 @@ Set this to the name of a forecast variable that you want to evaluate. <n> is an
   FCST_VAR1_NAME = TMP
   FCST_VAR2_NAME = RH
 
+If this value is set for a given <n> value, then the corresponding OBS_VAR<n>_NAME must be set. If the value for forecast and observation data are the same, BOTH_VAR<n>_NAME can be used instead.
+
 **FCST_VAR<n>_LEVELS**:
 Set this to a comma-separated list of levels or a single value. FCST_VAR1_LEVELS corresponds to FCST_VAR1_NAME, FCST_VAR2_LEVELS corresponds to FCST_VAR2_NAME, etc. For example::
 
@@ -243,21 +245,21 @@ Set this to a comma-separated list of levels or a single value. FCST_VAR1_LEVELS
   FCST_VAR1_NAME = TMP
   FCST_VAR1_LEVELS = P500, P750
 
-will process TMP at P500 and TMP at P750.
+will process TMP at P500 and TMP at P750. If FCST_VAR<n>_LEVELS and FCST_VAR<n>_NAME are set, then the corresponding OBS_VAR<n>_LEVELS and OBS_VAR<n>_NAME must be set. If the value for forecast and observation data are the same, BOTH_VAR<n>_NAME and BOTH_VAR<n>_LEVELS can be used instead.
 
 **OBS_VAR<n>_NAME**:
-Set this to the corresponding observation variable that you want to evaluate with FCST_VAR<n>_NAME. If this value is not set for a given <n> value, then it will be assumed that the same name as the forecast name will be used.
+Set this to the corresponding observation variable that you want to evaluate with FCST_VAR<n>_NAME. If this value is set for a given <n> value, then the corresponding FCST_VAR<n>_NAME must be set. If the value for forecast and observation data are the same, BOTH_VAR<n>_NAME can be used instead.
 
 **OBS_VAR<n>_LEVELS**:
-Set this to a comma-separated list of levels or a single value. If OBS_VAR<n>_LEVELS and OBS_VAR<n>_NAME are not set, it will be assumed that the same name/level combination as the forecast data will be used. For example, setting::
+Set this to a comma-separated list of levels or a single value. If OBS_VAR<n>_LEVELS and OBS_VAR<n>_NAME are set, then the corresponding FCST_VAR<n>_LEVELS and FCST_VAR<n>_NAME must be set. If the value for forecast and observation data are the same, BOTH_VAR<n>_NAME and BOTH_VAR<n>_LEVELS can be used instead. For example, setting::
 
   [config]
-  FCST_VAR1_NAME = TMP
-  FCST_VAR1_LEVELS = P500
-  FCST_VAR2_NAME = RH
-  FCST_VAR2_LEVELS = P750, P250
+  BOTH_VAR1_NAME = TMP
+  BOTH_VAR1_LEVELS = P500
+  BOTH_VAR2_NAME = RH
+  BOTH_VAR2_LEVELS = P750, P250
 
-without setting OBS_VAR1_NAME or OBS_VAR2_NAME is the equivalent of setting::
+is the equivalent of setting::
 
   [config]
   FCST_VAR1_NAME = TMP
@@ -317,9 +319,9 @@ will add the folloing information to the MET config file::
 
    fcst = {field = [ {name="TMP"; level="P500"; cat_thresh=[ le0.5, gt0.4, gt0.5, gt0.8];} ];}
 
-Note that the value for FCST_VAR<n>_THRESH will not be copied to OBS_VAR<n>_THRESH if it is not set. These items are independent of each other.
+If FCST_VAR<n>_THRESH is set, then OBS_VAR<n>_THRESH must be set. If the threshold list is the same for both forecast and observation data, BOTH_VAR<n>_THRESH can be used instead.
 
-**[FCST/OBS_VAR<n>_OPTIONS**:
+**[FCST/OBS]_VAR<n>_OPTIONS**:
 Set this to add additional information to the field dictionary in the MET config file. The item must end with a semi-colon. For example::
 
   [config]
@@ -331,9 +333,9 @@ will add the following to the MET config file::
 
   fcst = {field = [ {name="TMP"; level="P500"; GRIB_lvl_typ = 105; ens_phist_bin_size = 0.05;} ];}
 
-Note that the value for FCST_VAR<n>_OPTIONS will not be copied to OBS_VAR<n>_OPTIONS if it is not set. These items are independent of each other.
+If FCST_VAR<n>_OPTIONS is set, OBS_VAR<n>_OPTIONS does not need to be set, and vice-versa. If the extra options are the same for both forecast and observation data, BOTH_VAR<n>_OPTIONS can be used instead.
 
-**[ENS_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS]**:
+**ENS_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS]**:
 **Used with EnsembleStat Wrapper only.** Users may want to define the ens dictionary item in the MET EnsembleStat config file differently than the fcst dictionary item. If this is the case, you can use these variables. If it is not set, the values in the corresponding FCST_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS] will be used in the ens dictionary.
 
 Directory and Filename Template Info
