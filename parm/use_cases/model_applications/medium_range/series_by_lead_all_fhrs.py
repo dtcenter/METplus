@@ -46,10 +46,8 @@ requested a series analysis based on forecast hours rather than by initializatio
 # The following tools are used for each run time:
 # TcPairs > RegridDataPlane, TcStat > SeriesAnalysis
 #
-# This example loops by initialization time. For each initialization time
-# it will process forecast leads 6, 12, 18, 24, 30, 36, 40, 46, 52, 58, 64, 70, 76, 82, 88, and 94 (if data
-# is available for those corresponding forecast leads). Data for this example is only available for 20141214,
-# therefore there is only one initialization time that is run.
+# This example loops by forecast/lead time, beginning at 6 hrs up to and including 90 hours in 6 hour increments (as requested in the METplus
+# series_by_lead_by_fhr_grouping.conf file).
 # The following will be run, based on the actual availability of data corresponding to the requested initialization time
 # and forecast leads:
 #
