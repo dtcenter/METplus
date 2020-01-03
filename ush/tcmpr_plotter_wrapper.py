@@ -393,4 +393,4 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    util.run_stand_alone("tcmpr_plotter_wrapper", "TCMPRPlotter")
+    util.run_stand_alone(__file__, "TCMPRPlotter")

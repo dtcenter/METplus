@@ -433,4 +433,4 @@ class MTDWrapper(MODEWrapper):
 
 
 if __name__ == "__main__":
-    util.run_stand_alone("mtd_wrapper", "MTD")
+    util.run_stand_alone(__file__, "MTD")

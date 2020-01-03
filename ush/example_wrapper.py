@@ -90,4 +90,4 @@ class ExampleWrapper(CommandBuilder):
         return True
 
 if __name__ == "__main__":
-    util.run_stand_alone("example_wrapper", "Example")
+    util.run_stand_alone(__file__, "Example")

@@ -370,4 +370,4 @@ class PB2NCWrapper(CommandBuilder):
         return cmd.strip()
 
 if __name__ == "__main__":
-        util.run_stand_alone("pb2nc_wrapper", "PB2NC")
+    util.run_stand_alone(__file__, "PB2NC")

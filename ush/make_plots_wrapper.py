@@ -1051,4 +1051,4 @@ class MakePlotsWrapper(CommandBuilder):
             exit(1)
 
 if __name__ == "__main__":
-    util.run_stand_alone("make_plots_wrapper", "MakePlots")
+    util.run_stand_alone(__file__, "MakePlots")

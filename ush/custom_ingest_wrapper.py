@@ -138,4 +138,4 @@ class CustomIngestWrapper(CommandBuilder):
             rdp.build()
 
 if __name__ == "__main__":
-        util.run_stand_alone("custom_ingest_wrapper", "CustomIngest")
+    util.run_stand_alone(__file__, "CustomIngest")

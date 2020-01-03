@@ -543,5 +543,5 @@ class CyclonePlotterWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    util.run_stand_alone("cyclone_plotter_wrapper", "CyclonePlotter")
+    util.run_stand_alone(__file__, "CyclonePlotter")
 

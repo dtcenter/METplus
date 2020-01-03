@@ -240,3 +240,7 @@ class ASCII2NCWrapper(CommandBuilder):
         # add mask SID if set
         if self.c_dict['MASK_SID']:
             self.args.append(f" -mask_sid {self.c_dict['MASK_SID']}")
+
+
+if __name__ == "__main__":
+    util.run_stand_alone(__file__, "ASCII2NC")

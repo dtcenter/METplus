@@ -831,4 +831,4 @@ class TCStatWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    util.run_stand_alone("tc_stat_wrapper", "TCStat")
+    util.run_stand_alone(__file__, "TCStat")
