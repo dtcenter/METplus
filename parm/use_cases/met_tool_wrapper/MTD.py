@@ -1,23 +1,23 @@
 """
-MODE
+MTD
 ========
 
-This use case will run the MET MODE tool to compare gridded forecast data to gridded observation data.
+This use case will run the MET MTD (MODE Time Domain) tool to compare gridded forecast data to gridded observation data over time.
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Compare relative humidity 12 hour forecast to 0 hour observations.
-# Generate statistics of the results.
+# Compare forecast and observation 3 hour precipitation accumulation spatially and temporally over the 6 hour, 9 hour, and 12 hour forecast leads.
+#
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** WRF Relative Humidity
-# | **Observation:** WRF Relative Humidity
+# | **Forecast:** WRF GRIB Precipitation Accumulation
+# | **Observation:** Stage 2 NetCDF Precipitation Accumulation (converted from GRIB format)
 #
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v2.2/sample_data-met_test-8.1.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
@@ -28,7 +28,7 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus MODE wrapper to search for
+# This use case utilizes the METplus MTD wrapper to search for
 # files that are valid at a given run time and generate a command to run
 # the MET tool mode if all required files are found.
 
@@ -36,11 +36,11 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 # METplus Workflow
 # ----------------
 #
-# MODE is the only tool called in this example. It processes the following
+# MTD is the only tool called in this example. It processes the following
 # run times:
 #
 # | **Init:** 2005-08-07_0Z
-# | **Forecast lead:** 12 hour
+# | **Forecast leads:** 6, 9, and 12 hours
 
 ##############################################################################
 # METplus Configuration
@@ -48,10 +48,10 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/MODE.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/MTD.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/MODE.conf
+# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/MTD.conf
 
 ##############################################################################
 # MET Configuration
@@ -61,27 +61,23 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 # These variables are referenced in the MET configuration file.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/met_config/MODEConfig_wrapped
+# .. literalinclude:: ../../../parm/met_config/MTDConfig_wrapped
 #
 # Note the following variables are referenced in the MET configuration file.
-# * QUILT - True/False to perform quilting. Corresponds to MODE_QUILT in the METplus configuration file.
+# * **${MIN_VOLUME}** - Minimum volume to be considered valid data. Corresponds to MTD_MIN_VOLUME in the METplus configuration file.
 # * **${FCST_CONV_RADIUS}** - Convolution radius used for forecast data. Corresponds to FCST_MODE_CONV_RADIUS in the METplus configuration files.
 # * **${FCST_CONV_THRESH}** - List of convolution thresholds used for forecast data. Corresponds to FCST_MODE_CONV_THRESH in the METplus configuration files.
-# * **${FCST_MERGE_THRESH}** - List of merge thresholds used for forecast data. Corresponds to FCST_MODE_MERGE_THRESH in the METplus configuration files.
-# * **${FCST_MERGE_FLAG}** - True/False merge flag used for forecast data. Corresponds to FCST_MODE_MERGE_FLAG in the METplus configuration files.
 # * **${OBS_CONV_RADIUS}** - Convolution radius used for observation data. Corresponds to OBS_MODE_CONV_RADIUS in the METplus configuration files.
 # * **${OBS_CONV_THRESH}** - List of convolution thresholds used for observation data. Corresponds to OBS_MODE_CONV_THRESH in the METplus configuration files.
-# * **${OBS_MERGE_THRESH}** - List of merge thresholds used for observation data. Corresponds to OBS_MODE_MERGE_THRESH in the METplus configuration files.
-# * **${OBS_MERGE_FLAG}** - True/False merge flag used for forecast data. Corresponds to OBS_MODE_MERGE_FLAG in the METplus configuration files.
 # * **${MODEL}** - Name of forecast input. Corresponds to MODEL in the METplus configuration file.
 # * **${OBTYPE}** - Name of observation input. Corresponds to OBTYPE in the METplus configuration file.
-# * **${FCST_FIELD}** - Formatted forecast field information. Generated from FCST_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${OBS_FIELD}** - Formatted observation field information. Generated from OBS_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${FCST_VAR}** - Field name of forecast data to process. Used in output_prefix to include input information in the output filenames. Corresponds to FCST_VAR<n>_NAME in the METplus configuration file.
-# * **${OBS_VAR}** - Field name of observation data to process. Used in output_prefix to include input information in the output filenames. Corresponds to OBS_VAR<n>_NAME in the METplus configuration file.
-# * **${LEVEL}** - Vertical level of the forecast input data. Used in output_prefix to include input information in the output filenames. Corresponds to FCST_VAR<n>_LEVELS in the METplus configuration file.
-# * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to MODE_REGRID_TO_GRID in the METplus configuration file.
-# * **${VERIF_MASK}** - Optional verification mask file or list of files. Corresponds to GRID_STAT_VERIFICATION_MASK_TEMPLATE in the METplus configuration file.
+# * **${LEVEL}** - Vertical level of the forecast input data. Used in output_prefix to include input information in the output filenames. Corresponds to [FCST/BOTH]_VAR<n>_LEVELS in the METplus configuration file.
+# * **${FCST_FIELD}** - Formatted forecast field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+# * **${OBS_FIELD}** - Formatted observation field information. Generated from [OBS/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+# * **${FCST_VAR}** - Field name of forecast data to process. Used in output_prefix to include input information in the output filenames. Corresponds to [FCST/BOTH]_VAR<n>_NAME in the METplus configuration file.
+# * **${OBS_VAR}** - Field name of observation data to process. Used in output_prefix to include input information in the output filenames. Corresponds to [OBS/BOTH]_VAR<n>_NAME in the METplus configuration file.
+# * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to MTD_REGRID_TO_GRID in the METplus configuration file.
+
 
 ##############################################################################
 # Running METplus
@@ -89,13 +85,13 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 #
 # This use case can be run two ways:
 #
-# 1) Passing in MODE.conf then a user-specific system configuration file::
+# 1) Passing in MTD.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MODE.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MTD.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in MODE.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in MTD.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MODE.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MTD.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -122,17 +118,15 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in mode/2005080712 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in mtd/2005080712 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 
-# * mode_WRF_RH_vs_WRF_RH_P500_120000L_20050807_120000V_000000A_cts.txt
-# * mode_WRF_RH_vs_WRF_RH_P500_120000L_20050807_120000V_000000A_obj.nc
-# * mode_WRF_RH_vs_WRF_RH_P500_120000L_20050807_120000V_000000A_obj.txt
-# * mode_WRF_RH_vs_WRF_RH_P500_120000L_20050807_120000V_000000A.ps
-
+# * mtd_PROB_WRF_APCP_vs_MC_PCP_APCP_03_A03_20050807_060000V_2d.txt
+# * mtd_PROB_WRF_APCP_vs_MC_PCP_APCP_03_A03_20050807_060000V_3d_single_simple.txt
+# * mtd_PROB_WRF_APCP_vs_MC_PCP_APCP_03_A03_20050807_060000V_obj.nc
 
 ##############################################################################
 # Keywords
 # --------
 #
-# .. note:: `MODEUseCase <https://ncar.github.io/METplus/search.html?q=MODEUseCase&check_keywords=yes&area=default>`_
+# .. note:: `MTDUseCase <https://ncar.github.io/METplus/search.html?q=MTDUseCase&check_keywords=yes&area=default>`_
