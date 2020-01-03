@@ -1,21 +1,21 @@
 """
-ASCII2NC
+RegridDataPlane
 ========
 
-This use case will run the MET ASCII2NC tool to convert point observation data in ASCII text format to NetCDF format.
+This use case will run the MET RegridDataPlane tool to convert point observation data in ASCII text format to NetCDF format.
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# None. Simply converting file formats so point observations can be read by the MET tools.
+# None. Simply regridding data to match a desired grid domain for comparisons.
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Observations:** Precipitation accumulation observations in ASCII text files
+# | **Observations:** Stage 2 NetCDF 1-hour Precipitation Accumulation
 #
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v2.2/sample_data-met_test-8.1.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
@@ -26,16 +26,22 @@ This use case will run the MET ASCII2NC tool to convert point observation data i
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus ASCII2NC wrapper to generate a command to run the MET tool ASCII2NC if all required files are found.
+# This use case utilizes the METplus RegridDataPlane wrapper to generate a command to run the MET tool RegridDataPlane if all required files are found.
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# ASCII2NC is the only tool called in this example. It processes the following
+# RegridDataPlane is the only tool called in this example. It processes the following
 # run time:
 #
-# | **Valid:** 2010-01-01_12Z
+# | **Init:** 2005-08-07_0Z
+# | **Forecast lead:** 3 hour
+#
+# This use case regrids data to another domain specified with REGRID_DATA_PLANE_VERIF_GRID. This is done so that
+# forecast and observation comparisons are done on the same grid. Many MET comparison tools have regridding capabilities
+# built in. However, if the same file is read for comparisons multiple times, it is redundant to regrid that file each time.
+# Running RegridDataPlane allows you to regrid once and use the output it many comparisons/evaluations.
 
 ##############################################################################
 # METplus Configuration
@@ -43,34 +49,16 @@ This use case will run the MET ASCII2NC tool to convert point observation data i
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/ASCII2NC.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/RegridDataPlane.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/ASCII2NC.conf
+# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/RegridDataPlane.conf
 
 ##############################################################################
 # MET Configuration
 # ---------------------
 #
-# METplus sets environment variables based on the values in the METplus configuration file.
-# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../parm/met_config/Ascii2NcConfig_wrapped
-#
-# Note the following variables are referenced in the MET configuration file. Please see the MET User's Guide section regarding ASCII2NC time summary options for more information.
-#
-# * **${TIME_SUMMARY_FLAG}** - True/False option to compute time summary statistics. Corresponds to ASCII2NC_TIME_SUMMARY_FLAG in the METplus configuration file.
-# * **${TIME_SUMMARY_RAW_DATA}** - Corresponds to ASCII2NC_TIME_SUMMARY_RAW_DATA in the METplus configuration file.
-# * **${TIME_SUMMARY_BEG}** - Corresponds to ASCII2NC_TIME_SUMMARY_BEG in the METplus configuration file.
-# * **${TIME_SUMMARY_END}** - Corresponds to ASCII2NC_TIME_SUMMARY_END in the METplus configuration file.
-# * **${TIME_SUMMARY_STEP}** - Corresponds to ASCII2NC_TIME_SUMMARY_STEP in the METplus configuration file.
-# * **${TIME_SUMMARY_WIDTH}** - Corresponds to ASCII2NC_TIME_SUMMARY_WIDTH in the METplus configuration file.
-# * **${TIME_SUMMARY_GRIB_CODES}** - Corresponds to ASCII2NC_TIME_SUMMARY_GRIB_CODES in the METplus configuration file.
-# * **${TIME_SUMMARY_VAR_NAMES}** - Corresponds to ASCII2NC_TIME_SUMMARY_VAR_NAMES in the METplus configuration file.
-# * **${TIME_SUMMARY_TYPES}** - Corresponds to ASCII2NC_TIME_SUMMARY_TYPES in the METplus configuration file.
-# * **${TIME_SUMMARY_VALID_FREQ}** - Corresponds to ASCII2NC_TIME_SUMMARY_VALID_FREQ in the METplus configuration file.
-# * **${TIME_SUMMARY_VALID_THRESH}** - Corresponds to ASCII2NC_TIME_SUMMARY_VALID_THRESH in the METplus configuration file.
+# None. RegridDataPlane does not use configuration files.
 #
 
 ##############################################################################
@@ -79,13 +67,13 @@ This use case will run the MET ASCII2NC tool to convert point observation data i
 #
 # This use case can be run two ways:
 #
-# 1) Passing in ASCII2NC.conf then a user-specific system configuration file::
+# 1) Passing in RegridDataPlane.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/ASCII2NC.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/RegridDataPlane.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in ASCII2NC.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in RegridDataPlane.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/ASCII2NC.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/RegridDataPlane.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -112,13 +100,13 @@ This use case will run the MET ASCII2NC tool to convert point observation data i
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in ascii2nc (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in regrid_data_plane (relative to **OUTPUT_BASE**)
 # and will contain the following file:
 #
-# * precip24_2010010112.nc
+# * ST2ml2005080703.Grb_G212
 
 ##############################################################################
 # Keywords
 # --------
 #
-# .. note:: `ASCII2NCUseCase <https://ncar.github.io/METplus/search.html?q=ASCII2NCUseCase&check_keywords=yes&area=default>`_
+# .. note:: `RegridDataPlaneUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default>`_
