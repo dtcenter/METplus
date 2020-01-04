@@ -1668,7 +1668,6 @@ def validate_configuration_variables(config, force_check=False):
       inoutbase_isOK = False
 
     check_user_environment(config)
-    print(f"{deprecated_isOK}, {field_isOK}, {inoutbase_isOK}, {all_sed_cmds}")
 
     return deprecated_isOK, field_isOK, inoutbase_isOK, all_sed_cmds
 
