@@ -1,0 +1,95 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// STAT-Analysis configuration file.
+//
+// For additional information, see the MET_BASE/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Filtering input STAT lines by the contents of each column
+//
+model = [${MODEL}];
+desc  = [${DESC}];
+
+
+fcst_lead = [${FCST_LEAD}];
+obs_lead  = [${OBS_LEAD}];
+
+fcst_valid_beg  = "${FCST_VALID_BEG}";
+fcst_valid_end  = "${FCST_VALID_END}";
+fcst_valid_hour = [${FCST_VALID_HOUR}];
+
+obs_valid_beg   = "${OBS_VALID_BEG}";
+obs_valid_end   = "${OBS_VALID_END}";
+obs_valid_hour  = [${OBS_VALID_HOUR}];
+
+fcst_init_beg   = "${FCST_INIT_BEG}";
+fcst_init_end   = "${FCST_INIT_END}";
+fcst_init_hour  = [${FCST_INIT_HOUR}];
+
+obs_init_beg    = "${OBS_INIT_BEG}";
+obs_init_end    = "${OBS_INIT_END}";
+obs_init_hour   = [${OBS_INIT_HOUR}];
+
+fcst_var = [${FCST_VAR}];
+obs_var  = [${OBS_VAR}];
+
+fcst_units = [${FCST_UNITS}];
+obs_units  = [${OBS_UNITS}];
+
+fcst_lev = [${FCST_LEVEL}];
+obs_lev  = [${OBS_LEVEL}];
+
+obtype = [${OBTYPE}];
+
+vx_mask = [${VX_MASK}];
+
+interp_mthd = [${INTERP_MTHD}];
+
+interp_pnts = [${INTERP_PNTS}];
+
+fcst_thresh = [${FCST_THRESH}];
+obs_thresh  = [${OBS_THRESH}];
+cov_thresh  = [${COV_THRESH}];
+
+alpha = [${ALPHA}];
+
+line_type = [${LINE_TYPE}];
+
+column = [];
+
+weight = [];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Array of STAT-Analysis jobs to be performed on the filtered data
+//
+jobs = [
+   "${JOB}"
+];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Confidence interval settings
+//
+out_alpha = 0.05;
+
+boot = {
+   interval = PCTILE;
+   rep_prop = 1.0;
+   n_rep    = 0;
+   rng      = "mt19937";
+   seed     = "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+rank_corr_flag = FALSE;
+vif_flag       = FALSE;
+tmp_dir        = "/tmp";
+//version        = "V8.1";
+
+////////////////////////////////////////////////////////////////////////////////
