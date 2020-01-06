@@ -80,8 +80,8 @@ climo_mean = {
 
    time_interp_method = DW_MEAN;
    match_month        = TRUE;
-   match_day          = FALSE;
-   time_step          = 21600;
+   day_interval       = 31;
+   hour_interval      = 6;
 }
 
 climo_stdev = climo_mean;
@@ -90,6 +90,15 @@ climo_stdev = {
 }
 
 climo_cdf_bins = 1;
+
+//
+// May be set separately in each "obs.field" entry
+//
+climo_cdf = {
+   cdf_bins    = 1;
+   center_bins = FALSE;
+   write_bins  = TRUE;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -172,6 +181,19 @@ gradient = {
 ////////////////////////////////////////////////////////////////////////////////
 
 //
+// Distance Map statistics
+// May be set separately in each "obs.field" entry
+//
+distance_map = {
+   baddeley_p        = 2;
+   baddeley_max_dist = NA;
+   fom_alpha         = 0.1;
+   zhu_weight        = 0.5;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
 // Statistical output types
 //
 output_flag = {
@@ -195,6 +217,7 @@ output_flag = {
    nbrcts = NONE;
    nbrcnt = NONE;
    grad   = BOTH;
+   dmap   = NONE;
 }
 
 //
@@ -206,10 +229,12 @@ nc_pairs_flag = {
    raw        = FALSE;
    diff       = FALSE;
    climo      = FALSE;
+   climo_cdp    = FALSE;
    weight     = FALSE;
    nbrhd      = FALSE;
    fourier    = FALSE;
    gradient   = FALSE;
+   distance_map = FALSE;
    apply_mask = FALSE;
 }
 
@@ -218,6 +243,6 @@ nc_pairs_flag = {
 grid_weight_flag = NONE;
 tmp_dir          = "/tmp";
 output_prefix    = "PROB_${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${LEVEL}";
-//version		 = "V8.1";
+//version		 = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////
