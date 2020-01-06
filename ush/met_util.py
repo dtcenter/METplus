@@ -1683,11 +1683,11 @@ def skip_field_info_validation(config):
     if 'MTD' in process_list and config.getbool('config', 'MTD_SINGLE_RUN'):
         return True
 
-    # if only running PCPCombine and/or RegridDataPlane, you don't need matching FCST/OBS
+    # if running any app other than the reformatters, you need matching FCST/OBS, so don't skip
     if [item for item in process_list if item not in reformatters]:
-        return True
+        return False
 
-    return False
+    return True
 
 def find_indices_in_config_section(regex_expression, config, sec):
     # regex expression must have 2 () items and the 2nd item must be the index
