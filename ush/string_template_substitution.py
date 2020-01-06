@@ -577,7 +577,6 @@ class StringExtract(object):
                             return None
                         # extract string that corresponds to format
                     if items[0] == SHIFT_STRING:
-                        shift = int(items[1])
                         # don't allow shift on any identifier except valid
                         if identifier != VALID_STRING:
                             msg = 'Cannot apply a shift to template ' +\
@@ -585,6 +584,8 @@ class StringExtract(object):
                                   'times. Only {} is accepted'.format(VALID_STRING)
                             self.logger.error(msg)
                             exit(1)
+
+                        shift = int(time_util.get_seconds_from_string(items[1], default_unit='S'))
 
                         # if shift has been set before (other than 0) and
                         # this shift differs, report error and exit
