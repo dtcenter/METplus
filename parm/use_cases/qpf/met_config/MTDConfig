@@ -229,6 +229,6 @@ txt_output = {
 
 output_prefix    = "PROB_${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_A${LEVEL}";
 
-//version        = "V8.1";
+//version        = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////
