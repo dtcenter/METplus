@@ -2,7 +2,7 @@
 PHPT vs. Stage IV GRIB Use Case
 ========
 
-This use case compares gridded 6 hour forecast precipitation accumulation data to
+This use case compares gridded probabilistic 6 hour forecast precipitation accumulation data to
 gridded 6 hour observation precipitation accumulation data.
 
 """
