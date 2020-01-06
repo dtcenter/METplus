@@ -173,6 +173,7 @@ def post_run_cleanup(config, app_name, total_errors):
             error_msg += 's'
         error_msg += '.'
         logger.error(error_msg)
+        logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
 
 
 def check_for_deprecated_config(conf):
