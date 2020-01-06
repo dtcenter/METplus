@@ -145,10 +145,9 @@ def main():
               "\nRun this script again to compare results to previous run")
         exit(0)
 
-    print("\nIf files or directories were only found in one run, they will appear here:\n")
+    print("\nIf files or directories were only found in one run, they will appear when you run the following:\n")
     diff_cmd = f"diff -r {output_base_prev} {output_base} | grep Only"
-    process = subprocess.Popen(diff_cmd, shell=True, stdout=subprocess.PIPE)
-    process.wait()
+    print(diff_cmd)
 
     print("\nCompare the output from previous run (" + output_base_prev + ") to this run"+\
           " (" + output_base + ").\nRun the following to compare results:")
