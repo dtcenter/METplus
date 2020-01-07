@@ -153,8 +153,12 @@ def parse_launch_args(args, usage, filename, logger, baseinputconfs):
             infiles.append(os.path.join(parm, args[iarg]))
         else:
             bad = True
-            logger.error('%s: invalid argument.  Not an config option '
-                         '(a.b=c) nor a conf file.' % (args[iarg],))
+            # if OS separator character (/ or \) if in argument, assume it
+            # is supposed to be a path but the file is not found
+            if os.sep in args[iarg]:
+                logger.error(f"Configuration file not found: {args[iarg]}")
+            else:
+                logger.error(f"Invalid argument: {args[iarg]}")
     if bad:
         sys.exit(2)
 
@@ -287,35 +291,6 @@ def load(filename):
     conf = METplusConfig()
     conf.read(filename)
     return conf
-
-def set_conf_file_path(conf_file):
-    return _set_conf_file_path(conf_file)
-
-
-# This is meant to be used with the -c option in METplus
-# for backward compatability, since users using the -c option
-# are not required to add path information and the previous
-# constants object found it since it was pulled in via the import
-# statement and the parm directory was defined in the PYTHONPATH
-def _set_conf_file_path(conf_file):
-    """Do not call this directly.  It is an internal implementation
-    routine. It is only used internally and is called when adding an
-    additional conf using the -c command line option.
-
-    Adds the path information to the conf file if there isn't any.
-    """
-    parm = os.path.realpath(PARM_BASE)
-
-    # Determine if add_conf_file has path information /path/to/file.conf
-    # If not head than there is no path information, only a filename,
-    # so assUme the conf file is in the parm directory, and add that
-    # parm path information
-    head, tail = os.path.split(conf_file)
-    if not head:
-        new_conf_file = os.path.join(parm, conf_file)
-        return new_conf_file
-
-    return conf_file
 
 def _set_logvars(config, logger=None):
     """!Sets and adds the LOG_METPLUS and LOG_TIMESTAMP
