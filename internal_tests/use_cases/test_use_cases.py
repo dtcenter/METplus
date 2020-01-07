@@ -31,8 +31,8 @@ all_use_cases = [
                 use_case_dir+"/met_tool_wrapper/PCPCombine_C.conf",
                 use_case_dir+"/met_tool_wrapper/PCPCombine_D.conf",
                 use_case_dir+"/met_tool_wrapper/PCPCombine_E.conf",
-                use_case_dir + "/qpf/examples/ruc-vs-s2grib.conf",
-                use_case_dir+"/qpf/examples/phpt-vs-s4grib.conf" ,
+                use_case_dir+"/model_applications/precipitation/ruc-vs-s2grib.conf",
+                use_case_dir+"/model_applications/precipitation/phpt-vs-s4grib.conf",
                 use_case_dir+"/qpf/examples/phpt-vs-mrms-qpe.conf" ,
                 use_case_dir+"/qpf/examples/hrefmean-vs-mrms-qpe.conf" ,
                 use_case_dir+"/qpf/examples/nationalblend-vs-mrms-qpe.conf" ,
@@ -42,10 +42,8 @@ all_use_cases = [
                 use_case_dir+"/grid_to_grid/examples/sfc.conf" ,
                 use_case_dir+"/grid_to_grid/examples/precip.conf",
                 use_case_dir+"/grid_to_grid/examples/precip_continuous.conf" ,
-                use_case_dir+"/mode/examples/hrefmean-vs-mrms-qpe-mode.conf",
-                use_case_dir+"/mode/examples/phpt-vs-qpe-mtd.conf",
-                use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/conus_surface.conf",
-                use_case_dir+"/grid_to_obs/grid_to_obs.conf,"+use_case_dir+"/grid_to_obs/examples/upper_air.conf",
+                use_case_dir+"/model_applications/medium_range/conus_surface.conf",
+                use_case_dir+"/model_applications/medium_range/upper_air.conf",
                 use_case_dir+"/feature_relative/feature_relative.conf",
                 use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_init_12-14_to_12-16.conf" ,
                 use_case_dir+"/feature_relative/feature_relative.conf,"+use_case_dir+"/feature_relative/examples/series_by_lead_all_fhrs.conf" ,
@@ -147,10 +145,9 @@ def main():
               "\nRun this script again to compare results to previous run")
         exit(0)
 
-    print("\nIf files or directories were only found in one run, they will appear here:\n")
+    print("\nIf files or directories were only found in one run, they will appear when you run the following:\n")
     diff_cmd = f"diff -r {output_base_prev} {output_base} | grep Only"
-    process = subprocess.Popen(diff_cmd, shell=True)
-    process.wait()
+    print(diff_cmd)
 
     print("\nCompare the output from previous run (" + output_base_prev + ") to this run"+\
           " (" + output_base + ").\nRun the following to compare results:")

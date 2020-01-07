@@ -1395,4 +1395,4 @@ class SeriesByLeadWrapper(CommandBuilder):
         util.remove_staged_files(staging_dir, filter_regex, self.logger)
 
 if __name__ == "__main__":
-        util.run_stand_alone("series_by_lead_wrapper", "SeriesByLead")
+    util.run_stand_alone(__file__, "SeriesByLead")

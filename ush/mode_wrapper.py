@@ -233,4 +233,4 @@ class MODEWrapper(CompareGriddedWrapper):
             self.clear()
 
 if __name__ == "__main__":
-    util.run_stand_alone("mode_wrapper", "MODE")
+    util.run_stand_alone(__file__, "MODE")

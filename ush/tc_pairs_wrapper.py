@@ -737,4 +737,4 @@ class TCPairsWrapper(CommandBuilder):
         out_file.close()
 
 if __name__ == "__main__":
-    util.run_stand_alone("tc_pairs_wrapper", "TCPairs")
+    util.run_stand_alone(__file__, "TCPairs")

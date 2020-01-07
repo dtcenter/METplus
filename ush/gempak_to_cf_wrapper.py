@@ -107,3 +107,6 @@ class GempakToCFWrapper(CommandBuilder):
             return
 
         self.build()
+
+if __name__ == "__main__":
+    util.run_stand_alone(__file__, "GempakToCF")

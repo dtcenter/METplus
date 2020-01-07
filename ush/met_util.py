@@ -43,6 +43,139 @@ baseinputconfs = ['metplus_config/metplus_system.conf',
                   'metplus_config/metplus_runtime.conf',
                   'metplus_config/metplus_logging.conf']
 
+def pre_run_setup(filename, app_name):
+    filebasename = os.path.basename(filename)
+    logger = logging.getLogger(app_name)
+    version_number = get_version_number()
+    logger.info(f'Starting {app_name} v{version_number}')
+
+    # Parse arguments, options and return a config instance.
+    config = config_metplus.setup(baseinputconfs,
+                                  filename=filebasename)
+
+    logger = get_logger(config)
+
+    config.set('config', 'METPLUS_VERSION', version_number)
+    logger.info(f'Running {app_name} v%s called with command: %s',
+                version_number, ' '.join(sys.argv))
+
+    # validate configuration variables
+    isOK_A, isOK_B, isOK_C, all_sed_cmds = validate_configuration_variables(config)
+    if not (isOK_A and isOK_B and isOK_C):
+        # if any sed commands were generated, write them to the sed file
+        if all_sed_cmds:
+            sed_file = os.path.join(config.getdir('OUTPUT_BASE'), 'sed_commands.txt')
+            # remove if sed file exists
+            if os.path.exists(sed_file):
+                os.remove(sed_file)
+
+            write_list_to_file(sed_file, all_sed_cmds)
+            config.logger.error(f"Find/Replace commands have been generated in {sed_file}")
+
+        logger.error("Correct configuration variables and rerun. Exiting.")
+        exit(1)
+
+    # set staging dir to OUTPUT_BASE/stage if not set
+    if not config.has_option('dir', 'STAGING_DIR'):
+        config.set('dir', 'STAGING_DIR',
+                   os.path.join(config.getdir('OUTPUT_BASE'), "stage"))
+
+    # handle dir to write temporary files
+    handle_tmp_dir(config)
+
+    config.env = os.environ.copy()
+
+    return config
+
+def run_metplus(config, process_list):
+
+    processes = []
+    for item in process_list:
+        try:
+            logger = config.log(item)
+            command_builder = \
+                getattr(sys.modules['__main__'],
+                        item + "Wrapper")(config, logger)
+            # if Usage specified in PROCESS_LIST, print usage and exit
+            if item == 'Usage':
+                command_builder.run_all_times()
+                exit(1)
+        except AttributeError:
+            raise NameError("Process %s doesn't exist" % item)
+
+        processes.append(command_builder)
+
+    # check if all processes initialized correctly
+    allOK = True
+    for process in processes:
+        if not process.isOK:
+            allOK = False
+            class_name = process.__class__.__name__.replace('Wrapper', '')
+            logger.error("{} was not initialized properly".format(class_name))
+
+    # exit if any wrappers did not initialized properly
+    if not allOK:
+        logger.info("Refer to ERROR messages above to resolve issues.")
+        exit()
+
+    loop_order = config.getstr('config', 'LOOP_ORDER', '')
+
+    if loop_order == "processes":
+        for process in processes:
+            process.run_all_times()
+
+    elif loop_order == "times":
+        loop_over_times_and_call(config, processes)
+
+    else:
+        logger.error("Invalid LOOP_ORDER defined. " + \
+              "Options are processes, times")
+        exit()
+
+   # compute total number of errors that occurred and output results
+    total_errors = 0
+    for process in processes:
+        if process.errors != 0:
+            process_name = process.__class__.__name__.replace('Wrapper', '')
+            error_msg = '{} had {} error'.format(process_name, process.errors)
+            if process.errors > 1:
+                error_msg += 's'
+            error_msg += '.'
+            logger.error(error_msg)
+            total_errors += process.errors
+
+    return total_errors
+
+def post_run_cleanup(config, app_name, total_errors):
+    logger = config.logger
+    # scrub staging directory if requested
+    if config.getbool('config', 'SCRUB_STAGING_DIR', False) and\
+       os.path.exists(config.getdir('STAGING_DIR')):
+        staging_dir = config.getdir('STAGING_DIR')
+        logger.info("Scrubbing staging dir: %s", staging_dir)
+        shutil.rmtree(staging_dir)
+
+    # rewrite final conf so it contains all of the default values used
+    write_final_conf(config, logger)
+
+    # compute time it took to run
+    start_clock_time = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
+                                                  '%Y%m%d%H%M%S')
+    end_clock_time = datetime.datetime.now()
+    total_run_time = end_clock_time - start_clock_time
+    logger.debug(f"{app_name} took {total_run_time} to run.")
+
+    if total_errors == 0:
+        logger.info(f'{app_name} has successfully finished running.')
+    else:
+        error_msg = f"{app_name} has finished running but had {total_errors} error"
+        if total_errors > 1:
+            error_msg += 's'
+        error_msg += '.'
+        logger.error(error_msg)
+        logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
+
+
 def check_for_deprecated_config(conf):
     """!Checks user configuration files and reports errors or warnings if any deprecated variable
         is found. If an alternate variable name can be suggested, add it to the 'alt' section
@@ -1377,7 +1510,7 @@ def getlistint(list_str):
     list_str = [int(i) for i in list_str]
     return list_str
 
-def get_process_list(process_list_string, logger):
+def get_process_list(config):
     """!Read process list, remove dashes/underscores and change to lower case. Then
         map the name to the correct wrapper name"""
     lower_to_wrapper_name = {'ascii2nc': 'ASCII2NC',
@@ -1406,7 +1539,7 @@ def get_process_list(process_list_string, logger):
                             }
 
     # get list of processes
-    process_list = getlist(process_list_string)
+    process_list = getlist(config.getstr('config', 'PROCESS_LIST'))
 
     out_process_list = []
     # for each item remove dashes, underscores, and cast to lower-case
@@ -1415,7 +1548,7 @@ def get_process_list(process_list_string, logger):
         if lower_process in lower_to_wrapper_name.keys():
             out_process_list.append(lower_to_wrapper_name[lower_process])
         else:
-            logger.warning(f"PROCESS_LIST item {process} may be invalid.")
+            config.logger.warning(f"PROCESS_LIST item {process} may be invalid.")
             out_process_list.append(process)
 
     return out_process_list
@@ -1515,7 +1648,7 @@ def write_list_to_file(filename, output_list):
         for line in output_list:
             f.write(f"{line}\n")
 
-def validate_configuration_variables(config):
+def validate_configuration_variables(config, force_check=False):
 
     all_sed_cmds = []
     # check for deprecated config items and warn user to remove/replace them
@@ -1523,7 +1656,7 @@ def validate_configuration_variables(config):
     all_sed_cmds.extend(sed_cmds)
 
     # validate configuration variables
-    field_isOK, sed_cmds = validate_field_info_configs(config)
+    field_isOK, sed_cmds = validate_field_info_configs(config, force_check)
     all_sed_cmds.extend(sed_cmds)
 
     # check that OUTPUT_BASE is not set to the exact same value as INPUT_BASE
@@ -1537,7 +1670,7 @@ def validate_configuration_variables(config):
 
     check_user_environment(config)
 
-    return deprecated_isOK and field_isOK and inoutbase_isOK, all_sed_cmds
+    return deprecated_isOK, field_isOK, inoutbase_isOK, all_sed_cmds
 
 def skip_field_info_validation(config):
     """!Check config to see if having corresponding FCST/OBS variables is necessary. If process list only
@@ -1545,17 +1678,17 @@ def skip_field_info_validation(config):
         it is configured to only process either FCST or OBS, validation is unnecessary."""
 
     reformatters = ['PCPCombine', 'RegridDataPlane']
-    process_list = get_process_list(config.getstr('config', 'PROCESS_LIST'), config.logger)
+    process_list = get_process_list(config)
 
     # if running MTD in single mode, you don't need matching FCST/OBS
     if 'MTD' in process_list and config.getbool('config', 'MTD_SINGLE_RUN'):
         return True
 
-    # if only running PCPCombine and/or RegridDataPlane, you don't need matching FCST/OBS
+    # if running any app other than the reformatters, you need matching FCST/OBS, so don't skip
     if [item for item in process_list if item not in reformatters]:
-        return True
+        return False
 
-    return False
+    return True
 
 def find_indices_in_config_section(regex_expression, config, sec):
     # regex expression must have 2 () items and the 2nd item must be the index
@@ -1611,14 +1744,14 @@ def is_var_item_valid(item_list, index, ext, config):
 
     return False, msg, sed_cmds
 
-def validate_field_info_configs(config):
+def validate_field_info_configs(config, force_check=False):
     """!Verify that config variables with _VAR<n>_ in them are valid. Returns True if all are valid.
        Returns False if any items are invalid"""
 
     variable_extensions = ['NAME', 'LEVELS', 'THRESH', 'OPTIONS']
     all_good = True, []
 
-    if skip_field_info_validation(config):
+    if skip_field_info_validation(config) and not force_check:
         return True, []
 
     # keep track of all sed commands to replace config variable names
@@ -2112,18 +2245,18 @@ def preprocess_file(filename, data_type, config):
 
     return None
 
-
-def run_stand_alone(module_name, app_name):
+def run_stand_alone(filename, app_name):
     """ Used to allow MET tool wrappers to be run without using
     master_metplus.py
         Args:
-            @param module_name: Name of wrapper with underscores, i.e.
-            pcp_combine_wrapper
+            @param filename: Path to wrapper file with underscores, i.e.
+            /path/to/pcp_combine_wrapper.py
             @param app_name: Name of wrapper with camel case, i.e.
             PcpCombine
         Returns:
             None
     """
+    module_name = os.path.splitext(os.path.basename(filename))[0]
     try:
         # If jobname is not defined, in log it is 'NO-NAME'
         if 'JLOGFILE' in os.environ:
@@ -2131,81 +2264,22 @@ def run_stand_alone(module_name, app_name):
                                  jlogfile=os.environ['JLOGFILE'])
         else:
             produtil.setup.setup(send_dbn=False, jobname='run-METplus')
-        produtil.log.postmsg(app_name + ' is starting')
 
-        # Job Logger
-        produtil.log.jlogger.info('Top of ' + app_name)
-
-
-        # Used for logging and usage statment
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
-        # Setup Task logger, Until Conf object is created, Task logger is
-        # only logging to tty, not a file.
-        logger = logging.getLogger(app_name)
-        logger.info('logger Top of ' + app_name + ".")
-
-        # Parse arguments, options and return a config instance.
-        config = config_metplus.setup(baseinputconfs,
-                                      filename=cur_filename)
-        logger = get_logger(config)
-
-        version_number = get_version_number().strip()
-        logger.info(f"Running {app_name} stand-alone via METplus v{version_number} called with command: {' '.join(sys.argv)}")
-
-        # validate configuration variables
-        config_isOK, all_sed_cmds = util.validate_configuration_variables(config)
-        if not config_isOK:
-            # if any sed commands were generated, write them to the sed file
-            if all_sed_cmds:
-                sed_file = os.path.join(config.getdir('OUTPUT_BASE'), 'sed_commands.txt')
-                # remove if sed file exists
-                if os.path.exists(sed_file):
-                    os.remove(sed_file)
-
-                write_list_to_file(sed_file, all_sed_cmds)
-                config.logger.error(f"Find/Replace commands have been generated in {sed_file}")
-
-            logger.error("Correct configuration variables and rerun. Exiting.")
-            exit(1)
+        config = pre_run_setup(filename, app_name)
 
         module = __import__(module_name)
         wrapper_class = getattr(module, app_name + "Wrapper")
-        wrapper = wrapper_class(config, logger)
+        wrapper = wrapper_class(config, config.logger)
 
-        if not os.environ.get('MET_TMP_DIR', ''):
-            os.environ['MET_TMP_DIR'] = config.getdir('TMP_DIR')
+        process_list = [app_name]
+        total_errors = run_metplus(config, process_list)
 
-        produtil.log.postmsg(app_name + ' Calling run_all_times.')
+        post_run_cleanup(config, app_name, total_errors)
 
-        wrapper.run_all_times()
-
-        if wrapper.errors == 0:
-            logger.info(f'{app_name} stand-alone has successfully finished running.')
-        else:
-            error_msg = f"{app_name} stand-alone has finished running but had {wrapper.errors} error"
-            if wrapper.errors > 1:
-                error_msg += 's.'
-            error_msg += '.'
-            logger.error(error_msg)
-
-        produtil.log.postmsg(app_name + ' completed')
     except Exception as e:
         produtil.log.jlogger.critical(
             app_name + '  failed: %s' % (str(e),), exc_info=True)
         sys.exit(2)
-
-def add_common_items_to_dictionary(config, dictionary):
-    dictionary['WGRIB2_EXE'] = config.getexe('WGRIB2')
-    dictionary['CUT_EXE'] = config.getexe('CUT')
-    dictionary['TR_EXE'] = config.getexe('TR')
-    dictionary['RM_EXE'] = config.getexe('RM')
-    dictionary['NCAP2_EXE'] = config.getexe('NCAP2')
-    dictionary['CONVERT_EXE'] = config.getexe('CONVERT')
-    dictionary['NCDUMP_EXE'] = config.getexe('NCDUMP')
-    dictionary['EGREP_EXE'] = config.getexe('EGREP')
-
 
 def template_to_regex(template, time_info, logger):
     in_template = re.sub(r'\.', '\\.', template)

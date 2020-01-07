@@ -351,4 +351,4 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         return True
 
 if __name__ == "__main__":
-    util.run_stand_alone("regrid_data_plane_wrapper", "RegridDataPlane")
+    util.run_stand_alone(__file__, "RegridDataPlane")

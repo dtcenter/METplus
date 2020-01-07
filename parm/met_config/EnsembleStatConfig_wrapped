@@ -58,6 +58,33 @@ ens = {
 ////////////////////////////////////////////////////////////////////////////////
 
 //
+// Neighborhood ensemble probabilities
+//
+nbrhd_prob = {
+   width      = [ 5 ];
+   shape      = CIRCLE;
+   vld_thresh = 0.0;
+}
+
+//
+// NMEP smoothing methods
+//
+nmep_smooth = {
+   vld_thresh      = 0.0;
+   shape           = CIRCLE;
+   gaussian_dx     = 81.27;
+   gaussian_radius = 120;
+   type = [
+      {
+         method = GAUSSIAN;
+         width  = 1;
+      }
+   ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
 // Forecast and observation fields to be verified
 //
 
@@ -110,7 +137,7 @@ ens_phist_bin_size = 0.05;
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// Climatology mean data
+// Climatology data
 //
 climo_mean = {
 
@@ -121,13 +148,28 @@ climo_mean = {
       method     = NEAREST;
       width      = 1;
       vld_thresh = 0.5;
+      shape      = SQUARE;
    }
 
    time_interp_method = DW_MEAN;
-   match_month        = TRUE;
-   match_day          = FALSE;
-   time_step          = 21600;
+   day_interval       = 31;
+   hour_interval      = 6;
 }
+
+climo_stdev = climo_mean;
+climo_stdev = {
+   file_name = [];
+}
+
+//
+// May be set separately in each "obs.field" entry
+//
+climo_cdf = {
+   cdf_bins    = 1;
+   center_bins = FALSE;
+   write_bins  = TRUE;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -227,6 +269,6 @@ rng = {
 grid_weight_flag = NONE;
 output_prefix    = "";
 //output_prefix    = "${MODEL}_F${FCST_LEAD}_ADPSFC";
-//version          = "V8.1";
+//version          = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////

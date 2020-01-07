@@ -1865,4 +1865,4 @@ class StatAnalysisWrapper(CommandBuilder):
             exit(1)
 
 if __name__ == "__main__":
-    util.run_stand_alone("stat_analysis_wrapper", "StatAnalysis")
+    util.run_stand_alone(__file__, "StatAnalysis")

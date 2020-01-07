@@ -880,4 +880,4 @@ class SeriesByInitWrapper(CommandBuilder):
             util.prune_empty(fcst_anly_ascii_dir, self.logger)
 
 if __name__ == "__main__":
-        util.run_stand_alone("series_by_init_wrapper", "SeriesByInit")
+    util.run_stand_alone(__file__, "SeriesByInit")

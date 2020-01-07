@@ -27,10 +27,10 @@ def main():
                                   filename='validate_configs.py')
 
     # validate configuration variables
-    isOK, sed_cmds = util.validate_configuration_variables(config)
+    deprecatedIsOK, fieldIsOK, inoutbaseIsOk, sed_cmds = util.validate_configuration_variables(config)
 
     # if everything is valid, report success and exit
-    if isOK:
+    if deprecatedIsOK and fieldIsOK and inoutbaseIsOk:
         print("SUCCESS: Configuration passed all of the validation tests.")
         exit(0)
 

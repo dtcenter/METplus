@@ -58,6 +58,7 @@ fcst = {
 
    censor_thresh     = [];
    censor_val        = [];
+   conv_time_window  = { beg = -1; end = 1; };
    conv_radius       = ${FCST_CONV_RADIUS};
    conv_thresh       = ${FCST_CONV_THRESH};
 
@@ -71,6 +72,15 @@ obs = {
    conv_radius       = ${OBS_CONV_RADIUS};
    conv_thresh       = ${OBS_CONV_THRESH};
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+   //
+   // Intensity percentile value to be written
+   //
+
+inten_perc_value = 99;
+
 ////////////////////////////////////////////////////////////////////////////////
 
    //
@@ -228,6 +238,6 @@ txt_output = {
 ////////////////////////////////////////////////////////////////////////////////
 
 output_prefix    = "PROB_${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_A${LEVEL}";
-//version        = "V8.1";
+//version        = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////

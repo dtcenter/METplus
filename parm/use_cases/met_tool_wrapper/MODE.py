@@ -2,8 +2,7 @@
 MODE
 ========
 
-This use case will run the MET MODE tool to compare gridded forecast data to
-gridded observation data.
+This use case will run the MET MODE tool to compare gridded forecast data to gridded observation data.
 
 """
 ##############################################################################
@@ -41,7 +40,7 @@ gridded observation data.
 # run times:
 #
 # | **Init:** 2005-08-07_0Z
-# | **Forecast lead:** 12
+# | **Forecast lead:** 12 hour
 
 ##############################################################################
 # METplus Configuration
@@ -66,25 +65,23 @@ gridded observation data.
 #
 # Note the following variables are referenced in the MET configuration file.
 # * QUILT - True/False to perform quilting. Corresponds to MODE_QUILT in the METplus configuration file.
-# * FCST_CONV_RADIUS - Convolution radius used for forecast data. Corresponds to FCST_MODE_CONV_RADIUS in the METplus configuration files.
-# * FCST_CONV_THRESH - List of convolution thresholds used for forecast data. Corresponds to FCST_MODE_CONV_THRESH in the METplus configuration files.
-# * FCST_MERGE_THRESH - List of merge thresholds used for forecast data. Corresponds to FCST_MODE_MERGE_THRESH in the METplus configuration files.
-# * FCST_MERGE_FLAG - True/False merge flag used for forecast data. Corresponds to FCST_MODE_MERGE_FLAG in the METplus configuration files.
-# * OBS_CONV_RADIUS - Convolution radius used for observation data. Corresponds to OBS_MODE_CONV_RADIUS in the METplus configuration files.
-# * OBS_CONV_THRESH - List of convolution thresholds used for observation data. Corresponds to OBS_MODE_CONV_THRESH in the METplus configuration files.
-# * OBS_MERGE_THRESH - List of merge thresholds used for observation data. Corresponds to OBS_MODE_MERGE_THRESH in the METplus configuration files.
-# * OBS_MERGE_FLAG - True/False merge flag used for forecast data. Corresponds to OBS_MODE_MERGE_FLAG in the METplus configuration files.
-# * The following will be moved to a section that contains variables common to multiple tools (provide link)
-# * MODEL
-# * OBTYPE
-# * FCST_VAR
-# * OBS_VAR
-# * LEVEL
-# * FCST_FIELD
-# * OBS_FIELD
-# * VERIF_MASK
-#
-#
+# * **${FCST_CONV_RADIUS}** - Convolution radius used for forecast data. Corresponds to FCST_MODE_CONV_RADIUS in the METplus configuration files.
+# * **${FCST_CONV_THRESH}** - List of convolution thresholds used for forecast data. Corresponds to FCST_MODE_CONV_THRESH in the METplus configuration files.
+# * **${FCST_MERGE_THRESH}** - List of merge thresholds used for forecast data. Corresponds to FCST_MODE_MERGE_THRESH in the METplus configuration files.
+# * **${FCST_MERGE_FLAG}** - True/False merge flag used for forecast data. Corresponds to FCST_MODE_MERGE_FLAG in the METplus configuration files.
+# * **${OBS_CONV_RADIUS}** - Convolution radius used for observation data. Corresponds to OBS_MODE_CONV_RADIUS in the METplus configuration files.
+# * **${OBS_CONV_THRESH}** - List of convolution thresholds used for observation data. Corresponds to OBS_MODE_CONV_THRESH in the METplus configuration files.
+# * **${OBS_MERGE_THRESH}** - List of merge thresholds used for observation data. Corresponds to OBS_MODE_MERGE_THRESH in the METplus configuration files.
+# * **${OBS_MERGE_FLAG}** - True/False merge flag used for forecast data. Corresponds to OBS_MODE_MERGE_FLAG in the METplus configuration files.
+# * **${MODEL}** - Name of forecast input. Corresponds to MODEL in the METplus configuration file.
+# * **${OBTYPE}** - Name of observation input. Corresponds to OBTYPE in the METplus configuration file.
+# * **${FCST_FIELD}** - Formatted forecast field information. Generated from FCST_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+# * **${OBS_FIELD}** - Formatted observation field information. Generated from OBS_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+# * **${FCST_VAR}** - Field name of forecast data to process. Used in output_prefix to include input information in the output filenames. Corresponds to FCST_VAR<n>_NAME in the METplus configuration file.
+# * **${OBS_VAR}** - Field name of observation data to process. Used in output_prefix to include input information in the output filenames. Corresponds to OBS_VAR<n>_NAME in the METplus configuration file.
+# * **${LEVEL}** - Vertical level of the forecast input data. Used in output_prefix to include input information in the output filenames. Corresponds to FCST_VAR<n>_LEVELS in the METplus configuration file.
+# * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to MODE_REGRID_TO_GRID in the METplus configuration file.
+# * **${VERIF_MASK}** - Optional verification mask file or list of files. Corresponds to GRID_STAT_VERIFICATION_MASK_TEMPLATE in the METplus configuration file.
 
 ##############################################################################
 # Running METplus
@@ -138,4 +135,4 @@ gridded observation data.
 # Keywords
 # --------
 #
-# .. note:: MODEUseCase
+# .. note:: `MODEUseCase <https://ncar.github.io/METplus/search.html?q=MODEUseCase&check_keywords=yes&area=default>`_

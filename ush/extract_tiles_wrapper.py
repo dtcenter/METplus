@@ -237,4 +237,4 @@ class ExtractTilesWrapper(CommandBuilder):
         return 0
 
 if __name__ == "__main__":
-    util.run_stand_alone("extract_tiles_wrapper", "ExtractTiles")
+    util.run_stand_alone(__file__, "ExtractTiles")

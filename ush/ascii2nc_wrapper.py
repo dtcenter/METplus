@@ -102,15 +102,6 @@ class ASCII2NCWrapper(CommandBuilder):
             Reformat as needed. Print list of variables that were set and their values.
             Args:
               @param time_info dictionary containing timing info from current run"""
-        # list of fields to print to log
-        print_list = ["TIME_SUMMARY_FLAG", "TIME_SUMMARY_RAW_DATA",
-                      "TIME_SUMMARY_BEG", "TIME_SUMMARY_END",
-                      "TIME_SUMMARY_STEP", "TIME_SUMMARY_WIDTH",
-                      "TIME_SUMMARY_GRIB_CODES", "TIME_SUMMARY_VAR_NAMES",
-                      "TIME_SUMMARY_TYPES", "TIME_SUMMARY_VALID_FREQ",
-                      "TIME_SUMMARY_VALID_THRESH",
-                      ]
-
         # set environment variables needed for MET application
         self.add_env_var('TIME_SUMMARY_FLAG',
                          self.c_dict['TIME_SUMMARY_FLAG'])
@@ -139,12 +130,7 @@ class ASCII2NCWrapper(CommandBuilder):
         self.set_user_environment(time_info)
 
         # send environment variables to logger
-        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_user_env_items()
-        for l in print_list:
-            self.print_env_item(l)
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(print_list)
+        self.print_all_envs()
 
     def get_command(self):
         cmd = self.app_path
@@ -254,3 +240,7 @@ class ASCII2NCWrapper(CommandBuilder):
         # add mask SID if set
         if self.c_dict['MASK_SID']:
             self.args.append(f" -mask_sid {self.c_dict['MASK_SID']}")
+
+
+if __name__ == "__main__":
+    util.run_stand_alone(__file__, "ASCII2NC")

@@ -88,4 +88,4 @@ class GridStatWrapper(CompareGriddedWrapper):
 
 
 if __name__ == "__main__":
-    util.run_stand_alone("grid_stat_wrapper", "GridStat")
+    util.run_stand_alone(__file__, "GridStat")

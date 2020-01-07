@@ -244,4 +244,4 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.print_all_envs()
 
 if __name__ == "__main__":
-    util.run_stand_alone("point_stat_wrapper", "PointStat")
+    util.run_stand_alone(__file__, "PointStat")

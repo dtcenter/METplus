@@ -178,14 +178,6 @@ class PB2NCWrapper(CommandBuilder):
             Reformat as needed. Print list of variables that were set and their values.
             Args:
               @param time_info dictionary containing timing info from current run"""
-        # list of fields to print to log
-        print_list = ["PB2NC_MESSAGE_TYPE", "PB2NC_STATION_ID",
-                      "OBS_WINDOW_BEGIN", "OBS_WINDOW_END",
-                      "PB2NC_GRID", "PB2NC_POLY", "OBS_BUFR_VAR_LIST",
-                      "TIME_SUMMARY_FLAG", "TIME_SUMMARY_BEG",
-                      "TIME_SUMMARY_END", "TIME_SUMMARY_VAR_NAMES",
-                      "TIME_SUMMARY_TYPES" ]
-
         # set environment variables needed for MET application
         self.add_env_var("PB2NC_MESSAGE_TYPE", self.c_dict['MESSAGE_TYPE'])
         self.add_env_var("PB2NC_STATION_ID", self.c_dict['STATION_ID'])
@@ -213,12 +205,7 @@ class PB2NCWrapper(CommandBuilder):
         self.set_user_environment(time_info)
 
         # send environment variables to logger
-        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_user_env_items()
-        for l in print_list:
-            self.print_env_item(l)
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(print_list)
+        self.print_all_envs()
 
     def find_input_files(self, input_dict):
         """!Find prepbufr data to convert. If file(s) are found, return timing information
@@ -383,4 +370,4 @@ class PB2NCWrapper(CommandBuilder):
         return cmd.strip()
 
 if __name__ == "__main__":
-        util.run_stand_alone("pb2nc_wrapper", "PB2NC")
+    util.run_stand_alone(__file__, "PB2NC")

@@ -35,4 +35,4 @@ class WaveletStatWrapper(CompareGriddedWrapper):
 
 
 if __name__ == "__main__":
-        util.run_stand_alone("wavelet_stat_wrapper", "WaveletStat")
+    util.run_stand_alone(__file__, "WaveletStat")

@@ -402,4 +402,4 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
 
 if __name__ == "__main__":
-    util.run_stand_alone("ensemble_stat_wrapper", "EnsembleStat")
+    util.run_stand_alone(__file__, "EnsembleStat")
