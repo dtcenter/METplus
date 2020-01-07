@@ -45,13 +45,13 @@ modified the initialization times we wish to evaluate.
 # ----------------
 #
 # The following tools are used for each run time:
-#  TcPairs > RegridDataPlane, TcStat > SeriesAnalysis
+# TcPairs > RegridDataPlane, TcStat > SeriesAnalysis
 #
 # This example loops by initialization time. For each initialization time
-#  it will process forecast leads 6, 12, 18, 24, 30, 36, and 40. Data is only
-#  available for 20141214.  Therefore there is only one
-#  initializtion time that is run, in spite of the requested 20141214 to 20141216 time range.
-#  The following will be run:
+# it will process forecast leads 6, 12, 18, 24, 30, 36, and 40. Data is only
+# available for 20141214.  Therefore there is only one
+# initializtion time that is run, in spite of the requested 20141214 to 20141216 time range.
+# The following will be run:
 #
 # Run times:
 #
