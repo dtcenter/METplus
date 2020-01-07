@@ -1,8 +1,13 @@
 """
-Feature Relative Use Case (simple series analysis by initialization times)
+Series by Lead (for forecast hour groupings)
 ========
 This use case performs a series analysis on tropical cyclone
-data, based on initialization times.
+data based on all lead times. This use case illustrates how one can "build" on an existing
+configuration file by overriding configuration settings. In this example, we have
+requested a series analysis based on forecast hours rather than by initialization times. This
+series by lead example illustrates that results can be grouped based on forecast hours.
+For example, one can readily aggregate series analysis results by the first, second, and third days of
+a storm event, rather than by all the forecast hours/lead times.
 """
 
 ##############################################################################
@@ -28,14 +33,16 @@ data, based on initialization times.
 # METplus Components
 # ------------------
 #
-# This use case first runs TcPairs and ExtractTiles to generate matched
+# This use case first runs TcPairs and ExtractTiles wrappers to generate matched
 # tropical cyclone data and regrid them into appropriately-sized tiles
 # along a storm track. The MET tc-stat tool is used to filter the
 # track data, and the MET regrid-dataplane tool is used to regrid the
-# data (GRIB1 or GRIB2 into netCDF). Next, a series analysis by init time is
+# data (GRIB1 or GRIB2 into netCDF). Next, a series analysis by lead time is
 # performed on the results and plots (.ps and .png) are generated for all
 # variable-level-stat combinations from the specified variables, levels, and
-# requested statistics.
+# requested statistics. The final results are aggregated into forecast hour
+# groupings as specified by the start, end and increment in the METplus
+# configuration file, as well as labels to identify each forecast hour grouping.
 
 ##############################################################################
 # METplus Workflow
@@ -44,9 +51,11 @@ data, based on initialization times.
 # The following tools are used for each run time:
 #  TcPairs > RegridDataPlane, TcStat > SeriesAnalysis
 #
-# This example loops by initialization time. For each initialization time
-#  it will process forecast leads 6, 12, 18, 24, 30, 36, and 40. There is only one
-#  initialization time in this example, so the following will be run:
+# This example loops by forecast/lead time (with begin, end, and increment as specified in the METplus
+# series_by_lead_by_fhr_grouping.conf file).
+# The following will be run based on the availability of data corresponding to the initialization time
+# (in this example, we only have 20141214 as our initialization time) and the requested forecast leads, resulting
+# in the run times below.
 #
 # Run times:
 #
@@ -59,17 +68,6 @@ data, based on initialization times.
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 18
 #
-# | **Init:** 20141214_0Z
-# | **Forecast lead:** 24
-#
-# | **Init:** 20141214_0Z
-# | **Forecast lead:** 30
-#
-# | **Init:** 20141214_0Z
-# | **Forecast lead:** 36
-#
-# | **Init:** 20141214_0Z
-# | **Forecast lead:** 40
 #
 
 ##############################################################################
@@ -79,9 +77,11 @@ data, based on initialization times.
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
 # with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/feature_relative.conf
+# -c parm/use_cases/model_applications/medium_range/series_by_init_12-14_to_12-16.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: feature_relative.conf
+# .. literalinclude:: series_by_lead_by_fhr_grouping.conf
 
 ##############################################################################
 # MET Configuration
@@ -98,7 +98,7 @@ data, based on initialization times.
 # See the following files for more information about the environment variables set in these configuration files.
 #   parm/use_cases/met_tool_wrapper/TCPairs.py
 #
-#   parm/use_cases/met_tool_wrapper/SeriesByInit.py
+#   parm/use_cases/met_tool_wrapper/SeriesByLead.py
 #
 ##############################################################################
 # Running METplus
@@ -106,13 +106,16 @@ data, based on initialization times.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in feature_relative.conf then a user-specific system configuration file::
-#
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/feature_relative.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in feature_relative.conf::
+# 1) Passing in feature_relative.conf and series_by_init_12-14_to_12-16.conf, then a user-specific system configuration file::
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/feature_relative.conf
+#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/series_by_init_12-14_to_12-16.conf
+#        -c /path/to/user_system.conf
+#
+# 2) Modifying the configurations in parm/metplus_config, then passing in feature_relative.conf and series_by_init_12-14_to_12_16.conf::
+#
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/feature_relative.conf
+#                          -c /path/to/METplus/parm/use_cases/model_applications/medium_range/series_by_init_12-14_to_12-16.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -139,26 +142,16 @@ data, based on initialization times.
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in series_analysis_init/20141214_00 (relative to **OUTPUT_BASE**)
-# and will contain the following subdirectories:
+# Output for this use case will be found in the following directories (relative to **OUTPUT_BASE**):
 #
-# * ML1200942014
-# * ML1200942014
-# * ML1200942014
-# * ML1201002014
-# * ML1201032014
-# * ML1201042014
-# * ML1201052014
-# * ML1201062014
-# * ML1201072014
-# * ML1201082014
-# * ML1201092014
-# * ML1201102014
+# * Day1
+# * series_animate
 #
-# Each subdirectory will contain files that have the following format:
-#   ANLY_ASCII_FILES_<storm>
+# The *Day1* subdirectory will contain files that have the following format:
 #
-#   FCST_ASCII_FILES_<storm>
+#   ANLY_FILES_Fhhh_to_FHHH
+#
+#   FCST_ASCII_FILES_Fhhh_to_FHHH
 #
 #   series_<varname>_<level>_<stat>.png
 #
@@ -166,6 +159,28 @@ data, based on initialization times.
 #
 #   series_<varname>_<level>_<stat>.nc
 #
+#   Where:
+#
+#    **hhh** is the starting forecast hour/lead time in hours
+#
+#    **HHH** is the ending forecast hour/lead time in hours
+#
+#    **varname** is the variable of interest, as specified in the METplus series_by_lead_all_fhrs config file
+#
+#    **level**  is the level of interest, as specified in the METplus series_by_lead_all_fhrs config file
+#
+#    **stat** is the statistic of interest, as specified in the METplus series_by_lead_all_fhrs config file.
+#
+#   **NOTE**:
+#    There is only a Day1 subdirectory, and the expected Day2 and Day3 subdirectories are absent, even though
+#    these are requested in the METplus series_by_lead_by_fhr_grouping.conf file.  This is because we have
+#    been provided with only data for 20141214_00 to 201412_18, which constitutes only one days' worth of
+#    results.
+#
+# | The series_animate directory contains the animations of the series analysis in .gif format for all variable, level, and statistics combinations:
+#
+#    series_animate_<varname>_<level>_<stat>.gif
+
 
 
 

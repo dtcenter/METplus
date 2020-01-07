@@ -1,8 +1,11 @@
 """
-Feature Relative Use Case (simple series analysis by initialization times)
+Series by Init Use Case (from 2014-12-14 to 2014-12-16)
 ========
 This use case performs a series analysis on tropical cyclone
-data, based on initialization times.
+data, based on a requested range in initialization times from 2014-12-14 to 2014-12-16
+and the available data.  This use case illustrates how one can "build" on an existing
+configuration file by overriding configuration settings. In this case, we have
+modified the initialization times we wish to evaluate.
 """
 
 ##############################################################################
@@ -42,11 +45,13 @@ data, based on initialization times.
 # ----------------
 #
 # The following tools are used for each run time:
-#  TcPairs > RegridDataPlane, TcStat > SeriesAnalysis
+# TcPairs > RegridDataPlane, TcStat > SeriesAnalysis
 #
 # This example loops by initialization time. For each initialization time
-#  it will process forecast leads 6, 12, 18, 24, 30, 36, and 40. There is only one
-#  initialization time in this example, so the following will be run:
+# it will process forecast leads 6, 12, 18, 24, 30, 36, and 40. Data is only
+# available for 20141214.  Therefore there is only one
+# initializtion time that is run, in spite of the requested 20141214 to 20141216 time range.
+# The following will be run:
 #
 # Run times:
 #
@@ -79,9 +84,11 @@ data, based on initialization times.
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
 # with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/feature_relative.conf
+# -c parm/use_cases/model_applications/medium_range/series_by_init_12-14_to_12-16.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: feature_relative.conf
+# .. literalinclude:: series_by_init_12-14_to_12-16.conf
 
 ##############################################################################
 # MET Configuration
@@ -106,13 +113,16 @@ data, based on initialization times.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in feature_relative.conf then a user-specific system configuration file::
-#
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/feature_relative.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in feature_relative.conf::
+# 1) Passing in feature_relative.conf and series_by_init_12-14_to_12-16.conf, then a user-specific system configuration file::
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/feature_relative.conf
+#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/series_by_init_12-14_to_12-16.conf
+#        -c /path/to/user_system.conf
+#
+# 2) Modifying the configurations in parm/metplus_config, then passing in feature_relative.conf and series_by_init_12-14_to_12_16.conf::
+#
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/feature_relative.conf
+#                          -c /path/to/METplus/parm/use_cases/model_applications/medium_range/series_by_init_12-14_to_12-16.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -143,8 +153,8 @@ data, based on initialization times.
 # and will contain the following subdirectories:
 #
 # * ML1200942014
-# * ML1200942014
-# * ML1200942014
+# * ML1200972014
+# * ML1200992014
 # * ML1201002014
 # * ML1201032014
 # * ML1201042014
@@ -156,6 +166,7 @@ data, based on initialization times.
 # * ML1201102014
 #
 # Each subdirectory will contain files that have the following format:
+#
 #   ANLY_ASCII_FILES_<storm>
 #
 #   FCST_ASCII_FILES_<storm>
