@@ -94,6 +94,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_PROB_THRESH'] = self.config.getstr('config',
                                                        'OBS_POINT_STAT_PROB_THRESH', '==0.1')
 
+        c_dict['OUTPUT_PREFIX'] = self.config.getstr('config', 'POINT_STAT_OUTPUT_PREFIX', '')
+
         if c_dict['FCST_INPUT_TEMPLATE'] == '':
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE in config file')
             self.isOK = False
@@ -238,6 +240,9 @@ class PointStatWrapper(CompareGriddedWrapper):
         # add additional env vars if they are specified
         self.add_env_var('VERIF_MASK',
                          self.c_dict['VERIFICATION_MASK'])
+
+        self.add_env_var('OUTPUT_PREFIX',
+                         self.c_dict['OUTPUT_PREFIX'])
 
         self.add_common_envs(time_info)
 

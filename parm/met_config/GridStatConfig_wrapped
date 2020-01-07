@@ -237,7 +237,7 @@ nc_pairs_flag = {
 
 grid_weight_flag = NONE;
 tmp_dir          = "/tmp";
-output_prefix    = "${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}";
+output_prefix    = "${OUTPUT_PREFIX}";
 //version 	 = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////

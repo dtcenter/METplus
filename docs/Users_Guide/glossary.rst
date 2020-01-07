@@ -25,6 +25,41 @@ METplus Configuration Glossary
      | *Family:* [regex_pattern]
      | *Default:*
 
+   ENSEMBLE_STAT_OUTPUT_PREFIX
+     String to pass to the MET config file to prepend text to the output filenames.
+
+     | *Used by:* EnsembleStat
+     | *Family:* [config]
+     | *Default:*
+
+   GRID_STAT_OUTPUT_PREFIX
+     String to pass to the MET config file to prepend text to the output filenames.
+
+     | *Used by:* GridStat
+     | *Family:* [config]
+     | *Default:*
+
+   POINT_STAT_OUTPUT_PREFIX
+     String to pass to the MET config file to prepend text to the output filenames.
+
+     | *Used by:* PointStat
+     | *Family:* [config]
+     | *Default:*
+
+   MODE_OUTPUT_PREFIX
+     String to pass to the MET config file to prepend text to the output filenames.
+
+     | *Used by:* MODE
+     | *Family:* [config]
+     | *Default:*
+
+   MTD_OUTPUT_PREFIX
+     String to pass to the MET config file to prepend text to the output filenames.
+
+     | *Used by:* MTD
+     | *Family:* [config]
+     | *Default:*
+
    OBS_SERIES_ANALYSIS_LEAD_REGEX
      The regular expression describing the analysis (obs) file name (in ASCII format) of the intermediate file generated when running a series_by_lead process.
 
@@ -743,6 +778,13 @@ METplus Configuration Glossary
      Used to set the regrid dictionary item 'to_grid' in the MET GridStat config file. See the MET User's Guide for more information.
 
      | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:* NONE
+
+   POINT_STAT_REGRID_TO_GRID
+     Used to set the regrid dictionary item 'to_grid' in the MET PointStat config file. See the MET User's Guide for more information.
+
+     | *Used by:*  PointStat
      | *Family:*  [config]
      | *Default:* NONE
 
@@ -3582,13 +3624,6 @@ METplus Configuration Glossary
      Specify the absolute path to a file containing information about the desired output grid from the MET regrid_data_plane tool.
 
      | *Used by:*  RegridDataPlane
-     | *Family:*  [config]
-     | *Default:*  Varies
-
-   REGRID_TO_GRID
-     If supported, provide the output grid that is desired from the MET tool being used in the analysis.
-
-     | *Used by:*  MakePlots, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 

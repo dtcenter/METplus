@@ -267,7 +267,7 @@ rng = {
 ////////////////////////////////////////////////////////////////////////////////
 
 grid_weight_flag = NONE;
-output_prefix    = "";
+output_prefix    = "${OUTPUT_PREFIX}";
 //output_prefix    = "${MODEL}_F${FCST_LEAD}_ADPSFC";
 //version          = "V9.0";
 

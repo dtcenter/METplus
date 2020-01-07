@@ -75,6 +75,7 @@ that reformat gridded data
         c_dict['CLIMO_INPUT_DIR'] = ''
         c_dict['CLIMO_INPUT_TEMPLATE'] = ''
         c_dict['CLIMO_FILE'] = None
+        c_dict['OUTPUT_PREFIX'] = ''
 
         return c_dict
 
@@ -386,7 +387,7 @@ that reformat gridded data
         self.add_env_var("LEVEL", var_info['fcst_level'])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
-        # climo file is set to None if not found, so need to checkx
+        # climo file is set to None if not found, so need to check
         if self.c_dict['CLIMO_FILE']:
             self.add_env_var("CLIMO_FILE", self.c_dict['CLIMO_FILE'])
         else:
@@ -403,6 +404,9 @@ that reformat gridded data
 
         self.add_env_var('VERIF_MASK',
                          self.c_dict['VERIFICATION_MASK'])
+
+        self.add_env_var('OUTPUT_PREFIX',
+                         self.c_dict['OUTPUT_PREFIX'])
 
         self.add_common_envs(time_info)
 
