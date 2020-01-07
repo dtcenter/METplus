@@ -38,9 +38,9 @@ a storm event, rather than by all the forecast hours/lead times.
 # along a storm track. The MET tc-stat tool is used to filter the
 # track data, and the MET regrid-dataplane tool is used to regrid the
 # data (GRIB1 or GRIB2 into netCDF). Next, a series analysis by lead time is
-# performed on the results and plots (.ps and ,png) are generated for all
+# performed on the results and plots (.ps and .png) are generated for all
 # variable-level-stat combinations from the specified variables, levels, and
-# requiested statistics. The final results are aggregated into forecast hour
+# requested statistics. The final results are aggregated into forecast hour
 # groupings as specified by the start, end and increment in the METplus
 # configuration file, as well as labels to identify each forecast hour grouping.
 
