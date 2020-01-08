@@ -75,7 +75,6 @@ that reformat gridded data
         c_dict['CLIMO_INPUT_DIR'] = ''
         c_dict['CLIMO_INPUT_TEMPLATE'] = ''
         c_dict['CLIMO_FILE'] = None
-        c_dict['OUTPUT_PREFIX'] = ''
 
         return c_dict
 
@@ -121,8 +120,6 @@ that reformat gridded data
             input_dict['lead'] = lead
 
             # set current lead time config and environment variables
-            self.config.set('config', 'CURRENT_LEAD_TIME', lead)
-            os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
             time_info = time_util.ti_calculate(input_dict)
 
             self.logger.info("Processing forecast lead {}".format(time_info['lead_string']))
@@ -405,8 +402,7 @@ that reformat gridded data
         self.add_env_var('VERIF_MASK',
                          self.c_dict['VERIFICATION_MASK'])
 
-        self.add_env_var('OUTPUT_PREFIX',
-                         self.c_dict['OUTPUT_PREFIX'])
+        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
         self.add_common_envs(time_info)
 

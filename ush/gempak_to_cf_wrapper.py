@@ -59,8 +59,6 @@ class GempakToCFWrapper(CommandBuilder):
         for lead in lead_seq:
             self.clear()
             input_dict['lead'] = lead
-            self.config.set('config', 'CURRENT_LEAD_TIME', lead)
-            os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
             time_info = time_util.ti_calculate(input_dict)
             self.run_at_time_once(time_info)
 

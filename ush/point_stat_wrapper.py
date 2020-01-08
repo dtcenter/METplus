@@ -94,8 +94,6 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_PROB_THRESH'] = self.config.getstr('config',
                                                        'OBS_POINT_STAT_PROB_THRESH', '==0.1')
 
-        c_dict['OUTPUT_PREFIX'] = self.config.getstr('config', 'POINT_STAT_OUTPUT_PREFIX', '')
-
         if c_dict['FCST_INPUT_TEMPLATE'] == '':
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE in config file')
             self.isOK = False
@@ -120,10 +118,6 @@ class PointStatWrapper(CompareGriddedWrapper):
 
             lead_string = time_util.ti_calculate(input_dict)['lead_string']
             self.logger.info("Processing forecast lead {}".format(lead_string))
-
-            # set current lead time config and environment variables
-            self.config.set('config', 'CURRENT_LEAD_TIME', lead)
-            os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
 
             # Run for given init/valid time and forecast lead combination
             self.run_at_time_once(input_dict)
@@ -241,8 +235,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_env_var('VERIF_MASK',
                          self.c_dict['VERIFICATION_MASK'])
 
-        self.add_env_var('OUTPUT_PREFIX',
-                         self.c_dict['OUTPUT_PREFIX'])
+        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
         self.add_common_envs(time_info)
 

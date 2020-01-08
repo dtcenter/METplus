@@ -509,6 +509,11 @@ class CommandBuilder:
 
         return ','.join(strings)
 
+    def get_output_prefix(self, time_info):
+        return sts.StringSub(self.logger,
+                             self.config.getraw('config', f'{self.app_name.upper()}_OUTPUT_PREFIX', ''),
+                             **time_info).do_string_sub()
+
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string

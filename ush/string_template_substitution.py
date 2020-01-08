@@ -311,8 +311,11 @@ class StringSub(object):
                 return obj.strftime(fmt)
             # if input is relativedelta
             elif isinstance(obj, relativedelta):
-                self.logger.error('Year and month intervals not yet supported in string substitution')
-                exit(1)
+                seconds = time_util.ti_get_seconds_from_relativedelta(obj)
+                if seconds is None:
+                    self.logger.error('Year and month intervals not yet supported in string substitution')
+                    exit(1)
+                return format_hms(fmt, seconds)
             # if input is integer, format with H, M, and S
             elif isinstance(obj, int):
                 obj += self.shift_seconds

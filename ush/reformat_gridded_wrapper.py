@@ -71,8 +71,6 @@ that reformat gridded data
             self.logger.info("Processing {} data".format(to_run))
             for lead in lead_seq:
                 input_dict['lead'] = lead
-                self.config.set('config', 'CURRENT_LEAD_TIME', lead)
-                os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
 
                 time_info = time_util.ti_calculate(input_dict)
 

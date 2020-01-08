@@ -472,16 +472,6 @@ def write_final_conf(conf, logger):
     with open(confloc, 'wt') as conf_file:
         conf.write(conf_file)
 
-    # remove current time env vars if they are set
-    if 'METPLUS_CURRENT_INIT_TIME' in os.environ.keys():
-        del os.environ['METPLUS_CURRENT_INIT_TIME']
-
-    if 'METPLUS_CURRENT_VALID_TIME' in os.environ.keys():
-        del os.environ['METPLUS_CURRENT_VALID_TIME']
-
-    if 'METPLUS_CURRENT_LEAD_TIME' in os.environ.keys():
-        del os.environ['METPLUS_CURRENT_LEAD_TIME']
-
     # write out os environment to file for debugging
     env_file = os.path.join(conf.getdir('LOG_DIR'), '.metplus_user_env')
     with open(env_file, 'w') as env_file:
@@ -559,12 +549,8 @@ def loop_over_times_and_call(config, processes):
         config.logger.info("* Running METplus")
         if use_init:
             config.logger.info("*  at init time: " + run_time)
-            config.set('config', 'CURRENT_INIT_TIME', run_time)
-            os.environ['METPLUS_CURRENT_INIT_TIME'] = run_time
         else:
             config.logger.info("*  at valid time: " + run_time)
-            config.set('config', 'CURRENT_VALID_TIME', run_time)
-            os.environ['METPLUS_CURRENT_VALID_TIME'] = run_time
         config.logger.info("****************************************")
         if not isinstance(processes, list):
             processes = [processes]

@@ -84,8 +84,6 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'GRID_STAT_REGRID_TO_GRID', '')
 
-        c_dict['OUTPUT_PREFIX'] = self.config.getstr('config', 'GRID_STAT_OUTPUT_PREFIX', '')
-
         return c_dict
 
 

@@ -281,10 +281,6 @@ class PB2NCWrapper(CommandBuilder):
             lead_string = time_util.ti_calculate(input_dict)['lead_string']
             self.logger.info("Processing forecast lead {}".format(lead_string))
 
-            # set current lead time config and environment variables
-            self.config.set('config', 'CURRENT_LEAD_TIME', lead)
-            os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
-
             # Run for given init/valid time and forecast lead combination
             self.run_at_time_once(input_dict)
 

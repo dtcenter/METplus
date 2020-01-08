@@ -118,8 +118,6 @@ class MODEWrapper(CompareGriddedWrapper):
 
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'MODE_REGRID_TO_GRID', '')
 
-        c_dict['OUTPUT_PREFIX'] = self.config.getstr('config', 'MODE_OUTPUT_PREFIX', '')
-
         # check that values are valid
         error_message = 'items must start with a comparison operator '+\
                         '(>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)'
@@ -159,8 +157,7 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"])
         self.add_env_var('VERIF_MASK', self.c_dict['VERIFICATION_MASK'])
 
-        self.add_env_var('OUTPUT_PREFIX',
-                         self.c_dict['OUTPUT_PREFIX'])
+        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
         self.add_common_envs(time_info)
 
