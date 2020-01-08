@@ -71,6 +71,7 @@ class CommandBuilder:
         c_dict['FCST_INPUT_DATATYPE'] = ''
         c_dict['OBS_INPUT_DATATYPE'] = ''
         c_dict['ALLOW_MULTIPLE_FILES'] = False
+        c_dict['CURRENT_VAR_INFO'] = None
         return c_dict
 
     def clear(self):

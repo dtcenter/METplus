@@ -310,66 +310,16 @@ class MTDWrapper(MODEWrapper):
             self.param = self.c_dict['CONFIG_FILE']
             self.create_and_set_output_dir(time_info)
 
-            self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"] )
-            self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
+            self.set_environment_variables(fcst_field, obs_field, var_info, time_info)
 
-            if 'fcst_name' in var_info:
-                fcst_name = var_info['fcst_name']
-            else:
-                fcst_name = ''
-            self.add_env_var("FCST_VAR", fcst_name)
-
-
-
-            if 'obs_name' in var_info:
-                obs_name = var_info['obs_name']
-            else:
-                obs_name = ''
-            self.add_env_var("OBS_VAR", obs_name)
-
-            if 'fcst_level' in var_info:
-                level = util.split_level(var_info['fcst_level'])[1]
-            elif 'obs_level' in var_info:
-                level = util.split_level(var_info['obs_level'])[1]
-            else:
-                level = ''
-            self.add_env_var("LEVEL", level)
-
-            # single mode - set fcst file, field, etc.
             if self.c_dict['SINGLE_RUN']:
                 if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
                     self.set_fcst_file(obs_path)
-
-                    self.add_env_var("FCST_FIELD", obs_field)
-                    self.add_env_var("OBS_FIELD", obs_field)
-                    self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"] )
-                    self.add_env_var("FCST_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"] )
-                    self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
-                    self.add_env_var("FCST_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
                 else:
                     self.set_fcst_file(model_path)
-
-                    self.add_env_var("FCST_FIELD", fcst_field)
-                    self.add_env_var("OBS_FIELD", fcst_field)
-                    self.add_env_var("FCST_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"] )
-                    self.add_env_var("OBS_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"] )
-                    self.add_env_var("FCST_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"] )
-                    self.add_env_var("OBS_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"] )
             else:
                 self.set_fcst_file(model_path)
                 self.set_obs_file(obs_path)
-                self.add_env_var("FCST_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"] )
-                self.add_env_var("FCST_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"] )
-                self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"] )
-                self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"] )
-                self.add_env_var("FCST_FIELD", fcst_field)
-                self.add_env_var("OBS_FIELD", obs_field)
-
-            self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
-
-            self.add_common_envs(time_info)
-
-            self.print_all_envs()
 
             cmd = self.get_command()
             if cmd is None:
@@ -392,6 +342,50 @@ class MTDWrapper(MODEWrapper):
         self.fcst_file = None
         self.obs_file = None
 
+    def set_environment_variables(self, fcst_field, obs_field, var_info, time_info):
+        self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"])
+        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
+
+        # set config variables that can be referenced in output_prefix
+        self.config.set('config', 'CURRENT_FCST_NAME',
+                        var_info['fcst_name'] if 'fcst_name' in var_info else '')
+        self.config.set('config', 'CURRENT_FCST_LEVEL',
+                        var_info['fcst_level'] if 'fcst_level' in var_info else '')
+        self.config.set('config', 'CURRENT_OBS_NAME',
+                        var_info['obs_name'] if 'obs_name' in var_info else '')
+        self.config.set('config', 'CURRENT_OBS_LEVEL',
+                        var_info['obs_level'] if 'obs_level' in var_info else '')
+
+
+        # single mode - set fcst file, field, etc.
+        if self.c_dict['SINGLE_RUN']:
+            if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
+                self.add_env_var("FCST_FIELD", obs_field)
+                self.add_env_var("OBS_FIELD", obs_field)
+                self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"])
+                self.add_env_var("FCST_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"])
+                self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"])
+                self.add_env_var("FCST_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"])
+            else:
+                self.add_env_var("FCST_FIELD", fcst_field)
+                self.add_env_var("OBS_FIELD", fcst_field)
+                self.add_env_var("FCST_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"])
+                self.add_env_var("OBS_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"])
+                self.add_env_var("FCST_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"])
+                self.add_env_var("OBS_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"])
+        else:
+            self.add_env_var("FCST_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"])
+            self.add_env_var("FCST_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"])
+            self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"])
+            self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"])
+            self.add_env_var("FCST_FIELD", fcst_field)
+            self.add_env_var("OBS_FIELD", obs_field)
+
+        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
+
+        self.add_common_envs(time_info)
+
+        self.print_all_envs()
 
     def get_command(self):
         """! Builds the command to run the MET application

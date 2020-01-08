@@ -86,6 +86,46 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         return c_dict
 
+    def set_environment_variables(self, fcst_field, obs_field, time_info):
+        """!Set environment variables that are referenced by the MET config file"""
+        var_info = self.c_dict['VAR_LIST'][0]
+        if self.c_dict['CURRENT_VAR_INFO'] is not None:
+            var_info = self.c_dict['CURRENT_VAR_INFO']
+
+        self.config.set('config', 'CURRENT_FCST_NAME', var_info['fcst_name'])
+        self.config.set('config', 'CURRENT_OBS_NAME', var_info['obs_name'])
+        self.config.set('config', 'CURRENT_FCST_LEVEL', var_info['fcst_level'])
+        self.config.set('config', 'CURRENT_OBS_LEVEL', var_info['obs_level'])
+
+        # set environment variables needed for MET application
+        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
+        self.add_env_var("FCST_FIELD", fcst_field)
+        self.add_env_var("OBS_FIELD", obs_field)
+        # climo file is set to None if not found, so need to check
+        if self.c_dict['CLIMO_FILE']:
+            self.add_env_var("CLIMO_FILE", self.c_dict['CLIMO_FILE'])
+        else:
+            self.add_env_var("CLIMO_FILE", '')
+        self.add_env_var("FCST_TIME", str(time_info['lead_hours']).zfill(3))
+        self.add_env_var("INPUT_BASE", self.c_dict["INPUT_BASE"])
+
+        # add additional env vars if they are specified
+        self.add_env_var('NEIGHBORHOOD_WIDTH',
+                         self.c_dict['NEIGHBORHOOD_WIDTH'])
+
+        self.add_env_var('NEIGHBORHOOD_SHAPE',
+                         self.c_dict['NEIGHBORHOOD_SHAPE'])
+
+        self.add_env_var('VERIF_MASK',
+                         self.c_dict['VERIFICATION_MASK'])
+
+        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
+
+        self.add_common_envs(time_info)
+
+        # send environment variables to logger
+        self.print_all_envs()
+
 
 if __name__ == "__main__":
     util.run_stand_alone(__file__, "GridStat")

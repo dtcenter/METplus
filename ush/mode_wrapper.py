@@ -137,10 +137,12 @@ class MODEWrapper(CompareGriddedWrapper):
         return c_dict
 
     def set_environment_variables(self, fcst_field, obs_field, var_info, time_info):
+        self.config.set('config', 'CURRENT_FCST_NAME', var_info['fcst_name'])
+        self.config.set('config', 'CURRENT_OBS_NAME', var_info['obs_name'])
+        self.config.set('config', 'CURRENT_FCST_LEVEL', var_info['fcst_level'])
+        self.config.set('config', 'CURRENT_OBS_LEVEL', var_info['obs_level'])
+
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-        self.add_env_var("FCST_VAR", var_info['fcst_name'])
-        self.add_env_var("OBS_VAR", var_info['obs_name'])
-        self.add_env_var("LEVEL", util.split_level(var_info['fcst_level'])[1])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
 

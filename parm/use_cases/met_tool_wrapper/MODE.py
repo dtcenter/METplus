@@ -77,9 +77,6 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 # * **${OBTYPE}** - Name of observation input. Corresponds to OBTYPE in the METplus configuration file.
 # * **${FCST_FIELD}** - Formatted forecast field information. Generated from FCST_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
 # * **${OBS_FIELD}** - Formatted observation field information. Generated from OBS_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${FCST_VAR}** - Field name of forecast data to process. Used in output_prefix to include input information in the output filenames. Corresponds to FCST_VAR<n>_NAME in the METplus configuration file.
-# * **${OBS_VAR}** - Field name of observation data to process. Used in output_prefix to include input information in the output filenames. Corresponds to OBS_VAR<n>_NAME in the METplus configuration file.
-# * **${LEVEL}** - Vertical level of the forecast input data. Used in output_prefix to include input information in the output filenames. Corresponds to FCST_VAR<n>_LEVELS in the METplus configuration file.
 # * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to MODE_REGRID_TO_GRID in the METplus configuration file.
 # * **${VERIF_MASK}** - Optional verification mask file or list of files. Corresponds to GRID_STAT_VERIFICATION_MASK_TEMPLATE in the METplus configuration file.
 
