@@ -60,7 +60,7 @@ obs = fcst;
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// Climatology mean data
+// Climatology data
 //
 climo_mean = {
 
@@ -75,9 +75,13 @@ climo_mean = {
    }
 
    time_interp_method = DW_MEAN;
-   match_month        = TRUE;
-   match_day          = FALSE;
-   time_step          = 21600;
+   day_interval       = 31;
+   hour_interval      = 6;
+}
+
+climo_stdev = climo_mean;
+climo_stdev = {
+   file_name = [];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,6 +144,6 @@ output_stats = {
 
 rank_corr_flag = FALSE;
 tmp_dir        = "/tmp";
-//version        = "V8.1";
+//version        = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////
