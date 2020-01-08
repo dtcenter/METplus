@@ -113,6 +113,8 @@ class MTDWrapper(MODEWrapper):
 
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'MTD_REGRID_TO_GRID', '')
 
+        c_dict['OUTPUT_PREFIX'] = self.config.getstr('config', 'MTD_OUTPUT_PREFIX', '')
+
         return c_dict
 
 
@@ -365,6 +367,8 @@ class MTDWrapper(MODEWrapper):
                 self.add_env_var("FCST_FIELD", fcst_field)
                 self.add_env_var("OBS_FIELD", obs_field)
 
+            self.add_env_var('OUTPUT_PREFIX',
+                             self.c_dict['OUTPUT_PREFIX'])
 
             self.add_common_envs(time_info)
 

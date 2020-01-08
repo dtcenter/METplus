@@ -114,7 +114,7 @@ def setup(baseinputconfs, filename=None, logger=None):
 
     opts_conf_list = list()
     for opts_conf_file in opts_conf_files:
-        opts_conf_list.append(config_launcher.set_conf_file_path(opts_conf_file))
+        opts_conf_list.append(opts_conf_file)
     # append args to opts conf_list, to maintain the same conf
     # file order from command line, when confs may be space seperated.
     # ie. -c conf1 -c conf2 conf3 would become

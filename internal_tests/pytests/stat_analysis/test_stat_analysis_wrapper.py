@@ -141,8 +141,8 @@ def test_create_c_dict():
     c_dict = st.create_c_dict()
     assert(c_dict['LOOP_ORDER'] == 'times')
     assert(c_dict['PROCESS_LIST'] == 'StatAnalysis')
-    assert(c_dict['CONFIG_FILE'] == (METPLUS_BASE+'/parm/use_cases/grid_to_grid/'
-                                     +'met_config/STATAnalysisConfig'))
+    assert(c_dict['CONFIG_FILE'] == (METPLUS_BASE+'/internal_tests/'
+                                     +'config/STATAnalysisConfig'))
     assert(c_dict['OUTPUT_BASE_DIR'] == (st.config.getdir('OUTPUT_BASE')
                                          +'/stat_analysis'))
     assert(c_dict['GROUP_LIST_ITEMS'] == [ 'FCST_INIT_HOUR_LIST' ])
