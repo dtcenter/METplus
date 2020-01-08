@@ -34,6 +34,7 @@ regrid = {
    method     = NEAREST;
    width      = 1;
    vld_thresh = 0.5;
+   shape      = SQUARE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,6 +45,7 @@ regrid = {
 censor_thresh = [];
 censor_val    = [];
 cat_thresh    = [];
+nc_var_str    = "";
 
 //
 // Ensemble product fields to be processed
@@ -89,13 +91,11 @@ nmep_smooth = {
 //
 
 fcst = {
-   message_type = [ "ADPSFC" ];
 
    field = [ ${FCST_FIELD}  ];
 }
 
 obs = {
-   message_type = [ "ADPSFC" ];
  
    field = [ ${OBS_FIELD}   ];
 }
@@ -106,6 +106,8 @@ obs = {
 // Point observation filtering options
 // May be set separately in each "obs.field" entry
 //
+
+message_type = [ "ADPSFC" ];
 sid_exc        = [];
 obs_thresh     = [ NA ];
 obs_quality    = [];
@@ -125,7 +127,19 @@ obs_error = {
    dist_parm        = [];
    inst_bias_scale  = 1.0;
    inst_bias_offset = 0.0;
+   min              = NA;      // Valid range of data
+   max              = NA;
 }
+
+//
+// Mapping of message type group name to comma-separated list of values.
+//
+message_type_group_map = [
+   { key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";               },
+   { key = "ANYAIR";  val = "AIRCAR,AIRCFT";                      },
+   { key = "ANYSFC";  val = "ADPSFC,SFCSHP,ADPUPA,PROFLR,MSONET"; },
+   { key = "ONLYSF";  val = "ADPSFC,SFCSHP";                      }
+];
 
 //
 // Ensemble bin sizes
@@ -212,6 +226,7 @@ ci_alpha  = [ 0.05 ];
 interp = {
    field      = BOTH;
    vld_thresh = 1.0;
+   shape  = SQUARE;
 
    type = [
       {
@@ -241,6 +256,7 @@ output_flag = {
 // Ensemble product output types
 //
 ensemble_flag = {
+   latlon    = TRUE;
    mean      = TRUE;
    stdev     = TRUE;
    minus     = TRUE;
@@ -250,6 +266,8 @@ ensemble_flag = {
    range     = TRUE;
    vld_count = TRUE;
    frequency = TRUE;
+   nep       = FALSE;
+   nmep      = FALSE;
    rank      = TRUE;
    weight    = FALSE;
 }
