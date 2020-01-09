@@ -61,7 +61,7 @@ This use case will run the MET MTD (MODE Time Domain) tool to compare gridded fo
 # These variables are referenced in the MET configuration file.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/met_config/MTDConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/MTDConfig_wrapped
 #
 # Note the following variables are referenced in the MET configuration file.
 # * **${MIN_VOLUME}** - Minimum volume to be considered valid data. Corresponds to MTD_MIN_VOLUME in the METplus configuration file.

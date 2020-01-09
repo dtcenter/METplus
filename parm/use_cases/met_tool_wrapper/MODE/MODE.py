@@ -61,7 +61,7 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 # These variables are referenced in the MET configuration file.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/met_config/MODEConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
 #
 # Note the following variables are referenced in the MET configuration file.
 # * QUILT - True/False to perform quilting. Corresponds to MODE_QUILT in the METplus configuration file.
