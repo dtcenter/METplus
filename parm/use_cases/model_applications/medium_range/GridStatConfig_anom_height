@@ -219,7 +219,7 @@ nc_pairs_flag   = {
 
 grid_weight_flag = COS_LAT;
 tmp_dir          = "/tmp";
-output_prefix    = "height_${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${LEVEL}";
+output_prefix    = "${OUTPUT_PREFIX}";
 //version		 = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////
