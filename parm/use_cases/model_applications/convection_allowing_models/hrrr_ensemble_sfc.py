@@ -1,6 +1,6 @@
 """
 HRRR Ensemble Use Case
-========
+======================
 
 This use case builds a 3 hour gridded precipitation accumulation using 1 hour accumulation fields,
 then compares the resulting data set to gridded 3 hour accumulation forecast data
@@ -64,7 +64,7 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 # with the -c option, i.e. -c parm/use_cases/model_applications/convection_allowing_models/hrrr_ensemble_sfc.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: hrrr_ensemble_sfc.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/hrrr_ensemble_sfc.conf
 
 ##############################################################################
 # MET Configuration
@@ -74,7 +74,7 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/model_applications/convection_allowing_models/EnsembleStatConfig_SFC
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/EnsembleStatConfig_SFC
 #
 # See the following files for more information about the environment variables set in this configuration file.
 #   parm/use_cases/met_tool_wrapper/EnsembleStat.py
