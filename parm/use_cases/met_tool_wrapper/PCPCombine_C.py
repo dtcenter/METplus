@@ -1,6 +1,6 @@
 """
-PCPCombine
-========
+PCPCombine SUBTRACT
+===================
 
 This use case will run the MET PCPCombine tool in SUBTRACT mode to extract a 3 hour accumulation field
 
@@ -103,6 +103,7 @@ This use case will run the MET PCPCombine tool in SUBTRACT mode to extract a 3 h
 #
 # * wrfprs_ruc13_2005080700_f24_A18.nc
 #
+
 ##############################################################################
 # Keywords
 # --------

@@ -1,6 +1,6 @@
 """
-PCPCombine
-========
+PCPCombine CUSTOM
+=================
 
 This use case will run the MET PCPCombine tool in CUSTOM mode to generate a command defined by the user.
 
@@ -108,6 +108,7 @@ This use case will run the MET PCPCombine tool in CUSTOM mode to generate a comm
 #
 # * wrfprs_ruc13_2005080700_f24_A24.nc
 #
+
 ##############################################################################
 # Keywords
 # --------

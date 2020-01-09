@@ -1,6 +1,6 @@
 """
 PHPT MODE Time Domain Use Case
-========
+==============================
 
 This use case processes precipitation accumulation data over time.
 
@@ -52,7 +52,7 @@ This use case processes precipitation accumulation data over time.
 # with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/phpt-mtd.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: phpt-mtd.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/phpt-mtd.conf
 
 ##############################################################################
 # MET Configuration
@@ -62,7 +62,7 @@ This use case processes precipitation accumulation data over time.
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/met_config/MTDConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/MTDConfig_wrapped
 #
 # See the following files for more information about the environment variables set in this configuration file.
 #   parm/use_cases/met_tool_wrapper/MTD.py

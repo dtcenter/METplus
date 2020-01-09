@@ -1,6 +1,6 @@
 """
 PHPT vs. Stage IV GRIB Use Case
-========
+===============================
 
 This use case compares gridded probabilistic 6 hour forecast precipitation accumulation data to
 gridded 6 hour observation precipitation accumulation data.
@@ -71,7 +71,7 @@ gridded 6 hour observation precipitation accumulation data.
 # with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/phpt-vs-s4grib.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: phpt-vs-s4grib.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/phpt-vs-s4grib.conf
 
 ##############################################################################
 # MET Configuration
@@ -81,7 +81,7 @@ gridded 6 hour observation precipitation accumulation data.
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/model_applications/precipitation/GridStatConfig_PROB
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/GridStatConfig_PROB
 #
 # See the following files for more information about the environment variables set in this configuration file.
 #   parm/use_cases/met_tool_wrapper/GridStat.py
@@ -128,12 +128,12 @@ gridded 6 hour observation precipitation accumulation data.
 # Output for this use case will be found in grid_stat/phpt-vs-s4grib/201609041200 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# *grid_stat_PROB_PHPT_APCP_vs_STAGE4_GRIB_APCP_A06_060000L_20160904_180000V_eclv.txt
-# *grid_stat_PROB_PHPT_APCP_vs_STAGE4_GRIB_APCP_A06_060000L_20160904_180000V_grad.txt
-# *grid_stat_PROB_PHPT_APCP_vs_STAGE4_GRIB_APCP_A06_060000L_20160904_180000V.stat
-# *grid_stat_PROB_PHPT_APCP_vs_STAGE4_GRIB_APCP_A06_070000L_20160904_190000V_eclv.txt
-# *grid_stat_PROB_PHPT_APCP_vs_STAGE4_GRIB_APCP_A06_070000L_20160904_190000V_grad.txt
-# *grid_stat_PROB_PHPT_APCP_vs_STAGE4_GRIB_APCP_A06_070000L_20160904_190000V.stat
+# * grid_stat_PROB_PHPT_APCP_vs_STAGE4_GRIB_APCP_A06_060000L_20160904_180000V_eclv.txt
+# * grid_stat_PROB_PHPT_APCP_vs_STAGE4_GRIB_APCP_A06_060000L_20160904_180000V_grad.txt
+# * grid_stat_PROB_PHPT_APCP_vs_STAGE4_GRIB_APCP_A06_060000L_20160904_180000V.stat
+# * grid_stat_PROB_PHPT_APCP_vs_STAGE4_GRIB_APCP_A06_070000L_20160904_190000V_eclv.txt
+# * grid_stat_PROB_PHPT_APCP_vs_STAGE4_GRIB_APCP_A06_070000L_20160904_190000V_grad.txt
+# * grid_stat_PROB_PHPT_APCP_vs_STAGE4_GRIB_APCP_A06_070000L_20160904_190000V.stat
 #
 
 ##############################################################################

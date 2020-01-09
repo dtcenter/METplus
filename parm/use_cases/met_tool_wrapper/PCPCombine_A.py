@@ -1,6 +1,6 @@
 """
-PCPCombine
-========
+PCPCombine SUM
+==============
 
 This use case will run the MET PCPCombine tool in SUM mode to build a 15 minute accumulation field
 
@@ -101,6 +101,7 @@ This use case will run the MET PCPCombine tool in SUM mode to build a 15 minute 
 #
 # * NEWSe5min_mem00_lag00.nc
 #
+
 ##############################################################################
 # Keywords
 # --------

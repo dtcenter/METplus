@@ -1,6 +1,6 @@
 """
 Series by Lead (for all forecast hours)
-========
+=======================================
 This use case performs a series analysis on tropical cyclone
 data based on all lead times. This use case illustrates how to "build" on an existing
 configuration file by overriding configuration settings. In this case, we have
@@ -75,8 +75,8 @@ requested a series analysis based on forecast hours rather than by initializatio
 # -c parm/use_cases/model_applications/medium_range/series_by_lead_all_fhrs.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: feature_relative.conf
-# .. literalinclude:: series_by_all_fhrs.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/feature_relative.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/series_by_lead_all_fhrs.conf
 
 ##############################################################################
 # MET Configuration
@@ -86,15 +86,16 @@ requested a series analysis based on forecast hours rather than by initializatio
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/model_applications/medium_range/TCPairsETCConfig
-# .. literalinclude:: ../../../parm/use_cases/model_applications/medium_range/TCStatConfig
-# .. literalinclude:: ../../../parm/use_cases/model_applications/medium_range/SeriesAnalysisConfig
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCPairsETCConfig
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStatConfig
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/SeriesAnalysisConfig
 #
 # See the following files for more information about the environment variables set in these configuration files.
 #   parm/use_cases/met_tool_wrapper/TCPairs.py
 #
 #   parm/use_cases/met_tool_wrapper/SeriesByLead.py
 #
+
 ##############################################################################
 # Running METplus
 # ---------------

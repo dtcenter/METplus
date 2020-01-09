@@ -1,6 +1,6 @@
 """
 TCMPRPlotter
-========
+============
 
 This use case will run the MET R script tcmpr_plotter.R to generate various statistical
 plots of tropical cyclone tracks.

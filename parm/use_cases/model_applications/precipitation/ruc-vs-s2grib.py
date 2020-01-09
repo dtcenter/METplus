@@ -1,6 +1,6 @@
 """
 RUC vs. Stage II GRIB Use Case
-========
+==============================
 
 This use case builds a 3 hour gridded precipitation accumulation using 1 hour accumulation fields,
 then compares the resulting data set to gridded 3 hour accumulation forecast data
@@ -69,7 +69,7 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 # with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/ruc-vs-s2grib.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ruc-vs-s2grib.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/ruc-vs-s2grib.conf
 
 ##############################################################################
 # MET Configuration
@@ -79,7 +79,7 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/model_applications/precipitation/GridStatConfig_MEAN
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/GridStatConfig_MEAN
 #
 # See the following files for more information about the environment variables set in this configuration file.
 #   parm/use_cases/met_tool_wrapper/GridStat.py
@@ -126,18 +126,18 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 # Output for this use case will be found in grid_stat/ruc-vs-s2grib/2005080700 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# *grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_030000L_20050807_030000V_eclv.txt
-# *grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_030000L_20050807_030000V_grad.txt
-# *grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_030000L_20050807_030000V.stat
-# *grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_060000L_20050807_060000V_eclv.txt
-# *grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_060000L_20050807_060000V_grad.txt
-# *grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_060000L_20050807_060000V.stat
-# *grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_090000L_20050807_090000V_eclv.txt
-# *grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_090000L_20050807_090000V_grad.txt
-# *grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_090000L_20050807_090000V.stat
-# *grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_120000L_20050807_120000V_eclv.txt
-# *grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_120000L_20050807_120000V_grad.txt
-# *grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_120000L_20050807_120000V.stat
+# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_030000L_20050807_030000V_eclv.txt
+# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_030000L_20050807_030000V_grad.txt
+# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_030000L_20050807_030000V.stat
+# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_060000L_20050807_060000V_eclv.txt
+# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_060000L_20050807_060000V_grad.txt
+# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_060000L_20050807_060000V.stat
+# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_090000L_20050807_090000V_eclv.txt
+# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_090000L_20050807_090000V_grad.txt
+# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_090000L_20050807_090000V.stat
+# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_120000L_20050807_120000V_eclv.txt
+# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_120000L_20050807_120000V_grad.txt
+# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_120000L_20050807_120000V.stat
 #
 
 ##############################################################################

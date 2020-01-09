@@ -1,6 +1,6 @@
 """
-PCPCombine
-========
+PCPCombine DERIVE
+=================
 
 This use case will run the MET PCPCombine tool in DERIVE mode to generate statistics using multiple input files.
 
@@ -104,6 +104,7 @@ This use case will run the MET PCPCombine tool in DERIVE mode to generate statis
 #
 # * wrfprs_ruc13_2005080700_f24_A18.nc
 #
+
 ##############################################################################
 # Keywords
 # --------

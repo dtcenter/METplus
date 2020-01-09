@@ -94,44 +94,43 @@ This use case will loop over run times and output information for each run regar
 # METplus Configuration
 # ---------------------
 #
-# METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/Example.conf
+# METplus first loads all of the configuration files found in parm/metplus_config, then it loads any configuration files passed to METplus via the command line with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/Example.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/Example.conf
 #
-# The following configuration variables tell METplus to loop by valid time starting at 2017-02-01 0Z, ending on 2017-02-02 0Z, incrementing 6 hours each iteration.
+# The following configuration variables tell METplus to loop by valid time starting at 2017-02-01 0Z, ending on 2017-02-02 0Z, incrementing 6 hours each iteration::
 #
-# LOOP_BY = VALID
-# VALID_TIME_FMT = %Y%m%d%H
-# VALID_BEG = 2017020100
-# VALID_END = 2017020200
-# VALID_INCREMENT = 6H
+#   LOOP_BY = VALID
+#   VALID_TIME_FMT = %Y%m%d%H
+#   VALID_BEG = 2017020100
+#   VALID_END = 2017020200
+#   VALID_INCREMENT = 6H
 #
-# The following configuration variable tells METplus to process the 3 hour, 6 hour, 9 hour, and 12 hour forecast leads for EACH valid time.
+# The following configuration variable tells METplus to process the 3 hour, 6 hour, 9 hour, and 12 hour forecast leads for EACH valid time::
 #
-# LEAD_SEQ = 3H, 6H, 9H, 12H
+#   LEAD_SEQ = 3H, 6H, 9H, 12H
 #
-# The following configuration variable tells METplus to look in /dir/containing/example/data to find data to process.
+# The following configuration variable tells METplus to look in /dir/containing/example/data to find data to process::
 #
-# [dir]
-# EXAMPLE_INPUT_DIR = /dir/containing/example/data
+#   [dir]
+#   EXAMPLE_INPUT_DIR = /dir/containing/example/data
 #
 # Note that this variable must be found following the [dir] section header
 #
-# The following configuration variable tells METplus to look for files in the input directory matching the format specified.
+# The following configuration variable tells METplus to look for files in the input directory matching the format specified::
 #
-# [filename_templates]
-# EXAMPLE_INPUT_TEMPLATE = {init?fmt=%Y%m%d}/file_{init?fmt=%Y%m%d}_{init?fmt=%2H}_F{lead?fmt=%3H}.ext
+#   [filename_templates]
+#   EXAMPLE_INPUT_TEMPLATE = {init?fmt=%Y%m%d}/file_{init?fmt=%Y%m%d}_{init?fmt=%2H}_F{lead?fmt=%3H}.ext
 #
 # For example, valid time 2017-02-01 18Z and forecast lead 3 hours, the desired file is /dir/containing/example/data/20170201/file_20170201_15_F03.ext
 #
 # Note that the initialization time used is 2017-02-01 15Z, which is calculated by subtracting the forecast lead from the valid time.
 #
+
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # None.
 #
@@ -172,34 +171,32 @@ This use case will loop over run times and output information for each run regar
 #
 #   INFO: METplus has successfully finished running.
 #
-# You should also see a series of log output listing init/valid times, forecast lead times, and filenames derived from the filename templates. Here is an excerpt:
+# You should also see a series of log output listing init/valid times, forecast lead times, and filenames derived from the filename templates. Here is an excerpt::
 #
-# ... 
-# 12/30 19:44:02.901 metplus (met_util.py:425) INFO: ****************************************
-# 12/30 19:44:02.901 metplus (met_util.py:426) INFO: * Running METplus
-# 12/30 19:44:02.902 metplus (met_util.py:432) INFO: *  at valid time: 201702010000
-# 12/30 19:44:02.902 metplus (met_util.py:435) INFO: ****************************************
-# 12/30 19:44:02.902 metplus.Example (example_wrapper.py:58) INFO: Running ExampleWrapper at valid time 20170201000000
-# 12/30 19:44:02.902 metplus.Example (example_wrapper.py:63) INFO: Input directory is /dir/containing/example/data
-# 12/30 19:44:02.902 metplus.Example (example_wrapper.py:64) INFO: Input template is {init?fmt=%Y%m%d}/file_{init?fmt=%Y%m%d}_{init?fmt=%2H}_F{lead?fmt=%3H}.ext
-# 12/30 19:44:02.902 metplus.Example (example_wrapper.py:79) INFO: Processing forecast lead 3 hours initialized at 2017-01-31 21Z and valid at 2017-02-01 00Z
-# 12/30 19:44:02.903 metplus.Example (example_wrapper.py:88) INFO: Looking in input directory for file: 20170131/file_20170131_21_F003.ext
-# 12/30 19:44:02.903 metplus.Example (example_wrapper.py:79) INFO: Processing forecast lead 6 hours initialized at 2017-01-31 18Z and valid at 2017-02-01 00Z
-# 12/30 19:44:02.903 metplus.Example (example_wrapper.py:88) INFO: Looking in input directory for file: 20170131/file_20170131_18_F006.ext
-# 12/30 19:44:02.904 metplus.Example (example_wrapper.py:79) INFO: Processing forecast lead 9 hours initialized at 2017-01-31 15Z and valid at 2017-02-01 00Z
-# 12/30 19:44:02.904 metplus.Example (example_wrapper.py:88) INFO: Looking in input directory for file: 20170131/file_20170131_15_F009.ext
-# 12/30 19:44:02.904 metplus.Example (example_wrapper.py:79) INFO: Processing forecast lead 12 hours initialized at 2017-01-31 12Z and valid at 2017-02-01 00Z
-# 12/30 19:44:02.904 metplus.Example (example_wrapper.py:88) INFO: Looking in input directory for file: 20170131/file_20170131_12_F012.ext
-# 12/30 19:44:02.904 metplus (met_util.py:425) INFO: ****************************************
-# 12/30 19:44:02.904 metplus (met_util.py:426) INFO: * Running METplus
-# 12/30 19:44:02.905 metplus (met_util.py:432) INFO: *  at valid time: 201702010600
-# 12/30 19:44:02.905 metplus (met_util.py:435) INFO: ****************************************
-# 12/30 19:44:02.905 metplus.Example (example_wrapper.py:58) INFO: Running ExampleWrapper at valid time 20170201060000
-# 12/30 19:44:02.905 metplus.Example (example_wrapper.py:63) INFO: Input directory is /dir/containing/example/data
-# 12/30 19:44:02.905 metplus.Example (example_wrapper.py:64) INFO: Input template is {init?fmt=%Y%m%d}/file_{init?fmt=%Y%m%d}_{init?fmt=%2H}_F{lead?fmt=%3H}.ext
-# 12/30 19:44:02.905 metplus.Example (example_wrapper.py:79) INFO: Processing forecast lead 3 hours initialized at 2017-02-01 03Z and valid at 2017-02-01 06Z
-# 12/30 19:44:02.906 metplus.Example (example_wrapper.py:88) INFO: Looking in input directory for file: 20170201/file_20170201_03_F003.ext
-# ...
+#   12/30 19:44:02.901 metplus (met_util.py:425) INFO: ****************************************
+#   12/30 19:44:02.901 metplus (met_util.py:426) INFO: * Running METplus
+#   12/30 19:44:02.902 metplus (met_util.py:432) INFO: *  at valid time: 201702010000
+#   12/30 19:44:02.902 metplus (met_util.py:435) INFO: ****************************************
+#   12/30 19:44:02.902 metplus.Example (example_wrapper.py:58) INFO: Running ExampleWrapper at valid time 20170201000000
+#   12/30 19:44:02.902 metplus.Example (example_wrapper.py:63) INFO: Input directory is /dir/containing/example/data
+#   12/30 19:44:02.902 metplus.Example (example_wrapper.py:64) INFO: Input template is {init?fmt=%Y%m%d}/file_{init?fmt=%Y%m%d}_{init?fmt=%2H}_F{lead?fmt=%3H}.ext
+#   12/30 19:44:02.902 metplus.Example (example_wrapper.py:79) INFO: Processing forecast lead 3 hours initialized at 2017-01-31 21Z and valid at 2017-02-01 00Z
+#   12/30 19:44:02.903 metplus.Example (example_wrapper.py:88) INFO: Looking in input directory for file: 20170131/file_20170131_21_F003.ext
+#   12/30 19:44:02.903 metplus.Example (example_wrapper.py:79) INFO: Processing forecast lead 6 hours initialized at 2017-01-31 18Z and valid at 2017-02-01 00Z
+#   12/30 19:44:02.903 metplus.Example (example_wrapper.py:88) INFO: Looking in input directory for file: 20170131/file_20170131_18_F006.ext
+#   12/30 19:44:02.904 metplus.Example (example_wrapper.py:79) INFO: Processing forecast lead 9 hours initialized at 2017-01-31 15Z and valid at 2017-02-01 00Z
+#   12/30 19:44:02.904 metplus.Example (example_wrapper.py:88) INFO: Looking in input directory for file: 20170131/file_20170131_15_F009.ext
+#   12/30 19:44:02.904 metplus.Example (example_wrapper.py:79) INFO: Processing forecast lead 12 hours initialized at 2017-01-31 12Z and valid at 2017-02-01 00Z
+#   12/30 19:44:02.904 metplus.Example (example_wrapper.py:88) INFO: Looking in input directory for file: 20170131/file_20170131_12_F012.ext
+#   12/30 19:44:02.904 metplus (met_util.py:425) INFO: ****************************************
+#   12/30 19:44:02.904 metplus (met_util.py:426) INFO: * Running METplus
+#   12/30 19:44:02.905 metplus (met_util.py:432) INFO: *  at valid time: 201702010600
+#   12/30 19:44:02.905 metplus (met_util.py:435) INFO: ****************************************
+#   12/30 19:44:02.905 metplus.Example (example_wrapper.py:58) INFO: Running ExampleWrapper at valid time 20170201060000
+#   12/30 19:44:02.905 metplus.Example (example_wrapper.py:63) INFO: Input directory is /dir/containing/example/data
+#   12/30 19:44:02.905 metplus.Example (example_wrapper.py:64) INFO: Input template is {init?fmt=%Y%m%d}/file_{init?fmt=%Y%m%d}_{init?fmt=%2H}_F{lead?fmt=%3H}.ext
+#   12/30 19:44:02.905 metplus.Example (example_wrapper.py:79) INFO: Processing forecast lead 3 hours initialized at 2017-02-01 03Z and valid at 2017-02-01 06Z
+#   12/30 19:44:02.906 metplus.Example (example_wrapper.py:88) INFO: Looking in input directory for file: 20170201/file_20170201_03_F003.ext
 #
 
 ##############################################################################

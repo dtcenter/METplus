@@ -98,8 +98,8 @@ Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 # Output for this use case will be found in cyclone/ (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# *20150301.txt
-# *20150301.png
+# * 20150301.txt
+# * 20150301.png
 
 ##############################################################################
 # Keywords

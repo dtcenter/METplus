@@ -1,6 +1,6 @@
 """
 RegridDataPlane
-========
+===============
 
 This use case will run the MET RegridDataPlane tool to convert point observation data in ASCII text format to NetCDF format.
 
