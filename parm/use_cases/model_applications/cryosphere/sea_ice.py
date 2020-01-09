@@ -51,26 +51,41 @@ models against sea ice observations. For now, it is limited to observation again
 #
 # This use case utilizes the MET GridStat and MET Mode tools. 
 
-##############################################################################
-# METplus Workflow
-# ----------------
-#
-# A general description of the workflow will be useful to the user. For example,
-                    # the order in which tools are called (e.g. PcpCombine then grid_stat) or the way 
-                    # in which data are processed (e.g. looping over valid times) with an example
-                    # of how the looping will work would be helpful for the user.
+    ##############################################################################
+    # METplus Workflow
+    # ----------------
+    # 
+    # 
+    # A general description of the workflow will be useful to the user. For example,
+    # the order in which tools are called (e.g. PcpCombine then grid_stat) or the way 
+    # in which data are processed (e.g. looping over valid times) with an example
+    # of how the looping will work would be helpful for the user.
 
-                    ##############################################################################
-                    # METplus Configuration
-                    # ---------------------
-                    #
-                    # Detail the configuration/conf file for this METplus use case. Also review
-                    # how METplus sets configuration variables if the user does not set them (i.e.
-                    # it loads from METplus/parm/metplus_config/* before any custom conf files
-                    # provided by the user via master_metplus.py -c custom_file.conf).
-                    # You can include conf items in code-blocks using RST like this:
-                    #
-                    # .. code-block:: none
+###################################################################################################
+# METplus Configuration
+# ---------------------
+# 
+# METplus sets environment variables based on the values in the METplus configuration file. 
+#
+# These variables are referenced in the MET configuration files.
+#  1. ${MODEL} - Name of the forecast input. Corresponds to MODEL in the METplus configuration file.
+#  2. ${OBTYPE} - Name of the observation input. Corresponds to OBTYPE in the METplus config. file.
+#  3. ${FCST_FIELD} - Formatted forecast field information. Generated from FCST_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] 
+#                    in the METplus config file. 
+#  4. ${OBS_FIELD} - Formatted observation field information. Generated from OBS_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS]
+#                   in the METplus config file. 
+#  5. ${FCST_VAR} - Field name of forecast data to process. Used in output_prefix to include input information in
+#                  the output filenames. Corresponds to FCST_VAR<n>_NAME in the METplus config. file. 
+#  6. ${OBS_VAR} - Field name of observation data to process. Used in output_prefix to include input information in
+#                 the output filenames. Corresponds to OBS_VAR<n>_NAME in the METplus config. file. 
+#  7. ${LEVEL} - Vertical level of the forecast input data. Used in output_prefix to include input information in
+#               the output filenames. Corresponds to FCST_VAR<n>_LEVELS in the METplus config. file.
+#  8. ${QUILT} - True/FAlse to perform quilting. Corresponds to MODE_QUILT in the METplus config. file.
+#  9. ${FCST_CONV_RADIUS} - Convolution radius/radii used for forecast data. Corresponds to FCST_MODE_CONV_RADIUS in the
+#                          METplus config. file. 
+# 10. ${FCST_CONV_THRESH} - Convolution threshold(s) used for forecast data. Corresponds to FCST_CONV_THRESH in the
+#                           METplus config. file. 
+#
                     #
                     #    [dir]
                     #    OUTPUT_BASE=/path/to
@@ -82,13 +97,13 @@ models against sea ice observations. For now, it is limited to observation again
                     # .. highlight:: none
                     # .. literalinclude:: ../../../../parm/use_cases/template/use_case_application/use-case-application.conf
 
-                    ##############################################################################
-                    # Running METplus
-                    # ---------------
-                    #
-                    # It will be helpful to include an example command of running METplus.
+###################################################################################################
+# Running METplus
+# ---------------
+#
+# It will be helpful to include an example command of running METplus.
 
-                    ##############################################################################
+####################################################################################################
                     # Expected Output
                     # ---------------
                     #
