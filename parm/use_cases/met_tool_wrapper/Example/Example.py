@@ -97,7 +97,7 @@ This use case will loop over run times and output information for each run regar
 # METplus first loads all of the configuration files found in parm/metplus_config, then it loads any configuration files passed to METplus via the command line with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/Example.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/Example.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/Example/Example.conf
 #
 # The following configuration variables tell METplus to loop by valid time starting at 2017-02-01 0Z, ending on 2017-02-02 0Z, incrementing 6 hours each iteration::
 #

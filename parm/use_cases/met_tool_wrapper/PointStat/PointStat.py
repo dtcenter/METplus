@@ -51,7 +51,7 @@ point observation data.
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PointStat.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/PointStat.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PointStat/PointStat.conf
 
 ##############################################################################
 # MET Configuration

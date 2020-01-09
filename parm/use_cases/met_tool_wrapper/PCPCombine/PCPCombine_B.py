@@ -50,7 +50,7 @@ This use case will run the MET PCPCombine tool in ADD mode to build a 15 minute 
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine_B.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/PCPCombine_B.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_B.conf
 
 ##############################################################################
 # MET Configuration

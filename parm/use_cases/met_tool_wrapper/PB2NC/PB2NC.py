@@ -46,7 +46,7 @@ This use case will run the MET PB2NC tool to convert prepBUFR point observation 
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PB2NC.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/PB2NC.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PB2NC/PB2NC.conf
 
 ##############################################################################
 # MET Configuration

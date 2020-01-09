@@ -50,7 +50,7 @@ This use case will run the MET PCPCombine tool in SUBTRACT mode to extract a 3 h
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine_C.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/PCPCombine_C.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_C.conf
 
 ##############################################################################
 # MET Configuration

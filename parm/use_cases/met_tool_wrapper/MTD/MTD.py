@@ -51,7 +51,7 @@ This use case will run the MET MTD (MODE Time Domain) tool to compare gridded fo
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/MTD.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/MTD.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/MTD/MTD.conf
 
 ##############################################################################
 # MET Configuration

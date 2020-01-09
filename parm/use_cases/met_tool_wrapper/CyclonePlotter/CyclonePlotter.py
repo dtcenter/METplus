@@ -6,6 +6,7 @@ Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 
 """
 
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -45,7 +46,7 @@ Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/CyclonePlotter.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/CyclonePlotter.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf
 
 ##############################################################################
 # MET Configuration
@@ -63,8 +64,8 @@ Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 # 1) Passing in CyclonePlotter.conf then a user-specific system configuration file and user-specific data
 #    configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/CyclonePlotter.conf
-#                          -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/CyclonePlotter.conf \
+#                          -c /path/to/user_system.conf \
 #                          -c /path/to/user_data.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in CyclonePlotter.conf::

@@ -49,7 +49,7 @@ from a TCPairs run.
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/TCStat.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/TCStat.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/TCStat/TCStat.conf
 
 ##############################################################################
 # MET Configuration

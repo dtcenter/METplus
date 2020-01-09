@@ -51,7 +51,7 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/MODE.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/MODE.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/MODE/MODE.conf
 
 ##############################################################################
 # MET Configuration

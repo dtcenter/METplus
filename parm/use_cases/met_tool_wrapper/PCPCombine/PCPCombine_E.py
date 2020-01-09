@@ -55,7 +55,7 @@ This use case will run the MET PCPCombine tool in CUSTOM mode to generate a comm
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine_E.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/PCPCombine_E.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_E.conf
 
 ##############################################################################
 # MET Configuration

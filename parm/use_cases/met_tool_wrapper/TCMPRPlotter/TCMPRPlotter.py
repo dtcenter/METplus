@@ -47,7 +47,7 @@ plots of tropical cyclone tracks.
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GridStat.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/TCMPRPlotter.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf
 
 ##############################################################################
 # MET Configuration

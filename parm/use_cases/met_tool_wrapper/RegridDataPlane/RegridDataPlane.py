@@ -52,7 +52,7 @@ This use case will run the MET RegridDataPlane tool to convert point observation
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/RegridDataPlane.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/RegridDataPlane.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
 
 ##############################################################################
 # MET Configuration

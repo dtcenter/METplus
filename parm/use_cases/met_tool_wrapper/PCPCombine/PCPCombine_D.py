@@ -51,7 +51,7 @@ This use case will run the MET PCPCombine tool in DERIVE mode to generate statis
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine_D.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/met_tool_wrapper/PCPCombine_D.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_D.conf
 
 ##############################################################################
 # MET Configuration
