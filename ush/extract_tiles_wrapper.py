@@ -11,6 +11,8 @@ Condition codes: 0 for success, 1 for failure
 
 """
 
+import metplus_check_python_version
+
 import os
 import sys
 import met_util as util

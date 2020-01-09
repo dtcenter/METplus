@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Program Name: custom_ingester_wrapper.py
+Program Name: custom_ingest_wrapper.py
 Contact(s): George McCabe
 Abstract: 
 History Log:  Initial version
@@ -12,6 +12,7 @@ Output Files: None
 Condition codes: 0 for success, 1 for failure
 """
 
+import metplus_check_python_version
 
 import os
 import re
@@ -49,12 +50,12 @@ class CustomIngestWrapper(CommandBuilder):
                 indices.append(result.group(1))
 
         for index in indices:
-            ingest_script = self.config.getraw('config', f'CUSTOM_INGEST_{index}_SCRIPT')
-            input_type = self.config.getstr('config', f'CUSTOM_INGEST_{index}_TYPE')
-            output_dir = self.config.getdir(f'CUSTOM_INGEST_{index}_OUTPUT_DIR', '')
+            ingest_script = self.config.getraw('config', 'CUSTOM_INGEST_{}_SCRIPT'.format(index))
+            input_type = self.config.getstr('config', 'CUSTOM_INGEST_{}_TYPE'.format(index))
+            output_dir = self.config.getdir('CUSTOM_INGEST_{}_OUTPUT_DIR'.format(index), '')
             output_template = self.config.getraw('filename_templates',
-                                                 f'CUSTOM_INGEST_{index}_OUTPUT_TEMPLATE')
-            output_grid = self.config.getraw('config', f'CUSTOM_INGEST_{index}_OUTPUT_GRID', '')
+                                                 'CUSTOM_INGEST_{}_OUTPUT_TEMPLATE'.format(index))
+            output_grid = self.config.getraw('config', 'CUSTOM_INGEST_{}_OUTPUT_GRID'.format(index), '')
             ingester_dict = {'output_dir': output_dir,
                              'output_template': output_template,
                              'script': ingest_script,

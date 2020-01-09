@@ -15,10 +15,7 @@ Condition codes:
 import os
 import sys
 
-py_version = sys.version.split(' ')[0]
-if py_version < '3.6.3':
-    print("Must be using Python 3.6.3 or higher. You are using {}".format(py_version))
-    exit(1)
+import metplus_check_python_version
 
 import logging
 import shutil

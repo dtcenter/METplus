@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import metplus_check_python_version
+
 import os
 import re
 import met_util as util

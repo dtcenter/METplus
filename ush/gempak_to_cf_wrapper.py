@@ -12,6 +12,8 @@ Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 """
 
+import metplus_check_python_version
+
 import os
 import met_util as util
 import string_template_substitution as sts

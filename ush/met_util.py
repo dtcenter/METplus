@@ -35,6 +35,7 @@ import config_metplus
 """!@namespace met_util
  @brief Provides  Utility functions for METplus.
 """
+
 # list of compression extensions that are handled by METplus
 VALID_EXTENSIONS = ['.gz', '.bz2', '.zip']
 

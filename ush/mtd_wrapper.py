@@ -12,6 +12,8 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 '''
 
+import metplus_check_python_version
+
 import os
 import met_util as util
 import time_util
@@ -141,7 +143,7 @@ class MTDWrapper(MODEWrapper):
         # report error and exit if field info is not set
         if not var_list:
             self.log_error('No input fields were specified to MTD. You must set '
-                           f'[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
+                           '[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
             return None
 
         for var_info in var_list:
@@ -168,8 +170,8 @@ class MTDWrapper(MODEWrapper):
                 if obs_file is None:
                     continue
 
-                self.logger.debug(f"Adding forecast file: {model_file}")
-                self.logger.debug(f"Adding observation file: {obs_file}")
+                self.logger.debug("Adding forecast file: {}".format(model_file))
+                self.logger.debug("Adding observation file: {}".format(obs_file))
                 model_list.append(model_file)
                 obs_list.append(obs_file)
 

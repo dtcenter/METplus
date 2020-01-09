@@ -12,6 +12,8 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 '''
 
+import metplus_check_python_version
+
 import os
 import glob
 import met_util as util

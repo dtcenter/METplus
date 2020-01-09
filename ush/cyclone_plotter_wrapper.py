@@ -6,6 +6,8 @@ A Python class that generates plots of extra tropical cyclone forecast data,
  verification plots http://www.emc.ncep.noaa.gov/mmb/gplou/emchurr/glblgen/
 """
 
+import metplus_check_python_version
+
 import os
 import time
 import datetime

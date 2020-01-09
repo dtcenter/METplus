@@ -12,6 +12,8 @@ Output Files: .png images
 Condition codes: 0 for success, 1 for failure
 '''
 
+import metplus_check_python_version
+
 import logging
 import os
 import copy

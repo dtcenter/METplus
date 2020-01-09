@@ -12,6 +12,8 @@ Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 """
 
+import metplus_check_python_version
+
 import os
 import met_util as util
 import time_util
@@ -55,11 +57,11 @@ class ASCII2NCWrapper(CommandBuilder):
                                                         'ASCII2NC_TIME_SUMMARY_BEG')
         # add quotes if not already added
         if c_dict['TIME_SUMMARY_BEG'][0] != '"' and c_dict['TIME_SUMMARY_BEG'][-1] != '"':
-            c_dict['TIME_SUMMARY_BEG'] = f"\"{c_dict['TIME_SUMMARY_BEG']}\""
+            c_dict['TIME_SUMMARY_BEG'] = "\"{}\"".format(c_dict['TIME_SUMMARY_BEG'])
         c_dict['TIME_SUMMARY_END'] = self.config.getstr('config',
                                                         'ASCII2NC_TIME_SUMMARY_END')
         if c_dict['TIME_SUMMARY_END'][0] != '"' and c_dict['TIME_SUMMARY_END'][-1] != '"':
-            c_dict['TIME_SUMMARY_END'] = f"\"{c_dict['TIME_SUMMARY_END']}\""
+            c_dict['TIME_SUMMARY_END'] = "\"{}\"".format(c_dict['TIME_SUMMARY_END'])
 
         c_dict['TIME_SUMMARY_STEP'] = self.config.getstr('config',
                                                          'ASCII2NC_TIME_SUMMARY_STEP')
@@ -146,11 +148,11 @@ class ASCII2NCWrapper(CommandBuilder):
 
         # add input files
         for infile in self.infiles:
-            cmd += f' {infile}'
+            cmd += ' ' + {infile}
 
         # add output path
         out_path = self.get_output_path()
-        cmd += f' {out_path}'
+        cmd += ' ' + {out_path}
 
         parent_dir = os.path.dirname(out_path)
         if parent_dir == '':
@@ -165,7 +167,7 @@ class ASCII2NCWrapper(CommandBuilder):
         cmd += ''.join(self.args)
 
         # add verbosity
-        cmd += f" -v {self.c_dict['VERBOSITY']}"
+        cmd += ' -v ' + self.c_dict['VERBOSITY']
         return cmd
 
     def run_at_time(self, input_dict):
@@ -222,23 +224,23 @@ class ASCII2NCWrapper(CommandBuilder):
     def set_command_line_arguments(self):
         # add input data format if set
         if self.c_dict['ASCII_FORMAT']:
-            self.args.append(f" -format {self.c_dict['ASCII_FORMAT']}")
+            self.args.append(" -format {}".format(self.c_dict['ASCII_FORMAT']))
 
         # add config file if set
         if self.c_dict['CONFIG_FILE']:
-            self.args.append(f" -config {self.c_dict['CONFIG_FILE']}")
+            self.args.append(" -config {}".format(self.c_dict['CONFIG_FILE']))
 
         # add mask grid if set
         if self.c_dict['MASK_GRID']:
-            self.args.append(f" -mask_grid {self.c_dict['MASK_GRID']}")
+            self.args.append(" -mask_grid {}".format(self.c_dict['MASK_GRID']))
 
         # add mask poly if set
         if self.c_dict['MASK_POLY']:
-            self.args.append(f" -mask_poly {self.c_dict['MASK_POLY']}")
+            self.args.append(" -mask_poly {}".format(self.c_dict['MASK_POLY']))
 
         # add mask SID if set
         if self.c_dict['MASK_SID']:
-            self.args.append(f" -mask_sid {self.c_dict['MASK_SID']}")
+            self.args.append(" -mask_sid {}".format(self.c_dict['MASK_SID']))
 
 
 if __name__ == "__main__":
