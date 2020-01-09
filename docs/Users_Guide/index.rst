@@ -196,6 +196,7 @@ Foundation (NSF).
    systemconfiguration
    usecases
    references
+   quicksearch
    glossary
 
 
