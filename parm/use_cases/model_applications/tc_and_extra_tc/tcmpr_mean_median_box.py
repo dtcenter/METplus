@@ -1,7 +1,7 @@
 """
 Track and Intensity Use case (generate mean, median and box plots)
-========
-This use case generates plots on TC-pairs TCST output files
+==================================================================
+This use case generates plots of TC-pairs .tcst output files
 using the MET R script plot_tcmpr.R.  There is a pre-requisite for running
 this use case, the user must have R installed on the computer where the use
 case is being run.
@@ -18,19 +18,19 @@ case is being run.
 # Datasets
 # --------
 #
-# Describe the datasets here. Relevant information about the datasets that would
-# be beneficial include:
 #
 #  * Forecast dataset: ADeck non-ATCF tropical cyclone data
 #  * Observation dataset: non-ATCF tropical cyclone "best track"(BDeck) cyclone data
-#  * Sources of data (links, contacts, etc...)
 #
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case first runs TcPairs
+# This use case first runs TcPairs and then generates the requested
+# plot types for statistics of interest. The tcmpr_customize.conf configuration
+# file is used by the plot_tcmpr.R script to select things such as the size of
+# the plot window that appears on your screen, etc.
 
 ##############################################################################
 # METplus Workflow
@@ -42,7 +42,7 @@ case is being run.
 # To generate TcPairs output, this example loops by initialization time for every 6 hour period that is available
 # in the data set for 20141214. The output is then used to generate the mean, median, and box plot for the following:
 # the difference between the MSLP of the Adeck and Bdeck tracks (AMSLP-BMSLP), the difference between the max wind of the Adeck and
-# Bdeck tracks (AMAX_WIND-BMSLP), the track err (TK_ERR).
+# Bdeck tracks (AMAX_WIND-BMSLP), and the track err (TK_ERR).
 #
 
 ##############################################################################
@@ -54,23 +54,24 @@ case is being run.
 # with the -c option, i.e. -c parm/use_cases/model_applications/tc_and_extra_tc/tcmpr_mean_median_box.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: tcmp_mean_median_box.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/tcmpr_mean_median_box.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on the values in the METplus configuration file.
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/model_applications/tc_and_extra_tc/tcmpr_mean_median_box
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/TCPairsETCConfig
 #
 #
 # See the following files for more information about the environment variables set in these configuration files.
 #   parm/use_cases/met_tool_wrapper/TCPairs.py
 #
 #
+
 ##############################################################################
 # Running METplus
 # ---------------
@@ -113,26 +114,29 @@ case is being run.
 # TCPairs output for this use case will be found in tc_pairs/201412 (relative to **OUTPUT_BASE**)
 # and will contain files with the following format:
 #
-# * mlq2014121400.gfso.<####>.tcst  where #### is a zero-padded 4-digit number
+# * mlq2014121400.gfso.<*nnnn*>.tcst
+#
+# where *nnnn* is a zero-padded 4-digit number
+#
 #
 # Plots (in .png format) will be found in tcmp_plots (relative to **OUTPUT_BASE**):
-#   AMAX_WIND-BMAX_WIND_boxplot.png
+#   * AMAX_WIND-BMAX_WIND_boxplot.png
 #
-#   AMAX_WIND-BMAX_WIND_boxplot.png
+#   * AMAX_WIND-BMAX_WIND_boxplot.png
 #
-#   AMAX_WIND-BMAX_WIND_boxplot.png
+#   * AMAX_WIND-BMAX_WIND_boxplot.png
 #
-#   AMSLP-BMSLP_boxplot.png
+#   * AMSLP-BMSLP_boxplot.png
 #
-#   AMSLP-BMSLP_boxplot.png
+#   * AMSLP-BMSLP_boxplot.png
 #
-#   AMSLP-BMSLP_boxplot.png
+#   * AMSLP-BMSLP_boxplot.png
 #
-#   TK_ERR_boxplot.png
+#   * TK_ERR_boxplot.png
 #
-#   TK_ERR_mean.png
+#   * TK_ERR_mean.png
 #
-#   TK_ERR_median.png
+#   * TK_ERR_median.png
 
 
 
@@ -140,11 +144,7 @@ case is being run.
 # Keywords
 # --------
 #
-# Choose from the following pool of keywords, and include them in a note directive below.
-# Remove any keywords you don't use.
 #
-# TcPairsUseCase
 #
-# Now include them like this:
 #
 # .. note:: TcPairsUseCase
