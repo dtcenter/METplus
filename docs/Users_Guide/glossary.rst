@@ -39,6 +39,14 @@ METplus Configuration Glossary
      | *Family:* config
      | *Default:* NONE
 
+
+    CYCLONE_PLOTTER_INPUT_DIR
+      It can be referenced in the [CYCLONE_PLOTTER]_INPUT_DIR to set the directory containing input data. This needs to be set by a user.
+
+     | *Used by:* GridStat, MODE, MTD
+     | *Family:* config
+     | *Default:* NONE
+
    [DEPRECATED] ANLY_ASCII_REGEX_LEAD
      Please use OBS_SERIES_ANALYSIS_LEAD_REGEX instead. The regular expression describing the analysis (obs) file name (in ASCII format) of the intermediate file generated when running a series_by_lead process.
 
