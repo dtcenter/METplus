@@ -28,107 +28,134 @@ models against sea ice observations. For now, it is limited to observation again
 #      >=0.40 and "0" means a sea ice concentration of <0.40.
 #    - Level: Z0 (surface)
 #    - Dates: 20190201 - 20190228
+#    - Valid time: 22 UTC
 #    - Format: Grib2
 #    - Projection: 4-km Polar Stereographic
 #
 #  * Observation dataset: NCEP Sea Ice Concentration
-#    - Variable of interest: ICEC; ICEC is the sea ice concentration with values from 0.0 - 1.0. Values
-#      >1.0 && <=1.28 indicate flagged data to be included and should be set to ==1.0 when running MET.
-#      Values <1.28 should be ignored as that indicates an invalid observation.
+#    - Variable of interest: ICEC; ICEC is the sea ice concentration with values from 0.0 - 1.0. 
+#      Values >1.0 && <=1.28 indicate flagged data to be included and should be set to ==1.0 when 
+#      running MET. Values <1.28 should be ignored as that indicates an invalid observation.
 #    - Level: Z0 (surface)
 #    - Dates: 20190201 - 20190228
+#    - Valid time: 00 UTC
 #    - Format: Grib2
 #    - Projection: 12.7-km Polar Stereographic
 #    
-#  * Data source: Received from Robert Grumbine at EMC. IMS data is originally from the NIC. NCEP data
-#                 is originally from NCEP. 
+#  * Data source: Received from Robert Grumbine at EMC. IMS data is originally from the NIC. NCEP 
+#    data is originally from NCEP. 
 #  
 #  * Location: All input data is located on eyewall. 
 
-####################################################################################################
+###################################################################################################
 # METplus Components
 # ------------------
 #
-# This use case utilizes the MET GridStat and MET Mode tools. 
+# This use case runs the MET GridStat and MODE tools.
 
-    ##############################################################################
-    # METplus Workflow
-    # ----------------
-    # 
-    # 
-    # A general description of the workflow will be useful to the user. For example,
-    # the order in which tools are called (e.g. PcpCombine then grid_stat) or the way 
-    # in which data are processed (e.g. looping over valid times) with an example
-    # of how the looping will work would be helpful for the user.
+###################################################################################################
+# METplus Workflow
+# ----------------
+# 
+# The workflow processes the data by valid time, meaning that each tool will be run for each time 
+# before moving onto the next valid time. The GridStat tool is called first followed by the MODE
+# tool. It processes analysis times from 2019-02-01 to 2019-02-05. The valid times for each analysis
+# are different from one another (please see 'Dataset' section for more information).
 
 ###################################################################################################
 # METplus Configuration
 # ---------------------
 # 
+# METplus first loads all of the configuration files found in parm/metplus_config. Then, it loads
+# any configuration files passed to METplus by the command line with the -c option.
+#
+
+###################################################################################################
+# MET Configuration
+# -----------------
+# 
 # METplus sets environment variables based on the values in the METplus configuration file. 
 #
 # These variables are referenced in the MET configuration files.
-#  1. ${MODEL} - Name of the forecast input. Corresponds to MODEL in the METplus configuration file.
-#  2. ${OBTYPE} - Name of the observation input. Corresponds to OBTYPE in the METplus config. file.
-#  3. ${FCST_FIELD} - Formatted forecast field information. Generated from FCST_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] 
-#                    in the METplus config file. 
-#  4. ${OBS_FIELD} - Formatted observation field information. Generated from OBS_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS]
-#                   in the METplus config file. 
-#  5. ${FCST_VAR} - Field name of forecast data to process. Used in output_prefix to include input information in
-#                  the output filenames. Corresponds to FCST_VAR<n>_NAME in the METplus config. file. 
-#  6. ${OBS_VAR} - Field name of observation data to process. Used in output_prefix to include input information in
-#                 the output filenames. Corresponds to OBS_VAR<n>_NAME in the METplus config. file. 
-#  7. ${LEVEL} - Vertical level of the forecast input data. Used in output_prefix to include input information in
-#               the output filenames. Corresponds to FCST_VAR<n>_LEVELS in the METplus config. file.
-#  8. ${QUILT} - True/FAlse to perform quilting. Corresponds to MODE_QUILT in the METplus config. file.
-#  9. ${FCST_CONV_RADIUS} - Convolution radius/radii used for forecast data. Corresponds to FCST_MODE_CONV_RADIUS in the
-#                          METplus config. file. 
-# 10. ${FCST_CONV_THRESH} - Convolution threshold(s) used for forecast data. Corresponds to FCST_CONV_THRESH in the
-#                           METplus config. file. 
-#
-                    #
-                    #    [dir]
-                    #    OUTPUT_BASE=/path/to
-                    #
-                    # Or if you want to suck in the entire conf file automatically, provide the relative
-                    # path to the conf file from the gallery_dirs directory for this use case specified in the
-                    # conf.py file (this is recommended since it will keep in sync with the conf file automatically):
-                    #
-                    # .. highlight:: none
-                    # .. literalinclude:: ../../../../parm/use_cases/template/use_case_application/use-case-application.conf
+# ${MODEL} - Name of the forecast input. Corresponds to MODEL in the METplus configuration file.
+# ${OBTYPE} - Name of the observation input. Corresponds to OBTYPE in the METplus configuration file.
+# ${FCST_FIELD} - Formatted forecast field information. Generated from FCST_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] 
+#                 in the METplus configuration file. 
+# ${OBS_FIELD} - Formatted observation field information. Generated from OBS_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS]
+#                in the METplus configuration file. 
+# ${FCST_VAR} - Field name of forecast data to process. Used in output_prefix to include input information in
+#               the output filenames. Corresponds to FCST_VAR<n>_NAME in the METplus configuration file. 
+# ${OBS_VAR} - Field name of observation data to process. Used in output_prefix to include input information in
+#              the output filenames. Corresponds to OBS_VAR<n>_NAME in the METplus configuration file. 
+# ${LEVEL} - Vertical level of the forecast input data. Used in output_prefix to include input information in
+#            the output filenames. Corresponds to FCST_VAR<n>_LEVELS in the METplus configuration file.
+# ${QUILT} - True/FAlse to perform quilting. Corresponds to MODE_QUILT in the METplus configuration file.
+# ${FCST_CONV_RADIUS} - Convolution radius/radii used for forecast data. Corresponds to FCST_MODE_CONV_RADIUS in the
+#                       METplus configuration file. 
+# ${FCST_CONV_THRESH} - Convolution threshold(s) used for forecast data. Corresponds to FCST_CONV_THRESH in the
+#                       METplus configuration file. 
+# ${FCST_MERGE_THRESH} - Merge threshold(s) used for forecast data. Corresponds to FCST_MODE_CONV_THRESH in the
+#                        METplus configuration file.
+# ${FCST_MERGE_FLAG} - True/False merge flag used for forecast data. Corresponds to FCST_MODE_MERGE_FLAG in the
+#                      METplus configuration file.
+# ${OBS_CONV_RADIUS} - Convultion radius/radii used for observation data. Corresponds to OBS_CONV_RADIUS in the
+#                      METplus configuration file.
+# ${OBS_CONV_THRESH} - Convolution threshold(s) used for observation data. Corresponds to OBS_MODE_CONV_THRESH
+#                      in the METplus configuration file.
+# ${OBS_MERGE_THRESH} - Merge threshold(s) used for observation data. Corresponds to OBS_MODE_MERGE_FLAG in the
+#                       METplus configuration file.
+# ${OBS_MERGE_FLAG} - True/False merge flag used for observation data. Corresponds to OBS_MODE_MERGE_FLAG in the
+#                     METplus configuration file.
 
 ###################################################################################################
 # Running METplus
 # ---------------
 #
-# It will be helpful to include an example command of running METplus.
+# The command to run this use case is: 
+#       
+#  master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/cryosphere/sea_ice.conf
 
 ####################################################################################################
-                    # Expected Output
-                    # ---------------
-                    #
-                    # Spend some time detailing how the user will know if the use case succeeded or not. This
-                    # could include anything from where expected output files will be, what those filenames will be,
-                    # what METplus will print to the command line, images from METplotpy, or something else.
-                    # If the expected output is just files, include some information for the user on how they can
-                    # know if what is in the files is what is expected.
-                    #
-                    # Using static images is allowed but must use a path relative to the gallery_dirs directory for
-                    # this use case (found in the conf.py file). This relative path allows images to be stored with the
-                    # use case files under parm/use_cases:
-                    #
-                    # .. image:: ../../../../parm/use_cases/template/use_case_application/METplus_logo.png
-                    #
+# Expected Output
+# ---------------
+#
+# A successful run of this use case will output the following to the screen and logfile:
+#  
+#   INFO: METplus has successfully finished runing.
+#
+# A successful run will have the following output files in the location defined by {OUTPUT_BASE}, which
+# is located in the metplus_system.conf configuration file located in /path/to/METplus/parm/metplus_config.
+# This list of files should be found for every time run through METplus. Using the output for 20190201 as
+# and example.
+#
+# GridStat output:
+# grid_stat_IMS_ICEC_vs_NCEP_ICEC_Z0_000000L_20190201_220000V_pairs.nc
+# grid_stat_IMS_ICEC_vs_NCEP_ICEC_Z0_000000L_20190201_220000V.stat
+#
+# MODE output:
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R1_T1_cts.txt
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R1_T1_obj.nc
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R1_T1_obj.txt
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R1_T1.ps
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R2_T1_cts.txt
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R2_T1_obj.nc 
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R2_T1_obj.txt
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R2_T1.ps
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R3_T1_cts.txt
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R3_T1_obj.nc
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R3_T1_obj.txt
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R3_T1.ps
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R4_T1_cts.txt
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R4_T1_obj.nc
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R4_T1_obj.txt
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R4_T1.ps
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R5_T1_cts.txt
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R5_T1_obj.nc
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R5_T1_obj.txt
+# mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R5_T1.ps 
 
-                    ##############################################################################
-                    # Keywords
-                    # --------
-                    #
-                    # Choose from the following pool of keywords, and include them in a note directive below.
-                    # Remove any keywords you don't use.
-                    #
-                    # GridStatUseCase, PB2NCUseCase, PrecipitationUseCase
-                    #
-                    # Now include them like this:
-                    #
-                    # .. note:: GridStatUseCase, PB2NCUseCase
+###################################################################################################
+# Keywords
+# --------
+#
+# .. note:: GridStatUseCase, MODEUseCase
