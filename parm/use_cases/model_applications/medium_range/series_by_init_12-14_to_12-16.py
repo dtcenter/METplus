@@ -185,11 +185,5 @@ modified the initialization times we wish to evaluate.
 # Keywords
 # --------
 #
-# Choose from the following pool of keywords, and include them in a note directive below.
-# Remove any keywords you don't use.
 #
-# FeatureRelativeUseCase, TcPairsUseCase, SeriesByInitUseCase
-#
-# Now include them like this:
-#
-# .. note:: FeatureRelativeUseCase, TcPairsUseCase, SeriesByInitUseCase
+# .. note:: TcPairsUseCase, SeriesByInitUseCase
