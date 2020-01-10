@@ -26,7 +26,7 @@ Configuration
 
 [dir]
 
-| :term:`CYCLONE_PLOTTER_INPUT_DIR`
+| CYCLONE_PLOTTER_INPUT_DIR `[sec:C] <#sec:C>` __
 | CYCLONE_PLOTTER_OUTPUT_DIR `[sec:SC_C] <#sec:SC_C>`__
 
 [config]
