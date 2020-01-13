@@ -100,7 +100,7 @@ print("Hello World")
 # this use case (found in the conf.py file). This relative path allows images to be stored with the
 # use case files under parm/use_cases:
 #
-# .. image:: ../../../../parm/use_cases/template/use_case_application/METplus_logo.png
+# .. image:: ../../../../parm/use_cases/METplus_logo.png
 #
 
 ##############################################################################
