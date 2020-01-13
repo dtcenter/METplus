@@ -47,10 +47,10 @@ This use case will run the MET PCPCombine tool in ADD mode to build a 15 minute 
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine_B.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine/pcp_add.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_B.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/pcp_add.conf
 
 ##############################################################################
 # MET Configuration
@@ -65,13 +65,13 @@ This use case will run the MET PCPCombine tool in ADD mode to build a 15 minute 
 #
 # This use case can be run two ways:
 #
-# 1) Passing in PCPCombine_B.conf then a user-specific system configuration file::
+# 1) Passing in pcp_add.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine_B.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_add.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in PCPCombine_B.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in pcp_add.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine_B.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_add.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
