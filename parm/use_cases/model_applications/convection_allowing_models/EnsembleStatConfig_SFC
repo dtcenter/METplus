@@ -208,10 +208,10 @@ obs_window = {
 //
 mask = {
    grid = [];
-   poly = [ "${INPUT_BASE}/ensemble/mask/EAST.nc",
-            "${INPUT_BASE}/ensemble/mask/WEST.nc",
-            "${INPUT_BASE}/ensemble/mask/CONUS.nc",
-            "${INPUT_BASE}/ensemble/mask/LMV.nc" ];
+   poly = [ "${INPUT_BASE}/model_applications/convection_allowing_models/mask/EAST.nc",
+            "${INPUT_BASE}/model_applications/convection_allowing_models/mask/WEST.nc",
+            "${INPUT_BASE}/model_applications/convection_allowing_models/mask/CONUS.nc",
+            "${INPUT_BASE}/model_applications/convection_allowing_models/mask/LMV.nc" ];
    sid  = [];
    llpnt = [];
 }
@@ -285,8 +285,7 @@ rng = {
 ////////////////////////////////////////////////////////////////////////////////
 
 grid_weight_flag = NONE;
-//output_prefix    = "${OUTPUT_PREFIX}";
-output_prefix    = "${MODEL}_F${FCST_LEAD}_ADPSFC";
+output_prefix    = "${OUTPUT_PREFIX}";
 //version          = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////
