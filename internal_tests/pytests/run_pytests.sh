@@ -81,10 +81,10 @@ run_pytest_and_check time_util
 run_pytest_and_check series_lead
 run_pytest_and_check pb2nc -c ./conf1
 
-cd $script_dir/extract_tiles
-python ./run_precondition.py >/dev/null 2>&1
-run_pytest_and_check extract_tiles -c  ./extract_tiles_test.conf -c ./custom.conf
-python ./run_cleanup.py
+#cd $script_dir/extract_tiles
+#python ./run_precondition.py >/dev/null 2>&1
+#run_pytest_and_check extract_tiles -c  ./extract_tiles_test.conf -c ./custom.conf
+#python ./run_cleanup.py
 
 run_pytest_and_check series_init -c ./series_init_test.conf -c ./custom.conf
 
