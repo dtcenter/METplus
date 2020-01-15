@@ -3,7 +3,7 @@ Track and Intensity Use case (filter TC Pairs output)
 ==================================================================
 This use case generates TC-pairs .tcst output files
 via MET TC-pairs, then performs further filtering on the output
-based on the basin
+based on a specific cyclone of interest.
 """
 
 ##############################################################################
@@ -26,22 +26,19 @@ based on the basin
 # METplus Components
 # ------------------
 #
-# This use case first runs TcPairs and then generates the requested
-# plot types for statistics of interest. The tcmpr_customize.conf configuration
-# file is used by the plot_tcmpr.R script to select things such as the size of
-# the plot window that appears on your screen, etc.
+# This use case first runs TcPairs and then filters out results specific to
+# a cyclone.
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
 # The following tools are used for each run time:
-#  TcPairs > plot_tcmpr.R
+#  TcPairs > TcStat
 #
 # To generate TcPairs output, this example loops by initialization time for every 6 hour period that is available
-# in the data set for 20141214. The output is then used to generate the mean, median, and box plot for the following:
-# the difference between the MSLP of the Adeck and Bdeck tracks (AMSLP-BMSLP), the difference between the max wind of the Adeck and
-# Bdeck tracks (AMAX_WIND-BMSLP), and the track err (TK_ERR).
+# in the data set for 20141214. The output is then filtered using TcStat to produce output for the specified
+# cyclone of interest as specified in the TC_STAT_JOBS_LIST in the METplus config file.
 #
 
 ##############################################################################
@@ -53,7 +50,7 @@ based on the basin
 # with the -c option, i.e. -c parm/use_cases/model_applications/tc_and_extra_tc/tcmpr_mean_median_box.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/tcmpr_mean_median_box.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/tc_stat_filter.conf
 
 ##############################################################################
 # MET Configuration
@@ -63,7 +60,7 @@ based on the basin
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/TCPairsETCConfig
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/TCStatConfig
 #
 #
 # See the following files for more information about the environment variables set in these configuration files.
@@ -79,11 +76,11 @@ based on the basin
 #
 # 1) Passing in tcmpr_mean_median_box.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/tcmpr_mean_median_box.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/tc_stat_filter.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in feature_relative.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/tcmpr_mean_median_box.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/tc_stat_filter.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -101,6 +98,8 @@ based on the basin
 # **NOTE:** All of these items must be found under the [dir] section.
 #
 
+
+
 ##############################################################################
 # Expected Output
 # ---------------
@@ -113,29 +112,14 @@ based on the basin
 # TCPairs output for this use case will be found in tc_pairs/201412 (relative to **OUTPUT_BASE**)
 # and will contain files with the following format:
 #
-# * mlq2014121400.gfso.<*nnnn*>.tcst
+# |    * mlq2014121400.gfso.<*nnnn*>.tcst
+# |
+# | where nnnn is a zero-padded 4-digit number.
+# |
+# | The filtered result is a .tcst file (relative to **OUTPUT_BASE**), which was specified in the TC_STAT_JOBS_LIST value in the METplus config file:
+# |    * tc_stat_filter_config.tcst
 #
-# where *nnnn* is a zero-padded 4-digit number
-#
-#
-# Plots (in .png format) will be found in tcmp_plots (relative to **OUTPUT_BASE**):
-#   * AMAX_WIND-BMAX_WIND_boxplot.png
-#
-#   * AMAX_WIND-BMAX_WIND_boxplot.png
-#
-#   * AMAX_WIND-BMAX_WIND_boxplot.png
-#
-#   * AMSLP-BMSLP_boxplot.png
-#
-#   * AMSLP-BMSLP_boxplot.png
-#
-#   * AMSLP-BMSLP_boxplot.png
-#
-#   * TK_ERR_boxplot.png
-#
-#   * TK_ERR_mean.png
-#
-#   * TK_ERR_median.png
+
 
 
 
@@ -146,4 +130,4 @@ based on the basin
 #
 #
 #
-# .. note:: TcPairsUseCase
+# .. note:: TcPairsUseCase,TcStatUseCase
