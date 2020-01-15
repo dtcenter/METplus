@@ -21,7 +21,7 @@ desc = "NA";
 //
 // Output observation type to be written
 //
-obtype = "MC_PCP";
+//obtype = "MC_PCP";
 obtype = "${OBTYPE}";
 
 ////////////////////////////////////////////////////////////////////////////////

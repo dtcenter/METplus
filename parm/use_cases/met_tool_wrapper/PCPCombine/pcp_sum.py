@@ -1,36 +1,33 @@
 """
-PCPCombine DERIVE
-=================
+PCPCombine SUM
+==============
 
-This use case will run the MET PCPCombine tool in DERIVE mode to generate statistics using multiple input files.
+This use case will run the MET PCPCombine tool in SUM mode to build a 15 minute accumulation field
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Derive statistics (sum, minimum, maximum, range, mean, standard deviation, and valid count) using six 3 hour
-# precipitation accumulation fields.
+# Build a 15 minute precipitation accumulation field from 5 minute accumulation fields.
 #
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** WRF precipitation accumulation fields (24, 21, 18, 15, 12, and 9 hour forecast leads)
+# | **Forecast:** NEWSe 5 minute precipitation accumulation
 #
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v2.2/sample_data-met_test-8.1.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
-# | **Data Source:** WRF
+# | **Data Source:** NEWSe
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus PCPCombine wrapper to search for files for each run time
-# using a filename template, forecast lead, and lookback time. It will a generate a command to run PCPCombine to derive
-# statistics from the fields.
+# This use case utilizes the METplus PCPCombine wrapper to build a command that will look for valid data to build an accumulation.
 
 ##############################################################################
 # METplus Workflow
@@ -39,8 +36,8 @@ This use case will run the MET PCPCombine tool in DERIVE mode to generate statis
 # PCPCombine is the only tool called in this example. It processes the following
 # run times:
 #
-# | **Valid:** 2005-08-07_00Z
-# | **Forecast lead:** 24 hour
+# | **Valid:** 2019-08-02_18:15Z
+# | **Forecast lead:** 15 minute
 
 ##############################################################################
 # METplus Configuration
@@ -48,10 +45,10 @@ This use case will run the MET PCPCombine tool in DERIVE mode to generate statis
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine_D.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine/pcp_sum.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_D.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/pcp_sum.conf
 
 ##############################################################################
 # MET Configuration
@@ -66,13 +63,13 @@ This use case will run the MET PCPCombine tool in DERIVE mode to generate statis
 #
 # This use case can be run two ways:
 #
-# 1) Passing in PCPCombine_D.conf then a user-specific system configuration file::
+# 1) Passing in pcp_sum.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine_D.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_sum.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in PCPCombine_D.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in pcp_sum.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine_D.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_sum.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -99,10 +96,10 @@ This use case will run the MET PCPCombine tool in DERIVE mode to generate statis
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in pcp_combine_derive (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in pcp_combine_sum (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * wrfprs_ruc13_2005080700_f24_A18.nc
+# * NEWSe5min_mem00_lag00.nc
 #
 
 ##############################################################################

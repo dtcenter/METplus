@@ -3,21 +3,40 @@ EnsembleStat
 ============
 
 This use case will run the MET EnsembleStat tool to compare gridded ensemble
-forecast data to gridded AND point  observation data.
+forecast data to gridded AND point observation data.
 
 """
-##############################################################################
+
+###########################################
 # Scientific Objective
 # --------------------
 #
-# TODO Placeholder
+# TODO Section to be filled in by a scientist.
+
 
 ##############################################################################
 # Datasets
 # --------
 #
-# TODO Placeholder
+# TODO Section to be filled in by a scientist.
 #
+#
+# | **Forecast:** WRF ARW 24 hour precipitation accumulation
+# |     ...met_test/data/sample_fcst/2009123112/
+# |         arw-fer-gep1/d01_2009123112_02400.grib
+# |         arw-fer-gep5/d01_2009123112_02400.grib
+# |         arw-sch-gep2/d01_2009123112_02400.grib
+# |         arw-sch-gep6/d01_2009123112_02400.grib
+# |         arw-tom-gep3/d01_2009123112_02400.grib
+# |         arw-tom-gep7/d01_2009123112_02400.grib
+# | **Gridded Observation:** ST4 24 hour precipitation accumulation
+# |         met_test/data/sample_obs/ST4/sample_obs/ST4/ST4.2010010112.24h
+# | **Point Observation:** 
+# |         met_test/out/ascii2nc/precip24_2010010112.nc 
+#
+# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
+# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | **Data Source:** Unknown
 
 ##############################################################################
 # METplus Components
@@ -31,10 +50,11 @@ forecast data to gridded AND point  observation data.
 # METplus Workflow
 # ----------------
 #
-# Ensemble is the only tool called in this example. It processes the following
+# EnsembleStat is the only tool called in this example. It processes the following
 # run times:
 #
-# TODO Placeholder
+# | **Init:** 2009-12-31_12Z
+# | **Forecast lead:** 24 hour
 
 ##############################################################################
 # METplus Configuration
@@ -42,7 +62,7 @@ forecast data to gridded AND point  observation data.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/EnsembleStat.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.conf
@@ -59,8 +79,71 @@ forecast data to gridded AND point  observation data.
 #
 # Note the following variables are referenced in the MET configuration file.
 #
-# TODO Placeholder
+# * **${MODEL}** - Name of forecast input. Corresponds to MODEL in the METplus configuration file.
+# * **${OBTYPE}** - Name of observation input. Corresponds to OBTYPE in the METplus configuration file.
+# * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to GRID_STAT_REGRID_TO_GRID in the METplus configuration file.
+# * **${ENS_THRESH}** - Threshold for ratio of valid files to expected files to allow application to run. Corresponds to ENSEMBLE_STAT_ENS_THRESH in the METplus configuration file.
+# * **${ENS_FIELD}** - Formatted ensemble product fields information. Generated from ENS_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+# * **${FCST_FIELD}** - Formatted forecast field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+# * **${OBS_FIELD}** - Formatted observation field information. Generated from [OBS/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+# * **${OBS_WINDOW_BEGIN}** - Corresponds to OBS_WINDOW_BEGIN or OBS_ENSEMBLE_STAT_WINDOW_BEGIN in the METplus configuration file.
+# * **${OBS_WINDOW_END}** - Corresponds to OBS_WINDOW_END or OBS_ENSEMBLE_STAT_WINDOW_END in the METplus configuration file.
+# * **${TEST_LABEL_REF}** - see :ref:`TEST_REF_TITLE ens-var-n-levels`
+
+##############################################################################
+# Running METplus
+# ---------------
+#
+# It is recommended to run this use case by:
+#
+# Passing in EnsembleStat.conf then a user-specific system configuration file::
+#
+#   master_metplus.py -c /path/to/EnsembleStat.conf -c /path/to/user_system.conf
+#
+# The following METplus configuration variables must be set correctly to run this example.:
+#
+# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs).
+# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
+# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
+#
+# Example User Configuration File::
+#
+#   [dir]
+#   INPUT_BASE = /path/to/sample/input/data
+#   OUTPUT_BASE = /path/to/output/dir
+#   MET_INSTALL_DIR = /path/to/met-X.Y 
+#
+# **NOTE:** All of these items must be found under the [dir] section.
 #
 
 
+
+##############################################################################
+# Expected Output
+# ---------------
+#
+# A successful run will output the following both to the screen and to the logfile::
+#
+#   INFO: METplus has successfully finished running.
+#
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
+# Output for this use case will be found in ensemble/200912311200/ensemble_stat  (relative to **OUTPUT_BASE**)
+# and will contain the following files:
+#
+# * ensemble_stat_20100101_120000V.stat
+# * ensemble_stat_20100101_120000V_ecnt.txt
+# * ensemble_stat_20100101_120000V_rhist.txt
+# * ensemble_stat_20100101_120000V_phist.txt
+# * ensemble_stat_20100101_120000V_orank.txt
+# * ensemble_stat_20100101_120000V_ssvar.txt
+# * ensemble_stat_20100101_120000V_relp.txt
+# * ensemble_stat_20100101_120000V_ens.nc
+# * ensemble_stat_20100101_120000V_orank.nc
+
+##############################################################################
+# Keywords
+# --------
+#
+# .. note:: `EnsembleStatUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleStatUseCase&check_keywords=yes&area=default>`_,
+#           `UseCase <https://ncar.github.io/METplus/search.html?q=UseCase&check_keywords=yes&area=default>`_
 

@@ -99,10 +99,10 @@ write_cdf_bins = FALSE;
 //
 mask = {
    grid = [ "FULL" ];
-   poly = [ "${INPUT_BASE}/grid_to_grid/poly/NHX.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/SHX.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/TRO.nc",
-	    "${INPUT_BASE}/grid_to_grid/poly/PNA.nc" ];
+   poly = [ "${INPUT_BASE}/model_applications/medium_range/poly/NHX.nc",
+            "${INPUT_BASE}/model_applications/medium_range/poly/SHX.nc",
+            "${INPUT_BASE}/model_applications/medium_range/poly/TRO.nc",
+	    "${INPUT_BASE}/model_applications/medium_range/poly/PNA.nc" ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

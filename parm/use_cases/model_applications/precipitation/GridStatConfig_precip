@@ -99,9 +99,9 @@ write_cdf_bins = FALSE;
 //
 mask = {
    grid = [ "FULL" ];
-   poly = [ "${INPUT_BASE}/grid_to_grid/poly/CONUS.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/EAST.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/WEST.nc" ];
+   poly = [ "${INPUT_BASE}/model_applications/precipitation/poly/CONUS.nc",
+            "${INPUT_BASE}/model_applications/precipitation/poly/EAST.nc",
+            "${INPUT_BASE}/model_applications/precipitation/poly/WEST.nc" ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

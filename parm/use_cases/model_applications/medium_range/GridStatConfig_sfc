@@ -100,18 +100,18 @@ write_cdf_bins = FALSE;
 //
 mask = {
    grid = [ "FULL" ];
-   poly = [ "${INPUT_BASE}/grid_to_grid/poly/NHX.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/SHX.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/N60.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/S60.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/TRO.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/NPO.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/SPO.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/NAO.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/SAO.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/CONUS.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/CAM.nc",
-            "${INPUT_BASE}/grid_to_grid/poly/NSA.nc" ];
+   poly = [ "${INPUT_BASE}/model_applications/medium_range/poly/NHX.nc",
+            "${INPUT_BASE}/model_applications/medium_range/poly/SHX.nc",
+            "${INPUT_BASE}/model_applications/medium_range/poly/N60.nc",
+            "${INPUT_BASE}/model_applications/medium_range/poly/S60.nc",
+            "${INPUT_BASE}/model_applications/medium_range/poly/TRO.nc",
+            "${INPUT_BASE}/model_applications/medium_range/poly/NPO.nc",
+            "${INPUT_BASE}/model_applications/medium_range/poly/SPO.nc",
+            "${INPUT_BASE}/model_applications/medium_range/poly/NAO.nc",
+            "${INPUT_BASE}/model_applications/medium_range/poly/SAO.nc",
+            "${INPUT_BASE}/model_applications/medium_range/poly/CONUS.nc",
+            "${INPUT_BASE}/model_applications/medium_range/poly/CAM.nc",
+            "${INPUT_BASE}/model_applications/medium_range/poly/NSA.nc" ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

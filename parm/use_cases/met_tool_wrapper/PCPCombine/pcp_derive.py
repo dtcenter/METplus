@@ -1,8 +1,8 @@
 """
-PCPCombine CUSTOM
+PCPCombine DERIVE
 =================
 
-This use case will run the MET PCPCombine tool in CUSTOM mode to generate a command defined by the user.
+This use case will run the MET PCPCombine tool in DERIVE mode to generate statistics using multiple input files.
 
 """
 ##############################################################################
@@ -10,8 +10,7 @@ This use case will run the MET PCPCombine tool in CUSTOM mode to generate a comm
 # --------------------
 #
 # Derive statistics (sum, minimum, maximum, range, mean, standard deviation, and valid count) using six 3 hour
-# precipitation accumulation fields. This use case builds the same command as PCP_Combine_D.conf, but the command
-# is defined completely by the user in the METplus configuration file.
+# precipitation accumulation fields.
 #
 
 ##############################################################################
@@ -29,12 +28,9 @@ This use case will run the MET PCPCombine tool in CUSTOM mode to generate a comm
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus PCPCombine wrapper to generate a command to run PCPCombine to derive
-# statistics from the fields. FCST_PCP_COMBINE_COMMAND is used to define all arguments to the call to the MET tool
-# pcp_combine. This variable uses filename template notation using the 'shift' keyword to define filenames that
-# are valid at a time slightly shifted from the run time, i.e. wrfprs_ruc13_{lead?fmt=%HH?shift=-3H}.tm00_G212.
-# It also references other configuration variables in the METplus
-# configuration file, such as FCST_PCP_COMBINE_INPUT_NAMES and FCST_PCP_COMBINE_INPUT_LEVELS, and FCST_PCP_COMBINE_INPUT_DIR.
+# This use case utilizes the METplus PCPCombine wrapper to search for files for each run time
+# using a filename template, forecast lead, and lookback time. It will a generate a command to run PCPCombine to derive
+# statistics from the fields.
 
 ##############################################################################
 # METplus Workflow
@@ -52,10 +48,10 @@ This use case will run the MET PCPCombine tool in CUSTOM mode to generate a comm
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine_E.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine/pcp_derive.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_E.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/pcp_derive.conf
 
 ##############################################################################
 # MET Configuration
@@ -70,13 +66,13 @@ This use case will run the MET PCPCombine tool in CUSTOM mode to generate a comm
 #
 # This use case can be run two ways:
 #
-# 1) Passing in PCPCombine_E.conf then a user-specific system configuration file::
+# 1) Passing in pcp_derive.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine_E.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_derive.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in PCPCombine_E.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in pcp_derive.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine_E.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_derive.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -103,10 +99,10 @@ This use case will run the MET PCPCombine tool in CUSTOM mode to generate a comm
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in pcp_combine_custom (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in pcp_combine_derive (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * wrfprs_ruc13_2005080700_f24_A24.nc
+# * wrfprs_ruc13_2005080700_f24_A18.nc
 #
 
 ##############################################################################
