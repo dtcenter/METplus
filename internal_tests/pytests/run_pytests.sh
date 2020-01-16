@@ -78,7 +78,7 @@ run_pytest_and_check plotting/plot_util
 run_pytest_and_check StringTemplateSubstitution
 run_pytest_and_check compare_gridded
 run_pytest_and_check time_util
-run_pytest_and_check series_lead
+#run_pytest_and_check series_lead
 run_pytest_and_check pb2nc -c ./conf1
 
 #cd $script_dir/extract_tiles
