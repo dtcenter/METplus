@@ -72,9 +72,25 @@ class TCPairsWrapper(CommandBuilder):
         c_dict['TC_PAIRS_CONFIG_FILE'] = self.config.getstr('config',
                                                             'TC_PAIRS_CONFIG_FILE')
 
-        c_dict['INIT_BEG'] = self.config.getraw('config', 'INIT_BEG')
-        c_dict['INIT_END'] = self.config.getraw('config', 'INIT_END')
+
         c_dict['INIT_TIME_FMT'] = self.config.getstr('config', 'INIT_TIME_FMT')
+        clock_time = datetime.datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
+                                                '%Y%m%d%H%M%S')
+
+        init_beg = self.config.getraw('config', 'INIT_BEG')
+        init_beg_dt = util.get_time_obj(init_beg,
+                                        c_dict['INIT_TIME_FMT'],
+                                        clock_time,
+                                        logger=self.logger)
+        c_dict['INIT_BEG'] = init_beg_dt.strftime('%Y%m%d_%H%M%S')
+
+        init_end = self.config.getraw('config', 'INIT_END')
+        init_end_dt = util.get_time_obj(init_end,
+                                        c_dict['INIT_TIME_FMT'],
+                                        clock_time,
+                                        logger=self.logger)
+        c_dict['INIT_END'] = init_end_dt.strftime('%Y%m%d_%H%M%S')
+
         c_dict['INIT_INCREMENT'] = self.config.getint('config', 'INIT_INCREMENT')
 
         c_dict['INIT_INCLUDE'] = util.getlist(
@@ -174,7 +190,7 @@ class TCPairsWrapper(CommandBuilder):
         # use init begin as run time (start of the storm)
         input_dict = {'init' :
                       datetime.datetime.strptime(self.c_dict['INIT_BEG'],
-                                                 self.c_dict['INIT_TIME_FMT'])
+                                                 '%Y%m%d_%H%M%S')
                      }
 
         self.run_at_time(input_dict)
@@ -277,8 +293,8 @@ class TCPairsWrapper(CommandBuilder):
 
         # INIT_BEG, INIT_END
         # pull out YYYYMMDD from INIT_BEG/END
-        tmp_init_beg = self.c_dict['INIT_BEG'][0:8]
-        tmp_init_end = self.c_dict['INIT_END'][0:8]
+        tmp_init_beg = self.c_dict['INIT_BEG']
+        tmp_init_end = self.c_dict['INIT_END']
 
         if not tmp_init_beg:
             self.add_env_var('INIT_BEG', "")
