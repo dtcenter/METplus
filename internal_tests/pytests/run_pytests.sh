@@ -86,7 +86,7 @@ run_pytest_and_check pb2nc -c ./conf1
 #run_pytest_and_check extract_tiles -c  ./extract_tiles_test.conf -c ./custom.conf
 #python ./run_cleanup.py
 
-run_pytest_and_check series_init -c ./series_init_test.conf -c ./custom.conf
+#run_pytest_and_check series_init -c ./series_init_test.conf -c ./custom.conf
 
 if [ $all_good == 0 ]; then
     echo SUCCESS: All tests passed
