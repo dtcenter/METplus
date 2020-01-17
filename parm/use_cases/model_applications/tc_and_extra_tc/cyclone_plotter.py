@@ -78,7 +78,7 @@ specific MET tool.  This is a data visualization written entirely in Python.
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/cyclone_plotter.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in feature_relative.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in cyclone_plotter.conf::
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/cyclone_plotter.conf
 #
@@ -102,14 +102,9 @@ specific MET tool.  This is a data visualization written entirely in Python.
 # Expected Output
 # ---------------
 #
-# A successful run will output the following both to the screen and to the logfile::
-#
-#   INFO: METplus has successfully finished running.
-#
-#
-# A pop-up window will appear, displaying a plot of all the cyclone tracks that are in the output .tcst file created
+# A successful run will output a plot of all the cyclone tracks that are in the output .tcst file created
 # by the MET tc-pairs tool.
-# In addition, two output files are created.  Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
+# Additionally, two output files are created.  Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # TCPairs output for this use case will be found in tc_pairs/201503 (relative to **OUTPUT_BASE**)
 # and will contain files with the following format:
 #
