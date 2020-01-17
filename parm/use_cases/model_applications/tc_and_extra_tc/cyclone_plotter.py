@@ -103,7 +103,7 @@ specific MET tool.  This is a data visualization written entirely in Python.
 # ---------------
 #
 # A successful run will generate a popup window containing a plot of all the cyclone tracks that are in the output .tcst file created
-# by the MET tc-pairs tool. Click on the plot to close it followed by output to both the screen and to the logfile::
+# by the MET tc-pairs tool. Click on the plot to close it.  Now you will observe the following output to both the screen and to the logfile::
 #
 #    INFO: METplus has successfully finished running.
 #
