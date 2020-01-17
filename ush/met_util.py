@@ -655,7 +655,7 @@ def get_lead_sequence(config, input_dict=None):
 def get_version_number():
     # read version file and return value
     version_file_path = os.path.join(dirname(dirname(realpath(__file__))),
-                                     'doc', 'version')
+                                     'docs', 'version')
     with open(version_file_path, 'r') as version_file:
         return version_file.read()
 
