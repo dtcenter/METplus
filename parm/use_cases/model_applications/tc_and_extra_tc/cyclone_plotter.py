@@ -6,11 +6,9 @@ the MET tc-pairs tool.  The CyclonePlotter wrapper does not directly wrap a
 specific MET tool.  This is a data visualization written entirely in Python.
 
 """
-
 ##############################################################################
 # Scientific Objective
 # --------------------
-#
 # Provide visualization of storm tracks using output from the MET tc-pairs tool.
 # The date and hour associated with each storm track indicates the first time
 # the storm was tracked in the model.
@@ -80,7 +78,7 @@ specific MET tool.  This is a data visualization written entirely in Python.
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/cyclone_plotter.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in feature_relative.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in cyclone_plotter.conf::
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/cyclone_plotter.conf
 #
@@ -104,12 +102,12 @@ specific MET tool.  This is a data visualization written entirely in Python.
 # Expected Output
 # ---------------
 #
-# A successful run will output the following both to the screen and to the logfile::
+# A successful run will generate a popup window containing a plot of all the cyclone tracks that are in the output .tcst file created
+# by the MET tc-pairs tool. Click on the plot to close it followed by output to both the screen and to the logfile::
 #
-#   INFO: METplus has successfully finished running.
+#    INFO: METplus has successfully finished running.
 #
-#
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
+# Additionally, two output files are created.  Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # TCPairs output for this use case will be found in tc_pairs/201503 (relative to **OUTPUT_BASE**)
 # and will contain files with the following format:
 #
@@ -118,12 +116,12 @@ specific MET tool.  This is a data visualization written entirely in Python.
 # where *nnnn* is a zero-padded 4-digit number
 #
 #
-#  A plot (in .png format) will be found in the cyclone directory (relative to **OUTPUT_BASE**) along with
-#  a text file containing data corresponding to the plotted storm tracks:
+# A plot (in .png format) will be found in the cyclone directory (relative to **OUTPUT_BASE**) along with
+# a text file containing data corresponding to the plotted storm tracks:
+#
 #   * 20150301.png
 #
 #   * 20150301.txt
-#
 
 
 
