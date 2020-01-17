@@ -117,6 +117,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                                    d_type+'_PCP_COMBINE_BUCKET_INTERVAL',
                                                                    0)
 
+        c_dict[d_type + '_CONSTANT_INIT'] = self.config.getbool('config',
+                                                                d_type+'_PCP_COMBINE_CONSTANT_INIT',
+                                                                False)
+
         if run_method not in self.valid_run_methods:
             self.log_error(f"Invalid value for {d_type}_PCP_COMBINE_METHOD: "
                            f"{run_method}. Valid options are "
@@ -320,20 +324,32 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         addon += "'"
         return addon
 
-    def find_input_file(self, in_template, search_time, search_accum, data_src):
-        if '{lead?' in in_template or ('{init?' in in_template and '{valid?' in in_template) :
-            return self.getLowestForecastFile(search_time, data_src, in_template)
+    def find_input_file(self, in_template, init_time, valid_time, search_accum, data_src):
+        lead = 0
 
-        fSts = sts.StringSub(self.logger,
-                             in_template,
-                             valid=search_time,
-                             level=(int(search_accum)))
-        search_file = os.path.join(self.input_dir,
-                                   fSts.do_string_sub())
+        if '{lead?' in in_template or ('{init?' in in_template and '{valid?' in in_template):
+            if not self.c_dict[f'{data_src}_CONSTANT_INIT']:
+                return self.getLowestForecastFile(valid_time, data_src, in_template)
 
-        return util.preprocess_file(search_file,
+            # set init time and lead in time dictionary if init time should be constant
+            # time_util.ti_calculate cannot currently handle supplying both init and valid
+            lead = (valid_time - init_time).total_seconds()
+            input_dict = {'init': init_time,
+                          'lead': lead}
+        else:
+            input_dict = { 'valid': valid_time }
+
+        time_info = time_util.ti_calculate(input_dict)
+
+        input_file = sts.StringSub(self.logger,
+                                   in_template,
+                                   level=int(search_accum),
+                                   **time_info).do_string_sub()
+        input_path = os.path.join(self.input_dir, input_file)
+
+        return util.preprocess_file(input_path,
                                     self.c_dict[data_src+'_INPUT_DATATYPE'],
-                                    self.config), 0
+                                    self.config), lead
 
     def get_template_accum(self, accum_dict, search_time, lead, data_src):
         # apply string substitution to accum amount
@@ -416,7 +432,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 if accum_dict['amount'] > total_accum and accum_dict['template'] is None:
                     continue
 
-                search_file, lead = self.find_input_file(in_template, search_time,
+                search_file, lead = self.find_input_file(in_template, time_info['init'], search_time,
                                                          accum_dict['amount'], data_src)
 
                 # if found a file, add it to input list with info

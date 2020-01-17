@@ -148,11 +148,11 @@ class ASCII2NCWrapper(CommandBuilder):
 
         # add input files
         for infile in self.infiles:
-            cmd += ' ' + {infile}
+            cmd += ' ' + infile
 
         # add output path
         out_path = self.get_output_path()
-        cmd += ' ' + {out_path}
+        cmd += ' ' + out_path
 
         parent_dir = os.path.dirname(out_path)
         if parent_dir == '':

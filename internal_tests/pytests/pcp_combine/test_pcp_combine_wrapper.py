@@ -147,6 +147,31 @@ def test_get_lowest_forecast_file_dated_subdir():
     out_file, fcst = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/20180201/file.2018020118f003.nc" and fcst == 10800)
 
+def test_forecast_constant_init():
+    dtype = "FCST"
+    pcw = pcp_combine_wrapper(dtype)
+    pcw.c_dict['FCST_CONSTANT_INIT'] = True
+    input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    init_time = datetime.datetime.strptime("2018020112", '%Y%m%d%H')
+    valid_time = datetime.datetime.strptime("2018020121", '%Y%m%d%H')
+    template = pcw.config.getraw('filename_templates', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
+    pcw.input_dir = input_dir
+    out_file, fcst = pcw.find_input_file(template, init_time, valid_time, 0, dtype)
+    assert(out_file == input_dir+"/20180201/file.2018020112f009.nc" and fcst == 32400)
+
+def test_forecast_not_constant_init():
+    dtype = "FCST"
+    pcw = pcp_combine_wrapper(dtype)
+    pcw.c_dict['FCST_CONSTANT_INIT'] = False
+    input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
+    init_time = datetime.datetime.strptime("2018020112", '%Y%m%d%H')
+    valid_time = datetime.datetime.strptime("2018020121", '%Y%m%d%H')
+    template = pcw.config.getraw('filename_templates', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
+    pcw.input_dir = input_dir
+    pcw.build_input_accum_list(dtype, {'valid': valid_time})
+    out_file, fcst = pcw.find_input_file(template, init_time, valid_time, 0, dtype)
+    assert(out_file == input_dir+"/20180201/file.2018020118f003.nc" and fcst == 10800)
+
 
 def test_get_lowest_forecast_file_no_subdir():
     dtype = "FCST"
