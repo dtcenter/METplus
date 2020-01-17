@@ -92,12 +92,14 @@ Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 # Expected Output
 # ---------------
 #
-# A successful run will output a window containing a plot of the
-# cyclone tracks and create a cyclone.png file
+# A successful run will generate a popup window containing a plot of all the cyclone tracks that are in the output .tcst file created
+# by the MET tc-pairs tool. Click on the plot to close it followed by output to both the screen and to the logfile:
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output plot (.png) was saved.
-# Output for this use case will be found in cyclone/ (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+#    INFO: METplus has successfully finished running.
+#
+# Additionally, two output files are created.  Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
+# TCPairs output for this use case will be found in tc_pairs/201503 (relative to **OUTPUT_BASE**)
+# and will contain files with the following format:
 #
 # * 20150301.txt
 # * 20150301.png
