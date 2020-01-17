@@ -89,63 +89,67 @@ def pre_run_setup(filename, app_name):
     return config
 
 def run_metplus(config, process_list):
-
-    processes = []
-    for item in process_list:
-        try:
-            logger = config.log(item)
-            command_builder = \
-                getattr(sys.modules['__main__'],
-                        item + "Wrapper")(config, logger)
-            # if Usage specified in PROCESS_LIST, print usage and exit
-            if item == 'Usage':
-                command_builder.run_all_times()
-                exit(1)
-        except AttributeError:
-            raise NameError("Process %s doesn't exist" % item)
-
-        processes.append(command_builder)
-
-    # check if all processes initialized correctly
-    allOK = True
-    for process in processes:
-        if not process.isOK:
-            allOK = False
-            class_name = process.__class__.__name__.replace('Wrapper', '')
-            logger.error("{} was not initialized properly".format(class_name))
-
-    # exit if any wrappers did not initialized properly
-    if not allOK:
-        logger.info("Refer to ERROR messages above to resolve issues.")
-        exit()
-
-    loop_order = config.getstr('config', 'LOOP_ORDER', '')
-
-    if loop_order == "processes":
-        for process in processes:
-            process.run_all_times()
-
-    elif loop_order == "times":
-        loop_over_times_and_call(config, processes)
-
-    else:
-        logger.error("Invalid LOOP_ORDER defined. " + \
-              "Options are processes, times")
-        exit()
-
-   # compute total number of errors that occurred and output results
     total_errors = 0
-    for process in processes:
-        if process.errors != 0:
-            process_name = process.__class__.__name__.replace('Wrapper', '')
-            error_msg = '{} had {} error'.format(process_name, process.errors)
-            if process.errors > 1:
-                error_msg += 's'
-            error_msg += '.'
-            logger.error(error_msg)
-            total_errors += process.errors
+    try:
+        processes = []
+        for item in process_list:
+            try:
+                logger = config.log(item)
+                command_builder = \
+                    getattr(sys.modules['__main__'],
+                            item + "Wrapper")(config, logger)
+                # if Usage specified in PROCESS_LIST, print usage and exit
+                if item == 'Usage':
+                    command_builder.run_all_times()
+                    exit(1)
+            except AttributeError:
+                raise NameError("Process %s doesn't exist" % item)
 
-    return total_errors
+            processes.append(command_builder)
+
+        # check if all processes initialized correctly
+        allOK = True
+        for process in processes:
+            if not process.isOK:
+                allOK = False
+                class_name = process.__class__.__name__.replace('Wrapper', '')
+                logger.error("{} was not initialized properly".format(class_name))
+
+        # exit if any wrappers did not initialized properly
+        if not allOK:
+            logger.info("Refer to ERROR messages above to resolve issues.")
+            exit()
+
+        loop_order = config.getstr('config', 'LOOP_ORDER', '')
+
+        if loop_order == "processes":
+            for process in processes:
+                process.run_all_times()
+
+        elif loop_order == "times":
+            loop_over_times_and_call(config, processes)
+
+        else:
+            logger.error("Invalid LOOP_ORDER defined. " + \
+                         "Options are processes, times")
+            exit()
+
+       # compute total number of errors that occurred and output results
+        for process in processes:
+            if process.errors != 0:
+                process_name = process.__class__.__name__.replace('Wrapper', '')
+                error_msg = '{} had {} error'.format(process_name, process.errors)
+                if process.errors > 1:
+                    error_msg += 's'
+                error_msg += '.'
+                logger.error(error_msg)
+                total_errors += process.errors
+
+        return total_errors
+    except:
+        logger.exception("Fatal error occurred")
+        total_errors += 1
+        return total_errors
 
 def post_run_cleanup(config, app_name, total_errors):
     logger = config.logger
