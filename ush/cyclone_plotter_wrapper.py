@@ -522,6 +522,8 @@ class CyclonePlotterWrapper(CommandBuilder):
         if self.gen_ascii:
             ascii_track_file.close()
 
+        self.logger.info("Plot is displayed in separate window. Close window to continue METplus execution")
+
         # Plot data onto axes
         plt.show()
 
