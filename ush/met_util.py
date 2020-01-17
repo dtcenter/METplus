@@ -148,8 +148,8 @@ def run_metplus(config, process_list):
         return total_errors
     except:
         logger.exception("Fatal error occurred")
-        total_errors += 1
-        return total_errors
+        logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
+        exit(1)
 
 def post_run_cleanup(config, app_name, total_errors):
     logger = config.logger
