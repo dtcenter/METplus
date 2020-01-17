@@ -50,7 +50,7 @@ The end time is the same as the begin time, so it runs quickly..
 # TCPairs is the only tool called in this example. It processes the following
 # run times:
 #
-# | **Init:** 2014-12-14_12Z
+# | **Init:** 2014-12-13_18Z
 # | **Forecast lead:** 24 hour
 
 ##############################################################################
@@ -127,8 +127,8 @@ The end time is the same as the begin time, so it runs quickly..
 # Output for this use case will be found in **tc_pairs/201412** (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * mlq2014121400.gfso.0103.tcst
-# * mlq2014121400.gfso.0104.tcst
+# * mlq2014121318.gfso.0103.tcst
+# * mlq2014121318.gfso.0104.tcst
 
 ##############################################################################
 # Keywords

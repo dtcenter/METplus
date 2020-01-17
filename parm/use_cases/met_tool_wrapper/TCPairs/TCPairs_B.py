@@ -128,7 +128,6 @@ one task (TCPairs) defined in the PROCESS_LIST (so there is no next task).
 # * tc_pairs_al2018083006.dat.tcst
 # * tc_pairs_al2018083012.dat.tcst
 # * tc_pairs_al2018083018.dat.tcst
-# * tc_pairs_al2018083100.dat.tcst
 
 ##############################################################################
 # Keywords
