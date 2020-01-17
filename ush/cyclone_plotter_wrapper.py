@@ -525,7 +525,9 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.logger.info("Plot is displayed in separate window. Close window to continue METplus execution")
 
         # Plot data onto axes
-        plt.show()
+        # Uncomment below if you wish to have a pop up window automatically
+        # appear with the plot.
+        #plt.show()
 
 
     @staticmethod
