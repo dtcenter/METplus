@@ -56,6 +56,11 @@ class CyclonePlotterWrapper(CommandBuilder):
                                     'BLON', 'AMSLP', 'BMSLP']
         self.circle_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE')
         self.cross_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CROSS_MARKER_SIZE')
+        if 'DISPLAY' not in self.env:
+            self.log_error("DISPLAY environment variable must be set to run {} ".format(self.app_name)+
+                           "If you are using SSH to log into a machine, make sure window forwarding is enabled."
+                            " You can also try setting DISPLAY to localhost:0.0")
+            self.isOK = False
 
     def run_all_times(self):
         """! Calls the defs needed to create the cyclone plots
@@ -516,6 +521,8 @@ class CyclonePlotterWrapper(CommandBuilder):
         # Close the ASCII track file, if generated
         if self.gen_ascii:
             ascii_track_file.close()
+
+        self.logger.info("Plot is displayed in separate window. Close window to continue METplus execution")
 
         # Plot data onto axes
         plt.show()
