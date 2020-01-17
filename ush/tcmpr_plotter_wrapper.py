@@ -111,7 +111,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         if 'MET_INSTALL_DIR' in os.environ:
             self.logger.info('Using MET_INSTALL_DIR setting from user '
                              'metplus configuration setting. '
-                             'Using: %s' % self.config.getdir['MET_INSTALL_DIR'])
+                             'Using: {}'.format(self.config.getdir('MET_INSTALL_DIR')))
         else:
             # MET_INSTALL_DIR is required, so we want to throw an error if it is
             # not defined.
@@ -123,6 +123,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
                                   'Check your MET_INSTALL_DIR path in your METplus conf file.')
                 sys.exit(1)
 
+        if 'MET_BASE' not in os.environ:
+            met_base = os.path.join(self.config.getdir('MET_INSTALL_DIR'), 'share', 'met')
+            self.logger.debug("Setting environment variable MET_BASE to {}".format(met_base))
+            os.environ['MET_BASE'] = met_base
 
         met_tcmpr_script =\
         os.path.join(self.config.getdir('MET_INSTALL_DIR'), 'share/met/Rscripts/plot_tcmpr.R')
