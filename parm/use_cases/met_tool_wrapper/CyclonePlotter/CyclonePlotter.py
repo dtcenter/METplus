@@ -92,8 +92,7 @@ Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 # Expected Output
 # ---------------
 #
-# A successful run will generate a popup window containing a plot of all the cyclone tracks that are in the output .tcst file created
-# by the MET tc-pairs tool. Click on the plot to close it. Now you will observe output to both the screen and to the logfile:
+# A successful run will generate output to both the screen and to the logfile:
 #
 #    INFO: METplus has successfully finished running.
 #
