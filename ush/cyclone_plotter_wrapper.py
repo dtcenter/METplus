@@ -522,11 +522,12 @@ class CyclonePlotterWrapper(CommandBuilder):
         if self.gen_ascii:
             ascii_track_file.close()
 
-        self.logger.info("Plot is displayed in separate window. Close window to continue METplus execution")
 
         # Plot data onto axes
-        # Uncomment below if you wish to have a pop up window automatically
-        # appear with the plot.
+        # Uncomment the two lines below if you wish to have a pop up 
+        # window of the plot automatically appear, in addition to the creation
+        # of the .png version of the plot.
+        #self.logger.info("Plot is displayed in separate window. Close window to continue METplus execution")
         #plt.show()
 
 
