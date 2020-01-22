@@ -167,7 +167,7 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         # For example, we want tmp_stat_string to look like
         #   '["TOTAL","FBAR"]', NOT "['TOTAL','FBAR']"
-        os.environ['STAT_LIST'] = tmp_stat_string
+        self.add_env_var('STAT_LIST', tmp_stat_string)
 
         self.logger.info("Begin series analysis by lead...")
 
@@ -391,13 +391,12 @@ class SeriesByLeadWrapper(CommandBuilder):
             full_vars_list = feature_util.retrieve_var_name_levels(self.config)
             for cur_var in full_vars_list:
                 name, level = cur_var
-                os.environ['NAME'] = name
-                os.environ['LEVEL'] = level
+                self.add_env_var('LEVEL', level)
 
                 # Set the NAME environment to <name>_<level> format if
                 # regridding method is to be done with the MET tool
                 # regrid_data_plane.
-                os.environ['NAME'] = name + '_' + level
+                self.add_env_var('NAME', name + '_' + level)
                 out_param_parts = ['-out ', out_dir, '/series_F',
                                     cur_beg_str, '_to_F', cur_end_str,
                                     '_', name, '_', level, '.nc']
@@ -415,18 +414,7 @@ class SeriesByLeadWrapper(CommandBuilder):
 
                 self.add_common_envs()
 
-                # this can be removed once this wrapper is refactored to use
-                # self.env environment
-                to_grid = self.c_dict['REGRID_TO_GRID'].strip('"')
-                if not to_grid:
-                    to_grid = 'NONE'
-
-                # if not surrounded by quotes and not NONE, FCST or OBS
-                # add quotes
-                if to_grid not in ['NONE', 'FCST', 'OBS']:
-                    to_grid = f'"{to_grid}"'
-
-                os.environ['REGRID_TO_GRID'] = to_grid
+                self.print_all_envs()
 
                 # Since this wrapper is not using the CommandBuilder
                 # to build the cmd, we need to add the met verbosity
@@ -436,8 +424,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                    (series_analysis_cmd, env=None, app_name=self.app_name)
-#                    (series_analysis_cmd, env=self.env, app_name=self.app_name)
+                    (series_analysis_cmd, env=self.env, app_name=self.app_name)
 
                 # Clean up any empty files and directories that still
                 # persist.
@@ -555,11 +542,10 @@ class SeriesByLeadWrapper(CommandBuilder):
             full_vars_list = feature_util.retrieve_var_name_levels(self.config)
             for cur_var in full_vars_list:
                 name, level = cur_var
-                os.environ['NAME'] = name
-                os.environ['LEVEL'] = level
+                self.add_env_var('LEVEL', level)
 
                 # Set NAME to name_level
-                os.environ['NAME'] = name + '_' + level
+                self.add_env_var('NAME', name + '_' + level)
                 out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr,
                                    '_', name, '_', level, '.nc']
                 out_param = ''.join(out_param_parts)
@@ -576,18 +562,7 @@ class SeriesByLeadWrapper(CommandBuilder):
 
                 self.add_common_envs()
 
-                # this can be removed once this wrapper is refactored to use
-                # self.env environment
-                to_grid = self.c_dict['REGRID_TO_GRID'].strip('"')
-                if not to_grid:
-                    to_grid = 'NONE'
-
-                # if not surrounded by quotes and not NONE, FCST or OBS
-                # add quotes
-                if to_grid not in ['NONE', 'FCST', 'OBS']:
-                    to_grid = f'"{to_grid}"'
-
-                os.environ['REGRID_TO_GRID'] = to_grid
+                self.print_all_envs()
 
                 # Since this wrapper is not using the CommandBuilder
                 # to build the cmd, we need to add the met verbosity
@@ -596,8 +571,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 series_analysis_cmd = self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                    (series_analysis_cmd, env=None, app_name=self.app_name)
-#                    (series_analysis_cmd, env=self.env , app_name=self.app_name)
+                    (series_analysis_cmd, env=self.env, app_name=self.app_name)
 
                 # Make sure there aren't any emtpy
                 # files or directories that still persist.
@@ -659,7 +633,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  nc_var_file, ' ', nseries_nc_path]
         nco_nseries_cmd = ''.join(nco_nseries_cmd_parts)
         (ret, nco_nseries_cmd) = self.cmdrunner.run_cmd \
-            (nco_nseries_cmd, env=None, ismetcmd=False)
+            (nco_nseries_cmd, env=self.env, ismetcmd=False)
         # nco_nseries_cmd = batchexe('sh')['-c', nco_nseries_cmd].err2out()
         # run(nco_nseries_cmd)
 
@@ -670,7 +644,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                 '> ', nseries_txt_path]
         ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
         (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
-            (ncdump_max_cmd, env=None, ismetcmd=False, run_inshell=True)
+            (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True)
         # ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
         # run(ncdump_max_cmd)
 
@@ -769,7 +743,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             nco_min_cmd = ''.join(nco_min_cmd_parts)
             self.logger.debug('nco_min_cmd: ' + nco_min_cmd)
             (ret, nco_min_cmd) = self.cmdrunner.run_cmd \
-                (nco_min_cmd, env=None, ismetcmd=False)
+                (nco_min_cmd, env=self.env, ismetcmd=False)
             # nco_min_cmd = batchexe('sh')['-c', nco_min_cmd].err2out()
             # run(nco_min_cmd)
 
@@ -791,7 +765,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  '" ', cur_nc, ' ', max_nc_path]
             nco_max_cmd = ''.join(nco_max_cmd_parts)
             self.logger.debug('nco_max_cmd: ' + nco_max_cmd)
-            (ret, nco_max_cmd) = self.cmdrunner.run_cmd(nco_max_cmd, env=None,
+            (ret, nco_max_cmd) = self.cmdrunner.run_cmd(nco_max_cmd, env=self.env,
                                                         ismetcmd=False)
             # nco_max_cmd = batchexe('sh')['-c', nco_max_cmd].err2out()
             # run(nco_max_cmd)
@@ -803,7 +777,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                     '/min.nc > ', min_txt_path]
             ncdump_min_cmd = ''.join(ncdump_min_cmd_parts)
             (ret, ncdump_min_cmd) = self.cmdrunner.run_cmd \
-                (ncdump_min_cmd, env=None, ismetcmd=False, run_inshell=True)
+                (ncdump_min_cmd, env=self.env, ismetcmd=False, run_inshell=True)
             # ncdump_min_cmd = batchexe('sh')['-c', ncdump_min_cmd].err2out()
             # run(ncdump_min_cmd)
 
@@ -811,7 +785,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                     '/max.nc > ', max_txt_path]
             ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
             (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
-                (ncdump_max_cmd, env=None, ismetcmd=False, run_inshell=True)
+                (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True)
             # ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
             # run(ncdump_max_cmd)
 
@@ -1097,8 +1071,8 @@ class SeriesByLeadWrapper(CommandBuilder):
         full_vars_list = feature_util.retrieve_var_name_levels(self.config)
         for cur_var in full_vars_list:
             name, level = cur_var
-            os.environ['LEVEL'] = level
-            os.environ['NAME'] = name + '_' + level
+            self.add_env_var('LEVEL', level)
+            self.add_env_var('NAME', name + '_' + level)
 
             # Retrieve only those netCDF files that correspond to
             # the current variable.
@@ -1113,7 +1087,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             for cur_stat in self.stat_list:
                 # Set environment variable required by MET
                 # application Plot_Data_Plane.
-                os.environ['CUR_STAT'] = cur_stat
+                self.add_env_var('CUR_STAT', cur_stat)
                 vmin, vmax = self.get_netcdf_min_max(do_fhr_by_range,
                                                      nc_var_list,
                                                      cur_stat)
@@ -1175,6 +1149,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                     else:
                         map_data = "map_data={source=[];}  "
 
+                    self.print_all_envs()
+
                     plot_data_plane_parts = [self.plot_data_plane_exe, ' ',
                                              cur_nc, ' ', ps_file, ' ',
                                              "'", 'name = ', '"',
@@ -1199,14 +1175,14 @@ class SeriesByLeadWrapper(CommandBuilder):
                         self.cmdrunner.insert_metverbosity_opt\
                         (plot_data_plane_cmd)
                     (ret, plot_data_plane_cmd) = self.cmdrunner.run_cmd\
-                        (plot_data_plane_cmd, env=None, app_name=self.app_name)
+                        (plot_data_plane_cmd, env=self.env, app_name=self.app_name)
 
                     # Create the convert command.
                     convert_parts = [self.convert_exe, ' -rotate 90 ',
                                      ' -background white -flatten ',
                                      ps_file, ' ', png_file]
                     convert_cmd = ''.join(convert_parts)
-                    (ret, convert_cmd) = self.cmdrunner.run_cmd(convert_cmd, env=None,
+                    (ret, convert_cmd) = self.cmdrunner.run_cmd(convert_cmd, env=self.env,
                                                                 ismetcmd=False)
                     # convert_cmd = batchexe('sh')['-c', convert_cmd].err2out()
                     # run(convert_cmd)
@@ -1242,8 +1218,10 @@ class SeriesByLeadWrapper(CommandBuilder):
         full_vars_list = feature_util.retrieve_var_name_levels(self.config)
         for cur_var in full_vars_list:
             name, level = cur_var
-            os.environ['LEVEL'] = level
-            os.environ['NAME'] = name + '_' + level
+            self.add_env_var('LEVEL', level)
+            self.add_env_var('NAME', name + '_' + level)
+
+            self.print_all_envs()
 
             self.logger.info("Creating animated gifs")
             for cur_stat in self.stat_list:
@@ -1260,9 +1238,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                     animate_cmd = ''.join(gif_parts)
                     self.logger.debug("animate cmd: {}".format(animate_cmd))
 
-
                     (ret, animate_cmd) = self.cmdrunner.run_cmd\
-                        (animate_cmd, env=None, ismetcmd=False,
+                        (animate_cmd, env=self.env, ismetcmd=False,
                          run_inshell=True, log_theoutput=True)
                 else:
                     # For series analysis by forecast hour groups, create a
@@ -1289,7 +1266,7 @@ class SeriesByLeadWrapper(CommandBuilder):
 
                     animate_cmd = ''.join(gif_parts)
                     (ret, animate_cmd) = self.cmdrunner.run_cmd \
-                        (animate_cmd, env=None, ismetcmd=False,
+                        (animate_cmd, env=self.env, ismetcmd=False,
                          run_inshell=True, log_theoutput=True)
 
     def apply_series_filters(self, tile_dir, init_times, series_output_dir,
