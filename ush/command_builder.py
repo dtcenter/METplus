@@ -40,7 +40,7 @@ class CommandBuilder:
         self.errors = 0
         self.logger = logger
         self.config = config
-        self.env_list = []
+        self.env_list = set()
         self.debug = False
         self.args = []
         self.input_dir = ""
@@ -207,7 +207,7 @@ class CommandBuilder:
         can reference it in the parameter file or the application itself
         """
         self.env[key] = name
-        self.env_list.append(key)
+        self.env_list.add(key)
 
     def print_env(self):
         """!Print all environment variables set for this application
@@ -220,7 +220,10 @@ class CommandBuilder:
         copied into terminal
         """
         out = ""
-        all_vars = var_list + self.config.keys('user_env_vars') + ['MET_TMP_DIR']
+        all_vars = var_list
+        for user_var in self.config.keys('user_env_vars'):
+            all_vars.add(user_var)
+
         shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
         for var in all_vars:
             if shell == 'csh':
