@@ -19,7 +19,6 @@ use_case_dir = os.path.join(metplus_home,"parm/use_cases")
 all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/ASCII2NC/ASCII2NC.conf",
                 use_case_dir + "/met_tool_wrapper/CustomIngest/CustomIngest.conf",
-#                use_case_dir + "/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf",
                 use_case_dir + "/met_tool_wrapper/EnsembleStat/EnsembleStat.conf",
                 use_case_dir + "/met_tool_wrapper/Example/Example.conf",
                 use_case_dir + "/met_tool_wrapper/GridStat/GridStat.conf",
@@ -38,7 +37,6 @@ all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/SeriesByInit/SeriesByInit.conf",
                 use_case_dir + "/met_tool_wrapper/SeriesByLead/SeriesByLead.conf",
 #                use_case_dir + "/met_tool_wrapper/StatAnalysis/StatAnalysis.conf",
-#                use_case_dir + "/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_A.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_B.conf",
                 use_case_dir + "/met_tool_wrapper/TCStat/TCStat.conf",
@@ -59,10 +57,19 @@ all_use_cases = [
                 use_case_dir + "/model_applications/precipitation/precip.conf",
                 use_case_dir + "/model_applications/precipitation/precip_continuous.conf",
                 use_case_dir + "/model_applications/precipitation/ruc-vs-s2grib.conf",
-#                use_case_dir + "/model_applications/tc_and_extra_tc/cyclone_plotter.conf",
-                use_case_dir + "/model_applications/tc_and_extra_tc/tcmpr_mean_median_box.conf",
                 use_case_dir + "/model_applications/tc_and_extra_tc/tc_stat_filter.conf",
               ]
+
+plotting_use_cases = [
+                use_case_dir + "/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf",
+                use_case_dir + "/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf",
+                use_case_dir + "/model_applications/tc_and_extra_tc/cyclone_plotter.conf",
+                use_case_dir + "/model_applications/tc_and_extra_tc/tcmpr_mean_median_box.conf",
+              ]
+
+# if METPLUS_DISABLE_PLOTTING is not set or set to empty string, add plotting use cases
+if 'METPLUS_DISABLE_PLOTTING' not in os.environ or not os.environ['METPLUS_DISABLE_PLOTTING']:
+    all_use_cases += plotting_use_cases
 
 # list of use cases to run
 # to run a subset of use cases, uncomment the 2nd variable and copy
@@ -108,6 +115,7 @@ def run_test_use_case(param, test_metplus_base):
     process.wait()
 
 def main():
+
     if os.environ.get('METPLUS_TEST_METPLUS_BASE') is None:
         test_metplus_base = metplus_home
     else:
