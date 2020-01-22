@@ -20,3 +20,6 @@ export METPLUS_TEST_GEMPAKTOCF_BIN=/d1/mccabe/bin/GempakToCF
 
 # Location of ncap2 exe
 export METPLUS_TEST_NCAP2=/usr/local/nco/bin/ncap2
+
+# Location of ncdump exe
+export METPLUS_TEST_NCDUMP=/usr/local/netcdf/bin/ncdump
