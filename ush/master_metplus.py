@@ -24,6 +24,11 @@ import produtil.setup
 import met_util as util
 import config_metplus
 
+# check if env var METPLUS_DISABLE_PLOTTING is not set or set to empty string
+disable_plotting = False
+if 'METPLUS_DISABLE_PLOTTING' in os.environ and os.environ['METPLUS_DISABLE_PLOTTING']:
+    disable_plotting = True
+
 # wrappers are referenced dynamically based on PROCESS_LIST values
 # import of each wrapper is required
 # pylint:disable=unused-import
@@ -36,13 +41,10 @@ from extract_tiles_wrapper import ExtractTilesWrapper
 from series_by_lead_wrapper import SeriesByLeadWrapper
 from series_by_init_wrapper import SeriesByInitWrapper
 from stat_analysis_wrapper import StatAnalysisWrapper
-from make_plots_wrapper import MakePlotsWrapper
 from mode_wrapper import MODEWrapper
 from mtd_wrapper import MTDWrapper
 from usage_wrapper import UsageWrapper
 from command_builder import CommandBuilder
-from tcmpr_plotter_wrapper import TCMPRPlotterWrapper
-from cyclone_plotter_wrapper import CyclonePlotterWrapper
 from pb2nc_wrapper import PB2NCWrapper
 from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TCStatWrapper
@@ -50,6 +52,12 @@ from gempak_to_cf_wrapper import GempakToCFWrapper
 from example_wrapper import ExampleWrapper
 from custom_ingest_wrapper import CustomIngestWrapper
 from ascii2nc_wrapper import ASCII2NCWrapper
+
+# if using plotting wrappers, import them
+if not disable_plotting:
+    from tcmpr_plotter_wrapper import TCMPRPlotterWrapper
+    from cyclone_plotter_wrapper import CyclonePlotterWrapper
+    from make_plots_wrapper import MakePlotsWrapper
 
 '''!@namespace master_metplus
 Main script the processes all the tasks in the PROCESS_LIST
@@ -65,7 +73,12 @@ def main():
     # Use config object to get the list of processes to call
     process_list = util.get_process_list(config)
 
-    total_errors = util.run_metplus(config, process_list)
+    if disable_plotting and util.is_plotter_in_process_list(process_list):
+        config.logger.error("Attempting to run a plotting wrapper while METPLUS_DISABLE_PLOTTING environment "
+                            "variable is set. Unset the variable to run this use case")
+        total_errors = 1
+    else:
+        total_errors = util.run_metplus(config, process_list)
 
     util.post_run_cleanup(config, 'METplus', total_errors)
 
