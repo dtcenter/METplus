@@ -507,3 +507,22 @@ def test_remove_staged_files():
     # Now clean up your /tmp/test_cleanup directory so we don't leave
     # unused files and directories remaining...
     shutil.rmtree(staged_dir)
+
+@pytest.mark.parametrize(
+    'process_list, has_plotter', [
+        (['PCPCombine'], False),
+        (['PCPCombine', 'GridStat'], False),
+        (['PCPCombine', 'RegridDataPlane', 'GridStat'], False),
+        (['CyclonePlotter'], True),
+        (['PCPCombine', 'CyclonePlotter', 'Other'], True),
+        (['MakePlots', 'Other'], True),
+        (['TCMPRPlotter'], True),
+        (['TCMPRPlotter', 'Other'], True),
+        (['Other', 'TCMPRPlotter'], True),
+        ([], False),
+        (['CyclonePlotter', 'TCMPRPlotter'], True),
+        (['CyclonePlotter', 'TCMPRPlotter', 'MakePlots'], True),
+    ]
+)
+def test_is_plotter_in_process_list(process_list, has_plotter):
+    assert(util.is_plotter_in_process_list(process_list) == has_plotter)

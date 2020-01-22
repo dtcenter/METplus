@@ -1663,6 +1663,18 @@ def validate_configuration_variables(config, force_check=False):
 
     return deprecated_isOK, field_isOK, inoutbase_isOK, all_sed_cmds
 
+def is_plotter_in_process_list(process_list):
+    """!Check config to see if having corresponding FCST/OBS variables is necessary. If process list only
+        contains reformatter wrappers, don't validate field info. Also, if MTD is in the process list and
+        it is configured to only process either FCST or OBS, validation is unnecessary."""
+
+    plotters = ['MakePlots', 'TCMPRPlotter', 'CyclonePlotter']
+
+    if [item for item in process_list if item in plotters]:
+        return True
+
+    return False
+
 def skip_field_info_validation(config):
     """!Check config to see if having corresponding FCST/OBS variables is necessary. If process list only
         contains reformatter wrappers, don't validate field info. Also, if MTD is in the process list and
