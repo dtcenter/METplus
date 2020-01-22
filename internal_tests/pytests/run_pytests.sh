@@ -72,9 +72,6 @@ run_pytest_and_check met_util
 run_pytest_and_check mtd
 run_pytest_and_check pcp_combine -c ./test1.conf
 run_pytest_and_check stat_analysis -c ./test_stat_analysis.conf
-run_pytest_and_check plotting/stat_analysis -c ./test_stat_analysis.conf
-run_pytest_and_check plotting/make_plots -c ./test_make_plots.conf
-run_pytest_and_check plotting/plot_util
 run_pytest_and_check StringTemplateSubstitution
 run_pytest_and_check compare_gridded
 run_pytest_and_check time_util
@@ -87,6 +84,14 @@ run_pytest_and_check pb2nc -c ./conf1
 #python ./run_cleanup.py
 
 #run_pytest_and_check series_init -c ./series_init_test.conf -c ./custom.conf
+
+if [ -z "$METPLUS_DISABLE_PLOTTING" ]; then
+    run_pytest_and_check plotting/stat_analysis -c ./test_stat_analysis.conf
+    run_pytest_and_check plotting/make_plots -c ./test_make_plots.conf
+    run_pytest_and_check plotting/plot_util
+else
+    echo WARNING: Skipping plotting tests. Unset METPLUS_DISABLE_PLOTTING to run them.
+fi
 
 if [ $all_good == 0 ]; then
     echo SUCCESS: All tests passed
