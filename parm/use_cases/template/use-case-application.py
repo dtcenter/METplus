@@ -37,7 +37,6 @@ The use case template will follow the general pattern of:
 #  * Sources of data (links, contacts, etc...)
 #  * Example graphics of datasets if appropriate
 
-import numpy as np
 print("Hello World")
 
 ##############################################################################

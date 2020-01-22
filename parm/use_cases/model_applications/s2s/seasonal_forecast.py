@@ -129,7 +129,6 @@ coupled system.
 #  * Sources of data (links, contacts, etc...)
 #  * Example graphics of datasets if appropriate
 
-import numpy as np
 
 """
 All datasets are traditionally in netCDF format. Grids are either regular gaussian
