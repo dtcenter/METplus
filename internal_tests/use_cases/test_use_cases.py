@@ -67,8 +67,8 @@ plotting_use_cases = [
                 use_case_dir + "/model_applications/tc_and_extra_tc/tcmpr_mean_median_box.conf",
               ]
 
-# if METPLUS_DISABLE_PLOTTING is not set or set to empty string, add plotting use cases
-if 'METPLUS_DISABLE_PLOTTING' not in os.environ or not os.environ['METPLUS_DISABLE_PLOTTING']:
+# if METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string, add plotting use cases
+if 'METPLUS_DISABLE_PLOT_WRAPPERS' not in os.environ or not os.environ['METPLUS_DISABLE_PLOT_WRAPPERS']:
     all_use_cases += plotting_use_cases
 
 # list of use cases to run

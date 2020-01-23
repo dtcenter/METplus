@@ -24,9 +24,9 @@ import produtil.setup
 import met_util as util
 import config_metplus
 
-# check if env var METPLUS_DISABLE_PLOTTING is not set or set to empty string
+# check if env var METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string
 disable_plotting = False
-if 'METPLUS_DISABLE_PLOTTING' in os.environ and os.environ['METPLUS_DISABLE_PLOTTING']:
+if 'METPLUS_DISABLE_PLOT_WRAPPERS' in os.environ and os.environ['METPLUS_DISABLE_PLOT_WRAPPERS']:
     disable_plotting = True
 
 # wrappers are referenced dynamically based on PROCESS_LIST values
@@ -74,7 +74,7 @@ def main():
     process_list = util.get_process_list(config)
 
     if disable_plotting and util.is_plotter_in_process_list(process_list):
-        config.logger.error("Attempting to run a plotting wrapper while METPLUS_DISABLE_PLOTTING environment "
+        config.logger.error("Attempting to run a plotting wrapper while METPLUS_DISABLE_PLOT_WRAPPERS environment "
                             "variable is set. Unset the variable to run this use case")
         total_errors = 1
     else:
