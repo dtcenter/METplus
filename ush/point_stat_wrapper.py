@@ -239,6 +239,12 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
+        # climo file is set to None if not found, so need to check
+        if self.c_dict['CLIMO_FILE']:
+            self.add_env_var("CLIMO_FILE", self.c_dict['CLIMO_FILE'])
+        else:
+            self.add_env_var("CLIMO_FILE", '')
+
         self.add_common_envs(time_info)
 
         self.print_all_envs()
