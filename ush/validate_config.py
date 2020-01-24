@@ -27,10 +27,13 @@ def main():
                                   filename='validate_configs.py')
 
     # validate configuration variables
-    deprecatedIsOK, fieldIsOK, inoutbaseIsOk, sed_cmds = util.validate_configuration_variables(config)
+    deprecatedIsOK, fieldIsOK, inoutbaseIsOk, metIsOK, sed_cmds = util.validate_configuration_variables(config)
+
+    if metIsOK:
+        print("No MET config files are using deprecated environment variables")
 
     # if everything is valid, report success and exit
-    if deprecatedIsOK and fieldIsOK and inoutbaseIsOk:
+    if deprecatedIsOK and fieldIsOK and inoutbaseIsOk and metIsOK:
         print("SUCCESS: Configuration passed all of the validation tests.")
         exit(0)
 

@@ -61,8 +61,8 @@ def pre_run_setup(filename, app_name):
                 version_number, ' '.join(sys.argv))
 
     # validate configuration variables
-    isOK_A, isOK_B, isOK_C, all_sed_cmds = validate_configuration_variables(config)
-    if not (isOK_A and isOK_B and isOK_C):
+    isOK_A, isOK_B, isOK_C, isOK_D, all_sed_cmds = validate_configuration_variables(config)
+    if not (isOK_A and isOK_B and isOK_C and isOK_D):
         # if any sed commands were generated, write them to the sed file
         if all_sed_cmds:
             sed_file = os.path.join(config.getdir('OUTPUT_BASE'), 'sed_commands.txt')
@@ -433,6 +433,62 @@ def check_for_deprecated_config(conf):
         return False, all_sed_cmds
 
     return True, []
+
+def check_for_deprecated_met_config(config):
+    deprecated_met_list = ['FCST_VAR', 'OBS_VAR', 'MET_VALID_HHMM', 'GRID_VX', 'CONFIG_DIR']
+    sed_cmds = []
+    all_good = True
+
+    # set CURRENT_* METplus variables in case they are referenced in a
+    # METplus config variable and not already set
+    current_vars = ['CURRENT_FCST_NAME',
+                    'CURRENT_OBS_NAME',
+                    'CURRENT_FCST_LEVEL',
+                    'CURRENT_OBS_LEVEL',
+                   ]
+    for current_var in current_vars:
+        if not config.has_option('config', current_var):
+            config.set('config', current_var, '')
+
+    # check if *_CONFIG_FILE if set in the METplus config file and check for
+    # deprecated environment variables in those files
+    met_configs = [value for key, value in config.items('config') if key.endswith('CONFIG_FILE')]
+    for met_config in met_configs:
+        print(f"Checking for deprecated environment variables in: {met_config}")
+        with open(met_config, 'r') as f:
+            for line in f:
+                found_depr = False
+                for deprecated_item in deprecated_met_list:
+                    if '${' + deprecated_item + '}' in line:
+                        all_good = False
+                        config.logger.error("Please remove deprecated environment variable "
+                                            f"${{{deprecated_item}}} found in MET config file: "
+                                            f"{met_config}")
+
+                        # if deprecated item found in output prefix or to_grid line, replace line to use
+                        # env var OUTPUT_PREFIX or REGRID_TO_GRID
+                        if 'output_prefix' in line:
+                            config.logger.error("output_prefix variable should reference "
+                                                "${OUTPUT_PREFIX} environment variable")
+                            new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
+                            sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+                            break
+
+                        if 'to_grid' in line:
+                            config.logger.error("MET to_grid variable should reference "
+                                                "${REGRID_TO_GRID} environment variable")
+                            new_line = "   to_grid    = ${REGRID_TO_GRID};"
+                            sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+                            break
+
+                        if deprecated_item == 'MET_VALID_HHMM' and 'file_name' in line:
+                            config.logger.error("Set [GRID/POINT]_STAT_CLIMO_INPUT_[DIR/TEMPLATE] in a "
+                                                "METplus config file to set CLIMO_FILE in a MET config")
+                            new_line = "   file_name = [ ${CLIMO_FILE} ];"
+                            sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+                            break
+
+    return all_good, sed_cmds
 
 def handle_tmp_dir(config):
     """! if env var MET_TMP_DIR is set, override config TMP_DIR with value
@@ -1646,6 +1702,10 @@ def validate_configuration_variables(config, force_check=False):
     deprecated_isOK, sed_cmds = check_for_deprecated_config(config)
     all_sed_cmds.extend(sed_cmds)
 
+    # check for deprecated env vars in MET config files and warn user to remove/replace them
+    deprecatedMET_isOK, sed_cmds = check_for_deprecated_met_config(config)
+    all_sed_cmds.extend(sed_cmds)
+
     # validate configuration variables
     field_isOK, sed_cmds = validate_field_info_configs(config, force_check)
     all_sed_cmds.extend(sed_cmds)
@@ -1661,7 +1721,7 @@ def validate_configuration_variables(config, force_check=False):
 
     check_user_environment(config)
 
-    return deprecated_isOK, field_isOK, inoutbase_isOK, all_sed_cmds
+    return deprecated_isOK, field_isOK, inoutbase_isOK, deprecatedMET_isOK, all_sed_cmds
 
 def is_plotter_in_process_list(process_list):
     """!Check config to see if having corresponding FCST/OBS variables is necessary. If process list only
