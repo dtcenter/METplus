@@ -334,7 +334,6 @@ def check_for_deprecated_config(conf):
         'TIME_METHOD': {'sec': 'config', 'alt': 'LOOP_BY', 'copy': False},
         'MODEL_DATA_DIR': {'sec': 'dir', 'alt': 'EXTRACT_TILES_GRID_INPUT_DIR'},
         'STAT_LIST': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_STAT_LIST'},
-        'VAR_LIST': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_VAR_LIST'},
         'NLAT': {'sec': 'config', 'alt': 'EXTRACT_TILES_NLAT'},
         'NLON': {'sec': 'config', 'alt': 'EXTRACT_TILES_NLON'},
         'DLAT': {'sec': 'config', 'alt': 'EXTRACT_TILES_DLAT'},
@@ -361,10 +360,50 @@ def check_for_deprecated_config(conf):
         'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_CONFIG_FILE'},
         'SERIES_ANALYSIS_BY_INIT_CONFIG_FILE': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_CONFIG_FILE'},
         'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE': {'sec': 'config', 'alt': 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE'},
-        'VAR_LIST': {'sec': 'config', 'alt': 'BOTH_VAR<n>_NAME BOTH_VAR<n>_LEVELS', 'copy': False},
+        'VAR_LIST': {'sec': 'config', 'alt': 'BOTH_VAR<n>_NAME BOTH_VAR<n>_LEVELS or SERIES_ANALYSIS_VAR_LIST', 'copy': False},
         'SERIES_ANALYSIS_VAR_LIST': {'sec': 'config', 'alt': 'BOTH_VAR<n>_NAME BOTH_VAR<n>_LEVELS', 'copy': False},
         'EXTRACT_TILES_VAR_LIST': {'sec': 'config', 'alt': ''},
-
+        'STAT_ANALYSIS_LOOKIN_DIR': {'sec': 'dir', 'alt': 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR'},
+        'VALID_HOUR_METHOD': {'sec': 'config', 'alt': None},
+        'VALID_HOUR_BEG': {'sec': 'config', 'alt': None},
+        'VALID_HOUR_END': {'sec': 'config', 'alt': None},
+        'VALID_HOUR_INCREMENT': {'sec': 'config', 'alt': None},
+        'INIT_HOUR_METHOD': {'sec': 'config', 'alt': None},
+        'INIT_HOUR_BEG': {'sec': 'config', 'alt': None},
+        'INIT_HOUR_END': {'sec': 'config', 'alt': None},
+        'INIT_HOUR_INCREMENT': {'sec': 'config', 'alt': None},
+        'STAT_ANALYSIS_CONFIG': {'sec': 'config', 'alt': 'STAT_ANALYSIS_CONFIG_FILE'},
+        'JOB_NAME': {'sec': 'config', 'alt': 'STAT_ANALYSIS_JOB_NAME'},
+        'JOB_ARGS': {'sec': 'config', 'alt': 'STAT_ANALYSIS_JOB_ARGS'},
+        'DESC': {'sec': 'config', 'alt': 'DESC_LIST'},
+        'FCST_LEAD': {'sec': 'config', 'alt': 'FCST_LEAD_LIST'},
+        'FCST_VAR_NAME': {'sec': 'config', 'alt': 'FCST_VAR_LIST'},
+        'FCST_VAR_LEVEL': {'sec': 'config', 'alt': 'FCST_VAR_LEVEL_LIST'},
+        'OBS_VAR_NAME': {'sec': 'config', 'alt': 'OBS_VAR_LIST'},
+        'OBS_VAR_LEVEL': {'sec': 'config', 'alt': 'OBS_VAR_LEVEL_LIST'},
+        'REGION': {'sec': 'config', 'alt': 'VX_MASK_LIST'},
+        'INTERP': {'sec': 'config', 'alt': 'INTERP_LIST'},
+        'INTERP_PTS': {'sec': 'config', 'alt': 'INTERP_PTS_LIST'},
+        'CONV_THRESH': {'sec': 'config', 'alt': 'CONV_THRESH_LIST'},
+        'FCST_THRESH': {'sec': 'config', 'alt': 'FCST_THRESH_LIST'},
+        'LINE_TYPE': {'sec': 'config', 'alt': 'LINE_TYPE_LIST'},
+        'STAT_ANALYSIS_DUMP_ROW_TMPL': {'sec': 'filename_templates', 'alt': 'STAT_ANALYSIS_DUMP_ROW_TEMPLATE'},
+        'STAT_ANALYSIS_OUT_STAT_TMPL': {'sec': 'filename_templates', 'alt': 'STAT_ANALYSIS_OUT_STAT_TEMPLATE'},
+        'PLOTTING_SCRIPTS_DIR': {'sec': 'dir', 'alt': 'MAKE_PLOTS_SCRIPTS_DIR'},
+        'STAT_FILES_INPUT_DIR': {'sec': 'dir', 'alt': 'MAKE_PLOTS_INPUT_DIR'},
+        'PLOTTING_OUTPUT_DIR': {'sec': 'dir', 'alt': 'MAKE_PLOTS_OUTPUT_DIR'},
+        'VERIF_CASE': {'sec': 'config', 'alt': 'MAKE_PLOTS_VERIF_CASE'},
+        'VERIF_TYPE': {'sec': 'config', 'alt': 'MAKE_PLOTS_VERIF_TYPE'},
+        'PLOT_TIME': {'sec': 'config', 'alt': 'DATE_TIME'},
+        'MODEL<n>_NAME': {'sec': 'config', 'alt': 'MODEL<n>'},
+        'MODEL<n>_OBS_NAME': {'sec': 'config', 'alt': 'MODEL<n>_OBTYPE'},
+        'MODEL<n>_STAT_DIR': {'sec': 'dir', 'alt': 'MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR'},
+        'MODEL<n>_NAME_ON_PLOT': {'sec': 'config', 'alt': 'MODEL<n>_REFERENCE_NAME'},
+        'REGION_LIST': {'sec': 'config', 'alt': 'VX_MASK_LIST'},
+        'PLOT_STATS_LIST': {'sec': 'config', 'alt': 'MAKE_PLOT_STATS_LIST'},
+        'CI_METHOD': {'sec': 'config', 'alt': 'MAKE_PLOTS_CI_METHOD'},
+        'VERIF_GRID': {'sec': 'config', 'alt': 'MAKE_PLOTS_VERIF_GRID'},
+        'EVENT_EQUALIZATION': {'sec': 'config', 'alt': 'MAKE_PLOTS_EVENT_EQUALIZATION'},
     }
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
@@ -375,31 +414,30 @@ def check_for_deprecated_config(conf):
     e_list = []
     w_list = []
     all_sed_cmds = []
-    config_files = conf.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+
     for old, depr_info in deprecated_dict.items():
         if isinstance(depr_info, dict):
-            sec = depr_info['sec']
-            alt = depr_info['alt']
-            # if deprecated config item is found
-            if conf.has_option(sec, old):
-                # if it is not required to remove, add to warning list
-                if 'req' in depr_info.keys() and depr_info['req'] is False:
-                    msg = '[{}] {} is deprecated and will be '.format(sec, old) +\
-                      'removed in a future version of METplus'
-                    if alt:
-                        msg += ". Please replace with {}".format(alt)
-                    w_list.append(msg)
-                # if it is required to remove, add to error list
-                else:
-                    if not alt:
-                        e_list.append("[{}] {} should be removed".format(sec, old))
-                    else:
-                        e_list.append("[{}] {} should be replaced with {}".format(sec, old, alt))
 
-                        if 'copy' not in depr_info.keys() or depr_info['copy']:
-                            for config_file in config_files:
-                                all_sed_cmds.append(f"sed -i 's|^{old}|{alt}|g' {config_file}")
-                                all_sed_cmds.append(f"sed -i 's|{{{old}}}|{{{alt}}}|g' {config_file}")
+            # check if <n> is found in the old item, use regex to find variables if found
+            if '<n>' in old:
+                old_regex = old.replace('<n>', '(\d+)')
+                indicies = find_indices_in_config_section(old_regex,
+                                                          conf,
+                                                          'config',
+                                                          noID=True).keys()
+                for index in indicies:
+                    old_with_index = old.replace('<n>', index)
+                    if depr_info['alt']:
+                        alt_with_index = depr_info['alt'].replace('<n>', index)
+                    else:
+                        alt_with_index = ''
+
+                    handle_deprecated(old_with_index, alt_with_index, depr_info,
+                                      conf, all_sed_cmds, w_list, e_list)
+            else:
+                handle_deprecated(old, depr_info['alt'], depr_info,
+                                  conf, all_sed_cmds, w_list, e_list)
+
 
     # check all templates and error if any deprecated tags are used
     # value of dict is replacement tag, set to None if no replacement exists
@@ -434,6 +472,30 @@ def check_for_deprecated_config(conf):
 
     return True, []
 
+def handle_deprecated(old, alt, depr_info, conf, all_sed_cmds, w_list, e_list):
+    sec = depr_info['sec']
+    config_files = conf.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+    # if deprecated config item is found
+    if conf.has_option(sec, old):
+        # if it is not required to remove, add to warning list
+        if 'req' in depr_info.keys() and depr_info['req'] is False:
+            msg = '[{}] {} is deprecated and will be '.format(sec, old) + \
+                  'removed in a future version of METplus'
+            if alt:
+                msg += ". Please replace with {}".format(alt)
+            w_list.append(msg)
+        # if it is required to remove, add to error list
+        else:
+            if not alt:
+                e_list.append("[{}] {} should be removed".format(sec, old))
+            else:
+                e_list.append("[{}] {} should be replaced with {}".format(sec, old, alt))
+
+                if 'copy' not in depr_info.keys() or depr_info['copy']:
+                    for config_file in config_files:
+                        all_sed_cmds.append(f"sed -i 's|^{old}|{alt}|g' {config_file}")
+                        all_sed_cmds.append(f"sed -i 's|{{{old}}}|{{{alt}}}|g' {config_file}")
+
 def check_for_deprecated_met_config(config):
     deprecated_met_list = ['FCST_VAR', 'OBS_VAR', 'MET_VALID_HHMM', 'GRID_VX', 'CONFIG_DIR']
     sed_cmds = []
@@ -452,9 +514,13 @@ def check_for_deprecated_met_config(config):
 
     # check if *_CONFIG_FILE if set in the METplus config file and check for
     # deprecated environment variables in those files
-    met_configs = [value for key, value in config.items('config') if key.endswith('CONFIG_FILE')]
-    for met_config in met_configs:
-        print(f"Checking for deprecated environment variables in: {met_config}")
+    met_config_keys = [key for key in config.keys('config') if key.endswith('CONFIG_FILE')]
+
+    for met_config_key in met_config_keys:
+        met_config = config.getstr('config', met_config_key)
+        if not met_config:
+            continue
+        config.logger.debug(f"Checking for deprecated environment variables in: {met_config}")
         with open(met_config, 'r') as f:
             for line in f:
                 found_depr = False
@@ -1753,7 +1819,7 @@ def skip_field_info_validation(config):
 
     return True
 
-def find_indices_in_config_section(regex_expression, config, sec):
+def find_indices_in_config_section(regex_expression, config, sec, noID=False):
     # regex expression must have 2 () items and the 2nd item must be the index
     all_conf = config.keys(sec)
     indices = {}
@@ -1761,8 +1827,13 @@ def find_indices_in_config_section(regex_expression, config, sec):
     for conf in all_conf:
         result = regex.match(conf)
         if result is not None:
-            identifier = result.group(1)
-            index = result.group(2)
+            if noID:
+                index = result.group(1)
+                identifier = None
+            else:
+                identifier = result.group(1)
+                index = result.group(2)
+
             if index not in indices:
                 indices[index] = [identifier]
             else:
