@@ -675,6 +675,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if lead2 == 0 and level_type == 'A':
             self.logger.debug("Subtracted accumulation is 0, so running ADD mode on one file")
             self.method = 'ADD'
+            lead = time_util.seconds_to_met_time(lead)
             self.add_input_file(file1, lead)
             return self.get_command()
 
