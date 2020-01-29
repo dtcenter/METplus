@@ -162,7 +162,7 @@ GitHub Workflow
 |
 |        * In your browser, navigate to https://github.com/<github-username>/METplus
 |
-|        * Click on the green 'Compary & pull request' button
+|        * Click on the green 'Compare & pull request' button
 |
 |        * A web page appears with four grey buttons:
 |
@@ -174,7 +174,7 @@ GitHub Workflow
 |            * For the head repository button, make sure you have selected 'head repository:<github_username>/METplus'
 |              where <github_username> is your GitHub account name.
 |
-|            * For the select compare button, make sure you have selected 'compare:<your_feature_branch>'
+|            * For the compare button, make sure you have selected 'compare:<your_feature_branch>'
 |              where <your_feature_branch> corresponds to the feature branch where you have been making your
 |              changes (e.g. feature_777_wrapper_xyz).
 |
