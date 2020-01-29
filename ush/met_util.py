@@ -497,7 +497,8 @@ def handle_deprecated(old, alt, depr_info, conf, all_sed_cmds, w_list, e_list):
                         all_sed_cmds.append(f"sed -i 's|{{{old}}}|{{{alt}}}|g' {config_file}")
 
 def check_for_deprecated_met_config(config):
-    deprecated_met_list = ['FCST_VAR', 'OBS_VAR', 'MET_VALID_HHMM', 'GRID_VX', 'CONFIG_DIR']
+    deprecated_met_list = ['MET_VALID_HHMM', 'GRID_VX', 'CONFIG_DIR']
+    deprecated_output_prefix_list = ['FCST_VAR', 'OBS_VAR']
     sed_cmds = []
     all_good = True
 
@@ -523,22 +524,13 @@ def check_for_deprecated_met_config(config):
         config.logger.debug(f"Checking for deprecated environment variables in: {met_config}")
         with open(met_config, 'r') as f:
             for line in f:
-                found_depr = False
+
                 for deprecated_item in deprecated_met_list:
                     if '${' + deprecated_item + '}' in line:
                         all_good = False
                         config.logger.error("Please remove deprecated environment variable "
                                             f"${{{deprecated_item}}} found in MET config file: "
                                             f"{met_config}")
-
-                        # if deprecated item found in output prefix or to_grid line, replace line to use
-                        # env var OUTPUT_PREFIX or REGRID_TO_GRID
-                        if 'output_prefix' in line:
-                            config.logger.error("output_prefix variable should reference "
-                                                "${OUTPUT_PREFIX} environment variable")
-                            new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
-                            sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
-                            break
 
                         if 'to_grid' in line:
                             config.logger.error("MET to_grid variable should reference "
@@ -553,6 +545,17 @@ def check_for_deprecated_met_config(config):
                             new_line = "   file_name = [ ${CLIMO_FILE} ];"
                             sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
                             break
+
+                for deprecated_item in deprecated_output_prefix_list:
+                    # if deprecated item found in output prefix or to_grid line, replace line to use
+                    # env var OUTPUT_PREFIX or REGRID_TO_GRID
+                    if '${' + deprecated_item + '}' in line and 'output_prefix' in line:
+                        config.logger.error("output_prefix variable should reference "
+                                            "${OUTPUT_PREFIX} environment variable")
+                        new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
+                        sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+                        all_good = False
+                        break
 
     return all_good, sed_cmds
 
