@@ -1019,11 +1019,11 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.config.getstr('config', 'MODEL'+m+'_REFERENCE_NAME',
                                        model_name)
                 )
-                if self.config.has_option('config',
+                if self.config.has_option('dir',
                                           'MODEL'+m
                                           +'_STAT_ANALYSIS_LOOKIN_DIR'):
                     model_dir = (
-                        self.config.getraw('config',
+                        self.config.getraw('dir',
                                            'MODEL'+m
                                            +'_STAT_ANALYSIS_LOOKIN_DIR')
                     )
