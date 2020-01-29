@@ -17,7 +17,7 @@ GitHub Workflow
 | METplus, which includes data tarballs for use in running use cases.
 
 
-**Sequence of Events- Contributing Code**
+**Sequence of Events - Contributing Code**
 
 *Pre-requisite:*
 
@@ -64,9 +64,11 @@ GitHub Workflow
 |
 |
 | 3. Clone the fork to a local repository, ie. copy the source code to the directory where you will be doing your
-|    work. From the command line, enter the following:
-|        *git clone https://github.com/<your-github-account>/METplus*
+|    work. 
+|       'cd' to the directory where you wish to do your work. From the command line, enter the following:
+|            *git clone https://github.com/<your-github-account>/METplus*
 |
+|       'cd' to the METplus directory.  Now you are working in your local METplus repository.
 |
 | 4. Add a remote named origin to the clone of your local Git repository.  Thie is how you will push changes to the
 |    repository you forked in step 1:
@@ -91,6 +93,19 @@ GitHub Workflow
 |
 |        So for example, for GitHub issue #777 that creates new wrapper xyz, the feature branch would be named:
 |             *feature_777_wrapper_xyz*
+|
+|        Create your feature branch based off the develop branch:
+|            *git checkout develop*
+|
+|        Verify that you are currently working in the develop branch by entering the following:
+|            *git branch*
+|
+|
+|             You should see something like the following:
+|               * develop
+|                master_v2.2    
+|             
+|             The asterik, * indicates the currently active branch.
 |
 |        At the command line, create and checkout the feature branch:
 |            *git checkout -b feature_777_wrapper_xyz*
