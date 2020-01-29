@@ -105,7 +105,7 @@ GitHub Workflow
 |               * develop
 |                master_v2.2    
 |             
-|             The asterik, * indicates the currently active branch.
+|             The asterisk, * indicates the currently active branch.
 |
 |        At the command line, create and checkout the feature branch:
 |            *git checkout -b feature_777_wrapper_xyz*
@@ -146,7 +146,7 @@ GitHub Workflow
 | 7.  Push your changes to GitHub
 |
 |         *git push origin <your feature>*
-|           to push your changes to the origin (i.e. to your https://github.com/<username>/METplus repository)
+|           to push your changes to the origin (i.e. to your https://github.com/<github-username>/METplus repository)
 |
 |           Replace <your feature> with the name of your feature branch, e.g.:
 |               *git push origin feature_777_wrapper_xyz*
@@ -158,7 +158,35 @@ GitHub Workflow
 |     (i.e. https://github.com/NCAR/METplus repository).
 |
 |     The METplus maintainers will need to approve the request and then merge your files into the main
-|     repository's develop branch which will then be used to create a release candidate.
+|     repository's develop branch.  The develop branch will then be used to create a release candidate.
+|
+|        * In your browser, navigate to https://github.com/<github-username>/METplus
+|
+|        * Click on the green 'Compary & pull request' button
+|
+|        * A web page appears with four grey buttons:
+|
+|            * On the left-most button (for setting the base repository), make sure you have selected
+|              'base repository:NCAR/METplus'
+|
+|            * For the base button, make sure you have selected 'base:develop'
+|
+|            * For the head repository button, make sure you have selected 'head repository:<github_username>/METplus'
+|              where <github_username> is your GitHub account name.
+|
+|            * For the select compare button, make sure you have selected 'compare:<your_feature_branch>'
+|              where <your_feature_branch> corresponds to the feature branch where you have been making your
+|              changes (e.g. feature_777_wrapper_xyz).
+|
+|            * In the 'write' window, add any additional comments/details.  In this window are the comments you
+|              created when you committed your changes in step 6 above.
+|
+|              *  You can scroll down to see what changes were made to the file you committed.
+|
+|            * When everything looks satisfactory, click on the green 'Create pull request' button.
+|
+|            * Someone from the METplus maintainer group will accept the pull request (if everything meets acceptance criteria)
+|              and merge your code into the remote repository's develop branch.
 |
 |
 | 9.  Clean up after a successful merged pull request
@@ -167,21 +195,29 @@ GitHub Workflow
 |     your local clone by pulling changes from the original repository's (i.e. the https://github.com/NCAR/METplus repository)
 |     develop branch:
 |
-|     *git pull upstream develop*
+|     Checkout your develop branch:
+|           *git checkout develop*
+|
+|     Verify that you are now working from the develop branch:
+|           *git branch*
+|
+|     Merge changes from the upstream develop branch with your local develop branch:
+|           *git pull upstream develop*
 |
 |     Your local cloned repository should now have all the latest changes from the original repository's develop branch.
 |
 |     Now you can delete your feature branch:
 |
-|       *git branch -d <branch name>*
+|          *git branch -D <branch name>*
+|          *git push --delete origin <branch name>*
 |
-|        where <branch name> is your feature branch name, e.g. feature_777_wrapper_xyz
-|
-|     Update the develop branch in your forked repository (i.e. the https://github.com/<username>/METplus repository):
-|
-|        *git push --delete origin <branch name>*
+|     where <branch name> is your feature branch name, e.g. feature_777_wrapper_xyz
 |
 |         e.g. git push --delete origin feature_777_wrapper_xyz
+|
+|     You can verify that your feature branch has been successfully removed/deleted via your web browser.
+|     Navigate to https://github.com/<github-username>/METplus and under the 'Branch' pulldown menu, you
+|     should no longer find your feature branch as a selection.
 |
 |
 | *Re-cap*:
