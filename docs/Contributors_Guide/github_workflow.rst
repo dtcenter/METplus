@@ -12,7 +12,7 @@ GitHub Workflow
 | The feature branch is named after the corresponding GitHub issue:
 |       *feature_<Github Issue number>_<brief_description>*
 |
-| When work is complete, the code in the feature branch is merged into the 'develop' branch.  When a release candidate
+| When work is complete, the code in the feature branch is merged into the develop branch.  When a release candidate
 | for METplus has been determined, then the develop branch is used to create a master_vx.y release of
 | METplus, which includes data tarballs for use in running use cases.
 
@@ -53,10 +53,8 @@ GitHub Workflow
 |      located on the right hand side of the page
 |
 |
-|
-|
-| 2.  Fork the NCAR/METplus
-|     Retrieve a copy of the source code by forking the NCAR/METplus repository into your own GitHub repository by clicking
+| 2.  Fork the NCAR/METplus repository
+|     Retrieve a copy of the source code by forking the NCAR/METplus repository into your own GitHub repository. Click
 |     on the 'Fork' button in the upper right hand side of the web page at https://github.com/NCAR/METplus.
 |     Click on the appropriate GitHub account when presented with the pop-up window with the question
 |          'Where should we fork METplus?'
@@ -86,17 +84,18 @@ GitHub Workflow
 |
 |         where <github-username> is your GitHub user account name
 |
+|
 | 5. Create a feature branch in the NCAR/METplus GitHub repository following this naming convention:
 |
 |        *feature_<Github Issue number>_<brief_description>*
 |
-|        So for example, for GitHub issue #777 that creates new wrapper xyz, the feature branch would be:
+|        So for example, for GitHub issue #777 that creates new wrapper xyz, the feature branch would be named:
 |             *feature_777_wrapper_xyz*
 |
 |        At the command line, create and checkout the feature branch:
 |            *git checkout -b feature_777_wrapper_xyz*
 |
-|        replacing *feature_777_wrapper_xyz* with your feature branch name.
+|        except replace *feature_777_wrapper_xyz* with your feature branch name.
 |
 |        Verify that you are working in the correct branch by entering:
 |            *git branch*
@@ -109,17 +108,70 @@ GitHub Workflow
 |        where the asterisk, * indicates which branch is currently in use/checked out.
 |
 |
-| 6.  Make changes to your feature branch
-|     While you are making changes to your feature branch, please keep in mind that other contributors are also
-|     making changes and committing them to upstream develop
-|     (i.e.the GitHub repository at https://github.com/NCAR/METplus).
-|     As a result, your forked repository can become out of synchronization, requiring you to regularly synchronize
-|     your feature branch with the upstream develop.
+| 6.  Make changes to your feature branch and commit changes to your local repository (i.e. where you are doing
+|     your work/local computer)
 |
-| 7.  Commit changes to your feature branch.
-|     After you have created your code following the coding standards and created accompanying tests and documentation,
-|     you are ready to commit your changes to your feature branch.  It is a best practice to commit one change
-|     per commit, rather than wait until you have multiple changes to include in one commit.
+|     Create your code following the coding standards in the Coding Standards section of the Contributor's Guide.
+|     In addition, please provide some tests for your code using the pytest framework and provide user documentation
+|     describing what your code does and provide any necessary data.
+|
+|     Commit any new files:
+|         *git add <filename>*
+|           Perform this step only if this file is newly created and does not yet exist in your repository.
+|
+|         *git commit <filename>*
+|           A popup window will appear, where you will enter a description of this commit.
+|           For the first line, enter a brief description, such as the GitHub Issue number and a brief description.
+|           On the second and subsequent lines, provide a detailed description of the changes/additions you made.
+|
+|
+|         **Note**: It is a best practice to commit one change per commit, rather than wait
+|                   until you have multiple changes to include in one commit.
+|
+| 7.  Push your changes to GitHub
+|
+|         *git push origin <your feature>*
+|           to push your changes to the origin (i.e. to your https://github.com/<username>/METplus repository)
+|
+|           Replace <your feature> with the name of your feature branch, e.g.:
+|               *git push origin feature_777_wrapper_xyz*
+|
+|
+| 8.  Open a pull request using your browser
+|
+|     To request to have your changes be incorporated into the remote repository
+|     (i.e. https://github.com/NCAR/METplus repository).
+|
+|     The METplus maintainers will need to approve the request and then merge your files into the main
+|     repository's develop branch which will then be used to create a release candidate.
+|
+|
+| 9.  Clean up after a successful merged pull request
+|
+|     After the METplus maintainers have accepted your changes and have merged them into the main repository, update
+|     your local clone by pulling changes from the original repository's (i.e. the https://github.com/NCAR/METplus repository)
+|     develop branch:
+|
+|     *git pull upstream develop*
+|
+|     Your local cloned repository should now have all the latest changes from the original repository's develop branch.
+|
+|     Now you can delete your feature branch:
+|
+|       *git branch -d <branch name>*
+|
+|        where <branch name> is your feature branch name, e.g. feature_777_wrapper_xyz
+|
+|     Update the develop branch in your forked repository (i.e. the https://github.com/<username>/METplus repository):
+|
+|        *git push --delete origin <branch name>*
+|
+|         e.g. git push --delete origin feature_777_wrapper_xyz
+|
+|
+| *Re-cap*:
+|   You've created a feature branch, made changes, committed those changes to the repository, pushed them to GitHub,
+|   opened a pull request,had your changes merged by the repository maintainers, and finally performed some clean-up.
 
 
 
@@ -132,35 +184,6 @@ GitHub Workflow
 
 
 
-
-Checkout the 'develop' branch:
-
-         git checkout develop
-
-Create a feature branch from the develop branch (above):
-
-* e.g. for GitHub issue 777 that refactors xyz wrapper:
-
-         git branch feature_777_refactor_xyz_wrapper
-
-
-
-
-3.  Make code changes to the feature branch you created in step 2 above.
-
-
-4.  Frequently commit your changes to your feature branch, and frequently merge any updates from the
-
-    develop branch.
-
-     commit <file-to-commit>
-
-
-
-
-**Retrieving Source Code as External Contributor**
-
-add content here...
 
 
 
