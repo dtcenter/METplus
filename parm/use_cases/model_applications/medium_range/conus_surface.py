@@ -134,7 +134,7 @@ Needs scientific input
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in nam/conus_sfc (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in nam (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * point_stat_000000L_20170601_000000V.stat
