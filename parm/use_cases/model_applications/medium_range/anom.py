@@ -36,8 +36,7 @@ This use case will run the MET GridStat and StatAnalysis tools to compare gridde
 # METplus Workflow
 # ----------------
 #
-# GridStat and StatAnalysis are the tools called in this example. It processes the following
-# run times:
+# GridStat and StatAnalysis are the tools called in this example. It processes the following run times:
 #
 # | **Valid:** 2017-06-13 0Z
 # | **Forecast lead:** 24 hour
@@ -51,6 +50,7 @@ This use case will run the MET GridStat and StatAnalysis tools to compare gridde
 # | **Valid:** 2017-06-13 6Z
 # | **Forecast lead:** 48 hour
 #
+
 ##############################################################################
 # METplus Configuration
 # ---------------------

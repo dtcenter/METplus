@@ -20,24 +20,54 @@ CommandBuilder's initialization function sets default values for instance variab
 Show clips of ExampleWrapper and CommandBuilder's create_c_dict functions
 
 isOK class variable
+-------------------
+
+isOK is inherited from command_builder.py.
+
+Its function is to note a failed process while not stopping a parent process.
+Instead of instantly exiting a larger wrapper script once one sub process has failed we
+want all of the processes to attempt to be executed and then note which ones failed.
+
+At the end of master_metplus.py all isOK=false will be collected and reported.
+
+code-block:: python 
+    c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG_FILE', '')
+            if not c_dict['CONFIG_FILE']:
+                self.log_error('MODE_CONFIG_FILE must be set')
+                self.isOK = False
+
+See modewrapper.py for other examples
+
+
 
 run_at_time function
+--------------------
 
 run_all_times function
+----------------------
 
 get_command function
+--------------------
 
 build function
+--------------
 
-set_environment_variables function (if setting using a MET config file) - uses add_env_var function
+set_environment_variables function 
+----------------------------------
+(if setting using a MET config file) - uses add_env_var function
 
 find_data/find_model/find_obs functions (in CommandBuilder)
+-----------------------------------------------------------
 uses c_dict dictionary items [FCST/OBS]_FILE_WINDOW_[BEGIN/END], [FCST/OBS]_INPUT_[DIR/TEMPLATE], etc.
 
 StringSub class
+---------------
 
-time utilities: time_util.ti_calculate function
-
+time utilities 
+--------------
+time_util.ti_calculate function
+ 
 main function
+-------------
 if __name__ == "__main__":
     util.run_stand_alone(__file__, "Example")
