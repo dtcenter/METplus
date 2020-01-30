@@ -30,6 +30,16 @@ want all of the processes to attempt to be executed and then note which ones fai
 
 At the end of master_metplus.py all isOK=false will be collected and reported.
 
+code-block:: python 
+    c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG_FILE', '')
+            if not c_dict['CONFIG_FILE']:
+                self.log_error('MODE_CONFIG_FILE must be set')
+                self.isOK = False
+
+See modewrapper.py for other examples
+
+
+
 run_at_time function
 --------------------
 
