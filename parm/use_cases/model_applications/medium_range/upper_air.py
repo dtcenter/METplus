@@ -1,116 +1,149 @@
 """
-Template
-========
+Upper Air Grid to Point Observation
+===================================
 
-Enter a description of your use case here. This will appear at the very top of the 
-use case page. It can be fairly long, and can include hyperlinks to websites, references,
-or other relevant details to help the user. Any valid RST is acceptable here. 
-
-The use case template will follow the general pattern of:
-
-  * Scientific objective
-  * Datasets
-  * METplus Components
-  * METplus Workflow
-  * METplus Configuration
-  * Running METplus
-  * Expected Output
-  * Keywords
+Needs scientific input
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Describe the scientific objective of the use case here. This can be fairly
-# simple, or complex depending on the task.
+# Needs scientific input
 
 ##############################################################################
 # Datasets
 # --------
 #
-# Describe the datasets here. Relevant information about the datasets that would
-# be beneficial include:
-# 
-#  * Forecast dataset name/levels/dates/formats
-#  * Observation dataset name/levels/dates/formats
-#  * Sources of data (links, contacts, etc...)
-#  * Example graphics of datasets if appropriate
-
-print("Hello World")
+# | **Forecast:** GFS temperature, u-wind component, v-wind component, and height
+# | **Observation:** GDAS prepBURF data
+#
+# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-medium_range-3.0.tgz
+# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+#
+# | **Data Source:** Unknown
+#
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# Describe the METplus Components that are used in this use case. This can be
-# anything from the METplus wrapper names that are used, to METdb, to METviewer,
-# to the MET tools (e.g. grid_stat, etc...) that are utilized in this use case.
-# Try to be as complete as possible.
+# This use case utilizes the METplus PB2NC wrapper to convert PrepBUFR point observations to NetCDF format and then compare them to gridded forecast data using PointStat.
+
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# A general description of the workflow will be useful to the user. For example,
-# the order in which tools are called (e.g. PcpCombine then grid_stat) or the way 
-# in which data are processed (e.g. looping over valid times) with an example
-# of how the looping will work would be helpful for the user.
+# PB2NC and PointStat are the tools called in this example. It processes the following run times:
+#
+# | **Valid:** 2017-06-01 0Z
+#
+# | **Valid:** 2017-06-02 0Z
+#
+# | **Valid:** 2017-06-03 0Z
+#
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
-# Detail the configuration/conf file for this METplus use case. Also review
-# how METplus sets configuration variables if the user does not set them (i.e.
-# it loads from METplus/parm/metplus_config/* before any custom conf files
-# provided by the user via master_metplus.py -c custom_file.conf).
-# You can include conf items in code-blocks using RST like this:
+# METplus first loads all of the configuration files found in parm/metplus_config,
+# then it loads any configuration files passed to METplus via the command line
+# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/upper_air.conf
 #
-# .. code-block:: none
+# .. highlight:: bash
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/upper_air.conf
 #
-#    [dir]
-#    OUTPUT_BASE=/path/to
+
+##############################################################################
+# MET Configuration
+# ---------------------
 #
-# Or if you want to suck in the entire conf file automatically, provide the relative
-# path to the conf file from the gallery_dirs directory for this use case specified in the
-# conf.py file (this is recommended since it will keep in sync with the conf file automatically):
+# METplus sets environment variables based on the values in the METplus configuration file.
+# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
-# .. highlight:: none
-# .. literalinclude:: ../../../../parm/use_cases/template/use-case-application.conf
+# .. highlight:: bash
+# .. literalinclude:: ../../../../parm/met_config/PB2NCConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
+#
+# Note the following variables are referenced in the MET configuration file.
+# PB2NC:
+# * **${PB2NC_MESSAGE_TYPE}** - Corresponds to PB2NC_MESSAGE_TYPE in the METplus configuration file.
+# * **${PB2NC_STATION_ID}** - Corresponds to PB2NC_STATION_ID in the METplus configuration file.
+# * **${PB2NC_GRID}** - Corresponds to PB2NC_GRID in the METplus configuration file.
+# * **${PB2NC_POLY}** - Corresponds to PB2NC_POLY in the METplus configuration file.
+# * **${OBS_WINDOW_BEGIN}** - Corresponds to OBS_WINDOW_BEGIN or PB2NC_WINDOW_BEGIN in the METplus configuration file.
+# * **${OBS_WINDOW_END}** - Corresponds to OBS_WINDOW_END or PB2NC_WINDOW_END in the METplus configuration file.
+# * **${OBS_BUFR_VAR_LIST}** - Corresponds to PB2NC_OBS_BUFR_VAR_LIST in the METplus configuration file.
+# * **${TIME_SUMMARY_FLAG}** - True/False option to compute time summary statistics. Corresponds to PB2NC_TIME_SUMMARY_FLAG in the METplus configuration file.
+# * **${TIME_SUMMARY_BEG}** - Corresponds to PB2NC_TIME_SUMMARY_BEG in the METplus configuration file.
+# * **${TIME_SUMMARY_END}** - Corresponds to PB2NC_TIME_SUMMARY_END in the METplus configuration file.
+# * **${TIME_SUMMARY_VAR_NAMES}** - Corresponds to PB2NC_TIME_SUMMARY_VAR_NAMES in the METplus configuration file.
+# * **${TIME_SUMMARY_TYPES}** - Corresponds to PB2NC_TIME_SUMMARY_TYPES in the METplus configuration file.
+#
+# PointStat:
+# * **${POINT_STAT_MESSAGE_TYPE}** - Corresponds to POINT_STAT_MESSAGE_TYPE in the METplus configuration file.
+# * **${POINT_STAT_STATION_ID}** - Corresponds to POINT_STAT_STATION_ID in the METplus configuration file.
+# * **${POINT_STAT_GRID}** - Corresponds to POINT_STAT_GRID in the METplus configuration file.
+# * **${POINT_STAT_POLY}** - Corresponds to POINT_STAT_POLY in the METplus configuration file.
+# * **${OBS_WINDOW_BEGIN}** - Corresponds to OBS_WINDOW_BEGIN or OBS_POINT_STAT_WINDOW_BEGIN in the METplus configuration file.
+# * **${OBS_WINDOW_END}** - Corresponds to OBS_WINDOW_END or OBS_POINT_STAT_WINDOW_END in the METplus configuration file.
+# * **${MODEL}** - Name of forecast input. Corresponds to MODEL in the METplus configuration file.
+# * **${FCST_FIELD}** - Formatted forecast field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+# * **${OBS_FIELD}** - Formatted observation field information. Generated from [OBS/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+# * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to POINT_STAT_REGRID_TO_GRID in the METplus configuration file.
+# * **${VERIF_MASK}** - Optional verification mask file or list of files. Corresponds to POINT_STAT_VERIFICATION_MASK_TEMPLATE in the METplus configuration file.
+#
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# It will be helpful to include an example command of running METplus.
+# This use case can be run two ways:
+#
+# 1) Passing in upper_air.conf then a user-specific system configuration file::
+#
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/upper_air.conf -c /path/to/user_system.conf
+#
+# 2) Modifying the configurations in parm/metplus_config, then passing in upper_air.conf::
+#
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/upper_air.conf
+#
+# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
+#
+# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
+# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
+# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
+#
+# Example User Configuration File::
+#
+#   [dir]
+#   INPUT_BASE = /path/to/sample/input/data
+#   OUTPUT_BASE = /path/to/output/dir
+#   MET_INSTALL_DIR = /path/to/met-X.Y 
+#
+# **NOTE:** All of these items must be found under the [dir] section.
 
 ##############################################################################
 # Expected Output
 # ---------------
 #
-# Spend some time detailing how the user will know if the use case succeeded or not. This
-# could include anything from where expected output files will be, what those filenames will be,
-# what METplus will print to the command line, images from METplotpy, or something else.
-# If the expected output is just files, include some information for the user on how they can
-# know if what is in the files is what is expected.
+# A successful run will output the following both to the screen and to the logfile::
 #
-# Using static images is allowed but must use a path relative to the gallery_dirs directory for
-# this use case (found in the conf.py file). This relative path allows images to be stored with the
-# use case files under parm/use_cases:
+#   INFO: METplus has successfully finished running.
 #
-# .. image:: ../../../../parm/use_cases/METplus_logo.png
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
+# Output for this use case will be found in gdas (relative to **OUTPUT_BASE**)
+# and will contain the following files:
+#
+# * point_stat_000000L_20170601_000000V.stat
+# * point_stat_000000L_20170602_000000V.stat
+# * point_stat_000000L_20170603_000000V.stat
 #
 
 ##############################################################################
 # Keywords
 # --------
 #
-# Choose from the following pool of keywords, and include them in a note directive below.
-# Remove any keywords you don't use.
-#
-# GridStatUseCase, PB2NCUseCase, PrecipitationUseCase
-#
-# Now include them like this:
-#
-# .. note:: GridStatUseCase, PB2NCUseCase
+# .. note:: `PB2NCUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCUseCase&check_keywords=yes&area=default>, PointStatUseCase <https://ncar.github.io/METplus/search.html?q=PointStatUseCase&check_keywords=yes&area=default>`
