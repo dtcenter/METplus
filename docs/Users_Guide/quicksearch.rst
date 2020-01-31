@@ -6,6 +6,8 @@ Use Cases by MET Tool:
 
 | `GridStat <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
 | `MODE <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
+| `StatAnalysis <https://ncar.github.io/METplus/search.html?q=StatAnalysisUseCase&check_keywords=yes&area=default>`_
+
 
 Use Cases by Organization:
 --------------------------
