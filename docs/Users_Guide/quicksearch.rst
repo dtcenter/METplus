@@ -7,6 +7,10 @@ Use Cases by MET Tool:
 | `GridStat <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
 | `MODE <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
 | `StatAnalysis <https://ncar.github.io/METplus/search.html?q=StatAnalysisUseCase&check_keywords=yes&area=default>`_
+| `CyclonePlotter <https://ncar.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`
+| `TCMPRPlotter <https://ncar.github.io/METplus/search.html?q=TCMPRPlotterUseCase&check_keywords=yes&area=default>`_
+| `TCPairs <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_
+
 
 
 Use Cases by Organization:
@@ -26,7 +30,10 @@ Use Cases by Application:
 Use Cases by METplus Feature:
 -----------------------------
 | `Looping my month and then year  <https://ncar.github.io/METplus/search.html?q=MonthLoopFeatureUseCase&check_keywords=yes&area=default>`_
-
+| `SeriesByInit  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
+| `SeriesByInitSpecificTimeRange  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
+| `SeriesByLead  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`
+| `SeriesByLeadGrouping  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadGroupingUseCase&check_keywords=yes&area=default>`
 Use cases by File Format:
 -------------------------
 | `GEMPAK  <https://ncar.github.io/METplus/search.html?q=GEMPAKFileUseCase&check_keywords=yes&area=default>`_
