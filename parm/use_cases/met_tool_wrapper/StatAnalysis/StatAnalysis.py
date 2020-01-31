@@ -73,7 +73,7 @@ output files.
 # .. literalinclude:: ../../../../parm/met_config/STATAnalysisConfig_wrapped
 #
 # Note the following variables can be referenced in the MET configuration file.
-# Refer to the MET Stat-Analysis Tool users guide for a further descripition of
+# Refer to the MET Stat-Analysis Tool users guide for a further description of
 # these MET configuration file settings.
 #
 # * **${MODEL}** - Name of forecast input. Corresponds to MODEL_LIST = {MODEL<n>} in the METplus configuration file.
