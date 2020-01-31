@@ -142,7 +142,7 @@ GitHub Workflow
 |            The first command pulls changes from the original repository.
 |            i.e. the https://github.com/NCAR/METplus
 |            repository that you see when you perform *git remote -v* and that you set to upstream in
-|            step #4 above.
+|            step #4 above.  The second command pushes those changes to your forked repository.
 |
 |     Commit any new files:
 |         *git add <filename>*
