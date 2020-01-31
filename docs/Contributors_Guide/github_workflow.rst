@@ -130,14 +130,32 @@ GitHub Workflow
 |     In addition, please provide some tests for your code using the pytest framework and provide user documentation
 |     describing what your code does and provide any necessary data.
 |
+|
+|     Keep your fork in sync:
+|         While you are working, it is highly likely that changes are occurring to the original repository.  This
+|         may impact your work.  Periodically/regularly use these commands to keep your fork in sync with the
+|         original repository:
+|            *git pull upstream develop*
+|
+|            *git push origin develop*
+|
+|            The first command pulls changes from the original repository.
+|            i.e. the https://github.com/NCAR/METplus
+|            repository that you see when you perform *git remote -v* and that you set to upstream in
+|            step #4 above.
+|
 |     Commit any new files:
 |         *git add <filename>*
 |           Perform this step only if this file is newly created and does not yet exist in your repository.
 |
 |         *git commit <filename>*
-|           A popup window will appear, where you will enter a description of this commit.
-|           For the first line, enter a brief description, such as the GitHub Issue number and a brief description.
-|           On the second and subsequent lines, provide a detailed description of the changes/additions you made.
+|           A popup window will appear, where you will enter a description of this commit, using the editor you selected
+|           when you set up your Git account.  Please refer to the following on configuring your
+|           Git account: https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup
+|
+|           For the first line of your commit comment, enter a brief description, such as the GitHub Issue number
+|           and a brief description.  On the second and subsequent lines, provide a detailed description of the
+|           changes/additions you made.
 |
 |
 |         **Note**: It is a best practice to commit one change per commit, rather than wait
