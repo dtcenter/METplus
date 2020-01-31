@@ -44,7 +44,7 @@ plots of tropical cyclone tracks.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GridStat.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf
@@ -67,7 +67,7 @@ plots of tropical cyclone tracks.
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in TCMPRPlotter.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
