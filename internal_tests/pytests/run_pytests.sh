@@ -33,16 +33,19 @@ if [ $ret == 0 ]; then
     exit_script=0
 fi
 
-echo -e $remove_commands
+if [ "$remove_commands" != "\n" ]; then
+    echo -e $remove_commands
 
-echo -e "\nWould you like to run these remove commands now? (y/n)"
-read confirm_remove
+    echo -e "\nWould you like to run these remove commands now? (y/n)"
+    read confirm_remove
 
-if [ "${confirm_remove:0:1}" == 'y' ]; then
-    rm -rf $METPLUS_TEST_OUTPUT_BASE
-    rm -r $script_dir/*/__pycache__
-    exit_script=1
+    if [ "${confirm_remove:0:1}" == 'y' ]; then
+        rm -rf $METPLUS_TEST_OUTPUT_BASE
+        rm -r $script_dir/*/__pycache__
+        exit_script=1
+    fi
 fi
+
 
 if [ $exit_script == 0 ]; then
     exit
