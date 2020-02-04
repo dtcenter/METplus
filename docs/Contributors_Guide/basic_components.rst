@@ -30,11 +30,13 @@ want all of the processes to attempt to be executed and then note which ones fai
 
 At the end of master_metplus.py all isOK=false will be collected and reported.
 
-code-block:: python 
+.. code-block:: python 
+
     c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG_FILE', '')
             if not c_dict['CONFIG_FILE']:
                 self.log_error('MODE_CONFIG_FILE must be set')
                 self.isOK = False
+
 
 See modewrapper.py for other examples
 
@@ -42,6 +44,26 @@ See modewrapper.py for other examples
 
 run_at_time function
 --------------------
+
+run_at_time runs a process or collection of processes for one specific time.
+This is inherited from CommandBuilder.
+
+.. code-block:: python
+
+    def run_at_time(self, input_dict):
+        """! Loop over each forecast lead and build pb2nc command """
+         # loop of forecast leads and process each
+        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        for lead in lead_seq:
+            input_dict['lead'] = lead
+
+            lead_string = time_util.ti_calculate(input_dict)['lead_string']
+            self.logger.info("Processing forecast lead {}".format(lead_string))
+
+            # Run for given init/valid time and forecast lead combination
+            self.run_at_time_once(input_dict)
+
+See ush/pb2nc_wrapper.py for an example.
 
 run_all_times function
 ----------------------
