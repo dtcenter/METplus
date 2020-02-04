@@ -135,5 +135,5 @@ The end time is the same as the begin time, so it runs quickly..
 # --------
 #
 # .. note:: `TCPairsUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_,
-#           `UseCase <https://ncar.github.io/METplus/search.html?q=UseCase&check_keywords=yes&area=default>`_
+#           `SBUOrgUseCase <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
 

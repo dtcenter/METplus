@@ -144,6 +144,5 @@ forecast data to gridded AND point observation data.
 # Keywords
 # --------
 #
-# .. note:: `EnsembleStatUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleStatUseCase&check_keywords=yes&area=default>`_,
-#           `UseCase <https://ncar.github.io/METplus/search.html?q=UseCase&check_keywords=yes&area=default>`_
+# .. note:: `EnsembleStatUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleStatUseCase&check_keywords=yes&area=default>`_
 

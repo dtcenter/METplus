@@ -121,4 +121,4 @@ This use case will run the CustomIngest wrapper tool to utilize the MET Python E
 # Keywords
 # --------
 #
-# .. note:: `ASCII2NCUseCase <https://ncar.github.io/METplus/search.html?q=ASCII2NCUseCase&check_keywords=yes&area=default>`_
+# .. note:: `CustomIngestUseCase <https://ncar.github.io/METplus/search.html?q=CustomIngestUseCase&check_keywords=yes&area=default>`_

@@ -3,7 +3,7 @@ Basic Components of METplus Python Wrappers
 
 CommandBuilder is the parent class of all METplus wrappers. Every wrapper is a subclass of CommandBuilder or another subclass of CommandBuilder. For example, GridStatWrapper, PointStatWrapper, EnsembleStatWrapper, and MODEWrapper are all a subclass of CompareGriddedWrapper. CompareGriddedWrapper is a subclass of CommandBuilder. CommandBuilder contains instance variables that are common to every wrapper, such as config (METplusConfig object), errors (a counter of the number of errors that have occurred in the wrapper), and c_dict (a dictionary containing common information). CommandBuilder also contains use class functions that can be called within each wrapper, such as create_c_dict, clear, and find_data. More information regarding these variables and functions can be found in the Doxygen documentation (link?).
 
-Each wrapper contains an initialization function (__init__) that sets up the wrapper. Every wrapper's initialization function should at very least call the parent's initialization function (using super() function). Many wrapper also set the app_name and app_path instance variables in the initialization function. app_name is the name of the MET executable that pertains to the wrapper and app_path is the full path of the MET executable (relative to MET_INSTALL_DIR/bin) that is called when the MET tool is run.
+Each wrapper contains an initialization function (__init__) that sets up the wrapper. Every wrapper's initialization function should at very least call the parent's initialization function (using super() function). Many wrapper also set the app_name and app_path instance variables in the initialization function. app_name is the name of the MET executable that pertains to the wrapper and app_path is the full path of the MET executable (relative to MET_INSTALL_DIR/bin) that is called when the MET tool is run.::
 
     class ExampleWrapper(CommandBuilder):
         """!Wrapper can be used as a base to develop a new wrapper"""
@@ -30,11 +30,13 @@ want all of the processes to attempt to be executed and then note which ones fai
 
 At the end of master_metplus.py all isOK=false will be collected and reported.
 
-code-block:: python 
+.. code-block:: python 
+
     c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG_FILE', '')
             if not c_dict['CONFIG_FILE']:
                 self.log_error('MODE_CONFIG_FILE must be set')
                 self.isOK = False
+
 
 See modewrapper.py for other examples
 
@@ -42,6 +44,26 @@ See modewrapper.py for other examples
 
 run_at_time function
 --------------------
+
+run_at_time runs a process or collection of processes for one specific time.
+This is inherited from CommandBuilder.
+
+.. code-block:: python
+
+    def run_at_time(self, input_dict):
+        """! Loop over each forecast lead and build pb2nc command """
+         # loop of forecast leads and process each
+        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        for lead in lead_seq:
+            input_dict['lead'] = lead
+
+            lead_string = time_util.ti_calculate(input_dict)['lead_string']
+            self.logger.info("Processing forecast lead {}".format(lead_string))
+
+            # Run for given init/valid time and forecast lead combination
+            self.run_at_time_once(input_dict)
+
+See ush/pb2nc_wrapper.py for an example.
 
 run_all_times function
 ----------------------
