@@ -105,3 +105,12 @@ docs/Users_Guide/model_applications
 
 # sphinx stuff
 docs/_build
+
+# doxygen files
+docs/doxygen/config-files.dox
+docs/doxygen/doxygen_sqlite3.db
+docs/doxygen/html
+docs/doxygen/latex
+sorc/doc/Doxyfile
+sorc/doc/doxygenloc
+sorc/doc/doxylog
