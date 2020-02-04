@@ -48,8 +48,8 @@ Use Cases by METplus Feature:
 | `Looping by month and then year  <https://ncar.github.io/METplus/search.html?q=MonthLoopFeatureUseCase&check_keywords=yes&area=default>`_
 | `SeriesByInit  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
 | `SeriesByInitSpecificTimeRange  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
-| `SeriesByLead  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`
-| `SeriesByLeadGrouping  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadGroupingUseCase&check_keywords=yes&area=default>`
+| `SeriesByLead  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
+| `SeriesByLeadGrouping  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadGroupingUseCase&check_keywords=yes&area=default>`_
 Use cases by File Format:
 -------------------------
 | `GEMPAK  <https://ncar.github.io/METplus/search.html?q=GEMPAKFileUseCase&check_keywords=yes&area=default>`_
