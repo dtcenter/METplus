@@ -765,7 +765,7 @@ WARN_LOGFILE           =
 #                         ../../README.md
 
 INPUT                  = ../../ush \
-                         ../../doc \
+                         ../../docs/doxygen \
                          ../../README.md
 
 

@@ -103,7 +103,7 @@ website, and a LaTeX version of the same, if they have **Doxygen version
 git clone https://www.github.com/NCAR/METplus
 cd METplus/sorc/
 make doc
-cd ../doc
+cd ../docs/doxygen
 # copy the entire contents of the html/ directory to a web server
 \endcode
 
