@@ -67,19 +67,28 @@ See ush/pb2nc_wrapper.py for an example.
 
 run_all_times function
 ----------------------
+run_all_times loops over a series of times calling run_at_time for one process for each time
+Inherited from CommandBuilder
+
+See series_by_lead_wrapper for an example of over-ridding the inherited function
 
 get_command function
 --------------------
 
-build function
---------------
+get_command assembles a MET command with arguments that can be run via the shell or the wrapper
+Inherited from CommandBuilder
+
+Can be overridden to customize the command or just used from the super class
 
 set_environment_variables function 
 ----------------------------------
 (if setting using a MET config file) - uses add_env_var function
+set_environment_variables will set any shell environment variables that MET or other METplus wrappers
+might expect to be set. This allows a wrapper to customize common environment variables
 
 find_data/find_model/find_obs functions (in CommandBuilder)
 -----------------------------------------------------------
+find_* uses the c_dict directory templates and then queries the file system to find the files you are looking for
 uses c_dict dictionary items [FCST/OBS]_FILE_WINDOW_[BEGIN/END], [FCST/OBS]_INPUT_[DIR/TEMPLATE], etc.
 
 StringSub class
