@@ -46,6 +46,9 @@ class SeriesByInitWrapper(CommandBuilder):
             self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
         self.fcst_ascii_file_prefix = 'FCST_ASCII_FILES_'
         self.anly_ascii_file_prefix = 'ANLY_ASCII_FILES_'
+        self.convert_exe = self.config.getexe('CONVERT')
+        if not self.convert_exe:
+            self.isOK = False
 
         # Needed for generating plots
         self.sbi_plotting_out_dir = ''
@@ -665,7 +668,6 @@ class SeriesByInitWrapper(CommandBuilder):
                @param tile_dir:  The directory where input data resides.
            Returns:
         """
-        convert_exe = self.config.getexe('CONVERT')
         background_map = self.config.getbool('config', 'SERIES_ANALYSIS_BACKGROUND_MAP')
         plot_data_plane_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                            'bin/plot_data_plane')
@@ -765,7 +767,7 @@ class SeriesByInitWrapper(CommandBuilder):
                         # postscript file to png
                         png_fname = plot_data_plane_output_fname.replace(
                             '.ps', '.png')
-                        convert_parts = [convert_exe, ' -rotate 90',
+                        convert_parts = [self.convert_exe, ' -rotate 90',
                                          ' -background white -flatten ',
                                          plot_data_plane_output_fname,
                                          ' ', png_fname]
