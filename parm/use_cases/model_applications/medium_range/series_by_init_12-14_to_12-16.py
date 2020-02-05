@@ -90,6 +90,7 @@ modified the initialization times we wish to evaluate.
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/feature_relative.conf
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/series_by_init_12-14_to_12-16.conf
 
+
 ##############################################################################
 # MET Configuration
 # ---------------------
@@ -131,6 +132,35 @@ modified the initialization times we wish to evaluate.
 # * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
 # * **MET_INSTALL_DIR** - Path to location where MET is installed locally
 #
+#  and for the [exe] section, you will need to define the location of
+#  NON-MET executables.  If the executable is in the user's path, METplus will find it from
+#  the name. If the executable is not in the path, specify the full
+#  path to the executable here (i.e. RM = /bin/rm)  The following executables are required
+#  for performing series analysis use cases:
+#
+#  If the executables are in the path:
+#
+# * **RM = rm**
+# * **CUT = cut**
+# * **TR = tr**
+# * **NCAP2 = ncap2**
+# * **CONVERT = convert**
+# * **NCDUMP = ncdump**
+#
+# **NOTE:** All of these executable items must be located under the [exe] section.
+#
+#
+# If the executables are not in the path, they need to be defined:
+#
+# * **RM = /path/to/rm**
+# * **CUT = /path/to/cut**
+# * **TR = /path/to/tr**
+# * **NCAP2 = /path/to/ncap2**
+# * **CONVERT = /path/to/convert**
+# * **NCDUMP= /path/to/ncdump**
+#
+# **NOTE:** All of these executable items must be located under the [exe] section.
+#
 # Example User Configuration File::
 #
 #   [dir]
@@ -138,8 +168,15 @@ modified the initialization times we wish to evaluate.
 #   OUTPUT_BASE = /path/to/output/dir
 #   MET_INSTALL_DIR = /path/to/met-X.Y
 #
-# **NOTE:** All of these items must be found under the [dir] section.
+#   [exe]
+#   RM = /path/to/rm
+#   CUT = /path/to/cut
+#   TR = /path/to/tr
+#   NCAP2 = /path/to/ncap2
+#   CONVERT = /path/to/convert
+#   NCDUMP = /path/to/ncdump
 #
+# **NOTE:** The INPUT_BASE, OUTPUT_BASE, and MET_INSTALL_DIR must be located under the [dir] section, while the RM, CUT, TR, NCAP2, CONVERT, and NCDUMP must be located under the [exe] section.
 
 ##############################################################################
 # Expected Output
