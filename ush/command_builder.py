@@ -52,6 +52,7 @@ class CommandBuilder:
         if hasattr(config, 'env'):
             self.env = config.env
         self.c_dict = self.create_c_dict()
+        self.check_for_externals()
 
         self.cmdrunner = CommandRunner(self.config, logger=self.logger,
                                        verbose=self.c_dict['VERBOSITY'])
@@ -513,6 +514,33 @@ class CommandBuilder:
 
         return ','.join(strings)
 
+    def check_for_externals(self):
+        self.check_for_gempak()
+
+    def check_for_gempak(self):
+        # check if we are processing Gempak data
+        processingGempak = False
+
+        # if any *_DATATYPE keys in c_dict have a value of GEMPAK, we are using Gempak data
+        data_types = [value for key,value in self.c_dict.items() if key.endswith('DATATYPE')]
+        if 'GEMPAK' in data_types:
+            processingGempak = True
+
+        # if any filename templates end with .grd, we are using Gempak data
+        templates = [value for key,value in self.c_dict.items() if key.endswith('TEMPLATE')]
+        if [value for value in templates if value and value.endswith('.grd')]:
+            processingGempak = True
+
+        # If processing Gempak, make sure GempakToCF is found
+        gempaktocf_jar = self.config.getstr('exe', 'GEMPAKTOCF_JAR', '')
+        if processingGempak:
+            if not gempaktocf_jar:
+                self.log_error("[exe] GEMPAKTOCF_JAR was not set if configuration file. This is required to process Gempak data.")
+                self.isOK = False
+            elif not os.path.exists(gempaktocf_jar):
+                self.log_error("GempakToCF Jar file does not exist at " + gempaktocf_jar + ". This is required to process Gempak data.")
+                self.isOK = False
+
     def get_output_prefix(self, time_info):
         return sts.StringSub(self.logger,
                              self.config.getraw('config', f'{self.app_name.upper()}_OUTPUT_PREFIX', ''),
@@ -584,7 +612,8 @@ class CommandBuilder:
 
         ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
         if ret != 0:
-            self.log_error(f"Command returned a non-zero return code: {cmd}")
+            self.log_error(f"MET command returned a non-zero return code: {cmd}. "
+                           "Check the logfile for more information on why it failed")
             return False
 
         return True

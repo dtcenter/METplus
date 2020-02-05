@@ -53,7 +53,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('filename_templates',
                                    f'FCST_{app}_TEMPLATE')
         else:
-            c_dict['FCST_INPUT_TEMPLATE'] = None
+            c_dict['FCST_INPUT_TEMPLATE'] = ''
 
         if self.config.has_option('filename_templates',
                                   'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE'):
@@ -66,7 +66,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('filename_templates',
                                    'OBS_REGRID_DATA_PLANE_TEMPLATE')
         else:
-            c_dict['OBS_INPUT_TEMPLATE'] = None
+            c_dict['OBS_INPUT_TEMPLATE'] = ''
 
         if self.config.has_option('filename_templates',
                                   'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'):
@@ -79,7 +79,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('filename_templates',
                                    'FCST_REGRID_DATA_PLANE_TEMPLATE')
         else:
-            c_dict['FCST_OUTPUT_TEMPLATE'] = None
+            c_dict['FCST_OUTPUT_TEMPLATE'] = ''
 
         if self.config.has_option('filename_templates',
                                   'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'):
@@ -92,7 +92,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('filename_templates',
                                    'OBS_REGRID_DATA_PLANE_TEMPLATE')
         else:
-            c_dict['OBS_OUTPUT_TEMPLATE'] = None
+            c_dict['OBS_OUTPUT_TEMPLATE'] = ''
 
         if self.config.getbool('config', 'FCST_REGRID_DATA_PLANE_RUN', False):
             c_dict['FCST_INPUT_DIR'] = \

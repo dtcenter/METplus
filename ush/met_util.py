@@ -101,7 +101,7 @@ def run_metplus(config, process_list):
                 # if Usage specified in PROCESS_LIST, print usage and exit
                 if item == 'Usage':
                     command_builder.run_all_times()
-                    exit(1)
+                    return 1
             except AttributeError:
                 raise NameError("Process %s doesn't exist" % item)
 
@@ -118,7 +118,7 @@ def run_metplus(config, process_list):
         # exit if any wrappers did not initialized properly
         if not allOK:
             logger.info("Refer to ERROR messages above to resolve issues.")
-            exit()
+            return 1
 
         loop_order = config.getstr('config', 'LOOP_ORDER', '')
 
@@ -132,7 +132,7 @@ def run_metplus(config, process_list):
         else:
             logger.error("Invalid LOOP_ORDER defined. " + \
                          "Options are processes, times")
-            exit()
+            return 1
 
        # compute total number of errors that occurred and output results
         for process in processes:
@@ -149,7 +149,7 @@ def run_metplus(config, process_list):
     except:
         logger.exception("Fatal error occurred")
         logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
-        exit(1)
+        return 1
 
 def post_run_cleanup(config, app_name, total_errors):
     logger = config.logger
