@@ -66,7 +66,7 @@ Documentation
 |    creating/constructing your new code.
 |
 
-|   * Use cases that have only one MET tool/METplus wrapper:
+|   **Use cases that have only one MET tool/METplus wrapper**:
 |      * create a new subdirectory, based on the name of the MET tool:
 |        e.g. METplus/parm/use_cases/met_tool_wrapper/ASCII2NC
 |
@@ -81,7 +81,7 @@ Documentation
 |        above, except replace the .py extension with .conf.  The contents
 |        of this file will be pulled into the .py file you created.
 |
-|   * Use cases that use more than one MET tool/METplus wrapper:
+|   **Use cases that use more than one MET tool/METplus wrapper**:
 |     * the model_applications directory contains subdirectories that
 |       are based on the following categories:
 |           * convection_allowing_models
@@ -99,7 +99,8 @@ Documentation
 |                        the convention:
 |                        <descriptive name>.py
 |
-|     * User's Guide
+|     **User's Guide**:
+|         * to add/modify any content that affects METplus users
 |         * modify any of the affected sections from the METplus/docs/Users_Guide directory:
 |             * glossary.rst (Glossary)
 |             * references.rst (Reference)
@@ -107,7 +108,8 @@ Documentation
 |             * usecases.rst (Use cases)
 |             * wrappers.rst (METplus wrappers)
 |
-|     * Contributor's Guide
+|     **Contributor's Guide**:
+|         * to add/modify any content that affects METplus contributors
 |         * modify any of the affected sections from the METplus/docs/Contributors_Guide directory:
 |             * add_use_case.rst (How to add new use cases)
 |             * basic_components.rst (The basic components of a METplus wrapper)
