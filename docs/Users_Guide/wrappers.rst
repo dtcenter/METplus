@@ -156,7 +156,7 @@ Configuration
 
 [exe]
 
-GEMPAKTOCF_CLASSPATH `[sec:SC_G] <#sec:SC_G>`__
+GEMPAKTOCF_JAR `[sec:SC_G] <#sec:SC_G>`__
 
 [dir]
 
@@ -170,7 +170,11 @@ GEMPAKTOCF_CLASSPATH `[sec:SC_G] <#sec:SC_G>`__
 
 [config]
 
-GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS `[sec:SC_G] <#sec:SC_G>`__
+| GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS `[sec:SC_G] <#sec:SC_G>`__
+
+**Deprecated:**
+
+| GEMPAKTOCF_CLASSPATH `[sec:SC_G] <#sec:SC_G>`__
 
 GridStat
 --------

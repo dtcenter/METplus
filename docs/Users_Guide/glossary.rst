@@ -1735,12 +1735,19 @@ METplus Configuration Glossary
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
-   GEMPAKTOCF_CLASSPATH
-     Path to the GempakToCF binary file and the NetCDF jar file required to run GempakToCF.
+   [DEPRECATED] GEMPAKTOCF_CLASSPATH
+     Please use GEMPAKTOCF_JAR instead. Path to the GempakToCF binary file and the NetCDF jar file required to run GempakToCF.
 
      | *Used by:*  GempakToCF
      | *Family:*  [exe]
      | *Default:*  Varies
+
+   GEMPAKTOCF_JAR
+     Path to the GempakToCF.jar file to run GempakToCF. Available on the MET webpage. Must be set if running GempakToCF wrapper, if using a filename template that ends with .grd, or if specifying an *_INPUT_DATATYPE item as GEMPAK.
+
+     | *Used by:*  GempakToCF, other wrappers that will read Gempak data
+     | *Family:*  [exe]
+     | *Default:*  None
 
    GEMPAKTOCF_INPUT_DIR
      Specify the input directory for the tool used to convert GEMPAK files to netCDF.
