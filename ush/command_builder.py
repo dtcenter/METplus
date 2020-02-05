@@ -527,13 +527,23 @@ class CommandBuilder:
             processingGempak = True
 
         # if any filename templates end with .grd, we are using Gempak data
-        templates = [value for key,value in self.c_dict.items() if key.endswith('TEMPLATE')]
+        template_list = [value for key,value in self.c_dict.items() if key.endswith('TEMPLATE')]
+
+        # handle when template is a list of templates, which happens in EnsembleStat
+        templates = []
+        for value in template_list:
+            if type(value) is list:
+                 for subval in value:
+                     templates.append(subval)
+            else:
+                templates.append(value)
+
         if [value for value in templates if value and value.endswith('.grd')]:
             processingGempak = True
 
         # If processing Gempak, make sure GempakToCF is found
-        gempaktocf_jar = self.config.getstr('exe', 'GEMPAKTOCF_JAR', '')
         if processingGempak:
+            gempaktocf_jar = self.config.getstr('exe', 'GEMPAKTOCF_JAR', '')
             if not gempaktocf_jar:
                 self.log_error("[exe] GEMPAKTOCF_JAR was not set if configuration file. This is required to process Gempak data.")
                 self.isOK = False
