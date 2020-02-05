@@ -21,7 +21,6 @@ Show clips of ExampleWrapper and CommandBuilder's create_c_dict functions
 
 isOK class variable
 -------------------
-
 isOK is inherited from command_builder.py.
 
 Its function is to note a failed process while not stopping a parent process.
@@ -44,7 +43,6 @@ See modewrapper.py for other examples
 
 run_at_time function
 --------------------
-
 run_at_time runs a process or collection of processes for one specific time.
 This is inherited from CommandBuilder.
 
@@ -74,7 +72,6 @@ See series_by_lead_wrapper for an example of over-ridding the inherited function
 
 get_command function
 --------------------
-
 get_command assembles a MET command with arguments that can be run via the shell or the wrapper
 Inherited from CommandBuilder
 
@@ -93,10 +90,29 @@ uses c_dict dictionary items [FCST/OBS]_FILE_WINDOW_[BEGIN/END], [FCST/OBS]_INPU
 
 StringSub class
 ---------------
+StringSub is found in string_template_substitution and is the critical function for substituting the placeholder
+values in templates with the actual values needed for running a particular wrapper
+
+tc_pairs_wrapper has a good example
+
+.. code-block:: python
+
+    # get search expression for bdeck files to pass to glob
+        string_sub = StringSub(self.logger,
+                               self.c_dict['BDECK_TEMPLATE'],
+                               basin=basin,
+                               cyclone=cyclone,
+                               **time_info)
+        bdeck_glob = os.path.join(self.c_dict['BDECK_DIR'],
+                                  string_sub.do_string_sub())
+
 
 time utilities 
 --------------
-time_util.ti_calculate function
+time_util is a collection of functions to handle the idosyncracies of working with model 
+valid, initialization and observation times.
+
+pcp_combine uses a variety of time_util functions like ti_calculate and ti_get_lead_string
  
 main function
 -------------
