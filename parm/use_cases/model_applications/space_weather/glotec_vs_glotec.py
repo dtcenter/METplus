@@ -163,4 +163,4 @@ from two runs of the GloTEC model.
 # Keywords
 # --------
 #
-# .. note:: GridStatUseCase SpaceWeather GloTEC LOOP_BY_VALID
+# .. note:: GridStatUseCase SpaceWeatherAppUseCase NOAASWPCOrgUseCase GloTECModelUseCase
