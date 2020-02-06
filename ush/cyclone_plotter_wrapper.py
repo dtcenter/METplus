@@ -6,6 +6,8 @@ A Python class that generates plots of extra tropical cyclone forecast data,
  verification plots http://www.emc.ncep.noaa.gov/mmb/gplou/emchurr/glblgen/
 """
 
+import metplus_check_python_version
+
 import os
 import time
 import datetime
@@ -54,6 +56,11 @@ class CyclonePlotterWrapper(CommandBuilder):
                                     'BLON', 'AMSLP', 'BMSLP']
         self.circle_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE')
         self.cross_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CROSS_MARKER_SIZE')
+        if 'DISPLAY' not in self.env:
+            self.log_error("DISPLAY environment variable must be set to run {} ".format(self.app_name)+
+                           "If you are using SSH to log into a machine, make sure window forwarding is enabled."
+                            " You can also try setting DISPLAY to localhost:0.0")
+            self.isOK = False
 
     def run_all_times(self):
         """! Calls the defs needed to create the cyclone plots
@@ -247,7 +254,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                     self.storm_id_dict[cur_unique] = cur_storm_list
 
         else:
-            self.logger.error("{} should be a directory".format(self.input_data))
+            self.log_error("{} should be a directory".format(self.input_data))
             sys.exit(1)
 
     def get_columns_and_indices(self, header):
@@ -381,7 +388,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             # pylint:disable=len-as-condition
             # if len(track_info_list) == 0:
             if not track_info_list:
-                self.logger.error("Empty track list, no data extracted " +
+                self.log_error("Empty track list, no data extracted " +
                                   "from track files, exiting.")
                 sys.exit(1)
 
@@ -515,8 +522,13 @@ class CyclonePlotterWrapper(CommandBuilder):
         if self.gen_ascii:
             ascii_track_file.close()
 
+
         # Plot data onto axes
-        plt.show()
+        # Uncomment the two lines below if you wish to have a pop up 
+        # window of the plot automatically appear, in addition to the creation
+        # of the .png version of the plot.
+        #self.logger.info("Plot is displayed in separate window. Close window to continue METplus execution")
+        #plt.show()
 
 
     @staticmethod
@@ -543,5 +555,5 @@ class CyclonePlotterWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    util.run_stand_alone("cyclone_plotter_wrapper", "CyclonePlotter")
+    util.run_stand_alone(__file__, "CyclonePlotter")
 

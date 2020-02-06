@@ -12,6 +12,8 @@ Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 '''
 
+import metplus_check_python_version
+
 import os
 import met_util as util
 import string_template_substitution as sts
@@ -51,7 +53,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('filename_templates',
                                    f'FCST_{app}_TEMPLATE')
         else:
-            c_dict['FCST_INPUT_TEMPLATE'] = None
+            c_dict['FCST_INPUT_TEMPLATE'] = ''
 
         if self.config.has_option('filename_templates',
                                   'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE'):
@@ -64,7 +66,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('filename_templates',
                                    'OBS_REGRID_DATA_PLANE_TEMPLATE')
         else:
-            c_dict['OBS_INPUT_TEMPLATE'] = None
+            c_dict['OBS_INPUT_TEMPLATE'] = ''
 
         if self.config.has_option('filename_templates',
                                   'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'):
@@ -77,7 +79,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('filename_templates',
                                    'FCST_REGRID_DATA_PLANE_TEMPLATE')
         else:
-            c_dict['FCST_OUTPUT_TEMPLATE'] = None
+            c_dict['FCST_OUTPUT_TEMPLATE'] = ''
 
         if self.config.has_option('filename_templates',
                                   'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'):
@@ -90,7 +92,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('filename_templates',
                                    'OBS_REGRID_DATA_PLANE_TEMPLATE')
         else:
-            c_dict['OBS_OUTPUT_TEMPLATE'] = None
+            c_dict['OBS_OUTPUT_TEMPLATE'] = ''
 
         if self.config.getbool('config', 'FCST_REGRID_DATA_PLANE_RUN', False):
             c_dict['FCST_INPUT_DIR'] = \
@@ -163,30 +165,38 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         # exit if input or output template is not set
         if self.c_dict[dtype+'_INPUT_TEMPLATE'] == '':
-            self.logger.error('Must set {}_REGRID_DATA_PLANE_INPUT_TEMPLATE'.format(dtype) +\
+            self.log_error('Must set {}_REGRID_DATA_PLANE_INPUT_TEMPLATE'.format(dtype) +\
                               ' in config file')
             exit(1)
 
         if self.c_dict[dtype+'_OUTPUT_TEMPLATE'] == '':
-            self.logger.error('Must set {}_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'.format(dtype) +\
+            self.log_error('Must set {}_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'.format(dtype) +\
                               ' in config file')
             exit(1)
 
         if self.c_dict['VERIFICATION_GRID'] == '':
-            self.logger.error('No verification grid specified! ' + \
+            self.log_error('No verification grid specified! ' + \
                               'Set REGRID_DATA_PLANE_VERIF_GRID')
             exit(1)
 
 
         # check if any RDP VAR<n>_INPUT_FIELD_* configs are set
         # get a list of the indices that are set
-        input_regex = f'{dtype}_{self.app_name.upper()}_'+r'VAR(\d)_INPUT_NAME'
+        input_regex = f'({dtype})_{self.app_name.upper()}_'+r'VAR(\d+)_INPUT_FIELD_NAME'
         rdp_input_indices = \
-          util.find_regex_in_config_section(input_regex, self.config, 'config')
+          util.find_indices_in_config_section(input_regex, self.config, 'config').keys()
+
+        # check RDP VAR<n>_FIELD_NAME if INPUT_FIELD is not set
+        if not rdp_input_indices:
+            input_regex = f'({dtype})_{self.app_name.upper()}_'+r'VAR(\d+)_FIELD_NAME'
+            rdp_input_indices = \
+              util.find_indices_in_config_section(input_regex, self.config, 'config').keys()
 
         # if no field info or input field configs are set, error and return
         if var_info is None and not rdp_input_indices:
-            self.logger.error('No fields were specified using [FCST/OBS]_VAR<n>_NAME.')
+            self.log_error('No input fields were specified to RegridDataPlane. You must set either '
+                           f'{dtype}_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME or '
+                           f'{dtype}_VAR<n>_NAME.')
             return
 
         # if var info is set, build command using that item's info
@@ -208,7 +218,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 input_level = var_info[f'{dtype.lower()}_level']
 
             if not output_name and util.is_python_script(input_name):
-                    self.logger.error('Must explicitly set '
+                    self.log_error('Must explicitly set '
                                       f'{dtype}_REGRID_DATA_PLANE_VAR{index}_'
                                       'OUTPUT_FIELD_NAME '
                                       'if input field comes from a python script.')
@@ -281,10 +291,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                    input_template,
                                    level=(int(f_level)*3600),
                                    **time_info).do_string_sub()
-        infile = os.path.join(input_dir,  input_file)
+        full_path = os.path.join(input_dir, input_file)
 
         infile = \
-          util.preprocess_file(infile,
+          util.preprocess_file(full_path,
                                self.config.getstr('config',
                                                   dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE',
                                                   ''),
@@ -293,8 +303,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if infile is not None:
             self.infiles.append(infile)
         else:
-            self.logger.error('Could not find input file in {} matching template {}'
-                              .format(input_dir, input_template))
+            self.log_error(f"Could not find {dtype} file {full_path} using template {input_template}")
             return False
 
         verif_grid = self.c_dict['VERIFICATION_GRID']
@@ -344,4 +353,4 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         return True
 
 if __name__ == "__main__":
-    util.run_stand_alone("regrid_data_plane_wrapper", "RegridDataPlane")
+    util.run_stand_alone(__file__, "RegridDataPlane")

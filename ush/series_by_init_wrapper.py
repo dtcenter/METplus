@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import metplus_check_python_version
+
 import errno
 import os
 import re
@@ -36,7 +38,6 @@ class SeriesByInitWrapper(CommandBuilder):
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
         self.stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST'))
-        self.var_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_VAR_LIST'))
         self.extract_tiles_dir = self.config.getdir('SERIES_ANALYSIS_INPUT_DIR')
         self.series_out_dir = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR')
         self.series_filtered_out_dir = \
@@ -45,6 +46,9 @@ class SeriesByInitWrapper(CommandBuilder):
             self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
         self.fcst_ascii_file_prefix = 'FCST_ASCII_FILES_'
         self.anly_ascii_file_prefix = 'ANLY_ASCII_FILES_'
+        self.convert_exe = self.config.getexe('CONVERT')
+        if not self.convert_exe:
+            self.isOK = False
 
         # Needed for generating plots
         self.sbi_plotting_out_dir = ''
@@ -61,6 +65,12 @@ class SeriesByInitWrapper(CommandBuilder):
         self.args = []
 
         self.logger.info("Initialized SeriesByInitWrapper")
+
+    def create_c_dict(self):
+        c_dict = super().create_c_dict()
+        c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
+        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'SERIES_ANALYSIS_REGRID_TO_GRID', '')
+        return c_dict
 
     def run_all_times(self):
         """! Invoke the series analysis script based on
@@ -116,16 +126,16 @@ class SeriesByInitWrapper(CommandBuilder):
         except OSError:
             msg = ("Missing n x m tile files.  " +
                    "Extract tiles needs to be run")
-            self.logger.error(msg)
+            self.log_error(msg)
 
         # If applicable, apply any filtering via tc_stat, as indicated in the
         # parameter/config file.
-        tmp_dir = os.path.join(self.config.getdir('TMP_DIR'), str(os.getpid()))
+        staging_dir = self.config.getdir('STAGING_DIR')
         if series_filter_opts:
             self.apply_series_filters(tile_dir, init_times,
                                       self.series_filtered_out_dir,
                                       self.filter_opts,
-                                      tmp_dir)
+                                      staging_dir)
 
             # Clean up any empty files and directories that could arise as
             # a result of filtering
@@ -136,7 +146,8 @@ class SeriesByInitWrapper(CommandBuilder):
             # First, make sure that the series_lead_filtered_out
             # directory isn't empty.  If so, then no files fall within the
             # filter criteria.
-            if os.listdir(self.series_filtered_out_dir):
+            if os.path.exists(self.series_filtered_out_dir) and \
+                    os.listdir(self.series_filtered_out_dir):
                 # The series filter directory has data, use this directory as
                 # input for series analysis.
                 tile_dir = self.series_filtered_out_dir
@@ -188,13 +199,19 @@ class SeriesByInitWrapper(CommandBuilder):
         if self.is_netcdf_created():
             self.generate_plots(sorted_filter_init, tile_dir)
         else:
-            self.logger.error("No NetCDF files were created by"
+            self.log_error("No NetCDF files were created by"
                               " series_analysis, exiting...")
             sys.exit(errno.ENODATA)
+
+        # clean up the tmp dir now that we are finished and create a new empty
+        # tmp dir
+        filtered_file_regex = "filter_.*"
+        util.remove_staged_files(staging_dir, filtered_file_regex, self.logger )
+
         self.logger.info("Finished series analysis by init time")
 
     def apply_series_filters(self, tile_dir, init_times, series_output_dir,
-                             filter_opts, temporary_dir):
+                             filter_opts, staging_dir):
 
         """! Apply filter options, as specified in the
             param/config file.
@@ -207,7 +224,7 @@ class SeriesByInitWrapper(CommandBuilder):
                @param series_output_dir:  The directory where the filter results
                                           will be stored.
                @param filter_opts:  The filter options to apply
-               @param temporary_dir:  The temporary directory where intermediate
+               @param staging_dir:  The staging directory where intermediate
                                       files are saved.
             Returns:
                 None
@@ -224,9 +241,7 @@ class SeriesByInitWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         # Create temporary directory where intermediate files are saved.
-        cur_pid = str(os.getpid())
-        tmp_dir = os.path.join(temporary_dir, cur_pid)
-        self.logger.debug("creating tmp dir: " + tmp_dir)
+        self.logger.debug("creating tmp dir for filtered files: " + staging_dir)
 
         for cur_init in init_times:
             # Call the tc_stat wrapper to build up the command and invoke
@@ -270,9 +285,9 @@ class SeriesByInitWrapper(CommandBuilder):
                     storm_output_dir = os.path.join(series_output_dir,
                                                     cur_init, cur_storm)
                     util.mkdir_p(storm_output_dir)
-                    util.mkdir_p(tmp_dir)
+                    util.mkdir_p(staging_dir)
                     tmp_file = "filter_" + cur_init + "_" + cur_storm
-                    tmp_filename = os.path.join(tmp_dir, tmp_file)
+                    tmp_filename = os.path.join(staging_dir, tmp_file)
                     storm_match_list = util.grep(cur_storm, filter_filename)
                     with open(tmp_filename, "a+") as tmp_file:
                         tmp_file.write(header)
@@ -292,9 +307,6 @@ class SeriesByInitWrapper(CommandBuilder):
         # any errors or performance degradation when performing
         # series analysis.
         util.prune_empty(series_output_dir, self.logger)
-
-        # Clean up the tmp dir
-        util.rmtree(tmp_dir)
 
     def is_netcdf_created(self):
         """! Check for the presence of NetCDF files in the series_analysis_init
@@ -371,7 +383,7 @@ class SeriesByInitWrapper(CommandBuilder):
             msg = ("exiting, no files found for " +
                    "init time of interest" +
                    " and directory:" + dir_to_search)
-            self.logger.error(msg)
+            self.log_error(msg)
             sys.exit(1)
 
         first = sorted_files[0]
@@ -386,14 +398,14 @@ class SeriesByInitWrapper(CommandBuilder):
             beg = match_beg.group(1)
         else:
             msg = ("Unexpected file format encountered, exiting...")
-            self.logger.error(msg)
+            self.log_error(msg)
             sys.exit(1)
 
         if match_end:
             end = match_end.group(1)
         else:
             msg = ("Unexpected file format encountered, exiting...")
-            self.logger.error(msg)
+            self.log_error(msg)
             sys.exit(1)
 
         # Get the number of forecast tile files
@@ -493,6 +505,7 @@ class SeriesByInitWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
+
         # Now assemble the -fcst, -obs, and -out arguments and invoke the
         # MET Tool: series_analysis.
         for cur_init in sorted_filter_init:
@@ -506,8 +519,9 @@ class SeriesByInitWrapper(CommandBuilder):
                     # Build the -obs and -fcst portions of the series_analysis
                     # command. Then generate the -out portion, get the NAME and
                     # corresponding LEVEL for each variable.
-                    for cur_var in self.var_list:
-                        name, level = util.get_name_level(cur_var, self.logger)
+                    full_vars_list = feature_util.retrieve_var_name_levels(self.config)
+                    for cur_var in full_vars_list:
+                        name, level = cur_var
                         param = \
                             self.config.getstr(
                                 'config',
@@ -521,6 +535,7 @@ class SeriesByInitWrapper(CommandBuilder):
                                                  cur_storm,
                                                  cur_init)
                         self.create_out_arg(cur_storm, cur_init, name, level)
+                        self.add_common_envs()
                         self.build()
                         self.clear()
 
@@ -618,7 +633,7 @@ class SeriesByInitWrapper(CommandBuilder):
 
     def get_command(self):
         if self.app_path is None:
-            self.logger.error("No app path specified. You must use a subclass")
+            self.log_error("No app path specified. You must use a subclass")
             return None
 
         cmd = self.app_path + " "
@@ -637,7 +652,7 @@ class SeriesByInitWrapper(CommandBuilder):
             self.logger.info("No output filename specified, because series analysis has multiple files")
         else:
             cmd += "-out " + os.path.join(self.get_output_path())
-        print("!!!! cmd: ", cmd)
+
         return cmd
 
     def generate_plots(self, sorted_filter_init, tile_dir):
@@ -653,12 +668,13 @@ class SeriesByInitWrapper(CommandBuilder):
                @param tile_dir:  The directory where input data resides.
            Returns:
         """
-        convert_exe = self.config.getexe('CONVERT')
         background_map = self.config.getbool('config', 'SERIES_ANALYSIS_BACKGROUND_MAP')
         plot_data_plane_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                            'bin/plot_data_plane')
-        for cur_var in self.var_list:
-            name, level = util.get_name_level(cur_var, self.logger)
+
+        full_vars_list = feature_util.retrieve_var_name_levels(self.config)
+        for cur_var in full_vars_list:
+            name, level = cur_var
             for cur_init in sorted_filter_init:
                 storm_list = self.get_storms_for_init(cur_init, tile_dir)
                 for cur_storm in storm_list:
@@ -725,7 +741,7 @@ class SeriesByInitWrapper(CommandBuilder):
                                        str(num), ' Forecasts (',
                                        str(beg), ' to ', str(end),
                                        '),', cur_stat, ' for ',
-                                       cur_var, '"']
+                                       name, ', ',  level, '"']
                         title = ''.join(title_parts)
 
                         # Now assemble the entire plot data plane command
@@ -751,7 +767,7 @@ class SeriesByInitWrapper(CommandBuilder):
                         # postscript file to png
                         png_fname = plot_data_plane_output_fname.replace(
                             '.ps', '.png')
-                        convert_parts = [convert_exe, ' -rotate 90',
+                        convert_parts = [self.convert_exe, ' -rotate 90',
                                          ' -background white -flatten ',
                                          plot_data_plane_output_fname,
                                          ' ', png_fname]
@@ -857,7 +873,7 @@ class SeriesByInitWrapper(CommandBuilder):
         except IOError:
             msg = ("Could not create requested ASCII file:  " +
                    fcst_anly_ascii)
-            self.logger.error(msg)
+            self.log_error(msg)
 
         if os.stat(fcst_anly_ascii).st_size == 0:
             # Just in case there are any empty fcst ASCII or anly ASCII files
@@ -867,6 +883,5 @@ class SeriesByInitWrapper(CommandBuilder):
             # steps.
             util.prune_empty(fcst_anly_ascii_dir, self.logger)
 
-
 if __name__ == "__main__":
-        util.run_stand_alone("series_by_init_wrapper", "SeriesByInit")
+    util.run_stand_alone(__file__, "SeriesByInit")

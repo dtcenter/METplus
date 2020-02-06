@@ -26,18 +26,18 @@ Configuration
 
 [dir]
 
-| :term:`CYCLONE_INPUT_DIR`
-| CYCLONE_OUTPUT_DIR `[sec:SC_C] <#sec:SC_C>`__
+| CYCLONE_PLOTTER_INPUT_DIR `[sec:C] <#sec:C>` __
+| CYCLONE_PLOTTER_OUTPUT_DIR `[sec:SC_C] <#sec:SC_C>`__
 
 [config]
 
-| CYCLONE_INIT_DATE `[sec:SC_C] <#sec:SC_C>`__
-| CYCLONE_INIT_HOUR `[sec:SC_C] <#sec:SC_C>`__
-| CYCLONE_MODEL `[sec:SC_C] <#sec:SC_C>`__
-| CYCLONE_PLOT_TITLE `[sec:SC_C] <#sec:SC_C>`__
-| CIRCLE_MARKER_SIZE `[sec:SC_C] <#sec:SC_C>`__
-| CROSS_MARKER_SIZE `[sec:SC_C] <#sec:SC_C>`__
-| GENERATE_TRACK_ASCII `[sec:SC_G] <#sec:SC_G>`__
+| CYCLONE_PLOTTER_INIT_DATE `[sec:SC_C] <#sec:SC_C>`__
+| CYCLONE_PLOTTER_INIT_HOUR `[sec:SC_C] <#sec:SC_C>`__
+| CYCLONE_PLOTTER_MODEL `[sec:SC_C] <#sec:SC_C>`__
+| CYCLONE_PLOTTER_PLOT_TITLE `[sec:SC_C] <#sec:SC_C>`__
+| CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE `[sec:SC_C] <#sec:SC_C>`__
+| CYCLONE_PLOTTER_CROSS_MARKER_SIZE `[sec:SC_C] <#sec:SC_C>`__
+| CYCLONE_PLOTTER_GENERATE_TRACK_ASCII `[sec:SC_G] <#sec:SC_G>`__
 
 **Deprecated:**
 
@@ -79,7 +79,7 @@ Configuration
 | OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE `[sec:SC_O] <#sec:SC_O>`__
 | ENSEMBLE_STAT_GRID_VX `[sec:SC_E] <#sec:SC_E>`__
 | ENSEMBLE_STAT_CONFIG_FILE `[sec:SC_E] <#sec:SC_E>`__
-| ENSEMBLE_STAT_MET_OBS_ERROR_TABLE `[sec:SC_E] <#sec:SC_E>`__
+| ENSEMBLE_STAT_MET_OBS_ERR_TABLE `[sec:SC_E] <#sec:SC_E>`__
 | ENSEMBLE_STAT_N_MEMBERS `[sec:SC_E] <#sec:SC_E>`__
 | OBS_ENSEMBLE_STAT_WINDOW_BEGIN `[sec:SC_O] <#sec:SC_O>`__
 | OBS_ENSEMBLE_STAT_WINDOW_END `[sec:SC_O] <#sec:SC_O>`__
@@ -93,6 +93,7 @@ Configuration
 
 | ENSEMBLE_STAT_OUT_DIR\ `[sec:SC_E] <#sec:SC_E>`__
 | ENSEMBLE_STAT_CONFIG\ `[sec:SC_E] <#sec:SC_E>`__
+| ENSEMBLE_STAT_MET_OBS_ERROR_TABLE `[sec:SC_E] <#sec:SC_E>`__
 
 ExtractTiles
 ------------
@@ -155,7 +156,7 @@ Configuration
 
 [exe]
 
-GEMPAKTOCF_CLASSPATH `[sec:SC_G] <#sec:SC_G>`__
+GEMPAKTOCF_JAR `[sec:SC_G] <#sec:SC_G>`__
 
 [dir]
 
@@ -169,7 +170,11 @@ GEMPAKTOCF_CLASSPATH `[sec:SC_G] <#sec:SC_G>`__
 
 [config]
 
-GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS `[sec:SC_G] <#sec:SC_G>`__
+| GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS `[sec:SC_G] <#sec:SC_G>`__
+
+**Deprecated:**
+
+| GEMPAKTOCF_CLASSPATH `[sec:SC_G] <#sec:SC_G>`__
 
 GridStat
 --------
@@ -991,7 +996,7 @@ Description
 ~~~~~~~~~~~
 
 The TCMPRPlotter wrapper is a Python script that wraps the R script
-plot_tcmpr.R. This script is usefule for plotting the calculated
+plot_tcmpr.R. This script is useful for plotting the calculated
 statistics for the output from the MET-TC tools. This script, and other
 R scripts are included in the MET installation. Please refer to section
 21.2.3 of the MET User's Guide for usage information.
@@ -1002,40 +1007,40 @@ Configuration
 ~~~~~~~~~~~~~
 
 | LOOP ORDER `[sec:SC_L] <#sec:SC_L>`__
-| CONFIG_FILE `[sec:SC_C] <#sec:SC_C>`__
-| PREFIX `[sec:SC_P] <#sec:SC_P>`__
-| TITLE `[sec:SC_T] <#sec:SC_T>`__
-| SUBTITLE `[sec:SC_S] <#sec:SC_S>`__
-| XLAB `[sec:SC_X] <#sec:SC_X>`__
-| YLAB `[sec:SC_Y] <#sec:SC_Y>`__
-| XLIM\ `[sec:SC_X] <#sec:SC_X>`__
-| YLIM `[sec:SC_Y] <#sec:SC_Y>`__
-| FILTER `[sec:SC_F] <#sec:SC_F>`__
-| FILTERED_TCST_DATA_FILE `[sec:SC_F] <#sec:SC_F>`__
-| DEP_VARS `[sec:SC_D] <#sec:SC_D>`__
-| SCATTER_X `[sec:SC_D] <#sec:SC_D>`__
-| SCATTER_Y `[sec:SC_D] <#sec:SC_D>`__
-| SKILL_REF `[sec:SC_D] <#sec:SC_D>`__
-| SERIES `[sec:SC_D] <#sec:SC_D>`__
-| SERIES_CI `[sec:SC_D] <#sec:SC_D>`__
-| LEGEND `[sec:SC_L] <#sec:SC_L>`__
-| LEAD `[sec:SC_L] <#sec:SC_L>`__
-| PLOT_TYPES `[sec:SC_P] <#sec:SC_P>`__
-| RP_DIFF `[sec:SC_R] <#sec:SC_R>`__
-| DEMO_YR `[sec:SC_D] <#sec:SC_D>`__
-| HFIP_BASELINE `[sec:SC_H] <#sec:SC_H>`__
-| FOOTNOTE_FLAG `[sec:SC_F] <#sec:SC_F>`__
-| PLOT_CONFIG_OPTS `[sec:SC_P] <#sec:SC_P>`__
-| SAVE_DATA `[sec:SC_D] <#sec:SC_D>`__
+| TCMPR_PLOTTER_CONFIG_FILE `[sec:SC_C] <#sec:SC_C>`__
+| TCMPR_PLOTTER_PREFIX `[sec:SC_P] <#sec:SC_P>`__
+| TCMPR_PLOTTER_TITLE `[sec:SC_T] <#sec:SC_T>`__
+| TCMPR_PLOTTER_SUBTITLE `[sec:SC_S] <#sec:SC_S>`__
+| TCMPR_PLOTTER_XLAB `[sec:SC_X] <#sec:SC_X>`__
+| TCMPR_PLOTTER_YLAB `[sec:SC_Y] <#sec:SC_Y>`__
+| TCMPR_PLOTTER_XLIM\ `[sec:SC_X] <#sec:SC_X>`__
+| TCMPR_PLOTTER_YLIM `[sec:SC_Y] <#sec:SC_Y>`__
+| TCMPR_PLOTTER_FILTER `[sec:SC_F] <#sec:SC_F>`__
+| TCMPR_PLOTTER_FILTERED_TCST_DATA_FILE `[sec:SC_F] <#sec:SC_F>`__
+| TCMPR_PLOTTER_DEP_VARS `[sec:SC_D] <#sec:SC_D>`__
+| TCMPR_PLOTTER_SCATTER_X `[sec:SC_D] <#sec:SC_D>`__
+| TCMPR_PLOTTER_SCATTER_Y `[sec:SC_D] <#sec:SC_D>`__
+| TCMPR_PLOTTER_SKILL_REF `[sec:SC_D] <#sec:SC_D>`__
+| TCMPR_PLOTTER_SERIES `[sec:SC_D] <#sec:SC_D>`__
+| TCMPR_PLOTTER_SERIES_CI `[sec:SC_D] <#sec:SC_D>`__
+| TCMPR_PLOTTER_LEGEND `[sec:SC_L] <#sec:SC_L>`__
+| TCMPR_PLOTTER_LEAD `[sec:SC_L] <#sec:SC_L>`__
+| TCMPR_PLOTTER_PLOT_TYPES `[sec:SC_P] <#sec:SC_P>`__
+| TCMPR_PLOTTER_RP_DIFF `[sec:SC_R] <#sec:SC_R>`__
+| TCMPR_PLOTTER_DEMO_YR `[sec:SC_D] <#sec:SC_D>`__
+| TCMPR_PLOTTER_HFIP_BASELINE `[sec:SC_H] <#sec:SC_H>`__
+| TCMPR_PLOTTER_FOOTNOTE_FLAG `[sec:SC_F] <#sec:SC_F>`__
+| TCMPR_PLOTTER_PLOT_CONFIG_OPTS `[sec:SC_P] <#sec:SC_P>`__
+| TCMPR_PLOTTER_SAVE_DATA `[sec:SC_D] <#sec:SC_D>`__
 
 The following are TCMPR flags, if set to 'no', then don't set flag, if
 set to 'yes', then set the flag
 
-| NO_EE `[sec:SC_N] <#sec:SC_N>`__
-| NO_LOG `[sec:SC_N] <#sec:SC_N>`__
-| SAVE `[sec:SC_S] <#sec:SC_S>`__
-| TCMPR_DATA_DIR `[sec:SC_T] <#sec:SC_T>`__
-| TCMPR_PLOT_OUTPUT_DIR `[sec:SC_T] <#sec:SC_T>`__
+| TCMPR_PLOTTER_NO_EE `[sec:SC_N] <#sec:SC_N>`__
+| TCMPR_PLOTTER_NO_LOG `[sec:SC_N] <#sec:SC_N>`__
+| TCMPR_PLOTTER_SAVE `[sec:SC_S] <#sec:SC_S>`__
+| TCMPR_PLOTTER_TCMPR_DATA_DIR `[sec:SC_T] <#sec:SC_T>`__
+| TCMPR_PLOTTER_PLOT_OUTPUT_DIR `[sec:SC_T] <#sec:SC_T>`__
 
 **Deprecated:**
 

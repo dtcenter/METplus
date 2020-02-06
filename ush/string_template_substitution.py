@@ -265,7 +265,6 @@ class StringSub(object):
 
         if self.kwargs is not None:
             for key, value in kwargs.items():
-                # print("%s == %s" % (key, value))
                 setattr(self, key, value)
 
     def round_time_down(self, obj):
@@ -312,8 +311,11 @@ class StringSub(object):
                 return obj.strftime(fmt)
             # if input is relativedelta
             elif isinstance(obj, relativedelta):
-                self.logger.error('Year and month intervals not yet supported in string substitution')
-                exit(1)
+                seconds = time_util.ti_get_seconds_from_relativedelta(obj)
+                if seconds is None:
+                    self.logger.error('Year and month intervals not yet supported in string substitution')
+                    exit(1)
+                return format_hms(fmt, seconds)
             # if input is integer, format with H, M, and S
             elif isinstance(obj, int):
                 obj += self.shift_seconds
@@ -403,7 +405,7 @@ class StringSub(object):
             self.logger.error("match_list and match_start_end_list should " +
                               "have the same length for template: " +
                               self.tmpl)
-            exit(0)
+            exit(1)
 
         # A dictionary that will contain the string to replace (key)
         # and the string to replace it with (value)
@@ -419,7 +421,6 @@ class StringSub(object):
             # valid, init, lead, etc.
             # print split_string[0]
             # value e.g. 2016012606, 3
-            # print (self.kwargs).get(split_string[0], None)
 
             # split_string[0] holds the key (e.g. "init", "valid", etc)
             if split_string[0] not in self.kwargs.keys():
@@ -573,14 +574,12 @@ class StringExtract(object):
                     items = section.split('=')
                     if items[0] == 'fmt':
                         fmt = items[1]
-#                        print("Format for {} is {}".format(identifier, format))
                         fmt_len = self.get_fmt_info(fmt, self.full_str[str_i:],
                                                     match_dict, identifier)
                         if fmt_len == -1:
                             return None
                         # extract string that corresponds to format
                     if items[0] == SHIFT_STRING:
-                        shift = int(items[1])
                         # don't allow shift on any identifier except valid
                         if identifier != VALID_STRING:
                             msg = 'Cannot apply a shift to template ' +\
@@ -588,6 +587,8 @@ class StringExtract(object):
                                   'times. Only {} is accepted'.format(VALID_STRING)
                             self.logger.error(msg)
                             exit(1)
+
+                        shift = int(time_util.get_seconds_from_string(items[1], default_unit='S'))
 
                         # if shift has been set before (other than 0) and
                         # this shift differs, report error and exit

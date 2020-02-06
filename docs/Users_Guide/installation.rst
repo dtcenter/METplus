@@ -19,7 +19,7 @@ platform.
 Programming/scripting languages
 -------------------------------
 
-METplus Wrappers is written in Python 2.7. It is intended to be a tool
+METplus Wrappers is written in Python 3.6.3. It is intended to be a tool
 for the modeling community to use and adapt. As users make upgrades and
 improvements to the tools, they are encouraged to offer those upgrades
 to the broader community by offering feedback to the developers or
@@ -32,13 +32,13 @@ Pre-requisites
 
 The following software is required to run METplus Wrappers:
 
--  Python 2.7
+-  Python 3.6.3
 
 -  R version 3.2.5  [1]_
 
 -  nco (netCDF operators)
 
--  MET version 8.1 or above
+-  MET version 9.0 or above
 
 -  Basic familiarity with MET
 

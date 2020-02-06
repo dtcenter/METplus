@@ -1,8 +1,6 @@
 """!Common utilities used by other parts of the produtil.testing package."""
         
-import sys, re, collections, os, datetime, logging
-
-from io import StringIO
+import sys, re, io, collections, os, datetime, logging
 
 ##@var __all__
 # List of variables exported by "from produtil.testing.utilities import *"
@@ -54,7 +52,7 @@ def bashify_string(string):
         @param string Any subclass of str
 
         @returns valid bash code to represent the string"""
-        output=StringIO()
+        output=io.StringIO()
         for m in re.finditer('''(?xs)
             (
                 (?P<quotes>'+)
@@ -108,7 +106,7 @@ def dqstring2bracestring(dq):
     string.
     @param dq The bash-style double quote string, minus the 
       surrounding double quotes."""
-    output=StringIO()
+    output=io.StringIO()
     for m in re.finditer(r'''(?xs)
         (
             \\ (?P<backslashed>.)
@@ -196,25 +194,25 @@ class peekable(object):
             else:
                     return NO_VALUE
 
-    def next(self):
+    def __next__(self):
         """!Advances the iterator to the next value and returns it"""
         if self.__peek is not NO_VALUE:
             p,self.__peek = self.__peek,NO_VALUE
         else:
-            p=self.__iterator.next()
+            p=next(self.__iterator)
         self.__prior=p
         return p
     def peek(self):
         """!Returns the next value in the iterator or raises StopIteration"""
         if self.__peek is NO_VALUE:
-            self.__peek=self.__iterator.next()
+            self.__peek=next(self.__iterator)
         return self.__peek
     def at_end(self):
         """!Returns True if the iterator has reached the last value"""
         if self.__peek is not NO_VALUE:
             return False
         try:
-            self.__peek=self.__iterator.next()
+            self.__peek=next(self.__iterator)
         except StopIteration as se:
             return True
         return False

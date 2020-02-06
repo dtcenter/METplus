@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import metplus_check_python_version
+
 from command_builder import CommandBuilder
 
 # @namespace UsageWrapper

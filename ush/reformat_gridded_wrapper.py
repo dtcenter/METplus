@@ -37,7 +37,7 @@ that reformat gridded data
     # pylint:disable=unused-argument
     def run_at_time_once(self, time_info, var_info, to_run):
         """!To be implemented by child class"""
-        self.logger.error('ReformatGridded wrapper cannot be called directly.'+\
+        self.log_error('ReformatGridded wrapper cannot be called directly.'+\
                           ' Please use child wrapper')
         exit(1)
 
@@ -61,7 +61,7 @@ that reformat gridded data
             run_list.append("OBS")
 
         if len(run_list) == 0:
-            self.logger.error(class_name+" specified in process_list, but "+\
+            self.log_error(class_name+" specified in process_list, but "+\
                               "FCST_"+app_name_caps+"_RUN and OBS_"+app_name_caps+"_RUN "+\
                               " are both False. Set one or both to true or "+\
                               "remove "+class_name+" from the process_list")
@@ -71,17 +71,15 @@ that reformat gridded data
             self.logger.info("Processing {} data".format(to_run))
             for lead in lead_seq:
                 input_dict['lead'] = lead
-                self.config.set('config', 'CURRENT_LEAD_TIME', lead)
-                os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
 
                 time_info = time_util.ti_calculate(input_dict)
 
                 self.logger.info("Processing forecast lead {}".format(time_info['lead_string']))
 
-                var_list = util.parse_var_list(self.config, time_info)
+                var_list = util.parse_var_list(self.config, time_info, data_type=to_run)
                 if not var_list:
                     self.run_at_time_once(time_info, None, to_run)
-                    return
+                    continue
 
                 for var_info in var_list:
                     self.run_at_time_once(time_info, var_info, to_run)

@@ -12,6 +12,8 @@ Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 """
 
+import metplus_check_python_version
+
 import os
 import met_util as util
 import string_template_substitution as sts
@@ -28,23 +30,40 @@ class GempakToCFWrapper(CommandBuilder):
     def __init__(self, config, logger):
         super().__init__(config, logger)
         self.app_name = "GempakToCF"
-        self.class_path = self.config.getstr('exe', 'GEMPAKTOCF_CLASSPATH')
+        self.app_path = self.config.getstr('exe', 'GEMPAKTOCF_JAR', '')
+        if not self.app_path:
+            self.log_error("[exe] GEMPAKTOCF_JAR was not set if configuration file. This is required to process Gempak data.")
+            self.isOK = False
+        elif not os.path.exists(self.app_path):
+            self.log_error("GempakToCF Jar file does not exist at " + self.app_path)
+            self.isOK = False
+
+    def create_c_dict(self):
+        """!Create dictionary from config items to be used in the wrapper
+            Allows developer to reference config items without having to know
+            the type and consolidates config get calls so it is easier to see
+            which config variables are used in the wrapper"""
+        c_dict = super().create_c_dict()
+
+        # set this for check if we are using Gempak data to ensure GempakToCF is found
+        c_dict['INPUT_DATATYPE'] = 'GEMPAK'
+        return c_dict
 
     def get_command(self):
-        cmd = "java -classpath " + self.class_path + " GempakToCF "
+        cmd = "java -jar " + self.app_path
 
         if len(self.infiles) != 1:
-            self.logger.error("Only 1 input file can be selected")
+            self.log_error("Only 1 input file can be selected")
             return None
 
         for infile in self.infiles:
-            cmd += infile + " "
+            cmd += " " + infile
 
         if self.outfile == "":
-            self.logger.error("No output file specified")
+            self.log_error("No output file specified")
             return None
 
-        cmd += self.get_output_path()
+        cmd += " " + self.get_output_path()
         return cmd
 
     def run_at_time(self, input_dict):
@@ -59,8 +78,6 @@ class GempakToCFWrapper(CommandBuilder):
         for lead in lead_seq:
             self.clear()
             input_dict['lead'] = lead
-            self.config.set('config', 'CURRENT_LEAD_TIME', lead)
-            os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
             time_info = time_util.ti_calculate(input_dict)
             self.run_at_time_once(time_info)
 
@@ -103,7 +120,10 @@ class GempakToCFWrapper(CommandBuilder):
 
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("Could not generate command")
+            self.log_error("Could not generate command")
             return
 
         self.build()
+
+if __name__ == "__main__":
+    util.run_stand_alone(__file__, "GempakToCF")

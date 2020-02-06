@@ -146,8 +146,8 @@ def test_find_obs_dated_next_day():
     'conf_dict, out_dict', [
         # file window is get from obs window if not set
         ({ 'OBS_WINDOW_BEGIN' : -10,
-            'OBS_WINDOW_END': 10},  {'OBS_FILE_WINDOW_BEGIN' : -10,
-                                     'OBS_FILE_WINDOW_END' : 10}),
+            'OBS_WINDOW_END': 10},  {'OBS_FILE_WINDOW_BEGIN' : 0,
+                                     'OBS_FILE_WINDOW_END' : 0}),
         # obs grid_stat window overrides obs window
         ({ 'OBS_GRID_STAT_WINDOW_BEGIN' : -10,
             'OBS_GRID_STAT_WINDOW_END': 10},  {'OBS_WINDOW_BEGIN' : -10,
@@ -164,7 +164,7 @@ def test_find_obs_dated_next_day():
         ({ 'OBS_GRID_STAT_FILE_WINDOW_BEGIN' : -10,
            'OBS_GRID_STAT_WINDOW_BEGIN' : -20,
             'OBS_GRID_STAT_WINDOW_END': 30},  {'OBS_FILE_WINDOW_BEGIN' : -10,
-                                       'OBS_FILE_WINDOW_END' : 30}),
+                                       'OBS_FILE_WINDOW_END' : 0}),
 
     ]
 )

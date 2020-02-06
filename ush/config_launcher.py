@@ -21,6 +21,8 @@ from os.path import dirname, realpath
 from produtil.config import ProdConfig
 import produtil.fileop
 
+import met_util as util
+
 """!Creates the initial METplus directory structure,
 loads information into each job.
 
@@ -151,8 +153,12 @@ def parse_launch_args(args, usage, filename, logger, baseinputconfs):
             infiles.append(os.path.join(parm, args[iarg]))
         else:
             bad = True
-            logger.error('%s: invalid argument.  Not an config option '
-                         '(a.b=c) nor a conf file.' % (args[iarg],))
+            # if OS separator character (/ or \) if in argument, assume it
+            # is supposed to be a path but the file is not found
+            if os.sep in args[iarg]:
+                logger.error(f"Configuration file not found: {args[iarg]}")
+            else:
+                logger.error(f"Invalid argument: {args[iarg]}")
     if bad:
         sys.exit(2)
 
@@ -204,6 +210,11 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
                 logger.info('Override: %s.%s=%s'
                             % (section, option, repr(value)))
                 conf.set(section, option, value)
+
+    # get OUTPUT_BASE to make sure it is set correctly so the first error
+    # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
+    # only set incorrectly because OUTPUT_BASE is set incorrectly
+    conf.getdir('OUTPUT_BASE')
 
     # All conf files and command line options have been parsed.
     # So lets set and add specific log variables to the conf object
@@ -281,35 +292,6 @@ def load(filename):
     conf.read(filename)
     return conf
 
-def set_conf_file_path(conf_file):
-    return _set_conf_file_path(conf_file)
-
-
-# This is meant to be used with the -c option in METplus
-# for backward compatability, since users using the -c option
-# are not required to add path information and the previous
-# constants object found it since it was pulled in via the import
-# statement and the parm directory was defined in the PYTHONPATH
-def _set_conf_file_path(conf_file):
-    """Do not call this directly.  It is an internal implementation
-    routine. It is only used internally and is called when adding an
-    additional conf using the -c command line option.
-
-    Adds the path information to the conf file if there isn't any.
-    """
-    parm = os.path.realpath(PARM_BASE)
-
-    # Determine if add_conf_file has path information /path/to/file.conf
-    # If not head than there is no path information, only a filename,
-    # so assUme the conf file is in the parm directory, and add that
-    # parm path information
-    head, tail = os.path.split(conf_file)
-    if not head:
-        new_conf_file = os.path.join(parm, conf_file)
-        return new_conf_file
-
-    return conf_file
-
 def _set_logvars(config, logger=None):
     """!Sets and adds the LOG_METPLUS and LOG_TIMESTAMP
        to the config object. If LOG_METPLUS was already defined by the
@@ -349,7 +331,7 @@ def _set_logvars(config, logger=None):
             log_timestamp_template = '%Y%m%d%H'
         date_t = datetime.datetime.now()
         if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
-            if is_loop_by_init(config):
+            if util.is_loop_by_init(config):
                 date_t = datetime.datetime.strptime(config.getstr('config',
                                                                   'INIT_BEG'),
                                                     config.getstr('config',
@@ -545,14 +527,14 @@ class METplusConfig(ProdConfig):
 
     def getexe(self, exe_name, default=None, morevars=None):
         """!Wraps produtil exe with checks to see if option is set and if
-            exe actually exists"""
+            exe actually exists. Returns None if not found instead of exiting"""
         if not self.has_option('exe', exe_name):
             msg = 'Requested [exe] {} was not set in config file'.format(exe_name)
             if self.logger:
                 self.logger.error(msg)
             else:
                 print('ERROR: {}'.format(msg))
-            exit(1)
+            return None
 
         exe_path = super().getexe(exe_name)
 
@@ -563,7 +545,7 @@ class METplusConfig(ProdConfig):
                 self.logger.error(msg)
             else:
                 print('ERROR: {}'.format(msg))
-            exit(1)
+            return None
 
         # set config item to full path to exe and return full path
         self.set('exe', exe_name, full_exe_path)

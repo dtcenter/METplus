@@ -7,6 +7,8 @@ import met_util as util
 import time_util
 import produtil
 import os
+import subprocess
+import shutil
 from dateutil.relativedelta import relativedelta
 import config_metplus
 
@@ -27,21 +29,13 @@ def metplus_config():
 
         # Read in the configuration object CONFIG
         config = config_metplus.setup(util.baseinputconfs)
+        logger = util.get_logger(config)
         return config
 
     except Exception as e:
         produtil.log.jlogger.critical(
             'met_util test failed: %s' % (str(e),), exc_info=True)
         sys.exit(2)
-
-
-def test_add_common_items_to_dictionary():
-    pytest.skip('Function not currently used')
-    conf = metplus_config()
-    dictionary = dict()
-    util.add_common_items_to_dictionary(conf, dictionary)
-    assert(dictionary['WGRIB2_EXE'] == conf.getexe('WGRIB2'))
-
 
 @pytest.mark.parametrize(
     'key, value', [
@@ -162,54 +156,107 @@ def test_getlist_has_commas():
     assert(test_list == ['gt2.7', '>3.6', 'eq42', 'has,commas,in,it'])
 
 # field info only defined in the FCST_* variables
-def test_parse_var_list_fcst_only():
+@pytest.mark.parametrize(
+    'data_type, list_created', [
+        (None, False),
+        ('FCST', True),
+        ('OBS', False),
+    ]
+)
+def test_parse_var_list_fcst_only(data_type, list_created):
     conf = metplus_config()
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "LEVELS11, LEVELS12")
     conf.set('config', 'FCST_VAR2_NAME', "NAME2")
     conf.set('config', 'FCST_VAR2_LEVELS', "LEVELS21, LEVELS22")
-    var_list = util.parse_var_list(conf)
-    assert(var_list[0]['fcst_name'] == "NAME1" and \
-           var_list[0]['obs_name'] == "NAME1" and \
-           var_list[1]['fcst_name'] == "NAME1" and \
-           var_list[1]['obs_name'] == "NAME1" and \
-           var_list[2]['fcst_name'] == "NAME2" and \
-           var_list[2]['obs_name'] == "NAME2" and \
-           var_list[3]['fcst_name'] == "NAME2" and \
-           var_list[3]['obs_name'] == "NAME2" and \
-           var_list[0]['fcst_level'] == "LEVELS11" and \
-           var_list[0]['obs_level'] == "LEVELS11" and \
-           var_list[1]['fcst_level'] == "LEVELS12" and \
-           var_list[1]['obs_level'] == "LEVELS12" and \
-           var_list[2]['fcst_level'] == "LEVELS21" and \
-           var_list[2]['obs_level'] == "LEVELS21" and \
-           var_list[3]['fcst_level'] == "LEVELS22" and \
-           var_list[3]['obs_level'] == "LEVELS22")
+
+    # this should not occur because OBS variables are missing
+    if util.validate_configuration_variables(conf, force_check=True)[1]:
+        assert(False)
+
+    var_list = util.parse_var_list(conf, time_info=None, data_type=data_type)
+
+    # list will be created if requesting just OBS, but it should not be created if
+    # nothing was requested because FCST values are missing
+    if list_created:
+        assert(var_list[0]['fcst_name'] == "NAME1" and \
+               var_list[1]['fcst_name'] == "NAME1" and \
+               var_list[2]['fcst_name'] == "NAME2" and \
+               var_list[3]['fcst_name'] == "NAME2" and \
+               var_list[0]['fcst_level'] == "LEVELS11" and \
+               var_list[1]['fcst_level'] == "LEVELS12" and \
+               var_list[2]['fcst_level'] == "LEVELS21" and \
+               var_list[3]['fcst_level'] == "LEVELS22")
+    else:
+        assert(not var_list)
 
 # field info only defined in the OBS_* variables
-def test_parse_var_list_obs():
+@pytest.mark.parametrize(
+    'data_type, list_created', [
+        (None, False),
+        ('OBS', True),
+        ('FCST', False),
+    ]
+)
+def test_parse_var_list_obs(data_type, list_created):
     conf = metplus_config()
     conf.set('config', 'OBS_VAR1_NAME', "NAME1")
     conf.set('config', 'OBS_VAR1_LEVELS', "LEVELS11, LEVELS12")
     conf.set('config', 'OBS_VAR2_NAME', "NAME2")
     conf.set('config', 'OBS_VAR2_LEVELS', "LEVELS21, LEVELS22")
-    var_list = util.parse_var_list(conf)
-    assert(var_list[0]['fcst_name'] == "NAME1" and \
-           var_list[0]['obs_name'] == "NAME1" and \
-           var_list[1]['fcst_name'] == "NAME1" and \
-           var_list[1]['obs_name'] == "NAME1" and \
-           var_list[2]['fcst_name'] == "NAME2" and \
-           var_list[2]['obs_name'] == "NAME2" and \
-           var_list[3]['fcst_name'] == "NAME2" and \
-           var_list[3]['obs_name'] == "NAME2" and \
-           var_list[0]['fcst_level'] == "LEVELS11" and \
-           var_list[0]['obs_level'] == "LEVELS11" and \
-           var_list[1]['fcst_level'] == "LEVELS12" and \
-           var_list[1]['obs_level'] == "LEVELS12" and \
-           var_list[2]['fcst_level'] == "LEVELS21" and \
-           var_list[2]['obs_level'] == "LEVELS21" and \
-           var_list[3]['fcst_level'] == "LEVELS22" and \
-           var_list[3]['obs_level'] == "LEVELS22")
+
+    # this should not occur because FCST variables are missing
+    if util.validate_configuration_variables(conf, force_check=True)[1]:
+        assert(False)
+
+    var_list = util.parse_var_list(conf, time_info=None, data_type=data_type)
+
+    # list will be created if requesting just OBS, but it should not be created if
+    # nothing was requested because FCST values are missing
+    if list_created:
+        assert(var_list[0]['obs_name'] == "NAME1" and \
+               var_list[1]['obs_name'] == "NAME1" and \
+               var_list[2]['obs_name'] == "NAME2" and \
+               var_list[3]['obs_name'] == "NAME2" and \
+               var_list[0]['obs_level'] == "LEVELS11" and \
+               var_list[1]['obs_level'] == "LEVELS12" and \
+               var_list[2]['obs_level'] == "LEVELS21" and \
+               var_list[3]['obs_level'] == "LEVELS22")
+    else:
+        assert(not var_list)
+
+
+# field info only defined in the BOTH_* variables
+@pytest.mark.parametrize(
+    'data_type, list_created', [
+        (None, 'fcst:obs'),
+        ('FCST', 'fcst'),
+        ('OBS', 'obs'),
+    ]
+)
+def test_parse_var_list_both(data_type, list_created):
+    conf = metplus_config()
+    conf.set('config', 'BOTH_VAR1_NAME', "NAME1")
+    conf.set('config', 'BOTH_VAR1_LEVELS', "LEVELS11, LEVELS12")
+    conf.set('config', 'BOTH_VAR2_NAME', "NAME2")
+    conf.set('config', 'BOTH_VAR2_LEVELS', "LEVELS21, LEVELS22")
+
+    # this should not occur because BOTH variables are used
+    if not util.validate_configuration_variables(conf, force_check=True)[1]:
+        assert(False)
+
+    var_list = util.parse_var_list(conf, time_info=None, data_type=data_type)
+
+    for list_to_check in list_created.split(':'):
+        if not var_list[0][f'{list_to_check}_name']  == "NAME1" or \
+           not var_list[1][f'{list_to_check}_name']  == "NAME1" or \
+           not var_list[2][f'{list_to_check}_name']  == "NAME2" or \
+           not var_list[3][f'{list_to_check}_name']  == "NAME2" or \
+           not var_list[0][f'{list_to_check}_level'] == "LEVELS11" or \
+           not var_list[1][f'{list_to_check}_level'] == "LEVELS12" or \
+           not var_list[2][f'{list_to_check}_level'] == "LEVELS21" or \
+           not var_list[3][f'{list_to_check}_level'] == "LEVELS22":
+           assert(False)
 
 # field info defined in both FCST_* and OBS_* variables
 def test_parse_var_list_fcst_and_obs():
@@ -222,7 +269,13 @@ def test_parse_var_list_fcst_and_obs():
     conf.set('config', 'OBS_VAR1_LEVELS', "OLEVELS11, OLEVELS12")
     conf.set('config', 'OBS_VAR2_NAME', "ONAME2")
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
+
+    # this should not occur because FCST and OBS variables are found
+    if not util.validate_configuration_variables(conf, force_check=True)[1]:
+        assert(False)
+
     var_list = util.parse_var_list(conf)
+
     assert(var_list[0]['fcst_name'] == "FNAME1" and \
            var_list[0]['obs_name'] == "ONAME1" and \
            var_list[1]['fcst_name'] == "FNAME1" and \
@@ -247,26 +300,19 @@ def test_parse_var_list_fcst_and_obs_alternate():
     conf.set('config', 'FCST_VAR1_LEVELS', "FLEVELS11, FLEVELS12")
     conf.set('config', 'OBS_VAR2_NAME', "ONAME2")
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
-    var_list = util.parse_var_list(conf)
-    assert(var_list[0]['fcst_name'] == "FNAME1" and \
-           var_list[0]['obs_name'] == "FNAME1" and \
-           var_list[1]['fcst_name'] == "FNAME1" and \
-           var_list[1]['obs_name'] == "FNAME1" and \
-           var_list[2]['fcst_name'] == "ONAME2" and \
-           var_list[2]['obs_name'] == "ONAME2" and \
-           var_list[3]['fcst_name'] == "ONAME2" and \
-           var_list[3]['obs_name'] == "ONAME2" and \
-           var_list[0]['fcst_level'] == "FLEVELS11" and \
-           var_list[0]['obs_level'] == "FLEVELS11" and \
-           var_list[1]['fcst_level'] == "FLEVELS12" and \
-           var_list[1]['obs_level'] == "FLEVELS12" and \
-           var_list[2]['fcst_level'] == "OLEVELS21" and \
-           var_list[2]['obs_level'] == "OLEVELS21" and \
-           var_list[3]['fcst_level'] == "OLEVELS22" and \
-           var_list[3]['obs_level'] == "OLEVELS22")
+
+    # configuration is invalid and parse var list should not give any results
+    assert(not util.validate_configuration_variables(conf, force_check=True)[1] and not util.parse_var_list(conf))
 
 # VAR1 defined by OBS, VAR2 by FCST, VAR3 by both FCST AND OBS
-def test_parse_var_list_fcst_and_obs_and_both():
+@pytest.mark.parametrize(
+    'data_type, list_len, name_levels', [
+        (None, 0, None),
+        ('FCST', 4, ('FNAME2:FLEVELS21','FNAME2:FLEVELS22','FNAME3:FLEVELS31','FNAME3:FLEVELS32')),
+        ('OBS', 4, ('ONAME1:OLEVELS11','ONAME1:OLEVELS12','ONAME3:OLEVELS31','ONAME3:OLEVELS32')),
+    ]
+)
+def test_parse_var_list_fcst_and_obs_and_both(data_type, list_len, name_levels):
     conf = metplus_config()
     conf.set('config', 'OBS_VAR1_NAME', "ONAME1")
     conf.set('config', 'OBS_VAR1_LEVELS', "OLEVELS11, OLEVELS12")
@@ -277,55 +323,57 @@ def test_parse_var_list_fcst_and_obs_and_both():
     conf.set('config', 'OBS_VAR3_NAME', "ONAME3")
     conf.set('config', 'OBS_VAR3_LEVELS', "OLEVELS31, OLEVELS32")
 
-    var_list = util.parse_var_list(conf)
-    assert(var_list[0]['fcst_name'] == "ONAME1" and \
-           var_list[0]['obs_name'] == "ONAME1" and \
-           var_list[1]['fcst_name'] == "ONAME1" and \
-           var_list[1]['obs_name'] == "ONAME1" and \
-           var_list[2]['fcst_name'] == "FNAME2" and \
-           var_list[2]['obs_name'] == "FNAME2" and \
-           var_list[3]['fcst_name'] == "FNAME2" and \
-           var_list[3]['obs_name'] == "FNAME2" and \
-           var_list[4]['fcst_name'] == "FNAME3" and \
-           var_list[4]['obs_name'] == "ONAME3" and \
-           var_list[5]['fcst_name'] == "FNAME3" and \
-           var_list[5]['obs_name'] == "ONAME3" and \
-           var_list[0]['fcst_level'] == "OLEVELS11" and \
-           var_list[0]['obs_level'] == "OLEVELS11" and \
-           var_list[1]['fcst_level'] == "OLEVELS12" and \
-           var_list[1]['obs_level'] == "OLEVELS12" and \
-           var_list[2]['fcst_level'] == "FLEVELS21" and \
-           var_list[2]['obs_level'] == "FLEVELS21" and \
-           var_list[3]['fcst_level'] == "FLEVELS22" and \
-           var_list[3]['obs_level'] == "FLEVELS22" and \
-           var_list[4]['fcst_level'] == "FLEVELS31" and \
-           var_list[4]['obs_level'] == "OLEVELS31" and \
-           var_list[5]['fcst_level'] == "FLEVELS32" and \
-           var_list[5]['obs_level'] == "OLEVELS32" )
+    # configuration is invalid and parse var list should not give any results
+    if util.validate_configuration_variables(conf, force_check=True)[1]:
+        assert(False)
+
+    var_list = util.parse_var_list(conf, time_info=None, data_type=data_type)
+
+    if len(var_list) != list_len:
+        assert(False)
+
+    if data_type is None:
+        assert(len(var_list) == 0)
+
+    if name_levels is not None:
+        dt_lower = data_type.lower()
+        expected = []
+        for name_level in name_levels:
+            name, level = name_level.split(':')
+            expected.append({f'{dt_lower}_name': name,
+                             f'{dt_lower}_level': level})
+
+        for expect, reality in zip(expected,var_list):
+            if expect[f'{dt_lower}_name'] != reality[f'{dt_lower}_name']:
+                assert(False)
+
+            if expect[f'{dt_lower}_level'] != reality[f'{dt_lower}_level']:
+                assert(False)
+
+        assert(True)
 
 # option defined in obs only
-def test_parse_var_list_fcst_only():
+@pytest.mark.parametrize(
+    'data_type, list_len', [
+        (None, 0),
+        ('FCST', 2),
+        ('OBS', 0),
+    ]
+)
+def test_parse_var_list_fcst_only_options(data_type, list_len):
     conf = metplus_config()
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "LEVELS11, LEVELS12")
     conf.set('config', 'FCST_VAR1_THRESH', ">1, >2")
     conf.set('config', 'OBS_VAR1_OPTIONS', "OOPTIONS11")
-    var_list = util.parse_var_list(conf)
-    assert(var_list[0]['fcst_name'] == "NAME1" and \
-           var_list[0]['obs_name'] == "NAME1" and \
-           var_list[1]['fcst_name'] == "NAME1" and \
-           var_list[1]['obs_name'] == "NAME1" and \
-           var_list[0]['fcst_level'] == "LEVELS11" and \
-           var_list[0]['obs_level'] == "LEVELS11" and \
-           var_list[1]['fcst_level'] == "LEVELS12" and \
-           var_list[1]['obs_level'] == "LEVELS12" and \
-           var_list[0]['fcst_thresh'] ==  var_list[0]['obs_thresh'] and \
-           var_list[1]['fcst_thresh'] ==  var_list[1]['obs_thresh'] and \
-           var_list[0]['fcst_extra'] == "" and \
-           var_list[0]['obs_extra'] == "OOPTIONS11" and \
-           var_list[1]['fcst_extra'] == "" and \
-           var_list[1]['obs_extra'] == "OOPTIONS11"
-           )
+
+    # this should not occur because OBS variables are missing
+    if util.validate_configuration_variables(conf, force_check=True)[1]:
+        assert(False)
+
+    var_list = util.parse_var_list(conf, time_info=None, data_type=data_type)
+
+    assert(len(var_list) == list_len)
 
 def test_get_lead_sequence_lead():
     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 13) }
@@ -337,7 +385,7 @@ def test_get_lead_sequence_lead():
         hour_seq.append(time_util.ti_get_seconds_from_relativedelta(test) // 3600)
     lead_seq = [ 3, 6, 9, 12 ]
     assert(hour_seq == lead_seq)
-    
+
 
 @pytest.mark.parametrize(
     'key, value', [
@@ -361,49 +409,120 @@ def test_get_lead_sequence_lead_list(key, value):
     lead_seq = value
     assert(hour_seq == lead_seq)
 
+# @pytest.mark.parametrize(
+#     'key, value', [
+#         (0,  [ 0, 12, 24, 36]),
+#         (1,  [ 1, 13, 25 ]),
+#         (2,  [ 2, 14, 26 ]),
+#         (3,  [ 3, 15, 27 ]),
+#         (4,  [ 4, 16, 28 ]),
+#         (5,  [ 5, 17, 29 ]),
+#         (6,  [ 6, 18, 30 ]),
+#         (7,  [ 7, 19, 31 ]),
+#         (8,  [ 8, 20, 32 ]),
+#         (9,  [ 9, 21, 33 ]),
+#         (10, [ 10, 22, 34 ]),
+#         (11, [ 11, 23, 35 ]),
+#         (12, [ 0, 12, 24, 36 ]),
+#         (13, [ 1, 13, 25 ]),
+#         (14, [ 2, 14, 26 ]),
+#         (15, [ 3, 15, 27 ]),
+#         (16, [ 4, 16, 28 ]),
+#         (17, [ 5, 17, 29 ]),
+#         (18, [ 6, 18, 30 ]),
+#         (19, [ 7, 19, 31 ]),
+#         (20, [ 8, 20, 32 ]),
+#         (21, [ 9, 21, 33 ]),
+#         (22, [ 10, 22, 34 ]),
+#         (23, [ 11, 23, 35 ])
+#     ]
+# )
+# def test_get_lead_sequence_init(key, value):
+#     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, key) }
+#     conf = metplus_config()
+#     conf.set('config', 'INIT_SEQ', "0, 12")
+#     conf.set('config', 'LEAD_SEQ_MAX', 36)
+#     test_seq = util.get_lead_sequence(conf, input_dict)
+#     lead_seq = value
+#     assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
+#
+# def test_get_lead_sequence_init_min_10():
+#     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 12) }
+#     conf = metplus_config()
+#     conf.set('config', 'INIT_SEQ', "0, 12")
+#     conf.set('config', 'LEAD_SEQ_MAX', 24)
+#     conf.set('config', 'LEAD_SEQ_MIN', 10)
+#     test_seq = util.get_lead_sequence(conf, input_dict)
+#     lead_seq = [ 12, 24 ]
+#     assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
+#
 @pytest.mark.parametrize(
-    'key, value', [
-        (0,  [ 0, 12, 24, 36]),
-        (1,  [ 1, 13, 25 ]),
-        (2,  [ 2, 14, 26 ]),
-        (3,  [ 3, 15, 27 ]),
-        (4,  [ 4, 16, 28 ]),
-        (5,  [ 5, 17, 29 ]),
-        (6,  [ 6, 18, 30 ]),
-        (7,  [ 7, 19, 31 ]),
-        (8,  [ 8, 20, 32 ]),
-        (9,  [ 9, 21, 33 ]),
-        (10, [ 10, 22, 34 ]),
-        (11, [ 11, 23, 35 ]),
-        (12, [ 0, 12, 24, 36 ]),
-        (13, [ 1, 13, 25 ]),
-        (14, [ 2, 14, 26 ]),
-        (15, [ 3, 15, 27 ]),
-        (16, [ 4, 16, 28 ]),
-        (17, [ 5, 17, 29 ]),
-        (18, [ 6, 18, 30 ]),
-        (19, [ 7, 19, 31 ]),
-        (20, [ 8, 20, 32 ]),
-        (21, [ 9, 21, 33 ]),
-        (22, [ 10, 22, 34 ]),
-        (23, [ 11, 23, 35 ])
+    'item_list, is_valid', [
+        (['FCST'], False),
+        (['OBS'], False),
+        (['FCST', 'OBS'], True),
+        (['BOTH'], True),
+        (['FCST', 'OBS', 'BOTH'], False),
+        (['FCST', 'ENS'], False),
+        (['OBS', 'ENS'], False),
+        (['FCST', 'OBS', 'ENS'], True),
+        (['BOTH', 'ENS'], True),
+        (['FCST', 'OBS', 'BOTH', 'ENS'], False),
     ]
 )
-def test_get_lead_sequence_init(key, value):
-    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, key) }
-    conf = metplus_config()
-    conf.set('config', 'INIT_SEQ', "0, 12")
-    conf.set('config', 'LEAD_SEQ_MAX', 36)
-    test_seq = util.get_lead_sequence(conf, input_dict)
-    lead_seq = value
-    assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
 
-def test_get_lead_sequence_init_min_10():
-    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 12) }
+def test_is_var_item_valid(item_list, is_valid):
     conf = metplus_config()
-    conf.set('config', 'INIT_SEQ', "0, 12")
-    conf.set('config', 'LEAD_SEQ_MAX', 24)
-    conf.set('config', 'LEAD_SEQ_MIN', 10)
-    test_seq = util.get_lead_sequence(conf, input_dict)
-    lead_seq = [ 12, 24 ]
-    assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
+    assert(util.is_var_item_valid(item_list, '1', 'NAME', conf)[0] == is_valid)
+
+def test_remove_staged_files():
+    ''' Verify that the remove_staged_files correctly removes
+        the files with a filename pattern specified by the
+        filename_regex that are owned by the current are
+        removed, leaving all other files intact.
+
+    '''
+
+    # Create filter files (which are to be deleted later on) and some
+    # other files with a different filename pattern
+    staged_dir = '/tmp/test_cleanup'
+    util.mkdir_p(staged_dir)
+    filename_regex = 'filter_.*'
+    files_to_create = ['foo.txt', 'bar.txt', 'baz.csv', 'filter_20191214_00', 'filter-do-not-delete-me.txt', 'filter_20121212.tcst']
+    expected_deleted = ['filter_20191214_00','filter_20121212.tcst' ]
+
+    for cur_file in files_to_create:
+        full_file = os.path.join(staged_dir, cur_file)
+        subprocess.run(['touch', full_file])
+
+    util.remove_staged_files(staged_dir, filename_regex, None)
+
+    # Now check the /tmp/test_cleanup dir and verify that we no longer have the two filter_xyz files
+    # we deleted
+    actual_remaining_files = util.get_files(staged_dir, ".*", None)
+    for cur_deleted in expected_deleted:
+        assert (cur_deleted not in actual_remaining_files)
+
+
+    # Now clean up your /tmp/test_cleanup directory so we don't leave
+    # unused files and directories remaining...
+    shutil.rmtree(staged_dir)
+
+@pytest.mark.parametrize(
+    'process_list, has_plotter', [
+        (['PCPCombine'], False),
+        (['PCPCombine', 'GridStat'], False),
+        (['PCPCombine', 'RegridDataPlane', 'GridStat'], False),
+        (['CyclonePlotter'], True),
+        (['PCPCombine', 'CyclonePlotter', 'Other'], True),
+        (['MakePlots', 'Other'], True),
+        (['TCMPRPlotter'], True),
+        (['TCMPRPlotter', 'Other'], True),
+        (['Other', 'TCMPRPlotter'], True),
+        ([], False),
+        (['CyclonePlotter', 'TCMPRPlotter'], True),
+        (['CyclonePlotter', 'TCMPRPlotter', 'MakePlots'], True),
+    ]
+)
+def test_is_plotter_in_process_list(process_list, has_plotter):
+    assert(util.is_plotter_in_process_list(process_list) == has_plotter)

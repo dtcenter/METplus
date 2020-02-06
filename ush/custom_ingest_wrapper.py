@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Program Name: custom_ingester_wrapper.py
+Program Name: custom_ingest_wrapper.py
 Contact(s): George McCabe
 Abstract: 
 History Log:  Initial version
@@ -12,6 +12,7 @@ Output Files: None
 Condition codes: 0 for success, 1 for failure
 """
 
+import metplus_check_python_version
 
 import os
 import re
@@ -49,12 +50,12 @@ class CustomIngestWrapper(CommandBuilder):
                 indices.append(result.group(1))
 
         for index in indices:
-            ingest_script = self.config.getraw('config', f'CUSTOM_INGEST_{index}_SCRIPT')
-            input_type = self.config.getstr('config', f'CUSTOM_INGEST_{index}_TYPE')
-            output_dir = self.config.getdir(f'CUSTOM_INGEST_{index}_OUTPUT_DIR', '')
+            ingest_script = self.config.getraw('config', 'CUSTOM_INGEST_{}_SCRIPT'.format(index))
+            input_type = self.config.getstr('config', 'CUSTOM_INGEST_{}_TYPE'.format(index))
+            output_dir = self.config.getdir('CUSTOM_INGEST_{}_OUTPUT_DIR'.format(index), '')
             output_template = self.config.getraw('filename_templates',
-                                                 f'CUSTOM_INGEST_{index}_OUTPUT_TEMPLATE')
-            output_grid = self.config.getraw('config', f'CUSTOM_INGEST_{index}_OUTPUT_GRID', '')
+                                                 'CUSTOM_INGEST_{}_OUTPUT_TEMPLATE'.format(index))
+            output_grid = self.config.getraw('config', 'CUSTOM_INGEST_{}_OUTPUT_GRID'.format(index), '')
             ingester_dict = {'output_dir': output_dir,
                              'output_template': output_template,
                              'script': ingest_script,
@@ -97,13 +98,13 @@ class CustomIngestWrapper(CommandBuilder):
             index = ingester['index']
             input_type = ingester['input_type']
             if input_type not in VALID_PYTHON_EMBED_TYPES:
-                self.logger.error(f'CUSTOM_INGEST_{index}_TYPE ({input_type}) not valid. '
+                self.log_error(f'CUSTOM_INGEST_{index}_TYPE ({input_type}) not valid. '
                                   f'Valid types are {VALID_PYTHON_EMBED_TYPES}')
                 return
 
             # If input type is PANDAS, call ascii2nc? instead of RegridDataPlane
             if input_type == 'PANDAS':
-                self.logger.error('Running CustomIngester on pandas data not yet implemented')
+                self.log_error('Running CustomIngester on pandas data not yet implemented')
                 return
 
             # get grid information to project output data
@@ -111,7 +112,7 @@ class CustomIngestWrapper(CommandBuilder):
                                     ingester['output_grid'],
                                     **time_info).do_string_sub()
             if output_grid == '':
-                self.logger.error(f'Must set CUSTOM_INGEST_{index}_OUTPUT_GRID')
+                self.log_error(f'Must set CUSTOM_INGEST_{index}_OUTPUT_GRID')
                 return
 
             # get call to python script
@@ -132,10 +133,10 @@ class CustomIngestWrapper(CommandBuilder):
             rdp.outfile = output_path
             cmd = rdp.get_command()
             if cmd is None:
-                self.logger.error("Could not generate command")
+                self.log_error("Could not generate command")
                 return
             self.logger.info(f'Running Custom Ingester {index}')
             rdp.build()
 
 if __name__ == "__main__":
-        util.run_stand_alone("custom_ingest_wrapper", "CustomIngest")
+    util.run_stand_alone(__file__, "CustomIngest")

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import metplus_check_python_version
+
 import sys
 import os
 import re
@@ -109,7 +111,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         if 'MET_INSTALL_DIR' in os.environ:
             self.logger.info('Using MET_INSTALL_DIR setting from user '
                              'metplus configuration setting. '
-                             'Using: %s' % self.config.getdir['MET_INSTALL_DIR'])
+                             'Using: {}'.format(self.config.getdir('MET_INSTALL_DIR')))
         else:
             # MET_INSTALL_DIR is required, so we want to throw an error if it is
             # not defined.
@@ -117,10 +119,14 @@ class TCMPRPlotterWrapper(CommandBuilder):
                 os.environ['MET_INSTALL_DIR'] = \
                     self.config.getdir('MET_INSTALL_DIR')
             else:
-                self.logger.error('NO tcmpr_plot.R script could be found, '
+                self.log_error('NO tcmpr_plot.R script could be found, '
                                   'Check your MET_INSTALL_DIR path in your METplus conf file.')
                 sys.exit(1)
 
+        if 'MET_BASE' not in os.environ:
+            met_base = os.path.join(self.config.getdir('MET_INSTALL_DIR'), 'share', 'met')
+            self.logger.debug("Setting environment variable MET_BASE to {}".format(met_base))
+            os.environ['MET_BASE'] = met_base
 
         met_tcmpr_script =\
         os.path.join(self.config.getdir('MET_INSTALL_DIR'), 'share/met/Rscripts/plot_tcmpr.R')
@@ -131,7 +137,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             self.logger.info("Using MET tool's plot_tcmpr R script: %s "
                              % met_tcmpr_script)
         else:
-            self.logger.error('NO tcmpr_plot.R script could be found, '
+            self.log_error('NO tcmpr_plot.R script could be found, '
                               'Check your MET_INSTALL_DIR path in your METplus conf file.')
             sys.exit(1)
 
@@ -257,12 +263,12 @@ class TCMPRPlotterWrapper(CommandBuilder):
                 # If the tcst file is empty (with the exception of the
                 #  header), or there is some other problem, then
                 # plot_tcmpr.R will return with a non-zero exit status of 1
-                self.logger.error("plot_tcmpr.R returned non-zero"
+                self.log_error("plot_tcmpr.R returned non-zero"
                                   " exit status, tcst file may be missing"
                                   " data... continuing: " + str(ese))
                 sys.exit(1)
         else:
-            self.logger.error("Expected input is neither a file nor directory,"
+            self.log_error("Expected input is neither a file nor directory,"
                               "exiting...")
             sys.exit(1)
 
@@ -376,7 +382,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
              rather than a typical MET tool. Build command to run from
              arguments"""
         if self.app_path is None:
-            self.logger.error("No app path specified. You must use a subclass")
+            self.log_error("No app path specified. You must use a subclass")
             return None
 
         return self.cmd
@@ -393,4 +399,4 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    util.run_stand_alone("tcmpr_plotter_wrapper", "TCMPRPlotter")
+    util.run_stand_alone(__file__, "TCMPRPlotter")

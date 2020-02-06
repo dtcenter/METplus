@@ -12,6 +12,8 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 """
 
+import metplus_check_python_version
+
 import os
 import met_util as util
 from compare_gridded_wrapper import CompareGriddedWrapper
@@ -30,7 +32,9 @@ class WaveletStatWrapper(CompareGriddedWrapper):
         self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
                                      'bin/wavelet_stat')
         self.app_name = os.path.basename(self.app_path)
+        self.log_error("WaveletStat wrapper not yet implemented")
+        self.isOK = False
 
 
 if __name__ == "__main__":
-        util.run_stand_alone("wavelet_stat_wrapper", "WaveletStat")
+    util.run_stand_alone(__file__, "WaveletStat")

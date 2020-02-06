@@ -46,10 +46,9 @@ __all__=[]
 
 import sys
 
+import io
 import logging
 import produtil.prog
-
-from io import StringIO
 from produtil.prog import ProgSyntaxError, shbackslash
 
 class MPIProgSyntaxError(ProgSyntaxError): 
@@ -445,11 +444,11 @@ class MPIRanksBase(object):
         while have_srank and have_orank:
             have_srank, have_orank = False, False
             try:
-                ( srank, scount ) = siter.next()
+                ( srank, scount ) = next(siter)
                 have_srank=True
             except StopIteration: pass
             try:
-                ( orank, ocount )=oiter.next()
+                ( orank, ocount )=next(oiter)
                 have_orank=True
             except StopIteration: pass
             if have_rank != have_orank:
@@ -529,7 +528,7 @@ class MPIRanksSPMD(MPIRanksBase):
         """!Returns "X*N" where X is the MPI program and N is the
         number of ranks."""
         return '%s*%d'%(repr(self._mpirank),int(self._count))
-        # sio=StringIO()
+        # sio=io.StringIO()
         # sio.write(repr(self._mpirank))
         # if self.haslocalopts():
         #     sio.write('.setlocalopts(%s)'%(repr(self.localopts),))
@@ -893,7 +892,7 @@ class MPIRank(MPIRanksBase):
     def __repr__(self):
         """!Returns a Pythonic representation of this object for
         debugging."""
-        sio=StringIO()
+        sio=io.StringIO()
         sio.write('mpi(%s)'%(repr(self._args[0])))
         if len(self._args)>1:
             sio.write('['+','.join([repr(x) for x in self._args[1:]])+']')

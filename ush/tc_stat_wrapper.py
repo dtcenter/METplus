@@ -14,6 +14,8 @@ Condition codes: 0 for success, 1 for failure
 
 """
 
+import metplus_check_python_version
+
 import os
 import sys
 import produtil.setup
@@ -76,7 +78,7 @@ class TCStatWrapper(CommandBuilder):
         # Check for the MET_INSTALL_DIR, if it is missing, then
         # we cannot invoke the MET tool.
         if not self.config.getdir('MET_INSTALL_DIR'):
-            self.logger.error(
+            self.log_error(
                 cur_filename + '|' + cur_function + ': MET install ' +
                 'directory not found in config file. Exiting.')
             sys.exit(1)
@@ -264,7 +266,7 @@ class TCStatWrapper(CommandBuilder):
         if self.by_config:
             self.set_envs()
             if not self.config_lists_ok():
-                self.logger.error('There is at least one <>_VAL/<>_NAME pair'
+                self.log_error('There is at least one <>_VAL/<>_NAME pair'
                                   'requested in the MET tc-stat config '
                                   'file where the size of the lists '
                                   'is not equal.  Please '
@@ -307,7 +309,7 @@ class TCStatWrapper(CommandBuilder):
                 raise ExitStatusException(
                     '%s: non-zero exit status' % (repr(cmd),), ret)
         except ExitStatusException as ese:
-            self.logger.error(ese)
+            self.log_error(ese)
 
         return 0
 
@@ -574,10 +576,10 @@ class TCStatWrapper(CommandBuilder):
         if tmp_column_str_name:
             # Replace any single quotes with double quotes and remove any
             # whitespace
-            tmp_column_thresh_val_str = str(tmp_column_thresh_val).replace("\'",
-                                                                           "\"")
-            tmp_column_thresh_val = ''.join(tmp_column_thresh_val_str.strip())
-            self.add_env_var('COLUMN_STR_NAME', tmp_column_thresh_val)
+            tmp_column_str_name = str(tmp_column_str_name).replace("\'",
+                                                                   "\"")
+            tmp_column_str_name = ''.join(tmp_column_str_name.strip())
+            self.add_env_var('COLUMN_STR_NAME', tmp_column_str_name)
         else:
             self.add_env_var('COLUMN_STR_NAME', "[]")
 
@@ -674,7 +676,7 @@ class TCStatWrapper(CommandBuilder):
             self.add_env_var('CONFIG_FILE',
                              self.c_dict['CONFIG_FILE'])
         else:
-            self.logger.error(
+            self.log_error(
                 cur_filename + '|' + cur_function +
                 ': no MET TC-Stat config file found. Exiting')
             sys.exit(1)
@@ -685,7 +687,7 @@ class TCStatWrapper(CommandBuilder):
             jobs_list_str = '"' + jobs_list_tmp + '"'
             self.add_env_var('JOBS', jobs_list_str)
         else:
-            self.logger.error('No jobs list defined. Please check your METplus'
+            self.log_error('No jobs list defined. Please check your METplus'
                               'config file.  Exiting...')
             sys.exit(1)
         return 0
@@ -719,7 +721,7 @@ class TCStatWrapper(CommandBuilder):
         # Check COLUMN_THRESH_NAME and COLUMN_THRESH_VAL
         if len(self.c_dict['COLUMN_THRESH_NAME']) != \
                 len(self.c_dict['COLUMN_THRESH_VAL']):
-            self.logger.error(
+            self.log_error(
                 cur_filename + '|' + cur_function +
                 ': COLUMN_THRESH_NAME does not have the same ' +
                 'number of items as COLUMN_THRESH_VAL. Please' +
@@ -729,7 +731,7 @@ class TCStatWrapper(CommandBuilder):
         # Check COLUMN_STR_NAME and COLUMN_STR_VAL
         if len(self.c_dict['COLUMN_STR_NAME']) != \
                 len(self.c_dict['COLUMN_STR_VAL']):
-            self.logger.error(
+            self.log_error(
                 cur_filename + '|' + cur_function +
                 ': COLUMN_STR_NAME does not have the same ' +
                 'number of items as COLUMN_STR_VAL. Please' +
@@ -739,7 +741,7 @@ class TCStatWrapper(CommandBuilder):
         # Check INIT_THRESH_NAME and INIT_THRESH_VAL
         if len(self.c_dict['INIT_THRESH_NAME']) != \
                 len(self.c_dict['INIT_THRESH_VAL']):
-            self.logger.error(
+            self.log_error(
                 cur_filename + '|' + cur_function +
                 ': INIT_THRESH_NAME does not have the same ' +
                 'number of items as INIT_THRESH_VAL. Please' +
@@ -749,7 +751,7 @@ class TCStatWrapper(CommandBuilder):
         # Check INIT_STR_NAME and INIT_STR_VAL
         if len(self.c_dict['INIT_STR_NAME']) != \
                 len(self.c_dict['INIT_STR_VAL']):
-            self.logger.error(
+            self.log_error(
                 cur_filename + '|' + cur_function +
                 ': INIT_STR_NAME does not have the same ' +
                 'number of items as INIT_STR_VAL. Please' +
@@ -827,8 +829,8 @@ class TCStatWrapper(CommandBuilder):
                 raise ExitStatusException(
                     '%s: non-zero exit status' % (repr(cmd),), ret)
         except ExitStatusException as ese:
-            self.logger.error(ese)
+            self.log_error(ese)
 
 
 if __name__ == "__main__":
-    util.run_stand_alone("tc_stat_wrapper", "TCStat")
+    util.run_stand_alone(__file__, "TCStat")

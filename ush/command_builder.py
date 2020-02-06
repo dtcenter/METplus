@@ -14,6 +14,8 @@ Output Files: N/A
 import os
 from datetime import datetime
 from abc import ABCMeta
+from inspect import getframeinfo, stack
+
 from command_runner import CommandRunner
 import met_util as util
 import string_template_substitution as sts
@@ -34,9 +36,11 @@ class CommandBuilder:
     __metaclass__ = ABCMeta
 
     def __init__(self, config, logger):
+        self.isOK = True
         self.errors = 0
         self.logger = logger
         self.config = config
+        self.env_list = set()
         self.debug = False
         self.args = []
         self.input_dir = ""
@@ -48,12 +52,14 @@ class CommandBuilder:
         if hasattr(config, 'env'):
             self.env = config.env
         self.c_dict = self.create_c_dict()
+        self.check_for_externals()
+
         self.cmdrunner = CommandRunner(self.config, logger=self.logger,
                                        verbose=self.c_dict['VERBOSITY'])
 
         # if env MET_TMP_DIR was not set, set it to config TMP_DIR
         if 'MET_TMP_DIR' not in self.env:
-            self.env['MET_TMP_DIR'] = self.config.getdir('TMP_DIR')
+            self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
 
         self.clear()
 
@@ -66,6 +72,7 @@ class CommandBuilder:
         c_dict['FCST_INPUT_DATATYPE'] = ''
         c_dict['OBS_INPUT_DATATYPE'] = ''
         c_dict['ALLOW_MULTIPLE_FILES'] = False
+        c_dict['CURRENT_VAR_INFO'] = None
         return c_dict
 
     def clear(self):
@@ -77,6 +84,15 @@ class CommandBuilder:
         self.outdir = ""
         self.outfile = ""
         self.param = ""
+        self.env_list.clear()
+
+        # add MET_TMP_DIR back to env_list
+        self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
+
+    def log_error(self, error_string):
+        caller = getframeinfo(stack()[1][0])
+        self.logger.error(f"({os.path.basename(caller.filename)}:{caller.lineno}) {error_string}")
+        self.errors += 1
 
     def set_user_environment(self, time_info=None):
         """!Set environment variables defined in [user_env_vars] section of config
@@ -95,6 +111,32 @@ class CommandBuilder:
                                           raw_env_var_value,
                                           **time_info).do_string_sub()
             self.add_env_var(env_var, env_var_value)
+
+    def add_common_envs(self, time_info=None):
+        # Set the environment variables
+        self.add_env_var('MODEL', str(self.c_dict['MODEL']))
+
+        to_grid = self.c_dict['REGRID_TO_GRID'].strip('"')
+        if not to_grid:
+            to_grid = 'NONE'
+
+        # if not surrounded by quotes and not NONE, FCST or OBS, add quotes
+        if to_grid not in ['NONE', 'FCST', 'OBS']:
+            to_grid = f'"{to_grid}"'
+
+        self.add_env_var('REGRID_TO_GRID', to_grid)
+
+        # set user environment variables
+        self.set_user_environment(time_info)
+
+    def print_all_envs(self):
+        # send environment variables to logger
+        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
+        for env_item in self.env_list:
+            self.print_env_item(env_item)
+
+        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+        self.print_env_copy(self.env_list)
 
     def handle_window_once(self, c_dict, dtype, edge, app_name):
         """! Check and set window dictionary variables like
@@ -133,9 +175,9 @@ class CommandBuilder:
             c_dict[dtype + '_FILE_WINDOW_' + edge] = \
                 self.config.getseconds('config',
                                        dtype + '_FILE_WINDOW_' + edge)
-        # otherwise set to *_WINDOW_* value
+        # otherwise set to 0
         else:
-            c_dict[dtype + '_FILE_WINDOW_' + edge] = c_dict[dtype + '_WINDOW_' + edge]
+            c_dict[dtype + '_FILE_WINDOW_' + edge] = 0
 
     def handle_window_variables(self, c_dict, app_name, dtypes=['FCST', 'OBS']):
         """! Handle all window config variables like
@@ -166,6 +208,7 @@ class CommandBuilder:
         can reference it in the parameter file or the application itself
         """
         self.env[key] = name
+        self.env_list.add(key)
 
     def print_env(self):
         """!Print all environment variables set for this application
@@ -178,7 +221,10 @@ class CommandBuilder:
         copied into terminal
         """
         out = ""
-        all_vars = var_list + self.config.keys('user_env_vars') + ['MET_TMP_DIR']
+        all_vars = var_list
+        for user_var in self.config.keys('user_env_vars'):
+            all_vars.add(user_var)
+
         shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
         for var in all_vars:
             if shell == 'csh':
@@ -221,12 +267,12 @@ class CommandBuilder:
 
         # if one but not the other is set, error and exit
         if has_fcst and not has_obs:
-            self.logger.error('Cannot use {} without {}'.format(fcst_name, obs_name))
-            exit(1)
+            self.log_error('Cannot use {} without {}'.format(fcst_name, obs_name))
+            return None, None
 
         if has_obs and not has_fcst:
-            self.logger.error('Cannot use {} without {}'.format(obs_name, fcst_name))
-            exit(1)
+            self.log_error('Cannot use {} without {}'.format(obs_name, fcst_name))
+            return None, None
 
         # if generic conf is set, use for both
         if has_gen:
@@ -238,9 +284,10 @@ class CommandBuilder:
             msg = 'Must set both {} and {} in the config files'.format(fcst_name,
                                                                        obs_name)
             msg += ' or set {} instead'.format(gen_name)
-            self.logger.error(msg)
+            self.log_error(msg)
 
-            exit(1)
+            return None, None
+
         self.logger.warning('Using default values for {}'.format(gen_name))
         return default, default
 
@@ -290,7 +337,7 @@ class CommandBuilder:
         if processed_path is None:
             msg = f"Could not find {data_type} file {full_path} using template {template}"
             if mandatory:
-                self.logger.error(msg)
+                self.log_error(msg)
             else:
                 self.logger.warning(msg)
 
@@ -317,7 +364,7 @@ class CommandBuilder:
         self.logger.debug(msg)
 
         if data_dir == '':
-            self.logger.error('Must set INPUT_DIR if looking for files within a time window')
+            self.log_error('Must set INPUT_DIR if looking for files within a time window')
             return None
 
         # step through all files under input directory in sorted order
@@ -357,7 +404,7 @@ class CommandBuilder:
             msg = f"Could not find {data_type} files under {data_dir} within range " +\
                   f"[{valid_range_lower},{valid_range_upper}] using template {template}"
             if mandatory:
-                self.logger.error(msg)
+                self.log_error(msg)
             else:
                 self.logger.warning(msg)
             return None
@@ -431,6 +478,7 @@ class CommandBuilder:
         if not os.path.exists(list_dir):
             os.makedirs(list_dir, mode=0o0775)
 
+        self.logger.debug(f"Writing list of filenames to {list_path}")
         with open(list_path, 'w') as file_handle:
             for f_path in file_list:
                 file_handle.write(f_path + '\n')
@@ -453,13 +501,68 @@ class CommandBuilder:
                           f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
                           'to process')
 
+    def format_list_string(self, list_string):
+        """!Add quotation marks around each comma separated item in the string"""
+        strings = []
+        for string in list_string.split(','):
+            string = string.strip().replace('\'', '\"')
+            if not string:
+                continue
+            if string[0] != '"' and string[-1] != '"':
+                string = f'"{string}"'
+            strings.append(string)
+
+        return ','.join(strings)
+
+    def check_for_externals(self):
+        self.check_for_gempak()
+
+    def check_for_gempak(self):
+        # check if we are processing Gempak data
+        processingGempak = False
+
+        # if any *_DATATYPE keys in c_dict have a value of GEMPAK, we are using Gempak data
+        data_types = [value for key,value in self.c_dict.items() if key.endswith('DATATYPE')]
+        if 'GEMPAK' in data_types:
+            processingGempak = True
+
+        # if any filename templates end with .grd, we are using Gempak data
+        template_list = [value for key,value in self.c_dict.items() if key.endswith('TEMPLATE')]
+
+        # handle when template is a list of templates, which happens in EnsembleStat
+        templates = []
+        for value in template_list:
+            if type(value) is list:
+                 for subval in value:
+                     templates.append(subval)
+            else:
+                templates.append(value)
+
+        if [value for value in templates if value and value.endswith('.grd')]:
+            processingGempak = True
+
+        # If processing Gempak, make sure GempakToCF is found
+        if processingGempak:
+            gempaktocf_jar = self.config.getstr('exe', 'GEMPAKTOCF_JAR', '')
+            if not gempaktocf_jar:
+                self.log_error("[exe] GEMPAKTOCF_JAR was not set if configuration file. This is required to process Gempak data.")
+                self.isOK = False
+            elif not os.path.exists(gempaktocf_jar):
+                self.log_error("GempakToCF Jar file does not exist at " + gempaktocf_jar + ". This is required to process Gempak data.")
+                self.isOK = False
+
+    def get_output_prefix(self, time_info):
+        return sts.StringSub(self.logger,
+                             self.config.getraw('config', f'{self.app_name.upper()}_OUTPUT_PREFIX', ''),
+                             **time_info).do_string_sub()
+
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.logger.error('No app path specified. '
+            self.log_error('No app path specified. '
                               'You must use a subclass')
             return None
 
@@ -469,14 +572,14 @@ class CommandBuilder:
             cmd += arg + " "
 
         if not self.infiles:
-            self.logger.error("No input filenames specified")
+            self.log_error("No input filenames specified")
             return None
 
         for infile in self.infiles:
             cmd += infile + " "
 
         if self.outfile == "":
-            self.logger.error("No output filename specified")
+            self.log_error("No output filename specified")
             return None
 
         out_path = os.path.join(self.outdir, self.outfile)
@@ -484,7 +587,7 @@ class CommandBuilder:
         # create outdir (including subdir in outfile) if it doesn't exist
         parent_dir = os.path.dirname(out_path)
         if parent_dir == '':
-            self.logger.error('Must specify path to output file')
+            self.log_error('Must specify path to output file')
             return None
 
         if not os.path.exists(parent_dir):
@@ -500,7 +603,7 @@ class CommandBuilder:
     def build_and_run_command(self):
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("Could not generate command")
+            self.log_error("Could not generate command")
             return
         self.build()
 
@@ -515,18 +618,22 @@ class CommandBuilder:
         """!Build and run command"""
         cmd = self.get_command()
         if cmd is None:
-            return
+            return False
 
         ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
         if ret != 0:
-            self.errors += 1
+            self.log_error(f"MET command returned a non-zero return code: {cmd}. "
+                           "Check the logfile for more information on why it failed")
+            return False
+
+        return True
 
     # argument needed to match call
     # pylint:disable=unused-argument
     def run_at_time(self, input_dict):
         """!Used to output error and exit if wrapper is attemped to be run with
             LOOP_ORDER = times and the run_at_time method is not implemented"""
-        self.logger.error('run_at_time not implemented for {} wrapper. '
+        self.log_error('run_at_time not implemented for {} wrapper. '
                           'Cannot run with LOOP_ORDER = times'.format(self.app_name))
         exit(1)
 

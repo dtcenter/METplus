@@ -12,6 +12,8 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 '''
 
+import metplus_check_python_version
+
 import os
 import glob
 import met_util as util
@@ -59,23 +61,28 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_GRID_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE', '')
 
-        c_dict['GRID_VX'] = self.config.getstr('config', 'ENSEMBLE_STAT_GRID_VX', 'FCST')
-
         c_dict['CONFIG_FILE'] = \
-            self.config.getstr('config', 'ENSEMBLE_STAT_CONFIG_FILE',
-                               c_dict['CONFIG_DIR']+'/EnsembleStatConfig_SFC')
+            self.config.getstr('config', 'ENSEMBLE_STAT_CONFIG_FILE', '')
+
+        if not c_dict['CONFIG_FILE']:
+            self.log_error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
+            self.isOK = False
 
         c_dict['ENS_THRESH'] = \
           self.config.getstr('config', 'ENSEMBLE_STAT_ENS_THRESH', '1.0')
 
         # met_obs_error_table is not required, if it is not defined
         # set it to the empty string '', that way the MET default is used.
-        c_dict['MET_OBS_ERROR_TABLE'] = \
-            self.config.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE', '')
+        c_dict['MET_OBS_ERR_TABLE'] = \
+            self.config.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE', '')
 
         # No Default being set this is REQUIRED TO BE DEFINED in conf file.
         c_dict['N_MEMBERS'] = \
-            self.config.getint('config', 'ENSEMBLE_STAT_N_MEMBERS')
+            self.config.getint('config', 'ENSEMBLE_STAT_N_MEMBERS', -1)
+
+        if c_dict['N_MEMBERS'] < 0:
+            self.log_error("Must set ENSEMBLE_STAT_N_MEMBERS to a integer > 0")
+            self.isOK = False
 
         c_dict['OBS_POINT_INPUT_DIR'] = \
           self.config.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
@@ -100,8 +107,14 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_TEMPLATE'] = \
           util.getlist(self.config.getraw('filename_templates',
                                           'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE'))
+        if not c_dict['FCST_INPUT_TEMPLATE']:
+            self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE")
+            self.isOK = False
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
+        if not c_dict['OUTPUT_DIR']:
+            self.log_error("Must set ENSEMBLE_STAT_OUTPUT_DIR in configuration file")
+            self.isOK = False
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'ensemble_stat')
@@ -117,13 +130,15 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_GRID_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
         c_dict['OBS_GRID_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
 
+        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'ENSEMBLE_STAT_REGRID_TO_GRID', '')
+
         return c_dict
 
     # var_info not used but needed to match signature of parent class call
     # pylint:disable=unused-argument
     def run_at_time_one_field(self, time_info, var_info):
-        self.logger.error("run_at_time_one_field not implemented yet for {}"
-                          .format(self.app_name))
+        self.log_error("run_at_time_one_field not implemented yet for {}"
+                       .format(self.app_name))
         exit()
 
 
@@ -139,10 +154,21 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.infiles.append(fcst_file_list)
 
+        # parse var list for ENS fields
+        ensemble_var_list = util.parse_var_list(self.config, time_info, data_type='ENS')
+
+        # parse optional var list for FCST and/or OBS fields
         var_list = util.parse_var_list(self.config, time_info)
+
+        # if empty var list for FCST/OBS, use None as first var, else use first var in list
+        if not var_list:
+            first_var_info = None
+        else:
+            first_var_info = var_list[0]
+
         # get point observation file if requested
         if self.c_dict['OBS_POINT_INPUT_TEMPLATE'] != '':
-            point_obs_path = self.find_data(time_info, var_list[0], 'OBS_POINT')
+            point_obs_path = self.find_data(time_info, first_var_info, 'OBS_POINT')
             if point_obs_path is None:
                 return
 
@@ -150,17 +176,20 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # get grid observation file if requested
         if self.c_dict['OBS_GRID_INPUT_TEMPLATE'] != '':
-            grid_obs_path = self.find_data(time_info, var_list[0], 'OBS_GRID')
+            grid_obs_path = self.find_data(time_info, first_var_info, 'OBS_GRID')
             if grid_obs_path is None:
                 return
 
             self.grid_obs_files.append(grid_obs_path)
 
-
         # set field info
         fcst_field = self.get_all_field_info(var_list, "something.grb2", 'FCST')
         obs_field = self.get_all_field_info(var_list, "something.grb2", 'OBS')
-        ens_field = self.get_all_field_info(var_list, 'something.grb2', 'ENS')
+        ens_field = self.get_all_field_info(ensemble_var_list, 'something.grb2', 'ENS')
+
+        if not fcst_field and not obs_field and not ens_field:
+            self.log_error("Could not build field info for fcst, obs, or ens")
+            return
 
         # run
         self.process_fields(time_info, fcst_field, obs_field, ens_field)
@@ -181,16 +210,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 name = var_info['obs_name']
                 extra = var_info['obs_extra']
             elif data_type == 'ENS':
-                if 'ens_name' in var_info.keys():
-                    level = var_info['ens_level']
-                    thresh = var_info['ens_thresh']
-                    name = var_info['ens_name']
-                    extra = var_info['ens_extra']
-                else:
-                    level = var_info['fcst_level']
-                    thresh = var_info['fcst_thresh']
-                    name = var_info['fcst_name']
-                    extra = var_info['fcst_extra']
+                level = var_info['ens_level']
+                thresh = var_info['ens_thresh']
+                name = var_info['ens_name']
+                extra = var_info['ens_extra']
             else:
                 return ''
 
@@ -261,7 +284,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                   'Adjust wildcard expression in [filename_templates] '+\
                   'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE or adjust [config] '+\
                   'ENSEMBLE_STAT_N_MEMBERS. Files found: {}'.format(ens_members_path)
-            self.logger.error(msg)
+            self.log_error(msg)
             self.logger.error("Could not file files in {} for init {} f{} "
                               .format(model_dir, time_info['init_fmt'],
                                       str(time_info['lead_hours'])))
@@ -285,18 +308,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return self.write_list_file(list_filename, ens_members_path)
 
     def set_environment_variables(self, fcst_field, obs_field, ens_field, time_info):
-        # list of fields to print to log
-        print_list = ["MODEL", "GRID_VX", "OBTYPE",
-                      "CONFIG_DIR", "FCST_LEAD",
-                      "FCST_FIELD", "OBS_FIELD",
-                      'ENS_FIELD', "INPUT_BASE",
-                      "OBS_WINDOW_BEGIN", "OBS_WINDOW_END",
-                      "ENS_THRESH"]
-
-        if self.c_dict["MET_OBS_ERROR_TABLE"]:
-            self.add_env_var("MET_OBS_ERROR_TABLE",
-                             self.c_dict["MET_OBS_ERROR_TABLE"])
-            print_list.append("MET_OBS_ERROR_TABLE")
+        self.add_env_var("MET_OBS_ERROR_TABLE",
+                         self.c_dict["MET_OBS_ERR_TABLE"])
 
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
@@ -304,26 +317,20 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.add_env_var("ENS_FIELD", ens_field)
         else:
             self.add_env_var("ENS_FIELD", fcst_field)
-        self.add_env_var("MODEL", self.c_dict['MODEL'])
+
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-        self.add_env_var("GRID_VX", self.c_dict['GRID_VX'])
-        self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
         self.add_env_var("INPUT_BASE", self.c_dict['INPUT_BASE'])
         self.add_env_var("FCST_LEAD", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("OBS_WINDOW_BEGIN", str(self.c_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
         self.add_env_var("ENS_THRESH", self.c_dict['ENS_THRESH'])
 
-        # set user environment variables
-        self.set_user_environment(time_info)
+        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
+
+        self.add_common_envs(time_info)
 
         # send environment variables to logger
-        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_user_env_items()
-        for item in print_list:
-            self.print_env_item(item)
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(print_list)
+        self.print_all_envs()
 
     def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
         """! Set and print environment variables, then build/run MET command
@@ -344,7 +351,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # check if METplus can generate the command successfully
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("Could not generate command")
+            self.log_error("Could not generate command")
             return
 
         # run the MET command
@@ -354,12 +361,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
     def clear(self):
         """!Unset class variables to prepare for next run time
         """
-        self.args = []
-        self.input_dir = ""
-        self.infiles = []
-        self.outdir = ""
-        self.outfile = ""
-        self.param = ""
+        super().clear()
         self.point_obs_files = []
         self.grid_obs_files = []
 
@@ -370,7 +372,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.logger.error(self.app_name + ": No app path specified. \
+            self.log_error(self.app_name + ": No app path specified. \
                               You must use a subclass")
             return None
 
@@ -380,7 +382,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             cmd += args + " "
 
         if len(self.infiles) == 0:
-            self.logger.error(self.app_name+": No input filenames specified")
+            self.log_error(self.app_name+": No input filenames specified")
             return None
 
         for infile in self.infiles:
@@ -396,7 +398,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             cmd += "-grid_obs " + obs_file + " "
 
         if self.outdir == "":
-            self.logger.error(self.app_name+": No output directory specified")
+            self.log_error(self.app_name+": No output directory specified")
             return None
 
         cmd += '-outdir {}'.format(self.outdir)
@@ -404,4 +406,4 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
 
 if __name__ == "__main__":
-    util.run_stand_alone("ensemble_stat_wrapper", "EnsembleStat")
+    util.run_stand_alone(__file__, "EnsembleStat")

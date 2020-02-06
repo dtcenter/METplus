@@ -288,7 +288,7 @@ class NOAAWCOSS(Cluster):
             phase=1
             with open('/proc/cpuinfo','rt') as cpuinfo:
                 for line in cpuinfo:
-                    if re.match('(?i)^processor\\s*:\\s*32',line):
+                    if re.match(r'(?i)^processor\s*:\s*32',line):
                         phase=2
                         break
             self._phase=phase

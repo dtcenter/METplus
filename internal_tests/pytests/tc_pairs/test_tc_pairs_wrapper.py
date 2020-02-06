@@ -9,7 +9,6 @@ import produtil
 import config_metplus
 from command_builder import CommandBuilder
 from tc_pairs_wrapper import TCPairsWrapper
-from config_wrapper import ConfigWrapper
 import met_util as util
 
 

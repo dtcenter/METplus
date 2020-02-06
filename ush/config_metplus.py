@@ -114,7 +114,7 @@ def setup(baseinputconfs, filename=None, logger=None):
 
     opts_conf_list = list()
     for opts_conf_file in opts_conf_files:
-        opts_conf_list.append(config_launcher.set_conf_file_path(opts_conf_file))
+        opts_conf_list.append(opts_conf_file)
     # append args to opts conf_list, to maintain the same conf
     # file order from command line, when confs may be space seperated.
     # ie. -c conf1 -c conf2 conf3 would become
@@ -142,10 +142,37 @@ def setup(baseinputconfs, filename=None, logger=None):
     conf = config_launcher.launch(infiles, moreopt, cycle=cycle)
     #conf.sanity_check()
 
+    # save list of user configuration files in a variable
+    conf.set('config', 'METPLUS_CONFIG_FILES', ','.join(opts_conf_list))
+
     logger.info('Completed METplus configuration setup.')
 
     return conf
 
+class METplusLogFormatter(logging.Formatter):
+    def __init__(self, config):
+        self.default_fmt = config.getraw('config', 'LOG_LINE_FORMAT')
+        self.info_fmt = config.getraw('config', 'LOG_INFO_LINE_FORMAT', self.default_fmt)
+        self.debug_fmt = config.getraw('config', 'LOG_DEBUG_LINE_FORMAT', self.default_fmt)
+        self.error_fmt = config.getraw('config', 'LOG_ERR_LINE_FORMAT', self.default_fmt)
+        super().__init__(fmt=self.default_fmt,
+                         datefmt=config.getraw('config', 'LOG_LINE_DATE_FORMAT'),
+                         style='%')
+
+    def format(self, record):
+        if record.levelno == logging.ERROR:
+            self._style._fmt = self.error_fmt
+        elif record.levelno == logging.DEBUG:
+            self._style._fmt = self.debug_fmt
+        elif record.levelno == logging.INFO:
+            self._style._fmt = self.info_fmt
+
+        output = logging.Formatter.format(self, record)
+
+        # restore default format
+        self._style._fmt = self.default_fmt
+
+        return output
 
 # You can run this module from the command line, that is  __main__
 # However, this module is intended to be imported and run via setup function.

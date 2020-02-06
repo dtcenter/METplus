@@ -83,6 +83,9 @@ def time_string_to_met_time(time_string, default_unit='S'):
     """!Convert time string (3H, 4M, 7, etc.) to format expected by the MET
         tools ([H]HH[MM[SS]])"""
     total_seconds = get_seconds_from_string(time_string, default_unit)
+    return seconds_to_met_time(total_seconds)
+
+def seconds_to_met_time(total_seconds):
     seconds_time_string = str(total_seconds % 60).zfill(2)
     minutes_time_string = str(total_seconds // 60 % 60).zfill(2)
     hour_time_string = str(total_seconds // 3600).zfill(2)

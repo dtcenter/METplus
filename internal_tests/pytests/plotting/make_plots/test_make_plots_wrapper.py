@@ -187,7 +187,7 @@ def test_create_c_dict():
                                     +'/logs/master_metplus.log.'
                                     +mp.config.getstr('config',
                                                       'LOG_TIMESTAMP'))
-    assert(c_dict['LOG_LEVEL'] == 'DEBUG')
+    assert(c_dict['LOG_LEVEL'] == 'INFO')
 
 def test_list_to_str():
     # Independently test that a list of strings

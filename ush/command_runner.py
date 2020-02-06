@@ -120,7 +120,7 @@ class CommandRunner(object):
             the_exe = shlex.split(cmd)[0]
             the_args = shlex.split(cmd)[1:]
             if log_dest:
-                self.logger.info("app_name is: %s, output sent to: %s" % (app_name, log_dest))
+                self.logger.debug("app_name is: %s, output sent to: %s" % (app_name, log_dest))
                 #cmd = exe('sh')['-c', cmd].err2out() >> log_dest
                 cmd = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
             else:
