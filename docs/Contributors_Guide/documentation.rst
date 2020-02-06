@@ -10,7 +10,7 @@ Documentation
 
 | **Documentation Overview**
 |
-| The documentation is created using the Sphinx documentation generator
+| The majority of the documentation is created using the Sphinx documentation generator
 | tool, which was originally created for Python documentation.
 | The documentation is created using reStructuredText (rst):
 |     https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
@@ -26,6 +26,7 @@ Documentation
 | are found in the METplus/ directory.  If you wish to replicate all the
 | packages employed by METplus, please refer to the "Instructions for the
 | Conda Environment" section of the Contributor's Guide.
+|
 |
 | **Description of Documentation Directories**
 |
@@ -46,10 +47,10 @@ Documentation
 |              as the .py files, with a .conf file extension
 |
 | Documentation files end with a .py extension and these files generate the clickable graphics in the gallery.
-
-
-
-
+|
+|
+|
+|
 | **Adding New Documentation**
 | Determine where you should add documentation:
 |   * Use cases that involve a single MET tool/METplus wrapper will reside in the
@@ -124,10 +125,11 @@ Documentation
 |
 |
 |
-| **Building Documentation**
+| **Building Sphinx Documentation**
 |
 | ** NOTE**:  It is assumed that your web browser application and your METplus
 | source code are located on the same computer/host.
+|
 | All the sphinx modules (listed earlier) need to be present in order to
 | generate the HTML content that comprises the documentation.
 | From the command line, change to the METplus/docs directory and
@@ -149,12 +151,43 @@ Documentation
 |    *file:///<path-to>/METplus/docs/_build/html/index.html*
 |
 | where <path-to> is the full file path leading to your METplus
-| source code. This will take you to the home page of the
-| documentation, where you click on the "User's Guide"
+| source code. This will direct you to the home page of the
+| documentation, where you can click on the "User's Guide"
 | link (which takes you to the user documentation and the use cases)
 | or the "Contributor's Guide" link (which is relevant if you intend to
 | contribute code and/or new use cases).
 |
-|
-|
 
+| **Relevant Documentation for Contributors**
+
+| The Doxygen tool is employed to create documentation from the source code.  This documentation
+| is useful in generating details about the METplus wrapper API (Application Programming Interface).
+| This is a useful reference for contributors to peruse prior to creating new METplus wrappers.
+| The Doxygen files located in the /path/to/METplus/docs/doxygen directory do **NOT** need to be
+| modified and should not be modified.
+|
+|
+| For more information about Doxygen, please refer to the following:
+|
+|    http://doxygen.nl/
+|
+| You will need to download and install Doxygen to create this documentation:
+|
+|    http://doxygen.nl/download.html
+|
+|    *Note*: Doxygen version 1.8.9.1 or higher is required to create the documentation for the METplus wrappers.
+|
+| Create the Doxygen documentation by performing the following:
+|
+|    * ensure that you are working with Python 3.6 (minimum)
+|    * cd to the /path/to/METplus/sorc directory, where /path/to is the file path where you installed
+|     your METplus source code
+|    * at the command line, enter the following:
+|           *make clean*
+|           *make doc*
+|    The first command cleans up any existing documentation, and the second generates new documentation based on the current source code.
+|    The HTML files are generated in the /path/to/METplus/docs/doxygen/html directory, which can be viewed in your local browser. The file corresponding to the home page is /path/to/METplus/docs/doxygen/html/index.html
+|
+|    Useful information can be found under the *Packages*, *Classes*, and *Python Files* tabs located at the top of the home page.
+|
+|
