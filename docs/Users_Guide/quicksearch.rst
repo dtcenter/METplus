@@ -26,6 +26,7 @@ Use Cases by Organization:
 --------------------------
 | `NCAR  <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA WPC  <https://ncar.github.io/METplus/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_
+| `NOAA SWPC  <https://ncar.github.io/METplus/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_
 | `SBU  <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
 | `HWRF  <https://ncar.github.io/METplus/search.html?q=HWRFOrgUseCase&check_keywords=yes&area=default>`_
 
