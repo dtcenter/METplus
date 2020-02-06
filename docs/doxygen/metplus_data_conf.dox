@@ -1,33 +1,10 @@
 /** @page metplus_data_conf METplus Data Configuration (metplus_data.conf)
 
-The parm/metplus_config/metplus_data.conf file contains the settings (as
-key-value pairs under the appropriate section header) that are applicable
-to your data, such as the location of input data, the location of your project
-directory, and any filename templates.
+METplus documentation is now under GitHub Pages.
 
-Replace all instances of '/path/to' to the full filepath corresponding to your
-environment.
+https://ncar.github.io/METplus
 
-For Example:
+This website only contains the METplus wrappers API documentation.
 
-    #
-    #  DIRECTORIES
-    #
-    [dir]
-    # Input data directories
 
-    # This is the location of your input files for METplus
-    PROJ_DIR = /path/to
-    MODEL_DATA_DIR = {PROJ_DIR}/model_data
-
-    #
-    #  FILENAME TEMPLATES
-    #
-    [filename_templates]
-    # This is an example.  Omit if not applicable or add your own
-    # format for your data files.
-    GFS_FCST_FILE_TMPL = gfs_4_{init?fmt=%Y%m%d}_{init?fmt=%H}00_{lead?fmt=%HHH}.grb2
-    GFS_FCST_NC_FILE_TMPL = gfs_4_{init?fmt=%Y%m%d}_{init?fmt=%H}00_{lead?fmt=%HHH}.nc
-    GFS_ANLY_FILE_TMPL = gfs_4_{valid?fmt=%Y%m%d}_{valid?fmt=%H}00_000.grb2
-    GFS_ANLY_NC_FILE_TMPL = gfs_4_{valid?fmt=%Y%m%d}_{valid?fmt=%H}00_000.nc
 */

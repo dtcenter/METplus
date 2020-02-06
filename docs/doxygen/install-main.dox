@@ -1,12 +1,11 @@
 /** @page install METplus Installation Guide
 
-Obtain METplus from the public GitHub repository: https://github.com/NCAR/METplus
 
-@section install-github-ref Installation from the Public Repository
+METplus Installation documentation is now under GitHub Pages.
 
-Most of this guide explains how to compile, install and run the HWRF
-system from the public repository:
+https://ncar.github.io/METplus
 
-  + @subpage install-repo
+This website only contains the METplus wrappers API documentation.
+
 
 */

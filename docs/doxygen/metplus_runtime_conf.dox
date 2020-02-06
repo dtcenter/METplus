@@ -1,37 +1,10 @@
 /** @page metplus_runtime_conf METplus Runtime Configuration Guide (metplus_runtime.conf)
 
-The parm/metplus_runtime.conf contains settings (as key-value pairs under the
-appropriate section header) that are neede at runtime, such as the list of
-processes to run, the appropriate logging level (debug, info, etc), the dates
-and times of interest, etc.  Replace all instances of '/path/to' with the
-full path name that is appropriate for your runtime environment.
+METplus documentation is now under GitHub Pages.
 
-For Example:
+https://ncar.github.io/METplus
 
-    [config]
-
-    # Processes to run in master script (master_metplus.py)
-    PROCESS_LIST = Usage
-
-    # NOTE: "TOTAL" is a REQUIRED cnt statistic used by the series analysis scripts
-    STAT_LIST = TOTAL, FBAR, OBAR, ME, MAE, RMSE, BCMSE, E50, EIQR, MAD
-
-    # Init time
-    INIT_TIME_FMT = %Y%m%d
-    INIT_BEG = 20141214
-    INIT_END = 20141216
-    INIT_INCREMENT =  21600
-    #21600 sec (6hours) The increment in seconds in integer format
-
-    # LOGGING
-    LOG_LEVEL = DEBUG ;; Levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
-    LOG_FILENAME = {LOG_DIR}/master_metplus.log ;; NOTE: current YYYYMMDD is inserted before the rightmost . filename extension
-
-
-    # Final conf file used by all processes.
-    METPLUS_CONF={OUTPUT_BASE}/metplus_final.conf
-    # Location of mandatory MET config files
-    CONFIG_DIR = {METPLUS_BASE}/parm/met_config
+This website only contains the METplus wrappers API documentation.
 
 
 */
