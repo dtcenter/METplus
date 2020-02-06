@@ -1,4 +1,2 @@
-.. _met-tool-wrapper-index:
-
-MET tools
-=========
+Space Weather
+=============
