@@ -18,7 +18,7 @@ from two runs of the GloTEC model.
 # The observations are considered to be the run with COSMIC-1 RO data.
 #
 # This use case runs grid_stat for the first two forecast times of a 
-# space weather event known as the St. Patricks Day Storm (Mar 17, 2015). 
+# space weather event known as the St. Patrick's Day Storm (Mar 17, 2015). 
 #
 # Novel aspects of this use case:
 #    - This is the first example use case to run grid_stat on a space weather model (GloTEC)
@@ -43,7 +43,8 @@ from two runs of the GloTEC model.
 # | **Forecast:** GloTEC Total Electron Content (TEC) model run without assimilation of any COSMIC-1 RO data
 # | **Observation:** GloTEC TEC model run that assimilates COSMIC-1 RO data
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-met_test-8.1.tgz
+# | **Location:** All of the input data required for this use case can be found in the sample data tarball. 
+# / Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-met_test-8.1.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** NOAA Space Weather Prediction Center (SWPC)
@@ -53,7 +54,7 @@ from two runs of the GloTEC model.
 # METplus Use Case Contact
 # ------------------------
 # / **Author:** Jonathan L. Vigh (National Center for Atmospheric Research / Research Applications Laboratory / Joint Numerical Testbed)
-# / **Last modified:** 21 December 2019
+# / **Last modified:** 06 February 2020
 
 ##############################################################################
 # METplus Components
@@ -79,10 +80,10 @@ from two runs of the GloTEC model.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications_space_weather/glotec_vs_glotec/glotec_vs_glotec.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications_space_weather/glotec_vs_glotec.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/model_applications/space_weather/glotec_vs_glotec/glotec_vs_glotec.conf
+# .. literalinclude:: ../../../parm/use_cases/model_applications/space_weather/glotec_vs_glotec.conf
 
 ##############################################################################
 # MET Configuration
@@ -92,7 +93,7 @@ from two runs of the GloTEC model.
 # These variables are referenced in the MET configuration file.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/model_applications/space_weather/glotec_vs_glotec/GridStat.glotec_vs_glotec
+# .. literalinclude:: ../../../parm/use_cases/model_applications/space_weather/GridStat.glotec_vs_glotec
 #
 # Note the following variables are referenced in the MET configuration file.
 # 
@@ -117,11 +118,11 @@ from two runs of the GloTEC model.
 #
 # 1) Passing in GridStat.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/glotec_vs_glotec.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in GridStat.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/glotec_vs_glotec.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -148,12 +149,15 @@ from two runs of the GloTEC model.
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in grid_stat/2005080700 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in space_weather/glotec_vs_glotec/output_data/2015_03_17 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * grid_stat_QPF_APCP_vs_QPE_APCP_03_120000L_20050807_120000V_eclv.txt
-# * grid_stat_QPF_APCP_vs_QPE_APCP_03_120000L_20050807_120000V_grad.txt
-# * grid_stat_QPF_APCP_vs_QPE_APCP_03_120000L_20050807_120000V.stat
+# * grid_stat_GloTEC_without_cosmic-vx7_TEC_vs_GloTEC_with_cosmic_000000L_20150317_000500V_pairs.nc  
+# * grid_stat_GloTEC_without_cosmic-vx7_TEC_vs_GloTEC_with_cosmic_000000L_20150317_001500V_pairs.nc
+# * grid_stat_GloTEC_without_cosmic-vx7_TEC_vs_GloTEC_with_cosmic_000000L_20150317_000500V.stat      
+# * grid_stat_GloTEC_without_cosmic-vx7_TEC_vs_GloTEC_with_cosmic_000000L_20150317_001500V.stat
+
+
 
 ##############################################################################
 # Keywords
