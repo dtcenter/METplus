@@ -17,16 +17,16 @@ Documentation
 |
 | The following Sphinx modules are required to generate the necessary
 | documentation:
-|     *sphinx-2.2.0
-|     *sphinx-gallery-0.40
-|     *sphinx_rtd_theme-0.4.3
+|     * sphinx-2.2.0
+|     * sphinx-gallery-0.40
+|     * sphinx_rtd_theme-0.4.3
 |
 | You can see which versions are used by the current METplus release
 | by looking at either environment.yml or requirements.txt, both of which
 | are found in the METplus/ directory.  If you wish to replicate all the
 | packages employed by METplus, please refer to the "Instructions for the
 | Conda Environment" section of the Contributor's Guide.
-
+|
 | **Description of Documentation Directories**
 |
 | Core documentation is divided into two sections: the User's Guide and
@@ -34,8 +34,7 @@ Documentation
 | directory, with files ending in .rst.
 |
 
-| Documentation for the use cases is found in the Sphinx gallery.
-| This documentation is found in the following directories:
+| Documentation for the use cases is found in the following directories:
 |       * METplus/parm/met_tools
 |            * This directory contains documentation pertaining to use cases that
 |              use one MET tool/METplus wrapper
@@ -46,10 +45,90 @@ Documentation
 |              configuration files to these use cases have the same name
 |              as the .py files, with a .conf file extension
 |
-| Document files end with a .py extension:
+| Documentation files end with a .py extension and these files generate the clickable graphics in the gallery.
 
+
+
+
+| **Adding New Documentation**
+| Determine where you should add documentation:
+|   * Use cases that involve a single MET tool/METplus wrapper will reside in the
+|     METplus/parm/use_cases/met_tool_wrapper directory
+|
+|   * Use cases that involv multiple MET tools/METplus wrappers will reside
+|     in the METplus/parm/use_cases/model_applications directory, under
+|     a subdirectory that corresponds to a specific category
+|
+|   * The User's Guide for any instructions or details that will enable a user
+|     to run/use your use case and/or new code.
+|
+|   * The Contributor's Guide for any instructions for instructions on
+|    creating/constructing your new code.
+|
+
+|   **Use cases that have only one MET tool/METplus wrapper**:
+|      * create a new subdirectory, based on the name of the MET tool:
+|        e.g. METplus/parm/use_cases/met_tool_wrapper/ASCII2NC
+|
+|      * create a new Python file with the .py extension
+|             * for a use case document in the METplus/parm/use_cases/met_tools
+|                directory, follow this pattern:
+|                      <MET tool name>.py
+|                where the MET tool name follows PascalCase, e.g. GridStat.py or
+|                ASCII2NC.py.  This file is a hybrid RST and Python file.
+|
+|      * add a METplus configuration file for this use case, using the same name as the .py file
+|        above, except replace the .py extension with .conf.  The contents
+|        of this file will be pulled into the .py file you created.
+|
+|   **Use cases that use more than one MET tool/METplus wrapper**:
+|     * the model_applications directory contains subdirectories that
+|       are based on the following categories:
+|           * convection_allowing_models
+|           * medium_range
+|           * precipitation
+|           * s2s (sub-seasonal to seasonal)
+|           * tc_and_extra_tc
+|
+|            * for documenting a use case that spans more than one MET tool/
+|               METplus wrapper, determine which category to place your
+|              documentation
+|                     * if no category exists, create a new subdirectory with the
+|                        name of the new category
+|                     * create a new Python (.py) file with a descriptive name, following
+|                        the convention:
+|                        <descriptive name>.py
+|
+|     **User's Guide**:
+|         * to add/modify any content that affects METplus users
+|         * modify any of the affected sections from the METplus/docs/Users_Guide directory:
+|             * glossary.rst (Glossary)
+|             * references.rst (Reference)
+|             * systemconfiguration.rst (System Configuration)
+|             * usecases.rst (Use cases)
+|             * wrappers.rst (METplus wrappers)
+|
+|     **Contributor's Guide**:
+|         * to add/modify any content that affects METplus contributors
+|         * modify any of the affected sections from the METplus/docs/Contributors_Guide directory:
+|             * add_use_case.rst (How to add new use cases)
+|             * basic_components.rst (The basic components of a METplus wrapper)
+|             * coding_standards.rst (The coding standards currently in use)
+|             * conda_env.rst  (How to set up your conda environment for running METplus)
+|             * create_wrapper.rst (How to create a new METplus wrapper)
+|             * deprecation.rst (What to do to deprecate a variable)
+|             * documentation.rst (This document.  Describing the documentation process and files)
+|             * github_workflow.rst (A description of how releases are made, how to to obtain source code from the GitHub repository)
+|             * index.rst (The page that shows all the 'chapters/sections' of the Contributor's Guide)
+|             * testing.rst (A description of how to set up testing your wrapper code)
+|
+|
+|
 | **Building Documentation**
-| All the sphinx modules (listed above) need to be present in order to
+|
+| ** NOTE**:  It is assumed that your web browser application and your METplus
+| source code are located on the same computer/host.
+| All the sphinx modules (listed earlier) need to be present in order to
 | generate the HTML content that comprises the documentation.
 | From the command line, change to the METplus/docs directory and
 | enter the following:
@@ -59,8 +138,8 @@ Documentation
 |    *make html*
 |
 | The first command cleans up any previously created documentation and the
-| second command creates the new documentation based on the currently
-| available .py and .rst files in the METplus/docs and METplus/parm
+| second command creates new documentation based on the current
+| .py and .rst files in the METplus/docs and METplus/parm
 | directories.
 |
 | The html files that are created can be found in the METplus/docs/_build/html
@@ -76,71 +155,6 @@ Documentation
 | or the "Contributor's Guide" link (which is relevant if you intend to
 | contribute code and/or new use cases).
 |
-| ** NOTE**:  It is assumed that your web browser application and your METplus
-| source code are located on the same computer/host.
 |
-
-
-
-| **Adding New Documentation**
-| Determine where you should add documentation:
-|   * The Sphinx gallery for use cases:
-|         * Use cases that involve a single MET tool/METplus wrapper will reside in the
-|            METplus/parm/use_cases/met_tool_wrapper directory
-|         * Use cases that involv multiple MET tools/METplus wrappers will reside
-|            in the METplus/parm/use_cases/model_applications directory, under
-|            a subdirectory that corresponds to a specific category
-|
-|   * The User's Guide for any instructions or details that will enable a user
-|      to run/use your use case and/or new code.
-|
-|  * The Contributor's Guide for any instructions for instructions on
-|     creating/constructing your new code.
-|
-
-
-|     * Sphinx gallery
-|        * the met_tools directory has subdirectories that are named by the
-|           single MET tool/METplus wrapper that is used in the use case
-|        * the model_applications directory contains subdirectories that
-|          are based on the following categories:
-|             * convection_allowing_models
-|             * medium_range
-|             * precipitation
-|             *s2s (sub-seasonal to seasonal)
-|             * tc_and_extra_tc
-|        * create a new Python file with the .py extension
-|             * for a use case document in the METplus/parm/use_cases/met_tools
-|                directory, follow this pattern:
-|                      <MET tool name>.py
-|                where the MET tool name follows PascalCase, e.g. GridStat.py or
-|                ASCII2NC.py.  This file is a hybrid RST and Python file.
-|                     * add a METplus configuration file for this use case.  The contents
-|                       of this file can be pulled into the .py file you created.
-|            * for documenting a use case that spans more than one MET tool/
-|               METplus wrapper, determine which category to place your
-|              documentation
-|                     * if no category exists, create a new subdirectory with the
-|                        name of the new category
-|                     * create a new Python (.py) file with a descriptive name, following
-|                        the convention:
-|                        <xyz>_<123>_<abc>.py
-|
-|                       where <xyz> corresponds to xxxxx
-|                       and <123>  corresponds to yyyyy
-|                       and <abc> corresponds to zzzzz
-|
-
-|     * User's Guide
-|          * modify any of the affected sections:
-|               * glossary.rst (Glossary)
-|               * references.rst (Reference)
-|               * systemconfiguration.rst (System Configuration)
-|               * usecases.rst (Use cases)
-|               * wrappers.rst (METplus wrappers)
-|
-|     * Contributor's Guide
-|
-
 |
 

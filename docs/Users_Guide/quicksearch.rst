@@ -6,7 +6,7 @@ Use Cases by MET Tool:
 
 | `ASCII2NC <https://ncar.github.io/METplus/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
 | `CustomIngest <https://ncar.github.io/METplus/search.html?q=CustomIngestToolUseCase&check_keywords=yes&area=default>`_
-| `CyclonePlotter <https://ncar.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`
+| `CyclonePlotter <https://ncar.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
 | `EnsembleStat <https://ncar.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_
 | `Example <https://ncar.github.io/METplus/search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_
 | `GridStat <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
@@ -47,9 +47,10 @@ Use Cases by METplus Feature:
 -----------------------------
 | `Looping by month and then year  <https://ncar.github.io/METplus/search.html?q=MonthLoopFeatureUseCase&check_keywords=yes&area=default>`_
 | `SeriesByInit  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
-| `SeriesByInitSpecificTimeRange  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
+| `SeriesByInitSpecificTimeRange  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseSpecificTimeRangeUseCase&check_keywords=yes&area=default>`_
 | `SeriesByLead  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
 | `SeriesByLeadGrouping  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadGroupingUseCase&check_keywords=yes&area=default>`_
+
 Use cases by File Format:
 -------------------------
 | `GEMPAK  <https://ncar.github.io/METplus/search.html?q=GEMPAKFileUseCase&check_keywords=yes&area=default>`_
