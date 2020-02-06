@@ -113,9 +113,7 @@ Brief summary of this use case...
 # time format of the use-case is monthly. Since the verification is done on the hindcasts
 # rather than the forecast (would require another 6 months of waiting), the key
 # identification here is the month of initialization and then the lead-time of the forecast
-# of interest:
-#
-# 	INIT_TIME_FMT = %Y%m
+# of interest.
 #
 # The hindcast data, the 'observational' data that is to be compared to the forecast,
 # is a collection of datasets formatted in equivalent format to the forecast. The
@@ -123,118 +121,56 @@ Brief summary of this use case...
 # time variable inside the netCDF file).
 #
 #
-#
 # Forecast Datasets:
 #
-# * FCST_GRID_STAT_INPUT_DIR = {INPUT_BASE}/NMME/hindcast/monthly/
-# * FCST_GRID_STAT_INPUT_TEMPLATE = nmme_pr_hcst_{init?fmt=%b}IC_{valid?fmt=%2m}_1982-2010.nc
-#
-# variable of interest: pr (precipitation: cumulative monthly sum)
-# format of precipitation variable: time,lat,lon (here dimensions: 29,181,361)
-# with time variable representing 29 samples of same Julian Init-Time of hindcasts
-# over past 29 years.
+# * variable of interest: pr (precipitation: cumulative monthly sum)
+# * format of precipitation variable: time,lat,lon (here dimensions: 29,181,361) with time variable representing 29 samples of same Julian Init-Time of hindcasts over past 29 years.
 #
 # Hindcast Datasets:
 #
 # Observational Dataset:
 #
-# use of the CPC precipitation reference data (same format and grid)
-#
-# * OBS_GRID_STAT_INPUT_DIR = {INPUT_BASE}/NMME/obs/
-# * OBS_GRID_STAT_INPUT_TEMPLATE = obs_cpc_pp.1x1.nc
+# * CPC precipitation reference data (same format and grid)
 #
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# Describe the METplus Components that are used in this use case. This can be
-# anything from the METplus wrapper names that are used, to METdb, to METviewer,
-# to the MET tools (e.g. grid_stat, etc...) that are utilized in this use case.
-# Try to be as complete as possible.
-
-########################################
-# Segment from run_grid_stat_metplus.bash:
- 
-# ------- run_grid_stat_metplus.bash --------- #
+# This use case loops over initialization years and processes forecast lead months with GridStat
 #
-# PROJECT="APIK"
-# Set the path to the version of METplus you will run
-#	Note: normally, this would be a release version of METplus, obtained from GitHub.
-#  	but we are using here a preliminary version where S2S has been implemented.
-#
-# development version
-# METPLUS_BASE_DIR = "/opt/utilities/METplus_feature_281_py_embed"
-#
-# The repository that contains the stand-alone use case
-#
-# PROJECT_CODE_DIR=${PROJECT_BASE_DIR}/${PROJECT}/"METplus-for-Indonesia-APIK"
-#
-# inside the repository, here is the preliminary-release specific user configuration:
-# USER_CONFIG_DIR=${PROJECT_BASE_DIR}/${PROJECT}/"METplus-for-Indonesia-APIK/METplus_feature_281_py_embed_parm/user_config"
-#
-# ... and the 
-# USE_CASE_CONFIG_PATH=${PROJECT_CODE_DIR}/"METplus_feature_281_py_embed_parm/examples"
-#
-#
-
-# -------  METplus Execution --------- #
-#
-# Now the execution of METplus following a specified use case config file and user config files
-#
-# This first call runs the use case for months in the same year as initial conditions.
-# In this demo case: August - December (starting from the July initial conditions)
-
-# point to configuration file
-#USE_CASE_CONFIG_FILENAME="grid_to_grid_s2s_use_case_1_August-December.conf"
-
-# now launch the METplus python master script
-# echo "${METPLUS_BASE_DIR}/ush/master_metplus.py -c ${USER_CONFIG_DIR}/apik.conf -c ${USE_CASE_CONFIG_PATH}/${USE_CASE_CONFIG_FILENAME}"
-# ${METPLUS_BASE_DIR}/ush/master_metplus.py -c ${USER_CONFIG_DIR}/apik.conf -c ${USE_CASE_CONFIG_PATH}/${USE_CASE_CONFIG_FILENAME}
-
-
-
-##############################################################
-# Segment from grid_to_grid_s2s_use_case_1_August-December.conf 
-# Hindcast Step (here for grid-to-grid : gridstat
-# LOOP_BY = INIT
-
-# Format of INIT_BEG and INIT_END
-#INIT_TIME_FMT = %Y%m
-
-# Start time for METplus run    First year of 29-yr hindcast archive of CPC
-#INIT_BEG = 198207
-
-# End time for METplus run	    Last year of 29-yr hindcast archive of CPC
-#INIT_END = 201007
-
-# Increment between METplus runs. Normal ly, this is given in seconds (Must be >= 60), 
-# but George McCabe has done some new development to support shifts of months and years.
-# NOTE: You MUST use the following METplus branch: feature_281_py_embed!
-# Use 1Y to do a 1-year increment
-# Use 1m to do a 1-month increment
-
-#INIT_INCREMENT = 1Y
-  
-# Options are times, processes
-# times = run all items in the PROCESS_LIST for a single initialization
-# time, then repeat until all times have been evaluated.
-# processes = run each item in the PROCESS_LIST for all times
-#   specified, then repeat for the next item in the PROCESS_LIST.
-#LOOP_ORDER = times
-
-
-
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# A general description of the workflow will be useful to the user. For example,
-# the order in which tools are called (e.g. PcpCombine then grid_stat) or the way 
-# in which data are processed (e.g. looping over valid times) with an example
-# of how the looping will work would be helpful for the user.
-
+# The following tools are used for each run time:
+#  GridStat
+#
+# This example loops by initialization time. Each initialization time is July of each year from 1982 to 2010. For each init time it will run once, processing forecast leads 1 month through 5 months. The following times are processed:
+#
+# Run times:
+#
+# | **Init:** 1982-07
+# | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
+#
+# | **Init:** 1983-07
+# | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
+#
+# | **Init:** 1984-07
+# | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
+#
+# | **Init:** 1985-07
+# | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
+#
+# ...
+#
+# | **Init:** 2009-07
+# | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
+#
+# | **Init:** 2010-07
+# | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
+#
 # Because not all of MET has been wrapped with python into METplus, the application of
 # seasonal forecast verification is split into two steps:
 #
@@ -301,13 +237,34 @@ Brief summary of this use case...
 # .. highlight:: none
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/seasonal_forecast.conf
 
-
-
-
-
 ##############################################################################
 # Running METplus
 # ---------------
+# This use case can be run two ways:
+#
+# 1) Passing in seasonal_forecast.conf then a user-specific system configuration file::
+#
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/seasonal_forecast.conf -c /path/to/user_system.conf
+#
+# 2) Modifying the configurations in parm/metplus_config, then passing in seasonal_forecast.conf::
+#
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/seasonal_forecast.conf
+#
+# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
+#
+# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
+# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
+# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
+#
+# Example User Configuration File::
+#
+#   [dir]
+#   INPUT_BASE = /path/to/sample/input/data
+#   OUTPUT_BASE = /path/to/output/dir
+#   MET_INSTALL_DIR = /path/to/met-X.Y
+#
+# **NOTE:** All of these items must be found under the [dir] section.
+#
 #
 #  ------  METplus is run via a bash script -------
 #
@@ -343,7 +300,7 @@ Brief summary of this use case...
 # Expected Output
 # ---------------
 #
-# For each month and year there will be two files written:
+# For each month and year there will be two files written::
 #
 # * grid_stat_NMME-hindcast_precip_vs_CPC_IC{%Y}{%N}01_2301360000L_20081001_000000V.stat
 # * grid_stat_NMME-hindcast_precip_vs_CPC_IC{%Y}{%N}01_2301360000L_20081001_000000V_pairs.nc
@@ -353,4 +310,5 @@ Brief summary of this use case...
 # Keywords
 # --------
 #
-# note:: GridStatUseCase
+# .. note:: `GridStatUseCase <https://ncar.github.io/METplus/search.html?q=GridStatUseCase&check_keywords=yes&area=default>`_
+
