@@ -49,12 +49,15 @@ from two runs of the GloTEC model.
 #
 # | **Data Source:** NOAA Space Weather Prediction Center (SWPC)
 # / Data contact: Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
+#
 
 ##############################################################################
 # METplus Use Case Contact
 # ------------------------
+#
 # / **Author:** Jonathan L. Vigh (National Center for Atmospheric Research / Research Applications Laboratory / Joint Numerical Testbed)
 # / **Last modified:** 06 February 2020
+#
 
 ##############################################################################
 # METplus Components
@@ -83,7 +86,7 @@ from two runs of the GloTEC model.
 # with the -c option, i.e. -c parm/use_cases/model_applications_space_weather/glotec_vs_glotec.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/model_applications/space_weather/glotec_vs_glotec.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/space_weather/glotec_vs_glotec.conf
 
 ##############################################################################
 # MET Configuration
@@ -93,7 +96,7 @@ from two runs of the GloTEC model.
 # These variables are referenced in the MET configuration file.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/use_cases/model_applications/space_weather/GridStat.glotec_vs_glotec
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/space_weather/GridStat.glotec_vs_glotec
 #
 # Note the following variables are referenced in the MET configuration file.
 # 
