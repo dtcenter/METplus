@@ -631,8 +631,8 @@ class CommandBuilder:
 
         ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
         if ret != 0:
-            self.log_error(f"MET command returned a non-zero return code: {cmd}. "
-                           "Check the logfile for more information on why it failed")
+            self.log_error(f"MET command returned a non-zero return code: {cmd}")
+            self.logger.info("Check the logfile for more information on why it failed")
             return False
 
         return True
