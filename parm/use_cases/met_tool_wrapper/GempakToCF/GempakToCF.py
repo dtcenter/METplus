@@ -28,6 +28,9 @@ This use case will run the GempakToCF (external) tool to convert Gempak data to 
 # --------------------
 #
 # GempakToCF is an external tool that utilizes the Unidata NetCDF-Java package. The jar file that can be used to run the utility is available here: https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
+#
+# See the METplus Configuration section for information on how to configure METplus to find the jar file.
+#
 # More information on the package used to create the file is here:  https://www.unidata.ucar.edu/software/netcdf-java
 #
 
@@ -53,6 +56,12 @@ This use case will run the GempakToCF (external) tool to convert Gempak data to 
 ##############################################################################
 # METplus Configuration
 # ---------------------
+#
+# To enable Gempak support, you must set [exe] GEMPAKTOCF_JAR in your user METplus configuration file.:
+#
+#    [exe]
+#    GEMPAKTOCF_JAR = /path/to/GempakToCF.jar
+#
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
