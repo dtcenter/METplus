@@ -31,12 +31,6 @@ class GempakToCFWrapper(CommandBuilder):
         super().__init__(config, logger)
         self.app_name = "GempakToCF"
         self.app_path = self.config.getstr('exe', 'GEMPAKTOCF_JAR', '')
-        if not self.app_path:
-            self.log_error("[exe] GEMPAKTOCF_JAR was not set if configuration file. This is required to process Gempak data.")
-            self.isOK = False
-        elif not os.path.exists(self.app_path):
-            self.log_error("GempakToCF Jar file does not exist at " + self.app_path)
-            self.isOK = False
 
     def create_c_dict(self):
         """!Create dictionary from config items to be used in the wrapper

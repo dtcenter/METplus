@@ -544,12 +544,21 @@ class CommandBuilder:
         # If processing Gempak, make sure GempakToCF is found
         if processingGempak:
             gempaktocf_jar = self.config.getstr('exe', 'GEMPAKTOCF_JAR', '')
-            if not gempaktocf_jar:
-                self.log_error("[exe] GEMPAKTOCF_JAR was not set if configuration file. This is required to process Gempak data.")
-                self.isOK = False
-            elif not os.path.exists(gempaktocf_jar):
-                self.log_error("GempakToCF Jar file does not exist at " + gempaktocf_jar + ". This is required to process Gempak data.")
-                self.isOK = False
+            self.check_gempaktocf(gempaktocf_jar)
+
+    def check_gempaktocf(self, gempaktocf_jar):
+        if not gempaktocf_jar:
+            self.log_error("[exe] GEMPAKTOCF_JAR was not set if configuration file. "
+                           "This is required to process Gempak data.")
+            self.logger.info("Refer to the GempakToCF use case documentation for information "
+                             "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")
+            self.isOK = False
+        elif not os.path.exists(gempaktocf_jar):
+            self.log_error(f"GempakToCF Jar file does not exist at {gempaktocf_jar}. " +
+                           "This is required to process Gempak data.")
+            self.logger.info("Refer to the GempakToCF use case documentation for information "
+                             "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")
+            self.isOK = False
 
     def get_output_prefix(self, time_info):
         return sts.StringSub(self.logger,
