@@ -81,6 +81,11 @@ def pre_run_setup(filename, app_name):
         config.set('dir', 'STAGING_DIR',
                    os.path.join(config.getdir('OUTPUT_BASE'), "stage"))
 
+    # get USER_SHELL config variable so the default value doesn't get logged
+    # at an inconvenient time (right after "COPYABLE ENVIRONMENT" but before actual
+    # copyable environment variable list)
+    config.getstr('config', 'USER_SHELL', 'bash')
+
     # handle dir to write temporary files
     handle_tmp_dir(config)
 
