@@ -44,7 +44,7 @@ from two runs of the GloTEC model.
 # | **Observation:** GloTEC TEC model run that assimilates COSMIC-1 RO data
 #
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. 
-# / Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-met_test-8.1.tgz
+# / Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-space_weather-3.0.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** NOAA Space Weather Prediction Center (SWPC)
@@ -74,8 +74,12 @@ from two runs of the GloTEC model.
 # GridStat is the only tool called in this example. It processes the following
 # run times:
 #
-# | **Init:** 2015-03-17: 0005Z and 0015Z
-# | **Forecast lead:** 00
+# | **Init:** 2015-03-17 0005Z
+# | **Forecast lead:** 0
+#
+# | **Init:** 2015-03-17 0015Z
+# | **Forecast lead:** 0
+#
 
 ##############################################################################
 # METplus Configuration
@@ -119,11 +123,11 @@ from two runs of the GloTEC model.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in GridStat.conf then a user-specific system configuration file::
+# 1) Passing in glotec_vs_glotec.conf then a user-specific system configuration file::
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/glotec_vs_glotec.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in glotec_vs_glotec.conf::
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/glotec_vs_glotec.conf
 #
