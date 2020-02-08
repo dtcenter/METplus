@@ -220,7 +220,7 @@ Brief summary of this use case...
 # 	input and output data, provides templates for reading variables inside the statistics
 # 	files. Because this part of MET has not yet been “python-wrapped”, the run-script has
 # 	to cover many aspects of the configuration that in METplus are better generalized.
-# 	SeriesAnalysis Climatology: ”config/SeriesAnalysisConfig_APIK_S2S_use_case_ 1_climo”
+# 	SeriesAnalysis Climatology: ”config/SeriesAnalysisConfig_APIK_S2S_use_case_1_climo”
 # 	contains the parameters that calculate the climatological mean difference between the
 # 	hindcast experiments and their associated observations.
 # 	SeriesAnalysis 2: “config/SeriesAnalsyisConfig_APIK_S2S_use_case_1_full_stats”
