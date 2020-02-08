@@ -116,6 +116,12 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         c_dict['WIDTH'] = \
          self.config.getint('config', 'REGRID_DATA_PLANE_WIDTH', 1)
 
+        c_dict['GAUSSIAN_DX'] = \
+         self.config.getstr('config', 'REGRID_DATA_PLANE_GAUSSIAN_DX', '')
+
+        c_dict['GAUSSIAN_RADIUS'] = \
+         self.config.getstr('config', 'REGRID_DATA_PLANE_GAUSSIAN_RADIUS', '')
+
         return c_dict
 
     def get_explicit_field_names(self, index, d_type):
@@ -349,6 +355,12 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         self.args.append("-width {}".format(self.c_dict['WIDTH']))
 
         self.args.append("-name " + output_name)
+
+        if self.c_dict['GAUSSIAN_DX']:
+            self.args.append(f"-gaussian_dx {self.c_dict['GAUSSIAN_DX']}")
+
+        if self.c_dict['GAUSSIAN_RADIUS']:
+            self.args.append(f"-gaussian_radius {self.c_dict['GAUSSIAN_RADIUS']}")
 
         return True
 

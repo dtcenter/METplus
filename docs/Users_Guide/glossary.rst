@@ -4,6 +4,20 @@ METplus Configuration Glossary
 .. glossary::
    :sorted:
 
+   REGRID_DATA_PLANE_GAUSSIAN_DX
+     Gaussian dx value to add to the RegridDataPlane command line call with -gaussian_dx. Not added to call if unset or set to empty string.
+
+     | *Used by:* RegridDataPlane
+     | *Family:* config
+     | *Default:* None
+
+   REGRID_DATA_PLANE_GAUSSIAN_RADIUS
+     Gaussian radius value to add to the RegridDataPlane command line call with -gaussian_radius. Not added to call if unset or set to empty string.
+
+     | *Used by:* RegridDataPlane
+     | *Family:* config
+     | *Default:* None
+
    FCST_PCP_COMBINE_CONSTANT_INIT
      If True, only look for forecast files that have a given initialization time. Used only if FCST_PCP_COMBINE_INPUT_TEMPLATE has a 'lead' tag. If set to False, the lowest forecast lead for each search (valid) time is used.
 
