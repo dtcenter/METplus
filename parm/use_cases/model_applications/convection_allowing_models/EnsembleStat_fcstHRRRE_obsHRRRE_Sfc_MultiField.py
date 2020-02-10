@@ -2,16 +2,17 @@
 HRRR Ensemble Use Case
 ======================
 
-This use case builds a 3 hour gridded precipitation accumulation using 1 hour accumulation fields,
-then compares the resulting data set to gridded 3 hour accumulation forecast data
+This use case builds hourly gridded fields for multiple variables,
+comparing the resulting data to forecast data
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Describe the scientific objective of the use case here. This can be fairly
-# simple, or complex depending on the task.
+# To provide useful statistical information on the relationship between observation
+# data (in both grid and point formats) to an ensemble forecast. These values
+# can be used to help correct ensemble member deviations from observed values.
 
 ##############################################################################
 # Datasets
@@ -20,8 +21,8 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 # Describe the datasets here. Relevant information about the datasets that would
 # be beneficial include:
 # 
-#  * Forecast dataset: RUC GRIB 3 hour precipitation accumulation
-#  * Observation dataset: Stage II GRIB 1 hour precipitation accumulation
+#  * Forecast dataset: HRRRE data
+#  * Observation dataset: HRRRE
 #  * Sources of data (links, contacts, etc...)
 #
 
@@ -159,4 +160,4 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 #
 # Now include them like this:
 #
-# .. note:: EnsembleStatUseCase, ConvectionAllowingModelsUseCase
+# .. note:: EnsembleStatUseCase, ConvectionAllowingModelsUseCase, PB2NCUseCase

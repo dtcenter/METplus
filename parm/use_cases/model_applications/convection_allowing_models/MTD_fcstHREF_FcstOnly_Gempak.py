@@ -9,8 +9,10 @@ This use case processes data over time.
 # Scientific Objective
 # --------------------
 #
-# Needs input
-#
+# To provide useful statistical information on aggregated object-based information
+# over a time series. This non-standard approach (i.e. a holistic approach to
+# weather systems over grid or point assessments) provides alternative views to numerical model
+# accuracy and offers new solutions to model adjustments.
 
 ##############################################################################
 # Datasets
@@ -118,4 +120,4 @@ This use case processes data over time.
 # Keywords
 # --------
 #
-# .. note:: MTDUseCase
+# .. note:: MTDUseCase, HMTUseCase
