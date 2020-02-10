@@ -10,30 +10,6 @@ wrapping the MET tools suite.
 * master_metplus ---  This is the main script that calls all the 
   tasks in the PROCESS_LIST.
 
-* run_tc_pairs --- Runs tc_pairs to parse ADeck and BDeck ATCF files, 
-  filter the data, and match them up.
-
-* extract_tiles --- Extracts tiles to be used by series_analysis.
-
-* series_by_lead --- Perform a series analysis of extra tropical cyclone
-  paired data based on lead time (forecast hour).
-
-* series_by_init --- Invoke the series analysis script based on
-  the init time in the format YYYYMMDD_hh.
-
-* run_tc_stat --- Subset tc_pairs data using MET tool TC-STAT for use in
-  extract_tiles or series analysis.
-
-* tc2cyclone_relative --- Convert MET TC-Pairs output (A-deck and B-deck track 
-  files) into format for SBU cyc-new.dat and match.dat.
-
-* TCMPRPlotter --- A Python wrapper to the plot_tcmpr.R plotting script
-  Generates plots for input files with .tcst format and creates output 
-  subdirectory based on the input tcst file.
-
-* met_util --- A collection of utility functions used to perform necessary
-  series analysis tasks and other METPlus related tasks.
-
 
 #### Reference links to the produtil package
 

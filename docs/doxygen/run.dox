@@ -1,71 +1,9 @@
 /** @page run-hwrf Running METplus
 
+Running METplus documentation is now under GitHub Pages.
 
-@todo edit me: run.dox, THIS PAGE is a PLACEHOLDER.
-THIS PAGE NEEDS TO BE FULLY EDITED and REVIEWD..
+https://ncar.github.io/METplus
 
-This page and its subpages explain how to run METplus, track
-what it is doing during the execution, and figure out what is going
-wrong.
-
-@section run-run Running METplus
-
-There are several ways to run METpus:
-
- + Use a workflow automation system.
-     + @ref spa "Use ecFlow," if you work in NCEP Central Operations (NCO).
-     + @subpage rocoto_workflow "Use Rocoto," if you don't work in NCO.
- + In interactive batch jobs with METplus wrappers.
- + Manual execution for debugging:
-     + @ref manual_ex_scripts "Directly run ex-scripts from the shell."
-     + @ref manual_python "Manually run METPlus Python functions."
-
-The direct methods are more laborious than automation systems.
-However, direct methods are more useful for debugging if one is
-developing new capabilities in METplus, or porting it to new
-supercomputers.  For details on each method, visit one of the three
-above links.
-
-For information about METplus wrappers, see the METplus User's Guide on the
-public METplus website: http://www.dtcenter.org/met/users/
-
-------------------------------------------------------------------------
-@section run-monitor Monitoring METplus
-
-After you start the Rocoto-based or ecFlow-based workflow, a sequence
-of jobs will run, and some may fail, requiring user intervention.  In
-order to know this, you must monitor the progress of the HWRF forecast
-cycles.  Both ecFlow and Rocoto have means by which to check which
-jobs are queued, submitted, completed or failed.  See the @ref
-rocoto_workflow page for details on doing this in Rocoto.
-
-@subsection run-dir METplus Directory Structure
-
-Knowing where data will show up can tell you a lot about what is going
-on in METplus and why.  The METplus system has several key directories:
-
- + WORKmetplus --- the work directory for each cycle.  Each storm and
-     cycle has its own work directory.  In the Rocoto-based workflow,
-     this directory contains log files.
-
- + intercom --- a directory used to trade data between jobs for one
-     storm and cycle.  This is inside the WORKhwrf directory.
-
- + com --- the com directory for each cycle.  A job for one storm or
-     cycle will never access another storm or cycle data except
-     through its com directory.
-
- + log --- contains log files that are not specific to a storm or cycle.
-
-For great detail on the METplus directory structure:
-
-@todo Add METplus  directory structure page.
-
-@subsection run-mon-log Detailed Logging
-
-Logging in METplus is quite extensive.  For details on METplus logging, we
-refer you to an entire page on the matter:
-
- + @subpage metplus-log-files
+This website only contains the METplus wrappers API documentation.
 
 */

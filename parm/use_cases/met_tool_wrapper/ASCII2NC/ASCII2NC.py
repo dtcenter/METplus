@@ -43,7 +43,7 @@ This use case will run the MET ASCII2NC tool to convert point observation data i
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/ASCII2NC.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/ASCII2NC/ASCII2NC.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/ASCII2NC/ASCII2NC.conf
@@ -81,11 +81,11 @@ This use case will run the MET ASCII2NC tool to convert point observation data i
 #
 # 1) Passing in ASCII2NC.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/ASCII2NC.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/ASCII2NC/ASCII2NC.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in ASCII2NC.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/ASCII2NC.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/ASCII2NC/ASCII2NC.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -121,4 +121,4 @@ This use case will run the MET ASCII2NC tool to convert point observation data i
 # Keywords
 # --------
 #
-# .. note:: `ASCII2NCUseCase <https://ncar.github.io/METplus/search.html?q=ASCII2NCUseCase&check_keywords=yes&area=default>`_
+# .. note:: `ASCII2NCToolUseCase <https://ncar.github.io/METplus/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_

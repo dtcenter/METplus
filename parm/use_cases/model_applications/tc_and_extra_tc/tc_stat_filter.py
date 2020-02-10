@@ -78,7 +78,7 @@ based on a specific cyclone of interest.
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/tc_stat_filter.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in feature_relative.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in tc_stat_filter.conf::
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/tc_stat_filter.conf
 #

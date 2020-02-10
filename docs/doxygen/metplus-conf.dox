@@ -1,6 +1,13 @@
 /** @page metplus-conf Local System Configuration (metplus.conf)
 
 
+METplus documentation is now under GitHub Pages.
+
+https://ncar.github.io/METplus
+
+This website only contains the METplus wrappers API documentation.
+
+
 This page documents how to modify the METplus parm/metplus.conf 
 amd user.template.conf file.
 

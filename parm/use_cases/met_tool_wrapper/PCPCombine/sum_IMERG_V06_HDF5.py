@@ -59,7 +59,7 @@ def read_IMERG_data(cur_file, var_name):
   units = d.attrs['units']
   if units == b"mm/hr":
     m = m * in_accum_hr
-    units = b"mm"
+    units = "mm"
 
   print("Data Shape and Type  :" + repr(m.shape) + ", " + repr(m.dtype))
 
@@ -75,8 +75,8 @@ def read_IMERG_data(cur_file, var_name):
    'grid': {
      'name':       'IMERG-Grid',
      'type' :      'LatLon',
-     'lat_ll' :    min(lat),
-     'lon_ll' :    min(lon),
+     'lat_ll' :    np.float64(min(lat)),
+     'lon_ll' :    np.float64(min(lon)),
      'delta_lat' : round((max(lat)-min(lat))/(len(lat)-1), 4),
      'delta_lon' : round((max(lon)-min(lon))/(len(lon)-1), 4),
      'Nlat' :      len(lat),

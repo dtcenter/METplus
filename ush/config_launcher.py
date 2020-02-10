@@ -527,14 +527,14 @@ class METplusConfig(ProdConfig):
 
     def getexe(self, exe_name, default=None, morevars=None):
         """!Wraps produtil exe with checks to see if option is set and if
-            exe actually exists"""
+            exe actually exists. Returns None if not found instead of exiting"""
         if not self.has_option('exe', exe_name):
             msg = 'Requested [exe] {} was not set in config file'.format(exe_name)
             if self.logger:
                 self.logger.error(msg)
             else:
                 print('ERROR: {}'.format(msg))
-            exit(1)
+            return None
 
         exe_path = super().getexe(exe_name)
 
@@ -545,7 +545,7 @@ class METplusConfig(ProdConfig):
                 self.logger.error(msg)
             else:
                 print('ERROR: {}'.format(msg))
-            exit(1)
+            return None
 
         # set config item to full path to exe and return full path
         self.set('exe', exe_name, full_exe_path)

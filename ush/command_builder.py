@@ -52,6 +52,7 @@ class CommandBuilder:
         if hasattr(config, 'env'):
             self.env = config.env
         self.c_dict = self.create_c_dict()
+        self.check_for_externals()
 
         self.cmdrunner = CommandRunner(self.config, logger=self.logger,
                                        verbose=self.c_dict['VERBOSITY'])
@@ -513,6 +514,52 @@ class CommandBuilder:
 
         return ','.join(strings)
 
+    def check_for_externals(self):
+        self.check_for_gempak()
+
+    def check_for_gempak(self):
+        # check if we are processing Gempak data
+        processingGempak = False
+
+        # if any *_DATATYPE keys in c_dict have a value of GEMPAK, we are using Gempak data
+        data_types = [value for key,value in self.c_dict.items() if key.endswith('DATATYPE')]
+        if 'GEMPAK' in data_types:
+            processingGempak = True
+
+        # if any filename templates end with .grd, we are using Gempak data
+        template_list = [value for key,value in self.c_dict.items() if key.endswith('TEMPLATE')]
+
+        # handle when template is a list of templates, which happens in EnsembleStat
+        templates = []
+        for value in template_list:
+            if type(value) is list:
+                 for subval in value:
+                     templates.append(subval)
+            else:
+                templates.append(value)
+
+        if [value for value in templates if value and value.endswith('.grd')]:
+            processingGempak = True
+
+        # If processing Gempak, make sure GempakToCF is found
+        if processingGempak:
+            gempaktocf_jar = self.config.getstr('exe', 'GEMPAKTOCF_JAR', '')
+            self.check_gempaktocf(gempaktocf_jar)
+
+    def check_gempaktocf(self, gempaktocf_jar):
+        if not gempaktocf_jar:
+            self.log_error("[exe] GEMPAKTOCF_JAR was not set if configuration file. "
+                           "This is required to process Gempak data.")
+            self.logger.info("Refer to the GempakToCF use case documentation for information "
+                             "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")
+            self.isOK = False
+        elif not os.path.exists(gempaktocf_jar):
+            self.log_error(f"GempakToCF Jar file does not exist at {gempaktocf_jar}. " +
+                           "This is required to process Gempak data.")
+            self.logger.info("Refer to the GempakToCF use case documentation for information "
+                             "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")
+            self.isOK = False
+
     def get_output_prefix(self, time_info):
         return sts.StringSub(self.logger,
                              self.config.getraw('config', f'{self.app_name.upper()}_OUTPUT_PREFIX', ''),
@@ -584,7 +631,8 @@ class CommandBuilder:
 
         ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
         if ret != 0:
-            self.log_error(f"Command returned a non-zero return code: {cmd}")
+            self.log_error(f"MET command returned a non-zero return code: {cmd}")
+            self.logger.info("Check the logfile for more information on why it failed")
             return False
 
         return True

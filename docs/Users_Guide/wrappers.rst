@@ -156,7 +156,7 @@ Configuration
 
 [exe]
 
-GEMPAKTOCF_CLASSPATH `[sec:SC_G] <#sec:SC_G>`__
+GEMPAKTOCF_JAR `[sec:SC_G] <#sec:SC_G>`__
 
 [dir]
 
@@ -170,7 +170,11 @@ GEMPAKTOCF_CLASSPATH `[sec:SC_G] <#sec:SC_G>`__
 
 [config]
 
-GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS `[sec:SC_G] <#sec:SC_G>`__
+| GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS `[sec:SC_G] <#sec:SC_G>`__
+
+**Deprecated:**
+
+| GEMPAKTOCF_CLASSPATH `[sec:SC_G] <#sec:SC_G>`__
 
 GridStat
 --------
@@ -624,6 +628,10 @@ Configuration
 | REGRID_DATA_PLANE_VERIF_GRID `[sec:SC_R] <#sec:SC_R>`__
 | FCST_REGRID_DATA_PLANE_INPUT_DATATYPE `[sec:SC_F] <#sec:SC_F>`__
 | OBS_REGRID_DATA_PLANE_INPUT_DATATYPE `[sec:SC_O] <#sec:SC_O>`__
+| REGRID_DATA_PLANE_GAUSSIAN_DX
+| REGRID_DATA_PLANE_GAUSSIAN_RADIUS
+| REGRID_DATA_PLANE_WIDTH
+| REGRID_DATA_PLANE_METHOD
 
 **Deprecated:**
 

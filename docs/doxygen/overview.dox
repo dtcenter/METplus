@@ -1,33 +1,12 @@
 /** \page metplus_scripts_overview METplus System Overview
 
-\section intro Introduction
 
-METplus provides wrappers to MET in an effort to make MET easily configurable
-and easy to run for both new and experienced MET users.  METplus is
-written entirely in Python.
+METplus documentation is now under GitHub Pages.
 
-\section sysdesign Overall System Design
+https://ncar.github.io/METplus
 
-As of the beta release of METplus, the following MET applications have
-corresponding METplus "wrappers":
-- Grid-Stat
-- Point-Stat
-- PCP-Combine
-- PB2NC
-- MODE
-- Regrid-Data-Plane
-- Series-Analysis
-- TC-Pairs
-- TC-Stat
-- tcmpr_plotter.R
+This website only contains the METplus wrappers API documentation.
 
-<sup>*</sup>In addition, there is new code to generate cyclone plots like those
-found on the NOAA NCEP Tropical and Extratropical Cyclone Tracks and
-Verification page.  Although this code does not wrap existing MET code,
-it implements a use case which uses the TC-Pairs wrapper.
-
-<sup>**</sup>In the future, all MET applications will have corresponding
-METplus wrappers, including METViewer.
 
 \subsection workflow Workflow Layer
 
