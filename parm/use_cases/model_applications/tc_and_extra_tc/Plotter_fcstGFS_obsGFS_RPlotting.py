@@ -1,17 +1,18 @@
 """
-Cyclone Plotter Use case
+Track and Intensity Use case (generate mean, median and box plots)
 ==================================================================
-This use case generates a plot of tropical cyclone tracks using output from
-the MET tc-pairs tool.  The CyclonePlotter wrapper does not directly wrap a
-specific MET tool.  This is a data visualization written entirely in Python.
-
+This use case generates plots of TC-pairs .tcst output files
+using the MET R script plot_tcmpr.R.  There is a pre-requisite for running
+this use case, the user must have R installed on the computer where the use
+case is being run.
 """
+
 ##############################################################################
 # Scientific Objective
 # --------------------
-# Provide visualization of storm tracks using output from the MET tc-pairs tool.
-# The date and hour associated with each storm track indicates the first time
-# the storm was tracked in the model.
+#
+# Describe the scientific objective of the use case here. This can be fairly
+# simple, or complex depending on the task.
 
 ##############################################################################
 # Datasets
@@ -26,19 +27,22 @@ specific MET tool.  This is a data visualization written entirely in Python.
 # METplus Components
 # ------------------
 #
-# This use case first runs TcPairs and then generates the storm track plot
-# for all storm tracks found in the .tcst output file created by the MET tc-pairs tool.
-#
+# This use case first runs TcPairs and then generates the requested
+# plot types for statistics of interest. The TCMPRPlotterConfig_customize configuration
+# file is used by the plot_tcmpr.R script to select things such as the size of
+# the plot window that appears on your screen, etc.
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
 # The following tools are used for each run time:
-#  TcPairs
+#  TcPairs > plot_tcmpr.R
 #
 # To generate TcPairs output, this example loops by initialization time for every 6 hour period that is available
-# in the data set for 20150301. The output is then used to generate the plot of all cyclone tracks.
+# in the data set for 20141214. The output is then used to generate the mean, median, and box plot for the following:
+# the difference between the MSLP of the Adeck and Bdeck tracks (AMSLP-BMSLP), the difference between the max wind of the Adeck and
+# Bdeck tracks (AMAX_WIND-BMSLP), and the track err (TK_ERR).
 #
 
 ##############################################################################
@@ -47,10 +51,10 @@ specific MET tool.  This is a data visualization written entirely in Python.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/tc_and_extra_tc/cyclone_plotter.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/cyclone_plotter.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
 
 ##############################################################################
 # MET Configuration
@@ -74,13 +78,13 @@ specific MET tool.  This is a data visualization written entirely in Python.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in cyclone_plotter.conf then a user-specific system configuration file::
+# 1) Passing in Plotter_fcstGFS_obsGFS_RPlotting.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/cyclone_plotter.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in cyclone_plotter.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in Plotter_fcstGFS_obsGFS_RPlotting.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/cyclone_plotter.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -102,26 +106,37 @@ specific MET tool.  This is a data visualization written entirely in Python.
 # Expected Output
 # ---------------
 #
-# A successful run will generate the following output to both the screen and to the logfile::
+# A successful run will output the following both to the screen and to the logfile::
 #
-#    INFO: METplus has successfully finished running.
+#   INFO: METplus has successfully finished running.
 #
-# Additionally, two output files are created.  Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# TCPairs output for this use case will be found in tc_pairs/201503 (relative to **OUTPUT_BASE**)
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
+# TCPairs output for this use case will be found in tc_pairs/201412 (relative to **OUTPUT_BASE**)
 # and will contain files with the following format:
 #
-# * mlq2015030100.gfso.<*nnnn*>.tcst
+# * mlq2014121400.gfso.<*nnnn*>.tcst
 #
 # where *nnnn* is a zero-padded 4-digit number
 #
 #
-# A plot (in .png format) will be found in the cyclone directory (relative to **OUTPUT_BASE**) along with
-# a text file containing data corresponding to the plotted storm tracks:
+# Plots (in .png format) will be found in tcmp_plots (relative to **OUTPUT_BASE**):
+#   * AMAX_WIND-BMAX_WIND_boxplot.png
 #
-#   * 20150301.png
+#   * AMAX_WIND-BMAX_WIND_boxplot.png
 #
-#   * 20150301.txt
-
+#   * AMAX_WIND-BMAX_WIND_boxplot.png
+#
+#   * AMSLP-BMSLP_boxplot.png
+#
+#   * AMSLP-BMSLP_boxplot.png
+#
+#   * AMSLP-BMSLP_boxplot.png
+#
+#   * TK_ERR_boxplot.png
+#
+#   * TK_ERR_mean.png
+#
+#   * TK_ERR_median.png
 
 
 
@@ -132,4 +147,4 @@ specific MET tool.  This is a data visualization written entirely in Python.
 #
 #
 #
-# .. note:: TcPairsUseCase, CyclonePlotterUseCase
+# .. note:: TcPairsUseCase
