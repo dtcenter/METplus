@@ -3,8 +3,8 @@
 export METPLUS_TEST_METPLUS_BASE=
 
 # version of METplus to test
-#export METPLUS_TEST_MET_INSTALL_DIR=/usr/local/met-8.1.1
-export METPLUS_TEST_MET_INSTALL_DIR=/d1/CODE/MET/MET_releases/met-9.0_beta2
+#export METPLUS_TEST_MET_INSTALL_DIR=/d1/CODE/MET/MET_releases/met-9.0_beta2
+export METPLUS_TEST_MET_INSTALL_DIR=/d1/CODE/MET/MET_development/MET-develop/met
 
 # location to write output from test run
 export METPLUS_TEST_OUTPUT_BASE=/d1/$USER/test-use-case-b
@@ -16,8 +16,7 @@ export METPLUS_TEST_PREV_OUTPUT_BASE=/d1/$USER/test-use-case-a
 export METPLUS_TEST_INPUT_BASE=/d1/METplus_Data
 
 # location of GempakToCF to run tests that use Gempak
-export METPLUS_TEST_GEMPAKTOCF_BIN=/d1/mccabe/bin/GempakToCF
-
+export METPLUS_TEST_GEMPAKTOCF_JAR=/d1/mccabe/bin/GempakToCF.jar
 # Location of ncap2 exe
 export METPLUS_TEST_NCAP2=/usr/local/nco/bin/ncap2
 
