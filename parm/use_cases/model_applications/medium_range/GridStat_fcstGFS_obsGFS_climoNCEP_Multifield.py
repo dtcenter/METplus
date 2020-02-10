@@ -1,6 +1,6 @@
 """
 Anomaly Grid Comparison
-=======
+=======================
 
 This use case will run the MET GridStat and StatAnalysis tools to compare gridded forecast data to gridded observation data over a few valid times and generate statistics over time.
 
@@ -58,10 +58,10 @@ This use case will run the MET GridStat and StatAnalysis tools to compare gridde
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_Multifield.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_Multifield.conf
 
 ##############################################################################
 # MET Configuration
@@ -94,13 +94,13 @@ This use case will run the MET GridStat and StatAnalysis tools to compare gridde
 #
 # This use case can be run two ways:
 #
-# 1) Passing in GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf then a user-specific system configuration file::
+# 1) Passing in GridStat_fcstGFS_obsGFS_climoNCEP_Multifield.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_Multifield.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstGFS_obsGFS_climoNCEP_Multifield.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_Multifield.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #

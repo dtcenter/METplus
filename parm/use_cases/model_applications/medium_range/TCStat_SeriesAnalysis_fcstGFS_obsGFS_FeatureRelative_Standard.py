@@ -1,6 +1,6 @@
 """
 Feature Relative Standard Use Case (simple series analysis by initialization times)
-==========================================================================
+===================================================================================
 This use case performs a series analysis on tropical cyclone
 data, based on initialization times.
 """
@@ -47,7 +47,7 @@ data, based on initialization times.
 # ----------------
 #
 # The following tools are used for each run time:
-#  TcPairs > RegridDataPlane, TcStat > SeriesAnalysis
+#  TcPairs > RegridDataPlane, TCStat > SeriesAnalysis
 #
 # This example loops by initialization time. For each initialization time
 #  it will process forecast leads 6, 12, 18, 24, 30, 36, and 40. There is only one
@@ -83,10 +83,10 @@ data, based on initialization times.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/TcStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TcStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf
 
 ##############################################################################
 # MET Configuration
@@ -112,13 +112,13 @@ data, based on initialization times.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in TcStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf then a user-specific system configuration file::
+# 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TcStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in TcStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TcStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -218,4 +218,4 @@ data, based on initialization times.
 # Keywords
 # --------
 #
-# .. note:: `TCPairsUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>, SeriesByInitUseCase <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>, TCStatUseCase <https://ncar.github.io/METplus/search.html?q=TCStatUseCase&check_keywords=yes&area=default>, RegridDataPlaneUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default> MediumRangeUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>`_
+# .. note:: `TCStatUseCase <https://ncar.github.io/METplus/search.html?q=TCStatUseCase&check_keywords=yes&area=default>, SeriesByInitUseCase <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>, TCStatUseCase <https://ncar.github.io/METplus/search.html?q=TCStatUseCase&check_keywords=yes&area=default>, RegridDataPlaneUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default> MediumRangeUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>`_
