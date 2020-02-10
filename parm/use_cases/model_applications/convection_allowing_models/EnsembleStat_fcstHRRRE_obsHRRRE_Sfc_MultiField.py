@@ -61,10 +61,10 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/convection_allowing_models/hrrr_ensemble_sfc.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/convection_allowing_models/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/hrrr_ensemble_sfc.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf
 
 ##############################################################################
 # MET Configuration
@@ -85,13 +85,13 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 #
 # This use case can be run two ways:
 #
-# 1) Passing in hrrr_ensemble_sfc.conf then a user-specific system configuration file::
+# 1) Passing in EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/hrrr_ensemble_sfc.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in hrrr_ensemble_sfc.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/hrrr_ensemble_sfc.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -118,7 +118,7 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in ensemble/201807091200 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/convection_allowing_models/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField/201807091200 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * ensemble_stat_HRRRE_F000_ADPSFC_20180709_120000V_ecnt.txt

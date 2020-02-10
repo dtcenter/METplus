@@ -87,10 +87,10 @@ from two runs of the GloTEC model.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications_space_weather/glotec_vs_glotec.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications_space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/space_weather/glotec_vs_glotec.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 
 ##############################################################################
 # MET Configuration
@@ -123,13 +123,13 @@ from two runs of the GloTEC model.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in glotec_vs_glotec.conf then a user-specific system configuration file::
+# 1) Passing in GridStat_fcstGloTEC_obsGloTEC_vx7.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/glotec_vs_glotec.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in glotec_vs_glotec.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstGloTEC_obsGloTEC_vx7.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/glotec_vs_glotec.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
