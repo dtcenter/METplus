@@ -425,7 +425,7 @@ def check_for_deprecated_config(conf):
 
             # check if <n> is found in the old item, use regex to find variables if found
             if '<n>' in old:
-                old_regex = old.replace('<n>', '(\d+)')
+                old_regex = old.replace('<n>', r'(\d+)')
                 indicies = find_indices_in_config_section(old_regex,
                                                           conf,
                                                           'config',

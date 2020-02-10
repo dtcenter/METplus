@@ -236,20 +236,20 @@ Brief summary of this use case...
 # ---------------------
 #
 # .. highlight:: none
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/seasonal_forecast.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/GridStat_fcstNMME_obsCPC_seasonal_forecast.conf
 
 ##############################################################################
 # Running METplus
 # ---------------
 # This use case can be run two ways:
 #
-# 1) Passing in seasonal_forecast.conf then a user-specific system configuration file::
+# 1) Passing in GridStat_fcstNMME_obsCPC_seasonal_forecast.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/seasonal_forecast.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/GridStat_fcstNMME_obsCPC_seasonal_forecast.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in seasonal_forecast.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstNMME_obsCPC_seasonal_forecast.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/seasonal_forecast.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/GridStat_fcstNMME_obsCPC_seasonal_forecast.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -301,7 +301,15 @@ Brief summary of this use case...
 # Expected Output
 # ---------------
 #
+# A successful run will output the following both to the screen and to the logfile::
+#
+#   INFO: METplus has successfully finished running.
+#
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
+# Output for this use case will be found in model_applications/s2s/GridStat_fcstNMME_obsCPC_seasonal_forecast/GridStat (relative to **OUTPUT_BASE**)
+#
 # For each month and year there will be two files written::
+
 #
 # * grid_stat_NMME-hindcast_precip_vs_CPC_IC{%Y}{%N}01_2301360000L_20081001_000000V.stat
 # * grid_stat_NMME-hindcast_precip_vs_CPC_IC{%Y}{%N}01_2301360000L_20081001_000000V_pairs.nc

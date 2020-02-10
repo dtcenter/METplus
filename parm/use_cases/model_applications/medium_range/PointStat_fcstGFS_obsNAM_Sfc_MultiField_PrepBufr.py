@@ -1,22 +1,25 @@
 """
-Upper Air Grid to Point Observation
-===================================
+CONUS Surface Air Grid to Point Observation
+===========================================
 
-Needs scientific input
+This use case will run PB2NC to move the PrepBufr format files to NetCDF and then
+compare a gridded forecast field to point observations, with an output of statistical
+comparisons.
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
-#
-# Needs scientific input
+# To provide useful statistical information on the relationship between observation data
+# in point format to a gridded forecast. These values can be used to help correct model
+# deviations from observed values.
 
 ##############################################################################
 # Datasets
 # --------
 #
 # | **Forecast:** GFS temperature, u-wind component, v-wind component, and height
-# | **Observation:** GDAS prepBURF data
+# | **Observation:** NAM prepBURF data
 #
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-medium_range-3.0.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
@@ -50,10 +53,10 @@ Needs scientific input
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/upper_air.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/upper_air.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf
 #
 
 ##############################################################################
@@ -102,13 +105,13 @@ Needs scientific input
 #
 # This use case can be run two ways:
 #
-# 1) Passing in upper_air.conf then a user-specific system configuration file::
+# 1) Passing in PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/upper_air.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in upper_air.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/upper_air.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -134,7 +137,7 @@ Needs scientific input
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in gdas (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in nam (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * point_stat_000000L_20170601_000000V.stat
@@ -146,4 +149,4 @@ Needs scientific input
 # Keywords
 # --------
 #
-# .. note:: `PB2NCUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCUseCase&check_keywords=yes&area=default>, PointStatUseCase <https://ncar.github.io/METplus/search.html?q=PointStatUseCase&check_keywords=yes&area=default>`
+# .. note:: `PB2NCUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCUseCase&check_keywords=yes&area=default>, MediumRangeUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>, PointStatUseCase <https://ncar.github.io/METplus/search.html?q=PointStatUseCase&check_keywords=yes&area=default>`
