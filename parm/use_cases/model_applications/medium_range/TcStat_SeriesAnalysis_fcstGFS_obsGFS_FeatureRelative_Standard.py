@@ -1,5 +1,5 @@
 """
-Feature Relative Use Case (simple series analysis by initialization times)
+Feature Relative Standard Use Case (simple series analysis by initialization times)
 ==========================================================================
 This use case performs a series analysis on tropical cyclone
 data, based on initialization times.
@@ -9,18 +9,23 @@ data, based on initialization times.
 # Scientific Objective
 # --------------------
 #
-# Describe the scientific objective of the use case here. This can be fairly
-# simple, or complex depending on the task.
+# By maintaining focus of each evaluation time (or evaluation time series, in this case)
+# on a user-defined area around a cyclone, the model statistical errors associated
+# with cyclonic physical features (moisture flux, stability, strength of upper-level PV
+# anomaly and jet, etc.) can be related directly to the model forecasts and provide
+# improvement guidance by accurately depicting interactions with significant weather
+# features around and within the cyclone. This is in contrast to the traditional
+# method of regional averaging cyclone observations in a fixed grid, which "smooths out"
+# system features and limits the meaningful metrics that can be gathered.
 
 ##############################################################################
 # Datasets
 # --------
 #
-# Describe the datasets here. Relevant information about the datasets that would
-# be beneficial include:
+# Relevant information about the datasets that would be beneficial include:
 #
-#  * Forecast dataset: ADeck non-ATCF tropical cyclone data
-#  * Observation dataset: non-ATCF tropical cyclone "best track"(BDeck) cyclone data
+#  * Forecast dataset: ADeck non-ATCF tropical cyclone data (GFS)
+#  * Observation dataset: non-ATCF tropical cyclone "best track"(BDeck) cyclone data (GFS)
 #  * Sources of data (links, contacts, etc...)
 #
 
@@ -78,10 +83,10 @@ data, based on initialization times.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/feature_relative.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/TcStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/feature_relative.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TcStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf
 
 ##############################################################################
 # MET Configuration
@@ -107,13 +112,13 @@ data, based on initialization times.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in feature_relative.conf then a user-specific system configuration file::
+# 1) Passing in TcStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/feature_relative.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TcStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in feature_relative.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in TcStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/feature_relative.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TcStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -213,4 +218,4 @@ data, based on initialization times.
 # Keywords
 # --------
 #
-# .. note:: TcPairsUseCase, SeriesByInitUseCase
+# .. note:: `TCPairsUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>, SeriesByInitUseCase <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>, TCStatUseCase <https://ncar.github.io/METplus/search.html?q=TCStatUseCase&check_keywords=yes&area=default>, RegridDataPlaneUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default> MediumRangeUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>`_
