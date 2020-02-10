@@ -44,19 +44,19 @@ from two runs of the GloTEC model.
 # | **Observation:** GloTEC TEC model run that assimilates COSMIC-1 RO data
 #
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. 
-# / Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-space_weather-3.0.tgz
+# | Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-space_weather-3.0.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** NOAA Space Weather Prediction Center (SWPC)
-# / Data contact: Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
+# | Data contact: Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
 #
 
 ##############################################################################
 # METplus Use Case Contact
 # ------------------------
 #
-# / **Author:** Jonathan L. Vigh (National Center for Atmospheric Research / Research Applications Laboratory / Joint Numerical Testbed)
-# / **Last modified:** 06 February 2020
+# | **Author:** Jonathan L. Vigh (National Center for Atmospheric Research / Research Applications Laboratory / Joint Numerical Testbed)
+# | **Last modified:** 06 February 2020
 #
 
 ##############################################################################
