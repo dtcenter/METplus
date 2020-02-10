@@ -190,6 +190,7 @@ Brief summary of this use case...
 # 		conda activate py3.6.3
 #
 # The GridStat tool is driven by the following ASCII configuration and run-scripts:
+#
 # •	METplus: run_grid_stat_metplus.bash sets key variables and executes the
 # 	master_metplus.py with configurations. Look for …/ush/master_metplus.py call:
 # •	user-config: “apik.conf”: defines which met version is used, where input data is to

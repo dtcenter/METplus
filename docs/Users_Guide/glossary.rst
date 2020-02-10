@@ -1757,7 +1757,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    GEMPAKTOCF_JAR
-     Path to the GempakToCF.jar file to run GempakToCF. Available on the MET webpage. Must be set if running GempakToCF wrapper, if using a filename template that ends with .grd, or if specifying an *_INPUT_DATATYPE item as GEMPAK.
+     Path to the GempakToCF.jar file to run GempakToCF. Available on the MET webpage. Must be set if running GempakToCF wrapper, if using a filename template that ends with .grd, or if specifying an \*_INPUT_DATATYPE item as GEMPAK.
 
      | *Used by:*  GempakToCF, other wrappers that will read Gempak data
      | *Family:*  [exe]
