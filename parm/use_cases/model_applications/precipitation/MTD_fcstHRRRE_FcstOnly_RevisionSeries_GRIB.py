@@ -49,10 +49,10 @@ This use case processes precipitation accumulation data over time.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/phpt-mtd.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/phpt-mtd.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf
 
 ##############################################################################
 # MET Configuration
@@ -73,13 +73,13 @@ This use case processes precipitation accumulation data over time.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in phpt-mtd.conf then a user-specific system configuration file::
+# 1) Passing in MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/phpt-mtd.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in phpt-mtd.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/phpt-mtd.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -106,7 +106,7 @@ This use case processes precipitation accumulation data over time.
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in phpt-mtd (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * mtd_20180313_000000V_2d.txt
@@ -118,11 +118,5 @@ This use case processes precipitation accumulation data over time.
 # Keywords
 # --------
 #
-# Choose from the following pool of keywords, and include them in a note directive below.
-# Remove any keywords you don't use.
-#
-# GridStatUseCase, PB2NCUseCase, PrecipitationUseCase
-#
-# Now include them like this:
 #
 # .. note:: MTDUseCase, PrecipitationUseCase

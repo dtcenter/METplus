@@ -68,10 +68,10 @@ gridded 6 hour observation precipitation accumulation data.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/phpt-vs-s4grib.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/phpt-vs-s4grib.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
 
 ##############################################################################
 # MET Configuration
@@ -92,13 +92,13 @@ gridded 6 hour observation precipitation accumulation data.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in phpt-vs-s4grib.conf then a user-specific system configuration file::
+# 1) Passing in GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/phpt-vs-s4grib.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in phpt-vs-s4grib.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/phpt-vs-s4grib.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -125,7 +125,7 @@ gridded 6 hour observation precipitation accumulation data.
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in grid_stat/phpt-vs-s4grib/201609041200 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB/grid_stat/201609041200 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * grid_stat_PROB_PHPT_APCP_vs_STAGE4_GRIB_APCP_A06_060000L_20160904_180000V_eclv.txt
@@ -139,12 +139,5 @@ gridded 6 hour observation precipitation accumulation data.
 ##############################################################################
 # Keywords
 # --------
-#
-# Choose from the following pool of keywords, and include them in a note directive below.
-# Remove any keywords you don't use.
-#
-# GridStatUseCase, PB2NCUseCase, PrecipitationUseCase
-#
-# Now include them like this:
 #
 # .. note:: GridStatUseCase, PrecipitationUseCase, PCPCombineUseCase, RegridDataPlaneUseCase
