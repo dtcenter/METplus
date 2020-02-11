@@ -57,9 +57,9 @@ nc_pairs_var_str = "";
 rank_corr_flag   = FALSE;
 
 // Applies to WAM and GloTEC
-// NOTE: This was added because MET v8.0 couldn't recognize the updated data files with quality flags 
+// NOTE: This was added because MET v8.0 could not recognize the updated data files with quality flags 
 // (the files were missing expected file attributes for CF compliance). So we tell it that this is a 
-// CF-compliant NetCDF file (even though it's not).
+// CF-compliant NetCDF file (even though it is not).
 file_type  = NETCDF_NCCF;
 
 //
@@ -118,7 +118,7 @@ obs = {
 // Data coverage quality flag. 0=none; 1=poor; 2=fair; 3=good; 4=very good; 5=excellent 
 //
 // Note that it is necessary to add 'file_type=NETCDF_NCCF;' below to tell MET that this
-// is a NetCDF file (it doesn't know from the larger context that this is the case). Otherwise
+// is a NetCDF file (it does not know from the larger context that this is the case). Otherwise
 // MET may interpret this as a polyline mask.
 
 mask = {
