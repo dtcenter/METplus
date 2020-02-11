@@ -39,10 +39,10 @@ exists).
 **Example 1**
 ::
 
-'FCST_HR_START' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'}
+'WGRIB2_EXE' : {'sec' : 'exe', 'alt' : 'WGRIB2'}
 
-this says that FCST_HR_START was found in the [config] section and should
-be replaced with LEAD_SEQ.
+this says that WGRIB2_EXE was found in the [exe] section and should
+be replaced with WGRIB2.
 
 **Example 2**
 ::
