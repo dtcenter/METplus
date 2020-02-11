@@ -22,5 +22,6 @@ If /d1/<USER>/test-use-case-b already exists, its content will be copied over to
 Once the tests have finished running, the output found in the two directories can be compared to see what has changed. Suggested commands to run to compare the output will be shown on the screen after completion of the script.
 
 To see which files and directories are only found in one run::
+
     diff -r /d1/mccabe/test-use-case-a /d1/mccabe/test-use-case-b | grep Only
 
