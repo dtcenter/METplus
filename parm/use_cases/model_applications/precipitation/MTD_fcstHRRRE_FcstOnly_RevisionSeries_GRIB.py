@@ -1,5 +1,5 @@
 """
-PHPT MODE Time Domain Use Case
+HRRRE MODE Time Domain Use Case
 ==============================
 
 This use case processes precipitation accumulation data over time.
@@ -9,14 +9,16 @@ This use case processes precipitation accumulation data over time.
 # Scientific Objective
 # --------------------
 #
-# Needs input
-#
+# To provide useful statistical information on aggregated object-based information
+# over a time series. This non-standard approach (i.e. a holistic approach to weather
+# systems over grid or point assessments) provides alternative views to numerical model
+# accuracy and offers new solutions to model adjustments.
 
 ##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset: PHPT forecasts in GRIB2
+#  * Forecast dataset: HRRRE forecasts in GRIB2
 #  * Sources of data (links, contacts, etc...)
 #
 
@@ -119,4 +121,4 @@ This use case processes precipitation accumulation data over time.
 # --------
 #
 #
-# .. note:: MTDUseCase, PrecipitationUseCase
+# .. note:: MTDUseCase, PrecipitationUseCase, HMTUseCase

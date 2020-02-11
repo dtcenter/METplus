@@ -1,5 +1,5 @@
 """
-PHPT vs. Stage IV GRIB Use Case
+HRRR-TLE vs. Stage IV GRIB Use Case
 ===============================
 
 This use case compares gridded probabilistic 6 hour forecast precipitation accumulation data to
@@ -28,7 +28,7 @@ gridded 6 hour observation precipitation accumulation data.
 # Describe the datasets here. Relevant information about the datasets that would
 # be beneficial include:
 # 
-#  * Forecast dataset: PHPT probabilistic forecasts in GRIB2
+#  * Forecast dataset: HRRR-TLE probabilistic forecasts in GRIB2
 #  * Observation dataset: Stage IV GRIB 1 and 6 hour precipitation accumulation
 #  * Sources of data (links, contacts, etc...)
 #
