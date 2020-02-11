@@ -57,8 +57,6 @@ all_use_cases = [
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf",
                 use_case_dir + "/model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf",
                 use_case_dir + "/model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf",
-                use_case_dir + "/model_applications/precipitation/precip_continuous.conf",
-                use_case_dir + "/model_applications/precipitation/ruc-vs-s2grib.conf",
                 use_case_dir + "/model_applications/tc_and_extra_tc/tc_stat_filter.conf",
                 use_case_dir + "/model_applications/s2s/GridStat_fcstNMME_obsCPC_seasonal_forecast.conf",
                 use_case_dir + "/model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf",
