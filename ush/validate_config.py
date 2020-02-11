@@ -44,8 +44,10 @@ def main():
             if cmd.startswith('#Add'):
                 add_line = cmd.replace('#Add ', '')
                 met_tool = add_line.split('_OUTPUT_PREFIX')[0]
-                print(f"\nIMPORTANT: Add the following to your METplus configuration file that sets {met_tool}_CONFIG_FILE:\n")
+                print(f"\nIMPORTANT: Add the following in the [config] section to your METplus "
+                      f"configuration file that sets {met_tool}_CONFIG_FILE:\n")
                 print(add_line)
+                user_answer = input("Make this change before continuing! [OK]")
                 continue
             # remove -i from sed command to avoid replacing in the file
             cmd_no_inline = cmd.replace('sed -i', 'sed')

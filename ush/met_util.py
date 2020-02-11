@@ -561,7 +561,7 @@ def check_for_deprecated_met_config(config):
                         new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
                         sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
                         config.logger.info(f"You will need to add {met_tool}_OUTPUT_PREFIX to the METplus config file"
-                                           f" that sets {met_tool}_CONFIG_FILE")
+                                           f" that sets {met_tool}_CONFIG_FILE. Set it to:")
                         output_prefix = replace_output_prefix(line)
                         add_line = f"{met_tool}_OUTPUT_PREFIX = {output_prefix}"
                         config.logger.info(add_line)
