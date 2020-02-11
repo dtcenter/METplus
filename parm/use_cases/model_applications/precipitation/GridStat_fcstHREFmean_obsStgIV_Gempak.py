@@ -1,6 +1,6 @@
 """
 HREF-mean to Stage IV QPE Use Case
-===============================
+==================================
 
 This use case compares 1 6- hour gridded forecast precipitation accumulation file to
 gridded 6 hour observation precipitation accumulation data.

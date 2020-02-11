@@ -1,6 +1,6 @@
 """
 HRRRE MODE Time Domain Use Case
-==============================
+===============================
 
 This use case processes precipitation accumulation data over time.
 
