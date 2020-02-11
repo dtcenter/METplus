@@ -287,7 +287,6 @@ Brief summary of this use case...
 # Output for this use case will be found in model_applications/s2s/GridStat_fcstNMME_obsCPC_seasonal_forecast/GridStat (relative to **OUTPUT_BASE**)
 #
 # For each month and year there will be two files written::
-
 #
 # * grid_stat_NMME-hindcast_precip_vs_CPC_IC{%Y}{%N}01_2301360000L_20081001_000000V.stat
 # * grid_stat_NMME-hindcast_precip_vs_CPC_IC{%Y}{%N}01_2301360000L_20081001_000000V_pairs.nc
