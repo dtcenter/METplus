@@ -80,6 +80,8 @@ accompanies the use cases:
 
 .. image:: ../_static/metplus_repo_releases_page.png
 
+-  Expand the Assets menu by clicking on the black triangle to the left of the 'Assets' text (below the description of the latest release)
+
 -  Click on the 'Source code' link (either the *zip* or *tar.gz*) and
    when prompted, save it to the directory you created.
 
@@ -91,36 +93,22 @@ accompanies the use cases:
 
 -  Click on the sample data link for the use case you will run and when
    prompted, save the file to the directory you created above. Sample
-   data are available for the following use cases:
+   data are available for the following use case categories:
 
-   -  Cyclone Track and Feature: *sample_data-cyclone_track_feature.tgz*
 
-   -  Ensemble: *sample_data-ensemble.tgz*
+   -  Model Applications:
+         -  Convection allowing models: *sample_data-convection_allowing_models-3.0.tgz*
 
-   -  Grid-to-Grid: *sample_data-grid_to_grid.tgz*
+         -  Medium Range: *sample_data-medium_range-3.0.tgz*
 
-   -  Grid-to-Obs: *sample_data-grid_to_obs.tgz*
+         -  Precipitation: *sample_data-precipitation-3.0.tgz*
 
-   -  Mode: *sample_data-mode.tgz*
+         -  TC and Extra TC: *sample_data-tc_and_extra_tc-3.0.tgz*
 
-   -  QPF: *sample_data-qpf.tgz*
+   -  MET Tool Wrapper:
+         -  For single MET tool/METplus wrapper use cases and MET tests: *sample_data-met_test-9.0.tgz*
 
-Get the source code via Command line
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  On your local host (or wherever you wish to install the METplus code)
-   create a directory where you want the code to reside
-
--  cd to the directory you just created.
-
--  On the command line, enter the following:
-
-   -  *git clone https://github.com/NCAR/METplus*
-
-   -  The source code should appear under the METplus Wrappers directory
-
--  To update your copy, cd to your METplus Wrappers install directory:
-   </*path*/*to*/>METplus and enter *git pull* at the command line
 
 METplus Wrappers directory structure
 ------------------------------------
@@ -131,7 +119,7 @@ directories to the METplus Wrappers directory. You should have the
 following directory structure::
 
   METplus/
-    doc/
+    docs/
     internal_tests/
     parm/
     sorc/
@@ -141,10 +129,11 @@ following directory structure::
 The top-level METplus Wrappers directory consists of a README.md file
 and several subdirectories.
 
-The doc/ directory contains documentation for users (PDF) and Doxygen
-files that are used to create the developer documentaton. The Doxygen
+The docs/ directory contains documentation for users and contributors (HTML) and Doxygen
+files that are used to create the METplus wrapper API documentaton. The Doxygen
 documentation can be created and viewed via web browser if the developer
-has Doxygen installed on the host.
+has Doxygen installed on the host.  The Doxygen documentation is useful to contributors and is not
+necessary for METplus end-users.
 
 The internal_tests/ directory contains unit test scripts that are only
 relevant to METplus Wrappers developers and contributors.
@@ -293,13 +282,13 @@ Copy and paste the following into an empty text file and name it 'my_user_config
 
   // Set the MET_INSTALL_DIR to the location of the MET install
   [dir]
-  MET_INSTALL_DIR = /usr/local/met-8.1
+  MET_INSTALL_DIR = /usr/local/met-9.0
 
   // Set these to any valid directory to override the </path/to> placeholder set in the metplus_system.conf file
   [dir]
   TMP_DIR = /tmp
-  INPUT_BASE = /tmp
-  OUTPUT_BASE = /tmp
+  INPUT_BASE = /tmp/input
+  OUTPUT_BASE = /tmp/output
 
 Run METplus via: ``master_metplus.py -c ./<my_user_config.conf>`` or ``master_metplus.py -c /<username>/<my_user_config.conf>`` if you saved your default config in a directory other than where you are running master_metplus.py.
 
@@ -341,7 +330,7 @@ The command:
 
 will run METplus using the defaults set in the three config files found in parm/metplus_config. Any variables defined in these three config files can be over-ridden in the parm/use_cases/feature_relative/feature_relative.conf file. METplus will run using the values specified in the feature_relative.conf file.
 
-**Example 3: Using examp,e configuration to perform a specific evaluation (e.g. Model 1 vs. Obs 1, Model 1 vs. Obs 2, Model 2 vs. Obs 1, etc...):**
+**Example 3: Using example configuration to perform a specific evaluation (e.g. Model 1 vs. Obs 1, Model 1 vs. Obs 2, Model 2 vs. Obs 1, etc...):**
 
 The command: 
 
