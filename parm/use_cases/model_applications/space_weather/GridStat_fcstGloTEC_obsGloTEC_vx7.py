@@ -100,7 +100,7 @@ from two runs of the GloTEC model.
 # These variables are referenced in the MET configuration file.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/space_weather/GridStat.glotec_vs_glotec
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/space_weather/GridStatConfig_vx7
 #
 # Note the following variables are referenced in the MET configuration file.
 # 
