@@ -190,7 +190,7 @@ Brief summary of this use case...
 # •	user-config: “apik.conf”: defines which met version is used, where input data is to
 # 	be found, and where output. It also provides the filters for the formats of both input
 # 	and output.
-# •	met_config: contains “GridStatConfig_APIK_S2S_use_case_1” where it sets all the
+# •	met_config: contains "GridStatConfig_seasonal_forecast" where it sets all the
 # 	GridStat parameters for data handling as well as types of statistics to be computed.
 # •	use-case config: points to the specific configuration file, in this case
 # 	“grid_to_grid_s2s_use_case_1_August-December.conf”, though a separate configuration
@@ -215,10 +215,10 @@ Brief summary of this use case...
 # 	input and output data, provides templates for reading variables inside the statistics
 # 	files. Because this part of MET has not yet been “python-wrapped”, the run-script has
 # 	to cover many aspects of the configuration that in METplus are better generalized.
-# 	SeriesAnalysis Climatology: ”config/SeriesAnalysisConfig_APIK_S2S_use_case_1_climo”
+# 	SeriesAnalysis Climatology: SeriesAnalysisConfig_seasonal_forecast_climo
 # 	contains the parameters that calculate the climatological mean difference between the
 # 	hindcast experiments and their associated observations.
-# 	SeriesAnalysis 2: “config/SeriesAnalsyisConfig_APIK_S2S_use_case_1_full_stats”
+# 	SeriesAnalysis 2: SeriesAnalysisConfig_seasonal_forecast_full_stats
 # 	contains all necessary configurations to compute the skill statistics. The options for
 # 	these statistics are listed in the MET-Users Guide. There are many options, and
 # 	turning them on is done in the context of the different groups or “packages”.
@@ -231,6 +231,19 @@ Brief summary of this use case...
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/GridStat_fcstNMME_obsCPC_seasonal_forecast.conf
 #
+
+##############################################################################
+# MET Configuration
+# ---------------------
+#
+# METplus sets environment variables based on the values in the METplus configuration file.
+# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
+#
+# .. highlight:: bash
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/GridStatConfig_seasonal_forecast
+#
+# See the following files for more information about the environment variables set in this configuration file.
+#   parm/use_cases/met_tool_wrapper/GridStat/GridStat.py
 
 ##############################################################################
 # Running METplus

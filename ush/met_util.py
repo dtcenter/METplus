@@ -2166,6 +2166,9 @@ def split_level(level):
     return '', ''
 
 def remove_quotes(input_string):
+    if not input_string:
+        return input_string
+
     if input_string[0] == '"' and input_string[-1] == '"':
         return input_string[1:-1]
 
