@@ -476,6 +476,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         return True
         
     def get_command(self):
+
         cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for a in self.args:
@@ -604,6 +605,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                               'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS to True to process'
                               .format(outfile))
             return True
+
+        # set user environment variables if needed
+        self.set_user_environment()
+
+        # send environment variables to logger
+        self.print_all_envs()
 
         return self.build()
 

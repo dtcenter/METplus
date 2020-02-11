@@ -136,7 +136,10 @@ class CustomIngestWrapper(CommandBuilder):
                 self.log_error("Could not generate command")
                 return
             self.logger.info(f'Running Custom Ingester {index}')
-            rdp.build()
+
+            # run command and add to errors if it failed
+            if not rdp.build():
+                self.errors += 1
 
 if __name__ == "__main__":
     util.run_stand_alone(__file__, "CustomIngest")

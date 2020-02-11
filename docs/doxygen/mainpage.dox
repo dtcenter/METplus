@@ -1,0 +1,64 @@
+/**
+\mainpage METplus Scripts
+
+\anchor mainpage-top
+
+Welcome to the METplus wrappers API documentation.  
+
+You can find more information about MET and METplus on these websites:
+
+What                  | Where
+:--------------------- | :------------------------------------
+MET                   | http://www.dtcenter.org/community-code
+METplus<sup>*</sup>   | https://github.com/NCAR/METplus
+METplus guides        | https://ncar.github.io/METplus
+
+<b><sup>*</sup>The METplus GitHub repository is currently public. A user account
+ is only necessary if you plan on contributing code.</b>
+
+
+------------------------------------------------------------------------
+\section the_manual Generating the Website
+
+This manual is a living document based on the version of the
+scripts.  It is generated from special comments in the scripts 
+themselves by a program called Doxygen, a documentation generation suite.  
+
+Go to the METplus GitHub Pages for information on how to generate this
+METplus API website, and a LaTeX version of the same.
+
+<!--###
+
+This manual is a living document.  It is generated from special
+comments in the scripts themselves by a program called Doxygen, a
+documentation generation suite.  Users can generate the entire
+website, and a LaTeX version of the same, if they have **Doxygen version
+1.8.9.1 or later**.
+
+\code{.sh}
+git clone https://www.github.com/NCAR/METplus
+cd METplus/sorc/
+make doc
+cd ../doc
+# copy the entire contents of the html/ directory to a web server
+\endcode
+
+As the METplus code is updated, the documentation should
+be updated as well, and any public version of this manual should add
+the new version.
+-->
+
+<!--### \section Repository README Text file and wiki contents.
+
+Links to the main repository README text file and the GitHub wiki contents
+
+ This links to the doxygen created html version of the README.md file
+ named METplus_README.html, the link text is: METplus Repository README File
+ So ... on the web page you literally see the following
+ See the METplus Repository README File
+
+ + @ref METplus_README
+ + @ref wikicontents
+-->
+
+*/

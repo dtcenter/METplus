@@ -81,6 +81,11 @@ def pre_run_setup(filename, app_name):
         config.set('dir', 'STAGING_DIR',
                    os.path.join(config.getdir('OUTPUT_BASE'), "stage"))
 
+    # get USER_SHELL config variable so the default value doesn't get logged
+    # at an inconvenient time (right after "COPYABLE ENVIRONMENT" but before actual
+    # copyable environment variable list)
+    config.getstr('config', 'USER_SHELL', 'bash')
+
     # handle dir to write temporary files
     handle_tmp_dir(config)
 
@@ -101,7 +106,7 @@ def run_metplus(config, process_list):
                 # if Usage specified in PROCESS_LIST, print usage and exit
                 if item == 'Usage':
                     command_builder.run_all_times()
-                    exit(1)
+                    return 1
             except AttributeError:
                 raise NameError("Process %s doesn't exist" % item)
 
@@ -118,7 +123,7 @@ def run_metplus(config, process_list):
         # exit if any wrappers did not initialized properly
         if not allOK:
             logger.info("Refer to ERROR messages above to resolve issues.")
-            exit()
+            return 1
 
         loop_order = config.getstr('config', 'LOOP_ORDER', '')
 
@@ -132,7 +137,7 @@ def run_metplus(config, process_list):
         else:
             logger.error("Invalid LOOP_ORDER defined. " + \
                          "Options are processes, times")
-            exit()
+            return 1
 
        # compute total number of errors that occurred and output results
         for process in processes:
@@ -149,7 +154,7 @@ def run_metplus(config, process_list):
     except:
         logger.exception("Fatal error occurred")
         logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
-        exit(1)
+        return 1
 
 def post_run_cleanup(config, app_name, total_errors):
     logger = config.logger
@@ -420,7 +425,7 @@ def check_for_deprecated_config(conf):
 
             # check if <n> is found in the old item, use regex to find variables if found
             if '<n>' in old:
-                old_regex = old.replace('<n>', '(\d+)')
+                old_regex = old.replace('<n>', r'(\d+)')
                 indicies = find_indices_in_config_section(old_regex,
                                                           conf,
                                                           'config',
@@ -521,6 +526,7 @@ def check_for_deprecated_met_config(config):
         met_config = config.getstr('config', met_config_key)
         if not met_config:
             continue
+        met_tool = met_config_key.replace('_CONFIG_FILE', '')
         config.logger.debug(f"Checking for deprecated environment variables in: {met_config}")
         with open(met_config, 'r') as f:
             for line in f:
@@ -554,10 +560,30 @@ def check_for_deprecated_met_config(config):
                                             "${OUTPUT_PREFIX} environment variable")
                         new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
                         sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+                        config.logger.info(f"You will need to add {met_tool}_OUTPUT_PREFIX to the METplus config file"
+                                           f" that sets {met_tool}_CONFIG_FILE. Set it to:")
+                        output_prefix = replace_output_prefix(line)
+                        add_line = f"{met_tool}_OUTPUT_PREFIX = {output_prefix}"
+                        config.logger.info(add_line)
+                        sed_cmds.append(f"#Add {add_line}")
                         all_good = False
                         break
 
     return all_good, sed_cmds
+
+def replace_output_prefix(line):
+    op_replacements = {'${MODEL}': '{MODEL}',
+                       '${FCST_VAR}': '{CURRENT_FCST_NAME}',
+                       '${OBTYPE}': '{OBTYPE}',
+                       '${OBS_VAR}': '{CURRENT_OBS_NAME}',
+                       '${LEVEL}': '{CURRENT_FCST_LEVEL}',
+                       '${FCST_TIME}': '{lead?fmt=%3H}',
+                       }
+    prefix = line.split('=')[1].strip().rstrip(';').strip('"')
+    for key, value, in op_replacements.items():
+        prefix = prefix.replace(key, value)
+
+    return prefix
 
 def handle_tmp_dir(config):
     """! if env var MET_TMP_DIR is set, override config TMP_DIR with value

@@ -53,7 +53,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('filename_templates',
                                    f'FCST_{app}_TEMPLATE')
         else:
-            c_dict['FCST_INPUT_TEMPLATE'] = None
+            c_dict['FCST_INPUT_TEMPLATE'] = ''
 
         if self.config.has_option('filename_templates',
                                   'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE'):
@@ -66,7 +66,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('filename_templates',
                                    'OBS_REGRID_DATA_PLANE_TEMPLATE')
         else:
-            c_dict['OBS_INPUT_TEMPLATE'] = None
+            c_dict['OBS_INPUT_TEMPLATE'] = ''
 
         if self.config.has_option('filename_templates',
                                   'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'):
@@ -79,7 +79,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('filename_templates',
                                    'FCST_REGRID_DATA_PLANE_TEMPLATE')
         else:
-            c_dict['FCST_OUTPUT_TEMPLATE'] = None
+            c_dict['FCST_OUTPUT_TEMPLATE'] = ''
 
         if self.config.has_option('filename_templates',
                                   'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'):
@@ -92,7 +92,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('filename_templates',
                                    'OBS_REGRID_DATA_PLANE_TEMPLATE')
         else:
-            c_dict['OBS_OUTPUT_TEMPLATE'] = None
+            c_dict['OBS_OUTPUT_TEMPLATE'] = ''
 
         if self.config.getbool('config', 'FCST_REGRID_DATA_PLANE_RUN', False):
             c_dict['FCST_INPUT_DIR'] = \
@@ -115,6 +115,12 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         c_dict['WIDTH'] = \
          self.config.getint('config', 'REGRID_DATA_PLANE_WIDTH', 1)
+
+        c_dict['GAUSSIAN_DX'] = \
+         self.config.getstr('config', 'REGRID_DATA_PLANE_GAUSSIAN_DX', '')
+
+        c_dict['GAUSSIAN_RADIUS'] = \
+         self.config.getstr('config', 'REGRID_DATA_PLANE_GAUSSIAN_RADIUS', '')
 
         return c_dict
 
@@ -349,6 +355,12 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         self.args.append("-width {}".format(self.c_dict['WIDTH']))
 
         self.args.append("-name " + output_name)
+
+        if self.c_dict['GAUSSIAN_DX']:
+            self.args.append(f"-gaussian_dx {self.c_dict['GAUSSIAN_DX']}")
+
+        if self.c_dict['GAUSSIAN_RADIUS']:
+            self.args.append(f"-gaussian_radius {self.c_dict['GAUSSIAN_RADIUS']}")
 
         return True
 

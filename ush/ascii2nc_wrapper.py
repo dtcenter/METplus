@@ -18,6 +18,7 @@ import os
 import met_util as util
 import time_util
 from command_builder import CommandBuilder
+from string_template_substitution import StringSub
 
 '''!@namespace ASCII2NCWrapper
 @brief Wraps the ASCII2NC tool to reformat ascii format to NetCDF
@@ -211,9 +212,18 @@ class ASCII2NCWrapper(CommandBuilder):
         self.build()
 
     def find_input_files(self, time_info):
+        # if using python embedding input, don't check if file exists,
+        # just substitute time info and add to input file list
+        if self.c_dict['ASCII_FORMAT'] == 'python':
+            filename = StringSub(self.logger,
+                                 self.c_dict['OBS_INPUT_TEMPLATE'],
+                                 **time_info).do_string_sub()
+            self.infiles.append(filename)
+            return self.infiles
+
         obs_path = self.find_obs(time_info, None)
         if obs_path is None:
-            return
+            return None
 
         if isinstance(obs_path, list):
             self.infiles.extend(obs_path)

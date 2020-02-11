@@ -50,6 +50,7 @@ def stat_analysis_wrapper():
     # Default, empty StatAnalysisWrapper with some configuration values set
     # to /path/to:
     config = metplus_config()
+    util.handle_tmp_dir(config)
     return StatAnalysisWrapper(config, config.logger)
 
 

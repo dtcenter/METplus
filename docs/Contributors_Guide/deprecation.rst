@@ -6,10 +6,20 @@ user that they need to update the config files if they are using a
 deprecated variable.
 
 
-**Example**
+Example
+-------
+::
 
-[exe] WGRIB2_EXE changed to [exe] WGRIB2. The new variable is set to
-wgrib2 in the default config file
+    [exe]
+    WGRIB2_EXE
+
+changed to
+::
+
+    [exe]
+    WGRIB2
+
+The new variable is set to wgrib2 in the default config file
 (parm/metplus_config/metplus_system.conf). If the user is still using
 WGRIB2_EXE to set to /usr/local/bin/wgrib2, this value will not be
 read and the user will have no way to know that they are setting the
@@ -25,20 +35,23 @@ it was found in, and a suggested alternative (None if no alternative
 exists).
 
 
+
 **Example 1**
+::
 
-'FCST_HR_START' : {'sec' : 'config', 'alt' : 'LEAD_SEQ'}    -- this
-says that FCST_HR_START was found in the [config] section and should
-be replaced with LEAD_SEQ.
+'WGRIB2_EXE' : {'sec' : 'exe', 'alt' : 'WGRIB2'}
 
+this says that WGRIB2_EXE was found in the [exe] section and should
+be replaced with WGRIB2.
 
 **Example 2**
+::
 
-'PREPBUFR_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : None}   --
+'PREPBUFR_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : None}
+
 this says that [regex_pattern] PREPBUFR_DIR_REGEX is no longer used
 and there is no alternative (because the wrapper uses filename
 templates instead of regex now).
-
 
 
 If any of these old variables are found in any config file passed to
@@ -54,9 +67,11 @@ not set, check for the old config as well.
 
 
 **Example**
+::
 
-'LOOP_METHOD' : {'sec' : 'config', 'alt' : 'LOOP_ORDER', 'req' :
-False}  -- this says that [config] LOOP_METHOD is deprecated and you
+'LOOP_METHOD' : {'sec' : 'config', 'alt' : 'LOOP_ORDER', 'req' : False}
+
+this says that [config] LOOP_METHOD is deprecated and you
 should use LOOP_ORDER, but it is not required to change
 immediately. If you do this, you should check for LOOP_ORDER and then
 check for LOOP_METHOD if it is not set.
