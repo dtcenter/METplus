@@ -497,7 +497,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    [DEPRECATED] ADECK_FILE_PREFIX
-     Please use TC_PAIRS_ADECK_TEMPLATE..
+     Please use TC_PAIRS_ADECK_TEMPLATE.
 
      | *Used by:*  TcPairs
      | *Family:* [config]
@@ -644,7 +644,7 @@ METplus Configuration Glossary
      | *Default:*  /path/to
 
    [DEPRECATED] CYCLONE
-     Please use TC_PAIRS_CYCLONE or TC_STAT_CYCLONE..
+     Please use TC_PAIRS_CYCLONE or TC_STAT_CYCLONE.
 
      | *Used by:*  TcPairs, TcStat
      | *Family:*  [config]
