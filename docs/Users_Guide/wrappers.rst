@@ -8,8 +8,7 @@ sections can be added to the PROCESS_LIST configuration list variable.
 The Configuration section of each wrapper section below lists the
 METplus Wrappers configuration variables that are specific to that
 wrapper organized by config file section. You can find more information
-about each item in the A-Z Config Glossary
-(`[sec:SC_AZ_Config_Glossary] <#sec:SC_AZ_Config_Glossary>`__).
+about each item in the METplus Configuration Glossary.
 
 CyclonePlotter
 --------------
@@ -26,22 +25,22 @@ Configuration
 
 [dir]
 
-| CYCLONE_PLOTTER_INPUT_DIR `[sec:C] <#sec:C>` __
-| CYCLONE_PLOTTER_OUTPUT_DIR `[sec:SC_C] <#sec:SC_C>`__
+| CYCLONE_PLOTTER_INPUT_DIR
+| CYCLONE_PLOTTER_OUTPUT_DIR 
 
 [config]
 
-| CYCLONE_PLOTTER_INIT_DATE `[sec:SC_C] <#sec:SC_C>`__
-| CYCLONE_PLOTTER_INIT_HOUR `[sec:SC_C] <#sec:SC_C>`__
-| CYCLONE_PLOTTER_MODEL `[sec:SC_C] <#sec:SC_C>`__
-| CYCLONE_PLOTTER_PLOT_TITLE `[sec:SC_C] <#sec:SC_C>`__
-| CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE `[sec:SC_C] <#sec:SC_C>`__
-| CYCLONE_PLOTTER_CROSS_MARKER_SIZE `[sec:SC_C] <#sec:SC_C>`__
-| CYCLONE_PLOTTER_GENERATE_TRACK_ASCII `[sec:SC_G] <#sec:SC_G>`__
+| CYCLONE_PLOTTER_INIT_DATE 
+| CYCLONE_PLOTTER_INIT_HOUR 
+| CYCLONE_PLOTTER_MODEL 
+| CYCLONE_PLOTTER_PLOT_TITLE 
+| CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE 
+| CYCLONE_PLOTTER_CROSS_MARKER_SIZE 
+| CYCLONE_PLOTTER_GENERATE_TRACK_ASCII
 
 **Deprecated:**
 
-CYCLONE_OUT_DIR\ `[sec:SC_C] <#sec:SC_C>`__
+CYCLONE_OUT_DIR
 
 EnsembleStat
 ------------
@@ -60,40 +59,40 @@ Configuration
 
 [dir]
 
-| OBS_ENSEMBLE_STAT_POINT_INPUT_DIR `[sec:SC_O] <#sec:SC_O>`__
-| OBS_ENSEMBLE_STAT_GRID_INPUT_DIR `[sec:SC_O] <#sec:SC_O>`__
-| FCST_ENSEMBLE_STAT_INPUT_DIR `[sec:SC_F] <#sec:SC_F>`__
-| ENSEMBLE_STAT_OUTPUT_DIR `[sec:SC_E] <#sec:SC_E>`__
+| OBS_ENSEMBLE_STAT_POINT_INPUT_DIR 
+| OBS_ENSEMBLE_STAT_GRID_INPUT_DIR 
+| FCST_ENSEMBLE_STAT_INPUT_DIR 
+| ENSEMBLE_STAT_OUTPUT_DIR
 
 [filename_templates]
 
-| OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE `[sec:SC_O] <#sec:SC_O>`__
-| OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE `[sec:SC_O] <#sec:SC_O>`__
-| FCST_ENSEMBLE_STAT_INPUT_TEMPLATE `[sec:SC_F] <#sec:SC_F>`__
+| OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE 
+| OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE 
+| FCST_ENSEMBLE_STAT_INPUT_TEMPLATE 
 
 [config]
 
-| ENSEMBLE_STAT_ONCE_PER_FIELD `[sec:SC_E] <#sec:SC_E>`__
-| FCST_ENSEMBLE_STAT_INPUT_DATATYPE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE `[sec:SC_O] <#sec:SC_O>`__
-| OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE `[sec:SC_O] <#sec:SC_O>`__
-| ENSEMBLE_STAT_GRID_VX `[sec:SC_E] <#sec:SC_E>`__
-| ENSEMBLE_STAT_CONFIG_FILE `[sec:SC_E] <#sec:SC_E>`__
-| ENSEMBLE_STAT_MET_OBS_ERR_TABLE `[sec:SC_E] <#sec:SC_E>`__
-| ENSEMBLE_STAT_N_MEMBERS `[sec:SC_E] <#sec:SC_E>`__
-| OBS_ENSEMBLE_STAT_WINDOW_BEGIN `[sec:SC_O] <#sec:SC_O>`__
-| OBS_ENSEMBLE_STAT_WINDOW_END `[sec:SC_O] <#sec:SC_O>`__
-| ENSEMBLE_STAT_ENS_THRESH `[sec:SC_E] <#sec:SC_E>`__
-| ENS_VAR<n>_NAME (optional) `[sec:SC_E] <#sec:SC_E>`__
-| ENS_VAR<n>_LEVELS (optional) `[sec:SC_E] <#sec:SC_E>`__
-| ENS_VAR<n>_THRESH (optional) `[sec:SC_E] <#sec:SC_E>`__
-| ENS_VAR<n>_OPTIONS (optional) `[sec:SC_E] <#sec:SC_E>`__
+| ENSEMBLE_STAT_ONCE_PER_FIELD
+| FCST_ENSEMBLE_STAT_INPUT_DATATYPE 
+| OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE 
+| OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE 
+| ENSEMBLE_STAT_GRID_VX
+| ENSEMBLE_STAT_CONFIG_FILE
+| ENSEMBLE_STAT_MET_OBS_ERR_TABLE
+| ENSEMBLE_STAT_N_MEMBERS
+| OBS_ENSEMBLE_STAT_WINDOW_BEGIN 
+| OBS_ENSEMBLE_STAT_WINDOW_END 
+| ENSEMBLE_STAT_ENS_THRESH
+| ENS_VAR<n>_NAME (optional)
+| ENS_VAR<n>_LEVELS (optional)
+| ENS_VAR<n>_THRESH (optional)
+| ENS_VAR<n>_OPTIONS (optional)
 
 **Deprecated:**
 
-| ENSEMBLE_STAT_OUT_DIR\ `[sec:SC_E] <#sec:SC_E>`__
-| ENSEMBLE_STAT_CONFIG\ `[sec:SC_E] <#sec:SC_E>`__
-| ENSEMBLE_STAT_MET_OBS_ERROR_TABLE `[sec:SC_E] <#sec:SC_E>`__
+| ENSEMBLE_STAT_OUT_DIR
+| ENSEMBLE_STAT_CONFIG
+| ENSEMBLE_STAT_MET_OBS_ERROR_TABLE
 
 ExtractTiles
 ------------
@@ -122,22 +121,22 @@ the dimensions and density of the tiles comprising the subregion:
 
 [dir]
 
-EXTRACT_TILES_OUTPUT_DIR `[sec:SC_E] <#sec:SC_E>`__
+EXTRACT_TILES_OUTPUT_DIR
 
 [config]
 
-| LON_ADJ\ `[sec:SC_L] <#sec:SC_L>`__
-| LAT_ADJ `[sec:SC_L] <#sec:SC_L>`__
-| NLAT `[sec:SC_N] <#sec:SC_N>`__
-| NLON `[sec:SC_N] <#sec:SC_N>`__
-| DLON `[sec:SC_D] <#sec:SC_D>`__
-| DLAT `[sec:SC_D] <#sec:SC_D>`__
-| EXTRACT_TILES_FILTER_OPTS `[sec:SC_E] <#sec:SC_E>`__
-| EXTRACT_TILES_VAR_LIST `[sec:SC_E] <#sec:SC_E>`__
+| LON_ADJ
+| LAT_ADJ
+| NLAT
+| NLON
+| DLON
+| DLAT
+| EXTRACT_TILES_FILTER_OPTS
+| EXTRACT_TILES_VAR_LIST
 
 **Deprecated:**
 
-EXTRACT_OUT_DIR\ `[sec:SC_E] <#sec:SC_E>`__
+EXTRACT_OUT_DIR
 
 GempakToCF
 ----------
@@ -156,25 +155,25 @@ Configuration
 
 [exe]
 
-GEMPAKTOCF_JAR `[sec:SC_G] <#sec:SC_G>`__
+GEMPAKTOCF_JAR
 
 [dir]
 
-| GEMPAKTOCF_INPUT_DIR `[sec:SC_G] <#sec:SC_G>`__
-| GEMPAKTOCF_OUTPUT_DIR `[sec:SC_G] <#sec:SC_G>`__
+| GEMPAKTOCF_INPUT_DIR
+| GEMPAKTOCF_OUTPUT_DIR
 
 [filename_templates]
 
-| GEMPAKTOCF_INPUT_TEMPLATE `[sec:SC_G] <#sec:SC_G>`__
-| GEMPAKTOCF_OUTPUT_TEMPLATE `[sec:SC_G] <#sec:SC_G>`__
+| GEMPAKTOCF_INPUT_TEMPLATE
+| GEMPAKTOCF_OUTPUT_TEMPLATE
 
 [config]
 
-| GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS `[sec:SC_G] <#sec:SC_G>`__
+| GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS
 
 **Deprecated:**
 
-| GEMPAKTOCF_CLASSPATH `[sec:SC_G] <#sec:SC_G>`__
+| GEMPAKTOCF_CLASSPATH
 
 GridStat
 --------
@@ -193,36 +192,36 @@ Configuration
 
 [dir]
 
-| FCST_GRID_STAT_INPUT_DIR `[sec:SC_F] <#sec:SC_F>`__
-| OBS_GRID_STAT_INPUT_DIR `[sec:SC_O] <#sec:SC_O>`__
-| GRID_STAT_OUTPUT_DIR `[sec:SC_G] <#sec:SC_G>`__
+| FCST_GRID_STAT_INPUT_DIR 
+| OBS_GRID_STAT_INPUT_DIR 
+| GRID_STAT_OUTPUT_DIR
 
 [filename_templates]
 
-| FCST_GRID_STAT_INPUT_TEMPLATE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_GRID_STAT_INPUT_TEMPLATE `[sec:SC_O] <#sec:SC_O>`__
+| FCST_GRID_STAT_INPUT_TEMPLATE 
+| OBS_GRID_STAT_INPUT_TEMPLATE 
 | GRID_STAT_VERIFICATION_MASK_TEMPLATE (optional)
-  `[sec:SC_G] <#sec:SC_G>`__
+ 
 
 [config]
 
-| GRID_STAT_CONFIG_FILE `[sec:SC_G] <#sec:SC_G>`__
-| FCST_GRID_STAT_INPUT_DATATYPE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_GRID_STAT_INPUT_DATATYPE `[sec:SC_O] <#sec:SC_O>`__
-| GRID_STAT_ONCE_PER_FIELD `[sec:SC_G] <#sec:SC_G>`__
-| FCST_GRID_STAT_PROB_THRESH (optional) `[sec:SC_F] <#sec:SC_F>`__
-| OBS_GRID_STAT_PROB_THRESH (optional) `[sec:SC_O] <#sec:SC_O>`__
-| GRID_STAT_NEIGHBORHOOD_WIDTH (optional) `[sec:SC_G] <#sec:SC_G>`__
-| GRID_STAT_NEIGHBORHOOD_SHAPE (optional) `[sec:SC_G] <#sec:SC_G>`__
-| FCST_GRID_STAT_WINDOW_BEGIN (optional) `[sec:SC_F] <#sec:SC_F>`__
-| FCST_GRID_STAT_WINDOW_END (optional) `[sec:SC_F] <#sec:SC_F>`__
-| OBS_GRID_STAT_WINDOW_BEGIN (optional) `[sec:SC_O] <#sec:SC_O>`__
-| OBS_GRID_STAT_WINDOW_END (optional) `[sec:SC_O] <#sec:SC_O>`__
+| GRID_STAT_CONFIG_FILE
+| FCST_GRID_STAT_INPUT_DATATYPE 
+| OBS_GRID_STAT_INPUT_DATATYPE 
+| GRID_STAT_ONCE_PER_FIELD
+| FCST_GRID_STAT_PROB_THRESH (optional) 
+| OBS_GRID_STAT_PROB_THRESH (optional) 
+| GRID_STAT_NEIGHBORHOOD_WIDTH (optional)
+| GRID_STAT_NEIGHBORHOOD_SHAPE (optional)
+| FCST_GRID_STAT_WINDOW_BEGIN (optional) 
+| FCST_GRID_STAT_WINDOW_END (optional) 
+| OBS_GRID_STAT_WINDOW_BEGIN (optional) 
+| OBS_GRID_STAT_WINDOW_END (optional) 
 
 **Deprecated:**
 
-| GRID_STAT_OUT_DIR\ `[sec:SC_G] <#sec:SC_G>`__
-| GRID_STAT_CONFIG\ `[sec:SC_G] <#sec:SC_G>`__
+| GRID_STAT_OUT_DIR
+| GRID_STAT_CONFIG
 
 MakePlots
 ---------
@@ -247,47 +246,47 @@ configuration file:
 
 [dir]
 
-| PLOTTING_SCRIPTS_DIR `[sec:SC_P] <#sec:SC_P>`__
-| STAT_FILES_INPUT_DIR `[sec:SC_S] <#sec:SC_S>`__
-| PLOTTING_OUTPUT_DIR `[sec:SC_P] <#sec:SC_P>`__
+| PLOTTING_SCRIPTS_DIR 
+| STAT_FILES_INPUT_DIR 
+| PLOTTING_OUTPUT_DIR 
 
 [config]
 
-| VERIF_CASE `[sec:SC_V] <#sec:SC_V>`__
-| VERIF_TYPE `[sec:SC_V] <#sec:SC_V>`__
-| PLOT_TIME `[sec:SC_P] <#sec:SC_P>`__
-| VALID_BEG `[sec:SC_V] <#sec:SC_V>`__
-| VALID_END `[sec:SC_V] <#sec:SC_V>`__
-| INIT_BEG `[sec:SC_I] <#sec:SC_I>`__
-| INIT_END `[sec:SC_I] <#sec:SC_I>`__
-| VALID_HOUR_METHOD `[sec:SC_V] <#sec:SC_V>`__
-| VALID_HOUR_BEG `[sec:SC_V] <#sec:SC_V>`__
-| VALID_HOUR_END `[sec:SC_V] <#sec:SC_V>`__
-| VALID_HOUR_INCREMENT `[sec:SC_V] <#sec:SC_V>`__
-| INIT_HOUR_METHOD `[sec:SC_I] <#sec:SC_I>`__
-| INIT_HOUR_BEG `[sec:SC_I] <#sec:SC_I>`__
-| INIT_HOUR_END `[sec:SC_I] <#sec:SC_I>`__
-| INIT_HOUR_INCREMENT `[sec:SC_I] <#sec:SC_I>`__
-| MODEL<n>_NAME `[sec:SC_M] <#sec:SC_M>`__
-| MODEL<n>_OBS_NAME `[sec:SC_M] <#sec:SC_M>`__
-| MODEL<n>_NAME_ON_PLOT `[sec:SC_M] <#sec:SC_M>`__
-| FCST_VAR<n>_NAME `[sec:SC_F] <#sec:SC_F>`__
-| FCST_VAR<n>_LEVELS `[sec:SC_F] <#sec:SC_F>`__
-| REGION_LIST `[sec:SC_R] <#sec:SC_R>`__
-| LEAD_LIST `[sec:SC_L] <#sec:SC_L>`__
-| INTERP `[sec:SC_I] <#sec:SC_I>`__
-| PLOT_STATS_LIST `[sec:SC_P] <#sec:SC_P>`__
-| CI_METHOD `[sec:SC_C] <#sec:SC_C>`__
-| VERIF_GRID `[sec:SC_V] <#sec:SC_V>`__
-| EVENT_EQUALIZATION `[sec:SC_E] <#sec:SC_E>`__
+| VERIF_CASE
+| VERIF_TYPE
+| PLOT_TIME 
+| VALID_BEG
+| VALID_END
+| INIT_BEG 
+| INIT_END 
+| VALID_HOUR_METHOD
+| VALID_HOUR_BEG
+| VALID_HOUR_END
+| VALID_HOUR_INCREMENT
+| INIT_HOUR_METHOD 
+| INIT_HOUR_BEG 
+| INIT_HOUR_END 
+| INIT_HOUR_INCREMENT 
+| MODEL<n>_NAME 
+| MODEL<n>_OBS_NAME 
+| MODEL<n>_NAME_ON_PLOT 
+| FCST_VAR<n>_NAME 
+| FCST_VAR<n>_LEVELS 
+| REGION_LIST 
+| LEAD_LIST 
+| INTERP 
+| PLOT_STATS_LIST 
+| CI_METHOD 
+| VERIF_GRID
+| EVENT_EQUALIZATION
 
 The following values are **optional** in the METplus Wrappers
 configuration file:
 
-| FCST_VAR<n>_THRESH `[sec:SC_F] <#sec:SC_F>`__
-| FCST_VAR<n>_OPTIONS `[sec:SC_F] <#sec:SC_F>`__
-| VAR<n>_FOURIER_DECOMP `[sec:SC_V] <#sec:SC_V>`__
-| VAR<n>_WAVE_NUM_LIST `[sec:SC_V] <#sec:SC_V>`__
+| FCST_VAR<n>_THRESH 
+| FCST_VAR<n>_OPTIONS 
+| VAR<n>_FOURIER_DECOMP
+| VAR<n>_WAVE_NUM_LIST
 
 Mode
 ----
@@ -306,43 +305,43 @@ Configuration
 
 [dir]
 
-| FCST_MODE_INPUT_DIR `[sec:SC_F] <#sec:SC_F>`__
-| OBS_MODE_INPUT_DIR `[sec:SC_O] <#sec:SC_O>`__
-| MODE_OUTPUT_DIR `[sec:SC_M] <#sec:SC_M>`__
+| FCST_MODE_INPUT_DIR 
+| OBS_MODE_INPUT_DIR 
+| MODE_OUTPUT_DIR 
 
 [filename_templates]
 
-| FCST_MODE_INPUT_TEMPLATE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_MODE_INPUT_TEMPLATE `[sec:SC_O] <#sec:SC_O>`__
+| FCST_MODE_INPUT_TEMPLATE 
+| OBS_MODE_INPUT_TEMPLATE 
 
 [config]
 
-| MODE_CONFIG_FILE `[sec:SC_M] <#sec:SC_M>`__
-| FCST_MODE_INPUT_DATATYPE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_MODE_INPUT_DATATYPE `[sec:SC_O] <#sec:SC_O>`__
-| MODE_QUILT `[sec:SC_M] <#sec:SC_M>`__
-| MODE_CONV_RADIUS `[sec:SC_M] <#sec:SC_M>`__
-| FCST_MODE_CONV_RADIUS `[sec:SC_F] <#sec:SC_F>`__
-| OBS_MODE_CONV_RADIUS `[sec:SC_O] <#sec:SC_O>`__
-| MODE_CONV_THRESH `[sec:SC_M] <#sec:SC_M>`__
-| FCST_MODE_CONV_THRESH `[sec:SC_F] <#sec:SC_F>`__
-| OBS_MODE_CONV_THRESH `[sec:SC_O] <#sec:SC_O>`__
-| MODE_MERGE_THRESH `[sec:SC_M] <#sec:SC_M>`__
-| FCST_MODE_MERGE_THRESH `[sec:SC_F] <#sec:SC_F>`__
-| OBS_MODE_MERGE_THRESH `[sec:SC_O] <#sec:SC_O>`__
-| MODE_MERGE_FLAG `[sec:SC_M] <#sec:SC_M>`__
-| FCST_MODE_MERGE_FLAG `[sec:SC_F] <#sec:SC_F>`__
-| OBS_MODE_MERGE_FLAG `[sec:SC_O] <#sec:SC_O>`__
-| MODE_MERGE_CONFIG_FILE `[sec:SC_M] <#sec:SC_M>`__
-| FCST_MODE_WINDOW_BEGIN `[sec:SC_F] <#sec:SC_F>`__
-| FCST_MODE_WINDOW_END `[sec:SC_F] <#sec:SC_F>`__
-| OBS_MODE_WINDOW_BEGIN `[sec:SC_O] <#sec:SC_O>`__
-| OBS_MODE_WINDOW_END `[sec:SC_O] <#sec:SC_O>`__
+| MODE_CONFIG_FILE 
+| FCST_MODE_INPUT_DATATYPE 
+| OBS_MODE_INPUT_DATATYPE 
+| MODE_QUILT 
+| MODE_CONV_RADIUS 
+| FCST_MODE_CONV_RADIUS 
+| OBS_MODE_CONV_RADIUS 
+| MODE_CONV_THRESH 
+| FCST_MODE_CONV_THRESH 
+| OBS_MODE_CONV_THRESH 
+| MODE_MERGE_THRESH 
+| FCST_MODE_MERGE_THRESH 
+| OBS_MODE_MERGE_THRESH 
+| MODE_MERGE_FLAG 
+| FCST_MODE_MERGE_FLAG 
+| OBS_MODE_MERGE_FLAG 
+| MODE_MERGE_CONFIG_FILE 
+| FCST_MODE_WINDOW_BEGIN 
+| FCST_MODE_WINDOW_END 
+| OBS_MODE_WINDOW_BEGIN 
+| OBS_MODE_WINDOW_END 
 
 **Deprecated:**
 
-| MODE_OUT_DIR\ `[sec:SC_M] <#sec:SC_M>`__
-| MODE_CONFIG\ `[sec:SC_M] <#sec:SC_M>`__
+| MODE_OUT_DIR
+| MODE_CONFIG 
 
 MTD
 ---
@@ -361,32 +360,32 @@ Configuration
 
 [dir]
 
-| FCST_MTD_INPUT_DIR `[sec:SC_F] <#sec:SC_F>`__
-| OBS_MTD_INPUT_DIR `[sec:SC_O] <#sec:SC_O>`__
-| MTD_OUTPUT_DIR `[sec:SC_M] <#sec:SC_M>`__
+| FCST_MTD_INPUT_DIR 
+| OBS_MTD_INPUT_DIR 
+| MTD_OUTPUT_DIR 
 
 [filename_templates]
 
-| FCST_MTD_INPUT_TEMPLATE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_MTD_INPUT_TEMPLATE `[sec:SC_O] <#sec:SC_O>`__
+| FCST_MTD_INPUT_TEMPLATE 
+| OBS_MTD_INPUT_TEMPLATE 
 
 [config]
 
-| MTD_CONFIG_FILE `[sec:SC_M] <#sec:SC_M>`__
-| MTD_MIN_VOLUME `[sec:SC_M] <#sec:SC_M>`__
-| MTD_SINGLE_RUN `[sec:SC_M] <#sec:SC_M>`__
-| MTD_SINGLE_DATA_SRC `[sec:SC_M] <#sec:SC_M>`__
-| FCST_MTD_INPUT_DATATYPE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_MTD_INPUT_DATATYPE `[sec:SC_O] <#sec:SC_O>`__
-| FCST_MTD_CONV_RADIUS `[sec:SC_F] <#sec:SC_F>`__
-| FCST_MTD_CONV_THRESH `[sec:SC_F] <#sec:SC_F>`__ OBS_MTD_CONV_RADIUS
-  `[sec:SC_O] <#sec:SC_O>`__
-| OBS_MTD_CONV_THRESH `[sec:SC_O] <#sec:SC_O>`__
+| MTD_CONFIG_FILE 
+| MTD_MIN_VOLUME 
+| MTD_SINGLE_RUN 
+| MTD_SINGLE_DATA_SRC 
+| FCST_MTD_INPUT_DATATYPE 
+| OBS_MTD_INPUT_DATATYPE 
+| FCST_MTD_CONV_RADIUS 
+| FCST_MTD_CONV_THRESH
+| OBS_MTD_CONV_RADIUS
+| OBS_MTD_CONV_THRESH 
 
 **Deprecated:**
 
-| MTD_OUT_DIR\ `[sec:SC_M] <#sec:SC_M>`__
-| MTD_CONFIG\ `[sec:SC_M] <#sec:SC_M>`__
+| MTD_OUT_DIR
+| MTD_CONFIG 
 
 PB2NC
 -----
@@ -406,49 +405,49 @@ Configuration
 
 [dir]
 
-| PB2NC_INPUT_DIR `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_OUTPUT_DIR `[sec:SC_P] <#sec:SC_P>`__
+| PB2NC_INPUT_DIR 
+| PB2NC_OUTPUT_DIR 
 
 [filename_templates]
 
-| PB2NC_INPUT_TEMPLATE `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_OUTPUT_TEMPLATE `[sec:SC_P] <#sec:SC_P>`__
+| PB2NC_INPUT_TEMPLATE 
+| PB2NC_OUTPUT_TEMPLATE 
 
 [config]
 
-| PB2NC_SKIP_IF_OUTPUT_EXISTS `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_OFFSETS `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_INPUT_DATATYPE `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_CONFIG_FILE `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_MESSAGE_TYPE (optional) `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_STATION_ID (optional) `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_GRID (optional) `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_POLY `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_OBS_BUFR_VAR_LIST (optional) `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_TIME_SUMMARY_FLAG `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_TIME_SUMMARY_BEG `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_TIME_SUMMARY_END `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_TIME_SUMMARY_VAR_NAMES `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_TIME_SUMMARY_TYPES `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_WINDOW_BEGIN `[sec:SC_P] <#sec:SC_P>`__
-| PB2NC_WINDOW_END `[sec:SC_P] <#sec:SC_P>`__
+| PB2NC_SKIP_IF_OUTPUT_EXISTS 
+| PB2NC_OFFSETS 
+| PB2NC_INPUT_DATATYPE 
+| PB2NC_CONFIG_FILE 
+| PB2NC_MESSAGE_TYPE (optional) 
+| PB2NC_STATION_ID (optional) 
+| PB2NC_GRID (optional) 
+| PB2NC_POLY 
+| PB2NC_OBS_BUFR_VAR_LIST (optional) 
+| PB2NC_TIME_SUMMARY_FLAG 
+| PB2NC_TIME_SUMMARY_BEG 
+| PB2NC_TIME_SUMMARY_END 
+| PB2NC_TIME_SUMMARY_VAR_NAMES 
+| PB2NC_TIME_SUMMARY_TYPES 
+| PB2NC_WINDOW_BEGIN 
+| PB2NC_WINDOW_END 
 
 **Deprecated:**
 
-| PREPBUFR_DATA_DIR\ `[sec:SC_P] <#sec:SC_P>`__
-| PREPBUFR_MODEL_DIR_NAME\ `[sec:SC_P] <#sec:SC_P>`__
-| PREPBUFR_DIR_REGEX\ `[sec:SC_P] <#sec:SC_P>`__
-| PREPBUFR_FILE_REGEX\ `[sec:SC_P] <#sec:SC_P>`__
-| NC_FILE_TMPL\ `[sec:SC_N] <#sec:SC_N>`__
-| PB2NC_VERTICAL_LEVEL\ `[sec:SC_P] <#sec:SC_P>`__
-| OBS_BUFR_VAR_LIST\ `[sec:SC_O] <#sec:SC_O>`__
-| TIME_SUMMARY_FLAG\ `[sec:SC_T] <#sec:SC_T>`__
-| TIME_SUMMARY_BEG\ `[sec:SC_T] <#sec:SC_T>`__
-| TIME_SUMMARY_END\ `[sec:SC_T] <#sec:SC_T>`__
-| TIME_SUMMARY_VAR_NAMES\ `[sec:SC_T] <#sec:SC_T>`__
-| TIME_SUMMARY_TYPE\ `[sec:SC_T] <#sec:SC_T>`__
-| OVERWRITE_NC_OUTPUT\ `[sec:SC_O] <#sec:SC_O>`__
-| VERTICAL_LOCATION\ `[sec:SC_V] <#sec:SC_V>`__
+| PREPBUFR_DATA_DIR
+| PREPBUFR_MODEL_DIR_NAME
+| PREPBUFR_DIR_REGEX
+| PREPBUFR_FILE_REGEX
+| NC_FILE_TMPL
+| PB2NC_VERTICAL_LEVEL
+| OBS_BUFR_VAR_LIST
+| TIME_SUMMARY_FLAG
+| TIME_SUMMARY_BEG
+| TIME_SUMMARY_END
+| TIME_SUMMARY_VAR_NAMES
+| TIME_SUMMARY_TYPE
+| OVERWRITE_NC_OUTPUT 
+| VERTICAL_LOCATION
 
 PcpCombine
 ----------
@@ -469,63 +468,63 @@ Configuration
 
 [dir]
 
-| FCST_PCP_COMBINE_INPUT_DIR `[sec:SC_F] <#sec:SC_F>`__
-| FCST_PCP_COMBINE_OUTPUT_DIR `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_INPUT_DIR `[sec:SC_O] <#sec:SC_O>`__
-| OBS_PCP_COMBINE_OUTPUT_DIR `[sec:SC_O] <#sec:SC_O>`__
+| FCST_PCP_COMBINE_INPUT_DIR 
+| FCST_PCP_COMBINE_OUTPUT_DIR 
+| OBS_PCP_COMBINE_INPUT_DIR 
+| OBS_PCP_COMBINE_OUTPUT_DIR 
 
 [filename_templates]
 
-| FCST_PCP_COMBINE_INPUT_TEMPLATE `[sec:SC_F] <#sec:SC_F>`__
-| FCST_PCP_COMBINE_OUTPUT_TEMPLATE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_INPUT_TEMPLATE `[sec:SC_O] <#sec:SC_O>`__
-| OBS_PCP_COMBINE_OUTPUT_TEMPLATE `[sec:SC_O] <#sec:SC_O>`__
+| FCST_PCP_COMBINE_INPUT_TEMPLATE 
+| FCST_PCP_COMBINE_OUTPUT_TEMPLATE 
+| OBS_PCP_COMBINE_INPUT_TEMPLATE 
+| OBS_PCP_COMBINE_OUTPUT_TEMPLATE 
 
 [config]
 
-| FCST_IS_PROB `[sec:SC_F] <#sec:SC_F>`__
-| OBS_IS_PROB `[sec:SC_O] <#sec:SC_O>`__
-| FCST_PCP_COMBINE_<n>_FIELD_NAME `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_<n>_FIELD_NAME `[sec:SC_O] <#sec:SC_O>`__
-| FCST_PCP_COMBINE_DATA_INTERVAL `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_DATA_INTERVAL `[sec:SC_O] <#sec:SC_O>`__
-| FCST_PCP_COMBINE_TIMES_PER_FILE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_TIMES_PER_FILE `[sec:SC_O] <#sec:SC_O>`__
-| FCST_PCP_COMBINE_IS_DAILY_FILE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_IS_DAILY_FILE `[sec:SC_O] <#sec:SC_O>`__
-| FCST_PCP_COMBINE_INPUT_DATATYPE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_INPUT_DATATYPE `[sec:SC_O] <#sec:SC_O>`__
-| FCST_PCP_COMBINE_INPUT_LEVEL `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_INPUT_LEVEL `[sec:SC_O] <#sec:SC_O>`__
-| FCST_PCP_COMBINE_RUN `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_RUN `[sec:SC_O] <#sec:SC_O>`__
-| FCST_PCP_COMBINE_METHOD `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_METHOD `[sec:SC_O] <#sec:SC_O>`__
-| FCST_PCP_COMBINE_MIN_FORECAST `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_MIN_FORECAST `[sec:SC_O] <#sec:SC_O>`__
-| FCST_PCP_COMBINE_MAX_FORECAST `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_MAX_FORECAST `[sec:SC_O] <#sec:SC_O>`__
-| FCST_PCP_COMBINE_STAT_LIST `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_STAT_LIST `[sec:SC_O] <#sec:SC_O>`__
-| FCST_PCP_COMBINE_DERIVE_LOOKBACK `[sec:SC_F] <#sec:SC_F>`__
-| OBS_PCP_COMBINE_DERIVE_LOOKBACK `[sec:SC_O] <#sec:SC_O>`__
-| PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS `[sec:SC_P] <#sec:SC_P>`__
+| FCST_IS_PROB 
+| OBS_IS_PROB 
+| FCST_PCP_COMBINE_<n>_FIELD_NAME 
+| OBS_PCP_COMBINE_<n>_FIELD_NAME 
+| FCST_PCP_COMBINE_DATA_INTERVAL 
+| OBS_PCP_COMBINE_DATA_INTERVAL 
+| FCST_PCP_COMBINE_TIMES_PER_FILE 
+| OBS_PCP_COMBINE_TIMES_PER_FILE 
+| FCST_PCP_COMBINE_IS_DAILY_FILE 
+| OBS_PCP_COMBINE_IS_DAILY_FILE 
+| FCST_PCP_COMBINE_INPUT_DATATYPE 
+| OBS_PCP_COMBINE_INPUT_DATATYPE 
+| FCST_PCP_COMBINE_INPUT_LEVEL 
+| OBS_PCP_COMBINE_INPUT_LEVEL 
+| FCST_PCP_COMBINE_RUN 
+| OBS_PCP_COMBINE_RUN 
+| FCST_PCP_COMBINE_METHOD 
+| OBS_PCP_COMBINE_METHOD 
+| FCST_PCP_COMBINE_MIN_FORECAST 
+| OBS_PCP_COMBINE_MIN_FORECAST 
+| FCST_PCP_COMBINE_MAX_FORECAST 
+| OBS_PCP_COMBINE_MAX_FORECAST 
+| FCST_PCP_COMBINE_STAT_LIST 
+| OBS_PCP_COMBINE_STAT_LIST 
+| FCST_PCP_COMBINE_DERIVE_LOOKBACK 
+| OBS_PCP_COMBINE_DERIVE_LOOKBACK 
+| PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS 
 
 **Deprecated:**
 
-| PCP_COMBINE_METHOD\ `[sec:SC_P] <#sec:SC_P>`__
-| FCST_MIN_FORECAST\ `[sec:SC_F] <#sec:SC_F>`__
-| FCST_MAX_FORECAST\ `[sec:SC_F] <#sec:SC_F>`__
-| OBS_MIN_FORECAST\ `[sec:SC_O] <#sec:SC_O>`__
-| OBS_MAX_FORECAST\ `[sec:SC_O] <#sec:SC_O>`__
-| FCST_DATA_INTERVAL\ `[sec:SC_F] <#sec:SC_F>`__
-| OBS_DATA_INTERVAL\ `[sec:SC_O] <#sec:SC_O>`__
-| FCST_IS_DAILY_FILE\ `[sec:SC_F] <#sec:SC_F>`__
-| OBS_IS_DAILY_FILE\ `[sec:SC_O] <#sec:SC_O>`__
-| FCST_TIMES_PER_FILE\ `[sec:SC_F] <#sec:SC_F>`__
-| OBS_TIMES_PER_FILE\ `[sec:SC_O] <#sec:SC_O>`__
-| FCST_LEVEL\ `[sec:SC_F] <#sec:SC_F>`__
-| OBS_LEVEL\ `[sec:SC_O] <#sec:SC_O>`__
+| PCP_COMBINE_METHOD
+| FCST_MIN_FORECAST 
+| FCST_MAX_FORECAST 
+| OBS_MIN_FORECAST 
+| OBS_MAX_FORECAST 
+| FCST_DATA_INTERVAL 
+| OBS_DATA_INTERVAL 
+| FCST_IS_DAILY_FILE 
+| OBS_IS_DAILY_FILE 
+| FCST_TIMES_PER_FILE 
+| OBS_TIMES_PER_FILE 
+| FCST_LEVEL
+| OBS_LEVEL 
 
 PointStat
 ---------
@@ -547,53 +546,53 @@ Configuration
 
 [dir]
 
-| FCST_POINT_STAT_INPUT_DIR `[sec:SC_F] <#sec:SC_F>`__
-| OBS_POINT_STAT_INPUT_DIR `[sec:SC_O] <#sec:SC_O>`__
-| POINT_STAT_OUTPUT_DIR `[sec:SC_P] <#sec:SC_P>`__
+| FCST_POINT_STAT_INPUT_DIR 
+| OBS_POINT_STAT_INPUT_DIR 
+| POINT_STAT_OUTPUT_DIR 
 
 [filename_templates]
 
-| FCST_POINT_STAT_INPUT_TEMPLATE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_POINT_STAT_INPUT_TEMPLATE `[sec:SC_O] <#sec:SC_O>`__
+| FCST_POINT_STAT_INPUT_TEMPLATE 
+| OBS_POINT_STAT_INPUT_TEMPLATE 
 | POINT_STAT_VERIFICATION_MASK_TEMPLATE (optional)
-  `[sec:SC_P] <#sec:SC_P>`__
+  
 
 [config]
 
-| POINT_STAT_OFFSETS `[sec:SC_P] <#sec:SC_P>`__
-| FCST_POINT_STAT_INPUT_DATATYPE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_POINT_STAT_INPUT_DATATYPE `[sec:SC_O] <#sec:SC_O>`__
-| POINT_STAT_CONFIG_FILE `[sec:SC_P] <#sec:SC_P>`__
-| MODEL `[sec:SC_M] <#sec:SC_M>`__
-| POINT_STAT_REGRID_TO_GRID `[sec:SC_P] <#sec:SC_P>`__
-| POINT_STAT_GRID `[sec:SC_P] <#sec:SC_P>`__
-| POINT_STAT_POLY `[sec:SC_P] <#sec:SC_P>`__
-| POINT_STAT_STATION_ID `[sec:SC_P] <#sec:SC_P>`__
-| POINT_STAT_MESSAGE_TYPE `[sec:SC_P] <#sec:SC_P>`__
-| FCST_POINT_STAT_WINDOW_BEGIN (optional) `[sec:SC_F] <#sec:SC_F>`__
-| FCST_POINT_STAT_WINDOW_END (optional) `[sec:SC_F] <#sec:SC_F>`__
-| OBS_POINT_STAT_WINDOW_BEGIN (optional) `[sec:SC_O] <#sec:SC_O>`__
-| OBS_POINT_STAT_WINDOW_END (optional) `[sec:SC_O] <#sec:SC_O>`__
-| POINT_STAT_NEIGHBORHOOD_WIDTH (optional) `[sec:SC_P] <#sec:SC_P>`__
-| POINT_STAT_NEIGHBORHOOD_SHAPE (optional) `[sec:SC_P] <#sec:SC_P>`__
+| POINT_STAT_OFFSETS 
+| FCST_POINT_STAT_INPUT_DATATYPE 
+| OBS_POINT_STAT_INPUT_DATATYPE 
+| POINT_STAT_CONFIG_FILE 
+| MODEL 
+| POINT_STAT_REGRID_TO_GRID 
+| POINT_STAT_GRID 
+| POINT_STAT_POLY 
+| POINT_STAT_STATION_ID 
+| POINT_STAT_MESSAGE_TYPE 
+| FCST_POINT_STAT_WINDOW_BEGIN (optional) 
+| FCST_POINT_STAT_WINDOW_END (optional) 
+| OBS_POINT_STAT_WINDOW_BEGIN (optional) 
+| OBS_POINT_STAT_WINDOW_END (optional) 
+| POINT_STAT_NEIGHBORHOOD_WIDTH (optional) 
+| POINT_STAT_NEIGHBORHOOD_SHAPE (optional) 
 
 **Deprecated:**
 
-| FCST_INPUT_DIR\ `[sec:SC_F] <#sec:SC_F>`__
-| OBS_INPUT_DIR\ `[sec:SC_O] <#sec:SC_O>`__
-| START_HOUR\ `[sec:SC_S] <#sec:SC_S>`__
-| END_HOUR\ `[sec:SC_E] <#sec:SC_E>`__
-| BEG_TIME\ `[sec:SC_B] <#sec:SC_B>`__
-| FCST_HR_START\ `[sec:SC_F] <#sec:SC_F>`__
-| FCST_HR_END\ `[sec:SC_F] <#sec:SC_F>`__
-| FCST_HR_INTERVAL\ `[sec:SC_F] <#sec:SC_F>`__
-| OBS_INPUT_DIR_REGEX\ `[sec:SC_O] <#sec:SC_O>`__
-| FCST_INPUT_DIR_REGEX\ `[sec:SC_F] <#sec:SC_F>`__
-| FCST_INPUT_FILE_REGEX\ `[sec:SC_F] <#sec:SC_F>`__
-| OBS_INPUT_FILE_REGEX\ `[sec:SC_O] <#sec:SC_O>`__
-| OBS_INPUT_FILE_TMPL\ `[sec:SC_O] <#sec:SC_O>`__
-| FCST_INPUT_FILE_TMPL\ `[sec:SC_F] <#sec:SC_F>`__
-| REGRID_TO_GRID\ `[sec:SC_R] <#sec:SC_R>`__
+| FCST_INPUT_DIR
+| OBS_INPUT_DIR
+| START_HOUR
+| END_HOUR
+| BEG_TIME
+| FCST_HR_START
+| FCST_HR_END
+| FCST_HR_INTERVAL
+| OBS_INPUT_DIR_REGEX
+| FCST_INPUT_DIR_REGEX
+| FCST_INPUT_FILE_REGEX
+| OBS_INPUT_FILE_REGEX
+| OBS_INPUT_FILE_TMPL 
+| FCST_INPUT_FILE_TMPL
+| REGRID_TO_GRID
 
 RegridDataPlane
 ---------------
@@ -612,22 +611,22 @@ Configuration
 
 [dir]
 
-| FCST_REGRID_DATA_PLANE_INPUT_DIR `[sec:SC_F] <#sec:SC_F>`__
-| OBS_REGRID_DATA_PLANE_INPUT_DIR `[sec:SC_O] <#sec:SC_O>`__
+| FCST_REGRID_DATA_PLANE_INPUT_DIR 
+| OBS_REGRID_DATA_PLANE_INPUT_DIR 
 
 [filename_templates]
 
-| FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE `[sec:SC_O] <#sec:SC_O>`__
+| FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE 
+| OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE 
 
 [config]
 
-| FCST_REGRID_DATA_PLANE_RUN `[sec:SC_F] <#sec:SC_F>`__
-| OBS_REGRID_DATA_PLANE_RUN `[sec:SC_O] <#sec:SC_O>`__
-| REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS `[sec:SC_R] <#sec:SC_R>`__
-| REGRID_DATA_PLANE_VERIF_GRID `[sec:SC_R] <#sec:SC_R>`__
-| FCST_REGRID_DATA_PLANE_INPUT_DATATYPE `[sec:SC_F] <#sec:SC_F>`__
-| OBS_REGRID_DATA_PLANE_INPUT_DATATYPE `[sec:SC_O] <#sec:SC_O>`__
+| FCST_REGRID_DATA_PLANE_RUN
+| OBS_REGRID_DATA_PLANE_RUN
+| REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS
+| REGRID_DATA_PLANE_VERIF_GRID
+| FCST_REGRID_DATA_PLANE_INPUT_DATATYPE
+| OBS_REGRID_DATA_PLANE_INPUT_DATATYPE
 | REGRID_DATA_PLANE_GAUSSIAN_DX
 | REGRID_DATA_PLANE_GAUSSIAN_RADIUS
 | REGRID_DATA_PLANE_WIDTH
@@ -635,7 +634,7 @@ Configuration
 
 **Deprecated:**
 
-VERIFICATION_GRID\ `[sec:SC_V] <#sec:SC_V>`__
+VERIFICATION_GRID
 
 SeriesByInit
 ------------
@@ -657,33 +656,33 @@ Configuration
 
 [dir]
 
-| SERIES_BY_INIT_FILTERED_OUTPUT_DIR `[sec:SC_S] <#sec:SC_S>`__
-| SERIES_BY_INIT_OUTPUT_DIR `[sec:SC_S] <#sec:SC_S>`__
+| SERIES_BY_INIT_FILTERED_OUTPUT_DIR 
+| SERIES_BY_INIT_OUTPUT_DIR 
 
 [regex_patterns]
 
-| FCST_TILE_PREFIX `[sec:SC_F] <#sec:SC_F>`__
-| ANLY_TILE_PREFIX `[sec:SC_A] <#sec:SC_A>`__
-| FCST_TILE_REGEX `[sec:SC_F] <#sec:SC_F>`__
-| ANLY_TILE_REGEX `[sec:SC_A] <#sec:SC_A>`__
-| FCST_NC_TILE_REGEX `[sec:SC_F] <#sec:SC_F>`__
-| ANLY_NC_TILE_REGEX `[sec:SC_A] <#sec:SC_A>`__
-| FCST_ASCII_REGEX_LEAD `[sec:SC_F] <#sec:SC_F>`__
-| ANLY_ASCII_REGEX_LEAD `[sec:SC_A] <#sec:SC_A>`__
+| FCST_TILE_PREFIX 
+| ANLY_TILE_PREFIX
+| FCST_TILE_REGEX 
+| ANLY_TILE_REGEX
+| FCST_NC_TILE_REGEX 
+| ANLY_NC_TILE_REGEX
+| FCST_ASCII_REGEX_LEAD 
+| ANLY_ASCII_REGEX_LEAD
 
 [config]
 
-| INIT_BEG `[sec:SC_I] <#sec:SC_I>`__
-| INIT_END `[sec:SC_I] <#sec:SC_I>`__
-| INIT_INCREMENT `[sec:SC_I] <#sec:SC_I>`__
-| INIT_HOUR_END `[sec:SC_I] <#sec:SC_I>`__
-| INIT_INCLUDE `[sec:SC_I] <#sec:SC_I>`__
-| INIT_EXCLUDE `[sec:SC_I] <#sec:SC_I>`__
-| SERIES_ANALYSIS_FILTER_OPTS `[sec:SC_S] <#sec:SC_S>`__
+| INIT_BEG 
+| INIT_END 
+| INIT_INCREMENT 
+| INIT_HOUR_END 
+| INIT_INCLUDE 
+| INIT_EXCLUDE 
+| SERIES_ANALYSIS_FILTER_OPTS 
 
 **Deprecated:**
 
-SERIES_INIT_FILTERED_OUT_DIR\ `[sec:SC_S] <#sec:SC_S>`__
+SERIES_INIT_FILTERED_OUT_DIR
 
 SeriesByLead
 ------------
@@ -722,25 +721,25 @@ would set the following:
 
 [dir]
 
-| SERIES_BY_LEAD_FILTERED_OUTPUT `[sec:SC_S] <#sec:SC_S>`__
-| SERIES_BY_LEAD_OUTPUT_DIR `[sec:SC_S] <#sec:SC_S>`__
+| SERIES_BY_LEAD_FILTERED_OUTPUT 
+| SERIES_BY_LEAD_OUTPUT_DIR 
 
 [config]
 
-| INIT_BEG `[sec:SC_I] <#sec:SC_I>`__
-| INIT_TIME_FMT `[sec:SC_I] <#sec:SC_I>`__
-| INIT_END `[sec:SC_I] <#sec:SC_I>`__
-| INIT_INCREMENT `[sec:SC_I] <#sec:SC_I>`__
-| SERIES_BY_LEAD_GROUP_FCSTS `[sec:SC_S] <#sec:SC_S>`__
-| LEAD_SEQ_<n> `[sec:SC_L] <#sec:SC_L>`__
-| LEAD_SEQ_<n>_LABEL `[sec:SC_L] <#sec:SC_L>`__
-| SERIES_ANALYSIS_FILTER_OPT `[sec:SC_S] <#sec:SC_S>`__
-| VAR_LIST `[sec:SC_V] <#sec:SC_V>`__
-| STAT_LIST `[sec:SC_S] <#sec:SC_S>`__
+| INIT_BEG 
+| INIT_TIME_FMT 
+| INIT_END 
+| INIT_INCREMENT 
+| SERIES_BY_LEAD_GROUP_FCSTS 
+| LEAD_SEQ_<n> 
+| LEAD_SEQ_<n>_LABEL 
+| SERIES_ANALYSIS_FILTER_OPT 
+| VAR_LIST
+| STAT_LIST 
 
 **Deprecated:**
 
-SERIES_LEAD_FILTERED_OUT_DIR\ `[sec:SC_S] <#sec:SC_S>`__
+SERIES_LEAD_FILTERED_OUT_DIR
 
 StatAnalysis
 ------------
@@ -769,90 +768,90 @@ configuration file for running with LOOP_ORDER = times:
 
 [dir]
 
-| STAT_ANALYSIS_LOOKIN_DIR\ `[sec:SC_S] <#sec:SC_S>`__
-| STAT_ANALYSIS_OUTPUT_DIR `[sec:SC_S] <#sec:SC_S>`__
+| STAT_ANALYSIS_LOOKIN_DIR
+| STAT_ANALYSIS_OUTPUT_DIR 
 
 [config]
 
-| LOOP_BY `[sec:SC_L] <#sec:SC_L>`__
-| [VALID/INIT]\_TIME_FMT `[sec:SC_V] <#sec:SC_V>`__
-| [VALID/INIT]\_BEG `[sec:SC_V] <#sec:SC_V>`__
-  `[sec:SC_I] <#sec:SC_I>`__
-| [VALID/INIT]\_END `[sec:SC_V] <#sec:SC_V>`__
-  `[sec:SC_I] <#sec:SC_I>`__
-| VALID_HOUR_METHOD `[sec:SC_V] <#sec:SC_V>`__
-| VALID_HOUR_BEG `[sec:SC_V] <#sec:SC_V>`__
-| VALID_HOUR_END `[sec:SC_V] <#sec:SC_V>`__
-| VALID_HOUR_INCREMENT `[sec:SC_V] <#sec:SC_V>`__
-| INIT_HOUR_METHOD `[sec:SC_I] <#sec:SC_I>`__
-| INIT_HOUR_BEG `[sec:SC_I] <#sec:SC_I>`__
-| INIT_HOUR_END `[sec:SC_I] <#sec:SC_I>`__
-| INIT_HOUR_INCREMENT `[sec:SC_I] <#sec:SC_I>`__
-| STAT_ANALYSIS_CONFIG `[sec:SC_S] <#sec:SC_S>`__
-| MODEL `[sec:SC_M] <#sec:SC_M>`__
-| OBTYPE `[sec:SC_O] <#sec:SC_O>`__
-| JOB_NAME `[sec:SC_J] <#sec:SC_J>`__
-| JOB_ARGS `[sec:SC_J] <#sec:SC_J>`__
+| LOOP_BY 
+| [VALID/INIT]\_TIME_FMT
+| [VALID/INIT]\_BEG
+  
+| [VALID/INIT]\_END
+  
+| VALID_HOUR_METHOD
+| VALID_HOUR_BEG
+| VALID_HOUR_END
+| VALID_HOUR_INCREMENT
+| INIT_HOUR_METHOD 
+| INIT_HOUR_BEG 
+| INIT_HOUR_END 
+| INIT_HOUR_INCREMENT 
+| STAT_ANALYSIS_CONFIG 
+| MODEL 
+| OBTYPE 
+| JOB_NAME
+| JOB_ARGS
 
 The following values are **optional** in the METplus Wrappers
 configuration file for running with LOOP_ORDER = times:
 
-| DESC `[sec:SC_D] <#sec:SC_D>`__
-| FCST_LEAD `[sec:SC_F] <#sec:SC_F>`__
-| FCST_VAR<n>_NAME `[sec:SC_F] <#sec:SC_F>`__
-| FCST_VAR<n>_LEVEL `[sec:SC_F] <#sec:SC_F>`__
-| OBS_VAR<n>_NAME `[sec:SC_O] <#sec:SC_O>`__
-| OBS_VAR<n>_LEVEL\ `[sec:SC_O] <#sec:SC_O>`__
-| REGION `[sec:SC_R] <#sec:SC_R>`__
-| INTERP `[sec:SC_I] <#sec:SC_I>`__
-| INTERP_PTS `[sec:SC_I] <#sec:SC_I>`__
-| FCST_THRESH `[sec:SC_F] <#sec:SC_F>`__
-| COV_THRESH `[sec:SC_C] <#sec:SC_C>`__
-| LINE_TYPE `[sec:SC_L] <#sec:SC_L>`__
-| STAT_ANALYSIS_DUMP_ROW_TMPL `[sec:SC_S] <#sec:SC_S>`__
-| STAT_ANALYSIS_OUT_STAT_TMPL `[sec:SC_S] <#sec:SC_S>`__
+| DESC
+| FCST_LEAD 
+| FCST_VAR<n>_NAME 
+| FCST_VAR<n>_LEVEL 
+| OBS_VAR<n>_NAME 
+| OBS_VAR<n>_LEVEL
+| REGION 
+| INTERP 
+| INTERP_PTS 
+| FCST_THRESH 
+| COV_THRESH 
+| LINE_TYPE 
+| STAT_ANALYSIS_DUMP_ROW_TMPL 
+| STAT_ANALYSIS_OUT_STAT_TMPL 
 
 The following values **must** be defined in the METplus Wrappers
 configuration file for running with LOOP_ORDER = processes:
 
-| STAT_ANALYSIS_OUTPUT_DIR `[sec:SC_S] <#sec:SC_S>`__
-| VERIF_CASE `[sec:SC_V] <#sec:SC_V>`__
-| VERIF_TYPE `[sec:SC_V] <#sec:SC_V>`__
-| PLOT_TIME `[sec:SC_P] <#sec:SC_P>`__
-| [VALID/INIT]\_BEG `[sec:SC_V] <#sec:SC_V>`__
-  `[sec:SC_I] <#sec:SC_I>`__
-| [VALID/INIT]\_END `[sec:SC_V] <#sec:SC_V>`__
-  `[sec:SC_I] <#sec:SC_I>`__
-| VALID_HOUR_METHOD `[sec:SC_V] <#sec:SC_V>`__
-| VALID_HOUR_BEG `[sec:SC_V] <#sec:SC_V>`__
-| VALID_HOUR_END `[sec:SC_V] <#sec:SC_V>`__
-| VALID_HOUR_INCREMENT `[sec:SC_V] <#sec:SC_V>`__
-| INIT_HOUR_METHOD `[sec:SC_I] <#sec:SC_I>`__
-| INIT_HOUR_BEG `[sec:SC_I] <#sec:SC_I>`__
-| INIT_HOUR_END `[sec:SC_I] <#sec:SC_I>`__
-| INIT_HOUR_INCREMENT `[sec:SC_I] <#sec:SC_I>`__
-| STAT_ANALYSIS_CONFIG `[sec:SC_S] <#sec:SC_S>`__
-| MODEL<n>_NAME `[sec:SC_M] <#sec:SC_M>`__
-| MODEL<n>_OBS_NAME `[sec:SC_M] <#sec:SC_M>`__
-| MODEL<n>_NAME_ON_PLOT `[sec:SC_M] <#sec:SC_M>`__
-| FCST_VAR<n>_NAME `[sec:SC_F] <#sec:SC_F>`__
-| FCST_VAR<n>_LEVELS `[sec:SC_F] <#sec:SC_F>`__
-| REGION_LIST `[sec:SC_R] <#sec:SC_R>`__
-| LEAD_LIST `[sec:SC_L] <#sec:SC_L>`__
-| INTERP `[sec:SC_I] <#sec:SC_I>`__
-| LINE_TYPE `[sec:SC_L] <#sec:SC_L>`__
+| STAT_ANALYSIS_OUTPUT_DIR 
+| VERIF_CASE
+| VERIF_TYPE
+| PLOT_TIME 
+| [VALID/INIT]\_BEG
+  
+| [VALID/INIT]\_END
+  
+| VALID_HOUR_METHOD
+| VALID_HOUR_BEG
+| VALID_HOUR_END
+| VALID_HOUR_INCREMENT
+| INIT_HOUR_METHOD 
+| INIT_HOUR_BEG 
+| INIT_HOUR_END 
+| INIT_HOUR_INCREMENT 
+| STAT_ANALYSIS_CONFIG 
+| MODEL<n>_NAME 
+| MODEL<n>_OBS_NAME 
+| MODEL<n>_NAME_ON_PLOT 
+| FCST_VAR<n>_NAME 
+| FCST_VAR<n>_LEVELS 
+| REGION_LIST 
+| LEAD_LIST 
+| INTERP 
+| LINE_TYPE 
 
 The following values are optional in the METplus Wrappers configuration
 file for running with LOOP_ORDER = processes:
 
-| FCST_VAR<n>_THRESH `[sec:SC_F] <#sec:SC_F>`__
-| FCST_VAR<n>_THRESH `[sec:SC_F] <#sec:SC_F>`__
-| FCST_VAR<n>_OPTIONS `[sec:SC_F] <#sec:SC_F>`__
-| VAR<n>_FOURIER_DECOMP `[sec:SC_V] <#sec:SC_V>`__
-| VAR<n>_WAVE_NUM_LIST `[sec:SC_V] <#sec:SC_V>`__
+| FCST_VAR<n>_THRESH 
+| FCST_VAR<n>_THRESH 
+| FCST_VAR<n>_OPTIONS 
+| VAR<n>_FOURIER_DECOMP
+| VAR<n>_WAVE_NUM_LIST
 | **Deprecated:**
 
-STAT_ANALYSIS_OUT_DIR\ `[sec:SC_S] <#sec:SC_S>`__
+STAT_ANALYSIS_OUT_DIR
 
 TcPairs
 -------
@@ -876,56 +875,56 @@ Configuration
 
 [dir]
 
-| TC_PAIRS_ADECK_INPUT_DIR `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_BDECK_INPUT_DIR `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_EDECK_INPUT_DIR `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_OUTPUT_DIR `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_REFORMAT_DIR `[sec:SC_T] <#sec:SC_T>`__
+| TC_PAIRS_ADECK_INPUT_DIR
+| TC_PAIRS_BDECK_INPUT_DIR
+| TC_PAIRS_EDECK_INPUT_DIR
+| TC_PAIRS_OUTPUT_DIR
+| TC_PAIRS_REFORMAT_DIR
 | [filename_templates]
 
-| TC_PAIRS_ADECK_INPUT_TEMPLATE `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_BDECK_INPUT_TEMPLATE `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_EDECK_INPUT_TEMPLATE `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_OUTPUT_TEMPLATE `[sec:SC_T] <#sec:SC_T>`__
+| TC_PAIRS_ADECK_INPUT_TEMPLATE
+| TC_PAIRS_BDECK_INPUT_TEMPLATE
+| TC_PAIRS_EDECK_INPUT_TEMPLATE
+| TC_PAIRS_OUTPUT_TEMPLATE
 | [config]
 
-| TC_PAIRS_CONFIG_FILE `[sec:SC_T] <#sec:SC_T>`__
-| INIT_BEG `[sec:SC_I] <#sec:SC_I>`__
-| INIT_END `[sec:SC_I] <#sec:SC_I>`__
-| INIT_INCREMENT `[sec:SC_I] <#sec:SC_I>`__
-| INIT_HOUR_END `[sec:SC_I] <#sec:SC_I>`__
-| INIT_INCLUDE `[sec:SC_I] <#sec:SC_I>`__
-| INIT_EXCLUDE `[sec:SC_I] <#sec:SC_I>`__
-| TC_PAIRS_READ_ALL_FILES `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_MODEL `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_STORM_ID `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_BASIN `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_CYCLONE `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_STORM_NAME `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_DLAND_FILE `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_MISSING_VAL_TO_REPLACE `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_MISSING_VAL `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_SKIP_IF_REFACTOR_EXISTS `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_SKIP_IF_OUTPUT_EXISTS `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_REFORMAT_DECK `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_REFORMAT_TYPE `[sec:SC_T] <#sec:SC_T>`__
+| TC_PAIRS_CONFIG_FILE
+| INIT_BEG 
+| INIT_END 
+| INIT_INCREMENT 
+| INIT_HOUR_END 
+| INIT_INCLUDE 
+| INIT_EXCLUDE 
+| TC_PAIRS_READ_ALL_FILES
+| TC_PAIRS_MODEL
+| TC_PAIRS_STORM_ID
+| TC_PAIRS_BASIN
+| TC_PAIRS_CYCLONE
+| TC_PAIRS_STORM_NAME
+| TC_PAIRS_DLAND_FILE
+| TC_PAIRS_MISSING_VAL_TO_REPLACE
+| TC_PAIRS_MISSING_VAL
+| TC_PAIRS_SKIP_IF_REFACTOR_EXISTS
+| TC_PAIRS_SKIP_IF_OUTPUT_EXISTS
+| TC_PAIRS_REFORMAT_DECK
+| TC_PAIRS_REFORMAT_TYPE
 | **Deprecated:**
-| ADECK_TRACK_DATA_DIR\ `[sec:SC_A] <#sec:SC_A>`__
-| BDECK_TRACK_DATA_DIR\ `[sec:SC_B] <#sec:SC_B>`__
-| TRACK_DATA_SUBDIR_MOD\ `[sec:SC_T] <#sec:SC_T>`__
-| TC_PAIRS_DIR\ `[sec:SC_T] <#sec:SC_T>`__
-| TOP_LEVEL_DIRS\ `[sec:SC_T] <#sec:SC_T>`__
-| MODEL\ `[sec:SC_M] <#sec:SC_M>`__
-| STORM_ID\ `[sec:SC_S] <#sec:SC_S>`__
-| BASIN\ `[sec:SC_B] <#sec:SC_B>`__
-| CYCLONE\ `[sec:SC_C] <#sec:SC_C>`__
-| STORM_NAME\ `[sec:SC_S] <#sec:SC_S>`__
-| DLAND_FILE\ `[sec:SC_D] <#sec:SC_D>`__
-| TRACK_TYPE\ `[sec:SC_T] <#sec:SC_T>`__
-| ADECK_FILE_PREFIX\ `[sec:SC_A] <#sec:SC_A>`__
-| BDECK_FILE_PREFIX\ `[sec:SC_B] <#sec:SC_B>`__
-| MISSING_VAL_TO_REPLACE\ `[sec:SC_M] <#sec:SC_M>`__
-| MISSING_VAL\ `[sec:SC_M] <#sec:SC_M>`__
+| ADECK_TRACK_DATA_DIR
+| BDECK_TRACK_DATA_DIR
+| TRACK_DATA_SUBDIR_MOD
+| TC_PAIRS_DIR
+| TOP_LEVEL_DIRS
+| MODEL
+| STORM_ID
+| BASIN
+| CYCLONE
+| STORM_NAME
+| DLAND_FILE
+| TRACK_TYPE
+| ADECK_FILE_PREFIX
+| BDECK_FILE_PREFIX
+| MISSING_VAL_TO_REPLACE
+| MISSING_VAL
 
 TcStat
 ------
@@ -946,50 +945,50 @@ Configuration
 
 [dir]
 
-| TC_STAT_INPUT_DIR `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_OUTPUT_DIR `[sec:SC_T] <#sec:SC_T>`__
+| TC_STAT_INPUT_DIR
+| TC_STAT_OUTPUT_DIR
 
 [config]
 
-| TC_STAT_RUN_VIA `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_CONFIG_FILE `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_CMD_LINE_JOB `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_JOBS_LIST `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_AMODEL `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_BMODEL `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_DESC `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_STORM_ID `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_BASIN `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_CYCLONE `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_STORM_NAME `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_INIT_BEG `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_INIT_INCLUDE `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_INIT_EXCLUDE `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_INIT_HOUR `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_VALID_BEG `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_VALID_END `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_VALID_INCLUDE `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_VALID_EXCLUDE `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_VALID_HOUR `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_LEAD_REQ `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_INIT_MASK `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_VALID_MASK `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_VALID_HOUR `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_LEAD `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_TRACK_WATCH_WARN `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_COLUMN_THRESH_NAME `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_COLUNN_THRESH_VAL `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_COLUMN_STR_NAME `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_COLUMN_STR_VAL `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_INIT_THRESH_NAME `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_INIT_THRESH_VAL `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_INIT_STR_NAME `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_INIT_STR_VAL `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_WATER_ONLY `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_LANDFALL `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_LANDFALL_BEG `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_LANDFALL_END `[sec:SC_T] <#sec:SC_T>`__
-| TC_STAT_MATCH_POINTS `[sec:SC_T] <#sec:SC_T>`__
+| TC_STAT_RUN_VIA
+| TC_STAT_CONFIG_FILE
+| TC_STAT_CMD_LINE_JOB
+| TC_STAT_JOBS_LIST
+| TC_STAT_AMODEL
+| TC_STAT_BMODEL
+| TC_STAT_DESC
+| TC_STAT_STORM_ID
+| TC_STAT_BASIN
+| TC_STAT_CYCLONE
+| TC_STAT_STORM_NAME
+| TC_STAT_INIT_BEG
+| TC_STAT_INIT_INCLUDE
+| TC_STAT_INIT_EXCLUDE
+| TC_STAT_INIT_HOUR
+| TC_STAT_VALID_BEG
+| TC_STAT_VALID_END
+| TC_STAT_VALID_INCLUDE
+| TC_STAT_VALID_EXCLUDE
+| TC_STAT_VALID_HOUR
+| TC_STAT_LEAD_REQ
+| TC_STAT_INIT_MASK
+| TC_STAT_VALID_MASK
+| TC_STAT_VALID_HOUR
+| TC_STAT_LEAD
+| TC_STAT_TRACK_WATCH_WARN
+| TC_STAT_COLUMN_THRESH_NAME
+| TC_STAT_COLUNN_THRESH_VAL
+| TC_STAT_COLUMN_STR_NAME
+| TC_STAT_COLUMN_STR_VAL
+| TC_STAT_INIT_THRESH_NAME
+| TC_STAT_INIT_THRESH_VAL
+| TC_STAT_INIT_STR_NAME
+| TC_STAT_INIT_STR_VAL
+| TC_STAT_WATER_ONLY
+| TC_STAT_LANDFALL
+| TC_STAT_LANDFALL_BEG
+| TC_STAT_LANDFALL_END
+| TC_STAT_MATCH_POINTS
 
 TCMPRPlotter 
 -------------
@@ -1010,42 +1009,42 @@ R scripts are included in the MET installation. Please refer to section
 Configuration
 ~~~~~~~~~~~~~
 
-| LOOP ORDER `[sec:SC_L] <#sec:SC_L>`__
-| TCMPR_PLOTTER_CONFIG_FILE `[sec:SC_C] <#sec:SC_C>`__
-| TCMPR_PLOTTER_PREFIX `[sec:SC_P] <#sec:SC_P>`__
-| TCMPR_PLOTTER_TITLE `[sec:SC_T] <#sec:SC_T>`__
-| TCMPR_PLOTTER_SUBTITLE `[sec:SC_S] <#sec:SC_S>`__
-| TCMPR_PLOTTER_XLAB `[sec:SC_X] <#sec:SC_X>`__
-| TCMPR_PLOTTER_YLAB `[sec:SC_Y] <#sec:SC_Y>`__
-| TCMPR_PLOTTER_XLIM\ `[sec:SC_X] <#sec:SC_X>`__
-| TCMPR_PLOTTER_YLIM `[sec:SC_Y] <#sec:SC_Y>`__
-| TCMPR_PLOTTER_FILTER `[sec:SC_F] <#sec:SC_F>`__
-| TCMPR_PLOTTER_FILTERED_TCST_DATA_FILE `[sec:SC_F] <#sec:SC_F>`__
-| TCMPR_PLOTTER_DEP_VARS `[sec:SC_D] <#sec:SC_D>`__
-| TCMPR_PLOTTER_SCATTER_X `[sec:SC_D] <#sec:SC_D>`__
-| TCMPR_PLOTTER_SCATTER_Y `[sec:SC_D] <#sec:SC_D>`__
-| TCMPR_PLOTTER_SKILL_REF `[sec:SC_D] <#sec:SC_D>`__
-| TCMPR_PLOTTER_SERIES `[sec:SC_D] <#sec:SC_D>`__
-| TCMPR_PLOTTER_SERIES_CI `[sec:SC_D] <#sec:SC_D>`__
-| TCMPR_PLOTTER_LEGEND `[sec:SC_L] <#sec:SC_L>`__
-| TCMPR_PLOTTER_LEAD `[sec:SC_L] <#sec:SC_L>`__
-| TCMPR_PLOTTER_PLOT_TYPES `[sec:SC_P] <#sec:SC_P>`__
-| TCMPR_PLOTTER_RP_DIFF `[sec:SC_R] <#sec:SC_R>`__
-| TCMPR_PLOTTER_DEMO_YR `[sec:SC_D] <#sec:SC_D>`__
-| TCMPR_PLOTTER_HFIP_BASELINE `[sec:SC_H] <#sec:SC_H>`__
-| TCMPR_PLOTTER_FOOTNOTE_FLAG `[sec:SC_F] <#sec:SC_F>`__
-| TCMPR_PLOTTER_PLOT_CONFIG_OPTS `[sec:SC_P] <#sec:SC_P>`__
-| TCMPR_PLOTTER_SAVE_DATA `[sec:SC_D] <#sec:SC_D>`__
+| LOOP ORDER 
+| TCMPR_PLOTTER_CONFIG_FILE 
+| TCMPR_PLOTTER_PREFIX 
+| TCMPR_PLOTTER_TITLE
+| TCMPR_PLOTTER_SUBTITLE 
+| TCMPR_PLOTTER_XLAB
+| TCMPR_PLOTTER_YLAB
+| TCMPR_PLOTTER_XLIM
+| TCMPR_PLOTTER_YLIM
+| TCMPR_PLOTTER_FILTER 
+| TCMPR_PLOTTER_FILTERED_TCST_DATA_FILE 
+| TCMPR_PLOTTER_DEP_VARS
+| TCMPR_PLOTTER_SCATTER_X
+| TCMPR_PLOTTER_SCATTER_Y
+| TCMPR_PLOTTER_SKILL_REF
+| TCMPR_PLOTTER_SERIES
+| TCMPR_PLOTTER_SERIES_CI
+| TCMPR_PLOTTER_LEGEND 
+| TCMPR_PLOTTER_LEAD 
+| TCMPR_PLOTTER_PLOT_TYPES 
+| TCMPR_PLOTTER_RP_DIFF 
+| TCMPR_PLOTTER_DEMO_YR
+| TCMPR_PLOTTER_HFIP_BASELINE
+| TCMPR_PLOTTER_FOOTNOTE_FLAG 
+| TCMPR_PLOTTER_PLOT_CONFIG_OPTS 
+| TCMPR_PLOTTER_SAVE_DATA
 
 The following are TCMPR flags, if set to 'no', then don't set flag, if
 set to 'yes', then set the flag
 
-| TCMPR_PLOTTER_NO_EE `[sec:SC_N] <#sec:SC_N>`__
-| TCMPR_PLOTTER_NO_LOG `[sec:SC_N] <#sec:SC_N>`__
-| TCMPR_PLOTTER_SAVE `[sec:SC_S] <#sec:SC_S>`__
-| TCMPR_PLOTTER_TCMPR_DATA_DIR `[sec:SC_T] <#sec:SC_T>`__
-| TCMPR_PLOTTER_PLOT_OUTPUT_DIR `[sec:SC_T] <#sec:SC_T>`__
+| TCMPR_PLOTTER_NO_EE
+| TCMPR_PLOTTER_NO_LOG
+| TCMPR_PLOTTER_SAVE 
+| TCMPR_PLOTTER_TCMPR_DATA_DIR
+| TCMPR_PLOTTER_PLOT_OUTPUT_DIR
 
 **Deprecated:**
 
-TCMPR_PLOT_OUT_DIR\ `[sec:SC_T] <#sec:SC_T>`__
+TCMPR_PLOT_OUT_DIR
