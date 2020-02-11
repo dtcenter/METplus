@@ -1,17 +1,19 @@
 """
-RUC vs. Stage II GRIB Use Case
-==============================
+HREF-mean to Stage IV QPE Use Case
+===============================
 
-This use case builds a 3 hour gridded precipitation accumulation using 1 hour accumulation fields,
-then compares the resulting data set to gridded 3 hour accumulation forecast data
+This use case compares 1 6- hour gridded forecast precipitation accumulation file to
+gridded 6 hour observation precipitation accumulation data.
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Describe the scientific objective of the use case here. This can be fairly
-# simple, or complex depending on the task.
+# To provide useful statistical information on the relationship between observation data
+# in gridded format to a gridded forecast. These values can be used to help correct
+# model deviations from observed values.
+#
 
 ##############################################################################
 # Datasets
@@ -20,8 +22,8 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 # Describe the datasets here. Relevant information about the datasets that would
 # be beneficial include:
 # 
-#  * Forecast dataset: RUC GRIB 3 hour precipitation accumulation
-#  * Observation dataset: Stage II GRIB 1 hour precipitation accumulation
+#  * Forecast dataset: HREF mean forecasts in NetCDF
+#  * Observation dataset: Stage IV GRIB 6 hour precipitation accumulation
 #  * Sources of data (links, contacts, etc...)
 #
 
@@ -29,9 +31,9 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 # METplus Components
 # ------------------
 #
-# This use case first runs PCPCombine on the observation data to build a 3
-# hour precipitation accumulation from 1 hour files. Then the observation data
-# is regridded to the model grid using the RegridDataPlane. Finally, the
+# This use case first runs PCPCombine on the forecast data to build a 6
+# hour precipitation accumulation from 1 hour files or a single 6 hour file.
+# Then the observation data is regridded to the model grid using the RegridDataPlane. Finally, the
 # observation files are compared to the forecast data using GridStat.
 
 ##############################################################################
@@ -41,23 +43,14 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 # The following tools are used for each run time:
 #  PCPCombine (observation) > RegridDataPlane (observation) > GridStat
 #
-# This example loops by initialization time. For each initialization time
-#  it will process forecast leads 3, 6, 9, and 12. There is only one
-#  initialization time in this example, so the following will be run:
+# This example loops by initialization time.
+# There is only one initalization time in this example so the following will be run:
 #
 # Run times:
 #
-# | **Init:** 2005-08-07_0Z
-# | **Forecast lead:** 3
+# | **Init:** 2017-05-09_12Z
+# | **Forecast lead:** 18
 #
-# | **Init:** 2005-08-07_0Z
-# | **Forecast lead:** 6
-#
-# | **Init:** 2005-08-07_0Z
-# | **Forecast lead:** 9
-#
-# | **Init:** 2005-08-07_0Z
-# | **Forecast lead:** 12
 #
 
 ##############################################################################
@@ -66,10 +59,12 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/ruc-vs-s2grib.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_NetCDF.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/ruc-vs-s2grib.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_NetCDF.conf
+#
+
 
 ##############################################################################
 # MET Configuration
@@ -90,13 +85,13 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 #
 # This use case can be run two ways:
 #
-# 1) Passing in ruc-vs-s2grib.conf then a user-specific system configuration file::
+# 1) Passing in GridStat_fcstHREFmean_obsStgIV_NetCDF.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/ruc-vs-s2grib.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_NetCDF.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in ruc-vs-s2grib.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstHREFmean_obsStgIV_NetCDF.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/ruc-vs-s2grib.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_NetCDF.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -123,32 +118,13 @@ then compares the resulting data set to gridded 3 hour accumulation forecast dat
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in grid_stat/ruc-vs-s2grib/2005080700 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_NetCDF/GridStat/201705091200 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_030000L_20050807_030000V_eclv.txt
-# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_030000L_20050807_030000V_grad.txt
-# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_030000L_20050807_030000V.stat
-# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_060000L_20050807_060000V_eclv.txt
-# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_060000L_20050807_060000V_grad.txt
-# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_060000L_20050807_060000V.stat
-# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_090000L_20050807_090000V_eclv.txt
-# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_090000L_20050807_090000V_grad.txt
-# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_090000L_20050807_090000V.stat
-# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_120000L_20050807_120000V_eclv.txt
-# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_120000L_20050807_120000V_grad.txt
-# * grid_stat_MEAN_QPF_APCP_vs_QPE_APCP_A03_120000L_20050807_120000V.stat
 #
 
 ##############################################################################
 # Keywords
 # --------
-#
-# Choose from the following pool of keywords, and include them in a note directive below.
-# Remove any keywords you don't use.
-#
-# GridStatUseCase, PB2NCUseCase, PrecipitationUseCase
-#
-# Now include them like this:
 #
 # .. note:: GridStatUseCase, PrecipitationUseCase, PCPCombineUseCase, RegridDataPlaneUseCase

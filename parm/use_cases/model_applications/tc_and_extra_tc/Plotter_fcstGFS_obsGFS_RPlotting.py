@@ -11,16 +11,24 @@ case is being run.
 # Scientific Objective
 # --------------------
 #
-# Describe the scientific objective of the use case here. This can be fairly
-# simple, or complex depending on the task.
+# By maintaining focus of each evaluation time on a user-defined area around a cyclone,
+# the model statistical errors associated with cyclonic physical features (moisture
+# flux, stability, strength of upper-level PV anomaly and jet, etc.) can be related
+# directly to the model forecasts and provide improvement guidance by accurately
+# depicting interactions with significant weather features around and within the cyclone.
+# This is in contrast to the traditional method of regional averaging cyclone observations
+# in a fixed grid, which “smooths out" system features and limits the meaningful metrics
+# that can be gathered. This use case relays the mean and median of forecast lead
+# times for cyclone position compared to a reference dataset via boxplot.
+
 
 ##############################################################################
 # Datasets
 # --------
 #
 #
-#  * Forecast dataset: ADeck non-ATCF tropical cyclone data
-#  * Observation dataset: non-ATCF tropical cyclone "best track"(BDeck) cyclone data
+#  * Forecast dataset: ADeck non-ATCF tropical cyclone data (GFS)
+#  * Observation dataset: non-ATCF tropical cyclone "best track"(BDeck) cyclone data (GFS)
 #
 
 ##############################################################################
@@ -147,4 +155,4 @@ case is being run.
 #
 #
 #
-# .. note:: TcPairsUseCase
+# .. note:: TcPairsUseCase, TCandExtraTCUseCase

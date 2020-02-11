@@ -1,5 +1,5 @@
 """
-HRRRE MODE Time Domain Use Case
+HRRR-TLE MODE Time Domain Use Case
 ==============================
 
 This use case processes precipitation accumulation data over time.
@@ -18,7 +18,8 @@ This use case processes precipitation accumulation data over time.
 # Datasets
 # --------
 #
-#  * Forecast dataset: HRRRE forecasts in GRIB2
+#  * Forecast dataset: HRRR-TLE forecasts in GRIB2
+#  * Observation dataset: MRMS
 #  * Sources of data (links, contacts, etc...)
 #
 
@@ -26,7 +27,8 @@ This use case processes precipitation accumulation data over time.
 # METplus Components
 # ------------------
 #
-# This use case runs MTD (MODE Time Domain) over multiple forecast leads.
+# This use case runs MTD (MODE Time Domain) over multiple forecast leads and 
+# compares them to the observational data set.
 
 ##############################################################################
 # METplus Workflow
@@ -36,13 +38,13 @@ This use case processes precipitation accumulation data over time.
 #  MTD
 #
 # This example loops by valid time. For each valid time
-#  it will run once, processing forecast leads 0 through 12. There is only one
+#  it will run once, processing forecast leads 1, 2, and 3. There is only one
 #  valid time in this example, so the following will be run:
 #
 # Run times:
 #
-# | **Valid:** 2018-03-13_0Z
-# | **Forecast leads:** 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
+# | **Valid:** 2017-05-10_03Z
+# | **Forecast leads:** 1, 2, 3
 #
 
 ##############################################################################
@@ -51,10 +53,10 @@ This use case processes precipitation accumulation data over time.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
 
 ##############################################################################
 # MET Configuration
@@ -75,13 +77,13 @@ This use case processes precipitation accumulation data over time.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf then a user-specific system configuration file::
+# 1) Passing in MTD_fcstHRRR-TLE_obsMRMS.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in MTD_fcstHRRR-TLE_obsMRMS.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -108,12 +110,9 @@ This use case processes precipitation accumulation data over time.
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * mtd_20180313_000000V_2d.txt
-# * mtd_20180313_000000V_3d_single_simple.txt
-# * mtd_20180313_000000V_obj.nc
 #
 
 ##############################################################################
@@ -121,4 +120,4 @@ This use case processes precipitation accumulation data over time.
 # --------
 #
 #
-# .. note:: MTDUseCase, PrecipitationUseCase, HMTUseCase
+# .. note:: MTDUseCase, PrecipitationUseCase
