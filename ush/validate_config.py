@@ -41,6 +41,12 @@ def main():
     # user if they want to run the sed command
     if sed_cmds:
         for cmd in sed_cmds:
+            if cmd.startswith('#Add'):
+                add_line = cmd.replace('#Add ', '')
+                met_tool = add_line.split('_OUTPUT_PREFIX')[0]
+                print(f"\nIMPORTANT: Add the following to your METplus configuration file that sets {met_tool}_CONFIG_FILE:\n")
+                print(add_line)
+                continue
             # remove -i from sed command to avoid replacing in the file
             cmd_no_inline = cmd.replace('sed -i', 'sed')
             split_cmd = shlex.split(cmd_no_inline)
@@ -51,7 +57,7 @@ def main():
 
             # compare the result to the original file and show the differences
             with open(original_file, 'r') as f:
-                original = [i.replace('\n', '') for i in f.readlines() ]
+                original = [i.replace('\n', '') for i in f.readlines()]
 
             # if no differences, continue
             if result == original:

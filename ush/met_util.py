@@ -526,6 +526,7 @@ def check_for_deprecated_met_config(config):
         met_config = config.getstr('config', met_config_key)
         if not met_config:
             continue
+        met_tool = met_config_key.replace('_CONFIG_FILE', '')
         config.logger.debug(f"Checking for deprecated environment variables in: {met_config}")
         with open(met_config, 'r') as f:
             for line in f:
@@ -559,10 +560,30 @@ def check_for_deprecated_met_config(config):
                                             "${OUTPUT_PREFIX} environment variable")
                         new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
                         sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+                        config.logger.info(f"You will need to add {met_tool}_OUTPUT_PREFIX to the METplus config file"
+                                           f" that sets {met_tool}_CONFIG_FILE")
+                        output_prefix = replace_output_prefix(line)
+                        add_line = f"{met_tool}_OUTPUT_PREFIX = {output_prefix}"
+                        config.logger.info(add_line)
+                        sed_cmds.append(f"#Add {add_line}")
                         all_good = False
                         break
 
     return all_good, sed_cmds
+
+def replace_output_prefix(line):
+    op_replacements = {'${MODEL}': '{MODEL}',
+                       '${FCST_VAR}': '{CURRENT_FCST_NAME}',
+                       '${OBTYPE}': '{OBTYPE}',
+                       '${OBS_VAR}': '{CURRENT_OBS_NAME}',
+                       '${LEVEL}': '{CURRENT_FCST_LEVEL}',
+                       '${FCST_TIME}': '{lead?fmt=%3H}',
+                       }
+    prefix = line.split('=')[1].strip().rstrip(';').strip('"')
+    for key, value, in op_replacements.items():
+        prefix = prefix.replace(key, value)
+
+    return prefix
 
 def handle_tmp_dir(config):
     """! if env var MET_TMP_DIR is set, override config TMP_DIR with value
