@@ -30,8 +30,7 @@ Configuration
 
 [config]
 
-| :term:`CYCLONE_PLOTTER_INIT_DATE` 
-| :term:`CYCLONE_PLOTTER_INIT_HOUR` 
+| :term:`CYCLONE_PLOTTER_INIT_DATE`
 | :term:`CYCLONE_PLOTTER_MODEL` 
 | :term:`CYCLONE_PLOTTER_PLOT_TITLE` 
 | :term:`CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE` 
@@ -76,7 +75,7 @@ Configuration
 | :term:`FCST_ENSEMBLE_STAT_INPUT_DATATYPE` 
 | :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE` 
 | :term:`OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE` 
-| :term:`ENSEMBLE_STAT_GRID_VX`
+| :term:`ENSEMBLE_STAT_REGRID_TO_GRID`
 | :term:`ENSEMBLE_STAT_CONFIG_FILE`
 | :term:`ENSEMBLE_STAT_MET_OBS_ERR_TABLE`
 | :term:`ENSEMBLE_STAT_N_MEMBERS`
@@ -93,6 +92,7 @@ Configuration
 | :term:`ENSEMBLE_STAT_OUT_DIR`
 | :term:`ENSEMBLE_STAT_CONFIG`
 | :term:`ENSEMBLE_STAT_MET_OBS_ERROR_TABLE`
+| :term:`ENSEMBLE_STAT_GRID_VX`
 
 ExtractTiles
 ------------
@@ -125,18 +125,24 @@ the dimensions and density of the tiles comprising the subregion:
 
 [config]
 
-| :term:`LON_ADJ`
-| :term:`LAT_ADJ`
-| :term:`NLAT`
-| :term:`NLON`
-| :term:`DLON`
-| :term:`DLAT`
+| :term:`EXTRACT_TILES_LON_ADJ`
+| :term:`EXTRACT_TILES_LAT_ADJ`
+| :term:`EXTRACT_TILES_NLAT`
+| :term:`EXTRACT_TILES_NLON`
+| :term:`EXTRACT_TILES_DLON`
+| :term:`EXTRACT_TILES_DLAT`
 | :term:`EXTRACT_TILES_FILTER_OPTS`
 | :term:`EXTRACT_TILES_VAR_LIST`
 
 **Deprecated:**
 
 :term:`EXTRACT_OUT_DIR`
+| :term:`LON_ADJ`
+| :term:`LAT_ADJ`
+| :term:`NLAT`
+| :term:`NLON`
+| :term:`DLON`
+| :term:`DLAT`
 
 GempakToCF
 ----------
@@ -374,7 +380,7 @@ Configuration
 | :term:`MTD_CONFIG_FILE` 
 | :term:`MTD_MIN_VOLUME` 
 | :term:`MTD_SINGLE_RUN` 
-| :term:`MTD_SINGLE_DATA_SRC` 
+| :term:`MTD_SINGLE_DATA_SRC`
 | :term:`FCST_MTD_INPUT_DATATYPE` 
 | :term:`OBS_MTD_INPUT_DATATYPE` 
 | :term:`FCST_MTD_CONV_RADIUS`
@@ -385,7 +391,8 @@ Configuration
 **Deprecated:**
 
 | :term:`MTD_OUT_DIR`
-| :term:`MTD_CONFIG` 
+| :term:`MTD_CONFIG`
+| :term:`MTD_SINGLE_RUN_SRC`
 
 PB2NC
 -----
@@ -445,7 +452,7 @@ Configuration
 | :term:`TIME_SUMMARY_BEG`
 | :term:`TIME_SUMMARY_END`
 | :term:`TIME_SUMMARY_VAR_NAMES`
-| :term:`TIME_SUMMARY_TYPE`
+| :term:`TIME_SUMMARY_TYPES`
 | :term:`OVERWRITE_NC_OUTPUT` 
 | :term:`VERTICAL_LOCATION`
 
@@ -656,8 +663,8 @@ Configuration
 
 [dir]
 
-| :term:`SERIES_BY_INIT_FILTERED_OUTPUT_DIR` 
-| :term:`SERIES_BY_INIT_OUTPUT_DIR`
+| :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR`
+| :term:`SERIES_ANALYSIS_OUTPUT_DIR`
 
 [regex_patterns]
 
@@ -683,6 +690,7 @@ Configuration
 **Deprecated:**
 
 :term:`SERIES_INIT_FILTERED_OUT_DIR`
+| :term:`SERIES_BY_INIT_OUTPUT_DIR`
 
 SeriesByLead
 ------------
@@ -730,10 +738,9 @@ would set the following:
 | :term:`INIT_TIME_FMT` 
 | :term:`INIT_END` 
 | :term:`INIT_INCREMENT` 
-| :term:`SERIES_BY_LEAD_GROUP_FCSTS` 
-| :term:`LEAD_SEQ_<n>` 
-| :term:`LEAD_SEQ_<n>_LABEL` 
-| :term:`SERIES_ANALYSIS_FILTER_OPT` 
+| :term:`SERIES_BY_LEAD_GROUP_FCSTS`
+| :term:`LEAD_SEQ_<n>_LABEL`
+| :term:`SERIES_ANALYSIS_FILTER_OPTS`
 | :term:`VAR_LIST`
 | :term:`STAT_LIST` 
 
@@ -773,12 +780,6 @@ configuration file for running with LOOP_ORDER = times:
 
 [config]
 
-| :term:`LOOP_BY` 
-| :term:`[VALID/INIT]\_TIME_FMT`
-| :term:`[VALID/INIT]\_BEG`
-  
-| :term:`[VALID/INIT]\_END`
-  
 | :term:`VALID_HOUR_METHOD`
 | :term:`VALID_HOUR_BEG`
 | :term:`VALID_HOUR_END`
@@ -799,9 +800,9 @@ configuration file for running with LOOP_ORDER = times:
 | :term:`DESC`
 | :term:`FCST_LEAD` 
 | :term:`FCST_VAR<n>_NAME` 
-| :term:`FCST_VAR<n>_LEVEL` 
+| :term:`FCST_VAR<n>_LEVELS`
 | :term:`OBS_VAR<n>_NAME` 
-| :term:`OBS_VAR<n>_LEVEL`
+| :term:`OBS_VAR<n>_LEVELS`
 | :term:`REGION`
 | :term:`INTERP` 
 | :term:`INTERP_PTS`
@@ -817,11 +818,7 @@ configuration file for running with LOOP_ORDER = processes:
 | :term:`STAT_ANALYSIS_OUTPUT_DIR` 
 | :term:`VERIF_CASE`
 | :term:`VERIF_TYPE`
-| :term:`PLOT_TIME `
-| :term:`[VALID/INIT]\_BEG`
-  
-| :term:`[VALID/INIT]\_END`
-  
+| :term:`PLOT_TIME`
 | :term:`VALID_HOUR_METHOD`
 | :term:`VALID_HOUR_BEG`
 | :term:`VALID_HOUR_END`
@@ -904,7 +901,7 @@ Configuration
 | :term:`TC_PAIRS_DLAND_FILE`
 | :term:`TC_PAIRS_MISSING_VAL_TO_REPLACE`
 | :term:`TC_PAIRS_MISSING_VAL`
-| :term:`TC_PAIRS_SKIP_IF_REFACTOR_EXISTS`
+| :term:`TC_PAIRS_SKIP_IF_REFORMAT_EXISTS`
 | :term:`TC_PAIRS_SKIP_IF_OUTPUT_EXISTS`
 | :term:`TC_PAIRS_REFORMAT_DECK`
 | :term:`TC_PAIRS_REFORMAT_TYPE`
@@ -977,7 +974,7 @@ Configuration
 | :term:`TC_STAT_LEAD`
 | :term:`TC_STAT_TRACK_WATCH_WARN`
 | :term:`TC_STAT_COLUMN_THRESH_NAME`
-| :term:`TC_STAT_COLUNN_THRESH_VAL`
+| :term:`TC_STAT_COLUMN_THRESH_VAL`
 | :term:`TC_STAT_COLUMN_STR_NAME`
 | :term:`TC_STAT_COLUMN_STR_VAL`
 | :term:`TC_STAT_INIT_THRESH_NAME`
@@ -1009,7 +1006,6 @@ R scripts are included in the MET installation. Please refer to section
 Configuration
 ~~~~~~~~~~~~~
 
-| :term:`LOOP ORDER` 
 | :term:`TCMPR_PLOTTER_CONFIG_FILE` 
 | :term:`TCMPR_PLOTTER_PREFIX` 
 | :term:`TCMPR_PLOTTER_TITLE`
