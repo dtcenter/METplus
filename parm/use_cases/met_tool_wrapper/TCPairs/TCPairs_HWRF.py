@@ -1,14 +1,13 @@
 """
-TCPairs_A
-=========
 
-This METplus use case will run the MET tc_pairs tool on Extra Tropical Cyclone 
-data (from Stony Brook University), by first converting the data to ATCF format. 
-METPlus looping method is by process, so all times in the INIT_BEG to INIT_END 
-time window, are run before moving to the next task in the PROCESS_LIST. 
-Note: This is a single application use case example, and as such, there is only
-one task (TCPairs) defined in the PROCESS_LIST (so there is no next process ).
-The end time is the same as the begin time, so it runs quickly..
+TCPairs HWRF
+============
+
+This use case runs the MET tc_pairs tool on HWRF data. METPlus looping is 
+by initialization times, so each time defined in the INIT_BEG to INIT_END 
+time window, is run for each task in the PROCESS_LIST. 
+Note: This is a single application use case example, as such, there is only
+one task (TCPairs) defined in the PROCESS_LIST (so there is no next task).
 
 """
 
@@ -25,9 +24,9 @@ The end time is the same as the begin time, so it runs quickly..
 #
 #
 # | **Forecast:** A Deck 
-# |     track_data/201412/a??q201412*.gfso.*
+# |     /path/to/hwrf/adeck
 # | **Observation:** Best Track - B Deck
-# |     track_data/201412/b??q201412*.gfso.*
+# |     /path/to/hwrf/bdeck
 #
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
@@ -49,8 +48,7 @@ The end time is the same as the begin time, so it runs quickly..
 # TCPairs is the only tool called in this example. It processes the following
 # run times:
 #
-# | **Init:** 2014-12-13_18Z
-# | **Forecast lead:** 24 hour
+# | **Init:** 2018-08-30_06Z, 2018-08-30_12Z, 2018-08-30_18Z
 
 ##############################################################################
 # METplus Configuration
@@ -58,10 +56,10 @@ The end time is the same as the begin time, so it runs quickly..
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c /path/to/TCPairs_A.conf
+# with the -c option, i.e. -c /path/to/TCPairs_HWRF.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/TCPairs/TCPairs_A.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/TCPairs/TCPairs_HWRF.conf
 
 ##############################################################################
 # MET Configuration
@@ -94,9 +92,9 @@ The end time is the same as the begin time, so it runs quickly..
 #
 # It is recommended to run this use case by:
 #
-# Passing in TCPairs_A.conf then a user-specific system configuration file::
+# Passing in TCPairs_HWRF.conf then a user-specific system configuration file::
 #
-#   master_metplus.py -c /path/to/TCPairs_A.conf -c /path/to/user_system.conf
+#   master_metplus.py -c /path/to/TCPairs_HWRF.conf -c /path/to/user_system.conf
 #
 # The following METplus configuration variables must be set correctly to run this example.:
 #
@@ -123,16 +121,16 @@ The end time is the same as the begin time, so it runs quickly..
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in **tc_pairs/201412** (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in **TC_PAIRS_OUTPUT_DIR**.
 # and will contain the following files:
 #
-# * mlq2014121318.gfso.0103.tcst
-# * mlq2014121318.gfso.0104.tcst
+# * tc_pairs_al2018083006.dat.tcst
+# * tc_pairs_al2018083012.dat.tcst
+# * tc_pairs_al2018083018.dat.tcst
 
 ##############################################################################
 # Keywords
 # --------
 #
 # .. note:: `TCPairsUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_,
-#           `SBUOrgUseCase <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
-
+#           `HWRFOrgUseCase <https://ncar.github.io/METplus/search.html?q=HWRFOrgUseCase&check_keywords=yes&area=default>`_
