@@ -19,7 +19,7 @@ This use case will run the MET PCPCombine tool in DERIVE mode to generate statis
 #
 # | **Forecast:** WRF precipitation accumulation fields (24, 21, 18, 15, 12, and 9 hour forecast leads)
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v2.2/sample_data-met_test-8.1.tgz
+# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** WRF
