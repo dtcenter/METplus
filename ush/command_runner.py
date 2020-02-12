@@ -126,7 +126,7 @@ class CommandRunner(object):
                 # if logging MET command to its own log file, add command that was run to that log
                 if self.log_command_to_met_log:
                     with open(log_dest, 'a+') as log_file_handle:
-                        log_file_handle.write(f"COMMAND: {cmd}")
+                        log_file_handle.write(f"COMMAND: {cmd}\n")
 
                 #cmd = exe('sh')['-c', cmd].err2out() >> log_dest
                 cmd = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
