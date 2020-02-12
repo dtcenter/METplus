@@ -18,6 +18,8 @@ use_case_dir = os.path.join(metplus_home,"parm/use_cases")
 # all use cases that work with this script
 all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/ASCII2NC/ASCII2NC.conf",
+                use_case_dir + "/met_tool_wrapper/ASCII2NC/ASCII2NC_python_embedding.conf",
+                use_case_dir + "/met_tool_wrapper/ASCII2NC/ASCII2NC_python_embedding_user_py.conf",
                 use_case_dir + "/met_tool_wrapper/CustomIngest/CustomIngest.conf",
                 use_case_dir + "/met_tool_wrapper/EnsembleStat/EnsembleStat.conf",
                 use_case_dir + "/met_tool_wrapper/Example/Example.conf",
@@ -35,11 +37,12 @@ all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_subtract.conf",
                 use_case_dir + "/met_tool_wrapper/PointStat/PointStat.conf",
                 use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf",
+                use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/SeriesByInit/SeriesByInit.conf",
                 use_case_dir + "/met_tool_wrapper/SeriesByLead/SeriesByLead.conf",
                 use_case_dir + "/met_tool_wrapper/StatAnalysis/StatAnalysis.conf",
-                use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_A.conf",
-                use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_B.conf",
+                use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_ETC.conf",
+                use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_HWRF.conf",
                 use_case_dir + "/met_tool_wrapper/TCStat/TCStat.conf",
                 use_case_dir + "/model_applications/convection_allowing_models/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf",
                 use_case_dir + "/model_applications/convection_allowing_models/MTD_fcstHREF_FcstOnly_Gempak.conf",
