@@ -61,26 +61,18 @@ METplus Configuration Glossary
      | *Default:* NONE
 
 
-    CYCLONE_PLOTTER_INPUT_DIR
+   CYCLONE_PLOTTER_INPUT_DIR
       It can be referenced in the [CYCLONE_PLOTTER]_INPUT_DIR to set the directory containing input data. This needs to be set by a user.
 
      | *Used by:* GridStat, MODE, MTD
      | *Family:* config
      | *Default:* NONE
 
-   [DEPRECATED] ANLY_ASCII_REGEX_LEAD
-     Please use OBS_SERIES_ANALYSIS_LEAD_REGEX instead. The regular expression describing the analysis (obs) file name (in ASCII format) of the intermediate file generated when running a series_by_lead process.
+   ANLY_ASCII_REGEX_LEAD
+     .. warning:: **DEPRECATED:** Please use OBS_SERIES_ANALYSIS_LEAD_REGEX instead.
 
-     | *Used by:* SeriesByLead
-     | *Family:* [regex_pattern]
-     | *Default:*
-
-   [DEPRECATED] ANLY_NC_TILE_REGEX
-     Please use OBS_SERIES_ANALYSIS_NC_TILE_REGEX instead. The regular expression used to search the input files that are in netCDF format and used in the series_by_analysis process.
-
-     | *Used by:* SeriesByLead, SeriesByInit
-     | *Family:* [regex_pattern]
-     | *Default:*
+   ANLY_NC_TILE_REGEX
+     .. warning:: **DEPRECATED:** Please use OBS_SERIES_ANALYSIS_NC_TILE_REGEX instead.
 
    ENSEMBLE_STAT_OUTPUT_PREFIX
      String to pass to the MET config file to prepend text to the output filenames.
@@ -130,20 +122,12 @@ METplus Configuration Glossary
      | *Used by:* SeriesByLead, SeriesByInit
      | *Family:* [regex_pattern]
      | *Default:*
-   
-   [DEPRECATED] ANLY_TILE_PREFIX
-     Please use OBS_EXTRACT_TILES_PREFIX instead. The prefix to the filename for the analysis file that is created as part of a series_analysis process.
-    
-     | *Used by:* ExtractTiles, SeriesByLead
-     | *Family:* [regex_pattern]
-     | *Default:*
-   
-   [DEPRECATED] ANLY_TILE_REGEX
-     No longer used. The regular expression for the analysis input file. The file is in GRIBv2 format.
-    
-     | *Used by:* SeriesByLead, SeriesByInit
-     | *Family:* [regex_pattern]
-     | *Default:*
+
+   ANLY_TILE_PREFIX
+     .. warning:: **DEPRECATED:** Please use OBS_EXTRACT_TILES_PREFIX instead.
+
+   ANLY_TILE_REGEX
+     .. warning:: **DEPRECATED:** No longer used. The regular expression for the analysis input file. The file is in GRIBv2 format.
 
    OBS_EXTRACT_TILES_PREFIX
      Prefix for observation tile files. Used to create filename of intermediate files that are created while performing a series analysis.
@@ -158,10 +142,10 @@ METplus Configuration Glossary
      | *Used by:* CyclonePlotter
      | *Family:* [dir]
      | *Default:* Varies
-     
+
    FCST_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME
      Specify the forecast output field name that is created by RegridDataPlane. The name corresponds to FCST_VAR<n>_NAME. This is used when using Python Embedding as input to the MET tool, because the FCST_VAR<n>_NAME defines the python script to call.
-    
+
      | *Used by:* RegridDataPlane
      | *Family:* [config]
      | *Default:* None
@@ -169,7 +153,7 @@ METplus Configuration Glossary
 
    OBS_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME
      Specify the observation output field name that is created by RegridDataPlane. The name corresponds to OBS_VAR<n>_NAME. This is used when using Python Embedding as input to the MET tool, because the OBS_VAR<n>_NAME defines the python script to call.
-    
+
      | *Used by:* RegridDataPlane
      | *Family:* [config]
      | *Default:* None
@@ -180,70 +164,70 @@ METplus Configuration Glossary
      | *Used by:* Ascii2Nc
      | *Family:* [config]
      | *Default:* None
-     
+
    LOG_ENSEMBLE_STAT_VERBOSITY
      Overrides the log verbosity for EnsembleStat only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
 
      | *Used by:* EnsembleStat
      | *Family:* [config]
      | *Default:* None
-     
+
    LOG_GRID_STAT_VERBOSITY
      Overrides the log verbosity for GridStat only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
 
      | *Used by:* GridStat
      | *Family:* [config]
      | *Default:* None
-     
+
    LOG_MODE_VERBOSITY
      Overrides the log verbosity for Mode only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
 
      | *Used by:* Mode
      | *Family:* [config]
      | *Default:* None
-     
+
    LOG_MTD_VERBOSITY
      Overrides the log verbosity for MTD only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
 
      | *Used by:* MTD
      | *Family:* [config]
      | *Default:* None
-     
+
    LOG_PB2NC_VERBOSITY
      Overrides the log verbosity for PB2NC only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
 
      | *Used by:* PB2NC
      | *Family:* [config]
      | *Default:* None
-     
+
    LOG_PCP_COMBINE_VERBOSITY
      Overrides the log verbosity for PcpCombine only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
 
      | *Used by:* PcpCombine
      | *Family:* [config]
      | *Default:* None
-     
+
    LOG_POINT_STAT_VERBOSITY
      Overrides the log verbosity for PointStat only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
 
      | *Used by:* PointStat
      | *Family:* [config]
      | *Default:* None
-     
+
    LOG_REGRID_DATA_PLANE_VERBOSITY
      Overrides the log verbosity for RegridDataPlane only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
 
      | *Used by:* RegridDataPlane
      | *Family:* [config]
      | *Default:* None
-     
+
    LOG_TC_PAIRS_VERBOSITY
      Overrides the log verbosity for TcPairs only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
 
      | *Used by:* TcPairs
      | *Family:* [config]
      | *Default:* None
-     
+
    LOG_TC_STAT_VERBOSITY
      Overrides the log verbosity for TcStat only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
 
@@ -271,14 +255,14 @@ METplus Configuration Glossary
      | *Used by:* PcpCombine
      | *Family:* [config]
      | *Default:* None
-     
+
    OBS_PCP_COMBINE_COMMAND
      Used only when OBS_PCP_COMBINE_METHOD = CUSTOM. Custom command to run PcpCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for forecast data called FCST_PCP_COMBINE_COMMAND.
 
      | *Used by:* PcpCombine
      | *Family:* [config]
      | *Default:* None
-     
+
    CUSTOM_INGEST_<n>_SCRIPT
      Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the python script with arguments to run through RegridDataPlane to generate a file that can be read by the MET tools. This variable supports filename template syntax, so you can specify filenames with time information, i.e. {valid?fmt=%Y%m%d}. See also CUSTOM_INGEST<n>_TYPE, CUSTOM_INGEST<n>_OUTPUT_GRID, CUSTOM_INGEST<n>_OUTPUT_TEMPLATE, and CUSTOM_INGEST<n>_OUTPUT_DIR.
 
@@ -496,26 +480,15 @@ METplus Configuration Glossary
      | *Family:* [filename_templates]
      | *Default:* None
 
-   [DEPRECATED] ADECK_FILE_PREFIX
-     Please use TC_PAIRS_ADECK_TEMPLATE.
 
-     | *Used by:*  TcPairs
-     | *Family:* [config]
-     | *Default:*  Varies
+   ADECK_FILE_PREFIX
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_ADECK_TEMPLATE.
 
-   [DEPRECATED] ADECK_TRACK_DATA_DIR
-     Please use TC_PAIRS_ADECK_INPUT_DIR.
+   ADECK_TRACK_DATA_DIR
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_ADECK_INPUT_DIR.
 
-     | *Used by:*  TcPairs
-     | *Family:* [dir]
-     | *Default:*  Varies
-
-   [DEPRECATED] AMODEL
-     Please use TC_STAT_AMODEL.
-
-     | *Used by:*  CyclonePlotter, TcStat
-     | *Family:* [config]
-     | *Default:* 
+   AMODEL
+     .. warning:: **DEPRECATED:** Please use TC_STAT_AMODEL.
 
    SERIES_ANALYSIS_BACKGROUND_MAP
      Control whether or not a background map shows up for series analysis plots. Set to 'yes' if background map desired.
@@ -524,54 +497,31 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  no
 
-   [DEPRECATED] BACKGROUND_MAP
-     Please use SERIES_ANALYSIS_BACKGROUND_MAP instead.
 
-     | *Used by:*  SeriesByLead, SeriesByInit
-     | *Family:*  [config]
-     | *Default:*  no
+   BACKGROUND_MAP
+     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_BACKGROUND_MAP instead.
 
-   [DEPRECATED] BASIN
-     Please use TC_PAIRS_BASIN or TC_STAT_BASIN.
+   BASIN
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_BASIN or TC_STAT_BASIN.
 
-     | *Used by:*  TcPairs, TcStat
-     | *Family:* [config]
-     | *Default:*  Varies
+   BDECK_FILE_PREFIX
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_BDECK_TEMPLATE.
 
-   [DEPRECATED] BDECK_FILE_PREFIX
-     Please use TC_PAIRS_BDECK_TEMPLATE.
+   BDECK_TRACK_DATA_DIR
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_BDECK_INPUT_DIR.
 
-     | *Used by:*  TcPairs
-     | *Family:*  [config]
-     | *Default:*  Varies
+   BEG_TIME
+     .. warning:: **DEPRECATED:** Please use INIT_BEG or VALID_BEG instead.
 
-   [DEPRECATED] BDECK_TRACK_DATA_DIR
-     Please use TC_PAIRS_BDECK_INPUT_DIR.
-
-     | *Used by:*  TcPairs
-     | *Family:* [dir]
-     | *Default:*  Varies
-
-   [DEPRECATED] BEG_TIME
-     Please use INIT_BEG or VALID_BEG instead. Beginning time for analysis in YYYYMMDD format.
-
-     | *Used by:*  PB2NC, PointStat
-     | *Family:*  [config]
-     | *Default:*  Varies
-
-   [DEPRECATED] BMODEL
-     Please use TC_STAT_BMODEL.
-
-     | *Used by:*  TcStat
-     | *Family:*  [config]
-     | *Default:* 
+   BMODEL
+     .. warning:: **DEPRECATED:** Please use TC_STAT_BMODEL.
 
    CI_METHOD
      The method for creating confidence intervals. Valid options are EMC, or NONE.
 
      | *Used by:*  MakePlots
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    CIRCLE_MARKER_SIZE
      Control the size of the circle marker in the cyclone plotter.
@@ -608,19 +558,15 @@ METplus Configuration Glossary
      | *Family:*  [exe]
      | *Default:*  /path/to
 
-   [DEPRECATED] CONVERT_EXE
-     Please use CONVERT.
-
-     | *Used by:*  PB2NC, PointStat, SeriesByInit, SeriesByLead
-     | *Family:*  [exe]
-     | *Default:*  /path/to
+   CONVERT_EXE
+     .. warning:: **DEPRECATED:** Please use CONVERT.
 
    COV_THRESH
      Specify the values of the COV_THRESH column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    CROSS_MARKER_SIZE
      Control the size of the cross marker in the cyclone plotter.
@@ -636,19 +582,11 @@ METplus Configuration Glossary
      | *Family:*  [exe]
      | *Default:*  /path/to
 
-   [DEPRECATED] CUT_EXE
-     Please use CUT.
+   CUT_EXE
+     .. warning:: **DEPRECATED:** Please use CUT.
 
-     | *Used by:*  PB2NC, PointStat
-     | *Family:*  [exe]
-     | *Default:*  /path/to
-
-   [DEPRECATED] CYCLONE
-     Please use TC_PAIRS_CYCLONE or TC_STAT_CYCLONE.
-
-     | *Used by:*  TcPairs, TcStat
-     | *Family:*  [config]
-     | *Default:*  Varies
+   CYCLONE
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_CYCLONE or TC_STAT_CYCLONE.
 
    CYCLONE_INIT_DATE
      Initialization date for the cyclone forecasts in YYYYMMDD format.
@@ -706,12 +644,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] DLAND_FILE
-     Please use TC_PAIRS_DLAND_FILE.
-
-     | *Used by:*  TcPairs
-     | *Family:*  [config]
-     | *Default:* Varies
+   DLAND_FILE
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_DLAND_FILE.
 
    EXTRACT_TILES_DLAT
      The value that defines the resolution of the data (in decimal degrees).
@@ -727,19 +661,11 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  0.5
 
-   [DEPRECATED] DLAT
-     Please use EXTRACT_TILES_DLAT instead. The value that defines the resolution of the data (in decimal degrees).
+   DLAT
+     .. warning:: **DEPRECATED:** Please use EXTRACT_TILES_DLAT instead.
 
-     | *Used by:*  ExtractTiles, SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  0.5
-
-   [DEPRECATED] DLON
-     Please use EXTRACT_TILES_DLON instead. The longitude value, in degrees. Set to the value that defines the resolution of the data (in decimal degrees).
-
-     | *Used by:*  ExtractTiles, SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  0.5
+   DLON
+     .. warning:: **DEPRECATED:** Please use EXTRACT_TILES_DLON instead.
 
    EXTRACT_TILES_PAIRS_INPUT_DIR
      Directory containing matched pairs input to be read by ExtractTiles.
@@ -755,33 +681,21 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  False
 
-   [DEPRECATED] END_DATE
-     Please use INIT_END or VALID_END instead.
+   END_DATE
+     .. warning:: **DEPRECATED:** Please use INIT_END or VALID_END instead.
 
-     | *Used by:*  PB2NC, PointStat
-     | *Family:*  [config]
-     | *Default:*  Varies
+   END_HOUR
+     .. warning:: **DEPRECATED:** Ending hour for analysis with format HH.
 
-   [DEPRECATED] END_HOUR
-     Ending hour for analysis with format HH.
-
-     | *Used by:*  PB2NC, PointStat
-     | *Family:*  [config]
-     | *Default:*  Varies
-
-   [DEPRECATED] END_TIME
-     Ending date string for analysis with format YYYYMMDD.
-
-     | *Used by:*  PB2NC, PointStat
-     | *Family:*  [config]
-     | *Default:*  Varies
+   END_TIME
+     .. warning:: **DEPRECATED:** Ending date string for analysis with format YYYYMMDD.
 
    ENSEMBLE_STAT_CONFIG_FILE
      Specify the absolute path to the configuration file for the MET ensemble_stat tool.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    ENSEMBLE_STAT_ENS_THRESH
      Threshold for the ratio of the number of valid ensemble fields to the total number of expected ensemble members. This value is passed into the ensemble_stat config file to make sure the percentage of files that are valid meets the expectation.
@@ -790,12 +704,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  1.0
 
-   [DEPRECATED] ENSEMBLE_STAT_GRID_VX
-     Please use GRID_STAT_REGRID_TO_GRID
-
-     | *Used by:*  EnsembleStat
-     | *Family:*  [config]
-     | *Default:* FCST
+   ENSEMBLE_STAT_GRID_VX
+     .. warning:: **DEPRECATED:** Please use GRID_STAT_REGRID_TO_GRID.
 
    ENSEMBLE_STAT_REGRID_TO_GRID
      Used to set the regrid dictionary item 'to_grid' in the MET EnsembleStat config file. See the MET User's Guide for more information.
@@ -845,19 +755,15 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*
 
-   [DEPRECATED] ENSEMBLE_STAT_MET_OBS_ERROR_TABLE
-      Please use ENSEMBLE_STAT_MET_OBS_ERR_TABLE instead.
-
-     | *Used by:*  EnsembleStat
-     | *Family:*  [config]
-     | *Default:* 
+   ENSEMBLE_STAT_MET_OBS_ERROR_TABLE
+     .. warning:: **DEPRECATED:** Please use ENSEMBLE_STAT_MET_OBS_ERR_TABLE instead.
 
    ENSEMBLE_STAT_N_MEMBERS
      Expected number of ensemble members found. This should correspond to the number of items in FCST_ENSEMBLE_STAT_INPUT_TEMPLATE. If this number differs from the number of files are found for a given run, then ensemble_stat will not run for that time.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    ENSEMBLE_STAT_ONCE_PER_FIELD
      If True, run ensemble_stat separately for each field name/level combination specified in the configuration file. Seereference "sec:SC_Field_Info" for more information on how fields are specified. If False, run ensemble_stat once with all of the fields specified.
@@ -906,7 +812,7 @@ METplus Configuration Glossary
      ENS_VAR2_NAME
      ...
      ENS_VAR<n>_NAME
-     
+
      See reference *REF* (SC_Field_Info) for more information.
 
      | *Used by:*  EnsembleStat
@@ -920,7 +826,7 @@ METplus Configuration Glossary
      ENS_VAR2_OPTIONS
      ...
      ENS_VAR<n>_OPTION
- 
+
      See reference *REF* (sec:SC_Field_Info) for more information.
 
      | *Used by:*  EnsembleStat
@@ -934,7 +840,7 @@ METplus Configuration Glossary
      ENS_VAR2_THRESH
      ...
      ENS_VAR<n>_THRESH
-     
+
      See reference *REF* "sec:SC_Field_Info" for more information.
 
      | *Used by:*  EnsembleStat
@@ -948,12 +854,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  True
 
-   [DEPRECATED] EXTRACT_OUT_DIR
-     Please use EXTRACT_TILES_OUTPUT_DIR. Set the output directory for the METplus extract_tiles utility.
-
-     | *Used by:*  ExtractTiles, SeriesByInit, SeriesByLead
-     | *Family:*  [dir]
-     | *Default:*  Varies
+   EXTRACT_OUT_DIR
+     .. warning:: **DEPRECATED:** Please use EXTRACT_TILES_OUTPUT_DIR.
 
    EXTRACT_TILES_FILTER_OPTS
      Control what options are passed to the METplus extract_tiles utility.
@@ -976,26 +878,14 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] FCST_EXACT_VALID_TIME
-     No longer used. Please use FCST_WINDOW_BEGIN and FCST_WINDOW_END instead. If both of those variables are set to 0, the functionality is the same as FCST_EXACT_VALID_TIME = True.
+   FCST_EXACT_VALID_TIME
+     .. warning:: **DEPRECATED:** No longer used. Please use FCST_WINDOW_BEGIN and FCST_WINDOW_END instead. If both of those variables are set to 0, the functionality is the same as FCST_EXACT_VALID_TIME = True.
 
-     | *Used by:*  GridStat Mode, MTD
-     | *Family:*  [config]
-     | *Default:*  False
+   FCST_<n>_FIELD_NAME
+     .. warning:: **DEPRECATED:** Please use FCST_PCP_COMBINE_<n>_FIELD_NAME where N >=1 instead.
 
-   [DEPRECATED] FCST_<n>_FIELD_NAME
-     Please use FCST_PCP_COMBINE_<n>_FIELD_NAME where N >=1 instead.
-
-     | *Used by:*  PcpCombine
-     | *Family:*  [config]
-     | *Default:*  Varies
-
-   [DEPRECATED] FCST_ASCII_REGEX_LEAD
-     Please use FCST_SERIES_ANALYSIS_LEAD_REGEX instead. Regular expression used to find the forecast file (ASCII format) generated as an intermediate step in the series by lead use case.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [regex_pattern]
-     | *Default:*  Varies
+   FCST_ASCII_REGEX_LEAD
+     .. warning:: **DEPRECATED:** Please use FCST_SERIES_ANALYSIS_LEAD_REGEX instead. Regular expression used to find the forecast file (ASCII format) generated as an intermediate step in the series by lead use case.
 
    FCST_SERIES_ANALYSIS_LEAD_REGEX
      Regular expression used to find the forecast file (ASCII format) generated as an intermediate step in the series by lead use case.
@@ -1005,10 +895,10 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    FCST_ENSEMBLE_STAT_FILE_WINDOW_BEGIN
-     See OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN *REF* "sec:SC_O" 
+     See OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN *REF* "sec:SC_O"
 
-     | *Used by:* 
-     | *Family:* 
+     | *Used by:*
+     | *Family:*
      | *Default:* OBS_FILE_WINDOW_BEGIN
 
    FCST_ENSEMBLE_STAT_FILE_WINDOW_END
@@ -1046,19 +936,11 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] FCST_GEMPAK_INPUT_DIR
-     Input directory for GEMPAK formatted forecast files. Use GEMPAKTOCF_INPUT_DIR if GempakToCF is in the PROCESS_LIST.
+   FCST_GEMPAK_INPUT_DIR
+     .. warning:: **DEPRECATED:** Please use GEMPAKTOCF_INPUT_DIR instead.
 
-     | *Used by:*  GempakToCF
-     | *Family:*  [dir]
-     | *Default:*  Varies
-
-   [DEPRECATED] FCST_GEMPAK_TEMPLATE
-     Template used to specify input filenames for GEMPAK formatted forecast files. Use GEMPAKTOCF_INPUT_TEMPLATE if GempakToCF is in the PROCESS_LIST.
-
-     | *Used by:*  GempakToCF
-     | *Family:*  [filename_templates]
-     | *Default:*  Varies
+   FCST_GEMPAK_TEMPLATE
+     .. warning:: **DEPRECATED:** Please use GEMPAKTOCF_INPUT_TEMPLATE if GempakToCF is in the PROCESS_LIST.
 
    FCST_GRID_STAT_FILE_WINDOW_BEGIN
      See OBS_GRID_STAT_FILE_WINDOW_BEGINreference "sec:SC_O".
@@ -1102,68 +984,32 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  ==0.1
 
-   [DEPRECATED] FCST_HR_END
-     Please use LEAD_SEQ instead.
+   FCST_HR_END
+     .. warning:: **DEPRECATED:** Please use LEAD_SEQ instead.
 
-     | *Used by:* 
-     | *Family:*  [config]
-     | *Default:* 
+   FCST_HR_INTERVAL
+     .. warning:: **DEPRECATED:** Please use LEAD_SEQ instead.
 
-   [DEPRECATED] FCST_HR_INTERVAL
-     Please use LEAD_SEQ instead.
+   FCST_HR_START
+     .. warning:: **DEPRECATED:** Please use LEAD_SEQ instead.
 
-     | *Used by:* 
-     | *Family:*  [config]
-     | *Default:* 
+   FCST_INIT_INTERVAL
+     .. warning:: **DEPRECATED:** Specify the stride for forecast initializations.
 
-   [DEPRECATED] FCST_HR_START
-     Please use LEAD_SEQ instead.
+   FCST_INPUT_DIR_REGEX
+     .. warning:: **DEPRECATED:** Please use FCST_POINT_STAT_INPUT_DIR instead.
 
-     | *Used by:* 
-     | *Family:*  [config]
-     | *Default:* 
+   FCST_INPUT_DIR
+     .. warning:: **DEPRECATED:** Please use FCST_[MET-APP]_INPUT_DIR instead, i.e. FCST_GRID_STAT_INPUT_DIR
 
-   [DEPRECATED] FCST_INIT_INTERVAL
-     Specify the stride for forecast initializations.
+   FCST_INPUT_FILE_REGEX
+     .. warning:: **DEPRECATED:** Regular expression to use when identifying which forecast file to use.
 
-     | *Used by:*  EnsembleStat, GridStat, Mode
-     | *Family:*  [config]
-     | *Default:*  Varies
+   FCST_INPUT_FILE_TMPL
+     .. warning:: **DEPRECATED:** Please use FCST_POINT_STAT_INPUT_TEMPLATE instead.
 
-   [DEPRECATED] FCST_INPUT_DIR_REGEX
-     Please use FCST_POINT_STAT_INPUT_DIR instead.
-
-     | *Used by:*  PointStat
-     | *Family:*  [regex_pattern]
-     | *Default:*  Varies
-
-   [DEPRECATED] FCST_INPUT_DIR
-     Specify the input directory for the forecast files. Use FCST_[MET-APP]_INPUT_DIR instead, i.e. FCST_GRID_STAT_INPUT_DIR
-
-     | *Used by:*  GridStat, Mode, PointStat, PcpCombine
-     | *Family:*  [dir]
-     | *Default:*  Varies
-
-   [DEPRECATED] FCST_INPUT_FILE_REGEX
-     Regular expression to use when identifying which forecast file to use.
-
-     | *Used by:*  PointStat
-     | *Family:*  [regex_pattern]
-     | *Default:*  Varies
-
-   [DEPRECATED] FCST_INPUT_FILE_TMPL
-     Please use FCST_POINT_STAT_INPUT_TEMPLATE instead.
-
-     | *Used by:*  PointStat
-     | *Family:*  [filename_templates]
-     | *Default:*  Varies
-
-   [DEPRECATED] FCST_IS_DAILY_FILE
-     Please use FCST_PCP_COMBINE_IS_DAILY_FILE instead.Acceptable values: true/false
-
-     | *Used by:*  PcpCombine
-     | *Family:*  [config]
-     | *Default:*  False
+   FCST_IS_DAILY_FILE
+     .. warning:: **DEPRECATED:** Please use FCST_PCP_COMBINE_IS_DAILY_FILE instead.
 
    FCST_IS_PROB
      Specify whether the forecast data are probabilistic or not.Acceptable values: true/false
@@ -1186,33 +1032,25 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] FCST_LEVEL
-     Please use FCST_PCP_COMBINE_INPUT_ACCUMS instead.
+   FCST_LEVEL
+     .. warning:: **DEPRECATED:** Please use FCST_PCP_COMBINE_INPUT_ACCUMS instead.
 
-     | *Used by:*  PcpCombine
-     | *Family:*  [config]
-     | *Default:*  Varies
-
-   [DEPRECATED] FCST_MAX_FORECAST
-     Please use LEAD_SEQ_MAX instead. Specify the maximum forecast lead time to use for the analysis.
-
-     | *Used by:*  EnsembleStat, GridStat, Mode
-     | *Family:*  [config]
-     | *Default:*  Varies
+   FCST_MAX_FORECAST
+     .. warning:: **DEPRECATED:** Please use LEAD_SEQ_MAX instead.
 
    FCST_MODE_CONV_RADIUS
      Comma separated list of convolution radius values used by mode for forecast fields. A corresponding variable exists for observation data called OBS_MODE_CONV_RADIUS.
 
      | *Used by:*  Mode
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    FCST_MODE_CONV_THRESH
      Comma separated list of convolution threshold values used by mode for forecast fields. A corresponding variable exists for observation data called OBS_MODE_CONV_THRESH.
 
      | *Used by:*  Mode
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    FCST_MODE_FILE_WINDOW_BEGIN
      See OBS_MODE_FILE_WINDOW_BEGINreference "sec:SC_O".
@@ -1233,14 +1071,14 @@ METplus Configuration Glossary
 
      | *Used by:*  Mode
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    FCST_MODE_MERGE_THRESH
      Comma separated list of merge threshold values used by mode for forecast fields. A corresponding variable exists for observation data called OBS_MODE_MERGE_THRESH.
 
      | *Used by:*  Mode
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    FCST_MODE_INPUT_DATATYPE
      Specify the data type of the input directory for forecast files used with the MET mode tool. Currently valid options are NETCDF, GRIB, and GEMPAK. If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF. A corresponding variable exists for observation data called OBS_MODE_INPUT_DATATYPE.
@@ -1266,16 +1104,16 @@ METplus Configuration Glossary
    FCST_MTD_CONV_RADIUS
      Comma separated list of convolution radius values used by mode-TD for forecast files. A corresponding variable exists for observation data called OBS_MTD_CONV_RADIUS.
 
-     | *Used by:* 
+     | *Used by:*
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    FCST_MTD_CONV_THRESH
      Comma separated list of convolution threshold values used by mode-TD for forecast files. A corresponding variable exists for observation data called OBS_MTD_CONV_THRESH.
 
-     | *Used by:* 
+     | *Used by:*
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    FCST_MTD_FILE_WINDOW_BEGIN
      See OBS_MTD_FILE_WINDOW_BEGINreference "sec:SC_O".
@@ -1312,19 +1150,11 @@ METplus Configuration Glossary
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
-   [DEPRECATED] FCST_NATIVE_DATA_TYPE
-     Specify the data format of the forecast data. Use FCST_PCP_COMBINE_INPUT_DATATYPE instead
+   FCST_NATIVE_DATA_TYPE
+     .. warning:: **DEPRECATED:** Please use FCST_PCP_COMBINE_INPUT_DATATYPE instead
 
-     | *Used by:*  PcpCombine
-     | *Family:*  [config]
-     | *Default:*  Varies
-
-   [DEPRECATED] FCST_NC_TILE_REGEX
-     Please use FCST_SERIES_ANALYSIS_NC_TILE_REGEX instead. Define the regular expression for input forecast files that are in netCDF.
-
-     | *Used by:*  SeriesByLead, SeriesByInit
-     | *Family:*  [regex_pattern]
-     | *Default:*  Varies
+   FCST_NC_TILE_REGEX
+     .. warning:: **DEPRECATED:** Please use FCST_SERIES_ANALYSIS_NC_TILE_REGEX instead.
 
    FCST_SERIES_ANALYSIS_NC_TILE_REGEX
      Define the regular expression for input forecast files that are in netCDF.
@@ -1368,12 +1198,8 @@ METplus Configuration Glossary
      | *Family:*  [dir]
      | *Default:*  Varies
 
-   [DEPRECATED] FCST_PCP_COMBINE_INPUT_LEVEL
-     Please use FCST_PCP_COMBINE_INPUT_ACCUMS.
-
-     | *Used by:*  PcpCombine
-     | *Family:*  [config]
-     | *Default:*  Varies
+   FCST_PCP_COMBINE_INPUT_LEVEL
+     .. warning:: **DEPRECATED:** Please use FCST_PCP_COMBINE_INPUT_ACCUMS.
 
    FCST_PCP_COMBINE_INPUT_TEMPLATE
      Template used to specify input filenames for forecast files used by the MET pcp_combine tool. A corresponding variable exists for observation data called OBS_PCP_COMBINE_INPUT_TEMPLATE. To utilize Python Embedding as input to the MET tools, set this value to PYTHON_NUMPY or PYTHON_XARRAY.
@@ -1443,7 +1269,7 @@ METplus Configuration Glossary
 
      | *Used by:*  PcpCombine
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    FCST_POINT_STAT_FILE_WINDOW_BEGIN
      See OBS_POINT_STAT_FILE_WINDOW_BEGINreference "sec:SC_O".
@@ -1527,21 +1353,13 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
-   [DEPRECATED] FCST_TILE_PREFIX
-     Please use FCST_EXTRACT_TILES_PREFIX instead. Prefix for forecast tile files. Used to create filename of intermediate files that are created while performing a series analysis.
+   FCST_TILE_PREFIX
+     .. warning:: **DEPRECATED:** Please use FCST_EXTRACT_TILES_PREFIX instead.
 
-     | *Used by:*  ExtractTiles, SeriesByLead
-     | *Family:* [regex_pattern]
-     | *Default:*  Varies
-
-   [DEPRECATED] FCST_TILE_REGEX
-     No longer used. Regular expression for forecast input files that are in GRIB2.
-
-     | *Used by:*  SeriesByInit, SeriesByLead
-     | *Family:*  [regex_pattern]
-     | *Default:*  Varies
+   FCST_TILE_REGEX
+     .. warning:: **DEPRECATED:** No longer used. Regular expression for forecast input files that are in GRIB2.
 
    FCST_EXTRACT_TILES_PREFIX
      Prefix for forecast tile files. Used to create filename of intermediate files that are created while performing a series analysis.
@@ -1550,12 +1368,8 @@ METplus Configuration Glossary
      | *Family:* [regex_pattern]
      | *Default:*  Varies
 
-   [DEPRECATED] FCST_VAR
-     Define the name of the forecast variable to be used in the analysis. See FCST_VAR<n>_NAME, FCST_VAR<n>_LEVELS, FCST_VAR<n>_THRESH, and FCST_VAR<n>_OPTIONS where <n> = integer >= 1.
-
-     | *Used by:*  EnsembleStat, MakePlots
-     | *Family:*  [config]
-     | *Default:*  Varies
+   FCST_VAR
+     .. warning:: **DEPRECATED:** Define the name of the forecast variable to be used in the analysis. See FCST_VAR<n>_NAME, FCST_VAR<n>_LEVELS, FCST_VAR<n>_THRESH, and FCST_VAR<n>_OPTIONS where <n> = integer >= 1.
 
    FCST_VAR_LEVEL
      Specify the values of the FCST_VAR_LEVEL column in the MET .stat file to use.
@@ -1585,7 +1399,7 @@ METplus Configuration Glossary
      FCST_VAR<n>_LEVELS
 
      If FCST_VAR<n>_LEVELS is set, then OBS_VAR<n>_LEVELS must be set as well. If the same value applies to both forecast and observation data, use BOTH_VAR<n>_LEVELS.
-     
+
      See reference "sec:SC_Field_Info" for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
@@ -1599,7 +1413,7 @@ METplus Configuration Glossary
      FCST_VAR2_NAME
      ...
      FCST_VAR<n>_NAME
-     
+
      See reference "sec:SC_Field_Info" for more information.
 
      This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the MET User's Guide for more information about Python Embedding in the MET tools.
@@ -1628,7 +1442,7 @@ METplus Configuration Glossary
      FCST_VAR2_THRESH
      ...
      FCST_VAR<n>_THRESH
-     
+
      If FCST_VAR<n>_THRESH is set, then OBS_VAR<n>_THRESH must be set as well. If the same value applies to both forecast and observation data, use BOTH_VAR<n>_THRESH.
 
      See reference "sec:SC_Field_Info" for more information.
@@ -1742,19 +1556,11 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] FORECAST_TMPL
-     Please use TC_PAIRS_ADECK_TEMPLATE.
+   FORECAST_TMPL
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_ADECK_TEMPLATE.
 
-     | *Used by:*  TcPairs
-     | *Family:*  [filename_templates]
-     | *Default:*  Varies
-
-   [DEPRECATED] GEMPAKTOCF_CLASSPATH
-     Please use GEMPAKTOCF_JAR instead. Path to the GempakToCF binary file and the NetCDF jar file required to run GempakToCF.
-
-     | *Used by:*  GempakToCF
-     | *Family:*  [exe]
-     | *Default:*  Varies
+   GEMPAKTOCF_CLASSPATH
+     .. warning:: **DEPRECATED:** Please use GEMPAKTOCF_JAR instead. Path to the GempakToCF binary file and the NetCDF jar file required to run GempakToCF.
 
    GEMPAKTOCF_JAR
      Path to the GempakToCF.jar file to run GempakToCF. Available on the MET webpage. Must be set if running GempakToCF wrapper, if using a filename template that ends with .grd, or if specifying an \*_INPUT_DATATYPE item as GEMPAK.
@@ -1805,11 +1611,8 @@ METplus Configuration Glossary
      | *Family:*  [conf]
      | *Default:*  Varies
 
-   [DEPRECATED] GEN_SEQ
-
-     | *Used by:* 
-     | *Family:* 
-     | *Default:* 
+   GEN_SEQ
+     .. warning:: **DEPRECATED:**
 
    FCST_EXTRACT_TILES_INPUT_TEMPLATE
      Filename template used to identify forecast input file to ExtractTiles.
@@ -1825,27 +1628,15 @@ METplus Configuration Glossary
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
-   [DEPRECATED] GFS_ANLY_FILE_TMPL
-     Please use OBS_EXTRACT_TILES_INPUT_TEMPLATE instead. Filename template used to identify the GFS analysis file.
+   GFS_ANLY_FILE_TMPL
+     .. warning:: **DEPRECATED:** Please use OBS_EXTRACT_TILES_INPUT_TEMPLATE instead.
 
-     | *Used by:*  ExtractTiles, SeriesByLead
-     | *Family:*  [filename_templates]
-     | *Default:*  Varies
-
-   [DEPRECATED] GFS_FCST_FILE_TMPL
-     Please use FCST_EXTRACT_TILES_INPUT_TEMPLATE instead.Filename templated used to identify the GFS forecast files.
-
-     | *Used by:*  ExtractTiles, SeriesByLead
-     | *Family:*  [filename_templates]
-     | *Default:*  Varies
+   GFS_FCST_FILE_TMPL
+     .. warning:: **DEPRECATED:** Please use FCST_EXTRACT_TILES_INPUT_TEMPLATE instead.
 
 
-   [DEPRECATED] GRID_STAT_CONFIG
-     Please use GRID_STAT_CONFIG_FILE instead. Specify the absolute path to the configuration file used by the MET grid_stat tool.
-
-     | *Used by:*  GridStat
-     | *Family:*  [config]
-     | *Default:* Varies
+   GRID_STAT_CONFIG
+     .. warning:: **DEPRECATED:** Please use GRID_STAT_CONFIG_FILE instead.
 
    GRID_STAT_CONFIG_FILE
      Specify the absolute path to the configuration file used by the MET grid_stat tool.
@@ -1861,12 +1652,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:* False
 
-   [DEPRECATED] GRID_STAT_OUT_DIR
-     Specify the output directory where files from the MET grid_stat tool are written. Please use GRID_STAT_OUTPUT_DIR instead.
-
-     | *Used by:*  GridStat
-     | *Family:*  [dir]
-     | *Default:*  Varies
+   GRID_STAT_OUT_DIR
+     .. warning:: **DEPRECATED:** Please use GRID_STAT_OUTPUT_DIR instead.
 
    GRID_STAT_OUTPUT_DIR
      Specify the output directory where files from the MET grid_stat tool are written.
@@ -1970,22 +1757,22 @@ METplus Configuration Glossary
      Specify a formatting string to use for INIT_BEG and INIT_END.Seereference "subsec:SC_Timing_Control_Looping-by-Initialization" for more information.
 
      | *Used by:*  All
-     | *Family:* 
-     | *Default:* 
+     | *Family:*
+     | *Default:*
 
    INTERP
      Specify the interpolation used to create the MET .stat files. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    INTERP_PTS
      Corresponds to the interpolation in the MET .stat files. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    INTERVAL_TIME
      Define the interval time in hours (HH) to be used by the MET pb2nc tool.
@@ -1999,14 +1786,14 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    JOB_NAME
      Specify stat_analysis job name to run. Valid options are filter, summary, aggregate, aggregate_stat, go_index, and ramp. For more information on these job names and what they do, please see the MET Users Guide.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    EXTRACT_TILES_LAT_ADJ
      Specify a latitude adjustment, in degrees to be used in the analysis. In the ExtractTiles wrapper, this corresponds to the 2m portion of the 2n x 2m subregion tile.
@@ -2015,12 +1802,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] LAT_ADJ
-     Please use EXTRACT_TILES_LAT_ADJ instead. Specify a latitude adjustment, in degrees to be used in the analysis. In the ExtractTiles wrapper, this corresponds to the 2m portion of the 2n x 2m subregion tile.
-
-     | *Used by:*  ExtractTiles, SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+   LAT_ADJ
+     .. warning:: **DEPRECATED:** Please use EXTRACT_TILES_LAT_ADJ instead.
 
    LEAD
      For CyclonePlotter, this refers to the column of interest in the input ASCII cyclone file.In the TCMPRPlotter, this corresponds to the optional -lead argument in the plot_TCMPR.R script (which is wrapped by TCMPRPlotter). This argument is set to a comma-separted list of lead times (h) to be plotted.In TcStat, this corresponds to the name of the column of interest in the input ASCII data file.
@@ -2069,7 +1852,7 @@ METplus Configuration Glossary
 
      | *Used by:*  SeriesByLead
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    LEGEND
      The text to be included in the legend of your plot.
@@ -2083,7 +1866,7 @@ METplus Configuration Glossary
 
      | *Used by:*  TCMPRPlotter
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    LOG_DIR
      Specify the directory where log files from MET and METplus should be written.
@@ -2101,7 +1884,7 @@ METplus Configuration Glossary
      INFO
      WARNING
      ERROR
-     CRITICAL     
+     CRITICAL
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -2149,12 +1932,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] LON_ADJ
-     Please use EXTRACT_TILES_LON_ADJ instead. Specify a longitude adjustment, in degrees to be used in the analysis. In the ExtractTiles wrapper, this corresponds to the 2n portion of the 2n x 2m subregion tile.
-
-     | *Used by:*  ExtractTiles, SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+   LON_ADJ
+     .. warning:: **DEPRECATED:** Please use EXTRACT_TILES_LON_ADJ instead.
 
    LOOP_BY
      Control whether the analysis is processed across valid or initialization times.Seereference "subsec:SC_Timing_Control_LOOP_BY" for more information.
@@ -2163,12 +1942,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  true
 
-   [DEPRECATED] LOOP_BY_INIT
-     Please use LOOP_BY instead.
-
-     | *Used by:*  All
-     | *Family:*  [config]
-     | *Default:*  true
+   LOOP_BY_INIT
+     .. warning:: **DEPRECATED:** Please use LOOP_BY instead.
 
    LOOP_ORDER
      Control the looping order for METplus. Valid options are "times" or "processes". "times" runs all items in the PROCESS_LIST for a single run time, then repeat until all times have been evaluated. "processes" runs each item in the PROCESS_LIST for all times specified, then repeat for the next item in the PROCESS_LIST.
@@ -2196,14 +1971,10 @@ METplus Configuration Glossary
 
      | *Used by:*  CyclonePlotter, ExtractTiles, PB2NC, PointStat, SeriesByInit, SeriesByLead, TCMPRPlotter, TcPairs
      | *Family:*  [dir]
-     | *Default:* 
+     | *Default:*
 
-   [DEPRECATED] MET_BIN
-     The location of MET binaries.
-
-     | *Used by:* 
-     | *Family:* 
-     | *Default:* 
+   MET_BIN
+     .. warning:: **DEPRECATED:** Please use MET_INSTALL_DIR instead.
 
    MET_BUILD_BASE
      The base directory of the MET install. Only needed if using MET version 6.0
@@ -2219,19 +1990,11 @@ METplus Configuration Glossary
      | *Family:*  [dir]
      | *Default:*  Varies
 
-   [DEPRECATED] MISSING_VAL
-     Please use TC_PAIRS_MISSING_VAL.
+   MISSING_VAL
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_MISSING_VAL.
 
-     | *Used by:*  TcPairs
-     | *Family:*  [config]
-     | *Default:*  Varies
-
-   [DEPRECATED] MISSING_VAL_TO_REPLACE
-     Please use TC_PAIRS_MISSING_VAL_TO_REPLACE.
-
-     | *Used by:*  TcPairs
-     | *Family:*  [config]
-     | *Default:*  Varies
+   MISSING_VAL_TO_REPLACE
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_MISSING_VAL_TO_REPLACE.
 
    MODEL
      Specify the model name. This is the model name listed in the MET .stat files.
@@ -2246,7 +2009,7 @@ METplus Configuration Glossary
      MODEL1_NAME
      MODEL2_NAME
      ...
-     MODELN_NAME   
+     MODELN_NAME
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
@@ -2295,26 +2058,14 @@ METplus Configuration Glossary
      | *Family:*  [dir]
      | *Default:*  Varies
 
-   [DEPRECATED] MODEL_DATA_DIR
-     Please use EXTRACT_TILES_GRID_INPUT_DIR instead.
+   MODEL_DATA_DIR
+     .. warning:: **DEPRECATED:** Please use EXTRACT_TILES_GRID_INPUT_DIR instead.
 
-     | *Used by:*  ExtractTiles, SeriesByLead
-     | *Family:*  [dir]
-     | *Default:*  Varies
+   MODEL_NAME
+     .. warning:: **DEPRECATED:** Please use MODEL instead.
 
-   [DEPRECATED] MODEL_NAME
-     Please use MODEL instead.
-
-     | *Used by:*  PointStat
-     | *Family:*  [config]
-     | *Default:*  Varies
-
-   [DEPRECATED] MODE_CONFIG
-     Please use MODE_CONFIG_FILE instead. Path to mode configuration file.
-
-     | *Used by:*  Mode
-     | *Family:*  [config]
-     | *Default:*  Varies
+   MODE_CONFIG
+     .. warning:: **DEPRECATED:** Please use MODE_CONFIG_FILE instead. Path to mode configuration file.
 
    MODE_CONFIG_FILE
      Path to mode configuration file.
@@ -2328,14 +2079,14 @@ METplus Configuration Glossary
 
      | *Used by:*  Mode
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    MODE_CONV_THRESH
      Comma separated list of convolution threshold values used by mode for both forecast and observation fields. Has the same behavior as setting FCST_MODE_CONV_THRESH and OBS_MODE_CONV_THRESH to the same value.
 
      | *Used by:*  Mode
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    MODE_FCST_CONV_RADIUS
      Comma separated list of convolution radius values used by mode for forecast fields.
@@ -2386,41 +2137,21 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  >0.45
 
-   [DEPRECATED] MODE_OBS_CONV_RADIUS
-     Please use OBS_CONV_MODE_RADIUS instead. Comma separated list of convolution radius values used by mode for observation fields.
+   MODE_OBS_CONV_RADIUS
+     .. warning:: **DEPRECATED:** Please use OBS_CONV_MODE_RADIUS instead.
 
-     | *Used by:*  Mode
-     | *Family:*  [config]
-     | *Default:*  5
+   MODE_OBS_CONV_THRESH
+     .. warning:: **DEPRECATED:** Please use OBS_MODE_CONV_THRESH instead.
 
-   [DEPRECATED] MODE_OBS_CONV_THRESH
-     Please use OBS_MODE_CONV_THRESH instead. Comma separated list of convolution threshold values used by mode for observation fields.
+   MODE_OBS_MERGE_FLAG
+     .. warning:: **DEPRECATED:** Please use OBS_MODE_MERGE_FLAG instead.
 
-     | *Used by:*  Mode
-     | *Family:*  [config]
-     | *Default:*  5
+   MODE_OBS_MERGE_THRESH
+     .. warning:: **DEPRECATED:** Please use OBS_MODE_MERGE_THRESH_INSTEAD.
 
-   [DEPRECATED] MODE_OBS_MERGE_FLAG
-     Please use OBS_MODE_MERGE_FLAG instead. Sets the merge_flag value in the mode config file for observation fields. Valid values are NONE, THRESH, ENGINE, and BOTH.
+   MODE_OUT_DIR
+     .. warning:: **DEPRECATED:** Please use MODE_OUTPUT_DIR instead.
 
-     | *Used by:*  Mode
-     | *Family:*  [config]
-     | *Default:* THRESH
-
-   [DEPRECATED] MODE_OBS_MERGE_THRESH
-     Please use OBS_MODE_MERGE_THRESH_INSTEAD. Comma separated list of merge threshold values used by mode for observation fields.
-
-     | *Used by:*  Mode
-     | *Family:*  [config]
-     | *Default:*  >0.45
-
-   [DEPRECATED] MODE_OUT_DIR
-     Please use MODE_OUTPUT_DIR instead. Output directory to write mode files.
-
-     | *Used by:*  Mode
-     | *Family:*  [dir]
-     | *Default:*  Varies
-     
    MODE_OUTPUT_DIR
      Output directory to write mode files.
 
@@ -2449,12 +2180,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  False
 
-   [DEPRECATED] MTD_CONFIG
-     Please use MTD_CONFIG_FILE instead. Path to mode-TD configuration file. Varies
-
-     | *Used by:* MTD
-     | *Family:*  [config]
-     | *Default:*  Varies
+   MTD_CONFIG
+     .. warning:: **DEPRECATED:** Please use MTD_CONFIG_FILE instead.
 
    MTD_CONFIG_FILE
      Path to mode-TD configuration file.
@@ -2468,14 +2195,14 @@ METplus Configuration Glossary
 
      | *Used by:* MTD
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    MTD_CONV_THRESH
      Comma separated list of convolution threshold values used by mode-TD for both forecast and observation files. Has the same behavior as setting FCST_MTD_CONV_THRESH and OBS_MTD_CONV_THRESH to the same value.
 
      | *Used by:* MTD
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    MTD_FCST_CONV_RADIUS
      Comma separated list of convolution radius values used by mode-TD for forecast files.
@@ -2489,14 +2216,14 @@ METplus Configuration Glossary
 
      | *Used by:* MTD
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    MTD_SINGLE_RUN
      Set to True to only process one data set (forecast or observation) in Mode-TD. If True, must set MTD_SINGLE_RUN_SRC to either 'FCST' or 'OBS'.
 
      | *Used by:* MTD
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    MTD_SINGLE_RUN_SRC
      Used only if MTD_SINGLE_RUN is set to True. Valid options are 'FCST' or 'OBS'.
@@ -2515,23 +2242,19 @@ METplus Configuration Glossary
    MTD_OBS_CONV_RADIUS
      Comma separated list of convolution radius values used by mode-TD for observation files.
 
-     | *Used by:* 
+     | *Used by:*
      | *Family:*  [config]
      | *Default:*  5
 
    MTD_OBS_CONV_THRESH
      Comma separated list of convolution threshold values used by mode-TD for observation files.
 
-     | *Used by:* 
+     | *Used by:*
      | *Family:*  [config]
      | *Default:*  >0.5
 
-   [DEPRECATED] MTD_OUT_DIR
-     Please use MTD_OUTPUT_DIR.
-
-     | *Used by:* MTD
-     | *Family:*  [dir]
-     | *Default:*  Varies
+   MTD_OUT_DIR
+     .. warning:: **DEPRECATED:** Please use MTD_OUTPUT_DIR.
 
    MTD_OUTPUT_DIR
      Output directory to write mode-TD files.
@@ -2554,19 +2277,11 @@ METplus Configuration Glossary
      | *Family:*  [exe]
      | *Default:*  /path/to
 
-   [DEPRECATED] NCDUMP_EXE
-     Please use NCDUMP.
+   NCDUMP_EXE
+     .. warning:: **DEPRECATED:** Please use NCDUMP.
 
-     | *Used by:*  PB2NC, PointStat, SeriesByLead
-     | *Family:*  [exe]
-     | *Default:*  /path/to
-
-   [DEPRECATED] NC_FILE_TMPL
-     Please use PB2NC_OUTPUT_TEMPLATE instead.
-
-     | *Used by:*  PB2NC
-     | *Family:*  [filename_templates]
-     | *Default:*  Varies
+   NC_FILE_TMPL
+     .. warning:: **DEPRECATED:** Please use PB2NC_OUTPUT_TEMPLATE instead.
 
    PB2NC_OUTPUT_TEMPLATE
      File template used to create netCDF files generated by PB2NC.
@@ -2589,19 +2304,11 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] NLAT
-     Please use EXTRACT_TILES_NLAT instead. The number of latitude points, set to a whole number. This defines the number of latitude points to incorporate into the subregion (density).
+   NLAT
+     .. warning:: **DEPRECATED:** Please use EXTRACT_TILES_NLAT instead.
 
-     | *Used by:*  ExtractTiles, SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
-
-   [DEPRECATED] NLON
-     Please use EXTRACT_TILES_NLON instead. The number of longitude points, set to a whole number. This defines the number of longitude points to incorporate into the subregion (density).
-
-     | *Used by:*  ExtractTiles, SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+   NLON
+     .. warning:: **DEPRECATED:** Please use EXTRACT_TILES_NLON instead.
 
    NO_EE
      Set the NO_EE flag for the TC Matched Pairs plotting utility.Acceptable values: yes/no
@@ -2617,26 +2324,14 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  no
 
-   [DEPRECATED] OBS_<n>_FIELD_NAME
-     Please use OBS_PCP_COMBINE_<n>_FIELD_NAME instead. This variable is used to define a <n> hour accumulation NetCDF field in the observation dataset used in the MET tool pcp_combine. <n> must be an integer >= 1.
+   OBS_<n>_FIELD_NAME
+     .. warning:: **DEPRECATED:** Please use OBS_PCP_COMBINE_<n>_FIELD_NAME instead.
 
-     | *Used by:*  PcpCombine
-     | *Family:*  [config]
-     | *Default:*  Varies
+   OBS_BUFR_VAR_LIST
+     .. warning:: **DEPRECATED:** Please use PB2NC_OBS_BUFR_VAR_LIST instead.
 
-   [DEPRECATED] OBS_BUFR_VAR_LIST
-     Please use PB2NC_OBS_BUFR_VAR_LIST instead. Specify which BUFR codes to use from the observation dataset when using the MET pb2nc tool. Format is comma separated list, e.g.:PMO, TOB, TDO
-
-     | *Used by:*  PB2NC
-     | *Family:*  [config]
-     | *Default:*  Varies
-
-   [DEPRECATED] OBS_DATA_INTERVAL
-     Specify the accumulation interval of the observation dataset used by the MET pcp_combine tool.
-
-     | *Used by:*  PcpCombine
-     | *Family:*  [config]
-     | *Default:*  Varies
+   OBS_DATA_INTERVAL
+     .. warning:: **DEPRECATED:** Specify the accumulation interval of the observation dataset used by the MET pcp_combine tool.
 
    OBS_ENSEMBLE_STAT_GRID_INPUT_DATATYPE
      Specify the data type of the input directory for grid observation files used with the MET ensemble_stat tool. Currently valid options are NETCDF, GRIB, and GEMPAK. If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF. A similar variable exists for forecast data called FCST_ENSEMBLE_STAT_INPUT_DATATYPE.
@@ -2750,54 +2445,26 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  ==0.1
 
-   [DEPRECATED] OBS_GEMPAK_INPUT_DIR
-     Specify the input directory for GEMPAK formatted observation files. Use GEMPAKTOCF_INPUT_DIR if running GempakToCF from the PROCESS_LIST.
+   OBS_GEMPAK_INPUT_DIR
+     .. warning:: **DEPRECATED:** Please use GEMPAKTOCF_INPUT_DIR instead.
 
-     | *Used by:*  PcpCombine
-     | *Family:*  [dir]
-     | *Default:*  Varies
+   OBS_GEMPAK_TEMPLATE
+     .. warning:: **DEPRECATED:** Please use GEMPAKTOCF_INPUT_TEMPLATE instead.
 
-   [DEPRECATED] OBS_GEMPAK_TEMPLATE
-     Filename template used to filter GEMPAK formatted observation files. Use GEMPAKTOCF_INPUT_TEMPLATE if running GempakToCF from the PROCESS_LIST.
+   OBS_INPUT_DIR
+     .. warning:: **DEPRECATED:** Please use OBS_POINT_STAT_INPUT_DIR instead.
 
-     | *Used by:*  PcpCombine
-     | *Family:*  [filename_templates]
-     | *Default:*  Varies
+   OBS_INPUT_DIR_REGEX
+     .. warning:: **DEPRECATED:** Please use OBS_POINT_STAT_INPUT_DIR instead.
 
-   [DEPRECATED] OBS_INPUT_DIR
-     Please use OBS_POINT_STAT_INPUT_DIR instead. Specify the input directory for observation files.
+   OBS_INPUT_FILE_REGEX
+     .. warning:: **DEPRECATED:** Please use OBS_POINT_STAT_INPUT_TEMPLATE instead.
 
-     | *Used by:*  PointStat
-     | *Family:*  [dir]
-     | *Default:*  Varies
+   OBS_INPUT_FILE_TEMPL
+     .. warning:: **DEPRECATED:** Please use OBS_POINT_STAT_INPUT_TEMPLATE instead.
 
-   [DEPRECATED] OBS_INPUT_DIR_REGEX
-     Please use OBS_POINT_STAT_INPUT_DIR instead. Specify the regular expression to use when searching for observation file input directories.
-
-     | *Used by:*  PointStat
-     | *Family:*  [regex_pattern]
-     | *Default:*  Varies
-
-   [DEPRECATED] OBS_INPUT_FILE_REGEX
-     Please use OBS_POINT_STAT_INPUT_TEMPLATE instead. Regular expression used to filter observation input files used in the analysis.
-
-     | *Used by:*  PointStat,
-     | *Family:*  [regex_pattern]
-     | *Default:*  Varies
-
-   [DEPRECATED] OBS_INPUT_FILE_TEMPL
-     Please use OBS_POINT_STAT_INPUT_TEMPLATE instead. Specify the filename template to use for observation input files.
-
-     | *Used by:*  PointStat,
-     | *Family:*  [filename_templates]
-     | *Default:*  Varies
-
-   [DEPRECATED] OBS_IS_DAILY_FILE
-     Please use OBS_PCP_COMBINE_IS_DAILY_FILE instead. Specify whether the forecast file is a daily file or not.Acceptable values: true/false
-
-     | *Used by:*  PcpCombine
-     | *Family:*  [config]
-     | *Default:*  Varies
+   OBS_IS_DAILY_FILE
+     .. warning:: **DEPRECATED:** Please use OBS_PCP_COMBINE_IS_DAILY_FILE instead.
 
    OBS_IS_PROB
      Used when setting OBS_* variables to process forecast data for comparisons with mtd. Specify whether the observation data are probabilistic or not. See FCST_IS_PROBreference "sec:SC_F".Acceptable values: true/false
@@ -2813,26 +2480,22 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*
 
-   [DEPRECATED] OBS_LEVEL
-     Please use OBS_PCP_COMBINE_INPUT_LEVEL instead. Specify what accumulation level should be used from the observation data for the analysis. See FCST_LEVEL for more information
-
-     | *Used by:*  PcpCombine
-     | *Family:*  [config]
-     | *Default:*  Varies
+   OBS_LEVEL
+     .. warning:: **DEPRECATED:** Please use OBS_PCP_COMBINE_INPUT_LEVEL instead.
 
    OBS_MODE_CONV_RADIUS
      See FCST_MODE_CONV_RADIUSreference "sec:SC_F".
 
      | *Used by:*  Mode
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    OBS_MODE_CONV_THRESH
      See FCST_MODE_CONV_THRESHreference "sec:SC_F".
 
      | *Used by:*  Mode
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    OBS_MODE_FILE_WINDOW_BEGIN
      Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by Mode. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_MODE_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
@@ -2853,14 +2516,14 @@ METplus Configuration Glossary
 
      | *Used by:*  Mode
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    OBS_MODE_MERGE_THRESH
      See FCST_MODE_MERGE_THRESHreference "sec:SC_F".
 
      | *Used by:*  Mode
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    OBS_MODE_INPUT_DATATYPE
      See FCST_MODE_INPUT_DATATYPEreference "sec:SC_F".
@@ -2888,19 +2551,19 @@ METplus Configuration Glossary
 
      | *Used by:* MTD
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    OBS_MTD_CONV_THRESH
      See FCST_MTD_CONV_THRESHreference "sec:SC_F".
 
      | *Used by:* MTD
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    OBS_MTD_FILE_WINDOW_BEGIN
      Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by MTD. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_MTD_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
-     | *Used by:* 
+     | *Used by:*
      | *Family:*  [config]
      | *Default:* OBS_FILE_WINDOW_BEGIN
 
@@ -2928,23 +2591,15 @@ METplus Configuration Glossary
    OBS_MTD_INPUT_TEMPLATE
      See FCST_MTD_INPUT_TEMPLATEreference "sec:SC_F".
 
-     | *Used by:* 
+     | *Used by:*
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
-   [DEPRECATED] OBS_NAME
-     No longer used. Provide a string to identify the observation dataset name.
+   OBS_NAME
+     .. warning:: **DEPRECATED:** No longer used. Provide a string to identify the observation dataset name.
 
-     | *Used by:*  PointStat
-     | *Family:*  [config]
-     | *Default:*  Varies
-
-   [DEPRECATED] OBS_NATIVE_DATA_TYPE
-     Specify the data format of the observation data. Use OBS_PCP_COMBINE_INPUT_DATATYPE instead.
-
-     | *Used by:*  PcpCombine
-     | *Family:*  [config]
-     | *Default:*  Varies
+   OBS_NATIVE_DATA_TYPE
+     .. warning:: **DEPRECATED:** Please use OBS_PCP_COMBINE_INPUT_DATATYPE instead.
 
    OBS_PCP_COMBINE_<n>_FIELD_NAME
      See FCST_PCP_COMBINE_<n>_FIELD_NAMEreference "sec:SC_F".
@@ -3056,7 +2711,7 @@ METplus Configuration Glossary
 
      | *Used by:*  PcpCombine
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    OBS_POINT_STAT_FILE_WINDOW_BEGIN
      Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by PointStat. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_POINT_STAT_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
@@ -3149,12 +2804,8 @@ METplus Configuration Glossary
      | *Family:*  [dir]
      | *Default:*  Varies
 
-   [DEPRECATED] OBS_VAR
-     Specify the string for the observation variable used in the analysis. See OBS_VAR<n>_NAME, OBS_VAR<n>_LEVELS, OBS_VAR<n>_OPTIONS and OBS_VAR<n>_THRESH where n = integer >= 1.
-
-     | *Used by:*  GridStat
-     | *Family:*  [config]
-     | *Default:*  Varies
+   OBS_VAR
+     .. warning:: **DEPRECATED:** Specify the string for the observation variable used in the analysis. See OBS_VAR<n>_NAME, OBS_VAR<n>_LEVELS, OBS_VAR<n>_OPTIONS and OBS_VAR<n>_THRESH where n = integer >= 1.
 
    OBS_VAR_LEVEL
      Specify the values of the OBS_VAR_LEVEL column in the MET .stat file to use.
@@ -3223,7 +2874,7 @@ METplus Configuration Glossary
      OBS_VAR1_THRESH
      OBS_VAR2_THRESH
      ...
-     OBS_VAR<n>_THRESH     
+     OBS_VAR<n>_THRESH
 
      If OBS_VAR<n>_THRESH is set, then FCST_VAR<n>_THRESH must be set as well. If the same value applies to both forecast and observation data, use BOTH_VAR<n>_THRESH.
 
@@ -3233,12 +2884,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] OBS_WINDOW_BEG
-     Please use OBS_WINDOW_BEGIN.
-
-     | *Used by:*  PB2NC, PointStat
-     | *Family:*  [config]
-     | *Default:*  Varies
+   OBS_WINDOW_BEG
+     .. warning:: **DEPRECATED:** Please use OBS_WINDOW_BEGIN.
 
    OBS_WINDOW_BEGIN
      Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if OBS_POINT_STAT_WINDOW_BEGIN is set, the PointStat wrapper will use that value. If PB2NC_WINDOW_BEGIN is not set, then the PB2NC wrapper will use OBS_WINDOW_BEGIN.A corresponding variable exists for forecast data called FCST_WINDOW_BEGIN.
@@ -3261,12 +2908,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] OB_TYPE
-     Please use OBTYPE instead.
-
-     | *Used by:*  EnsembleStat, GridStat, Mode, StatAnalysis
-     | *Family:*  [config]
-     | *Default:*  Varies
+   OB_TYPE
+     .. warning:: **DEPRECATED:** Please use OBTYPE instead.
 
    OUTPUT_BASE
      Provide a path to the top level output directory for METplus.
@@ -3275,12 +2918,8 @@ METplus Configuration Glossary
      | *Family:*  [dir]
      | *Default:*  Varies
 
-   [DEPRECATED] OVERWRITE_NC_OUTPUT
-     Please use PB2NC_SKIP_IF_OUTPUT_EXISTS instead. Specify whether to overwrite the netCDF output or not when using the MET pb2nc tool.Acceptable values: yes/no
-
-     | *Used by:*  PB2NC
-     | *Family:*  [config]
-     | *Default:*  yes
+   OVERWRITE_NC_OUTPUT
+     .. warning:: **DEPRECATED:** Please use PB2NC_SKIP_IF_OUTPUT_EXISTS instead.
 
    EXTRACT_TILES_OVERWRITE_TRACK
      Specify whether to overwrite the track data or not.Acceptable values: yes/no
@@ -3289,12 +2928,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  no
 
-   [DEPRECATED] OVERWRITE_TRACK
-     Please use EXTRACT_TILES_OVERWRITE_TRACK instead.
-
-     | *Used by:*  ExtractTiles
-     | *Family:*  [config]
-     | *Default:*  no
+   OVERWRITE_TRACK
+     .. warning:: **DEPRECATED:** Please use EXTRACT_TILES_OVERWRITE_TRACK instead.
 
    PARM_BASE
      This variable will automatically be set by METplus when it is started. Specifies the top level METplus parameter file directory. You can override this value by setting the environment variable METPLUS_PARM_BASE to another directory containing a copy of the METPlus parameter file directory. If the environment variable is not set, the parm directory corresponding to the calling script is used. It is recommended that this variable is not set by the user. If it is set and is not equivalent to the value determined by METplus, execution will fail.
@@ -3309,7 +2944,7 @@ METplus Configuration Glossary
      | *Used by:*  PB2NC
      | *Family:*  [config]
      | *Default:*  Varies
-     
+
    PB2NC_FILE_WINDOW_BEGIN
      Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by PB2NC. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If PB2NC_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
@@ -3436,12 +3071,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] PCP_COMBINE_METHOD
-     SPlease use [FCST/OBS]_PCP_COMBINE_METHOD instead.
-
-     | *Used by:*  PcpCombine
-     | *Family:*  [config]
-     | *Default:* ADD
+   PCP_COMBINE_METHOD
+     .. warning:: **DEPRECATED:** Please use [FCST/OBS]_PCP_COMBINE_METHOD instead.
 
    PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS
      If True, do not run pcp_combine if output file already exists. Set to False to overwrite files.
@@ -3559,33 +3190,17 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] PREPBUFR_DATA_DIR
-     Please use PB2NC_INPUT_DIR instead. Specify the directory where the PREPBUFR data are located for the MET pb2nc tool.
+   PREPBUFR_DATA_DIR
+     .. warning:: **DEPRECATED:** Please use PB2NC_INPUT_DIR instead.
 
-     | *Used by:*  PB2NC
-     | *Family:*  [dir]
-     | *Default:*  Varies
+   PREPBUFR_DIR_REGEX
+     .. warning:: **DEPRECATED:** No longer used. Regular expression to use when searching for PREPBUFR data.
 
-   [DEPRECATED] PREPBUFR_DIR_REGEX
-     Regular expression to use when searching for PREPBUFR data.
+   PREPBUFR_FILE_REGEX
+     .. warning:: **DEPRECATED:** No longer used. Regular expression to use when searching for PREPBUFR files.
 
-     | *Used by:*  PB2NC
-     | *Family:*  [regex_pattern]
-     | *Default:*  Varies
-
-   [DEPRECATED] PREPBUFR_FILE_REGEX
-     Regular expression to use when searching for PREPBUFR files.
-
-     | *Used by:*  PB2NC
-     | *Family:*  [regex_pattern]
-     | *Default:*  Varies
-
-   [DEPRECATED] PREPBUFR_MODEL_DIR_NAME
-     Please put the value previously used here in the PB2NC_INPUT_DIR path. Specify the name of the model being used with the MET pb2nc tool.
-
-     | *Used by:*  PB2NC
-     | *Family:*  [config]
-     | *Default:*  Varies
+   PREPBUFR_MODEL_DIR_NAME
+     .. warning:: **DEPRECATED:** Please put the value previously used here in the PB2NC_INPUT_DIR path. Specify the name of the model being used with the MET pb2nc tool.
 
    PROCESS_LIST
      Specify the list of processes for METplus to perform, in a comma separated list.
@@ -3594,26 +3209,18 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] PROJ_DIR
-     A directory for generic use. The user can store input files (if INPUT_BASE is not defined), intermediate files, and any other project-related files.
+   PROJ_DIR
+     .. warning:: **DEPRECATED:** A directory for generic use. The user can store input files (if INPUT_BASE is not defined), intermediate files, and any other project-related files.
 
-     | *Used by:*  PB2NC, PointStat, TcStat
-     | *Family:*  [dir]
-     | *Default:*  Varies
-
-   [DEPRECATED] REFERENCE_TMPL
-     Please use TC_PAIRS_BDECK_TEMPLATE.
-
-     | *Used by:*  TcPairs
-     | *Family:*  [filename_templates]
-     | *Default:*  Varies
+   REFERENCE_TMPL
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_BDECK_TEMPLATE.
 
    REGION
      Specify the values of the VX_MASK column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    REGION_LIST
      A list of the regions of interest. This is the list of regions for plotting verification.
@@ -3627,7 +3234,7 @@ METplus Configuration Glossary
 
      | *Used by:*  RegridDataPlane
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS
      If True, do not run regrid_data_plane if output file already exists. Set to False to overwrite files.
@@ -3657,12 +3264,8 @@ METplus Configuration Glossary
      | *Family:*  [exe]
      | *Default:*  /path/to
 
-   [DEPRECATED] RM_EXE
-     Please use RM.
-
-     | *Used by:*  PB2NC, PointStat, SeriesByLead
-     | *Family:*  [exe]
-     | *Default:*  /path/to
+   RM_EXE
+     .. warning:: **DEPRECATED:** Please use RM.
 
    RP_DIFF
      This corresponds to the optional -rp_diff flag of the plot_TCMPR.R script (which is wrapped by TCMPRPlotter). This a comma-separated list of thresholds to specify meaningful differences for the relative performance plot.
@@ -3720,19 +3323,11 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] SERIES_ANALYSIS_BY_INIT_CONFIG_FILE
-     Please use SERIES_ANALYSIS_CONFIG_FILE instead.
+   SERIES_ANALYSIS_BY_INIT_CONFIG_FILE
+     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_CONFIG_FILE instead.
 
-     | *Used by:*  SeriesByInit
-     | *Family:*  [config]
-     | *Default:*  Varies
-
-   [DEPRECATED] SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE
-     Please use SERIES_ANALYSIS_CONFIG_FILE instead.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+   SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE
+     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_CONFIG_FILE instead.
 
    SERIES_ANALYSIS_FILTER_OPTS
      Filtering options to be applied during series analysis. Filter options are performed by invoking the MET tc_stat tool within the METplus wrapper. Refer to Chapter 20 of the MET User's Guide for the syntax to use for performing filtering via the MET tc_stat tool.
@@ -3748,12 +3343,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] SERIES_BY_LEAD_FILTERED_OUTPUT_DIR
-     Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR instead.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+   SERIES_BY_LEAD_FILTERED_OUTPUT_DIR
+     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR instead.
 
    SERIES_ANALYSIS_GROUP_FCSTS
      Set to True to aggregate the series by lead results into bins of time.
@@ -3762,12 +3353,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] SERIES_BY_LEAD_GROUP_FCSTS
-     Please use SERIES_ANALYSIS_GROUP_FCSTS instead.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+   SERIES_BY_LEAD_GROUP_FCSTS
+     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_GROUP_FCSTS instead.
 
    SERIES_CI
      Corresponds to the optional -series_ci flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is a list of true/false for confidence intervals. This list can be optionally followed by a comma-separated list of values, including ALL, OTHER, and colon-separated groups.
@@ -3776,12 +3363,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] SERIES_INIT_FILTERED_OUT_DIR
-     Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR instead.
-
-     | *Used by:*  SeriesByInit
-     | *Family:*  [dir]
-     | *Default:*  Varies
+   SERIES_INIT_FILTERED_OUT_DIR
+     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR instead.
 
    SERIES_ANALYSIS_INPUT_DIR
      Specify the directory to read input to SeriesAnalysis. It is recommended to set this to {EXTRACT_TILES_OUTPUT_DIR}.
@@ -3797,26 +3380,14 @@ METplus Configuration Glossary
      | *Family:*  [dir]
      | *Default:*  Varies
 
-   [DEPRECATED] SERIES_INIT_OUT_DIR
-     Please use SERIES_ANALYSIS_OUTPUT_DIR instead.
+   SERIES_INIT_OUT_DIR
+     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_OUTPUT_DIR instead.
 
-     | *Used by:*  SeriesByInit
-     | *Family:*  [dir]
-     | *Default:*  Varies
+   SERIES_LEAD_FILTERED_OUT_DIR
+     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR.
 
-   [DEPRECATED] SERIES_LEAD_FILTERED_OUT_DIR
-     Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR. Specify the directory where filtered files will be written from the MET series_analysis tool when processing by lead time.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [dir]
-     | *Default:*  Varies
-
-   [DEPRECATED] SERIES_LEAD_OUT_DIR
-     Please use SERIES_ANALYSIS_OUTPUT_DIR instead.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [dir]
-     | *Default:*  Varies
+   SERIES_LEAD_OUT_DIR
+     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_OUTPUT_DIR instead.
 
    SKILL_REF
      This corresponds to the optional -skill_ref flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is the identifier for the skill score reference.
@@ -3825,12 +3396,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] START_DATE
-     Please use INIT_BEG or VALID_BEG instead.
-
-     | *Used by:*  PB2NC, PointStat
-     | *Family:*  [config]
-     | *Default:*  Varies
+   START_DATE
+     .. warning:: **DEPRECATED:** Please use INIT_BEG or VALID_BEG instead.
 
    STAGING_DIR
      Directory to uncompress or convert data into for use in METplus.
@@ -3839,12 +3406,8 @@ METplus Configuration Glossary
      | *Family:*  [dir]
      | *Default:*  OUTPUT_BASE/stage
 
-   [DEPRECATED] START_HOUR
-     Please use INIT_BEG or VALID_BEG instead.
-
-     | *Used by:*  PB2NC, PointStat
-     | *Family:*  [config]
-     | *Default:* Varies
+   START_HOUR
+     .. warning:: **DEPRECATED:** Please use INIT_BEG or VALID_BEG instead.
 
    STAT_ANALYSIS_CONFIG
      Specify the absolute path for the configuration file used with the MET stat_analysis tool. It is recommended to set this to {PARM_BASE}/use_cases/plotting/met_config/STATAnalysisConfig.
@@ -3858,7 +3421,7 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
      | *Family:*  [filename_templates]
-     | *Default:* 
+     | *Default:*
 
    STAT_ANALYSIS_LOOKIN_DIR
      Specify the input directory where the MET stat_analysis tool will find input files. This is the directory that the stat_analysis wrapper will use to build the argument to -lookin for the MET stat_analysis tool. It can contain wildcards, i.e. \*.
@@ -3872,7 +3435,7 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
      | *Family:*  [filename_templates]
-     | *Default:* 
+     | *Default:*
 
    STAT_ANALYSIS_OUTPUT_DIR
      This is the base directory where the output from running stat_analysis_wrapper will be put.
@@ -3895,26 +3458,14 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] STAT_LIST
-     Please use SERIES_ANALYSIS_STAT_LIST instead.
+   STAT_LIST
+     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_STAT_LIST instead.
 
-     | *Used by:*  SeriesByInit, SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+   STORM_ID
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_STORM_ID or TC_STAT_STORM_ID.
 
-   [DEPRECATED] STORM_ID
-     Please use TC_PAIRS_STORM_ID or TC_STAT_STORM_ID.
-
-     | *Used by:*  CyclonePlotter, TcPairs, TcStat
-     | *Family:*  [config]
-     | *Default:*  Varies
-
-   [DEPRECATED] STORM_NAME
-     Please use TC_PAIRS_STORM_NAME.
-
-     | *Used by:*  TcPairs
-     | *Family:*  [config]
-     | *Default:*  Varies
+   STORM_NAME
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_STORM_NAME.
 
    SUBTITLE
      The subtitle of the plot.
@@ -4007,19 +3558,11 @@ METplus Configuration Glossary
      | *Family:* [filename_templates]
      | *Default:*  Varies
 
-   [DEPRECATED] TC_PAIRS_DIR
-     Please use TC_PAIRS_OUTPUT_DIR.
+   TC_PAIRS_DIR
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_OUTPUT_DIR.
 
-     | *Used by:*  TcPairs
-     | *Family:*  [dir]
-     | *Default:*  Varies
-
-   [DEPRECATED] TC_PAIRS_FORCE_OVERWRITE
-     Please use TC_PAIRS_SKIP_IF_OUTPUT_EXISTS.Acceptable values: yes/no
-
-     | *Used by:*  TcPairs
-     | *Family:*  [config]
-     | *Default:*  no
+   TC_PAIRS_FORCE_OVERWRITE
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_SKIP_IF_OUTPUT_EXISTS.Acceptable values: yes/no
 
    TC_PAIRS_MISSING_VAL
      Specify the missing value code.
@@ -4371,40 +3914,20 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] TIME_METHOD
-     Please use LOOP_BY instead.
+   TIME_METHOD
+     .. warning:: **DEPRECATED:** Please use LOOP_BY instead.
 
-     | *Used by:*  PB2NC, PointStat
-     | *Family:* 
-     | *Default:* 
+   TIME_SUMMARY_BEG
+     .. warning:: **DEPRECATED:** Please use PB2NC_TIME_SUMMARY_BEG instead.
 
-   [DEPRECATED] TIME_SUMMARY_BEG
-     Please use PB2NC_TIME_SUMMARY_BEG instead. Specify the starting time of the summary when using the MET pb2nc tool.Acceptable formats: HHMMSS
+   TIME_SUMMARY_END
+     .. warning:: **DEPRECATED:** Please use PB2NC_TIME_SUMMARY_END instead.
 
-     | *Used by:*  PB2NC
-     | *Family:*  [config]
-     | *Default:*  000000
+   TIME_SUMMARY_FLAG
+     .. warning:: **DEPRECATED:** Please use PB2NC_TIME_SUMMARY_FLAG instead.
 
-   [DEPRECATED] TIME_SUMMARY_END
-     Please use PB2NC_TIME_SUMMARY_END instead. Specify the ending time of the summary when using the MET pb2nc tool.Acceptable formats: HHMMSS
-
-     | *Used by:*  PB2NC
-     | *Family:*  [config]
-     | *Default:*  235959
-
-   [DEPRECATED] TIME_SUMMARY_FLAG
-     Please use PB2NC_TIME_SUMMARY_FLAG instead. Specify whether to receive a time summary from the MET pb2nc tool or not.Acceptable values: True/False
-
-     | *Used by:*  PB2NC
-     | *Family:*  [config]
-     | *Default:*  False
-
-   [DEPRECATED] TIME_SUMMARY_TYPES
-     Please use PB2NC_TIME_SUMMARY_TYPES instead. Specify a comma separated list of time summary types to receive from the MET pb2nc tool.
-
-     | *Used by:*  PB2NC PB2NC
-     | *Family:*  [config] [config]
-     | *Default:*  Varies[deprecated]TIME_SUMMARY_VAR_NAMESPlease use PB2NC_TIME_SUMMARY_VAR_NAMES instead. Specify a comma separated list of time summary variable names to receive from the MET pb2nc tool. Varies
+   TIME_SUMMARY_TYPES
+     .. warning:: **DEPRECATED:** Please use PB2NC_TIME_SUMMARY_TYPES instead.
 
    TITLE
      Specify a title string for the TC Matched Pairs plotting tool.
@@ -4420,40 +3943,20 @@ METplus Configuration Glossary
      | *Family:*  [dir]
      | *Default:*  Varies
 
-   [DEPRECATED] TOP_LEVEL_DIRS
-     Please use TC_PAIRS_READ_ALL_FILES.
+   TOP_LEVEL_DIRS
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_READ_ALL_FILES.
 
-     | *Used by:*  TcPairs
-     | *Family:*  [config]
-     | *Default:*  no
+   TRACK_DATA_DIR
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_[A/B/E]DECK_INPUT_DIR.
 
-   [DEPRECATED] TRACK_DATA_DIR
-     Please use TC_PAIRS_[A/B/E]DECK_INPUT_DIR.
+   TRACK_DATA_MOD_FORCE_OVERWRITE
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_SKIP_IF_REFORMAT_EXISTS.
 
-     | *Used by:*  TcPairs
-     | *Family:*  [dir]
-     | *Default:*  Varies
+   TRACK_DATA_SUBDIR_MOD
+     .. warning:: **DEPRECATED:** No longer used.
 
-   [DEPRECATED] TRACK_DATA_MOD_FORCE_OVERWRITE
-     Please use TC_PAIRS_SKIP_IF_REFORMAT_EXISTS.
-
-     | *Used by:*  TcPairs
-     | *Family:*  [config]
-     | *Default:*  no
-
-   [DEPRECATED] TRACK_DATA_SUBDIR_MOD
-     No longer used.
-
-     | *Used by:*  TcPairs
-     | *Family:*  [dir]
-     | *Default:*  Varies
-
-   [DEPRECATED] TRACK_TYPE
-     Please use TC_PAIRS_REFORMAT_DECK.
-
-     | *Used by:*  TcPairs
-     | *Family:*  [config]
-     | *Default:*  Varies
+   TRACK_TYPE
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_REFORMAT_DECK.
 
    TR
      Specify the path to the Linux "tr" executable.
@@ -4462,12 +3965,8 @@ METplus Configuration Glossary
      | *Family:*  [exe]
      | *Default:*  /path/to
 
-   [DEPRECATED] TR_EXE
-     Please use TR.
-
-     | *Used by:*  PB2NC, PointStat
-     | *Family:*  [exe]
-     | *Default:*  /path/to
+   TR_EXE
+     .. warning:: **DEPRECATED:** Please use TR.
 
    VALID_BEG
      Specify a begin time for valid times for use in the analysis. This is the starting date in the format set in the VALID_TIME_FMT. It is named accordingly to the value set for LOOP_BY. However, in StatAnalysis, it is named accordingly to the value set for PLOT_TIME.Seereference "subsec:SC_Timing_Control_Looping-by-Valid" for more information.
@@ -4532,12 +4031,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] VAR_LIST
-     Please use SERIES_ANALYSIS_VAR_LIST.
-
-     | *Used by:*  PB2NC, SeriesByInit, SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+   VAR_LIST
+     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_VAR_LIST.
 
    VAR<n>_FOURIER_DECOMP
      Specify if Fourier decomposition is to be considered (True) or not (False). If this is set to True, data stratification will be done for the Fourier decomposition of FCS_VAR<n>_NAME. This should have been previously run in grid_stat_wrapper. The default value is set to False.
@@ -4551,14 +4046,10 @@ METplus Configuration Glossary
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
-   [DEPRECATED] VERIFICATION_GRID
-     Please use REGRID_DATA_PLANE_VERIF_GRID. Specify the absolute path to a file containing information about the desired output grid from the MET regrid_data_plane tool.
-
-     | *Used by:*  RegridDataPlane
-     | *Family:*  [config]
-     | *Default:*  Varies
+   VERIFICATION_GRID
+     .. warning:: **DEPRECATED:** Please use REGRID_DATA_PLANE_VERIF_GRID instead.
 
    VERIF_CASE
      Specify a string identifying the verification case being performed. Valid options are grid2grid, grid2obs, and precip.
@@ -4572,7 +4063,7 @@ METplus Configuration Glossary
 
      | *Used by:*  MakePlots
      | *Family:*  [config]
-     | *Default:* 
+     | *Default:*
 
    VERIF_TYPE
      Specify a string describing the type of verification being performed. For VERIF_CASE = grid2grid, valid options are anom, pres, and sfc. For VERIF_CASE = grid2obs, valid options are conus_sfc and upper_air. For VERIF_CASE = precip, any accumulation amount is valid, ex. A24.
@@ -4581,12 +4072,8 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   [DEPRECATED] VERTICAL_LOCATION
-     Specify the vertical location desired when using the MET pb2nc tool.
-
-     | *Used by:*  PB2NC
-     | *Family:*  [config]
-     | *Default:*  Varies
+   VERTICAL_LOCATION
+     .. warning:: **DEPRECATED:** Specify the vertical location desired when using the MET pb2nc tool.
 
    XLAB
      Specify the x-axis label when using the TC Matched Pairs plotting tool.
