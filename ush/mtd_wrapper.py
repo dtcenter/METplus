@@ -41,7 +41,7 @@ class MTDWrapper(MODEWrapper):
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('MTD_OUTPUT_DIR',
                                            self.config.getdir('OUTPUT_BASE'))
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MTD_CONFIG', '')
+        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MTD_CONFIG_FILE', '')
         c_dict['MIN_VOLUME'] = self.config.getstr('config', 'MTD_MIN_VOLUME', '2000')
         c_dict['SINGLE_RUN'] = self.config.getbool('config', 'MTD_SINGLE_RUN', False)
         c_dict['SINGLE_DATA_SRC'] = self.config.getstr('config', 'MTD_SINGLE_DATA_SRC', 'FCST')

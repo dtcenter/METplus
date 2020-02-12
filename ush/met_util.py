@@ -409,6 +409,7 @@ def check_for_deprecated_config(conf):
         'CI_METHOD': {'sec': 'config', 'alt': 'MAKE_PLOTS_CI_METHOD'},
         'VERIF_GRID': {'sec': 'config', 'alt': 'MAKE_PLOTS_VERIF_GRID'},
         'EVENT_EQUALIZATION': {'sec': 'config', 'alt': 'MAKE_PLOTS_EVENT_EQUALIZATION'},
+        'MTD_CONFIG': {'sec': 'config', 'alt': 'MTD_CONFIG_FILE'},
     }
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
