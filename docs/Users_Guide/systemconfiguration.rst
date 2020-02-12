@@ -151,6 +151,7 @@ is equivalent to setting::
 
 Grouping forecast leads is possible as well using a special version of the LEAD_SEQ variable for the **SeriesByLead Wrapper Only**. If SERIES_BY_LEAD_GROUP_FCSTS = True, then you can define groups of forecast leads that will be evaluated together. You can define any number of these groups by setting configuration variables LEAD_SEQ_1, LEAD_SEQ_2, ..., LEAD_SEQ_N. You can define the value with a comma-separated list of integers (hours) or using the special begin_end_incr(b,e,i) notation described just above. Each LEAD_SEQ_<n> must have a corresponding variable LEAD_SEQ_<n>_LABEL. For example::
 
+
   [config]
   SERIES_BY_LEAD_GROUP_FCSTS = True
   LEAD_SEQ_1 = 0,6,12,18
@@ -451,56 +452,70 @@ Using the above configuration, PcpCombine will use +/- 0 hours and require exact
 
 Config Quick Start Example
 --------------------------
+**Simple Example Use Case**
+
 
 **Track and Intensity Use Case with Sample Data**
 
-  1. Create a directory where you wish to store the sample data. Sample datasets are specific to each use case (see [sec:2.5.1]) and are required in order to be able to run the use case.
+  1. Create a directory where you wish to store the sample data. Sample datasets are specific to each use case and are required in order to be able to run the use case.
   2. Retrieve the sample data from the GitHub repository:
     
     a. In your browser, navigate to https://www.github.com/NCAR/METplus/releases
-    b. Locate the latest release and click on the *sample_data-cyclone_track_feature.tgz* link associated with that release
-    c. Save it to the directory you created above, hereafter referred to as INPUT_DATA_DIRECTORY
-    d. cd to your $INPUT_DATA_DIRECTORY and uncompress the tarballe: *tar xvfz sample_data-cyclone_track_feature.tgz*
-    e. when you perform a listing of the sample_data directory, the INPUT_DATA_DIRECTORY/sample_data/GFS contains the data you will need for this use case
+    b. Locate the latest release
+    c. Expand the 'Assets' menu by clicking on the black triangle to the left of the word 'Assets'
+    d. Click on the *sample_data-medium_range-x.y.tgz* link associated with that release, where x.y refers to the release number.
+    e. Save it to the directory you created above, hereafter referred to as INPUT_DATA_DIRECTORY
+    f. cd to your $INPUT_DATA_DIRECTORY and uncompress the tarball: *tar xvfz sample_data-medium_range-x.y.tgz* where x.y is replaced with the current release number.
+    g. when you perform a listing of the sample_data directory, the INPUT_DATA_DIRECTORY/METplus_Data/model_applications/medium_range contains the data you will need for this use case
   
   3. Set up the configuration file:
     
     a. Your METplus Wrappers install directory will hereafter be referred to as METplus_INSTALL
     b. Verify that all the *</path/to>* values are replaced with valid paths in the METplus_INSTALL/parm/metplus_conf/metplus_data.conf and METplus_INSTALL/parm/metplus_conf/metplus_system.conf files
-    c. Two configuration files are used in this use case, track_and_intensity.conf file and tcmp_mean_median.conf to take cyclone track data, and using TcPairs which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone tracks to generate matched pairs and error statistics). The TCM-PRPlotter is then used (wraps the MET tool plot_tcmpr.R) to generate a mean and median plots for these matched pairs
-    d. In your editor, open the METplus_INSTALL/METplus/parm/use_cases/track_and_intensity.conf file and perform the following:
+    c. One configuration file is used in this use case,  to take cyclone track data, and using TcPairs which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone tracks to generate matched pairs and error statistics). The TCMPRPlotter is then used (wraps the MET tool plot_tcmpr.R) to generate a mean and median plots for these matched pairs
+    d. In your editor, open the METplus_INSTALL/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf file and perform the following:
       
-      1. Replace any *</path/to>* with actual paths by setting the following:
+      1. Under the [dir] section, add the following:
         
-        a. OUTPUT_BASE to where you wish to save the output:
-        b. TCPAIRS_ADECK_INPUT_DIR to INPUT_DATA_DIRECTORY/sample_data/GFS/track_data
-      
+        a. OUTPUT_BASE to where you wish to save the output:  e.g. OUTPUT_BASE = path-to-your/output_dir
+        b. INPUT_BASE = INPUT_DATA_DIRECTORY/METplus_Data
+        c. MET_INSTALL_DIR = path-to-your/MET-install where path-to-your/MET-install is the full path where your MET installation resides
+        d. Verify that PROCESS_LIST, under the [conf] header/section is set to TcPairs, TCMPRPlotter. This instructs METplus Wrappers to run the TcPairs wrapper first (TC-Pairs) followed by the TCMPR plotter wrapper (plot_TCMPR.R).
+
       2. Save your changes and exit your editor
     
-    e. In your editor, open the METplus_INSTALL/METplus/parm/use_cases/track_and_intensity/examples/tcmpr_mean_median.conf
-      
-      1. Verify that PROCESS_LIST is set to TcPairs, TCMPRPlotter. This instructs METplus Wrappers to run the TcPairs wrapper first (TC-Pairs) followed by the TCMPR plotter wrapper (plot_TCMPR.R).
-  
+
   4. Run the use case:
     
     a. Make sure you have set the following environment in your .cshrc (C Shell) or .bashrc (Bash):
       
       1. csh: setenv RSCRIPTS_BASE $MET_BASE/scripts/Rscripts
       2. bash: export RSCRIPTS_BASE $MET_BASE/scripts/Rscripts
-      3. Refer to section [sec:2.7] for the full instructions on setting up the rest of your environment
+      3. Refer to section 2.7 'Set up your environment' in the :ref:`install` chapter for the full instructions on setting up the rest of your environment
       4. On your command line, run::
          
-           master_metplus.py -c use_cases/track_and_intensity/track_and_intensity.conf -c use_cases/track_and_intensity/examples/tcmpr_mean_median.conf
+           master_metplus.py -c parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
         
       5. When complete, you will have a log file in the output directory you specified, and under the tc_pairs directory you will see .tcst files under the 201412 subdirectory. These are the matched pairs created by the MET tool Tc-pairs and can be viewed in any text editor.
       6. Plots are generated under the tcmpr_plots subdirectory in .png format. You should have the following plots which can be viewed by any graphics viewers such as 'display' on Linux/Unix hosts:
         
-        a. AMAX_WIND-BMAX_WIND_mean.png
-        b. AMAX_WIND-BMAX_WIND_median.png
-        c. AMSLP-BMSLP_mean.png
-        d. AMSLP-BMSLP_median.png
-        e. TK_ERR_mean.png
-        f. TK_ERR_median.png
+        a. AMAX_WIND-BMAX_WIND_boxplot.png
+
+        b. AMAX_WIND-BMAX_WIND_mean.png
+
+        c. AMAX_WIND-BMAX_WIND_median.png
+
+        d. AMSLP-BMSLP_boxplot.png
+
+        e. AMSLP-BMSLP_mean.png
+
+        f. AMSLP-BMSLP_median.png
+
+        g. TK_ERR_boxplot.png
+
+        h. TK_ERR_mean.png
+
+        i. TK_ERR_median.png
 
 User Defined Config
 -------------------
