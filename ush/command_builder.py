@@ -222,8 +222,9 @@ class CommandBuilder:
         """
         out = ""
         all_vars = var_list
-        for user_var in self.config.keys('user_env_vars'):
-            all_vars.add(user_var)
+        if 'user_env_vars' in self.config.sections():
+            for user_var in self.config.keys('user_env_vars'):
+                all_vars.add(user_var)
 
         shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
         for var in all_vars:
