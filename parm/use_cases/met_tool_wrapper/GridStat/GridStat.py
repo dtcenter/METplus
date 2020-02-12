@@ -20,10 +20,8 @@ gridded observation data.
 # | **Forecast:** WRF 3 hour precipitation accumulation
 # | **Observation:** MU 3 hour precipitation accumulation
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v2.2/sample_data-met_test-8.1.tgz
+# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
-#
-# | **Data Source:** Unknown
 
 ##############################################################################
 # METplus Components
@@ -49,7 +47,7 @@ gridded observation data.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GridStat.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
@@ -85,11 +83,11 @@ gridded observation data.
 #
 # 1) Passing in GridStat.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in GridStat.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
