@@ -86,6 +86,11 @@ def pre_run_setup(filename, app_name):
     # copyable environment variable list)
     config.getstr('config', 'USER_SHELL', 'bash')
 
+
+    # get DO_NOT_RUN_EXE config variable so it shows up at the beginning of execution
+    # only if the default value is used
+    config.getbool('config', 'DO_NOT_RUN_EXE', False)
+
     # handle dir to write temporary files
     handle_tmp_dir(config)
 

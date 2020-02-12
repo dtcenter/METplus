@@ -49,6 +49,7 @@ class CommandRunner(object):
         self.logger = logger
         self.config = config
         self.verbose = verbose
+        self.log_command_to_met_log = False
 
     def run_cmd(self, cmd, env=None, ismetcmd = True, app_name=None, run_inshell=False,
                 log_theoutput=False, **kwargs):
@@ -121,6 +122,12 @@ class CommandRunner(object):
             the_args = shlex.split(cmd)[1:]
             if log_dest:
                 self.logger.debug("app_name is: %s, output sent to: %s" % (app_name, log_dest))
+
+                # if logging MET command to its own log file, add command that was run to that log
+                if self.log_command_to_met_log:
+                    with open(log_dest, 'w+') as log_file_handle:
+                        log_file_handle.write(f"COMMAND: {cmd}")
+
                 #cmd = exe('sh')['-c', cmd].err2out() >> log_dest
                 cmd = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
             else:
@@ -237,10 +244,11 @@ class CommandRunner(object):
             if log_met_output_to_metplus or not cmdlog:
                 cmdlog_dest = metpluslog
             else:
+                self.log_command_to_met_log = True
                 log_timestamp = self.config.getstr('config', 'LOG_TIMESTAMP', '')
                 if log_timestamp:
                     cmdlog_dest = os.path.join(self.config.getdir('LOG_DIR'),
-                                            cmdlog + '_' + log_timestamp)
+                                            cmdlog + '.' + log_timestamp)
                 else:
                     cmdlog_dest = os.path.join(self.config.getdir('LOG_DIR'),cmdlog)
 
