@@ -19,10 +19,8 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 # | **Forecast:** WRF Relative Humidity
 # | **Observation:** WRF Relative Humidity
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v2.2/sample_data-met_test-8.1.tgz
+# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
-#
-# | **Data Source:** Unknown
 
 ##############################################################################
 # METplus Components
@@ -48,7 +46,7 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/MODE.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/MODE/MODE.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/MODE/MODE.conf
@@ -64,7 +62,7 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 # .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
 #
 # Note the following variables are referenced in the MET configuration file.
-# * QUILT - True/False to perform quilting. Corresponds to MODE_QUILT in the METplus configuration file.
+# * **QUILT - True/False to perform quilting. Corresponds to MODE_QUILT in the METplus configuration file.
 # * **${FCST_CONV_RADIUS}** - Convolution radius used for forecast data. Corresponds to FCST_MODE_CONV_RADIUS in the METplus configuration files.
 # * **${FCST_CONV_THRESH}** - List of convolution thresholds used for forecast data. Corresponds to FCST_MODE_CONV_THRESH in the METplus configuration files.
 # * **${FCST_MERGE_THRESH}** - List of merge thresholds used for forecast data. Corresponds to FCST_MODE_MERGE_THRESH in the METplus configuration files.
@@ -88,11 +86,11 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 #
 # 1) Passing in MODE.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MODE.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MODE/MODE.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in MODE.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MODE.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MODE/MODE.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
