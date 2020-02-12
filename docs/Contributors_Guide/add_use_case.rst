@@ -26,7 +26,7 @@ Use Case Content
 ----------------
 In the category sub-directory, each use case should have the following:
 
-* A METplus configuration file named **<MET-TOOL>**_fcst**<FCST>**_obs**<OBS>**_**<DESCRIPTOR>**.conf where
+* A METplus configuration file named \<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_\<DESCRIPTOR\>.conf where
     * **<MET-TOOL>** is the MET tool that performs the final analysis, i.e. GridStat or SeriesAnalysis
     * **<FCST>** is the name of the forecast input data source
     * **<OBS>** is the name of the observation input data source
