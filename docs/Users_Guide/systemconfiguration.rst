@@ -19,9 +19,15 @@ Below is a list of Best Practices:
   e. Critical - least verbose
 
 2. Direct your logging either to stdout or to a log file
-3. Review your log file to verify that all your processes ran cleanly
-4. The order in which you list your METplus Wrappers config files matters. The last config file on the command line will over-ride any key-values defined in an earlier config file
-5. Check the master_metplus.conf file, as it contains all the key-valies based on what you have specified. This will help you determine whether you forgot to replace any *</path/to>* with valid paths or to verify that you have defined things as you expected.
+3. When setting up your output path for running use cases, set up the directory structure to reflect the use case
+   directory structure:
+
+   e.g.
+   {OUTPUT_BASE}/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_NetCDF/GridStat
+
+4. Review your log file to verify that all your processes ran cleanly
+5. The order in which you list your METplus Wrappers config files matters. The last config file on the command line will over-ride any key-values defined in an earlier config file
+6. Check the master_metplus.conf file, as it contains all the key-values based on what you have specified. This will help you determine whether you forgot to replace any *</path/to>* with valid paths or to verify that you have defined things as you expected.
 
 Config File Structure
 ---------------------
@@ -50,25 +56,23 @@ This section describes the METplus Wrappers configuration variables that are use
 LOOP_BY
 ^^^^^^^
 
-METplus Wrappers can be configured to loop over a set of valid times or a set of initialization times. This is controlled by the METplus Wrappers configuration variable called LOOP_BY. If the value of this variable is set to INIT or RETRO, looping will be relative to initialization time. If the value is set to VALID or REALTIME, looping will be relative to valid time. Older versions of METplus Wrappers used a True/False variable named LOOP_BY_INIT. METplus Wrappers still supports using this variable, although it is recommended that users update their config files to use LOOP_BY instead. LOOP_BY_INIT will eventually be removed.
+METplus Wrappers can be configured to loop over a set of valid times or a set of initialization times. This is controlled by the METplus Wrappers configuration variable called LOOP_BY. If the value of this variable is set to INIT or RETRO, looping will be relative to initialization time. If the value is set to VALID or REALTIME, looping will be relative to valid time. Earlier versions of METplus Wrappers used a True/False variable named LOOP_BY_INIT. METplus Wrappers still supports using this variable, although it is recommended that users update their config files to use LOOP_BY instead. **LOOP_BY_INIT will eventually be removed**.
 
 Looping by Valid Time
 ^^^^^^^^^^^^^^^^^^^^^
 
 When looping over valid time (LOOP_BY = VALID or LOOP_BY = REALTIME), the following variables must be set:
 
-.. **VALID_TIME_FMT**:
-
 :term:`VALID_TIME_FMT`:
-This is the format of the valid times the user can configure in the METplus Wrappers. The valie of VALID_BEG and VALID_END must correspond to this format. Example: VALID_TIME_FMT=%Y%m%d%H. Using this format, the valid time range values specified must be defined as YYYYMMDDHH, i.e. 2019020112.
+This is the format of the valid times the user can configure in the METplus Wrappers. The value of VALID_BEG and VALID_END must correspond to this format. Example: VALID_TIME_FMT=%Y%m%d%H. Using this format, the valid time range values specified must be defined as YYYYMMDDHH, i.e. 2019020112.
 
-**VALID_BEG**:
+:term:`VALID_BEG`:
 This is the first valid time that will be processed. The format of this variable is controlled by VALID_TIME_FMT. For example, if VALID_TIME_FMT=%Y%m%d, then VALID_BEG must be set to a valid time matching YYYYMMDD, such as 20190201.
 
-**VALID_END**:
+:term:`VALID_END`:
 This is the last valid time that can be processed. The format of this variable is controlled by VALID_TIME_FMT. For example, if VALID_TIME_FMT=%Y%m%d, then VALID_END must be set to a valid time matching YYYYMMDD, such as 20190202. Note that the time specified for this variable will not necessarily be processed. It is used to determine the cutoff of run times that can be processed. For example, if METplus Wrappers is configured to start at 20190201 and end at 20190202 processing data in 48 hour increments, it will process valid time 20190201 then increment the run time to 20190203. This is later than the VALID_END value, so execution will stop. However, if the increment is set to 24 hours (see VALID_INCREMENT), then METplus Wrappers will process valid times 20190201 and 20190202 before ending execution.
 
-**VALID_INCREMENT**:
+:term:`VALID_INCREMENT`:
 This is the number of seconds to add to each run time to determine the next run time to process. This value must be greater than or equal to 60 because METplus Wrappers currently does not support processing intervals of less than one minute.
 
 The following is a configuration that will process valid time 20190201 at 00Z until 20190202 at 00Z in 6 hour (21600 seconds) increments::
@@ -87,16 +91,16 @@ Looping by Initialization Time
 
 When looping over initialization time (LOOP_BY = INIT or LOOP_BY = RETRO), the following variables must be set:
 
-**INIT_TIME_FMT**:
+:term:`INIT_TIME_FMT`:
 This is the format of the initialization times the user can configure in METplus Wrappers. The value of INIT_BEG and INIT_END must correspond to this format. Example: INIT_TIME_FMT = %Y%m%d%H. Using this format, the initialization time range values specified must be defined as YYYYMMDDHH, i.e. 2019020112.
 
-**INIT_BEG**:
+:term:`INIT_BEG`:
 This is the first initialization time that will be processed. The format of this variable is controlled by INIT_TIME_FMT. For example, if INIT_TIME_FMT = %Y%m%d, then INIT_BEG must be set to an initialization time matching YYYYMMDD, such as 20190201.
 
-**INIT_END**:
+:term:`INIT_END`:
 This is the last initialization time that can be processed. The format of this variable is controlled by INIT_TIME_FMT. For example, if INIT_TIME_FMT = %Y%m%d, then INIT_END must be set to an initialization time matching YYYYMMDD, such as 20190202. Note that the time specified for this variable will not necissarily be processed. It is used to determine the cutoff of run times that can be processed. For example, if METplus Wrappers is configured to start at 20190201 and end at 20190202 processing data in 48 hour increments, it will process 20190201 then increment the run time to 20190203. This is later than the INIT_END valid, so execution will stop. However, if the increment is set to 24 hours (see INIT_INCREMENT), then METplus Wrappers will process initialization times 20190201 and 20190202 before ending executaion.
 
-**INIT_INCREMENT**:
+:term:`INIT_INCREMENT`:
 This is the number of seconds to add to each run time to determine the next run time to process. This value must be greater than or equal to 60 because METplus Wrappers currently does not support processing intervals of less than one minute.
 
 The following is a configuration that will process initialization time 20190201 at 00Z until 20190202 at 00Z in 6 hour (21600 second) increments::
@@ -108,14 +112,16 @@ The following is a configuration that will process initialization time 20190201 
   INIT_END = 2019020200
   INIT_INCREMENT = 21600
 
-This will process data initialized on 20190201 at 00Z, 06Z, 12Z, and 18Z as well as 20190202 at 00Z. For each of these initialization times, METplus Wrappers can also loop over a set of forecast leads that are all initialized at the current run time. See 'Looping Over Forecast Leads' [sec:4.3.1.4] for more information.
+This will process data initialized on 20190201 at 00Z, 06Z, 12Z, and 18Z as well as 20190202 at 00Z. For each of these initialization times, METplus Wrappers can also loop over a set of forecast leads that are all initialized at the current run time. See :ref:`looping-over-forecast-leads` for more information.
+
+.. _looping-over-forecast-leads:
 
 Looping over Forecast Leads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Many of the wrappers METplus Wrappers will also loop over a list of forecast leads relative to the current valid/initialization time that is being processed.
 
-**LEAD_SEQ**:
+:term:`LEAD_SEQ`:
 This variable can be set to a comma-separated list of integers to define the forecast leads (hours) that will be processed relative to the initialization/valid time. Currently only hours are supported for these values. Future versions of METplus Wrappers will allow sub-hourly forecast leads. For example::
 
   [config]
@@ -143,7 +149,7 @@ is equivalent to setting::
   [config]
   LEAD_SEQ = 0,3,6,9,12
 
-Grouping forecast leads is possible as well using a special version of the LEAD_SEQ variable for the **SeriesByLead Wrapper Only**. If SERIES_BY_LEAD_GROUP_FCSTS = True, then you can define groups of forecast leads that will be evaluated together. You can define any number of these groups by setting configuration variables LEAD_SEQ_1, LEAD_SEQ_2, ... LEAD_SEQ_N. You can define the value with a comma-separated list of integers (hours) or using the special begin_end_incr(b,e,i) notation described just above. Each list must have a corresponding label to describe it using LEAD_SEQ_<n>_LABEL, i.e. LEAD_SEQ_1 must have the corresponding variable LEAD_SEQ_1_LABEL set. For example::
+Grouping forecast leads is possible as well using a special version of the LEAD_SEQ variable for the **SeriesByLead Wrapper Only**. If SERIES_BY_LEAD_GROUP_FCSTS = True, then you can define groups of forecast leads that will be evaluated together. You can define any number of these groups by setting configuration variables LEAD_SEQ_1, LEAD_SEQ_2, ..., LEAD_SEQ_N. You can define the value with a comma-separated list of integers (hours) or using the special begin_end_incr(b,e,i) notation described just above. Each LEAD_SEQ_<n> must have a corresponding variable LEAD_SEQ_<n>_LABEL. For example::
 
   [config]
   SERIES_BY_LEAD_GROUP_FCSTS = True
@@ -152,7 +158,7 @@ Grouping forecast leads is possible as well using a special version of the LEAD_
   LEAD_SEQ_2 = begin_end_incr(24,42,6)
   LEAD_SEQ_2_LABEL = Day2
 
-**INIT_SEQ**:
+:term:`INIT_SEQ`:
 If METplus Wrappers is configured to loop by valid time (LOOP_BY = VALID), you can use INIT_SEQ instead of LEAD_SEQ. This is a list of initialization hours that are available in the data. This is useful if you know when the data is initialized and you need to use a different list of forecast leads depending on the valid time being evaluated. For example::
 
   [config]
@@ -201,7 +207,7 @@ However, you may want to configure METplus Wrappers to process at 00Z, 06Z, 12Z,
   [config]
   VALID_BEG = {now?fmt=%Y%m%d%H?shift=-86400?truncate=21600}
 
-This will rounds down the value to the nearest 6 hour interval of time. Starting METplus Wrappers on or after 06Z but before 12Z on 20190426 will result in VALID_BEG = 2019042506 (clock time shifted backwards by 24 hours then truncated to nearest 6 hour time).
+This will round down the value to the nearest 6 hour interval of time. Starting METplus Wrappers on or after 06Z but before 12Z on 20190426 will result in VALID_BEG = 2019042506 (clock time shifted backwards by 24 hours then truncated to the nearest 6 hour time).
 
 Starting METplus Wrappers on 20190426 at 08:16 with the following configuration::
 
@@ -222,14 +228,14 @@ will process valid times starting on 20190425 at 06Z every 6 hours until the cur
 
 .. note::
 
-   When using the 'now' keyword, the value of VALID_TIME_FMT must be set to the same value as the 'fmt' used in the 'now' item in VALID_BEG and VALID_END. In the above example, this would be the %Y%m%d%H portion within values of the VALID_TIME_FMT, VALID_BEG, and VALID_END variables.
+   When using the 'now' keyword, the value of VALID_TIME_FMT must be identical to the 'fmt' value corresponding to the 'now' item in VALID_BEG and VALID_END. In the above example, this would be the %Y%m%d%H portion within values of the VALID_TIME_FMT, VALID_BEG, and VALID_END variables.
 
 Field Info
 ~~~~~~~~~~
 
 This section describes how METplus Wrappers configuration variables can be used to define field information that is sent to the MET applications to read forecast and observation fields.
 
-**FCST_VAR<n>_NAME**:
+:term:`FCST_VAR<n>_NAME`:
 Set this to the name of a forecast variable that you want to evaluate. <n> is any integer greater than or equal to 1, i.e.::
 
   [config]
@@ -238,7 +244,7 @@ Set this to the name of a forecast variable that you want to evaluate. <n> is an
 
 If this value is set for a given <n> value, then the corresponding OBS_VAR<n>_NAME must be set. If the value for forecast and observation data are the same, BOTH_VAR<n>_NAME can be used instead.
 
-**FCST_VAR<n>_LEVELS**:
+:term:`FCST_VAR<n>_LEVELS`:
 Set this to a comma-separated list of levels or a single value. FCST_VAR1_LEVELS corresponds to FCST_VAR1_NAME, FCST_VAR2_LEVELS corresponds to FCST_VAR2_NAME, etc. For example::
 
   [config]
@@ -247,10 +253,10 @@ Set this to a comma-separated list of levels or a single value. FCST_VAR1_LEVELS
 
 will process TMP at P500 and TMP at P750. If FCST_VAR<n>_LEVELS and FCST_VAR<n>_NAME are set, then the corresponding OBS_VAR<n>_LEVELS and OBS_VAR<n>_NAME must be set. If the value for forecast and observation data are the same, BOTH_VAR<n>_NAME and BOTH_VAR<n>_LEVELS can be used instead.
 
-**OBS_VAR<n>_NAME**:
+:term:`OBS_VAR<n>_NAME`:
 Set this to the corresponding observation variable that you want to evaluate with FCST_VAR<n>_NAME. If this value is set for a given <n> value, then the corresponding FCST_VAR<n>_NAME must be set. If the value for forecast and observation data are the same, BOTH_VAR<n>_NAME can be used instead.
 
-**OBS_VAR<n>_LEVELS**:
+:term:`OBS_VAR<n>_LEVELS`:
 Set this to a comma-separated list of levels or a single value. If OBS_VAR<n>_LEVELS and OBS_VAR<n>_NAME are set, then the corresponding FCST_VAR<n>_LEVELS and FCST_VAR<n>_NAME must be set. If the value for forecast and observation data are the same, BOTH_VAR<n>_NAME and BOTH_VAR<n>_LEVELS can be used instead. For example, setting::
 
   [config]
@@ -307,7 +313,7 @@ and then comparing TMP (P500 and P750) in the forecast data and TEMP ((1,*,*)) i
 
 Note that some MET applications allow multiple fields to be specified for a single run. If the MET tool allows it and METplus Wrappers is configured accordingly, these two comparisons would be configured in a single run.
 
-**[FCST/OBS]_VAR<n>_THRESH**:
+:term:`FCST_VAR<n>_THRESH` / :term:`OBS_VAR<n>_THRESH`:
 Set this to a comma-separated list of threshold values to use in the comparison. Each of these values must begin with a comparison operator (>, >=, =, ==, !=, <, <=, gt, ge, eq, ne, lt, or le). For example, setting::
 
   [config]
@@ -321,7 +327,7 @@ will add the folloing information to the MET config file::
 
 If FCST_VAR<n>_THRESH is set, then OBS_VAR<n>_THRESH must be set. If the threshold list is the same for both forecast and observation data, BOTH_VAR<n>_THRESH can be used instead.
 
-**[FCST/OBS]_VAR<n>_OPTIONS**:
+:term:`FCST_VAR<n>_OPTIONS` /  :term:`OBS_VAR<n>_OPTIONS`:
 Set this to add additional information to the field dictionary in the MET config file. The item must end with a semi-colon. For example::
 
   [config]
@@ -335,7 +341,7 @@ will add the following to the MET config file::
 
 If FCST_VAR<n>_OPTIONS is set, OBS_VAR<n>_OPTIONS does not need to be set, and vice-versa. If the extra options are the same for both forecast and observation data, BOTH_VAR<n>_OPTIONS can be used instead.
 
-**ENS_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS]**:
+:term:`ENS_VAR<n>_NAME` / :term:`ENS_VAR<n>_LEVELS`/ :term:`ENS_VAR<n>_THRESH` / :term:`ENS_VAR<n>_OPTIONS`:
 **Used with EnsembleStat Wrapper only.** Users may want to define the ens dictionary item in the MET EnsembleStat config file differently than the fcst dictionary item. If this is the case, you can use these variables. If it is not set, the values in the corresponding FCST_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS] will be used in the ens dictionary.
 
 Directory and Filename Template Info
@@ -526,5 +532,5 @@ This is the equivalent of calling (bash example shown)::
 
 on the command line at the beginning of your METplus run. You can access the variable in the MET config file with ${USE_CASE_TIME_ID}.
 
-A-Z Config Glossary
--------------------
+:doc:`glossary`
+
