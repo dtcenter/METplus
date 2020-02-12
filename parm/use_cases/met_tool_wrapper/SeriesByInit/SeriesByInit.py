@@ -24,13 +24,14 @@ plot_data_plane. The NetCDF plots are then converted to .png and Postscript.
 # Scientific Objective
 # --------------------
 #
-# TODO Section to be filled in by a scientist.
+# By grouping the statistical information by the initialization time
+# as a series (as opposed to grouping by geographical/grid locations), model
+# differences specific to weather systems and model initialization can be discovered.
 
 ##############################################################################
 # Datasets
 # --------
 #
-# TODO Section to be filled in by a scientist.
 #
 # Input is the output of ExtractTiles, SERIES_ANALYSIS_INPUT_DIR.
 #

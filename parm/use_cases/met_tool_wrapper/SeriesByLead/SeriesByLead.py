@@ -27,13 +27,15 @@ and an animated GIF representative of the entire series is generated.
 # Scientific Objective
 # --------------------
 #
-# TODO Section to be filled in by a scientist.
+# By grouping the statistical information by lead time
+# as a series (as opposed to grouping by geographical/grid locations), model
+# differences specific to weather systems and changes in accuracy over a range of
+# lead times can be discovered.
 
 ##############################################################################
 # Datasets
 # --------
 #
-# TODO Section to be filled in by a scientist.
 #
 # Input is the output of ExtractTiles, SERIES_ANALYSIS_INPUT_DIR.
 #

@@ -11,14 +11,14 @@ forecast data to gridded AND point observation data.
 # Scientific Objective
 # --------------------
 #
-# TODO Section to be filled in by a scientist.
+# To provide useful statistical information on the relationship between
+# observation data (in both grid and point formats) to an ensemble forecast.
+# These values can be used to help correct ensemble member deviations from observed values.
 
 
 ##############################################################################
 # Datasets
 # --------
-#
-# TODO Section to be filled in by a scientist.
 #
 #
 # | **Forecast:** WRF ARW 24 hour precipitation accumulation
