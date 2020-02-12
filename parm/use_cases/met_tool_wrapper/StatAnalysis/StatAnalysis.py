@@ -12,14 +12,14 @@ output files.
 # Scientific Objective
 # --------------------
 #
-# TODO Section to be filled in by a scientist.
+# This demonstrates how the StatAnalysis tool can tie together results from other
+# MET tools (including PointStat, GridStat, EnsembleStat, and WaveletStat)
+# and provide summary statistical information.
 
 
 ##############################################################################
 # Datasets
 # --------
-#
-# TODO Section to be filled in by a scientist.
 #
 #
 # | **WRF ARW grid_stat output STAT files:**

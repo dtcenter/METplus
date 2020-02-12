@@ -15,13 +15,12 @@ one task (TCPairs) defined in the PROCESS_LIST (so there is no next task).
 # Scientific Objective
 # --------------------
 #
-# TODO Section to be filled in by a scientist.
+# Once this method is complete, a forecast and reference track analysis file
+# will have been paired up, allowing statistical information to be extracted.
 
 ##############################################################################
 # Datasets
 # --------
-#
-# TODO Section to be filled in by a scientist.
 #
 #
 # | **Forecast:** A Deck 
