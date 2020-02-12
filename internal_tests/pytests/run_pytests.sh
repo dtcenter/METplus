@@ -25,12 +25,20 @@ if [ $ret == 0 ]; then
     exit_script=0
 fi
 
+ls $script_dir/*/*/__pycache__ &> /dev/null
+ret=$?
+if [ $ret == 0 ]; then
+    echo -e "\n\nRemove all __pycache__ directories before running."
+    remove_commands=${remove_commands}"\nrm -r $script_dir/*/*/__pycache__"
+    exit_script=0
+fi
+
 ls $METPLUS_TEST_OUTPUT_BASE &> /dev/null
 ret=$?
 if [ $ret == 0 ]; then
     echo -e "\n\nRemove $METPLUS_TEST_OUTPUT_BASE before running tests."
-    remove_commands=${remove_commands}"\nrm -rf $METPLUS_TEST_OUTPUT_BASE"
-    exit_script=0
+    echo Exiting...
+    exit
 fi
 
 if [ "$remove_commands" != "\n" ]; then
@@ -40,8 +48,8 @@ if [ "$remove_commands" != "\n" ]; then
     read confirm_remove
 
     if [ "${confirm_remove:0:1}" == 'y' ]; then
-        rm -rf $METPLUS_TEST_OUTPUT_BASE
-        rm -r $script_dir/*/__pycache__
+        rm -r $script_dir/*/__pycache__ &> /dev/null
+        rm -r $script_dir/*/*/__pycache__ &> /dev/null
         exit_script=1
     fi
 fi
