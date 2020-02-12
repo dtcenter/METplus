@@ -43,7 +43,7 @@ Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/CyclonePlotter.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf
@@ -64,13 +64,13 @@ Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 # 1) Passing in CyclonePlotter.conf then a user-specific system configuration file and user-specific data
 #    configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/CyclonePlotter.conf \
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf \
 #                          -c /path/to/user_system.conf \
 #                          -c /path/to/user_data.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in CyclonePlotter.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/CyclonePlotter.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #

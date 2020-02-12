@@ -18,7 +18,7 @@ This use case will run the MET PCPCombine tool in ADD mode using a python script
 #
 # | **Forecast:** IMERG HDF5 30 minute precipitation accumulation
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v2.2/sample_data-met_test-8.1.tgz
+# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** IMERG
@@ -28,8 +28,9 @@ This use case will run the MET PCPCombine tool in ADD mode using a python script
 # ---------------------
 #
 # You will need to use a version of Python 3.6+ that has the following packages installed::
-#    h5-py
-#    numpy
+#
+# * h5-py
+# * numpy
 #
 # If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
 #
@@ -124,4 +125,4 @@ This use case will run the MET PCPCombine tool in ADD mode using a python script
 # Keywords
 # --------
 #
-# .. note:: `PCPCombineUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>`_
+# .. note:: `PCPCombineUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>, PythonEmbeddingUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>, MET_PYTHON_EXEUseCase <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_

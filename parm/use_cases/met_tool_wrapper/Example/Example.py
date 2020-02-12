@@ -94,7 +94,7 @@ This use case will loop over run times and output information for each run regar
 # METplus Configuration
 # ---------------------
 #
-# METplus first loads all of the configuration files found in parm/metplus_config, then it loads any configuration files passed to METplus via the command line with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/Example.conf
+# METplus first loads all of the configuration files found in parm/metplus_config, then it loads any configuration files passed to METplus via the command line with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/Example/Example.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/Example/Example.conf
@@ -143,11 +143,11 @@ This use case will loop over run times and output information for each run regar
 #
 # 1) Passing in Example.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in Example.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #

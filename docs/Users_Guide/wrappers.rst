@@ -10,8 +10,89 @@ METplus Wrappers configuration variables that are specific to that
 wrapper organized by config file section. You can find more information
 about each item in the METplus Configuration Glossary.
 
+
+ASCII2NC
+--------
+
+.. _description-1:
+
+Description
+~~~~~~~~~~~
+
+Used to configure the MET tool ASCII2NC
+
+.. _configuration-1:
+
+Configuration
+~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`ASCII2NC_INPUT_DIR`
+| :term:`ASCII2NC_OUTPUT_DIR`
+
+[filename_templates]
+
+| :term:`ASCII2NC_INPUT_TEMPLATE`
+| :term:`ASCII2NC_OUTPUT_TEMPLATE`
+
+[config]
+
+| :term:`LOG_ASCII2NC_VERBOSITY`
+| :term:`ASCII2NC_CONFIG_FILE`
+| :term:`ASCII2NC_FILE_WINDOW_BEGIN`
+| :term:`ASCII2NC_FILE_WINDOW_END`
+| :term:`ASCII2NC_WINDOW_BEGIN`
+| :term:`ASCII2NC_WINDOW_END`
+| :term:`ASCII2NC_INPUT_FORMAT`
+| :term:`ASCII2NC_MASK_GRID`
+| :term:`ASCII2NC_MASK_POLY`
+| :term:`ASCII2NC_MASK_SID`
+| :term:`ASCII2NC_TIME_SUMMARY_FLAG`
+| :term:`ASCII2NC_TIME_SUMMARY_RAW_DATA`
+| :term:`ASCII2NC_TIME_SUMMARY_BEG`
+| :term:`ASCII2NC_TIME_SUMMARY_END`
+| :term:`ASCII2NC_TIME_SUMMARY_STEP`
+| :term:`ASCII2NC_TIME_SUMMARY_WIDTH`
+| :term:`ASCII2NC_TIME_SUMMARY_GRIB_CODES`
+| :term:`ASCII2NC_TIME_SUMMARY_VAR_NAMES`
+| :term:`ASCII2NC_TIME_SUMMARY_TYPES`
+| :term:`ASCII2NC_TIME_SUMMARY_VALID_FREQ`
+| :term:`ASCII2NC_TIME_SUMMARY_VALID_THRESH`
+
+CustomIngest
+------------
+
+.. _description-2:
+
+Description
+~~~~~~~~~~~
+
+Used to configure the CustomIngest wrapper that runs RegridDataPlane to convert data using python embedding scripts into NetCDF so it can be read by the MET tools.
+
+.. _configuration-2:
+
+Configuration
+~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`CUSTOM_INGEST_<n>_OUTPUT_DIR`
+
+[filename_templates]
+
+| :term:`CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE`
+
+[config]
+
+| :term:`CUSTOM_INGEST_<n>_SCRIPT`
+| :term:`CUSTOM_INGEST_<n>_TYPE`
+| :term:`CUSTOM_INGEST_<n>_OUTPUT_GRID`
+
 CyclonePlotter
 --------------
+
+.. _description-3:
 
 Description
 ~~~~~~~~~~~
@@ -19,6 +100,8 @@ Description
 This wrapper does not have a corresponding MET tool but instead wraps
 the logic necessary to create plots of cyclone tracks. Currently only
 the output from the MET tc-pairs tool can be plotted.
+
+.. _configuration-3:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -31,27 +114,35 @@ Configuration
 [config]
 
 | :term:`CYCLONE_PLOTTER_INIT_DATE`
+| :term:`CYCLONE_PLOTTER_INIT_HR`
 | :term:`CYCLONE_PLOTTER_MODEL` 
 | :term:`CYCLONE_PLOTTER_PLOT_TITLE` 
 | :term:`CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE` 
 | :term:`CYCLONE_PLOTTER_CROSS_MARKER_SIZE` 
 | :term:`CYCLONE_PLOTTER_GENERATE_TRACK_ASCII`
 
-**Deprecated:**
+.. warning:: **DEPRECATED:**
 
-:term:`CYCLONE_OUT_DIR`
+   | :term:`CYCLONE_OUT_DIR`
+   | :term:`CYCLONE_INIT_DATE`
+   | :term:`CYCLONE_INIT_HR`
+   | :term:`CYCLONE_MODEL`
+   | :term:`CYCLONE_PLOT_TITLE`
+   | :term:`CYCLONE_CIRCLE_MARKER_SIZE`
+   | :term:`CYCLONE_CROSS_MARKER_SIZE`
+   | :term:`CYCLONE_GENERATE_TRACK_ASCII`
 
 EnsembleStat
 ------------
 
-.. _description-1:
+.. _description-4:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool ensemble_stat.
 
-.. _configuration-1:
+.. _configuration-4:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -67,10 +158,12 @@ Configuration
 
 | :term:`OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE` 
 | :term:`OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE` 
-| :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE` 
+| :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE`
+| :term:`ENSEMBLE_STAT_OUTPUT_TEMPLATE`
 
 [config]
 
+| :term:`LOG_ENSEMBLE_STAT_VERBOSITY`
 | :term:`ENSEMBLE_STAT_ONCE_PER_FIELD`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_DATATYPE` 
 | :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE` 
@@ -80,24 +173,51 @@ Configuration
 | :term:`ENSEMBLE_STAT_MET_OBS_ERR_TABLE`
 | :term:`ENSEMBLE_STAT_N_MEMBERS`
 | :term:`OBS_ENSEMBLE_STAT_WINDOW_BEGIN` 
-| :term:`OBS_ENSEMBLE_STAT_WINDOW_END` 
+| :term:`OBS_ENSEMBLE_STAT_WINDOW_END`
+| :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN`
+| :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_END`
 | :term:`ENSEMBLE_STAT_ENS_THRESH`
 | :term:`ENS_VAR<n>_NAME` (optional)
 | :term:`ENS_VAR<n>_LEVELS` (optional)
 | :term:`ENS_VAR<n>_THRESH` (optional)
 | :term:`ENS_VAR<n>_OPTIONS` (optional)
 
-**Deprecated:**
+.. warning:: **DEPRECATED:**
 
-| :term:`ENSEMBLE_STAT_OUT_DIR`
-| :term:`ENSEMBLE_STAT_CONFIG`
-| :term:`ENSEMBLE_STAT_MET_OBS_ERROR_TABLE`
-| :term:`ENSEMBLE_STAT_GRID_VX`
+   | :term:`ENSEMBLE_STAT_OUT_DIR`
+   | :term:`ENSEMBLE_STAT_CONFIG`
+   | :term:`ENSEMBLE_STAT_MET_OBS_ERROR_TABLE`
+   | :term:`ENSEMBLE_STAT_GRID_VX`
+
+
+Example
+--------
+
+.. _description-5:
+
+Description
+~~~~~~~~~~~
+
+Used to configure the CustomIngest wrapper that runs RegridDataPlane to convert data using python embedding scripts into NetCDF so it can be read by the MET tools.
+
+.. _configuration-5:
+
+Configuration
+~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`EXAMPLE_INPUT_DIR`
+
+[filename_templates]
+
+| :term:`EXAMPLE_INPUT_TEMPLATE`
+
 
 ExtractTiles
 ------------
 
-.. _description-2:
+.. _description-6:
 
 3.5.1 Description
 ~~~~~~~~~~~~~~~~~
@@ -111,7 +231,7 @@ paired track data. This information is then used to create tiles of
 subregions. The ExtractTiles wrapper creates a 2n degree x 2m degree
 grid/tile with each storm located at the center.
 
-.. _configuration-2:
+.. _configuration-6:
 
 Configuration 
 ~~~~~~~~~~~~~
@@ -121,7 +241,8 @@ the dimensions and density of the tiles comprising the subregion:
 
 [dir]
 
-:term:`EXTRACT_TILES_OUTPUT_DIR`
+| :term:`EXTRACT_TILES_OUTPUT_DIR`
+| :term:`EXTRACT_TILES_PAIRS_INPUT_DIR`
 
 [config]
 
@@ -133,35 +254,36 @@ the dimensions and density of the tiles comprising the subregion:
 | :term:`EXTRACT_TILES_DLAT`
 | :term:`EXTRACT_TILES_FILTER_OPTS`
 | :term:`EXTRACT_TILES_VAR_LIST`
+| :term:`EXTRACT_TILES_OVERWRITE_TRACK`
 
-**Deprecated:**
+.. warning:: **DEPRECATED:**
 
-:term:`EXTRACT_OUT_DIR`
-| :term:`LON_ADJ`
-| :term:`LAT_ADJ`
-| :term:`NLAT`
-| :term:`NLON`
-| :term:`DLON`
-| :term:`DLAT`
+   | :term:`EXTRACT_OUT_DIR`
+   | :term:`LON_ADJ`
+   | :term:`LAT_ADJ`
+   | :term:`NLAT`
+   | :term:`NLON`
+   | :term:`DLON`
+   | :term:`DLAT`
 
 GempakToCF
 ----------
 
-.. _description-3:
+.. _description-7:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the utility GempakToCF.
 
-.. _configuration-3:
+.. _configuration-7:
 
 Configuration
 ~~~~~~~~~~~~~
 
 [exe]
 
-GEMPAKTOCF_JAR
+| :term:`GEMPAKTOCF_JAR`
 
 [dir]
 
@@ -177,21 +299,21 @@ GEMPAKTOCF_JAR
 
 | :term:`GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS`
 
-**Deprecated:**
+.. warning:: **DEPRECATED:**
 
-| :term:`GEMPAKTOCF_CLASSPATH`
+   | :term:`GEMPAKTOCF_CLASSPATH`
 
 GridStat
 --------
 
-.. _description-4:
+.. _description-8:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool grid_stat.
 
-.. _configuration-4:
+.. _configuration-8:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -201,16 +323,21 @@ Configuration
 | :term:`FCST_GRID_STAT_INPUT_DIR` 
 | :term:`OBS_GRID_STAT_INPUT_DIR` 
 | :term:`GRID_STAT_OUTPUT_DIR`
+| :term:`CLIMO_GRID_STAT_INPUT_DIR`
 
 [filename_templates]
 
 | :term:`FCST_GRID_STAT_INPUT_TEMPLATE` 
-| :term:`OBS_GRID_STAT_INPUT_TEMPLATE` 
+| :term:`OBS_GRID_STAT_INPUT_TEMPLATE`
+| :term:`GRID_STAT_OUTPUT_TEMPLATE`
+| :term:`CLIMO_GRID_STAT_INPUT_TEMPLATE`
 | :term:`GRID_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
  
 
 [config]
 
+| :term:`LOG_GRID_STAT_VERBOSITY`
+| :term:`GRID_STAT_OUTPUT_PREFIX`
 | :term:`GRID_STAT_CONFIG_FILE`
 | :term:`FCST_GRID_STAT_INPUT_DATATYPE` 
 | :term:`OBS_GRID_STAT_INPUT_DATATYPE` 
@@ -222,17 +349,21 @@ Configuration
 | :term:`FCST_GRID_STAT_WINDOW_BEGIN` (optional) 
 | :term:`FCST_GRID_STAT_WINDOW_END` (optional) 
 | :term:`OBS_GRID_STAT_WINDOW_BEGIN` (optional) 
-| :term:`OBS_GRID_STAT_WINDOW_END` (optional) 
+| :term:`OBS_GRID_STAT_WINDOW_END` (optional)
+| :term:`FCST_GRID_STAT_FILE_WINDOW_BEGIN` (optional)
+| :term:`FCST_GRID_STAT_FILE_WINDOW_END` (optional)
+| :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN` (optional)
+| :term:`OBS_GRID_STAT_FILE_WINDOW_END` (optional)
 
-**Deprecated:**
+.. warning:: **DEPRECATED:**
 
-| :term:`GRID_STAT_OUT_DIR`
-| :term:`GRID_STAT_CONFIG`
+   | :term:`GRID_STAT_OUT_DIR`
+   | :term:`GRID_STAT_CONFIG`
 
 MakePlots
 ---------
 
-.. _description-5:
+.. _description-9:
 
 Description
 ~~~~~~~~~~~
@@ -242,7 +373,7 @@ scripts for the various METplus Wrappers use cases. This can only be run
 following StatAnalysis wrapper when LOOP_ORDER = processes. To run
 MakePlots wrapper, include MakePlots in PROCESS_LIST.
 
-.. _configuration-5:
+.. _configuration-9:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -252,59 +383,62 @@ configuration file:
 
 [dir]
 
-| :term:`PLOTTING_SCRIPTS_DIR` 
-| :term:`STAT_FILES_INPUT_DIR` 
-| :term:`PLOTTING_OUTPUT_DIR` 
+| :term:`MAKE_PLOTS_SCRIPTS_DIR`
+| :term:`MAKE_PLOTS_INPUT_DIR`
+| :term:`MAKE_PLOTS_OUTPUT_DIR`
 
 [config]
 
-| :term:`VERIF_CASE`
-| :term:`VERIF_TYPE`
-| :term:`PLOT_TIME` 
-| :term:`VALID_BEG`
-| :term:`VALID_END`
-| :term:`INIT_BEG` 
-| :term:`INIT_END` 
-| :term:`VALID_HOUR_METHOD`
-| :term:`VALID_HOUR_BEG`
-| :term:`VALID_HOUR_END`
-| :term:`VALID_HOUR_INCREMENT`
-| :term:`INIT_HOUR_METHOD` 
-| :term:`INIT_HOUR_BEG` 
-| :term:`INIT_HOUR_END` 
-| :term:`INIT_HOUR_INCREMENT` 
-| :term:`MODEL<n>_NAME` 
-| :term:`MODEL<n>_OBS_NAME` 
-| :term:`MODEL<n>_NAME_ON_PLOT` 
-| :term:`FCST_VAR<n>_NAME` 
-| :term:`FCST_VAR<n>_LEVELS` 
-| :term:`REGION_LIST` 
-| :term:`LEAD_LIST` 
-| :term:`INTERP` 
-| :term:`PLOT_STATS_LIST` 
-| :term:`CI_METHOD` 
-| :term:`VERIF_GRID`
-| :term:`EVENT_EQUALIZATION`
+| :term:`MAKE_PLOTS_VERIF_CASE`
+| :term:`MAKE_PLOTS_VERIF_TYPE`
+| :term:`DATE_TIME`
+
+| :term:`MODEL\<n\>`
+| :term:`MODEL<n>_OBTYPE`
+| :term:`MODEL<n>_REFERENCE_NAME`
+| :term:`VX_MASK_LIST`
+| :term:`INTERP_MTHD_LIST`
+| :term:`MAKE_PLOT_STATS_LIST`
+| :term:`MAKE_PLOTS_CI_METHOD`
+| :term:`MAKE_PLOTS_VERIF_GRID`
+| :term:`MAKE_PLOTS_EVENT_EQUALIZATION`
 
 The following values are **optional** in the METplus Wrappers
 configuration file:
 
-| :term:`FCST_VAR<n>_THRESH`
-| :term:`FCST_VAR<n>_OPTIONS`
 | :term:`VAR<n>_FOURIER_DECOMP`
 | :term:`VAR<n>_WAVE_NUM_LIST`
+
+
+.. warning:: **DEPRECATED:**
+
+   | :term:`PLOTTING_SCRIPTS_DIR`
+   | :term:`STAT_FILES_INPUT_DIR`
+   | :term:`PLOTTING_OUTPUT_DIR`
+   | :term:`VERIF_CASE`
+   | :term:`VERIF_TYPE`
+   | :term:`PLOT_TIME`
+   | :term:`MODEL<n>_NAME`
+   | :term:`MODEL<n>_OBS_NAME`
+   | :term:`MODEL<n>_NAME_ON_PLOT`
+   | :term:`REGION_LIST`
+   | :term:`INTERP`
+   | :term:`PLOT_STATS_LIST`
+   | :term:`CI_METHOD`
+   | :term:`VERIF_GRID`
+   | :term:`EVENT_EQUALIZATION`
 
 Mode
 ----
 
-.. _description-6:
+.. _description-10:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool mode.
 
-.. _configuration-6:
+.. _configuration-10:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -318,11 +452,16 @@ Configuration
 [filename_templates]
 
 | :term:`FCST_MODE_INPUT_TEMPLATE` 
-| :term:`OBS_MODE_INPUT_TEMPLATE` 
+| :term:`OBS_MODE_INPUT_TEMPLATE`
+| :term:`MODE_OUTPUT_TEMPLATE`
+| :term:`MODE_VERIFICATION_MASK_TEMPLATE`
 
 [config]
 
-| :term:`MODE_CONFIG_FILE` 
+| :term:`LOG_MODE_VERBOSITY`
+| :term:`MODE_OUTPUT_PREFIX`
+| :term:`MODE_REGRID_TO_GRID`
+| :term:`MODE_CONFIG_FILE`
 | :term:`FCST_MODE_INPUT_DATATYPE` 
 | :term:`OBS_MODE_INPUT_DATATYPE` 
 | :term:`MODE_QUILT` 
@@ -342,24 +481,28 @@ Configuration
 | :term:`FCST_MODE_WINDOW_BEGIN` 
 | :term:`FCST_MODE_WINDOW_END` 
 | :term:`OBS_MODE_WINDOW_BEGIN` 
-| :term:`OBS_MODE_WINDOW_END` 
+| :term:`OBS_MODE_WINDOW_END`
+| :term:`FCST_MODE_FILE_WINDOW_BEGIN`
+| :term:`FCST_MODE_FILE_WINDOW_END`
+| :term:`OBS_MODE_FILE_WINDOW_BEGIN`
+| :term:`OBS_MODE_FILE_WINDOW_END`
 
-**Deprecated:**
+.. warning:: **DEPRECATED:**
 
-| :term:`MODE_OUT_DIR`
-| :term:`MODE_CONFIG` 
+   | :term:`MODE_OUT_DIR`
+   | :term:`MODE_CONFIG`
 
 MTD
 ---
 
-.. _description-7:
+.. _description-11:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool mtd (mode time domain).
 
-.. _configuration-7:
+.. _configuration-11:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -373,7 +516,8 @@ Configuration
 [filename_templates]
 
 | :term:`FCST_MTD_INPUT_TEMPLATE` 
-| :term:`OBS_MTD_INPUT_TEMPLATE` 
+| :term:`OBS_MTD_INPUT_TEMPLATE`
+| :term:`MTD_OUTPUT_TEMPLATE`
 
 [config]
 
@@ -388,16 +532,16 @@ Configuration
 | :term:`OBS_MTD_CONV_RADIUS`
 | :term:`OBS_MTD_CONV_THRESH` 
 
-**Deprecated:**
+.. warning:: **DEPRECATED:**
 
-| :term:`MTD_OUT_DIR`
-| :term:`MTD_CONFIG`
-| :term:`MTD_SINGLE_RUN_SRC`
+   | :term:`MTD_OUT_DIR`
+   | :term:`MTD_CONFIG`
+   | :term:`MTD_SINGLE_RUN_SRC`
 
 PB2NC
 -----
 
-.. _description-8:
+.. _description-12:
 
 Description
 ~~~~~~~~~~~
@@ -405,7 +549,7 @@ Description
 The PB2NC wrapper is a Python script that encapsulates the behavior of
 the MET pb2nc tool to convert prepBUFR files into netCDF.
 
-.. _configuration-8:
+.. _configuration-12:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -437,29 +581,31 @@ Configuration
 | :term:`PB2NC_TIME_SUMMARY_VAR_NAMES` 
 | :term:`PB2NC_TIME_SUMMARY_TYPES` 
 | :term:`PB2NC_WINDOW_BEGIN` 
-| :term:`PB2NC_WINDOW_END` 
+| :term:`PB2NC_WINDOW_END`
+| :term:`PB2NC_VALID_BEGIN`
+| :term:`PB2NC_VALID_END`
 
-**Deprecated:**
+.. warning:: **DEPRECATED:**
 
-| :term:`PREPBUFR_DATA_DIR`
-| :term:`PREPBUFR_MODEL_DIR_NAME`
-| :term:`PREPBUFR_DIR_REGEX`
-| :term:`PREPBUFR_FILE_REGEX`
-| :term:`NC_FILE_TMPL`
-| :term:`PB2NC_VERTICAL_LEVEL`
-| :term:`OBS_BUFR_VAR_LIST`
-| :term:`TIME_SUMMARY_FLAG`
-| :term:`TIME_SUMMARY_BEG`
-| :term:`TIME_SUMMARY_END`
-| :term:`TIME_SUMMARY_VAR_NAMES`
-| :term:`TIME_SUMMARY_TYPES`
-| :term:`OVERWRITE_NC_OUTPUT` 
-| :term:`VERTICAL_LOCATION`
+   | :term:`PREPBUFR_DATA_DIR`
+   | :term:`PREPBUFR_MODEL_DIR_NAME`
+   | :term:`PREPBUFR_DIR_REGEX`
+   | :term:`PREPBUFR_FILE_REGEX`
+   | :term:`NC_FILE_TMPL`
+   | :term:`PB2NC_VERTICAL_LEVEL`
+   | :term:`OBS_BUFR_VAR_LIST`
+   | :term:`TIME_SUMMARY_FLAG`
+   | :term:`TIME_SUMMARY_BEG`
+   | :term:`TIME_SUMMARY_END`
+   | :term:`TIME_SUMMARY_VAR_NAMES`
+   | :term:`TIME_SUMMARY_TYPES`
+   | :term:`OVERWRITE_NC_OUTPUT`
+   | :term:`VERTICAL_LOCATION`
 
 PcpCombine
 ----------
 
-.. _description-9:
+.. _description-13:
 
 Description
 ~~~~~~~~~~~
@@ -468,7 +614,7 @@ The PcpCombine wrapper is a Python script that encapsulates the MET
 pcp_combine tool. It provides the infrastructure to combine or extract
 from files to build desired accumulations.
 
-.. _configuration-9:
+.. _configuration-13:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -489,20 +635,19 @@ Configuration
 
 [config]
 
-| :term:`FCST_IS_PROB` 
-| :term:`OBS_IS_PROB` 
-| :term:`FCST_PCP_COMBINE_<n>_FIELD_NAME` 
-| :term:`OBS_PCP_COMBINE_<n>_FIELD_NAME`
-| :term:`FCST_PCP_COMBINE_DATA_INTERVAL` 
-| :term:`OBS_PCP_COMBINE_DATA_INTERVAL` 
-| :term:`FCST_PCP_COMBINE_TIMES_PER_FILE` 
-| :term:`OBS_PCP_COMBINE_TIMES_PER_FILE` 
-| :term:`FCST_PCP_COMBINE_IS_DAILY_FILE` 
-| :term:`OBS_PCP_COMBINE_IS_DAILY_FILE` 
+| :term:`LOG_PCP_COMBINE_VERBOSITY`
+| :term:`FCST_IS_PROB`
+| :term:`OBS_IS_PROB`
+| :term:`FCST_PCP_COMBINE_INPUT_ACCUMS`
+| :term:`FCST_PCP_COMBINE_INPUT_NAMES`
+| :term:`FCST_PCP_COMBINE_INPUT_LEVELS`
+| :term:`FCST_PCP_COMBINE_INPUT_OPTIONS`
+| :term:`OBS_PCP_COMBINE_INPUT_ACCUMS`
+| :term:`OBS_PCP_COMBINE_INPUT_NAMES`
+| :term:`OBS_PCP_COMBINE_INPUT_LEVELS`
+| :term:`OBS_PCP_COMBINE_INPUT_OPTIONS`
 | :term:`FCST_PCP_COMBINE_INPUT_DATATYPE` 
-| :term:`OBS_PCP_COMBINE_INPUT_DATATYPE` 
-| :term:`FCST_PCP_COMBINE_INPUT_LEVEL` 
-| :term:`OBS_PCP_COMBINE_INPUT_LEVEL` 
+| :term:`OBS_PCP_COMBINE_INPUT_DATATYPE`
 | :term:`FCST_PCP_COMBINE_RUN` 
 | :term:`OBS_PCP_COMBINE_RUN` 
 | :term:`FCST_PCP_COMBINE_METHOD` 
@@ -510,33 +655,53 @@ Configuration
 | :term:`FCST_PCP_COMBINE_MIN_FORECAST` 
 | :term:`OBS_PCP_COMBINE_MIN_FORECAST` 
 | :term:`FCST_PCP_COMBINE_MAX_FORECAST` 
-| :term:`OBS_PCP_COMBINE_MAX_FORECAST` 
+| :term:`OBS_PCP_COMBINE_MAX_FORECAST`
+| :term:`FCST_PCP_COMBINE_BUCKET_INTERVAL`
+| :term:`OBS_PCP_COMBINE_BUCKET_INTERVAL`
+| :term:`FCST_PCP_COMBINE_CONSTANT_INIT`
+| :term:`OBS_PCP_COMBINE_CONSTANT_INIT`
 | :term:`FCST_PCP_COMBINE_STAT_LIST` 
 | :term:`OBS_PCP_COMBINE_STAT_LIST` 
 | :term:`FCST_PCP_COMBINE_DERIVE_LOOKBACK` 
 | :term:`OBS_PCP_COMBINE_DERIVE_LOOKBACK` 
-| :term:`PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS` 
+| :term:`PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS`
+| :term:`FCST_PCP_COMBINE_DATA_INTERVAL`
+| :term:`OBS_PCP_COMBINE_DATA_INTERVAL`
+| :term:`FCST_PCP_COMBINE_TIMES_PER_FILE`
+| :term:`OBS_PCP_COMBINE_TIMES_PER_FILE`
+| :term:`FCST_PCP_COMBINE_IS_DAILY_FILE`
+| :term:`OBS_PCP_COMBINE_IS_DAILY_FILE`
+| :term:`FCST_PCP_COMBINE_COMMAND`
+| :term:`OBS_PCP_COMBINE_COMMAND`
+| :term:`FCST_PCP_COMBINE_OUTPUT_ACCUM` (optional)
+| :term:`FCST_PCP_COMBINE_OUTPUT_NAME` (optional)
+| :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM` (optional)
+| :term:`OBS_PCP_COMBINE_OUTPUT_NAME` (optional)
 
-**Deprecated:**
+.. warning:: **DEPRECATED:**
 
-| :term:`PCP_COMBINE_METHOD`
-| :term:`FCST_MIN_FORECAST` 
-| :term:`FCST_MAX_FORECAST` 
-| :term:`OBS_MIN_FORECAST` 
-| :term:`OBS_MAX_FORECAST` 
-| :term:`FCST_DATA_INTERVAL` 
-| :term:`OBS_DATA_INTERVAL` 
-| :term:`FCST_IS_DAILY_FILE` 
-| :term:`OBS_IS_DAILY_FILE` 
-| :term:`FCST_TIMES_PER_FILE` 
-| :term:`OBS_TIMES_PER_FILE` 
-| :term:`FCST_LEVEL`
-| :term:`OBS_LEVEL` 
+   | :term:`PCP_COMBINE_METHOD`
+   | :term:`FCST_MIN_FORECAST`
+   | :term:`FCST_MAX_FORECAST`
+   | :term:`OBS_MIN_FORECAST`
+   | :term:`OBS_MAX_FORECAST`
+   | :term:`FCST_DATA_INTERVAL`
+   | :term:`OBS_DATA_INTERVAL`
+   | :term:`FCST_IS_DAILY_FILE`
+   | :term:`OBS_IS_DAILY_FILE`
+   | :term:`FCST_TIMES_PER_FILE`
+   | :term:`OBS_TIMES_PER_FILE`
+   | :term:`FCST_LEVEL`
+   | :term:`OBS_LEVEL`
+   | :term:`FCST_PCP_COMBINE_INPUT_LEVEL`
+   | :term:`OBS_PCP_COMBINE_INPUT_LEVEL`
+   | :term:`FCST_PCP_COMBINE_<n>_FIELD_NAME`
+   | :term:`OBS_PCP_COMBINE_<n>_FIELD_NAME`
 
 PointStat
 ---------
 
-.. _description-10:
+.. _description-14:
 
 Description
 ~~~~~~~~~~~
@@ -546,7 +711,7 @@ point_stat tool. It provides the infrastructure to read in gridded model
 data and netCDF point observation data to perform grid-to-point
 (grid-to-obs) verification.
 
-.. _configuration-10:
+.. _configuration-14:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -566,7 +731,9 @@ Configuration
 
 [config]
 
-| :term:`POINT_STAT_OFFSETS` 
+| :term:`POINT_STAT_OUTPUT_PREFIX`
+| :term:`LOG_POINT_STAT_VERBOSITY`
+| :term:`POINT_STAT_OFFSETS`
 | :term:`FCST_POINT_STAT_INPUT_DATATYPE` 
 | :term:`OBS_POINT_STAT_INPUT_DATATYPE` 
 | :term:`POINT_STAT_CONFIG_FILE` 
@@ -583,35 +750,35 @@ Configuration
 | :term:`POINT_STAT_NEIGHBORHOOD_WIDTH` (optional) 
 | :term:`POINT_STAT_NEIGHBORHOOD_SHAPE` (optional) 
 
-**Deprecated:**
+.. warning:: **DEPRECATED:**
 
-| :term:`FCST_INPUT_DIR`
-| :term:`OBS_INPUT_DIR`
-| :term:`START_HOUR`
-| :term:`END_HOUR`
-| :term:`BEG_TIME`
-| :term:`FCST_HR_START`
-| :term:`FCST_HR_END`
-| :term:`FCST_HR_INTERVAL`
-| :term:`OBS_INPUT_DIR_REGEX`
-| :term:`FCST_INPUT_DIR_REGEX`
-| :term:`FCST_INPUT_FILE_REGEX`
-| :term:`OBS_INPUT_FILE_REGEX`
-| :term:`OBS_INPUT_FILE_TMPL` 
-| :term:`FCST_INPUT_FILE_TMPL`
-| :term:`REGRID_TO_GRID`
+   | :term:`FCST_INPUT_DIR`
+   | :term:`OBS_INPUT_DIR`
+   | :term:`START_HOUR`
+   | :term:`END_HOUR`
+   | :term:`BEG_TIME`
+   | :term:`FCST_HR_START`
+   | :term:`FCST_HR_END`
+   | :term:`FCST_HR_INTERVAL`
+   | :term:`OBS_INPUT_DIR_REGEX`
+   | :term:`FCST_INPUT_DIR_REGEX`
+   | :term:`FCST_INPUT_FILE_REGEX`
+   | :term:`OBS_INPUT_FILE_REGEX`
+   | :term:`OBS_INPUT_FILE_TMPL`
+   | :term:`FCST_INPUT_FILE_TMPL`
+   | :term:`REGRID_TO_GRID`
 
 RegridDataPlane
 ---------------
 
-.. _description-11:
+.. _description-15:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool regrid_data_plane.
 
-.. _configuration-11:
+.. _configuration-15:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -624,7 +791,11 @@ Configuration
 [filename_templates]
 
 | :term:`FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE` 
-| :term:`OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE` 
+| :term:`OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE`
+| :term:`FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE`
+| :term:`OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE`
+| :term:`FCST_REGRID_DATA_PLANE_TEMPLATE`
+| :term:`OBS_REGRID_DATA_PLANE_TEMPLATE`
 
 [config]
 
@@ -638,15 +809,21 @@ Configuration
 | :term:`REGRID_DATA_PLANE_GAUSSIAN_RADIUS`
 | :term:`REGRID_DATA_PLANE_WIDTH`
 | :term:`REGRID_DATA_PLANE_METHOD`
+| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME` (optional)
+| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL` (optional)
+| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME` (optional)
+| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME` (optional)
+| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL` (optional)
+| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME` (optional)
 
-**Deprecated:**
+.. warning:: **DEPRECATED:**
 
-:term:`VERIFICATION_GRID`
+   | :term:`VERIFICATION_GRID`
 
 SeriesByInit
 ------------
 
-.. _description-12:
+.. _description-16:
 
 Description
 ~~~~~~~~~~~
@@ -656,46 +833,53 @@ series analysis on tropical cyclone data, based on initialization times.
 The SeriesByInit_wrapper creates numerous plots that represent the
 field, level, and statistic for each initialization time.
 
-.. _configuration-12:
+.. _configuration-16:
 
 Configuration
 ~~~~~~~~~~~~~
 
 [dir]
 
+| :term:`SERIES_ANALYSIS_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR`
 | :term:`SERIES_ANALYSIS_OUTPUT_DIR`
 
+
 [regex_patterns]
 
-| :term:`FCST_TILE_PREFIX` 
-| :term:`ANLY_TILE_PREFIX`
-| :term:`FCST_TILE_REGEX` 
-| :term:`ANLY_TILE_REGEX`
-| :term:`FCST_NC_TILE_REGEX` 
-| :term:`ANLY_NC_TILE_REGEX`
-| :term:`FCST_ASCII_REGEX_LEAD` 
-| :term:`ANLY_ASCII_REGEX_LEAD`
+| :term:`FCST_SERIES_ANALYSIS_NC_TILE_REGEX`
+| :term:`OBS_SERIES_ANALYSIS_NC_TILE_REGEX`
+| :term:`FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
+| :term:`OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
 
 [config]
 
-| :term:`INIT_BEG`
-| :term:`INIT_END` 
-| :term:`INIT_INCREMENT` 
+| :term:`SERIES_ANALYSIS_CONFIG_FILE`
+| :term:`SERIES_ANALYSIS_REGRID_TO_GRID`
+| :term:`SERIES_ANALYSIS_STAT_LIST`
 | :term:`INIT_HOUR_END` 
 | :term:`INIT_INCLUDE` 
 | :term:`INIT_EXCLUDE` 
 | :term:`SERIES_ANALYSIS_FILTER_OPTS`
+| :term:`SERIES_ANALYSIS_BACKGROUND_MAP`
 
-**Deprecated:**
+.. warning:: **DEPRECATED:**
 
-:term:`SERIES_INIT_FILTERED_OUT_DIR`
-| :term:`SERIES_BY_INIT_OUTPUT_DIR`
+   | :term:`SERIES_INIT_FILTERED_OUT_DIR`
+   | :term:`SERIES_BY_INIT_OUTPUT_DIR`
+   | :term:`FCST_TILE_PREFIX`
+   | :term:`ANLY_TILE_PREFIX`
+   | :term:`FCST_TILE_REGEX`
+   | :term:`ANLY_TILE_REGEX`
+   | :term:`FCST_NC_TILE_REGEX`
+   | :term:`ANLY_NC_TILE_REGEX`
+   | :term:`FCST_ASCII_REGEX_LEAD`
+   | :term:`ANLY_ASCII_REGEX_LEAD`
 
 SeriesByLead
 ------------
 
-.. _description-13:
+.. _description-17:
 
 Description
 ~~~~~~~~~~~
@@ -709,7 +893,7 @@ forecast hour groupings. Performing a series analysis by valid time with
 forecast hour groupings can be useful when analyzing storm tracks based
 on time 'bins' such as by days (eg. day 1, day 2, day 3, etc.).
 
-.. _configuration-13:
+.. _configuration-17:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -729,29 +913,41 @@ would set the following:
 
 [dir]
 
-| :term:`SERIES_BY_LEAD_FILTERED_OUTPUT` 
-| :term:`SERIES_BY_LEAD_OUTPUT_DIR` 
+| :term:`SERIES_ANALYSIS_INPUT_DIR`
+| :term:`SERIES_ANALYSIS_FILTERED_OUTPUT`
+| :term:`SERIES_ANALYSIS_OUTPUT_DIR`
+
+[regex_patterns]
+
+| :term:`FCST_SERIES_ANALYSIS_NC_TILE_REGEX`
+| :term:`OBS_SERIES_ANALYSIS_NC_TILE_REGEX`
+| :term:`FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
+| :term:`OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
 
 [config]
 
-| :term:`INIT_BEG` 
-| :term:`INIT_TIME_FMT` 
-| :term:`INIT_END` 
-| :term:`INIT_INCREMENT` 
-| :term:`SERIES_BY_LEAD_GROUP_FCSTS`
+| :term:`SERIES_ANALYSIS_REGRID_TO_GRID`
+| :term:`SERIES_ANALYSIS_STAT_LIST`
+| :term:`SERIES_ANALYSIS_BACKGROUND_MAP`
+| :term:`SERIES_ANALYSIS_GROUP_FCSTS`
 | :term:`LEAD_SEQ_<n>_LABEL`
+| :term:`LEAD_SEQ_\<n\>`
 | :term:`SERIES_ANALYSIS_FILTER_OPTS`
-| :term:`VAR_LIST`
-| :term:`STAT_LIST` 
+| :term:`SERIES_ANALYSIS_STAT_LIST`
 
-**Deprecated:**
+.. warning:: **DEPRECATED:**
 
-:term:`SERIES_LEAD_FILTERED_OUT_DIR`
+   | :term:`SERIES_LEAD_FILTERED_OUT_DIR`
+   | :term:`SERIES_BY_LEAD_FILTERED_OUTPUT`
+   | :term:`SERIES_BY_LEAD_OUTPUT_DIR`
+   | :term:`SERIES_BY_LEAD_GROUP_FCSTS`
+   | :term:`VAR_LIST`
+   | :term:`STAT_LIST`
 
 StatAnalysis
 ------------
 
-.. _description-14:
+.. _description-18:
 
 Description
 ~~~~~~~~~~~
@@ -765,7 +961,7 @@ lines over a span of dates, to use this method set LOOP_ORDER =
 processes. To run StatAnalysis wrapper, include StatAnalysis in
 PROCESS_LIST.
 
-.. _configuration-14:
+.. _configuration-18:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -775,85 +971,182 @@ configuration file for running with LOOP_ORDER = times:
 
 [dir]
 
-| :term:`STAT_ANALYSIS_LOOKIN_DIR`
+| :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR`
 | :term:`STAT_ANALYSIS_OUTPUT_DIR` 
+
+[filename_templates]
+
+| :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE`
+| :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE`
 
 [config]
 
-| :term:`VALID_HOUR_METHOD`
-| :term:`VALID_HOUR_BEG`
-| :term:`VALID_HOUR_END`
-| :term:`VALID_HOUR_INCREMENT`
-| :term:`INIT_HOUR_METHOD` 
-| :term:`INIT_HOUR_BEG` 
-| :term:`INIT_HOUR_END` 
-| :term:`INIT_HOUR_INCREMENT` 
-| :term:`STAT_ANALYSIS_CONFIG` 
-| :term:`MODEL` 
-| :term:`OBTYPE` 
-| :term:`JOB_NAME`
-| :term:`JOB_ARGS`
+| :term:`LOG_STAT_ANALYSIS_VERBOSITY`
+| :term:`MODEL\<n\>`
+| :term:`MODEL<n>_OBTYPE`
+| :term:`FCST_VALID_HOUR_LIST`
+| :term:`OBS_VALID_HOUR_LIST`
+| :term:`FCST_INIT_HOUR_LIST`
+| :term:`OBS_INIT_HOUR_LIST`
+| :term:`FCST_VAR_LIST`
+| :term:`OBS_VAR_LIST`
+| :term:`FCST_VAR_LEVEL_LIST`
+| :term:`OBS_VAR_LEVEL_LIST`
+| :term:`FCST_LEAD_LIST`
+| :term:`VX_MASK_LIST`
+
+| :term:`STAT_ANALYSIS_CONFIG_FILE`
+| :term:`STAT_ANALYSIS_JOB_NAME`
+| :term:`STAT_ANALYSIS_JOB_ARGS`
 
 The following values are **optional** in the METplus Wrappers
 configuration file for running with LOOP_ORDER = times:
 
-| :term:`DESC`
-| :term:`FCST_LEAD` 
-| :term:`FCST_VAR<n>_NAME` 
-| :term:`FCST_VAR<n>_LEVELS`
-| :term:`OBS_VAR<n>_NAME` 
-| :term:`OBS_VAR<n>_LEVELS`
-| :term:`REGION`
-| :term:`INTERP` 
-| :term:`INTERP_PTS`
-| :term:`FCST_THRESH` 
-| :term:`COV_THRESH` 
-| :term:`LINE_TYPE` 
-| :term:`STAT_ANALYSIS_DUMP_ROW_TMPL`
-| :term:`STAT_ANALYSIS_OUT_STAT_TMPL` 
+| :term:`FCST_LEAD_LIST`
+| :term:`INTERP_MTHD_LIST`
+| :term:`INTERP_PNTS_LIST`
+| :term:`FCST_THRESH_LIST`
+| :term:`COV_THRESH_LIST`
+| :term:`LINE_TYPE_LIST`
 
 The following values **must** be defined in the METplus Wrappers
 configuration file for running with LOOP_ORDER = processes:
 
-| :term:`STAT_ANALYSIS_OUTPUT_DIR` 
-| :term:`VERIF_CASE`
-| :term:`VERIF_TYPE`
-| :term:`PLOT_TIME`
-| :term:`VALID_HOUR_METHOD`
-| :term:`VALID_HOUR_BEG`
-| :term:`VALID_HOUR_END`
-| :term:`VALID_HOUR_INCREMENT`
-| :term:`INIT_HOUR_METHOD` 
-| :term:`INIT_HOUR_BEG` 
-| :term:`INIT_HOUR_END` 
-| :term:`INIT_HOUR_INCREMENT` 
-| :term:`STAT_ANALYSIS_CONFIG` 
+| :term:`STAT_ANALYSIS_OUTPUT_DIR`
 | :term:`MODEL<n>_NAME` 
 | :term:`MODEL<n>_OBS_NAME` 
-| :term:`MODEL<n>_NAME_ON_PLOT` 
-| :term:`FCST_VAR<n>_NAME` 
-| :term:`FCST_VAR<n>_LEVELS` 
-| :term:`REGION_LIST` 
-| :term:`LEAD_LIST` 
-| :term:`INTERP` 
+| :term:`MODEL<n>_NAME_ON_PLOT`
+| :term:`VX_MASK_LIST`
+| :term:`FCST_LEAD_LIST`
+| :term:`INTERP_MTHD_LIST`
+| :term:`INTERP_PNTS_LIST`
 | :term:`LINE_TYPE`
 
 The following values are optional in the METplus Wrappers configuration
 file for running with LOOP_ORDER = processes:
 
-| :term:`FCST_VAR<n>_THRESH` 
-| :term:`FCST_VAR<n>_THRESH`
-| :term:`FCST_VAR<n>_OPTIONS`
 | :term:`VAR<n>_FOURIER_DECOMP`
 | :term:`VAR<n>_WAVE_NUM_LIST`
-| **Deprecated:**
 
-:term:`STAT_ANALYSIS_OUT_DIR`
+.. warning:: **DEPRECATED:**
+
+   | :term:`STAT_ANALYSIS_LOOKIN_DIR`
+   | :term:`STAT_ANALYSIS_OUT_DIR`
+   | :term:`STAT_ANALYSIS_CONFIG`
+   | :term:`JOB_NAME`
+   | :term:`JOB_ARGS`
+   | :term:`DESC`
+   | :term:`FCST_LEAD`
+   | :term:`REGION`
+   | :term:`INTERP`
+   | :term:`INTERP_PTS`
+   | :term:`FCST_THRESH`
+   | :term:`COV_THRESH`
+   | :term:`LINE_TYPE`
+   | :term:`STAT_ANALYSIS_DUMP_ROW_TMPL`
+   | :term:`STAT_ANALYSIS_OUT_STAT_TMPL`
+   | :term:`PLOT_TIME`
+   | :term:`VERIF_CASE`
+   | :term:`VERIF_TYPE`
+   | :term:`VALID_HOUR_METHOD`
+   | :term:`VALID_HOUR_BEG`
+   | :term:`VALID_HOUR_END`
+   | :term:`VALID_HOUR_INCREMENT`
+   | :term:`INIT_HOUR_METHOD`
+   | :term:`INIT_HOUR_BEG`
+   | :term:`INIT_HOUR_END`
+   | :term:`INIT_HOUR_INCREMENT`
+
+TCMPRPlotter
+-------------
+
+.. _description-19:
+
+Description
+~~~~~~~~~~~
+
+The TCMPRPlotter wrapper is a Python script that wraps the R script
+plot_tcmpr.R. This script is useful for plotting the calculated
+statistics for the output from the MET-TC tools. This script, and other
+R scripts are included in the MET installation. Please refer to section
+21.2.3 of the MET User's Guide for usage information.
+
+.. _configuration-19:
+
+Configuration
+~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`TCMPR_PLOTTER_TCMPR_DATA_DIR`
+| :term:`TCMPR_PLOTTER_PLOT_OUTPUT_DIR`
+
+[config]
+
+| :term:`TCMPR_PLOTTER_CONFIG_FILE`
+| :term:`TCMPR_PLOTTER_PREFIX`
+| :term:`TCMPR_PLOTTER_TITLE`
+| :term:`TCMPR_PLOTTER_SUBTITLE`
+| :term:`TCMPR_PLOTTER_XLAB`
+| :term:`TCMPR_PLOTTER_YLAB`
+| :term:`TCMPR_PLOTTER_XLIM`
+| :term:`TCMPR_PLOTTER_YLIM`
+| :term:`TCMPR_PLOTTER_FILTER`
+| :term:`TCMPR_PLOTTER_FILTERED_TCST_DATA_FILE`
+| :term:`TCMPR_PLOTTER_DEP_VARS`
+| :term:`TCMPR_PLOTTER_SCATTER_X`
+| :term:`TCMPR_PLOTTER_SCATTER_Y`
+| :term:`TCMPR_PLOTTER_SKILL_REF`
+| :term:`TCMPR_PLOTTER_SERIES`
+| :term:`TCMPR_PLOTTER_SERIES_CI`
+| :term:`TCMPR_PLOTTER_LEGEND`
+| :term:`TCMPR_PLOTTER_LEAD`
+| :term:`TCMPR_PLOTTER_PLOT_TYPES`
+| :term:`TCMPR_PLOTTER_RP_DIFF`
+| :term:`TCMPR_PLOTTER_DEMO_YR`
+| :term:`TCMPR_PLOTTER_HFIP_BASELINE`
+| :term:`TCMPR_PLOTTER_FOOTNOTE_FLAG`
+| :term:`TCMPR_PLOTTER_PLOT_CONFIG_OPTS`
+| :term:`TCMPR_PLOTTER_SAVE_DATA`
+
+The following are TCMPR flags, if set to 'no', then don't set flag, if
+set to 'yes', then set the flag
+
+| :term:`TCMPR_PLOTTER_NO_EE`
+| :term:`TCMPR_PLOTTER_NO_LOG`
+| :term:`TCMPR_PLOTTER_SAVE`
+
+.. warning:: **DEPRECATED:**
+
+   | :term:`TCMPR_PLOT_OUT_DIR`
+   | :term:`TITLE`
+   | :term:`SUBTITLE`
+   | :term:`XLAB`
+   | :term:`YLAB`
+   | :term:`XLIM`
+   | :term:`YLIM`
+   | :term:`FILTER`
+   | :term:`FILTERED_TCST_DATA_FILE`
+   | :term:`DEP_VARS`
+   | :term:`SCATTER_X`
+   | :term:`SCATTER_Y`
+   | :term:`SKILL_REF`
+   | :term:`SERIES`
+   | :term:`SERIES_CI`
+   | :term:`LEGEND`
+   | :term:`LEAD`
+   | :term:`PLOT_TYPES`
+   | :term:`RP_DIFF`
+   | :term:`DEMO_YR`
+   | :term:`HFIP_BASELINE`
+   | :term:`FOOTNOTE_FLAG`
+   | :term:`PLOT_CONFIG_OPTS`
+   | :term:`SAVE_DATA`
 
 TcPairs
 -------
 
-.. _description-15:
+.. _description-20:
 
 Description
 ~~~~~~~~~~~
@@ -865,7 +1158,7 @@ provided in the METplus tutorial), or ATCF formatted track data. If data
 is in an extra tropical cyclone (non-ATCF) format, the data is
 reformatted into an ATCF format that is recognized by MET.
 
-.. _configuration-15:
+.. _configuration-20:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -877,18 +1170,17 @@ Configuration
 | :term:`TC_PAIRS_EDECK_INPUT_DIR`
 | :term:`TC_PAIRS_OUTPUT_DIR`
 | :term:`TC_PAIRS_REFORMAT_DIR`
-| [filename_templates]
+
+[filename_templates]
 
 | :term:`TC_PAIRS_ADECK_INPUT_TEMPLATE`
 | :term:`TC_PAIRS_BDECK_INPUT_TEMPLATE`
 | :term:`TC_PAIRS_EDECK_INPUT_TEMPLATE`
 | :term:`TC_PAIRS_OUTPUT_TEMPLATE`
-| [config]
+
+[config]
 
 | :term:`TC_PAIRS_CONFIG_FILE`
-| :term:`INIT_BEG`
-| :term:`INIT_END` 
-| :term:`INIT_INCREMENT` 
 | :term:`INIT_HOUR_END` 
 | :term:`INIT_INCLUDE`
 | :term:`INIT_EXCLUDE` 
@@ -905,28 +1197,30 @@ Configuration
 | :term:`TC_PAIRS_SKIP_IF_OUTPUT_EXISTS`
 | :term:`TC_PAIRS_REFORMAT_DECK`
 | :term:`TC_PAIRS_REFORMAT_TYPE`
-| **Deprecated:**
-| :term:`ADECK_TRACK_DATA_DIR`
-| :term:`BDECK_TRACK_DATA_DIR`
-| :term:`TRACK_DATA_SUBDIR_MOD`
-| :term:`TC_PAIRS_DIR`
-| :term:`TOP_LEVEL_DIRS`
-| :term:`MODEL`
-| :term:`STORM_ID`
-| :term:`BASIN`
-| :term:`CYCLONE`
-| :term:`STORM_NAME`
-| :term:`DLAND_FILE`
-| :term:`TRACK_TYPE`
-| :term:`ADECK_FILE_PREFIX`
-| :term:`BDECK_FILE_PREFIX`
-| :term:`MISSING_VAL_TO_REPLACE`
-| :term:`MISSING_VAL`
+
+.. warning:: **DEPRECATED:**
+
+   | :term:`ADECK_TRACK_DATA_DIR`
+   | :term:`BDECK_TRACK_DATA_DIR`
+   | :term:`TRACK_DATA_SUBDIR_MOD`
+   | :term:`TC_PAIRS_DIR`
+   | :term:`TOP_LEVEL_DIRS`
+   | :term:`MODEL`
+   | :term:`STORM_ID`
+   | :term:`BASIN`
+   | :term:`CYCLONE`
+   | :term:`STORM_NAME`
+   | :term:`DLAND_FILE`
+   | :term:`TRACK_TYPE`
+   | :term:`ADECK_FILE_PREFIX`
+   | :term:`BDECK_FILE_PREFIX`
+   | :term:`MISSING_VAL_TO_REPLACE`
+   | :term:`MISSING_VAL`
 
 TcStat
 ------
 
-.. _description-16:
+.. _description-21:
 
 Description
 ~~~~~~~~~~~
@@ -935,7 +1229,7 @@ Used to configure the MET tool tc_stat. This wrapper can be run by
 listing it in the PROCESS_LIST, or can be called from the ExtractTiles
 wrapper (via the MET tc-stat command line commands).
 
-.. _configuration-16:
+.. _configuration-21:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -986,61 +1280,3 @@ Configuration
 | :term:`TC_STAT_LANDFALL_BEG`
 | :term:`TC_STAT_LANDFALL_END`
 | :term:`TC_STAT_MATCH_POINTS`
-
-TCMPRPlotter 
--------------
-
-.. _description-17:
-
-Description
-~~~~~~~~~~~
-
-The TCMPRPlotter wrapper is a Python script that wraps the R script
-plot_tcmpr.R. This script is useful for plotting the calculated
-statistics for the output from the MET-TC tools. This script, and other
-R scripts are included in the MET installation. Please refer to section
-21.2.3 of the MET User's Guide for usage information.
-
-.. _configuration-17:
-
-Configuration
-~~~~~~~~~~~~~
-
-| :term:`TCMPR_PLOTTER_CONFIG_FILE` 
-| :term:`TCMPR_PLOTTER_PREFIX` 
-| :term:`TCMPR_PLOTTER_TITLE`
-| :term:`TCMPR_PLOTTER_SUBTITLE` 
-| :term:`TCMPR_PLOTTER_XLAB`
-| :term:`TCMPR_PLOTTER_YLAB`
-| :term:`TCMPR_PLOTTER_XLIM`
-| :term:`TCMPR_PLOTTER_YLIM`
-| :term:`TCMPR_PLOTTER_FILTER`
-| :term:`TCMPR_PLOTTER_FILTERED_TCST_DATA_FILE` 
-| :term:`TCMPR_PLOTTER_DEP_VARS`
-| :term:`TCMPR_PLOTTER_SCATTER_X`
-| :term:`TCMPR_PLOTTER_SCATTER_Y`
-| :term:`TCMPR_PLOTTER_SKILL_REF`
-| :term:`TCMPR_PLOTTER_SERIES`
-| :term:`TCMPR_PLOTTER_SERIES_CI`
-| :term:`TCMPR_PLOTTER_LEGEND` 
-| :term:`TCMPR_PLOTTER_LEAD`
-| :term:`TCMPR_PLOTTER_PLOT_TYPES` 
-| :term:`TCMPR_PLOTTER_RP_DIFF`
-| :term:`TCMPR_PLOTTER_DEMO_YR`
-| :term:`TCMPR_PLOTTER_HFIP_BASELINE`
-| :term:`TCMPR_PLOTTER_FOOTNOTE_FLAG`
-| :term:`TCMPR_PLOTTER_PLOT_CONFIG_OPTS`
-| :term:`TCMPR_PLOTTER_SAVE_DATA`
-
-The following are TCMPR flags, if set to 'no', then don't set flag, if
-set to 'yes', then set the flag
-
-| :term:`TCMPR_PLOTTER_NO_EE`
-| :term:`TCMPR_PLOTTER_NO_LOG`
-| :term:`TCMPR_PLOTTER_SAVE`
-| :term:`TCMPR_PLOTTER_TCMPR_DATA_DIR`
-| :term:`TCMPR_PLOTTER_PLOT_OUTPUT_DIR`
-
-**Deprecated:**
-
-:term:`TCMPR_PLOT_OUT_DIR`

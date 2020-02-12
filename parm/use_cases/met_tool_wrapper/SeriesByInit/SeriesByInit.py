@@ -170,6 +170,4 @@ plot_data_plane. The NetCDF plots are then converted to .png and Postscript.
 # Keywords
 # --------
 #
-# .. note:: `SeriesByInitUseCase <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_,
-#           `UseCase <https://ncar.github.io/METplus/search.html?q=UseCase&check_keywords=yes&area=default>`_
-
+# .. note:: `SeriesByInitUseCase <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_, `SeriesAnalysis <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_

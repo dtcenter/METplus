@@ -763,6 +763,10 @@ class SeriesByInitWrapper(CommandBuilder):
                         (ret, cmd) = self.cmdrunner.run_cmd\
                             (data_plane_command, env=None, app_name=self.app_name)
 
+                        if ret != 0:
+                            self.log_error(f"MET command returned a non-zero return code: {cmd}")
+                            self.logger.info("Check the logfile for more information on why it failed")
+
                         # Now assemble the command to convert the
                         # postscript file to png
                         png_fname = plot_data_plane_output_fname.replace(
@@ -774,6 +778,9 @@ class SeriesByInitWrapper(CommandBuilder):
                         convert_command = ''.join(convert_parts)
 
                         (ret, cmd) = self.cmdrunner.run_cmd(convert_command, ismetcmd=False)
+                        if ret != 0:
+                            self.log_error(f"MET command returned a non-zero return code: {cmd}")
+                            self.logger.info("Check the logfile for more information on why it failed")
 
     def get_storms_for_init(self, cur_init, out_dir_base):
         """! Retrieve all the filter files which have the .tcst

@@ -17,7 +17,7 @@ This use case will run the MET ASCII2NC tool to convert point observation data i
 #
 # | **Observations:** Precipitation accumulation observations in ASCII text files
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v2.2/sample_data-met_test-8.1.tgz
+# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download smaple data fore the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** Unknown
@@ -101,4 +101,4 @@ This use case will run the MET ASCII2NC tool to convert point observation data i
 # Keywords
 # --------
 #
-# .. note:: `ASCII2NCToolUseCase <https://ncar.github.io/METplus/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
+# .. note:: `ASCII2NCToolUseCase <https://ncar.github.io/METplus/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`, , `PythonEmbeddingUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>`, `MET_PYTHON_EXEUseCase  <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`
