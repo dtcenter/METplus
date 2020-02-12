@@ -1,8 +1,8 @@
 """
-RegridDataPlane
-===============
+RegridDataPlane with Python Embedding
+=====================================
 
-This use case will run the MET RegridDataPlane tool to convert point observation data in ASCII text format to NetCDF format.
+This use case will run the MET RegridDataPlane tool to regrid data using a python embedding script to read the input data.
 
 """
 ##############################################################################
@@ -15,7 +15,7 @@ This use case will run the MET RegridDataPlane tool to convert point observation
 # Datasets
 # --------
 #
-# | **Observations:** Stage 2 NetCDF 1-hour Precipitation Accumulation
+# | **Forecast:** ASCII sample file
 #
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-met_test-9.0.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
@@ -32,11 +32,7 @@ This use case will run the MET RegridDataPlane tool to convert point observation
 # METplus Workflow
 # ----------------
 #
-# RegridDataPlane is the only tool called in this example. It processes the following
-# run time:
-#
-# | **Init:** 2005-08-07_0Z
-# | **Forecast lead:** 3 hour
+# RegridDataPlane is the only tool called in this example. It processes a single run time, but the data does not contain any time information in the filename, so the run time is irrelevant.
 #
 # This use case regrids data to another domain specified with REGRID_DATA_PLANE_VERIF_GRID. This is done so that
 # forecast and observation comparisons are done on the same grid. Many MET comparison tools have regridding capabilities
@@ -49,10 +45,10 @@ This use case will run the MET RegridDataPlane tool to convert point observation
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane_python_embedding.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane_python_embedding.conf
 
 ##############################################################################
 # MET Configuration
@@ -67,13 +63,13 @@ This use case will run the MET RegridDataPlane tool to convert point observation
 #
 # This use case can be run two ways:
 #
-# 1) Passing in RegridDataPlane.conf then a user-specific system configuration file::
+# 1) Passing in RegridDataPlane_python_embedding.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane_python_embedding.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in RegridDataPlane.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in RegridDataPlane_python_embedding.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane_python_embedding.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -100,13 +96,13 @@ This use case will run the MET RegridDataPlane tool to convert point observation
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in regrid_data_plane (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in met_tool_wrapper/RegridDataPlane/regrid_py (relative to **OUTPUT_BASE**)
 # and will contain the following file:
 #
-# * ST2ml2005080703.Grb_G212
+# * numpy_data.nc
 
 ##############################################################################
 # Keywords
 # --------
 #
-# .. note:: `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
+# .. note:: `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`,_`PythonEmbeddingUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>`__
