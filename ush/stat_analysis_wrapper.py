@@ -1389,6 +1389,10 @@ class StatAnalysisWrapper(CommandBuilder):
             if cmd is None:
                 self.log_error("stat_analysis could not generate command")
                 return
+
+            # send environment variables to logger
+            self.print_all_envs()
+
             self.build()
             self.clear()
 
@@ -1835,6 +1839,10 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.log_error("stat_analysis could not generate "+
                                       "command")
                     return
+
+                # send environment variables to logger
+                self.print_all_envs()
+
                 self.build()
                 self.clear()
 
