@@ -56,7 +56,7 @@ Use Cases by METplus Feature:
 | `SeriesByLead  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
 | `SeriesByLeadGrouping  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadGroupingUseCase&check_keywords=yes&area=default>`_
 | `Python Embedding  <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>`_
-
+| `Using MET_PYTHON_EXE  <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
 
 Use cases by File Format:
 -------------------------
