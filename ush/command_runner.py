@@ -125,7 +125,7 @@ class CommandRunner(object):
 
                 # if logging MET command to its own log file, add command that was run to that log
                 if self.log_command_to_met_log:
-                    with open(log_dest, 'w+') as log_file_handle:
+                    with open(log_dest, 'a+') as log_file_handle:
                         log_file_handle.write(f"COMMAND: {cmd}")
 
                 #cmd = exe('sh')['-c', cmd].err2out() >> log_dest
@@ -233,6 +233,8 @@ class CommandRunner(object):
         # a log file or tty.
         # metpluslog includes /path/filename.
         metpluslog = self.config.getstr('config', 'LOG_METPLUS', '')
+
+        self.log_command_to_met_log = False
 
         # This block determines where to send the command output, cmdlog_dest.
         # To the METplus log, a MET log, or tty.

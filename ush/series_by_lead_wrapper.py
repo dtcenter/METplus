@@ -428,7 +428,11 @@ class SeriesByLeadWrapper(CommandBuilder):
                     self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                    (series_analysis_cmd, env=self.env, app_name=self.app_name)
+                    (series_analysis_cmd, env=self.env, app_name='series_analysis')
+
+                if ret != 0:
+                    self.log_error(f"MET command returned a non-zero return code: {series_analysis_cmd}")
+                    self.logger.info("Check the logfile for more information on why it failed")
 
                 # Clean up any empty files and directories that still
                 # persist.
@@ -575,7 +579,11 @@ class SeriesByLeadWrapper(CommandBuilder):
                 series_analysis_cmd = self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                    (series_analysis_cmd, env=self.env, app_name=self.app_name)
+                    (series_analysis_cmd, env=self.env, app_name='series_analysis')
+
+                if ret != 0:
+                    self.log_error(f"MET command returned a non-zero return code: {series_analysis_cmd}")
+                    self.logger.info("Check the logfile for more information on why it failed")
 
                 # Make sure there aren't any emtpy
                 # files or directories that still persist.
@@ -638,8 +646,10 @@ class SeriesByLeadWrapper(CommandBuilder):
         nco_nseries_cmd = ''.join(nco_nseries_cmd_parts)
         (ret, nco_nseries_cmd) = self.cmdrunner.run_cmd \
             (nco_nseries_cmd, env=self.env, ismetcmd=False)
-        # nco_nseries_cmd = batchexe('sh')['-c', nco_nseries_cmd].err2out()
-        # run(nco_nseries_cmd)
+
+        if ret != 0:
+            self.log_error(f"Command returned a non-zero return code: {nco_nseries_cmd}")
+            self.logger.info("Check the logfile for more information on why it failed")
 
         # Create an ASCII file with the max value, which can be parsed.
         nseries_txt_path = os.path.join(base_nc_dir, 'nseries.txt')
@@ -649,8 +659,11 @@ class SeriesByLeadWrapper(CommandBuilder):
         ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
         (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
             (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True)
-        # ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
-        # run(ncdump_max_cmd)
+
+        if ret != 0:
+            self.log_error(f"Command returned a non-zero return code: {ncdump_max_cmd}")
+            self.logger.info("Check the logfile for more information on why it failed")
+
 
         # Look for the max value for this netCDF file.
         try:
@@ -748,8 +761,10 @@ class SeriesByLeadWrapper(CommandBuilder):
             self.logger.debug('nco_min_cmd: ' + nco_min_cmd)
             (ret, nco_min_cmd) = self.cmdrunner.run_cmd \
                 (nco_min_cmd, env=self.env, ismetcmd=False)
-            # nco_min_cmd = batchexe('sh')['-c', nco_min_cmd].err2out()
-            # run(nco_min_cmd)
+
+            if ret != 0:
+                self.log_error(f"Command returned a non-zero return code: {nco_min_cmd}")
+                self.logger.info("Check the logfile for more information on why it failed")
 
             # now set up file paths for the max value...
             max_nc_path = os.path.join(base_nc_dir, 'max.nc')
@@ -771,8 +786,9 @@ class SeriesByLeadWrapper(CommandBuilder):
             self.logger.debug('nco_max_cmd: ' + nco_max_cmd)
             (ret, nco_max_cmd) = self.cmdrunner.run_cmd(nco_max_cmd, env=self.env,
                                                         ismetcmd=False)
-            # nco_max_cmd = batchexe('sh')['-c', nco_max_cmd].err2out()
-            # run(nco_max_cmd)
+            if ret != 0:
+                self.log_error(f"Command returned a non-zero return code: {nco_max_cmd}")
+                self.logger.info("Check the logfile for more information on why it failed")
 
             # Create ASCII files with the min and max values, using the
             # NCO utility ncdump.
@@ -782,16 +798,21 @@ class SeriesByLeadWrapper(CommandBuilder):
             ncdump_min_cmd = ''.join(ncdump_min_cmd_parts)
             (ret, ncdump_min_cmd) = self.cmdrunner.run_cmd \
                 (ncdump_min_cmd, env=self.env, ismetcmd=False, run_inshell=True)
-            # ncdump_min_cmd = batchexe('sh')['-c', ncdump_min_cmd].err2out()
-            # run(ncdump_min_cmd)
+
+            if ret != 0:
+                self.log_error(f"Command returned a non-zero return code: {ncdump_min_cmd}")
+                self.logger.info("Check the logfile for more information on why it failed")
+
 
             ncdump_max_cmd_parts = [self.ncdump_exe, ' ', base_nc_dir,
                                     '/max.nc > ', max_txt_path]
             ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
             (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
                 (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True)
-            # ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
-            # run(ncdump_max_cmd)
+
+            if ret != 0:
+                self.log_error(f"Command returned a non-zero return code: {ncdump_max_cmd}")
+                self.logger.info("Check the logfile for more information on why it failed")
 
             # Search for 'min' in the min.txt file.
             try:
@@ -1179,7 +1200,11 @@ class SeriesByLeadWrapper(CommandBuilder):
                         self.cmdrunner.insert_metverbosity_opt\
                         (plot_data_plane_cmd)
                     (ret, plot_data_plane_cmd) = self.cmdrunner.run_cmd\
-                        (plot_data_plane_cmd, env=self.env, app_name=self.app_name)
+                        (plot_data_plane_cmd, env=self.env, app_name='plot_data_plane')
+
+                    if ret != 0:
+                        self.log_error(f"MET Command returned a non-zero return code: {plot_data_plane_cmd}")
+                        self.logger.info("Check the logfile for more information on why it failed")
 
                     # Create the convert command.
                     convert_parts = [self.convert_exe, ' -rotate 90 ',
@@ -1188,8 +1213,11 @@ class SeriesByLeadWrapper(CommandBuilder):
                     convert_cmd = ''.join(convert_parts)
                     (ret, convert_cmd) = self.cmdrunner.run_cmd(convert_cmd, env=self.env,
                                                                 ismetcmd=False)
-                    # convert_cmd = batchexe('sh')['-c', convert_cmd].err2out()
-                    # run(convert_cmd)
+
+                    if ret != 0:
+                        self.log_error(f"Command returned a non-zero return code: {convert_cmd}")
+                        self.logger.info("Check the logfile for more information on why it failed")
+
 
     def create_animated_gifs(self, do_fhr_by_range):
         """! Creates the animated GIF files from the .png files created in
@@ -1245,6 +1273,11 @@ class SeriesByLeadWrapper(CommandBuilder):
                     (ret, animate_cmd) = self.cmdrunner.run_cmd\
                         (animate_cmd, env=self.env, ismetcmd=False,
                          run_inshell=True, log_theoutput=True)
+
+                    if ret != 0:
+                        self.log_error(f"Command returned a non-zero return code: {animate_cmd}")
+                        self.logger.info("Check the logfile for more information on why it failed")
+
                 else:
                     # For series analysis by forecast hour groups, create a
                     # list of the series analysis output for all the forecast
@@ -1272,6 +1305,10 @@ class SeriesByLeadWrapper(CommandBuilder):
                     (ret, animate_cmd) = self.cmdrunner.run_cmd \
                         (animate_cmd, env=self.env, ismetcmd=False,
                          run_inshell=True, log_theoutput=True)
+
+                    if ret != 0:
+                        self.log_error(f"Command returned a non-zero return code: {animate_cmd}")
+                        self.logger.info("Check the logfile for more information on why it failed")
 
     def apply_series_filters(self, tile_dir, init_times, series_output_dir,
                              filter_opts, staging_dir):
