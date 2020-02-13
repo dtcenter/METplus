@@ -72,6 +72,7 @@ class ExtractTilesWrapper(CommandBuilder):
         time_info = time_util.ti_calculate(input_dict)
         init_time = time_info['init_fmt']
         tmp_dir = self.config.getdir('TMP_DIR')
+
         self.logger.info("Begin extract tiles")
         cur_init = init_time[0:8]+"_"+init_time[8:10]
 
@@ -115,13 +116,12 @@ class ExtractTilesWrapper(CommandBuilder):
         # search for the presence of the storm id.  Store this
         # corresponding row of data into a temporary file in the
         # /tmp directory where each file contains information based on storm.
-        tmp_files_created = self.create_results_files(sorted_storm_ids, cur_init, filter_name, tmp_dir)
-        if tmp_files_created != 0:
+        if not self.create_results_files(sorted_storm_ids, cur_init, filter_name, tmp_dir):
             self.log_error("There was a problem with processing storms from the filtered result, "\
                     "please check your METplus config file settings or your write permissions for your "\
                     "tmp directory.")
 
-        self.cleanup(tmp_dir)
+        util.prune_empty(self.filtered_out_dir, self.logger)
 
     def tc_files_exist(self):
         ''' Check that there are tc_pairs data files (.tcst) which are needed as input
@@ -188,6 +188,8 @@ class ExtractTilesWrapper(CommandBuilder):
             Return:
              0 if successful in creating the tmp files (one per storm) in the tmp_dir
         '''
+
+        processed_file = False
         # Process each storm in the sorted_storm_ids list
         # Iterate over each filter file in the output directory and
         # search for the presence of the storm id.  Store this
@@ -198,18 +200,14 @@ class ExtractTilesWrapper(CommandBuilder):
                                             cur_init, cur_storm)
             header = open(filter_name, "r").readline()
             util.mkdir_p(storm_output_dir)
-            util.mkdir_p(tmp_dir)
+
             tmp_filename = "filter_" + cur_init + "_" + cur_storm
             full_tmp_filename = os.path.join(tmp_dir, tmp_filename)
 
-            # If this full_tmp_filename already exists for this storm
-            # (from a previous run), then remove it.  Otherwise the file
-            # will continue to be appended with the same information.
-            # This in turn will lead to errors when this file is being read/parsed.
-            if os.path.exists(full_tmp_filename):
-                os.remove(full_tmp_filename)
             storm_match_list = util.grep(cur_storm, filter_name)
-            with open(full_tmp_filename, "a+") as tmp_file:
+
+            # open with w+ to overwrite if it exists and create it if not
+            with open(full_tmp_filename, "w") as tmp_file:
                 # copy over header information
                 tmp_file.write(header)
                 for storm_match in storm_match_list:
@@ -219,24 +217,11 @@ class ExtractTilesWrapper(CommandBuilder):
                                              cur_storm, self.filtered_out_dir,
                                              self.config)
 
-        return 0
+            # remove tmp file
+            os.remove(full_tmp_filename)
+            processed_file = True
 
-
-    def cleanup(self, tmp_dir):
-        '''Remove any empty files and directories in the extract_tiles output
-           directory and the tmp directory.
-
-           Input:
-                @param tmp_dir:  The full path to the tmp directory
-        '''
-        util.prune_empty(self.filtered_out_dir, self.logger)
-
-        # Clean up the tmp directory if it exists
-        if os.path.isdir(tmp_dir):
-            util.rmtree(tmp_dir)
-            util.mkdir_p(tmp_dir)
-
-        return 0
+        return processed_file
 
 if __name__ == "__main__":
     util.run_stand_alone(__file__, "ExtractTiles")
