@@ -1390,7 +1390,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     tmp_file = "filter_" + cur_init + "_" + cur_storm
                     tmp_filename = os.path.join(staging_dir, tmp_file)
                     storm_match_list = util.grep(cur_storm, filter_filename)
-                    with open(tmp_filename, "a+") as tmp_file:
+                    with open(tmp_filename, "w") as tmp_file:
                         tmp_file.write(header)
                         for storm_match in storm_match_list:
                             tmp_file.write(storm_match)
