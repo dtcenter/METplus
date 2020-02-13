@@ -454,6 +454,42 @@ Config Quick Start Example
 --------------------------
 **Simple Example Use Case**
 
+1. Set up the configuration file:
+
+    a. Your METplus Wrappers install directory will hereafter be referred to as METplus_INSTALL
+    b. Create a user_system.conf file (wherever you wish, just make note of the path to where you saved it) and under the [dir] section, do the following:
+
+           -set INPUT_BASE = /tmp/input
+
+           *or to some other directory that exists, as this use case does not use input data
+
+           -set OUTPUT_BASE = /tmp/output
+           *or to some other directory that exists where you wish to direct your output
+
+           -set MET_INSTALL_DIR = <path/to/your/MET>
+
+             where *<path/to/your/MET>* is the full path to your MET installation:
+
+               e.g. /d1/projects/MET/met-9.0
+
+
+
+
+
+
+2. Run the use case:
+
+   a. On your command line, run::
+
+            master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf -c /path/to/user_system.conf
+
+            *where /path/to/user_system.conf indicates the location of the user_system.conf file you created earlier.
+
+   b. When complete, you should see the following message printed to the screen upon successful completion: "INFO: METplus has successfully finished running."
+      A *logs* directory with a log file will be created under the output directory you specified.
+      Additionally, a metplus_final.conf file is created and saved to the output directory.  It contains all the final values set by all your
+      METplus configuration files, including those from the METplus_INSTALL/parm/metplus_config directory.
+
 
 **Track and Intensity Use Case with Sample Data**
 
@@ -471,8 +507,8 @@ Config Quick Start Example
   3. Set up the configuration file:
     
     a. Your METplus Wrappers install directory will hereafter be referred to as METplus_INSTALL
-    b. Verify that all the *</path/to>* values are replaced with valid paths in the METplus_INSTALL/parm/metplus_conf/metplus_data.conf and METplus_INSTALL/parm/metplus_conf/metplus_system.conf files
-    c. One configuration file is used in this use case,  to take cyclone track data, and using TcPairs which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone tracks to generate matched pairs and error statistics). The TCMPRPlotter is then used (wraps the MET tool plot_tcmpr.R) to generate a mean and median plots for these matched pairs
+    b. Verify that all the *</path/to>* values are replaced with valid paths in the METplus_INSTALL/parm/metplus_config/metplus_data.conf and METplus_INSTALL/parm/metplus_conf/metplus_system.conf files
+    c. One configuration file is used in this use case, Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data, and using TcPairs which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone tracks to generate matched pairs and error statistics). The TCMPRPlotter is then used (wraps the MET tool plot_tcmpr.R) to generate a mean and median plots for these matched pairs
     d. In your editor, open the METplus_INSTALL/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf file and perform the following:
       
       1. Under the [dir] section, add the following:
