@@ -18,7 +18,7 @@ from a TCPairs run.
 #
 # | TC-Pairs data from 201503 
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v2.2/sample_data-met_test-8.1.tgz
+# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** Unknown
@@ -46,7 +46,7 @@ from a TCPairs run.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/TCStat.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/TCStat/TCStat.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/TCStat/TCStat.conf
@@ -63,7 +63,7 @@ from a TCPairs run.
 #
 # Note the following variables are referenced in the MET configuration file.
 #
-# ASPEED 
+# * **ASPEED**
 #
 
 ##############################################################################
@@ -74,11 +74,11 @@ from a TCPairs run.
 #
 # 1) Passing in TCStat.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/TCStat.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/TCStat/TCStat.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in TCStat.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/TCStat.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/TCStat/TCStat.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #

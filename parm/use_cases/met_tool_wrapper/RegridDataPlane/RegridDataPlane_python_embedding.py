@@ -17,10 +17,8 @@ This use case will run the MET RegridDataPlane tool to regrid data using a pytho
 #
 # | **Forecast:** ASCII sample file
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-met_test-9.0.tgz
+# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
-#
-# | **Data Source:** Unknown
 
 ##############################################################################
 # METplus Components
@@ -37,7 +35,7 @@ This use case will run the MET RegridDataPlane tool to regrid data using a pytho
 # This use case regrids data to another domain specified with REGRID_DATA_PLANE_VERIF_GRID. This is done so that
 # forecast and observation comparisons are done on the same grid. Many MET comparison tools have regridding capabilities
 # built in. However, if the same file is read for comparisons multiple times, it is redundant to regrid that file each time.
-# Running RegridDataPlane allows you to regrid once and use the output it many comparisons/evaluations.
+# Running RegridDataPlane allows you to regrid once and use the output in many comparisons/evaluations.
 
 ##############################################################################
 # METplus Configuration
@@ -105,4 +103,4 @@ This use case will run the MET RegridDataPlane tool to regrid data using a pytho
 # Keywords
 # --------
 #
-# .. note:: `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`,_`PythonEmbeddingUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>`__
+# .. note:: `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>, PythonEmbeddingUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>`_

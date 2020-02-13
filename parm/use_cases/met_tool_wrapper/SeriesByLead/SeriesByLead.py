@@ -55,10 +55,10 @@ and an animated GIF representative of the entire series is generated.
 # This use case utilizes the METplus SeriesByLead wrapper to search for
 # files that are valid at a given run time and generate a command to run
 # the MET tool series_analysis.
-
+#
 # Typically, running SeriesByLead, will involve running the following METplus
 # wrapper tasks in the following order, TcPairs, ExtractTiles, SeriesByLead.
-# However, this used case example will run only SeriesByLead, therefore it
+# However, this use case example will run only SeriesByLead, therefore it
 # uses sample data input from the output of already having run ExtractTiles. 
 
 ##############################################################################

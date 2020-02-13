@@ -51,10 +51,10 @@ plot_data_plane. The NetCDF plots are then converted to .png and Postscript.
 # This use case utilizes the METplus SeriesByLead wrapper to search for
 # files that are valid at a given run time and generate a command to run
 # the MET tool series_analysis.
-
-# Typically, running SeriesByInit, will involve running the following METplus
+#
+# Typically, running SeriesByInit will involve running the following METplus
 # wrapper tasks in the following order, TcPairs, ExtractTiles, SeriesByInit.
-# However, this used case example will run only SeriesByInit, therefore it
+# However, this use case example will run only SeriesByInit, therefore it
 # uses sample data input from the output of already having run ExtractTiles. 
 
 ##############################################################################
@@ -151,7 +151,7 @@ plot_data_plane. The NetCDF plots are then converted to .png and Postscript.
 #     * series_TMP_Z2_TOTAL.png
 #     * series_TMP_Z2_TOTAL.ps
 #  
-# AND EACH directory contains same set of files, as above, for each directory time.
+# AND each directory contains the same set of files, as above, for each directory time.
 #
 #   * ML1200972014/
 #   * ML1200992014/

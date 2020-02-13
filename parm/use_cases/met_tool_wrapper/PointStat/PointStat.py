@@ -20,7 +20,7 @@ point observation data.
 # | **Forecast:** NAM temperature, u-wind component, and v-wind component
 # | **Observation:** prepBURF data that has been converted to NetCDF format via PB2NC
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v2.2/sample_data-met_test-8.1.tgz
+# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** Unknown
@@ -48,7 +48,7 @@ point observation data.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PointStat.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PointStat/PointStat.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PointStat/PointStat.conf
@@ -86,11 +86,11 @@ point observation data.
 #
 # 1) Passing in PointStat.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PointStat.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PointStat/PointStat.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in PointStat.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PointStat.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PointStat/PointStat.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #

@@ -8,7 +8,7 @@ METPlus looping method is by process, so all times in the INIT_BEG to INIT_END
 time window, are run before moving to the next task in the PROCESS_LIST. 
 Note: This is a single application use case example, and as such, there is only
 one task (TCPairs) defined in the PROCESS_LIST (so there is no next process ).
-The end time is the same as the begin time, so it runs quickly..
+The end time is the same as the begin time, so it runs quickly.
 
 """
 
@@ -32,7 +32,7 @@ The end time is the same as the begin time, so it runs quickly..
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
-# | **Data Source:** Unknown
+# | **Data Source:** GFS
 
 ##############################################################################
 # METplus Components
