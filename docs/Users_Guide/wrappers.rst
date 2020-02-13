@@ -1020,7 +1020,6 @@ configuration file for running with LOOP_ORDER = processes:
 | :term:`FCST_LEAD_LIST`
 | :term:`INTERP_MTHD_LIST`
 | :term:`INTERP_PNTS_LIST`
-| :term:`LINE_TYPE`
 
 The following values are optional in the METplus Wrappers configuration
 file for running with LOOP_ORDER = processes:
