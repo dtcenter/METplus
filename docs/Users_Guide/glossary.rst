@@ -807,6 +807,9 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    DESC
+     .. warning:: **DEPRECATED:** Please use DESC_LIST instead.
+     
+   DESC_LIST
      A single value or list of values used in the stat_analysis data stratification. Specifies the values of the DESC column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times
 
      | *Used by:*  StatAnalysis
@@ -1208,12 +1211,8 @@ METplus Configuration Glossary
      | *Default:*
 
    FCST_LEAD
-     Specify the values of the FCST_LEAD column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times
-
-     | *Used by:*  StatAnalysis
-     | *Family:*  [config]
-     | *Default:*  Varies
-
+     .. warning:: **DEPRECATED:**
+		  
    FCST_LEVEL
      .. warning:: **DEPRECATED:** Please use FCST_PCP_COMBINE_INPUT_ACCUMS instead.
 
@@ -3519,18 +3518,10 @@ METplus Configuration Glossary
      | *Default:*  False
 
    PLOTTING_OUTPUT_DIR
-     Specify the output directory where plots will be saved. This is the base directory where the output from running make_plots_wrapper will be put.
-
-     | *Used by:*  MakePlots
-     | *Family:*  [dir]
-     | *Default:*  Varies
+     .. warning:: **DEPRECATED:**
 
    PLOTTING_SCRIPTS_DIR
-     Specify the directory where the plotting scripts are located. It is recommended to set this to {METPLUS_BASE}/ush/plotting_scripts.
-
-     | *Used by:*  MakePlots
-     | *Family:*  [dir]
-     | *Default:*  Varies
+      .. warning:: **DEPRECATED:**
 
    PLOT_CONFIG_OPTS
      .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_PLOT_CONFIG_OPTS instead.
@@ -3675,11 +3666,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use TC_PAIRS_BDECK_TEMPLATE.
 
    REGION
-     Specify the values of the VX_MASK column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times
-
-     | *Used by:*  StatAnalysis
-     | *Family:*  [config]
-     | *Default:*
+     .. warning:: **DEPRECATED:**
 
    REGION_LIST
      .. warning:: **DEPRECATED:** Please use VX_MASK_LIST instead.
@@ -3962,11 +3949,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    STAT_FILES_INPUT_DIR
-     Specify the directory where stat files exist that plots can be generated from. This is the directory where the files from running previously running stat_analysis_wrapper are located. These are the files used as the data to create the plots. It is recommended to set this to {STAT_ANALYSIS_OUTPUT_DIR}.
-
-     | *Used by:*  MakePlots
-     | *Family:*  [dir]
-     | *Default:*  Varies
+      .. warning:: **DEPRECATED:** 
 
    SERIES_ANALYSIS_STAT_LIST
      Specify a list of statistics to be computed by the MET series_analysis tool.
@@ -4613,11 +4596,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use REGRID_DATA_PLANE_VERIF_GRID instead.
 
    VERIF_CASE
-     Specify a string identifying the verification case being performed. Valid options are grid2grid, grid2obs, and precip.
-
-     | *Used by:*  MakePlots, StatAnalysis
-     | *Family:*  [config]
-     | *Default:*  Varies
+     .. warning:: **DEPRECATED:** 
 
    VERIF_GRID
      .. warning:: **DEPRECATED:** Please use MAKE_PLOTS_VERIF_GRID instead.
