@@ -815,7 +815,7 @@ METplus Configuration Glossary
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
      | *Default:*  Varies
-		  
+
    DLAND_FILE
      .. warning:: **DEPRECATED:** Please use TC_PAIRS_DLAND_FILE.
 
