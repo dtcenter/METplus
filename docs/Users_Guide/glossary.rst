@@ -807,7 +807,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    DESC
-     .. warning:: **DEPRECATED:**
+     .. warning:: **DEPRECATED:** Please use DESC_LIST instead.
+     
+   DESC_LIST
+     A single value or list of values used in the stat_analysis data stratification. Specifies the values of the DESC column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times
+
+     | *Used by:*  StatAnalysis
+     | *Family:*  [config]
+     | *Default:*  Varies
 		  
    DLAND_FILE
      .. warning:: **DEPRECATED:** Please use TC_PAIRS_DLAND_FILE.
