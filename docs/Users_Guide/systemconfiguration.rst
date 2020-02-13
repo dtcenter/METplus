@@ -461,10 +461,11 @@ Config Quick Start Example
 
            -set INPUT_BASE = /tmp/input
 
-           *or to some other directory that exists, as this use case does not use input data
+           (or to some other directory that exists, as this use case does not use input data)
 
            -set OUTPUT_BASE = /tmp/output
-           *or to some other directory that exists where you wish to direct your output
+
+           (or to some other directory that exists where you wish to direct your output)
 
            -set MET_INSTALL_DIR = <path/to/your/MET>
 
