@@ -128,11 +128,9 @@ class CommandRunner(object):
                     with open(log_dest, 'a+') as log_file_handle:
                         log_file_handle.write(f"COMMAND: {cmd}\n")
 
-                #cmd = exe('sh')['-c', cmd].err2out() >> log_dest
-                cmd = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
+                cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
             else:
-                #cmd = exe('sh')['-c', cmd].err2out()
-                cmd = exe(the_exe)[the_args].env(**env).err2out()
+                cmd_exe = exe(the_exe)[the_args].env(**env).err2out()
 
         else:
             # This block is for all the Non-MET commands
@@ -152,18 +150,18 @@ class CommandRunner(object):
 
                 if log_theoutput:
                     log_dest = self.cmdlog_destination()
-                    cmd = exe('sh')['-c', cmd].env(**env).err2out() >> log_dest
+                    cmd_exe = exe('sh')['-c', cmd].env(**env).err2out() >> log_dest
                 else:
-                    cmd = exe('sh')['-c', cmd].env(**env)
+                    cmd_exe = exe('sh')['-c', cmd].env(**env)
 
             else:
                 the_exe = shlex.split(cmd)[0]
                 the_args = shlex.split(cmd)[1:]
                 if log_theoutput:
                     log_dest = self.cmdlog_destination()
-                    cmd = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
+                    cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
                 else:
-                    cmd = exe(the_exe)[the_args].env(**env)
+                    cmd_exe = exe(the_exe)[the_args].env(**env)
 
         ret = 0
         # run app unless DO_NOT_RUN_EXE is set to True
@@ -172,12 +170,15 @@ class CommandRunner(object):
             start_cmd_time = datetime.now()
 
             # run command
-            ret = run(cmd, **kwargs)
-
-            # calculate time to run
-            end_cmd_time = datetime.now()
-            total_cmd_time = end_cmd_time - start_cmd_time
-            self.logger.debug(f'Finished running {the_exe} in {total_cmd_time}')
+            try:
+                ret = run(cmd_exe, **kwargs)
+            except:
+                ret = -1
+            else:
+                # calculate time to run
+                end_cmd_time = datetime.now()
+                total_cmd_time = end_cmd_time - start_cmd_time
+                self.logger.debug(f'Finished running {the_exe} in {total_cmd_time}')
 
         return (ret, cmd)
 
