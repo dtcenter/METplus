@@ -137,4 +137,4 @@ This use case will run the MET GridStat and StatAnalysis tools to compare gridde
 # Keywords
 # --------
 #
-# .. note:: `GridStatUseCase <https://ncar.github.io/METplus/search.html?q=GridStatUseCase&check_keywords=yes&area=default>, MediumRangeUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>, StatAnalysisUseCase <https://ncar.github.io/METplus/search.html?q=StatAnalysisUseCase&check_keywords=yes&area=default>`_
+# .. note:: `GridStatUseCase <https://ncar.github.io/METplus/search.html?q=GridStatUseCase&check_keywords=yes&area=default>`_, `MediumRangeUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>`_, `StatAnalysisUseCase <https://ncar.github.io/METplus/search.html?q=StatAnalysisUseCase&check_keywords=yes&area=default>`_

@@ -26,8 +26,6 @@ putting statistics into the output file.
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-medium_range-3.0.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
-# | **Data Source:** Unknown
-#
 
 ##############################################################################
 # METplus Components
@@ -73,7 +71,9 @@ putting statistics into the output file.
 # .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
 #
 # Note the following variables are referenced in the MET configuration file.
+#
 # PB2NC:
+#
 # * **${PB2NC_MESSAGE_TYPE}** - Corresponds to PB2NC_MESSAGE_TYPE in the METplus configuration file.
 # * **${PB2NC_STATION_ID}** - Corresponds to PB2NC_STATION_ID in the METplus configuration file.
 # * **${PB2NC_GRID}** - Corresponds to PB2NC_GRID in the METplus configuration file.
@@ -88,6 +88,7 @@ putting statistics into the output file.
 # * **${TIME_SUMMARY_TYPES}** - Corresponds to PB2NC_TIME_SUMMARY_TYPES in the METplus configuration file.
 #
 # PointStat:
+#
 # * **${POINT_STAT_MESSAGE_TYPE}** - Corresponds to POINT_STAT_MESSAGE_TYPE in the METplus configuration file.
 # * **${POINT_STAT_STATION_ID}** - Corresponds to POINT_STAT_STATION_ID in the METplus configuration file.
 # * **${POINT_STAT_GRID}** - Corresponds to POINT_STAT_GRID in the METplus configuration file.
@@ -151,4 +152,4 @@ putting statistics into the output file.
 # Keywords
 # --------
 #
-# .. note:: `PB2NCUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCUseCase&check_keywords=yes&area=default>, PointStatUseCase <https://ncar.github.io/METplus/search.html?q=PointStatUseCase&check_keywords=yes&area=default>, MediumRangeUseCase <https://ncar.githu.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>`
+# .. note:: `PB2NCUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCUseCase&check_keywords=yes&area=default>`_, `PointStatUseCase <https://ncar.github.io/METplus/search.html?q=PointStatUseCase&check_keywords=yes&area=default>`_, `MediumRangeUseCase <https://ncar.githu.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>`_

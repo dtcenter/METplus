@@ -47,11 +47,11 @@ data, based on initialization times.
 # ----------------
 #
 # The following tools are used for each run time:
-#  TcPairs > RegridDataPlane, TCStat > SeriesAnalysis
+# TcPairs > RegridDataPlane, TCStat > SeriesAnalysis
 #
 # This example loops by initialization time. For each initialization time
-#  it will process forecast leads 6, 12, 18, 24, 30, 36, and 40. There is only one
-#  initialization time in this example, so the following will be run:
+# it will process forecast leads 6, 12, 18, 24, 30, 36, and 40. There is only one
+# initialization time in this example, so the following will be run:
 #
 # Run times:
 #
@@ -101,9 +101,9 @@ data, based on initialization times.
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/SeriesAnalysisConfig
 #
 # See the following files for more information about the environment variables set in these configuration files.
-#   parm/use_cases/met_tool_wrapper/TCPairs.py
-#
-#   parm/use_cases/met_tool_wrapper/SeriesByInit.py
+# 
+# parm/use_cases/met_tool_wrapper/TCPairs/TCPairs.py
+# parm/use_cases/met_tool_wrapper/SeriesByInit/SeriesByInit.py
 #
 
 ##############################################################################
@@ -201,15 +201,16 @@ data, based on initialization times.
 # * ML1201102014
 #
 # Each subdirectory will contain files that have the following format:
-#   ANLY_ASCII_FILES_<storm>
+# 
+# ANLY_ASCII_FILES_<storm>
 #
-#   FCST_ASCII_FILES_<storm>
+# FCST_ASCII_FILES_<storm>
 #
-#   series_<varname>_<level>_<stat>.png
+# series_<varname>_<level>_<stat>.png
 #
-#   series_<varname>_<level>_<stat>.ps
+# series_<varname>_<level>_<stat>.ps
 #
-#   series_<varname>_<level>_<stat>.nc
+# series_<varname>_<level>_<stat>.nc
 #
 
 
@@ -218,4 +219,4 @@ data, based on initialization times.
 # Keywords
 # --------
 #
-# .. note:: `TCStatUseCase <https://ncar.github.io/METplus/search.html?q=TCStatUseCase&check_keywords=yes&area=default>, SeriesByInitUseCase <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>, TCStatUseCase <https://ncar.github.io/METplus/search.html?q=TCStatUseCase&check_keywords=yes&area=default>, RegridDataPlaneUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default> MediumRangeUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>`,  `SeriesAnalysis <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
+# .. note:: `TCStatUseCase <https://ncar.github.io/METplus/search.html?q=TCStatUseCase&check_keywords=yes&area=default>`_, `SeriesByInitUseCase <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_, `TCStatUseCase <https://ncar.github.io/METplus/search.html?q=TCStatUseCase&check_keywords=yes&area=default>`_, `RegridDataPlaneUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default>`_, `MediumRangeUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>`_,  `SeriesAnalysis <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_

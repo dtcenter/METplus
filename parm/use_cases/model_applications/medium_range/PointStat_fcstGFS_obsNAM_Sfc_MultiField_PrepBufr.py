@@ -1,6 +1,6 @@
 """
-CONUS Surface Air Grid to Point Observation
-===========================================
+CONUS Surface Grid to Point Observation
+=======================================
 
 This use case will run PB2NC to move the PrepBufr format files to NetCDF and then
 compare a gridded forecast field to point observations, with an output of statistical
@@ -71,7 +71,9 @@ comparisons.
 # .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
 #
 # Note the following variables are referenced in the MET configuration file.
+#
 # PB2NC:
+#
 # * **${PB2NC_MESSAGE_TYPE}** - Corresponds to PB2NC_MESSAGE_TYPE in the METplus configuration file.
 # * **${PB2NC_STATION_ID}** - Corresponds to PB2NC_STATION_ID in the METplus configuration file.
 # * **${PB2NC_GRID}** - Corresponds to PB2NC_GRID in the METplus configuration file.
@@ -86,6 +88,7 @@ comparisons.
 # * **${TIME_SUMMARY_TYPES}** - Corresponds to PB2NC_TIME_SUMMARY_TYPES in the METplus configuration file.
 #
 # PointStat:
+#
 # * **${POINT_STAT_MESSAGE_TYPE}** - Corresponds to POINT_STAT_MESSAGE_TYPE in the METplus configuration file.
 # * **${POINT_STAT_STATION_ID}** - Corresponds to POINT_STAT_STATION_ID in the METplus configuration file.
 # * **${POINT_STAT_GRID}** - Corresponds to POINT_STAT_GRID in the METplus configuration file.
@@ -149,4 +152,4 @@ comparisons.
 # Keywords
 # --------
 #
-# .. note:: `PB2NCUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCUseCase&check_keywords=yes&area=default>, MediumRangeUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>, PointStatUseCase <https://ncar.github.io/METplus/search.html?q=PointStatUseCase&check_keywords=yes&area=default>`
+# .. note:: `PB2NCUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCUseCase&check_keywords=yes&area=default>`_, `MediumRangeUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>`_, `PointStatUseCase <https://ncar.github.io/METplus/search.html?q=PointStatUseCase&check_keywords=yes&area=default>`_

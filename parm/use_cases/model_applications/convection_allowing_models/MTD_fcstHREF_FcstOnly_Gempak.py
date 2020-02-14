@@ -23,6 +23,16 @@ This use case processes data over time.
 #
 
 ##############################################################################
+#External Dependencies
+#---------------------
+#
+# GempakToCF.jar
+#
+# GempakToCF is an external too that utilizes the Unidata NetCDF-Java package. The jar file that can be used to run the utility is available here: https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
+#
+# For more information, please see the GempakToCF file documentation: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py
+
+##############################################################################
 # METplus Components
 # ------------------
 #
@@ -33,11 +43,12 @@ This use case processes data over time.
 # ----------------
 #
 # The following tools are used for each run time:
-#  MTD
+#
+# * MTD
 #
 # This example loops by valid time. For each valid time
-#  it will run once, processing forecast leads 12 and 36. There is only one
-#  valid time in this example, so the following will be run:
+# it will run once, processing forecast leads 12 and 36. There is only one
+# valid time in this example, so the following will be run:
 #
 # Run times:
 #
@@ -67,7 +78,8 @@ This use case processes data over time.
 # .. literalinclude:: ../../../../parm/met_config/MTDConfig_wrapped
 #
 # See the following files for more information about the environment variables set in this configuration file.
-#   parm/use_cases/met_tool_wrapper/MTD/MTD.py
+# 
+# parm/use_cases/met_tool_wrapper/MTD/MTD.py
 
 ##############################################################################
 # Running METplus

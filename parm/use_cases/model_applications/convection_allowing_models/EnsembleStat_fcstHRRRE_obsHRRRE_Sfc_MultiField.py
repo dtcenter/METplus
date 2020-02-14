@@ -18,8 +18,7 @@ comparing the resulting data to forecast data
 # Datasets
 # --------
 #
-# Describe the datasets here. Relevant information about the datasets that would
-# be beneficial include:
+# Relevant information about the datasets that would be beneficial include:
 # 
 #  * Forecast dataset: HRRRE data
 #  * Observation dataset: HRRRE
@@ -78,7 +77,7 @@ comparing the resulting data to forecast data
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/EnsembleStatConfig_SFC
 #
 # See the following files for more information about the environment variables set in this configuration file.
-#   parm/use_cases/met_tool_wrapper/EnsembleStat.py
+#   parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.py
 
 ##############################################################################
 # Running METplus
@@ -152,12 +151,5 @@ comparing the resulting data to forecast data
 ##############################################################################
 # Keywords
 # --------
-#
-# Choose from the following pool of keywords, and include them in a note directive below.
-# Remove any keywords you don't use.
-#
-# GridStatUseCase, PB2NCUseCase, PrecipitationUseCase
-#
-# Now include them like this:
 #
 # .. note:: EnsembleStatUseCase, ConvectionAllowingModelsUseCase, PB2NCUseCase

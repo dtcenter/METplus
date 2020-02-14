@@ -56,7 +56,8 @@ a storm event, rather than by all the forecast hours/lead times.
 # ----------------
 #
 # The following tools are used for each run time:
-#  TcPairs > RegridDataPlane, TCStat > SeriesAnalysis
+#
+# TcPairs > RegridDataPlane, TCStat > SeriesAnalysis
 #
 # This example loops by forecast/lead time (with begin, end, and increment as specified in the METplus
 # TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_FhrGrouping.conf file).
@@ -103,9 +104,10 @@ a storm event, rather than by all the forecast hours/lead times.
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/SeriesAnalysisConfig
 #
 # See the following files for more information about the environment variables set in these configuration files.
-#   parm/use_cases/met_tool_wrapper/TCPairs.py
 #
-#   parm/use_cases/met_tool_wrapper/SeriesByLead.py
+# parm/use_cases/met_tool_wrapper/TCPairs/TCPairs.py
+#
+# parm/use_cases/met_tool_wrapper/SeriesByLead/SeriesByLead.py
 #
 
 ##############################################################################
@@ -218,8 +220,8 @@ a storm event, rather than by all the forecast hours/lead times.
 #
 #   **NOTE**:
 #    There is only a Day1 subdirectory, and the expected Day2 and Day3 subdirectories are absent, even though
-#    these are requested in the METplus series_by_lead_by_fhr_grouping.conf file.  This is because we have
-#    been provided with only data for 20141214_00 to 201412_18, which constitutes only one days' worth of
+#    these are requested in the METplus series_by_lead_by_fhr_grouping.conf file. This is because we have
+#    been provided with only data for 20141214_00 to 20141214_18, which constitutes only one days' worth of
 #    results.
 #
 # | The series_animate directory contains the animations of the series analysis in .gif format for all variable, level, and statistics combinations:
@@ -233,4 +235,4 @@ a storm event, rather than by all the forecast hours/lead times.
 # Keywords
 # --------
 #
-# .. note:: `TcPairsUseCase <https://ncar.github.io/METplus/search.html?q=TcPairsUseCase&check_keywords=yes&area=default>, SeriesByLeadGroupingUseCase <https://ncar.github.io/METplus/search.html?q=SeriesByLeadGroupingUseCase&check_keywords=yes&area=default>, TCStatUseCase <https://ncar.github.io/METplus/search.html?q=TCStatUseCase&check_keywords=yes&area=default>, RegridDataPlaneUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default>, MediumRangeUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>`,  `SeriesAnalysis <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
+# .. note:: `TcPairsUseCase <https://ncar.github.io/METplus/search.html?q=TcPairsUseCase&check_keywords=yes&area=default>`_, `SeriesByLeadGroupingUseCase <https://ncar.github.io/METplus/search.html?q=SeriesByLeadGroupingUseCase&check_keywords=yes&area=default>`_, `TCStatUseCase <https://ncar.github.io/METplus/search.html?q=TCStatUseCase&check_keywords=yes&area=default>`_, `RegridDataPlaneUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default>`_, `MediumRangeUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>`_,  `SeriesAnalysis <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
