@@ -62,7 +62,8 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 # .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
 #
 # Note the following variables are referenced in the MET configuration file.
-# * **QUILT - True/False to perform quilting. Corresponds to MODE_QUILT in the METplus configuration file.
+#
+# * **QUILT** - True/False to perform quilting. Corresponds to MODE_QUILT in the METplus configuration file.
 # * **${FCST_CONV_RADIUS}** - Convolution radius used for forecast data. Corresponds to FCST_MODE_CONV_RADIUS in the METplus configuration files.
 # * **${FCST_CONV_THRESH}** - List of convolution thresholds used for forecast data. Corresponds to FCST_MODE_CONV_THRESH in the METplus configuration files.
 # * **${FCST_MERGE_THRESH}** - List of merge thresholds used for forecast data. Corresponds to FCST_MODE_MERGE_THRESH in the METplus configuration files.

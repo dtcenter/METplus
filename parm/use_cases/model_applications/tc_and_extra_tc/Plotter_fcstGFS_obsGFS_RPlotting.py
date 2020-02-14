@@ -45,7 +45,8 @@ case is being run.
 # ----------------
 #
 # The following tools are used for each run time:
-#  TcPairs > plot_tcmpr.R
+#
+# TcPairs > plot_tcmpr.R
 #
 # To generate TcPairs output, this example loops by initialization time for every 6 hour period that is available
 # in the data set for 20141214. The output is then used to generate the mean, median, and box plot for the following:
@@ -76,7 +77,8 @@ case is being run.
 #
 #
 # See the following files for more information about the environment variables set in these configuration files.
-#   parm/use_cases/met_tool_wrapper/TCPairs.py
+#
+# parm/use_cases/met_tool_wrapper/TCPairs/TCPairs.py
 #
 #
 
@@ -128,23 +130,15 @@ case is being run.
 #
 #
 # Plots (in .png format) will be found in tcmp_plots (relative to **OUTPUT_BASE**):
-#   * AMAX_WIND-BMAX_WIND_boxplot.png
-#
-#   * AMAX_WIND-BMAX_WIND_boxplot.png
-#
-#   * AMAX_WIND-BMAX_WIND_boxplot.png
-#
-#   * AMSLP-BMSLP_boxplot.png
-#
-#   * AMSLP-BMSLP_boxplot.png
-#
-#   * AMSLP-BMSLP_boxplot.png
-#
-#   * TK_ERR_boxplot.png
-#
-#   * TK_ERR_mean.png
-#
-#   * TK_ERR_median.png
+# * AMAX_WIND-BMAX_WIND_boxplot.png
+# * AMAX_WIND-BMAX_WIND_boxplot.png
+# * AMAX_WIND-BMAX_WIND_boxplot.png
+# * AMSLP-BMSLP_boxplot.png
+# * AMSLP-BMSLP_boxplot.png
+# * AMSLP-BMSLP_boxplot.png
+# * TK_ERR_boxplot.png
+# * TK_ERR_mean.png
+# * TK_ERR_median.png
 
 
 
@@ -155,4 +149,4 @@ case is being run.
 #
 #
 #
-# .. note:: TcPairsUseCase, TCandExtraTCUseCase
+# .. note:: `TcPairsUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_, `TCandExtraTCUseCase <https://ncar.github.io/METplus/search.html?q=TCandExtraTCUseCase&check_keywords=yes&area=default>`_

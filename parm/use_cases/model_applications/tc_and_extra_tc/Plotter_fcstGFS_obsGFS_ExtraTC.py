@@ -35,7 +35,8 @@ specific MET tool.  This is a data visualization written entirely in Python.
 # ----------------
 #
 # The following tools are used for each run time:
-#  TcPairs
+#
+# TcPairs
 #
 # To generate TcPairs output, this example loops by initialization time for every 6 hour period that is available
 # in the data set for 20150301. The output is then used to generate the plot of all cyclone tracks.
@@ -64,7 +65,8 @@ specific MET tool.  This is a data visualization written entirely in Python.
 #
 #
 # See the following files for more information about the environment variables set in these configuration files.
-#   parm/use_cases/met_tool_wrapper/TCPairs.py
+#
+# parm/use_cases/met_tool_wrapper/TCPairs/TCPairs.py
 #
 #
 
@@ -132,4 +134,4 @@ specific MET tool.  This is a data visualization written entirely in Python.
 #
 #
 #
-# .. note:: TcPairsUseCase, CyclonePlotterUseCase
+# .. note:: `TcPairsUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_, `CyclonePlotterUseCase <https://ncar.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_

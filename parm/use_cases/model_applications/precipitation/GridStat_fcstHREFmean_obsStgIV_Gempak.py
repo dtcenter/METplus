@@ -139,6 +139,9 @@ gridded 6 hour observation precipitation accumulation data.
 # Output for this use case will be found in model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak/GridStat/201705091200 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
+# * grid_stat_000000L_20170510_060000V_eclv.txt
+# * grid_stat_000000L_20170510_060000V_grad.txt
+# * grid_stat_000000L_20170510_060000V.stat
 #
 
 ##############################################################################
