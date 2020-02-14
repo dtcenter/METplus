@@ -102,4 +102,4 @@ This use case will run the CustomIngest wrapper tool to utilize the MET Python E
 # Keywords
 # --------
 #
-# .. note:: `CustomIngestToolUseCase <https://ncar.github.io/METplus/search.html?q=CustomIngestToolUseCase&check_keywords=yes&area=default>`, `PythonEmbeddingUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>`__
+# .. note:: `CustomIngestToolUseCase <https://ncar.github.io/METplus/search.html?q=CustomIngestToolUseCase&check_keywords=yes&area=default>`_, `PythonEmbeddingUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>`_
