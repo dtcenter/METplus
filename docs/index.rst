@@ -7,9 +7,9 @@ What is METplus and how is it different from the components?
 
 History
 -------
-The Model Evaluation Tools (MET) were developed by the Developmental Testbed Center and released in January 2008.  The focus of the tools was to replicate the NOAA EMC (see list of acronyms below) Mesoscale Branch verification package, called VSDB, and to make the tools extensible.  In the first release, MET included several pre-processing, statistical, and analysis tools to provide the same functionality as the EMC VSDB system, and also included a spatial verification package called MODE.
+The Model Evaluation Tools (MET) were developed by the Developmental Testbed Center (DTC)  and released in January 2008.  The goal of the tools was to provide the community with a platform independent and extensible framework for reproducible verification.  The DTC partners, including NCAR, NOAA, and the USAF, decided to start by replicating the NOAA EMC (see list of acronyms below) Mesoscale Branch verification package, called VSDB.  In the first release, MET included several pre-processing, statistical, and analysis tools to provided the primary functionality as the EMC VSDB system, and also included a spatial verification package called MODE.
 
-Over the years, MET and VSDB packages grew in complexity.  Verification capability at other NOAA laboratories, such as ESRL, were also under heavy development.  An effort to unify verification capability was first started under the HIWPP project and led by NOAA ESRL.  In 2015, the NGGPS Program Office started working groups to focus on several aspects of the next gen system, including the Verification and Validation Working Group.  This group made the recommendation to use MET as the foundation for a unified verification capability.  In 2016, NCAR and GSD leads visited EMC to gather requirements.  At that time, the concept of METplus was developed as it extends beyond the original code base.  It was originally called MET+ but several constraints have driven the transition to the use of METplus.
+Over the years, MET and VSDB packages grew in complexity.  Verification capability at other NOAA laboratories, such as ESRL, were also under heavy development.  An effort to unify verification capability was first started under the HIWPP project and led by NOAA ESRL.  In 2015, the NGGPS Program Office started working groups to focus on several aspects of the next gen system, including the Verification and Validation Working Group.  This group made the recommendation to use MET as the foundation for a unified verification capability.  In 2016, NCAR and GSD leads visited EMC to gather requirements.  At that time, the concept of METplus was developed as it extends beyond the original code base.  It was originally called MET+ but several constraints have driven the transition to the use of METplus. METplus is now the unified verification, validation, and diagnostics capability for NOAA's UFS and a component of NCAR's SIMA modeling frameworks.  It being actively developed by NCAR, ESRL, EMC and is open to community contributions.
 
 
 METplus Concept
@@ -36,10 +36,15 @@ The umbrella repository will be brought together by using a software package cal
 Acronyms
 --------
 
+* **MET** - Model Evaluation Tools 
+* **DTC** - Developmental Testbed Center 
+* **NCAR** - National Center for Atmospheric Research 
 * **NOAA** - National Oceanic and Atmospheric Administration
 * **EMC** - Environmental Modeling Center
 * **VSDB** - Verification Statistics Data Base
 * **MODE** - Method for Object-Based Diagnostic Evaluation
+* **UFS** - Unified Forecast System 
+* **SIMA** -System for Integrated Modeling of the Atmosphere 
 * **ESRL** - Earth Systems Research Laboratory
 * **HIWPP** - High Impact Weather Predication Project
 * **NGGPS** - Next Generation Global Predicatio System
