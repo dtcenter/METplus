@@ -163,9 +163,9 @@ is equivalent to setting::
 Grouping forecast leads is possible as well using a special version of the :term:`LEAD_SEQ` variable for the
 **SeriesByLead Wrapper Only**. If :term:`SERIES_BY_LEAD_GROUP_FCSTS` = True, then you can define groups of
 forecast leads that will be evaluated together. You can define any number of these groups by setting
-configuration variables LEAD_SEQ_1, LEAD_SEQ_2, ..., :term:`LEAD_SEQ_<n>`. You can define the value with a
+configuration variables LEAD_SEQ_1, LEAD_SEQ_2, ..., :term:`LEAD_SEQ_\<n\>`. You can define the value with a
 comma-separated list of integers (currently only hours are supported here) or using the special begin_end_incr(b,e,i) notation described just
-above. Each :term:`LEAD_SEQ_<n>q must have a corresponding variable :term:`LEAD_SEQ_<n>_LABEL`. For example::
+above. Each :term:`LEAD_SEQ_\<n\>` must have a corresponding variable :term:`LEAD_SEQ_<n>_LABEL`. For example::
 
 
   [config]
