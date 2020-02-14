@@ -1,4 +1,4 @@
-
+﻿
 
 ============
 User's Guide
@@ -8,24 +8,20 @@ User's Guide
 
 
 This User's Guide is provided as an aid to users of the Model Evaluation
-Tools (MET) and it's companion package METplus Wrappers. MET is a set of
+Tools (MET) and it's companion package METplus Wrappers. MET is a suite of
 verification tools developed and supported to community via the
 Developmental Testbed Center (DTC) for use by the numerical weather
-prediction community. METplus Wrappers is intended to be a suite of
+prediction community. METplus Wrappers are intended to be a suite of
 Python wrappers and ancillary scripts to enhance the user's ability to
-quickly set-up and run MET. Over the next few years, METplus Wrappers
+quickly set-up and run MET. Over the next year, METplus Wrappers
 will become the authoritative repository for verification of the Unified
 Forecast System.
 
 It is important to note here that METplus Wrappers is an evolving
-software package. Previous releases of METplus Wrappers have occurred
-since 2017. This documentation describes the 2.1 release in May 2019.
+software package. The first release of METplus Wrappers have occurred
+in 2017. This documentation describes the 3.0 release in February 2020.
 Intermediate releases may include bug fixes. METplus Wrappers is also be
-able to accept new modules contributed by the community. If you have
-code you would like to contribute, we will gladly consider your
-contribution. While we are setting up our community contribution
-protocol, please send email to: `met_help@ucar.edu <mailto:>`__ and
-inform us of your desired contribution. We will then determine the
+able to accept new modules contributed by the community. While we are setting up our community contribution protocol, please send email to: `met_help@ucar.edu <mailto:>`__ and inform us of your desired contribution. We will then determine the
 maturity of any new verification method and coordinate the inclusion of
 the new module in a future version.
 
@@ -67,28 +63,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 The citation for this User's Guide should be:
 
 | Adriaansen, D., M. Win-Gildenmeister, J. Frimel, J. Prestopnik, J. Halley Gotway,
-| T. Jensen, J. Vigh, C. Kalb, G. McCabe, and H. Fisher, 2018:
-| The METplus Wrappers Version 2.1 User's Guide. Developmental Testbed Center.
+| T. Jensen, J. Vigh, C. Kalb, G. McCabe, and H. Fisher, 2020:
+| The METplus Wrappers Version 3.0 User's Guide. Developmental Testbed Center.
 | Available at: https://github.com/NCAR/METplus/releases. 85 pp.
 
 **Acknowledgments**
 
-We thank the the National Science Foundation (NSF) along with three
-organizations within the National Oceanic and Atmospheric Administration
-(NOAA): 1) Office of Atmospheric Research (OAR); 2) Next Generation
-Global Predition System project (NGGPS); and 3) United State Weather
-Research Program (USWRP) for their support of this work. Thanks also go
-to the staff at the Developmental Testbed Center for their help, advice,
-and many types of support. We released METplus Alpha in February 2017
-and would not have made a decade of cutting-edge verification support
-without those who participated in DTC planning workshops and the NGGPS
-United Forecast System Strategic Implementation Plan Working Groups
-(NGGPS UFS SIP WGs).
+We thank all the Metplus sponsors including: DTC partners (NOAA, NCAR, USAF, and NSF), along with NOAA/Office of Atmospheric Research (OAR), NOAA/Office of Science and Technology Integration, NOAA/Weather Program Office (WPO, formerly Office of Weather and Air Quality), and the Naval Research Laboratory (NRL). Thanks also go to the staff at the Developmental Testbed Center for their help, advice,and many types of support. We released METplus Alpha in February 2017 and would not have made a decade of cutting-edge verification support without those who participated in DTC planning workshops and the NGGPS United Forecast System Strategic Implementation Plan Working Groups (UFS SIP WGs).
 
-The DTC is sponsored by the National Oceanic and Atmospheric
-Administration (NOAA), the United States Air Force, and the National
-Science Foundation (NSF). NCAR is sponsored by the National Science
-Foundation (NSF).
+
 
 
 .. toctree::

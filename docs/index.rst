@@ -1,4 +1,4 @@
-
+﻿
    
 ============================================================
 What is METplus and how is it different from the components?
@@ -14,7 +14,7 @@ Over the years, MET and VSDB packages grew in complexity.  Verification capabili
 
 METplus Concept
 ---------------
-METplus is expected to become the overarching, or umbrella, repository and hence framework for the Unified Forecast System verification capability.  It is intended to be extensible through adding additional capability developed by the community.  The core components of the framework include MET, the associated database and display systems called METviewer and METexpress, and a suite of Python wrappers to provide low-level automation and examples, also called use-cases.  A description of each tool along with some ancillary repositories are as follows:
+METplus is the overarching, or umbrella, repository and hence framework for the Unified Forecast System verification capability.  It is intended to be extensible through adding additional capability developed by the community.  The core components of the framework include MET, the associated database and display systems called METviewer and METexpress, and a suite of Python wrappers to provide low-level automation and examples, also called use-cases.  A description of each tool along with some ancillary repositories are as follows:
 
 * **MET** - core statistical tool that matches up grids with either gridded analyses or point observations and applies configurable methods to compute statistics and diagnostics
 * **METviewer**  - core database and display system intended for deep analysis of MET output
