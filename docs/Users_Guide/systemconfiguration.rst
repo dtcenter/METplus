@@ -52,10 +52,10 @@ The METplus wrappers can be configured to loop over a set of valid times or a se
 Looping by Valid Time
 ^^^^^^^^^^^^^^^^^^^^^
 
-When looping over valid time (:term:`LOOP_BY` = VALID or REALTIME), the following variables must be set:
+When looping over valid time (`LOOP_BY` = VALID or REALTIME), the following variables must be set:
 
 :term:`VALID_TIME_FMT`:
-This is the format of the valid times the user can configure in the METplus Wrappers. The value of :term:`VALID_BEG` and :term:`VALID_END` must correspond to this format.
+This is the format of the valid times the user can configure in the METplus Wrappers. The value of `VALID_BEG` and `VALID_END` must correspond to this format.
 
 Example::
 
@@ -67,9 +67,11 @@ Using this format, the valid time range values specified must be defined as YYYY
 This is the first valid time that will be processed. The format of this variable is controlled by :term:`VALID_TIME_FMT`. For example, if VALID_TIME_FMT=%Y%m%d, then VALID_BEG must be set to a valid time matching YYYYMMDD, such as 20190201.
 
 :term:`VALID_END`:
+
 This is the last valid time that can be processed. The format of this variable is controlled by :term:`VALID_TIME_FMT`. For example, if VALID_TIME_FMT=%Y%m%d, then VALID_END must be set to a valid time matching YYYYMMDD, such as 20190202.
 
-Note that the time specified for this variable will not necessarily be processed. It is used to determine the cutoff of run times that can be processed. For example, if METplus Wrappers is configured to start at 20190201 and end at 20190202 processing data in 48 hour increments, it will process valid time 20190201 then increment the run time to 20190203. This is later than the VALID_END value, so execution will stop. However, if the increment is set to 24 hours (see :term:`VALID_INCREMENT`), then METplus Wrappers will process valid times 20190201 and 20190202 before ending execution.
+.. note::
+    The time specified for this variable will not necessarily be processed. It is used to determine the cutoff of run times that can be processed. For example, if METplus Wrappers is configured to start at 20190201 and end at 20190202 processing data in 48 hour increments, it will process valid time 20190201 then increment the run time to 20190203. This is later than the VALID_END value, so execution will stop. However, if the increment is set to 24 hours (see :term:`VALID_INCREMENT`), then METplus Wrappers will process valid times 20190201 and 20190202 before ending execution.
 
 :term:`VALID_INCREMENT`:
 This is the time interval to add to each run time to determine the next run time to process. See :ref:`time-interval-units` for information on time interval formatting. Units of hours are assumed if no units are specified. This value must be greater than or equal to 60 seconds because the METplus wrappers currently do not support processing intervals of less than one minute.
