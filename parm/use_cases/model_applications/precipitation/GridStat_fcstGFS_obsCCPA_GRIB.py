@@ -37,10 +37,11 @@ gridded 24 hour observation precipitation accumulation data.
 # ----------------
 #
 # The following tools are used for each run time:
-#  PCPCombine (observation) > GridStat
+#
+# PCPCombine (observation) > GridStat
 #
 # This example loops by valid time. There is only one
-#  initialization time in this example, so the following will be run:
+# initialization time in this example, so the following will be run:
 #
 # Run times:
 #
@@ -70,7 +71,8 @@ gridded 24 hour observation precipitation accumulation data.
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/GridStatConfig_precip
 #
 # See the following files for more information about the environment variables set in this configuration file.
-#   parm/use_cases/met_tool_wrapper/GridStat.py
+#
+# parm/use_cases/met_tool_wrapper/GridStat/GridStat.py
 
 ##############################################################################
 # Running METplus
@@ -108,7 +110,7 @@ gridded 24 hour observation precipitation accumulation data.
 #
 # A successful run will output the following both to the screen and to the logfile::
 #
-
+#   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in model_applications/precipitation/GridStat_fcstGFS_obsCCPA_GRIB/grid_stat/20170613 (relative to **OUTPUT_BASE**)
@@ -120,4 +122,4 @@ gridded 24 hour observation precipitation accumulation data.
 # Keywords
 # --------
 #
-# .. note:: GridStatUseCase, PrecipitationUseCase, PCPCombineUseCase
+# .. note:: `GridStatUseCase <https://ncar.github.io/METplus/search.html?q=GridStatUseCase&check_keywords=yes&area=default>`_, `PrecipitationUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationUseCase&check_keywords=yes&area=default>`_, `PCPCombineUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>`_

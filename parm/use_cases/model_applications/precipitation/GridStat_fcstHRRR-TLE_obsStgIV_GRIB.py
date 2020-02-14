@@ -25,8 +25,7 @@ gridded 6 hour observation precipitation accumulation data.
 # Datasets
 # --------
 #
-# Describe the datasets here. Relevant information about the datasets that would
-# be beneficial include:
+# Relevant information about the datasets that would be beneficial include:
 # 
 #  * Forecast dataset: HRRR-TLE probabilistic forecasts in GRIB2
 #  * Observation dataset: Stage IV GRIB 1 and 6 hour precipitation accumulation
@@ -47,11 +46,12 @@ gridded 6 hour observation precipitation accumulation data.
 # ----------------
 #
 # The following tools are used for each run time:
-#  PCPCombine (observation) > RegridDataPlane (observation) > GridStat
+#
+# PCPCombine (observation) > RegridDataPlane (observation) > GridStat
 #
 # This example loops by initialization time. For each initialization time
-#  it will process forecast leads 6 and 7. There is only one
-#  initialization time in this example, so the following will be run:
+# it will process forecast leads 6 and 7. There is only one
+# initialization time in this example, so the following will be run:
 #
 # Run times:
 #
@@ -84,7 +84,8 @@ gridded 6 hour observation precipitation accumulation data.
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/GridStatConfig_PROB
 #
 # See the following files for more information about the environment variables set in this configuration file.
-#   parm/use_cases/met_tool_wrapper/GridStat.py
+#
+# parm/use_cases/met_tool_wrapper/GridStat/GridStat.py
 
 ##############################################################################
 # Running METplus
@@ -140,4 +141,4 @@ gridded 6 hour observation precipitation accumulation data.
 # Keywords
 # --------
 #
-# .. note:: GridStatUseCase, PrecipitationUseCase, PCPCombineUseCase, RegridDataPlaneUseCase
+# .. note:: `GridStatUseCase <https://ncar.github.io/METplus/search.html?q=GridStatUseCase&check_keywords=yes&area=default>`_, `PrecipitationUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationUseCase&check_keywords=yes&area=default>`_, `PCPCombineUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>`_, `RegridDataPlaneUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default>`_

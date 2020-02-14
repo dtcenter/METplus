@@ -35,11 +35,12 @@ This use case processes precipitation accumulation data over time.
 # ----------------
 #
 # The following tools are used for each run time:
-#  MTD
+#
+# MTD
 #
 # This example loops by valid time. For each valid time
-#  it will run once, processing forecast leads 1, 2, and 3. There is only one
-#  valid time in this example, so the following will be run:
+# it will run once, processing forecast leads 1, 2, and 3. There is only one
+# valid time in this example, so the following will be run:
 #
 # Run times:
 #
@@ -69,7 +70,8 @@ This use case processes precipitation accumulation data over time.
 # .. literalinclude:: ../../../../parm/met_config/MTDConfig_wrapped
 #
 # See the following files for more information about the environment variables set in this configuration file.
-#   parm/use_cases/met_tool_wrapper/MTD.py
+#
+# parm/use_cases/met_tool_wrapper/MTD/MTD.py
 
 ##############################################################################
 # Running METplus
@@ -120,4 +122,4 @@ This use case processes precipitation accumulation data over time.
 # --------
 #
 #
-# .. note:: MTDUseCase, PrecipitationUseCase
+# .. note:: `MTDUseCase <https://ncar.github.io/METplus/search.html?q=MTDUSeCase&check_keywords=yes&area=default>`_, `PrecipitationUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationUseCase&check_keywords=yes&area=default>`_

@@ -1,6 +1,6 @@
 """
-HREF-mean to Stage IV QPE Use Case
-==================================
+HREF-mean to Stage IV QPE GEMPAK Use Case
+=========================================
 
 This use case compares 1 6- hour gridded forecast precipitation accumulation file to
 gridded 6 hour observation precipitation accumulation data.
@@ -19,12 +19,30 @@ gridded 6 hour observation precipitation accumulation data.
 # Datasets
 # --------
 #
-# Describe the datasets here. Relevant information about the datasets that would
-# be beneficial include:
+# Relevant information about the datasets that would be beneficial include:
 # 
 #  * Forecast dataset: HREF mean forecasts in Gempak
 #  * Observation dataset: Stage IV GRIB 6 hour precipitation accumulation
 #  * Sources of data (links, contacts, etc...)
+#
+
+##############################################################################
+#External Dependencies
+#---------------------
+#
+# GempakToCF.jar
+#
+# GempakToCF is an external tool that utilizes the Unidata NetCDF-Java package. The jar file that can be used to run the utility is available here: https://dtcenter.org/sites/default/files/community-code/utilities/GempakToCF.jar
+#
+#To enable Gempak support, you must set [exe] GEMPAKTOCF_JAR in your user METplus configuration file:
+#
+# [exe] GEMPAKTOCF_JAR = /path/to/GempakToCF.jar
+#
+# See the GempakToCF use case for more information:
+#
+# parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.conf
+#
+# More information on the package used to create the file is here: https://www.unidata.ucar.edu/software/netcdf-java
 #
 
 ##############################################################################
@@ -41,7 +59,8 @@ gridded 6 hour observation precipitation accumulation data.
 # ----------------
 #
 # The following tools are used for each run time:
-#  PCPCombine (observation) > RegridDataPlane (observation) > GridStat
+#
+# PCPCombine (observation) > RegridDataPlane (observation) > GridStat
 #
 # This example loops by initialization time.
 # There is only one initalization time in this example so the following will be run:
@@ -64,9 +83,6 @@ gridded 6 hour observation precipitation accumulation data.
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf
 #
-#
-# For more information on the conversion for Gempak files, please refer to the following file.
-#   parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py
 
 ##############################################################################
 # MET Configuration
@@ -79,7 +95,7 @@ gridded 6 hour observation precipitation accumulation data.
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/GridStatConfig_MEAN
 #
 # See the following files for more information about the environment variables set in this configuration file.
-#   parm/use_cases/met_tool_wrapper/GridStat.py
+#   parm/use_cases/met_tool_wrapper/GridStat/GridStat.py
 
 ##############################################################################
 # Running METplus
@@ -129,4 +145,4 @@ gridded 6 hour observation precipitation accumulation data.
 # Keywords
 # --------
 #
-# .. note:: GridStatUseCase, PrecipitationUseCase, PCPCombineUseCase, RegridDataPlaneUseCase, GempakUseCase
+# .. note:: `GridStatUseCase <https://ncar.github.io/METplus/search.html?q=GridStatUseCase&check_keywords=yes&area=default>`_, `PrecipitationUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationUseCase&check_keywords=yes&area=default>`_, `PCPCombineUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>`_, `RegridDataPlaneUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default>`_, `GempakUseCase <https://ncar.github.io/METplus/search.html?q=GempakUseCase&check_keywords=yes&area=default>`_
