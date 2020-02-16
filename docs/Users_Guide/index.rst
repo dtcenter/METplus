@@ -26,10 +26,7 @@ maturity of any new verification method and coordinate the inclusion of
 the new module in a future version.
 
 This User's Guide was prepared by the developers of the METplus
-Wrappers, including Dan Adriaansen, Minna Win-Gildenmeister, Julie
-Prestopnik, Jim Frimel, Mallory Row, John Halley Gotway, George McCabe,
-Paul Prestopnik, Christana Kalb, Hank Fisher, Jonathan Vigh, Lisa
-Goodrich, Tara Jensen, Tatiana Burek, and Bonny Strong.
+Wrappers, including Dan Adriaansen, Minna Win-Gildenmeister, George McCabe, Julie Prestopnik, Jim Frimel, John Opatz, John Halley Gotway, Tara Jensen, Jonathan Vigh, Mallory Row, Christana Kalb, Hank Fisher, Lisa Goodrich, and Lindsay Blank.
 
 **New for METplus Wrappers v3.0**
 
@@ -62,14 +59,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 The citation for this User's Guide should be:
 
-| Adriaansen, D., M. Win-Gildenmeister, J. Frimel, J. Prestopnik, J. Halley Gotway,
-| T. Jensen, J. Vigh, C. Kalb, G. McCabe, and H. Fisher, 2020:
-| The METplus Wrappers Version 3.0 User's Guide. Developmental Testbed Center.
-| Available at: https://github.com/NCAR/METplus/releases. 85 pp.
+Adriaansen, D., M. Win-Gildenmeister, G. McCabe, J. Prestopnik, J. Frimel, J. Opatz, J. Halley Gotway, T. Jensen, J. Vigh, M. Row, C. Kalb, H. Fisher, L. Goodrich, and L. Blank, 2020: The METplus Wrappers Version 3.0 User's Guide. Developmental Testbed Center.  Available at: https://github.com/NCAR/METplus/releases.
 
 **Acknowledgments**
 
-We thank all the Metplus sponsors including: DTC partners (NOAA, NCAR, USAF, and NSF), along with NOAA/Office of Atmospheric Research (OAR), NOAA/Office of Science and Technology Integration, NOAA/Weather Program Office (WPO, formerly Office of Weather and Air Quality), and the Naval Research Laboratory (NRL). Thanks also go to the staff at the Developmental Testbed Center for their help, advice,and many types of support. We released METplus Alpha in February 2017 and would not have made a decade of cutting-edge verification support without those who participated in DTC planning workshops and the NGGPS United Forecast System Strategic Implementation Plan Working Groups (UFS SIP WGs).
+We thank all the METplus sponsors including: DTC partners (NOAA, NCAR, USAF, and NSF), along with NOAA/Office of Atmospheric Research (OAR), NOAA/Office of Science and Technology Integration, NOAA/Weather Program Office (WPO, formerly Office of Weather and Air Quality), and the Naval Research Laboratory (NRL). Thanks also go to the staff at the Developmental Testbed Center for their help, advice,and many types of support. We released METplus Alpha in February 2017 and would not have made a decade of cutting-edge verification support without those who participated in DTC planning workshops and the NGGPS United Forecast System Strategic Implementation Plan Working Groups (UFS SIP WGs).
 
 
 

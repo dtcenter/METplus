@@ -1,4 +1,4 @@
-Python Wrappers
+﻿Python Wrappers
 ===============
 
 This chapter provides a description of each supported Python wrapper in
@@ -428,7 +428,7 @@ configuration file:
    | :term:`VERIF_GRID`
    | :term:`EVENT_EQUALIZATION`
 
-Mode
+MODE
 ----
 
 .. _description-10:
@@ -436,7 +436,7 @@ Mode
 Description
 ~~~~~~~~~~~
 
-Used to configure the MET tool mode.
+Used to configure the MET Method for Object-based Diagnostic Evaluation tool mode.
 
 .. _configuration-10:
 
@@ -500,7 +500,7 @@ MTD
 Description
 ~~~~~~~~~~~
 
-Used to configure the MET tool mtd (mode time domain).
+Used to configure the MET MODE Time Domain tool mtd.  This tools follows objects through time and can also be used to track objects.
 
 .. _configuration-11:
 
@@ -776,7 +776,7 @@ RegridDataPlane
 Description
 ~~~~~~~~~~~
 
-Used to configure the MET tool regrid_data_plane.
+Used to configure the MET tool regrid_data_plane which can be used to change projections of a grid with user configurable interpolation choices.  It can also be used to convert GRIB1 and GRIB2 files into netcdf files if desired.
 
 .. _configuration-15:
 
@@ -828,9 +828,7 @@ SeriesByInit
 Description
 ~~~~~~~~~~~
 
-The SeriesByInit wrapper provides the infrastructure needed to perform a
-series analysis on tropical cyclone data, based on initialization times.
-The SeriesByInit_wrapper creates numerous plots that represent the
+The SeriesByInit wrapper provides the infrastructure needed to demonstrates the use  of the series analysis tool using tropical cyclone data, based on initialization times. The SeriesByInit_wrapper creates numerous plots that represent the
 field, level, and statistic for each initialization time.
 
 .. _configuration-16:

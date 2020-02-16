@@ -1,4 +1,4 @@
-Overview
+﻿Overview
 ========
 
 Purpose and organization of the User's Guide
@@ -27,7 +27,7 @@ The Developmental Testbed Center (DTC)
 METplus Wrappers has been developed, and will be maintained and
 enhanced, by the Developmental Testbed Center (DTC;
 http://www.dtcenter.org/ ). The main goal of the DTC is to serve as a
-bridge between operations and research, to facilitate the activities of
+bridge between operations and research and to facilitate the activities of
 these two important components of the numerical weather prediction (NWP)
 community. The DTC provides an environment that is functionally
 equivalent to the operational environment in which the research
@@ -39,8 +39,7 @@ researchers to test their own enhancements to models and providing a
 capability for the DTC to evaluate the strengths and weaknesses of
 advances in NWP prior to operational implementation.
 
-METplus Wrappers will also be available to DTC visitors and to the WRF
-modeling community for testing and evaluation of new model capabilities,
+METplus Wrappers will also be available to DTC visitors and the NOAA Unified Forecast System (UFS) and NCAR System for Integrated Modeling of the Atmosphere (SIMA) modeling communities for testing and evaluation of new model capabilities,
 applications in new environments, and so on. The METplus Wrappers
 release schedule is coincident with the MET release schedule and the
 METplus Wrappers major release number is six less than the MET major
@@ -66,7 +65,7 @@ their verification environments. Wrappers can be run individually, or as
 a group of wrappers that represent a sequence of MET processes. New
 wrappers can readily be added to the METplus Wrappers package due to
 this modular design. Currently, METplus Wrappers can easily be applied
-by any user on their own computer platform that supports Python 2.7.
+by any user on their own computer platform that supports Python 3.6.  We have depricated support to Python 2.7.
 
 The METplus Wrappers code and documentation is maintained by the DTC in
 Boulder, Colorado. METplus Wrappers is freely available to the modeling,
@@ -118,7 +117,7 @@ certainly take all suggestions into consideration.
 
 METplus Wrappers is a "living" set of wrappers and configuration files.
 Our goal is to continually enhance it and add to its capabilities.
-Because our time, resources, and talents are limited, we welcome
+Because our time, resources, and talents can at times be limited, we welcome
 contributed code for future versions of METplus. These contributions may
 represent new use cases or new plotting functions. For more information
 on contributing code to METplus Wrappers, please contact
