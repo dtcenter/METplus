@@ -44,10 +44,10 @@ def usage(filename=None, logger=None):
     # Note: runtime option is not being used. remove it ?
     # -r|--runtime <arg0>     Specify initialization time to process
     print ('''
-Usage: %s [ -c /path/to/additional/conf_file]...[] [options]
+Usage: %s [ -c /path/to/additional/file.conf]...[] [options]
     -c|--config <arg0>      Specify custom configuration file to use
     -h|--help               Display this usage statement
-    
+
 Optional arguments: [options]
 section.option=value -- override conf options on the command line
 /path/to/parmfile.conf -- additional conf files to parse
