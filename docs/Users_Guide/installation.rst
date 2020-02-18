@@ -274,17 +274,17 @@ Copy and paste the following into an empty text file and name it 'my_user_config
 
 .. code-block:: none
 
-  // This is a comment, comments are defined with a // at the beginning of the line
+  # This is a comment, comments are defined with a # at the beginning of the line
   
-  // Setting the PROCESS_LIST to **Usage** indicates that we want usage information
+  # Setting the PROCESS_LIST to **Usage** indicates that we want usage information
   [config]
   PROCESS_LIST = Usage
 
-  // Set the MET_INSTALL_DIR to the location of the MET install
+  # Set the MET_INSTALL_DIR to the location of the MET install
   [dir]
   MET_INSTALL_DIR = /usr/local/met-9.0
 
-  // Set these to any valid directory to override the </path/to> placeholder set in the metplus_system.conf file
+  # Set these to any valid directory to override the </path/to> placeholder set in the metplus_system.conf file
   [dir]
   TMP_DIR = /tmp
   INPUT_BASE = /tmp/input
