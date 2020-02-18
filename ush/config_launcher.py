@@ -551,7 +551,7 @@ class METplusConfig(ProdConfig):
         self.set('exe', exe_name, full_exe_path)
         return full_exe_path
 
-    def getdir(self, dir_name, default=None, morevars=None,taskvars=None):
+    def getdir(self, dir_name, default=None, morevars=None,taskvars=None, must_exist=False):
         """!Wraps produtil getdir and reports an error if it is set to /path/to"""
         if not self.has_option('dir', dir_name):
             self.check_default('dir', dir_name, default)
@@ -567,6 +567,10 @@ class METplusConfig(ProdConfig):
             else:
                 print('ERROR: {}'.format(msg))
             exit(1)
+
+        if must_exist and not os.path.exists(dir_path):
+            self.logger.error(f"Path must exist: {dir_path}")
+            return None
 
         return dir_path
 

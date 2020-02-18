@@ -76,6 +76,10 @@ def pre_run_setup(filename, app_name):
         logger.error("Correct configuration variables and rerun. Exiting.")
         exit(1)
 
+    if not config.getdir('dir', 'MET_INSTALL_DIR', must_exist=True):
+        logger.error('MET_INSTALL_DIR must be set correctly to run METplus')
+        exit(1)
+
     # set staging dir to OUTPUT_BASE/stage if not set
     if not config.has_option('dir', 'STAGING_DIR'):
         config.set('dir', 'STAGING_DIR',
