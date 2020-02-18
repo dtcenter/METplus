@@ -9,7 +9,11 @@ from two runs of the GloTEC model.
 ##############################################################################
 # Overview
 # --------
-# 
+#
+# .. image:: ../../../../docs/_static/space_weather-vx7.jpg
+#
+# sphinx_gallery_thumbnail_number = 1
+#
 # This use case illustrates the use of grid_stat tool for the space weather domain.
 # It compares Total Electron Content for a GloTEC model run initialized with COSMIC-1
 # radio occultation (RO) data to a GloTEC model run without such data. 
