@@ -1939,14 +1939,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    INIT_BEG
-     Specify the beginning initialization time to be used in the analysis. Format can be controlled by INIT_TIME_FMT.Seereference "subsec:SC_Timing_Control_Looping-by-Initialization" for more information.
+     Specify the beginning initialization time to be used in the analysis. Format can be controlled by INIT_TIME_FMT. See reference :ref:`Looping by Initialization Time<Looping by Initialization Time>` for more information.
 
      | *Used by:*  All
      | *Family:*  [config]
      | *Default:*  Varies
 
    INIT_END
-     Specify the ending initialization time to be used in the analysis. Format can be controlled by INIT_TIME_FMT.Seereference "subsec:SC_Timing_Control_Looping-by-Initialization" for more information.
+     Specify the ending initialization time to be used in the analysis. Format can be controlled by INIT_TIME_FMT.See reference :ref:`Looping by Initialization Time<Looping by Initialization Time>` for more information.
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -1981,7 +1981,7 @@ METplus Configuration Glossary
 
    INIT_HOUR_INCREMENT
      .. warning:: **DEPRECATED:** Please use FCST_INIT_HOUR_LIST or OBS_INIT_HOUR_LIST instead.
-
+		  
    INIT_HOUR_METHOD
      .. warning:: **DEPRECATED:** No longer used.
 
@@ -1993,21 +1993,21 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    INIT_INCREMENT
-     Control the increment or stride to use when stepping between forecast initializations. Units are seconds.Seereference "subsec:SC_Timing_Control_Looping-by-Initialization" for more information. Units are assumed to be seconds unless specified with Y, m, d, H, M, or S.
+     Control the increment or stride to use when stepping between forecast initializations. Units are seconds. See reference :ref:`Looping by Initialization Time<Looping by Initialization Time>` for more information. Units are assumed to be seconds unless specified with Y, m, d, H, M, or S.
 
      | *Used by:*  All
      | *Family:*  [config]
      | *Default:*  Varies
 
    INIT_SEQ
-     Specify a list of initialization hours that are used to build a sequence of forecast lead times to include in the analysis. Used only when looping by valid time (LOOP_BY = VALID). Comma separated list format, e.g.:0, 6, 12Seereference "subsec:SC_Timing_Control_Looping-over-Forecast" for more information.
+     Specify a list of initialization hours that are used to build a sequence of forecast lead times to include in the analysis. Used only when looping by valid time (LOOP_BY = VALID). Comma separated list format, e.g.:0, 6, 12 See reference :ref:`looping over forecast leads<looping over forecast leads>` for more information.
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PcpCombine, PointStat, RegridDataPlane, SeriesByLead
      | *Family:*  [config]
      | *Default:*  Varies
 
    INIT_TIME_FMT
-     Specify a formatting string to use for INIT_BEG and INIT_END.Seereference "subsec:SC_Timing_Control_Looping-by-Initialization" for more information.
+     Specify a formatting string to use for INIT_BEG and INIT_END. See reference :ref:`Looping by Initialization Time<Looping by Initialization Time>` for more information.
 
      | *Used by:*  All
      | *Family:*
@@ -2091,21 +2091,21 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    LEAD_SEQ
-     Specify the sequence of forecast lead times to include in the analysis. Comma separated list format, e.g.:0, 6, 12Seereference "subsec:SC_Timing_Control_Looping-over-Forecast" for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
+     Specify the sequence of forecast lead times to include in the analysis. Comma separated list format, e.g.:0, 6, 12. See reference :ref:`looping over forecast leads<looping over forecast leads>` for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PcpCombine, PointStat, RegridDataPlane, SeriesByLead
      | *Family:*  [config]
      | *Default:*  Varies
 
    LEAD_SEQ_MIN
-     Minimum forecast lead to be processed. Used primarily with INIT_SEQ but also affects LEAD_SEQ.Seereference "subsec:SC_Timing_Control_Looping-over-Forecast" for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
+     Minimum forecast lead to be processed. Used primarily with INIT_SEQ but also affects LEAD_SEQ. See reference :ref:`looping over forecast leads<looping over forecast leads>` for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PcpCombine, PointStat, RegridDataPlane, SeriesByLead
      | *Family:*  [config]
      | *Default:*  Varies
 
    LEAD_SEQ_MAX
-     Maximum forecast lead to be processed. Used primarily with INIT_SEQ but also affects LEAD_SEQ.Seereference "subsec:SC_Timing_Control_Looping-over-Forecast" for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
+     Maximum forecast lead to be processed. Used primarily with INIT_SEQ but also affects LEAD_SEQ.See reference :ref:`looping over forecast leads<looping over forecast leads>` for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PcpCombine, PointStat, RegridDataPlane, SeriesByLead
      | *Family:*  [config]
@@ -2214,7 +2214,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use EXTRACT_TILES_LON_ADJ instead.
 
    LOOP_BY
-     Control whether the analysis is processed across valid or initialization times.Seereference "subsec:SC_Timing_Control_LOOP_BY" for more information.
+     Control whether the analysis is processed across valid or initialization times. See reference :ref:`LOOP_BY<LOOP_BY>` for more information.
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -4514,14 +4514,14 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use TR.
 
    VALID_BEG
-     Specify a begin time for valid times for use in the analysis. This is the starting date in the format set in the VALID_TIME_FMT. It is named accordingly to the value set for LOOP_BY. However, in StatAnalysis, it is named accordingly to the value set for PLOT_TIME.Seereference "subsec:SC_Timing_Control_Looping-by-Valid" for more information.
+     Specify a begin time for valid times for use in the analysis. This is the starting date in the format set in the VALID_TIME_FMT. It is named accordingly to the value set for LOOP_BY. However, in StatAnalysis, it is named accordingly to the value set for PLOT_TIME. See reference :ref:`Looping by Valid Time<Looping by Valid Time>` for more information.
 
      | *Used by:*  All
      | *Family:*  [config]
      | *Default:*  Varies
 
    VALID_END
-     Specify an end time for valid times for use in the analysis. This is the ending date in the format set in the VALID_TIME_FMT. It is named accordingly to the value set for LOOP_BY.Seereference "subsec:SC_Timing_Control_Looping-by-Valid" for more information.
+     Specify an end time for valid times for use in the analysis. This is the ending date in the format set in the VALID_TIME_FMT. It is named accordingly to the value set for LOOP_BY. See reference :ref:`Looping by Valid Time<Looping by Valid Time>` for more information.
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -4555,14 +4555,14 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** No longer used.
 
    VALID_INCREMENT
-     Specify the time increment for valid times for use in the analysis.Seereference "subsec:SC_Timing_Control_Looping-by-Valid" for more information. Units are assumed to be seconds unless specified with Y, m, d, H, M, or S.
+     Specify the time increment for valid times for use in the analysis. See reference :ref:`Looping by Valid Time<Looping by Valid Time>` for more information. Units are assumed to be seconds unless specified with Y, m, d, H, M, or S.
 
      | *Used by:*  All
      | *Family:*  [config]
      | *Default:*  Varies
 
    VALID_TIME_FMT
-     Specify a strftime formatting string for use with VALID_BEG and VALID_END.Seereference "subsec:SC_Timing_Control_Looping-by-Valid" for more information.
+     Specify a strftime formatting string for use with VALID_BEG and VALID_END. See reference :ref:`Looping by Valid Time<Looping by Valid Time>` for more information.
 
      | *Used by:*  All
      | *Family:*  [config]
