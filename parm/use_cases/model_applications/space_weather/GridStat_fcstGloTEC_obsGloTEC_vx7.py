@@ -10,9 +10,7 @@ from two runs of the GloTEC model.
 # Overview
 # --------
 #
-# .. image:: ../../../../docs/_static/space_weather-vx7.jpg
-#
-# sphinx_gallery_thumbnail_number = 1
+# .. image:: ../../../../docs/_static/space_weather-GridStat_fcstGloTEC_obsGloTEC_vx7.jpg
 #
 # This use case illustrates the use of grid_stat tool for the space weather domain.
 # It compares Total Electron Content for a GloTEC model run initialized with COSMIC-1
@@ -169,9 +167,11 @@ from two runs of the GloTEC model.
 # * grid_stat_GloTEC_without_cosmic-vx7_TEC_vs_GloTEC_with_cosmic_000000L_20150317_001500V.stat
 
 
-
 ##############################################################################
 # Keywords
 # --------
 #
 # .. note:: GridStatUseCase SpaceWeatherAppUseCase NOAASWPCOrgUseCase GloTECModelUseCase
+#
+# sphinx_gallery_thumbnail_path = '_static/space_weather-GridStat_fcstGloTEC_obsGloTEC_vx7.jpg'
+#
