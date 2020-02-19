@@ -52,10 +52,25 @@ class CustomIngestWrapper(CommandBuilder):
         for index in indices:
             ingest_script = self.config.getraw('config', 'CUSTOM_INGEST_{}_SCRIPT'.format(index))
             input_type = self.config.getstr('config', 'CUSTOM_INGEST_{}_TYPE'.format(index))
+            input_type = input_type.upper()
+            if input_type not in VALID_PYTHON_EMBED_TYPES:
+                self.log_error(f'CUSTOM_INGEST_{index}_TYPE ({input_type}) not valid. '
+                               f"Valid types are {', '.join(VALID_PYTHON_EMBED_TYPES)}")
+                self.isOK = False
+
+            # If input type is PANDAS, call ascii2nc? instead of RegridDataPlane
+            if input_type == 'PANDAS':
+                self.log_error('Running CustomIngester on pandas data not yet implemented')
+                self.isOK = False
+
             output_dir = self.config.getdir('CUSTOM_INGEST_{}_OUTPUT_DIR'.format(index), '')
             output_template = self.config.getraw('filename_templates',
                                                  'CUSTOM_INGEST_{}_OUTPUT_TEMPLATE'.format(index))
             output_grid = self.config.getraw('config', 'CUSTOM_INGEST_{}_OUTPUT_GRID'.format(index), '')
+            if output_grid == '':
+                self.log_error(f'Must set CUSTOM_INGEST_{index}_OUTPUT_GRID')
+                self.isOK = False
+
             ingester_dict = {'output_dir': output_dir,
                              'output_template': output_template,
                              'script': ingest_script,
@@ -96,24 +111,11 @@ class CustomIngestWrapper(CommandBuilder):
         # run each ingester specified
         for ingester in self.c_dict['INGESTERS']:
             index = ingester['index']
-            input_type = ingester['input_type']
-            if input_type not in VALID_PYTHON_EMBED_TYPES:
-                self.log_error(f'CUSTOM_INGEST_{index}_TYPE ({input_type}) not valid. '
-                                  f'Valid types are {VALID_PYTHON_EMBED_TYPES}')
-                return
-
-            # If input type is PANDAS, call ascii2nc? instead of RegridDataPlane
-            if input_type == 'PANDAS':
-                self.log_error('Running CustomIngester on pandas data not yet implemented')
-                return
 
             # get grid information to project output data
             output_grid = StringSub(self.logger,
                                     ingester['output_grid'],
                                     **time_info).do_string_sub()
-            if output_grid == '':
-                self.log_error(f'Must set CUSTOM_INGEST_{index}_OUTPUT_GRID')
-                return
 
             # get call to python script
             script = StringSub(self.logger,
@@ -127,7 +129,7 @@ class CustomIngestWrapper(CommandBuilder):
             output_path = os.path.join(ingester['output_dir'], output_file)
 
             rdp.clear()
-            rdp.infiles.append(f'PYTHON_{input_type}')
+            rdp.infiles.append(f"PYTHON_{ingester['input_type']}")
             rdp.infiles.append(f'-field \'name="{script}\";\'')
             rdp.infiles.append(output_grid)
             rdp.outfile = output_path

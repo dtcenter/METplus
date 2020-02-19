@@ -4,6 +4,27 @@ METplus Configuration Glossary
 .. glossary::
    :sorted:
 
+   GROUP_LIST_ITEMS
+     Names of the lists in the METplus .conf file to treat the items in those lists as a group.
+
+     | *Used by:* MakePlots, StatAnalysis
+     | *Family:* config
+     | *Default:* None
+
+   LOOP_LIST_ITEMS
+     Names of the lists in the METplus .conf file to treat the items in those lists individually.
+
+     | *Used by:* MakePlots, StatAnalysis
+     | *Family:* config
+     | *Default:* None
+
+   MAKE_PLOTS_AVERAGE_METHOD
+     The method to use to average the data. Valid options are MEAN, MEDIAN, and AGGREGATION.
+
+     | *Used by:* MakePlots
+     | *Family:* config
+     | *Default:* MEAN
+  
    MAKE_PLOTS_SCRIPTS_DIR
      Directory to find scripts used by MakePlots.
 
@@ -26,14 +47,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    MAKE_PLOTS_VERIF_CASE
-     Verification case used by MakePlots.
-
-     | *Used by:* MakePlots
-     | *Family:* config
-     | *Default:* None
-
-   MAKE_PLOTS_VERIF_TYPE
-     Verification type used by MakePlots.
+     Verification case used by MakePlots. Valid options for this include: grid2grid, grid2obs, precip.
 
      | *Used by:* MakePlots
      | *Family:* config
@@ -666,7 +680,7 @@ METplus Configuration Glossary
 
      | *Used by:*  MakePlots
      | *Family:*  [config]
-     | *Default:*
+     | *Default:* NONE
 
    CYCLONE_CIRCLE_MARKER_SIZE
      .. warning:: **DEPRECATED:** Please use CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE.
@@ -713,11 +727,11 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use COV_THRESH_LIST instead.
 
    COV_THRESH_LIST
-     Specify the values of the COV_THRESH column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the values of the COV_THRESH column in the MET .stat file to use; specify the values of the COV_THRESH column in the MET .stat file to use.
 
-     | *Used by:*  StatAnalysis
+     | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:*
+     | *Default:* None
 
    CYCLONE_CROSS_MARKER_SIZE
      .. warning:: **DEPRECATED:** Please use CYCLONE_PLOTTER_CROSS_MARKER_SIZE.
@@ -810,11 +824,18 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use DESC_LIST instead.
      
    DESC_LIST
-     A single value or list of values used in the stat_analysis data stratification. Specifies the values of the DESC column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times
+     A single value or list of values used in the stat_analysis data stratification. Specifies the values of the DESC column in the MET .stat file to use.
 
-     | *Used by:*  StatAnalysis
+     | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:* None
+
+   ALPHA_LIST
+     A single value or list of values used in the stat_analysis data stratification. Specifies the values of the ALPHA column in the MET .stat file to use.
+
+     | *Used by:*  MakePlots, StatAnalysis
+     | *Family:*  [config]
+     | *Default:* None
 
    DLAND_FILE
      .. warning:: **DEPRECATED:** Please use TC_PAIRS_DLAND_FILE.
@@ -1211,7 +1232,7 @@ METplus Configuration Glossary
      | *Default:*
 
    FCST_LEAD
-     .. warning:: **DEPRECATED:**
+     .. warning:: **DEPRECATED:** Please use FCST_LEAD_LIST instead.
 		  
    FCST_LEVEL
      .. warning:: **DEPRECATED:** Please use FCST_PCP_COMBINE_INPUT_ACCUMS instead.
@@ -1559,7 +1580,14 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
-     | *Default:*
+     | *Default:* None
+
+   OBS_THRESH_LIST
+     Specify the values of the OBS_THRESH column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+
+     | *Used by:*  StatAnalysis
+     | *Family:*  [config]
+     | *Default:* None   
 
    FCST_TILE_PREFIX
      .. warning:: **DEPRECATED:** Please use FCST_EXTRACT_TILES_PREFIX instead.
@@ -1578,24 +1606,31 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** No longer used.
 
    FCST_VAR_LEVEL
-     .. warning:: **DEPRECATED:** Please use FCST_VAR_LEVEL_LIST instead.
+     .. warning:: **DEPRECATED:** Please use FCST_LEVEL_LIST instead.
 
-   FCST_VAR_LEVEL_LIST
-     Specify the values of the FCST_VAR_LEVEL column in the MET .stat file to use.
+   FCST_LEVEL_LIST
+     Specify the values of the FCST_LEV column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:*  None
 
    FCST_VAR_NAME
      .. warning:: **DEPRECATED:** Please use FCST_VAR_LIST instead.
 
    FCST_VAR_LIST
-     Specify the values of the FCST_VAR_NAME column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times
+     Specify the values of the FCST_VAR column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:*  None
+
+   FCST_UNITS_LIST
+     Specify the values of the FCST_UNITS column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+
+     | *Used by:*  StatAnalysis
+     | *Family:*  [config]
+     | *Default:*  None
 
    FCST_VAR<n>_LEVELS
      Define the levels for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items. You can define NetCDF levels, such as (0,*,*), but you will need to surround these values with quotation marks so that the commas in the item are not interpreted as an item delimeter. Some examples:
@@ -1964,14 +1999,14 @@ METplus Configuration Glossary
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:*  None
 
    OBS_INIT_HOUR_LIST
      Specify a list of hours for initialization times of observation files for use in the analysis.
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:*  None
 
    INIT_HOUR_BEG
      .. warning:: **DEPRECATED:** Please use FCST_INIT_HOUR_LIST or OBS_INIT_HOUR_LIST instead.
@@ -2017,21 +2052,21 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use INTERP_MTHD_LIST instead.
 
    INTERP_MTHD_LIST
-     Specify the interpolation used to create the MET .stat files. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the values of the INTERP_MTHD column in the MET .stat file to use; specify the interpolation used to create the MET .stat files.
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:*
+     | *Default:* None
 
    INTERP_PTS
      .. warning:: **DEPRECATED:** Please use INTERP_PNTS_LIST instead.
 
    INTERP_PNTS_LIST
-     Corresponds to the interpolation in the MET .stat files. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the values of the INTERP_PNTS column in the MET .stat file to use; corresponds to the interpolation in the MET .stat files.
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:*
+     | *Default:* None
 
    INTERVAL_TIME
      Define the interval time in hours (HH) to be used by the MET pb2nc tool.
@@ -2084,11 +2119,18 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use FCST_LEAD_LIST instead.
 
    FCST_LEAD_LIST
-     Specify a list of forecast leads to include in the analysis. Comma separated list format, e.g.:0, 24, 48, 72, 96, 120
+     Specify the values of the FSCT_LEAD column in the MET .stat file to use. Comma separated list format, e.g.: 00, 24, 48, 72, 96, 120
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:*  None
+
+   OBS_LEAD_LIST
+     Specify the values of the OBS_LEAD column in the MET .stat file to use. Comma separated list format, e.g.: 00, 24, 48, 72, 96, 120
+
+     | *Used by:*  MakePlots, StatAnalysis
+     | *Family:*  [config]
+     | *Default:*  None
 
    LEAD_SEQ
      Specify the sequence of forecast lead times to include in the analysis. Comma separated list format, e.g.:0, 6, 12. See reference :ref:`looping over forecast leads<looping over forecast leads>` for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
@@ -2140,9 +2182,9 @@ METplus Configuration Glossary
 
 
    LINE_TYPE_LIST
-     Specify the MET STAT line types to be considered. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the MET STAT line types to be considered. For TCMPRPlotter, this is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
-     | *Used by:*  TCMPRPlotter
+     | *Used by:*  MakePlots, StatAnalysis, TCMPRPlotter
      | *Family:*  [config]
      | *Default:*
 
@@ -2277,24 +2319,31 @@ METplus Configuration Glossary
    MODEL
      Specify the model name. This is the model name listed in the MET .stat files.
 
-     | *Used by:*  EnsembleStat, GridStat, PointStat, PcpCombine, StatAnalysis, TcPairs
+     | *Used by:*  EnsembleStat, GridStat, PointStat, PcpCombine, TcPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
+   MODEL_LIST
+     List of the specified the model names.
+
+     | *Used by:*  MakePlots, StatAnalysis
+     | *Family:*  [config]
+     | *Default:*  Models listed as MODEL<n>
+ 
    MODEL<n>_NAME
      .. warning:: **DEPRECATED:** Please use MODEL<n>.
 
    MODEL<n>
      Define the model name for the first model to be used in the analysis. This is the model name listed in the MET .stat files.There can be <n> number of models defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
 
-     MODEL1_NAME
-     MODEL2_NAME
+     MODEL1
+     MODEL2
      ...
-     MODELN_NAME
+     MODEL<n>
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:* Varies
+     | *Default:* None
 
    MODEL<n>_NAME_ON_PLOT
      .. warning:: **DEPRECATED:** Please use MODEL<n>_REFERENCE_NAME instead.
@@ -2309,7 +2358,7 @@ METplus Configuration Glossary
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:* Varies
+     | *Default:* None
 
    MODEL<n>_OBS_NAME
      .. warning:: **DEPRECATED:** Please use MODEL<n>_OBTYPE instead.
@@ -2317,26 +2366,17 @@ METplus Configuration Glossary
    MODEL<n>_OBTYPE
      Define the observation name that was used to compare the first model to be. This is the observation name listed in the MET .stat files. There can be <n> number of observation names defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
 
-     MODEL1_OBS_NAME
-     MODEL2_OBS_NAME
+     MODEL1_OBTYPE
+     MODEL2_OBTYPE
      ...
-     MODELN_OBS_NAME
+     MODEL<n>_OBTYPE
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:* Varies
+     | *Default:* None
 
    MODEL<n>_STAT_DIR
-     Define the stat file directory for the first model to be used in the analysis. There can be <n> number of model directories defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
-
-     MODEL1_DIR
-     MODEL2_DIR
-     ...
-     MODELN_DIR
-
-     | *Used by:*  StatAnalysis
-     | *Family:*  [config]
-     | *Default:* Varies
+     .. warning:: **DEPRECATED:** Please use MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR instead.
 
    EXTRACT_TILES_GRID_INPUT_DIR
      Directory containing gridded input data to be used in ExtractTiles. Currently contains both forecast and observation data.
@@ -3218,24 +3258,31 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Specify the string for the observation variable used in the analysis. See OBS_VAR<n>_NAME, OBS_VAR<n>_LEVELS, OBS_VAR<n>_OPTIONS and OBS_VAR<n>_THRESH where n = integer >= 1.
 
    OBS_VAR_LEVEL
-     .. warning:: **DEPRECATED:** Please use OBS_VAR_LEVEL_LIST instead.
+     .. warning:: **DEPRECATED:** Please use OBS_LEVEL_LIST instead.
 
-   OBS_VAR_LEVEL_LIST
-     Specify the values of the OBS_VAR_LEVEL column in the MET .stat file to use.
+   OBS_LEVEL_LIST
+     Specify the values of the OBS_LEV column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:*  None
 
    OBS_VAR_NAME
      .. warning:: **DEPRECATED:** Please use OBS_VAR_LIST instead.
 
    OBS_VAR_LIST
-     Specify the values of the OBS_VAR_NAME column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times
+     Specify the values of the OBS_VAR column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:*  None
+
+   OBS_UNITS_LIST
+     Specify the values of the OBS_UNITS column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+
+     | *Used by:*  StatAnalysis
+     | *Family:*  [config]
+     | *Default:*  None
 
    OBS_VAR<n>_LEVELS
      Define the levels for the <n>th observation variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items. You can define NetCDF levels, such as (0,*,*), but you will need to surround these values with quotation marks so that the commas in the item are not interpreted as an item delimeter. Some examples:
@@ -3320,7 +3367,7 @@ METplus Configuration Glossary
    OBTYPE
      Provide a string to represent the type of observation data used in the analysis. This is the observation time listed in the MET .stat files and is used in setting output filename.
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PointStat, StatAnalysis
+     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -3518,10 +3565,10 @@ METplus Configuration Glossary
      | *Default:*  False
 
    PLOTTING_OUTPUT_DIR
-     .. warning:: **DEPRECATED:**
+     .. warning:: **DEPRECATED:** Please use MAKE_PLOTS_OUTPUT_DIR instead.
 
    PLOTTING_SCRIPTS_DIR
-      .. warning:: **DEPRECATED:**
+      .. warning:: **DEPRECATED:** Please use MAKE_PLOTS_SCRIPTS_DIR instead.
 
    PLOT_CONFIG_OPTS
      .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_PLOT_CONFIG_OPTS instead.
@@ -3536,24 +3583,24 @@ METplus Configuration Glossary
    PLOT_STATS_LIST
      .. warning:: **DEPRECATED:** Please use MAKE_PLOT_STATS_LIST instead.
 
-   MAKE_PLOT_STATS_LIST
+   MAKE_PLOTS_STATS_LIST
      This is a list of the statistics to calculate and create plots for. Specify the list in a comma-separated list, e.g.:
 
      acc, bias, rmse
 
-     The list of valid options varies depending on line type that was used during the filtering of stat_analysis_wrapper. For SL1L2, VL1L2 valid options are bias, rms, msess, rsd, rmse_md, rmse_pv, pcor, fbar, and fbar_obar. For SAL1L2, VAL1L2, the valid options is acc. For VCNT, bias, fbar, fbar_obar, speed_err, dir_err, rmsve, vdiff_speed, vdiff_dir, rsd, fbar_speed, fbar_dir, fbar_obar_speed, and fbar_obar_dir.
+     The list of valid options varies depending on line type that was used during the filtering of stat_analysis_wrapper. For SL1L2, VL1L2 valid options are bias, rms, msess, rsd, rmse_md, rmse_pv, pcor, fbar, and fbar_obar. For SAL1L2, VAL1L2, the valid options is acc. For VCNT, bias, fbar, fbar_obar, speed_err, dir_err, rmsve, vdiff_speed, vdiff_dir, rsd, fbar_speed, fbar_dir, fbar_obar_speed, and fbar_obar_dir. For CTC, rate, baser, frate, orate_frate, baser_frate, accuracy, bias, fbias, pod, hrate, pofd, farate, podn, faratio, csi, ts, gss, ets, hk, tss, pss, hs
 
      | *Used by:*  MakePlots
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:*  None
 
    PLOT_TIME
-     .. warning:: **DEPRECATED:** Please use DATE_TIME instead.
+     .. warning:: **DEPRECATED:** Please use DATE_TYPE instead.
 
-   DATE_TIME
-     In StatAnalysis, this specifies the way to treat the date information, where valid options are valid and init.
+   DATE_TYPE
+     In StatAnalysis, this specifies the way to treat the date information, where valid options are VALID and INIT.
 
-     | *Used by:*  StatAnalysis
+     | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -3666,17 +3713,17 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use TC_PAIRS_BDECK_TEMPLATE.
 
    REGION
-     .. warning:: **DEPRECATED:**
+     .. warning:: **DEPRECATED:** Please use VX_MASK_LIST instead.
 
    REGION_LIST
      .. warning:: **DEPRECATED:** Please use VX_MASK_LIST instead.
 
    VX_MASK_LIST
-     A list of the regions of interest. This is the list of regions for plotting verification.
+     Specify the values of the VX_MASK column in the MET .stat file to use; a list of the verification regions of interest.
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:*  None
 
    REGRID_DATA_PLANE_METHOD
      Sets the method used by regrid_data_plane. See MET User's Guide for more information.
@@ -3916,7 +3963,7 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
      | *Family:*  [filename_templates]
-     | *Default:*
+     | *Default:* None
 
    STAT_ANALYSIS_LOOKIN_DIR
      .. warning:: **DEPRECATED:** Please use MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR instead.
@@ -3925,8 +3972,8 @@ METplus Configuration Glossary
      Specify the input directory where the MET stat_analysis tool will find input files. This is the directory that the stat_analysis wrapper will use to build the argument to -lookin for the MET stat_analysis tool. It can contain wildcards, i.e. \*.
 
      | *Used by:*  StatAnalysis
-     | *Family:*  [dir]
-     | *Default:*  Varies
+     | *Family:*  [config]
+     | *Default:*  None
 
    STAT_ANALYSIS_OUT_STAT_TMPL
      .. warning:: **DEPRECATED:** Please use MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE instead.
@@ -3936,7 +3983,7 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
      | *Family:*  [filename_templates]
-     | *Default:*
+     | *Default:* None
 
    STAT_ANALYSIS_OUT_DIR
      .. warning:: **DEPRECATED:** Please use STAT_ANALYSIS_OUTPUT_DIR instead.
@@ -3946,10 +3993,10 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
      | *Family:*  [dir]
-     | *Default:*  Varies
+     | *Default:* None
 
    STAT_FILES_INPUT_DIR
-      .. warning:: **DEPRECATED:** 
+      .. warning:: **DEPRECATED:** Please use MAKE_PLOTS_INPUT_DIR instead. 
 
    SERIES_ANALYSIS_STAT_LIST
      Specify a list of statistics to be computed by the MET series_analysis tool.
@@ -4532,18 +4579,17 @@ METplus Configuration Glossary
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:*  None
 
    OBS_VALID_HOUR_LIST
      Specify a list of hours for valid times of observation files for use in the analysis.
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:*  None
 
    VALID_HOUR_BEG
      .. warning:: **DEPRECATED:** Please use FCST_VALID_HOUR_LIST or OBS_VALID_HOUR_LIST instead.
-
 
    VALID_HOUR_END
      .. warning:: **DEPRECATED:** Please use FCST_VALID_HOUR_LIST or OBS_VALID_HOUR_LIST instead.
@@ -4590,13 +4636,13 @@ METplus Configuration Glossary
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:*
+     | *Default:* None
 
    VERIFICATION_GRID
      .. warning:: **DEPRECATED:** Please use REGRID_DATA_PLANE_VERIF_GRID instead.
 
    VERIF_CASE
-     .. warning:: **DEPRECATED:** 
+     .. warning:: **DEPRECATED:** Please use MAKE_PLOTS_VERIF_CASE instead.
 
    VERIF_GRID
      .. warning:: **DEPRECATED:** Please use MAKE_PLOTS_VERIF_GRID instead.
@@ -4612,11 +4658,11 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use MAKE_PLOTS_VERIF_TYPE instead.
 
    MAKE_PLOTS_VERIF_TYPE
-     Specify a string describing the type of verification being performed. For VERIF_CASE = grid2grid, valid options are anom, pres, and sfc. For VERIF_CASE = grid2obs, valid options are conus_sfc and upper_air. For VERIF_CASE = precip, any accumulation amount is valid, ex. A24.
+     Specify a string describing the type of verification being performed. For MAKE_PLOTS_VERIF_CASE = grid2grid, valid options are anom, pres, and sfc. For MAKE_PLOTS_VERIF_CASE = grid2obs, valid options are conus_sfc and upper_air. For MAKE_PLOTS_VERIF_CASE = precip, any accumulation amount is valid, ex. A24.
 
-     | *Used by:*  MakePlots, StatAnalysis
+     | *Used by:*  MakePlots
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:*  None
 
    VERTICAL_LOCATION
      .. warning:: **DEPRECATED:** Specify the vertical location desired when using the MET pb2nc tool.
