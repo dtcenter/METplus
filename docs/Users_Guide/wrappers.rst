@@ -391,14 +391,18 @@ configuration file:
 
 | :term:`MAKE_PLOTS_VERIF_CASE`
 | :term:`MAKE_PLOTS_VERIF_TYPE`
-| :term:`DATE_TIME`
-
+| :term:`DATE_TYPE`
 | :term:`MODEL\<n\>`
 | :term:`MODEL<n>_OBTYPE`
 | :term:`MODEL<n>_REFERENCE_NAME`
+| :term:`GROUP_LIST_ITEMS`
+| :term:`LOOP_LIST_ITEMS`
+| :term:`MODEL_LIST`
+| :term:`FCST_LEAD_LIST`
 | :term:`VX_MASK_LIST`
-| :term:`INTERP_MTHD_LIST`
-| :term:`MAKE_PLOT_STATS_LIST`
+| :term:`LINE_TYPE_LIST`
+| :term:`MAKE_PLOTS_AVERAGE_METHOD`
+| :term:`MAKE_PLOTS_STATS_LIST`
 | :term:`MAKE_PLOTS_CI_METHOD`
 | :term:`MAKE_PLOTS_VERIF_GRID`
 | :term:`MAKE_PLOTS_EVENT_EQUALIZATION`
@@ -406,9 +410,20 @@ configuration file:
 The following values are **optional** in the METplus Wrappers
 configuration file:
 
+[config]
+
 | :term:`VAR<n>_FOURIER_DECOMP`
 | :term:`VAR<n>_WAVE_NUM_LIST`
-
+| :term:`FCST_VALID_HOUR_LIST`
+| :term:`OBS_VALID_HOUR_LIST`
+| :term:`FCST_INIT_HOUR_LIST`
+| :term:`OBS_INIT_HOUR_LIST`
+| :term:`OBS_LEAD_LIST`
+| :term:`DESC_LIST`
+| :term:`INTERP_MTHD_LIST`
+| :term:`INTERP_PNTS_LIST`
+| :term:`COV_THRESH_LIST`
+| :term:`ALPHA_LIST`
 
 .. warning:: **DEPRECATED:**
 
@@ -421,7 +436,16 @@ configuration file:
    | :term:`MODEL<n>_NAME`
    | :term:`MODEL<n>_OBS_NAME`
    | :term:`MODEL<n>_NAME_ON_PLOT`
+   | :term:`VALID_HOUR_METHOD`
+   | :term:`VALID_HOUR_BEG`
+   | :term:`VALID_HOUR_END`
+   | :term:`VALID_HOUR_INCREMENT`
+   | :term:`INIT_HOUR_BEG`
+   | :term:`INIT_HOUR_END`
+   | :term:`INIT_HOUR_INCREMENT`
    | :term:`REGION_LIST`
+   | :term:`LEAD_LIST`
+   | :term:`LINE_TYPE`
    | :term:`INTERP`
    | :term:`PLOT_STATS_LIST`
    | :term:`CI_METHOD`
@@ -969,7 +993,6 @@ configuration file for running with LOOP_ORDER = times:
 
 [dir]
 
-| :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR`
 | :term:`STAT_ANALYSIS_OUTPUT_DIR` 
 
 [filename_templates]
@@ -982,17 +1005,10 @@ configuration file for running with LOOP_ORDER = times:
 | :term:`LOG_STAT_ANALYSIS_VERBOSITY`
 | :term:`MODEL\<n\>`
 | :term:`MODEL<n>_OBTYPE`
-| :term:`FCST_VALID_HOUR_LIST`
-| :term:`OBS_VALID_HOUR_LIST`
-| :term:`FCST_INIT_HOUR_LIST`
-| :term:`OBS_INIT_HOUR_LIST`
-| :term:`FCST_VAR_LIST`
-| :term:`OBS_VAR_LIST`
-| :term:`FCST_VAR_LEVEL_LIST`
-| :term:`OBS_VAR_LEVEL_LIST`
-| :term:`FCST_LEAD_LIST`
-| :term:`VX_MASK_LIST`
-
+| :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR`
+| :term:`MODEL_LIST`
+| :term:`GROUP_LIST_ITEMS`
+| :term:`LOOP_LIST_ITEMS`
 | :term:`STAT_ANALYSIS_CONFIG_FILE`
 | :term:`STAT_ANALYSIS_JOB_NAME`
 | :term:`STAT_ANALYSIS_JOB_ARGS`
@@ -1000,40 +1016,91 @@ configuration file for running with LOOP_ORDER = times:
 The following values are **optional** in the METplus Wrappers
 configuration file for running with LOOP_ORDER = times:
 
+[config]
+
+| :term:`DESC_LIST`
+| :term:`FCST_VALID_HOUR_LIST`
+| :term:`OBS_VALID_HOUR_LIST`
+| :term:`FCST_INIT_HOUR_LIST`
+| :term:`OBS_INIT_HOUR_LIST`
+| :term:`FCST_VAR_LIST`
+| :term:`OBS_VAR_LIST`
+| :term:`FCST_LEVEL_LIST`
+| :term:`OBS_LEVEL_LIST`
+| :term:`FCST_UNITS_LIST`
+| :term:`OBS_UNITS_LIST`
+| :term:`FCST_THRESH_LIST`
+| :term:`OBS_THRESH_LIST`
 | :term:`FCST_LEAD_LIST`
+| :term:`OBS_LEAD_LIST`
+| :term:`VX_MASK_LIST`
 | :term:`INTERP_MTHD_LIST`
 | :term:`INTERP_PNTS_LIST`
-| :term:`FCST_THRESH_LIST`
+| :term:`ALPHA_LIST`
 | :term:`COV_THRESH_LIST`
 | :term:`LINE_TYPE_LIST`
 
 The following values **must** be defined in the METplus Wrappers
 configuration file for running with LOOP_ORDER = processes:
 
+[dir]
+
 | :term:`STAT_ANALYSIS_OUTPUT_DIR`
-| :term:`MODEL<n>_NAME` 
-| :term:`MODEL<n>_OBS_NAME` 
-| :term:`MODEL<n>_NAME_ON_PLOT`
+
+[config]
+
+| :term:`LOG_STAT_ANALYSIS_VERBOSITY`
+| :term:`DATE_TYPE`
+| :term:`STAT_ANALYSIS_CONFIG_FILE`
+| :term:`MODEL\<n\>`
+| :term:`MODEL<n>_OBTYPE` 
+| :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR`
+| :term:`MODEL<n>_REFERENCE_NAME`
+| :term:`GROUP_LIST_ITEMS`
+| :term:`LOOP_LIST_ITEMS`
+| :term:`MODEL_LIST`
 | :term:`VX_MASK_LIST`
 | :term:`FCST_LEAD_LIST`
-| :term:`INTERP_MTHD_LIST`
-| :term:`INTERP_PNTS_LIST`
+| :term:`LINE_TYPE_LIST`
 
 The following values are optional in the METplus Wrappers configuration
 file for running with LOOP_ORDER = processes:
 
 | :term:`VAR<n>_FOURIER_DECOMP`
 | :term:`VAR<n>_WAVE_NUM_LIST`
+| :term:`FCST_VALID_HOUR_LIST`
+| :term:`OBS_VALID_HOUR_LIST`
+| :term:`FCST_INIT_HOUR_LIST`
+| :term:`OBS_INIT_HOUR_LIST`
+| :term:`OBS_LEAD_LIST`
+| :term:`DESC_LIST`
+| :term:`INTERP_MTHD_LIST`
+| :term:`INTERP_PNTS_LIST`
+| :term:`COV_THRESH_LIST`
+| :term:`ALPHA_LIST`
 
 .. warning:: **DEPRECATED:**
 
    | :term:`STAT_ANALYSIS_LOOKIN_DIR`
    | :term:`STAT_ANALYSIS_OUT_DIR`
    | :term:`STAT_ANALYSIS_CONFIG`
+   | :term:`VALID_HOUR_METHOD`
+   | :term:`VALID_HOUR_BEG`
+   | :term:`VALID_HOUR_END`
+   | :term:`VALID_HOUR_INCREMENT`
+   | :term:`INIT_HOUR_BEG`
+   | :term:`INIT_HOUR_END`
+   | :term:`INIT_HOUR_INCREMENT`
+   | :term:`MODEL`
+   | :term:`OBTYPE`
    | :term:`JOB_NAME`
    | :term:`JOB_ARGS`
    | :term:`DESC`
    | :term:`FCST_LEAD`
+   | :term:`FCST_VAR_NAME`
+   | :term:`FCST_VAR_LEVEL`
+   | :term:`OBS_VAR_NAME`
+   | :term:`OBS_VAR_LEVEL`
    | :term:`REGION`
    | :term:`INTERP`
    | :term:`INTERP_PTS`
@@ -1045,14 +1112,12 @@ file for running with LOOP_ORDER = processes:
    | :term:`PLOT_TIME`
    | :term:`VERIF_CASE`
    | :term:`VERIF_TYPE`
-   | :term:`VALID_HOUR_METHOD`
-   | :term:`VALID_HOUR_BEG`
-   | :term:`VALID_HOUR_END`
-   | :term:`VALID_HOUR_INCREMENT`
-   | :term:`INIT_HOUR_METHOD`
-   | :term:`INIT_HOUR_BEG`
-   | :term:`INIT_HOUR_END`
-   | :term:`INIT_HOUR_INCREMENT`
+   | :term:`MODEL<n>_NAME`
+   | :term:`MODEL<n>_OBS_NAME`
+   | :term:`MODEL<n>_NAME_ON_PLOT`
+   | :term:`MODEL<n>_STAT_DIR`
+   | :term:`REGION_LIST`
+   | :term:`LEAD_LIST`
 
 TCMPRPlotter
 -------------
