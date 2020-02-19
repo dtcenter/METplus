@@ -6,6 +6,9 @@ This use case runs the MET GridStat tool to compare gridded forecast data
 from two runs of the GloTEC model. 
 
 """
+
+# .. image:: ../../../../docs/_static/space_weather-vx7.jpg
+
 ##############################################################################
 # Overview
 # --------
