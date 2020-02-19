@@ -81,7 +81,7 @@ forecast data to gridded AND point observation data.
 #
 # * **${MODEL}** - Name of forecast input. Corresponds to MODEL in the METplus configuration file.
 # * **${OBTYPE}** - Name of observation input. Corresponds to OBTYPE in the METplus configuration file.
-# * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to GRID_STAT_REGRID_TO_GRID in the METplus configuration file.
+# * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to ENSEMBLE_STAT_REGRID_TO_GRID in the METplus configuration file.
 # * **${ENS_THRESH}** - Threshold for ratio of valid files to expected files to allow application to run. Corresponds to ENSEMBLE_STAT_ENS_THRESH in the METplus configuration file.
 # * **${ENS_FIELD}** - Formatted ensemble product fields information. Generated from ENS_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
 # * **${FCST_FIELD}** - Formatted forecast field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
