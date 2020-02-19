@@ -44,10 +44,14 @@ Timing Control
 
 This section describes the METplus wrapper configuration variables that are used to control which times are processed. It also covers functionality that is useful for processing data in realtime by setting run times based on the clock time when the METplus wrappers are run.
 
+.. :ref:`LOOP_BY`
+   
 LOOP_BY
 ^^^^^^^
 
 The METplus wrappers can be configured to loop over a set of valid times or a set of initialization times. This is controlled by the configuration variable called :term:`LOOP_BY`. If the value of this variable is set to INIT or RETRO, looping will be relative to initialization time. If the value is set to VALID or REALTIME, looping will be relative to valid time.
+
+.. :ref:`Looping by Valid Time`
 
 Looping by Valid Time
 ^^^^^^^^^^^^^^^^^^^^^
@@ -87,7 +91,9 @@ The following is a configuration that will process valid time 2019-02-01 at 00Z 
 
 Note: Substituting VALID_INCREMENT = 21600 will generate the same result.
 
-This will process data valid on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these valid times, the METplus wrappers can also loop over a set of forecast leads that are all valid at the current run time. See :ref:`looping-over-forecast-leads` for more information.
+This will process data valid on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these valid times, the METplus wrappers can also loop over a set of forecast leads that are all valid at the current run time. See :ref:`looping over forecast leads` for more information.
+
+.. :ref:`Looping by Initialization Time`
 
 Looping by Initialization Time
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -121,9 +127,9 @@ The following is a configuration that will process initialization time 2019-02-0
 .. note::
     Substituting VALID_INCREMENT = 21600 will generate the same result.
 
-This will process data initialized on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these initialization times, METplus Wrappers can also loop over a set of forecast leads that are all initialized at the current run time. See :ref:`looping-over-forecast-leads` for more information.
+This will process data initialized on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these initialization times, METplus Wrappers can also loop over a set of forecast leads that are all initialized at the current run time. See :ref:`looping over forecast leads` for more information.
 
-.. _looping-over-forecast-leads:
+.. :ref:`looping over forecast leads`
 
 Looping over Forecast Leads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
