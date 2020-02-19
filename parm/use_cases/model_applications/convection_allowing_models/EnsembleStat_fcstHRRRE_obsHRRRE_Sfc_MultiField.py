@@ -77,7 +77,8 @@ comparing the resulting data to forecast data
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/EnsembleStatConfig_SFC
 #
 # See the following files for more information about the environment variables set in this configuration file.
-#   parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.py
+#
+# parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.py
 
 ##############################################################################
 # Running METplus
@@ -152,4 +153,4 @@ comparing the resulting data to forecast data
 # Keywords
 # --------
 #
-# .. note:: EnsembleStatUseCase, ConvectionAllowingModelsUseCase, PB2NCUseCase
+# .. note:: `EnsembleStatUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleStatUseCase&check_keywords=yes&area=default>`_, `ConvectionAllowingModelsUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsUseCase&check_keywords=yes&area=default>`_, `PB2NCUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCUseCase&check_keywords=yes&area=default>`_

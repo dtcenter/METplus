@@ -5,7 +5,7 @@ Purpose and organization of the User's Guide
 --------------------------------------------      
 
 The goal of this User's Guide is to equip users with the information
-needed to use the Model Evaluation Tools (MET) and it's companion
+needed to use the Model Evaluation Tools (MET) and its companion
 package METplus Wrappers. MET is a set of verification tools developed
 and supported to community via the Developmental Testbed Center (DTC)
 for use by the numerical weather prediction community. METplus Wrappers
@@ -65,7 +65,7 @@ their verification environments. Wrappers can be run individually, or as
 a group of wrappers that represent a sequence of MET processes. New
 wrappers can readily be added to the METplus Wrappers package due to
 this modular design. Currently, METplus Wrappers can easily be applied
-by any user on their own computer platform that supports Python 3.6.  We have depricated support to Python 2.7.
+by any user on their own computer platform that supports Python 3.6.  We have deprecated support to Python 2.7.
 
 The METplus Wrappers code and documentation is maintained by the DTC in
 Boulder, Colorado. METplus Wrappers is freely available to the modeling,
