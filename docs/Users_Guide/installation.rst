@@ -32,7 +32,7 @@ Pre-requisites
 
 The following software is required to run METplus Wrappers:
 
--  Python 3.6.3
+-  Python 3.6.3 or higher (If running plot wrappers, cartopy and pandas packages are required. If not, dateutil package is required) 
 
 -  R version 3.2.5  [1]_
 
@@ -276,18 +276,16 @@ Copy and paste the following into an empty text file and name it 'my_user_config
 
   # This is a comment, comments are defined with a # at the beginning of the line
   
-  # Setting the PROCESS_LIST to **Usage** indicates that we want usage information
-  [config]
-  PROCESS_LIST = Usage
-
   # Set the MET_INSTALL_DIR to the location of the MET install
   [dir]
   MET_INSTALL_DIR = /usr/local/met-9.0
 
-  # Set these to any valid directory to override the </path/to> placeholder set in the metplus_system.conf file
-  [dir]
-  TMP_DIR = /tmp
+  # Set INPUT_BASE to the directory containing sample input data if running use cases in the repository
+  # Otherwise et INPUT_BASE to any path that does not contain /path/to.
   INPUT_BASE = /tmp/input
+
+  # Set OUTPUT_BASE to a directory where you have permission to write output files
+  # It will be created if it does not exist
   OUTPUT_BASE = /tmp/output
 
 Run METplus via: ``master_metplus.py -c ./<my_user_config.conf>`` or ``master_metplus.py -c /<username>/<my_user_config.conf>`` if you saved your default config in a directory other than where you are running master_metplus.py.
@@ -303,22 +301,26 @@ When the above command is run, a usage message appears indicating that other con
   -parm/metplus_use_cases/<usecase_name>/examples/<example_name>.conf
 
   Currently available processes are:
+  - ASCII2NC
+  - CustomIngest
   - CyclonePlotter
   - EnsembleStat
   - ExtractTiles
   - GempakToCF
   - GridStat
+  - MakePlots
   - Mode
   - MTD
   - PB2NC
   - PcpCombine
   - PointStat
   - RegridDataPlane
-  - SeriesByLead
   - SeriesByInit
+  - SeriesByLead
+  - StatAnalysis
+  - TCMPRPlotter
   - TcPairs
   - TcStat
-  - TCMPRPlotter
 
 **Example 2: Using a use-case configuration:**
 
