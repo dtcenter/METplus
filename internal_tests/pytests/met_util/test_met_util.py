@@ -38,6 +38,18 @@ def metplus_config():
         sys.exit(2)
 
 @pytest.mark.parametrize(
+    'before, after', [
+        ('string', 'string'),
+        ('"string"', 'string'),
+        ('', ''),
+        ('""', ''),
+        (None, ''),
+    ]
+)
+def test_remove_quotes(before, after):
+    assert(util.remove_quotes(before) == after)
+
+@pytest.mark.parametrize(
     'key, value', [
         ({"gt2.3", "gt5.5"}, True),
         ({"ge2.3", "ge5.5"}, True),

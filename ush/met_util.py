@@ -419,6 +419,10 @@ def check_for_deprecated_config(conf):
         'VERIF_GRID': {'sec': 'config', 'alt': 'MAKE_PLOTS_VERIF_GRID'},
         'EVENT_EQUALIZATION': {'sec': 'config', 'alt': 'MAKE_PLOTS_EVENT_EQUALIZATION'},
         'MTD_CONFIG': {'sec': 'config', 'alt': 'MTD_CONFIG_FILE'},
+        'CLIMO_GRID_STAT_INPUT_DIR': {'sec': 'dir', 'alt': 'GRID_STAT_CLIMO_MEAN_INPUT_DIR'},
+        'CLIMO_GRID_STAT_INPUT_TEMPLATE': {'sec': 'filename_templates', 'alt': 'GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE'},
+        'CLIMO_POINT_STAT_INPUT_DIR': {'sec': 'dir', 'alt': 'POINT_STAT_CLIMO_MEAN_INPUT_DIR'},
+        'CLIMO_POINT_STAT_INPUT_TEMPLATE': {'sec': 'filename_templates', 'alt': 'POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE'},
     }
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
@@ -2176,13 +2180,11 @@ def split_level(level):
     return '', ''
 
 def remove_quotes(input_string):
+    """!Remove double quotes from string"""
     if not input_string:
-        return input_string
+        return ''
 
-    if input_string[0] == '"' and input_string[-1] == '"':
-        return input_string[1:-1]
-
-    return input_string
+    return input_string.strip('"')
 
 def get_filetype(filepath, logger=None):
     """!This function determines if the filepath is a NETCDF or GRIB file

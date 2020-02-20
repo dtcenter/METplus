@@ -82,7 +82,7 @@ obs = {
 //
 //climo_mean = {
 //
-//   file_name = [ ${CLIMO_FILE} ];
+//   file_name = [ ${CLIMO_MEAN_FILE} ];
 //   field     = [];
 //
 //   regrid = {

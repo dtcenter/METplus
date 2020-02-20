@@ -88,7 +88,7 @@ message_type_group_map = [
 //
 climo_mean = {
 
-   file_name = [ ${CLIMO_FILE} ];
+   file_name = [ ${CLIMO_MEAN_FILE} ];
    field     = [];
 
    regrid = {
@@ -105,7 +105,7 @@ climo_mean = {
 
 climo_stdev = climo_mean;
 climo_stdev = {
-   file_name = [];
+   file_name = [ ${CLIMO_STDEV_FILE} ];
 }
 
 //

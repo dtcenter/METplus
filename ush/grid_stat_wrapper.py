@@ -54,12 +54,8 @@ class GridStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
 
-        c_dict['CLIMO_INPUT_DIR'] = self.config.getdir('CLIMO_GRID_STAT_INPUT_DIR',
-                                                       '')
-        c_dict['CLIMO_INPUT_TEMPLATE'] = \
-            self.config.getraw('filename_templates',
-                               'CLIMO_GRID_STAT_INPUT_TEMPLATE',
-                               '')
+        # get climatology config variables
+        self.read_climo_wrapper_specific('GRID_STAT', c_dict)
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_STAT_OUTPUT_DIR',
                                                   self.config.getdir('OUTPUT_BASE'))
@@ -103,11 +99,10 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
-        # climo file is set to None if not found, so need to check
-        if self.c_dict['CLIMO_FILE']:
-            self.add_env_var("CLIMO_FILE", self.c_dict['CLIMO_FILE'])
-        else:
-            self.add_env_var("CLIMO_FILE", '')
+
+        # set climatology environment variables
+        self.set_climo_env_vars()
+
         self.add_env_var("FCST_TIME", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("INPUT_BASE", self.c_dict["INPUT_BASE"])
 
