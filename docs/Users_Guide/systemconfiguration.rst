@@ -44,10 +44,10 @@ Timing Control
 
 This section describes the METplus wrapper configuration variables that are used to control which times are processed. It also covers functionality that is useful for processing data in realtime by setting run times based on the clock time when the METplus wrappers are run.
 
-.. :ref:`LOOP_BY`
-   
-LOOP_BY
-^^^^^^^
+.. _LOOP_BY_ref:
+
+:term:`LOOP_BY`
+^^^^^^^^^^^^^^^
 
 The METplus wrappers can be configured to loop over a set of valid times or a set of initialization times. This is controlled by the configuration variable called :term:`LOOP_BY`. If the value of this variable is set to INIT or RETRO, looping will be relative to initialization time. If the value is set to VALID or REALTIME, looping will be relative to valid time.
 
@@ -292,6 +292,8 @@ will process valid times starting on 20190425 at 06Z every 6 hours until the cur
 
    When using the 'now' keyword, the value of VALID_TIME_FMT must be identical to the 'fmt' value corresponding to the 'now' item in VALID_BEG and VALID_END. In the above example, this would be the %Y%m%d%H portion within values of the VALID_TIME_FMT, VALID_BEG, and VALID_END variables.
 
+:ref:`Field Info`   
+
 Field Info
 ~~~~~~~~~~
 
@@ -417,7 +419,9 @@ If FCST_VAR<n>_OPTIONS is set, OBS_VAR<n>_OPTIONS does not need to be set, and v
 :term:`ENS_VAR<n>_NAME` / :term:`ENS_VAR<n>_LEVELS`/ :term:`ENS_VAR<n>_THRESH` / :term:`ENS_VAR<n>_OPTIONS`:
 **Used with EnsembleStat Wrapper only.** Users may want to define the ens dictionary item in the MET EnsembleStat config file differently than the fcst dictionary item. If this is the case, you can use these variables. If it is not set, the values in the corresponding FCST_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS] will be used in the ens dictionary.
 
-Directory and Filename Template Info
+ref:`Directory and Filename Template Info`
+
+Directory and Filename Template Info 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The METplus Wrappers use directory and filename template configuration variables to find the desired files for a given run.
