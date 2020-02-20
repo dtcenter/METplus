@@ -61,12 +61,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['OUTPUT_DIR'] = \
             self.config.getdir('POINT_STAT_OUTPUT_DIR')
 
-        c_dict['CLIMO_INPUT_DIR'] = self.config.getdir('CLIMO_POINT_STAT_INPUT_DIR',
-                                                       '')
-        c_dict['CLIMO_INPUT_TEMPLATE'] = \
-            self.config.getraw('filename_templates',
-                               'CLIMO_POINT_STAT_INPUT_TEMPLATE',
-                               '')
+        # get climatology config variables
+        self.read_climo_wrapper_specific('POINT_STAT', c_dict)
 
         # Configuration
         c_dict['CONFIG_FILE'] = \
@@ -239,11 +235,8 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
-        # climo file is set to None if not found, so need to check
-        if self.c_dict['CLIMO_FILE']:
-            self.add_env_var("CLIMO_FILE", self.c_dict['CLIMO_FILE'])
-        else:
-            self.add_env_var("CLIMO_FILE", '')
+        # set climatology environment variables
+        self.set_climo_env_vars()
 
         self.add_common_envs(time_info)
 

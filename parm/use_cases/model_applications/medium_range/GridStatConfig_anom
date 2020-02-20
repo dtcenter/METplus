@@ -69,7 +69,7 @@ obs = {
 //
 climo_mean = fcst;
 climo_mean = {
-   file_name = [ "${CLIMO_FILE}" ];
+   file_name = [ ${CLIMO_MEAN_FILE} ];
 
    regrid = {
       method     = BILIN;
@@ -86,7 +86,7 @@ climo_mean = {
 
 climo_stdev = climo_mean;
 climo_stdev = {
-   file_name = [];
+    file_name = [ ${CLIMO_STDEV_FILE} ];
 }
 
 climo_cdf_bins = 1;

@@ -116,6 +116,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.log_error("Must set ENSEMBLE_STAT_OUTPUT_DIR in configuration file")
             self.isOK = False
 
+        # get climatology config variables
+        self.read_climo_wrapper_specific('ENSEMBLE_STAT', c_dict)
+
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'ensemble_stat')
 
@@ -326,6 +329,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_env_var("ENS_THRESH", self.c_dict['ENS_THRESH'])
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
+
+        # set climatology environment variables
+        self.set_climo_env_vars()
 
         self.add_common_envs(time_info)
 
