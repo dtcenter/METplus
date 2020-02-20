@@ -375,6 +375,30 @@ def test_parse_var_list_fcst_only_options(data_type, list_len):
 
     assert(len(var_list) == list_len)
 
+@pytest.mark.parametrize(
+    'met_tool, indices', [
+        (None, {'1':['FCST']}),
+        ('GRID_STAT', {'2':['FCST']}),
+        ('ENSEMBLE_STAT', {}),
+    ]
+)
+def test_find_var_indices_wrapper_specific(met_tool, indices):
+    conf = metplus_config()
+    data_type = 'FCST'
+    conf.set('config', f'{data_type}_VAR1_NAME', "NAME1")
+    conf.set('config', f'{data_type}_GRID_STAT_VAR2_NAME', "GSNAME2")
+
+    # this should not occur because OBS variables are missing
+#    if util.validate_configuration_variables(conf, force_check=True)[1]:
+#        assert(False)
+
+    var_name_indices = util.find_var_name_indices(conf, data_type=data_type,
+                                                  met_tool=met_tool)
+
+    assert(var_name_indices == indices)
+
+
+
 def test_get_lead_sequence_lead():
     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 13) }
     conf = metplus_config()
