@@ -419,6 +419,10 @@ def check_for_deprecated_config(conf):
         'VERIF_GRID': {'sec': 'config', 'alt': 'MAKE_PLOTS_VERIF_GRID'},
         'EVENT_EQUALIZATION': {'sec': 'config', 'alt': 'MAKE_PLOTS_EVENT_EQUALIZATION'},
         'MTD_CONFIG': {'sec': 'config', 'alt': 'MTD_CONFIG_FILE'},
+        'CLIMO_GRID_STAT_INPUT_DIR': {'sec': 'dir', 'alt': 'GRID_STAT_CLIMO_MEAN_INPUT_DIR'},
+        'CLIMO_GRID_STAT_INPUT_TEMPLATE': {'sec': 'filename_templates', 'alt': 'GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE'},
+        'CLIMO_POINT_STAT_INPUT_DIR': {'sec': 'dir', 'alt': 'POINT_STAT_CLIMO_MEAN_INPUT_DIR'},
+        'CLIMO_POINT_STAT_INPUT_TEMPLATE': {'sec': 'filename_templates', 'alt': 'POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE'},
     }
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
