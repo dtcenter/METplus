@@ -966,7 +966,7 @@ METplus Configuration Glossary
      | *Default:*
 
    ENSEMBLE_STAT_ONCE_PER_FIELD
-     If True, run ensemble_stat separately for each field name/level combination specified in the configuration file. Seereference "sec:SC_Field_Info" for more information on how fields are specified. If False, run ensemble_stat once with all of the fields specified.
+     If True, run ensemble_stat separately for each field name/level combination specified in the configuration file. :ref:`Field Info` for more information on how fields are specified. If False, run ensemble_stat once with all of the fields specified.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
@@ -1002,7 +1002,7 @@ METplus Configuration Glossary
      ...
      ENS_VAR<n>_LEVELS
 
-     See reference *REF* (SC_Field_Info) for more information.
+     See reference *REF* :ref:`Field Info` for more information.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
@@ -1016,7 +1016,7 @@ METplus Configuration Glossary
      ...
      ENS_VAR<n>_NAME
 
-     See reference *REF* (SC_Field_Info) for more information.
+     See reference *REF* :ref:`Field Info` for more information.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
@@ -1030,7 +1030,7 @@ METplus Configuration Glossary
      ...
      ENS_VAR<n>_OPTION
 
-     See reference *REF* (sec:SC_Field_Info) for more information.
+     See reference :ref:`Field Info` for more information.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
@@ -1044,7 +1044,7 @@ METplus Configuration Glossary
      ...
      ENS_VAR<n>_THRESH
 
-     See reference *REF* "sec:SC_Field_Info" for more information.
+     See reference *REF* :ref:`Field Info` for more information.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
@@ -1647,7 +1647,7 @@ METplus Configuration Glossary
 
      If FCST_VAR<n>_LEVELS is set, then OBS_VAR<n>_LEVELS must be set as well. If the same value applies to both forecast and observation data, use BOTH_VAR<n>_LEVELS.
 
-     See reference "sec:SC_Field_Info" for more information.
+     See reference :ref:`Field Info` for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]
@@ -1661,7 +1661,7 @@ METplus Configuration Glossary
      ...
      FCST_VAR<n>_NAME
 
-     See reference "sec:SC_Field_Info" for more information.
+     See reference :ref:`Field Info` for more information.
 
      This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the MET User's Guide for more information about Python Embedding in the MET tools.
 
@@ -1677,7 +1677,7 @@ METplus Configuration Glossary
      ...
      FCST_VAR<n>_OPTIONS
 
-     See reference "sec:SC_Field_Info" for more information.
+     See reference :ref:`Field Info` for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]
@@ -1692,35 +1692,35 @@ METplus Configuration Glossary
 
      If FCST_VAR<n>_THRESH is set, then OBS_VAR<n>_THRESH must be set as well. If the same value applies to both forecast and observation data, use BOTH_VAR<n>_THRESH.
 
-     See reference "sec:SC_Field_Info" for more information.
+     See reference :ref:`Field Info` for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    BOTH_VAR<n>_LEVELS
-     Define the levels for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See FCST_VAR<n>_LEVELS, OBS_VAR<n>_LEVELS, or reference "sec:SC_Field_Info" for more information.
+     Define the levels for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See FCST_VAR<n>_LEVELS, OBS_VAR<n>_LEVELS, or reference :ref:`Field Info` for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    BOTH_VAR<n>_NAME
-     Define the name for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See FCST_VAR<n>_NAME, OBS_VAR<n>_NAME, or reference "sec:SC_Field_Info" for more information.
+     Define the name for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See FCST_VAR<n>_NAME, OBS_VAR<n>_NAME, or reference :ref:`Field Info` for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    BOTH_VAR<n>_OPTIONS
-     Define the extra options for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See FCST_VAR<n>_OPTIONS, OBS_VAR<n>_OPTIONS, or reference "sec:SC_Field_Info" for more information.
+     Define the extra options for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See FCST_VAR<n>_OPTIONS, OBS_VAR<n>_OPTIONS, or reference :ref:`Field Info` for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    BOTH_VAR<n>_THRESH
-     Define the threshold list for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See FCST_VAR<n>_THRESH, OBS_VAR<n>_THRESH, or reference "sec:SC_Field_Info" for more information.
+     Define the threshold list for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See FCST_VAR<n>_THRESH, OBS_VAR<n>_THRESH, or reference :ref:`Field Info` for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]
@@ -2256,7 +2256,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use EXTRACT_TILES_LON_ADJ instead.
 
    LOOP_BY
-     Control whether the analysis is processed across valid or initialization times. See reference :ref:`LOOP_BY<LOOP_BY>` for more information.
+     Control whether the analysis is processed across valid or initialization times. See reference .. :ref:`LOOP_BY_ref` for more information.
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -2722,42 +2722,42 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by EnsembleStat. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by EnsembleStat. Seereference :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:* OBS_FILE_WINDOW_BEGIN
 
    OBS_ENSEMBLE_STAT_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by EnsembleStat. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_ENSEMBLE_STAT_FILE_WINDOW_END is not set in the config file, the value of OBS_FILE_WINDOW_END will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by EnsembleStat. Seereference :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_ENSEMBLE_STAT_FILE_WINDOW_END is not set in the config file, the value of OBS_FILE_WINDOW_END will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:* OBS_FILE_WINDOW_END
 
    OBS_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if OBS_GRID_STAT_FILE_WINDOW_BEGIN is set, the GridStat wrapper will use that value. If PB2NC_FILE_WINDOW_BEGIN is not set, then the PB2NC wrapper will use OBS_FILE_WINDOW_BEGIN.A corresponding variable exists for forecast data called FCST_FILE_WINDOW_BEGIN.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing. Seereference :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if OBS_GRID_STAT_FILE_WINDOW_BEGIN is set, the GridStat wrapper will use that value. If PB2NC_FILE_WINDOW_BEGIN is not set, then the PB2NC wrapper will use OBS_FILE_WINDOW_BEGIN.A corresponding variable exists for forecast data called FCST_FILE_WINDOW_BEGIN.
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if OBS_GRID_STAT_WINDOW_END is set, the GridStat wrapper will use that value. If PB2NC_WINDOW_END is not set, then the PB2NC wrapper will use OBS_WINDOW_END.A corresponding variable exists for forecast data called FCST_FILE_WINDOW_END.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing. Seereference :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if OBS_GRID_STAT_WINDOW_END is set, the GridStat wrapper will use that value. If PB2NC_WINDOW_END is not set, then the PB2NC wrapper will use OBS_WINDOW_END.A corresponding variable exists for forecast data called FCST_FILE_WINDOW_END.
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_GRID_STAT_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by GridStat. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_GRID_STAT_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by GridStat. Seereference :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_GRID_STAT_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  GridStat
      | *Family:*  [config]
      | *Default:* OBS_FILE_WINDOW_BEGIN
 
    OBS_GRID_STAT_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by GridStat. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_GRID_STAT_FILE_WINDOW_END is not set in the config file, the value of OBS_FILE_WINDOW_END will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by GridStat. Seereference  :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_GRID_STAT_FILE_WINDOW_END is not set in the config file, the value of OBS_FILE_WINDOW_END will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  GridStat
      | *Family:*  [config]
@@ -2844,14 +2844,14 @@ METplus Configuration Glossary
      | *Default:*
 
    OBS_MODE_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by Mode. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_MODE_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by Mode. Seereference  :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_MODE_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  Mode
      | *Family:*  [config]
      | *Default:* OBS_FILE_WINDOW_BEGIN
 
    OBS_MODE_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by Mode. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_MODE_FILE_WINDOW_END is not set in the config file, the value of OBS_FILE_WINDOW_END will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by Mode. Seereference  :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_MODE_FILE_WINDOW_END is not set in the config file, the value of OBS_FILE_WINDOW_END will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  Mode
      | *Family:*  [config]
@@ -2907,14 +2907,14 @@ METplus Configuration Glossary
      | *Default:*
 
    OBS_MTD_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by MTD. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_MTD_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by MTD. Seereference  :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_MTD_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*
      | *Family:*  [config]
      | *Default:* OBS_FILE_WINDOW_BEGIN
 
    OBS_MTD_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by MTD. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_MTD_FILE_WINDOW_END is not set in the config file, the value of OBS_FILE_WINDOW_END will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by MTD. Seereference  :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_MTD_FILE_WINDOW_END is not set in the config file, the value of OBS_FILE_WINDOW_END will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:* MTD
      | *Family:*  [config]
@@ -3066,14 +3066,14 @@ METplus Configuration Glossary
      | *Default:*
 
    OBS_POINT_STAT_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by PointStat. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_POINT_STAT_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by PointStat. See reference  :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_POINT_STAT_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  PointStat
      | *Family:*  [config]
      | *Default:* OBS_FILE_WINDOW_BEGIN
 
    OBS_POINT_STAT_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by PointStat. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_POINT_STAT_FILE_WINDOW_END is not set in the config file, the value of OBS_FILE_WINDOW_END will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by PointStat. See reference  :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If OBS_POINT_STAT_FILE_WINDOW_END is not set in the config file, the value of OBS_FILE_WINDOW_END will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  PointStat
      | *Family:*  [config]
@@ -3299,7 +3299,7 @@ METplus Configuration Glossary
 
      If OBS_VAR<n>_LEVELS is set, then FCST_VAR<n>_LEVELS must be set as well. If the same value applies to both forecast and observation data, use BOTH_VAR<n>_LEVELS.
 
-     See reference "sec:SC_Field_Info" for more information.
+     See reference :ref:`Field Info` for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]
@@ -3341,7 +3341,7 @@ METplus Configuration Glossary
 
      If OBS_VAR<n>_THRESH is set, then FCST_VAR<n>_THRESH must be set as well. If the same value applies to both forecast and observation data, use BOTH_VAR<n>_THRESH.
 
-     See reference "sec:SC_Field_Info" for more information.
+     See reference :ref:`Field Info` for more information.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]
@@ -3409,14 +3409,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    PB2NC_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by PB2NC. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If PB2NC_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by PB2NC. See reference  :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If PB2NC_FILE_WINDOW_BEGIN is not set in the config file, the value of OBS_FILE_WINDOW_BEGIN will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  PB2NC
      | *Family:*  [config]
      | *Default:* OBS_FILE_WINDOW_BEGIN
 
    PB2NC_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by PB2NC. Seereference "sec:SC_Directory_and_Filename_Template_Info" subsection called 'Use Windows to Find Valid Files.' Units are seconds. If PB2NC_FILE_WINDOW_END is not set in the config file, the value of OBS_FILE_WINDOW_END will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by PB2NC. Seereference  :ref:`Directory and Filename Template Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If PB2NC_FILE_WINDOW_END is not set in the config file, the value of OBS_FILE_WINDOW_END will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  PB2NC
      | *Family:*  [config]
