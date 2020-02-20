@@ -88,6 +88,8 @@ forecast data to gridded AND point observation data.
 # * **${OBS_FIELD}** - Formatted observation field information. Generated from [OBS/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
 # * **${OBS_WINDOW_BEGIN}** - Corresponds to OBS_WINDOW_BEGIN or OBS_ENSEMBLE_STAT_WINDOW_BEGIN in the METplus configuration file.
 # * **${OBS_WINDOW_END}** - Corresponds to OBS_WINDOW_END or OBS_ENSEMBLE_STAT_WINDOW_END in the METplus configuration file.
+# * **${CLIMO_MEAN_FILE}** - Optional path to climatology mean file. Corresponds to ENSEMBLE_STAT_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
+# * **${CLIMO_STDEV_FILE}** - Optional path to climatology standard deviation file. Corresponds to ENSEMBLE_STAT_CLIMO_STDEV_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
 
 ##############################################################################
 # Running METplus
