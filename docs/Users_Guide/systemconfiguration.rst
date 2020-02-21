@@ -51,7 +51,7 @@ This section describes the METplus wrapper configuration variables that are used
 
 The METplus wrappers can be configured to loop over a set of valid times or a set of initialization times. This is controlled by the configuration variable called :term:`LOOP_BY`. If the value of this variable is set to INIT or RETRO, looping will be relative to initialization time. If the value is set to VALID or REALTIME, looping will be relative to valid time.
 
-.. :ref:`Looping by Valid Time`
+.. _Looping_by_Valid_Time:
 
 Looping by Valid Time
 ^^^^^^^^^^^^^^^^^^^^^
@@ -91,9 +91,9 @@ The following is a configuration that will process valid time 2019-02-01 at 00Z 
 
 Note: Substituting VALID_INCREMENT = 21600 will generate the same result.
 
-This will process data valid on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these valid times, the METplus wrappers can also loop over a set of forecast leads that are all valid at the current run time. See :ref:`looping over forecast leads` for more information.
+This will process data valid on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these valid times, the METplus wrappers can also loop over a set of forecast leads that are all valid at the current run time. See :ref:`looping_over_forecast_leads` for more information.
 
-.. :ref:`Looping by Initialization Time`
+.. _Looping_by_Initialization_Time:
 
 Looping by Initialization Time
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -127,9 +127,9 @@ The following is a configuration that will process initialization time 2019-02-0
 .. note::
     Substituting VALID_INCREMENT = 21600 will generate the same result.
 
-This will process data initialized on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these initialization times, METplus Wrappers can also loop over a set of forecast leads that are all initialized at the current run time. See :ref:`looping over forecast leads` for more information.
+This will process data initialized on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these initialization times, METplus Wrappers can also loop over a set of forecast leads that are all initialized at the current run time. See :ref:`looping_over_forecast_leads` for more information.
 
-.. :ref:`looping over forecast leads`
+.. _looping_over_forecast_leads:
 
 Looping over Forecast Leads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -292,7 +292,7 @@ will process valid times starting on 20190425 at 06Z every 6 hours until the cur
 
    When using the 'now' keyword, the value of VALID_TIME_FMT must be identical to the 'fmt' value corresponding to the 'now' item in VALID_BEG and VALID_END. In the above example, this would be the %Y%m%d%H portion within values of the VALID_TIME_FMT, VALID_BEG, and VALID_END variables.
 
-:ref:`Field Info`   
+.. _Field_Info:   
 
 Field Info
 ~~~~~~~~~~
@@ -419,7 +419,7 @@ If FCST_VAR<n>_OPTIONS is set, OBS_VAR<n>_OPTIONS does not need to be set, and v
 :term:`ENS_VAR<n>_NAME` / :term:`ENS_VAR<n>_LEVELS`/ :term:`ENS_VAR<n>_THRESH` / :term:`ENS_VAR<n>_OPTIONS`:
 **Used with EnsembleStat Wrapper only.** Users may want to define the ens dictionary item in the MET EnsembleStat config file differently than the fcst dictionary item. If this is the case, you can use these variables. If it is not set, the values in the corresponding FCST_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS] will be used in the ens dictionary.
 
-ref:`Directory and Filename Template Info`
+.. _Directory_and_Filename_Template_Info:
 
 Directory and Filename Template Info 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
