@@ -132,4 +132,4 @@ This use case processes data over time.
 # Keywords
 # --------
 #
-# .. note:: MTDUseCase, HMTUseCase
+# .. note:: `MTD <https://ncar.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_, `NOAA HMT <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_, `GEMPAK <https://ncar.github.io/METplus/search.html?q=GEMPAKFileUseCase&check_keywords=yes&area=default>`_
