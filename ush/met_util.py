@@ -1967,7 +1967,7 @@ def validate_field_info_configs(config, force_check=False):
                     obs_levels.append('')
 
                 if len(fcst_levels) != len(obs_levels):
-                    config.logger.error(f"FCST_VAR{index}_LEVELS and OBS_VAR{inx}_LEVELS do not have "
+                    config.logger.error(f"FCST_VAR{index}_LEVELS and OBS_VAR{index}_LEVELS do not have "
                                         "the same number of elements")
                     all_good = False
 
@@ -2047,8 +2047,28 @@ def get_var_items(config, data_type, index, time_info):
 
     return name, levels, thresh, extra
 
+def find_var_name_indices(config, data_type, met_tool=None):
 
-def parse_var_list(config, time_info=None, data_type=None):
+    regex_string = ''
+    # if specific data type is requested, only get that type or BOTH
+    if data_type:
+        regex_string += f"({data_type}|BOTH)"
+    # if no data type requested, get one or more characters that are not underscore
+    else:
+        regex_string += r"([^_]+)"
+
+    # if MET tool is specified, get tool specific items
+    if met_tool:
+        regex_string += f"_{met_tool}"
+
+    regex_string += r"_VAR(\d+)_NAME"
+
+    # find all <data_type>_VAR<n>_NAME keys in the conf files
+    return find_indices_in_config_section(regex_string,
+                                          config,
+                                          'config')
+
+def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
     """ read conf items and populate list of dictionaries containing
     information about each variable to be compared
         Args:
@@ -2078,16 +2098,13 @@ def parse_var_list(config, time_info=None, data_type=None):
     # var_list is a list containing an list of dictionaries
     var_list = []
 
-    # if specific data type is requested, only get those items
-    if data_type:
-        regex_string = f"({data_type})"+r"_VAR(\d+)_NAME"
-    else:
-        regex_string = r"(\w+)_VAR(\d+)_NAME"
+    # check if *_<MET-tool>_VAR<n>_NAME exists, if so, use that instead of generic
+    data_types_and_indices = {}
+    if met_tool:
+        data_types_and_indices = find_var_name_indices(config, data_type, met_tool)
 
-    # find all <data_type>_VAR<n>_NAME keys in the conf files
-    data_types_and_indices = find_indices_in_config_section(r"(\w+)_VAR(\d+)_NAME",
-                                                            config,
-                                                            'config')
+    if not data_types_and_indices:
+        data_types_and_indices = find_var_name_indices(config, data_type)
 
     # loop over all possible variables and add them to list
     for index, data_type_list in data_types_and_indices.items():
