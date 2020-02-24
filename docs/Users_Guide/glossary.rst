@@ -1169,14 +1169,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    FCST_ENSEMBLE_STAT_FILE_WINDOW_BEGIN
-     See OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN"sec:SC_O".
+     See :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN`
 
      | *Used by:*
      | *Family:*
      | *Default:* OBS_FILE_WINDOW_BEGIN
 
    FCST_ENSEMBLE_STAT_FILE_WINDOW_END
-     See OBS_ENSEMBLE_STAT_FILE_WINDOW_ENDreference "sec:SC_O".
+     See :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_END`
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
