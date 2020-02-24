@@ -1,6 +1,6 @@
 """
-HRRRE MODE Time Domain Use Case
-===============================
+HRRR-TLE MODE Time Domain Use Case
+==================================
 
 This use case processes precipitation accumulation data over time.
 
@@ -18,7 +18,7 @@ This use case processes precipitation accumulation data over time.
 # Datasets
 # --------
 #
-#  * Forecast dataset: HRRRE forecasts in GRIB2
+#  * Forecast dataset: HRRR-TLE forecasts in GRIB2
 #  * Sources of data (links, contacts, etc...)
 #
 
@@ -52,10 +52,10 @@ This use case processes precipitation accumulation data over time.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.conf
 
 ##############################################################################
 # MET Configuration
@@ -77,13 +77,13 @@ This use case processes precipitation accumulation data over time.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf then a user-specific system configuration file::
+# 1) Passing in MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -110,7 +110,7 @@ This use case processes precipitation accumulation data over time.
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/precipitation/MTD_fcstHRRRE_FcstOnly_RevisionSeries_GRIB (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * mtd_20180313_000000V_2d.txt
@@ -123,4 +123,4 @@ This use case processes precipitation accumulation data over time.
 # --------
 #
 #
-# .. note:: `MTDUseCase <https://ncar.github.io/METplus/search.html?q=MTDUseCase&check_keywords=yes&area=default>`_, `PrecipitationUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationUseCase&check_keywords=yes&area=default>`_, `HMTUseCase <https://ncar.github.io/METplus/search.html?q=HMTUseCase&check_keywords=yes&area=default>`_
+# .. note:: `MTD <https://ncar.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_, `Precipitation <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_, `HMT <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_, `GRIB2 <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_

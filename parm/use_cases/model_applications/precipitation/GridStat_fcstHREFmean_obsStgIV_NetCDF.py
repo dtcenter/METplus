@@ -127,4 +127,4 @@ gridded 6 hour observation precipitation accumulation data.
 # Keywords
 # --------
 #
-# .. note:: GridStatUseCase, PrecipitationUseCase, PCPCombineUseCase, RegridDataPlaneUseCase
+# .. note:: `GridStat <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, `Precipitation <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_, `PCPCombine <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_, `RegridDataPlane <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_, `NetCDF <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_

@@ -122,4 +122,4 @@ gridded 24 hour observation precipitation accumulation data.
 # Keywords
 # --------
 #
-# .. note:: `GridStatUseCase <https://ncar.github.io/METplus/search.html?q=GridStatUseCase&check_keywords=yes&area=default>`_, `PrecipitationUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationUseCase&check_keywords=yes&area=default>`_, `PCPCombineUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>`_
+# .. note:: `GridStat <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, `Precipitation <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_, `PCPCombine <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_, `GRIB <https://ncar.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_

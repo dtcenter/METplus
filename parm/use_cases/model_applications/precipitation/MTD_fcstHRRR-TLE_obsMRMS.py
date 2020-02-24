@@ -122,4 +122,4 @@ This use case processes precipitation accumulation data over time.
 # --------
 #
 #
-# .. note:: `MTDUseCase <https://ncar.github.io/METplus/search.html?q=MTDUSeCase&check_keywords=yes&area=default>`_, `PrecipitationUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationUseCase&check_keywords=yes&area=default>`_
+# .. note:: `MTD <https://ncar.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_, `Precipitation <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_, `GRIB2 <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_, `NetCDF <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_
