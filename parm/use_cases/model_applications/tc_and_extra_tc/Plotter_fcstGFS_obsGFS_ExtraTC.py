@@ -134,4 +134,4 @@ specific MET tool.  This is a data visualization written entirely in Python.
 #
 #
 #
-# .. note:: `TcPairsUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_, `CyclonePlotterUseCase <https://ncar.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
+# .. note:: `TcPairs <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_, `CyclonePlotter <https://ncar.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
