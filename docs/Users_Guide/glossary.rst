@@ -2084,7 +2084,7 @@ METplus Configuration Glossary
 
    INIT_HOUR_INCREMENT
      .. warning:: **DEPRECATED:** Please use FCST_INIT_HOUR_LIST or OBS_INIT_HOUR_LIST instead.
-		  
+
    INIT_HOUR_METHOD
      .. warning:: **DEPRECATED:** No longer used.
 
