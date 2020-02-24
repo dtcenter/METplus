@@ -130,6 +130,8 @@ class CommandRunner(object):
                         if copyable_env:
                             log_file_handle.write("\nCOPYABLE ENVIRONMENT FOR NEXT COMMAND:\n")
                             log_file_handle.write(f"{copyable_env}\n\n")
+                        else:
+                            log_file_handle.write('\n')
 
                         log_file_handle.write(f"COMMAND:\n{cmd}\n\n")
 
