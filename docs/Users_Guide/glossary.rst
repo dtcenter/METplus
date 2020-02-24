@@ -110,7 +110,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    FCST_PCP_COMBINE_CONSTANT_INIT
-     If True, only look for forecast files that have a given initialization time. Used only if FCST_PCP_COMBINE_INPUT_TEMPLATE has a 'lead' tag. If set to False, the lowest forecast lead for each search (valid) time is used.
+     If True, only look for forecast files that have a given initialization time. Used only if FCST_PCP_COMBINE_INPUT_TEMPLATE has a 'lead' tag. If set to False, the lowest forecast lead for each search (valid) time is used. See :term:`OBS_PCP_COMBINE_CONSTANT_INIT`
 
      | *Used by:* PCPCombine
      | *Family:* config
