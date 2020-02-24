@@ -52,7 +52,7 @@ class CommandRunner(object):
         self.log_command_to_met_log = False
 
     def run_cmd(self, cmd, env=None, ismetcmd = True, app_name=None, run_inshell=False,
-                log_theoutput=False, **kwargs):
+                log_theoutput=False, copyable_env=None, **kwargs):
         """!The command cmd is a string which is converted to a produtil
         exe Runner object and than run. Output of the command may also
         be redirected to either METplus log, MET log, or TTY.
@@ -87,7 +87,7 @@ class CommandRunner(object):
         if env is None:
             env = os.environ
 
-        self.logger.info("RUNNING: %s" % cmd)
+        self.logger.info("COMMAND: %s" % cmd)
 
         if ismetcmd:
 
@@ -123,10 +123,18 @@ class CommandRunner(object):
             if log_dest:
                 self.logger.debug("app_name is: %s, output sent to: %s" % (app_name, log_dest))
 
-                # if logging MET command to its own log file, add command that was run to that log
-                if self.log_command_to_met_log:
-                    with open(log_dest, 'a+') as log_file_handle:
-                        log_file_handle.write(f"COMMAND: {cmd}\n")
+                with open(log_dest, 'a+') as log_file_handle:
+                    # if logging MET command to its own log file, add command that was run to that log
+                    if self.log_command_to_met_log:
+                        # if environment variables were set and available, write them to MET tool log
+                        if copyable_env:
+                            log_file_handle.write("\nCOPYABLE ENVIRONMENT FOR NEXT COMMAND:\n")
+                            log_file_handle.write(f"{copyable_env}\n\n")
+
+                        log_file_handle.write(f"COMMAND:\n{cmd}\n\n")
+
+                    # write line to designate where MET tool output starts
+                    log_file_handle.write("MET OUTPUT:\n")
 
                 cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
             else:

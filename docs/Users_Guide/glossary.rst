@@ -609,33 +609,101 @@ METplus Configuration Glossary
      | *Default:* None
 
    CLIMO_GRID_STAT_INPUT_DIR
-     Directory containing the climatology file used by GridStat. This variable is optional because you can specify the full path to a climatology file using CLIMO_GRID_STAT_INPUT_TEMPLATE.
+     .. warning:: **DEPRECATED:** Please use GRID_STAT_CLIMO_MEAN_INPUT_DIR.
+
+   GRID_STAT_CLIMO_MEAN_INPUT_DIR
+     Directory containing the climatology mean file used by GridStat. This variable is optional because you can specify the full path to a climatology file using GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE.
 
      | *Used by:* GridStat
      | *Family:* [dir]
      | *Default:* None
 
    CLIMO_GRID_STAT_INPUT_TEMPLATE
-     Filename template of the climatology file used by GridStat. See also CLIMO_GRID_STAT_INPUT_DIR.
+     .. warning:: **DEPRECATED:** Please use GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE.
+
+   GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE
+     Filename template of the climatology mean file used by GridStat. See also GRID_STAT_CLIMO_MEAN_INPUT_DIR.
 
      | *Used by:* GridStat
      | *Family:* [filename_templates]
      | *Default:* None
 
    CLIMO_POINT_STAT_INPUT_DIR
-     Directory containing the climatology file used by PointStat. This variable is optional because you can specify the full path to a climatology file using CLIMO_POINT_STAT_INPUT_TEMPLATE.
+     .. warning:: **DEPRECATED:** Please use POINT_STAT_CLIMO_MEAN_INPUT_DIR.
+
+   POINT_STAT_CLIMO_MEAN_INPUT_DIR
+     Directory containing the climatology mean file used by PointStat. This variable is optional because you can specify the full path to a climatology file using POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE.
 
      | *Used by:* PointStat
      | *Family:* [dir]
      | *Default:* None
 
    CLIMO_POINT_STAT_INPUT_TEMPLATE
-     Filename template of the climatology file used by PointStat. See also CLIMO_POINT_STAT_INPUT_DIR.
+     .. warning:: **DEPRECATED:** Please use POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE.
+
+   POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE
+
+     Filename template of the climatology file used by PointStat. See also POINT_STAT_CLIMO_MEAN_INPUT_DIR.
 
      | *Used by:* PointStat
      | *Family:* [filename_templates]
      | *Default:* None
 
+   ENSEMBLE_STAT_CLIMO_MEAN_INPUT_DIR
+     Directory containing the climatology mean file used by EnsembleStat. This variable is optional because you can specify the full path to a climatology file using ENSEMBLE_STAT_CLIMO_MEAN_INPUT_TEMPLATE.
+
+     | *Used by:* EnsembleStat
+     | *Family:* [dir]
+     | *Default:* None
+
+   ENSEMBLE_STAT_CLIMO_MEAN_INPUT_TEMPLATE
+     Filename template of the climatology mean file used by EnsembleStat. See also ENSEMBLE_STAT_CLIMO_MEAN_INPUT_DIR.
+
+     | *Used by:* EnsembleStat
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   ENSEMBLE_STAT_CLIMO_STDEV_INPUT_DIR
+     Directory containing the climatology standard deviation file used by EnsembleStat. This variable is optional because you can specify the full path to a climatology file using ENSEMBLE_STAT_CLIMO_STDEV_INPUT_TEMPLATE.
+
+     | *Used by:* EnsembleStat
+     | *Family:* [dir]
+     | *Default:* None
+
+   ENSEMBLE_STAT_CLIMO_STDEV_INPUT_TEMPLATE
+     Filename template of the climatology standard deviation file used by EnsembleStat. See also ENSEMBLE_STAT_CLIMO_STDEV_INPUT_DIR.
+
+     | *Used by:* EnsembleStat
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   GRID_STAT_CLIMO_STDEV_INPUT_DIR
+     Directory containing the climatology standard deviation file used by GridStat. This variable is optional because you can specify the full path to a climatology file using GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE.
+
+     | *Used by:* GridStat
+     | *Family:* [dir]
+     | *Default:* None
+
+   GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE
+     Filename template of the climatology standard deviation file used by GridStat. See also GRID_STAT_CLIMO_STDEV_INPUT_DIR.
+
+     | *Used by:* GridStat
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   POINT_STAT_CLIMO_STDEV_INPUT_DIR
+     Directory containing the climatology standard deviation file used by PointStat. This variable is optional because you can specify the full path to a climatology file using POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE.
+
+     | *Used by:* PointStat
+     | *Family:* [dir]
+     | *Default:* None
+
+   POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE
+     Filename template of the climatology standard deviation file used by PointStat. See also POINT_STAT_CLIMO_STDEV_INPUT_DIR.
+
+     | *Used by:* PointStat
+     | *Family:* [filename_templates]
+     | *Default:* None
 
    ADECK_FILE_PREFIX
      .. warning:: **DEPRECATED:** Please use TC_PAIRS_ADECK_TEMPLATE.

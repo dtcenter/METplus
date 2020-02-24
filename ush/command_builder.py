@@ -136,7 +136,7 @@ class CommandBuilder:
             self.print_env_item(env_item)
 
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(self.env_list)
+        self.print_env_copy()
 
     def handle_window_once(self, c_dict, dtype, edge, app_name):
         """! Check and set window dictionary variables like
@@ -216,25 +216,31 @@ class CommandBuilder:
         for env_name in self.env:
             self.logger.debug(env_name + '="' + self.env[env_name] + '"')
 
-    def print_env_copy(self, var_list):
+    def print_env_copy(self, var_list=None):
+        self.logger.debug(self.get_env_copy(var_list))
+
+    def get_env_copy(self, var_list=None):
         """!Print list of environment variables that can be easily
         copied into terminal
         """
         out = ""
-        all_vars = var_list
+        if not var_list:
+            var_list = self.env_list
+
         if 'user_env_vars' in self.config.sections():
             for user_var in self.config.keys('user_env_vars'):
-                all_vars.add(user_var)
+                var_list.add(user_var)
 
         shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
-        for var in all_vars:
+        for var in var_list:
             if shell == 'csh':
                 line = 'setenv ' + var + ' "' + self.env[var].replace('"', '"\\""') + '"'
             else:
                 line = 'export ' + var + '="' + self.env[var].replace('"', '\\"') + '"'
 
             out += line + '; '
-        self.logger.debug(out)
+
+        return out
 
     def print_env_item(self, item):
         """!Print single environment variable in the log file
@@ -630,7 +636,8 @@ class CommandBuilder:
         if cmd is None:
             return False
 
-        ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name)
+        ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name,
+                                              copyable_env=self.get_env_copy())
         if ret != 0:
             self.log_error(f"MET command returned a non-zero return code: {cmd}")
             self.logger.info("Check the logfile for more information on why it failed")
