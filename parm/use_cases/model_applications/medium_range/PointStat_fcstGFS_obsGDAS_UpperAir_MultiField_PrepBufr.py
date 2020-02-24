@@ -152,4 +152,4 @@ putting statistics into the output file.
 # Keywords
 # --------
 #
-# .. note:: `PB2NCUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCUseCase&check_keywords=yes&area=default>`_, `PointStatUseCase <https://ncar.github.io/METplus/search.html?q=PointStatUseCase&check_keywords=yes&area=default>`_, `MediumRangeUseCase <https://ncar.githu.io/METplus/search.html?q=MediumRangeUseCase&check_keywords=yes&area=default>`_
+# .. note:: `PB2NC <https://ncar.github.io/METplus/search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_, `PointStat <https://ncar.github.io/METplus/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_, `MediumRange <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_, `GRIB <https://ncar.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_, `prepBUFR <https://ncar.github.io/METplus/search.html?q=prepBUFRFileUseCase&check_keywords=yes&area=default>`_

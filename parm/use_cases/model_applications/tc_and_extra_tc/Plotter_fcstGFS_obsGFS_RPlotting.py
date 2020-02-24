@@ -149,4 +149,4 @@ case is being run.
 #
 #
 #
-# .. note:: `TcPairsUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_, `TCandExtraTCUseCase <https://ncar.github.io/METplus/search.html?q=TCandExtraTCUseCase&check_keywords=yes&area=default>`_
+# .. note:: `TcPairs <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_, `TCandExtraTC <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
