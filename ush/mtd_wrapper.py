@@ -115,8 +115,29 @@ class MTDWrapper(MODEWrapper):
 
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'MTD_REGRID_TO_GRID', '')
 
+        # used to override the file type for fcst/obs if using python embedding for input
+        c_dict['FCST_FILE_TYPE'] = ''
+        c_dict['OBS_FILE_TYPE'] = ''
+
         return c_dict
 
+    def check_for_python_embedding(self, input_type, var_info):
+        if not util.is_python_script(var_info[f"{input_type.lower()}_name"]):
+            # if not a python script, return var name
+            return var_info[f"{input_type.lower()}_name"]
+
+        # if it is a python script, set file extension to show that and make sure *_INPUT_DATATYPE is a valid PYTHON_* string
+        file_ext = 'python_embedding'
+        data_type = self.c_dict[f'{input_type}_INPUT_DATATYPE']
+        if data_type not in util.PYTHON_EMBEDDING_TYPES:
+            self.log_error(f"{input_type}_{self.app_name.upper()}_INPUT_DATATYPE ({data_type}) must be set to a valid Python Embedding type "
+                           f"if supplying a Python script as the {input_type}_VAR<n>_NAME. Valid options: "
+                           f"{','.join(util.PYTHON_EMBEDDING_TYPES)}")
+            return None
+
+        # set file type string to be set in MET config file to specify Python Embedding is being used for this dataset
+        self.c_dict[f'{input_type}_FILE_TYPE'] = f"file_type = {data_type};"
+        return file_ext
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
@@ -147,6 +168,10 @@ class MTDWrapper(MODEWrapper):
             return None
 
         for var_info in var_list:
+
+            # reset file type items in case Python Embedding is used for some vars and not others
+            self.c_dict['FCST_FILE_TYPE'] = ''
+            self.c_dict['OBS_FILE_TYPE'] = ''
 
             model_list = []
             obs_list = []
@@ -183,8 +208,16 @@ class MTDWrapper(MODEWrapper):
             # write ascii file with list of files to process
             input_dict['lead'] = 0
             time_info = time_util.ti_calculate(input_dict)
-            model_outfile = time_info['valid_fmt'] + '_mtd_fcst_' + var_info['fcst_name'] + '.txt'
-            obs_outfile = time_info['valid_fmt'] + '_mtd_obs_' + var_info['obs_name'] + '.txt'
+
+            # if var name is a python embedding script, check type of python input and name file list file accordingly
+            fcst_file_ext = self.check_for_python_embedding('FCST', var_info)
+            obs_file_ext = self.check_for_python_embedding('OBS', var_info)
+            # if check_for_python_embedding returns None, an error occurred
+            if not fcst_file_ext or not obs_file_ext:
+                return
+
+            model_outfile = time_info['valid_fmt'] + '_mtd_fcst_' + fcst_file_ext + '.txt'
+            obs_outfile = time_info['valid_fmt'] + '_mtd_obs_' + obs_file_ext + '.txt'
             model_list_path = self.write_list_file(model_outfile, model_list)
             obs_list_path = self.write_list_file(obs_outfile, obs_list)
 
@@ -269,6 +302,7 @@ class MTDWrapper(MODEWrapper):
                                                  d_type='FCST')
 
                 if fcst_field is None:
+                    self.log_error("No forecast fields found")
                     return
 
                 fcst_field_list.extend(fcst_field)
@@ -282,8 +316,8 @@ class MTDWrapper(MODEWrapper):
                 return
 
             # if no thresholds are specified, run once
-            if not fcst_thresh_list:
-                fcst_thresh_list = [""]
+            if not obs_thresh_list:
+                obs_thresh_list = [""]
 
             # loop over thresholds and build field list with one thresh per item
             for obs_thresh in obs_thresh_list:
@@ -294,6 +328,7 @@ class MTDWrapper(MODEWrapper):
                                                 d_type='OBS')
 
                 if obs_field is None:
+                    self.log_error("No observation fields found")
                     return
 
                 obs_field_list.extend(obs_field)
@@ -384,6 +419,9 @@ class MTDWrapper(MODEWrapper):
             self.add_env_var("OBS_FIELD", obs_field)
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
+
+        self.add_env_var("FCST_FILE_TYPE", self.c_dict['FCST_FILE_TYPE'])
+        self.add_env_var("OBS_FILE_TYPE", self.c_dict['OBS_FILE_TYPE'])
 
         self.add_common_envs(time_info)
 

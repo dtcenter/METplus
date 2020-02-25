@@ -135,6 +135,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'ENSEMBLE_STAT_REGRID_TO_GRID', '')
 
+        # used to override the file type for fcst/obs if using python embedding for input
+        c_dict['FCST_FILE_TYPE'] = ''
+        c_dict['OBS_FILE_TYPE'] = ''
+
         return c_dict
 
     # var_info not used but needed to match signature of parent class call
@@ -329,6 +333,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_env_var("ENS_THRESH", self.c_dict['ENS_THRESH'])
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
+
+        self.add_env_var("FCST_FILE_TYPE", self.c_dict['FCST_FILE_TYPE'])
+        self.add_env_var("OBS_FILE_TYPE", self.c_dict['OBS_FILE_TYPE'])
 
         # set climatology environment variables
         self.set_climo_env_vars()

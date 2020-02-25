@@ -44,6 +44,8 @@ baseinputconfs = ['metplus_config/metplus_system.conf',
                   'metplus_config/metplus_runtime.conf',
                   'metplus_config/metplus_logging.conf']
 
+PYTHON_EMBEDDING_TYPES = ['PYTHON_NUMPY', 'PYTHON_XARRAY', 'PYTHON_PANDAS']
+
 def pre_run_setup(filename, app_name):
     filebasename = os.path.basename(filename)
     logger = logging.getLogger(app_name)
@@ -2355,7 +2357,7 @@ def preprocess_file(filename, data_type, config):
         return None
 
     # if using python embedding for input, return the keyword
-    if os.path.basename(filename) in ['PYTHON_NUMPY', 'PYTHON_XARRAY', 'PYTHON_PANDAS']:
+    if os.path.basename(filename) in PYTHON_EMBEDDING_TYPES:
             return os.path.basename(filename)
 
     stage_dir = config.getdir('STAGING_DIR')
@@ -2488,7 +2490,8 @@ def is_python_script(name):
     all_items = name.split(' ')
     if any(item.endswith('.py') for item in all_items):
         return True
-    # python returns None when no explicit return statement is hit
+
+    return False
 
 def check_user_environment(config):
     """!Check if any environment variables set in [user_env_vars] are already set in
