@@ -7,8 +7,6 @@ from two runs of the GloTEC model.
 
 """
 
-# .. image:: ../../../../docs/_static/space_weather-vx7.jpg
-
 ##############################################################################
 # Overview
 # --------
