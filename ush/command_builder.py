@@ -132,7 +132,7 @@ class CommandBuilder:
     def print_all_envs(self):
         # send environment variables to logger
         self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        for env_item in self.env_list:
+        for env_item in sorted(self.env_list):
             self.print_env_item(env_item)
 
         self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
@@ -232,7 +232,7 @@ class CommandBuilder:
                 var_list.add(user_var)
 
         shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
-        for var in var_list:
+        for var in sorted(var_list):
             if shell == 'csh':
                 line = 'setenv ' + var + ' "' + self.env[var].replace('"', '"\\""') + '"'
             else:
