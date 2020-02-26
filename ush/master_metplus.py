@@ -10,6 +10,10 @@ Parameters: None
 Input Files:
 Output Files:
 Condition codes:
+Developer Note: Please do not use f-strings in this file so that the
+  Python version check can notify the user of the incorrect version.
+  Using Python 3.5 or earlier will output the SyntaxError from the
+  f-string instead of the useful error message.
 """
 
 import os
