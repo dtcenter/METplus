@@ -1550,14 +1550,14 @@ METplus Configuration Glossary
      | *Default:*
 
    FCST_POINT_STAT_FILE_WINDOW_BEGIN
-     See OBS_POINT_STAT_FILE_WINDOW_BEGIN`
+     See :term:`OBS_POINT_STAT_FILE_WINDOW_BEGIN`
 
      | *Used by:*  PointStat
      | *Family:*  [config]
      | *Default:* FCST_FILE_WINDOW_BEGIN
 
    FCST_POINT_STAT_FILE_WINDOW_END
-     See reference :term:`OBS_POINT_STAT_FILE_WINDOW_END`
+     See :term:`OBS_POINT_STAT_FILE_WINDOW_END`
 
      | *Used by:*  PointStat
      | *Family:*  [config]
