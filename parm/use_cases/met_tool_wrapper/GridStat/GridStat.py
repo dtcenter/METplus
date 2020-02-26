@@ -74,6 +74,7 @@ gridded observation data.
 # * **${CLIMO_STDEV_FILE}** - Optional path to climatology standard deviation file. Corresponds to GRID_STAT_CLIMO_STDEV_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
 # * **${NEIGHBORHOOD_SHAPE}** - Shape of the neighborhood method applied. Corresponds to GRID_STAT_NEIGHBORHOOD_SHAPE in the METplus configuration file. Default value is 1 if not set.
 # * **${NEIGHBORHOOD_WIDTH}** - Width of the neighborhood method applied. Corresponds to GRID_STAT_NEIGHBORHOOD_WIDTH in the METplus configuration file. Default value is SQUARE if not set.
+# * **${OUTPUT_PREFIX}** - String to prepend to the output filenames. Corresponds to GRID_STAT_OUTPUT_PREFIX in the METplus configuration file.
 #
 
 ##############################################################################

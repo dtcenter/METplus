@@ -1,6 +1,6 @@
 """
-ASCII2NC Python Embedding
-=========================
+ASCII2NC using Python Embedding
+===============================
 
 This use case will run the MET ASCII2NC tool to convert point observation data in ASCII text format to NetCDF format using Python Embedding
 
@@ -101,4 +101,4 @@ This use case will run the MET ASCII2NC tool to convert point observation data i
 # Keywords
 # --------
 #
-# .. note:: `ASCII2NCToolUseCase <https://ncar.github.io/METplus/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_, `PythonEmbeddingUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>`_
+# .. note:: `ASCII2NC Tool <https://ncar.github.io/METplus/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_, `Python Embedding <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>`_

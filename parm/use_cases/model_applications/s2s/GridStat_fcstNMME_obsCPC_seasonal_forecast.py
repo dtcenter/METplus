@@ -165,7 +165,7 @@ Brief summary of this use case...
 # | **Init:** 2010-07
 # | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
 #
-# Because not all of MET has been wrapped with python into METplus, the application of
+# Because not all of this use case has been incorporated into the METplus wrappers framework, the application of
 # seasonal forecast verification is split into two steps:
 #
 # 1.	work with ~30-years of hindcasts to determine how well forecasting mechanisms worked
@@ -173,8 +173,8 @@ Brief summary of this use case...
 # 	for automated processing using the GridStat tool.
 # 2.	select one or more verification criteria and investigate these in context of the
 # 	hindcast archive to generate a mask that then is applied to the actual forecast.
-# 	This step users StatAnalysis, an element of MET that has not yet been wrapped in
-# 	python (METplus), and thus it needs to be run directly under MET.
+# 	This step users StatAnalysis, an element of this use case that has not yet been configured in
+# 	the METplus wrappers, and thus it needs to be run directly under MET.
 #
 # Step 1: GridStat using METplus
 # In order to run the python-based METplus packages, the user needs to issue a command to
@@ -213,7 +213,7 @@ Brief summary of this use case...
 # The following scripts define the process:
 # 	MET run script: run_sereis_analysis.bash sets all key configurations determining
 # 	input and output data, provides templates for reading variables inside the statistics
-# 	files. Because this part of MET has not yet been “python-wrapped”, the run-script has
+# 	files. Because this part of the use case is not yet run via the METplus wrappers, the run-script has
 # 	to cover many aspects of the configuration that in METplus are better generalized.
 # 	SeriesAnalysis Climatology: SeriesAnalysisConfig_seasonal_forecast_climo
 # 	contains the parameters that calculate the climatological mean difference between the

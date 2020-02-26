@@ -1794,6 +1794,286 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
+   FCST_MODE_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_NAME`.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_MTD_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_NAME`.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_GRID_STAT_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_NAME`.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_ENSEMBLE_STAT_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_NAME`.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_POINT_STAT_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_NAME`.
+
+     | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_MODE_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_LEVELS`.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_MTD_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_LEVELS`.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_GRID_STAT_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_LEVELS`.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_ENSEMBLE_STAT_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_LEVELS`.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_POINT_STAT_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_LEVELS`.
+
+     | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_MODE_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_OPTIONS`.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_MTD_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_OPTIONS`.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_GRID_STAT_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_OPTIONS`.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_ENSEMBLE_STAT_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_OPTIONS`.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_POINT_STAT_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_OPTIONS`.
+
+     | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_MODE_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_THRESH`.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_MTD_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_THRESH`.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_GRID_STAT_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_THRESH`.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_ENSEMBLE_STAT_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_THRESH`.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   FCST_POINT_STAT_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_THRESH`.
+
+     | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_MODE_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_NAME`.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_MTD_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_NAME`.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_GRID_STAT_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_NAME`.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_ENSEMBLE_STAT_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_NAME`.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_POINT_STAT_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_NAME`.
+
+     | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_MODE_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_LEVELS`.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_MTD_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_LEVELS`.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_GRID_STAT_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_LEVELS`.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_ENSEMBLE_STAT_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_LEVELS`.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_POINT_STAT_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_LEVELS`.
+
+     | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_MODE_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_OPTIONS`.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_MTD_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_OPTIONS`.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_GRID_STAT_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_OPTIONS`.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_OPTIONS`.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_POINT_STAT_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_OPTIONS`.
+
+     | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_MODE_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_THRESH`.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_MTD_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_THRESH`.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_GRID_STAT_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_THRESH`.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_ENSEMBLE_STAT_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_THRESH`.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   OBS_POINT_STAT_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_THRESH`.
+
+     | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
    FCST_WINDOW_BEGIN
      See reference :term:`OBS_WINDOW_BEGIN`
 
