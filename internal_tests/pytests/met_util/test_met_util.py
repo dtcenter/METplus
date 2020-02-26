@@ -400,10 +400,6 @@ def test_find_var_indices_wrapper_specific(met_tool, indices):
     conf.set('config', f'{data_type}_VAR1_NAME', "NAME1")
     conf.set('config', f'{data_type}_GRID_STAT_VAR2_NAME', "GSNAME2")
 
-    # this should not occur because OBS variables are missing
-#    if util.validate_configuration_variables(conf, force_check=True)[1]:
-#        assert(False)
-
     var_name_indices = util.find_var_name_indices(conf, data_type=data_type,
                                                   met_tool=met_tool)
 
@@ -562,3 +558,39 @@ def test_remove_staged_files():
 )
 def test_is_plotter_in_process_list(process_list, has_plotter):
     assert(util.is_plotter_in_process_list(process_list) == has_plotter)
+
+# test that if wrapper specific field info is specified, it only gets
+# values from that list. All generic values should be read if no
+# wrapper specific field info variables are specified
+def test_parse_var_list_wrapper_specific():
+    conf = metplus_config()
+    conf.set('config', 'FCST_VAR1_NAME', "ENAME1")
+    conf.set('config', 'FCST_VAR1_LEVELS', "ELEVELS11, ELEVELS12")
+    conf.set('config', 'FCST_VAR2_NAME', "ENAME2")
+    conf.set('config', 'FCST_VAR2_LEVELS', "ELEVELS21, ELEVELS22")
+    conf.set('config', 'FCST_GRID_STAT_VAR1_NAME', "GNAME1")
+    conf.set('config', 'FCST_GRID_STAT_VAR1_LEVELS', "GLEVELS11, GLEVELS12")
+
+    e_var_list = util.parse_var_list(conf,
+                                     time_info=None,
+                                     data_type='FCST',
+                                     met_tool='ensemble_stat')
+
+    g_var_list = util.parse_var_list(conf,
+                                     time_info=None,
+                                     data_type='FCST',
+                                     met_tool='grid_stat')
+
+    assert(len(e_var_list) == 4 and len(g_var_list) == 2 and
+           e_var_list[0]['fcst_name'] == "ENAME1" and
+           e_var_list[1]['fcst_name'] == "ENAME1" and
+           e_var_list[2]['fcst_name'] == "ENAME2" and
+           e_var_list[3]['fcst_name'] == "ENAME2" and
+           e_var_list[0]['fcst_level'] == "ELEVELS11" and
+           e_var_list[1]['fcst_level'] == "ELEVELS12" and
+           e_var_list[2]['fcst_level'] == "ELEVELS21" and
+           e_var_list[3]['fcst_level'] == "ELEVELS22" and
+           g_var_list[0]['fcst_name'] == "GNAME1" and
+           g_var_list[1]['fcst_name'] == "GNAME1" and
+           g_var_list[0]['fcst_level'] == "GLEVELS11" and
+           g_var_list[1]['fcst_level'] == "GLEVELS12")

@@ -54,6 +54,9 @@ grid_res = 4;
    //
 
 fcst = {
+
+   ${FCST_FILE_TYPE}
+
    field = ${FCST_FIELD};
 
    censor_thresh     = [];
@@ -64,11 +67,15 @@ fcst = {
 
 }
 
-obs = fcst;
-
 obs = {
+
+   ${OBS_FILE_TYPE}
+
    field = ${OBS_FIELD};
 
+   censor_thresh     = [];
+   censor_val        = [];
+   conv_time_window  = { beg = -1; end = 1; };
    conv_radius       = ${OBS_CONV_RADIUS};
    conv_thresh       = ${OBS_CONV_THRESH};
 }

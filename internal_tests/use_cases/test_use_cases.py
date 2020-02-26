@@ -27,6 +27,7 @@ all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/GridStat/GridStat.conf",
                 use_case_dir + "/met_tool_wrapper/MODE/MODE.conf",
                 use_case_dir + "/met_tool_wrapper/MTD/MTD.conf",
+                use_case_dir + "/met_tool_wrapper/MTD/MTD_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/PB2NC/PB2NC.conf",
                 use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_sum.conf",
                 use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_add.conf",
@@ -144,7 +145,7 @@ def main():
             user_answer = input("Would you like to remove all files? (y/n)[n]")
 
             if user_answer and user_answer[0] == 'y':
-                print("Removing " + output_base_prev + " and all files under")
+                print("Removing " + output_base_prev + " and all files in it.")
                 shutil.rmtree(output_base_prev)
             else:
                 print("Directory must be empty to proceed with tests")

@@ -115,8 +115,11 @@ class MTDWrapper(MODEWrapper):
 
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'MTD_REGRID_TO_GRID', '')
 
-        return c_dict
+        # used to override the file type for fcst/obs if using python embedding for input
+        c_dict['FCST_FILE_TYPE'] = ''
+        c_dict['OBS_FILE_TYPE'] = ''
 
+        return c_dict
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
@@ -131,14 +134,16 @@ class MTDWrapper(MODEWrapper):
 
         # if only processing a single data set (FCST or OBS) then only read that var list and process
         if self.c_dict['SINGLE_RUN']:
-            var_list = util.parse_var_list(self.config, input_dict, self.c_dict['SINGLE_DATA_SRC'])
+            var_list = util.parse_var_list(self.config, input_dict, self.c_dict['SINGLE_DATA_SRC'],
+                                           met_tool=self.app_name)
             for var_info in var_list:
                 self.run_single_mode(input_dict, var_info)
 
             return
 
         # if comparing FCST and OBS data, get var list from FCST/OBS or BOTH variables
-        var_list = util.parse_var_list(self.config, input_dict)
+        var_list = util.parse_var_list(self.config, input_dict,
+                                       met_tool=self.app_name)
 
         # report error and exit if field info is not set
         if not var_list:
@@ -183,8 +188,16 @@ class MTDWrapper(MODEWrapper):
             # write ascii file with list of files to process
             input_dict['lead'] = 0
             time_info = time_util.ti_calculate(input_dict)
-            model_outfile = time_info['valid_fmt'] + '_mtd_fcst_' + var_info['fcst_name'] + '.txt'
-            obs_outfile = time_info['valid_fmt'] + '_mtd_obs_' + var_info['obs_name'] + '.txt'
+
+            # if var name is a python embedding script, check type of python input and name file list file accordingly
+            fcst_file_ext = self.check_for_python_embedding('FCST', var_info)
+            obs_file_ext = self.check_for_python_embedding('OBS', var_info)
+            # if check_for_python_embedding returns None, an error occurred
+            if not fcst_file_ext or not obs_file_ext:
+                return
+
+            model_outfile = time_info['valid_fmt'] + '_mtd_fcst_' + fcst_file_ext + '.txt'
+            obs_outfile = time_info['valid_fmt'] + '_mtd_obs_' + obs_file_ext + '.txt'
             model_list_path = self.write_list_file(model_outfile, model_list)
             obs_list_path = self.write_list_file(obs_outfile, obs_list)
 
@@ -197,7 +210,9 @@ class MTDWrapper(MODEWrapper):
     def run_single_mode(self, input_dict, var_info):
         single_list = []
 
-        if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
+        data_src = self.c_dict['SINGLE_DATA_SRC']
+
+        if data_src == 'OBS':
             find_method = self.find_obs
             s_name = var_info['obs_name']
             s_level = var_info['obs_level']
@@ -223,11 +238,15 @@ class MTDWrapper(MODEWrapper):
         # write ascii file with list of files to process
         input_dict['lead'] = 0
         time_info = time_util.ti_calculate(input_dict)
-        single_outfile = time_info['valid_fmt'] + '_mtd_single_' + s_name + '.txt'
+        file_ext = self.check_for_python_embedding(data_src, var_info)
+        if not file_ext:
+            return
+
+        single_outfile = time_info['valid_fmt'] + '_mtd_single_' + file_ext + '.txt'
         single_list_path = self.write_list_file(single_outfile, single_list)
 
         arg_dict = {}
-        if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
+        if data_src == 'OBS':
             arg_dict['obs_path'] = single_list_path
             arg_dict['model_path'] = None
         else:
@@ -269,6 +288,7 @@ class MTDWrapper(MODEWrapper):
                                                  d_type='FCST')
 
                 if fcst_field is None:
+                    self.log_error("No forecast fields found")
                     return
 
                 fcst_field_list.extend(fcst_field)
@@ -282,8 +302,8 @@ class MTDWrapper(MODEWrapper):
                 return
 
             # if no thresholds are specified, run once
-            if not fcst_thresh_list:
-                fcst_thresh_list = [""]
+            if not obs_thresh_list:
+                obs_thresh_list = [""]
 
             # loop over thresholds and build field list with one thresh per item
             for obs_thresh in obs_thresh_list:
@@ -294,6 +314,7 @@ class MTDWrapper(MODEWrapper):
                                                 d_type='OBS')
 
                 if obs_field is None:
+                    self.log_error("No observation fields found")
                     return
 
                 obs_field_list.extend(obs_field)
@@ -384,6 +405,9 @@ class MTDWrapper(MODEWrapper):
             self.add_env_var("OBS_FIELD", obs_field)
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
+
+        self.add_env_var("FCST_FILE_TYPE", self.c_dict['FCST_FILE_TYPE'])
+        self.add_env_var("OBS_FILE_TYPE", self.c_dict['OBS_FILE_TYPE'])
 
         self.add_common_envs(time_info)
 

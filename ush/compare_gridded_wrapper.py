@@ -181,7 +181,8 @@ that reformat gridded data
         # get verification mask if available
         self.get_verification_mask(time_info)
 
-        self.c_dict['VAR_LIST'] = util.parse_var_list(self.config, time_info)
+        self.c_dict['VAR_LIST'] = util.parse_var_list(self.config, time_info,
+                                                      met_tool=self.app_name)
 
         if not self.c_dict['VAR_LIST']:
             self.log_error('No input fields were specified. You must set '

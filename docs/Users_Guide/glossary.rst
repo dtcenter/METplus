@@ -1197,7 +1197,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    FCST_FILE_WINDOW_BEGIN
-     See OBS_FILE_WINDOW_BEGINreference "sec:SC_O".
+     See :term:`OBS_FILE_WINDOW_BEGIN`.
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
      | *Family:*  [config]

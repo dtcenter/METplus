@@ -9,7 +9,6 @@
 //
 // Output model name to be written
 //
-//model = "WRF";
 model = "${MODEL}";
 
 //
@@ -21,7 +20,6 @@ desc = "NA";
 //
 // Output observation type to be written
 //
-//obtype = "MC_PCP";
 obtype = "${OBTYPE}";
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,6 +49,9 @@ nc_var_str    = "";
 // Ensemble product fields to be processed
 //
 ens = {
+
+   ${ENS_FILE_TYPE}
+
    ens_thresh = ${ENS_THRESH};
    vld_thresh = 1.0;
 
@@ -92,10 +93,14 @@ nmep_smooth = {
 
 fcst = {
 
+   ${FCST_FILE_TYPE}
+
    field = [ ${FCST_FIELD}  ];
 }
 
 obs = {
+
+   ${OBS_FILE_TYPE}
  
    field = [ ${OBS_FIELD}   ];
 }

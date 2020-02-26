@@ -44,6 +44,8 @@ baseinputconfs = ['metplus_config/metplus_system.conf',
                   'metplus_config/metplus_runtime.conf',
                   'metplus_config/metplus_logging.conf']
 
+PYTHON_EMBEDDING_TYPES = ['PYTHON_NUMPY', 'PYTHON_XARRAY', 'PYTHON_PANDAS']
+
 def pre_run_setup(filename, app_name):
     filebasename = os.path.basename(filename)
     logger = logging.getLogger(app_name)
@@ -1973,20 +1975,36 @@ def validate_field_info_configs(config, force_check=False):
 
     return all_good, all_sed_cmds
 
-def get_var_items(config, data_type, index, time_info):
+def get_var_items(config, data_type, index, time_info, met_tool=None):
     """!Get configuration variables for given data type and index
         Args:
             @param config: METplusConfig object
             @param data_type: type of data to find, i.e. FCST, OBS, BOTH, or ENS
-            @param index: index of variable, i.e. _VAR<index>_NAME"""
+            @param index: index of variable, i.e. _VAR<index>_NAME
+            @param met_tool: optional name of MET tool to look for wrapper specific items
+            @returns tuple containing name, level, thresh, extra values if found. If not found
+               4 empty strings are returned.
+    """
+
+    # build string to search for BOTH items, using MET tool name if provided
+    # do the same for data_type, i.e. FCST
+    # The result with either be BOTH_VAR and FCST_VAR or
+    # BOTH_<MET-tool>_VAR and FCST_<MET-tool>_VAR
+    both_var = "BOTH_"
+    data_type_var = f"{data_type}_"
+    if met_tool:
+        both_var += f"{met_tool.upper()}_"
+        data_type_var += f"{met_tool.upper()}_"
+    both_var += "VAR"
+    data_type_var += "VAR"
 
     # get field variable name from data type name
     # look for BOTH_VAR<n>_NAME if looking for FCST or OBS (not ENS)
     # return empty strings if name cannot be found from either
-    if data_type in ['FCST', 'OBS'] and config.has_option('config', f"BOTH_VAR{index}_NAME"):
-        search_name = f"BOTH_VAR{index}_NAME"
-    elif config.has_option('config', f"{data_type}_VAR{index}_NAME"):
-        search_name = f"{data_type}_VAR{index}_NAME"
+    if data_type in ['FCST', 'OBS'] and config.has_option('config', f"{both_var}{index}_NAME"):
+        search_name = f"{both_var}{index}_NAME"
+    elif config.has_option('config', f"{data_type_var}{index}_NAME"):
+        search_name = f"{data_type_var}{index}_NAME"
     else:
         return '', '', '', ''
 
@@ -1996,10 +2014,10 @@ def get_var_items(config, data_type, index, time_info):
 
     # get levels if available
     levels = []
-    if data_type in ['FCST', 'OBS'] and config.has_option('config', f"BOTH_VAR{index}_LEVELS"):
-        search_levels = f"BOTH_VAR{index}_LEVELS"
+    if data_type in ['FCST', 'OBS'] and config.has_option('config', f"{both_var}{index}_LEVELS"):
+        search_levels = f"{both_var}{index}_LEVELS"
     else:
-        search_levels = f"{data_type}_VAR{index}_LEVELS"
+        search_levels = f"{data_type_var}{index}_LEVELS"
 
     levels = []
     for level in getlist(config.getraw('config', search_levels, '')):
@@ -2012,10 +2030,10 @@ def get_var_items(config, data_type, index, time_info):
 
     # get thresholds if available
     thresh = []
-    if data_type in ['FCST', 'OBS'] and config.has_option('config', f"BOTH_VAR{index}_THRESH"):
-        search_thresh = f"BOTH_VAR{index}_THRESH"
-    elif config.has_option('config', f"{data_type}_VAR{index}_THRESH"):
-        search_thresh = f"{data_type}_VAR{index}_THRESH"
+    if data_type in ['FCST', 'OBS'] and config.has_option('config', f"{both_var}{index}_THRESH"):
+        search_thresh = f"{both_var}{index}_THRESH"
+    elif config.has_option('config', f"{data_type_var}{index}_THRESH"):
+        search_thresh = f"{data_type_var}{index}_THRESH"
     else:
         search_thresh = None
 
@@ -2027,10 +2045,10 @@ def get_var_items(config, data_type, index, time_info):
 
     # get extra options if available
     extra = ""
-    if data_type in ['FCST', 'OBS'] and config.has_option('config', f"BOTH_VAR{index}_OPTIONS"):
-        search_extra = f"BOTH_VAR{index}_OPTIONS"
-    elif config.has_option('config', f"{data_type}_VAR{index}_OPTIONS"):
-        search_extra = f"{data_type}_VAR{index}_OPTIONS"
+    if data_type in ['FCST', 'OBS'] and config.has_option('config', f"{both_var}{index}_OPTIONS"):
+        search_extra = f"{both_var}{index}_OPTIONS"
+    elif config.has_option('config', f"{data_type_var}{index}_OPTIONS"):
+        search_extra = f"{data_type_var}{index}_OPTIONS"
     else:
         search_extra = None
 
@@ -2059,7 +2077,7 @@ def find_var_name_indices(config, data_type, met_tool=None):
 
     # if MET tool is specified, get tool specific items
     if met_tool:
-        regex_string += f"_{met_tool}"
+        regex_string += f"_{met_tool.upper()}"
 
     regex_string += r"_VAR(\d+)_NAME"
 
@@ -2075,6 +2093,7 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
             @param config: METplusConfig object
             @param time_info: time object for string sub, optional
             @param data_type: data type to find. Can be FCST, OBS, or ENS. If not set, get FCST/OBS/BOTH
+            @param met_tool: optional name of MET tool to look for wrapper specific var items
         Returns:
             list of dictionaries with variable information
     """
@@ -2100,11 +2119,17 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
 
     # check if *_<MET-tool>_VAR<n>_NAME exists, if so, use that instead of generic
     data_types_and_indices = {}
+
+    # if using wrapper specific field info, use_met_tool will be set to handle them
+    use_met_tool = None
     if met_tool:
         data_types_and_indices = find_var_name_indices(config, data_type, met_tool)
 
     if not data_types_and_indices:
         data_types_and_indices = find_var_name_indices(config, data_type)
+    # if found wrapper specific fields, pass the MET tool name to get_var_items
+    else:
+        use_met_tool = met_tool
 
     # loop over all possible variables and add them to list
     for index, data_type_list in data_types_and_indices.items():
@@ -2112,7 +2137,8 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
         # if specific data type is requested, only get that type
         if data_type:
             data_type_lower = data_type.lower()
-            name, levels, thresh, extra = get_var_items(config, data_type, index, time_info)
+            name, levels, thresh, extra = get_var_items(config, data_type, index, time_info,
+                                                        met_tool=use_met_tool)
 
             if not name:
                 continue
@@ -2128,8 +2154,12 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
 
         # if FCST and OBS or BOTH are used, get and set both of them
         else:
-            f_name, f_levels, f_thresh, f_extra = get_var_items(config, 'FCST', index, time_info)
-            o_name, o_levels, o_thresh, o_extra = get_var_items(config, 'OBS', index, time_info)
+            f_name, f_levels, f_thresh, f_extra = get_var_items(config, 'FCST', index,
+                                                                time_info,
+                                                                met_tool=use_met_tool)
+            o_name, o_levels, o_thresh, o_extra = get_var_items(config, 'OBS', index,
+                                                                time_info,
+                                                                met_tool=use_met_tool)
 
             # if number of levels are not equal, return an empty list
             if len(f_levels) != len(o_levels):
@@ -2355,7 +2385,7 @@ def preprocess_file(filename, data_type, config):
         return None
 
     # if using python embedding for input, return the keyword
-    if os.path.basename(filename) in ['PYTHON_NUMPY', 'PYTHON_XARRAY', 'PYTHON_PANDAS']:
+    if os.path.basename(filename) in PYTHON_EMBEDDING_TYPES:
             return os.path.basename(filename)
 
     stage_dir = config.getdir('STAGING_DIR')
@@ -2488,7 +2518,8 @@ def is_python_script(name):
     all_items = name.split(' ')
     if any(item.endswith('.py') for item in all_items):
         return True
-    # python returns None when no explicit return statement is hit
+
+    return False
 
 def check_user_environment(config):
     """!Check if any environment variables set in [user_env_vars] are already set in

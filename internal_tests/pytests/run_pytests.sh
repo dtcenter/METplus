@@ -77,6 +77,7 @@ function run_pytest_and_check() {
 
 
 run_pytest_and_check config
+run_pytest_and_check check_metplus_python_version
 run_pytest_and_check grid_stat
 run_pytest_and_check logging
 run_pytest_and_check met_util
@@ -99,7 +100,7 @@ run_pytest_and_check pb2nc -c ./conf1
 if [ -z "$METPLUS_DISABLE_PLOT_WRAPPERS" ]; then
     run_pytest_and_check plotting/stat_analysis -c ./test_stat_analysis.conf
     run_pytest_and_check plotting/make_plots -c ./test_make_plots.conf
-    run_pytest_and_check plotting/plot_util
+#    run_pytest_and_check plotting/plot_util
 else
     echo WARNING: Skipping plotting tests. Unset METPLUS_DISABLE_PLOT_WRAPPERS to run them.
 fi

@@ -672,12 +672,12 @@ class TCPairsWrapper(CommandBuilder):
             return None
 
         config_file = self.c_dict['TC_PAIRS_CONFIG_FILE']
-        if config_file is None:
+        if not config_file:
             self.log_error('Config file not set')
             return None
 
         output_path = self.get_output_path()
-        if output_path is '':
+        if not output_path:
             self.log_error('Output path not set')
             return None
 
