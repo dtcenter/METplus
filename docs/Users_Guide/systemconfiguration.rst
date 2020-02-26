@@ -292,6 +292,57 @@ will process valid times starting on 20190425 at 06Z every 6 hours until the cur
 
    When using the 'now' keyword, the value of VALID_TIME_FMT must be identical to the 'fmt' value corresponding to the 'now' item in VALID_BEG and VALID_END. In the above example, this would be the %Y%m%d%H portion within values of the VALID_TIME_FMT, VALID_BEG, and VALID_END variables.
 
+.. _Loop_Order:
+
+Loop Order
+~~~~~~~~~~
+
+The METplus wrappers can be configured to loop first by times then processes or vice-versa. Looping by times first will run each process in the process list for a given run time, increment to the next run time, run each process in the process list, and so on. Looping by processes first will run all times for the first process, then run all times for the second process, and so on.
+
+Example 1 Configuration::
+
+  [config]
+  LOOP_ORDER = times
+
+  PROCESS_LIST = PCPCombine, GridStat
+
+  VALID_BEG = 20190201
+  VALID_END = 20190203
+  VALID_INCREMENT = 1d
+
+will run in the following order::
+
+  * PCPCombine at 2019-02-01
+  * GridStat   at 2019-02-01
+  * PCPCombine at 2019-02-02
+  * GridStat   at 2019-02-02
+  * PCPCombine at 2019-02-03
+  * GridStat   at 2019-02-03
+
+
+Example 2 Configuration::
+
+  [config]
+  LOOP_ORDER = processes
+
+  PROCESS_LIST = PCPCombine, GridStat
+
+  VALID_BEG = 20190201
+  VALID_END = 20190203
+  VALID_INCREMENT = 1d
+
+will run in the following order::
+
+  * PCPCombine at 2019-02-01
+  * PCPCombine at 2019-02-02
+  * PCPCombine at 2019-02-03
+  * GridStat   at 2019-02-01
+  * GridStat   at 2019-02-02
+  * GridStat   at 2019-02-03
+
+.. note::
+    If running a MET tool that processes data over a time range such as SeriesAnalysis or StatAnalysis must be run with LOOP_ORDER = processes.
+
 .. _Field_Info:   
 
 Field Info
@@ -418,6 +469,39 @@ If FCST_VAR<n>_OPTIONS is set, OBS_VAR<n>_OPTIONS does not need to be set, and v
 
 :term:`ENS_VAR<n>_NAME` / :term:`ENS_VAR<n>_LEVELS`/ :term:`ENS_VAR<n>_THRESH` / :term:`ENS_VAR<n>_OPTIONS`:
 **Used with EnsembleStat Wrapper only.** Users may want to define the ens dictionary item in the MET EnsembleStat config file differently than the fcst dictionary item. If this is the case, you can use these variables. If it is not set, the values in the corresponding FCST_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS] will be used in the ens dictionary.
+
+Wrapper Specific Field Info
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+New to METplus 3.0 is the ability to specify VAR<n> items differently across wrappers. In previous versions, it was assumed that the list of forecast and observation files that were processed would be applied to any MET Stat tool used, such as GridStat, PointStat, or EnsembleStat. This prevented the ability to run, for example, GridStat, then pass the output into EnsembleStat.
+
+Example 1::
+
+  [config]
+  PROCESS_LIST = GridStat, EnsembleStat
+
+  FCST_GRID_STAT_VAR1_NAME = HGT
+  FCST_GRID_STAT_VAR1_LEVELS = P500
+
+  FCST_ENSEMBLE_STAT_VAR1_NAME = HGT_P500_MEAN
+  FCST_ENSEMBLE_STAT_VAR1_LEVELS = "(*,*)"
+
+If the generic :term:`FCST_VAR<n>_NAME` variables are used, the same values will be applied to all tools that don't have wrapper specific fields defined. If wrapper specific fields are defined, any generic fields will be ignored.
+
+Example 2::
+
+  [config]
+  PROCESS_LIST = GridStat, EnsembleStat
+
+  FCST_VAR1_NAME = HGT
+  FCST_VAR1_LEVELS = P500, P750
+  FCST_VAR2_NAME = TMP
+  FCST_VAR2_LEVELS = P500, P750
+
+  FCST_ENSEMBLE_STAT_VAR1_NAME = HGT
+  FCST_ENSEMBLE_STAT_VAR1_LEVELS = P500
+
+In this example, GridStat will process HGT at pressure levels 500 and 750 and TMP at pressure levels 500 and 750, while EnsembleStat will only process HGT at pressure level 500. To configure EnsembleStat to also process TMP, the user will have to define it explicitly with FCST_ENSEMBLE_STAT_VAR2_NAME.
+
 
 .. _Directory_and_Filename_Template_Info:
 
