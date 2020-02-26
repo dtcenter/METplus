@@ -184,7 +184,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         ensemble_var_list = util.parse_var_list(self.config, time_info, data_type='ENS')
 
         # parse optional var list for FCST and/or OBS fields
-        var_list = util.parse_var_list(self.config, time_info)
+        var_list = util.parse_var_list(self.config, time_info, met_tool=self.app_name)
 
         # if empty var list for FCST/OBS, use None as first var, else use first var in list
         if not var_list:

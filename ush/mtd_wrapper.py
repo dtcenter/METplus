@@ -134,14 +134,16 @@ class MTDWrapper(MODEWrapper):
 
         # if only processing a single data set (FCST or OBS) then only read that var list and process
         if self.c_dict['SINGLE_RUN']:
-            var_list = util.parse_var_list(self.config, input_dict, self.c_dict['SINGLE_DATA_SRC'])
+            var_list = util.parse_var_list(self.config, input_dict, self.c_dict['SINGLE_DATA_SRC'],
+                                           met_tool=self.app_name)
             for var_info in var_list:
                 self.run_single_mode(input_dict, var_info)
 
             return
 
         # if comparing FCST and OBS data, get var list from FCST/OBS or BOTH variables
-        var_list = util.parse_var_list(self.config, input_dict)
+        var_list = util.parse_var_list(self.config, input_dict,
+                                       met_tool=self.app_name)
 
         # report error and exit if field info is not set
         if not var_list:

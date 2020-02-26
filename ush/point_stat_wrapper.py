@@ -125,7 +125,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.clear()
 
         time_info = time_util.ti_calculate(input_dict)
-        var_list = util.parse_var_list(self.config, time_info)
+        var_list = util.parse_var_list(self.config, time_info,
+                                       met_tool=self.app_name)
 
         if not var_list:
             self.log_error("Field information not set in configuration files. Must set "
