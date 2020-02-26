@@ -1197,14 +1197,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    FCST_FILE_WINDOW_BEGIN
-     See :term:`OBS_FILE_WINDOW_BEGIN`.
+     See reference :term:`OBS_FILE_WINDOW_BEGIN`
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_FILE_WINDOW_END
-     See OBS_FILE_WINDOW_ENDreference "sec:SC_O".
+     See reference :term:`OBS_FILE_WINDOW_END`
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
      | *Family:*  [config]
@@ -1217,14 +1217,14 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use GEMPAKTOCF_INPUT_TEMPLATE if GempakToCF is in the PROCESS_LIST.
 
    FCST_GRID_STAT_FILE_WINDOW_BEGIN
-     See OBS_GRID_STAT_FILE_WINDOW_BEGINreference "sec:SC_O".
+     See reference :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN`
 
      | *Used by:*  GridStat
      | *Family:*  [config]
      | *Default:* FCST_FILE_WINDOW_BEGIN
 
    FCST_GRID_STAT_FILE_WINDOW_END
-     See OBS_GRID_STAT_FILE_WINDOW_ENDreference "sec:SC_O".
+     See reference :term:`OBS_GRID_STAT_FILE_WINDOW_END`
 
      | *Used by:*  GridStat
      | *Family:*  [config]
@@ -1323,14 +1323,14 @@ METplus Configuration Glossary
      | *Default:*
 
    FCST_MODE_FILE_WINDOW_BEGIN
-     See OBS_MODE_FILE_WINDOW_BEGINreference "sec:SC_O".
+     See reference :term:`OBS_MODE_FILE_WINDOW_BEGIN`
 
      | *Used by:*  Mode
      | *Family:*  [config]
      | *Default:* FCST_FILE_WINDOW_BEGIN
 
    FCST_MODE_FILE_WINDOW_END
-     See OBS_MODE_FILE_WINDOW_ENDreference "sec:SC_O".
+     See reference :term:`OBS_MODE_FILE_WINDOW_END`
 
      | *Used by:*  Mode
      | *Family:*  [config]
@@ -1386,14 +1386,14 @@ METplus Configuration Glossary
      | *Default:*
 
    FCST_MTD_FILE_WINDOW_BEGIN
-     See OBS_MTD_FILE_WINDOW_BEGINreference "sec:SC_O".
+     See reference :term:`OBS_MTD_FILE_WINDOW_BEGIN`
 
      | *Used by:* MTD
      | *Family:* [config]
      | *Default:* OBS_FILE_WINDOW_BEGIN
 
    FCST_MTD_FILE_WINDOW_END
-     See OBS_MTD_FILE_WINDOW_ENDreference "sec:SC_O".
+     See reference :term:`OBS_MTD_FILE_WINDOW_END`
 
      | *Used by:* MTD
      | *Family:*  [config]
@@ -1550,14 +1550,14 @@ METplus Configuration Glossary
      | *Default:*
 
    FCST_POINT_STAT_FILE_WINDOW_BEGIN
-     See OBS_POINT_STAT_FILE_WINDOW_BEGINreference "sec:SC_O".
+     See :term:`OBS_POINT_STAT_FILE_WINDOW_BEGIN`
 
      | *Used by:*  PointStat
      | *Family:*  [config]
      | *Default:* FCST_FILE_WINDOW_BEGIN
 
    FCST_POINT_STAT_FILE_WINDOW_END
-     See OBS_POINT_STAT_FILE_WINDOW_ENDreference "sec:SC_O".
+     See :term:`OBS_POINT_STAT_FILE_WINDOW_END`
 
      | *Used by:*  PointStat
      | *Family:*  [config]
@@ -2075,14 +2075,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    FCST_WINDOW_BEGIN
-     See OBS_WINDOW_BEGINreference "sec:SC_O".
+     See reference :term:`OBS_WINDOW_BEGIN`
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_WINDOW_END
-     See OBS_WINDOW_ENDreference "sec:SC_O".
+     See reference :term:`OBS_WINDOW_END`
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
      | *Family:*  [config]
@@ -3112,28 +3112,28 @@ METplus Configuration Glossary
      | *Default:* OBS_FILE_WINDOW_END
 
    OBS_GRID_STAT_INPUT_DATATYPE
-     See FCST_GRID_STAT_INPUT_DATATYPEreference "sec:SC_F".
+     See reference :term:`FCST_GRID_STAT_INPUT_DATATYPE`
 
      | *Used by:*  GridStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_GRID_STAT_INPUT_DIR
-     See FCST_GRID_STAT_INPUT_DIRreference "sec:SC_F".
+     See reference :term:`FCST_GRID_STAT_INPUT_DIR`
 
      | *Used by:*  GridStat
      | *Family:*  [dir]
      | *Default:*  Varies
 
    OBS_GRID_STAT_INPUT_TEMPLATE
-     See FCST_GRID_STAT_INPUT_TEMPLATEreference "sec:SC_F".
+     See reference :term:`FCST_GRID_STAT_INPUT_TEMPLATE`
 
      | *Used by:*  GridStat
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    OBS_GRID_STAT_PROB_THRESH
-     See FCST_GRID_STAT_PROB_THRESHreference "sec:SC_F".
+     See reference :term:`FCST_GRID_STAT_PROB_THRESH`
 
      | *Used by:*  GridStat
      | *Family:*  [config]
@@ -3161,7 +3161,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use OBS_PCP_COMBINE_IS_DAILY_FILE instead.
 
    OBS_IS_PROB
-     Used when setting OBS_* variables to process forecast data for comparisons with mtd. Specify whether the observation data are probabilistic or not. See FCST_IS_PROBreference "sec:SC_F".Acceptable values: true/false
+     Used when setting OBS_* variables to process forecast data for comparisons with mtd. Specify whether the observation data are probabilistic or not. See reference :term:`FCST_IS_PROB` .Acceptable values: true/false
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PointStat
      | *Family:*  [config]
@@ -3178,14 +3178,14 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use OBS_PCP_COMBINE_INPUT_LEVEL instead.
 
    OBS_MODE_CONV_RADIUS
-     See FCST_MODE_CONV_RADIUSreference "sec:SC_F".
+     See reference :term:`FCST_MODE_CONV_RADIUS`
 
      | *Used by:*  Mode
      | *Family:*  [config]
      | *Default:*
 
    OBS_MODE_CONV_THRESH
-     See FCST_MODE_CONV_THRESHreference "sec:SC_F".
+     See reference :term:`FCST_MODE_CONV_THRESH`
 
      | *Used by:*  Mode
      | *Family:*  [config]
@@ -3206,49 +3206,49 @@ METplus Configuration Glossary
      | *Default:* OBS_FILE_WINDOW_END
 
    OBS_MODE_MERGE_FLAG
-     See FCST_MODE_MERGE_FLAGreference "sec:SC_F".
+     See :term:`FCST_MODE_MERGE_FLAG` reference.
 
      | *Used by:*  Mode
      | *Family:*  [config]
      | *Default:*
 
    OBS_MODE_MERGE_THRESH
-     See FCST_MODE_MERGE_THRESHreference "sec:SC_F".
+     See :term:`FCST_MODE_MERGE_THRESH` reference.
 
      | *Used by:*  Mode
      | *Family:*  [config]
      | *Default:*
 
    OBS_MODE_INPUT_DATATYPE
-     See FCST_MODE_INPUT_DATATYPEreference "sec:SC_F".
+     See :term:`FCST_MODE_INPUT_DATATYPE` reference.
 
      | *Used by:*  Mode
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_MODE_INPUT_DIR
-     See FCST_MODE_INPUT_DIRreference "sec:SC_F".
+     See :term:`FCST_MODE_INPUT_DIR` reference.
 
      | *Used by:*  Mode
      | *Family:*  [dir]
      | *Default:*  Varies
 
    OBS_MODE_INPUT_TEMPLATE
-     See FCST_MODE_INPUT_TEMPLATEreference "sec:SC_F".
+     See :term:`FCST_MODE_INPUT_TEMPLATE` reference
 
      | *Used by:*  Mode
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    OBS_MTD_CONV_RADIUS
-     See FCST_MTD_CONV_RADIUSreference "sec:SC_F".
+     See :term:`FCST_MTD_CONV_RADIUS` reference.
 
      | *Used by:* MTD
      | *Family:*  [config]
      | *Default:*
 
    OBS_MTD_CONV_THRESH
-     See FCST_MTD_CONV_THRESHreference "sec:SC_F".
+     See :term:`FCST_MTD_CONV_THRESH` reference.
 
      | *Used by:* MTD
      | *Family:*  [config]
@@ -3269,21 +3269,21 @@ METplus Configuration Glossary
      | *Default:* OBS_FILE_WINDOW_END
 
    OBS_MTD_INPUT_DATATYPE
-     See FCST_MTD_INPUT_DATATYPEreference "sec:SC_F".
+     See :term:`FCST_MTD_INPUT_DATATYPE` reference.
 
      | *Used by:* MTD
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_MTD_INPUT_DIR
-     See FCST_MTD_INPUT_DIRreference "sec:SC_F".
+     See :term:`FCST_MTD_INPUT_DIR` reference.
 
      | *Used by:* MTD
      | *Family:*  [dir]
      | *Default:*  Varies
 
    OBS_MTD_INPUT_TEMPLATE
-     See FCST_MTD_INPUT_TEMPLATEreference "sec:SC_F".
+     See :term:`FCST_MTD_INPUT_TEMPLATE` reference.
 
      | *Used by:*
      | *Family:*  [filename_templates]
@@ -3393,14 +3393,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_RUN
-     See FCST_PCP_COMBINE_RUNreference "sec:SC_F".Acceptable values: true/false
+     See :term:`FCST_PCP_COMBINE_RUN` reference. Acceptable values: true/false
 
      | *Used by:*  PcpCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_STAT_LIST
-     See FCST_PCP_COMBINE_STAT_LIST. Acceptable values: sum, min, max, range, mean, stdev, vld_count
+     See :term:`FCST_PCP_COMBINE_STAT_LIST` reference. Acceptable values: sum, min, max, range, mean, stdev, vld_count
 
      | *Used by:*  PcpCombine
      | *Family:*  [config]
@@ -3428,21 +3428,21 @@ METplus Configuration Glossary
      | *Default:* OBS_FILE_WINDOW_END
 
    OBS_POINT_STAT_INPUT_DATATYPE
-     See FCST_POINT_STAT_INPUT_DATATYPEreference "sec:SC_F".
+     See :term:`FCST_POINT_STAT_INPUT_DATATYPE` reference.
 
      | *Used by:*  PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_POINT_STAT_INPUT_DIR
-     See FCST_POINT_STAT_INPUT_DIRreference "sec:SC_F".
+     See :term:`FCST_POINT_STAT_INPUT_DIR` reference.
 
      | *Used by:*  PointStat
      | *Family:*  [dir]
      | *Default:*  Varies
 
    OBS_POINT_STAT_INPUT_TEMPLATE
-     See FCST_POINT_STAT_INPUT_TEMPLATEreference "sec:SC_F".
+     See :term:`FCST_POINT_STAT_INPUT_TEMPLATE` reference.
 
      | *Used by:*  GriPointStat
      | *Family:*  [filename_templates]
@@ -3561,42 +3561,42 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    OBS_REGRID_DATA_PLANE_INPUT_DATATYPE
-     See FCST_REGRID_DATA_PLANE_INPUT_DATATYPEreference "sec:SC_F".
+     See :term:`FCST_REGRID_DATA_PLANE_INPUT_DATATYPE` reference.
 
      | *Used by:*  RegridDataPlane
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_REGRID_DATA_PLANE_INPUT_DIR
-     See FCST_REGRID_DATA_PLANE_INPUT_DIRreference "sec:SC_F".
+     See :term:`FCST_REGRID_DATA_PLANE_INPUT_DIR` reference.
 
      | *Used by:*  RegridDataPlane
      | *Family:*  [dir]
      | *Default:*  Varies
 
    OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE
-     See FCST_REGRID_DATA_PLANE_INPUT_TEMPLATEreference "sec:SC_F".
+     See :term:`FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE` reference.
 
      | *Used by:*  RegridDataPlane
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE
-     See FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATEreference "sec:SC_F".
+     See :term:`FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE` reference.
 
      | *Used by:*  RegridDataPlane
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    OBS_REGRID_DATA_PLANE_TEMPLATE
-     See FCST_REGRID_DATA_PLANE_TEMPLATEreference "sec:SC_F".
+     See :term:`FCST_REGRID_DATA_PLANE_TEMPLATE` reference.
 
      | *Used by:*  RegridDataPlane
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    OBS_REGRID_DATA_PLANE_OUTPUT_DIR
-     See FCST_REGRID_DATA_PLANE_OUTPUT_DIRreference "sec:SC_F".
+     See :term:`FCST_REGRID_DATA_PLANE_OUTPUT_DIR` reference.
 
      | *Used by:*  RegridDataPlane
      | *Family:*  [dir]
