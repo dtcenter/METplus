@@ -78,6 +78,7 @@ point observation data.
 # * **${VERIF_MASK}** - Optional verification mask file or list of files. Corresponds to POINT_STAT_VERIFICATION_MASK_TEMPLATE in the METplus configuration file.
 # * **${CLIMO_MEAN_FILE}** - Optional path to climatology mean file. Corresponds to POINT_STAT_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
 # * **${CLIMO_STDEV_FILE}** - Optional path to climatology standard deviation file. Corresponds to POINT_STAT_CLIMO_STDEV_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
+# * **${OUTPUT_PREFIX}** - String to prepend to the output filenames. Corresponds to POINT_STAT_OUTPUT_PREFIX in the METplus configuration file.
 #
 
 ##############################################################################

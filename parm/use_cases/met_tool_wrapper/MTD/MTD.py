@@ -76,7 +76,8 @@ This use case will run the MET MTD (MODE Time Domain) tool to compare gridded fo
 # * **${FCST_VAR}** - Field name of forecast data to process. Used in output_prefix to include input information in the output filenames. Corresponds to [FCST/BOTH]_VAR<n>_NAME in the METplus configuration file.
 # * **${OBS_VAR}** - Field name of observation data to process. Used in output_prefix to include input information in the output filenames. Corresponds to [OBS/BOTH]_VAR<n>_NAME in the METplus configuration file.
 # * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to MTD_REGRID_TO_GRID in the METplus configuration file.
-
+# * **${OUTPUT_PREFIX}** - String to prepend to the output filenames. Corresponds to MTD_OUTPUT_PREFIX in the METplus configuration file.
+#
 
 ##############################################################################
 # Running METplus

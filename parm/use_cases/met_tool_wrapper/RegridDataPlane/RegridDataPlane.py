@@ -107,4 +107,4 @@ This use case will run the MET RegridDataPlane tool to regrid observation data i
 # Keywords
 # --------
 #
-# .. note:: `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
+# .. note:: `RegridDataPlane Tool <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_

@@ -1,6 +1,6 @@
 """
 EnsembleStat using Python Embedding
-============
+===================================
 
 This use case will run the MET EnsembleStat tool to compare gridded ensemble
 forecast data to gridded AND point observation data. The input data is read in via Python Embedding.
@@ -84,7 +84,7 @@ forecast data to gridded AND point observation data. The input data is read in v
 #
 # Passing in EnsembleStat_python_embedding.conf then a user-specific system configuration file::
 #
-#   master_metplus.py -c /path/to/EnsembleStat_python_embedding.conf -c /path/to/user_system.conf
+#   master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat_python_embedding.conf -c /path/to/user_system.conf
 #
 # The following METplus configuration variables must be set correctly to run this example.:
 #

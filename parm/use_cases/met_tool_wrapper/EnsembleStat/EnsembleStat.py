@@ -44,7 +44,7 @@ forecast data to gridded AND point observation data.
 #
 # This use case utilizes the METplus EnsembleStat wrapper to search for
 # files that are valid at a given run time and generate a command to run
-# the MET tool ensemble_stat if all required files are found.
+# the MET tool EnsembleStat if all required files are found.
 
 ##############################################################################
 # METplus Workflow
@@ -66,10 +66,11 @@ forecast data to gridded AND point observation data.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.conf
+#
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on the values in the METplus configuration file.
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
@@ -90,6 +91,8 @@ forecast data to gridded AND point observation data.
 # * **${OBS_WINDOW_END}** - Corresponds to OBS_WINDOW_END or OBS_ENSEMBLE_STAT_WINDOW_END in the METplus configuration file.
 # * **${CLIMO_MEAN_FILE}** - Optional path to climatology mean file. Corresponds to ENSEMBLE_STAT_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
 # * **${CLIMO_STDEV_FILE}** - Optional path to climatology standard deviation file. Corresponds to ENSEMBLE_STAT_CLIMO_STDEV_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
+# * **${OUTPUT_PREFIX}** - String to prepend to the output filenames. Corresponds to ENSEMBLE_STAT_OUTPUT_PREFIX in the METplus configuration file.
+#
 
 ##############################################################################
 # Running METplus
@@ -99,7 +102,7 @@ forecast data to gridded AND point observation data.
 #
 # Passing in EnsembleStat.conf then a user-specific system configuration file::
 #
-#   master_metplus.py -c /path/to/EnsembleStat.conf -c /path/to/user_system.conf
+#   master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.conf -c /path/to/user_system.conf
 #
 # The following METplus configuration variables must be set correctly to run this example.:
 #
@@ -145,5 +148,5 @@ forecast data to gridded AND point observation data.
 # Keywords
 # --------
 #
-# .. note:: `EnsembleStatUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleStatUseCase&check_keywords=yes&area=default>`_
+# .. note:: `EnsembleStat Tool <https://ncar.github.io/METplus/search.html?q=EnsembleStatUseCase&check_keywords=yes&area=default>`, `GRIB File <https://ncar.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_
 

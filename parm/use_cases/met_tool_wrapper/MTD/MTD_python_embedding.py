@@ -35,6 +35,7 @@ This use case will run the MET MTD (MODE Time Domain) tool to compare gridded fo
 #
 # MTD is the only tool called in this example. It processes a single run time with three forecast leads. The input data are simple text files with no timing information, so the list of forecast leads simply duplicates the same file multiple times to demonstrate how data is read in via Python Embedding.
 #
+
 ##############################################################################
 # METplus Configuration
 # ---------------------
@@ -45,6 +46,7 @@ This use case will run the MET MTD (MODE Time Domain) tool to compare gridded fo
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/MTD/MTD_python_embedding.conf
+#
 
 ##############################################################################
 # MET Configuration
@@ -71,7 +73,8 @@ This use case will run the MET MTD (MODE Time Domain) tool to compare gridded fo
 # * **${FCST_VAR}** - Field name of forecast data to process. Used in output_prefix to include input information in the output filenames. Corresponds to [FCST/BOTH]_VAR<n>_NAME in the METplus configuration file.
 # * **${OBS_VAR}** - Field name of observation data to process. Used in output_prefix to include input information in the output filenames. Corresponds to [OBS/BOTH]_VAR<n>_NAME in the METplus configuration file.
 # * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to MTD_REGRID_TO_GRID in the METplus configuration file.
-
+# * **${OUTPUT_PREFIX}** - String to prepend to the output filenames. Corresponds to MTD_OUTPUT_PREFIX in the METplus configuration file.
+#
 
 ##############################################################################
 # Running METplus
