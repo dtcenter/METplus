@@ -472,18 +472,18 @@ If FCST_VAR<n>_OPTIONS is set, OBS_VAR<n>_OPTIONS does not need to be set, and v
 
 Wrapper Specific Field Info
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-New to METplus 3.0 is the ability to specify VAR<n> items differently across comparison wrappers. In previous versions, it was assumed that the list of forecast and observation files that were processed would be applied to any MET Stat tool used, such as GridStat, PointStat, or EnsembleStat. This prevented the ability to run, for example, GridStat, then pass the output into EnsembleStat.
+New to METplus 3.0 is the ability to specify VAR<n> items differently across comparison wrappers. In previous versions, it was assumed that the list of forecast and observation files that were processed would be applied to any MET Stat tool used, such as GridStat, PointStat, EnsembleStat, MODE, or MTD. This prevented the ability to run, for example, EnsembleStat, then pass the output into GridStat.
 
 Example 1::
 
   [config]
-  PROCESS_LIST = GridStat, EnsembleStat
+  PROCESS_LIST = EnsembleStat, GridStat
 
-  FCST_GRID_STAT_VAR1_NAME = HGT
-  FCST_GRID_STAT_VAR1_LEVELS = P500
+  FCST_ENSEMBLE_STAT_VAR1_NAME = HGT
+  FCST_ENSEMBLE_STAT_VAR1_LEVELS = P500
 
-  FCST_ENSEMBLE_STAT_VAR1_NAME = HGT_P500_MEAN
-  FCST_ENSEMBLE_STAT_VAR1_LEVELS = "(*,*)"
+  FCST_GRID_STAT_VAR1_NAME = HGT_P500_ENS_MEAN
+  FCST_GRID_STAT_VAR1_LEVELS = "(*,*)"
 
 If the generic :term:`FCST_VAR<n>_NAME` variables are used, the same values will be applied to all tools that don't have wrapper specific fields defined. If wrapper specific fields are defined, any generic fields will be ignored.
 
