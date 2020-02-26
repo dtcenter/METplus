@@ -461,7 +461,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                     break
 
             # if we don't need any more accumulation, break out of loop and run
-            if total_accum == 0:
+            if not total_accum:
                 break
 
             # if we still need to find more accum but we couldn't find it, fail
@@ -470,7 +470,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # fail if no files were found or if we didn't find
         #  the entire accumulation needed
-        if len(self.infiles) is 0 or total_accum != 0:
+        if not self.infiles or total_accum:
             return False
 
         return True
