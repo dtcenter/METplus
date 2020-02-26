@@ -1,4 +1,4 @@
-﻿Python Wrappers
+Python Wrappers
 ===============
 
 This chapter provides a description of each supported Python wrapper in
@@ -185,6 +185,14 @@ Configuration
 | :term:`ENS_VAR<n>_LEVELS` (optional)
 | :term:`ENS_VAR<n>_THRESH` (optional)
 | :term:`ENS_VAR<n>_OPTIONS` (optional)
+| :term:`FCST_ENSEMBLE_STAT_VAR<n>_NAME` (optional)
+| :term:`FCST_ENSEMBLE_STAT_VAR<n>_LEVELS` (optional)
+| :term:`FCST_ENSEMBLE_STAT_VAR<n>_THRESH` (optional)
+| :term:`FCST_ENSEMBLE_STAT_VAR<n>_OPTIONS` (optional)
+| :term:`OBS_ENSEMBLE_STAT_VAR<n>_NAME` (optional)
+| :term:`OBS_ENSEMBLE_STAT_VAR<n>_LEVELS` (optional)
+| :term:`OBS_ENSEMBLE_STAT_VAR<n>_THRESH` (optional)
+| :term:`OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS` (optional)
 
 .. warning:: **DEPRECATED:**
 
@@ -360,6 +368,14 @@ Configuration
 | :term:`FCST_GRID_STAT_FILE_WINDOW_END` (optional)
 | :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN` (optional)
 | :term:`OBS_GRID_STAT_FILE_WINDOW_END` (optional)
+| :term:`FCST_GRID_STAT_VAR<n>_NAME` (optional)
+| :term:`FCST_GRID_STAT_VAR<n>_LEVELS` (optional)
+| :term:`FCST_GRID_STAT_VAR<n>_THRESH` (optional)
+| :term:`FCST_GRID_STAT_VAR<n>_OPTIONS` (optional)
+| :term:`OBS_GRID_STAT_VAR<n>_NAME` (optional)
+| :term:`OBS_GRID_STAT_VAR<n>_LEVELS` (optional)
+| :term:`OBS_GRID_STAT_VAR<n>_THRESH` (optional)
+| :term:`OBS_GRID_STAT_VAR<n>_OPTIONS` (optional)
 
 .. warning:: **DEPRECATED:**
 
@@ -518,6 +534,15 @@ Configuration
 | :term:`FCST_MODE_FILE_WINDOW_END`
 | :term:`OBS_MODE_FILE_WINDOW_BEGIN`
 | :term:`OBS_MODE_FILE_WINDOW_END`
+| :term:`FCST_MODE_VAR<n>_NAME` (optional)
+| :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
+| :term:`FCST_MODE_VAR<n>_THRESH` (optional)
+| :term:`FCST_MODE_VAR<n>_OPTIONS` (optional)
+| :term:`OBS_MODE_VAR<n>_NAME` (optional)
+| :term:`OBS_MODE_VAR<n>_LEVELS` (optional)
+| :term:`OBS_MODE_VAR<n>_THRESH` (optional)
+| :term:`OBS_MODE_VAR<n>_OPTIONS` (optional)
+
 
 .. warning:: **DEPRECATED:**
 
@@ -562,7 +587,15 @@ Configuration
 | :term:`FCST_MTD_CONV_RADIUS`
 | :term:`FCST_MTD_CONV_THRESH`
 | :term:`OBS_MTD_CONV_RADIUS`
-| :term:`OBS_MTD_CONV_THRESH` 
+| :term:`OBS_MTD_CONV_THRESH`
+| :term:`FCST_MTD_VAR<n>_NAME` (optional)
+| :term:`FCST_MTD_VAR<n>_LEVELS` (optional)
+| :term:`FCST_MTD_VAR<n>_THRESH` (optional)
+| :term:`FCST_MTD_VAR<n>_OPTIONS` (optional)
+| :term:`OBS_MTD_VAR<n>_NAME` (optional)
+| :term:`OBS_MTD_VAR<n>_LEVELS` (optional)
+| :term:`OBS_MTD_VAR<n>_THRESH` (optional)
+| :term:`OBS_MTD_VAR<n>_OPTIONS` (optional)
 
 .. warning:: **DEPRECATED:**
 
@@ -783,7 +816,15 @@ Configuration
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional) 
 | :term:`OBS_POINT_STAT_WINDOW_END` (optional) 
 | :term:`POINT_STAT_NEIGHBORHOOD_WIDTH` (optional) 
-| :term:`POINT_STAT_NEIGHBORHOOD_SHAPE` (optional) 
+| :term:`POINT_STAT_NEIGHBORHOOD_SHAPE` (optional)
+| :term:`FCST_POINT_STAT_VAR<n>_NAME` (optional)
+| :term:`FCST_POINT_STAT_VAR<n>_LEVELS` (optional)
+| :term:`FCST_POINT_STAT_VAR<n>_THRESH` (optional)
+| :term:`FCST_POINT_STAT_VAR<n>_OPTIONS` (optional)
+| :term:`OBS_POINT_STAT_VAR<n>_NAME` (optional)
+| :term:`OBS_POINT_STAT_VAR<n>_LEVELS` (optional)
+| :term:`OBS_POINT_STAT_VAR<n>_THRESH` (optional)
+| :term:`OBS_POINT_STAT_VAR<n>_OPTIONS` (optional)
 
 .. warning:: **DEPRECATED:**
 
