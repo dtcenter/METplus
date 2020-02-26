@@ -121,24 +121,6 @@ class MTDWrapper(MODEWrapper):
 
         return c_dict
 
-    def check_for_python_embedding(self, input_type, var_info):
-        if not util.is_python_script(var_info[f"{input_type.lower()}_name"]):
-            # if not a python script, return var name
-            return var_info[f"{input_type.lower()}_name"]
-
-        # if it is a python script, set file extension to show that and make sure *_INPUT_DATATYPE is a valid PYTHON_* string
-        file_ext = 'python_embedding'
-        data_type = self.c_dict[f'{input_type}_INPUT_DATATYPE']
-        if data_type not in util.PYTHON_EMBEDDING_TYPES:
-            self.log_error(f"{input_type}_{self.app_name.upper()}_INPUT_DATATYPE ({data_type}) must be set to a valid Python Embedding type "
-                           f"if supplying a Python script as the {input_type}_VAR<n>_NAME. Valid options: "
-                           f"{','.join(util.PYTHON_EMBEDDING_TYPES)}")
-            return None
-
-        # set file type string to be set in MET config file to specify Python Embedding is being used for this dataset
-        self.c_dict[f'{input_type}_FILE_TYPE'] = f"file_type = {data_type};"
-        return file_ext
-
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
               over the list of forecast leads and runs the application for each.
@@ -168,10 +150,6 @@ class MTDWrapper(MODEWrapper):
             return None
 
         for var_info in var_list:
-
-            # reset file type items in case Python Embedding is used for some vars and not others
-            self.c_dict['FCST_FILE_TYPE'] = ''
-            self.c_dict['OBS_FILE_TYPE'] = ''
 
             model_list = []
             obs_list = []
@@ -230,7 +208,9 @@ class MTDWrapper(MODEWrapper):
     def run_single_mode(self, input_dict, var_info):
         single_list = []
 
-        if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
+        data_src = self.c_dict['SINGLE_DATA_SRC']
+
+        if data_src == 'OBS':
             find_method = self.find_obs
             s_name = var_info['obs_name']
             s_level = var_info['obs_level']
@@ -256,11 +236,15 @@ class MTDWrapper(MODEWrapper):
         # write ascii file with list of files to process
         input_dict['lead'] = 0
         time_info = time_util.ti_calculate(input_dict)
-        single_outfile = time_info['valid_fmt'] + '_mtd_single_' + s_name + '.txt'
+        file_ext = self.check_for_python_embedding(data_src, var_info)
+        if not file_ext:
+            return
+
+        single_outfile = time_info['valid_fmt'] + '_mtd_single_' + file_ext + '.txt'
         single_list_path = self.write_list_file(single_outfile, single_list)
 
         arg_dict = {}
-        if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
+        if data_src == 'OBS':
             arg_dict['obs_path'] = single_list_path
             arg_dict['model_path'] = None
         else:

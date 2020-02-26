@@ -52,6 +52,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                                        'ENSEMBLE_STAT_ONCE_PER_FIELD',
                                                        False)
 
+        c_dict['ENS_INPUT_DATATYPE'] = \
+          self.config.getstr('config', 'ENS_ENSEMBLE_STAT_INPUT_DATATYPE', '')
+
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'FCST_ENSEMBLE_STAT_INPUT_DATATYPE', '')
 
@@ -60,6 +63,21 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         c_dict['OBS_GRID_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE', '')
+
+        # check if more than 1 obs datatype is set to python embedding, only one can be used
+        if (c_dict['OBS_POINT_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES and
+            c_dict['OBS_GRID_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES):
+            self.log_error("Both OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE and "
+                           "OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE"
+                           " are set to Python Embedding types. Only one can be used at a time")
+            self.isOK = False
+
+        # if either are set, set OBS_INPUT_DATATYPE to that value so it can be found by
+        # the check_for_python_embedding function
+        elif c_dict['OBS_POINT_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES:
+            c_dict['OBS_INPUT_DATATYPE'] = c_dict['OBS_POINT_INPUT_DATATYPE']
+        elif c_dict['OBS_GRID_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES:
+            c_dict['OBS_INPUT_DATATYPE'] = c_dict['OBS_GRID_INPUT_DATATYPE']
 
         c_dict['CONFIG_FILE'] = \
             self.config.getstr('config', 'ENSEMBLE_STAT_CONFIG_FILE', '')
@@ -136,6 +154,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'ENSEMBLE_STAT_REGRID_TO_GRID', '')
 
         # used to override the file type for fcst/obs if using python embedding for input
+        c_dict['ENS_FILE_TYPE'] = ''
         c_dict['FCST_FILE_TYPE'] = ''
         c_dict['OBS_FILE_TYPE'] = ''
 
@@ -174,7 +193,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             first_var_info = var_list[0]
 
         # get point observation file if requested
-        if self.c_dict['OBS_POINT_INPUT_TEMPLATE'] != '':
+        if self.c_dict['OBS_POINT_INPUT_TEMPLATE']:
             point_obs_path = self.find_data(time_info, first_var_info, 'OBS_POINT')
             if point_obs_path is None:
                 return
@@ -182,7 +201,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.point_obs_files.append(point_obs_path)
 
         # get grid observation file if requested
-        if self.c_dict['OBS_GRID_INPUT_TEMPLATE'] != '':
+        if self.c_dict['OBS_GRID_INPUT_TEMPLATE']:
             grid_obs_path = self.find_data(time_info, first_var_info, 'OBS_GRID')
             if grid_obs_path is None:
                 return
@@ -190,9 +209,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.grid_obs_files.append(grid_obs_path)
 
         # set field info
-        fcst_field = self.get_all_field_info(var_list, "something.grb2", 'FCST')
-        obs_field = self.get_all_field_info(var_list, "something.grb2", 'OBS')
-        ens_field = self.get_all_field_info(ensemble_var_list, 'something.grb2', 'ENS')
+        fcst_field = self.get_all_field_info(var_list, 'FCST')
+        obs_field = self.get_all_field_info(var_list, 'OBS')
+        ens_field = self.get_all_field_info(ensemble_var_list, 'ENS')
 
         if not fcst_field and not obs_field and not ens_field:
             self.log_error("Could not build field info for fcst, obs, or ens")
@@ -202,7 +221,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.process_fields(time_info, fcst_field, obs_field, ens_field)
 
 
-    def get_all_field_info(self, var_list, model_path, data_type):
+    def get_all_field_info(self, var_list, data_type):
         """!Get field info based on data type"""
         field_list = []
         for var_info in var_list:
@@ -222,6 +241,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 name = var_info['ens_name']
                 extra = var_info['ens_extra']
             else:
+                return ''
+
+            # check if python embedding is used and set up correctly
+            # set env var for file type if it is used
+            pyEmbedIsOK = self.check_for_python_embedding(data_type, var_info)
+            if not pyEmbedIsOK:
                 return ''
 
             next_field = self.get_field_info(v_level=level,
@@ -334,6 +359,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
+        self.add_env_var("ENS_FILE_TYPE", self.c_dict['ENS_FILE_TYPE'])
         self.add_env_var("FCST_FILE_TYPE", self.c_dict['FCST_FILE_TYPE'])
         self.add_env_var("OBS_FILE_TYPE", self.c_dict['OBS_FILE_TYPE'])
 
