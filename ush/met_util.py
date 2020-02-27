@@ -679,8 +679,7 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
     time_str = sts.do_string_sub()
     return datetime.datetime.strptime(time_str, fmt)
 
-def loop_over_times_and_call(config, processes):
-    """!Loop over all run times and call wrappers listed in config"""
+def get_start_end_interval_times(config):
     clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
                                                 '%Y%m%d%H%M%S')
     use_init = is_loop_by_init(config)
@@ -699,21 +698,34 @@ def loop_over_times_and_call(config, processes):
     time_format_len = len(datetime.datetime.now().strftime(time_format))
     if len(start_t) != time_format_len:
         config.logger.error(f"[INIT/VALID]_TIME_FMT {time_format} does not match [INIT/VALID]_BEG {start_t}.")
-        exit(1)
+        return None
 
     if len(end_t) != time_format_len:
         config.logger.error(f"[INIT/VALID]_TIME_FMT ({time_format}) does not match [INIT/VALID]_END ({end_t}).")
-        exit(1)
+        return None
 
-    loop_time = get_time_obj(start_t, time_format,
+    start_time = get_time_obj(start_t, time_format,
                              clock_time_obj, config.logger)
     end_time = get_time_obj(end_t, time_format,
                             clock_time_obj, config.logger)
 
-    if loop_time + time_interval < loop_time + datetime.timedelta(seconds=60):
-        config.logger.error("time_interval parameter must be "
-                            "greater than or equal to 60 seconds")
-        exit(1)
+    if start_time + time_interval < start_time + datetime.timedelta(seconds=60):
+        config.logger.error("[INIT/VALID]_INCREMENT must be greater than or equal to 60 seconds")
+        return None
+
+    return start_time, end_time, time_interval
+
+def loop_over_times_and_call(config, processes):
+    """!Loop over all run times and call wrappers listed in config"""
+    clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
+                                                '%Y%m%d%H%M%S')
+    use_init = is_loop_by_init(config)
+
+    # get start time, end time, and time interval from config
+    loop_time, end_time, time_interval = get_start_end_interval_times(config) or (None, None, None)
+    if not loop_time:
+        config.logger.error("Could not get [INIT/VALID] time information from configuration file")
+        return None
 
     while loop_time <= end_time:
         run_time = loop_time.strftime("%Y%m%d%H%M")
